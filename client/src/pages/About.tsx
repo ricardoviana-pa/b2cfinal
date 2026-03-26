@@ -1,0 +1,242 @@
+/* ==========================================================================
+   ABOUT — V1.6 Redesign
+   Hero, story, Private Hotel Model, 4 values, team carousel, dual CTA
+   ========================================================================== */
+
+import { useRef, useMemo } from 'react';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import { Link } from 'wouter';
+import { useTranslation } from 'react-i18next';
+import { IMAGES } from '@/lib/images';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
+
+const TEAM = [
+  {
+    id: '1',
+    name: 'Team Member',
+    role: 'Founder & CEO',
+    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
+  },
+  {
+    id: '2',
+    name: 'Team Member',
+    role: 'Head of Operations',
+    photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80',
+  },
+  {
+    id: '3',
+    name: 'Team Member',
+    role: 'Head of Guest Experience',
+    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80',
+  },
+  {
+    id: '4',
+    name: 'Team Member',
+    role: 'Concierge Lead, Minho',
+    photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80',
+  },
+  {
+    id: '5',
+    name: 'Team Member',
+    role: 'Concierge Lead, Porto',
+    photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80',
+  },
+  {
+    id: '6',
+    name: 'Team Member',
+    role: 'Concierge Lead, Algarve',
+    photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80',
+  },
+];
+
+export default function About() {
+  const { t } = useTranslation();
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const values = useMemo(() => [
+    {
+      title: t('about.value1Title'),
+      body: t('about.value1Body'),
+    },
+    {
+      title: t('about.value2Title'),
+      body: t('about.value2Body'),
+    },
+    {
+      title: t('about.value3Title'),
+      body: t('about.value3Body'),
+    },
+    {
+      title: t('about.value4Title'),
+      body: t('about.value4Body'),
+    },
+  ], [t]);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (!scrollRef.current) return;
+    scrollRef.current.scrollBy({ left: direction === 'left' ? -320 : 320, behavior: 'smooth' });
+  };
+
+  return (
+    <div className="min-h-screen bg-[#FAFAF7]">
+      <Header />
+
+      {/* Hero */}
+      <section className="relative h-[55vh] min-h-[380px] flex items-end overflow-hidden">
+        <img src={IMAGES.aboutStory} alt="The Portugal Active team" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-black/10" />
+        <div className="relative container pb-12 lg:pb-16 z-10">
+          <h1 className="headline-xl text-white max-w-2xl">
+            {t('about.heroTitle')}
+          </h1>
+        </div>
+      </section>
+
+      {/* Our Story */}
+      <section className="section-padding">
+        <div className="container max-w-3xl mx-auto">
+          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('about.storyLabel')}</p>
+          <h2 className="headline-lg text-[#1A1A18] mb-8">{t('about.storyTitle')}</h2>
+          <p className="body-lg mb-5">
+            {t('about.storyP1')}
+          </p>
+          <p className="body-lg mb-5">
+            {t('about.storyP2')}
+          </p>
+          <p className="body-lg mb-5">
+            {t('about.storyP3')}
+          </p>
+          <p className="body-lg">
+            {t('about.storyP4')}
+          </p>
+        </div>
+      </section>
+
+      {/* The Private Hotel Model */}
+      <section className="section-padding bg-[#F5F1EB]">
+        <div className="container max-w-3xl mx-auto">
+          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('about.modelLabel')}</p>
+          <h2 className="headline-lg text-[#1A1A18] mb-8">{t('about.modelTitle')}</h2>
+          <p className="body-lg mb-5">
+            {t('about.modelP1')}
+          </p>
+          <p className="body-lg mb-10">
+            {t('about.modelP2')}
+          </p>
+
+          {/* Stats bar */}
+          <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible border-t border-[#E8E4DC] pt-8">
+            {[
+              { stat: '50+', label: t('about.statHomes') },
+              { stat: '4.9/5', label: t('about.statRating') },
+              { stat: 'Since 2019', label: t('about.statOperating') },
+            ].map(item => (
+              <div key={item.label} className="text-center flex-shrink-0 w-[200px] sm:w-auto" style={{ scrollSnapAlign: 'start' }}>
+                <div className="font-display text-[2.5rem] lg:text-[3rem] text-[#1A1A18] leading-none mb-2">{item.stat}</div>
+                <div className="text-[11px] font-medium text-[#9E9A90] tracking-[0.06em]">{item.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Values */}
+      <section className="section-padding bg-white">
+        <div className="container">
+          <div className="max-w-3xl mx-auto mb-10">
+            <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('about.valuesLabel')}</p>
+            <h2 className="headline-lg text-[#1A1A18]">{t('about.valuesTitle')}</h2>
+          </div>
+          <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-auto md:px-0 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible max-w-3xl">
+            {values.map((value, idx) => (
+              <div key={idx} className="bg-[#FAFAF7] border border-[#E8E4DC] p-8 flex-shrink-0 w-[280px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
+                <h3 className="font-display text-[20px] text-[#1A1A18] mb-4">{value.title}</h3>
+                <p className="text-[14px] text-[#6B6860] font-light leading-relaxed">{value.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Team Carousel */}
+      <section className="section-padding bg-[#FAFAF7]">
+        <div className="container">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <h2 className="headline-lg text-[#1A1A18] mb-3">{t('about.teamTitle')}</h2>
+              <p className="body-lg max-w-2xl">
+                {t('about.teamDescription')}
+              </p>
+            </div>
+            <div className="hidden md:flex gap-2 shrink-0 ml-8">
+              <button
+                onClick={() => scroll('left')}
+                className="w-10 h-10 flex items-center justify-center border border-[#E8E4DC] text-[#6B6860] hover:border-[#1A1A18] hover:text-[#1A1A18] transition-colors"
+                style={{ minHeight: 'auto', minWidth: 'auto' }}
+                aria-label="Scroll left"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => scroll('right')}
+                className="w-10 h-10 flex items-center justify-center border border-[#E8E4DC] text-[#6B6860] hover:border-[#1A1A18] hover:text-[#1A1A18] transition-colors"
+                style={{ minHeight: 'auto', minWidth: 'auto' }}
+                aria-label="Scroll right"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          <div
+            ref={scrollRef}
+            className="flex gap-5 overflow-x-auto scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0 snap-x snap-mandatory"
+          >
+            {TEAM.map(member => (
+              <div key={member.id} className="flex-shrink-0 w-[260px] snap-start">
+                <div className="relative overflow-hidden mb-3" style={{ aspectRatio: '3/4' }}>
+                  <img
+                    src={member.photo}
+                    alt={member.name}
+                    className="w-full h-full object-cover grayscale-[20%]"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="pt-3">
+                  <h4 className="text-[15px] font-display text-[#1A1A18] mb-0.5">{member.name}</h4>
+                  <p className="text-[12px] font-medium text-[#8B7355]">{member.role}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="section-padding bg-[#1A1A18]">
+        <div className="container max-w-2xl mx-auto text-center">
+          <h2 className="headline-lg text-white mb-8">{t('about.ctaTitle')}</h2>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/homes"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#8B7355] text-white text-[12px] tracking-[0.08em] font-medium px-8 py-4 hover:bg-[#7A6548] transition-colors"
+            >
+              {t('about.ctaExplore')} <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 text-white text-[12px] tracking-[0.08em] font-medium px-8 py-4 hover:border-white hover:bg-white/10 transition-colors"
+            >
+              {t('about.ctaContact')} <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+      <WhatsAppFloat />
+    </div>
+  );
+}

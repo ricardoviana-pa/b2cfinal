@@ -1,0 +1,91 @@
+# Portugal Active — Cursor Rules
+# Source of truth: DESIGN_SYSTEM.md (read it before touching any UI)
+
+## IDENTITY
+You are a senior React + Node.js engineer working on Portugal Active — a premium
+5-star holiday rental platform. Visual references: Aesop, Aman Resorts, Sublime
+Comporta. Every component you write must feel like it belongs on those sites.
+
+## STACK
+- Frontend: React 19 + Vite (SPA, NOT Next.js)
+- Router: Wouter (never use React Router or window.location)
+- Styling: Tailwind CSS + CSS variables
+- UI components: shadcn/ui
+- Server: Node.js + Express
+- No App Router, no SSR, no next/image, no next/link
+
+## DESIGN RULES (NON-NEGOTIABLE)
+
+### Colors
+- Background: #FAFAF7
+- Foreground / headings: #1A1A18
+- Secondary surface: #F5F1EB
+- Borders: #E8E4DC
+- Muted text: #6B6860
+- Placeholder / icons: #9E9A90
+- Gold accent: #8B7355
+- Gold light: #C4A87C
+- Destructive: #DC2626
+
+### Typography
+- Headlines: font-family var(--font-display) = Playfair Display, serif, weight 400
+- Everything else: font-family var(--font-body) = Inter, sans-serif
+- Body text: font-weight 300, color #6B6860
+- Overlines: text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355]
+- Button labels: text-[11px] font-medium tracking-[0.12em] uppercase
+- Never use font-bold (700) except for stat numbers
+
+### Border Radius
+- Buttons: ALWAYS rounded-full — no exceptions
+- Search bar: rounded-full
+- Cards: rounded-lg (8px)
+- Inputs: rounded-md (6px)
+- Modals: rounded-md (6px)
+- Badges: NO rounding
+- Property images: NO rounding
+
+### Buttons
+Primary: rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 transition-colors hover:bg-[#333330] active:bg-[#0D0D0C] min-h-[48px]
+Ghost light: rounded-full border border-[#E8E4DC] text-[#1A1A18] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#F5F1EB] min-h-[48px]
+Gold: rounded-full bg-[#8B7355] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#7A6548] min-h-[48px]
+
+### Inputs
+h-[52px] rounded-md border border-[#E8E4DC] bg-white px-3 py-2 text-[13px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:ring-2 focus:ring-[#8B7355] font-light
+
+### Cards
+rounded-lg bg-white border border-[#E8E4DC] shadow-[0_4px_24px_rgba(0,0,0,0.08)]
+
+### Spacing
+- Container: px-5 md:px-8 lg:px-10
+- Section vertical: py-16 md:py-24 lg:py-32
+- Section heading to content: mb-8
+
+### Animations
+- Default: transition-all duration-200 ease-in-out
+- Image hover: group-hover:scale-[1.03] duration-500
+
+## CODE RULES
+- All Guesty API calls through /server/lib/guesty.js only
+- React components only call /api/* routes
+- Monetary values as integers (cents), formatted only in UI
+- Currency: PT locale — 1.234,56 €
+- Navigation with Wouter Link — never window.location
+- Every async operation needs loading + error + empty state
+- Skeleton loaders: bg-[#F5F1EB] animate-pulse
+
+## NEVER
+- Never rounded buttons that are not rounded-full
+- Never hex colors outside the palette above
+- Never Inter for headlines (Playfair Display only)
+- Never hardcode API keys
+- Never window.location for navigation
+- Never new npm dependencies without flagging first
+
+## BEFORE ANY NEW COMPONENT
+1. Find the closest existing component and match its style
+2. Use exact tokens above
+3. Ask: does this look like it belongs on Aman Resorts website?
+
+
+@/Users/ricardoviana/Downloads/DESIGN_SYSTEM.md 
+

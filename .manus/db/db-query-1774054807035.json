@@ -1,0 +1,46 @@
+{
+  "query": "SELECT 'properties' as tbl, COUNT(*) as cnt FROM properties UNION ALL SELECT 'destinations', COUNT(*) FROM destinations UNION ALL SELECT 'services', COUNT(*) FROM services UNION ALL SELECT 'experiences', COUNT(*) FROM experiences UNION ALL SELECT 'reviews', COUNT(*) FROM reviews UNION ALL SELECT 'blog_posts', COUNT(*) FROM blog_posts UNION ALL SELECT 'blog_authors', COUNT(*) FROM blog_authors UNION ALL SELECT 'events', COUNT(*) FROM events UNION ALL SELECT 'faqs', COUNT(*) FROM faqs",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cxMh9zmfdZJBM2R.root --database TrgtKZm5wvwi7gPLiBhuvN --execute SELECT 'properties' as tbl, COUNT(*) as cnt FROM properties UNION ALL SELECT 'destinations', COUNT(*) FROM destinations UNION ALL SELECT 'services', COUNT(*) FROM services UNION ALL SELECT 'experiences', COUNT(*) FROM experiences UNION ALL SELECT 'reviews', COUNT(*) FROM reviews UNION ALL SELECT 'blog_posts', COUNT(*) FROM blog_posts UNION ALL SELECT 'blog_authors', COUNT(*) FROM blog_authors UNION ALL SELECT 'events', COUNT(*) FROM events UNION ALL SELECT 'faqs', COUNT(*) FROM faqs",
+  "rows": [
+    {
+      "tbl": "experiences",
+      "cnt": "16"
+    },
+    {
+      "tbl": "properties",
+      "cnt": "53"
+    },
+    {
+      "tbl": "reviews",
+      "cnt": "12"
+    },
+    {
+      "tbl": "destinations",
+      "cnt": "6"
+    },
+    {
+      "tbl": "services",
+      "cnt": "15"
+    },
+    {
+      "tbl": "blog_authors",
+      "cnt": "2"
+    },
+    {
+      "tbl": "blog_posts",
+      "cnt": "5"
+    },
+    {
+      "tbl": "faqs",
+      "cnt": "0"
+    },
+    {
+      "tbl": "events",
+      "cnt": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "tbl\tcnt\nexperiences\t16\nproperties\t53\nreviews\t12\ndestinations\t6\nservices\t15\nblog_authors\t2\nblog_posts\t5\nfaqs\t0\nevents\t0\n",
+  "stderr": "",
+  "execution_time_ms": 966
+}

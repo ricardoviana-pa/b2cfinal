@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS experiences (id int AUTO_INCREMENT PRIMARY KEY, name varchar(255) NOT NULL, slug varchar(255) NOT NULL, description text, shortDescription varchar(500), category varchar(100), destination varchar(100), duration varchar(100), priceFrom int DEFAULT 0, images json, sortOrder int NOT NULL DEFAULT 0, isActive boolean NOT NULL DEFAULT true, createdAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, updatedAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, UNIQUE KEY experiences_slug_unique (slug));",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cxMh9zmfdZJBM2R.root --database TrgtKZm5wvwi7gPLiBhuvN --execute CREATE TABLE IF NOT EXISTS experiences (id int AUTO_INCREMENT PRIMARY KEY, name varchar(255) NOT NULL, slug varchar(255) NOT NULL, description text, shortDescription varchar(500), category varchar(100), destination varchar(100), duration varchar(100), priceFrom int DEFAULT 0, images json, sortOrder int NOT NULL DEFAULT 0, isActive boolean NOT NULL DEFAULT true, createdAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, updatedAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, UNIQUE KEY experiences_slug_unique (slug));",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 522
+}

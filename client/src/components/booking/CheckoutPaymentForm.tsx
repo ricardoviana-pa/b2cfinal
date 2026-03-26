@@ -1,0 +1,230 @@
+/**
+ * On-site checkout with Stripe (same payment processor as Guesty).
+ * Requires: BE-API + STRIPE_PUBLISHABLE_KEY (from Guesty-connected Stripe account).
+ */
+
+import { useState, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { trpc } from "@/lib/trpc";
+
+const EUR = "\u20AC";
+
+function parseApiError(msg: string, t: any): string {
+  if (!msg) return t('payment.errors.defaultError');
+  if (/Guesty auth failed:\s*429|429|rate limit|Too Many Requests/i.test(msg)) {
+    return t('payment.errors.rateLimitError');
+  }
+  try {
+    const parsed = JSON.parse(msg);
+    if (Array.isArray(parsed) && parsed[0]) {
+      const p = parsed[0];
+      if (p.path?.includes?.("guestEmail")) return t('payment.errors.invalidEmail');
+      if (p.path?.includes?.("guestPhone")) return t('payment.errors.invalidPhone');
+      if (p.message) return p.message;
+    }
+  } catch {
+    /* not JSON */
+  }
+  if (msg.includes("invalid") && msg.toLowerCase().includes("email")) return t('payment.errors.invalidEmail');
+  if (msg.includes("invalid") && msg.toLowerCase().includes("phone")) return t('payment.errors.invalidPhone');
+  if (msg.length > 120) return t('payment.errors.genericError');
+  return msg;
+}
+
+interface CheckoutPaymentFormProps {
+  listingId: string;
+  checkIn: string;
+  checkOut: string;
+  guests: number;
+  quoteId: string;
+  ratePlanId: string;
+  total: number;
+  currency: string;
+  guestName: string;
+  guestEmail: string;
+  guestPhone: string;
+  propertyName: string;
+  notes?: string;
+  onSuccess: (confirmationCode: string) => void;
+  onRequestFallbackSuccess?: (confirmationCode: string) => void;
+  onCancel: () => void;
+}
+
+function PaymentFormInner({
+  listingId,
+  checkIn,
+  checkOut,
+  guests,
+  quoteId,
+  ratePlanId,
+  total,
+  guestName,
+  guestEmail,
+  guestPhone,
+  onSuccess,
+  onRequestFallbackSuccess,
+  onCancel,
+  notes,
+}: Omit<CheckoutPaymentFormProps, "currency" | "propertyName">) {
+  const { t } = useTranslation();
+  const stripe = useStripe();
+  const elements = useElements();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const submittedRef = useRef(false);
+  const createReservation = trpc.booking.createBEInstantReservation.useMutation();
+  const createRequestFallback = trpc.booking.createReservation.useMutation();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (submittedRef.current) return;
+    if (!stripe || !elements || !guestName.trim() || !guestEmail.trim() || !guestPhone.trim()) {
+      setError(t('payment.errors.requiredFields'));
+      return;
+    }
+
+    submittedRef.current = true;
+    setLoading(true);
+    setError("");
+
+    const card = elements.getElement(CardElement);
+    if (!card) {
+      setError(t('payment.errors.cardNotReady'));
+      setLoading(false);
+      return;
+    }
+
+    const { error: stripeError, paymentMethod } = await stripe.createPaymentMethod({
+      type: "card",
+      card,
+    });
+
+    if (stripeError) {
+      setError(stripeError.message || t('payment.errors.cardValidationFailed'));
+      setLoading(false);
+      return;
+    }
+
+    if (!paymentMethod?.id) {
+      setError(t('payment.errors.couldNotCreatePaymentMethod'));
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await Promise.race([
+        createReservation.mutateAsync({
+          quoteId,
+          ratePlanId,
+          ccToken: paymentMethod.id,
+          guestName,
+          guestEmail,
+          guestPhone,
+        }),
+        new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error("Payment provider timeout")), 35000);
+        }),
+      ]);
+      onSuccess(response.confirmationCode);
+    } catch (err: any) {
+      const message = parseApiError(err?.message || t('payment.errors.defaultError'), t);
+      if (/overcarregado|temporarily|timeout|429|busy/i.test(message) && onRequestFallbackSuccess) {
+        try {
+          const fallback = await createRequestFallback.mutateAsync({
+            listingId,
+            checkIn,
+            checkOut,
+            guests,
+            guestName,
+            guestEmail,
+            guestPhone,
+            notes: notes || undefined,
+          });
+          onRequestFallbackSuccess(fallback.confirmationCode);
+          return;
+        } catch (fallbackErr: any) {
+          setError(parseApiError(fallbackErr?.message || message, t));
+        }
+      } else {
+        setError(message);
+        submittedRef.current = false;
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="p-4 bg-white border border-[#E8E4DC] rounded">
+        <CardElement
+          options={{
+            hidePostalCode: true,
+            style: {
+              base: {
+                fontSize: "14px",
+                color: "#1A1A18",
+                "::placeholder": { color: "#9E9A90" },
+              },
+              invalid: { color: "#b91c1c" },
+            },
+          }}
+        />
+      </div>
+
+      {error && (
+        <div className="flex items-start gap-2 p-3 bg-[#F5F1EB] border border-[#DC2626] rounded-md">
+          <span className="text-[#DC2626] mt-0.5 shrink-0" aria-hidden>⚠</span>
+          <p className="text-[#DC2626] text-sm leading-snug">{error}</p>
+        </div>
+      )}
+
+      <div className="flex gap-3">
+        <button
+          type="submit"
+          disabled={!stripe || loading || !guestName.trim() || !guestEmail.trim() || !guestPhone.trim()}
+          className="btn-primary flex-1 disabled:opacity-50"
+        >
+          {loading ? t('payment.processing') : t('payment.payButton', { currency: EUR, amount: total })}
+        </button>
+        <button type="button" onClick={onCancel} className="btn-ghost">
+          {t('payment.cancelButton')}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
+  const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
+  const { data: paymentProvider } = trpc.booking.getPaymentProvider.useQuery(
+    { listingId: props.listingId },
+    { enabled: !!props.listingId },
+  );
+  if (!stripeConfig?.publishableKey) {
+    return null;
+  }
+
+  // Use connected Stripe account from payment provider (listing-level) or env fallback.
+  // Guesty requires the payment token to originate from the same Stripe account
+  // that is assigned to the listing — otherwise the reservation will be rejected.
+  const connectedAccountId =
+    paymentProvider?.providerAccountId ||
+    stripeConfig.stripeAccountId ||
+    undefined;
+
+  const stripePromise = useMemo(
+    () =>
+      connectedAccountId
+        ? loadStripe(stripeConfig.publishableKey, { stripeAccount: connectedAccountId })
+        : loadStripe(stripeConfig.publishableKey),
+    [stripeConfig.publishableKey, connectedAccountId],
+  );
+  return (
+    <Elements stripe={stripePromise}>
+      <PaymentFormInner {...props} />
+    </Elements>
+  );
+}
