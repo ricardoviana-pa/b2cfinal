@@ -199,28 +199,13 @@ function PaymentFormInner({
 
 export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
   const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
-  const { data: paymentProvider } = trpc.booking.getPaymentProvider.useQuery(
-    { listingId: props.listingId },
-    { enabled: !!props.listingId },
-  );
   if (!stripeConfig?.publishableKey) {
     return null;
   }
 
-  // Use connected Stripe account from payment provider (listing-level) or env fallback.
-  // Guesty requires the payment token to originate from the same Stripe account
-  // that is assigned to the listing — otherwise the reservation will be rejected.
-  const connectedAccountId =
-    paymentProvider?.providerAccountId ||
-    stripeConfig.stripeAccountId ||
-    undefined;
-
   const stripePromise = useMemo(
-    () =>
-      connectedAccountId
-        ? loadStripe(stripeConfig.publishableKey, { stripeAccount: connectedAccountId })
-        : loadStripe(stripeConfig.publishableKey),
-    [stripeConfig.publishableKey, connectedAccountId],
+    () => loadStripe(stripeConfig.publishableKey),
+    [stripeConfig.publishableKey],
   );
   return (
     <Elements stripe={stripePromise}>
