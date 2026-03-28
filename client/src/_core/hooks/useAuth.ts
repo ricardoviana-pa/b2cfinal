@@ -8,8 +8,16 @@ type UseAuthOptions = {
   redirectPath?: string;
 };
 
+function safeLoginUrl(): string {
+  try {
+    return getLoginUrl();
+  } catch {
+    return '/login';
+  }
+}
+
 export function useAuth(options?: UseAuthOptions) {
-  const { redirectOnUnauthenticated = false, redirectPath = getLoginUrl() } =
+  const { redirectOnUnauthenticated = false, redirectPath = safeLoginUrl() } =
     options ?? {};
   const utils = trpc.useUtils();
 

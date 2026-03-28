@@ -171,8 +171,8 @@ class SDKServer {
     return this.signSession(
       {
         openId,
-        appId: ENV.appId,
-        name: options.name || "",
+        appId: ENV.appId || "portugalactive",
+        name: options.name || "user",
       },
       options
     );
@@ -200,7 +200,10 @@ class SDKServer {
   async verifySession(
     cookieValue: string | undefined | null
   ): Promise<{ openId: string; appId: string; name: string } | null> {
-    if (!cookieValue) return null;
+    if (!cookieValue) {
+      console.log("[Auth] No session cookie found");
+      return null;
+    }
 
     try {
       const secretKey = this.getSessionSecret();
@@ -209,19 +212,17 @@ class SDKServer {
       });
       const { openId, appId, name } = payload as Record<string, unknown>;
 
-      if (
-        !isNonEmptyString(openId) ||
-        !isNonEmptyString(appId) ||
-        !isNonEmptyString(name)
-      ) {
-        console.warn("[Auth] Session payload missing required fields");
+      console.log("[Auth] JWT payload:", { openId, appId, name });
+
+      if (!isNonEmptyString(openId)) {
+        console.warn("[Auth] Session payload missing openId");
         return null;
       }
 
       return {
         openId,
-        appId,
-        name,
+        appId: isNonEmptyString(appId) ? appId : "portugalactive",
+        name: isNonEmptyString(name) ? name : "user",
       };
     } catch (error) {
       console.warn("[Auth] Session verification failed", String(error));
@@ -254,9 +255,9 @@ class SDKServer {
   }
 
   async authenticateRequest(req: Request): Promise<User> {
-    // Regular authentication flow
     const cookies = this.parseCookies(req.headers.cookie);
     const sessionCookie = cookies.get(COOKIE_NAME);
+    console.log("[Auth] Cookie present:", !!sessionCookie, "| Cookie name:", COOKIE_NAME);
     const session = await this.verifySession(sessionCookie);
 
     if (!session) {
@@ -267,8 +268,8 @@ class SDKServer {
     const signedInAt = new Date();
     let user = await db.getUserByOpenId(sessionUserId);
 
-    // If user not in DB, sync from OAuth server (skip for dev-admin)
-    if (!user && sessionUserId !== ENV.devAdminOpenId) {
+    // If user not in DB, sync from OAuth server (skip for dev-admin and Google OAuth users)
+    if (!user && sessionUserId !== ENV.devAdminOpenId && !sessionUserId.startsWith("google_")) {
       try {
         const userInfo = await this.getUserInfoWithJwt(sessionCookie ?? "");
         await db.upsertUser({
