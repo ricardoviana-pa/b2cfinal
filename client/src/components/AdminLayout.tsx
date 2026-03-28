@@ -35,6 +35,7 @@ import {
   LogOut,
   PanelLeft,
   ArrowLeft,
+  Users,
 } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation, Link } from "wouter";
@@ -50,6 +51,7 @@ const menuItems = [
   { icon: FileText, label: "Blog / Journal", path: "/admin/blog" },
   { icon: Star, label: "Reviews", path: "/admin/reviews" },
   { icon: Mail, label: "Leads & Newsletter", path: "/admin/leads" },
+  { icon: Users, label: "Customers", path: "/admin/customers" },
   { icon: HelpCircle, label: "FAQ", path: "/admin/faqs" },
   { icon: Settings, label: "Settings", path: "/admin/settings" },
 ];

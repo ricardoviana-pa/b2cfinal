@@ -124,6 +124,7 @@ export default function PropertyCard({
           alt={t('property.imageAlt', { name: property.name, current: currentImage + 1, total })}
           className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03] ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
           loading="lazy"
+          width={800} height={600}
           onLoad={() => setImageLoaded(true)}
         />
 

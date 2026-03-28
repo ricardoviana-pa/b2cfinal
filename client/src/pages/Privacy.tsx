@@ -9,7 +9,7 @@ import Footer from '@/components/layout/Footer';
 
 export default function Privacy() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Privacy Policy' });
+  usePageMeta({ title: 'Privacy Policy', description: 'How Portugal Active collects, uses, and protects your personal data. GDPR-compliant privacy practices for all guests and visitors.', url: '/legal/privacy' });
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <Header />

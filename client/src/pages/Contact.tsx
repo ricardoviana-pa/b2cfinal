@@ -91,7 +91,7 @@ const CONTACT_CHANNELS = [
 
 export default function Contact() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Contact', description: 'Get in touch with our concierge team. We typically respond within 2 hours.' });
+  usePageMeta({ title: 'Contact Portugal Active | Plan Your Stay in Portugal', description: 'Speak to our concierge team. We respond within 2 hours. Phone, WhatsApp, or email — plan your perfect Portuguese villa holiday.', url: '/contact' });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');

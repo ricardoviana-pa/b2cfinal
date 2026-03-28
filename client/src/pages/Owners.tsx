@@ -13,7 +13,7 @@ import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 
 export default function Owners() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'For Owners', description: 'Partner with Portugal Active and let us manage your property to hotel standards.' });
+  usePageMeta({ title: 'Property Management Portugal | Portugal Active for Owners', description: 'Maximise your rental income. Full-service villa management — marketing, bookings, housekeeping, maintenance, guest concierge.', url: '/owners' });
   const [submitted, setSubmitted] = useState(false);
 
   const WHAT_WE_DO = useMemo(() => [

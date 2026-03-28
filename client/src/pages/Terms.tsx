@@ -9,7 +9,7 @@ import Footer from '@/components/layout/Footer';
 
 export default function Terms() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Terms of Service' });
+  usePageMeta({ title: 'Terms of Service', description: 'Booking terms, cancellation policy, and conditions of use for Portugal Active villa rentals and concierge services.', url: '/legal/terms' });
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <Header />

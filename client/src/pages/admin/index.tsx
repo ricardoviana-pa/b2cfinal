@@ -13,6 +13,7 @@ const Reviews = lazy(() => import("./Reviews"));
 const Leads = lazy(() => import("./Leads"));
 const Faqs = lazy(() => import("./Faqs"));
 const Destinations = lazy(() => import("./Destinations"));
+const Customers = lazy(() => import("./Customers"));
 const Settings = lazy(() => import("./Settings"));
 
 function AdminLoader() {
@@ -45,6 +46,7 @@ export default function AdminRouter() {
           <Route path="/admin/reviews" component={Reviews} />
           <Route path="/admin/leads" component={Leads} />
           <Route path="/admin/faqs" component={Faqs} />
+          <Route path="/admin/customers" component={Customers} />
           <Route path="/admin/settings" component={Settings} />
         </Switch>
       </Suspense>

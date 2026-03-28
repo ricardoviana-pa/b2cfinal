@@ -3,18 +3,21 @@
    Individual service/activity page with itinerary integration
    ========================================================================== */
 
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { useRoute, Link } from 'wouter';
 import { Check, Star, Clock, MapPin, ArrowLeft, Plus, MessageCircle } from 'lucide-react';
 import servicesData from '@/data/services.json';
 import productsData from '@/data/products.json';
-import type { Product } from '@/lib/types';
+import destinationsData from '@/data/destinations.json';
+import type { Product, Destination } from '@/lib/types';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
-import AddToItineraryModal from '@/components/itinerary/AddToItineraryModal';
+const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 
 const allProducts = productsData as unknown as Product[];
+const destinations = (destinationsData as unknown as Destination[]).filter(d => d.status === 'active' && !d.comingSoon);
 
 function InquiryForm({ serviceName }: { serviceName: string }) {
   const [submitted, setSubmitted] = useState(false);
@@ -76,6 +79,13 @@ export default function ServiceDetail() {
   const allItems = [...servicesData.services, ...servicesData.activities];
   const item = allItems.find(s => s.slug === slug);
 
+  usePageMeta({
+    title: item ? `${item.name} | Luxury Experience in Portugal` : 'Service Not Found',
+    description: item ? `${item.tagline || item.name}. Book this experience with your Portugal Active villa stay.`.slice(0, 155) : undefined,
+    image: item?.image,
+    url: item ? `/services/${item.slug}` : undefined,
+  });
+
   if (!item) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FAFAF7]">
@@ -97,7 +107,7 @@ export default function ServiceDetail() {
 
       {/* Hero */}
       <section className="relative h-[55vh] min-h-[380px] flex items-end overflow-hidden">
-        <img src={item.image} alt={item.name} className="absolute inset-0 w-full h-full object-cover" />
+        <img src={item.image} alt={`${item.name} – luxury experience in Portugal`} className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-black/10" />
         <div className="relative container pb-12 lg:pb-16 z-10">
           <p className="text-[11px] font-medium tracking-[0.02em] text-[#C4A87C] mb-4">{isService ? 'Service' : 'Activity'}</p>
@@ -123,6 +133,15 @@ export default function ServiceDetail() {
                 {item.description.split('\n\n').map((para: string, i: number) => (
                   <p key={i} className="body-lg mb-4">{para}</p>
                 ))}
+                <p className="body-lg mb-4">
+                  This {isService ? 'service' : 'experience'} is available across all our destinations including{' '}
+                  {destinations.slice(0, 3).map((d, i) => (
+                    <span key={d.slug}>
+                      {i > 0 && (i === Math.min(destinations.length, 3) - 1 ? ' and ' : ', ')}
+                      <Link href={`/destinations/${d.slug}`} className="text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4 decoration-[#E8E4DC]">{d.name}</Link>
+                    </span>
+                  ))}.
+                </p>
               </div>
 
               <div className="mb-10">
@@ -237,7 +256,7 @@ export default function ServiceDetail() {
             {otherItems.map((other) => (
               <Link key={other.slug} href={`/${other.category === 'service' ? 'services' : 'activities'}/${other.slug}`} className="group">
                 <div className="relative overflow-hidden mb-4" style={{ aspectRatio: '3/4' }}>
-                  <img src={other.image} alt={other.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" loading="lazy" />
+                  <img src={other.image} alt={`${other.name} – luxury experience in Portugal`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" loading="lazy" />
                   <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1">
                     <span className="text-[10px] tracking-[0.02em] font-medium text-[#6B6860]">
                       {other.category === 'service' ? 'Service' : 'Activity'}
@@ -256,7 +275,9 @@ export default function ServiceDetail() {
       <WhatsAppFloat />
 
       {modalProduct && (
-        <AddToItineraryModal product={modalProduct} isOpen={!!modalProduct} onClose={() => setModalProduct(null)} />
+        <Suspense fallback={null}>
+          <AddToItineraryModal product={modalProduct} isOpen={!!modalProduct} onClose={() => setModalProduct(null)} />
+        </Suspense>
       )}
     </div>
   );

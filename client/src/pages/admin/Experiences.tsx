@@ -44,7 +44,7 @@ export default function AdminExperiences() {
   };
 
   const columns: Column<Experience>[] = [
-    { key: "image", label: "", className: "w-[50px]", render: (item) => item.images?.[0] ? <img src={item.images[0]} alt="" className="w-10 h-10 rounded object-cover" /> : <div className="w-10 h-10 rounded bg-muted" /> },
+    { key: "image", label: "", className: "w-[50px]", render: (item) => item.images?.[0] ? <img src={item.images[0]} alt="" role="presentation" className="w-10 h-10 rounded object-cover" /> : <div className="w-10 h-10 rounded bg-muted" /> },
     { key: "name", label: "Name", render: (item) => <div><p className="font-medium text-sm">{item.name}</p><p className="text-xs text-muted-foreground">{item.slug}</p></div> },
     { key: "category", label: "Category", render: (item) => item.category ? <Badge variant="outline" className="text-xs capitalize">{item.category}</Badge> : <span className="text-xs text-muted-foreground">—</span> },
     { key: "destination", label: "Destination", render: (item) => item.destination ? <Badge variant="outline" className="text-xs capitalize">{item.destination}</Badge> : <span className="text-xs text-muted-foreground">—</span> },

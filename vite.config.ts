@@ -170,6 +170,19 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/react-dom')) return 'react-dom';
+          if (id.includes('node_modules/react/')) return 'react';
+          if (id.includes('node_modules/@tanstack')) return 'query';
+          if (id.includes('node_modules/i18next') || id.includes('node_modules/react-i18next')) return 'i18n';
+          if (id.includes('node_modules/@radix-ui')) return 'ui';
+          if (id.includes('node_modules/wouter')) return 'router';
+          if (id.includes('node_modules/@trpc')) return 'trpc';
+        },
+      },
+    },
   },
   server: {
     host: true,

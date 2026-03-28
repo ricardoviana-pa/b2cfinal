@@ -354,7 +354,7 @@ export async function listLeads(opts?: { source?: string; status?: string }) {
   const db = await getDb();
   if (!db) return [];
   const conditions: any[] = [];
-  if (opts?.source) conditions.push(eq(leads.source, opts.source));
+  if (opts?.source) conditions.push(like(leads.source, `${opts.source}%`));
   if (opts?.status) conditions.push(eq(leads.status, opts.status as any));
   const where = conditions.length > 0 ? and(...conditions) : undefined;
   return db.select().from(leads).where(where).orderBy(desc(leads.createdAt));
@@ -383,8 +383,8 @@ export async function getLeadStats() {
   const db = await getDb();
   if (!db) return { total: 0, newsletter: 0, contact: 0, newLeads: 0 };
   const [total] = await db.select({ count: sql<number>`count(*)` }).from(leads);
-  const [newsletter] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(eq(leads.source, "newsletter"));
-  const [contact] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(eq(leads.source, "contact"));
+  const [newsletter] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(like(leads.source, "newsletter%"));
+  const [contact] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(like(leads.source, "contact%"));
   const [newLeads] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(eq(leads.status, "new"));
   return { total: total.count, newsletter: newsletter.count, contact: contact.count, newLeads: newLeads.count };
 }
@@ -616,6 +616,46 @@ export async function createCustomerTrip(data: InsertCustomerTrip) {
   if (!db) throw new Error("Database not available");
   const result = await db.insert(customerTrips).values(data);
   return { id: result[0].insertId };
+}
+
+/* ================================================================
+   ADMIN: CUSTOMER OVERVIEW
+   ================================================================ */
+export async function listAllCustomers() {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select({
+      id: customerProfiles.id,
+      userId: customerProfiles.userId,
+      googleId: customerProfiles.googleId,
+      avatar: customerProfiles.avatar,
+      phone: customerProfiles.phone,
+      nationality: customerProfiles.nationality,
+      referralCode: customerProfiles.referralCode,
+      loyaltyPoints: customerProfiles.loyaltyPoints,
+      loyaltyTier: customerProfiles.loyaltyTier,
+      totalStays: customerProfiles.totalStays,
+      totalNights: customerProfiles.totalNights,
+      createdAt: customerProfiles.createdAt,
+      userName: users.name,
+      userEmail: users.email,
+    })
+    .from(customerProfiles)
+    .innerJoin(users, eq(users.id, customerProfiles.userId))
+    .orderBy(desc(customerProfiles.createdAt));
+}
+
+export async function listAllReferrals() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(referrals).orderBy(desc(referrals.createdAt));
+}
+
+export async function listAllTrips() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(customerTrips).orderBy(desc(customerTrips.createdAt));
 }
 
 /* ================================================================

@@ -7,6 +7,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { IMAGES } from '@/lib/images';
 import { SlidersHorizontal, X, Search, Calendar, Users, Minus, Plus } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
@@ -19,7 +20,7 @@ const BEDROOM_OPTIONS = ['1-2', '3-4', '5-6', '7+'];
 
 export default function Homes() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Properties', description: 'Browse our portfolio of private homes across Portugal, each operated to hotel standards.' });
+  usePageMeta({ title: 'Private Villas Portugal | Luxury Holiday Homes', description: 'Browse 50+ handpicked private villas across Portugal. Pool, concierge, housekeeping included. Filter by region and book direct.', image: IMAGES.heroHomes, url: '/homes' });
   const [, navigate] = useLocation();
 
   const OCCASIONS = useMemo(
@@ -216,7 +217,7 @@ export default function Homes() {
 
       {/* Hero */}
       <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
-        <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp" alt={t('homes.heroAlt')} className="absolute inset-0 w-full h-full object-cover" />
+        <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp" alt="Collection of luxury private villas across Portugal" className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10" />
         <div className="relative container pb-12 lg:pb-16 z-10">
           <h1 className="headline-xl text-white mb-4">{t('homes.title')}</h1>

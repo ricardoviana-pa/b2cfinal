@@ -3,7 +3,7 @@
    Adventure catalogue filtered by destination, with itinerary integration
    ========================================================================== */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { Plus, MessageCircle, MapPin } from 'lucide-react';
@@ -12,14 +12,14 @@ import type { Product, DestinationSlug } from '@/lib/types';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
-import AddToItineraryModal from '@/components/itinerary/AddToItineraryModal';
+const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 
 const allProducts = productsData as unknown as Product[];
 const adventures = allProducts.filter(p => p.type === 'adventure' && p.isActive).sort((a, b) => a.sortOrder - b.sortOrder);
 
 export default function Adventures() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Adventures', description: "Outdoor activities and guided adventures across Portugal's most stunning landscapes." });
+  usePageMeta({ title: 'Outdoor Adventures Portugal | Surf, Hike, Wine Tours', description: "Guided adventures across Portugal — surf lessons, hiking trails, wine tastings, coasteering. Book with your villa stay.", url: '/adventures' });
   const [destination, setDestination] = useState('all');
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
 
@@ -43,7 +43,7 @@ export default function Adventures() {
 
       {/* Hero */}
       <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1400&q=80" alt="Adventure experiences in Portugal" className="absolute inset-0 w-full h-full object-cover" />
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1400&q=80" alt="Golden beach on the Portuguese Atlantic coast – adventure experiences" className="absolute inset-0 w-full h-full object-cover" width={1400} height={933} fetchPriority="high" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-black/10" />
         <div className="relative container pb-12 lg:pb-16 z-10">
           <h1 className="headline-xl text-white mb-4">{t('adventures.title')}</h1>
@@ -88,7 +88,7 @@ export default function Adventures() {
                 {/* Image */}
                 <div className="relative overflow-hidden" style={{ aspectRatio: '4/3' }}>
                   {adventure.image ? (
-                    <img src={adventure.image} alt={adventure.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                    <img src={adventure.image} alt={`${adventure.name} – guided adventure in Portugal`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                   ) : (
                     <div className="w-full h-full placeholder-image" />
                   )}
@@ -169,7 +169,9 @@ export default function Adventures() {
 
       {/* Add to Itinerary Modal */}
       {modalProduct && (
-        <AddToItineraryModal product={modalProduct} isOpen={!!modalProduct} onClose={() => setModalProduct(null)} />
+        <Suspense fallback={null}>
+          <AddToItineraryModal product={modalProduct} isOpen={!!modalProduct} onClose={() => setModalProduct(null)} />
+        </Suspense>
       )}
 
       <Footer />

@@ -8,7 +8,7 @@ import { Shield, Gift, MapPin, Star } from 'lucide-react';
 
 export default function Login() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Sign In', description: 'Sign in to your Portugal Active account.' });
+  usePageMeta({ title: 'Sign In | Access Your Account', description: 'Sign in to manage your bookings, loyalty points, and personalised concierge services with Portugal Active.', url: '/login' });
   const { isAuthenticated, loading } = useAuth();
   const [, navigate] = useLocation();
 

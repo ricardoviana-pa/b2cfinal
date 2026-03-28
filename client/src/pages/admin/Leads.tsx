@@ -195,9 +195,10 @@ export default function AdminLeads() {
             <SelectContent>
               <SelectItem value="all">All sources</SelectItem>
               <SelectItem value="newsletter">Newsletter</SelectItem>
-              <SelectItem value="contact">Contact</SelectItem>
+              <SelectItem value="contact">Contact form</SelectItem>
               <SelectItem value="owners">Owners</SelectItem>
               <SelectItem value="booking">Booking</SelectItem>
+              <SelectItem value="other">Other</SelectItem>
             </SelectContent>
           </Select>
           <Select value={statusFilter} onValueChange={setStatusFilter}>

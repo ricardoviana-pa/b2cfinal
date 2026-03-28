@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useParams } from "wouter";
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import PriceBreakdown from "@/components/booking/PriceBreakdown";
@@ -9,6 +10,7 @@ import { clearBookingFlow, readBookingFlow } from "@/lib/booking-flow";
 
 export default function BookingConfirmPage() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'Review & Confirm | Secure Your Villa', description: 'Review your booking summary and confirm your luxury villa reservation with Portugal Active.' });
   const { listingId } = useParams<{ listingId: string }>();
   const [, navigate] = useLocation();
   const flow = useMemo(() => readBookingFlow(listingId), [listingId]);

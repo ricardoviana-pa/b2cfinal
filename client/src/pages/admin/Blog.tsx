@@ -157,6 +157,10 @@ function PostsTab() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const editingPost = editId
+      ? ((postsQ.data as BlogPost[]) || []).find((p) => p.id === editId)
+      : null;
+    const wasAlreadyPublished = editingPost?.status === "published";
     const data = {
       ...form,
       excerpt: form.excerpt || undefined,
@@ -167,7 +171,10 @@ function PostsTab() {
       seoTitle: form.seoTitle || undefined,
       seoDescription: form.seoDescription || undefined,
       readTime: form.readTime || undefined,
-      publishedAt: form.status === "published" ? new Date() : undefined,
+      publishedAt:
+        form.status === "published" && !wasAlreadyPublished
+          ? new Date()
+          : undefined,
     };
     if (editId) {
       updateM.mutate({ id: editId, ...data });

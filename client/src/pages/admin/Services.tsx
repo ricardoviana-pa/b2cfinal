@@ -21,10 +21,14 @@ type Service = {
   id: number;
   name: string;
   slug: string;
+  tagline: string | null;
   description: string | null;
   category: string | null;
   icon: string | null;
   images: string[];
+  price: string | null;
+  duration: string | null;
+  availability: string | null;
   sortOrder: number;
   isActive: boolean;
 };
@@ -53,22 +57,26 @@ export default function AdminServices() {
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
   const [form, setForm] = useState({
-    name: "", slug: "", description: "", category: "", icon: "",
-    images: [] as string[], sortOrder: 0, isActive: true,
+    name: "", slug: "", tagline: "", description: "", category: "", icon: "",
+    images: [] as string[], price: "", duration: "", availability: "",
+    sortOrder: 0, isActive: true,
   });
 
   const openCreate = () => {
     setEditId(null);
-    setForm({ name: "", slug: "", description: "", category: "", icon: "", images: [], sortOrder: 0, isActive: true });
+    setForm({ name: "", slug: "", tagline: "", description: "", category: "", icon: "", images: [], price: "", duration: "", availability: "", sortOrder: 0, isActive: true });
     setOpen(true);
   };
 
   const openEdit = (item: Service) => {
     setEditId(item.id);
     setForm({
-      name: item.name, slug: item.slug, description: item.description || "",
+      name: item.name, slug: item.slug, tagline: (item as any).tagline || "",
+      description: item.description || "",
       category: item.category || "", icon: item.icon || "",
-      images: item.images || [], sortOrder: item.sortOrder, isActive: item.isActive,
+      images: item.images || [], price: item.price || "",
+      duration: item.duration || "", availability: item.availability || "",
+      sortOrder: item.sortOrder, isActive: item.isActive,
     });
     setOpen(true);
   };
@@ -77,9 +85,13 @@ export default function AdminServices() {
     e.preventDefault();
     const data = {
       ...form,
+      tagline: form.tagline || undefined,
       description: form.description || undefined,
       category: form.category || undefined,
       icon: form.icon || undefined,
+      price: form.price || undefined,
+      duration: form.duration || undefined,
+      availability: form.availability || undefined,
     };
     if (editId) updateM.mutate({ id: editId, ...data });
     else createM.mutate(data);
@@ -89,7 +101,7 @@ export default function AdminServices() {
     {
       key: "image", label: "", className: "w-[50px]",
       render: (item) => item.images?.[0]
-        ? <img src={item.images[0]} alt="" className="w-10 h-10 rounded object-cover" />
+        ? <img src={item.images[0]} alt="" role="presentation" className="w-10 h-10 rounded object-cover" />
         : <div className="w-10 h-10 rounded bg-muted" />,
     },
     {
@@ -159,9 +171,25 @@ export default function AdminServices() {
             <Input value={form.icon} onChange={(e) => setForm((f) => ({ ...f, icon: e.target.value }))} placeholder="e.g. utensils, spa, car" />
           </div>
           <div className="space-y-2">
+            <Label>Price</Label>
+            <Input value={form.price} onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))} placeholder="e.g. From 150€, On request" />
+          </div>
+          <div className="space-y-2">
+            <Label>Duration</Label>
+            <Input value={form.duration} onChange={(e) => setForm((f) => ({ ...f, duration: e.target.value }))} placeholder="e.g. 3 hours, Full day" />
+          </div>
+          <div className="space-y-2">
+            <Label>Availability</Label>
+            <Input value={form.availability} onChange={(e) => setForm((f) => ({ ...f, availability: e.target.value }))} placeholder="e.g. Year-round, May–October" />
+          </div>
+          <div className="space-y-2">
             <Label>Sort order</Label>
             <Input type="number" value={form.sortOrder} onChange={(e) => setForm((f) => ({ ...f, sortOrder: parseInt(e.target.value) || 0 }))} />
           </div>
+        </div>
+        <div className="space-y-2">
+          <Label>Tagline</Label>
+          <Input value={form.tagline} onChange={(e) => setForm((f) => ({ ...f, tagline: e.target.value }))} placeholder="Short description for cards" />
         </div>
         <div className="space-y-2">
           <Label>Description</Label>

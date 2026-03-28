@@ -76,41 +76,72 @@ async function startServer() {
     })
   );
 
+  // 301 redirects — old Webflow URLs → new SPA routes (preserves SEO equity)
+  app.get('/properties', (_req, res) => res.redirect(301, '/homes'));
+  app.get('/properties/:slug', (req, res) => res.redirect(301, `/homes/${req.params.slug}`));
+  app.get('/contact-us', (_req, res) => res.redirect(301, '/contact'));
+  app.get('/legal-terms', (_req, res) => res.redirect(301, '/legal/terms'));
+  app.get('/why-portugal-active', (_req, res) => res.redirect(301, '/about'));
+  app.get('/locations/minho', (_req, res) => res.redirect(301, '/destinations/minho-coast'));
+  app.get('/locations/porto', (_req, res) => res.redirect(301, '/destinations/porto-douro'));
+  app.get('/locations/algarve', (_req, res) => res.redirect(301, '/destinations/algarve'));
+  app.get('/locations/:slug', (_req, res) => res.redirect(301, '/destinations'));
+
   // Dynamic sitemap.xml
   app.get("/sitemap.xml", async (_req, res) => {
     try {
       const { getPropertiesForSite } = await import("../services/properties-store");
+      const { listBlogPosts } = await import("../db");
       const properties = await getPropertiesForSite();
+      const blogPosts = await listBlogPosts({ status: "published" });
       const base = process.env.SITE_URL || "https://www.portugalactive.com";
       const now = new Date().toISOString().split("T")[0];
 
       const staticPages = [
-        { loc: "/", priority: "1.0", changefreq: "weekly" },
+        { loc: "/", priority: "1.0", changefreq: "daily" },
         { loc: "/homes", priority: "0.9", changefreq: "daily" },
-        { loc: "/about", priority: "0.6", changefreq: "monthly" },
-        { loc: "/contact", priority: "0.6", changefreq: "monthly" },
-        { loc: "/services", priority: "0.7", changefreq: "monthly" },
-        { loc: "/adventures", priority: "0.7", changefreq: "monthly" },
-        { loc: "/events", priority: "0.7", changefreq: "monthly" },
-        { loc: "/blog", priority: "0.6", changefreq: "weekly" },
-        { loc: "/faq", priority: "0.4", changefreq: "monthly" },
-        { loc: "/owners", priority: "0.5", changefreq: "monthly" },
-        { loc: "/destinations/minho", priority: "0.7", changefreq: "monthly" },
-        { loc: "/destinations/porto", priority: "0.7", changefreq: "monthly" },
-        { loc: "/destinations/algarve", priority: "0.7", changefreq: "monthly" },
-        { loc: "/legal/privacy", priority: "0.2", changefreq: "yearly" },
-        { loc: "/legal/terms", priority: "0.2", changefreq: "yearly" },
-        { loc: "/legal/cookies", priority: "0.2", changefreq: "yearly" },
+        { loc: "/destinations", priority: "0.9", changefreq: "monthly" },
+        { loc: "/destinations/minho", priority: "0.9", changefreq: "monthly" },
+        { loc: "/destinations/porto", priority: "0.9", changefreq: "monthly" },
+        { loc: "/destinations/lisbon", priority: "0.9", changefreq: "monthly" },
+        { loc: "/destinations/alentejo", priority: "0.9", changefreq: "monthly" },
+        { loc: "/destinations/algarve", priority: "0.9", changefreq: "monthly" },
+        { loc: "/services", priority: "0.8", changefreq: "monthly" },
+        { loc: "/adventures", priority: "0.8", changefreq: "monthly" },
+        { loc: "/events", priority: "0.8", changefreq: "monthly" },
+        { loc: "/blog", priority: "0.8", changefreq: "weekly" },
+        { loc: "/about", priority: "0.7", changefreq: "monthly" },
+        { loc: "/contact", priority: "0.7", changefreq: "monthly" },
+        { loc: "/owners", priority: "0.7", changefreq: "monthly" },
+        { loc: "/faq", priority: "0.7", changefreq: "monthly" },
+        { loc: "/careers", priority: "0.7", changefreq: "monthly" },
+        { loc: "/legal/privacy", priority: "0.3", changefreq: "yearly" },
+        { loc: "/legal/terms", priority: "0.3", changefreq: "yearly" },
+        { loc: "/legal/cookies", priority: "0.3", changefreq: "yearly" },
       ];
+
+      const url = (loc: string, lastmod: string, changefreq: string, priority: string) =>
+        `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
+
+      const staticUrls = staticPages.map(p => url(`${base}${p.loc}`, now, p.changefreq, p.priority));
 
       const propertyUrls = properties
         .filter((p: any) => p.slug)
-        .map((p: any) => `  <url><loc>${base}/homes/${p.slug}</loc><lastmod>${now}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>`);
+        .map((p: any) => url(`${base}/homes/${p.slug}`, now, "weekly", "0.9"));
+
+      const blogUrls = blogPosts
+        .filter((p: any) => p.slug)
+        .map((p: any) => {
+          const mod = p.updatedAt || p.publishedAt || p.createdAt;
+          const lastmod = mod ? new Date(mod).toISOString().split("T")[0] : now;
+          return url(`${base}/blog/${p.slug}`, lastmod, "monthly", "0.8");
+        });
 
       const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${staticPages.map(p => `  <url><loc>${base}${p.loc}</loc><lastmod>${now}</lastmod><changefreq>${p.changefreq}</changefreq><priority>${p.priority}</priority></url>`).join("\n")}
+${staticUrls.join("\n")}
 ${propertyUrls.join("\n")}
+${blogUrls.join("\n")}
 </urlset>`;
 
       res.setHeader("Content-Type", "application/xml");

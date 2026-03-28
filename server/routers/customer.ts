@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { router, protectedProcedure } from "../_core/trpc";
+import { router, protectedProcedure, adminProcedure } from "../_core/trpc";
 import * as db from "../db";
 
 export const customerRouter = router({
@@ -92,6 +92,10 @@ export const customerRouter = router({
       });
       return { success: true };
     }),
+
+  adminListCustomers: adminProcedure.query(() => db.listAllCustomers()),
+  adminListReferrals: adminProcedure.query(() => db.listAllReferrals()),
+  adminListTrips: adminProcedure.query(() => db.listAllTrips()),
 });
 
 function getNextTier(current: string): string | null {

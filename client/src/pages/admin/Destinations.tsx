@@ -8,12 +8,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus, Pencil, Trash2, MapPin, Eye, EyeOff, GripVertical } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, Pencil, Trash2, MapPin } from "lucide-react";
 import { toast } from "sonner";
 
 type DestinationForm = {
@@ -21,11 +29,20 @@ type DestinationForm = {
   slug: string;
   tagline: string;
   description: string;
+  whyDescription: string;
+  whyOverline: string;
   coverImage: string;
+  gallery: string[];
+  highlights: string[];
+  howToGetHere: string;
+  bestTimeToVisit: string;
+  whatToExpect: string;
   status: string;
   comingSoon: boolean;
   sortOrder: number;
   isActive: boolean;
+  seoTitle: string;
+  seoDescription: string;
 };
 
 const emptyForm: DestinationForm = {
@@ -33,11 +50,20 @@ const emptyForm: DestinationForm = {
   slug: "",
   tagline: "",
   description: "",
+  whyDescription: "",
+  whyOverline: "",
   coverImage: "",
+  gallery: [],
+  highlights: [],
+  howToGetHere: "",
+  bestTimeToVisit: "",
+  whatToExpect: "",
   status: "active",
   comingSoon: false,
   sortOrder: 0,
   isActive: true,
+  seoTitle: "",
+  seoDescription: "",
 };
 
 export default function AdminDestinations() {
@@ -45,6 +71,8 @@ export default function AdminDestinations() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<DestinationForm>(emptyForm);
+  const [highlightInput, setHighlightInput] = useState("");
+  const [galleryInput, setGalleryInput] = useState("");
 
   const destinationsQ = trpc.destinations.list.useQuery();
   const createM = trpc.destinations.create.useMutation({
@@ -81,20 +109,42 @@ export default function AdminDestinations() {
       slug: d.slug || "",
       tagline: d.tagline || "",
       description: d.description || "",
+      whyDescription: d.whyDescription || "",
+      whyOverline: d.whyOverline || "",
       coverImage: d.coverImage || "",
+      gallery: d.gallery || [],
+      highlights: d.highlights || [],
+      howToGetHere: d.howToGetHere || "",
+      bestTimeToVisit: d.bestTimeToVisit || "",
+      whatToExpect: d.whatToExpect || "",
       status: d.status || "active",
       comingSoon: d.comingSoon || false,
       sortOrder: d.sortOrder || 0,
       isActive: d.isActive ?? true,
+      seoTitle: d.seoTitle || "",
+      seoDescription: d.seoDescription || "",
     });
     setDialogOpen(true);
   };
 
   const handleSave = () => {
+    const data = {
+      ...form,
+      tagline: form.tagline || undefined,
+      description: form.description || undefined,
+      whyDescription: form.whyDescription || undefined,
+      whyOverline: form.whyOverline || undefined,
+      coverImage: form.coverImage || undefined,
+      howToGetHere: form.howToGetHere || undefined,
+      bestTimeToVisit: form.bestTimeToVisit || undefined,
+      whatToExpect: form.whatToExpect || undefined,
+      seoTitle: form.seoTitle || undefined,
+      seoDescription: form.seoDescription || undefined,
+    };
     if (editingId) {
-      updateM.mutate({ id: editingId, ...form });
+      updateM.mutate({ id: editingId, ...data });
     } else {
-      createM.mutate(form);
+      createM.mutate(data);
     }
   };
 
@@ -199,147 +249,325 @@ export default function AdminDestinations() {
         </div>
       )}
 
-      {/* Create/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {editingId ? "Edit destination" : "New destination"}
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 mt-2">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Name</Label>
-                <Input
-                  value={form.name}
-                  onChange={(e) => {
-                    const name = e.target.value;
-                    setForm((f) => ({
-                      ...f,
-                      name,
-                      slug: editingId
-                        ? f.slug
-                        : name
-                            .toLowerCase()
-                            .replace(/[^a-z0-9]+/g, "-")
-                            .replace(/-+$/, ""),
-                    }));
-                  }}
-                  placeholder="Minho Coast"
-                />
+
+          <Tabs defaultValue="basic" className="mt-2">
+            <TabsList className="grid grid-cols-4 w-full">
+              <TabsTrigger value="basic">Basic</TabsTrigger>
+              <TabsTrigger value="content">Content</TabsTrigger>
+              <TabsTrigger value="media">Media</TabsTrigger>
+              <TabsTrigger value="seo">SEO</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="basic" className="space-y-4 mt-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Name *</Label>
+                  <Input
+                    value={form.name}
+                    onChange={(e) => {
+                      const name = e.target.value;
+                      setForm((f) => ({
+                        ...f,
+                        name,
+                        slug: editingId
+                          ? f.slug
+                          : name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, ""),
+                      }));
+                    }}
+                    placeholder="Minho Coast"
+                  />
+                </div>
+                <div>
+                  <Label>Slug *</Label>
+                  <Input
+                    value={form.slug}
+                    onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
+                    placeholder="minho"
+                  />
+                </div>
               </div>
               <div>
-                <Label>Slug</Label>
+                <Label>Tagline</Label>
                 <Input
-                  value={form.slug}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, slug: e.target.value }))
-                  }
-                  placeholder="minho"
-                />
-              </div>
-            </div>
-            <div>
-              <Label>Tagline</Label>
-              <Input
-                value={form.tagline}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, tagline: e.target.value }))
-                }
-                placeholder="Wild Atlantic coast..."
-              />
-            </div>
-            <div>
-              <Label>Description</Label>
-              <Textarea
-                value={form.description}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, description: e.target.value }))
-                }
-                rows={4}
-              />
-            </div>
-            <div>
-              <Label>Cover image URL</Label>
-              <Input
-                value={form.coverImage}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, coverImage: e.target.value }))
-                }
-                placeholder="https://..."
-              />
-              {form.coverImage && (
-                <img
-                  src={form.coverImage}
-                  alt="Preview"
-                  className="mt-2 h-32 w-full object-cover rounded"
-                />
-              )}
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Sort order</Label>
-                <Input
-                  type="number"
-                  value={form.sortOrder}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      sortOrder: parseInt(e.target.value) || 0,
-                    }))
-                  }
+                  value={form.tagline}
+                  onChange={(e) => setForm((f) => ({ ...f, tagline: e.target.value }))}
+                  placeholder="Wild Atlantic coast meets Portuguese tradition"
                 />
               </div>
               <div>
-                <Label>Status</Label>
+                <Label>Description</Label>
+                <Textarea
+                  value={form.description}
+                  onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                  rows={4}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Sort order</Label>
+                  <Input
+                    type="number"
+                    value={form.sortOrder}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, sortOrder: parseInt(e.target.value) || 0 }))
+                    }
+                  />
+                </div>
+                <div>
+                  <Label>Status</Label>
+                  <Select
+                    value={form.status}
+                    onValueChange={(v) => setForm((f) => ({ ...f, status: v }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="draft">Draft</SelectItem>
+                      <SelectItem value="archived">Archived</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={form.isActive}
+                    onCheckedChange={(v) => setForm((f) => ({ ...f, isActive: v }))}
+                  />
+                  <Label>Active</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={form.comingSoon}
+                    onCheckedChange={(v) => setForm((f) => ({ ...f, comingSoon: v }))}
+                  />
+                  <Label>Coming soon</Label>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="content" className="space-y-4 mt-4">
+              <div>
+                <Label>Why visit — Overline</Label>
                 <Input
-                  value={form.status}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, status: e.target.value }))
-                  }
-                  placeholder="active"
+                  value={form.whyOverline}
+                  onChange={(e) => setForm((f) => ({ ...f, whyOverline: e.target.value }))}
+                  placeholder="Why Minho Coast"
                 />
               </div>
-            </div>
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2">
-                <Switch
-                  checked={form.isActive}
-                  onCheckedChange={(v) =>
-                    setForm((f) => ({ ...f, isActive: v }))
-                  }
+              <div>
+                <Label>Why visit — Description</Label>
+                <Textarea
+                  value={form.whyDescription}
+                  onChange={(e) => setForm((f) => ({ ...f, whyDescription: e.target.value }))}
+                  rows={4}
+                  placeholder="Explain why guests should visit this destination"
                 />
-                <Label>Active</Label>
               </div>
-              <div className="flex items-center gap-2">
-                <Switch
-                  checked={form.comingSoon}
-                  onCheckedChange={(v) =>
-                    setForm((f) => ({ ...f, comingSoon: v }))
-                  }
+              <div>
+                <Label>Highlights</Label>
+                <div className="flex gap-2">
+                  <Input
+                    value={highlightInput}
+                    onChange={(e) => setHighlightInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        const v = highlightInput.trim();
+                        if (v && !form.highlights.includes(v)) {
+                          setForm((f) => ({ ...f, highlights: [...f.highlights, v] }));
+                        }
+                        setHighlightInput("");
+                      }
+                    }}
+                    placeholder="Add highlight and press Enter"
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const v = highlightInput.trim();
+                      if (v && !form.highlights.includes(v)) {
+                        setForm((f) => ({ ...f, highlights: [...f.highlights, v] }));
+                      }
+                      setHighlightInput("");
+                    }}
+                  >
+                    Add
+                  </Button>
+                </div>
+                {form.highlights.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {form.highlights.map((h, i) => (
+                      <span
+                        key={i}
+                        className="px-2 py-1 bg-muted rounded text-xs cursor-pointer hover:bg-destructive/20"
+                        onClick={() =>
+                          setForm((f) => ({
+                            ...f,
+                            highlights: f.highlights.filter((_, j) => j !== i),
+                          }))
+                        }
+                      >
+                        {h} ×
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div>
+                <Label>How to get here</Label>
+                <Textarea
+                  value={form.howToGetHere}
+                  onChange={(e) => setForm((f) => ({ ...f, howToGetHere: e.target.value }))}
+                  rows={3}
+                  placeholder="Airport, driving directions, transfers..."
                 />
-                <Label>Coming soon</Label>
               </div>
-            </div>
-            <div className="flex justify-end gap-2 pt-2">
-              <Button
-                variant="outline"
-                onClick={() => setDialogOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleSave}
-                disabled={createM.isPending || updateM.isPending}
-              >
-                {createM.isPending || updateM.isPending
-                  ? "Saving..."
-                  : editingId
-                  ? "Update"
-                  : "Create"}
-              </Button>
-            </div>
+              <div>
+                <Label>Best time to visit</Label>
+                <Textarea
+                  value={form.bestTimeToVisit}
+                  onChange={(e) => setForm((f) => ({ ...f, bestTimeToVisit: e.target.value }))}
+                  rows={2}
+                  placeholder="May to October for beach weather..."
+                />
+              </div>
+              <div>
+                <Label>What to expect</Label>
+                <Textarea
+                  value={form.whatToExpect}
+                  onChange={(e) => setForm((f) => ({ ...f, whatToExpect: e.target.value }))}
+                  rows={3}
+                  placeholder="Climate, vibe, activities..."
+                />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="media" className="space-y-4 mt-4">
+              <div>
+                <Label>Cover image URL</Label>
+                <Input
+                  value={form.coverImage}
+                  onChange={(e) => setForm((f) => ({ ...f, coverImage: e.target.value }))}
+                  placeholder="https://..."
+                />
+                {form.coverImage && (
+                  <img
+                    src={form.coverImage}
+                    alt="Preview"
+                    className="mt-2 h-32 w-full object-cover rounded"
+                  />
+                )}
+              </div>
+              <div>
+                <Label>Gallery</Label>
+                <div className="flex gap-2">
+                  <Input
+                    value={galleryInput}
+                    onChange={(e) => setGalleryInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        const v = galleryInput.trim();
+                        if (v) {
+                          setForm((f) => ({ ...f, gallery: [...f.gallery, v] }));
+                        }
+                        setGalleryInput("");
+                      }
+                    }}
+                    placeholder="Paste image URL and press Enter"
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const v = galleryInput.trim();
+                      if (v) {
+                        setForm((f) => ({ ...f, gallery: [...f.gallery, v] }));
+                      }
+                      setGalleryInput("");
+                    }}
+                  >
+                    Add
+                  </Button>
+                </div>
+                {form.gallery.length > 0 && (
+                  <div className="grid grid-cols-4 gap-2 mt-2">
+                    {form.gallery.map((url, i) => (
+                      <div key={i} className="relative group">
+                        <img
+                          src={url}
+                          alt=""
+                          className="w-full h-20 object-cover rounded"
+                        />
+                        <button
+                          type="button"
+                          className="absolute top-1 right-1 bg-black/60 text-white rounded-full w-5 h-5 text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() =>
+                            setForm((f) => ({
+                              ...f,
+                              gallery: f.gallery.filter((_, j) => j !== i),
+                            }))
+                          }
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="seo" className="space-y-4 mt-4">
+              <div>
+                <Label>SEO title</Label>
+                <Input
+                  value={form.seoTitle}
+                  onChange={(e) => setForm((f) => ({ ...f, seoTitle: e.target.value }))}
+                  placeholder="Custom title for search engines"
+                />
+              </div>
+              <div>
+                <Label>SEO description</Label>
+                <Textarea
+                  value={form.seoDescription}
+                  onChange={(e) => setForm((f) => ({ ...f, seoDescription: e.target.value }))}
+                  rows={2}
+                  placeholder="Meta description for this destination"
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
+
+          <div className="flex justify-end gap-2 pt-4 border-t">
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSave}
+              disabled={createM.isPending || updateM.isPending}
+            >
+              {createM.isPending || updateM.isPending
+                ? "Saving..."
+                : editingId
+                ? "Update"
+                : "Create"}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

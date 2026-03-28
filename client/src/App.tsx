@@ -5,10 +5,11 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ItineraryProvider } from "./contexts/ItineraryContext";
-import ItineraryDrawer from "./components/itinerary/ItineraryDrawer";
-import CookieBanner from "./components/layout/CookieBanner";
 import Home from "./pages/Home";
 import { lazy, Suspense } from "react";
+
+const ItineraryDrawer = lazy(() => import("./components/itinerary/ItineraryDrawer"));
+const CookieBanner = lazy(() => import("./components/layout/CookieBanner"));
 
 const Homes = lazy(() => import("./pages/Homes"));
 const PropertyDetail = lazy(() => import("./pages/PropertyDetail"));
@@ -97,8 +98,8 @@ function App() {
         <ItineraryProvider>
           <TooltipProvider>
             <Toaster />
-            <ItineraryDrawer />
-            <CookieBanner />
+            <Suspense fallback={null}><ItineraryDrawer /></Suspense>
+            <Suspense fallback={null}><CookieBanner /></Suspense>
             <Router />
           </TooltipProvider>
         </ItineraryProvider>

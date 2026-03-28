@@ -25,13 +25,18 @@ type Property = {
   description: string | null;
   destination: string;
   region: string | null;
+  locality: string | null;
   bedrooms: number;
+  bathrooms: number;
   maxGuests: number;
   priceFrom: number;
   tier: "standard" | "signature" | "ultra";
   images: string[];
-  amenities: string[];
+  amenities: Record<string, string[]>;
   guestyUrl: string | null;
+  guestyId: string | null;
+  seoTitle: string | null;
+  seoDescription: string | null;
   sortOrder: number;
   isActive: boolean;
   isFeatured: boolean;
@@ -44,13 +49,19 @@ const emptyForm = {
   description: "",
   destination: "minho",
   region: "",
+  locality: "",
   bedrooms: 0,
+  bathrooms: 0,
   maxGuests: 0,
   priceFrom: 0,
   tier: "standard" as "standard" | "signature" | "ultra",
   images: [] as string[],
-  amenities: [] as string[],
+  amenities: {} as Record<string, string[]>,
+  amenitiesText: "",
   guestyUrl: "",
+  guestyId: "",
+  seoTitle: "",
+  seoDescription: "",
   sortOrder: 0,
   isActive: true,
   isFeatured: false,
@@ -110,6 +121,7 @@ export default function AdminProperties() {
 
   const openEdit = (item: Property) => {
     setEditId(item.id);
+    const am = item.amenities || {};
     setForm({
       name: item.name,
       slug: item.slug,
@@ -117,13 +129,21 @@ export default function AdminProperties() {
       description: item.description || "",
       destination: item.destination,
       region: item.region || "",
+      locality: item.locality || "",
       bedrooms: item.bedrooms,
+      bathrooms: item.bathrooms || 0,
       maxGuests: item.maxGuests,
       priceFrom: item.priceFrom,
       tier: item.tier as "standard" | "signature" | "ultra",
       images: item.images || [],
-      amenities: item.amenities || [],
+      amenities: am,
+      amenitiesText: Object.entries(am)
+        .map(([cat, items]) => `${cat}: ${(items as string[]).join(", ")}`)
+        .join("\n"),
       guestyUrl: item.guestyUrl || "",
+      guestyId: item.guestyId || "",
+      seoTitle: item.seoTitle || "",
+      seoDescription: item.seoDescription || "",
       sortOrder: item.sortOrder,
       isActive: item.isActive,
       isFeatured: item.isFeatured,
@@ -131,17 +151,37 @@ export default function AdminProperties() {
     setOpen(true);
   };
 
+  const parseAmenities = (text: string): Record<string, string[]> => {
+    const result: Record<string, string[]> = {};
+    for (const line of text.split("\n")) {
+      const [cat, ...rest] = line.split(":");
+      if (cat && rest.length > 0) {
+        result[cat.trim()] = rest
+          .join(":")
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+      }
+    }
+    return result;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const { amenitiesText, ...rest } = form;
     const data = {
-      ...form,
+      ...rest,
       tagline: form.tagline || undefined,
       description: form.description || undefined,
       region: form.region || undefined,
+      locality: form.locality || undefined,
       guestyUrl: form.guestyUrl || undefined,
-      amenities: (Array.isArray(form.amenities)
-        ? { general: form.amenities }
-        : form.amenities) as Record<string, string[]>,
+      guestyId: form.guestyId || undefined,
+      seoTitle: form.seoTitle || undefined,
+      seoDescription: form.seoDescription || undefined,
+      amenities: amenitiesText.trim()
+        ? parseAmenities(amenitiesText)
+        : form.amenities,
     };
     if (editId) {
       updateM.mutate({ id: editId, ...data });
@@ -319,6 +359,14 @@ export default function AdminProperties() {
             </Select>
           </div>
           <div className="space-y-2">
+            <Label>Locality</Label>
+            <Input
+              value={form.locality}
+              onChange={(e) => setForm((f) => ({ ...f, locality: e.target.value }))}
+              placeholder="e.g. Vila Nova de Cerveira"
+            />
+          </div>
+          <div className="space-y-2">
             <Label>Bedrooms</Label>
             <Input
               type="number"
@@ -326,6 +374,17 @@ export default function AdminProperties() {
               value={form.bedrooms}
               onChange={(e) =>
                 setForm((f) => ({ ...f, bedrooms: parseInt(e.target.value) || 0 }))
+              }
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Bathrooms</Label>
+            <Input
+              type="number"
+              min={0}
+              value={form.bathrooms}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, bathrooms: parseInt(e.target.value) || 0 }))
               }
             />
           </div>
@@ -371,6 +430,16 @@ export default function AdminProperties() {
             />
           </div>
           <div className="space-y-2">
+            <Label>Guesty ID</Label>
+            <Input
+              value={form.guestyId}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, guestyId: e.target.value }))
+              }
+              placeholder="Guesty listing ID"
+            />
+          </div>
+          <div className="space-y-2">
             <Label>Guesty booking URL</Label>
             <Input
               value={form.guestyUrl}
@@ -403,11 +472,53 @@ export default function AdminProperties() {
           />
         </div>
 
+        <div className="space-y-2">
+          <Label>Amenities</Label>
+          <Textarea
+            value={form.amenitiesText}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, amenitiesText: e.target.value }))
+            }
+            rows={4}
+            placeholder={"general: WiFi, Pool, Air Conditioning\nkitchen: Oven, Dishwasher\noutdoor: Garden, BBQ, Terrace"}
+            className="font-mono text-xs"
+          />
+          <p className="text-[11px] text-muted-foreground">
+            One category per line. Format: category: item1, item2, item3
+          </p>
+        </div>
+
         <ImageUpload
           images={form.images}
           onChange={(images) => setForm((f) => ({ ...f, images }))}
           max={20}
         />
+
+        <div className="border-t pt-4 space-y-4">
+          <p className="text-sm font-medium text-muted-foreground">SEO</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>SEO title</Label>
+              <Input
+                value={form.seoTitle}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, seoTitle: e.target.value }))
+                }
+                placeholder="Custom title for search engines"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>SEO description</Label>
+              <Input
+                value={form.seoDescription}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, seoDescription: e.target.value }))
+                }
+                placeholder="Meta description"
+              />
+            </div>
+          </div>
+        </div>
 
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">

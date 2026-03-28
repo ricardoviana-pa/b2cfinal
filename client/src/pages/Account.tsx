@@ -27,7 +27,7 @@ function TierBadge({ tier }: { tier: string }) {
 
 export default function Account() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'My Account', description: 'Manage your trips, loyalty points, and profile.' });
+  usePageMeta({ title: 'My Account | Trips, Loyalty & Profile', description: 'View your trip history, earn loyalty points, manage referrals, and update your profile with Portugal Active.', url: '/account' });
   const { user, loading: authLoading, logout, isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
@@ -101,7 +101,7 @@ export default function Account() {
         <div className="container max-w-[1100px]">
           <div className="flex items-center gap-4">
             {profile.avatar ? (
-              <img src={profile.avatar} alt="" className="w-12 h-12 rounded-full object-cover border-2 border-[#E8E4DC]" />
+              <img src={profile.avatar} alt={`${profile.name || 'Guest'} profile photo`} className="w-12 h-12 rounded-full object-cover border-2 border-[#E8E4DC]" />
             ) : (
               <div className="w-12 h-12 rounded-full bg-[#8B7355] flex items-center justify-center text-white text-[18px] font-display">
                 {(profile.name || 'G')[0].toUpperCase()}
@@ -184,7 +184,7 @@ export default function Account() {
                       <div className="space-y-3">
                         {upcomingTrips.map(trip => (
                           <div key={trip.id} className="flex items-center gap-4 rounded-lg border border-[#E8E4DC] bg-white p-4">
-                            {trip.propertyImage && <img src={trip.propertyImage} alt="" className="w-16 h-16 rounded-md object-cover shrink-0" />}
+                            {trip.propertyImage && <img src={trip.propertyImage} alt={`${trip.propertyName || 'Property'} – Portugal Active`} className="w-16 h-16 rounded-md object-cover shrink-0" />}
                             <div className="flex-1 min-w-0">
                               <p className="text-[14px] text-[#1A1A18] font-medium truncate">{trip.propertyName}</p>
                               <p className="text-[12px] text-[#9E9A90] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
@@ -419,7 +419,7 @@ function TripCard({ trip, t, isPast }: { trip: any; t: any; isPast?: boolean }) 
   return (
     <div className="flex items-center gap-4 rounded-lg border border-[#E8E4DC] bg-white p-4">
       {trip.propertyImage ? (
-        <img src={trip.propertyImage} alt="" className="w-20 h-20 rounded-md object-cover shrink-0" />
+        <img src={trip.propertyImage} alt={`${trip.propertyName || 'Property'} – Portugal Active`} className="w-20 h-20 rounded-md object-cover shrink-0" />
       ) : (
         <div className="w-20 h-20 rounded-md bg-[#F5F1EB] flex items-center justify-center shrink-0">
           <HomeIcon size={20} className="text-[#E8E4DC]" />

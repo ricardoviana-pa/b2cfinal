@@ -54,7 +54,7 @@ const TEAM = [
 
 export default function About() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'About Us', description: 'Meet the team behind Portugal Active. Since 2017, delivering hotel-standard stays in handpicked private homes across Portugal.' });
+  usePageMeta({ title: 'About Portugal Active | Luxury Villa Management Since 2017', description: 'Family-run villa management company since 2017. 50+ homes, hotel-standard service, local concierge across Portugal.', url: '/about' });
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const values = useMemo(() => [
@@ -87,7 +87,7 @@ export default function About() {
 
       {/* Hero */}
       <section className="relative h-[55vh] min-h-[380px] flex items-end overflow-hidden">
-        <img src={IMAGES.aboutStory} alt="The Portugal Active team" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={IMAGES.aboutStory} alt="Aerial view of a luxury private villa managed by Portugal Active" className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-black/10" />
         <div className="relative container pb-12 lg:pb-16 z-10">
           <h1 className="headline-xl text-white max-w-2xl">
@@ -124,8 +124,11 @@ export default function About() {
           <p className="body-lg mb-5">
             {t('about.modelP1')}
           </p>
-          <p className="body-lg mb-10">
+          <p className="body-lg mb-5">
             {t('about.modelP2')}
+          </p>
+          <p className="body-lg mb-10">
+            Explore our <Link href="/homes" className="text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4 decoration-[#E8E4DC]">portfolio of private homes</Link> or discover the <Link href="/services" className="text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4 decoration-[#E8E4DC]">concierge services</Link> that come with every stay.
           </p>
 
           {/* Stats bar */}

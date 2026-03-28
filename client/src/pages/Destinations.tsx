@@ -5,6 +5,7 @@
 
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import destinationsData from '@/data/destinations.json';
 import { trpc } from '@/lib/trpc';
 import Header from '@/components/layout/Header';
@@ -17,6 +18,7 @@ const destinations = destinationsData as unknown as Destination[];
 
 export default function Destinations() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'Destinations in Portugal | Minho, Porto, Algarve & More', description: 'Explore our luxury villa destinations across Portugal — Minho Coast, Porto & Douro, Algarve, Lisbon, Alentejo. Find your perfect region.', url: '/destinations' });
   const { data: propsData } = trpc.properties.listForSite.useQuery();
   const properties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
   const active = destinations.filter(d => !d.comingSoon);

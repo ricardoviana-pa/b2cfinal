@@ -3,7 +3,7 @@
    Hero gallery, two-column layout, sticky booking card, Le Collectionist-style amenities
    ========================================================================== */
 
-import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import { useState, useMemo, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
 import { useParams, Link, useSearch } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -11,14 +11,14 @@ import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck,
   Sparkles, Star, Clock, UtensilsCrossed, Headphones, ExternalLink, Plus, X,
   Wifi, Tv, Coffee, Car, Waves, Wind, Shirt, Flame, TreePine, Mountain,
-  Sun, Monitor, Utensils, Sofa, type LucideIcon
+  Sun, Monitor, Utensils, Sofa, ArrowRight, type LucideIcon
 } from 'lucide-react';
-import AddToItineraryModal from '@/components/itinerary/AddToItineraryModal';
+const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 import productsData from '@/data/products.json';
 import destinationsData from '@/data/destinations.json';
 import type { Product, Destination, Property } from '@/lib/types';
 import { getPropertyImages } from '@/lib/images';
-import { BookingWidget } from '@/components/booking';
+const BookingWidget = lazy(() => import('@/components/booking/BookingWidget'));
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { trpc } from '@/lib/trpc';
@@ -89,26 +89,52 @@ export default function PropertyDetail() {
     { slug: slug ?? '' },
     { enabled: !!slug }
   );
-  usePageMeta({ title: property?.name, description: property?.tagline || property?.description?.slice(0, 160) });
+  const pdpTitle = useMemo(() => {
+    if (!property) return undefined;
+    const dest = destinations.find(d => d.slug === property.destination);
+    const beds = property.bedrooms ? `${property.bedrooms}-Bed` : '';
+    const loc = dest?.name || property.region || '';
+    return `${property.name} | ${beds} Luxury Villa ${loc}`.replace(/\s+/g, ' ').trim();
+  }, [property]);
+  const pdpDesc = useMemo(() => {
+    if (!property) return undefined;
+    const dest = destinations.find(d => d.slug === property.destination);
+    const beds = property.bedrooms ? `${property.bedrooms}-bedroom` : '';
+    const loc = dest?.name || property.region || 'Portugal';
+    const tag = property.tagline || '';
+    return `${beds} luxury villa in ${loc}. ${tag} Book direct with Portugal Active.`.replace(/\s+/g, ' ').trim().slice(0, 155);
+  }, [property]);
+  usePageMeta({
+    title: pdpTitle,
+    description: pdpDesc,
+    image: property?.images?.[0],
+    url: property ? `/homes/${property.slug}` : undefined,
+    type: 'place',
+  });
 
   useEffect(() => {
     if (!property) return;
     const dest = destinations.find(d => d.slug === property.destination);
-    const jsonLd = {
+    const amenityFeatures = Object.entries(property.amenities || {}).flatMap(([category, items]) =>
+      (items as string[]).map(item => ({ "@type": "PropertyValue", "name": item, "value": true }))
+    );
+    const jsonLd: Record<string, any> = {
       "@context": "https://schema.org",
-      "@type": "VacationRental",
+      "@type": "LodgingBusiness",
       "name": property.name,
       "description": property.tagline || property.description?.slice(0, 300),
       "url": `https://www.portugalactive.com/homes/${property.slug}`,
       "image": property.images?.slice(0, 5),
-      "numberOfBedrooms": property.bedrooms,
-      "numberOfBathroomsTotal": property.bathrooms,
-      "occupancy": { "@type": "QuantitativeValue", "maxValue": property.maxGuests },
+      "numberOfRooms": property.bedrooms,
       "address": {
         "@type": "PostalAddress",
         "addressLocality": property.locality || dest?.name,
+        "addressRegion": dest?.name || '',
         "addressCountry": "PT",
       },
+      "starRating": { "@type": "Rating", "ratingValue": "5" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "2000" },
+      ...(amenityFeatures.length > 0 && { "amenityFeature": amenityFeatures }),
       ...(property.priceFrom > 0 && {
         "priceRange": `From €${property.priceFrom} per night`,
         "offers": {
@@ -173,11 +199,19 @@ export default function PropertyDetail() {
     );
   }, [property]);
 
-  const destName = useMemo(() => {
-    if (!property) return '';
-    const d = destinations.find(d => d.slug === property.destination);
-    return d?.name || property.destination;
+  const destObj = useMemo(() => {
+    if (!property) return null;
+    return destinations.find(d => d.slug === property.destination) || null;
   }, [property]);
+  const destName = destObj?.name || property?.destination || '';
+
+  const { data: allPropsData } = trpc.properties.listForSite.useQuery();
+  const relatedProperties = useMemo(() => {
+    if (!property || !allPropsData) return [];
+    return (allPropsData as Property[])
+      .filter(p => p.isActive !== false && p.destination === property.destination && p.slug !== property.slug)
+      .slice(0, 3);
+  }, [property, allPropsData]);
 
   const flatAmenities = useMemo(() => {
     if (!property?.amenities || typeof property.amenities !== 'object') return [];
@@ -229,6 +263,23 @@ export default function PropertyDetail() {
       <div className="min-h-screen bg-[#FAFAF7]">
         <Header />
 
+        {/* Breadcrumbs */}
+        <nav aria-label="Breadcrumb" className="container pt-20 pb-3">
+          <ol className="flex items-center gap-1.5 text-[12px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
+            <li><Link href="/" className="hover:text-[#1A1A18] transition-colors">Home</Link></li>
+            <li className="text-[#E8E4DC]">/</li>
+            <li><Link href="/homes" className="hover:text-[#1A1A18] transition-colors">Homes</Link></li>
+            {destObj && (
+              <>
+                <li className="text-[#E8E4DC]">/</li>
+                <li><Link href={`/destinations/${destObj.slug}`} className="hover:text-[#1A1A18] transition-colors">{destObj.name}</Link></li>
+              </>
+            )}
+            <li className="text-[#E8E4DC]">/</li>
+            <li className="text-[#6B6860] truncate max-w-[200px]">{property.name}</li>
+          </ol>
+        </nav>
+
         {/* Hero gallery — full width, 4:3 or 16:9 */}
         <div
           className="relative w-full overflow-hidden bg-[#F5F1EB] aspect-[4/3] lg:aspect-[16/9]"
@@ -243,7 +294,7 @@ export default function PropertyDetail() {
             {(images.length ? images : ['']).map((img: string, idx: number) => (
               <div key={idx} className="relative shrink-0 h-full bg-[#E8E4DC]" style={{ width: `${100 / totalImages}%` }}>
                 {img ? (
-                  <img src={img} alt={`${property.name} - ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" loading={idx === 0 ? 'eager' : 'lazy'} />
+                  <img src={img} alt={`${property.name} – luxury villa in ${destName}, Portugal`} className="absolute inset-0 w-full h-full object-cover" width={1200} height={900} loading={idx === 0 ? 'eager' : 'lazy'} {...(idx === 0 ? { fetchPriority: 'high' as const } : {})} />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center text-[#9E9A90] text-sm">{t('propertyDetail.noImage')}</div>
                 )}
@@ -272,7 +323,7 @@ export default function PropertyDetail() {
           <p className="body-lg italic text-[#6B6860] mb-4">{property.tagline}</p>
           <div className="flex items-center gap-2 text-[#6B6860] mb-6">
             <MapPin size={14} className="text-[#9E9A90]" />
-            <span className="text-[13px]">{property.locality}, {destName}</span>
+            <span className="text-[13px]">{property.locality}, {destObj ? <Link href={`/destinations/${destObj.slug}`} className="text-[#8B7355] hover:text-[#1A1A18] transition-colors">{destName}</Link> : destName}</span>
           </div>
 
           {/* Key stats bar */}
@@ -439,6 +490,7 @@ export default function PropertyDetail() {
               <div className="property-sticky-card lg:sticky lg:top-[100px]">
                 {property.guestyId ? (
                   <>
+                    <Suspense fallback={<div className="h-[300px] bg-[#F5F1EB] animate-pulse border border-[#E8E4DC]" />}>
                     <BookingWidget
                       guestyId={property.guestyId}
                       propertyName={property.name}
@@ -458,6 +510,7 @@ export default function PropertyDetail() {
                     >
                       {t('property.guidedFlow')}
                     </Link>
+                    </Suspense>
                   </>
                 ) : (
                   <div className="bg-[#FAFAF7] border border-[#E8E4DC] p-6">
@@ -516,6 +569,48 @@ export default function PropertyDetail() {
         </div>
         )}
 
+        {/* Related properties from same region */}
+        {relatedProperties.length > 0 && (
+          <section className="section-padding bg-white border-t border-[#E8E4DC]">
+            <div className="container">
+              <div className="flex items-end justify-between mb-8">
+                <div>
+                  <p className="text-[11px] font-medium tracking-[0.08em] text-[#8B7355] mb-2 uppercase">More in {destName}</p>
+                  <h2 className="headline-lg text-[#1A1A18]">Related homes</h2>
+                </div>
+                {destObj && (
+                  <Link href={`/destinations/${destObj.slug}`} className="hidden md:flex items-center gap-2 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors">
+                    All {destName} homes <ArrowRight className="w-4 h-4" />
+                  </Link>
+                )}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {relatedProperties.map(rp => (
+                  <Link key={rp.id} href={`/homes/${rp.slug}`} className="group block">
+                    <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '4/3' }}>
+                      {rp.images?.[0] ? (
+                        <img src={rp.images[0]} alt={`${rp.name} – luxury villa in ${destName}, Portugal`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" width={800} height={600} />
+                      ) : (
+                        <div className="w-full h-full placeholder-image" />
+                      )}
+                    </div>
+                    <div className="pt-3">
+                      <h3 className="text-[1rem] font-display text-[#1A1A18] group-hover:text-[#8B7355] transition-colors mb-1">{rp.name}</h3>
+                      <div className="flex items-center gap-3 text-[13px] text-[#6B6860] mb-1">
+                        <span className="flex items-center gap-1"><BedDouble className="w-3.5 h-3.5" /> {rp.bedrooms}</span>
+                        <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {rp.maxGuests}</span>
+                      </div>
+                      {rp.priceFrom > 0 && (
+                        <p className="text-[14px] text-[#1A1A18] font-medium">From €{rp.priceFrom.toLocaleString()} <span className="text-[#9E9A90] font-normal">/ night</span></p>
+                      )}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         <Footer />
       </div>
 
@@ -528,7 +623,7 @@ export default function PropertyDetail() {
           <div className="container py-16 lg:py-20">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
               {images.map((img: string, idx: number) => (
-                <img key={idx} src={img} alt={`${property.name} - ${idx + 1}`} className="w-full aspect-[4/3] object-cover" loading="lazy" />
+                <img key={idx} src={img} alt={`${property.name} – luxury villa in ${destName}, Portugal`} className="w-full aspect-[4/3] object-cover" loading="lazy" width={800} height={600} />
               ))}
             </div>
           </div>
@@ -536,7 +631,9 @@ export default function PropertyDetail() {
       )}
 
       {modalProduct && (
-        <AddToItineraryModal product={modalProduct} isOpen={!!modalProduct} onClose={() => setModalProduct(null)} />
+        <Suspense fallback={null}>
+          <AddToItineraryModal product={modalProduct} isOpen={!!modalProduct} onClose={() => setModalProduct(null)} />
+        </Suspense>
       )}
     </>
   );

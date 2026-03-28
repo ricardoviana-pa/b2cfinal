@@ -3,13 +3,14 @@
    Hero, editorial "Why", info grid, properties, services, adventures
    ========================================================================== */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, lazy, Suspense } from 'react';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { useParams, Link } from 'wouter';
 import { BedDouble, Users, ArrowRight, MapPin, Sun, Plane, Plus } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
-import AddToItineraryModal from '@/components/itinerary/AddToItineraryModal';
+const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 import destinationsData from '@/data/destinations.json';
 import productsData from '@/data/products.json';
 import { trpc } from '@/lib/trpc';
@@ -24,7 +25,40 @@ export default function DestinationDetail() {
   const allProperties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
 
   const dest = destinations.find(d => d.slug === slug);
+  usePageMeta({
+    title: dest ? `${dest.name} Portugal | Luxury Villas and Experiences` : undefined,
+    description: dest ? `Discover ${dest.name}. Private villas with pool, concierge, and curated experiences. Book direct with Portugal Active.`.slice(0, 155) : undefined,
+    image: dest?.coverImage,
+    url: dest ? `/destinations/${dest.slug}` : undefined,
+  });
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
+
+  useEffect(() => {
+    if (!dest) return;
+    const containsPlace = allProperties
+      .filter(p => p.destination === dest.slug)
+      .map(p => ({
+        "@type": "LodgingBusiness",
+        "name": p.name,
+        "url": `https://www.portugalactive.com/homes/${p.slug}`,
+      }));
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "TouristDestination",
+      "name": dest.name,
+      "description": dest.description || dest.tagline,
+      "url": `https://www.portugalactive.com/destinations/${dest.slug}`,
+      "image": dest.coverImage,
+      ...(containsPlace.length > 0 && { "containsPlace": containsPlace }),
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(jsonLd);
+    script.id = "destination-jsonld";
+    document.querySelector("#destination-jsonld")?.remove();
+    document.head.appendChild(script);
+    return () => { document.querySelector("#destination-jsonld")?.remove(); };
+  }, [dest, allProperties]);
 
   const destProperties = useMemo(() => {
     if (!dest) return [];
@@ -57,7 +91,7 @@ export default function DestinationDetail() {
       {/* Hero */}
       <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
         {dest.coverImage ? (
-          <img src={dest.coverImage} alt={dest.name} className="absolute inset-0 w-full h-full object-cover" />
+          <img src={dest.coverImage} alt={`${dest.name}, Portugal – luxury villa destination`} className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" />
         ) : (
           <div className="absolute inset-0 placeholder-image" />
         )}
@@ -159,7 +193,7 @@ export default function DestinationDetail() {
                 <Link key={property.id} href={`/homes/${property.slug}`} className="group block">
                   <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '4/3' }}>
                     {property.images && property.images.length > 0 ? (
-                      <img src={property.images[0]} alt={property.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" />
+                      <img src={property.images[0]} alt={`${property.name} – luxury villa in ${dest.name}, Portugal`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" width={800} height={600} />
                     ) : (
                       <div className="w-full h-full placeholder-image" />
                     )}
@@ -202,7 +236,7 @@ export default function DestinationDetail() {
       <section className="section-padding bg-[#FAFAF7]">
         <div className="container">
           <h2 className="headline-lg text-[#1A1A18] mb-3">Services available</h2>
-          <p className="body-lg mb-8 max-w-xl">Arranged by your concierge. Delivered by our in house team.</p>
+          <p className="body-lg mb-8 max-w-xl">Our <Link href="/services" className="text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4 decoration-[#E8E4DC]">concierge services</Link> — private chef, spa, transfers — are available in all {dest.name} properties.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {services.slice(0, 8).map(service => (
               <div key={service.id} className="bg-white border border-[#E8E4DC] p-5 flex flex-col">
@@ -232,13 +266,13 @@ export default function DestinationDetail() {
         <section className="section-padding bg-white">
           <div className="container">
             <h2 className="headline-lg text-[#1A1A18] mb-3">Adventures in {dest.name}</h2>
-            <p className="body-lg mb-8 max-w-xl">Curated by our local team. Unique to this region.</p>
+            <p className="body-lg mb-8 max-w-xl">Curated by our local team. Explore all our <Link href="/adventures" className="text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4 decoration-[#E8E4DC]">outdoor adventures</Link> across Portugal.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {adventures.map(adv => (
                 <div key={adv.id} className="group">
                   <div className="relative overflow-hidden bg-[#E8E4DC] mb-3" style={{ aspectRatio: '3/2' }}>
                     {adv.image ? (
-                      <img src={adv.image} alt={adv.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" />
+                      <img src={adv.image} alt={`${adv.name} – outdoor experience in ${dest.name}, Portugal`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" width={800} height={600} />
                     ) : (
                       <div className="w-full h-full placeholder-image" />
                     )}
@@ -264,7 +298,9 @@ export default function DestinationDetail() {
 
       {/* Add to Itinerary Modal */}
       {modalProduct && (
-        <AddToItineraryModal product={modalProduct} isOpen={!!modalProduct} onClose={() => setModalProduct(null)} />
+        <Suspense fallback={null}>
+          <AddToItineraryModal product={modalProduct} isOpen={!!modalProduct} onClose={() => setModalProduct(null)} />
+        </Suspense>
       )}
 
       <Footer />

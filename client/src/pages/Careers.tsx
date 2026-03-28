@@ -10,7 +10,7 @@ import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 
 export default function Careers() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Careers', description: 'Join the Portugal Active team.' });
+  usePageMeta({ title: 'Careers at Portugal Active | Join Our Team', description: 'Work in luxury hospitality across Portugal. Open roles in concierge, property management, and guest experience.', url: '/careers' });
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <Header variant="solid" />

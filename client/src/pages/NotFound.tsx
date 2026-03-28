@@ -11,7 +11,7 @@ import Footer from '@/components/layout/Footer';
 
 export default function NotFound() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Page Not Found' });
+  usePageMeta({ title: 'Page Not Found (404)', description: 'This page does not exist. Browse our luxury villas or contact our concierge team for help.', url: '/404' });
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FAFAF7' }}>
       <Header />

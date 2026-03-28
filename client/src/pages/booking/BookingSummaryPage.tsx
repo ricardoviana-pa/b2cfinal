@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useParams, useSearch } from "wouter";
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import AvailabilityCalendar from "@/components/booking/AvailabilityCalendar";
@@ -11,6 +12,7 @@ import { patchBookingFlow, readBookingFlow } from "@/lib/booking-flow";
 
 export default function BookingSummaryPage() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'Select Dates & Rate Plan | Book Your Villa', description: 'Choose your dates, rate plan, and number of guests. Secure your luxury Portuguese villa with Portugal Active.' });
   const { listingId } = useParams<{ listingId: string }>();
   const [, navigate] = useLocation();
   const search = useSearch();

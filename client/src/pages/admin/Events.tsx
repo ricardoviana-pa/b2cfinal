@@ -43,7 +43,7 @@ export default function AdminEvents() {
   };
 
   const columns: Column<Event>[] = [
-    { key: "image", label: "", className: "w-[50px]", render: (item) => item.coverImage ? <img src={item.coverImage} alt="" className="w-10 h-10 rounded object-cover" /> : <div className="w-10 h-10 rounded bg-muted" /> },
+    { key: "image", label: "", className: "w-[50px]", render: (item) => item.coverImage ? <img src={item.coverImage} alt="" role="presentation" className="w-10 h-10 rounded object-cover" /> : <div className="w-10 h-10 rounded bg-muted" /> },
     { key: "title", label: "Title", render: (item) => <div><p className="font-medium text-sm">{item.title}</p><p className="text-xs text-muted-foreground">{item.slug}</p></div> },
     { key: "eventType", label: "Type", render: (item) => item.eventType ? <Badge variant="outline" className="text-xs capitalize">{item.eventType.replace("-", " ")}</Badge> : <span className="text-xs text-muted-foreground">—</span> },
     { key: "capacity", label: "Capacity", render: (item) => <span className="text-sm">{item.capacity || "—"}</span> },

@@ -22,15 +22,16 @@
    - Paragraphs max 3 lines
    ========================================================================== */
 
-import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { Link, useLocation } from 'wouter';
 import { ChevronDown, ChevronLeft, ChevronRight, BedDouble, Users, ArrowRight, Key, Star, MapPin, Shield, Check, Quote, Minus, Plus } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { IMAGES } from '@/lib/images';
-import ReviewsSection from '@/components/ReviewsSection';
+const ReviewsSection = lazy(() => import('@/components/ReviewsSection'));
 import destinationsData from '@/data/destinations.json';
 import { trpc } from '@/lib/trpc';
 import type { Destination, Property } from '@/lib/types';
@@ -69,7 +70,7 @@ function HomePropertyCard({ property }: { property: Property }) {
             <div className="flex h-full transition-transform duration-400 ease-out" style={{ transform: `translateX(-${imgIdx * 100}%)`, width: `${total * 100}%` }}>
               {images.map((img: string, idx: number) => (
                 <div key={idx} className="relative shrink-0 h-full" style={{ width: `${100 / total}%` }}>
-                  <img src={img} alt={`${property.name} - ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+                  <img src={img} alt={`${property.name} – luxury villa in ${destName}, Portugal`} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
                 </div>
               ))}
             </div>
@@ -126,6 +127,11 @@ function useFadeIn() {
 
 export default function Home() {
   const { t } = useTranslation();
+  usePageMeta({
+    title: 'Luxury Private Villas in Portugal | Hotel Service',
+    description: '50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool. Book direct for best rates.',
+    url: '/',
+  });
   const { data: propsData, isLoading, isError } = trpc.properties.listForSite.useQuery();
   const properties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
 
@@ -708,7 +714,9 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 9: SOCIAL PROOF Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <ReviewsSection ref={s9Ref} />
+      <Suspense fallback={<div className="py-16 md:py-24 lg:py-32 bg-[#FAFAF7]" />}>
+        <ReviewsSection ref={s9Ref} />
+      </Suspense>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 10: OWNERS CTA Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <section ref={s10Ref} className="fade-in bg-[#1A1A18]">
@@ -745,12 +753,12 @@ export default function Home() {
           </p>
           {(() => {
             const logos = [
-              { src: IMAGES.pressForbes, alt: 'Forbes', h: 'h-5 md:h-6' },
-              { src: IMAGES.pressTheTimes, alt: 'The Times', h: 'h-7 md:h-8' },
-              { src: IMAGES.pressTheGuardian, alt: 'The Guardian', h: 'h-4 md:h-5' },
-              { src: IMAGES.pressTimeOut, alt: 'Time Out', h: 'h-5 md:h-6' },
-              { src: IMAGES.pressMensHealth, alt: "Men's Health", h: 'h-4 md:h-5' },
-              { src: IMAGES.pressArquitectura, alt: 'Arquitectura y DiseÃÂ±o', h: 'h-4 md:h-5' },
+              { src: IMAGES.pressForbes, alt: 'Featured in Forbes', h: 'h-5 md:h-6' },
+              { src: IMAGES.pressTheTimes, alt: 'Featured in The Times', h: 'h-7 md:h-8' },
+              { src: IMAGES.pressTheGuardian, alt: 'Featured in The Guardian', h: 'h-4 md:h-5' },
+              { src: IMAGES.pressTimeOut, alt: 'Featured in Time Out', h: 'h-5 md:h-6' },
+              { src: IMAGES.pressMensHealth, alt: "Featured in Men's Health", h: 'h-4 md:h-5' },
+              { src: IMAGES.pressArquitectura, alt: 'Featured in Arquitectura y Diseño', h: 'h-4 md:h-5' },
             ];
             return (
               <>

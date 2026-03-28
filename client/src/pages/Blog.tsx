@@ -30,7 +30,7 @@ function getArticleImage(article: BlogArticle): string {
 
 export default function Blog() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Journal', description: 'Stories, guides and insider tips from Portugal Active.' });
+  usePageMeta({ title: 'Portugal Travel Journal | Guides, Tips & Inspiration', description: 'Insider guides to Portugal — best beaches, hidden restaurants, wine regions, and travel tips from our local concierge team.', url: '/blog' });
   const [activeCategory, setActiveCategory] = useState<BlogCategory | 'all'>('all');
 
   const CATEGORIES = useMemo(() => [
@@ -98,7 +98,7 @@ export default function Blog() {
                 <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB]">
                   <img
                     src={getArticleImage(featured)}
-                    alt={featured.title}
+                    alt={`${featured.title} – Portugal Active journal`}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
                   />
@@ -143,7 +143,7 @@ export default function Blog() {
                   <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] mb-4">
                     <img
                       src={getArticleImage(article)}
-                      alt={article.title}
+                      alt={`${article.title} – Portugal Active journal`}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
                     />

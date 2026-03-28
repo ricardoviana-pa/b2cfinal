@@ -8,7 +8,7 @@ import Footer from '@/components/layout/Footer';
 
 export default function Cookies() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Cookie Policy' });
+  usePageMeta({ title: 'Cookie Policy', description: 'Learn how Portugal Active uses cookies to improve your browsing experience. Manage your cookie preferences here.', url: '/legal/cookies' });
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <Header variant="solid" />

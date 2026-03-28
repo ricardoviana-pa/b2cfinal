@@ -3,7 +3,7 @@
    4 sections: Gastronomy, Wellness, Adventure, Mobility + Additional Services
    ========================================================================== */
 
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { Plus, MessageCircle, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -12,7 +12,7 @@ import type { Product } from '@/lib/types';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
-import AddToItineraryModal from '@/components/itinerary/AddToItineraryModal';
+const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 
 const allProducts = productsData as unknown as Product[];
 const services = allProducts.filter(p => p.type === 'service' && p.isActive);
@@ -91,7 +91,7 @@ function AdventureCard({ product, onAdd }: AdventureCardProps) {
     <div className="bg-white border border-[#E8E4DC] overflow-hidden group">
       <div className="relative overflow-hidden" style={{ aspectRatio: '4/3' }}>
         {product.image ? (
-          <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+          <img src={product.image} alt={`${product.name} – concierge service at luxury villa in Portugal`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
         ) : (
           <div className="w-full h-full bg-[#E8E4DC]" />
         )}
@@ -131,7 +131,7 @@ function AdventureCard({ product, onAdd }: AdventureCardProps) {
 
 export default function Experiences() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Services', description: 'Concierge services and curated experiences to elevate your stay in Portugal.' });
+  usePageMeta({ title: 'Luxury Concierge Services | Private Chef, Spa, Transfers', description: 'Elevate your villa stay with private chef, in-house spa, airport transfers, and bespoke experiences. Book alongside your villa.', url: '/services' });
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
 
   const gastronomyProducts = GASTRONOMY_SLUGS.map(getService).filter(Boolean) as Product[];
@@ -290,7 +290,9 @@ export default function Experiences() {
 
       {/* Add to Itinerary Modal */}
       {modalProduct && (
-        <AddToItineraryModal product={modalProduct} isOpen={!!modalProduct} onClose={() => setModalProduct(null)} />
+        <Suspense fallback={null}>
+          <AddToItineraryModal product={modalProduct} isOpen={!!modalProduct} onClose={() => setModalProduct(null)} />
+        </Suspense>
       )}
 
       <Footer />

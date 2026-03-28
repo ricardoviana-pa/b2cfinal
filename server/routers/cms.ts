@@ -68,10 +68,17 @@ export const destinationsRouter = router({
 const serviceInput = z.object({
   name: z.string().min(1),
   slug: z.string().min(1),
+  tagline: z.string().optional(),
   description: z.string().optional(),
   category: z.string().optional(),
   icon: z.string().optional(),
+  image: z.string().optional(),
   images: z.array(z.string()).default([]),
+  details: z.array(z.string()).default([]),
+  price: z.string().optional(),
+  duration: z.string().optional(),
+  availability: z.string().optional(),
+  whatsappMessage: z.string().optional(),
   sortOrder: z.number().int().default(0),
   isActive: z.boolean().default(true),
 });

@@ -14,7 +14,7 @@ import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 
 export default function Events() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Events', description: 'Host your next event in one of our exclusive Portuguese venues.' });
+  usePageMeta({ title: 'Private Events Portugal | Weddings, Retreats, Celebrations', description: 'Host weddings, corporate retreats, and private celebrations in luxury Portuguese villas. Full event planning and concierge.', url: '/events' });
 
   const EVENT_TYPES = useMemo(() => [
     {

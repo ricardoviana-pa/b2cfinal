@@ -2,6 +2,7 @@
    BLOG ARTICLE — Single article view with editorial layout
    ========================================================================== */
 
+import { useEffect } from 'react';
 import { useParams, Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -17,7 +18,50 @@ export default function BlogArticle() {
   const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const article = articles.find(a => a.slug === slug);
-  usePageMeta({ title: article?.title });
+  usePageMeta({
+    title: article?.title,
+    description: article ? `${article.excerpt?.slice(0, 130) || article.title}. Read on the Portugal Active journal.`.slice(0, 155) : undefined,
+    image: article?.featuredImage,
+    url: article ? `/blog/${article.slug}` : undefined,
+    type: 'article',
+  });
+
+  useEffect(() => {
+    if (!article) return;
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": article.title,
+      "description": article.excerpt,
+      "image": article.featuredImage,
+      "datePublished": article.publishDate,
+      "dateModified": article.publishDate,
+      "author": {
+        "@type": "Person",
+        "name": article.author.name,
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Portugal Active",
+        "url": "https://www.portugalactive.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp",
+        },
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `https://www.portugalactive.com/blog/${article.slug}`,
+      },
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(jsonLd);
+    script.id = "article-jsonld";
+    document.querySelector("#article-jsonld")?.remove();
+    document.head.appendChild(script);
+    return () => { document.querySelector("#article-jsonld")?.remove(); };
+  }, [article]);
 
   if (!article) {
     return (
@@ -73,8 +117,9 @@ export default function BlogArticle() {
         <div className="container max-w-4xl mx-auto">
           <img
             src={(article as any).coverImage || (article as any).featuredImage || 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1200&q=80'}
-            alt={article.title}
+            alt={`${article.title} – Portugal Active journal`}
             className="w-full aspect-[16/9] object-cover"
+            width={1200} height={675} fetchPriority="high"
           />
         </div>
       </section>
@@ -137,7 +182,7 @@ export default function BlogArticle() {
                   <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] mb-4">
                     <img
                       src={(a as any).coverImage || (a as any).featuredImage || 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&q=80'}
-                      alt={a.title}
+                      alt={`${a.title} – Portugal Active journal`}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
                     />

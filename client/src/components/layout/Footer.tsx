@@ -37,7 +37,7 @@ export default function Footer() {
           {/* Column 1: Brand + Newsletter */}
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <Link href="/">
-              <img src={IMAGES.logoWhite} alt={t('header.logoAlt')} className="h-5 lg:h-6 w-auto object-contain mb-4" />
+              <img src={IMAGES.logoWhite} alt="Portugal Active – luxury villa management in Portugal" className="h-5 lg:h-6 w-auto object-contain mb-4" />
             </Link>
             <p
               className="text-[13px] text-white/40 mb-6 leading-relaxed max-w-[240px]"

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "wouter";
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { fetchReservation } from "@/lib/booking-api";
@@ -17,6 +18,7 @@ function formatMoney(cents: number | null, currency = "EUR", t?: any): string {
 
 export default function BookingConfirmationPage() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'Booking Confirmed | Thank You', description: 'Your Portugal Active villa booking is confirmed. Check your email for details and prepare for your stay.' });
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
