@@ -18,7 +18,7 @@
   {
     "id": "s2",
     "slug": "in-villa-spa",
-    "name": "In-Villa Spa & Massage",
+    "name": "In-Villa Spa and Massage",
     "type": "service",
     "tagline": "Professional therapists come to you. Deep tissue, hot stone, aromatherapy, or couples massage.",
     "description": "Professional therapists come to you. Deep tissue, hot stone, aromatherapy, or couples massage — in your living room, garden, or by the pool.",
@@ -66,7 +66,7 @@
   {
     "id": "s5",
     "slug": "grocery-delivery",
-    "name": "Grocery Setup & Delivery",
+    "name": "Grocery Setup and Delivery",
     "type": "service",
     "tagline": "Arrive to a fully stocked kitchen. Share your preferences and we'll have everything ready.",
     "description": "Arrive to a fully stocked kitchen. Share your preferences and we'll have everything ready. Fridge organized, wine chilled.",
@@ -98,7 +98,7 @@
   {
     "id": "s7",
     "slug": "airport-shuttle",
-    "name": "Airport Shuttle & Private Chauffeur",
+    "name": "Airport Shuttle and Private Chauffeur",
     "type": "service",
     "tagline": "Seamless transfers from Porto, Lisbon, or any airport. Premium vehicles, local drivers.",
     "description": "Seamless transfers from Porto, Lisbon, or any airport. Premium vehicles, local drivers who double as guides.",
@@ -200,7 +200,7 @@
   {
     "id": "a4",
     "slug": "hike-dive-dine",
-    "name": "Hike, Dive & Dine",
+    "name": "Hike, Dive and Dine",
     "type": "adventure",
     "tagline": "A full-day adventure: hike to hidden waterfalls, swim in natural pools, finish with a traditional lunch.",
     "description": "A full-day adventure: hike to hidden waterfalls, swim in natural pools, and finish with a traditional lunch at a local family restaurant.",
@@ -215,7 +215,7 @@
     "destinations": [
       "minho"
     ],
-    "whatsappMessage": "Hi, I'd like to book hike dive & dine",
+    "whatsappMessage": "Hi, I'd like to book hike dive and dine",
     "isActive": true,
     "sortOrder": 4
   },
@@ -244,7 +244,7 @@
   {
     "id": "a6",
     "slug": "sailing",
-    "name": "Sailing & Boat Tours",
+    "name": "Sailing and Boat Tours",
     "type": "adventure",
     "tagline": "Sunset sailing along the Atlantic coast, private boat charters, or a leisurely cruise.",
     "description": "Sunset sailing along the Atlantic coast, private boat charters, or a leisurely cruise up the Lima estuary.",
@@ -269,7 +269,7 @@
   {
     "id": "a7",
     "slug": "ebike-tours",
-    "name": "E-Bike & Fat Bike Tours",
+    "name": "E-Bike and Fat Bike Tours",
     "type": "adventure",
     "tagline": "Explore coastal trails, beach dunes, and mountain paths on electric or fat-tire bikes.",
     "description": "Explore coastal trails, beach dunes, and mountain paths on electric or fat-tire bikes. Guided by locals.",

@@ -72,22 +72,22 @@ The palette is intentionally restrained — warm neutrals with a single gold acc
 
 ## 2. Typography
 
-Two typefaces form the entire typographic system. **Playfair Display** handles all editorial headlines with a serif warmth. **Inter** handles everything else — body, labels, buttons, navigation — with optical sizing for crispness at small sizes.
+Two typefaces form the entire typographic system. **Cormorant Garamond** handles all editorial headlines with a serif warmth. **DM Sans** handles everything else — body, labels, buttons, navigation — with optical sizing for crispness at small sizes.
 
 ### Font Loading
 
 ```html
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet" />
 ```
 
 ### Font Stacks
 
 ```css
---font-display: 'Playfair Display', Georgia, serif;
---font-body: 'Inter', system-ui, -apple-system, sans-serif;
+--font-display: 'Cormorant Garamond', Georgia, serif;
+--font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
 ```
 
-### Headline Scale (Playfair Display)
+### Headline Scale (Cormorant Garamond)
 
 All headlines use `font-weight: 400` and `letter-spacing: -0.01em` by default.
 
@@ -116,7 +116,7 @@ Fluid sizing uses `clamp()`:
 | `h3` | `1.375rem` | `1.75rem` | `2rem` | `1.2` |
 | `h4` | `1.125rem` | `1.25rem` | `1.25rem` | `1.3` |
 
-### Body Text Scale (Inter)
+### Body Text Scale (DM Sans)
 
 | Class | Size | Weight | Line-height | Color |
 |---|---|---|---|---|
@@ -154,7 +154,7 @@ The most frequently used inline sizes across components, ordered by usage freque
 | Tailwind Class | Weight | Usage |
 |---|---|---|
 | `font-light` (300) | 300 | Body paragraphs, descriptions |
-| `font-normal` (400) | 400 | Headlines (Playfair), default |
+| `font-normal` (400) | 400 | Headlines (Cormorant Garamond), default |
 | `font-medium` (500) | 500 | Navigation, labels, buttons, overlines |
 | `font-semibold` (600) | 600 | Card titles, badge text, emphasis |
 | `font-bold` (700) | 700 | Rare — stat numbers, strong emphasis |
@@ -279,7 +279,7 @@ shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 
 ## 6. Buttons
 
-All buttons share a pill shape (`border-radius: 9999px`), uppercase text with wide letter-spacing, and a minimum touch target of 48px. The font is always Inter at `0.75rem` (12px), weight `500`.
+All buttons share a pill shape (`border-radius: 9999px`), uppercase text with wide letter-spacing, and a minimum touch target of 48px. The font is always DM Sans at `0.75rem` (12px), weight `500`.
 
 ### Shared Properties
 
@@ -289,7 +289,7 @@ display: inline-flex;
 align-items: center;
 justify-content: center;
 gap: 0.5rem;
-font-family: var(--font-body);        /* Inter */
+font-family: var(--font-body);        /* DM Sans */
 font-size: 0.75rem;                   /* 12px */
 font-weight: 500;
 letter-spacing: 0.12em;
@@ -344,13 +344,13 @@ pointer-events: none;
 
 ## 7. Inputs & Forms
 
-Form elements use Inter, maintain a 16px minimum font size (prevents iOS zoom), and follow a consistent border/focus pattern.
+Form elements use DM Sans, maintain a 16px minimum font size (prevents iOS zoom), and follow a consistent border/focus pattern.
 
 ### Text Input
 
 ```css
 /* Base input styling */
-font-family: var(--font-body);         /* Inter */
+font-family: var(--font-body);         /* DM Sans */
 font-size: 16px;                       /* Prevents iOS zoom */
 height: 2.5rem;                        /* 40px — h-10 */
 padding: 0.5rem 0.75rem;              /* py-2 px-3 */

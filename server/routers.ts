@@ -16,6 +16,7 @@ import {
   settingsRouter,
 } from "./routers/cms";
 import { uploadRouter } from "./routers/upload";
+import { customerRouter } from "./routers/customer";
 
 export const appRouter = router({
   system: systemRouter,
@@ -49,6 +50,7 @@ export const appRouter = router({
   faqs: faqsRouter,
   settings: settingsRouter,
   upload: uploadRouter,
+  customer: customerRouter,
 });
 
 export type AppRouter = typeof appRouter;

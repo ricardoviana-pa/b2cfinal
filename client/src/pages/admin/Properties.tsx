@@ -282,7 +282,7 @@ export default function AdminProperties() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="minho">Minho Coast</SelectItem>
-                <SelectItem value="porto">Porto & Douro</SelectItem>
+                <SelectItem value="porto">Porto and Douro</SelectItem>
                 <SelectItem value="algarve">Algarve</SelectItem>
                 <SelectItem value="lisbon">Lisbon</SelectItem>
                 <SelectItem value="alentejo">Alentejo</SelectItem>

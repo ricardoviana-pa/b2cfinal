@@ -88,9 +88,9 @@ export default function FAQ() {
       {/* Hero */}
       <section className="pt-28 pb-12 bg-white border-b border-[#E8E4DC]">
         <div className="container max-w-3xl">
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('faq.label')}</p>
-          <h1 className="headline-xl text-[#1A1A18] mb-4">{t('faq.heroTitle')}</h1>
-          <p className="body-lg text-[#6B6860]">{t('faq.heroSubtitle')}</p>
+          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('faq.overline')}</p>
+          <h1 className="headline-xl text-[#1A1A18] mb-4">{t('faq.title')}</h1>
+          <p className="body-lg text-[#6B6860]">{t('faq.subtitle')}</p>
         </div>
       </section>
 
@@ -108,12 +108,12 @@ export default function FAQ() {
       {/* Final CTA */}
       <section className="section-padding bg-[#F5F1EB]">
         <div className="container max-w-3xl text-center">
-          <p className="body-lg text-[#6B6860] mb-6">{t('faq.ctaText')}</p>
+          <p className="body-lg text-[#6B6860] mb-6">{t('faq.cantFind')}</p>
           <Link
             href="/contact"
             className="inline-flex items-center gap-2 rounded-full bg-[#1A1A18] text-white text-[12px] tracking-[0.08em] font-medium px-8 py-4 hover:bg-[#333] transition-colors"
           >
-            {t('faq.ctaButton')} <ArrowRight className="w-4 h-4" />
+            {t('faq.contactTeam')} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </section>

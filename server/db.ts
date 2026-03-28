@@ -13,6 +13,10 @@ import {
   siteSettings, InsertSiteSetting,
   faqs, InsertFaq,
   destinations, InsertDestination,
+  customerProfiles, InsertCustomerProfile,
+  loyaltyPointsLog, InsertLoyaltyPointsLog,
+  referrals, InsertReferral,
+  customerTrips, InsertCustomerTrip,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -500,6 +504,118 @@ export async function getAdminStats() {
   const [l] = await db.select({ count: sql<number>`count(*)` }).from(leads);
   const [f] = await db.select({ count: sql<number>`count(*)` }).from(faqs);
   return { properties: p.count, destinations: d.count, services: s.count, experiences: e.count, events: ev.count, blogPosts: bp.count, reviews: r.count, leads: l.count, faqs: f.count };
+}
+
+/* ================================================================
+   CUSTOMER PROFILES
+   ================================================================ */
+export async function upsertCustomerProfile(data: { openId: string; googleId?: string; avatar?: string | null }) {
+  const db = await getDb();
+  if (!db) return;
+  const user = await getUserByOpenId(data.openId);
+  if (!user) return;
+
+  const existing = await db.select().from(customerProfiles).where(eq(customerProfiles.userId, user.id)).limit(1);
+  if (existing.length > 0) {
+    const updateSet: Record<string, unknown> = {};
+    if (data.googleId) updateSet.googleId = data.googleId;
+    if (data.avatar !== undefined) updateSet.avatar = data.avatar;
+    if (Object.keys(updateSet).length > 0) {
+      await db.update(customerProfiles).set(updateSet).where(eq(customerProfiles.userId, user.id));
+    }
+  } else {
+    const code = generateReferralCode();
+    await db.insert(customerProfiles).values({
+      userId: user.id,
+      googleId: data.googleId || null,
+      avatar: data.avatar || null,
+      referralCode: code,
+      loyaltyPoints: 100,
+    });
+    await db.insert(loyaltyPointsLog).values({
+      userId: user.id,
+      points: 100,
+      type: "welcome",
+      description: "Welcome bonus",
+    });
+  }
+}
+
+function generateReferralCode(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "PA-";
+  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+
+export async function getCustomerProfile(userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(customerProfiles).where(eq(customerProfiles.userId, userId)).limit(1);
+  return result[0];
+}
+
+export async function updateCustomerProfile(userId: number, data: Partial<InsertCustomerProfile>) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(customerProfiles).set(data).where(eq(customerProfiles.userId, userId));
+}
+
+/* ================================================================
+   LOYALTY POINTS
+   ================================================================ */
+export async function getPointsLog(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(loyaltyPointsLog).where(eq(loyaltyPointsLog.userId, userId)).orderBy(desc(loyaltyPointsLog.createdAt));
+}
+
+export async function addPoints(userId: number, points: number, type: "booking" | "referral" | "bonus" | "redemption" | "welcome", description: string, referenceId?: string) {
+  const db = await getDb();
+  if (!db) return;
+  await db.insert(loyaltyPointsLog).values({ userId, points, type, description, referenceId });
+  await db.update(customerProfiles).set({
+    loyaltyPoints: sql`loyalty_points + ${points}`,
+  }).where(eq(customerProfiles.userId, userId));
+}
+
+/* ================================================================
+   REFERRALS
+   ================================================================ */
+export async function listReferrals(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(referrals).where(eq(referrals.referrerId, userId)).orderBy(desc(referrals.createdAt));
+}
+
+export async function createReferral(data: InsertReferral) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(referrals).values(data);
+  return { id: result[0].insertId };
+}
+
+export async function getProfileByReferralCode(code: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(customerProfiles).where(eq(customerProfiles.referralCode, code)).limit(1);
+  return result[0];
+}
+
+/* ================================================================
+   CUSTOMER TRIPS
+   ================================================================ */
+export async function listCustomerTrips(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(customerTrips).where(eq(customerTrips.userId, userId)).orderBy(desc(customerTrips.createdAt));
+}
+
+export async function createCustomerTrip(data: InsertCustomerTrip) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(customerTrips).values(data);
+  return { id: result[0].insertId };
 }
 
 /* ================================================================

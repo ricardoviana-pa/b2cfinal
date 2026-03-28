@@ -153,10 +153,10 @@ export default function Experiences() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-black/10" />
         <div className="relative container pb-12 lg:pb-16 z-10">
-          <p className="text-[11px] font-medium text-white/60 mb-3 tracking-[0.08em]">{t('services.experiencesLabel')}</p>
+          <p className="text-[11px] font-medium text-white/60 mb-3 tracking-[0.08em]">{t('services.heroOverline')}</p>
           <h1 className="headline-xl text-white mb-4">{t('services.heroTitle')}</h1>
           <p className="body-lg max-w-xl" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            {t('services.heroSubtitle')}
+            {t('services.heroBody')}
           </p>
         </div>
       </section>
@@ -187,10 +187,10 @@ export default function Experiences() {
       {/* Gastronomy */}
       <section id="gastronomy" className="section-padding bg-white">
         <div className="container max-w-3xl mx-auto">
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.gastronomyLabel')}</p>
+          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.gastronomyOverline')}</p>
           <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.gastronomyTitle')}</h2>
           <p className="body-lg mb-8">
-            {t('services.gastronomyDesc')}
+            {t('services.gastronomyBody')}
           </p>
           <div className="border-t border-[#E8E4DC]">
             {gastronomyProducts.map(p => (
@@ -203,10 +203,10 @@ export default function Experiences() {
       {/* Wellness */}
       <section id="wellness" className="section-padding bg-[#F5F1EB]">
         <div className="container max-w-3xl mx-auto">
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.wellnessLabel')}</p>
+          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.wellnessOverline')}</p>
           <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.wellnessTitle')}</h2>
           <p className="body-lg mb-8">
-            {t('services.wellnessDesc')}
+            {t('services.wellnessBody')}
           </p>
           <div className="border-t border-[#E8E4DC]">
             {wellnessProducts.map(p => (
@@ -220,10 +220,10 @@ export default function Experiences() {
       <section id="adventure" className="section-padding bg-white">
         <div className="container">
           <div className="max-w-3xl mx-auto mb-10">
-            <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.adventureLabel')}</p>
+            <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.adventureOverline')}</p>
             <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.adventureTitle')}</h2>
             <p className="body-lg">
-              {t('services.adventureDesc')}
+              {t('services.adventureBody')}
             </p>
           </div>
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-5 sm:overflow-visible">
@@ -239,10 +239,10 @@ export default function Experiences() {
       {/* Mobility */}
       <section id="mobility" className="section-padding bg-[#F5F1EB]">
         <div className="container max-w-3xl mx-auto">
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.mobilityLabel')}</p>
+          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.mobilityOverline')}</p>
           <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.mobilityTitle')}</h2>
           <p className="body-lg mb-8">
-            {t('services.mobilityDesc')}
+            {t('services.mobilityBody')}
           </p>
           <div className="border-t border-[#E8E4DC]">
             {mobilityProducts.map(p => (
@@ -255,10 +255,10 @@ export default function Experiences() {
       {/* Additional Services */}
       <section id="additional" className="section-padding bg-white">
         <div className="container max-w-3xl mx-auto">
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.additionalLabel')}</p>
+          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.additionalOverline')}</p>
           <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.additionalTitle')}</h2>
           <p className="body-lg mb-8">
-            {t('services.additionalDesc')}
+            {t('services.additionalBody')}
           </p>
           <div className="border-t border-[#E8E4DC]">
             {additionalProducts.map(p => (
@@ -273,7 +273,7 @@ export default function Experiences() {
         <div className="container max-w-2xl mx-auto text-center">
           <h2 className="headline-lg text-white mb-4">{t('services.ctaTitle')}</h2>
           <p className="body-lg mb-8" style={{ color: 'rgba(255,255,255,0.65)' }}>
-            {t('services.ctaDescription')}
+            {t('services.ctaBody')}
           </p>
           <a
             href={`${WHATSAPP_BASE}${waConciergeMsgEncoded}`}

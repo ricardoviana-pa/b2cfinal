@@ -10,17 +10,20 @@ import { Link, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import {
   Menu, X, Phone, Mail, MessageCircle, Instagram, Youtube, Linkedin,
-  ChevronDown, ChevronRight, MapPin, Sparkles, ArrowRight
+  ChevronDown, ChevronRight, MapPin, Sparkles, ArrowRight, User
 } from 'lucide-react';
 import { IMAGES } from '@/lib/images';
+import { trpc } from '@/lib/trpc';
 import LanguageSwitcher from './LanguageSwitcher';
 
 interface HeaderProps {
   variant?: 'transparent' | 'solid';
 }
 
-export default function Header({ variant = 'transparent' }: HeaderProps) {
+export default function Header({ variant = 'solid' }: HeaderProps) {
   const { t } = useTranslation();
+  const meQuery = trpc.auth.me.useQuery(undefined, { retry: false, refetchOnWindowFocus: false });
+  const authUser = meQuery.data;
   const destinations = useMemo(
     () =>
       [
@@ -156,21 +159,21 @@ export default function Header({ variant = 'transparent' }: HeaderProps) {
                   <div
                     key={item.href}
                     ref={propertiesRef}
-                    className="relative"
+                    className="relative flex items-center"
                     onMouseEnter={openProperties}
                     onMouseLeave={closeProperties}
                   >
                     <Link
                       href={item.href}
-                      className={`flex items-center gap-1 text-[13px] font-medium transition-colors ${
+                      className={`inline-flex items-center gap-1 text-[13px] font-medium leading-none transition-colors ${
                         location.startsWith('/homes') || location.startsWith('/services')
                           ? (isTransparent ? 'text-white' : 'text-[#1A1A18]')
                           : (isTransparent ? 'text-white/75 hover:text-white' : 'text-[#6B6860] hover:text-[#1A1A18]')
                       }`}
-                      style={{ letterSpacing: '0.02em' }}
+                      style={{ letterSpacing: '0.02em', minHeight: 'auto', minWidth: 'auto' }}
                     >
                       {item.label}
-                      <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${propertiesOpen ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`w-3 h-3 shrink-0 transition-transform duration-200 ${propertiesOpen ? 'rotate-180' : ''}`} />
                     </Link>
 
                     {/* Properties mega-dropdown */}
@@ -234,12 +237,12 @@ export default function Header({ variant = 'transparent' }: HeaderProps) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`text-[13px] font-medium transition-colors ${
+                    className={`inline-flex items-center text-[13px] font-medium leading-none transition-colors ${
                       location === item.href
                         ? (isTransparent ? 'text-white' : 'text-[#1A1A18]')
                         : (isTransparent ? 'text-white/75 hover:text-white' : 'text-[#6B6860] hover:text-[#1A1A18]')
                     }`}
-                    style={{ letterSpacing: '0.02em' }}
+                    style={{ letterSpacing: '0.02em', minHeight: 'auto', minWidth: 'auto' }}
                   >
                     {item.label}
                   </Link>
@@ -316,10 +319,29 @@ export default function Header({ variant = 'transparent' }: HeaderProps) {
                 </div>
               </div>
 
+              {/* Account / Login */}
+              <Link
+                href={authUser ? '/account' : '/login'}
+                className={`hidden md:inline-flex items-center justify-center w-9 h-9 rounded-full transition-all duration-300 ${
+                  isTransparent
+                    ? 'text-white/70 hover:text-white hover:bg-white/10'
+                    : 'text-[#6B6860] hover:text-[#1A1A18] hover:bg-[#F5F1EB]'
+                }`}
+                aria-label={authUser ? 'My Account' : 'Sign in'}
+              >
+                {authUser ? (
+                  <div className="w-7 h-7 rounded-full bg-[#8B7355] flex items-center justify-center text-white text-[11px] font-display">
+                    {(authUser.name || 'G')[0].toUpperCase()}
+                  </div>
+                ) : (
+                  <User size={18} />
+                )}
+              </Link>
+
               {/* Desktop: BOOK NOW button */}
               <Link
                 href="/homes"
-                className={`hidden md:inline-flex items-center rounded-full px-5 py-2.5 text-[11px] font-semibold transition-all duration-300 ${
+                className={`hidden md:inline-flex items-center rounded-full px-5 py-2.5 text-[11px] font-semibold uppercase transition-all duration-300 ${
                   isTransparent
                     ? 'border border-white/40 text-white hover:bg-white/15 hover:border-white/60'
                     : 'border border-[#1A1A18] text-[#1A1A18] hover:bg-[#1A1A18] hover:text-white'
@@ -332,7 +354,7 @@ export default function Header({ variant = 'transparent' }: HeaderProps) {
               {/* Mobile: BOOK button */}
               <Link
                 href="/homes"
-                className={`md:hidden inline-flex items-center rounded-full px-4 py-2 text-[10px] font-semibold transition-all duration-300 ${
+                className={`md:hidden inline-flex items-center rounded-full px-4 py-2 text-[10px] font-semibold uppercase transition-all duration-300 ${
                   isTransparent
                     ? 'border border-white/40 text-white hover:bg-white/15'
                     : 'border border-[#1A1A18] text-[#1A1A18] hover:bg-[#1A1A18] hover:text-white'
@@ -481,6 +503,24 @@ export default function Header({ variant = 'transparent' }: HeaderProps) {
                 )}
               </div>
             ))}
+            {/* Account link */}
+            <Link
+              href={authUser ? '/account' : '/login'}
+              onClick={() => setMenuOpen(false)}
+              className={`flex items-center gap-3 py-3.5 border-b border-[#E8E4DC]/30 transition-all duration-500 ${menuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
+              style={{ transitionDelay: menuOpen ? '400ms' : '0ms' }}
+            >
+              {authUser ? (
+                <div className="w-6 h-6 rounded-full bg-[#8B7355] flex items-center justify-center text-white text-[10px] font-display">
+                  {(authUser.name || 'G')[0].toUpperCase()}
+                </div>
+              ) : (
+                <User size={18} className="text-[#8B7355]" />
+              )}
+              <span className="text-[1.3rem]" style={{ fontFamily: 'var(--font-display)', color: '#1A1A18', fontWeight: 400 }}>
+                {authUser ? t('nav.myAccount', 'My Account') : t('nav.signIn', 'Sign In')}
+              </span>
+            </Link>
           </nav>
 
           {/* Bottom: contact + language + social */}

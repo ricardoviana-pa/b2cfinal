@@ -6,7 +6,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { SlidersHorizontal, X, Search, Calendar, Users } from 'lucide-react';
+import { SlidersHorizontal, X, Search, Calendar, Users, Minus, Plus } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
 import { filterProperties, sortProperties } from '@/lib/utils';
@@ -178,7 +178,7 @@ export default function Homes() {
           ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
           : 'bg-transparent text-[#6B6860] border-[#E8E4DC] hover:border-[#1A1A18] hover:text-[#1A1A18]'
       }`}
-      style={{ minHeight: '42px', minWidth: 'auto' }}
+      style={{ minHeight: '44px', minWidth: 'auto' }}
     >
       {children}
     </button>
@@ -259,6 +259,7 @@ export default function Homes() {
                   onChange={(e) => {
                     setBookingCheckin(e.target.value);
                     if (bookingCheckout && bookingCheckout <= e.target.value) setBookingCheckout('');
+                    setTimeout(() => checkOutRef.current?.showPicker?.(), 50);
                   }}
                   className="w-full bg-transparent text-[13px] text-[#1A1A18] focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute"
                 />
@@ -285,15 +286,25 @@ export default function Homes() {
                 <p className="text-[10px] uppercase tracking-[0.08em] text-[#9E9A90] mb-1 flex items-center gap-1">
                   <Users className="w-3 h-3" /> {t('search.guests')}
                 </p>
-                <select
-                  value={bookingGuests}
-                  onChange={(e) => setBookingGuests(Number(e.target.value))}
-                  className="w-full bg-transparent text-[13px] text-[#1A1A18] focus:outline-none cursor-pointer"
-                >
-                  {Array.from({ length: 20 }, (_, i) => i + 1).map(n => (
-                    <option key={n} value={n}>{t('search.guestsCount', { count: n })}</option>
-                  ))}
-                </select>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setBookingGuests(g => Math.max(1, g - 1))}
+                    disabled={bookingGuests <= 1}
+                    className="flex h-7 w-7 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                  >
+                    <Minus className="w-3 h-3" />
+                  </button>
+                  <span className="min-w-[3ch] text-center text-[13px] text-[#1A1A18] tabular-nums">{bookingGuests}</span>
+                  <button
+                    type="button"
+                    onClick={() => setBookingGuests(g => Math.min(30, g + 1))}
+                    disabled={bookingGuests >= 30}
+                    className="flex h-7 w-7 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                  >
+                    <Plus className="w-3 h-3" />
+                  </button>
+                </div>
               </div>
 
               <div className="md:col-span-1 px-2 py-2">
@@ -312,7 +323,7 @@ export default function Homes() {
             <button
               onClick={() => setMobileFiltersOpen(true)}
               className="flex items-center gap-2 text-[13px] font-medium text-[#1A1A18] border border-[#E8E4DC] px-4 py-2.5"
-              style={{ minHeight: '40px', minWidth: 'auto' }}
+              style={{ minHeight: '44px', minWidth: 'auto' }}
             >
               <SlidersHorizontal className="w-4 h-4" />
               {t('filters.mobileFilter')}{hasActiveFilters ? ` (${filtered.length})` : ''}
@@ -321,7 +332,7 @@ export default function Homes() {
               value={sort}
               onChange={(e) => setSort(e.target.value as SortOption)}
               className="text-[13px] text-[#6B6860] bg-transparent border border-[#E8E4DC] px-3 py-2.5 font-sans"
-              style={{ minHeight: '40px' }}
+              style={{ minHeight: '44px' }}
             >
               {SORT_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
             </select>
@@ -341,7 +352,7 @@ export default function Homes() {
               </div>
               <div className="flex items-center gap-3">
                 {hasActiveFilters && (
-                  <button onClick={clearFilters} className="text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors" style={{ minHeight: '40px', minWidth: 'auto' }}>
+                  <button onClick={clearFilters} className="text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors" style={{ minHeight: '44px', minWidth: 'auto' }}>
                     {t('filters.clearAll')}
                   </button>
                 )}
@@ -370,7 +381,7 @@ export default function Homes() {
               <button
                 onClick={() => setShowMoreFilters(!showMoreFilters)}
                 className="text-[13px] font-medium text-[#8B7355] ml-2 hover:text-[#1A1A18] transition-colors"
-                style={{ minHeight: '40px', minWidth: 'auto' }}
+                style={{ minHeight: '44px', minWidth: 'auto' }}
               >
                 {showMoreFilters ? t('filters.lessFilters') : t('filters.moreFilters')}
               </button>

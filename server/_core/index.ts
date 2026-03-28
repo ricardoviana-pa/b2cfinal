@@ -5,6 +5,7 @@ import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerDevAuthRoutes } from "./devAuth";
+import { registerGoogleAuthRoutes } from "./googleAuth";
 import { registerBookingRoutes, registerGuestyWebhookRoute } from "../routes/booking";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
@@ -45,6 +46,7 @@ async function startServer() {
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
   registerDevAuthRoutes(app);
+  registerGoogleAuthRoutes(app);
   // tRPC API
   app.use(
     "/api/trpc",

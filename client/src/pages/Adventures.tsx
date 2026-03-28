@@ -44,9 +44,9 @@ export default function Adventures() {
         <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1400&q=80" alt="Adventure experiences in Portugal" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-black/10" />
         <div className="relative container pb-12 lg:pb-16 z-10">
-          <h1 className="headline-xl text-white mb-4">{t('adventures.hero.title')}</h1>
+          <h1 className="headline-xl text-white mb-4">{t('adventures.title')}</h1>
           <p className="body-lg max-w-lg" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            {t('adventures.hero.description')}
+            {t('adventures.subtitle')}
           </p>
         </div>
       </section>
@@ -65,7 +65,7 @@ export default function Adventures() {
                     ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
                     : 'bg-transparent text-[#6B6860] border-[#E8E4DC] hover:border-[#1A1A18] hover:text-[#1A1A18]'
                 }`}
-                style={{ minHeight: '40px', minWidth: 'auto' }}
+                style={{ minHeight: '44px', minWidth: 'auto' }}
               >
                 {d.label}
               </button>
@@ -142,10 +142,10 @@ export default function Adventures() {
           {filtered.length === 0 && (
             <div className="text-center py-20">
               <p className="text-[#6B6860] text-lg mb-6">
-                {t('adventures.noResults')}
+                {t('adventures.noAdventures')}
               </p>
               <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="btn-primary inline-flex items-center gap-2">
-                {t('adventures.noResultsCta')}
+                {t('adventures.talkToTeam')}
               </a>
             </div>
           )}
@@ -155,12 +155,12 @@ export default function Adventures() {
       {/* CTA */}
       <section className="section-padding text-center bg-[#F5F1EB]">
         <div className="container max-w-lg mx-auto">
-          <h3 className="headline-md mb-4 text-[#1A1A18]">{t('adventures.cta.title')}</h3>
+          <h3 className="headline-md mb-4 text-[#1A1A18]">{t('adventures.customTitle')}</h3>
           <p className="body-md mb-8">
-            {t('adventures.cta.description')}
+            {t('adventures.customBody')}
           </p>
           <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="btn-primary inline-flex items-center gap-2">
-            {t('adventures.cta.button')}
+            {t('adventures.customCta')}
           </a>
         </div>
       </section>

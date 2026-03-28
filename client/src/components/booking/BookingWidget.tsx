@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
-import { Calendar, Users, Shield, ChevronDown, ChevronUp, Loader2, Check, ShoppingBag } from "lucide-react";
+import { Calendar, Users, Shield, ChevronDown, ChevronUp, Loader2, Check, ShoppingBag, Minus, Plus } from "lucide-react";
 import CheckoutPaymentForm from "./CheckoutPaymentForm";
 import PhoneInput from "./PhoneInput";
 import productsData from "@/data/products.json";
@@ -498,6 +498,7 @@ export default function BookingWidget({
                 setError("");
                 setBeQuoteError("");
                 setStep("dates");
+                setTimeout(() => checkOutRef.current?.showPicker?.(), 50);
               }}
               className="w-full bg-transparent text-[14px] text-[#1A1A18] focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute"
             />
@@ -523,21 +524,35 @@ export default function BookingWidget({
             />
           </div>
         </div>
-        <div className="border-t border-[#1A1A18] p-3 cursor-pointer hover:bg-[#F5F1EB] transition-colors">
-          <p className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#1A1A18] mb-0.5">{t("booking.guestsLabel")}</p>
-          <select
-            value={guests}
-            onChange={(e) => {
-              setGuests(Number(e.target.value));
-              if (quote) setStep("dates");
-              setError("");
-            }}
-            className="w-full bg-transparent text-[14px] text-[#1A1A18] focus:outline-none cursor-pointer appearance-none"
-          >
-            {Array.from({ length: Math.max(maxGuests, 1) }, (_, i) => (
-              <option key={i + 1} value={i + 1}>{t("search.guestsCount", { count: i + 1 })}</option>
-            ))}
-          </select>
+        <div className="border-t border-[#1A1A18] p-3">
+          <p className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#1A1A18] mb-1.5">{t("booking.guestsLabel")}</p>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setGuests(g => Math.max(1, g - 1));
+                if (quote) setStep("dates");
+                setError("");
+              }}
+              disabled={guests <= 1}
+              className="flex h-7 w-7 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+            >
+              <Minus className="w-3 h-3" />
+            </button>
+            <span className="min-w-[3ch] text-center text-[14px] text-[#1A1A18] tabular-nums">{guests}</span>
+            <button
+              type="button"
+              onClick={() => {
+                setGuests(g => Math.min(maxGuests > 0 ? maxGuests : 30, g + 1));
+                if (quote) setStep("dates");
+                setError("");
+              }}
+              disabled={guests >= (maxGuests > 0 ? maxGuests : 30)}
+              className="flex h-7 w-7 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+            >
+              <Plus className="w-3 h-3" />
+            </button>
+          </div>
         </div>
       </div>
 

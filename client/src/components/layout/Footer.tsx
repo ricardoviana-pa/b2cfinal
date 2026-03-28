@@ -9,6 +9,7 @@ import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { IMAGES } from '@/lib/images';
 import { Instagram, Youtube, Linkedin, Facebook, Check, Phone, Mail, MessageCircle, Calendar } from 'lucide-react';
+import FooterPaymentLogos from './FooterPaymentLogos';
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -207,104 +208,34 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="border-t border-white/[0.06]">
         <div className="container py-5">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            {/* Left: Legal */}
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 text-[11px] text-white/20" style={{ fontWeight: 300 }}>
-              <span>
-                {t('footer.copyrightLine', {
-                  year: new Date().getFullYear(),
-                  rights: t('footer.allRightsReserved'),
-                })}
-              </span>
-              <Link href="/legal/privacy" className="hover:text-white/50 transition-colors">{t('footer.privacy')}</Link>
-              <Link href="/legal/terms" className="hover:text-white/50 transition-colors">{t('footer.terms')}</Link>
-              <Link href="/legal/cookies" className="hover:text-white/50 transition-colors">{t('footer.cookies')}</Link>
-              <Link href="/admin" className="hover:text-white/50 transition-colors">{t('footer.admin')}</Link>
-            </div>
+          <div className="flex items-center justify-between">
 
-            {/* Right: Social + Payment */}
             <div className="flex items-center gap-6">
-              {/* Social icons */}
-              <div className="flex items-center gap-3.5">
-                <a href="https://instagram.com/portugalactive" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white/20 hover:text-white/60 transition-colors">
-                  <Instagram className="w-4 h-4" />
-                </a>
-                <a href="https://youtube.com/@portugalactive" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-white/20 hover:text-white/60 transition-colors">
-                  <Youtube className="w-4 h-4" />
-                </a>
-                <a href="https://linkedin.com/company/portugalactive" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-white/20 hover:text-white/60 transition-colors">
-                  <Linkedin className="w-4 h-4" />
-                </a>
-                <a href="https://facebook.com/portugalactive" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-white/20 hover:text-white/60 transition-colors">
-                  <Facebook className="w-4 h-4" />
-                </a>
+              <span className="text-[11px] text-white/20" style={{ fontWeight: 300 }}>
+                {t('footer.copyrightLine', { year: new Date().getFullYear(), rights: t('footer.allRightsReserved') })}
+              </span>
+
+              <div className="hidden items-center gap-4 text-[11px] text-white/20 md:flex" style={{ fontWeight: 300 }}>
+                <Link href="/legal/privacy" className="hover:text-white/45 transition-colors">{t('footer.privacy')}</Link>
+                <Link href="/legal/terms" className="hover:text-white/45 transition-colors">{t('footer.terms')}</Link>
+                <Link href="/legal/cookies" className="hover:text-white/45 transition-colors">{t('footer.cookies')}</Link>
+                <Link href="/admin" className="hover:text-white/45 transition-colors">{t('footer.admin')}</Link>
               </div>
 
-              {/* Divider */}
-              <div className="w-px h-4 bg-white/10" />
+              <div className="hidden h-3.5 w-px bg-white/[0.08] lg:block" />
 
-              {/* Payment method text logos — clean, minimal, Le Collectionist style */}
-              <div className="flex items-center gap-3">
-                {/* Visa */}
-                <svg viewBox="0 0 48 16" className="h-3 w-auto" aria-label="Visa">
-                  <text
-                    x="0" y="13"
-                    fill="rgba(255,255,255,0.25)"
-                    fontSize="15"
-                    fontWeight="700"
-                    fontFamily="system-ui, -apple-system, sans-serif"
-                    fontStyle="italic"
-                    letterSpacing="-0.5"
-                  >
-                    VISA
-                  </text>
-                </svg>
-                {/* Mastercard */}
-                <svg viewBox="0 0 28 18" className="h-3.5 w-auto" aria-label="Mastercard">
-                  <circle cx="10" cy="9" r="7" fill="rgba(255,255,255,0.15)" />
-                  <circle cx="18" cy="9" r="7" fill="rgba(255,255,255,0.20)" />
-                </svg>
-                {/* Amex */}
-                <svg viewBox="0 0 48 16" className="h-3 w-auto" aria-label="American Express">
-                  <text
-                    x="0" y="12"
-                    fill="rgba(255,255,255,0.25)"
-                    fontSize="10"
-                    fontWeight="700"
-                    fontFamily="system-ui, -apple-system, sans-serif"
-                    letterSpacing="0.5"
-                  >
-                    AMEX
-                  </text>
-                </svg>
-                {/* Apple Pay */}
-                <svg viewBox="0 0 56 16" className="h-3 w-auto" aria-label="Apple Pay">
-                  <text
-                    x="0" y="12"
-                    fill="rgba(255,255,255,0.25)"
-                    fontSize="10"
-                    fontWeight="500"
-                    fontFamily="system-ui, -apple-system, sans-serif"
-                  >
-                    Apple Pay
-                  </text>
-                </svg>
-                {/* Bank Transfer */}
-                <svg viewBox="0 0 70 16" className="h-3 w-auto" aria-label="Bank Transfer">
-                  <text
-                    x="0" y="12"
-                    fill="rgba(255,255,255,0.18)"
-                    fontSize="9"
-                    fontWeight="400"
-                    fontFamily="system-ui, -apple-system, sans-serif"
-                  >
-                    Bank Transfer
-                  </text>
-                </svg>
+              <div className="hidden items-center gap-4 lg:flex">
+                <a href="https://instagram.com/portugalactive" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white/20 hover:text-white/45 transition-colors"><Instagram className="h-[14px] w-[14px]" /></a>
+                <a href="https://youtube.com/@portugalactive" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-white/20 hover:text-white/45 transition-colors"><Youtube className="h-[14px] w-[14px]" /></a>
+                <a href="https://linkedin.com/company/portugalactive" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-white/20 hover:text-white/45 transition-colors"><Linkedin className="h-[14px] w-[14px]" /></a>
+                <a href="https://facebook.com/portugalactive" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-white/20 hover:text-white/45 transition-colors"><Facebook className="h-[14px] w-[14px]" /></a>
               </div>
             </div>
+
+            <FooterPaymentLogos />
+
           </div>
         </div>
       </div>

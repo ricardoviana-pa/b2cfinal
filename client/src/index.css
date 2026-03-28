@@ -6,7 +6,7 @@
 /* ==========================================================================
    PORTUGAL ACTIVE â V3 FINAL DESIGN SYSTEM (POLISHED)
    Visual: Aesop + Aman + Sublime Comporta
-   Typography: Playfair Display (editorial headlines) + Inter (body)
+   Typography: Cormorant Garamond (editorial headlines) + DM Sans (body)
    Mobile-first: 375px â 768px â 1200px
    ========================================================================== */
 
@@ -60,8 +60,8 @@
   --color-pa-gold-light: #C4A87C;
 
   /* Font families */
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
 }
 
 :root {
@@ -125,6 +125,14 @@
     font-family: var(--font-body);
     min-height: 100dvh;
     overflow-x: hidden;
+  }
+
+  #root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    min-width: 0;
+    width: 100%;
   }
 
   /* Headings â Playfair Display */
@@ -698,6 +706,11 @@
   }
   @keyframes fadeInSafety {
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
   }
 
   /* Line clamp */

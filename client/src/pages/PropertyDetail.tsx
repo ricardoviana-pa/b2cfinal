@@ -10,10 +10,9 @@ import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck,
   Sparkles, Star, Clock, UtensilsCrossed, Headphones, ExternalLink, Plus, X,
   Wifi, Tv, Coffee, Car, Waves, Wind, Shirt, Flame, TreePine, Mountain,
-  Sun, Monitor, Utensils, Sofa, Calendar, type LucideIcon
+  Sun, Monitor, Utensils, Sofa, type LucideIcon
 } from 'lucide-react';
 import AddToItineraryModal from '@/components/itinerary/AddToItineraryModal';
-import { MapView } from '@/components/Map';
 import productsData from '@/data/products.json';
 import destinationsData from '@/data/destinations.json';
 import type { Product, Destination, Property } from '@/lib/types';
@@ -25,15 +24,6 @@ import { trpc } from '@/lib/trpc';
 
 const allProducts = productsData as unknown as Product[];
 const destinations = destinationsData as unknown as Destination[];
-
-const DEST_COORDS: Record<string, { lat: number; lng: number }> = {
-  minho: { lat: 41.6946, lng: -8.8300 },
-  porto: { lat: 41.1579, lng: -8.6291 },
-  lisbon: { lat: 38.7223, lng: -9.1393 },
-  alentejo: { lat: 38.5700, lng: -7.9100 },
-  algarve: { lat: 37.0194, lng: -7.9304 },
-  brazil: { lat: -22.9068, lng: -43.1729 },
-};
 
 /** Map amenity name (lowercase) to Lucide icon — Le Collectionist / Plum Guide style */
 const AMENITY_ICON_MAP: Record<string, LucideIcon> = {
@@ -142,11 +132,6 @@ export default function PropertyDetail() {
     if (!property) return '';
     const d = destinations.find(d => d.slug === property.destination);
     return d?.name || property.destination;
-  }, [property]);
-
-  const mapCenter = useMemo(() => {
-    if (!property) return { lat: 39.3999, lng: -8.2245 };
-    return DEST_COORDS[property.destination] || { lat: 39.3999, lng: -8.2245 };
   }, [property]);
 
   const flatAmenities = useMemo(() => {
@@ -278,34 +263,28 @@ export default function PropertyDetail() {
           </div>
         </div>
 
-        {/* Booking rules strip — static info visible before selecting dates */}
-        {(() => {
-          const minNights = (property as any).minNights;
-          const cleaningFee = (property as any).cleaningFee;
-          const rules: { icon: LucideIcon; label: string }[] = [];
-          if (minNights > 1) rules.push({ icon: Calendar, label: t('propertyDetail.minNights', { count: minNights }) });
-          if (cleaningFee > 0) rules.push({ icon: Sparkles, label: t('propertyDetail.cleaningFeeRule', { fee: cleaningFee }) });
-          if (rules.length === 0) return null;
-          return (
-            <div className="container pb-3">
-              <div className="flex flex-wrap gap-2">
-                {rules.map((rule, i) => (
-                  <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F5F1EB] border border-[#E8E4DC] rounded-full">
-                    <rule.icon size={12} className="text-[#8B7355] shrink-0" />
-                    <span className="text-[11px] text-[#6B6860] font-medium">{rule.label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        })()}
 
         {/* Two-column layout: main content (left 2/3) + sticky booking (right 1/3) */}
         <div className={property.guestyId ? "container pb-8 lg:pb-16" : "container pb-24 lg:pb-16"}>
           <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
             {/* Main content — left 2/3 */}
             <div className="order-2 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12 pt-6">
-              {/* About */}
+              {/* 1. What's included */}
+              <section className="p-5 lg:p-6 bg-[#F5F1EB]">
+                <h2 className="headline-sm text-[#1A1A18] mb-4">{t('propertyDetail.includedTitle')}</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+                  {whatsIncluded.map((item, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <div className="w-7 h-7 flex items-center justify-center shrink-0 mt-0.5 rounded-full bg-[#FAFAF7]">
+                        <item.icon size={13} className="text-[#8B7355]" />
+                      </div>
+                      <span className="text-[12px] text-[#6B6860] font-light leading-relaxed pt-1">{item.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* 2. Editorial description */}
               <section>
                 <h2 className="headline-sm text-[#1A1A18] mb-4">{t('propertyDetail.aboutTitle')}</h2>
                 <div className="body-lg space-y-4">
@@ -319,7 +298,7 @@ export default function PropertyDetail() {
                 </div>
               </section>
 
-              {/* Amenities — Le Collectionist style icon grid */}
+              {/* 3. Amenities — Le Collectionist style icon grid */}
               <section>
                 <h2 className="headline-sm text-[#1A1A18] mb-6">{t('propertyDetail.amenitiesTitle')}</h2>
                 {flatAmenities.length > 0 ? (
@@ -341,59 +320,7 @@ export default function PropertyDetail() {
                 )}
               </section>
 
-              {/* What's included */}
-              <section className="p-5 lg:p-6 bg-[#F5F1EB]">
-                <h2 className="headline-sm text-[#1A1A18] mb-4">{t('propertyDetail.includedTitle')}</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
-                  {whatsIncluded.map((item, i) => (
-                    <div key={i} className="flex items-start gap-3">
-                      <div className="w-7 h-7 flex items-center justify-center shrink-0 mt-0.5 rounded-full bg-[#FAFAF7]">
-                        <item.icon size={13} className="text-[#8B7355]" />
-                      </div>
-                      <span className="text-[12px] text-[#6B6860] font-light leading-relaxed pt-1">{item.text}</span>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              {/* Location map */}
-              <section>
-                <h2 className="headline-sm text-[#1A1A18] mb-2">{t('propertyDetail.locationTitle')}</h2>
-                <p className="body-md text-[#9E9A90] mb-4">{t('propertyDetail.locationLine', { locality: property.locality, destination: destName })}</p>
-                <div className="rounded-lg overflow-hidden border border-[#E8E4DC]">
-                  <MapView
-                    className="h-[280px] lg:h-[320px]"
-                    initialCenter={mapCenter}
-                    initialZoom={13}
-                    onMapReady={(map) => {
-                      try {
-                        if (typeof google === 'undefined') return;
-                        const geocoder = new google.maps.Geocoder();
-                        geocoder.geocode(
-                          { address: `${property.locality}, ${destName}, Portugal` },
-                          (results, status) => {
-                            try {
-                              if (status === 'OK' && results?.[0]) {
-                                const pos = results[0].geometry.location;
-                                map.setCenter(pos);
-                                new google.maps.marker.AdvancedMarkerElement({ map, position: pos, title: property.name });
-                              } else {
-                                new google.maps.marker.AdvancedMarkerElement({ map, position: mapCenter, title: property.name });
-                              }
-                            } catch {
-                              map.setCenter(mapCenter);
-                            }
-                          }
-                        );
-                      } catch {
-                        map.setCenter(mapCenter);
-                      }
-                    }}
-                  />
-                </div>
-              </section>
-
-              {/* Services */}
+              {/* 4. Services (add-on) */}
               <section>
                 <h2 className="headline-sm text-[#1A1A18] mb-2">{t('propertyDetail.servicesTitle')}</h2>
                 <p className="body-md text-[#9E9A90] mb-5">{t('propertyDetail.servicesSubtitle')}</p>
@@ -418,7 +345,7 @@ export default function PropertyDetail() {
                 </div>
               </section>
 
-              {/* Adventures */}
+              {/* 5. Adventures nearby */}
               {adventures.length > 0 && (
                 <section>
                   <h2 className="headline-sm text-[#1A1A18] mb-2">{t('propertyDetail.adventuresTitle')}</h2>
@@ -444,6 +371,22 @@ export default function PropertyDetail() {
                   </div>
                 </section>
               )}
+
+              {/* 6. Location map */}
+              <section>
+                <h2 className="headline-sm text-[#1A1A18] mb-2">{t('propertyDetail.locationTitle')}</h2>
+                <p className="body-md text-[#9E9A90] mb-4">{t('propertyDetail.locationLine', { locality: property.locality, destination: destName })}</p>
+                <div className="rounded-lg overflow-hidden border border-[#E8E4DC]">
+                  <iframe
+                    title={`${property.name} — ${property.locality}`}
+                    className="w-full h-[280px] lg:h-[320px] border-0"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(`${property.locality}, ${destName}, Portugal`)}&z=13&output=embed`}
+                    allowFullScreen
+                  />
+                </div>
+              </section>
             </div>
 
             {/* Sticky booking card — right 1/3 */}

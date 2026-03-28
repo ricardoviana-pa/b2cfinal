@@ -293,3 +293,88 @@ export const destinations = mysqlTable("destinations", {
 
 export type Destination = typeof destinations.$inferSelect;
 export type InsertDestination = typeof destinations.$inferInsert;
+
+/* ================================================================
+   CUSTOMER PROFILES — Extended data for guest/customer accounts
+   ================================================================ */
+export const customerProfiles = mysqlTable("customer_profiles", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique(),
+  googleId: varchar("googleId", { length: 255 }).unique(),
+  avatar: varchar("avatar", { length: 500 }),
+  phone: varchar("phone", { length: 50 }),
+  nationality: varchar("nationality", { length: 100 }),
+  referralCode: varchar("referralCode", { length: 20 }).unique(),
+  referredByCode: varchar("referredByCode", { length: 20 }),
+  loyaltyPoints: int("loyaltyPoints").default(0).notNull(),
+  loyaltyTier: mysqlEnum("loyaltyTier", ["bronze", "silver", "gold", "platinum"]).default("bronze").notNull(),
+  totalStays: int("totalStays").default(0).notNull(),
+  totalNights: int("totalNights").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CustomerProfile = typeof customerProfiles.$inferSelect;
+export type InsertCustomerProfile = typeof customerProfiles.$inferInsert;
+
+/* ================================================================
+   LOYALTY POINTS LOG — Point transactions
+   ================================================================ */
+export const loyaltyPointsLog = mysqlTable("loyalty_points_log", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  points: int("points").notNull(),
+  type: mysqlEnum("type", ["booking", "referral", "bonus", "redemption", "welcome"]).notNull(),
+  description: varchar("description", { length: 500 }),
+  referenceId: varchar("referenceId", { length: 100 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type LoyaltyPointsLog = typeof loyaltyPointsLog.$inferSelect;
+export type InsertLoyaltyPointsLog = typeof loyaltyPointsLog.$inferInsert;
+
+/* ================================================================
+   REFERRALS — Referral tracking
+   ================================================================ */
+export const referrals = mysqlTable("referrals", {
+  id: int("id").autoincrement().primaryKey(),
+  referrerId: int("referrerId").notNull(),
+  referredEmail: varchar("referredEmail", { length: 320 }).notNull(),
+  referredUserId: int("referredUserId"),
+  status: mysqlEnum("status", ["pending", "signed_up", "booked", "completed"]).default("pending").notNull(),
+  pointsAwarded: int("pointsAwarded").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Referral = typeof referrals.$inferSelect;
+export type InsertReferral = typeof referrals.$inferInsert;
+
+/* ================================================================
+   CUSTOMER TRIPS — Booking / trip history
+   ================================================================ */
+export const customerTrips = mysqlTable("customer_trips", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  propertyId: int("propertyId"),
+  propertyName: varchar("propertyName", { length: 255 }).notNull(),
+  propertyImage: varchar("propertyImage", { length: 500 }),
+  destination: varchar("destination", { length: 100 }),
+  checkIn: varchar("checkIn", { length: 20 }).notNull(),
+  checkOut: varchar("checkOut", { length: 20 }).notNull(),
+  guests: int("guests").default(2).notNull(),
+  nights: int("nights").default(1).notNull(),
+  totalPrice: int("totalPrice").default(0),
+  currency: varchar("currency", { length: 10 }).default("EUR"),
+  status: mysqlEnum("status", ["upcoming", "active", "completed", "cancelled"]).default("upcoming").notNull(),
+  confirmationCode: varchar("confirmationCode", { length: 100 }),
+  guestyReservationId: varchar("guestyReservationId", { length: 100 }),
+  pointsEarned: int("pointsEarned").default(0).notNull(),
+  rating: int("rating"),
+  reviewText: text("reviewText"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CustomerTrip = typeof customerTrips.$inferSelect;
+export type InsertCustomerTrip = typeof customerTrips.$inferInsert;

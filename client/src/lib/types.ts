@@ -128,7 +128,7 @@ export interface TeamMember {
 }
 
 // --- BLOG ---
-export type BlogCategory = 'destinations' | 'lifestyle' | 'portugal-active' | 'video' | 'people';
+export type BlogCategory = 'destinations' | 'lifestyle' | 'portugal-active' | 'video' | 'people' | 'guides';
 
 export interface BlogAuthor {
   id: string;

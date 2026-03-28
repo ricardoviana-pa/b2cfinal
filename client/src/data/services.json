@@ -56,7 +56,7 @@
       "tagline": "Stay active on holiday with expert guidance.",
       "description": "Maintain your fitness routine — or start a new one — with a certified personal trainer who comes to your property. Sessions are tailored to your fitness level, goals, and available space.\n\nWhether it is strength training by the pool, a HIIT session in the garden, or a gentle mobility workout on the terrace, our trainers bring all the equipment needed for an effective session.",
       "image": "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1200&q=80",
-      "details": ["Certified trainers", "Tailored sessions", "All equipment provided", "Strength & cardio", "All fitness levels", "Outdoor sessions"],
+      "details": ["Certified trainers", "Tailored sessions", "All equipment provided", "Strength and cardio", "All fitness levels", "Outdoor sessions"],
       "price": "From €55 per session",
       "duration": "60 minutes",
       "availability": "Available in all homes",
@@ -72,7 +72,7 @@
       "tagline": "Seamless transfers from landing to your front door.",
       "description": "Your holiday begins the moment you land. Our private airport transfer service ensures a smooth, comfortable journey from Porto, Lisbon, or Faro airport directly to your property.\n\nProfessional drivers in premium vehicles meet you at arrivals with a name board. Child seats are available on request. We monitor flight times so even if your flight is delayed, your driver will be there.",
       "image": "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1200&q=80",
-      "details": ["Premium vehicles", "Meet & greet", "Flight monitoring", "Child seats available", "Door-to-door", "24/7 availability"],
+      "details": ["Premium vehicles", "Meet and greet", "Flight monitoring", "Child seats available", "Door-to-door", "24/7 availability"],
       "price": "From €65 per transfer",
       "duration": "Varies by distance",
       "availability": "Porto, Lisbon, Faro airports",
@@ -93,7 +93,7 @@
     },
     {
       "slug": "grocery-setup",
-      "name": "Grocery Setup & Delivery",
+      "name": "Grocery Setup and Delivery",
       "category": "service",
       "tagline": "Your fridge stocked before you arrive.",
       "description": "Arrive to a fully stocked kitchen with local produce, artisan bread, regional cheese, fresh fruit, and your favourite wines. We take care of the shopping so you can start enjoying your holiday from the very first moment.\n\nChoose from our curated welcome packages or send us your personal shopping list. We source everything from local markets and trusted suppliers.",
@@ -111,7 +111,7 @@
       "tagline": "Trusted childcare so you can enjoy your evening.",
       "description": "Certified childcare professionals available for evenings out, day excursions, or whenever you need a few hours to yourselves. All our babysitters are vetted, experienced, and speak English.\n\nWhether you want a romantic dinner out, a spa session, or simply some quiet time, our babysitters ensure your children are safe, entertained, and happy.",
       "image": "https://images.unsplash.com/photo-1476703993599-0035a21b17a9?w=1200&q=80",
-      "details": ["Certified professionals", "English speaking", "Vetted & experienced", "Flexible hours", "Evening or daytime", "All ages"],
+      "details": ["Certified professionals", "English speaking", "Vetted and experienced", "Flexible hours", "Evening or daytime", "All ages"],
       "price": "From €20 per hour",
       "duration": "Minimum 3 hours",
       "availability": "Available in all homes",
@@ -126,7 +126,7 @@
       "tagline": "Explore beaches and forests on horseback.",
       "description": "Discover Portugal's stunning landscapes from a completely different perspective — on horseback. Our experienced guides lead you through beaches, forests, vineyards, and ancient trails on well-trained horses suitable for all experience levels.\n\nRides range from gentle beach walks for beginners to full-day adventures through the countryside for experienced riders. All safety equipment is provided.",
       "image": "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=1200&q=80",
-      "details": ["All experience levels", "Beach & forest trails", "Safety equipment", "Professional guides", "1-4 hour options", "Small groups"],
+      "details": ["All experience levels", "Beach and forest trails", "Safety equipment", "Professional guides", "1-4 hour options", "Small groups"],
       "price": "From €55 per person",
       "duration": "1-4 hours",
       "availability": "Minho Coast, Algarve",
@@ -180,7 +180,7 @@
     },
     {
       "slug": "bike-tour",
-      "name": "City & Mountain Bike Tour",
+      "name": "City and Mountain Bike Tour",
       "category": "activity",
       "tagline": "Pedal through history and nature.",
       "description": "Explore Porto's historic streets, the Douro Valley's terraced vineyards, or the Minho's mountain trails on a guided bike tour. Our local guides share stories, history, and hidden gems along every route.\n\nRoutes are available for all fitness levels, from gentle city tours to challenging mountain rides. Premium bikes and all safety equipment are provided.",
@@ -193,7 +193,7 @@
     },
     {
       "slug": "hike-dive-dine",
-      "name": "Hike, Dive & Dine",
+      "name": "Hike, Dive and Dine",
       "category": "activity",
       "tagline": "A full-day adventure combining nature and gastronomy.",
       "description": "Our signature experience combines a coastal hike along dramatic cliff paths, a refreshing swim in hidden coves, and a traditional seafood lunch at a local restaurant known only to locals.\n\nThis full-day adventure is led by expert local guides who know every trail, every hidden beach, and every restaurant worth visiting. A truly immersive way to experience Portugal.",
@@ -203,7 +203,7 @@
       "duration": "Full day (6-8 hours)",
       "availability": "Minho Coast, Algarve",
       "reviews": [
-        { "name": "Anna & Marco", "text": "The best day of our holiday! The hike was beautiful, the hidden beach was paradise, and the lunch was unforgettable.", "rating": 5 }
+        { "name": "Anna and Marco", "text": "The best day of our holiday! The hike was beautiful, the hidden beach was paradise, and the lunch was unforgettable.", "rating": 5 }
       ]
     },
     {

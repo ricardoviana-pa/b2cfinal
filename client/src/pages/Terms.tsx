@@ -18,18 +18,18 @@ export default function Terms() {
           <h1 className="headline-lg text-[#1A1A18] mb-8">{t('terms.title')}</h1>
           <div>
             <p className="body-lg mb-6" style={{ textTransform: 'none' }}>{t('terms.lastUpdated')}</p>
-            <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('terms.section1.title')}</h2>
-            <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('terms.section1.body')}</p>
-            <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('terms.section2.title')}</h2>
-            <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('terms.section2.body')}</p>
-            <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('terms.section3.title')}</h2>
-            <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('terms.section3.body')}</p>
-            <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('terms.section4.title')}</h2>
-            <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('terms.section4.body')}</p>
-            <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('terms.section5.title')}</h2>
-            <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('terms.section5.body')}</p>
-            <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('terms.section6.title')}</h2>
-            <p className="body-md" style={{ textTransform: 'none' }}>{t('terms.section6.body')}</p>
+            <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('terms.s1Title')}</h2>
+            <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('terms.s1Body')}</p>
+            <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('terms.s2Title')}</h2>
+            <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('terms.s2Body')}</p>
+            <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('terms.s3Title')}</h2>
+            <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('terms.s3Body')}</p>
+            <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('terms.s4Title')}</h2>
+            <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('terms.s4Body')}</p>
+            <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('terms.s5Title')}</h2>
+            <p className="body-md mb-4" style={{ textTransform: 'none' }}>{t('terms.s5Body')}</p>
+            <h2 className="headline-sm text-[#1A1A18] mb-4 mt-10">{t('terms.s6Title')}</h2>
+            <p className="body-md" style={{ textTransform: 'none' }}>{t('terms.s6Body')}</p>
           </div>
         </div>
       </section>

@@ -154,7 +154,7 @@ export default function AdminSettings() {
       {/* SEO */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">SEO & Analytics</CardTitle>
+          <CardTitle className="text-lg">SEO and Analytics</CardTitle>
           <CardDescription>Search engine and tracking configuration</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

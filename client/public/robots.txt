@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 Disallow: /api/
-Sitemap: https://www.portugalactive.com/sitemap.xml
+Sitemap: https://portugalactive.com/sitemap.xml

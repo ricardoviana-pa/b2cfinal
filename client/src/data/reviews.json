@@ -1,7 +1,7 @@
 [
   {
     "id": "r1",
-    "guestName": "James & Sarah",
+    "guestName": "James and Sarah",
     "guestCountry": "United Kingdom",
     "propertyName": "Casa do Mar",
     "rating": 5,
@@ -45,7 +45,7 @@
   },
   {
     "id": "r5",
-    "guestName": "Anna & Erik",
+    "guestName": "Anna and Erik",
     "guestCountry": "Sweden",
     "propertyName": "Casa da Praia",
     "rating": 5,
@@ -78,7 +78,7 @@
   },
   {
     "id": "r8",
-    "guestName": "David & Claire",
+    "guestName": "David and Claire",
     "guestCountry": "United Kingdom",
     "propertyName": "Monte Velho",
     "rating": 5,
@@ -122,7 +122,7 @@
   },
   {
     "id": "r12",
-    "guestName": "Henrik & Lena",
+    "guestName": "Henrik and Lena",
     "guestCountry": "Norway",
     "propertyName": "Villa Oceano",
     "rating": 5,

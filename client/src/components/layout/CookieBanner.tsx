@@ -45,7 +45,7 @@ export default function CookieBanner() {
         <button
           onClick={accept}
           className="rounded-full text-[11px] tracking-[0.12em] font-medium text-white bg-[#1A1A18] px-6 py-2.5 hover:bg-[#333330] transition-colors whitespace-nowrap flex-shrink-0"
-          style={{ minHeight: '40px', textTransform: 'uppercase' }}
+          style={{ minHeight: '44px', textTransform: 'uppercase' }}
         >
           {t('cookieBanner.accept')}
         </button>

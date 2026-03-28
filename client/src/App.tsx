@@ -33,6 +33,8 @@ const BookingDetailsPage = lazy(() => import("./pages/booking/BookingDetailsPage
 const BookingConfirmPage = lazy(() => import("./pages/booking/BookingConfirmPage"));
 const BookingConfirmationPage = lazy(() => import("./pages/booking/BookingConfirmationPage"));
 const AdminRouter = lazy(() => import("./pages/admin/index"));
+const Login = lazy(() => import("./pages/Login"));
+const Account = lazy(() => import("./pages/Account"));
 
 /* /owners-portal redirects to external management portal */
 function OwnersRedirect() {
@@ -74,6 +76,8 @@ function Router() {
         <Route path="/booking/:listingId/details" component={BookingDetailsPage} />
         <Route path="/booking/:listingId/confirm" component={BookingConfirmPage} />
         <Route path="/booking/confirmation/:id" component={BookingConfirmationPage} />
+        <Route path="/login" component={Login} />
+        <Route path="/account" component={Account} />
         <Route path="/owners-portal" component={OwnersRedirect} />
         <Route path="/legal/privacy" component={Privacy} />
         <Route path="/legal/terms" component={Terms} />

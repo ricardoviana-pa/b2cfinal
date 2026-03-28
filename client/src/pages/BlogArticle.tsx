@@ -53,7 +53,7 @@ export default function BlogArticle() {
             </span>
             <span className="flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5" />
-              {t('blogArticle.readTime', { minutes: article.readTime })}
+              {article.readTime} {t('blogArticle.minRead')}
             </span>
             <button
               onClick={() => navigator.clipboard.writeText(window.location.href)}
@@ -106,19 +106,19 @@ export default function BlogArticle() {
       {/* Contextual CTA */}
       <section className="py-12 lg:py-16" style={{ backgroundColor: '#1A1A18' }}>
         <div className="container max-w-2xl mx-auto text-center">
-          <p className="overline mb-3" style={{ color: '#C4A87C' }}>{t('blogArticle.cta.overline')}</p>
+          <p className="overline mb-3" style={{ color: '#C4A87C' }}>{t('blogArticle.ctaSubtitle')}</p>
           <h3 className="headline-md mb-4" style={{ color: '#FAFAF7' }}>
-            {t('blogArticle.cta.title')}
+            {t('blogArticle.ctaTitle')}
           </h3>
           <p className="body-md mb-6" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {t('blogArticle.cta.description')}
+            {t('blogArticle.ctaBody')}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link href="/homes" className="btn-white inline-flex items-center gap-2">
-              {t('blogArticle.cta.exploreCta')} <ArrowRight size={14} />
+              {t('blogArticle.ctaExplore')} <ArrowRight size={14} />
             </Link>
             <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="btn-ghost-light inline-flex items-center gap-2">
-              {t('blogArticle.cta.conciergeCta')}
+              {t('blogArticle.ctaConcierge')}
             </a>
           </div>
         </div>

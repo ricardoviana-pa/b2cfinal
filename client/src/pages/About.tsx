@@ -97,7 +97,7 @@ export default function About() {
       {/* Our Story */}
       <section className="section-padding">
         <div className="container max-w-3xl mx-auto">
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('about.storyLabel')}</p>
+          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('about.storyOverline')}</p>
           <h2 className="headline-lg text-[#1A1A18] mb-8">{t('about.storyTitle')}</h2>
           <p className="body-lg mb-5">
             {t('about.storyP1')}
@@ -117,7 +117,7 @@ export default function About() {
       {/* The Private Hotel Model */}
       <section className="section-padding bg-[#F5F1EB]">
         <div className="container max-w-3xl mx-auto">
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('about.modelLabel')}</p>
+          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('about.modelOverline')}</p>
           <h2 className="headline-lg text-[#1A1A18] mb-8">{t('about.modelTitle')}</h2>
           <p className="body-lg mb-5">
             {t('about.modelP1')}
@@ -129,9 +129,9 @@ export default function About() {
           {/* Stats bar */}
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible border-t border-[#E8E4DC] pt-8">
             {[
-              { stat: '50+', label: t('about.statHomes') },
+              { stat: '70+', label: t('about.statHomes') },
               { stat: '4.9/5', label: t('about.statRating') },
-              { stat: 'Since 2019', label: t('about.statOperating') },
+              { stat: '2017', label: t('about.statSince') },
             ].map(item => (
               <div key={item.label} className="text-center flex-shrink-0 w-[200px] sm:w-auto" style={{ scrollSnapAlign: 'start' }}>
                 <div className="font-display text-[2.5rem] lg:text-[3rem] text-[#1A1A18] leading-none mb-2">{item.stat}</div>
@@ -146,7 +146,7 @@ export default function About() {
       <section className="section-padding bg-white">
         <div className="container">
           <div className="max-w-3xl mx-auto mb-10">
-            <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('about.valuesLabel')}</p>
+            <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('about.valuesOverline')}</p>
             <h2 className="headline-lg text-[#1A1A18]">{t('about.valuesTitle')}</h2>
           </div>
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-auto md:px-0 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible max-w-3xl">
@@ -167,7 +167,7 @@ export default function About() {
             <div>
               <h2 className="headline-lg text-[#1A1A18] mb-3">{t('about.teamTitle')}</h2>
               <p className="body-lg max-w-2xl">
-                {t('about.teamDescription')}
+                {t('about.teamBody')}
               </p>
             </div>
             <div className="hidden md:flex gap-2 shrink-0 ml-8">

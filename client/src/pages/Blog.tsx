@@ -32,13 +32,13 @@ export default function Blog() {
   const [activeCategory, setActiveCategory] = useState<BlogCategory | 'all'>('all');
 
   const CATEGORIES = useMemo(() => [
-    { label: t('blog.categories.all'), value: 'all' as const },
-    { label: t('blog.categories.destinations'), value: 'destinations' as const },
-    { label: t('blog.categories.lifestyle'), value: 'lifestyle' as const },
-    { label: t('blog.categories.portugallActive'), value: 'portugal-active' as const },
-    { label: t('blog.categories.video'), value: 'video' as const },
-    { label: t('blog.categories.people'), value: 'people' as const },
-    { label: t('blog.categories.guides'), value: 'destinations' as const }, // maps to destinations
+    { label: t('blog.catAll'), value: 'all' as const },
+    { label: t('blog.catDestinations'), value: 'destinations' as const },
+    { label: t('blog.catLifestyle'), value: 'lifestyle' as const },
+    { label: t('blog.catPA'), value: 'portugal-active' as const },
+    { label: t('blog.catVideo'), value: 'video' as const },
+    { label: t('blog.catPeople'), value: 'people' as const },
+    { label: t('blog.catGuides'), value: 'guides' as const },
   ], [t]);
 
   const filtered = useMemo(() => {
@@ -57,10 +57,10 @@ export default function Blog() {
       {/* Hero */}
       <section className="pt-28 md:pt-36 pb-12 md:pb-16 bg-white border-b border-[#E8E4DC]">
         <div className="container">
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('blog.hero.overline')}</p>
-          <h1 className="headline-xl text-[#1A1A18] mb-4">{t('blog.hero.title')}</h1>
+          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('blog.overline')}</p>
+          <h1 className="headline-xl text-[#1A1A18] mb-4">{t('blog.title')}</h1>
           <p className="body-lg text-[#6B6860] max-w-xl">
-            {t('blog.hero.description')}
+            {t('blog.subtitle')}
           </p>
         </div>
       </section>
@@ -78,7 +78,7 @@ export default function Blog() {
                     ? 'bg-[#1A1A18] text-white'
                     : 'text-[#6B6860] hover:text-[#1A1A18] hover:bg-[#F5F1EB]'
                 }`}
-                style={{ minHeight: '40px', minWidth: 'auto' }}
+                style={{ minHeight: '44px', minWidth: 'auto' }}
               >
                 {cat.label}
               </button>
@@ -114,7 +114,7 @@ export default function Blog() {
                     </span>
                     <span className="flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5" />
-                      {t('blog.readTime', { minutes: featured.readTime })}
+                      {t('blog.minRead', { minutes: featured.readTime })}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-[12px] font-medium tracking-[0.06em] text-[#8B7355] group-hover:gap-3 transition-all">

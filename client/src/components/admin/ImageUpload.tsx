@@ -92,7 +92,7 @@ export default function ImageUpload({
                   <button
                     type="button"
                     onClick={() => moveImage(i, i - 1)}
-                    className="h-6 w-6 rounded bg-white/90 text-black flex items-center justify-center text-xs hover:bg-white"
+                    className="h-6 w-6 rounded bg-white/90 text-[#1A1A18] flex items-center justify-center text-xs hover:bg-white"
                   >
                     ←
                   </button>
@@ -108,7 +108,7 @@ export default function ImageUpload({
                   <button
                     type="button"
                     onClick={() => moveImage(i, i + 1)}
-                    className="h-6 w-6 rounded bg-white/90 text-black flex items-center justify-center text-xs hover:bg-white"
+                    className="h-6 w-6 rounded bg-white/90 text-[#1A1A18] flex items-center justify-center text-xs hover:bg-white"
                   >
                     →
                   </button>
