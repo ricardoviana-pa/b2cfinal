@@ -39,6 +39,8 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
 
+  app.set("trust proxy", true);
+
   app.use(helmet({
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
@@ -79,7 +81,7 @@ async function startServer() {
     try {
       const { getPropertiesForSite } = await import("../services/properties-store");
       const properties = await getPropertiesForSite();
-      const base = "https://www.portugalactive.com";
+      const base = process.env.SITE_URL || "https://www.portugalactive.com";
       const now = new Date().toISOString().split("T")[0];
 
       const staticPages = [
