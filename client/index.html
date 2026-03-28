@@ -61,6 +61,20 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Umami analytics: add when configured (VITE_ANALYTICS_ENDPOINT + VITE_ANALYTICS_WEBSITE_ID in .env) -->
+    <script>
+      // GA4: load if VITE_GA4_ID is set at build time
+      (function(){
+        var id = '__VITE_GA4_ID__';
+        if (!id || id.indexOf('VITE_') === 0) return;
+        var s = document.createElement('script');
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+        s.async = true;
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', id);
+      })();
+    </script>
   </body>
 </html>

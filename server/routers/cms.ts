@@ -300,6 +300,12 @@ export const faqsRouter = router({
 /* ================================================================
    SITE SETTINGS
    ================================================================ */
+const PUBLIC_SETTING_KEYS = new Set([
+  "site_name", "site_tagline", "contact_email", "contact_phone",
+  "social_instagram", "social_facebook", "social_youtube", "social_linkedin",
+  "google_analytics_id", "currency", "default_language",
+]);
+
 export const settingsRouter = router({
   list: adminProcedure
     .input(z.object({ category: z.string().optional() }).optional())
@@ -307,7 +313,12 @@ export const settingsRouter = router({
 
   get: publicProcedure
     .input(z.object({ key: z.string() }))
-    .query(({ input }) => db.getSetting(input.key)),
+    .query(({ input, ctx }) => {
+      if (ctx.user?.role !== "admin" && !PUBLIC_SETTING_KEYS.has(input.key)) {
+        return null;
+      }
+      return db.getSetting(input.key);
+    }),
 
   upsert: adminProcedure
     .input(z.object({

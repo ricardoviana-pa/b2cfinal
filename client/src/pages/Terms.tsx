@@ -3,11 +3,13 @@
  * Design: Le Collectionist-inspired. Clean legal page.
  */
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
 export default function Terms() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'Terms of Service' });
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <Header />

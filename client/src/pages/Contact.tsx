@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Phone, Mail, MapPin, MessageCircle, Calendar, ChevronDown, Check, ArrowRight, Send, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { IMAGES } from '@/lib/images';
 import Header from '@/components/layout/Header';
 import PhoneInput from '@/components/booking/PhoneInput';
@@ -90,6 +91,7 @@ const CONTACT_CHANNELS = [
 
 export default function Contact() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'Contact', description: 'Get in touch with our concierge team. We typically respond within 2 hours.' });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');

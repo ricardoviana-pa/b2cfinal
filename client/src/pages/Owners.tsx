@@ -5,6 +5,7 @@
 
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { ArrowRight, Check, ExternalLink } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -12,6 +13,7 @@ import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 
 export default function Owners() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'For Owners', description: 'Partner with Portugal Active and let us manage your property to hotel standards.' });
   const [submitted, setSubmitted] = useState(false);
 
   const WHAT_WE_DO = useMemo(() => [

@@ -2,11 +2,13 @@
  * Cookie Policy — Portugal Active
  */
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
 export default function Cookies() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'Cookie Policy' });
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <Header variant="solid" />

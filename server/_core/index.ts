@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
@@ -42,6 +43,16 @@ async function startServer() {
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
   }));
+
+  const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false, message: { error: "Too many login attempts. Please try again later." } });
+  const apiLimiter = rateLimit({ windowMs: 60 * 1000, max: 60, standardHeaders: true, legacyHeaders: false });
+  const leadLimiter = rateLimit({ windowMs: 60 * 1000, max: 10, standardHeaders: true, legacyHeaders: false, message: { error: "Too many submissions. Please wait a moment." } });
+
+  app.use("/api/auth/google", authLimiter);
+  app.use("/api/auth/dev-login", authLimiter);
+  app.use("/api/reservations", apiLimiter);
+  app.use("/api/trpc/leads.create", leadLimiter);
+  app.use("/api/trpc/booking", apiLimiter);
 
   // Guesty webhook needs raw body for signature validation
   registerGuestyWebhookRoute(app);

@@ -5,11 +5,13 @@
  */
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
 export default function NotFound() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'Page Not Found' });
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FAFAF7' }}>
       <Header />

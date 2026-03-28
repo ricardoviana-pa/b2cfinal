@@ -7,6 +7,7 @@ import { useRef, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { IMAGES } from '@/lib/images';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -53,6 +54,7 @@ const TEAM = [
 
 export default function About() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'About Us', description: 'Meet the team behind Portugal Active. Since 2017, delivering hotel-standard stays in handpicked private homes across Portugal.' });
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const values = useMemo(() => [

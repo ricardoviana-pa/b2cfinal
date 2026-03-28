@@ -6,6 +6,7 @@
 import { useState } from 'react';
 import { Plus, MessageCircle, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import productsData from '@/data/products.json';
 import type { Product } from '@/lib/types';
 import Header from '@/components/layout/Header';
@@ -130,6 +131,7 @@ function AdventureCard({ product, onAdd }: AdventureCardProps) {
 
 export default function Experiences() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'Services', description: 'Concierge services and curated experiences to elevate your stay in Portugal.' });
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
 
   const gastronomyProducts = GASTRONOMY_SLUGS.map(getService).filter(Boolean) as Product[];

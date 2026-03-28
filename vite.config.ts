@@ -153,6 +153,9 @@ function vitePluginManusDebugCollector(): Plugin {
 const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
 
 export default defineConfig({
+  define: {
+    '__VITE_GA4_ID__': JSON.stringify(process.env.VITE_GA4_ID || ''),
+  },
   plugins,
   resolve: {
     alias: {

@@ -7,12 +7,14 @@ import { useMemo } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 
 export default function Events() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'Events', description: 'Host your next event in one of our exclusive Portuguese venues.' });
 
   const EVENT_TYPES = useMemo(() => [
     {

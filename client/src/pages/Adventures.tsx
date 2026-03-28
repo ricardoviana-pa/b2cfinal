@@ -5,6 +5,7 @@
 
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { Plus, MessageCircle, MapPin } from 'lucide-react';
 import productsData from '@/data/products.json';
 import type { Product, DestinationSlug } from '@/lib/types';
@@ -18,6 +19,7 @@ const adventures = allProducts.filter(p => p.type === 'adventure' && p.isActive)
 
 export default function Adventures() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'Adventures', description: "Outdoor activities and guided adventures across Portugal's most stunning landscapes." });
   const [destination, setDestination] = useState('all');
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
 

@@ -5,6 +5,7 @@
 
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { Link } from 'wouter';
 import { Clock, ArrowRight, Calendar } from 'lucide-react';
 import Header from '@/components/layout/Header';
@@ -29,6 +30,7 @@ function getArticleImage(article: BlogArticle): string {
 
 export default function Blog() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'Journal', description: 'Stories, guides and insider tips from Portugal Active.' });
   const [activeCategory, setActiveCategory] = useState<BlogCategory | 'all'>('all');
 
   const CATEGORIES = useMemo(() => [

@@ -6,6 +6,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { SlidersHorizontal, X, Search, Calendar, Users, Minus, Plus } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
@@ -18,6 +19,7 @@ const BEDROOM_OPTIONS = ['1-2', '3-4', '5-6', '7+'];
 
 export default function Homes() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'Properties', description: 'Browse our portfolio of private homes across Portugal, each operated to hotel standards.' });
   const [, navigate] = useLocation();
 
   const OCCASIONS = useMemo(

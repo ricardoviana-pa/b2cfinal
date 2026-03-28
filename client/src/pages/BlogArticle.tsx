@@ -4,6 +4,7 @@
 
 import { useParams, Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { ArrowLeft, Clock, Calendar, Share2, ArrowRight } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -16,6 +17,7 @@ export default function BlogArticle() {
   const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const article = articles.find(a => a.slug === slug);
+  usePageMeta({ title: article?.title });
 
   if (!article) {
     return (

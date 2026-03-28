@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { useLocation } from 'wouter';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -7,6 +8,7 @@ import { Shield, Gift, MapPin, Star } from 'lucide-react';
 
 export default function Login() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'Sign In', description: 'Sign in to your Portugal Active account.' });
   const { isAuthenticated, loading } = useAuth();
   const [, navigate] = useLocation();
 

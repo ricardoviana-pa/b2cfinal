@@ -93,6 +93,7 @@ function PaymentFormInner({
     if (!card) {
       setError(t('payment.errors.cardNotReady'));
       setLoading(false);
+      submittedRef.current = false;
       return;
     }
 
@@ -104,12 +105,14 @@ function PaymentFormInner({
     if (stripeError) {
       setError(stripeError.message || t('payment.errors.cardValidationFailed'));
       setLoading(false);
+      submittedRef.current = false;
       return;
     }
 
     if (!paymentMethod?.id) {
       setError(t('payment.errors.couldNotCreatePaymentMethod'));
       setLoading(false);
+      submittedRef.current = false;
       return;
     }
 

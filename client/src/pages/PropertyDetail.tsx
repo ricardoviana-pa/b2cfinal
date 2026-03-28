@@ -6,6 +6,7 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { useParams, Link, useSearch } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck,
   Sparkles, Star, Clock, UtensilsCrossed, Headphones, ExternalLink, Plus, X,
@@ -83,6 +84,12 @@ function formatDescription(desc: unknown): string[] {
 
 export default function PropertyDetail() {
   const { t } = useTranslation();
+  const { slug } = useParams<{ slug: string }>();
+  const { data: property, isLoading, error } = trpc.properties.getBySlugForSite.useQuery(
+    { slug: slug ?? '' },
+    { enabled: !!slug }
+  );
+  usePageMeta({ title: property?.name, description: property?.tagline || property?.description?.slice(0, 160) });
   const whatsIncluded = useMemo(
     () => [
       { icon: Sparkles, text: t('propertyDetail.included1') },
@@ -98,16 +105,11 @@ export default function PropertyDetail() {
     ],
     [t]
   );
-  const { slug } = useParams<{ slug: string }>();
   const searchString = useSearch();
   const searchParams = useMemo(() => new URLSearchParams(searchString), [searchString]);
   const initialCheckin = searchParams.get('checkin') || '';
   const initialCheckout = searchParams.get('checkout') || '';
   const initialGuests = Number(searchParams.get('guests')) || 0;
-  const { data: property, isLoading, error } = trpc.properties.getBySlugForSite.useQuery(
-    { slug: slug ?? '' },
-    { enabled: !!slug }
-  );
 
   const [currentImage, setCurrentImage] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);

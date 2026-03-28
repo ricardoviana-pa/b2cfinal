@@ -7,6 +7,7 @@ import { useState, useMemo } from 'react';
 import { ChevronDown, ArrowRight } from 'lucide-react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -41,6 +42,7 @@ function FAQItem({ item, id }: { item: { q: string; a: string }; id?: string }) 
 
 export default function FAQ() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'FAQ', description: 'Frequently asked questions about booking, services, and your stay.' });
 
   const FAQ_ITEMS = useMemo(() => [
     {

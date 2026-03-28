@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { useLocation } from 'wouter';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/_core/hooks/useAuth';
@@ -26,6 +27,7 @@ function TierBadge({ tier }: { tier: string }) {
 
 export default function Account() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'My Account', description: 'Manage your trips, loyalty points, and profile.' });
   const { user, loading: authLoading, logout, isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');

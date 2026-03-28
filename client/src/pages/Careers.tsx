@@ -3,12 +3,14 @@
    ========================================================================== */
 
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 
 export default function Careers() {
   const { t } = useTranslation();
+  usePageMeta({ title: 'Careers', description: 'Join the Portugal Active team.' });
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <Header variant="solid" />

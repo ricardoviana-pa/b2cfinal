@@ -1,9 +1,12 @@
 import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import type { Express, Request, Response } from "express";
+import crypto from "crypto";
 import axios from "axios";
 import * as db from "../db";
 import { getSessionCookieOptions } from "./cookies";
 import { sdk } from "./sdk";
+
+const pendingStates = new Map<string, { returnPath: string; expires: number }>();
 
 const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
@@ -31,7 +34,8 @@ export function registerGoogleAuthRoutes(app: Express) {
 
     const redirectUri = getRedirectUri(req);
     const returnPath = (req.query.returnTo as string) || "/account";
-    const state = Buffer.from(returnPath).toString("base64");
+    const state = crypto.randomBytes(32).toString("hex");
+    pendingStates.set(state, { returnPath, expires: Date.now() + 10 * 60 * 1000 });
 
     const params = new URLSearchParams({
       client_id: clientId!,
@@ -67,6 +71,14 @@ export function registerGoogleAuthRoutes(app: Express) {
       res.status(400).json({ error: "Authorization code missing" });
       return;
     }
+
+    const stateData = pendingStates.get(state);
+    if (!stateData || stateData.expires < Date.now()) {
+      pendingStates.delete(state);
+      res.redirect("/login?error=invalid_state");
+      return;
+    }
+    pendingStates.delete(state);
 
     try {
       const redirectUri = getRedirectUri(req);
@@ -111,12 +123,7 @@ export function registerGoogleAuthRoutes(app: Express) {
       const cookieOptions = getSessionCookieOptions(req);
       res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
 
-      let returnPath = "/account";
-      if (state) {
-        try {
-          returnPath = Buffer.from(state, "base64").toString("utf-8");
-        } catch { /* use default */ }
-      }
+      const returnPath = stateData.returnPath || "/account";
       const safePath = returnPath.startsWith("/") ? returnPath : "/account";
 
       console.log(`[GoogleAuth] Login successful for ${email}, redirecting to: ${safePath}`);
