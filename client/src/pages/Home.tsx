@@ -220,6 +220,7 @@ export default function Home() {
             src={IMAGES.heroMain}
             alt={t('home.heroAlt')}
             className="w-full h-full object-cover"
+            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/30 to-transparent" />
         </div>

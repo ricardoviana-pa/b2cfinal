@@ -351,7 +351,10 @@
     "adventuresSubtitle": "Experiences available in {{destination}}",
     "custom": "Custom",
     "add": "Add",
-    "closeGallery": "Close gallery"
+    "closeGallery": "Close gallery",
+    "cleaningFeeRule": "Frais de ménage : €{{fee}}",
+    "minNights_one": "Séjour minimum de {{count}} nuit",
+    "minNights_other": "Séjour minimum de {{count}} nuits"
   },
   "priceBreakdown": {
     "title": "Price summary",

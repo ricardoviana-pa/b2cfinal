@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../_core/trpc";
 import * as db from "../db";
+import { sendContactConfirmation, sendContactNotification, sendNewsletterWelcome } from "../services/email";
 
 /* ================================================================
    DESTINATIONS
@@ -245,7 +246,20 @@ export const leadsRouter = router({
 
   create: publicProcedure
     .input(leadInput)
-    .mutation(({ input }) => db.createLead(input)),
+    .mutation(async ({ input }) => {
+      const lead = await db.createLead(input);
+
+      if (input.source === 'contact-form' && input.name) {
+        const subject = input.metadata?.subject || 'general';
+        const messageBody = input.message?.replace(/^\[.*?\]\s*/, '') || '';
+        sendContactConfirmation(input.email, input.name).catch(e => console.error("[Email] Contact confirmation failed:", e));
+        sendContactNotification({ name: input.name, email: input.email, phone: input.phone, subject, message: messageBody }).catch(e => console.error("[Email] Team notification failed:", e));
+      } else if (input.source.startsWith('newsletter')) {
+        sendNewsletterWelcome(input.email).catch(e => console.error("[Email] Newsletter welcome failed:", e));
+      }
+
+      return lead;
+    }),
 
   update: adminProcedure
     .input(z.object({

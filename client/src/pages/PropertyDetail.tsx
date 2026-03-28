@@ -90,6 +90,49 @@ export default function PropertyDetail() {
     { enabled: !!slug }
   );
   usePageMeta({ title: property?.name, description: property?.tagline || property?.description?.slice(0, 160) });
+
+  useEffect(() => {
+    if (!property) return;
+    const dest = destinations.find(d => d.slug === property.destination);
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "VacationRental",
+      "name": property.name,
+      "description": property.tagline || property.description?.slice(0, 300),
+      "url": `https://www.portugalactive.com/homes/${property.slug}`,
+      "image": property.images?.slice(0, 5),
+      "numberOfBedrooms": property.bedrooms,
+      "numberOfBathroomsTotal": property.bathrooms,
+      "occupancy": { "@type": "QuantitativeValue", "maxValue": property.maxGuests },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": property.locality || dest?.name,
+        "addressCountry": "PT",
+      },
+      ...(property.priceFrom > 0 && {
+        "priceRange": `From €${property.priceFrom} per night`,
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "EUR",
+          "price": property.priceFrom,
+          "availability": "https://schema.org/InStock",
+        },
+      }),
+      "provider": {
+        "@type": "Organization",
+        "name": "Portugal Active",
+        "url": "https://www.portugalactive.com",
+      },
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(jsonLd);
+    script.id = "property-jsonld";
+    document.querySelector("#property-jsonld")?.remove();
+    document.head.appendChild(script);
+    return () => { document.querySelector("#property-jsonld")?.remove(); };
+  }, [property]);
+
   const whatsIncluded = useMemo(
     () => [
       { icon: Sparkles, text: t('propertyDetail.included1') },

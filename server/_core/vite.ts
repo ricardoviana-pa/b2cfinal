@@ -58,10 +58,26 @@ export function serveStatic(app: Express) {
     );
   }
 
-  app.use(express.static(distPath));
+  app.use("/assets", express.static(path.join(distPath, "assets"), {
+    maxAge: "1y",
+    immutable: true,
+  }));
 
-  // fall through to index.html if the file doesn't exist
-  app.use("*", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
+  app.use(express.static(distPath, {
+    maxAge: "1h",
+  }));
+
+  const KNOWN_ROUTES = new Set([
+    "/", "/homes", "/about", "/contact", "/services", "/adventures",
+    "/events", "/blog", "/faq", "/careers", "/owners", "/login", "/account",
+    "/legal/privacy", "/legal/terms", "/legal/cookies", "/admin", "/404",
+  ]);
+  const KNOWN_PREFIXES = ["/homes/", "/destinations/", "/blog/", "/admin/", "/booking/"];
+
+  app.use("*", (req, res) => {
+    const p = req.originalUrl.split("?")[0];
+    const isKnown = KNOWN_ROUTES.has(p) || KNOWN_PREFIXES.some(pre => p.startsWith(pre));
+    const status = isKnown ? 200 : 404;
+    res.status(status).sendFile(path.resolve(distPath, "index.html"));
   });
 }

@@ -351,7 +351,10 @@
     "adventuresSubtitle": "Experiences available in {{destination}}",
     "custom": "Custom",
     "add": "Add",
-    "closeGallery": "Close gallery"
+    "closeGallery": "Close gallery",
+    "cleaningFeeRule": "Siivousmaksu: €{{fee}}",
+    "minNights_one": "Vähintään {{count}} yö",
+    "minNights_other": "Vähintään {{count}} yötä"
   },
   "priceBreakdown": {
     "title": "Price summary",

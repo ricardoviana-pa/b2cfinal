@@ -351,7 +351,10 @@
     "adventuresSubtitle": "Experiences available in {{destination}}",
     "custom": "Custom",
     "add": "Add",
-    "closeGallery": "Close gallery"
+    "closeGallery": "Close gallery",
+    "cleaningFeeRule": "Städavgift: €{{fee}}",
+    "minNights_one": "Minst {{count}} natt",
+    "minNights_other": "Minst {{count}} nätter"
   },
   "priceBreakdown": {
     "title": "Price summary",

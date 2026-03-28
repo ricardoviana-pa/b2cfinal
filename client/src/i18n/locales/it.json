@@ -351,7 +351,10 @@
     "adventuresSubtitle": "Experiences available in {{destination}}",
     "custom": "Custom",
     "add": "Add",
-    "closeGallery": "Close gallery"
+    "closeGallery": "Close gallery",
+    "cleaningFeeRule": "Tassa di pulizia: €{{fee}}",
+    "minNights_one": "Soggiorno minimo di {{count}} notte",
+    "minNights_other": "Soggiorno minimo di {{count}} notti"
   },
   "priceBreakdown": {
     "title": "Price summary",
