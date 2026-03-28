@@ -1,0 +1,140 @@
+{
+  "authors": [
+    {
+      "id": "ba1",
+      "name": "Portugal Active Team",
+      "photo": "",
+      "bio": "The team behind Portugal Active — sharing local knowledge, property stories, and travel inspiration.",
+      "role": "Editorial Team"
+    },
+    {
+      "id": "ba2",
+      "name": "João Mendes",
+      "photo": "",
+      "bio": "Co-founder of Portugal Active. Born in the Minho, passionate about sharing Portugal's hidden corners.",
+      "role": "Co-Founder"
+    }
+  ],
+  "articles": [
+    {
+      "id": "b1",
+      "slug": "why-minho-coast-is-portugals-best-kept-secret",
+      "title": "Why the Minho Coast Is Portugal's Best-Kept Secret",
+      "category": "destinations",
+      "destinationTag": "minho-coast",
+      "author": {
+        "id": "ba2",
+        "name": "João Mendes",
+        "photo": "",
+        "bio": "Co-founder of Portugal Active. Born in the Minho, passionate about sharing Portugal's hidden corners.",
+        "role": "Co-Founder"
+      },
+      "featuredImage": "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1200&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1200&q=80",
+      "content": "",
+      "excerpt": "Ancient forests, wild beaches, and Vinho Verde vineyards — the Minho Coast is the Portugal most visitors never discover.",
+      "publishDate": "2025-09-15",
+      "status": "published",
+      "isFeatured": true,
+      "seoTitle": "Why the Minho Coast Is Portugal's Best-Kept Secret",
+      "seoDescription": "Discover the Minho Coast: ancient forests, wild Atlantic beaches, and Vinho Verde vineyards.",
+      "readTime": 8
+    },
+    {
+      "id": "b2",
+      "slug": "douro-valley-wine-guide",
+      "title": "A Wine Lover's Guide to the Douro Valley",
+      "category": "destinations",
+      "destinationTag": "porto-douro",
+      "author": {
+        "id": "ba1",
+        "name": "Portugal Active Team",
+        "photo": "",
+        "bio": "The team behind Portugal Active — sharing local knowledge, property stories, and travel inspiration.",
+        "role": "Editorial Team"
+      },
+      "featuredImage": "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=1200&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=1200&q=80",
+      "content": "",
+      "excerpt": "From port cellars to table wine pioneers — everything you need to know about tasting in the Douro.",
+      "publishDate": "2025-08-20",
+      "status": "published",
+      "isFeatured": false,
+      "seoTitle": "Douro Valley Wine Guide",
+      "seoDescription": "Complete guide to wine tasting in the Douro Valley.",
+      "readTime": 12
+    },
+    {
+      "id": "b3",
+      "slug": "slow-living-in-portugal",
+      "title": "The Art of Slow Living: Why Portugal Gets It Right",
+      "category": "lifestyle",
+      "destinationTag": null,
+      "author": {
+        "id": "ba1",
+        "name": "Portugal Active Team",
+        "photo": "",
+        "bio": "The team behind Portugal Active — sharing local knowledge, property stories, and travel inspiration.",
+        "role": "Editorial Team"
+      },
+      "featuredImage": "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=1200&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=1200&q=80",
+      "content": "",
+      "excerpt": "In a world of hustle culture, Portugal offers a different rhythm. Here's how to embrace it.",
+      "publishDate": "2025-07-10",
+      "status": "published",
+      "isFeatured": false,
+      "seoTitle": "Slow Living in Portugal",
+      "seoDescription": "Why Portugal is the perfect destination for slow living.",
+      "readTime": 6
+    },
+    {
+      "id": "b4",
+      "slug": "behind-the-scenes-property-preparation",
+      "title": "Behind the Scenes: How We Prepare Every Property",
+      "category": "portugal-active",
+      "destinationTag": null,
+      "author": {
+        "id": "ba2",
+        "name": "João Mendes",
+        "photo": "",
+        "bio": "Co-founder of Portugal Active. Born in the Minho, passionate about sharing Portugal's hidden corners.",
+        "role": "Co-Founder"
+      },
+      "featuredImage": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
+      "content": "",
+      "excerpt": "A look inside our 47-point preparation checklist and what hotel-standard operations actually means.",
+      "publishDate": "2025-06-05",
+      "status": "published",
+      "isFeatured": false,
+      "seoTitle": "Behind the Scenes: Property Preparation",
+      "seoDescription": "How Portugal Active prepares every property to hotel standards.",
+      "readTime": 5
+    },
+    {
+      "id": "b5",
+      "slug": "algarve-beyond-the-resorts",
+      "title": "Algarve Beyond the Resorts: A Local's Guide",
+      "category": "destinations",
+      "destinationTag": "algarve",
+      "author": {
+        "id": "ba2",
+        "name": "João Mendes",
+        "photo": "",
+        "bio": "Co-founder of Portugal Active. Born in the Minho, passionate about sharing Portugal's hidden corners.",
+        "role": "Co-Founder"
+      },
+      "featuredImage": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80",
+      "content": "",
+      "excerpt": "The western coast, the Monchique hills, the fishing villages — the Algarve the guidebooks miss.",
+      "publishDate": "2025-09-01",
+      "status": "published",
+      "isFeatured": false,
+      "seoTitle": "Algarve Beyond the Resorts",
+      "seoDescription": "Discover the Algarve beyond the tourist resorts.",
+      "readTime": 10
+    }
+  ]
+}

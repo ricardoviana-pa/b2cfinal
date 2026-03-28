@@ -1,0 +1,251 @@
+[
+  {
+    "id": "d1",
+    "slug": "minho",
+    "name": "Minho Coast",
+    "tagline": "Where the Atlantic meets ancient forests and vineyards.",
+    "description": "Where the Atlantic meets ancient forests and vineyards.",
+    "coverImage": "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/destination-minho-7ZVrmAaNov33qs7DkpNaKc.webp",
+    "gallery": [],
+    "whyDescription": "Where Portugal begins and where most visitors never reach. Ancient forests meeting wild Atlantic beaches. Vinho Verde vineyards covering every hillside. Granite villages with Romanesque churches and family tascas serving dishes unchanged for generations.\n\nThe Minho is Portugal's greenest, most authentic region. The seafood is an hour old. The wine was made by someone you can visit. The beaches are empty on a Tuesday in July. This is not undiscovered. It is simply un touristed. And that is exactly the point.",
+    "highlights": [
+      "Wild Atlantic coastline with deserted beaches",
+      "Vinho Verde wine country — the world's only green wine region",
+      "Peneda-Gerês National Park — pristine wilderness",
+      "Medieval towns and Romanesque architecture",
+      "Some of the best seafood in Portugal"
+    ],
+    "propertyCount": 7,
+    "comingSoon": false,
+    "seoTitle": "Minho — Private Homes in Northern Portugal",
+    "seoDescription": "Discover the Minho: ancient forests, wild beaches, Vinho Verde vineyards. Private homes operated to hotel standards.",
+    "howToGetHere": "Fly into Porto Airport (OPO), 45 minutes north by car. Vigo Airport (VGO) in Spain is 1 hour south. We arrange airport transfers for all guests.",
+    "bestTimeToVisit": "June to September for beach and outdoor adventures. May and October for hiking, wine harvest, and fewer crowds. Mild and green year round.",
+    "whatToExpect": "Lush green landscapes, wild Atlantic beaches, traditional granite villages, and some of the best seafood in Portugal. A pace of life the south lost decades ago.",
+    "insiderRecommendations": [
+      {
+        "name": "Tasca do Celso",
+        "category": "Restaurant",
+        "description": "Ponte de Lima. No menu. The owner brings what is fresh. Book the terrace."
+      },
+      {
+        "name": "Praia do Afife",
+        "category": "Beach",
+        "description": "Between Viana and Caminha. Wild, uncrowded, with a beach bar that grills sardines to order."
+      },
+      {
+        "name": "Quinta de Soalheiro",
+        "category": "Wine",
+        "description": "The best Alvarinho producer in Monção. Private tastings with the family who started it all."
+      },
+      {
+        "name": "Trilho dos Moinhos",
+        "category": "Hike",
+        "description": "Watermill trail in Peneda Gerês. 8km through ancient oak forest with natural swimming pools."
+      }
+    ],
+    "status": "active",
+    "whyOverline": "WHY MINHO"
+  },
+  {
+    "id": "d2",
+    "slug": "porto",
+    "name": "Porto & Douro",
+    "tagline": "The city, the river, the wine.",
+    "description": "The city, the river, the wine.",
+    "coverImage": "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/destination-porto-cjrXcH98hgUxZe4zNQBukn.webp",
+    "gallery": [],
+    "whyDescription": "The city that gave Portugal its name. Port wine cellars lining the riverbank. Michelin starred restaurants in converted warehouses. A creative energy that makes Lisbon feel mainstream. Porto is compact, walkable, and endlessly rewarding for those who take the time to explore beyond the postcard views.\n\nBeyond the city, the Douro Valley unfolds in terraced vineyards classified as a UNESCO World Heritage landscape. This is where port wine comes from, but it is also where Portugal's most exciting table wines are being made. Visit a quinta, taste with the winemaker, and understand why this region is considered one of Europe's most beautiful.",
+    "highlights": [
+      "UNESCO World Heritage city centre",
+      "Port wine cellars and Douro Valley vineyards",
+      "Michelin-starred dining scene",
+      "Ribeira waterfront and iconic bridges",
+      "Gateway to the Douro wine region"
+    ],
+    "propertyCount": 5,
+    "comingSoon": false,
+    "seoTitle": "Porto — Private Homes in Porto & Douro Valley",
+    "seoDescription": "Discover Porto: historic city, port wine, Douro Valley. Private homes operated to hotel standards.",
+    "howToGetHere": "Fly into Porto Airport (OPO), 20 minutes from city centre by metro or taxi. High speed train from Lisbon takes 2h45.",
+    "bestTimeToVisit": "May to October for warm weather. September for wine harvest in the Douro. Year round for the city.",
+    "whatToExpect": "Compact, walkable city with world class food, port wine culture, and creative energy. The Douro Valley is 90 minutes east by car.",
+    "insiderRecommendations": [
+      {
+        "name": "The Yeatman",
+        "category": "Restaurant",
+        "description": "Two Michelin stars overlooking the Douro. The tasting menu with wine pairing is extraordinary."
+      },
+      {
+        "name": "Livraria Lello",
+        "category": "Culture",
+        "description": "Go at opening time to avoid crowds. The staircase alone is worth the visit."
+      },
+      {
+        "name": "Quinta do Vallado",
+        "category": "Wine",
+        "description": "One of the oldest estates in the Douro. Stay overnight and wake up to terraced vineyards."
+      },
+      {
+        "name": "Foz do Douro",
+        "category": "Walk",
+        "description": "Sunset walk along the ocean promenade. End at Praia do Carneiro for a drink at Tavi."
+      }
+    ],
+    "status": "active",
+    "whyOverline": "WHY PORTO & DOURO"
+  },
+  {
+    "id": "d3",
+    "slug": "lisbon",
+    "name": "Lisbon",
+    "tagline": "Golden light, coastal charm, and timeless elegance.",
+    "description": "Golden light, coastal charm, and timeless elegance.",
+    "coverImage": "https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=1600&q=80",
+    "gallery": [],
+    "whyDescription": "Europe's sunniest capital, where cobblestone hills meet the Atlantic. Lisbon is a city of contrasts — ancient trams climbing through Alfama's narrow streets while Michelin-starred chefs reinvent Portuguese cuisine in converted palaces. The coastline stretches from the surf breaks of Ericeira to the glamour of Cascais, with Sintra's fairy-tale palaces just 30 minutes away.",
+    "highlights": [
+      "Europe's sunniest capital with 300 days of sun",
+      "Cascais and Sintra — coastal glamour meets fairy-tale palaces",
+      "World-class gastronomy and wine scene",
+      "Rich maritime history and cultural heritage",
+      "Surf, sailing, and beach culture year-round"
+    ],
+    "propertyCount": 0,
+    "comingSoon": false,
+    "seoTitle": "Lisbon — Private Homes in Lisbon & Coast",
+    "seoDescription": "Discover Lisbon: golden light, coastal charm, timeless elegance. Private homes coming soon.",
+    "howToGetHere": "Fly into Lisbon Airport (LIS), 30 minutes from the city centre. Cascais and Sintra are 30-40 minutes west by car or train.",
+    "bestTimeToVisit": "April to June and September to October for perfect weather. July-August is peak season with higher prices.",
+    "whatToExpect": "Golden light, pastel-coloured buildings, world-class pastéis de nata, and a coastline that stretches from surf breaks to glamorous beach clubs.",
+    "insiderRecommendations": [
+      {
+        "name": "Belcanto",
+        "category": "Restaurant",
+        "description": "José Avillez's two-Michelin-star flagship. Modern Portuguese cuisine at its absolute best."
+      },
+      {
+        "name": "Praia da Ursa",
+        "category": "Beach",
+        "description": "Hidden beach near Sintra. A steep 20-minute hike down, but you'll have dramatic rock formations almost to yourself."
+      },
+      {
+        "name": "Feira da Ladra",
+        "category": "Market",
+        "description": "Tuesday and Saturday flea market in Alfama. Arrive early for the best vintage finds."
+      },
+      {
+        "name": "Palácio da Pena",
+        "category": "Culture",
+        "description": "Sintra's colourful hilltop palace. Go at 9am opening to beat the crowds."
+      }
+    ],
+    "status": "active"
+  },
+  {
+    "id": "d4",
+    "slug": "alentejo",
+    "name": "Alentejo",
+    "tagline": "Rolling plains, cork oaks, and the slowest pace in Europe.",
+    "description": "Rolling plains, cork oaks, and the slowest pace in Europe.",
+    "coverImage": "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1600&q=80",
+    "gallery": [],
+    "whyDescription": "Portugal's vast interior, where time moves differently. The Alentejo is a land of golden wheat fields, ancient cork oak forests, and whitewashed villages that haven't changed in centuries. The coastline — the Rota Vicentina — is one of Europe's last truly wild stretches of shore, with dramatic cliffs and empty beaches.",
+    "highlights": [
+      "Rota Vicentina — Europe's wildest coastline",
+      "Cork oak forests and golden wheat plains",
+      "Dark sky reserves — some of Europe's best stargazing",
+      "Whitewashed medieval villages",
+      "Emerging wine region rivalling the Douro"
+    ],
+    "propertyCount": 0,
+    "comingSoon": false,
+    "seoTitle": "Alentejo — Private Homes in Alentejo",
+    "seoDescription": "Discover the Alentejo: rolling plains, cork oaks, wild coastline. Private homes coming soon.",
+    "howToGetHere": "Fly into Lisbon (LIS), then 1.5 hours south by car. Alternatively, Beja Airport for the interior. The Rota Vicentina coast is 2-2.5 hours from Lisbon.",
+    "bestTimeToVisit": "April to June for wildflowers and mild weather. September-October for wine harvest. The coast is beautiful year-round.",
+    "whatToExpect": "Vast open landscapes, profound silence, dark skies full of stars, and a culinary tradition rooted in simplicity and quality ingredients.",
+    "insiderRecommendations": [
+      {
+        "name": "Herdade do Esporão",
+        "category": "Wine",
+        "description": "One of the Alentejo's finest estates. Book the extended tasting with lunch at their restaurant."
+      },
+      {
+        "name": "Praia do Malhão",
+        "category": "Beach",
+        "description": "Wild beach on the Vicentine Coast. No facilities, no crowds — just dramatic cliffs and Atlantic waves."
+      },
+      {
+        "name": "Monsaraz",
+        "category": "Village",
+        "description": "Hilltop medieval village overlooking the Alqueva reservoir. Stay for sunset — the light is extraordinary."
+      },
+      {
+        "name": "Rota Vicentina",
+        "category": "Hike",
+        "description": "The Fishermen's Trail section from Porto Covo to Vila Nova de Milfontes. 4 days of coastal walking perfection."
+      }
+    ],
+    "status": "active"
+  },
+  {
+    "id": "d5",
+    "slug": "algarve",
+    "name": "Algarve",
+    "tagline": "Golden cliffs, private pools, and 300 days of sun.",
+    "description": "Clifftop villas, private pools, and 300 days of sun.",
+    "coverImage": "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/destination-algarve-3kQynd6tpdsGxReK7b8dAs.webp",
+    "gallery": [],
+    "whyDescription": "Most people know the Algarve for its resorts, golf courses, and tourist beaches. We know it for what lies beyond: the wild western coast where surfers ride empty breaks, the Monchique hills where cork oaks shade hidden trails, the fishing villages where the catch arrives twice a day and the restaurants have six tables.\n\nThe Algarve we operate in is the one that rewards curiosity. Year round sunshine, dramatic coastline, and a landscape that changes completely from east to west. Our homes and concierge team focus on the Algarve that most visitors miss entirely.\n\nOur Algarve collection is growing. Contact our concierge for the latest availability.",
+    "highlights": [
+      "300+ days of sunshine per year",
+      "Dramatic limestone cliffs and hidden cove beaches",
+      "World-class golf courses",
+      "Fresh seafood and cataplana tradition",
+      "Vibrant nightlife in Lagos and Albufeira"
+    ],
+    "propertyCount": 6,
+    "comingSoon": false,
+    "seoTitle": "Algarve — Private Homes in Southern Portugal",
+    "seoDescription": "Discover the Algarve: clifftop villas, private pools, 300 days of sun. Private homes operated to hotel standards.",
+    "howToGetHere": "Fly into Faro Airport (FAO), 30 to 90 minutes from our properties depending on location. We arrange all airport transfers.",
+    "bestTimeToVisit": "Year round. Peak June to September. Spring and autumn ideal for hiking, cycling, quieter beaches. Winter mild, 15 to 18 degrees.",
+    "whatToExpect": "300+ days of sunshine, dramatic cliff coastline, world class golf, and a quieter interior that most visitors never explore.",
+    "insiderRecommendations": [
+      {
+        "name": "Silves Castle",
+        "category": "Culture",
+        "description": "One of the best preserved Moorish castles in Portugal. Visit in the morning, explore the town, eat grilled fish by the river."
+      },
+      {
+        "name": "The West Coast",
+        "category": "Nature",
+        "description": "From Sagres to Aljezur. Wild, windswept, and the opposite of everything people expect from the Algarve."
+      },
+      {
+        "name": "Monchique Hills",
+        "category": "Hike",
+        "description": "Hot springs, cork forests, and hilltop villages. A completely different Algarve 30 minutes from the coast."
+      }
+    ],
+    "status": "active",
+    "whyOverline": "WHY THE ALGARVE"
+  },
+  {
+    "id": "d6",
+    "slug": "brazil",
+    "name": "Brazil",
+    "tagline": "A new chapter. Stay tuned.",
+    "description": "A new chapter. Stay tuned.",
+    "coverImage": "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=1600&q=80",
+    "gallery": [],
+    "whyDescription": "",
+    "highlights": [],
+    "propertyCount": 0,
+    "comingSoon": true,
+    "seoTitle": "Brazil — Coming Soon",
+    "seoDescription": "Brazil is coming soon to Portugal Active.",
+    "status": "draft"
+  }
+]

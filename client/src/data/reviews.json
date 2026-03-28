@@ -1,0 +1,134 @@
+[
+  {
+    "id": "r1",
+    "guestName": "James & Sarah",
+    "guestCountry": "United Kingdom",
+    "propertyName": "Casa do Mar",
+    "rating": 5,
+    "quote": "The house was immaculate and the concierge arranged everything — from restaurant bookings to a private chef for our anniversary dinner. It felt like staying at a five-star hotel, but with the freedom of our own home.",
+    "date": "2025-08",
+    "source": "Direct",
+    "isActive": true
+  },
+  {
+    "id": "r2",
+    "guestName": "The Müller Family",
+    "guestCountry": "Germany",
+    "propertyName": "Quinta da Eira",
+    "rating": 5,
+    "quote": "We came for a week and stayed for two. The kids didn't want to leave the pool, and the wine tasting at the quinta next door was a highlight. The housekeeping team was invisible but everything was always perfect.",
+    "date": "2025-07",
+    "source": "Google",
+    "isActive": true
+  },
+  {
+    "id": "r3",
+    "guestName": "Sophie Laurent",
+    "guestCountry": "France",
+    "propertyName": "Villa Serena",
+    "rating": 5,
+    "quote": "The Douro views from the infinity pool were extraordinary. The team organised a private boat cruise and a chef dinner on the terrace. Every detail was considered.",
+    "date": "2025-09",
+    "source": "Direct",
+    "isActive": true
+  },
+  {
+    "id": "r4",
+    "guestName": "Michael Chen",
+    "guestCountry": "United States",
+    "propertyName": "Villa Atlântica",
+    "rating": 5,
+    "quote": "We've rented luxury villas across Europe and this was the best-managed property we've experienced. The preparation checklist they sent before arrival showed a level of professionalism we hadn't seen before.",
+    "date": "2025-06",
+    "source": "Google",
+    "isActive": true
+  },
+  {
+    "id": "r5",
+    "guestName": "Anna & Erik",
+    "guestCountry": "Sweden",
+    "propertyName": "Casa da Praia",
+    "rating": 5,
+    "quote": "Waking up to the sound of waves, walking to the beach in two minutes, coming home to a spotless house. Simple luxury at its best.",
+    "date": "2025-08",
+    "source": "Booking.com",
+    "isActive": true
+  },
+  {
+    "id": "r6",
+    "guestName": "The Petersons",
+    "guestCountry": "United States",
+    "propertyName": "Quinta do Vale",
+    "rating": 5,
+    "quote": "The harvest experience was unforgettable — our teenagers actually put down their phones to pick grapes. The property was stunning and the team's local knowledge made every day an adventure.",
+    "date": "2025-09",
+    "source": "Direct",
+    "isActive": true
+  },
+  {
+    "id": "r7",
+    "guestName": "Isabella Rossi",
+    "guestCountry": "Italy",
+    "propertyName": "Palacete Porto",
+    "rating": 5,
+    "quote": "As an Italian, I have high standards for food and hospitality. Portugal Active exceeded them. The private chef dinner with local wines was one of the best meals of my life.",
+    "date": "2025-07",
+    "source": "Google",
+    "isActive": true
+  },
+  {
+    "id": "r8",
+    "guestName": "David & Claire",
+    "guestCountry": "United Kingdom",
+    "propertyName": "Monte Velho",
+    "rating": 5,
+    "quote": "Complete peace in the Monchique hills. The spring-fed pool, the cork oak forest, the silence. And then the team arranged a coasteering trip that was the most fun we've had in years.",
+    "date": "2025-08",
+    "source": "Direct",
+    "isActive": true
+  },
+  {
+    "id": "r9",
+    "guestName": "Thomas Andersen",
+    "guestCountry": "Denmark",
+    "propertyName": "Casa do Campo",
+    "rating": 5,
+    "quote": "Gerês is an undiscovered gem. The canyoning was incredible, the villa was perfectly maintained, and the concierge knew every hidden trail and restaurant.",
+    "date": "2025-06",
+    "source": "Booking.com",
+    "isActive": true
+  },
+  {
+    "id": "r10",
+    "guestName": "The Williams Family",
+    "guestCountry": "Australia",
+    "propertyName": "Villa Garden",
+    "rating": 5,
+    "quote": "Travelling with three kids and grandparents, we needed space and support. Villa Garden delivered both. The babysitting service meant we actually got an evening to ourselves.",
+    "date": "2025-07",
+    "source": "Direct",
+    "isActive": true
+  },
+  {
+    "id": "r11",
+    "guestName": "Marie Dubois",
+    "guestCountry": "France",
+    "propertyName": "Casa Algarvia",
+    "rating": 5,
+    "quote": "Authentic Algarve, not the resort version. The team's restaurant recommendations were perfect — we ate like locals and loved every meal.",
+    "date": "2025-09",
+    "source": "Google",
+    "isActive": true
+  },
+  {
+    "id": "r12",
+    "guestName": "Henrik & Lena",
+    "guestCountry": "Norway",
+    "propertyName": "Villa Oceano",
+    "rating": 5,
+    "quote": "Sagres in September is paradise. Empty beaches, warm water, incredible sunsets from the pool. The yoga instructor they arranged was a wonderful addition to our mornings.",
+    "date": "2025-09",
+    "source": "Direct",
+    "isActive": true
+  }
+]
