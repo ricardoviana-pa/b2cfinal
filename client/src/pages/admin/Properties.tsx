@@ -139,6 +139,9 @@ export default function AdminProperties() {
       description: form.description || undefined,
       region: form.region || undefined,
       guestyUrl: form.guestyUrl || undefined,
+      amenities: (Array.isArray(form.amenities)
+        ? { general: form.amenities }
+        : form.amenities) as Record<string, string[]>,
     };
     if (editId) {
       updateM.mutate({ id: editId, ...data });
@@ -230,7 +233,7 @@ export default function AdminProperties() {
         title="Properties"
         description="Manage your portfolio of homes."
         columns={columns}
-        data={(listQ.data as Property[]) || []}
+        data={(listQ.data as unknown as Property[]) || []}
         loading={listQ.isLoading}
         onAdd={openCreate}
         onEdit={openEdit}

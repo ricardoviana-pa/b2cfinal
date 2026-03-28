@@ -10,15 +10,22 @@ import { useTranslation } from 'react-i18next';
 import { IMAGES } from '@/lib/images';
 import { Instagram, Youtube, Linkedin, Facebook, Check, Phone, Mail, MessageCircle, Calendar } from 'lucide-react';
 import FooterPaymentLogos from './FooterPaymentLogos';
+import { trpc } from '@/lib/trpc';
 
 export default function Footer() {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const createLead = trpc.leads.create.useMutation();
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) { setSubscribed(true); setEmail(''); }
+    if (!email) return;
+    try {
+      await createLead.mutateAsync({ email, source: 'newsletter-footer' });
+      setSubscribed(true);
+      setEmail('');
+    } catch { setSubscribed(true); setEmail(''); }
   };
 
   return (

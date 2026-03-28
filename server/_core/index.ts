@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import helmet from "helmet";
 import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
@@ -36,6 +37,12 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+
+  app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+  }));
+
   // Guesty webhook needs raw body for signature validation
   registerGuestyWebhookRoute(app);
   // Configure body parser with larger size limit for file uploads
@@ -55,6 +62,53 @@ async function startServer() {
       createContext,
     })
   );
+
+  // Dynamic sitemap.xml
+  app.get("/sitemap.xml", async (_req, res) => {
+    try {
+      const { getPropertiesForSite } = await import("../services/properties-store");
+      const properties = await getPropertiesForSite();
+      const base = "https://www.portugalactive.com";
+      const now = new Date().toISOString().split("T")[0];
+
+      const staticPages = [
+        { loc: "/", priority: "1.0", changefreq: "weekly" },
+        { loc: "/homes", priority: "0.9", changefreq: "daily" },
+        { loc: "/about", priority: "0.6", changefreq: "monthly" },
+        { loc: "/contact", priority: "0.6", changefreq: "monthly" },
+        { loc: "/services", priority: "0.7", changefreq: "monthly" },
+        { loc: "/adventures", priority: "0.7", changefreq: "monthly" },
+        { loc: "/events", priority: "0.7", changefreq: "monthly" },
+        { loc: "/blog", priority: "0.6", changefreq: "weekly" },
+        { loc: "/faq", priority: "0.4", changefreq: "monthly" },
+        { loc: "/owners", priority: "0.5", changefreq: "monthly" },
+        { loc: "/destinations/minho", priority: "0.7", changefreq: "monthly" },
+        { loc: "/destinations/porto", priority: "0.7", changefreq: "monthly" },
+        { loc: "/destinations/algarve", priority: "0.7", changefreq: "monthly" },
+        { loc: "/legal/privacy", priority: "0.2", changefreq: "yearly" },
+        { loc: "/legal/terms", priority: "0.2", changefreq: "yearly" },
+        { loc: "/legal/cookies", priority: "0.2", changefreq: "yearly" },
+      ];
+
+      const propertyUrls = properties
+        .filter((p: any) => p.slug)
+        .map((p: any) => `  <url><loc>${base}/homes/${p.slug}</loc><lastmod>${now}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>`);
+
+      const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${staticPages.map(p => `  <url><loc>${base}${p.loc}</loc><lastmod>${now}</lastmod><changefreq>${p.changefreq}</changefreq><priority>${p.priority}</priority></url>`).join("\n")}
+${propertyUrls.join("\n")}
+</urlset>`;
+
+      res.setHeader("Content-Type", "application/xml");
+      res.setHeader("Cache-Control", "public, max-age=3600");
+      res.send(xml);
+    } catch (err) {
+      console.error("[Sitemap] Error generating sitemap:", err);
+      res.status(500).send("Error generating sitemap");
+    }
+  });
+
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);

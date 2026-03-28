@@ -48,6 +48,8 @@ interface QuoteData {
   currency?: string;
   cancellationPolicy?: string[];
   ratePlanOptions?: RatePlanOption[];
+  priceOnRequest?: boolean;
+  fallbackMessage?: string;
 }
 
 type Step = "dates" | "quote" | "details" | "payment" | "success";

@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
-import { Phone, Mail, MapPin, MessageCircle, Calendar, ChevronDown, Check, ArrowRight, Send } from 'lucide-react';
+import { Phone, Mail, MapPin, MessageCircle, Calendar, ChevronDown, Check, ArrowRight, Send, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { IMAGES } from '@/lib/images';
 import Header from '@/components/layout/Header';
 import PhoneInput from '@/components/booking/PhoneInput';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
+import { trpc } from '@/lib/trpc';
 
 function FAQItem({ item, isLast }: { item: { q: string; a: string }; isLast: boolean }) {
   const [open, setOpen] = useState(false);
@@ -90,8 +91,16 @@ const CONTACT_CHANNELS = [
 export default function Contact() {
   const { t } = useTranslation();
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [phone, setPhone] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [subject, setSubject] = useState('book-a-home');
+  const [message, setMessage] = useState('');
+
+  const createLead = trpc.leads.create.useMutation();
 
   const FAQ_ITEMS = useMemo(() => [
     { q: t('contact.faq1q'), a: t('contact.faq1a') },
@@ -102,9 +111,25 @@ export default function Contact() {
     { q: t('contact.faq6q'), a: t('contact.faq6a') },
   ], [t]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError('');
+    setSubmitting(true);
+    try {
+      await createLead.mutateAsync({
+        email,
+        name,
+        phone: phone || undefined,
+        message: `[${subject}] ${message}`,
+        source: 'contact-form',
+        metadata: { subject },
+      });
+      setSubmitted(true);
+    } catch {
+      setError(t('contact.errorMessage', 'Something went wrong. Please try again or contact us directly.'));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const inputClasses = (field: string) =>
@@ -195,6 +220,8 @@ export default function Contact() {
                       <input
                         type="text"
                         required
+                        value={name}
+                        onChange={e => setName(e.target.value)}
                         placeholder={t('contact.namePlaceholder', 'Your full name')}
                         className={inputClasses('name')}
                         style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
@@ -211,6 +238,8 @@ export default function Contact() {
                       <input
                         type="email"
                         required
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
                         placeholder={t('contact.emailPlaceholder', 'your@email.com')}
                         className={inputClasses('email')}
                         style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
@@ -240,6 +269,8 @@ export default function Contact() {
                         {t('contact.subjectLabel')}
                       </label>
                       <select
+                        value={subject}
+                        onChange={e => setSubject(e.target.value)}
                         className={`${inputClasses('subject')} appearance-none cursor-pointer`}
                         style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                         onFocus={() => setFocusedField('subject')}
@@ -263,6 +294,8 @@ export default function Contact() {
                     <textarea
                       required
                       rows={5}
+                      value={message}
+                      onChange={e => setMessage(e.target.value)}
                       placeholder={t('contact.messagePlaceholder', 'Tell us about your trip — dates, group size, anything we should know...')}
                       className={`w-full rounded-md border bg-white px-4 py-3.5 text-[14px] text-[#1A1A18] placeholder:text-[#9E9A90] transition-all duration-200 focus:outline-none resize-none ${
                         focusedField === 'message'
@@ -275,12 +308,17 @@ export default function Contact() {
                     />
                   </div>
 
+                  {error && (
+                    <p className="text-[13px] text-red-600" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>{error}</p>
+                  )}
+
                   <button
                     type="submit"
-                    className="rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#333330] active:bg-[#0D0D0C] transition-colors self-start inline-flex items-center gap-2.5 min-h-[48px]"
+                    disabled={submitting}
+                    className="rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#333330] active:bg-[#0D0D0C] transition-colors self-start inline-flex items-center gap-2.5 min-h-[48px] disabled:opacity-50"
                   >
-                    <Send className="w-3.5 h-3.5" />
-                    {t('contact.sendMessage')}
+                    {submitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                    {submitting ? t('contact.sending', 'Sending...') : t('contact.sendMessage')}
                   </button>
                 </form>
               )}

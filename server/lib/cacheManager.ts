@@ -28,7 +28,8 @@ export class CacheManager {
   }
 
   invalidateByPrefix(prefix: string): void {
-    for (const key of this.store.keys()) {
+    const keys = Array.from(this.store.keys());
+    for (const key of keys) {
       if (key.startsWith(prefix)) {
         this.store.delete(key);
       }

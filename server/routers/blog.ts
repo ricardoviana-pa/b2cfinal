@@ -63,15 +63,27 @@ export const blogRouter = router({
         status: z.enum(["draft", "published", "scheduled"]).optional(),
         limit: z.number().optional(),
       }).optional())
-      .query(({ input }) => db.listBlogPosts(input ?? undefined)),
+      .query(({ input, ctx }) => {
+        const isAdmin = ctx.user?.role === "admin";
+        const status = isAdmin ? input?.status : "published";
+        return db.listBlogPosts({ ...input, status });
+      }),
 
     getById: publicProcedure
       .input(z.object({ id: z.number() }))
-      .query(({ input }) => db.getBlogPostById(input.id)),
+      .query(async ({ input, ctx }) => {
+        const post = await db.getBlogPostById(input.id);
+        if (post && post.status !== "published" && ctx.user?.role !== "admin") return null;
+        return post;
+      }),
 
     getBySlug: publicProcedure
       .input(z.object({ slug: z.string() }))
-      .query(({ input }) => db.getBlogPostBySlug(input.slug)),
+      .query(async ({ input, ctx }) => {
+        const post = await db.getBlogPostBySlug(input.slug);
+        if (post && post.status !== "published" && ctx.user?.role !== "admin") return null;
+        return post;
+      }),
 
     create: adminProcedure
       .input(postInput)

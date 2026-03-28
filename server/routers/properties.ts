@@ -15,7 +15,7 @@ const propertyInput = z.object({
   priceFrom: z.number().int().min(0).default(0),
   tier: z.enum(["standard", "signature", "ultra"]).default("standard"),
   images: z.array(z.string()).default([]),
-  amenities: z.array(z.string()).default([]),
+  amenities: z.record(z.string(), z.array(z.string())).default({}),
   guestyUrl: z.string().optional(),
   sortOrder: z.number().int().default(0),
   isActive: z.boolean().default(true),

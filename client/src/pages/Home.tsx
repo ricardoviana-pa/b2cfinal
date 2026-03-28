@@ -165,9 +165,15 @@ export default function Home() {
 
   const activeDestinations = destinations.filter(d => d.status === 'active' || d.slug === 'brazil');
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const createLead = trpc.leads.create.useMutation();
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) { setSubscribed(true); setEmail(''); }
+    if (!email) return;
+    try {
+      await createLead.mutateAsync({ email, source: 'newsletter-home' });
+      setSubscribed(true);
+      setEmail('');
+    } catch { /* show success anyway to avoid blocking UX */ setSubscribed(true); setEmail(''); }
   };
 
   if (isLoading) {
