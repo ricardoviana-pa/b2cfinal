@@ -71,13 +71,14 @@ async function startServer() {
     console.info(`Server running on http://localhost:${port}/`);
 
     // Guesty sync: pull listings (photos, texts, pricing) on startup.
-    // Delay 5s to let the server stabilize and avoid hammering Guesty on rapid redeploys.
+    // Delay 5 minutes to avoid hammering Guesty auth on rapid redeploys and
+    // preserve rate-limit budget for user-facing quote requests.
     if (isGuestyConfigured()) {
       setTimeout(() => {
         runSync()
           .then((p) => console.info(`[Startup] Guesty sync complete → ${p}`))
           .catch((e) => console.warn("[Startup] Guesty sync failed (will retry next restart):", e.message));
-      }, 5000);
+      }, 5 * 60 * 1000);
 
       // Cron: sync listings twice a day — 07:00 and 19:00 Lisbon time (Europe/Lisbon)
       cron.schedule("0 7,19 * * *", () => {
