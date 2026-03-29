@@ -170,23 +170,25 @@ ${blogUrls.join("\n")}
   server.listen(port, () => {
     console.info(`Server running on http://localhost:${port}/`);
 
-    // Guesty sync: pull listings (photos, texts, pricing) on startup.
-    // Delay 30s to let server finish booting before first Guesty call.
+    // Guesty sync: pull listings (photos, texts, pricing).
+    // Cron runs at 07:00 and 19:00 Lisbon.  Startup sync only fires once
+    // after a 10-minute delay to preserve OAuth rate-limit budget during
+    // rapid deploys.  The static fallback JSON (auto-committed to GitHub by
+    // previous syncs) covers the gap.
     if (isGuestyConfigured()) {
       setTimeout(() => {
         runSync()
           .then((p) => console.info(`[Startup] Guesty sync complete → ${p}`))
-          .catch((e) => console.warn("[Startup] Guesty sync failed (will retry next restart):", e.message));
-      }, 30 * 1000);
+          .catch((e) => console.warn("[Startup] Guesty sync failed (will retry on cron):", e.message));
+      }, 10 * 60 * 1000); // 10 min — enough for rate-limit recovery after deploys
 
-      // Cron: sync listings twice a day — 07:00 and 19:00 Lisbon time (Europe/Lisbon)
       cron.schedule("0 7,19 * * *", () => {
         console.info("[Cron] Running scheduled Guesty sync...");
         runSync()
           .then((p) => console.info(`[Cron] Guesty sync complete → ${p}`))
           .catch((e) => console.warn("[Cron] Guesty sync failed:", e.message));
       }, { timezone: "Europe/Lisbon" });
-      console.info("[Cron] Guesty sync scheduled — 07:00 and 19:00 Europe/Lisbon");
+      console.info("[Cron] Guesty sync scheduled — 07:00 and 19:00 Europe/Lisbon + startup at +10min");
     }
   });
 }
