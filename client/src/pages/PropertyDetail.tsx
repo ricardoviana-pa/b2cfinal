@@ -21,6 +21,7 @@ import { getPropertyImages } from '@/lib/images';
 const BookingWidget = lazy(() => import('@/components/booking/BookingWidget'));
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import PropertyCard from '@/components/property/PropertyCard';
 import { trpc } from '@/lib/trpc';
 
 const allProducts = productsData as unknown as Product[];
@@ -842,25 +843,13 @@ export default function PropertyDetail() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {relatedProperties.map(rp => (
-                  <Link key={rp.id} href={`/homes/${rp.slug}`} className="group block">
-                    <div className="relative overflow-hidden bg-[#E8E4DC] img-fallback" style={{ aspectRatio: '4/3' }}>
-                      {rp.images?.[0] ? (
-                        <img src={rp.images[0]} alt={`${rp.name} – luxury villa in ${destName}, Portugal`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" width={800} height={600} onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }} />
-                      ) : (
-                        <div className="w-full h-full placeholder-image" />
-                      )}
-                    </div>
-                    <div className="pt-3">
-                      <h3 className="text-[1rem] font-display text-[#1A1A18] group-hover:text-[#8B7355] transition-colors mb-1">{rp.name}</h3>
-                      <div className="flex items-center gap-3 text-[13px] text-[#6B6860] mb-1">
-                        <span className="flex items-center gap-1"><BedDouble className="w-3.5 h-3.5" /> {rp.bedrooms}</span>
-                        <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {rp.maxGuests}</span>
-                      </div>
-                      {rp.priceFrom > 0 && (
-                        <p className="text-[14px] text-[#1A1A18] font-medium">From €{rp.priceFrom.toLocaleString()} <span className="text-[#9E9A90] font-normal">/ night</span></p>
-                      )}
-                    </div>
-                  </Link>
+                  <PropertyCard
+                    key={rp.id}
+                    property={rp}
+                    checkin={initialCheckin || undefined}
+                    checkout={initialCheckout || undefined}
+                    guests={initialGuests > 1 ? initialGuests : undefined}
+                  />
                 ))}
               </div>
             </div>

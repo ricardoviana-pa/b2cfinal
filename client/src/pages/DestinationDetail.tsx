@@ -6,10 +6,11 @@
 import { useState, useMemo, useEffect, lazy, Suspense } from 'react';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useParams, Link } from 'wouter';
-import { BedDouble, Users, ArrowRight, MapPin, Sun, Plane, Plus } from 'lucide-react';
+import { ArrowRight, MapPin, Sun, Plane, Plus } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
+import PropertyCard from '@/components/property/PropertyCard';
 const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 import destinationsData from '@/data/destinations.json';
 import productsData from '@/data/products.json';
@@ -190,23 +191,7 @@ export default function DestinationDetail() {
           </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {destProperties.map(property => (
-                <Link key={property.id} href={`/homes/${property.slug}`} className="group block">
-                  <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '4/3' }}>
-                    {property.images && property.images.length > 0 ? (
-                      <img src={property.images[0]} alt={`${property.name} – luxury villa in ${dest.name}, Portugal`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" width={800} height={600} />
-                    ) : (
-                      <div className="w-full h-full placeholder-image" />
-                    )}
-                  </div>
-                  <div className="pt-3">
-                    <h3 className="text-[1rem] font-display text-[#1A1A18] group-hover:text-[#8B7355] transition-colors mb-1">{property.name}</h3>
-                    <div className="flex items-center gap-3 text-[13px] text-[#6B6860] mb-1">
-                      <span className="flex items-center gap-1"><BedDouble className="w-3.5 h-3.5" /> {property.bedrooms}</span>
-                      <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {property.maxGuests}</span>
-                    </div>
-                    <p className="text-[14px] text-[#1A1A18] font-medium">From €{property.priceFrom.toLocaleString()} <span className="text-[#9E9A90] font-normal">/ night</span></p>
-                  </div>
-                </Link>
+                <PropertyCard key={property.id} property={property} />
               ))}
             </div>
           </div>

@@ -22,14 +22,15 @@
    - Paragraphs max 3 lines
    ========================================================================== */
 
-import { useState, useMemo, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
+import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { Link, useLocation } from 'wouter';
-import { ChevronDown, ChevronLeft, ChevronRight, BedDouble, Users, ArrowRight, Key, Star, MapPin, Shield, Check, Quote, Minus, Plus } from 'lucide-react';
+import { Link } from 'wouter';
+import { ChevronDown, Users, ArrowRight, Key, Star, MapPin, Shield, Check, Quote, Minus, Plus } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
+import PropertyCard from '@/components/property/PropertyCard';
 import { IMAGES } from '@/lib/images';
 const ReviewsSection = lazy(() => import('@/components/ReviewsSection'));
 import destinationsData from '@/data/destinations.json';
@@ -37,92 +38,6 @@ import { trpc } from '@/lib/trpc';
 import type { Destination, Property } from '@/lib/types';
 
 const destinations = destinationsData as unknown as Destination[];
-
-interface HomePropertyCardProps {
-  property: Property;
-  checkin?: string;
-  checkout?: string;
-  guests?: number;
-}
-
-function HomePropertyCard({ property, checkin, checkout, guests }: HomePropertyCardProps) {
-  const { t } = useTranslation();
-  const [, navigate] = useLocation();
-  const [imgIdx, setImgIdx] = useState(0);
-  const images = property.images?.length ? property.images.slice(0, 8) : [];
-  const total = images.length;
-  const destName = destinations.find(d => d.slug === property.destination)?.name || property.destination;
-
-  const prev = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setImgIdx(i => (i > 0 ? i - 1 : total - 1));
-  }, [total]);
-
-  const next = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setImgIdx(i => (i < total - 1 ? i + 1 : 0));
-  }, [total]);
-
-  return (
-    <div
-      className="group block flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto cursor-pointer"
-      style={{ scrollSnapAlign: 'start' }}
-      onClick={() => {
-        const p = new URLSearchParams();
-        if (checkin) p.set('checkin', checkin);
-        if (checkout) p.set('checkout', checkout);
-        if (guests && guests > 1) p.set('guests', String(guests));
-        const qs = p.toString();
-        navigate(`/homes/${property.slug}${qs ? `?${qs}` : ''}`);
-      }}
-    >
-      <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '4/3' }}>
-        {total > 0 ? (
-          <>
-            <div className="flex h-full transition-transform duration-400 ease-out" style={{ transform: `translateX(-${imgIdx * 100}%)`, width: `${total * 100}%` }}>
-              {images.map((img: string, idx: number) => (
-                <div key={idx} className="relative shrink-0 h-full" style={{ width: `${100 / total}%` }}>
-                  <img src={img} alt={`${property.name} – luxury villa in ${destName}, Portugal`} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-                </div>
-              ))}
-            </div>
-            {total > 1 && (
-              <>
-                <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm text-[#1A1A18] opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white" style={{ minHeight: 'auto', minWidth: 'auto' }} aria-label="Previous"><ChevronLeft size={16} /></button>
-                <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm text-[#1A1A18] opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white" style={{ minHeight: 'auto', minWidth: 'auto' }} aria-label="Next"><ChevronRight size={16} /></button>
-                <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1">
-                  {images.map((_: string, idx: number) => (
-                    <span key={idx} className={`block rounded-full transition-all ${idx === imgIdx ? 'w-1.5 h-1.5 bg-white' : 'w-1 h-1 bg-white/50'}`} />
-                  ))}
-                </div>
-              </>
-            )}
-          </>
-        ) : (
-          <div className="w-full h-full placeholder-image" />
-        )}
-        {property.tier === 'signature' && (
-          <div className="absolute top-3 left-3 px-2.5 py-1 bg-[#1A1A18] text-[#C4A87C] text-[10px] font-semibold" style={{ letterSpacing: '1px' }}>{t('filters.signature')}</div>
-        )}
-        <div className="absolute bottom-3 right-3 px-2 py-1 bg-white/90 text-[#1A1A18] text-[10px] font-medium">{t('property.bestRateGuarantee')}</div>
-      </div>
-      <div className="pt-3">
-        <p className="text-[12px] font-medium text-[#9E9A90] mb-1">{destName}</p>
-        <h3 className="text-[1rem] font-display text-[#1A1A18] group-hover:text-[#8B7355] transition-colors mb-1">{property.name}</h3>
-        <p className="text-[13px] text-[#6B6860] mb-2 leading-snug" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{property.tagline}</p>
-        <div className="flex items-center gap-3 text-[13px] text-[#9E9A90] mb-2">
-          <span className="flex items-center gap-1"><BedDouble className="w-3.5 h-3.5" /> {property.bedrooms} {t('property.bed')}</span>
-          <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {property.maxGuests} guests</span>
-        </div>
-        <p className="text-[14px] text-[#1A1A18] font-medium">
-          {(property.priceFrom ?? 0) > 0 ? <>From {"\u20AC"}{property.priceFrom.toLocaleString()} <span className="text-[#9E9A90] font-normal">{t('property.nightPrice')}</span></> : <span className="text-[#9E9A90] font-normal">{t('property.priceOnRequest')}</span>}
-        </p>
-      </div>
-    </div>
-  );
-}
 
 function useFadeIn() {
   const ref = useRef<HTMLDivElement>(null);
@@ -575,7 +490,14 @@ export default function Home() {
           {/* Property cards Ã¢ÂÂ horizontal scroll on mobile, 3 per row on desktop */}
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:overflow-visible">
             {featured.map(property => (
-              <HomePropertyCard key={property.id} property={property} checkin={searchCheckin} checkout={searchCheckout} guests={searchGuests} />
+              <div key={property.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
+                <PropertyCard
+                  property={property}
+                  checkin={searchCheckin || undefined}
+                  checkout={searchCheckout || undefined}
+                  guests={searchGuests > 1 ? searchGuests : undefined}
+                />
+              </div>
             ))}
           </div>
 

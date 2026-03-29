@@ -8,7 +8,7 @@ import { useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { IMAGES } from '@/lib/images';
-import { SlidersHorizontal, X, Search, Calendar, Users, Minus, Plus, AlertTriangle, MessageCircle } from 'lucide-react';
+import { SlidersHorizontal, X, Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, MessageCircle } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
 import { filterProperties, sortProperties } from '@/lib/utils';
@@ -184,11 +184,15 @@ export default function Homes() {
   };
 
   const applyBookingSearch = () => {
-    const params = new URLSearchParams();
-    if (bookingDestination && bookingDestination !== 'all') params.set('destination', bookingDestination);
+    const params = new URLSearchParams(searchString);
+    if (bookingDestination) params.set('destination', bookingDestination);
+    else params.delete('destination');
     if (bookingCheckin) params.set('checkin', bookingCheckin);
+    else params.delete('checkin');
     if (bookingCheckout) params.set('checkout', bookingCheckout);
+    else params.delete('checkout');
     if (bookingGuests > 1) params.set('guests', String(bookingGuests));
+    else params.delete('guests');
     const qs = params.toString();
     navigate(`/homes${qs ? `?${qs}` : ''}`);
   };
@@ -253,114 +257,204 @@ export default function Homes() {
     <div className="min-h-screen bg-[#FAFAF7]">
       <Header />
 
-      {/* Hero */}
-      <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
+      {/* Hero — search bar matches homepage (pill on desktop, card on mobile) */}
+      <section className="relative min-h-[520px] h-[62vh] max-h-[820px] overflow-hidden">
         <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp" alt="Collection of luxury private villas across Portugal" className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10" />
-        <div className="relative container pb-12 lg:pb-16 z-10">
-          <h1 className="headline-xl text-white mb-4">{t('homes.title')}</h1>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-black/15" />
+        <div className="relative z-10 container pt-28 md:pt-32 pb-44 lg:pb-36">
+          <h1 className="headline-xl text-white mb-4 max-w-2xl">{t('homes.title')}</h1>
           <p className="body-lg max-w-xl" style={{ color: 'rgba(255,255,255,0.7)' }}>
             {t('homes.subtitle')}
           </p>
+        </div>
+
+        {/* Desktop — same pill as Home */}
+        <div className="absolute bottom-12 md:bottom-16 left-1/2 -translate-x-1/2 hidden lg:block w-full max-w-[780px] px-6 z-10">
+          <div
+            className="flex items-center rounded-full bg-white shadow-[0_8px_40px_rgba(0,0,0,0.12)] overflow-hidden border border-[#E8E4DC]/60"
+            style={{ height: '56px' }}
+          >
+            <div className="flex-1 relative h-full min-w-0">
+              <select
+                value={bookingDestination}
+                onChange={e => {
+                  const v = e.target.value;
+                  setBookingDestination(v);
+                  setDestination(toFilterDestination(v || 'all'));
+                }}
+                className="w-full h-full pl-6 pr-8 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer appearance-none truncate"
+                style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
+              >
+                <option value="">{t('home.searchDestination')}</option>
+                <option value="minho">{t('home.searchMinhoCoast')}</option>
+                <option value="porto">{t('home.searchPortoDouro')}</option>
+                <option value="algarve">{t('home.searchAlgarve')}</option>
+              </select>
+              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9E9A90] pointer-events-none" />
+            </div>
+            <div className="w-px h-6 bg-[#E8E4DC] shrink-0" />
+            <div
+              className="flex-1 min-w-0 h-full cursor-pointer"
+              onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); (inp as HTMLInputElement | null)?.showPicker?.(); }}
+            >
+              <input
+                ref={checkInRef}
+                type="date"
+                min={today}
+                value={bookingCheckin}
+                onChange={e => {
+                  setBookingCheckin(e.target.value);
+                  if (bookingCheckout && bookingCheckout <= e.target.value) setBookingCheckout('');
+                  setTimeout(() => checkOutRef.current?.showPicker?.(), 50);
+                }}
+                className="w-full h-full px-3 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer"
+                style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
+              />
+            </div>
+            <ArrowRight className="w-3.5 h-3.5 text-[#9E9A90] flex-shrink-0" aria-hidden />
+            <div
+              className="flex-1 min-w-0 h-full cursor-pointer"
+              onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); (inp as HTMLInputElement | null)?.showPicker?.(); }}
+            >
+              <input
+                ref={checkOutRef}
+                type="date"
+                min={minCheckOut}
+                value={bookingCheckout}
+                onChange={e => setBookingCheckout(e.target.value)}
+                className="w-full h-full px-3 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer"
+                style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
+              />
+            </div>
+            <div className="w-px h-6 bg-[#E8E4DC] shrink-0" />
+            <div className="flex items-center h-full px-3 gap-2 shrink-0">
+              <Users className="w-3.5 h-3.5 text-[#9E9A90] flex-shrink-0" aria-hidden />
+              <button
+                type="button"
+                onClick={() => setBookingGuests(g => Math.max(1, g - 1))}
+                disabled={bookingGuests <= 1}
+                className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                aria-label={t('home.decreaseGuests', 'Decrease guests')}
+              >
+                <Minus className="w-2.5 h-2.5" />
+              </button>
+              <span className="text-[13px] text-[#1A1A18] tabular-nums whitespace-nowrap" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
+                {bookingGuests} <span className="text-[#9E9A90] lowercase">{t('home.searchGuests')}</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setBookingGuests(g => Math.min(30, g + 1))}
+                disabled={bookingGuests >= 30}
+                className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                aria-label={t('home.increaseGuests', 'Increase guests')}
+              >
+                <Plus className="w-2.5 h-2.5" />
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={applyBookingSearch}
+              className="flex-shrink-0 h-[44px] mr-1.5 px-6 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
+              style={{ letterSpacing: '1.5px' }}
+            >
+              {t('home.searchButton')}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile — same card layout as Home */}
+        <div className="absolute bottom-8 left-0 right-0 lg:hidden px-5 z-10">
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-[#E8E4DC]/60 p-4 space-y-3">
+            <div className="relative">
+              <select
+                value={bookingDestination}
+                onChange={e => {
+                  const v = e.target.value;
+                  setBookingDestination(v);
+                  setDestination(toFilterDestination(v || 'all'));
+                }}
+                className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white pl-3 pr-9 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer appearance-none"
+                style={{ fontFamily: 'var(--font-body)' }}
+              >
+                <option value="">{t('home.searchDestination')}</option>
+                <option value="minho">{t('home.searchMinhoCoast')}</option>
+                <option value="porto">{t('home.searchPortoDouro')}</option>
+                <option value="algarve">{t('home.searchAlgarve')}</option>
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9A90] pointer-events-none" />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div
+                className="relative"
+                onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); (inp as HTMLInputElement | null)?.showPicker?.(); }}
+              >
+                <input
+                  type="date"
+                  min={today}
+                  value={bookingCheckin}
+                  onChange={e => {
+                    setBookingCheckin(e.target.value);
+                    if (bookingCheckout && bookingCheckout <= e.target.value) setBookingCheckout('');
+                    setTimeout(() => checkOutRef.current?.showPicker?.(), 50);
+                  }}
+                  className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                />
+              </div>
+              <div
+                className="relative"
+                onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); (inp as HTMLInputElement | null)?.showPicker?.(); }}
+              >
+                <input
+                  ref={checkOutRef}
+                  type="date"
+                  min={minCheckOut}
+                  value={bookingCheckout}
+                  onChange={e => setBookingCheckout(e.target.value)}
+                  className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 flex-1 h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3">
+                <Users className="w-4 h-4 text-[#9E9A90] shrink-0" aria-hidden />
+                <button
+                  type="button"
+                  onClick={() => setBookingGuests(g => Math.max(1, g - 1))}
+                  disabled={bookingGuests <= 1}
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30"
+                  aria-label={t('home.decreaseGuests', 'Decrease guests')}
+                >
+                  <Minus className="w-3 h-3" />
+                </button>
+                <span className="text-[13px] text-[#1A1A18] tabular-nums flex-1 text-center">{bookingGuests} {t('home.searchGuests')}</span>
+                <button
+                  type="button"
+                  onClick={() => setBookingGuests(g => Math.min(30, g + 1))}
+                  disabled={bookingGuests >= 30}
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30"
+                  aria-label={t('home.increaseGuests', 'Increase guests')}
+                >
+                  <Plus className="w-3 h-3" />
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={applyBookingSearch}
+                className="shrink-0 h-[48px] px-6 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
+                style={{ letterSpacing: '1.5px' }}
+              >
+                {t('home.searchButton')}
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Sticky Filter Bar */}
       <div className="sticky top-16 md:top-20 z-30 bg-[#FAFAF7]/95 backdrop-blur-md border-b border-[#E8E4DC]">
         <div className="container py-3 md:py-4">
-          {/* Booking bar with dates on PLP */}
-          <div className="mb-3 md:mb-4 border border-[#E8E4DC] bg-white">
-            <div className="grid grid-cols-1 md:grid-cols-12">
-              <div className="md:col-span-3 border-b md:border-b-0 md:border-r border-[#E8E4DC] px-3 py-2.5">
-                <p className="text-[10px] uppercase tracking-[0.08em] text-[#9E9A90] mb-1">{t('homes.bookingBarDestination')}</p>
-                <select
-                  value={bookingDestination}
-                  onChange={(e) => setBookingDestination(e.target.value)}
-                  className="w-full bg-transparent text-[13px] text-[#1A1A18] focus:outline-none cursor-pointer"
-                >
-                  <option value="">{t('search.allRegions')}</option>
-                  <option value="minho">{t('destinations.minho')}</option>
-                  <option value="porto">{t('destinations.porto')}</option>
-                  <option value="algarve">{t('destinations.algarve')}</option>
-                </select>
-              </div>
-
-              <div
-                className="md:col-span-3 border-b md:border-b-0 md:border-r border-[#E8E4DC] px-3 py-2.5 cursor-pointer"
-                onClick={() => checkInRef.current?.showPicker?.()}
-              >
-                <p className="text-[10px] uppercase tracking-[0.08em] text-[#9E9A90] mb-1 flex items-center gap-1">
-                  <Calendar className="w-3 h-3" /> {t('search.checkIn')}
-                </p>
-                <input
-                  ref={checkInRef}
-                  type="date"
-                  min={today}
-                  value={bookingCheckin}
-                  onChange={(e) => {
-                    setBookingCheckin(e.target.value);
-                    if (bookingCheckout && bookingCheckout <= e.target.value) setBookingCheckout('');
-                    setTimeout(() => checkOutRef.current?.showPicker?.(), 50);
-                  }}
-                  className="w-full bg-transparent text-[13px] text-[#1A1A18] focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute"
-                />
-              </div>
-
-              <div
-                className="md:col-span-3 border-b md:border-b-0 md:border-r border-[#E8E4DC] px-3 py-2.5 cursor-pointer"
-                onClick={() => checkOutRef.current?.showPicker?.()}
-              >
-                <p className="text-[10px] uppercase tracking-[0.08em] text-[#9E9A90] mb-1 flex items-center gap-1">
-                  <Calendar className="w-3 h-3" /> {t('search.checkOut')}
-                </p>
-                <input
-                  ref={checkOutRef}
-                  type="date"
-                  min={minCheckOut}
-                  value={bookingCheckout}
-                  onChange={(e) => setBookingCheckout(e.target.value)}
-                  className="w-full bg-transparent text-[13px] text-[#1A1A18] focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute"
-                />
-              </div>
-
-              <div className="md:col-span-2 border-b md:border-b-0 md:border-r border-[#E8E4DC] px-3 py-2.5">
-                <p className="text-[10px] uppercase tracking-[0.08em] text-[#9E9A90] mb-1 flex items-center gap-1">
-                  <Users className="w-3 h-3" /> {t('search.guests')}
-                </p>
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setBookingGuests(g => Math.max(1, g - 1))}
-                    disabled={bookingGuests <= 1}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
-                    aria-label={t('home.decreaseGuests', 'Decrease guests')}
-                  >
-                    <Minus className="w-3 h-3" />
-                  </button>
-                  <span className="min-w-[3ch] text-center text-[13px] text-[#1A1A18] tabular-nums">{bookingGuests}</span>
-                  <button
-                    type="button"
-                    onClick={() => setBookingGuests(g => Math.min(30, g + 1))}
-                    disabled={bookingGuests >= 30}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
-                    aria-label={t('home.increaseGuests', 'Increase guests')}
-                  >
-                    <Plus className="w-3 h-3" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="md:col-span-1 px-2 py-2">
-                <button
-                  onClick={applyBookingSearch}
-                  className="w-full h-full min-h-[48px] rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase hover:bg-[#333330] transition-colors flex items-center justify-center gap-1.5"
-                >
-                  <Search className="w-3.5 h-3.5" /> {t('search.search')}
-                </button>
-              </div>
-            </div>
-          </div>
-
           {/* Mobile */}
           <div className="lg:hidden flex items-center justify-between">
             <button
