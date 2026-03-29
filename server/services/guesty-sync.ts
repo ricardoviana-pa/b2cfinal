@@ -152,6 +152,9 @@ function mapListingToProperty(listing: any) {
 /**
  * Persist synced properties to GitHub so the fallback file always
  * contains real data — survives Render's ephemeral filesystem.
+ *
+ * IMPORTANT: Compares content hash before committing to avoid triggering
+ * Render auto-deploy loops (sync → commit → deploy → sync → commit …).
  */
 async function commitToGitHub(jsonContent: string): Promise<boolean> {
   if (!GITHUB_PAT) {
@@ -168,13 +171,15 @@ async function commitToGitHub(jsonContent: string): Promise<boolean> {
       "User-Agent": "PortugalActive-GuestySync/1.0",
     };
 
-    // Get current file SHA (required for updates)
+    // Get current file SHA and content hash (required for updates)
     let sha: string | undefined;
+    let existingContentBase64: string | undefined;
     try {
       const getResponse = await fetch(`${apiBase}?ref=${GITHUB_BRANCH}`, { headers });
       if (getResponse.ok) {
-        const fileData = (await getResponse.json()) as { sha: string };
+        const fileData = (await getResponse.json()) as { sha: string; content?: string };
         sha = fileData.sha;
+        existingContentBase64 = fileData.content?.replace(/\n/g, "");
       }
     } catch {
       // File may not exist yet — that's fine, we'll create it
@@ -182,6 +187,12 @@ async function commitToGitHub(jsonContent: string): Promise<boolean> {
 
     // Encode content as base64
     const contentBase64 = Buffer.from(jsonContent, "utf-8").toString("base64");
+
+    // Skip commit if content is identical — avoids Render auto-deploy loops
+    if (existingContentBase64 && contentBase64 === existingContentBase64) {
+      console.info("[Guesty Sync] GitHub file already up-to-date — skipping commit (no deploy loop).");
+      return false;
+    }
 
     const body: Record<string, string> = {
       message: `[auto-sync] Update properties from Guesty (${new Date().toISOString().slice(0, 10)})`,
