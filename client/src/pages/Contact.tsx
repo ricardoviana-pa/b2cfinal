@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { Phone, Mail, MapPin, MessageCircle, Calendar, ChevronDown, Check, ArrowRight, Send, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -8,6 +8,7 @@ import PhoneInput from '@/components/booking/PhoneInput';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { trpc } from '@/lib/trpc';
+import { useSearch } from 'wouter';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -106,6 +107,26 @@ export default function Contact() {
   const [message, setMessage] = useState('');
 
   const createLead = trpc.leads.create.useMutation();
+  const searchString = useSearch();
+  const prefilledFromProperty = useRef(false);
+
+  useEffect(() => {
+    if (prefilledFromProperty.current) return;
+    const params = new URLSearchParams(searchString);
+    const slug = params.get('property');
+    const intent = params.get('intent');
+    if (slug && intent === 'availability') {
+      prefilledFromProperty.current = true;
+      setSubject('book-a-home');
+      setMessage(
+        t('contact.prefillAvailability', {
+          slug,
+          defaultValue:
+            'I would like to check availability for this home. Property reference: {{slug}}. Please contact me with next steps.',
+        })
+      );
+    }
+  }, [searchString, t]);
 
   const FAQ_ITEMS = useMemo(() => [
     { q: t('contact.faq1q'), a: t('contact.faq1a') },

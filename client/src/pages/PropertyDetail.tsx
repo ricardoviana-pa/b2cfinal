@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck,
-  Sparkles, Star, Clock, UtensilsCrossed, Headphones, ExternalLink, Plus, X, AlertTriangle,
+  Sparkles, Star, Clock, UtensilsCrossed, Headphones, Plus, X, AlertTriangle,
   Wifi, Tv, Coffee, Car, Waves, Wind, Shirt, Flame, TreePine, Mountain,
   Sun, Monitor, Utensils, Sofa, ArrowRight, Lock, ShieldCheck, type LucideIcon
 } from 'lucide-react';
@@ -730,7 +730,6 @@ export default function PropertyDetail() {
                       maxGuests={property.maxGuests || 10}
                       minNights={(property as any).minNights}
                       cleaningFee={(property as any).cleaningFee}
-                      bookingUrl={property.bookingUrl}
                       destination={property.destination}
                       initialCheckIn={initialCheckin}
                       initialCheckOut={initialCheckout}
@@ -756,9 +755,12 @@ export default function PropertyDetail() {
                       <span className="text-[11px] tracking-[0.02em] text-[#9E9A90] font-medium">{t('property.directConcierge')}</span>
                     </div>
                     <div className="space-y-3">
-                      <a href={property.bookingUrl || whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-primary w-full flex items-center justify-center gap-2">
-                        {t('property.checkAvailability')} <ExternalLink size={14} />
-                      </a>
+                      <Link
+                        href={`/contact?property=${encodeURIComponent(property.slug)}&intent=availability`}
+                        className="btn-primary w-full flex items-center justify-center gap-2"
+                      >
+                        {t('property.checkAvailability')}
+                      </Link>
                       <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-ghost w-full">
                         {t('property.askAboutHome')}
                       </a>
@@ -813,15 +815,19 @@ export default function PropertyDetail() {
             </div>
             {property.guestyId ? (
               <button
+                type="button"
                 onClick={() => document.getElementById('property-booking')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
                 className="btn-primary shrink-0"
               >
                 {t('property.checkAvailability')}
               </button>
             ) : (
-              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-primary shrink-0">
-                {t('property.talkConciergeMobile')}
-              </a>
+              <Link
+                href={`/contact?property=${encodeURIComponent(property.slug)}&intent=availability`}
+                className="btn-primary shrink-0"
+              >
+                {t('property.checkAvailability')}
+              </Link>
             )}
           </div>
         </div>

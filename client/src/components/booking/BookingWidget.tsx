@@ -17,8 +17,6 @@ interface BookingWidgetProps {
   maxGuests: number;
   minNights?: number;
   cleaningFee?: number;
-  /** @deprecated */
-  bookingUrl?: string;
   currency?: string;
   destination?: string;
   initialCheckIn?: string;
@@ -96,7 +94,6 @@ export default function BookingWidget({
   maxGuests,
   minNights = 1,
   cleaningFee: baseCleaningFee = 0,
-  bookingUrl: _bookingUrl,
   currency = "EUR",
   destination,
   initialCheckIn = "",
