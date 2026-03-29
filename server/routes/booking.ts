@@ -2,7 +2,7 @@ import type { Express, Request, Response } from "express";
 import express from "express";
 import crypto from "node:crypto";
 import { cacheManager } from "../lib/cacheManager";
-import { guestyClient, GuestyClientError } from "../lib/guesty";
+import { guestyClient, GuestyClientError, resetGuestyRateLimitCooldowns } from "../lib/guesty";
 import { getPropertiesForSite } from "../services/properties-store";
 
 const TTL_LISTING_MS = 6 * 60 * 60 * 1000;
@@ -230,6 +230,17 @@ export function registerBookingRoutes(app: Express): void {
         message: err?.message || "Unknown Guesty error",
       });
     }
+  });
+
+  /** POST clears in-memory Guesty OAuth cooldown after 429 (requires GUESTY_DEBUG_SECRET). */
+  app.post("/api/debug/guesty/reset-cooldown", (req: Request, res: Response) => {
+    const secret = process.env.GUESTY_DEBUG_SECRET || "";
+    if (!secret || req.headers["x-guesty-debug-secret"] !== secret) {
+      res.status(404).json({ message: "Not found" });
+      return;
+    }
+    resetGuestyRateLimitCooldowns();
+    res.json({ ok: true, message: "Guesty OAuth cooldowns cleared. Retry quotes." });
   });
 
   app.get("/api/listings/:id", async (req: Request, res: Response) => {

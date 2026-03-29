@@ -57,6 +57,9 @@ const GUESTY_BE_BASE_URL = "https://booking.guesty.com";
 const GUESTY_BE_CLIENT_ID = process.env.GUESTY_BE_CLIENT_ID || "";
 const GUESTY_BE_CLIENT_SECRET = process.env.GUESTY_BE_CLIENT_SECRET || "";
 const GUESTY_TIMEOUT_MS = 8_000;
+/** Never block OAuth longer than this after a 429 (Guesty may recover sooner; avoids hour-long self-blocks). */
+const MAX_GUESTY_OAUTH_COOLDOWN_MS = Number(process.env.GUESTY_MAX_OAUTH_COOLDOWN_MS || 120_000);
+const MAX_GUESTY_BE_OAUTH_COOLDOWN_MS = Number(process.env.GUESTY_MAX_BE_OAUTH_COOLDOWN_MS || 180_000);
 const TOKEN_CACHE_DIR = path.resolve(process.cwd(), ".cache");
 const OPEN_TOKEN_CACHE_FILE = path.join(TOKEN_CACHE_DIR, "guesty-open-token.json");
 const BE_TOKEN_CACHE_FILE = path.join(TOKEN_CACHE_DIR, "guesty-be-token.json");
@@ -74,6 +77,11 @@ function parseRetryAfterMs(headers: Headers, fallbackMs: number): number {
     return retryAfterSec * 1000;
   }
   return fallbackMs;
+}
+
+function capOAuthCooldownMs(rawMs: number, maxMs: number): number {
+  if (!Number.isFinite(rawMs) || rawMs <= 0) return maxMs;
+  return Math.min(rawMs, maxMs);
 }
 
 function createLimiter(maxConcurrent: number) {
@@ -224,13 +232,19 @@ async function fetchOAuthToken(): Promise<string> {
     throw new Error("Guesty auth not configured. Set GUESTY_CLIENT_ID and GUESTY_CLIENT_SECRET.");
   }
   if (Date.now() < guestyAuthCooldownUntil) {
-    throw new GuestyClientError({
-      message: "Guesty authentication temporarily cooled down after rate limiting",
-      status: 429,
-      method: "POST",
-      endpoint: "/oauth2/token",
-      details: { retryAfterMs: guestyAuthCooldownUntil - Date.now() },
-    });
+    const remaining = guestyAuthCooldownUntil - Date.now();
+    // Recover from stale/overlong cooldown (e.g. bad Retry-After)
+    if (remaining > MAX_GUESTY_OAUTH_COOLDOWN_MS) {
+      guestyAuthCooldownUntil = 0;
+    } else {
+      throw new GuestyClientError({
+        message: "Guesty authentication temporarily cooled down after rate limiting",
+        status: 429,
+        method: "POST",
+        endpoint: "/oauth2/token",
+        details: { retryAfterMs: remaining },
+      });
+    }
   }
 
   console.warn("[Guesty] Requesting new OAuth token at", new Date().toISOString());
@@ -294,7 +308,8 @@ async function fetchOAuthToken(): Promise<string> {
 
     if ((response.status === 429 || response.status >= 500) && attempt < maxAttempts - 1) {
       if (response.status === 429) {
-        guestyAuthCooldownUntil = Date.now() + parseRetryAfterMs(response.headers, 30_000);
+        guestyAuthCooldownUntil =
+          Date.now() + capOAuthCooldownMs(parseRetryAfterMs(response.headers, 30_000), MAX_GUESTY_OAUTH_COOLDOWN_MS);
       }
       await sleep(3000 + attempt * 2000);
       continue;
@@ -583,13 +598,18 @@ async function fetchBEOAuthToken(): Promise<string> {
     throw new Error("Guesty Booking Engine auth not configured.");
   }
   if (Date.now() < guestyBeAuthCooldownUntil) {
-    throw new GuestyClientError({
-      message: "Guesty BE authentication temporarily cooled down after rate limiting",
-      status: 429,
-      method: "POST",
-      endpoint: "/oauth2/token",
-      details: { retryAfterMs: guestyBeAuthCooldownUntil - Date.now() },
-    });
+    const remaining = guestyBeAuthCooldownUntil - Date.now();
+    if (remaining > MAX_GUESTY_BE_OAUTH_COOLDOWN_MS) {
+      guestyBeAuthCooldownUntil = 0;
+    } else {
+      throw new GuestyClientError({
+        message: "Guesty BE authentication temporarily cooled down after rate limiting",
+        status: 429,
+        method: "POST",
+        endpoint: "/oauth2/token",
+        details: { retryAfterMs: remaining },
+      });
+    }
   }
 
   const maxAttempts = 2;
@@ -624,7 +644,8 @@ async function fetchBEOAuthToken(): Promise<string> {
 
     if ((response.status === 429 || response.status >= 500) && attempt < maxAttempts - 1) {
       if (response.status === 429) {
-        guestyBeAuthCooldownUntil = Date.now() + parseRetryAfterMs(response.headers, 60_000);
+        guestyBeAuthCooldownUntil =
+          Date.now() + capOAuthCooldownMs(parseRetryAfterMs(response.headers, 60_000), MAX_GUESTY_BE_OAUTH_COOLDOWN_MS);
       }
       logError({
         method: "POST",
@@ -794,4 +815,10 @@ export const guestyBEClient = {
 
 export function isGuestyConfigured(): boolean {
   return !!(GUESTY_CLIENT_ID && GUESTY_CLIENT_SECRET);
+}
+
+/** Clears in-memory OAuth cooldowns after Guesty 429s / rate limits (Render keeps process alive). */
+export function resetGuestyRateLimitCooldowns(): void {
+  guestyAuthCooldownUntil = 0;
+  guestyBeAuthCooldownUntil = 0;
 }
