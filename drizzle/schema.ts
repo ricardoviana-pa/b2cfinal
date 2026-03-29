@@ -378,3 +378,34 @@ export const customerTrips = mysqlTable("customer_trips", {
 
 export type CustomerTrip = typeof customerTrips.$inferSelect;
 export type InsertCustomerTrip = typeof customerTrips.$inferInsert;
+
+/* ================================================================
+   PROPERTY REFERRALS — Refer a property to Portugal Active portfolio
+   Select tier = 500 EUR reward · Luxury tier = 1000 EUR reward
+   ================================================================ */
+export const propertyReferrals = mysqlTable("property_referrals", {
+  id: int("id").autoincrement().primaryKey(),
+  referrerId: int("referrerId").notNull(),
+  ownerName: varchar("ownerName", { length: 255 }).notNull(),
+  ownerEmail: varchar("ownerEmail", { length: 320 }),
+  ownerPhone: varchar("ownerPhone", { length: 50 }),
+  propertyAddress: varchar("propertyAddress", { length: 500 }),
+  propertyCity: varchar("propertyCity", { length: 100 }),
+  propertyRegion: varchar("propertyRegion", { length: 100 }),
+  propertyBedrooms: int("propertyBedrooms"),
+  propertyType: varchar("propertyType", { length: 100 }),
+  propertyDescription: text("propertyDescription"),
+  notes: text("notes"),
+  tier: mysqlEnum("tier", ["select", "luxury"]),
+  status: mysqlEnum("status", ["submitted", "contacted", "under_review", "signed", "rejected"])
+    .default("submitted")
+    .notNull(),
+  rewardAmount: int("rewardAmount").default(0).notNull(),
+  rewardPaid: boolean("rewardPaid").default(false).notNull(),
+  adminNotes: text("adminNotes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type PropertyReferral = typeof propertyReferrals.$inferSelect;
+export type InsertPropertyReferral = typeof propertyReferrals.$inferInsert;

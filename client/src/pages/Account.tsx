@@ -7,27 +7,67 @@ import { useAuth } from '@/_core/hooks/useAuth';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
-import { MapPin, Gift, Users, User, LogOut, ChevronRight, Star, Copy, Check, Send, Calendar, Home as HomeIcon, Award, ArrowUpRight } from 'lucide-react';
+import {
+  MapPin, Gift, Users, User, LogOut, ChevronRight, Star, Copy, Check, Send,
+  Calendar, Home as HomeIcon, Award, ArrowUpRight, Building2, Euro,
+  Phone, Mail, MapPinned, BedDouble, FileText, Sparkles, Clock, CheckCircle2,
+  XCircle, MessageSquare, ChevronDown
+} from 'lucide-react';
 
-type Tab = 'dashboard' | 'trips' | 'points' | 'referrals' | 'profile';
+type Tab = 'dashboard' | 'trips' | 'points' | 'refer-friend' | 'refer-property' | 'profile';
 
+/* ================================================================
+   TIER BADGE
+   ================================================================ */
 function TierBadge({ tier }: { tier: string }) {
   const colors: Record<string, string> = {
-    bronze: 'bg-[#CD7F32]/10 text-[#CD7F32]',
-    silver: 'bg-[#9E9A90]/10 text-[#6B6860]',
-    gold: 'bg-[#C4A87C]/15 text-[#8B7355]',
-    platinum: 'bg-[#1A1A18]/10 text-[#1A1A18]',
+    bronze: 'bg-[#CD7F32]/10 text-[#CD7F32] border-[#CD7F32]/20',
+    silver: 'bg-[#9E9A90]/10 text-[#6B6860] border-[#9E9A90]/20',
+    gold: 'bg-[#C4A87C]/15 text-[#8B7355] border-[#C4A87C]/30',
+    platinum: 'bg-[#1A1A18]/8 text-[#1A1A18] border-[#1A1A18]/15',
   };
   return (
-    <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-medium tracking-[0.1em] uppercase ${colors[tier] || colors.bronze}`}>
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-medium tracking-[0.12em] uppercase rounded-full border ${colors[tier] || colors.bronze}`}>
       <Award size={11} /> {tier}
     </span>
   );
 }
 
+/* ================================================================
+   STATUS BADGE
+   ================================================================ */
+function StatusBadge({ status }: { status: string }) {
+  const config: Record<string, { bg: string; text: string; icon: typeof Clock }> = {
+    submitted: { bg: 'bg-blue-50 border-blue-100', text: 'text-blue-700', icon: Clock },
+    contacted: { bg: 'bg-amber-50 border-amber-100', text: 'text-amber-700', icon: Phone },
+    under_review: { bg: 'bg-purple-50 border-purple-100', text: 'text-purple-700', icon: FileText },
+    signed: { bg: 'bg-emerald-50 border-emerald-100', text: 'text-emerald-700', icon: CheckCircle2 },
+    rejected: { bg: 'bg-red-50 border-red-100', text: 'text-red-700', icon: XCircle },
+    pending: { bg: 'bg-[#F5F1EB] border-[#E8E4DC]', text: 'text-[#9E9A90]', icon: Clock },
+    signed_up: { bg: 'bg-blue-50 border-blue-100', text: 'text-blue-700', icon: CheckCircle2 },
+    booked: { bg: 'bg-[#C4A87C]/15 border-[#C4A87C]/30', text: 'text-[#8B7355]', icon: CheckCircle2 },
+    completed: { bg: 'bg-emerald-50 border-emerald-100', text: 'text-emerald-700', icon: CheckCircle2 },
+  };
+  const c = config[status] || config.pending;
+  const Icon = c.icon;
+  const label = status.replace(/_/g, ' ');
+  return (
+    <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-medium tracking-[0.08em] uppercase rounded-full border ${c.bg} ${c.text}`}>
+      <Icon size={10} /> {label}
+    </span>
+  );
+}
+
+/* ================================================================
+   MAIN ACCOUNT PAGE
+   ================================================================ */
 export default function Account() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'My Account | Trips, Loyalty & Profile', description: 'View your trip history, earn loyalty points, manage referrals, and update your profile with Portugal Active.', url: '/account' });
+  usePageMeta({
+    title: 'My Account | Trips, Loyalty & Profile',
+    description: 'View your trip history, earn loyalty points, manage referrals, and update your profile with Portugal Active.',
+    url: '/account',
+  });
   const { user, loading: authLoading, logout, isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
@@ -38,9 +78,13 @@ export default function Account() {
   const tripsQuery = trpc.customer.getTrips.useQuery(undefined, { enabled: isAuthenticated });
   const pointsSummary = trpc.customer.getPointsSummary.useQuery(undefined, { enabled: isAuthenticated });
   const pointsLog = trpc.customer.getPointsLog.useQuery(undefined, { enabled: isAuthenticated && activeTab === 'points' });
-  const referralsQuery = trpc.customer.getReferrals.useQuery(undefined, { enabled: isAuthenticated && activeTab === 'referrals' });
+  const referralsQuery = trpc.customer.getReferrals.useQuery(undefined, { enabled: isAuthenticated && activeTab === 'refer-friend' });
+  const propertyReferralsQuery = trpc.customer.getPropertyReferrals.useQuery(undefined, { enabled: isAuthenticated && (activeTab === 'refer-property' || activeTab === 'dashboard') });
   const sendReferral = trpc.customer.sendReferral.useMutation();
   const updateProfile = trpc.customer.updateProfile.useMutation();
+  const submitPropertyReferral = trpc.customer.submitPropertyReferral.useMutation({
+    onSuccess: () => { propertyReferralsQuery.refetch(); },
+  });
 
   if (!authLoading && !isAuthenticated) {
     navigate('/login');
@@ -55,8 +99,8 @@ export default function Account() {
           <div className="space-y-4 animate-pulse">
             <div className="h-8 w-48 bg-[#F5F1EB] rounded-md" />
             <div className="h-4 w-72 bg-[#F5F1EB] rounded-md" />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-              {[1,2,3].map(i => <div key={i} className="h-32 bg-[#F5F1EB] rounded-lg" />)}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">
+              {[1,2,3,4].map(i => <div key={i} className="h-28 bg-[#F5F1EB] rounded-lg" />)}
             </div>
           </div>
         </div>
@@ -69,12 +113,14 @@ export default function Account() {
   const upcomingTrips = trips.filter(t => t.isUpcoming);
   const pastTrips = trips.filter(t => t.isPast);
   const points = pointsSummary.data;
+  const propRefs = propertyReferralsQuery.data;
 
-  const tabs: { id: Tab; label: string; icon: typeof MapPin }[] = [
+  const tabs: { id: Tab; label: string; icon: typeof MapPin; badge?: number }[] = [
     { id: 'dashboard', label: t('account.tabDashboard', 'Dashboard'), icon: HomeIcon },
-    { id: 'trips', label: t('account.tabTrips', 'My Trips'), icon: MapPin },
+    { id: 'trips', label: t('account.tabTrips', 'My Trips'), icon: MapPin, badge: upcomingTrips.length || undefined },
     { id: 'points', label: t('account.tabPoints', 'Points'), icon: Gift },
-    { id: 'referrals', label: t('account.tabReferrals', 'Refer a Friend'), icon: Users },
+    { id: 'refer-friend', label: t('account.tabReferFriend', 'Refer a Friend'), icon: Users },
+    { id: 'refer-property', label: t('account.tabReferProperty', 'Refer a Property'), icon: Building2 },
     { id: 'profile', label: t('account.tabProfile', 'Profile'), icon: User },
   ];
 
@@ -101,17 +147,17 @@ export default function Account() {
         <div className="container max-w-[1100px]">
           <div className="flex items-center gap-4">
             {profile.avatar ? (
-              <img src={profile.avatar} alt={`${profile.name || 'Guest'} profile photo`} className="w-12 h-12 rounded-full object-cover border-2 border-[#E8E4DC]" />
+              <img src={profile.avatar} alt={`${profile.name || 'Guest'} profile photo`} className="w-14 h-14 rounded-full object-cover border-2 border-[#E8E4DC] shadow-sm" />
             ) : (
-              <div className="w-12 h-12 rounded-full bg-[#8B7355] flex items-center justify-center text-white text-[18px] font-display">
+              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#8B7355] to-[#6B5A42] flex items-center justify-center text-white text-[20px] font-display shadow-sm">
                 {(profile.name || 'G')[0].toUpperCase()}
               </div>
             )}
             <div>
-              <h1 className="font-display text-[22px] md:text-[26px] font-light text-[#1A1A18]">
+              <h1 className="font-display text-[22px] md:text-[28px] font-light text-[#1A1A18] tracking-tight">
                 {t('account.welcome', 'Welcome')}, {profile.name?.split(' ')[0] || t('account.guest', 'Guest')}
               </h1>
-              <div className="flex items-center gap-3 mt-0.5">
+              <div className="flex items-center gap-3 mt-1">
                 <TierBadge tier={profile.loyaltyTier} />
                 <span className="text-[12px] text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
                   {t('account.memberSince', 'Member since')} {new Date(profile.memberSince).getFullYear()}
@@ -124,7 +170,7 @@ export default function Account() {
 
       <section className="py-8 md:py-12">
         <div className="container max-w-[1100px]">
-          <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-8 lg:gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-8 lg:gap-12">
 
             {/* Sidebar nav */}
             <nav className="flex lg:flex-col gap-1 overflow-x-auto no-scrollbar -mx-5 px-5 lg:mx-0 lg:px-0">
@@ -134,107 +180,138 @@ export default function Account() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2.5 px-4 py-2.5 rounded-md text-[13px] whitespace-nowrap transition-colors ${
+                    className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-[13px] whitespace-nowrap transition-all duration-200 ${
                       activeTab === tab.id
-                        ? 'bg-[#1A1A18] text-white'
-                        : 'text-[#6B6860] hover:bg-[#F5F1EB]'
+                        ? 'bg-[#1A1A18] text-white shadow-sm'
+                        : 'text-[#6B6860] hover:bg-[#F5F1EB]/80'
                     }`}
                     style={{ fontFamily: 'var(--font-body)', fontWeight: activeTab === tab.id ? 500 : 400 }}
                   >
                     <Icon size={15} />
                     {tab.label}
+                    {tab.badge ? (
+                      <span className={`ml-auto text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
+                        activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-[#8B7355]/10 text-[#8B7355]'
+                      }`}>{tab.badge}</span>
+                    ) : null}
                   </button>
                 );
               })}
-              <button
-                onClick={async () => { await logout(); navigate('/'); }}
-                className="flex items-center gap-2.5 px-4 py-2.5 rounded-md text-[13px] text-[#9E9A90] hover:bg-[#F5F1EB] transition-colors mt-2"
-                style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
-              >
-                <LogOut size={15} />
-                {t('account.logout', 'Sign out')}
-              </button>
+              <div className="mt-4 pt-4 border-t border-[#E8E4DC] lg:border-t lg:mt-4 lg:pt-4">
+                <button
+                  onClick={async () => { await logout(); navigate('/'); }}
+                  className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-[13px] text-[#9E9A90] hover:bg-red-50 hover:text-red-600 transition-all duration-200 w-full"
+                  style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
+                >
+                  <LogOut size={15} />
+                  {t('account.logout', 'Sign out')}
+                </button>
+              </div>
             </nav>
 
-            {/* Content */}
+            {/* Content area */}
             <div className="min-w-0">
 
-              {/* DASHBOARD */}
+              {/* ============================================================
+                  DASHBOARD
+                  ============================================================ */}
               {activeTab === 'dashboard' && (
                 <div className="space-y-8">
                   {/* Stats row */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {[
-                      { label: t('account.statPoints', 'Points'), value: points?.balance?.toLocaleString() || '0', accent: true },
-                      { label: t('account.statStays', 'Total stays'), value: String(profile.totalStays) },
-                      { label: t('account.statNights', 'Nights'), value: String(profile.totalNights) },
-                      { label: t('account.statTier', 'Tier'), value: profile.loyaltyTier.charAt(0).toUpperCase() + profile.loyaltyTier.slice(1) },
-                    ].map((s, i) => (
-                      <div key={i} className="rounded-lg border border-[#E8E4DC] bg-white p-5">
-                        <p className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#9E9A90] mb-2" style={{ fontFamily: 'var(--font-body)' }}>{s.label}</p>
-                        <p className={`font-display text-[24px] font-light ${s.accent ? 'text-[#8B7355]' : 'text-[#1A1A18]'}`}>{s.value}</p>
-                      </div>
-                    ))}
+                      { label: t('account.statPoints', 'Points'), value: points?.balance?.toLocaleString() || '0', accent: true, icon: Sparkles },
+                      { label: t('account.statStays', 'Total stays'), value: String(profile.totalStays), icon: HomeIcon },
+                      { label: t('account.statNights', 'Nights'), value: String(profile.totalNights), icon: Calendar },
+                      { label: t('account.statTier', 'Tier'), value: profile.loyaltyTier.charAt(0).toUpperCase() + profile.loyaltyTier.slice(1), icon: Award },
+                    ].map((s, i) => {
+                      const Icon = s.icon;
+                      return (
+                        <div key={i} className="rounded-xl border border-[#E8E4DC] bg-white p-5 hover:shadow-sm transition-shadow duration-200">
+                          <div className="flex items-center gap-2 mb-3">
+                            <Icon size={14} className="text-[#9E9A90]" />
+                            <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)' }}>{s.label}</p>
+                          </div>
+                          <p className={`font-display text-[26px] font-light tracking-tight ${s.accent ? 'text-[#8B7355]' : 'text-[#1A1A18]'}`}>{s.value}</p>
+                        </div>
+                      );
+                    })}
                   </div>
 
                   {/* Upcoming trips */}
                   <div>
-                    <h2 className="font-display text-[20px] font-light text-[#1A1A18] mb-4">{t('account.upcomingTrips', 'Upcoming trips')}</h2>
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="font-display text-[20px] font-light text-[#1A1A18]">{t('account.upcomingTrips', 'Upcoming trips')}</h2>
+                      {upcomingTrips.length > 0 && (
+                        <button onClick={() => setActiveTab('trips')} className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#8B7355] hover:text-[#6B5A42] transition-colors flex items-center gap-1">
+                          {t('account.viewAll', 'View all')} <ChevronRight size={12} />
+                        </button>
+                      )}
+                    </div>
                     {upcomingTrips.length > 0 ? (
                       <div className="space-y-3">
-                        {upcomingTrips.map(trip => (
-                          <div key={trip.id} className="flex items-center gap-4 rounded-lg border border-[#E8E4DC] bg-white p-4">
-                            {trip.propertyImage && <img src={trip.propertyImage} alt={`${trip.propertyName || 'Property'} – Portugal Active`} className="w-16 h-16 rounded-md object-cover shrink-0" />}
-                            <div className="flex-1 min-w-0">
-                              <p className="text-[14px] text-[#1A1A18] font-medium truncate">{trip.propertyName}</p>
-                              <p className="text-[12px] text-[#9E9A90] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
-                                {trip.checkIn} → {trip.checkOut} · {trip.nights} {t('account.nights', 'nights')}
-                              </p>
-                            </div>
-                            <ChevronRight size={16} className="text-[#E8E4DC] shrink-0" />
-                          </div>
+                        {upcomingTrips.slice(0, 3).map(trip => (
+                          <TripCard key={trip.id} trip={trip} t={t} />
                         ))}
                       </div>
                     ) : (
-                      <div className="rounded-lg border border-dashed border-[#E8E4DC] bg-white p-8 text-center">
-                        <Calendar size={24} className="text-[#E8E4DC] mx-auto mb-3" />
-                        <p className="text-[14px] text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
-                          {t('account.noUpcoming', 'No upcoming trips. Time to plan your next stay?')}
-                        </p>
-                        <a
-                          href="/homes"
-                          className="inline-flex items-center gap-1.5 mt-4 text-[12px] font-medium tracking-[0.1em] uppercase text-[#8B7355] hover:text-[#6B5A42] transition-colors"
-                        >
-                          {t('account.browseHomes', 'Browse homes')} <ArrowUpRight size={13} />
-                        </a>
-                      </div>
+                      <EmptyState icon={Calendar} message={t('account.noUpcoming', 'No upcoming trips. Time to plan your next stay?')} cta={t('account.browseHomes', 'Browse homes')} href="/homes" />
                     )}
                   </div>
 
-                  {/* Quick referral */}
-                  {profile.referralCode && (
-                    <div className="rounded-lg border border-[#E8E4DC] bg-[#F5F1EB]/50 p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-[14px] text-[#1A1A18] mb-1" style={{ fontWeight: 500 }}>{t('account.referQuick', 'Share your referral code')}</p>
-                          <p className="text-[12px] text-[#6B6860]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
-                            {t('account.referQuickSub', 'Earn 500 points for every friend who books.')}
-                          </p>
+                  {/* Quick actions row */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Friend referral card */}
+                    {profile.referralCode && (
+                      <div className="rounded-xl border border-[#E8E4DC] bg-gradient-to-br from-white to-[#F5F1EB]/30 p-6">
+                        <div className="flex items-start gap-3 mb-3">
+                          <div className="w-9 h-9 rounded-lg bg-[#8B7355]/10 flex items-center justify-center shrink-0">
+                            <Users size={16} className="text-[#8B7355]" />
+                          </div>
+                          <div>
+                            <p className="text-[14px] text-[#1A1A18]" style={{ fontWeight: 500 }}>{t('account.referQuick', 'Refer a friend')}</p>
+                            <p className="text-[12px] text-[#6B6860] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                              {t('account.referQuickSub', 'Earn 500 points for every friend who books.')}
+                            </p>
+                          </div>
                         </div>
                         <button
                           onClick={copyReferralCode}
-                          className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-[#E8E4DC] bg-white text-[12px] font-medium tracking-[0.08em] text-[#1A1A18] hover:border-[#8B7355] transition-colors"
+                          className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#E8E4DC] bg-white text-[12px] font-medium tracking-[0.08em] text-[#1A1A18] hover:border-[#8B7355] transition-colors w-full justify-center"
                         >
-                          {copiedCode ? <Check size={14} className="text-green-600" /> : <Copy size={14} />}
-                          {profile.referralCode}
+                          {copiedCode ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
+                          {copiedCode ? t('account.copied', 'Copied!') : profile.referralCode}
                         </button>
                       </div>
+                    )}
+
+                    {/* Property referral card */}
+                    <div className="rounded-xl border border-[#E8E4DC] bg-gradient-to-br from-white to-[#F5F1EB]/30 p-6">
+                      <div className="flex items-start gap-3 mb-3">
+                        <div className="w-9 h-9 rounded-lg bg-[#C4A87C]/15 flex items-center justify-center shrink-0">
+                          <Building2 size={16} className="text-[#8B7355]" />
+                        </div>
+                        <div>
+                          <p className="text-[14px] text-[#1A1A18]" style={{ fontWeight: 500 }}>{t('account.propertyReferQuick', 'Know a property owner?')}</p>
+                          <p className="text-[12px] text-[#6B6860] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                            {t('account.propertyReferQuickSub', 'Earn up to \u20AC1,000 for every property that joins our portfolio.')}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setActiveTab('refer-property')}
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#1A1A18] text-white text-[12px] font-medium tracking-[0.08em] hover:bg-[#333330] transition-colors w-full justify-center"
+                      >
+                        <Building2 size={13} /> {t('account.referPropertyCTA', 'Refer a property')}
+                      </button>
                     </div>
-                  )}
+                  </div>
                 </div>
               )}
 
-              {/* TRIPS */}
+              {/* ============================================================
+                  MY TRIPS
+                  ============================================================ */}
               {activeTab === 'trips' && (
                 <div className="space-y-8">
                   <div>
@@ -264,7 +341,9 @@ export default function Account() {
                 </div>
               )}
 
-              {/* POINTS */}
+              {/* ============================================================
+                  POINTS
+                  ============================================================ */}
               {activeTab === 'points' && points && (
                 <div className="space-y-8">
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -275,15 +354,18 @@ export default function Account() {
                   </div>
 
                   {points.nextTier && points.pointsToNextTier > 0 && (
-                    <div className="rounded-lg border border-[#E8E4DC] bg-white p-5">
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-[13px] text-[#6B6860]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
-                          {t('account.nextTierProgress', { tier: points.nextTier.charAt(0).toUpperCase() + points.nextTier.slice(1), points: points.pointsToNextTier, defaultValue: `${points.pointsToNextTier} points to ${points.nextTier.charAt(0).toUpperCase() + points.nextTier.slice(1)}` })}
+                    <div className="rounded-xl border border-[#E8E4DC] bg-white p-5">
+                      <div className="flex items-center justify-between mb-3">
+                        <p className="text-[13px] text-[#6B6860]" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
+                          {points.pointsToNextTier.toLocaleString()} {t('account.pointsTo', 'points to')} {points.nextTier.charAt(0).toUpperCase() + points.nextTier.slice(1)}
                         </p>
                         <TierBadge tier={points.nextTier} />
                       </div>
-                      <div className="h-1.5 bg-[#F5F1EB] rounded-full overflow-hidden">
-                        <div className="h-full bg-[#8B7355] rounded-full transition-all duration-500" style={{ width: `${Math.min(100, ((points.balance) / (points.balance + points.pointsToNextTier)) * 100)}%` }} />
+                      <div className="h-2 bg-[#F5F1EB] rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-[#8B7355] to-[#C4A87C] rounded-full transition-all duration-700 ease-out"
+                          style={{ width: `${Math.min(100, ((points.balance) / (points.balance + points.pointsToNextTier)) * 100)}%` }}
+                        />
                       </div>
                     </div>
                   )}
@@ -291,16 +373,16 @@ export default function Account() {
                   <div>
                     <h2 className="font-display text-[20px] font-light text-[#1A1A18] mb-4">{t('account.pointsHistory', 'Points history')}</h2>
                     {pointsLog.data && pointsLog.data.length > 0 ? (
-                      <div className="rounded-lg border border-[#E8E4DC] bg-white overflow-hidden divide-y divide-[#E8E4DC]">
+                      <div className="rounded-xl border border-[#E8E4DC] bg-white overflow-hidden divide-y divide-[#E8E4DC]/60">
                         {pointsLog.data.map(entry => (
-                          <div key={entry.id} className="flex items-center justify-between px-5 py-3.5">
+                          <div key={entry.id} className="flex items-center justify-between px-5 py-4 hover:bg-[#FAFAF7]/50 transition-colors">
                             <div>
                               <p className="text-[13px] text-[#1A1A18]" style={{ fontWeight: 500 }}>{entry.description}</p>
                               <p className="text-[11px] text-[#9E9A90] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
                                 {new Date(entry.createdAt).toLocaleDateString('pt-PT', { day: 'numeric', month: 'short', year: 'numeric' })}
                               </p>
                             </div>
-                            <span className={`text-[14px] font-medium tabular-nums ${entry.points > 0 ? 'text-green-700' : 'text-[#1A1A18]'}`}>
+                            <span className={`text-[15px] font-medium tabular-nums ${entry.points > 0 ? 'text-emerald-600' : 'text-[#1A1A18]'}`}>
                               {entry.points > 0 ? '+' : ''}{entry.points}
                             </span>
                           </div>
@@ -311,44 +393,56 @@ export default function Account() {
                     )}
                   </div>
 
-                  <div className="rounded-lg border border-[#E8E4DC] bg-white p-6">
-                    <h3 className="font-display text-[18px] font-light text-[#1A1A18] mb-3">{t('account.howToEarn', 'How to earn points')}</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="rounded-xl border border-[#E8E4DC] bg-white p-6">
+                    <h3 className="font-display text-[18px] font-light text-[#1A1A18] mb-4">{t('account.howToEarn', 'How to earn points')}</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {[
-                        { pts: '100', desc: t('account.earnBooking', 'Per night booked') },
-                        { pts: '500', desc: t('account.earnReferral', 'Per friend who books') },
-                        { pts: '100', desc: t('account.earnWelcome', 'Welcome bonus') },
-                      ].map((e, i) => (
-                        <div key={i} className="flex items-center gap-3 p-3 rounded-md bg-[#F5F1EB]/50">
-                          <span className="text-[16px] font-display text-[#8B7355]">+{e.pts}</span>
-                          <span className="text-[12px] text-[#6B6860]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{e.desc}</span>
-                        </div>
-                      ))}
+                        { pts: '100', desc: t('account.earnBooking', 'Per night booked'), icon: Calendar },
+                        { pts: '500', desc: t('account.earnReferral', 'Per friend who books'), icon: Users },
+                        { pts: '100', desc: t('account.earnWelcome', 'Welcome bonus'), icon: Sparkles },
+                      ].map((e, i) => {
+                        const Icon = e.icon;
+                        return (
+                          <div key={i} className="flex items-center gap-3 p-4 rounded-lg bg-[#FAFAF7] border border-[#E8E4DC]/50">
+                            <div className="w-8 h-8 rounded-lg bg-[#8B7355]/10 flex items-center justify-center shrink-0">
+                              <Icon size={14} className="text-[#8B7355]" />
+                            </div>
+                            <div>
+                              <span className="text-[15px] font-display text-[#8B7355]">+{e.pts}</span>
+                              <p className="text-[11px] text-[#6B6860] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{e.desc}</p>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* REFERRALS */}
-              {activeTab === 'referrals' && (
+              {/* ============================================================
+                  REFER A FRIEND
+                  ============================================================ */}
+              {activeTab === 'refer-friend' && (
                 <div className="space-y-8">
-                  <div className="rounded-lg border border-[#E8E4DC] bg-white p-8 text-center">
-                    <Gift size={32} className="text-[#8B7355] mx-auto mb-4" />
-                    <h2 className="font-display text-[22px] font-light text-[#1A1A18] mb-2">{t('account.referTitle', 'Refer a friend, earn 500 points')}</h2>
-                    <p className="text-[14px] text-[#6B6860] max-w-md mx-auto mb-6" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                  <div className="rounded-xl border border-[#E8E4DC] bg-white p-8 md:p-10 text-center">
+                    <div className="w-14 h-14 rounded-2xl bg-[#8B7355]/10 flex items-center justify-center mx-auto mb-5">
+                      <Gift size={24} className="text-[#8B7355]" />
+                    </div>
+                    <h2 className="font-display text-[24px] font-light text-[#1A1A18] mb-2 tracking-tight">{t('account.referTitle', 'Refer a friend, earn 500 points')}</h2>
+                    <p className="text-[14px] text-[#6B6860] max-w-md mx-auto mb-8" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
                       {t('account.referBody', 'When your friend completes their first stay, you both earn 500 loyalty points towards future bookings.')}
                     </p>
 
                     {profile.referralCode && (
-                      <div className="flex items-center justify-center gap-3 mb-6">
-                        <div className="px-5 py-3 rounded-md bg-[#F5F1EB] text-[16px] font-medium tracking-[0.1em] text-[#1A1A18]">
+                      <div className="flex items-center justify-center gap-3 mb-8">
+                        <div className="px-6 py-3.5 rounded-lg bg-[#FAFAF7] border border-[#E8E4DC] text-[17px] font-medium tracking-[0.12em] text-[#1A1A18]">
                           {profile.referralCode}
                         </div>
                         <button
                           onClick={copyReferralCode}
-                          className="flex h-[46px] w-[46px] items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] hover:border-[#8B7355] hover:text-[#8B7355] transition-colors"
+                          className="flex h-[50px] w-[50px] items-center justify-center rounded-xl border border-[#E8E4DC] text-[#9E9A90] hover:border-[#8B7355] hover:text-[#8B7355] transition-all duration-200"
                         >
-                          {copiedCode ? <Check size={16} className="text-green-600" /> : <Copy size={16} />}
+                          {copiedCode ? <Check size={18} className="text-emerald-600" /> : <Copy size={18} />}
                         </button>
                       </div>
                     )}
@@ -359,13 +453,13 @@ export default function Account() {
                         value={referralEmail}
                         onChange={e => setReferralEmail(e.target.value)}
                         placeholder={t('account.referEmailPlaceholder', "Friend's email")}
-                        className="flex-1 h-[48px] rounded-md border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[13px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355]"
+                        className="flex-1 h-[50px] rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[13px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200"
                         style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                       />
                       <button
                         onClick={handleSendReferral}
                         disabled={!referralEmail || sendReferral.isPending}
-                        className="h-[48px] px-5 rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase hover:bg-[#333330] transition-colors disabled:opacity-40 flex items-center gap-2"
+                        className="h-[50px] px-6 rounded-lg bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase hover:bg-[#333330] transition-all duration-200 disabled:opacity-40 flex items-center gap-2"
                       >
                         <Send size={13} /> {t('account.referSend', 'Send')}
                       </button>
@@ -375,23 +469,16 @@ export default function Account() {
                   {referralsQuery.data && referralsQuery.data.referrals.length > 0 && (
                     <div>
                       <h3 className="font-display text-[18px] font-light text-[#1A1A18] mb-4">{t('account.referHistory', 'Referral history')}</h3>
-                      <div className="rounded-lg border border-[#E8E4DC] bg-white overflow-hidden divide-y divide-[#E8E4DC]">
+                      <div className="rounded-xl border border-[#E8E4DC] bg-white overflow-hidden divide-y divide-[#E8E4DC]/60">
                         {referralsQuery.data.referrals.map(ref => (
-                          <div key={ref.id} className="flex items-center justify-between px-5 py-3.5">
+                          <div key={ref.id} className="flex items-center justify-between px-5 py-4 hover:bg-[#FAFAF7]/50 transition-colors">
                             <div>
                               <p className="text-[13px] text-[#1A1A18]">{ref.referredEmail}</p>
                               <p className="text-[11px] text-[#9E9A90] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
                                 {new Date(ref.createdAt).toLocaleDateString('pt-PT', { day: 'numeric', month: 'short', year: 'numeric' })}
                               </p>
                             </div>
-                            <span className={`text-[11px] font-medium tracking-[0.08em] uppercase px-2.5 py-1 ${
-                              ref.status === 'completed' ? 'bg-green-50 text-green-700' :
-                              ref.status === 'booked' ? 'bg-[#C4A87C]/15 text-[#8B7355]' :
-                              ref.status === 'signed_up' ? 'bg-blue-50 text-blue-700' :
-                              'bg-[#F5F1EB] text-[#9E9A90]'
-                            }`}>
-                              {ref.status.replace('_', ' ')}
-                            </span>
+                            <StatusBadge status={ref.status} />
                           </div>
                         ))}
                       </div>
@@ -400,7 +487,20 @@ export default function Account() {
                 </div>
               )}
 
-              {/* PROFILE */}
+              {/* ============================================================
+                  REFER A PROPERTY
+                  ============================================================ */}
+              {activeTab === 'refer-property' && (
+                <PropertyReferralTab
+                  t={t}
+                  propRefs={propRefs}
+                  submitPropertyReferral={submitPropertyReferral}
+                />
+              )}
+
+              {/* ============================================================
+                  PROFILE
+                  ============================================================ */}
               {activeTab === 'profile' && (
                 <ProfileTab profile={profile} t={t} updateProfile={updateProfile} />
               )}
@@ -415,14 +515,319 @@ export default function Account() {
   );
 }
 
+/* ================================================================
+   PROPERTY REFERRAL TAB
+   ================================================================ */
+function PropertyReferralTab({ t, propRefs, submitPropertyReferral }: {
+  t: any;
+  propRefs: any;
+  submitPropertyReferral: any;
+}) {
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
+    ownerName: '',
+    ownerEmail: '',
+    ownerPhone: '',
+    propertyAddress: '',
+    propertyCity: '',
+    propertyRegion: '',
+    propertyBedrooms: '',
+    propertyType: '',
+    propertyDescription: '',
+    notes: '',
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!formData.ownerName) return;
+    await submitPropertyReferral.mutateAsync({
+      ...formData,
+      propertyBedrooms: formData.propertyBedrooms ? parseInt(formData.propertyBedrooms) : undefined,
+    });
+    setSubmitted(true);
+    setFormData({
+      ownerName: '', ownerEmail: '', ownerPhone: '', propertyAddress: '',
+      propertyCity: '', propertyRegion: '', propertyBedrooms: '', propertyType: '',
+      propertyDescription: '', notes: '',
+    });
+    setTimeout(() => {
+      setSubmitted(false);
+      setShowForm(false);
+    }, 3000);
+  };
+
+  const updateField = (field: string, value: string) => setFormData(prev => ({ ...prev, [field]: value }));
+
+  return (
+    <div className="space-y-8">
+      {/* Hero section */}
+      <div className="rounded-xl border border-[#E8E4DC] bg-white overflow-hidden">
+        <div className="bg-gradient-to-br from-[#1A1A18] to-[#333330] p-8 md:p-10 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mx-auto mb-5 backdrop-blur-sm">
+            <Building2 size={24} className="text-[#C4A87C]" />
+          </div>
+          <h2 className="font-display text-[26px] md:text-[30px] font-light text-white mb-3 tracking-tight">
+            {t('account.propRefTitle', 'Refer a Property')}
+          </h2>
+          <p className="text-[14px] text-white/70 max-w-lg mx-auto mb-6" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+            {t('account.propRefBody', 'Know a stunning property that deserves the Portugal Active experience? Refer the owner and earn a generous reward when the property joins our curated portfolio.')}
+          </p>
+
+          {/* Reward tiers */}
+          <div className="flex items-center justify-center gap-4 md:gap-6 mb-6">
+            <div className="px-6 py-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 text-center min-w-[140px]">
+              <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-white/50 mb-1">Select</p>
+              <p className="font-display text-[28px] font-light text-[#C4A87C]">{'\u20AC'}500</p>
+              <p className="text-[11px] text-white/40 mt-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>per property</p>
+            </div>
+            <div className="px-6 py-4 rounded-xl bg-white/10 backdrop-blur-sm border border-[#C4A87C]/30 text-center min-w-[140px]">
+              <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#C4A87C] mb-1">Luxury</p>
+              <p className="font-display text-[28px] font-light text-[#C4A87C]">{'\u20AC'}1,000</p>
+              <p className="text-[11px] text-white/40 mt-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>per property</p>
+            </div>
+          </div>
+
+          {!showForm && !submitted && (
+            <button
+              onClick={() => setShowForm(true)}
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg bg-[#C4A87C] text-[#1A1A18] text-[12px] font-medium tracking-[0.1em] uppercase hover:bg-[#D4B88C] transition-all duration-200"
+            >
+              <Building2 size={14} /> {t('account.propRefCTA', 'Refer a property now')}
+            </button>
+          )}
+        </div>
+
+        {/* How it works */}
+        <div className="px-8 py-6 border-t border-[#E8E4DC]">
+          <h3 className="text-[12px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-4" style={{ fontFamily: 'var(--font-body)' }}>
+            {t('account.propRefHowItWorks', 'How it works')}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {[
+              { step: '01', title: t('account.propRefStep1', 'Submit'), desc: t('account.propRefStep1Desc', 'Share the property owner\'s contact details') },
+              { step: '02', title: t('account.propRefStep2', 'We reach out'), desc: t('account.propRefStep2Desc', 'Our team contacts the owner directly') },
+              { step: '03', title: t('account.propRefStep3', 'Evaluation'), desc: t('account.propRefStep3Desc', 'Property is reviewed for our standards') },
+              { step: '04', title: t('account.propRefStep4', 'You earn'), desc: t('account.propRefStep4Desc', 'Receive your reward when the property signs') },
+            ].map((s, i) => (
+              <div key={i} className="flex gap-3">
+                <span className="text-[22px] font-display font-light text-[#E8E4DC]">{s.step}</span>
+                <div>
+                  <p className="text-[13px] text-[#1A1A18]" style={{ fontWeight: 500 }}>{s.title}</p>
+                  <p className="text-[12px] text-[#9E9A90] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{s.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Submission form */}
+      {showForm && !submitted && (
+        <div className="rounded-xl border border-[#E8E4DC] bg-white p-6 md:p-8">
+          <h3 className="font-display text-[20px] font-light text-[#1A1A18] mb-6">
+            {t('account.propRefFormTitle', 'Property referral details')}
+          </h3>
+
+          <div className="space-y-5">
+            {/* Owner info section */}
+            <div>
+              <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-3" style={{ fontFamily: 'var(--font-body)' }}>
+                {t('account.propRefOwnerSection', 'Property owner')}
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <FormField icon={User} label={t('account.propRefOwnerName', 'Owner name')} value={formData.ownerName} onChange={v => updateField('ownerName', v)} required />
+                <FormField icon={Mail} label={t('account.propRefOwnerEmail', 'Email')} value={formData.ownerEmail} onChange={v => updateField('ownerEmail', v)} type="email" />
+                <FormField icon={Phone} label={t('account.propRefOwnerPhone', 'Phone')} value={formData.ownerPhone} onChange={v => updateField('ownerPhone', v)} type="tel" />
+              </div>
+            </div>
+
+            {/* Property info section */}
+            <div>
+              <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-3" style={{ fontFamily: 'var(--font-body)' }}>
+                {t('account.propRefPropertySection', 'Property details')}
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormField icon={MapPinned} label={t('account.propRefAddress', 'Address or location')} value={formData.propertyAddress} onChange={v => updateField('propertyAddress', v)} />
+                <FormField icon={MapPin} label={t('account.propRefCity', 'City')} value={formData.propertyCity} onChange={v => updateField('propertyCity', v)} />
+                <FormField icon={MapPin} label={t('account.propRefRegion', 'Region')} value={formData.propertyRegion} onChange={v => updateField('propertyRegion', v)} />
+                <FormField icon={BedDouble} label={t('account.propRefBedrooms', 'Bedrooms')} value={formData.propertyBedrooms} onChange={v => updateField('propertyBedrooms', v)} type="number" />
+              </div>
+              <div className="grid grid-cols-1 gap-4 mt-4">
+                <div>
+                  <label className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#9E9A90] mb-1.5 block" style={{ fontFamily: 'var(--font-body)' }}>
+                    {t('account.propRefType', 'Property type')}
+                  </label>
+                  <select
+                    value={formData.propertyType}
+                    onChange={e => updateField('propertyType', e.target.value)}
+                    className="w-full h-[46px] rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[13px] text-[#1A1A18] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200 appearance-none"
+                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                  >
+                    <option value="">{t('account.propRefSelectType', 'Select type...')}</option>
+                    <option value="villa">Villa</option>
+                    <option value="townhouse">Townhouse</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="farmhouse">Farmhouse / Quinta</option>
+                    <option value="manor">Manor House</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#9E9A90] mb-1.5 block" style={{ fontFamily: 'var(--font-body)' }}>
+                    {t('account.propRefDescription', 'Brief description')}
+                  </label>
+                  <textarea
+                    value={formData.propertyDescription}
+                    onChange={e => updateField('propertyDescription', e.target.value)}
+                    placeholder={t('account.propRefDescPlaceholder', 'What makes this property special? Pool, views, location...')}
+                    rows={3}
+                    className="w-full rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 py-3 text-[13px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200 resize-none"
+                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#9E9A90] mb-1.5 block" style={{ fontFamily: 'var(--font-body)' }}>
+                    {t('account.propRefNotes', 'Additional notes')}
+                  </label>
+                  <textarea
+                    value={formData.notes}
+                    onChange={e => updateField('notes', e.target.value)}
+                    placeholder={t('account.propRefNotesPlaceholder', 'How do you know the owner? Any context for our team...')}
+                    rows={2}
+                    className="w-full rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 py-3 text-[13px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200 resize-none"
+                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                onClick={handleSubmit}
+                disabled={!formData.ownerName || submitPropertyReferral.isPending}
+                className="h-[48px] px-8 rounded-lg bg-[#1A1A18] text-[#FAFAF7] text-[12px] font-medium tracking-[0.1em] uppercase hover:bg-[#333330] transition-all duration-200 disabled:opacity-40 flex items-center gap-2"
+              >
+                {submitPropertyReferral.isPending ? (
+                  <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <Send size={13} />
+                )}
+                {t('account.propRefSubmit', 'Submit referral')}
+              </button>
+              <button
+                onClick={() => setShowForm(false)}
+                className="h-[48px] px-6 rounded-lg border border-[#E8E4DC] text-[12px] font-medium tracking-[0.1em] uppercase text-[#6B6860] hover:bg-[#F5F1EB] transition-all duration-200"
+              >
+                {t('account.cancel', 'Cancel')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success message */}
+      {submitted && (
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-6 text-center">
+          <CheckCircle2 size={32} className="text-emerald-600 mx-auto mb-3" />
+          <h3 className="font-display text-[18px] font-light text-emerald-800 mb-1">
+            {t('account.propRefSuccess', 'Referral submitted successfully!')}
+          </h3>
+          <p className="text-[13px] text-emerald-600" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+            {t('account.propRefSuccessBody', 'Our team will review and contact the property owner. You\'ll be notified of any updates.')}
+          </p>
+        </div>
+      )}
+
+      {/* Referral history */}
+      {propRefs && propRefs.referrals.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-display text-[18px] font-light text-[#1A1A18]">{t('account.propRefHistory', 'Your property referrals')}</h3>
+            {propRefs.totalSigned > 0 && (
+              <div className="flex items-center gap-2 text-[12px]">
+                <span className="text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('account.propRefTotalEarned', 'Total earned')}:</span>
+                <span className="font-display text-[#8B7355] text-[15px]">{'\u20AC'}{propRefs.totalReward.toLocaleString()}</span>
+              </div>
+            )}
+          </div>
+          <div className="rounded-xl border border-[#E8E4DC] bg-white overflow-hidden divide-y divide-[#E8E4DC]/60">
+            {propRefs.referrals.map((ref: any) => (
+              <div key={ref.id} className="px-5 py-4 hover:bg-[#FAFAF7]/50 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-[13px] text-[#1A1A18] truncate" style={{ fontWeight: 500 }}>
+                        {ref.ownerName}
+                      </p>
+                      {ref.tier && (
+                        <span className={`text-[9px] font-medium tracking-[0.1em] uppercase px-2 py-0.5 rounded-full ${
+                          ref.tier === 'luxury' ? 'bg-[#C4A87C]/15 text-[#8B7355] border border-[#C4A87C]/30' : 'bg-[#F5F1EB] text-[#6B6860] border border-[#E8E4DC]'
+                        }`}>
+                          {ref.tier}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-[#9E9A90] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                      {[ref.propertyCity, ref.propertyRegion].filter(Boolean).join(', ') || 'Portugal'} · {new Date(ref.createdAt).toLocaleDateString('pt-PT', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0 ml-3">
+                    {ref.rewardAmount > 0 && (
+                      <span className="text-[14px] font-display text-[#8B7355]">
+                        {'\u20AC'}{ref.rewardAmount}
+                        {ref.rewardPaid && <CheckCircle2 size={12} className="inline ml-1 text-emerald-500" />}
+                      </span>
+                    )}
+                    <StatusBadge status={ref.status} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ================================================================
+   FORM FIELD COMPONENT
+   ================================================================ */
+function FormField({ icon: Icon, label, value, onChange, type = 'text', required }: {
+  icon: typeof User;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  type?: string;
+  required?: boolean;
+}) {
+  return (
+    <div>
+      <label className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#9E9A90] mb-1.5 flex items-center gap-1.5" style={{ fontFamily: 'var(--font-body)' }}>
+        <Icon size={12} /> {label} {required && <span className="text-[#C4A87C]">*</span>}
+      </label>
+      <input
+        type={type}
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        className="w-full h-[46px] rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[13px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200"
+        style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+      />
+    </div>
+  );
+}
+
+/* ================================================================
+   TRIP CARD
+   ================================================================ */
 function TripCard({ trip, t, isPast }: { trip: any; t: any; isPast?: boolean }) {
   return (
-    <div className="flex items-center gap-4 rounded-lg border border-[#E8E4DC] bg-white p-4">
+    <div className="flex items-center gap-4 rounded-xl border border-[#E8E4DC] bg-white p-4 hover:shadow-sm transition-all duration-200">
       {trip.propertyImage ? (
-        <img src={trip.propertyImage} alt={`${trip.propertyName || 'Property'} – Portugal Active`} className="w-20 h-20 rounded-md object-cover shrink-0" />
+        <img src={trip.propertyImage} alt={`${trip.propertyName || 'Property'} – Portugal Active`} className="w-20 h-20 rounded-lg object-cover shrink-0" />
       ) : (
-        <div className="w-20 h-20 rounded-md bg-[#F5F1EB] flex items-center justify-center shrink-0">
-          <HomeIcon size={20} className="text-[#E8E4DC]" />
+        <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-[#F5F1EB] to-[#E8E4DC] flex items-center justify-center shrink-0">
+          <HomeIcon size={22} className="text-[#C4A87C]" />
         </div>
       )}
       <div className="flex-1 min-w-0">
@@ -432,39 +837,56 @@ function TripCard({ trip, t, isPast }: { trip: any; t: any; isPast?: boolean }) 
           {trip.checkIn} → {trip.checkOut} · {trip.nights} {t('account.nights', 'nights')} · {trip.guests} {t('account.guests', 'guests')}
         </p>
         {trip.pointsEarned > 0 && (
-          <p className="text-[11px] text-[#8B7355] mt-1">+{trip.pointsEarned} {t('account.pointsLabel', 'points')}</p>
+          <p className="text-[11px] text-[#8B7355] mt-1 flex items-center gap-1">
+            <Sparkles size={10} /> +{trip.pointsEarned} {t('account.pointsLabel', 'points')}
+          </p>
         )}
       </div>
-      {isPast && trip.status === 'completed' && !trip.rating && (
-        <button className="text-[11px] font-medium tracking-[0.08em] uppercase text-[#8B7355] hover:text-[#6B5A42] transition-colors whitespace-nowrap">
-          <Star size={13} className="inline mr-1" />{t('account.leaveReview', 'Review')}
-        </button>
-      )}
-      {trip.status === 'upcoming' && (
-        <span className="text-[10px] font-medium tracking-[0.1em] uppercase text-[#8B7355] bg-[#C4A87C]/10 px-2.5 py-1 whitespace-nowrap">
-          {t('account.confirmed', 'Confirmed')}
-        </span>
-      )}
+      <div className="shrink-0 flex flex-col items-end gap-2">
+        {isPast && trip.status === 'completed' && !trip.rating && (
+          <button className="text-[11px] font-medium tracking-[0.08em] uppercase text-[#8B7355] hover:text-[#6B5A42] transition-colors whitespace-nowrap flex items-center gap-1">
+            <Star size={12} />{t('account.leaveReview', 'Review')}
+          </button>
+        )}
+        {trip.status === 'upcoming' && (
+          <span className="text-[10px] font-medium tracking-[0.1em] uppercase text-[#8B7355] bg-[#C4A87C]/10 px-3 py-1.5 rounded-full whitespace-nowrap border border-[#C4A87C]/20">
+            {t('account.confirmed', 'Confirmed')}
+          </span>
+        )}
+        {trip.totalPrice > 0 && (
+          <span className="text-[13px] font-display text-[#1A1A18]">
+            {'\u20AC'}{trip.totalPrice.toLocaleString()}
+          </span>
+        )}
+      </div>
     </div>
   );
 }
 
+/* ================================================================
+   STAT CARD
+   ================================================================ */
 function StatCard({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
-    <div className="rounded-lg border border-[#E8E4DC] bg-white p-5">
-      <p className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#9E9A90] mb-2" style={{ fontFamily: 'var(--font-body)' }}>{label}</p>
-      <p className={`font-display text-[24px] font-light ${accent ? 'text-[#8B7355]' : 'text-[#1A1A18]'}`}>{value}</p>
+    <div className="rounded-xl border border-[#E8E4DC] bg-white p-5 hover:shadow-sm transition-shadow duration-200">
+      <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2" style={{ fontFamily: 'var(--font-body)' }}>{label}</p>
+      <p className={`font-display text-[26px] font-light tracking-tight ${accent ? 'text-[#8B7355]' : 'text-[#1A1A18]'}`}>{value}</p>
     </div>
   );
 }
 
+/* ================================================================
+   EMPTY STATE
+   ================================================================ */
 function EmptyState({ icon: Icon, message, cta, href }: { icon: typeof MapPin; message: string; cta?: string; href?: string }) {
   return (
-    <div className="rounded-lg border border-dashed border-[#E8E4DC] bg-white p-8 text-center">
-      <Icon size={24} className="text-[#E8E4DC] mx-auto mb-3" />
+    <div className="rounded-xl border border-dashed border-[#E8E4DC] bg-white p-10 text-center">
+      <div className="w-12 h-12 rounded-xl bg-[#F5F1EB] flex items-center justify-center mx-auto mb-4">
+        <Icon size={20} className="text-[#C4A87C]" />
+      </div>
       <p className="text-[14px] text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{message}</p>
       {cta && href && (
-        <a href={href} className="inline-flex items-center gap-1.5 mt-4 text-[12px] font-medium tracking-[0.1em] uppercase text-[#8B7355] hover:text-[#6B5A42] transition-colors">
+        <a href={href} className="inline-flex items-center gap-1.5 mt-5 text-[12px] font-medium tracking-[0.1em] uppercase text-[#8B7355] hover:text-[#6B5A42] transition-colors">
           {cta} <ArrowUpRight size={13} />
         </a>
       )}
@@ -472,6 +894,9 @@ function EmptyState({ icon: Icon, message, cta, href }: { icon: typeof MapPin; m
   );
 }
 
+/* ================================================================
+   PROFILE TAB
+   ================================================================ */
 function ProfileTab({ profile, t, updateProfile }: { profile: any; t: any; updateProfile: any }) {
   const [name, setName] = useState(profile.name || '');
   const [phone, setPhone] = useState(profile.phone || '');
@@ -486,7 +911,7 @@ function ProfileTab({ profile, t, updateProfile }: { profile: any; t: any; updat
 
   return (
     <div className="space-y-8">
-      <div className="rounded-lg border border-[#E8E4DC] bg-white p-6 md:p-8">
+      <div className="rounded-xl border border-[#E8E4DC] bg-white p-6 md:p-8">
         <h2 className="font-display text-[20px] font-light text-[#1A1A18] mb-6">{t('account.profileInfo', 'Personal information')}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div>
@@ -497,7 +922,7 @@ function ProfileTab({ profile, t, updateProfile }: { profile: any; t: any; updat
               type="text"
               value={name}
               onChange={e => setName(e.target.value)}
-              className="w-full h-[52px] rounded-md border border-[#E8E4DC] bg-white px-4 text-[14px] text-[#1A1A18] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all"
+              className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[14px] text-[#1A1A18] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200"
               style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
             />
           </div>
@@ -509,7 +934,7 @@ function ProfileTab({ profile, t, updateProfile }: { profile: any; t: any; updat
               type="email"
               value={profile.email || ''}
               disabled
-              className="w-full h-[52px] rounded-md border border-[#E8E4DC] bg-[#F5F1EB]/50 px-4 text-[14px] text-[#9E9A90] cursor-not-allowed"
+              className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-[#F5F1EB] px-4 text-[14px] text-[#9E9A90] cursor-not-allowed"
               style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
             />
           </div>
@@ -521,8 +946,8 @@ function ProfileTab({ profile, t, updateProfile }: { profile: any; t: any; updat
               type="tel"
               value={phone}
               onChange={e => setPhone(e.target.value)}
-              placeholder="+351..."
-              className="w-full h-[52px] rounded-md border border-[#E8E4DC] bg-white px-4 text-[14px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all"
+              placeholder="+351 ..."
+              className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[14px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200"
               style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
             />
           </div>
@@ -534,37 +959,39 @@ function ProfileTab({ profile, t, updateProfile }: { profile: any; t: any; updat
               type="text"
               value={nationality}
               onChange={e => setNationality(e.target.value)}
-              placeholder="e.g. Portuguese"
-              className="w-full h-[52px] rounded-md border border-[#E8E4DC] bg-white px-4 text-[14px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all"
+              placeholder="Portuguese, British, German..."
+              className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[14px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200"
               style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
             />
           </div>
         </div>
+
         <div className="mt-6 flex items-center gap-3">
           <button
             onClick={handleSave}
             disabled={updateProfile.isPending}
-            className="rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#333330] transition-colors disabled:opacity-40 min-h-[48px] inline-flex items-center gap-2"
+            className="h-[48px] px-8 rounded-lg bg-[#1A1A18] text-[#FAFAF7] text-[12px] font-medium tracking-[0.1em] uppercase hover:bg-[#333330] transition-all duration-200 disabled:opacity-40 flex items-center gap-2"
           >
-            {saved ? <><Check size={14} /> {t('account.saved', 'Saved')}</> : t('account.saveChanges', 'Save changes')}
+            {updateProfile.isPending ? (
+              <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : saved ? (
+              <Check size={14} className="text-emerald-400" />
+            ) : null}
+            {saved ? t('account.saved', 'Saved') : t('account.saveChanges', 'Save changes')}
           </button>
         </div>
       </div>
 
-      <div className="rounded-lg border border-[#E8E4DC] bg-white p-6 md:p-8">
-        <h2 className="font-display text-[20px] font-light text-[#1A1A18] mb-2">{t('account.loginMethod', 'Login method')}</h2>
-        <div className="flex items-center gap-3 mt-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F5F1EB]">
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-            </svg>
+      <div className="rounded-xl border border-[#E8E4DC] bg-white p-6 md:p-8">
+        <h2 className="font-display text-[20px] font-light text-[#1A1A18] mb-4">{t('account.accountInfo', 'Account details')}</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[13px]">
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-[#FAFAF7] border border-[#E8E4DC]/50">
+            <span className="text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('account.loginMethod', 'Login method')}:</span>
+            <span className="text-[#1A1A18] capitalize" style={{ fontWeight: 500 }}>{profile.loginMethod || 'Google'}</span>
           </div>
-          <div>
-            <p className="text-[14px] text-[#1A1A18]" style={{ fontWeight: 500 }}>Google</p>
-            <p className="text-[12px] text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{profile.email}</p>
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-[#FAFAF7] border border-[#E8E4DC]/50">
+            <span className="text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('account.referCode', 'Referral code')}:</span>
+            <span className="text-[#1A1A18] font-medium tracking-[0.08em]">{profile.referralCode || 'N/A'}</span>
           </div>
         </div>
       </div>

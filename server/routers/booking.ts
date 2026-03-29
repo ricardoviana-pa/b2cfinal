@@ -7,6 +7,81 @@ import {
   createBEInstantReservation,
   getPaymentProvider,
 } from "../services/guesty-booking";
+import * as db from "../db";
+
+/**
+ * Save a trip to the customer's account and award loyalty points.
+ * Called after a successful reservation (inquiry or instant).
+ * Silently skipped when user is not authenticated.
+ */
+async function recordTripForUser(ctx: any, params: {
+  listingId: string;
+  propertyName: string;
+  propertyImage?: string;
+  destination?: string;
+  checkIn: string;
+  checkOut: string;
+  guests: number;
+  totalPrice?: number;
+  currency?: string;
+  confirmationCode: string;
+  guestyReservationId: string;
+  status: "upcoming" | "active" | "completed" | "cancelled";
+}) {
+  try {
+    const user = ctx?.user;
+    if (!user?.id) return;
+
+    const nights = Math.max(
+      1,
+      Math.ceil(
+        (new Date(params.checkOut).getTime() - new Date(params.checkIn).getTime()) / 86400000
+      )
+    );
+
+    // Insert trip
+    await db.createCustomerTrip({
+      userId: user.id,
+      propertyName: params.propertyName || "Portugal Active Home",
+      propertyImage: params.propertyImage || null,
+      destination: params.destination || null,
+      checkIn: params.checkIn,
+      checkOut: params.checkOut,
+      guests: params.guests,
+      nights,
+      totalPrice: params.totalPrice ? Math.round(params.totalPrice) : 0,
+      currency: params.currency || "EUR",
+      status: params.status,
+      confirmationCode: params.confirmationCode,
+      guestyReservationId: params.guestyReservationId,
+      pointsEarned: nights * 100,
+    });
+
+    // Award loyalty points (100 per night)
+    const pointsToAward = nights * 100;
+    await db.addPoints(
+      user.id,
+      pointsToAward,
+      "booking",
+      `Booking: ${params.propertyName} (${nights} nights)`,
+      params.guestyReservationId
+    );
+
+    // Update profile stay counters
+    const profile = await db.getCustomerProfile(user.id);
+    if (profile) {
+      await db.updateCustomerProfile(user.id, {
+        totalStays: (profile.totalStays || 0) + 1,
+        totalNights: (profile.totalNights || 0) + nights,
+      } as any);
+    }
+
+    console.info(`[Booking] Trip saved for user ${user.id}: ${params.propertyName}, +${pointsToAward} pts`);
+  } catch (err: any) {
+    // Never let trip recording break the booking flow
+    console.warn(`[Booking] Failed to record trip for user: ${err.message}`);
+  }
+}
 
 export const bookingRouter = router({
   checkAvailability: publicProcedure
@@ -53,11 +128,30 @@ export const bookingRouter = router({
         guestEmail: z.string().email(),
         guestPhone: z.string().min(5),
         notes: z.string().optional(),
+        propertyName: z.string().optional(),
+        propertyImage: z.string().optional(),
+        destination: z.string().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       try {
-        return await createReservation(input);
+        const result = await createReservation(input);
+
+        // Record to customer account (non-blocking)
+        await recordTripForUser(ctx, {
+          listingId: input.listingId,
+          propertyName: input.propertyName || "Portugal Active Home",
+          propertyImage: input.propertyImage,
+          destination: input.destination,
+          checkIn: input.checkIn,
+          checkOut: input.checkOut,
+          guests: input.guests,
+          confirmationCode: result.confirmationCode,
+          guestyReservationId: result.reservationId,
+          status: "upcoming",
+        });
+
+        return result;
       } catch (error: any) {
         throw new Error(error.message || "Failed to create reservation");
       }
@@ -109,12 +203,42 @@ export const bookingRouter = router({
         guestName: z.string().min(2),
         guestEmail: z.string().email(),
         guestPhone: z.string().min(5),
+        // Extra fields for trip recording
+        listingId: z.string().optional(),
+        propertyName: z.string().optional(),
+        propertyImage: z.string().optional(),
+        destination: z.string().optional(),
+        checkIn: z.string().optional(),
+        checkOut: z.string().optional(),
+        guests: z.number().optional(),
+        totalPrice: z.number().optional(),
+        currency: z.string().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       if (!isBEApiConfigured()) throw new Error("Booking Engine API not configured");
       try {
-        return await createBEInstantReservation(input);
+        const result = await createBEInstantReservation(input);
+
+        // Record to customer account (non-blocking)
+        if (input.checkIn && input.checkOut) {
+          await recordTripForUser(ctx, {
+            listingId: input.listingId || "",
+            propertyName: input.propertyName || "Portugal Active Home",
+            propertyImage: input.propertyImage,
+            destination: input.destination,
+            checkIn: input.checkIn,
+            checkOut: input.checkOut,
+            guests: input.guests || 2,
+            totalPrice: input.totalPrice,
+            currency: input.currency,
+            confirmationCode: result.confirmationCode,
+            guestyReservationId: result.reservationId,
+            status: "upcoming",
+          });
+        }
+
+        return result;
       } catch (error: any) {
         throw new Error(error.message || "Failed to create reservation");
       }

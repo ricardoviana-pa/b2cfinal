@@ -17,6 +17,7 @@ import {
   loyaltyPointsLog, InsertLoyaltyPointsLog,
   referrals, InsertReferral,
   customerTrips, InsertCustomerTrip,
+  propertyReferrals, InsertPropertyReferral,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -656,6 +657,60 @@ export async function listAllTrips() {
   const db = await getDb();
   if (!db) return [];
   return db.select().from(customerTrips).orderBy(desc(customerTrips.createdAt));
+}
+
+/* ================================================================
+   PROPERTY REFERRALS
+   ================================================================ */
+export async function listPropertyReferrals(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(propertyReferrals).where(eq(propertyReferrals.referrerId, userId)).orderBy(desc(propertyReferrals.createdAt));
+}
+
+export async function createPropertyReferral(data: InsertPropertyReferral) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(propertyReferrals).values(data);
+  return { id: result[0].insertId };
+}
+
+export async function listAllPropertyReferrals() {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select({
+      id: propertyReferrals.id,
+      referrerId: propertyReferrals.referrerId,
+      ownerName: propertyReferrals.ownerName,
+      ownerEmail: propertyReferrals.ownerEmail,
+      ownerPhone: propertyReferrals.ownerPhone,
+      propertyAddress: propertyReferrals.propertyAddress,
+      propertyCity: propertyReferrals.propertyCity,
+      propertyRegion: propertyReferrals.propertyRegion,
+      propertyBedrooms: propertyReferrals.propertyBedrooms,
+      propertyType: propertyReferrals.propertyType,
+      propertyDescription: propertyReferrals.propertyDescription,
+      notes: propertyReferrals.notes,
+      tier: propertyReferrals.tier,
+      status: propertyReferrals.status,
+      rewardAmount: propertyReferrals.rewardAmount,
+      rewardPaid: propertyReferrals.rewardPaid,
+      adminNotes: propertyReferrals.adminNotes,
+      createdAt: propertyReferrals.createdAt,
+      updatedAt: propertyReferrals.updatedAt,
+      referrerName: users.name,
+      referrerEmail: users.email,
+    })
+    .from(propertyReferrals)
+    .innerJoin(users, eq(users.id, propertyReferrals.referrerId))
+    .orderBy(desc(propertyReferrals.createdAt));
+}
+
+export async function updatePropertyReferral(id: number, data: Partial<InsertPropertyReferral & { adminNotes: string }>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(propertyReferrals).set(data).where(eq(propertyReferrals.id, id));
 }
 
 /* ================================================================

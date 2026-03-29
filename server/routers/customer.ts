@@ -93,9 +93,85 @@ export const customerRouter = router({
       return { success: true };
     }),
 
+  /* ================================================================
+     PROPERTY REFERRALS — Refer a property to PA's portfolio
+     ================================================================ */
+
+  getPropertyReferrals: protectedProcedure.query(async ({ ctx }) => {
+    const refs = await db.listPropertyReferrals(ctx.user.id);
+    const signed = refs.filter(r => r.status === "signed");
+    const totalReward = signed.reduce((s, r) => s + (r.rewardAmount || 0), 0);
+    const paidReward = signed.filter(r => r.rewardPaid).reduce((s, r) => s + (r.rewardAmount || 0), 0);
+    return {
+      referrals: refs,
+      totalSubmitted: refs.length,
+      totalSigned: signed.length,
+      totalReward,
+      paidReward,
+      pendingReward: totalReward - paidReward,
+    };
+  }),
+
+  submitPropertyReferral: protectedProcedure
+    .input(z.object({
+      ownerName: z.string().min(2),
+      ownerEmail: z.string().email().optional().or(z.literal("")),
+      ownerPhone: z.string().min(5).optional().or(z.literal("")),
+      propertyAddress: z.string().optional().or(z.literal("")),
+      propertyCity: z.string().optional().or(z.literal("")),
+      propertyRegion: z.string().optional().or(z.literal("")),
+      propertyBedrooms: z.number().int().min(0).max(50).optional(),
+      propertyType: z.string().optional().or(z.literal("")),
+      propertyDescription: z.string().optional().or(z.literal("")),
+      notes: z.string().optional().or(z.literal("")),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const result = await db.createPropertyReferral({
+        referrerId: ctx.user.id,
+        ownerName: input.ownerName,
+        ownerEmail: input.ownerEmail || null,
+        ownerPhone: input.ownerPhone || null,
+        propertyAddress: input.propertyAddress || null,
+        propertyCity: input.propertyCity || null,
+        propertyRegion: input.propertyRegion || null,
+        propertyBedrooms: input.propertyBedrooms ?? null,
+        propertyType: input.propertyType || null,
+        propertyDescription: input.propertyDescription || null,
+        notes: input.notes || null,
+        status: "submitted",
+        rewardAmount: 0,
+      });
+      return { success: true, id: result.id };
+    }),
+
+  /* ================================================================
+     ADMIN
+     ================================================================ */
   adminListCustomers: adminProcedure.query(() => db.listAllCustomers()),
   adminListReferrals: adminProcedure.query(() => db.listAllReferrals()),
   adminListTrips: adminProcedure.query(() => db.listAllTrips()),
+  adminListPropertyReferrals: adminProcedure.query(() => db.listAllPropertyReferrals()),
+
+  adminUpdatePropertyReferral: adminProcedure
+    .input(z.object({
+      id: z.number(),
+      status: z.enum(["submitted", "contacted", "under_review", "signed", "rejected"]).optional(),
+      tier: z.enum(["select", "luxury"]).optional(),
+      rewardAmount: z.number().optional(),
+      rewardPaid: z.boolean().optional(),
+      adminNotes: z.string().optional(),
+    }))
+    .mutation(async ({ input }) => {
+      const { id, ...data } = input;
+      const update: Record<string, unknown> = {};
+      if (data.status) update.status = data.status;
+      if (data.tier) update.tier = data.tier;
+      if (data.rewardAmount !== undefined) update.rewardAmount = data.rewardAmount;
+      if (data.rewardPaid !== undefined) update.rewardPaid = data.rewardPaid;
+      if (data.adminNotes !== undefined) update.adminNotes = data.adminNotes;
+      await db.updatePropertyReferral(id, update as any);
+      return { success: true };
+    }),
 });
 
 function getNextTier(current: string): string | null {

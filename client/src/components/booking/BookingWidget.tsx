@@ -310,6 +310,8 @@ export default function BookingWidget({
         guestName: `${guestFirstName} ${guestLastName}`,
         guestEmail, guestPhone,
         notes: (notes + upsellNote).trim() || undefined,
+        propertyName,
+        destination,
       });
       setConfirmation(data.confirmationCode);
       setSuccessMode("request");
@@ -922,6 +924,7 @@ export default function BookingWidget({
               total={effectiveQuote?.total ?? quote.total}
               currency={quote.currency || currency}
               propertyName={propertyName}
+              destination={destination}
               guestName={`${guestFirstName} ${guestLastName}`}
               guestEmail={guestEmail}
               guestPhone={guestPhone}

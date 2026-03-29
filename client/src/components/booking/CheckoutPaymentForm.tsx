@@ -46,6 +46,7 @@ interface CheckoutPaymentFormProps {
   guestEmail: string;
   guestPhone: string;
   propertyName: string;
+  destination?: string;
   notes?: string;
   onSuccess: (confirmationCode: string) => void;
   onRequestFallbackSuccess?: (confirmationCode: string) => void;
@@ -67,7 +68,9 @@ function PaymentFormInner({
   onRequestFallbackSuccess,
   onCancel,
   notes,
-}: Omit<CheckoutPaymentFormProps, "currency" | "propertyName">) {
+  propertyName,
+  destination,
+}: Omit<CheckoutPaymentFormProps, "currency">) {
   const { t } = useTranslation();
   const stripe = useStripe();
   const elements = useElements();
@@ -125,6 +128,13 @@ function PaymentFormInner({
           guestName,
           guestEmail,
           guestPhone,
+          listingId,
+          propertyName,
+          destination,
+          checkIn,
+          checkOut,
+          guests,
+          totalPrice: total,
         }),
         new Promise<never>((_, reject) => {
           setTimeout(() => reject(new Error("Payment provider timeout")), 35000);
@@ -144,6 +154,8 @@ function PaymentFormInner({
             guestEmail,
             guestPhone,
             notes: notes || undefined,
+            propertyName,
+            destination,
           });
           onRequestFallbackSuccess(fallback.confirmationCode);
           return;
