@@ -51,7 +51,7 @@ interface QuoteData {
 }
 
 type Step = "dates" | "quote" | "details" | "payment" | "success";
-type SuccessMode = "confirmed" | "request" | "payment-fallback";
+type SuccessMode = "confirmed";
 
 function parseBookingError(msg: string): string {
   if (!msg) return i18n.t("errors.generic");
@@ -118,7 +118,7 @@ export default function BookingWidget({
   const [guestPhone, setGuestPhone] = useState("");
   const [notes, setNotes] = useState("");
   const [confirmation, setConfirmation] = useState("");
-  const [successMode, setSuccessMode] = useState<SuccessMode>("request");
+  const [successMode, setSuccessMode] = useState<SuccessMode>("confirmed");
   const [beQuoteError, setBeQuoteError] = useState("");
   const quoteRequestRef = useRef(0);
   const lastQuoteKeyRef = useRef("");
@@ -148,7 +148,6 @@ export default function BookingWidget({
   const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
   const canPayOnSite = isBECheckoutAvailable && !!stripeConfig?.publishableKey;
   const createBEQuote = trpc.booking.createBEQuote.useMutation();
-  const createReservation = trpc.booking.createReservation.useMutation();
 
   useEffect(() => {
     quoteRef.current = quote;
@@ -289,49 +288,10 @@ export default function BookingWidget({
     widgetRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [step]);
 
-  const handleSubmitBooking = useCallback(async () => {
-    if (!guestFirstName || !guestLastName || !guestEmail || !guestPhone) {
-      setError(t("bookingWidget.fillRequired"));
-      return;
-    }
-    if (!isValidEmail(guestEmail)) {
-      setError(t("errors.invalidEmail"));
-      return;
-    }
-    if (!isValidPhone(guestPhone)) {
-      setError(t("errors.invalidPhone"));
-      return;
-    }
-    setLoading(true);
-    setError("");
-    try {
-      const data = await createReservation.mutateAsync({
-        listingId: guestyId, checkIn, checkOut, guests,
-        guestName: `${guestFirstName} ${guestLastName}`,
-        guestEmail, guestPhone,
-        notes: (notes + upsellNote).trim() || undefined,
-        propertyName,
-        destination,
-      });
-      setConfirmation(data.confirmationCode);
-      setSuccessMode("request");
-      setStep("success");
-    } catch (err: any) {
-      setError(parseBookingError(err?.message || i18n.t("errors.unableCompleteReservation")));
-    } finally {
-      setLoading(false);
-    }
-  }, [guestyId, checkIn, checkOut, guests, guestFirstName, guestLastName, guestEmail, guestPhone, notes, createReservation, t]);
 
   const handlePaymentSuccess = useCallback((code: string) => {
     setConfirmation(code);
     setSuccessMode("confirmed");
-    setStep("success");
-  }, []);
-
-  const handleFallbackRequestSuccess = useCallback((code: string) => {
-    setConfirmation(code);
-    setSuccessMode("payment-fallback");
     setStep("success");
   }, []);
 
@@ -376,29 +336,13 @@ export default function BookingWidget({
             <Check className="w-6 h-6 text-white" />
           </div>
           <p className="text-white text-[18px]" style={{ fontFamily: "var(--font-display)" }}>
-            {successMode === "confirmed"
-              ? t("bookingWidget.confirmed")
-              : t("bookingWidget.requestSent")}
+            {t("bookingWidget.confirmed")}
           </p>
         </div>
         <div className="p-6 space-y-4 text-center">
           <p className="text-[#1A1A18] font-medium text-lg">{confirmation}</p>
-          {successMode === "payment-fallback" && (
-            <div className="bg-[#F5F1EB] border border-[#E8E4DC] p-3 rounded-lg">
-              <p className="text-[13px] text-[#1A1A18] font-medium">
-                {/* TODO: i18n */}
-                Payment was not processed
-              </p>
-              <p className="text-[12px] text-[#6B6860] mt-1 leading-relaxed">
-                {/* TODO: i18n */}
-                Our team will contact you to finalise the reservation and arrange payment.
-              </p>
-            </div>
-          )}
           <p className="text-[13px] text-[#6B6860] leading-relaxed">
-            {successMode === "confirmed"
-              ? t("bookingWidget.confirmedBody")
-              : t("bookingWidget.requestBody")}
+            {t("bookingWidget.confirmedBody")}
           </p>
           <div className="bg-[#F5F1EB] p-4 text-left space-y-1">
             <p className="text-[12px] text-[#9E9A90]">{t("bookingWidget.propertyLabel")}</p>
@@ -599,12 +543,6 @@ export default function BookingWidget({
                   >
                     {t("property.retry")}
                   </button>
-                  <button
-                    onClick={() => { setError(""); setStep("details"); }}
-                    className="w-full rounded-full border border-[#E8E4DC] text-[#1A1A18] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 min-h-[48px] hover:bg-[#F5F1EB]"
-                  >
-                    {t("bookingWidget.sendRequestWithoutPrice")}
-                  </button>
                 </div>
               </div>
             )}
@@ -636,18 +574,17 @@ export default function BookingWidget({
                 </div>
               )}
             </div>
-            <button
-              onClick={() => { setError(""); setStep("details"); }}
-              className="w-full rounded-full bg-[#1A1A18] text-white text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#333] transition-colors"
-            >
-              {t("bookingWidget.sendRequestWithoutPrice")}
-            </button>
-            <button
-              onClick={() => setStep("dates")}
-              className="w-full rounded-full border border-[#E8E4DC] text-[#1A1A18] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 mt-2 hover:bg-[#F5F4F0] transition-colors"
-            >
-              {t("bookingWidget.changeDates")}
-            </button>
+            <div className="flex gap-2 flex-col">
+              <p className="text-[11px] text-[#9E9A90] text-center leading-snug">
+                {t("bookingWidget.contactConcierge", { defaultValue: "Please contact our concierge team for custom pricing and booking assistance" })}
+              </p>
+              <button
+                onClick={() => setStep("dates")}
+                className="w-full rounded-full border border-[#E8E4DC] text-[#1A1A18] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#F5F4F0] transition-colors"
+              >
+                {t("bookingWidget.changeDates")}
+              </button>
+            </div>
           </>
         )}
 
@@ -782,42 +719,26 @@ export default function BookingWidget({
 
             {/* CTA */}
             {canPayOnSite && quote?.quoteId ? (
-              <div className="space-y-2">
-                <button
-                  onClick={() => { setError(""); setStep("payment"); }}
-                  className="w-full min-h-[48px] rounded-full bg-[#8B7355] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#7A6548] transition-colors"
-                >
-                  RESERVE & PAY {formatEur(effectiveQuote.total)}
-                </button>
-                <button
-                  onClick={() => { setError(""); setStep("details"); }}
-                  className="w-full text-[12px] text-[#8B7355] hover:text-[#1A1A18] transition py-1"
-                >
-                  Or request without payment
-                </button>
-              </div>
+              <button
+                onClick={() => { setError(""); setStep("payment"); }}
+                className="w-full min-h-[48px] rounded-full bg-[#8B7355] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#7A6548] transition-colors"
+              >
+                RESERVE & PAY {formatEur(effectiveQuote.total)}
+              </button>
             ) : (
               <div className="space-y-3">
-                {canPayOnSite && beQuoteError && (
+                {beQuoteError && (
                   <div className="flex items-start gap-2 p-3 bg-[#FFF8F0] border border-[#D97706]/30 rounded-md" role="alert">
                     <span className="text-[#D97706] shrink-0 mt-0.5 text-[13px]">ⓘ</span>
                     <div>
-                      <p className="text-[12px] text-[#92400E] font-medium leading-snug">{t("bookingWidget.onlinePaymentUnavailable", { defaultValue: "Online payment not available" })}</p>
-                      <p className="text-[11px] text-[#92400E]/80 mt-0.5 leading-snug">{beQuoteError}</p>
+                      <p className="text-[12px] text-[#92400E] font-medium leading-snug">{t("bookingWidget.onlinePaymentUnavailable", { defaultValue: "Online payment not available for this property" })}</p>
+                      <p className="text-[11px] text-[#92400E]/80 mt-0.5 leading-snug">{t("bookingWidget.contactConcierge", { defaultValue: "Please contact our concierge team for booking assistance" })}</p>
                     </div>
                   </div>
                 )}
-                <button
-                  onClick={() => { setError(""); setStep("details"); }}
-                  className="w-full min-h-[48px] rounded-full bg-[#8B7355] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#7A6548] transition-colors"
-                >
-                  {t("bookingWidget.reserveNow")}
-                </button>
-                {canPayOnSite && beQuoteError && (
-                  <p className="text-[11px] text-[#9E9A90] text-center leading-snug">
-                    {t("bookingWidget.reserveRequestNote", { defaultValue: "Your request will be reviewed by our team." })}
-                  </p>
-                )}
+                <p className="text-[11px] text-[#9E9A90] text-center leading-snug">
+                  {t("bookingWidget.paymentRequired", { defaultValue: "Online payment is required to complete your booking" })}
+                </p>
               </div>
             )}
 
@@ -828,82 +749,6 @@ export default function BookingWidget({
         )}
 
         {/* Step: DETAILS ÃÂ¢ÃÂÃÂ guest info form */}
-        {step === "details" && (
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-6 h-6 rounded-full bg-[#8B7355] flex items-center justify-center">
-                <Users className="w-3 h-3 text-white" />
-              </div>
-              <p className="text-[14px] text-[#1A1A18] font-medium">{t("bookingWidget.guestDetailsTitle")}</p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <input
-                type="text"
-                placeholder={t("bookingWidget.firstNamePh")}
-                value={guestFirstName}
-                onChange={e => setGuestFirstName(e.target.value)}
-                className="w-full h-[52px] rounded-md border border-[#E8E4DC] bg-white px-3 py-2 text-[13px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:ring-2 focus:ring-[#8B7355] font-light"
-              />
-              <input
-                type="text"
-                placeholder={t("bookingWidget.lastNamePh")}
-                value={guestLastName}
-                onChange={e => setGuestLastName(e.target.value)}
-                className="w-full h-[52px] rounded-md border border-[#E8E4DC] bg-white px-3 py-2 text-[13px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:ring-2 focus:ring-[#8B7355] font-light"
-              />
-            </div>
-            <input
-              type="email"
-              placeholder={t("bookingWidget.emailPh")}
-              value={guestEmail}
-              onChange={e => setGuestEmail(e.target.value)}
-              className="w-full h-[52px] rounded-md border border-[#E8E4DC] bg-white px-3 py-2 text-[13px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:ring-2 focus:ring-[#8B7355] font-light"
-            />
-            <PhoneInput value={guestPhone} onChange={setGuestPhone} />
-            <textarea
-              placeholder={t("bookingWidget.specialRequestsOptional")}
-              value={notes}
-              onChange={e => setNotes(e.target.value)}
-              rows={2}
-              className="w-full rounded-md border border-[#E8E4DC] bg-white px-3 py-2 text-[13px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:ring-2 focus:ring-[#8B7355] font-light resize-none"
-            />
-
-            {/* Compact price reminder */}
-            {effectiveQuote && (
-              <div className="flex items-center justify-between py-2 px-3 bg-[#F5F1EB] rounded-lg">
-                <span className="text-[13px] text-[#6B6860]">{t("bookingWidget.nightsCountShort", { count: effectiveQuote.nights })}</span>
-                <span className="text-[16px] text-[#1A1A18] font-medium" style={{ fontFamily: "var(--font-display)" }}>
-                  {formatEur(effectiveQuote.total + upsellsTotal)}
-                </span>
-              </div>
-            )}
-
-            <button
-              onClick={handleSubmitBooking}
-              disabled={loading || !guestFirstName || !guestLastName || !guestEmail || !guestPhone}
-              className={cn(
-                "w-full min-h-[48px] rounded-full px-8 py-3.5 text-[11px] font-medium tracking-[0.12em] uppercase transition-colors",
-                "bg-[#1A1A18] text-[#FAFAF7] hover:bg-[#333330]",
-                "disabled:opacity-40 disabled:cursor-not-allowed",
-              )}
-            >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" /> {t("bookingWidget.processing")}
-                </span>
-              ) : t("booking.confirmBooking")}
-            </button>
-
-            <button
-              onClick={() => { setError(""); setStep("quote"); }}
-              className="w-full text-[12px] text-[#9E9A90] hover:text-[#1A1A18] transition py-1"
-            >
-              {t("bookingWidget.backToSummary")}
-            </button>
-          </div>
-        )}
-
         {/* Step: PAYMENT */}
         {step === "payment" && quote?.quoteId && (
           <div className="space-y-3">
@@ -944,7 +789,6 @@ export default function BookingWidget({
               guestPhone={guestPhone}
               notes={(notes + upsellNote).trim() || undefined}
               onSuccess={handlePaymentSuccess}
-              onRequestFallbackSuccess={handleFallbackRequestSuccess}
               onCancel={() => setStep("quote")}
             />
           </div>

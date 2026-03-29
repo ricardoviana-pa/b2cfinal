@@ -49,7 +49,6 @@ interface CheckoutPaymentFormProps {
   destination?: string;
   notes?: string;
   onSuccess: (confirmationCode: string) => void;
-  onRequestFallbackSuccess?: (confirmationCode: string) => void;
   onCancel: () => void;
 }
 
@@ -65,7 +64,6 @@ function PaymentFormInner({
   guestEmail,
   guestPhone,
   onSuccess,
-  onRequestFallbackSuccess,
   onCancel,
   notes,
   propertyName,
@@ -78,7 +76,6 @@ function PaymentFormInner({
   const [loading, setLoading] = useState(false);
   const submittedRef = useRef(false);
   const createReservation = trpc.booking.createBEInstantReservation.useMutation();
-  const createRequestFallback = trpc.booking.createReservation.useMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,29 +140,8 @@ function PaymentFormInner({
       onSuccess(response.confirmationCode);
     } catch (err: any) {
       const message = parseApiError(err?.message || t('payment.errors.defaultError'), t);
-      if (/overcarregado|temporarily|timeout|429|busy/i.test(message) && onRequestFallbackSuccess) {
-        try {
-          const fallback = await createRequestFallback.mutateAsync({
-            listingId,
-            checkIn,
-            checkOut,
-            guests,
-            guestName,
-            guestEmail,
-            guestPhone,
-            notes: notes || undefined,
-            propertyName,
-            destination,
-          });
-          onRequestFallbackSuccess(fallback.confirmationCode);
-          return;
-        } catch (fallbackErr: any) {
-          setError(parseApiError(fallbackErr?.message || message, t));
-        }
-      } else {
-        setError(message);
-        submittedRef.current = false;
-      }
+      setError(message);
+      submittedRef.current = false;
     } finally {
       setLoading(false);
     }
@@ -204,37 +180,6 @@ function PaymentFormInner({
         >
           {loading ? t('payment.processing') : t('payment.payButton', { currency: EUR, amount: total })}
         </button>
-        {onRequestFallbackSuccess && (
-          <button
-            type="button"
-            onClick={async () => {
-              setLoading(true);
-              try {
-                const fallback = await createRequestFallback.mutateAsync({
-                  listingId,
-                  checkIn,
-                  checkOut,
-                  guests,
-                  guestName,
-                  guestEmail,
-                  guestPhone,
-                  notes: notes || undefined,
-                  propertyName,
-                  destination,
-                });
-                onRequestFallbackSuccess(fallback.confirmationCode);
-              } catch (err: any) {
-                setError(parseApiError(err?.message || t('payment.errors.defaultError'), t));
-              } finally {
-                setLoading(false);
-              }
-            }}
-            disabled={loading || !guestName.trim() || !guestEmail.trim() || !guestPhone.trim()}
-            className="btn-secondary w-full disabled:opacity-50"
-          >
-            {loading ? t('payment.processing') : t('payment.reserveButton', 'Reserve Now (Inquiry)')}
-          </button>
-        )}
         <button type="button" onClick={onCancel} className="btn-ghost">
           {t('payment.cancelButton')}
         </button>

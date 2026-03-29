@@ -30,9 +30,6 @@ const BlogArticle = lazy(() => import("./pages/BlogArticle"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const Careers = lazy(() => import("./pages/Careers"));
 const Owners = lazy(() => import("./pages/Owners"));
-const BookingSummaryPage = lazy(() => import("./pages/booking/BookingSummaryPage"));
-const BookingDetailsPage = lazy(() => import("./pages/booking/BookingDetailsPage"));
-const BookingConfirmPage = lazy(() => import("./pages/booking/BookingConfirmPage"));
 const BookingConfirmationPage = lazy(() => import("./pages/booking/BookingConfirmationPage"));
 const AdminRouter = lazy(() => import("./pages/admin/index"));
 const Login = lazy(() => import("./pages/Login"));
@@ -134,9 +131,6 @@ function Router() {
         <Route path="/faq" component={FAQ} />
         <Route path="/careers" component={Careers} />
         <Route path="/owners" component={Owners} />
-        <Route path="/booking/:listingId/summary" component={BookingSummaryPage} />
-        <Route path="/booking/:listingId/details" component={BookingDetailsPage} />
-        <Route path="/booking/:listingId/confirm" component={BookingConfirmPage} />
         <Route path="/booking/confirmation/:id" component={BookingConfirmationPage} />
         <Route path="/login" component={Login} />
         <Route path="/account" component={Account} />

@@ -740,12 +740,6 @@ export default function PropertyDetail() {
                       initialCheckOut={initialCheckout}
                       initialGuests={initialGuests}
                     />
-                    <Link
-                      href={`/booking/${property.guestyId}/summary`}
-                      className="mt-4 block text-center text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] underline-offset-4 hover:underline"
-                    >
-                      {t('property.guidedFlow')}
-                    </Link>
                     </Suspense>
                   </>
                 ) : (

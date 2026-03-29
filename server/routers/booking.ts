@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../_core/trpc";
-import { checkAvailability, getQuoteWithDeadline, createReservation } from "../services/guesty";
+import { checkAvailability, getQuoteWithDeadline } from "../services/guesty";
 import {
   isBEApiConfigured,
   createBEQuote,
@@ -114,46 +114,6 @@ export const bookingRouter = router({
         return await getQuoteWithDeadline(input.listingId, input.checkIn, input.checkOut, input.guests, 20_000);
       } catch (error: any) {
         throw new Error(error.message || "Failed to get quote");
-      }
-    }),
-
-  createReservation: publicProcedure
-    .input(
-      z.object({
-        listingId: z.string().min(1),
-        checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-        checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-        guests: z.number().int().min(1).max(30),
-        guestName: z.string().min(2),
-        guestEmail: z.string().email(),
-        guestPhone: z.string().min(5),
-        notes: z.string().optional(),
-        propertyName: z.string().optional(),
-        propertyImage: z.string().optional(),
-        destination: z.string().optional(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      try {
-        const result = await createReservation(input);
-
-        // Record to customer account (non-blocking)
-        await recordTripForUser(ctx, {
-          listingId: input.listingId,
-          propertyName: input.propertyName || "Portugal Active Home",
-          propertyImage: input.propertyImage,
-          destination: input.destination,
-          checkIn: input.checkIn,
-          checkOut: input.checkOut,
-          guests: input.guests,
-          confirmationCode: result.confirmationCode,
-          guestyReservationId: result.reservationId,
-          status: "upcoming",
-        });
-
-        return result;
-      } catch (error: any) {
-        throw new Error(error.message || "Failed to create reservation");
       }
     }),
 
