@@ -167,6 +167,43 @@ ${blogUrls.join("\n")}
     console.info(`Port ${preferredPort} is busy, using port ${port} instead`);
   }
 
+  // Auto-migrate: ensure new tables exist (idempotent, safe to run on every deploy)
+  try {
+    const { getDb } = await import("../db");
+    const db = await getDb();
+    if (db) {
+      await (db as any).execute(`
+        CREATE TABLE IF NOT EXISTS \`property_referrals\` (
+          \`id\` int AUTO_INCREMENT NOT NULL,
+          \`referrerId\` int NOT NULL,
+          \`ownerName\` varchar(255) NOT NULL,
+          \`ownerEmail\` varchar(320),
+          \`ownerPhone\` varchar(50),
+          \`propertyAddress\` varchar(500),
+          \`propertyCity\` varchar(100),
+          \`propertyRegion\` varchar(100),
+          \`propertyBedrooms\` int,
+          \`propertyType\` varchar(100),
+          \`propertyDescription\` text,
+          \`notes\` text,
+          \`tier\` enum('select','luxury'),
+          \`status\` enum('submitted','contacted','under_review','signed','rejected') NOT NULL DEFAULT 'submitted',
+          \`rewardAmount\` int NOT NULL DEFAULT 0,
+          \`rewardPaid\` boolean NOT NULL DEFAULT false,
+          \`adminNotes\` text,
+          \`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          PRIMARY KEY(\`id\`),
+          INDEX \`idx_property_referrals_referrer\` (\`referrerId\`),
+          INDEX \`idx_property_referrals_status\` (\`status\`)
+        )
+      `);
+      console.info("[Migration] property_referrals table OK");
+    }
+  } catch (migErr: any) {
+    console.warn("[Migration] property_referrals:", migErr.message);
+  }
+
   server.listen(port, () => {
     console.info(`Server running on http://localhost:${port}/`);
 
