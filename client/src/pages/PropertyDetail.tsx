@@ -70,10 +70,49 @@ function getAmenityIcon(name: string): LucideIcon {
   return AMENITY_ICON_MAP[key] ?? Utensils;
 }
 
-function filterAmenities(items: string[]): string[] {
-  return items.filter((x) => {
+/** Priority order — high-impact amenities guests care about most */
+const AMENITY_PRIORITY: string[] = [
+  'private pool', 'swimming pool', 'outdoor pool', 'heated pool', 'infinity pool', 'pool',
+  'wifi', 'high speed wifi', 'wireless internet', 'internet',
+  'air conditioning',
+  'free parking on premises', 'free parking', 'parking', 'garage', 'ev charging',
+  'bbq grill', 'bbq', 'outdoor kitchen',
+  'hot tub', 'jacuzzi',
+  'gym', 'fitness', 'horseback riding',
+  'garden or backyard', 'garden view', 'garden', 'terrace', 'patio', 'balcony',
+  'ocean view', 'sea view', 'beach front', 'beach view', 'beach access',
+  'fully equipped kitchen', 'full kitchen', 'kitchen',
+  'tv', 'smart tv', 'cable tv', 'sound system',
+  'coffee maker', 'coffee machine', 'nespresso', 'espresso',
+  'washer', 'washing machine', 'dryer', 'iron',
+  'dishwasher',
+  'bathtub', 'hair dryer',
+  'indoor fireplace',
+  'crib', 'high chair', 'suitable for children (2-12 years)', 'suitable for infants (under 2 years)',
+  'laptop friendly workspace', 'home office', 'desk',
+  'private entrance',
+  'heating',
+  'outdoor seating (furniture)',
+  'dining table',
+  'board games',
+  'tennis',
+  'table tennis',
+];
+
+function filterAndSortAmenities(items: string[]): string[] {
+  const filtered = items.filter((x) => {
     const k = x.toLowerCase().trim();
     return !AMENITY_BLACKLIST.has(k) && x.length > 0;
+  });
+  return filtered.sort((a, b) => {
+    const aKey = a.toLowerCase().trim();
+    const bKey = b.toLowerCase().trim();
+    const aIdx = AMENITY_PRIORITY.findIndex(p => aKey === p || aKey.includes(p) || p.includes(aKey));
+    const bIdx = AMENITY_PRIORITY.findIndex(p => bKey === p || bKey.includes(p) || p.includes(bKey));
+    const aPri = aIdx >= 0 ? aIdx : 999;
+    const bPri = bIdx >= 0 ? bIdx : 999;
+    if (aPri !== bPri) return aPri - bPri;
+    return a.localeCompare(b);
   });
 }
 
@@ -357,7 +396,7 @@ export default function PropertyDetail() {
   const flatAmenities = useMemo(() => {
     if (!property?.amenities || typeof property.amenities !== 'object') return [];
     const all = Object.values(property.amenities).flat().filter((x): x is string => typeof x === 'string' && x.length > 0);
-    return filterAmenities(all);
+    return filterAndSortAmenities(all);
   }, [property?.amenities]);
 
   const handleGalleryTouchStart = useCallback((e: React.TouchEvent) => {
