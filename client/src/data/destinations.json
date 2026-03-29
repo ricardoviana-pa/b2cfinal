@@ -1,0 +1,176 @@
+[
+  {
+    "id": "dest-minho",
+    "slug": "minho",
+    "name": "Minho Coast",
+    "tagline": "Wild Atlantic coastline meets lush green valleys",
+    "description": "Portugal's greenest corner — dramatic cliffs, wild beaches, and ancient vineyards stretching to the Spanish border.",
+    "coverImage": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80",
+      "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1200&q=80",
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80"
+    ],
+    "whyDescription": "The Minho is Portugal at its most elemental — rugged Atlantic coastline, impossibly green hillsides draped in vineyards, and medieval towns that feel entirely untouched by mass tourism. This is the home of Vinho Verde, produced from grapes grown on the granite slopes above the Lima and Minho rivers.",
+    "highlights": [
+      "Wild Atlantic beaches and dramatic sea cliffs",
+      "Vinho Verde wine country and river valleys",
+      "Medieval towns and romanesque monasteries",
+      "National Parks and ancient Roman roads",
+      "Authentic village life far from the tourist trail"
+    ],
+    "propertyCount": 3,
+    "comingSoon": false,
+    "howToGetHere": "Fly into Porto (OPO), then 45–90 minutes north by car. The A28 runs the length of the coast.",
+    "bestTimeToVisit": "May–September for beach weather; March–May for lush landscapes and fewer crowds.",
+    "whatToExpect": "A slower pace, genuine hospitality, and landscapes that surprise at every turn. Pack layers — the Atlantic keeps things fresh even in summer.",
+    "insiderRecommendations": [
+      { "name": "Afife Beach", "category": "Beach", "description": "One of the last untouched beaches on the coast — no hotels, no beach bars, just dunes and Atlantic swells." },
+      { "name": "Quinta da Calçada", "category": "Wine", "description": "Small family estate producing exceptional Loureiro. Ask for a barrel tasting if you visit in spring." },
+      { "name": "Caminha market", "category": "Local life", "description": "Saturday morning market in a medieval square. The local cheese and presunto are extraordinary." }
+    ],
+    "seoTitle": "Minho Coast Villas | Portugal Active",
+    "seoDescription": "Exclusive villa rentals on Portugal's Minho Coast — wild Atlantic beaches, Vinho Verde country, and unspoiled medieval villages.",
+    "status": "active"
+  },
+  {
+    "id": "dest-porto",
+    "slug": "porto",
+    "name": "Porto & Douro",
+    "tagline": "Baroque city grandeur meets world-class wine country",
+    "description": "A UNESCO city of bridges, azulejos, and port wine cellars, with the spectacular Douro Valley terraces stretching east.",
+    "coverImage": "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1200&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1200&q=80",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80",
+      "https://images.unsplash.com/photo-1549144511-f099e773c147?w=1200&q=80"
+    ],
+    "whyDescription": "Porto is one of Europe's great cities — fiercely proud, architecturally magnificent, and utterly unpretentious. The Douro Valley, stretching 100km east, is a UNESCO World Heritage landscape of terraced vineyards carved into schist hillsides over two millennia. Together they form Portugal's most rewarding region for a slow, immersive stay.",
+    "highlights": [
+      "UNESCO-listed historic centre and iconic Dom Luís bridge",
+      "Port wine lodges and tastings in Vila Nova de Gaia",
+      "Douro Valley river cruises and quinta visits",
+      "World-class restaurants and a thriving food scene",
+      "Atlantic beaches 20 minutes from the city centre"
+    ],
+    "propertyCount": 4,
+    "comingSoon": false,
+    "howToGetHere": "Porto Francisco Sá Carneiro Airport (OPO) — 20 minutes to the city centre by metro (Violeta line).",
+    "bestTimeToVisit": "April–June and September–October offer ideal weather and fewer crowds. September–October coincides with the Douro grape harvest.",
+    "whatToExpect": "A city that rewards wandering — get lost in the Ribeira, cross the bridge on foot, and eat a francesinha at a neighbourhood café.",
+    "insiderRecommendations": [
+      { "name": "Livraria Lello", "category": "Culture", "description": "One of the world's most beautiful bookshops. Go early morning to beat the queues." },
+      { "name": "Quinta do Crasto", "category": "Wine", "description": "Outstanding Douro estate with a stunning infinity pool overlooking the river. Book the harvest lunch in October." },
+      { "name": "Cantinho do Avillez", "category": "Dining", "description": "José Avillez's Porto outpost — refined Portuguese cooking without the formality of a tasting menu." }
+    ],
+    "seoTitle": "Porto & Douro Valley Villas | Portugal Active",
+    "seoDescription": "Luxury villa rentals in Porto and the Douro Valley — UNESCO heritage, world-class wine, and Portugal's most spectacular river landscape.",
+    "status": "active"
+  },
+  {
+    "id": "dest-algarve",
+    "slug": "algarve",
+    "name": "Algarve",
+    "tagline": "Golden cliffs, secret sea caves, and endless sunshine",
+    "description": "Portugal's sun-drenched south — iconic limestone sea stacks, hidden coves, championship golf, and 300 days of sunshine.",
+    "coverImage": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80",
+      "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1200&q=80"
+    ],
+    "whyDescription": "The Algarve is Portugal's most celebrated coastline — and for good reason. Sculpted by millennia of Atlantic erosion, the western Sotavento coast delivers some of the most dramatic cliff scenery in Europe. But look beyond the famous postcards and you'll find a region of genuine depth: pristine natural parks, Moorish whitewashed villages, and a culinary tradition built on the freshest seafood in the country.",
+    "highlights": [
+      "Iconic limestone sea stacks and golden cliff formations",
+      "Hidden sea caves accessible by kayak or boat",
+      "Ria Formosa Natural Park — a 60km lagoon and island system",
+      "Championship golf courses in a Mediterranean climate",
+      "Outstanding seafood restaurants and local fish markets"
+    ],
+    "propertyCount": 5,
+    "comingSoon": false,
+    "howToGetHere": "Faro Airport (FAO) serves the eastern Algarve. For the western coast, Lagos is 90 minutes from Faro by car or train.",
+    "bestTimeToVisit": "May–June and September–October are ideal — warm, sunny, and significantly quieter than peak summer.",
+    "whatToExpect": "Expect warm evenings, cold Atlantic swells (even in summer), and the best grilled fish of your life.",
+    "insiderRecommendations": [
+      { "name": "Praia do Camilo", "category": "Beach", "description": "A short staircase descent to a pocket cove framed by golden rock. Arrive early — it holds perhaps 50 people comfortably." },
+      { "name": "A Forja, Lagos", "category": "Dining", "description": "No-frills local restaurant serving the freshest cataplana in the western Algarve. Cash only." },
+      { "name": "Sagres Point at sunset", "category": "Experience", "description": "The southwestern tip of continental Europe. The scale of the Atlantic from here is humbling." }
+    ],
+    "seoTitle": "Algarve Luxury Villas | Portugal Active",
+    "seoDescription": "Curated villa rentals on the Algarve — golden sea cliffs, hidden coves, and 300 days of Portuguese sunshine.",
+    "status": "active"
+  },
+  {
+    "id": "dest-lisbon",
+    "slug": "lisbon",
+    "name": "Lisbon",
+    "tagline": "Seven hills, seven centuries of history",
+    "description": "Europe's westernmost capital — Moorish hilltop castles, art nouveau cafés, and the melancholy beauty of fado echoing through tiled alleyways.",
+    "coverImage": "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=1200&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=1200&q=80"
+    ],
+    "whyDescription": "Lisbon rewards those who wander without a plan — take the vintage tram up to Alfama, sit in a miradouro at sunset with a glass of wine, and let the city unfold at its own pace.",
+    "highlights": [
+      "Alfama and Mouraria — medieval Moorish quarters",
+      "Belém Tower and the monuments to the Age of Discovery",
+      "World-class contemporary art at MAAT",
+      "Sintra palaces and Cascais coast 30 minutes away",
+      "Vibrant food and nightlife scene"
+    ],
+    "propertyCount": 0,
+    "comingSoon": true,
+    "seoTitle": "Lisbon Villas Coming Soon | Portugal Active",
+    "seoDescription": "Curated luxury stays in Lisbon — coming soon from Portugal Active.",
+    "status": "draft"
+  },
+  {
+    "id": "dest-alentejo",
+    "slug": "alentejo",
+    "name": "Alentejo",
+    "tagline": "Endless plains, ancient cork oaks, and slow time",
+    "description": "Portugal's vast interior heartland — rolling plains studded with cork oaks, medieval walled towns, and the country's most acclaimed red wines.",
+    "coverImage": "https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=1200&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=1200&q=80"
+    ],
+    "whyDescription": "The Alentejo is Portugal at its most meditative — vast skies, golden light, and a pace of life that invites you to slow down completely.",
+    "highlights": [
+      "UNESCO-listed Évora and its Roman temple",
+      "World-class Alentejo red wines and olive oils",
+      "Ancient megalithic monuments and prehistoric sites",
+      "Herdade agri-tourism estates and farm-to-table dining",
+      "Untouched Alentejo coast — wild, windswept, and crowd-free"
+    ],
+    "propertyCount": 0,
+    "comingSoon": true,
+    "seoTitle": "Alentejo Villas Coming Soon | Portugal Active",
+    "seoDescription": "Luxury stays in the Alentejo — coming soon from Portugal Active.",
+    "status": "draft"
+  },
+  {
+    "id": "dest-brazil",
+    "slug": "brazil",
+    "name": "Brazil",
+    "tagline": "Jungle, coast, and the rhythm of a continent",
+    "description": "From the Amazon to the Cerrado, from the Northeast coast to the Pantanal — Brazil's scale and diversity defy easy description.",
+    "coverImage": "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=1200&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=1200&q=80"
+    ],
+    "whyDescription": "Brazil is not a country — it's a continent. Portugal Active is curating a select collection of exceptional stays across Brazil's most compelling destinations.",
+    "highlights": [
+      "Amazon rainforest lodges and river expeditions",
+      "Northeast coast beaches — Trancoso, Arraial d'Ajuda, Jericoacoara",
+      "Pantanal wildlife safaris",
+      "Iguaçu Falls and the Atlantic Forest",
+      "Lençóis Maranhenses — the white sand dune desert"
+    ],
+    "propertyCount": 0,
+    "comingSoon": true,
+    "seoTitle": "Brazil Stays Coming Soon | Portugal Active",
+    "seoDescription": "Curated luxury stays across Brazil — coming soon from Portugal Active.",
+    "status": "draft"
+  }
+]
