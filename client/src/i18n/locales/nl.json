@@ -543,7 +543,20 @@
     "processing": "Processing…",
     "pay": "Pay",
     "cancel": "Cancel",
-    "checkDetails": "Something went wrong. Please check your details and try again."
+    "checkDetails": "Something went wrong. Please check your details and try again.",
+    "errors": {
+      "defaultError": "Er is iets fout gegaan. Probeer het opnieuw.",
+      "rateLimitError": "Te veel pogingen. Wacht een moment en probeer het opnieuw.",
+      "invalidEmail": "Voer een geldig e-mailadres in.",
+      "invalidPhone": "Voer een geldig telefoonnummer in.",
+      "genericError": "Er is een fout opgetreden. Probeer het opnieuw.",
+      "requiredFields": "Vul alle verplichte velden in.",
+      "cardNotReady": "Kaarten element is niet gereed. Vernieuw de pagina en probeer het opnieuw.",
+      "cardValidationFailed": "Kaartvalidatie is mislukt. Controleer uw kaartgegevens.",
+      "couldNotCreatePaymentMethod": "Betaalmethode kon niet worden gemaakt. Probeer het opnieuw."
+    },
+    "payButton": "Betaal {{currency}} {{amount}}",
+    "cancelButton": "Annuleren"
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",

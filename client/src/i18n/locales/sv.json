@@ -543,7 +543,20 @@
     "processing": "Processing…",
     "pay": "Pay",
     "cancel": "Cancel",
-    "checkDetails": "Something went wrong. Please check your details and try again."
+    "checkDetails": "Something went wrong. Please check your details and try again.",
+    "errors": {
+      "defaultError": "Något gick fel. Prova igen.",
+      "rateLimitError": "För många forsok. Vanta en stund och prova igen.",
+      "invalidEmail": "Ange en giltig e-postadress.",
+      "invalidPhone": "Ange ett giltigt telefonnummer.",
+      "genericError": "Ett fel uppstod. Prova igen.",
+      "requiredFields": "Fyll i alla obligatoriska falt.",
+      "cardNotReady": "Kortelement ar inte klart. Uppdatera sidan och prova igen.",
+      "cardValidationFailed": "Kortvalidering misslyckades. Kontrollera dina kortuppgifter.",
+      "couldNotCreatePaymentMethod": "Kunde inte skapa betalningsmetod. Prova igen."
+    },
+    "payButton": "Betala {{currency}} {{amount}}",
+    "cancelButton": "Avbryt"
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",

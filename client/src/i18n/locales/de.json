@@ -543,7 +543,20 @@
     "processing": "Processing…",
     "pay": "Pay",
     "cancel": "Cancel",
-    "checkDetails": "Something went wrong. Please check your details and try again."
+    "checkDetails": "Something went wrong. Please check your details and try again.",
+    "errors": {
+      "defaultError": "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+      "rateLimitError": "Zu viele Versuche. Bitte warten Sie einen Moment und versuchen Sie es erneut.",
+      "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+      "invalidPhone": "Bitte geben Sie eine gültige Telefonnummer ein.",
+      "genericError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+      "requiredFields": "Bitte füllen Sie alle erforderlichen Felder aus.",
+      "cardNotReady": "Kartenelement nicht bereit. Bitte aktualisieren Sie die Seite und versuchen Sie es erneut.",
+      "cardValidationFailed": "Kartenvalidierung fehlgeschlagen. Bitte überprüfen Sie Ihre Kartendaten.",
+      "couldNotCreatePaymentMethod": "Zahlungsmethode konnte nicht erstellt werden. Bitte versuchen Sie es erneut."
+    },
+    "payButton": "{{currency}} {{amount}} zahlen",
+    "cancelButton": "Abbrechen"
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",

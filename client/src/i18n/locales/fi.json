@@ -543,7 +543,20 @@
     "processing": "Processing…",
     "pay": "Pay",
     "cancel": "Cancel",
-    "checkDetails": "Something went wrong. Please check your details and try again."
+    "checkDetails": "Something went wrong. Please check your details and try again.",
+    "errors": {
+      "defaultError": "Jotakin meni pieleen. Yritä uudelleen.",
+      "rateLimitError": "Liian monta yritystä. Odota hetki ja yritä uudelleen.",
+      "invalidEmail": "Kirjoita kelvollinen sähköpostiosoite.",
+      "invalidPhone": "Kirjoita kelvollinen puhelinnumero.",
+      "genericError": "Tapahtui virhe. Yritä uudelleen.",
+      "requiredFields": "Täytä kaikki pakolliset kentät.",
+      "cardNotReady": "Korttielementti ei ole valmis. Päivitä sivu ja yritä uudelleen.",
+      "cardValidationFailed": "Kortin vahvistus epäonnistui. Tarkista kortin tiedot.",
+      "couldNotCreatePaymentMethod": "Maksutapaa ei voitu luoda. Yritä uudelleen."
+    },
+    "payButton": "Maksa {{currency}} {{amount}}",
+    "cancelButton": "Peruuta"
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",
