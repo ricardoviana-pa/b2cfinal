@@ -7,8 +7,9 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { useFavorites } from '@/hooks/useFavorites';
 import { IMAGES } from '@/lib/images';
-import { SlidersHorizontal, X, Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, MessageCircle } from 'lucide-react';
+import { SlidersHorizontal, X, Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, MessageCircle, Heart } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
 import { filterProperties, sortProperties } from '@/lib/utils';
@@ -20,6 +21,7 @@ const BEDROOM_OPTIONS = ['1-2', '3-4', '5-6', '7+'];
 
 export default function Homes() {
   const { t } = useTranslation();
+  const { favorites } = useFavorites();
   usePageMeta({ title: 'Private Villas Portugal | Luxury Holiday Homes', description: 'Browse 50+ handpicked private villas across Portugal. Pool, concierge, housekeeping included. Filter by region and book direct.', image: IMAGES.heroHomes, url: '/homes' });
   const [, navigate] = useLocation();
 
@@ -117,6 +119,7 @@ export default function Homes() {
   const [bedrooms, setBedrooms] = useState<string | undefined>(() => searchParams.get('bedrooms') || undefined);
   const [price, setPrice] = useState<string | undefined>(() => searchParams.get('price') || undefined);
   const [style, setStyle] = useState<string | undefined>(() => searchParams.get('style') || undefined);
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(() => searchParams.get('favorites') === 'true');
   const [showMoreFilters, setShowMoreFilters] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [bookingDestination, setBookingDestination] = useState(searchDestinationFromUrl);
@@ -156,12 +159,14 @@ export default function Homes() {
     set('bedrooms', bedrooms, '');
     set('price', price, '');
     set('style', style, '');
+    if (showFavoritesOnly) params.set('favorites', 'true');
+    else params.delete('favorites');
     const qs = params.toString();
     const newUrl = `/homes${qs ? `?${qs}` : ''}`;
     if (newUrl !== window.location.pathname + window.location.search) {
       window.history.replaceState(null, '', newUrl);
     }
-  }, [occasion, destination, tier, sort, bedrooms, price, style, searchString]);
+  }, [occasion, destination, tier, sort, bedrooms, price, style, showFavoritesOnly, searchString]);
 
   const filtered = useMemo(() => {
     const f = filterProperties(allProperties, occasion, destination, bedrooms, price, style, tier);
@@ -169,10 +174,13 @@ export default function Homes() {
       searchGuestsCount > 0
         ? f.filter((property) => (property.maxGuests ?? 0) >= searchGuestsCount)
         : f;
-    return sortProperties(withGuestCapacity, sort);
-  }, [allProperties, occasion, destination, sort, bedrooms, price, style, tier, searchGuestsCount]);
+    const withFavorites = showFavoritesOnly
+      ? withGuestCapacity.filter((property) => favorites.includes(property.slug))
+      : withGuestCapacity;
+    return sortProperties(withFavorites, sort);
+  }, [allProperties, occasion, destination, sort, bedrooms, price, style, tier, searchGuestsCount, showFavoritesOnly, favorites]);
 
-  const hasActiveFilters = occasion !== 'all' || destination !== 'all' || tier !== 'all' || bedrooms || price || style;
+  const hasActiveFilters = occasion !== 'all' || destination !== 'all' || tier !== 'all' || bedrooms || price || style || showFavoritesOnly;
 
   const clearFilters = () => {
     setOccasion('all');
@@ -181,6 +189,7 @@ export default function Homes() {
     setBedrooms(undefined);
     setPrice(undefined);
     setStyle(undefined);
+    setShowFavoritesOnly(false);
   };
 
   const applyBookingSearch = () => {
@@ -459,12 +468,27 @@ export default function Homes() {
           <div className="lg:hidden flex items-center justify-between gap-2">
             <button
               onClick={() => setMobileFiltersOpen(true)}
-              className="flex items-center gap-2 text-[13px] font-medium text-[#1A1A18] border border-[#E8E4DC] px-4 py-2.5"
+              className="flex items-center gap-2 text-[13px] font-medium text-[#1A1A18] border border-[#E8E4DC] px-4 py-2.5 flex-1"
               style={{ minHeight: '44px', minWidth: 'auto' }}
             >
               <SlidersHorizontal className="w-4 h-4" />
               {t('filters.mobileFilter')}{hasActiveFilters ? ` (${filtered.length})` : ''}
             </button>
+            {favorites.length > 0 && (
+              <button
+                onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                className={`flex items-center gap-1.5 text-[13px] font-medium px-3 py-2.5 border rounded-full transition-all ${
+                  showFavoritesOnly
+                    ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
+                    : 'text-[#6B6860] border-[#E8E4DC] hover:border-[#1A1A18] hover:text-[#1A1A18]'
+                }`}
+                style={{ minHeight: '44px', minWidth: 'auto' }}
+                title={t('filters.favorites', 'Favorites')}
+              >
+                <Heart className={`w-3.5 h-3.5 ${showFavoritesOnly ? 'fill-white' : ''}`} />
+                <span>{favorites.length}</span>
+              </button>
+            )}
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as SortOption)}
@@ -486,6 +510,14 @@ export default function Homes() {
                 {TIERS.map(t => (
                   <Chip key={t.value} active={tier === t.value} onClick={() => setTier(t.value)}>{t.label}</Chip>
                 ))}
+                <div className="w-px h-8 bg-[#E8E4DC] self-center mx-1" />
+                <Chip
+                  active={showFavoritesOnly}
+                  onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                >
+                  <Heart className="w-3 h-3 mr-1 inline" />
+                  {t('filters.favorites', 'Favorites')} {favorites.length > 0 && `(${favorites.length})`}
+                </Chip>
               </div>
               <div className="flex items-center gap-3">
                 {hasActiveFilters && (
@@ -590,6 +622,19 @@ export default function Homes() {
                   </div>
                 </div>
               ))}
+
+              {favorites.length > 0 && (
+                <div className="mb-6">
+                  <p className="text-[11px] font-medium tracking-[0.02em] text-[#9E9A90] mb-3">{t('filters.favorites', 'Favorites')}</p>
+                  <Chip
+                    active={showFavoritesOnly}
+                    onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                  >
+                    <Heart className="w-3 h-3 mr-1 inline" />
+                    {t('filters.showFavorites', 'Show favorites')} ({favorites.length})
+                  </Chip>
+                </div>
+              )}
 
               <button
                 onClick={() => setMobileFiltersOpen(false)}

@@ -16,37 +16,37 @@ import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 const TEAM = [
   {
     id: '1',
-    name: 'Team Member',
+    name: 'Ricardo Viana',
     role: 'Founder & CEO',
     photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
   },
   {
     id: '2',
-    name: 'Team Member',
+    name: 'Sofia Mendes',
     role: 'Head of Operations',
     photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80',
   },
   {
     id: '3',
-    name: 'Team Member',
+    name: 'Mariana Costa',
     role: 'Head of Guest Experience',
     photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80',
   },
   {
     id: '4',
-    name: 'Team Member',
+    name: 'Tiago Almeida',
     role: 'Concierge Lead, Minho',
     photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80',
   },
   {
     id: '5',
-    name: 'Team Member',
+    name: 'Ana Ferreira',
     role: 'Concierge Lead, Porto',
     photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80',
   },
   {
     id: '6',
-    name: 'Team Member',
+    name: 'João Santos',
     role: 'Concierge Lead, Algarve',
     photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80',
   },
@@ -132,14 +132,14 @@ export default function About() {
           </p>
 
           {/* Stats bar */}
-          <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible border-t border-[#E8E4DC] pt-8">
+          <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible border-t border-[#E8E4DC] pt-8" role="region" aria-label="Portugal Active company statistics">
             {[
               { stat: '70+', label: t('about.statHomes') },
               { stat: '4.9/5', label: t('about.statRating') },
               { stat: '2017', label: t('about.statSince') },
             ].map(item => (
               <div key={item.label} className="text-center flex-shrink-0 w-[200px] sm:w-auto" style={{ scrollSnapAlign: 'start' }}>
-                <div className="font-display text-[2.5rem] lg:text-[3rem] text-[#1A1A18] leading-none mb-2">{item.stat}</div>
+                <div className="font-display text-[2.5rem] lg:text-[3rem] text-[#1A1A18] leading-none mb-2" role="doc-statistic" aria-label={item.label}>{item.stat}</div>
                 <div className="text-[11px] font-medium text-[#9E9A90] tracking-[0.06em]">{item.label}</div>
               </div>
             ))}

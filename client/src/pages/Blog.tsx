@@ -3,7 +3,7 @@
    Hero, 6 categories, featured article, article grid
    ========================================================================== */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { Link } from 'wouter';
@@ -32,6 +32,45 @@ export default function Blog() {
   const { t } = useTranslation();
   usePageMeta({ title: 'Portugal Travel Journal | Guides, Tips & Inspiration', description: 'Insider guides to Portugal — best beaches, hidden restaurants, wine regions, and travel tips from our local concierge team.', url: '/blog' });
   const [activeCategory, setActiveCategory] = useState<BlogCategory | 'all'>('all');
+
+  // Add Schema.org BlogPosting list markup for SEO
+  useEffect(() => {
+    const publishedArticles = articles.filter(a => a.status === 'published');
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "@id": "https://www.portugalactive.com/blog",
+      "name": "Portugal Travel Journal",
+      "description": "Insider guides to Portugal — best beaches, hidden restaurants, wine regions, and travel tips from our local concierge team.",
+      "url": "https://www.portugalactive.com/blog",
+      "mainEntity": {
+        "@type": "ItemList",
+        "itemListElement": publishedArticles.map((article, idx) => ({
+          "@type": "ListItem",
+          "position": idx + 1,
+          "item": {
+            "@type": "BlogPosting",
+            "@id": `https://www.portugalactive.com/blog/${article.slug}`,
+            "headline": article.title,
+            "description": article.excerpt,
+            "image": getArticleImage(article),
+            "datePublished": article.publishDate,
+            "author": {
+              "@type": "Person",
+              "name": article.author.name,
+            },
+          },
+        })),
+      },
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(jsonLd);
+    script.id = "blog-list-jsonld";
+    document.querySelector("#blog-list-jsonld")?.remove();
+    document.head.appendChild(script);
+    return () => { document.querySelector("#blog-list-jsonld")?.remove(); };
+  }, []);
 
   const CATEGORIES = useMemo(() => [
     { label: t('blog.catAll'), value: 'all' as const },

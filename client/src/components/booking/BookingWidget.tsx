@@ -621,6 +621,20 @@ export default function BookingWidget({
               <p className="text-[12px] text-[#9E9A90]">
                 {t("bookingWidget.priceOnRequestBody")}
               </p>
+              {pricePerNight > 0 && nights > 0 && (
+                <div className="mt-4 pt-4 border-t border-[#E8E4DC]">
+                  <p className="text-[14px] font-medium text-[#1A1A18] mb-1">
+                    {t("bookingWidget.estimatedPrice", "Estimated from €{{amount}} for {{nights}} night{{plural}}", {
+                      amount: formatEur(pricePerNight * nights),
+                      nights,
+                      plural: nights !== 1 ? 's' : ''
+                    })}
+                  </p>
+                  <p className="text-[12px] text-[#9E9A90]">
+                    {t("bookingWidget.estimatedNote", "Final price confirmed after review")}
+                  </p>
+                </div>
+              )}
             </div>
             <button
               onClick={() => { setError(""); setStep("details"); }}

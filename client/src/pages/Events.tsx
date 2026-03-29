@@ -3,7 +3,7 @@
    6 event types, exact copy per Prompt 2 spec, final CTA
    ========================================================================== */
 
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +15,53 @@ import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 export default function Events() {
   const { t } = useTranslation();
   usePageMeta({ title: 'Private Events Portugal | Weddings, Retreats, Celebrations', description: 'Host weddings, corporate retreats, and private celebrations in luxury Portuguese villas. Full event planning and concierge.', url: '/events' });
+
+  // Add Event schema markup for SEO
+  useEffect(() => {
+    const eventTypes = [
+      { type: 'Corporate Events', description: 'Host corporate retreats, conferences, and team-building events in luxury Portuguese villas' },
+      { type: 'Weddings', description: 'Plan your dream wedding ceremony and reception at a private villa in Portugal' },
+      { type: 'Brand Events', description: 'Launch products and host brand experiences at exclusive Portuguese venues' },
+      { type: 'Private Celebrations', description: 'Celebrate birthdays, anniversaries, and special occasions in private luxury villas' },
+      { type: 'Wellness Retreats', description: 'Organize yoga retreats, wellness programs, and mindfulness events in Portugal' },
+      { type: 'Creative Workshops', description: 'Host creative workshops, artist residencies, and team-building experiences' }
+    ];
+
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "EventVenue",
+      "name": "Portugal Active Private Events",
+      "url": "https://portugalactive.com/events",
+      "description": "Host private events in luxury Portuguese villas with full event planning and concierge services",
+      "areaServed": {
+        "@type": "AdministrativeArea",
+        "name": "Portugal"
+      },
+      "acceptsReservations": true,
+      "events": eventTypes.map(event => ({
+        "@type": "Event",
+        "name": event.type,
+        "description": event.description,
+        "location": {
+          "@type": "Place",
+          "name": "Portugal",
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "PT"
+          }
+        }
+      }))
+    };
+
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(jsonLd);
+    script.id = "events-schema";
+    document.querySelector("#events-schema")?.remove();
+    document.head.appendChild(script);
+
+    return () => { document.querySelector("#events-schema")?.remove(); };
+  }, []);
 
   const EVENT_TYPES = useMemo(() => [
     {

@@ -30,15 +30,17 @@ export default function BlogArticle() {
     if (!article) return;
     const jsonLd = {
       "@context": "https://schema.org",
-      "@type": "Article",
+      "@type": "BlogPosting",
+      "@id": `https://www.portugalactive.com/blog/${article.slug}`,
       "headline": article.title,
       "description": article.excerpt,
-      "image": article.featuredImage,
+      "image": article.featuredImage || (article as any).coverImage,
       "datePublished": article.publishDate,
       "dateModified": article.publishDate,
       "author": {
         "@type": "Person",
         "name": article.author.name,
+        "url": "https://www.portugalactive.com",
       },
       "publisher": {
         "@type": "Organization",
@@ -47,12 +49,17 @@ export default function BlogArticle() {
         "logo": {
           "@type": "ImageObject",
           "url": "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp",
+          "width": 600,
+          "height": 60,
         },
       },
       "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": `https://www.portugalactive.com/blog/${article.slug}`,
       },
+      "articleBody": article.content || article.excerpt,
+      "wordCount": article.content ? article.content.split(/\s+/).length : article.excerpt.split(/\s+/).length,
+      "timeRequired": `PT${article.readTime}M`,
     };
     const script = document.createElement("script");
     script.type = "application/ld+json";

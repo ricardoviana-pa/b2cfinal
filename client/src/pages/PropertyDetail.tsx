@@ -22,6 +22,7 @@ const BookingWidget = lazy(() => import('@/components/booking/BookingWidget'));
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
+import ReviewsSection from '@/components/property/ReviewsSection';
 import { trpc } from '@/lib/trpc';
 
 const allProducts = productsData as unknown as Product[];
@@ -206,6 +207,7 @@ function Lightbox({ images, initialIndex, propertyName, destName, onClose, t }: 
           src={images[idx]}
           alt={`${propertyName} – ${destName} – image ${idx + 1} of ${total}`}
           className="max-w-full max-h-full object-contain select-none"
+          decoding="async"
           style={{
             transform: lbDragOffset ? `translateX(${lbDragOffset}px)` : 'translateX(0)',
             transition: lbDragOffset ? 'none' : 'transform 300ms ease',
@@ -487,7 +489,7 @@ export default function PropertyDetail() {
             {(images.length ? images : ['']).map((img: string, idx: number) => (
               <div key={idx} className="relative shrink-0 h-full bg-[#E8E4DC] img-fallback" style={{ width: `${100 / totalImages}%` }}>
                 {img ? (
-                  <img src={img} alt={`${property.name} – luxury villa in ${destName}, Portugal`} className="absolute inset-0 w-full h-full object-cover" width={1200} height={900} loading={idx === 0 ? 'eager' : 'lazy'} {...(idx === 0 ? { fetchPriority: 'high' as const } : {})} draggable={false} onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }} />
+                  <img src={img} alt={`${property.name} – luxury villa in ${destName}, Portugal – image ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" width={1200} height={900} loading={idx === 0 ? 'eager' : 'lazy'} decoding="async" {...(idx === 0 ? { fetchPriority: 'high' as const } : {})} draggable={false} onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }} />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center text-[#9E9A90] text-sm">{t('propertyDetail.noImage')}</div>
                 )}
@@ -645,6 +647,9 @@ export default function PropertyDetail() {
                   <p className="body-md text-[#9E9A90]">{t('propertyDetail.amenitiesContact')}</p>
                 )}
               </section>
+
+              {/* 3b. Guest Reviews */}
+              <ReviewsSection propertyName={property.name} propertySlug={property.slug} />
 
               {/* 4. Services (add-on) */}
               <section>

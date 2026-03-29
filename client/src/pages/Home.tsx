@@ -177,6 +177,7 @@ export default function Home() {
             alt={t('home.heroAlt')}
             className="w-full h-full object-cover"
             fetchPriority="high"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/30 to-transparent" />
         </div>

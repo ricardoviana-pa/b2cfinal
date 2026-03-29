@@ -3,7 +3,7 @@
    4 sections: Gastronomy, Wellness, Adventure, Mobility + Additional Services
    ========================================================================== */
 
-import { useState, lazy, Suspense } from 'react';
+import { useState, lazy, Suspense, useEffect } from 'react';
 import { Plus, MessageCircle, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -133,6 +133,45 @@ export default function Experiences() {
   const { t } = useTranslation();
   usePageMeta({ title: 'Luxury Concierge Services | Private Chef, Spa, Transfers', description: 'Elevate your villa stay with private chef, in-house spa, airport transfers, and bespoke experiences. Book alongside your villa.', url: '/services' });
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
+
+  // Add Service schema markup for SEO
+  useEffect(() => {
+    const gastronomyProducts = GASTRONOMY_SLUGS.map(getService).filter(Boolean) as Product[];
+    const wellnessProducts = WELLNESS_SLUGS.map(getService).filter(Boolean) as Product[];
+    const mobilityProducts = MOBILITY_SLUGS.map(getService).filter(Boolean) as Product[];
+    const additionalProducts = ADDITIONAL_SLUGS.map(getService).filter(Boolean) as Product[];
+    const adventureProducts = ADVENTURE_SLUGS.map(getAdventure).filter(Boolean) as Product[];
+
+    const allServices = [...gastronomyProducts, ...wellnessProducts, ...mobilityProducts, ...additionalProducts, ...adventureProducts];
+
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Portugal Active",
+      "url": "https://portugalactive.com/services",
+      "hasService": allServices.map(service => ({
+        "@type": "Service",
+        "name": service.name,
+        "description": service.tagline || service.name,
+        "areaServed": {
+          "@type": "AdministrativeArea",
+          "name": "Portugal"
+        },
+        ...(service.priceFrom && {
+          "priceRange": `€${service.priceFrom}${service.priceSuffix ? ` ${service.priceSuffix}` : ''}`
+        })
+      }))
+    };
+
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(jsonLd);
+    script.id = "services-schema";
+    document.querySelector("#services-schema")?.remove();
+    document.head.appendChild(script);
+
+    return () => { document.querySelector("#services-schema")?.remove(); };
+  }, []);
 
   const gastronomyProducts = GASTRONOMY_SLUGS.map(getService).filter(Boolean) as Product[];
   const wellnessProducts = WELLNESS_SLUGS.map(getService).filter(Boolean) as Product[];

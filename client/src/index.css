@@ -110,9 +110,9 @@
     @apply border-border;
   }
 
-  /* Visible keyboard focus ring — only on keyboard navigation */
+  /* Visible keyboard focus ring — only on keyboard navigation with gold ring */
   :focus-visible {
-    outline: 2px solid #8B7355;
+    outline: 3px solid #C4A87C;
     outline-offset: 2px;
   }
 
@@ -809,5 +809,15 @@
     background-position: center;
     background-size: 24px 24px;
     z-index: 1;
+  }
+
+  /* Reduced motion — disable animations for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }

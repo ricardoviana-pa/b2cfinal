@@ -11,6 +11,7 @@ import { Heart, ChevronLeft, ChevronRight, Users, BedDouble, Bath, BadgeCheck, S
 import { formatEur } from '@/lib/format';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages } from '@/lib/images';
+import { useFavorites } from '@/hooks/useFavorites';
 import destinationsData from '@/data/destinations.json';
 
 const destinations = destinationsData as unknown as Destination[];
@@ -46,6 +47,7 @@ export default function PropertyCard({
   batchFailed = false,
 }: PropertyCardProps) {
   const { t } = useTranslation();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const tierBadge = useMemo(
     (): Record<string, { className: string; label: string }> => ({
       signature: { className: 'badge-signature', label: t('filters.signature') },
@@ -55,13 +57,11 @@ export default function PropertyCard({
     [t]
   );
   const [currentImage, setCurrentImage] = useState(0);
-  const [saved, setSaved] = useState(() => {
-    try { return localStorage.getItem(`saved-${property.slug}`) === 'true'; } catch { return false; }
-  });
   const [isDragging, setIsDragging] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const touchStartX = useRef(0);
   const touchCurrentX = useRef(0);
+  const saved = isFavorite(property.slug);
 
   // Use property.images if available, otherwise fall back to curated Unsplash images
   const images = property.images && property.images.length > 0
@@ -83,10 +83,8 @@ export default function PropertyCard({
 
   const toggleSave = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    const next = !saved;
-    setSaved(next);
-    try { localStorage.setItem(`saved-${property.slug}`, String(next)); } catch {}
-  }, [saved, property.slug]);
+    toggleFavorite(property.slug);
+  }, [toggleFavorite, property.slug]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -125,6 +123,9 @@ export default function PropertyCard({
           alt={t('property.imageAlt', { name: property.name, current: currentImage + 1, total })}
           className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03] ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
           loading="lazy"
+          decoding="async"
+          fetchPriority="low"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           width={800} height={600}
           onLoad={() => setImageLoaded(true)}
           onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }}

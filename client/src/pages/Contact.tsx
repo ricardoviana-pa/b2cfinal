@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef, useLayoutEffect } from 'react';
 import { Phone, Mail, MapPin, MessageCircle, Calendar, ChevronDown, Check, ArrowRight, Send, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -105,10 +105,18 @@ export default function Contact() {
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('book-a-home');
   const [message, setMessage] = useState('');
+  const [honeypot, setHoneypot] = useState('');
 
+  const formLoadTimeRef = useRef<number | null>(null);
   const createLead = trpc.leads.create.useMutation();
   const searchString = useSearch();
   const prefilledFromProperty = useRef(false);
+
+  useLayoutEffect(() => {
+    if (formLoadTimeRef.current === null) {
+      formLoadTimeRef.current = Date.now();
+    }
+  }, []);
 
   useEffect(() => {
     if (prefilledFromProperty.current) return;
@@ -153,6 +161,18 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Honeypot check: if filled, silently reject
+    if (honeypot.trim()) {
+      return;
+    }
+
+    // Timing check: if submitted in less than 2 seconds, silently reject (bots are fast)
+    const timeElapsed = formLoadTimeRef.current ? Date.now() - formLoadTimeRef.current : 0;
+    if (timeElapsed < 2000) {
+      return;
+    }
+
     const errors: Record<string, string> = {
       name: validateField('name', name),
       email: validateField('email', email),
@@ -259,6 +279,17 @@ export default function Contact() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
+                  {/* Honeypot field - hidden from real users */}
+                  <input
+                    type="text"
+                    name="website"
+                    value={honeypot}
+                    onChange={e => setHoneypot(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    style={{ position: 'absolute', left: '-9999px' }}
+                  />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                       <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>

@@ -196,14 +196,45 @@ function PaymentFormInner({
         </div>
       )}
 
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-3">
         <button
           type="submit"
           disabled={!stripe || loading || !guestName.trim() || !guestEmail.trim() || !guestPhone.trim()}
-          className="btn-primary flex-1 disabled:opacity-50"
+          className="btn-primary w-full disabled:opacity-50"
         >
           {loading ? t('payment.processing') : t('payment.payButton', { currency: EUR, amount: total })}
         </button>
+        {onRequestFallbackSuccess && (
+          <button
+            type="button"
+            onClick={async () => {
+              setLoading(true);
+              try {
+                const fallback = await createRequestFallback.mutateAsync({
+                  listingId,
+                  checkIn,
+                  checkOut,
+                  guests,
+                  guestName,
+                  guestEmail,
+                  guestPhone,
+                  notes: notes || undefined,
+                  propertyName,
+                  destination,
+                });
+                onRequestFallbackSuccess(fallback.confirmationCode);
+              } catch (err: any) {
+                setError(parseApiError(err?.message || t('payment.errors.defaultError'), t));
+              } finally {
+                setLoading(false);
+              }
+            }}
+            disabled={loading || !guestName.trim() || !guestEmail.trim() || !guestPhone.trim()}
+            className="btn-secondary w-full disabled:opacity-50"
+          >
+            {loading ? t('payment.processing') : t('payment.reserveButton', 'Reserve Now (Inquiry)')}
+          </button>
+        )}
         <button type="button" onClick={onCancel} className="btn-ghost">
           {t('payment.cancelButton')}
         </button>

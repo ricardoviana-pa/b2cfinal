@@ -79,6 +79,7 @@ export default function Adventures() {
       {/* Adventures Grid */}
       <section className="section-padding">
         <div className="container">
+          <h2 className="sr-only">Available Adventures</h2>
           <p className="text-[13px] text-[#9E9A90] mb-6">
             {t('adventures.available', { count: filtered.length })}
           </p>
