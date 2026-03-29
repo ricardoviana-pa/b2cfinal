@@ -17,6 +17,15 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
 
+interface LiveQuote {
+  total: number;
+  nightlyRate: number;
+  cleaningFee: number;
+  nights: number;
+  source?: string;
+  fallbackMessage?: string;
+}
+
 const BEDROOM_OPTIONS = ['1-2', '3-4', '5-6', '7+'];
 
 export default function Homes() {
@@ -126,6 +135,9 @@ export default function Homes() {
   const [bookingCheckin, setBookingCheckin] = useState(searchCheckin);
   const [bookingCheckout, setBookingCheckout] = useState(searchCheckout);
   const [bookingGuests, setBookingGuests] = useState(searchGuests ? Number(searchGuests) : 2);
+  const [quotes, setQuotes] = useState<Record<string, LiveQuote | null>>({});
+  const [quotesLoading, setQuotesLoading] = useState(false);
+  const utils = trpc.useUtils();
   const effectiveGuests = searchGuestsCount > 0 ? searchGuestsCount : bookingGuests;
   const checkInRef = useRef<HTMLInputElement>(null);
   const checkOutRef = useRef<HTMLInputElement>(null);
@@ -191,6 +203,55 @@ export default function Homes() {
     setStyle(undefined);
     setShowFavoritesOnly(false);
   };
+
+  // Fetch live quotes for all filtered properties when dates are present
+  useEffect(() => {
+    if (!searchCheckin || !searchCheckout || searchNights <= 0 || filtered.length === 0) {
+      return;
+    }
+
+    setQuotesLoading(true);
+    const guestCount = effectiveGuests || 2;
+
+    // Fetch quotes for all filtered properties in parallel
+    const quotePromises = filtered.map(async (property) => {
+      try {
+        const quote = await utils.booking.getQuote.fetch({
+          listingId: property.guestyId,
+          checkIn: searchCheckin,
+          checkOut: searchCheckout,
+          guests: guestCount,
+        });
+        return { slug: property.slug, quote };
+      } catch (err) {
+        // If quote fails, store null so we can fall back to catalogue price
+        return { slug: property.slug, quote: null };
+      }
+    });
+
+    Promise.allSettled(quotePromises).then((results) => {
+      const newQuotes: Record<string, LiveQuote | null> = {};
+      results.forEach((result) => {
+        if (result.status === 'fulfilled') {
+          const { slug, quote } = result.value;
+          if (quote) {
+            newQuotes[slug] = {
+              total: quote.total,
+              nightlyRate: quote.nightlyRate,
+              cleaningFee: quote.cleaningFee,
+              nights: searchNights,
+              source: quote.source || 'live',
+              fallbackMessage: quote.fallbackMessage,
+            };
+          } else {
+            newQuotes[slug] = null;
+          }
+        }
+      });
+      setQuotes(newQuotes);
+      setQuotesLoading(false);
+    });
+  }, [searchCheckin, searchCheckout, searchNights, filtered, effectiveGuests, utils.booking.getQuote]);
 
   const applyBookingSearch = () => {
     const params = new URLSearchParams(searchString);
@@ -668,6 +729,8 @@ export default function Homes() {
                   checkin={searchCheckin}
                   checkout={searchCheckout}
                   guests={searchGuestsCount || undefined}
+                  liveQuote={quotes[property.slug] || undefined}
+                  quoteLoading={quotesLoading}
                 />
               </div>
             ))}
