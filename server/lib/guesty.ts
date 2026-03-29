@@ -58,7 +58,7 @@ const GUESTY_BE_CLIENT_ID = process.env.GUESTY_BE_CLIENT_ID || "";
 const GUESTY_BE_CLIENT_SECRET = process.env.GUESTY_BE_CLIENT_SECRET || "";
 const GUESTY_TIMEOUT_MS = 8_000;
 /** Never block OAuth longer than this after a 429 (Guesty may recover sooner; avoids hour-long self-blocks). */
-const MAX_GUESTY_OAUTH_COOLDOWN_MS = Number(process.env.GUESTY_MAX_OAUTH_COOLDOWN_MS || 120_000);
+const MAX_GUESTY_OAUTH_COOLDOWN_MS = Number(process.env.GUESTY_MAX_OAUTH_COOLDOWN_MS || 300_000); // 5 min default
 const MAX_GUESTY_BE_OAUTH_COOLDOWN_MS = Number(process.env.GUESTY_MAX_BE_OAUTH_COOLDOWN_MS || 180_000);
 const TOKEN_CACHE_DIR = path.resolve(process.cwd(), ".cache");
 const OPEN_TOKEN_CACHE_FILE = path.join(TOKEN_CACHE_DIR, "guesty-open-token.json");
@@ -306,11 +306,21 @@ async function fetchOAuthToken(): Promise<string> {
       details,
     });
 
-    if ((response.status === 429 || response.status >= 500) && attempt < maxAttempts - 1) {
-      if (response.status === 429) {
-        guestyAuthCooldownUntil =
-          Date.now() + capOAuthCooldownMs(parseRetryAfterMs(response.headers, 30_000), MAX_GUESTY_OAUTH_COOLDOWN_MS);
-      }
+    if (response.status === 429) {
+      // Set a long cooldown to stop poking the API and let the rate limit truly expire.
+      guestyAuthCooldownUntil =
+        Date.now() + capOAuthCooldownMs(parseRetryAfterMs(response.headers, 60_000), MAX_GUESTY_OAUTH_COOLDOWN_MS);
+      // Do NOT retry — every 429 response counts against the rate limit window.
+      throw new GuestyClientError({
+        message: "Guesty authentication temporarily cooled down after rate limiting",
+        status: 429,
+        method: "POST",
+        endpoint,
+        details,
+      });
+    }
+
+    if (response.status >= 500 && attempt < maxAttempts - 1) {
       await sleep(3000 + attempt * 2000);
       continue;
     }
@@ -642,14 +652,31 @@ async function fetchBEOAuthToken(): Promise<string> {
       return beOauthCache.token;
     }
 
-    if ((response.status === 429 || response.status >= 500) && attempt < maxAttempts - 1) {
-      if (response.status === 429) {
-        guestyBeAuthCooldownUntil =
-          Date.now() + capOAuthCooldownMs(parseRetryAfterMs(response.headers, 60_000), MAX_GUESTY_BE_OAUTH_COOLDOWN_MS);
-      }
+    if (response.status === 429) {
+      guestyBeAuthCooldownUntil =
+        Date.now() + capOAuthCooldownMs(parseRetryAfterMs(response.headers, 60_000), MAX_GUESTY_BE_OAUTH_COOLDOWN_MS);
+      const details = parseJsonSafe(await response.text());
       logError({
         method: "POST",
+        endpoint: "/oauth2/token (BE)",
+        status: response.status,
+        durationMs: Date.now() - startedAt,
+        details,
+      });
+      // Do NOT retry 429 — stop poking the API to let the rate limit expire.
+      throw new GuestyClientError({
+        message: "Guesty BE authentication temporarily cooled down after rate limiting",
+        status: 429,
+        method: "POST",
         endpoint: "/oauth2/token",
+        details,
+      });
+    }
+
+    if (response.status >= 500 && attempt < maxAttempts - 1) {
+      logError({
+        method: "POST",
+        endpoint: "/oauth2/token (BE)",
         status: response.status,
         durationMs: Date.now() - startedAt,
         details: parseJsonSafe(await response.text()),
