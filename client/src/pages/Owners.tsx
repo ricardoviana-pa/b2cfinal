@@ -3,18 +3,46 @@
    Hero, impact numbers, what we do, how it works, management link, form
    ========================================================================== */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { ArrowRight, Check, ExternalLink } from 'lucide-react';
+import { ArrowRight, Check, ExternalLink, Loader2 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
+import { trpc } from '@/lib/trpc';
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Owners() {
   const { t } = useTranslation();
   usePageMeta({ title: 'Property Management Portugal | Portugal Active for Owners', description: 'Maximise your rental income. Full-service villa management — marketing, bookings, housekeeping, maintenance, guest concierge.', url: '/owners' });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [ownerName, setOwnerName] = useState('');
+  const [ownerEmail, setOwnerEmail] = useState('');
+  const [ownerPhone, setOwnerPhone] = useState('');
+  const [ownerLocation, setOwnerLocation] = useState('');
+  const [ownerType, setOwnerType] = useState('');
+  const [ownerDescription, setOwnerDescription] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  const createLead = trpc.leads.create.useMutation();
+
+  const validateField = useCallback((field: string, value: string) => {
+    if (field === 'ownerName' && !value.trim()) return t('owners.errorName', 'Please enter your name');
+    if (field === 'ownerEmail' && !value.trim()) return t('owners.errorEmailRequired', 'Please enter your email');
+    if (field === 'ownerEmail' && !EMAIL_RE.test(value)) return t('owners.errorEmailInvalid', 'Please enter a valid email address');
+    if (field === 'ownerLocation' && !value.trim()) return t('owners.errorLocation', 'Please enter the property location');
+    return '';
+  }, [t]);
+
+  const handleFieldBlur = useCallback((field: string, value: string) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    setFieldErrors(prev => ({ ...prev, [field]: validateField(field, value) }));
+  }, [validateField]);
 
   const WHAT_WE_DO = useMemo(() => [
     {
@@ -58,9 +86,34 @@ export default function Owners() {
     },
   ], [t]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    const errors: Record<string, string> = {
+      ownerName: validateField('ownerName', ownerName),
+      ownerEmail: validateField('ownerEmail', ownerEmail),
+      ownerLocation: validateField('ownerLocation', ownerLocation),
+    };
+    setFieldErrors(errors);
+    setTouched({ ownerName: true, ownerEmail: true, ownerLocation: true });
+    if (Object.values(errors).some(Boolean)) return;
+
+    setSubmitError('');
+    setSubmitting(true);
+    try {
+      await createLead.mutateAsync({
+        email: ownerEmail,
+        name: ownerName,
+        phone: ownerPhone || undefined,
+        message: `[Owner Submission] Location: ${ownerLocation} | Type: ${ownerType || 'Not specified'} | ${ownerDescription}`,
+        source: 'owner-submission',
+        metadata: { location: ownerLocation, propertyType: ownerType },
+      });
+      setSubmitted(true);
+    } catch {
+      setSubmitError(t('owners.errorSubmit', 'Something went wrong. Please try again or contact us directly.'));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -184,7 +237,7 @@ export default function Owners() {
           </p>
 
           {submitted ? (
-            <div className="bg-[#F5F1EB] border border-[#E8E4DC] p-10 text-center">
+            <div className="bg-[#F5F1EB] border border-[#E8E4DC] p-10 text-center" role="status" aria-live="polite">
               <div className="w-12 h-12 bg-[#8B7355] flex items-center justify-center mx-auto mb-4">
                 <Check className="w-6 h-6 text-white" />
               </div>
@@ -192,49 +245,71 @@ export default function Owners() {
               <p className="body-md">{t('owners.formSuccessBody')}</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-2 block">{t('owners.formName')}</label>
+                  <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-2 block">{t('owners.formName')} <span className="text-[#DC2626]">*</span></label>
                   <input
                     type="text"
                     required
-                    className="w-full px-4 py-3.5 bg-transparent border border-[#E8E4DC] text-[15px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] transition-colors"
+                    value={ownerName}
+                    onChange={e => { setOwnerName(e.target.value); if (touched.ownerName) setFieldErrors(prev => ({ ...prev, ownerName: validateField('ownerName', e.target.value) })); }}
+                    onBlur={() => handleFieldBlur('ownerName', ownerName)}
+                    autoComplete="name"
+                    className={`w-full h-[52px] px-4 bg-white border text-[16px] text-[#1A1A18] focus:outline-none transition-colors ${touched.ownerName && fieldErrors.ownerName ? 'border-[#DC2626] ring-2 ring-[#DC2626]/10' : 'border-[#E8E4DC] focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C]'}`}
                     style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                   />
+                  {touched.ownerName && fieldErrors.ownerName && <p className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.ownerName}</p>}
                 </div>
                 <div>
-                  <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-2 block">{t('owners.formEmail')}</label>
+                  <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-2 block">{t('owners.formEmail')} <span className="text-[#DC2626]">*</span></label>
                   <input
                     type="email"
                     required
-                    className="w-full px-4 py-3.5 bg-transparent border border-[#E8E4DC] text-[15px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] transition-colors"
+                    value={ownerEmail}
+                    onChange={e => { setOwnerEmail(e.target.value); if (touched.ownerEmail) setFieldErrors(prev => ({ ...prev, ownerEmail: validateField('ownerEmail', e.target.value) })); }}
+                    onBlur={() => handleFieldBlur('ownerEmail', ownerEmail)}
+                    autoComplete="email"
+                    inputMode="email"
+                    className={`w-full h-[52px] px-4 bg-white border text-[16px] text-[#1A1A18] focus:outline-none transition-colors ${touched.ownerEmail && fieldErrors.ownerEmail ? 'border-[#DC2626] ring-2 ring-[#DC2626]/10' : 'border-[#E8E4DC] focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C]'}`}
                     style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                   />
+                  {touched.ownerEmail && fieldErrors.ownerEmail && <p className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.ownerEmail}</p>}
                 </div>
               </div>
               <div>
                 <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-2 block">{t('owners.formPhone')}</label>
                 <input
                   type="tel"
-                  className="w-full px-4 py-3.5 bg-transparent border border-[#E8E4DC] text-[15px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] transition-colors"
+                  value={ownerPhone}
+                  onChange={e => setOwnerPhone(e.target.value)}
+                  autoComplete="tel"
+                  inputMode="tel"
+                  className="w-full h-[52px] px-4 bg-white border border-[#E8E4DC] text-[16px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C] transition-colors"
                   style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                 />
               </div>
               <div>
-                <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-2 block">{t('owners.formLocation')}</label>
+                <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-2 block">{t('owners.formLocation')} <span className="text-[#DC2626]">*</span></label>
                 <input
                   type="text"
                   required
+                  value={ownerLocation}
+                  onChange={e => { setOwnerLocation(e.target.value); if (touched.ownerLocation) setFieldErrors(prev => ({ ...prev, ownerLocation: validateField('ownerLocation', e.target.value) })); }}
+                  onBlur={() => handleFieldBlur('ownerLocation', ownerLocation)}
                   placeholder={t('owners.formLocationPh')}
-                  className="w-full px-4 py-3.5 bg-transparent border border-[#E8E4DC] text-[15px] text-[#1A1A18] placeholder:text-[#E8E4DC] focus:outline-none focus:border-[#8B7355] transition-colors"
+                  autoComplete="address-level2"
+                  className={`w-full h-[52px] px-4 bg-white border text-[16px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none transition-colors ${touched.ownerLocation && fieldErrors.ownerLocation ? 'border-[#DC2626] ring-2 ring-[#DC2626]/10' : 'border-[#E8E4DC] focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C]'}`}
                   style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                 />
+                {touched.ownerLocation && fieldErrors.ownerLocation && <p className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.ownerLocation}</p>}
               </div>
               <div>
                 <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-2 block">{t('owners.formType')}</label>
                 <select
-                  className="w-full px-4 py-3.5 bg-transparent border border-[#E8E4DC] text-[15px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] transition-colors"
+                  value={ownerType}
+                  onChange={e => setOwnerType(e.target.value)}
+                  className="w-full h-[52px] px-4 bg-white border border-[#E8E4DC] text-[16px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C] transition-colors appearance-none cursor-pointer"
                   style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                 >
                   <option value="">{t('owners.formTypeSelect')}</option>
@@ -249,17 +324,28 @@ export default function Owners() {
                 <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-2 block">{t('owners.formDescription')}</label>
                 <textarea
                   rows={4}
+                  value={ownerDescription}
+                  onChange={e => setOwnerDescription(e.target.value)}
                   placeholder={t('owners.formDescriptionPh')}
-                  className="w-full px-4 py-3.5 bg-transparent border border-[#E8E4DC] text-[15px] text-[#1A1A18] placeholder:text-[#E8E4DC] focus:outline-none focus:border-[#8B7355] transition-colors resize-none"
+                  className="w-full px-4 py-3.5 bg-white border border-[#E8E4DC] text-[16px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C] transition-colors resize-none"
                   style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                 />
               </div>
+
+              {submitError && (
+                <div className="flex items-start gap-2 p-3 bg-red-50 border border-[#DC2626]/20 rounded-md" role="alert" aria-live="assertive">
+                  <p className="text-[13px] text-[#DC2626]">{submitError}</p>
+                  <button type="button" onClick={() => setSubmitError('')} className="text-[#DC2626] text-[12px] underline ml-auto shrink-0">{t('owners.dismiss', 'Dismiss')}</button>
+                </div>
+              )}
+
               <button
                 type="submit"
-                className="rounded-full bg-[#8B7355] text-white text-[12px] tracking-[0.08em] font-medium px-8 py-4 hover:bg-[#7A6548] transition-colors self-start inline-flex items-center gap-2"
-                style={{ minHeight: '52px' }}
+                disabled={submitting}
+                className="rounded-full bg-[#8B7355] text-white text-[12px] tracking-[0.08em] font-medium px-8 py-4 hover:bg-[#7A6548] transition-colors self-start inline-flex items-center gap-2 disabled:opacity-50 min-h-[52px]"
               >
-                {t('owners.formSubmit')}
+                {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                {submitting ? t('owners.formSending', 'Sending...') : t('owners.formSubmit')}
               </button>
             </form>
           )}

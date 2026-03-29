@@ -156,7 +156,7 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
     <>
       <div className="fixed inset-0 bg-black/40 z-[150]" onClick={onClose} />
       <div className="fixed inset-0 z-[151] flex items-center justify-center p-4">
-        <div className="bg-white w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl">
+        <div role="dialog" aria-modal="true" aria-label={`Add ${product.name} to itinerary`} className="bg-white w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E4DC]">
             <div>
@@ -165,8 +165,9 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
             </div>
             <button
               onClick={onClose}
-              className="w-9 h-9 flex items-center justify-center text-[#6B6860] hover:text-[#1A1A18] transition-colors"
+              className="w-10 h-10 flex items-center justify-center text-[#6B6860] hover:text-[#1A1A18] transition-colors"
               style={{ minHeight: 'auto', minWidth: 'auto' }}
+              aria-label="Close modal"
             >
               <X className="w-5 h-5" />
             </button>

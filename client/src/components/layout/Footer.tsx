@@ -16,20 +16,28 @@ export default function Footer() {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
+  const [nlError, setNlError] = useState('');
 
   const createLead = trpc.leads.create.useMutation();
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
+    setSubscribing(true);
+    setNlError('');
     try {
       await createLead.mutateAsync({ email, source: 'newsletter-footer' });
       setSubscribed(true);
       setEmail('');
-    } catch { setSubscribed(true); setEmail(''); }
+    } catch {
+      setNlError(t('footer.nlError', 'Something went wrong. Please try again.'));
+    } finally {
+      setSubscribing(false);
+    }
   };
 
   return (
-    <footer className="bg-[#1A1A18] text-white">
+    <footer className="bg-[#1A1A18] text-white" role="contentinfo">
       {/* Main grid */}
       <div className="container py-14 lg:py-20">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 lg:gap-8">
@@ -52,27 +60,33 @@ export default function Footer() {
               {t('footer.newsletterHint')}
             </p>
             {subscribed ? (
-              <p className="text-[13px] flex items-center gap-2 text-[#C4A87C]">
+              <p className="text-[13px] flex items-center gap-2 text-[#C4A87C]" role="status" aria-live="polite">
                 <Check className="w-3.5 h-3.5" /> {t('footer.welcomeInbox')}
               </p>
             ) : (
-              <form onSubmit={handleSubscribe} className="flex">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder={t('footer.emailPlaceholder')}
-                  required
-                  className="flex-1 px-3 py-2.5 text-[12px] bg-transparent border border-white/15 text-white placeholder:text-white/25 focus:outline-none focus:border-white/35 transition-colors min-w-0"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
-                />
-                <button
-                  type="submit"
-                  className="px-4 py-2.5 bg-white text-[#1A1A18] text-[10px] font-semibold hover:bg-[#C4A87C] hover:text-white transition-colors flex-shrink-0"
-                  style={{ letterSpacing: '1.5px' }}
-                >
-                  {t('footer.subscribe')}
-                </button>
+              <form onSubmit={handleSubscribe} className="flex flex-col gap-1.5" noValidate>
+                <div className="flex">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={e => { setEmail(e.target.value); setNlError(''); }}
+                    placeholder={t('footer.emailPlaceholder')}
+                    required
+                    autoComplete="email"
+                    inputMode="email"
+                    className="flex-1 h-[44px] px-3 text-[12px] bg-transparent border border-white/15 text-white placeholder:text-white/25 focus:outline-none focus:border-white/35 transition-colors min-w-0"
+                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={subscribing}
+                    className="h-[44px] px-4 bg-white text-[#1A1A18] text-[10px] font-semibold hover:bg-[#C4A87C] hover:text-white transition-colors flex-shrink-0 disabled:opacity-50"
+                    style={{ letterSpacing: '1.5px' }}
+                  >
+                    {subscribing ? '...' : t('footer.subscribe')}
+                  </button>
+                </div>
+                {nlError && <p className="text-[11px] text-red-400" role="alert" aria-live="assertive">{nlError}</p>}
               </form>
             )}
           </div>
@@ -233,11 +247,11 @@ export default function Footer() {
 
               <div className="hidden h-3.5 w-px bg-white/[0.08] lg:block" />
 
-              <div className="hidden items-center gap-4 lg:flex">
-                <a href="https://instagram.com/portugalactive" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white/20 hover:text-white/45 transition-colors"><Instagram className="h-[14px] w-[14px]" /></a>
-                <a href="https://youtube.com/@portugalactive" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-white/20 hover:text-white/45 transition-colors"><Youtube className="h-[14px] w-[14px]" /></a>
-                <a href="https://linkedin.com/company/portugalactive" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-white/20 hover:text-white/45 transition-colors"><Linkedin className="h-[14px] w-[14px]" /></a>
-                <a href="https://facebook.com/portugalactive" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-white/20 hover:text-white/45 transition-colors"><Facebook className="h-[14px] w-[14px]" /></a>
+              <div className="hidden items-center gap-1 lg:flex">
+                <a href="https://instagram.com/portugalactive" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white/20 hover:text-white/45 transition-colors flex items-center justify-center w-11 h-11" style={{ minHeight: 'auto', minWidth: 'auto' }}><Instagram className="h-[15px] w-[15px]" /></a>
+                <a href="https://youtube.com/@portugalactive" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-white/20 hover:text-white/45 transition-colors flex items-center justify-center w-11 h-11" style={{ minHeight: 'auto', minWidth: 'auto' }}><Youtube className="h-[15px] w-[15px]" /></a>
+                <a href="https://linkedin.com/company/portugalactive" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-white/20 hover:text-white/45 transition-colors flex items-center justify-center w-11 h-11" style={{ minHeight: 'auto', minWidth: 'auto' }}><Linkedin className="h-[15px] w-[15px]" /></a>
+                <a href="https://facebook.com/portugalactive" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-white/20 hover:text-white/45 transition-colors flex items-center justify-center w-11 h-11" style={{ minHeight: 'auto', minWidth: 'auto' }}><Facebook className="h-[15px] w-[15px]" /></a>
               </div>
             </div>
 

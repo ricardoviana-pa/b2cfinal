@@ -67,6 +67,8 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
   const phoneRef = useRef<HTMLDivElement>(null);
   const propertiesRef = useRef<HTMLDivElement>(null);
   const propertiesTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const menuPanelRef = useRef<HTMLDivElement>(null);
+  const menuToggleRef = useRef<HTMLButtonElement>(null);
 
   const handleScroll = useCallback(() => {
     setScrolled(window.scrollY > 60);
@@ -90,6 +92,36 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
+
+  // Escape key closes mobile menu & focus trap
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMenuOpen(false);
+        menuToggleRef.current?.focus();
+        return;
+      }
+      if (e.key === 'Tab' && menuPanelRef.current) {
+        const focusable = menuPanelRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
   }, [menuOpen]);
 
   // Close dropdowns on outside click
@@ -119,7 +151,15 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
 
   return (
     <>
+      {/* Skip to main content — first focusable element */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded-md focus:bg-[#1A1A18] focus:text-white focus:text-sm focus:outline-none"
+      >
+        {t('header.skipToContent', 'Skip to main content')}
+      </a>
       <header
+        role="banner"
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isTransparent
             ? 'bg-transparent'
@@ -132,10 +172,13 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
             {/* LEFT: Hamburger + Logo */}
             <div className="flex items-center gap-3 flex-shrink-0">
               <button
+                ref={menuToggleRef}
                 onClick={() => setMenuOpen(v => !v)}
                 className={`flex items-center justify-center w-10 h-10 ${textColor} transition-colors`}
                 style={{ minHeight: 'auto', minWidth: 'auto' }}
                 aria-label={menuOpen ? t('header.closeMenu') : t('header.openMenu')}
+                aria-expanded={menuOpen}
+                aria-controls="mobile-menu-panel"
               >
                 {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -153,7 +196,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
             </div>
 
             {/* CENTRE: Desktop nav with Properties dropdown */}
-            <nav className="hidden lg:flex items-center gap-6">
+            <nav className="hidden lg:flex items-center gap-6" aria-label="Main navigation">
               {navItems.map(item => (
                 item.hasDropdown ? (
                   <div
@@ -379,6 +422,11 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
 
       {/* Panel — slides from left */}
       <div
+        ref={menuPanelRef}
+        id="mobile-menu-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('header.menuLabel', 'Site navigation')}
         className={`fixed top-0 left-0 bottom-0 z-[55] w-[85vw] sm:w-[380px] lg:w-[420px] bg-white shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="h-full flex flex-col overflow-y-auto">
@@ -404,7 +452,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
           </div>
 
           {/* Navigation links */}
-          <nav className="flex-1 px-7 pt-6">
+          <nav className="flex-1 px-7 pt-6" aria-label="Mobile navigation">
             {mobileNav.map((item, i) => (
               <div key={item.href}>
                 {item.isParent ? (
@@ -432,8 +480,10 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                       </Link>
                       <button
                         onClick={() => setMobilePropertiesOpen(v => !v)}
-                        className="w-8 h-8 flex items-center justify-center text-[#9E9A90] hover:text-[#1A1A18] transition-colors"
+                        className="w-10 h-10 flex items-center justify-center text-[#9E9A90] hover:text-[#1A1A18] transition-colors"
                         style={{ minHeight: 'auto', minWidth: 'auto' }}
+                        aria-label={mobilePropertiesOpen ? t('header.collapseProperties', 'Collapse properties') : t('header.expandProperties', 'Expand properties')}
+                        aria-expanded={mobilePropertiesOpen}
                       >
                         <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${mobilePropertiesOpen ? 'rotate-180' : ''}`} />
                       </button>
@@ -541,13 +591,13 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
 
             {/* Social */}
             <div className="flex items-center gap-4">
-              <a href="https://instagram.com/portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors">
+              <a href="https://instagram.com/portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="Instagram">
                 <Instagram className="w-4.5 h-4.5" />
               </a>
-              <a href="https://youtube.com/@portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors">
+              <a href="https://youtube.com/@portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="YouTube">
                 <Youtube className="w-4.5 h-4.5" />
               </a>
-              <a href="https://linkedin.com/company/portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors">
+              <a href="https://linkedin.com/company/portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="LinkedIn">
                 <Linkedin className="w-4.5 h-4.5" />
               </a>
             </div>

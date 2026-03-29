@@ -21,6 +21,7 @@ interface PropertyCardProps {
   nights?: number;
   checkin?: string;
   checkout?: string;
+  guests?: number;
   liveQuote?: {
     total: number;
     nightlyRate: number;
@@ -39,6 +40,7 @@ export default function PropertyCard({
   nights = 0,
   checkin,
   checkout,
+  guests,
   liveQuote,
   quoteLoading = false,
   batchFailed = false,
@@ -108,17 +110,16 @@ export default function PropertyCard({
   const badge = tierBadge[property.tier];
 
   return (
-    <Link href={`/homes/${property.slug}${checkin && checkout ? `?checkin=${encodeURIComponent(checkin)}&checkout=${encodeURIComponent(checkout)}` : ''}`}>
+    <Link href={`/homes/${property.slug}${checkin && checkout ? `?checkin=${encodeURIComponent(checkin)}&checkout=${encodeURIComponent(checkout)}${guests && guests > 1 ? `&guests=${guests}` : ''}` : ''}`}>
       <article className="group cursor-pointer block">
       {/* Image Carousel â 4:3 aspect */}
       <div
-        className="relative overflow-hidden bg-[#E8E4DC]"
+        className="relative overflow-hidden bg-[#E8E4DC] img-fallback"
         style={{ aspectRatio: '4/3' }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Actual property image */}
         <img
           src={images[currentImage]}
           alt={t('property.imageAlt', { name: property.name, current: currentImage + 1, total })}
@@ -126,11 +127,12 @@ export default function PropertyCard({
           loading="lazy"
           width={800} height={600}
           onLoad={() => setImageLoaded(true)}
+          onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }}
         />
 
-        {/* Subtle loading shimmer (shows while image loads) */}
+        {/* Shimmer skeleton while image loads */}
         {!imageLoaded && (
-          <div className="absolute inset-0 bg-[#E8E4DC] animate-pulse" />
+          <div className="absolute inset-0 skeleton-shimmer" />
         )}
 
         {/* Subtle bottom gradient for readability */}
@@ -162,6 +164,7 @@ export default function PropertyCard({
               onClick={prevImage}
               className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/80 backdrop-blur-sm hidden md:flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
               style={{ minHeight: 'auto', minWidth: 'auto' }}
+              aria-label={t('property.prevImage', 'Previous image')}
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -169,6 +172,7 @@ export default function PropertyCard({
               onClick={nextImage}
               className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/80 backdrop-blur-sm hidden md:flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
               style={{ minHeight: 'auto', minWidth: 'auto' }}
+              aria-label={t('property.nextImage', 'Next image')}
             >
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -306,9 +310,12 @@ export default function PropertyCard({
               )}
             </div>
           )}
-          <div className="flex items-center gap-1 mt-1.5">
-            <BadgeCheck className="w-3 h-3 text-[#8B7355]" />
-            <span className="text-[0.625rem] tracking-[0.02em] text-[#9E9A90] font-medium">{t('property.bestRateGuarantee')}</span>
+          <div className="flex items-center justify-between mt-1.5">
+            <div className="flex items-center gap-1">
+              <BadgeCheck className="w-3 h-3 text-[#8B7355]" />
+              <span className="text-[0.625rem] tracking-[0.02em] text-[#9E9A90] font-medium">{t('property.bestRateGuarantee')}</span>
+            </div>
+            <span className="text-[0.6875rem] text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('property.directBooking', 'Direct booking')}</span>
           </div>
         </div>
       </div>

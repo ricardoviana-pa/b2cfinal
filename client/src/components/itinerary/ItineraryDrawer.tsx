@@ -4,7 +4,7 @@
    Guest info, notes, estimated total, dual CTAs.
    ========================================================================== */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Trash2, ClipboardCheck, MessageCircle, Mail } from 'lucide-react';
 import { useItinerary } from '@/contexts/ItineraryContext';
 
@@ -20,6 +20,13 @@ export default function ItineraryDrawer() {
   const estimatedTotal = items.reduce((sum, i) => sum + (i.estimatedPrice || 0), 0);
 
   const canSend = guestName.trim() && guestEmail.trim();
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsOpen(false); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [isOpen, setIsOpen]);
 
   const handleWhatsApp = () => {
     if (!canSend) return;
@@ -51,7 +58,7 @@ export default function ItineraryDrawer() {
       />
 
       {/* Panel */}
-      <div className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white z-[121] shadow-2xl flex flex-col overflow-hidden">
+      <div role="dialog" aria-modal="true" aria-label="Your itinerary" className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white z-[121] shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E4DC]">
           <div className="flex items-center gap-2">
@@ -63,8 +70,9 @@ export default function ItineraryDrawer() {
           </div>
           <button
             onClick={() => setIsOpen(false)}
-            className="w-9 h-9 flex items-center justify-center text-[#6B6860] hover:text-[#1A1A18] transition-colors"
+            className="w-10 h-10 flex items-center justify-center text-[#6B6860] hover:text-[#1A1A18] transition-colors"
             style={{ minHeight: 'auto', minWidth: 'auto' }}
+            aria-label="Close itinerary"
           >
             <X className="w-5 h-5" />
           </button>

@@ -1,12 +1,13 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ItineraryProvider } from "./contexts/ItineraryContext";
 import Home from "./pages/Home";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { WifiOff, ArrowUp } from "lucide-react";
 
 const ItineraryDrawer = lazy(() => import("./components/itinerary/ItineraryDrawer"));
 const CookieBanner = lazy(() => import("./components/layout/CookieBanner"));
@@ -47,11 +48,71 @@ function OwnersRedirect() {
 
 function PageLoader() {
   return (
-    <div className="min-h-screen bg-[#FAFAF7] flex items-center justify-center">
-      <div className="w-[320px] h-[180px] rounded-lg bg-[#F5F1EB] animate-pulse border border-[#E8E4DC]" />
+    <div className="min-h-screen bg-[#FAFAF7]">
+      <div className="container py-16">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="skeleton-shimmer w-full rounded" style={{ aspectRatio: '16/7' }} />
+          <div className="skeleton-shimmer h-8 w-64 rounded" />
+          <div className="skeleton-shimmer h-4 w-96 rounded" />
+          <div className="space-y-2 pt-4">
+            <div className="skeleton-shimmer h-3 w-full rounded" />
+            <div className="skeleton-shimmer h-3 w-full rounded" />
+            <div className="skeleton-shimmer h-3 w-3/4 rounded" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
+
+function PageTransition({ children }: { children: ReactNode }) {
+  const [location] = useLocation();
+  const [visible, setVisible] = useState(true);
+  const [displayChildren, setDisplayChildren] = useState(children);
+  const prevLocation = useRef(location);
+  const isPopstate = useRef(false);
+
+  useEffect(() => {
+    const onPop = () => { isPopstate.current = true; };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
+  useEffect(() => {
+    const pathChanged = location.split('?')[0] !== prevLocation.current.split('?')[0];
+    const wasPop = isPopstate.current;
+    isPopstate.current = false;
+    prevLocation.current = location;
+
+    if (pathChanged && !wasPop) {
+      setVisible(false);
+      const timer = setTimeout(() => {
+        setDisplayChildren(children);
+        setVisible(true);
+        document.documentElement.style.scrollBehavior = 'auto';
+        window.scrollTo(0, 0);
+        requestAnimationFrame(() => { document.documentElement.style.scrollBehavior = ''; });
+      }, 150);
+      return () => clearTimeout(timer);
+    } else if (pathChanged && wasPop) {
+      setDisplayChildren(children);
+    } else {
+      setDisplayChildren(children);
+    }
+  }, [location, children]);
+
+  return (
+    <div
+      style={{
+        opacity: visible ? 1 : 0,
+        transition: visible ? 'opacity 300ms ease-out' : 'opacity 150ms ease-in',
+      }}
+    >
+      {displayChildren}
+    </div>
+  );
+}
+
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
@@ -91,6 +152,70 @@ function Router() {
   );
 }
 
+function BackToTop() {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setShow(window.scrollY > window.innerHeight * 2);
+        ticking = false;
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  if (!show) return null;
+
+  return (
+    <button
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      className="fixed z-[89] right-4 sm:right-6 md:right-7 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shadow-lg transition-opacity duration-300"
+      style={{
+        bottom: 'calc(5rem + 56px + env(safe-area-inset-bottom, 0px))',
+        backgroundColor: '#8B7355',
+        opacity: show ? 1 : 0,
+        minHeight: 'auto',
+        minWidth: 'auto',
+      }}
+      aria-label="Back to top"
+    >
+      <ArrowUp className="w-4 h-4 text-white" />
+    </button>
+  );
+}
+
+function OfflineBanner() {
+  const [offline, setOffline] = useState(!navigator.onLine);
+  const handleOnline = useCallback(() => setOffline(false), []);
+  const handleOffline = useCallback(() => setOffline(true), []);
+
+  useEffect(() => {
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [handleOnline, handleOffline]);
+
+  if (!offline) return null;
+
+  return (
+    <div
+      className="fixed top-0 left-0 right-0 z-[9999] flex items-center justify-center gap-2 px-4 py-2.5"
+      style={{ backgroundColor: '#F5E6C8', color: '#7A5C2E', fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 400 }}
+    >
+      <WifiOff className="w-4 h-4 shrink-0" />
+      <span>You appear to be offline. Some features may not work.</span>
+    </div>
+  );
+}
+
 function App() {
   return (
     <ErrorBoundary>
@@ -98,9 +223,13 @@ function App() {
         <ItineraryProvider>
           <TooltipProvider>
             <Toaster />
+            <OfflineBanner />
+            <BackToTop />
             <Suspense fallback={null}><ItineraryDrawer /></Suspense>
             <Suspense fallback={null}><CookieBanner /></Suspense>
-            <Router />
+            <main id="main-content" role="main">
+              <PageTransition><Router /></PageTransition>
+            </main>
           </TooltipProvider>
         </ItineraryProvider>
       </ThemeProvider>

@@ -9,9 +9,9 @@ import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck,
-  Sparkles, Star, Clock, UtensilsCrossed, Headphones, ExternalLink, Plus, X,
+  Sparkles, Star, Clock, UtensilsCrossed, Headphones, ExternalLink, Plus, X, AlertTriangle,
   Wifi, Tv, Coffee, Car, Waves, Wind, Shirt, Flame, TreePine, Mountain,
-  Sun, Monitor, Utensils, Sofa, ArrowRight, type LucideIcon
+  Sun, Monitor, Utensils, Sofa, ArrowRight, Lock, ShieldCheck, type LucideIcon
 } from 'lucide-react';
 const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 import productsData from '@/data/products.json';
@@ -82,10 +82,144 @@ function formatDescription(desc: unknown): string[] {
   return s.split(/\n\n+/).flatMap(p => p.split('\n').filter(Boolean));
 }
 
+function Lightbox({ images, initialIndex, propertyName, destName, onClose, t }: {
+  images: string[];
+  initialIndex: number;
+  propertyName: string;
+  destName: string;
+  onClose: () => void;
+  t: ReturnType<typeof import('react-i18next').useTranslation>['t'];
+}) {
+  const [idx, setIdx] = useState(initialIndex);
+  const total = images.length;
+  const lbTouchStartX = useRef(0);
+  const lbTouchDelta = useRef(0);
+  const [lbDragOffset, setLbDragOffset] = useState(0);
+  const lbRef = useRef<HTMLDivElement>(null);
+
+  const prev = useCallback(() => setIdx(p => (p - 1 + total) % total), [total]);
+  const next = useCallback(() => setIdx(p => (p + 1) % total), [total]);
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { onClose(); return; }
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'ArrowRight') next();
+      if (e.key === 'Tab' && lbRef.current) {
+        const focusable = lbRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [onClose, prev, next]);
+
+  useEffect(() => {
+    const preload = [idx - 1, idx + 1].map(i => (i + total) % total);
+    preload.forEach(i => {
+      const img = new Image();
+      img.src = images[i];
+    });
+  }, [idx, images, total]);
+
+  const handleLbTouchStart = (e: React.TouchEvent) => {
+    lbTouchStartX.current = e.touches[0].clientX;
+    lbTouchDelta.current = 0;
+  };
+  const handleLbTouchMove = (e: React.TouchEvent) => {
+    lbTouchDelta.current = e.touches[0].clientX - lbTouchStartX.current;
+    setLbDragOffset(lbTouchDelta.current);
+  };
+  const handleLbTouchEnd = () => {
+    if (Math.abs(lbTouchDelta.current) > 50) {
+      if (lbTouchDelta.current < 0) next();
+      else prev();
+    }
+    setLbDragOffset(0);
+  };
+
+  return (
+    <div
+      ref={lbRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${propertyName} photo gallery, image ${idx + 1} of ${total}`}
+      className="fixed inset-0 z-[200] flex flex-col"
+      style={{ backgroundColor: 'rgba(0,0,0,0.95)' }}
+    >
+      {/* Top bar: counter + close */}
+      <div className="flex items-center justify-between px-4 py-3 shrink-0">
+        <div />
+        <span className="text-white/70 text-[13px]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+          {idx + 1} / {total}
+        </span>
+        <button
+          onClick={onClose}
+          className="touch-target rounded-full bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center"
+          aria-label={t('propertyDetail.closeGallery', 'Close gallery')}
+        >
+          <X size={20} className="text-white" />
+        </button>
+      </div>
+
+      {/* Main image area */}
+      <div
+        className="flex-1 flex items-center justify-center relative overflow-hidden"
+        onTouchStart={handleLbTouchStart}
+        onTouchMove={handleLbTouchMove}
+        onTouchEnd={handleLbTouchEnd}
+      >
+        {/* Desktop arrows */}
+        <button
+          onClick={prev}
+          className="absolute left-3 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/10 hover:bg-white/20 transition-colors hidden md:flex items-center justify-center z-10"
+          aria-label={t('propertyDetail.prevImage', 'Previous image')}
+        >
+          <ChevronLeft size={24} className="text-white" />
+        </button>
+        <button
+          onClick={next}
+          className="absolute right-3 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/10 hover:bg-white/20 transition-colors hidden md:flex items-center justify-center z-10"
+          aria-label={t('propertyDetail.nextImage', 'Next image')}
+        >
+          <ChevronRight size={24} className="text-white" />
+        </button>
+
+        <img
+          src={images[idx]}
+          alt={`${propertyName} – ${destName} – image ${idx + 1} of ${total}`}
+          className="max-w-full max-h-full object-contain select-none"
+          style={{
+            transform: lbDragOffset ? `translateX(${lbDragOffset}px)` : 'translateX(0)',
+            transition: lbDragOffset ? 'none' : 'transform 300ms ease',
+          }}
+          draggable={false}
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function PropertyDetail() {
   const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
-  const { data: property, isLoading, error } = trpc.properties.getBySlugForSite.useQuery(
+  const { data: property, isLoading, error, refetch } = trpc.properties.getBySlugForSite.useQuery(
     { slug: slug ?? '' },
     { enabled: !!slug }
   );
@@ -182,9 +316,13 @@ export default function PropertyDetail() {
 
   const [currentImage, setCurrentImage] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState(0);
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
   const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
+  const touchDeltaX = useRef(0);
+  const touchStartTime = useRef(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const isDragging = useRef(false);
 
   useEffect(() => {
     if (property) setCurrentImage(0);
@@ -219,21 +357,65 @@ export default function PropertyDetail() {
     return filterAmenities(all);
   }, [property?.amenities]);
 
-  const handleGalleryTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
-  const handleGalleryTouchMove = (e: React.TouchEvent) => { touchEndX.current = e.touches[0].clientX; };
+  const handleGalleryTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchDeltaX.current = 0;
+    touchStartTime.current = Date.now();
+    isDragging.current = false;
+    setDragOffset(0);
+  }, []);
+  const handleGalleryTouchMove = useCallback((e: React.TouchEvent) => {
+    touchDeltaX.current = e.touches[0].clientX - touchStartX.current;
+    isDragging.current = true;
+    setDragOffset(touchDeltaX.current);
+  }, []);
   const handleGalleryTouchEnd = useCallback(() => {
-    const diff = touchStartX.current - touchEndX.current;
-    const totalImages = (property?.images?.length || getPropertyImages(property?.slug ?? '').length) || 1;
-    if (Math.abs(diff) > 40) {
-      if (diff > 0) setCurrentImage(p => Math.min(p + 1, totalImages - 1));
+    const total = (property?.images?.length || getPropertyImages(property?.slug ?? '').length) || 1;
+    const velocity = Math.abs(touchDeltaX.current) / Math.max(Date.now() - touchStartTime.current, 1);
+    const threshold = velocity > 0.3 ? 20 : 60;
+    if (Math.abs(touchDeltaX.current) > threshold) {
+      if (touchDeltaX.current < 0) setCurrentImage(p => Math.min(p + 1, total - 1));
       else setCurrentImage(p => Math.max(p - 1, 0));
     }
+    setDragOffset(0);
+    isDragging.current = false;
   }, [property]);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FAFAF7] flex items-center justify-center">
-        <div className="w-[320px] h-[180px] rounded-lg bg-[#F5F1EB] animate-pulse border border-[#E8E4DC]" />
+      <div className="min-h-screen bg-[#FAFAF7]">
+        <Header />
+        {/* Hero image skeleton */}
+        <div className="skeleton-shimmer w-full" style={{ aspectRatio: '16/7' }} />
+        <div className="container py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            {/* Content column */}
+            <div className="lg:col-span-2 space-y-5">
+              <div className="skeleton-shimmer h-3 w-28 rounded" />
+              <div className="skeleton-shimmer h-8 w-72 rounded" />
+              <div className="skeleton-shimmer h-4 w-56 rounded" />
+              <div className="flex gap-4 pt-2">
+                <div className="skeleton-shimmer h-4 w-16 rounded" />
+                <div className="skeleton-shimmer h-4 w-16 rounded" />
+                <div className="skeleton-shimmer h-4 w-16 rounded" />
+              </div>
+              <div className="space-y-2 pt-6">
+                <div className="skeleton-shimmer h-3 w-full rounded" />
+                <div className="skeleton-shimmer h-3 w-full rounded" />
+                <div className="skeleton-shimmer h-3 w-4/5 rounded" />
+              </div>
+            </div>
+            {/* Sidebar skeleton */}
+            <div className="space-y-4">
+              <div className="border border-[#E8E4DC] p-6 space-y-4">
+                <div className="skeleton-shimmer h-8 w-40 rounded" />
+                <div className="skeleton-shimmer h-3 w-32 rounded" />
+                <div className="skeleton-shimmer h-12 w-full rounded-full" />
+                <div className="skeleton-shimmer h-12 w-full rounded-full" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -242,12 +424,16 @@ export default function PropertyDetail() {
     return (
       <div className="min-h-screen bg-[#FAFAF7]">
         <Header />
-        <div className="container py-20 text-center">
-          <h1 className="headline-md mb-4">{t('propertyDetail.notFound')}</h1>
-          <p className="body-lg mb-6">{t('propertyDetail.notFoundBody')}</p>
-          <Link href="/homes" className="btn-primary inline-block">
-            {t('propertyDetail.browseHomes')}
-          </Link>
+        <div className="container max-w-lg py-24 text-center">
+          <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#F5F1EB]">
+            <AlertTriangle className="w-6 h-6 text-[#9E9A90]" />
+          </div>
+          <h1 className="headline-md mb-3">{t('propertyDetail.errorTitle', 'Something went wrong')}</h1>
+          <p className="body-lg mb-8">{t('propertyDetail.errorBody', 'We couldn\'t load this property. Please try again.')}</p>
+          <div className="flex items-center justify-center gap-4">
+            <button onClick={() => refetch()} className="btn-primary">{t('propertyDetail.retry', 'RETRY')}</button>
+            <Link href="/homes" className="btn-ghost">{t('propertyDetail.browseHomes')}</Link>
+          </div>
         </div>
         <Footer />
       </div>
@@ -265,53 +451,96 @@ export default function PropertyDetail() {
 
         {/* Breadcrumbs */}
         <nav aria-label="Breadcrumb" className="container pt-20 pb-3">
-          <ol className="flex items-center gap-1.5 text-[12px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
-            <li><Link href="/" className="hover:text-[#1A1A18] transition-colors">Home</Link></li>
+          <ol className="flex items-center gap-0.5 text-[12px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
+            <li><Link href="/" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">Home</Link></li>
             <li className="text-[#E8E4DC]">/</li>
-            <li><Link href="/homes" className="hover:text-[#1A1A18] transition-colors">Homes</Link></li>
+            <li><Link href="/homes" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">Homes</Link></li>
             {destObj && (
               <>
                 <li className="text-[#E8E4DC]">/</li>
-                <li><Link href={`/destinations/${destObj.slug}`} className="hover:text-[#1A1A18] transition-colors">{destObj.name}</Link></li>
+                <li><Link href={`/destinations/${destObj.slug}`} className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">{destObj.name}</Link></li>
               </>
             )}
             <li className="text-[#E8E4DC]">/</li>
-            <li className="text-[#6B6860] truncate max-w-[200px]">{property.name}</li>
+            <li className="text-[#6B6860] truncate max-w-[200px] inline-flex items-center min-h-[44px] px-1.5">{property.name}</li>
           </ol>
         </nav>
 
         {/* Hero gallery — full width, 4:3 or 16:9 */}
         <div
-          className="relative w-full overflow-hidden bg-[#F5F1EB] aspect-[4/3] lg:aspect-[16/9]"
+          className="group/gallery relative w-full overflow-hidden bg-[#F5F1EB] aspect-[4/3] lg:aspect-[16/9] cursor-pointer select-none"
           onTouchStart={handleGalleryTouchStart}
           onTouchMove={handleGalleryTouchMove}
           onTouchEnd={handleGalleryTouchEnd}
+          onClick={() => { if (!isDragging.current) { setLightboxImage(currentImage); setLightboxOpen(true); } }}
         >
           <div
-            className="flex h-full transition-transform duration-400 ease-out"
-            style={{ transform: `translateX(-${currentImage * 100}%)`, width: `${totalImages * 100}%` }}
+            className="flex h-full"
+            style={{
+              transform: `translateX(calc(-${currentImage * 100}% + ${dragOffset}px))`,
+              transition: dragOffset ? 'none' : 'transform 300ms ease',
+              width: `${totalImages * 100}%`,
+              willChange: 'transform',
+            }}
           >
             {(images.length ? images : ['']).map((img: string, idx: number) => (
-              <div key={idx} className="relative shrink-0 h-full bg-[#E8E4DC]" style={{ width: `${100 / totalImages}%` }}>
+              <div key={idx} className="relative shrink-0 h-full bg-[#E8E4DC] img-fallback" style={{ width: `${100 / totalImages}%` }}>
                 {img ? (
-                  <img src={img} alt={`${property.name} – luxury villa in ${destName}, Portugal`} className="absolute inset-0 w-full h-full object-cover" width={1200} height={900} loading={idx === 0 ? 'eager' : 'lazy'} {...(idx === 0 ? { fetchPriority: 'high' as const } : {})} />
+                  <img src={img} alt={`${property.name} – luxury villa in ${destName}, Portugal`} className="absolute inset-0 w-full h-full object-cover" width={1200} height={900} loading={idx === 0 ? 'eager' : 'lazy'} {...(idx === 0 ? { fetchPriority: 'high' as const } : {})} draggable={false} onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }} />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center text-[#9E9A90] text-sm">{t('propertyDetail.noImage')}</div>
                 )}
               </div>
             ))}
           </div>
+
+          {/* Desktop arrows — fade in on hover */}
           {totalImages > 1 && (
             <>
-              <button onClick={() => setCurrentImage(p => Math.max(p - 1, 0))} className="absolute left-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors hidden md:flex"><ChevronLeft size={20} /></button>
-              <button onClick={() => setCurrentImage(p => Math.min(p + 1, totalImages - 1))} className="absolute right-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors hidden md:flex"><ChevronRight size={20} /></button>
+              <button
+                onClick={e => { e.stopPropagation(); setCurrentImage(p => Math.max(p - 1, 0)); }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all duration-200 hidden md:flex opacity-0 group-hover/gallery:opacity-100"
+                aria-label={t('propertyDetail.prevImage', 'Previous image')}
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                onClick={e => { e.stopPropagation(); setCurrentImage(p => Math.min(p + 1, totalImages - 1)); }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all duration-200 hidden md:flex opacity-0 group-hover/gallery:opacity-100"
+                aria-label={t('propertyDetail.nextImage', 'Next image')}
+              >
+                <ChevronRight size={20} />
+              </button>
             </>
           )}
-          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-10">
-            <span className="text-white/80 text-[12px] bg-black/30 backdrop-blur-sm px-2.5 py-1">{currentImage + 1} / {totalImages}</span>
-            <button onClick={() => setLightboxOpen(true)} className="rounded-full bg-white/90 backdrop-blur-sm text-[#1A1A18] px-6 py-3.5 min-h-[48px] hover:bg-white transition-colors text-[11px] font-medium tracking-[0.12em] uppercase">{t('propertyDetail.viewAll')}</button>
+
+          {/* Counter + View all */}
+          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
+            <span className="text-white/80 text-[12px] bg-black/30 backdrop-blur-sm px-2.5 py-1 rounded-sm pointer-events-auto" style={{ fontFamily: 'var(--font-body)' }}>
+              {currentImage + 1} / {totalImages}
+            </span>
+            <button
+              onClick={e => { e.stopPropagation(); setLightboxImage(currentImage); setLightboxOpen(true); }}
+              className="pointer-events-auto rounded-full bg-white/90 backdrop-blur-sm text-[#1A1A18] px-6 py-3.5 min-h-[48px] hover:bg-white transition-colors text-[11px] font-medium tracking-[0.12em] uppercase"
+            >
+              {t('propertyDetail.viewAll')}
+            </button>
           </div>
 
+          {/* Dot indicators */}
+          {totalImages > 1 && totalImages <= 20 && (
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 hidden md:flex gap-1.5">
+              {images.map((_: string, i: number) => (
+                <button
+                  key={i}
+                  onClick={e => { e.stopPropagation(); setCurrentImage(i); }}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${i === currentImage ? 'bg-white w-4' : 'bg-white/40 w-1.5 hover:bg-white/60'}`}
+                  aria-label={`Go to image ${i + 1}`}
+                  style={{ minHeight: 'auto', minWidth: 'auto' }}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Title, location, key stats — below hero */}
@@ -432,9 +661,10 @@ export default function PropertyDetail() {
                       </div>
                       <button
                         onClick={() => setModalProduct(service)}
-                        className="flex items-center gap-1 rounded-full bg-[#1A1A18] text-white text-[9px] tracking-[0.02em] font-medium px-2.5 py-1.5 hover:bg-[#333] transition-colors shrink-0"
+                        className="flex items-center gap-1.5 rounded-full bg-[#1A1A18] text-white text-[11px] tracking-[0.06em] font-medium px-4 py-2.5 hover:bg-[#333] transition-colors shrink-0"
+                        style={{ minHeight: '44px', minWidth: '44px' }}
                       >
-                        <Plus className="w-3 h-3" /> {t('propertyDetail.add')}
+                        <Plus className="w-3.5 h-3.5" /> {t('propertyDetail.add')}
                       </button>
                     </div>
                   ))}
@@ -458,9 +688,10 @@ export default function PropertyDetail() {
                         </div>
                         <button
                           onClick={() => setModalProduct(adventure)}
-                          className="flex items-center gap-1 rounded-full bg-[#1A1A18] text-white text-[9px] tracking-[0.02em] font-medium px-2.5 py-1.5 hover:bg-[#333] transition-colors shrink-0"
+                          className="flex items-center gap-1.5 rounded-full bg-[#1A1A18] text-white text-[11px] tracking-[0.06em] font-medium px-4 py-2.5 hover:bg-[#333] transition-colors shrink-0"
+                          style={{ minHeight: '44px', minWidth: '44px' }}
                         >
-                          <Plus className="w-3 h-3" /> {t('propertyDetail.add')}
+                          <Plus className="w-3.5 h-3.5" /> {t('propertyDetail.add')}
                         </button>
                       </div>
                     ))}
@@ -543,14 +774,31 @@ export default function PropertyDetail() {
                 >
                   {t('property.needHelpConcierge')}
                 </a>
+
+                {/* Trust strip */}
+                <div className="grid grid-cols-2 gap-x-4 gap-y-3 mt-6 pt-5 border-t border-[#E8E4DC]">
+                  {([
+                    { icon: Lock, label: t('trust.secureBooking', 'Secure booking') },
+                    { icon: ShieldCheck, label: t('trust.bestRate', 'Best rate guaranteed') },
+                    { icon: Clock, label: t('trust.freeCancellation', 'Free cancellation (30 days)') },
+                    { icon: Headphones, label: t('trust.conciergeIncluded', 'Concierge included') },
+                  ] as const).map((item, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <item.icon size={14} className="text-[#9E9A90] shrink-0" />
+                      <span className="text-[12px] text-[#9E9A90] leading-tight" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{item.label}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </aside>
           </div>
         </div>
 
-        {/* Mobile: sticky booking card at bottom when scrolling */}
-        {!property.guestyId && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#E8E4DC] p-4 z-40 safe-area-bottom">
+        {/* Mobile: sticky booking bar at bottom */}
+        <div
+          className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#E8E4DC] px-4 pt-3 z-40"
+          style={{ paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))' }}
+        >
           <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0">
               {property.priceFrom > 0 && (
@@ -562,12 +810,20 @@ export default function PropertyDetail() {
                 <BadgeCheck size={12} className="text-[#8B7355]" /> {t('property.conciergeShort')}
               </p>
             </div>
-            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-primary shrink-0">
-              {t('property.talkConciergeMobile')}
-            </a>
+            {property.guestyId ? (
+              <button
+                onClick={() => document.getElementById('property-booking')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                className="btn-primary shrink-0"
+              >
+                {t('property.checkAvailability')}
+              </button>
+            ) : (
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-primary shrink-0">
+                {t('property.talkConciergeMobile')}
+              </a>
+            )}
           </div>
         </div>
-        )}
 
         {/* Related properties from same region */}
         {relatedProperties.length > 0 && (
@@ -587,9 +843,9 @@ export default function PropertyDetail() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {relatedProperties.map(rp => (
                   <Link key={rp.id} href={`/homes/${rp.slug}`} className="group block">
-                    <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '4/3' }}>
+                    <div className="relative overflow-hidden bg-[#E8E4DC] img-fallback" style={{ aspectRatio: '4/3' }}>
                       {rp.images?.[0] ? (
-                        <img src={rp.images[0]} alt={`${rp.name} – luxury villa in ${destName}, Portugal`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" width={800} height={600} />
+                        <img src={rp.images[0]} alt={`${rp.name} – luxury villa in ${destName}, Portugal`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" width={800} height={600} onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }} />
                       ) : (
                         <div className="w-full h-full placeholder-image" />
                       )}
@@ -614,20 +870,16 @@ export default function PropertyDetail() {
         <Footer />
       </div>
 
-      {/* Lightbox */}
+      {/* Fullscreen lightbox */}
       {lightboxOpen && (
-        <div className="fixed inset-0 z-[200] bg-black/95 overflow-y-auto">
-          <button onClick={() => setLightboxOpen(false)} className="fixed top-3 right-3 z-[210] touch-target rounded-full bg-white/10 hover:bg-white/20 transition-colors" aria-label={t('propertyDetail.closeGallery')}>
-            <X size={20} className="text-white" />
-          </button>
-          <div className="container py-16 lg:py-20">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
-              {images.map((img: string, idx: number) => (
-                <img key={idx} src={img} alt={`${property.name} – luxury villa in ${destName}, Portugal`} className="w-full aspect-[4/3] object-cover" loading="lazy" width={800} height={600} />
-              ))}
-            </div>
-          </div>
-        </div>
+        <Lightbox
+          images={images}
+          initialIndex={lightboxImage}
+          propertyName={property.name}
+          destName={destName}
+          onClose={() => setLightboxOpen(false)}
+          t={t}
+        />
       )}
 
       {modalProduct && (

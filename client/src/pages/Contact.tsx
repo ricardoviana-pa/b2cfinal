@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Phone, Mail, MapPin, MessageCircle, Calendar, ChevronDown, Check, ArrowRight, Send, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -8,6 +8,8 @@ import PhoneInput from '@/components/booking/PhoneInput';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { trpc } from '@/lib/trpc';
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function FAQItem({ item, isLast }: { item: { q: string; a: string }; isLast: boolean }) {
   const [open, setOpen] = useState(false);
@@ -95,7 +97,8 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -113,8 +116,31 @@ export default function Contact() {
     { q: t('contact.faq6q'), a: t('contact.faq6a') },
   ], [t]);
 
+  const validateField = useCallback((field: string, value: string) => {
+    if (field === 'name' && !value.trim()) return t('contact.errorName', 'Please enter your name');
+    if (field === 'email' && !value.trim()) return t('contact.errorEmailRequired', 'Please enter your email');
+    if (field === 'email' && !EMAIL_RE.test(value)) return t('contact.errorEmailInvalid', 'Please enter a valid email address');
+    if (field === 'message' && !value.trim()) return t('contact.errorMessage', 'Please enter a message');
+    return '';
+  }, [t]);
+
+  const handleBlur = useCallback((field: string, value: string) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    const err = validateField(field, value);
+    setFieldErrors(prev => ({ ...prev, [field]: err }));
+  }, [validateField]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const errors: Record<string, string> = {
+      name: validateField('name', name),
+      email: validateField('email', email),
+      message: validateField('message', message),
+    };
+    setFieldErrors(errors);
+    setTouched({ name: true, email: true, message: true });
+    if (Object.values(errors).some(Boolean)) return;
+
     setError('');
     setSubmitting(true);
     try {
@@ -128,17 +154,17 @@ export default function Contact() {
       });
       setSubmitted(true);
     } catch {
-      setError(t('contact.errorMessage', 'Something went wrong. Please try again or contact us directly.'));
+      setError(t('contact.errorSubmit', 'Something went wrong. Please try again or contact us directly.'));
     } finally {
       setSubmitting(false);
     }
   };
 
-  const inputClasses = (field: string) =>
-    `w-full h-[52px] rounded-md border bg-white px-4 text-[14px] text-[#1A1A18] transition-all duration-200 focus:outline-none ${
-      focusedField === field
-        ? 'border-[#8B7355] ring-2 ring-[#8B7355]/10'
-        : 'border-[#E8E4DC] hover:border-[#C4A87C]'
+  const inputClasses = (field: string, hasError: boolean) =>
+    `w-full h-[52px] rounded-md border bg-white px-4 text-[16px] text-[#1A1A18] transition-all duration-200 focus:outline-none ${
+      hasError
+        ? 'border-[#DC2626] ring-2 ring-[#DC2626]/10'
+        : 'border-[#E8E4DC] hover:border-[#C4A87C] focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10'
     }`;
 
   return (
@@ -192,7 +218,7 @@ export default function Contact() {
               </p>
 
               {submitted ? (
-                <div className="rounded-lg border border-[#E8E4DC] bg-white p-10 md:p-14 text-center">
+                <div className="rounded-lg border border-[#E8E4DC] bg-white p-10 md:p-14 text-center" role="status" aria-live="polite">
                   <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-[#8B7355]">
                     <Check className="w-6 h-6 text-white" />
                   </div>
@@ -211,51 +237,48 @@ export default function Contact() {
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block"
-                        style={{ fontFamily: 'var(--font-body)' }}
-                      >
-                        {t('contact.nameLabel')}
+                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                        {t('contact.nameLabel')} <span className="text-[#DC2626]">*</span>
                       </label>
                       <input
                         type="text"
                         required
                         value={name}
-                        onChange={e => setName(e.target.value)}
+                        onChange={e => { setName(e.target.value); if (touched.name) setFieldErrors(prev => ({ ...prev, name: validateField('name', e.target.value) })); }}
+                        onBlur={() => handleBlur('name', name)}
                         placeholder={t('contact.namePlaceholder', 'Your full name')}
-                        className={inputClasses('name')}
+                        autoComplete="name"
+                        className={inputClasses('name', !!(touched.name && fieldErrors.name))}
                         style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
-                        onFocus={() => setFocusedField('name')}
-                        onBlur={() => setFocusedField(null)}
                       />
+                      {touched.name && fieldErrors.name && <p className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.name}</p>}
                     </div>
                     <div>
-                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block"
-                        style={{ fontFamily: 'var(--font-body)' }}
-                      >
-                        {t('contact.emailLabel')}
+                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                        {t('contact.emailLabel')} <span className="text-[#DC2626]">*</span>
                       </label>
                       <input
                         type="email"
                         required
                         value={email}
-                        onChange={e => setEmail(e.target.value)}
+                        onChange={e => { setEmail(e.target.value); if (touched.email) setFieldErrors(prev => ({ ...prev, email: validateField('email', e.target.value) })); }}
+                        onBlur={() => handleBlur('email', email)}
                         placeholder={t('contact.emailPlaceholder', 'your@email.com')}
-                        className={inputClasses('email')}
+                        autoComplete="email"
+                        inputMode="email"
+                        className={inputClasses('email', !!(touched.email && fieldErrors.email))}
                         style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
-                        onFocus={() => setFocusedField('email')}
-                        onBlur={() => setFocusedField(null)}
                       />
+                      {touched.email && fieldErrors.email && <p className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.email}</p>}
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block"
-                        style={{ fontFamily: 'var(--font-body)' }}
-                      >
+                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
                         {t('contact.phoneLabel')}
                       </label>
                       <PhoneInput
@@ -265,18 +288,14 @@ export default function Contact() {
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block"
-                        style={{ fontFamily: 'var(--font-body)' }}
-                      >
+                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
                         {t('contact.subjectLabel')}
                       </label>
                       <select
                         value={subject}
                         onChange={e => setSubject(e.target.value)}
-                        className={`${inputClasses('subject')} appearance-none cursor-pointer`}
+                        className={`${inputClasses('subject', false)} appearance-none cursor-pointer`}
                         style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
-                        onFocus={() => setFocusedField('subject')}
-                        onBlur={() => setFocusedField(null)}
                       >
                         <option value="book-a-home">{t('contact.subjectBookHome')}</option>
                         <option value="services-enquiry">{t('contact.subjectServices')}</option>
@@ -288,30 +307,31 @@ export default function Contact() {
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block"
-                      style={{ fontFamily: 'var(--font-body)' }}
-                    >
-                      {t('contact.messageLabel')}
+                    <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                      {t('contact.messageLabel')} <span className="text-[#DC2626]">*</span>
                     </label>
                     <textarea
                       required
                       rows={5}
                       value={message}
-                      onChange={e => setMessage(e.target.value)}
+                      onChange={e => { setMessage(e.target.value); if (touched.message) setFieldErrors(prev => ({ ...prev, message: validateField('message', e.target.value) })); }}
+                      onBlur={() => handleBlur('message', message)}
                       placeholder={t('contact.messagePlaceholder', 'Tell us about your trip — dates, group size, anything we should know...')}
-                      className={`w-full rounded-md border bg-white px-4 py-3.5 text-[14px] text-[#1A1A18] placeholder:text-[#9E9A90] transition-all duration-200 focus:outline-none resize-none ${
-                        focusedField === 'message'
-                          ? 'border-[#8B7355] ring-2 ring-[#8B7355]/10'
-                          : 'border-[#E8E4DC] hover:border-[#C4A87C]'
+                      className={`w-full rounded-md border bg-white px-4 py-3.5 text-[16px] text-[#1A1A18] placeholder:text-[#9E9A90] transition-all duration-200 focus:outline-none resize-none ${
+                        touched.message && fieldErrors.message
+                          ? 'border-[#DC2626] ring-2 ring-[#DC2626]/10'
+                          : 'border-[#E8E4DC] hover:border-[#C4A87C] focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10'
                       }`}
                       style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
-                      onFocus={() => setFocusedField('message')}
-                      onBlur={() => setFocusedField(null)}
                     />
+                    {touched.message && fieldErrors.message && <p className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.message}</p>}
                   </div>
 
                   {error && (
-                    <p className="text-[13px] text-red-600" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>{error}</p>
+                    <div className="flex items-start gap-2 p-3 bg-red-50 border border-[#DC2626]/20 rounded-md" role="alert" aria-live="assertive">
+                      <p className="text-[13px] text-[#DC2626]">{error}</p>
+                      <button type="button" onClick={() => setError('')} className="text-[#DC2626] text-[12px] underline ml-auto shrink-0">{t('contact.dismiss', 'Dismiss')}</button>
+                    </div>
                   )}
 
                   <button

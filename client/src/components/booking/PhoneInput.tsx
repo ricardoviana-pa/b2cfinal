@@ -16,7 +16,8 @@ export default function PhoneInput({ value, onChange, placeholder = "Phone numbe
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        inputClassName="!w-full !h-full !bg-white !border-0 !border-r-0 !rounded-none !rounded-r-md !text-[13px] !text-[#1A1A18] !px-3 focus:!outline-none focus:!ring-0 !font-[inherit]"
+        inputProps={{ autoComplete: 'tel', inputMode: 'tel' }}
+        inputClassName="!w-full !h-full !bg-white !border-0 !border-r-0 !rounded-none !rounded-r-md !text-[16px] !text-[#1A1A18] !px-3 focus:!outline-none focus:!ring-0 !font-[inherit]"
         countrySelectorStyleProps={{
           buttonClassName: "!bg-white !border-0 !rounded-none !rounded-l-md !px-3 !h-full hover:!bg-[#F5F1EB] !transition-colors",
           dropdownStyleProps: {

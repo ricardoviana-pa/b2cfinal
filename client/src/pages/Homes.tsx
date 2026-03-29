@@ -8,7 +8,7 @@ import { useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { IMAGES } from '@/lib/images';
-import { SlidersHorizontal, X, Search, Calendar, Users, Minus, Plus } from 'lucide-react';
+import { SlidersHorizontal, X, Search, Calendar, Users, Minus, Plus, AlertTriangle, MessageCircle } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
 import { filterProperties, sortProperties } from '@/lib/utils';
@@ -102,16 +102,21 @@ export default function Homes() {
     return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
   }, [searchGuests]);
 
-  const { data: propsData, isLoading, isError } = trpc.properties.listForSite.useQuery();
+  const toFilterDestination = (value: string): FilterDestination => {
+    if (value === 'minho' || value === 'porto' || value === 'algarve') return value;
+    return 'all';
+  };
+
+  const { data: propsData, isLoading, isError, refetch } = trpc.properties.listForSite.useQuery();
   const allProperties = (propsData ?? []) as Property[];
 
-  const [occasion, setOccasion] = useState('all');
-  const [destination, setDestination] = useState<FilterDestination>('all');
-  const [tier, setTier] = useState('all');
-  const [sort, setSort] = useState<SortOption>('recommended');
-  const [bedrooms, setBedrooms] = useState<string | undefined>();
-  const [price, setPrice] = useState<string | undefined>();
-  const [style, setStyle] = useState<string | undefined>();
+  const [occasion, setOccasion] = useState(() => searchParams.get('occasion') || 'all');
+  const [destination, setDestination] = useState<FilterDestination>(() => toFilterDestination(searchDestinationFromUrl));
+  const [tier, setTier] = useState(() => searchParams.get('tier') || 'all');
+  const [sort, setSort] = useState<SortOption>(() => (searchParams.get('sort') as SortOption) || 'recommended');
+  const [bedrooms, setBedrooms] = useState<string | undefined>(() => searchParams.get('bedrooms') || undefined);
+  const [price, setPrice] = useState<string | undefined>(() => searchParams.get('price') || undefined);
+  const [style, setStyle] = useState<string | undefined>(() => searchParams.get('style') || undefined);
   const [showMoreFilters, setShowMoreFilters] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [bookingDestination, setBookingDestination] = useState(searchDestinationFromUrl);
@@ -130,11 +135,6 @@ export default function Homes() {
     return d.toISOString().split('T')[0];
   }, [bookingCheckin, today]);
 
-  const toFilterDestination = (value: string): FilterDestination => {
-    if (value === 'minho' || value === 'porto' || value === 'algarve') return value;
-    return 'all';
-  };
-
   useEffect(() => {
     setBookingDestination(searchDestinationFromUrl);
     setBookingCheckin(searchCheckin);
@@ -142,6 +142,26 @@ export default function Homes() {
     setBookingGuests(searchGuests ? Math.max(1, Number(searchGuests) || 2) : 2);
     setDestination(toFilterDestination(searchDestinationFromUrl));
   }, [searchDestinationFromUrl, searchCheckin, searchCheckout, searchGuests]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchString);
+    const set = (k: string, v: string | undefined, fallback: string) => {
+      if (v && v !== fallback) params.set(k, v);
+      else params.delete(k);
+    };
+    set('occasion', occasion, 'all');
+    set('destination', destination, 'all');
+    set('tier', tier, 'all');
+    set('sort', sort, 'recommended');
+    set('bedrooms', bedrooms, '');
+    set('price', price, '');
+    set('style', style, '');
+    const qs = params.toString();
+    const newUrl = `/homes${qs ? `?${qs}` : ''}`;
+    if (newUrl !== window.location.pathname + window.location.search) {
+      window.history.replaceState(null, '', newUrl);
+    }
+  }, [occasion, destination, tier, sort, bedrooms, price, style, searchString]);
 
   const filtered = useMemo(() => {
     const f = filterProperties(allProperties, occasion, destination, bedrooms, price, style, tier);
@@ -189,8 +209,23 @@ export default function Homes() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FAFAF7] flex items-center justify-center">
-        <div className="w-[320px] h-[180px] rounded-lg bg-[#F5F1EB] animate-pulse border border-[#E8E4DC]" />
+      <div className="min-h-screen bg-[#FAFAF7]">
+        <Header />
+        <div className="container py-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i}>
+                <div className="skeleton-shimmer" style={{ aspectRatio: '4/3' }} />
+                <div className="pt-3.5 space-y-2">
+                  <div className="skeleton-shimmer h-3 w-24 rounded" />
+                  <div className="skeleton-shimmer h-5 w-48 rounded" />
+                  <div className="skeleton-shimmer h-3 w-36 rounded" />
+                  <div className="skeleton-shimmer h-4 w-28 rounded mt-3" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -200,10 +235,13 @@ export default function Homes() {
       <div className="min-h-screen bg-[#FAFAF7]">
         <Header />
         <section className="section-padding">
-          <div className="container text-center">
-            <h2 className="headline-md text-[#1A1A18] mb-3">{t('homes.loadErrorTitle')}</h2>
-            <p className="body-md mb-6">{t('homes.loadErrorBody')}</p>
-            <button onClick={() => navigate('/homes')} className="btn-primary">{t('homes.tryAgain')}</button>
+          <div className="container max-w-lg text-center">
+            <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#F5F1EB]">
+              <AlertTriangle className="w-6 h-6 text-[#9E9A90]" />
+            </div>
+            <h2 className="headline-md text-[#1A1A18] mb-3">{t('homes.loadErrorTitle', 'Something went wrong')}</h2>
+            <p className="body-md mb-8">{t('homes.loadErrorBody', 'We couldn\'t load the properties. Please try again.')}</p>
+            <button onClick={() => refetch()} className="btn-primary">{t('homes.retry', 'RETRY')}</button>
           </div>
         </section>
         <Footer />
@@ -294,7 +332,8 @@ export default function Homes() {
                     type="button"
                     onClick={() => setBookingGuests(g => Math.max(1, g - 1))}
                     disabled={bookingGuests <= 1}
-                    className="flex h-7 w-7 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                    aria-label={t('home.decreaseGuests', 'Decrease guests')}
                   >
                     <Minus className="w-3 h-3" />
                   </button>
@@ -303,7 +342,8 @@ export default function Homes() {
                     type="button"
                     onClick={() => setBookingGuests(g => Math.min(30, g + 1))}
                     disabled={bookingGuests >= 30}
-                    className="flex h-7 w-7 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                    aria-label={t('home.increaseGuests', 'Increase guests')}
                   >
                     <Plus className="w-3 h-3" />
                   </button>
@@ -469,9 +509,9 @@ export default function Homes() {
       )}
 
       {/* Results */}
-      <section className="section-padding">
+      <section className="section-padding" aria-live="polite" aria-atomic="true">
         <div className="container">
-          <p className="text-[13px] text-[#9E9A90] mb-6">
+          <p className="text-[13px] text-[#78756F] mb-6">
             {t('homes.available', { count: filtered.length })}
             {searchGuestsCount > 0 && (
               <span> · {t('homes.guestsPlus', { count: searchGuestsCount })}</span>
@@ -488,18 +528,30 @@ export default function Homes() {
                   nights={searchNights}
                   checkin={searchCheckin}
                   checkout={searchCheckout}
+                  guests={searchGuestsCount || undefined}
                 />
               </div>
             ))}
           </div>
 
           {filtered.length === 0 && (
-            <div className="text-center py-20">
-              <p className="body-lg mb-2" style={{ color: '#1A1A18' }}>{t('homes.noMatch')}</p>
-              <p className="body-md mb-8">{t('homes.noMatchHint')}</p>
+            <div className="text-center py-16 md:py-24 max-w-md mx-auto">
+              <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#F5F1EB]">
+                <Search className="w-5 h-5 text-[#9E9A90]" />
+              </div>
+              <h3 className="headline-sm text-[#1A1A18] mb-2">{t('homes.noMatch', 'No homes match your criteria')}</h3>
+              <p className="body-md mb-8">{t('homes.noMatchHint', 'Try adjusting your filters or contact our team for help.')}</p>
               <div className="flex items-center justify-center gap-4 flex-wrap">
                 <button onClick={clearFilters} className="btn-primary">{t('filters.clearAll')}</button>
-                <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="btn-ghost">{t('homes.talkConcierge')}</a>
+                <a
+                  href="https://wa.me/351927161771?text=Hi%2C%20I%27m%20looking%20for%20a%20property%20but%20can%27t%20find%20the%20right%20match.%20Can%20you%20help%3F"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-ghost inline-flex items-center gap-2"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  {t('homes.talkConcierge', 'Talk to concierge')}
+                </a>
               </div>
             </div>
           )}

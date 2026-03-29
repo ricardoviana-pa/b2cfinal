@@ -26,19 +26,15 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="flex items-center justify-center min-h-screen p-8 bg-[#FAFAF7]">
-          <div className="flex flex-col items-center w-full max-w-2xl p-8 rounded-lg bg-white border border-[#E8E4DC] shadow-[0_4px_24px_rgba(0,0,0,0.08)]">
-            <AlertTriangle
-              size={48}
-              className="text-[#DC2626] mb-6 flex-shrink-0"
-            />
-
-            <h2 className="headline-sm text-[#1A1A18] mb-4">{i18n.t("errorBoundary.title")}</h2>
-
-            <div className="p-4 w-full rounded-md bg-[#F5F1EB] overflow-auto mb-6 border border-[#E8E4DC]">
-              <pre className="text-sm text-[#6B6860] whitespace-break-spaces">
-                {this.state.error?.stack}
-              </pre>
+          <div className="flex flex-col items-center w-full max-w-md p-10 text-center">
+            <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#F5F1EB]">
+              <AlertTriangle size={24} className="text-[#9E9A90]" />
             </div>
+
+            <h2 className="headline-sm text-[#1A1A18] mb-3">{i18n.t("errorBoundary.title", "Something went wrong")}</h2>
+            <p className="body-md mb-8" style={{ color: '#6B6860' }}>
+              {i18n.t("errorBoundary.body", "Please try again. If the problem persists, contact our team.")}
+            </p>
 
             <button
               onClick={() => window.location.reload()}
@@ -49,7 +45,7 @@ class ErrorBoundary extends Component<Props, State> {
               )}
             >
               <RotateCcw size={16} />
-              {i18n.t("errorBoundary.reload")}
+              {i18n.t("errorBoundary.reload", "Try again")}
             </button>
           </div>
         </div>

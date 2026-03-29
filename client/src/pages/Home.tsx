@@ -38,7 +38,14 @@ import type { Destination, Property } from '@/lib/types';
 
 const destinations = destinationsData as unknown as Destination[];
 
-function HomePropertyCard({ property }: { property: Property }) {
+interface HomePropertyCardProps {
+  property: Property;
+  checkin?: string;
+  checkout?: string;
+  guests?: number;
+}
+
+function HomePropertyCard({ property, checkin, checkout, guests }: HomePropertyCardProps) {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
   const [imgIdx, setImgIdx] = useState(0);
@@ -62,7 +69,14 @@ function HomePropertyCard({ property }: { property: Property }) {
     <div
       className="group block flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto cursor-pointer"
       style={{ scrollSnapAlign: 'start' }}
-      onClick={() => navigate(`/homes/${property.slug}`)}
+      onClick={() => {
+        const p = new URLSearchParams();
+        if (checkin) p.set('checkin', checkin);
+        if (checkout) p.set('checkout', checkout);
+        if (guests && guests > 1) p.set('guests', String(guests));
+        const qs = p.toString();
+        navigate(`/homes/${property.slug}${qs ? `?${qs}` : ''}`);
+      }}
     >
       <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '4/3' }}>
         {total > 0 ? (
@@ -138,6 +152,8 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('all');
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
+  const [nlError, setNlError] = useState('');
   const [searchDest, setSearchDest] = useState('');
   const [searchCheckin, setSearchCheckin] = useState('');
   const [searchCheckout, setSearchCheckout] = useState('');
@@ -175,24 +191,43 @@ export default function Home() {
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
+    setSubscribing(true);
+    setNlError('');
     try {
       await createLead.mutateAsync({ email, source: 'newsletter-home' });
       setSubscribed(true);
       setEmail('');
-    } catch { /* show success anyway to avoid blocking UX */ setSubscribed(true); setEmail(''); }
+    } catch {
+      setNlError(t('home.newsletterError', 'Something went wrong. Please try again.'));
+    } finally {
+      setSubscribing(false);
+    }
   };
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#FAFAF7]">
         <Header variant="transparent" />
-        <section className="section-padding">
-          <div className="container text-center">
-            <h2 className="headline-md text-[#1A1A18] mb-3">{t('home.loading')}</h2>
-            <p className="body-md mb-6">{t('home.loadingBody')}</p>
-            <div className="mx-auto w-[320px] h-[180px] rounded-lg bg-[#F5F1EB] animate-pulse border border-[#E8E4DC]" />
+        {/* Hero skeleton */}
+        <div className="skeleton-shimmer w-full" style={{ height: '80vh', minHeight: 480 }} />
+        {/* Properties skeleton */}
+        <div className="container py-16">
+          <div className="skeleton-shimmer h-3 w-20 rounded mx-auto mb-4" />
+          <div className="skeleton-shimmer h-8 w-64 rounded mx-auto mb-10" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i}>
+                <div className="skeleton-shimmer" style={{ aspectRatio: '4/3' }} />
+                <div className="pt-3.5 space-y-2">
+                  <div className="skeleton-shimmer h-3 w-24 rounded" />
+                  <div className="skeleton-shimmer h-5 w-48 rounded" />
+                  <div className="skeleton-shimmer h-3 w-36 rounded" />
+                  <div className="skeleton-shimmer h-4 w-28 rounded mt-3" />
+                </div>
+              </div>
+            ))}
           </div>
-        </section>
+        </div>
       </div>
     );
   }
@@ -344,6 +379,7 @@ export default function Home() {
                 onClick={() => setSearchGuests(g => Math.max(1, g - 1))}
                 disabled={searchGuests <= 1}
                 className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                aria-label={t('home.decreaseGuests', 'Decrease guests')}
               >
                 <Minus className="w-2.5 h-2.5" />
               </button>
@@ -355,6 +391,7 @@ export default function Home() {
                 onClick={() => setSearchGuests(g => Math.min(30, g + 1))}
                 disabled={searchGuests >= 30}
                 className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                aria-label={t('home.increaseGuests', 'Increase guests')}
               >
                 <Plus className="w-2.5 h-2.5" />
               </button>
@@ -379,8 +416,84 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Mobile search bar — stacked layout */}
+        <div className="absolute bottom-16 left-0 right-0 lg:hidden px-5 z-10">
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg p-4 space-y-3">
+            <div className="grid grid-cols-2 gap-2">
+              <div
+                className="relative"
+                onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
+              >
+                <input
+                  type="date"
+                  value={searchCheckin}
+                  onChange={e => {
+                    setSearchCheckin(e.target.value);
+                    setTimeout(() => checkoutRef.current?.showPicker?.(), 50);
+                  }}
+                  className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                  placeholder={t('home.searchCheckin', 'Check-in')}
+                />
+              </div>
+              <div
+                className="relative"
+                onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
+              >
+                <input
+                  ref={checkoutRef}
+                  type="date"
+                  value={searchCheckout}
+                  onChange={e => setSearchCheckout(e.target.value)}
+                  className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                  placeholder={t('home.searchCheckout', 'Check-out')}
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 flex-1 h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3">
+                <Users className="w-4 h-4 text-[#9E9A90] shrink-0" />
+                <button
+                  type="button"
+                  onClick={() => setSearchGuests(g => Math.max(1, g - 1))}
+                  disabled={searchGuests <= 1}
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30"
+                  aria-label={t('home.decreaseGuests', 'Decrease guests')}
+                >
+                  <Minus className="w-3 h-3" />
+                </button>
+                <span className="text-[13px] text-[#1A1A18] tabular-nums flex-1 text-center">{searchGuests} {t('home.searchGuests')}</span>
+                <button
+                  type="button"
+                  onClick={() => setSearchGuests(g => Math.min(30, g + 1))}
+                  disabled={searchGuests >= 30}
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30"
+                  aria-label={t('home.increaseGuests', 'Increase guests')}
+                >
+                  <Plus className="w-3 h-3" />
+                </button>
+              </div>
+              <Link
+                href={(() => {
+                  const p = new URLSearchParams();
+                  if (searchCheckin) p.set('checkin', searchCheckin);
+                  if (searchCheckout) p.set('checkout', searchCheckout);
+                  if (searchGuests > 1) p.set('guests', String(searchGuests));
+                  const qs = p.toString();
+                  return `/homes${qs ? `?${qs}` : ''}`;
+                })()}
+                className="shrink-0 h-[48px] px-6 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
+                style={{ letterSpacing: '1.5px' }}
+              >
+                {t('home.searchButton')}
+              </Link>
+            </div>
+          </div>
+        </div>
+
         {/* Scroll indicator */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 animate-bounce z-10">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 animate-bounce z-10 hidden lg:flex">
           <ChevronDown className="w-5 h-5 text-white/40" />
         </div>
       </section>
@@ -462,7 +575,7 @@ export default function Home() {
           {/* Property cards Ã¢ÂÂ horizontal scroll on mobile, 3 per row on desktop */}
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:overflow-visible">
             {featured.map(property => (
-              <HomePropertyCard key={property.id} property={property} />
+              <HomePropertyCard key={property.id} property={property} checkin={searchCheckin} checkout={searchCheckout} guests={searchGuests} />
             ))}
           </div>
 
@@ -798,23 +911,29 @@ export default function Home() {
                 {t('home.newsletterSuccess')}
               </p>
             ) : (
-              <form onSubmit={handleSubscribe} className="flex gap-0 max-w-sm mx-auto">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder={t('home.newsletterPlaceholder')}
-                  required
-                  className="flex-1 px-4 py-3 text-[13px] bg-white border border-[#E8E4DC] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:border-[#8B7355] transition-colors"
-                  style={{ fontFamily: 'var(--font-body)' }}
-                />
-                <button
-                  type="submit"
-                  className="px-5 py-3 bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex-shrink-0"
-                  style={{ letterSpacing: '1.5px' }}
-                >
-                  {t('home.newsletterCta')}
-                </button>
+              <form onSubmit={handleSubscribe} className="flex flex-col gap-1.5 max-w-sm mx-auto" noValidate>
+                <div className="flex gap-0">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={e => { setEmail(e.target.value); setNlError(''); }}
+                    placeholder={t('home.newsletterPlaceholder')}
+                    required
+                    autoComplete="email"
+                    inputMode="email"
+                    className="flex-1 h-[48px] px-4 text-[13px] bg-white border border-[#E8E4DC] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:border-[#8B7355] transition-colors"
+                    style={{ fontFamily: 'var(--font-body)' }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={subscribing}
+                    className="h-[48px] px-5 bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex-shrink-0 disabled:opacity-50"
+                    style={{ letterSpacing: '1.5px' }}
+                  >
+                    {subscribing ? '...' : t('home.newsletterCta')}
+                  </button>
+                </div>
+                {nlError && <p className="text-[12px] text-[#DC2626] text-center">{nlError}</p>}
               </form>
             )}
           </div>

@@ -33,7 +33,7 @@ export default function CookieBanner() {
   return (
     <div
       className="fixed bottom-0 left-0 right-0 z-[60] bg-white border-t border-[#E8E4DC] shadow-lg"
-      style={{ animation: 'slideUp 0.4s ease-out' }}
+      style={{ animation: 'slideUp 0.4s ease-out', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
     >
       <div className="container py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>

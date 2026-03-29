@@ -537,11 +537,12 @@ export default function BookingWidget({
                 setError("");
               }}
               disabled={guests <= 1}
-              className="flex h-7 w-7 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+              aria-label={t("booking.decreaseGuests", "Decrease guests")}
             >
-              <Minus className="w-3 h-3" />
+              <Minus className="w-3.5 h-3.5" />
             </button>
-            <span className="min-w-[3ch] text-center text-[14px] text-[#1A1A18] tabular-nums">{guests}</span>
+            <span className="min-w-[3ch] text-center text-[14px] text-[#1A1A18] tabular-nums" aria-live="polite" aria-atomic="true">{guests}</span>
             <button
               type="button"
               onClick={() => {
@@ -550,9 +551,10 @@ export default function BookingWidget({
                 setError("");
               }}
               disabled={guests >= (maxGuests > 0 ? maxGuests : 30)}
-              className="flex h-7 w-7 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+              aria-label={t("booking.increaseGuests", "Increase guests")}
             >
-              <Plus className="w-3 h-3" />
+              <Plus className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
