@@ -715,7 +715,11 @@ export default function PropertyDetail() {
                     className="w-full h-[280px] lg:h-[320px] border-0"
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    src={`https://maps.google.com/maps?q=${encodeURIComponent(`${property.locality}, ${destName}, Portugal`)}&z=13&output=embed`}
+                    src={
+                      property.address?.lat && property.address?.lng
+                        ? `https://maps.google.com/maps?q=${property.address.lat},${property.address.lng}&z=15&output=embed`
+                        : `https://maps.google.com/maps?q=${encodeURIComponent(`${property.locality}, ${destName}, Portugal`)}&z=13&output=embed`
+                    }
                     allowFullScreen
                   />
                 </div>

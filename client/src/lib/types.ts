@@ -61,6 +61,16 @@ export interface Property {
   isActive: boolean;
   seoTitle: string;
   seoDescription: string;
+  address?: {
+    full?: string;
+    street?: string;
+    city?: string;
+    state?: string;
+    zipcode?: string;
+    country?: string;
+    lat?: number;
+    lng?: number;
+  };
 }
 
 // --- PRODUCTS: SERVICES + ADVENTURES ---

@@ -21,7 +21,7 @@ async function fetchAllListings(): Promise<any[]> {
   let skip = 0;
   const limit = 50;
   const fields =
-    "title publicDescriptions description pictures address accommodates bedrooms bathrooms prices terms amenities amenitiesNotIncluded customFields";
+    "title publicDescription publicDescriptions description pictures address accommodates bedrooms bathrooms prices terms amenities amenitiesNotIncluded customFields";
 
   while (true) {
     const data = await guestyClient.getListings({
@@ -37,6 +37,7 @@ async function fetchAllListings(): Promise<any[]> {
     if (items.length < limit) break;
     skip += limit;
   }
+  console.log(`[Guesty Sync] Fetched ${results.length} listings with address data`);
   return results;
 }
 
@@ -60,6 +61,20 @@ function buildDescription(desc: any, legacyDescription?: string): string {
     return legacyDescription;
   }
   return combined || legacyDescription || "";
+}
+
+/** Build tagline from description — ensure it's always populated */
+function buildTagline(desc: any, legacyDescription?: string): string {
+  const summary = desc?.summary || desc?.space || desc?.neighborhood || "";
+  if (summary.trim().length > 0) {
+    return summary.slice(0, 150) + (summary.length > 150 ? "…" : "");
+  }
+  // Fallback: use first 150 chars of full description
+  const fullDesc = buildDescription(desc, legacyDescription);
+  if (fullDesc.trim().length > 0) {
+    return fullDesc.slice(0, 150) + (fullDesc.length > 150 ? "…" : "");
+  }
+  return "";
 }
 
 function slugify(title: string, id: string): string {
@@ -94,10 +109,10 @@ function mapListingToProperty(listing: any) {
   const id = listing._id || listing.listingId || "";
   const title = listing.title || "Untitled";
   const slug = slugify(title, id);
-  const desc = listing.publicDescriptions;
+  const desc = listing.publicDescription || listing.publicDescriptions;
   const fullDesc = buildDescription(desc, listing.description);
+  const tagline = buildTagline(desc, listing.description);
   const summary = desc?.summary || desc?.space || desc?.neighborhood || "";
-  const tagline = summary.slice(0, 150) + (summary.length > 150 ? "…" : "");
   const pictures = listing.pictures || [];
   const images = pictures
     .filter((p: any) => p.original || p.thumbnail)
@@ -114,6 +129,18 @@ function mapListingToProperty(listing: any) {
   const terms = listing.terms || {};
   const minNights = terms.minNights ?? terms.minNight ?? 1;
   const amenities = mapGuestyAmenities(listing);
+
+  // Extract full address data from Guesty
+  const addressData = {
+    full: addr.address || "",
+    street: addr.street || "",
+    city: addr.city || "",
+    state: addr.state || addr.region || "",
+    zipcode: addr.zipCode || addr.postalCode || "",
+    country: addr.country || "Portugal",
+    lat: addr.lat ? Number(addr.lat) : undefined,
+    lng: addr.lng ? Number(addr.lng) : undefined,
+  };
 
   return {
     id: `guesty-${id}`,
@@ -146,6 +173,7 @@ function mapListingToProperty(listing: any) {
     isActive: true,
     seoTitle: `${title} — Portugal Active`,
     seoDescription: summary.slice(0, 160) || `${title} in Portugal.`,
+    address: addressData,
   };
 }
 
