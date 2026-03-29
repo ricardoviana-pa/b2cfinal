@@ -275,7 +275,8 @@
     "lastNameRequired": "Last name is required",
     "emailInvalid": "Invalid email",
     "phoneInvalid": "Invalid phone number",
-    "countryRequired": "Country is required"
+    "countryRequired": "Country is required",
+    "advanceNoticeWithDays": "Bokningar kräver minst {{days}} dagars förvarning."
   },
   "footer": {
     "allRightsReserved": "Alla rättigheter förbehållna",

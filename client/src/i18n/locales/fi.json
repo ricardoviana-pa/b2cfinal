@@ -275,7 +275,8 @@
     "lastNameRequired": "Last name is required",
     "emailInvalid": "Invalid email",
     "phoneInvalid": "Invalid phone number",
-    "countryRequired": "Country is required"
+    "countryRequired": "Country is required",
+    "advanceNoticeWithDays": "Varaukset vaativat vähintään {{days}} päivän ennakkoilmoituksen."
   },
   "footer": {
     "allRightsReserved": "Kaikki oikeudet pidätetään",

@@ -7,7 +7,7 @@
 import { guestyBEClient } from "../lib/guesty";
 
 const GUESTY_BE_AUTH_ERROR =
-  "O serviÃ§o de reservas estÃ¡ temporariamente sobrecarregado. Aguarde 1â2 minutos e tente novamente.";
+  "O serviço de reservas está temporariamente sobrecarregado. Aguarde 1-2 minutos e tente novamente.";
 
 /** Parse BE API error body and return a user-friendly message */
 function parseBEError(body: string): string | null {

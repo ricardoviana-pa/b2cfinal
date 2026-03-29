@@ -263,6 +263,7 @@
     "contactWhatsapp": "Contacte-nos no WhatsApp",
     "minStay": "Estas datas não cumprem a estadia mínima para esta propriedade.",
     "advanceNotice": "Estas datas não podem ser reservadas online porque a regra de antecedência não é cumprida.",
+    "advanceNoticeWithDays": "As reservas requerem pelo menos {{days}} dias de antecedência.",
     "requestOnly": "Esta propriedade está apenas disponível por pedido para as datas selecionadas.",
     "datesNotAvailable": "Estas datas não estão disponíveis. Selecione datas diferentes.",
     "pricingUnavailable": "Preço não disponível para estas datas.",

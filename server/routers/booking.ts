@@ -64,7 +64,11 @@ export const bookingRouter = router({
     }),
 
   /** Booking Engine API — for on-site checkout with payment */
-  isBECheckoutAvailable: publicProcedure.query(() => isBEApiConfigured()),
+  isBECheckoutAvailable: publicProcedure.query(() => {
+    const configured = isBEApiConfigured();
+    console.info(`[Booking] isBECheckoutAvailable: ${configured}`);
+    return configured;
+  }),
 
   createBEQuote: publicProcedure
     .input(
@@ -80,14 +84,18 @@ export const bookingRouter = router({
     .mutation(async ({ input }) => {
       if (!isBEApiConfigured()) throw new Error("Booking Engine API not configured");
       try {
+        console.info(`[Booking] Creating BE quote for listing=${input.listingId}, ${input.checkIn}→${input.checkOut}, guests=${input.guests}`);
         const [first, ...rest] = (input.guestName || "Guest").split(" ");
-        return await createBEQuote({
+        const result = await createBEQuote({
           ...input,
           guestFirstName: first,
           guestLastName: rest.join(" ") || first,
           guestEmail: input.guestEmail,
         });
+        console.info(`[Booking] BE quote OK: quoteId=${result.quoteId}, total=${result.total}, plans=${result.ratePlanOptions?.length ?? 0}`);
+        return result;
       } catch (error: any) {
+        console.error(`[Booking] BE quote FAILED: ${error.message}`);
         throw new Error(error.message || "Failed to get quote");
       }
     }),
@@ -126,7 +134,9 @@ export const bookingRouter = router({
   /** Returns Stripe publishable key + connected account when BE+Stripe configured */
   getStripeConfig: publicProcedure.query(() => {
     const key = process.env.STRIPE_PUBLISHABLE_KEY;
-    if (!isBEApiConfigured() || !key) return null;
+    const beConfigured = isBEApiConfigured();
+    console.info(`[Booking] getStripeConfig: BE=${beConfigured}, STRIPE_KEY=${key ? 'set(' + key.slice(0, 10) + '...)' : 'MISSING'}, ACCOUNT=${process.env.STRIPE_ACCOUNT_ID || 'not set'}`);
+    if (!beConfigured || !key) return null;
     return {
       publishableKey: key,
       stripeAccountId: process.env.STRIPE_ACCOUNT_ID || null,

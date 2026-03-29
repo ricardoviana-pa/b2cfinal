@@ -263,6 +263,7 @@
     "contactWhatsapp": "Contact us on WhatsApp",
     "minStay": "These dates do not meet the minimum stay for this property.",
     "advanceNotice": "These dates cannot be booked online because the advance notice rule is not met.",
+    "advanceNoticeWithDays": "Bookings require at least {{days}} days advance notice.",
     "requestOnly": "This property is only available by request for the selected dates.",
     "datesNotAvailable": "These dates are not available. Please select different dates.",
     "pricingUnavailable": "Pricing not available for these dates.",

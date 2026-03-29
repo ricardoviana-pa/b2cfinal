@@ -365,7 +365,7 @@ export default function BookingWidget({
 
   const displayRate = effectiveQuote?.nightlyRate || pricePerNight || 0;
 
-  // ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ SUCCESS ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ
+  // ── SUCCESS ──
   if (step === "success") {
     return (
       <div className="bg-white border border-[#E8E4DC] overflow-hidden">
@@ -420,7 +420,7 @@ export default function BookingWidget({
     );
   }
 
-  // ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ MAIN WIDGET ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ
+  // ── MAIN WIDGET ──
   return (
     <div ref={widgetRef} className="bg-white border border-[#E8E4DC] overflow-hidden">
       {/* Price header ÃÂ¢ÃÂÃÂ shows total when quote exists, per-night otherwise */}

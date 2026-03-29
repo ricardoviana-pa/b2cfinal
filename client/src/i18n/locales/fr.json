@@ -275,7 +275,8 @@
     "lastNameRequired": "Last name is required",
     "emailInvalid": "Invalid email",
     "phoneInvalid": "Invalid phone number",
-    "countryRequired": "Country is required"
+    "countryRequired": "Country is required",
+    "advanceNoticeWithDays": "Les réservations nécessitent un préavis d'au moins {{days}} jours."
   },
   "footer": {
     "allRightsReserved": "Tous droits réservés",
