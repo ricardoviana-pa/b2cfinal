@@ -376,8 +376,17 @@
     "reload": "RECARREGAR PÁGINA"
   },
   "cookieBanner": {
-    "message": "Utilizamos cookies para melhorar a sua experiência. Ao continuar, concorda com a nossa",
+    "title": "PREFERÊNCIAS DE COOKIES",
+    "description": "Utilizamos cookies para melhorar a sua experiência e analisar o uso do site. A sua privacidade é importante para nós. Pode personalizar as suas preferências abaixo.",
+    "essential": "Cookies Essenciais",
+    "essentialDesc": "Necessários para a funcionalidade básica do site e segurança. Não podem ser desativados.",
+    "analytics": "Cookies de Análise",
+    "analyticsDesc": "Ajudam-nos a entender como utiliza o nosso site para que possamos melhorar a sua experiência.",
+    "learnMore": "Saiba mais em nossa",
     "policyLink": "política de cookies",
+    "acceptAll": "ACEITAR TUDO",
+    "essentialOnly": "APENAS ESSENCIAIS",
+    "message": "Utilizamos cookies para melhorar a sua experiência. Ao continuar, concorda com a nossa",
     "accept": "Aceitar"
   },
   "home": {

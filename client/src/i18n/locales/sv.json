@@ -376,8 +376,17 @@
     "reload": "LADDA OM SIDAN"
   },
   "cookieBanner": {
+    "title": "COOKIEINSTÄLLNINGAR",
+    "description": "Vi använder cookies för att förbättra din upplevelse och analysera webbplatsanvändningen. Din integritet är viktig för oss. Du kan anpassa dina inställningar nedan.",
+    "essential": "Nödvändiga Cookies",
+    "essentialDesc": "Krävs för grundläggande webbplatsens funktionalitet och säkerhet. Kan inte inaktiveras.",
+    "analytics": "Analyse Cookies",
+    "analyticsDesc": "Hjälp oss förstå hur du använder vår webbplats så att vi kan förbättra din upplevelse.",
+    "learnMore": "Läs mer i vår",
+    "policyLink": "cookiepolicy",
+    "acceptAll": "ACCEPTERA ALLT",
+    "essentialOnly": "ENDAST NÖDVÄNDIGT",
     "message": "We use cookies to improve your experience. By continuing, you agree to our",
-    "policyLink": "cookie policy",
     "accept": "Accept"
   },
   "home": {

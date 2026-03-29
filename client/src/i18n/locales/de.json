@@ -376,8 +376,17 @@
     "reload": "SEITE NEU LADEN"
   },
   "cookieBanner": {
+    "title": "COOKIE-EINSTELLUNGEN",
+    "description": "Wir verwenden Cookies, um Ihre Erfahrung zu verbessern und die Nutzung der Website zu analysieren. Ihre Privatsphäre ist uns wichtig. Sie können Ihre Vorlieben unten anpassen.",
+    "essential": "Erforderliche Cookies",
+    "essentialDesc": "Erforderlich für grundlegende Website-Funktionalität und Sicherheit. Können nicht deaktiviert werden.",
+    "analytics": "Analyse-Cookies",
+    "analyticsDesc": "Helfen uns zu verstehen, wie Sie unsere Website nutzen, damit wir Ihre Erfahrung verbessern können.",
+    "learnMore": "Weitere Informationen in unsere",
+    "policyLink": "Cookie-Richtlinie",
+    "acceptAll": "ALLE AKZEPTIEREN",
+    "essentialOnly": "NUR ERFORDERLICHE",
     "message": "We use cookies to improve your experience. By continuing, you agree to our",
-    "policyLink": "cookie policy",
     "accept": "Accept"
   },
   "home": {

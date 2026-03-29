@@ -376,8 +376,17 @@
     "reload": "PAGINA VERNIEUWEN"
   },
   "cookieBanner": {
+    "title": "COOKIEVOORKEUREN",
+    "description": "We gebruiken cookies om uw ervaring te verbeteren en het sitegebruik te analyseren. Uw privacy is ons belangrijk. U kunt uw voorkeuren hieronder aanpassen.",
+    "essential": "Essentiële Cookies",
+    "essentialDesc": "Vereist voor basisfunctionaliteit en beveiliging van de site. Kan niet worden uitgeschakeld.",
+    "analytics": "Analytische Cookies",
+    "analyticsDesc": "Helpen ons begrijpen hoe u onze site gebruikt, zodat we uw ervaring kunnen verbeteren.",
+    "learnMore": "Meer informatie in onze",
+    "policyLink": "cookiebeleid",
+    "acceptAll": "ALLES ACCEPTEREN",
+    "essentialOnly": "ALLEEN ESSENTIEEL",
     "message": "We use cookies to improve your experience. By continuing, you agree to our",
-    "policyLink": "cookie policy",
     "accept": "Accept"
   },
   "home": {

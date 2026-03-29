@@ -376,8 +376,17 @@
     "reload": "RELOAD PAGE"
   },
   "cookieBanner": {
-    "message": "We use cookies to improve your experience. By continuing, you agree to our",
+    "title": "COOKIE PREFERENCES",
+    "description": "We use cookies to improve your experience and analyze site usage. Your privacy is important to us. You can customize your preferences below.",
+    "essential": "Essential Cookies",
+    "essentialDesc": "Required for basic site functionality and security. Cannot be disabled.",
+    "analytics": "Analytics Cookies",
+    "analyticsDesc": "Help us understand how you use our site so we can improve your experience.",
+    "learnMore": "Learn more in our",
     "policyLink": "cookie policy",
+    "acceptAll": "ACCEPT ALL",
+    "essentialOnly": "ESSENTIAL ONLY",
+    "message": "We use cookies to improve your experience. By continuing, you agree to our",
     "accept": "Accept"
   },
   "home": {
