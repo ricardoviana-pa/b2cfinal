@@ -446,25 +446,16 @@ export default function BookingWidget({
   };
 
   // Upsell total from selected items
-  const upsellsTotal = useMemo(() => {
-    let sum = 0;
-    selectedUpsells.forEach(id => {
-      const item = UPSELL_ITEMS.find((u: any) => u.id === id);
-      if (item?.priceFrom) sum += item.priceFrom;
-    });
-    return sum;
-  }, [selectedUpsells]);
-
-  // Build upsell note for reservation payload
+  // Build upsell note for reservation payload (no pricing — varies per person/date)
   const upsellNote = useMemo(() => {
     if (selectedUpsells.size === 0) return "";
     const lines = Array.from(selectedUpsells).map(id => {
       const item = UPSELL_ITEMS.find((u: any) => u.id === id);
       if (!item) return null;
-      return `- ${item.name}${item.priceFrom ? ` (+${formatEur(item.priceFrom)})` : ""}`;
+      return `- ${item.name} (from ${formatEur(item.priceFrom)}/${item.priceSuffix})`;
     }).filter(Boolean);
-    return `\n\n--- Additional Services ---\n${lines.join("\n")}\nEstimated upsells total: ${formatEur(upsellsTotal)}`;
-  }, [selectedUpsells, upsellsTotal]);
+    return `\n\n⚠️ AÇÃO NECESSÁRIA — SERVIÇOS PEDIDOS PELO HÓSPEDE:\n${lines.join("\n")}\n\nContactar hóspede nas primeiras 2h após reserva para confirmar detalhes, datas e orçamento final de cada serviço.`;
+  }, [selectedUpsells]);
 
   const displayRate = effectiveQuote?.nightlyRate || pricePerNight || 0;
 
@@ -499,6 +490,22 @@ export default function BookingWidget({
               </div>
             </div>
           </div>
+          {selectedUpsells.size > 0 && (
+            <div className="bg-[#F5F1EB] p-4 text-left space-y-2">
+              <p className="text-[12px] text-[#9E9A90]">Services requested</p>
+              <div className="space-y-1">
+                {Array.from(selectedUpsells).map(id => {
+                  const item = UPSELL_ITEMS.find((u: any) => u.id === id);
+                  return item ? (
+                    <p key={id} className="text-[13px] text-[#1A1A18]">{item.name}</p>
+                  ) : null;
+                })}
+              </div>
+              <p className="text-[11px] text-[#8B7355] leading-relaxed">
+                Our concierge will contact you within 2 hours to confirm details and pricing for each service.
+              </p>
+            </div>
+          )}
           <button onClick={resetDates} className="text-[#8B7355] text-[13px] hover:underline">
             {t("bookingWidget.makeAnother")}
           </button>
@@ -516,7 +523,7 @@ export default function BookingWidget({
           <>
             <div className="flex items-baseline gap-1">
               <span className="text-[28px] text-[#1A1A18]" style={{ fontFamily: "var(--font-display)" }}>
-                {formatEur(effectiveQuote.total + upsellsTotal)}
+                {formatEur(effectiveQuote.total)}
               </span>
               <span className="text-[14px] text-[#9E9A90]">{t("property.totalLabel")}</span>
             </div>
@@ -787,21 +794,20 @@ export default function BookingWidget({
                       <span className="text-[13px] text-[#1A1A18] tabular-nums">{formatEur(effectiveQuote.cleaningFee)}</span>
                     </div>
                   )}
-                  {upsellsTotal > 0 && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-[13px] text-[#6B6860]">{t("bookingWidget.enhanceStay")}</span>
-                      <span className="text-[13px] text-[#1A1A18] tabular-nums">{formatEur(upsellsTotal)}</span>
-                    </div>
-                  )}
                 </div>
 
                 {/* Divider + Total */}
                 <div className="border-t border-[#E8E4DC] pt-3 flex justify-between items-baseline">
                   <span className="text-[15px] font-medium text-[#1A1A18]">{t("property.total")}</span>
                   <span className="text-[22px] font-medium text-[#1A1A18] tabular-nums" style={{ fontFamily: "var(--font-display)" }}>
-                    {formatEur(effectiveQuote.total + upsellsTotal)}
+                    {formatEur(effectiveQuote.total)}
                   </span>
                 </div>
+                {selectedUpsells.size > 0 && (
+                  <p className="text-[11px] text-[#8B7355] pt-1">
+                    + {selectedUpsells.size} {selectedUpsells.size === 1 ? 'service' : 'services'} requested — confirmed after booking
+                  </p>
+                )}
               </div>
             </div>
 
@@ -855,7 +861,7 @@ export default function BookingWidget({
                 onClick={() => { setError(""); setStep("payment"); }}
                 className="w-full min-h-[52px] rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[12px] font-medium tracking-[0.12em] uppercase px-8 py-4 hover:bg-[#2A2A28] transition-colors shadow-sm"
               >
-                {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote.total + upsellsTotal)}
+                {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote.total)}
               </button>
             ) : canPayOnSite && !quote?.quoteId && !beQuoteError ? (
               /* Loading: BE quote still being fetched in background */
