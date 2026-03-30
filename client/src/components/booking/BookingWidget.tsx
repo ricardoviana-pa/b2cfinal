@@ -763,27 +763,41 @@ export default function BookingWidget({
               </div>
             )}
 
-            {/* ── CTA Button ── */}
+            {/* ── CTA Section ── */}
             {canPayOnSite && quote?.quoteId ? (
+              /* Primary: Online payment available */
               <button
                 onClick={() => { setError(""); setStep("payment"); }}
                 className="w-full min-h-[52px] rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[12px] font-medium tracking-[0.12em] uppercase px-8 py-4 hover:bg-[#2A2A28] transition-colors shadow-sm"
               >
                 {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote.total + upsellsTotal)}
               </button>
+            ) : canPayOnSite && !quote?.quoteId && !beQuoteError ? (
+              /* Loading: BE quote still being fetched in background */
+              <button
+                disabled
+                className="w-full min-h-[52px] rounded-full bg-[#1A1A18]/60 text-[#FAFAF7] text-[12px] font-medium tracking-[0.12em] uppercase px-8 py-4 cursor-wait"
+              >
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  {t("bookingWidget.preparingPayment", "Preparing secure payment...")}
+                </span>
+              </button>
             ) : (
+              /* Fallback: Online payment unavailable — offer WhatsApp + email */
               <div className="space-y-3">
-                {beQuoteError && (
-                  <div className="flex items-start gap-2 p-3 bg-[#FFF8F0] border border-[#D97706]/30 rounded-md" role="alert">
-                    <span className="text-[#D97706] shrink-0 mt-0.5 text-[13px]">i</span>
-                    <div>
-                      <p className="text-[12px] text-[#92400E] font-medium leading-snug">{t("bookingWidget.onlinePaymentUnavailable", { defaultValue: "Online payment not available for this property" })}</p>
-                      <p className="text-[11px] text-[#92400E]/80 mt-0.5 leading-snug">{t("bookingWidget.contactConcierge", { defaultValue: "Please contact our concierge team for booking assistance" })}</p>
-                    </div>
-                  </div>
-                )}
-                <p className="text-[11px] text-[#9E9A90] text-center leading-snug">
-                  {t("bookingWidget.paymentRequired", { defaultValue: "Online payment is required to complete your booking" })}
+                <a
+                  href={`https://wa.me/351927161771?text=${encodeURIComponent(
+                    `Hi, I'd like to book ${propertyName} from ${checkIn} to ${checkOut} for ${guests} guests. Total: ${formatEur(effectiveQuote.total)}`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full min-h-[52px] rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[12px] font-medium tracking-[0.12em] uppercase px-8 py-4 hover:bg-[#2A2A28] transition-colors shadow-sm flex items-center justify-center gap-2"
+                >
+                  {t("bookingWidget.requestToBook", "Request to Book")}
+                </a>
+                <p className="text-[11px] text-[#9E9A90] text-center leading-relaxed">
+                  {t("bookingWidget.conciergeWillConfirm", "Our concierge will confirm availability and send you a secure payment link within 1 hour.")}
                 </p>
               </div>
             )}
@@ -795,7 +809,7 @@ export default function BookingWidget({
         )}
 
 
-        {/* Step: DETAILS ÃÂ¢ÃÂÃÂ guest info form */}
+        {/* Step: DETAILS — guest info form */}
         {/* Step: PAYMENT */}
         {step === "payment" && quote?.quoteId && (
           <div className="space-y-3">
