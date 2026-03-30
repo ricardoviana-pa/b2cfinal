@@ -589,7 +589,7 @@ export default function PropertyDetail() {
 
         {/* Hero gallery — full width, 4:3 or 16:9 */}
         <div
-          className="group/gallery relative w-full overflow-hidden bg-[#F5F1EB] aspect-[4/3] lg:aspect-[16/9] cursor-pointer select-none"
+          className="group relative w-full overflow-hidden bg-[#F5F1EB] aspect-[4/3] lg:aspect-[16/9] cursor-pointer select-none"
           onTouchStart={handleGalleryTouchStart}
           onTouchMove={handleGalleryTouchMove}
           onTouchEnd={handleGalleryTouchEnd}
@@ -620,14 +620,14 @@ export default function PropertyDetail() {
             <>
               <button
                 onClick={e => { e.stopPropagation(); setCurrentImage(p => Math.max(p - 1, 0)); }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all duration-200 hidden md:flex opacity-0 group-hover/gallery:opacity-100"
+                className="absolute left-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/60 backdrop-blur-sm hover:bg-white/90 transition-all duration-200 hidden md:flex z-10"
                 aria-label={t('propertyDetail.prevImage', 'Previous image')}
               >
                 <ChevronLeft size={20} />
               </button>
               <button
                 onClick={e => { e.stopPropagation(); setCurrentImage(p => Math.min(p + 1, totalImages - 1)); }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all duration-200 hidden md:flex opacity-0 group-hover/gallery:opacity-100"
+                className="absolute right-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/60 backdrop-blur-sm hover:bg-white/90 transition-all duration-200 hidden md:flex z-10"
                 aria-label={t('propertyDetail.nextImage', 'Next image')}
               >
                 <ChevronRight size={20} />
