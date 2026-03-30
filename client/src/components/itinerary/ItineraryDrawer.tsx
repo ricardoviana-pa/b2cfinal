@@ -225,7 +225,7 @@ export default function ItineraryDrawer() {
           <div className="border-t border-[#E8E4DC] px-6 py-4 space-y-3">
             {estimatedTotal > 0 && (
               <div className="flex items-baseline justify-between mb-1">
-                <span className="text-[14px] text-[#6B6860]">Estimated total</span>
+                <span className="text-[14px] text-[#6B6860]">Estimated services total (confirmed by concierge)</span>
                 <span className="text-[18px] font-display text-[#1A1A18]">€{estimatedTotal.toLocaleString()}</span>
               </div>
             )}

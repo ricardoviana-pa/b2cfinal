@@ -710,10 +710,10 @@ export default function BookingWidget({
               </div>
             )}
 
-            {/* Upsell note when paying online — services billed separately */}
-            {upsellsTotal > 0 && canPayOnSite && (
-              <p className="text-[11px] text-[#9E9A90] italic">
-                {t("bookingWidget.upsellsArrangedSeparately", { defaultValue: "Selected services will be arranged separately by our concierge team." })}
+            {/* Services are concierge-handled, not charged through Stripe */}
+            {UPSELL_ITEMS.length > 0 && (
+              <p className="text-[11px] text-[#9E9A90] italic leading-relaxed">
+                Services are confirmed separately by our concierge. Payment is arranged directly with your concierge after booking.
               </p>
             )}
 
