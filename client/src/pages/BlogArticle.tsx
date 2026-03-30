@@ -14,13 +14,22 @@ import blogData from '@/data/blog.json';
 
 const articles = (blogData as any).articles as BlogArticleType[];
 
-/* ── YouTube embed with error fallback ── */
-function VideoEmbed({ videoId, title }: { videoId: string; title: string }) {
+/* ── Video embed: supports Vimeo (primary) and YouTube (fallback) ── */
+function VideoEmbed({ vimeoId, videoId, title }: { vimeoId?: string; videoId?: string; title: string }) {
   const [embedFailed, setEmbedFailed] = useState(false);
-  const thumbUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-  const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
-
   const handleError = useCallback(() => setEmbedFailed(true), []);
+
+  const isVimeo = !!vimeoId;
+  const embedSrc = isVimeo
+    ? `https://player.vimeo.com/video/${vimeoId}?badge=0&autopause=0&player_id=0&app_id=58479&byline=0&title=0&portrait=0`
+    : `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`;
+  const watchUrl = isVimeo
+    ? `https://vimeo.com/${vimeoId}`
+    : `https://www.youtube.com/watch?v=${videoId}`;
+  const thumbUrl = isVimeo
+    ? undefined // Vimeo doesn't have a simple thumbnail URL pattern
+    : `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+  const platformLabel = isVimeo ? 'Vimeo' : 'YouTube';
 
   if (embedFailed) {
     return (
@@ -28,13 +37,15 @@ function VideoEmbed({ videoId, title }: { videoId: string; title: string }) {
         <div className="container max-w-4xl mx-auto">
           <a href={watchUrl} target="_blank" rel="noopener noreferrer"
             className="group relative block w-full aspect-video bg-[#1A1A18] rounded-sm overflow-hidden">
-            <img src={thumbUrl} alt={title} className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-80 transition-opacity" />
+            {thumbUrl && (
+              <img src={thumbUrl} alt={title} className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-80 transition-opacity" />
+            )}
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
               <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                 <Play className="w-7 h-7 text-[#1A1A18] ml-1" fill="#1A1A18" />
               </div>
               <span className="flex items-center gap-2 text-white/90 text-sm font-medium">
-                Watch on YouTube <ExternalLink className="w-3.5 h-3.5" />
+                Watch on {platformLabel} <ExternalLink className="w-3.5 h-3.5" />
               </span>
             </div>
           </a>
@@ -48,39 +59,18 @@ function VideoEmbed({ videoId, title }: { videoId: string; title: string }) {
       <div className="container max-w-4xl mx-auto">
         <div className="relative w-full aspect-video bg-black rounded-sm overflow-hidden">
           <iframe
-            src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`}
+            src={embedSrc}
             title={title}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
             allowFullScreen
             className="absolute inset-0 w-full h-full"
             loading="lazy"
             onError={handleError}
           />
-          {/* Fallback: detect embed failure via postMessage from YouTube */}
-          <EmbedErrorDetector videoId={videoId} onError={handleError} />
         </div>
       </div>
     </section>
   );
-}
-
-/* Detects YouTube Error 150/153 via the embed API's postMessage events */
-function EmbedErrorDetector({ videoId, onError }: { videoId: string; onError: () => void }) {
-  useEffect(() => {
-    const handler = (e: MessageEvent) => {
-      if (e.origin !== 'https://www.youtube.com') return;
-      try {
-        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
-        const errorCode = data?.info?.playerResponse?.playabilityStatus?.status === 'ERROR'
-          || data?.info?.errorCode === 150
-          || data?.info?.errorCode === 153;
-        if (errorCode) onError();
-      } catch { /* ignore non-JSON messages */ }
-    };
-    window.addEventListener('message', handler);
-    return () => window.removeEventListener('message', handler);
-  }, [videoId, onError]);
-  return null;
 }
 
 export default function BlogArticle() {
@@ -201,8 +191,8 @@ export default function BlogArticle() {
       </section>
 
       {/* Video Embed */}
-      {(article as any).videoId && (
-        <VideoEmbed videoId={(article as any).videoId} title={article.title} />
+      {((article as any).vimeoId || (article as any).videoId) && (
+        <VideoEmbed vimeoId={(article as any).vimeoId} videoId={(article as any).videoId} title={article.title} />
       )}
 
       {/* Article Content */}

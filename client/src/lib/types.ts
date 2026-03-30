@@ -175,6 +175,7 @@ export interface BlogArticle {
   featuredImage: string;
   coverImage?: string;
   videoId?: string;
+  vimeoId?: string;
   content: string;
   excerpt: string;
   publishDate: string;

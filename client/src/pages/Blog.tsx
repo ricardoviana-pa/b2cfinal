@@ -141,7 +141,7 @@ export default function Blog() {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
                   />
-                  {(featured as any).videoId && (
+                  {((featured as any).videoId || (featured as any).vimeoId) && (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                         <Play className="w-7 h-7 text-[#1A1A18] ml-1" fill="#1A1A18" />
@@ -193,7 +193,7 @@ export default function Blog() {
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
                     />
-                    {(article as any).videoId && (
+                    {((article as any).videoId || (article as any).vimeoId) && (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                           <Play className="w-5 h-5 text-[#1A1A18] ml-0.5" fill="#1A1A18" />
@@ -207,7 +207,7 @@ export default function Blog() {
                   </h3>
                   <p className="text-[13px] text-[#6B6860] font-light line-clamp-2 mb-3">{article.excerpt}</p>
                   <div className="flex items-center gap-3 text-[11px] text-[#9E9A90]">
-                    <span>{new Date(article.publishDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
+                    <span>{new Date(article.publishDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                     <span>·</span>
                     <span>{t('blog.minRead', { minutes: article.readTime })}</span>
                   </div>
