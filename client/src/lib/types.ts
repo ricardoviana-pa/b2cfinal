@@ -174,6 +174,7 @@ export interface BlogArticle {
   author: BlogAuthor;
   featuredImage: string;
   coverImage?: string;
+  videoId?: string;
   content: string;
   excerpt: string;
   publishDate: string;

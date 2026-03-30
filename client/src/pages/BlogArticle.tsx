@@ -131,6 +131,24 @@ export default function BlogArticle() {
         </div>
       </section>
 
+      {/* Video Embed */}
+      {(article as any).videoId && (
+        <section className="pb-8">
+          <div className="container max-w-4xl mx-auto">
+            <div className="relative w-full aspect-video bg-black rounded-sm overflow-hidden">
+              <iframe
+                src={`https://www.youtube.com/embed/${(article as any).videoId}?rel=0&modestbranding=1`}
+                title={article.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Article Content */}
       <section className="pb-16">
         <div className="container max-w-3xl mx-auto">
