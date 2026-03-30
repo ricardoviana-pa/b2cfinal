@@ -28,76 +28,124 @@ import { trpc } from '@/lib/trpc';
 const allProducts = productsData as unknown as Product[];
 const destinations = destinationsData as unknown as Destination[];
 
-/** Map amenity name (lowercase) to Lucide icon — Le Collectionist / Plum Guide style */
-const AMENITY_ICON_MAP: Record<string, LucideIcon> = {
-  wifi: Wifi, internet: Wifi, 'high speed wifi': Wifi, 'high-speed wifi': Wifi, 'wireless internet': Wifi,
-  tv: Tv, television: Tv, 'smart tv': Tv,
-  kitchen: Utensils, 'fully equipped kitchen': Utensils, 'full kitchen': Utensils,
-  coffee: Coffee, 'nespresso': Coffee, 'coffee maker': Coffee, 'coffee machine': Coffee, espresso: Coffee,
-  pool: Waves, swimming: Waves, 'infinity pool': Waves, 'heated pool': Waves, 'swimming pool': Waves, 'outdoor pool': Waves, 'private pool': Waves,
-  parking: Car, garage: Car, 'free parking': Car, 'ev charging': Car, 'free parking on premises': Car,
-  'air conditioning': Wind, ac: Wind, heating: Flame, climate: Wind,
-  washer: Shirt, laundry: Shirt, dryer: Shirt, 'washing machine': Shirt, iron: Shirt,
-  garden: TreePine, terrace: Sun, balcony: Sun, patio: Sun, 'garden view': TreePine, 'garden or backyard': TreePine,
-  gym: Mountain, fitness: Mountain, workout: Mountain, 'horseback riding': Mountain,
-  'ocean view': Waves, 'sea view': Waves, beach: Waves, beachfront: Waves, town: MapPin,
-  workspace: Monitor, 'home office': Monitor, desk: Monitor, 'laptop friendly workspace': Monitor,
-  bbq: Flame, grill: Flame, barbecue: Flame, 'bbq grill': Flame,
-  'living room': Sofa, lounge: Sofa,
-  dishwasher: Utensils, oven: Utensils, microwave: Utensils, stove: Utensils, refrigerator: Utensils,
-  blender: Utensils, toaster: Utensils, kettle: Utensils,
-  bathtub: Bath, 'hair dryer': Bath,
-  crib: BedDouble, 'high chair': BedDouble, 'suitable for children (2-12 years)': BedDouble, 'suitable for infants (under 2 years)': BedDouble,
-  'indoor fireplace': Flame, 'outdoor seating (furniture)': Sun,
-  'dining table': Utensils, 'sound system': Tv,
-  'private entrance': Car, 'outdoor kitchen': Utensils,
-  'long term stays allowed': Clock,
-  'smoke detector': Award, 'fire extinguisher': Award, 'first aid kit': Award,
-};
+/** ── Amenity Categorization & Deduplication ── */
 
-/** Amenities to hide — low value, redundant, or clutter */
+/** Categories for grouping amenities — order determines display order */
+const AMENITY_CATEGORIES: { key: string; label: string; icon: LucideIcon; keywords: string[] }[] = [
+  { key: 'outdoor', label: 'Outdoor & Pool', icon: Waves, keywords: [
+    'pool', 'swimming', 'infinity', 'heated pool', 'outdoor pool', 'private pool', 'hot tub', 'jacuzzi',
+    'garden', 'backyard', 'terrace', 'patio', 'balcony', 'outdoor seating', 'outdoor kitchen',
+    'bbq', 'grill', 'barbecue', 'pool table', 'tennis', 'table tennis',
+  ]},
+  { key: 'views', label: 'Views & Location', icon: Mountain, keywords: [
+    'ocean view', 'sea view', 'beach', 'beachfront', 'mountain', 'garden view', 'lake', 'river', 'town',
+  ]},
+  { key: 'comfort', label: 'Comfort & Climate', icon: Wind, keywords: [
+    'air conditioning', 'heating', 'indoor fireplace', 'fireplace',
+  ]},
+  { key: 'kitchen', label: 'Kitchen & Dining', icon: Utensils, keywords: [
+    'kitchen', 'fully equipped', 'dishwasher', 'oven', 'microwave', 'stove', 'refrigerator',
+    'coffee', 'nespresso', 'espresso', 'kettle', 'toaster', 'blender', 'dining',
+  ]},
+  { key: 'entertainment', label: 'Entertainment', icon: Tv, keywords: [
+    'tv', 'cable tv', 'smart tv', 'sound system', 'board games', 'books',
+  ]},
+  { key: 'connectivity', label: 'Connectivity & Work', icon: Wifi, keywords: [
+    'wifi', 'internet', 'wireless', 'workspace', 'desk', 'laptop', 'home office', 'monitor',
+  ]},
+  { key: 'wellness', label: 'Wellness & Fitness', icon: Mountain, keywords: [
+    'gym', 'fitness', 'workout', 'sauna', 'spa', 'yoga', 'horseback',
+  ]},
+  { key: 'parking', label: 'Parking & Access', icon: Car, keywords: [
+    'parking', 'garage', 'ev charging', 'private entrance',
+  ]},
+  { key: 'laundry', label: 'Laundry & Housekeeping', icon: Shirt, keywords: [
+    'washer', 'washing machine', 'dryer', 'laundry', 'iron',
+  ]},
+  { key: 'bathroom', label: 'Bathroom', icon: Bath, keywords: [
+    'bathtub', 'hair dryer',
+  ]},
+  { key: 'family', label: 'Family Friendly', icon: BedDouble, keywords: [
+    'crib', 'high chair', 'children', 'infants', 'baby',
+  ]},
+  { key: 'safety', label: 'Safety', icon: Award, keywords: [
+    'smoke detector', 'fire extinguisher', 'first aid', 'security', 'safe',
+  ]},
+];
+
+/** Amenities to completely hide — zero value to guests */
 const AMENITY_BLACKLIST = new Set([
   'essentials', 'hot water', 'hangers', 'clothing storage', 'bed linens', 'towels provided',
   'cleaning disinfection', 'enhanced cleaning practices', 'high touch surfaces disinfected',
   'shampoo', 'shower gel', 'cookware', 'dishes and silverware', 'baking sheet', 'barbeque utensils',
   'wine glasses', 'wide hallway clearance', 'accessible-height bed',
   'freezer', 'babysitter recommendations', 'long term stays allowed',
-  'smoke detector', 'fire extinguisher', 'first aid kit',
 ]);
 
-function getAmenityIcon(name: string): LucideIcon {
-  const key = name.toLowerCase().trim();
-  return AMENITY_ICON_MAP[key] ?? Utensils;
+/** Deduplicate similar amenities — keep the most descriptive version */
+function deduplicateAmenities(items: string[]): string[] {
+  const normalized = items.map(a => ({ original: a, lower: a.toLowerCase().trim() }));
+  const result: string[] = [];
+  const seen = new Set<string>();
+
+  // Group by root concept and keep the most descriptive
+  const conceptGroups: Record<string, string[]> = {};
+  for (const { original, lower } of normalized) {
+    if (AMENITY_BLACKLIST.has(lower)) continue;
+    if (seen.has(lower)) continue;
+    seen.add(lower);
+
+    // Extract root concept (e.g., "pool" from "private pool", "swimming pool")
+    let rootConcept = lower;
+    const roots = ['pool', 'parking', 'tv', 'coffee', 'garden', 'kitchen', 'wifi', 'internet'];
+    for (const root of roots) {
+      if (lower.includes(root)) { rootConcept = root; break; }
+    }
+
+    if (!conceptGroups[rootConcept]) conceptGroups[rootConcept] = [];
+    conceptGroups[rootConcept].push(original);
+  }
+
+  // For each concept group, pick the most descriptive (longest) name
+  for (const group of Object.values(conceptGroups)) {
+    const best = group.sort((a, b) => b.length - a.length)[0];
+    result.push(best);
+  }
+  return result;
 }
 
-/** Priority order — high-impact amenities guests care about most */
-const AMENITY_PRIORITY: string[] = [
-  'private pool', 'swimming pool', 'outdoor pool', 'heated pool', 'infinity pool', 'pool',
-  'wifi', 'high speed wifi', 'wireless internet', 'internet',
-  'air conditioning',
-  'free parking on premises', 'free parking', 'parking', 'garage', 'ev charging',
-  'bbq grill', 'bbq', 'outdoor kitchen',
-  'hot tub', 'jacuzzi',
-  'gym', 'fitness', 'horseback riding',
-  'garden or backyard', 'garden view', 'garden', 'terrace', 'patio', 'balcony',
-  'ocean view', 'sea view', 'beach front', 'beach view', 'beach access',
-  'fully equipped kitchen', 'full kitchen', 'kitchen',
-  'tv', 'smart tv', 'cable tv', 'sound system',
-  'coffee maker', 'coffee machine', 'nespresso', 'espresso',
-  'washer', 'washing machine', 'dryer', 'iron',
-  'dishwasher',
-  'bathtub', 'hair dryer',
-  'indoor fireplace',
-  'crib', 'high chair', 'suitable for children (2-12 years)', 'suitable for infants (under 2 years)',
-  'laptop friendly workspace', 'home office', 'desk',
-  'private entrance',
-  'heating',
-  'outdoor seating (furniture)',
-  'dining table',
-  'board games',
-  'tennis',
-  'table tennis',
-];
+/** Categorize amenities into groups */
+function categorizeAmenities(items: string[]): { category: string; label: string; icon: LucideIcon; items: string[] }[] {
+  const deduplicated = deduplicateAmenities(items);
+  const categorized: Record<string, string[]> = {};
+  const uncategorized: string[] = [];
+
+  for (const item of deduplicated) {
+    const lower = item.toLowerCase().trim();
+    let matched = false;
+    for (const cat of AMENITY_CATEGORIES) {
+      if (cat.keywords.some(kw => lower.includes(kw) || kw.includes(lower))) {
+        if (!categorized[cat.key]) categorized[cat.key] = [];
+        categorized[cat.key].push(item);
+        matched = true;
+        break;
+      }
+    }
+    if (!matched) uncategorized.push(item);
+  }
+
+  const groups: { category: string; label: string; icon: LucideIcon; items: string[] }[] = [];
+  for (const cat of AMENITY_CATEGORIES) {
+    if (categorized[cat.key]?.length) {
+      groups.push({ category: cat.key, label: cat.label, icon: cat.icon, items: categorized[cat.key] });
+    }
+  }
+  if (uncategorized.length) {
+    groups.push({ category: 'other', label: 'Other', icon: Sparkles, items: uncategorized });
+  }
+  return groups;
+}
+
 
 /** Humanize bed type names and get icon */
 function getBedTypeDisplay(bedType: string): { label: string; icon: LucideIcon } {
@@ -115,22 +163,6 @@ function getBedTypeDisplay(bedType: string): { label: string; icon: LucideIcon }
   return iconMap[normalized] || { label: bedType || 'Bed', icon: Bed };
 }
 
-function filterAndSortAmenities(items: string[]): string[] {
-  const filtered = items.filter((x) => {
-    const k = x.toLowerCase().trim();
-    return !AMENITY_BLACKLIST.has(k) && x.length > 0;
-  });
-  return filtered.sort((a, b) => {
-    const aKey = a.toLowerCase().trim();
-    const bKey = b.toLowerCase().trim();
-    const aIdx = AMENITY_PRIORITY.findIndex(p => aKey === p || aKey.includes(p) || p.includes(aKey));
-    const bIdx = AMENITY_PRIORITY.findIndex(p => bKey === p || bKey.includes(p) || p.includes(bKey));
-    const aPri = aIdx >= 0 ? aIdx : 999;
-    const bPri = bIdx >= 0 ? bIdx : 999;
-    if (aPri !== bPri) return aPri - bPri;
-    return a.localeCompare(b);
-  });
-}
 
 /** Parse description: handle string, split by \n\n or \n */
 function formatDescription(desc: unknown): string[] {
@@ -409,10 +441,10 @@ export default function PropertyDetail() {
       .slice(0, 3);
   }, [property, allPropsData]);
 
-  const flatAmenities = useMemo(() => {
+  const amenityGroups = useMemo(() => {
     if (!property?.amenities || typeof property.amenities !== 'object') return [];
     const all = Object.values(property.amenities).flat().filter((x): x is string => typeof x === 'string' && x.length > 0);
-    return filterAndSortAmenities(all);
+    return categorizeAmenities(all);
   }, [property?.amenities]);
 
   const handleGalleryTouchStart = useCallback((e: React.TouchEvent) => {
@@ -713,45 +745,27 @@ export default function PropertyDetail() {
               {/* 3. Amenities — Le Collectionist style icon grid with expandable sections */}
               <section>
                 <h2 className="headline-sm text-[#1A1A18] mb-6">{t('propertyDetail.amenitiesTitle')}</h2>
-                {flatAmenities.length > 0 ? (
-                  <>
-                    {/* Show top 6-8 amenities */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
-                      {flatAmenities.slice(0, 8).map((item, idx) => {
-                        const Icon = getAmenityIcon(item);
-                        return (
-                          <div key={idx} className="flex items-center gap-3 p-3 rounded-lg bg-[#F5F1EB]/50">
-                            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FAFAF7] shrink-0">
-                              <Icon size={18} className="text-[#8B7355]" />
-                            </div>
-                            <span className="text-[13px] text-[#6B6860] font-light">{item}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Expandable rest of amenities if more than 8 */}
-                    {flatAmenities.length > 8 && (
-                      <details className="group">
-                        <summary className="cursor-pointer text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors">
-                          Show all {flatAmenities.length} amenities
-                        </summary>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6 pt-6 border-t border-[#E8E4DC]">
-                          {flatAmenities.slice(8).map((item, idx) => {
-                            const Icon = getAmenityIcon(item);
-                            return (
-                              <div key={idx + 8} className="flex items-center gap-3 p-3 rounded-lg bg-[#F5F1EB]/50">
-                                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FAFAF7] shrink-0">
-                                  <Icon size={18} className="text-[#8B7355]" />
-                                </div>
-                                <span className="text-[13px] text-[#6B6860] font-light">{item}</span>
-                              </div>
-                            );
-                          })}
+                {amenityGroups.length > 0 ? (
+                  <div className="space-y-6">
+                    {amenityGroups.map((group) => (
+                      <div key={group.category}>
+                        <div className="flex items-center gap-2 mb-3">
+                          <group.icon size={16} className="text-[#8B7355]" />
+                          <h3 className="text-[13px] font-medium tracking-[0.04em] text-[#1A1A18]">{group.label}</h3>
                         </div>
-                      </details>
-                    )}
-                  </>
+                        <div className="flex flex-wrap gap-2">
+                          {group.items.map((item, idx) => (
+                            <span
+                              key={idx}
+                              className="text-[12px] text-[#6B6860] bg-[#F5F1EB] px-3 py-1.5 rounded-full"
+                            >
+                              {item}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 ) : (
                   <p className="body-md text-[#9E9A90]">{t('propertyDetail.amenitiesContact')}</p>
                 )}
