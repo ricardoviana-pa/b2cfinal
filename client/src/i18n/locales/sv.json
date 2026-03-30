@@ -241,7 +241,7 @@
     "nightsCountShort_other": "{{count}} nights",
     "sendRequestWithoutPrice": "SEND REQUEST WITHOUT PRICE",
     "minNightMinimum": "{{count}}-night minimum",
-    "reserveAndPay": "RESERVE och PAY {{total}}",
+    "reserveAndPay": "RESERVERA OCH BETALA",
     "reserveNow": "RESERVE NOW",
     "requestWithoutPayment": "Or request without payment"
   },

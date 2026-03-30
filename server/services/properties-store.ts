@@ -32,7 +32,7 @@ export async function getPropertiesForSite(): Promise<any[]> {
       const data = JSON.parse(raw);
       if (Array.isArray(data) && data.length > 0) {
         console.info(`[Properties] Loaded ${data.length} properties from runtime sync.`);
-        return data;
+        return filterPublicProperties(data);
       }
     } catch {
       // fall through to fallback
@@ -48,7 +48,7 @@ export async function getPropertiesForSite(): Promise<any[]> {
       console.info(
         `[Properties] Loaded ${data.length} properties from static fallback (real data: ${real}).`,
       );
-      return data;
+      return filterPublicProperties(data);
     }
   } catch {
     // fall through
@@ -56,4 +56,22 @@ export async function getPropertiesForSite(): Promise<any[]> {
 
   console.warn("[Properties] No property data available.");
   return [];
+}
+
+/** Filter out test listings and properties below minimum price threshold */
+function filterPublicProperties(properties: any[]): any[] {
+  return properties.filter(p => {
+    // Exclude properties with 'test' in title (case-insensitive)
+    if (p.title && /test/i.test(p.title)) {
+      console.debug(`[Properties] Filtered out test listing: ${p.title}`);
+      return false;
+    }
+    // Exclude properties with base price below €20/night
+    const basePrice = p.basePrice || p.pricePerNight || 0;
+    if (basePrice < 20) {
+      console.debug(`[Properties] Filtered out low-price listing: ${p.title} (€${basePrice}/night)`);
+      return false;
+    }
+    return true;
+  });
 }

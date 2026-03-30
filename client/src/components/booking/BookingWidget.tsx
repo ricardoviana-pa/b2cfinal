@@ -85,6 +85,39 @@ function parseBookingError(msg: string): string {
   return msg;
 }
 
+/** Humanize raw Guesty rate-plan name */
+function humanizeRatePlanName(raw: string): string {
+  const lower = raw.toLowerCase();
+  if ((lower.includes('non') && lower.includes('refund')) || (lower.includes('não') && lower.includes('reembols'))) return 'Non-Refundable';
+  if (lower.includes('refund') || lower.includes('reembols')) return 'Flexible';
+  if (lower.includes('standard')) return 'Standard';
+  if (lower.includes('moderate')) return 'Moderate';
+  return raw;
+}
+
+/** Humanize raw Guesty cancellation policy code */
+function humanizeCancellationPolicy(raw: string): string {
+  const policyMap: Record<string, string> = {
+    'super_strict': 'Non-refundable',
+    'strict': 'Strict cancellation',
+    'moderate': 'Free cancellation (14+ days before)',
+    'flexible': 'Free cancellation (24h before)',
+    'firm': 'Firm cancellation policy',
+  };
+  return policyMap[raw.toLowerCase()] || raw;
+}
+
+/** Format date with zero-padded day and month name (e.g., "08 Apr") */
+function formatDateDisplay(dateStr: string, locale: string = "en-US", includeYear: boolean = false): string {
+  const date = new Date(dateStr + "T12:00:00");
+  const day = String(date.getDate()).padStart(2, '0');
+  const options: Intl.DateTimeFormatOptions = { month: 'short' };
+  if (includeYear) options.year = 'numeric';
+  const formatted = date.toLocaleDateString(locale, options);
+  // formatted is like "Apr" or "Apr 2026", prepend the zero-padded day
+  return `${day} ${formatted}`;
+}
+
 const UPSELL_ITEMS = (productsData as any[])
   .filter(p => p.type === "service" && p.isActive)
   .slice(0, 3);
@@ -373,11 +406,11 @@ export default function BookingWidget({
             <div className="flex gap-4 mt-2">
               <div>
                 <p className="text-[11px] text-[#9E9A90]">{t("bookingWidget.checkInLabel")}</p>
-                <p className="text-[13px] text-[#1A1A18]">{new Date(checkIn).toLocaleDateString("pt-PT", { day: "numeric", month: "short", year: "numeric" })}</p>
+                <p className="text-[13px] text-[#1A1A18]">{formatDateDisplay(checkIn, "pt-PT", true)}</p>
               </div>
               <div>
                 <p className="text-[11px] text-[#9E9A90]">{t("bookingWidget.checkOutLabel")}</p>
-                <p className="text-[13px] text-[#1A1A18]">{new Date(checkOut).toLocaleDateString("pt-PT", { day: "numeric", month: "short", year: "numeric" })}</p>
+                <p className="text-[13px] text-[#1A1A18]">{formatDateDisplay(checkOut, "pt-PT", true)}</p>
               </div>
             </div>
           </div>
@@ -456,13 +489,13 @@ export default function BookingWidget({
             <div className="p-3 hover:bg-[#F5F1EB] transition-colors">
               <p className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#1A1A18] mb-0.5">{t("bookingWidget.checkInLabel")}</p>
               <p className="text-[14px] text-[#1A1A18]">
-                {checkIn ? new Date(checkIn + "T12:00:00").toLocaleDateString("pt-PT", { day: "numeric", month: "short" }) : t("bookingWidget.selectDate", "Select")}
+                {checkIn ? formatDateDisplay(checkIn, "pt-PT", false) : t("bookingWidget.selectDate", "Select")}
               </p>
             </div>
             <div className="p-3 hover:bg-[#F5F1EB] transition-colors">
               <p className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#1A1A18] mb-0.5">{t("bookingWidget.checkOutLabel")}</p>
               <p className="text-[14px] text-[#1A1A18]">
-                {checkOut ? new Date(checkOut + "T12:00:00").toLocaleDateString("pt-PT", { day: "numeric", month: "short" }) : t("bookingWidget.selectDate", "Select")}
+                {checkOut ? formatDateDisplay(checkOut, "pt-PT", false) : t("bookingWidget.selectDate", "Select")}
               </p>
             </div>
           </div>
@@ -709,9 +742,9 @@ export default function BookingWidget({
                       className="accent-[#8B7355] w-4 h-4"
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] text-[#1A1A18] font-medium">{opt.name}</p>
+                      <p className="text-[13px] text-[#1A1A18] font-medium">{humanizeRatePlanName(opt.name)}</p>
                       {opt.cancellationPolicy?.[0] && (
-                        <p className="text-[11px] text-[#9E9A90] mt-0.5 truncate">{opt.cancellationPolicy[0]}</p>
+                        <p className="text-[11px] text-[#9E9A90] mt-0.5 truncate">{humanizeCancellationPolicy(opt.cancellationPolicy[0])}</p>
                       )}
                     </div>
                     <span className="text-[14px] text-[#1A1A18] font-medium whitespace-nowrap tabular-nums">{formatEur(opt.total)}</span>
@@ -866,7 +899,7 @@ export default function BookingWidget({
         <p className="text-[11px] text-[#9E9A90] text-center">
           <a href="/faq#cancellation" className="text-[#8B7355] hover:underline">{t("bookingWidget.cancellationPolicyLink")}</a>
           {(effectiveQuote?.cancellationPolicy?.length ?? 0) > 0 && (
-            <span className="block mt-1 text-[#9E9A90]">{effectiveQuote?.cancellationPolicy?.[0]}</span>
+            <span className="block mt-1 text-[#9E9A90]">{humanizeCancellationPolicy(effectiveQuote?.cancellationPolicy?.[0] || '')}</span>
           )}
         </p>
       </div>

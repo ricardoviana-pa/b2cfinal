@@ -241,7 +241,7 @@
     "nightsCountShort_other": "{{count}} noites",
     "sendRequestWithoutPrice": "ENVIAR PEDIDO SEM PREÇO",
     "minNightMinimum": "Mínimo de {{count}} noites",
-    "reserveAndPay": "RESERVAR e PAGAR {{total}}",
+    "reserveAndPay": "RESERVAR E PAGAR",
     "reserveNow": "RESERVAR AGORA",
     "requestWithoutPayment": "Ou solicitar sem pagamento"
   },

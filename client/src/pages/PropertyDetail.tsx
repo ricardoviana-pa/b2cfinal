@@ -34,7 +34,7 @@ const destinations = destinationsData as unknown as Destination[];
 const AMENITY_CATEGORIES: { key: string; label: string; icon: LucideIcon; keywords: string[] }[] = [
   { key: 'outdoor', label: 'Outdoor & Pool', icon: Waves, keywords: [
     'pool', 'swimming', 'infinity', 'heated pool', 'outdoor pool', 'private pool', 'hot tub', 'jacuzzi',
-    'garden', 'backyard', 'terrace', 'patio', 'balcony', 'outdoor seating', 'outdoor kitchen',
+    'garden', 'backyard', 'terrace', 'patio', 'balcony', 'outdoor seating',
     'bbq', 'grill', 'barbecue', 'pool table', 'tennis', 'table tennis',
   ]},
   { key: 'views', label: 'Views & Location', icon: Mountain, keywords: [
@@ -44,7 +44,7 @@ const AMENITY_CATEGORIES: { key: string; label: string; icon: LucideIcon; keywor
     'air conditioning', 'heating', 'indoor fireplace', 'fireplace',
   ]},
   { key: 'kitchen', label: 'Kitchen & Dining', icon: Utensils, keywords: [
-    'kitchen', 'fully equipped', 'dishwasher', 'oven', 'microwave', 'stove', 'refrigerator',
+    'kitchen', 'fully equipped', 'oven', 'microwave', 'stove', 'refrigerator',
     'coffee', 'nespresso', 'espresso', 'kettle', 'toaster', 'blender', 'dining',
   ]},
   { key: 'entertainment', label: 'Entertainment', icon: Tv, keywords: [
@@ -60,7 +60,7 @@ const AMENITY_CATEGORIES: { key: string; label: string; icon: LucideIcon; keywor
     'parking', 'garage', 'ev charging', 'private entrance',
   ]},
   { key: 'laundry', label: 'Laundry & Housekeeping', icon: Shirt, keywords: [
-    'washer', 'washing machine', 'dryer', 'laundry', 'iron',
+    'washer', 'washing machine', 'clothes dryer', 'laundry', 'iron',
   ]},
   { key: 'bathroom', label: 'Bathroom', icon: Bath, keywords: [
     'bathtub', 'hair dryer',
@@ -168,7 +168,25 @@ function getBedTypeDisplay(bedType: string): { label: string; icon: LucideIcon }
 function formatDescription(desc: unknown): string[] {
   if (!desc) return [];
   const s = typeof desc === 'string' ? desc : String(desc);
-  return s.split(/\n\n+/).flatMap(p => p.split('\n').filter(Boolean));
+  const cleaned = cleanDescription(s);
+  return cleaned.split(/\n\n+/).flatMap(p => p.split('\n').filter(Boolean));
+}
+
+/** Clean raw Guesty description for premium display */
+function cleanDescription(raw: string): string {
+  return raw
+    // Remove dash separators: ------Title------
+    .replace(/[-–—]{3,}[^-\n]*[-–—]{3,}/g, '')
+    // Remove emoji bullets
+    .replace(/[✔️✅☑️🔹🔸▪️•]/g, '')
+    // Remove marketing CTAs
+    .replace(/book your stay\.?/gi, '')
+    .replace(/portugal active,?\s*your private hotel\.?/gi, '')
+    // Remove "Enhance Your Stay with Our Exclusive Services:" header
+    .replace(/enhance your stay with our exclusive services:?/gi, '')
+    // Clean up multiple blank lines
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 function Lightbox({ images, initialIndex, propertyName, destName, onClose, t }: {
@@ -916,7 +934,7 @@ export default function PropertyDetail() {
                   {([
                     { icon: Lock, label: t('trust.secureBooking', 'Secure booking') },
                     { icon: ShieldCheck, label: t('trust.bestRate', 'Best rate guaranteed') },
-                    { icon: Clock, label: t('trust.freeCancellation', 'Free cancellation (30 days)') },
+                    { icon: Clock, label: t('trust.flexibleOptions', 'Flexible cancellation options') },
                     { icon: Headphones, label: t('trust.conciergeIncluded', 'Concierge included') },
                   ] as const).map((item, i) => (
                     <div key={i} className="flex items-center gap-2">
