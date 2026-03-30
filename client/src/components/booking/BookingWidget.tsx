@@ -291,9 +291,9 @@ export default function BookingWidget({
     let cancelled = false;
     setCalendarLoading(true);
     const from = today;
-    // Fetch 6 months of calendar data
+    // Fetch 18 months of calendar data (reservations extend into 2027+)
     const toDate = new Date();
-    toDate.setMonth(toDate.getMonth() + 6);
+    toDate.setMonth(toDate.getMonth() + 18);
     const to = toDate.toISOString().split("T")[0];
     utils.booking.getCalendar.fetch({ listingId: guestyId, from, to })
       .then((res) => {
