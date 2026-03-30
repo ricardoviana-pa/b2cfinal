@@ -814,15 +814,6 @@ export default function PropertyDetail() {
                 )}
               </section>
 
-              {/* 3b. Guest Reviews (from Guesty sync) */}
-              <ReviewsSection
-                propertyName={property.name}
-                propertySlug={property.slug}
-                reviews={(property as any).reviews}
-                averageRating={(property as any).averageRating}
-                reviewCount={(property as any).reviewCount}
-              />
-
               {/* 4. Services (add-on) */}
               <section>
                 <h2 className="headline-sm text-[#1A1A18] mb-2">{t('propertyDetail.servicesTitle')}</h2>
@@ -896,6 +887,15 @@ export default function PropertyDetail() {
                   />
                 </div>
               </section>
+
+              {/* 10. Guest Reviews (from Guesty sync) */}
+              <ReviewsSection
+                propertyName={property.name}
+                propertySlug={property.slug}
+                reviews={(property as any).reviews}
+                averageRating={(property as any).averageRating}
+                reviewCount={(property as any).reviewCount}
+              />
 
             </div>
 
