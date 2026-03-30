@@ -215,7 +215,7 @@ export default function PropertyCard({
         <div className="flex items-center gap-1.5 mb-3">
           <Sparkles className="w-3 h-3 text-[#C4A87C] shrink-0" />
           <span className="text-[0.6875rem] text-[#9E9A90] font-light">
-            {t('property.dailyHousekeeping')} Â· {t('property.concierge')} Â· {t('property.welcomeHamper')}
+            {t('property.dailyHousekeeping')} · {t('property.concierge')} · {t('property.welcomeHamper')}
           </span>
         </div>
 
