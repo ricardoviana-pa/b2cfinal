@@ -184,6 +184,19 @@ function cleanDescription(raw: string): string {
     .replace(/portugal active,?\s*your private hotel\.?/gi, '')
     // Remove "Enhance Your Stay with Our Exclusive Services:" header
     .replace(/enhance your stay with our exclusive services:?/gi, '')
+    // Remove embedded promotional/upsell service lines
+    .replace(/enjoy luxury transfers:?[^\n]*/gi, '')
+    .replace(/personalized experience:?[^\n]*/gi, '')
+    .replace(/daily cleaning\s*&\s*babysitting:?[^\n]*/gi, '')
+    .replace(/local team available:?[^\n]*/gi, '')
+    // Remove adventure activity promo blocks (heading + description pairs)
+    .replace(/horseback riding:?\s*\n[^\n]*/gi, '')
+    .replace(/guided hike[^\n]*:\s*\n[^\n]*/gi, '')
+    .replace(/e-bike[^\n]*:\s*\n[^\n]*/gi, '')
+    .replace(/surf[^\n]*:\s*\n[^\n]*/gi, '')
+    .replace(/wine[^\n]*tasting[^\n]*:\s*\n[^\n]*/gi, '')
+    // Remove "rest assured" concierge promo lines
+    .replace(/rest assured[^\n]*/gi, '')
     // Clean up multiple blank lines
     .replace(/\n{3,}/g, '\n\n')
     .trim();
