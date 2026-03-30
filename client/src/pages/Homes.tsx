@@ -226,23 +226,23 @@ export default function Homes() {
           checkOut: searchCheckout,
           guests: guestCount,
         });
-        // Accept live, cached, and base price quotes (base = estimated from catalogue rate)
-        const isUsable = raw?.source === 'live' || raw?.source === 'cached' || raw?.source === 'base';
-        // Unavailable properties: return quote with available=false so PLP can show badge
-        if (isUsable && raw?.pricing && raw.pricing.total > 0 && raw?.available === false) {
+        // If Guesty explicitly says unavailable (booked/blocked dates), show badge
+        if (raw?.available === false) {
           return {
             slug: property.slug,
             quote: {
-              total: raw.pricing.total,
-              nightlyRate: raw.pricing.nightlyRate ?? 0,
-              cleaningFee: raw.pricing.cleaningFee ?? 0,
+              total: 0,
+              nightlyRate: 0,
+              cleaningFee: 0,
               nights: raw.nights ?? searchNights,
-              source: raw.source!,
+              source: raw.source ?? 'request',
               fallbackMessage: raw.fallbackMessage,
               available: false,
             },
           };
         }
+        // Accept live, cached, and base price quotes (base = estimated from catalogue rate)
+        const isUsable = raw?.source === 'live' || raw?.source === 'cached' || raw?.source === 'base';
         const quote = (isUsable && raw?.pricing && raw.pricing.total > 0) ? {
           total: raw.pricing.total,
           nightlyRate: raw.pricing.nightlyRate ?? 0,
@@ -250,7 +250,7 @@ export default function Homes() {
           nights: raw.nights ?? searchNights,
           source: raw.source!,
           fallbackMessage: raw.fallbackMessage,
-          available: raw?.available !== false,
+          available: true,
         } : null;
         return { slug: property.slug, quote };
       } catch {

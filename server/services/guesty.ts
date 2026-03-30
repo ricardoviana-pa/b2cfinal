@@ -163,8 +163,9 @@ export async function getQuote(
     }
 
     // Before falling back to base pricing, check calendar availability.
-    // This prevents showing prices for unavailable properties on the PLP.
-    let calendarAvailable: boolean | null = null;
+    // Only mark as unavailable when we have DEFINITIVE proof (booked days in range).
+    // If calendar check fails or is ambiguous, default to showing base price (available: true).
+    let calendarHasBookedDays = false;
     try {
       const calendar = await Promise.race([
         guestyClient.getListingCalendar(listingId, checkIn, checkOut),
@@ -173,14 +174,20 @@ export async function getQuote(
         }),
       ]);
       const days = calendar?.data?.days || calendar?.days || (Array.isArray(calendar) ? calendar : []);
-      calendarAvailable = days.length > 0 && days.every((d: any) => d.status === "available" || d.available === true);
+      // Only count as unavailable if there are explicitly "booked" or "blocked" days
+      // Don't count "unavailable" alone — it may just mean today/past date
+      if (days.length > 0) {
+        calendarHasBookedDays = days.some((d: any) =>
+          d.status === "booked" || d.status === "blocked" || d.status === "maintenance"
+        );
+      }
     } catch {
-      // Calendar check failed — we don't know availability, proceed cautiously
-      calendarAvailable = null;
+      // Calendar check failed — assume available, show base price
+      calendarHasBookedDays = false;
     }
 
-    // If calendar explicitly says unavailable, return unavailable immediately
-    if (calendarAvailable === false) {
+    // Only if we found explicitly booked/blocked days, return unavailable
+    if (calendarHasBookedDays) {
       return buildPriceOnRequestResult(listingId, checkIn, checkOut, guests);
     }
 
@@ -195,7 +202,7 @@ export async function getQuote(
       const cleaningFee = Number(listing?.prices?.cleaningFee || 0);
       if (basePrice > 0 && nights > 0) {
         const baseResult: QuoteResult = {
-          available: calendarAvailable === true,
+          available: true,
           listingId,
           checkIn,
           checkOut,
@@ -209,9 +216,7 @@ export async function getQuote(
             total: basePrice * nights + cleaningFee,
           },
           source: "base",
-          fallbackMessage: calendarAvailable === true
-            ? "Live pricing is temporarily unavailable. Showing an estimated base rate."
-            : "Availability could not be confirmed. Showing an estimated base rate.",
+          fallbackMessage: "Live pricing is temporarily unavailable. Showing an estimated base rate.",
         };
         setCachedQuote(cacheKey, baseResult);
         return baseResult;
@@ -228,7 +233,7 @@ export async function getQuote(
       const syncedCleaning = Number(prop?.cleaningFee || 0);
       if (syncedPrice > 0 && nights > 0) {
         const syncResult: QuoteResult = {
-          available: calendarAvailable === true,
+          available: true,
           listingId,
           checkIn,
           checkOut,
@@ -242,9 +247,7 @@ export async function getQuote(
             total: syncedPrice * nights + syncedCleaning,
           },
           source: "base",
-          fallbackMessage: calendarAvailable === true
-            ? "Estimated price based on property's base rate."
-            : "Availability could not be confirmed. Showing an estimated base rate.",
+          fallbackMessage: "Estimated price based on property's base rate.",
         };
         setCachedQuote(cacheKey, syncResult);
         return syncResult;
