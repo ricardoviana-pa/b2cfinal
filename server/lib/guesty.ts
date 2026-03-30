@@ -540,8 +540,8 @@ export const guestyClient = {
   },
 
   async getListingCalendar(id: string, from: string, to: string): Promise<any> {
-    return request<any>("GET", `/v1/listings/${id}/calendar`, {
-      query: { from, to },
+    return request<any>("GET", `/v1/availability-pricing/api/calendar/listings/${id}`, {
+      query: { startDate: from, endDate: to },
     });
   },
 
