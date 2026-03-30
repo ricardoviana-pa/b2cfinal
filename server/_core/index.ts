@@ -153,6 +153,63 @@ ${blogUrls.join("\n")}
     }
   });
 
+  // Admin email trigger endpoints
+  const adminAuth = (req: any, res: any, next: any) => {
+    const key = req.headers["x-admin-key"];
+    const expected = process.env.ADMIN_API_KEY;
+    if (!expected || key !== expected) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    next();
+  };
+
+  app.post("/api/admin/send-pre-arrival/:tripId", adminAuth, async (req, res) => {
+    try {
+      const { sendPreArrival } = await import("../services/transactional-email");
+      const { getDb } = await import("../db");
+      const db = await getDb();
+      if (!db) return res.status(500).json({ error: "Database not available" });
+      const [rows] = await (db as any).execute("SELECT * FROM customer_trips WHERE id = ?", [req.params.tripId]);
+      const trip = (rows as any[])?.[0];
+      if (!trip) return res.status(404).json({ error: "Trip not found" });
+      const [userRows] = await (db as any).execute("SELECT email, name FROM users WHERE id = ?", [trip.userId]);
+      const user = (userRows as any[])?.[0];
+      if (!user?.email) return res.status(400).json({ error: "No guest email found" });
+      await sendPreArrival({
+        guestName: user.name || "Guest",
+        guestEmail: user.email,
+        propertyName: trip.propertyName || "Portugal Active Home",
+        checkIn: trip.checkIn,
+      });
+      res.json({ success: true });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/send-post-stay/:tripId", adminAuth, async (req, res) => {
+    try {
+      const { sendPostStay } = await import("../services/transactional-email");
+      const { getDb } = await import("../db");
+      const db = await getDb();
+      if (!db) return res.status(500).json({ error: "Database not available" });
+      const [rows] = await (db as any).execute("SELECT * FROM customer_trips WHERE id = ?", [req.params.tripId]);
+      const trip = (rows as any[])?.[0];
+      if (!trip) return res.status(404).json({ error: "Trip not found" });
+      const [userRows] = await (db as any).execute("SELECT email, name FROM users WHERE id = ?", [trip.userId]);
+      const user = (userRows as any[])?.[0];
+      if (!user?.email) return res.status(400).json({ error: "No guest email found" });
+      await sendPostStay({
+        guestName: user.name || "Guest",
+        guestEmail: user.email,
+        propertyName: trip.propertyName || "Portugal Active Home",
+      });
+      res.json({ success: true });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);

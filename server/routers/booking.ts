@@ -8,6 +8,7 @@ import {
   getPaymentProvider,
 } from "../services/guesty-booking";
 import * as db from "../db";
+import { sendBookingConfirmation } from "../services/transactional-email";
 
 /**
  * Save a trip to the customer's account and award loyalty points.
@@ -189,6 +190,23 @@ export const bookingRouter = router({
             guestyReservationId: result.reservationId,
             status: "upcoming",
           });
+        }
+
+        // Send booking confirmation email (non-blocking, never breaks booking)
+        try {
+          await sendBookingConfirmation({
+            guestName: input.guestName,
+            guestEmail: input.guestEmail,
+            propertyName: input.propertyName || "Portugal Active Home",
+            destination: input.destination,
+            checkIn: input.checkIn || "",
+            checkOut: input.checkOut || "",
+            guests: input.guests || 2,
+            totalPrice: input.totalPrice,
+            confirmationCode: result.confirmationCode,
+          });
+        } catch (emailErr: any) {
+          console.warn(`[Booking] Confirmation email failed (non-blocking): ${emailErr.message}`);
         }
 
         return result;
