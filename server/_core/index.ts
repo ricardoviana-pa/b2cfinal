@@ -12,7 +12,7 @@ import { registerBookingRoutes, registerGuestyWebhookRoute } from "../routes/boo
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
-import { isGuestyConfigured } from "../lib/guesty";
+import { isGuestyConfigured, warmUpOAuthTokens } from "../lib/guesty";
 import { runSync } from "../services/guesty-sync";
 import cron from "node-cron";
 
@@ -268,6 +268,11 @@ ${blogUrls.join("\n")}
     // DISABLED on startup to prevent OAuth rate-limit exhaustion during deploys.
     // Static fallback JSON (auto-committed to GitHub by previous syncs) covers the gap.
     // Cron fires at 07:00 and 19:00 Lisbon time for regular updates.
+    // Pre-fetch OAuth tokens so the first visitor doesn't wait for token negotiation
+    if (isGuestyConfigured()) {
+      warmUpOAuthTokens().catch(() => {/* non-blocking */});
+    }
+
     if (isGuestyConfigured()) {
       cron.schedule("0 7,19 * * *", () => {
         console.info("[Cron] Running scheduled Guesty sync...");

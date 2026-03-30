@@ -187,7 +187,9 @@ function firstPositiveNumber(values: unknown[], fallback = 0): number {
 function computeRefreshAt(expiresInSec: number): { expiresAt: number; refreshAt: number } {
   const now = Date.now();
   const ttlMs = Math.max(30_000, expiresInSec * 1000);
-  const skewMs = Math.min(120_000, Math.max(15_000, Math.floor(ttlMs * 0.2)));
+  // Refresh at ~10% before expiry (was 20%) — tokens last ~1h, so refresh at ~54min
+  // This halves the number of token requests over time
+  const skewMs = Math.min(120_000, Math.max(15_000, Math.floor(ttlMs * 0.1)));
   const expiresAt = now + ttlMs;
   return {
     expiresAt,
@@ -875,4 +877,31 @@ export function resetGuestyRateLimitCooldowns(): void {
 /** Check if the Open API OAuth is currently in 429 cooldown (skip live quotes, use fallback). */
 export function isGuestyOAuthCoolingDown(): boolean {
   return Date.now() < guestyAuthCooldownUntil;
+}
+
+/**
+ * Pre-fetch OAuth tokens on server start so the first PDP visitor
+ * doesn't wait for token negotiation. Non-blocking — failures are logged
+ * but never prevent the server from starting.
+ */
+export async function warmUpOAuthTokens(): Promise<void> {
+  const tasks: Promise<void>[] = [];
+
+  if (GUESTY_CLIENT_ID && GUESTY_CLIENT_SECRET) {
+    tasks.push(
+      getAuthHeaders()
+        .then(() => console.info("[Guesty] Open API token warmed up ✓"))
+        .catch((err) => console.warn("[Guesty] Open API warm-up skipped:", err?.message || err))
+    );
+  }
+
+  if (GUESTY_BE_CLIENT_ID && GUESTY_BE_CLIENT_SECRET) {
+    tasks.push(
+      getBEAuthHeaders()
+        .then(() => console.info("[Guesty] BE API token warmed up ✓"))
+        .catch((err) => console.warn("[Guesty] BE API warm-up skipped:", err?.message || err))
+    );
+  }
+
+  await Promise.allSettled(tasks);
 }
