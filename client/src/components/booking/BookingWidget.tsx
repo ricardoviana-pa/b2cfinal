@@ -393,7 +393,7 @@ export default function BookingWidget({
   // ── MAIN WIDGET ──
   return (
     <div ref={widgetRef} className="bg-white border border-[#E8E4DC] overflow-hidden">
-      {/* Price header ÃÂ¢ÃÂÃÂ shows total when quote exists, per-night otherwise */}
+      {/* Price header */}
       <div className="px-6 pt-5 pb-4">
         {effectiveQuote && effectiveQuote.total > 0 ? (
           <>
@@ -417,24 +417,22 @@ export default function BookingWidget({
             <div className="h-6 bg-[#F5F1EB] rounded-md w-full mt-2" />
           </div>
         ) : error && checkIn && checkOut ? (
-          <>
-            <div className="text-[13px] text-[#6B6860]">
-              <p className="font-medium text-[#1A1A18] mb-1">{t("bookingWidget.priceOnRequestTitle")}</p>
-              <p className="text-[12px]">{t("bookingWidget.priceOnRequestBody")}</p>
-              <button
-                type="button"
-                onClick={fetchQuote}
-                className="mt-2 text-[11px] font-medium text-[#8B7355] tracking-[0.12em] uppercase underline-offset-2 hover:underline"
-              >
-                {t("property.retry")}
-              </button>
-            </div>
-          </>
+          <div className="text-[13px] text-[#6B6860]">
+            <p className="font-medium text-[#1A1A18] mb-1">{t("bookingWidget.priceOnRequestTitle")}</p>
+            <p className="text-[12px]">{t("bookingWidget.priceOnRequestBody")}</p>
+            <button
+              type="button"
+              onClick={fetchQuote}
+              className="mt-2 text-[11px] font-medium text-[#8B7355] tracking-[0.12em] uppercase underline-offset-2 hover:underline"
+            >
+              {t("property.retry")}
+            </button>
+          </div>
         ) : (
           <>
             <div className="flex items-baseline gap-1">
               <span className="text-[28px] text-[#1A1A18]" style={{ fontFamily: "var(--font-display)" }}>
-                {displayRate > 0 ? formatEur(displayRate) : "ÃÂ¢ÃÂÃÂ"}
+                {displayRate > 0 ? formatEur(displayRate) : "---"}
               </span>
               <span className="text-[14px] text-[#9E9A90]">{t("property.perNight")}</span>
             </div>
@@ -559,23 +557,48 @@ export default function BookingWidget({
 
       {/* Action area */}
       <div className="px-4 pt-4 pb-5 space-y-3">
+        {/* Advance notice warning — check-in too soon */}
+        {checkIn && (() => {
+          const daysUntilCheckIn = Math.ceil((new Date(checkIn).getTime() - Date.now()) / 86400000);
+          if (daysUntilCheckIn >= 0 && daysUntilCheckIn <= 2) {
+            return (
+              <div className="flex items-start gap-2.5 p-3 bg-[#FFF8F0] border border-[#D97706]/30 rounded-lg">
+                <span className="text-[#D97706] text-[16px] shrink-0 leading-none mt-0.5">!</span>
+                <div>
+                  <p className="text-[12px] text-[#92400E] font-medium leading-snug">
+                    {daysUntilCheckIn === 0
+                      ? t("bookingWidget.checkInToday", "Check-in is today")
+                      : daysUntilCheckIn === 1
+                        ? t("bookingWidget.checkInTomorrow", "Check-in is tomorrow")
+                        : t("bookingWidget.checkInSoon", "Check-in is in 2 days")}
+                  </p>
+                  <p className="text-[11px] text-[#92400E]/70 mt-0.5 leading-snug">
+                    {t("bookingWidget.advanceNoticeNote", "Some properties require advance notice. Instant confirmation may not be available.")}
+                  </p>
+                </div>
+              </div>
+            );
+          }
+          return null;
+        })()}
+
         {/* Error */}
         {error && (
-          <div className="flex items-start gap-2 p-3 bg-[#F5F1EB] border border-[#DC2626] rounded-md text-[13px]" role="alert">
-            <span className="text-[#DC2626] mt-0.5 shrink-0">!</span>
+          <div className="flex items-start gap-2 p-3 bg-[#F5F1EB] border border-[#DC2626]/30 rounded-lg text-[13px]" role="alert">
+            <span className="text-[#DC2626] mt-0.5 shrink-0 font-medium">!</span>
             <p className="text-[#DC2626] leading-snug">{error}</p>
           </div>
         )}
 
-        {/* Step: DATES ÃÂ¢ÃÂÃÂ show CTA to check price */}
+        {/* Step: DATES */}
         {step === "dates" && (
           <div className="space-y-2">
             <button
               onClick={fetchQuote}
               disabled={!checkIn || !checkOut || loading || nights < minNights}
               className={cn(
-                "w-full min-h-[48px] rounded-full px-8 text-[11px] font-medium tracking-[0.12em] uppercase transition-colors",
-                "bg-[#8B7355] text-[#FAFAF7] hover:bg-[#7A6548]",
+                "w-full min-h-[52px] rounded-full px-8 text-[12px] font-medium tracking-[0.12em] uppercase transition-colors",
+                "bg-[#1A1A18] text-[#FAFAF7] hover:bg-[#2A2A28]",
                 "disabled:opacity-40 disabled:cursor-not-allowed",
               )}
             >
@@ -585,21 +608,6 @@ export default function BookingWidget({
                 </span>
               ) : nights > 0 ? t("bookingWidget.checkPrice", { count: nights }) : t("property.checkAvailability")}
             </button>
-            {error && checkIn && checkOut && (
-              <div className="text-[13px] text-[#6B6860]">
-                <p className="font-medium text-[#1A1A18] mb-1">{t("bookingWidget.priceOnRequestTitle")}</p>
-                <p className="text-[12px]">{t("bookingWidget.priceOnRequestBody")}</p>
-                <div className="flex flex-col gap-2 mt-2">
-                  <button
-                    type="button"
-                    onClick={fetchQuote}
-                    className="text-[11px] font-medium text-[#8B7355] tracking-[0.12em] uppercase underline-offset-2 hover:underline text-left"
-                  >
-                    {t("property.retry")}
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         )}
 
@@ -642,56 +650,45 @@ export default function BookingWidget({
           </>
         )}
 
-        {/* Step: QUOTE ÃÂ¢ÃÂÃÂ show price breakdown + CTA to book */}
+        {/* Step: QUOTE — price breakdown + booking */}
         {step === "quote" && effectiveQuote && !quote?.priceOnRequest && (
           <>
-            {/* Price summary ÃÂ¢ÃÂÃÂ collapsible */}
+            {/* ── Price Breakdown Card (always expanded) ── */}
             <div className="bg-[#FAFAF7] rounded-lg border border-[#E8E4DC] overflow-hidden">
-              <button
-                type="button"
-                onClick={() => setPriceExpanded(!priceExpanded)}
-                className="w-full flex items-center justify-between p-4 text-left"
-              >
-                <div>
-                  <p className="text-[20px] text-[#1A1A18] font-medium" style={{ fontFamily: "var(--font-display)" }}>
-                    {formatEur(effectiveQuote.total + upsellsTotal)}
-                  </p>
-                  <p className="text-[12px] text-[#9E9A90]">
-                    {t("bookingWidget.nightsLine", {
-                      count: effectiveQuote.nights,
-                      rate: formatEur(effectiveQuote.nightlyRate),
-                    })}
-                  </p>
-                </div>
-                {priceExpanded ? <ChevronUp className="w-4 h-4 text-[#9E9A90]" /> : <ChevronDown className="w-4 h-4 text-[#9E9A90]" />}
-              </button>
-              {priceExpanded && (
-                <div className="px-4 pb-4 space-y-2 border-t border-[#E8E4DC] pt-3">
-                  <div className="flex justify-between text-[13px]">
-                    <span className="text-[#6B6860]">{t("bookingWidget.rentNightsLine", { rate: formatEur(effectiveQuote.nightlyRate), count: effectiveQuote.nights })}</span>
-                    <span className="text-[#1A1A18]">{formatEur(effectiveQuote.totalNights)}</span>
-                  </div>
-                  <div className="flex justify-between text-[13px]">
-                    <span className="text-[#6B6860]">{t("property.cleaningFee")}</span>
-                    <span className="text-[#1A1A18]">
-                      {effectiveQuote.cleaningFee > 0 ? formatEur(effectiveQuote.cleaningFee) : t("bookingWidget.included")}
+              <div className="p-5 space-y-3">
+                {/* Line items */}
+                <div className="space-y-2.5">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[13px] text-[#6B6860]">
+                      {formatEur(effectiveQuote.nightlyRate)} x {effectiveQuote.nights} {t("bookingWidget.nightsLabel", "nights")}
                     </span>
+                    <span className="text-[13px] text-[#1A1A18] tabular-nums">{formatEur(effectiveQuote.totalNights)}</span>
                   </div>
-                  {upsellsTotal > 0 && (
-                    <div className="flex justify-between text-[13px]">
-                      <span className="text-[#6B6860]">{t("bookingWidget.enhanceStay")}</span>
-                      <span className="text-[#1A1A18]">{formatEur(upsellsTotal)}</span>
+                  {effectiveQuote.cleaningFee > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-[13px] text-[#6B6860]">{t("property.cleaningFee")}</span>
+                      <span className="text-[13px] text-[#1A1A18] tabular-nums">{formatEur(effectiveQuote.cleaningFee)}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-[14px] font-medium pt-2 border-t border-[#E8E4DC]">
-                    <span className="text-[#1A1A18]">{t("property.total")}</span>
-                    <span className="text-[#1A1A18]">{formatEur(effectiveQuote.total + upsellsTotal)}</span>
-                  </div>
+                  {upsellsTotal > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-[13px] text-[#6B6860]">{t("bookingWidget.enhanceStay")}</span>
+                      <span className="text-[13px] text-[#1A1A18] tabular-nums">{formatEur(upsellsTotal)}</span>
+                    </div>
+                  )}
                 </div>
-              )}
+
+                {/* Divider + Total */}
+                <div className="border-t border-[#E8E4DC] pt-3 flex justify-between items-baseline">
+                  <span className="text-[15px] font-medium text-[#1A1A18]">{t("property.total")}</span>
+                  <span className="text-[22px] font-medium text-[#1A1A18] tabular-nums" style={{ fontFamily: "var(--font-display)" }}>
+                    {formatEur(effectiveQuote.total + upsellsTotal)}
+                  </span>
+                </div>
+              </div>
             </div>
 
-            {/* Rate plan options */}
+            {/* ── Rate Plan Options ── */}
             {quote?.ratePlanOptions && quote.ratePlanOptions.length > 0 && (
               <div className="space-y-2">
                 <p className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#9E9A90]">{t("bookingWidget.ratePlan")}</p>
@@ -718,13 +715,13 @@ export default function BookingWidget({
                         <p className="text-[11px] text-[#9E9A90] mt-0.5 truncate">{opt.cancellationPolicy[0]}</p>
                       )}
                     </div>
-                    <span className="text-[14px] text-[#1A1A18] font-medium whitespace-nowrap">{formatEur(opt.total)}</span>
+                    <span className="text-[14px] text-[#1A1A18] font-medium whitespace-nowrap tabular-nums">{formatEur(opt.total)}</span>
                   </label>
                 ))}
               </div>
             )}
 
-            {/* Upsells */}
+            {/* ── Upsell Add-ons ── */}
             {UPSELL_ITEMS.length > 0 && (
               <div className="space-y-2">
                 <p className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#9E9A90] flex items-center gap-1">
@@ -756,34 +753,30 @@ export default function BookingWidget({
                       <p className="text-[13px] text-[#1A1A18]">{item.name}</p>
                       <p className="text-[11px] text-[#9E9A90] truncate">{item.tagline}</p>
                     </div>
-                    <span className="text-[12px] text-[#8B7355] whitespace-nowrap">
-                      {item.priceFrom ? `+ÃÂ¢ÃÂÃÂ¬${item.priceFrom}` : t("bookingWidget.free")}
+                    <span className="text-[12px] text-[#8B7355] font-medium whitespace-nowrap tabular-nums">
+                      {item.priceFrom ? `+${formatEur(item.priceFrom)}` : t("bookingWidget.free")}
                     </span>
                   </label>
                 ))}
+                <p className="text-[11px] text-[#9E9A90] italic leading-relaxed">
+                  {t("bookingWidget.servicesNote", "Services confirmed separately by our concierge after booking.")}
+                </p>
               </div>
             )}
 
-            {/* Services are concierge-handled, not charged through Stripe */}
-            {UPSELL_ITEMS.length > 0 && (
-              <p className="text-[11px] text-[#9E9A90] italic leading-relaxed">
-                Services are confirmed separately by our concierge. Payment is arranged directly with your concierge after booking.
-              </p>
-            )}
-
-            {/* CTA */}
+            {/* ── CTA Button ── */}
             {canPayOnSite && quote?.quoteId ? (
               <button
                 onClick={() => { setError(""); setStep("payment"); }}
-                className="w-full min-h-[48px] rounded-full bg-[#8B7355] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#7A6548] transition-colors"
+                className="w-full min-h-[52px] rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[12px] font-medium tracking-[0.12em] uppercase px-8 py-4 hover:bg-[#2A2A28] transition-colors shadow-sm"
               >
-                RESERVE & PAY {formatEur(effectiveQuote.total)}
+                {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote.total + upsellsTotal)}
               </button>
             ) : (
               <div className="space-y-3">
                 {beQuoteError && (
                   <div className="flex items-start gap-2 p-3 bg-[#FFF8F0] border border-[#D97706]/30 rounded-md" role="alert">
-                    <span className="text-[#D97706] shrink-0 mt-0.5 text-[13px]">ⓘ</span>
+                    <span className="text-[#D97706] shrink-0 mt-0.5 text-[13px]">i</span>
                     <div>
                       <p className="text-[12px] text-[#92400E] font-medium leading-snug">{t("bookingWidget.onlinePaymentUnavailable", { defaultValue: "Online payment not available for this property" })}</p>
                       <p className="text-[11px] text-[#92400E]/80 mt-0.5 leading-snug">{t("bookingWidget.contactConcierge", { defaultValue: "Please contact our concierge team for booking assistance" })}</p>
@@ -801,6 +794,7 @@ export default function BookingWidget({
             </button>
           </>
         )}
+
 
         {/* Step: DETAILS ÃÂ¢ÃÂÃÂ guest info form */}
         {/* Step: PAYMENT */}
