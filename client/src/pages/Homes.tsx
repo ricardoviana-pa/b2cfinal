@@ -225,12 +225,14 @@ export default function Homes() {
           checkOut: searchCheckout,
           guests: guestCount,
         });
-        const quote = raw?.pricing ? {
-          total: raw.pricing.total ?? 0,
+        // Only accept live or cached quotes — never base price fallbacks (inaccurate)
+        const isLive = raw?.source === 'live' || raw?.source === 'cached';
+        const quote = (isLive && raw?.pricing && raw.pricing.total > 0) ? {
+          total: raw.pricing.total,
           nightlyRate: raw.pricing.nightlyRate ?? 0,
           cleaningFee: raw.pricing.cleaningFee ?? 0,
           nights: raw.nights ?? searchNights,
-          source: raw.source || 'live',
+          source: raw.source!,
           fallbackMessage: raw.fallbackMessage,
         } : null;
         return { slug: property.slug, quote };

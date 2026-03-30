@@ -245,11 +245,12 @@ export default function PropertyCard({
                 ) : (() => {
                   const fmt = formatEur;
                   const fromCatalogue = (property.priceFrom ?? 0) * nights;
-                  const showGuesty =
+                  // Only show live/cached quotes — never base price estimates
+                  const isLiveQuote =
                     liveQuote &&
-                    (liveQuote.source === 'live' || liveQuote.source === 'cached' || liveQuote.source === 'base') &&
+                    (liveQuote.source === 'live' || liveQuote.source === 'cached') &&
                     liveQuote.total > 0;
-                  if (showGuesty && liveQuote) {
+                  if (isLiveQuote && liveQuote) {
                     return (
                       <>
                         <span className="text-[#1A1A18] font-medium">
@@ -261,37 +262,32 @@ export default function PropertyCard({
                       </>
                     );
                   }
-                  if (fromCatalogue > 0) {
+                  // No live quote available — show catalogue per-night rate only
+                  if ((property.priceFrom ?? 0) > 0) {
                     return (
                       <div className="text-left w-full">
-                        <span className="text-[#1A1A18] font-medium">{fmt(fromCatalogue)}</span>
-                        <span className="text-[0.75rem] text-[#9E9A90] ml-1">{t('property.estTotal')}</span>
-                        <p className="text-[0.6875rem] text-[#9E9A90] mt-0.5">
-                          {batchFailed || liveQuote?.source === 'request'
-                            ? t('property.indicativeUnavailable')
-                            : t('property.indicativeCatalogue')}
-                        </p>
+                        <span className="text-[#1A1A18] font-medium">
+                          {t('property.fromPerNight', { price: property.priceFrom.toLocaleString() })}
+                        </span>
+                        <span className="text-[0.75rem] text-[#9E9A90] ml-1">{t('property.perNight')}</span>
                       </div>
                     );
                   }
                   return (
                     <span className="text-[#9E9A90] text-[0.8125rem]">
-                      {liveQuote?.fallbackMessage || t('property.priceOnRequest')}
+                      {t('property.priceOnRequest')}
                     </span>
                   );
                 })()}
               </div>
               {liveQuote &&
-                (liveQuote.source === 'live' || liveQuote.source === 'cached' || liveQuote.source === 'base') &&
+                (liveQuote.source === 'live' || liveQuote.source === 'cached') &&
                 liveQuote.total > 0 && (
                 <p className="text-[0.6875rem] text-[#9E9A90] mt-0.5">
                   {t('property.nightCleaningLine', {
                     nightly: formatEur(liveQuote.nightlyRate),
                     cleaning: formatEur(liveQuote.cleaningFee),
                   })}
-                  {liveQuote.source === 'base' && (
-                    <span className="block text-[0.625rem] mt-0.5">{t('property.estimatedBaseGuesty')}</span>
-                  )}
                 </p>
               )}
             </>
