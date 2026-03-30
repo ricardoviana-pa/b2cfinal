@@ -95,16 +95,32 @@ export const bookingRouter = router({
           input.from,
           input.to
         );
-        // Guesty calendar response can be { data: { days: [...] } } or directly { days: [...] } or an array
-        const rawDays = calendar?.data?.days || calendar?.days || (Array.isArray(calendar) ? calendar : []);
-        console.info(`[Booking] getCalendar for ${input.listingId}: got ${rawDays.length} days, keys=${Object.keys(calendar || {}).join(',')}`);
-        if (rawDays.length > 0) {
-          console.info(`[Booking] getCalendar sample day:`, JSON.stringify(rawDays[0]).slice(0, 200));
+        // Guesty calendar response: log raw structure for diagnostics
+        const calKeys = Object.keys(calendar || {});
+        console.info(`[Booking] getCalendar raw keys: ${calKeys.join(',')}, type=${typeof calendar}, isArray=${Array.isArray(calendar)}`);
+        if (calKeys.length > 0) {
+          // Log first 300 chars of response to understand structure
+          console.info(`[Booking] getCalendar raw sample: ${JSON.stringify(calendar).slice(0, 300)}`);
         }
+
+        // Handle all possible Guesty calendar response formats
+        let rawDays: any[] = [];
+        if (Array.isArray(calendar)) {
+          rawDays = calendar;
+        } else if (calendar?.data?.days) {
+          rawDays = calendar.data.days;
+        } else if (calendar?.days) {
+          rawDays = calendar.days;
+        } else if (calendar?.data && Array.isArray(calendar.data)) {
+          rawDays = calendar.data;
+        }
+
+        console.info(`[Booking] getCalendar for ${input.listingId}: parsed ${rawDays.length} days`);
+
         const days = rawDays.map((d: any) => ({
           date: d.date,
-          status: d.status || (d.available ? "available" : "unavailable"),
-          minNights: d.minNights ?? d.minNight ?? undefined,
+          status: d.status || (d.available === true ? "available" : d.available === false ? "unavailable" : "unavailable"),
+          minNights: d.minNights ?? d.minNight ?? d.terms?.minNights ?? undefined,
           price: d.price ?? d.basePrice ?? d.nightlyRate ?? undefined,
         }));
         return { days };
