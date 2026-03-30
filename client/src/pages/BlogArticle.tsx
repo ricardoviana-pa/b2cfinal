@@ -2,17 +2,86 @@
    BLOG ARTICLE — Single article view with editorial layout
    ========================================================================== */
 
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { ArrowLeft, Clock, Calendar, Share2, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, Share2, ArrowRight, Play, ExternalLink } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import type { BlogArticle as BlogArticleType } from '@/lib/types';
 import blogData from '@/data/blog.json';
 
 const articles = (blogData as any).articles as BlogArticleType[];
+
+/* ── YouTube embed with error fallback ── */
+function VideoEmbed({ videoId, title }: { videoId: string; title: string }) {
+  const [embedFailed, setEmbedFailed] = useState(false);
+  const thumbUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+  const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
+
+  const handleError = useCallback(() => setEmbedFailed(true), []);
+
+  if (embedFailed) {
+    return (
+      <section className="pb-8">
+        <div className="container max-w-4xl mx-auto">
+          <a href={watchUrl} target="_blank" rel="noopener noreferrer"
+            className="group relative block w-full aspect-video bg-[#1A1A18] rounded-sm overflow-hidden">
+            <img src={thumbUrl} alt={title} className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-80 transition-opacity" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+              <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <Play className="w-7 h-7 text-[#1A1A18] ml-1" fill="#1A1A18" />
+              </div>
+              <span className="flex items-center gap-2 text-white/90 text-sm font-medium">
+                Watch on YouTube <ExternalLink className="w-3.5 h-3.5" />
+              </span>
+            </div>
+          </a>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="pb-8">
+      <div className="container max-w-4xl mx-auto">
+        <div className="relative w-full aspect-video bg-black rounded-sm overflow-hidden">
+          <iframe
+            src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`}
+            title={title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="absolute inset-0 w-full h-full"
+            loading="lazy"
+            onError={handleError}
+          />
+          {/* Fallback: detect embed failure via postMessage from YouTube */}
+          <EmbedErrorDetector videoId={videoId} onError={handleError} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* Detects YouTube Error 150/153 via the embed API's postMessage events */
+function EmbedErrorDetector({ videoId, onError }: { videoId: string; onError: () => void }) {
+  useEffect(() => {
+    const handler = (e: MessageEvent) => {
+      if (e.origin !== 'https://www.youtube.com') return;
+      try {
+        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        const errorCode = data?.info?.playerResponse?.playabilityStatus?.status === 'ERROR'
+          || data?.info?.errorCode === 150
+          || data?.info?.errorCode === 153;
+        if (errorCode) onError();
+      } catch { /* ignore non-JSON messages */ }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, [videoId, onError]);
+  return null;
+}
 
 export default function BlogArticle() {
   const { t } = useTranslation();
@@ -133,20 +202,7 @@ export default function BlogArticle() {
 
       {/* Video Embed */}
       {(article as any).videoId && (
-        <section className="pb-8">
-          <div className="container max-w-4xl mx-auto">
-            <div className="relative w-full aspect-video bg-black rounded-sm overflow-hidden">
-              <iframe
-                src={`https://www.youtube.com/embed/${(article as any).videoId}?rel=0&modestbranding=1`}
-                title={article.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="absolute inset-0 w-full h-full"
-                loading="lazy"
-              />
-            </div>
-          </div>
-        </section>
+        <VideoEmbed videoId={(article as any).videoId} title={article.title} />
       )}
 
       {/* Article Content */}
