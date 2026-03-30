@@ -205,84 +205,33 @@ export default function Homes() {
     setShowFavoritesOnly(false);
   };
 
-  // Fetch live quotes in throttled batches to avoid Guesty 429 rate limits.
-  // Batches of 4 with 600ms pause between groups keeps us well within limits.
+  // PLP pricing: compute estimated totals from catalogue base prices (zero API calls).
+  // Live Guesty quotes are fetched only on the PDP when a guest selects dates for a single property.
+  // This eliminates 55+ API calls per page load and prevents Guesty rate-limit cascades.
   useEffect(() => {
     if (!searchCheckin || !searchCheckout || searchNights <= 0 || filtered.length === 0) {
+      setQuotes({});
       return;
     }
 
-    let cancelled = false;
-    setQuotesLoading(true);
-    const guestCount = effectiveGuests || 2;
-    const BATCH_SIZE = 4;
-    const BATCH_DELAY_MS = 600;
-
-    async function fetchSingleQuote(property: Property): Promise<{ slug: string; quote: LiveQuote | null }> {
-      try {
-        const raw = await utils.booking.getQuote.fetch({
-          listingId: property.guestyId,
-          checkIn: searchCheckin,
-          checkOut: searchCheckout,
-          guests: guestCount,
-        });
-        // If Guesty explicitly says unavailable (booked/blocked dates), show badge
-        if (raw?.available === false) {
-          return {
-            slug: property.slug,
-            quote: {
-              total: 0,
-              nightlyRate: 0,
-              cleaningFee: 0,
-              nights: raw.nights ?? searchNights,
-              source: raw.source ?? 'request',
-              fallbackMessage: raw.fallbackMessage,
-              available: false,
-            },
-          };
-        }
-        // Accept live, cached, and base price quotes (base = estimated from catalogue rate)
-        const isUsable = raw?.source === 'live' || raw?.source === 'cached' || raw?.source === 'base';
-        const quote = (isUsable && raw?.pricing && raw.pricing.total > 0) ? {
-          total: raw.pricing.total,
-          nightlyRate: raw.pricing.nightlyRate ?? 0,
-          cleaningFee: raw.pricing.cleaningFee ?? 0,
-          nights: raw.nights ?? searchNights,
-          source: raw.source!,
-          fallbackMessage: raw.fallbackMessage,
+    const computed: Record<string, LiveQuote | null> = {};
+    for (const property of filtered) {
+      const nightlyRate = property.pricePerNight ?? property.priceFrom ?? 0;
+      const cleaningFee = property.cleaningFee ?? 0;
+      if (nightlyRate > 0) {
+        computed[property.slug] = {
+          total: nightlyRate * searchNights + cleaningFee,
+          nightlyRate,
+          cleaningFee,
+          nights: searchNights,
+          source: 'base',
           available: true,
-        } : null;
-        return { slug: property.slug, quote };
-      } catch {
-        return { slug: property.slug, quote: null };
+        };
       }
     }
-
-    async function fetchInBatches() {
-      const accumulated: Record<string, LiveQuote | null> = {};
-      for (let i = 0; i < filtered.length; i += BATCH_SIZE) {
-        if (cancelled) return;
-        const batch = filtered.slice(i, i + BATCH_SIZE);
-        const results = await Promise.allSettled(batch.map(fetchSingleQuote));
-        results.forEach((r) => {
-          if (r.status === 'fulfilled') {
-            const { slug, quote } = r.value;
-            accumulated[slug] = quote ?? null;
-          }
-        });
-        // Update state progressively so first results appear fast
-        if (!cancelled) setQuotes({ ...accumulated });
-        // Pause between batches (except after the last one)
-        if (i + BATCH_SIZE < filtered.length && !cancelled) {
-          await new Promise(resolve => setTimeout(resolve, BATCH_DELAY_MS));
-        }
-      }
-      if (!cancelled) setQuotesLoading(false);
-    }
-
-    fetchInBatches();
-    return () => { cancelled = true; };
-  }, [searchCheckin, searchCheckout, searchNights, filtered, effectiveGuests, utils.booking.getQuote]);
+    setQuotes(computed);
+    setQuotesLoading(false);
+  }, [searchCheckin, searchCheckout, searchNights, filtered]);
 
   const applyBookingSearch = () => {
     const params = new URLSearchParams(searchString);
