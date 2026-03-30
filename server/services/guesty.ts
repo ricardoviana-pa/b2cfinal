@@ -4,6 +4,7 @@
  */
 
 import { guestyClient } from "../lib/guesty";
+import { getPropertiesForSite } from "./properties-store";
 
 type QuoteSource = "live" | "cached" | "base" | "request";
 
@@ -181,6 +182,37 @@ export async function getQuote(
         };
         setCachedQuote(cacheKey, baseResult);
         return baseResult;
+      }
+    } catch {
+      /* ignore — getListing also failed */
+    }
+
+    // 3rd fallback: use priceFrom from our synced property data (survives Guesty 404s)
+    try {
+      const allProps = await getPropertiesForSite();
+      const prop = allProps.find((p: any) => p.guestyId === listingId);
+      const syncedPrice = Number(prop?.pricePerNight || prop?.priceFrom || 0);
+      const syncedCleaning = Number(prop?.cleaningFee || 0);
+      if (syncedPrice > 0 && nights > 0) {
+        const syncResult: QuoteResult = {
+          available: true,
+          listingId,
+          checkIn,
+          checkOut,
+          nights,
+          currency: prop?.currency || "EUR",
+          pricing: {
+            nightlyRate: syncedPrice,
+            totalNights: syncedPrice * nights,
+            cleaningFee: syncedCleaning,
+            subtotal: syncedPrice * nights + syncedCleaning,
+            total: syncedPrice * nights + syncedCleaning,
+          },
+          source: "base",
+          fallbackMessage: "Estimated price based on property's base rate.",
+        };
+        setCachedQuote(cacheKey, syncResult);
+        return syncResult;
       }
     } catch {
       /* ignore */
