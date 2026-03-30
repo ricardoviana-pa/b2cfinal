@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../_core/trpc";
 import { checkAvailability, getQuoteWithDeadline } from "../services/guesty";
+import { guestyClient } from "../lib/guesty";
 import {
   isBEApiConfigured,
   createBEQuote,
@@ -108,6 +109,28 @@ export const bookingRouter = router({
         return await getQuoteWithDeadline(input.listingId, input.checkIn, input.checkOut, input.guests, 20_000);
       } catch (error: any) {
         throw new Error(error.message || "Failed to get quote");
+      }
+    }),
+
+  /** TEMP diagnostic: test raw Guesty createQuote to see actual error */
+  debugQuote: publicProcedure
+    .input(z.object({
+      listingId: z.string().min(1),
+      checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      guests: z.number().int().min(1).max(30).default(2),
+    }))
+    .query(async ({ input }) => {
+      try {
+        const quote = await guestyClient.createQuote(input.listingId, input.checkIn, input.checkOut, input.guests);
+        return { ok: true, source: "live", pricingCents: quote.pricingCents, ratePlanId: quote.ratePlanId };
+      } catch (err: any) {
+        return {
+          ok: false,
+          error: err?.message || String(err),
+          status: err?.status || null,
+          details: err?.details || null,
+        };
       }
     }),
 
