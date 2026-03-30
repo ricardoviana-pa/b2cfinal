@@ -1,12 +1,15 @@
 /**
- * On-site checkout with Stripe (same payment processor as Guesty).
+ * On-site checkout with Stripe PaymentElement (multi-payment-method support).
+ * Uses "deferred intent" mode — no server-side PaymentIntent needed.
+ * Guesty Booking Engine handles the actual charge; we pass a payment method token.
+ *
  * Requires: BE-API + STRIPE_PUBLISHABLE_KEY (from Guesty-connected Stripe account).
  */
 
 import { useState, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { loadStripe } from "@stripe/stripe-js";
-import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { trpc } from "@/lib/trpc";
 
 const EUR = "\u20AC";
@@ -18,7 +21,7 @@ function parseApiError(msg: string, t: any): string {
   }
   try {
     const parsed = JSON.parse(msg);
-    if (Array.isArray(parsed) && parsed[0]) {
+    if (Array.isArray(parsed) && parsed.length > 0) {
       const p = parsed[0];
       if (p.path?.includes?.("guestEmail")) return t('payment.errors.invalidEmail');
       if (p.path?.includes?.("guestPhone")) return t('payment.errors.invalidPhone');
@@ -89,17 +92,18 @@ function PaymentFormInner({
     setLoading(true);
     setError("");
 
-    const card = elements.getElement(CardElement);
-    if (!card) {
-      setError(t('payment.errors.cardNotReady'));
+    // Step 1: Validate the PaymentElement form
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+      setError(submitError.message || t('payment.errors.cardValidationFailed'));
       setLoading(false);
       submittedRef.current = false;
       return;
     }
 
+    // Step 2: Create payment method from PaymentElement
     const { error: stripeError, paymentMethod } = await stripe.createPaymentMethod({
-      type: "card",
-      card,
+      elements,
     });
 
     if (stripeError) {
@@ -116,6 +120,7 @@ function PaymentFormInner({
       return;
     }
 
+    // Step 3: Send payment method to Guesty via our backend
     try {
       const response = await Promise.race([
         createReservation.mutateAsync({
@@ -150,24 +155,17 @@ function PaymentFormInner({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="p-4 bg-white border border-[#E8E4DC] rounded">
-        <CardElement
+        <PaymentElement
           options={{
-            hidePostalCode: true,
-            style: {
-              base: {
-                fontSize: "14px",
-                color: "#1A1A18",
-                "::placeholder": { color: "#9E9A90" },
-              },
-              invalid: { color: "#b91c1c" },
-            },
+            layout: "tabs",
+            fields: { billingDetails: { address: { country: "never", postalCode: "never" } } },
           }}
         />
       </div>
 
       {error && (
         <div className="flex items-start gap-2 p-3 bg-[#F5F1EB] border border-[#DC2626] rounded-md">
-          <span className="text-[#DC2626] mt-0.5 shrink-0" aria-hidden>⚠</span>
+          <span className="text-[#DC2626] mt-0.5 shrink-0" aria-hidden>&#9888;</span>
           <p className="text-[#DC2626] text-sm leading-snug">{error}</p>
         </div>
       )}
@@ -198,8 +196,30 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
     () => loadStripe(stripeConfig.publishableKey),
     [stripeConfig.publishableKey],
   );
+
+  // Deferred intent mode: PaymentElement without a client secret.
+  // We pass mode + amount + currency so Stripe knows the context.
+  const elementsOptions = useMemo(
+    () => ({
+      mode: "payment" as const,
+      amount: Math.round(props.total * 100), // Stripe expects cents
+      currency: (props.currency || "eur").toLowerCase(),
+      appearance: {
+        theme: "stripe" as const,
+        variables: {
+          colorPrimary: "#1A1A18",
+          colorBackground: "#ffffff",
+          colorText: "#1A1A18",
+          fontFamily: "var(--font-body), Arial, sans-serif",
+          borderRadius: "4px",
+        },
+      },
+    }),
+    [props.total, props.currency],
+  );
+
   return (
-    <Elements stripe={stripePromise}>
+    <Elements stripe={stripePromise} options={elementsOptions}>
       <PaymentFormInner {...props} />
     </Elements>
   );
