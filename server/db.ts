@@ -552,8 +552,14 @@ function generateReferralCode(): string {
 export async function getCustomerProfile(userId: number) {
   const db = await getDb();
   if (!db) return undefined;
-  const result = await db.select().from(customerProfiles).where(eq(customerProfiles.userId, userId)).limit(1);
-  return result[0];
+  try {
+    const result = await db.select().from(customerProfiles).where(eq(customerProfiles.userId, userId)).limit(1);
+    return result[0];
+  } catch (err: any) {
+    // Table may not exist yet (migration not run) — return undefined so the endpoint returns defaults
+    console.warn("[DB] customer_profiles query failed (table may not exist):", err?.message?.slice(0, 120));
+    return undefined;
+  }
 }
 
 export async function updateCustomerProfile(userId: number, data: Partial<InsertCustomerProfile>) {

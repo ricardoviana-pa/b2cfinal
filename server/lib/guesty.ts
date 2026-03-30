@@ -70,6 +70,8 @@ let beOauthCache: TokenCache | null = null;
 let beOauthRefreshPromise: Promise<string> | null = null;
 let guestyAuthCooldownUntil = 0;
 let guestyBeAuthCooldownUntil = 0;
+/** Exponential backoff: consecutive 429s multiply the cooldown duration. Resets on success. */
+let guestyAuthConsecutive429s = 0;
 
 function parseRetryAfterMs(headers: Headers, fallbackMs: number): number {
   const retryAfterSec = Number(headers.get("Retry-After") || "0");
@@ -292,7 +294,9 @@ async function fetchOAuthToken(): Promise<string> {
         expiresAt,
         refreshAt,
       };
+      guestyAuthConsecutive429s = 0; // Reset backoff on success
       writeTokenCacheToDisk(OPEN_TOKEN_CACHE_FILE, oauthCache);
+      console.info("[Guesty] OAuth token acquired successfully, expires in", Math.round((expiresAt - Date.now()) / 1000), "s");
       return oauthCache.token;
     }
 
@@ -307,9 +311,12 @@ async function fetchOAuthToken(): Promise<string> {
     });
 
     if (response.status === 429) {
-      // Set a long cooldown to stop poking the API and let the rate limit truly expire.
-      guestyAuthCooldownUntil =
-        Date.now() + capOAuthCooldownMs(parseRetryAfterMs(response.headers, 60_000), MAX_GUESTY_OAUTH_COOLDOWN_MS);
+      guestyAuthConsecutive429s += 1;
+      // Exponential backoff: 60s → 120s → 240s → 480s (max 10 min)
+      const backoffMs = Math.min(60_000 * Math.pow(2, guestyAuthConsecutive429s - 1), 600_000);
+      const retryMs = capOAuthCooldownMs(parseRetryAfterMs(response.headers, backoffMs), Math.max(backoffMs, MAX_GUESTY_OAUTH_COOLDOWN_MS));
+      guestyAuthCooldownUntil = Date.now() + retryMs;
+      console.warn(`[Guesty] OAuth 429 #${guestyAuthConsecutive429s} — cooldown ${Math.round(retryMs / 1000)}s (until ${new Date(guestyAuthCooldownUntil).toISOString()})`);
       // Do NOT retry — every 429 response counts against the rate limit window.
       throw new GuestyClientError({
         message: "Guesty authentication temporarily cooled down after rate limiting",
@@ -858,4 +865,10 @@ export function isGuestyConfigured(): boolean {
 export function resetGuestyRateLimitCooldowns(): void {
   guestyAuthCooldownUntil = 0;
   guestyBeAuthCooldownUntil = 0;
+  guestyAuthConsecutive429s = 0;
+}
+
+/** Check if the Open API OAuth is currently in 429 cooldown (skip live quotes, use fallback). */
+export function isGuestyOAuthCoolingDown(): boolean {
+  return Date.now() < guestyAuthCooldownUntil;
 }

@@ -3,7 +3,7 @@
  * Uses centralized server/lib/guesty client.
  */
 
-import { guestyClient } from "../lib/guesty";
+import { guestyClient, isGuestyOAuthCoolingDown } from "../lib/guesty";
 import { getPropertiesForSite } from "./properties-store";
 
 type QuoteSource = "live" | "cached" | "base" | "request";
@@ -118,7 +118,11 @@ export async function getQuote(
   );
   const cacheKey = getQuoteCacheKey(listingId, checkIn, checkOut, guests);
 
+  // If Guesty OAuth is rate-limited, skip the live API call entirely — go straight to fallbacks
+  const skipLiveQuote = isGuestyOAuthCoolingDown();
+
   try {
+    if (skipLiveQuote) throw new Error("Guesty OAuth in cooldown — using fallback");
     const quote = await guestyClient.createQuote(listingId, checkIn, checkOut, guests);
     const pricing = quote.pricingCents;
     const fareAccommodation = pricing.baseRentCents / 100;
