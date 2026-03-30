@@ -613,36 +613,32 @@ export default function PropertyDetail() {
             <span className="text-[13px]">{property.locality}, {destObj ? <Link href={`/destinations/${destObj.slug}`} className="text-[#8B7355] hover:text-[#1A1A18] transition-colors">{destName}</Link> : destName}</span>
           </div>
 
-          {/* Key stats bar */}
-          <div className="grid grid-cols-4 gap-0 border-y border-[#E8E4DC] py-4">
-            <div className="flex flex-col items-center text-center">
-              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F5F1EB] mb-2">
-                <BedDouble size={18} className="text-[#8B7355]" />
-              </div>
-              <span className="text-[18px] font-light text-[#1A1A18]" style={{ fontFamily: 'var(--font-display)' }}>{property.bedrooms}</span>
-              <span className="text-[10px] text-[#9E9A90] tracking-[0.05em] uppercase mt-0.5">{t('property.bedrooms')}</span>
-            </div>
-            <div className="flex flex-col items-center text-center border-x border-[#E8E4DC]">
-              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F5F1EB] mb-2">
-                <Bath size={18} className="text-[#8B7355]" />
-              </div>
-              <span className="text-[18px] font-light text-[#1A1A18]" style={{ fontFamily: 'var(--font-display)' }}>{property.bathrooms}</span>
-              <span className="text-[10px] text-[#9E9A90] tracking-[0.05em] uppercase mt-0.5">{t('property.bathrooms')}</span>
-            </div>
-            <div className="flex flex-col items-center text-center border-r border-[#E8E4DC]">
-              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F5F1EB] mb-2">
-                <Users size={18} className="text-[#8B7355]" />
-              </div>
-              <span className="text-[18px] font-light text-[#1A1A18]" style={{ fontFamily: 'var(--font-display)' }}>{property.maxGuests}</span>
-              <span className="text-[10px] text-[#9E9A90] tracking-[0.05em] uppercase mt-0.5">{t('property.guests')}</span>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F5F1EB] mb-2">
-                <Award size={18} className="text-[#8B7355]" />
-              </div>
-              <span className="text-[18px] font-light text-[#1A1A18]" style={{ fontFamily: 'var(--font-display)' }}>{t('property.fiveStar')}</span>
-              <span className="text-[10px] text-[#9E9A90] tracking-[0.05em] uppercase mt-0.5">{t('property.serviceLabel')}</span>
-            </div>
+          {/* Key stats bar — single source of truth for property specs */}
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-[#E8E4DC] py-4 text-[13px] text-[#6B6860]">
+            <span className="flex items-center gap-1.5">
+              <BedDouble size={15} className="text-[#8B7355]" />
+              {property.bedrooms} {t('property.bedrooms')}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Bath size={15} className="text-[#8B7355]" />
+              {property.bathrooms} {t('property.bathrooms')}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Users size={15} className="text-[#8B7355]" />
+              {property.maxGuests} {t('property.guests')}
+            </span>
+            {property.areaSquareFeet && property.areaSquareFeet > 0 && (
+              <span className="flex items-center gap-1.5">
+                <MapPin size={15} className="text-[#8B7355]" />
+                {Math.round(property.areaSquareFeet * 0.0929)} m²
+              </span>
+            )}
+            {(property.checkInTime || property.checkOutTime) && (
+              <span className="flex items-center gap-1.5">
+                <Clock size={15} className="text-[#8B7355]" />
+                {property.checkInTime || '16:00'} / {property.checkOutTime || '11:00'}
+              </span>
+            )}
           </div>
         </div>
 
@@ -652,60 +648,7 @@ export default function PropertyDetail() {
           <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
             {/* Main content — left 2/3 */}
             <div className="order-2 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12 pt-6">
-              {/* NEW SECTION: Property Highlights */}
-              <section>
-                <div className="flex flex-wrap gap-3">
-                  {/* Property Type */}
-                  {property.propertyType && (
-                    <div className="bg-[#FAFAF7] border border-[#E8E4DC] px-4 py-3 rounded-lg">
-                      <span className="text-[11px] font-medium tracking-[0.12em] text-[#9E9A90] uppercase block mb-1">Property</span>
-                      <span className="text-[13px] text-[#1A1A18]">{property.propertyType}</span>
-                    </div>
-                  )}
-
-                  {/* Bedrooms */}
-                  <div className="bg-[#FAFAF7] border border-[#E8E4DC] px-4 py-3 rounded-lg flex items-center gap-2">
-                    <BedDouble size={16} className="text-[#8B7355]" />
-                    <div>
-                      <span className="text-[11px] font-medium tracking-[0.12em] text-[#9E9A90] uppercase block">{property.bedrooms} {property.bedrooms === 1 ? 'Bedroom' : 'Bedrooms'}</span>
-                    </div>
-                  </div>
-
-                  {/* Bathrooms */}
-                  <div className="bg-[#FAFAF7] border border-[#E8E4DC] px-4 py-3 rounded-lg flex items-center gap-2">
-                    <Bath size={16} className="text-[#8B7355]" />
-                    <div>
-                      <span className="text-[11px] font-medium tracking-[0.12em] text-[#9E9A90] uppercase block">{property.bathrooms} {property.bathrooms === 1 ? 'Bathroom' : 'Bathrooms'}</span>
-                    </div>
-                  </div>
-
-                  {/* Max Guests */}
-                  <div className="bg-[#FAFAF7] border border-[#E8E4DC] px-4 py-3 rounded-lg flex items-center gap-2">
-                    <Users size={16} className="text-[#8B7355]" />
-                    <div>
-                      <span className="text-[11px] font-medium tracking-[0.12em] text-[#9E9A90] uppercase block">{property.maxGuests} Guests</span>
-                    </div>
-                  </div>
-
-                  {/* Area (if available) */}
-                  {property.areaSquareFeet && property.areaSquareFeet > 0 && (
-                    <div className="bg-[#FAFAF7] border border-[#E8E4DC] px-4 py-3 rounded-lg">
-                      <span className="text-[11px] font-medium tracking-[0.12em] text-[#9E9A90] uppercase block mb-1">Area</span>
-                      <span className="text-[13px] text-[#1A1A18]">{Math.round(property.areaSquareFeet * 0.0929)} m²</span>
-                    </div>
-                  )}
-
-                  {/* Check-in / Check-out */}
-                  {(property.checkInTime || property.checkOutTime) && (
-                    <div className="bg-[#FAFAF7] border border-[#E8E4DC] px-4 py-3 rounded-lg">
-                      <span className="text-[11px] font-medium tracking-[0.12em] text-[#9E9A90] uppercase block mb-1">Check-in / Out</span>
-                      <span className="text-[13px] text-[#1A1A18]">{property.checkInTime || '16:00'} / {property.checkOutTime || '11:00'}</span>
-                    </div>
-                  )}
-                </div>
-              </section>
-
-              {/* NEW SECTION: Bedrooms & Sleeping Arrangement */}
+              {/* Bedrooms & Sleeping Arrangement */}
               {property.rooms && property.rooms.length > 0 && (
                 <section>
                   <h2 className="headline-sm text-[#1A1A18] mb-6">Bedrooms & Sleeping Arrangements</h2>

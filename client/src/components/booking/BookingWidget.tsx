@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
-import { Calendar, Users, Shield, ChevronDown, ChevronUp, Loader2, Check, ShoppingBag, Minus, Plus } from "lucide-react";
+import { Calendar, Shield, Loader2, Check, ShoppingBag, Minus, Plus } from "lucide-react";
 import AvailabilityCalendar from "./AvailabilityCalendar";
 import type { AvailabilityDay } from "./AvailabilityCalendar";
 import CheckoutPaymentForm from "./CheckoutPaymentForm";
@@ -111,7 +111,6 @@ export default function BookingWidget({
   const [selectedRatePlanId, setSelectedRatePlanId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [priceExpanded, setPriceExpanded] = useState(false);
   const [selectedUpsells, setSelectedUpsells] = useState<Set<string>>(new Set());
 
   const [guestFirstName, setGuestFirstName] = useState("");
