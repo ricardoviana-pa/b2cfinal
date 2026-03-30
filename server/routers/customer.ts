@@ -145,6 +145,23 @@ export const customerRouter = router({
     }),
 
   /* ================================================================
+     RETURNING GUEST PROGRAMME — Preferences
+     ================================================================ */
+
+  getPreferences: protectedProcedure.query(async ({ ctx }) => {
+    const profile = await db.getCustomerProfile(ctx.user.id);
+    if (!profile?.preferences) return {};
+    try { return JSON.parse(profile.preferences as string); } catch { return {}; }
+  }),
+
+  updatePreferences: protectedProcedure
+    .input(z.object({ preferences: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await db.updateCustomerProfile(ctx.user.id, { preferences: input.preferences } as any);
+      return { success: true };
+    }),
+
+  /* ================================================================
      ADMIN
      ================================================================ */
   adminListCustomers: adminProcedure.query(() => db.listAllCustomers()),

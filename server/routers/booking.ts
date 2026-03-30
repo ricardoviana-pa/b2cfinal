@@ -57,15 +57,8 @@ async function recordTripForUser(ctx: any, params: {
       pointsEarned: nights * 100,
     });
 
-    // Award loyalty points (100 per night)
-    const pointsToAward = nights * 100;
-    await db.addPoints(
-      user.id,
-      pointsToAward,
-      "booking",
-      `Booking: ${params.propertyName} (${nights} nights)`,
-      params.guestyReservationId
-    );
+    // Points system removed, replaced by Returning Guest Programme
+    const pointsToAward = 0;
 
     // Update profile stay counters
     const profile = await db.getCustomerProfile(user.id);
