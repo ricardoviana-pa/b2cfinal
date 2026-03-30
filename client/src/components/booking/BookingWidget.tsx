@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
-import { Calendar, Shield, Loader2, Check, ShoppingBag, Minus, Plus } from "lucide-react";
+import { Calendar, Shield, Loader2, Check, ShoppingBag, Minus, Plus, UtensilsCrossed, Sparkles, Dumbbell, ShoppingCart, Baby, Car, SprayCanIcon, ChevronDown } from "lucide-react";
 import AvailabilityCalendar from "./AvailabilityCalendar";
 import type { AvailabilityDay } from "./AvailabilityCalendar";
 import CheckoutPaymentForm from "./CheckoutPaymentForm";
@@ -120,7 +120,92 @@ function formatDateDisplay(dateStr: string, locale: string = "en-US", includeYea
 
 const UPSELL_ITEMS = (productsData as any[])
   .filter(p => p.type === "service" && p.isActive)
-  .slice(0, 3);
+  .sort((a: any, b: any) => (a.sortOrder || 0) - (b.sortOrder || 0));
+
+/** Map slug to Lucide icon */
+const SERVICE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  "private-chef": UtensilsCrossed,
+  "in-villa-spa": Sparkles,
+  "private-yoga": Sparkles,
+  "personal-training": Dumbbell,
+  "grocery-delivery": ShoppingCart,
+  "babysitter": Baby,
+  "airport-shuttle": Car,
+  "daily-housekeeping": SprayCanIcon,
+};
+
+function EnhanceYourStay({
+  items, selectedUpsells, setSelectedUpsells, t,
+}: {
+  items: any[];
+  selectedUpsells: Set<string>;
+  setSelectedUpsells: React.Dispatch<React.SetStateAction<Set<string>>>;
+  t: (key: string, fallback?: string | Record<string, unknown>) => string;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const visible = expanded ? items : items.slice(0, 4);
+
+  return (
+    <div className="space-y-2">
+      <p className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#9E9A90] flex items-center gap-1.5">
+        <ShoppingBag className="w-3 h-3" /> {t("bookingWidget.enhanceStay", "Enhance your stay")}
+      </p>
+
+      <div className="grid grid-cols-2 gap-2">
+        {visible.map((item: any) => {
+          const selected = selectedUpsells.has(item.id);
+          const Icon = SERVICE_ICONS[item.slug] || ShoppingBag;
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => {
+                setSelectedUpsells(prev => {
+                  const next = new Set(prev);
+                  next.has(item.id) ? next.delete(item.id) : next.add(item.id);
+                  return next;
+                });
+              }}
+              className={cn(
+                "relative flex flex-col items-start p-3 rounded-lg border text-left transition-all group",
+                selected
+                  ? "border-[#8B7355] bg-[#FAFAF7] ring-1 ring-[#8B7355]/30"
+                  : "border-[#E8E4DC] hover:border-[#8B7355]/40"
+              )}
+            >
+              {selected && (
+                <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-[#8B7355] flex items-center justify-center">
+                  <Check className="w-2.5 h-2.5 text-white" />
+                </div>
+              )}
+              <Icon className={cn("w-4 h-4 mb-1.5", selected ? "text-[#8B7355]" : "text-[#9E9A90]")} />
+              <p className="text-[12px] text-[#1A1A18] font-medium leading-tight">{item.name}</p>
+              <p className="text-[10px] text-[#8B7355] mt-1 tabular-nums">
+                {t("bookingWidget.fromPrice", "from")} {formatEur(item.priceFrom)}
+                <span className="text-[#9E9A90] font-normal"> / {item.priceSuffix}</span>
+              </p>
+            </button>
+          );
+        })}
+      </div>
+
+      {items.length > 4 && !expanded && (
+        <button
+          type="button"
+          onClick={() => setExpanded(true)}
+          className="w-full flex items-center justify-center gap-1 text-[11px] text-[#8B7355] font-medium tracking-[0.04em] py-1.5 hover:underline"
+        >
+          {t("bookingWidget.showAllServices", "Show all services")} ({items.length})
+          <ChevronDown className="w-3 h-3" />
+        </button>
+      )}
+
+      <p className="text-[10px] text-[#9E9A90] leading-relaxed">
+        {t("bookingWidget.servicesNote", "Services confirmed separately by our concierge after booking. No charge now.")}
+      </p>
+    </div>
+  );
+}
 
 export default function BookingWidget({
   guestyId,
@@ -753,47 +838,14 @@ export default function BookingWidget({
               </div>
             )}
 
-            {/* ── Upsell Add-ons ── */}
+            {/* ── Enhance Your Stay — Full Service Grid ── */}
             {UPSELL_ITEMS.length > 0 && (
-              <div className="space-y-2">
-                <p className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#9E9A90] flex items-center gap-1">
-                  <ShoppingBag className="w-3 h-3" /> {t("bookingWidget.enhanceStay")}
-                </p>
-                {UPSELL_ITEMS.map((item: any) => (
-                  <label
-                    key={item.id}
-                    className={cn(
-                      "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all",
-                      selectedUpsells.has(item.id)
-                        ? "border-[#8B7355] bg-[#FAFAF7]"
-                        : "border-[#E8E4DC] hover:border-[#8B7355]/30"
-                    )}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedUpsells.has(item.id)}
-                      onChange={() => {
-                        setSelectedUpsells(prev => {
-                          const next = new Set(prev);
-                          next.has(item.id) ? next.delete(item.id) : next.add(item.id);
-                          return next;
-                        });
-                      }}
-                      className="accent-[#8B7355] w-4 h-4 rounded"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[13px] text-[#1A1A18]">{item.name}</p>
-                      <p className="text-[11px] text-[#9E9A90] truncate">{item.tagline}</p>
-                    </div>
-                    <span className="text-[12px] text-[#8B7355] font-medium whitespace-nowrap tabular-nums">
-                      {item.priceFrom ? `+${formatEur(item.priceFrom)}` : t("bookingWidget.free")}
-                    </span>
-                  </label>
-                ))}
-                <p className="text-[11px] text-[#9E9A90] italic leading-relaxed">
-                  {t("bookingWidget.servicesNote", "Services confirmed separately by our concierge after booking.")}
-                </p>
-              </div>
+              <EnhanceYourStay
+                items={UPSELL_ITEMS}
+                selectedUpsells={selectedUpsells}
+                setSelectedUpsells={setSelectedUpsells}
+                t={t}
+              />
             )}
 
             {/* ── CTA Section ── */}
