@@ -617,19 +617,21 @@ export default function BookingWidget({
                 }}
               />
             ) : (
-              /* Fallback: HTML5 date inputs when calendar data unavailable */
-              <div className="border border-[#E8E4DC] rounded-lg p-3 space-y-3">
-                <div>
-                  <label className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#1A1A18] mb-0.5 block">{t("bookingWidget.checkInLabel")}</label>
-                  <input type="date" value={checkIn} min={today}
-                    onChange={(e) => { setCheckIn(e.target.value); setQuote(null); setError(""); setBeQuoteError(""); setStep("dates"); }}
-                    className="w-full bg-transparent text-[14px] text-[#1A1A18] border border-[#E8E4DC] rounded-md px-3 py-2 focus:outline-none focus:border-[#8B7355]" />
-                </div>
-                <div>
-                  <label className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#1A1A18] mb-0.5 block">{t("bookingWidget.checkOutLabel")}</label>
-                  <input type="date" value={checkOut} min={minCheckOut}
-                    onChange={(e) => { setCheckOut(e.target.value); setQuote(null); setError(""); setBeQuoteError(""); setStep("dates"); }}
-                    className="w-full bg-transparent text-[14px] text-[#1A1A18] border border-[#E8E4DC] rounded-md px-3 py-2 focus:outline-none focus:border-[#8B7355]" />
+              /* Fallback: simple date inputs styled as full-width clickable boxes */
+              <div className="border border-[#E8E4DC] rounded-lg overflow-hidden">
+                <div className="grid grid-cols-2 divide-x divide-[#E8E4DC]">
+                  <div className="p-3 cursor-pointer hover:bg-[#F5F1EB] transition-colors relative">
+                    <label className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#1A1A18] mb-0.5 block">{t("bookingWidget.checkInLabel")}</label>
+                    <input type="date" value={checkIn} min={today}
+                      onChange={(e) => { setCheckIn(e.target.value); setQuote(null); setError(""); setBeQuoteError(""); setStep("dates"); }}
+                      className="w-full bg-transparent text-[14px] text-[#1A1A18] focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full" />
+                  </div>
+                  <div className="p-3 cursor-pointer hover:bg-[#F5F1EB] transition-colors relative">
+                    <label className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#1A1A18] mb-0.5 block">{t("bookingWidget.checkOutLabel")}</label>
+                    <input type="date" value={checkOut} min={minCheckOut}
+                      onChange={(e) => { setCheckOut(e.target.value); setQuote(null); setError(""); setBeQuoteError(""); setStep("dates"); }}
+                      className="w-full bg-transparent text-[14px] text-[#1A1A18] focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full" />
+                  </div>
                 </div>
               </div>
             )}
