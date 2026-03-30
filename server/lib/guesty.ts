@@ -312,11 +312,15 @@ async function fetchOAuthToken(): Promise<string> {
 
     if (response.status === 429) {
       guestyAuthConsecutive429s += 1;
-      // Exponential backoff: 60s → 120s → 240s → 480s (max 10 min)
-      const backoffMs = Math.min(60_000 * Math.pow(2, guestyAuthConsecutive429s - 1), 600_000);
-      const retryMs = capOAuthCooldownMs(parseRetryAfterMs(response.headers, backoffMs), Math.max(backoffMs, MAX_GUESTY_OAUTH_COOLDOWN_MS));
+      // Capped exponential backoff: 30s → 60s → max 60s (never block longer than MAX_GUESTY_OAUTH_COOLDOWN_MS)
+      // The BE API handles pricing while Open API recovers, so long self-blocks are unnecessary.
+      const retryAfterFromHeader = parseRetryAfterMs(response.headers, 0);
+      const backoffMs = Math.min(30_000 * Math.pow(2, Math.min(guestyAuthConsecutive429s - 1, 1)), MAX_GUESTY_OAUTH_COOLDOWN_MS);
+      const retryMs = retryAfterFromHeader > 0
+        ? Math.min(retryAfterFromHeader, MAX_GUESTY_OAUTH_COOLDOWN_MS)
+        : backoffMs;
       guestyAuthCooldownUntil = Date.now() + retryMs;
-      console.warn(`[Guesty] OAuth 429 #${guestyAuthConsecutive429s} — cooldown ${Math.round(retryMs / 1000)}s (until ${new Date(guestyAuthCooldownUntil).toISOString()})`);
+      console.warn(`[Guesty] OAuth 429 #${guestyAuthConsecutive429s} — cooldown ${Math.round(retryMs / 1000)}s (until ${new Date(guestyAuthCooldownUntil).toISOString()}). BE API will handle pricing.`);
       // Do NOT retry — every 429 response counts against the rate limit window.
       throw new GuestyClientError({
         message: "Guesty authentication temporarily cooled down after rate limiting",

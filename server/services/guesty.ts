@@ -1,9 +1,12 @@
 /**
  * GUESTY API SERVICE
  * Uses centralized server/lib/guesty client.
+ * When Open API OAuth is rate-limited, falls through to Booking Engine API
+ * (which uses separate credentials and is typically not rate-limited).
  */
 
-import { guestyClient, isGuestyOAuthCoolingDown } from "../lib/guesty";
+import { guestyClient, isGuestyOAuthCoolingDown, resetGuestyRateLimitCooldowns } from "../lib/guesty";
+import { isBEApiConfigured, createBEQuote } from "./guesty-booking";
 import { getPropertiesForSite } from "./properties-store";
 
 type QuoteSource = "live" | "cached" | "base" | "request";
@@ -118,146 +121,172 @@ export async function getQuote(
   );
   const cacheKey = getQuoteCacheKey(listingId, checkIn, checkOut, guests);
 
-  // If Guesty OAuth is rate-limited, skip the live API call entirely — go straight to fallbacks
-  const skipLiveQuote = isGuestyOAuthCoolingDown();
+  // If Guesty OAuth is rate-limited, skip the live API call — try BE API first (separate credentials)
+  const openApiCoolingDown = isGuestyOAuthCoolingDown();
 
-  try {
-    if (skipLiveQuote) throw new Error("Guesty OAuth in cooldown — using fallback");
-    const quote = await guestyClient.createQuote(listingId, checkIn, checkOut, guests);
-    const pricing = quote.pricingCents;
-    const fareAccommodation = pricing.baseRentCents / 100;
-    const fareCleaning = pricing.cleaningFeeCents / 100;
-    const hostPayout = pricing.totalAfterTaxCents / 100;
+  // ── TIER 1: Open API live quote (fastest, most accurate) ──
+  if (!openApiCoolingDown) {
+    try {
+      const quote = await guestyClient.createQuote(listingId, checkIn, checkOut, guests);
+      const pricing = quote.pricingCents;
+      const fareAccommodation = pricing.baseRentCents / 100;
+      const fareCleaning = pricing.cleaningFeeCents / 100;
+      const hostPayout = pricing.totalAfterTaxCents / 100;
 
-    const result: QuoteResult = {
-      available: true,
-      listingId,
-      checkIn,
-      checkOut,
-      nights,
-      currency: pricing.currency || "EUR",
-      pricing: {
-        nightlyRate: nights > 0 ? Math.round(fareAccommodation / nights) : 0,
-        totalNights: fareAccommodation,
-        cleaningFee: fareCleaning,
-        subtotal: fareAccommodation + fareCleaning,
-        total: hostPayout,
-      },
-      source: "live",
-    };
-    setCachedQuote(cacheKey, result);
-    return result;
-  } catch (err: any) {
-    console.error(`[getQuote] createQuote FAILED for listing=${listingId} ${checkIn}→${checkOut}:`, err?.message || err, err?.status || '', err?.response?.status || '');
-    const cached = getCachedQuote(cacheKey);
-    if (cached) {
-      // Preserve original source so frontend can distinguish cached-live from cached-base
-      const wasLive = cached.source === "live" || cached.source === "cached";
-      return {
-        ...cached,
-        source: wasLive ? "cached" : "base",
-        fallbackMessage: wasLive
-          ? "Live pricing is temporarily unavailable. Showing the most recent cached price."
-          : "Estimated price based on property's base rate.",
+      const result: QuoteResult = {
+        available: true,
+        listingId,
+        checkIn,
+        checkOut,
+        nights,
+        currency: pricing.currency || "EUR",
+        pricing: {
+          nightlyRate: nights > 0 ? Math.round(fareAccommodation / nights) : 0,
+          totalNights: fareAccommodation,
+          cleaningFee: fareCleaning,
+          subtotal: fareAccommodation + fareCleaning,
+          total: hostPayout,
+        },
+        source: "live",
       };
+      setCachedQuote(cacheKey, result);
+      console.info(`[getQuote] ✓ LIVE quote for ${listingId}: €${hostPayout} (${nights}n)`);
+      return result;
+    } catch (err: any) {
+      console.warn(`[getQuote] Open API FAILED for ${listingId} ${checkIn}→${checkOut}: ${err?.message || err}`);
     }
+  } else {
+    console.info(`[getQuote] Open API in cooldown — skipping for ${listingId}, trying BE API`);
+  }
 
-    // Before falling back to base pricing, check calendar availability.
-    // Only mark as unavailable when we have DEFINITIVE proof (booked days in range).
-    // If calendar check fails or is ambiguous, default to showing base price (available: true).
-    let calendarHasBookedDays = false;
+  // ── Check server-side cache before making more API calls ──
+  const cached = getCachedQuote(cacheKey);
+  if (cached && cached.source === "live") {
+    console.info(`[getQuote] ✓ CACHED live quote for ${listingId}: €${cached.pricing.total}`);
+    return {
+      ...cached,
+      source: "cached" as QuoteSource,
+      fallbackMessage: "Live pricing is temporarily unavailable. Showing the most recent cached price.",
+    };
+  }
+
+  // ── TIER 2: Booking Engine API (separate OAuth credentials, typically not rate-limited) ──
+  if (isBEApiConfigured()) {
     try {
-      const calendar = await Promise.race([
-        guestyClient.getListingCalendar(listingId, checkIn, checkOut),
-        new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error("calendar_timeout")), 5_000);
-        }),
+      const beQuote = await Promise.race([
+        createBEQuote({ listingId, checkIn, checkOut, guests }),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error("be_quote_timeout")), 12_000)),
       ]);
-      const days = calendar?.data?.days || calendar?.days || (Array.isArray(calendar) ? calendar : []);
-      // Only count as unavailable if there are explicitly "booked" or "blocked" days
-      // Don't count "unavailable" alone — it may just mean today/past date
-      if (days.length > 0) {
-        calendarHasBookedDays = days.some((d: any) =>
-          d.status === "booked" || d.status === "blocked" || d.status === "maintenance"
-        );
-      }
-    } catch {
-      // Calendar check failed — assume available, show base price
-      calendarHasBookedDays = false;
-    }
-
-    // Only if we found explicitly booked/blocked days, return unavailable
-    if (calendarHasBookedDays) {
-      return buildPriceOnRequestResult(listingId, checkIn, checkOut, guests);
-    }
-
-    try {
-      const listing = await Promise.race([
-        guestyClient.getListing(listingId, "prices"),
-        new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error("listing_fetch_timeout")), 6_000);
-        }),
-      ]);
-      const basePrice = Number(listing?.prices?.basePrice || 0);
-      const cleaningFee = Number(listing?.prices?.cleaningFee || 0);
-      if (basePrice > 0 && nights > 0) {
-        const baseResult: QuoteResult = {
+      if (beQuote && beQuote.total > 0) {
+        const result: QuoteResult = {
           available: true,
           listingId,
           checkIn,
           checkOut,
           nights,
-          currency: listing?.prices?.currency || "EUR",
+          currency: beQuote.currency || "EUR",
           pricing: {
-            nightlyRate: basePrice,
-            totalNights: basePrice * nights,
-            cleaningFee,
-            subtotal: basePrice * nights + cleaningFee,
-            total: basePrice * nights + cleaningFee,
+            nightlyRate: beQuote.pricing.nightlyRate,
+            totalNights: beQuote.pricing.totalNights,
+            cleaningFee: beQuote.pricing.cleaningFee,
+            subtotal: beQuote.pricing.totalNights + beQuote.pricing.cleaningFee,
+            total: beQuote.total,
           },
-          source: "base",
-          fallbackMessage: "Live pricing is temporarily unavailable. Showing an estimated base rate.",
+          source: "live",
         };
-        setCachedQuote(cacheKey, baseResult);
-        return baseResult;
+        setCachedQuote(cacheKey, result);
+        console.info(`[getQuote] ✓ BE API quote for ${listingId}: €${beQuote.total} (${nights}n)`);
+        return result;
       }
-    } catch {
-      /* ignore — getListing also failed */
+    } catch (beErr: any) {
+      console.warn(`[getQuote] BE API FAILED for ${listingId}: ${beErr?.message || beErr}`);
     }
+  }
 
-    // 3rd fallback: use priceFrom from our synced property data (survives Guesty 404s)
-    try {
-      const allProps = await getPropertiesForSite();
-      const prop = allProps.find((p: any) => p.guestyId === listingId);
-      const syncedPrice = Number(prop?.pricePerNight || prop?.priceFrom || 0);
-      const syncedCleaning = Number(prop?.cleaningFee || 0);
-      if (syncedPrice > 0 && nights > 0) {
-        const syncResult: QuoteResult = {
-          available: true,
-          listingId,
-          checkIn,
-          checkOut,
-          nights,
-          currency: prop?.currency || "EUR",
-          pricing: {
-            nightlyRate: syncedPrice,
-            totalNights: syncedPrice * nights,
-            cleaningFee: syncedCleaning,
-            subtotal: syncedPrice * nights + syncedCleaning,
-            total: syncedPrice * nights + syncedCleaning,
-          },
-          source: "base",
-          fallbackMessage: "Estimated price based on property's base rate.",
-        };
-        setCachedQuote(cacheKey, syncResult);
-        return syncResult;
-      }
-    } catch {
-      /* ignore */
+  // ── Return cached base quote if we have one ──
+  if (cached) {
+    console.info(`[getQuote] ✓ CACHED base quote for ${listingId}: €${cached.pricing.total}`);
+    return {
+      ...cached,
+      source: (cached.source === "live" || cached.source === "cached" ? "cached" : "base") as QuoteSource,
+      fallbackMessage: "Estimated price based on property's base rate.",
+    };
+  }
+
+  // ── TIER 3: Calendar check for definitive unavailability ──
+  let calendarHasBookedDays = false;
+  try {
+    const calendar = await Promise.race([
+      guestyClient.getListingCalendar(listingId, checkIn, checkOut),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("calendar_timeout")), 5_000)),
+    ]);
+    const days = calendar?.data?.days || calendar?.days || (Array.isArray(calendar) ? calendar : []);
+    if (days.length > 0) {
+      calendarHasBookedDays = days.some((d: any) =>
+        d.status === "booked" || d.status === "blocked" || d.status === "maintenance"
+      );
     }
-
+  } catch {
+    calendarHasBookedDays = false;
+  }
+  if (calendarHasBookedDays) {
     return buildPriceOnRequestResult(listingId, checkIn, checkOut, guests);
   }
+
+  // ── TIER 4: Listing base price from Open API ──
+  try {
+    const listing = await Promise.race([
+      guestyClient.getListing(listingId, "prices"),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("listing_fetch_timeout")), 6_000)),
+    ]);
+    const basePrice = Number(listing?.prices?.basePrice || 0);
+    const cleaningFee = Number(listing?.prices?.cleaningFee || 0);
+    if (basePrice > 0 && nights > 0) {
+      const baseResult: QuoteResult = {
+        available: true, listingId, checkIn, checkOut, nights,
+        currency: listing?.prices?.currency || "EUR",
+        pricing: {
+          nightlyRate: basePrice,
+          totalNights: basePrice * nights,
+          cleaningFee,
+          subtotal: basePrice * nights + cleaningFee,
+          total: basePrice * nights + cleaningFee,
+        },
+        source: "base",
+        fallbackMessage: "Live pricing is temporarily unavailable. Showing an estimated base rate.",
+      };
+      setCachedQuote(cacheKey, baseResult);
+      console.info(`[getQuote] ✓ BASE price for ${listingId}: €${baseResult.pricing.total}/night`);
+      return baseResult;
+    }
+  } catch { /* ignore */ }
+
+  // ── TIER 5: Synced property catalogue data ──
+  try {
+    const allProps = await getPropertiesForSite();
+    const prop = allProps.find((p: any) => p.guestyId === listingId);
+    const syncedPrice = Number(prop?.pricePerNight || prop?.priceFrom || 0);
+    const syncedCleaning = Number(prop?.cleaningFee || 0);
+    if (syncedPrice > 0 && nights > 0) {
+      const syncResult: QuoteResult = {
+        available: true, listingId, checkIn, checkOut, nights,
+        currency: prop?.currency || "EUR",
+        pricing: {
+          nightlyRate: syncedPrice,
+          totalNights: syncedPrice * nights,
+          cleaningFee: syncedCleaning,
+          subtotal: syncedPrice * nights + syncedCleaning,
+          total: syncedPrice * nights + syncedCleaning,
+        },
+        source: "base",
+        fallbackMessage: "Estimated price based on property's base rate.",
+      };
+      setCachedQuote(cacheKey, syncResult);
+      return syncResult;
+    }
+  } catch { /* ignore */ }
+
+  return buildPriceOnRequestResult(listingId, checkIn, checkOut, guests);
 }
 
 /** Used when live quote + fallbacks cannot complete in time (PLP batch safety). */
