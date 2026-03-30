@@ -50,6 +50,7 @@ interface QuoteData {
   ratePlanOptions?: RatePlanOption[];
   priceOnRequest?: boolean;
   fallbackMessage?: string;
+  source?: "live" | "cached" | "base" | "request";
 }
 
 type Step = "dates" | "quote" | "details" | "payment" | "success";
@@ -345,6 +346,8 @@ export default function BookingWidget({
         cleaningFee: cleaning,
         total: effectiveTotal,
         nights: d.nights,
+        source: (d as any).source || "live",
+        fallbackMessage: (d as any).fallbackMessage,
       };
 
       setQuote(quoteData);
@@ -523,15 +526,20 @@ export default function BookingWidget({
           <>
             <div className="flex items-baseline gap-1">
               <span className="text-[28px] text-[#1A1A18]" style={{ fontFamily: "var(--font-display)" }}>
-                {formatEur(effectiveQuote.total)}
+                {quote?.source && quote.source !== "live" ? `~${formatEur(effectiveQuote.total)}` : formatEur(effectiveQuote.total)}
               </span>
               <span className="text-[14px] text-[#9E9A90]">{t("property.totalLabel")}</span>
             </div>
             <p className="text-[13px] text-[#6B6860] mt-0.5">
-              {t("bookingWidget.nightsLine", {
-                count: effectiveQuote.nights,
-                rate: formatEur(effectiveQuote.nightlyRate),
-              })}
+              {quote?.source && quote.source !== "live"
+                ? t("bookingWidget.estimatedNightsLine", "~{{rate}} per night · {{count}} nights", {
+                    count: effectiveQuote.nights,
+                    rate: formatEur(effectiveQuote.nightlyRate),
+                  })
+                : t("bookingWidget.nightsLine", {
+                    count: effectiveQuote.nights,
+                    rate: formatEur(effectiveQuote.nightlyRate),
+                  })}
             </p>
           </>
         ) : loading && checkIn && checkOut ? (
@@ -779,6 +787,15 @@ export default function BookingWidget({
         {/* Step: QUOTE — price breakdown + booking */}
         {step === "quote" && effectiveQuote && !quote?.priceOnRequest && (
           <>
+            {/* ── Estimate notice when price is not live ── */}
+            {quote?.source && quote.source !== "live" && (
+              <div className="bg-[#FDF8F0] rounded-lg border border-[#E8D9C0] px-4 py-3 mb-1">
+                <p className="text-[12px] text-[#8B7355] font-medium">
+                  {t("bookingWidget.estimatedNotice", "Estimated price — final price confirmed upon booking")}
+                </p>
+              </div>
+            )}
+
             {/* ── Price Breakdown Card (always expanded) ── */}
             <div className="bg-[#FAFAF7] rounded-lg border border-[#E8E4DC] overflow-hidden">
               <div className="p-5 space-y-3">
@@ -801,9 +818,11 @@ export default function BookingWidget({
                 {/* Divider + Total */}
                 <div className="border-t border-[#E8E4DC] pt-3 flex justify-between items-baseline">
                   <span className="text-[15px] font-medium text-[#1A1A18]">{t("property.total")}</span>
-                  <span className="text-[22px] font-medium text-[#1A1A18] tabular-nums" style={{ fontFamily: "var(--font-display)" }}>
-                    {formatEur(effectiveQuote.total)}
-                  </span>
+                  <div className="text-right">
+                    <span className="text-[22px] font-medium text-[#1A1A18] tabular-nums" style={{ fontFamily: "var(--font-display)" }}>
+                      {quote?.source && quote.source !== "live" ? `~${formatEur(effectiveQuote.total)}` : formatEur(effectiveQuote.total)}
+                    </span>
+                  </div>
                 </div>
                 {selectedUpsells.size > 0 && (
                   <p className="text-[11px] text-[#8B7355] pt-1">
