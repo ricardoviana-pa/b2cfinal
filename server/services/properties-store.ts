@@ -61,15 +61,16 @@ export async function getPropertiesForSite(): Promise<any[]> {
 /** Filter out test listings and properties below minimum price threshold */
 function filterPublicProperties(properties: any[]): any[] {
   return properties.filter(p => {
-    // Exclude properties with 'test' in title (case-insensitive)
-    if (p.title && /test/i.test(p.title)) {
-      console.debug(`[Properties] Filtered out test listing: ${p.title}`);
+    // Exclude properties with 'test' in title/name (case-insensitive)
+    const propName = p.title || p.name || '';
+    if (/test/i.test(propName)) {
+      console.debug(`[Properties] Filtered out test listing: ${propName}`);
       return false;
     }
     // Exclude properties with base price below €20/night
-    const basePrice = p.basePrice || p.pricePerNight || 0;
-    if (basePrice < 20) {
-      console.debug(`[Properties] Filtered out low-price listing: ${p.title} (€${basePrice}/night)`);
+    const basePrice = p.basePrice || p.pricePerNight || p.priceFrom || 0;
+    if (basePrice > 0 && basePrice < 20) {
+      console.debug(`[Properties] Filtered out low-price listing: ${propName} (€${basePrice}/night)`);
       return false;
     }
     return true;
