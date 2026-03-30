@@ -78,6 +78,36 @@ async function recordTripForUser(ctx: any, params: {
 }
 
 export const bookingRouter = router({
+  /** Day-by-day calendar availability for the PDP date picker */
+  getCalendar: publicProcedure
+    .input(
+      z.object({
+        listingId: z.string().min(1),
+        from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      })
+    )
+    .query(async ({ input }) => {
+      try {
+        const { guestyClient } = await import("../lib/guesty");
+        const calendar = await guestyClient.getListingCalendar(
+          input.listingId,
+          input.from,
+          input.to
+        );
+        const days = (calendar.data?.days || []).map((d: any) => ({
+          date: d.date,
+          status: d.status || "unavailable",
+          minNights: d.minNights ?? undefined,
+          price: d.price ?? d.basePrice ?? undefined,
+        }));
+        return { days };
+      } catch (error: any) {
+        console.error(`[Booking] getCalendar FAILED: ${error.message}`);
+        return { days: [] };
+      }
+    }),
+
   checkAvailability: publicProcedure
     .input(
       z.object({

@@ -4,6 +4,8 @@ import i18n from "@/i18n";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import { Calendar, Users, Shield, ChevronDown, ChevronUp, Loader2, Check, ShoppingBag, Minus, Plus } from "lucide-react";
+import AvailabilityCalendar from "./AvailabilityCalendar";
+import type { AvailabilityDay } from "./AvailabilityCalendar";
 import CheckoutPaymentForm from "./CheckoutPaymentForm";
 import PhoneInput from "./PhoneInput";
 import productsData from "@/data/products.json";
@@ -125,8 +127,10 @@ export default function BookingWidget({
   /** Avoids unstable `fetchQuote` when `quote` updates (prevents auto-quote useEffect loops). */
   const quoteRef = useRef<QuoteData | null>(null);
 
-  const checkInRef = useRef<HTMLInputElement>(null);
-  const checkOutRef = useRef<HTMLInputElement>(null);
+  const [calendarDays, setCalendarDays] = useState<AvailabilityDay[]>([]);
+  const [calendarLoading, setCalendarLoading] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
+
   const widgetRef = useRef<HTMLDivElement>(null);
 
   const today = new Date().toISOString().split("T")[0];
@@ -282,6 +286,26 @@ export default function BookingWidget({
     return () => clearTimeout(timer);
   }, [checkIn, checkOut, guests, nights, minNights, step]);
 
+  // Fetch calendar availability on mount (and when guestyId changes)
+  useEffect(() => {
+    let cancelled = false;
+    setCalendarLoading(true);
+    const from = today;
+    // Fetch 6 months of calendar data
+    const toDate = new Date();
+    toDate.setMonth(toDate.getMonth() + 6);
+    const to = toDate.toISOString().split("T")[0];
+    utils.booking.getCalendar.fetch({ listingId: guestyId, from, to })
+      .then((res) => {
+        if (!cancelled && res?.days) {
+          setCalendarDays(res.days);
+        }
+      })
+      .catch(() => { /* calendar fetch failed — fallback to basic inputs */ })
+      .finally(() => { if (!cancelled) setCalendarLoading(false); });
+    return () => { cancelled = true; };
+  }, [guestyId, today, utils.booking.getCalendar]);
+
   // Scroll widget into view when advancing to a new step so content is visible
   useEffect(() => {
     if (step === "dates") return;
@@ -424,52 +448,82 @@ export default function BookingWidget({
         )}
       </div>
 
-      {/* Date selection ÃÂ¢ÃÂÃÂ Airbnb style stacked inputs */}
-      <div className="mx-4 border border-[#1A1A18] rounded-lg overflow-hidden">
-        <div className="grid grid-cols-2 divide-x divide-[#1A1A18]">
-          <div
-            className="p-3 cursor-pointer hover:bg-[#F5F1EB] transition-colors"
-            onClick={() => checkInRef.current?.showPicker?.()}
-          >
-            <p className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#1A1A18] mb-0.5">{t("bookingWidget.checkInLabel")}</p>
-            <input
-              ref={checkInRef}
-              type="date"
-              value={checkIn}
-              min={today}
-              onChange={(e) => {
-                setCheckIn(e.target.value);
-                setQuote(null);
-                setError("");
-                setBeQuoteError("");
-                setStep("dates");
-                setTimeout(() => checkOutRef.current?.showPicker?.(), 50);
-              }}
-              className="w-full bg-transparent text-[14px] text-[#1A1A18] focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute"
-            />
-          </div>
-          <div
-            className="p-3 cursor-pointer hover:bg-[#F5F1EB] transition-colors"
-            onClick={() => checkOutRef.current?.showPicker?.()}
-          >
-            <p className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#1A1A18] mb-0.5">{t("bookingWidget.checkOutLabel")}</p>
-            <input
-              ref={checkOutRef}
-              type="date"
-              value={checkOut}
-              min={minCheckOut}
-              onChange={(e) => {
-                setCheckOut(e.target.value);
-                setQuote(null);
-                setError("");
-                setBeQuoteError("");
-                setStep("dates");
-              }}
-              className="w-full bg-transparent text-[14px] text-[#1A1A18] focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute"
-            />
+      {/* Date selection — Airbnb-style with availability calendar */}
+      <div className="mx-4">
+        {/* Date display / toggle */}
+        <div
+          className="border border-[#1A1A18] rounded-lg overflow-hidden cursor-pointer"
+          onClick={() => setShowCalendar(!showCalendar)}
+        >
+          <div className="grid grid-cols-2 divide-x divide-[#1A1A18]">
+            <div className="p-3 hover:bg-[#F5F1EB] transition-colors">
+              <p className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#1A1A18] mb-0.5">{t("bookingWidget.checkInLabel")}</p>
+              <p className="text-[14px] text-[#1A1A18]">
+                {checkIn ? new Date(checkIn + "T12:00:00").toLocaleDateString("pt-PT", { day: "numeric", month: "short" }) : t("bookingWidget.selectDate", "Select")}
+              </p>
+            </div>
+            <div className="p-3 hover:bg-[#F5F1EB] transition-colors">
+              <p className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#1A1A18] mb-0.5">{t("bookingWidget.checkOutLabel")}</p>
+              <p className="text-[14px] text-[#1A1A18]">
+                {checkOut ? new Date(checkOut + "T12:00:00").toLocaleDateString("pt-PT", { day: "numeric", month: "short" }) : t("bookingWidget.selectDate", "Select")}
+              </p>
+            </div>
           </div>
         </div>
-        <div className="border-t border-[#1A1A18] p-3">
+
+        {/* Availability Calendar dropdown */}
+        {showCalendar && (
+          <div className="mt-2">
+            {calendarLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-5 h-5 animate-spin text-[#8B7355]" />
+                <span className="ml-2 text-[12px] text-[#9E9A90]">{t("bookingWidget.loadingCalendar", "Loading availability...")}</span>
+              </div>
+            ) : calendarDays.length > 0 ? (
+              <AvailabilityCalendar
+                days={calendarDays}
+                checkIn={checkIn}
+                checkOut={checkOut}
+                onSelectRange={({ checkIn: ci, checkOut: co }) => {
+                  setCheckIn(ci);
+                  setCheckOut(co);
+                  setQuote(null);
+                  setError("");
+                  setBeQuoteError("");
+                  setStep("dates");
+                  if (ci && co) setShowCalendar(false);
+                }}
+              />
+            ) : (
+              /* Fallback: HTML5 date inputs when calendar data unavailable */
+              <div className="border border-[#E8E4DC] rounded-lg p-3 space-y-3">
+                <div>
+                  <label className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#1A1A18] mb-0.5 block">{t("bookingWidget.checkInLabel")}</label>
+                  <input type="date" value={checkIn} min={today}
+                    onChange={(e) => { setCheckIn(e.target.value); setQuote(null); setError(""); setBeQuoteError(""); setStep("dates"); }}
+                    className="w-full bg-transparent text-[14px] text-[#1A1A18] border border-[#E8E4DC] rounded-md px-3 py-2 focus:outline-none focus:border-[#8B7355]" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#1A1A18] mb-0.5 block">{t("bookingWidget.checkOutLabel")}</label>
+                  <input type="date" value={checkOut} min={minCheckOut}
+                    onChange={(e) => { setCheckOut(e.target.value); setQuote(null); setError(""); setBeQuoteError(""); setStep("dates"); }}
+                    className="w-full bg-transparent text-[14px] text-[#1A1A18] border border-[#E8E4DC] rounded-md px-3 py-2 focus:outline-none focus:border-[#8B7355]" />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Min nights info */}
+        {minNights > 1 && (
+          <p className="text-[11px] text-[#8B7355] mt-2 flex items-center gap-1">
+            <Calendar className="w-3 h-3" />
+            {t("bookingWidget.minNightMinimum", { count: minNights })}
+          </p>
+        )}
+
+        {/* Guests selector */}
+        <div className="border border-[#1A1A18] rounded-lg mt-3 p-3">
           <p className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#1A1A18] mb-1.5">{t("booking.guestsLabel")}</p>
           <div className="flex items-center gap-3">
             <button

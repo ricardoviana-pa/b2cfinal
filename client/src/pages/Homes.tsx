@@ -24,6 +24,7 @@ interface LiveQuote {
   nights: number;
   source?: string;
   fallbackMessage?: string;
+  available?: boolean;
 }
 
 const BEDROOM_OPTIONS = ['1-2', '3-4', '5-6', '7+'];
@@ -227,6 +228,21 @@ export default function Homes() {
         });
         // Accept live, cached, and base price quotes (base = estimated from catalogue rate)
         const isUsable = raw?.source === 'live' || raw?.source === 'cached' || raw?.source === 'base';
+        // Unavailable properties: return quote with available=false so PLP can show badge
+        if (isUsable && raw?.pricing && raw.pricing.total > 0 && raw?.available === false) {
+          return {
+            slug: property.slug,
+            quote: {
+              total: raw.pricing.total,
+              nightlyRate: raw.pricing.nightlyRate ?? 0,
+              cleaningFee: raw.pricing.cleaningFee ?? 0,
+              nights: raw.nights ?? searchNights,
+              source: raw.source!,
+              fallbackMessage: raw.fallbackMessage,
+              available: false,
+            },
+          };
+        }
         const quote = (isUsable && raw?.pricing && raw.pricing.total > 0) ? {
           total: raw.pricing.total,
           nightlyRate: raw.pricing.nightlyRate ?? 0,
@@ -234,6 +250,7 @@ export default function Homes() {
           nights: raw.nights ?? searchNights,
           source: raw.source!,
           fallbackMessage: raw.fallbackMessage,
+          available: raw?.available !== false,
         } : null;
         return { slug: property.slug, quote };
       } catch {
@@ -250,7 +267,7 @@ export default function Homes() {
         results.forEach((r) => {
           if (r.status === 'fulfilled') {
             const { slug, quote } = r.value;
-            accumulated[slug] = (quote && quote.total > 0) ? quote : null;
+            accumulated[slug] = quote ?? null;
           }
         });
         // Update state progressively so first results appear fast

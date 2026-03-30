@@ -30,6 +30,7 @@ interface PropertyCardProps {
     nights: number;
     source?: string;
     fallbackMessage?: string;
+    available?: boolean;
   } | null;
   quoteLoading?: boolean;
   /** Batch tRPC failed â show catalogue estimate instead of infinite loading */
@@ -242,6 +243,18 @@ export default function PropertyCard({
                     <div className="h-3.5 bg-[#F5F1EB] rounded-md animate-pulse w-4/5" />
                     <div className="h-3 bg-[#F5F1EB] rounded-md animate-pulse w-1/2" />
                   </div>
+                ) : liveQuote && liveQuote.available === false ? (
+                  <div className="w-full">
+                    <div className="flex items-center gap-1.5">
+                      <span className="inline-block w-2 h-2 rounded-full bg-[#DC2626] shrink-0" />
+                      <span className="text-[#DC2626] text-[0.8125rem] font-medium">
+                        {t('property.unavailableForDates', 'Unavailable for these dates')}
+                      </span>
+                    </div>
+                    <p className="text-[0.6875rem] text-[#9E9A90] mt-1">
+                      {t('property.tryOtherDates', 'Try different dates or contact us for alternatives')}
+                    </p>
+                  </div>
                 ) : (() => {
                   const fmt = formatEur;
                   const fromCatalogue = (property.priceFrom ?? 0) * nights;
@@ -281,7 +294,7 @@ export default function PropertyCard({
                   );
                 })()}
               </div>
-              {liveQuote &&
+              {liveQuote && liveQuote.available !== false &&
                 (liveQuote.source === 'live' || liveQuote.source === 'cached' || liveQuote.source === 'base') &&
                 liveQuote.total > 0 && (
                 <p className="text-[0.6875rem] text-[#9E9A90] mt-0.5">
