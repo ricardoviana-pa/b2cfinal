@@ -83,8 +83,8 @@ export async function checkAvailability(
     const calendar = await guestyClient.getListingCalendar(listingId, checkIn, checkOut);
 
     // Check if all dates are available
-    const days = calendar.data?.days || [];
-    const allAvailable = days.length > 0 && days.every((d: any) => d.status === 'available');
+    const days = calendar?.data?.days || calendar?.days || (Array.isArray(calendar) ? calendar : []);
+    const allAvailable = days.length > 0 && days.every((d: any) => d.status === 'available' || d.available === true);
 
     return { available: allAvailable, listingId, checkIn, checkOut, nights };
   } catch (error) {
@@ -172,8 +172,8 @@ export async function getQuote(
           setTimeout(() => reject(new Error("calendar_timeout")), 5_000);
         }),
       ]);
-      const days = calendar.data?.days || [];
-      calendarAvailable = days.length > 0 && days.every((d: any) => d.status === "available");
+      const days = calendar?.data?.days || calendar?.days || (Array.isArray(calendar) ? calendar : []);
+      calendarAvailable = days.length > 0 && days.every((d: any) => d.status === "available" || d.available === true);
     } catch {
       // Calendar check failed — we don't know availability, proceed cautiously
       calendarAvailable = null;

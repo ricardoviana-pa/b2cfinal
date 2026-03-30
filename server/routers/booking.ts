@@ -95,11 +95,17 @@ export const bookingRouter = router({
           input.from,
           input.to
         );
-        const days = (calendar.data?.days || []).map((d: any) => ({
+        // Guesty calendar response can be { data: { days: [...] } } or directly { days: [...] } or an array
+        const rawDays = calendar?.data?.days || calendar?.days || (Array.isArray(calendar) ? calendar : []);
+        console.info(`[Booking] getCalendar for ${input.listingId}: got ${rawDays.length} days, keys=${Object.keys(calendar || {}).join(',')}`);
+        if (rawDays.length > 0) {
+          console.info(`[Booking] getCalendar sample day:`, JSON.stringify(rawDays[0]).slice(0, 200));
+        }
+        const days = rawDays.map((d: any) => ({
           date: d.date,
-          status: d.status || "unavailable",
-          minNights: d.minNights ?? undefined,
-          price: d.price ?? d.basePrice ?? undefined,
+          status: d.status || (d.available ? "available" : "unavailable"),
+          minNights: d.minNights ?? d.minNight ?? undefined,
+          price: d.price ?? d.basePrice ?? d.nightlyRate ?? undefined,
         }));
         return { days };
       } catch (error: any) {
