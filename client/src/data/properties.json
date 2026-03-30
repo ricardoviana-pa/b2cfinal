@@ -255,7 +255,61 @@
       "country": "Portugal",
       "lat": 41.3814387,
       "lng": -8.412852700000002
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "17:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 6287,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-6965338a753fb0001424acf6",
@@ -407,7 +461,108 @@
       "country": "Portugal",
       "lat": 41.1500255,
       "lng": -8.605798499999999
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 915,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Ubicación muy céntrica. Atención del equipo Portugal Active inmediata.\nLimpieza perfecta.",
+        "guestName": "Guest",
+        "date": "2026-03-08T21:30:25.986Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Muito obrigado TOP!",
+        "guestName": "Guest",
+        "date": "2026-01-05T13:12:36.250Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 2
   },
   {
     "id": "guesty-6965339404b96f00147f571a",
@@ -551,7 +706,25 @@
       "country": "Portugal",
       "lat": 41.654438,
       "lng": -8.6853318
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 216,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-6965338ed1c09900156e8502",
@@ -746,7 +919,61 @@
       "country": "Portugal",
       "lat": 41.7362282,
       "lng": -8.7324361
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 19376,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-6965338554dbb5001568a505",
@@ -930,7 +1157,34 @@
       "country": "Portugal",
       "lat": 41.1614735,
       "lng": -8.6048013
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 560,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-696533d2ec19770014fd1b52",
@@ -1094,7 +1348,117 @@
       "country": "Portugal",
       "lat": 41.6477741,
       "lng": -8.8228852
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "BUNK_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 2928,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Fantastic place! Stayed over with a few friends for work, and I can easily way it was one of the best places we stayed so far. \n\nBeautiful place with the host leaving us everything we could possibly need. The only downside we're the mattresses being extremely stiff on all rooms, but aside from that, flawless.",
+        "guestName": "Guest",
+        "date": "2026-02-04T15:01:04.741Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Recomendo este espaço, corresponde com a descrição e fotos, limpo, espaçoso e perfeito para grupos ou famílias grandes. A agência é muito proativa e deixaram-nos um welcome pack muito agradável.",
+        "guestName": "Guest",
+        "date": "2026-01-02T15:38:16.252Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 2
   },
   {
     "id": "guesty-696532f3753fb0001424a570",
@@ -1248,7 +1612,85 @@
       "country": "Portugal",
       "lat": 41.66205490677745,
       "lng": -8.784078348667533
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": null,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Estava tudo perfeito, estava tudo novo e com tudo o que precisa para passar alguns dias.",
+        "guestName": "Guest",
+        "date": "2026-03-02T10:09:28.821Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-6965335df1c3a8001597c8e4",
@@ -1414,7 +1856,43 @@
       "country": "Portugal",
       "lat": 41.6830081,
       "lng": -8.8303345
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 808,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-6965339dbf04fe0013743e2d",
@@ -1663,7 +2141,175 @@
       "country": "Portugal",
       "lat": 41.654438,
       "lng": -8.6853318
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 6",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 7",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 8",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 9",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 10",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 11",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 12",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 13",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 14",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 7535,
+    "reviews": [
+      {
+        "rating": 4,
+        "text": "A Portugal Active, representada pelo Sr. João Porto, tiveram o grande desafio de lidar com as circunstâncias que a propriedade sofreu com as tempestades! Mantiveram sempre em contacto connosco e deslocaram-se ao espaço para nos darem o apoio possível e para resolução imediata das quebras de electricidade e de tudo que implica a falha de luz! \nNa minha opinião, pouco mais poderiam fazer tendo em conta as condições climáticas do momento e pelo facto de que tais reparações têm de ser efetuadas com ",
+        "guestName": "Guest",
+        "date": "2026-02-22T14:41:55.298Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      }
+    ],
+    "averageRating": 4,
+    "reviewCount": 1
   },
   {
     "id": "guesty-6965338cecf7490014ed2c2d",
@@ -1830,7 +2476,34 @@
       "country": "Portugal",
       "lat": 41.1553579,
       "lng": -8.6044991
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 485,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-696533a0ecf7490014ed31d5",
@@ -1974,7 +2647,34 @@
       "country": "Portugal",
       "lat": 41.654438,
       "lng": -8.6853318
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 646,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-69653394ecf7490014ed2ed9",
@@ -2117,7 +2817,25 @@
       "country": "Portugal",
       "lat": 41.654438,
       "lng": -8.6853318
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": null,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-696f6aad74604800452a40b8",
@@ -2169,7 +2887,15 @@
       "country": "Portugal",
       "lat": 41.6441737,
       "lng": -8.799871699999999
-    }
+    },
+    "rooms": [],
+    "propertyType": "Apartment",
+    "checkInTime": "15:00",
+    "checkOutTime": "10:00",
+    "areaSquareFeet": null,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-6965330729bb8c00141e8cd6",
@@ -2342,7 +3068,85 @@
       "country": "Portugal",
       "lat": 41.64415,
       "lng": -8.7981
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 12917,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "We rented this house for New Year with a large group — 6 adults and children — and overall we were very happy with the stay.\n\nThe house is genuinely spacious, so everyone had enough room and privacy. The layout works very well for groups: there is a comfortable common area to spend time together, and at the same time enough separate bedrooms to rest properly.\n\nThe kitchen is well equipped and easy to use — we cooked a lot and had everything we needed. The outdoor area and the grill are a great b",
+        "guestName": "Guest",
+        "date": "2026-01-03T10:18:04.818Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-696533b7bf04fe00137440f8",
@@ -2463,7 +3267,99 @@
       "country": "Portugal",
       "lat": 41.4421415,
       "lng": -8.2929718
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 463,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Espaço limpo e acolhedor, muito bem localizado.\nCorrespondeu às expectativas",
+        "guestName": "Guest",
+        "date": "2026-02-23T10:06:11.664Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Excelente!",
+        "guestName": "Guest",
+        "date": "2026-01-04T19:06:06.017Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 2
   },
   {
     "id": "guesty-69653388753fb0001424abad",
@@ -2647,7 +3543,131 @@
       "country": "Portugal",
       "lat": 41.1528201,
       "lng": -8.614097700000002
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 539,
+    "reviews": [
+      {
+        "rating": 4,
+        "text": "The place was beautiful and as expected. The sauna was a lovely touch!\nOne minor inconvenience was that the shower did not drain very well (so the shower became\nA puddle) and there seemed to be leaks under the sink, but apart from that it was a beautiful stay",
+        "guestName": "Guest",
+        "date": "2026-02-20T10:03:55.136Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Logement idéal pour visiter Porto. Très lumineux et agréable. Je recommande pour une petite famille en séjour court.",
+        "guestName": "Guest",
+        "date": "2026-02-15T20:59:05.574Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Um excelente espaço, muito bem decorado e que nos proporcionou uma excelente estadia.",
+        "guestName": "Guest",
+        "date": "2026-01-13T14:29:33.058Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 4.3,
+    "reviewCount": 3
   },
   {
     "id": "guesty-69653390ecf7490014ed2d6c",
@@ -2840,7 +3860,43 @@
       "country": "Portugal",
       "lat": 41.74979200000001,
       "lng": -8.875339799999999
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "10:00",
+    "areaSquareFeet": 1615,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-696533714b583900135cef22",
@@ -3098,7 +4154,70 @@
       "country": "Portugal",
       "lat": 41.7141723,
       "lng": -8.7377577
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 6",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 1615,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-696533616cff760015e28802",
@@ -3312,7 +4431,34 @@
       "country": "Portugal",
       "lat": 41.7141723,
       "lng": -8.7377577
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 862,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-696533d34b583900135cfd96",
@@ -3480,7 +4626,105 @@
       "country": "Portugal",
       "lat": 41.8543296,
       "lng": -8.4292873
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          },
+          {
+            "type": "SINGLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 6",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 7",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 8",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          },
+          {
+            "type": "SINGLE_BED",
+            "quantity": 4
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 9",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 12110,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-69b3f4234aafb300134e52a9",
@@ -3639,7 +4883,43 @@
       "country": "Portugal",
       "lat": 41.934189,
       "lng": -8.600304
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 1551,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-6965335cbf04fe00137431cb",
@@ -3920,7 +5200,121 @@
       "country": "Portugal",
       "lat": 41.714194324177,
       "lng": -8.7377362423279
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 6",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 7",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 8",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "17:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 16146,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Fuimos un grupo de 16 amigos y nos encantó! Las habitaciones son grandes y con baño propio, todo muy limpio. La cocina tiene todo lo necesario. Hay varias zonas para juntarse. La zona exterior con la piscina está muy bien cuidada. Hay aparcamiento para varios coches en la finca. Repetiríamos!",
+        "guestName": "Guest",
+        "date": "2026-02-01T18:17:14.755Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-6970af61638a8a0015eaa850",
@@ -4135,7 +5529,43 @@
       "country": "Portugal",
       "lat": 41.8494256,
       "lng": -8.8654273
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 10097,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-696533794fe6a100145fe4bf",
@@ -4302,7 +5732,67 @@
       "country": "Portugal",
       "lat": 41.6829688,
       "lng": -8.8309276
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 646,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Wonderful experience. We definitely recommend this place. Close to the water and restaurants, peaceful surroundings, excellent amenities, everyone you need and more. \nPam",
+        "guestName": "Guest",
+        "date": "2026-02-14T00:39:20.694Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-696532fa6d209c001510d5ee",
@@ -4455,7 +5945,34 @@
       "country": "Portugal",
       "lat": 41.682697296143,
       "lng": -8.8299913406372
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 1077,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-6965330b6d209c001510dd49",
@@ -4624,7 +6141,199 @@
       "country": "Portugal",
       "lat": 41.782932281494,
       "lng": -8.8597011566162
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 6",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 3445,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Muito agradável a estadia, voltaremos a repetir.",
+        "guestName": "Guest",
+        "date": "2026-03-16T10:19:42.152Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Uma ótima casa para umas mini férias de inverno. Quente e confortável",
+        "guestName": "Guest",
+        "date": "2026-02-18T10:29:19.279Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Pasamos muy buen fin de semana en esta casa.",
+        "guestName": "Guest",
+        "date": "2026-01-05T15:16:13.326Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "o espaço correspondeu às expectativas mas as janelas da sala necessitam de reparação",
+        "guestName": "Guest",
+        "date": "2026-01-03T12:37:22.602Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 4
   },
   {
     "id": "guesty-6965333104b96f00147f5428",
@@ -4825,7 +6534,76 @@
       "country": "Portugal",
       "lat": 41.703683,
       "lng": -8.8176364
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "BUNK_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 2261,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "tudo 5*",
+        "guestName": "Guest",
+        "date": "2026-01-02T10:07:07.428Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-696532eee44e1a0015bb2460",
@@ -4982,7 +6760,67 @@
       "country": "Portugal",
       "lat": 41.68254186880869,
       "lng": -8.830086071877977
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 862,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Il n’y a rien le logement était plus que propre terres bien situé et nous avons passé un agréable séjour",
+        "guestName": "Guest",
+        "date": "2026-01-03T13:13:54.581Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-696533266dec35001492fdbb",
@@ -5123,7 +6961,34 @@
       "country": "Portugal",
       "lat": 41.682759965426,
       "lng": -8.831214515115
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 539,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-6965332327950e001416f0b2",
@@ -5345,7 +7210,144 @@
       "country": "Portugal",
       "lat": 41.6796938,
       "lng": -8.8245396
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 6",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 7",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": null,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "The house is located in a really nice area - just a few minutes to the beach. Well equipped kitchen",
+        "guestName": "Guest",
+        "date": "2026-03-15T19:40:34.723Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 3
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Tudo como anunciado, comunicação rápida e eficiente e casa muito bem organizada para grupos com crianças. Destaco a extraordinária flexibilidade em permitir ajustar os horários á necessidade do grupo. Recomendo e a repetir.",
+        "guestName": "Guest",
+        "date": "2026-01-25T20:34:13.658Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 2
   },
   {
     "id": "guesty-696533466d209c001510ecfe",
@@ -5529,7 +7531,190 @@
       "country": "Portugal",
       "lat": 41.754663894426,
       "lng": -8.8600030232788
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "17:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": null,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Casa fantástica, com espaço super agradáveis. O que está nas fotos é tudo tal e qual. Piscina aquecida embora por volta dos 26º o que para o inverno não é o melhor, mas dá para dar um mergulhos. Dos melhores espaços que frequentei no Airbnb. Recomendo sempre... Um dia voltamos de certeza.",
+        "guestName": "Guest",
+        "date": "2026-03-01T19:30:16.278Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "The place was amazing pictures don't do it justice had every thing you could ask for down to bath Robes felt like a five star hotel more than an airbnb host was super helpful and responsive with recommendations and everything else",
+        "guestName": "Guest",
+        "date": "2026-01-28T16:19:28.691Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Foi 3 noites a repetir. Tudo como esperado e planeado.",
+        "guestName": "Guest",
+        "date": "2026-01-03T17:11:37.393Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": ".",
+        "guestName": "Guest",
+        "date": "2025-12-31T16:10:23.864Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 4
   },
   {
     "id": "guesty-6965334e4b9b64001401b817",
@@ -5679,7 +7864,43 @@
       "country": "Portugal",
       "lat": 41.7095473,
       "lng": -8.8246257
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 1615,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-6965334abf04fe0013742da8",
@@ -5834,7 +8055,70 @@
       "country": "Portugal",
       "lat": 41.7898227,
       "lng": -8.7289649
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 6",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 15124,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-69653335bf04fe0013742743",
@@ -6067,7 +8351,88 @@
       "country": "Portugal",
       "lat": 41.754763065975,
       "lng": -8.7927579098564
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 6",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 7",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 8",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 3553,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-696533494b9b64001401b62e",
@@ -6265,7 +8630,94 @@
       "country": "Portugal",
       "lat": 41.6821501,
       "lng": -8.7403473
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "17:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 4554,
+    "reviews": [
+      {
+        "rating": 4,
+        "text": "Obrigado Portugal Active pelo excelente suporte.",
+        "guestName": "Guest",
+        "date": "2026-02-17T20:56:40.598Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      }
+    ],
+    "averageRating": 4,
+    "reviewCount": 1
   },
   {
     "id": "guesty-696533284b583900135ceb91",
@@ -6476,7 +8928,60 @@
       "country": "Portugal",
       "lat": 41.741061,
       "lng": -8.860883
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          },
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          },
+          {
+            "type": "SINGLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 8612,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-69653398bf04fe0013743b98",
@@ -6630,7 +9135,43 @@
       "country": "Portugal",
       "lat": 41.654438,
       "lng": -8.6853318
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 969,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-696533b2e44e1a0015bb2b42",
@@ -6783,7 +9324,34 @@
       "country": "Portugal",
       "lat": 41.6906457,
       "lng": -8.8288006
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Boat",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 323,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-696533814b9b64001401c7b8",
@@ -6978,7 +9546,140 @@
       "country": "Portugal",
       "lat": 41.7444555,
       "lng": -8.8766676
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 1077,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "We liked everything. The apartment was comfortable, had everything we needed, and the view from the window was wonderful.",
+        "guestName": "Guest",
+        "date": "2026-03-12T12:54:31.314Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "What a beautiful view! With the raging ocean right outside our window, we could enjoy the view even when the weather didn’t let us go outside. This little apartment is very clean and appears very recently remodeled. It sleeps 6, but it’s not a ton of square footage if your group needs more room to spread out. It was great for our family of 2 adults and 4 kids. We had what we needed to cook all our meals, although some plastic utensils would help preserve the skillet. Beautiful opportunities for ",
+        "guestName": "Guest",
+        "date": "2026-02-02T20:25:21.867Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Fomos surpreendidos pela forma que fomos recebidos. Casa super limpa e um espaço muito acolhedor. Recomendamos muito.",
+        "guestName": "Guest",
+        "date": "2026-01-01T15:41:44.932Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 3
   },
   {
     "id": "guesty-696533762def930014e917bf",
@@ -7176,7 +9877,76 @@
       "country": "Portugal",
       "lat": 41.6830081,
       "lng": -8.8303345
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "BUNK_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 1077,
+    "reviews": [
+      {
+        "rating": 4,
+        "text": "A estadia foi, no geral, positiva. O alojamento estava muito bem equipado, com todos os utensílios necessários, a limpeza era excelente e a localização é muito boa.\n\nRecomendo!!",
+        "guestName": "Guest",
+        "date": "2026-01-03T13:07:51.701Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 4,
+    "reviewCount": 1
   },
   {
     "id": "guesty-696533752def930014e9167c",
@@ -7348,7 +10118,76 @@
       "country": "Portugal",
       "lat": 41.5450143,
       "lng": -8.7865363
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 1088,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Excelente apartamento! Cozinha muito bem equipada",
+        "guestName": "Guest",
+        "date": "2026-01-02T10:19:39.687Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-6965339bbf04fe0013743cd8",
@@ -7611,7 +10450,112 @@
       "country": "Portugal",
       "lat": 41.654438,
       "lng": -8.6853318
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 6",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 7",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 3768,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Muito bom",
+        "guestName": "Guest",
+        "date": "2026-03-26T20:11:30.235Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-696533cf4b583900135cfb02",
@@ -7742,7 +10686,76 @@
       "country": "Portugal",
       "lat": 41.548278,
       "lng": -8.7871594
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "BUNK_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 1077,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "El apartamento está muy bien ubicado fácil de llegar y en zona sin ruidos. Aparcamiento delante delante de la casa sin problemas.\nBuena comunicación con los anfitriones.\nLas instrucciones de acceso con llegada autónoma muy claras y sin problemas.\n En cuanto a la limpieza, insuperable en todas las zonas de la casa.\nConfortable y con todo lo necesario (calefacción, electrodomésticos, tv, cafeteras, utensilios de cocina, etc..)\nCamas  y almohadas muy cómodas.\nMuy recomendable.",
+        "guestName": "Guest",
+        "date": "2026-02-01T18:07:27.624Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-696533aaf142270014026d70",
@@ -7961,7 +10974,61 @@
       "country": "Portugal",
       "lat": 41.70637809999999,
       "lng": -8.8273099
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 1669,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-6965332c6d209c001510e1c1",
@@ -8153,7 +11220,89 @@
       "country": "Portugal",
       "lat": 41.793165,
       "lng": -8.629346
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          },
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 8073,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Toda a casa estava muito bem equipada!",
+        "guestName": "Guest",
+        "date": "2026-01-03T10:43:03.898Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-69653354109993001383ef5f",
@@ -8389,7 +11538,176 @@
       "country": "Portugal",
       "lat": 41.7335106,
       "lng": -8.8567017
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 6",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 7",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "17:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 7428,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Cuando un grupo de 10 amigos, todos quedamos encantados y impresionados de toda la casa, habitaciones,cocina, baños,salas, entorno de la enorme finca, piscina.\nuna auténtica maravilla",
+        "guestName": "Guest",
+        "date": "2026-03-02T09:29:23.929Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Casa preciosa, cuidada, estancias grandes y cómodas. Teníamos todo lo necesario, hacía calor y te sentías como en casa. Nos pareció un poco pronto la hora de salida ya que al ser un grupo grande es más difícil dejar todo recogido temprano.  Por lo demás un 10, repetiremos en verano para poder aprovechar la piscina.",
+        "guestName": "Guest",
+        "date": "2026-02-15T17:35:37.607Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "A casa é fantástica e extremamente bem equipada. A localização é excelente, com uma vista verdadeiramente deslumbrante. Os quartos são muito confortáveis e revelam um grande cuidado com os detalhes  todos dispõem de várias almofadas, bons lençóis e roupões. As áreas comuns são amplas, bem decoradas e ideais para desfrutar de ótimos momentos de lazer. O espaço exterior é igualmente muito agradável, tornando a estadia ainda mais especial.\n\nLigeiramente afastada da cidade mas com todos os serviços ",
+        "guestName": "Guest",
+        "date": "2026-01-03T19:19:27.052Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 3
   },
   {
     "id": "guesty-696533abf142270014026fa9",
@@ -8654,7 +11972,117 @@
       "country": "Portugal",
       "lat": 41.44699780000001,
       "lng": -8.1387641
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 2961,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "A casa era muito espaçosa, áreas externas agradáveis, mas infelizmente não usamos muito porque estava frio. Os quartos eram grandes com camas confortáveis, lençóis e toalhas boas, e AC novos. A cozinha muito bem equipada com louças, taças e aparelhos eletrodomésticos bons.\nPor ser uma casa plana, ela é ótima para quem tem crianças! Portugal Active forneceu berços e haviam cadeiras de alimentação para as crianças também. \nSelf check-in e check-out foi ótimo e fácil.\nO local da casa é excelente, p",
+        "guestName": "Guest",
+        "date": "2026-03-18T02:14:02.390Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "We loved our stay! The house is spacious and very accommodating. The heating system works great, and the fireplace adds a cozy vibe. The host was very kind and responsive. There are also many supermarkets nearby, all within a short driving distance.",
+        "guestName": "Guest",
+        "date": "2026-01-31T10:23:27.944Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 2
   },
   {
     "id": "guesty-69653381bf04fe00137437cd",
@@ -8849,7 +12277,52 @@
       "country": "Portugal",
       "lat": 41.7697198,
       "lng": -8.85432
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 16146,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-69653365bf04fe0013743511",
@@ -9176,7 +12649,126 @@
       "country": "Portugal",
       "lat": 41.642475119244125,
       "lng": -8.59105978717194
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 49515,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "We had an amazing stay.",
+        "guestName": "Guest",
+        "date": "2026-01-29T19:02:10.373Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Lovely place, very comfortable. The views were good and the house was very warm.\n\nFully equipped kitchen, and comfortable beds and rooms. \n\nWould recommend!",
+        "guestName": "Guest",
+        "date": "2026-01-02T17:15:31.540Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 2
   },
   {
     "id": "guesty-696533d64b583900135d00cc",
@@ -9324,7 +12916,120 @@
       "country": "Portugal",
       "lat": 41.8543296,
       "lng": -8.4292873
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          },
+          {
+            "type": "SINGLE_BED",
+            "quantity": 4
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 6",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 7",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          },
+          {
+            "type": "SINGLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 8612,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "The location fit our needs for this trip. Portugal Active was very helpful with quick responses and thorough instructions.",
+        "guestName": "Guest",
+        "date": "2026-02-08T13:20:42.867Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-696533d8753fb0001424b10d",
@@ -9469,7 +13174,99 @@
       "country": "Portugal",
       "lat": 41.8543296,
       "lng": -8.4292873
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 4844,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "This place was absolutely stunning, we felt lucky we found it available. The place had style and felt luxurious, and we immediately felt pampered. The hosts were very kind and accommodating. The sauna (and fireplace) were by far our favorite parts of the stay. It heated up quickly and the entire place felt very clean (including the jacuzzi). The private backyard was gorgeous with the beautiful lemon tree right outside the master bedroom. The kitchen was wonderful for cooking and the bedrooms/bat",
+        "guestName": "Guest",
+        "date": "2026-01-28T09:20:59.047Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Lovely place with all the amenities. The host was very responsive, and although we had some issues with hot water and heating, they were resolved quickly.",
+        "guestName": "Guest",
+        "date": "2026-01-06T16:08:37.777Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      }
+    ],
+    "averageRating": 4.5,
+    "reviewCount": 2
   },
   {
     "id": "guesty-696533616cff760015e28965",
@@ -9633,7 +13430,140 @@
       "country": "Portugal",
       "lat": 41.6830081,
       "lng": -8.8303345
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 1077,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Mr João Porto , qui c’est occupé de nous à notre arrivée, a été extrêmement sympathique à notre arrivée, accueil irréprochable, tout comme le logement .\nMerci",
+        "guestName": "Guest",
+        "date": "2026-03-15T19:08:13.573Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "It was a wonderful place to stay.. we felt at home.. and great place to walk around. It was calm and peaceful.:)",
+        "guestName": "Guest",
+        "date": "2026-02-18T09:21:03.187Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Experiencia fantástica de nuevo en este apartamento.\nLimpieza , decoración y confort excelente!!\nVolveremos a repetir pronto !!\nMuchas gracias 😊",
+        "guestName": "Guest",
+        "date": "2026-02-01T15:00:07.711Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 3
   },
   {
     "id": "guesty-6965337d2def930014e919c6",
@@ -9818,7 +13748,108 @@
       "country": "Portugal",
       "lat": 41.70549310000001,
       "lng": -8.8101676
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Townhouse",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 1680,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "good place to stay, excellent value",
+        "guestName": "Guest",
+        "date": "2026-03-15T18:38:17.679Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Todo correcto fácil acceso y fiel  a las fotos",
+        "guestName": "Guest",
+        "date": "2026-01-05T14:38:23.959Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 2
   },
   {
     "id": "guesty-696533b24fe6a100145fee01",
@@ -10035,7 +14066,52 @@
       "country": "Portugal",
       "lat": 41.6985164,
       "lng": -8.830495899999999
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 2476,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-696533af4fe6a100145fecb6",
@@ -10196,7 +14272,34 @@
       "country": "Portugal",
       "lat": 41.6470018,
       "lng": -8.8215974
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 754,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-696533794b583900135cf0fc",
@@ -10375,6 +14478,57 @@
       "country": "Portugal",
       "lat": 41.6826415,
       "lng": -8.8311443
-    }
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": null,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Very good, good building",
+        "guestName": "Guest",
+        "date": "2026-02-15T18:51:03.719Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   }
 ]

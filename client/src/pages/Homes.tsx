@@ -204,53 +204,65 @@ export default function Homes() {
     setShowFavoritesOnly(false);
   };
 
-  // Fetch live quotes for all filtered properties when dates are present
+  // Fetch live quotes in throttled batches to avoid Guesty 429 rate limits.
+  // Batches of 4 with 600ms pause between groups keeps us well within limits.
   useEffect(() => {
     if (!searchCheckin || !searchCheckout || searchNights <= 0 || filtered.length === 0) {
       return;
     }
 
+    let cancelled = false;
     setQuotesLoading(true);
     const guestCount = effectiveGuests || 2;
+    const BATCH_SIZE = 4;
+    const BATCH_DELAY_MS = 600;
 
-    // Fetch quotes for all filtered properties in parallel
-    const quotePromises = filtered.map(async (property) => {
+    async function fetchSingleQuote(property: Property): Promise<{ slug: string; quote: LiveQuote | null }> {
       try {
-        const quote = await utils.booking.getQuote.fetch({
+        const raw = await utils.booking.getQuote.fetch({
           listingId: property.guestyId,
           checkIn: searchCheckin,
           checkOut: searchCheckout,
           guests: guestCount,
         });
+        const quote = raw?.pricing ? {
+          total: raw.pricing.total ?? 0,
+          nightlyRate: raw.pricing.nightlyRate ?? 0,
+          cleaningFee: raw.pricing.cleaningFee ?? 0,
+          nights: raw.nights ?? searchNights,
+          source: raw.source || 'live',
+          fallbackMessage: raw.fallbackMessage,
+        } : null;
         return { slug: property.slug, quote };
-      } catch (err) {
-        // If quote fails, store null so we can fall back to catalogue price
+      } catch {
         return { slug: property.slug, quote: null };
       }
-    });
+    }
 
-    Promise.allSettled(quotePromises).then((results) => {
-      const newQuotes: Record<string, LiveQuote | null> = {};
-      results.forEach((result) => {
-        if (result.status === 'fulfilled') {
-          const { slug, quote } = result.value;
-          if (quote) {
-            newQuotes[slug] = {
-              total: quote.total,
-              nightlyRate: quote.nightlyRate,
-              cleaningFee: quote.cleaningFee,
-              nights: searchNights,
-              source: quote.source || 'live',
-              fallbackMessage: quote.fallbackMessage,
-            };
-          } else {
-            newQuotes[slug] = null;
+    async function fetchInBatches() {
+      const accumulated: Record<string, LiveQuote | null> = {};
+      for (let i = 0; i < filtered.length; i += BATCH_SIZE) {
+        if (cancelled) return;
+        const batch = filtered.slice(i, i + BATCH_SIZE);
+        const results = await Promise.allSettled(batch.map(fetchSingleQuote));
+        results.forEach((r) => {
+          if (r.status === 'fulfilled') {
+            const { slug, quote } = r.value;
+            accumulated[slug] = (quote && quote.total > 0) ? quote : null;
           }
+        });
+        // Update state progressively so first results appear fast
+        if (!cancelled) setQuotes({ ...accumulated });
+        // Pause between batches (except after the last one)
+        if (i + BATCH_SIZE < filtered.length && !cancelled) {
+          await new Promise(resolve => setTimeout(resolve, BATCH_DELAY_MS));
         }
-      });
-      setQuotes(newQuotes);
-      setQuotesLoading(false);
-    });
+      }
+      if (!cancelled) setQuotesLoading(false);
+    }
+
+    fetchInBatches();
+    return () => { cancelled = true; };
   }, [searchCheckin, searchCheckout, searchNights, filtered, effectiveGuests, utils.booking.getQuote]);
 
   const applyBookingSearch = () => {

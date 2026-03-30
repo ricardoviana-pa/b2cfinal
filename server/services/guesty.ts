@@ -7,7 +7,8 @@ import { guestyClient } from "../lib/guesty";
 
 type QuoteSource = "live" | "cached" | "base" | "request";
 
-const QUOTE_CACHE_TTL_MS = 15 * 60 * 1000;
+const QUOTE_CACHE_TTL_MS = 15 * 60 * 1000; // 15 min for live quotes
+const QUOTE_CACHE_FALLBACK_TTL_MS = 3 * 60 * 1000; // 3 min for base-price fallbacks (retry sooner)
 const quoteCache = new Map<string, { expiresAt: number; value: QuoteResult }>();
 
 function getQuoteCacheKey(listingId: string, checkIn: string, checkOut: string, guests: number): string {
@@ -25,7 +26,11 @@ function getCachedQuote(key: string): QuoteResult | null {
 }
 
 function setCachedQuote(key: string, value: QuoteResult): void {
-  quoteCache.set(key, { expiresAt: Date.now() + QUOTE_CACHE_TTL_MS, value });
+  // Never cache "price on request" (failed) results — allow immediate retry
+  if (value.source === "request") return;
+  // Base-price fallbacks get a shorter TTL so we retry live quotes sooner
+  const ttl = value.source === "base" ? QUOTE_CACHE_FALLBACK_TTL_MS : QUOTE_CACHE_TTL_MS;
+  quoteCache.set(key, { expiresAt: Date.now() + ttl, value });
 }
 
 export interface AvailabilityResult {
@@ -157,7 +162,7 @@ export async function getQuote(
       const basePrice = Number(listing?.prices?.basePrice || 0);
       const cleaningFee = Number(listing?.prices?.cleaningFee || 0);
       if (basePrice > 0 && nights > 0) {
-        return {
+        const baseResult: QuoteResult = {
           available: true,
           listingId,
           checkIn,
@@ -174,6 +179,8 @@ export async function getQuote(
           source: "base",
           fallbackMessage: "Live pricing is temporarily unavailable. Showing an estimated base rate.",
         };
+        setCachedQuote(cacheKey, baseResult);
+        return baseResult;
       }
     } catch {
       /* ignore */

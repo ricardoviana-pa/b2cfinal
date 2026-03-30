@@ -57,9 +57,9 @@ const GUESTY_BE_BASE_URL = "https://booking.guesty.com";
 const GUESTY_BE_CLIENT_ID = process.env.GUESTY_BE_CLIENT_ID || "";
 const GUESTY_BE_CLIENT_SECRET = process.env.GUESTY_BE_CLIENT_SECRET || "";
 const GUESTY_TIMEOUT_MS = 8_000;
-/** Never block OAuth longer than this after a 429 (Guesty may recover sooner; avoids hour-long self-blocks). */
-const MAX_GUESTY_OAUTH_COOLDOWN_MS = Number(process.env.GUESTY_MAX_OAUTH_COOLDOWN_MS || 300_000); // 5 min default
-const MAX_GUESTY_BE_OAUTH_COOLDOWN_MS = Number(process.env.GUESTY_MAX_BE_OAUTH_COOLDOWN_MS || 180_000);
+/** Never block OAuth longer than this after a 429 (Guesty recovers fast; long self-blocks cascade across PDP+PLP). */
+const MAX_GUESTY_OAUTH_COOLDOWN_MS = Number(process.env.GUESTY_MAX_OAUTH_COOLDOWN_MS || 60_000); // 60s default (was 5min — too aggressive)
+const MAX_GUESTY_BE_OAUTH_COOLDOWN_MS = Number(process.env.GUESTY_MAX_BE_OAUTH_COOLDOWN_MS || 60_000);
 const TOKEN_CACHE_DIR = path.resolve(process.cwd(), ".cache");
 const OPEN_TOKEN_CACHE_FILE = path.join(TOKEN_CACHE_DIR, "guesty-open-token.json");
 const BE_TOKEN_CACHE_FILE = path.join(TOKEN_CACHE_DIR, "guesty-be-token.json");
@@ -600,6 +600,16 @@ export const guestyClient = {
 
   async getReservation(id: string): Promise<any> {
     return request<any>("GET", `/v1/reservations/${id}`);
+  },
+
+  /** Fetch guest reviews (paginated). */
+  async getReviews(input?: { limit?: number; skip?: number }): Promise<any> {
+    return request<any>("GET", "/v1/reviews", {
+      query: {
+        limit: input?.limit ?? 100,
+        skip: input?.skip ?? 0,
+      },
+    });
   },
 };
 

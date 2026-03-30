@@ -11,7 +11,7 @@ import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck,
   Sparkles, Star, Clock, UtensilsCrossed, Headphones, Plus, X, AlertTriangle,
   Wifi, Tv, Coffee, Car, Waves, Wind, Shirt, Flame, TreePine, Mountain,
-  Sun, Monitor, Utensils, Sofa, ArrowRight, Lock, ShieldCheck, type LucideIcon
+  Sun, Monitor, Utensils, Sofa, ArrowRight, Lock, ShieldCheck, Bed, type LucideIcon
 } from 'lucide-react';
 const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 import productsData from '@/data/products.json';
@@ -98,6 +98,22 @@ const AMENITY_PRIORITY: string[] = [
   'tennis',
   'table tennis',
 ];
+
+/** Humanize bed type names and get icon */
+function getBedTypeDisplay(bedType: string): { label: string; icon: LucideIcon } {
+  const normalized = (bedType || '').toUpperCase().replace(/ /g, '_');
+  const iconMap: Record<string, { label: string; icon: LucideIcon }> = {
+    'KING_BED': { label: 'King Bed', icon: BedDouble },
+    'QUEEN_BED': { label: 'Queen Bed', icon: BedDouble },
+    'DOUBLE_BED': { label: 'Double Bed', icon: BedDouble },
+    'SINGLE_BED': { label: 'Single Bed', icon: Bed },
+    'SOFA_BED': { label: 'Sofa Bed', icon: Sofa },
+    'BUNK_BED': { label: 'Bunk Bed', icon: Bed },
+    'COUCH': { label: 'Sofa Bed', icon: Sofa },
+    'AIR_MATTRESS': { label: 'Air Mattress', icon: Bed },
+  };
+  return iconMap[normalized] || { label: bedType || 'Bed', icon: Bed };
+}
 
 function filterAndSortAmenities(items: string[]): string[] {
   const filtered = items.filter((x) => {
@@ -636,7 +652,93 @@ export default function PropertyDetail() {
           <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
             {/* Main content — left 2/3 */}
             <div className="order-2 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12 pt-6">
-              {/* 1. What's included */}
+              {/* NEW SECTION: Property Highlights */}
+              <section>
+                <div className="flex flex-wrap gap-3">
+                  {/* Property Type */}
+                  {property.propertyType && (
+                    <div className="bg-[#FAFAF7] border border-[#E8E4DC] px-4 py-3 rounded-lg">
+                      <span className="text-[11px] font-medium tracking-[0.12em] text-[#9E9A90] uppercase block mb-1">Property</span>
+                      <span className="text-[13px] text-[#1A1A18]">{property.propertyType}</span>
+                    </div>
+                  )}
+
+                  {/* Bedrooms */}
+                  <div className="bg-[#FAFAF7] border border-[#E8E4DC] px-4 py-3 rounded-lg flex items-center gap-2">
+                    <BedDouble size={16} className="text-[#8B7355]" />
+                    <div>
+                      <span className="text-[11px] font-medium tracking-[0.12em] text-[#9E9A90] uppercase block">{property.bedrooms} {property.bedrooms === 1 ? 'Bedroom' : 'Bedrooms'}</span>
+                    </div>
+                  </div>
+
+                  {/* Bathrooms */}
+                  <div className="bg-[#FAFAF7] border border-[#E8E4DC] px-4 py-3 rounded-lg flex items-center gap-2">
+                    <Bath size={16} className="text-[#8B7355]" />
+                    <div>
+                      <span className="text-[11px] font-medium tracking-[0.12em] text-[#9E9A90] uppercase block">{property.bathrooms} {property.bathrooms === 1 ? 'Bathroom' : 'Bathrooms'}</span>
+                    </div>
+                  </div>
+
+                  {/* Max Guests */}
+                  <div className="bg-[#FAFAF7] border border-[#E8E4DC] px-4 py-3 rounded-lg flex items-center gap-2">
+                    <Users size={16} className="text-[#8B7355]" />
+                    <div>
+                      <span className="text-[11px] font-medium tracking-[0.12em] text-[#9E9A90] uppercase block">{property.maxGuests} Guests</span>
+                    </div>
+                  </div>
+
+                  {/* Area (if available) */}
+                  {property.areaSquareFeet && property.areaSquareFeet > 0 && (
+                    <div className="bg-[#FAFAF7] border border-[#E8E4DC] px-4 py-3 rounded-lg">
+                      <span className="text-[11px] font-medium tracking-[0.12em] text-[#9E9A90] uppercase block mb-1">Area</span>
+                      <span className="text-[13px] text-[#1A1A18]">{Math.round(property.areaSquareFeet * 0.0929)} m²</span>
+                    </div>
+                  )}
+
+                  {/* Check-in / Check-out */}
+                  {(property.checkInTime || property.checkOutTime) && (
+                    <div className="bg-[#FAFAF7] border border-[#E8E4DC] px-4 py-3 rounded-lg">
+                      <span className="text-[11px] font-medium tracking-[0.12em] text-[#9E9A90] uppercase block mb-1">Check-in / Out</span>
+                      <span className="text-[13px] text-[#1A1A18]">{property.checkInTime || '16:00'} / {property.checkOutTime || '11:00'}</span>
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              {/* NEW SECTION: Bedrooms & Sleeping Arrangement */}
+              {property.rooms && property.rooms.length > 0 && (
+                <section>
+                  <h2 className="headline-sm text-[#1A1A18] mb-6">Bedrooms & Sleeping Arrangements</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {property.rooms.map((room, roomIdx) => (
+                      <div key={roomIdx} className="bg-white border border-[#E8E4DC] p-5 rounded-lg">
+                        <h3 className="text-[13px] font-medium text-[#1A1A18] mb-4">{room.name}</h3>
+                        <div className="space-y-3">
+                          {room.beds && room.beds.length > 0 ? (
+                            room.beds.map((bed, bedIdx) => {
+                              const { label, icon: BedIcon } = getBedTypeDisplay(bed.type);
+                              return (
+                                <div key={bedIdx} className="flex items-center gap-3">
+                                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#F5F1EB] shrink-0">
+                                    <BedIcon size={16} className="text-[#8B7355]" />
+                                  </div>
+                                  <span className="text-[12px] text-[#6B6860]">
+                                    {bed.quantity > 1 ? `${bed.quantity} × ${label}` : label}
+                                  </span>
+                                </div>
+                              );
+                            })
+                          ) : (
+                            <span className="text-[12px] text-[#9E9A90]">Bed configuration details not available</span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* 1. What's included (now section B in redesign) */}
               <section className="p-5 lg:p-6 bg-[#F5F1EB]">
                 <h2 className="headline-sm text-[#1A1A18] mb-4">{t('propertyDetail.includedTitle')}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
@@ -665,30 +767,61 @@ export default function PropertyDetail() {
                 </div>
               </section>
 
-              {/* 3. Amenities — Le Collectionist style icon grid */}
+              {/* 3. Amenities — Le Collectionist style icon grid with expandable sections */}
               <section>
                 <h2 className="headline-sm text-[#1A1A18] mb-6">{t('propertyDetail.amenitiesTitle')}</h2>
                 {flatAmenities.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    {flatAmenities.map((item, idx) => {
-                      const Icon = getAmenityIcon(item);
-                      return (
-                        <div key={idx} className="flex items-center gap-3 p-3 rounded-lg bg-[#F5F1EB]/50">
-                          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FAFAF7] shrink-0">
-                            <Icon size={18} className="text-[#8B7355]" />
+                  <>
+                    {/* Show top 6-8 amenities */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+                      {flatAmenities.slice(0, 8).map((item, idx) => {
+                        const Icon = getAmenityIcon(item);
+                        return (
+                          <div key={idx} className="flex items-center gap-3 p-3 rounded-lg bg-[#F5F1EB]/50">
+                            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FAFAF7] shrink-0">
+                              <Icon size={18} className="text-[#8B7355]" />
+                            </div>
+                            <span className="text-[13px] text-[#6B6860] font-light">{item}</span>
                           </div>
-                          <span className="text-[13px] text-[#6B6860] font-light">{item}</span>
+                        );
+                      })}
+                    </div>
+
+                    {/* Expandable rest of amenities if more than 8 */}
+                    {flatAmenities.length > 8 && (
+                      <details className="group">
+                        <summary className="cursor-pointer text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors">
+                          Show all {flatAmenities.length} amenities
+                        </summary>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6 pt-6 border-t border-[#E8E4DC]">
+                          {flatAmenities.slice(8).map((item, idx) => {
+                            const Icon = getAmenityIcon(item);
+                            return (
+                              <div key={idx + 8} className="flex items-center gap-3 p-3 rounded-lg bg-[#F5F1EB]/50">
+                                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FAFAF7] shrink-0">
+                                  <Icon size={18} className="text-[#8B7355]" />
+                                </div>
+                                <span className="text-[13px] text-[#6B6860] font-light">{item}</span>
+                              </div>
+                            );
+                          })}
                         </div>
-                      );
-                    })}
-                  </div>
+                      </details>
+                    )}
+                  </>
                 ) : (
                   <p className="body-md text-[#9E9A90]">{t('propertyDetail.amenitiesContact')}</p>
                 )}
               </section>
 
-              {/* 3b. Guest Reviews */}
-              <ReviewsSection propertyName={property.name} propertySlug={property.slug} />
+              {/* 3b. Guest Reviews (from Guesty sync) */}
+              <ReviewsSection
+                propertyName={property.name}
+                propertySlug={property.slug}
+                reviews={(property as any).reviews}
+                averageRating={(property as any).averageRating}
+                reviewCount={(property as any).reviewCount}
+              />
 
               {/* 4. Services (add-on) */}
               <section>
@@ -746,8 +879,8 @@ export default function PropertyDetail() {
 
               {/* 6. Location map */}
               <section>
-                <h2 className="headline-sm text-[#1A1A18] mb-2">{t('propertyDetail.locationTitle')}</h2>
-                <p className="body-md text-[#9E9A90] mb-4">{t('propertyDetail.locationLine', { locality: property.locality, destination: destName })}</p>
+                <h2 className="headline-sm text-[#1A1A18] mb-2">Location</h2>
+                <p className="text-[13px] font-medium text-[#8B7355] mb-4">{property.locality}</p>
                 <div className="rounded-lg overflow-hidden border border-[#E8E4DC]">
                   <iframe
                     title={`${property.name} — ${property.locality}`}
@@ -763,6 +896,7 @@ export default function PropertyDetail() {
                   />
                 </div>
               </section>
+
             </div>
 
             {/* Sticky booking card — right 1/3 */}

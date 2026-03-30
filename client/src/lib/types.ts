@@ -71,6 +71,23 @@ export interface Property {
     lat?: number;
     lng?: number;
   };
+  rooms?: Array<{
+    name: string;
+    beds: Array<{ type: string; quantity: number }>;
+  }>;
+  propertyType?: string;
+  checkInTime?: string;
+  checkOutTime?: string;
+  areaSquareFeet?: number | null;
+  reviews?: Array<{
+    rating: number;
+    text: string;
+    guestName: string;
+    date: string;
+    categories?: Array<{ name: string; score: number }>;
+  }>;
+  averageRating?: number | null;
+  reviewCount?: number;
 }
 
 // --- PRODUCTS: SERVICES + ADVENTURES ---

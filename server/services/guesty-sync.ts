@@ -21,7 +21,7 @@ async function fetchAllListings(): Promise<any[]> {
   let skip = 0;
   const limit = 50;
   const fields =
-    "title publicDescription publicDescriptions description pictures address accommodates bedrooms bathrooms prices terms amenities amenitiesNotIncluded customFields";
+    "title publicDescription publicDescriptions description pictures address accommodates bedrooms bathrooms prices terms amenities amenitiesNotIncluded customFields listingRooms propertyType defaultCheckInTime defaultCheckOutTime areaSquareFeet";
 
   while (true) {
     const data = await guestyClient.getListings({
@@ -86,6 +86,72 @@ function slugify(title: string, id: string): string {
   return `${base}-${id.slice(-6)}`;
 }
 
+/** Fetch all reviews from Guesty, paginated */
+async function fetchAllReviews(): Promise<any[]> {
+  const results: any[] = [];
+  let skip = 0;
+  const limit = 100;
+
+  while (true) {
+    try {
+      const resp = await guestyClient.getReviews({ limit, skip });
+      // Guesty reviews API returns { data: [...], limit, skip }
+      const items = resp.data || resp.results || [];
+      if (!Array.isArray(items) || items.length === 0) break;
+      results.push(...items);
+      if (items.length < limit) break;
+      skip += limit;
+    } catch (err: any) {
+      console.warn(`[Guesty Sync] Reviews fetch error at skip=${skip}: ${err.message}`);
+      break;
+    }
+  }
+  console.log(`[Guesty Sync] Fetched ${results.length} reviews`);
+  return results;
+}
+
+/** Group reviews by listingId, filter rating >= 4, sort newest first */
+function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
+  const byListing = new Map<string, any[]>();
+
+  for (const review of reviews) {
+    const listingId = review.listingId;
+    if (!listingId) continue;
+
+    const raw = review.rawReview || review;
+    const rating = Number(raw.overall_rating ?? raw.overallRating ?? raw.rating ?? 0);
+    const text = (raw.public_review || raw.publicReview || raw.comments || "").trim();
+
+    // Only include reviews with rating >= 4 and non-empty text
+    if (rating < 4 || !text) continue;
+
+    // Build category ratings from flat fields (Guesty v1 format)
+    const categories: Array<{ name: string; score: number }> = [];
+    for (const cat of ["cleanliness", "accuracy", "checkin", "communication", "location", "value"]) {
+      const score = Number(raw[`category_ratings_${cat}`] ?? 0);
+      if (score > 0) categories.push({ name: cat, score });
+    }
+
+    const mapped = {
+      rating,
+      text: text.slice(0, 500),
+      guestName: review.guestName || raw.reviewer_name || "Guest",
+      date: review.createdAt || review.date || "",
+      categories,
+    };
+
+    if (!byListing.has(listingId)) byListing.set(listingId, []);
+    byListing.get(listingId)!.push(mapped);
+  }
+
+  // Sort each listing's reviews newest first
+  for (const [, arr] of byListing) {
+    arr.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }
+
+  return byListing;
+}
+
 function mapGuestyAmenities(listing: any) {
   const out = { property: [] as string[], bedrooms: [] as string[], kitchen: [] as string[], services: [] as string[] };
   const raw = listing.amenities ?? listing.customFields?.amenities ?? [];
@@ -105,7 +171,7 @@ function inferDestination(addr: any): string {
   return "algarve";
 }
 
-function mapListingToProperty(listing: any) {
+function mapListingToProperty(listing: any, reviews: any[] = []) {
   const id = listing._id || listing.listingId || "";
   const title = listing.title || "Untitled";
   const slug = slugify(title, id);
@@ -142,6 +208,17 @@ function mapListingToProperty(listing: any) {
     lng: addr.lng ? Number(addr.lng) : undefined,
   };
 
+  // Extract room/bedroom data
+  const rooms = (listing.listingRooms ?? [])
+    .filter((r: any) => r.beds?.length > 0)
+    .map((r: any, i: number) => ({
+      name: `Bedroom ${i + 1}`,
+      beds: (r.beds ?? []).map((b: any) => ({
+        type: b.type || "BED",
+        quantity: b.quantity ?? 1
+      }))
+    })) || [];
+
   return {
     id: `guesty-${id}`,
     slug,
@@ -174,6 +251,16 @@ function mapListingToProperty(listing: any) {
     seoTitle: `${title} — Portugal Active`,
     seoDescription: summary.slice(0, 160) || `${title} in Portugal.`,
     address: addressData,
+    rooms,
+    propertyType: listing.propertyType || "Villa",
+    checkInTime: listing.defaultCheckInTime || "16:00",
+    checkOutTime: listing.defaultCheckOutTime || "11:00",
+    areaSquareFeet: listing.areaSquareFeet || null,
+    reviews: reviews.slice(0, 20), // Cap at 20 most recent reviews per property
+    averageRating: reviews.length > 0
+      ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) * 10) / 10
+      : null,
+    reviewCount: reviews.length,
   };
 }
 
@@ -256,16 +343,27 @@ export async function runSync(): Promise<string> {
     throw new Error("Guesty is not configured. Set GUESTY_CLIENT_ID/GUESTY_CLIENT_SECRET.");
   }
 
-  console.log("[Guesty Sync] Fetching listings...");
-  const listings = await fetchAllListings();
-  console.log(`[Guesty Sync] Got ${listings.length} listings`);
+  console.log("[Guesty Sync] Fetching listings and reviews...");
+  const [listings, allReviews] = await Promise.all([
+    fetchAllListings(),
+    fetchAllReviews().catch((err) => {
+      console.warn(`[Guesty Sync] Reviews fetch failed (non-blocking): ${err.message}`);
+      return [] as any[];
+    }),
+  ]);
+  console.log(`[Guesty Sync] Got ${listings.length} listings, ${allReviews.length} reviews`);
 
   if (listings.length === 0) {
     console.warn("[Guesty Sync] No listings returned — keeping existing data.");
     return "skipped (0 listings)";
   }
 
-  const properties = listings.map(mapListingToProperty);
+  const reviewsByListing = buildReviewsByListing(allReviews);
+  const properties = listings.map((listing) => {
+    const rawId = listing._id || listing.listingId || "";
+    const listingReviews = reviewsByListing.get(rawId) || [];
+    return mapListingToProperty(listing, listingReviews);
+  });
   const jsonContent = JSON.stringify(properties, null, 2);
 
   // 1. Write to local runtime file (fast reads during this server's lifetime)
