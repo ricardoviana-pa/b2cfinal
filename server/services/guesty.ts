@@ -143,7 +143,8 @@ export async function getQuote(
     };
     setCachedQuote(cacheKey, result);
     return result;
-  } catch {
+  } catch (err: any) {
+    console.error(`[getQuote] createQuote FAILED for listing=${listingId} ${checkIn}→${checkOut}:`, err?.message || err, err?.status || '', err?.response?.status || '');
     const cached = getCachedQuote(cacheKey);
     if (cached) {
       // Preserve original source so frontend can distinguish cached-live from cached-base
