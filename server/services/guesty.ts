@@ -146,10 +146,14 @@ export async function getQuote(
   } catch {
     const cached = getCachedQuote(cacheKey);
     if (cached) {
+      // Preserve original source so frontend can distinguish cached-live from cached-base
+      const wasLive = cached.source === "live" || cached.source === "cached";
       return {
         ...cached,
-        source: "cached",
-        fallbackMessage: "Live pricing is temporarily unavailable. Showing the most recent cached price.",
+        source: wasLive ? "cached" : "base",
+        fallbackMessage: wasLive
+          ? "Live pricing is temporarily unavailable. Showing the most recent cached price."
+          : "Estimated price based on property's base rate.",
       };
     }
 
