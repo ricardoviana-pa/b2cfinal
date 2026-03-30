@@ -7,7 +7,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { Link } from 'wouter';
-import { Clock, ArrowRight, Calendar } from 'lucide-react';
+import { Clock, ArrowRight, Calendar, Play } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -134,13 +134,20 @@ export default function Blog() {
           <div className="container">
             <Link href={`/blog/${featured.slug}`} className="group block">
               <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-                <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB]">
+                <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] relative">
                   <img
                     src={getArticleImage(featured)}
                     alt={`${featured.title} – Portugal Active journal`}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
                   />
+                  {(featured as any).videoId && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <Play className="w-7 h-7 text-[#1A1A18] ml-1" fill="#1A1A18" />
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col justify-center">
                   <p className="text-[11px] font-medium text-[#8B7355] mb-3 tracking-[0.08em]">{featured.category.replace('-', ' ').toUpperCase()}</p>
@@ -179,13 +186,20 @@ export default function Blog() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {rest.map(article => (
                 <Link key={article.id} href={`/blog/${article.slug}`} className="group block">
-                  <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] mb-4">
+                  <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] mb-4 relative">
                     <img
                       src={getArticleImage(article)}
                       alt={`${article.title} – Portugal Active journal`}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
                     />
+                    {(article as any).videoId && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                          <Play className="w-5 h-5 text-[#1A1A18] ml-0.5" fill="#1A1A18" />
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <p className="text-[10px] font-medium text-[#8B7355] mb-2 tracking-[0.08em]">{article.category.replace('-', ' ').toUpperCase()}</p>
                   <h3 className="font-display text-[18px] text-[#1A1A18] mb-2 group-hover:text-[#8B7355] transition-colors line-clamp-2">
