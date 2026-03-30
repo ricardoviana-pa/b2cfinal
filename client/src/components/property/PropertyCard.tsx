@@ -245,16 +245,17 @@ export default function PropertyCard({
                 ) : (() => {
                   const fmt = formatEur;
                   const fromCatalogue = (property.priceFrom ?? 0) * nights;
-                  // Only show live/cached quotes — never base price estimates
-                  const isLiveQuote =
+                  // Show live, cached, or base price quotes
+                  const isUsableQuote =
                     liveQuote &&
-                    (liveQuote.source === 'live' || liveQuote.source === 'cached') &&
+                    (liveQuote.source === 'live' || liveQuote.source === 'cached' || liveQuote.source === 'base') &&
                     liveQuote.total > 0;
-                  if (isLiveQuote && liveQuote) {
+                  const isEstimate = liveQuote?.source === 'base';
+                  if (isUsableQuote && liveQuote) {
                     return (
                       <>
                         <span className="text-[#1A1A18] font-medium">
-                          {fmt(liveQuote.total)} {t('property.totalLabel')}
+                          {isEstimate ? '~' : ''}{fmt(liveQuote.total)} {t('property.totalLabel')}
                         </span>
                         <span className="text-[0.75rem] text-[#9E9A90]">
                           {t('booking.nights', { count: liveQuote.nights })}
@@ -281,13 +282,16 @@ export default function PropertyCard({
                 })()}
               </div>
               {liveQuote &&
-                (liveQuote.source === 'live' || liveQuote.source === 'cached') &&
+                (liveQuote.source === 'live' || liveQuote.source === 'cached' || liveQuote.source === 'base') &&
                 liveQuote.total > 0 && (
                 <p className="text-[0.6875rem] text-[#9E9A90] mt-0.5">
-                  {t('property.nightCleaningLine', {
-                    nightly: formatEur(liveQuote.nightlyRate),
-                    cleaning: formatEur(liveQuote.cleaningFee),
-                  })}
+                  {liveQuote.source === 'base'
+                    ? `${formatEur(liveQuote.nightlyRate)}/night + ${formatEur(liveQuote.cleaningFee)} cleaning (est.)`
+                    : t('property.nightCleaningLine', {
+                        nightly: formatEur(liveQuote.nightlyRate),
+                        cleaning: formatEur(liveQuote.cleaningFee),
+                      })
+                  }
                 </p>
               )}
             </>

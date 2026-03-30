@@ -225,9 +225,9 @@ export default function Homes() {
           checkOut: searchCheckout,
           guests: guestCount,
         });
-        // Only accept live or cached quotes — never base price fallbacks (inaccurate)
-        const isLive = raw?.source === 'live' || raw?.source === 'cached';
-        const quote = (isLive && raw?.pricing && raw.pricing.total > 0) ? {
+        // Accept live, cached, and base price quotes (base = estimated from catalogue rate)
+        const isUsable = raw?.source === 'live' || raw?.source === 'cached' || raw?.source === 'base';
+        const quote = (isUsable && raw?.pricing && raw.pricing.total > 0) ? {
           total: raw.pricing.total,
           nightlyRate: raw.pricing.nightlyRate ?? 0,
           cleaningFee: raw.pricing.cleaningFee ?? 0,

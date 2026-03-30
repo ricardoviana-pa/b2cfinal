@@ -65,8 +65,8 @@ function StatusBadge({ status }: { status: string }) {
 export default function Account() {
   const { t } = useTranslation();
   usePageMeta({
-    title: 'My Account | Trips, Loyalty & Profile',
-    description: 'View your trip history, earn loyalty points, manage referrals, and update your profile with Portugal Active.',
+    title: 'My Account | Trips, Preferences & Profile',
+    description: 'View your trip history, manage your stay preferences, referrals, and update your profile with Portugal Active.',
     url: '/account',
   });
   const { user, loading: authLoading, logout, isAuthenticated } = useAuth();
