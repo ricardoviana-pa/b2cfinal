@@ -22,13 +22,13 @@ const getService = (slug: string) => services.find(s => s.slug === slug);
 const getAdventure = (slug: string) => adventures.find(a => a.slug === slug);
 
 const GASTRONOMY_SLUGS = ['private-chef'];
-const WELLNESS_SLUGS = ['in-villa-spa', 'yoga', 'personal-training'];
+const WELLNESS_SLUGS = ['in-villa-spa', 'private-yoga', 'personal-training'];
 const MOBILITY_SLUGS = ['airport-shuttle'];
-const ADDITIONAL_SLUGS = ['grocery-setup', 'babysitter', 'daily-housekeeping'];
+const ADDITIONAL_SLUGS = ['grocery-delivery', 'babysitter', 'daily-housekeeping'];
 
 const ADVENTURE_SLUGS = [
   'canyoning', 'stand-up-paddle', 'horseback-riding', 'hike-dive-dine',
-  'can-am-buggy', 'sailing-boat-tours', 'e-bike-fat-bike', 'surf-lessons'
+  'canam-buggy', 'sailing', 'ebike-tours', 'surf-lessons'
 ];
 
 const WHATSAPP_BASE = 'https://wa.me/351927161771?text=';
@@ -38,40 +38,46 @@ interface ServiceRowProps {
   onAdd: (p: Product) => void;
 }
 
-function ServiceRow({ product, onAdd }: ServiceRowProps) {
+function ServiceCard({ product, onAdd }: ServiceRowProps) {
   const { t } = useTranslation();
   if (!product) return null;
   const waMsg = encodeURIComponent(`Hi, I'd like to book ${product.name}. Can you help me plan this?`);
   return (
-    <div className="flex items-center justify-between gap-4 py-4 border-b border-[#E8E4DC] last:border-0">
-      <div className="min-w-0">
-        <div className="flex items-center gap-3 flex-wrap">
-          <span className="font-display text-[17px] text-[#1A1A18]">{product.name}</span>
-          {product.priceFrom && (
-            <span className="text-[13px] text-[#6B6860]">From €{product.priceFrom}{product.priceSuffix ? ` ${product.priceSuffix}` : ''}</span>
-          )}
-        </div>
-        {product.tagline && (
-          <p className="text-[13px] text-[#9E9A90] mt-0.5 font-light">{product.tagline}</p>
+    <div className="bg-white border border-[#E8E4DC] overflow-hidden group">
+      <div className="relative overflow-hidden" style={{ aspectRatio: '4/3' }}>
+        {product.image ? (
+          <img src={product.image} alt={`${product.name} – concierge service at luxury villa in Portugal`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+        ) : (
+          <div className="w-full h-full bg-[#E8E4DC]" />
         )}
       </div>
-      <div className="flex gap-2 shrink-0">
-        <button
-          onClick={() => onAdd(product)}
-          className="flex items-center gap-1.5 rounded-full bg-[#1A1A18] text-white text-[11px] tracking-[0.08em] font-medium px-3 py-2 hover:bg-[#333330] transition-colors whitespace-nowrap"
-          style={{ minHeight: '36px' }}
-        >
-          <Plus className="w-3 h-3" /> {t('services.addToItinerary')}
-        </button>
-        <a
-          href={`${WHATSAPP_BASE}${waMsg}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1.5 rounded-full border border-[#E8E4DC] text-[#6B6860] text-[11px] tracking-[0.08em] font-medium px-3 py-2 hover:border-[#8B7355] hover:text-[#8B7355] transition-colors whitespace-nowrap"
-          style={{ minHeight: '36px' }}
-        >
-          <MessageCircle className="w-3 h-3" /> {t('services.bookViaWhatsapp')}
-        </a>
+      <div className="p-4">
+        <h4 className="font-display text-[16px] text-[#1A1A18] mb-1">{product.name}</h4>
+        {product.tagline && (
+          <p className="text-[12px] text-[#6B6860] font-light mb-3 line-clamp-2">{product.tagline}</p>
+        )}
+        {product.priceFrom && (
+          <p className="text-[13px] text-[#1A1A18] font-medium mb-3">From €{product.priceFrom} <span className="text-[#9E9A90] font-normal">{product.priceSuffix}</span></p>
+        )}
+        <div className="flex gap-2">
+          <button
+            onClick={() => onAdd(product)}
+            className="flex-1 flex items-center justify-center gap-1.5 bg-[#1A1A18] text-white text-[10px] tracking-[0.08em] font-medium py-2.5 hover:bg-[#333330] transition-colors"
+            style={{ minHeight: '38px' }}
+          >
+            <Plus className="w-3 h-3" /> {t('services.addToItinerary')}
+          </button>
+          <a
+            href={`${WHATSAPP_BASE}${waMsg}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center w-10 border border-[#E8E4DC] text-[#6B6860] hover:text-[#8B7355] hover:border-[#8B7355] transition-colors"
+            style={{ minHeight: '38px' }}
+            aria-label={t('services.bookViaWhatsapp')}
+          >
+            <MessageCircle className="w-4 h-4" />
+          </a>
+        </div>
       </div>
     </div>
   );
@@ -227,15 +233,17 @@ export default function Experiences() {
 
       {/* Gastronomy */}
       <section id="gastronomy" className="section-padding bg-white">
-        <div className="container max-w-3xl mx-auto">
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.gastronomyOverline')}</p>
-          <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.gastronomyTitle')}</h2>
-          <p className="body-lg mb-8">
-            {t('services.gastronomyBody')}
-          </p>
-          <div className="border-t border-[#E8E4DC]">
+        <div className="container">
+          <div className="max-w-3xl mx-auto mb-10">
+            <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.gastronomyOverline')}</p>
+            <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.gastronomyTitle')}</h2>
+            <p className="body-lg">
+              {t('services.gastronomyBody')}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {gastronomyProducts.map(p => (
-              <ServiceRow key={p.slug} product={p} onAdd={setModalProduct} />
+              <ServiceCard key={p.slug} product={p} onAdd={setModalProduct} />
             ))}
           </div>
         </div>
@@ -243,15 +251,17 @@ export default function Experiences() {
 
       {/* Wellness */}
       <section id="wellness" className="section-padding bg-[#F5F1EB]">
-        <div className="container max-w-3xl mx-auto">
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.wellnessOverline')}</p>
-          <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.wellnessTitle')}</h2>
-          <p className="body-lg mb-8">
-            {t('services.wellnessBody')}
-          </p>
-          <div className="border-t border-[#E8E4DC]">
+        <div className="container">
+          <div className="max-w-3xl mx-auto mb-10">
+            <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.wellnessOverline')}</p>
+            <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.wellnessTitle')}</h2>
+            <p className="body-lg">
+              {t('services.wellnessBody')}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {wellnessProducts.map(p => (
-              <ServiceRow key={p.slug} product={p} onAdd={setModalProduct} />
+              <ServiceCard key={p.slug} product={p} onAdd={setModalProduct} />
             ))}
           </div>
         </div>
@@ -279,15 +289,17 @@ export default function Experiences() {
 
       {/* Mobility */}
       <section id="mobility" className="section-padding bg-[#F5F1EB]">
-        <div className="container max-w-3xl mx-auto">
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.mobilityOverline')}</p>
-          <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.mobilityTitle')}</h2>
-          <p className="body-lg mb-8">
-            {t('services.mobilityBody')}
-          </p>
-          <div className="border-t border-[#E8E4DC]">
+        <div className="container">
+          <div className="max-w-3xl mx-auto mb-10">
+            <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.mobilityOverline')}</p>
+            <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.mobilityTitle')}</h2>
+            <p className="body-lg">
+              {t('services.mobilityBody')}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {mobilityProducts.map(p => (
-              <ServiceRow key={p.slug} product={p} onAdd={setModalProduct} />
+              <ServiceCard key={p.slug} product={p} onAdd={setModalProduct} />
             ))}
           </div>
         </div>
@@ -295,15 +307,17 @@ export default function Experiences() {
 
       {/* Additional Services */}
       <section id="additional" className="section-padding bg-white">
-        <div className="container max-w-3xl mx-auto">
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.additionalOverline')}</p>
-          <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.additionalTitle')}</h2>
-          <p className="body-lg mb-8">
-            {t('services.additionalBody')}
-          </p>
-          <div className="border-t border-[#E8E4DC]">
+        <div className="container">
+          <div className="max-w-3xl mx-auto mb-10">
+            <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('services.additionalOverline')}</p>
+            <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.additionalTitle')}</h2>
+            <p className="body-lg">
+              {t('services.additionalBody')}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {additionalProducts.map(p => (
-              <ServiceRow key={p.slug} product={p} onAdd={setModalProduct} />
+              <ServiceCard key={p.slug} product={p} onAdd={setModalProduct} />
             ))}
           </div>
         </div>
