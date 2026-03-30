@@ -237,7 +237,7 @@ export default function PropertyCard({
           {nights > 0 ? (
             <>
               <div className="flex items-baseline justify-between">
-                {quoteLoading ? (
+                {quoteLoading && !liveQuote ? (
                   <div className="flex flex-col gap-1.5 w-full max-w-[200px]" aria-busy="true" aria-label={t('property.checkingPriceAria')}>
                     <div className="h-3.5 bg-[#F5F1EB] rounded-md animate-pulse w-4/5" />
                     <div className="h-3 bg-[#F5F1EB] rounded-md animate-pulse w-1/2" />
