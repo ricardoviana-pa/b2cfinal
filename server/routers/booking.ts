@@ -8,7 +8,7 @@ import {
   getPaymentProvider,
 } from "../services/guesty-booking";
 import * as db from "../db";
-import { sendBookingConfirmation } from "../services/transactional-email";
+import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
 
 /**
  * Save a trip to the customer's account and award loyalty points.
@@ -278,6 +278,26 @@ export const bookingRouter = router({
 
         return result;
       } catch (error: any) {
+        // ── CRITICAL: Booking failed after Stripe PM was created ──
+        // The guest may have been charged. Alert the reservations team immediately.
+        sendBookingFailureAlert({
+          quoteId: input.quoteId,
+          ratePlanId: input.ratePlanId,
+          ccTokenPrefix: input.ccToken.slice(0, 6),
+          guestName: input.guestName,
+          guestEmail: input.guestEmail,
+          guestPhone: input.guestPhone,
+          propertyName: input.propertyName,
+          listingId: input.listingId,
+          checkIn: input.checkIn,
+          checkOut: input.checkOut,
+          guests: input.guests,
+          totalPrice: input.totalPrice,
+          currency: input.currency,
+          errorMessage: error.message || "Unknown error",
+          timestamp: new Date().toISOString(),
+        }).catch(() => {}); // Never let alert email failure mask the booking error
+
         throw new Error(error.message || "Failed to create reservation");
       }
     }),

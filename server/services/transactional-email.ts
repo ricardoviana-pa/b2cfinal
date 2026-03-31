@@ -147,6 +147,156 @@ export async function sendBookingConfirmation(data: BookingConfirmationData): Pr
 }
 
 /* ================================================================
+   BOOKING FAILURE ALERT (internal — to reservations team)
+   Triggered when a booking attempt fails AFTER Stripe payment method
+   was created. Guest may or may not have been charged.
+   ================================================================ */
+interface BookingFailureAlertData {
+  quoteId: string;
+  ratePlanId: string;
+  ccTokenPrefix: string;
+  guestName: string;
+  guestEmail: string;
+  guestPhone: string;
+  propertyName?: string;
+  listingId?: string;
+  checkIn?: string;
+  checkOut?: string;
+  guests?: number;
+  totalPrice?: number;
+  currency?: string;
+  errorMessage: string;
+  errorStatus?: number;
+  durationMs?: number;
+  timestamp: string;
+}
+
+const BOOKING_ALERT_EMAIL = process.env.BOOKING_ALERT_EMAIL || "booking@portugalactive.com";
+
+export async function sendBookingFailureAlert(data: BookingFailureAlertData): Promise<void> {
+  const subject = `BOOKING FAILED — ${data.propertyName || data.listingId || "Unknown"} — ${data.guestName} — €${data.totalPrice || "?"}`;
+
+  const html = wrapTemplate(`
+<tr><td style="padding:0 0 24px 0;">
+  <h1 style="font-family:Georgia,serif;font-size:22px;color:#DC2626;margin:0;font-weight:400;">Booking Attempt Failed</h1>
+  <p style="font-family:Arial,sans-serif;font-size:13px;color:#DC2626;margin:8px 0 0 0;">
+    A guest tried to book and the payment may have been processed but the reservation failed. Immediate action required.
+  </p>
+</td></tr>
+
+<!-- Guest Details -->
+<tr><td style="padding:0 0 20px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FEF2F2;border:1px solid #FECACA;">
+  <tr><td style="padding:20px;">
+    <p style="font-family:Arial,sans-serif;font-size:11px;color:#9E9A90;margin:0 0 12px 0;text-transform:uppercase;letter-spacing:0.05em;">Guest Information</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">Name</td>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;font-weight:600;">${data.guestName}</td>
+      </tr>
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">Email</td>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;">
+          <a href="mailto:${data.guestEmail}" style="color:#1A1A18;">${data.guestEmail}</a>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">Phone</td>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;">
+          <a href="https://wa.me/${data.guestPhone.replace(/[^0-9+]/g, "")}" style="color:#1A1A18;">${data.guestPhone}</a>
+        </td>
+      </tr>
+    </table>
+  </td></tr>
+</table>
+</td></tr>
+
+<!-- Booking Details -->
+<tr><td style="padding:0 0 20px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAFAF7;border:1px solid #E8E4DC;">
+  <tr><td style="padding:20px;">
+    <p style="font-family:Arial,sans-serif;font-size:11px;color:#9E9A90;margin:0 0 12px 0;text-transform:uppercase;letter-spacing:0.05em;">Booking Details</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">Property</td>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;">${data.propertyName || "—"}</td>
+      </tr>
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">Listing ID</td>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;">${data.listingId || "—"}</td>
+      </tr>
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">Check-in / Check-out</td>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;">${data.checkIn || "—"} → ${data.checkOut || "—"}</td>
+      </tr>
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">Guests</td>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;">${data.guests || "—"}</td>
+      </tr>
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">Amount</td>
+        <td style="padding:4px 0;font-family:Georgia,serif;font-size:16px;color:#DC2626;text-align:right;font-weight:600;">${data.currency || "EUR"} ${data.totalPrice ? data.totalPrice.toLocaleString() : "?"}</td>
+      </tr>
+    </table>
+  </td></tr>
+</table>
+</td></tr>
+
+<!-- Error Details -->
+<tr><td style="padding:0 0 20px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFF7ED;border:1px solid #FED7AA;">
+  <tr><td style="padding:20px;">
+    <p style="font-family:Arial,sans-serif;font-size:11px;color:#9E9A90;margin:0 0 12px 0;text-transform:uppercase;letter-spacing:0.05em;">Error Details</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">Quote ID</td>
+        <td style="padding:4px 0;font-family:monospace;font-size:12px;color:#1A1A18;text-align:right;">${data.quoteId}</td>
+      </tr>
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">Rate Plan ID</td>
+        <td style="padding:4px 0;font-family:monospace;font-size:12px;color:#1A1A18;text-align:right;">${data.ratePlanId}</td>
+      </tr>
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">Stripe PM prefix</td>
+        <td style="padding:4px 0;font-family:monospace;font-size:12px;color:#1A1A18;text-align:right;">${data.ccTokenPrefix}...</td>
+      </tr>
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">HTTP Status</td>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:14px;color:#DC2626;text-align:right;font-weight:600;">${data.errorStatus || "Unknown"}</td>
+      </tr>
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">Duration</td>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;">${data.durationMs ? data.durationMs + "ms" : "—"}</td>
+      </tr>
+      <tr>
+        <td colspan="2" style="padding:8px 0 0 0;font-family:Arial,sans-serif;font-size:13px;color:#DC2626;word-break:break-word;">${data.errorMessage}</td>
+      </tr>
+    </table>
+  </td></tr>
+</table>
+</td></tr>
+
+<tr><td style="padding:0 0 20px 0;">
+  <p style="font-family:Arial,sans-serif;font-size:13px;color:#6B6860;line-height:1.6;margin:0;">
+    <strong>Action required:</strong> Check Guesty and Stripe dashboards to verify if the guest was charged. If charged without a reservation, process a refund or create the reservation manually. Contact the guest proactively.
+  </p>
+</td></tr>
+
+<tr><td style="padding:0 0 10px 0;">
+  <p style="font-family:Arial,sans-serif;font-size:11px;color:#9E9A90;margin:0;">
+    Timestamp: ${data.timestamp} | Alert sent automatically by dev.portugalactive.com
+  </p>
+</td></tr>`);
+
+  try {
+    await sendEmail(BOOKING_ALERT_EMAIL, subject, html);
+  } catch (emailErr: any) {
+    // Alert email must NEVER throw — log and move on
+    console.error(`[EMAIL] CRITICAL: Failed to send booking failure alert to ${BOOKING_ALERT_EMAIL}: ${emailErr.message}`);
+  }
+}
+
+/* ================================================================
    PRE-ARRIVAL (3 days before)
    ================================================================ */
 interface PreArrivalData {

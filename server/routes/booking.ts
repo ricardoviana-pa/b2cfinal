@@ -4,6 +4,8 @@ import crypto from "node:crypto";
 import { cacheManager } from "../lib/cacheManager";
 import { guestyClient, GuestyClientError, resetGuestyRateLimitCooldowns } from "../lib/guesty";
 import { getPropertiesForSite } from "../services/properties-store";
+import { updateTripStatusByReservationId } from "../db";
+import { sendBookingFailureAlert } from "../services/transactional-email";
 
 const TTL_LISTING_MS = 6 * 60 * 60 * 1000;
 const TTL_CALENDAR_MS = 60 * 1000;
@@ -172,20 +174,23 @@ export function registerGuestyWebhookRoute(app: Express): void {
 
     res.status(200).json({ ok: true });
 
-    setImmediate(() => {
+    setImmediate(async () => {
       const eventType = String(payload?.event || payload?.type || "unknown");
-      const listingId = payload?.data?.listingId || payload?.listingId || payload?.data?.reservation?.listingId;
+      const reservation = payload?.data?.reservation || payload?.data || payload;
+      const listingId = reservation?.listingId || payload?.listingId || "";
+      const reservationId = reservation?._id || payload?.data?._id || "";
+      const guestyStatus = String(reservation?.status || "").toLowerCase();
 
-      console.info(
-        JSON.stringify({
-          source: "guesty.webhook",
-          eventType,
-          listingId,
-          receivedAt: new Date().toISOString(),
-          payload,
-        })
-      );
+      console.info(JSON.stringify({
+        source: "guesty.webhook",
+        eventType,
+        listingId,
+        reservationId,
+        guestyStatus,
+        receivedAt: new Date().toISOString(),
+      }));
 
+      // ── Invalidate cache for listing-related events ──
       if (
         listingId &&
         (
@@ -200,15 +205,44 @@ export function registerGuestyWebhookRoute(app: Express): void {
         cacheManager.invalidateByPrefix(`calendar:${listingId}:`);
       }
 
+      // ── Sync reservation status to customer trips DB ──
+      if (reservationId && (
+        eventType === "reservation.updated" ||
+        eventType === "reservation.canceled" ||
+        eventType === "reservation.cancelled"
+      )) {
+        try {
+          // Map Guesty statuses to our trip statuses
+          let tripStatus: "upcoming" | "active" | "completed" | "cancelled" | null = null;
+          if (guestyStatus === "canceled" || guestyStatus === "cancelled") {
+            tripStatus = "cancelled";
+          } else if (guestyStatus === "checked_in" || guestyStatus === "checked-in") {
+            tripStatus = "active";
+          } else if (guestyStatus === "checked_out" || guestyStatus === "checked-out") {
+            tripStatus = "completed";
+          } else if (guestyStatus === "confirmed" || guestyStatus === "reserved") {
+            tripStatus = "upcoming";
+          }
+
+          if (tripStatus) {
+            await updateTripStatusByReservationId(reservationId, tripStatus);
+            console.info(`[Webhook] Trip status updated: reservationId=${reservationId} → ${tripStatus}`);
+          }
+        } catch (err: any) {
+          console.warn(`[Webhook] Failed to update trip status: ${err.message}`);
+        }
+      }
+
+      // ── Log reservation.created for monitoring ──
       if (eventType === "reservation.created") {
-        console.info(
-          JSON.stringify({
-            source: "guesty.webhook.email_stub",
-            action: "send_confirmation_email",
-            reservationId: payload?.data?._id || payload?._id,
-            payload,
-          })
-        );
+        console.info(JSON.stringify({
+          source: "guesty.webhook.reservation_created",
+          reservationId,
+          listingId,
+          confirmationCode: reservation?.confirmationCode || "",
+          guestEmail: reservation?.guest?.email || "",
+          status: guestyStatus,
+        }));
       }
     });
   });
