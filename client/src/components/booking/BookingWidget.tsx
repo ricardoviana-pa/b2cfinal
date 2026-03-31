@@ -51,7 +51,12 @@ interface QuoteData {
   priceOnRequest?: boolean;
   fallbackMessage?: string;
   source?: "live" | "cached" | "base" | "request";
+  /** Timestamp when the BE quote was created — valid for 24h */
+  quoteCreatedAt?: number;
 }
+
+/** BE quotes expire after 24h; warn at 23h to give buffer */
+const QUOTE_EXPIRY_MS = 23 * 60 * 60 * 1000;
 
 type Step = "dates" | "quote" | "details" | "payment" | "success";
 type SuccessMode = "confirmed";
@@ -240,6 +245,7 @@ export default function BookingWidget({
   const [confirmation, setConfirmation] = useState("");
   const [successMode, setSuccessMode] = useState<SuccessMode>("confirmed");
   const [beQuoteError, setBeQuoteError] = useState("");
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const quoteRequestRef = useRef(0);
   const lastQuoteKeyRef = useRef("");
   /** Avoids unstable `fetchQuote` when `quote` updates (prevents auto-quote useEffect loops). */
@@ -372,6 +378,7 @@ export default function BookingWidget({
             return {
               ...prev,
               quoteId: be.quoteId,
+              quoteCreatedAt: Date.now(),
               ratePlanId: be.ratePlanId,
               currency: be.currency || prev.currency,
               cancellationPolicy: be.cancellationPolicy,
@@ -871,7 +878,17 @@ export default function BookingWidget({
             {canPayOnSite && quote?.quoteId ? (
               /* Primary: Online payment available — direct booking */
               <button
-                onClick={() => { setError(""); setStep("payment"); }}
+                onClick={() => {
+                  // Check if BE quote has expired (24h validity)
+                  if (quote.quoteCreatedAt && (Date.now() - quote.quoteCreatedAt > QUOTE_EXPIRY_MS)) {
+                    setError(t("bookingWidget.quoteExpired", { defaultValue: "Your quote has expired. Please refresh the page to get updated pricing." }));
+                    setQuote(prev => prev ? { ...prev, quoteId: undefined, quoteCreatedAt: undefined } : null);
+                    return;
+                  }
+                  setError("");
+                  setTermsAccepted(false);
+                  setStep("payment");
+                }}
                 className="w-full min-h-[52px] bg-black text-white text-xs font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors"
               >
                 {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote.total)}
@@ -939,24 +956,53 @@ export default function BookingWidget({
               className="w-full h-[48px] border border-black/15 bg-white px-3 py-2 text-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black font-normal"
             />
             <PhoneInput value={guestPhone} onChange={setGuestPhone} />
-            <CheckoutPaymentForm
-              listingId={guestyId}
-              checkIn={checkIn}
-              checkOut={checkOut}
-              guests={guests}
-              quoteId={quote.quoteId}
-              ratePlanId={effectiveQuote?.ratePlanId ?? quote.ratePlanId ?? ""}
-              total={effectiveQuote?.total ?? quote.total}
-              currency={quote.currency || currency}
-              propertyName={propertyName}
-              destination={destination}
-              guestName={`${guestFirstName} ${guestLastName}`}
-              guestEmail={guestEmail}
-              guestPhone={guestPhone}
-              notes={(notes + upsellNote).trim() || undefined}
-              onSuccess={handlePaymentSuccess}
-              onCancel={() => setStep("quote")}
-            />
+            {/* Terms & Cancellation Policy acceptance */}
+            <label className="flex items-start gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={termsAccepted}
+                onChange={e => setTermsAccepted(e.target.checked)}
+                className="mt-0.5 w-4 h-4 accent-black border-black/20 rounded"
+              />
+              <span className="text-[12px] text-black/60 leading-snug">
+                {t("bookingWidget.termsAcceptLabel", {
+                  defaultValue: "I accept the"
+                })}{" "}
+                <a href="/terms" target="_blank" className="text-black underline hover:text-black/70">{t("bookingWidget.termsLink", { defaultValue: "Terms & Conditions" })}</a>
+                {" "}{t("bookingWidget.termsAnd", { defaultValue: "and" })}{" "}
+                <a href="/faq#cancellation" target="_blank" className="text-black underline hover:text-black/70">{t("bookingWidget.cancellationPolicyLink")}</a>
+              </span>
+            </label>
+
+            {termsAccepted ? (
+              <CheckoutPaymentForm
+                listingId={guestyId}
+                checkIn={checkIn}
+                checkOut={checkOut}
+                guests={guests}
+                quoteId={quote.quoteId}
+                ratePlanId={effectiveQuote?.ratePlanId ?? quote.ratePlanId ?? ""}
+                total={effectiveQuote?.total ?? quote.total}
+                currency={quote.currency || currency}
+                propertyName={propertyName}
+                destination={destination}
+                guestName={`${guestFirstName} ${guestLastName}`}
+                guestEmail={guestEmail}
+                guestPhone={guestPhone}
+                notes={(notes + upsellNote).trim() || undefined}
+                onSuccess={handlePaymentSuccess}
+                onCancel={() => setStep("quote")}
+              />
+            ) : (
+              <div className="flex flex-col gap-3">
+                <button disabled className="btn-primary w-full opacity-40 cursor-not-allowed">
+                  {t("bookingWidget.acceptTermsToPay", { defaultValue: "Accept terms to continue" })}
+                </button>
+                <button type="button" onClick={() => setStep("quote")} className="btn-ghost">
+                  {t("payment.cancelButton", { defaultValue: "Back" })}
+                </button>
+              </div>
+            )}
           </div>
         )}
 

@@ -55,6 +55,15 @@ interface CheckoutPaymentFormProps {
   onCancel: () => void;
 }
 
+/** Policy acceptance object sent to Guesty BE API instant booking */
+function buildPolicyPayload() {
+  return {
+    termsAndConditions: { accepted: true, acceptedAt: new Date().toISOString() },
+    cancellationPolicy: { accepted: true, acceptedAt: new Date().toISOString() },
+    privacyPolicy: { accepted: true, acceptedAt: new Date().toISOString() },
+  };
+}
+
 function PaymentFormInner({
   listingId,
   checkIn,
@@ -130,6 +139,7 @@ function PaymentFormInner({
           guestName,
           guestEmail,
           guestPhone,
+          policy: buildPolicyPayload(),
           listingId,
           propertyName,
           destination,
@@ -188,13 +198,24 @@ function PaymentFormInner({
 
 export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
   const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
+  // Per-listing payment provider: fetch the Stripe connected account for this property
+  const { data: paymentProvider } = trpc.booking.getPaymentProvider.useQuery(
+    { listingId: props.listingId },
+    { enabled: !!props.listingId },
+  );
   if (!stripeConfig?.publishableKey) {
     return null;
   }
 
+  // Use per-listing Stripe connected account if available, fallback to global
+  const stripeAccountId = paymentProvider?.providerAccountId || stripeConfig.stripeAccountId;
+
   const stripePromise = useMemo(
-    () => loadStripe(stripeConfig.publishableKey),
-    [stripeConfig.publishableKey],
+    () => loadStripe(
+      stripeConfig.publishableKey,
+      stripeAccountId ? { stripeAccount: stripeAccountId } : undefined,
+    ),
+    [stripeConfig.publishableKey, stripeAccountId],
   );
 
   // Deferred intent mode: PaymentElement without a client secret.

@@ -196,6 +196,7 @@ export const bookingRouter = router({
         guestName: z.string().min(2),
         guestEmail: z.string().email(),
         guestPhone: z.string().min(5),
+        policy: z.record(z.unknown()).optional(),
         // Extra fields for trip recording
         listingId: z.string().optional(),
         propertyName: z.string().optional(),
@@ -211,7 +212,10 @@ export const bookingRouter = router({
     .mutation(async ({ ctx, input }) => {
       if (!isBEApiConfigured()) throw new Error("Booking Engine API not configured");
       try {
-        const result = await createBEInstantReservation(input);
+        const result = await createBEInstantReservation({
+          ...input,
+          policy: input.policy || {},
+        });
 
         // Record to customer account (non-blocking)
         if (input.checkIn && input.checkOut) {

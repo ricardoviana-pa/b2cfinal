@@ -105,56 +105,7 @@ export async function getQuote(
   );
   const cacheKey = getQuoteCacheKey(listingId, checkIn, checkOut, guests);
 
-  // If Guesty OAuth is rate-limited, skip the live API call — try BE API first (separate credentials)
-  const openApiCoolingDown = isGuestyOAuthCoolingDown();
-
-  // ── TIER 1: Open API live quote (fastest, most accurate) ──
-  if (!openApiCoolingDown) {
-    try {
-      const quote = await guestyClient.createQuote(listingId, checkIn, checkOut, guests);
-      const pricing = quote.pricingCents;
-      const fareAccommodation = pricing.baseRentCents / 100;
-      const fareCleaning = pricing.cleaningFeeCents / 100;
-      const hostPayout = pricing.totalAfterTaxCents / 100;
-
-      const result: QuoteResult = {
-        available: true,
-        listingId,
-        checkIn,
-        checkOut,
-        nights,
-        currency: pricing.currency || "EUR",
-        pricing: {
-          nightlyRate: nights > 0 ? Math.round(fareAccommodation / nights) : 0,
-          totalNights: fareAccommodation,
-          cleaningFee: fareCleaning,
-          subtotal: fareAccommodation + fareCleaning,
-          total: hostPayout,
-        },
-        source: "live",
-      };
-      setCachedQuote(cacheKey, result);
-      console.info(`[getQuote] ✓ LIVE quote for ${listingId}: €${hostPayout} (${nights}n)`);
-      return result;
-    } catch (err: any) {
-      console.warn(`[getQuote] Open API FAILED for ${listingId} ${checkIn}→${checkOut}: ${err?.message || err}`);
-    }
-  } else {
-    console.info(`[getQuote] Open API in cooldown — skipping for ${listingId}, trying BE API`);
-  }
-
-  // ── Check server-side cache before making more API calls ──
-  const cached = getCachedQuote(cacheKey);
-  if (cached && cached.source === "live") {
-    console.info(`[getQuote] ✓ CACHED live quote for ${listingId}: €${cached.pricing.total}`);
-    return {
-      ...cached,
-      source: "cached" as QuoteSource,
-      fallbackMessage: "Live pricing is temporarily unavailable. Showing the most recent cached price.",
-    };
-  }
-
-  // ── TIER 2: Booking Engine API (separate OAuth credentials, typically not rate-limited) ──
+  // ── TIER 1: Booking Engine API (primary source — same API used for checkout) ──
   if (isBEApiConfigured()) {
     try {
       const beQuote = await Promise.race([
@@ -187,9 +138,54 @@ export async function getQuote(
     }
   }
 
-  // ── Return cached base quote if we have one ──
+  // ── Check server-side cache before fallback tiers ──
+  const cached = getCachedQuote(cacheKey);
+  if (cached && cached.source === "live") {
+    console.info(`[getQuote] ✓ CACHED live quote for ${listingId}: €${cached.pricing.total}`);
+    return {
+      ...cached,
+      source: "cached" as QuoteSource,
+      fallbackMessage: "Live pricing is temporarily unavailable. Showing the most recent cached price.",
+    };
+  }
+
+  // ── TIER 2: Open API live quote (fallback — v1 endpoints may be deprecated) ──
+  const openApiCoolingDown = isGuestyOAuthCoolingDown();
+  if (!openApiCoolingDown) {
+    try {
+      const quote = await guestyClient.createQuote(listingId, checkIn, checkOut, guests);
+      const pricing = quote.pricingCents;
+      const fareAccommodation = pricing.baseRentCents / 100;
+      const fareCleaning = pricing.cleaningFeeCents / 100;
+      const hostPayout = pricing.totalAfterTaxCents / 100;
+
+      const result: QuoteResult = {
+        available: true,
+        listingId,
+        checkIn,
+        checkOut,
+        nights,
+        currency: pricing.currency || "EUR",
+        pricing: {
+          nightlyRate: nights > 0 ? Math.round(fareAccommodation / nights) : 0,
+          totalNights: fareAccommodation,
+          cleaningFee: fareCleaning,
+          subtotal: fareAccommodation + fareCleaning,
+          total: hostPayout,
+        },
+        source: "live",
+      };
+      setCachedQuote(cacheKey, result);
+      console.info(`[getQuote] ✓ Open API quote for ${listingId}: €${hostPayout} (${nights}n)`);
+      return result;
+    } catch (err: any) {
+      console.warn(`[getQuote] Open API FAILED for ${listingId} ${checkIn}→${checkOut}: ${err?.message || err}`);
+    }
+  }
+
+  // ── Return cached quote if we have one ──
   if (cached) {
-    console.info(`[getQuote] ✓ CACHED base quote for ${listingId}: €${cached.pricing.total}`);
+    console.info(`[getQuote] ✓ CACHED quote for ${listingId}: €${cached.pricing.total}`);
     return {
       ...cached,
       source: (cached.source === "live" || cached.source === "cached" ? "cached" : "base") as QuoteSource,
