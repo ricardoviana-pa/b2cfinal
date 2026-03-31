@@ -317,7 +317,7 @@ export default function BookingWidget({
     } finally {
       setIsRetryingForLivePrice(false);
     }
-  }, [checkIn, checkOut, guests, guestyId, createBEQuote]);
+  }, [checkIn, checkOut, guests, guestyId]);
 
   useEffect(() => {
     quoteRef.current = quote;
