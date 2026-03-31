@@ -43,16 +43,17 @@ export default function AvailabilityCalendar({
     [days]
   );
 
-  const prices = useMemo(() => {
-    const map = new Map<string, number>();
+  /* Status lookup — no prices needed */
+  const statusMap = useMemo(() => {
+    const map = new Map<string, string>();
     for (const day of days) {
-      if (day.price) map.set(day.date, day.price);
+      map.set(day.date, day.status);
     }
     return map;
   }, [days]);
 
   const calendarNode = (
-    <div className="rounded-lg bg-white border border-[#E8E4DC] shadow-[0_4px_24px_rgba(0,0,0,0.08)] p-4">
+    <div className="bg-white p-3">
       <CalendarUI
         mode="range"
         numberOfMonths={isMobile ? 1 : 2}
@@ -65,7 +66,6 @@ export default function AvailabilityCalendar({
           const from = range?.from ? range.from.toISOString().split("T")[0] : "";
           const to = range?.to ? range.to.toISOString().split("T")[0] : "";
 
-          // Check if any date in the range is unavailable
           if (from && to) {
             const fromDate = new Date(from);
             const toDate = new Date(to);
@@ -81,8 +81,8 @@ export default function AvailabilityCalendar({
             }
 
             if (!isRangeValid) {
-              setUnavailableMessage(t("unavailableDatesMessage", "Some dates in your selection are unavailable. Please select another range."));
-              setTimeout(() => setUnavailableMessage(""), 3000);
+              setUnavailableMessage(t("unavailableDatesMessage", "Some dates in your selection are unavailable. Please choose another range."));
+              setTimeout(() => setUnavailableMessage(""), 4000);
               return;
             }
           }
@@ -94,27 +94,61 @@ export default function AvailabilityCalendar({
         components={{
           DayButton: ({ day, modifiers, ...props }: any) => {
             const dateKey = day.date.toISOString().split("T")[0];
-            const nightlyPrice = prices.get(dateKey);
+            const status = statusMap.get(dateKey) || "available";
+            const isBlocked = status !== "available";
+            const isSelected = modifiers.selected;
+            const isInRange = modifiers.range_middle;
+            const isRangeStart = modifiers.range_start;
+            const isRangeEnd = modifiers.range_end;
+            const isToday = modifiers.today;
+            const isOutside = modifiers.outside;
+
+            if (isOutside) {
+              return <button {...props} className="h-10 w-10" tabIndex={-1} />;
+            }
+
             return (
               <button
                 {...props}
-                className={`flex h-full min-h-[56px] w-full flex-col items-center justify-center rounded-md border text-[11px] ${
-                  modifiers.disabled
-                    ? "border-transparent bg-[#F5F1EB] text-[#9E9A90]"
-                    : modifiers.selected
-                      ? "border-[#8B7355] bg-[#8B7355] text-[#FAFAF7]"
-                      : "border-transparent bg-white text-[#1A1A18] hover:bg-[#F5F1EB]"
-                }`}
+                className={[
+                  "relative flex h-10 w-10 items-center justify-center text-sm font-medium transition-all",
+                  isBlocked
+                    ? "text-black/15 cursor-not-allowed"
+                    : isRangeStart || isRangeEnd
+                      ? "bg-black text-white rounded-full z-10"
+                      : isInRange
+                        ? "bg-black/5 text-black"
+                        : "text-black hover:bg-black/5 rounded-full",
+                  isToday && !isSelected && !isBlocked ? "ring-1 ring-black/20 rounded-full" : "",
+                ].join(" ")}
               >
-                <span>{day.date.getDate()}</span>
-                {!modifiers.disabled && nightlyPrice ? (
-                  <span className="text-[10px] opacity-70">{Math.round(nightlyPrice)}€</span>
-                ) : null}
+                <span className={isBlocked ? "line-through decoration-black/25" : ""}>
+                  {day.date.getDate()}
+                </span>
               </button>
             );
           },
         }}
       />
+
+      {/* Unavailable selection message */}
+      {unavailableMessage && (
+        <div className="mx-1 mt-2 p-2.5 bg-red-50 border border-red-200 rounded text-red-600 text-xs">
+          {unavailableMessage}
+        </div>
+      )}
+
+      {/* Legend */}
+      <div className="flex items-center gap-5 mt-3 pt-3 border-t border-black/5 px-1">
+        <div className="flex items-center gap-1.5">
+          <span className="w-3 h-3 rounded-full bg-black" />
+          <span className="text-[11px] text-black/50">{t("calendarAvailable", "Available")}</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-3 h-3 rounded-full bg-black/10 flex items-center justify-center text-[8px] text-black/30 line-through">—</span>
+          <span className="text-[11px] text-black/50">{t("calendarUnavailable", "Unavailable")}</span>
+        </div>
+      </div>
     </div>
   );
 
@@ -125,45 +159,28 @@ export default function AvailabilityCalendar({
       <button
         type="button"
         onClick={() => setMobileOpen(true)}
-        className="w-full rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 min-h-[48px]"
+        className="w-full bg-black text-white text-xs font-medium tracking-widest uppercase px-8 py-3.5 min-h-[48px] rounded-none"
       >
         {t("selectDates", "Select Dates")}
       </button>
       <Dialog open={mobileOpen} onOpenChange={setMobileOpen}>
-        <DialogContent className="max-w-none w-screen h-screen top-0 left-0 translate-x-0 translate-y-0 rounded-none p-5 bg-[#FAFAF7]">
+        <DialogContent className="max-w-none w-screen h-screen top-0 left-0 translate-x-0 translate-y-0 rounded-none p-5 bg-white">
           <div className="flex flex-col h-full">
             <div className="flex items-center justify-between mb-6">
-              <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] flex-1">
-                {t("calendar", "Calendar")}
+              <p className="text-xs font-medium tracking-widest uppercase text-black/40">
+                {t("calendar", "Select dates")}
               </p>
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}
-                className="text-[#1A1A18] hover:text-[#8B7355] transition-colors"
+                className="text-black hover:opacity-60 transition-opacity"
                 aria-label={t("close", "Close")}
               >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-
-            {unavailableMessage && (
-              <div className="mb-4 p-3 bg-red-100 border border-red-300 rounded-md text-red-700 text-[12px]">
-                {unavailableMessage}
-              </div>
-            )}
 
             <div className="flex-1 overflow-auto">
               {calendarNode}
