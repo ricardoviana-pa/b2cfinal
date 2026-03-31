@@ -1,0 +1,223 @@
+{
+  "services": [
+    {
+      "slug": "private-chef",
+      "name": "Private Chef",
+      "category": "service",
+      "tagline": "Restaurant-quality dining in the comfort of your home.",
+      "description": "Enjoy a personalised culinary experience in the comfort of your holiday home made by our talented chef. Whether you want to celebrate a special date, come together with family and friends, organise a corporate event or just sit back, relax and enjoy your home, this is the best way to do it.\n\nCooked with fresh and locally-sourced ingredients, each dish is always prepared with the goal to be delicious and healthy. You only need to choose the menu or a personalised meal, plus the date and time and we will take care of everything else.",
+      "image": "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1200&q=80",
+      "details": ["Full course meal", "Customized menu", "Available in all homes", "Drinks included", "Local ingredients", "Cleaning included"],
+      "price": "From €85 per person",
+      "duration": "3-4 hours",
+      "availability": "Available in all homes",
+      "reviews": [
+        { "name": "Benjamin", "text": "5 stars, wonderful! Having restaurant service at home made the occasion especially relaxing. The food is amazing and it goes very well with the wine.", "rating": 5 },
+        { "name": "Elijah M.", "text": "Wow! We were blown away by the private chef service! Dinner standard is excellent. The quality of service is exceptional!", "rating": 5 },
+        { "name": "Maria Lucas", "text": "We had an amazing night. Ricardo is an excellent chef and has great energy. The dishes are delicious, perfect pairing.", "rating": 5 },
+        { "name": "Amelia", "text": "Perfect! We had a showcase of high quality and creative Portuguese food. Haute cuisine and the comfort of home service.", "rating": 5 }
+      ]
+    },
+    {
+      "slug": "massage-therapist",
+      "name": "Massage Therapist",
+      "category": "service",
+      "tagline": "Professional spa treatments in the privacy of your villa.",
+      "description": "Transform your villa into a private wellness retreat. Our network of certified therapists brings the full spa experience directly to your home — on your schedule, in your space, with complete privacy.\n\nChoose from Swedish, deep tissue, hot stone, aromatherapy, or sports massage. All equipment and premium oils are provided. Sessions can be arranged poolside, on your terrace, or in any room you prefer.",
+      "image": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=1200&q=80",
+      "details": ["Certified therapists", "Multiple techniques", "All equipment provided", "Premium oils included", "Indoor or outdoor", "Couples available"],
+      "price": "From €75 per session",
+      "duration": "60-90 minutes",
+      "availability": "Available in all homes",
+      "reviews": [
+        { "name": "Sophie R.", "text": "The massage was absolutely divine. Having it on our terrace overlooking the ocean made it even more special.", "rating": 5 },
+        { "name": "James T.", "text": "Professional, punctual, and incredibly skilled. The deep tissue massage was exactly what I needed after a long flight.", "rating": 5 }
+      ]
+    },
+    {
+      "slug": "private-yoga",
+      "name": "Private Yoga Session",
+      "category": "service",
+      "tagline": "Morning serenity on your private terrace.",
+      "description": "Start your day with a private yoga session led by a certified instructor on your terrace, garden, or by the pool. All levels welcome — from complete beginners to advanced practitioners.\n\nOur instructors adapt each session to your group's needs and preferences. Equipment is provided, including mats, blocks, and straps. Sessions can focus on Hatha, Vinyasa, Yin, or restorative yoga.",
+      "image": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&q=80",
+      "details": ["Certified instructors", "All levels welcome", "Equipment provided", "Indoor or outdoor", "Group or individual", "Multiple yoga styles"],
+      "price": "From €60 per session",
+      "duration": "60 minutes",
+      "availability": "Available in all homes",
+      "reviews": [
+        { "name": "Clara D.", "text": "The sunrise yoga session on the terrace was the highlight of our trip. The instructor was wonderful with our mixed-level group.", "rating": 5 }
+      ]
+    },
+    {
+      "slug": "personal-trainer",
+      "name": "Personal Trainer",
+      "category": "service",
+      "tagline": "Stay active on holiday with expert guidance.",
+      "description": "Maintain your fitness routine — or start a new one — with a certified personal trainer who comes to your property. Sessions are tailored to your fitness level, goals, and available space.\n\nWhether it is strength training by the pool, a HIIT session in the garden, or a gentle mobility workout on the terrace, our trainers bring all the equipment needed for an effective session.",
+      "image": "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1200&q=80",
+      "details": ["Certified trainers", "Tailored sessions", "All equipment provided", "Strength and cardio", "All fitness levels", "Outdoor sessions"],
+      "price": "From €55 per session",
+      "duration": "60 minutes",
+      "availability": "Available in all homes",
+      "reviews": [
+        { "name": "Sarah T.", "text": "Her guidance and support are exactly what I need to help me tone up. The kids loved it, we got everyone active!", "rating": 5 },
+        { "name": "Mark K.", "text": "Sergio is a knowledgeable and experienced trainer! I appreciate his ability to mix things up and keep it fresh.", "rating": 5 }
+      ]
+    },
+    {
+      "slug": "airport-shuttle",
+      "name": "Airport Shuttle",
+      "category": "service",
+      "tagline": "Seamless transfers from landing to your front door.",
+      "description": "Your holiday begins the moment you land. Our private airport transfer service ensures a smooth, comfortable journey from Porto, Lisbon, or Faro airport directly to your property.\n\nProfessional drivers in premium vehicles meet you at arrivals with a name board. Child seats are available on request. We monitor flight times so even if your flight is delayed, your driver will be there.",
+      "image": "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1200&q=80",
+      "details": ["Premium vehicles", "Meet and greet", "Flight monitoring", "Child seats available", "Door-to-door", "24/7 availability"],
+      "price": "From €65 per transfer",
+      "duration": "Varies by distance",
+      "availability": "Porto, Lisbon, Faro airports",
+      "reviews": []
+    },
+    {
+      "slug": "private-chauffeur",
+      "name": "Private Chauffeur",
+      "category": "service",
+      "tagline": "Your dedicated driver for every journey.",
+      "description": "A dedicated driver at your disposal for day trips, wine tours, city explorations, or restaurant transfers. Relax and enjoy the scenery while your chauffeur handles the logistics.\n\nOur chauffeurs are local experts who can recommend the best routes, hidden restaurants, and scenic stops along the way. Available for half-day or full-day bookings.",
+      "image": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=1200&q=80",
+      "details": ["Local expert drivers", "Premium vehicles", "Half or full day", "Flexible itinerary", "Restaurant transfers", "Wine tour specialist"],
+      "price": "From €180 per half day",
+      "duration": "Half day or full day",
+      "availability": "All regions",
+      "reviews": []
+    },
+    {
+      "slug": "grocery-setup",
+      "name": "Grocery Setup and Delivery",
+      "category": "service",
+      "tagline": "Your fridge stocked before you arrive.",
+      "description": "Arrive to a fully stocked kitchen with local produce, artisan bread, regional cheese, fresh fruit, and your favourite wines. We take care of the shopping so you can start enjoying your holiday from the very first moment.\n\nChoose from our curated welcome packages or send us your personal shopping list. We source everything from local markets and trusted suppliers.",
+      "image": "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=1200&q=80",
+      "details": ["Local produce", "Artisan products", "Custom shopping lists", "Welcome packages", "Wine selection", "Dietary needs catered"],
+      "price": "From €45 per setup",
+      "duration": "Ready on arrival",
+      "availability": "Available in all homes",
+      "reviews": []
+    },
+    {
+      "slug": "babysitter",
+      "name": "Babysitter",
+      "category": "service",
+      "tagline": "Trusted childcare so you can enjoy your evening.",
+      "description": "Certified childcare professionals available for evenings out, day excursions, or whenever you need a few hours to yourselves. All our babysitters are vetted, experienced, and speak English.\n\nWhether you want a romantic dinner out, a spa session, or simply some quiet time, our babysitters ensure your children are safe, entertained, and happy.",
+      "image": "https://images.unsplash.com/photo-1476703993599-0035a21b17a9?w=1200&q=80",
+      "details": ["Certified professionals", "English speaking", "Vetted and experienced", "Flexible hours", "Evening or daytime", "All ages"],
+      "price": "From €20 per hour",
+      "duration": "Minimum 3 hours",
+      "availability": "Available in all homes",
+      "reviews": []
+    }
+  ],
+  "activities": [
+    {
+      "slug": "horseback-riding",
+      "name": "Horseback Riding",
+      "category": "activity",
+      "tagline": "Explore beaches and forests on horseback.",
+      "description": "Discover Portugal's stunning landscapes from a completely different perspective — on horseback. Our experienced guides lead you through beaches, forests, vineyards, and ancient trails on well-trained horses suitable for all experience levels.\n\nRides range from gentle beach walks for beginners to full-day adventures through the countryside for experienced riders. All safety equipment is provided.",
+      "image": "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=1200&q=80",
+      "details": ["All experience levels", "Beach and forest trails", "Safety equipment", "Professional guides", "1-4 hour options", "Small groups"],
+      "price": "From €55 per person",
+      "duration": "1-4 hours",
+      "availability": "Minho Coast, Algarve",
+      "reviews": [
+        { "name": "Emma W.", "text": "Riding along the beach at sunset was magical. The horses were gentle and the guide was fantastic with our children.", "rating": 5 },
+        { "name": "David L.", "text": "An unforgettable experience. The forest trail was beautiful and the horses were incredibly well cared for.", "rating": 5 }
+      ]
+    },
+    {
+      "slug": "canyoning",
+      "name": "Canyoning",
+      "category": "activity",
+      "tagline": "Descend through hidden valleys and natural pools.",
+      "description": "An adrenaline-pumping adventure through the hidden canyons of Peneda-Gerês National Park. Descend through waterfalls, slide down natural water slides, jump into crystal-clear pools, and rappel down rock faces.\n\nOur certified guides ensure safety while maximising the thrill. All equipment is provided including wetsuits, helmets, and harnesses. Suitable for ages 12 and above.",
+      "image": "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=1200&q=80",
+      "details": ["Certified guides", "All equipment provided", "Wetsuits included", "Ages 12+", "National Park setting", "Multiple difficulty levels"],
+      "price": "From €65 per person",
+      "duration": "3-5 hours",
+      "availability": "Peneda-Gerês, Minho",
+      "reviews": [
+        { "name": "Tom R.", "text": "Absolutely incredible! The canyon was stunning and the guides made us feel completely safe while having the time of our lives.", "rating": 5 }
+      ]
+    },
+    {
+      "slug": "ebike-tour",
+      "name": "E-Bike Wild Tour",
+      "category": "activity",
+      "tagline": "Discover the countryside at your own pace.",
+      "description": "Explore Portugal's most beautiful landscapes on premium electric bikes with curated routes designed by local experts. From coastal paths to vineyard trails, each route reveals hidden gems that most visitors never discover.\n\nBikes are delivered to your property and our guides lead you through carefully selected routes that balance scenery, culture, and local gastronomy stops.",
+      "image": "https://images.unsplash.com/photo-1571188654248-7a89213915f7?w=1200&q=80",
+      "details": ["Premium e-bikes", "Curated routes", "Local guide", "Gastronomy stops", "All fitness levels", "Helmets included"],
+      "price": "From €50 per person",
+      "duration": "3-5 hours",
+      "availability": "All regions",
+      "reviews": [
+        { "name": "Peter H.", "text": "The e-bike tour through the vineyards was the highlight of our trip. The guide knew every hidden spot and the lunch stop was incredible.", "rating": 5 }
+      ]
+    },
+    {
+      "slug": "sup-experience",
+      "name": "Stand Up Paddle",
+      "category": "activity",
+      "tagline": "Glide across calm waters with stunning views.",
+      "description": "Stand up paddle on the calm waters of the Lima River, along the Atlantic coastline, or in hidden coves. A peaceful way to explore Portugal's waterways while getting a full-body workout.\n\nOur instructors provide all equipment and teach proper technique for beginners. Experienced paddlers can join guided tours to explore coastline caves and hidden beaches.",
+      "image": "https://images.unsplash.com/photo-1530549387789-4c1017266635?w=1200&q=80",
+      "details": ["All equipment provided", "Beginner friendly", "River or ocean", "Guided tours available", "Wetsuit included", "Small groups"],
+      "price": "From €40 per person",
+      "duration": "1.5-3 hours",
+      "availability": "Minho Coast, Algarve",
+      "reviews": []
+    },
+    {
+      "slug": "bike-tour",
+      "name": "City and Mountain Bike Tour",
+      "category": "activity",
+      "tagline": "Pedal through history and nature.",
+      "description": "Explore Porto's historic streets, the Douro Valley's terraced vineyards, or the Minho's mountain trails on a guided bike tour. Our local guides share stories, history, and hidden gems along every route.\n\nRoutes are available for all fitness levels, from gentle city tours to challenging mountain rides. Premium bikes and all safety equipment are provided.",
+      "image": "https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=1200&q=80",
+      "details": ["Premium bikes", "Local guides", "Multiple routes", "All fitness levels", "Safety equipment", "Cultural stops"],
+      "price": "From €45 per person",
+      "duration": "2-5 hours",
+      "availability": "All regions",
+      "reviews": []
+    },
+    {
+      "slug": "hike-dive-dine",
+      "name": "Hike, Dive and Dine",
+      "category": "activity",
+      "tagline": "A full-day adventure combining nature and gastronomy.",
+      "description": "Our signature experience combines a coastal hike along dramatic cliff paths, a refreshing swim in hidden coves, and a traditional seafood lunch at a local restaurant known only to locals.\n\nThis full-day adventure is led by expert local guides who know every trail, every hidden beach, and every restaurant worth visiting. A truly immersive way to experience Portugal.",
+      "image": "https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200&q=80",
+      "details": ["Full-day experience", "Coastal hiking", "Swimming stops", "Local restaurant lunch", "Expert guides", "Small groups"],
+      "price": "From €95 per person",
+      "duration": "Full day (6-8 hours)",
+      "availability": "Minho Coast, Algarve",
+      "reviews": [
+        { "name": "Anna and Marco", "text": "The best day of our holiday! The hike was beautiful, the hidden beach was paradise, and the lunch was unforgettable.", "rating": 5 }
+      ]
+    },
+    {
+      "slug": "canam-experience",
+      "name": "Can-Am Experience",
+      "category": "activity",
+      "tagline": "Off-road thrills through Portugal's wild landscapes.",
+      "description": "Experience the thrill of driving a Can-Am off-road vehicle through Portugal's most dramatic landscapes. From mountain trails to forest paths, this adventure combines adrenaline with stunning scenery.\n\nOur experienced guides lead you through carefully selected routes that showcase the best of Portugal's wild interior. All safety briefings and equipment are included.",
+      "image": "https://images.unsplash.com/photo-1571188654248-7a89213915f7?w=1200&q=80",
+      "details": ["Can-Am vehicles", "Off-road trails", "Safety briefing", "All equipment", "Guided experience", "Stunning scenery"],
+      "price": "From €120 per person",
+      "duration": "2-4 hours",
+      "availability": "Minho, Peneda-Gerês",
+      "reviews": []
+    }
+  ]
+}

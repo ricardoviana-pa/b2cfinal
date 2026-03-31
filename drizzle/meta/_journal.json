@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1774051808686,
+      "tag": "0000_flaky_thor",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1774051954623,
+      "tag": "0001_cultured_gideon",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1774054429127,
+      "tag": "0002_public_winter_soldier",
+      "breakpoints": true
+    }
+  ]
+}

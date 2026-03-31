@@ -1,0 +1,108 @@
+{
+  "experiences": [
+    {
+      "slug": "wellness",
+      "anchor": "wellness",
+      "name": "Wellness and Spa",
+      "headline": "Your body, your schedule, your space.",
+      "description": "No need to leave your home. Our licensed therapists and instructors come to you. Whether it is a deep-tissue massage after a day of hiking, a sunrise yoga session on the terrace, or a personal training programme designed around your stay, every session is tailored to your preferences.",
+      "image": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=1200&q=80",
+      "services": [
+        {
+          "name": "In-Villa Massage",
+          "description": "Swedish, deep tissue, hot stone, sports recovery"
+        },
+        {
+          "name": "Private Yoga",
+          "description": "Vinyasa, hatha, restorative"
+        },
+        {
+          "name": "Personal Training",
+          "description": "Customised sessions with certified trainers"
+        },
+        {
+          "name": "Spa Day",
+          "description": "Full spa experience at home"
+        }
+      ]
+    },
+    {
+      "slug": "gastronomy",
+      "anchor": "gastronomy",
+      "name": "Gastronomy",
+      "headline": "Every meal tells a story.",
+      "description": "Portugal's culinary tradition is one of Europe's richest, and our chefs bring it directly to your table. From a simple breakfast of fresh pastries to a multi-course dinner paired with wines from the region, every meal is prepared with seasonal ingredients.",
+      "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80",
+      "services": [
+        {
+          "name": "Private Chef",
+          "description": "From breakfast to multi-course dinners"
+        },
+        {
+          "name": "Wine Tasting",
+          "description": "Guided tastings with regional wines"
+        },
+        {
+          "name": "Grocery Setup",
+          "description": "Your fridge stocked before you arrive"
+        },
+        {
+          "name": "Cooking Class",
+          "description": "Learn Portuguese cuisine with our chefs"
+        }
+      ]
+    },
+    {
+      "slug": "adventure",
+      "anchor": "adventure",
+      "name": "Adventure and Nature",
+      "headline": "Guided by locals who know every trail.",
+      "description": "The best experiences in Portugal are not in guidebooks. They are the hidden waterfall your guide grew up swimming in, the coastal trail that ends at a beach with no name.",
+      "image": "https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200&q=80",
+      "services": [
+        {
+          "name": "Surf Lessons",
+          "description": "Atlantic waves for all levels"
+        },
+        {
+          "name": "Horseback Riding",
+          "description": "Beaches, forests, and mountain trails"
+        },
+        {
+          "name": "Canyoning",
+          "description": "Hidden valleys and natural pools"
+        },
+        {
+          "name": "E-Bike Tours",
+          "description": "Countryside at your own pace"
+        }
+      ]
+    },
+    {
+      "slug": "mobility",
+      "anchor": "mobility",
+      "name": "Mobility and Transfers",
+      "headline": "Getting there is part of the experience.",
+      "description": "From the moment you land, we take care of every journey. Private transfers, car rentals, and curated road trip itineraries.",
+      "image": "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1200&q=80",
+      "services": [
+        {
+          "name": "Airport Transfer",
+          "description": "Private car from Porto or Lisbon airport"
+        },
+        {
+          "name": "Private Chauffeur",
+          "description": "Your dedicated driver for every journey"
+        },
+        {
+          "name": "Car Rental",
+          "description": "Premium vehicles delivered to your door"
+        },
+        {
+          "name": "Babysitter",
+          "description": "Trusted childcare so you can enjoy your evening"
+        }
+      ]
+    }
+  ]
+}
