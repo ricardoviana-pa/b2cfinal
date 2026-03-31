@@ -508,6 +508,8 @@ export default function BookingWidget({
     setQuote(null);
     setError("");
     setBeQuoteError("");
+    setIsRetryingForLivePrice(false);
+    setBeQuoteRetryFailed(false);
     setPhoneTouched(false);
     setStep("dates");
   };
@@ -768,6 +770,8 @@ export default function BookingWidget({
                   setCheckIn(ci);
                   setCheckOut(co);
                   setQuote(null);
+                  setIsRetryingForLivePrice(false);
+                  setBeQuoteRetryFailed(false);
                   setError("");
                   setBeQuoteError("");
                   setStep("dates");
@@ -1120,6 +1124,25 @@ export default function BookingWidget({
               >
                 {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote.total)}
               </button>
+            ) : canPayOnSite && quote?.source === "base" && isRetryingForLivePrice ? (
+              /* Retry in progress */
+              <button
+                disabled
+                className="w-full min-h-[52px] bg-black/50 text-white text-xs font-medium tracking-[0.15em] uppercase px-8 py-4 cursor-wait"
+              >
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  {t("bookingWidget.checkingLivePricing", "Checking live pricing…")}
+                </span>
+              </button>
+            ) : canPayOnSite && quote?.source === "base" && beQuoteError && !beQuoteRetryFailed ? (
+              /* Estimated price — retry for live on click */
+              <button
+                onClick={handleRetryReserve}
+                className="w-full min-h-[52px] bg-black text-white text-xs font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors"
+              >
+                {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote?.total ?? 0)}
+              </button>
             ) : canPayOnSite && !quote?.quoteId && !beQuoteError ? (
               /* Loading: BE quote still being fetched — 8s timeout then show concierge */
               <button
@@ -1134,6 +1157,11 @@ export default function BookingWidget({
             ) : (
               /* Fallback: Payment unavailable — concierge contact only, NO prices */
               <div className="space-y-3">
+                {beQuoteRetryFailed && beQuoteError && (
+                  <div className="bg-red-50/60 border border-red-200/40 px-4 py-2.5 text-[11px] text-red-700">
+                    {beQuoteError}
+                  </div>
+                )}
                 <a
                   href={`https://wa.me/351927161771?text=${encodeURIComponent(
                     [
