@@ -2,9 +2,21 @@
  * GUESTY BOOKING ENGINE API
  * For direct booking with payment (same Stripe/GuestyPay as Guesty config).
  * Requires: GUESTY_BE_CLIENT_ID, GUESTY_BE_CLIENT_SECRET (from Booking Engine API instance)
+ *
+ * IMPORTANT: Average transaction value is €7,000+. Every edge case matters.
+ * - Idempotency: quoteId acts as natural idempotency key (1 booking per quote)
+ * - Double-submit guard: in-flight map prevents concurrent calls for same quoteId
+ * - Structured error logging with booking context for incident investigation
  */
 
 import { guestyBEClient } from "../lib/guesty";
+
+/**
+ * In-flight booking guard: prevents double-charging when the same quoteId
+ * is submitted concurrently (e.g., user double-clicks, network retry, etc.).
+ * Maps quoteId → Promise<result> so concurrent calls await the same promise.
+ */
+const inFlightBookings = new Map<string, Promise<BEInstantReservationResult>>();
 
 const GUESTY_BE_AUTH_ERROR =
   "O serviço de reservas está temporariamente sobrecarregado. Aguarde 1-2 minutos e tente novamente.";
@@ -186,8 +198,45 @@ export async function createBEInstantReservation(input: {
   guestPhone: string;
   policy?: Record<string, unknown>;
 }): Promise<BEInstantReservationResult> {
+  // ── Idempotency guard: prevent double-charging for same quoteId ──
+  const existing = inFlightBookings.get(input.quoteId);
+  if (existing) {
+    console.warn(`[BE Booking] DUPLICATE REQUEST detected for quoteId=${input.quoteId} — awaiting existing call`);
+    return existing;
+  }
+
+  const bookingPromise = executeInstantReservation(input);
+  inFlightBookings.set(input.quoteId, bookingPromise);
+
+  try {
+    return await bookingPromise;
+  } finally {
+    // Clean up after 60s (keep briefly for rapid retries)
+    setTimeout(() => inFlightBookings.delete(input.quoteId), 60_000);
+  }
+}
+
+async function executeInstantReservation(input: {
+  quoteId: string;
+  ratePlanId: string;
+  ccToken: string;
+  guestName: string;
+  guestEmail: string;
+  guestPhone: string;
+  policy?: Record<string, unknown>;
+}): Promise<BEInstantReservationResult> {
   const [firstName, ...lastParts] = input.guestName.split(" ");
   const lastName = lastParts.join(" ") || firstName;
+  const startedAt = Date.now();
+
+  const logCtx = {
+    quoteId: input.quoteId,
+    ratePlanId: input.ratePlanId,
+    guestEmail: input.guestEmail,
+    ccTokenPrefix: input.ccToken.slice(0, 6),
+  };
+
+  console.info(`[BE Booking] START instant reservation`, JSON.stringify(logCtx));
 
   let reservation: any;
   try {
@@ -209,16 +258,48 @@ export async function createBEInstantReservation(input: {
       }
     );
   } catch (error: any) {
-    const friendly = parseBEError(JSON.stringify(error?.details ?? error?.message ?? ""));
-    if ((error?.status ?? 0) === 429) throw new Error(GUESTY_BE_AUTH_ERROR);
+    const durationMs = Date.now() - startedAt;
+    const status = error?.status ?? 0;
+    const errorDetails = error?.details ?? error?.message ?? "";
+    const friendly = parseBEError(JSON.stringify(errorDetails));
+
+    console.error(`[BE Booking] FAILED instant reservation (${durationMs}ms, status=${status})`, JSON.stringify({
+      ...logCtx,
+      status,
+      error: typeof errorDetails === "string" ? errorDetails.slice(0, 500) : errorDetails,
+    }));
+
+    if (status === 429) throw new Error(GUESTY_BE_AUTH_ERROR);
+
+    // Categorize error for frontend handling
+    if (status === 409 || /already.*booked|conflict|dates.*unavail/i.test(String(errorDetails))) {
+      throw new Error("These dates have just been booked by another guest. Please select different dates.");
+    }
+    if (status === 422) {
+      throw new Error(friendly || "The booking could not be processed. Please check your details and try again.");
+    }
+    if (status >= 500) {
+      throw new Error("The payment system is temporarily unavailable. Your card has not been charged. Please try again in a few minutes.");
+    }
+
     throw new Error(friendly || "Unable to complete payment reservation.");
   }
 
-  return {
+  const durationMs = Date.now() - startedAt;
+  const result: BEInstantReservationResult = {
     reservationId: reservation._id || "",
     confirmationCode: reservation.confirmationCode || reservation._id?.slice(-8) || "PA-" + Date.now(),
     status: reservation.status || "confirmed",
   };
+
+  console.info(`[BE Booking] SUCCESS instant reservation (${durationMs}ms)`, JSON.stringify({
+    ...logCtx,
+    reservationId: result.reservationId,
+    confirmationCode: result.confirmationCode,
+    status: result.status,
+  }));
+
+  return result;
 }
 
 export async function getPaymentProvider(listingId: string): Promise<{

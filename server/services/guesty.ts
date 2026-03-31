@@ -5,7 +5,7 @@
  * (which uses separate credentials and is typically not rate-limited).
  */
 
-import { guestyClient, isGuestyOAuthCoolingDown, resetGuestyRateLimitCooldowns } from "../lib/guesty";
+import { guestyClient } from "../lib/guesty";
 import { isBEApiConfigured, createBEQuote } from "./guesty-booking";
 import { getPropertiesForSite } from "./properties-store";
 
@@ -82,31 +82,15 @@ export async function checkAvailability(
   );
 
   try {
-    // Check calendar availability
-    const calendar = await guestyClient.getListingCalendar(listingId, checkIn, checkOut);
-
-    // Check if all dates are available
-    const days = calendar?.data?.days || calendar?.days || (Array.isArray(calendar) ? calendar : []);
-    const allAvailable = days.length > 0 && days.every((d: any) => d.status === 'available' || d.available === true);
+    // Check calendar availability via BE API (returns flat array)
+    const days = await guestyClient.getListingCalendar(listingId, checkIn, checkOut);
+    const dayList = Array.isArray(days) ? days : (days?.days || []);
+    const allAvailable = dayList.length > 0 && dayList.every((d: any) => d.status === 'available');
 
     return { available: allAvailable, listingId, checkIn, checkOut, nights };
-  } catch (error) {
-    // Fallback: try reservations check
-    try {
-      const reservations = await guestyClient.request<any>("GET", "/v1/reservations", {
-        query: {
-          listingId,
-          checkIn,
-          checkOut,
-          status: "confirmed,checked_in",
-          limit: 1,
-        },
-      });
-      const hasConflict = (reservations.results?.length || 0) > 0;
-      return { available: !hasConflict, listingId, checkIn, checkOut, nights };
-    } catch {
-      throw new Error("Unable to verify availability right now.");
-    }
+  } catch {
+    // Calendar is the primary availability source; if it fails, report unavailable
+    throw new Error("Unable to verify availability right now.");
   }
 }
 
@@ -121,56 +105,7 @@ export async function getQuote(
   );
   const cacheKey = getQuoteCacheKey(listingId, checkIn, checkOut, guests);
 
-  // If Guesty OAuth is rate-limited, skip the live API call — try BE API first (separate credentials)
-  const openApiCoolingDown = isGuestyOAuthCoolingDown();
-
-  // ── TIER 1: Open API live quote (fastest, most accurate) ──
-  if (!openApiCoolingDown) {
-    try {
-      const quote = await guestyClient.createQuote(listingId, checkIn, checkOut, guests);
-      const pricing = quote.pricingCents;
-      const fareAccommodation = pricing.baseRentCents / 100;
-      const fareCleaning = pricing.cleaningFeeCents / 100;
-      const hostPayout = pricing.totalAfterTaxCents / 100;
-
-      const result: QuoteResult = {
-        available: true,
-        listingId,
-        checkIn,
-        checkOut,
-        nights,
-        currency: pricing.currency || "EUR",
-        pricing: {
-          nightlyRate: nights > 0 ? Math.round(fareAccommodation / nights) : 0,
-          totalNights: fareAccommodation,
-          cleaningFee: fareCleaning,
-          subtotal: fareAccommodation + fareCleaning,
-          total: hostPayout,
-        },
-        source: "live",
-      };
-      setCachedQuote(cacheKey, result);
-      console.info(`[getQuote] ✓ LIVE quote for ${listingId}: €${hostPayout} (${nights}n)`);
-      return result;
-    } catch (err: any) {
-      console.warn(`[getQuote] Open API FAILED for ${listingId} ${checkIn}→${checkOut}: ${err?.message || err}`);
-    }
-  } else {
-    console.info(`[getQuote] Open API in cooldown — skipping for ${listingId}, trying BE API`);
-  }
-
-  // ── Check server-side cache before making more API calls ──
-  const cached = getCachedQuote(cacheKey);
-  if (cached && cached.source === "live") {
-    console.info(`[getQuote] ✓ CACHED live quote for ${listingId}: €${cached.pricing.total}`);
-    return {
-      ...cached,
-      source: "cached" as QuoteSource,
-      fallbackMessage: "Live pricing is temporarily unavailable. Showing the most recent cached price.",
-    };
-  }
-
-  // ── TIER 2: Booking Engine API (separate OAuth credentials, typically not rate-limited) ──
+  // ── TIER 1: Booking Engine API (primary source — same API used for checkout) ──
   if (isBEApiConfigured()) {
     try {
       const beQuote = await Promise.race([
@@ -203,9 +138,23 @@ export async function getQuote(
     }
   }
 
-  // ── Return cached base quote if we have one ──
+  // ── Check server-side cache before fallback tiers ──
+  const cached = getCachedQuote(cacheKey);
+  if (cached && cached.source === "live") {
+    console.info(`[getQuote] ✓ CACHED live quote for ${listingId}: €${cached.pricing.total}`);
+    return {
+      ...cached,
+      source: "cached" as QuoteSource,
+      fallbackMessage: "Live pricing is temporarily unavailable. Showing the most recent cached price.",
+    };
+  }
+
+  // ── TIER 2 (removed): Open API /v1/quotes permanently removed 2026-03-31 ──
+  // The v1 endpoint is dead. Only the BE API (Tier 1) produces live quotes now.
+
+  // ── Return cached quote if we have one ──
   if (cached) {
-    console.info(`[getQuote] ✓ CACHED base quote for ${listingId}: €${cached.pricing.total}`);
+    console.info(`[getQuote] ✓ CACHED quote for ${listingId}: €${cached.pricing.total}`);
     return {
       ...cached,
       source: (cached.source === "live" || cached.source === "cached" ? "cached" : "base") as QuoteSource,
@@ -220,7 +169,8 @@ export async function getQuote(
       guestyClient.getListingCalendar(listingId, checkIn, checkOut),
       new Promise<never>((_, reject) => setTimeout(() => reject(new Error("calendar_timeout")), 5_000)),
     ]);
-    const days = calendar?.data?.days || calendar?.days || (Array.isArray(calendar) ? calendar : []);
+    // BE API returns flat array; guard against wrapped response
+    const days = Array.isArray(calendar) ? calendar : (calendar?.days || []);
     if (days.length > 0) {
       calendarHasBookedDays = days.some((d: any) =>
         d.status === "booked" || d.status === "blocked" || d.status === "maintenance"
@@ -340,42 +290,7 @@ export async function getQuoteWithDeadline(
   ]);
 }
 
-export async function createReservation(input: {
-  listingId: string;
-  checkIn: string;
-  checkOut: string;
-  guests: number;
-  guestName: string;
-  guestEmail: string;
-  guestPhone: string;
-  notes?: string;
-}): Promise<ReservationResult> {
-  const [firstName, ...lastParts] = input.guestName.split(' ');
-  const lastName = lastParts.join(' ') || firstName;
-
-  // Single quote call: avoid doubling Guesty traffic (widget/PLP already requested quotes).
-  // Guesty validates inquiry payload against live calendar/terms on the server.
-  const reservation = await guestyClient.createReservation({
-    listingId: input.listingId,
-    checkInDateLocalized: input.checkIn,
-    checkOutDateLocalized: input.checkOut,
-    status: "inquiry",
-    guest: {
-      firstName,
-      lastName,
-      email: input.guestEmail,
-      phone: input.guestPhone,
-    },
-    guestsCount: input.guests,
-    source: "Website Direct",
-  });
-
-  return {
-    confirmationCode: reservation.confirmationCode || reservation._id?.slice(-8) || 'PA-' + Date.now(),
-    reservationId: reservation._id || '',
-    status: reservation.status || 'inquiry',
-    checkIn: input.checkIn,
-    checkOut: input.checkOut,
-    guestName: input.guestName,
-  };
-}
+// DEPRECATED: createReservation (inquiry) removed.
+// All bookings must go through Booking Engine with Stripe payment.
+// Guests without live pricing should contact concierge via WhatsApp/email.
+// See createBEInstantReservation in guesty-booking.ts for the active booking flow.

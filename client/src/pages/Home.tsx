@@ -73,6 +73,7 @@ export default function Home() {
   const [searchCheckin, setSearchCheckin] = useState('');
   const [searchCheckout, setSearchCheckout] = useState('');
   const [searchGuests, setSearchGuests] = useState(2);
+  const today = new Date().toISOString().split("T")[0];
   const checkoutDesktopRef = useRef<HTMLInputElement>(null);
   const checkoutMobileRef = useRef<HTMLInputElement>(null);
 
@@ -269,6 +270,7 @@ export default function Home() {
               <input
                 type="date"
                 value={searchCheckin}
+                min={today}
                 onChange={e => handleCheckinChange(e.target.value, false)}
                 placeholder="Check-in"
                 className="w-full h-full px-4 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer"
@@ -288,7 +290,7 @@ export default function Home() {
                 ref={checkoutDesktopRef}
                 type="date"
                 value={searchCheckout}
-                min={searchCheckin || undefined}
+                min={searchCheckin || today}
                 onChange={e => setSearchCheckout(e.target.value)}
                 placeholder="Check-out"
                 className="w-full h-full px-4 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer"
@@ -355,6 +357,7 @@ export default function Home() {
                 <input
                   type="date"
                   value={searchCheckin}
+                  min={today}
                   onChange={e => handleCheckinChange(e.target.value, true)}
                   className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
                   style={{ fontFamily: 'var(--font-body)' }}
@@ -369,7 +372,7 @@ export default function Home() {
                   ref={checkoutMobileRef}
                   type="date"
                   value={searchCheckout}
-                  min={searchCheckin || undefined}
+                  min={searchCheckin || today}
                   onChange={e => setSearchCheckout(e.target.value)}
                   className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
                   style={{ fontFamily: 'var(--font-body)' }}

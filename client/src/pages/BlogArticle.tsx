@@ -7,12 +7,39 @@ import { useParams, Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { ArrowLeft, Clock, Calendar, Share2, ArrowRight, Play, ExternalLink } from 'lucide-react';
+import { useMemo } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import type { BlogArticle as BlogArticleType } from '@/lib/types';
 import blogData from '@/data/blog.json';
 
 const articles = (blogData as any).articles as BlogArticleType[];
+
+/* ── Inline markdown: bold + links ── */
+function renderInline(text: string) {
+  // Split on **bold** and [link](url) patterns
+  const parts: (string | JSX.Element)[] = [];
+  const regex = /\*\*(.+?)\*\*|\[([^\]]+)\]\(([^)]+)\)/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index));
+    if (match[1]) {
+      parts.push(<strong key={key++} className="text-[#1A1A18] font-semibold">{match[1]}</strong>);
+    } else if (match[2] && match[3]) {
+      const href = match[3];
+      const isExternal = href.startsWith('http');
+      parts.push(
+        <a key={key++} href={href} className="text-[#8B7355] underline underline-offset-2 hover:text-[#1A1A18] transition-colors"
+          {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{match[2]}</a>
+      );
+    }
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  return parts;
+}
 
 /* ── Video embed: supports Vimeo (primary) and YouTube (fallback) ── */
 function VideoEmbed({ vimeoId, videoId, title }: { vimeoId?: string; videoId?: string; title: string }) {
@@ -199,9 +226,15 @@ export default function BlogArticle() {
       <section className="pb-16">
         <div className="container max-w-3xl mx-auto">
           <div className="prose prose-lg max-w-none">
-            {article.content.split('\n\n').map((paragraph, i) => (
-              <p key={i} className="text-[#6B6860] leading-relaxed mb-6">{paragraph}</p>
-            ))}
+            {article.content.split('\n\n').map((block, i) => {
+              const trimmed = block.trim();
+              if (!trimmed) return null;
+              if (trimmed.startsWith('### '))
+                return <h3 key={i} className="text-[#1A1A18] font-display text-xl md:text-2xl mt-10 mb-4">{renderInline(trimmed.slice(4))}</h3>;
+              if (trimmed.startsWith('## '))
+                return <h2 key={i} className="text-[#1A1A18] font-display text-2xl md:text-3xl mt-12 mb-5">{renderInline(trimmed.slice(3))}</h2>;
+              return <p key={i} className="text-[#6B6860] leading-relaxed mb-6">{renderInline(trimmed)}</p>;
+            })}
           </div>
         </div>
       </section>

@@ -146,6 +146,7 @@ export function MapView({
       fullscreenControl: true,
       zoomControl: true,
       streetViewControl: true,
+      mapTypeId: "satellite",
       mapId: "DEMO_MAP_ID",
     });
       if (onMapReady && map.current) {

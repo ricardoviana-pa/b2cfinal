@@ -8,7 +8,7 @@ import {
   getPaymentProvider,
 } from "../services/guesty-booking";
 import * as db from "../db";
-import { sendBookingConfirmation } from "../services/transactional-email";
+import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
 
 /**
  * Save a trip to the customer's account and award loyalty points.
@@ -89,15 +89,15 @@ export const bookingRouter = router({
     )
     .query(async ({ input }) => {
       try {
-        const { guestyClient } = await import("../lib/guesty");
-        const calendar = await guestyClient.getListingCalendar(
+        const { guestyBEClient } = await import("../lib/guesty");
+        // BE API: GET /api/listings/{id}/calendar?from=X&to=Y
+        // Returns flat array: [{ date, status, minNights, isBaseMinNights, cta, ctd }]
+        const rawDays = await guestyBEClient.getCalendar(
           input.listingId,
           input.from,
           input.to
         );
-        // Guesty availability-pricing calendar: response has { days: [...] } with status, price, minNights
-        const rawDays = calendar?.data?.days || calendar?.days || (Array.isArray(calendar) ? calendar : []);
-        console.info(`[Booking] getCalendar for ${input.listingId}: ${rawDays.length} days, keys=${Object.keys(calendar || {}).slice(0, 5).join(',')}`);
+        console.info(`[Booking] getCalendar (BE API) for ${input.listingId}: ${rawDays.length} days`);
         if (rawDays.length > 0) {
           console.info(`[Booking] getCalendar sample:`, JSON.stringify(rawDays[0]).slice(0, 250));
         }
@@ -107,6 +107,8 @@ export const bookingRouter = router({
           status: d.status || "unavailable",
           minNights: d.minNights ?? undefined,
           price: d.price ?? undefined,
+          cta: d.cta ?? undefined,
+          ctd: d.ctd ?? undefined,
         }));
         return { days };
       } catch (error: any) {
@@ -194,6 +196,7 @@ export const bookingRouter = router({
         guestName: z.string().min(2),
         guestEmail: z.string().email(),
         guestPhone: z.string().min(5),
+        policy: z.record(z.unknown()).optional(),
         // Extra fields for trip recording
         listingId: z.string().optional(),
         propertyName: z.string().optional(),
@@ -208,8 +211,35 @@ export const bookingRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       if (!isBEApiConfigured()) throw new Error("Booking Engine API not configured");
+
+      // ── Server-side validation: protect against malformed or tampered requests ──
+      // ccToken MUST be a Stripe payment method (pm_) — old tok_ tokens are not SCA compliant
+      if (!input.ccToken.startsWith("pm_")) {
+        throw new Error("Invalid payment method. Please use a card that supports secure authentication.");
+      }
+      // quoteId sanity check — Guesty IDs are 24-char hex ObjectIds
+      if (!/^[a-f0-9]{24}$/i.test(input.quoteId)) {
+        throw new Error("Invalid quote reference. Please refresh and try again.");
+      }
+      // Amount sanity: reject obviously wrong totals (< €10 or > €100,000)
+      if (input.totalPrice !== undefined) {
+        if (input.totalPrice < 10 || input.totalPrice > 100_000) {
+          console.error(`[Booking] SUSPICIOUS amount: €${input.totalPrice} for quoteId=${input.quoteId}`);
+          throw new Error("The booking amount appears incorrect. Please refresh the page and try again.");
+        }
+      }
+      // Guest email domain check — reject clearly fake emails
+      const emailDomain = input.guestEmail.split("@")[1]?.toLowerCase() || "";
+      if (emailDomain === "example.com" || emailDomain === "test.com") {
+        throw new Error("Please provide a valid email address for your booking confirmation.");
+      }
+
       try {
-        const result = await createBEInstantReservation(input);
+        console.info(`[Booking] Creating instant reservation: quoteId=${input.quoteId}, amount=€${input.totalPrice || "?"}, guest=${input.guestEmail}`);
+        const result = await createBEInstantReservation({
+          ...input,
+          policy: input.policy || {},
+        });
 
         // Record to customer account (non-blocking)
         if (input.checkIn && input.checkOut) {
@@ -248,6 +278,26 @@ export const bookingRouter = router({
 
         return result;
       } catch (error: any) {
+        // ── CRITICAL: Booking failed after Stripe PM was created ──
+        // The guest may have been charged. Alert the reservations team immediately.
+        sendBookingFailureAlert({
+          quoteId: input.quoteId,
+          ratePlanId: input.ratePlanId,
+          ccTokenPrefix: input.ccToken.slice(0, 6),
+          guestName: input.guestName,
+          guestEmail: input.guestEmail,
+          guestPhone: input.guestPhone,
+          propertyName: input.propertyName,
+          listingId: input.listingId,
+          checkIn: input.checkIn,
+          checkOut: input.checkOut,
+          guests: input.guests,
+          totalPrice: input.totalPrice,
+          currency: input.currency,
+          errorMessage: error.message || "Unknown error",
+          timestamp: new Date().toISOString(),
+        }).catch(() => {}); // Never let alert email failure mask the booking error
+
         throw new Error(error.message || "Failed to create reservation");
       }
     }),
@@ -263,15 +313,18 @@ export const bookingRouter = router({
       }
     }),
 
-  /** Returns Stripe publishable key + connected account when BE+Stripe configured */
+  /** Returns Stripe publishable key when BE+Stripe configured.
+   *  Connected account is resolved per-listing via getPaymentProvider — never from env var.
+   *  This eliminates the race condition where a stale/wrong STRIPE_ACCOUNT_ID env var
+   *  caused the PaymentElement to load on the wrong Stripe account. */
   getStripeConfig: publicProcedure.query(() => {
     const key = process.env.STRIPE_PUBLISHABLE_KEY;
     const beConfigured = isBEApiConfigured();
-    console.info(`[Booking] getStripeConfig: BE=${beConfigured}, STRIPE_KEY=${key ? 'set(' + key.slice(0, 10) + '...)' : 'MISSING'}, ACCOUNT=${process.env.STRIPE_ACCOUNT_ID || 'not set'}`);
+    console.info(`[Booking] getStripeConfig: BE=${beConfigured}, STRIPE_KEY=${key ? 'set(' + key.slice(0, 10) + '...)' : 'MISSING'}`);
     if (!beConfigured || !key) return null;
     return {
       publishableKey: key,
-      stripeAccountId: process.env.STRIPE_ACCOUNT_ID || null,
+      stripeAccountId: null, // Resolved per-listing via getPaymentProvider
     };
   }),
 });

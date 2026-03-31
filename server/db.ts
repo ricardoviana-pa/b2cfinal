@@ -625,6 +625,23 @@ export async function createCustomerTrip(data: InsertCustomerTrip) {
   return { id: result[0].insertId };
 }
 
+/**
+ * Update trip status by Guesty reservation ID.
+ * Used by webhook handler when Guesty notifies us of reservation changes.
+ */
+export async function updateTripStatusByReservationId(
+  guestyReservationId: string,
+  status: "upcoming" | "active" | "completed" | "cancelled"
+) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db
+    .update(customerTrips)
+    .set({ status })
+    .where(eq(customerTrips.guestyReservationId, guestyReservationId));
+  return result;
+}
+
 /* ================================================================
    ADMIN: CUSTOMER OVERVIEW
    ================================================================ */

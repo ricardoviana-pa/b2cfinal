@@ -207,6 +207,7 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
                   <input
                     type="date"
                     value={values[field.key] as string}
+                    min={new Date().toISOString().split("T")[0]}
                     onChange={(e) => handleChange(field.key, e.target.value)}
                     onClick={e => (e.target as HTMLInputElement).showPicker?.()}
                     required={field.required}
