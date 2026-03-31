@@ -317,6 +317,9 @@ export default function BookingWidget({
     } finally {
       setIsRetryingForLivePrice(false);
     }
+  // createBEQuote intentionally omitted — tRPC useMutation returns a new object reference
+  // on every render; including it would invalidate this callback every render (defeating memoization).
+  // The mutateAsync function itself is stable per tRPC's contract.
   }, [checkIn, checkOut, guests, guestyId]);
 
   useEffect(() => {
@@ -1135,7 +1138,7 @@ export default function BookingWidget({
                   {t("bookingWidget.checkingLivePricing", "Checking live pricing…")}
                 </span>
               </button>
-            ) : canPayOnSite && quote?.source === "base" && beQuoteError && !beQuoteRetryFailed ? (
+            ) : canPayOnSite && quote?.source === "base" && !quote?.quoteId && beQuoteError && !beQuoteRetryFailed ? (
               /* Estimated price — retry for live on click */
               <button
                 onClick={handleRetryReserve}
