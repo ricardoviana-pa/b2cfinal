@@ -313,15 +313,18 @@ export const bookingRouter = router({
       }
     }),
 
-  /** Returns Stripe publishable key + connected account when BE+Stripe configured */
+  /** Returns Stripe publishable key when BE+Stripe configured.
+   *  Connected account is resolved per-listing via getPaymentProvider — never from env var.
+   *  This eliminates the race condition where a stale/wrong STRIPE_ACCOUNT_ID env var
+   *  caused the PaymentElement to load on the wrong Stripe account. */
   getStripeConfig: publicProcedure.query(() => {
     const key = process.env.STRIPE_PUBLISHABLE_KEY;
     const beConfigured = isBEApiConfigured();
-    console.info(`[Booking] getStripeConfig: BE=${beConfigured}, STRIPE_KEY=${key ? 'set(' + key.slice(0, 10) + '...)' : 'MISSING'}, ACCOUNT=${process.env.STRIPE_ACCOUNT_ID || 'not set'}`);
+    console.info(`[Booking] getStripeConfig: BE=${beConfigured}, STRIPE_KEY=${key ? 'set(' + key.slice(0, 10) + '...)' : 'MISSING'}`);
     if (!beConfigured || !key) return null;
     return {
       publishableKey: key,
-      stripeAccountId: process.env.STRIPE_ACCOUNT_ID || null,
+      stripeAccountId: null, // Resolved per-listing via getPaymentProvider
     };
   }),
 });

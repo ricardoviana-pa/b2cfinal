@@ -251,8 +251,9 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
     return null;
   }
 
-  // Use per-listing Stripe connected account if available, fallback to global
-  const stripeAccountId = paymentProvider?.providerAccountId || stripeConfig.stripeAccountId;
+  // Per-listing Stripe connected account is the ONLY source of truth.
+  // Never fall back to stripeConfig.stripeAccountId (env var may be wrong/stale).
+  const stripeAccountId = paymentProvider?.providerAccountId || null;
 
   const stripePromise = useMemo(
     () => loadStripe(
