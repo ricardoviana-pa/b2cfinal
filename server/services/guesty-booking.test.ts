@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 vi.mock("../lib/guesty", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../lib/guesty")>();
@@ -19,6 +19,10 @@ describe("createBEQuote error logging", () => {
     vi.clearAllMocks();
     vi.spyOn(console, "error").mockImplementation(() => {});
     process.env.GUESTY_BE_CLIENT_ID = "abc123xyz";
+  });
+
+  afterEach(() => {
+    delete process.env.GUESTY_BE_CLIENT_ID;
   });
 
   it("logs status, credential prefix, listingId, and body on 500 failure", async () => {
@@ -64,6 +68,7 @@ describe("createBEQuote error logging", () => {
     const errorCall = vi.mocked(console.error).mock.calls.find((args) =>
       String(args[0]).includes("[BE Quote] createBEQuote FAILED")
     );
+    expect(errorCall).toBeDefined();
     expect(String(errorCall![0])).toContain("NOT SET");
   });
 });
