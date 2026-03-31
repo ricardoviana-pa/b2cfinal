@@ -247,7 +247,7 @@ export default function BookingWidget({
 
   const [calendarDays, setCalendarDays] = useState<AvailabilityDay[]>([]);
   const [calendarLoading, setCalendarLoading] = useState(false);
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(true);
 
   const widgetRef = useRef<HTMLDivElement>(null);
 
@@ -579,21 +579,27 @@ export default function BookingWidget({
 
       {/* Date selection */}
       <div className="mx-5">
-        {/* Date display / toggle */}
+        {/* Date display / toggle — clicking either box opens calendar */}
         <div
-          className="border border-black/15 overflow-hidden cursor-pointer hover:border-black/30 transition-colors"
-          onClick={() => setShowCalendar(!showCalendar)}
+          className={`border overflow-hidden cursor-pointer transition-colors ${
+            showCalendar ? "border-black" : "border-black/15 hover:border-black/30"
+          }`}
+          onClick={() => setShowCalendar(true)}
         >
           <div className="grid grid-cols-2 divide-x divide-black/10">
-            <div className="px-4 py-3 hover:bg-black/[0.02] transition-colors">
+            <div className={`px-4 py-3.5 transition-colors ${
+              showCalendar && checkIn && !checkOut ? "bg-black/[0.03]" : "hover:bg-black/[0.02]"
+            }`}>
               <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-black/35 mb-1">{t("bookingWidget.checkInLabel")}</p>
-              <p className="text-[15px] text-black font-normal">
+              <p className={`text-[15px] font-normal ${checkIn ? "text-black" : "text-black/30"}`}>
                 {checkIn ? formatDateDisplay(checkIn, "pt-PT", false) : t("bookingWidget.selectDate", "Select")}
               </p>
             </div>
-            <div className="px-4 py-3 hover:bg-black/[0.02] transition-colors">
+            <div className={`px-4 py-3.5 transition-colors ${
+              showCalendar && checkIn && !checkOut ? "hover:bg-black/[0.02]" : showCalendar && !checkIn ? "hover:bg-black/[0.02]" : "hover:bg-black/[0.02]"
+            }`}>
               <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-black/35 mb-1">{t("bookingWidget.checkOutLabel")}</p>
-              <p className="text-[15px] text-black font-normal">
+              <p className={`text-[15px] font-normal ${checkOut ? "text-black" : "text-black/30"}`}>
                 {checkOut ? formatDateDisplay(checkOut, "pt-PT", false) : t("bookingWidget.selectDate", "Select")}
               </p>
             </div>
@@ -602,9 +608,9 @@ export default function BookingWidget({
 
         {/* Availability Calendar dropdown */}
         {showCalendar && (
-          <div className="mt-2 border border-black/10">
+          <div className="border border-black/10 border-t-0 overflow-hidden">
             {calendarLoading ? (
-              <div className="flex items-center justify-center py-8">
+              <div className="flex items-center justify-center py-10">
                 <Loader2 className="w-4 h-4 animate-spin text-black/30" />
                 <span className="ml-2 text-xs text-black/40">{t("bookingWidget.loadingCalendar", "Loading availability...")}</span>
               </div>
@@ -620,24 +626,25 @@ export default function BookingWidget({
                   setError("");
                   setBeQuoteError("");
                   setStep("dates");
+                  // Only close calendar when both dates selected
                   if (ci && co) setShowCalendar(false);
                 }}
               />
             ) : (
-              /* Fallback: simple date inputs styled as full-width clickable boxes */
-              <div className="border border-black/10 rounded-lg overflow-hidden">
-                <div className="grid grid-cols-2 divide-x divide-black/10">
-                  <div className="p-3 cursor-pointer hover:bg-black/[0.03] transition-colors relative">
-                    <label className="text-[10px] font-semibold tracking-[0.08em] uppercase text-black mb-0.5 block">{t("bookingWidget.checkInLabel")}</label>
+              /* Fallback: simple date inputs */
+              <div className="p-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="relative">
+                    <label className="text-[10px] font-semibold tracking-[0.08em] uppercase text-black/40 mb-1 block">{t("bookingWidget.checkInLabel")}</label>
                     <input type="date" value={checkIn} min={today}
                       onChange={(e) => { setCheckIn(e.target.value); setQuote(null); setError(""); setBeQuoteError(""); setStep("dates"); }}
-                      className="w-full bg-transparent text-[14px] text-black focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full" />
+                      className="w-full bg-transparent text-[14px] text-black border border-black/10 px-3 py-2 focus:outline-none focus:border-black cursor-pointer" />
                   </div>
-                  <div className="p-3 cursor-pointer hover:bg-black/[0.03] transition-colors relative">
-                    <label className="text-[10px] font-semibold tracking-[0.08em] uppercase text-black mb-0.5 block">{t("bookingWidget.checkOutLabel")}</label>
+                  <div className="relative">
+                    <label className="text-[10px] font-semibold tracking-[0.08em] uppercase text-black/40 mb-1 block">{t("bookingWidget.checkOutLabel")}</label>
                     <input type="date" value={checkOut} min={minCheckOut}
                       onChange={(e) => { setCheckOut(e.target.value); setQuote(null); setError(""); setBeQuoteError(""); setStep("dates"); }}
-                      className="w-full bg-transparent text-[14px] text-black focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full" />
+                      className="w-full bg-transparent text-[14px] text-black border border-black/10 px-3 py-2 focus:outline-none focus:border-black cursor-pointer" />
                   </div>
                 </div>
               </div>
