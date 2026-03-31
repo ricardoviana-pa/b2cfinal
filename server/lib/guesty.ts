@@ -57,9 +57,9 @@ const GUESTY_BE_BASE_URL = "https://booking.guesty.com";
 const GUESTY_BE_CLIENT_ID = process.env.GUESTY_BE_CLIENT_ID || "";
 const GUESTY_BE_CLIENT_SECRET = process.env.GUESTY_BE_CLIENT_SECRET || "";
 const GUESTY_TIMEOUT_MS = 8_000;
-/** Never block OAuth longer than this after a 429 (Guesty may recover sooner; avoids hour-long self-blocks). */
-const MAX_GUESTY_OAUTH_COOLDOWN_MS = Number(process.env.GUESTY_MAX_OAUTH_COOLDOWN_MS || 300_000); // 5 min default
-const MAX_GUESTY_BE_OAUTH_COOLDOWN_MS = Number(process.env.GUESTY_MAX_BE_OAUTH_COOLDOWN_MS || 180_000);
+/** Never block OAuth longer than this after a 429 (Guesty recovers fast; long self-blocks cascade across PDP+PLP). */
+const MAX_GUESTY_OAUTH_COOLDOWN_MS = Number(process.env.GUESTY_MAX_OAUTH_COOLDOWN_MS || 60_000); // 60s default (was 5min — too aggressive)
+const MAX_GUESTY_BE_OAUTH_COOLDOWN_MS = Number(process.env.GUESTY_MAX_BE_OAUTH_COOLDOWN_MS || 60_000);
 const TOKEN_CACHE_DIR = path.resolve(process.cwd(), ".cache");
 const OPEN_TOKEN_CACHE_FILE = path.join(TOKEN_CACHE_DIR, "guesty-open-token.json");
 const BE_TOKEN_CACHE_FILE = path.join(TOKEN_CACHE_DIR, "guesty-be-token.json");
@@ -70,6 +70,8 @@ let beOauthCache: TokenCache | null = null;
 let beOauthRefreshPromise: Promise<string> | null = null;
 let guestyAuthCooldownUntil = 0;
 let guestyBeAuthCooldownUntil = 0;
+/** Exponential backoff: consecutive 429s multiply the cooldown duration. Resets on success. */
+let guestyAuthConsecutive429s = 0;
 
 function parseRetryAfterMs(headers: Headers, fallbackMs: number): number {
   const retryAfterSec = Number(headers.get("Retry-After") || "0");
@@ -185,7 +187,9 @@ function firstPositiveNumber(values: unknown[], fallback = 0): number {
 function computeRefreshAt(expiresInSec: number): { expiresAt: number; refreshAt: number } {
   const now = Date.now();
   const ttlMs = Math.max(30_000, expiresInSec * 1000);
-  const skewMs = Math.min(120_000, Math.max(15_000, Math.floor(ttlMs * 0.2)));
+  // Refresh at ~10% before expiry (was 20%) — tokens last ~1h, so refresh at ~54min
+  // This halves the number of token requests over time
+  const skewMs = Math.min(120_000, Math.max(15_000, Math.floor(ttlMs * 0.1)));
   const expiresAt = now + ttlMs;
   return {
     expiresAt,
@@ -292,7 +296,9 @@ async function fetchOAuthToken(): Promise<string> {
         expiresAt,
         refreshAt,
       };
+      guestyAuthConsecutive429s = 0; // Reset backoff on success
       writeTokenCacheToDisk(OPEN_TOKEN_CACHE_FILE, oauthCache);
+      console.info("[Guesty] OAuth token acquired successfully, expires in", Math.round((expiresAt - Date.now()) / 1000), "s");
       return oauthCache.token;
     }
 
@@ -307,9 +313,16 @@ async function fetchOAuthToken(): Promise<string> {
     });
 
     if (response.status === 429) {
-      // Set a long cooldown to stop poking the API and let the rate limit truly expire.
-      guestyAuthCooldownUntil =
-        Date.now() + capOAuthCooldownMs(parseRetryAfterMs(response.headers, 60_000), MAX_GUESTY_OAUTH_COOLDOWN_MS);
+      guestyAuthConsecutive429s += 1;
+      // Capped exponential backoff: 30s → 60s → max 60s (never block longer than MAX_GUESTY_OAUTH_COOLDOWN_MS)
+      // The BE API handles pricing while Open API recovers, so long self-blocks are unnecessary.
+      const retryAfterFromHeader = parseRetryAfterMs(response.headers, 0);
+      const backoffMs = Math.min(30_000 * Math.pow(2, Math.min(guestyAuthConsecutive429s - 1, 1)), MAX_GUESTY_OAUTH_COOLDOWN_MS);
+      const retryMs = retryAfterFromHeader > 0
+        ? Math.min(retryAfterFromHeader, MAX_GUESTY_OAUTH_COOLDOWN_MS)
+        : backoffMs;
+      guestyAuthCooldownUntil = Date.now() + retryMs;
+      console.warn(`[Guesty] OAuth 429 #${guestyAuthConsecutive429s} — cooldown ${Math.round(retryMs / 1000)}s (until ${new Date(guestyAuthCooldownUntil).toISOString()}). BE API will handle pricing.`);
       // Do NOT retry — every 429 response counts against the rate limit window.
       throw new GuestyClientError({
         message: "Guesty authentication temporarily cooled down after rate limiting",
@@ -532,10 +545,13 @@ export const guestyClient = {
     });
   },
 
+  /**
+   * @deprecated Use guestyBEClient.getCalendar() instead — this calls the v1 Open API
+   * endpoint which was permanently removed on 2026-03-31.
+   */
   async getListingCalendar(id: string, from: string, to: string): Promise<any> {
-    return request<any>("GET", `/v1/listings/${id}/calendar`, {
-      query: { from, to },
-    });
+    // Delegate to BE API (correct endpoint) instead of deprecated Open API
+    return guestyBEClient.getCalendar(id, from, to);
   },
 
   async getListingRatePlans(id: string): Promise<any> {
@@ -591,15 +607,33 @@ export const guestyClient = {
     };
   },
 
-  async createReservation(payload: Record<string, unknown>): Promise<any> {
-    if ((payload as any).quoteId) {
-      return request<any>("POST", "/v1/reservations-v3/quote", { body: payload });
-    }
-    return request<any>("POST", "/v1/reservations", { body: payload });
+  /**
+   * @deprecated All bookings MUST go through Booking Engine with Stripe payment.
+   * Use createBEInstantReservation() in guesty-booking.ts instead.
+   * The v1 endpoints were permanently removed on 2026-03-31.
+   */
+  async createReservation(_payload: Record<string, unknown>): Promise<any> {
+    throw new Error(
+      "createReservation via Open API is deprecated. Use Booking Engine API (createBEInstantReservation) with Stripe payment."
+    );
   },
 
+  /**
+   * Fetch reservation details via Booking Engine API.
+   * Migrated from deprecated GET /v1/reservations/{id} to BE API.
+   */
   async getReservation(id: string): Promise<any> {
-    return request<any>("GET", `/v1/reservations/${id}`);
+    return guestyBEClient.request<any>("GET", `/api/reservations/${id}/summary`);
+  },
+
+  /** Fetch guest reviews (paginated). */
+  async getReviews(input?: { limit?: number; skip?: number }): Promise<any> {
+    return request<any>("GET", "/v1/reviews", {
+      query: {
+        limit: input?.limit ?? 100,
+        skip: input?.skip ?? 0,
+      },
+    });
   },
 };
 
@@ -838,6 +872,23 @@ export const guestyBEClient = {
 
     return isQuoteRequest ? runBeQuoteLimited(execute) : execute();
   },
+
+  /**
+   * Fetch day-by-day calendar for a listing via the Booking Engine API.
+   * GET https://booking.guesty.com/api/listings/{id}/calendar?from=YYYY-MM-DD&to=YYYY-MM-DD
+   * Returns flat array: [{ date, status, minNights, isBaseMinNights, cta, ctd }]
+   */
+  async getCalendar(listingId: string, from: string, to: string): Promise<any[]> {
+    const result = await this.request<any>("GET", `/api/listings/${listingId}/calendar`, {
+      query: { from, to },
+    });
+    // BE API returns a flat array directly; guard against unexpected wrapping
+    if (Array.isArray(result)) return result;
+    if (result?.days && Array.isArray(result.days)) return result.days;
+    if (result?.data && Array.isArray(result.data)) return result.data;
+    console.warn(`[guestyBEClient.getCalendar] Unexpected response shape:`, Object.keys(result || {}).slice(0, 5));
+    return [];
+  },
 };
 
 export function isGuestyConfigured(): boolean {
@@ -848,4 +899,37 @@ export function isGuestyConfigured(): boolean {
 export function resetGuestyRateLimitCooldowns(): void {
   guestyAuthCooldownUntil = 0;
   guestyBeAuthCooldownUntil = 0;
+  guestyAuthConsecutive429s = 0;
+}
+
+/** Check if the Open API OAuth is currently in 429 cooldown (skip live quotes, use fallback). */
+export function isGuestyOAuthCoolingDown(): boolean {
+  return Date.now() < guestyAuthCooldownUntil;
+}
+
+/**
+ * Pre-fetch OAuth tokens on server start so the first PDP visitor
+ * doesn't wait for token negotiation. Non-blocking — failures are logged
+ * but never prevent the server from starting.
+ */
+export async function warmUpOAuthTokens(): Promise<void> {
+  const tasks: Promise<void>[] = [];
+
+  if (GUESTY_CLIENT_ID && GUESTY_CLIENT_SECRET) {
+    tasks.push(
+      getAuthHeaders()
+        .then(() => console.info("[Guesty] Open API token warmed up ✓"))
+        .catch((err) => console.warn("[Guesty] Open API warm-up skipped:", err?.message || err))
+    );
+  }
+
+  if (GUESTY_BE_CLIENT_ID && GUESTY_BE_CLIENT_SECRET) {
+    tasks.push(
+      getBEAuthHeaders()
+        .then(() => console.info("[Guesty] BE API token warmed up ✓"))
+        .catch((err) => console.warn("[Guesty] BE API warm-up skipped:", err?.message || err))
+    );
+  }
+
+  await Promise.allSettled(tasks);
 }

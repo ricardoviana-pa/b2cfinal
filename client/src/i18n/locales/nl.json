@@ -241,7 +241,7 @@
     "nightsCountShort_other": "{{count}} nights",
     "sendRequestWithoutPrice": "SEND REQUEST WITHOUT PRICE",
     "minNightMinimum": "{{count}}-night minimum",
-    "reserveAndPay": "RESERVE en PAY {{total}}",
+    "reserveAndPay": "RESERVEER EN BETAAL",
     "reserveNow": "RESERVE NOW",
     "requestWithoutPayment": "Or request without payment"
   },
@@ -376,8 +376,17 @@
     "reload": "PAGINA VERNIEUWEN"
   },
   "cookieBanner": {
+    "title": "COOKIEVOORKEUREN",
+    "description": "We gebruiken cookies om uw ervaring te verbeteren en het sitegebruik te analyseren. Uw privacy is ons belangrijk. U kunt uw voorkeuren hieronder aanpassen.",
+    "essential": "Essentiële Cookies",
+    "essentialDesc": "Vereist voor basisfunctionaliteit en beveiliging van de site. Kan niet worden uitgeschakeld.",
+    "analytics": "Analytische Cookies",
+    "analyticsDesc": "Helpen ons begrijpen hoe u onze site gebruikt, zodat we uw ervaring kunnen verbeteren.",
+    "learnMore": "Meer informatie in onze",
+    "policyLink": "cookiebeleid",
+    "acceptAll": "ALLES ACCEPTEREN",
+    "essentialOnly": "ALLEEN ESSENTIEEL",
     "message": "We use cookies to improve your experience. By continuing, you agree to our",
-    "policyLink": "cookie policy",
     "accept": "Accept"
   },
   "home": {
@@ -534,7 +543,20 @@
     "processing": "Processing…",
     "pay": "Pay",
     "cancel": "Cancel",
-    "checkDetails": "Something went wrong. Please check your details and try again."
+    "checkDetails": "Something went wrong. Please check your details and try again.",
+    "errors": {
+      "defaultError": "Er is iets fout gegaan. Probeer het opnieuw.",
+      "rateLimitError": "Te veel pogingen. Wacht een moment en probeer het opnieuw.",
+      "invalidEmail": "Voer een geldig e-mailadres in.",
+      "invalidPhone": "Voer een geldig telefoonnummer in.",
+      "genericError": "Er is een fout opgetreden. Probeer het opnieuw.",
+      "requiredFields": "Vul alle verplichte velden in.",
+      "cardNotReady": "Kaarten element is niet gereed. Vernieuw de pagina en probeer het opnieuw.",
+      "cardValidationFailed": "Kaartvalidatie is mislukt. Controleer uw kaartgegevens.",
+      "couldNotCreatePaymentMethod": "Betaalmethode kon niet worden gemaakt. Probeer het opnieuw."
+    },
+    "payButton": "Betaal {{currency}} {{amount}}",
+    "cancelButton": "Annuleren"
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",

@@ -4,6 +4,8 @@ import crypto from "node:crypto";
 import { cacheManager } from "../lib/cacheManager";
 import { guestyClient, GuestyClientError, resetGuestyRateLimitCooldowns } from "../lib/guesty";
 import { getPropertiesForSite } from "../services/properties-store";
+import { updateTripStatusByReservationId } from "../db";
+import { sendBookingFailureAlert } from "../services/transactional-email";
 
 const TTL_LISTING_MS = 6 * 60 * 60 * 1000;
 const TTL_CALENDAR_MS = 60 * 1000;
@@ -172,20 +174,23 @@ export function registerGuestyWebhookRoute(app: Express): void {
 
     res.status(200).json({ ok: true });
 
-    setImmediate(() => {
+    setImmediate(async () => {
       const eventType = String(payload?.event || payload?.type || "unknown");
-      const listingId = payload?.data?.listingId || payload?.listingId || payload?.data?.reservation?.listingId;
+      const reservation = payload?.data?.reservation || payload?.data || payload;
+      const listingId = reservation?.listingId || payload?.listingId || "";
+      const reservationId = reservation?._id || payload?.data?._id || "";
+      const guestyStatus = String(reservation?.status || "").toLowerCase();
 
-      console.info(
-        JSON.stringify({
-          source: "guesty.webhook",
-          eventType,
-          listingId,
-          receivedAt: new Date().toISOString(),
-          payload,
-        })
-      );
+      console.info(JSON.stringify({
+        source: "guesty.webhook",
+        eventType,
+        listingId,
+        reservationId,
+        guestyStatus,
+        receivedAt: new Date().toISOString(),
+      }));
 
+      // ── Invalidate cache for listing-related events ──
       if (
         listingId &&
         (
@@ -200,15 +205,44 @@ export function registerGuestyWebhookRoute(app: Express): void {
         cacheManager.invalidateByPrefix(`calendar:${listingId}:`);
       }
 
+      // ── Sync reservation status to customer trips DB ──
+      if (reservationId && (
+        eventType === "reservation.updated" ||
+        eventType === "reservation.canceled" ||
+        eventType === "reservation.cancelled"
+      )) {
+        try {
+          // Map Guesty statuses to our trip statuses
+          let tripStatus: "upcoming" | "active" | "completed" | "cancelled" | null = null;
+          if (guestyStatus === "canceled" || guestyStatus === "cancelled") {
+            tripStatus = "cancelled";
+          } else if (guestyStatus === "checked_in" || guestyStatus === "checked-in") {
+            tripStatus = "active";
+          } else if (guestyStatus === "checked_out" || guestyStatus === "checked-out") {
+            tripStatus = "completed";
+          } else if (guestyStatus === "confirmed" || guestyStatus === "reserved") {
+            tripStatus = "upcoming";
+          }
+
+          if (tripStatus) {
+            await updateTripStatusByReservationId(reservationId, tripStatus);
+            console.info(`[Webhook] Trip status updated: reservationId=${reservationId} → ${tripStatus}`);
+          }
+        } catch (err: any) {
+          console.warn(`[Webhook] Failed to update trip status: ${err.message}`);
+        }
+      }
+
+      // ── Log reservation.created for monitoring ──
       if (eventType === "reservation.created") {
-        console.info(
-          JSON.stringify({
-            source: "guesty.webhook.email_stub",
-            action: "send_confirmation_email",
-            reservationId: payload?.data?._id || payload?._id,
-            payload,
-          })
-        );
+        console.info(JSON.stringify({
+          source: "guesty.webhook.reservation_created",
+          reservationId,
+          listingId,
+          confirmationCode: reservation?.confirmationCode || "",
+          guestEmail: reservation?.guest?.email || "",
+          status: guestyStatus,
+        }));
       }
     });
   });
@@ -307,9 +341,11 @@ export function registerBookingRoutes(app: Express): void {
     }
 
     try {
-      const calendar = await guestyClient.getListingCalendar(id, from, to);
-      cacheManager.set(cacheKey, calendar, TTL_CALENDAR_MS);
-      res.json({ ...calendar, cached: false });
+      // BE API returns flat array of days via delegated getListingCalendar()
+      const days = await guestyClient.getListingCalendar(id, from, to);
+      const result = { days: Array.isArray(days) ? days : [], from, to };
+      cacheManager.set(cacheKey, result, TTL_CALENDAR_MS);
+      res.json({ ...result, cached: false });
     } catch (err) {
       mapGuestyError(err, res);
     }
@@ -368,78 +404,20 @@ export function registerBookingRoutes(app: Express): void {
     }
   });
 
-  app.post("/api/reservations", async (req: Request, res: Response) => {
-    const body = req.body || {};
-    const listingId = String(body.listingId || "");
-    const checkIn = toIsoDate(String(body.checkInDateLocalized || body.checkIn || ""));
-    const checkOut = toIsoDate(String(body.checkOutDateLocalized || body.checkOut || ""));
-    const guest = body.guest || {};
-    const ratePlanId = body.ratePlanId ? String(body.ratePlanId) : undefined;
-    const policyAccepted = Boolean(body.policyAccepted);
-    const termsAccepted = Boolean(body.termsAccepted);
-
-    if (!listingId || !checkIn || !checkOut || !guest?.firstName || !guest?.lastName || !guest?.email || !guest?.phone) {
-      res.status(422).json({
-        message: "Missing required booking fields",
-        code: "VALIDATION_ERROR",
-      });
-      return;
-    }
-
-    if (!policyAccepted || !termsAccepted) {
-      res.status(422).json({
-        message: "You must accept terms and cancellation policy",
-        code: "TERMS_REQUIRED",
-      });
-      return;
-    }
-
-    const counts = parseGuestCounts(body);
-    const payload = body.quoteId
-      ? {
-          status: "confirmed",
-          reservedUntil: -1,
-          quoteId: String(body.quoteId),
-          ...(ratePlanId ? { ratePlanId } : {}),
-          guest: {
-            firstName: String(guest.firstName),
-            lastName: String(guest.lastName),
-            email: String(guest.email),
-            phones: [String(guest.phone)],
-          },
-          ignoreCalendar: false,
-          ignoreTerms: false,
-          ignoreBlocks: false,
-        }
-      : {
-          listingId,
-          checkInDateLocalized: checkIn,
-          checkOutDateLocalized: checkOut,
-          guestsCount: counts.guestsCount,
-          guest: {
-            firstName: String(guest.firstName),
-            lastName: String(guest.lastName),
-            email: String(guest.email),
-            phone: String(guest.phone),
-          },
-          source: "Website Direct",
-          status: "inquiry",
-        };
-
-    try {
-      const reservation = await guestyClient.createReservation(payload as Record<string, unknown>);
-      res.status(201).json({
-        reservationId: reservation?._id || "",
-        confirmationCode: reservation?.confirmationCode || reservation?._id?.slice(-8) || "",
-        status: reservation?.status || "reserved",
-      });
-    } catch (err) {
-      mapGuestyError(err, res);
-    }
+  // POST /api/reservations — REMOVED (2026-03-31)
+  // All bookings now go through the Booking Engine API with Stripe payment.
+  // See: tRPC createBEInstantReservation in server/routers/booking.ts
+  app.post("/api/reservations", (_req: Request, res: Response) => {
+    res.status(410).json({
+      message: "This endpoint has been retired. All bookings must use the direct payment flow via our Booking Engine.",
+      code: "ENDPOINT_RETIRED",
+      alternative: "Use the checkout flow with Stripe payment (createBEInstantReservation).",
+    });
   });
 
   app.get("/api/reservations/:id", async (req: Request, res: Response) => {
     try {
+      // Migrated to BE API: GET /api/reservations/{id}/summary
       const reservation = await guestyClient.getReservation(req.params.id);
       const listingId = reservation?.listingId || reservation?.listing?._id || reservation?.listing?._idStr || "";
       let listingName = "";
@@ -459,7 +437,7 @@ export function registerBookingRoutes(app: Express): void {
         listingName = maybe?.name || "";
       }
 
-      const title = listingName || "Portugal Active Reservation";
+      const title = listingName || reservation?.listing?.title || "Portugal Active Reservation";
       const checkIn = toIsoDate(String(reservation?.checkInDateLocalized || reservation?.checkIn || ""));
       const checkOut = toIsoDate(String(reservation?.checkOutDateLocalized || reservation?.checkOut || ""));
       const calendarDescription = `Reservation ${reservation?.confirmationCode || reservation?._id || ""}`;
@@ -516,6 +494,7 @@ export function registerBookingRoutes(app: Express): void {
 
   app.get("/api/reservations/:id/ics", async (req: Request, res: Response) => {
     try {
+      // Migrated to BE API via guestyClient.getReservation() → BE API /api/reservations/{id}/summary
       const reservation = await guestyClient.getReservation(req.params.id);
       const checkIn = toIsoDate(String(reservation?.checkInDateLocalized || reservation?.checkIn || ""));
       const checkOut = toIsoDate(String(reservation?.checkOutDateLocalized || reservation?.checkOut || ""));
@@ -525,7 +504,7 @@ export function registerBookingRoutes(app: Express): void {
       }
       const content = buildIcsContent({
         uid: String(reservation?._id || req.params.id),
-        summary: String(reservation?.listing?.title || "Portugal Active Reservation"),
+        summary: String(reservation?.listing?.title || reservation?.listingName || "Portugal Active Reservation"),
         checkIn,
         checkOut,
         description: `Reservation ${reservation?.confirmationCode || reservation?._id || ""}`,
@@ -565,9 +544,11 @@ export function registerBookingRoutes(app: Express): void {
       return;
     }
     try {
-      const calendar = await guestyClient.getListingCalendar(listingId, from, to);
-      cacheManager.set(cacheKey, calendar, TTL_CALENDAR_MS);
-      res.json({ ...calendar, cached: false, from, to });
+      // BE API returns flat array of days via delegated getListingCalendar()
+      const days = await guestyClient.getListingCalendar(listingId, from, to);
+      const result = { days: Array.isArray(days) ? days : [], from, to };
+      cacheManager.set(cacheKey, result, TTL_CALENDAR_MS);
+      res.json({ ...result, cached: false });
     } catch (err) {
       mapGuestyError(err, res);
     }

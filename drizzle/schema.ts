@@ -310,6 +310,7 @@ export const customerProfiles = mysqlTable("customer_profiles", {
   loyaltyTier: mysqlEnum("loyaltyTier", ["bronze", "silver", "gold", "platinum"]).default("bronze").notNull(),
   totalStays: int("totalStays").default(0).notNull(),
   totalNights: int("totalNights").default(0).notNull(),
+  preferences: text("preferences"), // JSON string storing guest preferences (Returning Guest Programme)
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

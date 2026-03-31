@@ -61,6 +61,33 @@ export interface Property {
   isActive: boolean;
   seoTitle: string;
   seoDescription: string;
+  address?: {
+    full?: string;
+    street?: string;
+    city?: string;
+    state?: string;
+    zipcode?: string;
+    country?: string;
+    lat?: number;
+    lng?: number;
+  };
+  rooms?: Array<{
+    name: string;
+    beds: Array<{ type: string; quantity: number }>;
+  }>;
+  propertyType?: string;
+  checkInTime?: string;
+  checkOutTime?: string;
+  areaSquareFeet?: number | null;
+  reviews?: Array<{
+    rating: number;
+    text: string;
+    guestName: string;
+    date: string;
+    categories?: Array<{ name: string; score: number }>;
+  }>;
+  averageRating?: number | null;
+  reviewCount?: number;
 }
 
 // --- PRODUCTS: SERVICES + ADVENTURES ---
@@ -147,6 +174,8 @@ export interface BlogArticle {
   author: BlogAuthor;
   featuredImage: string;
   coverImage?: string;
+  videoId?: string;
+  vimeoId?: string;
   content: string;
   excerpt: string;
   publishDate: string;

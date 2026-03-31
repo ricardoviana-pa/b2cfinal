@@ -207,6 +207,7 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
                   <input
                     type="date"
                     value={values[field.key] as string}
+                    min={new Date().toISOString().split("T")[0]}
                     onChange={(e) => handleChange(field.key, e.target.value)}
                     onClick={e => (e.target as HTMLInputElement).showPicker?.()}
                     required={field.required}
@@ -273,7 +274,10 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
           </form>
 
           {/* Footer */}
-          <div className="border-t border-[#E8E4DC] px-6 py-4">
+          <div className="border-t border-[#E8E4DC] px-6 py-4 space-y-3">
+            <p className="text-[11px] text-[#9E9A90] italic leading-relaxed">
+              This is a request, not a confirmed booking. Our concierge will confirm availability and pricing.
+            </p>
             <button
               onClick={handleSubmit as any}
               className="w-full bg-[#8B7355] text-white text-[12px] tracking-[0.12em] font-medium py-3.5 hover:bg-[#7A6548] transition-colors flex items-center justify-center gap-2"

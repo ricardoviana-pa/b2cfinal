@@ -552,8 +552,14 @@ function generateReferralCode(): string {
 export async function getCustomerProfile(userId: number) {
   const db = await getDb();
   if (!db) return undefined;
-  const result = await db.select().from(customerProfiles).where(eq(customerProfiles.userId, userId)).limit(1);
-  return result[0];
+  try {
+    const result = await db.select().from(customerProfiles).where(eq(customerProfiles.userId, userId)).limit(1);
+    return result[0];
+  } catch (err: any) {
+    // Table may not exist yet (migration not run) — return undefined so the endpoint returns defaults
+    console.warn("[DB] customer_profiles query failed (table may not exist):", err?.message?.slice(0, 120));
+    return undefined;
+  }
 }
 
 export async function updateCustomerProfile(userId: number, data: Partial<InsertCustomerProfile>) {
@@ -617,6 +623,23 @@ export async function createCustomerTrip(data: InsertCustomerTrip) {
   if (!db) throw new Error("Database not available");
   const result = await db.insert(customerTrips).values(data);
   return { id: result[0].insertId };
+}
+
+/**
+ * Update trip status by Guesty reservation ID.
+ * Used by webhook handler when Guesty notifies us of reservation changes.
+ */
+export async function updateTripStatusByReservationId(
+  guestyReservationId: string,
+  status: "upcoming" | "active" | "completed" | "cancelled"
+) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db
+    .update(customerTrips)
+    .set({ status })
+    .where(eq(customerTrips.guestyReservationId, guestyReservationId));
+  return result;
 }
 
 /* ================================================================

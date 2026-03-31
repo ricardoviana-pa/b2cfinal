@@ -174,8 +174,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
               <button
                 ref={menuToggleRef}
                 onClick={() => setMenuOpen(v => !v)}
-                className={`flex items-center justify-center w-10 h-10 ${textColor} transition-colors`}
-                style={{ minHeight: 'auto', minWidth: 'auto' }}
+                className={`flex items-center justify-center w-11 h-11 ${textColor} transition-colors`}
                 aria-label={menuOpen ? t('header.closeMenu') : t('header.openMenu')}
                 aria-expanded={menuOpen}
                 aria-controls="mobile-menu-panel"
@@ -443,8 +442,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
             </Link>
             <button
               onClick={() => setMenuOpen(false)}
-              className="w-10 h-10 flex items-center justify-center text-[#1A1A18] hover:text-[#8B7355] transition-colors"
-              style={{ minHeight: 'auto', minWidth: 'auto' }}
+              className="w-11 h-11 flex items-center justify-center text-[#1A1A18] hover:text-[#8B7355] transition-colors"
               aria-label={t('header.closeMenu')}
             >
               <X className="w-5 h-5" />

@@ -17,6 +17,16 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
 
+interface LiveQuote {
+  total: number;
+  nightlyRate: number;
+  cleaningFee: number;
+  nights: number;
+  source?: string;
+  fallbackMessage?: string;
+  available?: boolean;
+}
+
 const BEDROOM_OPTIONS = ['1-2', '3-4', '5-6', '7+'];
 
 export default function Homes() {
@@ -126,6 +136,9 @@ export default function Homes() {
   const [bookingCheckin, setBookingCheckin] = useState(searchCheckin);
   const [bookingCheckout, setBookingCheckout] = useState(searchCheckout);
   const [bookingGuests, setBookingGuests] = useState(searchGuests ? Number(searchGuests) : 2);
+  const [quotes, setQuotes] = useState<Record<string, LiveQuote | null>>({});
+  const [quotesLoading, setQuotesLoading] = useState(false);
+  const utils = trpc.useUtils();
   const effectiveGuests = searchGuestsCount > 0 ? searchGuestsCount : bookingGuests;
   const checkInRef = useRef<HTMLInputElement>(null);
   const checkOutRef = useRef<HTMLInputElement>(null);
@@ -191,6 +204,34 @@ export default function Homes() {
     setStyle(undefined);
     setShowFavoritesOnly(false);
   };
+
+  // PLP pricing: compute estimated totals from catalogue base prices (zero API calls).
+  // Live Guesty quotes are fetched only on the PDP when a guest selects dates for a single property.
+  // This eliminates 55+ API calls per page load and prevents Guesty rate-limit cascades.
+  useEffect(() => {
+    if (!searchCheckin || !searchCheckout || searchNights <= 0 || filtered.length === 0) {
+      setQuotes({});
+      return;
+    }
+
+    const computed: Record<string, LiveQuote | null> = {};
+    for (const property of filtered) {
+      const nightlyRate = property.pricePerNight ?? property.priceFrom ?? 0;
+      const cleaningFee = property.cleaningFee ?? 0;
+      if (nightlyRate > 0) {
+        computed[property.slug] = {
+          total: nightlyRate * searchNights + cleaningFee,
+          nightlyRate,
+          cleaningFee,
+          nights: searchNights,
+          source: 'base',
+          available: true,
+        };
+      }
+    }
+    setQuotes(computed);
+    setQuotesLoading(false);
+  }, [searchCheckin, searchCheckout, searchNights, filtered]);
 
   const applyBookingSearch = () => {
     const params = new URLSearchParams(searchString);
@@ -668,6 +709,8 @@ export default function Homes() {
                   checkin={searchCheckin}
                   checkout={searchCheckout}
                   guests={searchGuestsCount || undefined}
+                  liveQuote={quotes[property.slug] || undefined}
+                  quoteLoading={quotesLoading}
                 />
               </div>
             ))}

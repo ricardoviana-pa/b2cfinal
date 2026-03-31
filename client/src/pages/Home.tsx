@@ -73,7 +73,22 @@ export default function Home() {
   const [searchCheckin, setSearchCheckin] = useState('');
   const [searchCheckout, setSearchCheckout] = useState('');
   const [searchGuests, setSearchGuests] = useState(2);
-  const checkoutRef = useRef<HTMLInputElement>(null);
+  const today = new Date().toISOString().split("T")[0];
+  const checkoutDesktopRef = useRef<HTMLInputElement>(null);
+  const checkoutMobileRef = useRef<HTMLInputElement>(null);
+
+  /** When check-in changes, auto-set checkout to +2 days and open checkout picker */
+  const handleCheckinChange = (value: string, isMobile: boolean) => {
+    setSearchCheckin(value);
+    if (value) {
+      const d = new Date(value);
+      d.setDate(d.getDate() + 2);
+      const co = d.toISOString().slice(0, 10);
+      setSearchCheckout(co);
+      const ref = isMobile ? checkoutMobileRef : checkoutDesktopRef;
+      setTimeout(() => ref.current?.showPicker?.(), 50);
+    }
+  };
 
   const s2Ref = useFadeIn();
   const s3Ref = useFadeIn();
@@ -255,10 +270,8 @@ export default function Home() {
               <input
                 type="date"
                 value={searchCheckin}
-                onChange={e => {
-                  setSearchCheckin(e.target.value);
-                  setTimeout(() => checkoutRef.current?.showPicker?.(), 50);
-                }}
+                min={today}
+                onChange={e => handleCheckinChange(e.target.value, false)}
                 placeholder="Check-in"
                 className="w-full h-full px-4 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
@@ -274,9 +287,10 @@ export default function Home() {
               onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
             >
               <input
-                ref={checkoutRef}
+                ref={checkoutDesktopRef}
                 type="date"
                 value={searchCheckout}
+                min={searchCheckin || today}
                 onChange={e => setSearchCheckout(e.target.value)}
                 placeholder="Check-out"
                 className="w-full h-full px-4 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer"
@@ -343,10 +357,8 @@ export default function Home() {
                 <input
                   type="date"
                   value={searchCheckin}
-                  onChange={e => {
-                    setSearchCheckin(e.target.value);
-                    setTimeout(() => checkoutRef.current?.showPicker?.(), 50);
-                  }}
+                  min={today}
+                  onChange={e => handleCheckinChange(e.target.value, true)}
                   className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
                   style={{ fontFamily: 'var(--font-body)' }}
                   placeholder={t('home.searchCheckin', 'Check-in')}
@@ -357,9 +369,10 @@ export default function Home() {
                 onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
               >
                 <input
-                  ref={checkoutRef}
+                  ref={checkoutMobileRef}
                   type="date"
                   value={searchCheckout}
+                  min={searchCheckin || today}
                   onChange={e => setSearchCheckout(e.target.value)}
                   className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
                   style={{ fontFamily: 'var(--font-body)' }}

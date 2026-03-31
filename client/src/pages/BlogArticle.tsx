@@ -2,17 +2,103 @@
    BLOG ARTICLE — Single article view with editorial layout
    ========================================================================== */
 
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { ArrowLeft, Clock, Calendar, Share2, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, Share2, ArrowRight, Play, ExternalLink } from 'lucide-react';
+import { useMemo } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import type { BlogArticle as BlogArticleType } from '@/lib/types';
 import blogData from '@/data/blog.json';
 
 const articles = (blogData as any).articles as BlogArticleType[];
+
+/* ── Inline markdown: bold + links ── */
+function renderInline(text: string) {
+  // Split on **bold** and [link](url) patterns
+  const parts: (string | JSX.Element)[] = [];
+  const regex = /\*\*(.+?)\*\*|\[([^\]]+)\]\(([^)]+)\)/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index));
+    if (match[1]) {
+      parts.push(<strong key={key++} className="text-[#1A1A18] font-semibold">{match[1]}</strong>);
+    } else if (match[2] && match[3]) {
+      const href = match[3];
+      const isExternal = href.startsWith('http');
+      parts.push(
+        <a key={key++} href={href} className="text-[#8B7355] underline underline-offset-2 hover:text-[#1A1A18] transition-colors"
+          {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{match[2]}</a>
+      );
+    }
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  return parts;
+}
+
+/* ── Video embed: supports Vimeo (primary) and YouTube (fallback) ── */
+function VideoEmbed({ vimeoId, videoId, title }: { vimeoId?: string; videoId?: string; title: string }) {
+  const [embedFailed, setEmbedFailed] = useState(false);
+  const handleError = useCallback(() => setEmbedFailed(true), []);
+
+  const isVimeo = !!vimeoId;
+  const embedSrc = isVimeo
+    ? `https://player.vimeo.com/video/${vimeoId}?badge=0&autopause=0&player_id=0&app_id=58479&byline=0&title=0&portrait=0`
+    : `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`;
+  const watchUrl = isVimeo
+    ? `https://vimeo.com/${vimeoId}`
+    : `https://www.youtube.com/watch?v=${videoId}`;
+  const thumbUrl = isVimeo
+    ? undefined // Vimeo doesn't have a simple thumbnail URL pattern
+    : `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+  const platformLabel = isVimeo ? 'Vimeo' : 'YouTube';
+
+  if (embedFailed) {
+    return (
+      <section className="pb-8">
+        <div className="container max-w-4xl mx-auto">
+          <a href={watchUrl} target="_blank" rel="noopener noreferrer"
+            className="group relative block w-full aspect-video bg-[#1A1A18] rounded-sm overflow-hidden">
+            {thumbUrl && (
+              <img src={thumbUrl} alt={title} className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-80 transition-opacity" />
+            )}
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+              <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <Play className="w-7 h-7 text-[#1A1A18] ml-1" fill="#1A1A18" />
+              </div>
+              <span className="flex items-center gap-2 text-white/90 text-sm font-medium">
+                Watch on {platformLabel} <ExternalLink className="w-3.5 h-3.5" />
+              </span>
+            </div>
+          </a>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="pb-8">
+      <div className="container max-w-4xl mx-auto">
+        <div className="relative w-full aspect-video bg-black rounded-sm overflow-hidden">
+          <iframe
+            src={embedSrc}
+            title={title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+            allowFullScreen
+            className="absolute inset-0 w-full h-full"
+            loading="lazy"
+            onError={handleError}
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function BlogArticle() {
   const { t } = useTranslation();
@@ -131,13 +217,24 @@ export default function BlogArticle() {
         </div>
       </section>
 
+      {/* Video Embed */}
+      {((article as any).vimeoId || (article as any).videoId) && (
+        <VideoEmbed vimeoId={(article as any).vimeoId} videoId={(article as any).videoId} title={article.title} />
+      )}
+
       {/* Article Content */}
       <section className="pb-16">
         <div className="container max-w-3xl mx-auto">
           <div className="prose prose-lg max-w-none">
-            {article.content.split('\n\n').map((paragraph, i) => (
-              <p key={i} className="text-[#6B6860] leading-relaxed mb-6">{paragraph}</p>
-            ))}
+            {article.content.split('\n\n').map((block, i) => {
+              const trimmed = block.trim();
+              if (!trimmed) return null;
+              if (trimmed.startsWith('### '))
+                return <h3 key={i} className="text-[#1A1A18] font-display text-xl md:text-2xl mt-10 mb-4">{renderInline(trimmed.slice(4))}</h3>;
+              if (trimmed.startsWith('## '))
+                return <h2 key={i} className="text-[#1A1A18] font-display text-2xl md:text-3xl mt-12 mb-5">{renderInline(trimmed.slice(3))}</h2>;
+              return <p key={i} className="text-[#6B6860] leading-relaxed mb-6">{renderInline(trimmed)}</p>;
+            })}
           </div>
         </div>
       </section>

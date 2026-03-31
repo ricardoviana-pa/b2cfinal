@@ -241,7 +241,7 @@
     "nightsCountShort_other": "{{count}} nights",
     "sendRequestWithoutPrice": "SEND REQUEST WITHOUT PRICE",
     "minNightMinimum": "{{count}}-night minimum",
-    "reserveAndPay": "RESERVE ja PAY {{total}}",
+    "reserveAndPay": "VARAA JA MAKSA",
     "reserveNow": "RESERVE NOW",
     "requestWithoutPayment": "Or request without payment"
   },
@@ -376,8 +376,17 @@
     "reload": "PÄIVITÄ SIVU"
   },
   "cookieBanner": {
+    "title": "EVUSTEASETUKSET",
+    "description": "Käytämme evusteitä käyttäjäkokemuksesi parantamiseen ja sivuston käytön analysointiin. Yksityisyytesi on meille tärkeä. Voit mukauttaa asetuksiasi alla.",
+    "essential": "Välttämättömät Evusteet",
+    "essentialDesc": "Vaaditaan sivuston perustoiminnalle ja turvallisuudelle. Niitä ei voi poistaa käytöstä.",
+    "analytics": "Analytiikka Evusteet",
+    "analyticsDesc": "Auttavat meitä ymmärtämään, miten käytät sivustoamme, jotta voimme parantaa kokemustasi.",
+    "learnMore": "Lisätietoja osoitteessa",
+    "policyLink": "evusteen käytäntö",
+    "acceptAll": "HYVÄKSY KAIKKI",
+    "essentialOnly": "VAIN VÄLTTÄMÄTTÖMÄT",
     "message": "We use cookies to improve your experience. By continuing, you agree to our",
-    "policyLink": "cookie policy",
     "accept": "Accept"
   },
   "home": {
@@ -534,7 +543,20 @@
     "processing": "Processing…",
     "pay": "Pay",
     "cancel": "Cancel",
-    "checkDetails": "Something went wrong. Please check your details and try again."
+    "checkDetails": "Something went wrong. Please check your details and try again.",
+    "errors": {
+      "defaultError": "Jotakin meni pieleen. Yritä uudelleen.",
+      "rateLimitError": "Liian monta yritystä. Odota hetki ja yritä uudelleen.",
+      "invalidEmail": "Kirjoita kelvollinen sähköpostiosoite.",
+      "invalidPhone": "Kirjoita kelvollinen puhelinnumero.",
+      "genericError": "Tapahtui virhe. Yritä uudelleen.",
+      "requiredFields": "Täytä kaikki pakolliset kentät.",
+      "cardNotReady": "Korttielementti ei ole valmis. Päivitä sivu ja yritä uudelleen.",
+      "cardValidationFailed": "Kortin vahvistus epäonnistui. Tarkista kortin tiedot.",
+      "couldNotCreatePaymentMethod": "Maksutapaa ei voitu luoda. Yritä uudelleen."
+    },
+    "payButton": "Maksa {{currency}} {{amount}}",
+    "cancelButton": "Peruuta"
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",

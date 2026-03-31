@@ -30,6 +30,7 @@ interface PropertyCardProps {
     nights: number;
     source?: string;
     fallbackMessage?: string;
+    available?: boolean;
   } | null;
   quoteLoading?: boolean;
   /** Batch tRPC failed â show catalogue estimate instead of infinite loading */
@@ -215,7 +216,7 @@ export default function PropertyCard({
         <div className="flex items-center gap-1.5 mb-3">
           <Sparkles className="w-3 h-3 text-[#C4A87C] shrink-0" />
           <span className="text-[0.6875rem] text-[#9E9A90] font-light">
-            {t('property.dailyHousekeeping')} Â· {t('property.concierge')} Â· {t('property.welcomeHamper')}
+            {t('property.dailyHousekeeping')} · {t('property.concierge')} · {t('property.welcomeHamper')}
           </span>
         </div>
 
@@ -237,23 +238,37 @@ export default function PropertyCard({
           {nights > 0 ? (
             <>
               <div className="flex items-baseline justify-between">
-                {quoteLoading ? (
+                {quoteLoading && !liveQuote ? (
                   <div className="flex flex-col gap-1.5 w-full max-w-[200px]" aria-busy="true" aria-label={t('property.checkingPriceAria')}>
                     <div className="h-3.5 bg-[#F5F1EB] rounded-md animate-pulse w-4/5" />
                     <div className="h-3 bg-[#F5F1EB] rounded-md animate-pulse w-1/2" />
                   </div>
+                ) : liveQuote && liveQuote.available === false ? (
+                  <div className="w-full">
+                    <div className="flex items-center gap-1.5">
+                      <span className="inline-block w-2 h-2 rounded-full bg-[#DC2626] shrink-0" />
+                      <span className="text-[#DC2626] text-[0.8125rem] font-medium">
+                        {t('property.unavailableForDates', 'Unavailable for these dates')}
+                      </span>
+                    </div>
+                    <p className="text-[0.6875rem] text-[#9E9A90] mt-1">
+                      {t('property.tryOtherDates', 'Try different dates or contact us for alternatives')}
+                    </p>
+                  </div>
                 ) : (() => {
                   const fmt = formatEur;
                   const fromCatalogue = (property.priceFrom ?? 0) * nights;
-                  const showGuesty =
+                  // Show live, cached, or base price quotes
+                  const isUsableQuote =
                     liveQuote &&
                     (liveQuote.source === 'live' || liveQuote.source === 'cached' || liveQuote.source === 'base') &&
                     liveQuote.total > 0;
-                  if (showGuesty && liveQuote) {
+                  const isEstimate = liveQuote?.source === 'base';
+                  if (isUsableQuote && liveQuote) {
                     return (
                       <>
                         <span className="text-[#1A1A18] font-medium">
-                          {fmt(liveQuote.total)} {t('property.totalLabel')}
+                          {isEstimate ? '~' : ''}{fmt(liveQuote.total)} {t('property.totalLabel')}
                         </span>
                         <span className="text-[0.75rem] text-[#9E9A90]">
                           {t('booking.nights', { count: liveQuote.nights })}
@@ -261,37 +276,35 @@ export default function PropertyCard({
                       </>
                     );
                   }
-                  if (fromCatalogue > 0) {
+                  // No live quote available — show catalogue per-night rate only
+                  if ((property.priceFrom ?? 0) > 0) {
                     return (
                       <div className="text-left w-full">
-                        <span className="text-[#1A1A18] font-medium">{fmt(fromCatalogue)}</span>
-                        <span className="text-[0.75rem] text-[#9E9A90] ml-1">{t('property.estTotal')}</span>
-                        <p className="text-[0.6875rem] text-[#9E9A90] mt-0.5">
-                          {batchFailed || liveQuote?.source === 'request'
-                            ? t('property.indicativeUnavailable')
-                            : t('property.indicativeCatalogue')}
-                        </p>
+                        <span className="text-[#1A1A18] font-medium">
+                          {t('property.fromPerNight', { price: property.priceFrom.toLocaleString() })}
+                        </span>
+                        <span className="text-[0.75rem] text-[#9E9A90] ml-1">{t('property.perNight')}</span>
                       </div>
                     );
                   }
                   return (
                     <span className="text-[#9E9A90] text-[0.8125rem]">
-                      {liveQuote?.fallbackMessage || t('property.priceOnRequest')}
+                      {t('property.priceOnRequest')}
                     </span>
                   );
                 })()}
               </div>
-              {liveQuote &&
+              {liveQuote && liveQuote.available !== false &&
                 (liveQuote.source === 'live' || liveQuote.source === 'cached' || liveQuote.source === 'base') &&
                 liveQuote.total > 0 && (
                 <p className="text-[0.6875rem] text-[#9E9A90] mt-0.5">
-                  {t('property.nightCleaningLine', {
-                    nightly: formatEur(liveQuote.nightlyRate),
-                    cleaning: formatEur(liveQuote.cleaningFee),
-                  })}
-                  {liveQuote.source === 'base' && (
-                    <span className="block text-[0.625rem] mt-0.5">{t('property.estimatedBaseGuesty')}</span>
-                  )}
+                  {liveQuote.source === 'base'
+                    ? `${formatEur(liveQuote.nightlyRate)}/night + ${formatEur(liveQuote.cleaningFee)} cleaning (est.)`
+                    : t('property.nightCleaningLine', {
+                        nightly: formatEur(liveQuote.nightlyRate),
+                        cleaning: formatEur(liveQuote.cleaningFee),
+                      })
+                  }
                 </p>
               )}
             </>

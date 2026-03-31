@@ -784,7 +784,7 @@
 
   /* WhatsApp float — above safe area on mobile, normal on desktop */
   .whatsapp-float {
-    bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+    bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
     min-height: auto;
     min-width: auto;
   }

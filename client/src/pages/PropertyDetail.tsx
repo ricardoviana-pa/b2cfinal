@@ -11,7 +11,7 @@ import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck,
   Sparkles, Star, Clock, UtensilsCrossed, Headphones, Plus, X, AlertTriangle,
   Wifi, Tv, Coffee, Car, Waves, Wind, Shirt, Flame, TreePine, Mountain,
-  Sun, Monitor, Utensils, Sofa, ArrowRight, Lock, ShieldCheck, type LucideIcon
+  Sun, Monitor, Utensils, Sofa, ArrowRight, Lock, ShieldCheck, Bed, type LucideIcon
 } from 'lucide-react';
 const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 import productsData from '@/data/products.json';
@@ -28,60 +28,178 @@ import { trpc } from '@/lib/trpc';
 const allProducts = productsData as unknown as Product[];
 const destinations = destinationsData as unknown as Destination[];
 
-/** Map amenity name (lowercase) to Lucide icon — Le Collectionist / Plum Guide style */
-const AMENITY_ICON_MAP: Record<string, LucideIcon> = {
-  wifi: Wifi, internet: Wifi, 'high speed wifi': Wifi, 'high-speed wifi': Wifi, 'wireless internet': Wifi,
-  tv: Tv, television: Tv, 'smart tv': Tv,
-  kitchen: Utensils, 'fully equipped kitchen': Utensils, 'full kitchen': Utensils,
-  coffee: Coffee, 'nespresso': Coffee, 'coffee maker': Coffee, 'coffee machine': Coffee, espresso: Coffee,
-  pool: Waves, swimming: Waves, 'infinity pool': Waves, 'heated pool': Waves, 'swimming pool': Waves, 'outdoor pool': Waves, 'private pool': Waves,
-  parking: Car, garage: Car, 'free parking': Car, 'ev charging': Car, 'free parking on premises': Car,
-  'air conditioning': Wind, ac: Wind, heating: Flame, climate: Wind,
-  washer: Shirt, laundry: Shirt, dryer: Shirt, 'washing machine': Shirt, iron: Shirt,
-  garden: TreePine, terrace: Sun, balcony: Sun, patio: Sun, 'garden view': TreePine, 'garden or backyard': TreePine,
-  gym: Mountain, fitness: Mountain, workout: Mountain, 'horseback riding': Mountain,
-  'ocean view': Waves, 'sea view': Waves, beach: Waves, beachfront: Waves, town: MapPin,
-  workspace: Monitor, 'home office': Monitor, desk: Monitor, 'laptop friendly workspace': Monitor,
-  bbq: Flame, grill: Flame, barbecue: Flame, 'bbq grill': Flame,
-  'living room': Sofa, lounge: Sofa,
-  dishwasher: Utensils, oven: Utensils, microwave: Utensils, stove: Utensils, refrigerator: Utensils,
-  blender: Utensils, toaster: Utensils, kettle: Utensils,
-  bathtub: Bath, 'hair dryer': Bath,
-  crib: BedDouble, 'high chair': BedDouble, 'suitable for children (2-12 years)': BedDouble, 'suitable for infants (under 2 years)': BedDouble,
-  'indoor fireplace': Flame, 'outdoor seating (furniture)': Sun,
-  'dining table': Utensils, 'sound system': Tv,
-  'private entrance': Car, 'outdoor kitchen': Utensils,
-  'long term stays allowed': Clock,
-  'smoke detector': Award, 'fire extinguisher': Award, 'first aid kit': Award,
-};
+/** ── Amenity Categorization & Deduplication ── */
 
-/** Amenities to hide — low value, redundant, or clutter */
+/** Categories for grouping amenities — order determines display order */
+const AMENITY_CATEGORIES: { key: string; label: string; icon: LucideIcon; keywords: string[] }[] = [
+  { key: 'outdoor', label: 'Outdoor & Pool', icon: Waves, keywords: [
+    'pool', 'swimming', 'infinity', 'heated pool', 'outdoor pool', 'private pool', 'hot tub', 'jacuzzi',
+    'garden', 'backyard', 'terrace', 'patio', 'balcony', 'outdoor seating',
+    'bbq', 'grill', 'barbecue', 'pool table', 'tennis', 'table tennis',
+  ]},
+  { key: 'views', label: 'Views & Location', icon: Mountain, keywords: [
+    'ocean view', 'sea view', 'beach', 'beachfront', 'mountain', 'garden view', 'lake', 'river', 'town',
+  ]},
+  { key: 'comfort', label: 'Comfort & Climate', icon: Wind, keywords: [
+    'air conditioning', 'heating', 'indoor fireplace', 'fireplace',
+  ]},
+  { key: 'kitchen', label: 'Kitchen & Dining', icon: Utensils, keywords: [
+    'kitchen', 'fully equipped', 'oven', 'microwave', 'stove', 'refrigerator',
+    'coffee', 'nespresso', 'espresso', 'kettle', 'toaster', 'blender', 'dining',
+  ]},
+  { key: 'entertainment', label: 'Entertainment', icon: Tv, keywords: [
+    'tv', 'cable tv', 'smart tv', 'sound system', 'board games', 'books',
+  ]},
+  { key: 'connectivity', label: 'Connectivity & Work', icon: Wifi, keywords: [
+    'wifi', 'internet', 'wireless', 'workspace', 'desk', 'laptop', 'home office', 'monitor',
+  ]},
+  { key: 'wellness', label: 'Wellness & Fitness', icon: Mountain, keywords: [
+    'gym', 'fitness', 'workout', 'sauna', 'spa', 'yoga', 'horseback',
+  ]},
+  { key: 'parking', label: 'Parking & Access', icon: Car, keywords: [
+    'parking', 'garage', 'ev charging', 'private entrance',
+  ]},
+  { key: 'laundry', label: 'Laundry & Housekeeping', icon: Shirt, keywords: [
+    'washer', 'washing machine', 'clothes dryer', 'laundry', 'iron',
+  ]},
+  { key: 'bathroom', label: 'Bathroom', icon: Bath, keywords: [
+    'bathtub', 'hair dryer',
+  ]},
+  { key: 'family', label: 'Family Friendly', icon: BedDouble, keywords: [
+    'crib', 'high chair', 'children', 'infants', 'baby',
+  ]},
+  { key: 'safety', label: 'Safety', icon: Award, keywords: [
+    'smoke detector', 'fire extinguisher', 'first aid', 'security', 'safe',
+  ]},
+];
+
+/** Amenities to completely hide — zero value to guests */
 const AMENITY_BLACKLIST = new Set([
   'essentials', 'hot water', 'hangers', 'clothing storage', 'bed linens', 'towels provided',
   'cleaning disinfection', 'enhanced cleaning practices', 'high touch surfaces disinfected',
   'shampoo', 'shower gel', 'cookware', 'dishes and silverware', 'baking sheet', 'barbeque utensils',
   'wine glasses', 'wide hallway clearance', 'accessible-height bed',
   'freezer', 'babysitter recommendations', 'long term stays allowed',
-  'smoke detector', 'fire extinguisher', 'first aid kit',
 ]);
 
-function getAmenityIcon(name: string): LucideIcon {
-  const key = name.toLowerCase().trim();
-  return AMENITY_ICON_MAP[key] ?? Utensils;
+/** Deduplicate similar amenities — keep the most descriptive version */
+function deduplicateAmenities(items: string[]): string[] {
+  const normalized = items.map(a => ({ original: a, lower: a.toLowerCase().trim() }));
+  const result: string[] = [];
+  const seen = new Set<string>();
+
+  // Group by root concept and keep the most descriptive
+  const conceptGroups: Record<string, string[]> = {};
+  for (const { original, lower } of normalized) {
+    if (AMENITY_BLACKLIST.has(lower)) continue;
+    if (seen.has(lower)) continue;
+    seen.add(lower);
+
+    // Extract root concept (e.g., "pool" from "private pool", "swimming pool")
+    let rootConcept = lower;
+    const roots = ['pool', 'parking', 'tv', 'coffee', 'garden', 'kitchen', 'wifi', 'internet'];
+    for (const root of roots) {
+      if (lower.includes(root)) { rootConcept = root; break; }
+    }
+
+    if (!conceptGroups[rootConcept]) conceptGroups[rootConcept] = [];
+    conceptGroups[rootConcept].push(original);
+  }
+
+  // For each concept group, pick the most descriptive (longest) name
+  for (const group of Object.values(conceptGroups)) {
+    const best = group.sort((a, b) => b.length - a.length)[0];
+    result.push(best);
+  }
+  return result;
 }
 
-function filterAmenities(items: string[]): string[] {
-  return items.filter((x) => {
-    const k = x.toLowerCase().trim();
-    return !AMENITY_BLACKLIST.has(k) && x.length > 0;
-  });
+/** Categorize amenities into groups */
+function categorizeAmenities(items: string[]): { category: string; label: string; icon: LucideIcon; items: string[] }[] {
+  const deduplicated = deduplicateAmenities(items);
+  const categorized: Record<string, string[]> = {};
+  const uncategorized: string[] = [];
+
+  for (const item of deduplicated) {
+    const lower = item.toLowerCase().trim();
+    let matched = false;
+    for (const cat of AMENITY_CATEGORIES) {
+      if (cat.keywords.some(kw => lower.includes(kw) || kw.includes(lower))) {
+        if (!categorized[cat.key]) categorized[cat.key] = [];
+        categorized[cat.key].push(item);
+        matched = true;
+        break;
+      }
+    }
+    if (!matched) uncategorized.push(item);
+  }
+
+  const groups: { category: string; label: string; icon: LucideIcon; items: string[] }[] = [];
+  for (const cat of AMENITY_CATEGORIES) {
+    if (categorized[cat.key]?.length) {
+      groups.push({ category: cat.key, label: cat.label, icon: cat.icon, items: categorized[cat.key] });
+    }
+  }
+  if (uncategorized.length) {
+    groups.push({ category: 'other', label: 'Other', icon: Sparkles, items: uncategorized });
+  }
+  return groups;
 }
+
+
+/** Humanize bed type names and get icon */
+function getBedTypeDisplay(bedType: string): { label: string; icon: LucideIcon } {
+  const normalized = (bedType || '').toUpperCase().replace(/ /g, '_');
+  const iconMap: Record<string, { label: string; icon: LucideIcon }> = {
+    'KING_BED': { label: 'King Bed', icon: BedDouble },
+    'QUEEN_BED': { label: 'Queen Bed', icon: BedDouble },
+    'DOUBLE_BED': { label: 'Double Bed', icon: BedDouble },
+    'SINGLE_BED': { label: 'Single Bed', icon: Bed },
+    'SOFA_BED': { label: 'Sofa Bed', icon: Sofa },
+    'BUNK_BED': { label: 'Bunk Bed', icon: Bed },
+    'COUCH': { label: 'Sofa Bed', icon: Sofa },
+    'AIR_MATTRESS': { label: 'Air Mattress', icon: Bed },
+  };
+  return iconMap[normalized] || { label: bedType || 'Bed', icon: Bed };
+}
+
 
 /** Parse description: handle string, split by \n\n or \n */
 function formatDescription(desc: unknown): string[] {
   if (!desc) return [];
   const s = typeof desc === 'string' ? desc : String(desc);
-  return s.split(/\n\n+/).flatMap(p => p.split('\n').filter(Boolean));
+  const cleaned = cleanDescription(s);
+  return cleaned.split(/\n\n+/).flatMap(p => p.split('\n').filter(Boolean));
+}
+
+/** Clean raw Guesty description for premium display */
+function cleanDescription(raw: string): string {
+  return raw
+    // Remove dash separators: ------Title------
+    .replace(/[-–—]{3,}[^-\n]*[-–—]{3,}/g, '')
+    // Remove emoji bullets
+    .replace(/[✔️✅☑️🔹🔸▪️•]/g, '')
+    // Remove marketing CTAs
+    .replace(/book your stay\.?/gi, '')
+    .replace(/portugal active,?\s*your private hotel\.?/gi, '')
+    // Remove "Enhance Your Stay with Our Exclusive Services:" header
+    .replace(/enhance your stay with our exclusive services:?/gi, '')
+    // Remove embedded promotional/upsell service lines
+    .replace(/enjoy luxury transfers:?[^\n]*/gi, '')
+    .replace(/personalized experience:?[^\n]*/gi, '')
+    .replace(/daily cleaning\s*&\s*babysitting:?[^\n]*/gi, '')
+    .replace(/local team available:?[^\n]*/gi, '')
+    // Remove adventure activity promo blocks (heading + description pairs)
+    .replace(/horseback riding:?\s*\n[^\n]*/gi, '')
+    .replace(/guided hike[^\n]*:\s*\n[^\n]*/gi, '')
+    .replace(/e-bike[^\n]*:\s*\n[^\n]*/gi, '')
+    .replace(/surf[^\n]*:\s*\n[^\n]*/gi, '')
+    .replace(/wine[^\n]*tasting[^\n]*:\s*\n[^\n]*/gi, '')
+    // Remove "rest assured" concierge promo lines
+    .replace(/rest assured[^\n]*/gi, '')
+    // Clean up multiple blank lines
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 function Lightbox({ images, initialIndex, propertyName, destName, onClose, t }: {
@@ -354,10 +472,10 @@ export default function PropertyDetail() {
       .slice(0, 3);
   }, [property, allPropsData]);
 
-  const flatAmenities = useMemo(() => {
+  const amenityGroups = useMemo(() => {
     if (!property?.amenities || typeof property.amenities !== 'object') return [];
     const all = Object.values(property.amenities).flat().filter((x): x is string => typeof x === 'string' && x.length > 0);
-    return filterAmenities(all);
+    return categorizeAmenities(all);
   }, [property?.amenities]);
 
   const handleGalleryTouchStart = useCallback((e: React.TouchEvent) => {
@@ -471,7 +589,7 @@ export default function PropertyDetail() {
 
         {/* Hero gallery — full width, 4:3 or 16:9 */}
         <div
-          className="group/gallery relative w-full overflow-hidden bg-[#F5F1EB] aspect-[4/3] lg:aspect-[16/9] cursor-pointer select-none"
+          className="group relative w-full overflow-hidden bg-[#F5F1EB] aspect-[4/3] lg:aspect-[16/9] cursor-pointer select-none"
           onTouchStart={handleGalleryTouchStart}
           onTouchMove={handleGalleryTouchMove}
           onTouchEnd={handleGalleryTouchEnd}
@@ -502,14 +620,14 @@ export default function PropertyDetail() {
             <>
               <button
                 onClick={e => { e.stopPropagation(); setCurrentImage(p => Math.max(p - 1, 0)); }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all duration-200 hidden md:flex opacity-0 group-hover/gallery:opacity-100"
+                className="absolute left-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/60 backdrop-blur-sm hover:bg-white/90 transition-all duration-200 hidden md:flex z-10"
                 aria-label={t('propertyDetail.prevImage', 'Previous image')}
               >
                 <ChevronLeft size={20} />
               </button>
               <button
                 onClick={e => { e.stopPropagation(); setCurrentImage(p => Math.min(p + 1, totalImages - 1)); }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all duration-200 hidden md:flex opacity-0 group-hover/gallery:opacity-100"
+                className="absolute right-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/60 backdrop-blur-sm hover:bg-white/90 transition-all duration-200 hidden md:flex z-10"
                 aria-label={t('propertyDetail.nextImage', 'Next image')}
               >
                 <ChevronRight size={20} />
@@ -558,36 +676,32 @@ export default function PropertyDetail() {
             <span className="text-[13px]">{property.locality}, {destObj ? <Link href={`/destinations/${destObj.slug}`} className="text-[#8B7355] hover:text-[#1A1A18] transition-colors">{destName}</Link> : destName}</span>
           </div>
 
-          {/* Key stats bar */}
-          <div className="grid grid-cols-4 gap-0 border-y border-[#E8E4DC] py-4">
-            <div className="flex flex-col items-center text-center">
-              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F5F1EB] mb-2">
-                <BedDouble size={18} className="text-[#8B7355]" />
-              </div>
-              <span className="text-[18px] font-light text-[#1A1A18]" style={{ fontFamily: 'var(--font-display)' }}>{property.bedrooms}</span>
-              <span className="text-[10px] text-[#9E9A90] tracking-[0.05em] uppercase mt-0.5">{t('property.bedrooms')}</span>
-            </div>
-            <div className="flex flex-col items-center text-center border-x border-[#E8E4DC]">
-              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F5F1EB] mb-2">
-                <Bath size={18} className="text-[#8B7355]" />
-              </div>
-              <span className="text-[18px] font-light text-[#1A1A18]" style={{ fontFamily: 'var(--font-display)' }}>{property.bathrooms}</span>
-              <span className="text-[10px] text-[#9E9A90] tracking-[0.05em] uppercase mt-0.5">{t('property.bathrooms')}</span>
-            </div>
-            <div className="flex flex-col items-center text-center border-r border-[#E8E4DC]">
-              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F5F1EB] mb-2">
-                <Users size={18} className="text-[#8B7355]" />
-              </div>
-              <span className="text-[18px] font-light text-[#1A1A18]" style={{ fontFamily: 'var(--font-display)' }}>{property.maxGuests}</span>
-              <span className="text-[10px] text-[#9E9A90] tracking-[0.05em] uppercase mt-0.5">{t('property.guests')}</span>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F5F1EB] mb-2">
-                <Award size={18} className="text-[#8B7355]" />
-              </div>
-              <span className="text-[18px] font-light text-[#1A1A18]" style={{ fontFamily: 'var(--font-display)' }}>{t('property.fiveStar')}</span>
-              <span className="text-[10px] text-[#9E9A90] tracking-[0.05em] uppercase mt-0.5">{t('property.serviceLabel')}</span>
-            </div>
+          {/* Key stats bar — single source of truth for property specs */}
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-[#E8E4DC] py-4 text-[13px] text-[#6B6860]">
+            <span className="flex items-center gap-1.5">
+              <BedDouble size={15} className="text-[#8B7355]" />
+              {property.bedrooms} {t('property.bedrooms')}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Bath size={15} className="text-[#8B7355]" />
+              {property.bathrooms} {t('property.bathrooms')}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Users size={15} className="text-[#8B7355]" />
+              {property.maxGuests} {t('property.guests')}
+            </span>
+            {property.areaSquareFeet && property.areaSquareFeet > 0 && (
+              <span className="flex items-center gap-1.5">
+                <MapPin size={15} className="text-[#8B7355]" />
+                {Math.round(property.areaSquareFeet * 0.0929)} m²
+              </span>
+            )}
+            {(property.checkInTime || property.checkOutTime) && (
+              <span className="flex items-center gap-1.5">
+                <Clock size={15} className="text-[#8B7355]" />
+                {property.checkInTime || '16:00'} / {property.checkOutTime || '11:00'}
+              </span>
+            )}
           </div>
         </div>
 
@@ -597,7 +711,40 @@ export default function PropertyDetail() {
           <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
             {/* Main content — left 2/3 */}
             <div className="order-2 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12 pt-6">
-              {/* 1. What's included */}
+              {/* Bedrooms & Sleeping Arrangement */}
+              {property.rooms && property.rooms.length > 0 && (
+                <section>
+                  <h2 className="headline-sm text-[#1A1A18] mb-6">Bedrooms & Sleeping Arrangements</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {property.rooms.map((room, roomIdx) => (
+                      <div key={roomIdx} className="bg-white border border-[#E8E4DC] p-5 rounded-lg">
+                        <h3 className="text-[13px] font-medium text-[#1A1A18] mb-4">{room.name}</h3>
+                        <div className="space-y-3">
+                          {room.beds && room.beds.length > 0 ? (
+                            room.beds.map((bed, bedIdx) => {
+                              const { label, icon: BedIcon } = getBedTypeDisplay(bed.type);
+                              return (
+                                <div key={bedIdx} className="flex items-center gap-3">
+                                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#F5F1EB] shrink-0">
+                                    <BedIcon size={16} className="text-[#8B7355]" />
+                                  </div>
+                                  <span className="text-[12px] text-[#6B6860]">
+                                    {bed.quantity > 1 ? `${bed.quantity} × ${label}` : label}
+                                  </span>
+                                </div>
+                              );
+                            })
+                          ) : (
+                            <span className="text-[12px] text-[#9E9A90]">Bed configuration details not available</span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* 1. What's included (now section B in redesign) */}
               <section className="p-5 lg:p-6 bg-[#F5F1EB]">
                 <h2 className="headline-sm text-[#1A1A18] mb-4">{t('propertyDetail.includedTitle')}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
@@ -626,30 +773,34 @@ export default function PropertyDetail() {
                 </div>
               </section>
 
-              {/* 3. Amenities — Le Collectionist style icon grid */}
+              {/* 3. Amenities — Le Collectionist style icon grid with expandable sections */}
               <section>
                 <h2 className="headline-sm text-[#1A1A18] mb-6">{t('propertyDetail.amenitiesTitle')}</h2>
-                {flatAmenities.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    {flatAmenities.map((item, idx) => {
-                      const Icon = getAmenityIcon(item);
-                      return (
-                        <div key={idx} className="flex items-center gap-3 p-3 rounded-lg bg-[#F5F1EB]/50">
-                          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FAFAF7] shrink-0">
-                            <Icon size={18} className="text-[#8B7355]" />
-                          </div>
-                          <span className="text-[13px] text-[#6B6860] font-light">{item}</span>
+                {amenityGroups.length > 0 ? (
+                  <div className="space-y-6">
+                    {amenityGroups.map((group) => (
+                      <div key={group.category}>
+                        <div className="flex items-center gap-2 mb-3">
+                          <group.icon size={16} className="text-[#8B7355]" />
+                          <h3 className="text-[13px] font-medium tracking-[0.04em] text-[#1A1A18]">{group.label}</h3>
                         </div>
-                      );
-                    })}
+                        <div className="flex flex-wrap gap-2">
+                          {group.items.map((item, idx) => (
+                            <span
+                              key={idx}
+                              className="text-[12px] text-[#6B6860] bg-[#F5F1EB] px-3 py-1.5 rounded-full"
+                            >
+                              {item}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 ) : (
                   <p className="body-md text-[#9E9A90]">{t('propertyDetail.amenitiesContact')}</p>
                 )}
               </section>
-
-              {/* 3b. Guest Reviews */}
-              <ReviewsSection propertyName={property.name} propertySlug={property.slug} />
 
               {/* 4. Services (add-on) */}
               <section>
@@ -707,19 +858,33 @@ export default function PropertyDetail() {
 
               {/* 6. Location map */}
               <section>
-                <h2 className="headline-sm text-[#1A1A18] mb-2">{t('propertyDetail.locationTitle')}</h2>
-                <p className="body-md text-[#9E9A90] mb-4">{t('propertyDetail.locationLine', { locality: property.locality, destination: destName })}</p>
+                <h2 className="headline-sm text-[#1A1A18] mb-2">Location</h2>
+                <p className="text-[13px] font-medium text-[#8B7355] mb-4">{property.locality}</p>
                 <div className="rounded-lg overflow-hidden border border-[#E8E4DC]">
                   <iframe
                     title={`${property.name} — ${property.locality}`}
                     className="w-full h-[280px] lg:h-[320px] border-0"
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    src={`https://maps.google.com/maps?q=${encodeURIComponent(`${property.locality}, ${destName}, Portugal`)}&z=13&output=embed`}
+                    src={
+                      property.address?.lat && property.address?.lng
+                        ? `https://maps.google.com/maps?q=${property.address.lat},${property.address.lng}&z=15&output=embed`
+                        : `https://maps.google.com/maps?q=${encodeURIComponent(`${property.locality}, ${destName}, Portugal`)}&z=13&output=embed`
+                    }
                     allowFullScreen
                   />
                 </div>
               </section>
+
+              {/* 10. Guest Reviews (from Guesty sync) */}
+              <ReviewsSection
+                propertyName={property.name}
+                propertySlug={property.slug}
+                reviews={(property as any).reviews}
+                averageRating={(property as any).averageRating}
+                reviewCount={(property as any).reviewCount}
+              />
+
             </div>
 
             {/* Sticky booking card — right 1/3 */}
@@ -740,12 +905,6 @@ export default function PropertyDetail() {
                       initialCheckOut={initialCheckout}
                       initialGuests={initialGuests}
                     />
-                    <Link
-                      href={`/booking/${property.guestyId}/summary`}
-                      className="mt-4 block text-center text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] underline-offset-4 hover:underline"
-                    >
-                      {t('property.guidedFlow')}
-                    </Link>
                     </Suspense>
                   </>
                 ) : (
@@ -788,7 +947,7 @@ export default function PropertyDetail() {
                   {([
                     { icon: Lock, label: t('trust.secureBooking', 'Secure booking') },
                     { icon: ShieldCheck, label: t('trust.bestRate', 'Best rate guaranteed') },
-                    { icon: Clock, label: t('trust.freeCancellation', 'Free cancellation (30 days)') },
+                    { icon: Clock, label: t('trust.flexibleOptions', 'Flexible cancellation options') },
                     { icon: Headphones, label: t('trust.conciergeIncluded', 'Concierge included') },
                   ] as const).map((item, i) => (
                     <div key={i} className="flex items-center gap-2">

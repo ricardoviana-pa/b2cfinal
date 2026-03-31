@@ -241,7 +241,7 @@
     "nightsCountShort_other": "{{count}} nights",
     "sendRequestWithoutPrice": "SEND REQUEST WITHOUT PRICE",
     "minNightMinimum": "{{count}}-night minimum",
-    "reserveAndPay": "RESERVE y PAY {{total}}",
+    "reserveAndPay": "RESERVAR Y PAGAR",
     "reserveNow": "RESERVE NOW",
     "requestWithoutPayment": "Or request without payment"
   },
@@ -376,8 +376,17 @@
     "reload": "RECARGAR PÁGINA"
   },
   "cookieBanner": {
+    "title": "PREFERENCIAS DE COOKIES",
+    "description": "Utilizamos cookies para mejorar su experiencia y analizar el uso del sitio. Su privacidad es importante para nosotros. Puede personalizar sus preferencias a continuación.",
+    "essential": "Cookies Esenciales",
+    "essentialDesc": "Necesarias para la funcionalidad básica del sitio y la seguridad. No se pueden desactivar.",
+    "analytics": "Cookies de Análisis",
+    "analyticsDesc": "Nos ayudan a entender cómo utiliza nuestro sitio para que podamos mejorar su experiencia.",
+    "learnMore": "Obtenga más información en nuestro",
+    "policyLink": "política de cookies",
+    "acceptAll": "ACEPTAR TODO",
+    "essentialOnly": "SOLO ESENCIALES",
     "message": "We use cookies to improve your experience. By continuing, you agree to our",
-    "policyLink": "cookie policy",
     "accept": "Accept"
   },
   "home": {
@@ -534,7 +543,20 @@
     "processing": "Processing…",
     "pay": "Pay",
     "cancel": "Cancel",
-    "checkDetails": "Something went wrong. Please check your details and try again."
+    "checkDetails": "Something went wrong. Please check your details and try again.",
+    "errors": {
+      "defaultError": "Algo salió mal. Por favor, inténtelo de nuevo.",
+      "rateLimitError": "Demasiados intentos. Por favor, espere un momento e inténtelo de nuevo.",
+      "invalidEmail": "Por favor, introduzca una dirección de correo electrónico válida.",
+      "invalidPhone": "Por favor, introduzca un número de teléfono válido.",
+      "genericError": "Ha ocurrido un error. Por favor, inténtelo de nuevo.",
+      "requiredFields": "Por favor, rellene todos los campos obligatorios.",
+      "cardNotReady": "El elemento de la tarjeta no está listo. Por favor, actualice e inténtelo de nuevo.",
+      "cardValidationFailed": "La validación de la tarjeta ha fallado. Por favor, compruebe los datos de su tarjeta.",
+      "couldNotCreatePaymentMethod": "No se ha podido crear el método de pago. Por favor, inténtelo de nuevo."
+    },
+    "payButton": "Pagar {{currency}} {{amount}}",
+    "cancelButton": "Cancelar"
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",

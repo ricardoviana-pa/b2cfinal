@@ -43,43 +43,53 @@ export const customerRouter = router({
     }),
 
   getTrips: protectedProcedure.query(async ({ ctx }) => {
-    const trips = await db.listCustomerTrips(ctx.user.id);
-    const now = new Date().toISOString().split("T")[0];
-    return trips.map(t => ({
-      ...t,
-      isUpcoming: t.checkIn > now,
-      isPast: t.checkOut <= now,
-    }));
+    try {
+      const trips = await db.listCustomerTrips(ctx.user.id);
+      const now = new Date().toISOString().split("T")[0];
+      return trips.map(t => ({
+        ...t,
+        isUpcoming: t.checkIn > now,
+        isPast: t.checkOut <= now,
+      }));
+    } catch { return []; }
   }),
 
   getPointsLog: protectedProcedure.query(async ({ ctx }) => {
-    return db.getPointsLog(ctx.user.id);
+    try { return await db.getPointsLog(ctx.user.id); } catch { return []; }
   }),
 
   getPointsSummary: protectedProcedure.query(async ({ ctx }) => {
-    const profile = await db.getCustomerProfile(ctx.user.id);
-    const log = await db.getPointsLog(ctx.user.id);
-    const totalEarned = log.filter(l => l.points > 0).reduce((s, l) => s + l.points, 0);
-    const totalRedeemed = log.filter(l => l.points < 0).reduce((s, l) => s + Math.abs(l.points), 0);
-    return {
-      balance: profile?.loyaltyPoints || 0,
-      tier: profile?.loyaltyTier || "bronze",
-      totalEarned,
-      totalRedeemed,
-      nextTier: getNextTier(profile?.loyaltyTier || "bronze"),
-      pointsToNextTier: getPointsToNextTier(profile?.loyaltyTier || "bronze", profile?.loyaltyPoints || 0),
-    };
+    try {
+      const profile = await db.getCustomerProfile(ctx.user.id);
+      const log = await db.getPointsLog(ctx.user.id);
+      const totalEarned = log.filter(l => l.points > 0).reduce((s, l) => s + l.points, 0);
+      const totalRedeemed = log.filter(l => l.points < 0).reduce((s, l) => s + Math.abs(l.points), 0);
+      return {
+        balance: profile?.loyaltyPoints || 0,
+        tier: profile?.loyaltyTier || "bronze",
+        totalEarned,
+        totalRedeemed,
+        nextTier: getNextTier(profile?.loyaltyTier || "bronze"),
+        pointsToNextTier: getPointsToNextTier(profile?.loyaltyTier || "bronze", profile?.loyaltyPoints || 0),
+      };
+    } catch {
+      return { balance: 0, tier: "bronze" as const, totalEarned: 0, totalRedeemed: 0, nextTier: "silver" as const, pointsToNextTier: 500 };
+    }
   }),
 
   getReferrals: protectedProcedure.query(async ({ ctx }) => {
-    const profile = await db.getCustomerProfile(ctx.user.id);
-    const refs = await db.listReferrals(ctx.user.id);
-    return {
-      referralCode: profile?.referralCode || null,
-      referrals: refs,
-      totalReferred: refs.length,
-      totalBooked: refs.filter(r => r.status === "booked" || r.status === "completed").length,
-    };
+    try {
+      const profile = await db.getCustomerProfile(ctx.user.id);
+      const refs = await db.listReferrals(ctx.user.id);
+      return {
+        referralCode: profile?.referralCode || null,
+        referrals: refs,
+        totalReferred: refs.length,
+        totalBooked: refs.filter(r => r.status === "booked" || r.status === "completed").length,
+      };
+    } catch {
+      return { referralCode: null, referrals: [], totalReferred: 0, totalBooked: 0 };
+    }
   }),
 
   sendReferral: protectedProcedure
@@ -98,18 +108,22 @@ export const customerRouter = router({
      ================================================================ */
 
   getPropertyReferrals: protectedProcedure.query(async ({ ctx }) => {
-    const refs = await db.listPropertyReferrals(ctx.user.id);
-    const signed = refs.filter(r => r.status === "signed");
-    const totalReward = signed.reduce((s, r) => s + (r.rewardAmount || 0), 0);
-    const paidReward = signed.filter(r => r.rewardPaid).reduce((s, r) => s + (r.rewardAmount || 0), 0);
-    return {
-      referrals: refs,
-      totalSubmitted: refs.length,
-      totalSigned: signed.length,
-      totalReward,
-      paidReward,
-      pendingReward: totalReward - paidReward,
-    };
+    try {
+      const refs = await db.listPropertyReferrals(ctx.user.id);
+      const signed = refs.filter(r => r.status === "signed");
+      const totalReward = signed.reduce((s, r) => s + (r.rewardAmount || 0), 0);
+      const paidReward = signed.filter(r => r.rewardPaid).reduce((s, r) => s + (r.rewardAmount || 0), 0);
+      return {
+        referrals: refs,
+        totalSubmitted: refs.length,
+        totalSigned: signed.length,
+        totalReward,
+        paidReward,
+        pendingReward: totalReward - paidReward,
+      };
+    } catch {
+      return { referrals: [], totalSubmitted: 0, totalSigned: 0, totalReward: 0, paidReward: 0, pendingReward: 0 };
+    }
   }),
 
   submitPropertyReferral: protectedProcedure
@@ -142,6 +156,23 @@ export const customerRouter = router({
         rewardAmount: 0,
       });
       return { success: true, id: result.id };
+    }),
+
+  /* ================================================================
+     RETURNING GUEST PROGRAMME — Preferences
+     ================================================================ */
+
+  getPreferences: protectedProcedure.query(async ({ ctx }) => {
+    const profile = await db.getCustomerProfile(ctx.user.id);
+    if (!profile?.preferences) return {};
+    try { return JSON.parse(profile.preferences as string); } catch { return {}; }
+  }),
+
+  updatePreferences: protectedProcedure
+    .input(z.object({ preferences: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await db.updateCustomerProfile(ctx.user.id, { preferences: input.preferences } as any);
+      return { success: true };
     }),
 
   /* ================================================================

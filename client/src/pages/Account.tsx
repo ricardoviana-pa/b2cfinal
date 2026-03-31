@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useLocation } from 'wouter';
@@ -7,6 +7,7 @@ import { useAuth } from '@/_core/hooks/useAuth';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
+import productsData from '@/data/products.json';
 import {
   MapPin, Gift, Users, User, LogOut, ChevronRight, Star, Copy, Check, Send,
   Calendar, Home as HomeIcon, Award, ArrowUpRight, Building2, Euro,
@@ -64,8 +65,8 @@ function StatusBadge({ status }: { status: string }) {
 export default function Account() {
   const { t } = useTranslation();
   usePageMeta({
-    title: 'My Account | Trips, Loyalty & Profile',
-    description: 'View your trip history, earn loyalty points, manage referrals, and update your profile with Portugal Active.',
+    title: 'My Account | Trips, Preferences & Profile',
+    description: 'View your trip history, manage your stay preferences, referrals, and update your profile with Portugal Active.',
     url: '/account',
   });
   const { user, loading: authLoading, logout, isAuthenticated } = useAuth();
@@ -118,7 +119,7 @@ export default function Account() {
   const tabs: { id: Tab; label: string; icon: typeof MapPin; badge?: number }[] = [
     { id: 'dashboard', label: t('account.tabDashboard', 'Dashboard'), icon: HomeIcon },
     { id: 'trips', label: t('account.tabTrips', 'My Trips'), icon: MapPin, badge: upcomingTrips.length || undefined },
-    { id: 'points', label: t('account.tabPoints', 'Points'), icon: Gift },
+    { id: 'points', label: t('account.tabPreferences', 'My Preferences'), icon: Gift },
     { id: 'refer-friend', label: t('account.tabReferFriend', 'Refer a Friend'), icon: Users },
     { id: 'refer-property', label: t('account.tabReferProperty', 'Refer a Property'), icon: Building2 },
     { id: 'profile', label: t('account.tabProfile', 'Profile'), icon: User },
@@ -157,12 +158,9 @@ export default function Account() {
               <h1 className="font-display text-[22px] md:text-[28px] font-light text-[#1A1A18] tracking-tight">
                 {t('account.welcome', 'Welcome')}, {profile.name?.split(' ')[0] || t('account.guest', 'Guest')}
               </h1>
-              <div className="flex items-center gap-3 mt-1">
-                <TierBadge tier={profile.loyaltyTier} />
-                <span className="text-[12px] text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
-                  {t('account.memberSince', 'Member since')} {new Date(profile.memberSince).getFullYear()}
-                </span>
-              </div>
+              <span className="text-[12px] text-[#9E9A90] mt-1 block" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                {t('account.memberSince', 'Member since')} {new Date(profile.memberSince).getFullYear()}
+              </span>
             </div>
           </div>
         </div>
@@ -220,10 +218,9 @@ export default function Account() {
                   {/* Stats row */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {[
-                      { label: t('account.statPoints', 'Points'), value: points?.balance?.toLocaleString() || '0', accent: true, icon: Sparkles },
-                      { label: t('account.statStays', 'Total stays'), value: String(profile.totalStays), icon: HomeIcon },
+                      { label: t('account.statStays', 'Total stays'), value: String(profile.totalStays), accent: true, icon: HomeIcon },
                       { label: t('account.statNights', 'Nights'), value: String(profile.totalNights), icon: Calendar },
-                      { label: t('account.statTier', 'Tier'), value: profile.loyaltyTier.charAt(0).toUpperCase() + profile.loyaltyTier.slice(1), icon: Award },
+                      { label: t('account.statMember', 'Member since'), value: new Date(profile.memberSince).getFullYear().toString(), icon: Award },
                     ].map((s, i) => {
                       const Icon = s.icon;
                       return (
@@ -342,82 +339,9 @@ export default function Account() {
               )}
 
               {/* ============================================================
-                  POINTS
+                  RETURNING GUEST PROGRAMME (replaces Points & Loyalty)
                   ============================================================ */}
-              {activeTab === 'points' && points && (
-                <div className="space-y-8">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <StatCard label={t('account.balance', 'Balance')} value={points.balance.toLocaleString()} accent />
-                    <StatCard label={t('account.totalEarned', 'Total earned')} value={points.totalEarned.toLocaleString()} />
-                    <StatCard label={t('account.totalRedeemed', 'Redeemed')} value={points.totalRedeemed.toLocaleString()} />
-                    <StatCard label={t('account.statTier', 'Tier')} value={points.tier.charAt(0).toUpperCase() + points.tier.slice(1)} />
-                  </div>
-
-                  {points.nextTier && points.pointsToNextTier > 0 && (
-                    <div className="rounded-xl border border-[#E8E4DC] bg-white p-5">
-                      <div className="flex items-center justify-between mb-3">
-                        <p className="text-[13px] text-[#6B6860]" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
-                          {points.pointsToNextTier.toLocaleString()} {t('account.pointsTo', 'points to')} {points.nextTier.charAt(0).toUpperCase() + points.nextTier.slice(1)}
-                        </p>
-                        <TierBadge tier={points.nextTier} />
-                      </div>
-                      <div className="h-2 bg-[#F5F1EB] rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-[#8B7355] to-[#C4A87C] rounded-full transition-all duration-700 ease-out"
-                          style={{ width: `${Math.min(100, ((points.balance) / (points.balance + points.pointsToNextTier)) * 100)}%` }}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  <div>
-                    <h2 className="font-display text-[20px] font-light text-[#1A1A18] mb-4">{t('account.pointsHistory', 'Points history')}</h2>
-                    {pointsLog.data && pointsLog.data.length > 0 ? (
-                      <div className="rounded-xl border border-[#E8E4DC] bg-white overflow-hidden divide-y divide-[#E8E4DC]/60">
-                        {pointsLog.data.map(entry => (
-                          <div key={entry.id} className="flex items-center justify-between px-5 py-4 hover:bg-[#FAFAF7]/50 transition-colors">
-                            <div>
-                              <p className="text-[13px] text-[#1A1A18]" style={{ fontWeight: 500 }}>{entry.description}</p>
-                              <p className="text-[11px] text-[#9E9A90] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
-                                {new Date(entry.createdAt).toLocaleDateString('pt-PT', { day: 'numeric', month: 'short', year: 'numeric' })}
-                              </p>
-                            </div>
-                            <span className={`text-[15px] font-medium tabular-nums ${entry.points > 0 ? 'text-emerald-600' : 'text-[#1A1A18]'}`}>
-                              {entry.points > 0 ? '+' : ''}{entry.points}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <EmptyState icon={Gift} message={t('account.noPoints', 'Your points activity will appear here.')} />
-                    )}
-                  </div>
-
-                  <div className="rounded-xl border border-[#E8E4DC] bg-white p-6">
-                    <h3 className="font-display text-[18px] font-light text-[#1A1A18] mb-4">{t('account.howToEarn', 'How to earn points')}</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      {[
-                        { pts: '100', desc: t('account.earnBooking', 'Per night booked'), icon: Calendar },
-                        { pts: '500', desc: t('account.earnReferral', 'Per friend who books'), icon: Users },
-                        { pts: '100', desc: t('account.earnWelcome', 'Welcome bonus'), icon: Sparkles },
-                      ].map((e, i) => {
-                        const Icon = e.icon;
-                        return (
-                          <div key={i} className="flex items-center gap-3 p-4 rounded-lg bg-[#FAFAF7] border border-[#E8E4DC]/50">
-                            <div className="w-8 h-8 rounded-lg bg-[#8B7355]/10 flex items-center justify-center shrink-0">
-                              <Icon size={14} className="text-[#8B7355]" />
-                            </div>
-                            <div>
-                              <span className="text-[15px] font-display text-[#8B7355]">+{e.pts}</span>
-                              <p className="text-[11px] text-[#6B6860] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{e.desc}</p>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              )}
+              {activeTab === 'points' && <ReturningGuestTab profile={profile} />}
 
               {/* ============================================================
                   REFER A FRIEND
@@ -858,6 +782,160 @@ function TripCard({ trip, t, isPast }: { trip: any; t: any; isPast?: boolean }) 
             {'\u20AC'}{trip.totalPrice.toLocaleString()}
           </span>
         )}
+      </div>
+    </div>
+  );
+}
+
+/* ================================================================
+   RETURNING GUEST TAB — Preferences
+   ================================================================ */
+function ReturningGuestTab({ profile }: { profile: any }) {
+  const preferencesQuery = trpc.customer.getPreferences.useQuery();
+  const updatePrefs = trpc.customer.updatePreferences.useMutation();
+  const adventures = (productsData as any[]).filter((p: any) => p.type === 'adventure' && p.isActive);
+
+  const [pillow, setPillow] = useState('');
+  const [dietary, setDietary] = useState('');
+  const [checkinTime, setCheckinTime] = useState('');
+  const [favouriteActivities, setFavouriteActivities] = useState<string[]>([]);
+  const [wine, setWine] = useState('');
+  const [teamNotes, setTeamNotes] = useState('');
+  const [saved, setSaved] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (preferencesQuery.data && !loaded) {
+      const p = preferencesQuery.data as any;
+      setPillow(p.pillow || '');
+      setDietary(p.dietary || '');
+      setCheckinTime(p.checkinTime || '');
+      setFavouriteActivities(p.favouriteActivities || []);
+      setWine(p.wine || '');
+      setTeamNotes(p.teamNotes || '');
+      setLoaded(true);
+    }
+  }, [preferencesQuery.data, loaded]);
+
+  const handleSave = async () => {
+    await updatePrefs.mutateAsync({
+      preferences: JSON.stringify({ pillow, dietary, checkinTime, favouriteActivities, wine, teamNotes }),
+    });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  };
+
+  const toggleActivity = (name: string) => {
+    setFavouriteActivities(prev =>
+      prev.includes(name) ? prev.filter(a => a !== name) : [...prev, name]
+    );
+  };
+
+  const inputClass = "w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[14px] text-[#1A1A18] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200";
+  const labelClass = "text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block";
+
+  return (
+    <div className="space-y-8">
+      {/* Welcome message */}
+      <div className="rounded-xl border border-[#E8E4DC] bg-white p-6 md:p-8">
+        <h2 className="font-display text-[22px] font-light text-[#1A1A18] mb-2 tracking-tight">
+          Welcome back, {profile.name?.split(' ')[0] || 'Guest'}.
+        </h2>
+        <p className="text-[14px] text-[#6B6860]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+          You have stayed with us {profile.totalStays || 0} {profile.totalStays === 1 ? 'time' : 'times'} across {profile.totalNights || 0} nights.
+        </p>
+      </div>
+
+      {/* Preferences form */}
+      <div className="rounded-xl border border-[#E8E4DC] bg-white p-6 md:p-8">
+        <h3 className="font-display text-[18px] font-light text-[#1A1A18] mb-6">Your preferences</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div>
+            <label className={labelClass}>Pillow preference</label>
+            <select value={pillow} onChange={e => setPillow(e.target.value)} className={inputClass} style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+              <option value="">No preference</option>
+              <option value="soft">Soft</option>
+              <option value="firm">Firm</option>
+              <option value="hypoallergenic">Hypoallergenic</option>
+            </select>
+          </div>
+          <div>
+            <label className={labelClass}>Preferred check-in time</label>
+            <select value={checkinTime} onChange={e => setCheckinTime(e.target.value)} className={inputClass} style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+              <option value="">No preference</option>
+              <option value="early">Early morning (before 12:00)</option>
+              <option value="afternoon">Afternoon (12:00–16:00)</option>
+              <option value="evening">Evening (after 16:00)</option>
+            </select>
+          </div>
+          <div className="sm:col-span-2">
+            <label className={labelClass}>Dietary requirements</label>
+            <textarea
+              value={dietary}
+              onChange={e => setDietary(e.target.value)}
+              placeholder="e.g., vegetarian, gluten-free, nut allergy"
+              rows={2}
+              className="w-full rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 py-3 text-[14px] text-[#1A1A18] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200 resize-none"
+              style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <label className={labelClass}>Favourite activities</label>
+            <div className="flex flex-wrap gap-2">
+              {adventures.map((a: any) => (
+                <button
+                  key={a.id}
+                  type="button"
+                  onClick={() => toggleActivity(a.name)}
+                  className={`px-3 py-2 text-[12px] font-medium border transition-all ${
+                    favouriteActivities.includes(a.name)
+                      ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
+                      : 'bg-transparent text-[#6B6860] border-[#E8E4DC] hover:border-[#1A1A18]'
+                  }`}
+                >
+                  {a.name}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className={labelClass}>Wine preference</label>
+            <input
+              type="text"
+              value={wine}
+              onChange={e => setWine(e.target.value)}
+              placeholder="e.g., Alvarinho, Douro reds"
+              className={inputClass}
+              style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <label className={labelClass}>Notes for our team</label>
+            <textarea
+              value={teamNotes}
+              onChange={e => setTeamNotes(e.target.value)}
+              placeholder="Anything else for your next stay"
+              rows={3}
+              className="w-full rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 py-3 text-[14px] text-[#1A1A18] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200 resize-none"
+              style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+            />
+          </div>
+        </div>
+
+        <button
+          onClick={handleSave}
+          disabled={updatePrefs.isPending}
+          className="mt-6 inline-flex items-center gap-2 bg-[#8B7355] text-white text-[11px] tracking-[0.12em] font-medium px-8 py-3.5 hover:bg-[#7A6548] transition-colors disabled:opacity-50"
+        >
+          {saved ? <><Check size={14} /> Saved</> : updatePrefs.isPending ? 'Saving...' : 'Save preferences'}
+        </button>
+      </div>
+
+      {/* Concierge note */}
+      <div className="rounded-xl border border-[#E8E4DC] bg-[#FAFAF7] p-6 md:p-8">
+        <p className="text-[14px] text-[#6B6860] italic leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+          Before every stay, our concierge reviews your preferences and prepares your home accordingly. You never need to ask twice.
+        </p>
       </div>
     </div>
   );
