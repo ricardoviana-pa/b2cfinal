@@ -86,8 +86,19 @@ function capOAuthCooldownMs(rawMs: number, maxMs: number): number {
   return Math.min(rawMs, maxMs);
 }
 
-function createLimiter(maxConcurrent: number) {
+/**
+ * Paced request limiter — implements the Guesty API Traffic Management recipe.
+ * Combines concurrency limiting WITH time-based pacing (min delay between requests).
+ *
+ * Guesty rate limits: 5 req/sec, 275 req/min, 16500 req/hr, max 15 concurrent.
+ * Recipe pattern: queue requests, process one every INTERVAL_MS (200ms = 5/sec).
+ *
+ * @param maxConcurrent - Maximum parallel in-flight requests
+ * @param intervalMs    - Minimum milliseconds between dispatching consecutive requests
+ */
+function createPacedLimiter(maxConcurrent: number, intervalMs: number = 0) {
   let active = 0;
+  let lastDispatchedAt = 0;
   const queue: Array<() => void> = [];
 
   const next = () => {
@@ -97,10 +108,19 @@ function createLimiter(maxConcurrent: number) {
   };
 
   return async function runLimited<T>(task: () => Promise<T>): Promise<T> {
+    // Concurrency gate
     if (active >= maxConcurrent) {
       await new Promise<void>((resolve) => queue.push(resolve));
     }
+    // Time-based pacing: enforce minimum interval between request dispatches
+    if (intervalMs > 0) {
+      const elapsed = Date.now() - lastDispatchedAt;
+      if (elapsed < intervalMs) {
+        await sleep(intervalMs - elapsed);
+      }
+    }
     active += 1;
+    lastDispatchedAt = Date.now();
     try {
       return await task();
     } finally {
@@ -109,8 +129,14 @@ function createLimiter(maxConcurrent: number) {
   };
 }
 
-const runOpenQuoteLimited = createLimiter(2);
-const runBeQuoteLimited = createLimiter(2);
+/** Open API: 3 concurrent, 250ms pacing (4/sec — conservative, rarely used now) */
+const runOpenQuoteLimited = createPacedLimiter(3, 250);
+/**
+ * BE API: 5 concurrent, 200ms pacing (5/sec — matches Guesty recipe).
+ * PLP uses single GET /api/listings call so this only applies to PDP quotes,
+ * calendar checks, and payment provider lookups.
+ */
+const runBeQuoteLimited = createPacedLimiter(5, 200);
 
 function ensureTokenCacheDir(): void {
   if (!fs.existsSync(TOKEN_CACHE_DIR)) {
@@ -187,9 +213,12 @@ function firstPositiveNumber(values: unknown[], fallback = 0): number {
 function computeRefreshAt(expiresInSec: number): { expiresAt: number; refreshAt: number } {
   const now = Date.now();
   const ttlMs = Math.max(30_000, expiresInSec * 1000);
-  // Refresh at ~10% before expiry (was 20%) — tokens last ~1h, so refresh at ~54min
-  // This halves the number of token requests over time
-  const skewMs = Math.min(120_000, Math.max(15_000, Math.floor(ttlMs * 0.1)));
+  // Guesty tokens last 24h (86400s). Max 3 renewals per 24h.
+  // Refresh 5 minutes before expiry (per Guesty docs recommendation).
+  // For shorter tokens (<10min), refresh at 80% of TTL.
+  const skewMs = ttlMs >= 600_000
+    ? 5 * 60 * 1000  // 5 minutes for normal tokens (24h)
+    : Math.max(15_000, Math.floor(ttlMs * 0.2)); // 20% for short-lived tokens
   const expiresAt = now + ttlMs;
   return {
     expiresAt,
@@ -396,7 +425,9 @@ async function request<T>(
       });
     } catch (error) {
       if (attempt < maxAttempts - 1) {
-        await sleep(1000 + attempt * 1000);
+        const backoffMs = 500 * Math.pow(2, attempt); // 500ms, 1000ms
+        console.warn(`[Guesty] Network error on ${method} ${endpoint} — retry #${attempt + 1} in ${backoffMs}ms`);
+        await sleep(backoffMs);
         continue;
       }
       throw new GuestyClientError({
@@ -431,8 +462,16 @@ async function request<T>(
     }
 
     if ((response.status === 429 || response.status >= 500) && attempt < maxAttempts - 1) {
-      const retryAfterSec = Number(response.headers.get("Retry-After") || "2");
-      await sleep(Math.max(1000, retryAfterSec * 1000 + attempt * 1000));
+      // Exponential backoff per Guesty API Traffic Management recipe:
+      // BASE_BACKOFF_MS * 2^attempt → 500ms, 1000ms, 2000ms
+      // Respect Retry-After header if present (capped at 30s)
+      const retryAfterMs = parseRetryAfterMs(response.headers, 0);
+      const exponentialMs = 500 * Math.pow(2, attempt); // 500, 1000, 2000
+      const backoffMs = retryAfterMs > 0
+        ? Math.min(retryAfterMs, 30_000)
+        : exponentialMs;
+      console.warn(`[Guesty] ${response.status} on ${method} ${endpoint} — retry #${attempt + 1} in ${backoffMs}ms`);
+      await sleep(backoffMs);
       continue;
     }
 
@@ -798,7 +837,9 @@ export const guestyBEClient = {
           });
         } catch (error) {
           if (attempt < maxAttempts - 1) {
-            await sleep(1000 + attempt * 1000);
+            const backoffMs = 500 * Math.pow(2, attempt); // 500ms, 1000ms
+            console.warn(`[Guesty BE] Network error on ${method} ${normalizedPath} — retry #${attempt + 1} in ${backoffMs}ms`);
+            await sleep(backoffMs);
             continue;
           }
           throw new GuestyClientError({
@@ -836,8 +877,15 @@ export const guestyBEClient = {
             durationMs: Date.now() - startedAt,
             details: parseJsonSafe(errBody),
           });
-          const retryAfterSec = Number(response.headers.get("Retry-After") || "2");
-          await sleep(Math.max(1000, retryAfterSec * 1000 + attempt * 1000));
+          // Exponential backoff per Guesty API Traffic Management recipe:
+          // BASE_BACKOFF_MS * 2^attempt → 500ms, 1000ms, 2000ms
+          const retryAfterMs = parseRetryAfterMs(response.headers, 0);
+          const exponentialMs = 500 * Math.pow(2, attempt);
+          const backoffMs = retryAfterMs > 0
+            ? Math.min(retryAfterMs, 30_000)
+            : exponentialMs;
+          console.warn(`[Guesty BE] ${response.status} on ${method} ${normalizedPath} — retry #${attempt + 1} in ${backoffMs}ms`);
+          await sleep(backoffMs);
           continue;
         }
 
@@ -874,6 +922,41 @@ export const guestyBEClient = {
   },
 
   /**
+   * PLP pricing: single API call returns ALL available listings with accurate totalPrice.
+   * GET /api/listings?checkIn=...&checkOut=...&fields=totalPrice _id title accommodates prices
+   *
+   * Key behavior (from Guesty docs):
+   * - totalPrice = base rate + cleaning + service fees + taxes + all mandatory charges
+   * - Internally invokes reservation quote for each rate plan, returns minimum
+   * - Only AVAILABLE listings for the given dates are returned
+   * - Max 50 results per request (no cursor pagination for totalPrice queries)
+   * - Prices guaranteed for 24h after quote creation
+   *
+   * Rate limits: 5/sec, 275/min, 16500/hr — this is a SINGLE call, well within limits.
+   */
+  async getListingsWithPricing(input: {
+    checkIn: string;
+    checkOut: string;
+    minOccupancy?: number;
+    limit?: number;
+  }): Promise<BEListingsResponse> {
+    const fields = "totalPrice _id title accommodates prices address reviews picture";
+    const result = await this.request<any>("GET", "/api/listings", {
+      query: {
+        checkIn: input.checkIn,
+        checkOut: input.checkOut,
+        fields,
+        limit: input.limit ?? 50,
+        ...(input.minOccupancy ? { minOccupancy: input.minOccupancy } : {}),
+      },
+    });
+    // Normalize response shape
+    const results = Array.isArray(result?.results) ? result.results : (Array.isArray(result) ? result : []);
+    const pagination = result?.pagination ?? { total: results.length, cursor: { next: null } };
+    return { results, pagination };
+  },
+
+  /**
    * Fetch day-by-day calendar for a listing via the Booking Engine API.
    * GET https://booking.guesty.com/api/listings/{id}/calendar?from=YYYY-MM-DD&to=YYYY-MM-DD
    * Returns flat array: [{ date, status, minNights, isBaseMinNights, cta, ctd }]
@@ -890,6 +973,28 @@ export const guestyBEClient = {
     return [];
   },
 };
+
+/**
+ * PLP pricing result from GET /api/listings?checkIn=...&checkOut=...&fields=totalPrice
+ * The BE API internally creates quotes for each rate plan and returns the minimum totalPrice.
+ * Only AVAILABLE listings for the given dates are returned.
+ * Docs: https://booking-api-docs.guesty.com/docs/retrieve-accurate-stay-pricing
+ */
+export interface BEListingWithPrice {
+  _id: string;
+  title?: string;
+  accommodates?: number;
+  totalPrice?: number;
+  address?: { city?: string; country?: string };
+  reviews?: { avg?: number; total?: number };
+  picture?: { thumbnail?: string };
+  prices?: { basePrice?: number; cleaningFee?: number; currency?: string };
+}
+
+export interface BEListingsResponse {
+  results: BEListingWithPrice[];
+  pagination: { total: number; cursor: { next: string | null } };
+}
 
 export function isGuestyConfigured(): boolean {
   return !!(GUESTY_CLIENT_ID && GUESTY_CLIENT_SECRET);

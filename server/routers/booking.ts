@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../_core/trpc";
-import { checkAvailability, getQuoteWithDeadline } from "../services/guesty";
+import { checkAvailability, getQuoteWithDeadline, type QuoteResult } from "../services/guesty";
 import {
   isBEApiConfigured,
   createBEQuote,
   createBEInstantReservation,
   getPaymentProvider,
 } from "../services/guesty-booking";
+import { guestyBEClient, type BEListingWithPrice } from "../lib/guesty";
 import * as db from "../db";
 import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
 
@@ -148,6 +149,122 @@ export const bookingRouter = router({
       } catch (error: any) {
         throw new Error(error.message || "Failed to get quote");
       }
+    }),
+
+  /**
+   * PLP live pricing — single Guesty BE API call returns ALL available listings with totalPrice.
+   *
+   * Uses GET /api/listings?checkIn=...&checkOut=...&fields=totalPrice
+   * (see https://booking-api-docs.guesty.com/docs/retrieve-accurate-stay-pricing)
+   *
+   * Key behaviors per Guesty docs:
+   * - totalPrice includes base rate + cleaning + service fees + taxes + all mandatory charges
+   * - Guesty internally creates reservation quotes per rate plan and returns the minimum
+   * - Only AVAILABLE listings for the given dates are returned (unavailable = not in response)
+   * - Prices guaranteed for 24h after the internal quote creation
+   * - SINGLE API call vs 50+ individual quote calls — eliminates rate limit risk entirely
+   * - Max 50 results per request (sufficient for our portfolio)
+   * - Rate limits: 5/sec, 275/min, 16500/hr — one call is well within limits
+   */
+  getBatchQuotes: publicProcedure
+    .input(
+      z.object({
+        listings: z.array(
+          z.object({
+            listingId: z.string().min(1),
+            slug: z.string().min(1),
+          })
+        ).min(1).max(60),
+        checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        guests: z.number().int().min(1).max(30).default(2),
+      })
+    )
+    .query(async ({ input }) => {
+      const { listings, checkIn, checkOut, guests } = input;
+      const nights = Math.ceil(
+        (new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000
+      );
+
+      console.info(`[PLP] Fetching live pricing via GET /api/listings for ${listings.length} properties, ${checkIn}→${checkOut}, ${guests}g`);
+
+      // Build guestyId → slug map for matching response back to our properties
+      const idToSlug = new Map<string, string>();
+      for (const { listingId, slug } of listings) {
+        idToSlug.set(listingId, slug);
+      }
+
+      const results: Record<string, QuoteResult> = {};
+
+      try {
+        // SINGLE API CALL — Guesty returns all available listings with totalPrice
+        const response = await guestyBEClient.getListingsWithPricing({
+          checkIn,
+          checkOut,
+          minOccupancy: guests > 1 ? guests : undefined,
+          limit: 50,
+        });
+
+        const availableIds = new Set<string>();
+
+        for (const listing of response.results) {
+          const slug = idToSlug.get(listing._id);
+          if (!slug) continue; // Listing not in our catalogue
+
+          availableIds.add(listing._id);
+
+          const totalPrice = listing.totalPrice ?? 0;
+          const basePrice = listing.prices?.basePrice ?? 0;
+          const cleaningFee = listing.prices?.cleaningFee ?? 0;
+          const nightlyRate = totalPrice > 0 && nights > 0
+            ? (totalPrice - cleaningFee) / nights
+            : basePrice;
+
+          results[slug] = {
+            available: true,
+            listingId: listing._id,
+            checkIn,
+            checkOut,
+            nights,
+            currency: listing.prices?.currency || "EUR",
+            pricing: {
+              nightlyRate: Math.round(nightlyRate * 100) / 100,
+              totalNights: Math.round((totalPrice - cleaningFee) * 100) / 100,
+              cleaningFee,
+              subtotal: totalPrice,
+              total: totalPrice,
+            },
+            source: "live",
+          };
+        }
+
+        // Mark properties NOT in Guesty response as unavailable
+        for (const { listingId, slug } of listings) {
+          if (!availableIds.has(listingId) && !results[slug]) {
+            results[slug] = {
+              available: false,
+              listingId,
+              checkIn,
+              checkOut,
+              nights,
+              currency: "EUR",
+              pricing: { nightlyRate: 0, totalNights: 0, cleaningFee: 0, subtotal: 0, total: 0 },
+              source: "request",
+              fallbackMessage: "Not available for selected dates",
+            };
+          }
+        }
+
+        const liveCount = Object.values(results).filter(r => r.source === "live").length;
+        const unavailCount = Object.values(results).filter(r => !r.available).length;
+        console.info(`[PLP] Done: ${liveCount} available with live pricing, ${unavailCount} unavailable`);
+
+      } catch (err: any) {
+        console.error(`[PLP] GET /api/listings pricing call failed: ${err?.message || err}`);
+        // Return empty — client falls back to catalogue base prices
+      }
+
+      return results;
     }),
 
   /** Booking Engine API — for on-site checkout with payment */

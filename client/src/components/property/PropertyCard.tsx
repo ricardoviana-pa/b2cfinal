@@ -257,18 +257,13 @@ export default function PropertyCard({
                   </div>
                 ) : (() => {
                   const fmt = formatEur;
-                  const fromCatalogue = (property.priceFrom ?? 0) * nights;
-                  // Show live, cached, or base price quotes
-                  const isUsableQuote =
-                    liveQuote &&
-                    (liveQuote.source === 'live' || liveQuote.source === 'cached' || liveQuote.source === 'base') &&
-                    liveQuote.total > 0;
-                  const isEstimate = liveQuote?.source === 'base';
-                  if (isUsableQuote && liveQuote) {
+                  // Only show confirmed total for live/cached quotes
+                  const isLiveOrCached = liveQuote && (liveQuote.source === 'live' || liveQuote.source === 'cached') && liveQuote.total > 0;
+                  if (isLiveOrCached && liveQuote) {
                     return (
                       <>
                         <span className="text-[#1A1A18] font-medium">
-                          {isEstimate ? '~' : ''}{fmt(liveQuote.total)} {t('property.totalLabel')}
+                          {fmt(liveQuote.total)} {t('property.totalLabel')}
                         </span>
                         <span className="text-[0.75rem] text-[#9E9A90]">
                           {t('booking.nights', { count: liveQuote.nights })}
@@ -276,35 +271,35 @@ export default function PropertyCard({
                       </>
                     );
                   }
-                  // No live quote available — show catalogue per-night rate only
+                  // Non-live pricing — show "Price on request" with base rate context
                   if ((property.priceFrom ?? 0) > 0) {
                     return (
                       <div className="text-left w-full">
-                        <span className="text-[#1A1A18] font-medium">
-                          {t('property.fromPerNight', { price: property.priceFrom.toLocaleString() })}
+                        <span className="text-[#8B7355] font-medium text-[0.8125rem]">
+                          {t('property.priceOnRequest', 'Price on request')}
                         </span>
-                        <span className="text-[0.75rem] text-[#9E9A90] ml-1">{t('property.perNight')}</span>
+                        <span className="text-[0.6875rem] text-[#9E9A90] ml-1.5">
+                          {t('property.fromRate', { defaultValue: 'from {{price}}/night', price: fmt(property.priceFrom) })}
+                        </span>
                       </div>
                     );
                   }
                   return (
-                    <span className="text-[#9E9A90] text-[0.8125rem]">
-                      {t('property.priceOnRequest')}
+                    <span className="text-[#8B7355] font-medium text-[0.8125rem]">
+                      {t('property.priceOnRequest', 'Price on request')}
                     </span>
                   );
                 })()}
               </div>
+              {/* Price detail line — only for confirmed live/cached pricing */}
               {liveQuote && liveQuote.available !== false &&
-                (liveQuote.source === 'live' || liveQuote.source === 'cached' || liveQuote.source === 'base') &&
+                (liveQuote.source === 'live' || liveQuote.source === 'cached') &&
                 liveQuote.total > 0 && (
                 <p className="text-[0.6875rem] text-[#9E9A90] mt-0.5">
-                  {liveQuote.source === 'base'
-                    ? `${formatEur(liveQuote.nightlyRate)}/night + ${formatEur(liveQuote.cleaningFee)} cleaning (est.)`
-                    : t('property.nightCleaningLine', {
-                        nightly: formatEur(liveQuote.nightlyRate),
-                        cleaning: formatEur(liveQuote.cleaningFee),
-                      })
-                  }
+                  {t('property.nightCleaningLine', {
+                    nightly: formatEur(liveQuote.nightlyRate),
+                    cleaning: formatEur(liveQuote.cleaningFee),
+                  })}
                 </p>
               )}
             </>
