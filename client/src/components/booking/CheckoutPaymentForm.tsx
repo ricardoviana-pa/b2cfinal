@@ -228,12 +228,25 @@ function PaymentFormInner({
 }
 
 export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
-  const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
+  const { data: stripeConfig, isLoading: stripeConfigLoading } = trpc.booking.getStripeConfig.useQuery();
   // Per-listing payment provider: fetch the Stripe connected account for this property
-  const { data: paymentProvider } = trpc.booking.getPaymentProvider.useQuery(
+  const { data: paymentProvider, isLoading: providerLoading } = trpc.booking.getPaymentProvider.useQuery(
     { listingId: props.listingId },
     { enabled: !!props.listingId },
   );
+
+  // CRITICAL: Wait for BOTH queries to settle before rendering Stripe Elements.
+  // Without this, the component renders with the wrong Stripe account (from env var)
+  // and then re-mounts when the per-listing account loads, breaking the PaymentElement.
+  if (stripeConfigLoading || providerLoading) {
+    return (
+      <div className="flex items-center justify-center py-8 gap-2 text-sm text-black/40">
+        <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+        Preparing secure payment...
+      </div>
+    );
+  }
+
   if (!stripeConfig?.publishableKey) {
     return null;
   }
@@ -246,6 +259,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
       stripeConfig.publishableKey,
       stripeAccountId ? { stripeAccount: stripeAccountId } : undefined,
     ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- stable after loading guard above
     [stripeConfig.publishableKey, stripeAccountId],
   );
 
