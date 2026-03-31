@@ -307,9 +307,11 @@ export function registerBookingRoutes(app: Express): void {
     }
 
     try {
-      const calendar = await guestyClient.getListingCalendar(id, from, to);
-      cacheManager.set(cacheKey, calendar, TTL_CALENDAR_MS);
-      res.json({ ...calendar, cached: false });
+      // BE API returns flat array of days via delegated getListingCalendar()
+      const days = await guestyClient.getListingCalendar(id, from, to);
+      const result = { days: Array.isArray(days) ? days : [], from, to };
+      cacheManager.set(cacheKey, result, TTL_CALENDAR_MS);
+      res.json({ ...result, cached: false });
     } catch (err) {
       mapGuestyError(err, res);
     }
@@ -368,73 +370,20 @@ export function registerBookingRoutes(app: Express): void {
     }
   });
 
-  app.post("/api/reservations", async (req: Request, res: Response) => {
-    const body = req.body || {};
-    const listingId = String(body.listingId || "");
-    const checkIn = toIsoDate(String(body.checkInDateLocalized || body.checkIn || ""));
-    const checkOut = toIsoDate(String(body.checkOutDateLocalized || body.checkOut || ""));
-    const guest = body.guest || {};
-    const ratePlanId = body.ratePlanId ? String(body.ratePlanId) : undefined;
-    const policyAccepted = Boolean(body.policyAccepted);
-    const termsAccepted = Boolean(body.termsAccepted);
-
-    if (!listingId || !checkIn || !checkOut || !guest?.firstName || !guest?.lastName || !guest?.email || !guest?.phone) {
-      res.status(422).json({
-        message: "Missing required booking fields",
-        code: "VALIDATION_ERROR",
-      });
-      return;
-    }
-
-    if (!policyAccepted || !termsAccepted) {
-      res.status(422).json({
-        message: "You must accept terms and cancellation policy",
-        code: "TERMS_REQUIRED",
-      });
-      return;
-    }
-
-    const counts = parseGuestCounts(body);
-    // Direct bookings only — inquiry creation is disabled.
-    // All reservations MUST go through Booking Engine with payment (quoteId required).
-    if (!body.quoteId) {
-      res.status(422).json({
-        message: "Direct booking with payment is required. Please contact our concierge for assistance.",
-        code: "PAYMENT_REQUIRED",
-      });
-      return;
-    }
-
-    const payload = {
-      status: "confirmed",
-      reservedUntil: -1,
-      quoteId: String(body.quoteId),
-      ...(ratePlanId ? { ratePlanId } : {}),
-      guest: {
-        firstName: String(guest.firstName),
-        lastName: String(guest.lastName),
-        email: String(guest.email),
-        phones: [String(guest.phone)],
-      },
-      ignoreCalendar: false,
-      ignoreTerms: false,
-      ignoreBlocks: false,
-    };
-
-    try {
-      const reservation = await guestyClient.createReservation(payload as Record<string, unknown>);
-      res.status(201).json({
-        reservationId: reservation?._id || "",
-        confirmationCode: reservation?.confirmationCode || reservation?._id?.slice(-8) || "",
-        status: reservation?.status || "reserved",
-      });
-    } catch (err) {
-      mapGuestyError(err, res);
-    }
+  // POST /api/reservations — REMOVED (2026-03-31)
+  // All bookings now go through the Booking Engine API with Stripe payment.
+  // See: tRPC createBEInstantReservation in server/routers/booking.ts
+  app.post("/api/reservations", (_req: Request, res: Response) => {
+    res.status(410).json({
+      message: "This endpoint has been retired. All bookings must use the direct payment flow via our Booking Engine.",
+      code: "ENDPOINT_RETIRED",
+      alternative: "Use the checkout flow with Stripe payment (createBEInstantReservation).",
+    });
   });
 
   app.get("/api/reservations/:id", async (req: Request, res: Response) => {
     try {
+      // Migrated to BE API: GET /api/reservations/{id}/summary
       const reservation = await guestyClient.getReservation(req.params.id);
       const listingId = reservation?.listingId || reservation?.listing?._id || reservation?.listing?._idStr || "";
       let listingName = "";
@@ -454,7 +403,7 @@ export function registerBookingRoutes(app: Express): void {
         listingName = maybe?.name || "";
       }
 
-      const title = listingName || "Portugal Active Reservation";
+      const title = listingName || reservation?.listing?.title || "Portugal Active Reservation";
       const checkIn = toIsoDate(String(reservation?.checkInDateLocalized || reservation?.checkIn || ""));
       const checkOut = toIsoDate(String(reservation?.checkOutDateLocalized || reservation?.checkOut || ""));
       const calendarDescription = `Reservation ${reservation?.confirmationCode || reservation?._id || ""}`;
@@ -511,6 +460,7 @@ export function registerBookingRoutes(app: Express): void {
 
   app.get("/api/reservations/:id/ics", async (req: Request, res: Response) => {
     try {
+      // Migrated to BE API via guestyClient.getReservation() → BE API /api/reservations/{id}/summary
       const reservation = await guestyClient.getReservation(req.params.id);
       const checkIn = toIsoDate(String(reservation?.checkInDateLocalized || reservation?.checkIn || ""));
       const checkOut = toIsoDate(String(reservation?.checkOutDateLocalized || reservation?.checkOut || ""));
@@ -520,7 +470,7 @@ export function registerBookingRoutes(app: Express): void {
       }
       const content = buildIcsContent({
         uid: String(reservation?._id || req.params.id),
-        summary: String(reservation?.listing?.title || "Portugal Active Reservation"),
+        summary: String(reservation?.listing?.title || reservation?.listingName || "Portugal Active Reservation"),
         checkIn,
         checkOut,
         description: `Reservation ${reservation?.confirmationCode || reservation?._id || ""}`,
@@ -560,9 +510,11 @@ export function registerBookingRoutes(app: Express): void {
       return;
     }
     try {
-      const calendar = await guestyClient.getListingCalendar(listingId, from, to);
-      cacheManager.set(cacheKey, calendar, TTL_CALENDAR_MS);
-      res.json({ ...calendar, cached: false, from, to });
+      // BE API returns flat array of days via delegated getListingCalendar()
+      const days = await guestyClient.getListingCalendar(listingId, from, to);
+      const result = { days: Array.isArray(days) ? days : [], from, to };
+      cacheManager.set(cacheKey, result, TTL_CALENDAR_MS);
+      res.json({ ...result, cached: false });
     } catch (err) {
       mapGuestyError(err, res);
     }

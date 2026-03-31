@@ -545,10 +545,13 @@ export const guestyClient = {
     });
   },
 
+  /**
+   * @deprecated Use guestyBEClient.getCalendar() instead — this calls the v1 Open API
+   * endpoint which was permanently removed on 2026-03-31.
+   */
   async getListingCalendar(id: string, from: string, to: string): Promise<any> {
-    return request<any>("GET", `/v1/availability-pricing/api/calendar/listings/${id}`, {
-      query: { startDate: from, endDate: to },
-    });
+    // Delegate to BE API (correct endpoint) instead of deprecated Open API
+    return guestyBEClient.getCalendar(id, from, to);
   },
 
   async getListingRatePlans(id: string): Promise<any> {
@@ -604,15 +607,23 @@ export const guestyClient = {
     };
   },
 
-  async createReservation(payload: Record<string, unknown>): Promise<any> {
-    if ((payload as any).quoteId) {
-      return request<any>("POST", "/v1/reservations-v3/quote", { body: payload });
-    }
-    return request<any>("POST", "/v1/reservations", { body: payload });
+  /**
+   * @deprecated All bookings MUST go through Booking Engine with Stripe payment.
+   * Use createBEInstantReservation() in guesty-booking.ts instead.
+   * The v1 endpoints were permanently removed on 2026-03-31.
+   */
+  async createReservation(_payload: Record<string, unknown>): Promise<any> {
+    throw new Error(
+      "createReservation via Open API is deprecated. Use Booking Engine API (createBEInstantReservation) with Stripe payment."
+    );
   },
 
+  /**
+   * Fetch reservation details via Booking Engine API.
+   * Migrated from deprecated GET /v1/reservations/{id} to BE API.
+   */
   async getReservation(id: string): Promise<any> {
-    return request<any>("GET", `/v1/reservations/${id}`);
+    return guestyBEClient.request<any>("GET", `/api/reservations/${id}/summary`);
   },
 
   /** Fetch guest reviews (paginated). */
@@ -860,6 +871,23 @@ export const guestyBEClient = {
       (normalizedPath === "/api/reservations/quotes" || normalizedPath.includes("/api/reservations/quotes/"));
 
     return isQuoteRequest ? runBeQuoteLimited(execute) : execute();
+  },
+
+  /**
+   * Fetch day-by-day calendar for a listing via the Booking Engine API.
+   * GET https://booking.guesty.com/api/listings/{id}/calendar?from=YYYY-MM-DD&to=YYYY-MM-DD
+   * Returns flat array: [{ date, status, minNights, isBaseMinNights, cta, ctd }]
+   */
+  async getCalendar(listingId: string, from: string, to: string): Promise<any[]> {
+    const result = await this.request<any>("GET", `/api/listings/${listingId}/calendar`, {
+      query: { from, to },
+    });
+    // BE API returns a flat array directly; guard against unexpected wrapping
+    if (Array.isArray(result)) return result;
+    if (result?.days && Array.isArray(result.days)) return result.days;
+    if (result?.data && Array.isArray(result.data)) return result.data;
+    console.warn(`[guestyBEClient.getCalendar] Unexpected response shape:`, Object.keys(result || {}).slice(0, 5));
+    return [];
   },
 };
 

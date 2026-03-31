@@ -89,15 +89,15 @@ export const bookingRouter = router({
     )
     .query(async ({ input }) => {
       try {
-        const { guestyClient } = await import("../lib/guesty");
-        const calendar = await guestyClient.getListingCalendar(
+        const { guestyBEClient } = await import("../lib/guesty");
+        // BE API: GET /api/listings/{id}/calendar?from=X&to=Y
+        // Returns flat array: [{ date, status, minNights, isBaseMinNights, cta, ctd }]
+        const rawDays = await guestyBEClient.getCalendar(
           input.listingId,
           input.from,
           input.to
         );
-        // Guesty availability-pricing calendar: response has { days: [...] } with status, price, minNights
-        const rawDays = calendar?.data?.days || calendar?.days || (Array.isArray(calendar) ? calendar : []);
-        console.info(`[Booking] getCalendar for ${input.listingId}: ${rawDays.length} days, keys=${Object.keys(calendar || {}).slice(0, 5).join(',')}`);
+        console.info(`[Booking] getCalendar (BE API) for ${input.listingId}: ${rawDays.length} days`);
         if (rawDays.length > 0) {
           console.info(`[Booking] getCalendar sample:`, JSON.stringify(rawDays[0]).slice(0, 250));
         }
@@ -107,6 +107,8 @@ export const bookingRouter = router({
           status: d.status || "unavailable",
           minNights: d.minNights ?? undefined,
           price: d.price ?? undefined,
+          cta: d.cta ?? undefined,
+          ctd: d.ctd ?? undefined,
         }));
         return { days };
       } catch (error: any) {

@@ -82,31 +82,15 @@ export async function checkAvailability(
   );
 
   try {
-    // Check calendar availability
-    const calendar = await guestyClient.getListingCalendar(listingId, checkIn, checkOut);
-
-    // Check if all dates are available
-    const days = calendar?.data?.days || calendar?.days || (Array.isArray(calendar) ? calendar : []);
-    const allAvailable = days.length > 0 && days.every((d: any) => d.status === 'available' || d.available === true);
+    // Check calendar availability via BE API (returns flat array)
+    const days = await guestyClient.getListingCalendar(listingId, checkIn, checkOut);
+    const dayList = Array.isArray(days) ? days : (days?.days || []);
+    const allAvailable = dayList.length > 0 && dayList.every((d: any) => d.status === 'available');
 
     return { available: allAvailable, listingId, checkIn, checkOut, nights };
-  } catch (error) {
-    // Fallback: try reservations check
-    try {
-      const reservations = await guestyClient.request<any>("GET", "/v1/reservations", {
-        query: {
-          listingId,
-          checkIn,
-          checkOut,
-          status: "confirmed,checked_in",
-          limit: 1,
-        },
-      });
-      const hasConflict = (reservations.results?.length || 0) > 0;
-      return { available: !hasConflict, listingId, checkIn, checkOut, nights };
-    } catch {
-      throw new Error("Unable to verify availability right now.");
-    }
+  } catch {
+    // Calendar is the primary availability source; if it fails, report unavailable
+    throw new Error("Unable to verify availability right now.");
   }
 }
 
@@ -220,7 +204,8 @@ export async function getQuote(
       guestyClient.getListingCalendar(listingId, checkIn, checkOut),
       new Promise<never>((_, reject) => setTimeout(() => reject(new Error("calendar_timeout")), 5_000)),
     ]);
-    const days = calendar?.data?.days || calendar?.days || (Array.isArray(calendar) ? calendar : []);
+    // BE API returns flat array; guard against wrapped response
+    const days = Array.isArray(calendar) ? calendar : (calendar?.days || []);
     if (days.length > 0) {
       calendarHasBookedDays = days.some((d: any) =>
         d.status === "booked" || d.status === "blocked" || d.status === "maintenance"
