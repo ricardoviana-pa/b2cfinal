@@ -5,7 +5,7 @@
  * (which uses separate credentials and is typically not rate-limited).
  */
 
-import { guestyClient, isGuestyOAuthCoolingDown, resetGuestyRateLimitCooldowns } from "../lib/guesty";
+import { guestyClient } from "../lib/guesty";
 import { isBEApiConfigured, createBEQuote } from "./guesty-booking";
 import { getPropertiesForSite } from "./properties-store";
 
@@ -149,39 +149,8 @@ export async function getQuote(
     };
   }
 
-  // ── TIER 2: Open API live quote (fallback — v1 endpoints may be deprecated) ──
-  const openApiCoolingDown = isGuestyOAuthCoolingDown();
-  if (!openApiCoolingDown) {
-    try {
-      const quote = await guestyClient.createQuote(listingId, checkIn, checkOut, guests);
-      const pricing = quote.pricingCents;
-      const fareAccommodation = pricing.baseRentCents / 100;
-      const fareCleaning = pricing.cleaningFeeCents / 100;
-      const hostPayout = pricing.totalAfterTaxCents / 100;
-
-      const result: QuoteResult = {
-        available: true,
-        listingId,
-        checkIn,
-        checkOut,
-        nights,
-        currency: pricing.currency || "EUR",
-        pricing: {
-          nightlyRate: nights > 0 ? Math.round(fareAccommodation / nights) : 0,
-          totalNights: fareAccommodation,
-          cleaningFee: fareCleaning,
-          subtotal: fareAccommodation + fareCleaning,
-          total: hostPayout,
-        },
-        source: "live",
-      };
-      setCachedQuote(cacheKey, result);
-      console.info(`[getQuote] ✓ Open API quote for ${listingId}: €${hostPayout} (${nights}n)`);
-      return result;
-    } catch (err: any) {
-      console.warn(`[getQuote] Open API FAILED for ${listingId} ${checkIn}→${checkOut}: ${err?.message || err}`);
-    }
-  }
+  // ── TIER 2 (removed): Open API /v1/quotes permanently removed 2026-03-31 ──
+  // The v1 endpoint is dead. Only the BE API (Tier 1) produces live quotes now.
 
   // ── Return cached quote if we have one ──
   if (cached) {

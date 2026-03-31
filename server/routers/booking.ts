@@ -211,7 +211,31 @@ export const bookingRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       if (!isBEApiConfigured()) throw new Error("Booking Engine API not configured");
+
+      // ── Server-side validation: protect against malformed or tampered requests ──
+      // ccToken MUST be a Stripe payment method (pm_) — old tok_ tokens are not SCA compliant
+      if (!input.ccToken.startsWith("pm_")) {
+        throw new Error("Invalid payment method. Please use a card that supports secure authentication.");
+      }
+      // quoteId sanity check — Guesty IDs are 24-char hex ObjectIds
+      if (!/^[a-f0-9]{24}$/i.test(input.quoteId)) {
+        throw new Error("Invalid quote reference. Please refresh and try again.");
+      }
+      // Amount sanity: reject obviously wrong totals (< €10 or > €100,000)
+      if (input.totalPrice !== undefined) {
+        if (input.totalPrice < 10 || input.totalPrice > 100_000) {
+          console.error(`[Booking] SUSPICIOUS amount: €${input.totalPrice} for quoteId=${input.quoteId}`);
+          throw new Error("The booking amount appears incorrect. Please refresh the page and try again.");
+        }
+      }
+      // Guest email domain check — reject clearly fake emails
+      const emailDomain = input.guestEmail.split("@")[1]?.toLowerCase() || "";
+      if (emailDomain === "example.com" || emailDomain === "test.com") {
+        throw new Error("Please provide a valid email address for your booking confirmation.");
+      }
+
       try {
+        console.info(`[Booking] Creating instant reservation: quoteId=${input.quoteId}, amount=€${input.totalPrice || "?"}, guest=${input.guestEmail}`);
         const result = await createBEInstantReservation({
           ...input,
           policy: input.policy || {},

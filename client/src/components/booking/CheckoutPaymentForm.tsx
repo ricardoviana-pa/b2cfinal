@@ -101,16 +101,16 @@ function PaymentFormInner({
     setLoading(true);
     setError("");
 
-    // Step 1: Validate the PaymentElement form
+    // Step 1: Validate the PaymentElement form (safe to retry — no charge yet)
     const { error: submitError } = await elements.submit();
     if (submitError) {
       setError(submitError.message || t('payment.errors.cardValidationFailed'));
       setLoading(false);
-      submittedRef.current = false;
+      submittedRef.current = false; // Safe: no payment method created yet
       return;
     }
 
-    // Step 2: Create payment method from PaymentElement
+    // Step 2: Create payment method from PaymentElement (safe to retry — no charge yet)
     const { error: stripeError, paymentMethod } = await stripe.createPaymentMethod({
       elements,
     });
@@ -118,18 +118,22 @@ function PaymentFormInner({
     if (stripeError) {
       setError(stripeError.message || t('payment.errors.cardValidationFailed'));
       setLoading(false);
-      submittedRef.current = false;
+      submittedRef.current = false; // Safe: Stripe didn't create a PM
       return;
     }
 
     if (!paymentMethod?.id) {
       setError(t('payment.errors.couldNotCreatePaymentMethod'));
       setLoading(false);
-      submittedRef.current = false;
+      submittedRef.current = false; // Safe: no PM exists
       return;
     }
 
-    // Step 3: Send payment method to Guesty via our backend
+    // ═══════════════════════════════════════════════════════════════
+    // Step 3: POINT OF NO RETURN — Send PM to Guesty for charging
+    // After this point, the card MAY be charged. We NEVER reset
+    // submittedRef unless the error clearly indicates no charge.
+    // ═══════════════════════════════════════════════════════════════
     try {
       const response = await Promise.race([
         createReservation.mutateAsync({
@@ -149,14 +153,41 @@ function PaymentFormInner({
           totalPrice: total,
         }),
         new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error("Payment provider timeout")), 35000);
+          setTimeout(() => reject(new Error("Payment provider timeout")), 45000);
         }),
       ]);
       onSuccess(response.confirmationCode);
     } catch (err: any) {
       const message = parseApiError(err?.message || t('payment.errors.defaultError'), t);
-      setError(message);
-      submittedRef.current = false;
+      const rawMsg = String(err?.message || "").toLowerCase();
+
+      // Only allow retry if we're confident the card was NOT charged:
+      // - Validation errors (email, phone, dates)
+      // - Rate limiting (request didn't reach Guesty's payment processor)
+      // - Dates already booked by someone else
+      const safeToRetry =
+        rawMsg.includes("invalid") ||
+        rawMsg.includes("email") ||
+        rawMsg.includes("phone") ||
+        rawMsg.includes("429") ||
+        rawMsg.includes("rate limit") ||
+        rawMsg.includes("just been booked") ||
+        rawMsg.includes("not available") ||
+        rawMsg.includes("check your details");
+
+      if (safeToRetry) {
+        submittedRef.current = false;
+        setError(message);
+      } else {
+        // Potentially charged — do NOT allow retry.
+        // Show error with contact info so guest can verify.
+        setError(
+          message + "\n\n" +
+          t('payment.errors.contactSupport', {
+            defaultValue: "If you were charged, please contact us at reservations@portugalactive.com or WhatsApp +351 927 161 771. Do not attempt to pay again."
+          })
+        );
+      }
     } finally {
       setLoading(false);
     }

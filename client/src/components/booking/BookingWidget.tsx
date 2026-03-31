@@ -832,37 +832,61 @@ export default function BookingWidget({
             </div>
 
             {/* ── Rate Plan Options ── */}
-            {quote?.ratePlanOptions && quote.ratePlanOptions.length > 0 && (
-              <div className="space-y-2">
-                <p className="text-[11px] font-semibold tracking-[0.06em] uppercase text-black/30">{t("bookingWidget.ratePlan")}</p>
-                {quote.ratePlanOptions.map(opt => (
-                  <label
-                    key={opt.ratePlanId}
-                    className={cn(
-                      "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all",
-                      selectedRatePlanId === opt.ratePlanId
-                        ? "border-black bg-white ring-1 ring-black"
-                        : "border-black/10 hover:border-black/30"
-                    )}
-                  >
-                    <input
-                      type="radio"
-                      name="ratePlan"
-                      checked={selectedRatePlanId === opt.ratePlanId}
-                      onChange={() => setSelectedRatePlanId(opt.ratePlanId)}
-                      className="accent-black w-4 h-4"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[13px] text-black font-medium">{humanizeRatePlanName(opt.name)}</p>
-                      {opt.cancellationPolicy?.[0] && (
-                        <p className="text-[11px] text-black/30 mt-0.5 truncate">{humanizeCancellationPolicy(opt.cancellationPolicy[0])}</p>
-                      )}
-                    </div>
-                    <span className="text-[14px] text-black font-medium whitespace-nowrap tabular-nums">{formatEur(opt.total)}</span>
-                  </label>
-                ))}
-              </div>
-            )}
+            {quote?.ratePlanOptions && quote.ratePlanOptions.length > 1 && (() => {
+              const maxTotal = Math.max(...quote.ratePlanOptions!.map(o => o.total));
+              return (
+                <div className="space-y-2">
+                  <p className="text-[11px] font-semibold tracking-[0.06em] uppercase text-black/30">{t("bookingWidget.ratePlan")}</p>
+                  {quote.ratePlanOptions!.map(opt => {
+                    const isSelected = selectedRatePlanId === opt.ratePlanId;
+                    const savings = maxTotal - opt.total;
+                    const isNonRefundable = opt.name.toLowerCase().includes("non") && opt.name.toLowerCase().includes("refund");
+                    const isFlexible = opt.name.toLowerCase().includes("flex") || opt.name.toLowerCase().includes("free");
+                    return (
+                      <label
+                        key={opt.ratePlanId}
+                        className={cn(
+                          "flex items-center gap-3 p-3.5 border cursor-pointer transition-all",
+                          isSelected
+                            ? "border-black bg-white ring-1 ring-black"
+                            : "border-black/10 hover:border-black/30"
+                        )}
+                      >
+                        <input
+                          type="radio"
+                          name="ratePlan"
+                          checked={isSelected}
+                          onChange={() => setSelectedRatePlanId(opt.ratePlanId)}
+                          className="accent-black w-4 h-4 shrink-0"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="text-[13px] text-black font-medium">{humanizeRatePlanName(opt.name)}</p>
+                            {isFlexible && (
+                              <span className="text-[9px] font-semibold tracking-wider uppercase px-1.5 py-0.5 bg-green-50 text-green-700 border border-green-200/50">{t("bookingWidget.recommended", { defaultValue: "Recommended" })}</span>
+                            )}
+                          </div>
+                          {opt.cancellationPolicy?.[0] && (
+                            <p className="text-[11px] text-black/40 mt-0.5">{humanizeCancellationPolicy(opt.cancellationPolicy[0])}</p>
+                          )}
+                          {isNonRefundable && (
+                            <p className="text-[10px] text-red-500/70 mt-0.5">{t("bookingWidget.nonRefundableWarning", { defaultValue: "No refund if you cancel or modify" })}</p>
+                          )}
+                        </div>
+                        <div className="text-right shrink-0">
+                          <span className="text-[14px] text-black font-medium whitespace-nowrap tabular-nums">{formatEur(opt.total)}</span>
+                          {savings > 0 && (
+                            <p className="text-[10px] text-green-600 font-medium mt-0.5">
+                              {t("bookingWidget.save", { defaultValue: "Save" })} {formatEur(savings)}
+                            </p>
+                          )}
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+              );
+            })()}
 
             {/* ── Enhance Your Stay — Full Service Grid ── */}
             {UPSELL_ITEMS.length > 0 && (
@@ -881,8 +905,43 @@ export default function BookingWidget({
                 onClick={() => {
                   // Check if BE quote has expired (24h validity)
                   if (quote.quoteCreatedAt && (Date.now() - quote.quoteCreatedAt > QUOTE_EXPIRY_MS)) {
-                    setError(t("bookingWidget.quoteExpired", { defaultValue: "Your quote has expired. Please refresh the page to get updated pricing." }));
+                    // Auto-retry: clear expired quote and re-fetch
                     setQuote(prev => prev ? { ...prev, quoteId: undefined, quoteCreatedAt: undefined } : null);
+                    setBeQuoteError("");
+                    setError("");
+                    // Trigger new BE quote fetch
+                    const beRefreshTimeout = setTimeout(() => {
+                      setBeQuoteError(t("bookingWidget.quoteExpired", { defaultValue: "Quote expired. Please try again." }));
+                    }, 12000);
+                    createBEQuote.mutateAsync({
+                      listingId: guestyId, checkIn, checkOut, guests,
+                      guestEmail: "guest@example.com",
+                    }).then((be: any) => {
+                      clearTimeout(beRefreshTimeout);
+                      if (!be?.quoteId) return;
+                      setQuote(prev => prev ? {
+                        ...prev,
+                        quoteId: be.quoteId,
+                        quoteCreatedAt: Date.now(),
+                        ratePlanId: be.ratePlanId,
+                        currency: be.currency || prev.currency,
+                        cancellationPolicy: be.cancellationPolicy,
+                        ratePlanOptions: be.ratePlanOptions?.map((opt: any) => ({
+                          ...opt,
+                          total: opt.total > 0 ? opt.total : prev.total,
+                          nightlyRate: opt.nightlyRate > 0 ? opt.nightlyRate : prev.nightlyRate,
+                          cleaningFee: opt.cleaningFee > 0 ? opt.cleaningFee : prev.cleaningFee,
+                        })),
+                      } : null);
+                      if (be.ratePlanId) setSelectedRatePlanId(be.ratePlanId);
+                      // Auto-proceed to payment after refresh
+                      setError("");
+                      setTermsAccepted(false);
+                      setStep("payment");
+                    }).catch(() => {
+                      clearTimeout(beRefreshTimeout);
+                      setBeQuoteError(t("bookingWidget.quoteRefreshFailed", { defaultValue: "Could not refresh pricing. Please contact our concierge." }));
+                    });
                     return;
                   }
                   setError("");
@@ -974,29 +1033,57 @@ export default function BookingWidget({
               </span>
             </label>
 
-            {termsAccepted ? (
-              <CheckoutPaymentForm
-                listingId={guestyId}
-                checkIn={checkIn}
-                checkOut={checkOut}
-                guests={guests}
-                quoteId={quote.quoteId}
-                ratePlanId={effectiveQuote?.ratePlanId ?? quote.ratePlanId ?? ""}
-                total={effectiveQuote?.total ?? quote.total}
-                currency={quote.currency || currency}
-                propertyName={propertyName}
-                destination={destination}
-                guestName={`${guestFirstName} ${guestLastName}`}
-                guestEmail={guestEmail}
-                guestPhone={guestPhone}
-                notes={(notes + upsellNote).trim() || undefined}
-                onSuccess={handlePaymentSuccess}
-                onCancel={() => setStep("quote")}
-              />
+            {/* Inline validation feedback */}
+            {guestEmail && !isValidEmail(guestEmail) && (
+              <p className="text-[11px] text-red-500">{t("bookingWidget.invalidEmail", { defaultValue: "Please enter a valid email address" })}</p>
+            )}
+            {guestPhone && !isValidPhone(guestPhone) && (
+              <p className="text-[11px] text-red-500">{t("bookingWidget.invalidPhone", { defaultValue: "Please enter a valid phone number" })}</p>
+            )}
+
+            {/* Payment form only renders when ALL guest details are valid + terms accepted */}
+            {termsAccepted && guestFirstName.trim() && guestLastName.trim() && isValidEmail(guestEmail) && isValidPhone(guestPhone) ? (
+              <>
+                {/* Booking summary confirmation before payment */}
+                <div className="bg-black/[0.02] border border-black/10 p-4 space-y-1.5">
+                  <p className="text-[11px] font-semibold tracking-[0.06em] uppercase text-black/30">{t("bookingWidget.bookingSummary", { defaultValue: "Booking summary" })}</p>
+                  <p className="text-[13px] text-black">{propertyName}</p>
+                  <p className="text-[12px] text-black/50">
+                    {formatDateDisplay(checkIn, "pt-PT")} → {formatDateDisplay(checkOut, "pt-PT")} · {effectiveQuote?.nights || nights} {t("bookingWidget.nightsLabel", "nights")} · {guests} {t("booking.guestsLabel", "guests")}
+                  </p>
+                  <p className="text-[15px] text-black font-medium tabular-nums">{t("property.total")}: {formatEur(effectiveQuote?.total ?? quote.total)}</p>
+                  <p className="text-[11px] text-black/30">{guestFirstName} {guestLastName} · {guestEmail}</p>
+                </div>
+                <CheckoutPaymentForm
+                  listingId={guestyId}
+                  checkIn={checkIn}
+                  checkOut={checkOut}
+                  guests={guests}
+                  quoteId={quote.quoteId}
+                  ratePlanId={effectiveQuote?.ratePlanId ?? quote.ratePlanId ?? ""}
+                  total={effectiveQuote?.total ?? quote.total}
+                  currency={quote.currency || currency}
+                  propertyName={propertyName}
+                  destination={destination}
+                  guestName={`${guestFirstName} ${guestLastName}`}
+                  guestEmail={guestEmail}
+                  guestPhone={guestPhone}
+                  notes={(notes + upsellNote).trim() || undefined}
+                  onSuccess={handlePaymentSuccess}
+                  onCancel={() => setStep("quote")}
+                />
+              </>
             ) : (
               <div className="flex flex-col gap-3">
                 <button disabled className="btn-primary w-full opacity-40 cursor-not-allowed">
-                  {t("bookingWidget.acceptTermsToPay", { defaultValue: "Accept terms to continue" })}
+                  {!guestFirstName.trim() || !guestLastName.trim()
+                    ? t("bookingWidget.fillGuestDetails", { defaultValue: "Enter your name to continue" })
+                    : !isValidEmail(guestEmail)
+                      ? t("bookingWidget.validEmailRequired", { defaultValue: "Valid email required" })
+                      : !isValidPhone(guestPhone)
+                        ? t("bookingWidget.validPhoneRequired", { defaultValue: "Valid phone required" })
+                        : t("bookingWidget.acceptTermsToPay", { defaultValue: "Accept terms to continue" })
+                  }
                 </button>
                 <button type="button" onClick={() => setStep("quote")} className="btn-ghost">
                   {t("payment.cancelButton", { defaultValue: "Back" })}
