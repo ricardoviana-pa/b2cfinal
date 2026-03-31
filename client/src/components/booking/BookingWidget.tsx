@@ -245,6 +245,8 @@ export default function BookingWidget({
   const [confirmation, setConfirmation] = useState("");
   const [successMode, setSuccessMode] = useState<SuccessMode>("confirmed");
   const [beQuoteError, setBeQuoteError] = useState("");
+  const [isRetryingForLivePrice, setIsRetryingForLivePrice] = useState(false);
+  const [beQuoteRetryFailed, setBeQuoteRetryFailed] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [phoneTouched, setPhoneTouched] = useState(false);
   const quoteRequestRef = useRef(0);
@@ -277,6 +279,45 @@ export default function BookingWidget({
   const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
   const canPayOnSite = isBECheckoutAvailable && !!stripeConfig?.publishableKey;
   const createBEQuote = trpc.booking.createBEQuote.useMutation();
+
+  const handleRetryReserve = useCallback(async () => {
+    setIsRetryingForLivePrice(true);
+    setBeQuoteRetryFailed(false);
+    setBeQuoteError("");
+    try {
+      const be = await createBEQuote.mutateAsync({
+        listingId: guestyId, checkIn, checkOut, guests,
+        guestEmail: "guest@example.com",
+      });
+      if (!be?.quoteId) throw new Error("No quote ID returned");
+      setQuote(prev => prev ? {
+        ...prev,
+        quoteId: be.quoteId,
+        quoteCreatedAt: Date.now(),
+        ratePlanId: be.ratePlanId,
+        source: "live" as const,
+        priceOnRequest: false,
+        fallbackMessage: undefined,
+        currency: be.currency || prev.currency,
+        cancellationPolicy: be.cancellationPolicy,
+        ratePlanOptions: be.ratePlanOptions?.map((opt: any) => ({
+          ...opt,
+          total: opt.total > 0 ? opt.total : prev.total,
+          nightlyRate: opt.nightlyRate > 0 ? opt.nightlyRate : prev.nightlyRate,
+          cleaningFee: opt.cleaningFee > 0 ? opt.cleaningFee : prev.cleaningFee,
+        })),
+      } : null);
+      if (be.ratePlanId) setSelectedRatePlanId(be.ratePlanId);
+      setError("");
+      setTermsAccepted(false);
+      setStep("payment");
+    } catch (err: any) {
+      setBeQuoteRetryFailed(true);
+      setBeQuoteError(parseBookingError(err?.message || "Live pricing unavailable. Please contact our concierge."));
+    } finally {
+      setIsRetryingForLivePrice(false);
+    }
+  }, [checkIn, checkOut, guests, guestyId, createBEQuote]);
 
   useEffect(() => {
     quoteRef.current = quote;
