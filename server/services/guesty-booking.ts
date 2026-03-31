@@ -113,11 +113,18 @@ export async function createBEQuote(input: {
   try {
     quote = await guestyBEClient.request<any>("POST", "/api/reservations/quotes", { body });
   } catch (error: any) {
+    const status = error?.status ?? 0;
     const details = error?.details ?? null;
-    if (details) console.error("[BE Quote] Raw error details:", JSON.stringify(details));
+    const rawBody = typeof details === "string"
+      ? details.slice(0, 500)
+      : JSON.stringify(details ?? {}).slice(0, 500);
+    const credentialId = process.env.GUESTY_BE_CLIENT_ID
+      ? process.env.GUESTY_BE_CLIENT_ID.slice(0, 6) + "..."
+      : "NOT SET";
+    console.error(`[BE Quote] createBEQuote FAILED — status=${status}, credentialId=${credentialId}, listingId=${input.listingId}, body=${rawBody}`);
     const friendly = parseBEError(JSON.stringify(details ?? error?.message ?? ""));
-    if ((error?.status ?? 0) === 429) throw new Error(GUESTY_BE_AUTH_ERROR);
-    if ((error?.status ?? 0) === 422) throw new Error(friendly || "This property is not available for the selected dates.");
+    if (status === 429) throw new Error(GUESTY_BE_AUTH_ERROR);
+    if (status === 422) throw new Error(friendly || "This property is not available for the selected dates.");
     throw new Error(friendly || error?.message || "Unable to get live quote from Guesty.");
   }
 

@@ -245,6 +245,8 @@ export default function BookingWidget({
   const [confirmation, setConfirmation] = useState("");
   const [successMode, setSuccessMode] = useState<SuccessMode>("confirmed");
   const [beQuoteError, setBeQuoteError] = useState("");
+  const [isRetryingForLivePrice, setIsRetryingForLivePrice] = useState(false);
+  const [beQuoteRetryFailed, setBeQuoteRetryFailed] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [phoneTouched, setPhoneTouched] = useState(false);
   const quoteRequestRef = useRef(0);
@@ -277,6 +279,48 @@ export default function BookingWidget({
   const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
   const canPayOnSite = isBECheckoutAvailable && !!stripeConfig?.publishableKey;
   const createBEQuote = trpc.booking.createBEQuote.useMutation();
+
+  const handleRetryReserve = useCallback(async () => {
+    setIsRetryingForLivePrice(true);
+    setBeQuoteRetryFailed(false);
+    setBeQuoteError("");
+    try {
+      const be = await createBEQuote.mutateAsync({
+        listingId: guestyId, checkIn, checkOut, guests,
+        guestEmail: "guest@example.com",
+      });
+      if (!be?.quoteId) throw new Error("No quote ID returned");
+      setQuote(prev => prev ? {
+        ...prev,
+        quoteId: be.quoteId,
+        quoteCreatedAt: Date.now(),
+        ratePlanId: be.ratePlanId,
+        source: "live" as const,
+        priceOnRequest: false,
+        fallbackMessage: undefined,
+        currency: be.currency || prev.currency,
+        cancellationPolicy: be.cancellationPolicy,
+        ratePlanOptions: be.ratePlanOptions?.map((opt: any) => ({
+          ...opt,
+          total: opt.total > 0 ? opt.total : prev.total,
+          nightlyRate: opt.nightlyRate > 0 ? opt.nightlyRate : prev.nightlyRate,
+          cleaningFee: opt.cleaningFee > 0 ? opt.cleaningFee : prev.cleaningFee,
+        })),
+      } : null);
+      if (be.ratePlanId) setSelectedRatePlanId(be.ratePlanId);
+      setError("");
+      setTermsAccepted(false);
+      setStep("payment");
+    } catch (err: any) {
+      setBeQuoteRetryFailed(true);
+      setBeQuoteError(parseBookingError(err?.message || "Live pricing unavailable. Please contact our concierge."));
+    } finally {
+      setIsRetryingForLivePrice(false);
+    }
+  // createBEQuote intentionally omitted — tRPC useMutation returns a new object reference
+  // on every render; including it would invalidate this callback every render (defeating memoization).
+  // The mutateAsync function itself is stable per tRPC's contract.
+  }, [checkIn, checkOut, guests, guestyId]);
 
   useEffect(() => {
     quoteRef.current = quote;
@@ -358,7 +402,7 @@ export default function BookingWidget({
         total: effectiveTotal,
         nights: d.nights,
         source: (d as any).source || "base",
-        priceOnRequest: !isLivePrice,
+        priceOnRequest: (d as any).source === "request",
         fallbackMessage: !isLivePrice ? ((d as any).fallbackMessage || "Price on request") : undefined,
       };
 
@@ -467,6 +511,8 @@ export default function BookingWidget({
     setQuote(null);
     setError("");
     setBeQuoteError("");
+    setIsRetryingForLivePrice(false);
+    setBeQuoteRetryFailed(false);
     setPhoneTouched(false);
     setStep("dates");
   };
@@ -727,6 +773,8 @@ export default function BookingWidget({
                   setCheckIn(ci);
                   setCheckOut(co);
                   setQuote(null);
+                  setIsRetryingForLivePrice(false);
+                  setBeQuoteRetryFailed(false);
                   setError("");
                   setBeQuoteError("");
                   setStep("dates");
@@ -1079,6 +1127,25 @@ export default function BookingWidget({
               >
                 {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote.total)}
               </button>
+            ) : canPayOnSite && quote?.source === "base" && isRetryingForLivePrice ? (
+              /* Retry in progress */
+              <button
+                disabled
+                className="w-full min-h-[52px] bg-black/50 text-white text-xs font-medium tracking-[0.15em] uppercase px-8 py-4 cursor-wait"
+              >
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  {t("bookingWidget.checkingLivePricing", "Checking live pricing…")}
+                </span>
+              </button>
+            ) : canPayOnSite && quote?.source === "base" && !quote?.quoteId && beQuoteError && !beQuoteRetryFailed ? (
+              /* Estimated price — retry for live on click */
+              <button
+                onClick={handleRetryReserve}
+                className="w-full min-h-[52px] bg-black text-white text-xs font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors"
+              >
+                {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote?.total ?? 0)}
+              </button>
             ) : canPayOnSite && !quote?.quoteId && !beQuoteError ? (
               /* Loading: BE quote still being fetched — 8s timeout then show concierge */
               <button
@@ -1093,6 +1160,11 @@ export default function BookingWidget({
             ) : (
               /* Fallback: Payment unavailable — concierge contact only, NO prices */
               <div className="space-y-3">
+                {beQuoteRetryFailed && beQuoteError && (
+                  <div className="bg-red-50/60 border border-red-200/40 px-4 py-2.5 text-[11px] text-red-700">
+                    {beQuoteError}
+                  </div>
+                )}
                 <a
                   href={`https://wa.me/351927161771?text=${encodeURIComponent(
                     [

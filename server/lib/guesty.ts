@@ -695,6 +695,11 @@ async function fetchBEOAuthToken(): Promise<string> {
     }
   }
 
+
+  const beCredentialId = GUESTY_BE_CLIENT_ID
+    ? GUESTY_BE_CLIENT_ID.slice(0, 6) + "..."
+    : "NOT SET (GUESTY_BE_CLIENT_ID missing)";
+  console.info(`[BE OAuth] Token request — credentialId: ${beCredentialId}`);
   const maxAttempts = 2;
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const startedAt = Date.now();
