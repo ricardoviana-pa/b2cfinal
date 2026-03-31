@@ -125,7 +125,8 @@ export default function Homes() {
   const [occasion, setOccasion] = useState(() => searchParams.get('occasion') || 'all');
   const [destination, setDestination] = useState<FilterDestination>(() => toFilterDestination(searchDestinationFromUrl));
   const [tier, setTier] = useState(() => searchParams.get('tier') || 'all');
-  const [sort, setSort] = useState<SortOption>(() => (searchParams.get('sort') as SortOption) || 'recommended');
+  // Default to price-desc (premium positioning) when dates are active; otherwise recommended
+  const [sort, setSort] = useState<SortOption>(() => (searchParams.get('sort') as SortOption) || (searchCheckin && searchCheckout ? 'price-desc' : 'recommended'));
   const [bedrooms, setBedrooms] = useState<string | undefined>(() => searchParams.get('bedrooms') || undefined);
   const [price, setPrice] = useState<string | undefined>(() => searchParams.get('price') || undefined);
   const [style, setStyle] = useState<string | undefined>(() => searchParams.get('style') || undefined);
@@ -193,6 +194,38 @@ export default function Homes() {
     return sortProperties(withFavorites, sort);
   }, [allProperties, occasion, destination, sort, bedrooms, price, style, tier, searchGuestsCount, showFavoritesOnly, favorites]);
 
+  // When dates are set, split into available (with live pricing) and unavailable properties
+  const hasDates = searchNights > 0;
+  const { availableProperties, unavailableProperties } = useMemo(() => {
+    if (!hasDates || Object.keys(quotes).length === 0) {
+      return { availableProperties: filtered, unavailableProperties: [] as Property[] };
+    }
+    const available: Property[] = [];
+    const unavailable: Property[] = [];
+    for (const p of filtered) {
+      const q = quotes[p.slug];
+      if (q && q.available !== false && (q.source === 'live' || q.source === 'cached')) {
+        available.push(p);
+      } else if (q && q.available === false) {
+        unavailable.push(p);
+      } else {
+        // Base price or no quote — show in available section with estimate
+        available.push(p);
+      }
+    }
+    // Sort available by live total price descending (premium positioning)
+    available.sort((a, b) => {
+      const qa = quotes[a.slug];
+      const qb = quotes[b.slug];
+      const ta = qa?.total ?? (a.priceFrom * searchNights);
+      const tb = qb?.total ?? (b.priceFrom * searchNights);
+      return tb - ta; // Descending — most expensive first
+    });
+    // Sort unavailable by base price descending too
+    unavailable.sort((a, b) => b.priceFrom - a.priceFrom);
+    return { availableProperties: available, unavailableProperties: unavailable };
+  }, [filtered, quotes, hasDates, searchNights]);
+
   const hasActiveFilters = occasion !== 'all' || destination !== 'all' || tier !== 'all' || bedrooms || price || style || showFavoritesOnly;
 
   const clearFilters = () => {
@@ -205,33 +238,85 @@ export default function Homes() {
     setShowFavoritesOnly(false);
   };
 
-  // PLP pricing: compute estimated totals from catalogue base prices (zero API calls).
-  // Live Guesty quotes are fetched only on the PDP when a guest selects dates for a single property.
-  // This eliminates 55+ API calls per page load and prevents Guesty rate-limit cascades.
+  // PLP pricing: fetch LIVE Guesty quotes via batch endpoint when dates are set.
+  // Provides real availability + pricing for every property in the catalogue.
+  const [batchFailed, setBatchFailed] = useState(false);
+  const batchAbortRef = useRef<AbortController | null>(null);
+
   useEffect(() => {
-    if (!searchCheckin || !searchCheckout || searchNights <= 0 || filtered.length === 0) {
+    if (!searchCheckin || !searchCheckout || searchNights <= 0 || allProperties.length === 0) {
       setQuotes({});
+      setQuotesLoading(false);
+      setBatchFailed(false);
       return;
     }
 
-    const computed: Record<string, LiveQuote | null> = {};
-    for (const property of filtered) {
-      const nightlyRate = property.pricePerNight ?? property.priceFrom ?? 0;
-      const cleaningFee = property.cleaningFee ?? 0;
-      if (nightlyRate > 0) {
-        computed[property.slug] = {
-          total: nightlyRate * searchNights + cleaningFee,
-          nightlyRate,
-          cleaningFee,
-          nights: searchNights,
-          source: 'base',
-          available: true,
-        };
-      }
+    // Build listing map from all active properties (not just filtered — we need quotes for sorting/splitting)
+    const listings = allProperties
+      .filter(p => p.isActive && p.guestyId)
+      .map(p => ({ listingId: p.guestyId!, slug: p.slug }));
+
+    if (listings.length === 0) {
+      setQuotes({});
+      setQuotesLoading(false);
+      return;
     }
-    setQuotes(computed);
-    setQuotesLoading(false);
-  }, [searchCheckin, searchCheckout, searchNights, filtered]);
+
+    // Abort previous in-flight batch if dates changed
+    if (batchAbortRef.current) batchAbortRef.current.abort();
+    const controller = new AbortController();
+    batchAbortRef.current = controller;
+
+    setQuotesLoading(true);
+    setBatchFailed(false);
+
+    utils.booking.getBatchQuotes
+      .fetch(
+        { listings, checkIn: searchCheckin, checkOut: searchCheckout, guests: effectiveGuests || 2 },
+      )
+      .then((data) => {
+        if (controller.signal.aborted) return;
+        const mapped: Record<string, LiveQuote | null> = {};
+        for (const [slug, q] of Object.entries(data)) {
+          mapped[slug] = {
+            total: q.pricing.total,
+            nightlyRate: q.pricing.nightlyRate,
+            cleaningFee: q.pricing.cleaningFee,
+            nights: q.nights,
+            source: q.source,
+            fallbackMessage: q.fallbackMessage,
+            available: q.available,
+          };
+        }
+        setQuotes(mapped);
+        setQuotesLoading(false);
+      })
+      .catch((err) => {
+        if (controller.signal.aborted) return;
+        console.error('[PLP] Batch quotes failed:', err);
+        // Fallback: use catalogue base prices so cards aren't empty
+        const computed: Record<string, LiveQuote | null> = {};
+        for (const property of allProperties) {
+          const nightlyRate = property.pricePerNight ?? property.priceFrom ?? 0;
+          const cleaningFee = property.cleaningFee ?? 0;
+          if (nightlyRate > 0) {
+            computed[property.slug] = {
+              total: nightlyRate * searchNights + cleaningFee,
+              nightlyRate,
+              cleaningFee,
+              nights: searchNights,
+              source: 'base',
+              available: true,
+            };
+          }
+        }
+        setQuotes(computed);
+        setQuotesLoading(false);
+        setBatchFailed(true);
+      });
+
+    return () => { controller.abort(); };
+  }, [searchCheckin, searchCheckout, searchNights, allProperties, effectiveGuests, utils]);
 
   const applyBookingSearch = () => {
     const params = new URLSearchParams(searchString);
@@ -243,6 +328,11 @@ export default function Homes() {
     else params.delete('checkout');
     if (bookingGuests > 1) params.set('guests', String(bookingGuests));
     else params.delete('guests');
+    // Auto-switch to price-desc when dates are set (premium positioning)
+    if (bookingCheckin && bookingCheckout) {
+      setSort('price-desc');
+      params.set('sort', 'price-desc');
+    }
     const qs = params.toString();
     navigate(`/homes${qs ? `?${qs}` : ''}`);
   };
@@ -691,31 +781,107 @@ export default function Homes() {
       {/* Results */}
       <section className="pt-6 pb-12 md:pt-8 md:pb-16 lg:pb-20" aria-live="polite" aria-atomic="true">
         <div className="container">
-          <p className="text-[13px] text-[#78756F] mb-4">
-            {t('homes.available', { count: filtered.length })}
-            {searchGuestsCount > 0 && (
-              <span> · {t('homes.guestsPlus', { count: searchGuestsCount })}</span>
-            )}
-            {searchNights > 0 && (
-              <span> · {t('homes.nightsCount', { count: searchNights })}</span>
-            )}
-          </p>
-          <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-x-6 md:gap-y-10 md:overflow-visible">
-            {filtered.map(property => (
-              <div key={property.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
-                <PropertyCard
-                  property={property}
-                  nights={searchNights}
-                  checkin={searchCheckin}
-                  checkout={searchCheckout}
-                  guests={searchGuestsCount || undefined}
-                  liveQuote={quotes[property.slug] || undefined}
-                  quoteLoading={quotesLoading}
-                />
+          {/* Status line */}
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-[13px] text-[#78756F]">
+              {hasDates && !quotesLoading ? (
+                <>
+                  <span className="font-medium text-[#1A1A18]">{availableProperties.length}</span> {t('homes.availableForDates', 'homes available')}
+                  {unavailableProperties.length > 0 && (
+                    <span> · {unavailableProperties.length} {t('homes.unavailableCount', 'unavailable')}</span>
+                  )}
+                </>
+              ) : (
+                t('homes.available', { count: filtered.length })
+              )}
+              {searchGuestsCount > 0 && (
+                <span> · {t('homes.guestsPlus', { count: searchGuestsCount })}</span>
+              )}
+              {searchNights > 0 && (
+                <span> · {t('homes.nightsCount', { count: searchNights })}</span>
+              )}
+            </p>
+            {quotesLoading && hasDates && (
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full border-2 border-[#8B7355] border-t-transparent animate-spin" />
+                <span className="text-[12px] text-[#8B7355] font-medium">{t('homes.checkingAvailability', 'Checking live availability...')}</span>
               </div>
-            ))}
+            )}
           </div>
 
+          {/* Batch error banner */}
+          {batchFailed && hasDates && (
+            <div className="flex items-center gap-3 bg-[#FEF3C7] border border-[#F59E0B]/30 rounded-lg px-4 py-3 mb-6">
+              <AlertTriangle className="w-4 h-4 text-[#D97706] shrink-0" />
+              <p className="text-[13px] text-[#92400E]">
+                {t('homes.batchError', 'Live pricing is temporarily unavailable. Showing estimated rates — confirm final price on the property page.')}
+              </p>
+            </div>
+          )}
+
+          {/* SECTION 1: Available properties (with confirmed or estimated pricing) */}
+          {availableProperties.length > 0 && (
+            <>
+              {hasDates && !quotesLoading && unavailableProperties.length > 0 && (
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-2 h-2 rounded-full bg-[#22C55E]" />
+                  <h2 className="text-[13px] font-semibold tracking-[0.06em] uppercase text-[#1A1A18]">
+                    {t('homes.availableSection', 'Available for your dates')}
+                  </h2>
+                </div>
+              )}
+              <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-x-6 md:gap-y-10 md:overflow-visible">
+                {availableProperties.map(property => (
+                  <div key={property.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
+                    <PropertyCard
+                      property={property}
+                      nights={searchNights}
+                      checkin={searchCheckin}
+                      checkout={searchCheckout}
+                      guests={searchGuestsCount || undefined}
+                      liveQuote={quotes[property.slug] || undefined}
+                      quoteLoading={quotesLoading}
+                      batchFailed={batchFailed}
+                    />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* SECTION 2: Unavailable properties (portfolio visibility — "try other dates") */}
+          {hasDates && !quotesLoading && unavailableProperties.length > 0 && (
+            <div className="mt-12 md:mt-16">
+              <div className="border-t border-[#E8E4DC] pt-8 mb-6">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-2 h-2 rounded-full bg-[#9E9A90]" />
+                  <h2 className="text-[13px] font-semibold tracking-[0.06em] uppercase text-[#9E9A90]">
+                    {t('homes.unavailableSection', 'Unavailable for selected dates')}
+                  </h2>
+                </div>
+                <p className="text-[12px] text-[#9E9A90] ml-4">
+                  {t('homes.unavailableHint', 'These homes may be available for different dates. Contact our concierge for alternatives.')}
+                </p>
+              </div>
+              <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-x-6 md:gap-y-10 md:overflow-visible opacity-75">
+                {unavailableProperties.map(property => (
+                  <div key={property.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
+                    <PropertyCard
+                      property={property}
+                      nights={searchNights}
+                      checkin={searchCheckin}
+                      checkout={searchCheckout}
+                      guests={searchGuestsCount || undefined}
+                      liveQuote={quotes[property.slug] || undefined}
+                      quoteLoading={false}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* No results */}
           {filtered.length === 0 && (
             <div className="text-center py-16 md:py-24 max-w-md mx-auto">
               <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#F5F1EB]">
@@ -735,6 +901,27 @@ export default function Homes() {
                   {t('homes.talkConcierge', 'Talk to concierge')}
                 </a>
               </div>
+            </div>
+          )}
+
+          {/* All unavailable — nudge user */}
+          {hasDates && !quotesLoading && availableProperties.length === 0 && unavailableProperties.length > 0 && (
+            <div className="text-center py-8 mb-8 bg-[#F5F1EB] rounded-lg">
+              <p className="text-[15px] font-display text-[#1A1A18] mb-2">
+                {t('homes.noneAvailable', 'No homes available for these dates')}
+              </p>
+              <p className="text-[13px] text-[#9E9A90] mb-4">
+                {t('homes.noneAvailableHint', 'Try adjusting your dates or speak with our concierge')}
+              </p>
+              <a
+                href={`https://wa.me/351927161771?text=${encodeURIComponent(`Hi, I'm looking for a property from ${searchCheckin} to ${searchCheckout} for ${effectiveGuests} guests but nothing seems available. Can you help?`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-ghost inline-flex items-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+                {t('homes.talkConcierge', 'Talk to concierge')}
+              </a>
             </div>
           )}
         </div>

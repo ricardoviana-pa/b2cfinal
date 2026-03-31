@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../_core/trpc";
-import { checkAvailability, getQuoteWithDeadline } from "../services/guesty";
+import { checkAvailability, getQuoteWithDeadline, type QuoteResult } from "../services/guesty";
 import {
   isBEApiConfigured,
   createBEQuote,
@@ -148,6 +148,59 @@ export const bookingRouter = router({
       } catch (error: any) {
         throw new Error(error.message || "Failed to get quote");
       }
+    }),
+
+  /**
+   * Batch quote endpoint for PLP — fetches live Guesty pricing for multiple properties.
+   * Uses concurrency control (5 at a time) to avoid Guesty rate limits.
+   * Each individual quote has a 12s deadline; the entire batch has a 30s outer deadline.
+   * Returns a map of listingId → QuoteResult (available, pricing, source).
+   */
+  getBatchQuotes: publicProcedure
+    .input(
+      z.object({
+        listings: z.array(
+          z.object({
+            listingId: z.string().min(1),
+            slug: z.string().min(1),
+          })
+        ).min(1).max(60),
+        checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        guests: z.number().int().min(1).max(30).default(2),
+      })
+    )
+    .query(async ({ input }) => {
+      const { listings, checkIn, checkOut, guests } = input;
+      const CONCURRENCY = 5;
+      const PER_QUOTE_DEADLINE = 12_000;
+      const results: Record<string, QuoteResult> = {};
+
+      console.info(`[Batch] Starting batch quotes for ${listings.length} properties, ${checkIn}→${checkOut}, ${guests}g`);
+
+      // Process in chunks of CONCURRENCY
+      for (let i = 0; i < listings.length; i += CONCURRENCY) {
+        const chunk = listings.slice(i, i + CONCURRENCY);
+        const chunkResults = await Promise.allSettled(
+          chunk.map(({ listingId }) =>
+            getQuoteWithDeadline(listingId, checkIn, checkOut, guests, PER_QUOTE_DEADLINE)
+          )
+        );
+        for (let j = 0; j < chunk.length; j++) {
+          const r = chunkResults[j];
+          if (r.status === "fulfilled") {
+            results[chunk[j].slug] = r.value;
+          } else {
+            console.warn(`[Batch] Quote failed for ${chunk[j].slug}: ${r.reason}`);
+          }
+        }
+      }
+
+      const liveCount = Object.values(results).filter(r => r.source === "live" || r.source === "cached").length;
+      const availCount = Object.values(results).filter(r => r.available).length;
+      console.info(`[Batch] Done: ${Object.keys(results).length} quotes, ${liveCount} live/cached, ${availCount} available`);
+
+      return results;
     }),
 
   /** Booking Engine API — for on-site checkout with payment */
