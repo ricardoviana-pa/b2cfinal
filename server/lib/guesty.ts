@@ -86,8 +86,19 @@ function capOAuthCooldownMs(rawMs: number, maxMs: number): number {
   return Math.min(rawMs, maxMs);
 }
 
-function createLimiter(maxConcurrent: number) {
+/**
+ * Paced request limiter — implements the Guesty API Traffic Management recipe.
+ * Combines concurrency limiting WITH time-based pacing (min delay between requests).
+ *
+ * Guesty rate limits: 5 req/sec, 275 req/min, 16500 req/hr, max 15 concurrent.
+ * Recipe pattern: queue requests, process one every INTERVAL_MS (200ms = 5/sec).
+ *
+ * @param maxConcurrent - Maximum parallel in-flight requests
+ * @param intervalMs    - Minimum milliseconds between dispatching consecutive requests
+ */
+function createPacedLimiter(maxConcurrent: number, intervalMs: number = 0) {
   let active = 0;
+  let lastDispatchedAt = 0;
   const queue: Array<() => void> = [];
 
   const next = () => {
@@ -97,10 +108,19 @@ function createLimiter(maxConcurrent: number) {
   };
 
   return async function runLimited<T>(task: () => Promise<T>): Promise<T> {
+    // Concurrency gate
     if (active >= maxConcurrent) {
       await new Promise<void>((resolve) => queue.push(resolve));
     }
+    // Time-based pacing: enforce minimum interval between request dispatches
+    if (intervalMs > 0) {
+      const elapsed = Date.now() - lastDispatchedAt;
+      if (elapsed < intervalMs) {
+        await sleep(intervalMs - elapsed);
+      }
+    }
     active += 1;
+    lastDispatchedAt = Date.now();
     try {
       return await task();
     } finally {
@@ -109,9 +129,14 @@ function createLimiter(maxConcurrent: number) {
   };
 }
 
-const runOpenQuoteLimited = createLimiter(3);
-/** Guesty BE API allows max 15 concurrent requests. Keep at 5 to leave headroom for calendar/listing calls. */
-const runBeQuoteLimited = createLimiter(5);
+/** Open API: 3 concurrent, 250ms pacing (4/sec — conservative, rarely used now) */
+const runOpenQuoteLimited = createPacedLimiter(3, 250);
+/**
+ * BE API: 5 concurrent, 200ms pacing (5/sec — matches Guesty recipe).
+ * PLP uses single GET /api/listings call so this only applies to PDP quotes,
+ * calendar checks, and payment provider lookups.
+ */
+const runBeQuoteLimited = createPacedLimiter(5, 200);
 
 function ensureTokenCacheDir(): void {
   if (!fs.existsSync(TOKEN_CACHE_DIR)) {
@@ -400,7 +425,9 @@ async function request<T>(
       });
     } catch (error) {
       if (attempt < maxAttempts - 1) {
-        await sleep(1000 + attempt * 1000);
+        const backoffMs = 500 * Math.pow(2, attempt); // 500ms, 1000ms
+        console.warn(`[Guesty] Network error on ${method} ${endpoint} — retry #${attempt + 1} in ${backoffMs}ms`);
+        await sleep(backoffMs);
         continue;
       }
       throw new GuestyClientError({
@@ -435,8 +462,16 @@ async function request<T>(
     }
 
     if ((response.status === 429 || response.status >= 500) && attempt < maxAttempts - 1) {
-      const retryAfterSec = Number(response.headers.get("Retry-After") || "2");
-      await sleep(Math.max(1000, retryAfterSec * 1000 + attempt * 1000));
+      // Exponential backoff per Guesty API Traffic Management recipe:
+      // BASE_BACKOFF_MS * 2^attempt → 500ms, 1000ms, 2000ms
+      // Respect Retry-After header if present (capped at 30s)
+      const retryAfterMs = parseRetryAfterMs(response.headers, 0);
+      const exponentialMs = 500 * Math.pow(2, attempt); // 500, 1000, 2000
+      const backoffMs = retryAfterMs > 0
+        ? Math.min(retryAfterMs, 30_000)
+        : exponentialMs;
+      console.warn(`[Guesty] ${response.status} on ${method} ${endpoint} — retry #${attempt + 1} in ${backoffMs}ms`);
+      await sleep(backoffMs);
       continue;
     }
 
@@ -802,7 +837,9 @@ export const guestyBEClient = {
           });
         } catch (error) {
           if (attempt < maxAttempts - 1) {
-            await sleep(1000 + attempt * 1000);
+            const backoffMs = 500 * Math.pow(2, attempt); // 500ms, 1000ms
+            console.warn(`[Guesty BE] Network error on ${method} ${normalizedPath} — retry #${attempt + 1} in ${backoffMs}ms`);
+            await sleep(backoffMs);
             continue;
           }
           throw new GuestyClientError({
@@ -840,8 +877,15 @@ export const guestyBEClient = {
             durationMs: Date.now() - startedAt,
             details: parseJsonSafe(errBody),
           });
-          const retryAfterSec = Number(response.headers.get("Retry-After") || "2");
-          await sleep(Math.max(1000, retryAfterSec * 1000 + attempt * 1000));
+          // Exponential backoff per Guesty API Traffic Management recipe:
+          // BASE_BACKOFF_MS * 2^attempt → 500ms, 1000ms, 2000ms
+          const retryAfterMs = parseRetryAfterMs(response.headers, 0);
+          const exponentialMs = 500 * Math.pow(2, attempt);
+          const backoffMs = retryAfterMs > 0
+            ? Math.min(retryAfterMs, 30_000)
+            : exponentialMs;
+          console.warn(`[Guesty BE] ${response.status} on ${method} ${normalizedPath} — retry #${attempt + 1} in ${backoffMs}ms`);
+          await sleep(backoffMs);
           continue;
         }
 
