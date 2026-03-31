@@ -340,42 +340,7 @@ export async function getQuoteWithDeadline(
   ]);
 }
 
-export async function createReservation(input: {
-  listingId: string;
-  checkIn: string;
-  checkOut: string;
-  guests: number;
-  guestName: string;
-  guestEmail: string;
-  guestPhone: string;
-  notes?: string;
-}): Promise<ReservationResult> {
-  const [firstName, ...lastParts] = input.guestName.split(' ');
-  const lastName = lastParts.join(' ') || firstName;
-
-  // Single quote call: avoid doubling Guesty traffic (widget/PLP already requested quotes).
-  // Guesty validates inquiry payload against live calendar/terms on the server.
-  const reservation = await guestyClient.createReservation({
-    listingId: input.listingId,
-    checkInDateLocalized: input.checkIn,
-    checkOutDateLocalized: input.checkOut,
-    status: "inquiry",
-    guest: {
-      firstName,
-      lastName,
-      email: input.guestEmail,
-      phone: input.guestPhone,
-    },
-    guestsCount: input.guests,
-    source: "Website Direct",
-  });
-
-  return {
-    confirmationCode: reservation.confirmationCode || reservation._id?.slice(-8) || 'PA-' + Date.now(),
-    reservationId: reservation._id || '',
-    status: reservation.status || 'inquiry',
-    checkIn: input.checkIn,
-    checkOut: input.checkOut,
-    guestName: input.guestName,
-  };
-}
+// DEPRECATED: createReservation (inquiry) removed.
+// All bookings must go through Booking Engine with Stripe payment.
+// Guests without live pricing should contact concierge via WhatsApp/email.
+// See createBEInstantReservation in guesty-booking.ts for the active booking flow.

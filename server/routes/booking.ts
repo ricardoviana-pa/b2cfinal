@@ -395,36 +395,31 @@ export function registerBookingRoutes(app: Express): void {
     }
 
     const counts = parseGuestCounts(body);
-    const payload = body.quoteId
-      ? {
-          status: "confirmed",
-          reservedUntil: -1,
-          quoteId: String(body.quoteId),
-          ...(ratePlanId ? { ratePlanId } : {}),
-          guest: {
-            firstName: String(guest.firstName),
-            lastName: String(guest.lastName),
-            email: String(guest.email),
-            phones: [String(guest.phone)],
-          },
-          ignoreCalendar: false,
-          ignoreTerms: false,
-          ignoreBlocks: false,
-        }
-      : {
-          listingId,
-          checkInDateLocalized: checkIn,
-          checkOutDateLocalized: checkOut,
-          guestsCount: counts.guestsCount,
-          guest: {
-            firstName: String(guest.firstName),
-            lastName: String(guest.lastName),
-            email: String(guest.email),
-            phone: String(guest.phone),
-          },
-          source: "Website Direct",
-          status: "inquiry",
-        };
+    // Direct bookings only — inquiry creation is disabled.
+    // All reservations MUST go through Booking Engine with payment (quoteId required).
+    if (!body.quoteId) {
+      res.status(422).json({
+        message: "Direct booking with payment is required. Please contact our concierge for assistance.",
+        code: "PAYMENT_REQUIRED",
+      });
+      return;
+    }
+
+    const payload = {
+      status: "confirmed",
+      reservedUntil: -1,
+      quoteId: String(body.quoteId),
+      ...(ratePlanId ? { ratePlanId } : {}),
+      guest: {
+        firstName: String(guest.firstName),
+        lastName: String(guest.lastName),
+        email: String(guest.email),
+        phones: [String(guest.phone)],
+      },
+      ignoreCalendar: false,
+      ignoreTerms: false,
+      ignoreBlocks: false,
+    };
 
     try {
       const reservation = await guestyClient.createReservation(payload as Record<string, unknown>);
