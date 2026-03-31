@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS reviews (id int AUTO_INCREMENT PRIMARY KEY, guestName varchar(255) NOT NULL, guestLocation varchar(255), propertyName varchar(255), quote text NOT NULL, rating int DEFAULT 5, sortOrder int NOT NULL DEFAULT 0, isActive boolean NOT NULL DEFAULT true, createdAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, updatedAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cxMh9zmfdZJBM2R.root --database TrgtKZm5wvwi7gPLiBhuvN --execute CREATE TABLE IF NOT EXISTS reviews (id int AUTO_INCREMENT PRIMARY KEY, guestName varchar(255) NOT NULL, guestLocation varchar(255), propertyName varchar(255), quote text NOT NULL, rating int DEFAULT 5, sortOrder int NOT NULL DEFAULT 0, isActive boolean NOT NULL DEFAULT true, createdAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, updatedAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 503
+}

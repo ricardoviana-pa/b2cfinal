@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS leads (id int AUTO_INCREMENT PRIMARY KEY, email varchar(320) NOT NULL, name varchar(255), phone varchar(50), message text, source varchar(100) NOT NULL, status enum('new','contacted','converted','archived') NOT NULL DEFAULT 'new', metadata json, createdAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, updatedAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cxMh9zmfdZJBM2R.root --database TrgtKZm5wvwi7gPLiBhuvN --execute CREATE TABLE IF NOT EXISTS leads (id int AUTO_INCREMENT PRIMARY KEY, email varchar(320) NOT NULL, name varchar(255), phone varchar(50), message text, source varchar(100) NOT NULL, status enum('new','contacted','converted','archived') NOT NULL DEFAULT 'new', metadata json, createdAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, updatedAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 502
+}

@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS blog_posts (id int AUTO_INCREMENT PRIMARY KEY, title varchar(500) NOT NULL, slug varchar(500) NOT NULL, excerpt text, content text, coverImage varchar(500), authorId int, category varchar(100), tags json, seoTitle varchar(255), seoDescription varchar(500), status enum('draft','published','scheduled') NOT NULL DEFAULT 'draft', publishedAt timestamp NULL, scheduledAt timestamp NULL, readTime int, sortOrder int NOT NULL DEFAULT 0, createdAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, updatedAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, UNIQUE KEY blog_posts_slug_unique (slug));",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user cxMh9zmfdZJBM2R.root --database TrgtKZm5wvwi7gPLiBhuvN --execute CREATE TABLE IF NOT EXISTS blog_posts (id int AUTO_INCREMENT PRIMARY KEY, title varchar(500) NOT NULL, slug varchar(500) NOT NULL, excerpt text, content text, coverImage varchar(500), authorId int, category varchar(100), tags json, seoTitle varchar(255), seoDescription varchar(500), status enum('draft','published','scheduled') NOT NULL DEFAULT 'draft', publishedAt timestamp NULL, scheduledAt timestamp NULL, readTime int, sortOrder int NOT NULL DEFAULT 0, createdAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, updatedAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, UNIQUE KEY blog_posts_slug_unique (slug));",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 670
+}
