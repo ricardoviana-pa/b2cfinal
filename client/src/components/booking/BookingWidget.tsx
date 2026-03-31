@@ -358,7 +358,7 @@ export default function BookingWidget({
         total: effectiveTotal,
         nights: d.nights,
         source: (d as any).source || "base",
-        priceOnRequest: !isLivePrice,
+        priceOnRequest: (d as any).source === "request",
         fallbackMessage: !isLivePrice ? ((d as any).fallbackMessage || "Price on request") : undefined,
       };
 
