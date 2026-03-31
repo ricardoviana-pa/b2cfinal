@@ -58,7 +58,7 @@ function InquiryForm({ serviceName }: { serviceName: string }) {
         </div>
         <div>
           <label className="text-[10px] tracking-[0.02em] font-medium text-[#9E9A90] mb-2 block cursor-pointer">Preferred date</label>
-          <input type="date" onClick={e => (e.target as HTMLInputElement).showPicker?.()} className="w-full bg-transparent border border-[#E8E4DC] px-4 py-3.5 text-[15px] text-[#1A1A18] focus:border-[#8B7355] focus:outline-none transition-colors cursor-pointer" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }} />
+          <input type="date" min={new Date().toISOString().split("T")[0]} onClick={e => (e.target as HTMLInputElement).showPicker?.()} className="w-full bg-transparent border border-[#E8E4DC] px-4 py-3.5 text-[15px] text-[#1A1A18] focus:border-[#8B7355] focus:outline-none transition-colors cursor-pointer" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }} />
         </div>
       </div>
       <div>
