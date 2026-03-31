@@ -246,6 +246,7 @@ export default function BookingWidget({
   const [successMode, setSuccessMode] = useState<SuccessMode>("confirmed");
   const [beQuoteError, setBeQuoteError] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const quoteRequestRef = useRef(0);
   const lastQuoteKeyRef = useRef("");
   /** Avoids unstable `fetchQuote` when `quote` updates (prevents auto-quote useEffect loops). */
@@ -466,6 +467,7 @@ export default function BookingWidget({
     setQuote(null);
     setError("");
     setBeQuoteError("");
+    setPhoneTouched(false);
     setStep("dates");
   };
 
@@ -1153,7 +1155,7 @@ export default function BookingWidget({
               onChange={e => setGuestEmail(e.target.value)}
               className="w-full h-[48px] border border-black/15 bg-white px-3 py-2 text-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black font-normal"
             />
-            <PhoneInput value={guestPhone} onChange={setGuestPhone} />
+            <PhoneInput value={guestPhone} onChange={setGuestPhone} onBlur={() => setPhoneTouched(true)} />
             {/* Terms & Cancellation Policy acceptance */}
             <label className="flex items-start gap-2 cursor-pointer select-none">
               <input
@@ -1176,7 +1178,7 @@ export default function BookingWidget({
             {guestEmail && !isValidEmail(guestEmail) && (
               <p className="text-[11px] text-red-500">{t("bookingWidget.invalidEmail", { defaultValue: "Please enter a valid email address" })}</p>
             )}
-            {guestPhone && !isValidPhone(guestPhone) && (
+            {phoneTouched && guestPhone && !isValidPhone(guestPhone) && (
               <p className="text-[11px] text-red-500">{t("bookingWidget.invalidPhone", { defaultValue: "Please enter a valid phone number" })}</p>
             )}
 
@@ -1215,14 +1217,7 @@ export default function BookingWidget({
             ) : (
               <div className="flex flex-col gap-3">
                 <button disabled className="btn-primary w-full opacity-40 cursor-not-allowed">
-                  {!guestFirstName.trim() || !guestLastName.trim()
-                    ? t("bookingWidget.fillGuestDetails", { defaultValue: "Enter your name to continue" })
-                    : !isValidEmail(guestEmail)
-                      ? t("bookingWidget.validEmailRequired", { defaultValue: "Valid email required" })
-                      : !isValidPhone(guestPhone)
-                        ? t("bookingWidget.validPhoneRequired", { defaultValue: "Valid phone required" })
-                        : t("bookingWidget.acceptTermsToPay", { defaultValue: "Accept terms to continue" })
-                  }
+                  {t("bookingWidget.proceedToPayment", { defaultValue: "Proceed to Payment" })}
                 </button>
                 <button type="button" onClick={() => setStep("quote")} className="btn-ghost">
                   {t("payment.cancelButton", { defaultValue: "Back" })}

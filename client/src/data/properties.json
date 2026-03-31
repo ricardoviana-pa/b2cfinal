@@ -498,6 +498,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Rien à dire, service très réactif ! \nLogement propre et correspondait aux photos et description.",
+        "guestName": "Guest",
+        "date": "2026-03-16T18:34:52.461Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Ubicación muy céntrica. Atención del equipo Portugal Active inmediata.\nLimpieza perfecta.",
         "guestName": "Guest",
         "date": "2026-03-08T21:30:25.986Z",
@@ -562,7 +594,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   },
   {
     "id": "guesty-6965339404b96f00147f571a",
@@ -1890,9 +1922,42 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 808,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Tudo otimo",
+        "guestName": "Guest",
+        "date": "2026-03-17T14:34:42.709Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-6965339dbf04fe0013743e2d",
@@ -2832,66 +2897,6 @@
     "propertyType": "Apartment",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": null,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
-  },
-  {
-    "id": "guesty-696f6aad74604800452a40b8",
-    "slug": "guesty-test-2a40b8",
-    "name": "Guesty Test",
-    "tagline": "",
-    "tier": "select",
-    "destination": "algarve",
-    "locality": "Portugal",
-    "bedrooms": 1,
-    "bathrooms": 0,
-    "maxGuests": 2,
-    "priceFrom": 9,
-    "pricePerNight": 9,
-    "cleaningFee": 0,
-    "minNights": 1,
-    "currency": "EUR",
-    "images": [
-      "https://assets.guesty.com/image/upload/v1768909477/production/6957de4388cba42d9e7a905e/rkg1icshmjfrzmjfkx65.jpg"
-    ],
-    "description": "Welcome to Guesty Test.",
-    "amenities": {
-      "property": [
-        "Suitable for children (2-12 years)",
-        "Suitable for infants (under 2 years)"
-      ],
-      "bedrooms": [],
-      "kitchen": [],
-      "services": []
-    },
-    "stayIncludes": [],
-    "style": "",
-    "tags": [],
-    "occasions": [],
-    "bookingUrl": "",
-    "guestyId": "696f6aad74604800452a40b8",
-    "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Guesty Test",
-    "sortOrder": 0,
-    "isActive": true,
-    "seoTitle": "Guesty Test — Portugal Active",
-    "seoDescription": "Guesty Test in Portugal.",
-    "address": {
-      "full": "",
-      "street": "Avenida da Amorosa 1795",
-      "city": "",
-      "state": "Viana do Castelo",
-      "zipcode": "",
-      "country": "Portugal",
-      "lat": 41.6441737,
-      "lng": -8.799871699999999
-    },
-    "rooms": [],
-    "propertyType": "Apartment",
-    "checkInTime": "15:00",
-    "checkOutTime": "10:00",
     "areaSquareFeet": null,
     "reviews": [],
     "averageRating": null,
@@ -5568,6 +5573,216 @@
     "reviewCount": 0
   },
   {
+    "id": "guesty-69c567ad7f6873000e9a3c37",
+    "slug": "monte-do-sossego-by-portugal-active-9a3c37",
+    "name": "Monte do Sossego by Portugal Active",
+    "tagline": "",
+    "tier": "select",
+    "destination": "algarve",
+    "locality": "Ferreira do Alentejo",
+    "bedrooms": 4,
+    "bathrooms": 4,
+    "maxGuests": 10,
+    "priceFrom": 380,
+    "pricePerNight": 380,
+    "cleaningFee": 300,
+    "minNights": 1,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1774956499/production/6957de4388cba42d9e7a905e/reb1ggz1r5z95zomqvzr.jpg",
+      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/rduhgajwxc84enxnwppp.jpg",
+      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/q1sdzqlpoa5toizixa3y.jpg",
+      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/iuav7ew28kib29dpipvy.jpg",
+      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/ftbrsh5b4kkaqv9s2qe2.jpg",
+      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/xexhzlrbgyoy2jjpbd8e.jpg",
+      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/rrde8r6urp8suwfv55qe.jpg",
+      "https://assets.guesty.com/image/upload/v1774956493/production/6957de4388cba42d9e7a905e/gbhnunjsnzxyyd0xvmar.jpg",
+      "https://assets.guesty.com/image/upload/v1774956493/production/6957de4388cba42d9e7a905e/ohtfiqime1snlbcl3ldb.jpg",
+      "https://assets.guesty.com/image/upload/v1774956493/production/6957de4388cba42d9e7a905e/ek4dzr5s0ltdnejw7nua.jpg",
+      "https://assets.guesty.com/image/upload/v1774956493/production/6957de4388cba42d9e7a905e/k9rbvzcflwsuul284f5v.jpg",
+      "https://assets.guesty.com/image/upload/v1774956493/production/6957de4388cba42d9e7a905e/kawbfozwh2vtc6l63sbi.jpg",
+      "https://assets.guesty.com/image/upload/v1774956494/production/6957de4388cba42d9e7a905e/ktqtey67ne24tep3c5cr.jpg",
+      "https://assets.guesty.com/image/upload/v1774956496/production/6957de4388cba42d9e7a905e/jvgte5nyqxyki1sr4nyg.jpg",
+      "https://assets.guesty.com/image/upload/v1774956496/production/6957de4388cba42d9e7a905e/aujm76nxnzwhfhwqhv2g.jpg",
+      "https://assets.guesty.com/image/upload/v1774956497/production/6957de4388cba42d9e7a905e/l1zy2cbkgjude1mafebd.jpg",
+      "https://assets.guesty.com/image/upload/v1774956497/production/6957de4388cba42d9e7a905e/vixfweth8ksrygzxxjeb.jpg",
+      "https://assets.guesty.com/image/upload/v1774956497/production/6957de4388cba42d9e7a905e/fnbhffhcpcuafkfkotb9.jpg",
+      "https://assets.guesty.com/image/upload/v1774956499/production/6957de4388cba42d9e7a905e/misundep5ct762bh4zlh.jpg",
+      "https://assets.guesty.com/image/upload/v1774956497/production/6957de4388cba42d9e7a905e/j8vknyovubhknztl1krq.jpg",
+      "https://assets.guesty.com/image/upload/v1774956502/production/6957de4388cba42d9e7a905e/uzhqiu8iyp1va7i0y7w5.jpg",
+      "https://assets.guesty.com/image/upload/v1774956502/production/6957de4388cba42d9e7a905e/i2wznhh4xn9o8fnnp9gx.jpg",
+      "https://assets.guesty.com/image/upload/v1774956502/production/6957de4388cba42d9e7a905e/ao95boefs2gk9xgnapp8.jpg",
+      "https://assets.guesty.com/image/upload/v1774956501/production/6957de4388cba42d9e7a905e/hg5n4ajqbztmloo1pvnb.jpg",
+      "https://assets.guesty.com/image/upload/v1774956503/production/6957de4388cba42d9e7a905e/qkbupii65cjdji6xcqus.jpg",
+      "https://assets.guesty.com/image/upload/v1774956504/production/6957de4388cba42d9e7a905e/dkdvezlmvyzj906cmxs3.jpg",
+      "https://assets.guesty.com/image/upload/v1774956506/production/6957de4388cba42d9e7a905e/hxodwigfutx36mnwrfnw.jpg",
+      "https://assets.guesty.com/image/upload/v1774956507/production/6957de4388cba42d9e7a905e/yeei1ehr0ydgf6f9vs0h.jpg",
+      "https://assets.guesty.com/image/upload/v1774956507/production/6957de4388cba42d9e7a905e/fhaajbhjhwuup4zuxxh9.jpg",
+      "https://assets.guesty.com/image/upload/v1774956507/production/6957de4388cba42d9e7a905e/fpeqqrrbq8zkvw43hgy2.jpg",
+      "https://assets.guesty.com/image/upload/v1774956508/production/6957de4388cba42d9e7a905e/bh63hfqhufrhfckha7ut.jpg",
+      "https://assets.guesty.com/image/upload/v1774956509/production/6957de4388cba42d9e7a905e/wul2l4lh90wc6vaod6bc.jpg",
+      "https://assets.guesty.com/image/upload/v1774956510/production/6957de4388cba42d9e7a905e/mixjzw5k4lsaguwjm8a5.jpg",
+      "https://assets.guesty.com/image/upload/v1774956511/production/6957de4388cba42d9e7a905e/aqn9b6v9ophaqnr3bjks.jpg",
+      "https://assets.guesty.com/image/upload/v1774956511/production/6957de4388cba42d9e7a905e/zaxatuyhpsdlb3egowny.jpg",
+      "https://assets.guesty.com/image/upload/v1774956513/production/6957de4388cba42d9e7a905e/qzxqcklmjjzq1qmjirqu.jpg",
+      "https://assets.guesty.com/image/upload/v1774956512/production/6957de4388cba42d9e7a905e/tpkelbx11mozhs60blgq.jpg",
+      "https://assets.guesty.com/image/upload/v1774956513/production/6957de4388cba42d9e7a905e/izgml5xb2llgfjlh3fhu.jpg",
+      "https://assets.guesty.com/image/upload/v1774956515/production/6957de4388cba42d9e7a905e/ae4rj3h2ny8yzrc2t9ad.jpg",
+      "https://assets.guesty.com/image/upload/v1774956515/production/6957de4388cba42d9e7a905e/pp9wld0od60umxwd7efk.jpg",
+      "https://assets.guesty.com/image/upload/v1774956517/production/6957de4388cba42d9e7a905e/kryf83xknxit58dn0lpf.jpg",
+      "https://assets.guesty.com/image/upload/v1774956517/production/6957de4388cba42d9e7a905e/v68yve4rzi5a8pjshctm.jpg",
+      "https://assets.guesty.com/image/upload/v1774956517/production/6957de4388cba42d9e7a905e/gf40ikgpwxlklv1tjpte.jpg",
+      "https://assets.guesty.com/image/upload/v1774956517/production/6957de4388cba42d9e7a905e/wkzifke6saxdp4fez5gs.jpg",
+      "https://assets.guesty.com/image/upload/v1774956519/production/6957de4388cba42d9e7a905e/zfesjomhmlkuwyh7eo7k.jpg",
+      "https://assets.guesty.com/image/upload/v1774956521/production/6957de4388cba42d9e7a905e/ksvrmqb7wfo49os1aj49.jpg",
+      "https://assets.guesty.com/image/upload/v1774956521/production/6957de4388cba42d9e7a905e/ot8uxpnp2jwzgyjnt3hi.jpg",
+      "https://assets.guesty.com/image/upload/v1774956521/production/6957de4388cba42d9e7a905e/w3mwntg5bgaibfi66dbn.jpg",
+      "https://assets.guesty.com/image/upload/v1774956522/production/6957de4388cba42d9e7a905e/kmbivrvmtepkqitwi4pv.jpg",
+      "https://assets.guesty.com/image/upload/v1774956523/production/6957de4388cba42d9e7a905e/efilswcccksxvoagrt65.jpg",
+      "https://assets.guesty.com/image/upload/v1774956523/production/6957de4388cba42d9e7a905e/xzpneikjkcqnvhj2ekol.jpg",
+      "https://assets.guesty.com/image/upload/v1774956526/production/6957de4388cba42d9e7a905e/jxpjcanfvks2utzyzfuw.jpg",
+      "https://assets.guesty.com/image/upload/v1774956525/production/6957de4388cba42d9e7a905e/dudeipkmlkfgmbiehnms.jpg",
+      "https://assets.guesty.com/image/upload/v1774956525/production/6957de4388cba42d9e7a905e/tpkb4vxmfmksh8oywqlo.jpg",
+      "https://assets.guesty.com/image/upload/v1774956526/production/6957de4388cba42d9e7a905e/cmcuikdfaoxx01jn4kkd.jpg",
+      "https://assets.guesty.com/image/upload/v1774956526/production/6957de4388cba42d9e7a905e/dvyxzuffltr4vyjzoxnu.jpg",
+      "https://assets.guesty.com/image/upload/v1774956529/production/6957de4388cba42d9e7a905e/p3faivnsd910oqil53fz.jpg",
+      "https://assets.guesty.com/image/upload/v1774956531/production/6957de4388cba42d9e7a905e/dyujkixxxt1nv309v5do.jpg",
+      "https://assets.guesty.com/image/upload/v1774956527/production/6957de4388cba42d9e7a905e/rvajmvvrosklnx0wzvbe.jpg",
+      "https://assets.guesty.com/image/upload/v1774880264/production/6957de4388cba42d9e7a905e/plnjwc4ltf7g5licbjmd.jpg",
+      "https://assets.guesty.com/image/upload/v1774880265/production/6957de4388cba42d9e7a905e/chc3vg6jot1ptbdmga2y.jpg",
+      "https://assets.guesty.com/image/upload/v1774880265/production/6957de4388cba42d9e7a905e/ycvkpxnvyv7xgvx8lxtx.jpg",
+      "https://assets.guesty.com/image/upload/v1774880264/production/6957de4388cba42d9e7a905e/xxoy6whmnc0qstpcpnl2.jpg"
+    ],
+    "description": "Welcome to Monte do Sossego by Portugal Active.",
+    "amenities": {
+      "property": [
+        "Air conditioning",
+        "BBQ grill",
+        "Baking sheet",
+        "Barbeque utensils",
+        "Bed linens",
+        "Cable TV",
+        "Cleaning Disinfection",
+        "Cleaning products",
+        "Clothing storage",
+        "Coffee",
+        "Coffee maker",
+        "Cookware",
+        "Dining table",
+        "Dishes and silverware",
+        "Dishwasher",
+        "Dryer",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Fire extinguisher",
+        "First aid kit",
+        "Free parking on premises",
+        "Garden or backyard",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High touch surfaces disinfected",
+        "Hot water",
+        "Indoor fireplace",
+        "Iron",
+        "Kettle",
+        "Kitchen",
+        "Laptop friendly workspace",
+        "Long term stays allowed",
+        "Microwave",
+        "Outdoor kitchen",
+        "Outdoor pool",
+        "Oven",
+        "Patio or balcony",
+        "Private entrance",
+        "Refrigerator",
+        "Rural",
+        "Shampoo",
+        "Shower gel",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Village",
+        "Washer",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "69c567ad7f6873000e9a3c37",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Monte do Sossego by Portugal Active",
+    "sortOrder": 0,
+    "isActive": true,
+    "seoTitle": "Monte do Sossego by Portugal Active — Portugal Active",
+    "seoDescription": "Monte do Sossego by Portugal Active in Portugal.",
+    "address": {
+      "full": "",
+      "street": "",
+      "city": "Ferreira do Alentejo",
+      "state": "Beja",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 38.0064977,
+      "lng": -8.2110048
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 2
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 209,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
+  },
+  {
     "id": "guesty-696533794fe6a100145fe4bf",
     "slug": "ocean-bliss-beach-bbq-apartment-5fe4bf",
     "name": "Ocean Bliss - Beach & BBQ Apartment",
@@ -6788,6 +7003,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "espaço muito agradável e convidativo à permanência",
+        "guestName": "Guest",
+        "date": "2026-03-17T11:48:55.484Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Il n’y a rien le logement était plus que propre terres bien situé et nous avons passé un agréable séjour",
         "guestName": "Guest",
         "date": "2026-01-03T13:13:54.581Z",
@@ -6820,7 +7067,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-696533266dec35001492fdbb",
@@ -6853,7 +7100,6 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533266dec35001492fdbb/db61bf12-3590-48-I9OBV",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533266dec35001492fdbb/4a6da846-e260-43-UuQ06",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533266dec35001492fdbb/09714c48-0677-4d-Ru0gP",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533266dec35001492fdbb/dfb23cbe-1c0e-40-BN2o8",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533266dec35001492fdbb/7ff8e284-4fbd-42-2pQTk",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533266dec35001492fdbb/1b42287c-6e0a-48-Ob5gz",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533266dec35001492fdbb/ba1a10c8-a718-47-Yem2I",
@@ -13850,6 +14096,243 @@
     ],
     "averageRating": 5,
     "reviewCount": 2
+  },
+  {
+    "id": "guesty-69ca869e5b0a0500158b7d5a",
+    "slug": "viana-horizon-by-portugal-active-8b7d5a",
+    "name": "Viana Horizon by Portugal Active",
+    "tagline": "",
+    "tier": "select",
+    "destination": "minho",
+    "locality": "Viana do Castelo",
+    "bedrooms": 2,
+    "bathrooms": 1,
+    "maxGuests": 4,
+    "priceFrom": 300,
+    "pricePerNight": 300,
+    "cleaningFee": 0,
+    "minNights": 3,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1774880405/production/6957de4388cba42d9e7a905e/wyamda4rosklgdv7nlou.jpg",
+      "https://assets.guesty.com/image/upload/v1774956842/production/6957de4388cba42d9e7a905e/o86g7morkdh856hcsmdr.jpg",
+      "https://assets.guesty.com/image/upload/v1774956842/production/6957de4388cba42d9e7a905e/intyhmz2qsolfvmtv2jq.jpg",
+      "https://assets.guesty.com/image/upload/v1774956842/production/6957de4388cba42d9e7a905e/lmewd59osjspodrq8w3r.jpg",
+      "https://assets.guesty.com/image/upload/v1774956842/production/6957de4388cba42d9e7a905e/ptmmmmpip5960fhmohu8.jpg",
+      "https://assets.guesty.com/image/upload/v1774956842/production/6957de4388cba42d9e7a905e/cnn6br4th8xuvhbmtd0a.jpg",
+      "https://assets.guesty.com/image/upload/v1774956842/production/6957de4388cba42d9e7a905e/quzttlesvvvq5tqyosbq.jpg",
+      "https://assets.guesty.com/image/upload/v1774956844/production/6957de4388cba42d9e7a905e/fb5wc4zfshfqyrgsuuzr.jpg",
+      "https://assets.guesty.com/image/upload/v1774956844/production/6957de4388cba42d9e7a905e/vd07plw978sda5w8bdcb.jpg",
+      "https://assets.guesty.com/image/upload/v1774956847/production/6957de4388cba42d9e7a905e/u3pxqt3xf3enlcytxnuf.jpg",
+      "https://assets.guesty.com/image/upload/v1774956847/production/6957de4388cba42d9e7a905e/mmgkthg40zi696de4khx.jpg",
+      "https://assets.guesty.com/image/upload/v1774956847/production/6957de4388cba42d9e7a905e/ecchfgrteychkf9nin3p.jpg",
+      "https://assets.guesty.com/image/upload/v1774956848/production/6957de4388cba42d9e7a905e/svxnrzxofjolntfqt2hk.jpg",
+      "https://assets.guesty.com/image/upload/v1774956849/production/6957de4388cba42d9e7a905e/uzkoczqzocomrxevfv5p.jpg",
+      "https://assets.guesty.com/image/upload/v1774956849/production/6957de4388cba42d9e7a905e/cyvk0xyjtq2vgeavfj5g.jpg",
+      "https://assets.guesty.com/image/upload/v1774956850/production/6957de4388cba42d9e7a905e/nrmyja8zggbibvrwnz7d.jpg",
+      "https://assets.guesty.com/image/upload/v1774956849/production/6957de4388cba42d9e7a905e/jdnk9utsanocnpbv2usd.jpg",
+      "https://assets.guesty.com/image/upload/v1774956850/production/6957de4388cba42d9e7a905e/fzknzp3rkxnpsnmrr1g7.jpg",
+      "https://assets.guesty.com/image/upload/v1774956851/production/6957de4388cba42d9e7a905e/iul52ucydv9wvt9ta75k.jpg",
+      "https://assets.guesty.com/image/upload/v1774956852/production/6957de4388cba42d9e7a905e/mti77imu2wzukl6acptn.jpg",
+      "https://assets.guesty.com/image/upload/v1774956852/production/6957de4388cba42d9e7a905e/dmvfjlpbxmwl5ppw1qxr.jpg",
+      "https://assets.guesty.com/image/upload/v1774956852/production/6957de4388cba42d9e7a905e/pbfpnrhz6rmp1ry4bmje.jpg",
+      "https://assets.guesty.com/image/upload/v1774956852/production/6957de4388cba42d9e7a905e/ebmxhedpublshct83d1h.jpg",
+      "https://assets.guesty.com/image/upload/v1774956853/production/6957de4388cba42d9e7a905e/xjcgowtbifwngugbht0s.jpg",
+      "https://assets.guesty.com/image/upload/v1774956854/production/6957de4388cba42d9e7a905e/vvwfvgpk69kg0xn0dsfr.jpg",
+      "https://assets.guesty.com/image/upload/v1774956854/production/6957de4388cba42d9e7a905e/nkzqsezqcednt8awnirp.jpg",
+      "https://assets.guesty.com/image/upload/v1774956855/production/6957de4388cba42d9e7a905e/n08c8pyjnv7ooebusqsl.jpg",
+      "https://assets.guesty.com/image/upload/v1774956855/production/6957de4388cba42d9e7a905e/q90gwjqnw5clxvocuraf.jpg",
+      "https://assets.guesty.com/image/upload/v1774956855/production/6957de4388cba42d9e7a905e/wfjtow43btd20nzweid6.jpg",
+      "https://assets.guesty.com/image/upload/v1774956855/production/6957de4388cba42d9e7a905e/kzpuencwvxnikoo5ewkj.jpg",
+      "https://assets.guesty.com/image/upload/v1774956856/production/6957de4388cba42d9e7a905e/dtposu7dtp18dwe830d6.jpg",
+      "https://assets.guesty.com/image/upload/v1774956857/production/6957de4388cba42d9e7a905e/tmbqwigvwlxqubpomdd0.jpg",
+      "https://assets.guesty.com/image/upload/v1774956857/production/6957de4388cba42d9e7a905e/bbfo7qs5ooj8oy3i68nu.jpg",
+      "https://assets.guesty.com/image/upload/v1774956857/production/6957de4388cba42d9e7a905e/it3pxmozky3qhc6455fz.jpg",
+      "https://assets.guesty.com/image/upload/v1774956858/production/6957de4388cba42d9e7a905e/byxjwiqc5smv6vbf0irs.jpg",
+      "https://assets.guesty.com/image/upload/v1774956859/production/6957de4388cba42d9e7a905e/asxdir9hnsqkrtamcjoh.jpg",
+      "https://assets.guesty.com/image/upload/v1774956858/production/6957de4388cba42d9e7a905e/clupvhiqevvsb6jb28dp.jpg",
+      "https://assets.guesty.com/image/upload/v1774956859/production/6957de4388cba42d9e7a905e/iiixuyrn01wp3txfsiug.jpg",
+      "https://assets.guesty.com/image/upload/v1774956860/production/6957de4388cba42d9e7a905e/fwxuxifdw2jv1m35l3wf.jpg",
+      "https://assets.guesty.com/image/upload/v1774956861/production/6957de4388cba42d9e7a905e/rwmqhed9wozdwfbcakyv.jpg",
+      "https://assets.guesty.com/image/upload/v1774956860/production/6957de4388cba42d9e7a905e/gdney8rpvodfoi6gqruk.jpg",
+      "https://assets.guesty.com/image/upload/v1774956862/production/6957de4388cba42d9e7a905e/lde6kgys2bptr8gwtr7r.jpg",
+      "https://assets.guesty.com/image/upload/v1774956862/production/6957de4388cba42d9e7a905e/z4nxvwpfrla13ubxpzzk.jpg",
+      "https://assets.guesty.com/image/upload/v1774956862/production/6957de4388cba42d9e7a905e/jf0wlcd1a4iqqbkcttui.jpg",
+      "https://assets.guesty.com/image/upload/v1774956863/production/6957de4388cba42d9e7a905e/jxodgrwerh0ivedckdyu.jpg",
+      "https://assets.guesty.com/image/upload/v1774956863/production/6957de4388cba42d9e7a905e/c4vmplbiagfsg2wwhysi.jpg",
+      "https://assets.guesty.com/image/upload/v1774956865/production/6957de4388cba42d9e7a905e/wjxhaknwdddlxpsevokq.jpg",
+      "https://assets.guesty.com/image/upload/v1774956865/production/6957de4388cba42d9e7a905e/rtr5vloycsymfku6yx27.jpg",
+      "https://assets.guesty.com/image/upload/v1774956864/production/6957de4388cba42d9e7a905e/xo5fcejwi55o8mbc8ewi.jpg",
+      "https://assets.guesty.com/image/upload/v1774956866/production/6957de4388cba42d9e7a905e/mv4lrakmcf19r8aydawi.jpg",
+      "https://assets.guesty.com/image/upload/v1774956867/production/6957de4388cba42d9e7a905e/xxnykjswiljx7xtu07h9.jpg",
+      "https://assets.guesty.com/image/upload/v1774956867/production/6957de4388cba42d9e7a905e/qy6aqsbxcdjfwz1nj486.jpg",
+      "https://assets.guesty.com/image/upload/v1774956868/production/6957de4388cba42d9e7a905e/ye8roy6yejhuybhedzuo.jpg",
+      "https://assets.guesty.com/image/upload/v1774956868/production/6957de4388cba42d9e7a905e/m4uvpszko9gjo5ttqifi.jpg",
+      "https://assets.guesty.com/image/upload/v1774956867/production/6957de4388cba42d9e7a905e/oqo1dpz3mr00gvqsvndl.jpg",
+      "https://assets.guesty.com/image/upload/v1774956869/production/6957de4388cba42d9e7a905e/cvspwnchkqf3o5ausvil.jpg",
+      "https://assets.guesty.com/image/upload/v1774956870/production/6957de4388cba42d9e7a905e/vjc0nflpk38llyx5qs4r.jpg",
+      "https://assets.guesty.com/image/upload/v1774956871/production/6957de4388cba42d9e7a905e/gnjpgw5fttn5fykhorvr.jpg",
+      "https://assets.guesty.com/image/upload/v1774956871/production/6957de4388cba42d9e7a905e/f2cmfmlfbq48xxiid7tm.jpg",
+      "https://assets.guesty.com/image/upload/v1774956870/production/6957de4388cba42d9e7a905e/qqaj3vg0rviaana7krzr.jpg",
+      "https://assets.guesty.com/image/upload/v1774956872/production/6957de4388cba42d9e7a905e/kleffhhxt2vnmhcefcr7.jpg",
+      "https://assets.guesty.com/image/upload/v1774956872/production/6957de4388cba42d9e7a905e/mpjiwuooqurrcrsolco1.jpg",
+      "https://assets.guesty.com/image/upload/v1774956873/production/6957de4388cba42d9e7a905e/nibabn6fbhajvjf17pxy.jpg",
+      "https://assets.guesty.com/image/upload/v1774956873/production/6957de4388cba42d9e7a905e/dfyf1v4nih5sbsby6vrw.jpg",
+      "https://assets.guesty.com/image/upload/v1774956874/production/6957de4388cba42d9e7a905e/il4buolkvdjp1fuol6sg.jpg",
+      "https://assets.guesty.com/image/upload/v1774956875/production/6957de4388cba42d9e7a905e/ds9fgzxrftro3emcrfcm.jpg",
+      "https://assets.guesty.com/image/upload/v1774956874/production/6957de4388cba42d9e7a905e/gog5yfu1blg2wqjmdhke.jpg",
+      "https://assets.guesty.com/image/upload/v1774956875/production/6957de4388cba42d9e7a905e/qop61reqksgumnfpdk4w.jpg",
+      "https://assets.guesty.com/image/upload/v1774956875/production/6957de4388cba42d9e7a905e/u3vpnltw6cumppzsahzf.jpg",
+      "https://assets.guesty.com/image/upload/v1774956876/production/6957de4388cba42d9e7a905e/xercd0spnaqn6jmv75vd.jpg",
+      "https://assets.guesty.com/image/upload/v1774956874/production/6957de4388cba42d9e7a905e/gzrruhyvyptra2p83zed.jpg",
+      "https://assets.guesty.com/image/upload/v1774956877/production/6957de4388cba42d9e7a905e/sgmjlbcie6sqsr5clwof.jpg",
+      "https://assets.guesty.com/image/upload/v1774956878/production/6957de4388cba42d9e7a905e/glphfhaebycoywgjpnir.jpg",
+      "https://assets.guesty.com/image/upload/v1774956878/production/6957de4388cba42d9e7a905e/epxhijuairqa1tesw8gt.jpg",
+      "https://assets.guesty.com/image/upload/v1774956879/production/6957de4388cba42d9e7a905e/lv91rpazgfozzbt49pcn.jpg",
+      "https://assets.guesty.com/image/upload/v1774956878/production/6957de4388cba42d9e7a905e/hbf1oj81w1sjv2hdhybu.jpg",
+      "https://assets.guesty.com/image/upload/v1774956879/production/6957de4388cba42d9e7a905e/aqalibfjvin0tboxplwz.jpg",
+      "https://assets.guesty.com/image/upload/v1774956880/production/6957de4388cba42d9e7a905e/pz3lhqcmy7dber8koagb.jpg",
+      "https://assets.guesty.com/image/upload/v1774956880/production/6957de4388cba42d9e7a905e/lc8zwmstmcrmutuue30b.jpg",
+      "https://assets.guesty.com/image/upload/v1774956880/production/6957de4388cba42d9e7a905e/v5mizep2xovpo8wrkrio.jpg",
+      "https://assets.guesty.com/image/upload/v1774956881/production/6957de4388cba42d9e7a905e/ar9dlccwpxo3iwuf1qjo.jpg",
+      "https://assets.guesty.com/image/upload/v1774956881/production/6957de4388cba42d9e7a905e/cfwesvymjjilgk1djgsy.jpg",
+      "https://assets.guesty.com/image/upload/v1774956881/production/6957de4388cba42d9e7a905e/qeamzdp0glpsbohdbtld.jpg",
+      "https://assets.guesty.com/image/upload/v1774956882/production/6957de4388cba42d9e7a905e/ol2qlbgxoptmpnxxyfcm.jpg",
+      "https://assets.guesty.com/image/upload/v1774956883/production/6957de4388cba42d9e7a905e/ecfnni05o7hbnccu1tot.jpg",
+      "https://assets.guesty.com/image/upload/v1774956884/production/6957de4388cba42d9e7a905e/efbrmgdxx9wxs8hilojk.jpg",
+      "https://assets.guesty.com/image/upload/v1774956884/production/6957de4388cba42d9e7a905e/eoazygadztdfkxopbwnt.jpg",
+      "https://assets.guesty.com/image/upload/v1774956884/production/6957de4388cba42d9e7a905e/apsqlj9wklmxtfkrquke.jpg",
+      "https://assets.guesty.com/image/upload/v1774956884/production/6957de4388cba42d9e7a905e/twhoutzbujcokbvw70fd.jpg",
+      "https://assets.guesty.com/image/upload/v1774956885/production/6957de4388cba42d9e7a905e/h1ykrtijgipotgvlxcsr.jpg",
+      "https://assets.guesty.com/image/upload/v1774956886/production/6957de4388cba42d9e7a905e/zdqhdu5pmrmrfpkakyci.jpg",
+      "https://assets.guesty.com/image/upload/v1774956887/production/6957de4388cba42d9e7a905e/wtnhzpocynz3cu2viuuc.jpg",
+      "https://assets.guesty.com/image/upload/v1774956887/production/6957de4388cba42d9e7a905e/utbihcc7iclah0zmcwi4.jpg",
+      "https://assets.guesty.com/image/upload/v1774956887/production/6957de4388cba42d9e7a905e/cfdcyb5ntoda74kl7nax.jpg",
+      "https://assets.guesty.com/image/upload/v1774956888/production/6957de4388cba42d9e7a905e/avaja1otzrhwfwht2vsv.jpg",
+      "https://assets.guesty.com/image/upload/v1774956889/production/6957de4388cba42d9e7a905e/tdddps36mriyrflcchbe.jpg",
+      "https://assets.guesty.com/image/upload/v1774956888/production/6957de4388cba42d9e7a905e/qp27e3c6g3xspze7nwlk.jpg",
+      "https://assets.guesty.com/image/upload/v1774956889/production/6957de4388cba42d9e7a905e/q4dmmrhkqu1ngg8dnqqr.jpg",
+      "https://assets.guesty.com/image/upload/v1774956963/production/6957de4388cba42d9e7a905e/w4kwsnnfla50rsyj1htw.jpg",
+      "https://assets.guesty.com/image/upload/v1774956963/production/6957de4388cba42d9e7a905e/ndsbbrea0guouuodm9x1.jpg",
+      "https://assets.guesty.com/image/upload/v1774956964/production/6957de4388cba42d9e7a905e/y88flw9uy1o7qfoxvftg.jpg",
+      "https://assets.guesty.com/image/upload/v1774956963/production/6957de4388cba42d9e7a905e/xuryvsoz7zqioqzrqdbf.jpg"
+    ],
+    "description": "Welcome to Viana Horizon by Portugal Active.",
+    "amenities": {
+      "property": [
+        "Air conditioning",
+        "Bed linens",
+        "Cable TV",
+        "City View",
+        "Cleaning Disinfection",
+        "Cleaning products",
+        "Clothing storage",
+        "Coffee",
+        "Coffee maker",
+        "Cookware",
+        "Crib",
+        "Cycling",
+        "Dining table",
+        "Dishes and silverware",
+        "Dishwasher",
+        "Dryer",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Extra pillows and blankets",
+        "Family/kid friendly",
+        "Fire extinguisher",
+        "First aid kit",
+        "Fishing",
+        "Free parking on street",
+        "Freezer",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High chair",
+        "High touch surfaces disinfected",
+        "Horseback Riding",
+        "Hot water",
+        "Iron",
+        "Kettle",
+        "Kitchen",
+        "Laptop friendly workspace",
+        "Long term stays allowed",
+        "Microwave",
+        "Museums",
+        "Near Ocean",
+        "Oven",
+        "Refrigerator",
+        "River",
+        "Shampoo",
+        "Shopping",
+        "Shower gel",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Town",
+        "Washer",
+        "Water Parks",
+        "Water Sports",
+        "Water View",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "69ca869e5b0a0500158b7d5a",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Viana Horizon by Portugal Active",
+    "sortOrder": 0,
+    "isActive": true,
+    "seoTitle": "Viana Horizon by Portugal Active — Portugal Active",
+    "seoDescription": "Viana Horizon by Portugal Active in Portugal.",
+    "address": {
+      "full": "",
+      "street": "Avenida Paulo VI 976",
+      "city": "Viana do Castelo",
+      "state": "Viana do Castelo",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 41.6874637,
+      "lng": -8.812085900000001
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 754,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-696533b24fe6a100145fee01",
