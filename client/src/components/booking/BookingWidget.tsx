@@ -50,6 +50,7 @@ interface QuoteData {
   ratePlanOptions?: RatePlanOption[];
   priceOnRequest?: boolean;
   fallbackMessage?: string;
+  source?: string;
 }
 
 type Step = "dates" | "quote" | "details" | "payment" | "success";
@@ -326,12 +327,15 @@ export default function BookingWidget({
       const effectiveTotal = d.pricing?.total ?? 0;
       const cleaning = d.pricing?.cleaningFee ?? 0;
 
+      const isLivePrice = (d as any).source === "live";
+
       if (effectiveTotal <= 0 || effectiveNightly <= 0) {
-        // Price not available — show request-only flow
+        // No price at all — show request-only flow
         setQuote({
           nightlyRate: 0, totalNights: 0, cleaningFee: 0, total: 0,
           nights: d.nights,
           priceOnRequest: true,
+          source: (d as any).source || "request",
           fallbackMessage: (d as any).fallbackMessage || t("bookingWidget.priceOnRequestTitle"),
         });
         setStep("quote");
@@ -339,12 +343,16 @@ export default function BookingWidget({
         return;
       }
 
+      // Price available but not live — mark as "Price on Request" with estimate
       const quoteData: QuoteData = {
         nightlyRate: effectiveNightly,
         totalNights: d.pricing?.totalNights ?? effectiveNightly * d.nights,
         cleaningFee: cleaning,
         total: effectiveTotal,
         nights: d.nights,
+        source: (d as any).source || "base",
+        priceOnRequest: !isLivePrice,
+        fallbackMessage: !isLivePrice ? ((d as any).fallbackMessage || "Price on request") : undefined,
       };
 
       setQuote(quoteData);
@@ -555,10 +563,20 @@ export default function BookingWidget({
         ) : (
           <>
             <div className="flex items-baseline gap-1">
-              <span className="text-[28px] text-[#1A1A18]" style={{ fontFamily: "var(--font-display)" }}>
-                {displayRate > 0 ? formatEur(displayRate) : "---"}
-              </span>
-              <span className="text-[14px] text-[#9E9A90]">{t("property.perNight")}</span>
+              {quote?.priceOnRequest && quote.source !== "live" ? (
+                <>
+                  <span className="text-[22px] text-[#1A1A18]" style={{ fontFamily: "var(--font-display)" }}>
+                    {t("bookingWidget.priceOnRequestLabel", "Price on request")}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className="text-[28px] text-[#1A1A18]" style={{ fontFamily: "var(--font-display)" }}>
+                    {displayRate > 0 ? formatEur(displayRate) : "---"}
+                  </span>
+                  <span className="text-[14px] text-[#9E9A90]">{t("property.perNight")}</span>
+                </>
+              )}
             </div>
             {minNights > 1 && (
               <p className="text-[11px] text-[#8B7355] mt-1 flex items-center gap-1">
@@ -735,42 +753,81 @@ export default function BookingWidget({
           </div>
         )}
 
-        {/* Step: PRICE ON REQUEST */}
+        {/* Step: PRICE ON REQUEST — live price unavailable */}
         {step === "quote" && quote?.priceOnRequest && (
           <>
-            <div className="bg-[#FAFAF7] rounded-lg border border-[#E8E4DC] p-5 mb-4">
-              <p className="text-[18px] font-display font-light text-[#1A1A18] mb-2">
-                {quote.fallbackMessage || t("bookingWidget.priceOnRequestTitle")}
-              </p>
-              <p className="text-[12px] text-[#9E9A90]">
-                {t("bookingWidget.priceOnRequestBody")}
-              </p>
-              {pricePerNight > 0 && nights > 0 && (
-                <div className="mt-4 pt-4 border-t border-[#E8E4DC]">
-                  <p className="text-[14px] font-medium text-[#1A1A18] mb-1">
-                    {t("bookingWidget.estimatedPrice", "Estimated from €{{amount}} for {{nights}} night{{plural}}", {
-                      amount: formatEur(pricePerNight * nights),
-                      nights,
-                      plural: nights !== 1 ? 's' : ''
-                    })}
-                  </p>
-                  <p className="text-[12px] text-[#9E9A90]">
-                    {t("bookingWidget.estimatedNote", "Final price confirmed after review")}
+            {/* Price on Request card */}
+            <div className="bg-[#FAFAF7] rounded-lg border border-[#E8E4DC] overflow-hidden mb-4">
+              <div className="p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-5 h-5 rounded-full bg-[#8B7355]/10 flex items-center justify-center">
+                    <span className="text-[10px] text-[#8B7355]">i</span>
+                  </div>
+                  <p className="text-[14px] font-medium text-[#1A1A18]">
+                    {t("bookingWidget.priceOnRequestLabel", "Price on request")}
                   </p>
                 </div>
-              )}
+                <p className="text-[12px] text-[#9E9A90] leading-relaxed">
+                  {t("bookingWidget.priceOnRequestExplain", "Our team will confirm the exact price and availability for your dates and send you a secure payment link.")}
+                </p>
+                {/* Show estimate if we have base rate data */}
+                {quote.total > 0 && (
+                  <div className="mt-4 pt-4 border-t border-[#E8E4DC]">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-[12px] text-[#9E9A90] uppercase tracking-[0.06em]">
+                        {t("bookingWidget.estimateLabel", "Estimate")}
+                      </span>
+                      <span className="text-[12px] text-[#8B7355] font-medium">
+                        {t("bookingWidget.subjectToConfirmation", "Subject to confirmation")}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-[13px] text-[#6B6860]">
+                        {formatEur(quote.nightlyRate)} x {quote.nights} {t("bookingWidget.nightsLabel", "nights")}
+                        {quote.cleaningFee > 0 && ` + ${formatEur(quote.cleaningFee)}`}
+                      </span>
+                      <span className="text-[18px] text-[#9E9A90] line-through tabular-nums" style={{ fontFamily: "var(--font-display)" }}>
+                        ~{formatEur(quote.total)}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="flex gap-2 flex-col">
-              <p className="text-[11px] text-[#9E9A90] text-center leading-snug">
-                {t("bookingWidget.contactConcierge", { defaultValue: "Please contact our concierge team for custom pricing and booking assistance" })}
-              </p>
-              <button
-                onClick={() => setStep("dates")}
-                className="w-full rounded-full border border-[#E8E4DC] text-[#1A1A18] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#F5F4F0] transition-colors"
-              >
-                {t("bookingWidget.changeDates")}
-              </button>
-            </div>
+
+            {/* Upsells still available for price-on-request */}
+            {UPSELL_ITEMS.length > 0 && (
+              <EnhanceYourStay
+                items={UPSELL_ITEMS}
+                selectedUpsells={selectedUpsells}
+                setSelectedUpsells={setSelectedUpsells}
+                t={t as any}
+              />
+            )}
+
+            {/* WhatsApp CTA */}
+            <a
+              href={`https://wa.me/351927161771?text=${encodeURIComponent(
+                `Hi Portugal Active! I'd like to request pricing for:\n\n` +
+                `🏠 ${propertyName}\n` +
+                `📅 ${checkIn} → ${checkOut} (${nights} nights)\n` +
+                `👥 ${guests} guests\n` +
+                (quote.total > 0 ? `💰 Estimated ~${formatEur(quote.total)}\n` : '') +
+                (selectedUpsells.size > 0 ? `\n✨ Interested in: ${UPSELL_ITEMS.filter(u => selectedUpsells.has(u.id)).map(u => u.name).join(', ')}\n` : '') +
+                `\nPlease confirm availability and final pricing.`
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full min-h-[52px] rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[12px] font-medium tracking-[0.12em] uppercase px-8 py-4 hover:bg-[#2A2A28] transition-colors shadow-sm flex items-center justify-center gap-2"
+            >
+              {t("bookingWidget.requestPricing", "Request Pricing")}
+            </a>
+            <p className="text-[11px] text-[#9E9A90] text-center leading-relaxed">
+              {t("bookingWidget.conciergeWillConfirm", "Our concierge will confirm availability and send you a secure payment link within 1 hour.")}
+            </p>
+            <button onClick={resetDates} className="w-full text-[12px] text-[#9E9A90] hover:text-[#1A1A18] transition py-1">
+              {t("bookingWidget.changeDates")}
+            </button>
           </>
         )}
 
