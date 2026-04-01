@@ -13,42 +13,83 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 
+/**
+ * Team members — Portugal Active leadership & operations.
+ * Photos: replace placeholder URLs with CloudFront CDN links when available.
+ * Use format: https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/team/{name}.webp
+ */
 const TEAM = [
   {
-    id: '1',
+    id: 'rv',
     name: 'Ricardo Viana',
-    role: 'Founder & CEO',
-    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
+    role: 'CEO & Founder',
+    photo: '',
   },
   {
-    id: '2',
-    name: 'Sofia Mendes',
-    role: 'Head of Operations',
-    photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80',
+    id: 'db',
+    name: 'Diogo Boissel',
+    role: 'Head of Staff',
+    photo: '',
   },
   {
-    id: '3',
-    name: 'Mariana Costa',
-    role: 'Head of Guest Experience',
-    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80',
+    id: 'sq',
+    name: 'Susana Queirós',
+    role: 'Head of Field Operations',
+    photo: '',
   },
   {
-    id: '4',
-    name: 'Tiago Almeida',
-    role: 'Concierge Lead, Minho',
-    photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80',
+    id: 'tm',
+    name: 'Tomás Matos',
+    role: 'Manager of Field Operations',
+    photo: '',
   },
   {
-    id: '5',
-    name: 'Ana Ferreira',
-    role: 'Concierge Lead, Porto',
-    photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80',
+    id: 'jd',
+    name: 'João Dinis',
+    role: 'Head of Reservations',
+    photo: '',
   },
   {
-    id: '6',
-    name: 'João Santos',
-    role: 'Concierge Lead, Algarve',
-    photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80',
+    id: 'jf',
+    name: 'Joana Ferreira',
+    role: 'Concierge Manager',
+    photo: '',
+  },
+  {
+    id: 'dl',
+    name: 'Daniel Lima',
+    role: 'B2B Sales Manager',
+    photo: '',
+  },
+  {
+    id: 'tf',
+    name: 'Teresa Ferrador',
+    role: 'HR & Office Manager',
+    photo: '',
+  },
+  {
+    id: 'er',
+    name: 'Emanuel R.',
+    role: 'Executive Assistant',
+    photo: '',
+  },
+  {
+    id: 'jp',
+    name: 'João Porto',
+    role: 'Customer Support Specialist',
+    photo: '',
+  },
+  {
+    id: 'sr',
+    name: 'Samuel Rodrigues',
+    role: 'Customer Support Specialist',
+    photo: '',
+  },
+  {
+    id: 'bm',
+    name: 'Bruno Monteiro',
+    role: 'Finance Manager',
+    photo: '',
   },
 ];
 
@@ -199,22 +240,36 @@ export default function About() {
             ref={scrollRef}
             className="flex gap-5 overflow-x-auto scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0 snap-x snap-mandatory"
           >
-            {TEAM.map(member => (
-              <div key={member.id} className="flex-shrink-0 w-[260px] snap-start">
-                <div className="relative overflow-hidden mb-3" style={{ aspectRatio: '3/4' }}>
-                  <img
-                    src={member.photo}
-                    alt={member.name}
-                    className="w-full h-full object-cover grayscale-[20%]"
-                    loading="lazy"
-                  />
+            {TEAM.map(member => {
+              const initials = member.name
+                .split(' ')
+                .map(w => w[0])
+                .join('')
+                .slice(0, 2)
+                .toUpperCase();
+              return (
+                <div key={member.id} className="flex-shrink-0 w-[260px] snap-start">
+                  <div className="relative overflow-hidden mb-3" style={{ aspectRatio: '3/4' }}>
+                    {member.photo ? (
+                      <img
+                        src={member.photo}
+                        alt={member.name}
+                        className="w-full h-full object-cover grayscale-[20%]"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[#F0ECE4] flex items-center justify-center">
+                        <span className="font-display text-[3rem] text-[#8B7355]/40 select-none">{initials}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="pt-3">
+                    <h4 className="text-[15px] font-display text-[#1A1A18] mb-0.5">{member.name}</h4>
+                    <p className="text-[12px] font-medium text-[#8B7355]">{member.role}</p>
+                  </div>
                 </div>
-                <div className="pt-3">
-                  <h4 className="text-[15px] font-display text-[#1A1A18] mb-0.5">{member.name}</h4>
-                  <p className="text-[12px] font-medium text-[#8B7355]">{member.role}</p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
