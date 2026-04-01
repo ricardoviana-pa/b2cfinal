@@ -4916,6 +4916,15 @@
             "quantity": 2
           }
         ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
       }
     ],
     "propertyType": "House",
@@ -5589,27 +5598,16 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1774956499/production/6957de4388cba42d9e7a905e/reb1ggz1r5z95zomqvzr.jpg",
-      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/rduhgajwxc84enxnwppp.jpg",
-      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/q1sdzqlpoa5toizixa3y.jpg",
-      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/iuav7ew28kib29dpipvy.jpg",
-      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/ftbrsh5b4kkaqv9s2qe2.jpg",
-      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/xexhzlrbgyoy2jjpbd8e.jpg",
-      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/rrde8r6urp8suwfv55qe.jpg",
-      "https://assets.guesty.com/image/upload/v1774956493/production/6957de4388cba42d9e7a905e/gbhnunjsnzxyyd0xvmar.jpg",
-      "https://assets.guesty.com/image/upload/v1774956493/production/6957de4388cba42d9e7a905e/ohtfiqime1snlbcl3ldb.jpg",
-      "https://assets.guesty.com/image/upload/v1774956493/production/6957de4388cba42d9e7a905e/ek4dzr5s0ltdnejw7nua.jpg",
-      "https://assets.guesty.com/image/upload/v1774956493/production/6957de4388cba42d9e7a905e/k9rbvzcflwsuul284f5v.jpg",
-      "https://assets.guesty.com/image/upload/v1774956493/production/6957de4388cba42d9e7a905e/kawbfozwh2vtc6l63sbi.jpg",
       "https://assets.guesty.com/image/upload/v1774956494/production/6957de4388cba42d9e7a905e/ktqtey67ne24tep3c5cr.jpg",
-      "https://assets.guesty.com/image/upload/v1774956496/production/6957de4388cba42d9e7a905e/jvgte5nyqxyki1sr4nyg.jpg",
-      "https://assets.guesty.com/image/upload/v1774956496/production/6957de4388cba42d9e7a905e/aujm76nxnzwhfhwqhv2g.jpg",
-      "https://assets.guesty.com/image/upload/v1774956497/production/6957de4388cba42d9e7a905e/l1zy2cbkgjude1mafebd.jpg",
+      "https://assets.guesty.com/image/upload/v1774956502/production/6957de4388cba42d9e7a905e/uzhqiu8iyp1va7i0y7w5.jpg",
       "https://assets.guesty.com/image/upload/v1774956497/production/6957de4388cba42d9e7a905e/vixfweth8ksrygzxxjeb.jpg",
       "https://assets.guesty.com/image/upload/v1774956497/production/6957de4388cba42d9e7a905e/fnbhffhcpcuafkfkotb9.jpg",
       "https://assets.guesty.com/image/upload/v1774956499/production/6957de4388cba42d9e7a905e/misundep5ct762bh4zlh.jpg",
+      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/iuav7ew28kib29dpipvy.jpg",
+      "https://assets.guesty.com/image/upload/v1774956496/production/6957de4388cba42d9e7a905e/jvgte5nyqxyki1sr4nyg.jpg",
+      "https://assets.guesty.com/image/upload/v1774956496/production/6957de4388cba42d9e7a905e/aujm76nxnzwhfhwqhv2g.jpg",
+      "https://assets.guesty.com/image/upload/v1774956497/production/6957de4388cba42d9e7a905e/l1zy2cbkgjude1mafebd.jpg",
       "https://assets.guesty.com/image/upload/v1774956497/production/6957de4388cba42d9e7a905e/j8vknyovubhknztl1krq.jpg",
-      "https://assets.guesty.com/image/upload/v1774956502/production/6957de4388cba42d9e7a905e/uzhqiu8iyp1va7i0y7w5.jpg",
       "https://assets.guesty.com/image/upload/v1774956502/production/6957de4388cba42d9e7a905e/i2wznhh4xn9o8fnnp9gx.jpg",
       "https://assets.guesty.com/image/upload/v1774956502/production/6957de4388cba42d9e7a905e/ao95boefs2gk9xgnapp8.jpg",
       "https://assets.guesty.com/image/upload/v1774956501/production/6957de4388cba42d9e7a905e/hg5n4ajqbztmloo1pvnb.jpg",
@@ -5634,6 +5632,14 @@
       "https://assets.guesty.com/image/upload/v1774956517/production/6957de4388cba42d9e7a905e/gf40ikgpwxlklv1tjpte.jpg",
       "https://assets.guesty.com/image/upload/v1774956517/production/6957de4388cba42d9e7a905e/wkzifke6saxdp4fez5gs.jpg",
       "https://assets.guesty.com/image/upload/v1774956519/production/6957de4388cba42d9e7a905e/zfesjomhmlkuwyh7eo7k.jpg",
+      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/ftbrsh5b4kkaqv9s2qe2.jpg",
+      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/xexhzlrbgyoy2jjpbd8e.jpg",
+      "https://assets.guesty.com/image/upload/v1774956493/production/6957de4388cba42d9e7a905e/gbhnunjsnzxyyd0xvmar.jpg",
+      "https://assets.guesty.com/image/upload/v1774956493/production/6957de4388cba42d9e7a905e/ohtfiqime1snlbcl3ldb.jpg",
+      "https://assets.guesty.com/image/upload/v1774956499/production/6957de4388cba42d9e7a905e/reb1ggz1r5z95zomqvzr.jpg",
+      "https://assets.guesty.com/image/upload/v1774956493/production/6957de4388cba42d9e7a905e/ek4dzr5s0ltdnejw7nua.jpg",
+      "https://assets.guesty.com/image/upload/v1774956493/production/6957de4388cba42d9e7a905e/kawbfozwh2vtc6l63sbi.jpg",
+      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/q1sdzqlpoa5toizixa3y.jpg",
       "https://assets.guesty.com/image/upload/v1774956521/production/6957de4388cba42d9e7a905e/ksvrmqb7wfo49os1aj49.jpg",
       "https://assets.guesty.com/image/upload/v1774956521/production/6957de4388cba42d9e7a905e/ot8uxpnp2jwzgyjnt3hi.jpg",
       "https://assets.guesty.com/image/upload/v1774956521/production/6957de4388cba42d9e7a905e/w3mwntg5bgaibfi66dbn.jpg",
@@ -5641,11 +5647,10 @@
       "https://assets.guesty.com/image/upload/v1774956523/production/6957de4388cba42d9e7a905e/efilswcccksxvoagrt65.jpg",
       "https://assets.guesty.com/image/upload/v1774956523/production/6957de4388cba42d9e7a905e/xzpneikjkcqnvhj2ekol.jpg",
       "https://assets.guesty.com/image/upload/v1774956526/production/6957de4388cba42d9e7a905e/jxpjcanfvks2utzyzfuw.jpg",
-      "https://assets.guesty.com/image/upload/v1774956525/production/6957de4388cba42d9e7a905e/dudeipkmlkfgmbiehnms.jpg",
       "https://assets.guesty.com/image/upload/v1774956525/production/6957de4388cba42d9e7a905e/tpkb4vxmfmksh8oywqlo.jpg",
       "https://assets.guesty.com/image/upload/v1774956526/production/6957de4388cba42d9e7a905e/cmcuikdfaoxx01jn4kkd.jpg",
-      "https://assets.guesty.com/image/upload/v1774956526/production/6957de4388cba42d9e7a905e/dvyxzuffltr4vyjzoxnu.jpg",
       "https://assets.guesty.com/image/upload/v1774956529/production/6957de4388cba42d9e7a905e/p3faivnsd910oqil53fz.jpg",
+      "https://assets.guesty.com/image/upload/v1774956489/production/6957de4388cba42d9e7a905e/rduhgajwxc84enxnwppp.jpg",
       "https://assets.guesty.com/image/upload/v1774956531/production/6957de4388cba42d9e7a905e/dyujkixxxt1nv309v5do.jpg",
       "https://assets.guesty.com/image/upload/v1774956527/production/6957de4388cba42d9e7a905e/rvajmvvrosklnx0wzvbe.jpg",
       "https://assets.guesty.com/image/upload/v1774880264/production/6957de4388cba42d9e7a905e/plnjwc4ltf7g5licbjmd.jpg",
@@ -12516,13 +12521,13 @@
     "seoDescription": "Welcome to Stone by the Sea - Mountain & Beach Retreat w/Pool, a luxurious house where the authenticity of the Minho region meets contemporary comfort. With bre",
     "address": {
       "full": "",
-      "street": "Caminho da Lapa no 188",
+      "street": "Caminho da Lapa 118",
       "city": "Viana do Castelo",
       "state": "Viana do Castelo",
       "zipcode": "",
       "country": "Portugal",
-      "lat": 41.7697198,
-      "lng": -8.85432
+      "lat": 41.7694088,
+      "lng": -8.8550498
     },
     "rooms": [
       {
