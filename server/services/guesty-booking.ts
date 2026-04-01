@@ -18,6 +18,17 @@ import { guestyBEClient } from "../lib/guesty";
  */
 const inFlightBookings = new Map<string, Promise<BEInstantReservationResult>>();
 
+/** Cache BE quote results to avoid redundant API calls (rate limit: 275/min).
+ *  BE quotes are valid for 24h; we cache for 8 min so pricing stays fresh. */
+const BE_QUOTE_CACHE_TTL_MS = 8 * 60 * 1000;
+const beQuoteCache = new Map<string, { expiresAt: number; value: BEQuoteResult }>();
+/** In-flight dedup: concurrent requests for the same params share one BE API call. */
+const inFlightBEQuotes = new Map<string, Promise<BEQuoteResult>>();
+
+function getBEQuoteCacheKey(input: { listingId: string; checkIn: string; checkOut: string; guests: number }): string {
+  return `${input.listingId}:${input.checkIn}:${input.checkOut}:${input.guests}`;
+}
+
 const GUESTY_BE_AUTH_ERROR =
   "O serviço de reservas está temporariamente sobrecarregado. Aguarde 1-2 minutos e tente novamente.";
 
@@ -87,6 +98,40 @@ export interface BEQuoteResult {
 }
 
 export async function createBEQuote(input: {
+  listingId: string;
+  checkIn: string;
+  checkOut: string;
+  guests: number;
+  guestFirstName?: string;
+  guestLastName?: string;
+  guestEmail?: string;
+}): Promise<BEQuoteResult> {
+  // Only cache anonymous price-check calls (no guest data). Checkout calls with
+  // real guest info bypass the cache so they always produce a fresh quoteId.
+  const isAnonymous = !input.guestFirstName && !input.guestLastName && (!input.guestEmail || input.guestEmail === "guest@example.com");
+  if (isAnonymous) {
+    const cacheKey = getBEQuoteCacheKey(input);
+    const cached = beQuoteCache.get(cacheKey);
+    if (cached && cached.expiresAt > Date.now()) {
+      return cached.value;
+    }
+    const inflight = inFlightBEQuotes.get(cacheKey);
+    if (inflight) return inflight;
+    const promise = _createBEQuoteImpl(input).then(result => {
+      beQuoteCache.set(cacheKey, { expiresAt: Date.now() + BE_QUOTE_CACHE_TTL_MS, value: result });
+      inFlightBEQuotes.delete(cacheKey);
+      return result;
+    }).catch(err => {
+      inFlightBEQuotes.delete(cacheKey);
+      throw err;
+    });
+    inFlightBEQuotes.set(cacheKey, promise);
+    return promise;
+  }
+  return _createBEQuoteImpl(input);
+}
+
+async function _createBEQuoteImpl(input: {
   listingId: string;
   checkIn: string;
   checkOut: string;

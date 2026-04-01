@@ -394,7 +394,9 @@ export default function BookingWidget({
         return;
       }
 
-      // Price available but not live — mark as "Price on Request" with estimate
+      // quoteId is now returned directly from getQuote when source is "live" or "cached".
+      // No background createBEQuote call needed — eliminates a redundant BE API round-trip.
+      const beQuoteId: string | undefined = (d as any).quoteId;
       const quoteData: QuoteData = {
         nightlyRate: effectiveNightly,
         totalNights: d.pricing?.totalNights ?? effectiveNightly * d.nights,
@@ -404,49 +406,14 @@ export default function BookingWidget({
         source: (d as any).source || "base",
         priceOnRequest: (d as any).source === "request",
         fallbackMessage: !isLivePrice ? ((d as any).fallbackMessage || "Price on request") : undefined,
+        quoteId: beQuoteId,
+        quoteCreatedAt: beQuoteId ? Date.now() : undefined,
+        ratePlanId: (d as any).ratePlanId,
+        ratePlanOptions: (d as any).ratePlanOptions,
       };
 
       setQuote(quoteData);
-
-      // If BE checkout is available, fetch BE quote in background for payment data
-      // Hard timeout of 10s — after that, show concierge fallback instead of infinite spinner
-      if (canPayOnSite) {
-        const beTimeout = setTimeout(() => {
-          if (quoteRequestRef.current === requestId) {
-            setBeQuoteError("Payment system timeout — contact concierge");
-          }
-        }, 10000);
-
-        createBEQuote.mutateAsync({
-          listingId: guestyId, checkIn, checkOut, guests,
-          guestEmail: "guest@example.com",
-        }).then((be: any) => {
-          clearTimeout(beTimeout);
-          if (quoteRequestRef.current !== requestId || !be?.quoteId) return;
-          setQuote(prev => {
-            if (!prev) return prev;
-            return {
-              ...prev,
-              quoteId: be.quoteId,
-              quoteCreatedAt: Date.now(),
-              ratePlanId: be.ratePlanId,
-              currency: be.currency || prev.currency,
-              cancellationPolicy: be.cancellationPolicy,
-              ratePlanOptions: be.ratePlanOptions?.map((opt: any) => ({
-                ...opt,
-                total: opt.total > 0 ? opt.total : prev.total,
-                nightlyRate: opt.nightlyRate > 0 ? opt.nightlyRate : prev.nightlyRate,
-                cleaningFee: opt.cleaningFee > 0 ? opt.cleaningFee : prev.cleaningFee,
-              })),
-            };
-          });
-          if (be.ratePlanId) setSelectedRatePlanId(be.ratePlanId);
-        }).catch((err) => {
-          clearTimeout(beTimeout);
-          if (quoteRequestRef.current !== requestId) return;
-          setBeQuoteError(parseBookingError(err?.message || i18n.t("errors.pricingUnavailable")));
-        });
-      }
+      if ((d as any).ratePlanId) setSelectedRatePlanId((d as any).ratePlanId);
 
       setStep("quote");
     } catch (err: any) {
@@ -459,7 +426,7 @@ export default function BookingWidget({
         setLoading(false);
       }
     }
-  }, [checkIn, checkOut, guests, guestyId, minNights, canPayOnSite, utils, createBEQuote, nights]);
+  }, [checkIn, checkOut, guests, guestyId, minNights, canPayOnSite, utils, nights]);
 
   const fetchQuoteRef = useRef(fetchQuote);
   fetchQuoteRef.current = fetchQuote;
