@@ -63,6 +63,7 @@ const MAX_GUESTY_BE_OAUTH_COOLDOWN_MS = Number(process.env.GUESTY_MAX_BE_OAUTH_C
 const TOKEN_CACHE_DIR = path.resolve(process.cwd(), ".cache");
 const OPEN_TOKEN_CACHE_FILE = path.join(TOKEN_CACHE_DIR, "guesty-open-token.json");
 const BE_TOKEN_CACHE_FILE = path.join(TOKEN_CACHE_DIR, "guesty-be-token.json");
+const BE_COOLDOWN_CACHE_FILE = path.join(TOKEN_CACHE_DIR, "guesty-be-cooldown.json");
 
 let oauthCache: TokenCache | null = null;
 let oauthRefreshPromise: Promise<string> | null = null;
@@ -680,6 +681,19 @@ async function fetchBEOAuthToken(): Promise<string> {
   if (!GUESTY_BE_CLIENT_ID || !GUESTY_BE_CLIENT_SECRET) {
     throw new Error("Guesty Booking Engine auth not configured.");
   }
+  // Restore persisted cooldown after process restarts (Render ephemeral instances reset in-memory state).
+  if (guestyBeAuthCooldownUntil === 0) {
+    try {
+      const raw = fs.existsSync(BE_COOLDOWN_CACHE_FILE) ? fs.readFileSync(BE_COOLDOWN_CACHE_FILE, "utf8") : null;
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (typeof parsed?.cooldownUntil === "number" && parsed.cooldownUntil > Date.now()) {
+          guestyBeAuthCooldownUntil = parsed.cooldownUntil;
+          console.warn(`[BE OAuth] Restored cooldown from disk — ${Math.round((guestyBeAuthCooldownUntil - Date.now()) / 1000)}s remaining`);
+        }
+      }
+    } catch { /* ignore */ }
+  }
   if (Date.now() < guestyBeAuthCooldownUntil) {
     const remaining = guestyBeAuthCooldownUntil - Date.now();
     if (remaining > MAX_GUESTY_BE_OAUTH_COOLDOWN_MS) {
@@ -727,12 +741,17 @@ async function fetchBEOAuthToken(): Promise<string> {
         refreshAt,
       };
       writeTokenCacheToDisk(BE_TOKEN_CACHE_FILE, beOauthCache);
+      // Clear persisted cooldown — token acquired successfully.
+      try { if (fs.existsSync(BE_COOLDOWN_CACHE_FILE)) fs.unlinkSync(BE_COOLDOWN_CACHE_FILE); } catch { /* ignore */ }
+      guestyBeAuthCooldownUntil = 0;
       return beOauthCache.token;
     }
 
     if (response.status === 429) {
       guestyBeAuthCooldownUntil =
         Date.now() + capOAuthCooldownMs(parseRetryAfterMs(response.headers, 60_000), MAX_GUESTY_BE_OAUTH_COOLDOWN_MS);
+      // Persist cooldown to disk so process restarts (e.g. Render ephemeral instances) respect it.
+      try { ensureTokenCacheDir(); fs.writeFileSync(BE_COOLDOWN_CACHE_FILE, JSON.stringify({ cooldownUntil: guestyBeAuthCooldownUntil }), "utf8"); } catch { /* ignore */ }
       const details = parseJsonSafe(await response.text());
       logError({
         method: "POST",
