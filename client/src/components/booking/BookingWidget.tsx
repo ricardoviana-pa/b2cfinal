@@ -1138,16 +1138,16 @@ export default function BookingWidget({
                   {t("bookingWidget.checkingLivePricing", "Checking live pricing…")}
                 </span>
               </button>
-            ) : canPayOnSite && quote?.source === "base" && !quote?.quoteId && beQuoteError && !beQuoteRetryFailed ? (
-              /* Estimated price — retry for live on click */
+            ) : canPayOnSite && quote?.source === "base" && !quote?.quoteId && !isRetryingForLivePrice && !beQuoteRetryFailed ? (
+              /* Estimated price — show Reserve & Pay immediately; clicking triggers live pricing retry */
               <button
                 onClick={handleRetryReserve}
                 className="w-full min-h-[52px] bg-black text-white text-xs font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors"
               >
                 {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote?.total ?? 0)}
               </button>
-            ) : canPayOnSite && !quote?.quoteId && !beQuoteError ? (
-              /* Loading: BE quote still being fetched — 8s timeout then show concierge */
+            ) : canPayOnSite && !quote?.quoteId && !beQuoteError && quote?.source !== "base" ? (
+              /* Loading: BE quote still being fetched (live/cached source) — 8s timeout then show concierge */
               <button
                 disabled
                 className="w-full min-h-[52px] bg-black/50 text-white text-xs font-medium tracking-[0.15em] uppercase px-8 py-4 cursor-wait"
