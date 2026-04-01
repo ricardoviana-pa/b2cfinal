@@ -18,6 +18,29 @@ import { guestyBEClient } from "../lib/guesty";
  */
 const inFlightBookings = new Map<string, Promise<BEInstantReservationResult>>();
 
+/** Cache BE quote results to avoid redundant API calls (rate limit: 275/min).
+ *  BE quotes are valid for 24h; we cache for 8 min so pricing stays fresh. */
+const BE_QUOTE_CACHE_TTL_MS = 8 * 60 * 1000;
+const beQuoteCache = new Map<string, { expiresAt: number; value: BEQuoteResult }>();
+/** In-flight dedup: concurrent requests for the same params share one BE API call. */
+const inFlightBEQuotes = new Map<string, Promise<BEQuoteResult>>();
+/** Cooldown after a 429 on the quotes endpoint — set from Guesty's retryAfterMs. */
+let beQuoteCooldownUntil = 0;
+
+function getBEQuoteCacheKey(input: { listingId: string; checkIn: string; checkOut: string; guests: number }): string {
+  return `${input.listingId}:${input.checkIn}:${input.checkOut}:${input.guests}`;
+}
+
+/** Extract retryAfterMs from a Guesty 429 response body (details may be object or string). */
+function parseRetryAfterMs(details: unknown, fallbackMs = 60_000): number {
+  try {
+    const parsed = typeof details === "string" ? JSON.parse(details) : details;
+    const ms = Number(parsed?.retryAfterMs ?? parsed?.retry_after_ms ?? 0);
+    if (ms > 0) return ms;
+  } catch { /* ignore */ }
+  return fallbackMs;
+}
+
 const GUESTY_BE_AUTH_ERROR =
   "O serviço de reservas está temporariamente sobrecarregado. Aguarde 1-2 minutos e tente novamente.";
 
@@ -95,6 +118,40 @@ export async function createBEQuote(input: {
   guestLastName?: string;
   guestEmail?: string;
 }): Promise<BEQuoteResult> {
+  // Only cache anonymous price-check calls (no guest data). Checkout calls with
+  // real guest info bypass the cache so they always produce a fresh quoteId.
+  const isAnonymous = !input.guestFirstName && !input.guestLastName && (!input.guestEmail || input.guestEmail === "guest@example.com");
+  if (isAnonymous) {
+    const cacheKey = getBEQuoteCacheKey(input);
+    const cached = beQuoteCache.get(cacheKey);
+    if (cached && cached.expiresAt > Date.now()) {
+      return cached.value;
+    }
+    const inflight = inFlightBEQuotes.get(cacheKey);
+    if (inflight) return inflight;
+    const promise = _createBEQuoteImpl(input).then(result => {
+      beQuoteCache.set(cacheKey, { expiresAt: Date.now() + BE_QUOTE_CACHE_TTL_MS, value: result });
+      inFlightBEQuotes.delete(cacheKey);
+      return result;
+    }).catch(err => {
+      inFlightBEQuotes.delete(cacheKey);
+      throw err;
+    });
+    inFlightBEQuotes.set(cacheKey, promise);
+    return promise;
+  }
+  return _createBEQuoteImpl(input);
+}
+
+async function _createBEQuoteImpl(input: {
+  listingId: string;
+  checkIn: string;
+  checkOut: string;
+  guests: number;
+  guestFirstName?: string;
+  guestLastName?: string;
+  guestEmail?: string;
+}): Promise<BEQuoteResult> {
   const body: Record<string, unknown> = {
     listingId: input.listingId,
     checkInDateLocalized: input.checkIn,
@@ -109,15 +166,34 @@ export async function createBEQuote(input: {
     };
   }
 
+  // ── Rate-limit cooldown: respect Guesty's retryAfterMs from prior 429s ──
+  const cooldownRemaining = beQuoteCooldownUntil - Date.now();
+  if (cooldownRemaining > 0) {
+    console.warn(`[BE Quote] Skipping — quotes endpoint in cooldown for ${Math.ceil(cooldownRemaining / 1000)}s`);
+    throw new Error(GUESTY_BE_AUTH_ERROR);
+  }
+
   let quote: any;
   try {
     quote = await guestyBEClient.request<any>("POST", "/api/reservations/quotes", { body });
   } catch (error: any) {
+    const status = error?.status ?? 0;
     const details = error?.details ?? null;
-    if (details) console.error("[BE Quote] Raw error details:", JSON.stringify(details));
+    const rawBody = typeof details === "string"
+      ? details.slice(0, 500)
+      : JSON.stringify(details ?? {}).slice(0, 500);
+    const credentialId = process.env.GUESTY_BE_CLIENT_ID
+      ? process.env.GUESTY_BE_CLIENT_ID.slice(0, 6) + "..."
+      : "NOT SET";
+    console.error(`[BE Quote] createBEQuote FAILED — status=${status}, credentialId=${credentialId}, listingId=${input.listingId}, body=${rawBody}`);
+    if (status === 429) {
+      const waitMs = parseRetryAfterMs(details);
+      beQuoteCooldownUntil = Date.now() + waitMs;
+      console.warn(`[BE Quote] 429 received — quotes endpoint cooldown for ${Math.ceil(waitMs / 1000)}s (until ${new Date(beQuoteCooldownUntil).toISOString()})`);
+      throw new Error(GUESTY_BE_AUTH_ERROR);
+    }
     const friendly = parseBEError(JSON.stringify(details ?? error?.message ?? ""));
-    if ((error?.status ?? 0) === 429) throw new Error(GUESTY_BE_AUTH_ERROR);
-    if ((error?.status ?? 0) === 422) throw new Error(friendly || "This property is not available for the selected dates.");
+    if (status === 422) throw new Error(friendly || "This property is not available for the selected dates.");
     throw new Error(friendly || error?.message || "Unable to get live quote from Guesty.");
   }
 

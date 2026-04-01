@@ -6,7 +6,7 @@
  */
 
 import { guestyClient } from "../lib/guesty";
-import { isBEApiConfigured, createBEQuote } from "./guesty-booking";
+import { isBEApiConfigured, createBEQuote, type BERatePlanOption } from "./guesty-booking";
 import { getPropertiesForSite } from "./properties-store";
 
 type QuoteSource = "live" | "cached" | "base" | "request";
@@ -14,6 +14,8 @@ type QuoteSource = "live" | "cached" | "base" | "request";
 const QUOTE_CACHE_TTL_MS = 15 * 60 * 1000; // 15 min for live quotes
 const QUOTE_CACHE_FALLBACK_TTL_MS = 3 * 60 * 1000; // 3 min for base-price fallbacks (retry sooner)
 const quoteCache = new Map<string, { expiresAt: number; value: QuoteResult }>();
+/** In-flight dedup: concurrent getQuote calls for same params share one promise. */
+const inFlightGetQuotes = new Map<string, Promise<QuoteResult>>();
 
 function getQuoteCacheKey(listingId: string, checkIn: string, checkOut: string, guests: number): string {
   return `${listingId}:${checkIn}:${checkOut}:${guests}`;
@@ -61,6 +63,10 @@ export interface QuoteResult {
   };
   source?: QuoteSource;
   fallbackMessage?: string;
+  /** Present when source is "live" or "cached" — the BE quote ID for payment processing. */
+  quoteId?: string;
+  ratePlanId?: string;
+  ratePlanOptions?: BERatePlanOption[];
 }
 
 export interface ReservationResult {
@@ -100,10 +106,36 @@ export async function getQuote(
   checkOut: string,
   guests: number = 2
 ): Promise<QuoteResult> {
+  const cacheKey = getQuoteCacheKey(listingId, checkIn, checkOut, guests);
+
+  // ── Cache-first: return live/cached results immediately (no BE API call needed) ──
+  const existingCache = getCachedQuote(cacheKey);
+  if (existingCache && (existingCache.source === "live" || existingCache.source === "cached")) {
+    console.info(`[getQuote] ✓ CACHE HIT for ${listingId}: €${existingCache.pricing.total} (${existingCache.source})`);
+    return { ...existingCache, source: "cached" as QuoteSource };
+  }
+
+  // ── In-flight dedup: share one pending promise for concurrent identical requests ──
+  const inflight = inFlightGetQuotes.get(cacheKey);
+  if (inflight) return inflight;
+
+  const promise = _getQuoteImpl(listingId, checkIn, checkOut, guests, cacheKey).finally(() => {
+    inFlightGetQuotes.delete(cacheKey);
+  });
+  inFlightGetQuotes.set(cacheKey, promise);
+  return promise;
+}
+
+async function _getQuoteImpl(
+  listingId: string,
+  checkIn: string,
+  checkOut: string,
+  guests: number,
+  cacheKey: string
+): Promise<QuoteResult> {
   const nights = Math.ceil(
     (new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000
   );
-  const cacheKey = getQuoteCacheKey(listingId, checkIn, checkOut, guests);
 
   // ── TIER 1: Booking Engine API (primary source — same API used for checkout) ──
   if (isBEApiConfigured()) {
@@ -128,6 +160,9 @@ export async function getQuote(
             total: beQuote.total,
           },
           source: "live",
+          quoteId: beQuote.quoteId,
+          ratePlanId: beQuote.ratePlanId,
+          ratePlanOptions: beQuote.ratePlanOptions,
         };
         setCachedQuote(cacheKey, result);
         console.info(`[getQuote] ✓ BE API quote for ${listingId}: €${beQuote.total} (${nights}n)`);
@@ -138,26 +173,16 @@ export async function getQuote(
     }
   }
 
-  // ── Check server-side cache before fallback tiers ──
-  const cached = getCachedQuote(cacheKey);
-  if (cached && cached.source === "live") {
-    console.info(`[getQuote] ✓ CACHED live quote for ${listingId}: €${cached.pricing.total}`);
-    return {
-      ...cached,
-      source: "cached" as QuoteSource,
-      fallbackMessage: "Live pricing is temporarily unavailable. Showing the most recent cached price.",
-    };
-  }
-
   // ── TIER 2 (removed): Open API /v1/quotes permanently removed 2026-03-31 ──
   // The v1 endpoint is dead. Only the BE API (Tier 1) produces live quotes now.
 
-  // ── Return cached quote if we have one ──
+  // ── Return base-price cache if we have one ──
+  const cached = getCachedQuote(cacheKey);
   if (cached) {
     console.info(`[getQuote] ✓ CACHED quote for ${listingId}: €${cached.pricing.total}`);
     return {
       ...cached,
-      source: (cached.source === "live" || cached.source === "cached" ? "cached" : "base") as QuoteSource,
+      source: "base" as QuoteSource,
       fallbackMessage: "Estimated price based on property's base rate.",
     };
   }
