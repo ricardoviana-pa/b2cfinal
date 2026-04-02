@@ -115,6 +115,11 @@ function PaymentFormInner({
     try {
       const { error: stripeError, paymentMethod: pm } = await stripe.createPaymentMethod({
         elements,
+        params: {
+          billing_details: {
+            address: { country: "PT", postal_code: "" },
+          },
+        },
       });
 
       if (stripeError) {
