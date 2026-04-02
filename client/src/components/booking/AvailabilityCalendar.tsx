@@ -108,6 +108,19 @@ export default function AvailabilityCalendar({
     return status !== undefined && status !== "available";
   }, [statusMap]);
 
+  /** First blocked date strictly after checkIn — caps the checkout selection range */
+  const maxCheckoutDate = useMemo(() => {
+    if (phase !== "check-out" || !checkIn) return null;
+    const checkInMs = startOfDay(checkIn);
+    const sorted = [...days].sort((a, b) => startOfDay(a.date) - startOfDay(b.date));
+    for (const day of sorted) {
+      if (startOfDay(day.date) > checkInMs && isBlocked(day.date)) {
+        return day.date;
+      }
+    }
+    return null;
+  }, [phase, checkIn, days, isBlocked]);
+
   /** Check if selecting a range would cross blocked dates */
   const rangeHasBlockedDates = useCallback((from: string, to: string) => {
     const fromMs = startOfDay(from);
@@ -214,7 +227,13 @@ export default function AvailabilityCalendar({
             const dateMs = startOfDay(dateStr);
             const isPast = dateMs < todayMs;
             const blocked = isBlocked(dateStr);
-            const isDisabled = isPast || blocked;
+            const isBlockedForCheckout =
+              phase === "check-out" &&
+              !!checkIn &&
+              dateMs > checkInMs &&
+              maxCheckoutDate !== null &&
+              dateMs >= startOfDay(maxCheckoutDate);
+            const isDisabled = isPast || blocked || isBlockedForCheckout;
             const isToday = dateStr === todayStr;
             const isCheckIn = checkIn && dateStr === checkIn;
             const isCheckOut = checkOut && dateStr === checkOut;
