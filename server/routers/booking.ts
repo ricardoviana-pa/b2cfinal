@@ -313,7 +313,7 @@ export const bookingRouter = router({
         guestName: z.string().min(2),
         guestEmail: z.string().email(),
         guestPhone: z.string().min(5),
-        policy: z.record(z.unknown()).optional(),
+        policy: z.record(z.string(), z.unknown()).optional(),
         // Extra fields for trip recording
         listingId: z.string().optional(),
         propertyName: z.string().optional(),
