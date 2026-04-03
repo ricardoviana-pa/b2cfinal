@@ -3325,6 +3325,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "La piscine n était pas mise en marche , vu le beau temps et les réservations qui ne poursuivent pour ce week end de Pâques ,la mise en marche de cette dernière serait un caractère fort de la part de l équipe .Le service qui se dit Luxe doit être à la hauteur et garder cette anticipation à l esprit .Pour le reste la villa représente beaucoup d atouts dans un environnement calme et verdoyant. Merci à vous",
+        "guestName": "Guest",
+        "date": "2026-04-03T11:14:33.649Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "We rented this house for New Year with a large group — 6 adults and children — and overall we were very happy with the stay.\n\nThe house is genuinely spacious, so everyone had enough room and privacy. The layout works very well for groups: there is a comfortable common area to spend time together, and at the same time enough separate bedrooms to rest properly.\n\nThe kitchen is well equipped and easy to use — we cooked a lot and had everything we needed. The outdoor area and the grill are a great b",
         "guestName": "Guest",
         "date": "2026-01-03T10:18:04.818Z",
@@ -3357,7 +3389,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-696533b7bf04fe00137440f8",
@@ -10367,6 +10399,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Vivienda en una ubicación frente al mar impresionante. Estaba todo nuevo, las camas y toallas perfectas.\nSitio recomendable, siempre que tengas coche.",
+        "guestName": "Guest",
+        "date": "2026-04-01T15:09:44.285Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "We liked everything. The apartment was comfortable, had everything we needed, and the view from the window was wonderful.",
         "guestName": "Guest",
         "date": "2026-03-12T12:54:31.314Z",
@@ -10463,7 +10527,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 3
+    "reviewCount": 4
   },
   {
     "id": "guesty-696533762def930014e917bf",
@@ -15177,6 +15241,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Appartement très agréable et très propre joliment décoré dans une résidence récente où on peut se garer facilement. Je recommande sans la moindre hésitation !!!!",
+        "guestName": "Guest",
+        "date": "2026-03-31T17:31:13.215Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Very good, good building",
         "guestName": "Guest",
         "date": "2026-02-15T18:51:03.719Z",
@@ -15209,6 +15305,6 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   }
 ]
