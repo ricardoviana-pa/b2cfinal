@@ -248,24 +248,28 @@ export default function About() {
                 .slice(0, 2)
                 .toUpperCase();
               return (
-                <div key={member.id} className="flex-shrink-0 w-[260px] snap-start">
-                  <div className="relative overflow-hidden mb-3" style={{ aspectRatio: '3/4' }}>
+                <div key={member.id} className="group flex-shrink-0 w-[260px] snap-start cursor-default">
+                  <div className="relative overflow-hidden mb-4" style={{ aspectRatio: '3/4' }}>
                     {member.photo ? (
-                      <img
-                        src={member.photo}
-                        alt={member.name}
-                        className="w-full h-full object-cover grayscale-[20%]"
-                        loading="lazy"
-                      />
+                      <>
+                        <img
+                          src={member.photo}
+                          alt={member.name}
+                          className="w-full h-full object-cover object-top grayscale transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                        {/* Warm overlay for visual cohesion */}
+                        <div className="absolute inset-0 bg-[#8B7355]/10 mix-blend-multiply transition-opacity duration-700 group-hover:opacity-0 pointer-events-none" />
+                      </>
                     ) : (
-                      <div className="w-full h-full bg-[#F0ECE4] flex items-center justify-center">
-                        <span className="font-display text-[3rem] text-[#8B7355]/40 select-none">{initials}</span>
+                      <div className="w-full h-full bg-gradient-to-br from-[#F0ECE4] to-[#E8E0D4] flex items-center justify-center">
+                        <span className="font-display text-[3.5rem] text-[#8B7355]/30 select-none tracking-wide">{initials}</span>
                       </div>
                     )}
                   </div>
-                  <div className="pt-3">
-                    <h4 className="text-[15px] font-display text-[#1A1A18] mb-0.5">{member.name}</h4>
-                    <p className="text-[12px] font-medium text-[#8B7355]">{member.role}</p>
+                  <div className="pt-1">
+                    <h4 className="text-[15px] font-display text-[#1A1A18] mb-0.5 tracking-wide">{member.name}</h4>
+                    <p className="text-[12px] text-[#8B7355] tracking-wider uppercase">{member.role}</p>
                   </div>
                 </div>
               );
