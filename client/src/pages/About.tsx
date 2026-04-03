@@ -41,7 +41,7 @@ const TEAM = [
     id: 'tm',
     name: 'Tomás Matos',
     role: 'Manager of Field Operations',
-    photo: '',
+    photo: '/team/tomas-matos.webp',
   },
   {
     id: 'jd',
