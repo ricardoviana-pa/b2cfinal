@@ -25,9 +25,10 @@ const WEEKDAYS_PT = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
 const MONTHS_EN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const MONTHS_PT = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
-/** YYYY-MM-DD from Date */
+/** YYYY-MM-DD from Date — uses local date parts to avoid UTC timezone shift */
 function toIso(d: Date): string {
-  return d.toISOString().split("T")[0];
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
 /** Normalize a date to midnight UTC for clean comparisons */
@@ -106,6 +107,19 @@ export default function AvailabilityCalendar({
     const status = statusMap.get(dateStr);
     return status !== undefined && status !== "available";
   }, [statusMap]);
+
+  /** First blocked date strictly after checkIn — caps the checkout selection range */
+  const maxCheckoutDate = useMemo(() => {
+    if (phase !== "check-out" || !checkIn) return null;
+    const checkInMs = startOfDay(checkIn);
+    const sorted = [...days].sort((a, b) => startOfDay(a.date) - startOfDay(b.date));
+    for (const day of sorted) {
+      if (startOfDay(day.date) > checkInMs && isBlocked(day.date)) {
+        return day.date;
+      }
+    }
+    return null;
+  }, [phase, checkIn, days, isBlocked]);
 
   /** Check if selecting a range would cross blocked dates */
   const rangeHasBlockedDates = useCallback((from: string, to: string) => {
@@ -213,7 +227,13 @@ export default function AvailabilityCalendar({
             const dateMs = startOfDay(dateStr);
             const isPast = dateMs < todayMs;
             const blocked = isBlocked(dateStr);
-            const isDisabled = isPast || blocked;
+            const isBlockedForCheckout =
+              phase === "check-out" &&
+              !!checkIn &&
+              dateMs > checkInMs &&
+              maxCheckoutDate !== null &&
+              dateMs >= startOfDay(maxCheckoutDate);
+            const isDisabled = isPast || blocked || isBlockedForCheckout;
             const isToday = dateStr === todayStr;
             const isCheckIn = checkIn && dateStr === checkIn;
             const isCheckOut = checkOut && dateStr === checkOut;

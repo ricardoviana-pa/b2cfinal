@@ -111,21 +111,36 @@ function PaymentFormInner({
     }
 
     // Step 2: Create payment method from PaymentElement (safe to retry — no charge yet)
-    const { error: stripeError, paymentMethod } = await stripe.createPaymentMethod({
-      elements,
-    });
+    let paymentMethod;
+    try {
+      const { error: stripeError, paymentMethod: pm } = await stripe.createPaymentMethod({
+        elements,
+        params: {
+          billing_details: {
+            address: { country: "PT", postal_code: "" },
+          },
+        },
+      });
 
-    if (stripeError) {
-      setError(stripeError.message || t('payment.errors.cardValidationFailed'));
-      setLoading(false);
-      submittedRef.current = false; // Safe: Stripe didn't create a PM
-      return;
-    }
+      if (stripeError) {
+        setError(stripeError.message || t('payment.errors.cardValidationFailed'));
+        setLoading(false);
+        submittedRef.current = false;
+        return;
+      }
 
-    if (!paymentMethod?.id) {
-      setError(t('payment.errors.couldNotCreatePaymentMethod'));
+      if (!pm?.id) {
+        setError(t('payment.errors.couldNotCreatePaymentMethod'));
+        setLoading(false);
+        submittedRef.current = false;
+        return;
+      }
+
+      paymentMethod = pm;
+    } catch (stripeException: any) {
+      setError(stripeException?.message || t('payment.errors.cardValidationFailed'));
       setLoading(false);
-      submittedRef.current = false; // Safe: no PM exists
+      submittedRef.current = false;
       return;
     }
 
@@ -258,6 +273,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
       mode: "payment" as const,
       amount: Math.round(props.total * 100), // Stripe expects cents
       currency: (props.currency || "eur").toLowerCase(),
+      paymentMethodCreation: "manual" as const,
       appearance: {
         theme: "stripe" as const,
         variables: {
