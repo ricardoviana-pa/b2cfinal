@@ -3506,6 +3506,70 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Um pequeno apartamento, mas com todas as condições",
+        "guestName": "Guest",
+        "date": "2026-03-29T18:52:35.509Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "My stay at the Heritage loft has been lovely. Although it’s an apartment owned by an organisation, they have a very personal approach and have been very responsive. And although they were not familiar in the city, they took the time to find some recommendations in the area. The apartment was brand new and some devices weren’t even used before. When something was not working they responded quickly and tried to find a solution. Would definitely recommend!",
+        "guestName": "Guest",
+        "date": "2026-03-26T09:23:59.727Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Espaço limpo e acolhedor, muito bem localizado.\nCorrespondeu às expectativas",
         "guestName": "Guest",
         "date": "2026-02-23T10:06:11.664Z",
@@ -3569,8 +3633,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 2
+    "averageRating": 4.8,
+    "reviewCount": 4
   },
   {
     "id": "guesty-69653388753fb0001424abad",
@@ -3782,6 +3846,38 @@
     "reviews": [
       {
         "rating": 4,
+        "text": "L emplacement et la propreté de l’appartement.",
+        "guestName": "Guest",
+        "date": "2026-03-30T15:21:20.776Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 2
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
+        "rating": 4,
         "text": "The place was beautiful and as expected. The sauna was a lovely touch!\nOne minor inconvenience was that the shower did not drain very well (so the shower became\nA puddle) and there seemed to be leaks under the sink, but apart from that it was a beautiful stay",
         "guestName": "Guest",
         "date": "2026-02-20T10:03:55.136Z",
@@ -3878,7 +3974,7 @@
       }
     ],
     "averageRating": 4.3,
-    "reviewCount": 3
+    "reviewCount": 4
   },
   {
     "id": "guesty-69653390ecf7490014ed2d6c",
@@ -6791,6 +6887,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Casa muito catita, espaçosa e bem localizada. Mal chegamos estava a casa limpíssima e com um bom cheiro. Anfitrião respondia muito rápido as mensagens e era esclarecedor.\n\nApenas aponto uma coisa que é o facto de que a internet por vezes não funcionava",
+        "guestName": "Guest",
+        "date": "2026-04-02T18:39:12.757Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "tudo 5*",
         "guestName": "Guest",
         "date": "2026-01-02T10:07:07.428Z",
@@ -6823,7 +6951,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-696532eee44e1a0015bb2460",
@@ -12269,6 +12397,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Amazing place, very responsive.",
+        "guestName": "Guest",
+        "date": "2026-04-02T22:01:12.134Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "A casa era muito espaçosa, áreas externas agradáveis, mas infelizmente não usamos muito porque estava frio. Os quartos eram grandes com camas confortáveis, lençóis e toalhas boas, e AC novos. A cozinha muito bem equipada com louças, taças e aparelhos eletrodomésticos bons.\nPor ser uma casa plana, ela é ótima para quem tem crianças! Portugal Active forneceu berços e haviam cadeiras de alimentação para as crianças também. \nSelf check-in e check-out foi ótimo e fácil.\nO local da casa é excelente, p",
         "guestName": "Guest",
         "date": "2026-03-18T02:14:02.390Z",
@@ -12333,7 +12493,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   },
   {
     "id": "guesty-69653381bf04fe00137437cd",
@@ -14036,6 +14196,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Casa fantástica a 5 minutos de carro do centro de Viana, perfeita para um fim-de-semana em família. Casa moderna, funcional, extremamente confortável, cheia de luz natural pela manhã, totalmente equipada. A 7 minutos a pé de grandes supermercados, o que deu muito jeito. Garagem para 1 carro, com acesso directo à casa. No global uma escolha excelente.",
+        "guestName": "Guest",
+        "date": "2026-03-29T18:30:13.879Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "good place to stay, excellent value",
         "guestName": "Guest",
         "date": "2026-03-15T18:38:17.679Z",
@@ -14100,7 +14292,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   },
   {
     "id": "guesty-69ca869e5b0a0500158b7d5a",
