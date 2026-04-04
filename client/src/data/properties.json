@@ -1896,6 +1896,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Espaço com ótimas condições para grupos familiares.",
+        "guestName": "Guest",
+        "date": "2026-04-04T17:29:33.765Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Estava tudo perfeito, estava tudo novo e com tudo o que precisa para passar alguns dias.",
         "guestName": "Guest",
         "date": "2026-03-02T10:09:28.821Z",
@@ -1928,7 +1960,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-6965335df1c3a8001597c8e4",
@@ -9390,9 +9422,42 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 8612,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 5,
+        "text": ".",
+        "guestName": "Guest",
+        "date": "2026-04-02T16:39:52.682Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-69653354109993001383ef5f",
