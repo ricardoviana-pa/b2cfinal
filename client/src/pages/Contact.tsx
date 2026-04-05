@@ -215,7 +215,7 @@ export default function Contact() {
       {/* Hero with image */}
       <section className="relative h-[50vh] min-h-[380px] flex items-end overflow-hidden">
         <img
-          src={IMAGES.destinationPorto}
+          src={IMAGES.contactHero}
           alt={t('contact.heroAlt', 'Contact Portugal Active')}
           className="absolute inset-0 w-full h-full object-cover"
         />
