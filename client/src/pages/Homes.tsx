@@ -12,7 +12,7 @@ import { IMAGES } from '@/lib/images';
 import { SlidersHorizontal, X, Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, MessageCircle, Heart } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
-import { filterProperties, sortProperties } from '@/lib/utils';
+import { filterProperties, sortProperties, getUniqueLocalities } from '@/lib/utils';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
@@ -104,6 +104,7 @@ export default function Homes() {
   const searchCheckout = searchParams.get('checkout') || '';
   const searchGuests = searchParams.get('guests') || '';
   const searchDestinationFromUrl = searchParams.get('destination') || '';
+  const searchLocationFromUrl = searchParams.get('location') || '';
   const searchNights = useMemo(() => {
     if (!searchCheckin || !searchCheckout) return 0;
     const diff = new Date(searchCheckout).getTime() - new Date(searchCheckin).getTime();
@@ -121,9 +122,11 @@ export default function Homes() {
 
   const { data: propsData, isLoading, isError, refetch } = trpc.properties.listForSite.useQuery();
   const allProperties = (propsData ?? []) as Property[];
+  const localities = useMemo(() => getUniqueLocalities(allProperties), [allProperties]);
 
   const [occasion, setOccasion] = useState(() => searchParams.get('occasion') || 'all');
   const [destination, setDestination] = useState<FilterDestination>(() => toFilterDestination(searchDestinationFromUrl));
+  const [location, setLocation] = useState(() => searchLocationFromUrl || 'all');
   const [tier, setTier] = useState(() => searchParams.get('tier') || 'all');
   // Default to price-desc (premium positioning) when dates are active; otherwise recommended
   const [sort, setSort] = useState<SortOption>(() => (searchParams.get('sort') as SortOption) || (searchCheckin && searchCheckout ? 'price-desc' : 'recommended'));
@@ -134,6 +137,7 @@ export default function Homes() {
   const [showMoreFilters, setShowMoreFilters] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [bookingDestination, setBookingDestination] = useState(searchDestinationFromUrl);
+  const [bookingLocation, setBookingLocation] = useState(searchLocationFromUrl);
   const [bookingCheckin, setBookingCheckin] = useState(searchCheckin);
   const [bookingCheckout, setBookingCheckout] = useState(searchCheckout);
   const [bookingGuests, setBookingGuests] = useState(searchGuests ? Number(searchGuests) : 2);
@@ -154,11 +158,13 @@ export default function Homes() {
 
   useEffect(() => {
     setBookingDestination(searchDestinationFromUrl);
+    setBookingLocation(searchLocationFromUrl);
     setBookingCheckin(searchCheckin);
     setBookingCheckout(searchCheckout);
     setBookingGuests(searchGuests ? Math.max(1, Number(searchGuests) || 2) : 2);
     setDestination(toFilterDestination(searchDestinationFromUrl));
-  }, [searchDestinationFromUrl, searchCheckin, searchCheckout, searchGuests]);
+    setLocation(searchLocationFromUrl || 'all');
+  }, [searchDestinationFromUrl, searchLocationFromUrl, searchCheckin, searchCheckout, searchGuests]);
 
   useEffect(() => {
     const params = new URLSearchParams(searchString);
@@ -168,6 +174,7 @@ export default function Homes() {
     };
     set('occasion', occasion, 'all');
     set('destination', destination, 'all');
+    set('location', location, 'all');
     set('tier', tier, 'all');
     set('sort', sort, 'recommended');
     set('bedrooms', bedrooms, '');
@@ -180,10 +187,10 @@ export default function Homes() {
     if (newUrl !== window.location.pathname + window.location.search) {
       window.history.replaceState(null, '', newUrl);
     }
-  }, [occasion, destination, tier, sort, bedrooms, price, style, showFavoritesOnly, searchString]);
+  }, [occasion, destination, location, tier, sort, bedrooms, price, style, showFavoritesOnly, searchString]);
 
   const filtered = useMemo(() => {
-    const f = filterProperties(allProperties, occasion, destination, bedrooms, price, style, tier);
+    const f = filterProperties(allProperties, occasion, destination, bedrooms, price, style, tier, location);
     const withGuestCapacity =
       searchGuestsCount > 0
         ? f.filter((property) => (property.maxGuests ?? 0) >= searchGuestsCount)
@@ -192,7 +199,7 @@ export default function Homes() {
       ? withGuestCapacity.filter((property) => favorites.includes(property.slug))
       : withGuestCapacity;
     return sortProperties(withFavorites, sort);
-  }, [allProperties, occasion, destination, sort, bedrooms, price, style, tier, searchGuestsCount, showFavoritesOnly, favorites]);
+  }, [allProperties, occasion, destination, location, sort, bedrooms, price, style, tier, searchGuestsCount, showFavoritesOnly, favorites]);
 
   // When dates are set, split into available (with live pricing) and unavailable properties
   const hasDates = searchNights > 0;
@@ -226,11 +233,13 @@ export default function Homes() {
     return { availableProperties: available, unavailableProperties: unavailable };
   }, [filtered, quotes, hasDates, searchNights]);
 
-  const hasActiveFilters = occasion !== 'all' || destination !== 'all' || tier !== 'all' || bedrooms || price || style || showFavoritesOnly;
+  const hasActiveFilters = occasion !== 'all' || destination !== 'all' || location !== 'all' || tier !== 'all' || bedrooms || price || style || showFavoritesOnly;
 
   const clearFilters = () => {
     setOccasion('all');
     setDestination('all');
+    setLocation('all');
+    setBookingLocation('');
     setTier('all');
     setBedrooms(undefined);
     setPrice(undefined);
@@ -320,8 +329,9 @@ export default function Homes() {
 
   const applyBookingSearch = () => {
     const params = new URLSearchParams(searchString);
-    if (bookingDestination) params.set('destination', bookingDestination);
-    else params.delete('destination');
+    if (bookingLocation) { params.set('location', bookingLocation); params.delete('destination'); }
+    else if (bookingDestination) { params.set('destination', bookingDestination); params.delete('location'); }
+    else { params.delete('destination'); params.delete('location'); }
     if (bookingCheckin) params.set('checkin', bookingCheckin);
     else params.delete('checkin');
     if (bookingCheckout) params.set('checkout', bookingCheckout);
@@ -420,19 +430,19 @@ export default function Homes() {
             >
               <div className="flex-1 relative h-full min-w-0">
                 <select
-                  value={bookingDestination}
+                  value={bookingLocation}
                   onChange={e => {
                     const v = e.target.value;
-                    setBookingDestination(v);
-                    setDestination(toFilterDestination(v || 'all'));
+                    setBookingLocation(v);
+                    setLocation(v || 'all');
                   }}
                   className="w-full h-full pl-6 pr-8 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer appearance-none truncate"
                   style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                 >
                   <option value="">{t('home.searchDestination')}</option>
-                  <option value="minho">{t('home.searchMinhoCoast')}</option>
-                  <option value="porto">{t('home.searchPortoDouro')}</option>
-                  <option value="algarve">{t('home.searchAlgarve')}</option>
+                  {localities.map(loc => (
+                    <option key={loc.value} value={loc.value}>{loc.label}</option>
+                  ))}
                 </select>
                 <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9E9A90] pointer-events-none" />
               </div>
@@ -511,19 +521,19 @@ export default function Homes() {
             <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[#E8E4DC]/80 p-4 space-y-3">
               <div className="relative">
                 <select
-                  value={bookingDestination}
+                  value={bookingLocation}
                   onChange={e => {
                     const v = e.target.value;
-                    setBookingDestination(v);
-                    setDestination(toFilterDestination(v || 'all'));
+                    setBookingLocation(v);
+                    setLocation(v || 'all');
                   }}
                   className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white pl-3 pr-9 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer appearance-none"
                   style={{ fontFamily: 'var(--font-body)' }}
                 >
                   <option value="">{t('home.searchDestination')}</option>
-                  <option value="minho">{t('home.searchMinhoCoast')}</option>
-                  <option value="porto">{t('home.searchPortoDouro')}</option>
-                  <option value="algarve">{t('home.searchAlgarve')}</option>
+                  {localities.map(loc => (
+                    <option key={loc.value} value={loc.value}>{loc.label}</option>
+                  ))}
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9A90] pointer-events-none" />
               </div>

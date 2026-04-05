@@ -673,7 +673,7 @@ export default function PropertyDetail() {
           <p className="body-lg italic text-[#6B6860] mb-4">{property.tagline}</p>
           <div className="flex items-center gap-2 text-[#6B6860] mb-6">
             <MapPin size={14} className="text-[#9E9A90]" />
-            <span className="text-[13px]">{property.locality}, {destObj ? <Link href={`/destinations/${destObj.slug}`} className="text-[#8B7355] hover:text-[#1A1A18] transition-colors">{destName}</Link> : destName}</span>
+            <span className="text-[13px]">{property.locality}, Portugal</span>
           </div>
 
           {/* Key stats bar — single source of truth for property specs */}
@@ -869,7 +869,7 @@ export default function PropertyDetail() {
                     src={
                       property.address?.lat && property.address?.lng
                         ? `https://maps.google.com/maps?q=${property.address.lat},${property.address.lng}&z=15&output=embed`
-                        : `https://maps.google.com/maps?q=${encodeURIComponent(`${property.locality}, ${destName}, Portugal`)}&z=13&output=embed`
+                        : `https://maps.google.com/maps?q=${encodeURIComponent(`${property.locality}, Portugal`)}&z=13&output=embed`
                     }
                     allowFullScreen
                   />

@@ -36,6 +36,7 @@ const ReviewsSection = lazy(() => import('@/components/ReviewsSection'));
 import destinationsData from '@/data/destinations.json';
 import { trpc } from '@/lib/trpc';
 import type { Destination, Property } from '@/lib/types';
+import { getUniqueLocalities } from '@/lib/utils';
 
 const destinations = destinationsData as unknown as Destination[];
 
@@ -63,6 +64,8 @@ export default function Home() {
   });
   const { data: propsData, isLoading, isError } = trpc.properties.listForSite.useQuery();
   const properties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
+
+  const localities = useMemo(() => getUniqueLocalities(properties), [properties]);
 
   const [activeTab, setActiveTab] = useState('all');
   const [email, setEmail] = useState('');
@@ -252,9 +255,9 @@ export default function Home() {
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               >
                 <option value="">{t('home.searchDestination')}</option>
-                <option value="minho">{t('home.searchMinhoCoast')}</option>
-                <option value="porto">{t('home.searchPortoDouro')}</option>
-                <option value="algarve">{t('home.searchAlgarve')}</option>
+                {localities.map(loc => (
+                  <option key={loc.value} value={loc.value}>{loc.label}</option>
+                ))}
               </select>
               <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9E9A90] pointer-events-none" />
             </div>
@@ -331,7 +334,7 @@ export default function Home() {
             <Link
               href={(() => {
                 const p = new URLSearchParams();
-                if (searchDest) p.set('destination', searchDest);
+                if (searchDest) p.set('location', searchDest);
                 if (searchCheckin) p.set('checkin', searchCheckin);
                 if (searchCheckout) p.set('checkout', searchCheckout);
                 if (searchGuests > 1) p.set('guests', String(searchGuests));
