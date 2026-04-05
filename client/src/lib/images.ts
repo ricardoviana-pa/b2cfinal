@@ -9,7 +9,7 @@ export const IMAGES = {
   heroHomes: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp',
 
   // Destination images
-  destinationMinho: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/destination-minho-7ZVrmAaNov33qs7DkpNaKc.webp',
+  destinationMinho: '/destinations/minho-coast.webp',
   destinationPorto: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/destination-porto-cjrXcH98hgUxZe4zNQBukn.webp',
   destinationAlgarve: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/destination-algarve-3kQynd6tpdsGxReK7b8dAs.webp',
 
@@ -21,6 +21,9 @@ export const IMAGES = {
 
   // About page
   aboutStory: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp',
+
+  // Contact page
+  contactHero: '/destinations/contact-hero.webp',
 
   // Logo
   logoWhite: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp',
