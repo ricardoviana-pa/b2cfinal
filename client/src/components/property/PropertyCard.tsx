@@ -201,7 +201,7 @@ export default function PropertyCard({
       <div className="pt-3.5">
         {/* Location */}
         <p className="text-[0.6875rem] font-medium tracking-[0.02em] text-[#8B7355] mb-1">
-          {property.locality}, {getDestName(property.destination)}
+          {property.locality}, Portugal
         </p>
 
         {/* Name */}

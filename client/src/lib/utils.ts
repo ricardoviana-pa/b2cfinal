@@ -6,6 +6,30 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/** Turn a locality name into a URL-friendly slug, e.g. "Viana do Castelo" → "viana-do-castelo" */
+export function slugifyLocality(name: string): string {
+  return name
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
+/** Extract unique sorted localities from active properties */
+export function getUniqueLocalities(properties: Property[]): { label: string; value: string }[] {
+  const map = new Map<string, string>();
+  for (const p of properties) {
+    if (p.isActive && p.locality) {
+      const slug = slugifyLocality(p.locality);
+      if (!map.has(slug)) map.set(slug, p.locality);
+    }
+  }
+  return Array.from(map.entries())
+    .sort((a, b) => a[1].localeCompare(b[1], 'pt'))
+    .map(([value, label]) => ({ label, value }));
+}
+
 export function formatPrice(price: number): string {
   return `€${price.toLocaleString()}`;
 }
@@ -22,10 +46,14 @@ export function filterProperties(
   price?: string,
   style?: string,
   tier?: string,
+  location?: string,
 ): Property[] {
   let filtered = properties.filter(p => p.isActive);
 
-  if (destination !== 'all') {
+  if (location && location !== 'all') {
+    const slug = location.toLowerCase();
+    filtered = filtered.filter(p => slugifyLocality(p.locality) === slug);
+  } else if (destination !== 'all') {
     filtered = filtered.filter(p => p.destination === destination);
   }
 
