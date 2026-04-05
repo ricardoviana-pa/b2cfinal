@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" fill="#1A1A18"/>
-  <text x="50%" y="56%" dominant-baseline="middle" text-anchor="middle" font-family="serif" font-size="20" font-weight="300" fill="#C4A87C">P</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <circle cx="256" cy="256" r="256" fill="#000"/>
+  <text x="256" y="228" text-anchor="middle" dominant-baseline="central" fill="#fff" font-family="Poppins,system-ui,-apple-system,sans-serif" font-weight="700" font-size="94" letter-spacing="2">Portugal</text>
+  <text x="256" y="324" text-anchor="middle" dominant-baseline="central" fill="#fff" font-family="Poppins,system-ui,-apple-system,sans-serif" font-weight="700" font-size="94" letter-spacing="2">Active</text>
 </svg>
