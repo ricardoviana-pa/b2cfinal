@@ -12,7 +12,7 @@ import { IMAGES } from '@/lib/images';
 import { SlidersHorizontal, X, Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, MessageCircle, Heart } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
-import { filterProperties, sortProperties, getUniqueLocalities } from '@/lib/utils';
+import { filterProperties, sortProperties, getGroupedLocalities } from '@/lib/utils';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
@@ -122,7 +122,7 @@ export default function Homes() {
 
   const { data: propsData, isLoading, isError, refetch } = trpc.properties.listForSite.useQuery();
   const allProperties = (propsData ?? []) as Property[];
-  const localities = useMemo(() => getUniqueLocalities(allProperties), [allProperties]);
+  const localityGroups = useMemo(() => getGroupedLocalities(allProperties), [allProperties]);
 
   const [occasion, setOccasion] = useState(() => searchParams.get('occasion') || 'all');
   const [destination, setDestination] = useState<FilterDestination>(() => toFilterDestination(searchDestinationFromUrl));
@@ -440,8 +440,12 @@ export default function Homes() {
                   style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                 >
                   <option value="">{t('home.searchDestination')}</option>
-                  {localities.map(loc => (
-                    <option key={loc.value} value={loc.value}>{loc.label}</option>
+                  {localityGroups.map(group => (
+                    <optgroup key={group.destination} label={group.destinationLabel}>
+                      {group.localities.map(loc => (
+                        <option key={loc.value} value={loc.value}>{loc.label}</option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
                 <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9E9A90] pointer-events-none" />
@@ -531,8 +535,12 @@ export default function Homes() {
                   style={{ fontFamily: 'var(--font-body)' }}
                 >
                   <option value="">{t('home.searchDestination')}</option>
-                  {localities.map(loc => (
-                    <option key={loc.value} value={loc.value}>{loc.label}</option>
+                  {localityGroups.map(group => (
+                    <optgroup key={group.destination} label={group.destinationLabel}>
+                      {group.localities.map(loc => (
+                        <option key={loc.value} value={loc.value}>{loc.label}</option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9A90] pointer-events-none" />

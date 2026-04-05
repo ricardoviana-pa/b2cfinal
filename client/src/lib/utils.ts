@@ -16,7 +16,48 @@ export function slugifyLocality(name: string): string {
     .replace(/(^-|-$)/g, '');
 }
 
-/** Extract unique sorted localities from active properties */
+/** Destination slug → display name for grouping */
+const DEST_DISPLAY: Record<string, string> = {
+  minho: 'Minho Coast',
+  porto: 'Porto & Douro',
+  lisbon: 'Lisbon',
+  alentejo: 'Alentejo',
+  algarve: 'Algarve',
+  brazil: 'Brazil',
+};
+
+/** Destination display order */
+const DEST_ORDER = ['minho', 'porto', 'lisbon', 'alentejo', 'algarve', 'brazil'];
+
+export interface LocalityGroup {
+  destination: string;
+  destinationLabel: string;
+  localities: { label: string; value: string }[];
+}
+
+/** Extract unique localities grouped by destination region, sorted alphabetically within each group */
+export function getGroupedLocalities(properties: Property[]): LocalityGroup[] {
+  const groups = new Map<string, Map<string, string>>();
+  for (const p of properties) {
+    if (p.isActive && p.locality) {
+      const slug = slugifyLocality(p.locality);
+      if (!groups.has(p.destination)) groups.set(p.destination, new Map());
+      const destMap = groups.get(p.destination)!;
+      if (!destMap.has(slug)) destMap.set(slug, p.locality);
+    }
+  }
+  return DEST_ORDER
+    .filter(d => groups.has(d))
+    .map(d => ({
+      destination: d,
+      destinationLabel: DEST_DISPLAY[d] || d,
+      localities: Array.from(groups.get(d)!.entries())
+        .sort((a, b) => a[1].localeCompare(b[1], 'pt'))
+        .map(([value, label]) => ({ label, value })),
+    }));
+}
+
+/** Flat list (kept for backwards compat) */
 export function getUniqueLocalities(properties: Property[]): { label: string; value: string }[] {
   const map = new Map<string, string>();
   for (const p of properties) {
