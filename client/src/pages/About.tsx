@@ -4,7 +4,7 @@
    Regions, Values, Team, Owners CTA, Final CTA
    ========================================================================== */
 
-import { useRef, useMemo } from 'react';
+import { useRef } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight, Bed, Sparkles, Phone, Shield, Gift, UtensilsCrossed } from 'lucide-react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
@@ -13,11 +13,6 @@ import { IMAGES } from '@/lib/images';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
-import destinationsData from '@/data/destinations.json';
-import { trpc } from '@/lib/trpc';
-import type { Property, Destination } from '@/lib/types';
-
-const destinations = destinationsData as unknown as Destination[];
 
 /* ── Team data ─────────────────────────────────────────────────────────── */
 const TEAM = [
@@ -161,11 +156,14 @@ const VALUES = [
   },
 ];
 
-/* ── Press logos (text-based, will be replaced with SVGs when available) ── */
-const PRESS = [
-  { name: 'FORBES', url: 'https://www.forbes.com/sites/annabel/2023/02/21/portugals-adventure-travel-paradise-away-from-the-crowds-minho-with-portugal-active/' },
-  { name: 'THE TIMES', url: '' },
-  { name: 'THE GUARDIAN', url: '' },
+/* ── Press logos (same as homepage) ──────────────────────────────────────── */
+const PRESS_LOGOS = [
+  { src: IMAGES.pressForbes, alt: 'Featured in Forbes', h: 'h-5 md:h-6' },
+  { src: IMAGES.pressTheTimes, alt: 'Featured in The Times', h: 'h-7 md:h-8' },
+  { src: IMAGES.pressTheGuardian, alt: 'Featured in The Guardian', h: 'h-4 md:h-5' },
+  { src: IMAGES.pressTimeOut, alt: 'Featured in Time Out', h: 'h-5 md:h-6' },
+  { src: IMAGES.pressMensHealth, alt: "Featured in Men's Health", h: 'h-4 md:h-5' },
+  { src: IMAGES.pressArquitectura, alt: 'Featured in Arquitectura y Diseño', h: 'h-4 md:h-5' },
 ];
 
 export default function About() {
@@ -177,33 +175,9 @@ export default function About() {
   });
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  /* Live property counts per destination */
-  const { data: propsData } = trpc.properties.listForSite.useQuery();
-  const allProperties = ((propsData ?? []) as Property[]).filter(p => p.isActive);
-  const countByDest = useMemo(() => {
-    const map: Record<string, number> = {};
-    for (const p of allProperties) {
-      map[p.destination] = (map[p.destination] || 0) + 1;
-    }
-    return map;
-  }, [allProperties]);
-  const totalHomes = allProperties.length;
-
   const scroll = (direction: 'left' | 'right') => {
     if (!scrollRef.current) return;
     scrollRef.current.scrollBy({ left: direction === 'left' ? -320 : 320, behavior: 'smooth' });
-  };
-
-  /* Active + coming soon regions */
-  const activeRegions = destinations.filter(d => ['minho', 'porto', 'algarve'].includes(d.slug));
-  const comingSoonRegions = destinations.filter(d => ['lisbon', 'alentejo'].includes(d.slug));
-
-  const regionDescriptions: Record<string, string> = {
-    minho: 'Wild Atlantic beaches, Vinho Verde vineyards, and Portugal\'s only national park. Our home base since 2017.',
-    porto: 'Port wine country, UNESCO heritage, and the city that rivals Lisbon without trying.',
-    algarve: 'Golden cliffs, warm water, and 300 days of sun. Our newest and fastest growing region.',
-    lisbon: 'Portugal\'s capital. Coming 2026.',
-    alentejo: 'Rolling plains and cork oaks. Coming 2026.',
   };
 
   return (
@@ -237,7 +211,7 @@ export default function About() {
             className="text-white/85 max-w-[480px]"
             style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: 'clamp(15px, 2vw, 17px)', lineHeight: 1.6 }}
           >
-            One team. One standard. {totalHomes > 0 ? `${totalHomes}+` : 'Fifty'} homes across Portugal, each managed end to end by our people.
+            One team. One standard. Fifty homes across Portugal, each managed end to end by our people.
           </p>
         </div>
       </section>
@@ -267,7 +241,7 @@ export default function About() {
                 'Guests noticed. Not because the property was the most luxurious they had ever seen. Because of how it made them feel. Taken care of. Anticipated. Like someone had thought about their stay before they arrived. We started hearing the same thing: "Why can\'t every rental be like this?"',
                 'That question became the company. We looked at how holiday homes were rented across Portugal and saw the same pattern everywhere. Beautiful properties, handed over with a set of keys and a phone number for emergencies. No preparation standard. No team on the ground. No one who stood behind the experience after check-in. The entire industry had accepted that renting a home meant giving up the service you expect from a hotel. We refused to accept that.',
                 'So we redesigned the experience from the ground up. We took the operational discipline we had built in adventure tourism (where preparation is not a preference, it is a safety requirement) and applied it to every home we operate. A full-time housekeeping team. Maintenance crews. A concierge who knows the region because they live in it. A preparation checklist that runs before every single arrival. We did not just add service to a rental. We built an entirely new model: the private hotel.',
-                `From one property to five. From five to twenty. From twenty to over ${totalHomes > 0 ? totalHomes : 'fifty'}. Each managed end to end by our own people. Forbes featured us. The Times UK and The Guardian wrote about what we were building. The adventure experiences that started it all are still at the heart of what we offer. But today, Portugal Active is something larger: a hospitality company that believes renting a home should feel like checking in to the best hotel you have ever stayed at, except the entire place is yours.`,
+                'From one property to five. From five to twenty. From twenty to over fifty. Each managed end to end by our own people. Forbes featured us. The Times UK and The Guardian wrote about what we were building. The adventure experiences that started it all are still at the heart of what we offer. But today, Portugal Active is something larger: a hospitality company that believes renting a home should feel like checking in to the best hotel you have ever stayed at, except the entire place is yours.',
                 'We are still based in Viana do Castelo. We are still independent. We are still growing at over 100% per year. And we are still driven by the same conviction that started everything: that the way people experience a holiday home is broken, and that we are the ones fixing it.',
               ].map((para, i) => (
                 <p
@@ -313,35 +287,19 @@ export default function About() {
             </p>
           </div>
 
-          {/* Press logo strip */}
+          {/* Press logo strip — same logos as homepage */}
           <div className="border-t border-[#E8E4DC] pt-10 mt-4">
-            <div className="flex items-center justify-center gap-12 lg:gap-14 flex-wrap">
-              {PRESS.map(p => (
-                p.url ? (
-                  <a
-                    key={p.name}
-                    href={p.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#9E9A90] opacity-60 hover:opacity-100 transition-opacity"
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 500, fontSize: '14px', letterSpacing: '3px' }}
-                  >
-                    {p.name}
-                  </a>
-                ) : (
-                  <span
-                    key={p.name}
-                    className="text-[#9E9A90] opacity-60"
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 500, fontSize: '14px', letterSpacing: '3px' }}
-                  >
-                    {p.name}
-                  </span>
-                )
-              ))}
-            </div>
-            <p className="text-center text-[12px] text-[#9E9A90] mt-4" style={{ fontFamily: 'var(--font-body)' }}>
+            <p
+              className="text-center text-[11px] font-medium text-[#9E9A90] mb-8"
+              style={{ letterSpacing: '0.14em', fontFamily: 'var(--font-body)' }}
+            >
               Featured press
             </p>
+            <div className="flex items-center justify-center gap-10 lg:gap-14 flex-wrap">
+              {PRESS_LOGOS.map((logo, i) => (
+                <img key={i} src={logo.src} alt={logo.alt} className={`${logo.h} w-auto object-contain opacity-40`} loading="lazy" />
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -452,29 +410,10 @@ export default function About() {
           ══════════════════════════════════════════════════════════════════ */}
       <section className="py-16 lg:py-20 bg-[#1A1A18]">
         <div className="container max-w-[1200px] mx-auto text-center">
-          {/* Press logos */}
-          <div className="flex items-center justify-center gap-14 flex-wrap">
-            {PRESS.map(p => (
-              p.url ? (
-                <a
-                  key={p.name}
-                  href={p.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white opacity-70 hover:opacity-100 transition-opacity"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 500, fontSize: '14px', letterSpacing: '3px' }}
-                >
-                  {p.name}
-                </a>
-              ) : (
-                <span
-                  key={p.name}
-                  className="text-white opacity-70"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 500, fontSize: '14px', letterSpacing: '3px' }}
-                >
-                  {p.name}
-                </span>
-              )
+          {/* Press logos — inverted for dark background */}
+          <div className="flex items-center justify-center gap-10 lg:gap-14 flex-wrap">
+            {PRESS_LOGOS.map((logo, i) => (
+              <img key={i} src={logo.src} alt={logo.alt} className={`${logo.h} w-auto object-contain brightness-0 invert opacity-70`} loading="lazy" />
             ))}
           </div>
 
@@ -498,106 +437,7 @@ export default function About() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════
-          SECTION 6: WHERE WE OPERATE
-          Region cards with live property counts
-          ══════════════════════════════════════════════════════════════════ */}
-      <section className="py-20 lg:py-24">
-        <div className="container max-w-[1200px] mx-auto">
-          <p className="text-[12px] font-medium uppercase tracking-[2.5px] text-[#8B7355] mb-4" style={{ fontFamily: 'var(--font-body)' }}>
-            OUR REGIONS
-          </p>
-          <h2
-            className="text-[#1A1A18] mb-12"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 300, fontSize: 'clamp(28px, 4vw, 36px)', lineHeight: 1.2 }}
-          >
-            Three regions live. More on the way.
-          </h2>
-
-          {/* Active regions */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            {activeRegions.map(region => (
-              <Link key={region.slug} href={`/destinations/${region.slug}`} className="group block">
-                <div className="relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
-                  <img
-                    src={region.coverImage}
-                    alt={region.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-4 left-4">
-                    <h3
-                      className="text-white mb-1"
-                      style={{ fontFamily: 'var(--font-display)', fontWeight: 400, fontSize: '22px' }}
-                    >
-                      {region.name}
-                    </h3>
-                    <p className="text-white/80 text-[13px]" style={{ fontFamily: 'var(--font-body)' }}>
-                      {countByDest[region.slug] || 0} homes
-                    </p>
-                  </div>
-                </div>
-                <p
-                  className="text-[#6B6860] py-4"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '14px' }}
-                >
-                  {regionDescriptions[region.slug]}
-                </p>
-              </Link>
-            ))}
-          </div>
-
-          {/* Coming soon regions */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-[calc(66.666%-12px)]">
-            {comingSoonRegions.map(region => (
-              <div key={region.slug} className="relative">
-                <div className="relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
-                  <img
-                    src={region.coverImage}
-                    alt={region.name}
-                    className="w-full h-full object-cover grayscale-[40%]"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <span
-                    className="absolute top-4 left-4 bg-[#8B7355] text-white px-2.5 py-1"
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 500, fontSize: '11px', letterSpacing: '1px' }}
-                  >
-                    COMING SOON
-                  </span>
-                  <div className="absolute bottom-4 left-4">
-                    <h3
-                      className="text-white"
-                      style={{ fontFamily: 'var(--font-display)', fontWeight: 400, fontSize: '22px' }}
-                    >
-                      {region.name}
-                    </h3>
-                  </div>
-                </div>
-                <p
-                  className="text-[#6B6860] py-4"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '14px' }}
-                >
-                  {regionDescriptions[region.slug]}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Link
-              href="/destinations"
-              className="inline-flex items-center gap-2 border border-[#1A1A18] text-[#1A1A18] text-[12px] font-medium px-8 py-4 hover:bg-[#1A1A18] hover:text-white transition-colors"
-              style={{ letterSpacing: '1.5px' }}
-            >
-              EXPLORE ALL DESTINATIONS <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════
-          SECTION 7: VALUES
+          SECTION 6: VALUES
           Surface background, 2x2 grid
           ══════════════════════════════════════════════════════════════════ */}
       <section className="py-20 lg:py-24 bg-[#F5F1EB]">
