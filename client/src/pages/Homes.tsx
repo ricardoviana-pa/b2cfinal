@@ -128,8 +128,8 @@ export default function Homes() {
   const [destination, setDestination] = useState<FilterDestination>(() => toFilterDestination(searchDestinationFromUrl));
   const [location, setLocation] = useState(() => searchLocationFromUrl || 'all');
   const [tier, setTier] = useState(() => searchParams.get('tier') || 'all');
-  // Default to price-desc (premium positioning) when dates are active; otherwise recommended
-  const [sort, setSort] = useState<SortOption>(() => (searchParams.get('sort') as SortOption) || (searchCheckin && searchCheckout ? 'price-desc' : 'recommended'));
+  // Default to price-desc (premium positioning) — always show most expensive first
+  const [sort, setSort] = useState<SortOption>(() => (searchParams.get('sort') as SortOption) || 'price-desc');
   const [bedrooms, setBedrooms] = useState<string | undefined>(() => searchParams.get('bedrooms') || undefined);
   const [price, setPrice] = useState<string | undefined>(() => searchParams.get('price') || undefined);
   const [style, setStyle] = useState<string | undefined>(() => searchParams.get('style') || undefined);
@@ -176,7 +176,7 @@ export default function Homes() {
     set('destination', destination, 'all');
     set('location', location, 'all');
     set('tier', tier, 'all');
-    set('sort', sort, 'recommended');
+    set('sort', sort, 'price-desc');
     set('bedrooms', bedrooms, '');
     set('price', price, '');
     set('style', style, '');
