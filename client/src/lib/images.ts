@@ -13,11 +13,11 @@ export const IMAGES = {
   destinationPorto: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/destination-porto-cjrXcH98hgUxZe4zNQBukn.webp',
   destinationAlgarve: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/destination-algarve-3kQynd6tpdsGxReK7b8dAs.webp',
 
-  // Experience images
-  expGastronomy: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80',
-  expWellness: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&q=80',
-  expAdventure: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
-  expMobility: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=80',
+  // Experience images — real Portugal Active photography
+  expGastronomy: '/experiences/exp-gastronomy.webp',
+  expWellness: '/experiences/exp-wellness.webp',
+  expAdventure: '/experiences/exp-adventure.webp',
+  expMobility: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=80', /* TODO: Replace with real PA mobility/transfer photo */
 
   // About page
   aboutStory: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp',

@@ -614,8 +614,8 @@ export default function Home() {
           {/* Left: editorial image (60%) */}
           <div className="lg:col-span-3 relative" style={{ minHeight: '480px' }}>
             <img
-              src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1200&q=80"
-              alt="Private chef preparing dinner at a Portugal Active home"
+              src="/experiences/private-chef-concept.webp"
+              alt="Private chef serving dinner at a Portugal Active home"
               className="w-full h-full object-cover"
               style={{ position: 'absolute', inset: 0 }}
             />
