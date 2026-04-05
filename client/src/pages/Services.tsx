@@ -194,8 +194,8 @@ export default function Experiences() {
       {/* Hero */}
       <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1400&q=80"
-          alt="Portugal Active experiences"
+          src="/experiences/pa-property-firepit.webp"
+          alt="Portugal Active property terrace with fire pit at sunset"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-black/10" />
