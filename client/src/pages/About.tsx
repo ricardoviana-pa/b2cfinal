@@ -23,7 +23,7 @@ const TEAM = [
     id: 'rv',
     name: 'Ricardo Viana',
     role: 'CEO & Founder',
-    photo: '',
+    photo: '/team/ricardo-viana.webp',
   },
   {
     id: 'db',
