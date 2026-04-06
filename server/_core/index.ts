@@ -82,8 +82,8 @@ async function startServer() {
   app.get('/contact-us', (_req, res) => res.redirect(301, '/contact'));
   app.get('/legal-terms', (_req, res) => res.redirect(301, '/legal/terms'));
   app.get('/why-portugal-active', (_req, res) => res.redirect(301, '/about'));
-  app.get('/locations/minho', (_req, res) => res.redirect(301, '/destinations/minho-coast'));
-  app.get('/locations/porto', (_req, res) => res.redirect(301, '/destinations/porto-douro'));
+  app.get('/locations/minho', (_req, res) => res.redirect(301, '/destinations/minho'));
+  app.get('/locations/porto', (_req, res) => res.redirect(301, '/destinations/porto'));
   app.get('/locations/algarve', (_req, res) => res.redirect(301, '/destinations/algarve'));
   app.get('/locations/:slug', (_req, res) => res.redirect(301, '/destinations'));
 
