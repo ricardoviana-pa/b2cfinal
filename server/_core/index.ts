@@ -86,6 +86,8 @@ async function startServer() {
   app.get('/locations/porto', (_req, res) => res.redirect(301, '/destinations/porto'));
   app.get('/locations/algarve', (_req, res) => res.redirect(301, '/destinations/algarve'));
   app.get('/locations/:slug', (_req, res) => res.redirect(301, '/destinations'));
+  app.get('/journal', (_req, res) => res.redirect(301, '/blog'));
+  app.get('/account/login', (_req, res) => res.redirect(301, '/login'));
 
   // Dynamic sitemap.xml
   app.get("/sitemap.xml", async (_req, res) => {
@@ -94,7 +96,8 @@ async function startServer() {
       const { listBlogPosts } = await import("../db");
       const properties = await getPropertiesForSite();
       const blogPosts = await listBlogPosts({ status: "published" });
-      const base = process.env.SITE_URL || "https://www.portugalactive.com";
+      // Always use production domain for sitemap — this is for search engine indexing only
+      const base = "https://www.portugalactive.com";
       const now = new Date().toISOString().split("T")[0];
 
       const staticPages = [
