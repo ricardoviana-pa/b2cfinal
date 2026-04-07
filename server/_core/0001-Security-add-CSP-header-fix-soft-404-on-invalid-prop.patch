@@ -1,0 +1,95 @@
+From 6977dcd135f1020dbb170ea18c3ab07733d4e679 Mon Sep 17 00:00:00 2001
+From: Ricardo Viana <ricardo.viana@portugalactive.com>
+Date: Mon, 6 Apr 2026 14:50:27 +0100
+Subject: [PATCH] Security: add CSP header + fix soft 404 on invalid property
+ slugs
+
+- Enable Content-Security-Policy via Helmet with directives for Stripe,
+  Google Fonts, CloudFront images, and Guesty CDN
+- Add server-side property slug validation middleware before SPA catch-all
+  so Googlebot sees proper 404 (not 200) on non-existent /homes/:slug URLs
+- Both dev (Vite) and prod (static) catch-alls now respect upstream 404 status
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+---
+ server/_core/index.ts | 30 +++++++++++++++++++++++++++++-
+ server/_core/vite.ts  |  7 +++++--
+ 2 files changed, 34 insertions(+), 3 deletions(-)
+
+diff --git a/server/_core/index.ts b/server/_core/index.ts
+index b9b3f0b..4cc18d7 100644
+--- a/server/_core/index.ts
++++ b/server/_core/index.ts
+@@ -42,7 +42,22 @@ async function startServer() {
+   app.set("trust proxy", true);
+ 
+   app.use(helmet({
+-    contentSecurityPolicy: false,
++    contentSecurityPolicy: {
++      directives: {
++        defaultSrc: ["'self'"],
++        scriptSrc: ["'self'", "'unsafe-inline'", "https://js.stripe.com", "https://m.stripe.network"],
++        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
++        fontSrc: ["'self'", "https://fonts.gstatic.com"],
++        imgSrc: ["'self'", "data:", "blob:", "https://*.cloudfront.net", "https://images.unsplash.com", "https://*.guesty.com", "https://cdn.worldota.net"],
++        connectSrc: ["'self'", "https://api.stripe.com", "https://*.cloudfront.net", "https://*.guesty.com"],
++        frameSrc: ["'self'", "https://js.stripe.com", "https://hooks.stripe.com"],
++        objectSrc: ["'none'"],
++        baseUri: ["'self'"],
++        formAction: ["'self'"],
++        frameAncestors: ["'none'"],
++        upgradeInsecureRequests: [],
++      },
++    },
+     crossOriginEmbedderPolicy: false,
+   }));
+ 
+@@ -213,6 +228,19 @@ ${blogUrls.join("\n")}
+     }
+   });
+ 
++  // Property slug validation — return 404 for non-existent properties (SEO protection)
++  // Runs before the SPA catch-all so Googlebot sees proper 404, not a soft 200
++  app.get("/homes/:slug", async (_req, res, next) => {
++    try {
++      const { getPropertiesForSite } = await import("../services/properties-store");
++      const properties = await getPropertiesForSite();
++      if (!properties.some((p: any) => p.slug === _req.params.slug)) {
++        res.status(404);
++      }
++    } catch { /* fail open — serve normally if property check fails */ }
++    next();
++  });
++
+   // development mode uses Vite, production mode uses static files
+   if (process.env.NODE_ENV === "development") {
+     await setupVite(app, server);
+diff --git a/server/_core/vite.ts b/server/_core/vite.ts
+index 61fd8f5..fbc2659 100644
+--- a/server/_core/vite.ts
++++ b/server/_core/vite.ts
+@@ -39,7 +39,9 @@ export async function setupVite(app: Express, server: Server) {
+         `src="/src/main.tsx?v=${nanoid()}"`
+       );
+       const page = await vite.transformIndexHtml(url, template);
+-      res.status(200).set({ "Content-Type": "text/html" }).end(page);
++      // Respect 404 status set by upstream middleware (e.g. invalid property slug)
++      const status = res.statusCode === 404 ? 404 : 200;
++      res.status(status).set({ "Content-Type": "text/html" }).end(page);
+     } catch (e) {
+       vite.ssrFixStacktrace(e as Error);
+       next(e);
+@@ -76,8 +78,9 @@ export function serveStatic(app: Express) {
+ 
+   app.use("*", (req, res) => {
+     const p = req.originalUrl.split("?")[0];
++    // Respect 404 status set by upstream middleware (e.g. invalid property slug)
+     const isKnown = KNOWN_ROUTES.has(p) || KNOWN_PREFIXES.some(pre => p.startsWith(pre));
+-    const status = isKnown ? 200 : 404;
++    const status = res.statusCode === 404 ? 404 : (isKnown ? 200 : 404);
+     res.status(status).sendFile(path.resolve(distPath, "index.html"));
+   });
+ }
+-- 
+2.34.1
+
