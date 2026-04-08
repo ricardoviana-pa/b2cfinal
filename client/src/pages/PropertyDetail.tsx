@@ -409,7 +409,26 @@ export default function PropertyDetail() {
     script.id = "property-jsonld";
     document.querySelector("#property-jsonld")?.remove();
     document.head.appendChild(script);
-    return () => { document.querySelector("#property-jsonld")?.remove(); };
+    // BreadcrumbList
+    const breadcrumbLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
+        { "@type": "ListItem", "position": 2, "name": "Homes", "item": "https://www.portugalactive.com/homes" },
+        { "@type": "ListItem", "position": 3, "name": property.name },
+      ],
+    };
+    const breadcrumbScript = document.createElement("script");
+    breadcrumbScript.type = "application/ld+json";
+    breadcrumbScript.text = JSON.stringify(breadcrumbLd);
+    breadcrumbScript.id = "property-breadcrumb-jsonld";
+    document.querySelector("#property-breadcrumb-jsonld")?.remove();
+    document.head.appendChild(breadcrumbScript);
+    return () => {
+      document.querySelector("#property-jsonld")?.remove();
+      document.querySelector("#property-breadcrumb-jsonld")?.remove();
+    };
   }, [property]);
 
   const whatsIncluded = useMemo(
