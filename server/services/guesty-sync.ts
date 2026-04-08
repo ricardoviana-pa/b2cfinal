@@ -1,5 +1,5 @@
 /**
- * GUESTY SYNC — Pulls listings (photos, texts, pricing) from Guesty.
+ * GUESTY SYNC â Pulls listings (photos, texts, pricing) from Guesty.
  * Writes to data/properties-synced.json (runtime) AND commits to GitHub
  * so data persists across Render deploys (ephemeral filesystem).
  */
@@ -21,7 +21,7 @@ async function fetchAllListings(): Promise<any[]> {
   let skip = 0;
   const limit = 50;
   const fields =
-    "title publicDescription publicDescriptions description pictures address accommodates bedrooms bathrooms prices terms amenities amenitiesNotIncluded customFields listingRooms propertyType defaultCheckInTime defaultCheckOutTime areaSquareFeet";
+    "title publicDescriptions description pictures address accommodates bedrooms bathrooms prices terms amenities amenitiesNotIncluded customFields";
 
   while (true) {
     const data = await guestyClient.getListings({
@@ -37,7 +37,6 @@ async function fetchAllListings(): Promise<any[]> {
     if (items.length < limit) break;
     skip += limit;
   }
-  console.log(`[Guesty Sync] Fetched ${results.length} listings with address data`);
   return results;
 }
 
@@ -63,18 +62,60 @@ function buildDescription(desc: any, legacyDescription?: string): string {
   return combined || legacyDescription || "";
 }
 
-/** Build tagline from description — ensure it's always populated */
-function buildTagline(desc: any, legacyDescription?: string): string {
-  const summary = desc?.summary || desc?.space || desc?.neighborhood || "";
-  if (summary.trim().length > 0) {
-    return summary.slice(0, 150) + (summary.length > 150 ? "…" : "");
+/* ------------------------------------------------------------------ */
+/*  WEBSITE-ONLY NAME & DESCRIPTION CLEANUP                           */
+/*  Cleans up Guesty/Airbnb titles for a premium B2C experience       */
+/*  without modifying the original Guesty listings.                   */
+/* ------------------------------------------------------------------ */
+
+/** Remove branding suffixes/prefixes and polish property names */
+function cleanPropertyName(raw: string): string {
+  let name = raw.trim();
+
+  // Remove branding patterns (case-insensitive)
+  name = name
+    .replace(/\s*[-ââ|/\\]\s*by\s+portugal\s*active\s*/gi, "")
+    .replace(/\s+by\s+portugal\s*active\s*/gi, "")
+    .replace(/\s*By\s+PortugalActive\s*/gi, "")
+    .replace(/^Portugal\s*Active\s+/i, "")
+    .replace(/\s*[-ââ|/\\]\s*portugal\s*active\s*/gi, "");
+
+  // Clean up leftover formatting artifacts
+  name = name
+    .replace(/\s*[-ââ|]\s*$/, "")        // trailing dashes/pipes
+    .replace(/^\s*[-ââ|]\s*/, "")        // leading dashes/pipes
+    .replace(/\s{2,}/g, " ")             // double spaces
+    .trim();
+
+  // Polish common abbreviations for a premium feel
+  name = name
+    .replace(/\bw\//gi, "with ")        // "w/" â "with "
+    .replace(/\s*-\s+/g, " â ")         // " -X" loose dashes â em dash
+    .replace(/\b(\d+)\s*min\b/gi, "$1 Minutes")
+    .replace(/\bApartament\b/gi, "Apartment")
+    .replace(/\bBBQ\b/g, "Barbecue")
+    .replace(/\bSEA\s+VIEW\b/g, "Sea View")
+    .replace(/\s*[/]\s*/g, " â ")       // "/" separators â em dash
+    .replace(/\s*-\s*-\s*/g, " â ")     // double dashes
+    .replace(/\s*\|\s*/g, " Â· ")        // pipes â mid dot
+    .replace(/\s{2,}/g, " ")            // collapse double spaces
+    .trim();
+
+  // Ensure first letter is capitalized
+  if (name.length > 0) {
+    name = name.charAt(0).toUpperCase() + name.slice(1);
   }
-  // Fallback: use first 150 chars of full description
-  const fullDesc = buildDescription(desc, legacyDescription);
-  if (fullDesc.trim().length > 0) {
-    return fullDesc.slice(0, 150) + (fullDesc.length > 150 ? "…" : "");
-  }
-  return "";
+
+  return name;
+}
+
+/** IDs of listings to exclude from the website (test listings, etc.) */
+const EXCLUDED_LISTING_TITLES = new Set([
+  "guesty test",
+]);
+
+function shouldExcludeListing(title: string): boolean {
+  return EXCLUDED_LISTING_TITLES.has(title.toLowerCase().trim());
 }
 
 function slugify(title: string, id: string): string {
@@ -84,72 +125,6 @@ function slugify(title: string, id: string): string {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "") || "property";
   return `${base}-${id.slice(-6)}`;
-}
-
-/** Fetch all reviews from Guesty, paginated */
-async function fetchAllReviews(): Promise<any[]> {
-  const results: any[] = [];
-  let skip = 0;
-  const limit = 100;
-
-  while (true) {
-    try {
-      const resp = await guestyClient.getReviews({ limit, skip });
-      // Guesty reviews API returns { data: [...], limit, skip }
-      const items = resp.data || resp.results || [];
-      if (!Array.isArray(items) || items.length === 0) break;
-      results.push(...items);
-      if (items.length < limit) break;
-      skip += limit;
-    } catch (err: any) {
-      console.warn(`[Guesty Sync] Reviews fetch error at skip=${skip}: ${err.message}`);
-      break;
-    }
-  }
-  console.log(`[Guesty Sync] Fetched ${results.length} reviews`);
-  return results;
-}
-
-/** Group reviews by listingId, filter rating >= 4, sort newest first */
-function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
-  const byListing = new Map<string, any[]>();
-
-  for (const review of reviews) {
-    const listingId = review.listingId;
-    if (!listingId) continue;
-
-    const raw = review.rawReview || review;
-    const rating = Number(raw.overall_rating ?? raw.overallRating ?? raw.rating ?? 0);
-    const text = (raw.public_review || raw.publicReview || raw.comments || "").trim();
-
-    // Only include reviews with rating >= 4 and non-empty text
-    if (rating < 4 || !text) continue;
-
-    // Build category ratings from flat fields (Guesty v1 format)
-    const categories: Array<{ name: string; score: number }> = [];
-    for (const cat of ["cleanliness", "accuracy", "checkin", "communication", "location", "value"]) {
-      const score = Number(raw[`category_ratings_${cat}`] ?? 0);
-      if (score > 0) categories.push({ name: cat, score });
-    }
-
-    const mapped = {
-      rating,
-      text: text.slice(0, 500),
-      guestName: review.guestName || raw.reviewer_name || "Guest",
-      date: review.createdAt || review.date || "",
-      categories,
-    };
-
-    if (!byListing.has(listingId)) byListing.set(listingId, []);
-    byListing.get(listingId)!.push(mapped);
-  }
-
-  // Sort each listing's reviews newest first
-  for (const [, arr] of byListing) {
-    arr.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }
-
-  return byListing;
 }
 
 function mapGuestyAmenities(listing: any) {
@@ -171,14 +146,15 @@ function inferDestination(addr: any): string {
   return "algarve";
 }
 
-function mapListingToProperty(listing: any, reviews: any[] = []) {
+function mapListingToProperty(listing: any) {
   const id = listing._id || listing.listingId || "";
-  const title = listing.title || "Untitled";
+  const rawTitle = listing.title || "Untitled";
+  const title = cleanPropertyName(rawTitle);
   const slug = slugify(title, id);
-  const desc = listing.publicDescription || listing.publicDescriptions;
+  const desc = listing.publicDescriptions;
   const fullDesc = buildDescription(desc, listing.description);
-  const tagline = buildTagline(desc, listing.description);
   const summary = desc?.summary || desc?.space || desc?.neighborhood || "";
+  const tagline = summary.slice(0, 150) + (summary.length > 150 ? "â¦" : "");
   const pictures = listing.pictures || [];
   const images = pictures
     .filter((p: any) => p.original || p.thumbnail)
@@ -195,29 +171,6 @@ function mapListingToProperty(listing: any, reviews: any[] = []) {
   const terms = listing.terms || {};
   const minNights = terms.minNights ?? terms.minNight ?? 1;
   const amenities = mapGuestyAmenities(listing);
-
-  // Extract full address data from Guesty
-  const addressData = {
-    full: addr.address || "",
-    street: addr.street || "",
-    city: addr.city || "",
-    state: addr.state || addr.region || "",
-    zipcode: addr.zipCode || addr.postalCode || "",
-    country: addr.country || "Portugal",
-    lat: addr.lat ? Number(addr.lat) : undefined,
-    lng: addr.lng ? Number(addr.lng) : undefined,
-  };
-
-  // Extract room/bedroom data
-  const rooms = (listing.listingRooms ?? [])
-    .filter((r: any) => r.beds?.length > 0)
-    .map((r: any, i: number) => ({
-      name: `Bedroom ${i + 1}`,
-      beds: (r.beds ?? []).map((b: any) => ({
-        type: b.type || "BED",
-        quantity: b.quantity ?? 1
-      }))
-    })) || [];
 
   return {
     id: `guesty-${id}`,
@@ -248,32 +201,21 @@ function mapListingToProperty(listing: any, reviews: any[] = []) {
     whatsappMessage: `Hi, I am interested in ${title}`,
     sortOrder: 0,
     isActive: true,
-    seoTitle: `${title} — Portugal Active`,
+    seoTitle: `${title} â Portugal Active`,
     seoDescription: summary.slice(0, 160) || `${title} in Portugal.`,
-    address: addressData,
-    rooms,
-    propertyType: listing.propertyType || "Villa",
-    checkInTime: listing.defaultCheckInTime || "16:00",
-    checkOutTime: listing.defaultCheckOutTime || "11:00",
-    areaSquareFeet: listing.areaSquareFeet || null,
-    reviews: reviews.slice(0, 20), // Cap at 20 most recent reviews per property
-    averageRating: reviews.length > 0
-      ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) * 10) / 10
-      : null,
-    reviewCount: reviews.length,
   };
 }
 
 /**
  * Persist synced properties to GitHub so the fallback file always
- * contains real data — survives Render's ephemeral filesystem.
+ * contains real data â survives Render's ephemeral filesystem.
  *
  * IMPORTANT: Compares content hash before committing to avoid triggering
- * Render auto-deploy loops (sync → commit → deploy → sync → commit …).
+ * Render auto-deploy loops (sync â commit â deploy â sync â commit â¦).
  */
 async function commitToGitHub(jsonContent: string): Promise<boolean> {
   if (!GITHUB_PAT) {
-    console.warn("[Guesty Sync] GITHUB_PAT not set — skipping GitHub persistence.");
+    console.warn("[Guesty Sync] GITHUB_PAT not set â skipping GitHub persistence.");
     return false;
   }
 
@@ -297,15 +239,15 @@ async function commitToGitHub(jsonContent: string): Promise<boolean> {
         existingContentBase64 = fileData.content?.replace(/\n/g, "");
       }
     } catch {
-      // File may not exist yet — that's fine, we'll create it
+      // File may not exist yet â that's fine, we'll create it
     }
 
     // Encode content as base64
     const contentBase64 = Buffer.from(jsonContent, "utf-8").toString("base64");
 
-    // Skip commit if content is identical — avoids Render auto-deploy loops
+    // Skip commit if content is identical â avoids Render auto-deploy loops
     if (existingContentBase64 && contentBase64 === existingContentBase64) {
-      console.info("[Guesty Sync] GitHub file already up-to-date — skipping commit (no deploy loop).");
+      console.info("[Guesty Sync] GitHub file already up-to-date â skipping commit (no deploy loop).");
       return false;
     }
 
@@ -325,7 +267,7 @@ async function commitToGitHub(jsonContent: string): Promise<boolean> {
     });
 
     if (putResponse.ok) {
-      console.log("[Guesty Sync] ✓ Properties committed to GitHub — data will persist across deploys.");
+      console.log("[Guesty Sync] â Properties committed to GitHub â data will persist across deploys.");
       return true;
     }
 
@@ -343,27 +285,18 @@ export async function runSync(): Promise<string> {
     throw new Error("Guesty is not configured. Set GUESTY_CLIENT_ID/GUESTY_CLIENT_SECRET.");
   }
 
-  console.log("[Guesty Sync] Fetching listings and reviews...");
-  const [listings, allReviews] = await Promise.all([
-    fetchAllListings(),
-    fetchAllReviews().catch((err) => {
-      console.warn(`[Guesty Sync] Reviews fetch failed (non-blocking): ${err.message}`);
-      return [] as any[];
-    }),
-  ]);
-  console.log(`[Guesty Sync] Got ${listings.length} listings, ${allReviews.length} reviews`);
+  console.log("[Guesty Sync] Fetching listings...");
+  const listings = await fetchAllListings();
+  console.log(`[Guesty Sync] Got ${listings.length} listings`);
 
   if (listings.length === 0) {
-    console.warn("[Guesty Sync] No listings returned — keeping existing data.");
+    console.warn("[Guesty Sync] No listings returned â keeping existing data.");
     return "skipped (0 listings)";
   }
 
-  const reviewsByListing = buildReviewsByListing(allReviews);
-  const properties = listings.map((listing) => {
-    const rawId = listing._id || listing.listingId || "";
-    const listingReviews = reviewsByListing.get(rawId) || [];
-    return mapListingToProperty(listing, listingReviews);
-  });
+  const properties = listings
+    .filter((l: any) => !shouldExcludeListing(l.title || ""))
+    .map(mapListingToProperty);
   const jsonContent = JSON.stringify(properties, null, 2);
 
   // 1. Write to local runtime file (fast reads during this server's lifetime)
