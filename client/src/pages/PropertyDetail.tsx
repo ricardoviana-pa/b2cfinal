@@ -387,8 +387,6 @@ export default function PropertyDetail() {
         "addressRegion": dest?.name || '',
         "addressCountry": "PT",
       },
-      "starRating": { "@type": "Rating", "ratingValue": "5" },
-      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "2000" },
       ...(amenityFeatures.length > 0 && { "amenityFeature": amenityFeatures }),
       ...(property.priceFrom > 0 && {
         "priceRange": `From €${property.priceFrom} per night`,
