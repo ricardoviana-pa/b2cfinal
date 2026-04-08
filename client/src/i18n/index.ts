@@ -38,7 +38,7 @@ i18n
     },
   });
 
-const LOCALE_MAP: Record<string, string> = {
+export const LOCALE_MAP: Record<string, string> = {
   en: 'en_GB', pt: 'pt_PT', es: 'es_ES', fr: 'fr_FR',
   de: 'de_DE', it: 'it_IT', nl: 'nl_NL', fi: 'fi_FI', sv: 'sv_SE',
 };
@@ -49,6 +49,9 @@ function applyLanguage(lng: string) {
   if (ogLocale) ogLocale.setAttribute('content', LOCALE_MAP[lng] ?? 'en_GB');
 }
 
+// Keeps og:locale and <html lang> in sync when users switch language mid-session.
+// usePageMeta only reads i18n.language at mount, so this listener is the sole
+// update path for post-mount language changes.
 i18n.on('languageChanged', applyLanguage);
 // Set immediately on initial load
 applyLanguage(i18n.language || 'en');
