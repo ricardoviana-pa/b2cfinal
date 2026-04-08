@@ -49,8 +49,18 @@ export async function setupVite(app: Express, server: Server) {
 
 const BOT_UA_RE = /googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot|slackbot|discordbot|applebot|ia_archiver/i;
 
-function isBotRequest(req: any): boolean {
-  return BOT_UA_RE.test(req.headers['user-agent'] || '');
+let _cachedIndexHtml: string | null = null;
+
+function isBotRequest(req: import('express').Request): boolean {
+  return BOT_UA_RE.test(req.headers['user-agent'] ?? '');
+}
+
+function escAttr(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function escText(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 function injectMeta(html: string, meta: {
@@ -60,24 +70,24 @@ function injectMeta(html: string, meta: {
   url: string;
   type?: string;
 }): string {
-  const title = meta.title;
-  const description = meta.description;
-  const image = meta.image ?? 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-main-96HXfBCK752avi2daWhgmd.webp';
-  const url = meta.url;
-  const type = meta.type ?? 'website';
+  const title = escText(meta.title);
+  const description = escAttr(meta.description);
+  const image = escAttr(meta.image ?? 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-main-96HXfBCK752avi2daWhgmd.webp');
+  const url = escAttr(meta.url);
+  const type = escAttr(meta.type ?? 'website');
 
   return html
-    .replace(/(<title>)[^<]*(<\/title>)/, `$1${title}$2`)
-    .replace(/(<meta name="description" content=")[^"]*(")/,  `$1${description}$2`)
-    .replace(/(<link rel="canonical" href=")[^"]*(")/,        `$1${url}$2`)
-    .replace(/(<meta property="og:title" content=")[^"]*(")/,       `$1${title}$2`)
-    .replace(/(<meta property="og:description" content=")[^"]*(")/,  `$1${description}$2`)
-    .replace(/(<meta property="og:image" content=")[^"]*(")/,        `$1${image}$2`)
-    .replace(/(<meta property="og:url" content=")[^"]*(")/,          `$1${url}$2`)
-    .replace(/(<meta property="og:type" content=")[^"]*(")/,         `$1${type}$2`)
-    .replace(/(<meta name="twitter:title" content=")[^"]*(")/,       `$1${title}$2`)
-    .replace(/(<meta name="twitter:description" content=")[^"]*(")/,  `$1${description}$2`)
-    .replace(/(<meta name="twitter:image" content=")[^"]*(")/,        `$1${image}$2`);
+    .replace(/(<title>)[^<]*(<\/title>)/, (_m, open, close) => `${open}${title}${close}`)
+    .replace(/(<meta name="description" content=")[^"]*(")/,          (_m, open, close) => `${open}${description}${close}`)
+    .replace(/(<link rel="canonical" href=")[^"]*(")/,                 (_m, open, close) => `${open}${url}${close}`)
+    .replace(/(<meta property="og:title" content=")[^"]*(")/,         (_m, open, close) => `${open}${title}${close}`)
+    .replace(/(<meta property="og:description" content=")[^"]*(")/,   (_m, open, close) => `${open}${description}${close}`)
+    .replace(/(<meta property="og:image" content=")[^"]*(")/,         (_m, open, close) => `${open}${image}${close}`)
+    .replace(/(<meta property="og:url" content=")[^"]*(")/,           (_m, open, close) => `${open}${url}${close}`)
+    .replace(/(<meta property="og:type" content=")[^"]*(")/,          (_m, open, close) => `${open}${type}${close}`)
+    .replace(/(<meta name="twitter:title" content=")[^"]*(")/,        (_m, open, close) => `${open}${title}${close}`)
+    .replace(/(<meta name="twitter:description" content=")[^"]*(")/,  (_m, open, close) => `${open}${description}${close}`)
+    .replace(/(<meta name="twitter:image" content=")[^"]*(")/,        (_m, open, close) => `${open}${image}${close}`);
 }
 
 const BOT_BASE_URL = 'https://www.portugalactive.com';
@@ -144,7 +154,10 @@ export function serveStatic(app: Express) {
     // Bot request — inject page-specific meta before sending
     let html: string;
     try {
-      html = fs.readFileSync(indexPath, "utf-8");
+      if (_cachedIndexHtml === null) {
+        _cachedIndexHtml = fs.readFileSync(indexPath, "utf-8");
+      }
+      html = _cachedIndexHtml;
     } catch {
       return res.status(status).sendFile(indexPath);
     }
