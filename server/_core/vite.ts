@@ -72,7 +72,7 @@ export function serveStatic(app: Express) {
     "/events", "/blog", "/faq", "/careers", "/owners", "/login", "/account",
     "/legal/privacy", "/legal/terms", "/legal/cookies", "/admin", "/404",
   ]);
-  const KNOWN_PREFIXES = ["/homes/", "/destinations/", "/blog/", "/admin/", "/booking/"];
+  const KNOWN_PREFIXES = ["/homes/", "/destinations/", "/blog/", "/services/", "/admin/", "/booking/"];
 
   app.use("*", (req, res) => {
     const p = req.originalUrl.split("?")[0];
