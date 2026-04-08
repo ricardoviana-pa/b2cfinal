@@ -1,0 +1,102 @@
+[
+  {
+    "id": "private-chef",
+    "title": "Private Chef",
+    "icon": "chef-hat",
+    "description": "A professional chef arrives at your villa with morning-market ingredients and cooks a multi-course meal in your kitchen. Menus range from traditional Portuguese seafood feasts to contemporary tasting menus, dietary requirements always accommodated. The chef handles setup, cooking, service, and cleanup — you simply sit down and enjoy. Available for dinner, brunch, or a full-day culinary experience with wine pairing.",
+    "shortDescription": "Professional chef cooks in your villa kitchen with morning-market ingredients.",
+    "priceNote": "From €50 per person",
+    "leadTime": "Book 48 hours in advance",
+    "availableInAllProperties": true
+  },
+  {
+    "id": "in-villa-spa",
+    "title": "In-Villa Spa and Massage",
+    "icon": "sparkles",
+    "description": "Transform your villa into a private spa. Our certified therapists arrive with professional-grade equipment and organic products for massages, facials, body treatments, and aromatherapy sessions. Choose from deep tissue, Swedish, hot stone, or a bespoke treatment designed around your needs. Couples massage available. Treatments take place in your living room, terrace, or garden — wherever feels most relaxing.",
+    "shortDescription": "Certified therapists bring the spa to your villa — massage, facials, and body treatments.",
+    "priceNote": "From €80 per treatment",
+    "leadTime": "Book 24 hours in advance",
+    "availableInAllProperties": true
+  },
+  {
+    "id": "airport-transfer",
+    "title": "Airport Transfers",
+    "icon": "car",
+    "description": "Start and end your stay without any friction. Our premium transfer service covers all major airports — Porto (OPO), Lisbon (LIS), Faro (FAO) — with professional drivers in comfortable, air-conditioned vehicles. Child seats available on request. Your driver tracks your flight in real time, so delays never cause stress. Door-to-door from the terminal to your villa.",
+    "shortDescription": "Premium door-to-door airport transfers with flight tracking and child seats.",
+    "priceNote": "From €60 per transfer",
+    "leadTime": "Book 24 hours in advance",
+    "availableInAllProperties": true
+  },
+  {
+    "id": "grocery-stocking",
+    "title": "Grocery Stocking",
+    "icon": "shopping-bag",
+    "description": "Arrive to a fully stocked kitchen. Share your preferences or dietary requirements and our team fills your fridge and pantry before you arrive — fresh bread, local cheeses, organic fruits, premium olive oil, regional wines, and all the essentials. We can also prepare custom packages: wine lover, family with children, health-conscious, or celebration hamper with champagne and flowers.",
+    "shortDescription": "Your fridge stocked with fresh local produce before you arrive.",
+    "priceNote": "Service fee €25 + cost of groceries",
+    "leadTime": "Book 48 hours in advance",
+    "availableInAllProperties": true
+  },
+  {
+    "id": "daily-housekeeping",
+    "title": "Daily Housekeeping",
+    "icon": "home",
+    "description": "Enjoy hotel-level cleanliness every day of your stay. Our trained housekeeping team visits your property daily to clean common areas, make beds, refresh towels, restock bathroom amenities, and tidy the kitchen. We use premium, eco-friendly products throughout. Schedule is flexible — morning or afternoon visits to suit your routine.",
+    "shortDescription": "Hotel-standard daily cleaning, bed-making, and towel refresh at your villa.",
+    "priceNote": "From €40 per visit",
+    "leadTime": "Book at time of reservation",
+    "availableInAllProperties": true
+  },
+  {
+    "id": "babysitting",
+    "title": "Babysitting",
+    "icon": "baby",
+    "description": "Enjoy a worry-free evening out while a vetted, experienced babysitter looks after your children at the property. All our babysitters hold first aid certification and are experienced with children of all ages. We can also arrange daytime childcare for longer periods, allowing parents to enjoy experiences or simply have time to themselves.",
+    "shortDescription": "Vetted, first-aid certified babysitters at your villa for evenings or daytime.",
+    "priceNote": "From €20 per hour",
+    "leadTime": "Book 48 hours in advance",
+    "availableInAllProperties": true
+  },
+  {
+    "id": "personal-trainer",
+    "title": "Personal Trainer",
+    "icon": "dumbbell",
+    "description": "Keep your fitness routine going — or start a new one — with a certified personal trainer who comes to your villa. Sessions can take place in the garden, by the pool, or in properties with gym facilities. From high-intensity circuits to mobility work and strength training, your trainer adapts to your goals and fitness level. Morning and late afternoon sessions available.",
+    "shortDescription": "Certified personal trainer for sessions at your villa — pool, garden, or gym.",
+    "priceNote": "From €60 per session",
+    "leadTime": "Book 24 hours in advance",
+    "availableInAllProperties": true
+  },
+  {
+    "id": "laundry-service",
+    "title": "Laundry and Pressing",
+    "icon": "shirt",
+    "description": "Send your clothes out in the morning and have them returned freshly laundered and pressed by evening. Ideal for longer stays or travel-light guests. We handle all fabrics with care, using premium detergents. Express same-day service available for urgent needs.",
+    "shortDescription": "Same-day laundry and pressing service — send out in the morning, back by evening.",
+    "priceNote": "Pricing per item",
+    "leadTime": "Same-day collection",
+    "availableInAllProperties": true
+  },
+  {
+    "id": "turndown-service",
+    "title": "Turndown Service",
+    "icon": "bed",
+    "description": "A small luxury that transforms your evening. Our team visits in the late afternoon to prepare your bedroom: fresh sheets turned down, ambient lighting, curtains drawn, and a small treat left on the pillow. Available nightly for guests who want the full hotel experience in a private home.",
+    "shortDescription": "Evening bed preparation with fresh linens, ambient lighting, and a pillow treat.",
+    "priceNote": "Included with daily housekeeping",
+    "leadTime": "Book at time of reservation",
+    "availableInAllProperties": true
+  },
+  {
+    "id": "event-planning",
+    "title": "Private Event Planning",
+    "icon": "party-popper",
+    "description": "Celebrating a birthday, anniversary, proposal, or family reunion? Our events team plans and executes private celebrations at your villa or at curated venues nearby. From intimate dinners for two with a private chef to garden parties for thirty, we handle catering, flowers, music, decoration, and staffing. Every detail is tailored to your vision.",
+    "shortDescription": "Full-service planning for celebrations — birthdays, proposals, reunions at your villa.",
+    "priceNote": "Custom quote based on requirements",
+    "leadTime": "Book 2 weeks in advance for best availability",
+    "availableInAllProperties": true
+  }
+]

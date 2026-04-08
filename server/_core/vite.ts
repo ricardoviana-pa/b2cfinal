@@ -39,7 +39,9 @@ export async function setupVite(app: Express, server: Server) {
         `src="/src/main.tsx?v=${nanoid()}"`
       );
       const page = await vite.transformIndexHtml(url, template);
-      res.status(200).set({ "Content-Type": "text/html" }).end(page);
+      // Respect 404 status set by upstream middleware (e.g. invalid property slug)
+      const status = res.statusCode === 404 ? 404 : 200;
+      res.status(status).set({ "Content-Type": "text/html" }).end(page);
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);
       next(e);
@@ -68,16 +70,17 @@ export function serveStatic(app: Express) {
   }));
 
   const KNOWN_ROUTES = new Set([
-    "/", "/homes", "/about", "/contact", "/services", "/adventures",
+    "/", "/homes", "/about", "/contact", "/experiences", "/concierge",
     "/events", "/blog", "/faq", "/careers", "/owners", "/login", "/account",
     "/legal/privacy", "/legal/terms", "/legal/cookies", "/admin", "/404",
   ]);
-  const KNOWN_PREFIXES = ["/homes/", "/destinations/", "/blog/", "/admin/", "/booking/"];
+  const KNOWN_PREFIXES = ["/homes/", "/destinations/", "/experiences/", "/blog/", "/admin/", "/booking/"];
 
   app.use("*", (req, res) => {
     const p = req.originalUrl.split("?")[0];
+    // Respect 404 status set by upstream middleware (e.g. invalid property slug)
     const isKnown = KNOWN_ROUTES.has(p) || KNOWN_PREFIXES.some(pre => p.startsWith(pre));
-    const status = isKnown ? 200 : 404;
+    const status = res.statusCode === 404 ? 404 : (isKnown ? 200 : 404);
     res.status(status).sendFile(path.resolve(distPath, "index.html"));
   });
 }

@@ -42,7 +42,22 @@ async function startServer() {
   app.set("trust proxy", true);
 
   app.use(helmet({
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://js.stripe.com", "https://m.stripe.network"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        imgSrc: ["'self'", "data:", "blob:", "https://*.cloudfront.net", "https://images.unsplash.com", "https://*.guesty.com", "https://cdn.worldota.net"],
+        connectSrc: ["'self'", "https://api.stripe.com", "https://*.cloudfront.net", "https://*.guesty.com"],
+        frameSrc: ["'self'", "https://js.stripe.com", "https://hooks.stripe.com"],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+        frameAncestors: ["'none'"],
+        upgradeInsecureRequests: [],
+      },
+    },
     crossOriginEmbedderPolicy: false,
   }));
 
@@ -89,6 +104,11 @@ async function startServer() {
   app.get('/journal', (_req, res) => res.redirect(301, '/blog'));
   app.get('/account/login', (_req, res) => res.redirect(301, '/login'));
 
+  // Concierge & Activities restructure redirects
+  app.get('/services', (_req, res) => res.redirect(301, '/concierge'));
+  app.get('/services/:slug', (_req, res) => res.redirect(301, '/experiences'));
+  app.get('/adventures', (_req, res) => res.redirect(301, '/experiences'));
+
   // Dynamic sitemap.xml
   app.get("/sitemap.xml", async (_req, res) => {
     try {
@@ -109,8 +129,8 @@ async function startServer() {
         { loc: "/destinations/lisbon", priority: "0.9", changefreq: "monthly" },
         { loc: "/destinations/alentejo", priority: "0.9", changefreq: "monthly" },
         { loc: "/destinations/algarve", priority: "0.9", changefreq: "monthly" },
-        { loc: "/services", priority: "0.8", changefreq: "monthly" },
-        { loc: "/adventures", priority: "0.8", changefreq: "monthly" },
+        { loc: "/experiences", priority: "0.8", changefreq: "weekly" },
+        { loc: "/concierge", priority: "0.8", changefreq: "monthly" },
         { loc: "/events", priority: "0.8", changefreq: "monthly" },
         { loc: "/blog", priority: "0.8", changefreq: "weekly" },
         { loc: "/about", priority: "0.7", changefreq: "monthly" },
@@ -140,11 +160,23 @@ async function startServer() {
           return url(`${base}/blog/${p.slug}`, lastmod, "monthly", "0.8");
         });
 
+      // Experience (activity) slugs from static data
+      const experienceSlugs = [
+        "surf-lessons", "canyoning", "stand-up-paddle", "horseback-riding",
+        "e-bike-fat-bike", "hike-dive-dine", "sailing-boat-tours", "can-am-buggy",
+        "wine-tasting-douro", "vinho-verde-tasting", "cooking-class", "hiking-geres",
+        "private-chauffeur", "yoga-retreat", "algarve-kayak-caves", "porto-food-tour",
+      ];
+      const experienceUrls = experienceSlugs.map(s =>
+        url(`${base}/experiences/${s}`, now, "monthly", "0.7"),
+      );
+
       const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${staticUrls.join("\n")}
 ${propertyUrls.join("\n")}
 ${blogUrls.join("\n")}
+${experienceUrls.join("\n")}
 </urlset>`;
 
       res.setHeader("Content-Type", "application/xml");
@@ -211,6 +243,19 @@ ${blogUrls.join("\n")}
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }
+  });
+
+  // Property slug validation — return 404 for non-existent properties (SEO protection)
+  // Runs before the SPA catch-all so Googlebot sees proper 404, not a soft 200
+  app.get("/homes/:slug", async (_req, res, next) => {
+    try {
+      const { getPropertiesForSite } = await import("../services/properties-store");
+      const properties = await getPropertiesForSite();
+      if (!properties.some((p: any) => p.slug === _req.params.slug)) {
+        res.status(404);
+      }
+    } catch { /* fail open — serve normally if property check fails */ }
+    next();
   });
 
   // development mode uses Vite, production mode uses static files

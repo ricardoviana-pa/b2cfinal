@@ -3,417 +3,97 @@
    Hero gallery, two-column layout, sticky booking card, Le Collectionist-style amenities
    ========================================================================== */
 
-import { useState, useMemo, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { useParams, Link, useSearch } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { usePageMeta } from '@/hooks/usePageMeta';
 import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck,
-  Sparkles, Star, Clock, UtensilsCrossed, Headphones, Plus, X, AlertTriangle,
+  Sparkles, Star, Clock, UtensilsCrossed, Headphones, ExternalLink, Plus, X,
   Wifi, Tv, Coffee, Car, Waves, Wind, Shirt, Flame, TreePine, Mountain,
-  Sun, Monitor, Utensils, Sofa, ArrowRight, Lock, ShieldCheck, Bed, type LucideIcon
+  Sun, Monitor, Utensils, Sofa, Calendar, ArrowRight, type LucideIcon
 } from 'lucide-react';
-const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
+import AddToItineraryModal from '@/components/itinerary/AddToItineraryModal';
+import { MapView } from '@/components/Map';
 import productsData from '@/data/products.json';
+import activitiesData from '@/data/activities.json';
 import destinationsData from '@/data/destinations.json';
 import type { Product, Destination, Property } from '@/lib/types';
 import { getPropertyImages } from '@/lib/images';
-const BookingWidget = lazy(() => import('@/components/booking/BookingWidget'));
+import { BookingWidget } from '@/components/booking';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import PropertyCard from '@/components/property/PropertyCard';
-import ReviewsSection from '@/components/property/ReviewsSection';
 import { trpc } from '@/lib/trpc';
 
 const allProducts = productsData as unknown as Product[];
 const destinations = destinationsData as unknown as Destination[];
 
-/** ── Amenity Categorization & Deduplication ── */
+const DEST_COORDS: Record<string, { lat: number; lng: number }> = {
+  minho: { lat: 41.6946, lng: -8.8300 },
+  porto: { lat: 41.1579, lng: -8.6291 },
+  lisbon: { lat: 38.7223, lng: -9.1393 },
+  alentejo: { lat: 38.5700, lng: -7.9100 },
+  algarve: { lat: 37.0194, lng: -7.9304 },
+  brazil: { lat: -22.9068, lng: -43.1729 },
+};
 
-/** Categories for grouping amenities — order determines display order */
-const AMENITY_CATEGORIES: { key: string; label: string; icon: LucideIcon; keywords: string[] }[] = [
-  { key: 'outdoor', label: 'Outdoor & Pool', icon: Waves, keywords: [
-    'pool', 'swimming', 'infinity', 'heated pool', 'outdoor pool', 'private pool', 'hot tub', 'jacuzzi',
-    'garden', 'backyard', 'terrace', 'patio', 'balcony', 'outdoor seating',
-    'bbq', 'grill', 'barbecue', 'pool table', 'tennis', 'table tennis',
-  ]},
-  { key: 'views', label: 'Views & Location', icon: Mountain, keywords: [
-    'ocean view', 'sea view', 'beach', 'beachfront', 'mountain', 'garden view', 'lake', 'river', 'town',
-  ]},
-  { key: 'comfort', label: 'Comfort & Climate', icon: Wind, keywords: [
-    'air conditioning', 'heating', 'indoor fireplace', 'fireplace',
-  ]},
-  { key: 'kitchen', label: 'Kitchen & Dining', icon: Utensils, keywords: [
-    'kitchen', 'fully equipped', 'oven', 'microwave', 'stove', 'refrigerator',
-    'coffee', 'nespresso', 'espresso', 'kettle', 'toaster', 'blender', 'dining',
-  ]},
-  { key: 'entertainment', label: 'Entertainment', icon: Tv, keywords: [
-    'tv', 'cable tv', 'smart tv', 'sound system', 'board games', 'books',
-  ]},
-  { key: 'connectivity', label: 'Connectivity & Work', icon: Wifi, keywords: [
-    'wifi', 'internet', 'wireless', 'workspace', 'desk', 'laptop', 'home office', 'monitor',
-  ]},
-  { key: 'wellness', label: 'Wellness & Fitness', icon: Mountain, keywords: [
-    'gym', 'fitness', 'workout', 'sauna', 'spa', 'yoga', 'horseback',
-  ]},
-  { key: 'parking', label: 'Parking & Access', icon: Car, keywords: [
-    'parking', 'garage', 'ev charging', 'private entrance',
-  ]},
-  { key: 'laundry', label: 'Laundry & Housekeeping', icon: Shirt, keywords: [
-    'washer', 'washing machine', 'clothes dryer', 'laundry', 'iron',
-  ]},
-  { key: 'bathroom', label: 'Bathroom', icon: Bath, keywords: [
-    'bathtub', 'hair dryer',
-  ]},
-  { key: 'family', label: 'Family Friendly', icon: BedDouble, keywords: [
-    'crib', 'high chair', 'children', 'infants', 'baby',
-  ]},
-  { key: 'safety', label: 'Safety', icon: Award, keywords: [
-    'smoke detector', 'fire extinguisher', 'first aid', 'security', 'safe',
-  ]},
-];
+/** Map amenity name (lowercase) to Lucide icon — Le Collectionist / Plum Guide style */
+const AMENITY_ICON_MAP: Record<string, LucideIcon> = {
+  wifi: Wifi, internet: Wifi, 'high speed wifi': Wifi, 'high-speed wifi': Wifi, 'wireless internet': Wifi,
+  tv: Tv, television: Tv, 'smart tv': Tv,
+  kitchen: Utensils, 'fully equipped kitchen': Utensils, 'full kitchen': Utensils,
+  coffee: Coffee, 'nespresso': Coffee, 'coffee maker': Coffee, 'coffee machine': Coffee, espresso: Coffee,
+  pool: Waves, swimming: Waves, 'infinity pool': Waves, 'heated pool': Waves, 'swimming pool': Waves, 'outdoor pool': Waves, 'private pool': Waves,
+  parking: Car, garage: Car, 'free parking': Car, 'ev charging': Car, 'free parking on premises': Car,
+  'air conditioning': Wind, ac: Wind, heating: Flame, climate: Wind,
+  washer: Shirt, laundry: Shirt, dryer: Shirt, 'washing machine': Shirt, iron: Shirt,
+  garden: TreePine, terrace: Sun, balcony: Sun, patio: Sun, 'garden view': TreePine, 'garden or backyard': TreePine,
+  gym: Mountain, fitness: Mountain, workout: Mountain, 'horseback riding': Mountain,
+  'ocean view': Waves, 'sea view': Waves, beach: Waves, beachfront: Waves, town: MapPin,
+  workspace: Monitor, 'home office': Monitor, desk: Monitor, 'laptop friendly workspace': Monitor,
+  bbq: Flame, grill: Flame, barbecue: Flame, 'bbq grill': Flame,
+  'living room': Sofa, lounge: Sofa,
+  dishwasher: Utensils, oven: Utensils, microwave: Utensils, stove: Utensils, refrigerator: Utensils,
+  blender: Utensils, toaster: Utensils, kettle: Utensils,
+  bathtub: Bath, 'hair dryer': Bath,
+  crib: BedDouble, 'high chair': BedDouble, 'suitable for children (2-12 years)': BedDouble, 'suitable for infants (under 2 years)': BedDouble,
+  'indoor fireplace': Flame, 'outdoor seating (furniture)': Sun,
+  'dining table': Utensils, 'sound system': Tv,
+  'private entrance': Car, 'outdoor kitchen': Utensils,
+  'long term stays allowed': Clock,
+  'smoke detector': Award, 'fire extinguisher': Award, 'first aid kit': Award,
+};
 
-/** Amenities to completely hide — zero value to guests */
+/** Amenities to hide — low value, redundant, or clutter */
 const AMENITY_BLACKLIST = new Set([
   'essentials', 'hot water', 'hangers', 'clothing storage', 'bed linens', 'towels provided',
   'cleaning disinfection', 'enhanced cleaning practices', 'high touch surfaces disinfected',
   'shampoo', 'shower gel', 'cookware', 'dishes and silverware', 'baking sheet', 'barbeque utensils',
   'wine glasses', 'wide hallway clearance', 'accessible-height bed',
   'freezer', 'babysitter recommendations', 'long term stays allowed',
+  'smoke detector', 'fire extinguisher', 'first aid kit',
 ]);
 
-/** Deduplicate similar amenities — keep the most descriptive version */
-function deduplicateAmenities(items: string[]): string[] {
-  const normalized = items.map(a => ({ original: a, lower: a.toLowerCase().trim() }));
-  const result: string[] = [];
-  const seen = new Set<string>();
-
-  // Group by root concept and keep the most descriptive
-  const conceptGroups: Record<string, string[]> = {};
-  for (const { original, lower } of normalized) {
-    if (AMENITY_BLACKLIST.has(lower)) continue;
-    if (seen.has(lower)) continue;
-    seen.add(lower);
-
-    // Extract root concept (e.g., "pool" from "private pool", "swimming pool")
-    let rootConcept = lower;
-    const roots = ['pool', 'parking', 'tv', 'coffee', 'garden', 'kitchen', 'wifi', 'internet'];
-    for (const root of roots) {
-      if (lower.includes(root)) { rootConcept = root; break; }
-    }
-
-    if (!conceptGroups[rootConcept]) conceptGroups[rootConcept] = [];
-    conceptGroups[rootConcept].push(original);
-  }
-
-  // For each concept group, pick the most descriptive (longest) name
-  for (const group of Object.values(conceptGroups)) {
-    const best = group.sort((a, b) => b.length - a.length)[0];
-    result.push(best);
-  }
-  return result;
+function getAmenityIcon(name: string): LucideIcon {
+  const key = name.toLowerCase().trim();
+  return AMENITY_ICON_MAP[key] ?? Utensils;
 }
 
-/** Categorize amenities into groups */
-function categorizeAmenities(items: string[]): { category: string; label: string; icon: LucideIcon; items: string[] }[] {
-  const deduplicated = deduplicateAmenities(items);
-  const categorized: Record<string, string[]> = {};
-  const uncategorized: string[] = [];
-
-  for (const item of deduplicated) {
-    const lower = item.toLowerCase().trim();
-    let matched = false;
-    for (const cat of AMENITY_CATEGORIES) {
-      if (cat.keywords.some(kw => lower.includes(kw) || kw.includes(lower))) {
-        if (!categorized[cat.key]) categorized[cat.key] = [];
-        categorized[cat.key].push(item);
-        matched = true;
-        break;
-      }
-    }
-    if (!matched) uncategorized.push(item);
-  }
-
-  const groups: { category: string; label: string; icon: LucideIcon; items: string[] }[] = [];
-  for (const cat of AMENITY_CATEGORIES) {
-    if (categorized[cat.key]?.length) {
-      groups.push({ category: cat.key, label: cat.label, icon: cat.icon, items: categorized[cat.key] });
-    }
-  }
-  if (uncategorized.length) {
-    groups.push({ category: 'other', label: 'Other', icon: Sparkles, items: uncategorized });
-  }
-  return groups;
+function filterAmenities(items: string[]): string[] {
+  return items.filter((x) => {
+    const k = x.toLowerCase().trim();
+    return !AMENITY_BLACKLIST.has(k) && x.length > 0;
+  });
 }
-
-
-/** Humanize bed type names and get icon */
-function getBedTypeDisplay(bedType: string): { label: string; icon: LucideIcon } {
-  const normalized = (bedType || '').toUpperCase().replace(/ /g, '_');
-  const iconMap: Record<string, { label: string; icon: LucideIcon }> = {
-    'KING_BED': { label: 'King Bed', icon: BedDouble },
-    'QUEEN_BED': { label: 'Queen Bed', icon: BedDouble },
-    'DOUBLE_BED': { label: 'Double Bed', icon: BedDouble },
-    'SINGLE_BED': { label: 'Single Bed', icon: Bed },
-    'SOFA_BED': { label: 'Sofa Bed', icon: Sofa },
-    'BUNK_BED': { label: 'Bunk Bed', icon: Bed },
-    'COUCH': { label: 'Sofa Bed', icon: Sofa },
-    'AIR_MATTRESS': { label: 'Air Mattress', icon: Bed },
-  };
-  return iconMap[normalized] || { label: bedType || 'Bed', icon: Bed };
-}
-
 
 /** Parse description: handle string, split by \n\n or \n */
 function formatDescription(desc: unknown): string[] {
   if (!desc) return [];
   const s = typeof desc === 'string' ? desc : String(desc);
-  const cleaned = cleanDescription(s);
-  return cleaned.split(/\n\n+/).flatMap(p => p.split('\n').filter(Boolean));
-}
-
-/** Clean raw Guesty description for premium display */
-function cleanDescription(raw: string): string {
-  return raw
-    // Remove dash separators: ------Title------
-    .replace(/[-–—]{3,}[^-\n]*[-–—]{3,}/g, '')
-    // Remove emoji bullets
-    .replace(/[✔️✅☑️🔹🔸▪️•]/g, '')
-    // Remove marketing CTAs
-    .replace(/book your stay\.?/gi, '')
-    .replace(/portugal active,?\s*your private hotel\.?/gi, '')
-    // Remove "Enhance Your Stay with Our Exclusive Services:" header
-    .replace(/enhance your stay with our exclusive services:?/gi, '')
-    // Remove embedded promotional/upsell service lines
-    .replace(/enjoy luxury transfers:?[^\n]*/gi, '')
-    .replace(/personalized experience:?[^\n]*/gi, '')
-    .replace(/daily cleaning\s*&\s*babysitting:?[^\n]*/gi, '')
-    .replace(/local team available:?[^\n]*/gi, '')
-    // Remove adventure activity promo blocks (heading + description pairs)
-    .replace(/horseback riding:?\s*\n[^\n]*/gi, '')
-    .replace(/guided hike[^\n]*:\s*\n[^\n]*/gi, '')
-    .replace(/e-bike[^\n]*:\s*\n[^\n]*/gi, '')
-    .replace(/surf[^\n]*:\s*\n[^\n]*/gi, '')
-    .replace(/wine[^\n]*tasting[^\n]*:\s*\n[^\n]*/gi, '')
-    // Remove "rest assured" concierge promo lines
-    .replace(/rest assured[^\n]*/gi, '')
-    // Clean up multiple blank lines
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
-}
-
-function Lightbox({ images, initialIndex, propertyName, destName, onClose, t }: {
-  images: string[];
-  initialIndex: number;
-  propertyName: string;
-  destName: string;
-  onClose: () => void;
-  t: ReturnType<typeof import('react-i18next').useTranslation>['t'];
-}) {
-  const [idx, setIdx] = useState(initialIndex);
-  const total = images.length;
-  const lbTouchStartX = useRef(0);
-  const lbTouchDelta = useRef(0);
-  const [lbDragOffset, setLbDragOffset] = useState(0);
-  const lbRef = useRef<HTMLDivElement>(null);
-
-  const prev = useCallback(() => setIdx(p => (p - 1 + total) % total), [total]);
-  const next = useCallback(() => setIdx(p => (p + 1) % total), [total]);
-
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = ''; };
-  }, []);
-
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { onClose(); return; }
-      if (e.key === 'ArrowLeft') prev();
-      if (e.key === 'ArrowRight') next();
-      if (e.key === 'Tab' && lbRef.current) {
-        const focusable = lbRef.current.querySelectorAll<HTMLElement>(
-          'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
-        );
-        if (focusable.length === 0) return;
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
-      }
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [onClose, prev, next]);
-
-  useEffect(() => {
-    const preload = [idx - 1, idx + 1].map(i => (i + total) % total);
-    preload.forEach(i => {
-      const img = new Image();
-      img.src = images[i];
-    });
-  }, [idx, images, total]);
-
-  const handleLbTouchStart = (e: React.TouchEvent) => {
-    lbTouchStartX.current = e.touches[0].clientX;
-    lbTouchDelta.current = 0;
-  };
-  const handleLbTouchMove = (e: React.TouchEvent) => {
-    lbTouchDelta.current = e.touches[0].clientX - lbTouchStartX.current;
-    setLbDragOffset(lbTouchDelta.current);
-  };
-  const handleLbTouchEnd = () => {
-    if (Math.abs(lbTouchDelta.current) > 50) {
-      if (lbTouchDelta.current < 0) next();
-      else prev();
-    }
-    setLbDragOffset(0);
-  };
-
-  return (
-    <div
-      ref={lbRef}
-      role="dialog"
-      aria-modal="true"
-      aria-label={`${propertyName} photo gallery, image ${idx + 1} of ${total}`}
-      className="fixed inset-0 z-[200] flex flex-col"
-      style={{ backgroundColor: 'rgba(0,0,0,0.95)' }}
-    >
-      {/* Top bar: counter + close */}
-      <div className="flex items-center justify-between px-4 py-3 shrink-0">
-        <div />
-        <span className="text-white/70 text-[13px]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
-          {idx + 1} / {total}
-        </span>
-        <button
-          onClick={onClose}
-          className="touch-target rounded-full bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center"
-          aria-label={t('propertyDetail.closeGallery', 'Close gallery')}
-        >
-          <X size={20} className="text-white" />
-        </button>
-      </div>
-
-      {/* Main image area */}
-      <div
-        className="flex-1 flex items-center justify-center relative overflow-hidden"
-        onTouchStart={handleLbTouchStart}
-        onTouchMove={handleLbTouchMove}
-        onTouchEnd={handleLbTouchEnd}
-      >
-        {/* Desktop arrows */}
-        <button
-          onClick={prev}
-          className="absolute left-3 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/10 hover:bg-white/20 transition-colors hidden md:flex items-center justify-center z-10"
-          aria-label={t('propertyDetail.prevImage', 'Previous image')}
-        >
-          <ChevronLeft size={24} className="text-white" />
-        </button>
-        <button
-          onClick={next}
-          className="absolute right-3 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/10 hover:bg-white/20 transition-colors hidden md:flex items-center justify-center z-10"
-          aria-label={t('propertyDetail.nextImage', 'Next image')}
-        >
-          <ChevronRight size={24} className="text-white" />
-        </button>
-
-        <img
-          src={images[idx]}
-          alt={`${propertyName} – ${destName} – image ${idx + 1} of ${total}`}
-          className="max-w-full max-h-full object-contain select-none"
-          decoding="async"
-          style={{
-            transform: lbDragOffset ? `translateX(${lbDragOffset}px)` : 'translateX(0)',
-            transition: lbDragOffset ? 'none' : 'transform 300ms ease',
-          }}
-          draggable={false}
-        />
-      </div>
-    </div>
-  );
+  return s.split(/\n\n+/).flatMap(p => p.split('\n').filter(Boolean));
 }
 
 export default function PropertyDetail() {
   const { t } = useTranslation();
-  const { slug } = useParams<{ slug: string }>();
-  const { data: property, isLoading, error, refetch } = trpc.properties.getBySlugForSite.useQuery(
-    { slug: slug ?? '' },
-    { enabled: !!slug }
-  );
-  const pdpTitle = useMemo(() => {
-    if (!property) return undefined;
-    const dest = destinations.find(d => d.slug === property.destination);
-    const beds = property.bedrooms ? `${property.bedrooms}-Bed` : '';
-    const loc = dest?.name || property.region || '';
-    return `${property.name} | ${beds} Luxury Villa ${loc}`.replace(/\s+/g, ' ').trim();
-  }, [property]);
-  const pdpDesc = useMemo(() => {
-    if (!property) return undefined;
-    const dest = destinations.find(d => d.slug === property.destination);
-    const beds = property.bedrooms ? `${property.bedrooms}-bedroom` : '';
-    const loc = dest?.name || property.region || 'Portugal';
-    const tag = property.tagline || '';
-    return `${beds} luxury villa in ${loc}. ${tag} Book direct with Portugal Active.`.replace(/\s+/g, ' ').trim().slice(0, 155);
-  }, [property]);
-  usePageMeta({
-    title: pdpTitle,
-    description: pdpDesc,
-    image: property?.images?.[0],
-    url: property ? `/homes/${property.slug}` : undefined,
-    type: 'place',
-  });
-
-  useEffect(() => {
-    if (!property) return;
-    const dest = destinations.find(d => d.slug === property.destination);
-    const amenityFeatures = Object.entries(property.amenities || {}).flatMap(([category, items]) =>
-      (items as string[]).map(item => ({ "@type": "PropertyValue", "name": item, "value": true }))
-    );
-    const jsonLd: Record<string, any> = {
-      "@context": "https://schema.org",
-      "@type": "LodgingBusiness",
-      "name": property.name,
-      "description": property.tagline || property.description?.slice(0, 300),
-      "url": `https://www.portugalactive.com/homes/${property.slug}`,
-      "image": property.images?.slice(0, 5),
-      "numberOfRooms": property.bedrooms,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": property.locality || dest?.name,
-        "addressRegion": dest?.name || '',
-        "addressCountry": "PT",
-      },
-      "starRating": { "@type": "Rating", "ratingValue": "5" },
-      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "2000" },
-      ...(amenityFeatures.length > 0 && { "amenityFeature": amenityFeatures }),
-      ...(property.priceFrom > 0 && {
-        "priceRange": `From €${property.priceFrom} per night`,
-        "offers": {
-          "@type": "Offer",
-          "priceCurrency": "EUR",
-          "price": property.priceFrom,
-          "availability": "https://schema.org/InStock",
-        },
-      }),
-      "provider": {
-        "@type": "Organization",
-        "name": "Portugal Active",
-        "url": "https://www.portugalactive.com",
-      },
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(jsonLd);
-    script.id = "property-jsonld";
-    document.querySelector("#property-jsonld")?.remove();
-    document.head.appendChild(script);
-    return () => { document.querySelector("#property-jsonld")?.remove(); };
-  }, [property]);
-
   const whatsIncluded = useMemo(
     () => [
       { icon: Sparkles, text: t('propertyDetail.included1') },
@@ -429,21 +109,22 @@ export default function PropertyDetail() {
     ],
     [t]
   );
+  const { slug } = useParams<{ slug: string }>();
   const searchString = useSearch();
   const searchParams = useMemo(() => new URLSearchParams(searchString), [searchString]);
   const initialCheckin = searchParams.get('checkin') || '';
   const initialCheckout = searchParams.get('checkout') || '';
   const initialGuests = Number(searchParams.get('guests')) || 0;
+  const { data: property, isLoading, error } = trpc.properties.getBySlugForSite.useQuery(
+    { slug: slug ?? '' },
+    { enabled: !!slug }
+  );
 
   const [currentImage, setCurrentImage] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxImage, setLightboxImage] = useState(0);
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
   const touchStartX = useRef(0);
-  const touchDeltaX = useRef(0);
-  const touchStartTime = useRef(0);
-  const [dragOffset, setDragOffset] = useState(0);
-  const isDragging = useRef(false);
+  const touchEndX = useRef(0);
 
   useEffect(() => {
     if (property) setCurrentImage(0);
@@ -458,85 +139,45 @@ export default function PropertyDetail() {
     );
   }, [property]);
 
-  const destObj = useMemo(() => {
-    if (!property) return null;
-    return destinations.find(d => d.slug === property.destination) || null;
+  const nearbyActivities = useMemo(() => {
+    if (!property) return [];
+    return (activitiesData as any[]).filter(a =>
+      Array.isArray(a.regions) && a.regions.includes(property.destination)
+    ).slice(0, 3);
   }, [property]);
-  const destName = destObj?.name || property?.destination || '';
 
-  const { data: allPropsData } = trpc.properties.listForSite.useQuery();
-  const relatedProperties = useMemo(() => {
-    if (!property || !allPropsData) return [];
-    return (allPropsData as Property[])
-      .filter(p => p.isActive !== false && p.destination === property.destination && p.slug !== property.slug)
-      .slice(0, 3);
-  }, [property, allPropsData]);
+  const destName = useMemo(() => {
+    if (!property) return '';
+    const d = destinations.find(d => d.slug === property.destination);
+    return d?.name || property.destination;
+  }, [property]);
 
-  const amenityGroups = useMemo(() => {
+  const mapCenter = useMemo(() => {
+    if (!property) return { lat: 39.3999, lng: -8.2245 };
+    return DEST_COORDS[property.destination] || { lat: 39.3999, lng: -8.2245 };
+  }, [property]);
+
+  const flatAmenities = useMemo(() => {
     if (!property?.amenities || typeof property.amenities !== 'object') return [];
     const all = Object.values(property.amenities).flat().filter((x): x is string => typeof x === 'string' && x.length > 0);
-    return categorizeAmenities(all);
+    return filterAmenities(all);
   }, [property?.amenities]);
 
-  const handleGalleryTouchStart = useCallback((e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-    touchDeltaX.current = 0;
-    touchStartTime.current = Date.now();
-    isDragging.current = false;
-    setDragOffset(0);
-  }, []);
-  const handleGalleryTouchMove = useCallback((e: React.TouchEvent) => {
-    touchDeltaX.current = e.touches[0].clientX - touchStartX.current;
-    isDragging.current = true;
-    setDragOffset(touchDeltaX.current);
-  }, []);
+  const handleGalleryTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
+  const handleGalleryTouchMove = (e: React.TouchEvent) => { touchEndX.current = e.touches[0].clientX; };
   const handleGalleryTouchEnd = useCallback(() => {
-    const total = (property?.images?.length || getPropertyImages(property?.slug ?? '').length) || 1;
-    const velocity = Math.abs(touchDeltaX.current) / Math.max(Date.now() - touchStartTime.current, 1);
-    const threshold = velocity > 0.3 ? 20 : 60;
-    if (Math.abs(touchDeltaX.current) > threshold) {
-      if (touchDeltaX.current < 0) setCurrentImage(p => Math.min(p + 1, total - 1));
+    const diff = touchStartX.current - touchEndX.current;
+    const totalImages = (property?.images?.length || getPropertyImages(property?.slug ?? '').length) || 1;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) setCurrentImage(p => Math.min(p + 1, totalImages - 1));
       else setCurrentImage(p => Math.max(p - 1, 0));
     }
-    setDragOffset(0);
-    isDragging.current = false;
   }, [property]);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FAFAF7]">
-        <Header />
-        {/* Hero image skeleton */}
-        <div className="skeleton-shimmer w-full" style={{ aspectRatio: '16/7' }} />
-        <div className="container py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            {/* Content column */}
-            <div className="lg:col-span-2 space-y-5">
-              <div className="skeleton-shimmer h-3 w-28 rounded" />
-              <div className="skeleton-shimmer h-8 w-72 rounded" />
-              <div className="skeleton-shimmer h-4 w-56 rounded" />
-              <div className="flex gap-4 pt-2">
-                <div className="skeleton-shimmer h-4 w-16 rounded" />
-                <div className="skeleton-shimmer h-4 w-16 rounded" />
-                <div className="skeleton-shimmer h-4 w-16 rounded" />
-              </div>
-              <div className="space-y-2 pt-6">
-                <div className="skeleton-shimmer h-3 w-full rounded" />
-                <div className="skeleton-shimmer h-3 w-full rounded" />
-                <div className="skeleton-shimmer h-3 w-4/5 rounded" />
-              </div>
-            </div>
-            {/* Sidebar skeleton */}
-            <div className="space-y-4">
-              <div className="border border-[#E8E4DC] p-6 space-y-4">
-                <div className="skeleton-shimmer h-8 w-40 rounded" />
-                <div className="skeleton-shimmer h-3 w-32 rounded" />
-                <div className="skeleton-shimmer h-12 w-full rounded-full" />
-                <div className="skeleton-shimmer h-12 w-full rounded-full" />
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="min-h-screen bg-[#FAFAF7] flex items-center justify-center">
+        <div className="w-[320px] h-[180px] rounded-lg bg-[#F5F1EB] animate-pulse border border-[#E8E4DC]" />
       </div>
     );
   }
@@ -545,16 +186,12 @@ export default function PropertyDetail() {
     return (
       <div className="min-h-screen bg-[#FAFAF7]">
         <Header />
-        <div className="container max-w-lg py-24 text-center">
-          <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#F5F1EB]">
-            <AlertTriangle className="w-6 h-6 text-[#9E9A90]" />
-          </div>
-          <h1 className="headline-md mb-3">{t('propertyDetail.errorTitle', 'Something went wrong')}</h1>
-          <p className="body-lg mb-8">{t('propertyDetail.errorBody', 'We couldn\'t load this property. Please try again.')}</p>
-          <div className="flex items-center justify-center gap-4">
-            <button onClick={() => refetch()} className="btn-primary">{t('propertyDetail.retry', 'RETRY')}</button>
-            <Link href="/homes" className="btn-ghost">{t('propertyDetail.browseHomes')}</Link>
-          </div>
+        <div className="container py-20 text-center">
+          <h1 className="headline-md mb-4">{t('propertyDetail.notFound')}</h1>
+          <p className="body-lg mb-6">{t('propertyDetail.notFoundBody')}</p>
+          <Link href="/homes" className="btn-primary inline-block">
+            {t('propertyDetail.browseHomes')}
+          </Link>
         </div>
         <Footer />
       </div>
@@ -570,98 +207,38 @@ export default function PropertyDetail() {
       <div className="min-h-screen bg-[#FAFAF7]">
         <Header />
 
-        {/* Breadcrumbs */}
-        <nav aria-label="Breadcrumb" className="container pt-20 pb-3">
-          <ol className="flex items-center gap-0.5 text-[12px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
-            <li><Link href="/" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">Home</Link></li>
-            <li className="text-[#E8E4DC]">/</li>
-            <li><Link href="/homes" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">Homes</Link></li>
-            {destObj && (
-              <>
-                <li className="text-[#E8E4DC]">/</li>
-                <li><Link href={`/destinations/${destObj.slug}`} className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">{destObj.name}</Link></li>
-              </>
-            )}
-            <li className="text-[#E8E4DC]">/</li>
-            <li className="text-[#6B6860] truncate max-w-[200px] inline-flex items-center min-h-[44px] px-1.5">{property.name}</li>
-          </ol>
-        </nav>
-
         {/* Hero gallery — full width, 4:3 or 16:9 */}
         <div
-          className="group relative w-full overflow-hidden bg-[#F5F1EB] aspect-[4/3] lg:aspect-[16/9] cursor-pointer select-none"
+          className="relative w-full overflow-hidden bg-[#F5F1EB] aspect-[4/3] lg:aspect-[16/9]"
           onTouchStart={handleGalleryTouchStart}
           onTouchMove={handleGalleryTouchMove}
           onTouchEnd={handleGalleryTouchEnd}
-          onClick={() => { if (!isDragging.current) { setLightboxImage(currentImage); setLightboxOpen(true); } }}
         >
           <div
-            className="flex h-full"
-            style={{
-              transform: `translateX(calc(-${currentImage * 100}% + ${dragOffset}px))`,
-              transition: dragOffset ? 'none' : 'transform 300ms ease',
-              width: `${totalImages * 100}%`,
-              willChange: 'transform',
-            }}
+            className="flex h-full transition-transform duration-400 ease-out"
+            style={{ transform: `translateX(-${currentImage * 100}%)`, width: `${totalImages * 100}%` }}
           >
             {(images.length ? images : ['']).map((img: string, idx: number) => (
-              <div key={idx} className="relative shrink-0 h-full bg-[#E8E4DC] img-fallback" style={{ width: `${100 / totalImages}%` }}>
+              <div key={idx} className="relative shrink-0 h-full bg-[#E8E4DC]" style={{ width: `${100 / totalImages}%` }}>
                 {img ? (
-                  <img src={img} alt={`${property.name} – luxury villa in ${destName}, Portugal – image ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" width={1200} height={900} loading={idx === 0 ? 'eager' : 'lazy'} decoding="async" {...(idx === 0 ? { fetchPriority: 'high' as const } : {})} draggable={false} onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }} />
+                  <img src={img} alt={`${property.name} - ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" loading={idx === 0 ? 'eager' : 'lazy'} />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center text-[#9E9A90] text-sm">{t('propertyDetail.noImage')}</div>
                 )}
               </div>
             ))}
           </div>
-
-          {/* Desktop arrows — fade in on hover */}
           {totalImages > 1 && (
             <>
-              <button
-                onClick={e => { e.stopPropagation(); setCurrentImage(p => Math.max(p - 1, 0)); }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/60 backdrop-blur-sm hover:bg-white/90 transition-all duration-200 hidden md:flex z-10"
-                aria-label={t('propertyDetail.prevImage', 'Previous image')}
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <button
-                onClick={e => { e.stopPropagation(); setCurrentImage(p => Math.min(p + 1, totalImages - 1)); }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/60 backdrop-blur-sm hover:bg-white/90 transition-all duration-200 hidden md:flex z-10"
-                aria-label={t('propertyDetail.nextImage', 'Next image')}
-              >
-                <ChevronRight size={20} />
-              </button>
+              <button onClick={() => setCurrentImage(p => Math.max(p - 1, 0))} className="absolute left-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors hidden md:flex"><ChevronLeft size={20} /></button>
+              <button onClick={() => setCurrentImage(p => Math.min(p + 1, totalImages - 1))} className="absolute right-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors hidden md:flex"><ChevronRight size={20} /></button>
             </>
           )}
-
-          {/* Counter + View all */}
-          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
-            <span className="text-white/80 text-[12px] bg-black/30 backdrop-blur-sm px-2.5 py-1 rounded-sm pointer-events-auto" style={{ fontFamily: 'var(--font-body)' }}>
-              {currentImage + 1} / {totalImages}
-            </span>
-            <button
-              onClick={e => { e.stopPropagation(); setLightboxImage(currentImage); setLightboxOpen(true); }}
-              className="pointer-events-auto rounded-full bg-white/90 backdrop-blur-sm text-[#1A1A18] px-6 py-3.5 min-h-[48px] hover:bg-white transition-colors text-[11px] font-medium tracking-[0.12em] uppercase"
-            >
-              {t('propertyDetail.viewAll')}
-            </button>
+          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-10">
+            <span className="text-white/80 text-[12px] bg-black/30 backdrop-blur-sm px-2.5 py-1">{currentImage + 1} / {totalImages}</span>
+            <button onClick={() => setLightboxOpen(true)} className="rounded-full bg-white/90 backdrop-blur-sm text-[#1A1A18] px-6 py-3.5 min-h-[48px] hover:bg-white transition-colors text-[11px] font-medium tracking-[0.12em] uppercase">{t('propertyDetail.viewAll')}</button>
           </div>
 
-          {/* Dot indicators */}
-          {totalImages > 1 && totalImages <= 20 && (
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 hidden md:flex gap-1.5">
-              {images.map((_: string, i: number) => (
-                <button
-                  key={i}
-                  onClick={e => { e.stopPropagation(); setCurrentImage(i); }}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${i === currentImage ? 'bg-white w-4' : 'bg-white/40 w-1.5 hover:bg-white/60'}`}
-                  aria-label={`Go to image ${i + 1}`}
-                  style={{ minHeight: 'auto', minWidth: 'auto' }}
-                />
-              ))}
-            </div>
-          )}
         </div>
 
         {/* Title, location, key stats — below hero */}
@@ -673,78 +250,106 @@ export default function PropertyDetail() {
           <p className="body-lg italic text-[#6B6860] mb-4">{property.tagline}</p>
           <div className="flex items-center gap-2 text-[#6B6860] mb-6">
             <MapPin size={14} className="text-[#9E9A90]" />
-            <span className="text-[13px]">{property.locality}, Portugal</span>
+            <span className="text-[13px]">{property.locality}, {destName}</span>
           </div>
 
-          {/* Key stats bar — single source of truth for property specs */}
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-[#E8E4DC] py-4 text-[13px] text-[#6B6860]">
-            <span className="flex items-center gap-1.5">
-              <BedDouble size={15} className="text-[#8B7355]" />
-              {property.bedrooms} {t('property.bedrooms')}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Bath size={15} className="text-[#8B7355]" />
-              {property.bathrooms} {t('property.bathrooms')}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Users size={15} className="text-[#8B7355]" />
-              {property.maxGuests} {t('property.guests')}
-            </span>
-            {property.areaSquareFeet && property.areaSquareFeet > 0 && (
-              <span className="flex items-center gap-1.5">
-                <MapPin size={15} className="text-[#8B7355]" />
-                {Math.round(property.areaSquareFeet * 0.0929)} m²
-              </span>
-            )}
-            {(property.checkInTime || property.checkOutTime) && (
-              <span className="flex items-center gap-1.5">
-                <Clock size={15} className="text-[#8B7355]" />
-                {property.checkInTime || '16:00'} / {property.checkOutTime || '11:00'}
-              </span>
-            )}
+          {/* Key stats bar */}
+          <div className="grid grid-cols-4 gap-0 border-y border-[#E8E4DC] py-4">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F5F1EB] mb-2">
+                <BedDouble size={18} className="text-[#8B7355]" />
+              </div>
+              <span className="text-[18px] font-light text-[#1A1A18]" style={{ fontFamily: 'var(--font-display)' }}>{property.bedrooms}</span>
+              <span className="text-[10px] text-[#9E9A90] tracking-[0.05em] uppercase mt-0.5">{t('property.bedrooms')}</span>
+            </div>
+            <div className="flex flex-col items-center text-center border-x border-[#E8E4DC]">
+              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F5F1EB] mb-2">
+                <Bath size={18} className="text-[#8B7355]" />
+              </div>
+              <span className="text-[18px] font-light text-[#1A1A18]" style={{ fontFamily: 'var(--font-display)' }}>{property.bathrooms}</span>
+              <span className="text-[10px] text-[#9E9A90] tracking-[0.05em] uppercase mt-0.5">{t('property.bathrooms')}</span>
+            </div>
+            <div className="flex flex-col items-center text-center border-r border-[#E8E4DC]">
+              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F5F1EB] mb-2">
+                <Users size={18} className="text-[#8B7355]" />
+              </div>
+              <span className="text-[18px] font-light text-[#1A1A18]" style={{ fontFamily: 'var(--font-display)' }}>{property.maxGuests}</span>
+              <span className="text-[10px] text-[#9E9A90] tracking-[0.05em] uppercase mt-0.5">{t('property.guests')}</span>
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F5F1EB] mb-2">
+                <Award size={18} className="text-[#8B7355]" />
+              </div>
+              <span className="text-[18px] font-light text-[#1A1A18]" style={{ fontFamily: 'var(--font-display)' }}>{t('property.fiveStar')}</span>
+              <span className="text-[10px] text-[#9E9A90] tracking-[0.05em] uppercase mt-0.5">{t('property.serviceLabel')}</span>
+            </div>
           </div>
         </div>
 
+        {/* Booking rules strip — static info visible before selecting dates */}
+        {(() => {
+          const minNights = (property as any).minNights;
+          const cleaningFee = (property as any).cleaningFee;
+          const rules: { icon: LucideIcon; label: string }[] = [];
+          if (minNights > 1) rules.push({ icon: Calendar, label: t('propertyDetail.minNights', { count: minNights }) });
+          if (cleaningFee > 0) rules.push({ icon: Sparkles, label: t('propertyDetail.cleaningFeeRule', { fee: cleaningFee }) });
+          if (rules.length === 0) return null;
+          return (
+            <div className="container pb-3">
+              <div className="flex flex-wrap gap-2">
+                {rules.map((rule, i) => (
+                  <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F5F1EB] border border-[#E8E4DC] rounded-full">
+                    <rule.icon size={12} className="text-[#8B7355] shrink-0" />
+                    <span className="text-[11px] text-[#6B6860] font-medium">{rule.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Two-column layout: main content (left 2/3) + sticky booking (right 1/3) */}
         <div className={property.guestyId ? "container pb-8 lg:pb-16" : "container pb-24 lg:pb-16"}>
           <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
             {/* Main content — left 2/3 */}
             <div className="order-2 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12 pt-6">
-              {/* Bedrooms & Sleeping Arrangement */}
-              {property.rooms && property.rooms.length > 0 && (
-                <section>
-                  <h2 className="headline-sm text-[#1A1A18] mb-6">Bedrooms & Sleeping Arrangements</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {property.rooms.map((room, roomIdx) => (
-                      <div key={roomIdx} className="bg-white border border-[#E8E4DC] p-5 rounded-lg">
-                        <h3 className="text-[13px] font-medium text-[#1A1A18] mb-4">{room.name}</h3>
-                        <div className="space-y-3">
-                          {room.beds && room.beds.length > 0 ? (
-                            room.beds.map((bed, bedIdx) => {
-                              const { label, icon: BedIcon } = getBedTypeDisplay(bed.type);
-                              return (
-                                <div key={bedIdx} className="flex items-center gap-3">
-                                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#F5F1EB] shrink-0">
-                                    <BedIcon size={16} className="text-[#8B7355]" />
-                                  </div>
-                                  <span className="text-[12px] text-[#6B6860]">
-                                    {bed.quantity > 1 ? `${bed.quantity} × ${label}` : label}
-                                  </span>
-                                </div>
-                              );
-                            })
-                          ) : (
-                            <span className="text-[12px] text-[#9E9A90]">Bed configuration details not available</span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              )}
+              {/* About */}
+              <section>
+                <h2 className="headline-sm text-[#1A1A18] mb-4">{t('propertyDetail.aboutTitle')}</h2>
+                <div className="body-lg space-y-4">
+                  {formatDescription(property.description).length > 0 ? (
+                    formatDescription(property.description).map((para, i) => (
+                      <p key={i}>{para}</p>
+                    ))
+                  ) : (
+                    <p>{t('propertyDetail.welcomeFallback', { name: property.name, locality: property.locality, destination: destName })}</p>
+                  )}
+                </div>
+              </section>
 
-              {/* 1. What's included (now section B in redesign) */}
+              {/* Amenities — Le Collectionist style icon grid */}
+              <section>
+                <h2 className="headline-sm text-[#1A1A18] mb-6">{t('propertyDetail.amenitiesTitle')}</h2>
+                {flatAmenities.length > 0 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    {flatAmenities.map((item, idx) => {
+                      const Icon = getAmenityIcon(item);
+                      return (
+                        <div key={idx} className="flex items-center gap-3 p-3 rounded-lg bg-[#F5F1EB]/50">
+                          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FAFAF7] shrink-0">
+                            <Icon size={18} className="text-[#8B7355]" />
+                          </div>
+                          <span className="text-[13px] text-[#6B6860] font-light">{item}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="body-md text-[#9E9A90]">{t('propertyDetail.amenitiesContact')}</p>
+                )}
+              </section>
+
+              {/* What's included */}
               <section className="p-5 lg:p-6 bg-[#F5F1EB]">
                 <h2 className="headline-sm text-[#1A1A18] mb-4">{t('propertyDetail.includedTitle')}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
@@ -759,50 +364,44 @@ export default function PropertyDetail() {
                 </div>
               </section>
 
-              {/* 2. Editorial description */}
+              {/* Location map */}
               <section>
-                <h2 className="headline-sm text-[#1A1A18] mb-4">{t('propertyDetail.aboutTitle')}</h2>
-                <div className="body-lg space-y-4">
-                  {formatDescription(property.description).length > 0 ? (
-                    formatDescription(property.description).map((para, i) => (
-                      <p key={i}>{para}</p>
-                    ))
-                  ) : (
-                    <p>{t('propertyDetail.welcomeFallback', { name: property.name, locality: property.locality, destination: destName })}</p>
-                  )}
+                <h2 className="headline-sm text-[#1A1A18] mb-2">{t('propertyDetail.locationTitle')}</h2>
+                <p className="body-md text-[#9E9A90] mb-4">{t('propertyDetail.locationLine', { locality: property.locality, destination: destName })}</p>
+                <div className="rounded-lg overflow-hidden border border-[#E8E4DC]">
+                  <MapView
+                    className="h-[280px] lg:h-[320px]"
+                    initialCenter={mapCenter}
+                    initialZoom={13}
+                    onMapReady={(map) => {
+                      try {
+                        if (typeof google === 'undefined') return;
+                        const geocoder = new google.maps.Geocoder();
+                        geocoder.geocode(
+                          { address: `${property.locality}, ${destName}, Portugal` },
+                          (results, status) => {
+                            try {
+                              if (status === 'OK' && results?.[0]) {
+                                const pos = results[0].geometry.location;
+                                map.setCenter(pos);
+                                new google.maps.marker.AdvancedMarkerElement({ map, position: pos, title: property.name });
+                              } else {
+                                new google.maps.marker.AdvancedMarkerElement({ map, position: mapCenter, title: property.name });
+                              }
+                            } catch {
+                              map.setCenter(mapCenter);
+                            }
+                          }
+                        );
+                      } catch {
+                        map.setCenter(mapCenter);
+                      }
+                    }}
+                  />
                 </div>
               </section>
 
-              {/* 3. Amenities — Le Collectionist style icon grid with expandable sections */}
-              <section>
-                <h2 className="headline-sm text-[#1A1A18] mb-6">{t('propertyDetail.amenitiesTitle')}</h2>
-                {amenityGroups.length > 0 ? (
-                  <div className="space-y-6">
-                    {amenityGroups.map((group) => (
-                      <div key={group.category}>
-                        <div className="flex items-center gap-2 mb-3">
-                          <group.icon size={16} className="text-[#8B7355]" />
-                          <h3 className="text-[13px] font-medium tracking-[0.04em] text-[#1A1A18]">{group.label}</h3>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {group.items.map((item, idx) => (
-                            <span
-                              key={idx}
-                              className="text-[12px] text-[#6B6860] bg-[#F5F1EB] px-3 py-1.5 rounded-full"
-                            >
-                              {item}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="body-md text-[#9E9A90]">{t('propertyDetail.amenitiesContact')}</p>
-                )}
-              </section>
-
-              {/* 4. Services (add-on) */}
+              {/* Services */}
               <section>
                 <h2 className="headline-sm text-[#1A1A18] mb-2">{t('propertyDetail.servicesTitle')}</h2>
                 <p className="body-md text-[#9E9A90] mb-5">{t('propertyDetail.servicesSubtitle')}</p>
@@ -818,17 +417,16 @@ export default function PropertyDetail() {
                       </div>
                       <button
                         onClick={() => setModalProduct(service)}
-                        className="flex items-center gap-1.5 rounded-full bg-[#1A1A18] text-white text-[11px] tracking-[0.06em] font-medium px-4 py-2.5 hover:bg-[#333] transition-colors shrink-0"
-                        style={{ minHeight: '44px', minWidth: '44px' }}
+                        className="flex items-center gap-1 rounded-full bg-[#1A1A18] text-white text-[9px] tracking-[0.02em] font-medium px-2.5 py-1.5 hover:bg-[#333] transition-colors shrink-0"
                       >
-                        <Plus className="w-3.5 h-3.5" /> {t('propertyDetail.add')}
+                        <Plus className="w-3 h-3" /> {t('propertyDetail.add')}
                       </button>
                     </div>
                   ))}
                 </div>
               </section>
 
-              {/* 5. Adventures nearby */}
+              {/* Adventures */}
               {adventures.length > 0 && (
                 <section>
                   <h2 className="headline-sm text-[#1A1A18] mb-2">{t('propertyDetail.adventuresTitle')}</h2>
@@ -845,46 +443,15 @@ export default function PropertyDetail() {
                         </div>
                         <button
                           onClick={() => setModalProduct(adventure)}
-                          className="flex items-center gap-1.5 rounded-full bg-[#1A1A18] text-white text-[11px] tracking-[0.06em] font-medium px-4 py-2.5 hover:bg-[#333] transition-colors shrink-0"
-                          style={{ minHeight: '44px', minWidth: '44px' }}
+                          className="flex items-center gap-1 rounded-full bg-[#1A1A18] text-white text-[9px] tracking-[0.02em] font-medium px-2.5 py-1.5 hover:bg-[#333] transition-colors shrink-0"
                         >
-                          <Plus className="w-3.5 h-3.5" /> {t('propertyDetail.add')}
+                          <Plus className="w-3 h-3" /> {t('propertyDetail.add')}
                         </button>
                       </div>
                     ))}
                   </div>
                 </section>
               )}
-
-              {/* 6. Location map */}
-              <section>
-                <h2 className="headline-sm text-[#1A1A18] mb-2">Location</h2>
-                <p className="text-[13px] font-medium text-[#8B7355] mb-4">{property.locality}</p>
-                <div className="rounded-lg overflow-hidden border border-[#E8E4DC]">
-                  <iframe
-                    title={`${property.name} — ${property.locality}`}
-                    className="w-full h-[280px] lg:h-[320px] border-0"
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    src={
-                      property.address?.lat && property.address?.lng
-                        ? `https://maps.google.com/maps?q=${property.address.lat},${property.address.lng}&z=15&output=embed`
-                        : `https://maps.google.com/maps?q=${encodeURIComponent(`${property.locality}, Portugal`)}&z=13&output=embed`
-                    }
-                    allowFullScreen
-                  />
-                </div>
-              </section>
-
-              {/* 10. Guest Reviews (from Guesty sync) */}
-              <ReviewsSection
-                propertyName={property.name}
-                propertySlug={property.slug}
-                reviews={(property as any).reviews}
-                averageRating={(property as any).averageRating}
-                reviewCount={(property as any).reviewCount}
-              />
-
             </div>
 
             {/* Sticky booking card — right 1/3 */}
@@ -892,7 +459,6 @@ export default function PropertyDetail() {
               <div className="property-sticky-card lg:sticky lg:top-[100px]">
                 {property.guestyId ? (
                   <>
-                    <Suspense fallback={<div className="h-[300px] bg-[#F5F1EB] animate-pulse border border-[#E8E4DC]" />}>
                     <BookingWidget
                       guestyId={property.guestyId}
                       propertyName={property.name}
@@ -900,12 +466,18 @@ export default function PropertyDetail() {
                       maxGuests={property.maxGuests || 10}
                       minNights={(property as any).minNights}
                       cleaningFee={(property as any).cleaningFee}
+                      bookingUrl={property.bookingUrl}
                       destination={property.destination}
                       initialCheckIn={initialCheckin}
                       initialCheckOut={initialCheckout}
                       initialGuests={initialGuests}
                     />
-                    </Suspense>
+                    <Link
+                      href={`/booking/${property.guestyId}/summary`}
+                      className="mt-4 block text-center text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] underline-offset-4 hover:underline"
+                    >
+                      {t('property.guidedFlow')}
+                    </Link>
                   </>
                 ) : (
                   <div className="bg-[#FAFAF7] border border-[#E8E4DC] p-6">
@@ -919,12 +491,9 @@ export default function PropertyDetail() {
                       <span className="text-[11px] tracking-[0.02em] text-[#9E9A90] font-medium">{t('property.directConcierge')}</span>
                     </div>
                     <div className="space-y-3">
-                      <Link
-                        href={`/contact?property=${encodeURIComponent(property.slug)}&intent=availability`}
-                        className="btn-primary w-full flex items-center justify-center gap-2"
-                      >
-                        {t('property.checkAvailability')}
-                      </Link>
+                      <a href={property.bookingUrl || whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-primary w-full flex items-center justify-center gap-2">
+                        {t('property.checkAvailability')} <ExternalLink size={14} />
+                      </a>
                       <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-ghost w-full">
                         {t('property.askAboutHome')}
                       </a>
@@ -941,31 +510,14 @@ export default function PropertyDetail() {
                 >
                   {t('property.needHelpConcierge')}
                 </a>
-
-                {/* Trust strip */}
-                <div className="grid grid-cols-2 gap-x-4 gap-y-3 mt-6 pt-5 border-t border-[#E8E4DC]">
-                  {([
-                    { icon: Lock, label: t('trust.secureBooking', 'Secure booking') },
-                    { icon: ShieldCheck, label: t('trust.bestRate', 'Best rate guaranteed') },
-                    { icon: Clock, label: t('trust.flexibleOptions', 'Flexible cancellation options') },
-                    { icon: Headphones, label: t('trust.conciergeIncluded', 'Concierge included') },
-                  ] as const).map((item, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                      <item.icon size={14} className="text-[#9E9A90] shrink-0" />
-                      <span className="text-[12px] text-[#9E9A90] leading-tight" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{item.label}</span>
-                    </div>
-                  ))}
-                </div>
               </div>
             </aside>
           </div>
         </div>
 
-        {/* Mobile: sticky booking bar at bottom */}
-        <div
-          className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#E8E4DC] px-4 pt-3 z-40"
-          style={{ paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))' }}
-        >
+        {/* Mobile: sticky booking card at bottom when scrolling */}
+        {!property.guestyId && (
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#E8E4DC] p-4 z-40 safe-area-bottom">
           <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0">
               {property.priceFrom > 0 && (
@@ -977,50 +529,72 @@ export default function PropertyDetail() {
                 <BadgeCheck size={12} className="text-[#8B7355]" /> {t('property.conciergeShort')}
               </p>
             </div>
-            {property.guestyId ? (
-              <button
-                type="button"
-                onClick={() => document.getElementById('property-booking')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                className="btn-primary shrink-0"
-              >
-                {t('property.checkAvailability')}
-              </button>
-            ) : (
-              <Link
-                href={`/contact?property=${encodeURIComponent(property.slug)}&intent=availability`}
-                className="btn-primary shrink-0"
-              >
-                {t('property.checkAvailability')}
-              </Link>
-            )}
+            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-primary shrink-0">
+              {t('property.talkConciergeMobile')}
+            </a>
           </div>
         </div>
+        )}
 
-        {/* Related properties from same region */}
-        {relatedProperties.length > 0 && (
-          <section className="section-padding bg-white border-t border-[#E8E4DC]">
+        {/* Concierge Services Included */}
+        <section className="section-padding bg-[#F5F1EB]">
+          <div className="container max-w-4xl mx-auto text-center">
+            <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>
+              INCLUDED WITH EVERY STAY
+            </p>
+            <h2 className="headline-lg text-[#1A1A18] mb-4">Your personal concierge</h2>
+            <p className="body-md mb-8 max-w-2xl mx-auto" style={{ color: '#6B6860' }}>
+              Every Portugal Active guest receives a dedicated concierge before arrival. Private chef, spa, transfers, restaurant reservations — one message arranges everything.
+            </p>
+            <Link
+              href="/concierge"
+              className="inline-flex items-center gap-2 bg-[#1A1A18] text-white text-[12px] tracking-[0.08em] font-medium px-8 py-4 hover:bg-[#333330] transition-colors"
+            >
+              EXPLORE CONCIERGE SERVICES <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </section>
+
+        {/* Experiences Nearby */}
+        {nearbyActivities.length > 0 && (
+          <section className="section-padding bg-white">
             <div className="container">
-              <div className="flex items-end justify-between mb-8">
-                <div>
-                  <p className="text-[11px] font-medium tracking-[0.08em] text-[#8B7355] mb-2 uppercase">More in {destName}</p>
-                  <h2 className="headline-lg text-[#1A1A18]">Related homes</h2>
-                </div>
-                {destObj && (
-                  <Link href={`/destinations/${destObj.slug}`} className="hidden md:flex items-center gap-2 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors">
-                    All {destName} homes <ArrowRight className="w-4 h-4" />
+              <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>
+                EXPERIENCES
+              </p>
+              <h2 className="headline-lg text-[#1A1A18] mb-3">Things to do nearby</h2>
+              <p className="body-lg mb-8 max-w-xl">Curated activities and adventures in this region. Open to everyone.</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {nearbyActivities.map((act: any) => (
+                  <Link key={act.slug} href={`/experiences/${act.slug}`} className="group block">
+                    <div className="relative overflow-hidden bg-[#E8E4DC] mb-3" style={{ aspectRatio: '4/3' }}>
+                      {act.images?.[0] ? (
+                        <img src={act.images[0]} alt={act.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" />
+                      ) : (
+                        <div className="w-full h-full bg-[#E8E4DC]" />
+                      )}
+                      <span className="absolute top-3 left-3 bg-white/90 text-[10px] font-semibold text-[#1A1A18] px-2.5 py-1" style={{ letterSpacing: '0.05em' }}>
+                        {act.category?.toUpperCase()}
+                      </span>
+                    </div>
+                    <h4 className="text-[15px] font-medium text-[#1A1A18] mb-1 group-hover:text-[#8B7355] transition-colors" style={{ fontFamily: 'var(--font-body)' }}>
+                      {act.title}
+                    </h4>
+                    <p className="text-[13px] text-[#6B6860] line-clamp-2 mb-2" style={{ fontWeight: 300 }}>{act.shortDescription}</p>
+                    <div className="flex items-center gap-3 text-[12px] text-[#9E9A90]">
+                      {act.duration && <span>{act.duration}</span>}
+                      {act.priceFrom > 0 && <span>From €{act.priceFrom}</span>}
+                    </div>
                   </Link>
-                )}
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {relatedProperties.map(rp => (
-                  <PropertyCard
-                    key={rp.id}
-                    property={rp}
-                    checkin={initialCheckin || undefined}
-                    checkout={initialCheckout || undefined}
-                    guests={initialGuests > 1 ? initialGuests : undefined}
-                  />
                 ))}
+              </div>
+              <div className="text-center mt-8">
+                <Link
+                  href="/experiences"
+                  className="inline-flex items-center gap-2 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors"
+                >
+                  Explore all experiences <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
             </div>
           </section>
@@ -1029,22 +603,24 @@ export default function PropertyDetail() {
         <Footer />
       </div>
 
-      {/* Fullscreen lightbox */}
+      {/* Lightbox */}
       {lightboxOpen && (
-        <Lightbox
-          images={images}
-          initialIndex={lightboxImage}
-          propertyName={property.name}
-          destName={destName}
-          onClose={() => setLightboxOpen(false)}
-          t={t}
-        />
+        <div className="fixed inset-0 z-[200] bg-black/95 overflow-y-auto">
+          <button onClick={() => setLightboxOpen(false)} className="fixed top-3 right-3 z-[210] touch-target rounded-full bg-white/10 hover:bg-white/20 transition-colors" aria-label={t('propertyDetail.closeGallery')}>
+            <X size={20} className="text-white" />
+          </button>
+          <div className="container py-16 lg:py-20">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
+              {images.map((img: string, idx: number) => (
+                <img key={idx} src={img} alt={`${property.name} - ${idx + 1}`} className="w-full aspect-[4/3] object-cover" loading="lazy" />
+              ))}
+            </div>
+          </div>
+        </div>
       )}
 
       {modalProduct && (
-        <Suspense fallback={null}>
-          <AddToItineraryModal product={modalProduct} isOpen={!!modalProduct} onClose={() => setModalProduct(null)} />
-        </Suspense>
+        <AddToItineraryModal product={modalProduct} isOpen={!!modalProduct} onClose={() => setModalProduct(null)} />
       )}
     </>
   );

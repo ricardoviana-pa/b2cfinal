@@ -10,20 +10,17 @@ import { Link, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import {
   Menu, X, Phone, Mail, MessageCircle, Instagram, Youtube, Linkedin,
-  ChevronDown, ChevronRight, MapPin, Sparkles, ArrowRight, User
+  ChevronDown, ChevronRight, MapPin, Sparkles, ArrowRight
 } from 'lucide-react';
 import { IMAGES } from '@/lib/images';
-import { trpc } from '@/lib/trpc';
 import LanguageSwitcher from './LanguageSwitcher';
 
 interface HeaderProps {
   variant?: 'transparent' | 'solid';
 }
 
-export default function Header({ variant = 'solid' }: HeaderProps) {
+export default function Header({ variant = 'transparent' }: HeaderProps) {
   const { t } = useTranslation();
-  const meQuery = trpc.auth.me.useQuery(undefined, { retry: false, refetchOnWindowFocus: false });
-  const authUser = meQuery.data;
   const destinations = useMemo(
     () =>
       [
@@ -39,6 +36,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
     () => [
       { label: t('nav.properties'), href: '/homes', hasDropdown: true },
       { label: t('nav.destinations'), href: '/destinations' },
+      { label: 'Experiences', href: '/experiences' },
       { label: t('nav.events'), href: '/events' },
       { label: t('nav.journal'), href: '/blog' },
       { label: t('nav.about'), href: '/about' },
@@ -50,7 +48,8 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
     () => [
       { label: t('nav.properties'), href: '/homes', isParent: true },
       { label: t('nav.destinations'), href: '/destinations' },
-      { label: t('nav.concierge'), href: '/services', isParent: false },
+      { label: 'Experiences', href: '/experiences' },
+      { label: 'Concierge', href: '/concierge' },
       { label: t('nav.events'), href: '/events' },
       { label: t('nav.journal'), href: '/blog' },
       { label: t('nav.about'), href: '/about' },
@@ -67,8 +66,6 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
   const phoneRef = useRef<HTMLDivElement>(null);
   const propertiesRef = useRef<HTMLDivElement>(null);
   const propertiesTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const menuPanelRef = useRef<HTMLDivElement>(null);
-  const menuToggleRef = useRef<HTMLButtonElement>(null);
 
   const handleScroll = useCallback(() => {
     setScrolled(window.scrollY > 60);
@@ -92,36 +89,6 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
-  }, [menuOpen]);
-
-  // Escape key closes mobile menu & focus trap
-  useEffect(() => {
-    if (!menuOpen) return;
-
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setMenuOpen(false);
-        menuToggleRef.current?.focus();
-        return;
-      }
-      if (e.key === 'Tab' && menuPanelRef.current) {
-        const focusable = menuPanelRef.current.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
-        );
-        if (focusable.length === 0) return;
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
-      }
-    };
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
   }, [menuOpen]);
 
   // Close dropdowns on outside click
@@ -151,15 +118,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
 
   return (
     <>
-      {/* Skip to main content — first focusable element */}
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded-md focus:bg-[#1A1A18] focus:text-white focus:text-sm focus:outline-none"
-      >
-        {t('header.skipToContent', 'Skip to main content')}
-      </a>
       <header
-        role="banner"
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isTransparent
             ? 'bg-transparent'
@@ -172,12 +131,10 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
             {/* LEFT: Hamburger + Logo */}
             <div className="flex items-center gap-3 flex-shrink-0">
               <button
-                ref={menuToggleRef}
                 onClick={() => setMenuOpen(v => !v)}
-                className={`flex items-center justify-center w-11 h-11 ${textColor} transition-colors`}
+                className={`flex items-center justify-center w-10 h-10 ${textColor} transition-colors`}
+                style={{ minHeight: 'auto', minWidth: 'auto' }}
                 aria-label={menuOpen ? t('header.closeMenu') : t('header.openMenu')}
-                aria-expanded={menuOpen}
-                aria-controls="mobile-menu-panel"
               >
                 {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -195,27 +152,27 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
             </div>
 
             {/* CENTRE: Desktop nav with Properties dropdown */}
-            <nav className="hidden lg:flex items-center gap-6" aria-label="Main navigation">
+            <nav className="hidden lg:flex items-center gap-6">
               {navItems.map(item => (
                 item.hasDropdown ? (
                   <div
                     key={item.href}
                     ref={propertiesRef}
-                    className="relative flex items-center"
+                    className="relative"
                     onMouseEnter={openProperties}
                     onMouseLeave={closeProperties}
                   >
                     <Link
                       href={item.href}
-                      className={`inline-flex items-center gap-1 text-[13px] font-medium leading-none transition-colors ${
-                        location.startsWith('/homes') || location.startsWith('/services')
+                      className={`flex items-center gap-1 text-[13px] font-medium transition-colors ${
+                        location.startsWith('/homes') || location.startsWith('/concierge')
                           ? (isTransparent ? 'text-white' : 'text-[#1A1A18]')
                           : (isTransparent ? 'text-white/75 hover:text-white' : 'text-[#6B6860] hover:text-[#1A1A18]')
                       }`}
-                      style={{ letterSpacing: '0.02em', minHeight: 'auto', minWidth: 'auto' }}
+                      style={{ letterSpacing: '0.02em' }}
                     >
                       {item.label}
-                      <ChevronDown className={`w-3 h-3 shrink-0 transition-transform duration-200 ${propertiesOpen ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${propertiesOpen ? 'rotate-180' : ''}`} />
                     </Link>
 
                     {/* Properties mega-dropdown */}
@@ -259,7 +216,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
 
                       {/* Concierge */}
                       <Link
-                        href="/services"
+                        href="/concierge"
                         className="flex items-center justify-between px-5 py-3 hover:bg-[#FAFAF7] transition-colors group"
                       >
                         <div className="flex items-center gap-3">
@@ -279,12 +236,12 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`inline-flex items-center text-[13px] font-medium leading-none transition-colors ${
+                    className={`text-[13px] font-medium transition-colors ${
                       location === item.href
                         ? (isTransparent ? 'text-white' : 'text-[#1A1A18]')
                         : (isTransparent ? 'text-white/75 hover:text-white' : 'text-[#6B6860] hover:text-[#1A1A18]')
                     }`}
-                    style={{ letterSpacing: '0.02em', minHeight: 'auto', minWidth: 'auto' }}
+                    style={{ letterSpacing: '0.02em' }}
                   >
                     {item.label}
                   </Link>
@@ -361,29 +318,10 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                 </div>
               </div>
 
-              {/* Account / Login */}
-              <Link
-                href={authUser ? '/account' : '/login'}
-                className={`hidden md:inline-flex items-center justify-center w-9 h-9 rounded-full transition-all duration-300 ${
-                  isTransparent
-                    ? 'text-white/70 hover:text-white hover:bg-white/10'
-                    : 'text-[#6B6860] hover:text-[#1A1A18] hover:bg-[#F5F1EB]'
-                }`}
-                aria-label={authUser ? 'My Account' : 'Sign in'}
-              >
-                {authUser ? (
-                  <div className="w-7 h-7 rounded-full bg-[#8B7355] flex items-center justify-center text-white text-[11px] font-display">
-                    {(authUser.name || 'G')[0].toUpperCase()}
-                  </div>
-                ) : (
-                  <User size={18} />
-                )}
-              </Link>
-
               {/* Desktop: BOOK NOW button */}
               <Link
                 href="/homes"
-                className={`hidden md:inline-flex items-center rounded-full px-5 py-2.5 text-[11px] font-semibold uppercase transition-all duration-300 ${
+                className={`hidden md:inline-flex items-center rounded-full px-5 py-2.5 text-[11px] font-semibold transition-all duration-300 ${
                   isTransparent
                     ? 'border border-white/40 text-white hover:bg-white/15 hover:border-white/60'
                     : 'border border-[#1A1A18] text-[#1A1A18] hover:bg-[#1A1A18] hover:text-white'
@@ -396,7 +334,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
               {/* Mobile: BOOK button */}
               <Link
                 href="/homes"
-                className={`md:hidden inline-flex items-center rounded-full px-4 py-2 text-[10px] font-semibold uppercase transition-all duration-300 ${
+                className={`md:hidden inline-flex items-center rounded-full px-4 py-2 text-[10px] font-semibold transition-all duration-300 ${
                   isTransparent
                     ? 'border border-white/40 text-white hover:bg-white/15'
                     : 'border border-[#1A1A18] text-[#1A1A18] hover:bg-[#1A1A18] hover:text-white'
@@ -421,11 +359,6 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
 
       {/* Panel — slides from left */}
       <div
-        ref={menuPanelRef}
-        id="mobile-menu-panel"
-        role="dialog"
-        aria-modal="true"
-        aria-label={t('header.menuLabel', 'Site navigation')}
         className={`fixed top-0 left-0 bottom-0 z-[55] w-[85vw] sm:w-[380px] lg:w-[420px] bg-white shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="h-full flex flex-col overflow-y-auto">
@@ -442,7 +375,8 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
             </Link>
             <button
               onClick={() => setMenuOpen(false)}
-              className="w-11 h-11 flex items-center justify-center text-[#1A1A18] hover:text-[#8B7355] transition-colors"
+              className="w-10 h-10 flex items-center justify-center text-[#1A1A18] hover:text-[#8B7355] transition-colors"
+              style={{ minHeight: 'auto', minWidth: 'auto' }}
               aria-label={t('header.closeMenu')}
             >
               <X className="w-5 h-5" />
@@ -450,7 +384,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
           </div>
 
           {/* Navigation links */}
-          <nav className="flex-1 px-7 pt-6" aria-label="Mobile navigation">
+          <nav className="flex-1 px-7 pt-6">
             {mobileNav.map((item, i) => (
               <div key={item.href}>
                 {item.isParent ? (
@@ -478,10 +412,8 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                       </Link>
                       <button
                         onClick={() => setMobilePropertiesOpen(v => !v)}
-                        className="w-10 h-10 flex items-center justify-center text-[#9E9A90] hover:text-[#1A1A18] transition-colors"
+                        className="w-8 h-8 flex items-center justify-center text-[#9E9A90] hover:text-[#1A1A18] transition-colors"
                         style={{ minHeight: 'auto', minWidth: 'auto' }}
-                        aria-label={mobilePropertiesOpen ? t('header.collapseProperties', 'Collapse properties') : t('header.expandProperties', 'Expand properties')}
-                        aria-expanded={mobilePropertiesOpen}
                       >
                         <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${mobilePropertiesOpen ? 'rotate-180' : ''}`} />
                       </button>
@@ -516,7 +448,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                           </Link>
                         ))}
                         <Link
-                          href="/services"
+                          href="/concierge"
                           onClick={() => setMenuOpen(false)}
                           className="flex items-center gap-2.5 py-2.5 text-[14px] text-[#8B7355] font-medium hover:text-[#8B7355] transition-colors"
                         >
@@ -526,7 +458,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                       </div>
                     </div>
                   </div>
-                ) : item.href === '/services' ? (
+                ) : item.href === '/concierge' ? (
                   /* Concierge — skip in mobile nav since it's under Properties */
                   null
                 ) : (
@@ -551,24 +483,6 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                 )}
               </div>
             ))}
-            {/* Account link */}
-            <Link
-              href={authUser ? '/account' : '/login'}
-              onClick={() => setMenuOpen(false)}
-              className={`flex items-center gap-3 py-3.5 border-b border-[#E8E4DC]/30 transition-all duration-500 ${menuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
-              style={{ transitionDelay: menuOpen ? '400ms' : '0ms' }}
-            >
-              {authUser ? (
-                <div className="w-6 h-6 rounded-full bg-[#8B7355] flex items-center justify-center text-white text-[10px] font-display">
-                  {(authUser.name || 'G')[0].toUpperCase()}
-                </div>
-              ) : (
-                <User size={18} className="text-[#8B7355]" />
-              )}
-              <span className="text-[1.3rem]" style={{ fontFamily: 'var(--font-display)', color: '#1A1A18', fontWeight: 400 }}>
-                {authUser ? t('nav.myAccount', 'My Account') : t('nav.signIn', 'Sign In')}
-              </span>
-            </Link>
           </nav>
 
           {/* Bottom: contact + language + social */}
@@ -589,13 +503,13 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
 
             {/* Social */}
             <div className="flex items-center gap-4">
-              <a href="https://instagram.com/portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="Instagram">
+              <a href="https://instagram.com/portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors">
                 <Instagram className="w-4.5 h-4.5" />
               </a>
-              <a href="https://youtube.com/@portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="YouTube">
+              <a href="https://youtube.com/@portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors">
                 <Youtube className="w-4.5 h-4.5" />
               </a>
-              <a href="https://linkedin.com/company/portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="LinkedIn">
+              <a href="https://linkedin.com/company/portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors">
                 <Linkedin className="w-4.5 h-4.5" />
               </a>
             </div>
