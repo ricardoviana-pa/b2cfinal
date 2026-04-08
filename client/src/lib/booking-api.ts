@@ -104,8 +104,19 @@ export async function fetchCalendarWindow(listingId: string, months = 3): Promis
   }));
 }
 
-// createReservation (inquiry) removed — all bookings must go through
-// Booking Engine with Stripe payment. Contact concierge for questions.
+export function createReservation(payload: Record<string, unknown>) {
+  return fetchJson<{
+    reservationId: string;
+    confirmationCode: string;
+    status: string;
+  }>("/api/reservations", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+}
 
 export function fetchReservation(reservationId: string) {
   return fetchJson<{

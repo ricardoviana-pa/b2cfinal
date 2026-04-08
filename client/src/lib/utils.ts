@@ -1,74 +1,9 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { Property, FilterDestination, SortOption } from "./types";
+import type { Property, FilterDestination, FilterLocation, SortOption } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-/** Turn a locality name into a URL-friendly slug, e.g. "Viana do Castelo" → "viana-do-castelo" */
-export function slugifyLocality(name: string): string {
-  return name
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-}
-
-/** Destination slug → display name for grouping */
-const DEST_DISPLAY: Record<string, string> = {
-  minho: 'Minho Coast',
-  porto: 'Porto & Douro',
-  lisbon: 'Lisbon',
-  alentejo: 'Alentejo',
-  algarve: 'Algarve',
-  brazil: 'Brazil',
-};
-
-/** Destination display order */
-const DEST_ORDER = ['minho', 'porto', 'lisbon', 'alentejo', 'algarve', 'brazil'];
-
-export interface LocalityGroup {
-  destination: string;
-  destinationLabel: string;
-  localities: { label: string; value: string }[];
-}
-
-/** Extract unique localities grouped by destination region, sorted alphabetically within each group */
-export function getGroupedLocalities(properties: Property[]): LocalityGroup[] {
-  const groups = new Map<string, Map<string, string>>();
-  for (const p of properties) {
-    if (p.isActive && p.locality) {
-      const slug = slugifyLocality(p.locality);
-      if (!groups.has(p.destination)) groups.set(p.destination, new Map());
-      const destMap = groups.get(p.destination)!;
-      if (!destMap.has(slug)) destMap.set(slug, p.locality);
-    }
-  }
-  return DEST_ORDER
-    .filter(d => groups.has(d))
-    .map(d => ({
-      destination: d,
-      destinationLabel: DEST_DISPLAY[d] || d,
-      localities: Array.from(groups.get(d)!.entries())
-        .sort((a, b) => a[1].localeCompare(b[1], 'pt'))
-        .map(([value, label]) => ({ label, value })),
-    }));
-}
-
-/** Flat list (kept for backwards compat) */
-export function getUniqueLocalities(properties: Property[]): { label: string; value: string }[] {
-  const map = new Map<string, string>();
-  for (const p of properties) {
-    if (p.isActive && p.locality) {
-      const slug = slugifyLocality(p.locality);
-      if (!map.has(slug)) map.set(slug, p.locality);
-    }
-  }
-  return Array.from(map.entries())
-    .sort((a, b) => a[1].localeCompare(b[1], 'pt'))
-    .map(([value, label]) => ({ label, value }));
 }
 
 export function formatPrice(price: number): string {
@@ -87,13 +22,12 @@ export function filterProperties(
   price?: string,
   style?: string,
   tier?: string,
-  location?: string,
+  location?: FilterLocation,
 ): Property[] {
   let filtered = properties.filter(p => p.isActive);
 
   if (location && location !== 'all') {
-    const slug = location.toLowerCase();
-    filtered = filtered.filter(p => slugifyLocality(p.locality) === slug);
+    filtered = filtered.filter(p => p.locality === location);
   } else if (destination !== 'all') {
     filtered = filtered.filter(p => p.destination === destination);
   }

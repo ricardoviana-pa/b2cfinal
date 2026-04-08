@@ -6,33 +6,18 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { usePageMeta } from '@/hooks/usePageMeta';
-import { useFavorites } from '@/hooks/useFavorites';
-import { IMAGES } from '@/lib/images';
-import { SlidersHorizontal, X, Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, MessageCircle, Heart } from 'lucide-react';
+import { SlidersHorizontal, X, Search, Calendar, Users } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
-import type { Property, FilterDestination, SortOption } from '@/lib/types';
-import { filterProperties, sortProperties, getUniqueLocalities } from '@/lib/utils';
+import type { Property, FilterDestination, FilterLocation, SortOption } from '@/lib/types';
+import { filterProperties, sortProperties } from '@/lib/utils';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
-
-interface LiveQuote {
-  total: number;
-  nightlyRate: number;
-  cleaningFee: number;
-  nights: number;
-  source?: string;
-  fallbackMessage?: string;
-  available?: boolean;
-}
 
 const BEDROOM_OPTIONS = ['1-2', '3-4', '5-6', '7+'];
 
 export default function Homes() {
   const { t } = useTranslation();
-  const { favorites } = useFavorites();
-  usePageMeta({ title: 'Private Villas Portugal | Luxury Holiday Homes', description: 'Browse 50+ handpicked private villas across Portugal. Pool, concierge, housekeeping included. Filter by region and book direct.', image: IMAGES.heroHomes, url: '/homes' });
   const [, navigate] = useLocation();
 
   const OCCASIONS = useMemo(
@@ -46,12 +31,15 @@ export default function Homes() {
     [t]
   );
 
-  const CITY_FILTERS = useMemo(
-    (): { label: string; value: string }[] => [
-      { label: t('filters.all'), value: 'all' },
-      ...cities,
-    ],
-    [t, cities]
+  const LOCATIONS = useMemo(
+    (): { label: string; value: FilterLocation }[] => {
+      const cities = [...new Set(allProperties.filter(p => p.isActive && p.locality).map(p => p.locality))].sort();
+      return [
+        { label: t('filters.all'), value: 'all' },
+        ...cities.map(city => ({ label: city, value: city })),
+      ];
+    },
+    [allProperties, t]
   );
 
   const TIERS = useMemo(
@@ -113,35 +101,23 @@ export default function Homes() {
     return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
   }, [searchGuests]);
 
-  const toFilterDestination = (value: string): FilterDestination => {
-    if (value === 'minho' || value === 'porto' || value === 'algarve') return value;
-    return 'all';
-  };
-
-  const { data: propsData, isLoading, isError, refetch } = trpc.properties.listForSite.useQuery();
+  const { data: propsData, isLoading, isError } = trpc.properties.listForSite.useQuery();
   const allProperties = (propsData ?? []) as Property[];
-  const cities = useMemo(() => getUniqueLocalities(allProperties), [allProperties]);
 
-  const [occasion, setOccasion] = useState(() => searchParams.get('occasion') || 'all');
-  const [destination, setDestination] = useState<FilterDestination>(() => toFilterDestination(searchDestinationFromUrl));
-  const [location, setLocation] = useState(() => searchLocationFromUrl || 'all');
-  const [tier, setTier] = useState(() => searchParams.get('tier') || 'all');
-  // Default to price-desc (premium positioning) — always show most expensive first
-  const [sort, setSort] = useState<SortOption>(() => (searchParams.get('sort') as SortOption) || 'price-desc');
-  const [bedrooms, setBedrooms] = useState<string | undefined>(() => searchParams.get('bedrooms') || undefined);
-  const [price, setPrice] = useState<string | undefined>(() => searchParams.get('price') || undefined);
-  const [style, setStyle] = useState<string | undefined>(() => searchParams.get('style') || undefined);
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(() => searchParams.get('favorites') === 'true');
+  const [occasion, setOccasion] = useState('all');
+  const [destination, setDestination] = useState<FilterDestination>('all');
+  const [location, setLocation] = useState<FilterLocation>(searchLocationFromUrl || 'all');
+  const [tier, setTier] = useState('all');
+  const [sort, setSort] = useState<SortOption>('recommended');
+  const [bedrooms, setBedrooms] = useState<string | undefined>();
+  const [price, setPrice] = useState<string | undefined>();
+  const [style, setStyle] = useState<string | undefined>();
   const [showMoreFilters, setShowMoreFilters] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [bookingDestination, setBookingDestination] = useState(searchDestinationFromUrl);
-  const [bookingLocation, setBookingLocation] = useState(searchLocationFromUrl);
+  const [bookingLocation, setBookingLocation] = useState(searchLocationFromUrl || searchDestinationFromUrl);
   const [bookingCheckin, setBookingCheckin] = useState(searchCheckin);
   const [bookingCheckout, setBookingCheckout] = useState(searchCheckout);
   const [bookingGuests, setBookingGuests] = useState(searchGuests ? Number(searchGuests) : 2);
-  const [quotes, setQuotes] = useState<Record<string, LiveQuote | null>>({});
-  const [quotesLoading, setQuotesLoading] = useState(false);
-  const utils = trpc.useUtils();
   const effectiveGuests = searchGuestsCount > 0 ? searchGuestsCount : bookingGuests;
   const checkInRef = useRef<HTMLInputElement>(null);
   const checkOutRef = useRef<HTMLInputElement>(null);
@@ -154,38 +130,29 @@ export default function Homes() {
     return d.toISOString().split('T')[0];
   }, [bookingCheckin, today]);
 
+  // Sync URL params → state. Supports both ?location=City and legacy ?destination=slug
   useEffect(() => {
-    setBookingDestination(searchDestinationFromUrl);
-    setBookingLocation(searchLocationFromUrl);
+    if (searchLocationFromUrl) {
+      setLocation(searchLocationFromUrl);
+      setBookingLocation(searchLocationFromUrl);
+      setDestination('all');
+    } else if (searchDestinationFromUrl) {
+      const toFilterDest = (v: string): FilterDestination => {
+        if (v === 'minho' || v === 'porto' || v === 'algarve') return v;
+        return 'all';
+      };
+      setDestination(toFilterDest(searchDestinationFromUrl));
+      setLocation('all');
+      setBookingLocation('');
+    } else {
+      setLocation('all');
+      setDestination('all');
+      setBookingLocation('');
+    }
     setBookingCheckin(searchCheckin);
     setBookingCheckout(searchCheckout);
     setBookingGuests(searchGuests ? Math.max(1, Number(searchGuests) || 2) : 2);
-    setDestination(toFilterDestination(searchDestinationFromUrl));
-    setLocation(searchLocationFromUrl || 'all');
-  }, [searchDestinationFromUrl, searchLocationFromUrl, searchCheckin, searchCheckout, searchGuests]);
-
-  useEffect(() => {
-    const params = new URLSearchParams(searchString);
-    const set = (k: string, v: string | undefined, fallback: string) => {
-      if (v && v !== fallback) params.set(k, v);
-      else params.delete(k);
-    };
-    set('occasion', occasion, 'all');
-    set('destination', destination, 'all');
-    set('location', location, 'all');
-    set('tier', tier, 'all');
-    set('sort', sort, 'price-desc');
-    set('bedrooms', bedrooms, '');
-    set('price', price, '');
-    set('style', style, '');
-    if (showFavoritesOnly) params.set('favorites', 'true');
-    else params.delete('favorites');
-    const qs = params.toString();
-    const newUrl = `/homes${qs ? `?${qs}` : ''}`;
-    if (newUrl !== window.location.pathname + window.location.search) {
-      window.history.replaceState(null, '', newUrl);
-    }
-  }, [occasion, destination, location, tier, sort, bedrooms, price, style, showFavoritesOnly, searchString]);
+  }, [searchLocationFromUrl, searchDestinationFromUrl, searchCheckin, searchCheckout, searchGuests]);
 
   const filtered = useMemo(() => {
     const f = filterProperties(allProperties, occasion, destination, bedrooms, price, style, tier, location);
@@ -193,154 +160,27 @@ export default function Homes() {
       searchGuestsCount > 0
         ? f.filter((property) => (property.maxGuests ?? 0) >= searchGuestsCount)
         : f;
-    const withFavorites = showFavoritesOnly
-      ? withGuestCapacity.filter((property) => favorites.includes(property.slug))
-      : withGuestCapacity;
-    return sortProperties(withFavorites, sort);
-  }, [allProperties, occasion, destination, location, sort, bedrooms, price, style, tier, searchGuestsCount, showFavoritesOnly, favorites]);
+    return sortProperties(withGuestCapacity, sort);
+  }, [allProperties, occasion, destination, location, sort, bedrooms, price, style, tier, searchGuestsCount]);
 
-  // When dates are set, split into available (with live pricing) and unavailable properties
-  const hasDates = searchNights > 0;
-  const { availableProperties, unavailableProperties } = useMemo(() => {
-    if (!hasDates || Object.keys(quotes).length === 0) {
-      return { availableProperties: filtered, unavailableProperties: [] as Property[] };
-    }
-    const available: Property[] = [];
-    const unavailable: Property[] = [];
-    for (const p of filtered) {
-      const q = quotes[p.slug];
-      if (q && q.available !== false && (q.source === 'live' || q.source === 'cached')) {
-        available.push(p);
-      } else if (q && q.available === false) {
-        unavailable.push(p);
-      } else {
-        // Base price or no quote — show in available section with estimate
-        available.push(p);
-      }
-    }
-    // Sort available by live total price descending (premium positioning)
-    available.sort((a, b) => {
-      const qa = quotes[a.slug];
-      const qb = quotes[b.slug];
-      const ta = qa?.total ?? (a.priceFrom * searchNights);
-      const tb = qb?.total ?? (b.priceFrom * searchNights);
-      return tb - ta; // Descending — most expensive first
-    });
-    // Sort unavailable by base price descending too
-    unavailable.sort((a, b) => b.priceFrom - a.priceFrom);
-    return { availableProperties: available, unavailableProperties: unavailable };
-  }, [filtered, quotes, hasDates, searchNights]);
-
-  const hasActiveFilters = occasion !== 'all' || destination !== 'all' || location !== 'all' || tier !== 'all' || bedrooms || price || style || showFavoritesOnly;
+  const hasActiveFilters = occasion !== 'all' || location !== 'all' || tier !== 'all' || bedrooms || price || style;
 
   const clearFilters = () => {
     setOccasion('all');
-    setDestination('all');
     setLocation('all');
-    setBookingLocation('');
+    setDestination('all');
     setTier('all');
     setBedrooms(undefined);
     setPrice(undefined);
     setStyle(undefined);
-    setShowFavoritesOnly(false);
   };
 
-  // PLP pricing: fetch LIVE Guesty quotes via batch endpoint when dates are set.
-  // Provides real availability + pricing for every property in the catalogue.
-  const [batchFailed, setBatchFailed] = useState(false);
-  const batchAbortRef = useRef<AbortController | null>(null);
-
-  useEffect(() => {
-    if (!searchCheckin || !searchCheckout || searchNights <= 0 || allProperties.length === 0) {
-      setQuotes({});
-      setQuotesLoading(false);
-      setBatchFailed(false);
-      return;
-    }
-
-    // Build listing map from all active properties (not just filtered — we need quotes for sorting/splitting)
-    const listings = allProperties
-      .filter(p => p.isActive && p.guestyId)
-      .map(p => ({ listingId: p.guestyId!, slug: p.slug }));
-
-    if (listings.length === 0) {
-      setQuotes({});
-      setQuotesLoading(false);
-      return;
-    }
-
-    // Abort previous in-flight batch if dates changed
-    if (batchAbortRef.current) batchAbortRef.current.abort();
-    const controller = new AbortController();
-    batchAbortRef.current = controller;
-
-    setQuotesLoading(true);
-    setBatchFailed(false);
-
-    utils.booking.getBatchQuotes
-      .fetch(
-        { listings, checkIn: searchCheckin, checkOut: searchCheckout, guests: effectiveGuests || 2 },
-      )
-      .then((data) => {
-        if (controller.signal.aborted) return;
-        const mapped: Record<string, LiveQuote | null> = {};
-        for (const [slug, q] of Object.entries(data)) {
-          mapped[slug] = {
-            total: q.pricing.total,
-            nightlyRate: q.pricing.nightlyRate,
-            cleaningFee: q.pricing.cleaningFee,
-            nights: q.nights,
-            source: q.source,
-            fallbackMessage: q.fallbackMessage,
-            available: q.available,
-          };
-        }
-        setQuotes(mapped);
-        setQuotesLoading(false);
-      })
-      .catch((err) => {
-        if (controller.signal.aborted) return;
-        console.error('[PLP] Batch quotes failed:', err);
-        // Fallback: use catalogue base prices so cards aren't empty
-        const computed: Record<string, LiveQuote | null> = {};
-        for (const property of allProperties) {
-          const nightlyRate = property.pricePerNight ?? property.priceFrom ?? 0;
-          const cleaningFee = property.cleaningFee ?? 0;
-          if (nightlyRate > 0) {
-            computed[property.slug] = {
-              total: nightlyRate * searchNights + cleaningFee,
-              nightlyRate,
-              cleaningFee,
-              nights: searchNights,
-              source: 'base',
-              available: true,
-            };
-          }
-        }
-        setQuotes(computed);
-        setQuotesLoading(false);
-        setBatchFailed(true);
-      });
-
-    return () => { controller.abort(); };
-  }, [searchCheckin, searchCheckout, searchNights, allProperties, effectiveGuests, utils]);
-
   const applyBookingSearch = () => {
-    const params = new URLSearchParams(searchString);
-    if (bookingLocation) { params.set('location', bookingLocation); params.delete('destination'); }
-    else if (bookingDestination) { params.set('destination', bookingDestination); params.delete('location'); }
-    else { params.delete('destination'); params.delete('location'); }
+    const params = new URLSearchParams();
+    if (bookingLocation && bookingLocation !== 'all') params.set('location', bookingLocation);
     if (bookingCheckin) params.set('checkin', bookingCheckin);
-    else params.delete('checkin');
     if (bookingCheckout) params.set('checkout', bookingCheckout);
-    else params.delete('checkout');
     if (bookingGuests > 1) params.set('guests', String(bookingGuests));
-    else params.delete('guests');
-    // Auto-switch to price-desc when dates are set (premium positioning)
-    if (bookingCheckin && bookingCheckout) {
-      setSort('price-desc');
-      params.set('sort', 'price-desc');
-    }
     const qs = params.toString();
     navigate(`/homes${qs ? `?${qs}` : ''}`);
   };
@@ -353,7 +193,7 @@ export default function Homes() {
           ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
           : 'bg-transparent text-[#6B6860] border-[#E8E4DC] hover:border-[#1A1A18] hover:text-[#1A1A18]'
       }`}
-      style={{ minHeight: '44px', minWidth: 'auto' }}
+      style={{ minHeight: '42px', minWidth: 'auto' }}
     >
       {children}
     </button>
@@ -361,23 +201,8 @@ export default function Homes() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FAFAF7]">
-        <Header />
-        <div className="container py-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i}>
-                <div className="skeleton-shimmer" style={{ aspectRatio: '4/3' }} />
-                <div className="pt-3.5 space-y-2">
-                  <div className="skeleton-shimmer h-3 w-24 rounded" />
-                  <div className="skeleton-shimmer h-5 w-48 rounded" />
-                  <div className="skeleton-shimmer h-3 w-36 rounded" />
-                  <div className="skeleton-shimmer h-4 w-28 rounded mt-3" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="min-h-screen bg-[#FAFAF7] flex items-center justify-center">
+        <div className="w-[320px] h-[180px] rounded-lg bg-[#F5F1EB] animate-pulse border border-[#E8E4DC]" />
       </div>
     );
   }
@@ -387,13 +212,10 @@ export default function Homes() {
       <div className="min-h-screen bg-[#FAFAF7]">
         <Header />
         <section className="section-padding">
-          <div className="container max-w-lg text-center">
-            <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#F5F1EB]">
-              <AlertTriangle className="w-6 h-6 text-[#9E9A90]" />
-            </div>
-            <h2 className="headline-md text-[#1A1A18] mb-3">{t('homes.loadErrorTitle', 'Something went wrong')}</h2>
-            <p className="body-md mb-8">{t('homes.loadErrorBody', 'We couldn\'t load the properties. Please try again.')}</p>
-            <button onClick={() => refetch()} className="btn-primary">{t('homes.retry', 'RETRY')}</button>
+          <div className="container text-center">
+            <h2 className="headline-md text-[#1A1A18] mb-3">{t('homes.loadErrorTitle')}</h2>
+            <p className="body-md mb-6">{t('homes.loadErrorBody')}</p>
+            <button onClick={() => navigate('/homes')} className="btn-primary">{t('homes.tryAgain')}</button>
           </div>
         </section>
         <Footer />
@@ -405,234 +227,115 @@ export default function Homes() {
     <div className="min-h-screen bg-[#FAFAF7]">
       <Header />
 
-      {/* Hero — editorial only; search lives in sticky toolbar below (less empty white, clearer PLP hierarchy) */}
-      <section className="relative min-h-[300px] md:min-h-[340px] h-[38vh] max-h-[520px] overflow-hidden">
-        <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp" alt="Collection of luxury private villas across Portugal" className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/20" />
-        <div className="relative z-10 container flex flex-col justify-end h-full min-h-[inherit] pt-28 md:pt-32 pb-10 md:pb-14">
-          <h1 className="headline-xl text-white mb-3 max-w-2xl">{t('homes.title')}</h1>
-          <p className="body-lg max-w-xl pb-1" style={{ color: 'rgba(255,255,255,0.75)' }}>
+      {/* Hero */}
+      <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
+        <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp" alt={t('homes.heroAlt')} className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10" />
+        <div className="relative container pb-12 lg:pb-16 z-10">
+          <h1 className="headline-xl text-white mb-4">{t('homes.title')}</h1>
+          <p className="body-lg max-w-xl" style={{ color: 'rgba(255,255,255,0.7)' }}>
             {t('homes.subtitle')}
           </p>
         </div>
       </section>
 
-      {/* Sticky: homepage-style search + filters in one dense band */}
+      {/* Sticky Filter Bar */}
       <div className="sticky top-16 md:top-20 z-30 bg-[#FAFAF7]/95 backdrop-blur-md border-b border-[#E8E4DC]">
-        <div className="container py-2.5 md:py-3">
-          {/* Desktop — pill (same as homepage) */}
-          <div className="hidden lg:flex justify-center mb-2.5 md:mb-3">
-            <div
-              className="flex items-center w-full max-w-[780px] rounded-full bg-white shadow-[0_6px_32px_rgba(0,0,0,0.08)] overflow-hidden border border-[#E8E4DC]/60"
-              style={{ height: '56px' }}
-            >
-              <div className="flex-1 relative h-full min-w-0">
+        <div className="container py-3 md:py-4">
+          {/* Booking bar with dates on PLP */}
+          <div className="mb-3 md:mb-4 border border-[#E8E4DC] bg-white">
+            <div className="grid grid-cols-1 md:grid-cols-12">
+              <div className="md:col-span-3 border-b md:border-b-0 md:border-r border-[#E8E4DC] px-3 py-2.5">
+                <p className="text-[10px] uppercase tracking-[0.08em] text-[#9E9A90] mb-1">{t('homes.bookingBarDestination')}</p>
                 <select
                   value={bookingLocation}
-                  onChange={e => {
-                    const v = e.target.value;
-                    setBookingLocation(v);
-                    setLocation(v || 'all');
-                  }}
-                  className="w-full h-full pl-6 pr-8 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer appearance-none truncate"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
+                  onChange={(e) => setBookingLocation(e.target.value)}
+                  className="w-full bg-transparent text-[13px] text-[#1A1A18] focus:outline-none cursor-pointer"
                 >
-                  <option value="">{t('home.searchDestination')}</option>
-                  {cities.map(city => (
-                    <option key={city.value} value={city.value}>{city.label}</option>
+                  {LOCATIONS.map(loc => (
+                    <option key={loc.value} value={loc.value}>{loc.label}</option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9E9A90] pointer-events-none" />
               </div>
-              <div className="w-px h-6 bg-[#E8E4DC] shrink-0" />
+
               <div
-                className="flex-1 min-w-0 h-full cursor-pointer"
-                onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); (inp as HTMLInputElement | null)?.showPicker?.(); }}
+                className="md:col-span-3 border-b md:border-b-0 md:border-r border-[#E8E4DC] px-3 py-2.5 cursor-pointer"
+                onClick={() => checkInRef.current?.showPicker?.()}
               >
+                <p className="text-[10px] uppercase tracking-[0.08em] text-[#9E9A90] mb-1 flex items-center gap-1">
+                  <Calendar className="w-3 h-3" /> {t('search.checkIn')}
+                </p>
                 <input
                   ref={checkInRef}
                   type="date"
                   min={today}
                   value={bookingCheckin}
-                  onChange={e => {
+                  onChange={(e) => {
                     setBookingCheckin(e.target.value);
                     if (bookingCheckout && bookingCheckout <= e.target.value) setBookingCheckout('');
-                    setTimeout(() => checkOutRef.current?.showPicker?.(), 50);
                   }}
-                  className="w-full h-full px-3 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
+                  className="w-full bg-transparent text-[13px] text-[#1A1A18] focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute"
                 />
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-[#9E9A90] flex-shrink-0" aria-hidden />
+
               <div
-                className="flex-1 min-w-0 h-full cursor-pointer"
-                onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); (inp as HTMLInputElement | null)?.showPicker?.(); }}
+                className="md:col-span-3 border-b md:border-b-0 md:border-r border-[#E8E4DC] px-3 py-2.5 cursor-pointer"
+                onClick={() => checkOutRef.current?.showPicker?.()}
               >
+                <p className="text-[10px] uppercase tracking-[0.08em] text-[#9E9A90] mb-1 flex items-center gap-1">
+                  <Calendar className="w-3 h-3" /> {t('search.checkOut')}
+                </p>
                 <input
                   ref={checkOutRef}
                   type="date"
                   min={minCheckOut}
                   value={bookingCheckout}
-                  onChange={e => setBookingCheckout(e.target.value)}
-                  className="w-full h-full px-3 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
+                  onChange={(e) => setBookingCheckout(e.target.value)}
+                  className="w-full bg-transparent text-[13px] text-[#1A1A18] focus:outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute"
                 />
               </div>
-              <div className="w-px h-6 bg-[#E8E4DC] shrink-0" />
-              <div className="flex items-center h-full px-3 gap-2 shrink-0">
-                <Users className="w-3.5 h-3.5 text-[#9E9A90] flex-shrink-0" aria-hidden />
-                <button
-                  type="button"
-                  onClick={() => setBookingGuests(g => Math.max(1, g - 1))}
-                  disabled={bookingGuests <= 1}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
-                  aria-label={t('home.decreaseGuests', 'Decrease guests')}
-                >
-                  <Minus className="w-2.5 h-2.5" />
-                </button>
-                <span className="text-[13px] text-[#1A1A18] tabular-nums whitespace-nowrap" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
-                  {bookingGuests} <span className="text-[#9E9A90] lowercase">{t('home.searchGuests')}</span>
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setBookingGuests(g => Math.min(30, g + 1))}
-                  disabled={bookingGuests >= 30}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
-                  aria-label={t('home.increaseGuests', 'Increase guests')}
-                >
-                  <Plus className="w-2.5 h-2.5" />
-                </button>
-              </div>
-              <button
-                type="button"
-                onClick={applyBookingSearch}
-                className="flex-shrink-0 h-[44px] mr-1.5 px-6 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
-                style={{ letterSpacing: '1.5px' }}
-              >
-                {t('home.searchButton')}
-              </button>
-            </div>
-          </div>
 
-          {/* Mobile — card stack (homepage style), then filter row */}
-          <div className="lg:hidden mb-3">
-            <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[#E8E4DC]/80 p-4 space-y-3">
-              <div className="relative">
+              <div className="md:col-span-2 border-b md:border-b-0 md:border-r border-[#E8E4DC] px-3 py-2.5">
+                <p className="text-[10px] uppercase tracking-[0.08em] text-[#9E9A90] mb-1 flex items-center gap-1">
+                  <Users className="w-3 h-3" /> {t('search.guests')}
+                </p>
                 <select
-                  value={bookingLocation}
-                  onChange={e => {
-                    const v = e.target.value;
-                    setBookingLocation(v);
-                    setLocation(v || 'all');
-                  }}
-                  className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white pl-3 pr-9 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer appearance-none"
-                  style={{ fontFamily: 'var(--font-body)' }}
+                  value={bookingGuests}
+                  onChange={(e) => setBookingGuests(Number(e.target.value))}
+                  className="w-full bg-transparent text-[13px] text-[#1A1A18] focus:outline-none cursor-pointer"
                 >
-                  <option value="">{t('home.searchDestination')}</option>
-                  {cities.map(city => (
-                    <option key={city.value} value={city.value}>{city.label}</option>
+                  {Array.from({ length: 20 }, (_, i) => i + 1).map(n => (
+                    <option key={n} value={n}>{t('search.guestsCount', { count: n })}</option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9A90] pointer-events-none" />
               </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div
-                  className="relative"
-                  onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); (inp as HTMLInputElement | null)?.showPicker?.(); }}
-                >
-                  <input
-                    type="date"
-                    min={today}
-                    value={bookingCheckin}
-                    onChange={e => {
-                      setBookingCheckin(e.target.value);
-                      if (bookingCheckout && bookingCheckout <= e.target.value) setBookingCheckout('');
-                      setTimeout(() => checkOutRef.current?.showPicker?.(), 50);
-                    }}
-                    className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  />
-                </div>
-                <div
-                  className="relative"
-                  onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); (inp as HTMLInputElement | null)?.showPicker?.(); }}
-                >
-                  <input
-                    ref={checkOutRef}
-                    type="date"
-                    min={minCheckOut}
-                    value={bookingCheckout}
-                    onChange={e => setBookingCheckout(e.target.value)}
-                    className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  />
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 flex-1 h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3">
-                  <Users className="w-4 h-4 text-[#9E9A90] shrink-0" aria-hidden />
-                  <button
-                    type="button"
-                    onClick={() => setBookingGuests(g => Math.max(1, g - 1))}
-                    disabled={bookingGuests <= 1}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30"
-                    aria-label={t('home.decreaseGuests', 'Decrease guests')}
-                  >
-                    <Minus className="w-3 h-3" />
-                  </button>
-                  <span className="text-[13px] text-[#1A1A18] tabular-nums flex-1 text-center">{bookingGuests} {t('home.searchGuests')}</span>
-                  <button
-                    type="button"
-                    onClick={() => setBookingGuests(g => Math.min(30, g + 1))}
-                    disabled={bookingGuests >= 30}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30"
-                    aria-label={t('home.increaseGuests', 'Increase guests')}
-                  >
-                    <Plus className="w-3 h-3" />
-                  </button>
-                </div>
+
+              <div className="md:col-span-1 px-2 py-2">
                 <button
-                  type="button"
                   onClick={applyBookingSearch}
-                  className="shrink-0 h-[48px] px-5 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
-                  style={{ letterSpacing: '1.5px' }}
+                  className="w-full h-full min-h-[48px] rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase hover:bg-[#333330] transition-colors flex items-center justify-center gap-1.5"
                 >
-                  {t('home.searchButton')}
+                  <Search className="w-3.5 h-3.5" /> {t('search.search')}
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Mobile filter + sort */}
-          <div className="lg:hidden flex items-center justify-between gap-2">
+          {/* Mobile */}
+          <div className="lg:hidden flex items-center justify-between">
             <button
               onClick={() => setMobileFiltersOpen(true)}
-              className="flex items-center gap-2 text-[13px] font-medium text-[#1A1A18] border border-[#E8E4DC] px-4 py-2.5 flex-1"
-              style={{ minHeight: '44px', minWidth: 'auto' }}
+              className="flex items-center gap-2 text-[13px] font-medium text-[#1A1A18] border border-[#E8E4DC] px-4 py-2.5"
+              style={{ minHeight: '40px', minWidth: 'auto' }}
             >
               <SlidersHorizontal className="w-4 h-4" />
               {t('filters.mobileFilter')}{hasActiveFilters ? ` (${filtered.length})` : ''}
             </button>
-            {favorites.length > 0 && (
-              <button
-                onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-                className={`flex items-center gap-1.5 text-[13px] font-medium px-3 py-2.5 border rounded-full transition-all ${
-                  showFavoritesOnly
-                    ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
-                    : 'text-[#6B6860] border-[#E8E4DC] hover:border-[#1A1A18] hover:text-[#1A1A18]'
-                }`}
-                style={{ minHeight: '44px', minWidth: 'auto' }}
-                title={t('filters.favorites', 'Favorites')}
-              >
-                <Heart className={`w-3.5 h-3.5 ${showFavoritesOnly ? 'fill-white' : ''}`} />
-                <span>{favorites.length}</span>
-              </button>
-            )}
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as SortOption)}
               className="text-[13px] text-[#6B6860] bg-transparent border border-[#E8E4DC] px-3 py-2.5 font-sans"
-              style={{ minHeight: '44px' }}
+              style={{ minHeight: '40px' }}
             >
               {SORT_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
             </select>
@@ -640,7 +343,7 @@ export default function Homes() {
 
           {/* Desktop */}
           <div className="hidden lg:block">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-3">
               <div className="flex flex-wrap gap-2">
                 {OCCASIONS.map(o => (
                   <Chip key={o.value} active={occasion === o.value} onClick={() => setOccasion(o.value)}>{o.label}</Chip>
@@ -649,18 +352,10 @@ export default function Homes() {
                 {TIERS.map(t => (
                   <Chip key={t.value} active={tier === t.value} onClick={() => setTier(t.value)}>{t.label}</Chip>
                 ))}
-                <div className="w-px h-8 bg-[#E8E4DC] self-center mx-1" />
-                <Chip
-                  active={showFavoritesOnly}
-                  onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-                >
-                  <Heart className="w-3 h-3 mr-1 inline" />
-                  {t('filters.favorites', 'Favorites')} {favorites.length > 0 && `(${favorites.length})`}
-                </Chip>
               </div>
               <div className="flex items-center gap-3">
                 {hasActiveFilters && (
-                  <button onClick={clearFilters} className="text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors" style={{ minHeight: '44px', minWidth: 'auto' }}>
+                  <button onClick={clearFilters} className="text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors" style={{ minHeight: '40px', minWidth: 'auto' }}>
                     {t('filters.clearAll')}
                   </button>
                 )}
@@ -674,7 +369,7 @@ export default function Homes() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              {CITY_FILTERS.map(d => (
+              {LOCATIONS.map(d => (
                 <Chip
                   key={d.value}
                   active={location === d.value}
@@ -689,7 +384,7 @@ export default function Homes() {
               <button
                 onClick={() => setShowMoreFilters(!showMoreFilters)}
                 className="text-[13px] font-medium text-[#8B7355] ml-2 hover:text-[#1A1A18] transition-colors"
-                style={{ minHeight: '44px', minWidth: 'auto' }}
+                style={{ minHeight: '40px', minWidth: 'auto' }}
               >
                 {showMoreFilters ? t('filters.lessFilters') : t('filters.moreFilters')}
               </button>
@@ -736,7 +431,7 @@ export default function Homes() {
 
               {([
                 { groupKey: 'occasion' as const, labelKey: 'filters.occasion', items: OCCASIONS, value: occasion },
-                { groupKey: 'location' as const, labelKey: 'filters.destinationLabel', items: CITY_FILTERS, value: location },
+                { groupKey: 'location' as const, labelKey: 'filters.destinationLabel', items: LOCATIONS, value: location },
                 { groupKey: 'tier' as const, labelKey: 'filters.tierLabel', items: TIERS, value: tier },
               ] as const).map((group) => (
                 <div key={group.groupKey} className="mb-6">
@@ -750,7 +445,7 @@ export default function Homes() {
                           if (group.groupKey === 'occasion') setOccasion(item.value);
                           if (group.groupKey === 'tier') setTier(item.value);
                           if (group.groupKey === 'location') {
-                            setLocation(item.value);
+                            setLocation(item.value as FilterLocation);
                             setBookingLocation(item.value === 'all' ? '' : item.value);
                           }
                         }}
@@ -761,19 +456,6 @@ export default function Homes() {
                   </div>
                 </div>
               ))}
-
-              {favorites.length > 0 && (
-                <div className="mb-6">
-                  <p className="text-[11px] font-medium tracking-[0.02em] text-[#9E9A90] mb-3">{t('filters.favorites', 'Favorites')}</p>
-                  <Chip
-                    active={showFavoritesOnly}
-                    onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-                  >
-                    <Heart className="w-3 h-3 mr-1 inline" />
-                    {t('filters.showFavorites', 'Show favorites')} ({favorites.length})
-                  </Chip>
-                </div>
-              )}
 
               <button
                 onClick={() => setMobileFiltersOpen(false)}
@@ -787,149 +469,38 @@ export default function Homes() {
       )}
 
       {/* Results */}
-      <section className="pt-6 pb-12 md:pt-8 md:pb-16 lg:pb-20" aria-live="polite" aria-atomic="true">
+      <section className="section-padding">
         <div className="container">
-          {/* Status line */}
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-[13px] text-[#78756F]">
-              {hasDates && !quotesLoading ? (
-                <>
-                  <span className="font-medium text-[#1A1A18]">{availableProperties.length}</span> {t('homes.availableForDates', 'homes available')}
-                  {unavailableProperties.length > 0 && (
-                    <span> · {unavailableProperties.length} {t('homes.unavailableCount', 'unavailable')}</span>
-                  )}
-                </>
-              ) : (
-                t('homes.available', { count: filtered.length })
-              )}
-              {searchGuestsCount > 0 && (
-                <span> · {t('homes.guestsPlus', { count: searchGuestsCount })}</span>
-              )}
-              {searchNights > 0 && (
-                <span> · {t('homes.nightsCount', { count: searchNights })}</span>
-              )}
-            </p>
-            {quotesLoading && hasDates && (
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full border-2 border-[#8B7355] border-t-transparent animate-spin" />
-                <span className="text-[12px] text-[#8B7355] font-medium">{t('homes.checkingAvailability', 'Checking live availability...')}</span>
-              </div>
+          <p className="text-[13px] text-[#9E9A90] mb-6">
+            {t('homes.available', { count: filtered.length })}
+            {searchGuestsCount > 0 && (
+              <span> · {t('homes.guestsPlus', { count: searchGuestsCount })}</span>
             )}
+            {searchNights > 0 && (
+              <span> · {t('homes.nightsCount', { count: searchNights })}</span>
+            )}
+          </p>
+          <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-x-6 md:gap-y-10 md:overflow-visible">
+            {filtered.map(property => (
+              <div key={property.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
+                <PropertyCard
+                  property={property}
+                  nights={searchNights}
+                  checkin={searchCheckin}
+                  checkout={searchCheckout}
+                />
+              </div>
+            ))}
           </div>
 
-          {/* Batch error banner */}
-          {batchFailed && hasDates && (
-            <div className="flex items-center gap-3 bg-[#FEF3C7] border border-[#F59E0B]/30 rounded-lg px-4 py-3 mb-6">
-              <AlertTriangle className="w-4 h-4 text-[#D97706] shrink-0" />
-              <p className="text-[13px] text-[#92400E]">
-                {t('homes.batchError', 'Live pricing is temporarily unavailable. Showing estimated rates — confirm final price on the property page.')}
-              </p>
-            </div>
-          )}
-
-          {/* SECTION 1: Available properties (with confirmed or estimated pricing) */}
-          {availableProperties.length > 0 && (
-            <>
-              {hasDates && !quotesLoading && unavailableProperties.length > 0 && (
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-2 h-2 rounded-full bg-[#22C55E]" />
-                  <h2 className="text-[13px] font-semibold tracking-[0.06em] uppercase text-[#1A1A18]">
-                    {t('homes.availableSection', 'Available for your dates')}
-                  </h2>
-                </div>
-              )}
-              <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-x-6 md:gap-y-10 md:overflow-visible">
-                {availableProperties.map(property => (
-                  <div key={property.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
-                    <PropertyCard
-                      property={property}
-                      nights={searchNights}
-                      checkin={searchCheckin}
-                      checkout={searchCheckout}
-                      guests={searchGuestsCount || undefined}
-                      liveQuote={quotes[property.slug] || undefined}
-                      quoteLoading={quotesLoading}
-                      batchFailed={batchFailed}
-                    />
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-
-          {/* SECTION 2: Unavailable properties (portfolio visibility — "try other dates") */}
-          {hasDates && !quotesLoading && unavailableProperties.length > 0 && (
-            <div className="mt-12 md:mt-16">
-              <div className="border-t border-[#E8E4DC] pt-8 mb-6">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-2 h-2 rounded-full bg-[#9E9A90]" />
-                  <h2 className="text-[13px] font-semibold tracking-[0.06em] uppercase text-[#9E9A90]">
-                    {t('homes.unavailableSection', 'Unavailable for selected dates')}
-                  </h2>
-                </div>
-                <p className="text-[12px] text-[#9E9A90] ml-4">
-                  {t('homes.unavailableHint', 'These homes may be available for different dates. Contact our concierge for alternatives.')}
-                </p>
-              </div>
-              <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-x-6 md:gap-y-10 md:overflow-visible opacity-75">
-                {unavailableProperties.map(property => (
-                  <div key={property.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
-                    <PropertyCard
-                      property={property}
-                      nights={searchNights}
-                      checkin={searchCheckin}
-                      checkout={searchCheckout}
-                      guests={searchGuestsCount || undefined}
-                      liveQuote={quotes[property.slug] || undefined}
-                      quoteLoading={false}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* No results */}
           {filtered.length === 0 && (
-            <div className="text-center py-16 md:py-24 max-w-md mx-auto">
-              <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#F5F1EB]">
-                <Search className="w-5 h-5 text-[#9E9A90]" />
-              </div>
-              <h3 className="headline-sm text-[#1A1A18] mb-2">{t('homes.noMatch', 'No homes match your criteria')}</h3>
-              <p className="body-md mb-8">{t('homes.noMatchHint', 'Try adjusting your filters or contact our team for help.')}</p>
+            <div className="text-center py-20">
+              <p className="body-lg mb-2" style={{ color: '#1A1A18' }}>{t('homes.noMatch')}</p>
+              <p className="body-md mb-8">{t('homes.noMatchHint')}</p>
               <div className="flex items-center justify-center gap-4 flex-wrap">
                 <button onClick={clearFilters} className="btn-primary">{t('filters.clearAll')}</button>
-                <a
-                  href="https://wa.me/351927161771?text=Hi%2C%20I%27m%20looking%20for%20a%20property%20but%20can%27t%20find%20the%20right%20match.%20Can%20you%20help%3F"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-ghost inline-flex items-center gap-2"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  {t('homes.talkConcierge', 'Talk to concierge')}
-                </a>
+                <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="btn-ghost">{t('homes.talkConcierge')}</a>
               </div>
-            </div>
-          )}
-
-          {/* All unavailable — nudge user */}
-          {hasDates && !quotesLoading && availableProperties.length === 0 && unavailableProperties.length > 0 && (
-            <div className="text-center py-8 mb-8 bg-[#F5F1EB] rounded-lg">
-              <p className="text-[15px] font-display text-[#1A1A18] mb-2">
-                {t('homes.noneAvailable', 'No homes available for these dates')}
-              </p>
-              <p className="text-[13px] text-[#9E9A90] mb-4">
-                {t('homes.noneAvailableHint', 'Try adjusting your dates or speak with our concierge')}
-              </p>
-              <a
-                href={`https://wa.me/351927161771?text=${encodeURIComponent(`Hi, I'm looking for a property from ${searchCheckin} to ${searchCheckout} for ${effectiveGuests} guests but nothing seems available. Can you help?`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-ghost inline-flex items-center gap-2"
-              >
-                <MessageCircle className="w-4 h-4" />
-                {t('homes.talkConcierge', 'Talk to concierge')}
-              </a>
             </div>
           )}
         </div>
