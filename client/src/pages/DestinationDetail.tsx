@@ -58,7 +58,26 @@ export default function DestinationDetail() {
     script.id = "destination-jsonld";
     document.querySelector("#destination-jsonld")?.remove();
     document.head.appendChild(script);
-    return () => { document.querySelector("#destination-jsonld")?.remove(); };
+    // BreadcrumbList
+    const breadcrumbLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
+        { "@type": "ListItem", "position": 2, "name": "Destinations", "item": "https://www.portugalactive.com/destinations" },
+        { "@type": "ListItem", "position": 3, "name": dest.name },
+      ],
+    };
+    const breadcrumbScript = document.createElement("script");
+    breadcrumbScript.type = "application/ld+json";
+    breadcrumbScript.text = JSON.stringify(breadcrumbLd);
+    breadcrumbScript.id = "destination-breadcrumb-jsonld";
+    document.querySelector("#destination-breadcrumb-jsonld")?.remove();
+    document.head.appendChild(breadcrumbScript);
+    return () => {
+      document.querySelector("#destination-jsonld")?.remove();
+      document.querySelector("#destination-breadcrumb-jsonld")?.remove();
+    };
   }, [dest, allProperties]);
 
   const destProperties = useMemo(() => {

@@ -94,7 +94,7 @@ const CONTACT_CHANNELS = [
 
 export default function Contact() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Contact Portugal Active | Plan Your Stay in Portugal', description: 'Speak to our concierge team. We respond within 2 hours. Phone, WhatsApp, or email — plan your perfect Portuguese villa holiday.', url: '/contact' });
+  usePageMeta({ title: 'Contact Portugal Active | Plan Your Stay in Portugal', description: 'Plan your Portugal stay with our concierge team. Luxury villa rentals, private chef, outdoor adventures. Phone, WhatsApp or email — we reply within 2 hours.', url: '/contact' });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -144,6 +144,25 @@ export default function Contact() {
     { q: t('contact.faq5q'), a: t('contact.faq5a') },
     { q: t('contact.faq6q'), a: t('contact.faq6a') },
   ], [t]);
+
+  useEffect(() => {
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": FAQ_ITEMS.map(item => ({
+        "@type": "Question",
+        "name": item.q,
+        "acceptedAnswer": { "@type": "Answer", "text": item.a },
+      })),
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(jsonLd);
+    script.id = "contact-faq-jsonld";
+    document.querySelector("#contact-faq-jsonld")?.remove();
+    document.head.appendChild(script);
+    return () => { document.querySelector("#contact-faq-jsonld")?.remove(); };
+  }, [FAQ_ITEMS]);
 
   const validateField = useCallback((field: string, value: string) => {
     if (field === 'name' && !value.trim()) return t('contact.errorName', 'Please enter your name');

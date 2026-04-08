@@ -3,7 +3,7 @@
    Adventure catalogue filtered by destination, with itinerary integration
    ========================================================================== */
 
-import { useState, useMemo, lazy, Suspense } from 'react';
+import { useState, useMemo, useEffect, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { Plus, MessageCircle, MapPin } from 'lucide-react';
@@ -19,7 +19,74 @@ const adventures = allProducts.filter(p => p.type === 'adventure' && p.isActive)
 
 export default function Adventures() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Outdoor Adventures Portugal | Surf, Hike, Wine Tours', description: "Guided adventures across Portugal — surf lessons, hiking trails, wine tastings, coasteering. Book with your villa stay.", url: '/adventures' });
+  usePageMeta({ title: 'Adventure Activities in Portugal | Horseback Riding, Canyoning & Surfing', description: 'Guided adventure activities across Portugal — horseback riding, canyoning, surfing, hiking, wine tours & more. Book direct in Minho, Porto or Algarve.', url: '/adventures' });
+
+  useEffect(() => {
+    // ItemList schema — lets Google display individual adventures as rich results
+    const itemListLd = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Adventure Activities in Portugal",
+      "description": "Guided outdoor adventures across Portugal including horseback riding, canyoning, surfing and more.",
+      "url": "https://www.portugalactive.com/adventures",
+      "numberOfItems": adventures.length,
+      "itemListElement": adventures.map((a, i) => ({
+        "@type": "ListItem",
+        "position": i + 1,
+        "name": a.name,
+        "description": a.tagline || a.name,
+        "url": `https://www.portugalactive.com/adventures`,
+        ...(a.image && { "image": a.image }),
+        ...(a.priceFrom && { "offers": { "@type": "Offer", "priceCurrency": "EUR", "price": a.priceFrom } }),
+      })),
+    };
+    // FAQPage schema — earns FAQ rich snippets in search results
+    const faqLd = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What adventure activities are available in Portugal?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Portugal Active offers horseback riding, canyoning, surfing lessons, guided hiking, e-bike tours, stand-up paddleboarding, wine tastings, and coasteering. Activities are available across Minho, Porto & Douro, Lisbon, Alentejo and the Algarve." },
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need prior experience to join your adventure activities?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Most activities are suitable for all levels. Our guides tailor each experience to the group. Beginners are welcome for surfing, horseback riding, and hiking. Some activities like canyoning have basic fitness requirements — our team will advise when you enquire." },
+        },
+        {
+          "@type": "Question",
+          "name": "Can I book adventure activities as part of my villa stay?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. All adventure activities can be booked alongside your villa stay with Portugal Active. Our concierge team will build a bespoke itinerary combining your villa, activities, private chef, and transfers into a single plan." },
+        },
+        {
+          "@type": "Question",
+          "name": "Where in Portugal do your adventures take place?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Activities are available across Portugal — Minho Coast (Viana do Castelo area), Porto & Douro Valley, Lisbon & Sintra, Alentejo, and the Algarve. Location depends on the specific activity; our team will confirm the meeting point when you book." },
+        },
+      ],
+    };
+
+    const itemListScript = document.createElement("script");
+    itemListScript.type = "application/ld+json";
+    itemListScript.text = JSON.stringify(itemListLd);
+    itemListScript.id = "adventures-itemlist-jsonld";
+    document.querySelector("#adventures-itemlist-jsonld")?.remove();
+    document.head.appendChild(itemListScript);
+
+    const faqScript = document.createElement("script");
+    faqScript.type = "application/ld+json";
+    faqScript.text = JSON.stringify(faqLd);
+    faqScript.id = "adventures-faq-jsonld";
+    document.querySelector("#adventures-faq-jsonld")?.remove();
+    document.head.appendChild(faqScript);
+
+    return () => {
+      document.querySelector("#adventures-itemlist-jsonld")?.remove();
+      document.querySelector("#adventures-faq-jsonld")?.remove();
+    };
+  }, []);
   const [destination, setDestination] = useState('all');
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
 

@@ -62,6 +62,42 @@ export default function Home() {
     description: '50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool. Book direct for best rates.',
     url: '/',
   });
+  useEffect(() => {
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "LodgingBusiness",
+      "name": "Portugal Active",
+      "description": "50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool, housekeeping. Book direct for best rates.",
+      "url": "https://www.portugalactive.com",
+      "telephone": "+351927161771",
+      "email": "info@portugalactive.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Viana do Castelo",
+        "addressRegion": "Norte",
+        "addressCountry": "PT",
+      },
+      "areaServed": [
+        { "@type": "Place", "name": "Minho, Portugal" },
+        { "@type": "Place", "name": "Porto & Douro, Portugal" },
+        { "@type": "Place", "name": "Lisbon, Portugal" },
+        { "@type": "Place", "name": "Alentejo, Portugal" },
+        { "@type": "Place", "name": "Algarve, Portugal" },
+      ],
+      "priceRange": "€€€",
+      "sameAs": [
+        "https://www.instagram.com/portugal_active",
+      ],
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(jsonLd);
+    script.id = "home-localbusiness-jsonld";
+    document.querySelector("#home-localbusiness-jsonld")?.remove();
+    document.head.appendChild(script);
+    return () => { document.querySelector("#home-localbusiness-jsonld")?.remove(); };
+  }, []);
+
   const { data: propsData, isLoading, isError } = trpc.properties.listForSite.useQuery();
   const properties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
 
