@@ -12,7 +12,7 @@ import { IMAGES } from '@/lib/images';
 import { SlidersHorizontal, X, Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, MessageCircle, Heart } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
-import { filterProperties, sortProperties, getGroupedLocalities } from '@/lib/utils';
+import { filterProperties, sortProperties, getUniqueLocalities } from '@/lib/utils';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
@@ -46,14 +46,12 @@ export default function Homes() {
     [t]
   );
 
-  const DESTINATIONS = useMemo(
-    (): { label: string; value: FilterDestination }[] => [
+  const CITY_FILTERS = useMemo(
+    (): { label: string; value: string }[] => [
       { label: t('filters.all'), value: 'all' },
-      { label: t('destinations.minho'), value: 'minho' },
-      { label: t('destinations.porto'), value: 'porto' },
-      { label: t('destinations.algarve'), value: 'algarve' },
+      ...cities,
     ],
-    [t]
+    [t, cities]
   );
 
   const TIERS = useMemo(
@@ -122,7 +120,7 @@ export default function Homes() {
 
   const { data: propsData, isLoading, isError, refetch } = trpc.properties.listForSite.useQuery();
   const allProperties = (propsData ?? []) as Property[];
-  const localityGroups = useMemo(() => getGroupedLocalities(allProperties), [allProperties]);
+  const cities = useMemo(() => getUniqueLocalities(allProperties), [allProperties]);
 
   const [occasion, setOccasion] = useState(() => searchParams.get('occasion') || 'all');
   const [destination, setDestination] = useState<FilterDestination>(() => toFilterDestination(searchDestinationFromUrl));
@@ -440,12 +438,8 @@ export default function Homes() {
                   style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                 >
                   <option value="">{t('home.searchDestination')}</option>
-                  {localityGroups.map(group => (
-                    <optgroup key={group.destination} label={group.destinationLabel}>
-                      {group.localities.map(loc => (
-                        <option key={loc.value} value={loc.value}>{loc.label}</option>
-                      ))}
-                    </optgroup>
+                  {cities.map(city => (
+                    <option key={city.value} value={city.value}>{city.label}</option>
                   ))}
                 </select>
                 <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9E9A90] pointer-events-none" />
@@ -535,12 +529,8 @@ export default function Homes() {
                   style={{ fontFamily: 'var(--font-body)' }}
                 >
                   <option value="">{t('home.searchDestination')}</option>
-                  {localityGroups.map(group => (
-                    <optgroup key={group.destination} label={group.destinationLabel}>
-                      {group.localities.map(loc => (
-                        <option key={loc.value} value={loc.value}>{loc.label}</option>
-                      ))}
-                    </optgroup>
+                  {cities.map(city => (
+                    <option key={city.value} value={city.value}>{city.label}</option>
                   ))}
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9A90] pointer-events-none" />
@@ -684,13 +674,13 @@ export default function Homes() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              {DESTINATIONS.map(d => (
+              {CITY_FILTERS.map(d => (
                 <Chip
                   key={d.value}
-                  active={destination === d.value}
+                  active={location === d.value}
                   onClick={() => {
-                    setDestination(d.value);
-                    setBookingDestination(d.value === 'all' ? '' : d.value);
+                    setLocation(d.value);
+                    setBookingLocation(d.value === 'all' ? '' : d.value);
                   }}
                 >
                   {d.label}
@@ -746,7 +736,7 @@ export default function Homes() {
 
               {([
                 { groupKey: 'occasion' as const, labelKey: 'filters.occasion', items: OCCASIONS, value: occasion },
-                { groupKey: 'destination' as const, labelKey: 'filters.destinationLabel', items: DESTINATIONS, value: destination },
+                { groupKey: 'location' as const, labelKey: 'filters.destinationLabel', items: CITY_FILTERS, value: location },
                 { groupKey: 'tier' as const, labelKey: 'filters.tierLabel', items: TIERS, value: tier },
               ] as const).map((group) => (
                 <div key={group.groupKey} className="mb-6">
@@ -759,9 +749,9 @@ export default function Homes() {
                         onClick={() => {
                           if (group.groupKey === 'occasion') setOccasion(item.value);
                           if (group.groupKey === 'tier') setTier(item.value);
-                          if (group.groupKey === 'destination') {
-                            setDestination(item.value as FilterDestination);
-                            setBookingDestination(item.value === 'all' ? '' : item.value);
+                          if (group.groupKey === 'location') {
+                            setLocation(item.value);
+                            setBookingLocation(item.value === 'all' ? '' : item.value);
                           }
                         }}
                       >
