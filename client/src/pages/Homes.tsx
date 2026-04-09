@@ -35,6 +35,10 @@ export default function Homes() {
   usePageMeta({ title: 'Private Villas Portugal | Luxury Holiday Homes', description: 'Browse 50+ handpicked private villas across Portugal. Pool, concierge, housekeeping included. Filter by region and book direct.', image: IMAGES.heroHomes, url: '/homes' });
   const [, navigate] = useLocation();
 
+  const { data: propsData, isLoading, isError, refetch } = trpc.properties.listForSite.useQuery();
+  const allProperties = (propsData ?? []) as Property[];
+  const cities = useMemo(() => getUniqueLocalities(allProperties), [allProperties]);
+
   const OCCASIONS = useMemo(
     () => [
       { label: t('filters.all'), value: 'all' },
@@ -117,10 +121,6 @@ export default function Homes() {
     if (value === 'minho' || value === 'porto' || value === 'algarve') return value;
     return 'all';
   };
-
-  const { data: propsData, isLoading, isError, refetch } = trpc.properties.listForSite.useQuery();
-  const allProperties = (propsData ?? []) as Property[];
-  const cities = useMemo(() => getUniqueLocalities(allProperties), [allProperties]);
 
   const [occasion, setOccasion] = useState(() => searchParams.get('occasion') || 'all');
   const [destination, setDestination] = useState<FilterDestination>(() => toFilterDestination(searchDestinationFromUrl));
