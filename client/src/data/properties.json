@@ -1395,9 +1395,10 @@
     "images": [
       "https://assets.guesty.com/image/upload/v1775731340/production/6957de4388cba42d9e7a905e/sb0shfijuld0jptnvq67.jpg",
       "https://assets.guesty.com/image/upload/v1775731328/production/6957de4388cba42d9e7a905e/gtexbkrtswl6mo2tl8qx.jpg",
+      "https://assets.guesty.com/image/upload/v1775731361/production/6957de4388cba42d9e7a905e/lhezdnqwsbvaavhvqllf.jpg",
+      "https://assets.guesty.com/image/upload/v1775731336/production/6957de4388cba42d9e7a905e/ex26f0co1huzubv8dosb.jpg",
       "https://assets.guesty.com/image/upload/v1775731334/production/6957de4388cba42d9e7a905e/wlz25luibejlbkg7pymv.jpg",
       "https://assets.guesty.com/image/upload/v1775731335/production/6957de4388cba42d9e7a905e/tezfo94gjjsugjt8j8xi.jpg",
-      "https://assets.guesty.com/image/upload/v1775731336/production/6957de4388cba42d9e7a905e/ex26f0co1huzubv8dosb.jpg",
       "https://assets.guesty.com/image/upload/v1775731336/production/6957de4388cba42d9e7a905e/vh0bus5su4wxr2rtavu2.jpg",
       "https://assets.guesty.com/image/upload/v1775731328/production/6957de4388cba42d9e7a905e/fqfsenqlycmebzguwovs.jpg",
       "https://assets.guesty.com/image/upload/v1774457804/production/6957de4388cba42d9e7a905e/lplxjcreuu6rmktm5xw0.jpg",
@@ -1446,11 +1447,10 @@
       "https://assets.guesty.com/image/upload/v1775731357/production/6957de4388cba42d9e7a905e/rt61uivx2z2dn5kpu7nt.jpg",
       "https://assets.guesty.com/image/upload/v1775731357/production/6957de4388cba42d9e7a905e/xeekea2rzj9urwk1xa3l.jpg",
       "https://assets.guesty.com/image/upload/v1775731357/production/6957de4388cba42d9e7a905e/lzaujqoef41yhsuukpek.jpg",
-      "https://assets.guesty.com/image/upload/v1775731358/production/6957de4388cba42d9e7a905e/aj7rxagfagpm2xctl14b.jpg",
       "https://assets.guesty.com/image/upload/v1775731359/production/6957de4388cba42d9e7a905e/aayvjkovbkhakn8osjzt.jpg",
       "https://assets.guesty.com/image/upload/v1775731360/production/6957de4388cba42d9e7a905e/szfqhoqqpmujkzuxbk47.jpg",
+      "https://assets.guesty.com/image/upload/v1775731358/production/6957de4388cba42d9e7a905e/aj7rxagfagpm2xctl14b.jpg",
       "https://assets.guesty.com/image/upload/v1775731360/production/6957de4388cba42d9e7a905e/mzdzivdtry5tw1jowfas.jpg",
-      "https://assets.guesty.com/image/upload/v1775731361/production/6957de4388cba42d9e7a905e/lhezdnqwsbvaavhvqllf.jpg",
       "https://assets.guesty.com/image/upload/v1775731361/production/6957de4388cba42d9e7a905e/gooqo1ev4viknuzaukqv.jpg",
       "https://assets.guesty.com/image/upload/v1775731362/production/6957de4388cba42d9e7a905e/fsiikelupyjsj12omvxj.jpg",
       "https://assets.guesty.com/image/upload/v1775731362/production/6957de4388cba42d9e7a905e/nzbx8t5ctq4ha3ganhsn.jpg",
@@ -1692,6 +1692,15 @@
       },
       {
         "name": "Bedroom 10",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 11",
         "beds": [
           {
             "type": "SOFA_BED",
@@ -10534,11 +10543,14 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/07d641e9-e945-47-N0YQZ",
+      "https://assets.guesty.com/image/upload/v1775836140/production/6957de4388cba42d9e7a905e/wiadcvnbvuttjyt4elve.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/2ba42341-89a6-48-XPgOG",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/9cae3021-2b87-4a-whH8a",
+      "https://assets.guesty.com/image/upload/v1775836148/production/6957de4388cba42d9e7a905e/uyqb38fb6hqixhrrunrs.jpg",
+      "https://assets.guesty.com/image/upload/v1775836147/production/6957de4388cba42d9e7a905e/qsixugwzjfquam8ci7kh.jpg",
+      "https://assets.guesty.com/image/upload/v1775836139/production/6957de4388cba42d9e7a905e/t9bypvxhuteudud8imje.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/5d0945a2-66dd-41-78PX2",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/416e70ea-3957-45-0fXgX",
+      "https://assets.guesty.com/image/upload/v1775836146/production/6957de4388cba42d9e7a905e/klfsm3gf7luwdypido2g.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/685850a5-d346-40-eJBa6",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/d9f838c6-467e-47-ZJ36p",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/44e61375-7d01-4f-jW_rZ",
@@ -10564,6 +10576,8 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/cf85070c-4576-48-Xnqnk",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/963013a2-9183-4c-X_1ia",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/696648f5-5b6e-4b-ldQg3",
+      "https://assets.guesty.com/image/upload/v1775836147/production/6957de4388cba42d9e7a905e/uhl1t2lsc8ceixciyeg1.jpg",
+      "https://assets.guesty.com/image/upload/v1775836134/production/6957de4388cba42d9e7a905e/ffdklgy7wtuowfch1iii.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/b29f7d3e-1e54-45-KBoo1",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/f8dbde6e-e5ea-44-1ttUV",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/f2b116e2-746e-49-C4Q7h",
@@ -10633,6 +10647,14 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/c0e5bbc6-4b6d-44-P56pf",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/35c83cc2-261c-41-VSIfj",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/f31f5b0d-72e4-44-3mOHO",
+      "https://assets.guesty.com/image/upload/v1775836137/production/6957de4388cba42d9e7a905e/mm1lix7v2wqzj8v7yfi5.jpg",
+      "https://assets.guesty.com/image/upload/v1775836140/production/6957de4388cba42d9e7a905e/ncwsgt5kdwq3zdkj5cbn.jpg",
+      "https://assets.guesty.com/image/upload/v1775836137/production/6957de4388cba42d9e7a905e/ij7pxr9yxisu1nj9kzfz.jpg",
+      "https://assets.guesty.com/image/upload/v1775836139/production/6957de4388cba42d9e7a905e/vcxkuucnb8ggjezengx5.jpg",
+      "https://assets.guesty.com/image/upload/v1775836144/production/6957de4388cba42d9e7a905e/tyv6nydsjchgjsefcnhg.jpg",
+      "https://assets.guesty.com/image/upload/v1775836144/production/6957de4388cba42d9e7a905e/uwx7qnk4qubgqhyzxod4.jpg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/07d641e9-e945-47-N0YQZ",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/9cae3021-2b87-4a-whH8a",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/12e4e474-ed55-49-H5tLe",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/3c2abd76-2ff7-40-LaqaY",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653354109993001383ef5f/281e0a2d-2e3b-4b-_lIao",
