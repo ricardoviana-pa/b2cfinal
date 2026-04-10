@@ -13,6 +13,7 @@ import { SlidersHorizontal, X, Search, ChevronDown, ArrowRight, Users, Minus, Pl
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
 import { filterProperties, sortProperties, getUniqueLocalities } from '@/lib/utils';
+import { pushDL, pushEcommerce } from '@/lib/datalayer';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
@@ -199,6 +200,67 @@ export default function Homes() {
     return sortProperties(withFavorites, sort);
   }, [allProperties, occasion, destination, location, sort, bedrooms, price, style, tier, searchGuestsCount, showFavoritesOnly, favorites]);
 
+  // GA4: view_item_list — fires only for cards that enter the viewport
+  useEffect(() => {
+    observerRef.current?.disconnect();
+    pendingItemsRef.current.clear();
+
+    observerRef.current = new IntersectionObserver((entries) => {
+      let hasNew = false;
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          const slug = elementToSlugRef.current.get(entry.target);
+          if (slug) {
+            const data = cardDataRef.current.get(slug);
+            if (data) {
+              pendingItemsRef.current.set(slug, data);
+              hasNew = true;
+            }
+          }
+        }
+      }
+      if (!hasNew) return;
+      if (flushTimerRef.current) clearTimeout(flushTimerRef.current);
+      flushTimerRef.current = setTimeout(() => {
+        if (pendingItemsRef.current.size === 0) return;
+        const { location, destination, searchNights } = observerContextRef.current;
+        const listName = location !== 'all'
+          ? `Search Results – ${location}`
+          : destination !== 'all'
+            ? `Search Results – ${destination}`
+            : 'All Properties';
+        const items = Array.from(pendingItemsRef.current.values())
+          .sort((a, b) => a.index - b.index)
+          .map(({ property, index }) => ({
+            item_id: `PROP-${property.id}`,
+            item_name: property.name,
+            item_category: 'villa',
+            item_category2: property.locality || property.destination || '',
+            item_category3: 'Portugal',
+            item_variant: property.tier || '',
+            price: property.priceFrom || 0,
+            quantity: searchNights || 1,
+            index,
+          }));
+        pushEcommerce({
+          event: 'view_item_list',
+          ecommerce: { item_list_id: 'search_results', item_list_name: listName, items },
+        });
+        pendingItemsRef.current.clear();
+      }, 200);
+    }, { threshold: 0.5 });
+
+    // Observe all currently registered card elements
+    slugToElementRef.current.forEach((el) => observerRef.current!.observe(el));
+
+    return () => {
+      observerRef.current?.disconnect();
+      observerRef.current = null;
+      if (flushTimerRef.current) clearTimeout(flushTimerRef.current);
+      pendingItemsRef.current.clear();
+    };
+  }, [filtered]);
+
   // When dates are set, split into available (with live pricing) and unavailable properties
   const hasDates = searchNights > 0;
   const { availableProperties, unavailableProperties } = useMemo(() => {
@@ -249,6 +311,17 @@ export default function Homes() {
   // Provides real availability + pricing for every property in the catalogue.
   const [batchFailed, setBatchFailed] = useState(false);
   const batchAbortRef = useRef<AbortController | null>(null);
+
+  // Viewport tracking refs for view_item_list
+  const cardDataRef = useRef<Map<string, { property: Property; index: number }>>(new Map());
+  const slugToElementRef = useRef<Map<string, Element>>(new Map());
+  const elementToSlugRef = useRef<Map<Element, string>>(new Map());
+  const pendingItemsRef = useRef<Map<string, { property: Property; index: number }>>(new Map());
+  const flushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const observerContextRef = useRef({ location: 'all', destination: 'all', searchNights: 0 });
+  // Keep context ref fresh for use inside the IntersectionObserver callback
+  observerContextRef.current = { location, destination, searchNights };
 
   useEffect(() => {
     if (!searchCheckin || !searchCheckout || searchNights <= 0 || allProperties.length === 0) {
@@ -336,6 +409,22 @@ export default function Homes() {
     else params.delete('checkout');
     if (bookingGuests > 1) params.set('guests', String(bookingGuests));
     else params.delete('guests');
+
+    // GA4: search
+    const nights = bookingCheckin && bookingCheckout
+      ? Math.round((new Date(bookingCheckout).getTime() - new Date(bookingCheckin).getTime()) / 86400000)
+      : null;
+    pushDL({
+      event: 'search',
+      search_location: bookingLocation || bookingDestination || 'All Destinations',
+      search_location_type: bookingLocation ? 'city' : bookingDestination ? 'region' : 'all',
+      search_checkin: bookingCheckin || null,
+      search_checkout: bookingCheckout || null,
+      search_nights: nights,
+      search_adults: bookingGuests,
+      search_children: 0,
+      search_source: 'listing_page',
+    });
     // Auto-switch to price-desc when dates are set (premium positioning)
     if (bookingCheckin && bookingCheckout) {
       setSort('price-desc');
@@ -839,8 +928,29 @@ export default function Homes() {
                 </div>
               )}
               <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-x-6 md:gap-y-10 md:overflow-visible">
-                {availableProperties.map(property => (
-                  <div key={property.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
+                {availableProperties.map((property, index) => (
+                  <div
+                    key={property.id}
+                    className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto"
+                    style={{ scrollSnapAlign: 'start' }}
+                    ref={(el) => {
+                      const slug = property.slug;
+                      if (el) {
+                        cardDataRef.current.set(slug, { property, index: index + 1 });
+                        elementToSlugRef.current.set(el, slug);
+                        slugToElementRef.current.set(slug, el);
+                        observerRef.current?.observe(el);
+                      } else {
+                        const existing = slugToElementRef.current.get(slug);
+                        if (existing) {
+                          observerRef.current?.unobserve(existing);
+                          elementToSlugRef.current.delete(existing);
+                          slugToElementRef.current.delete(slug);
+                        }
+                        cardDataRef.current.delete(slug);
+                      }
+                    }}
+                  >
                     <PropertyCard
                       property={property}
                       nights={searchNights}
@@ -850,6 +960,9 @@ export default function Homes() {
                       liveQuote={quotes[property.slug] || undefined}
                       quoteLoading={quotesLoading}
                       batchFailed={batchFailed}
+                      listId="search_results"
+                      listName="Search Results"
+                      itemIndex={index + 1}
                     />
                   </div>
                 ))}
@@ -872,8 +985,30 @@ export default function Homes() {
                 </p>
               </div>
               <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-x-6 md:gap-y-10 md:overflow-visible opacity-75">
-                {unavailableProperties.map(property => (
-                  <div key={property.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
+                {unavailableProperties.map((property, idx) => (
+                  <div
+                    key={property.id}
+                    className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto"
+                    style={{ scrollSnapAlign: 'start' }}
+                    ref={(el) => {
+                      const slug = property.slug;
+                      const itemIndex = availableProperties.length + idx + 1;
+                      if (el) {
+                        cardDataRef.current.set(slug, { property, index: itemIndex });
+                        elementToSlugRef.current.set(el, slug);
+                        slugToElementRef.current.set(slug, el);
+                        observerRef.current?.observe(el);
+                      } else {
+                        const existing = slugToElementRef.current.get(slug);
+                        if (existing) {
+                          observerRef.current?.unobserve(existing);
+                          elementToSlugRef.current.delete(existing);
+                          slugToElementRef.current.delete(slug);
+                        }
+                        cardDataRef.current.delete(slug);
+                      }
+                    }}
+                  >
                     <PropertyCard
                       property={property}
                       nights={searchNights}

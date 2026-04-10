@@ -13,6 +13,7 @@ import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages } from '@/lib/images';
 import { useFavorites } from '@/hooks/useFavorites';
 import destinationsData from '@/data/destinations.json';
+import { pushEcommerce } from '@/lib/datalayer';
 
 const destinations = destinationsData as unknown as Destination[];
 const getDestName = (slug: string) => destinations.find(d => d.slug === slug)?.name || slug;
@@ -23,6 +24,9 @@ interface PropertyCardProps {
   checkin?: string;
   checkout?: string;
   guests?: number;
+  listId?: string;
+  listName?: string;
+  itemIndex?: number;
   liveQuote?: {
     total: number;
     nightlyRate: number;
@@ -43,6 +47,9 @@ export default function PropertyCard({
   checkin,
   checkout,
   guests,
+  listId = 'search_results',
+  listName = 'Search Results',
+  itemIndex,
   liveQuote,
   quoteLoading = false,
   batchFailed = false,
@@ -108,8 +115,34 @@ export default function PropertyCard({
 
   const badge = tierBadge[property.tier];
 
+  const handleCardClick = () => {
+    pushEcommerce({
+      event: 'select_item',
+      ecommerce: {
+        item_list_id: listId,
+        item_list_name: listName,
+        items: [
+          {
+            item_id: `PROP-${property.id}`,
+            item_name: property.name,
+            item_category: 'villa',
+            item_category2: property.locality || property.destination || '',
+            item_category3: 'Portugal',
+            item_variant: property.tier || '',
+            price: property.priceFrom || 0,
+            quantity: nights || 1,
+            ...(itemIndex !== undefined && { index: itemIndex }),
+          },
+        ],
+      },
+    });
+  };
+
   return (
-    <Link href={`/homes/${property.slug}${checkin && checkout ? `?checkin=${encodeURIComponent(checkin)}&checkout=${encodeURIComponent(checkout)}${guests && guests > 1 ? `&guests=${guests}` : ''}` : ''}`}>
+    <Link
+      href={`/homes/${property.slug}${checkin && checkout ? `?checkin=${encodeURIComponent(checkin)}&checkout=${encodeURIComponent(checkout)}${guests && guests > 1 ? `&guests=${guests}` : ''}` : ''}`}
+      onClick={handleCardClick}
+    >
       <article className="group cursor-pointer block">
       {/* Image Carousel â 4:3 aspect */}
       <div

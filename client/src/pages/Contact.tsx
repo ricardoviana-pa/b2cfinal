@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect, useRef, useLayoutEffect } from 'react';
+import { pushDL } from '@/lib/datalayer';
 import { Phone, Mail, MapPin, MessageCircle, Calendar, ChevronDown, Check, ArrowRight, Send, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -213,6 +214,7 @@ export default function Contact() {
         metadata: { subject },
       });
       setSubmitted(true);
+      pushDL({ event: 'generate_lead', lead_source: 'contact-form', lead_type: 'contact', lead_subject: subject });
     } catch {
       setError(t('contact.errorSubmit', 'Something went wrong. Please try again or contact us directly.'));
     } finally {

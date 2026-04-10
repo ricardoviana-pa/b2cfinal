@@ -174,7 +174,7 @@ export const bookingRouter = router({
             listingId: z.string().min(1),
             slug: z.string().min(1),
           })
-        ).min(1).max(60),
+        ).min(1).max(100),
         checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
         checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
         guests: z.number().int().min(1).max(30).default(2),
@@ -202,7 +202,7 @@ export const bookingRouter = router({
           checkIn,
           checkOut,
           minOccupancy: guests > 1 ? guests : undefined,
-          limit: 50,
+          limit: listings.length,
         });
 
         const availableIds = new Set<string>();

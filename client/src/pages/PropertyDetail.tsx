@@ -24,6 +24,7 @@ import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
 import ReviewsSection from '@/components/property/ReviewsSection';
 import { trpc } from '@/lib/trpc';
+import { pushEcommerce } from '@/lib/datalayer';
 
 const allProducts = productsData as unknown as Product[];
 const destinations = destinationsData as unknown as Destination[];
@@ -462,9 +463,49 @@ export default function PropertyDetail() {
   const [dragOffset, setDragOffset] = useState(0);
   const isDragging = useRef(false);
 
+  // Viewport tracking refs for related properties view_item_list
+  const relatedCardDataRef = useRef<Map<string, { property: Property; index: number }>>(new Map());
+  const relatedSlugToElementRef = useRef<Map<string, Element>>(new Map());
+  const relatedElementToSlugRef = useRef<Map<Element, string>>(new Map());
+  const relatedPendingRef = useRef<Map<string, { property: Property; index: number }>>(new Map());
+  const relatedFlushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const relatedObserverRef = useRef<IntersectionObserver | null>(null);
+
   useEffect(() => {
     if (property) setCurrentImage(0);
   }, [property?.slug]);
+
+  // GA4: view_item — fires once per property load
+  useEffect(() => {
+    if (!property) return;
+    const nights = initialCheckin && initialCheckout
+      ? Math.max(1, Math.ceil((new Date(initialCheckout).getTime() - new Date(initialCheckin).getTime()) / 86400000))
+      : 1;
+    pushEcommerce({
+      event: 'view_item',
+      ecommerce: {
+        currency: 'EUR',
+        value: (property.priceFrom || 0) * nights,
+        items: [
+          {
+            item_id: `PROP-${property.id}`,
+            item_name: property.name,
+            item_category: 'villa',
+            item_category2: property.locality || property.destination || '',
+            item_category3: 'Portugal',
+            item_variant: property.tier || '',
+            price: property.priceFrom || 0,
+            quantity: nights,
+            checkin_date: initialCheckin || undefined,
+            checkout_date: initialCheckout || undefined,
+            guests_adults: initialGuests || undefined,
+            max_guests: property.maxGuests || undefined,
+            bedrooms: property.bedrooms || undefined,
+          },
+        ],
+      },
+    });
+  }, [property?.id]);
 
   const services = useMemo(() => allProducts.filter(p => p.type === 'service' && p.isActive), []);
   const adventures = useMemo(() => {
@@ -488,6 +529,62 @@ export default function PropertyDetail() {
       .filter(p => p.isActive !== false && p.destination === property.destination && p.slug !== property.slug)
       .slice(0, 3);
   }, [property, allPropsData]);
+
+  // GA4: view_item_list for related properties — fires when cards enter the viewport
+  useEffect(() => {
+    relatedObserverRef.current?.disconnect();
+    relatedPendingRef.current.clear();
+
+    if (!relatedProperties.length) return;
+
+    relatedObserverRef.current = new IntersectionObserver((entries) => {
+      let hasNew = false;
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          const slug = relatedElementToSlugRef.current.get(entry.target);
+          if (slug) {
+            const data = relatedCardDataRef.current.get(slug);
+            if (data) {
+              relatedPendingRef.current.set(slug, data);
+              hasNew = true;
+            }
+          }
+        }
+      }
+      if (!hasNew) return;
+      if (relatedFlushTimerRef.current) clearTimeout(relatedFlushTimerRef.current);
+      relatedFlushTimerRef.current = setTimeout(() => {
+        if (relatedPendingRef.current.size === 0) return;
+        const items = Array.from(relatedPendingRef.current.values())
+          .sort((a, b) => a.index - b.index)
+          .map(({ property: rp, index }) => ({
+            item_id: `PROP-${rp.id}`,
+            item_name: rp.name,
+            item_category: 'villa',
+            item_category2: rp.locality || rp.destination || '',
+            item_category3: 'Portugal',
+            item_variant: rp.tier || '',
+            price: rp.priceFrom || 0,
+            quantity: 1,
+            index,
+          }));
+        pushEcommerce({
+          event: 'view_item_list',
+          ecommerce: { item_list_id: 'related_properties', item_list_name: 'Related Homes', items },
+        });
+        relatedPendingRef.current.clear();
+      }, 200);
+    }, { threshold: 0.5 });
+
+    relatedSlugToElementRef.current.forEach((el) => relatedObserverRef.current!.observe(el));
+
+    return () => {
+      relatedObserverRef.current?.disconnect();
+      relatedObserverRef.current = null;
+      if (relatedFlushTimerRef.current) clearTimeout(relatedFlushTimerRef.current);
+      relatedPendingRef.current.clear();
+    };
+  }, [relatedProperties]);
 
   const amenityGroups = useMemo(() => {
     if (!property?.amenities || typeof property.amenities !== 'object') return [];
@@ -615,7 +712,7 @@ export default function PropertyDetail() {
           <div
             className="flex h-full"
             style={{
-              transform: `translateX(calc(-${currentImage * 100}% + ${dragOffset}px))`,
+              transform: `translateX(calc(-${(currentImage / totalImages) * 100}% + ${dragOffset}px))`,
               transition: dragOffset ? 'none' : 'transform 300ms ease',
               width: `${totalImages * 100}%`,
               willChange: 'transform',
@@ -1029,14 +1126,34 @@ export default function PropertyDetail() {
                 )}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {relatedProperties.map(rp => (
-                  <PropertyCard
+                {relatedProperties.map((rp, i) => (
+                  <div
                     key={rp.id}
-                    property={rp}
-                    checkin={initialCheckin || undefined}
-                    checkout={initialCheckout || undefined}
-                    guests={initialGuests > 1 ? initialGuests : undefined}
-                  />
+                    ref={(el) => {
+                      const slug = rp.slug;
+                      if (el) {
+                        relatedCardDataRef.current.set(slug, { property: rp, index: i + 1 });
+                        relatedElementToSlugRef.current.set(el, slug);
+                        relatedSlugToElementRef.current.set(slug, el);
+                        relatedObserverRef.current?.observe(el);
+                      } else {
+                        const existing = relatedSlugToElementRef.current.get(slug);
+                        if (existing) {
+                          relatedObserverRef.current?.unobserve(existing);
+                          relatedElementToSlugRef.current.delete(existing);
+                          relatedSlugToElementRef.current.delete(slug);
+                        }
+                        relatedCardDataRef.current.delete(slug);
+                      }
+                    }}
+                  >
+                    <PropertyCard
+                      property={rp}
+                      checkin={initialCheckin || undefined}
+                      checkout={initialCheckout || undefined}
+                      guests={initialGuests > 1 ? initialGuests : undefined}
+                    />
+                  </div>
                 ))}
               </div>
             </div>

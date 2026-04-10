@@ -6,6 +6,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import type { Product, ItineraryItem, ItineraryFieldValue } from '@/lib/types';
+import { pushEcommerce, ADDON_PREFIX } from '@/lib/datalayer';
 
 interface ItineraryContextType {
   items: ItineraryItem[];
@@ -114,6 +115,26 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
     };
     setItems(prev => [...prev, newItem]);
     setIsOpen(true);
+
+    // GA4: add_to_cart
+    const prefix = ADDON_PREFIX[product.slug] || 'ADDON';
+    pushEcommerce({
+      event: 'add_to_cart',
+      ecommerce: {
+        currency: 'EUR',
+        value: estimatedPrice ?? product.priceFrom ?? 0,
+        items: [
+          {
+            item_id: `${prefix}-${product.id}`,
+            item_name: product.name,
+            item_category: 'addon',
+            item_category2: product.slug.replace(/-/g, '_'),
+            price: estimatedPrice ?? product.priceFrom ?? 0,
+            quantity: 1,
+          },
+        ],
+      },
+    });
   }, []);
 
   const updateItem = useCallback((id: string, fields: ItineraryFieldValue, estimatedPrice?: number) => {
@@ -123,7 +144,31 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const removeItem = useCallback((id: string) => {
-    setItems(prev => prev.filter(item => item.id !== id));
+    setItems(prev => {
+      const item = prev.find(i => i.id === id);
+      if (item) {
+        // GA4: remove_from_cart
+        const prefix = ADDON_PREFIX[item.product.slug] || 'ADDON';
+        pushEcommerce({
+          event: 'remove_from_cart',
+          ecommerce: {
+            currency: 'EUR',
+            value: item.estimatedPrice ?? item.product.priceFrom ?? 0,
+            items: [
+              {
+                item_id: `${prefix}-${item.product.id}`,
+                item_name: item.product.name,
+                item_category: 'addon',
+                item_category2: item.product.slug.replace(/-/g, '_'),
+                price: item.estimatedPrice ?? item.product.priceFrom ?? 0,
+                quantity: 1,
+              },
+            ],
+          },
+        });
+      }
+      return prev.filter(i => i.id !== id);
+    });
   }, []);
 
   const clearItinerary = useCallback(() => {

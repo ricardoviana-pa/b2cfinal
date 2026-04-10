@@ -11,6 +11,7 @@ import { IMAGES } from '@/lib/images';
 import { Instagram, Youtube, Linkedin, Facebook, Check, Phone, Mail, MessageCircle, Calendar } from 'lucide-react';
 import FooterPaymentLogos from './FooterPaymentLogos';
 import { trpc } from '@/lib/trpc';
+import { pushDL } from '@/lib/datalayer';
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -29,6 +30,7 @@ export default function Footer() {
       await createLead.mutateAsync({ email, source: 'newsletter-footer' });
       setSubscribed(true);
       setEmail('');
+      pushDL({ event: 'generate_lead', lead_source: 'newsletter-footer', lead_type: 'newsletter' });
     } catch {
       setNlError(t('footer.nlError', 'Something went wrong. Please try again.'));
     } finally {

@@ -37,6 +37,7 @@ import destinationsData from '@/data/destinations.json';
 import { trpc } from '@/lib/trpc';
 import type { Destination, Property } from '@/lib/types';
 import { getUniqueLocalities } from '@/lib/utils';
+import { pushDL, pushEcommerce } from '@/lib/datalayer';
 
 const destinations = destinationsData as unknown as Destination[];
 
@@ -156,6 +157,29 @@ export default function Home() {
 
   const activeDestinations = destinations.filter(d => d.status === 'active' || d.slug === 'brazil');
 
+  // GA4: view_item_list — fires when featured properties load
+  useEffect(() => {
+    if (!featured.length) return;
+    pushEcommerce({
+      event: 'view_item_list',
+      ecommerce: {
+        item_list_id: 'featured_homes',
+        item_list_name: "Editor's Picks",
+        items: featured.map((property, index) => ({
+          item_id: `PROP-${property.id}`,
+          item_name: property.name,
+          item_category: 'villa',
+          item_category2: property.locality || property.destination || '',
+          item_category3: 'Portugal',
+          item_variant: property.tier || '',
+          price: property.priceFrom || 0,
+          quantity: 1,
+          index: index + 1,
+        })),
+      },
+    });
+  }, [featured.length]);
+
   const createLead = trpc.leads.create.useMutation();
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -166,6 +190,7 @@ export default function Home() {
       await createLead.mutateAsync({ email, source: 'newsletter-home' });
       setSubscribed(true);
       setEmail('');
+      pushDL({ event: 'generate_lead', lead_source: 'newsletter-home', lead_type: 'newsletter' });
     } catch {
       setNlError(t('home.newsletterError', 'Something went wrong. Please try again.'));
     } finally {
@@ -377,6 +402,22 @@ export default function Home() {
                 const qs = p.toString();
                 return `/homes${qs ? `?${qs}` : ''}`;
               })()}
+              onClick={() => {
+                const nights = searchCheckin && searchCheckout
+                  ? Math.round((new Date(searchCheckout).getTime() - new Date(searchCheckin).getTime()) / 86400000)
+                  : null;
+                pushDL({
+                  event: 'search',
+                  search_location: searchDest || 'All Destinations',
+                  search_location_type: searchDest ? 'city' : 'all',
+                  search_checkin: searchCheckin || null,
+                  search_checkout: searchCheckout || null,
+                  search_nights: nights,
+                  search_adults: searchGuests,
+                  search_children: 0,
+                  search_source: 'hero_desktop',
+                });
+              }}
               className="flex-shrink-0 h-[44px] mr-1.5 px-6 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
               style={{ letterSpacing: '1.5px' }}
             >
@@ -451,6 +492,22 @@ export default function Home() {
                   const qs = p.toString();
                   return `/homes${qs ? `?${qs}` : ''}`;
                 })()}
+                onClick={() => {
+                  const nights = searchCheckin && searchCheckout
+                    ? Math.round((new Date(searchCheckout).getTime() - new Date(searchCheckin).getTime()) / 86400000)
+                    : null;
+                  pushDL({
+                    event: 'search',
+                    search_location: 'All Destinations',
+                    search_location_type: 'all',
+                    search_checkin: searchCheckin || null,
+                    search_checkout: searchCheckout || null,
+                    search_nights: nights,
+                    search_adults: searchGuests,
+                    search_children: 0,
+                    search_source: 'hero_mobile',
+                  });
+                }}
                 className="shrink-0 h-[48px] px-6 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
                 style={{ letterSpacing: '1.5px' }}
               >
@@ -542,13 +599,16 @@ export default function Home() {
 
           {/* Property cards Ã¢ÂÂ horizontal scroll on mobile, 3 per row on desktop */}
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:overflow-visible">
-            {featured.map(property => (
+            {featured.map((property, index) => (
               <div key={property.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
                 <PropertyCard
                   property={property}
                   checkin={searchCheckin || undefined}
                   checkout={searchCheckout || undefined}
                   guests={searchGuests > 1 ? searchGuests : undefined}
+                  listId="featured_homes"
+                  listName="Editor's Picks"
+                  itemIndex={index + 1}
                 />
               </div>
             ))}
