@@ -7,20 +7,17 @@ import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import destinationsData from '@/data/destinations.json';
-import { trpc } from '@/lib/trpc';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { IMAGES } from '@/lib/images';
-import type { Destination, Property } from '@/lib/types';
+import type { Destination } from '@/lib/types';
 
 const destinations = destinationsData as unknown as Destination[];
 
 export default function Destinations() {
   const { t } = useTranslation();
   usePageMeta({ title: 'Destinations in Portugal | Minho, Porto, Algarve & More', description: 'Explore our luxury villa destinations across Portugal — Minho Coast, Porto & Douro, Algarve, Lisbon, Alentejo. Find your perfect region.', url: '/destinations' });
-  const { data: propsData } = trpc.properties.listForSite.useQuery();
-  const properties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
   const active = destinations.filter(d => !d.comingSoon);
   const comingSoon = destinations.filter(d => d.comingSoon);
 
@@ -50,7 +47,6 @@ export default function Destinations() {
           <h2 className="sr-only">Portugal Destinations</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {active.map(dest => {
-              const homeCount = properties.filter(p => p.destination === dest.slug).length;
               return (
                 <Link
                   key={dest.slug}
@@ -71,8 +67,7 @@ export default function Destinations() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8">
                     <h3 className="headline-md text-white mb-1">{dest.name}</h3>
-                    <p className="text-[14px] text-white/70 mb-1" style={{ fontWeight: 300 }}>{dest.tagline}</p>
-                    <p className="text-[13px] text-white/50">{homeCount > 0 ? t('destinationsPage.home', { count: homeCount }) : t('common.comingSoon')}</p>
+                    <p className="text-[14px] text-white/70" style={{ fontWeight: 300 }}>{dest.tagline}</p>
                   </div>
                 </Link>
               );
@@ -82,26 +77,29 @@ export default function Destinations() {
             {comingSoon.map(dest => (
               <div
                 key={dest.slug}
-                className="relative overflow-hidden opacity-50"
+                className="relative overflow-hidden"
                 style={{ aspectRatio: '3/4' }}
               >
                 {dest.coverImage ? (
                   <img
                     src={dest.coverImage}
                     alt={dest.name}
-                    className="absolute inset-0 w-full h-full object-cover grayscale-[40%]"
+                    className="absolute inset-0 w-full h-full object-cover"
                     loading="lazy"
                   />
                 ) : (
                   <div className="absolute inset-0 placeholder-image" />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                <div className="absolute top-5 right-5 bg-white/90 backdrop-blur-sm px-3 py-1.5">
-                  <span className="text-[11px] font-medium tracking-[0.02em] text-[#1A1A18]">{t('common.comingSoon')}</span>
+                {/* Editorial dark veil — no grayscale, preserves the photograph */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
+                <div className="absolute top-5 left-5">
+                  <span className="text-[10px] font-medium tracking-[0.14em] uppercase text-white/90">
+                    {t('common.comingSoon')}
+                  </span>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8">
                   <h3 className="headline-md text-white mb-1">{dest.name}</h3>
-                  <p className="text-[14px] text-white/70" style={{ fontWeight: 300 }}>{dest.tagline}</p>
+                  <p className="text-[14px] text-white/80" style={{ fontWeight: 300 }}>{dest.tagline}</p>
                 </div>
               </div>
             ))}

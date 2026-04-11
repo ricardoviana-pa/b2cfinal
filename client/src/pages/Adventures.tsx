@@ -3,23 +3,24 @@
    Adventure catalogue filtered by destination, with itinerary integration
    ========================================================================== */
 
-import { useState, useMemo, useEffect, lazy, Suspense } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { Plus, MessageCircle, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import productsData from '@/data/products.json';
 import type { Product, DestinationSlug } from '@/lib/types';
+import { formatEurEditorial } from '@/lib/format';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
-const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 
 const allProducts = productsData as unknown as Product[];
 const adventures = allProducts.filter(p => p.type === 'adventure' && p.isActive).sort((a, b) => a.sortOrder - b.sortOrder);
 
 export default function Adventures() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Adventure Activities in Portugal | Horseback Riding, Canyoning & Surfing', description: 'Guided adventure activities across Portugal — horseback riding, canyoning, surfing, hiking, wine tours & more. Book direct in Minho, Porto or Algarve.', url: '/adventures' });
+  usePageMeta({ title: 'Experiences in Portugal | Horseback Riding, Canyoning & Surfing', description: 'Guided experiences across Portugal — horseback riding, canyoning, surfing, hiking, wine tours & more. Book direct in Minho, Porto or Algarve.', url: '/experiences' });
 
   useEffect(() => {
     // ItemList schema — lets Google display individual adventures as rich results
@@ -88,7 +89,6 @@ export default function Adventures() {
     };
   }, []);
   const [destination, setDestination] = useState('all');
-  const [modalProduct, setModalProduct] = useState<Product | null>(null);
 
   const DESTINATIONS = useMemo(() => [
     { label: t('adventures.allDestinations'), value: 'all' },
@@ -111,10 +111,10 @@ export default function Adventures() {
       {/* Hero */}
       <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
         <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1400&q=80" alt="Golden beach on the Portuguese Atlantic coast – adventure experiences" className="absolute inset-0 w-full h-full object-cover" width={1400} height={933} fetchPriority="high" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-black/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/15" />
         <div className="relative container pb-12 lg:pb-16 z-10">
           <h1 className="headline-xl text-white mb-4">{t('adventures.title')}</h1>
-          <p className="body-lg max-w-lg" style={{ color: 'rgba(255,255,255,0.7)' }}>
+          <p className="body-lg max-w-lg text-white/95">
             {t('adventures.subtitle')}
           </p>
         </div>
@@ -150,62 +150,38 @@ export default function Adventures() {
           <p className="text-[13px] text-[#9E9A90] mb-6">
             {t('adventures.available', { count: filtered.length })}
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filtered.map((adventure) => (
-              <div key={adventure.id} className="bg-white border border-[#E8E4DC] overflow-hidden group">
-                {/* Image */}
-                <div className="relative overflow-hidden" style={{ aspectRatio: '4/3' }}>
+              <Link
+                key={adventure.id}
+                href={`/experiences/${adventure.slug}`}
+                className="group block"
+              >
+                <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '4/5' }}>
                   {adventure.image ? (
-                    <img src={adventure.image} alt={`${adventure.name} – guided adventure in Portugal`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                    <img src={adventure.image} alt={`${adventure.name} – guided experience in Portugal`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" loading="lazy" />
                   ) : (
                     <div className="w-full h-full placeholder-image" />
                   )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
                   {adventure.destinations.length > 0 && (
-                    <div className="absolute top-3 left-3 flex gap-1.5">
-                      {adventure.destinations.map(d => (
-                        <span key={d} className="bg-white/90 backdrop-blur-sm px-2.5 py-1 text-[10px] tracking-[0.02em] font-medium text-[#6B6860]">
-                          {d}
-                        </span>
-                      ))}
-                    </div>
+                    <span className="absolute top-4 left-4 text-[10px] tracking-[0.12em] uppercase text-white/90 font-medium">
+                      {adventure.destinations.join(' · ')}
+                    </span>
                   )}
-                </div>
-
-                {/* Content */}
-                <div className="p-5">
-                  <h3 className="font-display text-lg text-[#1A1A18] mb-1 group-hover:text-[#8B7355] transition-colors">
-                    {adventure.name}
-                  </h3>
-                  <p className="text-[13px] text-[#6B6860] font-light mb-3 line-clamp-2">{adventure.tagline}</p>
-
-                  {(adventure.priceFrom ?? 0) > 0 && (
-                    <p className="text-[14px] text-[#1A1A18] font-medium mb-4">
-                      From €{(adventure.priceFrom ?? 0).toLocaleString()} <span className="text-[12px] text-[#9E9A90] font-light">{adventure.priceSuffix}</span>
-                    </p>
-                  )}
-
-                  {/* Action buttons */}
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setModalProduct(adventure)}
-                      className="flex-1 flex items-center justify-center gap-2 bg-[#1A1A18] text-white text-[12px] tracking-[0.02em] font-medium py-3 hover:bg-[#333] transition-colors"
-                      style={{ minHeight: '44px' }}
-                    >
-                      <Plus className="w-4 h-4" /> {t('adventures.addToItinerary')}
-                    </button>
-                    <a
-                      href={`https://wa.me/351927161771?text=${encodeURIComponent(adventure.whatsappMessage)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center w-11 border border-[#E8E4DC] text-[#6B6860] hover:text-[#8B7355] hover:border-[#8B7355] transition-colors"
-                      style={{ minHeight: '44px' }}
-                      aria-label="Book via WhatsApp"
-                    >
-                      <MessageCircle className="w-4 h-4" />
-                    </a>
+                  <div className="absolute bottom-0 left-0 right-0 p-5">
+                    <h3 className="font-display text-[1.5rem] text-white leading-tight mb-1">
+                      {adventure.name}
+                    </h3>
+                    <p className="text-[13px] text-white/80 font-light line-clamp-2">{adventure.tagline}</p>
                   </div>
                 </div>
-              </div>
+                {(adventure.priceFrom ?? 0) > 0 && (
+                  <p className="mt-4 text-[13px] text-[#1A1A18] font-medium">
+                    From {formatEurEditorial(adventure.priceFrom ?? 0)} <span className="text-[12px] text-[#9E9A90] font-light">{adventure.priceSuffix}</span>
+                  </p>
+                )}
+              </Link>
             ))}
           </div>
 
@@ -234,13 +210,6 @@ export default function Adventures() {
           </a>
         </div>
       </section>
-
-      {/* Add to Itinerary Modal */}
-      {modalProduct && (
-        <Suspense fallback={null}>
-          <AddToItineraryModal product={modalProduct} isOpen={!!modalProduct} onClose={() => setModalProduct(null)} />
-        </Suspense>
-      )}
 
       <Footer />
       <WhatsAppFloat />

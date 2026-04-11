@@ -16,6 +16,7 @@ import destinationsData from '@/data/destinations.json';
 import productsData from '@/data/products.json';
 import { trpc } from '@/lib/trpc';
 import type { Destination, Property, Product } from '@/lib/types';
+import { formatEurEditorial } from '@/lib/format';
 
 const destinations = destinationsData as unknown as Destination[];
 const allProducts = productsData as unknown as Product[];
@@ -246,7 +247,7 @@ export default function DestinationDetail() {
               <div key={service.id} className="bg-white border border-[#E8E4DC] p-5 flex flex-col">
                 <h4 className="text-[15px] font-medium text-[#1A1A18] mb-2" style={{ fontFamily: 'var(--font-body)' }}>{service.name}</h4>
                 <p className="text-[13px] text-[#6B6860] flex-1 mb-3 leading-relaxed line-clamp-2" style={{ fontWeight: 300 }}>{service.description}</p>
-                {(service.priceFrom ?? 0) > 0 && <p className="text-[13px] text-[#8B7355] mb-3">From €{(service.priceFrom ?? 0).toLocaleString()}</p>}
+                {(service.priceFrom ?? 0) > 0 && <p className="text-[13px] text-[#8B7355] mb-3">From {formatEurEditorial(service.priceFrom ?? 0)}</p>}
                 <button
                   onClick={() => setModalProduct(service)}
                   className="flex items-center gap-1.5 text-[12px] font-medium text-[#1A1A18] hover:text-[#8B7355] transition-colors"
@@ -284,7 +285,7 @@ export default function DestinationDetail() {
                   <h4 className="text-[15px] font-medium text-[#1A1A18] mb-1" style={{ fontFamily: 'var(--font-body)' }}>{adv.name}</h4>
                   <p className="text-[13px] text-[#6B6860] mb-2 leading-relaxed line-clamp-2" style={{ fontWeight: 300 }}>{adv.description}</p>
                   <div className="flex items-center justify-between">
-                    {(adv.priceFrom ?? 0) > 0 && <p className="text-[13px] text-[#8B7355]">From €{(adv.priceFrom ?? 0).toLocaleString()}</p>}
+                    {(adv.priceFrom ?? 0) > 0 && <p className="text-[13px] text-[#8B7355]">From {formatEurEditorial(adv.priceFrom ?? 0)}</p>}
                     <button
                       onClick={() => setModalProduct(adv)}
                       className="flex items-center gap-1.5 text-[12px] font-medium text-[#1A1A18] hover:text-[#8B7355] transition-colors"

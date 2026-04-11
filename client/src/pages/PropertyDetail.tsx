@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck,
-  Sparkles, Star, Clock, UtensilsCrossed, Headphones, Plus, X, AlertTriangle,
+  Sparkles, Gem, Clock, UtensilsCrossed, Headphones, Plus, X, AlertTriangle,
   Wifi, Tv, Coffee, Car, Waves, Wind, Shirt, Flame, TreePine, Mountain,
   Sun, Monitor, Utensils, Sofa, ArrowRight, Lock, ShieldCheck, Bed, type LucideIcon
 } from 'lucide-react';
@@ -25,6 +25,7 @@ import PropertyCard from '@/components/property/PropertyCard';
 import ReviewsSection from '@/components/property/ReviewsSection';
 import { trpc } from '@/lib/trpc';
 import { pushEcommerce } from '@/lib/datalayer';
+import { sanitizePropertyName } from '@/lib/format';
 
 const allProducts = productsData as unknown as Product[];
 const destinations = destinationsData as unknown as Destination[];
@@ -350,7 +351,8 @@ export default function PropertyDetail() {
     const dest = destinations.find(d => d.slug === property.destination);
     const beds = property.bedrooms ? `${property.bedrooms}-Bed` : '';
     const loc = dest?.name || property.region || '';
-    return `${property.name} | ${beds} Luxury Villa ${loc}`.replace(/\s+/g, ' ').trim();
+    const clean = sanitizePropertyName(property.name);
+    return `${clean} — ${beds} Luxury Villa ${loc}`.replace(/\s+/g, ' ').trim();
   }, [property]);
   const pdpDesc = useMemo(() => {
     if (!property) return undefined;
@@ -438,7 +440,7 @@ export default function PropertyDetail() {
       { icon: BedDouble, text: t('propertyDetail.included2') },
       { icon: Bath, text: t('propertyDetail.included3') },
       { icon: UtensilsCrossed, text: t('propertyDetail.included4') },
-      { icon: Star, text: t('propertyDetail.included5') },
+      { icon: Gem, text: t('propertyDetail.included5') },
       { icon: Clock, text: t('propertyDetail.included6') },
       { icon: Headphones, text: t('propertyDetail.included7') },
       { icon: MapPin, text: t('propertyDetail.included8') },
@@ -518,7 +520,17 @@ export default function PropertyDetail() {
 
   const destObj = useMemo(() => {
     if (!property) return null;
-    return destinations.find(d => d.slug === property.destination) || null;
+    // Prefer match by destination slug
+    const bySlug = destinations.find(d => d.slug === property.destination);
+    if (bySlug) {
+      // Defensive: if locality is in a known Minho town list but slug is wrong, override
+      const minhoLocalities = ['Carreço', 'Viana do Castelo', 'Âncora', 'Vila Praia de Âncora', 'Afife', 'Moledo', 'Caminha'];
+      if (property.locality && minhoLocalities.some(l => (property.locality || '').toLowerCase().includes(l.toLowerCase()))) {
+        return destinations.find(d => d.slug === 'minho') || bySlug;
+      }
+      return bySlug;
+    }
+    return null;
   }, [property]);
   const destName = destObj?.name || property?.destination || '';
 
@@ -697,7 +709,7 @@ export default function PropertyDetail() {
               </>
             )}
             <li className="text-[#E8E4DC]">/</li>
-            <li className="text-[#6B6860] truncate max-w-[200px] inline-flex items-center min-h-[44px] px-1.5">{property.name}</li>
+            <li className="text-[#6B6860] truncate max-w-[220px] inline-flex items-center min-h-[44px] px-1.5">{sanitizePropertyName(property.name)}</li>
           </ol>
         </nav>
 
@@ -782,7 +794,7 @@ export default function PropertyDetail() {
         <div className="container pt-6 lg:pt-8 pb-4">
           <p className="text-[11px] font-medium tracking-[0.08em] text-[#8B7355] mb-2 uppercase">{destName}</p>
           <h1 className="headline-lg text-[#1A1A18] mb-2" style={{ fontFamily: 'var(--font-display)' }}>
-            {property.name}
+            {sanitizePropertyName(property.name)}
           </h1>
           <p className="body-lg italic text-[#6B6860] mb-4">{property.tagline}</p>
           <div className="flex items-center gap-2 text-[#6B6860] mb-6">
@@ -793,16 +805,16 @@ export default function PropertyDetail() {
           {/* Key stats bar — single source of truth for property specs */}
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-[#E8E4DC] py-4 text-[13px] text-[#6B6860]">
             <span className="flex items-center gap-1.5">
+              <Users size={15} className="text-[#8B7355]" />
+              {property.maxGuests} {t('property.guests')}
+            </span>
+            <span className="flex items-center gap-1.5">
               <BedDouble size={15} className="text-[#8B7355]" />
               {property.bedrooms} {t('property.bedrooms')}
             </span>
             <span className="flex items-center gap-1.5">
               <Bath size={15} className="text-[#8B7355]" />
               {property.bathrooms} {t('property.bathrooms')}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Users size={15} className="text-[#8B7355]" />
-              {property.maxGuests} {t('property.guests')}
             </span>
             {property.areaSquareFeet && property.areaSquareFeet > 0 && (
               <span className="flex items-center gap-1.5">

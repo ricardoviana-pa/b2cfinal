@@ -6,7 +6,7 @@
 import { useState, lazy, Suspense } from 'react';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useRoute, Link } from 'wouter';
-import { Check, Star, Clock, MapPin, ArrowLeft, Plus, MessageCircle } from 'lucide-react';
+import { Check, Clock, MapPin, ArrowLeft, Plus, MessageCircle } from 'lucide-react';
 import servicesData from '@/data/services.json';
 import productsData from '@/data/products.json';
 import destinationsData from '@/data/destinations.json';
@@ -73,7 +73,8 @@ function InquiryForm({ serviceName }: { serviceName: string }) {
 export default function ServiceDetail() {
   const [, params] = useRoute('/services/:slug');
   const [, actParams] = useRoute('/activities/:slug');
-  const slug = params?.slug || actParams?.slug;
+  const [, expParams] = useRoute('/experiences/:slug');
+  const slug = params?.slug || actParams?.slug || expParams?.slug;
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
 
   const allItems = [...servicesData.services, ...servicesData.activities];
@@ -83,15 +84,15 @@ export default function ServiceDetail() {
     title: item ? `${item.name} | Luxury Experience in Portugal` : 'Service Not Found',
     description: item ? `${item.tagline || item.name}. Book this experience with your Portugal Active villa stay.`.slice(0, 155) : undefined,
     image: item?.image,
-    url: item ? `/services/${item.slug}` : undefined,
+    url: item ? (item.category === 'activity' ? `/experiences/${item.slug}` : `/services/${item.slug}`) : undefined,
   });
 
   if (!item) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FAFAF7]">
         <div className="text-center">
-          <h1 className="headline-lg mb-4 text-[#1A1A18]">Service not found</h1>
-          <Link href="/services" className="btn-ghost">Back to services</Link>
+          <h1 className="headline-lg mb-4 text-[#1A1A18]">Not found</h1>
+          <Link href="/experiences" className="btn-ghost">Back to experiences</Link>
         </div>
       </div>
     );
@@ -108,18 +109,18 @@ export default function ServiceDetail() {
       {/* Hero */}
       <section className="relative h-[55vh] min-h-[380px] flex items-end overflow-hidden">
         <img src={item.image} alt={`${item.name} – luxury experience in Portugal`} className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-black/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/15" />
         <div className="relative container pb-12 lg:pb-16 z-10">
-          <p className="text-[11px] font-medium tracking-[0.02em] text-[#C4A87C] mb-4">{isService ? 'Service' : 'Activity'}</p>
+          <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#C4A87C] mb-4">{isService ? 'Concierge service' : 'Experience'}</p>
           <h1 className="headline-xl text-white mb-3">{item.name}</h1>
-          <p className="body-lg max-w-lg" style={{ color: 'rgba(255,255,255,0.7)' }}>{item.tagline}</p>
+          <p className="body-lg max-w-lg text-white/95">{item.tagline}</p>
         </div>
       </section>
 
       {/* Back link */}
       <div className="container py-5 border-b border-[#E8E4DC]">
-        <Link href="/services" className="inline-flex items-center gap-2 text-[13px] font-medium text-[#9E9A90] hover:text-[#1A1A18] transition-colors">
-          <ArrowLeft className="w-4 h-4" /> All services
+        <Link href={isService ? '/concierge' : '/experiences'} className="inline-flex items-center gap-2 text-[13px] font-medium text-[#9E9A90] hover:text-[#1A1A18] transition-colors">
+          <ArrowLeft className="w-4 h-4" /> {isService ? 'All concierge services' : 'All experiences'}
         </Link>
       </div>
 
@@ -231,14 +232,9 @@ export default function ServiceDetail() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-[900px] mx-auto">
               {item.reviews.map((review: any, i: number) => (
-                <div key={i} className="bg-white p-8">
-                  <div className="flex gap-1 mb-4">
-                    {Array.from({ length: review.rating }).map((_, j) => (
-                      <Star key={j} className="w-4 h-4 fill-[#8B7355] text-[#8B7355]" />
-                    ))}
-                  </div>
-                  <p className="body-md mb-4 italic text-[#6B6860]">"{review.text}"</p>
-                  <p className="text-[13px] font-medium text-[#1A1A18]">{review.name}</p>
+                <div key={i} className="bg-white p-10 border-l-[1.5px] border-[#8B7355]">
+                  <p className="font-display text-[1.25rem] leading-snug mb-6 text-[#1A1A18]">"{review.text}"</p>
+                  <p className="text-[11px] tracking-[0.12em] uppercase text-[#8B7355]">{review.name}</p>
                 </div>
               ))}
             </div>
@@ -254,14 +250,10 @@ export default function ServiceDetail() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {otherItems.map((other) => (
-              <Link key={other.slug} href={`/${other.category === 'service' ? 'services' : 'activities'}/${other.slug}`} className="group">
+              <Link key={other.slug} href={`/${other.category === 'service' ? 'services' : 'experiences'}/${other.slug}`} className="group">
                 <div className="relative overflow-hidden mb-4" style={{ aspectRatio: '3/4' }}>
                   <img src={other.image} alt={`${other.name} – luxury experience in Portugal`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" loading="lazy" />
-                  <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1">
-                    <span className="text-[10px] tracking-[0.02em] font-medium text-[#6B6860]">
-                      {other.category === 'service' ? 'Service' : 'Activity'}
-                    </span>
-                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 </div>
                 <h3 className="headline-sm mb-1 text-[#1A1A18] group-hover:text-[#8B7355] transition-colors">{other.name}</h3>
                 <p className="text-[13px] text-[#6B6860]" style={{ fontWeight: 300 }}>{other.tagline}</p>

@@ -26,7 +26,7 @@ import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { Link } from 'wouter';
-import { ChevronDown, Users, ArrowRight, Key, Star, MapPin, Shield, Check, Quote, Minus, Plus } from 'lucide-react';
+import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Check, Quote, Minus, Plus } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -534,7 +534,7 @@ export default function Home() {
                   sub: t('home.uspPrivacySub'),
                 },
                 {
-                  icon: <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />,
+                  icon: <Gem className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />,
                   title: t('home.uspService'),
                   sub: t('home.uspServiceSub'),
                 },
@@ -776,9 +776,6 @@ export default function Home() {
 
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-3 lg:grid-cols-6 md:overflow-visible">
             {activeDestinations.map(dest => {
-              const homeCount = properties.filter(p => p.destination === dest.slug).length;
-              const label = dest.comingSoon ? t('home.destComingSoon', 'Coming Soon') : homeCount > 0 ? t('home.destHome', { count: homeCount }) : t('home.destNowOperating');
-
               return (
                 <Link key={dest.id} href={`/destinations/${dest.slug}`} className="group block flex-shrink-0 w-[240px] sm:w-[260px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
                   <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '3/4' }}>
@@ -793,9 +790,13 @@ export default function Home() {
                       <div className="w-full h-full placeholder-image" />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+                    {dest.comingSoon && (
+                      <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 text-[10px] font-medium tracking-[0.06em] uppercase text-[#6B6860]">
+                        {t('home.destComingSoon', 'Coming soon')}
+                      </span>
+                    )}
                     <div className="absolute bottom-0 left-0 right-0 p-5">
-                      <h3 className="text-white text-[1.25rem] font-display mb-1">{dest.name}</h3>
-                      <p className="text-white/70 text-[13px]">{label}</p>
+                      <h3 className="text-white text-[1.25rem] font-display">{dest.name}</h3>
                     </div>
                   </div>
                   <p className="text-[13px] text-[#6B6860] mt-3 leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>

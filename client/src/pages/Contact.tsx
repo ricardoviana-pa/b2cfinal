@@ -104,7 +104,7 @@ export default function Contact() {
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [subject, setSubject] = useState('book-a-home');
+  const [subject, setSubject] = useState('plan-my-stay');
   const [message, setMessage] = useState('');
   const [honeypot, setHoneypot] = useState('');
 
@@ -126,7 +126,7 @@ export default function Contact() {
     const intent = params.get('intent');
     if (slug && intent === 'availability') {
       prefilledFromProperty.current = true;
-      setSubject('book-a-home');
+      setSubject('plan-my-stay');
       setMessage(
         t('contact.prefillAvailability', {
           slug,
@@ -370,7 +370,7 @@ export default function Contact() {
                         className={`${inputClasses('subject', false)} appearance-none cursor-pointer`}
                         style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                       >
-                        <option value="book-a-home">{t('contact.subjectBookHome')}</option>
+                        <option value="plan-my-stay">{t('contact.subjectBookHome')}</option>
                         <option value="services-enquiry">{t('contact.subjectServices')}</option>
                         <option value="events">{t('contact.subjectEvents')}</option>
                         <option value="property-management">{t('contact.subjectProperty')}</option>

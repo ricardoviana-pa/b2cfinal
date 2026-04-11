@@ -104,20 +104,12 @@ export default function Footer() {
             <ul className="flex flex-col gap-3">
               <li><Link href="/destinations/minho" className="text-[13px] text-white/45 hover:text-white transition-colors" style={{ fontWeight: 300 }}>{t('footer.minhoCoast')}</Link></li>
               <li><Link href="/destinations/porto" className="text-[13px] text-white/45 hover:text-white transition-colors" style={{ fontWeight: 300 }}>{t('footer.portoDouro')}</Link></li>
+              <li><Link href="/destinations/lisbon" className="text-[13px] text-white/45 hover:text-white transition-colors" style={{ fontWeight: 300 }}>{t('footer.lisbon')}</Link></li>
+              <li><Link href="/destinations/alentejo" className="text-[13px] text-white/45 hover:text-white transition-colors" style={{ fontWeight: 300 }}>{t('footer.alentejo')}</Link></li>
               <li><Link href="/destinations/algarve" className="text-[13px] text-white/45 hover:text-white transition-colors" style={{ fontWeight: 300 }}>{t('footer.algarve')}</Link></li>
               <li>
                 <span className="text-[13px] text-white/20" style={{ fontWeight: 300 }}>
-                  {t('footer.lisbon')} <span className="text-[10px] text-white/15">{t('footer.soon')}</span>
-                </span>
-              </li>
-              <li>
-                <span className="text-[13px] text-white/20" style={{ fontWeight: 300 }}>
-                  {t('footer.alentejo')} <span className="text-[10px] text-white/15">{t('footer.soon')}</span>
-                </span>
-              </li>
-              <li>
-                <span className="text-[13px] text-white/15" style={{ fontWeight: 300 }}>
-                  {t('footer.brazil')} <span className="text-[10px]">{t('footer.year2026')}</span>
+                  {t('footer.brazil')} <span className="text-[10px] text-white/15 ml-1">{t('footer.soon')}</span>
                 </span>
               </li>
             </ul>
@@ -133,8 +125,8 @@ export default function Footer() {
             </h4>
             <ul className="flex flex-col gap-3">
               <li><Link href="/homes" className="text-[13px] text-white/45 hover:text-white transition-colors" style={{ fontWeight: 300 }}>{t('footer.bookStay')}</Link></li>
-              <li><Link href="/services" className="text-[13px] text-white/45 hover:text-white transition-colors" style={{ fontWeight: 300 }}>{t('footer.experiences')}</Link></li>
-              <li><Link href="/adventures" className="text-[13px] text-white/45 hover:text-white transition-colors" style={{ fontWeight: 300 }}>{t('footer.adventures')}</Link></li>
+              <li><Link href="/experiences" className="text-[13px] text-white/45 hover:text-white transition-colors" style={{ fontWeight: 300 }}>{t('footer.experiences')}</Link></li>
+              <li><Link href="/concierge" className="text-[13px] text-white/45 hover:text-white transition-colors" style={{ fontWeight: 300 }}>{t('footer.conciergeServices', 'Concierge services')}</Link></li>
               <li><Link href="/events" className="text-[13px] text-white/45 hover:text-white transition-colors" style={{ fontWeight: 300 }}>{t('footer.events')}</Link></li>
               <li>
                 <a

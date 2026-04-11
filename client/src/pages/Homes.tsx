@@ -7,9 +7,8 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { useFavorites } from '@/hooks/useFavorites';
 import { IMAGES } from '@/lib/images';
-import { SlidersHorizontal, X, Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, MessageCircle, Heart } from 'lucide-react';
+import { Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, MessageCircle } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
 import { filterProperties, sortProperties, getUniqueLocalities } from '@/lib/utils';
@@ -28,11 +27,8 @@ interface LiveQuote {
   available?: boolean;
 }
 
-const BEDROOM_OPTIONS = ['1-2', '3-4', '5-6', '7+'];
-
 export default function Homes() {
   const { t } = useTranslation();
-  const { favorites } = useFavorites();
   usePageMeta({ title: 'Private Villas Portugal | Luxury Holiday Homes', description: 'Browse 50+ handpicked private villas across Portugal. Pool, concierge, housekeeping included. Filter by region and book direct.', image: IMAGES.heroHomes, url: '/homes' });
   const [, navigate] = useLocation();
 
@@ -40,64 +36,12 @@ export default function Homes() {
   const allProperties = (propsData ?? []) as Property[];
   const cities = useMemo(() => getUniqueLocalities(allProperties), [allProperties]);
 
-  const OCCASIONS = useMemo(
-    () => [
-      { label: t('filters.all'), value: 'all' },
-      { label: t('filters.couples'), value: 'couples' },
-      { label: t('filters.families'), value: 'families' },
-      { label: t('filters.groups'), value: 'groups' },
-      { label: t('filters.extendedStays'), value: 'extended-stays' },
-    ],
-    [t]
-  );
-
-  const CITY_FILTERS = useMemo(
-    (): { label: string; value: string }[] => [
-      { label: t('filters.all'), value: 'all' },
-      ...cities,
-    ],
-    [t, cities]
-  );
-
-  const TIERS = useMemo(
-    () => [
-      { label: t('filters.allTiers'), value: 'all' },
-      { label: t('filters.signature'), value: 'signature' },
-      { label: t('filters.select'), value: 'select' },
-      { label: t('filters.new'), value: 'new' },
-    ],
-    [t]
-  );
-
   const SORT_OPTIONS = useMemo(
     (): { label: string; value: SortOption }[] => [
       { label: t('filters.recommended'), value: 'recommended' },
       { label: t('filters.sortPriceAsc'), value: 'price-asc' },
       { label: t('filters.sortPriceDesc'), value: 'price-desc' },
       { label: t('filters.sortNewest'), value: 'newest' },
-    ],
-    [t]
-  );
-
-  const PRICE_OPTIONS = useMemo(
-    () => [
-      { label: t('filters.priceUnder200'), value: 'under-200' },
-      { label: t('filters.price200400'), value: '200-400' },
-      { label: t('filters.price400600'), value: '400-600' },
-      { label: t('filters.price600Plus'), value: '600+' },
-    ],
-    [t]
-  );
-
-  const STYLE_OPTIONS = useMemo(
-    () => [
-      t('filters.stylePool'),
-      t('filters.styleHeatedPool'),
-      t('filters.styleBeachfront'),
-      t('filters.styleCountryside'),
-      t('filters.styleOceanView'),
-      t('filters.stylePetFriendly'),
-      t('filters.styleRemoteWork'),
     ],
     [t]
   );
@@ -123,18 +67,10 @@ export default function Homes() {
     return 'all';
   };
 
-  const [occasion, setOccasion] = useState(() => searchParams.get('occasion') || 'all');
   const [destination, setDestination] = useState<FilterDestination>(() => toFilterDestination(searchDestinationFromUrl));
   const [location, setLocation] = useState(() => searchLocationFromUrl || 'all');
-  const [tier, setTier] = useState(() => searchParams.get('tier') || 'all');
   // Default to price-desc (premium positioning) — always show most expensive first
   const [sort, setSort] = useState<SortOption>(() => (searchParams.get('sort') as SortOption) || 'price-desc');
-  const [bedrooms, setBedrooms] = useState<string | undefined>(() => searchParams.get('bedrooms') || undefined);
-  const [price, setPrice] = useState<string | undefined>(() => searchParams.get('price') || undefined);
-  const [style, setStyle] = useState<string | undefined>(() => searchParams.get('style') || undefined);
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(() => searchParams.get('favorites') === 'true');
-  const [showMoreFilters, setShowMoreFilters] = useState(false);
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [bookingDestination, setBookingDestination] = useState(searchDestinationFromUrl);
   const [bookingLocation, setBookingLocation] = useState(searchLocationFromUrl);
   const [bookingCheckin, setBookingCheckin] = useState(searchCheckin);
@@ -171,34 +107,24 @@ export default function Homes() {
       if (v && v !== fallback) params.set(k, v);
       else params.delete(k);
     };
-    set('occasion', occasion, 'all');
     set('destination', destination, 'all');
     set('location', location, 'all');
-    set('tier', tier, 'all');
     set('sort', sort, 'price-desc');
-    set('bedrooms', bedrooms, '');
-    set('price', price, '');
-    set('style', style, '');
-    if (showFavoritesOnly) params.set('favorites', 'true');
-    else params.delete('favorites');
     const qs = params.toString();
     const newUrl = `/homes${qs ? `?${qs}` : ''}`;
     if (newUrl !== window.location.pathname + window.location.search) {
       window.history.replaceState(null, '', newUrl);
     }
-  }, [occasion, destination, location, tier, sort, bedrooms, price, style, showFavoritesOnly, searchString]);
+  }, [destination, location, sort, searchString]);
 
   const filtered = useMemo(() => {
-    const f = filterProperties(allProperties, occasion, destination, bedrooms, price, style, tier, location);
+    const f = filterProperties(allProperties, 'all', destination, undefined, undefined, undefined, 'all', location);
     const withGuestCapacity =
       searchGuestsCount > 0
         ? f.filter((property) => (property.maxGuests ?? 0) >= searchGuestsCount)
         : f;
-    const withFavorites = showFavoritesOnly
-      ? withGuestCapacity.filter((property) => favorites.includes(property.slug))
-      : withGuestCapacity;
-    return sortProperties(withFavorites, sort);
-  }, [allProperties, occasion, destination, location, sort, bedrooms, price, style, tier, searchGuestsCount, showFavoritesOnly, favorites]);
+    return sortProperties(withGuestCapacity, sort);
+  }, [allProperties, destination, location, sort, searchGuestsCount]);
 
   // GA4: view_item_list — fires only for cards that enter the viewport
   useEffect(() => {
@@ -293,18 +219,10 @@ export default function Homes() {
     return { availableProperties: available, unavailableProperties: unavailable };
   }, [filtered, quotes, hasDates, searchNights]);
 
-  const hasActiveFilters = occasion !== 'all' || destination !== 'all' || location !== 'all' || tier !== 'all' || bedrooms || price || style || showFavoritesOnly;
-
   const clearFilters = () => {
-    setOccasion('all');
     setDestination('all');
     setLocation('all');
     setBookingLocation('');
-    setTier('all');
-    setBedrooms(undefined);
-    setPrice(undefined);
-    setStyle(undefined);
-    setShowFavoritesOnly(false);
   };
 
   // PLP pricing: fetch LIVE Guesty quotes via batch endpoint when dates are set.
@@ -433,20 +351,6 @@ export default function Homes() {
     const qs = params.toString();
     navigate(`/homes${qs ? `?${qs}` : ''}`);
   };
-
-  const Chip = ({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) => (
-    <button
-      onClick={onClick}
-      className={`px-4 py-2 text-[11px] font-medium tracking-[0.12em] uppercase whitespace-nowrap transition-all border rounded-full ${
-        active
-          ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
-          : 'bg-transparent text-[#6B6860] border-[#E8E4DC] hover:border-[#1A1A18] hover:text-[#1A1A18]'
-      }`}
-      style={{ minHeight: '44px', minWidth: 'auto' }}
-    >
-      {children}
-    </button>
-  );
 
   if (isLoading) {
     return (
@@ -692,188 +596,8 @@ export default function Homes() {
             </div>
           </div>
 
-          {/* Mobile filter + sort */}
-          <div className="lg:hidden flex items-center justify-between gap-2">
-            <button
-              onClick={() => setMobileFiltersOpen(true)}
-              className="flex items-center gap-2 text-[13px] font-medium text-[#1A1A18] border border-[#E8E4DC] px-4 py-2.5 flex-1"
-              style={{ minHeight: '44px', minWidth: 'auto' }}
-            >
-              <SlidersHorizontal className="w-4 h-4" />
-              {t('filters.mobileFilter')}{hasActiveFilters ? ` (${filtered.length})` : ''}
-            </button>
-            {favorites.length > 0 && (
-              <button
-                onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-                className={`flex items-center gap-1.5 text-[13px] font-medium px-3 py-2.5 border rounded-full transition-all ${
-                  showFavoritesOnly
-                    ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
-                    : 'text-[#6B6860] border-[#E8E4DC] hover:border-[#1A1A18] hover:text-[#1A1A18]'
-                }`}
-                style={{ minHeight: '44px', minWidth: 'auto' }}
-                title={t('filters.favorites', 'Favorites')}
-              >
-                <Heart className={`w-3.5 h-3.5 ${showFavoritesOnly ? 'fill-white' : ''}`} />
-                <span>{favorites.length}</span>
-              </button>
-            )}
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as SortOption)}
-              className="text-[13px] text-[#6B6860] bg-transparent border border-[#E8E4DC] px-3 py-2.5 font-sans"
-              style={{ minHeight: '44px' }}
-            >
-              {SORT_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
-            </select>
-          </div>
-
-          {/* Desktop */}
-          <div className="hidden lg:block">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex flex-wrap gap-2">
-                {OCCASIONS.map(o => (
-                  <Chip key={o.value} active={occasion === o.value} onClick={() => setOccasion(o.value)}>{o.label}</Chip>
-                ))}
-                <div className="w-px h-8 bg-[#E8E4DC] self-center mx-1" />
-                {TIERS.map(t => (
-                  <Chip key={t.value} active={tier === t.value} onClick={() => setTier(t.value)}>{t.label}</Chip>
-                ))}
-                <div className="w-px h-8 bg-[#E8E4DC] self-center mx-1" />
-                <Chip
-                  active={showFavoritesOnly}
-                  onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-                >
-                  <Heart className="w-3 h-3 mr-1 inline" />
-                  {t('filters.favorites', 'Favorites')} {favorites.length > 0 && `(${favorites.length})`}
-                </Chip>
-              </div>
-              <div className="flex items-center gap-3">
-                {hasActiveFilters && (
-                  <button onClick={clearFilters} className="text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors" style={{ minHeight: '44px', minWidth: 'auto' }}>
-                    {t('filters.clearAll')}
-                  </button>
-                )}
-                <select
-                  value={sort}
-                  onChange={(e) => setSort(e.target.value as SortOption)}
-                  className="text-[13px] text-[#6B6860] bg-transparent border border-[#E8E4DC] px-3 py-2 font-sans"
-                >
-                  {SORT_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
-                </select>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              {CITY_FILTERS.map(d => (
-                <Chip
-                  key={d.value}
-                  active={location === d.value}
-                  onClick={() => {
-                    setLocation(d.value);
-                    setBookingLocation(d.value === 'all' ? '' : d.value);
-                  }}
-                >
-                  {d.label}
-                </Chip>
-              ))}
-              <button
-                onClick={() => setShowMoreFilters(!showMoreFilters)}
-                className="text-[13px] font-medium text-[#8B7355] ml-2 hover:text-[#1A1A18] transition-colors"
-                style={{ minHeight: '44px', minWidth: 'auto' }}
-              >
-                {showMoreFilters ? t('filters.lessFilters') : t('filters.moreFilters')}
-              </button>
-            </div>
-
-            {showMoreFilters && (
-              <div className="flex flex-wrap items-center gap-6 mt-4 pt-4 border-t border-[#E8E4DC]">
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-medium tracking-[0.02em] text-[#9E9A90]">{t('filters.bedrooms')}:</span>
-                  {BEDROOM_OPTIONS.map(b => (
-                    <Chip key={b} active={bedrooms === b} onClick={() => setBedrooms(bedrooms === b ? undefined : b)}>{b}</Chip>
-                  ))}
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-medium tracking-[0.02em] text-[#9E9A90]">{t('filters.price')}:</span>
-                  {PRICE_OPTIONS.map(p => (
-                    <Chip key={p.value} active={price === p.value} onClick={() => setPrice(price === p.value ? undefined : p.value)}>{p.label}</Chip>
-                  ))}
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-medium text-[#9E9A90]">{t('filters.amenitiesLabel')}</span>
-                  {STYLE_OPTIONS.map(s => (
-                    <Chip key={s} active={style === s} onClick={() => setStyle(style === s ? undefined : s)}>{s}</Chip>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       </div>
-
-      {/* Mobile Filters Bottom Sheet */}
-      {mobileFiltersOpen && (
-        <div className="fixed inset-0 z-[80] lg:hidden">
-          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setMobileFiltersOpen(false)} />
-          <div className="absolute bottom-0 left-0 right-0 bg-[#FAFAF7] max-h-[85vh] overflow-y-auto animate-in slide-in-from-bottom">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-display text-[#1A1A18]">{t('filters.showFilters')}</h3>
-                <button onClick={() => setMobileFiltersOpen(false)} className="w-10 h-10 flex items-center justify-center" style={{ minHeight: 'auto', minWidth: 'auto' }}>
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              {([
-                { groupKey: 'occasion' as const, labelKey: 'filters.occasion', items: OCCASIONS, value: occasion },
-                { groupKey: 'location' as const, labelKey: 'filters.destinationLabel', items: CITY_FILTERS, value: location },
-                { groupKey: 'tier' as const, labelKey: 'filters.tierLabel', items: TIERS, value: tier },
-              ] as const).map((group) => (
-                <div key={group.groupKey} className="mb-6">
-                  <p className="text-[11px] font-medium tracking-[0.02em] text-[#9E9A90] mb-3">{t(group.labelKey)}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {group.items.map((item: { label: string; value: string }) => (
-                      <Chip
-                        key={item.value}
-                        active={group.value === item.value}
-                        onClick={() => {
-                          if (group.groupKey === 'occasion') setOccasion(item.value);
-                          if (group.groupKey === 'tier') setTier(item.value);
-                          if (group.groupKey === 'location') {
-                            setLocation(item.value);
-                            setBookingLocation(item.value === 'all' ? '' : item.value);
-                          }
-                        }}
-                      >
-                        {item.label}
-                      </Chip>
-                    ))}
-                  </div>
-                </div>
-              ))}
-
-              {favorites.length > 0 && (
-                <div className="mb-6">
-                  <p className="text-[11px] font-medium tracking-[0.02em] text-[#9E9A90] mb-3">{t('filters.favorites', 'Favorites')}</p>
-                  <Chip
-                    active={showFavoritesOnly}
-                    onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-                  >
-                    <Heart className="w-3 h-3 mr-1 inline" />
-                    {t('filters.showFavorites', 'Show favorites')} ({favorites.length})
-                  </Chip>
-                </div>
-              )}
-
-              <button
-                onClick={() => setMobileFiltersOpen(false)}
-                className="btn-primary w-full mt-4"
-              >
-                {t('filters.showHomes', { count: filtered.length })}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Results */}
       <section className="pt-6 pb-12 md:pt-8 md:pb-16 lg:pb-20" aria-live="polite" aria-atomic="true">
@@ -898,12 +622,21 @@ export default function Homes() {
                 <span> · {t('homes.nightsCount', { count: searchNights })}</span>
               )}
             </p>
-            {quotesLoading && hasDates && (
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full border-2 border-[#8B7355] border-t-transparent animate-spin" />
-                <span className="text-[12px] text-[#8B7355] font-medium">{t('homes.checkingAvailability', 'Checking live availability...')}</span>
-              </div>
-            )}
+            <div className="flex items-center gap-3">
+              {quotesLoading && hasDates && (
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full border-2 border-[#8B7355] border-t-transparent animate-spin" />
+                  <span className="text-[12px] text-[#8B7355] font-medium">{t('homes.checkingAvailability', 'Checking live availability...')}</span>
+                </div>
+              )}
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as SortOption)}
+                className="text-[13px] text-[#6B6860] bg-transparent border border-[#E8E4DC] px-3 py-2 font-sans"
+              >
+                {SORT_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+              </select>
+            </div>
           </div>
 
           {/* Batch error banner */}
