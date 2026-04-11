@@ -4603,6 +4603,38 @@
     "areaSquareFeet": 539,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Het was prima, op de bedden en de geluidsoverlast na",
+        "guestName": "Guest",
+        "date": "2026-04-08T15:41:30.886Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 2
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "The apartment was in a quiet area of Porto, but the hustle and bustle was only a five minute walk away. Fab little apartment, clean and well equipped. Good powerful shower, however the water didn’t drain very fast. Small, well equipped kitchen, could have done with a draining board for washing up. Comfortable beds. One of the upstairs bed was quite squeaky though so every time my daughter rolled over in bed the whole house heard it. Could also hear the apartment above us as they walked around an",
         "guestName": "Guest",
@@ -4763,8 +4795,8 @@
         ]
       }
     ],
-    "averageRating": 4.4,
-    "reviewCount": 5
+    "averageRating": 4.3,
+    "reviewCount": 6
   },
   {
     "id": "guesty-69c415701b964f00157188b5",
@@ -15485,6 +15517,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "excelente",
+        "guestName": "Guest",
+        "date": "2026-04-07T15:23:25.811Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Mr João Porto , qui c’est occupé de nous à notre arrivée, a été extrêmement sympathique à notre arrivée, accueil irréprochable, tout comme le logement .\nMerci",
         "guestName": "Guest",
         "date": "2026-03-15T19:08:13.573Z",
@@ -15581,7 +15645,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 3
+    "reviewCount": 4
   },
   {
     "id": "guesty-69c418871eabf900141bed48",
