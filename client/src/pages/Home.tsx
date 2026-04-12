@@ -96,7 +96,44 @@ export default function Home() {
     script.id = "home-localbusiness-jsonld";
     document.querySelector("#home-localbusiness-jsonld")?.remove();
     document.head.appendChild(script);
-    return () => { document.querySelector("#home-localbusiness-jsonld")?.remove(); };
+    // FAQPage schema for homepage — targets "luxury villas Portugal" queries
+    const faqLd = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What makes Portugal Active different from Airbnb or Booking.com?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Portugal Active operates each property like a private hotel — with a 47-point preparation checklist, dedicated concierge, optional private chef, and a local team minutes away. We don't just list homes; we manage them to hotel standards." }
+        },
+        {
+          "@type": "Question",
+          "name": "Which regions in Portugal does Portugal Active cover?",
+          "acceptedAnswer": { "@type": "Answer", "text": "We operate luxury villas across five regions: Minho Coast (Viana do Castelo area), Porto & Douro Valley, Lisbon & Sintra, Alentejo, and the Algarve. Each region offers a different character, from Atlantic beaches to wine country." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I book adventure activities alongside my villa stay?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. We offer curated experiences including horseback riding, canyoning, surfing, sailing, e-bike tours, and more. Our concierge team builds bespoke itineraries combining your villa, activities, private dining, and transfers." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it cheaper to book direct with Portugal Active?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Always. Booking direct means no middleman markup — you get the best rate guaranteed, plus complimentary concierge service and priority for special requests like early check-in or celebrations." }
+        },
+      ],
+    };
+    const faqScript = document.createElement("script");
+    faqScript.type = "application/ld+json";
+    faqScript.text = JSON.stringify(faqLd);
+    faqScript.id = "home-faq-jsonld";
+    document.querySelector("#home-faq-jsonld")?.remove();
+    document.head.appendChild(faqScript);
+
+    return () => {
+      document.querySelector("#home-localbusiness-jsonld")?.remove();
+      document.querySelector("#home-faq-jsonld")?.remove();
+    };
   }, []);
 
   const { data: propsData, isLoading, isError } = trpc.properties.listForSite.useQuery();

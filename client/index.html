@@ -43,6 +43,16 @@
     <meta name="twitter:image" content="https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-main-96HXfBCK752avi2daWhgmd.webp" />
     <meta name="twitter:image:alt" content="Portugal Active — Luxury Private Villas in Portugal" />
 
+    <!-- Additional SEO & performance -->
+    <meta name="theme-color" content="#1A1A18" />
+    <meta name="msapplication-TileColor" content="#1A1A18" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta property="og:image:type" content="image/webp" />
+    <meta property="og:image:secure_url" content="https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-main-96HXfBCK752avi2daWhgmd.webp" />
+
+    <!-- AI discoverability -->
+    <link rel="author" href="https://www.portugalactive.com/about" />
+
     <!-- Preload hero image for LCP -->
     <link rel="preload" as="image" href="https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-main-96HXfBCK752avi2daWhgmd.webp" type="image/webp" />
 
@@ -55,36 +65,72 @@
     <link rel="preconnect" href="https://d2xsxph8kpxj0f.cloudfront.net" crossorigin />
     <link rel="dns-prefetch" href="https://images.unsplash.com" />
 
-    <!-- Structured Data -->
+    <!-- Structured Data: Organization -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "Portugal Active",
+      "alternateName": "Portugal Active — Private Hotels",
       "url": "https://www.portugalactive.com",
-      "description": "50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool.",
+      "description": "50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool. Book direct for best rates.",
       "logo": "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp",
+      "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-main-96HXfBCK752avi2daWhgmd.webp",
       "email": "info@portugalactive.com",
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+351927161771",
-        "contactType": "customer service",
-        "availableLanguage": ["English", "Portuguese", "Spanish", "French", "German"]
-      },
+      "foundingDate": "2017",
+      "foundingLocation": "Viana do Castelo, Portugal",
+      "numberOfEmployees": { "@type": "QuantitativeValue", "minValue": 10, "maxValue": 50 },
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+351927161771",
+          "contactType": "customer service",
+          "availableLanguage": ["English", "Portuguese", "Spanish", "French", "German"],
+          "areaServed": "PT"
+        },
+        {
+          "@type": "ContactPoint",
+          "telephone": "+351927161771",
+          "contactType": "reservations",
+          "availableLanguage": ["English", "Portuguese"]
+        }
+      ],
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Viana do Castelo",
+        "addressRegion": "Minho",
         "addressCountry": "PT"
       },
-      "areaServed": {
-        "@type": "Country",
-        "name": "Portugal"
-      },
+      "areaServed": [
+        { "@type": "AdministrativeArea", "name": "Minho, Portugal" },
+        { "@type": "AdministrativeArea", "name": "Porto, Portugal" },
+        { "@type": "AdministrativeArea", "name": "Lisbon, Portugal" },
+        { "@type": "AdministrativeArea", "name": "Alentejo, Portugal" },
+        { "@type": "AdministrativeArea", "name": "Algarve, Portugal" }
+      ],
+      "knowsAbout": ["luxury villa rentals", "private chef services", "concierge services", "adventure tourism Portugal", "horseback riding Portugal", "canyoning Portugal", "surf lessons Portugal"],
+      "slogan": "Private Hotels in Portugal",
       "sameAs": [
         "https://www.instagram.com/portugalactive",
         "https://www.facebook.com/portugalactive",
-        "https://www.linkedin.com/company/portugalactive"
+        "https://www.linkedin.com/company/portugalactive",
+        "https://www.youtube.com/@portugalactivechannel",
+        "https://vimeo.com/portugalactive",
+        "https://www.tripadvisor.com/Attraction_Review-g189180-d12824498-Reviews-Portugal_Active-Viana_do_Castelo_Viana_do_Castelo_District_Northern_Portugal.html",
+        "https://www.getyourguide.com/viana-do-castelo-l97483/",
+        "https://www.viator.com/en-GB/tours/Porto/Portugal-Active/d2741-394428P1"
       ]
+    }
+    </script>
+    <!-- Structured Data: WebSite (for sitelinks search) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Portugal Active",
+      "url": "https://www.portugalactive.com",
+      "inLanguage": ["en", "pt", "es", "fr"],
+      "publisher": { "@type": "Organization", "name": "Portugal Active" }
     }
     </script>
   </head>

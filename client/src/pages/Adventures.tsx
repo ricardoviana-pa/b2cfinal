@@ -179,7 +179,7 @@ export default function Adventures() {
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
                   {adventure.destinations.length > 0 && (
-                    <span className="absolute top-4 left-4 text-[10px] tracking-[0.12em] uppercase text-white/90 font-medium">
+                    <span className="absolute top-4 left-4 max-w-[60%] text-[10px] tracking-[0.12em] uppercase text-white/90 font-medium leading-relaxed">
                       {adventure.destinations.join(' · ')}
                     </span>
                   )}

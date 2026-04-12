@@ -222,13 +222,30 @@ export default function ExperienceDetail() {
       image: exp.gallery && exp.gallery.length ? exp.gallery : [exp.image],
       url: `https://www.portugalactive.com/experiences/${exp.slug}`,
       brand: { '@type': 'Brand', name: 'Portugal Active' },
+      provider: {
+        '@type': 'Organization',
+        name: 'Portugal Active',
+        url: 'https://www.portugalactive.com',
+      },
       offers: {
         '@type': 'Offer',
         price: exp.priceFrom || 0,
         priceCurrency: 'EUR',
         availability: 'https://schema.org/InStock',
         url: `https://www.portugalactive.com/experiences/${exp.slug}`,
+        validFrom: new Date().toISOString().split('T')[0],
       },
+      ...(exp.duration && { duration: exp.duration }),
+      ...(exp.category && { touristType: exp.category }),
+      ...(exp.meetingPoint && {
+        contentLocation: {
+          '@type': 'Place',
+          name: exp.meetingPoint.description || exp.meetingPoint.address,
+          ...(exp.meetingPoint.lat && {
+            geo: { '@type': 'GeoCoordinates', latitude: exp.meetingPoint.lat, longitude: exp.meetingPoint.lng },
+          }),
+        },
+      }),
     };
 
     if (exp.aggregateRating) {
@@ -877,7 +894,10 @@ export default function ExperienceDetail() {
       </section>
 
       <Footer />
-      <WhatsAppFloat />
+      {/* WhatsApp float hidden on mobile — MobileBookingBar already has WhatsApp CTA */}
+      <div className="hidden lg:block">
+        <WhatsAppFloat />
+      </div>
 
       {/* Mobile booking bar */}
       <ExperienceMobileBookingBar

@@ -63,6 +63,24 @@ export default function Events() {
     return () => { document.querySelector("#events-schema")?.remove(); };
   }, []);
 
+  useEffect(() => {
+    const breadcrumbLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
+        { "@type": "ListItem", "position": 2, "name": "Events" },
+      ],
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(breadcrumbLd);
+    script.id = "events-breadcrumb-jsonld";
+    document.querySelector("#events-breadcrumb-jsonld")?.remove();
+    document.head.appendChild(script);
+    return () => { document.querySelector("#events-breadcrumb-jsonld")?.remove(); };
+  }, []);
+
   const EVENT_TYPES = useMemo(() => [
     {
       id: 'corporate',

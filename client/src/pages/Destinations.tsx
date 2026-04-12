@@ -3,6 +3,7 @@
    6 destination cards: Minho, Porto, Lisbon, Alentejo, Algarve, Brazil (faded)
    ========================================================================== */
 
+import { useEffect } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -18,6 +19,25 @@ const destinations = destinationsData as unknown as Destination[];
 export default function Destinations() {
   const { t } = useTranslation();
   usePageMeta({ title: 'Destinations in Portugal | Minho, Porto, Algarve & More', description: 'Explore our luxury villa destinations across Portugal — Minho Coast, Porto & Douro, Algarve, Lisbon, Alentejo. Find your perfect region.', url: '/destinations' });
+
+  useEffect(() => {
+    const breadcrumbLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
+        { "@type": "ListItem", "position": 2, "name": "Destinations" },
+      ],
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(breadcrumbLd);
+    script.id = "destinations-breadcrumb-jsonld";
+    document.querySelector("#destinations-breadcrumb-jsonld")?.remove();
+    document.head.appendChild(script);
+    return () => { document.querySelector("#destinations-breadcrumb-jsonld")?.remove(); };
+  }, []);
+
   const active = destinations.filter(d => !d.comingSoon);
   const comingSoon = destinations.filter(d => d.comingSoon);
 

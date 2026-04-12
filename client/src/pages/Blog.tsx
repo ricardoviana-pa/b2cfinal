@@ -72,6 +72,24 @@ export default function Blog() {
     return () => { document.querySelector("#blog-list-jsonld")?.remove(); };
   }, []);
 
+  useEffect(() => {
+    const breadcrumbLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
+        { "@type": "ListItem", "position": 2, "name": "Journal" },
+      ],
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(breadcrumbLd);
+    script.id = "blog-breadcrumb-jsonld";
+    document.querySelector("#blog-breadcrumb-jsonld")?.remove();
+    document.head.appendChild(script);
+    return () => { document.querySelector("#blog-breadcrumb-jsonld")?.remove(); };
+  }, []);
+
   const CATEGORIES = useMemo(() => [
     { label: t('blog.catAll'), value: 'all' as const },
     { label: t('blog.catDestinations'), value: 'destinations' as const },
