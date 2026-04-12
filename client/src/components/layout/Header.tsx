@@ -8,7 +8,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Link, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import {
-  Menu, X, Phone, Mail, MessageCircle, Instagram, Youtube, Linkedin,
+  Menu, X, Phone, Mail, MessageCircle, Instagram, Facebook, Youtube, Linkedin,
   User, ChevronDown
 } from 'lucide-react';
 import { IMAGES } from '@/lib/images';
@@ -474,8 +474,14 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
               <a href="https://instagram.com/portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="Instagram">
                 <Instagram className="w-4.5 h-4.5" />
               </a>
-              <a href="https://youtube.com/@portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="YouTube">
+              <a href="https://facebook.com/portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="Facebook">
+                <Facebook className="w-4.5 h-4.5" />
+              </a>
+              <a href="https://www.youtube.com/@portugalactivechannel" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="YouTube">
                 <Youtube className="w-4.5 h-4.5" />
+              </a>
+              <a href="https://vimeo.com/portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="Vimeo">
+                <svg className="w-4.5 h-4.5" viewBox="0 0 24 24" fill="currentColor"><path d="M23.977 6.416c-.105 2.338-1.739 5.543-4.894 9.609C15.906 19.988 13.08 22 10.68 22c-1.48 0-2.736-1.37-3.77-4.107C6.085 14.98 5.26 12.07 4.433 9.162c-.66-2.738-1.37-4.108-2.13-4.108-.165 0-.74.347-1.725 1.033L0 5.32c1.085-.953 2.157-1.906 3.21-2.858 1.447-1.254 2.531-1.913 3.26-1.98 1.713-.166 2.767 1.005 3.165 3.515.429 2.71.727 4.395.892 5.056.496 2.252 1.04 3.378 1.634 3.378.462 0 1.155-.73 2.08-2.19.924-1.46 1.42-2.572 1.486-3.336.132-1.262-.363-1.893-1.486-1.893-.53 0-1.075.12-1.637.36C13.75 2.152 16.047.186 19.082.013c2.253-.128 3.316 1.528 3.19 4.97l-.295 1.433z"/></svg>
               </a>
               <a href="https://linkedin.com/company/portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="LinkedIn">
                 <Linkedin className="w-4.5 h-4.5" />

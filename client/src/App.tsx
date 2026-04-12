@@ -25,6 +25,7 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Cookies = lazy(() => import("./pages/Cookies"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
+const ExperienceDetail = lazy(() => import("./pages/ExperienceDetail"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogArticle = lazy(() => import("./pages/BlogArticle"));
 const FAQ = lazy(() => import("./pages/FAQ"));
@@ -124,7 +125,8 @@ function Router() {
         <Route path="/services" component={Services} />
         <Route path="/services/:slug" component={ServiceDetail} />
         <Route path="/experiences" component={Experiences} />
-        <Route path="/experiences/:slug" component={ServiceDetail} />
+        <Route path="/experiences/:slug" component={ExperienceDetail} />
+        <Route path="/activities/:slug" component={ExperienceDetail} />
         <Route path="/adventures" component={Experiences} />
         <Route path="/events" component={Events} />
         <Route path="/about" component={About} />
