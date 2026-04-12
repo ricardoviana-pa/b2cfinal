@@ -799,6 +799,7 @@ export default function ExperienceDetail() {
                 reserveNowPayLater={exp.reserveNowPayLater}
                 whatsappMessage={exp.whatsappMessage || ''}
                 maxGroupSize={exp.groupSizeRange?.max}
+                bokunActivityId={(exp as any).bokunActivityId}
               />
 
               {/* Mini review snippet — social proof near CTA */}

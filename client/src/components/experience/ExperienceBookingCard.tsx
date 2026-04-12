@@ -1,11 +1,13 @@
 /* ==========================================================================
    EXPERIENCE BOOKING CARD — sticky right rail
    Date picker + participant stepper + CTA
-   Fallback: WhatsApp prefill (Bókun API wired in Sprint 2)
+   When bokunActivityId is set: real availability + pricing via tRPC
+   Fallback: WhatsApp prefill when Bókun not configured or no activityId
    ========================================================================== */
 
-import { useState, useMemo } from 'react';
-import { Check, Minus, Plus, MessageCircle, Calendar } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { Check, Minus, Plus, MessageCircle, Calendar, Loader2, AlertCircle, Clock } from 'lucide-react';
+import { trpc } from '@/lib/trpc';
 
 interface ExperienceBookingCardProps {
   experienceName: string;
@@ -16,6 +18,7 @@ interface ExperienceBookingCardProps {
   reserveNowPayLater?: boolean;
   whatsappMessage: string;
   maxGroupSize?: number;
+  bokunActivityId?: number;
 }
 
 const WHATSAPP_NUMBER = '351927161771';
@@ -29,21 +32,53 @@ export default function ExperienceBookingCard({
   reserveNowPayLater = true,
   whatsappMessage,
   maxGroupSize = 10,
+  bokunActivityId,
 }: ExperienceBookingCardProps) {
   const [date, setDate] = useState<string>('');
   const [adults, setAdults] = useState<number>(2);
+  const [selectedSlot, setSelectedSlot] = useState<string>('');
 
   const todayIso = useMemo(() => new Date().toISOString().split('T')[0], []);
 
-  const estimatedTotal = priceFrom * adults;
+  // Bókun availability query — only fires when we have activityId + date
+  const availabilityQuery = trpc.bokun.getAvailability.useQuery(
+    { activityId: bokunActivityId!, date },
+    { enabled: !!bokunActivityId && !!date, staleTime: 60_000, retry: 1 }
+  );
+
+  // Bókun pricing query — fires when we have slot selected
+  const pricingQuery = trpc.bokun.getPricing.useQuery(
+    { activityId: bokunActivityId!, date, adults },
+    { enabled: !!bokunActivityId && !!date && adults > 0, staleTime: 60_000, retry: 1 }
+  );
+
+  const hasBokun = !!bokunActivityId;
+  const slots = availabilityQuery.data?.slots ?? [];
+  const isLoadingSlots = availabilityQuery.isLoading;
+  const slotsError = availabilityQuery.error;
+  const bokunPrice = pricingQuery.data?.total;
+  const estimatedTotal = bokunPrice ?? priceFrom * adults;
+
+  // Auto-select first slot when slots load
+  useEffect(() => {
+    if (slots.length > 0 && !selectedSlot) {
+      setSelectedSlot(slots[0].time || slots[0].id || '');
+    }
+  }, [slots, selectedSlot]);
+
+  // Reset slot when date changes
+  useEffect(() => {
+    setSelectedSlot('');
+  }, [date]);
 
   const finalMessage = useMemo(() => {
     let msg = whatsappMessage || `Hi Portugal Active, I'd like to book the ${experienceName} experience.`;
     if (date) msg += `\n\nPreferred date: ${date}`;
+    if (selectedSlot) msg += `\nTime: ${selectedSlot}`;
     msg += `\nParticipants: ${adults} adult${adults > 1 ? 's' : ''}`;
     msg += `\nEstimated total: €${estimatedTotal}`;
     return msg;
-  }, [whatsappMessage, experienceName, date, adults, estimatedTotal]);
+  }, [whatsappMessage, experienceName, date, selectedSlot, adults, estimatedTotal]);
 
   const waHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(finalMessage)}`;
 
@@ -84,6 +119,55 @@ export default function ExperienceBookingCard({
         </div>
       </div>
 
+      {/* Time slots — only shown when Bókun is active and date is selected */}
+      {hasBokun && date && (
+        <div className="mb-5">
+          <label className="text-[10px] tracking-[0.08em] uppercase text-[#9E9A90] font-medium mb-2 block">
+            Available times
+          </label>
+          {isLoadingSlots ? (
+            <div className="flex items-center gap-2 py-3 text-[12px] text-[#9E9A90]">
+              <Loader2 size={14} className="animate-spin" /> Checking availability...
+            </div>
+          ) : slotsError ? (
+            <div className="flex items-center gap-2 py-3 text-[12px] text-[#9E9A90]">
+              <AlertCircle size={14} /> Could not load times. Use WhatsApp below.
+            </div>
+          ) : slots.length === 0 ? (
+            <p className="text-[12px] text-[#9E9A90] py-2" style={{ fontWeight: 300 }}>
+              No availability for this date. Try another date.
+            </p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {slots.map((slot: any) => {
+                const slotId = slot.time || slot.id || '';
+                const isSelected = selectedSlot === slotId;
+                return (
+                  <button
+                    key={slotId}
+                    type="button"
+                    onClick={() => setSelectedSlot(slotId)}
+                    className={`flex items-center gap-1.5 px-3 py-2 text-[12px] border transition-colors ${
+                      isSelected
+                        ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
+                        : 'bg-white text-[#1A1A18] border-[#E8E4DC] hover:border-[#8B7355]'
+                    }`}
+                  >
+                    <Clock size={12} />
+                    {slotId}
+                    {slot.remaining != null && slot.remaining <= 4 && (
+                      <span className="text-[10px] text-[#8B7355] ml-1">
+                        {slot.remaining} left
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Participants stepper */}
       <div className="mb-6">
         <label className="text-[10px] tracking-[0.08em] uppercase text-[#9E9A90] font-medium mb-2 block">
@@ -119,14 +203,14 @@ export default function ExperienceBookingCard({
       {/* Estimated total */}
       <div className="mb-6 flex items-baseline justify-between">
         <span className="text-[11px] tracking-[0.08em] uppercase text-[#9E9A90] font-medium">
-          Estimated total
+          {pricingQuery.isLoading ? 'Calculating...' : 'Estimated total'}
         </span>
         <span className="text-[18px] font-display text-[#1A1A18]">
           €{estimatedTotal}
         </span>
       </div>
 
-      {/* Primary CTA (Bókun placeholder → WhatsApp) */}
+      {/* Primary CTA */}
       <a
         href={waHref}
         target="_blank"
