@@ -4,15 +4,15 @@
    touch-friendly swipe, no rounded corners, mobile-first
    ========================================================================== */
 
-import { useState, useCallback, useRef, useMemo } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { Heart, ChevronLeft, ChevronRight, Users, BedDouble, Bath, BadgeCheck, Sparkles } from 'lucide-react';
-import { formatEur } from '@/lib/format';
+import { ChevronLeft, ChevronRight, Users, BedDouble, Bath } from 'lucide-react';
+import { formatEur, sanitizePropertyName } from '@/lib/format';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages } from '@/lib/images';
-import { useFavorites } from '@/hooks/useFavorites';
 import destinationsData from '@/data/destinations.json';
+import { pushEcommerce } from '@/lib/datalayer';
 
 const destinations = destinationsData as unknown as Destination[];
 const getDestName = (slug: string) => destinations.find(d => d.slug === slug)?.name || slug;
@@ -23,6 +23,9 @@ interface PropertyCardProps {
   checkin?: string;
   checkout?: string;
   guests?: number;
+  listId?: string;
+  listName?: string;
+  itemIndex?: number;
   liveQuote?: {
     total: number;
     nightlyRate: number;
@@ -43,26 +46,19 @@ export default function PropertyCard({
   checkin,
   checkout,
   guests,
+  listId = 'search_results',
+  listName = 'Search Results',
+  itemIndex,
   liveQuote,
   quoteLoading = false,
   batchFailed = false,
 }: PropertyCardProps) {
   const { t } = useTranslation();
-  const { isFavorite, toggleFavorite } = useFavorites();
-  const tierBadge = useMemo(
-    (): Record<string, { className: string; label: string }> => ({
-      signature: { className: 'badge-signature', label: t('filters.signature') },
-      select: { className: 'badge-select', label: t('filters.select') },
-      new: { className: 'badge-new', label: t('filters.new') },
-    }),
-    [t]
-  );
   const [currentImage, setCurrentImage] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const touchStartX = useRef(0);
   const touchCurrentX = useRef(0);
-  const saved = isFavorite(property.slug);
 
   // Use property.images if available, otherwise fall back to curated Unsplash images
   const images = property.images && property.images.length > 0
@@ -71,21 +67,18 @@ export default function PropertyCard({
   const total = images.length;
 
   const nextImage = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     setCurrentImage(p => (p + 1) % total);
     setImageLoaded(false);
   }, [total]);
 
   const prevImage = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     setCurrentImage(p => (p - 1 + total) % total);
     setImageLoaded(false);
   }, [total]);
-
-  const toggleSave = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    toggleFavorite(property.slug);
-  }, [toggleFavorite, property.slug]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -106,10 +99,34 @@ export default function PropertyCard({
     setTimeout(() => setIsDragging(false), 50);
   };
 
-  const badge = tierBadge[property.tier];
+  const handleCardClick = () => {
+    pushEcommerce({
+      event: 'select_item',
+      ecommerce: {
+        item_list_id: listId,
+        item_list_name: listName,
+        items: [
+          {
+            item_id: `PROP-${property.id}`,
+            item_name: property.name,
+            item_category: 'villa',
+            item_category2: property.locality || property.destination || '',
+            item_category3: 'Portugal',
+            item_variant: property.tier || '',
+            price: property.priceFrom || 0,
+            quantity: nights || 1,
+            ...(itemIndex !== undefined && { index: itemIndex }),
+          },
+        ],
+      },
+    });
+  };
 
   return (
-    <Link href={`/homes/${property.slug}${checkin && checkout ? `?checkin=${encodeURIComponent(checkin)}&checkout=${encodeURIComponent(checkout)}${guests && guests > 1 ? `&guests=${guests}` : ''}` : ''}`}>
+    <Link
+      href={`/homes/${property.slug}${checkin && checkout ? `?checkin=${encodeURIComponent(checkin)}&checkout=${encodeURIComponent(checkout)}${guests && guests > 1 ? `&guests=${guests}` : ''}` : ''}`}
+      onClick={handleCardClick}
+    >
       <article className="group cursor-pointer block">
       {/* Image Carousel â 4:3 aspect */}
       <div
@@ -140,39 +157,22 @@ export default function PropertyCard({
         {/* Subtle bottom gradient for readability */}
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.08) 0%, transparent 40%)' }} />
 
-        {/* Tier Badge */}
-        {badge && (
-          <div className={`absolute top-3 left-3 z-10 ${badge.className}`}>
-            {badge.label}
-          </div>
-        )}
-
-        {/* Save Button */}
-        <button
-          onClick={toggleSave}
-          className="absolute top-3 right-3 z-10 w-11 h-11 rounded-full flex items-center justify-center bg-white/80 backdrop-blur-sm hover:bg-white transition-colors"
-          style={{ minHeight: 'auto', minWidth: 'auto' }}
-          aria-label={saved ? t('property.removeSaveAria') : t('property.saveAria')}
-        >
-          <Heart
-            className={`w-4 h-4 transition-colors ${saved ? 'fill-[#DC2626] text-[#DC2626]' : 'text-[#1A1A18]'}`}
-          />
-        </button>
-
-        {/* Desktop Navigation Arrows */}
+        {/* Navigation Arrows — always visible so the slide is discoverable */}
         {total > 1 && (
           <>
             <button
+              type="button"
               onClick={prevImage}
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/80 backdrop-blur-sm hidden md:flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors"
               style={{ minHeight: 'auto', minWidth: 'auto' }}
               aria-label={t('property.prevImage', 'Previous image')}
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
+              type="button"
               onClick={nextImage}
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/80 backdrop-blur-sm hidden md:flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors"
               style={{ minHeight: 'auto', minWidth: 'auto' }}
               aria-label={t('property.nextImage', 'Next image')}
             >
@@ -206,30 +206,22 @@ export default function PropertyCard({
 
         {/* Name */}
         <h3 className="text-[1.0625rem] font-display text-[#1A1A18] mb-1 group-hover:text-[#8B7355] transition-colors leading-tight">
-          {property.name}
+          {sanitizePropertyName(property.name)}
         </h3>
 
         {/* Tagline */}
-        <p className="text-[0.8125rem] text-[#9E9A90] mb-2 line-clamp-1">{property.tagline}</p>
-
-        {/* Service level line */}
-        <div className="flex items-center gap-1.5 mb-3">
-          <Sparkles className="w-3 h-3 text-[#C4A87C] shrink-0" />
-          <span className="text-[0.6875rem] text-[#9E9A90] font-light">
-            {t('property.dailyHousekeeping')} · {t('property.concierge')} · {t('property.welcomeHamper')}
-          </span>
-        </div>
+        <p className="text-[0.8125rem] text-[#9E9A90] mb-3 line-clamp-1">{property.tagline}</p>
 
         {/* Specs Row */}
         <div className="flex items-center gap-4 text-[0.8125rem] text-[#6B6860] mb-3">
+          <span className="flex items-center gap-1.5">
+            <Users className="w-3.5 h-3.5" /> {property.maxGuests}
+          </span>
           <span className="flex items-center gap-1.5">
             <BedDouble className="w-3.5 h-3.5" /> {property.bedrooms}
           </span>
           <span className="flex items-center gap-1.5">
             <Bath className="w-3.5 h-3.5" /> {property.bathrooms}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Users className="w-3.5 h-3.5" /> {property.maxGuests}
           </span>
         </div>
 
@@ -319,13 +311,6 @@ export default function PropertyCard({
               )}
             </div>
           )}
-          <div className="flex items-center justify-between mt-1.5">
-            <div className="flex items-center gap-1">
-              <BadgeCheck className="w-3 h-3 text-[#8B7355]" />
-              <span className="text-[0.625rem] tracking-[0.02em] text-[#9E9A90] font-medium">{t('property.bestRateGuarantee')}</span>
-            </div>
-            <span className="text-[0.6875rem] text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('property.directBooking', 'Direct booking')}</span>
-          </div>
         </div>
       </div>
       </article>

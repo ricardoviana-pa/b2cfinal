@@ -17,7 +17,7 @@ const PropertyDetail = lazy(() => import("./pages/PropertyDetail"));
 const Destinations = lazy(() => import("./pages/Destinations"));
 const DestinationDetail = lazy(() => import("./pages/DestinationDetail"));
 const Services = lazy(() => import("./pages/Services"));
-const Adventures = lazy(() => import("./pages/Adventures"));
+const Experiences = lazy(() => import("./pages/Adventures"));
 const Events = lazy(() => import("./pages/Events"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
@@ -25,6 +25,7 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Cookies = lazy(() => import("./pages/Cookies"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
+const ExperienceDetail = lazy(() => import("./pages/ExperienceDetail"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogArticle = lazy(() => import("./pages/BlogArticle"));
 const FAQ = lazy(() => import("./pages/FAQ"));
@@ -120,9 +121,13 @@ function Router() {
         <Route path="/homes/:slug" component={PropertyDetail} />
         <Route path="/destinations" component={Destinations} />
         <Route path="/destinations/:slug" component={DestinationDetail} />
+        <Route path="/concierge" component={Services} />
         <Route path="/services" component={Services} />
         <Route path="/services/:slug" component={ServiceDetail} />
-        <Route path="/adventures" component={Adventures} />
+        <Route path="/experiences" component={Experiences} />
+        <Route path="/experiences/:slug" component={ExperienceDetail} />
+        <Route path="/activities/:slug" component={ExperienceDetail} />
+        <Route path="/adventures" component={Experiences} />
         <Route path="/events" component={Events} />
         <Route path="/about" component={About} />
         <Route path="/contact" component={Contact} />

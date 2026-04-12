@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "wouter";
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { fetchReservation } from "@/lib/booking-api";
+import { pushEcommerce } from "@/lib/datalayer";
 
 function formatMoney(cents: number | null, currency = "EUR", t?: any): string {
   if (cents == null) return t?.('bookingConfirmation.toConfirm') || "Por confirmar";
@@ -23,6 +24,7 @@ export default function BookingConfirmationPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const purchaseFiredRef = useRef(false);
 
   useEffect(() => {
     let active = true;
@@ -40,6 +42,33 @@ export default function BookingConfirmationPage() {
       active = false;
     };
   }, [id]);
+
+  // Fire purchase event once when reservation data loads
+  useEffect(() => {
+    if (!data || purchaseFiredRef.current) return;
+    purchaseFiredRef.current = true;
+
+    pushEcommerce({
+      event: 'purchase',
+      ecommerce: {
+        transaction_id: data.confirmationCode,
+        value: data.totalCents != null ? data.totalCents / 100 : undefined,
+        currency: data.currency || 'EUR',
+        items: [
+          {
+            item_id: data.listingId ? `PROP-${data.listingId}` : data.listingName,
+            item_name: data.listingName,
+            item_category: 'villa',
+            price: data.nightlyRate ?? undefined,
+            quantity: data.nights ?? undefined,
+            checkin_date: data.checkIn ?? undefined,
+            checkout_date: data.checkOut ?? undefined,
+            guests_adults: data.guestsCount ?? undefined,
+          },
+        ],
+      },
+    });
+  }, [data]);
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">

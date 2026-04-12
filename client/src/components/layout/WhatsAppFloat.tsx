@@ -9,7 +9,7 @@ export default function WhatsAppFloat() {
     <>
       <button
         onClick={() => setIsModalOpen(true)}
-        className="fixed right-4 z-[90] flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] shadow-lg transition-transform duration-300 hover:scale-105 sm:right-6 sm:h-14 sm:w-14 md:right-7 whatsapp-float"
+        className="fixed right-4 z-[90] flex h-12 w-12 items-center justify-center rounded-full bg-[#1A1A18] shadow-lg border border-white/10 transition-transform duration-300 hover:scale-105 hover:bg-[#2a2a27] sm:right-6 sm:h-14 sm:w-14 md:right-7 whatsapp-float"
         aria-label="Chat on WhatsApp"
       >
         <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="white">

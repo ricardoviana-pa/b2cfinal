@@ -93,9 +93,10 @@ async function startServer() {
   app.get("/sitemap.xml", async (_req, res) => {
     try {
       const { getPropertiesForSite } = await import("../services/properties-store");
-      const { listBlogPosts } = await import("../db");
+      const { listBlogPosts, listServices } = await import("../db");
       const properties = await getPropertiesForSite();
       const blogPosts = await listBlogPosts({ status: "published" });
+      const serviceItems = await listServices({ activeOnly: true });
       // Always use production domain for sitemap — this is for search engine indexing only
       const base = "https://www.portugalactive.com";
       const now = new Date().toISOString().split("T")[0];
@@ -140,11 +141,16 @@ async function startServer() {
           return url(`${base}/blog/${p.slug}`, lastmod, "monthly", "0.8");
         });
 
+      const serviceUrls = serviceItems
+        .filter((s: any) => s.slug)
+        .map((s: any) => url(`${base}/services/${s.slug}`, now, "monthly", "0.8"));
+
       const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${staticUrls.join("\n")}
 ${propertyUrls.join("\n")}
 ${blogUrls.join("\n")}
+${serviceUrls.join("\n")}
 </urlset>`;
 
       res.setHeader("Content-Type", "application/xml");

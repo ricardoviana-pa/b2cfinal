@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
+import { pushDL, pushEcommerce, ADDON_PREFIX } from "@/lib/datalayer";
 import { Calendar, Shield, Loader2, Check, ShoppingBag, Minus, Plus, UtensilsCrossed, Sparkles, Dumbbell, ShoppingCart, Baby, Car, SprayCanIcon, ChevronDown } from "lucide-react";
 import AvailabilityCalendar from "./AvailabilityCalendar";
 import type { AvailabilityDay } from "./AvailabilityCalendar";
@@ -166,10 +167,29 @@ function EnhanceYourStay({
               key={item.id}
               type="button"
               onClick={() => {
+                const isAdding = !selectedUpsells.has(item.id);
                 setSelectedUpsells(prev => {
                   const next = new Set(prev);
                   next.has(item.id) ? next.delete(item.id) : next.add(item.id);
                   return next;
+                });
+                const prefix = ADDON_PREFIX[item.slug] || 'ADDON';
+                pushEcommerce({
+                  event: isAdding ? 'add_to_cart' : 'remove_from_cart',
+                  ecommerce: {
+                    currency: 'EUR',
+                    value: item.priceFrom || 0,
+                    items: [
+                      {
+                        item_id: `${prefix}-${item.id}`,
+                        item_name: item.name,
+                        item_category: 'addon',
+                        item_category2: (item.slug as string).replace(/-/g, '_'),
+                        price: item.priceFrom || 0,
+                        quantity: 1,
+                      },
+                    ],
+                  },
                 });
               }}
               className={cn(
@@ -1045,6 +1065,27 @@ export default function BookingWidget({
               /* Primary: Online payment available — direct booking */
               <button
                 onClick={() => {
+                  // GA4: begin_checkout
+                  pushEcommerce({
+                    event: 'begin_checkout',
+                    ecommerce: {
+                      currency: quote.currency || currency,
+                      value: effectiveQuote?.total ?? quote.total,
+                      items: [
+                        {
+                          item_id: `PROP-${guestyId}`,
+                          item_name: propertyName,
+                          item_category: 'villa',
+                          item_variant: destination || '',
+                          price: effectiveQuote?.nightlyRate ?? quote.nightlyRate,
+                          quantity: effectiveQuote?.nights ?? quote.nights,
+                          checkin_date: checkIn,
+                          checkout_date: checkOut,
+                          guests_adults: guests,
+                        },
+                      ],
+                    },
+                  });
                   // Check if BE quote has expired (24h validity)
                   if (quote.quoteCreatedAt && (Date.now() - quote.quoteCreatedAt > QUOTE_EXPIRY_MS)) {
                     // Auto-retry: clear expired quote and re-fetch
@@ -1108,7 +1149,29 @@ export default function BookingWidget({
             ) : canPayOnSite && quote?.source === "base" && !quote?.quoteId && !isRetryingForLivePrice && !beQuoteRetryFailed ? (
               /* Estimated price — show Reserve & Pay immediately; clicking triggers live pricing retry */
               <button
-                onClick={handleRetryReserve}
+                onClick={() => {
+                  pushEcommerce({
+                    event: 'begin_checkout',
+                    ecommerce: {
+                      currency,
+                      value: effectiveQuote?.total ?? 0,
+                      items: [
+                        {
+                          item_id: `PROP-${guestyId}`,
+                          item_name: propertyName,
+                          item_category: 'villa',
+                          item_variant: destination || '',
+                          price: effectiveQuote?.nightlyRate ?? 0,
+                          quantity: effectiveQuote?.nights ?? nights,
+                          checkin_date: checkIn,
+                          checkout_date: checkOut,
+                          guests_adults: guests,
+                        },
+                      ],
+                    },
+                  });
+                  handleRetryReserve();
+                }}
                 className="w-full min-h-[52px] bg-black text-white text-xs font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors"
               >
                 {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote?.total ?? 0)}

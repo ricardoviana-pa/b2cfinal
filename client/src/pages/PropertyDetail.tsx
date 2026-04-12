@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck,
-  Sparkles, Star, Clock, UtensilsCrossed, Headphones, Plus, X, AlertTriangle,
+  Sparkles, Gem, Clock, UtensilsCrossed, Headphones, Plus, X, AlertTriangle,
   Wifi, Tv, Coffee, Car, Waves, Wind, Shirt, Flame, TreePine, Mountain,
   Sun, Monitor, Utensils, Sofa, ArrowRight, Lock, ShieldCheck, Bed, type LucideIcon
 } from 'lucide-react';
@@ -24,6 +24,8 @@ import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
 import ReviewsSection from '@/components/property/ReviewsSection';
 import { trpc } from '@/lib/trpc';
+import { pushEcommerce } from '@/lib/datalayer';
+import { sanitizePropertyName } from '@/lib/format';
 
 const allProducts = productsData as unknown as Product[];
 const destinations = destinationsData as unknown as Destination[];
@@ -337,6 +339,57 @@ function Lightbox({ images, initialIndex, propertyName, destName, onClose, t }: 
   );
 }
 
+/** Description with "Read more" truncation for long Guesty copy */
+function DescriptionSection({ description, propertyName, locality, destName, t }: {
+  description: unknown;
+  propertyName: string;
+  locality: string;
+  destName: string;
+  t: ReturnType<typeof import('react-i18next').useTranslation>['t'];
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const paragraphs = formatDescription(description);
+  const MAX_VISIBLE = 3;
+  const needsTruncation = paragraphs.length > MAX_VISIBLE;
+  const visible = expanded ? paragraphs : paragraphs.slice(0, MAX_VISIBLE);
+
+  return (
+    <section>
+      <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-5">{t('propertyDetail.aboutTitle')}</h2>
+      <div className="body-lg space-y-4 relative">
+        {visible.length > 0 ? (
+          <>
+            {visible.map((para, i) => (
+              <p key={i}>{para}</p>
+            ))}
+            {needsTruncation && !expanded && (
+              <div className="relative pt-2">
+                <div className="absolute -top-12 left-0 right-0 h-12 bg-gradient-to-t from-[#FAFAF7] to-transparent pointer-events-none" />
+                <button
+                  onClick={() => setExpanded(true)}
+                  className="text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4"
+                >
+                  {t('common.readMore', 'Read more')}
+                </button>
+              </div>
+            )}
+            {expanded && needsTruncation && (
+              <button
+                onClick={() => setExpanded(false)}
+                className="text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4"
+              >
+                {t('common.readLess', 'Read less')}
+              </button>
+            )}
+          </>
+        ) : (
+          <p>{t('propertyDetail.welcomeFallback', { name: propertyName, locality, destination: destName })}</p>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export default function PropertyDetail() {
   const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
@@ -349,7 +402,8 @@ export default function PropertyDetail() {
     const dest = destinations.find(d => d.slug === property.destination);
     const beds = property.bedrooms ? `${property.bedrooms}-Bed` : '';
     const loc = dest?.name || property.region || '';
-    return `${property.name} | ${beds} Luxury Villa ${loc}`.replace(/\s+/g, ' ').trim();
+    const clean = sanitizePropertyName(property.name);
+    return `${clean} — ${beds} Luxury Villa ${loc}`.replace(/\s+/g, ' ').trim();
   }, [property]);
   const pdpDesc = useMemo(() => {
     if (!property) return undefined;
@@ -387,8 +441,6 @@ export default function PropertyDetail() {
         "addressRegion": dest?.name || '',
         "addressCountry": "PT",
       },
-      "starRating": { "@type": "Rating", "ratingValue": "5" },
-      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "2000" },
       ...(amenityFeatures.length > 0 && { "amenityFeature": amenityFeatures }),
       ...(property.priceFrom > 0 && {
         "priceRange": `From €${property.priceFrom} per night`,
@@ -411,7 +463,26 @@ export default function PropertyDetail() {
     script.id = "property-jsonld";
     document.querySelector("#property-jsonld")?.remove();
     document.head.appendChild(script);
-    return () => { document.querySelector("#property-jsonld")?.remove(); };
+    // BreadcrumbList
+    const breadcrumbLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
+        { "@type": "ListItem", "position": 2, "name": "Homes", "item": "https://www.portugalactive.com/homes" },
+        { "@type": "ListItem", "position": 3, "name": property.name },
+      ],
+    };
+    const breadcrumbScript = document.createElement("script");
+    breadcrumbScript.type = "application/ld+json";
+    breadcrumbScript.text = JSON.stringify(breadcrumbLd);
+    breadcrumbScript.id = "property-breadcrumb-jsonld";
+    document.querySelector("#property-breadcrumb-jsonld")?.remove();
+    document.head.appendChild(breadcrumbScript);
+    return () => {
+      document.querySelector("#property-jsonld")?.remove();
+      document.querySelector("#property-breadcrumb-jsonld")?.remove();
+    };
   }, [property]);
 
   const whatsIncluded = useMemo(
@@ -420,7 +491,7 @@ export default function PropertyDetail() {
       { icon: BedDouble, text: t('propertyDetail.included2') },
       { icon: Bath, text: t('propertyDetail.included3') },
       { icon: UtensilsCrossed, text: t('propertyDetail.included4') },
-      { icon: Star, text: t('propertyDetail.included5') },
+      { icon: Gem, text: t('propertyDetail.included5') },
       { icon: Clock, text: t('propertyDetail.included6') },
       { icon: Headphones, text: t('propertyDetail.included7') },
       { icon: MapPin, text: t('propertyDetail.included8') },
@@ -445,9 +516,49 @@ export default function PropertyDetail() {
   const [dragOffset, setDragOffset] = useState(0);
   const isDragging = useRef(false);
 
+  // Viewport tracking refs for related properties view_item_list
+  const relatedCardDataRef = useRef<Map<string, { property: Property; index: number }>>(new Map());
+  const relatedSlugToElementRef = useRef<Map<string, Element>>(new Map());
+  const relatedElementToSlugRef = useRef<Map<Element, string>>(new Map());
+  const relatedPendingRef = useRef<Map<string, { property: Property; index: number }>>(new Map());
+  const relatedFlushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const relatedObserverRef = useRef<IntersectionObserver | null>(null);
+
   useEffect(() => {
     if (property) setCurrentImage(0);
   }, [property?.slug]);
+
+  // GA4: view_item — fires once per property load
+  useEffect(() => {
+    if (!property) return;
+    const nights = initialCheckin && initialCheckout
+      ? Math.max(1, Math.ceil((new Date(initialCheckout).getTime() - new Date(initialCheckin).getTime()) / 86400000))
+      : 1;
+    pushEcommerce({
+      event: 'view_item',
+      ecommerce: {
+        currency: 'EUR',
+        value: (property.priceFrom || 0) * nights,
+        items: [
+          {
+            item_id: `PROP-${property.id}`,
+            item_name: property.name,
+            item_category: 'villa',
+            item_category2: property.locality || property.destination || '',
+            item_category3: 'Portugal',
+            item_variant: property.tier || '',
+            price: property.priceFrom || 0,
+            quantity: nights,
+            checkin_date: initialCheckin || undefined,
+            checkout_date: initialCheckout || undefined,
+            guests_adults: initialGuests || undefined,
+            max_guests: property.maxGuests || undefined,
+            bedrooms: property.bedrooms || undefined,
+          },
+        ],
+      },
+    });
+  }, [property?.id]);
 
   const services = useMemo(() => allProducts.filter(p => p.type === 'service' && p.isActive), []);
   const adventures = useMemo(() => {
@@ -460,7 +571,17 @@ export default function PropertyDetail() {
 
   const destObj = useMemo(() => {
     if (!property) return null;
-    return destinations.find(d => d.slug === property.destination) || null;
+    // Prefer match by destination slug
+    const bySlug = destinations.find(d => d.slug === property.destination);
+    if (bySlug) {
+      // Defensive: if locality is in a known Minho town list but slug is wrong, override
+      const minhoLocalities = ['Carreço', 'Viana do Castelo', 'Âncora', 'Vila Praia de Âncora', 'Afife', 'Moledo', 'Caminha'];
+      if (property.locality && minhoLocalities.some(l => (property.locality || '').toLowerCase().includes(l.toLowerCase()))) {
+        return destinations.find(d => d.slug === 'minho') || bySlug;
+      }
+      return bySlug;
+    }
+    return null;
   }, [property]);
   const destName = destObj?.name || property?.destination || '';
 
@@ -471,6 +592,62 @@ export default function PropertyDetail() {
       .filter(p => p.isActive !== false && p.destination === property.destination && p.slug !== property.slug)
       .slice(0, 3);
   }, [property, allPropsData]);
+
+  // GA4: view_item_list for related properties — fires when cards enter the viewport
+  useEffect(() => {
+    relatedObserverRef.current?.disconnect();
+    relatedPendingRef.current.clear();
+
+    if (!relatedProperties.length) return;
+
+    relatedObserverRef.current = new IntersectionObserver((entries) => {
+      let hasNew = false;
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          const slug = relatedElementToSlugRef.current.get(entry.target);
+          if (slug) {
+            const data = relatedCardDataRef.current.get(slug);
+            if (data) {
+              relatedPendingRef.current.set(slug, data);
+              hasNew = true;
+            }
+          }
+        }
+      }
+      if (!hasNew) return;
+      if (relatedFlushTimerRef.current) clearTimeout(relatedFlushTimerRef.current);
+      relatedFlushTimerRef.current = setTimeout(() => {
+        if (relatedPendingRef.current.size === 0) return;
+        const items = Array.from(relatedPendingRef.current.values())
+          .sort((a, b) => a.index - b.index)
+          .map(({ property: rp, index }) => ({
+            item_id: `PROP-${rp.id}`,
+            item_name: rp.name,
+            item_category: 'villa',
+            item_category2: rp.locality || rp.destination || '',
+            item_category3: 'Portugal',
+            item_variant: rp.tier || '',
+            price: rp.priceFrom || 0,
+            quantity: 1,
+            index,
+          }));
+        pushEcommerce({
+          event: 'view_item_list',
+          ecommerce: { item_list_id: 'related_properties', item_list_name: 'Related Homes', items },
+        });
+        relatedPendingRef.current.clear();
+      }, 200);
+    }, { threshold: 0.5 });
+
+    relatedSlugToElementRef.current.forEach((el) => relatedObserverRef.current!.observe(el));
+
+    return () => {
+      relatedObserverRef.current?.disconnect();
+      relatedObserverRef.current = null;
+      if (relatedFlushTimerRef.current) clearTimeout(relatedFlushTimerRef.current);
+      relatedPendingRef.current.clear();
+    };
+  }, [relatedProperties]);
 
   const amenityGroups = useMemo(() => {
     if (!property?.amenities || typeof property.amenities !== 'object') return [];
@@ -583,13 +760,14 @@ export default function PropertyDetail() {
               </>
             )}
             <li className="text-[#E8E4DC]">/</li>
-            <li className="text-[#6B6860] truncate max-w-[200px] inline-flex items-center min-h-[44px] px-1.5">{property.name}</li>
+            <li className="text-[#6B6860] truncate max-w-[220px] inline-flex items-center min-h-[44px] px-1.5">{sanitizePropertyName(property.name)}</li>
           </ol>
         </nav>
 
-        {/* Hero gallery — full width, 4:3 or 16:9 */}
+        {/* Hero gallery — mobile carousel + desktop grid */}
+        {/* Mobile: swipeable carousel */}
         <div
-          className="group relative w-full overflow-hidden bg-[#F5F1EB] aspect-[4/3] lg:aspect-[16/9] cursor-pointer select-none"
+          className="lg:hidden group relative w-full overflow-hidden bg-[#F5F1EB] aspect-[4/3] cursor-pointer select-none"
           onTouchStart={handleGalleryTouchStart}
           onTouchMove={handleGalleryTouchMove}
           onTouchEnd={handleGalleryTouchEnd}
@@ -598,7 +776,7 @@ export default function PropertyDetail() {
           <div
             className="flex h-full"
             style={{
-              transform: `translateX(calc(-${currentImage * 100}% + ${dragOffset}px))`,
+              transform: `translateX(calc(-${(currentImage / totalImages) * 100}% + ${dragOffset}px))`,
               transition: dragOffset ? 'none' : 'transform 300ms ease',
               width: `${totalImages * 100}%`,
               willChange: 'transform',
@@ -614,94 +792,88 @@ export default function PropertyDetail() {
               </div>
             ))}
           </div>
-
-          {/* Desktop arrows — fade in on hover */}
-          {totalImages > 1 && (
-            <>
-              <button
-                onClick={e => { e.stopPropagation(); setCurrentImage(p => Math.max(p - 1, 0)); }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/60 backdrop-blur-sm hover:bg-white/90 transition-all duration-200 hidden md:flex z-10"
-                aria-label={t('propertyDetail.prevImage', 'Previous image')}
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <button
-                onClick={e => { e.stopPropagation(); setCurrentImage(p => Math.min(p + 1, totalImages - 1)); }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 touch-target rounded-full bg-white/60 backdrop-blur-sm hover:bg-white/90 transition-all duration-200 hidden md:flex z-10"
-                aria-label={t('propertyDetail.nextImage', 'Next image')}
-              >
-                <ChevronRight size={20} />
-              </button>
-            </>
-          )}
-
-          {/* Counter + View all */}
           <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
             <span className="text-white/80 text-[12px] bg-black/30 backdrop-blur-sm px-2.5 py-1 rounded-sm pointer-events-auto" style={{ fontFamily: 'var(--font-body)' }}>
               {currentImage + 1} / {totalImages}
             </span>
             <button
               onClick={e => { e.stopPropagation(); setLightboxImage(currentImage); setLightboxOpen(true); }}
-              className="pointer-events-auto rounded-full bg-white/90 backdrop-blur-sm text-[#1A1A18] px-6 py-3.5 min-h-[48px] hover:bg-white transition-colors text-[11px] font-medium tracking-[0.12em] uppercase"
+              className="pointer-events-auto rounded-full bg-white/90 backdrop-blur-sm text-[#1A1A18] px-5 py-2.5 min-h-[44px] hover:bg-white transition-colors text-[11px] font-medium tracking-[0.12em] uppercase"
             >
               {t('propertyDetail.viewAll')}
             </button>
           </div>
+        </div>
 
-          {/* Dot indicators */}
-          {totalImages > 1 && totalImages <= 20 && (
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 hidden md:flex gap-1.5">
-              {images.map((_: string, i: number) => (
-                <button
-                  key={i}
-                  onClick={e => { e.stopPropagation(); setCurrentImage(i); }}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${i === currentImage ? 'bg-white w-4' : 'bg-white/40 w-1.5 hover:bg-white/60'}`}
-                  aria-label={`Go to image ${i + 1}`}
-                  style={{ minHeight: 'auto', minWidth: 'auto' }}
-                />
-              ))}
+        {/* Desktop: Bento gallery grid (1 large + 4 small) */}
+        <div className="hidden lg:block container pt-4">
+          <div className="grid grid-cols-4 grid-rows-2 gap-2 rounded-xl overflow-hidden" style={{ height: '480px' }}>
+            {/* Main large image — left half */}
+            <div
+              className="col-span-2 row-span-2 relative cursor-pointer group bg-[#E8E4DC]"
+              onClick={() => { setLightboxImage(0); setLightboxOpen(true); }}
+            >
+              {images[0] && (
+                <img src={images[0]} alt={`${property.name} – luxury villa in ${destName}, Portugal`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" loading="eager" fetchPriority="high" draggable={false} />
+              )}
             </div>
-          )}
+            {/* 4 smaller images — right half */}
+            {[1, 2, 3, 4].map(idx => (
+              <div
+                key={idx}
+                className="relative cursor-pointer group bg-[#E8E4DC]"
+                onClick={() => { if (images[idx]) { setLightboxImage(idx); setLightboxOpen(true); } }}
+              >
+                {images[idx] ? (
+                  <img src={images[idx]} alt={`${property.name} – image ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" decoding="async" draggable={false} />
+                ) : (
+                  <div className="absolute inset-0 bg-[#F5F1EB]" />
+                )}
+                {/* "View all" button on last image */}
+                {idx === 4 && totalImages > 5 && (
+                  <button
+                    onClick={e => { e.stopPropagation(); setLightboxImage(0); setLightboxOpen(true); }}
+                    className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm text-[#1A1A18] px-4 py-2 text-[11px] font-medium tracking-[0.08em] uppercase rounded-full hover:bg-white transition-colors z-10"
+                  >
+                    {t('propertyDetail.viewAll')} ({totalImages})
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Title, location, key stats — below hero */}
-        <div className="container pt-6 lg:pt-8 pb-4">
-          <p className="text-[11px] font-medium tracking-[0.08em] text-[#8B7355] mb-2 uppercase">{destName}</p>
-          <h1 className="headline-lg text-[#1A1A18] mb-2" style={{ fontFamily: 'var(--font-display)' }}>
-            {property.name}
+        <div className="container pt-8 lg:pt-10 pb-4">
+          <div className="flex items-center gap-3 mb-3">
+            <p className="text-[11px] font-medium tracking-[0.12em] text-[#8B7355] uppercase">{destName}</p>
+            <span className="h-px flex-1 max-w-[60px] bg-[#E8E4DC]" />
+          </div>
+          <h1 className="font-display text-[clamp(1.75rem,4vw,3rem)] font-light leading-[1.08] text-[#1A1A18] mb-3">
+            {sanitizePropertyName(property.name)}
           </h1>
-          <p className="body-lg italic text-[#6B6860] mb-4">{property.tagline}</p>
-          <div className="flex items-center gap-2 text-[#6B6860] mb-6">
+          {property.tagline && (
+            <p className="text-[15px] text-[#6B6860] italic mb-4 max-w-2xl leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{property.tagline}</p>
+          )}
+          <div className="flex items-center gap-2 text-[#6B6860] mb-8">
             <MapPin size={14} className="text-[#9E9A90]" />
-            <span className="text-[13px]">{property.locality}, Portugal</span>
+            <span className="text-[13px]" style={{ fontWeight: 300 }}>{property.locality}, Portugal</span>
           </div>
 
-          {/* Key stats bar — single source of truth for property specs */}
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-[#E8E4DC] py-4 text-[13px] text-[#6B6860]">
-            <span className="flex items-center gap-1.5">
-              <BedDouble size={15} className="text-[#8B7355]" />
-              {property.bedrooms} {t('property.bedrooms')}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Bath size={15} className="text-[#8B7355]" />
-              {property.bathrooms} {t('property.bathrooms')}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Users size={15} className="text-[#8B7355]" />
-              {property.maxGuests} {t('property.guests')}
-            </span>
-            {property.areaSquareFeet && property.areaSquareFeet > 0 && (
-              <span className="flex items-center gap-1.5">
-                <MapPin size={15} className="text-[#8B7355]" />
-                {Math.round(property.areaSquareFeet * 0.0929)} m²
+          {/* Key stats — pill badges */}
+          <div className="flex flex-wrap items-center gap-3 pb-6 border-b border-[#E8E4DC]">
+            {[
+              { icon: Users, value: `${property.maxGuests} ${t('property.guests')}` },
+              { icon: BedDouble, value: `${property.bedrooms} ${t('property.bedrooms')}` },
+              { icon: Bath, value: `${property.bathrooms} ${t('property.bathrooms')}` },
+              ...(property.areaSquareFeet && property.areaSquareFeet > 0 ? [{ icon: MapPin, value: `${Math.round(property.areaSquareFeet * 0.0929)} m²` }] : []),
+              ...((property.checkInTime || property.checkOutTime) ? [{ icon: Clock, value: `${property.checkInTime || '16:00'} / ${property.checkOutTime || '11:00'}` }] : []),
+            ].map((stat, i) => (
+              <span key={i} className="inline-flex items-center gap-2 px-4 py-2 bg-[#F5F1EB] rounded-full text-[13px] text-[#6B6860]" style={{ fontWeight: 400 }}>
+                <stat.icon size={14} className="text-[#8B7355]" />
+                {stat.value}
               </span>
-            )}
-            {(property.checkInTime || property.checkOutTime) && (
-              <span className="flex items-center gap-1.5">
-                <Clock size={15} className="text-[#8B7355]" />
-                {property.checkInTime || '16:00'} / {property.checkOutTime || '11:00'}
-              </span>
-            )}
+            ))}
           </div>
         </div>
 
@@ -714,7 +886,7 @@ export default function PropertyDetail() {
               {/* Bedrooms & Sleeping Arrangement */}
               {property.rooms && property.rooms.length > 0 && (
                 <section>
-                  <h2 className="headline-sm text-[#1A1A18] mb-6">Bedrooms & Sleeping Arrangements</h2>
+                  <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-6">Bedrooms & Sleeping Arrangements</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {property.rooms.map((room, roomIdx) => (
                       <div key={roomIdx} className="bg-white border border-[#E8E4DC] p-5 rounded-lg">
@@ -744,38 +916,34 @@ export default function PropertyDetail() {
                 </section>
               )}
 
-              {/* 1. What's included (now section B in redesign) */}
-              <section className="p-5 lg:p-6 bg-[#F5F1EB]">
-                <h2 className="headline-sm text-[#1A1A18] mb-4">{t('propertyDetail.includedTitle')}</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+              {/* 1. What's included */}
+              <section className="p-6 lg:p-8 bg-[#F5F1EB] rounded-lg">
+                <div className="flex items-center gap-3 mb-5">
+                  <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18]">{t('propertyDetail.includedTitle')}</h2>
+                  <span className="h-px flex-1 bg-[#E8E4DC]" />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
                   {whatsIncluded.map((item, i) => (
-                    <div key={i} className="flex items-start gap-3">
-                      <div className="w-7 h-7 flex items-center justify-center shrink-0 mt-0.5 rounded-full bg-[#FAFAF7]">
-                        <item.icon size={13} className="text-[#8B7355]" />
-                      </div>
-                      <span className="text-[12px] text-[#6B6860] font-light leading-relaxed pt-1">{item.text}</span>
+                    <div key={i} className="flex items-center gap-3">
+                      <item.icon size={16} className="text-[#8B7355] shrink-0" />
+                      <span className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>{item.text}</span>
                     </div>
                   ))}
                 </div>
               </section>
 
-              {/* 2. Editorial description */}
-              <section>
-                <h2 className="headline-sm text-[#1A1A18] mb-4">{t('propertyDetail.aboutTitle')}</h2>
-                <div className="body-lg space-y-4">
-                  {formatDescription(property.description).length > 0 ? (
-                    formatDescription(property.description).map((para, i) => (
-                      <p key={i}>{para}</p>
-                    ))
-                  ) : (
-                    <p>{t('propertyDetail.welcomeFallback', { name: property.name, locality: property.locality, destination: destName })}</p>
-                  )}
-                </div>
-              </section>
+              {/* 2. Editorial description with Read more */}
+              <DescriptionSection
+                description={property.description}
+                propertyName={property.name}
+                locality={property.locality}
+                destName={destName}
+                t={t}
+              />
 
               {/* 3. Amenities — Le Collectionist style icon grid with expandable sections */}
               <section>
-                <h2 className="headline-sm text-[#1A1A18] mb-6">{t('propertyDetail.amenitiesTitle')}</h2>
+                <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-6">{t('propertyDetail.amenitiesTitle')}</h2>
                 {amenityGroups.length > 0 ? (
                   <div className="space-y-6">
                     {amenityGroups.map((group) => (
@@ -804,16 +972,16 @@ export default function PropertyDetail() {
 
               {/* 4. Services (add-on) */}
               <section>
-                <h2 className="headline-sm text-[#1A1A18] mb-2">{t('propertyDetail.servicesTitle')}</h2>
+                <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-2">{t('propertyDetail.servicesTitle')}</h2>
                 <p className="body-md text-[#9E9A90] mb-5">{t('propertyDetail.servicesSubtitle')}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {services.map(service => (
-                    <div key={service.slug} className="border border-[#E8E4DC] p-4 flex items-start justify-between gap-3 hover:border-[#8B7355]/30 transition-colors">
+                    <div key={service.slug} className="border border-[#E8E4DC] rounded-lg p-5 flex items-start justify-between gap-3 hover:border-[#8B7355]/40 hover:shadow-sm transition-all duration-200">
                       <div className="min-w-0">
                         <h3 className="font-display text-[15px] text-[#1A1A18] mb-1">{service.name}</h3>
-                        <p className="text-[11px] text-[#6B6860] font-light leading-relaxed mb-2 line-clamp-2">{service.tagline}</p>
-                        <p className="text-[12px] text-[#9E9A90]">
-                          {service.priceFrom ? t('propertyDetail.fromPrice', { price: String(service.priceFrom) }) : t('bookingWidget.included')} <span className="text-[10px]">{service.priceSuffix}</span>
+                        <p className="text-[12px] text-[#6B6860] leading-relaxed mb-2 line-clamp-2" style={{ fontWeight: 300 }}>{service.tagline}</p>
+                        <p className="text-[12px] text-[#8B7355] font-medium">
+                          {service.priceFrom ? t('propertyDetail.fromPrice', { price: String(service.priceFrom) }) : t('bookingWidget.included')} <span className="text-[10px] text-[#9E9A90] font-normal">{service.priceSuffix}</span>
                         </p>
                       </div>
                       <button
@@ -831,26 +999,22 @@ export default function PropertyDetail() {
               {/* 5. Adventures nearby */}
               {adventures.length > 0 && (
                 <section>
-                  <h2 className="headline-sm text-[#1A1A18] mb-2">{t('propertyDetail.adventuresTitle')}</h2>
+                  <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-2">{t('propertyDetail.adventuresTitle')}</h2>
                   <p className="body-md text-[#9E9A90] mb-5">{t('propertyDetail.adventuresSubtitle', { destination: destName })}</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {adventures.map(adventure => (
-                      <div key={adventure.slug} className="border border-[#E8E4DC] p-4 flex items-start justify-between gap-3 hover:border-[#8B7355]/30 transition-colors">
+                      <Link key={adventure.slug} href={`/experiences/${adventure.slug}`} className="border border-[#E8E4DC] rounded-lg p-5 flex items-start justify-between gap-3 hover:border-[#8B7355]/40 hover:shadow-sm transition-all duration-200 group">
                         <div className="min-w-0">
-                          <h3 className="font-display text-[15px] text-[#1A1A18] mb-1">{adventure.name}</h3>
+                          <h3 className="font-display text-[15px] text-[#1A1A18] mb-1 group-hover:text-[#8B7355] transition-colors">{adventure.name}</h3>
                           <p className="text-[11px] text-[#6B6860] font-light leading-relaxed mb-2 line-clamp-2">{adventure.tagline}</p>
                           <p className="text-[12px] text-[#9E9A90]">
                             {adventure.priceFrom ? t('propertyDetail.fromPrice', { price: String(adventure.priceFrom) }) : t('propertyDetail.custom')} <span className="text-[10px]">{adventure.priceSuffix}</span>
                           </p>
                         </div>
-                        <button
-                          onClick={() => setModalProduct(adventure)}
-                          className="flex items-center gap-1.5 rounded-full bg-[#1A1A18] text-white text-[11px] tracking-[0.06em] font-medium px-4 py-2.5 hover:bg-[#333] transition-colors shrink-0"
-                          style={{ minHeight: '44px', minWidth: '44px' }}
-                        >
-                          <Plus className="w-3.5 h-3.5" /> {t('propertyDetail.add')}
-                        </button>
-                      </div>
+                        <span className="flex items-center gap-1.5 rounded-full bg-[#1A1A18] text-white text-[11px] tracking-[0.06em] font-medium px-4 py-2.5 group-hover:bg-[#333] transition-colors shrink-0" style={{ minHeight: '44px', minWidth: '44px' }}>
+                          <ArrowRight className="w-3.5 h-3.5" /> {t('propertyDetail.viewDetails', 'View')}
+                        </span>
+                      </Link>
                     ))}
                   </div>
                 </section>
@@ -858,12 +1022,12 @@ export default function PropertyDetail() {
 
               {/* 6. Location map */}
               <section>
-                <h2 className="headline-sm text-[#1A1A18] mb-2">Location</h2>
+                <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-2">{t('propertyDetail.locationTitle', 'Location')}</h2>
                 <p className="text-[13px] font-medium text-[#8B7355] mb-4">{property.locality}</p>
-                <div className="rounded-lg overflow-hidden border border-[#E8E4DC]">
+                <div className="rounded-xl overflow-hidden border border-[#E8E4DC]">
                   <iframe
                     title={`${property.name} — ${property.locality}`}
-                    className="w-full h-[280px] lg:h-[320px] border-0"
+                    className="w-full h-[300px] lg:h-[360px] border-0"
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                     src={
@@ -996,35 +1160,82 @@ export default function PropertyDetail() {
           </div>
         </div>
 
+        {/* Why book direct */}
+        <section className="py-16 lg:py-20 bg-[#F5F1EB]">
+          <div className="container max-w-4xl mx-auto text-center">
+            <p className="text-[11px] font-medium tracking-[0.14em] text-[#8B7355] uppercase mb-3">{t('whyBookDirect.overline', 'Why book with us')}</p>
+            <h2 className="font-display text-[clamp(1.5rem,3vw,2.25rem)] font-light text-[#1A1A18] mb-10">{t('whyBookDirect.headline', 'Book direct. Save more.')}</h2>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+              {[
+                { icon: ShieldCheck, title: t('whyBookDirect.bestRate', 'Best rate guaranteed'), desc: t('whyBookDirect.bestRateDesc', 'Always the lowest price — no middleman markup.') },
+                { icon: Headphones, title: t('whyBookDirect.concierge', 'Dedicated concierge'), desc: t('whyBookDirect.conciergeDesc', 'Personal support from booking to checkout.') },
+                { icon: Clock, title: t('whyBookDirect.flexible', 'Flexible cancellation'), desc: t('whyBookDirect.flexibleDesc', 'Change of plans? We make it easy.') },
+                { icon: Sparkles, title: t('whyBookDirect.curated', 'Curated by locals'), desc: t('whyBookDirect.curatedDesc', 'Every home hand-picked and operated by our team.') },
+              ].map((item, i) => (
+                <div key={i} className="flex flex-col items-center">
+                  <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center mb-4">
+                    <item.icon size={20} className="text-[#8B7355]" />
+                  </div>
+                  <h3 className="text-[13px] font-medium text-[#1A1A18] mb-1.5">{item.title}</h3>
+                  <p className="text-[12px] text-[#9E9A90] leading-relaxed" style={{ fontWeight: 300 }}>{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Related properties from same region */}
         {relatedProperties.length > 0 && (
           <section className="section-padding bg-white border-t border-[#E8E4DC]">
             <div className="container">
               <div className="flex items-end justify-between mb-8">
                 <div>
-                  <p className="text-[11px] font-medium tracking-[0.08em] text-[#8B7355] mb-2 uppercase">More in {destName}</p>
-                  <h2 className="headline-lg text-[#1A1A18]">Related homes</h2>
+                  <p className="text-[11px] font-medium tracking-[0.08em] text-[#8B7355] mb-2 uppercase">{t('propertyDetail.moreIn', { destination: destName, defaultValue: `More in ${destName}` })}</p>
+                  <h2 className="headline-lg text-[#1A1A18]">{t('propertyDetail.relatedHomes', 'Related homes')}</h2>
                 </div>
                 {destObj && (
                   <Link href={`/destinations/${destObj.slug}`} className="hidden md:flex items-center gap-2 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors">
-                    All {destName} homes <ArrowRight className="w-4 h-4" />
+                    {t('propertyDetail.allDestHomes', { destination: destName, defaultValue: `All ${destName} homes` })} <ArrowRight className="w-4 h-4" />
                   </Link>
                 )}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {relatedProperties.map(rp => (
-                  <PropertyCard
+                {relatedProperties.map((rp, i) => (
+                  <div
                     key={rp.id}
-                    property={rp}
-                    checkin={initialCheckin || undefined}
-                    checkout={initialCheckout || undefined}
-                    guests={initialGuests > 1 ? initialGuests : undefined}
-                  />
+                    ref={(el) => {
+                      const slug = rp.slug;
+                      if (el) {
+                        relatedCardDataRef.current.set(slug, { property: rp, index: i + 1 });
+                        relatedElementToSlugRef.current.set(el, slug);
+                        relatedSlugToElementRef.current.set(slug, el);
+                        relatedObserverRef.current?.observe(el);
+                      } else {
+                        const existing = relatedSlugToElementRef.current.get(slug);
+                        if (existing) {
+                          relatedObserverRef.current?.unobserve(existing);
+                          relatedElementToSlugRef.current.delete(existing);
+                          relatedSlugToElementRef.current.delete(slug);
+                        }
+                        relatedCardDataRef.current.delete(slug);
+                      }
+                    }}
+                  >
+                    <PropertyCard
+                      property={rp}
+                      checkin={initialCheckin || undefined}
+                      checkout={initialCheckout || undefined}
+                      guests={initialGuests > 1 ? initialGuests : undefined}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
           </section>
         )}
+
+        {/* Bottom spacer for mobile sticky booking bar */}
+        <div className="lg:hidden h-[100px]" />
 
         <Footer />
       </div>

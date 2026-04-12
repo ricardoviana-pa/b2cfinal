@@ -4,7 +4,7 @@
    ========================================================================== */
 
 import { useState, useRef, useCallback, forwardRef, useEffect } from 'react';
-import { Star, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const REVIEWS = [
   {
@@ -184,32 +184,20 @@ const ReviewsSection = forwardRef<HTMLDivElement>((_, ref) => {
           {REVIEWS.map((review, i) => (
             <div
               key={i}
-              className="flex-shrink-0 w-[320px] md:w-[360px] bg-white border border-[#E8E4DC] p-6 flex flex-col"
+              className="flex-shrink-0 w-[320px] md:w-[380px] bg-white p-10 flex flex-col border-l-[1.5px] border-[#8B7355]"
               style={{ scrollSnapAlign: 'start' }}
             >
-              {/* Quote icon */}
-              <Quote className="w-5 h-5 text-[#C4A87C] mb-4 opacity-50" />
-
-              {/* Stars */}
-              <div className="flex items-center gap-0.5 mb-4">
-                {Array.from({ length: 5 }).map((_, j) => (
-                  <Star key={j} className="w-3 h-3 fill-[#C4A87C] text-[#C4A87C]" />
-                ))}
-              </div>
-
-              {/* Quote text */}
+              {/* Editorial quote */}
               <p
-                className="text-[14px] text-[#6B6860] italic leading-relaxed flex-1 mb-5"
-                style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                className="font-display text-[1.15rem] leading-snug text-[#1A1A18] flex-1 mb-8"
               >
                 "{review.quote}"
               </p>
 
               {/* Author */}
-              <div className="border-t border-[#E8E4DC] pt-4">
-                <p className="text-[14px] font-semibold text-[#1A1A18]">{review.name}</p>
-                <p className="text-[12px] text-[#8B7355] mt-0.5">{review.property}</p>
-                <p className="text-[11px] text-[#9E9A90] mt-0.5">{review.origin}</p>
+              <div>
+                <p className="text-[11px] tracking-[0.12em] uppercase text-[#8B7355] mb-1">{review.name}</p>
+                <p className="text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>{review.property} · {review.origin}</p>
               </div>
             </div>
           ))}

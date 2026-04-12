@@ -26,7 +26,7 @@ import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { Link } from 'wouter';
-import { ChevronDown, Users, ArrowRight, Key, Star, MapPin, Shield, Check, Quote, Minus, Plus } from 'lucide-react';
+import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Check, Quote, Minus, Plus } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -37,6 +37,7 @@ import destinationsData from '@/data/destinations.json';
 import { trpc } from '@/lib/trpc';
 import type { Destination, Property } from '@/lib/types';
 import { getUniqueLocalities } from '@/lib/utils';
+import { pushDL, pushEcommerce } from '@/lib/datalayer';
 
 const destinations = destinationsData as unknown as Destination[];
 
@@ -62,6 +63,79 @@ export default function Home() {
     description: '50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool. Book direct for best rates.',
     url: '/',
   });
+  useEffect(() => {
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "LodgingBusiness",
+      "name": "Portugal Active",
+      "description": "50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool, housekeeping. Book direct for best rates.",
+      "url": "https://www.portugalactive.com",
+      "telephone": "+351927161771",
+      "email": "info@portugalactive.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Viana do Castelo",
+        "addressRegion": "Norte",
+        "addressCountry": "PT",
+      },
+      "areaServed": [
+        { "@type": "Place", "name": "Minho, Portugal" },
+        { "@type": "Place", "name": "Porto & Douro, Portugal" },
+        { "@type": "Place", "name": "Lisbon, Portugal" },
+        { "@type": "Place", "name": "Alentejo, Portugal" },
+        { "@type": "Place", "name": "Algarve, Portugal" },
+      ],
+      "priceRange": "€€€",
+      "sameAs": [
+        "https://www.instagram.com/portugal_active",
+      ],
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(jsonLd);
+    script.id = "home-localbusiness-jsonld";
+    document.querySelector("#home-localbusiness-jsonld")?.remove();
+    document.head.appendChild(script);
+    // FAQPage schema for homepage — targets "luxury villas Portugal" queries
+    const faqLd = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What makes Portugal Active different from Airbnb or Booking.com?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Portugal Active operates each property like a private hotel — with a 47-point preparation checklist, dedicated concierge, optional private chef, and a local team minutes away. We don't just list homes; we manage them to hotel standards." }
+        },
+        {
+          "@type": "Question",
+          "name": "Which regions in Portugal does Portugal Active cover?",
+          "acceptedAnswer": { "@type": "Answer", "text": "We operate luxury villas across five regions: Minho Coast (Viana do Castelo area), Porto & Douro Valley, Lisbon & Sintra, Alentejo, and the Algarve. Each region offers a different character, from Atlantic beaches to wine country." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I book adventure activities alongside my villa stay?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. We offer curated experiences including horseback riding, canyoning, surfing, sailing, e-bike tours, and more. Our concierge team builds bespoke itineraries combining your villa, activities, private dining, and transfers." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it cheaper to book direct with Portugal Active?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Always. Booking direct means no middleman markup — you get the best rate guaranteed, plus complimentary concierge service and priority for special requests like early check-in or celebrations." }
+        },
+      ],
+    };
+    const faqScript = document.createElement("script");
+    faqScript.type = "application/ld+json";
+    faqScript.text = JSON.stringify(faqLd);
+    faqScript.id = "home-faq-jsonld";
+    document.querySelector("#home-faq-jsonld")?.remove();
+    document.head.appendChild(faqScript);
+
+    return () => {
+      document.querySelector("#home-localbusiness-jsonld")?.remove();
+      document.querySelector("#home-faq-jsonld")?.remove();
+    };
+  }, []);
+
   const { data: propsData, isLoading, isError } = trpc.properties.listForSite.useQuery();
   const properties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
 
@@ -120,6 +194,29 @@ export default function Home() {
 
   const activeDestinations = destinations.filter(d => d.status === 'active' || d.slug === 'brazil');
 
+  // GA4: view_item_list — fires when featured properties load
+  useEffect(() => {
+    if (!featured.length) return;
+    pushEcommerce({
+      event: 'view_item_list',
+      ecommerce: {
+        item_list_id: 'featured_homes',
+        item_list_name: "Editor's Picks",
+        items: featured.map((property, index) => ({
+          item_id: `PROP-${property.id}`,
+          item_name: property.name,
+          item_category: 'villa',
+          item_category2: property.locality || property.destination || '',
+          item_category3: 'Portugal',
+          item_variant: property.tier || '',
+          price: property.priceFrom || 0,
+          quantity: 1,
+          index: index + 1,
+        })),
+      },
+    });
+  }, [featured.length]);
+
   const createLead = trpc.leads.create.useMutation();
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,6 +227,7 @@ export default function Home() {
       await createLead.mutateAsync({ email, source: 'newsletter-home' });
       setSubscribed(true);
       setEmail('');
+      pushDL({ event: 'generate_lead', lead_source: 'newsletter-home', lead_type: 'newsletter' });
     } catch {
       setNlError(t('home.newsletterError', 'Something went wrong. Please try again.'));
     } finally {
@@ -341,6 +439,22 @@ export default function Home() {
                 const qs = p.toString();
                 return `/homes${qs ? `?${qs}` : ''}`;
               })()}
+              onClick={() => {
+                const nights = searchCheckin && searchCheckout
+                  ? Math.round((new Date(searchCheckout).getTime() - new Date(searchCheckin).getTime()) / 86400000)
+                  : null;
+                pushDL({
+                  event: 'search',
+                  search_location: searchDest || 'All Destinations',
+                  search_location_type: searchDest ? 'city' : 'all',
+                  search_checkin: searchCheckin || null,
+                  search_checkout: searchCheckout || null,
+                  search_nights: nights,
+                  search_adults: searchGuests,
+                  search_children: 0,
+                  search_source: 'hero_desktop',
+                });
+              }}
               className="flex-shrink-0 h-[44px] mr-1.5 px-6 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
               style={{ letterSpacing: '1.5px' }}
             >
@@ -415,6 +529,22 @@ export default function Home() {
                   const qs = p.toString();
                   return `/homes${qs ? `?${qs}` : ''}`;
                 })()}
+                onClick={() => {
+                  const nights = searchCheckin && searchCheckout
+                    ? Math.round((new Date(searchCheckout).getTime() - new Date(searchCheckin).getTime()) / 86400000)
+                    : null;
+                  pushDL({
+                    event: 'search',
+                    search_location: 'All Destinations',
+                    search_location_type: 'all',
+                    search_checkin: searchCheckin || null,
+                    search_checkout: searchCheckout || null,
+                    search_nights: nights,
+                    search_adults: searchGuests,
+                    search_children: 0,
+                    search_source: 'hero_mobile',
+                  });
+                }}
                 className="shrink-0 h-[48px] px-6 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
                 style={{ letterSpacing: '1.5px' }}
               >
@@ -441,7 +571,7 @@ export default function Home() {
                   sub: t('home.uspPrivacySub'),
                 },
                 {
-                  icon: <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />,
+                  icon: <Gem className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />,
                   title: t('home.uspService'),
                   sub: t('home.uspServiceSub'),
                 },
@@ -506,13 +636,16 @@ export default function Home() {
 
           {/* Property cards Ã¢ÂÂ horizontal scroll on mobile, 3 per row on desktop */}
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:overflow-visible">
-            {featured.map(property => (
+            {featured.map((property, index) => (
               <div key={property.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
                 <PropertyCard
                   property={property}
                   checkin={searchCheckin || undefined}
                   checkout={searchCheckout || undefined}
                   guests={searchGuests > 1 ? searchGuests : undefined}
+                  listId="featured_homes"
+                  listName="Editor's Picks"
+                  itemIndex={index + 1}
                 />
               </div>
             ))}
@@ -680,9 +813,6 @@ export default function Home() {
 
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-3 lg:grid-cols-6 md:overflow-visible">
             {activeDestinations.map(dest => {
-              const homeCount = properties.filter(p => p.destination === dest.slug).length;
-              const label = dest.comingSoon ? t('home.destComingSoon', 'Coming Soon') : homeCount > 0 ? t('home.destHome', { count: homeCount }) : t('home.destNowOperating');
-
               return (
                 <Link key={dest.id} href={`/destinations/${dest.slug}`} className="group block flex-shrink-0 w-[240px] sm:w-[260px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
                   <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '3/4' }}>
@@ -697,9 +827,13 @@ export default function Home() {
                       <div className="w-full h-full placeholder-image" />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+                    {dest.comingSoon && (
+                      <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 text-[10px] font-medium tracking-[0.06em] uppercase text-[#6B6860]">
+                        {t('home.destComingSoon', 'Coming soon')}
+                      </span>
+                    )}
                     <div className="absolute bottom-0 left-0 right-0 p-5">
-                      <h3 className="text-white text-[1.25rem] font-display mb-1">{dest.name}</h3>
-                      <p className="text-white/70 text-[13px]">{label}</p>
+                      <h3 className="text-white text-[1.25rem] font-display">{dest.name}</h3>
                     </div>
                   </div>
                   <p className="text-[13px] text-[#6B6860] mt-3 leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>

@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect, useRef, useLayoutEffect } from 'react';
+import { pushDL } from '@/lib/datalayer';
 import { Phone, Mail, MapPin, MessageCircle, Calendar, ChevronDown, Check, ArrowRight, Send, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -94,7 +95,26 @@ const CONTACT_CHANNELS = [
 
 export default function Contact() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Contact Portugal Active | Plan Your Stay in Portugal', description: 'Speak to our concierge team. We respond within 2 hours. Phone, WhatsApp, or email — plan your perfect Portuguese villa holiday.', url: '/contact' });
+  usePageMeta({ title: 'Contact Portugal Active | Plan Your Stay in Portugal', description: 'Plan your Portugal stay with our concierge team. Luxury villa rentals, private chef, outdoor adventures. Phone, WhatsApp or email — we reply within 2 hours.', url: '/contact' });
+
+  useEffect(() => {
+    const breadcrumbLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
+        { "@type": "ListItem", "position": 2, "name": "Contact" },
+      ],
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(breadcrumbLd);
+    script.id = "contact-breadcrumb-jsonld";
+    document.querySelector("#contact-breadcrumb-jsonld")?.remove();
+    document.head.appendChild(script);
+    return () => { document.querySelector("#contact-breadcrumb-jsonld")?.remove(); };
+  }, []);
+
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -103,7 +123,7 @@ export default function Contact() {
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [subject, setSubject] = useState('book-a-home');
+  const [subject, setSubject] = useState('plan-my-stay');
   const [message, setMessage] = useState('');
   const [honeypot, setHoneypot] = useState('');
 
@@ -125,7 +145,7 @@ export default function Contact() {
     const intent = params.get('intent');
     if (slug && intent === 'availability') {
       prefilledFromProperty.current = true;
-      setSubject('book-a-home');
+      setSubject('plan-my-stay');
       setMessage(
         t('contact.prefillAvailability', {
           slug,
@@ -144,6 +164,25 @@ export default function Contact() {
     { q: t('contact.faq5q'), a: t('contact.faq5a') },
     { q: t('contact.faq6q'), a: t('contact.faq6a') },
   ], [t]);
+
+  useEffect(() => {
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": FAQ_ITEMS.map(item => ({
+        "@type": "Question",
+        "name": item.q,
+        "acceptedAnswer": { "@type": "Answer", "text": item.a },
+      })),
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(jsonLd);
+    script.id = "contact-faq-jsonld";
+    document.querySelector("#contact-faq-jsonld")?.remove();
+    document.head.appendChild(script);
+    return () => { document.querySelector("#contact-faq-jsonld")?.remove(); };
+  }, [FAQ_ITEMS]);
 
   const validateField = useCallback((field: string, value: string) => {
     if (field === 'name' && !value.trim()) return t('contact.errorName', 'Please enter your name');
@@ -194,6 +233,7 @@ export default function Contact() {
         metadata: { subject },
       });
       setSubmitted(true);
+      pushDL({ event: 'generate_lead', lead_source: 'contact-form', lead_type: 'contact', lead_subject: subject });
     } catch {
       setError(t('contact.errorSubmit', 'Something went wrong. Please try again or contact us directly.'));
     } finally {
@@ -349,7 +389,7 @@ export default function Contact() {
                         className={`${inputClasses('subject', false)} appearance-none cursor-pointer`}
                         style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                       >
-                        <option value="book-a-home">{t('contact.subjectBookHome')}</option>
+                        <option value="plan-my-stay">{t('contact.subjectBookHome')}</option>
                         <option value="services-enquiry">{t('contact.subjectServices')}</option>
                         <option value="events">{t('contact.subjectEvents')}</option>
                         <option value="property-management">{t('contact.subjectProperty')}</option>
