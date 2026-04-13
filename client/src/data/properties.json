@@ -2049,6 +2049,7 @@
         "Outdoor seating (furniture)",
         "Oven",
         "Patio or balcony",
+        "Pets allowed",
         "Ping pong table",
         "Pool table",
         "Private entrance",
@@ -8200,6 +8201,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Buena ubicación cerca de la playa",
+        "guestName": "Guest",
+        "date": "2026-04-12T18:02:14.149Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "espaço muito agradável e convidativo à permanência",
         "guestName": "Guest",
         "date": "2026-03-17T11:48:55.484Z",
@@ -8264,7 +8297,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   },
   {
     "id": "guesty-696533266dec35001492fdbb",
