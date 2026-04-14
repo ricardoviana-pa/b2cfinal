@@ -105,13 +105,9 @@ async function main() {
         exp.gallery = photos;
         exp.image = pickPhotoUrl(a.keyPhoto) || photos[0];
       }
-      const descParas = htmlToParagraphs(a.description);
-      const incList = htmlToList(a.included);
-      const excList = htmlToList(a.excluded);
-      if (descParas.length) exp.aboutParagraphs = descParas;
-      if (incList.length) exp.included = incList;
-      if (excList.length) exp.notIncluded = excList;
-      if (a.title) exp.name = a.title;
+      // NOTE: We deliberately do NOT overwrite name/aboutParagraphs/included/
+      // notIncluded — the hand-written luxury copy outperforms Bókun's generic
+      // OTA text. Raw Bókun copy is preserved in `bokunContent` for reference.
       exp.bokunContent = {
         title: a.title,
         descriptionParagraphs: htmlToParagraphs(a.description),

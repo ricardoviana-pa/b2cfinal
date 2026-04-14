@@ -2,7 +2,7 @@
   "experiences": [
     {
       "slug": "horseback-riding",
-      "name": "Viana do Castelo Horseback Riding Tour with Transport from Porto / Braga",
+      "name": "Viana do Castelo Horseback Riding Tour — Beach, Mountain & Flower Fields",
       "category": "activity",
       "experienceCategory": "adventure",
       "tagline": "A horseback ride through flower fields, mountain trails and paradise beaches — crafted for any level, from first-timer to seasoned rider.",
@@ -67,9 +67,10 @@
         "https://imgcdn.bokun.tools/233ba006-eae0-4e5b-8f14-9e8c8798d0fb.jpg?w=660&h=660"
       ],
       "aboutParagraphs": [
-        "Portugal Active’s Horseback Riding Tour will take you through the breathtaking scenery of Viana do Castelo. You’ll pass through fields of flowers, mountain trails and even the paradisiac beaches* of the city.",
-        "The tour can be made for anyone – from a beginner to a professional – we have horses for all types of riders. It will be supervised by an experienced teacher who will guide and teach you how to better control your horse.",
-        "*During bathing season, there are legal restrictions on horseback riding and it isn't allowed to ride on the beach sand therefore our route will be adapted accordingly."
+        "This is the ride you will still be talking about a year from now. Starting from a traditional working ranch on the outskirts of Viana do Castelo, you will be matched with a horse that suits your experience level — from absolute beginner to confident rider — by one of our certified instructors.",
+        "The route takes you through the flower fields and pine forests that blanket the foothills above the Lima Valley, with panoramic views that stretch from the Serra d'Arga mountains to the Atlantic. The final stretch follows the coastline: a beach ride at golden hour, the sound of hooves on wet sand, the salt air in your hair.",
+        "Every detail is taken care of. We pick you up from your Portugal Active villa, provide all safety equipment, and keep groups small — never more than 8 riders — so that the instructor can give individual attention to every guest. Water, a photo souvenir, and a post-ride refreshment at the ranch are included.",
+        "This experience is available year-round, weather permitting. Spring (April to June) is the most spectacular season, when the fields are in full bloom and the light is extraordinary. During bathing season, there are legal restrictions on horseback riding on the beach sand — the route is adapted accordingly with equally stunning coastal trails."
       ],
       "highlights": [
         "Ride through the stunning landscapes of Viana do Castelo — flower fields, pine forests, Atlantic beaches",
@@ -82,12 +83,16 @@
         "Photo souvenir and post-ride refreshments at the ranch"
       ],
       "included": [
-        "All activities",
-        "Professional guide",
-        "Use of helmet"
+        "Professional horse riding instruction by a certified equestrian",
+        "Full safety equipment and helmet fitting",
+        "Insurance coverage for all participants",
+        "Round-trip transfer from your Portugal Active villa (on request)",
+        "Water during the ride",
+        "Photo souvenir"
       ],
       "notIncluded": [
-        "Transportation to/from activities (If option not selected)"
+        "Food and meals (can be arranged separately)",
+        "Gratuities (at your discretion)"
       ],
       "notSuitableFor": [
         "Children under 10 years old",
@@ -421,7 +426,7 @@
     },
     {
       "slug": "hike-dive-dine",
-      "name": "Serra D’Arga Hike, Dive & Dine Like A Local in a Secret Spot",
+      "name": "Serra d'Arga Hike, Dive & Dine Like a Local in a Secret Spot",
       "category": "activity",
       "experienceCategory": "gastronomy & adventure",
       "tagline": "Discover the Minho's best-kept secrets. Hike to a hidden waterfall, swim in crystal-clear lagoons, and end with traditional Portuguese cuisine at a secret mountain restaurant.",
@@ -477,11 +482,10 @@
         "https://imgcdn.bokun.tools/6dacd890-0a20-4b0d-a062-2984333ffcd2.jpg?w=660&h=660"
       ],
       "aboutParagraphs": [
-        "Ready to experience everything like a local?\nJoin us to discover the best secret places in Minho.",
-        "This is how we do it:",
-        "1 – Pick-up at the arranged location\nWe’ll pick you up anywhere, in the city of Viana do Castelo, and drive you to Serra D’Arga where all the adventure starts.",
-        "2 – Dive in a secret lagoon\nThe trek will take you to discover a secret waterfall and lagoon – a true hidden gem of Viana do Castelo. Here, you’ll have time for a refreshing dive in its pure waters.",
-        "3 – Time to taste the best traditional food\nHard to find, harder to leave. We will take you to a super traditional “Portuguese tapas” restaurant in the middle of the mountain. A fantastic place to go if you want to try real authentic Portuguese cuisine."
+        "This is our signature Minho experience — the one our guests rate highest and book again on their next trip. It combines the three things that make northern Portugal unforgettable: wild nature, extraordinary food, and local knowledge you cannot find in any guidebook.",
+        "Your guide — born and raised in the Minho — leads you through oak and chestnut forests in the Serra d'Arga to a hidden waterfall and natural lagoon that only locals know. The hike is moderate (about 40 minutes each way, well-marked trail), and the reward is a swim in crystal-clear mountain water surrounded by nothing but forest and birdsong.",
+        "The experience culminates at a traditional mountain restaurant that has no website, no Instagram, and no signs on the road. The table is set with broa de milho, chouriço assado, queijo da serra, local honey, and regional wine. It is the kind of meal that makes you understand why the Minho is Portugal's best-kept culinary secret.",
+        "Everything is included: villa transfer, snacks during the hike, the full traditional meal with wine pairing, and a polaroid souvenir. Groups are kept small — never more than 10 guests — so the experience feels personal and unhurried."
       ],
       "highlights": [
         "Discover a hidden waterfall and secret lagoon — a true hidden gem of Viana do Castelo",
@@ -494,12 +498,17 @@
         "A private tour means a personalised experience"
       ],
       "included": [
-        "Dinner",
-        "Guide",
-        "Alcoholic Beverages"
+        "Local expert guide",
+        "Dinner — full traditional Portuguese meal",
+        "Alcoholic beverages (local wine or beer pairing)",
+        "Snacks during the hike",
+        "Insurance coverage for all participants",
+        "Polaroid souvenir photograph",
+        "Round-trip transfer from your Portugal Active villa (on request)"
       ],
       "notIncluded": [
-        "Transportation to/from activities (Optional, additional charges may apply contact us for more info)"
+        "Additional drinks beyond the included pairing",
+        "Gratuities (at your discretion)"
       ],
       "notSuitableFor": [
         "Pregnant travellers",
@@ -1000,7 +1009,7 @@
     },
     {
       "slug": "stand-up-paddle",
-      "name": "SUP Sun Experience with Transport from Porto and Braga",
+      "name": "SUP Sun Experience — Lima River Descent from Ponte de Lima",
       "category": "activity",
       "experienceCategory": "adventure",
       "tagline": "Paddle the full length of the Lima River at sunrise or sunset — from the medieval town of Ponte de Lima to the Atlantic at Cabedelo Beach.",
@@ -1040,7 +1049,10 @@
         "https://imgcdn.bokun.tools/cfd9f586-1379-4d59-b0f1-98e2f57faf48.jpg?w=660&h=660"
       ],
       "aboutParagraphs": [
-        "According to our clients, if we want to describe this experience with a word, that word would be “Magic.” It consists of a descent of the Lima River starting at Ponte de Lima and ending at Cabedelo beach, you’ll get to see the sun rising or setting from the middle of the river."
+        "This is the experience guests describe in one word: magic. Starting from the medieval town of Ponte de Lima — one of the oldest in Portugal — you will paddle the full course of the Lima River as the light changes from gold to copper to pink. The current does most of the work; you supply the presence.",
+        "The route follows the river downstream through farmland, under ancient stone bridges, past herons and kingfishers, all the way to where the Lima meets the Atlantic at Cabedelo Beach. Halfway through, your guide calls a coffee break on the riverbank — a chance to swim, stretch, and take in the silence.",
+        "No previous SUP experience is required. Your guide begins with a short briefing on the bank, and within minutes you will be standing, paddling, and grinning. Groups are kept to a maximum of 8 so the river stays quiet and the experience stays personal.",
+        "Sunset sessions are the most popular — the light on the Lima is extraordinary. Sunrise sessions offer a completely different energy: mist on the water, the town still sleeping, and the feeling that you have the entire river to yourself."
       ],
       "highlights": [
         "Paddle the full Lima River from Ponte de Lima to Cabedelo Beach",
@@ -1053,13 +1065,13 @@
         "Route passes under medieval stone bridges with mountain views"
       ],
       "included": [
-        "All activities",
-        "Professional guide",
-        "Hotel pickup and drop-off",
-        "Pickup and drop-off from designated meeting points",
-        "Transport by private vehicle",
-        "Transportation to/from activities",
-        "Food and drinks"
+        "Professional SUP guide",
+        "Premium stand-up paddleboard and paddle",
+        "Safety equipment (life jacket, leash)",
+        "Coffee break with snacks and beverages",
+        "Waterproof bag for personal items",
+        "Insurance coverage for all participants",
+        "Round-trip transfer from your Portugal Active villa (on request)"
       ],
       "notIncluded": [
         "Meals (can be arranged separately)",
@@ -1248,7 +1260,7 @@
     },
     {
       "slug": "can-am-buggy",
-      "name": "CAN-AM Scenic Driving Tour - Northern Portugal",
+      "name": "Can-Am Scenic Driving Tour — Serra da Nó, Northern Portugal",
       "category": "activity",
       "experienceCategory": "adventure",
       "tagline": "Off-road through mountain trails, forest tracks, and panoramic viewpoints above Ponte de Lima and Viana do Castelo in a Can-Am buggy.",
@@ -1279,8 +1291,10 @@
         "https://imgcdn.bokun.tools/873efebf-d5c7-47c7-89e9-66f2dc5ebd5a.jpg?w=660&h=660"
       ],
       "aboutParagraphs": [
-        "Explore the stunning landscapes of Ponte de Lima and Viana do Castelo on this thrilling driving tour from Serra da Nó. Navigate through natural monuments and enjoy diverse terrains that will test your driving skills while immersing yourself in breathtaking scenery. This adventure is perfect for nature enthusiasts and those seeking a challenge, making it an ideal outing for all ages.",
-        "- Discover the scenic beauty of Ponte de Lima and Viana do Castelo\n- Experience diverse terrains and natural monuments in a single tour\n- Suitable for nature lovers and driving enthusiasts of all ages\n- Challenge yourself with exciting driving routes through beautiful landscapes"
+        "From the summit of Serra da Nó, the entire Minho unfolds beneath you — the river valleys of the Lima and Minho, the Atlantic coastline, the green mountains stretching into Galicia. Now imagine driving through all of it in a Can-Am buggy, off-road, with a professional guide leading the way.",
+        "This is not a theme park ride. The terrain is real: mountain trails, forest tracks, river crossings, and rocky paths that put your driving skills to the test. The buggies are powerful, safe, and equipped with roll cages, harnesses, and all the safety features you need. Your guide sets the pace — challenging enough for adrenaline, controlled enough for safety.",
+        "The route passes through natural monuments, traditional stone villages, and viewpoints that no tour bus will ever reach. Along the way, your guide shares stories about the landscape, the local history, and the granite megaliths scattered across the mountain. It is an exciting and complete ride for people of all ages who love nature, driving, and a challenge.",
+        "The experience is priced per buggy (2 people per vehicle). One person drives, the other rides — and you can switch halfway. A valid driving licence is required for the driver."
       ],
       "highlights": [
         "Drive a Can-Am buggy through the mountains of Serra da Nó",
@@ -1293,7 +1307,12 @@
         "Complimentary transfer from your Portugal Active villa"
       ],
       "included": [
-        "Private transportation"
+        "Can-Am buggy for 2 people (driver + passenger)",
+        "Professional driving guide leading the convoy",
+        "Full safety equipment (helmet, safety glasses, harness)",
+        "Insurance coverage for all participants",
+        "Round-trip transfer from your Portugal Active villa (on request)",
+        "Safety briefing and driving technique instruction"
       ],
       "notIncluded": [
         "Food and drinks (bring water)",
