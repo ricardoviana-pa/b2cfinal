@@ -2751,8 +2751,11 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/b271b5c9-3b90-4d-EMEB-",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/1ae0701c-1cbc-4e-jKcod",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/45f1f88e-c101-4b-zJWve",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/b271b5c9-3b90-4d-EMEB-",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/7632d8f6-22a4-45-3ElCw",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/b777f44e-a06b-43-29uW0",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/d76b7fde-7328-4f-rxz89",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/0aef22c1-9ba6-4f-lsCZ7",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/290117fe-af0c-4f-dDzsw",
@@ -2800,7 +2803,6 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/c3409705-2b6b-48-U_grd",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/d875a0ed-6f90-40-eI5cY",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/1facd485-f79f-48-3pB0Z",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/7632d8f6-22a4-45-3ElCw",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/fac2ed61-ae3a-4d-w5JsK",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/4baee210-43e5-45-ZjIYO",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/32eeeccf-dcb1-4e-NukEh",
@@ -2831,7 +2833,6 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/845033dc-a696-41-wgF_5",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/f8960898-1d8e-43-Dbq48",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/b77439f1-b6e1-48-_6y7O",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/b777f44e-a06b-43-29uW0",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/1034b26b-17e5-46-RqV4v",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/5821a5c7-a982-4c-HabTZ",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/5d2f9f10-5e0f-4b-Z8fDp",
@@ -2881,7 +2882,6 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/721981b9-cf52-47-fSqM7",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/598c5416-ca44-4f-axueL",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/8c0d477b-7196-48-P9ygX",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/1ae0701c-1cbc-4e-jKcod",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/7cbfa366-75f3-4d-IJ7MW",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/d024dbd2-5dc8-48-pF7Hx",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/d0b2fc88-72c1-48-Jzy0d",
@@ -4265,6 +4265,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Perfekt leilighet om du vil bo i sentrum av guimaraes. Helt lik beskrivelsen. Ikke nødvendig med kollektivtransport da det meste ligger ved gåavstand fra leiligheten. Anbefaler👍🏾",
+        "guestName": "Guest",
+        "date": "2026-04-13T15:00:06.859Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Um pequeno apartamento, mas com todas as condições",
         "guestName": "Guest",
         "date": "2026-03-29T18:52:35.509Z",
@@ -4393,7 +4425,7 @@
       }
     ],
     "averageRating": 4.8,
-    "reviewCount": 4
+    "reviewCount": 5
   },
   {
     "id": "guesty-69653388753fb0001424abad",
@@ -7585,6 +7617,38 @@
     "areaSquareFeet": 3445,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Villa agréable et bien équipée, confortable et bien adaptée pour un grand groupe, surtout pour la partie nuit avec des suites pour chaque couple avec enfants et sans enfants.\nQuelques petits soucis:\n- Le frigo est un peu petit et ne ferme pas bien.\n- Il y a un problème d'évacuation dans les douches du rez-de-chaussée\n- L'étanchéité de la paroi de la douche n'est pas parfaite d'une salle de bain du premier étage, le tapis de bains est trempé.\n- Il n'y a pas de rideau sur la piscine pour assurer l",
+        "guestName": "Guest",
+        "date": "2026-04-14T11:46:48.054Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Muito agradável a estadia, voltaremos a repetir.",
         "guestName": "Guest",
@@ -7713,8 +7777,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 4
+    "averageRating": 4.8,
+    "reviewCount": 5
   },
   {
     "id": "guesty-6965333104b96f00147f5428",
