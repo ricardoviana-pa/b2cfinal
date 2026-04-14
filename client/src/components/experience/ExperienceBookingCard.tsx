@@ -8,6 +8,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Check, Minus, Plus, MessageCircle, Calendar, Loader2, AlertCircle, Clock } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
+import BokunWidgetModal from './BokunWidgetModal';
 
 interface ExperienceBookingCardProps {
   experienceName: string;
@@ -37,6 +38,7 @@ export default function ExperienceBookingCard({
   const [date, setDate] = useState<string>('');
   const [adults, setAdults] = useState<number>(2);
   const [selectedSlot, setSelectedSlot] = useState<string>('');
+  const [widgetOpen, setWidgetOpen] = useState<boolean>(false);
 
   const todayIso = useMemo(() => new Date().toISOString().split('T')[0], []);
 
@@ -210,16 +212,36 @@ export default function ExperienceBookingCard({
         </span>
       </div>
 
-      {/* Primary CTA */}
-      <a
-        href={waHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="w-full flex items-center justify-center gap-2 bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase py-4 hover:bg-black transition-colors mb-3"
-        style={{ minHeight: '52px' }}
-      >
-        Check availability
-      </a>
+      {/* Primary CTA — opens Bókun widget when available, else WhatsApp */}
+      {hasBokun ? (
+        <button
+          type="button"
+          onClick={() => setWidgetOpen(true)}
+          className="w-full flex items-center justify-center gap-2 bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase py-4 hover:bg-black transition-colors mb-3"
+          style={{ minHeight: '52px' }}
+        >
+          Check availability
+        </button>
+      ) : (
+        <a
+          href={waHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full flex items-center justify-center gap-2 bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase py-4 hover:bg-black transition-colors mb-3"
+          style={{ minHeight: '52px' }}
+        >
+          Check availability
+        </a>
+      )}
+
+      {hasBokun && (
+        <BokunWidgetModal
+          open={widgetOpen}
+          onClose={() => setWidgetOpen(false)}
+          experienceName={experienceName}
+          bokunActivityId={bokunActivityId!}
+        />
+      )}
 
       {/* Secondary: WhatsApp text link */}
       <p className="text-center text-[12px] text-[#9E9A90] mb-5" style={{ fontWeight: 300 }}>
