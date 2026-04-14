@@ -188,8 +188,22 @@ export default function Home() {
 
   // Featured homes Ã¢ÂÂ Editor's Picks shows first 6 sorted by sortOrder
   // Other tabs are placeholder filters (no tag system yet)
+  const FEATURED_SLUGS = [
+    'portugal-active-eben-lodge-heated-pool-10ecfe',
+    'portugal-active-sunset-beach-lodge-heated-pool-5ceb91',
+    'abreu-retreat-palace-luxury-elegance-leisure-e914e2',
+    'stars-view-by-portugal-active-026fa9',
+    'majestic-villa-retreat-infinity-pool-chef-7431cb',
+    'quinta-with-infinity-pool-and-sea-views-carre-o-83ef5f',
+  ];
   const featured = useMemo(() => {
-    return [...properties].sort((a, b) => (b.priceFrom ?? 0) - (a.priceFrom ?? 0)).slice(0, 6);
+    const bySlug = new Map(properties.map(p => [p.slug, p]));
+    const pinned = FEATURED_SLUGS.map(s => bySlug.get(s)).filter(Boolean) as typeof properties;
+    if (pinned.length >= 6) return pinned.slice(0, 6);
+    const fillers = [...properties]
+      .filter(p => !FEATURED_SLUGS.includes(p.slug))
+      .sort((a, b) => (b.priceFrom ?? 0) - (a.priceFrom ?? 0));
+    return [...pinned, ...fillers].slice(0, 6);
   }, [properties]);
 
   const activeDestinations = destinations.filter(d => d.status === 'active' || d.slug === 'brazil');
