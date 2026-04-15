@@ -47,7 +47,8 @@ function buildSignature(date: string, accessKey: string, secretKey: string, meth
 }
 
 function bokunDate(): string {
-  return new Date().toISOString().replace(/\.\d{3}Z$/, "");
+  // Bókun requires "yyyy-MM-dd HH:mm:ss" (space separator, NOT ISO T)
+  return new Date().toISOString().replace("T", " ").replace(/\.\d{3}Z$/, "");
 }
 
 class BokunClient {
