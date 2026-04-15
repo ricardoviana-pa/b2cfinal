@@ -2700,6 +2700,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Queria agradecer pela hospitalidade e pela facilidade de mudar o check-out para um\nhorário que fosse mais favorável para nós. Foi uma experiência muito incrível e sentimos-nos muito bem acolhidos. Com certeza iremos voltar um dia, alojamento 5 estrelas com tudo impecável e com todos os utensílios que necessitam!",
+        "guestName": "Guest",
+        "date": "2026-04-12T17:07:37.301Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Tudo otimo",
         "guestName": "Guest",
         "date": "2026-03-17T14:34:42.709Z",
@@ -2732,7 +2764,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-6965339dbf04fe0013743e2d",
