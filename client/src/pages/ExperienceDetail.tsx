@@ -906,6 +906,7 @@ export default function ExperienceDetail() {
         priceFrom={priceFrom}
         whatsappMessage={exp.whatsappMessage || ''}
         maxGroupSize={exp.groupSizeRange?.max}
+        bokunActivityId={(exp as any).bokunActivityId}
       />
 
     </div>

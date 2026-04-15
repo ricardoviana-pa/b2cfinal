@@ -5,12 +5,14 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { X, Minus, Plus, Calendar } from 'lucide-react';
+import BokunWidgetModal from './BokunWidgetModal';
 
 interface ExperienceMobileBookingBarProps {
   experienceName: string;
   priceFrom: number;
   whatsappMessage: string;
   maxGroupSize?: number;
+  bokunActivityId?: number;
 }
 
 const WHATSAPP_NUMBER = '351927161771';
@@ -20,9 +22,12 @@ export default function ExperienceMobileBookingBar({
   priceFrom,
   whatsappMessage,
   maxGroupSize = 10,
+  bokunActivityId,
 }: ExperienceMobileBookingBarProps) {
   const [visible, setVisible] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [widgetOpen, setWidgetOpen] = useState(false);
+  const hasBokun = !!bokunActivityId;
   const [date, setDate] = useState<string>('');
   const [adults, setAdults] = useState<number>(2);
 
@@ -75,7 +80,7 @@ export default function ExperienceMobileBookingBar({
             </p>
           </div>
           <button
-            onClick={() => setSheetOpen(true)}
+            onClick={() => (hasBokun ? setWidgetOpen(true) : setSheetOpen(true))}
             className="bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase px-8 py-3.5"
             style={{ minHeight: '48px' }}
           >
@@ -166,17 +171,37 @@ export default function ExperienceMobileBookingBar({
             </div>
 
             {/* CTA */}
-            <a
-              href={waHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase py-4"
-              style={{ minHeight: '52px' }}
-            >
-              Check availability
-            </a>
+            {hasBokun ? (
+              <button
+                type="button"
+                onClick={() => { setSheetOpen(false); setWidgetOpen(true); }}
+                className="w-full flex items-center justify-center gap-2 bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase py-4"
+                style={{ minHeight: '52px' }}
+              >
+                Check availability
+              </button>
+            ) : (
+              <a
+                href={waHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase py-4"
+                style={{ minHeight: '52px' }}
+              >
+                Check availability
+              </a>
+            )}
           </div>
         </div>
+      )}
+
+      {hasBokun && (
+        <BokunWidgetModal
+          open={widgetOpen}
+          onClose={() => setWidgetOpen(false)}
+          experienceName={experienceName}
+          bokunActivityId={bokunActivityId!}
+        />
       )}
     </>
   );
