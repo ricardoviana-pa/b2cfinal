@@ -30,7 +30,7 @@ export default function ExperienceMobileBookingBar({
   const hasBokun = !!bokunActivityId && !!BOKUN_CHANNEL_UUID;
 
   const widgetSrc = hasBokun
-    ? `https://widgets.bokun.io/online-sales/${BOKUN_CHANNEL_UUID}/experience/${bokunActivityId}`
+    ? `https://widgets.bokun.io/online-sales/${BOKUN_CHANNEL_UUID}/experience-calendar/${bokunActivityId}`
     : '';
 
   useEffect(() => {
@@ -129,7 +129,6 @@ export default function ExperienceMobileBookingBar({
               title={`Book ${experienceName}`}
               className="w-full h-full border-0"
               allow="payment *; clipboard-write"
-              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
             />
           </div>
 

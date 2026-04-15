@@ -1,11 +1,12 @@
 /* ==========================================================================
    EXPERIENCE BOOKING CARD — sticky right rail
-   Embeds the Bókun booking widget (calendar + participants + checkout) inline.
+   Embeds the Bókun booking calendar via the official WidgetsLoader script.
    Fallback: WhatsApp prefill when Bókun not configured or no activityId.
    ========================================================================== */
 
 import { useMemo } from 'react';
 import { Check, MessageCircle } from 'lucide-react';
+import BokunCalendarWidget from './BokunCalendarWidget';
 
 interface ExperienceBookingCardProps {
   experienceName: string;
@@ -35,10 +36,6 @@ export default function ExperienceBookingCard({
 }: ExperienceBookingCardProps) {
   const hasBokun = !!bokunActivityId && !!BOKUN_CHANNEL_UUID;
 
-  const widgetSrc = hasBokun
-    ? `https://widgets.bokun.io/online-sales/${BOKUN_CHANNEL_UUID}/experience/${bokunActivityId}`
-    : '';
-
   const finalMessage = useMemo(() => {
     let msg = whatsappMessage || `Hi Portugal Active, I'd like to book the ${experienceName} experience.`;
     msg += `\nParticipants: 2 adults`;
@@ -66,19 +63,12 @@ export default function ExperienceBookingCard({
         )}
       </div>
 
-      {/* Bókun inline widget */}
+      {/* Bókun calendar widget (official loader) */}
       {hasBokun ? (
-        <div className="bg-white">
-          <iframe
-            key={`${bokunActivityId}-${BOKUN_CHANNEL_UUID}`}
-            src={widgetSrc}
-            title={`Book ${experienceName}`}
-            className="w-full border-0"
-            style={{ minHeight: '480px', height: '520px' }}
-            allow="payment *; clipboard-write"
-            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
-          />
-        </div>
+        <BokunCalendarWidget
+          bokunActivityId={bokunActivityId}
+          channelUuid={BOKUN_CHANNEL_UUID!}
+        />
       ) : (
         <div className="px-7 py-6">
           {/* WhatsApp CTA fallback */}
