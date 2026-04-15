@@ -85,6 +85,7 @@ export default function BokunWidgetModal({
               title={`Book ${experienceName}`}
               className="w-full h-full border-0"
               allow="payment *; clipboard-write"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
             />
           ) : (
             <div className="m-4 p-8 text-center text-[13px] text-[#6B6860] border border-dashed border-[#E8E4DC]" style={{ fontWeight: 300 }}>

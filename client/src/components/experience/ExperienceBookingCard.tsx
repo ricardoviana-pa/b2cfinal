@@ -76,6 +76,7 @@ export default function ExperienceBookingCard({
             className="w-full border-0"
             style={{ minHeight: '480px', height: '520px' }}
             allow="payment *; clipboard-write"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
           />
         </div>
       ) : (

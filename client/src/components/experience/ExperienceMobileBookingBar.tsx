@@ -129,6 +129,7 @@ export default function ExperienceMobileBookingBar({
               title={`Book ${experienceName}`}
               className="w-full h-full border-0"
               allow="payment *; clipboard-write"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
             />
           </div>
 
