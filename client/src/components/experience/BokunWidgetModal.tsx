@@ -4,7 +4,7 @@
    Keeps our sticky card design intact; Bókun handles the checkout flow.
    ========================================================================== */
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { X } from 'lucide-react';
 
 interface BokunWidgetModalProps {
@@ -15,18 +15,6 @@ interface BokunWidgetModalProps {
 }
 
 const BOKUN_CHANNEL_UUID = import.meta.env.VITE_BOKUN_CHANNEL_UUID as string | undefined;
-const LOADER_SRC = BOKUN_CHANNEL_UUID
-  ? `https://widgets.bokun.io/assets/javascripts/apps/build/BokunWidgetsLoader.js?bookingChannelUUID=${BOKUN_CHANNEL_UUID}`
-  : '';
-
-function ensureLoader(): void {
-  if (!LOADER_SRC) return;
-  if (document.querySelector(`script[src="${LOADER_SRC}"]`)) return;
-  const s = document.createElement('script');
-  s.src = LOADER_SRC;
-  s.async = true;
-  document.body.appendChild(s);
-}
 
 export default function BokunWidgetModal({
   open,
@@ -34,18 +22,8 @@ export default function BokunWidgetModal({
   experienceName,
   bokunActivityId,
 }: BokunWidgetModalProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     if (!open) return;
-    ensureLoader();
-    // Bókun's loader scans the DOM for .bokunWidget elements and mounts iframes.
-    // If it's already loaded, poke it to rescan.
-    const w = window as any;
-    if (w.BokunWidgetsLoader?.refresh) {
-      setTimeout(() => w.BokunWidgetsLoader.refresh(), 100);
-    }
-    // Lock body scroll
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     return () => {
@@ -97,16 +75,19 @@ export default function BokunWidgetModal({
           </button>
         </div>
 
-        {/* Widget area */}
-        <div ref={containerRef} className="p-4 min-h-[520px]">
+        {/* Widget area — direct iframe (bypasses BokunWidgetsLoader to avoid
+            iframe-resizer race conditions when modal mounts/unmounts) */}
+        <div className="bg-white" style={{ height: 'calc(100vh - 220px)', maxHeight: '780px', minHeight: '520px' }}>
           {BOKUN_CHANNEL_UUID ? (
-            <div
-              className="bokunWidget"
-              data-src={widgetSrc}
+            <iframe
               key={`${bokunActivityId}-${BOKUN_CHANNEL_UUID}`}
+              src={widgetSrc}
+              title={`Book ${experienceName}`}
+              className="w-full h-full border-0"
+              allow="payment *; clipboard-write"
             />
           ) : (
-            <div className="p-8 text-center text-[13px] text-[#6B6860] border border-dashed border-[#E8E4DC]" style={{ fontWeight: 300 }}>
+            <div className="m-4 p-8 text-center text-[13px] text-[#6B6860] border border-dashed border-[#E8E4DC]" style={{ fontWeight: 300 }}>
               <p className="mb-2 font-medium text-[#1A1A18]">Bókun widget not configured.</p>
               <p>
                 Set <code className="bg-[#F5F1EB] px-1.5 py-0.5">VITE_BOKUN_CHANNEL_UUID</code> in
@@ -117,9 +98,21 @@ export default function BokunWidgetModal({
           )}
         </div>
 
-        {/* Footer hint */}
-        <div className="px-6 py-3 text-center text-[11px] text-[#9E9A90] border-t border-[#E8E4DC]" style={{ fontWeight: 300 }}>
-          Secure booking powered by Bókun · Free cancellation policies apply
+        {/* Footer */}
+        <div className="px-6 py-3 flex items-center justify-between gap-3 border-t border-[#E8E4DC]">
+          <span className="text-[11px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
+            Secure booking powered by Bókun
+          </span>
+          {BOKUN_CHANNEL_UUID && (
+            <a
+              href={widgetSrc}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[11px] tracking-[0.08em] uppercase text-[#8B7355] hover:text-[#1A1A18] transition-colors"
+            >
+              Open in new tab ↗
+            </a>
+          )}
         </div>
       </div>
     </div>
