@@ -704,6 +704,38 @@
     "areaSquareFeet": 915,
     "reviews": [
       {
+        "rating": 4,
+        "text": "O apartamento era confortável com vários utensílios para uma boa estadia e a localização era ótima. Como sugestão acho que deveria ter um explicativo de utilização da lava louças e roupas.",
+        "guestName": "Guest",
+        "date": "2026-04-14T07:35:47.628Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Rien à dire, service très réactif ! \nLogement propre et correspondait aux photos et description.",
         "guestName": "Guest",
@@ -800,8 +832,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 3
+    "averageRating": 4.8,
+    "reviewCount": 4
   },
   {
     "id": "guesty-69c415701b964f00157188bd",
@@ -1372,9 +1404,42 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 19376,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "La casa era perfecta para un fin de semana en grupo. Fuimos 3 parejas con niños. Volveremos!",
+        "guestName": "Guest",
+        "date": "2026-04-15T14:23:04.828Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-69c415ceab80a8001247452c",
@@ -3770,66 +3835,6 @@
     "propertyType": "Apartment",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": null,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
-  },
-  {
-    "id": "guesty-696f6aad74604800452a40b8",
-    "slug": "guesty-test-2a40b8",
-    "name": "Guesty Test",
-    "tagline": "",
-    "tier": "select",
-    "destination": "algarve",
-    "locality": "Portugal",
-    "bedrooms": 1,
-    "bathrooms": 0,
-    "maxGuests": 2,
-    "priceFrom": 9,
-    "pricePerNight": 9,
-    "cleaningFee": 0,
-    "minNights": 1,
-    "currency": "EUR",
-    "images": [
-      "https://assets.guesty.com/image/upload/v1768909477/production/6957de4388cba42d9e7a905e/rkg1icshmjfrzmjfkx65.jpg"
-    ],
-    "description": "Welcome to Guesty Test.",
-    "amenities": {
-      "property": [
-        "Suitable for children (2-12 years)",
-        "Suitable for infants (under 2 years)"
-      ],
-      "bedrooms": [],
-      "kitchen": [],
-      "services": []
-    },
-    "stayIncludes": [],
-    "style": "",
-    "tags": [],
-    "occasions": [],
-    "bookingUrl": "",
-    "guestyId": "696f6aad74604800452a40b8",
-    "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Guesty Test",
-    "sortOrder": 0,
-    "isActive": true,
-    "seoTitle": "Guesty Test — Portugal Active",
-    "seoDescription": "Guesty Test in Portugal.",
-    "address": {
-      "full": "",
-      "street": "Avenida da Amorosa 1795",
-      "city": "",
-      "state": "Viana do Castelo",
-      "zipcode": "",
-      "country": "Portugal",
-      "lat": 41.6441737,
-      "lng": -8.799871699999999
-    },
-    "rooms": [],
-    "propertyType": "Apartment",
-    "checkInTime": "15:00",
-    "checkOutTime": "10:00",
     "areaSquareFeet": null,
     "reviews": [],
     "averageRating": null,
@@ -6727,6 +6732,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Casa incrível para convívio de amigos",
+        "guestName": "Guest",
+        "date": "2026-04-15T07:44:55.361Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Fuimos un grupo de 16 amigos y nos encantó! Las habitaciones son grandes y con baño propio, todo muy limpio. La cocina tiene todo lo necesario. Hay varias zonas para juntarse. La zona exterior con la piscina está muy bien cuidada. Hay aparcamiento para varios coches en la finca. Repetiríamos!",
         "guestName": "Guest",
         "date": "2026-02-01T18:17:14.755Z",
@@ -6759,7 +6796,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-6970af61638a8a0015eaa850",
@@ -7205,6 +7242,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "We thoroughly enjoyed our stay and wished we had booked for longer than 2 nights. Amazing host, amazing location!",
+        "guestName": "Guest",
+        "date": "2026-04-15T07:10:31.521Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Wonderful experience. We definitely recommend this place. Close to the water and restaurants, peaceful surroundings, excellent amenities, everyone you need and more. \nPam",
         "guestName": "Guest",
         "date": "2026-02-14T00:39:20.694Z",
@@ -7237,7 +7306,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-696532fa6d209c001510d5ee",
@@ -10619,6 +10688,38 @@
     "areaSquareFeet": 8612,
     "reviews": [
       {
+        "rating": 4,
+        "text": "This villa is very well equipped and immaculately clean, with comfy beds and lots of space. It is a nice villa but with a bit of attention could be perfect.\nThe pool was worth paying to have heated as my kids loved it. \nThe only negatives were the majority of the patio doors do not open and have all been damaged. The one that does open on balcony required my husband to close it for the outside. They need serious attention. Unfortunately while we were there the front door handle also came off, it",
+        "guestName": "Guest",
+        "date": "2026-04-13T14:57:52.121Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "…",
         "guestName": "Guest",
@@ -10683,8 +10784,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 2
+    "averageRating": 4.7,
+    "reviewCount": 3
   },
   {
     "id": "guesty-69653354109993001383ef5f",
@@ -13008,6 +13109,38 @@
     "areaSquareFeet": 3768,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Très bon séjour à 12 personnes",
+        "guestName": "Guest",
+        "date": "2026-04-13T09:25:36.486Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Muito bom",
         "guestName": "Guest",
@@ -13040,8 +13173,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 1
+    "averageRating": 4.5,
+    "reviewCount": 2
   },
   {
     "id": "guesty-696533cf4b583900135cfb02",
@@ -14436,6 +14569,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "We thoroughly enjoyed staying here. We felt very comfortable and at home. We really liked the welcome pack and also that there was olive oil, vinegar, salt and coffee in the cupboard. The game room is a huge bonus. Would love to stay again for longer!",
+        "guestName": "Guest",
+        "date": "2026-04-13T07:36:58.994Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "La casa perfecta para unas vacaciones de relax en familia",
         "guestName": "Guest",
         "date": "2026-04-05T19:15:00.327Z",
@@ -14468,7 +14633,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-69653365bf04fe0013743511",
@@ -14947,6 +15112,66 @@
     ],
     "averageRating": 5,
     "reviewCount": 3
+  },
+  {
+    "id": "guesty-696f6aad74604800452a40b8",
+    "slug": "test-guesty-test-2a40b8",
+    "name": "Test_Guesty Test",
+    "tagline": "",
+    "tier": "select",
+    "destination": "algarve",
+    "locality": "Portugal",
+    "bedrooms": 1,
+    "bathrooms": 0,
+    "maxGuests": 2,
+    "priceFrom": 9,
+    "pricePerNight": 9,
+    "cleaningFee": 0,
+    "minNights": 1,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1768909477/production/6957de4388cba42d9e7a905e/rkg1icshmjfrzmjfkx65.jpg"
+    ],
+    "description": "Welcome to Test_Guesty Test.",
+    "amenities": {
+      "property": [
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "696f6aad74604800452a40b8",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Test_Guesty Test",
+    "sortOrder": 0,
+    "isActive": true,
+    "seoTitle": "Test_Guesty Test — Portugal Active",
+    "seoDescription": "Test_Guesty Test in Portugal.",
+    "address": {
+      "full": "",
+      "street": "Avenida da Amorosa 1795",
+      "city": "",
+      "state": "Viana do Castelo",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 41.6441737,
+      "lng": -8.799871699999999
+    },
+    "rooms": [],
+    "propertyType": "Apartment",
+    "checkInTime": "15:00",
+    "checkOutTime": "10:00",
+    "areaSquareFeet": null,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-696533d64b583900135d00cc",
