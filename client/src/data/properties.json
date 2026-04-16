@@ -2832,10 +2832,197 @@
     "reviewCount": 2
   },
   {
+    "id": "guesty-69dfa9cead7c9c0014cb71c9",
+    "slug": "dunes-beach-house-with-ocean-views-cb71c9",
+    "name": "Dunes Beach House with Ocean Views ",
+    "tagline": "Brand-new 2026 villa built into the dunes of Amorosa beach, just 200 metres from the Atlantic. Three bedrooms, three premium bathrooms, a private pool…",
+    "tier": "select",
+    "destination": "minho",
+    "locality": "Viana do Castelo",
+    "bedrooms": 3,
+    "bathrooms": 3,
+    "maxGuests": 6,
+    "priceFrom": 190,
+    "pricePerNight": 190,
+    "cleaningFee": 180,
+    "minNights": 2,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1776264671/production/6957de4388cba42d9e7a905e/cqt7crali4wtmsrv7dis.jpg",
+      "https://assets.guesty.com/image/upload/v1776264675/production/6957de4388cba42d9e7a905e/fpqveshpwnjlomzsma5w.jpg",
+      "https://assets.guesty.com/image/upload/v1776264668/production/6957de4388cba42d9e7a905e/rqq1mu1h4gnjrbbhlm1l.jpg",
+      "https://assets.guesty.com/image/upload/v1776264673/production/6957de4388cba42d9e7a905e/sayrumxlugbaztrsjcj8.jpg",
+      "https://assets.guesty.com/image/upload/v1776264664/production/6957de4388cba42d9e7a905e/rgn4bnccath6whfqksbj.jpg",
+      "https://assets.guesty.com/image/upload/v1776264664/production/6957de4388cba42d9e7a905e/qwy4cbgvxntjb7orr8sf.jpg",
+      "https://assets.guesty.com/image/upload/v1776264664/production/6957de4388cba42d9e7a905e/my6k9ftusnbyudge2l0n.jpg",
+      "https://assets.guesty.com/image/upload/v1776264664/production/6957de4388cba42d9e7a905e/kyzctqvlbgpli6cgopzt.jpg",
+      "https://assets.guesty.com/image/upload/v1776264667/production/6957de4388cba42d9e7a905e/digpdvjxiisg2vl9y4eh.jpg",
+      "https://assets.guesty.com/image/upload/v1776264667/production/6957de4388cba42d9e7a905e/j6avc0nmoiovrv5hkprk.jpg",
+      "https://assets.guesty.com/image/upload/v1776264672/production/6957de4388cba42d9e7a905e/jqrmbrbvvbmr0jva9xbo.jpg",
+      "https://assets.guesty.com/image/upload/v1776264667/production/6957de4388cba42d9e7a905e/kwhqretweoji6wa33ugz.jpg",
+      "https://assets.guesty.com/image/upload/v1776264670/production/6957de4388cba42d9e7a905e/j5h2qlqbeor0csnyxvba.jpg",
+      "https://assets.guesty.com/image/upload/v1776264670/production/6957de4388cba42d9e7a905e/wbcebsuzjvlmlnoxjr1y.jpg",
+      "https://assets.guesty.com/image/upload/v1776264671/production/6957de4388cba42d9e7a905e/zjwhxtop8bhxujatttq2.jpg",
+      "https://assets.guesty.com/image/upload/v1776264664/production/6957de4388cba42d9e7a905e/agyflprdim4wnwqmvja1.jpg",
+      "https://assets.guesty.com/image/upload/v1776264664/production/6957de4388cba42d9e7a905e/vdmlpfvcaqlrsmuannbc.jpg",
+      "https://assets.guesty.com/image/upload/v1776264667/production/6957de4388cba42d9e7a905e/eatwqq9ngpsa6gvpc4s7.jpg",
+      "https://assets.guesty.com/image/upload/v1776264668/production/6957de4388cba42d9e7a905e/uaiglpduxogeh99hlenf.jpg",
+      "https://assets.guesty.com/image/upload/v1776264670/production/6957de4388cba42d9e7a905e/nrlfhgzhs0yeorzfuzrc.jpg",
+      "https://assets.guesty.com/image/upload/v1776264671/production/6957de4388cba42d9e7a905e/db02a5915wlswssbrm0r.jpg",
+      "https://assets.guesty.com/image/upload/v1776264673/production/6957de4388cba42d9e7a905e/a8lqgh6ycakk8odrtgys.jpg",
+      "https://assets.guesty.com/image/upload/v1776264673/production/6957de4388cba42d9e7a905e/rafqu5xdmk26ozrygnzw.jpg",
+      "https://assets.guesty.com/image/upload/v1776264674/production/6957de4388cba42d9e7a905e/sjysn0rj68hezm0ac66q.jpg",
+      "https://assets.guesty.com/image/upload/v1776264674/production/6957de4388cba42d9e7a905e/os3obwnu88c1e9m3awls.jpg",
+      "https://assets.guesty.com/image/upload/v1776264675/production/6957de4388cba42d9e7a905e/caqrlbjd8cyqgjfl00w8.jpg",
+      "https://assets.guesty.com/image/upload/v1776264675/production/6957de4388cba42d9e7a905e/lgimtkgj4monw58onkt7.jpg",
+      "https://assets.guesty.com/image/upload/v1776264676/production/6957de4388cba42d9e7a905e/k62fsx4uapfigmu1xnuw.jpg",
+      "https://assets.guesty.com/image/upload/v1776264676/production/6957de4388cba42d9e7a905e/hhbl8ehuuna742gwnzlk.jpg",
+      "https://assets.guesty.com/image/upload/v1776264676/production/6957de4388cba42d9e7a905e/hj6cnbdgyyxjtoeht5vn.jpg",
+      "https://assets.guesty.com/image/upload/v1776264678/production/6957de4388cba42d9e7a905e/u2v1g5vgpp3ajg32syz5.jpg",
+      "https://assets.guesty.com/image/upload/v1776264678/production/6957de4388cba42d9e7a905e/pvh70kx89o0fpbpc7y9p.jpg",
+      "https://assets.guesty.com/image/upload/v1776264678/production/6957de4388cba42d9e7a905e/ktgej89qoqvs3dzorrav.jpg",
+      "https://assets.guesty.com/image/upload/v1776264679/production/6957de4388cba42d9e7a905e/ff9xvbcqirntgzadpjol.jpg",
+      "https://assets.guesty.com/image/upload/v1776264679/production/6957de4388cba42d9e7a905e/ufl8giioqme9osqrcqgq.jpg",
+      "https://assets.guesty.com/image/upload/v1776264679/production/6957de4388cba42d9e7a905e/sgsfjvgsh2gcxe6bxftm.jpg",
+      "https://assets.guesty.com/image/upload/v1776264681/production/6957de4388cba42d9e7a905e/vdel4pkugcgnbhsn4qjn.jpg",
+      "https://assets.guesty.com/image/upload/v1776264681/production/6957de4388cba42d9e7a905e/z4g2w4rwcxntspofcntp.jpg",
+      "https://assets.guesty.com/image/upload/v1776264681/production/6957de4388cba42d9e7a905e/awkip5hyvkonay1q45mx.jpg",
+      "https://assets.guesty.com/image/upload/v1776264681/production/6957de4388cba42d9e7a905e/gz8jlyp1cpzdh29aoxdg.jpg",
+      "https://assets.guesty.com/image/upload/v1776264682/production/6957de4388cba42d9e7a905e/dph5i2khf7cuuxzfvkcy.jpg",
+      "https://assets.guesty.com/image/upload/v1776264682/production/6957de4388cba42d9e7a905e/omywthh4sj4avabw5y0g.jpg",
+      "https://assets.guesty.com/image/upload/v1776264683/production/6957de4388cba42d9e7a905e/xtr1mzt0kgn9yskgly8z.jpg",
+      "https://assets.guesty.com/image/upload/v1776264684/production/6957de4388cba42d9e7a905e/ssuu2uy1ofu3srryhkia.jpg",
+      "https://assets.guesty.com/image/upload/v1776264684/production/6957de4388cba42d9e7a905e/wghcumd8php5p0pmr1mu.jpg",
+      "https://assets.guesty.com/image/upload/v1776264684/production/6957de4388cba42d9e7a905e/mhvp2skuvqg7oavmmx5a.jpg",
+      "https://assets.guesty.com/image/upload/v1776264685/production/6957de4388cba42d9e7a905e/gkyt4qxaucipesxjcijk.jpg",
+      "https://assets.guesty.com/image/upload/v1776264685/production/6957de4388cba42d9e7a905e/ovgop40euvh1y8paimtn.jpg",
+      "https://assets.guesty.com/image/upload/v1776264686/production/6957de4388cba42d9e7a905e/fpok106ruvnbtcamuaa7.jpg",
+      "https://assets.guesty.com/image/upload/v1776264686/production/6957de4388cba42d9e7a905e/wrqpatobn5qmydcrh2dx.jpg"
+    ],
+    "description": "Brand-new 2026 villa built into the dunes of Amorosa beach, just 200 metres from the Atlantic. Three bedrooms, three premium bathrooms, a private pool and your own dunes with a sunset viewpoint over the ocean. Up to 6 guests. Portugal Active concierge available 24/7 🛎️.\n\nBuilt into the dune, facing the ocean🌊\n\nDunes Beach House is a brand-new contemporary villa, completed in 2026, set literally within the dunes of Amorosa, in Chafé. Two hundred metres from the beach, its white minimalist architecture, anthracite frames and floor-to-ceiling glass bring Atlantic light into every room. Three double bedrooms sleep up to six guests in comfort: two with private en-suite bathrooms finished in large-format porcelain, bidet and walk-in shower, and a third equally well-appointed room. Living areas and the kitchen open onto the outside via sliding doors, flowing naturally onto the deck and the a private pool. Behind them, the property's own dune rises with wild flowers and a timber staircase climbing to a viewpoint where the Atlantic unfolds at sunset🌅.\n\n\nThe Atlantic coast at its most untouched\n\nChafé is a small coastal village between Viana do Castelo and Esposende, where the horizon is always ocean and the air always tastes of salt. Praia da Amorosa, steps away, is one of the most unspoiled stretches of the Minho coast: long sands, high dunes and clean waves that roll in without warning. For a livelier beach experience, Viana do Castelo is seven kilometres away, with its historic centre, Cabedelo beach and early-morning fish market. Coastal trails thread through dunes and pine forest, swapping between the quiet of the sands and wide open sea views, with the Serra d'Arga rising green to the east.\n\nThe ocean at your feet, everything else minutes away\n\nViana do Castelo is seven kilometres away, with supermarkets, restaurants, pharmacies and the historic centre reachable in under ten minutes by car. The A28 motorway connects easily at the nearest roundabout, putting Porto within an hour or Galicia within forty minutes. Viana do Castelo train station, with direct connections to Porto and Braga, is around eight kilometres away. Private parking for two vehicles is available on site. Porto Airport is approximately 65 km away.\n\n\nPortugal Active\n\nFor those who want to live the ocean, not just look at it!\n\nWith the Atlantic two hundred metres away, the Portugal Active team is ready to turn your stay into a genuine coastal adventure. From private chef breakfasts to premium airport transfers, the 24-hour concierge service ensures no detail is left to chance.\n\nWhen the beach isn't enough, guided experiences take you deeper into the Minho coast: Stand Up Paddle on the calm morning waters of Amorosa, a Horseback Riding route along the sands and pine-scented coastal trails, or an E-Bike Wild Tour through dunes and fishing villages. Every activity is led by certified professionals.",
+    "amenities": {
+      "property": [
+        "Air conditioning",
+        "BBQ grill",
+        "Baking sheet",
+        "Barbeque utensils",
+        "Beach",
+        "Beach View",
+        "Bed linens",
+        "Body soap",
+        "Cable TV",
+        "Cleaning Disinfection",
+        "Cleaning products",
+        "Clothing storage",
+        "Coffee maker",
+        "Dining table",
+        "Dishes and silverware",
+        "Dishwasher",
+        "First aid kit",
+        "Free parking on street",
+        "Garden View",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High touch surfaces disinfected",
+        "Hot water",
+        "Internet",
+        "Iron",
+        "Kettle",
+        "Kitchen",
+        "Laptop friendly workspace",
+        "Long term stays allowed",
+        "Microwave",
+        "Near Ocean",
+        "Outdoor pool",
+        "Outdoor seating (furniture)",
+        "Oven",
+        "Patio or balcony",
+        "Pets allowed",
+        "Private entrance",
+        "Private pool",
+        "Refrigerator",
+        "Rice maker",
+        "Shampoo",
+        "Shower gel",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "Swimming pool",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "69dfa9cead7c9c0014cb71c9",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Dunes Beach House with Ocean Views ",
+    "sortOrder": 0,
+    "isActive": true,
+    "seoTitle": "Dunes Beach House with Ocean Views  — Portugal Active",
+    "seoDescription": "Brand-new 2026 villa built into the dunes of Amorosa beach, just 200 metres from the Atlantic. Three bedrooms, three premium bathrooms, a private pool and your ",
+    "address": {
+      "full": "",
+      "street": "Rua da Amorosa 928",
+      "city": "Viana do Castelo",
+      "state": "Viana do Castelo",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 41.6386289,
+      "lng": -8.8150062
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 1690,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
+  },
+  {
     "id": "guesty-6965339dbf04fe0013743e2d",
-    "slug": "fountain-retreat-i-pool-jacuzzi-sports-escape-743e2d",
-    "name": "Fountain Retreat I Pool, Jacuzzi & Sports Escape",
-    "tagline": "Discover Fountain Retreat | Pool, Jacuzzi & Sports Escape, an exclusive haven in Barroselas that blends rustic elegance with contemporary comfort. Sur…",
+    "slug": "fountain-retreat-i-pool-sports-escape-743e2d",
+    "name": "Fountain Retreat I Pool & Sports Escape",
+    "tagline": "Discover Fountain Retreat | Pool & Sports Escape, an exclusive haven in Barroselas that blends rustic elegance with contemporary comfort. Surrounded b…",
     "tier": "select",
     "destination": "minho",
     "locality": "Viana do Castelo",
@@ -2845,7 +3032,7 @@
     "priceFrom": 700,
     "pricePerNight": 700,
     "cleaningFee": 250,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/1ae0701c-1cbc-4e-jKcod",
@@ -2987,7 +3174,7 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/96b7b019-7b6a-4a-xoKxv",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/dc2c87f9-e304-41-CV3-4"
     ],
-    "description": "Discover Fountain Retreat | Pool, Jacuzzi & Sports Escape, an exclusive haven in Barroselas that blends rustic elegance with contemporary comfort. Surrounded by nature, it offers a unique selection of homes—from cozy studios to a spacious manor house—and outdoor spaces perfect for relaxing, making memories, and enjoying the best of rural tourism.\n\nFountain Retreat | Pool, Jacuzzi & Sports Escape features five independent houses, each with its own identity and charm, perfectly set in a rural landscape that invites relaxation.\r\nGranjas House and Buganvílias Hpuse are cozy studios designed for couples seeking an intimate getaway. Each open-plan space is decorated in a rustic-chic style, with comfortable double beds, a kitchenette equipped for simple meals, and a full bathroom—an ideal setting for a romantic escape.\r\nJardim House offers a separate bedroom and a bright living room with a sofa bed, opening onto the lush garden, creating a serene environment to unwind after a day exploring the region.\r\nAt Rosas House, you’ll find two bedrooms and a cozy living area with a sofa bed, perfect for families seeking more comfort and privacy in a bright, well-maintained space.\r\nThe impressive Senhorial House, the largest on the property, is the true jewel of the property: here, luxury and comfort merge in every detail. It features seven spacious suites, an elegant lounge with a fireplace, and a billiard room in the basement for lively evenings with friends or family. Outside, the private jacuzzi invites you to relaxing dips while enjoying the surrounding landscape.\r\n\r\nThroughout the property, guests can enjoy the outdoor swimming pool—perfect for a refreshing dip on warm days—the mini golf course and tennis court for fun matches with company, as well as the vast gardens and walking trails, ideal for peaceful strolls among flowers and century-old trees.\r\nAt Fountain Retreat | Pool, Jacuzzi & Sports Escape, every moment is lived with tranquility in an environment that combines modern comfort with the beauty of the Minho countryside, offering a unique and memorable experience to all who visit.\n\nLocated in Barroselas, Fountain Retreat | Pool, Jacuzzi & Sports Escape offers you the chance to experience the very best of northern Portugal. This charming rural retreat, just a few minutes from Viana do Castelo, invites you to discover the true essence of Minho — from its quiet village streets to the green hills and valleys that surround it.\r\nWander around traditional shops and local fairs, taste regional specialties in cozy family-run restaurants, and soak up the peaceful, authentic rhythm of village life. Nature lovers can explore nearby trails and bike paths winding through hills and fields, while Viana do Castelo’s historic center and its iconic landmarks — like the Santa Luzia Basilica — are only a short drive away.\r\nWhether you want to delve into history, embrace the outdoors, or simply relax in a welcoming, picturesque setting, Barroselas and its surroundings have something special for every visitor.\n\nGuests have access to the entire property, including the pool, garden, minigolf, tennis court and all indoor facilities.  Portugal Active's concierge service is available 24/7 to assist with any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\r\n\r\nImportant Note:\r\nDuring the high season (May to October), the pool is regularly maintained to provide guests with an impeccable experience. In the low season (November to April), the pool may be closed, subject to confirmation with our team.\n\nPublic transport is readily available, making your arrival straightforward and convenient. The nearest train station is Barroselas Station, located only 3 km from the house — about a 5‑minute taxi ride or a short drive. The station offers direct connections to Viana do Castelo, Porto, and other towns across the region.\r\nAdditionally, there are bus stops within a short walking distance, providing easy access to Viana do Castelo’s center and the nearby beaches.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
+    "description": "Discover Fountain Retreat | Pool & Sports Escape, an exclusive haven in Barroselas that blends rustic elegance with contemporary comfort. Surrounded by nature, it offers a unique selection of homes—from cozy studios to a spacious manor house—and outdoor spaces perfect for relaxing, making memories, and enjoying the best of rural tourism.\n\nFountain Retreat | Pool & Sports Escape features five independent houses, each with its own identity and charm, perfectly set in a rural landscape that invites relaxation.\nGranjas House and Buganvílias Hpuse are cozy studios designed for couples seeking an intimate getaway. Each open-plan space is decorated in a rustic-chic style, with comfortable double beds, a kitchenette equipped for simple meals, and a full bathroom—an ideal setting for a romantic escape.\nJardim House offers a separate bedroom and a bright living room with a sofa bed, opening onto the lush garden, creating a serene environment to unwind after a day exploring the region.\nAt Rosas House, you’ll find two bedrooms and a cozy living area with a sofa bed, perfect for families seeking more comfort and privacy in a bright, well-maintained space.\nThe impressive Senhorial House, the largest on the property, is the true jewel of the property: here, luxury and comfort merge in every detail. It features seven spacious suites, an elegant lounge with a fireplace, and a billiard room in the basement for lively evenings with friends or family. Outside, the private jacuzzi invites you to relaxing dips while enjoying the surrounding landscape.\n\nThroughout the property, guests can enjoy the outdoor swimming pool—perfect for a refreshing dip on warm days—the mini golf course and tennis court for fun matches with company, as well as the vast gardens and walking trails, ideal for peaceful strolls among flowers and century-old trees.\nAt Fountain Retreat | Pool & Sports Escape, every moment is lived with tranquility in an environment that combines modern comfort with the beauty of the Minho countryside, offering a unique and memorable experience to all who visit.\n\nLocated in Barroselas, Fountain Retreat | Pool & Sports Escape offers you the chance to experience the very best of northern Portugal. This charming rural retreat, just a few minutes from Viana do Castelo, invites you to discover the true essence of Minho — from its quiet village streets to the green hills and valleys that surround it.\nWander around traditional shops and local fairs, taste regional specialties in cozy family-run restaurants, and soak up the peaceful, authentic rhythm of village life. Nature lovers can explore nearby trails and bike paths winding through hills and fields, while Viana do Castelo’s historic center and its iconic landmarks — like the Santa Luzia Basilica — are only a short drive away.\nWhether you want to delve into history, embrace the outdoors, or simply relax in a welcoming, picturesque setting, Barroselas and its surroundings have something special for every visitor.\n\nGuests have access to the entire property, including the pool, garden, minigolf, tennis court and all indoor facilities.  Portugal Active's concierge service is available 24/7 to assist with any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\r\n\r\nImportant Note:\r\nDuring the high season (May to October), the pool is regularly maintained to provide guests with an impeccable experience. In the low season (November to April), the pool may be closed, subject to confirmation with our team.\n\nPublic transport is readily available, making your arrival straightforward and convenient. The nearest train station is Barroselas Station, located only 3 km from the house — about a 5‑minute taxi ride or a short drive. The station offers direct connections to Viana do Castelo, Porto, and other towns across the region.\r\nAdditionally, there are bus stops within a short walking distance, providing easy access to Viana do Castelo’s center and the nearby beaches.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
     "amenities": {
       "property": [
         "Air conditioning",
@@ -3064,11 +3251,11 @@
     "bookingUrl": "",
     "guestyId": "6965339dbf04fe0013743e2d",
     "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Fountain Retreat I Pool, Jacuzzi & Sports Escape",
+    "whatsappMessage": "Hi, I am interested in Fountain Retreat I Pool & Sports Escape",
     "sortOrder": 0,
     "isActive": true,
-    "seoTitle": "Fountain Retreat I Pool, Jacuzzi & Sports Escape — Portugal Active",
-    "seoDescription": "Discover Fountain Retreat | Pool, Jacuzzi & Sports Escape, an exclusive haven in Barroselas that blends rustic elegance with contemporary comfort. Surrounded by",
+    "seoTitle": "Fountain Retreat I Pool & Sports Escape — Portugal Active",
+    "seoDescription": "Discover Fountain Retreat | Pool & Sports Escape, an exclusive haven in Barroselas that blends rustic elegance with contemporary comfort. Surrounded by nature, ",
     "address": {
       "full": "",
       "street": "Rua da Fonte 101",
@@ -9805,10 +9992,10 @@
     "bedrooms": 8,
     "bathrooms": 8,
     "maxGuests": 16,
-    "priceFrom": 650,
-    "pricePerNight": 650,
+    "priceFrom": 550,
+    "pricePerNight": 550,
     "cleaningFee": 200,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/03348d35-f9f7-4c-ioTvi",
@@ -12778,9 +12965,9 @@
   },
   {
     "id": "guesty-6965339bbf04fe0013743cd8",
-    "slug": "senhorial-house-at-fountain-retreat-pool-sports-743cd8",
-    "name": "Senhorial House at Fountain Retreat-Pool & Sports",
-    "tagline": "The Senhorial House, located within Fountain Retreat I Pool, Jacuzzi & Sports Escape, beautifully blends traditional charm with modern comfort in an a…",
+    "slug": "senhorial-house-with-jacuzzi-at-fountain-retreat-743cd8",
+    "name": "Senhorial House with Jacuzzi at Fountain Retreat",
+    "tagline": "The Senhorial House with Jacuzzi, located within Fountain Retreat I Pool & Sports Escape, beautifully blends traditional charm with modern comfort in …",
     "tier": "select",
     "destination": "minho",
     "locality": "Viana do Castelo",
@@ -12946,7 +13133,7 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339bbf04fe0013743cd8/6a9acd4e-46a2-48-Z7Jdl",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339bbf04fe0013743cd8/17a69273-5b76-40-aU34r"
     ],
-    "description": "The Senhorial House, located within Fountain Retreat I Pool, Jacuzzi & Sports Escape, beautifully blends traditional charm with modern comfort in an authentic rural setting. Surrounded by lush green fields and mountain views, it offers a peaceful and refined stay—perfect for relaxing, reconnecting with nature, and experiencing the best of countryside living.\n\nSpanning two floors, the Senhorial House is a true gem of Fountain Retreat I Pool, Jacuzzi & Sports Escape, harmoniously combining space, comfort, and elegance.\r\n\r\nWith a total of 7 thoughtfully arranged bedrooms, each featuring a private bathroom, it guarantees maximum privacy and convenience for every guest. Each room invites rest and relaxation, providing the ideal environment to recharge after a day exploring the region’s wonders.\r\n\r\nOn the main floor, you’ll find a spacious, bright living room where natural light dances through the windows, creating a warm and inviting atmosphere for socializing and unwinding. The fully equipped kitchen beckons you to prepare delicious meals, while the dining area is perfect for sharing stories and flavors with friends and family.\r\n\r\nThe terrace offers breathtaking mountain views, inviting you to linger in moments of quiet contemplation and tranquility - the jacuzzi adds a touch of luxury and relaxation to your stay.\r\n\r\nDownstairs, the basement opens up a world of fun and relaxation: in addition to two bedrooms, there is a games room equipped with a pool table, darts, and a small bar—ideal for extending evenings with laughter and lively challenges.\r\n\r\nEvery detail of the Senhorial House has been designed to offer an experience that marries historic charm with contemporary comfort, creating a space where elegance meets rustic simplicity, setting the stage for a memorable stay filled with unique moments.\n\nLocated in Barroselas, Fountain Retreat I Pool, Jacuzzi & Sports Escape offers you the chance to experience the very best of northern Portugal. This charming rural retreat, just a few minutes from Viana do Castelo, invites you to discover the true essence of Minho — from its quiet village streets to the green hills and valleys that surround it.\r\nWander around traditional shops and local fairs, taste regional specialties in cozy family-run restaurants, and soak up the peaceful, authentic rhythm of village life. Nature lovers can explore nearby trails and bike paths winding through hills and fields, while Viana do Castelo’s historic center and its iconic landmarks — like the Santa Luzia Basilica — are only a short drive away.\r\nWhether you want to delve into history, embrace the outdoors, or simply relax in a welcoming, picturesque setting, Barroselas and its surroundings have something special for every visitor.\n\nGuests have full access to the entire property, including the outdoor areas shared with the other houses, such as the swimming pool, garden, minigolf, and tennis court — perfect for relaxing and enjoying the beautiful surroundings.\r\n\r\nThe Portugal Active concierge team is available 24/7 to cater to all requests, from organizing tours and local experiences to booking personalized services like a private chef. To guarantee availability, we kindly ask that you request any services at least 72 hours in advance.\r\n\r\nImportant Note:\r\nDuring high season (from May to October), the swimming pool is regularly maintained to ensure it is in perfect condition for guests. In low season (from November to April), the pool may be closed — please check with our team.\n\nPublic transport is readily available, making your arrival straightforward and convenient. The nearest train station is Barroselas Station, located only 3 km from the house — about a 5‑minute taxi ride or a short drive. The station offers direct connections to Viana do Castelo, Porto, and other towns across the region.\r\nAdditionally, there are bus stops within a short walking distance, providing easy access to Viana do Castelo’s center and the nearby beaches.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
+    "description": "The Senhorial House with Jacuzzi, located within Fountain Retreat I Pool & Sports Escape, beautifully blends traditional charm with modern comfort in an authentic rural setting. Surrounded by lush green fields and mountain views, it offers a peaceful and refined stay—perfect for relaxing, reconnecting with nature, and experiencing the best of countryside living.\n\nSpanning two floors, the Senhorial House is a true gem of Fountain Retreat I Pool & Sports Escape, harmoniously combining space, comfort, and elegance.\n\nWith a total of 7 thoughtfully arranged bedrooms, each featuring a private bathroom, it guarantees maximum privacy and convenience for every guest. Each room invites rest and relaxation, providing the ideal environment to recharge after a day exploring the region’s wonders.\n\nOn the main floor, you’ll find a spacious, bright living room where natural light dances through the windows, creating a warm and inviting atmosphere for socializing and unwinding. The fully equipped kitchen beckons you to prepare delicious meals, while the dining area is perfect for sharing stories and flavors with friends and family.\n\nThe terrace offers breathtaking mountain views, inviting you to linger in moments of quiet contemplation and tranquility - the jacuzzi adds a touch of luxury and relaxation to your stay.\n\nDownstairs, the basement opens up a world of fun and relaxation: in addition to two bedrooms, there is a games room equipped with a pool table, darts, and a small bar—ideal for extending evenings with laughter and lively challenges.\n\nEvery detail of the Senhorial House has been designed to offer an experience that marries historic charm with contemporary comfort, creating a space where elegance meets rustic simplicity, setting the stage for a memorable stay filled with unique moments.\n\nLocated in Barroselas, Fountain Retreat I Pool & Sports Escape offers you the chance to experience the very best of northern Portugal. This charming rural retreat, just a few minutes from Viana do Castelo, invites you to discover the true essence of Minho — from its quiet village streets to the green hills and valleys that surround it.\nWander around traditional shops and local fairs, taste regional specialties in cozy family-run restaurants, and soak up the peaceful, authentic rhythm of village life. Nature lovers can explore nearby trails and bike paths winding through hills and fields, while Viana do Castelo’s historic center and its iconic landmarks — like the Santa Luzia Basilica — are only a short drive away.\nWhether you want to delve into history, embrace the outdoors, or simply relax in a welcoming, picturesque setting, Barroselas and its surroundings have something special for every visitor.\n\nGuests have full access to the entire property, including the outdoor areas shared with the other houses, such as the swimming pool, garden, minigolf, and tennis court — perfect for relaxing and enjoying the beautiful surroundings.\r\n\r\nThe Portugal Active concierge team is available 24/7 to cater to all requests, from organizing tours and local experiences to booking personalized services like a private chef. To guarantee availability, we kindly ask that you request any services at least 72 hours in advance.\r\n\r\nImportant Note:\r\nDuring high season (from May to October), the swimming pool is regularly maintained to ensure it is in perfect condition for guests. In low season (from November to April), the pool may be closed — please check with our team.\n\nPublic transport is readily available, making your arrival straightforward and convenient. The nearest train station is Barroselas Station, located only 3 km from the house — about a 5‑minute taxi ride or a short drive. The station offers direct connections to Viana do Castelo, Porto, and other towns across the region.\r\nAdditionally, there are bus stops within a short walking distance, providing easy access to Viana do Castelo’s center and the nearby beaches.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
     "amenities": {
       "property": [
         "Air conditioning",
@@ -13023,11 +13210,11 @@
     "bookingUrl": "",
     "guestyId": "6965339bbf04fe0013743cd8",
     "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Senhorial House at Fountain Retreat-Pool & Sports",
+    "whatsappMessage": "Hi, I am interested in Senhorial House with Jacuzzi at Fountain Retreat",
     "sortOrder": 0,
     "isActive": true,
-    "seoTitle": "Senhorial House at Fountain Retreat-Pool & Sports — Portugal Active",
-    "seoDescription": "The Senhorial House, located within Fountain Retreat I Pool, Jacuzzi & Sports Escape, beautifully blends traditional charm with modern comfort in an authentic r",
+    "seoTitle": "Senhorial House with Jacuzzi at Fountain Retreat — Portugal Active",
+    "seoDescription": "The Senhorial House with Jacuzzi, located within Fountain Retreat I Pool & Sports Escape, beautifully blends traditional charm with modern comfort in an authent",
     "address": {
       "full": "",
       "street": "Rua da Fonte 101",
@@ -17223,7 +17410,7 @@
     "locality": "Viana do Castelo",
     "bedrooms": 1,
     "bathrooms": 1,
-    "maxGuests": 2,
+    "maxGuests": 3,
     "priceFrom": 90,
     "pricePerNight": 90,
     "cleaningFee": 40,
@@ -17308,7 +17495,7 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533794b583900135cf0fc/bb344397-9dd8-44-nvK1P",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533794b583900135cf0fc/27fedf5c-f0ad-48-GYb2Z"
     ],
-    "description": "Discover the perfect retreat in Viana do Castelo with Portugal Active. Yellow Breeze Apartment is designed for maximum comfort, offering a modern and welcoming environment. Enjoy the proximity to the beach, a private condominium, and premium services that elevate your experience to another level.\n\nStep into the comfort and elegance of this carefully designed apartment, crafted to offer the best experience. The bedroom features a superior-quality king-size bed, ensuring perfect nights of rest. The bright and welcoming living room has a comfortable sofa, ideal for relaxing after a day at the beach. The equipped kitchen allows you to prepare meals with all the convenience, while the modern bathroom, with a shower, provides a fresh and sophisticated atmosphere. The private balcony invites you to enjoy the outdoors and the tranquility of the space. Every detail has been thought out to provide an unforgettable stay, combining comfort, design, and proximity to the sea.\n\nWhat truly sets this apartment is its proximity to Praia do Cabedelo, a beach internationally renowned for windsurfing, kitesurfing and surfing. \r\nJust steps away, it's a haven for water sports enthusiasts. \r\nAnd when you're ready to explore, you'll find yourself conveniently close to the city center, with a multitude of cafes and renowned restaurants at your fingertips. \r\nNearby, a world of adventure awaits, from water parks to surf schools and kitesurfing lessons—all just a stone's throw away.\r\nDespite our villa's proximity to one of the region's busiest beaches, we've tucked it away in a serene and exclusive residential area. \r\nIt's the perfect retreat for those who crave tranquility without sacrificing easy access to the vibrant city of Viana do Castelo.\r\nDon't miss this chance to experience coastal luxury living at its finest. Your dream vacation is just a click away—book your stay at our premium villa now and immerse yourself in the beauty of Viana do Castelo's coastal paradise. Your escape begins here!\n\nGuests have exclusive access to the entire property. \r\nThe Portugal Active concierge service is available 24/7 to cater to any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\nThe property is accessible by public transport. The nearest train station is Viana do Castelo Station, located just 10 minutes by car or about 30 minutes on foot from the property. From the station, you can easily take a taxi or a local bus to reach the apartment. If you prefer to travel by bus, there are several stops nearby, with routes to the city center and areas around the beach.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
+    "description": "Discover the perfect retreat in Viana do Castelo with Portugal Active. Yellow Breeze Apartment is designed for maximum comfort, offering a modern and welcoming environment. Enjoy the proximity to the beach, a private condominium, and premium services that elevate your experience to another level.\n\nStep into the comfort and elegance of this carefully designed apartment, crafted to offer the best experience. The bedroom features a superior-quality king-size bed, ensuring perfect nights of rest. The bright and welcoming living room has a comfortable sofa bed (for 1 person), ideal for relaxing after a day at the beach. The equipped kitchen allows you to prepare meals with all the convenience, while the modern bathroom, with a shower, provides a fresh and sophisticated atmosphere. The private balcony invites you to enjoy the outdoors and the tranquility of the space. Every detail has been thought out to provide an unforgettable stay, combining comfort, design, and proximity to the sea.\n\nWhat truly sets this apartment is its proximity to Praia do Cabedelo, a beach internationally renowned for windsurfing, kitesurfing and surfing. \r\nJust steps away, it's a haven for water sports enthusiasts. \r\nAnd when you're ready to explore, you'll find yourself conveniently close to the city center, with a multitude of cafes and renowned restaurants at your fingertips. \r\nNearby, a world of adventure awaits, from water parks to surf schools and kitesurfing lessons—all just a stone's throw away.\r\nDespite our villa's proximity to one of the region's busiest beaches, we've tucked it away in a serene and exclusive residential area. \r\nIt's the perfect retreat for those who crave tranquility without sacrificing easy access to the vibrant city of Viana do Castelo.\r\nDon't miss this chance to experience coastal luxury living at its finest. Your dream vacation is just a click away—book your stay at our premium villa now and immerse yourself in the beauty of Viana do Castelo's coastal paradise. Your escape begins here!\n\nGuests have exclusive access to the entire property. \r\nThe Portugal Active concierge service is available 24/7 to cater to any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\nThe property is accessible by public transport. The nearest train station is Viana do Castelo Station, located just 10 minutes by car or about 30 minutes on foot from the property. From the station, you can easily take a taxi or a local bus to reach the apartment. If you prefer to travel by bus, there are several stops nearby, with routes to the city center and areas around the beach.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
     "amenities": {
       "property": [
         "Baking sheet",
@@ -17397,6 +17584,15 @@
         "beds": [
           {
             "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SOFA_BED",
             "quantity": 1
           }
         ]
