@@ -89,7 +89,9 @@ async function startServer() {
   app.get('/journal', (_req, res) => res.redirect(301, '/blog'));
   app.get('/account/login', (_req, res) => res.redirect(301, '/login'));
 
-  // Dynamic sitemap.xml
+  // Dynamic sitemap.xml with multi-language support
+  const SITEMAP_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
+
   app.get("/sitemap.xml", async (_req, res) => {
     try {
       const { getPropertiesForSite } = await import("../services/properties-store");
@@ -97,7 +99,6 @@ async function startServer() {
       const properties = await getPropertiesForSite();
       const blogPosts = await listBlogPosts({ status: "published" });
       const serviceItems = await listServices({ activeOnly: true });
-      // Always use production domain for sitemap — this is for search engine indexing only
       const base = "https://www.portugalactive.com";
       const now = new Date().toISOString().split("T")[0];
 
@@ -124,33 +125,52 @@ async function startServer() {
         { loc: "/legal/cookies", priority: "0.3", changefreq: "yearly" },
       ];
 
-      const url = (loc: string, lastmod: string, changefreq: string, priority: string) =>
-        `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
+      /** Generate a <url> entry with hreflang alternates for all languages */
+      const url = (pagePath: string, lang: string, lastmod: string, changefreq: string, priority: string) => {
+        const loc = `${base}/${lang}${pagePath === '/' ? '' : pagePath}`;
+        const alternates = SITEMAP_LANGS.map(l =>
+          `    <xhtml:link rel="alternate" hreflang="${l}" href="${base}/${l}${pagePath === '/' ? '' : pagePath}" />`
+        ).join('\n');
+        const xDefault = `    <xhtml:link rel="alternate" hreflang="x-default" href="${base}/en${pagePath === '/' ? '' : pagePath}" />`;
+        return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n${alternates}\n${xDefault}\n  </url>`;
+      };
 
-      const staticUrls = staticPages.map(p => url(`${base}${p.loc}`, now, p.changefreq, p.priority));
+      const allUrls: string[] = [];
 
-      const propertyUrls = properties
-        .filter((p: any) => p.slug)
-        .map((p: any) => url(`${base}/homes/${p.slug}`, now, "weekly", "0.9"));
+      // Static pages × all languages
+      for (const lang of SITEMAP_LANGS) {
+        for (const p of staticPages) {
+          allUrls.push(url(p.loc, now, p.changefreq, p.priority));
+        }
+      }
 
-      const blogUrls = blogPosts
-        .filter((p: any) => p.slug)
-        .map((p: any) => {
-          const mod = p.updatedAt || p.publishedAt || p.createdAt;
-          const lastmod = mod ? new Date(mod).toISOString().split("T")[0] : now;
-          return url(`${base}/blog/${p.slug}`, lastmod, "monthly", "0.8");
-        });
+      // Dynamic pages × all languages
+      const dynamicPages: { path: string; lastmod: string; changefreq: string; priority: string }[] = [];
 
-      const serviceUrls = serviceItems
-        .filter((s: any) => s.slug)
-        .map((s: any) => url(`${base}/services/${s.slug}`, now, "monthly", "0.8"));
+      for (const p of properties.filter((p: any) => p.slug)) {
+        dynamicPages.push({ path: `/homes/${(p as any).slug}`, lastmod: now, changefreq: "weekly", priority: "0.9" });
+      }
+
+      for (const p of blogPosts.filter((p: any) => p.slug)) {
+        const mod = (p as any).updatedAt || (p as any).publishedAt || (p as any).createdAt;
+        const lastmod = mod ? new Date(mod).toISOString().split("T")[0] : now;
+        dynamicPages.push({ path: `/blog/${(p as any).slug}`, lastmod, changefreq: "monthly", priority: "0.8" });
+      }
+
+      for (const s of serviceItems.filter((s: any) => s.slug)) {
+        dynamicPages.push({ path: `/services/${(s as any).slug}`, lastmod: now, changefreq: "monthly", priority: "0.8" });
+      }
+
+      for (const lang of SITEMAP_LANGS) {
+        for (const dp of dynamicPages) {
+          allUrls.push(url(dp.path, lang, dp.lastmod, dp.changefreq, dp.priority));
+        }
+      }
 
       const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${staticUrls.join("\n")}
-${propertyUrls.join("\n")}
-${blogUrls.join("\n")}
-${serviceUrls.join("\n")}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${allUrls.join("\n")}
 </urlset>`;
 
       res.setHeader("Content-Type", "application/xml");

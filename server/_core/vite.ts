@@ -134,15 +134,48 @@ export function serveStatic(app: Express) {
     maxAge: "1h",
   }));
 
+  const SUPPORTED_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
+
   const KNOWN_ROUTES = new Set([
     "/", "/homes", "/about", "/contact", "/services", "/adventures",
     "/events", "/blog", "/faq", "/careers", "/owners", "/login", "/account",
     "/legal/privacy", "/legal/terms", "/legal/cookies", "/admin", "/404",
+    "/destinations", "/experiences", "/concierge",
   ]);
-  const KNOWN_PREFIXES = ["/homes/", "/destinations/", "/blog/", "/services/", "/admin/", "/booking/"];
+  const KNOWN_PREFIXES = ["/homes/", "/destinations/", "/blog/", "/services/", "/admin/", "/booking/", "/experiences/", "/activities/"];
+
+  /** Strip locale prefix from path: /pt/homes → /homes */
+  function stripLocale(pathname: string): string {
+    const segments = pathname.split('/').filter(Boolean);
+    if (segments[0] && SUPPORTED_LANGS.includes(segments[0].toLowerCase())) {
+      return '/' + segments.slice(1).join('/') || '/';
+    }
+    return pathname;
+  }
+
+  // Redirect bare paths to locale-prefixed paths for SEO
+  app.use("*", async (req, res, next) => {
+    const p = req.originalUrl.split("?")[0];
+    const segments = p.split('/').filter(Boolean);
+
+    // If first segment is a supported locale, continue
+    if (segments[0] && SUPPORTED_LANGS.includes(segments[0].toLowerCase())) {
+      return next();
+    }
+
+    // If it's an asset, API, or static file request, skip
+    if (p.startsWith('/assets/') || p.startsWith('/api/') || p.includes('.')) {
+      return next();
+    }
+
+    // Redirect to /en/ prefixed version
+    const query = req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : '';
+    return res.redirect(301, `/en${p === '/' ? '' : p}${query}`);
+  });
 
   app.use("*", async (req, res) => {
-    const p = req.originalUrl.split("?")[0];
+    const rawPath = req.originalUrl.split("?")[0];
+    const p = stripLocale(rawPath);
     const isKnown = KNOWN_ROUTES.has(p) || KNOWN_PREFIXES.some(pre => p.startsWith(pre));
     const status = isKnown ? 200 : 404;
     const indexPath = path.resolve(distPath, "index.html");

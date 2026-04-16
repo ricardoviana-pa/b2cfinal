@@ -185,7 +185,7 @@ export default function Adventures() {
                   )}
                   {(adventure as any).videoUrl && (
                     <span className="absolute top-4 right-4 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm text-white text-[10px] tracking-[0.08em] uppercase font-medium px-2.5 py-1.5">
-                      <Play className="w-3 h-3 fill-current" /> Video
+                      <Play className="w-3 h-3 fill-current" /> {t('adventures.videoLabel')}
                     </span>
                   )}
                   <div className="absolute bottom-0 left-0 right-0 p-5">
@@ -201,7 +201,7 @@ export default function Adventures() {
                   <div className="flex items-center justify-between">
                     {(adventure.priceFrom ?? 0) > 0 && (
                       <p className="text-[13px] text-[#1A1A18] font-medium">
-                        From {formatEurEditorial(adventure.priceFrom ?? 0)} <span className="text-[12px] text-[#9E9A90] font-light">{adventure.priceSuffix}</span>
+                        {t('common.from')} {formatEurEditorial(adventure.priceFrom ?? 0)} <span className="text-[12px] text-[#9E9A90] font-light">{adventure.priceSuffix}</span>
                       </p>
                     )}
                     {rating && (
@@ -220,7 +220,7 @@ export default function Adventures() {
                     )}
                     <span className="inline-flex items-center gap-1 text-[11px] text-[#6B8E4E]" style={{ fontWeight: 300 }}>
                       <Check className="w-3 h-3" />
-                      Free cancellation
+                      {t('adventures.freeCancellation')}
                     </span>
                   </div>
                 </div>

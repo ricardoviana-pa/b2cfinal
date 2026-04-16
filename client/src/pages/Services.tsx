@@ -28,6 +28,7 @@ const ADDITIONAL_SLUGS = ['grocery-delivery', 'babysitter', 'daily-housekeeping'
 const WHATSAPP_BASE = 'https://wa.me/351927161771?text=';
 
 function ServiceCard({ product }: { product: Product | undefined }) {
+  const { t } = useTranslation();
   if (!product) return null;
   return (
     <div className="group block">
@@ -47,7 +48,7 @@ function ServiceCard({ product }: { product: Product | undefined }) {
       </div>
       {product.priceFrom && (
         <p className="mt-3 text-[12px] text-[#6B6860]">
-          <span className="text-[#1A1A18] font-medium">From {formatEurEditorial(product.priceFrom)}</span>
+          <span className="text-[#1A1A18] font-medium">{t('common.from')} {formatEurEditorial(product.priceFrom)}</span>
           <span className="text-[#9E9A90]"> {product.priceSuffix}</span>
         </p>
       )}
@@ -57,6 +58,7 @@ function ServiceCard({ product }: { product: Product | undefined }) {
 
 /** Single-product editorial layout: image left, copy right. Used when a section has exactly 1 product. */
 function SingleServiceFeature({ product, overline, title, body }: { product: Product | undefined; overline: string; title: string; body: string }) {
+  const { t } = useTranslation();
   if (!product) return null;
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
@@ -74,12 +76,12 @@ function SingleServiceFeature({ product, overline, title, body }: { product: Pro
           {product.tagline && <p className="body-md mb-4">{product.tagline}</p>}
           {product.priceFrom && (
             <p className="text-[13px] text-[#1A1A18] mb-6">
-              <span className="font-medium">From {formatEurEditorial(product.priceFrom)}</span>
+              <span className="font-medium">{t('common.from')} {formatEurEditorial(product.priceFrom)}</span>
               <span className="text-[#9E9A90] ml-1">{product.priceSuffix}</span>
             </p>
           )}
           <Link href={`/services/${product.slug}`} className="inline-flex items-center gap-2 text-[12px] font-medium tracking-[0.08em] uppercase text-[#8B7355] hover:text-[#1A1A18] transition-colors">
-            Learn more <ArrowRight className="w-3.5 h-3.5" />
+            {t('services.learnMore')} <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       </div>
@@ -150,7 +152,7 @@ export default function Concierge() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/15" />
         <div className="relative container pb-12 lg:pb-16 z-10">
           <p className="inline-flex items-center gap-1.5 text-[11px] font-medium text-white/90 mb-3 tracking-[0.12em] uppercase">
-            <Lock className="w-3 h-3" /> Exclusive to our guests
+            <Lock className="w-3 h-3" /> {t('services.exclusiveToGuests')}
           </p>
           <h1 className="headline-xl text-white mb-4">{t('services.heroTitle')}</h1>
           <p className="body-lg max-w-xl text-white/95">
@@ -163,10 +165,10 @@ export default function Concierge() {
       <div className="bg-[#F5F1EB] border-b border-[#E8E4DC]">
         <div className="container py-4 flex flex-wrap items-center justify-between gap-3">
           <p className="text-[13px] text-[#6B6860]">
-            <span className="font-medium text-[#1A1A18]">Concierge services are available only to guests staying at one of our properties.</span> Looking for activities open to everyone?
+            <span className="font-medium text-[#1A1A18]">{t('services.guestsOnlyBanner')}</span> {t('services.guestsOnlyQuestion')}
           </p>
           <Link href="/experiences" className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#8B7355] hover:text-[#1A1A18] transition-colors inline-flex items-center gap-1">
-            Browse experiences <ArrowRight className="w-3.5 h-3.5" />
+            {t('services.browseExperiences')} <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       </div>

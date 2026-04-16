@@ -83,7 +83,18 @@ export default function LanguageSwitcher({
             key={lang.code}
             type="button"
             onClick={() => {
+              // Navigate to same path with new locale prefix
+              const currentPath = window.location.pathname;
+              const segments = currentPath.split('/').filter(Boolean);
+              // Remove current locale prefix if present
+              const supportedLangs = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
+              if (segments[0] && supportedLangs.includes(segments[0].toLowerCase())) {
+                segments.shift();
+              }
+              const restPath = segments.length > 0 ? '/' + segments.join('/') : '';
+              const newUrl = `/${lang.code}${restPath}${window.location.search}${window.location.hash}`;
               void i18n.changeLanguage(lang.code);
+              window.history.pushState(null, '', newUrl);
               setOpen(false);
             }}
             className={`flex items-center justify-between w-full px-4 py-2.5 text-left transition-colors cursor-pointer ${
