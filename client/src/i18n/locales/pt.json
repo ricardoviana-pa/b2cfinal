@@ -776,7 +776,18 @@
     "title": "Os nossos destinos",
     "subtitle": "Cinco regiões de Portugal, cada uma com o seu próprio caráter, paisagem e ritmo.",
     "home_one": "{{count}} alojamento",
-    "home_other": "{{count}} alojamentos"
+    "home_other": "{{count}} alojamentos",
+    "titleFull": "Destinos em Portugal",
+    "notFound": "Destino não encontrado",
+    "backToDestinations": "Voltar aos destinos",
+    "bestTimeToVisit": "Melhor altura para visitar",
+    "bestTimeDefault": "Destino durante todo o ano. Época alta de Junho a Setembro.",
+    "servicesAvailable": "Serviços disponíveis",
+    "servicesIntro": "Os nossos <1>serviços de concierge</1> — chef privado, spa, transfers — estão disponíveis em todas as propriedades de {{destination}}.",
+    "addToItinerary": "Adicionar ao itinerário",
+    "seeAllServices": "Ver todos os serviços",
+    "adventuresIn": "Aventuras em {{destination}}",
+    "adventuresIntro": "Selecionadas pela nossa equipa local. Explore todas as nossas <1>aventuras ao ar livre</1> em Portugal."
   },
   "faq": {
     "overline": "FAQ",
@@ -818,7 +829,8 @@
     "customBody": "A nossa equipa organiza experiências privadas feitas à medida do seu grupo.",
     "customCta": "Falar com o nosso concierge →",
     "freeCancellation": "Cancelamento gratuito",
-    "videoLabel": "Vídeo"
+    "videoLabel": "Vídeo",
+    "availableAdventures": "Aventuras disponíveis"
   },
   "careers": {
     "title": "Junte-se à nossa equipa",
@@ -971,5 +983,35 @@
     "ctaExplore": "Explorar os nossos alojamentos",
     "ctaConcierge": "Falar com o nosso concierge",
     "relatedStories": "Histórias Relacionadas"
+  },
+  "experienceDetail": {
+    "notFound": "Experiência não encontrada",
+    "backToExperiences": "Voltar às experiências",
+    "aboutExperience": "Sobre esta experiência",
+    "seeInAction": "Veja em ação",
+    "importantInfo": "Informação importante",
+    "faq": "Perguntas frequentes"
+  },
+  "serviceDetail": {
+    "backToExperiences": "Voltar às experiências",
+    "whatIsIncluded": "O que está incluído",
+    "orContactDirectly": "Ou contacte-nos directamente",
+    "whatGuestsSay": "O que dizem os nossos hóspedes",
+    "otherExperiences": "Outras experiências"
+  },
+  "bedConfig": {
+    "notAvailable": "Configuração de camas não disponível"
+  },
+  "itinerary": {
+    "empty": "O seu itinerário está vazio",
+    "emptyBody": "Explore os nossos serviços e aventuras para começar a construir a sua estadia perfeita.",
+    "addToItinerary": "ADICIONAR AO ITINERÁRIO"
+  },
+  "experienceBooking": {
+    "reserveNow": "Reserve agora, pague depois",
+    "instantConfirmation": "Confirmação imediata"
+  },
+  "reviews": {
+    "whatTheyRemember": "O que mais recordam."
   }
 }

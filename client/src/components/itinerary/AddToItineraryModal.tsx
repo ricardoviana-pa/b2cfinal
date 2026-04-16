@@ -4,6 +4,7 @@
    ========================================================================== */
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, Plus } from 'lucide-react';
 import { useItinerary } from '@/contexts/ItineraryContext';
 import type { Product, ItineraryFieldValue } from '@/lib/types';
@@ -115,6 +116,7 @@ function getFieldsForProduct(product: Product): FieldDef[] {
 }
 
 export default function AddToItineraryModal({ product, isOpen, onClose }: Props) {
+  const { t } = useTranslation();
   const { addItem } = useItinerary();
   const fields = getFieldsForProduct(product);
 
@@ -160,7 +162,7 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E4DC]">
             <div>
-              <p className="text-[11px] font-medium text-[#8B7355] tracking-[0.08em] mb-1">ADD TO ITINERARY</p>
+              <p className="text-[11px] font-medium text-[#8B7355] tracking-[0.08em] mb-1">{t('itinerary.addToItinerary')}</p>
               <h3 className="text-[1rem] font-display text-[#1A1A18]">{product.name}</h3>
             </div>
             <button

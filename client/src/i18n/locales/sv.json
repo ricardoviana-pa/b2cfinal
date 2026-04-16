@@ -765,7 +765,18 @@
     "title": "Våra destinationer",
     "subtitle": "Fem regioner genom Portugal, var och en med sin egen karaktär, sitt landskap och sin rytm.",
     "home_one": "{{count}} hem",
-    "home_other": "{{count}} hem"
+    "home_other": "{{count}} hem",
+    "titleFull": "Destinationer i Portugal",
+    "notFound": "Destination hittades inte",
+    "backToDestinations": "Tillbaka till destinationer",
+    "bestTimeToVisit": "Bästa tid att besöka",
+    "bestTimeDefault": "Året runt-destination. Högsäsong juni till september.",
+    "servicesAvailable": "Tillgängliga tjänster",
+    "servicesIntro": "Våra <1>conciergetjänster</1> — privatkock, spa, transfer — finns tillgängliga i alla fastigheter i {{destination}}.",
+    "addToItinerary": "Lägg till i resplan",
+    "seeAllServices": "Se alla tjänster",
+    "adventuresIn": "Äventyr i {{destination}}",
+    "adventuresIntro": "Utvalda av vårt lokala team. Utforska alla våra <1>utomhusäventyr</1> i Portugal."
   },
   "faq": {
     "overline": "FAQ",
@@ -807,7 +818,8 @@
     "customBody": "Vårt team kan arrangera privata upplevelser anpassade för din grupp.",
     "customCta": "Prata med vår concierge →",
     "freeCancellation": "Gratis avbokning",
-    "videoLabel": "Video"
+    "videoLabel": "Video",
+    "availableAdventures": "Tillgängliga äventyr"
   },
   "careers": {
     "title": "Gå med i vårt team",
@@ -960,5 +972,35 @@
     "ctaExplore": "Utforska våra hem",
     "ctaConcierge": "Prata med vår concierge",
     "relatedStories": "Relaterade berättelser"
+  },
+  "experienceDetail": {
+    "notFound": "Upplevelse hittades inte",
+    "backToExperiences": "Tillbaka till upplevelser",
+    "aboutExperience": "Om denna upplevelse",
+    "seeInAction": "Se i aktion",
+    "importantInfo": "Viktig information",
+    "faq": "Vanliga frågor"
+  },
+  "serviceDetail": {
+    "backToExperiences": "Tillbaka till upplevelser",
+    "whatIsIncluded": "Vad ingår",
+    "orContactDirectly": "Eller kontakta oss direkt",
+    "whatGuestsSay": "Vad våra gäster säger",
+    "otherExperiences": "Andra upplevelser"
+  },
+  "bedConfig": {
+    "notAvailable": "Sängkonfiguration ej tillgänglig"
+  },
+  "itinerary": {
+    "empty": "Din resplan är tom",
+    "emptyBody": "Bläddra bland våra tjänster och äventyr för att börja bygga din perfekta vistelse.",
+    "addToItinerary": "LÄGG TILL I RESPLAN"
+  },
+  "experienceBooking": {
+    "reserveNow": "Reservera nu, betala senare",
+    "instantConfirmation": "Omedelbar bekräftelse"
+  },
+  "reviews": {
+    "whatTheyRemember": "Vad de minns mest."
   }
 }

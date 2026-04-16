@@ -64,7 +64,7 @@ export default function Destinations() {
       {/* Destination cards — 3 columns */}
       <section className="section-padding">
         <div className="container">
-          <h2 className="sr-only">Portugal Destinations</h2>
+          <h2 className="sr-only">{t('destinationsPage.titleFull')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {active.map(dest => {
               return (

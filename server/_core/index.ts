@@ -140,7 +140,7 @@ async function startServer() {
       // Static pages × all languages
       for (const lang of SITEMAP_LANGS) {
         for (const p of staticPages) {
-          allUrls.push(url(p.loc, now, p.changefreq, p.priority));
+          allUrls.push(url(p.loc, lang, now, p.changefreq, p.priority));
         }
       }
 

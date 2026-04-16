@@ -4,6 +4,7 @@
    ========================================================================== */
 
 import { useState, useMemo, useEffect, lazy, Suspense } from 'react';
+import { useTranslation, Trans } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useParams, Link } from 'wouter';
 import { ArrowRight, MapPin, Sun, Plane, Plus } from 'lucide-react';
@@ -22,6 +23,7 @@ const destinations = destinationsData as unknown as Destination[];
 const allProducts = productsData as unknown as Product[];
 
 export default function DestinationDetail() {
+  const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const { data: propsData } = trpc.properties.listForSite.useQuery();
   const allProperties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
@@ -97,8 +99,8 @@ export default function DestinationDetail() {
       <div className="min-h-screen bg-[#FAFAF7]">
         <Header variant="solid" />
         <div className="container pt-32 pb-20 text-center">
-          <h1 className="headline-lg text-[#1A1A18] mb-4">Destination not found</h1>
-          <Link href="/destinations" className="text-[#8B7355] hover:underline">Back to destinations</Link>
+          <h1 className="headline-lg text-[#1A1A18] mb-4">{t('destinationsPage.notFound')}</h1>
+          <Link href="/destinations" className="text-[#8B7355] hover:underline">{t('destinationsPage.backToDestinations')}</Link>
         </div>
         <Footer />
       </div>
@@ -119,7 +121,7 @@ export default function DestinationDetail() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         <div className="relative container pb-12 lg:pb-16 z-10">
           <Link href="/destinations" className="text-[13px] text-white/60 hover:text-white/80 transition-colors mb-3 inline-block">
-            ← All destinations
+            ← {t('destinationsPage.backToDestinations')}
           </Link>
           <h1 className="headline-xl text-white mb-3">{dest.name}</h1>
           <p className="body-lg max-w-lg" style={{ color: 'rgba(255,255,255,0.7)' }}>{dest.tagline}</p>
@@ -159,9 +161,9 @@ export default function DestinationDetail() {
             <div className="flex items-start gap-3 p-5 bg-white border border-[#E8E4DC]">
               <Sun className="w-5 h-5 text-[#8B7355] mt-0.5 flex-shrink-0" />
               <div>
-                <p className="text-[14px] font-medium text-[#1A1A18] mb-1">Best time to visit</p>
+                <p className="text-[14px] font-medium text-[#1A1A18] mb-1">{t('destinationsPage.bestTimeToVisit')}</p>
                 <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
-                  {dest.bestTimeToVisit || 'Year-round destination. Peak season June–September.'}
+                  {dest.bestTimeToVisit || t('destinationsPage.bestTimeDefault')}
                 </p>
               </div>
             </div>
@@ -240,8 +242,14 @@ export default function DestinationDetail() {
       {/* Services */}
       <section className="section-padding bg-[#FAFAF7]">
         <div className="container">
-          <h2 className="headline-lg text-[#1A1A18] mb-3">Services available</h2>
-          <p className="body-lg mb-8 max-w-xl">Our <Link href="/services" className="text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4 decoration-[#E8E4DC]">concierge services</Link> — private chef, spa, transfers — are available in all {dest.name} properties.</p>
+          <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationsPage.servicesAvailable')}</h2>
+          <p className="body-lg mb-8 max-w-xl">
+            <Trans
+              i18nKey="destinationsPage.servicesIntro"
+              values={{ destination: dest.name }}
+              components={{ 1: <Link href="/services" className="text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4 decoration-[#E8E4DC]" /> }}
+            />
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {services.slice(0, 8).map(service => (
               <div key={service.id} className="bg-white border border-[#E8E4DC] p-5 flex flex-col">
@@ -253,14 +261,14 @@ export default function DestinationDetail() {
                   className="flex items-center gap-1.5 text-[12px] font-medium text-[#1A1A18] hover:text-[#8B7355] transition-colors"
                   style={{ minHeight: 'auto', minWidth: 'auto' }}
                 >
-                  <Plus className="w-3.5 h-3.5" /> Add to itinerary
+                  <Plus className="w-3.5 h-3.5" /> {t('destinationsPage.addToItinerary')}
                 </button>
               </div>
             ))}
           </div>
           <div className="text-center mt-6">
             <Link href="/services" className="inline-flex items-center gap-2 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors">
-              See all services <ArrowRight className="w-4 h-4" />
+              {t('destinationsPage.seeAllServices')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -270,8 +278,13 @@ export default function DestinationDetail() {
       {adventures.length > 0 && (
         <section className="section-padding bg-white">
           <div className="container">
-            <h2 className="headline-lg text-[#1A1A18] mb-3">Adventures in {dest.name}</h2>
-            <p className="body-lg mb-8 max-w-xl">Curated by our local team. Explore all our <Link href="/adventures" className="text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4 decoration-[#E8E4DC]">outdoor adventures</Link> across Portugal.</p>
+            <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationsPage.adventuresIn', { destination: dest.name })}</h2>
+            <p className="body-lg mb-8 max-w-xl">
+              <Trans
+                i18nKey="destinationsPage.adventuresIntro"
+                components={{ 1: <Link href="/adventures" className="text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4 decoration-[#E8E4DC]" /> }}
+              />
+            </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {adventures.map(adv => (
                 <div key={adv.id} className="group">
@@ -291,7 +304,7 @@ export default function DestinationDetail() {
                       className="flex items-center gap-1.5 text-[12px] font-medium text-[#1A1A18] hover:text-[#8B7355] transition-colors"
                       style={{ minHeight: 'auto', minWidth: 'auto' }}
                     >
-                      <Plus className="w-3.5 h-3.5" /> Add to itinerary
+                      <Plus className="w-3.5 h-3.5" /> {t('destinationsPage.addToItinerary')}
                     </button>
                   </div>
                 </div>

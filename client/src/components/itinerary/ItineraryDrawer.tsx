@@ -5,10 +5,12 @@
    ========================================================================== */
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, Trash2, ClipboardCheck, MessageCircle, Mail } from 'lucide-react';
 import { useItinerary } from '@/contexts/ItineraryContext';
 
 export default function ItineraryDrawer() {
+  const { t } = useTranslation();
   const { items, itemCount, removeItem, isOpen, setIsOpen, sendToWhatsApp, sendViaEmail, clearItinerary } = useItinerary();
   const [guestName, setGuestName] = useState('');
   const [guestEmail, setGuestEmail] = useState('');
@@ -83,8 +85,8 @@ export default function ItineraryDrawer() {
           {items.length === 0 ? (
             <div className="text-center py-16">
               <ClipboardCheck className="w-10 h-10 text-[#E8E4DC] mx-auto mb-4" />
-              <p className="text-[15px] text-[#9E9A90] mb-2">Your itinerary is empty</p>
-              <p className="text-[13px] text-[#9E9A90]/70 leading-relaxed">Browse our services and adventures to start building your perfect stay.</p>
+              <p className="text-[15px] text-[#9E9A90] mb-2">{t('itinerary.empty')}</p>
+              <p className="text-[13px] text-[#9E9A90]/70 leading-relaxed">{t('itinerary.emptyBody')}</p>
               <button
                 onClick={() => setIsOpen(false)}
                 className="mt-6 text-[12px] tracking-[0.08em] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors"

@@ -907,7 +907,7 @@ export default function PropertyDetail() {
                               );
                             })
                           ) : (
-                            <span className="text-[12px] text-[#9E9A90]">Bed configuration details not available</span>
+                            <span className="text-[12px] text-[#9E9A90]">{t('bedConfig.notAvailable')}</span>
                           )}
                         </div>
                       </div>

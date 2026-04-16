@@ -762,7 +762,18 @@
     "title": "Our destinations",
     "subtitle": "Five regions across Portugal, each with its own character, landscape and rhythm.",
     "home_one": "{{count}} home",
-    "home_other": "{{count}} homes"
+    "home_other": "{{count}} homes",
+    "titleFull": "Portugal Destinations",
+    "notFound": "Destination not found",
+    "backToDestinations": "Back to destinations",
+    "bestTimeToVisit": "Best time to visit",
+    "bestTimeDefault": "Year-round destination. Peak season June–September.",
+    "servicesAvailable": "Services available",
+    "servicesIntro": "Our <1>concierge services</1> — private chef, spa, transfers — are available in all {{destination}} properties.",
+    "addToItinerary": "Add to itinerary",
+    "seeAllServices": "See all services",
+    "adventuresIn": "Adventures in {{destination}}",
+    "adventuresIntro": "Curated by our local team. Explore all our <1>outdoor adventures</1> across Portugal."
   },
   "faq": {
     "overline": "FAQ",
@@ -804,7 +815,38 @@
     "customBody": "Our team can arrange private experiences tailored to your group.",
     "customCta": "Talk to our concierge →",
     "freeCancellation": "Free cancellation",
-    "videoLabel": "Video"
+    "videoLabel": "Video",
+    "availableAdventures": "Available Adventures"
+  },
+  "experienceDetail": {
+    "notFound": "Experience not found",
+    "backToExperiences": "Back to experiences",
+    "aboutExperience": "About this experience",
+    "seeInAction": "See it in action",
+    "importantInfo": "Important information",
+    "faq": "Frequently asked"
+  },
+  "serviceDetail": {
+    "backToExperiences": "Back to experiences",
+    "whatIsIncluded": "What is included",
+    "orContactDirectly": "Or contact us directly",
+    "whatGuestsSay": "What our guests say",
+    "otherExperiences": "Other experiences"
+  },
+  "bedConfig": {
+    "notAvailable": "Bed configuration details not available"
+  },
+  "itinerary": {
+    "empty": "Your itinerary is empty",
+    "emptyBody": "Browse our services and adventures to start building your perfect stay.",
+    "addToItinerary": "ADD TO ITINERARY"
+  },
+  "experienceBooking": {
+    "reserveNow": "Reserve now, pay later",
+    "instantConfirmation": "Instant confirmation"
+  },
+  "reviews": {
+    "whatTheyRemember": "What they remember most."
   },
   "careers": {
     "title": "Join our team",

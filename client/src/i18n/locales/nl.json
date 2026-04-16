@@ -765,7 +765,18 @@
     "title": "Onze bestemmingen",
     "subtitle": "Vijf regio's door heel Portugal, elk met een eigen karakter, landschap en ritme.",
     "home_one": "{{count}} woning",
-    "home_other": "{{count}} woningen"
+    "home_other": "{{count}} woningen",
+    "titleFull": "Bestemmingen in Portugal",
+    "notFound": "Bestemming niet gevonden",
+    "backToDestinations": "Terug naar bestemmingen",
+    "bestTimeToVisit": "Beste tijd om te bezoeken",
+    "bestTimeDefault": "Het hele jaar door bestemming. Hoogseizoen van juni tot september.",
+    "servicesAvailable": "Beschikbare diensten",
+    "servicesIntro": "Onze <1>conciërgediensten</1> — privékok, spa, transfers — zijn beschikbaar in alle accommodaties in {{destination}}.",
+    "addToItinerary": "Toevoegen aan reisplan",
+    "seeAllServices": "Alle diensten bekijken",
+    "adventuresIn": "Avonturen in {{destination}}",
+    "adventuresIntro": "Geselecteerd door ons lokale team. Ontdek al onze <1>buitenavonturen</1> in Portugal."
   },
   "faq": {
     "overline": "FAQ",
@@ -807,7 +818,8 @@
     "customBody": "Ons team kan privé-ervaringen op maat regelen voor uw groep.",
     "customCta": "Praat met onze concierge →",
     "freeCancellation": "Gratis annulering",
-    "videoLabel": "Video"
+    "videoLabel": "Video",
+    "availableAdventures": "Beschikbare avonturen"
   },
   "careers": {
     "title": "Word lid van ons team",
@@ -960,5 +972,35 @@
     "ctaExplore": "Ontdek onze woningen",
     "ctaConcierge": "Praat met onze concierge",
     "relatedStories": "Gerelateerde verhalen"
+  },
+  "experienceDetail": {
+    "notFound": "Ervaring niet gevonden",
+    "backToExperiences": "Terug naar ervaringen",
+    "aboutExperience": "Over deze ervaring",
+    "seeInAction": "Zie in actie",
+    "importantInfo": "Belangrijke informatie",
+    "faq": "Veelgestelde vragen"
+  },
+  "serviceDetail": {
+    "backToExperiences": "Terug naar ervaringen",
+    "whatIsIncluded": "Wat is inbegrepen",
+    "orContactDirectly": "Of neem direct contact met ons op",
+    "whatGuestsSay": "Wat onze gasten zeggen",
+    "otherExperiences": "Andere ervaringen"
+  },
+  "bedConfig": {
+    "notAvailable": "Bedconfiguratie niet beschikbaar"
+  },
+  "itinerary": {
+    "empty": "Je reisplan is leeg",
+    "emptyBody": "Blader door onze diensten en avonturen om je perfecte verblijf samen te stellen.",
+    "addToItinerary": "TOEVOEGEN AAN REISPLAN"
+  },
+  "experienceBooking": {
+    "reserveNow": "Reserveer nu, betaal later",
+    "instantConfirmation": "Directe bevestiging"
+  },
+  "reviews": {
+    "whatTheyRemember": "Wat ze zich het meest herinneren."
   }
 }

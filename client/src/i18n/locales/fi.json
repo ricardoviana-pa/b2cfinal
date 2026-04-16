@@ -765,7 +765,18 @@
     "title": "Kohteemme",
     "subtitle": "Viisi aluetta kautta Portugalin, jokainen omalla luonteellaan, maisemallaan ja rytmillään.",
     "home_one": "{{count}} koti",
-    "home_other": "{{count}} kotia"
+    "home_other": "{{count}} kotia",
+    "titleFull": "Portugalin kohteet",
+    "notFound": "Kohdetta ei löytynyt",
+    "backToDestinations": "Takaisin kohteisiin",
+    "bestTimeToVisit": "Paras aika vierailla",
+    "bestTimeDefault": "Ympärivuotinen kohde. Sesonki kesäkuusta syyskuuhun.",
+    "servicesAvailable": "Saatavilla olevat palvelut",
+    "servicesIntro": "Meidän <1>concierge-palvelumme</1> — yksityinen kokki, kylpylä, kuljetukset — ovat saatavilla kaikissa {{destination}}-kohteen asunnoissa.",
+    "addToItinerary": "Lisää matkasuunnitelmaan",
+    "seeAllServices": "Katso kaikki palvelut",
+    "adventuresIn": "Seikkailuja kohteessa {{destination}}",
+    "adventuresIntro": "Paikallisen tiimimme valitsemat. Tutustu kaikkiin <1>ulkoilmaseikkailuihimme</1> Portugalissa."
   },
   "faq": {
     "overline": "UKK",
@@ -807,7 +818,8 @@
     "customBody": "Tiimimme voi järjestää yksityisiä elämyksiä räätälöitynä ryhmällesi.",
     "customCta": "Keskustele concierge-palvelumme kanssa →",
     "freeCancellation": "Ilmainen peruutus",
-    "videoLabel": "Video"
+    "videoLabel": "Video",
+    "availableAdventures": "Saatavilla olevat seikkailut"
   },
   "careers": {
     "title": "Liity tiimiimme",
@@ -960,5 +972,35 @@
     "ctaExplore": "Tutustu koteihimme",
     "ctaConcierge": "Keskustele concierge-palvelumme kanssa",
     "relatedStories": "Aiheeseen liittyvät tarinat"
+  },
+  "experienceDetail": {
+    "notFound": "Elämystä ei löytynyt",
+    "backToExperiences": "Takaisin elämyksiin",
+    "aboutExperience": "Tietoa tästä elämyksestä",
+    "seeInAction": "Katso toiminnassa",
+    "importantInfo": "Tärkeää tietoa",
+    "faq": "Usein kysytyt kysymykset"
+  },
+  "serviceDetail": {
+    "backToExperiences": "Takaisin elämyksiin",
+    "whatIsIncluded": "Mitä sisältyy",
+    "orContactDirectly": "Tai ota meihin yhteyttä suoraan",
+    "whatGuestsSay": "Mitä vieraamme sanovat",
+    "otherExperiences": "Muut elämykset"
+  },
+  "bedConfig": {
+    "notAvailable": "Sänkyjen määritystiedot eivät ole saatavilla"
+  },
+  "itinerary": {
+    "empty": "Matkasuunnitelmasi on tyhjä",
+    "emptyBody": "Tutustu palveluihimme ja seikkailuihimme ja rakenna täydellinen oleskelusi.",
+    "addToItinerary": "LISÄÄ MATKASUUNNITELMAAN"
+  },
+  "experienceBooking": {
+    "reserveNow": "Varaa nyt, maksa myöhemmin",
+    "instantConfirmation": "Välitön vahvistus"
+  },
+  "reviews": {
+    "whatTheyRemember": "Mitä he muistavat eniten."
   }
 }

@@ -6,6 +6,7 @@
    ========================================================================== */
 
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRoute, Link } from 'wouter';
 import {
   Check,
@@ -188,6 +189,7 @@ function findExperience(slug: string): RawExperience | null {
 /* ── Component ── */
 
 export default function ExperienceDetail() {
+  const { t } = useTranslation();
   const [, params] = useRoute('/experiences/:slug');
   const [, actParams] = useRoute('/activities/:slug');
   const slug = params?.slug || actParams?.slug || '';
@@ -305,9 +307,9 @@ export default function ExperienceDetail() {
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="headline-lg mb-4 text-[#1A1A18]">Experience not found</h1>
+            <h1 className="headline-lg mb-4 text-[#1A1A18]">{t('experienceDetail.notFound')}</h1>
             <Link href="/experiences" className="btn-ghost">
-              Back to experiences
+              {t('experienceDetail.backToExperiences')}
             </Link>
           </div>
         </div>
@@ -520,7 +522,7 @@ export default function ExperienceDetail() {
           <div className="lg:col-span-2 space-y-12">
             {/* Overview */}
             <section id="overview">
-              <h2 className="headline-md text-[#1A1A18] mb-5">About this experience</h2>
+              <h2 className="headline-md text-[#1A1A18] mb-5">{t('experienceDetail.aboutExperience')}</h2>
               <div className="body-lg space-y-4">
                 {paragraphs.map((p, i) => (
                   <p key={i} className="text-[15px] text-[#1A1A18] leading-relaxed" style={{ fontWeight: 300 }}>
@@ -543,7 +545,7 @@ export default function ExperienceDetail() {
             {/* Video embed */}
             {exp.videoUrl && (
               <section id="video">
-                <h2 className="headline-md text-[#1A1A18] mb-5">See it in action</h2>
+                <h2 className="headline-md text-[#1A1A18] mb-5">{t('experienceDetail.seeInAction')}</h2>
                 <div
                   className="relative w-full overflow-hidden bg-[#1A1A18]"
                   style={{ aspectRatio: '16/9' }}
@@ -702,7 +704,7 @@ export default function ExperienceDetail() {
             {/* What to bring / not allowed */}
             {(exp.whatToBring || exp.notAllowed) && (
               <section>
-                <h2 className="headline-md text-[#1A1A18] mb-6">Important information</h2>
+                <h2 className="headline-md text-[#1A1A18] mb-6">{t('experienceDetail.importantInfo')}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {exp.whatToBring && exp.whatToBring.length > 0 && (
                     <div>
@@ -759,7 +761,7 @@ export default function ExperienceDetail() {
             {/* FAQ */}
             {exp.faq && exp.faq.length > 0 && (
               <section id="faq">
-                <h2 className="headline-md text-[#1A1A18] mb-6">Frequently asked</h2>
+                <h2 className="headline-md text-[#1A1A18] mb-6">{t('experienceDetail.faq')}</h2>
                 <div className="space-y-0">
                   {exp.faq.map((f, i) => (
                     <details

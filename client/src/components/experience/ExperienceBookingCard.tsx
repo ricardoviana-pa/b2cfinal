@@ -5,6 +5,7 @@
    ========================================================================== */
 
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Check, MessageCircle } from 'lucide-react';
 import BokunCalendarWidget from './BokunCalendarWidget';
 
@@ -36,6 +37,7 @@ export default function ExperienceBookingCard({
 }: ExperienceBookingCardProps) {
   const hasBokun = !!bokunActivityId && !!BOKUN_CHANNEL_UUID;
 
+  const { t } = useTranslation();
   const finalMessage = useMemo(() => {
     let msg = whatsappMessage || `Hi Portugal Active, I'd like to book the ${experienceName} experience.`;
     msg += `\nParticipants: 2 adults`;
@@ -104,12 +106,12 @@ export default function ExperienceBookingCard({
           {reserveNowPayLater && (
             <div className="flex items-center gap-2.5 text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>
               <Check className="w-3.5 h-3.5 text-[#6B8E4E] shrink-0" />
-              <span>Reserve now, pay later</span>
+              <span>{t('experienceBooking.reserveNow')}</span>
             </div>
           )}
           <div className="flex items-center gap-2.5 text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>
             <Check className="w-3.5 h-3.5 text-[#6B8E4E] shrink-0" />
-            <span>Instant confirmation</span>
+            <span>{t('experienceBooking.instantConfirmation')}</span>
           </div>
         </div>
         {hasBokun && (
