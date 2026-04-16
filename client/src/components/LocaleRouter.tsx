@@ -5,10 +5,13 @@
  * If missing or invalid, redirects to /{defaultLang}/...
  * Sets i18n language from URL and provides wouter a base path
  * so every <Link href="/homes"> renders as /{lang}/homes automatically.
+ *
+ * Language switching is handled by LanguageSwitcher via full page reload
+ * (window.location.assign), which re-mounts the Router with the new base.
  */
 
 import { useEffect, useMemo, type ReactNode } from 'react';
-import { Router, useLocation } from 'wouter';
+import { Router } from 'wouter';
 import { useTranslation } from 'react-i18next';
 
 const SUPPORTED_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
@@ -24,15 +27,13 @@ function extractLocale(pathname: string): { lang: string; rest: string } {
   return { lang: '', rest: pathname };
 }
 
-/** Detect preferred language: URL > localStorage > browser > default */
+/** Detect preferred language: localStorage > browser > default */
 function detectLanguage(): string {
-  // Check localStorage first (user's previous choice)
   const stored = localStorage.getItem('i18nextLng');
   if (stored) {
     const base = stored.split('-')[0]?.toLowerCase() || '';
     if (SUPPORTED_LANGS.includes(base)) return base;
   }
-  // Check browser language
   const browserLang = navigator.language?.split('-')[0]?.toLowerCase() || '';
   if (SUPPORTED_LANGS.includes(browserLang)) return browserLang;
   return DEFAULT_LANG;
@@ -48,13 +49,12 @@ export default function LocaleRouter({ children }: { children: ReactNode }) {
     const preferred = detectLanguage();
     const newPath = `/${preferred}${rest === '/' ? '' : rest}${window.location.search}${window.location.hash}`;
     window.location.replace(newPath);
-    // Render nothing while redirecting
     return null;
   }
 
   const activeLang = lang;
 
-  // Sync i18n language with URL locale (runs after first render)
+  // Sync i18n language with URL locale on mount and URL changes
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     if (i18n.language !== activeLang) {
@@ -64,34 +64,9 @@ export default function LocaleRouter({ children }: { children: ReactNode }) {
 
   return (
     <Router base={`/${activeLang}`}>
-      <LanguageSync />
       {children}
     </Router>
   );
-}
-
-/**
- * LanguageSync — keeps URL in sync when i18n language changes
- * (e.g. from LanguageSwitcher).
- */
-function LanguageSync() {
-  const { i18n } = useTranslation();
-  const [location] = useLocation();
-
-  useEffect(() => {
-    const handleLanguageChange = (newLang: string) => {
-      const currentPath = location || '/';
-      const search = window.location.search;
-      const hash = window.location.hash;
-      const newUrl = `/${newLang}${currentPath === '/' ? '' : currentPath}${search}${hash}`;
-      window.history.pushState(null, '', newUrl);
-    };
-
-    i18n.on('languageChanged', handleLanguageChange);
-    return () => { i18n.off('languageChanged', handleLanguageChange); };
-  }, [i18n, location]);
-
-  return null;
 }
 
 export { SUPPORTED_LANGS, DEFAULT_LANG, extractLocale };
