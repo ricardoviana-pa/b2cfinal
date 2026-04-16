@@ -1056,7 +1056,7 @@ export default function BookingWidget({
                 items={UPSELL_ITEMS}
                 selectedUpsells={selectedUpsells}
                 setSelectedUpsells={setSelectedUpsells}
-                t={t}
+                t={t as any}
               />
             )}
 

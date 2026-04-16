@@ -2,7 +2,7 @@
    BLOG ARTICLE — Single article view with editorial layout
    ========================================================================== */
 
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -18,7 +18,7 @@ const articles = (blogData as any).articles as BlogArticleType[];
 /* ── Inline markdown: bold + links ── */
 function renderInline(text: string) {
   // Split on **bold** and [link](url) patterns
-  const parts: (string | JSX.Element)[] = [];
+  const parts: (string | React.ReactElement)[] = [];
   const regex = /\*\*(.+?)\*\*|\[([^\]]+)\]\(([^)]+)\)/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;

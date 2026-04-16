@@ -242,7 +242,7 @@ export default function ExperienceDetail() {
       ...(exp.meetingPoint && {
         contentLocation: {
           '@type': 'Place',
-          name: exp.meetingPoint.description || exp.meetingPoint.address,
+          name: (exp.meetingPoint as any).description || exp.meetingPoint.address,
           ...(exp.meetingPoint.lat && {
             geo: { '@type': 'GeoCoordinates', latitude: exp.meetingPoint.lat, longitude: exp.meetingPoint.lng },
           }),

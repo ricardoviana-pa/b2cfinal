@@ -888,12 +888,12 @@ export default function PropertyDetail() {
                 <section>
                   <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-6">Bedrooms & Sleeping Arrangements</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {property.rooms.map((room, roomIdx) => (
+                    {property.rooms.map((room: any, roomIdx: number) => (
                       <div key={roomIdx} className="bg-white border border-[#E8E4DC] p-5 rounded-lg">
                         <h3 className="text-[13px] font-medium text-[#1A1A18] mb-4">{room.name}</h3>
                         <div className="space-y-3">
                           {room.beds && room.beds.length > 0 ? (
-                            room.beds.map((bed, bedIdx) => {
+                            room.beds.map((bed: any, bedIdx: number) => {
                               const { label, icon: BedIcon } = getBedTypeDisplay(bed.type);
                               return (
                                 <div key={bedIdx} className="flex items-center gap-3">
