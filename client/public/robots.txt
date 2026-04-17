@@ -1,7 +1,14 @@
 User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /admin
+Disallow: /admin/
+Disallow: /*/admin/
+Disallow: /account
+Disallow: /*/account
+Disallow: /login
+Disallow: /*/login
+Disallow: /booking/confirmation/
+Disallow: /*/booking/confirmation/
 
 # AI crawlers
 User-agent: GPTBot
