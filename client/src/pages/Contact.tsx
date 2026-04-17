@@ -8,6 +8,7 @@ import Header from '@/components/layout/Header';
 import PhoneInput from '@/components/booking/PhoneInput';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
+import { StructuredData, buildBreadcrumbSchema, buildFaqPageSchema } from '@/components/seo/StructuredData';
 import { trpc } from '@/lib/trpc';
 import { useSearch } from 'wouter';
 
@@ -97,24 +98,6 @@ export default function Contact() {
   const { t } = useTranslation();
   usePageMeta({ title: 'Contact Portugal Active | Plan Your Stay in Portugal', description: 'Plan your Portugal stay with our concierge team. Luxury villa rentals, private chef, outdoor adventures. Phone, WhatsApp or email — we reply within 2 hours.', url: '/contact' });
 
-  useEffect(() => {
-    const breadcrumbLd = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
-        { "@type": "ListItem", "position": 2, "name": "Contact" },
-      ],
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(breadcrumbLd);
-    script.id = "contact-breadcrumb-jsonld";
-    document.querySelector("#contact-breadcrumb-jsonld")?.remove();
-    document.head.appendChild(script);
-    return () => { document.querySelector("#contact-breadcrumb-jsonld")?.remove(); };
-  }, []);
-
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -165,24 +148,16 @@ export default function Contact() {
     { q: t('contact.faq6q'), a: t('contact.faq6a') },
   ], [t]);
 
-  useEffect(() => {
-    const jsonLd = {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": FAQ_ITEMS.map(item => ({
-        "@type": "Question",
-        "name": item.q,
-        "acceptedAnswer": { "@type": "Answer", "text": item.a },
-      })),
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(jsonLd);
-    script.id = "contact-faq-jsonld";
-    document.querySelector("#contact-faq-jsonld")?.remove();
-    document.head.appendChild(script);
-    return () => { document.querySelector("#contact-faq-jsonld")?.remove(); };
-  }, [FAQ_ITEMS]);
+  const contactGraph = useMemo(
+    () => [
+      buildBreadcrumbSchema([
+        { name: 'Home', item: '/' },
+        { name: 'Contact' },
+      ]),
+      buildFaqPageSchema(FAQ_ITEMS.map((item) => ({ question: item.q, answer: item.a }))),
+    ],
+    [FAQ_ITEMS],
+  );
 
   const validateField = useCallback((field: string, value: string) => {
     if (field === 'name' && !value.trim()) return t('contact.errorName', 'Please enter your name');
@@ -250,6 +225,7 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
+      <StructuredData id="contact-graph" data={contactGraph} />
       <Header />
 
       {/* Hero with image */}

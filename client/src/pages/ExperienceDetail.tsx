@@ -5,9 +5,10 @@
    Real content from TripAdvisor, Viator, GetYourGuide.
    ========================================================================== */
 
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRoute, Link } from 'wouter';
+import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import {
   Check,
   X,
@@ -209,32 +210,25 @@ export default function ExperienceDetail() {
   });
 
   /* ── JSON-LD structured data ── */
-  useEffect(() => {
-    if (!exp) return;
-    const scriptId = 'experience-jsonld';
-    const existing = document.getElementById(scriptId);
-    if (existing) existing.remove();
-
-    const jsonld: Record<string, unknown> = {
+  const experienceGraph = useMemo(() => {
+    if (!exp) return null;
+    const url = `https://www.portugalactive.com/experiences/${exp.slug}`;
+    const product: Record<string, unknown> = {
       '@context': 'https://schema.org',
       '@type': ['Product', 'TouristTrip'],
       productID: `EXP-${exp.slug}`,
       name: exp.name,
       description: exp.tagline || exp.description,
       image: exp.gallery && exp.gallery.length ? exp.gallery : [exp.image],
-      url: `https://www.portugalactive.com/experiences/${exp.slug}`,
-      brand: { '@type': 'Brand', name: 'Portugal Active' },
-      provider: {
-        '@type': 'Organization',
-        name: 'Portugal Active',
-        url: 'https://www.portugalactive.com',
-      },
+      url,
+      brand: { '@id': 'https://www.portugalactive.com/#organization' },
+      provider: { '@id': 'https://www.portugalactive.com/#organization' },
       offers: {
         '@type': 'Offer',
         price: exp.priceFrom || 0,
         priceCurrency: 'EUR',
         availability: 'https://schema.org/InStock',
-        url: `https://www.portugalactive.com/experiences/${exp.slug}`,
+        url,
         validFrom: new Date().toISOString().split('T')[0],
       },
       ...(exp.duration && { duration: exp.duration }),
@@ -249,18 +243,16 @@ export default function ExperienceDetail() {
         },
       }),
     };
-
     if (exp.aggregateRating) {
-      jsonld.aggregateRating = {
+      product.aggregateRating = {
         '@type': 'AggregateRating',
         ratingValue: exp.aggregateRating.value,
         bestRating: exp.aggregateRating.bestRating || 5,
         reviewCount: exp.aggregateRating.count,
       };
     }
-
     if (exp.reviewsList && exp.reviewsList.length > 0) {
-      jsonld.review = exp.reviewsList.slice(0, 10).map(r => ({
+      product.review = exp.reviewsList.slice(0, 10).map((r) => ({
         '@type': 'Review',
         author: { '@type': 'Person', name: r.author },
         datePublished: r.date,
@@ -272,33 +264,15 @@ export default function ExperienceDetail() {
         },
       }));
     }
-
-    const breadcrumbs = {
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.portugalactive.com/' },
-        { '@type': 'ListItem', position: 2, name: 'Experiences', item: 'https://www.portugalactive.com/experiences' },
-        {
-          '@type': 'ListItem',
-          position: 3,
-          name: exp.name,
-          item: `https://www.portugalactive.com/experiences/${exp.slug}`,
-        },
-      ],
-    };
-
-    const script = document.createElement('script');
-    script.id = scriptId;
-    script.type = 'application/ld+json';
-    script.text = JSON.stringify([jsonld, breadcrumbs]);
-    document.head.appendChild(script);
-
-    return () => {
-      const s = document.getElementById(scriptId);
-      if (s) s.remove();
-    };
-  }, [exp?.slug]);
+    return [
+      product,
+      buildBreadcrumbSchema([
+        { name: 'Home', item: '/' },
+        { name: 'Experiences', item: '/experiences' },
+        { name: exp.name, item: `/experiences/${exp.slug}` },
+      ]),
+    ];
+  }, [exp]);
 
   /* ── 404 ── */
   if (!exp) {
@@ -343,6 +317,7 @@ export default function ExperienceDetail() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
+      {experienceGraph && <StructuredData id={`experience-${exp.slug}`} data={experienceGraph} />}
       <Header />
 
       {/* ── Breadcrumb ── */}

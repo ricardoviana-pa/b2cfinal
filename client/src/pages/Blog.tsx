@@ -3,7 +3,7 @@
    Hero, 6 categories, featured article, article grid
    ========================================================================== */
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { Link } from 'wouter';
@@ -11,6 +11,7 @@ import { Clock, ArrowRight, Calendar, Play } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
+import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import type { BlogArticle, BlogCategory } from '@/lib/types';
 import blogData from '@/data/blog.json';
 
@@ -33,61 +34,42 @@ export default function Blog() {
   usePageMeta({ title: 'Portugal Travel Journal | Guides, Tips & Inspiration', description: 'Insider guides to Portugal — best beaches, hidden restaurants, wine regions, and travel tips from our local concierge team.', url: '/blog' });
   const [activeCategory, setActiveCategory] = useState<BlogCategory | 'all'>('all');
 
-  // Add Schema.org BlogPosting list markup for SEO
-  useEffect(() => {
-    const publishedArticles = articles.filter(a => a.status === 'published');
-    const jsonLd = {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "@id": "https://www.portugalactive.com/blog",
-      "name": "Portugal Travel Journal",
-      "description": "Insider guides to Portugal — best beaches, hidden restaurants, wine regions, and travel tips from our local concierge team.",
-      "url": "https://www.portugalactive.com/blog",
-      "mainEntity": {
-        "@type": "ItemList",
-        "itemListElement": publishedArticles.map((article, idx) => ({
-          "@type": "ListItem",
-          "position": idx + 1,
-          "item": {
-            "@type": "BlogPosting",
-            "@id": `https://www.portugalactive.com/blog/${article.slug}`,
-            "headline": article.title,
-            "description": article.excerpt,
-            "image": getArticleImage(article),
-            "datePublished": article.publishDate,
-            "author": {
-              "@type": "Person",
-              "name": article.author.name,
+  const blogGraph = useMemo(() => {
+    const publishedArticles = articles.filter((a) => a.status === 'published');
+    return [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        '@id': 'https://www.portugalactive.com/blog',
+        name: 'Portugal Travel Journal',
+        description:
+          'Insider guides to Portugal — best beaches, hidden restaurants, wine regions, and travel tips from our local concierge team.',
+        url: 'https://www.portugalactive.com/blog',
+        mainEntity: {
+          '@type': 'ItemList',
+          itemListElement: publishedArticles.map((article, idx) => ({
+            '@type': 'ListItem',
+            position: idx + 1,
+            item: {
+              '@type': 'BlogPosting',
+              '@id': `https://www.portugalactive.com/blog/${article.slug}`,
+              headline: article.title,
+              description: article.excerpt,
+              image: getArticleImage(article),
+              datePublished: article.publishDate,
+              author: {
+                '@type': 'Person',
+                name: article.author.name,
+              },
             },
-          },
-        })),
+          })),
+        },
       },
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(jsonLd);
-    script.id = "blog-list-jsonld";
-    document.querySelector("#blog-list-jsonld")?.remove();
-    document.head.appendChild(script);
-    return () => { document.querySelector("#blog-list-jsonld")?.remove(); };
-  }, []);
-
-  useEffect(() => {
-    const breadcrumbLd = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
-        { "@type": "ListItem", "position": 2, "name": "Journal" },
-      ],
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(breadcrumbLd);
-    script.id = "blog-breadcrumb-jsonld";
-    document.querySelector("#blog-breadcrumb-jsonld")?.remove();
-    document.head.appendChild(script);
-    return () => { document.querySelector("#blog-breadcrumb-jsonld")?.remove(); };
+      buildBreadcrumbSchema([
+        { name: 'Home', item: '/' },
+        { name: 'Journal' },
+      ]),
+    ];
   }, []);
 
   const CATEGORIES = useMemo(() => [
@@ -111,6 +93,7 @@ export default function Blog() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
+      <StructuredData id="blog-graph" data={blogGraph} />
       <Header />
 
       {/* Hero */}

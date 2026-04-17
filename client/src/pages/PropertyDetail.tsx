@@ -453,6 +453,13 @@ export default function PropertyDetail() {
         petsAllowed: (property as any).petsAllowed ?? null,
         latitude: (property as any).latitude ?? null,
         longitude: (property as any).longitude ?? null,
+        aggregateRating:
+          (property as any).averageRating && (property as any).reviewCount
+            ? {
+                ratingValue: Number((property as any).averageRating),
+                reviewCount: Number((property as any).reviewCount),
+              }
+            : null,
       }),
       buildBreadcrumbSchema([
         { name: 'Home', item: '/' },

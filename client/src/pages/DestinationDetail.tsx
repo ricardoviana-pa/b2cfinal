@@ -3,7 +3,7 @@
    Hero, editorial "Why", info grid, properties, services, adventures
    ========================================================================== */
 
-import { useState, useMemo, useEffect, lazy, Suspense } from 'react';
+import { useState, useMemo, lazy, Suspense } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useParams, Link } from 'wouter';
@@ -16,6 +16,7 @@ const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItine
 import destinationsData from '@/data/destinations.json';
 import productsData from '@/data/products.json';
 import { trpc } from '@/lib/trpc';
+import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import type { Destination, Property, Product } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
 
@@ -37,50 +38,31 @@ export default function DestinationDetail() {
   });
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
 
-  useEffect(() => {
-    if (!dest) return;
+  const destinationGraph = useMemo(() => {
+    if (!dest) return null;
     const containsPlace = allProperties
-      .filter(p => p.destination === dest.slug)
-      .map(p => ({
-        "@type": "LodgingBusiness",
-        "name": p.name,
-        "url": `https://www.portugalactive.com/homes/${p.slug}`,
+      .filter((p) => p.destination === dest.slug)
+      .map((p) => ({
+        '@type': 'VacationRental',
+        name: p.name,
+        url: `https://www.portugalactive.com/homes/${p.slug}`,
       }));
-    const jsonLd = {
-      "@context": "https://schema.org",
-      "@type": "TouristDestination",
-      "name": dest.name,
-      "description": dest.description || dest.tagline,
-      "url": `https://www.portugalactive.com/destinations/${dest.slug}`,
-      "image": dest.coverImage,
-      ...(containsPlace.length > 0 && { "containsPlace": containsPlace }),
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(jsonLd);
-    script.id = "destination-jsonld";
-    document.querySelector("#destination-jsonld")?.remove();
-    document.head.appendChild(script);
-    // BreadcrumbList
-    const breadcrumbLd = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
-        { "@type": "ListItem", "position": 2, "name": "Destinations", "item": "https://www.portugalactive.com/destinations" },
-        { "@type": "ListItem", "position": 3, "name": dest.name },
-      ],
-    };
-    const breadcrumbScript = document.createElement("script");
-    breadcrumbScript.type = "application/ld+json";
-    breadcrumbScript.text = JSON.stringify(breadcrumbLd);
-    breadcrumbScript.id = "destination-breadcrumb-jsonld";
-    document.querySelector("#destination-breadcrumb-jsonld")?.remove();
-    document.head.appendChild(breadcrumbScript);
-    return () => {
-      document.querySelector("#destination-jsonld")?.remove();
-      document.querySelector("#destination-breadcrumb-jsonld")?.remove();
-    };
+    return [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'TouristDestination',
+        name: dest.name,
+        description: dest.description || dest.tagline,
+        url: `https://www.portugalactive.com/destinations/${dest.slug}`,
+        image: dest.coverImage,
+        ...(containsPlace.length > 0 && { containsPlace }),
+      },
+      buildBreadcrumbSchema([
+        { name: 'Home', item: '/' },
+        { name: 'Destinations', item: '/destinations' },
+        { name: dest.name },
+      ]),
+    ];
   }, [dest, allProperties]);
 
   const destProperties = useMemo(() => {
@@ -109,6 +91,7 @@ export default function DestinationDetail() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
+      {destinationGraph && <StructuredData id={`destination-${dest.slug}`} data={destinationGraph} />}
       <Header />
 
       {/* Hero */}

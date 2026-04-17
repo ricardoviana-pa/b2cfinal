@@ -3,7 +3,7 @@
    Sections: Gastronomy, Wellness, Mobility, Additional Services
    ========================================================================== */
 
-import { useEffect } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'wouter';
 import { MessageCircle, ArrowRight, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +14,7 @@ import { formatEurEditorial } from '@/lib/format';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
+import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 
 const allProducts = productsData as unknown as Product[];
 const services = allProducts.filter(p => p.type === 'service' && p.isActive);
@@ -93,53 +94,62 @@ export default function Concierge() {
   const { t } = useTranslation();
   usePageMeta({ title: 'Concierge Services | Exclusive to Portugal Active Guests', description: 'Private chef, in-house spa, airport transfers and additional services available exclusively to guests staying at our properties.', url: '/concierge' });
 
-  // Add Service schema markup for SEO
-  useEffect(() => {
-    const gastronomyProducts = GASTRONOMY_SLUGS.map(getService).filter(Boolean) as Product[];
-    const wellnessProducts = WELLNESS_SLUGS.map(getService).filter(Boolean) as Product[];
-    const mobilityProducts = MOBILITY_SLUGS.map(getService).filter(Boolean) as Product[];
-    const additionalProducts = ADDITIONAL_SLUGS.map(getService).filter(Boolean) as Product[];
-
-    const allServices = [...gastronomyProducts, ...wellnessProducts, ...mobilityProducts, ...additionalProducts];
-
-    const jsonLd = {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "name": "Portugal Active",
-      "url": "https://portugalactive.com/concierge",
-      "hasService": allServices.map(service => ({
-        "@type": "Service",
-        "name": service.name,
-        "description": service.tagline || service.name,
-        "areaServed": {
-          "@type": "AdministrativeArea",
-          "name": "Portugal"
-        },
-        ...(service.priceFrom && {
-          "priceRange": `€${service.priceFrom}${service.priceSuffix ? ` ${service.priceSuffix}` : ''}`
-        })
-      }))
-    };
-
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(jsonLd);
-    script.id = "services-schema";
-    document.querySelector("#services-schema")?.remove();
-    document.head.appendChild(script);
-
-    return () => { document.querySelector("#services-schema")?.remove(); };
-  }, []);
-
   const gastronomyProducts = GASTRONOMY_SLUGS.map(getService).filter(Boolean) as Product[];
   const wellnessProducts = WELLNESS_SLUGS.map(getService).filter(Boolean) as Product[];
   const mobilityProducts = MOBILITY_SLUGS.map(getService).filter(Boolean) as Product[];
   const additionalProducts = ADDITIONAL_SLUGS.map(getService).filter(Boolean) as Product[];
 
+  // Services are emitted as an ItemList of Service items. The brand entity
+  // (Organization) already exists once globally in index.html — we reference
+  // it via providedBy @id rather than re-declaring it here.
+  const servicesGraph = useMemo(() => {
+    const allServices = [
+      ...gastronomyProducts,
+      ...wellnessProducts,
+      ...mobilityProducts,
+      ...additionalProducts,
+    ];
+    return [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: 'Portugal Active Concierge Services',
+        url: 'https://www.portugalactive.com/concierge',
+        numberOfItems: allServices.length,
+        itemListElement: allServices.map((service, idx) => ({
+          '@type': 'ListItem',
+          position: idx + 1,
+          item: {
+            '@type': 'Service',
+            name: service.name,
+            description: service.tagline || service.name,
+            url: `https://www.portugalactive.com/services/${service.slug}`,
+            ...(service.image && { image: service.image }),
+            areaServed: { '@type': 'Country', name: 'Portugal' },
+            provider: { '@id': 'https://www.portugalactive.com/#organization' },
+            ...(service.priceFrom && {
+              offers: {
+                '@type': 'Offer',
+                priceCurrency: 'EUR',
+                price: service.priceFrom,
+                ...(service.priceSuffix && { description: service.priceSuffix }),
+              },
+            }),
+          },
+        })),
+      },
+      buildBreadcrumbSchema([
+        { name: 'Home', item: '/' },
+        { name: 'Concierge' },
+      ]),
+    ];
+  }, [gastronomyProducts, wellnessProducts, mobilityProducts, additionalProducts]);
+
   const waConciergeMsgEncoded = encodeURIComponent("Hi, I'd like to talk to your concierge about planning my stay.");
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
+      <StructuredData id="services-graph" data={servicesGraph} />
       <Header />
 
       {/* Hero */}

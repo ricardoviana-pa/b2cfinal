@@ -4,7 +4,7 @@
    6 event types with curated imagery + social proof + venue showcase
    ========================================================================== */
 
-import { useMemo, useEffect } from 'react';
+import { useMemo } from 'react';
 import { ArrowRight, Check, Users, MapPin, Star } from 'lucide-react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
@@ -12,59 +12,42 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
+import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
+
+const EVENT_TYPES_SCHEMA = [
+  { type: 'Corporate Retreats', description: 'Host corporate retreats and team offsites in private Portuguese villas with full concierge' },
+  { type: 'Weddings', description: 'Intimate destination weddings in private villa gardens overlooking the Atlantic coast' },
+  { type: 'Brand Activations', description: 'Exclusive product launches and brand experiences at private venues across Portugal' },
+  { type: 'Private Celebrations', description: 'Birthdays, anniversaries and milestone celebrations in luxury Portuguese villas' },
+  { type: 'Wellness Retreats', description: 'Yoga, meditation and wellness programs in private villas surrounded by nature' },
+  { type: 'Creative Workshops', description: 'Artist residencies, team-building and creative experiences in inspiring Portuguese settings' },
+];
+
+const EVENTS_GRAPH = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'EventVenue',
+    name: 'Portugal Active Private Events',
+    url: 'https://www.portugalactive.com/events',
+    description: 'Host private events in luxury Portuguese villas with full event planning and concierge services',
+    areaServed: { '@type': 'AdministrativeArea', name: 'Portugal' },
+    acceptsReservations: true,
+    events: EVENT_TYPES_SCHEMA.map((e) => ({
+      '@type': 'Event',
+      name: e.type,
+      description: e.description,
+      location: { '@type': 'Place', name: 'Portugal', address: { '@type': 'PostalAddress', addressCountry: 'PT' } },
+    })),
+  },
+  buildBreadcrumbSchema([
+    { name: 'Home', item: '/' },
+    { name: 'Events' },
+  ]),
+];
 
 export default function Events() {
   const { t } = useTranslation();
   usePageMeta({ title: 'Private Events Portugal | Weddings, Retreats, Celebrations', description: 'Host weddings, corporate retreats, and private celebrations in luxury Portuguese villas. Full event planning and concierge.', url: '/events' });
-
-  /* ---- Schema.org structured data ---- */
-  useEffect(() => {
-    const eventTypes = [
-      { type: 'Corporate Retreats', description: 'Host corporate retreats and team offsites in private Portuguese villas with full concierge' },
-      { type: 'Weddings', description: 'Intimate destination weddings in private villa gardens overlooking the Atlantic coast' },
-      { type: 'Brand Activations', description: 'Exclusive product launches and brand experiences at private venues across Portugal' },
-      { type: 'Private Celebrations', description: 'Birthdays, anniversaries and milestone celebrations in luxury Portuguese villas' },
-      { type: 'Wellness Retreats', description: 'Yoga, meditation and wellness programs in private villas surrounded by nature' },
-      { type: 'Creative Workshops', description: 'Artist residencies, team-building and creative experiences in inspiring Portuguese settings' },
-    ];
-    const jsonLd = {
-      "@context": "https://schema.org",
-      "@type": "EventVenue",
-      "name": "Portugal Active Private Events",
-      "url": "https://portugalactive.com/events",
-      "description": "Host private events in luxury Portuguese villas with full event planning and concierge services",
-      "areaServed": { "@type": "AdministrativeArea", "name": "Portugal" },
-      "acceptsReservations": true,
-      "events": eventTypes.map(e => ({
-        "@type": "Event", "name": e.type, "description": e.description,
-        "location": { "@type": "Place", "name": "Portugal", "address": { "@type": "PostalAddress", "addressCountry": "PT" } },
-      })),
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(jsonLd);
-    script.id = "events-schema";
-    document.querySelector("#events-schema")?.remove();
-    document.head.appendChild(script);
-    return () => { document.querySelector("#events-schema")?.remove(); };
-  }, []);
-
-  useEffect(() => {
-    const breadcrumbLd = {
-      "@context": "https://schema.org", "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
-        { "@type": "ListItem", "position": 2, "name": "Events" },
-      ],
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(breadcrumbLd);
-    script.id = "events-breadcrumb-jsonld";
-    document.querySelector("#events-breadcrumb-jsonld")?.remove();
-    document.head.appendChild(script);
-    return () => { document.querySelector("#events-breadcrumb-jsonld")?.remove(); };
-  }, []);
 
   /* ---- Event types data ---- */
   const EVENT_TYPES = useMemo(() => [
@@ -125,6 +108,7 @@ export default function Events() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
+      <StructuredData id="events-graph" data={EVENTS_GRAPH} />
       <Header />
 
       {/* ================================================================

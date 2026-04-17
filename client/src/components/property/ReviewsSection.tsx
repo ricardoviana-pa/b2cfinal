@@ -96,21 +96,9 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
         </button>
       )}
 
-      {/* Schema.org AggregateRating for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'AggregateRating',
-            ratingValue: averageRating ? averageRating.toFixed(1) : '5.0',
-            bestRating: '5',
-            worstRating: '1',
-            ratingCount: totalCount,
-            name: `Reviews for ${propertyName}`,
-          }),
-        }}
-      />
+      {/* AggregateRating is emitted on the page-level VacationRental schema
+          (see PropertyDetail.tsx) so it stays attached to the item being
+          rated, rather than as an orphan node. */}
     </section>
   );
 }
