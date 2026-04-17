@@ -4,7 +4,7 @@
    Regions, Values, Team, Owners CTA, Final CTA
    ========================================================================== */
 
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight, Bed, Sparkles, Phone, Shield, Gift, UtensilsCrossed } from 'lucide-react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +13,11 @@ import { IMAGES } from '@/lib/images';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
+import {
+  StructuredData,
+  buildBreadcrumbSchema,
+  buildPersonSchema,
+} from '@/components/seo/StructuredData';
 
 /* ── Team data ─────────────────────────────────────────────────────────── */
 const TEAM = [
@@ -126,23 +131,27 @@ export default function About() {
     url: '/about',
   });
 
-  useEffect(() => {
-    const breadcrumbLd = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
-        { "@type": "ListItem", "position": 2, "name": "About" },
+  // JSON-LD: breadcrumb + Ricardo Viana Person schema (bundled via @graph).
+  // Person is on the About page (not the homepage) because that's where the
+  // biography / photo live — Google and LLMs use that context to confirm
+  // the founder entity linked from index.html's Organization.
+  const aboutGraph = [
+    buildBreadcrumbSchema([
+      { name: 'Home', item: '/' },
+      { name: 'About' },
+    ]),
+    buildPersonSchema({
+      name: 'Ricardo Viana',
+      jobTitle: 'CEO & Founder',
+      description:
+        'Founder and CEO of Portugal Active. Built the company from his home town of Viana do Castelo, starting in adventure tourism and scaling to 50+ operated private homes across Portugal.',
+      image: 'https://www.portugalactive.com/team/ricardo-viana.webp',
+      url: 'https://www.portugalactive.com/about#ricardo-viana',
+      sameAs: [
+        'https://www.linkedin.com/in/ricardo-viana-portugal-active',
       ],
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(breadcrumbLd);
-    script.id = "about-breadcrumb-jsonld";
-    document.querySelector("#about-breadcrumb-jsonld")?.remove();
-    document.head.appendChild(script);
-    return () => { document.querySelector("#about-breadcrumb-jsonld")?.remove(); };
-  }, []);
+    }),
+  ];
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -153,6 +162,7 @@ export default function About() {
 
   return (
     <div className="min-h-screen bg-[#FDFBF7]">
+      <StructuredData id="about-graph" data={aboutGraph} />
       <Header />
 
       {/* ══════════════════════════════════════════════════════════════════

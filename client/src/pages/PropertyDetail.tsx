@@ -26,6 +26,11 @@ import ReviewsSection from '@/components/property/ReviewsSection';
 import { trpc } from '@/lib/trpc';
 import { pushEcommerce } from '@/lib/datalayer';
 import { sanitizePropertyName } from '@/lib/format';
+import {
+  StructuredData,
+  buildVacationRentalSchema,
+  buildBreadcrumbSchema,
+} from '@/components/seo/StructuredData';
 
 const allProducts = productsData as unknown as Product[];
 const destinations = destinationsData as unknown as Destination[];
@@ -421,68 +426,40 @@ export default function PropertyDetail() {
     type: 'place',
   });
 
-  useEffect(() => {
-    if (!property) return;
+  // VacationRental + Breadcrumb JSON-LD (bundled via @graph by StructuredData).
+  // VacationRental is Google's dedicated subtype for short-term rentals; it
+  // surfaces richer fields (numberOfBedrooms, occupancy, amenityFeature as
+  // LocationFeatureSpecification) that AI Overviews quote directly.
+  const propertyGraph = useMemo(() => {
+    if (!property) return null;
     const dest = destinations.find(d => d.slug === property.destination);
-    const amenityFeatures = Object.entries(property.amenities || {}).flatMap(([category, items]) =>
-      (items as string[]).map(item => ({ "@type": "PropertyValue", "name": item, "value": true }))
-    );
-    const jsonLd: Record<string, any> = {
-      "@context": "https://schema.org",
-      "@type": "LodgingBusiness",
-      "name": property.name,
-      "description": property.tagline || property.description?.slice(0, 300),
-      "url": `https://www.portugalactive.com/homes/${property.slug}`,
-      "image": property.images?.slice(0, 5),
-      "numberOfRooms": property.bedrooms,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": property.locality || dest?.name,
-        "addressRegion": dest?.name || '',
-        "addressCountry": "PT",
-      },
-      ...(amenityFeatures.length > 0 && { "amenityFeature": amenityFeatures }),
-      ...(property.priceFrom > 0 && {
-        "priceRange": `From €${property.priceFrom} per night`,
-        "offers": {
-          "@type": "Offer",
-          "priceCurrency": "EUR",
-          "price": property.priceFrom,
-          "availability": "https://schema.org/InStock",
-        },
+    const amenityNames = Object.values(property.amenities || {})
+      .flatMap((items) => (Array.isArray(items) ? (items as string[]) : []));
+
+    return [
+      buildVacationRentalSchema({
+        name: property.name,
+        slug: property.slug,
+        description: property.tagline || property.description?.slice(0, 500),
+        images: property.images,
+        bedrooms: property.bedrooms,
+        bathrooms: (property as any).bathrooms ?? null,
+        maxGuests: (property as any).maxGuests ?? null,
+        priceFrom: property.priceFrom,
+        locality: property.locality || dest?.name,
+        region: dest?.name,
+        amenities: amenityNames,
+        // Guesty doesn't currently expose these — leave null until wired.
+        petsAllowed: (property as any).petsAllowed ?? null,
+        latitude: (property as any).latitude ?? null,
+        longitude: (property as any).longitude ?? null,
       }),
-      "provider": {
-        "@type": "Organization",
-        "name": "Portugal Active",
-        "url": "https://www.portugalactive.com",
-      },
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(jsonLd);
-    script.id = "property-jsonld";
-    document.querySelector("#property-jsonld")?.remove();
-    document.head.appendChild(script);
-    // BreadcrumbList
-    const breadcrumbLd = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
-        { "@type": "ListItem", "position": 2, "name": "Homes", "item": "https://www.portugalactive.com/homes" },
-        { "@type": "ListItem", "position": 3, "name": property.name },
-      ],
-    };
-    const breadcrumbScript = document.createElement("script");
-    breadcrumbScript.type = "application/ld+json";
-    breadcrumbScript.text = JSON.stringify(breadcrumbLd);
-    breadcrumbScript.id = "property-breadcrumb-jsonld";
-    document.querySelector("#property-breadcrumb-jsonld")?.remove();
-    document.head.appendChild(breadcrumbScript);
-    return () => {
-      document.querySelector("#property-jsonld")?.remove();
-      document.querySelector("#property-breadcrumb-jsonld")?.remove();
-    };
+      buildBreadcrumbSchema([
+        { name: 'Home', item: '/' },
+        { name: 'Homes', item: '/homes' },
+        { name: property.name },
+      ]),
+    ];
   }, [property]);
 
   const whatsIncluded = useMemo(
@@ -744,6 +721,7 @@ export default function PropertyDetail() {
 
   return (
     <>
+      {propertyGraph && <StructuredData id={`property-${property.slug}`} data={propertyGraph} />}
       <div className="min-h-screen bg-[#FAFAF7]">
         <Header />
 

@@ -25,6 +25,7 @@
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { StructuredData, buildFaqPageSchema } from '@/components/seo/StructuredData';
 import { Link } from 'wouter';
 import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Check, Quote, Minus, Plus } from 'lucide-react';
 import Header from '@/components/layout/Header';
@@ -63,78 +64,27 @@ export default function Home() {
     description: '50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool. Book direct for best rates.',
     url: '/',
   });
-  useEffect(() => {
-    const jsonLd = {
-      "@context": "https://schema.org",
-      "@type": "LodgingBusiness",
-      "name": "Portugal Active",
-      "description": "50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool, housekeeping. Book direct for best rates.",
-      "url": "https://www.portugalactive.com",
-      "telephone": "+351927161771",
-      "email": "info@portugalactive.com",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Viana do Castelo",
-        "addressRegion": "Norte",
-        "addressCountry": "PT",
-      },
-      "areaServed": [
-        { "@type": "Place", "name": "Minho, Portugal" },
-        { "@type": "Place", "name": "Porto & Douro, Portugal" },
-        { "@type": "Place", "name": "Lisbon, Portugal" },
-        { "@type": "Place", "name": "Alentejo, Portugal" },
-        { "@type": "Place", "name": "Algarve, Portugal" },
-      ],
-      "priceRange": "€€€",
-      "sameAs": [
-        "https://www.instagram.com/portugal_active",
-      ],
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(jsonLd);
-    script.id = "home-localbusiness-jsonld";
-    document.querySelector("#home-localbusiness-jsonld")?.remove();
-    document.head.appendChild(script);
-    // FAQPage schema for homepage — targets "luxury villas Portugal" queries
-    const faqLd = {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What makes Portugal Active different from Airbnb or Booking.com?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Portugal Active operates each property like a private hotel — with a 47-point preparation checklist, dedicated concierge, optional private chef, and a local team minutes away. We don't just list homes; we manage them to hotel standards." }
-        },
-        {
-          "@type": "Question",
-          "name": "Which regions in Portugal does Portugal Active cover?",
-          "acceptedAnswer": { "@type": "Answer", "text": "We operate luxury villas across five regions: Minho Coast (Viana do Castelo area), Porto & Douro Valley, Lisbon & Sintra, Alentejo, and the Algarve. Each region offers a different character, from Atlantic beaches to wine country." }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I book adventure activities alongside my villa stay?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes. We offer curated experiences including horseback riding, canyoning, surfing, sailing, e-bike tours, and more. Our concierge team builds bespoke itineraries combining your villa, activities, private dining, and transfers." }
-        },
-        {
-          "@type": "Question",
-          "name": "Is it cheaper to book direct with Portugal Active?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Always. Booking direct means no middleman markup — you get the best rate guaranteed, plus complimentary concierge service and priority for special requests like early check-in or celebrations." }
-        },
-      ],
-    };
-    const faqScript = document.createElement("script");
-    faqScript.type = "application/ld+json";
-    faqScript.text = JSON.stringify(faqLd);
-    faqScript.id = "home-faq-jsonld";
-    document.querySelector("#home-faq-jsonld")?.remove();
-    document.head.appendChild(faqScript);
-
-    return () => {
-      document.querySelector("#home-localbusiness-jsonld")?.remove();
-      document.querySelector("#home-faq-jsonld")?.remove();
-    };
-  }, []);
+  // FAQPage schema only — the Organization schema is global (index.html),
+  // so we no longer emit LodgingBusiness here to avoid duplicating the
+  // brand entity on the homepage.
+  const homeFaq = useMemo(() => buildFaqPageSchema([
+    {
+      question: 'What makes Portugal Active different from Airbnb or Booking.com?',
+      answer: "Portugal Active operates each property like a private hotel — with a 47-point preparation checklist, dedicated concierge, optional private chef, and a local team minutes away. We don't just list homes; we manage them to hotel standards.",
+    },
+    {
+      question: 'Which regions in Portugal does Portugal Active cover?',
+      answer: 'We operate luxury villas across five regions: Minho Coast (Viana do Castelo area), Porto & Douro Valley, Lisbon & Sintra, Alentejo, and the Algarve. Each region offers a different character, from Atlantic beaches to wine country.',
+    },
+    {
+      question: 'Can I book adventure activities alongside my villa stay?',
+      answer: 'Yes. We offer curated experiences including horseback riding, canyoning, surfing, sailing, e-bike tours, and more. Our concierge team builds bespoke itineraries combining your villa, activities, private dining, and transfers.',
+    },
+    {
+      question: 'Is it cheaper to book direct with Portugal Active?',
+      answer: 'Always. Booking direct means no middleman markup — you get the best rate guaranteed, plus complimentary concierge service and priority for special requests like early check-in or celebrations.',
+    },
+  ]), []);
 
   const { data: propsData, isLoading, isError } = trpc.properties.listForSite.useQuery();
   const properties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
@@ -295,6 +245,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF7] min-w-0 w-full">
+      <StructuredData id="home-faq" data={homeFaq} />
       <Header variant="transparent" />
       <WhatsAppFloat />
 
