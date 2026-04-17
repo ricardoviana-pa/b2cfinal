@@ -149,7 +149,7 @@ export default function About() {
       image: 'https://www.portugalactive.com/team/ricardo-viana.webp',
       url: 'https://www.portugalactive.com/about#ricardo-viana',
       sameAs: [
-        'https://www.linkedin.com/in/ricardo-viana-portugal-active',
+        'https://www.linkedin.com/in/ricardo-viana-portugalactive/',
       ],
     }),
   ];
@@ -207,7 +207,7 @@ export default function About() {
             lastUpdated="2026-04-17"
             author="Ricardo Viana, CEO"
             cite={[
-              { label: 'Founder on LinkedIn', href: 'https://www.linkedin.com/in/ricardo-viana-portugal-active' },
+              { label: 'Founder on LinkedIn', href: 'https://www.linkedin.com/in/ricardo-viana-portugalactive/' },
               { label: 'Concierge services', href: '/concierge' },
               { label: 'Contact the team', href: '/contact' },
             ]}
