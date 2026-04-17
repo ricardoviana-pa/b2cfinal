@@ -487,6 +487,194 @@ const DESTINATION_DESCRIPTION: Record<string, Record<string, string>> = {
   },
 };
 
+/* ── Localized templates for dynamic DB-driven routes ─────────────────────
+   Property, experience, service and blog pages pull titles/descriptions
+   from Drizzle. Only English SEO text lives in DB, so we wrap the English
+   brand name / post title with per-language framing to localize meta for
+   the 8 other languages. Proper names (property "Casa do Minho", post
+   titles) stay in the original language — only the framing is translated. */
+
+/** Label for a destination slug in the visitor's language. Used in property
+ *  meta (e.g. "in Minho Coast, Portugal"). Keeps region name untranslated
+ *  where it's a proper noun (Minho, Alentejo, Algarve); translates "Coast",
+ *  "Porto & Douro", "Lisbon". */
+const DEST_LABEL: Record<string, Record<string, string>> = {
+  minho: {
+    en: 'Minho Coast', pt: 'Costa do Minho', es: 'Costa del Miño', fr: 'Côte du Minho',
+    de: 'Minho-Küste', it: 'Costa del Minho', nl: 'Minho-kust', fi: 'Minhon rannikko',
+    sv: 'Minhokusten',
+  },
+  porto: {
+    en: 'Porto & Douro', pt: 'Porto e Douro', es: 'Oporto y Duero', fr: 'Porto et Douro',
+    de: 'Porto & Douro', it: 'Porto e Douro', nl: 'Porto & Douro', fi: 'Porto ja Douro',
+    sv: 'Porto & Douro',
+  },
+  lisbon: {
+    en: 'Lisbon', pt: 'Lisboa', es: 'Lisboa', fr: 'Lisbonne', de: 'Lissabon',
+    it: 'Lisbona', nl: 'Lissabon', fi: 'Lissabon', sv: 'Lissabon',
+  },
+  alentejo: {
+    en: 'Alentejo', pt: 'Alentejo', es: 'Alentejo', fr: 'Alentejo', de: 'Alentejo',
+    it: 'Alentejo', nl: 'Alentejo', fi: 'Alentejo', sv: 'Alentejo',
+  },
+  algarve: {
+    en: 'Algarve', pt: 'Algarve', es: 'Algarve', fr: 'Algarve', de: 'Algarve',
+    it: 'Algarve', nl: 'Algarve', fi: 'Algarve', sv: 'Algarve',
+  },
+};
+
+function destLabel(slug: string | null | undefined, lang: string): string {
+  if (!slug) return '';
+  const key = slug.toLowerCase();
+  return DEST_LABEL[key]?.[lang] ?? DEST_LABEL[key]?.en ?? slug;
+}
+
+/** Property title: "{name} | {bedrooms}-bedroom villa in {destination} | Portugal Active" (per-lang). */
+const PROPERTY_TITLE: Record<string, (p: { name: string; bedrooms?: number | null; destination: string }) => string> = {
+  en: ({ name, bedrooms, destination }) => {
+    const b = bedrooms ? `${bedrooms}-Bedroom ` : '';
+    return `${name} | ${b}Luxury Villa in ${destLabel(destination, 'en')} | Portugal Active`;
+  },
+  pt: ({ name, bedrooms, destination }) => {
+    const b = bedrooms ? `T${bedrooms} ` : '';
+    return `${name} | Casa de Luxo ${b}em ${destLabel(destination, 'pt')} | Portugal Active`;
+  },
+  es: ({ name, bedrooms, destination }) => {
+    const b = bedrooms ? `de ${bedrooms} dormitorios ` : '';
+    return `${name} | Villa de Lujo ${b}en ${destLabel(destination, 'es')} | Portugal Active`;
+  },
+  fr: ({ name, bedrooms, destination }) => {
+    const b = bedrooms ? `${bedrooms} chambres ` : '';
+    return `${name} | Villa de Luxe ${b}à ${destLabel(destination, 'fr')} | Portugal Active`;
+  },
+  de: ({ name, bedrooms, destination }) => {
+    const b = bedrooms ? `${bedrooms}-Schlafzimmer-` : '';
+    return `${name} | ${b}Luxusvilla in ${destLabel(destination, 'de')} | Portugal Active`;
+  },
+  it: ({ name, bedrooms, destination }) => {
+    const b = bedrooms ? `con ${bedrooms} camere da letto ` : '';
+    return `${name} | Villa di Lusso ${b}in ${destLabel(destination, 'it')} | Portugal Active`;
+  },
+  nl: ({ name, bedrooms, destination }) => {
+    const b = bedrooms ? `met ${bedrooms} slaapkamers ` : '';
+    return `${name} | Luxevilla ${b}in ${destLabel(destination, 'nl')} | Portugal Active`;
+  },
+  fi: ({ name, bedrooms, destination }) => {
+    const b = bedrooms ? `${bedrooms} makuuhuoneen ` : '';
+    return `${name} | ${b}Luksushuvila – ${destLabel(destination, 'fi')} | Portugal Active`;
+  },
+  sv: ({ name, bedrooms, destination }) => {
+    const b = bedrooms ? `med ${bedrooms} sovrum ` : '';
+    return `${name} | Lyxvilla ${b}i ${destLabel(destination, 'sv')} | Portugal Active`;
+  },
+};
+
+/** Property description template. Uses tagline if available, else generates
+ *  a descriptive sentence. Closes with a localized CTA. Trimmed to 155 chars. */
+const PROPERTY_DESCRIPTION: Record<string, (p: { tagline?: string | null; bedrooms?: number | null; maxGuests?: number | null; destination: string; name: string }) => string> = {
+  en: ({ tagline, bedrooms, maxGuests, destination, name }) => {
+    const base = tagline || `${bedrooms ? `${bedrooms}-bedroom ` : ''}luxury villa in ${destLabel(destination, 'en')}${maxGuests ? ` for up to ${maxGuests} guests` : ''}.`;
+    return `${base} Private chef, concierge, housekeeping included. Book ${name} direct with Portugal Active.`;
+  },
+  pt: ({ tagline, bedrooms, maxGuests, destination, name }) => {
+    const base = tagline || `Casa de luxo ${bedrooms ? `T${bedrooms} ` : ''}em ${destLabel(destination, 'pt')}${maxGuests ? ` para até ${maxGuests} hóspedes` : ''}.`;
+    return `${base} Chef privado, concierge e limpeza incluídos. Reserve ${name} direto com a Portugal Active.`;
+  },
+  es: ({ tagline, bedrooms, maxGuests, destination, name }) => {
+    const base = tagline || `Villa de lujo ${bedrooms ? `de ${bedrooms} dormitorios ` : ''}en ${destLabel(destination, 'es')}${maxGuests ? ` para hasta ${maxGuests} huéspedes` : ''}.`;
+    return `${base} Chef privado, conserjería y limpieza incluidos. Reserva ${name} directo con Portugal Active.`;
+  },
+  fr: ({ tagline, bedrooms, maxGuests, destination, name }) => {
+    const base = tagline || `Villa de luxe ${bedrooms ? `${bedrooms} chambres ` : ''}à ${destLabel(destination, 'fr')}${maxGuests ? ` jusqu'à ${maxGuests} personnes` : ''}.`;
+    return `${base} Chef privé, conciergerie et ménage inclus. Réservez ${name} en direct avec Portugal Active.`;
+  },
+  de: ({ tagline, bedrooms, maxGuests, destination, name }) => {
+    const base = tagline || `Luxusvilla ${bedrooms ? `mit ${bedrooms} Schlafzimmern ` : ''}in ${destLabel(destination, 'de')}${maxGuests ? ` für bis zu ${maxGuests} Gäste` : ''}.`;
+    return `${base} Privatkoch, Concierge und Reinigung inklusive. Buchen Sie ${name} direkt bei Portugal Active.`;
+  },
+  it: ({ tagline, bedrooms, maxGuests, destination, name }) => {
+    const base = tagline || `Villa di lusso ${bedrooms ? `con ${bedrooms} camere ` : ''}in ${destLabel(destination, 'it')}${maxGuests ? ` fino a ${maxGuests} ospiti` : ''}.`;
+    return `${base} Chef privato, concierge e pulizie inclusi. Prenota ${name} diretto con Portugal Active.`;
+  },
+  nl: ({ tagline, bedrooms, maxGuests, destination, name }) => {
+    const base = tagline || `Luxevilla ${bedrooms ? `met ${bedrooms} slaapkamers ` : ''}in ${destLabel(destination, 'nl')}${maxGuests ? ` tot ${maxGuests} gasten` : ''}.`;
+    return `${base} Privékok, conciërge en schoonmaak inbegrepen. Boek ${name} direct bij Portugal Active.`;
+  },
+  fi: ({ tagline, bedrooms, maxGuests, destination, name }) => {
+    const base = tagline || `Luksushuvila ${bedrooms ? `${bedrooms} makuuhuoneella ` : ''}kohteessa ${destLabel(destination, 'fi')}${maxGuests ? `, jopa ${maxGuests} hengelle` : ''}.`;
+    return `${base} Yksityiskokki, concierge ja siivous sisältyy. Varaa ${name} suoraan Portugal Activesta.`;
+  },
+  sv: ({ tagline, bedrooms, maxGuests, destination, name }) => {
+    const base = tagline || `Lyxvilla ${bedrooms ? `med ${bedrooms} sovrum ` : ''}i ${destLabel(destination, 'sv')}${maxGuests ? ` för upp till ${maxGuests} gäster` : ''}.`;
+    return `${base} Privat kock, concierge och städning ingår. Boka ${name} direkt med Portugal Active.`;
+  },
+};
+
+/** Experience title template. */
+const EXPERIENCE_TITLE: Record<string, (e: { name: string; destination?: string | null }) => string> = {
+  en: ({ name, destination }) => destination ? `${name} in ${destLabel(destination, 'en')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
+  pt: ({ name, destination }) => destination ? `${name} em ${destLabel(destination, 'pt')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
+  es: ({ name, destination }) => destination ? `${name} en ${destLabel(destination, 'es')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
+  fr: ({ name, destination }) => destination ? `${name} à ${destLabel(destination, 'fr')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
+  de: ({ name, destination }) => destination ? `${name} in ${destLabel(destination, 'de')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
+  it: ({ name, destination }) => destination ? `${name} a ${destLabel(destination, 'it')}, Portogallo | Portugal Active` : `${name} | Portugal Active`,
+  nl: ({ name, destination }) => destination ? `${name} in ${destLabel(destination, 'nl')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
+  fi: ({ name, destination }) => destination ? `${name} – ${destLabel(destination, 'fi')}, Portugali | Portugal Active` : `${name} | Portugal Active`,
+  sv: ({ name, destination }) => destination ? `${name} i ${destLabel(destination, 'sv')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
+};
+
+/** Experience description: preserve tagline if present; otherwise generate. */
+const EXPERIENCE_DESCRIPTION: Record<string, (e: { name: string; tagline?: string | null; duration?: string | null; destination?: string | null }) => string> = {
+  en: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` in ${destLabel(destination, 'en')}` : ''}. Guided by local experts. Book direct with Portugal Active.`,
+  pt: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` em ${destLabel(destination, 'pt')}` : ''}. Guiado por especialistas locais. Reserve direto com a Portugal Active.`,
+  es: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` en ${destLabel(destination, 'es')}` : ''}. Guiado por expertos locales. Reserva directa con Portugal Active.`,
+  fr: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` à ${destLabel(destination, 'fr')}` : ''}. Guidé par des experts locaux. Réservation directe avec Portugal Active.`,
+  de: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` in ${destLabel(destination, 'de')}` : ''}. Geführt von lokalen Experten. Direkt bei Portugal Active buchen.`,
+  it: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` a ${destLabel(destination, 'it')}` : ''}. Guidato da esperti locali. Prenota diretto con Portugal Active.`,
+  nl: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` in ${destLabel(destination, 'nl')}` : ''}. Begeleid door lokale experts. Direct boeken bij Portugal Active.`,
+  fi: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` kohteessa ${destLabel(destination, 'fi')}` : ''}. Paikallisten asiantuntijoiden opastama. Varaa suoraan Portugal Activesta.`,
+  sv: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` i ${destLabel(destination, 'sv')}` : ''}. Guidad av lokala experter. Boka direkt med Portugal Active.`,
+};
+
+/** Service title. */
+const SERVICE_TITLE: Record<string, (s: { name: string }) => string> = {
+  en: ({ name }) => `${name} | Luxury Villa Concierge Service | Portugal Active`,
+  pt: ({ name }) => `${name} | Serviço de Concierge para Casas de Luxo | Portugal Active`,
+  es: ({ name }) => `${name} | Servicio de Conserjería para Villas de Lujo | Portugal Active`,
+  fr: ({ name }) => `${name} | Conciergerie pour Villas de Luxe | Portugal Active`,
+  de: ({ name }) => `${name} | Concierge-Service für Luxusvillen | Portugal Active`,
+  it: ({ name }) => `${name} | Concierge per Ville di Lusso | Portugal Active`,
+  nl: ({ name }) => `${name} | Conciërgedienst voor Luxevilla's | Portugal Active`,
+  fi: ({ name }) => `${name} | Luksushuviloiden Concierge-palvelu | Portugal Active`,
+  sv: ({ name }) => `${name} | Concierge-tjänst för Lyxvillor | Portugal Active`,
+};
+
+const SERVICE_DESCRIPTION: Record<string, (s: { name: string; tagline?: string | null; duration?: string | null }) => string> = {
+  en: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Add to any Portugal Active villa stay. Book alongside your villa.`,
+  pt: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Acrescente a qualquer estadia Portugal Active. Reserve junto com a sua casa.`,
+  es: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Añade a cualquier estancia Portugal Active. Reserva junto con tu villa.`,
+  fr: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Ajoutez à tout séjour Portugal Active. Réservez avec votre villa.`,
+  de: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Zu jedem Portugal-Active-Aufenthalt hinzufügen. Zusammen mit Ihrer Villa buchen.`,
+  it: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Aggiungi a qualsiasi soggiorno Portugal Active. Prenota insieme alla tua villa.`,
+  nl: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Voeg toe aan elk Portugal Active-verblijf. Boek samen met je villa.`,
+  fi: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Lisää mihin tahansa Portugal Active -huvilalomaan. Varaa huvilasi kanssa.`,
+  sv: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Lägg till vid valfri Portugal Active-vistelse. Boka tillsammans med din villa.`,
+};
+
+/** Blog title suffix — blog content is written in English, so we keep the
+ *  post title as-written but swap the suffix/description framing. */
+const BLOG_SUFFIX: Record<string, string> = {
+  en: ' | Portugal Active Journal',
+  pt: ' | Diário Portugal Active',
+  es: ' | Diario Portugal Active',
+  fr: ' | Journal Portugal Active',
+  de: ' | Portugal Active Journal',
+  it: ' | Journal Portugal Active',
+  nl: ' | Portugal Active Journal',
+  fi: ' | Portugal Active -päiväkirja',
+  sv: ' | Portugal Active-journalen',
+};
+
 export function serveStatic(app: Express) {
   const distPath =
     process.env.NODE_ENV === "development"
@@ -594,16 +782,26 @@ export function serveStatic(app: Express) {
         return res.status(status).set("Content-Type", "text/html").send(html);
       }
 
-      // /homes/:slug
+      // /homes/:slug — localized title + description via per-lang templates
       const homesMatch = p.match(/^\/homes\/([^/]+)$/);
       if (homesMatch) {
         const { getPropertyBySlug } = await import("../db");
         const prop = await getPropertyBySlug(homesMatch[1]);
         if (prop) {
-          const beds = prop.bedrooms ? `${prop.bedrooms}-bedroom ` : '';
+          // For English, prefer hand-crafted DB seoTitle/seoDescription when set.
+          const useDbEn = lang === 'en' && (prop.seoTitle || prop.seoDescription);
+          const titleFn = PROPERTY_TITLE[lang] ?? PROPERTY_TITLE.en;
+          const descFn = PROPERTY_DESCRIPTION[lang] ?? PROPERTY_DESCRIPTION.en;
+          const title = useDbEn && prop.seoTitle
+            ? prop.seoTitle
+            : titleFn({ name: prop.name, bedrooms: prop.bedrooms, destination: prop.destination });
+          const rawDesc = useDbEn && prop.seoDescription
+            ? prop.seoDescription
+            : descFn({ tagline: prop.tagline, bedrooms: prop.bedrooms, maxGuests: prop.maxGuests, destination: prop.destination, name: prop.name });
+          const description = rawDesc.replace(/\s+/g, ' ').trim().slice(0, 155);
           html = injectMeta(html, {
-            title: prop.seoTitle || `${prop.name} | Portugal Active`,
-            description: prop.seoDescription || `${beds}luxury villa in Portugal. ${prop.tagline || ''}. Book direct with Portugal Active.`.replace(/\s+/g, ' ').trim().slice(0, 155),
+            title,
+            description,
             image: (prop.images as string[] | null)?.[0],
             url: `${BOT_BASE_URL}/${lang}/homes/${prop.slug}`,
             type: 'place',
@@ -612,15 +810,24 @@ export function serveStatic(app: Express) {
         return res.status(status).set("Content-Type", "text/html").send(html);
       }
 
-      // /blog/:slug
+      // /blog/:slug — localize suffix + fall back to auto-excerpt. Post title
+      // stays in its original language (blog content isn't translated).
       const blogMatch = p.match(/^\/blog\/([^/]+)$/);
       if (blogMatch) {
         const { getBlogPostBySlug } = await import("../db");
         const post = await getBlogPostBySlug(blogMatch[1]);
         if (post) {
+          const suffix = BLOG_SUFFIX[lang] ?? BLOG_SUFFIX.en;
+          // For English, prefer DB seoTitle verbatim; for other langs, swap the suffix.
+          const title = lang === 'en'
+            ? (post.seoTitle || `${post.title}${suffix}`)
+            : `${post.title}${suffix}`;
+          const description = (lang === 'en' && post.seoDescription)
+            ? post.seoDescription
+            : (post.excerpt ?? post.seoDescription ?? '').slice(0, 155);
           html = injectMeta(html, {
-            title: post.seoTitle || `${post.title} | Portugal Active`,
-            description: post.seoDescription || (post.excerpt ?? '').slice(0, 155),
+            title,
+            description,
             image: post.coverImage ?? undefined,
             url: `${BOT_BASE_URL}/${lang}/blog/${post.slug}`,
             type: 'article',
@@ -641,6 +848,42 @@ export function serveStatic(app: Express) {
             title: titleFn(name),
             description: desc,
             url: `${BOT_BASE_URL}/${lang}/destinations/${slug}`,
+          });
+        }
+        return res.status(status).set("Content-Type", "text/html").send(html);
+      }
+
+      // /services/:slug — localized concierge service meta
+      const serviceMatch = p.match(/^\/services\/([^/]+)$/);
+      if (serviceMatch) {
+        const { getServiceBySlug } = await import("../db");
+        const svc = await getServiceBySlug(serviceMatch[1]);
+        if (svc) {
+          const titleFn = SERVICE_TITLE[lang] ?? SERVICE_TITLE.en;
+          const descFn = SERVICE_DESCRIPTION[lang] ?? SERVICE_DESCRIPTION.en;
+          html = injectMeta(html, {
+            title: titleFn({ name: svc.name }),
+            description: descFn({ name: svc.name, tagline: svc.tagline, duration: svc.duration }).replace(/\s+/g, ' ').trim().slice(0, 155),
+            image: svc.image ?? undefined,
+            url: `${BOT_BASE_URL}/${lang}/services/${svc.slug}`,
+          });
+        }
+        return res.status(status).set("Content-Type", "text/html").send(html);
+      }
+
+      // /experiences/:slug and /activities/:slug (legacy alias) — same handler
+      const expMatch = p.match(/^\/(?:experiences|activities)\/([^/]+)$/);
+      if (expMatch) {
+        const { getExperienceBySlug } = await import("../db");
+        const exp = await getExperienceBySlug(expMatch[1]);
+        if (exp) {
+          const titleFn = EXPERIENCE_TITLE[lang] ?? EXPERIENCE_TITLE.en;
+          const descFn = EXPERIENCE_DESCRIPTION[lang] ?? EXPERIENCE_DESCRIPTION.en;
+          html = injectMeta(html, {
+            title: titleFn({ name: exp.name, destination: exp.destination }),
+            description: descFn({ name: exp.name, tagline: exp.tagline, duration: exp.duration, destination: exp.destination }).replace(/\s+/g, ' ').trim().slice(0, 155),
+            image: exp.image ?? undefined,
+            url: `${BOT_BASE_URL}/${lang}${p}`,
           });
         }
         return res.status(status).set("Content-Type", "text/html").send(html);
