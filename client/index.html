@@ -75,20 +75,35 @@
     <link rel="preconnect" href="https://d2xsxph8kpxj0f.cloudfront.net" crossorigin />
     <link rel="dns-prefetch" href="https://images.unsplash.com" />
 
-    <!-- Structured Data: Organization -->
+    <!-- Structured Data: Organization (global — single source of truth for the brand entity) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Organization",
+      "@id": "https://www.portugalactive.com/#organization",
       "name": "Portugal Active",
-      "alternateName": "Portugal Active — Private Hotels",
+      "alternateName": ["Portugal Active — Private Hotels", "Portugal Active Property Management"],
       "url": "https://www.portugalactive.com",
       "description": "50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool. Book direct for best rates.",
       "logo": "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp",
       "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-main-96HXfBCK752avi2daWhgmd.webp",
       "email": "info@portugalactive.com",
+      "telephone": "+351927161771",
       "foundingDate": "2017",
-      "foundingLocation": "Viana do Castelo, Portugal",
+      "foundingLocation": {
+        "@type": "Place",
+        "name": "Viana do Castelo, Portugal"
+      },
+      "founder": {
+        "@type": "Person",
+        "@id": "https://www.portugalactive.com/about#ricardo-viana",
+        "name": "Ricardo Viana",
+        "jobTitle": "CEO & Founder",
+        "worksFor": { "@id": "https://www.portugalactive.com/#organization" },
+        "sameAs": [
+          "https://www.linkedin.com/in/ricardo-viana-portugal-active"
+        ]
+      },
       "numberOfEmployees": { "@type": "QuantitativeValue", "minValue": 10, "maxValue": 50 },
       "contactPoint": [
         {
@@ -112,13 +127,28 @@
         "addressCountry": "PT"
       },
       "areaServed": [
+        { "@type": "Country", "name": "Portugal" },
         { "@type": "AdministrativeArea", "name": "Minho, Portugal" },
         { "@type": "AdministrativeArea", "name": "Porto, Portugal" },
         { "@type": "AdministrativeArea", "name": "Lisbon, Portugal" },
         { "@type": "AdministrativeArea", "name": "Alentejo, Portugal" },
         { "@type": "AdministrativeArea", "name": "Algarve, Portugal" }
       ],
-      "knowsAbout": ["luxury villa rentals", "private chef services", "concierge services", "adventure tourism Portugal", "horseback riding Portugal", "canyoning Portugal", "surf lessons Portugal"],
+      "knowsAbout": [
+        "Short-term rental management",
+        "Vacation home hospitality",
+        "Property management Portugal",
+        "Premium holiday rentals",
+        "Luxury villa rentals",
+        "Private chef services",
+        "Concierge services",
+        "Adventure tourism Portugal",
+        "Horseback riding Portugal",
+        "Canyoning Portugal",
+        "Surf lessons Portugal",
+        "Wine tourism Douro Valley",
+        "Sailing Viana do Castelo"
+      ],
       "slogan": "Private Hotels in Portugal",
       "sameAs": [
         "https://www.instagram.com/portugalactive",
@@ -137,10 +167,11 @@
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
+      "@id": "https://www.portugalactive.com/#website",
       "name": "Portugal Active",
       "url": "https://www.portugalactive.com",
       "inLanguage": ["en", "pt", "es", "fr", "de", "it", "nl", "fi", "sv"],
-      "publisher": { "@type": "Organization", "name": "Portugal Active" }
+      "publisher": { "@id": "https://www.portugalactive.com/#organization" }
     }
     </script>
   </head>
