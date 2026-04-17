@@ -429,6 +429,7 @@
         "Outdoor pool",
         "Oven",
         "Patio or balcony",
+        "Pets allowed",
         "Private entrance",
         "Refrigerator",
         "Rural",
@@ -531,7 +532,7 @@
     "priceFrom": 120,
     "pricePerNight": 120,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338a753fb0001424acf6/baa024a0-36d8-48-ccG5a",
@@ -849,13 +850,13 @@
     "priceFrom": 100,
     "pricePerNight": 100,
     "cleaningFee": 75,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1775734361/production/6957de4388cba42d9e7a905e/tw8pmpmp5m06gadxtb2o.jpg",
-      "https://assets.guesty.com/image/upload/v1775734361/production/6957de4388cba42d9e7a905e/gf6pdqjjo33juwnge6df.jpg",
-      "https://assets.guesty.com/image/upload/v1775734362/production/6957de4388cba42d9e7a905e/aopf4vtvqmjdtg3ownzz.jpg",
       "https://assets.guesty.com/image/upload/v1775734361/production/6957de4388cba42d9e7a905e/aq6qnflkjsdta2xiq07n.jpg",
+      "https://assets.guesty.com/image/upload/v1775734361/production/6957de4388cba42d9e7a905e/tw8pmpmp5m06gadxtb2o.jpg",
+      "https://assets.guesty.com/image/upload/v1775734362/production/6957de4388cba42d9e7a905e/aopf4vtvqmjdtg3ownzz.jpg",
+      "https://assets.guesty.com/image/upload/v1775734361/production/6957de4388cba42d9e7a905e/gf6pdqjjo33juwnge6df.jpg",
       "https://assets.guesty.com/image/upload/v1775734361/production/6957de4388cba42d9e7a905e/grbji7dh8ipp860nhnaj.jpg",
       "https://assets.guesty.com/image/upload/v1775734362/production/6957de4388cba42d9e7a905e/zno5lfzww1tyehuu5ph4.jpg",
       "https://assets.guesty.com/image/upload/v1775734365/production/6957de4388cba42d9e7a905e/wch4ckcryf1yebcwjobx.jpg",
@@ -926,6 +927,7 @@
         "Microwave",
         "Mountain view",
         "Oven",
+        "Pets allowed",
         "Refrigerator",
         "River",
         "Rural",
@@ -1011,7 +1013,7 @@
     "priceFrom": 80,
     "pricePerNight": 80,
     "cleaningFee": 20,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339404b96f00147f571a/88157426-7027-4f-rkSei",
@@ -1455,7 +1457,7 @@
     "priceFrom": 450,
     "pricePerNight": 450,
     "cleaningFee": 380,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1775731340/production/6957de4388cba42d9e7a905e/sb0shfijuld0jptnvq67.jpg",
@@ -1630,6 +1632,7 @@
         "Mountain view",
         "Oven",
         "Patio or balcony",
+        "Pets allowed",
         "Refrigerator",
         "River",
         "Rural",
@@ -1796,7 +1799,7 @@
     "priceFrom": 90,
     "pricePerNight": 90,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/9817fb5b-daa6-4d-GDq71",
@@ -2007,7 +2010,7 @@
     "priceFrom": 220,
     "pricePerNight": 220,
     "cleaningFee": 60,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533d2ec19770014fd1b52/370234d6-cbfc-46-MSEg6",
@@ -2314,7 +2317,7 @@
     "priceFrom": 99,
     "pricePerNight": 99,
     "cleaningFee": 80,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532f3753fb0001424a570/0595c448-568c-4c--OAHu",
@@ -2578,7 +2581,7 @@
     "priceFrom": 100,
     "pricePerNight": 100,
     "cleaningFee": 45,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965335df1c3a8001597c8e4/772eacb1-01c3-42-dPwx2",
@@ -2909,22 +2912,30 @@
         "Beach",
         "Beach View",
         "Bed linens",
-        "Body soap",
         "Cable TV",
         "Cleaning Disinfection",
         "Cleaning products",
         "Clothing storage",
         "Coffee maker",
+        "Cookware",
+        "Crib",
+        "Cycling",
         "Dining table",
         "Dishes and silverware",
         "Dishwasher",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Fire extinguisher",
         "First aid kit",
+        "Fishing",
         "Free parking on street",
         "Garden View",
         "Hair dryer",
         "Hangers",
         "Heating",
+        "High chair",
         "High touch surfaces disinfected",
+        "Horseback Riding",
         "Hot water",
         "Internet",
         "Iron",
@@ -2933,6 +2944,7 @@
         "Laptop friendly workspace",
         "Long term stays allowed",
         "Microwave",
+        "Museums",
         "Near Ocean",
         "Outdoor pool",
         "Outdoor seating (furniture)",
@@ -2952,6 +2964,8 @@
         "TV",
         "Toaster",
         "Towels provided",
+        "Water Sports",
+        "Water View",
         "Wine glasses",
         "Wireless Internet"
       ],
@@ -3449,7 +3463,7 @@
     "priceFrom": 100,
     "pricePerNight": 100,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338cecf7490014ed2c2d/d00a4ca5-b269-48-aaPRb",
@@ -3676,7 +3690,7 @@
     "priceFrom": 90,
     "pricePerNight": 90,
     "cleaningFee": 30,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533a0ecf7490014ed31d5/048fac32-507d-48-MPg47",
@@ -3880,7 +3894,7 @@
     "priceFrom": 70,
     "pricePerNight": 70,
     "cleaningFee": 20,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653394ecf7490014ed2ed9/a29a18d0-8f93-44-bP5cL",
@@ -4041,7 +4055,7 @@
     "priceFrom": 300,
     "pricePerNight": 300,
     "cleaningFee": 120,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965330729bb8c00141e8cd6/bd78f631-6467-4c-r3uZw",
@@ -4356,7 +4370,7 @@
     "priceFrom": 80,
     "pricePerNight": 80,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b7bf04fe00137440f8/7e47bf63-7c8d-43-9KXrg",
@@ -4665,7 +4679,7 @@
     "priceFrom": 180,
     "pricePerNight": 180,
     "cleaningFee": 50,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653388753fb0001424abad/984c0529-485c-42-VkcvR",
@@ -5068,23 +5082,23 @@
     "priceFrom": 80,
     "pricePerNight": 80,
     "cleaningFee": 65,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/zt7blle9e0qr1gk15nba.jpg",
-      "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/iw8gn8sbkqfeknqz8exy.jpg",
-      "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/ukm8e7kgbbjsmbtzaqpz.jpg",
       "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/txiztepdbgr9toutzdv8.jpg",
+      "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/zt7blle9e0qr1gk15nba.jpg",
+      "https://assets.guesty.com/image/upload/v1775734254/production/6957de4388cba42d9e7a905e/o2ysncr84gkszv3p3uma.jpg",
+      "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/iw8gn8sbkqfeknqz8exy.jpg",
       "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/gthp1xpko5hhwbykugpa.jpg",
       "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/ftncabvv4urwjkrip4cq.jpg",
       "https://assets.guesty.com/image/upload/v1775734251/production/6957de4388cba42d9e7a905e/l92vluonfij2ci9t7aai.jpg",
       "https://assets.guesty.com/image/upload/v1775734251/production/6957de4388cba42d9e7a905e/oic8zkuh0lwonksqmjtr.jpg",
+      "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/ukm8e7kgbbjsmbtzaqpz.jpg",
       "https://assets.guesty.com/image/upload/v1775734251/production/6957de4388cba42d9e7a905e/nwnjk3lcbafs7sis5cgh.jpg",
       "https://assets.guesty.com/image/upload/v1775734251/production/6957de4388cba42d9e7a905e/yhytyejvaoxcdy15hhdb.jpg",
       "https://assets.guesty.com/image/upload/v1775734252/production/6957de4388cba42d9e7a905e/kq4efwdznjej4phdvt95.jpg",
       "https://assets.guesty.com/image/upload/v1775734252/production/6957de4388cba42d9e7a905e/luqdcrwvptdrcffhtbwi.jpg",
       "https://assets.guesty.com/image/upload/v1775734254/production/6957de4388cba42d9e7a905e/kgh5oplbrfubrl1onim4.jpg",
-      "https://assets.guesty.com/image/upload/v1775734254/production/6957de4388cba42d9e7a905e/o2ysncr84gkszv3p3uma.jpg",
       "https://assets.guesty.com/image/upload/v1775734254/production/6957de4388cba42d9e7a905e/q66juopbf9hqjwkaxqyl.jpg",
       "https://assets.guesty.com/image/upload/v1775734255/production/6957de4388cba42d9e7a905e/kgh9sdpexybl9jybpyyt.jpg",
       "https://assets.guesty.com/image/upload/v1774457804/production/6957de4388cba42d9e7a905e/lplxjcreuu6rmktm5xw0.jpg"
@@ -5131,6 +5145,7 @@
         "Long term stays allowed",
         "Mini fridge",
         "Mountain view",
+        "Pets allowed",
         "River",
         "Rural",
         "Shampoo",
@@ -5340,7 +5355,6 @@
         "Outdoor seating (furniture)",
         "Oven",
         "Patio or balcony",
-        "Pets allowed",
         "Portable fans",
         "Private entrance",
         "Refrigerator",
@@ -5473,7 +5487,7 @@
     "maxGuests": 12,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 175,
+    "cleaningFee": 300,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -5828,7 +5842,7 @@
     "priceFrom": 170,
     "pricePerNight": 170,
     "cleaningFee": 60,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533616cff760015e28802/6b61a2d5-20f9-40-I_3vL",
@@ -6069,7 +6083,7 @@
     "priceFrom": 700,
     "pricePerNight": 700,
     "cleaningFee": 250,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533d34b583900135cfd96/6bbaca4b-220f-45-KH2kt",
@@ -6176,6 +6190,7 @@
         "Outdoor seating (furniture)",
         "Oven",
         "Patio or balcony",
+        "Pets allowed",
         "Piano",
         "Private entrance",
         "Private pool",
@@ -6368,7 +6383,7 @@
     "priceFrom": 200,
     "pricePerNight": 200,
     "cleaningFee": 200,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1773414298/production/6957de4388cba42d9e7a905e/onvzknrqrg8ab43sf8d7.jpg",
@@ -6464,6 +6479,7 @@
         "Oven",
         "Path to entrance lit at night",
         "Patio or balcony",
+        "Pets allowed",
         "Private entrance",
         "Private pool",
         "Refrigerator",
@@ -6571,7 +6587,7 @@
     "maxGuests": 16,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 229,
+    "cleaningFee": 350,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -6999,7 +7015,7 @@
     "priceFrom": 180,
     "pricePerNight": 180,
     "cleaningFee": 80,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6970af61638a8a0015eaa850/046eb65d-ffba-43-OtBBM",
@@ -7250,7 +7266,7 @@
     "priceFrom": 100,
     "pricePerNight": 100,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533794fe6a100145fe4bf/7ca9f510-0e38-42-X4Tk4",
@@ -7509,7 +7525,7 @@
     "priceFrom": 90,
     "pricePerNight": 90,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532fa6d209c001510d5ee/cbbdfd1c-2201-41-pmWoy",
@@ -8082,7 +8098,7 @@
     "priceFrom": 110,
     "pricePerNight": 110,
     "cleaningFee": 80,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965333104b96f00147f5428/aaaff8f9-c04c-43-rKT5p",
@@ -8384,7 +8400,7 @@
     "priceFrom": 90,
     "pricePerNight": 90,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/d5322936-b56e-43-3_jOu",
@@ -8665,7 +8681,7 @@
     "priceFrom": 90,
     "pricePerNight": 90,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533266dec35001492fdbb/29f4083f-bc29-4f-HwwhR",
@@ -8832,7 +8848,7 @@
     "priceFrom": 350,
     "pricePerNight": 350,
     "cleaningFee": 200,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965332327950e001416f0b2/4fb3d58c-11d7-46-rillQ",
@@ -9107,7 +9123,7 @@
     "propertyType": "House",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": null,
+    "areaSquareFeet": 3230,
     "reviews": [
       {
         "rating": 5,
@@ -9543,225 +9559,6 @@
     ],
     "averageRating": 5,
     "reviewCount": 4
-  },
-  {
-    "id": "guesty-6965334e4b9b64001401b817",
-    "slug": "portugal-active-encosta-house-01b817",
-    "name": "Portugal Active Encosta House",
-    "tagline": "If you are looking for a peaceful place that is also close to the heart of Viana do Castelo and offers a beautiful mountain view, you need to experien…",
-    "tier": "select",
-    "destination": "minho",
-    "locality": "Viana do Castelo",
-    "bedrooms": 2,
-    "bathrooms": 2,
-    "maxGuests": 5,
-    "priceFrom": 90,
-    "pricePerNight": 90,
-    "cleaningFee": 55,
-    "minNights": 1,
-    "currency": "EUR",
-    "images": [
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/7794c0ba-3855-43-dLMJ4",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/431322d5-4e95-44-KVJMe",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/d489d8be-4863-4b-aJzN5",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/7f71b026-3c1d-40-bnPcp",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/eda8fd96-6fc7-40-WkrAs",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/7dbb43b4-5f88-45-0uC7l",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/17cb2599-2da8-42-Md3yG",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/a4a264fe-b29d-44-p8S-E",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/51466bda-8832-41-6ksEM",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/733326bc-757b-46-4eetA",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/d8ed5c33-3212-4b-M-_Pk",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/dfc9fa75-6101-48-XV74-",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/b579525c-332c-49-CV2eu",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/406ed8e7-1944-42-b_Gkq",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/b75698e9-d9e4-44-Nq9ud",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/5239e908-6512-4e-tAXQr",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/db88afa0-749a-4e-GbBcX",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/627d0cf1-42b0-46-8a1OG",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/06c7d5ef-bfb3-45-euFzA",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/264457e2-a28a-42-XVYiq",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/641cd543-df7e-40-vIKi9",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/439c732f-d847-48-CCHfm",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/98b65943-91c9-45-bW5SS",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/47b7b781-9556-43-QhN_Y",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/89dca442-7626-46-PJlBv",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/07faf753-8d77-43-qQNHu",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/d6a18227-4875-45-Mcwz9",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/fe0ce1d1-3b44-42-zJ6x6",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/ac222882-02c2-42-tak-k",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/dec2c6af-1e88-47-UvZ0F",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/3db343e6-d20c-4a-pEYUw",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/aa74d815-cb59-4f-ncjsz",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/cc58c4d2-879b-4b-bNt38",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/275905fa-0aff-4f-qxnM9",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/2f944b98-136a-4b--ZEIo",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/39710ea9-f142-48-677oC",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/a2d39cc1-01e3-4a-Xc6VC",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/f16d061d-720b-43-SU8bm"
-    ],
-    "description": "If you are looking for a peaceful place that is also close to the heart of Viana do Castelo and offers a beautiful mountain view, you need to experience the Portugal Active Encosta House. This charming retreat is perfect for families or groups of friends seeking comfort and serenity. Encosta House features two spacious bedrooms, including a suite, comfortably accommodating up to 5 people.\n\nImportant: In response to Covid-19, this property has extended cleaning & disinfection measures & protocols to guarantee the safety of our guests. If you are looking for a peaceful place that is also close to the heart of Viana do Castelo and offers a beautiful mountain view, you need to experience the Portugal Active Encosta House. This charming retreat is perfect for families or groups of friends seeking comfort and serenity. Encosta House features two spacious bedrooms, including a suite, comfortably accommodating up to 5 people. Bedroom 1 is equipped with a single bed and a double bed, while Bedroom 2 offers an additional double bed. The living room has a sofa bed, providing extra sleeping space. The house has two full bathrooms, one with a bathtub and the other with a shower. The fully equipped kitchen and washing machine ensure convenience during your stay. The dining and living area is perfect for relaxing after a day of exploration. The highlight of Encosta House is its spacious terrace, furnished with outdoor furniture, ideal for al fresco dining and socializing. The location on the mountain slope offers a mild temperature year-round and a private, tranquil environment. The large yard with a veranda is perfect for relaxing and enjoying the scenery. Located in a quiet rural area, Encosta House is just minutes away from bars, famous restaurants, and public transportation, offering a perfect balance between tranquility and convenience. Its proximity to the center of Viana do Castelo provides easy access to tourist attractions such as the Santuário do Sagrado Coração de Jesus, the Costume Museum, and the Sé Cathedral. Additionally, the house is close to Cabedelo Beach, known for its beautiful landscapes and water sports opportunities. Enjoy an unforgettable stay in Viana do Castelo, surrounded by comfort, nature, and rich local culture at Portugal Active Encosta House.\n\n/\n\nGuests have exclusive access to the entire property, including the garden and all indoor amenities. The Portugal Active concierge service is available 24/7 to cater to any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\n/\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
-    "amenities": {
-      "property": [
-        "BBQ grill",
-        "Baking sheet",
-        "Bathtub",
-        "Bed linens",
-        "City View",
-        "Cleaning Disinfection",
-        "Cleaning products",
-        "Clothing storage",
-        "Coffee",
-        "Coffee maker",
-        "Cookware",
-        "Crib",
-        "Cycling",
-        "Desk",
-        "Dining table",
-        "Dishes and silverware",
-        "Dishwasher",
-        "Enhanced cleaning practices",
-        "Essentials",
-        "Extra pillows and blankets",
-        "Fire extinguisher",
-        "First aid kit",
-        "Fishing",
-        "Free parking on street",
-        "Freezer",
-        "Garden or backyard",
-        "Hair dryer",
-        "Hangers",
-        "Heating",
-        "High chair",
-        "High touch surfaces disinfected",
-        "Horseback Riding",
-        "Hot water",
-        "Internet",
-        "Iron",
-        "Kettle",
-        "Kitchen",
-        "Laptop friendly workspace",
-        "Long term stays allowed",
-        "Microwave",
-        "Mountain view",
-        "Oven",
-        "Patio or balcony",
-        "Pets allowed",
-        "Private entrance",
-        "Refrigerator",
-        "Room-darkening shades",
-        "Shampoo",
-        "Shopping",
-        "Shower gel",
-        "Stove",
-        "Suitable for children (2-12 years)",
-        "Suitable for infants (under 2 years)",
-        "TV",
-        "Toaster",
-        "Towels provided",
-        "Town",
-        "Washer",
-        "Water Parks",
-        "Water Sports",
-        "Window guards",
-        "Wine glasses",
-        "Wireless Internet"
-      ],
-      "bedrooms": [],
-      "kitchen": [],
-      "services": []
-    },
-    "stayIncludes": [],
-    "style": "",
-    "tags": [],
-    "occasions": [],
-    "bookingUrl": "",
-    "guestyId": "6965334e4b9b64001401b817",
-    "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Portugal Active Encosta House",
-    "sortOrder": 0,
-    "isActive": true,
-    "seoTitle": "Portugal Active Encosta House — Portugal Active",
-    "seoDescription": "If you are looking for a peaceful place that is also close to the heart of Viana do Castelo and offers a beautiful mountain view, you need to experience the Por",
-    "address": {
-      "full": "",
-      "street": "Rua das Lavadeiras 51",
-      "city": "Viana do Castelo",
-      "state": "Viana do Castelo",
-      "zipcode": "",
-      "country": "Portugal",
-      "lat": 41.7095473,
-      "lng": -8.8246257
-    },
-    "rooms": [
-      {
-        "name": "Bedroom 1",
-        "beds": [
-          {
-            "type": "DOUBLE_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 2",
-        "beds": [
-          {
-            "type": "SOFA_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 3",
-        "beds": [
-          {
-            "type": "DOUBLE_BED",
-            "quantity": 1
-          }
-        ]
-      }
-    ],
-    "propertyType": "House",
-    "checkInTime": "16:00",
-    "checkOutTime": "11:00",
-    "areaSquareFeet": 1615,
-    "reviews": [
-      {
-        "rating": 4,
-        "text": "Local calmo, muito limpo e corresponde a todas as necessidades",
-        "guestName": "Guest",
-        "date": "2026-04-04T13:57:26.994Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 4
-          },
-          {
-            "name": "location",
-            "score": 4
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      }
-    ],
-    "averageRating": 4,
-    "reviewCount": 1
   },
   {
     "id": "guesty-6965334abf04fe0013742da8",
@@ -10342,7 +10139,7 @@
     "priceFrom": 280,
     "pricePerNight": 280,
     "cleaningFee": 150,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/acdc50ee-4f5f-41-Ho_L1",
@@ -10627,7 +10424,7 @@
     "priceFrom": 350,
     "pricePerNight": 350,
     "cleaningFee": 175,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533284b583900135ceb91/d5710825-2cbb-43-l4ehJ",
@@ -10988,7 +10785,7 @@
     "priceFrom": 550,
     "pricePerNight": 550,
     "cleaningFee": 230,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1775836140/production/6957de4388cba42d9e7a905e/wiadcvnbvuttjyt4elve.jpg",
@@ -11288,7 +11085,7 @@
       }
     ],
     "propertyType": "Villa",
-    "checkInTime": "17:00",
+    "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 7428,
     "reviews": [
@@ -12045,7 +11842,7 @@
     "priceFrom": 160,
     "pricePerNight": 160,
     "cleaningFee": 75,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533814b9b64001401c7b8/2506f0d9-e229-44-GQdvu",
@@ -12437,7 +12234,7 @@
     "priceFrom": 160,
     "pricePerNight": 160,
     "cleaningFee": 60,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533762def930014e917bf/952df398-6f1c-47-tGPxG",
@@ -12736,7 +12533,7 @@
     "priceFrom": 160,
     "pricePerNight": 160,
     "cleaningFee": 70,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533752def930014e9167c/b3cf568b-6c0c-4d-ZmpQD",
@@ -12977,7 +12774,7 @@
     "priceFrom": 450,
     "pricePerNight": 450,
     "cleaningFee": 125,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339bbf04fe0013743cd8/b69a5207-1a16-4c-6AyXr",
@@ -13377,7 +13174,7 @@
     "priceFrom": 140,
     "pricePerNight": 140,
     "cleaningFee": 60,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/dc87d9a4-6781-47-KpYAv",
@@ -13451,6 +13248,7 @@
         "Outdoor seating (furniture)",
         "Oven",
         "Patio or balcony",
+        "Pets allowed",
         "Portable fans",
         "Private entrance",
         "Refrigerator",
@@ -13577,7 +13375,7 @@
     "priceFrom": 250,
     "pricePerNight": 250,
     "cleaningFee": 120,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533aaf142270014026d70/771f6a9f-0d01-48-bKXwc",
@@ -14124,7 +13922,7 @@
     "priceFrom": 280,
     "pricePerNight": 280,
     "cleaningFee": 125,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533abf142270014026fa9/e39457bd-3536-42-Xw1vV",
@@ -14531,7 +14329,7 @@
     "priceFrom": 280,
     "pricePerNight": 280,
     "cleaningFee": 120,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653381bf04fe00137437cd/a6ffb153-43e9-4e-txDut",
@@ -15374,7 +15172,7 @@
     "priceFrom": 500,
     "pricePerNight": 500,
     "cleaningFee": 180,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533d64b583900135d00cc/8318cedf-e8ca-49-4fplK",
@@ -15872,7 +15670,7 @@
     "priceFrom": 180,
     "pricePerNight": 180,
     "cleaningFee": 70,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533616cff760015e28965/c7e29b6b-d3fe-4f-n7r_B",
@@ -16201,12 +15999,13 @@
     "priceFrom": 100,
     "pricePerNight": 100,
     "cleaningFee": 75,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1775750070/production/6957de4388cba42d9e7a905e/d0cflocklntgbaeegb7m.jpg",
       "https://assets.guesty.com/image/upload/v1775750077/production/6957de4388cba42d9e7a905e/ggr07rjh8lmswfsn4g8b.jpg",
+      "https://assets.guesty.com/image/upload/v1775750070/production/6957de4388cba42d9e7a905e/d0cflocklntgbaeegb7m.jpg",
       "https://assets.guesty.com/image/upload/v1775750078/production/6957de4388cba42d9e7a905e/vkwcwetkdtrj63q5yfum.jpg",
+      "https://assets.guesty.com/image/upload/v1775750070/production/6957de4388cba42d9e7a905e/vfy3qmjqhsxvzc1z9tlz.jpg",
       "https://assets.guesty.com/image/upload/v1775750077/production/6957de4388cba42d9e7a905e/zykzwhdw9ycaab5bejf3.jpg",
       "https://assets.guesty.com/image/upload/v1775750074/production/6957de4388cba42d9e7a905e/bwjmjixo6idkgdofz6o0.jpg",
       "https://assets.guesty.com/image/upload/v1775750070/production/6957de4388cba42d9e7a905e/z9iw21csy7rcfva02lck.jpg",
@@ -16218,7 +16017,6 @@
       "https://assets.guesty.com/image/upload/v1775750074/production/6957de4388cba42d9e7a905e/i3vpj4fzvwwrytih6mwt.jpg",
       "https://assets.guesty.com/image/upload/v1775750075/production/6957de4388cba42d9e7a905e/idj3k82tlmbourgxoiw7.jpg",
       "https://assets.guesty.com/image/upload/v1775750070/production/6957de4388cba42d9e7a905e/bqtgi0ubtnndrpltprpx.jpg",
-      "https://assets.guesty.com/image/upload/v1775750070/production/6957de4388cba42d9e7a905e/vfy3qmjqhsxvzc1z9tlz.jpg",
       "https://assets.guesty.com/image/upload/v1775750070/production/6957de4388cba42d9e7a905e/zyt00y8qupub5okcqlni.jpg",
       "https://assets.guesty.com/image/upload/v1775750078/production/6957de4388cba42d9e7a905e/ikwryxis5rsnkb0qsvws.jpg",
       "https://assets.guesty.com/image/upload/v1774457804/production/6957de4388cba42d9e7a905e/lplxjcreuu6rmktm5xw0.jpg"
@@ -16272,6 +16070,7 @@
         "Microwave",
         "Mountain view",
         "Oven",
+        "Pets allowed",
         "Refrigerator",
         "River",
         "Rural",
@@ -16707,7 +16506,7 @@
     "priceFrom": 200,
     "pricePerNight": 200,
     "cleaningFee": 80,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1775721721/production/6957de4388cba42d9e7a905e/sb47gqjpx3szxbkzkq6r.jpg",
@@ -17014,7 +16813,7 @@
     "priceFrom": 350,
     "pricePerNight": 350,
     "cleaningFee": 230,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1775734077/production/6957de4388cba42d9e7a905e/rrhjmdgvxrdug0pv5f1b.jpg",
@@ -17123,6 +16922,7 @@
         "Mountain view",
         "Oven",
         "Patio or balcony",
+        "Pets allowed",
         "Refrigerator",
         "River",
         "Rural",
@@ -17226,7 +17026,7 @@
     "priceFrom": 80,
     "pricePerNight": 80,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533af4fe6a100145fecb6/126d18ed-ccec-41-oUOmL",
@@ -17519,9 +17319,9 @@
         "Fishing",
         "Free parking on street",
         "Freezer",
-        "Garage",
         "Hair dryer",
         "Hangers",
+        "Heating",
         "High chair",
         "High touch surfaces disinfected",
         "Horseback Riding",
@@ -17537,6 +17337,7 @@
         "Oven",
         "Patio or balcony",
         "Pets allowed",
+        "Portable fans",
         "Refrigerator",
         "River",
         "Shampoo",
@@ -17605,6 +17406,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Adoramos ficar neste espaço. Muito bonito, bem situado - a 5min a pé da praia, zona calma e bonita. Cozinha com tudo o que é necessário. O único senão é a distância dos supermercados. De resto, foi top!",
+        "guestName": "Guest",
+        "date": "2026-04-17T11:06:21.233Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Appartement très agréable et très propre joliment décoré dans une résidence récente où on peut se garer facilement. Je recommande sans la moindre hésitation !!!!",
         "guestName": "Guest",
         "date": "2026-03-31T17:31:13.215Z",
@@ -17669,6 +17502,6 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   }
 ]
