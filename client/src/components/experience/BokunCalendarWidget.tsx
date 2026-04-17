@@ -1,87 +1,114 @@
 /* ==========================================================================
-   BOKUN CALENDAR WIDGET
-   Uses the official Bókun WidgetsLoader script to embed the booking calendar.
-   The loader handles iframe creation, auto-resizing, and cart/checkout
-   navigation — fixing the "Go to cart" issue that raw iframes have.
+   BOKUN CALENDAR WIDGET — inline booking calendar via BokunWidgetsLoader
+   Uses the official Bókun embed method (<div class="bokunWidget">) instead
+   of a raw iframe. The BokunWidgetsLoader.js (loaded in index.html) picks
+   up the div, creates a managed iframe, and handles the entire
+   calendar → checkout flow in a Bókun-managed modal overlay — no separate
+   shopping cart page, no lost context.
    ========================================================================== */
 
-import { useEffect, useRef } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 
 interface BokunCalendarWidgetProps {
   bokunActivityId: number;
-  channelUuid: string;
+  experienceName?: string;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-const LOADER_URL = 'https://widgets.bokun.io/assets/javascripts/apps/build/BokunWidgetsLoader.js';
+const BOKUN_CHANNEL_UUID = import.meta.env.VITE_BOKUN_CHANNEL_UUID as string | undefined;
 
-let loaderPromise: Promise<void> | null = null;
-
-function ensureLoaderScript(channelUuid: string): Promise<void> {
-  if (loaderPromise) return loaderPromise;
-
-  loaderPromise = new Promise((resolve, reject) => {
-    // Check if already loaded
-    const existing = document.querySelector(`script[src*="BokunWidgetsLoader"]`);
-    if (existing) {
-      resolve();
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = `${LOADER_URL}?bookingChannelUUID=${channelUuid}`;
-    script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error('Failed to load Bókun widget script'));
-    document.head.appendChild(script);
-  });
-
-  return loaderPromise;
-}
-
+/**
+ * Renders a Bókun experience-calendar widget using the official
+ * BokunWidgetsLoader embed method. The loader script (in index.html)
+ * watches for `.bokunWidget` elements and replaces them with managed
+ * iframes that handle checkout inline.
+ *
+ * Falls back to a direct iframe if the loader hasn't initialized
+ * within 3 seconds (e.g. ad-blocker, script-load failure).
+ */
 export default function BokunCalendarWidget({
   bokunActivityId,
-  channelUuid,
+  experienceName = 'Experience',
+  className,
+  style,
 }: BokunCalendarWidgetProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const fallbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const widgetUrl = BOKUN_CHANNEL_UUID
+    ? `https://widgets.bokun.io/online-sales/${BOKUN_CHANNEL_UUID}/experience-calendar/${bokunActivityId}`
+    : '';
+
+  /* ------------------------------------------------------------------ */
+  /* After mount, check if the loader processed this div. If not, try   */
+  /* to re-trigger it. If it still hasn't after 3 s, drop in a direct   */
+  /* iframe as a graceful fallback.                                      */
+  /* ------------------------------------------------------------------ */
+  const isProcessed = useCallback(
+    () => containerRef.current?.querySelector('iframe') !== null,
+    [],
+  );
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    const el = containerRef.current;
+    if (!el || !widgetUrl) return;
 
-    // Create the widget div that the Bókun loader will pick up
-    const widgetDiv = document.createElement('div');
-    widgetDiv.className = 'bokunWidget';
-    widgetDiv.setAttribute(
-      'data-src',
-      `https://widgets.bokun.io/online-sales/${channelUuid}/experience-calendar/${bokunActivityId}`
-    );
-    container.innerHTML = '';
-    container.appendChild(widgetDiv);
-
-    // Load the script; once loaded, Bókun auto-initialises any .bokunWidget divs
-    ensureLoaderScript(channelUuid).then(() => {
-      // The loader scans the DOM on load. If the widget was added after
-      // the script loaded, we need to re-trigger initialisation.
-      if ((window as any).BokunWidgetsLoader) {
-        try {
-          (window as any).BokunWidgetsLoader.init();
-        } catch {
-          // Fallback: re-append script to force re-scan
-        }
+    /* The BokunWidgetsLoader uses a MutationObserver, so dynamically
+       added .bokunWidget divs are usually picked up automatically.
+       But in some React render cycles the observer can miss them.
+       Give it a nudge after a short delay. */
+    const nudge = setTimeout(() => {
+      if (isProcessed()) return;
+      // The loader exposes itself on window — call init if available
+      const loader = (window as any).BokunWidgetsLoader;
+      if (loader) {
+        if (typeof loader.initialize === 'function') loader.initialize();
+        else if (typeof loader.init === 'function') loader.init();
+        else if (typeof loader.start === 'function') loader.start();
       }
-    });
+    }, 800);
+
+    /* Fallback: if the loader never processes the div (e.g. blocked by
+       privacy extension), inject a plain iframe so the booking still
+       works. The user will get the standard Bókun page-based checkout
+       instead of the modal overlay — still functional, just not ideal. */
+    fallbackTimer.current = setTimeout(() => {
+      if (isProcessed() || !el) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = widgetUrl;
+      iframe.title = `Book ${experienceName}`;
+      iframe.className = 'w-full border-0';
+      iframe.style.minHeight = '480px';
+      iframe.style.height = '520px';
+      iframe.setAttribute('allow', 'payment *; clipboard-write');
+      iframe.setAttribute(
+        'sandbox',
+        'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation',
+      );
+      el.innerHTML = '';
+      el.appendChild(iframe);
+    }, 3000);
 
     return () => {
-      if (container) container.innerHTML = '';
+      clearTimeout(nudge);
+      if (fallbackTimer.current) clearTimeout(fallbackTimer.current);
     };
-  }, [bokunActivityId, channelUuid]);
+  }, [bokunActivityId, widgetUrl, experienceName, isProcessed]);
+
+  if (!BOKUN_CHANNEL_UUID) return null;
 
   return (
     <div
       ref={containerRef}
-      style={{ minHeight: '480px' }}
-      className="bg-white"
-    />
+      className={`bokunWidget ${className || ''}`}
+      data-src={widgetUrl}
+      style={style}
+    >
+      {/* Placeholder while Bókun loads */}
+      <div className="flex items-center justify-center py-12 text-[12px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
+        Loading booking calendar&hellip;
+      </div>
+    </div>
   );
 }

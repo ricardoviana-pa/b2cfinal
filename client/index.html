@@ -65,6 +65,16 @@
     <link rel="preconnect" href="https://d2xsxph8kpxj0f.cloudfront.net" crossorigin />
     <link rel="dns-prefetch" href="https://images.unsplash.com" />
 
+    <!-- Bókun Widgets Loader — handles calendar→checkout flow inline -->
+    <link rel="preconnect" href="https://widgets.bokun.io" crossorigin />
+    <script type="text/javascript" src="https://widgets.bokun.io/assets/javascripts/apps/build/BokunWidgetsLoader.js?bookingChannelUUID=a283fa3e-a892-41cd-a775-036ac351a454" async></script>
+    <style>
+      /* Hide the floating Bókun shopping cart icon — checkout flows inline via modal */
+      #bokun-widgets-cart,
+      .bokun-widgets-cart,
+      [id^="bokun-widgets-cart"] { display: none !important; visibility: hidden !important; pointer-events: none !important; }
+    </style>
+
     <!-- Structured Data: Organization -->
     <script type="application/ld+json">
     {

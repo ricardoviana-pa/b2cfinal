@@ -1,11 +1,12 @@
 /* ==========================================================================
    EXPERIENCE MOBILE BOOKING BAR — sticky bottom
-   Tap → opens full-screen Bókun widget (no redundant date/pax sheet).
+   Tap → opens full-screen Bókun calendar widget (checkout via Bókun modal).
    Fallback: WhatsApp when Bókun is not configured.
    ========================================================================== */
 
 import { useEffect, useState, useMemo } from 'react';
 import { X, MessageCircle } from 'lucide-react';
+import BokunCalendarWidget from './BokunCalendarWidget';
 
 interface ExperienceMobileBookingBarProps {
   experienceName: string;
@@ -28,10 +29,6 @@ export default function ExperienceMobileBookingBar({
   const [visible, setVisible] = useState(false);
   const [widgetOpen, setWidgetOpen] = useState(false);
   const hasBokun = !!bokunActivityId && !!BOKUN_CHANNEL_UUID;
-
-  const widgetSrc = hasBokun
-    ? `https://widgets.bokun.io/online-sales/${BOKUN_CHANNEL_UUID}/experience-calendar/${bokunActivityId}`
-    : '';
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 100);
@@ -121,14 +118,12 @@ export default function ExperienceMobileBookingBar({
             </button>
           </div>
 
-          {/* Widget iframe — fills remaining space */}
-          <div className="flex-1 bg-white">
-            <iframe
-              key={`mobile-${bokunActivityId}-${BOKUN_CHANNEL_UUID}`}
-              src={widgetSrc}
-              title={`Book ${experienceName}`}
-              className="w-full h-full border-0"
-              allow="payment *; clipboard-write"
+          {/* Bókun calendar widget — fills remaining space, checkout via modal */}
+          <div className="flex-1 bg-white overflow-y-auto">
+            <BokunCalendarWidget
+              bokunActivityId={bokunActivityId!}
+              experienceName={experienceName}
+              style={{ minHeight: '100%' }}
             />
           </div>
 

@@ -1,11 +1,11 @@
 /* ==========================================================================
    EXPERIENCE BOOKING CARD — sticky right rail
-   Embeds the Bókun booking calendar via the official WidgetsLoader script.
+   Embeds the Bókun booking widget (calendar + participants + checkout) inline
+   using the official BokunWidgetsLoader embed method for seamless checkout.
    Fallback: WhatsApp prefill when Bókun not configured or no activityId.
    ========================================================================== */
 
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Check, MessageCircle } from 'lucide-react';
 import BokunCalendarWidget from './BokunCalendarWidget';
 
@@ -37,7 +37,6 @@ export default function ExperienceBookingCard({
 }: ExperienceBookingCardProps) {
   const hasBokun = !!bokunActivityId && !!BOKUN_CHANNEL_UUID;
 
-  const { t } = useTranslation();
   const finalMessage = useMemo(() => {
     let msg = whatsappMessage || `Hi Portugal Active, I'd like to book the ${experienceName} experience.`;
     msg += `\nParticipants: 2 adults`;
@@ -65,12 +64,15 @@ export default function ExperienceBookingCard({
         )}
       </div>
 
-      {/* Bókun calendar widget (official loader) */}
+      {/* Bókun inline calendar widget (checkout opens in Bókun modal overlay) */}
       {hasBokun ? (
-        <BokunCalendarWidget
-          bokunActivityId={bokunActivityId}
-          channelUuid={BOKUN_CHANNEL_UUID!}
-        />
+        <div className="bg-white">
+          <BokunCalendarWidget
+            bokunActivityId={bokunActivityId!}
+            experienceName={experienceName}
+            style={{ minHeight: '480px' }}
+          />
+        </div>
       ) : (
         <div className="px-7 py-6">
           {/* WhatsApp CTA fallback */}
@@ -106,12 +108,12 @@ export default function ExperienceBookingCard({
           {reserveNowPayLater && (
             <div className="flex items-center gap-2.5 text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>
               <Check className="w-3.5 h-3.5 text-[#6B8E4E] shrink-0" />
-              <span>{t('experienceBooking.reserveNow')}</span>
+              <span>Reserve now, pay later</span>
             </div>
           )}
           <div className="flex items-center gap-2.5 text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>
             <Check className="w-3.5 h-3.5 text-[#6B8E4E] shrink-0" />
-            <span>{t('experienceBooking.instantConfirmation')}</span>
+            <span>Instant confirmation</span>
           </div>
         </div>
         {hasBokun && (
