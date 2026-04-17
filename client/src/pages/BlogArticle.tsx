@@ -10,6 +10,7 @@ import { ArrowLeft, Clock, Calendar, Share2, ArrowRight, Play, ExternalLink } fr
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { StructuredData, buildArticleSchema } from '@/components/seo/StructuredData';
+import AnswerCapsule from '@/components/seo/AnswerCapsule';
 import type { BlogArticle as BlogArticleType } from '@/lib/types';
 import blogData from '@/data/blog.json';
 
@@ -194,6 +195,21 @@ export default function BlogArticle() {
       {/* Video Embed */}
       {((article as any).vimeoId || (article as any).videoId) && (
         <VideoEmbed vimeoId={(article as any).vimeoId} videoId={(article as any).videoId} title={article.title} />
+      )}
+
+      {/* Answer capsule — citable TL;DR for AI engines */}
+      {article.excerpt && (
+        <section className="pb-10">
+          <div className="container max-w-3xl">
+            <AnswerCapsule
+              question={article.title}
+              answer={article.excerpt}
+              lastUpdated={article.publishDate}
+              author={article.author?.name || 'Portugal Active'}
+              hideQuestion
+            />
+          </div>
+        </section>
       )}
 
       {/* Article Content */}

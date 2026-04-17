@@ -18,6 +18,7 @@ import {
   buildBreadcrumbSchema,
   buildPersonSchema,
 } from '@/components/seo/StructuredData';
+import AnswerCapsule from '@/components/seo/AnswerCapsule';
 
 /* ── Team data ─────────────────────────────────────────────────────────── */
 const TEAM = [
@@ -194,6 +195,23 @@ export default function About() {
           >
             {t('about.heroSubtitle')}
           </p>
+        </div>
+      </section>
+
+      {/* ANSWER CAPSULE — citable founder/company summary */}
+      <section className="bg-[#FAFAF7] pt-10 md:pt-14">
+        <div className="container max-w-3xl">
+          <AnswerCapsule
+            question="Who runs Portugal Active and what do they do?"
+            answer="Portugal Active was founded in 2017 by Ricardo Viana in Viana do Castelo, Minho. The company manages 50+ private villas across Portugal — applying hotel-grade service to short-term rentals through an in-house concierge, private chefs, housekeeping and guided experiences. The team works directly with owners and guests rather than through third-party intermediaries."
+            lastUpdated="2026-04-17"
+            author="Ricardo Viana, CEO"
+            cite={[
+              { label: 'Founder on LinkedIn', href: 'https://www.linkedin.com/in/ricardo-viana-portugal-active' },
+              { label: 'Concierge services', href: '/concierge' },
+              { label: 'Contact the team', href: '/contact' },
+            ]}
+          />
         </div>
       </section>
 

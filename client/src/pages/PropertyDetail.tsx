@@ -31,6 +31,7 @@ import {
   buildVacationRentalSchema,
   buildBreadcrumbSchema,
 } from '@/components/seo/StructuredData';
+import AnswerCapsule from '@/components/seo/AnswerCapsule';
 
 const allProducts = productsData as unknown as Product[];
 const destinations = destinationsData as unknown as Destination[];
@@ -862,6 +863,27 @@ export default function PropertyDetail() {
           </div>
         </div>
 
+        {/* Answer capsule — citable summary of the villa for AI engines */}
+        <div className="container max-w-3xl pt-6 lg:pt-8">
+          <AnswerCapsule
+            question={`What is ${sanitizePropertyName(property.name)}?`}
+            answer={[
+              `${sanitizePropertyName(property.name)} is a private villa in ${property.locality || destName}, Portugal,`,
+              `managed by Portugal Active as a short-term rental.`,
+              `It sleeps up to ${property.maxGuests} guests across ${property.bedrooms} bedrooms and ${property.bathrooms} bathrooms`,
+              property.priceFrom ? `with rates from €${property.priceFrom} per night.` : '.',
+              property.tagline ? ` ${property.tagline}` : '',
+              ` Every booking includes concierge support, housekeeping, and access to in-villa services such as a private chef and spa on request.`,
+            ].join(' ').replace(/\s+/g, ' ').trim()}
+            lastUpdated="2026-04-17"
+            author="Portugal Active concierge team"
+            cite={[
+              { label: 'All villas', href: '/homes' },
+              destObj ? { label: `${destObj.name} destination guide`, href: `/destinations/${destObj.slug}` } : null,
+              { label: 'Concierge services', href: '/concierge' },
+            ].filter(Boolean) as { label: string; href: string }[]}
+          />
+        </div>
 
         {/* Two-column layout: main content (left 2/3) + sticky booking (right 1/3) */}
         <div className={property.guestyId ? "container pb-8 lg:pb-16" : "container pb-24 lg:pb-16"}>

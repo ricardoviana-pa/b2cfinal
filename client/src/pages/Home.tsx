@@ -26,6 +26,7 @@ import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { StructuredData, buildFaqPageSchema } from '@/components/seo/StructuredData';
+import AnswerCapsule from '@/components/seo/AnswerCapsule';
 import { Link } from 'wouter';
 import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Check, Quote, Minus, Plus } from 'lucide-react';
 import Header from '@/components/layout/Header';
@@ -569,6 +570,23 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 3: OUR HOMES Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
+      {/* ANSWER CAPSULE — citable brand summary for AI engines */}
+      <section className="bg-[#FAFAF7] pt-10 md:pt-14 pb-2 md:pb-4">
+        <div className="container max-w-3xl">
+          <AnswerCapsule
+            question="What is Portugal Active?"
+            answer="Portugal Active is a Portuguese property-management company founded in 2017 and headquartered in Viana do Castelo. It operates 50+ private villas across Portugal — Minho, Porto, Lisbon, Alentejo and the Algarve — each managed like a luxury hotel with concierge, private chef, housekeeping and in-villa spa services included on request. Guests book direct for the best rate."
+            lastUpdated="2026-04-17"
+            author="Portugal Active concierge team"
+            cite={[
+              { label: 'About the company', href: '/about' },
+              { label: 'Browse villas', href: '/homes' },
+              { label: 'Concierge services', href: '/concierge' },
+            ]}
+          />
+        </div>
+      </section>
+
       <section ref={s3Ref} className="fade-in section-padding bg-white">
         <div className="container">
           <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.homesOverline')}</p>
