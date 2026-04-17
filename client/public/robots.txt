@@ -1,3 +1,9 @@
+# Portugal Active — robots.txt
+# We welcome AI/LLM crawlers so our content can be cited in ChatGPT,
+# Perplexity, Claude, Google AI Overviews, Bing Copilot and others.
+# Private/auth-gated paths are disallowed for every bot.
+
+# ── Default policy: all crawlers ─────────────────────────────────────
 User-agent: *
 Allow: /
 Disallow: /api/
@@ -10,20 +16,37 @@ Disallow: /*/login
 Disallow: /booking/confirmation/
 Disallow: /*/booking/confirmation/
 
-# AI crawlers
+# ── AI & LLM crawlers (training + retrieval + on-demand fetch) ───────
+# Grouped explicitly so they inherit the same disallow list as * above.
+# Per robots.txt spec, a bot only follows the most-specific matching
+# group — without this block, AI bots would be allowed on /admin, /api,
+# /login, etc. because they'd skip the * group entirely.
 User-agent: GPTBot
-Allow: /
-User-agent: Google-Extended
-Allow: /
+User-agent: OAI-SearchBot
 User-agent: ChatGPT-User
-Allow: /
-User-agent: anthropic-ai
-Allow: /
-User-agent: Claude-Web
-Allow: /
 User-agent: PerplexityBot
-Allow: /
+User-agent: Perplexity-User
+User-agent: ClaudeBot
+User-agent: Claude-Web
+User-agent: anthropic-ai
+User-agent: Google-Extended
+User-agent: GoogleOther
+User-agent: CCBot
+User-agent: FacebookBot
+User-agent: Meta-ExternalAgent
+User-agent: Applebot-Extended
 User-agent: Bytespider
+User-agent: Amazonbot
+User-agent: Diffbot
 Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /*/admin/
+Disallow: /account
+Disallow: /*/account
+Disallow: /login
+Disallow: /*/login
+Disallow: /booking/confirmation/
+Disallow: /*/booking/confirmation/
 
 Sitemap: https://www.portugalactive.com/sitemap.xml
