@@ -4873,6 +4873,38 @@
     "areaSquareFeet": 539,
     "reviews": [
       {
+        "rating": 5,
+        "text": "A lovely little apartment, central to the city centre but still quiet enough to suit a family stay. Nice little living space with a full kitchen, seating and table and a spacious outside area with hot tub. \n\nClean facilities with a good number of accessories e.g washing machine, coffee machine, toaster, microwave and oven as well as free wi-fi and tv set up. \n\nThe location is really nice as it wasn't far to walk into the busy areas of the city, there are a couple of supermarkets, a bakery and re",
+        "guestName": "Guest",
+        "date": "2026-04-19T20:34:59.593Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "Het was prima, op de bedden en de geluidsoverlast na",
         "guestName": "Guest",
@@ -5065,8 +5097,8 @@
         ]
       }
     ],
-    "averageRating": 4.3,
-    "reviewCount": 6
+    "averageRating": 4.4,
+    "reviewCount": 7
   },
   {
     "id": "guesty-69c415701b964f00157188b5",
