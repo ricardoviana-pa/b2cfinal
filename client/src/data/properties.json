@@ -2768,6 +2768,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Amazing!",
+        "guestName": "Guest",
+        "date": "2026-04-19T19:23:00.068Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Queria agradecer pela hospitalidade e pela facilidade de mudar o check-out para um\nhorário que fosse mais favorável para nós. Foi uma experiência muito incrível e sentimos-nos muito bem acolhidos. Com certeza iremos voltar um dia, alojamento 5 estrelas com tudo impecável e com todos os utensílios que necessitam!",
         "guestName": "Guest",
         "date": "2026-04-12T17:07:37.301Z",
@@ -2832,7 +2864,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   },
   {
     "id": "guesty-69dfa9cead7c9c0014cb71c9",
@@ -9806,9 +9838,42 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 15124,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Casa espetacular para umas mini férias com amigos",
+        "guestName": "Guest",
+        "date": "2026-04-20T17:11:03.243Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-69653335bf04fe0013742743",
@@ -16797,6 +16862,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Great spot a short walk from the center. Lots of space for our family of five and provided everything we needed. Would definitely stay here again.",
+        "guestName": "Guest",
+        "date": "2026-04-20T10:33:12.706Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Estuvimos encantados durante la estancia. La casa tiene todas las comodidades y está muy bien ubicada para visitar la ciudad. La empresa estuvo siempre atenta a nuestras dudas y el trato fue muy bueno. Para repetir.",
         "guestName": "Guest",
         "date": "2026-04-08T08:39:46.805Z",
@@ -16829,7 +16926,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-69c415701b964f00157188ad",
