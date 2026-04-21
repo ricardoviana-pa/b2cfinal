@@ -96,7 +96,44 @@ export default function Home() {
     script.id = "home-localbusiness-jsonld";
     document.querySelector("#home-localbusiness-jsonld")?.remove();
     document.head.appendChild(script);
-    return () => { document.querySelector("#home-localbusiness-jsonld")?.remove(); };
+    // FAQPage schema for homepage — targets "luxury villas Portugal" queries
+    const faqLd = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What makes Portugal Active different from Airbnb or Booking.com?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Portugal Active operates each property like a private hotel — with a 47-point preparation checklist, dedicated concierge, optional private chef, and a local team minutes away. We don't just list homes; we manage them to hotel standards." }
+        },
+        {
+          "@type": "Question",
+          "name": "Which regions in Portugal does Portugal Active cover?",
+          "acceptedAnswer": { "@type": "Answer", "text": "We operate luxury villas across five regions: Minho Coast (Viana do Castelo area), Porto & Douro Valley, Lisbon & Sintra, Alentejo, and the Algarve. Each region offers a different character, from Atlantic beaches to wine country." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I book adventure activities alongside my villa stay?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. We offer curated experiences including horseback riding, canyoning, surfing, sailing, e-bike tours, and more. Our concierge team builds bespoke itineraries combining your villa, activities, private dining, and transfers." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it cheaper to book direct with Portugal Active?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Always. Booking direct means no middleman markup — you get the best rate guaranteed, plus complimentary concierge service and priority for special requests like early check-in or celebrations." }
+        },
+      ],
+    };
+    const faqScript = document.createElement("script");
+    faqScript.type = "application/ld+json";
+    faqScript.text = JSON.stringify(faqLd);
+    faqScript.id = "home-faq-jsonld";
+    document.querySelector("#home-faq-jsonld")?.remove();
+    document.head.appendChild(faqScript);
+
+    return () => {
+      document.querySelector("#home-localbusiness-jsonld")?.remove();
+      document.querySelector("#home-faq-jsonld")?.remove();
+    };
   }, []);
 
   const { data: propsData, isLoading, isError } = trpc.properties.listForSite.useQuery();
@@ -151,8 +188,22 @@ export default function Home() {
 
   // Featured homes Ã¢ÂÂ Editor's Picks shows first 6 sorted by sortOrder
   // Other tabs are placeholder filters (no tag system yet)
+  const FEATURED_SLUGS = [
+    'portugal-active-eben-lodge-heated-pool-10ecfe',
+    'portugal-active-sunset-beach-lodge-heated-pool-5ceb91',
+    'abreu-retreat-palace-luxury-elegance-leisure-e914e2',
+    'stars-view-by-portugal-active-026fa9',
+    'majestic-villa-retreat-infinity-pool-chef-7431cb',
+    'quinta-with-infinity-pool-and-sea-views-carre-o-83ef5f',
+  ];
   const featured = useMemo(() => {
-    return [...properties].sort((a, b) => (b.priceFrom ?? 0) - (a.priceFrom ?? 0)).slice(0, 6);
+    const bySlug = new Map(properties.map(p => [p.slug, p]));
+    const pinned = FEATURED_SLUGS.map(s => bySlug.get(s)).filter(Boolean) as typeof properties;
+    if (pinned.length >= 6) return pinned.slice(0, 6);
+    const fillers = [...properties]
+      .filter(p => !FEATURED_SLUGS.includes(p.slug))
+      .sort((a, b) => (b.priceFrom ?? 0) - (a.priceFrom ?? 0));
+    return [...pinned, ...fillers].slice(0, 6);
   }, [properties]);
 
   const activeDestinations = destinations.filter(d => d.status === 'active' || d.slug === 'brazil');

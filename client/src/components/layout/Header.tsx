@@ -8,7 +8,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Link, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import {
-  Menu, X, Phone, Mail, MessageCircle, Instagram, Youtube, Linkedin,
+  Menu, X, Phone, Mail, MessageCircle, Instagram, Facebook, Youtube, Linkedin,
   User, ChevronDown
 } from 'lucide-react';
 import { IMAGES } from '@/lib/images';
@@ -26,7 +26,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
   const navItems = useMemo(
     () => [
       { label: t('nav.properties'), href: '/homes', hasDropdown: true },
-      { label: t('nav.experiences', 'Experiences'), href: '/experiences' },
+      { label: t('nav.experiences'), href: '/experiences' },
       { label: t('nav.events'), href: '/events' },
       { label: t('nav.journal'), href: '/blog' },
       { label: t('nav.about'), href: '/about' },
@@ -37,7 +37,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
   const mobileNav = useMemo(
     () => [
       { label: t('nav.properties'), href: '/homes' },
-      { label: t('nav.experiences', 'Experiences'), href: '/experiences' },
+      { label: t('nav.experiences'), href: '/experiences' },
       { label: t('nav.concierge'), href: '/concierge' },
       { label: t('nav.destinations'), href: '/destinations' },
       { label: t('nav.events'), href: '/events' },
@@ -133,7 +133,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded-md focus:bg-[#1A1A18] focus:text-white focus:text-sm focus:outline-none"
       >
-        {t('header.skipToContent', 'Skip to main content')}
+        {t('header.skipToContent')}
       </a>
       <header
         role="banner"
@@ -225,7 +225,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                           className="block px-5 py-2.5 hover:bg-[#FAFAF7] transition-colors"
                         >
                           <span className="block text-[13px] text-[#6B6860] hover:text-[#1A1A18]">{t('nav.concierge')}</span>
-                          <span className="block text-[10px] text-[#9E9A90] mt-0.5">Exclusive to our guests</span>
+                          <span className="block text-[10px] text-[#9E9A90] mt-0.5">{t('header.conciergeExclusive')}</span>
                         </Link>
                       </div>
                     </div>
@@ -331,7 +331,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                     ? 'text-white/70 hover:text-white hover:bg-white/10'
                     : 'text-[#6B6860] hover:text-[#1A1A18] hover:bg-[#F5F1EB]'
                 }`}
-                aria-label={authUser ? 'My Account' : 'Sign in'}
+                aria-label={authUser ? t('nav.myAccount') : t('nav.signIn')}
               >
                 {authUser ? (
                   <div className="w-7 h-7 rounded-full bg-[#8B7355] flex items-center justify-center text-white text-[11px] font-display">
@@ -387,7 +387,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
         id="mobile-menu-panel"
         role="dialog"
         aria-modal="true"
-        aria-label={t('header.menuLabel', 'Site navigation')}
+        aria-label={t('header.menuLabel')}
         className={`fixed top-0 left-0 bottom-0 z-[55] w-[85vw] sm:w-[380px] lg:w-[420px] bg-white shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="h-full flex flex-col overflow-y-auto">
@@ -448,7 +448,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                 <User size={18} className="text-[#8B7355]" />
               )}
               <span className="text-[1.3rem]" style={{ fontFamily: 'var(--font-display)', color: '#1A1A18', fontWeight: 400 }}>
-                {authUser ? t('nav.myAccount', 'My Account') : t('nav.signIn', 'Sign In')}
+                {authUser ? t('nav.myAccount') : t('nav.signIn')}
               </span>
             </Link>
           </nav>
@@ -474,8 +474,14 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
               <a href="https://instagram.com/portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="Instagram">
                 <Instagram className="w-4.5 h-4.5" />
               </a>
-              <a href="https://youtube.com/@portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="YouTube">
+              <a href="https://facebook.com/portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="Facebook">
+                <Facebook className="w-4.5 h-4.5" />
+              </a>
+              <a href="https://www.youtube.com/@portugalactivechannel" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="YouTube">
                 <Youtube className="w-4.5 h-4.5" />
+              </a>
+              <a href="https://vimeo.com/portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="Vimeo">
+                <svg className="w-4.5 h-4.5" viewBox="0 0 24 24" fill="currentColor"><path d="M23.977 6.416c-.105 2.338-1.739 5.543-4.894 9.609C15.906 19.988 13.08 22 10.68 22c-1.48 0-2.736-1.37-3.77-4.107C6.085 14.98 5.26 12.07 4.433 9.162c-.66-2.738-1.37-4.108-2.13-4.108-.165 0-.74.347-1.725 1.033L0 5.32c1.085-.953 2.157-1.906 3.21-2.858 1.447-1.254 2.531-1.913 3.26-1.98 1.713-.166 2.767 1.005 3.165 3.515.429 2.71.727 4.395.892 5.056.496 2.252 1.04 3.378 1.634 3.378.462 0 1.155-.73 2.08-2.19.924-1.46 1.42-2.572 1.486-3.336.132-1.262-.363-1.893-1.486-1.893-.53 0-1.075.12-1.637.36C13.75 2.152 16.047.186 19.082.013c2.253-.128 3.316 1.528 3.19 4.97l-.295 1.433z"/></svg>
               </a>
               <a href="https://linkedin.com/company/portugalactive" target="_blank" rel="noopener noreferrer" className="text-[#9E9A90] hover:text-[#1A1A18] transition-colors" aria-label="LinkedIn">
                 <Linkedin className="w-4.5 h-4.5" />

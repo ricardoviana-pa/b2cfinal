@@ -4,6 +4,7 @@
    ========================================================================== */
 
 import { useState, lazy, Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useRoute, Link } from 'wouter';
 import { Check, Clock, MapPin, ArrowLeft, Plus, MessageCircle } from 'lucide-react';
@@ -71,6 +72,7 @@ function InquiryForm({ serviceName }: { serviceName: string }) {
 }
 
 export default function ServiceDetail() {
+  const { t } = useTranslation();
   const [, params] = useRoute('/services/:slug');
   const [, actParams] = useRoute('/activities/:slug');
   const [, expParams] = useRoute('/experiences/:slug');
@@ -92,7 +94,7 @@ export default function ServiceDetail() {
       <div className="min-h-screen flex items-center justify-center bg-[#FAFAF7]">
         <div className="text-center">
           <h1 className="headline-lg mb-4 text-[#1A1A18]">Not found</h1>
-          <Link href="/experiences" className="btn-ghost">Back to experiences</Link>
+          <Link href="/experiences" className="btn-ghost">{t('serviceDetail.backToExperiences')}</Link>
         </div>
       </div>
     );
@@ -146,7 +148,7 @@ export default function ServiceDetail() {
               </div>
 
               <div className="mb-10">
-                <h3 className="text-[11px] font-medium tracking-[0.02em] text-[#8B7355] mb-5">What is included</h3>
+                <h3 className="text-[11px] font-medium tracking-[0.02em] text-[#8B7355] mb-5">{t('serviceDetail.whatIsIncluded')}</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {item.details.map((detail: string, i: number) => (
                     <div key={i} className="flex items-center gap-3 py-2">
@@ -212,7 +214,7 @@ export default function ServiceDetail() {
                   <InquiryForm serviceName={item.name} />
                 </div>
                 <div className="mt-4 text-center">
-                  <p className="text-[13px] text-[#9E9A90]" style={{ fontWeight: 300 }}>Or contact us directly</p>
+                  <p className="text-[13px] text-[#9E9A90]" style={{ fontWeight: 300 }}>{t('serviceDetail.orContactDirectly')}</p>
                   <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="inline-block mt-1 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors">
                     WhatsApp: +351 927 161 771
                   </a>
@@ -228,7 +230,7 @@ export default function ServiceDetail() {
         <section className="section-padding bg-[#F5F1EB]">
           <div className="container">
             <div className="text-center mb-12">
-              <h2 className="headline-lg text-[#1A1A18]">What our guests say</h2>
+              <h2 className="headline-lg text-[#1A1A18]">{t('serviceDetail.whatGuestsSay')}</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-[900px] mx-auto">
               {item.reviews.map((review: any, i: number) => (
@@ -246,7 +248,7 @@ export default function ServiceDetail() {
       <section className="section-padding">
         <div className="container">
           <div className="text-center mb-12">
-            <h2 className="headline-lg text-[#1A1A18]">Other experiences</h2>
+            <h2 className="headline-lg text-[#1A1A18]">{t('serviceDetail.otherExperiences')}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {otherItems.map((other) => (

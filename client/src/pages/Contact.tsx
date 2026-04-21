@@ -96,6 +96,25 @@ const CONTACT_CHANNELS = [
 export default function Contact() {
   const { t } = useTranslation();
   usePageMeta({ title: 'Contact Portugal Active | Plan Your Stay in Portugal', description: 'Plan your Portugal stay with our concierge team. Luxury villa rentals, private chef, outdoor adventures. Phone, WhatsApp or email — we reply within 2 hours.', url: '/contact' });
+
+  useEffect(() => {
+    const breadcrumbLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
+        { "@type": "ListItem", "position": 2, "name": "Contact" },
+      ],
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(breadcrumbLd);
+    script.id = "contact-breadcrumb-jsonld";
+    document.querySelector("#contact-breadcrumb-jsonld")?.remove();
+    document.head.appendChild(script);
+    return () => { document.querySelector("#contact-breadcrumb-jsonld")?.remove(); };
+  }, []);
+
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');

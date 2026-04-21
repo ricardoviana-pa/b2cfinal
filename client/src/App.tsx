@@ -3,11 +3,13 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
+import LocaleRouter from "./components/LocaleRouter";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ItineraryProvider } from "./contexts/ItineraryContext";
 import Home from "./pages/Home";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { WifiOff, ArrowUp } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const ItineraryDrawer = lazy(() => import("./components/itinerary/ItineraryDrawer"));
 const CookieBanner = lazy(() => import("./components/layout/CookieBanner"));
@@ -25,6 +27,7 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Cookies = lazy(() => import("./pages/Cookies"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
+const ExperienceDetail = lazy(() => import("./pages/ExperienceDetail"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogArticle = lazy(() => import("./pages/BlogArticle"));
 const FAQ = lazy(() => import("./pages/FAQ"));
@@ -124,7 +127,8 @@ function Router() {
         <Route path="/services" component={Services} />
         <Route path="/services/:slug" component={ServiceDetail} />
         <Route path="/experiences" component={Experiences} />
-        <Route path="/experiences/:slug" component={ServiceDetail} />
+        <Route path="/experiences/:slug" component={ExperienceDetail} />
+        <Route path="/activities/:slug" component={ExperienceDetail} />
         <Route path="/adventures" component={Experiences} />
         <Route path="/events" component={Events} />
         <Route path="/about" component={About} />
@@ -187,6 +191,7 @@ function BackToTop() {
 }
 
 function OfflineBanner() {
+  const { t } = useTranslation();
   const [offline, setOffline] = useState(!navigator.onLine);
   const handleOnline = useCallback(() => setOffline(false), []);
   const handleOffline = useCallback(() => setOffline(true), []);
@@ -208,7 +213,7 @@ function OfflineBanner() {
       style={{ backgroundColor: '#F5E6C8', color: '#7A5C2E', fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 400 }}
     >
       <WifiOff className="w-4 h-4 shrink-0" />
-      <span>You appear to be offline. Some features may not work.</span>
+      <span>{t('common.offline')}</span>
     </div>
   );
 }
@@ -217,25 +222,27 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
-        <ItineraryProvider>
-          <TooltipProvider>
-            <Toaster />
-            {/* Skip to content link for keyboard navigation */}
-            <a
-              href="#main-content"
-              className="absolute top-0 left-0 z-[9998] px-4 py-2 bg-[#8B7355] text-white text-sm font-medium rounded-b-md transform -translate-y-full focus:translate-y-0 transition-transform"
-            >
-              Skip to main content
-            </a>
-            <OfflineBanner />
-            <BackToTop />
-            <Suspense fallback={null}><ItineraryDrawer /></Suspense>
-            <Suspense fallback={null}><CookieBanner /></Suspense>
-            <main id="main-content" role="main">
-              <PageTransition><Router /></PageTransition>
-            </main>
-          </TooltipProvider>
-        </ItineraryProvider>
+        <LocaleRouter>
+          <ItineraryProvider>
+            <TooltipProvider>
+              <Toaster />
+              {/* Skip to content link for keyboard navigation */}
+              <a
+                href="#main-content"
+                className="absolute top-0 left-0 z-[9998] px-4 py-2 bg-[#8B7355] text-white text-sm font-medium rounded-b-md transform -translate-y-full focus:translate-y-0 transition-transform"
+              >
+                Skip to main content
+              </a>
+              <OfflineBanner />
+              <BackToTop />
+              <Suspense fallback={null}><ItineraryDrawer /></Suspense>
+              <Suspense fallback={null}><CookieBanner /></Suspense>
+              <main id="main-content" role="main">
+                <PageTransition><Router /></PageTransition>
+              </main>
+            </TooltipProvider>
+          </ItineraryProvider>
+        </LocaleRouter>
       </ThemeProvider>
     </ErrorBoundary>
   );

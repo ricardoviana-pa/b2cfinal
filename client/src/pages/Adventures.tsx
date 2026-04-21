@@ -7,8 +7,9 @@ import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { MapPin } from 'lucide-react';
+import { MapPin, Clock, Check, Play } from 'lucide-react';
 import productsData from '@/data/products.json';
+import experienceDetailsData from '@/data/experienceDetails.json';
 import type { Product, DestinationSlug } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
 import Header from '@/components/layout/Header';
@@ -17,6 +18,17 @@ import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 
 const allProducts = productsData as unknown as Product[];
 const adventures = allProducts.filter(p => p.type === 'adventure' && p.isActive).sort((a, b) => a.sortOrder - b.sortOrder);
+
+// Build a slug → { rating, reviewCount } lookup from experienceDetails.json
+const experienceRatings: Record<string, { value: number; count: number }> = {};
+((experienceDetailsData as any).experiences || []).forEach((exp: any) => {
+  if (exp.slug && exp.aggregateRating) {
+    experienceRatings[exp.slug] = {
+      value: exp.aggregateRating.value,
+      count: exp.aggregateRating.count,
+    };
+  }
+});
 
 export default function Adventures() {
   const { t } = useTranslation();
@@ -146,12 +158,14 @@ export default function Adventures() {
       {/* Adventures Grid */}
       <section className="section-padding">
         <div className="container">
-          <h2 className="sr-only">Available Adventures</h2>
+          <h2 className="sr-only">{t('adventures.availableAdventures')}</h2>
           <p className="text-[13px] text-[#9E9A90] mb-6">
             {t('adventures.available', { count: filtered.length })}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filtered.map((adventure) => (
+            {filtered.map((adventure) => {
+              const rating = experienceRatings[adventure.slug];
+              return (
               <Link
                 key={adventure.id}
                 href={`/experiences/${adventure.slug}`}
@@ -165,8 +179,13 @@ export default function Adventures() {
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
                   {adventure.destinations.length > 0 && (
-                    <span className="absolute top-4 left-4 text-[10px] tracking-[0.12em] uppercase text-white/90 font-medium">
+                    <span className="absolute top-4 left-4 max-w-[60%] text-[10px] tracking-[0.12em] uppercase text-white/90 font-medium leading-relaxed">
                       {adventure.destinations.join(' · ')}
+                    </span>
+                  )}
+                  {(adventure as any).videoUrl && (
+                    <span className="absolute top-4 right-4 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm text-white text-[10px] tracking-[0.08em] uppercase font-medium px-2.5 py-1.5">
+                      <Play className="w-3 h-3 fill-current" /> {t('adventures.videoLabel')}
                     </span>
                   )}
                   <div className="absolute bottom-0 left-0 right-0 p-5">
@@ -176,13 +195,38 @@ export default function Adventures() {
                     <p className="text-[13px] text-white/80 font-light line-clamp-2">{adventure.tagline}</p>
                   </div>
                 </div>
-                {(adventure.priceFrom ?? 0) > 0 && (
-                  <p className="mt-4 text-[13px] text-[#1A1A18] font-medium">
-                    From {formatEurEditorial(adventure.priceFrom ?? 0)} <span className="text-[12px] text-[#9E9A90] font-light">{adventure.priceSuffix}</span>
-                  </p>
-                )}
+
+                {/* Card metadata row — price, duration, rating, free cancellation */}
+                <div className="mt-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    {(adventure.priceFrom ?? 0) > 0 && (
+                      <p className="text-[13px] text-[#1A1A18] font-medium">
+                        {t('common.from')} {formatEurEditorial(adventure.priceFrom ?? 0)} <span className="text-[12px] text-[#9E9A90] font-light">{adventure.priceSuffix}</span>
+                      </p>
+                    )}
+                    {rating && (
+                      <span className="text-[12px] text-[#8B7355] italic" style={{ fontWeight: 400 }}>
+                        {rating.value.toFixed(1)}/5
+                        <span className="text-[#9E9A90] not-italic ml-1" style={{ fontWeight: 300 }}>({rating.count})</span>
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-4 flex-wrap">
+                    {adventure.duration && (
+                      <span className="inline-flex items-center gap-1 text-[11px] text-[#6B6860]" style={{ fontWeight: 300 }}>
+                        <Clock className="w-3 h-3 text-[#9E9A90]" />
+                        {adventure.duration}
+                      </span>
+                    )}
+                    <span className="inline-flex items-center gap-1 text-[11px] text-[#6B8E4E]" style={{ fontWeight: 300 }}>
+                      <Check className="w-3 h-3" />
+                      {t('adventures.freeCancellation')}
+                    </span>
+                  </div>
+                </div>
               </Link>
-            ))}
+              );
+            })}
           </div>
 
           {filtered.length === 0 && (
