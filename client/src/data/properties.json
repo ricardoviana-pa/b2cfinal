@@ -429,6 +429,7 @@
         "Outdoor pool",
         "Oven",
         "Patio or balcony",
+        "Pets allowed",
         "Private entrance",
         "Refrigerator",
         "Rural",
@@ -531,7 +532,7 @@
     "priceFrom": 120,
     "pricePerNight": 120,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338a753fb0001424acf6/baa024a0-36d8-48-ccG5a",
@@ -704,6 +705,38 @@
     "areaSquareFeet": 915,
     "reviews": [
       {
+        "rating": 4,
+        "text": "O apartamento era confortável com vários utensílios para uma boa estadia e a localização era ótima. Como sugestão acho que deveria ter um explicativo de utilização da lava louças e roupas.",
+        "guestName": "Guest",
+        "date": "2026-04-14T07:35:47.628Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Rien à dire, service très réactif ! \nLogement propre et correspondait aux photos et description.",
         "guestName": "Guest",
@@ -800,8 +833,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 3
+    "averageRating": 4.8,
+    "reviewCount": 4
   },
   {
     "id": "guesty-69c415701b964f00157188bd",
@@ -817,13 +850,13 @@
     "priceFrom": 100,
     "pricePerNight": 100,
     "cleaningFee": 75,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1775734361/production/6957de4388cba42d9e7a905e/tw8pmpmp5m06gadxtb2o.jpg",
-      "https://assets.guesty.com/image/upload/v1775734361/production/6957de4388cba42d9e7a905e/gf6pdqjjo33juwnge6df.jpg",
-      "https://assets.guesty.com/image/upload/v1775734362/production/6957de4388cba42d9e7a905e/aopf4vtvqmjdtg3ownzz.jpg",
       "https://assets.guesty.com/image/upload/v1775734361/production/6957de4388cba42d9e7a905e/aq6qnflkjsdta2xiq07n.jpg",
+      "https://assets.guesty.com/image/upload/v1775734361/production/6957de4388cba42d9e7a905e/tw8pmpmp5m06gadxtb2o.jpg",
+      "https://assets.guesty.com/image/upload/v1775734362/production/6957de4388cba42d9e7a905e/aopf4vtvqmjdtg3ownzz.jpg",
+      "https://assets.guesty.com/image/upload/v1775734361/production/6957de4388cba42d9e7a905e/gf6pdqjjo33juwnge6df.jpg",
       "https://assets.guesty.com/image/upload/v1775734361/production/6957de4388cba42d9e7a905e/grbji7dh8ipp860nhnaj.jpg",
       "https://assets.guesty.com/image/upload/v1775734362/production/6957de4388cba42d9e7a905e/zno5lfzww1tyehuu5ph4.jpg",
       "https://assets.guesty.com/image/upload/v1775734365/production/6957de4388cba42d9e7a905e/wch4ckcryf1yebcwjobx.jpg",
@@ -894,6 +927,7 @@
         "Microwave",
         "Mountain view",
         "Oven",
+        "Pets allowed",
         "Refrigerator",
         "River",
         "Rural",
@@ -979,7 +1013,7 @@
     "priceFrom": 80,
     "pricePerNight": 80,
     "cleaningFee": 20,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339404b96f00147f571a/88157426-7027-4f-rkSei",
@@ -1372,9 +1406,42 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 19376,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "La casa era perfecta para un fin de semana en grupo. Fuimos 3 parejas con niños. Volveremos!",
+        "guestName": "Guest",
+        "date": "2026-04-15T14:23:04.828Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-69c415ceab80a8001247452c",
@@ -1390,7 +1457,7 @@
     "priceFrom": 450,
     "pricePerNight": 450,
     "cleaningFee": 380,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1775731340/production/6957de4388cba42d9e7a905e/sb0shfijuld0jptnvq67.jpg",
@@ -1565,6 +1632,7 @@
         "Mountain view",
         "Oven",
         "Patio or balcony",
+        "Pets allowed",
         "Refrigerator",
         "River",
         "Rural",
@@ -1731,7 +1799,7 @@
     "priceFrom": 90,
     "pricePerNight": 90,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/9817fb5b-daa6-4d-GDq71",
@@ -1942,7 +2010,7 @@
     "priceFrom": 220,
     "pricePerNight": 220,
     "cleaningFee": 60,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533d2ec19770014fd1b52/370234d6-cbfc-46-MSEg6",
@@ -2049,6 +2117,7 @@
         "Outdoor seating (furniture)",
         "Oven",
         "Patio or balcony",
+        "Pets allowed",
         "Ping pong table",
         "Pool table",
         "Private entrance",
@@ -2248,7 +2317,7 @@
     "priceFrom": 99,
     "pricePerNight": 99,
     "cleaningFee": 80,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532f3753fb0001424a570/0595c448-568c-4c--OAHu",
@@ -2512,7 +2581,7 @@
     "priceFrom": 100,
     "pricePerNight": 100,
     "cleaningFee": 45,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965335df1c3a8001597c8e4/772eacb1-01c3-42-dPwx2",
@@ -2699,6 +2768,70 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Amazing!",
+        "guestName": "Guest",
+        "date": "2026-04-19T19:23:00.068Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Queria agradecer pela hospitalidade e pela facilidade de mudar o check-out para um\nhorário que fosse mais favorável para nós. Foi uma experiência muito incrível e sentimos-nos muito bem acolhidos. Com certeza iremos voltar um dia, alojamento 5 estrelas com tudo impecável e com todos os utensílios que necessitam!",
+        "guestName": "Guest",
+        "date": "2026-04-12T17:07:37.301Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Tudo otimo",
         "guestName": "Guest",
         "date": "2026-03-17T14:34:42.709Z",
@@ -2731,13 +2864,211 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 3
+  },
+  {
+    "id": "guesty-69dfa9cead7c9c0014cb71c9",
+    "slug": "dunes-beach-house-with-ocean-views-cb71c9",
+    "name": "Dunes Beach House with Ocean Views ",
+    "tagline": "Brand-new 2026 villa built into the dunes of Amorosa beach, just 200 metres from the Atlantic. Three bedrooms, three premium bathrooms, a private pool…",
+    "tier": "select",
+    "destination": "minho",
+    "locality": "Viana do Castelo",
+    "bedrooms": 3,
+    "bathrooms": 3,
+    "maxGuests": 6,
+    "priceFrom": 190,
+    "pricePerNight": 190,
+    "cleaningFee": 180,
+    "minNights": 2,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1776264671/production/6957de4388cba42d9e7a905e/cqt7crali4wtmsrv7dis.jpg",
+      "https://assets.guesty.com/image/upload/v1776264675/production/6957de4388cba42d9e7a905e/fpqveshpwnjlomzsma5w.jpg",
+      "https://assets.guesty.com/image/upload/v1776264668/production/6957de4388cba42d9e7a905e/rqq1mu1h4gnjrbbhlm1l.jpg",
+      "https://assets.guesty.com/image/upload/v1776264673/production/6957de4388cba42d9e7a905e/sayrumxlugbaztrsjcj8.jpg",
+      "https://assets.guesty.com/image/upload/v1776264664/production/6957de4388cba42d9e7a905e/rgn4bnccath6whfqksbj.jpg",
+      "https://assets.guesty.com/image/upload/v1776264664/production/6957de4388cba42d9e7a905e/qwy4cbgvxntjb7orr8sf.jpg",
+      "https://assets.guesty.com/image/upload/v1776264664/production/6957de4388cba42d9e7a905e/my6k9ftusnbyudge2l0n.jpg",
+      "https://assets.guesty.com/image/upload/v1776264664/production/6957de4388cba42d9e7a905e/kyzctqvlbgpli6cgopzt.jpg",
+      "https://assets.guesty.com/image/upload/v1776264667/production/6957de4388cba42d9e7a905e/digpdvjxiisg2vl9y4eh.jpg",
+      "https://assets.guesty.com/image/upload/v1776264667/production/6957de4388cba42d9e7a905e/j6avc0nmoiovrv5hkprk.jpg",
+      "https://assets.guesty.com/image/upload/v1776264672/production/6957de4388cba42d9e7a905e/jqrmbrbvvbmr0jva9xbo.jpg",
+      "https://assets.guesty.com/image/upload/v1776264667/production/6957de4388cba42d9e7a905e/kwhqretweoji6wa33ugz.jpg",
+      "https://assets.guesty.com/image/upload/v1776264670/production/6957de4388cba42d9e7a905e/j5h2qlqbeor0csnyxvba.jpg",
+      "https://assets.guesty.com/image/upload/v1776264670/production/6957de4388cba42d9e7a905e/wbcebsuzjvlmlnoxjr1y.jpg",
+      "https://assets.guesty.com/image/upload/v1776264671/production/6957de4388cba42d9e7a905e/zjwhxtop8bhxujatttq2.jpg",
+      "https://assets.guesty.com/image/upload/v1776264664/production/6957de4388cba42d9e7a905e/agyflprdim4wnwqmvja1.jpg",
+      "https://assets.guesty.com/image/upload/v1776264664/production/6957de4388cba42d9e7a905e/vdmlpfvcaqlrsmuannbc.jpg",
+      "https://assets.guesty.com/image/upload/v1776264667/production/6957de4388cba42d9e7a905e/eatwqq9ngpsa6gvpc4s7.jpg",
+      "https://assets.guesty.com/image/upload/v1776264668/production/6957de4388cba42d9e7a905e/uaiglpduxogeh99hlenf.jpg",
+      "https://assets.guesty.com/image/upload/v1776264670/production/6957de4388cba42d9e7a905e/nrlfhgzhs0yeorzfuzrc.jpg",
+      "https://assets.guesty.com/image/upload/v1776264671/production/6957de4388cba42d9e7a905e/db02a5915wlswssbrm0r.jpg",
+      "https://assets.guesty.com/image/upload/v1776264673/production/6957de4388cba42d9e7a905e/a8lqgh6ycakk8odrtgys.jpg",
+      "https://assets.guesty.com/image/upload/v1776264673/production/6957de4388cba42d9e7a905e/rafqu5xdmk26ozrygnzw.jpg",
+      "https://assets.guesty.com/image/upload/v1776264674/production/6957de4388cba42d9e7a905e/sjysn0rj68hezm0ac66q.jpg",
+      "https://assets.guesty.com/image/upload/v1776264674/production/6957de4388cba42d9e7a905e/os3obwnu88c1e9m3awls.jpg",
+      "https://assets.guesty.com/image/upload/v1776264675/production/6957de4388cba42d9e7a905e/caqrlbjd8cyqgjfl00w8.jpg",
+      "https://assets.guesty.com/image/upload/v1776264675/production/6957de4388cba42d9e7a905e/lgimtkgj4monw58onkt7.jpg",
+      "https://assets.guesty.com/image/upload/v1776264676/production/6957de4388cba42d9e7a905e/k62fsx4uapfigmu1xnuw.jpg",
+      "https://assets.guesty.com/image/upload/v1776264676/production/6957de4388cba42d9e7a905e/hhbl8ehuuna742gwnzlk.jpg",
+      "https://assets.guesty.com/image/upload/v1776264676/production/6957de4388cba42d9e7a905e/hj6cnbdgyyxjtoeht5vn.jpg",
+      "https://assets.guesty.com/image/upload/v1776264678/production/6957de4388cba42d9e7a905e/u2v1g5vgpp3ajg32syz5.jpg",
+      "https://assets.guesty.com/image/upload/v1776264678/production/6957de4388cba42d9e7a905e/pvh70kx89o0fpbpc7y9p.jpg",
+      "https://assets.guesty.com/image/upload/v1776264678/production/6957de4388cba42d9e7a905e/ktgej89qoqvs3dzorrav.jpg",
+      "https://assets.guesty.com/image/upload/v1776264679/production/6957de4388cba42d9e7a905e/ff9xvbcqirntgzadpjol.jpg",
+      "https://assets.guesty.com/image/upload/v1776264679/production/6957de4388cba42d9e7a905e/ufl8giioqme9osqrcqgq.jpg",
+      "https://assets.guesty.com/image/upload/v1776264679/production/6957de4388cba42d9e7a905e/sgsfjvgsh2gcxe6bxftm.jpg",
+      "https://assets.guesty.com/image/upload/v1776264681/production/6957de4388cba42d9e7a905e/vdel4pkugcgnbhsn4qjn.jpg",
+      "https://assets.guesty.com/image/upload/v1776264681/production/6957de4388cba42d9e7a905e/z4g2w4rwcxntspofcntp.jpg",
+      "https://assets.guesty.com/image/upload/v1776264681/production/6957de4388cba42d9e7a905e/awkip5hyvkonay1q45mx.jpg",
+      "https://assets.guesty.com/image/upload/v1776264681/production/6957de4388cba42d9e7a905e/gz8jlyp1cpzdh29aoxdg.jpg",
+      "https://assets.guesty.com/image/upload/v1776264682/production/6957de4388cba42d9e7a905e/dph5i2khf7cuuxzfvkcy.jpg",
+      "https://assets.guesty.com/image/upload/v1776264682/production/6957de4388cba42d9e7a905e/omywthh4sj4avabw5y0g.jpg",
+      "https://assets.guesty.com/image/upload/v1776264683/production/6957de4388cba42d9e7a905e/xtr1mzt0kgn9yskgly8z.jpg",
+      "https://assets.guesty.com/image/upload/v1776264684/production/6957de4388cba42d9e7a905e/ssuu2uy1ofu3srryhkia.jpg",
+      "https://assets.guesty.com/image/upload/v1776264684/production/6957de4388cba42d9e7a905e/wghcumd8php5p0pmr1mu.jpg",
+      "https://assets.guesty.com/image/upload/v1776264684/production/6957de4388cba42d9e7a905e/mhvp2skuvqg7oavmmx5a.jpg",
+      "https://assets.guesty.com/image/upload/v1776264685/production/6957de4388cba42d9e7a905e/gkyt4qxaucipesxjcijk.jpg",
+      "https://assets.guesty.com/image/upload/v1776264685/production/6957de4388cba42d9e7a905e/ovgop40euvh1y8paimtn.jpg",
+      "https://assets.guesty.com/image/upload/v1776264686/production/6957de4388cba42d9e7a905e/fpok106ruvnbtcamuaa7.jpg",
+      "https://assets.guesty.com/image/upload/v1776264686/production/6957de4388cba42d9e7a905e/wrqpatobn5qmydcrh2dx.jpg"
+    ],
+    "description": "Brand-new 2026 villa built into the dunes of Amorosa beach, just 200 metres from the Atlantic. Three bedrooms, three premium bathrooms, a private pool and your own dunes with a sunset viewpoint over the ocean. Up to 6 guests. Portugal Active concierge available 24/7 🛎️.\n\nBuilt into the dune, facing the ocean🌊\n\nDunes Beach House is a brand-new contemporary villa, completed in 2026, set literally within the dunes of Amorosa, in Chafé. Two hundred metres from the beach, its white minimalist architecture, anthracite frames and floor-to-ceiling glass bring Atlantic light into every room. Three double bedrooms sleep up to six guests in comfort: two with private en-suite bathrooms finished in large-format porcelain, bidet and walk-in shower, and a third equally well-appointed room. Living areas and the kitchen open onto the outside via sliding doors, flowing naturally onto the deck and the a private pool. Behind them, the property's own dune rises with wild flowers and a timber staircase climbing to a viewpoint where the Atlantic unfolds at sunset🌅.\n\n\nThe Atlantic coast at its most untouched\n\nChafé is a small coastal village between Viana do Castelo and Esposende, where the horizon is always ocean and the air always tastes of salt. Praia da Amorosa, steps away, is one of the most unspoiled stretches of the Minho coast: long sands, high dunes and clean waves that roll in without warning. For a livelier beach experience, Viana do Castelo is seven kilometres away, with its historic centre, Cabedelo beach and early-morning fish market. Coastal trails thread through dunes and pine forest, swapping between the quiet of the sands and wide open sea views, with the Serra d'Arga rising green to the east.\n\nThe ocean at your feet, everything else minutes away\n\nViana do Castelo is seven kilometres away, with supermarkets, restaurants, pharmacies and the historic centre reachable in under ten minutes by car. The A28 motorway connects easily at the nearest roundabout, putting Porto within an hour or Galicia within forty minutes. Viana do Castelo train station, with direct connections to Porto and Braga, is around eight kilometres away. Private parking for two vehicles is available on site. Porto Airport is approximately 65 km away.\n\n\nPortugal Active\n\nFor those who want to live the ocean, not just look at it!\n\nWith the Atlantic two hundred metres away, the Portugal Active team is ready to turn your stay into a genuine coastal adventure. From private chef breakfasts to premium airport transfers, the 24-hour concierge service ensures no detail is left to chance.\n\nWhen the beach isn't enough, guided experiences take you deeper into the Minho coast: Stand Up Paddle on the calm morning waters of Amorosa, a Horseback Riding route along the sands and pine-scented coastal trails, or an E-Bike Wild Tour through dunes and fishing villages. Every activity is led by certified professionals.",
+    "amenities": {
+      "property": [
+        "Air conditioning",
+        "BBQ grill",
+        "Baking sheet",
+        "Barbeque utensils",
+        "Beach",
+        "Beach View",
+        "Bed linens",
+        "Cable TV",
+        "Cleaning Disinfection",
+        "Cleaning products",
+        "Clothing storage",
+        "Coffee maker",
+        "Cookware",
+        "Crib",
+        "Cycling",
+        "Dining table",
+        "Dishes and silverware",
+        "Dishwasher",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Fire extinguisher",
+        "First aid kit",
+        "Fishing",
+        "Free parking on street",
+        "Garden View",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High chair",
+        "High touch surfaces disinfected",
+        "Horseback Riding",
+        "Hot water",
+        "Internet",
+        "Iron",
+        "Kettle",
+        "Kitchen",
+        "Laptop friendly workspace",
+        "Long term stays allowed",
+        "Microwave",
+        "Museums",
+        "Near Ocean",
+        "Outdoor pool",
+        "Outdoor seating (furniture)",
+        "Oven",
+        "Patio or balcony",
+        "Pets allowed",
+        "Private entrance",
+        "Private pool",
+        "Refrigerator",
+        "Rice maker",
+        "Shampoo",
+        "Shower gel",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "Swimming pool",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Water Sports",
+        "Water View",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "69dfa9cead7c9c0014cb71c9",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Dunes Beach House with Ocean Views ",
+    "sortOrder": 0,
+    "isActive": true,
+    "seoTitle": "Dunes Beach House with Ocean Views  — Portugal Active",
+    "seoDescription": "Brand-new 2026 villa built into the dunes of Amorosa beach, just 200 metres from the Atlantic. Three bedrooms, three premium bathrooms, a private pool and your ",
+    "address": {
+      "full": "",
+      "street": "Rua da Amorosa 928",
+      "city": "Viana do Castelo",
+      "state": "Viana do Castelo",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 41.6386289,
+      "lng": -8.8150062
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 1690,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-6965339dbf04fe0013743e2d",
-    "slug": "fountain-retreat-i-pool-jacuzzi-sports-escape-743e2d",
-    "name": "Fountain Retreat I Pool, Jacuzzi & Sports Escape",
-    "tagline": "Discover Fountain Retreat | Pool, Jacuzzi & Sports Escape, an exclusive haven in Barroselas that blends rustic elegance with contemporary comfort. Sur…",
+    "slug": "fountain-retreat-i-pool-sports-escape-743e2d",
+    "name": "Fountain Retreat I Pool & Sports Escape",
+    "tagline": "Discover Fountain Retreat | Pool & Sports Escape, an exclusive haven in Barroselas that blends rustic elegance with contemporary comfort. Surrounded b…",
     "tier": "select",
     "destination": "minho",
     "locality": "Viana do Castelo",
@@ -2747,11 +3078,14 @@
     "priceFrom": 700,
     "pricePerNight": 700,
     "cleaningFee": 250,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/b271b5c9-3b90-4d-EMEB-",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/1ae0701c-1cbc-4e-jKcod",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/45f1f88e-c101-4b-zJWve",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/b271b5c9-3b90-4d-EMEB-",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/7632d8f6-22a4-45-3ElCw",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/b777f44e-a06b-43-29uW0",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/d76b7fde-7328-4f-rxz89",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/0aef22c1-9ba6-4f-lsCZ7",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/290117fe-af0c-4f-dDzsw",
@@ -2799,7 +3133,6 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/c3409705-2b6b-48-U_grd",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/d875a0ed-6f90-40-eI5cY",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/1facd485-f79f-48-3pB0Z",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/7632d8f6-22a4-45-3ElCw",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/fac2ed61-ae3a-4d-w5JsK",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/4baee210-43e5-45-ZjIYO",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/32eeeccf-dcb1-4e-NukEh",
@@ -2830,7 +3163,6 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/845033dc-a696-41-wgF_5",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/f8960898-1d8e-43-Dbq48",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/b77439f1-b6e1-48-_6y7O",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/b777f44e-a06b-43-29uW0",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/1034b26b-17e5-46-RqV4v",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/5821a5c7-a982-4c-HabTZ",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/5d2f9f10-5e0f-4b-Z8fDp",
@@ -2880,7 +3212,6 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/721981b9-cf52-47-fSqM7",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/598c5416-ca44-4f-axueL",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/8c0d477b-7196-48-P9ygX",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/1ae0701c-1cbc-4e-jKcod",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/7cbfa366-75f3-4d-IJ7MW",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/d024dbd2-5dc8-48-pF7Hx",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/d0b2fc88-72c1-48-Jzy0d",
@@ -2889,7 +3220,7 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/96b7b019-7b6a-4a-xoKxv",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339dbf04fe0013743e2d/dc2c87f9-e304-41-CV3-4"
     ],
-    "description": "Discover Fountain Retreat | Pool, Jacuzzi & Sports Escape, an exclusive haven in Barroselas that blends rustic elegance with contemporary comfort. Surrounded by nature, it offers a unique selection of homes—from cozy studios to a spacious manor house—and outdoor spaces perfect for relaxing, making memories, and enjoying the best of rural tourism.\n\nFountain Retreat | Pool, Jacuzzi & Sports Escape features five independent houses, each with its own identity and charm, perfectly set in a rural landscape that invites relaxation.\r\nGranjas House and Buganvílias Hpuse are cozy studios designed for couples seeking an intimate getaway. Each open-plan space is decorated in a rustic-chic style, with comfortable double beds, a kitchenette equipped for simple meals, and a full bathroom—an ideal setting for a romantic escape.\r\nJardim House offers a separate bedroom and a bright living room with a sofa bed, opening onto the lush garden, creating a serene environment to unwind after a day exploring the region.\r\nAt Rosas House, you’ll find two bedrooms and a cozy living area with a sofa bed, perfect for families seeking more comfort and privacy in a bright, well-maintained space.\r\nThe impressive Senhorial House, the largest on the property, is the true jewel of the property: here, luxury and comfort merge in every detail. It features seven spacious suites, an elegant lounge with a fireplace, and a billiard room in the basement for lively evenings with friends or family. Outside, the private jacuzzi invites you to relaxing dips while enjoying the surrounding landscape.\r\n\r\nThroughout the property, guests can enjoy the outdoor swimming pool—perfect for a refreshing dip on warm days—the mini golf course and tennis court for fun matches with company, as well as the vast gardens and walking trails, ideal for peaceful strolls among flowers and century-old trees.\r\nAt Fountain Retreat | Pool, Jacuzzi & Sports Escape, every moment is lived with tranquility in an environment that combines modern comfort with the beauty of the Minho countryside, offering a unique and memorable experience to all who visit.\n\nLocated in Barroselas, Fountain Retreat | Pool, Jacuzzi & Sports Escape offers you the chance to experience the very best of northern Portugal. This charming rural retreat, just a few minutes from Viana do Castelo, invites you to discover the true essence of Minho — from its quiet village streets to the green hills and valleys that surround it.\r\nWander around traditional shops and local fairs, taste regional specialties in cozy family-run restaurants, and soak up the peaceful, authentic rhythm of village life. Nature lovers can explore nearby trails and bike paths winding through hills and fields, while Viana do Castelo’s historic center and its iconic landmarks — like the Santa Luzia Basilica — are only a short drive away.\r\nWhether you want to delve into history, embrace the outdoors, or simply relax in a welcoming, picturesque setting, Barroselas and its surroundings have something special for every visitor.\n\nGuests have access to the entire property, including the pool, garden, minigolf, tennis court and all indoor facilities.  Portugal Active's concierge service is available 24/7 to assist with any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\r\n\r\nImportant Note:\r\nDuring the high season (May to October), the pool is regularly maintained to provide guests with an impeccable experience. In the low season (November to April), the pool may be closed, subject to confirmation with our team.\n\nPublic transport is readily available, making your arrival straightforward and convenient. The nearest train station is Barroselas Station, located only 3 km from the house — about a 5‑minute taxi ride or a short drive. The station offers direct connections to Viana do Castelo, Porto, and other towns across the region.\r\nAdditionally, there are bus stops within a short walking distance, providing easy access to Viana do Castelo’s center and the nearby beaches.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
+    "description": "Discover Fountain Retreat | Pool & Sports Escape, an exclusive haven in Barroselas that blends rustic elegance with contemporary comfort. Surrounded by nature, it offers a unique selection of homes—from cozy studios to a spacious manor house—and outdoor spaces perfect for relaxing, making memories, and enjoying the best of rural tourism.\n\nFountain Retreat | Pool & Sports Escape features five independent houses, each with its own identity and charm, perfectly set in a rural landscape that invites relaxation.\nGranjas House and Buganvílias Hpuse are cozy studios designed for couples seeking an intimate getaway. Each open-plan space is decorated in a rustic-chic style, with comfortable double beds, a kitchenette equipped for simple meals, and a full bathroom—an ideal setting for a romantic escape.\nJardim House offers a separate bedroom and a bright living room with a sofa bed, opening onto the lush garden, creating a serene environment to unwind after a day exploring the region.\nAt Rosas House, you’ll find two bedrooms and a cozy living area with a sofa bed, perfect for families seeking more comfort and privacy in a bright, well-maintained space.\nThe impressive Senhorial House, the largest on the property, is the true jewel of the property: here, luxury and comfort merge in every detail. It features seven spacious suites, an elegant lounge with a fireplace, and a billiard room in the basement for lively evenings with friends or family. Outside, the private jacuzzi invites you to relaxing dips while enjoying the surrounding landscape.\n\nThroughout the property, guests can enjoy the outdoor swimming pool—perfect for a refreshing dip on warm days—the mini golf course and tennis court for fun matches with company, as well as the vast gardens and walking trails, ideal for peaceful strolls among flowers and century-old trees.\nAt Fountain Retreat | Pool & Sports Escape, every moment is lived with tranquility in an environment that combines modern comfort with the beauty of the Minho countryside, offering a unique and memorable experience to all who visit.\n\nLocated in Barroselas, Fountain Retreat | Pool & Sports Escape offers you the chance to experience the very best of northern Portugal. This charming rural retreat, just a few minutes from Viana do Castelo, invites you to discover the true essence of Minho — from its quiet village streets to the green hills and valleys that surround it.\nWander around traditional shops and local fairs, taste regional specialties in cozy family-run restaurants, and soak up the peaceful, authentic rhythm of village life. Nature lovers can explore nearby trails and bike paths winding through hills and fields, while Viana do Castelo’s historic center and its iconic landmarks — like the Santa Luzia Basilica — are only a short drive away.\nWhether you want to delve into history, embrace the outdoors, or simply relax in a welcoming, picturesque setting, Barroselas and its surroundings have something special for every visitor.\n\nGuests have access to the entire property, including the pool, garden, minigolf, tennis court and all indoor facilities.  Portugal Active's concierge service is available 24/7 to assist with any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\r\n\r\nImportant Note:\r\nDuring the high season (May to October), the pool is regularly maintained to provide guests with an impeccable experience. In the low season (November to April), the pool may be closed, subject to confirmation with our team.\n\nPublic transport is readily available, making your arrival straightforward and convenient. The nearest train station is Barroselas Station, located only 3 km from the house — about a 5‑minute taxi ride or a short drive. The station offers direct connections to Viana do Castelo, Porto, and other towns across the region.\r\nAdditionally, there are bus stops within a short walking distance, providing easy access to Viana do Castelo’s center and the nearby beaches.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
     "amenities": {
       "property": [
         "Air conditioning",
@@ -2966,11 +3297,11 @@
     "bookingUrl": "",
     "guestyId": "6965339dbf04fe0013743e2d",
     "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Fountain Retreat I Pool, Jacuzzi & Sports Escape",
+    "whatsappMessage": "Hi, I am interested in Fountain Retreat I Pool & Sports Escape",
     "sortOrder": 0,
     "isActive": true,
-    "seoTitle": "Fountain Retreat I Pool, Jacuzzi & Sports Escape — Portugal Active",
-    "seoDescription": "Discover Fountain Retreat | Pool, Jacuzzi & Sports Escape, an exclusive haven in Barroselas that blends rustic elegance with contemporary comfort. Surrounded by",
+    "seoTitle": "Fountain Retreat I Pool & Sports Escape — Portugal Active",
+    "seoDescription": "Discover Fountain Retreat | Pool & Sports Escape, an exclusive haven in Barroselas that blends rustic elegance with contemporary comfort. Surrounded by nature, ",
     "address": {
       "full": "",
       "street": "Rua da Fonte 101",
@@ -3164,7 +3495,7 @@
     "priceFrom": 100,
     "pricePerNight": 100,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338cecf7490014ed2c2d/d00a4ca5-b269-48-aaPRb",
@@ -3391,7 +3722,7 @@
     "priceFrom": 90,
     "pricePerNight": 90,
     "cleaningFee": 30,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533a0ecf7490014ed31d5/048fac32-507d-48-MPg47",
@@ -3595,7 +3926,7 @@
     "priceFrom": 70,
     "pricePerNight": 70,
     "cleaningFee": 20,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653394ecf7490014ed2ed9/a29a18d0-8f93-44-bP5cL",
@@ -3743,66 +4074,6 @@
     "reviewCount": 0
   },
   {
-    "id": "guesty-696f6aad74604800452a40b8",
-    "slug": "guesty-test-2a40b8",
-    "name": "Guesty Test",
-    "tagline": "",
-    "tier": "select",
-    "destination": "algarve",
-    "locality": "Portugal",
-    "bedrooms": 1,
-    "bathrooms": 0,
-    "maxGuests": 2,
-    "priceFrom": 9,
-    "pricePerNight": 9,
-    "cleaningFee": 0,
-    "minNights": 1,
-    "currency": "EUR",
-    "images": [
-      "https://assets.guesty.com/image/upload/v1768909477/production/6957de4388cba42d9e7a905e/rkg1icshmjfrzmjfkx65.jpg"
-    ],
-    "description": "Welcome to Guesty Test.",
-    "amenities": {
-      "property": [
-        "Suitable for children (2-12 years)",
-        "Suitable for infants (under 2 years)"
-      ],
-      "bedrooms": [],
-      "kitchen": [],
-      "services": []
-    },
-    "stayIncludes": [],
-    "style": "",
-    "tags": [],
-    "occasions": [],
-    "bookingUrl": "",
-    "guestyId": "696f6aad74604800452a40b8",
-    "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Guesty Test",
-    "sortOrder": 0,
-    "isActive": true,
-    "seoTitle": "Guesty Test — Portugal Active",
-    "seoDescription": "Guesty Test in Portugal.",
-    "address": {
-      "full": "",
-      "street": "Avenida da Amorosa 1795",
-      "city": "",
-      "state": "Viana do Castelo",
-      "zipcode": "",
-      "country": "Portugal",
-      "lat": 41.6441737,
-      "lng": -8.799871699999999
-    },
-    "rooms": [],
-    "propertyType": "Apartment",
-    "checkInTime": "15:00",
-    "checkOutTime": "10:00",
-    "areaSquareFeet": null,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
-  },
-  {
     "id": "guesty-6965330729bb8c00141e8cd6",
     "slug": "habito-s-lodge-by-portugalactive-5min-beach-town-1e8cd6",
     "name": "Habito's Lodge By PortugalActive/5min Beach & Town",
@@ -3816,7 +4087,7 @@
     "priceFrom": 300,
     "pricePerNight": 300,
     "cleaningFee": 120,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965330729bb8c00141e8cd6/bd78f631-6467-4c-r3uZw",
@@ -4131,7 +4402,7 @@
     "priceFrom": 80,
     "pricePerNight": 80,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b7bf04fe00137440f8/7e47bf63-7c8d-43-9KXrg",
@@ -4264,6 +4535,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Perfekt leilighet om du vil bo i sentrum av guimaraes. Helt lik beskrivelsen. Ikke nødvendig med kollektivtransport da det meste ligger ved gåavstand fra leiligheten. Anbefaler👍🏾",
+        "guestName": "Guest",
+        "date": "2026-04-13T15:00:06.859Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Um pequeno apartamento, mas com todas as condições",
         "guestName": "Guest",
         "date": "2026-03-29T18:52:35.509Z",
@@ -4392,7 +4695,7 @@
       }
     ],
     "averageRating": 4.8,
-    "reviewCount": 4
+    "reviewCount": 5
   },
   {
     "id": "guesty-69653388753fb0001424abad",
@@ -4408,7 +4711,7 @@
     "priceFrom": 180,
     "pricePerNight": 180,
     "cleaningFee": 50,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653388753fb0001424abad/984c0529-485c-42-VkcvR",
@@ -4532,7 +4835,6 @@
         "Oven",
         "Paid parking",
         "Patio or balcony",
-        "Pets allowed",
         "Private entrance",
         "Refrigerator",
         "Room-darkening shades",
@@ -4602,6 +4904,38 @@
     "checkOutTime": "11:00",
     "areaSquareFeet": 539,
     "reviews": [
+      {
+        "rating": 5,
+        "text": "A lovely little apartment, central to the city centre but still quiet enough to suit a family stay. Nice little living space with a full kitchen, seating and table and a spacious outside area with hot tub. \n\nClean facilities with a good number of accessories e.g washing machine, coffee machine, toaster, microwave and oven as well as free wi-fi and tv set up. \n\nThe location is really nice as it wasn't far to walk into the busy areas of the city, there are a couple of supermarkets, a bakery and re",
+        "guestName": "Guest",
+        "date": "2026-04-19T20:34:59.593Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
       {
         "rating": 4,
         "text": "Het was prima, op de bedden en de geluidsoverlast na",
@@ -4795,8 +5129,8 @@
         ]
       }
     ],
-    "averageRating": 4.3,
-    "reviewCount": 6
+    "averageRating": 4.4,
+    "reviewCount": 7
   },
   {
     "id": "guesty-69c415701b964f00157188b5",
@@ -4812,23 +5146,23 @@
     "priceFrom": 80,
     "pricePerNight": 80,
     "cleaningFee": 65,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/zt7blle9e0qr1gk15nba.jpg",
-      "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/iw8gn8sbkqfeknqz8exy.jpg",
-      "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/ukm8e7kgbbjsmbtzaqpz.jpg",
       "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/txiztepdbgr9toutzdv8.jpg",
+      "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/zt7blle9e0qr1gk15nba.jpg",
+      "https://assets.guesty.com/image/upload/v1775734254/production/6957de4388cba42d9e7a905e/o2ysncr84gkszv3p3uma.jpg",
+      "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/iw8gn8sbkqfeknqz8exy.jpg",
       "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/gthp1xpko5hhwbykugpa.jpg",
       "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/ftncabvv4urwjkrip4cq.jpg",
       "https://assets.guesty.com/image/upload/v1775734251/production/6957de4388cba42d9e7a905e/l92vluonfij2ci9t7aai.jpg",
       "https://assets.guesty.com/image/upload/v1775734251/production/6957de4388cba42d9e7a905e/oic8zkuh0lwonksqmjtr.jpg",
+      "https://assets.guesty.com/image/upload/v1775734248/production/6957de4388cba42d9e7a905e/ukm8e7kgbbjsmbtzaqpz.jpg",
       "https://assets.guesty.com/image/upload/v1775734251/production/6957de4388cba42d9e7a905e/nwnjk3lcbafs7sis5cgh.jpg",
       "https://assets.guesty.com/image/upload/v1775734251/production/6957de4388cba42d9e7a905e/yhytyejvaoxcdy15hhdb.jpg",
       "https://assets.guesty.com/image/upload/v1775734252/production/6957de4388cba42d9e7a905e/kq4efwdznjej4phdvt95.jpg",
       "https://assets.guesty.com/image/upload/v1775734252/production/6957de4388cba42d9e7a905e/luqdcrwvptdrcffhtbwi.jpg",
       "https://assets.guesty.com/image/upload/v1775734254/production/6957de4388cba42d9e7a905e/kgh5oplbrfubrl1onim4.jpg",
-      "https://assets.guesty.com/image/upload/v1775734254/production/6957de4388cba42d9e7a905e/o2ysncr84gkszv3p3uma.jpg",
       "https://assets.guesty.com/image/upload/v1775734254/production/6957de4388cba42d9e7a905e/q66juopbf9hqjwkaxqyl.jpg",
       "https://assets.guesty.com/image/upload/v1775734255/production/6957de4388cba42d9e7a905e/kgh9sdpexybl9jybpyyt.jpg",
       "https://assets.guesty.com/image/upload/v1774457804/production/6957de4388cba42d9e7a905e/lplxjcreuu6rmktm5xw0.jpg"
@@ -4875,6 +5209,7 @@
         "Long term stays allowed",
         "Mini fridge",
         "Mountain view",
+        "Pets allowed",
         "River",
         "Rural",
         "Shampoo",
@@ -5084,7 +5419,6 @@
         "Outdoor seating (furniture)",
         "Oven",
         "Patio or balcony",
-        "Pets allowed",
         "Portable fans",
         "Private entrance",
         "Refrigerator",
@@ -5217,7 +5551,7 @@
     "maxGuests": 12,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 175,
+    "cleaningFee": 300,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -5572,7 +5906,7 @@
     "priceFrom": 170,
     "pricePerNight": 170,
     "cleaningFee": 60,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533616cff760015e28802/6b61a2d5-20f9-40-I_3vL",
@@ -5813,7 +6147,7 @@
     "priceFrom": 700,
     "pricePerNight": 700,
     "cleaningFee": 250,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533d34b583900135cfd96/6bbaca4b-220f-45-KH2kt",
@@ -5920,6 +6254,7 @@
         "Outdoor seating (furniture)",
         "Oven",
         "Patio or balcony",
+        "Pets allowed",
         "Piano",
         "Private entrance",
         "Private pool",
@@ -6112,7 +6447,7 @@
     "priceFrom": 200,
     "pricePerNight": 200,
     "cleaningFee": 200,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1773414298/production/6957de4388cba42d9e7a905e/onvzknrqrg8ab43sf8d7.jpg",
@@ -6208,6 +6543,7 @@
         "Oven",
         "Path to entrance lit at night",
         "Patio or balcony",
+        "Pets allowed",
         "Private entrance",
         "Private pool",
         "Refrigerator",
@@ -6315,7 +6651,7 @@
     "maxGuests": 16,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 229,
+    "cleaningFee": 350,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -6663,6 +6999,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Casa incrível para convívio de amigos",
+        "guestName": "Guest",
+        "date": "2026-04-15T07:44:55.361Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Fuimos un grupo de 16 amigos y nos encantó! Las habitaciones son grandes y con baño propio, todo muy limpio. La cocina tiene todo lo necesario. Hay varias zonas para juntarse. La zona exterior con la piscina está muy bien cuidada. Hay aparcamiento para varios coches en la finca. Repetiríamos!",
         "guestName": "Guest",
         "date": "2026-02-01T18:17:14.755Z",
@@ -6695,7 +7063,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-6970af61638a8a0015eaa850",
@@ -6711,7 +7079,7 @@
     "priceFrom": 180,
     "pricePerNight": 180,
     "cleaningFee": 80,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6970af61638a8a0015eaa850/046eb65d-ffba-43-OtBBM",
@@ -6962,7 +7330,7 @@
     "priceFrom": 100,
     "pricePerNight": 100,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533794fe6a100145fe4bf/7ca9f510-0e38-42-X4Tk4",
@@ -7141,6 +7509,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "We thoroughly enjoyed our stay and wished we had booked for longer than 2 nights. Amazing host, amazing location!",
+        "guestName": "Guest",
+        "date": "2026-04-15T07:10:31.521Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Wonderful experience. We definitely recommend this place. Close to the water and restaurants, peaceful surroundings, excellent amenities, everyone you need and more. \nPam",
         "guestName": "Guest",
         "date": "2026-02-14T00:39:20.694Z",
@@ -7173,7 +7573,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-696532fa6d209c001510d5ee",
@@ -7189,7 +7589,7 @@
     "priceFrom": 90,
     "pricePerNight": 90,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532fa6d209c001510d5ee/cbbdfd1c-2201-41-pmWoy",
@@ -7585,6 +7985,38 @@
     "areaSquareFeet": 3445,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Villa agréable et bien équipée, confortable et bien adaptée pour un grand groupe, surtout pour la partie nuit avec des suites pour chaque couple avec enfants et sans enfants.\nQuelques petits soucis:\n- Le frigo est un peu petit et ne ferme pas bien.\n- Il y a un problème d'évacuation dans les douches du rez-de-chaussée\n- L'étanchéité de la paroi de la douche n'est pas parfaite d'une salle de bain du premier étage, le tapis de bains est trempé.\n- Il n'y a pas de rideau sur la piscine pour assurer l",
+        "guestName": "Guest",
+        "date": "2026-04-14T11:46:48.054Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Muito agradável a estadia, voltaremos a repetir.",
         "guestName": "Guest",
@@ -7713,8 +8145,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 4
+    "averageRating": 4.8,
+    "reviewCount": 5
   },
   {
     "id": "guesty-6965333104b96f00147f5428",
@@ -7730,7 +8162,7 @@
     "priceFrom": 110,
     "pricePerNight": 110,
     "cleaningFee": 80,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965333104b96f00147f5428/aaaff8f9-c04c-43-rKT5p",
@@ -8032,7 +8464,7 @@
     "priceFrom": 90,
     "pricePerNight": 90,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/d5322936-b56e-43-3_jOu",
@@ -8201,6 +8633,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Buena ubicación cerca de la playa",
+        "guestName": "Guest",
+        "date": "2026-04-12T18:02:14.149Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "espaço muito agradável e convidativo à permanência",
         "guestName": "Guest",
         "date": "2026-03-17T11:48:55.484Z",
@@ -8265,7 +8729,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   },
   {
     "id": "guesty-696533266dec35001492fdbb",
@@ -8281,7 +8745,7 @@
     "priceFrom": 90,
     "pricePerNight": 90,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533266dec35001492fdbb/29f4083f-bc29-4f-HwwhR",
@@ -8448,7 +8912,7 @@
     "priceFrom": 350,
     "pricePerNight": 350,
     "cleaningFee": 200,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965332327950e001416f0b2/4fb3d58c-11d7-46-rillQ",
@@ -8723,7 +9187,7 @@
     "propertyType": "House",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": null,
+    "areaSquareFeet": 3230,
     "reviews": [
       {
         "rating": 5,
@@ -9161,225 +9625,6 @@
     "reviewCount": 4
   },
   {
-    "id": "guesty-6965334e4b9b64001401b817",
-    "slug": "portugal-active-encosta-house-01b817",
-    "name": "Portugal Active Encosta House",
-    "tagline": "If you are looking for a peaceful place that is also close to the heart of Viana do Castelo and offers a beautiful mountain view, you need to experien…",
-    "tier": "select",
-    "destination": "minho",
-    "locality": "Viana do Castelo",
-    "bedrooms": 2,
-    "bathrooms": 2,
-    "maxGuests": 5,
-    "priceFrom": 90,
-    "pricePerNight": 90,
-    "cleaningFee": 55,
-    "minNights": 1,
-    "currency": "EUR",
-    "images": [
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/7794c0ba-3855-43-dLMJ4",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/431322d5-4e95-44-KVJMe",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/d489d8be-4863-4b-aJzN5",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/7f71b026-3c1d-40-bnPcp",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/eda8fd96-6fc7-40-WkrAs",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/7dbb43b4-5f88-45-0uC7l",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/17cb2599-2da8-42-Md3yG",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/a4a264fe-b29d-44-p8S-E",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/51466bda-8832-41-6ksEM",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/733326bc-757b-46-4eetA",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/d8ed5c33-3212-4b-M-_Pk",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/dfc9fa75-6101-48-XV74-",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/b579525c-332c-49-CV2eu",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/406ed8e7-1944-42-b_Gkq",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/b75698e9-d9e4-44-Nq9ud",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/5239e908-6512-4e-tAXQr",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/db88afa0-749a-4e-GbBcX",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/627d0cf1-42b0-46-8a1OG",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/06c7d5ef-bfb3-45-euFzA",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/264457e2-a28a-42-XVYiq",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/641cd543-df7e-40-vIKi9",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/439c732f-d847-48-CCHfm",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/98b65943-91c9-45-bW5SS",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/47b7b781-9556-43-QhN_Y",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/89dca442-7626-46-PJlBv",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/07faf753-8d77-43-qQNHu",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/d6a18227-4875-45-Mcwz9",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/fe0ce1d1-3b44-42-zJ6x6",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/ac222882-02c2-42-tak-k",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/dec2c6af-1e88-47-UvZ0F",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/3db343e6-d20c-4a-pEYUw",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/aa74d815-cb59-4f-ncjsz",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/cc58c4d2-879b-4b-bNt38",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/275905fa-0aff-4f-qxnM9",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/2f944b98-136a-4b--ZEIo",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/39710ea9-f142-48-677oC",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/a2d39cc1-01e3-4a-Xc6VC",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965334e4b9b64001401b817/f16d061d-720b-43-SU8bm"
-    ],
-    "description": "If you are looking for a peaceful place that is also close to the heart of Viana do Castelo and offers a beautiful mountain view, you need to experience the Portugal Active Encosta House. This charming retreat is perfect for families or groups of friends seeking comfort and serenity. Encosta House features two spacious bedrooms, including a suite, comfortably accommodating up to 5 people.\n\nImportant: In response to Covid-19, this property has extended cleaning & disinfection measures & protocols to guarantee the safety of our guests. If you are looking for a peaceful place that is also close to the heart of Viana do Castelo and offers a beautiful mountain view, you need to experience the Portugal Active Encosta House. This charming retreat is perfect for families or groups of friends seeking comfort and serenity. Encosta House features two spacious bedrooms, including a suite, comfortably accommodating up to 5 people. Bedroom 1 is equipped with a single bed and a double bed, while Bedroom 2 offers an additional double bed. The living room has a sofa bed, providing extra sleeping space. The house has two full bathrooms, one with a bathtub and the other with a shower. The fully equipped kitchen and washing machine ensure convenience during your stay. The dining and living area is perfect for relaxing after a day of exploration. The highlight of Encosta House is its spacious terrace, furnished with outdoor furniture, ideal for al fresco dining and socializing. The location on the mountain slope offers a mild temperature year-round and a private, tranquil environment. The large yard with a veranda is perfect for relaxing and enjoying the scenery. Located in a quiet rural area, Encosta House is just minutes away from bars, famous restaurants, and public transportation, offering a perfect balance between tranquility and convenience. Its proximity to the center of Viana do Castelo provides easy access to tourist attractions such as the Santuário do Sagrado Coração de Jesus, the Costume Museum, and the Sé Cathedral. Additionally, the house is close to Cabedelo Beach, known for its beautiful landscapes and water sports opportunities. Enjoy an unforgettable stay in Viana do Castelo, surrounded by comfort, nature, and rich local culture at Portugal Active Encosta House.\n\n/\n\nGuests have exclusive access to the entire property, including the garden and all indoor amenities. The Portugal Active concierge service is available 24/7 to cater to any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\n/\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
-    "amenities": {
-      "property": [
-        "BBQ grill",
-        "Baking sheet",
-        "Bathtub",
-        "Bed linens",
-        "City View",
-        "Cleaning Disinfection",
-        "Cleaning products",
-        "Clothing storage",
-        "Coffee",
-        "Coffee maker",
-        "Cookware",
-        "Crib",
-        "Cycling",
-        "Desk",
-        "Dining table",
-        "Dishes and silverware",
-        "Dishwasher",
-        "Enhanced cleaning practices",
-        "Essentials",
-        "Extra pillows and blankets",
-        "Fire extinguisher",
-        "First aid kit",
-        "Fishing",
-        "Free parking on street",
-        "Freezer",
-        "Garden or backyard",
-        "Hair dryer",
-        "Hangers",
-        "Heating",
-        "High chair",
-        "High touch surfaces disinfected",
-        "Horseback Riding",
-        "Hot water",
-        "Internet",
-        "Iron",
-        "Kettle",
-        "Kitchen",
-        "Laptop friendly workspace",
-        "Long term stays allowed",
-        "Microwave",
-        "Mountain view",
-        "Oven",
-        "Patio or balcony",
-        "Pets allowed",
-        "Private entrance",
-        "Refrigerator",
-        "Room-darkening shades",
-        "Shampoo",
-        "Shopping",
-        "Shower gel",
-        "Stove",
-        "Suitable for children (2-12 years)",
-        "Suitable for infants (under 2 years)",
-        "TV",
-        "Toaster",
-        "Towels provided",
-        "Town",
-        "Washer",
-        "Water Parks",
-        "Water Sports",
-        "Window guards",
-        "Wine glasses",
-        "Wireless Internet"
-      ],
-      "bedrooms": [],
-      "kitchen": [],
-      "services": []
-    },
-    "stayIncludes": [],
-    "style": "",
-    "tags": [],
-    "occasions": [],
-    "bookingUrl": "",
-    "guestyId": "6965334e4b9b64001401b817",
-    "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Portugal Active Encosta House",
-    "sortOrder": 0,
-    "isActive": true,
-    "seoTitle": "Portugal Active Encosta House — Portugal Active",
-    "seoDescription": "If you are looking for a peaceful place that is also close to the heart of Viana do Castelo and offers a beautiful mountain view, you need to experience the Por",
-    "address": {
-      "full": "",
-      "street": "Rua das Lavadeiras 51",
-      "city": "Viana do Castelo",
-      "state": "Viana do Castelo",
-      "zipcode": "",
-      "country": "Portugal",
-      "lat": 41.7095473,
-      "lng": -8.8246257
-    },
-    "rooms": [
-      {
-        "name": "Bedroom 1",
-        "beds": [
-          {
-            "type": "DOUBLE_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 2",
-        "beds": [
-          {
-            "type": "SOFA_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 3",
-        "beds": [
-          {
-            "type": "DOUBLE_BED",
-            "quantity": 1
-          }
-        ]
-      }
-    ],
-    "propertyType": "House",
-    "checkInTime": "16:00",
-    "checkOutTime": "11:00",
-    "areaSquareFeet": 1615,
-    "reviews": [
-      {
-        "rating": 4,
-        "text": "Local calmo, muito limpo e corresponde a todas as necessidades",
-        "guestName": "Guest",
-        "date": "2026-04-04T13:57:26.994Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 4
-          },
-          {
-            "name": "location",
-            "score": 4
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      }
-    ],
-    "averageRating": 4,
-    "reviewCount": 1
-  },
-  {
     "id": "guesty-6965334abf04fe0013742da8",
     "slug": "portugal-active-montaria-lodge-742da8",
     "name": "Portugal Active Montaria Lodge",
@@ -9593,9 +9838,42 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 15124,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Casa espetacular para umas mini férias com amigos",
+        "guestName": "Guest",
+        "date": "2026-04-20T17:11:03.243Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-69653335bf04fe0013742743",
@@ -9608,10 +9886,10 @@
     "bedrooms": 8,
     "bathrooms": 8,
     "maxGuests": 16,
-    "priceFrom": 650,
-    "pricePerNight": 650,
+    "priceFrom": 550,
+    "pricePerNight": 550,
     "cleaningFee": 200,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/03348d35-f9f7-4c-ioTvi",
@@ -9958,7 +10236,7 @@
     "priceFrom": 280,
     "pricePerNight": 280,
     "cleaningFee": 150,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/acdc50ee-4f5f-41-Ho_L1",
@@ -10243,7 +10521,7 @@
     "priceFrom": 350,
     "pricePerNight": 350,
     "cleaningFee": 175,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533284b583900135ceb91/d5710825-2cbb-43-l4ehJ",
@@ -10491,6 +10769,38 @@
     "areaSquareFeet": 8612,
     "reviews": [
       {
+        "rating": 4,
+        "text": "This villa is very well equipped and immaculately clean, with comfy beds and lots of space. It is a nice villa but with a bit of attention could be perfect.\nThe pool was worth paying to have heated as my kids loved it. \nThe only negatives were the majority of the patio doors do not open and have all been damaged. The one that does open on balcony required my husband to close it for the outside. They need serious attention. Unfortunately while we were there the front door handle also came off, it",
+        "guestName": "Guest",
+        "date": "2026-04-13T14:57:52.121Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "…",
         "guestName": "Guest",
@@ -10555,8 +10865,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 2
+    "averageRating": 4.7,
+    "reviewCount": 3
   },
   {
     "id": "guesty-69653354109993001383ef5f",
@@ -10572,7 +10882,7 @@
     "priceFrom": 550,
     "pricePerNight": 550,
     "cleaningFee": 230,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1775836140/production/6957de4388cba42d9e7a905e/wiadcvnbvuttjyt4elve.jpg",
@@ -10872,7 +11182,7 @@
       }
     ],
     "propertyType": "Villa",
-    "checkInTime": "17:00",
+    "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 7428,
     "reviews": [
@@ -11629,7 +11939,7 @@
     "priceFrom": 160,
     "pricePerNight": 160,
     "cleaningFee": 75,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533814b9b64001401c7b8/2506f0d9-e229-44-GQdvu",
@@ -12021,7 +12331,7 @@
     "priceFrom": 160,
     "pricePerNight": 160,
     "cleaningFee": 60,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533762def930014e917bf/952df398-6f1c-47-tGPxG",
@@ -12320,7 +12630,7 @@
     "priceFrom": 160,
     "pricePerNight": 160,
     "cleaningFee": 70,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533752def930014e9167c/b3cf568b-6c0c-4d-ZmpQD",
@@ -12549,9 +12859,9 @@
   },
   {
     "id": "guesty-6965339bbf04fe0013743cd8",
-    "slug": "senhorial-house-at-fountain-retreat-pool-sports-743cd8",
-    "name": "Senhorial House at Fountain Retreat-Pool & Sports",
-    "tagline": "The Senhorial House, located within Fountain Retreat I Pool, Jacuzzi & Sports Escape, beautifully blends traditional charm with modern comfort in an a…",
+    "slug": "senhorial-house-with-jacuzzi-at-fountain-retreat-743cd8",
+    "name": "Senhorial House with Jacuzzi at Fountain Retreat",
+    "tagline": "The Senhorial House with Jacuzzi, located within Fountain Retreat I Pool & Sports Escape, beautifully blends traditional charm with modern comfort in …",
     "tier": "select",
     "destination": "minho",
     "locality": "Viana do Castelo",
@@ -12561,7 +12871,7 @@
     "priceFrom": 450,
     "pricePerNight": 450,
     "cleaningFee": 125,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339bbf04fe0013743cd8/b69a5207-1a16-4c-6AyXr",
@@ -12717,7 +13027,7 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339bbf04fe0013743cd8/6a9acd4e-46a2-48-Z7Jdl",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965339bbf04fe0013743cd8/17a69273-5b76-40-aU34r"
     ],
-    "description": "The Senhorial House, located within Fountain Retreat I Pool, Jacuzzi & Sports Escape, beautifully blends traditional charm with modern comfort in an authentic rural setting. Surrounded by lush green fields and mountain views, it offers a peaceful and refined stay—perfect for relaxing, reconnecting with nature, and experiencing the best of countryside living.\n\nSpanning two floors, the Senhorial House is a true gem of Fountain Retreat I Pool, Jacuzzi & Sports Escape, harmoniously combining space, comfort, and elegance.\r\n\r\nWith a total of 7 thoughtfully arranged bedrooms, each featuring a private bathroom, it guarantees maximum privacy and convenience for every guest. Each room invites rest and relaxation, providing the ideal environment to recharge after a day exploring the region’s wonders.\r\n\r\nOn the main floor, you’ll find a spacious, bright living room where natural light dances through the windows, creating a warm and inviting atmosphere for socializing and unwinding. The fully equipped kitchen beckons you to prepare delicious meals, while the dining area is perfect for sharing stories and flavors with friends and family.\r\n\r\nThe terrace offers breathtaking mountain views, inviting you to linger in moments of quiet contemplation and tranquility - the jacuzzi adds a touch of luxury and relaxation to your stay.\r\n\r\nDownstairs, the basement opens up a world of fun and relaxation: in addition to two bedrooms, there is a games room equipped with a pool table, darts, and a small bar—ideal for extending evenings with laughter and lively challenges.\r\n\r\nEvery detail of the Senhorial House has been designed to offer an experience that marries historic charm with contemporary comfort, creating a space where elegance meets rustic simplicity, setting the stage for a memorable stay filled with unique moments.\n\nLocated in Barroselas, Fountain Retreat I Pool, Jacuzzi & Sports Escape offers you the chance to experience the very best of northern Portugal. This charming rural retreat, just a few minutes from Viana do Castelo, invites you to discover the true essence of Minho — from its quiet village streets to the green hills and valleys that surround it.\r\nWander around traditional shops and local fairs, taste regional specialties in cozy family-run restaurants, and soak up the peaceful, authentic rhythm of village life. Nature lovers can explore nearby trails and bike paths winding through hills and fields, while Viana do Castelo’s historic center and its iconic landmarks — like the Santa Luzia Basilica — are only a short drive away.\r\nWhether you want to delve into history, embrace the outdoors, or simply relax in a welcoming, picturesque setting, Barroselas and its surroundings have something special for every visitor.\n\nGuests have full access to the entire property, including the outdoor areas shared with the other houses, such as the swimming pool, garden, minigolf, and tennis court — perfect for relaxing and enjoying the beautiful surroundings.\r\n\r\nThe Portugal Active concierge team is available 24/7 to cater to all requests, from organizing tours and local experiences to booking personalized services like a private chef. To guarantee availability, we kindly ask that you request any services at least 72 hours in advance.\r\n\r\nImportant Note:\r\nDuring high season (from May to October), the swimming pool is regularly maintained to ensure it is in perfect condition for guests. In low season (from November to April), the pool may be closed — please check with our team.\n\nPublic transport is readily available, making your arrival straightforward and convenient. The nearest train station is Barroselas Station, located only 3 km from the house — about a 5‑minute taxi ride or a short drive. The station offers direct connections to Viana do Castelo, Porto, and other towns across the region.\r\nAdditionally, there are bus stops within a short walking distance, providing easy access to Viana do Castelo’s center and the nearby beaches.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
+    "description": "The Senhorial House with Jacuzzi, located within Fountain Retreat I Pool & Sports Escape, beautifully blends traditional charm with modern comfort in an authentic rural setting. Surrounded by lush green fields and mountain views, it offers a peaceful and refined stay—perfect for relaxing, reconnecting with nature, and experiencing the best of countryside living.\n\nSpanning two floors, the Senhorial House is a true gem of Fountain Retreat I Pool & Sports Escape, harmoniously combining space, comfort, and elegance.\n\nWith a total of 7 thoughtfully arranged bedrooms, each featuring a private bathroom, it guarantees maximum privacy and convenience for every guest. Each room invites rest and relaxation, providing the ideal environment to recharge after a day exploring the region’s wonders.\n\nOn the main floor, you’ll find a spacious, bright living room where natural light dances through the windows, creating a warm and inviting atmosphere for socializing and unwinding. The fully equipped kitchen beckons you to prepare delicious meals, while the dining area is perfect for sharing stories and flavors with friends and family.\n\nThe terrace offers breathtaking mountain views, inviting you to linger in moments of quiet contemplation and tranquility - the jacuzzi adds a touch of luxury and relaxation to your stay.\n\nDownstairs, the basement opens up a world of fun and relaxation: in addition to two bedrooms, there is a games room equipped with a pool table, darts, and a small bar—ideal for extending evenings with laughter and lively challenges.\n\nEvery detail of the Senhorial House has been designed to offer an experience that marries historic charm with contemporary comfort, creating a space where elegance meets rustic simplicity, setting the stage for a memorable stay filled with unique moments.\n\nLocated in Barroselas, Fountain Retreat I Pool & Sports Escape offers you the chance to experience the very best of northern Portugal. This charming rural retreat, just a few minutes from Viana do Castelo, invites you to discover the true essence of Minho — from its quiet village streets to the green hills and valleys that surround it.\nWander around traditional shops and local fairs, taste regional specialties in cozy family-run restaurants, and soak up the peaceful, authentic rhythm of village life. Nature lovers can explore nearby trails and bike paths winding through hills and fields, while Viana do Castelo’s historic center and its iconic landmarks — like the Santa Luzia Basilica — are only a short drive away.\nWhether you want to delve into history, embrace the outdoors, or simply relax in a welcoming, picturesque setting, Barroselas and its surroundings have something special for every visitor.\n\nGuests have full access to the entire property, including the outdoor areas shared with the other houses, such as the swimming pool, garden, minigolf, and tennis court — perfect for relaxing and enjoying the beautiful surroundings.\r\n\r\nThe Portugal Active concierge team is available 24/7 to cater to all requests, from organizing tours and local experiences to booking personalized services like a private chef. To guarantee availability, we kindly ask that you request any services at least 72 hours in advance.\r\n\r\nImportant Note:\r\nDuring high season (from May to October), the swimming pool is regularly maintained to ensure it is in perfect condition for guests. In low season (from November to April), the pool may be closed — please check with our team.\n\nPublic transport is readily available, making your arrival straightforward and convenient. The nearest train station is Barroselas Station, located only 3 km from the house — about a 5‑minute taxi ride or a short drive. The station offers direct connections to Viana do Castelo, Porto, and other towns across the region.\r\nAdditionally, there are bus stops within a short walking distance, providing easy access to Viana do Castelo’s center and the nearby beaches.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
     "amenities": {
       "property": [
         "Air conditioning",
@@ -12794,11 +13104,11 @@
     "bookingUrl": "",
     "guestyId": "6965339bbf04fe0013743cd8",
     "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Senhorial House at Fountain Retreat-Pool & Sports",
+    "whatsappMessage": "Hi, I am interested in Senhorial House with Jacuzzi at Fountain Retreat",
     "sortOrder": 0,
     "isActive": true,
-    "seoTitle": "Senhorial House at Fountain Retreat-Pool & Sports — Portugal Active",
-    "seoDescription": "The Senhorial House, located within Fountain Retreat I Pool, Jacuzzi & Sports Escape, beautifully blends traditional charm with modern comfort in an authentic r",
+    "seoTitle": "Senhorial House with Jacuzzi at Fountain Retreat — Portugal Active",
+    "seoDescription": "The Senhorial House with Jacuzzi, located within Fountain Retreat I Pool & Sports Escape, beautifully blends traditional charm with modern comfort in an authent",
     "address": {
       "full": "",
       "street": "Rua da Fonte 101",
@@ -12880,6 +13190,38 @@
     "areaSquareFeet": 3768,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Très bon séjour à 12 personnes",
+        "guestName": "Guest",
+        "date": "2026-04-13T09:25:36.486Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Muito bom",
         "guestName": "Guest",
@@ -12912,8 +13254,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 1
+    "averageRating": 4.5,
+    "reviewCount": 2
   },
   {
     "id": "guesty-696533cf4b583900135cfb02",
@@ -12929,7 +13271,7 @@
     "priceFrom": 140,
     "pricePerNight": 140,
     "cleaningFee": 60,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/dc87d9a4-6781-47-KpYAv",
@@ -13003,6 +13345,7 @@
         "Outdoor seating (furniture)",
         "Oven",
         "Patio or balcony",
+        "Pets allowed",
         "Portable fans",
         "Private entrance",
         "Refrigerator",
@@ -13129,7 +13472,7 @@
     "priceFrom": 250,
     "pricePerNight": 250,
     "cleaningFee": 120,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533aaf142270014026d70/771f6a9f-0d01-48-bKXwc",
@@ -13676,7 +14019,7 @@
     "priceFrom": 280,
     "pricePerNight": 280,
     "cleaningFee": 125,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533abf142270014026fa9/e39457bd-3536-42-Xw1vV",
@@ -14083,7 +14426,7 @@
     "priceFrom": 280,
     "pricePerNight": 280,
     "cleaningFee": 120,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653381bf04fe00137437cd/a6ffb153-43e9-4e-txDut",
@@ -14308,6 +14651,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "We thoroughly enjoyed staying here. We felt very comfortable and at home. We really liked the welcome pack and also that there was olive oil, vinegar, salt and coffee in the cupboard. The game room is a huge bonus. Would love to stay again for longer!",
+        "guestName": "Guest",
+        "date": "2026-04-13T07:36:58.994Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "La casa perfecta para unas vacaciones de relax en familia",
         "guestName": "Guest",
         "date": "2026-04-05T19:15:00.327Z",
@@ -14340,7 +14715,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-69653365bf04fe0013743511",
@@ -14821,6 +15196,66 @@
     "reviewCount": 3
   },
   {
+    "id": "guesty-696f6aad74604800452a40b8",
+    "slug": "test-guesty-test-2a40b8",
+    "name": "Test_Guesty Test",
+    "tagline": "",
+    "tier": "select",
+    "destination": "algarve",
+    "locality": "Portugal",
+    "bedrooms": 1,
+    "bathrooms": 0,
+    "maxGuests": 2,
+    "priceFrom": 9,
+    "pricePerNight": 9,
+    "cleaningFee": 0,
+    "minNights": 1,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1768909477/production/6957de4388cba42d9e7a905e/rkg1icshmjfrzmjfkx65.jpg"
+    ],
+    "description": "Welcome to Test_Guesty Test.",
+    "amenities": {
+      "property": [
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "696f6aad74604800452a40b8",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Test_Guesty Test",
+    "sortOrder": 0,
+    "isActive": true,
+    "seoTitle": "Test_Guesty Test — Portugal Active",
+    "seoDescription": "Test_Guesty Test in Portugal.",
+    "address": {
+      "full": "",
+      "street": "Avenida da Amorosa 1795",
+      "city": "",
+      "state": "Viana do Castelo",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 41.6441737,
+      "lng": -8.799871699999999
+    },
+    "rooms": [],
+    "propertyType": "Apartment",
+    "checkInTime": "15:00",
+    "checkOutTime": "10:00",
+    "areaSquareFeet": null,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
+  },
+  {
     "id": "guesty-696533d64b583900135d00cc",
     "slug": "the-luxury-manor-by-portugal-active-5d00cc",
     "name": "The Luxury Manor by Portugal Active",
@@ -14834,7 +15269,7 @@
     "priceFrom": 500,
     "pricePerNight": 500,
     "cleaningFee": 180,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533d64b583900135d00cc/8318cedf-e8ca-49-4fplK",
@@ -15332,7 +15767,7 @@
     "priceFrom": 180,
     "pricePerNight": 180,
     "cleaningFee": 70,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533616cff760015e28965/c7e29b6b-d3fe-4f-n7r_B",
@@ -15661,12 +16096,13 @@
     "priceFrom": 100,
     "pricePerNight": 100,
     "cleaningFee": 75,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1775750070/production/6957de4388cba42d9e7a905e/d0cflocklntgbaeegb7m.jpg",
       "https://assets.guesty.com/image/upload/v1775750077/production/6957de4388cba42d9e7a905e/ggr07rjh8lmswfsn4g8b.jpg",
+      "https://assets.guesty.com/image/upload/v1775750070/production/6957de4388cba42d9e7a905e/d0cflocklntgbaeegb7m.jpg",
       "https://assets.guesty.com/image/upload/v1775750078/production/6957de4388cba42d9e7a905e/vkwcwetkdtrj63q5yfum.jpg",
+      "https://assets.guesty.com/image/upload/v1775750070/production/6957de4388cba42d9e7a905e/vfy3qmjqhsxvzc1z9tlz.jpg",
       "https://assets.guesty.com/image/upload/v1775750077/production/6957de4388cba42d9e7a905e/zykzwhdw9ycaab5bejf3.jpg",
       "https://assets.guesty.com/image/upload/v1775750074/production/6957de4388cba42d9e7a905e/bwjmjixo6idkgdofz6o0.jpg",
       "https://assets.guesty.com/image/upload/v1775750070/production/6957de4388cba42d9e7a905e/z9iw21csy7rcfva02lck.jpg",
@@ -15678,7 +16114,6 @@
       "https://assets.guesty.com/image/upload/v1775750074/production/6957de4388cba42d9e7a905e/i3vpj4fzvwwrytih6mwt.jpg",
       "https://assets.guesty.com/image/upload/v1775750075/production/6957de4388cba42d9e7a905e/idj3k82tlmbourgxoiw7.jpg",
       "https://assets.guesty.com/image/upload/v1775750070/production/6957de4388cba42d9e7a905e/bqtgi0ubtnndrpltprpx.jpg",
-      "https://assets.guesty.com/image/upload/v1775750070/production/6957de4388cba42d9e7a905e/vfy3qmjqhsxvzc1z9tlz.jpg",
       "https://assets.guesty.com/image/upload/v1775750070/production/6957de4388cba42d9e7a905e/zyt00y8qupub5okcqlni.jpg",
       "https://assets.guesty.com/image/upload/v1775750078/production/6957de4388cba42d9e7a905e/ikwryxis5rsnkb0qsvws.jpg",
       "https://assets.guesty.com/image/upload/v1774457804/production/6957de4388cba42d9e7a905e/lplxjcreuu6rmktm5xw0.jpg"
@@ -15732,6 +16167,7 @@
         "Microwave",
         "Mountain view",
         "Oven",
+        "Pets allowed",
         "Refrigerator",
         "River",
         "Rural",
@@ -16167,7 +16603,7 @@
     "priceFrom": 200,
     "pricePerNight": 200,
     "cleaningFee": 80,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1775721721/production/6957de4388cba42d9e7a905e/sb47gqjpx3szxbkzkq6r.jpg",
@@ -16259,10 +16695,6 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b24fe6a100145fee01/c8c435ae-10ad-46-_zXQS",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b24fe6a100145fee01/44b632ec-d174-4a-9SezJ",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b24fe6a100145fee01/d308570a-5546-4d-NTqjB",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b24fe6a100145fee01/6ace0779-005b-45--dqMs",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b24fe6a100145fee01/bee252c4-5f04-4e-q8qB4",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b24fe6a100145fee01/a4976f7a-2a31-45-MB3QQ",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b24fe6a100145fee01/f678bfcd-cdfc-43-x0Fz0",
       "https://assets.guesty.com/image/upload/v1775721723/production/6957de4388cba42d9e7a905e/cgnvowjhydxlqwqzphja.jpg",
       "https://assets.guesty.com/image/upload/v1775721722/production/6957de4388cba42d9e7a905e/j6ctj5zmbe3nqjsyw0qe.jpg",
       "https://assets.guesty.com/image/upload/v1775721718/production/6957de4388cba42d9e7a905e/fht3rr5vkgvruc17m7jq.jpg",
@@ -16276,7 +16708,11 @@
       "https://assets.guesty.com/image/upload/v1775721719/production/6957de4388cba42d9e7a905e/lgeu3tlhrtmiohrsen4g.jpg",
       "https://assets.guesty.com/image/upload/v1775721717/production/6957de4388cba42d9e7a905e/k9sm7tqm40vlkeperjga.jpg",
       "https://assets.guesty.com/image/upload/v1775721708/production/6957de4388cba42d9e7a905e/kge5umriwzh6618wwbxk.jpg",
-      "https://assets.guesty.com/image/upload/v1775721726/production/6957de4388cba42d9e7a905e/mt7gdie4v8wwnzpll1qe.jpg"
+      "https://assets.guesty.com/image/upload/v1775721726/production/6957de4388cba42d9e7a905e/mt7gdie4v8wwnzpll1qe.jpg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b24fe6a100145fee01/6ace0779-005b-45--dqMs",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b24fe6a100145fee01/bee252c4-5f04-4e-q8qB4",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b24fe6a100145fee01/a4976f7a-2a31-45-MB3QQ",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b24fe6a100145fee01/f678bfcd-cdfc-43-x0Fz0"
     ],
     "description": "Villa Luzia by Portugal Active is a stunning four-storey townhouse featuring three elegant bedrooms, including a suite with a private balcony and breathtaking panoramic views.\r\nJust a 7-minute walk from the center of Viana do Castelo, it’s the perfect location for exploring the city on foot. The nearby Santa Luzia Stairway also offers the perfect setting for scenic walks or invigorating jogs.\n\nVilla Luzia is a true architectural gem, where charm, elegance, and comfort blend harmoniously across four thoughtfully designed levels. At the heart of the home, a bright and refined living room stands out with its impressive bookshelf, high-quality sound system, and a curated collection of CDs — creating a warm and inspiring atmosphere.\r\n\r\nThe spacious, modern, and fully equipped kitchen invites culinary creativity and opens directly onto a cozy terrace — ideal for relaxing outdoors.\r\n\r\nThe home offers three comfortable bedrooms, with the highlight being the master suite: an elegant retreat with an intimate balcony and stunning views over the city.\r\n\r\nOn the top floor, the solarium features a rooftop terrace with spectacular views and a double sofa bed — perfect for accommodating extra guests in comfort and privacy.\r\n\r\nEvery detail at Villa Luzia has been carefully considered to provide a memorable stay, where refined design meets functionality, creating a unique environment of comfort, sophistication, and tranquility.\n\nVilla Luzia by Portugal Active enjoys a truly privileged location in one of the most sought-after areas of Viana do Castelo. Just a 7-minute walk from the city center, it’s the perfect base for those looking to explore the local cuisine, enjoy leisurely strolls, or experience the city life without relying on a car.\r\n\r\nIts close proximity to the iconic Santa Luzia Stairway also offers guests the opportunity for scenic walks or invigorating runs, making it a daily invitation to connect with nature and well-being.\r\n\r\nIn the surrounding area, guests will find a variety of restaurants, cafés, shops, and services, adding authenticity and charm to the neighborhood — all while preserving the tranquility of a welcoming residential zone.\r\n\r\nAn ideal choice for those seeking a memorable stay, where quality of life meets comfort and convenience.\n\nGuests have exclusive access to the entire property. The concierge service from Portugal Active is available 24 hours a day, 7 days a week, to assist with any needs, from organizing local excursions to booking personalized services, such as a private chef. To ensure availability, please request any services at least 72 hours in advance.\n\nVilla Luzia by Portugal Active is very well connected by public transport, making it easy to get around both within the city and beyond. The train and bus stations are just a short walk away, offering quick access to the city center and various points of interest in the region.\r\n\r\nAdditionally, the property is located only 61 km from Francisco Sá Carneiro Airport (Porto), with direct connections by road and rail, ensuring a convenient and hassle-free arrival and departure for guests.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch: \r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour: \r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
     "amenities": {
@@ -16285,6 +16721,7 @@
         "Bathtub",
         "Bed linens",
         "Blender",
+        "Cable TV",
         "City View",
         "Cleaning Disinfection",
         "Cleaning products",
@@ -16304,8 +16741,6 @@
         "Fire extinguisher",
         "First aid kit",
         "Fishing",
-        "Free parking on premises",
-        "Free parking on street",
         "Freezer",
         "Garden View",
         "Garden or backyard",
@@ -16348,7 +16783,6 @@
         "Towels provided",
         "Town",
         "Washer",
-        "Washer in common space",
         "Water Parks",
         "Water Sports",
         "Water View",
@@ -16428,6 +16862,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Great spot a short walk from the center. Lots of space for our family of five and provided everything we needed. Would definitely stay here again.",
+        "guestName": "Guest",
+        "date": "2026-04-20T10:33:12.706Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Estuvimos encantados durante la estancia. La casa tiene todas las comodidades y está muy bien ubicada para visitar la ciudad. La empresa estuvo siempre atenta a nuestras dudas y el trato fue muy bueno. Para repetir.",
         "guestName": "Guest",
         "date": "2026-04-08T08:39:46.805Z",
@@ -16460,7 +16926,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-69c415701b964f00157188ad",
@@ -16476,7 +16942,7 @@
     "priceFrom": 350,
     "pricePerNight": 350,
     "cleaningFee": 230,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1775734077/production/6957de4388cba42d9e7a905e/rrhjmdgvxrdug0pv5f1b.jpg",
@@ -16585,6 +17051,7 @@
         "Mountain view",
         "Oven",
         "Patio or balcony",
+        "Pets allowed",
         "Refrigerator",
         "River",
         "Rural",
@@ -16688,7 +17155,7 @@
     "priceFrom": 80,
     "pricePerNight": 80,
     "cleaningFee": 40,
-    "minNights": 1,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533af4fe6a100145fecb6/126d18ed-ccec-41-oUOmL",
@@ -16872,7 +17339,7 @@
     "locality": "Viana do Castelo",
     "bedrooms": 1,
     "bathrooms": 1,
-    "maxGuests": 2,
+    "maxGuests": 3,
     "priceFrom": 90,
     "pricePerNight": 90,
     "cleaningFee": 40,
@@ -16957,7 +17424,7 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533794b583900135cf0fc/bb344397-9dd8-44-nvK1P",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533794b583900135cf0fc/27fedf5c-f0ad-48-GYb2Z"
     ],
-    "description": "Discover the perfect retreat in Viana do Castelo with Portugal Active. Yellow Breeze Apartment is designed for maximum comfort, offering a modern and welcoming environment. Enjoy the proximity to the beach, a private condominium, and premium services that elevate your experience to another level.\n\nStep into the comfort and elegance of this carefully designed apartment, crafted to offer the best experience. The bedroom features a superior-quality king-size bed, ensuring perfect nights of rest. The bright and welcoming living room has a comfortable sofa, ideal for relaxing after a day at the beach. The equipped kitchen allows you to prepare meals with all the convenience, while the modern bathroom, with a shower, provides a fresh and sophisticated atmosphere. The private balcony invites you to enjoy the outdoors and the tranquility of the space. Every detail has been thought out to provide an unforgettable stay, combining comfort, design, and proximity to the sea.\n\nWhat truly sets this apartment is its proximity to Praia do Cabedelo, a beach internationally renowned for windsurfing, kitesurfing and surfing. \r\nJust steps away, it's a haven for water sports enthusiasts. \r\nAnd when you're ready to explore, you'll find yourself conveniently close to the city center, with a multitude of cafes and renowned restaurants at your fingertips. \r\nNearby, a world of adventure awaits, from water parks to surf schools and kitesurfing lessons—all just a stone's throw away.\r\nDespite our villa's proximity to one of the region's busiest beaches, we've tucked it away in a serene and exclusive residential area. \r\nIt's the perfect retreat for those who crave tranquility without sacrificing easy access to the vibrant city of Viana do Castelo.\r\nDon't miss this chance to experience coastal luxury living at its finest. Your dream vacation is just a click away—book your stay at our premium villa now and immerse yourself in the beauty of Viana do Castelo's coastal paradise. Your escape begins here!\n\nGuests have exclusive access to the entire property. \r\nThe Portugal Active concierge service is available 24/7 to cater to any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\nThe property is accessible by public transport. The nearest train station is Viana do Castelo Station, located just 10 minutes by car or about 30 minutes on foot from the property. From the station, you can easily take a taxi or a local bus to reach the apartment. If you prefer to travel by bus, there are several stops nearby, with routes to the city center and areas around the beach.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
+    "description": "Discover the perfect retreat in Viana do Castelo with Portugal Active. Yellow Breeze Apartment is designed for maximum comfort, offering a modern and welcoming environment. Enjoy the proximity to the beach, a private condominium, and premium services that elevate your experience to another level.\n\nStep into the comfort and elegance of this carefully designed apartment, crafted to offer the best experience. The bedroom features a superior-quality king-size bed, ensuring perfect nights of rest. The bright and welcoming living room has a comfortable sofa bed (for 1 person), ideal for relaxing after a day at the beach. The equipped kitchen allows you to prepare meals with all the convenience, while the modern bathroom, with a shower, provides a fresh and sophisticated atmosphere. The private balcony invites you to enjoy the outdoors and the tranquility of the space. Every detail has been thought out to provide an unforgettable stay, combining comfort, design, and proximity to the sea.\n\nWhat truly sets this apartment is its proximity to Praia do Cabedelo, a beach internationally renowned for windsurfing, kitesurfing and surfing. \r\nJust steps away, it's a haven for water sports enthusiasts. \r\nAnd when you're ready to explore, you'll find yourself conveniently close to the city center, with a multitude of cafes and renowned restaurants at your fingertips. \r\nNearby, a world of adventure awaits, from water parks to surf schools and kitesurfing lessons—all just a stone's throw away.\r\nDespite our villa's proximity to one of the region's busiest beaches, we've tucked it away in a serene and exclusive residential area. \r\nIt's the perfect retreat for those who crave tranquility without sacrificing easy access to the vibrant city of Viana do Castelo.\r\nDon't miss this chance to experience coastal luxury living at its finest. Your dream vacation is just a click away—book your stay at our premium villa now and immerse yourself in the beauty of Viana do Castelo's coastal paradise. Your escape begins here!\n\nGuests have exclusive access to the entire property. \r\nThe Portugal Active concierge service is available 24/7 to cater to any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\nThe property is accessible by public transport. The nearest train station is Viana do Castelo Station, located just 10 minutes by car or about 30 minutes on foot from the property. From the station, you can easily take a taxi or a local bus to reach the apartment. If you prefer to travel by bus, there are several stops nearby, with routes to the city center and areas around the beach.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
     "amenities": {
       "property": [
         "Baking sheet",
@@ -16981,9 +17448,9 @@
         "Fishing",
         "Free parking on street",
         "Freezer",
-        "Garage",
         "Hair dryer",
         "Hangers",
+        "Heating",
         "High chair",
         "High touch surfaces disinfected",
         "Horseback Riding",
@@ -16999,6 +17466,7 @@
         "Oven",
         "Patio or balcony",
         "Pets allowed",
+        "Portable fans",
         "Refrigerator",
         "River",
         "Shampoo",
@@ -17049,6 +17517,15 @@
             "quantity": 1
           }
         ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
       }
     ],
     "propertyType": "Apartment",
@@ -17056,6 +17533,38 @@
     "checkOutTime": "11:00",
     "areaSquareFeet": null,
     "reviews": [
+      {
+        "rating": 5,
+        "text": "Adoramos ficar neste espaço. Muito bonito, bem situado - a 5min a pé da praia, zona calma e bonita. Cozinha com tudo o que é necessário. O único senão é a distância dos supermercados. De resto, foi top!",
+        "guestName": "Guest",
+        "date": "2026-04-17T11:06:21.233Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
       {
         "rating": 5,
         "text": "Appartement très agréable et très propre joliment décoré dans une résidence récente où on peut se garer facilement. Je recommande sans la moindre hésitation !!!!",
@@ -17122,6 +17631,6 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   }
 ]
