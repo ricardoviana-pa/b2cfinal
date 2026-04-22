@@ -43,6 +43,7 @@ import servicesData from '@/data/services.json';
 import productsData from '@/data/products.json';
 import destinationsData from '@/data/destinations.json';
 import type { Destination } from '@/lib/types';
+import { pushEcommerce } from '@/lib/datalayer';
 
 /* ── Types ── */
 
@@ -298,6 +299,25 @@ export default function ExperienceDetail() {
       const s = document.getElementById(scriptId);
       if (s) s.remove();
     };
+  }, [exp?.slug]);
+
+  // GA4: view_item — fires once per experience slug
+  useEffect(() => {
+    if (!exp) return;
+    pushEcommerce({
+      event: 'view_item',
+      ecommerce: {
+        currency: 'EUR',
+        value: exp.priceOta || 0,
+        items: [{
+          item_id: `EXP-${exp.slug}`,
+          item_name: exp.name,
+          item_category: exp.experienceCategory || '',
+          price: exp.priceOta || 0,
+          quantity: 1,
+        }],
+      },
+    });
   }, [exp?.slug]);
 
   /* ── 404 ── */
