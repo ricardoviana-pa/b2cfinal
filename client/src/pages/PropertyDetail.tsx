@@ -431,7 +431,7 @@ export default function PropertyDetail() {
       "@context": "https://schema.org",
       "@type": "LodgingBusiness",
       "name": property.name,
-      "description": property.tagline || property.description?.slice(0, 300),
+      "description": property.tagline || (typeof property.description === 'string' ? property.description.slice(0, 300) : ''),
       "url": `https://www.portugalactive.com/homes/${property.slug}`,
       "image": property.images?.slice(0, 5),
       "numberOfRooms": property.bedrooms,
