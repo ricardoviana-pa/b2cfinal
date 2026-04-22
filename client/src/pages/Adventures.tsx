@@ -266,6 +266,24 @@ export default function Adventures() {
                   <Link
                     href={`/experiences/${adventure.slug}`}
                     className="group block"
+                    onClick={() => {
+                      const expData = experienceData[adventure.slug];
+                      pushEcommerce({
+                        event: 'select_item',
+                        ecommerce: {
+                          item_list_id: 'experiences_listing',
+                          item_list_name: 'Experiences',
+                          items: [{
+                            item_id: `EXP-${adventure.slug}`,
+                            item_name: adventure.name,
+                            item_category: expData?.experienceCategory || '',
+                            price: expData?.priceOta || adventure.priceFrom || 0,
+                            quantity: 1,
+                            index: index + 1,
+                          }],
+                        },
+                      });
+                    }}
                   >
                     <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '4/5' }}>
                       {adventure.image ? (
