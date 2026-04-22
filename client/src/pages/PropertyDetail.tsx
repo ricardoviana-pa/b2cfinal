@@ -451,11 +451,21 @@ export default function PropertyDetail() {
           "availability": "https://schema.org/InStock",
         },
       }),
+      "checkinTime": property.checkInTime ?? 'T15:00',
+      "checkoutTime": property.checkOutTime ?? 'T11:00',
       "provider": {
         "@type": "Organization",
         "name": "Portugal Active",
         "url": "https://www.portugalactive.com",
       },
+      ...(property.averageRating && {
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": property.averageRating,
+          "reviewCount": property.reviewCount ?? 1,
+          "bestRating": 5,
+        },
+      }),
     };
     const script = document.createElement("script");
     script.type = "application/ld+json";
