@@ -822,6 +822,9 @@ export default function ExperienceDetail() {
                 whatsappMessage={exp.whatsappMessage || ''}
                 maxGroupSize={exp.groupSizeRange?.max}
                 bokunActivityId={(exp as any).bokunActivityId}
+                experienceSlug={exp.slug}
+                experienceCategory={exp.experienceCategory}
+                priceOta={exp.priceOta}
               />
 
               {/* Mini review snippet — social proof near CTA */}

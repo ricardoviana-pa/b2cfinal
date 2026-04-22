@@ -5,9 +5,10 @@
    Fallback: WhatsApp prefill when Bókun not configured or no activityId.
    ========================================================================== */
 
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { Check, MessageCircle } from 'lucide-react';
 import BokunCalendarWidget from './BokunCalendarWidget';
+import { pushEcommerce } from '@/lib/datalayer';
 
 interface ExperienceBookingCardProps {
   experienceName: string;
@@ -19,6 +20,10 @@ interface ExperienceBookingCardProps {
   whatsappMessage: string;
   maxGroupSize?: number;
   bokunActivityId?: number;
+  // Tracking
+  experienceSlug?: string;
+  experienceCategory?: string;
+  priceOta?: number;
 }
 
 const WHATSAPP_NUMBER = '351927161771';
@@ -34,8 +39,29 @@ export default function ExperienceBookingCard({
   whatsappMessage,
   maxGroupSize = 10,
   bokunActivityId,
+  experienceSlug,
+  experienceCategory,
+  priceOta,
 }: ExperienceBookingCardProps) {
   const hasBokun = !!bokunActivityId && !!BOKUN_CHANNEL_UUID;
+
+  useEffect(() => {
+    if (!hasBokun || !experienceSlug) return;
+    pushEcommerce({
+      event: 'begin_checkout',
+      ecommerce: {
+        currency: 'EUR',
+        value: priceOta || 0,
+        items: [{
+          item_id: `EXP-${experienceSlug}`,
+          item_name: experienceName,
+          item_category: experienceCategory || '',
+          price: priceOta || 0,
+          quantity: 1,
+        }],
+      },
+    });
+  }, [hasBokun, experienceSlug]);
 
   const finalMessage = useMemo(() => {
     let msg = whatsappMessage || `Hi Portugal Active, I'd like to book the ${experienceName} experience.`;
@@ -82,6 +108,23 @@ export default function ExperienceBookingCard({
             rel="noopener noreferrer"
             className="w-full flex items-center justify-center gap-2 bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase py-4 hover:bg-black transition-colors mb-3"
             style={{ minHeight: '52px' }}
+            onClick={() => {
+              if (!experienceSlug) return;
+              pushEcommerce({
+                event: 'begin_checkout',
+                ecommerce: {
+                  currency: 'EUR',
+                  value: priceOta || 0,
+                  items: [{
+                    item_id: `EXP-${experienceSlug}`,
+                    item_name: experienceName,
+                    item_category: experienceCategory || '',
+                    price: priceOta || 0,
+                    quantity: 1,
+                  }],
+                },
+              });
+            }}
           >
             Check availability
           </a>
