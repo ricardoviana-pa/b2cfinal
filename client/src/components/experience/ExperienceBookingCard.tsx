@@ -47,6 +47,9 @@ export default function ExperienceBookingCard({
 
   useEffect(() => {
     if (!hasBokun || !experienceSlug) return;
+    // Only fire on desktop — card is CSS-hidden (not unmounted) on mobile,
+    // so without this guard it would double-fire alongside the mobile bar click.
+    if (window.matchMedia('(max-width: 1023px)').matches) return;
     pushEcommerce({
       event: 'begin_checkout',
       ecommerce: {

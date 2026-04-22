@@ -20,26 +20,18 @@ import { pushEcommerce } from '@/lib/datalayer';
 const allProducts = productsData as unknown as Product[];
 const adventures = allProducts.filter(p => p.type === 'adventure' && p.isActive).sort((a, b) => a.sortOrder - b.sortOrder);
 
-// Build a slug → { rating, reviewCount } lookup from experienceDetails.json
+// Build per-slug lookups from experienceDetails.json in a single pass
 const experienceRatings: Record<string, { value: number; count: number }> = {};
-((experienceDetailsData as any).experiences || []).forEach((exp: any) => {
-  if (exp.slug && exp.aggregateRating) {
-    experienceRatings[exp.slug] = {
-      value: exp.aggregateRating.value,
-      count: exp.aggregateRating.count,
-    };
-  }
-});
-
-// Slug → { experienceCategory, priceOta } from experienceDetails.json
 const experienceData: Record<string, { experienceCategory: string; priceOta: number }> = {};
 ((experienceDetailsData as any).experiences || []).forEach((exp: any) => {
-  if (exp.slug) {
-    experienceData[exp.slug] = {
-      experienceCategory: exp.experienceCategory || '',
-      priceOta: exp.priceOta || 0,
-    };
+  if (!exp.slug) return;
+  if (exp.aggregateRating) {
+    experienceRatings[exp.slug] = { value: exp.aggregateRating.value, count: exp.aggregateRating.count };
   }
+  experienceData[exp.slug] = {
+    experienceCategory: exp.experienceCategory || '',
+    priceOta: exp.priceOta || 0,
+  };
 });
 
 export default function Adventures() {
