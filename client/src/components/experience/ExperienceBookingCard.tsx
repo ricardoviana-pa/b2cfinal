@@ -61,6 +61,8 @@ export default function ExperienceBookingCard({
         }],
       },
     });
+  // Fires once per slug/hasBokun pair — price/name changes must not re-fire.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasBokun, experienceSlug]);
 
   const finalMessage = useMemo(() => {
