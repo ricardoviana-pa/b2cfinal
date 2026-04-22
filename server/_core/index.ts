@@ -41,6 +41,23 @@ async function startServer() {
 
   app.set("trust proxy", true);
 
+  // Redirect HTTP → HTTPS (relies on trust proxy being set above)
+  app.use((req, res, next) => {
+    const proto = req.headers['x-forwarded-proto'] as string | undefined;
+    if (proto && proto !== 'https') {
+      return res.redirect(301, `https://${req.hostname}${req.originalUrl}`);
+    }
+    next();
+  });
+
+  // Redirect non-www → www
+  app.use((req, res, next) => {
+    if (req.hostname === 'portugalactive.com') {
+      return res.redirect(301, `https://www.portugalactive.com${req.originalUrl}`);
+    }
+    next();
+  });
+
   app.use(helmet({
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
