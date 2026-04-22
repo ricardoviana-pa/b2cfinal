@@ -21,4 +21,4 @@ Allow: /
 User-agent: Bytespider
 Allow: /
 
-Sitemap: https://www.portugaactive.com/sitemap.xml
+Sitemap: https://www.portugalactive.com/sitemap.xml
