@@ -218,12 +218,13 @@ export default function ExperienceDetail() {
 
     const jsonld: Record<string, unknown> = {
       '@context': 'https://schema.org',
-      '@type': ['Product', 'TouristTrip'],
+      '@type': ['Product', 'TouristTrip', 'TouristAttraction'],
       productID: `EXP-${exp.slug}`,
       name: exp.name,
-      description: exp.tagline || exp.description,
+      description: typeof exp.description === 'string' ? exp.description.slice(0, 300) : (typeof exp.tagline === 'string' ? exp.tagline.slice(0, 300) : ''),
       image: exp.gallery && exp.gallery.length ? exp.gallery : [exp.image],
       url: `https://www.portugalactive.com/experiences/${exp.slug}`,
+      touristType: ['Adventure', 'Nature', 'Sport'],
       brand: { '@type': 'Brand', name: 'Portugal Active' },
       provider: {
         '@type': 'Organization',
@@ -239,7 +240,6 @@ export default function ExperienceDetail() {
         validFrom: new Date().toISOString().split('T')[0],
       },
       ...(exp.duration && { duration: exp.duration }),
-      ...(exp.category && { touristType: exp.category }),
       ...(exp.meetingPoint && {
         contentLocation: {
           '@type': 'Place',
