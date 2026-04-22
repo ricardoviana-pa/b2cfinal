@@ -1,7 +1,9 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
 Disallow: /api/
-Disallow: /admin
+Disallow: /*.php$
+Disallow: /search?
 
 # AI crawlers
 User-agent: GPTBot
@@ -19,4 +21,4 @@ Allow: /
 User-agent: Bytespider
 Allow: /
 
-Sitemap: https://www.portugalactive.com/sitemap.xml
+Sitemap: https://www.portugaactive.com/sitemap.xml
