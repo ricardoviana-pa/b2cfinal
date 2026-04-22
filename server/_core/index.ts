@@ -89,6 +89,50 @@ async function startServer() {
   app.get('/journal', (_req, res) => res.redirect(301, '/blog'));
   app.get('/account/login', (_req, res) => res.redirect(301, '/login'));
 
+  // ── Old adventure/activity paths ──────────────────────────────────────────
+  app.get('/adventure', (_req, res) => res.redirect(301, '/experiences'));
+  app.get('/adventure/', (_req, res) => res.redirect(301, '/experiences'));
+  app.get('/adventure/:slug', (req, res) => res.redirect(301, `/experiences/${req.params.slug}`));
+
+  // ── Old rooms paths → /homes ───────────────────────────────────────────────
+  app.get('/rooms', (_req, res) => res.redirect(301, '/homes'));
+  app.get('/rooms/', (_req, res) => res.redirect(301, '/homes'));
+  app.get('/rooms/:slug', (req, res) => res.redirect(301, `/homes/${req.params.slug}`));
+  app.get('/rooms/:slug/', (req, res) => res.redirect(301, `/homes/${req.params.slug}`));
+
+  // ── Old offer/ paths → /services ──────────────────────────────────────────
+  app.get('/offer/:slug', (req, res) => res.redirect(301, `/services/${req.params.slug}`));
+  app.get('/offer/:slug/', (req, res) => res.redirect(301, `/services/${req.params.slug}`));
+  app.get('/new/offer/:slug', (req, res) => res.redirect(301, `/services/${req.params.slug}`));
+  app.get('/new/offer/:slug/', (req, res) => res.redirect(301, `/services/${req.params.slug}`));
+
+  // ── Section renames ────────────────────────────────────────────────────────
+  app.get('/news', (_req, res) => res.redirect(301, '/blog'));
+  app.get('/news/', (_req, res) => res.redirect(301, '/blog'));
+  app.get('/locations', (_req, res) => res.redirect(301, '/destinations'));
+  app.get('/locations/', (_req, res) => res.redirect(301, '/destinations'));
+
+  // ── Contact + About ────────────────────────────────────────────────────────
+  app.get('/connect-with-us', (_req, res) => res.redirect(301, '/contact'));
+  app.get('/connect-with-us/', (_req, res) => res.redirect(301, '/contact'));
+  app.get('/how-it-works', (_req, res) => res.redirect(301, '/about'));
+  app.get('/how-it-works/', (_req, res) => res.redirect(301, '/about'));
+  app.get('/about/', (_req, res) => res.redirect(301, '/about'));
+
+  // ── Legacy PHP ────────────────────────────────────────────────────────────
+  app.get('/index.php', (_req, res) => res.redirect(301, '/'));
+  app.get('/index', (_req, res) => res.redirect(301, '/'));
+
+  // ── Old event paths ────────────────────────────────────────────────────────
+  app.get('/event/horse', (_req, res) => res.redirect(301, '/new/event/horse'));
+  app.get('/event/horse/', (_req, res) => res.redirect(301, '/new/event/horse'));
+
+  // ── Old staging /new/ prefix ──────────────────────────────────────────────
+  app.get('/new/rooms/:slug', (req, res) => res.redirect(301, `/homes/${req.params.slug}`));
+  app.get('/new/rooms/:slug/', (req, res) => res.redirect(301, `/homes/${req.params.slug}`));
+  app.get('/new', (_req, res) => res.redirect(301, '/'));
+  app.get('/new/', (_req, res) => res.redirect(301, '/'));
+
   // Dynamic sitemap.xml with multi-language support
   const SITEMAP_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
 
