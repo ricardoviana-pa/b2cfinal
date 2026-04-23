@@ -9032,6 +9032,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "El alojamiento es precioso, tranquilo, está impecable. Perfecto para grupos familiares. Tuvimos un pequeño problema con el funcionamiento de la caldera pero lo solucionaron de forma rápida. La atención de los hosts ha sido sobresaliente. Recomiendo al 100%",
+        "guestName": "Guest",
+        "date": "2026-04-19T16:43:22.020Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Casa muito catita, espaçosa e bem localizada. Mal chegamos estava a casa limpíssima e com um bom cheiro. Anfitrião respondia muito rápido as mensagens e era esclarecedor.\n\nApenas aponto uma coisa que é o facto de que a internet por vezes não funcionava",
         "guestName": "Guest",
         "date": "2026-04-02T18:39:12.757Z",
@@ -9096,7 +9128,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   },
   {
     "id": "guesty-696532eee44e1a0015bb2460",
