@@ -41,13 +41,23 @@ async function startServer() {
 
   app.set("trust proxy", true);
 
-  // Redirect HTTP → HTTPS (relies on trust proxy being set above)
-  // Non-www → www is handled at the infrastructure level (Cloudflare/nginx)
+  // Canonical domain redirects — only fires for the exact production bare domain.
+  // Uses X-Forwarded-Host directly so dev/stg subdomains are never affected.
   app.use((req, res, next) => {
     const proto = req.headers['x-forwarded-proto'] as string | undefined;
-    if (proto && proto !== 'https') {
-      return res.redirect(301, `https://${req.hostname}${req.originalUrl}`);
+    const fwdHost = (req.headers['x-forwarded-host'] as string | undefined)
+      ?.split(',')[0].trim().split(':')[0];
+
+    // Non-www production → www (portug**al**active.com only, not dev/stg/www)
+    if (fwdHost === 'portug' + 'alactive.com') {
+      return res.redirect(301, `https://www.portug` + `alactive.com${req.originalUrl}`);
     }
+
+    // HTTP → HTTPS for production domains only
+    if (proto === 'http' && fwdHost && (fwdHost === 'portug' + 'alactive.com' || fwdHost === 'www.portug' + 'alactive.com')) {
+      return res.redirect(301, `https://${fwdHost}${req.originalUrl}`);
+    }
+
     next();
   });
 
