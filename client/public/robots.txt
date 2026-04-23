@@ -1,7 +1,9 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
 Disallow: /api/
-Disallow: /admin
+Disallow: /*.php$
+Disallow: /search?
 
 # AI crawlers
 User-agent: GPTBot
