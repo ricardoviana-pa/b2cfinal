@@ -4,7 +4,7 @@
    ========================================================================== */
 
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { useSearch, useLocation } from 'wouter';
+import { useSearch, useLocation, useRouter } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { IMAGES } from '@/lib/images';
@@ -31,6 +31,7 @@ export default function Homes() {
   const { t } = useTranslation();
   usePageMeta({ title: 'Private Villas Portugal | Luxury Holiday Homes', description: 'Browse 50+ handpicked private villas across Portugal. Pool, concierge, housekeeping included. Filter by region and book direct.', image: IMAGES.heroHomes, url: '/homes' });
   const [, navigate] = useLocation();
+  const router = useRouter();
 
   const { data: propsData, isLoading, isError, refetch } = trpc.properties.listForSite.useQuery();
   const allProperties = (propsData ?? []) as Property[];
@@ -111,7 +112,7 @@ export default function Homes() {
     set('location', location, 'all');
     set('sort', sort, 'price-desc');
     const qs = params.toString();
-    const newUrl = `/homes${qs ? `?${qs}` : ''}`;
+    const newUrl = `${router.base}/homes${qs ? `?${qs}` : ''}`;
     if (newUrl !== window.location.pathname + window.location.search) {
       window.history.replaceState(null, '', newUrl);
     }
