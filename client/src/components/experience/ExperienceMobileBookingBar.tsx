@@ -7,6 +7,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { X, MessageCircle } from 'lucide-react';
 import BokunCalendarWidget from './BokunCalendarWidget';
+import { pushEcommerce } from '@/lib/datalayer';
 
 interface ExperienceMobileBookingBarProps {
   experienceName: string;
@@ -14,6 +15,10 @@ interface ExperienceMobileBookingBarProps {
   whatsappMessage: string;
   maxGroupSize?: number;
   bokunActivityId?: number;
+  // Tracking
+  experienceSlug?: string;
+  experienceCategory?: string;
+  priceOta?: number;
 }
 
 const WHATSAPP_NUMBER = '351927161771';
@@ -25,6 +30,9 @@ export default function ExperienceMobileBookingBar({
   whatsappMessage,
   maxGroupSize = 10,
   bokunActivityId,
+  experienceSlug,
+  experienceCategory,
+  priceOta,
 }: ExperienceMobileBookingBarProps) {
   const [visible, setVisible] = useState(false);
   const [widgetOpen, setWidgetOpen] = useState(false);
@@ -75,7 +83,25 @@ export default function ExperienceMobileBookingBar({
           </div>
           {hasBokun ? (
             <button
-              onClick={() => setWidgetOpen(true)}
+              onClick={() => {
+                if (experienceSlug) {
+                  pushEcommerce({
+                    event: 'begin_checkout',
+                    ecommerce: {
+                      currency: 'EUR',
+                      value: priceOta || 0,
+                      items: [{
+                        item_id: `EXP-${experienceSlug}`,
+                        item_name: experienceName,
+                        item_category: experienceCategory || '',
+                        price: priceOta || 0,
+                        quantity: 1,
+                      }],
+                    },
+                  });
+                }
+                setWidgetOpen(true);
+              }}
               className="bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase px-8 py-3.5"
               style={{ minHeight: '48px' }}
             >
@@ -88,6 +114,23 @@ export default function ExperienceMobileBookingBar({
               rel="noopener noreferrer"
               className="bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase px-8 py-3.5 flex items-center"
               style={{ minHeight: '48px' }}
+              onClick={() => {
+                if (!experienceSlug) return;
+                pushEcommerce({
+                  event: 'begin_checkout',
+                  ecommerce: {
+                    currency: 'EUR',
+                    value: priceOta || 0,
+                    items: [{
+                      item_id: `EXP-${experienceSlug}`,
+                      item_name: experienceName,
+                      item_category: experienceCategory || '',
+                      price: priceOta || 0,
+                      quantity: 1,
+                    }],
+                  },
+                });
+              }}
             >
               Check availability
             </a>

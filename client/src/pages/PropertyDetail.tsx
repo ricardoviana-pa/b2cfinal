@@ -431,7 +431,7 @@ export default function PropertyDetail() {
       "@context": "https://schema.org",
       "@type": "LodgingBusiness",
       "name": property.name,
-      "description": property.tagline || property.description?.slice(0, 300),
+      "description": property.tagline || (typeof property.description === 'string' ? property.description.slice(0, 300) : ''),
       "url": `https://www.portugalactive.com/homes/${property.slug}`,
       "image": property.images?.slice(0, 5),
       "numberOfRooms": property.bedrooms,
@@ -451,11 +451,21 @@ export default function PropertyDetail() {
           "availability": "https://schema.org/InStock",
         },
       }),
+      "checkinTime": property.checkInTime ?? 'T15:00',
+      "checkoutTime": property.checkOutTime ?? 'T11:00',
       "provider": {
         "@type": "Organization",
         "name": "Portugal Active",
         "url": "https://www.portugalactive.com",
       },
+      ...(property.averageRating && {
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": property.averageRating,
+          "reviewCount": property.reviewCount ?? 1,
+          "bestRating": 5,
+        },
+      }),
     };
     const script = document.createElement("script");
     script.type = "application/ld+json";

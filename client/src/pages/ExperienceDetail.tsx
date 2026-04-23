@@ -43,6 +43,7 @@ import servicesData from '@/data/services.json';
 import productsData from '@/data/products.json';
 import destinationsData from '@/data/destinations.json';
 import type { Destination } from '@/lib/types';
+import { pushEcommerce } from '@/lib/datalayer';
 
 /* ── Types ── */
 
@@ -217,12 +218,13 @@ export default function ExperienceDetail() {
 
     const jsonld: Record<string, unknown> = {
       '@context': 'https://schema.org',
-      '@type': ['Product', 'TouristTrip'],
+      '@type': ['Product', 'TouristTrip', 'TouristAttraction'],
       productID: `EXP-${exp.slug}`,
       name: exp.name,
-      description: exp.tagline || exp.description,
+      description: typeof exp.description === 'string' ? exp.description.slice(0, 300) : (typeof exp.tagline === 'string' ? exp.tagline.slice(0, 300) : ''),
       image: exp.gallery && exp.gallery.length ? exp.gallery : [exp.image],
       url: `https://www.portugalactive.com/experiences/${exp.slug}`,
+      touristType: ['Adventure', 'Nature', 'Sport'],
       brand: { '@type': 'Brand', name: 'Portugal Active' },
       provider: {
         '@type': 'Organization',
@@ -238,7 +240,6 @@ export default function ExperienceDetail() {
         validFrom: new Date().toISOString().split('T')[0],
       },
       ...(exp.duration && { duration: exp.duration }),
-      ...(exp.category && { touristType: exp.category }),
       ...(exp.meetingPoint && {
         contentLocation: {
           '@type': 'Place',
@@ -298,6 +299,25 @@ export default function ExperienceDetail() {
       const s = document.getElementById(scriptId);
       if (s) s.remove();
     };
+  }, [exp?.slug]);
+
+  // GA4: view_item — fires once per experience slug
+  useEffect(() => {
+    if (!exp) return;
+    pushEcommerce({
+      event: 'view_item',
+      ecommerce: {
+        currency: 'EUR',
+        value: exp.priceOta || 0,
+        items: [{
+          item_id: `EXP-${exp.slug}`,
+          item_name: exp.name,
+          item_category: exp.experienceCategory || '',
+          price: exp.priceOta || 0,
+          quantity: 1,
+        }],
+      },
+    });
   }, [exp?.slug]);
 
   /* ── 404 ── */
@@ -802,6 +822,9 @@ export default function ExperienceDetail() {
                 whatsappMessage={exp.whatsappMessage || ''}
                 maxGroupSize={exp.groupSizeRange?.max}
                 bokunActivityId={(exp as any).bokunActivityId}
+                experienceSlug={exp.slug}
+                experienceCategory={exp.experienceCategory}
+                priceOta={exp.priceOta}
               />
 
               {/* Mini review snippet — social proof near CTA */}
@@ -909,6 +932,9 @@ export default function ExperienceDetail() {
         whatsappMessage={exp.whatsappMessage || ''}
         maxGroupSize={exp.groupSizeRange?.max}
         bokunActivityId={(exp as any).bokunActivityId}
+        experienceSlug={exp.slug}
+        experienceCategory={exp.experienceCategory}
+        priceOta={exp.priceOta}
       />
 
     </div>

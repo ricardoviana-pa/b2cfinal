@@ -59,8 +59,8 @@ function useFadeIn() {
 export default function Home() {
   const { t } = useTranslation();
   usePageMeta({
-    title: 'Luxury Private Villas in Portugal | Hotel Service',
-    description: '50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool. Book direct for best rates.',
+    title: 'Portugal Active | Adventure Lodges & Experiences in Minho',
+    description: 'Handpicked adventure lodges, outdoor experiences and concierge services in northern Portugal. Book horseback riding, canyoning, and unique stays in Minho.',
     url: '/',
   });
   useEffect(() => {
@@ -133,6 +133,29 @@ export default function Home() {
     return () => {
       document.querySelector("#home-localbusiness-jsonld")?.remove();
       document.querySelector("#home-faq-jsonld")?.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    const websiteLd = {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Portugal Active",
+      "url": "https://www.portugalactive.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://www.portugalactive.com/homes?q={search_term_string}",
+        "query-input": "required name=search_term_string",
+      },
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify(websiteLd);
+    script.id = "home-website-jsonld";
+    document.querySelector("#home-website-jsonld")?.remove();
+    document.head.appendChild(script);
+    return () => {
+      document.querySelector("#home-website-jsonld")?.remove();
     };
   }, []);
 
