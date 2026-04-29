@@ -1,3 +1,7 @@
+/**
+ * Cancellation Policy — Portugal Active
+ * Design: Le Collectionist-inspired. Clean legal page.
+ */
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from '@/components/layout/Header';
