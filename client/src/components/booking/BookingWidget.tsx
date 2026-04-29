@@ -1024,6 +1024,7 @@ export default function BookingWidget({
                     const savings = maxTotal - opt.total;
                     const isNonRefundable = opt.name.toLowerCase().includes("non") && opt.name.toLowerCase().includes("refund");
                     const isFlexible = opt.name.toLowerCase().includes("flex") || opt.name.toLowerCase().includes("free");
+                    const policyAnchor = opt.cancellationPolicy?.[0] ? policyPageAnchor(opt.cancellationPolicy[0]) : null;
                     return (
                       <label
                         key={opt.ratePlanId}
@@ -1043,12 +1044,13 @@ export default function BookingWidget({
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            {isNonRefundable ? (
+                            {isNonRefundable && policyAnchor ? (
                               <a
-                                href="/legal/cancellation-policy#non-refundable"
+                                href={`/legal/cancellation-policy${policyAnchor}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={e => e.stopPropagation()}
+                                aria-label={`${humanizeRatePlanName(opt.name)} – opens cancellation policy in a new tab`}
                                 className="text-[13px] text-black font-medium underline underline-offset-2 hover:text-black/70 transition-colors"
                               >
                                 {humanizeRatePlanName(opt.name)}
@@ -1060,23 +1062,22 @@ export default function BookingWidget({
                               <span className="text-[9px] font-semibold tracking-wider uppercase px-1.5 py-0.5 bg-green-50 text-green-700 border border-green-200/50">{t("bookingWidget.recommended", { defaultValue: "Recommended" })}</span>
                             )}
                           </div>
-                          {opt.cancellationPolicy?.[0] && (() => {
-                            const text = humanizeCancellationPolicy(opt.cancellationPolicy[0]);
-                            const anchor = policyPageAnchor(opt.cancellationPolicy[0]);
-                            return anchor ? (
+                          {opt.cancellationPolicy?.[0] && (
+                            policyAnchor ? (
                               <a
-                                href={`/legal/cancellation-policy${anchor}`}
+                                href={`/legal/cancellation-policy${policyAnchor}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={e => e.stopPropagation()}
+                                aria-label={`${humanizeCancellationPolicy(opt.cancellationPolicy[0])} – opens cancellation policy in a new tab`}
                                 className="text-[11px] text-black/40 mt-0.5 underline underline-offset-2 hover:text-black/70 transition-colors block"
                               >
-                                {text}
+                                {humanizeCancellationPolicy(opt.cancellationPolicy[0])}
                               </a>
                             ) : (
-                              <p className="text-[11px] text-black/40 mt-0.5">{text}</p>
-                            );
-                          })()}
+                              <p className="text-[11px] text-black/40 mt-0.5">{humanizeCancellationPolicy(opt.cancellationPolicy[0])}</p>
+                            )
+                          )}
                           {isNonRefundable && (
                             <p className="text-[10px] text-red-500/70 mt-0.5">{t("bookingWidget.nonRefundableWarning", { defaultValue: "No refund if you cancel or modify" })}</p>
                           )}
