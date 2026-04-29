@@ -249,7 +249,9 @@
     "minNightMinimum": "{{count}} Nächte Minimum",
     "reserveAndPay": "RESERVIEREN UND BEZAHLEN",
     "reserveNow": "JETZT RESERVIEREN",
-    "requestWithoutPayment": "Oder Anfrage ohne Zahlung"
+    "requestWithoutPayment": "Oder Anfrage ohne Zahlung",
+    "belowMinNightsWarning_one": "Bitte wählen Sie mindestens {{count}} Nacht aus, um fortzufahren",
+    "belowMinNightsWarning_other": "Bitte wählen Sie mindestens {{count}} Nächte aus, um fortzufahren"
   },
   "common": {
     "loading": "Wird geladen…",

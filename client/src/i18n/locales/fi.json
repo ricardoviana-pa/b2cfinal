@@ -249,7 +249,9 @@
     "minNightMinimum": "vähintään {{count}} yötä",
     "reserveAndPay": "VARAA JA MAKSA",
     "reserveNow": "VARAA NYT",
-    "requestWithoutPayment": "Tai pyydä ilman maksua"
+    "requestWithoutPayment": "Tai pyydä ilman maksua",
+    "belowMinNightsWarning_one": "Valitse vähintään {{count}} yö jatkaaksesi",
+    "belowMinNightsWarning_other": "Valitse vähintään {{count}} yötä jatkaaksesi"
   },
   "common": {
     "loading": "Ladataan…",

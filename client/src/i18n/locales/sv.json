@@ -249,7 +249,9 @@
     "minNightMinimum": "minst {{count}} nätter",
     "reserveAndPay": "RESERVERA OCH BETALA",
     "reserveNow": "RESERVERA NU",
-    "requestWithoutPayment": "Eller förfråga utan betalning"
+    "requestWithoutPayment": "Eller förfråga utan betalning",
+    "belowMinNightsWarning_one": "Välj minst {{count}} natt för att fortsätta",
+    "belowMinNightsWarning_other": "Välj minst {{count}} nätter för att fortsätta"
   },
   "common": {
     "loading": "Laddar…",

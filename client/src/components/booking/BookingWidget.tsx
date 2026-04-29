@@ -294,6 +294,8 @@ export default function BookingWidget({
     return diff > 0 ? Math.ceil(diff / 86400000) : 0;
   }, [checkIn, checkOut]);
 
+  const isBelow = nights > 0 && nights < minNights;
+
   const utils = trpc.useUtils();
   const { data: isBECheckoutAvailable } = trpc.booking.isBECheckoutAvailable.useQuery();
   const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
@@ -780,6 +782,15 @@ export default function BookingWidget({
           </p>
         )}
 
+        {isBelow && (
+          <div className="flex items-start gap-2.5 p-3 mt-2 bg-amber-50/80 border border-amber-200/60">
+            <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
+            <p className="text-xs text-amber-800 font-medium leading-snug">
+              {t("bookingWidget.belowMinNightsWarning", { count: minNights })}
+            </p>
+          </div>
+        )}
+
         {/* Guests selector */}
         <div className="border border-black/15 mt-3 px-4 py-3">
           <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-black/35 mb-2">{t("booking.guestsLabel")}</p>
@@ -855,7 +866,7 @@ export default function BookingWidget({
           <div className="space-y-2">
             <button
               onClick={fetchQuote}
-              disabled={!checkIn || !checkOut || loading || nights < minNights}
+              disabled={!checkIn || !checkOut || loading || isBelow}
               className={cn(
                 "w-full min-h-[52px] px-8 text-xs font-medium tracking-[0.15em] uppercase transition-all",
                 "bg-black text-white hover:bg-black/85",

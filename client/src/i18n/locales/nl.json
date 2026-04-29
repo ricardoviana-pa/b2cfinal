@@ -249,7 +249,9 @@
     "minNightMinimum": "minimaal {{count}} nachten",
     "reserveAndPay": "RESERVEER EN BETAAL",
     "reserveNow": "NU RESERVEREN",
-    "requestWithoutPayment": "Of aanvragen zonder betaling"
+    "requestWithoutPayment": "Of aanvragen zonder betaling",
+    "belowMinNightsWarning_one": "Selecteer minimaal {{count}} nacht om door te gaan",
+    "belowMinNightsWarning_other": "Selecteer minimaal {{count}} nachten om door te gaan"
   },
   "common": {
     "loading": "Laden…",

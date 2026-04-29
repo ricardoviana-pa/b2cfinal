@@ -249,7 +249,9 @@
     "minNightMinimum": "{{count}}-night minimum",
     "reserveAndPay": "RESERVE AND PAY",
     "reserveNow": "RESERVE NOW",
-    "requestWithoutPayment": "Or request without payment"
+    "requestWithoutPayment": "Or request without payment",
+    "belowMinNightsWarning_one": "Please select at least {{count}} night to continue",
+    "belowMinNightsWarning_other": "Please select at least {{count}} nights to continue"
   },
   "common": {
     "loading": "Loading…",

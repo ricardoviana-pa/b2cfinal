@@ -249,7 +249,9 @@
     "minNightMinimum": "Minimo {{count}} notti",
     "reserveAndPay": "PRENOTA E PAGA",
     "reserveNow": "PRENOTA ORA",
-    "requestWithoutPayment": "Oppure richiedi senza pagamento"
+    "requestWithoutPayment": "Oppure richiedi senza pagamento",
+    "belowMinNightsWarning_one": "Seleziona almeno {{count}} notte per continuare",
+    "belowMinNightsWarning_other": "Seleziona almeno {{count}} notti per continuare"
   },
   "common": {
     "loading": "Caricamento…",
