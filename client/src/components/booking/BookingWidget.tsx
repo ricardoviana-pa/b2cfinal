@@ -376,7 +376,7 @@ export default function BookingWidget({
 
   const fetchQuote = useCallback(async () => {
     if (!checkIn || !checkOut) return;
-    if (nights < minNights) {
+    if (nights > 0 && nights < minNights) {
       setError(i18n.t("bookingWidget.minimumStay", { count: minNights }));
       setQuote(null);
       return;
@@ -463,7 +463,7 @@ export default function BookingWidget({
   fetchQuoteRef.current = fetchQuote;
 
   useEffect(() => {
-    if (!checkIn || !checkOut || nights < minNights || step !== "dates") return;
+    if (!checkIn || !checkOut || (nights > 0 && nights < minNights) || step !== "dates") return;
     const timer = setTimeout(() => {
       fetchQuoteRef.current();
     }, 450);
