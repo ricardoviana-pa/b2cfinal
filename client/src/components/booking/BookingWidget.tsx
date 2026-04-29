@@ -114,6 +114,15 @@ function humanizeCancellationPolicy(raw: string): string {
   return policyMap[raw.toLowerCase()] || raw;
 }
 
+/** Map Guesty policy code to cancellation-policy page anchor, or null if no dedicated section */
+function policyPageAnchor(raw: string): string | null {
+  const map: Record<string, string> = {
+    super_strict: '#non-refundable',
+    firm: '#firm',
+  };
+  return map[raw.toLowerCase()] ?? null;
+}
+
 /** Format date with zero-padded day and month name (e.g., "08 Apr") */
 function formatDateDisplay(dateStr: string, locale: string = "en-US", includeYear: boolean = false): string {
   const date = new Date(dateStr + "T12:00:00");
@@ -1034,14 +1043,40 @@ export default function BookingWidget({
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <p className="text-[13px] text-black font-medium">{humanizeRatePlanName(opt.name)}</p>
+                            {isNonRefundable ? (
+                              <a
+                                href="/legal/cancellation-policy#non-refundable"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={e => e.stopPropagation()}
+                                className="text-[13px] text-black font-medium underline underline-offset-2 hover:text-black/70 transition-colors"
+                              >
+                                {humanizeRatePlanName(opt.name)}
+                              </a>
+                            ) : (
+                              <p className="text-[13px] text-black font-medium">{humanizeRatePlanName(opt.name)}</p>
+                            )}
                             {isFlexible && (
                               <span className="text-[9px] font-semibold tracking-wider uppercase px-1.5 py-0.5 bg-green-50 text-green-700 border border-green-200/50">{t("bookingWidget.recommended", { defaultValue: "Recommended" })}</span>
                             )}
                           </div>
-                          {opt.cancellationPolicy?.[0] && (
-                            <p className="text-[11px] text-black/40 mt-0.5">{humanizeCancellationPolicy(opt.cancellationPolicy[0])}</p>
-                          )}
+                          {opt.cancellationPolicy?.[0] && (() => {
+                            const text = humanizeCancellationPolicy(opt.cancellationPolicy[0]);
+                            const anchor = policyPageAnchor(opt.cancellationPolicy[0]);
+                            return anchor ? (
+                              <a
+                                href={`/legal/cancellation-policy${anchor}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={e => e.stopPropagation()}
+                                className="text-[11px] text-black/40 mt-0.5 underline underline-offset-2 hover:text-black/70 transition-colors block"
+                              >
+                                {text}
+                              </a>
+                            ) : (
+                              <p className="text-[11px] text-black/40 mt-0.5">{text}</p>
+                            );
+                          })()}
                           {isNonRefundable && (
                             <p className="text-[10px] text-red-500/70 mt-0.5">{t("bookingWidget.nonRefundableWarning", { defaultValue: "No refund if you cancel or modify" })}</p>
                           )}
