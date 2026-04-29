@@ -1004,5 +1004,18 @@
   },
   "reviews": {
     "whatTheyRemember": "Ciò che ricordano di più."
+  },
+  "cancellationPolicy": {
+    "overline": "LEGALE",
+    "pageTitle": "Politiche di Cancellazione",
+    "intro": "Offriamo diversi piani tariffari con diverse condizioni di cancellazione. Si prega di rivedere la politica applicabile prima di confermare la prenotazione.",
+    "flexibleTitle": "Flessibile",
+    "flexibleBody": "Rimborso completo se cancellato almeno 24 ore prima del check-in. Le cancellazioni entro 24 ore dal check-in non sono rimborsabili. Le modifiche delle date sono soggette a disponibilità.",
+    "firmTitle": "Politica di Cancellazione Moderata",
+    "firmBody": "Rimborso del 50% se cancellato almeno 30 giorni prima del check-in. Nessun rimborso per cancellazioni effettuate meno di 30 giorni prima del check-in. Consigliamo di stipulare un'assicurazione di viaggio.",
+    "strictTitle": "Cancellazione Rigorosa",
+    "strictBody": "Rimborso del 50% se cancellato almeno 60 giorni prima del check-in. Nessun rimborso per cancellazioni effettuate meno di 60 giorni prima del check-in. Non rimborsabile dopo il check-in.",
+    "nonRefundableTitle": "Non Rimborsabile",
+    "nonRefundableBody": "Questa tariffa è offerta a un prezzo ridotto in cambio di una politica di non rimborso. Una volta prenotato, non verrà emesso alcun rimborso indipendentemente dalla data di cancellazione. Si consiglia vivamente di acquistare un'assicurazione di viaggio quando si sceglie questa tariffa."
   }
 }

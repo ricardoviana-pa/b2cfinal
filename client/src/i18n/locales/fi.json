@@ -1004,5 +1004,18 @@
   },
   "reviews": {
     "whatTheyRemember": "Mitä he muistavat eniten."
+  },
+  "cancellationPolicy": {
+    "overline": "OIKEUDELLINEN",
+    "pageTitle": "Peruutuskäytännöt",
+    "intro": "Tarjoamme useita hinnoittelusuunnitelmia erilaisilla peruutusehdoilla. Tarkista sovellettava käytäntö ennen varauksen vahvistamista.",
+    "flexibleTitle": "Joustava",
+    "flexibleBody": "Täysi hyvitys, jos peruutus tehdään vähintään 24 tuntia ennen sisäänkirjautumista. Peruutukset 24 tunnin sisällä sisäänkirjautumisesta eivät ole hyvityskelpoisia. Päivämuutokset ovat saatavuuden mukaisia.",
+    "firmTitle": "Kohtalainen Peruutuskäytäntö",
+    "firmBody": "50 %:n hyvitys, jos peruutus tehdään vähintään 30 päivää ennen sisäänkirjautumista. Ei hyvitystä peruutuksille, jotka tehdään alle 30 päivää ennen sisäänkirjautumista. Suosittelemme matkavakuutuksen hankkimista.",
+    "strictTitle": "Tiukka Peruutus",
+    "strictBody": "50 %:n hyvitys, jos peruutus tehdään vähintään 60 päivää ennen sisäänkirjautumista. Ei hyvitystä peruutuksille, jotka tehdään alle 60 päivää ennen sisäänkirjautumisesta. Ei hyvityskelpoinen sisäänkirjautumisen jälkeen.",
+    "nonRefundableTitle": "Ei Hyvityskelpoinen",
+    "nonRefundableBody": "Tämä hinta tarjotaan alennettuun hintaan vastineena ei-palautusmaksukäytännöstä. Varauksen jälkeen hyvitystä ei myönnetä peruutuspäivämäärästä riippumatta. Suosittelemme vahvasti matkavakuutuksen ostamista tätä hintaa valittaessa."
   }
 }

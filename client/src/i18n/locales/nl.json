@@ -1004,5 +1004,18 @@
   },
   "reviews": {
     "whatTheyRemember": "Wat ze zich het meest herinneren."
+  },
+  "cancellationPolicy": {
+    "overline": "JURIDISCH",
+    "pageTitle": "Annuleringsbeleid",
+    "intro": "We bieden meerdere tariefplannen met verschillende annuleringsvoorwaarden. Bekijk het toepasselijke beleid aandachtig voordat u uw boeking bevestigt.",
+    "flexibleTitle": "Flexibel",
+    "flexibleBody": "Volledige terugbetaling bij annulering minimaal 24 uur voor inchecken. Annuleringen binnen 24 uur voor inchecken zijn niet restitueerbaar. Datumswijzigingen zijn afhankelijk van beschikbaarheid.",
+    "firmTitle": "Gematigd Annuleringsbeleid",
+    "firmBody": "50% terugbetaling bij annulering minimaal 30 dagen voor inchecken. Geen terugbetaling bij annuleringen minder dan 30 dagen voor inchecken. Wij raden aan een reisverzekering af te sluiten.",
+    "strictTitle": "Strikt Annuleringsbeleid",
+    "strictBody": "50% terugbetaling bij annulering minimaal 60 dagen voor inchecken. Geen terugbetaling bij annuleringen minder dan 60 dagen voor inchecken. Niet restitueerbaar na inchecken.",
+    "nonRefundableTitle": "Niet Restitueerbaar",
+    "nonRefundableBody": "Dit tarief wordt aangeboden tegen een gereduceerde prijs in ruil voor een niet-restitutiebeleid. Eenmaal geboekt, wordt er geen terugbetaling gedaan ongeacht de annuleringsdatum. Wij raden ten zeerste aan een reisverzekering te kopen bij het kiezen van dit tarief."
   }
 }
