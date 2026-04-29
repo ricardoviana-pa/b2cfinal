@@ -26,6 +26,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Cookies = lazy(() => import("./pages/Cookies"));
+const CancellationPolicy = lazy(() => import("./pages/CancellationPolicy"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
 const ExperienceDetail = lazy(() => import("./pages/ExperienceDetail"));
 const Blog = lazy(() => import("./pages/Blog"));
@@ -145,6 +146,7 @@ function Router() {
         <Route path="/legal/privacy" component={Privacy} />
         <Route path="/legal/terms" component={Terms} />
         <Route path="/legal/cookies" component={Cookies} />
+        <Route path="/legal/cancellation-policy" component={CancellationPolicy} />
         <Route path="/admin" nest component={AdminRouter} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
