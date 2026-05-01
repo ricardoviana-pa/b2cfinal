@@ -6,6 +6,7 @@
 # ── Default policy: all crawlers ─────────────────────────────────────
 User-agent: *
 Allow: /
+Disallow: /admin/
 Disallow: /api/
 Disallow: /admin/
 Disallow: /*/admin/
@@ -15,6 +16,8 @@ Disallow: /login
 Disallow: /*/login
 Disallow: /booking/confirmation/
 Disallow: /*/booking/confirmation/
+Disallow: /*.php$
+Disallow: /search?
 
 # ── AI & LLM crawlers (training + retrieval + on-demand fetch) ───────
 # Grouped explicitly so they inherit the same disallow list as * above.

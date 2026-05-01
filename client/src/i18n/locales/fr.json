@@ -249,7 +249,9 @@
     "minNightMinimum": "Minimum {{count}} nuits",
     "reserveAndPay": "RÉSERVER ET PAYER",
     "reserveNow": "RÉSERVER MAINTENANT",
-    "requestWithoutPayment": "Ou demande sans paiement"
+    "requestWithoutPayment": "Ou demande sans paiement",
+    "belowMinNightsWarning_one": "Veuillez sélectionner au moins {{count}} nuit pour continuer",
+    "belowMinNightsWarning_other": "Veuillez sélectionner au moins {{count}} nuits pour continuer"
   },
   "common": {
     "loading": "Chargement…",
@@ -999,5 +1001,18 @@
   },
   "reviews": {
     "whatTheyRemember": "Ce dont ils se souviennent le plus."
+  },
+  "cancellationPolicy": {
+    "overline": "LÉGAL",
+    "pageTitle": "Politiques d'Annulation",
+    "intro": "Nous proposons plusieurs formules tarifaires avec différentes conditions d'annulation. Veuillez consulter la politique applicable avant de confirmer votre réservation.",
+    "flexibleTitle": "Flexible",
+    "flexibleBody": "Remboursement intégral si annulation au moins 24 heures avant l'arrivée. Les annulations dans les 24 heures précédant l'arrivée ne sont pas remboursables. Les modifications de dates sont soumises à disponibilité.",
+    "firmTitle": "Politique d'Annulation Modérée",
+    "firmBody": "Remboursement de 50 % si annulation au moins 30 jours avant l'arrivée. Aucun remboursement pour les annulations effectuées moins de 30 jours avant l'arrivée. Nous recommandons de souscrire une assurance voyage.",
+    "strictTitle": "Annulation Stricte",
+    "strictBody": "Remboursement de 50 % si annulation au moins 60 jours avant l'arrivée. Aucun remboursement pour les annulations effectuées moins de 60 jours avant l'arrivée. Non remboursable après l'arrivée.",
+    "nonRefundableTitle": "Non Remboursable",
+    "nonRefundableBody": "Ce tarif est proposé à prix réduit en échange d'une politique de non-remboursement. Une fois la réservation effectuée, aucun remboursement ne sera émis quelle que soit la date d'annulation. Nous recommandons vivement de souscrire une assurance voyage lors du choix de ce tarif."
   }
 }

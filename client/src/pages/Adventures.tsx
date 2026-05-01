@@ -3,7 +3,7 @@
    Adventure catalogue filtered by destination, with itinerary integration
    ========================================================================== */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -16,19 +16,23 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildFaqPageSchema } from '@/components/seo/StructuredData';
+import { pushEcommerce } from '@/lib/datalayer';
 
 const allProducts = productsData as unknown as Product[];
 const adventures = allProducts.filter(p => p.type === 'adventure' && p.isActive).sort((a, b) => a.sortOrder - b.sortOrder);
 
-// Build a slug → { rating, reviewCount } lookup from experienceDetails.json
+// Build per-slug lookups from experienceDetails.json in a single pass
 const experienceRatings: Record<string, { value: number; count: number }> = {};
+const experienceData: Record<string, { experienceCategory: string; priceOta: number }> = {};
 ((experienceDetailsData as any).experiences || []).forEach((exp: any) => {
-  if (exp.slug && exp.aggregateRating) {
-    experienceRatings[exp.slug] = {
-      value: exp.aggregateRating.value,
-      count: exp.aggregateRating.count,
-    };
+  if (!exp.slug) return;
+  if (exp.aggregateRating) {
+    experienceRatings[exp.slug] = { value: exp.aggregateRating.value, count: exp.aggregateRating.count };
   }
+  experienceData[exp.slug] = {
+    experienceCategory: exp.experienceCategory || '',
+    priceOta: exp.priceOta || 0,
+  };
 });
 
 export default function Adventures() {
@@ -91,6 +95,72 @@ export default function Adventures() {
     return adventures.filter(a => a.destinations.includes(destination as DestinationSlug));
   }, [destination]);
 
+  // GA4 view_item_list refs — same pattern as Homes.tsx
+  const cardDataRef = useRef<Map<string, { adventure: Product; index: number }>>(new Map());
+  const slugToElementRef = useRef<Map<string, Element>>(new Map());
+  const elementToSlugRef = useRef<Map<Element, string>>(new Map());
+  const pendingItemsRef = useRef<Map<string, { adventure: Product; index: number }>>(new Map());
+  const flushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  // GA4: view_item_list — fires only for adventure cards that enter the viewport
+  useEffect(() => {
+    observerRef.current?.disconnect();
+    pendingItemsRef.current.clear();
+
+    observerRef.current = new IntersectionObserver((entries) => {
+      let hasNew = false;
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          const slug = elementToSlugRef.current.get(entry.target);
+          if (slug) {
+            const data = cardDataRef.current.get(slug);
+            if (data) {
+              pendingItemsRef.current.set(slug, data);
+              hasNew = true;
+            }
+          }
+        }
+      }
+      if (!hasNew) return;
+      if (flushTimerRef.current) clearTimeout(flushTimerRef.current);
+      flushTimerRef.current = setTimeout(() => {
+        if (pendingItemsRef.current.size === 0) return;
+        const items = Array.from(pendingItemsRef.current.values())
+          .sort((a, b) => a.index - b.index)
+          .map(({ adventure, index }) => {
+            const expData = experienceData[adventure.slug];
+            return {
+              item_id: `EXP-${adventure.slug}`,
+              item_name: adventure.name,
+              item_category: expData?.experienceCategory || '',
+              price: expData?.priceOta || adventure.priceFrom || 0,
+              quantity: 1,
+              index,
+            };
+          });
+        pushEcommerce({
+          event: 'view_item_list',
+          ecommerce: {
+            item_list_id: 'experiences_listing',
+            item_list_name: 'Experiences',
+            items,
+          },
+        });
+        pendingItemsRef.current.clear();
+      }, 200);
+    }, { threshold: 0.5 });
+
+    slugToElementRef.current.forEach((el) => observerRef.current!.observe(el));
+
+    return () => {
+      observerRef.current?.disconnect();
+      observerRef.current = null;
+      if (flushTimerRef.current) clearTimeout(flushTimerRef.current);
+      pendingItemsRef.current.clear();
+    };
+  }, [filtered]);
+
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <StructuredData id="adventures-graph" data={adventuresGraph} />
@@ -139,68 +209,105 @@ export default function Adventures() {
             {t('adventures.available', { count: filtered.length })}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filtered.map((adventure) => {
+            {filtered.map((adventure, index) => {
               const rating = experienceRatings[adventure.slug];
               return (
-              <Link
-                key={adventure.id}
-                href={`/experiences/${adventure.slug}`}
-                className="group block"
-              >
-                <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '4/5' }}>
-                  {adventure.image ? (
-                    <img src={adventure.image} alt={`${adventure.name} – guided experience in Portugal`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" loading="lazy" />
-                  ) : (
-                    <div className="w-full h-full placeholder-image" />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                  {adventure.destinations.length > 0 && (
-                    <span className="absolute top-4 left-4 max-w-[60%] text-[10px] tracking-[0.12em] uppercase text-white/90 font-medium leading-relaxed">
-                      {adventure.destinations.join(' · ')}
-                    </span>
-                  )}
-                  {(adventure as any).videoUrl && (
-                    <span className="absolute top-4 right-4 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm text-white text-[10px] tracking-[0.08em] uppercase font-medium px-2.5 py-1.5">
-                      <Play className="w-3 h-3 fill-current" /> {t('adventures.videoLabel')}
-                    </span>
-                  )}
-                  <div className="absolute bottom-0 left-0 right-0 p-5">
-                    <h3 className="font-display text-[1.5rem] text-white leading-tight mb-1">
-                      {adventure.name}
-                    </h3>
-                    <p className="text-[13px] text-white/80 font-light line-clamp-2">{adventure.tagline}</p>
-                  </div>
-                </div>
+                <div
+                  key={adventure.id}
+                  ref={(el) => {
+                    if (el) {
+                      cardDataRef.current.set(adventure.slug, { adventure, index: index + 1 });
+                      elementToSlugRef.current.set(el, adventure.slug);
+                      slugToElementRef.current.set(adventure.slug, el);
+                      observerRef.current?.observe(el);
+                    } else {
+                      const existing = slugToElementRef.current.get(adventure.slug);
+                      if (existing) {
+                        observerRef.current?.unobserve(existing);
+                        elementToSlugRef.current.delete(existing);
+                        slugToElementRef.current.delete(adventure.slug);
+                      }
+                      cardDataRef.current.delete(adventure.slug);
+                    }
+                  }}
+                >
+                  <Link
+                    href={`/experiences/${adventure.slug}`}
+                    className="group block"
+                    onClick={() => {
+                      const expData = experienceData[adventure.slug];
+                      pushEcommerce({
+                        event: 'select_item',
+                        ecommerce: {
+                          item_list_id: 'experiences_listing',
+                          item_list_name: 'Experiences',
+                          items: [{
+                            item_id: `EXP-${adventure.slug}`,
+                            item_name: adventure.name,
+                            item_category: expData?.experienceCategory || '',
+                            price: expData?.priceOta || adventure.priceFrom || 0,
+                            quantity: 1,
+                            index: index + 1,
+                          }],
+                        },
+                      });
+                    }}
+                  >
+                    <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '4/5' }}>
+                      {adventure.image ? (
+                        <img src={adventure.image} alt={`${adventure.name} – guided experience in Portugal`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" loading="lazy" />
+                      ) : (
+                        <div className="w-full h-full placeholder-image" />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                      {adventure.destinations.length > 0 && (
+                        <span className="absolute top-4 left-4 max-w-[60%] text-[10px] tracking-[0.12em] uppercase text-white/90 font-medium leading-relaxed">
+                          {adventure.destinations.join(' · ')}
+                        </span>
+                      )}
+                      {(adventure as any).videoUrl && (
+                        <span className="absolute top-4 right-4 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm text-white text-[10px] tracking-[0.08em] uppercase font-medium px-2.5 py-1.5">
+                          <Play className="w-3 h-3 fill-current" /> {t('adventures.videoLabel')}
+                        </span>
+                      )}
+                      <div className="absolute bottom-0 left-0 right-0 p-5">
+                        <h3 className="font-display text-[1.5rem] text-white leading-tight mb-1">
+                          {adventure.name}
+                        </h3>
+                        <p className="text-[13px] text-white/80 font-light line-clamp-2">{adventure.tagline}</p>
+                      </div>
+                    </div>
 
-                {/* Card metadata row — price, duration, rating, free cancellation */}
-                <div className="mt-4 space-y-2">
-                  <div className="flex items-center justify-between">
-                    {(adventure.priceFrom ?? 0) > 0 && (
-                      <p className="text-[13px] text-[#1A1A18] font-medium">
-                        {t('common.from')} {formatEurEditorial(adventure.priceFrom ?? 0)} <span className="text-[12px] text-[#9E9A90] font-light">{adventure.priceSuffix}</span>
-                      </p>
-                    )}
-                    {rating && (
-                      <span className="text-[12px] text-[#8B7355] italic" style={{ fontWeight: 400 }}>
-                        {rating.value.toFixed(1)}/5
-                        <span className="text-[#9E9A90] not-italic ml-1" style={{ fontWeight: 300 }}>({rating.count})</span>
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-4 flex-wrap">
-                    {adventure.duration && (
-                      <span className="inline-flex items-center gap-1 text-[11px] text-[#6B6860]" style={{ fontWeight: 300 }}>
-                        <Clock className="w-3 h-3 text-[#9E9A90]" />
-                        {adventure.duration}
-                      </span>
-                    )}
-                    <span className="inline-flex items-center gap-1 text-[11px] text-[#6B8E4E]" style={{ fontWeight: 300 }}>
-                      <Check className="w-3 h-3" />
-                      {t('adventures.freeCancellation')}
-                    </span>
-                  </div>
+                    {/* Card metadata row — price, duration, rating, free cancellation */}
+                    <div className="mt-4 space-y-2">
+                      <div className="flex items-center justify-between">
+                        {(adventure.priceFrom ?? 0) > 0 && (
+                          <p className="text-[13px] text-[#1A1A18] font-medium">
+                            {t('common.from')} {formatEurEditorial(adventure.priceFrom ?? 0)} <span className="text-[12px] text-[#9E9A90] font-light">{adventure.priceSuffix}</span>
+                          </p>
+                        )}
+                        {rating && (
+                          <span className="text-[12px] text-[#8B7355] italic" style={{ fontWeight: 400 }}>
+                            {rating.value.toFixed(1)}/5
+                            <span className="text-[#9E9A90] not-italic ml-1" style={{ fontWeight: 300 }}>({rating.count})</span>
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-4 flex-wrap">
+                        {adventure.duration && (
+                          <span className="inline-flex items-center gap-1 text-[11px] text-[#6B6860]" style={{ fontWeight: 300 }}>
+                            <Clock className="w-3 h-3 text-[#9E9A90]" />
+                            {adventure.duration}
+                          </span>
+                        )}
+                        <span className="inline-flex items-center gap-1 text-[11px] text-[#6B8E4E]" style={{ fontWeight: 300 }}>
+                          <Check className="w-3 h-3" />
+                          {t('adventures.freeCancellation')}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
                 </div>
-              </Link>
               );
             })}
           </div>

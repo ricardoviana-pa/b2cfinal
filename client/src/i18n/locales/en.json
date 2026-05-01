@@ -249,7 +249,9 @@
     "minNightMinimum": "{{count}}-night minimum",
     "reserveAndPay": "RESERVE AND PAY",
     "reserveNow": "RESERVE NOW",
-    "requestWithoutPayment": "Or request without payment"
+    "requestWithoutPayment": "Or request without payment",
+    "belowMinNightsWarning_one": "Please select at least {{count}} night to continue",
+    "belowMinNightsWarning_other": "Please select at least {{count}} nights to continue"
   },
   "common": {
     "loading": "Loading…",
@@ -999,5 +1001,18 @@
     "ctaExplore": "Explore our homes",
     "ctaConcierge": "Talk to our concierge",
     "relatedStories": "Related Stories"
+  },
+  "cancellationPolicy": {
+    "overline": "LEGAL",
+    "pageTitle": "Cancellation Policies",
+    "intro": "We offer multiple rate plans with different cancellation terms. Please review the applicable policy before confirming your booking.",
+    "flexibleTitle": "Flexible",
+    "flexibleBody": "Full refund if cancelled at least 24 hours before check-in. Cancellations within 24 hours of check-in are non-refundable. Changes to dates are subject to availability.",
+    "firmTitle": "Firm Cancellation Policy",
+    "firmBody": "50% refund if cancelled at least 30 days before check-in. No refund for cancellations made less than 30 days before check-in. We recommend travel insurance for additional peace of mind.",
+    "strictTitle": "Strict Cancellation",
+    "strictBody": "50% refund if cancelled at least 60 days before check-in. No refund for cancellations made less than 60 days before check-in. Non-refundable after check-in.",
+    "nonRefundableTitle": "Non-Refundable",
+    "nonRefundableBody": "This rate is offered at a reduced price in exchange for a no-refund policy. Once booked, no refund will be issued regardless of the cancellation date. We strongly recommend purchasing travel insurance when choosing this rate."
   }
 }

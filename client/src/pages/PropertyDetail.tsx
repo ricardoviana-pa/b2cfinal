@@ -450,6 +450,8 @@ export default function PropertyDetail() {
         locality: property.locality || dest?.name,
         region: dest?.name,
         amenities: amenityNames,
+        checkinTime: (property as any).checkInTime ?? null,
+        checkoutTime: (property as any).checkOutTime ?? null,
         // Guesty doesn't currently expose these — leave null until wired.
         petsAllowed: (property as any).petsAllowed ?? null,
         latitude: (property as any).latitude ?? null,

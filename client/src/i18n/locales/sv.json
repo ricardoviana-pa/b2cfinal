@@ -249,7 +249,9 @@
     "minNightMinimum": "minst {{count}} nätter",
     "reserveAndPay": "RESERVERA OCH BETALA",
     "reserveNow": "RESERVERA NU",
-    "requestWithoutPayment": "Eller förfråga utan betalning"
+    "requestWithoutPayment": "Eller förfråga utan betalning",
+    "belowMinNightsWarning_one": "Välj minst {{count}} natt för att fortsätta",
+    "belowMinNightsWarning_other": "Välj minst {{count}} nätter för att fortsätta"
   },
   "common": {
     "loading": "Laddar…",
@@ -999,5 +1001,18 @@
   },
   "reviews": {
     "whatTheyRemember": "Vad de minns mest."
+  },
+  "cancellationPolicy": {
+    "overline": "JURIDISKT",
+    "pageTitle": "Avbokningspolicyer",
+    "intro": "Vi erbjuder flera prisplaner med olika avbokningsvillkor. Vänligen granska tillämplig policy innan du bekräftar din bokning.",
+    "flexibleTitle": "Flexibel",
+    "flexibleBody": "Full återbetalning vid avbokning minst 24 timmar före incheckning. Avbokningar inom 24 timmar före incheckning återbetalas inte. Datumändringar är föremål för tillgänglighet.",
+    "firmTitle": "Måttlig Avbokningspolicy",
+    "firmBody": "50% återbetalning vid avbokning minst 30 dagar före incheckning. Ingen återbetalning vid avbokningar med mindre än 30 dagars varsel. Vi rekommenderar att teckna en reseförsäkring.",
+    "strictTitle": "Strikt Avbokning",
+    "strictBody": "50% återbetalning vid avbokning minst 60 dagar före incheckning. Ingen återbetalning vid avbokningar med mindre än 60 dagars varsel. Ej återbetalningsbar efter incheckning.",
+    "nonRefundableTitle": "Ej Återbetalningsbar",
+    "nonRefundableBody": "Detta pris erbjuds till ett reducerat pris i utbyte mot en policy om ingen återbetalning. När bokningen är gjord utfärdas ingen återbetalning oavsett avbokningsdatum. Vi rekommenderar starkt att köpa reseförsäkring när du väljer detta pris."
   }
 }

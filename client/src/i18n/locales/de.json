@@ -249,7 +249,9 @@
     "minNightMinimum": "{{count}} Nächte Minimum",
     "reserveAndPay": "RESERVIEREN UND BEZAHLEN",
     "reserveNow": "JETZT RESERVIEREN",
-    "requestWithoutPayment": "Oder Anfrage ohne Zahlung"
+    "requestWithoutPayment": "Oder Anfrage ohne Zahlung",
+    "belowMinNightsWarning_one": "Bitte wählen Sie mindestens {{count}} Nacht aus, um fortzufahren",
+    "belowMinNightsWarning_other": "Bitte wählen Sie mindestens {{count}} Nächte aus, um fortzufahren"
   },
   "common": {
     "loading": "Wird geladen…",
@@ -999,5 +1001,18 @@
   },
   "reviews": {
     "whatTheyRemember": "Woran sie sich am meisten erinnern."
+  },
+  "cancellationPolicy": {
+    "overline": "RECHTLICHES",
+    "pageTitle": "Stornierungsbedingungen",
+    "intro": "Wir bieten verschiedene Tarifpläne mit unterschiedlichen Stornierungsbedingungen an. Bitte lesen Sie die geltende Richtlinie sorgfältig, bevor Sie Ihre Buchung bestätigen.",
+    "flexibleTitle": "Flexibel",
+    "flexibleBody": "Vollständige Rückerstattung bei Stornierung mindestens 24 Stunden vor dem Check-in. Stornierungen innerhalb von 24 Stunden vor dem Check-in werden nicht erstattet. Datumsänderungen sind von der Verfügbarkeit abhängig.",
+    "firmTitle": "Moderate Stornierungsrichtlinie",
+    "firmBody": "50 % Rückerstattung bei Stornierung mindestens 30 Tage vor dem Check-in. Keine Rückerstattung bei Stornierungen weniger als 30 Tage vor dem Check-in. Wir empfehlen den Abschluss einer Reiseversicherung.",
+    "strictTitle": "Strenge Stornierung",
+    "strictBody": "50 % Rückerstattung bei Stornierung mindestens 60 Tage vor dem Check-in. Keine Rückerstattung bei Stornierungen weniger als 60 Tage vor dem Check-in. Nach dem Check-in nicht erstattungsfähig.",
+    "nonRefundableTitle": "Nicht erstattungsfähig",
+    "nonRefundableBody": "Dieser Tarif wird zu einem reduzierten Preis angeboten im Gegenzug für eine Nicht-Erstattungsrichtlinie. Nach der Buchung wird unabhängig vom Stornierungsdatum keine Rückerstattung gewährt. Wir empfehlen dringend den Abschluss einer Reiseversicherung bei der Wahl dieses Tarifs."
   }
 }

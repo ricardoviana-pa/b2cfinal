@@ -249,7 +249,9 @@
     "minNightMinimum": "Mínimo de {{count}} noites",
     "reserveAndPay": "RESERVAR E PAGAR",
     "reserveNow": "RESERVAR AGORA",
-    "requestWithoutPayment": "Ou solicitar sem pagamento"
+    "requestWithoutPayment": "Ou solicitar sem pagamento",
+    "belowMinNightsWarning_one": "Por favor, selecione pelo menos {{count}} noite para continuar",
+    "belowMinNightsWarning_other": "Por favor, selecione pelo menos {{count}} noites para continuar"
   },
   "common": {
     "loading": "A carregar…",
@@ -999,5 +1001,18 @@
   },
   "reviews": {
     "whatTheyRemember": "O que mais recordam."
+  },
+  "cancellationPolicy": {
+    "overline": "LEGAL",
+    "pageTitle": "Políticas de Cancelamento",
+    "intro": "Oferecemos vários planos de tarifa com diferentes condições de cancelamento. Por favor, reveja a política aplicável antes de confirmar a sua reserva.",
+    "flexibleTitle": "Flexível",
+    "flexibleBody": "Reembolso total se cancelado pelo menos 24 horas antes do check-in. Cancelamentos nas 24 horas antes do check-in não são reembolsáveis. Alterações de datas estão sujeitas a disponibilidade.",
+    "firmTitle": "Política de Cancelamento Moderada",
+    "firmBody": "50% de reembolso se cancelado pelo menos 30 dias antes do check-in. Sem reembolso para cancelamentos com menos de 30 dias de antecedência. Recomendamos a contratação de seguro de viagem.",
+    "strictTitle": "Cancelamento Rigoroso",
+    "strictBody": "50% de reembolso se cancelado pelo menos 60 dias antes do check-in. Sem reembolso para cancelamentos com menos de 60 dias de antecedência. Não reembolsável após o check-in.",
+    "nonRefundableTitle": "Não Reembolsável",
+    "nonRefundableBody": "Esta tarifa é oferecida a um preço reduzido em troca de uma política de não reembolso. Uma vez reservado, nenhum reembolso será emitido independentemente da data de cancelamento. Recomendamos vivamente a contratação de seguro de viagem ao escolher esta tarifa."
   }
 }

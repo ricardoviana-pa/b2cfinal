@@ -1,11 +1,13 @@
 /* ==========================================================================
    EXPERIENCE MOBILE BOOKING BAR — sticky bottom
-   Tap → opens full-screen Bókun widget (no redundant date/pax sheet).
+   Tap → opens full-screen Bókun calendar widget (checkout via Bókun modal).
    Fallback: WhatsApp when Bókun is not configured.
    ========================================================================== */
 
 import { useEffect, useState, useMemo } from 'react';
 import { X, MessageCircle } from 'lucide-react';
+import BokunCalendarWidget from './BokunCalendarWidget';
+import { pushEcommerce } from '@/lib/datalayer';
 
 interface ExperienceMobileBookingBarProps {
   experienceName: string;
@@ -13,6 +15,10 @@ interface ExperienceMobileBookingBarProps {
   whatsappMessage: string;
   maxGroupSize?: number;
   bokunActivityId?: number;
+  // Tracking
+  experienceSlug?: string;
+  experienceCategory?: string;
+  priceOta?: number;
 }
 
 const WHATSAPP_NUMBER = '351927161771';
@@ -24,14 +30,13 @@ export default function ExperienceMobileBookingBar({
   whatsappMessage,
   maxGroupSize = 10,
   bokunActivityId,
+  experienceSlug,
+  experienceCategory,
+  priceOta,
 }: ExperienceMobileBookingBarProps) {
   const [visible, setVisible] = useState(false);
   const [widgetOpen, setWidgetOpen] = useState(false);
   const hasBokun = !!bokunActivityId && !!BOKUN_CHANNEL_UUID;
-
-  const widgetSrc = hasBokun
-    ? `https://widgets.bokun.io/online-sales/${BOKUN_CHANNEL_UUID}/experience-calendar/${bokunActivityId}`
-    : '';
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 100);
@@ -78,7 +83,25 @@ export default function ExperienceMobileBookingBar({
           </div>
           {hasBokun ? (
             <button
-              onClick={() => setWidgetOpen(true)}
+              onClick={() => {
+                if (experienceSlug) {
+                  pushEcommerce({
+                    event: 'begin_checkout',
+                    ecommerce: {
+                      currency: 'EUR',
+                      value: priceOta || 0,
+                      items: [{
+                        item_id: `EXP-${experienceSlug}`,
+                        item_name: experienceName,
+                        item_category: experienceCategory || '',
+                        price: priceOta || 0,
+                        quantity: 1,
+                      }],
+                    },
+                  });
+                }
+                setWidgetOpen(true);
+              }}
               className="bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase px-8 py-3.5"
               style={{ minHeight: '48px' }}
             >
@@ -91,6 +114,23 @@ export default function ExperienceMobileBookingBar({
               rel="noopener noreferrer"
               className="bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase px-8 py-3.5 flex items-center"
               style={{ minHeight: '48px' }}
+              onClick={() => {
+                if (!experienceSlug) return;
+                pushEcommerce({
+                  event: 'begin_checkout',
+                  ecommerce: {
+                    currency: 'EUR',
+                    value: priceOta || 0,
+                    items: [{
+                      item_id: `EXP-${experienceSlug}`,
+                      item_name: experienceName,
+                      item_category: experienceCategory || '',
+                      price: priceOta || 0,
+                      quantity: 1,
+                    }],
+                  },
+                });
+              }}
             >
               Check availability
             </a>
@@ -121,14 +161,12 @@ export default function ExperienceMobileBookingBar({
             </button>
           </div>
 
-          {/* Widget iframe — fills remaining space */}
-          <div className="flex-1 bg-white">
-            <iframe
-              key={`mobile-${bokunActivityId}-${BOKUN_CHANNEL_UUID}`}
-              src={widgetSrc}
-              title={`Book ${experienceName}`}
-              className="w-full h-full border-0"
-              allow="payment *; clipboard-write"
+          {/* Bókun calendar widget — fills remaining space, checkout via modal */}
+          <div className="flex-1 bg-white overflow-y-auto">
+            <BokunCalendarWidget
+              bokunActivityId={bokunActivityId!}
+              experienceName={experienceName}
+              style={{ minHeight: '100%' }}
             />
           </div>
 
