@@ -5,7 +5,7 @@
 
 export const IMAGES = {
   // Hero images
-  heroMain: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-main-96HXfBCK752avi2daWhgmd.webp',
+  heroMain: '/hero/home-villa.webp',
   heroHomes: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp',
 
   // Destination images
@@ -20,7 +20,7 @@ export const IMAGES = {
   expMobility: 'https://images.unsplash.com/photo-1679007076103-9ffa7afa1bfb?w=800&q=80',
 
   // About page
-  aboutStory: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp',
+  aboutStory: '/hero/about-team-suite.webp',
 
   // Contact page
   contactHero: '/destinations/contact-hero.webp',
