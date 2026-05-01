@@ -14,10 +14,10 @@ export const IMAGES = {
   destinationAlgarve: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/destination-algarve-3kQynd6tpdsGxReK7b8dAs.webp',
 
   // Experience images — real Portugal Active photography
-  expGastronomy: '/experiences/exp-gastronomy.webp',
+  expGastronomy: '/experiences/pa-chef-cooking.webp',
   expWellness: '/experiences/exp-wellness.webp',
   expAdventure: '/experiences/sup-river.webp',
-  expMobility: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=80', /* TODO: Replace with real PA mobility/transfer photo */
+  expMobility: 'https://images.unsplash.com/photo-1679007076103-9ffa7afa1bfb?w=800&q=80',
 
   // About page
   aboutStory: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp',
