@@ -27,7 +27,7 @@ import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { StructuredData, buildFaqPageSchema } from '@/components/seo/StructuredData';
 import { Link } from 'wouter';
-import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Check, Quote, Minus, Plus } from 'lucide-react';
+import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Check, Quote, Minus, Plus, Home as HomeIcon, Star, Headphones } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -721,26 +721,28 @@ export default function Home() {
                 {t('home.conceptBody')}
               </p>
 
-              <div className="flex flex-col gap-5 mb-8">
+              <div className="flex flex-col gap-6 mb-8">
                 {[
                   {
-                    num: '01',
+                    icon: <HomeIcon className="w-5 h-5" strokeWidth={1.5} />,
                     title: t('home.conceptPoint1'),
                     body: t('home.conceptPoint1Body'),
                   },
                   {
-                    num: '02',
+                    icon: <Star className="w-5 h-5" strokeWidth={1.5} />,
                     title: t('home.conceptPoint2'),
                     body: t('home.conceptPoint2Body'),
                   },
                   {
-                    num: '03',
+                    icon: <Headphones className="w-5 h-5" strokeWidth={1.5} />,
                     title: t('home.conceptPoint3'),
                     body: t('home.conceptPoint3Body'),
                   },
                 ].map((pillar, i) => (
                   <div key={i} className="flex gap-4">
-                    <span className="text-[13px] font-medium text-[#C4A87C] flex-shrink-0 mt-0.5">{pillar.num}</span>
+                    <div className="flex-shrink-0 w-9 h-9 rounded-full bg-[#F5F1EB] flex items-center justify-center text-[#8B7355]">
+                      {pillar.icon}
+                    </div>
                     <div>
                       <p className="text-[14px] font-semibold text-[#1A1A18] mb-1">{pillar.title}</p>
                       <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{pillar.body}</p>

@@ -16,7 +16,7 @@ export const IMAGES = {
   // Experience images — real Portugal Active photography
   expGastronomy: '/experiences/exp-gastronomy.webp',
   expWellness: '/experiences/exp-wellness.webp',
-  expAdventure: '/experiences/exp-adventure.webp',
+  expAdventure: '/experiences/sup-river.webp',
   expMobility: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=80', /* TODO: Replace with real PA mobility/transfer photo */
 
   // About page
