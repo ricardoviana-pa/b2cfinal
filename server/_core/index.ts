@@ -261,6 +261,45 @@ ${allUrls.join("\n")}
     }
   });
 
+  // ── IndexNow: notify Bing/Yandex when content changes ──────────────
+  // POST /api/indexnow { urls: ["/homes/new-villa-slug"] }
+  // Protected by admin key. Call after property sync or blog publish.
+  const INDEXNOW_KEY = process.env.INDEXNOW_KEY || 'portugalactive2024indexnow';
+
+  // Serve the key verification file
+  app.get(`/${INDEXNOW_KEY}.txt`, (_req, res) => {
+    res.type('text/plain').send(INDEXNOW_KEY);
+  });
+
+  app.post('/api/indexnow', async (req, res) => {
+    const adminKey = req.headers['x-admin-key'];
+    if (!adminKey || adminKey !== process.env.ADMIN_API_KEY) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const { urls } = req.body as { urls?: string[] };
+    if (!urls || !urls.length) return res.status(400).json({ error: 'urls[] required' });
+
+    const base = 'https://www.portugalactive.com';
+    const fullUrls = urls.map(u => u.startsWith('http') ? u : `${base}${u}`);
+
+    try {
+      const resp = await fetch('https://api.indexnow.org/indexnow', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          host: 'www.portugalactive.com',
+          key: INDEXNOW_KEY,
+          keyLocation: `${base}/${INDEXNOW_KEY}.txt`,
+          urlList: fullUrls,
+        }),
+      });
+      res.json({ status: resp.status, submitted: fullUrls.length });
+    } catch (err) {
+      console.error('[IndexNow] ping failed:', err);
+      res.status(502).json({ error: 'IndexNow ping failed' });
+    }
+  });
+
   // Admin email trigger endpoints
   const adminAuth = (req: any, res: any, next: any) => {
     const key = req.headers["x-admin-key"];

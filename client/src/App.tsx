@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { WifiOff, ArrowUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { detectAiReferrer } from "./lib/datalayer";
 
 const ItineraryDrawer = lazy(() => import("./components/itinerary/ItineraryDrawer"));
 const CookieBanner = lazy(() => import("./components/layout/CookieBanner"));
@@ -221,6 +222,9 @@ function OfflineBanner() {
 }
 
 function App() {
+  // Fire AI referrer detection once on mount
+  useEffect(() => { detectAiReferrer(); }, []);
+
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">

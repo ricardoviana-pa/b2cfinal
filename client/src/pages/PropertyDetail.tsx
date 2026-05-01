@@ -1037,6 +1037,12 @@ export default function PropertyDetail() {
                       </Link>
                     ))}
                   </div>
+                  <Link
+                    href="/experiences"
+                    className="inline-flex items-center gap-2 mt-4 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors"
+                  >
+                    {t('propertyDetail.viewAllExperiences', 'View all experiences')} <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
                 </section>
               )}
 
