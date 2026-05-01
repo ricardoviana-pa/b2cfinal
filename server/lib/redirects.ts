@@ -90,6 +90,7 @@ const EXPERIENCE_REDIRECTS: Record<string, string> = {
   "sailing-experience": "sailing",
   "stand-up-paddle-experience": "stand-up-paddle",
   "sun-sup-experience": "stand-up-paddle",
+  "sailing-": "sailing",
 };
 
 // === SERVICES / OFFERS ====================================================
@@ -177,6 +178,13 @@ const STATIC_REDIRECTS: Record<string, string> = {
   "/index": "/",
   "/new": "/",
   "/new/": "/",
+  "/new/comments/feed/": "/",
+  "/new/comments/feed": "/",
+  "/new/author/ricardo/": "/about",
+  "/new/author/portugalactive/": "/about",
+  "/new/author/luis/": "/about",
+  "/event/sailing-": "/experiences/sailing",
+  "/event/sailing-/": "/experiences/sailing",
 };
 
 interface PatternRule {
@@ -234,6 +242,23 @@ const PATTERN_REDIRECTS: PatternRule[] = [
       const mapped = LOCATION_REDIRECTS[slug];
       return mapped ? `/destinations/${mapped}` : "/destinations";
     },
+  // /journal/<slug> (Webflow new-site era) → /blog/<slug> when present, else /blog
+  // Known new-site blog slugs from client/src/data/blog.json
+  {
+    pattern: /^\/journal\/([^/?#]+)\/?$/i,
+    resolve: (m) => {
+      const slug = m[1];
+      const knownBlogSlugs = new Set([
+        "complete-guide-north-portugal",
+        "porto-douro-valley-guide",
+      ]);
+      // Aliases: /journal/<slug> in the recent migration where <slug> matches a blog post we have
+      if (knownBlogSlugs.has(slug)) return `/blog/${slug}`;
+      // Otherwise fall back to /blog (preserves session, no 404)
+      return "/blog";
+    },
+  },
+
   },
 
   // Old WordPress date archives → /blog
