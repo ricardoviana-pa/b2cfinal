@@ -119,6 +119,9 @@ export default function Events() {
           src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1600&q=80"
           alt="Private villa event setting in Portugal"
           className="absolute inset-0 w-full h-full object-cover"
+          width={1600}
+          height={900}
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/5" />
         <div className="relative container pb-14 lg:pb-20 z-10">
@@ -295,6 +298,8 @@ export default function Events() {
           src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=80"
           alt="Elegant outdoor dining setup"
           className="absolute inset-0 w-full h-full object-cover"
+          width={1600}
+          height={900}
         />
         <div className="absolute inset-0 bg-[#1A1A18]/80" />
         <div className="relative section-padding">

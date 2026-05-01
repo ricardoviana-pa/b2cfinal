@@ -4,6 +4,8 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { createServer } from "http";
 import net from "net";
+import fs from "fs";
+import path from "path";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerDevAuthRoutes } from "./devAuth";
@@ -223,6 +225,19 @@ async function startServer() {
 
       for (const s of serviceItems.filter((s: any) => s.slug)) {
         dynamicPages.push({ path: `/services/${(s as any).slug}`, lastmod: now, changefreq: "monthly", priority: "0.8" });
+      }
+
+      // Experience detail pages (from static JSON — these are curated activity PDPs)
+      try {
+        const expPath = path.resolve(import.meta.dirname || __dirname, "..", "..", "client", "src", "data", "experienceDetails.json");
+        const expData = JSON.parse(fs.readFileSync(expPath, "utf-8"));
+        for (const exp of (expData.experiences || [])) {
+          if (exp.slug) {
+            dynamicPages.push({ path: `/experiences/${exp.slug}`, lastmod: now, changefreq: "monthly", priority: "0.8" });
+          }
+        }
+      } catch (e) {
+        console.warn("[Sitemap] could not load experienceDetails.json", e);
       }
 
       for (const lang of SITEMAP_LANGS) {

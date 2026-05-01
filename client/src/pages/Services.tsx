@@ -158,6 +158,9 @@ export default function Concierge() {
           src="/experiences/pa-property-firepit.webp"
           alt="Portugal Active property terrace with fire pit at sunset"
           className="absolute inset-0 w-full h-full object-cover"
+          width={1600}
+          height={900}
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/15" />
         <div className="relative container pb-12 lg:pb-16 z-10">

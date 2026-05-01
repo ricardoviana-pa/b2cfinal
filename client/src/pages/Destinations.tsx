@@ -40,6 +40,9 @@ export default function Destinations() {
           src={IMAGES.destinationMinho}
           alt="Portugal destinations"
           className="absolute inset-0 w-full h-full object-cover"
+          width={1600}
+          height={900}
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10" />
         <div className="relative container pb-12 lg:pb-16 z-10">

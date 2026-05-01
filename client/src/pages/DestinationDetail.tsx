@@ -58,8 +58,8 @@ export default function DestinationDetail() {
         ...(containsPlace.length > 0 && { containsPlace }),
       },
       buildBreadcrumbSchema([
-        { name: 'Home', item: '/' },
-        { name: 'Destinations', item: '/destinations' },
+        { name: t('destinationDetail.breadcrumbHome'), item: '/' },
+        { name: t('destinationDetail.breadcrumbDestinations'), item: '/destinations' },
         { name: dest.name },
       ]),
     ];
@@ -117,7 +117,7 @@ export default function DestinationDetail() {
           {(dest as any).whyOverline && (
             <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{(dest as any).whyOverline}</p>
           )}
-          <h2 className="headline-lg text-[#1A1A18] mb-8">Why {dest.name}</h2>
+          <h2 className="headline-lg text-[#1A1A18] mb-8">{t('destinationDetail.whyTitle', { name: dest.name })}</h2>
           {dest.whyDescription ? (
             dest.whyDescription.split('\n\n').map((para: string, i: number) => (
               <p key={i} className="body-lg mb-5 last:mb-0">{para}</p>
@@ -135,9 +135,9 @@ export default function DestinationDetail() {
             <div className="flex items-start gap-3 p-5 bg-white border border-[#E8E4DC]">
               <Plane className="w-5 h-5 text-[#8B7355] mt-0.5 flex-shrink-0" />
               <div>
-                <p className="text-[14px] font-medium text-[#1A1A18] mb-1">How to get here</p>
+                <p className="text-[14px] font-medium text-[#1A1A18] mb-1">{t('destinationDetail.howToGetHere')}</p>
                 <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
-                  {dest.howToGetHere || 'Direct flights from major European cities. Transfer service available.'}
+                  {dest.howToGetHere || t('destinationDetail.howToGetHereDefault')}
                 </p>
               </div>
             </div>
@@ -153,9 +153,9 @@ export default function DestinationDetail() {
             <div className="flex items-start gap-3 p-5 bg-white border border-[#E8E4DC]">
               <MapPin className="w-5 h-5 text-[#8B7355] mt-0.5 flex-shrink-0" />
               <div>
-                <p className="text-[14px] font-medium text-[#1A1A18] mb-1">What to expect</p>
+                <p className="text-[14px] font-medium text-[#1A1A18] mb-1">{t('destinationDetail.whatToExpect')}</p>
                 <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
-                  {dest.whatToExpect || 'A unique blend of culture, gastronomy, and natural beauty.'}
+                  {dest.whatToExpect || t('destinationDetail.whatToExpectDefault')}
                 </p>
               </div>
             </div>
@@ -167,8 +167,8 @@ export default function DestinationDetail() {
       {dest.insiderRecommendations && dest.insiderRecommendations.length > 0 && (
         <section className="section-padding bg-[#F5F1EB]">
           <div className="container">
-            <h2 className="headline-lg text-[#1A1A18] mb-3">Our local picks</h2>
-            <p className="body-lg text-[#6B6860] mb-8">Places, people, and experiences our team recommends in {dest.name}.</p>
+            <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.ourLocalPicks')}</h2>
+            <p className="body-lg text-[#6B6860] mb-8">{t('destinationDetail.ourLocalPicksSubtitle', { name: dest.name })}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
               {dest.insiderRecommendations.map((rec: { name: string; category: string; description: string }, idx: number) => (
                 <div key={idx} className="bg-white border border-[#E8E4DC] p-6">
@@ -189,9 +189,9 @@ export default function DestinationDetail() {
         <section className="section-padding bg-white">
           <div className="container">
             <div className="flex items-end justify-between mb-8">
-            <h2 className="headline-lg text-[#1A1A18]">Homes in {dest.name}</h2>
+            <h2 className="headline-lg text-[#1A1A18]">{t('destinationDetail.homesIn', { name: dest.name })}</h2>
             <a href="/homes" className="hidden md:flex items-center gap-2 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors">
-              VIEW ALL HOMES <ArrowRight className="w-4 h-4" />
+              {t('destinationDetail.viewAllHomes')} <ArrowRight className="w-4 h-4" />
             </a>
           </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -207,16 +207,16 @@ export default function DestinationDetail() {
       {destProperties.length === 0 && !dest.comingSoon && (
         <section className="section-padding bg-white">
           <div className="container max-w-xl text-center">
-            <h2 className="headline-lg text-[#1A1A18] mb-4">New homes coming soon to {dest.name}</h2>
-            <p className="body-lg mb-6">We're curating a collection of exceptional private homes in {dest.name}. Be the first to know when they're available.</p>
+            <h2 className="headline-lg text-[#1A1A18] mb-4">{t('destinationDetail.newHomesComingSoon', { name: dest.name })}</h2>
+            <p className="body-lg mb-6">{t('destinationDetail.newHomesComingSoonSubtitle', { name: dest.name })}</p>
             <form onSubmit={(e) => { e.preventDefault(); }} className="flex gap-3 max-w-md mx-auto">
               <input
                 type="email"
-                placeholder="Your email address"
+                placeholder={t('destinationDetail.emailPlaceholder')}
                 className="flex-1 px-4 py-3 border border-[#E8E4DC] text-[14px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355]"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
               />
-              <button type="submit" className="btn-primary px-6 whitespace-nowrap">Notify me</button>
+              <button type="submit" className="btn-primary px-6 whitespace-nowrap">{t('destinationDetail.notifyMe')}</button>
             </form>
           </div>
         </section>
@@ -238,7 +238,7 @@ export default function DestinationDetail() {
               <div key={service.id} className="bg-white border border-[#E8E4DC] p-5 flex flex-col">
                 <h4 className="text-[15px] font-medium text-[#1A1A18] mb-2" style={{ fontFamily: 'var(--font-body)' }}>{service.name}</h4>
                 <p className="text-[13px] text-[#6B6860] flex-1 mb-3 leading-relaxed line-clamp-2" style={{ fontWeight: 300 }}>{service.description}</p>
-                {(service.priceFrom ?? 0) > 0 && <p className="text-[13px] text-[#8B7355] mb-3">From {formatEurEditorial(service.priceFrom ?? 0)}</p>}
+                {(service.priceFrom ?? 0) > 0 && <p className="text-[13px] text-[#8B7355] mb-3">{t('destinationDetail.fromPrice', { price: formatEurEditorial(service.priceFrom ?? 0) })}</p>}
                 <button
                   onClick={() => setModalProduct(service)}
                   className="flex items-center gap-1.5 text-[12px] font-medium text-[#1A1A18] hover:text-[#8B7355] transition-colors"
@@ -281,7 +281,7 @@ export default function DestinationDetail() {
                   <h4 className="text-[15px] font-medium text-[#1A1A18] mb-1" style={{ fontFamily: 'var(--font-body)' }}>{adv.name}</h4>
                   <p className="text-[13px] text-[#6B6860] mb-2 leading-relaxed line-clamp-2" style={{ fontWeight: 300 }}>{adv.description}</p>
                   <div className="flex items-center justify-between">
-                    {(adv.priceFrom ?? 0) > 0 && <p className="text-[13px] text-[#8B7355]">From {formatEurEditorial(adv.priceFrom ?? 0)}</p>}
+                    {(adv.priceFrom ?? 0) > 0 && <p className="text-[13px] text-[#8B7355]">{t('destinationDetail.fromPrice', { price: formatEurEditorial(adv.priceFrom ?? 0) })}</p>}
                     <button
                       onClick={() => setModalProduct(adv)}
                       className="flex items-center gap-1.5 text-[12px] font-medium text-[#1A1A18] hover:text-[#8B7355] transition-colors"

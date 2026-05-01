@@ -60,8 +60,8 @@ function useFadeIn() {
 export default function Home() {
   const { t } = useTranslation();
   usePageMeta({
-    title: 'Portugal Active | Adventure Lodges & Experiences in Minho',
-    description: 'Handpicked adventure lodges, outdoor experiences and concierge services in northern Portugal. Book horseback riding, canyoning, and unique stays in Minho.',
+    title: 'Luxury Private Villas in Portugal | Hotel Service',
+    description: '50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool. Book direct for best rates.',
     url: '/',
   });
   // FAQPage schema only — the Organization schema is global (index.html),
@@ -85,29 +85,6 @@ export default function Home() {
       answer: 'Always. Booking direct means no middleman markup — you get the best rate guaranteed, plus complimentary concierge service and priority for special requests like early check-in or celebrations.',
     },
   ]), []);
-
-  useEffect(() => {
-    const websiteLd = {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Portugal Active",
-      "url": "https://www.portugalactive.com",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://www.portugalactive.com/homes?q={search_term_string}",
-        "query-input": "required name=search_term_string",
-      },
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.textContent = JSON.stringify(websiteLd);
-    script.id = "home-website-jsonld";
-    document.querySelector("#home-website-jsonld")?.remove();
-    document.head.appendChild(script);
-    return () => {
-      document.querySelector("#home-website-jsonld")?.remove();
-    };
-  }, []);
 
   const { data: propsData, isLoading, isError } = trpc.properties.listForSite.useQuery();
   const properties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
@@ -166,8 +143,8 @@ export default function Home() {
     'portugal-active-sunset-beach-lodge-heated-pool-5ceb91',
     'abreu-retreat-palace-luxury-elegance-leisure-e914e2',
     'stars-view-by-portugal-active-026fa9',
-    'majestic-villa-retreat-infinity-pool-chef-7431cb',
-    'quinta-with-infinity-pool-and-sea-views-carre-o-83ef5f',
+    'alvarinho-villa-5-suites-heated-pool-4854c5',
+    'beach-farm-pool-and-jacuzzi-with-sea-view-83ef5f',
   ];
   const featured = useMemo(() => {
     const bySlug = new Map(properties.map(p => [p.slug, p]));
@@ -280,6 +257,8 @@ export default function Home() {
             src={IMAGES.heroMain}
             alt={t('home.heroAlt')}
             className="w-full h-full object-cover"
+            width={1600}
+            height={900}
             fetchPriority="high"
             decoding="async"
           />
@@ -634,6 +613,7 @@ export default function Home() {
                   listId="featured_homes"
                   listName="Editor's Picks"
                   itemIndex={index + 1}
+                  hidePrice
                 />
               </div>
             ))}

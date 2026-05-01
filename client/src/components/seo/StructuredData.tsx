@@ -167,6 +167,8 @@ export function buildVacationRentalSchema(i: BuildVacationRentalInput): JsonLd {
         price: i.priceFrom,
         availability: 'https://schema.org/InStock',
         url,
+        // Valid for ~12 months from now — avoids Google "stale price" warnings
+        priceValidUntil: new Date(Date.now() + 365 * 86400000).toISOString().split('T')[0],
       },
     }),
     ...(i.aggregateRating && {

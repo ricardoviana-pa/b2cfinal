@@ -16,6 +16,7 @@ import { pushDL, pushEcommerce } from '@/lib/datalayer';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
+import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 
 interface LiveQuote {
   total: number;
@@ -36,6 +37,32 @@ export default function Homes() {
   const { data: propsData, isLoading, isError, refetch } = trpc.properties.listForSite.useQuery();
   const allProperties = (propsData ?? []) as Property[];
   const cities = useMemo(() => getUniqueLocalities(allProperties), [allProperties]);
+
+  // ItemList + BreadcrumbList JSON-LD for the catalogue page
+  const homesGraph = useMemo(() => {
+    if (!allProperties.length) return null;
+    return [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: 'Private Villas in Portugal',
+        description: 'Browse 50+ handpicked private villas across Portugal, each managed like a luxury hotel.',
+        url: 'https://www.portugalactive.com/homes',
+        numberOfItems: allProperties.length,
+        itemListElement: allProperties.slice(0, 30).map((p, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: p.name,
+          url: `https://www.portugalactive.com/homes/${p.slug}`,
+          ...(p.images?.[0] && { image: p.images[0] }),
+        })),
+      },
+      buildBreadcrumbSchema([
+        { name: 'Home', item: '/' },
+        { name: 'Homes' },
+      ]),
+    ];
+  }, [allProperties]);
 
   const SORT_OPTIONS = useMemo(
     (): { label: string; value: SortOption }[] => [
@@ -397,6 +424,7 @@ export default function Homes() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
+      {homesGraph && <StructuredData id="homes-graph" data={homesGraph} />}
       <Header />
 
       {/* Hero — editorial only; search lives in sticky toolbar below (less empty white, clearer PLP hierarchy) */}

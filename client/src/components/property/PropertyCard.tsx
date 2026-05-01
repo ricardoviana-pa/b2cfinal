@@ -38,6 +38,8 @@ interface PropertyCardProps {
   quoteLoading?: boolean;
   /** Batch tRPC failed â show catalogue estimate instead of infinite loading */
   batchFailed?: boolean;
+  /** When true, the price/rate row is hidden entirely (e.g. homepage showcase). */
+  hidePrice?: boolean;
 }
 
 export default function PropertyCard({
@@ -52,6 +54,7 @@ export default function PropertyCard({
   liveQuote,
   quoteLoading = false,
   batchFailed = false,
+  hidePrice = false,
 }: PropertyCardProps) {
   const { t } = useTranslation();
   const [currentImage, setCurrentImage] = useState(0);
@@ -226,7 +229,7 @@ export default function PropertyCard({
         </div>
 
         {/* Price + Best Rate Guarantee */}
-        <div className="border-t border-[#E8E4DC] pt-3">
+        {!hidePrice && <div className="border-t border-[#E8E4DC] pt-3">
           {nights > 0 ? (
             <>
               <div className="flex items-baseline justify-between">
@@ -311,7 +314,7 @@ export default function PropertyCard({
               )}
             </div>
           )}
-        </div>
+        </div>}
       </div>
       </article>
     </Link>
