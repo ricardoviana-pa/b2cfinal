@@ -91,7 +91,6 @@ export default function Home() {
 
   const cities = useMemo(() => getUniqueLocalities(properties), [properties]);
 
-  const [activeTab, setActiveTab] = useState('all');
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
@@ -128,16 +127,7 @@ export default function Home() {
   const s10Ref = useFadeIn();
   const s11Ref = useFadeIn();
 
-  const HOME_TABS = useMemo(() => [
-    { label: t('home.tabEditorsPicks'), value: 'all' },
-    { label: t('home.tabBeachfront'), value: 'beachfront' },
-    { label: t('home.tabCountryside'), value: 'countryside' },
-    { label: t('home.tabEstates'), value: 'estates' },
-    { label: t('home.tabNewArrivals'), value: 'new' },
-  ], [t]);
-
-  // Featured homes Ã¢ÂÂ Editor's Picks shows first 6 sorted by sortOrder
-  // Other tabs are placeholder filters (no tag system yet)
+  // Featured homes — Editor's Picks shows first 6 pinned by slug
   const FEATURED_SLUGS = [
     'portugal-active-eben-lodge-heated-pool-10ecfe',
     'portugal-active-sunset-beach-lodge-heated-pool-5ceb91',
@@ -581,24 +571,6 @@ export default function Home() {
                 {t('home.homesBody')}
               </p>
             </div>
-          </div>
-
-          {/* Tabs */}
-          <div className="flex items-center gap-5 mb-8 overflow-x-auto no-scrollbar pb-1">
-            {HOME_TABS.map(tab => (
-              <button
-                key={tab.value}
-                onClick={() => setActiveTab(tab.value)}
-                className={`text-[13px] font-medium whitespace-nowrap pb-2 border-b-2 transition-all ${
-                  activeTab === tab.value
-                    ? 'text-[#1A1A18] border-[#1A1A18]'
-                    : 'text-[#9E9A90] border-transparent hover:text-[#6B6860]'
-                }`}
-                style={{ minHeight: 'auto', minWidth: 'auto', fontFamily: 'var(--font-body)' }}
-              >
-                {tab.label}
-              </button>
-            ))}
           </div>
 
           {/* Property cards Ã¢ÂÂ horizontal scroll on mobile, 3 per row on desktop */}

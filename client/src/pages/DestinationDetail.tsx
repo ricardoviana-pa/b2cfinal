@@ -203,21 +203,12 @@ export default function DestinationDetail() {
         </section>
       )}
 
-      {/* Email capture for destinations with no properties */}
+      {/* Info banner for destinations with no properties yet */}
       {destProperties.length === 0 && !dest.comingSoon && (
         <section className="section-padding bg-white">
           <div className="container max-w-xl text-center">
             <h2 className="headline-lg text-[#1A1A18] mb-4">{t('destinationDetail.newHomesComingSoon', { name: dest.name })}</h2>
-            <p className="body-lg mb-6">{t('destinationDetail.newHomesComingSoonSubtitle', { name: dest.name })}</p>
-            <form onSubmit={(e) => { e.preventDefault(); }} className="flex gap-3 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder={t('destinationDetail.emailPlaceholder')}
-                className="flex-1 px-4 py-3 border border-[#E8E4DC] text-[14px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355]"
-                style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
-              />
-              <button type="submit" className="btn-primary px-6 whitespace-nowrap">{t('destinationDetail.notifyMe')}</button>
-            </form>
+            <p className="body-lg">{t('destinationDetail.newHomesComingSoonSubtitle', { name: dest.name })}</p>
           </div>
         </section>
       )}
