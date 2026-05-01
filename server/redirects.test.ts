@@ -184,3 +184,26 @@ describe("regressions from old ad-hoc routes (now consolidated)", () => {
     expect(__testing.resolvePath(from)).toBe(to);
   });
 });
+
+describe("locale-only paths pass through", () => {
+  it.each([
+    "/en", "/en/",
+    "/pt", "/pt/",
+    "/fr", "/fr/",
+    "/es", "/es/",
+    "/it", "/it/",
+    "/de", "/de/",
+    "/nl", "/nl/",
+    "/fi", "/fi/",
+    "/sv", "/sv/",
+  ])("does not redirect locale-only path %s", (path) => {
+    expect(__testing.resolvePath(path)).toBeNull();
+  });
+
+  it("still resolves localized legacy paths normally (locale stays as-is)", () => {
+    // /pt/properties/eben-lodge — should pass through (locale-prefixed,
+    // SPA / LocaleRouter handles it). Old WP /properties/eben-lodge without
+    // prefix already covered by the property pattern.
+    expect(__testing.resolvePath("/pt/properties/eben-lodge")).toBeNull();
+  });
+});
