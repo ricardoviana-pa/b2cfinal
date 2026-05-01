@@ -1,4 +1,5 @@
 import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface WhatsAppModalProps {
   isOpen: boolean;
@@ -7,6 +8,7 @@ interface WhatsAppModalProps {
 }
 
 export default function WhatsAppModal({ isOpen, onClose, whatsappUrl }: WhatsAppModalProps) {
+  const { t } = useTranslation();
   if (!isOpen) return null;
 
   return (
@@ -16,7 +18,7 @@ export default function WhatsAppModal({ isOpen, onClose, whatsappUrl }: WhatsApp
         <button
           onClick={onClose}
           className="absolute top-4 right-4 p-1 hover:bg-[#F5F1EB] rounded-full transition-colors"
-          aria-label="Close"
+          aria-label={t('whatsapp.close')}
         >
           <X size={20} className="text-[#9E9A90]" />
         </button>
@@ -24,10 +26,10 @@ export default function WhatsAppModal({ isOpen, onClose, whatsappUrl }: WhatsApp
         {/* Content */}
         <div className="space-y-3 pt-2">
           <h2 className="text-[20px] font-light text-[#1A1A18]" style={{ fontFamily: 'var(--font-display)' }}>
-            Connect on WhatsApp
+            {t('whatsapp.title')}
           </h2>
           <p className="text-[14px] text-[#6B6860] leading-relaxed">
-            You're about to open WhatsApp to chat with our concierge team. Your phone number will be shared with us via WhatsApp.
+            {t('whatsapp.body')}
           </p>
         </div>
 
@@ -37,7 +39,7 @@ export default function WhatsAppModal({ isOpen, onClose, whatsappUrl }: WhatsApp
             onClick={onClose}
             className="flex-1 px-4 py-3 rounded-full border border-[#E8E4DC] text-[12px] font-medium tracking-[0.06em] uppercase text-[#6B6860] hover:border-[#9E9A90] hover:text-[#1A1A18] transition-colors"
           >
-            Cancel
+            {t('whatsapp.cancel')}
           </button>
           <a
             href={whatsappUrl}
@@ -46,7 +48,7 @@ export default function WhatsAppModal({ isOpen, onClose, whatsappUrl }: WhatsApp
             onClick={onClose}
             className="flex-1 px-4 py-3 rounded-full bg-[#C7A574] text-white text-[12px] font-medium tracking-[0.06em] uppercase hover:bg-[#B89560] transition-colors flex items-center justify-center gap-2"
           >
-            Continue to WhatsApp
+            {t('whatsapp.continue')}
           </a>
         </div>
       </div>

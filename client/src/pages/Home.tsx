@@ -25,8 +25,9 @@
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { StructuredData, buildFaqPageSchema } from '@/components/seo/StructuredData';
 import { Link } from 'wouter';
-import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Check, Quote, Minus, Plus } from 'lucide-react';
+import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Check, Quote, Minus, Plus, Home as HomeIcon, Star, Headphones } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -59,112 +60,37 @@ function useFadeIn() {
 export default function Home() {
   const { t } = useTranslation();
   usePageMeta({
-    title: 'Portugal Active | Adventure Lodges & Experiences in Minho',
-    description: 'Handpicked adventure lodges, outdoor experiences and concierge services in northern Portugal. Book horseback riding, canyoning, and unique stays in Minho.',
+    title: 'Luxury Private Villas in Portugal | Hotel Service',
+    description: '50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool. Book direct for best rates.',
     url: '/',
   });
-  useEffect(() => {
-    const jsonLd = {
-      "@context": "https://schema.org",
-      "@type": "LodgingBusiness",
-      "name": "Portugal Active",
-      "description": "50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool, housekeeping. Book direct for best rates.",
-      "url": "https://www.portugalactive.com",
-      "telephone": "+351927161771",
-      "email": "info@portugalactive.com",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Viana do Castelo",
-        "addressRegion": "Norte",
-        "addressCountry": "PT",
-      },
-      "areaServed": [
-        { "@type": "Place", "name": "Minho, Portugal" },
-        { "@type": "Place", "name": "Porto & Douro, Portugal" },
-        { "@type": "Place", "name": "Lisbon, Portugal" },
-        { "@type": "Place", "name": "Alentejo, Portugal" },
-        { "@type": "Place", "name": "Algarve, Portugal" },
-      ],
-      "priceRange": "€€€",
-      "sameAs": [
-        "https://www.instagram.com/portugal_active",
-      ],
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(jsonLd);
-    script.id = "home-localbusiness-jsonld";
-    document.querySelector("#home-localbusiness-jsonld")?.remove();
-    document.head.appendChild(script);
-    // FAQPage schema for homepage — targets "luxury villas Portugal" queries
-    const faqLd = {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What makes Portugal Active different from Airbnb or Booking.com?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Portugal Active operates each property like a private hotel — with a 47-point preparation checklist, dedicated concierge, optional private chef, and a local team minutes away. We don't just list homes; we manage them to hotel standards." }
-        },
-        {
-          "@type": "Question",
-          "name": "Which regions in Portugal does Portugal Active cover?",
-          "acceptedAnswer": { "@type": "Answer", "text": "We operate luxury villas across five regions: Minho Coast (Viana do Castelo area), Porto & Douro Valley, Lisbon & Sintra, Alentejo, and the Algarve. Each region offers a different character, from Atlantic beaches to wine country." }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I book adventure activities alongside my villa stay?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes. We offer curated experiences including horseback riding, canyoning, surfing, sailing, e-bike tours, and more. Our concierge team builds bespoke itineraries combining your villa, activities, private dining, and transfers." }
-        },
-        {
-          "@type": "Question",
-          "name": "Is it cheaper to book direct with Portugal Active?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Always. Booking direct means no middleman markup — you get the best rate guaranteed, plus complimentary concierge service and priority for special requests like early check-in or celebrations." }
-        },
-      ],
-    };
-    const faqScript = document.createElement("script");
-    faqScript.type = "application/ld+json";
-    faqScript.text = JSON.stringify(faqLd);
-    faqScript.id = "home-faq-jsonld";
-    document.querySelector("#home-faq-jsonld")?.remove();
-    document.head.appendChild(faqScript);
-
-    return () => {
-      document.querySelector("#home-localbusiness-jsonld")?.remove();
-      document.querySelector("#home-faq-jsonld")?.remove();
-    };
-  }, []);
-
-  useEffect(() => {
-    const websiteLd = {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Portugal Active",
-      "url": "https://www.portugalactive.com",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://www.portugalactive.com/homes?q={search_term_string}",
-        "query-input": "required name=search_term_string",
-      },
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.textContent = JSON.stringify(websiteLd);
-    script.id = "home-website-jsonld";
-    document.querySelector("#home-website-jsonld")?.remove();
-    document.head.appendChild(script);
-    return () => {
-      document.querySelector("#home-website-jsonld")?.remove();
-    };
-  }, []);
+  // FAQPage schema only — the Organization schema is global (index.html),
+  // so we no longer emit LodgingBusiness here to avoid duplicating the
+  // brand entity on the homepage.
+  const homeFaq = useMemo(() => buildFaqPageSchema([
+    {
+      question: 'What makes Portugal Active different from Airbnb or Booking.com?',
+      answer: "Portugal Active operates each property like a private hotel — with a 47-point preparation checklist, dedicated concierge, optional private chef, and a local team minutes away. We don't just list homes; we manage them to hotel standards.",
+    },
+    {
+      question: 'Which regions in Portugal does Portugal Active cover?',
+      answer: 'We operate luxury villas across five regions: Minho Coast (Viana do Castelo area), Porto & Douro Valley, Lisbon & Sintra, Alentejo, and the Algarve. Each region offers a different character, from Atlantic beaches to wine country.',
+    },
+    {
+      question: 'Can I book adventure activities alongside my villa stay?',
+      answer: 'Yes. We offer curated experiences including horseback riding, canyoning, surfing, sailing, e-bike tours, and more. Our concierge team builds bespoke itineraries combining your villa, activities, private dining, and transfers.',
+    },
+    {
+      question: 'Is it cheaper to book direct with Portugal Active?',
+      answer: 'Always. Booking direct means no middleman markup — you get the best rate guaranteed, plus complimentary concierge service and priority for special requests like early check-in or celebrations.',
+    },
+  ]), []);
 
   const { data: propsData, isLoading, isError } = trpc.properties.listForSite.useQuery();
   const properties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
 
   const cities = useMemo(() => getUniqueLocalities(properties), [properties]);
 
-  const [activeTab, setActiveTab] = useState('all');
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
@@ -201,30 +127,23 @@ export default function Home() {
   const s10Ref = useFadeIn();
   const s11Ref = useFadeIn();
 
-  const HOME_TABS = useMemo(() => [
-    { label: t('home.tabEditorsPicks'), value: 'all' },
-    { label: t('home.tabBeachfront'), value: 'beachfront' },
-    { label: t('home.tabCountryside'), value: 'countryside' },
-    { label: t('home.tabEstates'), value: 'estates' },
-    { label: t('home.tabNewArrivals'), value: 'new' },
-  ], [t]);
-
-  // Featured homes Ã¢ÂÂ Editor's Picks shows first 6 sorted by sortOrder
-  // Other tabs are placeholder filters (no tag system yet)
+  // Featured homes — Editor's Picks shows first 6 pinned by slug
   const FEATURED_SLUGS = [
     'portugal-active-eben-lodge-heated-pool-10ecfe',
     'portugal-active-sunset-beach-lodge-heated-pool-5ceb91',
     'abreu-retreat-palace-luxury-elegance-leisure-e914e2',
     'stars-view-by-portugal-active-026fa9',
-    'majestic-villa-retreat-infinity-pool-chef-7431cb',
-    'quinta-with-infinity-pool-and-sea-views-carre-o-83ef5f',
+    'alvarinho-villa-5-suites-heated-pool-4854c5',
+    'beach-farm-pool-and-jacuzzi-with-sea-view-83ef5f',
   ];
+  // Slugs that should never appear as auto-fillers
+  const EXCLUDED_FILLERS = ['fountain-retreat-i-pool-sports-escape-743e2d'];
   const featured = useMemo(() => {
     const bySlug = new Map(properties.map(p => [p.slug, p]));
     const pinned = FEATURED_SLUGS.map(s => bySlug.get(s)).filter(Boolean) as typeof properties;
     if (pinned.length >= 6) return pinned.slice(0, 6);
     const fillers = [...properties]
-      .filter(p => !FEATURED_SLUGS.includes(p.slug))
+      .filter(p => !FEATURED_SLUGS.includes(p.slug) && !EXCLUDED_FILLERS.includes(p.slug))
       .sort((a, b) => (b.priceFrom ?? 0) - (a.priceFrom ?? 0));
     return [...pinned, ...fillers].slice(0, 6);
   }, [properties]);
@@ -311,6 +230,8 @@ export default function Home() {
             <Link href="/" className="btn-primary">{t('homes.tryAgain')}</Link>
           </div>
         </section>
+
+
         <Footer />
       </div>
     );
@@ -318,17 +239,20 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF7] min-w-0 w-full">
+      <StructuredData id="home-faq" data={homeFaq} />
       <Header variant="transparent" />
       <WhatsAppFloat />
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 1: HERO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section className="relative h-screen min-h-[600px] flex items-center">
+      <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
           <img
             src={IMAGES.heroMain}
             alt={t('home.heroAlt')}
             className="w-full h-full object-cover"
+            width={1600}
+            height={900}
             fetchPriority="high"
             decoding="async"
           />
@@ -337,18 +261,26 @@ export default function Home() {
 
         {/* Hero content */}
         <div className="relative container z-10">
-          <div className="max-w-xl">
+          <div className="max-w-2xl">
             <p
-              className="text-[13px] font-medium text-white/70 mb-5"
+              className="text-[15px] font-medium text-white/70 mb-5"
               style={{ fontFamily: 'var(--font-body)', letterSpacing: '0.08em' }}
             >
               {t('home.heroOverline')}
             </p>
-            <h1 className="headline-xl text-white mb-5 leading-[1.1]">
+            <h1
+              className="text-white mb-6 leading-[1.08]"
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 400,
+                letterSpacing: '-0.02em',
+                fontSize: 'clamp(2.75rem, 6vw, 5.25rem)',
+              }}
+            >
               {t('home.heroTitle')}
             </h1>
             <p
-              className="text-[16px] text-white/75 mb-8 leading-relaxed max-w-lg"
+              className="text-[18px] md:text-[20px] text-white/80 mb-9 leading-relaxed max-w-xl"
               style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
             >
               {t('home.heroBody')}
@@ -356,37 +288,51 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/homes"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white text-[#1A1A18] text-[11px] font-semibold hover:bg-[#F5F1EB] transition-colors"
+                className="inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full bg-white text-[#1A1A18] text-[13px] font-semibold hover:bg-[#F5F1EB] transition-colors"
                 style={{ letterSpacing: '1.5px' }}
               >
-                {t('home.heroCta')} <ArrowRight className="w-3.5 h-3.5" />
+                {t('home.heroCta')} <ArrowRight className="w-4 h-4" />
               </Link>
               <a
                 href="https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-white/50 text-white text-[11px] font-semibold hover:bg-white/10 transition-colors"
+                className="hidden sm:inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full border border-white/50 text-white text-[13px] font-semibold hover:bg-white/10 transition-colors"
                 style={{ letterSpacing: '1.5px' }}
               >
-                {t('home.heroCtaConcierge')} <ArrowRight className="w-3.5 h-3.5" />
+                {t('home.heroCtaConcierge')} <ArrowRight className="w-4 h-4" />
               </a>
             </div>
-            <p className="text-[12px] text-white/45 mt-3" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('home.heroGuarantee')}</p>
+
+            {/* Proof strip — replaces old guarantee text, stronger trust signal */}
+            <div className="hidden lg:flex flex-wrap items-center gap-x-5 gap-y-1 mt-5">
+              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+                {t('home.proofHotels', '60+ private hotels')}
+              </span>
+              <span className="text-white/25">·</span>
+              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+                {t('home.proofRating', '4.8★ guest rating')}
+              </span>
+              <span className="text-white/25">·</span>
+              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+                {t('home.proofManaged', 'Hotel-managed stays')}
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Search bar Ã¢ÂÂ centred, lower area, Le Collectionist style */}
-        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 hidden lg:block w-full max-w-[780px] px-6 z-10">
+            {/* Search bar Ã¢ÂÂ centred, lower area, Le Collectionist style */}
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 hidden lg:block w-full max-w-[860px] px-6 z-20">
           <div
-            className="flex items-center rounded-full bg-white shadow-lg overflow-hidden"
-            style={{ height: '56px' }}
+            className="flex items-center rounded-full bg-white/95 backdrop-blur-sm shadow-xl overflow-hidden ring-1 ring-black/5"
+            style={{ height: '64px' }}
           >
             {/* Destination */}
             <div className="flex-1 relative h-full">
               <select
                 value={searchDest}
                 onChange={e => setSearchDest(e.target.value)}
-                className="w-full h-full pl-6 pr-3 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer appearance-none"
+                className="w-full h-full pl-6 pr-3 bg-transparent text-[#1A1A18] text-[14px] focus:outline-none cursor-pointer appearance-none"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               >
                 <option value="">{t('home.searchDestination')}</option>
@@ -411,7 +357,7 @@ export default function Home() {
                 min={today}
                 onChange={e => handleCheckinChange(e.target.value, false)}
                 placeholder="Check-in"
-                className="w-full h-full px-4 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer"
+                className="w-full h-full px-4 bg-transparent text-[#1A1A18] text-[14px] focus:outline-none cursor-pointer"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               />
             </div>
@@ -431,7 +377,7 @@ export default function Home() {
                 min={searchCheckin || today}
                 onChange={e => setSearchCheckout(e.target.value)}
                 placeholder="Check-out"
-                className="w-full h-full px-4 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer"
+                className="w-full h-full px-4 bg-transparent text-[#1A1A18] text-[14px] focus:outline-none cursor-pointer"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               />
             </div>
@@ -451,7 +397,7 @@ export default function Home() {
               >
                 <Minus className="w-2.5 h-2.5" />
               </button>
-              <span className="text-[13px] text-[#1A1A18] tabular-nums whitespace-nowrap" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
+              <span className="text-[14px] text-[#1A1A18] tabular-nums whitespace-nowrap" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
                 {searchGuests} <span className="text-[#9E9A90] lowercase">{t('home.searchGuests')}</span>
               </span>
               <button
@@ -492,17 +438,33 @@ export default function Home() {
                   search_source: 'hero_desktop',
                 });
               }}
-              className="flex-shrink-0 h-[44px] mr-1.5 px-6 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
+              className="flex-shrink-0 h-[50px] mr-1.5 px-8 rounded-full bg-[#1A1A18] text-white text-[13px] font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
               style={{ letterSpacing: '1.5px' }}
             >
               {t('home.searchButton')}
             </Link>
           </div>
         </div>
-
-        {/* Mobile search bar — stacked layout */}
-        <div className="absolute bottom-16 left-0 right-0 lg:hidden px-5 z-10">
-          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg p-4 space-y-3">
+        {/* Mobile search bar — compact with destination */}
+        <div className="absolute bottom-4 left-0 right-0 lg:hidden px-5 z-10">
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg p-3 space-y-2">
+            {/* Destination */}
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9A90] pointer-events-none" />
+              <select
+                value={searchDest}
+                onChange={e => setSearchDest(e.target.value)}
+                className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white pl-9 pr-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer appearance-none"
+                style={{ fontFamily: 'var(--font-body)' }}
+              >
+                <option value="">{t('home.searchDestination')}</option>
+                {cities.map(city => (
+                  <option key={city.value} value={city.value}>{city.label}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9E9A90] pointer-events-none" />
+            </div>
+            {/* Dates */}
             <div className="grid grid-cols-2 gap-2">
               <div
                 className="relative"
@@ -513,7 +475,7 @@ export default function Home() {
                   value={searchCheckin}
                   min={today}
                   onChange={e => handleCheckinChange(e.target.value, true)}
-                  className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
+                  className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
                   style={{ fontFamily: 'var(--font-body)' }}
                   placeholder={t('home.searchCheckin', 'Check-in')}
                 />
@@ -528,30 +490,30 @@ export default function Home() {
                   value={searchCheckout}
                   min={searchCheckin || today}
                   onChange={e => setSearchCheckout(e.target.value)}
-                  className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
+                  className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
                   style={{ fontFamily: 'var(--font-body)' }}
                   placeholder={t('home.searchCheckout', 'Check-out')}
                 />
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 flex-1 h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3">
-                <Users className="w-4 h-4 text-[#9E9A90] shrink-0" />
+            {/* Guests + Search */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 flex-1 h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 min-w-0">
                 <button
                   type="button"
                   onClick={() => setSearchGuests(g => Math.max(1, g - 1))}
                   disabled={searchGuests <= 1}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30"
+                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30 shrink-0"
                   aria-label={t('home.decreaseGuests', 'Decrease guests')}
                 >
                   <Minus className="w-3 h-3" />
                 </button>
-                <span className="text-[13px] text-[#1A1A18] tabular-nums flex-1 text-center">{searchGuests} {t('home.searchGuests')}</span>
+                <span className="text-[13px] text-[#1A1A18] tabular-nums flex-1 text-center whitespace-nowrap">{searchGuests} {t('home.searchGuests')}</span>
                 <button
                   type="button"
                   onClick={() => setSearchGuests(g => Math.min(30, g + 1))}
                   disabled={searchGuests >= 30}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30"
+                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30 shrink-0"
                   aria-label={t('home.increaseGuests', 'Increase guests')}
                 >
                   <Plus className="w-3 h-3" />
@@ -560,6 +522,7 @@ export default function Home() {
               <Link
                 href={(() => {
                   const p = new URLSearchParams();
+                  if (searchDest) p.set('location', searchDest);
                   if (searchCheckin) p.set('checkin', searchCheckin);
                   if (searchCheckout) p.set('checkout', searchCheckout);
                   if (searchGuests > 1) p.set('guests', String(searchGuests));
@@ -572,8 +535,8 @@ export default function Home() {
                     : null;
                   pushDL({
                     event: 'search',
-                    search_location: 'All Destinations',
-                    search_location_type: 'all',
+                    search_location: searchDest || 'All Destinations',
+                    search_location_type: searchDest ? 'city' : 'all',
                     search_checkin: searchCheckin || null,
                     search_checkout: searchCheckout || null,
                     search_nights: nights,
@@ -582,7 +545,7 @@ export default function Home() {
                     search_source: 'hero_mobile',
                   });
                 }}
-                className="shrink-0 h-[48px] px-6 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
+                className="shrink-0 h-[40px] px-5 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
                 style={{ letterSpacing: '1.5px' }}
               >
                 {t('home.searchButton')}
@@ -591,10 +554,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 animate-bounce z-10 hidden lg:flex">
-          <ChevronDown className="w-5 h-5 text-white/40" />
-        </div>
+
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 2: USP BAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
@@ -653,24 +613,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Tabs */}
-          <div className="flex items-center gap-5 mb-8 overflow-x-auto no-scrollbar pb-1">
-            {HOME_TABS.map(tab => (
-              <button
-                key={tab.value}
-                onClick={() => setActiveTab(tab.value)}
-                className={`text-[13px] font-medium whitespace-nowrap pb-2 border-b-2 transition-all ${
-                  activeTab === tab.value
-                    ? 'text-[#1A1A18] border-[#1A1A18]'
-                    : 'text-[#9E9A90] border-transparent hover:text-[#6B6860]'
-                }`}
-                style={{ minHeight: 'auto', minWidth: 'auto', fontFamily: 'var(--font-body)' }}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
           {/* Property cards Ã¢ÂÂ horizontal scroll on mobile, 3 per row on desktop */}
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:overflow-visible">
             {featured.map((property, index) => (
@@ -683,6 +625,7 @@ export default function Home() {
                   listId="featured_homes"
                   listName="Editor's Picks"
                   itemIndex={index + 1}
+                  hidePrice
                 />
               </div>
             ))}
@@ -796,26 +739,28 @@ export default function Home() {
                 {t('home.conceptBody')}
               </p>
 
-              <div className="flex flex-col gap-5 mb-8">
+              <div className="flex flex-col gap-6 mb-8">
                 {[
                   {
-                    num: '01',
+                    icon: <HomeIcon className="w-5 h-5" strokeWidth={1.5} />,
                     title: t('home.conceptPoint1'),
                     body: t('home.conceptPoint1Body'),
                   },
                   {
-                    num: '02',
+                    icon: <Star className="w-5 h-5" strokeWidth={1.5} />,
                     title: t('home.conceptPoint2'),
                     body: t('home.conceptPoint2Body'),
                   },
                   {
-                    num: '03',
+                    icon: <Headphones className="w-5 h-5" strokeWidth={1.5} />,
                     title: t('home.conceptPoint3'),
                     body: t('home.conceptPoint3Body'),
                   },
                 ].map((pillar, i) => (
                   <div key={i} className="flex gap-4">
-                    <span className="text-[13px] font-medium text-[#C4A87C] flex-shrink-0 mt-0.5">{pillar.num}</span>
+                    <div className="flex-shrink-0 w-9 h-9 rounded-full bg-[#F5F1EB] flex items-center justify-center text-[#8B7355]">
+                      {pillar.icon}
+                    </div>
                     <div>
                       <p className="text-[14px] font-semibold text-[#1A1A18] mb-1">{pillar.title}</p>
                       <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{pillar.body}</p>

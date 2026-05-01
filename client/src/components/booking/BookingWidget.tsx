@@ -114,6 +114,15 @@ function humanizeCancellationPolicy(raw: string): string {
   return policyMap[raw.toLowerCase()] || raw;
 }
 
+/** Map Guesty policy code to cancellation-policy page anchor, or null if no dedicated section */
+function policyPageAnchor(raw: string): string | null {
+  const map: Record<string, string> = {
+    super_strict: '#non-refundable',
+    firm: '#firm',
+  };
+  return map[raw.toLowerCase()] ?? null;
+}
+
 /** Format date with zero-padded day and month name (e.g., "08 Apr") */
 function formatDateDisplay(dateStr: string, locale: string = "en-US", includeYear: boolean = false): string {
   const date = new Date(dateStr + "T12:00:00");
@@ -294,6 +303,8 @@ export default function BookingWidget({
     return diff > 0 ? Math.ceil(diff / 86400000) : 0;
   }, [checkIn, checkOut]);
 
+  const isBelow = nights > 0 && nights < minNights;
+
   const utils = trpc.useUtils();
   const { data: isBECheckoutAvailable } = trpc.booking.isBECheckoutAvailable.useQuery();
   const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
@@ -365,7 +376,7 @@ export default function BookingWidget({
 
   const fetchQuote = useCallback(async () => {
     if (!checkIn || !checkOut) return;
-    if (nights < minNights) {
+    if (nights > 0 && nights < minNights) {
       setError(i18n.t("bookingWidget.minimumStay", { count: minNights }));
       setQuote(null);
       return;
@@ -452,7 +463,7 @@ export default function BookingWidget({
   fetchQuoteRef.current = fetchQuote;
 
   useEffect(() => {
-    if (!checkIn || !checkOut || nights < minNights || step !== "dates") return;
+    if (!checkIn || !checkOut || (nights > 0 && nights < minNights) || step !== "dates") return;
     const timer = setTimeout(() => {
       fetchQuoteRef.current();
     }, 450);
@@ -780,6 +791,15 @@ export default function BookingWidget({
           </p>
         )}
 
+        {isBelow && (
+          <div className="flex items-start gap-2.5 p-3 mt-2 bg-amber-50/80 border border-amber-200/60">
+            <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
+            <p className="text-xs text-amber-800 font-medium leading-snug">
+              {t("bookingWidget.belowMinNightsWarning", { count: minNights })}
+            </p>
+          </div>
+        )}
+
         {/* Guests selector */}
         <div className="border border-black/15 mt-3 px-4 py-3">
           <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-black/35 mb-2">{t("booking.guestsLabel")}</p>
@@ -855,7 +875,7 @@ export default function BookingWidget({
           <div className="space-y-2">
             <button
               onClick={fetchQuote}
-              disabled={!checkIn || !checkOut || loading || nights < minNights}
+              disabled={!checkIn || !checkOut || loading || isBelow}
               className={cn(
                 "w-full min-h-[52px] px-8 text-xs font-medium tracking-[0.15em] uppercase transition-all",
                 "bg-black text-white hover:bg-black/85",
@@ -1004,6 +1024,7 @@ export default function BookingWidget({
                     const savings = maxTotal - opt.total;
                     const isNonRefundable = opt.name.toLowerCase().includes("non") && opt.name.toLowerCase().includes("refund");
                     const isFlexible = opt.name.toLowerCase().includes("flex") || opt.name.toLowerCase().includes("free");
+                    const policyAnchor = opt.cancellationPolicy?.[0] ? policyPageAnchor(opt.cancellationPolicy[0]) : null;
                     return (
                       <label
                         key={opt.ratePlanId}
@@ -1023,13 +1044,39 @@ export default function BookingWidget({
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <p className="text-[13px] text-black font-medium">{humanizeRatePlanName(opt.name)}</p>
+                            {isNonRefundable && policyAnchor ? (
+                              <a
+                                href={`/legal/cancellation-policy${policyAnchor}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={e => e.stopPropagation()}
+                                aria-label={`${humanizeRatePlanName(opt.name)} – opens cancellation policy in a new tab`}
+                                className="text-[13px] text-black font-medium underline underline-offset-2 hover:text-black/70 transition-colors"
+                              >
+                                {humanizeRatePlanName(opt.name)}
+                              </a>
+                            ) : (
+                              <p className="text-[13px] text-black font-medium">{humanizeRatePlanName(opt.name)}</p>
+                            )}
                             {isFlexible && (
                               <span className="text-[9px] font-semibold tracking-wider uppercase px-1.5 py-0.5 bg-green-50 text-green-700 border border-green-200/50">{t("bookingWidget.recommended", { defaultValue: "Recommended" })}</span>
                             )}
                           </div>
                           {opt.cancellationPolicy?.[0] && (
-                            <p className="text-[11px] text-black/40 mt-0.5">{humanizeCancellationPolicy(opt.cancellationPolicy[0])}</p>
+                            policyAnchor ? (
+                              <a
+                                href={`/legal/cancellation-policy${policyAnchor}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={e => e.stopPropagation()}
+                                aria-label={`${humanizeCancellationPolicy(opt.cancellationPolicy[0])} – opens cancellation policy in a new tab`}
+                                className="text-[11px] text-black/40 mt-0.5 underline underline-offset-2 hover:text-black/70 transition-colors block"
+                              >
+                                {humanizeCancellationPolicy(opt.cancellationPolicy[0])}
+                              </a>
+                            ) : (
+                              <p className="text-[11px] text-black/40 mt-0.5">{humanizeCancellationPolicy(opt.cancellationPolicy[0])}</p>
+                            )
                           )}
                           {isNonRefundable && (
                             <p className="text-[10px] text-red-500/70 mt-0.5">{t("bookingWidget.nonRefundableWarning", { defaultValue: "No refund if you cancel or modify" })}</p>
@@ -1056,7 +1103,7 @@ export default function BookingWidget({
                 items={UPSELL_ITEMS}
                 selectedUpsells={selectedUpsells}
                 setSelectedUpsells={setSelectedUpsells}
-                t={t}
+                t={t as any}
               />
             )}
 

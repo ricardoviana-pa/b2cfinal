@@ -26,6 +26,12 @@ import ReviewsSection from '@/components/property/ReviewsSection';
 import { trpc } from '@/lib/trpc';
 import { pushEcommerce } from '@/lib/datalayer';
 import { sanitizePropertyName } from '@/lib/format';
+import {
+  StructuredData,
+  buildVacationRentalSchema,
+  buildBreadcrumbSchema,
+} from '@/components/seo/StructuredData';
+import AnswerCapsule from '@/components/seo/AnswerCapsule';
 
 const allProducts = productsData as unknown as Product[];
 const destinations = destinationsData as unknown as Destination[];
@@ -421,78 +427,50 @@ export default function PropertyDetail() {
     type: 'place',
   });
 
-  useEffect(() => {
-    if (!property) return;
+  // VacationRental + Breadcrumb JSON-LD (bundled via @graph by StructuredData).
+  // VacationRental is Google's dedicated subtype for short-term rentals; it
+  // surfaces richer fields (numberOfBedrooms, occupancy, amenityFeature as
+  // LocationFeatureSpecification) that AI Overviews quote directly.
+  const propertyGraph = useMemo(() => {
+    if (!property) return null;
     const dest = destinations.find(d => d.slug === property.destination);
-    const amenityFeatures = Object.entries(property.amenities || {}).flatMap(([category, items]) =>
-      (items as string[]).map(item => ({ "@type": "PropertyValue", "name": item, "value": true }))
-    );
-    const jsonLd: Record<string, any> = {
-      "@context": "https://schema.org",
-      "@type": "LodgingBusiness",
-      "name": property.name,
-      "description": property.tagline || (typeof property.description === 'string' ? property.description.slice(0, 300) : ''),
-      "url": `https://www.portugalactive.com/homes/${property.slug}`,
-      "image": property.images?.slice(0, 5),
-      "numberOfRooms": property.bedrooms,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": property.locality || dest?.name,
-        "addressRegion": dest?.name || '',
-        "addressCountry": "PT",
-      },
-      ...(amenityFeatures.length > 0 && { "amenityFeature": amenityFeatures }),
-      ...(property.priceFrom > 0 && {
-        "priceRange": `From €${property.priceFrom} per night`,
-        "offers": {
-          "@type": "Offer",
-          "priceCurrency": "EUR",
-          "price": property.priceFrom,
-          "availability": "https://schema.org/InStock",
-        },
+    const amenityNames = Object.values(property.amenities || {})
+      .flatMap((items) => (Array.isArray(items) ? (items as string[]) : []));
+
+    return [
+      buildVacationRentalSchema({
+        name: property.name,
+        slug: property.slug,
+        description: property.tagline || property.description?.slice(0, 500),
+        images: property.images,
+        bedrooms: property.bedrooms,
+        bathrooms: (property as any).bathrooms ?? null,
+        maxGuests: (property as any).maxGuests ?? null,
+        priceFrom: property.priceFrom,
+        locality: property.locality || dest?.name,
+        region: dest?.name,
+        amenities: amenityNames,
+        checkinTime: (property as any).checkInTime ?? null,
+        checkoutTime: (property as any).checkOutTime ?? null,
+        // Guesty doesn't currently expose these — leave null until wired.
+        petsAllowed: (property as any).petsAllowed ?? null,
+        latitude: (property as any).latitude ?? null,
+        longitude: (property as any).longitude ?? null,
+        aggregateRating:
+          (property as any).averageRating && (property as any).reviewCount
+            ? {
+                ratingValue: Number((property as any).averageRating),
+                reviewCount: Number((property as any).reviewCount),
+              }
+            : null,
+        reviews: (property as any).reviews || null,
       }),
-      "checkinTime": property.checkInTime ?? 'T15:00',
-      "checkoutTime": property.checkOutTime ?? 'T11:00',
-      "provider": {
-        "@type": "Organization",
-        "name": "Portugal Active",
-        "url": "https://www.portugalactive.com",
-      },
-      ...(property.averageRating && {
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": property.averageRating,
-          "reviewCount": property.reviewCount ?? 1,
-          "bestRating": 5,
-        },
-      }),
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(jsonLd);
-    script.id = "property-jsonld";
-    document.querySelector("#property-jsonld")?.remove();
-    document.head.appendChild(script);
-    // BreadcrumbList
-    const breadcrumbLd = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
-        { "@type": "ListItem", "position": 2, "name": "Homes", "item": "https://www.portugalactive.com/homes" },
-        { "@type": "ListItem", "position": 3, "name": property.name },
-      ],
-    };
-    const breadcrumbScript = document.createElement("script");
-    breadcrumbScript.type = "application/ld+json";
-    breadcrumbScript.text = JSON.stringify(breadcrumbLd);
-    breadcrumbScript.id = "property-breadcrumb-jsonld";
-    document.querySelector("#property-breadcrumb-jsonld")?.remove();
-    document.head.appendChild(breadcrumbScript);
-    return () => {
-      document.querySelector("#property-jsonld")?.remove();
-      document.querySelector("#property-breadcrumb-jsonld")?.remove();
-    };
+      buildBreadcrumbSchema([
+        { name: 'Home', item: '/' },
+        { name: 'Homes', item: '/homes' },
+        { name: property.name },
+      ]),
+    ];
   }, [property]);
 
   const whatsIncluded = useMemo(
@@ -754,6 +732,7 @@ export default function PropertyDetail() {
 
   return (
     <>
+      {propertyGraph && <StructuredData id={`property-${property.slug}`} data={propertyGraph} />}
       <div className="min-h-screen bg-[#FAFAF7]">
         <Header />
 
@@ -858,6 +837,16 @@ export default function PropertyDetail() {
           <div className="flex items-center gap-3 mb-3">
             <p className="text-[11px] font-medium tracking-[0.12em] text-[#8B7355] uppercase">{destName}</p>
             <span className="h-px flex-1 max-w-[60px] bg-[#E8E4DC]" />
+            {property.tier === 'signature' && (
+              <span className="inline-flex items-center gap-1 text-[10px] font-medium tracking-[0.04em] uppercase text-[#1A1A18] bg-[#F5F1EB] px-2.5 py-1 rounded-full">
+                <Flame size={11} className="text-[#8B7355]" /> {t('urgency.highDemand', 'High demand')}
+              </span>
+            )}
+            {(property as any).averageRating >= 4.8 && ((property as any).reviewCount || 0) >= 5 && property.tier !== 'signature' && (
+              <span className="inline-flex items-center gap-1 text-[10px] font-medium tracking-[0.04em] uppercase text-[#8B7355] bg-[#F5F1EB] px-2.5 py-1 rounded-full">
+                <Award size={11} /> {t('urgency.guestFavourite', 'Guest favourite')}
+              </span>
+            )}
           </div>
           <h1 className="font-display text-[clamp(1.75rem,4vw,3rem)] font-light leading-[1.08] text-[#1A1A18] mb-3">
             {sanitizePropertyName(property.name)}
@@ -887,6 +876,27 @@ export default function PropertyDetail() {
           </div>
         </div>
 
+        {/* Answer capsule — citable summary of the villa for AI engines */}
+        <div className="container max-w-3xl pt-6 lg:pt-8">
+          <AnswerCapsule
+            question={`What is ${sanitizePropertyName(property.name)}?`}
+            answer={[
+              `${sanitizePropertyName(property.name)} is a private villa in ${property.locality || destName}, Portugal,`,
+              `managed by Portugal Active as a short-term rental.`,
+              `It sleeps up to ${property.maxGuests} guests across ${property.bedrooms} bedrooms and ${property.bathrooms} bathrooms`,
+              property.priceFrom ? `with rates from €${property.priceFrom} per night.` : '.',
+              property.tagline ? ` ${property.tagline}` : '',
+              ` Every booking includes concierge support, housekeeping, and access to in-villa services such as a private chef and spa on request.`,
+            ].join(' ').replace(/\s+/g, ' ').trim()}
+            lastUpdated="2026-04-17"
+            author="Portugal Active concierge team"
+            cite={[
+              { label: 'All villas', href: '/homes' },
+              destObj ? { label: `${destObj.name} destination guide`, href: `/destinations/${destObj.slug}` } : null,
+              { label: 'Concierge services', href: '/concierge' },
+            ].filter(Boolean) as { label: string; href: string }[]}
+          />
+        </div>
 
         {/* Two-column layout: main content (left 2/3) + sticky booking (right 1/3) */}
         <div className={property.guestyId ? "container pb-8 lg:pb-16" : "container pb-24 lg:pb-16"}>
@@ -898,12 +908,12 @@ export default function PropertyDetail() {
                 <section>
                   <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-6">Bedrooms & Sleeping Arrangements</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {property.rooms.map((room, roomIdx) => (
+                    {property.rooms.map((room: any, roomIdx: number) => (
                       <div key={roomIdx} className="bg-white border border-[#E8E4DC] p-5 rounded-lg">
                         <h3 className="text-[13px] font-medium text-[#1A1A18] mb-4">{room.name}</h3>
                         <div className="space-y-3">
                           {room.beds && room.beds.length > 0 ? (
-                            room.beds.map((bed, bedIdx) => {
+                            room.beds.map((bed: any, bedIdx: number) => {
                               const { label, icon: BedIcon } = getBedTypeDisplay(bed.type);
                               return (
                                 <div key={bedIdx} className="flex items-center gap-3">
@@ -1027,6 +1037,12 @@ export default function PropertyDetail() {
                       </Link>
                     ))}
                   </div>
+                  <Link
+                    href="/experiences"
+                    className="inline-flex items-center gap-2 mt-4 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors"
+                  >
+                    {t('propertyDetail.viewAllExperiences', 'View all experiences')} <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
                 </section>
               )}
 

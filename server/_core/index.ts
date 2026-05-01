@@ -1,9 +1,12 @@
 import "dotenv/config";
 import express from "express";
+import compression from "compression";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { createServer } from "http";
 import net from "net";
+import fs from "fs";
+import path from "path";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerDevAuthRoutes } from "./devAuth";
@@ -15,6 +18,7 @@ import { serveStatic, setupVite } from "./vite";
 import { isGuestyConfigured, warmUpOAuthTokens } from "../lib/guesty";
 import { runSync } from "../services/guesty-sync";
 import cron from "node-cron";
+import { legacyRedirects } from "../lib/redirects.js";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -61,6 +65,17 @@ async function startServer() {
     next();
   });
 
+  // Gzip/Brotli compression — reduces HTML/CSS/JS payload ~60-80%
+  app.use(compression({
+    level: 6,                         // balanced speed vs ratio
+    threshold: 1024,                  // skip tiny responses (<1KB)
+    filter: (req, res) => {
+      // Don't compress server-sent events
+      if (req.headers.accept === 'text/event-stream') return false;
+      return compression.filter(req, res);
+    },
+  }));
+
   app.use(helmet({
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
@@ -96,62 +111,11 @@ async function startServer() {
     })
   );
 
-  // 301 redirects — old Webflow URLs → new SPA routes (preserves SEO equity)
-  app.get('/properties', (_req, res) => res.redirect(301, '/homes'));
-  app.get('/properties/:slug', (req, res) => res.redirect(301, `/homes/${req.params.slug}`));
-  app.get('/contact-us', (_req, res) => res.redirect(301, '/contact'));
-  app.get('/legal-terms', (_req, res) => res.redirect(301, '/legal/terms'));
-  app.get('/why-portugal-active', (_req, res) => res.redirect(301, '/about'));
-  app.get('/locations/minho', (_req, res) => res.redirect(301, '/destinations/minho'));
-  app.get('/locations/porto', (_req, res) => res.redirect(301, '/destinations/porto'));
-  app.get('/locations/algarve', (_req, res) => res.redirect(301, '/destinations/algarve'));
-  app.get('/locations/:slug', (_req, res) => res.redirect(301, '/destinations'));
-  app.get('/journal', (_req, res) => res.redirect(301, '/blog'));
-  app.get('/account/login', (_req, res) => res.redirect(301, '/login'));
-
-  // ── Old adventure/activity paths ──────────────────────────────────────────
-  app.get('/adventure', (_req, res) => res.redirect(301, '/experiences'));
-  app.get('/adventure/', (_req, res) => res.redirect(301, '/experiences'));
-  app.get('/adventure/:slug', (req, res) => res.redirect(301, `/experiences/${req.params.slug}`));
-
-  // ── Old rooms paths → /homes ───────────────────────────────────────────────
-  app.get('/rooms', (_req, res) => res.redirect(301, '/homes'));
-  app.get('/rooms/', (_req, res) => res.redirect(301, '/homes'));
-  app.get('/rooms/:slug', (req, res) => res.redirect(301, `/homes/${req.params.slug}`));
-  app.get('/rooms/:slug/', (req, res) => res.redirect(301, `/homes/${req.params.slug}`));
-
-  // ── Old offer/ paths → /services ──────────────────────────────────────────
-  app.get('/offer/:slug', (req, res) => res.redirect(301, `/services/${req.params.slug}`));
-  app.get('/offer/:slug/', (req, res) => res.redirect(301, `/services/${req.params.slug}`));
-  app.get('/new/offer/:slug', (req, res) => res.redirect(301, `/services/${req.params.slug}`));
-  app.get('/new/offer/:slug/', (req, res) => res.redirect(301, `/services/${req.params.slug}`));
-
-  // ── Section renames ────────────────────────────────────────────────────────
-  app.get('/news', (_req, res) => res.redirect(301, '/blog'));
-  app.get('/news/', (_req, res) => res.redirect(301, '/blog'));
-  app.get('/locations', (_req, res) => res.redirect(301, '/destinations'));
-  app.get('/locations/', (_req, res) => res.redirect(301, '/destinations'));
-
-  // ── Contact + About ────────────────────────────────────────────────────────
-  app.get('/connect-with-us', (_req, res) => res.redirect(301, '/contact'));
-  app.get('/connect-with-us/', (_req, res) => res.redirect(301, '/contact'));
-  app.get('/how-it-works', (_req, res) => res.redirect(301, '/about'));
-  app.get('/how-it-works/', (_req, res) => res.redirect(301, '/about'));
-  app.get('/about/', (_req, res) => res.redirect(301, '/about'));
-
-  // ── Legacy PHP ────────────────────────────────────────────────────────────
-  app.get('/index.php', (_req, res) => res.redirect(301, '/'));
-  app.get('/index', (_req, res) => res.redirect(301, '/'));
-
-  // ── Old event paths ────────────────────────────────────────────────────────
-  app.get('/event/horse', (_req, res) => res.redirect(301, '/new/event/horse'));
-  app.get('/event/horse/', (_req, res) => res.redirect(301, '/new/event/horse'));
-
-  // ── Old staging /new/ prefix ──────────────────────────────────────────────
-  app.get('/new/rooms/:slug', (req, res) => res.redirect(301, `/homes/${req.params.slug}`));
-  app.get('/new/rooms/:slug/', (req, res) => res.redirect(301, `/homes/${req.params.slug}`));
-  app.get('/new', (_req, res) => res.redirect(301, '/'));
-  app.get('/new/', (_req, res) => res.redirect(301, '/'));
+  // 301 redirects for legacy URLs (Webflow / WP / Joomla migration).
+  // Replaces ~30 ad-hoc app.get(...) calls with a centralised, table-driven middleware.
+  // Source: Wayback Machine inventory + properties.json slug mapping.
+  // See server/lib/redirects.ts for full coverage and tests.
+  app.use(legacyRedirects);
 
   // Dynamic sitemap.xml with multi-language support
   const SITEMAP_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
@@ -225,6 +189,19 @@ async function startServer() {
         dynamicPages.push({ path: `/services/${(s as any).slug}`, lastmod: now, changefreq: "monthly", priority: "0.8" });
       }
 
+      // Experience detail pages (from static JSON — these are curated activity PDPs)
+      try {
+        const expPath = path.resolve(import.meta.dirname || __dirname, "..", "..", "client", "src", "data", "experienceDetails.json");
+        const expData = JSON.parse(fs.readFileSync(expPath, "utf-8"));
+        for (const exp of (expData.experiences || [])) {
+          if (exp.slug) {
+            dynamicPages.push({ path: `/experiences/${exp.slug}`, lastmod: now, changefreq: "monthly", priority: "0.8" });
+          }
+        }
+      } catch (e) {
+        console.warn("[Sitemap] could not load experienceDetails.json", e);
+      }
+
       for (const lang of SITEMAP_LANGS) {
         for (const dp of dynamicPages) {
           allUrls.push(url(dp.path, lang, dp.lastmod, dp.changefreq, dp.priority));
@@ -243,6 +220,45 @@ ${allUrls.join("\n")}
     } catch (err) {
       console.error("[Sitemap] Error generating sitemap:", err);
       res.status(500).send("Error generating sitemap");
+    }
+  });
+
+  // ── IndexNow: notify Bing/Yandex when content changes ──────────────
+  // POST /api/indexnow { urls: ["/homes/new-villa-slug"] }
+  // Protected by admin key. Call after property sync or blog publish.
+  const INDEXNOW_KEY = process.env.INDEXNOW_KEY || 'portugalactive2024indexnow';
+
+  // Serve the key verification file
+  app.get(`/${INDEXNOW_KEY}.txt`, (_req, res) => {
+    res.type('text/plain').send(INDEXNOW_KEY);
+  });
+
+  app.post('/api/indexnow', async (req, res) => {
+    const adminKey = req.headers['x-admin-key'];
+    if (!adminKey || adminKey !== process.env.ADMIN_API_KEY) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const { urls } = req.body as { urls?: string[] };
+    if (!urls || !urls.length) return res.status(400).json({ error: 'urls[] required' });
+
+    const base = 'https://www.portugalactive.com';
+    const fullUrls = urls.map(u => u.startsWith('http') ? u : `${base}${u}`);
+
+    try {
+      const resp = await fetch('https://api.indexnow.org/indexnow', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          host: 'www.portugalactive.com',
+          key: INDEXNOW_KEY,
+          keyLocation: `${base}/${INDEXNOW_KEY}.txt`,
+          urlList: fullUrls,
+        }),
+      });
+      res.json({ status: resp.status, submitted: fullUrls.length });
+    } catch (err) {
+      console.error('[IndexNow] ping failed:', err);
+      res.status(502).json({ error: 'IndexNow ping failed' });
     }
   });
 

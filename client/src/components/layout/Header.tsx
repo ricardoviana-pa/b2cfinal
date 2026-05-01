@@ -9,7 +9,7 @@ import { Link, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import {
   Menu, X, Phone, Mail, MessageCircle, Instagram, Facebook, Youtube, Linkedin,
-  User, ChevronDown
+  ChevronDown
 } from 'lucide-react';
 import { IMAGES } from '@/lib/images';
 import { trpc } from '@/lib/trpc';
@@ -21,8 +21,9 @@ interface HeaderProps {
 
 export default function Header({ variant = 'solid' }: HeaderProps) {
   const { t } = useTranslation();
-  const meQuery = trpc.auth.me.useQuery(undefined, { retry: false, refetchOnWindowFocus: false });
-  const authUser = meQuery.data;
+  // Auth temporarily disabled
+  // const meQuery = trpc.auth.me.useQuery(undefined, { retry: false, refetchOnWindowFocus: false });
+  // const authUser = meQuery.data;
   const navItems = useMemo(
     () => [
       { label: t('nav.properties'), href: '/homes', hasDropdown: true },
@@ -323,24 +324,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                 </div>
               </div>
 
-              {/* Account / Login */}
-              <Link
-                href={authUser ? '/account' : '/login'}
-                className={`hidden md:inline-flex items-center justify-center w-9 h-9 rounded-full transition-all duration-300 ${
-                  isTransparent
-                    ? 'text-white/70 hover:text-white hover:bg-white/10'
-                    : 'text-[#6B6860] hover:text-[#1A1A18] hover:bg-[#F5F1EB]'
-                }`}
-                aria-label={authUser ? t('nav.myAccount') : t('nav.signIn')}
-              >
-                {authUser ? (
-                  <div className="w-7 h-7 rounded-full bg-[#8B7355] flex items-center justify-center text-white text-[11px] font-display">
-                    {(authUser.name || 'G')[0].toUpperCase()}
-                  </div>
-                ) : (
-                  <User size={18} />
-                )}
-              </Link>
+              {/* Account / Login — temporarily disabled */}
 
               {/* Desktop: Reserve button */}
               <Link
@@ -433,24 +417,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                 </span>
               </Link>
             ))}
-            {/* Account link */}
-            <Link
-              href={authUser ? '/account' : '/login'}
-              onClick={() => setMenuOpen(false)}
-              className={`flex items-center gap-3 py-3.5 border-b border-[#E8E4DC]/30 transition-all duration-500 ${menuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
-              style={{ transitionDelay: menuOpen ? '400ms' : '0ms' }}
-            >
-              {authUser ? (
-                <div className="w-6 h-6 rounded-full bg-[#8B7355] flex items-center justify-center text-white text-[10px] font-display">
-                  {(authUser.name || 'G')[0].toUpperCase()}
-                </div>
-              ) : (
-                <User size={18} className="text-[#8B7355]" />
-              )}
-              <span className="text-[1.3rem]" style={{ fontFamily: 'var(--font-display)', color: '#1A1A18', fontWeight: 400 }}>
-                {authUser ? t('nav.myAccount') : t('nav.signIn')}
-              </span>
-            </Link>
+            {/* Account link — temporarily disabled */}
           </nav>
 
           {/* Bottom: contact + language + social */}

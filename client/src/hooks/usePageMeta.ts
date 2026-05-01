@@ -52,7 +52,9 @@ export function usePageMeta(opts?: PageMetaOpts) {
     const lang = i18n.language || 'en';
     const title = opts?.title ? `${opts.title} | Portugal Active` : BASE_TITLE;
     const description = opts?.description || BASE_DESC;
-    const image = opts?.image || BASE_IMAGE;
+    // Ensure og:image is always an absolute URL (crawlers can't resolve relative paths)
+    const rawImage = opts?.image || BASE_IMAGE;
+    const image = rawImage.startsWith('http') ? rawImage : `${BASE_URL}${rawImage}`;
     const pagePath = opts?.url || '/';
     const fullUrl = `${BASE_URL}/${lang}${pagePath === '/' ? '' : pagePath}`;
     const type = opts?.type || 'website';

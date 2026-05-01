@@ -3,7 +3,6 @@
    6 destination cards: Minho, Porto, Lisbon, Alentejo, Algarve, Brazil (faded)
    ========================================================================== */
 
-import { useEffect } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -11,6 +10,7 @@ import destinationsData from '@/data/destinations.json';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
+import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import { IMAGES } from '@/lib/images';
 import type { Destination } from '@/lib/types';
 
@@ -20,29 +20,18 @@ export default function Destinations() {
   const { t } = useTranslation();
   usePageMeta({ title: 'Destinations in Portugal | Minho, Porto, Algarve & More', description: 'Explore our luxury villa destinations across Portugal — Minho Coast, Porto & Douro, Algarve, Lisbon, Alentejo. Find your perfect region.', url: '/destinations' });
 
-  useEffect(() => {
-    const breadcrumbLd = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
-        { "@type": "ListItem", "position": 2, "name": "Destinations" },
-      ],
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(breadcrumbLd);
-    script.id = "destinations-breadcrumb-jsonld";
-    document.querySelector("#destinations-breadcrumb-jsonld")?.remove();
-    document.head.appendChild(script);
-    return () => { document.querySelector("#destinations-breadcrumb-jsonld")?.remove(); };
-  }, []);
-
   const active = destinations.filter(d => !d.comingSoon);
   const comingSoon = destinations.filter(d => d.comingSoon);
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
+      <StructuredData
+        id="destinations-breadcrumb"
+        data={buildBreadcrumbSchema([
+          { name: 'Home', item: '/' },
+          { name: 'Destinations' },
+        ])}
+      />
       <Header />
 
       {/* Hero */}
@@ -51,6 +40,9 @@ export default function Destinations() {
           src={IMAGES.destinationMinho}
           alt="Portugal destinations"
           className="absolute inset-0 w-full h-full object-cover"
+          width={1600}
+          height={900}
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10" />
         <div className="relative container pb-12 lg:pb-16 z-10">

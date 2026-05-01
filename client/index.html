@@ -15,8 +15,18 @@
     <meta name="author" content="Portugal Active" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.portugalactive.com/" />
-    <link rel="alternate" hreflang="x-default" href="https://www.portugalactive.com/" />
-    <link rel="alternate" hreflang="en" href="https://www.portugalactive.com/" />
+    <!-- hreflang alternates injected per-request by server (see server/_core/vite.ts injectLocaleTags).
+         This default pair is a safety fallback for any static file serve path. -->
+    <link rel="alternate" hreflang="x-default" href="https://www.portugalactive.com/en/" />
+    <link rel="alternate" hreflang="en" href="https://www.portugalactive.com/en/" />
+    <link rel="alternate" hreflang="pt" href="https://www.portugalactive.com/pt/" />
+    <link rel="alternate" hreflang="fr" href="https://www.portugalactive.com/fr/" />
+    <link rel="alternate" hreflang="es" href="https://www.portugalactive.com/es/" />
+    <link rel="alternate" hreflang="de" href="https://www.portugalactive.com/de/" />
+    <link rel="alternate" hreflang="it" href="https://www.portugalactive.com/it/" />
+    <link rel="alternate" hreflang="nl" href="https://www.portugalactive.com/nl/" />
+    <link rel="alternate" hreflang="fi" href="https://www.portugalactive.com/fi/" />
+    <link rel="alternate" hreflang="sv" href="https://www.portugalactive.com/sv/" />
     <link rel="icon" href="/favicon.ico?v=2" sizes="48x48" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2" />
@@ -47,6 +57,9 @@
     <meta name="theme-color" content="#1A1A18" />
     <meta name="msapplication-TileColor" content="#1A1A18" />
     <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Portugal Active" />
     <meta property="og:image:type" content="image/webp" />
     <meta property="og:image:secure_url" content="https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-main-96HXfBCK752avi2daWhgmd.webp" />
 
@@ -75,20 +88,35 @@
       [id^="bokun-widgets-cart"] { display: none !important; visibility: hidden !important; pointer-events: none !important; }
     </style>
 
-    <!-- Structured Data: Organization -->
+    <!-- Structured Data: Organization (global — single source of truth for the brand entity) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Organization",
+      "@id": "https://www.portugalactive.com/#organization",
       "name": "Portugal Active",
-      "alternateName": "Portugal Active — Private Hotels",
+      "alternateName": ["Portugal Active — Private Hotels", "Portugal Active Property Management"],
       "url": "https://www.portugalactive.com",
       "description": "50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool. Book direct for best rates.",
       "logo": "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp",
       "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-main-96HXfBCK752avi2daWhgmd.webp",
       "email": "info@portugalactive.com",
+      "telephone": "+351927161771",
       "foundingDate": "2017",
-      "foundingLocation": "Viana do Castelo, Portugal",
+      "foundingLocation": {
+        "@type": "Place",
+        "name": "Viana do Castelo, Portugal"
+      },
+      "founder": {
+        "@type": "Person",
+        "@id": "https://www.portugalactive.com/about#ricardo-viana",
+        "name": "Ricardo Viana",
+        "jobTitle": "CEO & Founder",
+        "worksFor": { "@id": "https://www.portugalactive.com/#organization" },
+        "sameAs": [
+          "https://www.linkedin.com/in/ricardo-viana-portugalactive/"
+        ]
+      },
       "numberOfEmployees": { "@type": "QuantitativeValue", "minValue": 10, "maxValue": 50 },
       "contactPoint": [
         {
@@ -112,13 +140,28 @@
         "addressCountry": "PT"
       },
       "areaServed": [
+        { "@type": "Country", "name": "Portugal" },
         { "@type": "AdministrativeArea", "name": "Minho, Portugal" },
         { "@type": "AdministrativeArea", "name": "Porto, Portugal" },
         { "@type": "AdministrativeArea", "name": "Lisbon, Portugal" },
         { "@type": "AdministrativeArea", "name": "Alentejo, Portugal" },
         { "@type": "AdministrativeArea", "name": "Algarve, Portugal" }
       ],
-      "knowsAbout": ["luxury villa rentals", "private chef services", "concierge services", "adventure tourism Portugal", "horseback riding Portugal", "canyoning Portugal", "surf lessons Portugal"],
+      "knowsAbout": [
+        "Short-term rental management",
+        "Vacation home hospitality",
+        "Property management Portugal",
+        "Premium holiday rentals",
+        "Luxury villa rentals",
+        "Private chef services",
+        "Concierge services",
+        "Adventure tourism Portugal",
+        "Horseback riding Portugal",
+        "Canyoning Portugal",
+        "Surf lessons Portugal",
+        "Wine tourism Douro Valley",
+        "Sailing Viana do Castelo"
+      ],
       "slogan": "Private Hotels in Portugal",
       "sameAs": [
         "https://www.instagram.com/portugalactive",
@@ -137,10 +180,11 @@
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
+      "@id": "https://www.portugalactive.com/#website",
       "name": "Portugal Active",
       "url": "https://www.portugalactive.com",
-      "inLanguage": ["en", "pt", "es", "fr"],
-      "publisher": { "@type": "Organization", "name": "Portugal Active" }
+      "inLanguage": ["en", "pt", "es", "fr", "de", "it", "nl", "fi", "sv"],
+      "publisher": { "@id": "https://www.portugalactive.com/#organization" }
     }
     </script>
   </head>

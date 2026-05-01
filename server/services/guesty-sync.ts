@@ -145,8 +145,8 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
   }
 
   // Sort each listing's reviews newest first
-  for (const [, arr] of byListing) {
-    arr.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  for (const [, arr] of Array.from(byListing.entries())) {
+    arr.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }
 
   return byListing;

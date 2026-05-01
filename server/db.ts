@@ -140,6 +140,13 @@ export async function getServiceById(id: number) {
   return result[0];
 }
 
+export async function getServiceBySlug(slug: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(services).where(eq(services.slug, slug)).limit(1);
+  return result[0];
+}
+
 export async function createService(data: InsertService) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -173,6 +180,13 @@ export async function getExperienceById(id: number) {
   const db = await getDb();
   if (!db) return undefined;
   const result = await db.select().from(experiences).where(eq(experiences.id, id)).limit(1);
+  return result[0];
+}
+
+export async function getExperienceBySlug(slug: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(experiences).where(eq(experiences.slug, slug)).limit(1);
   return result[0];
 }
 

@@ -54,6 +54,53 @@ export function buildAddonItem(product: {
   };
 }
 
+/* ── AI referrer detection ──────────────────────────────────────────────
+   Fires a custom GA4 event when the visitor arrived from an AI source
+   (ChatGPT link, Perplexity citation, Claude, Google AI Overview, etc.).
+   Call once on app mount. Uses both document.referrer and UTM params.  */
+
+const AI_REFERRER_PATTERNS: [RegExp, string][] = [
+  [/chat\.openai\.com|chatgpt\.com/i, 'chatgpt'],
+  [/perplexity\.ai/i, 'perplexity'],
+  [/claude\.ai/i, 'claude'],
+  [/gemini\.google\.com|bard\.google\.com/i, 'gemini'],
+  [/copilot\.microsoft\.com/i, 'copilot'],
+  [/you\.com/i, 'you.com'],
+  [/phind\.com/i, 'phind'],
+  [/google\.\w+\/search.*?ai_overview/i, 'google_ai_overview'],
+];
+
+export function detectAiReferrer(): void {
+  const ref = document.referrer || '';
+  const params = new URLSearchParams(window.location.search);
+  const utmSource = (params.get('utm_source') || '').toLowerCase();
+  const utmMedium = (params.get('utm_medium') || '').toLowerCase();
+
+  let source = '';
+
+  // Check referrer URL
+  for (const [pattern, name] of AI_REFERRER_PATTERNS) {
+    if (pattern.test(ref)) { source = name; break; }
+  }
+
+  // Check UTM fallback (links from AI tools often carry utm_source)
+  if (!source && (utmMedium === 'ai' || utmMedium === 'llm')) {
+    source = utmSource || 'ai_unknown';
+  }
+  if (!source && AI_REFERRER_PATTERNS.some(([p]) => p.test(utmSource))) {
+    source = utmSource;
+  }
+
+  if (source) {
+    pushDL({
+      event: 'ai_referral',
+      ai_source: source,
+      ai_referrer: ref,
+      ai_landing_page: window.location.pathname,
+    });
+  }
+}
+
 /** Build a GA4 property item object */
 export function buildPropertyItem(property: {
   id: string | number;

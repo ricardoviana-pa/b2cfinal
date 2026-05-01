@@ -3,7 +3,7 @@
    Hero, 9 questions, final CTA
    ========================================================================== */
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { ChevronDown, ArrowRight } from 'lucide-react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +11,7 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
+import { StructuredData, buildBreadcrumbSchema, buildFaqPageSchema } from '@/components/seo/StructuredData';
 
 function FAQItem({ item, id }: { item: { q: string; a: string }; id?: string }) {
   const [open, setOpen] = useState(false);
@@ -83,27 +84,20 @@ export default function FAQ() {
     },
   ], [t]);
 
-  useEffect(() => {
-    const jsonLd = {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": FAQ_ITEMS.map(item => ({
-        "@type": "Question",
-        "name": item.q,
-        "acceptedAnswer": { "@type": "Answer", "text": item.a },
-      })),
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(jsonLd);
-    script.id = "faq-jsonld";
-    document.querySelector("#faq-jsonld")?.remove();
-    document.head.appendChild(script);
-    return () => { document.querySelector("#faq-jsonld")?.remove(); };
-  }, [FAQ_ITEMS]);
+  const faqGraph = useMemo(
+    () => [
+      buildBreadcrumbSchema([
+        { name: 'Home', item: '/' },
+        { name: 'FAQ' },
+      ]),
+      buildFaqPageSchema(FAQ_ITEMS.map((item) => ({ question: item.q, answer: item.a }))),
+    ],
+    [FAQ_ITEMS],
+  );
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
+      <StructuredData id="faq-graph" data={faqGraph} />
       <Header variant="solid" />
 
       {/* Hero */}

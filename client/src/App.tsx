@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { WifiOff, ArrowUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { detectAiReferrer } from "./lib/datalayer";
 
 const ItineraryDrawer = lazy(() => import("./components/itinerary/ItineraryDrawer"));
 const CookieBanner = lazy(() => import("./components/layout/CookieBanner"));
@@ -26,6 +27,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Cookies = lazy(() => import("./pages/Cookies"));
+const CancellationPolicy = lazy(() => import("./pages/CancellationPolicy"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
 const ExperienceDetail = lazy(() => import("./pages/ExperienceDetail"));
 const Blog = lazy(() => import("./pages/Blog"));
@@ -145,6 +147,7 @@ function Router() {
         <Route path="/legal/privacy" component={Privacy} />
         <Route path="/legal/terms" component={Terms} />
         <Route path="/legal/cookies" component={Cookies} />
+        <Route path="/legal/cancellation-policy" component={CancellationPolicy} />
         <Route path="/admin" nest component={AdminRouter} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
@@ -219,6 +222,9 @@ function OfflineBanner() {
 }
 
 function App() {
+  // Fire AI referrer detection once on mount
+  useEffect(() => { detectAiReferrer(); }, []);
+
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
