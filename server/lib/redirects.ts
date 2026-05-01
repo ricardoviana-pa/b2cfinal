@@ -171,6 +171,12 @@ const STATIC_REDIRECTS: Record<string, string> = {
   "/home-2/": "/",
   "/new-homepage/": "/",
   "/thisisrealportugal/": "/",
+  "/journal": "/blog",
+  "/journal/": "/blog",
+  "/account/login": "/login",
+  "/index": "/",
+  "/new": "/",
+  "/new/": "/",
 };
 
 interface PatternRule {

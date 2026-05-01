@@ -169,3 +169,18 @@ describe("legacyRedirects.resolvePath", () => {
     });
   });
 });
+
+describe("regressions from old ad-hoc routes (now consolidated)", () => {
+  it.each([
+    ["/journal", "/blog"],
+    ["/journal/", "/blog"],
+    ["/account/login", "/login"],
+    ["/index", "/"],
+    ["/new", "/"],
+    ["/new/", "/"],
+    ["/event/horse", "/experiences/horseback-riding"],
+    ["/event/horse/", "/experiences/horseback-riding"],
+  ])("preserves redirect for %s → %s", (from, to) => {
+    expect(__testing.resolvePath(from)).toBe(to);
+  });
+});
