@@ -725,6 +725,7 @@ export default function Homes() {
                       listId="search_results"
                       listName="Search Results"
                       itemIndex={index + 1}
+                      hidePrice
                     />
                   </div>
                 ))}
@@ -779,6 +780,7 @@ export default function Homes() {
                       guests={searchGuestsCount || undefined}
                       liveQuote={quotes[property.slug] || undefined}
                       quoteLoading={false}
+                      hidePrice
                     />
                   </div>
                 ))}

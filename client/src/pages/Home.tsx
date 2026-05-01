@@ -133,7 +133,7 @@ export default function Home() {
     'portugal-active-sunset-beach-lodge-heated-pool-5ceb91',
     'abreu-retreat-palace-luxury-elegance-leisure-e914e2',
     'stars-view-by-portugal-active-026fa9',
-    'alvarinho-villa-5-suites-heated-pool-4854c5',
+    'luxury-and-nature-retreat-w-pool-jacuzzi-bbq-5cfd96',
     'beach-farm-pool-and-jacuzzi-with-sea-view-83ef5f',
   ];
   const featured = useMemo(() => {
