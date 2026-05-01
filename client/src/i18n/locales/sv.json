@@ -1072,5 +1072,10 @@
     "emailPlaceholder": "Din e-post",
     "notifyMe": "Meddela mig",
     "fromPrice": "Från €{{price}}"
+  },
+  "urgency": {
+    "highDemand": "Hög efterfrågan",
+    "guestFavourite": "Gästfavorit",
+    "justAdded": "Nyligen tillagd"
   }
 }

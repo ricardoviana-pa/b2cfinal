@@ -1072,5 +1072,10 @@
     "emailPlaceholder": "O seu email",
     "notifyMe": "Notificar-me",
     "fromPrice": "Desde €{{price}}"
+  },
+  "urgency": {
+    "highDemand": "Alta procura",
+    "guestFavourite": "Favorito dos hóspedes",
+    "justAdded": "Novidade"
   }
 }

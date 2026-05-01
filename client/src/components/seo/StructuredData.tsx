@@ -110,6 +110,7 @@ export interface BuildVacationRentalInput {
   latitude?: number | null;
   longitude?: number | null;
   aggregateRating?: { ratingValue: number; reviewCount: number } | null;
+  reviews?: Array<{ rating: number; text: string; guestName: string; date: string }> | null;
 }
 
 /** VacationRental is a Google-recognized subtype of LodgingBusiness tailored
@@ -179,6 +180,20 @@ export function buildVacationRentalSchema(i: BuildVacationRentalInput): JsonLd {
         bestRating: 5,
         worstRating: 1,
       },
+    }),
+    ...(i.reviews && i.reviews.length > 0 && {
+      review: i.reviews.slice(0, 5).map((r) => ({
+        '@type': 'Review',
+        reviewRating: {
+          '@type': 'Rating',
+          ratingValue: r.rating,
+          bestRating: 5,
+          worstRating: 1,
+        },
+        author: { '@type': 'Person', name: r.guestName },
+        reviewBody: r.text.slice(0, 500),
+        ...(r.date && { datePublished: r.date.split('T')[0] }),
+      })),
     }),
     brand: BRAND,
   };

@@ -4,10 +4,10 @@
    touch-friendly swipe, no rounded corners, mobile-first
    ========================================================================== */
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useMemo } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, ChevronRight, Users, BedDouble, Bath } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Flame, Star } from 'lucide-react';
 import { formatEur, sanitizePropertyName } from '@/lib/format';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages } from '@/lib/images';
@@ -125,6 +125,22 @@ export default function PropertyCard({
     });
   };
 
+  // Urgency badge — tier-based + review-driven signals
+  const urgencyBadge = useMemo(() => {
+    const rating = (property as any).averageRating;
+    const reviewCount = (property as any).reviewCount || 0;
+    if (property.tier === 'signature') {
+      return { label: t('urgency.highDemand', 'High demand'), icon: Flame, color: 'bg-[#1A1A18]/80' };
+    }
+    if (rating && rating >= 4.8 && reviewCount >= 5) {
+      return { label: t('urgency.guestFavourite', 'Guest favourite'), icon: Star, color: 'bg-[#8B7355]/90' };
+    }
+    if (property.tier === 'new') {
+      return { label: t('urgency.justAdded', 'Just added'), icon: null, color: 'bg-[#8B7355]/90' };
+    }
+    return null;
+  }, [property, t]);
+
   return (
     <Link
       href={`/homes/${property.slug}${checkin && checkout ? `?checkin=${encodeURIComponent(checkin)}&checkout=${encodeURIComponent(checkout)}${guests && guests > 1 ? `&guests=${guests}` : ''}` : ''}`}
@@ -159,6 +175,14 @@ export default function PropertyCard({
 
         {/* Subtle bottom gradient for readability */}
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.08) 0%, transparent 40%)' }} />
+
+        {/* Urgency badge */}
+        {urgencyBadge && (
+          <div className={`absolute top-3 left-3 z-10 ${urgencyBadge.color} text-white text-[10px] font-medium tracking-[0.04em] uppercase px-2.5 py-1 rounded-full flex items-center gap-1 backdrop-blur-sm`}>
+            {urgencyBadge.icon && <urgencyBadge.icon className="w-3 h-3" />}
+            {urgencyBadge.label}
+          </div>
+        )}
 
         {/* Navigation Arrows — always visible so the slide is discoverable */}
         {total > 1 && (

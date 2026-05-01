@@ -1072,5 +1072,10 @@
     "strictBody": "50% refund if cancelled at least 60 days before check-in. No refund for cancellations made less than 60 days before check-in. Non-refundable after check-in.",
     "nonRefundableTitle": "Non-Refundable",
     "nonRefundableBody": "This rate is offered at a reduced price in exchange for a no-refund policy. Once booked, no refund will be issued regardless of the cancellation date. We strongly recommend purchasing travel insurance when choosing this rate."
+  },
+  "urgency": {
+    "highDemand": "High demand",
+    "guestFavourite": "Guest favourite",
+    "justAdded": "Just added"
   }
 }

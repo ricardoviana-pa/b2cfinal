@@ -463,6 +463,7 @@ export default function PropertyDetail() {
                 reviewCount: Number((property as any).reviewCount),
               }
             : null,
+        reviews: (property as any).reviews || null,
       }),
       buildBreadcrumbSchema([
         { name: 'Home', item: '/' },
@@ -836,6 +837,16 @@ export default function PropertyDetail() {
           <div className="flex items-center gap-3 mb-3">
             <p className="text-[11px] font-medium tracking-[0.12em] text-[#8B7355] uppercase">{destName}</p>
             <span className="h-px flex-1 max-w-[60px] bg-[#E8E4DC]" />
+            {property.tier === 'signature' && (
+              <span className="inline-flex items-center gap-1 text-[10px] font-medium tracking-[0.04em] uppercase text-[#1A1A18] bg-[#F5F1EB] px-2.5 py-1 rounded-full">
+                <Flame size={11} className="text-[#8B7355]" /> {t('urgency.highDemand', 'High demand')}
+              </span>
+            )}
+            {(property as any).averageRating >= 4.8 && ((property as any).reviewCount || 0) >= 5 && property.tier !== 'signature' && (
+              <span className="inline-flex items-center gap-1 text-[10px] font-medium tracking-[0.04em] uppercase text-[#8B7355] bg-[#F5F1EB] px-2.5 py-1 rounded-full">
+                <Award size={11} /> {t('urgency.guestFavourite', 'Guest favourite')}
+              </span>
+            )}
           </div>
           <h1 className="font-display text-[clamp(1.75rem,4vw,3rem)] font-light leading-[1.08] text-[#1A1A18] mb-3">
             {sanitizePropertyName(property.name)}
