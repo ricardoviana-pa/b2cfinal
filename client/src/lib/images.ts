@@ -17,7 +17,7 @@ export const IMAGES = {
   expGastronomy: '/experiences/pa-chef-cooking.webp',
   expWellness: '/experiences/exp-wellness.webp',
   expAdventure: '/experiences/sup-river.webp',
-  expMobility: 'https://images.unsplash.com/photo-1679007076103-9ffa7afa1bfb?w=800&q=80',
+  expMobility: 'https://images.unsplash.com/photo-1679007076103-9ffa7afa1bfb?w=800&q=80&auto=format&fit=crop',
 
   // About page
   aboutStory: '/hero/about-team-suite.webp',
@@ -46,129 +46,129 @@ export const IMAGES = {
 export const PROPERTY_IMAGES: Record<string, string[]> = {
   // Casa do Mar — Oceanfront contemporary, Minho Coast
   'casa-do-mar': [
-    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80',
-    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
-    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-    'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800&q=80',
+    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800&q=80&auto=format&fit=crop',
   ],
   // Quinta da Eira — Restored farmhouse, vineyards, Ponte de Lima
   'quinta-da-eira': [
-    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80',
-    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-    'https://images.unsplash.com/photo-1416331108676-a22ccb276e35?w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
+    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1416331108676-a22ccb276e35?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80&auto=format&fit=crop',
   ],
   // Villa Serena — Hilltop, Douro Valley, contemporary
   'villa-serena': [
-    'https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=800&q=80',
-    'https://images.unsplash.com/photo-1602343168117-bb8ffe3e2e9f?w=800&q=80',
-    'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80',
-    'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80',
+    'https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1602343168117-bb8ffe3e2e9f?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80&auto=format&fit=crop',
   ],
   // Casa da Praia — Beachfront modern, Caminha
   'casa-da-praia': [
-    'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80',
-    'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80',
-    'https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=800&q=80',
-    'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80',
+    'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80&auto=format&fit=crop',
   ],
   // Solar de Além — Grand manor, heritage, gardens
   'solar-de-alem': [
-    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-    'https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=800&q=80',
-    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-    'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?w=800&q=80',
+    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?w=800&q=80&auto=format&fit=crop',
   ],
   // Casa Rio — Riverside, Douro, modern
   'casa-rio': [
-    'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&q=80',
-    'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
-    'https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=800&q=80',
+    'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=800&q=80&auto=format&fit=crop',
   ],
   // Villa Atlântica — Clifftop, Lagos, Algarve
   'villa-atlantica': [
-    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80',
-    'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&q=80',
-    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-    'https://images.unsplash.com/photo-1602343168117-bb8ffe3e2e9f?w=800&q=80',
+    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1602343168117-bb8ffe3e2e9f?w=800&q=80&auto=format&fit=crop',
   ],
   // Casa do Campo — Rural, Gerês, rustic
   'casa-do-campo': [
-    'https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=800&q=80',
-    'https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80',
-    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-    'https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=800&q=80',
+    'https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=800&q=80&auto=format&fit=crop',
   ],
   // Palacete Porto — Historic townhouse, Porto
   'palacete-porto': [
-    'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=800&q=80',
-    'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80',
-    'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80',
+    'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80&auto=format&fit=crop',
   ],
   // Casa Algarvia — Traditional, Tavira, Algarve
   'casa-algarvia': [
-    'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80',
-    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80',
-    'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80',
-    'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80',
+    'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80&auto=format&fit=crop',
   ],
   // Monte Velho — Countryside estate, Algarve
   'monte-velho': [
-    'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?w=800&q=80',
-    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-    'https://images.unsplash.com/photo-1416331108676-a22ccb276e35?w=800&q=80',
-    'https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80',
+    'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1416331108676-a22ccb276e35?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80&auto=format&fit=crop',
   ],
   // Casa da Torre — Medieval tower, Minho
   'casa-da-torre': [
-    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-    'https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
-    'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80',
+    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80&auto=format&fit=crop',
   ],
   // Villa Luz — Modern, Albufeira, Algarve
   'villa-luz': [
-    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80',
-    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80',
-    'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&q=80',
-    'https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=800&q=80',
+    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=800&q=80&auto=format&fit=crop',
   ],
   // Quinta do Vale — Wine estate, Douro
   'quinta-do-vale': [
-    'https://images.unsplash.com/photo-1416331108676-a22ccb276e35?w=800&q=80',
-    'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&q=80',
-    'https://images.unsplash.com/photo-1602343168117-bb8ffe3e2e9f?w=800&q=80',
-    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+    'https://images.unsplash.com/photo-1416331108676-a22ccb276e35?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1602343168117-bb8ffe3e2e9f?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80&auto=format&fit=crop',
   ],
   // Casa Branca — Whitewashed, Algarve
   'casa-branca': [
-    'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80',
-    'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80',
-    'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80',
-    'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80',
+    'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80&auto=format&fit=crop',
   ],
   // Villa Garden — Contemporary, Vilamoura
   'villa-garden': [
-    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=800&q=80',
-    'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80',
-    'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800&q=80',
+    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800&q=80&auto=format&fit=crop',
   ],
   // Casa do Artista — Bohemian, Porto
   'casa-do-artista': [
-    'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&q=80',
-    'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80',
-    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
+    'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80&auto=format&fit=crop',
   ],
   // Villa Oceano — Oceanfront, Sagres
   'villa-oceano': [
-    'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80',
-    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80',
-    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80',
-    'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&q=80',
+    'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&q=80&auto=format&fit=crop',
   ],
 } as const;
 
@@ -177,8 +177,8 @@ export const PROPERTY_IMAGES: Record<string, string[]> = {
  */
 export function getPropertyImages(slug: string): string[] {
   return PROPERTY_IMAGES[slug] || [
-    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
+    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80&auto=format&fit=crop',
   ];
 }

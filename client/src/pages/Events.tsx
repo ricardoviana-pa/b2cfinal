@@ -56,42 +56,42 @@ export default function Events() {
       title: t('events.typeCorporate'),
       subtitle: t('events.subtitleCorporate'),
       guestCount: 80,
-      image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80&auto=format&fit=crop',
     },
     {
       id: 'weddings',
       title: t('events.typeWeddings'),
       subtitle: t('events.subtitleWeddings'),
       guestCount: 120,
-      image: 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800&q=80&auto=format&fit=crop',
     },
     {
       id: 'brand',
       title: t('events.typeBrand'),
       subtitle: t('events.subtitleBrand'),
       guestCount: 50,
-      image: 'https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=800&q=80&auto=format&fit=crop',
     },
     {
       id: 'celebrations',
       title: t('events.typeCelebrations'),
       subtitle: t('events.subtitleCelebrations'),
       guestCount: 60,
-      image: 'https://images.unsplash.com/photo-1529636798458-92182e662485?w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1529636798458-92182e662485?w=800&q=80&auto=format&fit=crop',
     },
     {
       id: 'wellness',
       title: t('events.typeWellness'),
       subtitle: t('events.subtitleWellness'),
       guestCount: 40,
-      image: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&q=80&auto=format&fit=crop',
     },
     {
       id: 'creative',
       title: t('events.typeCreative'),
       subtitle: t('events.subtitleCreative'),
       guestCount: 30,
-      image: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&q=80&auto=format&fit=crop',
     },
   ], [t]);
 
@@ -116,7 +116,7 @@ export default function Events() {
           ================================================================ */}
       <section className="relative h-[70vh] min-h-[500px] flex items-end overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1600&q=80"
+          src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1600&q=80&auto=format&fit=crop"
           alt="Private villa event setting in Portugal"
           className="absolute inset-0 w-full h-full object-cover"
           width={1600}
@@ -176,6 +176,9 @@ export default function Events() {
                     alt={event.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
+                    width={800}
+                    height={533}
+                    decoding="async"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                   <div className="absolute bottom-4 left-5 right-5">
@@ -215,11 +218,14 @@ export default function Events() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="relative">
               <img
-                src="https://images.unsplash.com/photo-1510076857177-7470076d4098?w=1000&q=80"
+                src="https://images.unsplash.com/photo-1510076857177-7470076d4098?w=1000&q=80&auto=format&fit=crop"
                 alt="Luxury villa terrace set for a private dinner in Portugal"
                 className="w-full object-cover"
                 style={{ aspectRatio: '4/3' }}
                 loading="lazy"
+                width={1000}
+                height={750}
+                decoding="async"
               />
               <div className="absolute -bottom-4 -right-4 bg-[#1A1A18] text-white px-6 py-4 hidden lg:block">
                 <p className="font-display text-[1.1rem]">15+ {t('events.venueLabel')}</p>
@@ -295,7 +301,7 @@ export default function Events() {
           ================================================================ */}
       <section className="relative overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=80"
+          src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=80&auto=format&fit=crop"
           alt="Elegant outdoor dining setup"
           className="absolute inset-0 w-full h-full object-cover"
           width={1600}

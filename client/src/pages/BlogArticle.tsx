@@ -9,7 +9,7 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import { ArrowLeft, Clock, Calendar, Share2, ArrowRight, Play, ExternalLink } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { StructuredData, buildArticleSchema } from '@/components/seo/StructuredData';
+import { StructuredData, buildArticleSchema, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import AnswerCapsule from '@/components/seo/AnswerCapsule';
 import type { BlogArticle as BlogArticleType } from '@/lib/types';
 import blogData from '@/data/blog.json';
@@ -149,7 +149,14 @@ export default function BlogArticle() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
-      {articleSchema && <StructuredData id={`article-${article.slug}`} data={articleSchema} />}
+      {articleSchema && <StructuredData id={`article-${article.slug}`} data={[
+        articleSchema,
+        buildBreadcrumbSchema([
+          { name: 'Home', item: '/' },
+          { name: 'Journal', item: '/blog' },
+          { name: article.title },
+        ]),
+      ]} />}
       <Header variant="solid" />
 
       {/* Article Header */}
@@ -184,7 +191,7 @@ export default function BlogArticle() {
       <section className="pb-12">
         <div className="container max-w-4xl mx-auto">
           <img
-            src={(article as any).coverImage || (article as any).featuredImage || 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1200&q=80'}
+            src={(article as any).coverImage || (article as any).featuredImage || 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1200&q=80&auto=format&fit=crop'}
             alt={`${article.title} – Portugal Active journal`}
             className="w-full aspect-[16/9] object-cover"
             width={1200} height={675} fetchPriority="high"
@@ -275,10 +282,13 @@ export default function BlogArticle() {
                 <Link key={a.id} href={`/blog/${a.slug}`} className="group block">
                   <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] mb-4">
                     <img
-                      src={(a as any).coverImage || (a as any).featuredImage || 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&q=80'}
+                      src={(a as any).coverImage || (a as any).featuredImage || 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&q=80&auto=format&fit=crop'}
                       alt={`${a.title} – Portugal Active journal`}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
+                      width={800}
+                      height={600}
+                      decoding="async"
                     />
                   </div>
                   <p className="overline mb-2">{a.category.replace('-', ' ')}</p>
