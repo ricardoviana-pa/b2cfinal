@@ -3,7 +3,7 @@
    Mobile: swipe carousel (mirrors PropertyDetail). Desktop: editorial grid.
    ========================================================================== */
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 interface ExperienceGalleryProps {
@@ -31,8 +31,20 @@ export default function ExperienceGallery({ images, alt }: ExperienceGalleryProp
 
   const closeLightbox = () => setLightboxOpen(false);
 
-  const next = () => setLightboxIndex(i => (i + 1) % total);
-  const prev = () => setLightboxIndex(i => (i - 1 + total) % total);
+  const next = useCallback(() => setLightboxIndex(i => (i + 1) % total), [total]);
+  const prev = useCallback(() => setLightboxIndex(i => (i - 1 + total) % total), [total]);
+
+  // Keyboard navigation: ←/→ arrows + Escape
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); next(); }
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prev(); }
+      else if (e.key === 'Escape') closeLightbox();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [lightboxOpen, next, prev]);
 
   // Mobile touch handlers
   const handleTouchStart = (e: React.TouchEvent) => {

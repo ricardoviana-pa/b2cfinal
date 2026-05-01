@@ -1,11 +1,10 @@
 /* ==========================================================================
-   ABOUT — V2.0 Complete Rewrite
-   10 sections: Hero, Origin, Model, Standard, Social Proof,
-   Regions, Values, Team, Owners CTA, Final CTA
+   ABOUT — V3.0 Lean rewrite
+   5 sections: Hero, Origin Story, Social Proof, Team, Final CTA
    ========================================================================== */
 
 import { useRef } from 'react';
-import { ChevronLeft, ChevronRight, ArrowRight, Bed, Sparkles, Phone, Shield, Gift, UtensilsCrossed } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -108,13 +107,7 @@ const TEAM = [
   },
 ];
 
-/* ── The Standard — 6 items (icons only, text comes from i18n) ─────────── */
-const STANDARD_ICONS = [Bed, Sparkles, UtensilsCrossed, Phone, Shield, Gift];
-
-/* ── Values — 4 items (text comes from i18n) ──────────────────────────── */
-const VALUE_COUNT = 4;
-
-/* ── Press logos (same as homepage) ──────────────────────────────────────── */
+/* ── Press logos ────────────────────────────────────────────────────────── */
 const PRESS_LOGOS = [
   { src: IMAGES.pressForbes, alt: 'Featured in Forbes', h: 'h-5 md:h-6' },
   { src: IMAGES.pressTheTimes, alt: 'Featured in The Times', h: 'h-7 md:h-8' },
@@ -132,10 +125,6 @@ export default function About() {
     url: '/about',
   });
 
-  // JSON-LD: breadcrumb + Ricardo Viana Person schema (bundled via @graph).
-  // Person is on the About page (not the homepage) because that's where the
-  // biography / photo live — Google and LLMs use that context to confirm
-  // the founder entity linked from index.html's Organization.
   const aboutGraph = [
     buildBreadcrumbSchema([
       { name: 'Home', item: '/' },
@@ -166,10 +155,9 @@ export default function About() {
       <StructuredData id="about-graph" data={aboutGraph} />
       <Header />
 
-      {/* ══════════════════════════════════════════════════════════════════
+      {/* ═══════════════════════════════════════════════════════════════════
           SECTION 1: HERO
-          Full-width image, left-aligned text, gradient overlay
-          ══════════════════════════════════════════════════════════════════ */}
+          ═══════════════════════════════════════════════════════════════════ */}
       <section className="relative h-[70vh] min-h-[440px] lg:min-h-[520px] flex items-center overflow-hidden">
         <img
           src={IMAGES.aboutStory}
@@ -198,7 +186,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* ANSWER CAPSULE — citable founder/company summary */}
+      {/* ANSWER CAPSULE — citable founder/company summary (SEO) */}
       <section className="bg-[#FAFAF7] pt-10 md:pt-14">
         <div className="container max-w-3xl">
           <AnswerCapsule
@@ -215,10 +203,10 @@ export default function About() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════════
-          SECTION 2: THE ORIGIN (Our Story)
-          Two-column: text left, sticky image right
-          ══════════════════════════════════════════════════════════════════ */}
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION 2: OUR STORY (condensed)
+          Two-column: text left, sticky photo right + press strip
+          ═══════════════════════════════════════════════════════════════════ */}
       <section className="py-20 lg:py-24">
         <div className="container max-w-[1200px] mx-auto">
           <div className="lg:flex lg:gap-16">
@@ -238,10 +226,6 @@ export default function About() {
                 t('about.storyP1'),
                 t('about.storyP2'),
                 t('about.storyP3'),
-                t('about.storyP4'),
-                t('about.storyP5'),
-                t('about.storyP6'),
-                t('about.storyP7'),
               ].map((para, i) => (
                 <p
                   key={i}
@@ -266,7 +250,7 @@ export default function About() {
                 </div>
                 <p className="text-[13px] text-[#9E9A90] mt-3" style={{ fontFamily: 'var(--font-body)' }}>
                   {t('about.founderCaption')}
-</p>
+                </p>
               </div>
             </div>
           </div>
@@ -282,18 +266,18 @@ export default function About() {
               />
             </div>
             <p className="text-[13px] text-[#9E9A90] mt-3" style={{ fontFamily: 'var(--font-body)' }}>
-              Ricardo Viana, Founder. Viana do Castelo.
+              {t('about.founderCaption')}
             </p>
           </div>
 
-          {/* Press logo strip — same logos as homepage */}
+          {/* Press logo strip */}
           <div className="border-t border-[#E8E4DC] pt-10 mt-4">
             <p
               className="text-center text-[11px] font-medium text-[#9E9A90] mb-8"
               style={{ letterSpacing: '0.14em', fontFamily: 'var(--font-body)' }}
             >
               {t('about.pressOverline')}
-</p>
+            </p>
             <div className="flex items-center justify-center gap-10 lg:gap-14 flex-wrap">
               {PRESS_LOGOS.map((logo, i) => (
                 <img key={i} src={logo.src} alt={logo.alt} className={`${logo.h} w-auto object-contain opacity-40`} loading="lazy" />
@@ -303,125 +287,14 @@ export default function About() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════════
-          SECTION 3: WHAT WE ACTUALLY DO (The Model)
-          Surface background, two-column reversed
-          ══════════════════════════════════════════════════════════════════ */}
-      <section className="py-20 lg:py-24 bg-[#F5F1EB]">
-        <div className="container max-w-[1200px] mx-auto">
-          <div className="lg:flex lg:gap-16 lg:items-start">
-            {/* Text */}
-            <div className="lg:w-[55%]">
-              <p className="text-[12px] font-medium uppercase tracking-[2.5px] text-[#8B7355] mb-4" style={{ fontFamily: 'var(--font-body)' }}>
-                {t('about.modelOverline')}
-              </p>
-              <h2
-                className="text-[#1A1A18] mb-8"
-                style={{ fontFamily: 'var(--font-display)', fontWeight: 300, fontSize: 'clamp(28px, 4vw, 36px)', lineHeight: 1.2 }}
-              >
-                {t('about.modelTitle')}
-              </h2>
-              {[
-                t('about.modelP1'),
-                t('about.modelP2'),
-                t('about.modelP3'),
-              ].map((para, i) => (
-                <p
-                  key={i}
-                  className="text-[#6B6860] mb-5"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '16px', lineHeight: 1.7 }}
-                >
-                  {para}
-                </p>
-              ))}
-            </div>
-            {/* Image */}
-            <div className="lg:w-[45%] mt-8 lg:mt-0">
-              <div className="overflow-hidden" style={{ aspectRatio: '4/3' }}>
-                <img
-                  src={IMAGES.aboutStory}
-                  alt="Portugal Active team preparing a luxury villa for guest arrival"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════
-          SECTION 4: THE STANDARD (What's Included)
-          Icon grid, 3 columns
-          ══════════════════════════════════════════════════════════════════ */}
-      <section className="py-20 lg:py-24">
-        <div className="container max-w-[1200px] mx-auto">
-          <div className="text-center max-w-[600px] mx-auto mb-14">
-            <p className="text-[12px] font-medium uppercase tracking-[2.5px] text-[#8B7355] mb-4" style={{ fontFamily: 'var(--font-body)' }}>
-              {t('about.standardOverline')}
-            </p>
-            <h2
-              className="text-[#1A1A18]"
-              style={{ fontFamily: 'var(--font-display)', fontWeight: 300, fontSize: 'clamp(28px, 4vw, 36px)', lineHeight: 1.2 }}
-            >
-              {t('about.standardTitle')}
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-[960px] mx-auto">
-            {STANDARD_ICONS.map((Icon, idx) => {
-              const num = idx + 1;
-              return (
-                <div key={idx}>
-                  <Icon size={32} className="text-[#8B7355] mb-4" strokeWidth={1.5} />
-                  <h3
-                    className="text-[#1A1A18] mb-2"
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 500, fontSize: '15px' }}
-                  >
-                    {t(`about.standard${num}Title`)}
-                  </h3>
-                  <p
-                    className="text-[#6B6860]"
-                    style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '14px', lineHeight: 1.6 }}
-                  >
-                    {t(`about.standard${num}Body`)}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="text-center mt-12">
-            <Link
-              href="/services"
-              className="inline-flex items-center gap-2 border border-[#1A1A18] text-[#1A1A18] text-[12px] font-medium px-8 py-4 hover:bg-[#1A1A18] hover:text-white transition-colors"
-              style={{ letterSpacing: '1.5px' }}
-            >
-              {t('about.discoverExperiences')} <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════
-          SECTION 5: SOCIAL PROOF
-          Dark band with press logos + guest quote
-          ══════════════════════════════════════════════════════════════════ */}
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION 3: SOCIAL PROOF
+          Dark band — guest quote only (press logos already above)
+          ═══════════════════════════════════════════════════════════════════ */}
       <section className="py-16 lg:py-20 bg-[#1A1A18]">
-        <div className="container max-w-[1200px] mx-auto text-center">
-          {/* Press logos — inverted for dark background */}
-          <div className="flex items-center justify-center gap-10 lg:gap-14 flex-wrap">
-            {PRESS_LOGOS.map((logo, i) => (
-              <img key={i} src={logo.src} alt={logo.alt} className={`${logo.h} w-auto object-contain brightness-0 invert opacity-70`} loading="lazy" />
-            ))}
-          </div>
-
-          {/* Divider */}
-          <div className="mx-auto mt-8 mb-8 h-px bg-white/15 max-w-[400px]" />
-
-          {/* Guest quote */}
+        <div className="container max-w-[680px] mx-auto text-center">
           <blockquote
-            className="text-white max-w-[680px] mx-auto italic"
+            className="text-white italic"
             style={{ fontFamily: 'var(--font-display)', fontWeight: 300, fontSize: 'clamp(18px, 3vw, 22px)', lineHeight: 1.5 }}
           >
             "{t('about.socialProofQuote')}"
@@ -435,47 +308,10 @@ export default function About() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════════
-          SECTION 6: VALUES
-          Surface background, 2x2 grid
-          ══════════════════════════════════════════════════════════════════ */}
-      <section className="py-20 lg:py-24 bg-[#F5F1EB]">
-        <div className="container max-w-[1200px] mx-auto">
-          <p className="text-[12px] font-medium uppercase tracking-[2.5px] text-[#8B7355] mb-4" style={{ fontFamily: 'var(--font-body)' }}>
-            {t('about.valuesOverline')}
-          </p>
-          <h2
-            className="text-[#1A1A18] mb-10"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 300, fontSize: 'clamp(28px, 4vw, 36px)', lineHeight: 1.2 }}
-          >
-            {t('about.valuesTitle')}
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {Array.from({ length: VALUE_COUNT }, (_, idx) => (
-              <div key={idx} className="bg-white border border-[#E8E4DC] p-8">
-                <h3
-                  className="text-[#1A1A18] mb-3"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 500, fontSize: '17px' }}
-                >
-                  {t(`about.value${idx + 1}Title`)}
-                </h3>
-                <p
-                  className="text-[#6B6860]"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '15px', lineHeight: 1.65 }}
-                >
-                  {t(`about.value${idx + 1}Body`)}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════
-          SECTION 8: THE TEAM
-          Horizontal scroll carousel with one-liners
-          ══════════════════════════════════════════════════════════════════ */}
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION 4: THE TEAM
+          Horizontal scroll carousel
+          ═══════════════════════════════════════════════════════════════════ */}
       <section className="py-20 lg:py-24">
         <div className="container max-w-[1200px] mx-auto">
           <div className="flex items-end justify-between mb-10">
@@ -560,42 +396,11 @@ export default function About() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════════
-          SECTION 9: FOR PROPERTY OWNERS (Bridge to B2B)
-          Surface background, centered
-          ══════════════════════════════════════════════════════════════════ */}
-      <section className="py-16 lg:py-20 bg-[#F5F1EB]">
-        <div className="container max-w-[640px] mx-auto text-center">
-          <h2
-            className="text-[#1A1A18] mb-4"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 300, fontSize: 'clamp(26px, 4vw, 32px)', lineHeight: 1.2 }}
-          >
-            {t('about.ownersTitle')}
-          </h2>
-          <p
-            className="text-[#6B6860] max-w-[520px] mx-auto mb-8"
-            style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '16px', lineHeight: 1.7 }}
-          >
-            {t('about.ownersBody')}
-          </p>
-          <a
-            href="https://management.portugalactive.com/?utm_source=b2c_site&utm_medium=about_page&utm_campaign=about_cta"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 border border-[#1A1A18] text-[#1A1A18] text-[12px] font-medium px-8 py-4 hover:bg-[#1A1A18] hover:text-white transition-colors"
-            style={{ letterSpacing: '1.5px' }}
-          >
-            {t('about.ownersCta')} <ArrowRight className="w-4 h-4" />
-          </a>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════
-          SECTION 10: FINAL CTA
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION 5: FINAL CTA
           Dark band, two buttons
-          ══════════════════════════════════════════════════════════════════ */}
+          ═══════════════════════════════════════════════════════════════════ */}
       <section className="relative py-20 lg:py-24 bg-[#1A1A18] overflow-hidden">
-        {/* Subtle property image overlay */}
         <img
           src={IMAGES.aboutStory}
           alt=""
