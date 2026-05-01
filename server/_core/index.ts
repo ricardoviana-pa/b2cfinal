@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import compression from "compression";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { createServer } from "http";
@@ -62,6 +63,17 @@ async function startServer() {
 
     next();
   });
+
+  // Gzip/Brotli compression — reduces HTML/CSS/JS payload ~60-80%
+  app.use(compression({
+    level: 6,                         // balanced speed vs ratio
+    threshold: 1024,                  // skip tiny responses (<1KB)
+    filter: (req, res) => {
+      // Don't compress server-sent events
+      if (req.headers.accept === 'text/event-stream') return false;
+      return compression.filter(req, res);
+    },
+  }));
 
   app.use(helmet({
     contentSecurityPolicy: false,

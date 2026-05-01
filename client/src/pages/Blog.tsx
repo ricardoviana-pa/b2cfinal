@@ -18,11 +18,11 @@ import blogData from '@/data/blog.json';
 const articles = (blogData as any).articles as BlogArticle[];
 
 const FALLBACK_IMAGES: Record<string, string> = {
-  destinations: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&q=80',
-  lifestyle: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80',
-  'portugal-active': 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-  video: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&q=80',
-  people: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80',
+  destinations: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&q=80&auto=format&fit=crop',
+  lifestyle: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80&auto=format&fit=crop',
+  'portugal-active': 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80&auto=format&fit=crop',
+  video: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&q=80&auto=format&fit=crop',
+  people: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80&auto=format&fit=crop',
 };
 
 function getArticleImage(article: BlogArticle): string {
@@ -141,6 +141,9 @@ export default function Blog() {
                     alt={`${featured.title} – Portugal Active journal`}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
+                    width={800}
+                    height={600}
+                    decoding="async"
                   />
                   {((featured as any).videoId || (featured as any).vimeoId) && (
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -193,6 +196,9 @@ export default function Blog() {
                       alt={`${article.title} – Portugal Active journal`}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
+                      width={800}
+                      height={600}
+                      decoding="async"
                     />
                     {((article as any).videoId || (article as any).vimeoId) && (
                       <div className="absolute inset-0 flex items-center justify-center">
