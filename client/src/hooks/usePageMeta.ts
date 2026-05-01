@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import i18n, { LOCALE_MAP } from '@/i18n';
 
 const SUPPORTED_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
-const BASE_TITLE = 'Luxury Private Villas in Portugal | Hotel Service | Portugal Active';
-const BASE_DESC = '50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool. Book direct for best rates.';
+const BASE_TITLE = 'Portugal Active | Premium Holiday Homes & Adventure Experiences in Portugal';
+const BASE_DESC = 'Luxury holiday rentals with five-star hotel service across Porto, Lisbon, Algarve and Douro. Private villas, curated adventures, and concierge service.';
 const BASE_URL = 'https://www.portugalactive.com';
 const BASE_IMAGE = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-main-96HXfBCK752avi2daWhgmd.webp';
 

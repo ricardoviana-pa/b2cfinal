@@ -354,7 +354,7 @@ interface PostStayData {
 export async function sendPostStay(data: PostStayData): Promise<void> {
   const subject = `How was your stay at ${data.propertyName}?`;
   const reviewUrl = data.reviewLink || "https://g.page/r/portugalactive/review";
-  const homesUrl = "https://portugalactive.com/homes";
+  const homesUrl = "https://www.portugalactive.com/homes";
 
   const html = wrapTemplate(`
 <tr><td style="padding:0 0 24px 0;">
