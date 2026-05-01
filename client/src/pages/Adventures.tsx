@@ -37,7 +37,7 @@ const experienceData: Record<string, { experienceCategory: string; priceOta: num
 
 export default function Adventures() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Experiences in Portugal | Horseback Riding, Canyoning & Surfing', description: 'Guided experiences across Portugal — horseback riding, canyoning, surfing, hiking, wine tours & more. Book direct in Minho, Porto or Algarve.', url: '/experiences' });
+  usePageMeta({ title: 'Adventure Activities in Portugal | Hiking, Horse Riding, Surfing & More', description: 'Premium adventure experiences across Portugal. Expert-guided hiking, horseback riding, surfing, kayaking and outdoor activities in Porto, Algarve and Minho.', url: '/experiences' });
 
   const adventuresGraph = useMemo(
     () => [

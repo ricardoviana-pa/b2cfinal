@@ -60,8 +60,8 @@ function useFadeIn() {
 export default function Home() {
   const { t } = useTranslation();
   usePageMeta({
-    title: 'Luxury Private Villas in Portugal | Hotel Service',
-    description: '50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool. Book direct for best rates.',
+    title: 'Portugal Active | Premium Holiday Homes & Adventure Experiences in Portugal',
+    description: 'Luxury holiday rentals with five-star hotel service across Porto, Lisbon, Algarve and Douro. Private villas, curated adventures, and concierge service.',
     url: '/',
   });
   // FAQPage schema only — the Organization schema is global (index.html),

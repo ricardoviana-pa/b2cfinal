@@ -152,8 +152,8 @@ function injectLocaleTags(html: string, opts: { lang: string; pagePath: string }
 type MetaEntry = { title: string; description: string };
 const PAGE_META: Record<string, Record<string, MetaEntry>> = {
   '/': {
-    en: { title: 'Luxury Private Villas in Portugal | Hotel Service | Portugal Active',
-          description: '50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool. Book direct for best rates.' },
+    en: { title: 'Portugal Active | Premium Holiday Homes & Adventure Experiences in Portugal',
+          description: 'Luxury holiday rentals with five-star hotel service across Porto, Lisbon, Algarve and Douro. Private villas, curated adventures, and concierge service.' },
     pt: { title: 'Casas Privadas de Luxo em Portugal | Serviço de Hotel | Portugal Active',
           description: '50+ casas privadas em todo Portugal, geridas como hotéis de luxo. Chef privado, concierge, piscina. Reserve direto para o melhor preço.' },
     es: { title: 'Villas Privadas de Lujo en Portugal | Servicio de Hotel | Portugal Active',
@@ -172,8 +172,8 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
           description: '50+ privata villor runt om i Portugal, skötta som lyxhotell. Privat kock, concierge, pool. Boka direkt för bästa pris.' },
   },
   '/homes': {
-    en: { title: 'Private Villas Portugal | Luxury Holiday Homes | Portugal Active',
-          description: 'Browse 50+ handpicked private villas across Portugal. Pool, concierge, housekeeping included. Filter by region and book direct.' },
+    en: { title: 'Luxury Holiday Homes in Portugal | Private Villas & Premium Rentals',
+          description: 'Handpicked luxury holiday homes across Portugal. Each property managed to five-star hotel standards. Porto, Lisbon, Algarve, Douro and Minho.' },
     pt: { title: 'Casas Privadas em Portugal | Casas de Férias de Luxo | Portugal Active',
           description: 'Descubra mais de 50 casas privadas selecionadas em todo Portugal. Piscina, concierge e limpeza incluídos. Filtre por região e reserve direto.' },
     es: { title: 'Villas Privadas en Portugal | Casas de Vacaciones de Lujo | Portugal Active',
@@ -231,9 +231,29 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
     sv: { title: 'Lyxiga Concierge-tjänster | Privat Kock, Spa, Transfer | Portugal Active',
           description: 'Lyft din vistelse med privat kock, hemspa, flygplatstransfer och skräddarsydda upplevelser. Boka tillsammans med din villa.' },
   },
+  '/experiences': {
+    en: { title: 'Adventure Activities in Portugal | Hiking, Horse Riding, Surfing & More',
+          description: 'Premium adventure experiences across Portugal. Expert-guided hiking, horseback riding, surfing, kayaking and outdoor activities in Porto, Algarve and Minho.' },
+    pt: { title: 'Aventuras em Portugal | Equitação, Canyoning e Surf | Portugal Active',
+          description: 'Atividades de aventura guiadas em todo Portugal — equitação, canyoning, surf, caminhadas, provas de vinho e mais. Reserve direto no Minho, Porto ou Algarve.' },
+    es: { title: 'Aventuras en Portugal | Equitación, Barranquismo y Surf | Portugal Active',
+          description: 'Actividades de aventura guiadas en todo Portugal — equitación, barranquismo, surf, senderismo, catas de vino y más. Reserva directo en Miño, Oporto o Algarve.' },
+    fr: { title: 'Aventures au Portugal | Équitation, Canyoning et Surf | Portugal Active',
+          description: 'Activités d\'aventure guidées à travers le Portugal — équitation, canyoning, surf, randonnée, œnotourisme et plus. Réservation directe au Minho, Porto ou Algarve.' },
+    de: { title: 'Abenteueraktivitäten in Portugal | Reiten, Canyoning & Surfen | Portugal Active',
+          description: 'Geführte Abenteueraktivitäten in ganz Portugal — Reiten, Canyoning, Surfen, Wandern, Weintouren und mehr. Direkt buchen in Minho, Porto oder Algarve.' },
+    it: { title: 'Avventure in Portogallo | Equitazione, Canyoning e Surf | Portugal Active',
+          description: 'Attività d\'avventura guidate in tutto il Portogallo — equitazione, canyoning, surf, escursioni, tour del vino e altro. Prenota diretto a Minho, Porto o Algarve.' },
+    nl: { title: 'Avonturen in Portugal | Paardrijden, Canyoning & Surfen | Portugal Active',
+          description: 'Begeleide avonturenactiviteiten in heel Portugal — paardrijden, canyoning, surfen, wandelen, wijntochten en meer. Direct boeken in Minho, Porto of Algarve.' },
+    fi: { title: 'Seikkailut Portugalissa | Ratsastus, Canyoning ja Surffaus | Portugal Active',
+          description: 'Opastetut seikkailuaktiviteetit ympäri Portugalia — ratsastus, canyoning, surffaus, vaellus, viinikierrokset ja muuta. Varaa suoraan Minhossa, Portossa tai Algarvessa.' },
+    sv: { title: 'Äventyr i Portugal | Ridning, Canyoning & Surf | Portugal Active',
+          description: 'Guidade äventyrsaktiviteter runt om i Portugal — ridning, canyoning, surf, vandring, vintouring med mera. Boka direkt i Minho, Porto eller Algarve.' },
+  },
   '/adventures': {
-    en: { title: 'Adventure Activities in Portugal | Horseback Riding, Canyoning & Surfing | Portugal Active',
-          description: 'Guided adventure activities across Portugal — horseback riding, canyoning, surfing, hiking, wine tours & more. Book direct in Minho, Porto or Algarve.' },
+    en: { title: 'Adventure Activities in Portugal | Hiking, Horse Riding, Surfing & More',
+          description: 'Premium adventure experiences across Portugal. Expert-guided hiking, horseback riding, surfing, kayaking and outdoor activities in Porto, Algarve and Minho.' },
     pt: { title: 'Aventuras em Portugal | Equitação, Canyoning e Surf | Portugal Active',
           description: 'Atividades de aventura guiadas em todo Portugal — equitação, canyoning, surf, caminhadas, provas de vinho e mais. Reserve direto no Minho, Porto ou Algarve.' },
     es: { title: 'Aventuras en Portugal | Equitación, Barranquismo y Surf | Portugal Active',
@@ -370,6 +390,16 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
           description: 'Vastaukset yleisimpiin kysymyksiin varauksista, peruutuksista, sisäänkirjautumisesta, concierge-palveluista ja huviloiden hallinnasta.' },
     sv: { title: 'Vanliga Frågor | Portugal Active',
           description: 'Svar på vanliga frågor om bokning, avbokning, incheckning, concierge-tjänster och villaförvaltning med Portugal Active.' },
+  },
+  '/careers': {
+    en: { title: 'Careers at Portugal Active | Join Our Hospitality Team',
+          description: 'Work in luxury hospitality across Portugal. Open roles in concierge, property management, and guest experience. Join the Portugal Active team.' },
+    pt: { title: 'Carreiras na Portugal Active | Junta-te à Nossa Equipa',
+          description: 'Trabalha na hotelaria de luxo em Portugal. Vagas em concierge, gestão de propriedades e experiência do hóspede. Junta-te à equipa Portugal Active.' },
+  },
+  '/concierge': {
+    en: { title: 'Luxury Concierge Services | Private Chef, Spa, Transfers | Portugal Active',
+          description: 'Elevate your villa stay with private chef, in-house spa, airport transfers, and bespoke experiences. Book alongside your villa.' },
   },
 };
 
