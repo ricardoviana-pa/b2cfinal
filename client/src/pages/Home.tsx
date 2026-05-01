@@ -259,18 +259,26 @@ export default function Home() {
 
         {/* Hero content */}
         <div className="relative container z-10">
-          <div className="max-w-xl">
+          <div className="max-w-2xl">
             <p
-              className="text-[13px] font-medium text-white/70 mb-5"
+              className="text-[15px] font-medium text-white/70 mb-5"
               style={{ fontFamily: 'var(--font-body)', letterSpacing: '0.08em' }}
             >
               {t('home.heroOverline')}
             </p>
-            <h1 className="headline-xl text-white mb-5 leading-[1.1]">
+            <h1
+              className="text-white mb-6 leading-[1.08]"
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 400,
+                letterSpacing: '-0.02em',
+                fontSize: 'clamp(2.75rem, 6vw, 5.25rem)',
+              }}
+            >
               {t('home.heroTitle')}
             </h1>
             <p
-              className="text-[16px] text-white/75 mb-8 leading-relaxed max-w-lg"
+              className="text-[18px] md:text-[20px] text-white/80 mb-9 leading-relaxed max-w-xl"
               style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
             >
               {t('home.heroBody')}
@@ -278,37 +286,52 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/homes"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white text-[#1A1A18] text-[11px] font-semibold hover:bg-[#F5F1EB] transition-colors"
+                className="inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full bg-white text-[#1A1A18] text-[13px] font-semibold hover:bg-[#F5F1EB] transition-colors"
                 style={{ letterSpacing: '1.5px' }}
               >
-                {t('home.heroCta')} <ArrowRight className="w-3.5 h-3.5" />
+                {t('home.heroCta')} <ArrowRight className="w-4 h-4" />
               </Link>
               <a
                 href="https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-white/50 text-white text-[11px] font-semibold hover:bg-white/10 transition-colors"
+                className="inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full border border-white/50 text-white text-[13px] font-semibold hover:bg-white/10 transition-colors"
                 style={{ letterSpacing: '1.5px' }}
               >
-                {t('home.heroCtaConcierge')} <ArrowRight className="w-3.5 h-3.5" />
+                {t('home.heroCtaConcierge')} <ArrowRight className="w-4 h-4" />
               </a>
             </div>
-            <p className="text-[12px] text-white/45 mt-3" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('home.heroGuarantee')}</p>
+            <p className="text-[13px] text-white/50 mt-4" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('home.heroGuarantee')}</p>
+
+            {/* Proof strip */}
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-1 mt-6">
+              <span className="text-[13px] text-white/70 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+                {t('home.proofHotels', '60+ private hotels')}
+              </span>
+              <span className="text-white/30">·</span>
+              <span className="text-[13px] text-white/70 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+                {t('home.proofRating', '4.8★ guest rating')}
+              </span>
+              <span className="text-white/30">·</span>
+              <span className="text-[13px] text-white/70 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+                {t('home.proofManaged', 'Hotel-managed stays')}
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Search bar Ã¢ÂÂ centred, lower area, Le Collectionist style */}
-        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 hidden lg:block w-full max-w-[780px] px-6 z-10">
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 hidden lg:block w-full max-w-[860px] px-6 z-10">
           <div
-            className="flex items-center rounded-full bg-white shadow-lg overflow-hidden"
-            style={{ height: '56px' }}
+            className="flex items-center rounded-full bg-white shadow-xl overflow-hidden ring-1 ring-white/20"
+            style={{ height: '64px' }}
           >
             {/* Destination */}
             <div className="flex-1 relative h-full">
               <select
                 value={searchDest}
                 onChange={e => setSearchDest(e.target.value)}
-                className="w-full h-full pl-6 pr-3 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer appearance-none"
+                className="w-full h-full pl-6 pr-3 bg-transparent text-[#1A1A18] text-[14px] focus:outline-none cursor-pointer appearance-none"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               >
                 <option value="">{t('home.searchDestination')}</option>
@@ -333,7 +356,7 @@ export default function Home() {
                 min={today}
                 onChange={e => handleCheckinChange(e.target.value, false)}
                 placeholder="Check-in"
-                className="w-full h-full px-4 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer"
+                className="w-full h-full px-4 bg-transparent text-[#1A1A18] text-[14px] focus:outline-none cursor-pointer"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               />
             </div>
@@ -353,7 +376,7 @@ export default function Home() {
                 min={searchCheckin || today}
                 onChange={e => setSearchCheckout(e.target.value)}
                 placeholder="Check-out"
-                className="w-full h-full px-4 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer"
+                className="w-full h-full px-4 bg-transparent text-[#1A1A18] text-[14px] focus:outline-none cursor-pointer"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               />
             </div>
@@ -373,7 +396,7 @@ export default function Home() {
               >
                 <Minus className="w-2.5 h-2.5" />
               </button>
-              <span className="text-[13px] text-[#1A1A18] tabular-nums whitespace-nowrap" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
+              <span className="text-[14px] text-[#1A1A18] tabular-nums whitespace-nowrap" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
                 {searchGuests} <span className="text-[#9E9A90] lowercase">{t('home.searchGuests')}</span>
               </span>
               <button
@@ -414,7 +437,7 @@ export default function Home() {
                   search_source: 'hero_desktop',
                 });
               }}
-              className="flex-shrink-0 h-[44px] mr-1.5 px-6 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
+              className="flex-shrink-0 h-[50px] mr-1.5 px-8 rounded-full bg-[#1A1A18] text-white text-[13px] font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
               style={{ letterSpacing: '1.5px' }}
             >
               {t('home.searchButton')}
