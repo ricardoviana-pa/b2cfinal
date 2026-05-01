@@ -244,7 +244,7 @@ export default function Home() {
       <WhatsAppFloat />
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 1: HERO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section className="relative h-screen min-h-[600px] flex items-center">
+      <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
           <img
@@ -297,7 +297,7 @@ export default function Home() {
                 href="https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full border border-white/50 text-white text-[13px] font-semibold hover:bg-white/10 transition-colors"
+                className="hidden sm:inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full border border-white/50 text-white text-[13px] font-semibold hover:bg-white/10 transition-colors"
                 style={{ letterSpacing: '1.5px' }}
               >
                 {t('home.heroCtaConcierge')} <ArrowRight className="w-4 h-4" />
@@ -305,7 +305,7 @@ export default function Home() {
             </div>
 
             {/* Proof strip — replaces old guarantee text, stronger trust signal */}
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-1 mt-5">
+            <div className="hidden lg:flex flex-wrap items-center gap-x-5 gap-y-1 mt-5">
               <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
                 {t('home.proofHotels', '60+ private hotels')}
               </span>
@@ -445,9 +445,26 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        {/* Mobile search bar — stacked layout */}
-        <div className="absolute bottom-16 left-0 right-0 lg:hidden px-5 z-10">
-          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg p-4 space-y-3">
+        {/* Mobile search bar — compact with destination */}
+        <div className="absolute bottom-4 left-0 right-0 lg:hidden px-5 z-10">
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg p-3 space-y-2">
+            {/* Destination */}
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9A90] pointer-events-none" />
+              <select
+                value={searchDest}
+                onChange={e => setSearchDest(e.target.value)}
+                className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white pl-9 pr-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer appearance-none"
+                style={{ fontFamily: 'var(--font-body)' }}
+              >
+                <option value="">{t('home.searchDestination')}</option>
+                {cities.map(city => (
+                  <option key={city.value} value={city.value}>{city.label}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9E9A90] pointer-events-none" />
+            </div>
+            {/* Dates */}
             <div className="grid grid-cols-2 gap-2">
               <div
                 className="relative"
@@ -458,7 +475,7 @@ export default function Home() {
                   value={searchCheckin}
                   min={today}
                   onChange={e => handleCheckinChange(e.target.value, true)}
-                  className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
+                  className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
                   style={{ fontFamily: 'var(--font-body)' }}
                   placeholder={t('home.searchCheckin', 'Check-in')}
                 />
@@ -473,30 +490,30 @@ export default function Home() {
                   value={searchCheckout}
                   min={searchCheckin || today}
                   onChange={e => setSearchCheckout(e.target.value)}
-                  className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
+                  className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
                   style={{ fontFamily: 'var(--font-body)' }}
                   placeholder={t('home.searchCheckout', 'Check-out')}
                 />
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 flex-1 h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3">
-                <Users className="w-4 h-4 text-[#9E9A90] shrink-0" />
+            {/* Guests + Search */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 flex-1 h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 min-w-0">
                 <button
                   type="button"
                   onClick={() => setSearchGuests(g => Math.max(1, g - 1))}
                   disabled={searchGuests <= 1}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30"
+                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30 shrink-0"
                   aria-label={t('home.decreaseGuests', 'Decrease guests')}
                 >
                   <Minus className="w-3 h-3" />
                 </button>
-                <span className="text-[13px] text-[#1A1A18] tabular-nums flex-1 text-center">{searchGuests} {t('home.searchGuests')}</span>
+                <span className="text-[13px] text-[#1A1A18] tabular-nums flex-1 text-center whitespace-nowrap">{searchGuests} {t('home.searchGuests')}</span>
                 <button
                   type="button"
                   onClick={() => setSearchGuests(g => Math.min(30, g + 1))}
                   disabled={searchGuests >= 30}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30"
+                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30 shrink-0"
                   aria-label={t('home.increaseGuests', 'Increase guests')}
                 >
                   <Plus className="w-3 h-3" />
@@ -505,6 +522,7 @@ export default function Home() {
               <Link
                 href={(() => {
                   const p = new URLSearchParams();
+                  if (searchDest) p.set('location', searchDest);
                   if (searchCheckin) p.set('checkin', searchCheckin);
                   if (searchCheckout) p.set('checkout', searchCheckout);
                   if (searchGuests > 1) p.set('guests', String(searchGuests));
@@ -517,8 +535,8 @@ export default function Home() {
                     : null;
                   pushDL({
                     event: 'search',
-                    search_location: 'All Destinations',
-                    search_location_type: 'all',
+                    search_location: searchDest || 'All Destinations',
+                    search_location_type: searchDest ? 'city' : 'all',
                     search_checkin: searchCheckin || null,
                     search_checkout: searchCheckout || null,
                     search_nights: nights,
@@ -527,7 +545,7 @@ export default function Home() {
                     search_source: 'hero_mobile',
                   });
                 }}
-                className="shrink-0 h-[48px] px-6 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
+                className="shrink-0 h-[40px] px-5 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
                 style={{ letterSpacing: '1.5px' }}
               >
                 {t('home.searchButton')}
