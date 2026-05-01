@@ -281,7 +281,12 @@ const PATTERN_REDIRECTS: PatternRule[] = [
         "concierge", "faq", "login", "account", "admin", "legal",
         "owners-portal", "404", "booking", "activities",
       ]);
+      // Don't catch locale-only paths (LocaleRouter handles those)
+      const supportedLocales = new Set([
+        "en", "pt", "fr", "es", "it", "fi", "de", "nl", "sv",
+      ]);
       if (reservedSegments.has(slug)) return null as unknown as string; // pass through
+      if (supportedLocales.has(slug)) return null as unknown as string; // pass through
       return "/blog";
     },
   },
