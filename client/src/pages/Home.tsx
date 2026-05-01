@@ -230,6 +230,8 @@ export default function Home() {
             <Link href="/" className="btn-primary">{t('homes.tryAgain')}</Link>
           </div>
         </section>
+
+
         <Footer />
       </div>
     );
@@ -301,29 +303,28 @@ export default function Home() {
                 {t('home.heroCtaConcierge')} <ArrowRight className="w-4 h-4" />
               </a>
             </div>
-            <p className="text-[13px] text-white/50 mt-4" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('home.heroGuarantee')}</p>
 
-            {/* Proof strip */}
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-1 mt-6">
-              <span className="text-[13px] text-white/70 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+            {/* Proof strip — replaces old guarantee text, stronger trust signal */}
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-1 mt-5">
+              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
                 {t('home.proofHotels', '60+ private hotels')}
               </span>
-              <span className="text-white/30">·</span>
-              <span className="text-[13px] text-white/70 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+              <span className="text-white/25">·</span>
+              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
                 {t('home.proofRating', '4.8★ guest rating')}
               </span>
-              <span className="text-white/30">·</span>
-              <span className="text-[13px] text-white/70 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+              <span className="text-white/25">·</span>
+              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
                 {t('home.proofManaged', 'Hotel-managed stays')}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Search bar Ã¢ÂÂ centred, lower area, Le Collectionist style */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 hidden lg:block w-full max-w-[860px] px-6 z-10">
+            {/* Search bar Ã¢ÂÂ centred, lower area, Le Collectionist style */}
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 hidden lg:block w-full max-w-[860px] px-6 z-20">
           <div
-            className="flex items-center rounded-full bg-white shadow-xl overflow-hidden ring-1 ring-white/20"
+            className="flex items-center rounded-full bg-white/95 backdrop-blur-sm shadow-xl overflow-hidden ring-1 ring-black/5"
             style={{ height: '64px' }}
           >
             {/* Destination */}
@@ -444,7 +445,6 @@ export default function Home() {
             </Link>
           </div>
         </div>
-
         {/* Mobile search bar — stacked layout */}
         <div className="absolute bottom-16 left-0 right-0 lg:hidden px-5 z-10">
           <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg p-4 space-y-3">
@@ -536,10 +536,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 animate-bounce z-10 hidden lg:flex">
-          <ChevronDown className="w-5 h-5 text-white/40" />
-        </div>
+
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 2: USP BAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
