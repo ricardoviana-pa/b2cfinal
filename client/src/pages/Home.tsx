@@ -133,15 +133,17 @@ export default function Home() {
     'portugal-active-sunset-beach-lodge-heated-pool-5ceb91',
     'abreu-retreat-palace-luxury-elegance-leisure-e914e2',
     'stars-view-by-portugal-active-026fa9',
-    'luxury-and-nature-retreat-w-pool-jacuzzi-bbq-5cfd96',
+    'alvarinho-villa-5-suites-heated-pool-4854c5',
     'beach-farm-pool-and-jacuzzi-with-sea-view-83ef5f',
   ];
+  // Slugs that should never appear as auto-fillers
+  const EXCLUDED_FILLERS = ['fountain-retreat-i-pool-sports-escape-743e2d'];
   const featured = useMemo(() => {
     const bySlug = new Map(properties.map(p => [p.slug, p]));
     const pinned = FEATURED_SLUGS.map(s => bySlug.get(s)).filter(Boolean) as typeof properties;
     if (pinned.length >= 6) return pinned.slice(0, 6);
     const fillers = [...properties]
-      .filter(p => !FEATURED_SLUGS.includes(p.slug))
+      .filter(p => !FEATURED_SLUGS.includes(p.slug) && !EXCLUDED_FILLERS.includes(p.slug))
       .sort((a, b) => (b.priceFrom ?? 0) - (a.priceFrom ?? 0));
     return [...pinned, ...fillers].slice(0, 6);
   }, [properties]);
