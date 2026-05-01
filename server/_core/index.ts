@@ -18,6 +18,7 @@ import { serveStatic, setupVite } from "./vite";
 import { isGuestyConfigured, warmUpOAuthTokens } from "../lib/guesty";
 import { runSync } from "../services/guesty-sync";
 import cron from "node-cron";
+import { legacyRedirects } from "../lib/redirects.js";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -110,62 +111,11 @@ async function startServer() {
     })
   );
 
-  // 301 redirects — old Webflow URLs → new SPA routes (preserves SEO equity)
-  app.get('/properties', (_req, res) => res.redirect(301, '/homes'));
-  app.get('/properties/:slug', (req, res) => res.redirect(301, `/homes/${req.params.slug}`));
-  app.get('/contact-us', (_req, res) => res.redirect(301, '/contact'));
-  app.get('/legal-terms', (_req, res) => res.redirect(301, '/legal/terms'));
-  app.get('/why-portugal-active', (_req, res) => res.redirect(301, '/about'));
-  app.get('/locations/minho', (_req, res) => res.redirect(301, '/destinations/minho'));
-  app.get('/locations/porto', (_req, res) => res.redirect(301, '/destinations/porto'));
-  app.get('/locations/algarve', (_req, res) => res.redirect(301, '/destinations/algarve'));
-  app.get('/locations/:slug', (_req, res) => res.redirect(301, '/destinations'));
-  app.get('/journal', (_req, res) => res.redirect(301, '/blog'));
-  app.get('/account/login', (_req, res) => res.redirect(301, '/login'));
-
-  // ── Old adventure/activity paths ──────────────────────────────────────────
-  app.get('/adventure', (_req, res) => res.redirect(301, '/experiences'));
-  app.get('/adventure/', (_req, res) => res.redirect(301, '/experiences'));
-  app.get('/adventure/:slug', (req, res) => res.redirect(301, `/experiences/${req.params.slug}`));
-
-  // ── Old rooms paths → /homes ───────────────────────────────────────────────
-  app.get('/rooms', (_req, res) => res.redirect(301, '/homes'));
-  app.get('/rooms/', (_req, res) => res.redirect(301, '/homes'));
-  app.get('/rooms/:slug', (req, res) => res.redirect(301, `/homes/${req.params.slug}`));
-  app.get('/rooms/:slug/', (req, res) => res.redirect(301, `/homes/${req.params.slug}`));
-
-  // ── Old offer/ paths → /services ──────────────────────────────────────────
-  app.get('/offer/:slug', (req, res) => res.redirect(301, `/services/${req.params.slug}`));
-  app.get('/offer/:slug/', (req, res) => res.redirect(301, `/services/${req.params.slug}`));
-  app.get('/new/offer/:slug', (req, res) => res.redirect(301, `/services/${req.params.slug}`));
-  app.get('/new/offer/:slug/', (req, res) => res.redirect(301, `/services/${req.params.slug}`));
-
-  // ── Section renames ────────────────────────────────────────────────────────
-  app.get('/news', (_req, res) => res.redirect(301, '/blog'));
-  app.get('/news/', (_req, res) => res.redirect(301, '/blog'));
-  app.get('/locations', (_req, res) => res.redirect(301, '/destinations'));
-  app.get('/locations/', (_req, res) => res.redirect(301, '/destinations'));
-
-  // ── Contact + About ────────────────────────────────────────────────────────
-  app.get('/connect-with-us', (_req, res) => res.redirect(301, '/contact'));
-  app.get('/connect-with-us/', (_req, res) => res.redirect(301, '/contact'));
-  app.get('/how-it-works', (_req, res) => res.redirect(301, '/about'));
-  app.get('/how-it-works/', (_req, res) => res.redirect(301, '/about'));
-  app.get('/about/', (_req, res) => res.redirect(301, '/about'));
-
-  // ── Legacy PHP ────────────────────────────────────────────────────────────
-  app.get('/index.php', (_req, res) => res.redirect(301, '/'));
-  app.get('/index', (_req, res) => res.redirect(301, '/'));
-
-  // ── Old event paths ────────────────────────────────────────────────────────
-  app.get('/event/horse', (_req, res) => res.redirect(301, '/new/event/horse'));
-  app.get('/event/horse/', (_req, res) => res.redirect(301, '/new/event/horse'));
-
-  // ── Old staging /new/ prefix ──────────────────────────────────────────────
-  app.get('/new/rooms/:slug', (req, res) => res.redirect(301, `/homes/${req.params.slug}`));
-  app.get('/new/rooms/:slug/', (req, res) => res.redirect(301, `/homes/${req.params.slug}`));
-  app.get('/new', (_req, res) => res.redirect(301, '/'));
-  app.get('/new/', (_req, res) => res.redirect(301, '/'));
+  // 301 redirects for legacy URLs (Webflow / WP / Joomla migration).
+  // Replaces ~30 ad-hoc app.get(...) calls with a centralised, table-driven middleware.
+  // Source: Wayback Machine inventory + properties.json slug mapping.
+  // See server/lib/redirects.ts for full coverage and tests.
+  app.use(legacyRedirects);
 
   // Dynamic sitemap.xml with multi-language support
   const SITEMAP_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
