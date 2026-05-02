@@ -125,66 +125,66 @@ const LOCATION_REDIRECTS: Record<string, string> = {
 
 // === STATIC PAGE REDIRECTS ================================================
 const STATIC_REDIRECTS: Record<string, string> = {
-  // Old static pages → new equivalents
-  "/about-us": "/about",
-  "/about-us.html": "/about",
-  "/about/": "/about",
-  "/contact-us": "/contact",
-  "/contact-us.html": "/contact",
-  "/contact.html": "/contact",
-  "/connect-with-us/": "/contact",
-  "/connect-with-us": "/contact",
-  "/why-portugal-active/": "/about",
-  "/why-portugal-active": "/about",
-  "/founder-ricardo-viana/": "/about",
-  "/founder-ricardo-viana": "/about",
-  "/how-it-works/": "/about",
-  "/how-it-works": "/about",
-  "/lodges/": "/homes",
-  "/lodges": "/homes",
-  "/rooms/": "/homes",
-  "/rooms": "/homes",
-  "/our-rooms/": "/homes",
-  "/our-rooms": "/homes",
-  "/properties": "/homes",
-  "/properties/": "/homes",
-  "/adventures": "/experiences",
-  "/adventure/": "/experiences",
-  "/adventure": "/experiences",
-  "/destination/": "/destinations",
-  "/destination": "/destinations",
-  "/locations": "/destinations",
-  "/locations/": "/destinations",
-  "/locations/portugal": "/destinations",
-  "/services/": "/services",
-  "/news/": "/blog",
-  "/news": "/blog",
-  "/legal-terms": "/legal/terms",
-  "/terms-conditions/": "/legal/terms",
-  "/terms-conditions": "/legal/terms",
-  "/cookies-policy/": "/legal/cookies",
-  "/cookies-policy": "/legal/cookies",
-  "/complaint-book/": "/contact",
-  "/dispute-resolution/": "/contact",
-  "/lp-b2b": "/owners",
-  "/reviews": "/about",
-  "/index.html": "/",
-  "/home-2/": "/",
-  "/new-homepage/": "/",
-  "/thisisrealportugal/": "/",
-  "/journal": "/blog",
-  "/journal/": "/blog",
-  "/account/login": "/login",
-  "/index": "/",
-  "/new": "/",
-  "/new/": "/",
-  "/new/comments/feed/": "/",
-  "/new/comments/feed": "/",
-  "/new/author/ricardo/": "/about",
-  "/new/author/portugalactive/": "/about",
-  "/new/author/luis/": "/about",
-  "/event/sailing-": "/experiences/sailing",
-  "/event/sailing-/": "/experiences/sailing",
+  // Old static pages → new equivalents (all targets use /en/ prefix to avoid double-301 chains)
+  "/about-us": "/en/about",
+  "/about-us.html": "/en/about",
+  "/about/": "/en/about",
+  "/contact-us": "/en/contact",
+  "/contact-us.html": "/en/contact",
+  "/contact.html": "/en/contact",
+  "/connect-with-us/": "/en/contact",
+  "/connect-with-us": "/en/contact",
+  "/why-portugal-active/": "/en/about",
+  "/why-portugal-active": "/en/about",
+  "/founder-ricardo-viana/": "/en/about",
+  "/founder-ricardo-viana": "/en/about",
+  "/how-it-works/": "/en/about",
+  "/how-it-works": "/en/about",
+  "/lodges/": "/en/homes",
+  "/lodges": "/en/homes",
+  "/rooms/": "/en/homes",
+  "/rooms": "/en/homes",
+  "/our-rooms/": "/en/homes",
+  "/our-rooms": "/en/homes",
+  "/properties": "/en/homes",
+  "/properties/": "/en/homes",
+  "/adventures": "/en/experiences",
+  "/adventure/": "/en/experiences",
+  "/adventure": "/en/experiences",
+  "/destination/": "/en/destinations",
+  "/destination": "/en/destinations",
+  "/locations": "/en/destinations",
+  "/locations/": "/en/destinations",
+  "/locations/portugal": "/en/destinations",
+  "/services/": "/en/services",
+  "/news/": "/en/blog",
+  "/news": "/en/blog",
+  "/legal-terms": "/en/legal/terms",
+  "/terms-conditions/": "/en/legal/terms",
+  "/terms-conditions": "/en/legal/terms",
+  "/cookies-policy/": "/en/legal/cookies",
+  "/cookies-policy": "/en/legal/cookies",
+  "/complaint-book/": "/en/contact",
+  "/dispute-resolution/": "/en/contact",
+  "/lp-b2b": "/en/owners",
+  "/reviews": "/en/about",
+  "/index.html": "/en",
+  "/home-2/": "/en",
+  "/new-homepage/": "/en",
+  "/thisisrealportugal/": "/en",
+  "/journal": "/en/blog",
+  "/journal/": "/en/blog",
+  "/account/login": "/en/login",
+  "/index": "/en",
+  "/new": "/en",
+  "/new/": "/en",
+  "/new/comments/feed/": "/en",
+  "/new/comments/feed": "/en",
+  "/new/author/ricardo/": "/en/about",
+  "/new/author/portugalactive/": "/en/about",
+  "/new/author/luis/": "/en/about",
+  "/event/sailing-": "/en/experiences/sailing",
+  "/event/sailing-/": "/en/experiences/sailing",
 };
 
 interface PatternRule {
@@ -200,7 +200,7 @@ const PATTERN_REDIRECTS: PatternRule[] = [
     resolve: (m) => {
       const slug = m[2];
       const mapped = PROPERTY_REDIRECTS[slug];
-      return mapped ? `/homes/${mapped}` : "/homes";
+      return mapped ? `/en/homes/${mapped}` : "/en/homes";
     },
   },
 
@@ -210,7 +210,7 @@ const PATTERN_REDIRECTS: PatternRule[] = [
     resolve: (m) => {
       const slug = m[2];
       const mapped = EXPERIENCE_REDIRECTS[slug];
-      return mapped ? `/experiences/${mapped}` : "/experiences";
+      return mapped ? `/en/experiences/${mapped}` : "/en/experiences";
     },
   },
 
@@ -220,7 +220,7 @@ const PATTERN_REDIRECTS: PatternRule[] = [
     resolve: (m) => {
       const slug = m[1];
       const mapped = SERVICE_REDIRECTS[slug];
-      return mapped ? `/services/${mapped}` : "/services";
+      return mapped ? `/en/services/${mapped}` : "/en/services";
     },
   },
 
@@ -230,7 +230,7 @@ const PATTERN_REDIRECTS: PatternRule[] = [
     resolve: (m) => {
       const slug = m[1];
       const mapped = SERVICE_REDIRECTS[slug];
-      return mapped ? `/services/${mapped}` : "/services";
+      return mapped ? `/en/services/${mapped}` : "/en/services";
     },
   },
 
@@ -240,7 +240,7 @@ const PATTERN_REDIRECTS: PatternRule[] = [
     resolve: (m) => {
       const slug = m[1];
       const mapped = LOCATION_REDIRECTS[slug];
-      return mapped ? `/destinations/${mapped}` : "/destinations";
+      return mapped ? `/en/destinations/${mapped}` : "/en/destinations";
     },
   },
 
@@ -255,43 +255,43 @@ const PATTERN_REDIRECTS: PatternRule[] = [
         "porto-douro-valley-guide",
       ]);
       // Aliases: /journal/<slug> in the recent migration where <slug> matches a blog post we have
-      if (knownBlogSlugs.has(slug)) return `/blog/${slug}`;
-      // Otherwise fall back to /blog (preserves session, no 404)
-      return "/blog";
+      if (knownBlogSlugs.has(slug)) return `/en/blog/${slug}`;
+      // Otherwise fall back to /en/blog (preserves session, no 404)
+      return "/en/blog";
     },
   },
 
-  // Old WordPress date archives → /blog
-  { pattern: /^\/\d{4}\/\d{2}\/\d{2}\/?$/, resolve: () => "/blog" },
-  { pattern: /^\/\d{4}\/\d{2}\/?$/, resolve: () => "/blog" },
-  { pattern: /^\/\d{4}\/?$/, resolve: () => "/blog" },
+  // Old WordPress date archives → /en/blog
+  { pattern: /^\/\d{4}\/\d{2}\/\d{2}\/?$/, resolve: () => "/en/blog" },
+  { pattern: /^\/\d{4}\/\d{2}\/?$/, resolve: () => "/en/blog" },
+  { pattern: /^\/\d{4}\/?$/, resolve: () => "/en/blog" },
 
-  // /category/* /tag/* /author/* → /blog
-  { pattern: /^\/(category|tag|author)\/.+/i, resolve: () => "/blog" },
+  // /category/* /tag/* /author/* → /en/blog
+  { pattern: /^\/(category|tag|author)\/.+/i, resolve: () => "/en/blog" },
 
-  // /room-type/* → /homes
-  { pattern: /^\/room-type\/.+/i, resolve: () => "/homes" },
+  // /room-type/* → /en/homes
+  { pattern: /^\/room-type\/.+/i, resolve: () => "/en/homes" },
 
-  // /hotel-cart, /hotel-checkout, etc → /homes
-  { pattern: /^\/hotel-(cart|checkout|search|rooms|account|term-condition|thank-you).*/i, resolve: () => "/homes" },
+  // /hotel-cart, /hotel-checkout, etc → /en/homes
+  { pattern: /^\/hotel-(cart|checkout|search|rooms|account|term-condition|thank-you).*/i, resolve: () => "/en/homes" },
 
   // /new/* (preview path during migration) → strip /new/ prefix
   {
     pattern: /^\/new\/(.+)$/,
     resolve: (m, originalPath) => {
       // Recursively try the path without /new/ prefix
-      return resolvePath(`/${m[1]}`) ?? "/";
+      return resolvePath(`/${m[1]}`) ?? "/en";
     },
   },
 
   // Joomla index.php with page params → home
-  { pattern: /^\/index\.php(\?|\/|$)/i, resolve: () => "/" },
+  { pattern: /^\/index\.php(\?|\/|$)/i, resolve: () => "/en" },
 
   // /wp-login, /wp-admin → home (these were never legitimate user URLs)
-  { pattern: /^\/wp-(login|admin).*/i, resolve: () => "/" },
+  { pattern: /^\/wp-(login|admin).*/i, resolve: () => "/en" },
 
   // Legacy *.html / *.php pages without specific redirect → home
-  { pattern: /^\/[^/]+\.(html|php)$/i, resolve: () => "/" },
+  { pattern: /^\/[^/]+\.(html|php)$/i, resolve: () => "/en" },
 
   // Old slug-only blog posts (e.g. /viana-do-castelo-one-of-the-most-welcoming-cities/)
   // These were WP posts. If we have an exact slug match in blog.json, redirect; else /blog.
@@ -312,7 +312,7 @@ const PATTERN_REDIRECTS: PatternRule[] = [
       ]);
       if (reservedSegments.has(slug)) return null as unknown as string; // pass through
       if (supportedLocales.has(slug)) return null as unknown as string; // pass through
-      return "/blog";
+      return "/en/blog";
     },
   },
 ];

@@ -21,6 +21,7 @@
    ========================================================================== */
 
 import { useEffect } from 'react';
+import i18n from '@/i18n';
 
 export type JsonLd = Record<string, unknown>;
 
@@ -72,6 +73,14 @@ export function StructuredData({ id, data }: StructuredDataProps) {
    ========================================================================= */
 
 const BASE_URL = 'https://www.portugalactive.com';
+
+/** Build a locale-aware absolute URL that matches the canonical URL pattern.
+ *  Uses the current i18n language (falls back to 'en'). */
+function localeUrl(path: string): string {
+  const lang = i18n.language || 'en';
+  return `${BASE_URL}/${lang}${path}`;
+}
+
 const BRAND = {
   '@type': 'Organization' as const,
   name: 'Portugal Active',
@@ -117,7 +126,7 @@ export interface BuildVacationRentalInput {
  *  for short-term rentals. Emits the fields that drive rich results and AI
  *  Overviews citations (numberOfBedrooms, occupancy, amenityFeature, offers). */
 export function buildVacationRentalSchema(i: BuildVacationRentalInput): JsonLd {
-  const url = `${BASE_URL}/homes/${i.slug}`;
+  const url = localeUrl(`/homes/${i.slug}`);
 
   return {
     '@context': 'https://schema.org',
@@ -219,7 +228,7 @@ export interface BuildArticleInput {
  *  feeds Google Discover cards and is the type Google's Article rich result
  *  looks for. */
 export function buildArticleSchema(i: BuildArticleInput): JsonLd {
-  const url = `${BASE_URL}/blog/${i.slug}`;
+  const url = localeUrl(`/blog/${i.slug}`);
 
   return {
     '@context': 'https://schema.org',
@@ -311,7 +320,7 @@ export function buildBreadcrumbSchema(items: BreadcrumbItem[]): JsonLd {
       position: idx + 1,
       name: b.name,
       ...(b.item && {
-        item: b.item.startsWith('http') ? b.item : `${BASE_URL}${b.item}`,
+        item: b.item.startsWith('http') ? b.item : localeUrl(b.item),
       }),
     })),
   };
