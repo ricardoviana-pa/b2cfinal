@@ -734,6 +734,11 @@
     .hero-landscape-cap { max-height: 100vh; min-height: auto !important; }
   }
 
+  /* Hide hero proof strip on short viewports to avoid booking-bar overlap */
+  @media (max-height: 759px) {
+    .hero-proof-strip { display: none !important; }
+  }
+
   @keyframes marquee {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }

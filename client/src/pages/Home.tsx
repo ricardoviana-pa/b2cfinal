@@ -280,11 +280,27 @@ export default function Home() {
               {t('home.heroTitle')}
             </h1>
             <p
-              className="text-[18px] md:text-[20px] text-white/80 mb-9 leading-relaxed max-w-xl"
+              className="text-[18px] md:text-[20px] text-white/80 mb-6 lg:mb-4 leading-relaxed max-w-xl"
               style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
             >
               {t('home.heroBody')}
             </p>
+
+            {/* Proof strip — above CTAs so it never collides with booking bar */}
+            <div className="hidden lg:flex hero-proof-strip flex-wrap items-center gap-x-5 gap-y-1 mb-4">
+              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+                {t('home.proofHotels', '60+ private hotels')}
+              </span>
+              <span className="text-white/25">·</span>
+              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+                {t('home.proofRating', '4.8★ guest rating')}
+              </span>
+              <span className="text-white/25">·</span>
+              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+                {t('home.proofManaged', 'Hotel-managed stays')}
+              </span>
+            </div>
+
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/homes"
@@ -303,26 +319,11 @@ export default function Home() {
                 {t('home.heroCtaConcierge')} <ArrowRight className="w-4 h-4" />
               </a>
             </div>
-
-            {/* Proof strip — replaces old guarantee text, stronger trust signal */}
-            <div className="hidden lg:flex flex-wrap items-center gap-x-5 gap-y-1 mt-5">
-              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
-                {t('home.proofHotels', '60+ private hotels')}
-              </span>
-              <span className="text-white/25">·</span>
-              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
-                {t('home.proofRating', '4.8★ guest rating')}
-              </span>
-              <span className="text-white/25">·</span>
-              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
-                {t('home.proofManaged', 'Hotel-managed stays')}
-              </span>
-            </div>
           </div>
         </div>
 
             {/* Search bar Ã¢ÂÂ centred, lower area, Le Collectionist style */}
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 hidden lg:block w-full max-w-[860px] px-6 z-20">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:block w-full max-w-[860px] px-6 z-20">
           <div
             className="flex items-center rounded-full bg-white/95 backdrop-blur-sm shadow-xl overflow-hidden ring-1 ring-black/5"
             style={{ height: '64px' }}
