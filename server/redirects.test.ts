@@ -184,3 +184,52 @@ describe("regressions from old ad-hoc routes (now consolidated)", () => {
     expect(__testing.resolvePath(from)).toBe(to);
   });
 });
+
+describe("locale-only paths pass through", () => {
+  it.each([
+    "/en", "/en/",
+    "/pt", "/pt/",
+    "/fr", "/fr/",
+    "/es", "/es/",
+    "/it", "/it/",
+    "/de", "/de/",
+    "/nl", "/nl/",
+    "/fi", "/fi/",
+    "/sv", "/sv/",
+  ])("does not redirect locale-only path %s", (path) => {
+    expect(__testing.resolvePath(path)).toBeNull();
+  });
+
+  it("still resolves localized legacy paths normally (locale stays as-is)", () => {
+    // /pt/properties/eben-lodge — should pass through (locale-prefixed,
+    // SPA / LocaleRouter handles it). Old WP /properties/eben-lodge without
+    // prefix already covered by the property pattern.
+    expect(__testing.resolvePath("/pt/properties/eben-lodge")).toBeNull();
+  });
+});
+
+describe("GSC 404 report gaps (May 2026 audit)", () => {
+  it("known blog slugs at /journal/<slug> redirect to /blog/<slug>", () => {
+    expect(__testing.resolvePath("/journal/complete-guide-north-portugal"))
+      .toBe("/blog/complete-guide-north-portugal");
+    expect(__testing.resolvePath("/journal/porto-douro-valley-guide"))
+      .toBe("/blog/porto-douro-valley-guide");
+  });
+
+  it("unknown /journal/<slug> falls back to /blog", () => {
+    expect(__testing.resolvePath("/journal/minho-vs-algarve")).toBe("/blog");
+    expect(__testing.resolvePath("/journal/viana-do-castelo-guide")).toBe("/blog");
+    expect(__testing.resolvePath("/journal/algarve-beyond-resorts")).toBe("/blog");
+  });
+
+  it("WP feed/author paths under /new/ go home or about", () => {
+    expect(__testing.resolvePath("/new/comments/feed/")).toBe("/");
+    expect(__testing.resolvePath("/new/author/ricardo/")).toBe("/about");
+    expect(__testing.resolvePath("/new/author/portugalactive/")).toBe("/about");
+  });
+
+  it("/event/sailing- (typo with trailing hyphen) still resolves to sailing", () => {
+    expect(__testing.resolvePath("/event/sailing-")).toBe("/experiences/sailing");
+    expect(__testing.resolvePath("/event/sailing-/")).toBe("/experiences/sailing");
+  });
+});
