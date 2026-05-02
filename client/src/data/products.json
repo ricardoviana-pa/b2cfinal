@@ -182,8 +182,10 @@
     "type": "adventure",
     "tagline": "Ride along deserted beaches, through pine forests, and over coastal dunes.",
     "description": "Ride along deserted beaches, through pine forests, and over coastal dunes. Suitable for beginners and experienced riders.",
-    "image": "/experiences/horseback-beach.webp",
-    "gallery": [],
+    "image": "/experiences/horseback-riding/cover.webp",
+    "gallery": [
+      "/experiences/horseback-riding/cover.webp"
+    ],
     "videoUrl": "https://vimeo.com/764034090",
     "priceFrom": 75,
     "priceSuffix": "per person",
