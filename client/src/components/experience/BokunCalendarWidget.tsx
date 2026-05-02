@@ -18,6 +18,27 @@ interface BokunCalendarWidgetProps {
 
 const BOKUN_CHANNEL_UUID = import.meta.env.VITE_BOKUN_CHANNEL_UUID as string | undefined;
 
+/* ------------------------------------------------------------------ */
+/* Lazy-load the BokunWidgetsLoader script only when a Bokun widget    */
+/* is actually rendered (experience detail pages only).                */
+/* Previously this was a global <script> in index.html, costing ~1.3MB */
+/* of JS on every page load including the homepage.                    */
+/* ------------------------------------------------------------------ */
+let bokunLoaderPromise: Promise<void> | null = null;
+function ensureBokunLoader(): Promise<void> {
+  if (bokunLoaderPromise) return bokunLoaderPromise;
+  bokunLoaderPromise = new Promise((resolve) => {
+    if ((window as any).BokunWidgetsLoader) { resolve(); return; }
+    const s = document.createElement('script');
+    s.src = `https://widgets.bokun.io/assets/javascripts/apps/build/BokunWidgetsLoader.js?bookingChannelUUID=${BOKUN_CHANNEL_UUID}`;
+    s.async = true;
+    s.onload = () => resolve();
+    s.onerror = () => resolve(); // fallback iframe will handle it
+    document.head.appendChild(s);
+  });
+  return bokunLoaderPromise;
+}
+
 /**
  * Renders a Bókun experience-calendar widget using the official
  * BokunWidgetsLoader embed method. The loader script (in index.html)
@@ -54,20 +75,28 @@ export default function BokunCalendarWidget({
     const el = containerRef.current;
     if (!el || !widgetUrl) return;
 
-    /* The BokunWidgetsLoader uses a MutationObserver, so dynamically
-       added .bokunWidget divs are usually picked up automatically.
-       But in some React render cycles the observer can miss them.
-       Give it a nudge after a short delay. */
-    const nudge = setTimeout(() => {
+    /* Load the Bokun script dynamically (only on first widget render),
+       then nudge the loader to process this widget div. */
+    ensureBokunLoader().then(() => {
       if (isProcessed()) return;
-      // The loader exposes itself on window — call init if available
       const loader = (window as any).BokunWidgetsLoader;
       if (loader) {
         if (typeof loader.initialize === 'function') loader.initialize();
         else if (typeof loader.init === 'function') loader.init();
         else if (typeof loader.start === 'function') loader.start();
       }
-    }, 800);
+    });
+
+    /* Secondary nudge after a short delay in case the first one missed. */
+    const nudge = setTimeout(() => {
+      if (isProcessed()) return;
+      const loader = (window as any).BokunWidgetsLoader;
+      if (loader) {
+        if (typeof loader.initialize === 'function') loader.initialize();
+        else if (typeof loader.init === 'function') loader.init();
+        else if (typeof loader.start === 'function') loader.start();
+      }
+    }, 1500);
 
     /* Fallback: if the loader never processes the div (e.g. blocked by
        privacy extension), inject a plain iframe so the booking still
