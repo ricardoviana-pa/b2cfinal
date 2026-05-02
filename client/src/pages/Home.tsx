@@ -60,7 +60,7 @@ function useFadeIn() {
 export default function Home() {
   const { t } = useTranslation();
   usePageMeta({
-    title: 'Portugal Active | Premium Holiday Homes & Adventure Experiences in Portugal',
+    title: 'Premium Holiday Homes & Adventure Experiences in Portugal',
     description: 'Luxury holiday rentals with five-star hotel service across Porto, Lisbon, Algarve and Douro. Private villas, curated adventures, and concierge service.',
     url: '/',
   });
