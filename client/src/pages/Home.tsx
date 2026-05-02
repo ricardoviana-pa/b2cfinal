@@ -808,7 +808,7 @@ export default function Home() {
                     ) : (
                       <div className="w-full h-full placeholder-image" />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                     {dest.comingSoon && (
                       <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 text-[10px] font-medium tracking-[0.06em] uppercase text-[#6B6860]">
                         {t('home.destComingSoon', 'Coming soon')}
