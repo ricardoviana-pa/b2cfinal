@@ -1057,6 +1057,7 @@ export default function Home() {
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               className="w-full h-full rounded-sm"
+              referrerPolicy="origin"
             />
           </div>
         </div>

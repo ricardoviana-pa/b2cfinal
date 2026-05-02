@@ -303,6 +303,7 @@ export default function About() {
                   allowFullScreen
                   className="w-full h-full"
                   loading="lazy"
+                  referrerPolicy="origin"
                 />
               </div>
             </div>

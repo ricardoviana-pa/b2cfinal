@@ -94,6 +94,7 @@ function VideoEmbed({ vimeoId, videoId, title }: { vimeoId?: string; videoId?: s
             className="absolute inset-0 w-full h-full"
             loading="lazy"
             onError={handleError}
+            referrerPolicy="origin"
           />
         </div>
       </div>
