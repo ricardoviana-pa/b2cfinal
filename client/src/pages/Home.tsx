@@ -326,7 +326,7 @@ export default function Home() {
         </div>
 
             {/* Search bar Ã¢ÂÂ centred, lower area, Le Collectionist style */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:block w-full max-w-[860px] px-6 z-20">
+        <div className="absolute bottom-8 inset-x-0 mx-auto hidden lg:block w-full max-w-[860px] px-6 z-20">
           <div
             className="flex items-center rounded-full bg-white/95 backdrop-blur-sm shadow-xl overflow-hidden ring-1 ring-black/5"
             style={{ height: '64px' }}
