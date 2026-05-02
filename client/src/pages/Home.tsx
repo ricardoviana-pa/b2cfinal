@@ -245,16 +245,18 @@ export default function Home() {
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 1: HERO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden">
-        {/* Background */}
+        {/* Background — video on desktop, photo poster on mobile/data-saver */}
         <div className="absolute inset-0">
-          <img
-            src={IMAGES.heroMain}
-            alt={t('home.heroAlt')}
+          <video
+            src="/videos/hero-pa2.mp4"
+            poster={IMAGES.heroMain}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-label={t('home.heroAlt')}
             className="w-full h-full object-cover"
-            width={1600}
-            height={900}
-            fetchPriority="high"
-            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/30 to-transparent" />
         </div>
@@ -840,8 +842,6 @@ export default function Home() {
                 title: t('home.expGastronomy'),
                 body: t('home.expGastronomyBody'),
                 img: IMAGES.expGastronomy,
-                video: '/videos/private-chef.mp4',
-                videoPoster: '/videos/private-chef-poster.webp',
                 href: '/services#gastronomy',
               },
               {
