@@ -841,6 +841,8 @@ export default function Home() {
                 title: t('home.expGastronomy'),
                 body: t('home.expGastronomyBody'),
                 img: IMAGES.expGastronomy,
+                video: '/videos/private-chef.mp4',
+                videoPoster: '/videos/private-chef-poster.webp',
                 href: '/services#gastronomy',
               },
               {
@@ -864,12 +866,23 @@ export default function Home() {
             ].map((exp, i) => (
               <Link key={i} href={exp.href} className="group block flex-shrink-0 w-[220px] sm:w-auto" style={{ scrollSnapAlign: 'start' }}>
                 <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '3/4' }}>
-                  <img
-                    src={exp.img}
-                    alt={exp.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                    loading="lazy"
-                  />
+                  {(exp as any).video ? (
+                    <video
+                      src={(exp as any).video}
+                      poster={(exp as any).videoPoster}
+                      autoPlay muted loop playsInline
+                      preload="metadata"
+                      aria-label={exp.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    />
+                  ) : (
+                    <img
+                      src={exp.img}
+                      alt={exp.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      loading="lazy"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <h3 className="text-white text-[1rem] font-display mb-1">{exp.title}</h3>
