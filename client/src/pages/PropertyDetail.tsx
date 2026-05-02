@@ -876,33 +876,42 @@ export default function PropertyDetail() {
           </div>
         </div>
 
-        {/* Answer capsule — citable summary of the villa for AI engines */}
-        <div className="container max-w-3xl pt-6 lg:pt-8">
-          <AnswerCapsule
-            question={`What is ${sanitizePropertyName(property.name)}?`}
-            answer={[
-              `${sanitizePropertyName(property.name)} is a private villa in ${property.locality || destName}, Portugal,`,
-              `managed by Portugal Active as a short-term rental.`,
-              `It sleeps up to ${property.maxGuests} guests across ${property.bedrooms} bedrooms and ${property.bathrooms} bathrooms`,
-              property.priceFrom ? `with rates from €${property.priceFrom} per night.` : '.',
-              property.tagline ? ` ${property.tagline}` : '',
-              ` Every booking includes concierge support, housekeeping, and access to in-villa services such as a private chef and spa on request.`,
-            ].join(' ').replace(/\s+/g, ' ').trim()}
-            lastUpdated="2026-04-17"
-            author="Portugal Active concierge team"
-            cite={[
-              { label: 'All villas', href: '/homes' },
-              destObj ? { label: `${destObj.name} destination guide`, href: `/destinations/${destObj.slug}` } : null,
-              { label: 'Concierge services', href: '/concierge' },
-            ].filter(Boolean) as { label: string; href: string }[]}
-          />
-        </div>
-
         {/* Two-column layout: main content (left 2/3) + sticky booking (right 1/3) */}
         <div className={property.guestyId ? "container pb-8 lg:pb-16" : "container pb-24 lg:pb-16"}>
           <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
             {/* Main content — left 2/3 */}
             <div className="order-2 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12 pt-6">
+              {/* Answer capsule — citable summary for AI engines & search, inside the content column */}
+              <AnswerCapsule
+                question={`What is ${sanitizePropertyName(property.name)}?`}
+                answer={(() => {
+                  const name = sanitizePropertyName(property.name);
+                  const loc = property.locality || destName;
+                  const guests = property.maxGuests;
+                  const beds = property.bedrooms;
+                  const baths = property.bathrooms;
+                  const price = property.priceFrom;
+                  const tag = property.tagline;
+                  const parts: string[] = [];
+                  parts.push(`${name} is a private hotel in ${loc}, Portugal, operated by Portugal Active.`);
+                  parts.push(`It accommodates up to ${guests} guests across ${beds} bedrooms and ${baths} bathrooms.`);
+                  if (price) parts.push(`Rates start from €${price} per night.`);
+                  if (tag) parts.push(tag + (tag.endsWith('.') ? '' : '.'));
+                  parts.push(`Unlike a standard rental, every stay is fully managed: dedicated concierge, daily housekeeping, and access to private chef, spa, and curated local experiences.`);
+                  parts.push(`Book direct for the best rate and complimentary concierge planning.`);
+                  return parts.join(' ');
+                })()}
+                lastUpdated="2026-04-17"
+                author="Portugal Active concierge team"
+                emitSchema
+                schemaId={`qa-${property.slug}`}
+                cite={[
+                  { label: 'All properties', href: '/homes' },
+                  destObj ? { label: `${destObj.name} guide`, href: `/destinations/${destObj.slug}` } : null,
+                  { label: 'Concierge services', href: '/concierge' },
+                ].filter(Boolean) as { label: string; href: string }[]}
+              />
+
               {/* Bedrooms & Sleeping Arrangement */}
               {property.rooms && property.rooms.length > 0 && (
                 <section>

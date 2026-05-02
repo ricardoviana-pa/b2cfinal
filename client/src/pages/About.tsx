@@ -191,7 +191,7 @@ export default function About() {
         <div className="container max-w-3xl">
           <AnswerCapsule
             question="Who runs Portugal Active and what do they do?"
-            answer="Portugal Active was founded in 2017 by Ricardo Viana in Viana do Castelo, Minho. The company manages 50+ private villas across Portugal — applying hotel-grade service to short-term rentals through an in-house concierge, private chefs, housekeeping and guided experiences. The team works directly with owners and guests rather than through third-party intermediaries."
+            answer="Portugal Active was founded in 2017 by Ricardo Viana in Viana do Castelo, Minho. The company operates 60+ private hotels across Portugal, each managed to five-star standards with a dedicated concierge, private chefs, housekeeping, and curated local experiences. Every property is run by an in-house team, not through third-party intermediaries. Guests book direct for the best rate and a fully managed stay."
             lastUpdated="2026-04-17"
             author="Ricardo Viana, CEO"
             cite={[
