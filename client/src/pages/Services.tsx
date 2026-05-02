@@ -297,6 +297,34 @@ export default function Concierge() {
         </div>
       </section>
 
+      {/* Our Standards — PA Cleaning video proof */}
+      <section className="section-padding bg-white border-b border-[#E8E4DC]">
+        <div className="container">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            <div className="aspect-video w-full rounded-sm overflow-hidden bg-black">
+              <iframe
+                src="https://www.youtube.com/embed/OUgTpL2E15U?rel=0&modestbranding=1"
+                title="PA Cleaning — 47-point property preparation"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+                loading="lazy"
+              />
+            </div>
+            <div>
+              <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-4">{t('services.standardsOverline', 'OUR STANDARDS')}</p>
+              <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.standardsTitle', 'Hotel-grade housekeeping, every stay')}</h2>
+              <p className="body-lg mb-6">
+                {t('services.standardsBody', 'Before every guest arrives, our in-house team runs a 47-point preparation checklist. Linens pressed, amenities restocked, every surface inspected. No third-party crews, no shortcuts.')}
+              </p>
+              <p className="body-md text-[#9E9A90]">
+                {t('services.standardsNote', 'This is the standard across all 60+ properties. Every time.')}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Additional Services */}
       <section id="additional" className="section-padding bg-[#F5F1EB]">
         <div className="container">

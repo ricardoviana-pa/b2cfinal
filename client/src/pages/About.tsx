@@ -288,6 +288,53 @@ export default function About() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════
+          BEHIND THE SCENES — Operational proof: PA Cleaning video
+          ═══════════════════════════════════════════════════════════════════ */}
+      <section className="py-20 lg:py-24 bg-white">
+        <div className="container max-w-[1200px] mx-auto">
+          <div className="lg:flex lg:items-center lg:gap-16">
+            {/* Video */}
+            <div className="lg:w-[55%] mb-10 lg:mb-0">
+              <div className="aspect-video w-full rounded-sm overflow-hidden bg-black">
+                <iframe
+                  src="https://www.youtube.com/embed/OUgTpL2E15U?rel=0&modestbranding=1"
+                  title="PA Cleaning — 47-point property preparation"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+            {/* Copy */}
+            <div className="lg:w-[45%]">
+              <p className="text-[12px] font-medium uppercase tracking-[2.5px] text-[#8B7355] mb-4" style={{ fontFamily: 'var(--font-body)' }}>
+                {t('about.behindScenesOverline', 'BEHIND THE SCENES')}
+              </p>
+              <h2
+                className="text-[#1A1A18] mb-5"
+                style={{ fontFamily: 'var(--font-display)', fontWeight: 300, fontSize: 'clamp(28px, 4vw, 36px)', lineHeight: 1.2 }}
+              >
+                {t('about.behindScenesTitle', 'The 47-point checklist')}
+              </h2>
+              <p
+                className="text-[#6B6860] mb-5"
+                style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '16px', lineHeight: 1.7 }}
+              >
+                {t('about.behindScenesP1', 'Before every guest arrives, our in-house team runs a 47-point preparation checklist. Linens pressed, amenities restocked, every surface inspected. This is what hotel-grade service looks like when applied to a private home.')}
+              </p>
+              <p
+                className="text-[#6B6860]"
+                style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '16px', lineHeight: 1.7 }}
+              >
+                {t('about.behindScenesP2', 'No third-party cleaning crews. No shortcuts. Our team manages every property personally, so the standard never slips.')}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════
           SECTION 3: SOCIAL PROOF
           Dark band — guest quote only (press logos already above)
           ═══════════════════════════════════════════════════════════════════ */}

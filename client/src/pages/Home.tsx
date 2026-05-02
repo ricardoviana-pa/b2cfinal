@@ -22,12 +22,12 @@
    - Paragraphs max 3 lines
    ========================================================================== */
 
-import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { StructuredData, buildFaqPageSchema } from '@/components/seo/StructuredData';
 import { Link } from 'wouter';
-import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Check, Quote, Minus, Plus, Home as HomeIcon, Star, Headphones } from 'lucide-react';
+import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Check, Quote, Minus, Plus, Home as HomeIcon, Star, Headphones, Play, X } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -90,6 +90,9 @@ export default function Home() {
   const properties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
 
   const cities = useMemo(() => getUniqueLocalities(properties), [properties]);
+
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const closeVideoModal = useCallback(() => setVideoModalOpen(false), []);
 
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
@@ -721,14 +724,33 @@ export default function Home() {
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 6: THE CONCEPT (split layout) Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <section ref={s6Ref} className="fade-in bg-white overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-5">
-          {/* Left: editorial image (60%) */}
-          <div className="lg:col-span-3 relative" style={{ minHeight: '480px' }}>
+          {/* Left: editorial image with video play overlay (60%) */}
+          <div
+            className="lg:col-span-3 relative group cursor-pointer"
+            style={{ minHeight: '480px' }}
+            onClick={() => setVideoModalOpen(true)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={e => e.key === 'Enter' && setVideoModalOpen(true)}
+            aria-label="Play behind-the-scenes video"
+          >
             <img
               src="/experiences/private-chef-concept.webp"
               alt="Private chef serving dinner at a Portugal Active home"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
               style={{ position: 'absolute', inset: 0 }}
             />
+            <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors duration-300" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-20 h-20 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                <Play className="w-8 h-8 text-[#1A1A18] ml-1" fill="#1A1A18" />
+              </div>
+            </div>
+            <div className="absolute bottom-5 left-5">
+              <span className="inline-flex items-center gap-2 bg-black/50 backdrop-blur-sm text-white/90 text-[11px] font-medium tracking-[0.08em] uppercase px-3 py-1.5 rounded-full">
+                <Play className="w-3 h-3" fill="white" /> {t('home.watchVideo', 'Watch how we prepare')}
+              </span>
+            </div>
           </div>
 
           {/* Right: text (40%) */}
@@ -1008,6 +1030,37 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Video Lightbox Modal */}
+      {videoModalOpen && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-sm"
+          onClick={closeVideoModal}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Behind the scenes video"
+        >
+          <button
+            onClick={closeVideoModal}
+            className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+            aria-label="Close video"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <div
+            className="w-full max-w-4xl mx-4 aspect-video"
+            onClick={e => e.stopPropagation()}
+          >
+            <iframe
+              src="https://www.youtube.com/embed/OUgTpL2E15U?rel=0&modestbranding=1&autoplay=1"
+              title="PA Cleaning — 47-point property preparation"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full rounded-sm"
+            />
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>
