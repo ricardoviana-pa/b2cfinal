@@ -652,8 +652,8 @@ export default function Home() {
         <div className="container py-6 sm:py-8 md:py-9 lg:py-10">
           <div className="grid grid-cols-4 gap-0">
             {[
-              { value: '70+', label: t('home.statHomes') },
-              { value: '4.9/5', label: t('home.statRating') },
+              { value: '60+', label: t('home.statHomes') },
+              { value: '4.8/5', label: t('home.statRating') },
               { value: '40%', label: t('home.statRepeat') },
               { value: '2017', label: t('home.statFounded') },
             ].map((stat, i) => (

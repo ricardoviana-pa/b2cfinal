@@ -220,7 +220,7 @@ const ReviewsSection = forwardRef<HTMLDivElement>((_, ref) => {
         {/* Proof strip */}
         <div className="text-center mt-8">
           <p className="text-[14px] font-medium text-[#6B6860]">
-            4.9/5 across 2,000+ guest reviews
+            4.8/5 across 2,000+ guest reviews
           </p>
         </div>
       </div>

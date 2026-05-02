@@ -46,7 +46,7 @@ export default function Homes() {
         '@context': 'https://schema.org',
         '@type': 'ItemList',
         name: 'Private Villas in Portugal',
-        description: 'Browse 50+ handpicked private villas across Portugal, each managed like a luxury hotel.',
+        description: 'Browse 60+ handpicked private villas across Portugal, each managed like a luxury hotel.',
         url: 'https://www.portugalactive.com/homes',
         numberOfItems: allProperties.length,
         itemListElement: allProperties.slice(0, 30).map((p, i) => ({

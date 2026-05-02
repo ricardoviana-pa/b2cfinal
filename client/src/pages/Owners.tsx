@@ -149,8 +149,8 @@ export default function Owners() {
         <div className="container">
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 lg:mx-0 lg:px-0 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible">
             {[
-              { stat: '70+', label: t('owners.statHomes') },
-              { stat: '4.9/5', label: t('owners.statRating') },
+              { stat: '60+', label: t('owners.statHomes') },
+              { stat: '4.8/5', label: t('owners.statRating') },
               { stat: '40%', label: t('owners.statRepeat') },
               { stat: '30+', label: t('owners.statTeam') },
             ].map(item => (
