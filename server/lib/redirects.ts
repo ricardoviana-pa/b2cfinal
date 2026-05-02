@@ -242,6 +242,8 @@ const PATTERN_REDIRECTS: PatternRule[] = [
       const mapped = LOCATION_REDIRECTS[slug];
       return mapped ? `/destinations/${mapped}` : "/destinations";
     },
+  },
+
   // /journal/<slug> (Webflow new-site era) → /blog/<slug> when present, else /blog
   // Known new-site blog slugs from client/src/data/blog.json
   {
@@ -257,8 +259,6 @@ const PATTERN_REDIRECTS: PatternRule[] = [
       // Otherwise fall back to /blog (preserves session, no 404)
       return "/blog";
     },
-  },
-
   },
 
   // Old WordPress date archives → /blog
