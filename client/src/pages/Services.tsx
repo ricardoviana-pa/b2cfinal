@@ -15,6 +15,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
+import AnswerCapsule from '@/components/seo/AnswerCapsule';
 
 const allProducts = productsData as unknown as Product[];
 const services = allProducts.filter(p => p.type === 'service' && p.isActive);
@@ -185,6 +186,24 @@ export default function Concierge() {
           </Link>
         </div>
       </div>
+
+      {/* Answer capsule — citable concierge summary for AI engines */}
+      <section className="pt-10 pb-4 bg-[#FAFAF7]">
+        <div className="container max-w-3xl mx-auto">
+          <AnswerCapsule
+            question="What concierge services does Portugal Active offer?"
+            answer="Portugal Active provides hotel-grade concierge services exclusively to guests staying at its private hotels. Services include private chef dining, in-villa spa and wellness treatments, airport transfers, car rental, and curated local experiences. Every service is delivered by the in-house team or vetted local partners. These services are not available on third-party booking platforms."
+            lastUpdated="2026-04-17"
+            author="Portugal Active concierge team"
+            emitSchema
+            schemaId="qa-services"
+            cite={[
+              { label: 'Browse properties', href: '/homes' },
+              { label: 'Contact concierge', href: '/contact' },
+            ]}
+          />
+        </div>
+      </section>
 
       {/* Section Nav */}
       <div className="sticky top-16 md:top-20 z-30 bg-[#FAFAF7]/95 backdrop-blur-md border-b border-[#E8E4DC]">

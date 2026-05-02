@@ -9,6 +9,7 @@ import PhoneInput from '@/components/booking/PhoneInput';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildBreadcrumbSchema, buildFaqPageSchema } from '@/components/seo/StructuredData';
+import AnswerCapsule from '@/components/seo/AnswerCapsule';
 import { trpc } from '@/lib/trpc';
 import { useSearch } from 'wouter';
 
@@ -255,6 +256,18 @@ export default function Contact() {
           >
             {t('contact.heroSubtitle')}
           </p>
+        </div>
+      </section>
+
+      {/* Quick Answer — SEO / AI citable summary */}
+      <section className="py-8 bg-[#FAFAF7]">
+        <div className="container max-w-[1100px]">
+          <AnswerCapsule
+            question="How do I contact Portugal Active?"
+            answer="Portugal Active's concierge team is available by phone (+351 927 161 771), WhatsApp, or email (info@portugalactive.com). Response time is typically under two hours. You can also schedule a video call to plan your stay. The team assists with property selection, experience booking, airport transfers, private chefs, and any special requests. Book direct for the best rate and complimentary concierge planning."
+            emitSchema
+            schemaId="qa-contact"
+          />
         </div>
       </section>
 

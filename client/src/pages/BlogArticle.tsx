@@ -214,6 +214,8 @@ export default function BlogArticle() {
               lastUpdated={article.publishDate}
               author={article.author?.name || 'Portugal Active'}
               hideQuestion
+              emitSchema
+              schemaId={`qa-blog-${article.slug}`}
             />
           </div>
         </section>

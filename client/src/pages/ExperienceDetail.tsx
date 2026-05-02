@@ -9,6 +9,7 @@ import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRoute, Link } from 'wouter';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
+import AnswerCapsule from '@/components/seo/AnswerCapsule';
 import {
   Check,
   X,
@@ -515,6 +516,29 @@ export default function ExperienceDetail() {
         <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12 pt-10">
           {/* ───── LEFT COLUMN — main content ───── */}
           <div className="lg:col-span-2 space-y-12">
+            {/* Answer capsule — citable experience summary for AI engines */}
+            <AnswerCapsule
+              question={`What is the ${exp.name} experience?`}
+              answer={(() => {
+                const parts: string[] = [];
+                parts.push(`${exp.name} is a curated experience in ${destName}, Portugal, operated by Portugal Active.`);
+                if (exp.duration) parts.push(`Duration: ${exp.duration}.`);
+                if (exp.priceFrom) parts.push(`From €${exp.priceFrom} per person.`);
+                if (exp.tagline) parts.push(exp.tagline + (exp.tagline.endsWith('.') ? '' : '.'));
+                parts.push(`Led by local, certified guides and available exclusively to Portugal Active guests. Book direct for the best rate.`);
+                return parts.join(' ');
+              })()}
+              lastUpdated="2026-04-17"
+              author="Portugal Active experiences team"
+              emitSchema
+              schemaId={`qa-exp-${exp.slug}`}
+              cite={[
+                { label: 'All experiences', href: '/experiences' },
+                destObj ? { label: `${destObj.name} guide`, href: `/destinations/${destObj.slug}` } : null,
+                { label: 'Contact us', href: '/contact' },
+              ].filter(Boolean) as { label: string; href: string }[]}
+            />
+
             {/* Overview */}
             <section id="overview">
               <h2 className="headline-md text-[#1A1A18] mb-5">{t('experienceDetail.aboutExperience')}</h2>

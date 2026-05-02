@@ -17,6 +17,7 @@ import destinationsData from '@/data/destinations.json';
 import productsData from '@/data/products.json';
 import { trpc } from '@/lib/trpc';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
+import AnswerCapsule from '@/components/seo/AnswerCapsule';
 import type { Destination, Property, Product } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
 
@@ -108,6 +109,25 @@ export default function DestinationDetail() {
           </Link>
           <h1 className="headline-xl text-white mb-3">{dest.name}</h1>
           <p className="body-lg max-w-lg" style={{ color: 'rgba(255,255,255,0.7)' }}>{dest.tagline}</p>
+        </div>
+      </section>
+
+      {/* Answer capsule — citable destination summary for AI engines */}
+      <section className="pt-10 pb-4 bg-white">
+        <div className="container max-w-3xl mx-auto">
+          <AnswerCapsule
+            question={`Why stay in ${dest.name} with Portugal Active?`}
+            answer={`${dest.name} is one of Portugal Active's curated destinations, featuring ${destProperties.length} private hotel${destProperties.length !== 1 ? 's' : ''} managed to five-star standards. ${dest.tagline || dest.description || ''} Every property includes a dedicated concierge, daily housekeeping, and access to private chef and curated local experiences. Book direct for the best rate and a fully managed stay.`}
+            lastUpdated="2026-04-17"
+            author="Portugal Active concierge team"
+            emitSchema
+            schemaId={`qa-dest-${dest.slug}`}
+            cite={[
+              { label: `${dest.name} properties`, href: `/homes?destination=${dest.slug}` },
+              { label: 'All destinations', href: '/destinations' },
+              { label: 'Concierge services', href: '/concierge' },
+            ]}
+          />
         </div>
       </section>
 

@@ -10,6 +10,7 @@ import { ArrowRight, Check, ExternalLink, Loader2 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
+import AnswerCapsule from '@/components/seo/AnswerCapsule';
 import { trpc } from '@/lib/trpc';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -141,6 +142,18 @@ export default function Owners() {
           >
             {t('owners.requestAssessment')} <ArrowRight className="w-4 h-4" />
           </a>
+        </div>
+      </section>
+
+      {/* Quick Answer — SEO / AI citable summary */}
+      <section className="py-8 bg-[#FAFAF7]">
+        <div className="container max-w-3xl mx-auto">
+          <AnswerCapsule
+            question="Why list your property with Portugal Active?"
+            answer="Portugal Active manages 60+ private hotels across Portugal, delivering five-star hospitality to every guest while maximising owner returns. Services include professional photography, dynamic pricing, multi-channel distribution, 24/7 guest concierge, daily housekeeping, and preventive maintenance. Owners retain full use of their property and receive transparent monthly reporting. Average occupancy uplift is 40% in the first year. Request a free property assessment to see your projected revenue."
+            emitSchema
+            schemaId="qa-owners"
+          />
         </div>
       </section>
 

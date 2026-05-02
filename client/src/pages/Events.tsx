@@ -13,6 +13,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
+import AnswerCapsule from '@/components/seo/AnswerCapsule';
 
 const EVENT_TYPES_SCHEMA = [
   { type: 'Corporate Retreats', description: 'Host corporate retreats and team offsites in private Portuguese villas with full concierge' },
@@ -138,6 +139,24 @@ export default function Events() {
           >
             {t('events.heroCta')} <ArrowRight className="w-4 h-4" />
           </Link>
+        </div>
+      </section>
+
+      {/* Answer capsule — citable events summary for AI engines */}
+      <section className="pt-10 pb-4 bg-[#FAFAF7]">
+        <div className="container max-w-3xl mx-auto">
+          <AnswerCapsule
+            question="Can I host a private event at a Portugal Active property?"
+            answer="Yes. Portugal Active hosts corporate retreats, weddings, brand activations, milestone celebrations, and wellness retreats across its portfolio of 60+ private hotels in Portugal. Each event is managed end-to-end by the in-house team, including catering, decoration, activities, and logistics. Properties range from coastal villas to countryside estates, accommodating groups of 10 to 100+ guests."
+            lastUpdated="2026-04-17"
+            author="Portugal Active events team"
+            emitSchema
+            schemaId="qa-events"
+            cite={[
+              { label: 'Browse venues', href: '/homes' },
+              { label: 'Contact events team', href: '/contact?subject=events' },
+            ]}
+          />
         </div>
       </section>
 

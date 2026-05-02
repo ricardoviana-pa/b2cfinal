@@ -17,6 +17,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
+import AnswerCapsule from '@/components/seo/AnswerCapsule';
 
 interface LiveQuote {
   total: number;
@@ -436,6 +437,23 @@ export default function Homes() {
           <p className="body-lg max-w-xl pb-1" style={{ color: 'rgba(255,255,255,0.75)' }}>
             {t('homes.subtitle')}
           </p>
+        </div>
+      </section>
+
+      {/* Answer capsule — citable collection summary for AI engines */}
+      <section className="pt-8 pb-4 bg-[#FAFAF7]">
+        <div className="container max-w-3xl mx-auto">
+          <AnswerCapsule
+            question="What properties does Portugal Active offer?"
+            answer="Portugal Active operates a curated collection of 60+ private hotels across Portugal, spanning the Minho Coast, Porto, Douro Valley, Lisbon, Alentejo, and the Algarve. Each property is managed to five-star standards with dedicated concierge, daily housekeeping, and access to private chef, spa, and curated local experiences. Unlike standard rentals, every stay is fully operated by an in-house team. Book direct for the best rate guaranteed."
+            lastUpdated="2026-04-17"
+            author="Portugal Active concierge team"
+            cite={[
+              { label: 'About Portugal Active', href: '/about' },
+              { label: 'Concierge services', href: '/concierge' },
+              { label: 'Contact us', href: '/contact' },
+            ]}
+          />
         </div>
       </section>
 
