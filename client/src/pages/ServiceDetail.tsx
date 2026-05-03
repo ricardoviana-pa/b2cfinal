@@ -1,13 +1,12 @@
 /* ==========================================================================
-   SERVICE DETAIL — V1.7 Simplified
-   Two clear CTAs: inquiry form + WhatsApp. No itinerary complexity.
+   SERVICE DETAIL — V1.8 Single CTA
+   One clear action: WhatsApp. No form, no itinerary complexity.
    ========================================================================== */
 
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useRoute, Link } from 'wouter';
-import { Check, Clock, MapPin, ArrowLeft, MessageCircle, Send } from 'lucide-react';
+import { Check, Clock, MapPin, ArrowLeft, MessageCircle } from 'lucide-react';
 import servicesData from '@/data/services.json';
 import destinationsData from '@/data/destinations.json';
 import type { Destination } from '@/lib/types';
@@ -16,60 +15,6 @@ import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 
 const destinations = (destinationsData as unknown as Destination[]).filter(d => d.status === 'active' && !d.comingSoon);
-
-function InquiryForm({ serviceName }: { serviceName: string }) {
-  const { t } = useTranslation();
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-  };
-
-  if (submitted) {
-    return (
-      <div className="bg-[#F5F1EB] p-10 text-center">
-        <div className="w-12 h-12 bg-[#8B7355] flex items-center justify-center mx-auto mb-4">
-          <Check className="w-6 h-6 text-white" />
-        </div>
-        <h3 className="headline-sm mb-2 text-[#1A1A18]">{t('serviceDetail.thankYou', 'Thank you.')}</h3>
-        <p className="body-md">{t('serviceDetail.inquiryReceived', 'We have received your inquiry for {{service}}. Our team will get back to you within 24 hours.', { service: serviceName })}</p>
-      </div>
-    );
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <div>
-          <label className="text-[10px] tracking-[0.02em] font-medium text-[#9E9A90] mb-2 block">{t('form.name', 'Name')} *</label>
-          <input type="text" required className="w-full bg-transparent border border-[#E8E4DC] px-4 py-3.5 text-[15px] text-[#1A1A18] focus:border-[#8B7355] focus:outline-none transition-colors" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }} />
-        </div>
-        <div>
-          <label className="text-[10px] tracking-[0.02em] font-medium text-[#9E9A90] mb-2 block">{t('form.email', 'Email')} *</label>
-          <input type="email" required className="w-full bg-transparent border border-[#E8E4DC] px-4 py-3.5 text-[15px] text-[#1A1A18] focus:border-[#8B7355] focus:outline-none transition-colors" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }} />
-        </div>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <div>
-          <label className="text-[10px] tracking-[0.02em] font-medium text-[#9E9A90] mb-2 block">{t('form.phone', 'Phone')}</label>
-          <input type="tel" className="w-full bg-transparent border border-[#E8E4DC] px-4 py-3.5 text-[15px] text-[#1A1A18] focus:border-[#8B7355] focus:outline-none transition-colors" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }} />
-        </div>
-        <div>
-          <label className="text-[10px] tracking-[0.02em] font-medium text-[#9E9A90] mb-2 block cursor-pointer">{t('form.preferredDate', 'Preferred date')}</label>
-          <input type="date" min={new Date().toISOString().split("T")[0]} onClick={e => (e.target as HTMLInputElement).showPicker?.()} className="w-full bg-transparent border border-[#E8E4DC] px-4 py-3.5 text-[15px] text-[#1A1A18] focus:border-[#8B7355] focus:outline-none transition-colors cursor-pointer" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }} />
-        </div>
-      </div>
-      <div>
-        <label className="text-[10px] tracking-[0.02em] font-medium text-[#9E9A90] mb-2 block">{t('form.message', 'Message')}</label>
-        <textarea rows={4} className="w-full bg-transparent border border-[#E8E4DC] px-4 py-3.5 text-[15px] text-[#1A1A18] focus:border-[#8B7355] focus:outline-none transition-colors resize-none" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }} />
-      </div>
-      <button type="submit" className="btn-primary flex items-center gap-2">
-        <Send className="w-4 h-4" /> {t('serviceDetail.sendInquiry', 'Send inquiry')}
-      </button>
-    </form>
-  );
-}
 
 export default function ServiceDetail() {
   const { t } = useTranslation();
@@ -185,31 +130,28 @@ export default function ServiceDetail() {
               </div>
             </div>
 
-            {/* Sidebar — 2 CTAs: Form (primary) + WhatsApp (secondary) */}
+            {/* Sidebar — single WhatsApp CTA */}
             <div className="lg:col-span-2">
-              <div className="sticky top-28 space-y-4">
-                {/* Inquiry form — primary CTA */}
-                <div className="border border-[#E8E4DC] p-8">
+              <div className="sticky top-28 space-y-6">
+                <div className="border border-[#E8E4DC] p-8 text-center">
                   <h3 className="headline-sm mb-2 text-[#1A1A18]">
                     {isService
                       ? t('serviceDetail.bookService', 'Book this service')
                       : t('serviceDetail.bookExperience', 'Book this experience')}
                   </h3>
-                  <p className="body-sm mb-6">{t('serviceDetail.formSubtitle', 'Fill in the form and our team will get back to you within 24 hours.')}</p>
-                  <InquiryForm serviceName={item.name} />
+                  <p className="body-sm mb-6">{t('serviceDetail.whatsappSubtitle', 'Message our concierge team directly. We typically reply within minutes.')}</p>
+                  <a
+                    href={`https://wa.me/351927161771?text=${whatsappMsg}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-3 w-full bg-[#1A1A18] text-white text-[13px] tracking-[0.08em] font-semibold py-5 hover:bg-[#333330] transition-colors"
+                    style={{ minHeight: '56px' }}
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    {t('serviceDetail.chatOnWhatsApp', 'Chat on WhatsApp')}
+                  </a>
+                  <p className="text-[11px] text-[#9E9A90] mt-4">{t('serviceDetail.whatsappNote', 'Available every day, 9 am – 9 pm (Lisbon time)')}</p>
                 </div>
-
-                {/* WhatsApp — secondary CTA */}
-                <a
-                  href={`https://wa.me/351927161771?text=${whatsappMsg}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-3 w-full bg-[#1A1A18] text-white text-[12px] tracking-[0.08em] font-medium py-4 hover:bg-[#333330] transition-colors"
-                  style={{ minHeight: '52px' }}
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  {t('serviceDetail.contactWhatsApp', 'Or contact us on WhatsApp')}
-                </a>
               </div>
             </div>
           </div>

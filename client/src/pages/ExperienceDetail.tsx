@@ -636,24 +636,6 @@ export default function ExperienceDetail() {
                   )}
                 </div>
 
-                {exp.notSuitableFor && exp.notSuitableFor.length > 0 && (
-                  <div className="mt-8 p-5 bg-[#F5F1EB]">
-                    <p className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium mb-3">
-                      {t('experienceDetail.notSuitableFor')}
-                    </p>
-                    <ul className="space-y-1.5">
-                      {exp.notSuitableFor.map((item, i) => (
-                        <li
-                          key={i}
-                          className="text-[13px] text-[#6B6860]"
-                          style={{ fontWeight: 300 }}
-                        >
-                          · {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
               </section>
             )}
 
@@ -709,10 +691,10 @@ export default function ExperienceDetail() {
               </section>
             )}
 
-            {/* What to bring / not allowed */}
-            {(exp.whatToBring || exp.notAllowed) && (
+            {/* Before You Go — merged: not suitable for, what to bring, not allowed */}
+            {(exp.notSuitableFor || exp.whatToBring || exp.notAllowed) && (
               <section>
-                <h2 className="headline-md text-[#1A1A18] mb-6">{t('experienceDetail.importantInfo')}</h2>
+                <h2 className="headline-md text-[#1A1A18] mb-6">{t('experienceDetail.beforeYouGo', 'Before You Go')}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {exp.whatToBring && exp.whatToBring.length > 0 && (
                     <div>
@@ -721,11 +703,7 @@ export default function ExperienceDetail() {
                       </h3>
                       <ul className="space-y-2">
                         {exp.whatToBring.map((item, i) => (
-                          <li
-                            key={i}
-                            className="text-[14px] text-[#1A1A18]"
-                            style={{ fontWeight: 300 }}
-                          >
+                          <li key={i} className="text-[14px] text-[#1A1A18]" style={{ fontWeight: 300 }}>
                             · {item}
                           </li>
                         ))}
@@ -739,11 +717,7 @@ export default function ExperienceDetail() {
                       </h3>
                       <ul className="space-y-2">
                         {exp.notAllowed.map((item, i) => (
-                          <li
-                            key={i}
-                            className="text-[14px] text-[#6B6860]"
-                            style={{ fontWeight: 300 }}
-                          >
+                          <li key={i} className="text-[14px] text-[#6B6860]" style={{ fontWeight: 300 }}>
                             · {item}
                           </li>
                         ))}
@@ -751,27 +725,45 @@ export default function ExperienceDetail() {
                     </div>
                   )}
                 </div>
+                {exp.notSuitableFor && exp.notSuitableFor.length > 0 && (
+                  <div className="mt-6 p-5 bg-[#F5F1EB]">
+                    <p className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium mb-3">
+                      {t('experienceDetail.notSuitableFor')}
+                    </p>
+                    <ul className="space-y-1.5">
+                      {exp.notSuitableFor.map((item, i) => (
+                        <li key={i} className="text-[13px] text-[#6B6860]" style={{ fontWeight: 300 }}>
+                          · {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </section>
             )}
 
-            {/* Cancellation policy */}
-            {exp.cancellationPolicy && (
-              <section className="border-y border-[#E8E4DC] py-6">
-                <h3 className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-3">
-                  {t('experienceDetail.cancellationPolicy')}
-                </h3>
-                <p className="text-[14px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
-                  {exp.cancellationPolicy}
-                </p>
-              </section>
-            )}
-
-            {/* FAQ */}
-            {exp.faq && exp.faq.length > 0 && (
+            {/* FAQ — includes cancellation policy as first item when available */}
+            {(exp.faq?.length || exp.cancellationPolicy) && (
               <section id="faq">
                 <h2 className="headline-md text-[#1A1A18] mb-6">{t('experienceDetail.faq')}</h2>
                 <div className="space-y-0">
-                  {exp.faq.map((f, i) => (
+                  {/* Cancellation policy injected as first FAQ item */}
+                  {exp.cancellationPolicy && (
+                    <details className="group border-b border-[#E8E4DC] py-5 first:pt-0 last:border-b-0">
+                      <summary className="flex items-start justify-between gap-4 cursor-pointer list-none">
+                        <h3 className="text-[15px] font-medium text-[#1A1A18] group-open:text-[#8B7355] transition-colors">
+                          {t('experienceDetail.cancellationPolicyQ', 'What is the cancellation policy?')}
+                        </h3>
+                        <span className="text-[#8B7355] text-[20px] leading-none mt-0.5 group-open:rotate-45 transition-transform shrink-0">
+                          +
+                        </span>
+                      </summary>
+                      <p className="text-[14px] text-[#6B6860] leading-relaxed mt-3 pr-10" style={{ fontWeight: 300 }}>
+                        {exp.cancellationPolicy}
+                      </p>
+                    </details>
+                  )}
+                  {exp.faq?.map((f, i) => (
                     <details
                       key={i}
                       className="group border-b border-[#E8E4DC] py-5 first:pt-0 last:border-b-0"
