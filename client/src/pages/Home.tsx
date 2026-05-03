@@ -22,12 +22,12 @@
    - Paragraphs max 3 lines
    ========================================================================== */
 
-import { useState, useMemo, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
+import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { StructuredData, buildFaqPageSchema } from '@/components/seo/StructuredData';
 import { Link } from 'wouter';
-import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Minus, Plus, Home as HomeIcon, Star, Headphones, Play, X } from 'lucide-react';
+import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Minus, Plus, Home as HomeIcon, Star, Headphones } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -91,9 +91,6 @@ export default function Home() {
 
   const cities = useMemo(() => getUniqueLocalities(properties), [properties]);
 
-  const [videoModalOpen, setVideoModalOpen] = useState(false);
-  const closeVideoModal = useCallback(() => setVideoModalOpen(false), []);
-
   const [searchDest, setSearchDest] = useState('');
   const [searchCheckin, setSearchCheckin] = useState('');
   const [searchCheckout, setSearchCheckout] = useState('');
@@ -101,6 +98,18 @@ export default function Home() {
   const today = new Date().toISOString().split("T")[0];
   const checkoutDesktopRef = useRef<HTMLInputElement>(null);
   const checkoutMobileRef = useRef<HTMLInputElement>(null);
+
+  // Live quotes for featured cards when dates are entered
+  const utils = trpc.useUtils();
+  const searchNights = useMemo(() => {
+    if (!searchCheckin || !searchCheckout) return 0;
+    return Math.round((new Date(searchCheckout).getTime() - new Date(searchCheckin).getTime()) / 86400000);
+  }, [searchCheckin, searchCheckout]);
+  const hasDates = searchNights > 0;
+
+  const [homeQuotes, setHomeQuotes] = useState<Record<string, { total: number; nightlyRate: number; cleaningFee: number; nights: number; source?: string; available?: boolean } | null>>({});
+  const [homeQuotesLoading, setHomeQuotesLoading] = useState(false);
+  const batchAbortRef = useRef<AbortController | null>(null);
 
   /** When check-in changes, auto-set checkout to +2 days and open checkout picker */
   const handleCheckinChange = (value: string, isMobile: boolean) => {
@@ -147,6 +156,60 @@ export default function Home() {
   }, [properties]);
 
   const activeDestinations = destinations.filter(d => d.status === 'active' || d.slug === 'brazil');
+
+  // Fetch live quotes for featured cards when dates are entered
+  useEffect(() => {
+    if (!hasDates || featured.length === 0) {
+      setHomeQuotes({});
+      setHomeQuotesLoading(false);
+      return;
+    }
+    const listings = featured
+      .filter(p => (p as any).guestyId)
+      .map(p => ({ listingId: (p as any).guestyId!, slug: p.slug }));
+    if (listings.length === 0) return;
+
+    if (batchAbortRef.current) batchAbortRef.current.abort();
+    const controller = new AbortController();
+    batchAbortRef.current = controller;
+    setHomeQuotesLoading(true);
+
+    utils.booking.getBatchQuotes
+      .fetch({ listings, checkIn: searchCheckin, checkOut: searchCheckout, guests: searchGuests || 2 })
+      .then((data) => {
+        if (controller.signal.aborted) return;
+        const mapped: typeof homeQuotes = {};
+        for (const [slug, q] of Object.entries(data)) {
+          mapped[slug] = {
+            total: q.pricing.total,
+            nightlyRate: q.pricing.nightlyRate,
+            cleaningFee: q.pricing.cleaningFee,
+            nights: q.nights,
+            source: q.source,
+            available: q.available,
+          };
+        }
+        setHomeQuotes(mapped);
+        setHomeQuotesLoading(false);
+      })
+      .catch((err) => {
+        if (controller.signal.aborted) return;
+        console.error('[Home] Batch quotes failed:', err);
+        // Fallback: base price estimates
+        const computed: typeof homeQuotes = {};
+        for (const p of featured) {
+          const rate = (p as any).pricePerNight ?? p.priceFrom ?? 0;
+          const fee = (p as any).cleaningFee ?? 0;
+          if (rate > 0) {
+            computed[p.slug] = { total: rate * searchNights + fee, nightlyRate: rate, cleaningFee: fee, nights: searchNights, source: 'base', available: true };
+          }
+        }
+        setHomeQuotes(computed);
+        setHomeQuotesLoading(false);
+      });
+
+    return () => { controller.abort(); };
+  }, [hasDates, searchCheckin, searchCheckout, searchNights, searchGuests, featured, utils]);
 
   // GA4: view_item_list — fires when featured properties load
   useEffect(() => {
@@ -605,6 +668,10 @@ export default function Home() {
                   checkin={searchCheckin || undefined}
                   checkout={searchCheckout || undefined}
                   guests={searchGuests > 1 ? searchGuests : undefined}
+                  nights={searchNights}
+                  liveQuote={homeQuotes[property.slug] || undefined}
+                  quoteLoading={homeQuotesLoading}
+                  hidePrice={!hasDates}
                   listId="featured_homes"
                   listName="Editor's Picks"
                   itemIndex={index + 1}
@@ -702,33 +769,21 @@ export default function Home() {
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 6: THE CONCEPT (split layout) Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <section ref={s6Ref} className="fade-in bg-white overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-5">
-          {/* Left: editorial image with video play overlay (60%) */}
+          {/* Left: editorial image (60%) */}
           <div
-            className="lg:col-span-3 relative group cursor-pointer"
+            className="lg:col-span-3 relative"
             style={{ minHeight: '480px' }}
-            onClick={() => setVideoModalOpen(true)}
-            role="button"
-            tabIndex={0}
-            onKeyDown={e => e.key === 'Enter' && setVideoModalOpen(true)}
-            aria-label="Play behind-the-scenes video"
           >
             <img
               src="/experiences/private-chef-concept.webp"
               alt="Private chef serving dinner at a Portugal Active home"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+              className="w-full h-full object-cover"
               style={{ position: 'absolute', inset: 0 }}
+              loading="lazy"
+              width={960}
+              height={640}
+              decoding="async"
             />
-            <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors duration-300" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-20 h-20 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
-                <Play className="w-8 h-8 text-[#1A1A18] ml-1" fill="#1A1A18" />
-              </div>
-            </div>
-            <div className="absolute bottom-5 left-5">
-              <span className="inline-flex items-center gap-2 bg-black/50 backdrop-blur-sm text-white/90 text-[11px] font-medium tracking-[0.08em] uppercase px-3 py-1.5 rounded-full">
-                <Play className="w-3 h-3" fill="white" /> {t('home.watchVideo', 'Watch how we prepare')}
-              </span>
-            </div>
           </div>
 
           {/* Right: text (40%) */}
@@ -966,38 +1021,6 @@ export default function Home() {
         </div>
       </section>
 
-
-      {/* Video Lightbox Modal */}
-      {videoModalOpen && (
-        <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-sm"
-          onClick={closeVideoModal}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Behind the scenes video"
-        >
-          <button
-            onClick={closeVideoModal}
-            className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-            aria-label="Close video"
-          >
-            <X className="w-5 h-5" />
-          </button>
-          <div
-            className="w-full max-w-4xl mx-4 aspect-video"
-            onClick={e => e.stopPropagation()}
-          >
-            <iframe
-              src="https://www.youtube.com/embed/OUgTpL2E15U?rel=0&modestbranding=1&autoplay=1"
-              title="PA Cleaning — 47-point property preparation"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full rounded-sm"
-              referrerPolicy="origin"
-            />
-          </div>
-        </div>
-      )}
 
       <Footer />
     </div>
