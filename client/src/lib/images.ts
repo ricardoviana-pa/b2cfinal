@@ -22,8 +22,8 @@ export const IMAGES = {
   // About page
   aboutStory: '/hero/about-team-suite.webp',
 
-  // Contact page
-  contactHero: '/destinations/contact-hero.webp',
+  // Contact page — Abreu Retreat Palace pool at dusk
+  contactHero: 'https://assets.guesty.com/image/upload/w_1600,h_900,c_fill,q_80/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533722def930014e914e2/41dffdd6-99b5-4f-GO4s9',
 
   // Logo
   logoWhite: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp',
