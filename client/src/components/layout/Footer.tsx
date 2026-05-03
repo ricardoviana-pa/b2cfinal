@@ -193,9 +193,12 @@ export default function Footer() {
               {footerLinks(t('footer.about'), '/about')}
               {footerLinks(t('footer.faq'), '/faq')}
               {footerLinks(t('footer.journal'), '/blog')}
-              {footerLinks(t('footer.careers'), '/careers')}
-              {footerLinks(t('footer.forOwners'), '/owners')}
               {footerLinks(t('footer.contact'), '/contact')}
+              <li>
+                <a href="https://management.portugalactive.com" target="_blank" rel="noopener noreferrer" className="text-[13px] text-white/40 hover:text-white transition-colors" style={{ fontWeight: 300 }}>
+                  {t('footer.forOwners', 'For property owners')} →
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -215,7 +218,6 @@ export default function Footer() {
                 <Link href="/legal/privacy" className="hover:text-white/50 transition-colors">{t('footer.privacy')}</Link>
                 <Link href="/legal/terms" className="hover:text-white/50 transition-colors">{t('footer.terms')}</Link>
                 <Link href="/legal/cookies" className="hover:text-white/50 transition-colors">{t('footer.cookies')}</Link>
-                <Link href="/admin" className="hover:text-white/50 transition-colors">{t('footer.admin')}</Link>
               </div>
             </div>
 

@@ -340,6 +340,9 @@
     "browseHomes": "Browse our homes",
     "noImage": "No image",
     "viewAll": "View all",
+    "breadcrumbHome": "Home",
+    "breadcrumbHomes": "Homes",
+    "bedroomsTitle": "Bedrooms & Sleeping Arrangements",
     "aboutTitle": "About this home",
     "welcomeFallback": "Welcome to {{name}}. A beautiful property in {{locality}}, {{destination}}.",
     "amenitiesTitle": "Amenities and features",
@@ -894,6 +897,31 @@
   },
   "bedConfig": {
     "notAvailable": "Bed configuration details not available"
+  },
+  "amenity": {
+    "outdoorPool": "Outdoor & Pool",
+    "viewsLocation": "Views & Location",
+    "comfortClimate": "Comfort & Climate",
+    "kitchenDining": "Kitchen & Dining",
+    "entertainment": "Entertainment",
+    "connectivityWork": "Connectivity & Work",
+    "wellnessFitness": "Wellness & Fitness",
+    "parkingAccess": "Parking & Access",
+    "laundryHousekeeping": "Laundry & Housekeeping",
+    "bathroom": "Bathroom",
+    "familyFriendly": "Family Friendly",
+    "safety": "Safety",
+    "other": "Other"
+  },
+  "bedType": {
+    "KingBed": "King Bed",
+    "QueenBed": "Queen Bed",
+    "DoubleBed": "Double Bed",
+    "SingleBed": "Single Bed",
+    "SofaBed": "Sofa Bed",
+    "BunkBed": "Bunk Bed",
+    "AirMattress": "Air Mattress",
+    "Bed": "Bed"
   },
   "itinerary": {
     "empty": "Your itinerary is empty",

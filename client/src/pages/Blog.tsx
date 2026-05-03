@@ -30,7 +30,7 @@ function getArticleImage(article: BlogArticle): string {
 }
 
 export default function Blog() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   usePageMeta({ title: 'Portugal Travel Journal | Guides, Tips & Inspiration', description: 'Insider guides to Portugal — best beaches, hidden restaurants, wine regions, and travel tips from our local concierge team.', url: '/blog' });
   const [activeCategory, setActiveCategory] = useState<BlogCategory | 'all'>('all');
 
@@ -162,7 +162,7 @@ export default function Blog() {
                   <div className="flex items-center gap-4 text-[12px] text-[#9E9A90] mb-6">
                     <span className="flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5" />
-                      {new Date(featured.publishDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      {new Date(featured.publishDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'short', year: 'numeric' })}
                     </span>
                     <span className="flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5" />
@@ -214,7 +214,7 @@ export default function Blog() {
                   </h3>
                   <p className="text-[13px] text-[#6B6860] font-light line-clamp-2 mb-3">{article.excerpt}</p>
                   <div className="flex items-center gap-3 text-[11px] text-[#9E9A90]">
-                    <span>{new Date(article.publishDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    <span>{new Date(article.publishDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                     <span>·</span>
                     <span>{t('blog.minRead', { minutes: article.readTime })}</span>
                   </div>

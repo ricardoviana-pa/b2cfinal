@@ -107,15 +107,6 @@ const TEAM = [
   },
 ];
 
-/* ── Press logos ────────────────────────────────────────────────────────── */
-const PRESS_LOGOS = [
-  { src: IMAGES.pressForbes, alt: 'Featured in Forbes', h: 'h-5 md:h-6' },
-  { src: IMAGES.pressTheTimes, alt: 'Featured in The Times', h: 'h-7 md:h-8' },
-  { src: IMAGES.pressTheGuardian, alt: 'Featured in The Guardian', h: 'h-4 md:h-5' },
-  { src: IMAGES.pressTimeOut, alt: 'Featured in Time Out', h: 'h-5 md:h-6' },
-  { src: IMAGES.pressMensHealth, alt: "Featured in Men's Health", h: 'h-4 md:h-5' },
-  { src: IMAGES.pressArquitectura, alt: 'Featured in Arquitectura y Diseño', h: 'h-4 md:h-5' },
-];
 
 export default function About() {
   const { t } = useTranslation();
@@ -270,20 +261,6 @@ export default function About() {
             </p>
           </div>
 
-          {/* Press logo strip */}
-          <div className="border-t border-[#E8E4DC] pt-10 mt-4">
-            <p
-              className="text-center text-[11px] font-medium text-[#9E9A90] mb-8"
-              style={{ letterSpacing: '0.14em', fontFamily: 'var(--font-body)' }}
-            >
-              {t('about.pressOverline')}
-            </p>
-            <div className="flex items-center justify-center gap-10 lg:gap-14 flex-wrap">
-              {PRESS_LOGOS.map((logo, i) => (
-                <img key={i} src={logo.src} alt={logo.alt} className={`${logo.h} w-auto object-contain opacity-40`} loading="lazy" />
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 

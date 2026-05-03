@@ -166,7 +166,7 @@ const STATIC_REDIRECTS: Record<string, string> = {
   "/cookies-policy": "/en/legal/cookies",
   "/complaint-book/": "/en/contact",
   "/dispute-resolution/": "/en/contact",
-  "/lp-b2b": "/en/owners",
+  "/lp-b2b": "https://management.portugalactive.com",
   "/reviews": "/en/about",
   "/index.html": "/en",
   "/home-2/": "/en",

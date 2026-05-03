@@ -430,7 +430,7 @@ export default function Homes() {
 
       {/* Hero — editorial only; search lives in sticky toolbar below (less empty white, clearer PLP hierarchy) */}
       <section className="relative min-h-[300px] md:min-h-[340px] h-[38vh] max-h-[520px] overflow-hidden">
-        <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp" alt="Collection of luxury private villas across Portugal" className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" />
+        <img src={IMAGES.heroHomes} alt="Collection of luxury private villas across Portugal" className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/20" />
         <div className="relative z-10 container flex flex-col justify-end h-full min-h-[inherit] pt-28 md:pt-32 pb-10 md:pb-14">
           <h1 className="headline-xl text-white mb-3 max-w-2xl">{t('homes.title')}</h1>

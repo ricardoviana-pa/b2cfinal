@@ -40,43 +40,43 @@ const destinations = destinationsData as unknown as Destination[];
 
 /** Categories for grouping amenities — order determines display order */
 const AMENITY_CATEGORIES: { key: string; label: string; icon: LucideIcon; keywords: string[] }[] = [
-  { key: 'outdoor', label: 'Outdoor & Pool', icon: Waves, keywords: [
+  { key: 'outdoor', label: 'amenity.outdoorPool', icon: Waves, keywords: [
     'pool', 'swimming', 'infinity', 'heated pool', 'outdoor pool', 'private pool', 'hot tub', 'jacuzzi',
     'garden', 'backyard', 'terrace', 'patio', 'balcony', 'outdoor seating',
     'bbq', 'grill', 'barbecue', 'pool table', 'tennis', 'table tennis',
   ]},
-  { key: 'views', label: 'Views & Location', icon: Mountain, keywords: [
+  { key: 'views', label: 'amenity.viewsLocation', icon: Mountain, keywords: [
     'ocean view', 'sea view', 'beach', 'beachfront', 'mountain', 'garden view', 'lake', 'river', 'town',
   ]},
-  { key: 'comfort', label: 'Comfort & Climate', icon: Wind, keywords: [
+  { key: 'comfort', label: 'amenity.comfortClimate', icon: Wind, keywords: [
     'air conditioning', 'heating', 'indoor fireplace', 'fireplace',
   ]},
-  { key: 'kitchen', label: 'Kitchen & Dining', icon: Utensils, keywords: [
+  { key: 'kitchen', label: 'amenity.kitchenDining', icon: Utensils, keywords: [
     'kitchen', 'fully equipped', 'oven', 'microwave', 'stove', 'refrigerator',
     'coffee', 'nespresso', 'espresso', 'kettle', 'toaster', 'blender', 'dining',
   ]},
-  { key: 'entertainment', label: 'Entertainment', icon: Tv, keywords: [
+  { key: 'entertainment', label: 'amenity.entertainment', icon: Tv, keywords: [
     'tv', 'cable tv', 'smart tv', 'sound system', 'board games', 'books',
   ]},
-  { key: 'connectivity', label: 'Connectivity & Work', icon: Wifi, keywords: [
+  { key: 'connectivity', label: 'amenity.connectivityWork', icon: Wifi, keywords: [
     'wifi', 'internet', 'wireless', 'workspace', 'desk', 'laptop', 'home office', 'monitor',
   ]},
-  { key: 'wellness', label: 'Wellness & Fitness', icon: Mountain, keywords: [
+  { key: 'wellness', label: 'amenity.wellnessFitness', icon: Mountain, keywords: [
     'gym', 'fitness', 'workout', 'sauna', 'spa', 'yoga', 'horseback',
   ]},
-  { key: 'parking', label: 'Parking & Access', icon: Car, keywords: [
+  { key: 'parking', label: 'amenity.parkingAccess', icon: Car, keywords: [
     'parking', 'garage', 'ev charging', 'private entrance',
   ]},
-  { key: 'laundry', label: 'Laundry & Housekeeping', icon: Shirt, keywords: [
+  { key: 'laundry', label: 'amenity.laundryHousekeeping', icon: Shirt, keywords: [
     'washer', 'washing machine', 'clothes dryer', 'laundry', 'iron',
   ]},
-  { key: 'bathroom', label: 'Bathroom', icon: Bath, keywords: [
+  { key: 'bathroom', label: 'amenity.bathroom', icon: Bath, keywords: [
     'bathtub', 'hair dryer',
   ]},
-  { key: 'family', label: 'Family Friendly', icon: BedDouble, keywords: [
+  { key: 'family', label: 'amenity.familyFriendly', icon: BedDouble, keywords: [
     'crib', 'high chair', 'children', 'infants', 'baby',
   ]},
-  { key: 'safety', label: 'Safety', icon: Award, keywords: [
+  { key: 'safety', label: 'amenity.safety', icon: Award, keywords: [
     'smoke detector', 'fire extinguisher', 'first aid', 'security', 'safe',
   ]},
 ];
@@ -149,7 +149,7 @@ function categorizeAmenities(items: string[]): { category: string; label: string
     }
   }
   if (uncategorized.length) {
-    groups.push({ category: 'other', label: 'Other', icon: Sparkles, items: uncategorized });
+    groups.push({ category: 'other', label: 'amenity.other', icon: Sparkles, items: uncategorized });
   }
   return groups;
 }
@@ -739,9 +739,9 @@ export default function PropertyDetail() {
         {/* Breadcrumbs */}
         <nav aria-label="Breadcrumb" className="container pt-20 pb-3">
           <ol className="flex items-center gap-0.5 text-[12px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
-            <li><Link href="/" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">Home</Link></li>
+            <li><Link href="/" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">{t('propertyDetail.breadcrumbHome', 'Home')}</Link></li>
             <li className="text-[#E8E4DC]">/</li>
-            <li><Link href="/homes" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">Homes</Link></li>
+            <li><Link href="/homes" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">{t('propertyDetail.breadcrumbHomes', 'Homes')}</Link></li>
             {destObj && (
               <>
                 <li className="text-[#E8E4DC]">/</li>
@@ -915,7 +915,7 @@ export default function PropertyDetail() {
               {/* Bedrooms & Sleeping Arrangement */}
               {property.rooms && property.rooms.length > 0 && (
                 <section>
-                  <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-6">Bedrooms & Sleeping Arrangements</h2>
+                  <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-6">{t('propertyDetail.bedroomsTitle', 'Bedrooms & Sleeping Arrangements')}</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {property.rooms.map((room: any, roomIdx: number) => (
                       <div key={roomIdx} className="bg-white border border-[#E8E4DC] p-5 rounded-lg">
@@ -930,7 +930,7 @@ export default function PropertyDetail() {
                                     <BedIcon size={16} className="text-[#8B7355]" />
                                   </div>
                                   <span className="text-[12px] text-[#6B6860]">
-                                    {bed.quantity > 1 ? `${bed.quantity} × ${label}` : label}
+                                    {bed.quantity > 1 ? `${bed.quantity} × ${t('bedType.' + label.replace(/\s/g, ''), label)}` : t('bedType.' + label.replace(/\s/g, ''), label)}
                                   </span>
                                 </div>
                               );
@@ -979,7 +979,7 @@ export default function PropertyDetail() {
                       <div key={group.category}>
                         <div className="flex items-center gap-2 mb-3">
                           <group.icon size={16} className="text-[#8B7355]" />
-                          <h3 className="text-[13px] font-medium tracking-[0.04em] text-[#1A1A18]">{group.label}</h3>
+                          <h3 className="text-[13px] font-medium tracking-[0.04em] text-[#1A1A18]">{t(group.label)}</h3>
                         </div>
                         <div className="flex flex-wrap gap-2">
                           {group.items.map((item, idx) => (

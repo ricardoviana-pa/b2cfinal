@@ -103,7 +103,7 @@ function VideoEmbed({ vimeoId, videoId, title }: { vimeoId?: string; videoId?: s
 }
 
 export default function BlogArticle() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const article = articles.find(a => a.slug === slug);
   usePageMeta({
@@ -171,7 +171,7 @@ export default function BlogArticle() {
           <div className="flex flex-wrap items-center gap-4 text-sm text-[#9E9A90]">
             <span className="flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5" />
-              {new Date(article.publishDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+              {new Date(article.publishDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' })}
             </span>
             <span className="flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5" />

@@ -27,7 +27,7 @@ import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { StructuredData, buildFaqPageSchema } from '@/components/seo/StructuredData';
 import { Link } from 'wouter';
-import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Check, Quote, Minus, Plus, Home as HomeIcon, Star, Headphones, Play, X } from 'lucide-react';
+import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Minus, Plus, Home as HomeIcon, Star, Headphones, Play, X } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -94,10 +94,6 @@ export default function Home() {
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const closeVideoModal = useCallback(() => setVideoModalOpen(false), []);
 
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
-  const [subscribing, setSubscribing] = useState(false);
-  const [nlError, setNlError] = useState('');
   const [searchDest, setSearchDest] = useState('');
   const [searchCheckin, setSearchCheckin] = useState('');
   const [searchCheckout, setSearchCheckout] = useState('');
@@ -128,7 +124,6 @@ export default function Home() {
   const s8Ref = useFadeIn();
   const s9Ref = useFadeIn();
   const s10Ref = useFadeIn();
-  const s11Ref = useFadeIn();
 
   // Featured homes — Editor's Picks shows first 6 pinned by slug
   const FEATURED_SLUGS = [
@@ -176,23 +171,6 @@ export default function Home() {
     });
   }, [featured.length]);
 
-  const createLead = trpc.leads.create.useMutation();
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setSubscribing(true);
-    setNlError('');
-    try {
-      await createLead.mutateAsync({ email, source: 'newsletter-home' });
-      setSubscribed(true);
-      setEmail('');
-      pushDL({ event: 'generate_lead', lead_source: 'newsletter-home', lead_type: 'newsletter' });
-    } catch {
-      setNlError(t('home.newsletterError', 'Something went wrong. Please try again.'));
-    } finally {
-      setSubscribing(false);
-    }
-  };
 
   if (isLoading) {
     return (
@@ -257,7 +235,7 @@ export default function Home() {
             width={1600}
             height={900}
             fetchPriority="high"
-            decoding="async"
+            loading="eager"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/30 to-transparent" />
         </div>
@@ -629,7 +607,6 @@ export default function Home() {
                   listId="featured_homes"
                   listName="Editor's Picks"
                   itemIndex={index + 1}
-                  hidePrice
                 />
               </div>
             ))}
@@ -796,7 +773,7 @@ export default function Home() {
                 href="/about"
                 className="inline-flex items-center gap-2 text-[13px] font-medium text-[#1A1A18] hover:text-[#8B7355] transition-colors"
               >
-                Discover our approach <ArrowRight className="w-4 h-4" />
+                {t('home.discoverApproach', 'Discover our approach')} <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>
@@ -934,13 +911,15 @@ export default function Home() {
             >
               {t('home.ownersBody')}
             </p>
-            <Link
-              href="/owners"
+            <a
+              href="https://management.portugalactive.com"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-white/30 text-white text-[11px] font-semibold hover:bg-white/10 transition-colors"
               style={{ letterSpacing: '1.5px' }}
             >
               {t('home.ownersCta')} <ArrowRight className="w-4 h-4" />
-            </Link>
+            </a>
             <p className="text-[12px] text-white/35 mt-3" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('home.ownersNote')}</p>
           </div>
         </div>
@@ -986,50 +965,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 11: NEWSLETTER Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s11Ref} className="fade-in bg-[#F5F1EB]">
-        <div className="container py-14 lg:py-16">
-          <div className="max-w-md mx-auto text-center">
-            <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.newsletterOverline')}</p>
-            <h2 className="headline-md text-[#1A1A18] mb-2">{t('home.newsletterTitle')}</h2>
-            <p className="text-[14px] text-[#9E9A90] mb-6" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
-              {t('home.newsletterBody')}
-            </p>
-
-            {subscribed ? (
-              <p className="text-[14px] font-medium text-[#8B7355]">
-                <Check className="w-4 h-4 inline mr-2" />
-                {t('home.newsletterSuccess')}
-              </p>
-            ) : (
-              <form onSubmit={handleSubscribe} className="flex flex-col gap-1.5 max-w-sm mx-auto" noValidate>
-                <div className="flex gap-0">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={e => { setEmail(e.target.value); setNlError(''); }}
-                    placeholder={t('home.newsletterPlaceholder')}
-                    required
-                    autoComplete="email"
-                    inputMode="email"
-                    className="flex-1 h-[48px] px-4 text-[13px] bg-white border border-[#E8E4DC] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:border-[#8B7355] transition-colors"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  />
-                  <button
-                    type="submit"
-                    disabled={subscribing}
-                    className="h-[48px] px-5 bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex-shrink-0 disabled:opacity-50"
-                    style={{ letterSpacing: '1.5px' }}
-                  >
-                    {subscribing ? '...' : t('home.newsletterCta')}
-                  </button>
-                </div>
-                {nlError && <p className="text-[12px] text-[#DC2626] text-center">{nlError}</p>}
-              </form>
-            )}
-          </div>
-        </div>
-      </section>
 
       {/* Video Lightbox Modal */}
       {videoModalOpen && (

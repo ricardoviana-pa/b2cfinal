@@ -17,7 +17,6 @@ import {
   MapPin,
   MessageCircle,
   Share2,
-  Heart,
   Award,
   TrendingUp,
   Shield,
@@ -36,7 +35,6 @@ import ExperienceItinerary from '@/components/experience/ExperienceItinerary';
 import ExperienceReviews from '@/components/experience/ExperienceReviews';
 import ExperienceStickyNav from '@/components/experience/ExperienceStickyNav';
 import ExperienceMobileBookingBar from '@/components/experience/ExperienceMobileBookingBar';
-import ExperienceWhyBookDirect from '@/components/experience/ExperienceWhyBookDirect';
 import ExperienceGuideProfile from '@/components/experience/ExperienceGuideProfile';
 import ExperienceRelatedExperiences from '@/components/experience/ExperienceRelatedExperiences';
 
@@ -139,11 +137,7 @@ const destinations = destinationsData as unknown as Destination[];
 const SECTION_KEYS = [
   { id: 'overview', key: 'experienceDetail.navOverview' },
   { id: 'highlights', key: 'experienceDetail.navHighlights' },
-  { id: 'itinerary', key: 'experienceDetail.navItinerary' },
   { id: 'included', key: 'experienceDetail.navIncluded' },
-  { id: 'guide', key: 'experienceDetail.navYourGuide' },
-  { id: 'meeting', key: 'experienceDetail.navMeetingPoint' },
-  { id: 'faq', key: 'experienceDetail.navFaq' },
   { id: 'reviews', key: 'experienceDetail.navReviews' },
 ];
 
@@ -473,11 +467,6 @@ export default function ExperienceDetail() {
               className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.08em] uppercase text-[#9E9A90] hover:text-[#1A1A18] transition-colors"
             >
               <Share2 className="w-3.5 h-3.5" /> {t('experienceDetail.share')}
-            </button>
-            <button
-              className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.08em] uppercase text-[#9E9A90] hover:text-[#1A1A18] transition-colors"
-            >
-              <Heart className="w-3.5 h-3.5" /> {t('experienceDetail.save')}
             </button>
           </div>
         </div>
@@ -826,30 +815,6 @@ export default function ExperienceDetail() {
                 priceOta={exp.priceOta}
               />
 
-              {/* Mini review snippet — social proof near CTA */}
-              {exp.reviewsList && exp.reviewsList.length > 0 && (() => {
-                const topReview = exp.reviewsList
-                  .filter(r => r.rating >= 4 && r.text.length >= 40)
-                  .sort((a, b) => b.rating - a.rating || b.text.length - a.text.length)[0];
-                if (!topReview) return null;
-                const snippet = topReview.text.length > 120
-                  ? topReview.text.slice(0, 120).replace(/\s\S*$/, '') + '…'
-                  : topReview.text;
-                return (
-                  <div className="mt-4 p-4 border border-[#E8E4DC] bg-white">
-                    <p className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium mb-2">
-                      {t('experienceDetail.recentGuestReview')}
-                    </p>
-                    <p className="text-[13px] text-[#1A1A18] italic leading-relaxed" style={{ fontWeight: 300 }}>
-                      "{snippet}"
-                    </p>
-                    <p className="text-[11px] text-[#9E9A90] mt-2" style={{ fontWeight: 300 }}>
-                      — {topReview.author}{topReview.rating && `, ${topReview.rating.toFixed(1)}/5`}
-                    </p>
-                  </div>
-                );
-              })()}
-
               {/* OTA price comparison */}
               {exp.priceOta && exp.priceOta > priceFrom && (
                 <div className="mt-3 p-4 bg-[#F5F1EB] border border-[#E8E4DC] text-center">
@@ -877,12 +842,6 @@ export default function ExperienceDetail() {
           </aside>
         </div>
       </section>
-
-      {/* ── Why book direct ── */}
-      <ExperienceWhyBookDirect
-        priceDirect={priceFrom}
-        priceOta={exp.priceOta}
-      />
 
       {/* ── Reviews ── */}
       {exp.reviewsList && exp.reviewsList.length > 0 && (
