@@ -225,7 +225,7 @@ export default function Home() {
       <WhatsAppFloat />
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 1: HERO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden">
+      <section className="relative h-screen min-h-[600px] flex items-center lg:pb-28 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
           <img
@@ -304,7 +304,7 @@ export default function Home() {
         </div>
 
             {/* Search bar Ã¢ÂÂ centred, lower area, Le Collectionist style */}
-        <div className="absolute bottom-20 inset-x-0 mx-auto hidden lg:block w-full max-w-[860px] px-6 z-20">
+        <div className="absolute bottom-6 inset-x-0 mx-auto hidden lg:block w-full max-w-[860px] px-6 z-20">
           <div
             className="flex items-center rounded-full bg-white/95 backdrop-blur-sm shadow-xl overflow-hidden ring-1 ring-black/5"
             style={{ height: '64px' }}
