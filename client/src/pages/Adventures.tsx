@@ -168,7 +168,7 @@ export default function Adventures() {
 
       {/* Hero */}
       <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1598535110134-69469a0e71e3?w=1600&q=80&auto=format&fit=crop" alt="Ponta da Piedade cliffs in Lagos, Algarve – adventure experiences in Portugal" className="absolute inset-0 w-full h-full object-cover" width={1600} height={1067} fetchPriority="high" />
+        <img src="/experiences/horseback-riding/01.webp" alt="Horseback riding on the beach at sunset – adventure experiences in Portugal" className="absolute inset-0 w-full h-full object-cover" width={1600} height={1067} fetchPriority="high" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/15" />
         <div className="relative container pb-12 lg:pb-16 z-10">
           <h1 className="headline-xl text-white mb-4">{t('adventures.title')}</h1>
