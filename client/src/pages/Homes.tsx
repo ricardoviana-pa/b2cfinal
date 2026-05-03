@@ -107,6 +107,7 @@ export default function Homes() {
   const [bookingGuests, setBookingGuests] = useState(searchGuests ? Number(searchGuests) : 2);
   const [quotes, setQuotes] = useState<Record<string, LiveQuote | null>>({});
   const [quotesLoading, setQuotesLoading] = useState(false);
+  const [showAll, setShowAll] = useState(false);
   const utils = trpc.useUtils();
   const effectiveGuests = searchGuestsCount > 0 ? searchGuestsCount : bookingGuests;
   const checkInRef = useRef<HTMLInputElement>(null);
@@ -690,12 +691,11 @@ export default function Homes() {
                   </h2>
                 </div>
               )}
-              <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-x-6 md:gap-y-10 md:overflow-visible">
-                {availableProperties.map((property, index) => (
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 md:gap-x-6 md:gap-y-10">
+                {(showAll ? availableProperties : availableProperties.slice(0, 12)).map((property, index) => (
                   <div
                     key={property.id}
-                    className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto"
-                    style={{ scrollSnapAlign: 'start' }}
+                    className="w-full"
                     ref={(el) => {
                       const slug = property.slug;
                       if (el) {
@@ -730,6 +730,16 @@ export default function Homes() {
                   </div>
                 ))}
               </div>
+              {!showAll && availableProperties.length > 12 && (
+                <div className="flex justify-center mt-8">
+                  <button
+                    onClick={() => setShowAll(true)}
+                    className="px-6 py-3 border border-[#E8E4DC] rounded-full text-sm font-medium text-[#1A1A18] hover:bg-[#F5F1EB] transition-colors"
+                  >
+                    {t('homes.showAll', 'Show all properties')} ({availableProperties.length})
+                  </button>
+                </div>
+              )}
             </>
           )}
 
@@ -747,12 +757,11 @@ export default function Homes() {
                   {t('homes.unavailableHint', 'These homes may be available for different dates. Contact our concierge for alternatives.')}
                 </p>
               </div>
-              <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-x-6 md:gap-y-10 md:overflow-visible opacity-75">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 md:gap-x-6 md:gap-y-10 opacity-75">
                 {unavailableProperties.map((property, idx) => (
                   <div
                     key={property.id}
-                    className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto"
-                    style={{ scrollSnapAlign: 'start' }}
+                    className="w-full"
                     ref={(el) => {
                       const slug = property.slug;
                       const itemIndex = availableProperties.length + idx + 1;

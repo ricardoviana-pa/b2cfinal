@@ -79,6 +79,21 @@ function buildEntries(): SitemapEntry[] {
     console.warn("Sitemap: could not load experienceDetails.json", e);
   }
 
+  // Dynamic property pages
+  try {
+    const properties = loadJson("properties.json");
+    for (const property of properties) {
+      entries.push({
+        loc: `${BASE_URL}/homes/${property.slug}`,
+        lastmod: date,
+        changefreq: "weekly",
+        priority: 0.8,
+      });
+    }
+  } catch (e) {
+    console.warn("Sitemap: could not load properties.json", e);
+  }
+
   // Dynamic blog pages
   try {
     const blogData = loadJson("blog.json");
@@ -97,6 +112,19 @@ function buildEntries(): SitemapEntry[] {
   return entries;
 }
 
+const SUPPORTED_LANGS = ["en", "pt", "es", "fr", "de", "it", "nl", "fi", "sv"];
+
+function buildHreflangLinks(loc: string): string {
+  const links = SUPPORTED_LANGS.map(
+    (lang) =>
+      `    <xhtml:link rel="alternate" hreflang="${lang}" href="${loc}?lang=${lang}" />`
+  );
+  links.push(
+    `    <xhtml:link rel="alternate" hreflang="x-default" href="${loc}" />`
+  );
+  return links.join("\n");
+}
+
 function toXml(entries: SitemapEntry[]): string {
   const urls = entries
     .map(
@@ -105,12 +133,14 @@ function toXml(entries: SitemapEntry[]): string {
     <lastmod>${e.lastmod}</lastmod>
     <changefreq>${e.changefreq}</changefreq>
     <priority>${e.priority.toFixed(1)}</priority>
+${buildHreflangLinks(e.loc)}
   </url>`
     )
     .join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${urls}
 </urlset>`;
 }
