@@ -22,7 +22,7 @@ interface ExperienceMobileBookingBarProps {
 }
 
 const WHATSAPP_NUMBER = '351927161771';
-const BOKUN_CHANNEL_UUID = import.meta.env.VITE_BOKUN_CHANNEL_UUID as string | undefined;
+const BOKUN_CHANNEL_UUID = import.meta.env.VITE_BOKUN_CHANNEL_UUID || 'a283fa3e-a892-41cd-a775-036ac351a454';
 
 export default function ExperienceMobileBookingBar({
   experienceName,
