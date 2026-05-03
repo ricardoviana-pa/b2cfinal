@@ -31,7 +31,6 @@ import {
   buildVacationRentalSchema,
   buildBreadcrumbSchema,
 } from '@/components/seo/StructuredData';
-import AnswerCapsule from '@/components/seo/AnswerCapsule';
 
 const allProducts = productsData as unknown as Product[];
 const destinations = destinationsData as unknown as Destination[];
@@ -156,19 +155,19 @@ function categorizeAmenities(items: string[]): { category: string; label: string
 
 
 /** Humanize bed type names and get icon */
-function getBedTypeDisplay(bedType: string): { label: string; icon: LucideIcon } {
+function getBedTypeDisplay(bedType: string, t: (key: string, fallback: string) => string): { label: string; icon: LucideIcon } {
   const normalized = (bedType || '').toUpperCase().replace(/ /g, '_');
   const iconMap: Record<string, { label: string; icon: LucideIcon }> = {
-    'KING_BED': { label: 'King Bed', icon: BedDouble },
-    'QUEEN_BED': { label: 'Queen Bed', icon: BedDouble },
-    'DOUBLE_BED': { label: 'Double Bed', icon: BedDouble },
-    'SINGLE_BED': { label: 'Single Bed', icon: Bed },
-    'SOFA_BED': { label: 'Sofa Bed', icon: Sofa },
-    'BUNK_BED': { label: 'Bunk Bed', icon: Bed },
-    'COUCH': { label: 'Sofa Bed', icon: Sofa },
-    'AIR_MATTRESS': { label: 'Air Mattress', icon: Bed },
+    'KING_BED': { label: t('bedTypes.kingBed', 'King Bed'), icon: BedDouble },
+    'QUEEN_BED': { label: t('bedTypes.queenBed', 'Queen Bed'), icon: BedDouble },
+    'DOUBLE_BED': { label: t('bedTypes.doubleBed', 'Double Bed'), icon: BedDouble },
+    'SINGLE_BED': { label: t('bedTypes.singleBed', 'Single Bed'), icon: Bed },
+    'SOFA_BED': { label: t('bedTypes.sofaBed', 'Sofa Bed'), icon: Sofa },
+    'BUNK_BED': { label: t('bedTypes.bunkBed', 'Bunk Bed'), icon: Bed },
+    'COUCH': { label: t('bedTypes.sofaBed', 'Sofa Bed'), icon: Sofa },
+    'AIR_MATTRESS': { label: t('bedTypes.airMattress', 'Air Mattress'), icon: Bed },
   };
-  return iconMap[normalized] || { label: bedType || 'Bed', icon: Bed };
+  return iconMap[normalized] || { label: bedType || t('bedTypes.bed', 'Bed'), icon: Bed };
 }
 
 
@@ -881,37 +880,6 @@ export default function PropertyDetail() {
           <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
             {/* Main content — left 2/3 */}
             <div className="order-2 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12 pt-6">
-              {/* Answer capsule — citable summary for AI engines & search, inside the content column */}
-              <AnswerCapsule
-                question={`What is ${sanitizePropertyName(property.name)}?`}
-                answer={(() => {
-                  const name = sanitizePropertyName(property.name);
-                  const loc = property.locality || destName;
-                  const guests = property.maxGuests;
-                  const beds = property.bedrooms;
-                  const baths = property.bathrooms;
-                  const price = property.priceFrom;
-                  const tag = property.tagline;
-                  const parts: string[] = [];
-                  parts.push(`${name} is a private hotel in ${loc}, Portugal, operated by Portugal Active.`);
-                  parts.push(`It accommodates up to ${guests} guests across ${beds} bedrooms and ${baths} bathrooms.`);
-                  if (price) parts.push(`Rates start from €${price} per night.`);
-                  if (tag) parts.push(tag + (tag.endsWith('.') ? '' : '.'));
-                  parts.push(`Unlike a standard rental, every stay is fully managed: dedicated concierge, daily housekeeping, and access to private chef, spa, and curated local experiences.`);
-                  parts.push(`Book direct for the best rate and complimentary concierge planning.`);
-                  return parts.join(' ');
-                })()}
-                lastUpdated="2026-04-17"
-                author="Portugal Active concierge team"
-                emitSchema
-                schemaId={`qa-${property.slug}`}
-                cite={[
-                  { label: 'All properties', href: '/homes' },
-                  destObj ? { label: `${destObj.name} guide`, href: `/destinations/${destObj.slug}` } : null,
-                  { label: 'Concierge services', href: '/concierge' },
-                ].filter(Boolean) as { label: string; href: string }[]}
-              />
-
               {/* Bedrooms & Sleeping Arrangement */}
               {property.rooms && property.rooms.length > 0 && (
                 <section>
@@ -923,7 +891,7 @@ export default function PropertyDetail() {
                         <div className="space-y-3">
                           {room.beds && room.beds.length > 0 ? (
                             room.beds.map((bed: any, bedIdx: number) => {
-                              const { label, icon: BedIcon } = getBedTypeDisplay(bed.type);
+                              const { label, icon: BedIcon } = getBedTypeDisplay(bed.type, t);
                               return (
                                 <div key={bedIdx} className="flex items-center gap-3">
                                   <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#F5F1EB] shrink-0">

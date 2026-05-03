@@ -46,6 +46,7 @@
    ========================================================================== */
 
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'wouter';
 import { StructuredData, type JsonLd } from './StructuredData';
 
@@ -76,11 +77,11 @@ export interface AnswerCapsuleProps {
   className?: string;
 }
 
-function formatUpdated(iso: string | undefined): string | null {
+function formatUpdated(iso: string | undefined, locale: string = 'en-GB'): string | null {
   if (!iso) return null;
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return null;
-  return d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+  return d.toLocaleDateString(locale, { month: 'short', year: 'numeric' });
 }
 
 function Citation({ c }: { c: AnswerCapsuleCitation }) {
@@ -112,7 +113,8 @@ export default function AnswerCapsule({
   schemaId,
   className,
 }: AnswerCapsuleProps) {
-  const updatedLabel = formatUpdated(lastUpdated);
+  const { i18n } = useTranslation();
+  const updatedLabel = formatUpdated(lastUpdated, i18n.language);
 
   const qaSchema = useMemo<JsonLd | null>(() => {
     if (!emitSchema) return null;

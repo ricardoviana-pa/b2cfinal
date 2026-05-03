@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface Review {
   rating: number;
@@ -17,6 +18,7 @@ interface ReviewsSectionProps {
 }
 
 export default function ReviewsSection({ propertyName, reviews, averageRating, reviewCount }: ReviewsSectionProps) {
+  const { i18n } = useTranslation();
   const [showAll, setShowAll] = useState(false);
 
   if (!reviews || reviews.length === 0) return null;
@@ -62,7 +64,7 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
                   <p className="text-[13px] font-medium text-[#1A1A18]">{review.guestName}</p>
                   {review.date && (
                     <p className="text-[11px] text-[#9E9A90]">
-                      {new Date(review.date).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}
+                      {new Date(review.date).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' })}
                     </p>
                   )}
                 </div>

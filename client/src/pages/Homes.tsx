@@ -440,23 +440,6 @@ export default function Homes() {
         </div>
       </section>
 
-      {/* Answer capsule — citable collection summary for AI engines */}
-      <section className="pt-8 pb-4 bg-[#FAFAF7]">
-        <div className="container max-w-3xl mx-auto">
-          <AnswerCapsule
-            question="What properties does Portugal Active offer?"
-            answer="Portugal Active operates a curated collection of 60+ private hotels across Portugal, spanning the Minho Coast, Porto, Douro Valley, Lisbon, Alentejo, and the Algarve. Each property is managed to five-star standards with dedicated concierge, daily housekeeping, and access to private chef, spa, and curated local experiences. Unlike standard rentals, every stay is fully operated by an in-house team. Book direct for the best rate guaranteed."
-            lastUpdated="2026-04-17"
-            author="Portugal Active concierge team"
-            cite={[
-              { label: 'About Portugal Active', href: '/about' },
-              { label: 'Concierge services', href: '/concierge' },
-              { label: 'Contact us', href: '/contact' },
-            ]}
-          />
-        </div>
-      </section>
-
       {/* Sticky: homepage-style search + filters in one dense band */}
       <div className="sticky top-16 md:top-20 z-30 bg-[#FAFAF7]/95 backdrop-blur-md border-b border-[#E8E4DC]">
         <div className="container py-2.5 md:py-3">
@@ -847,6 +830,23 @@ export default function Homes() {
               </a>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Answer capsule — citable collection summary for AI engines (bottom, not blocking listings) */}
+      <section className="pt-8 pb-4 bg-[#FAFAF7]">
+        <div className="container max-w-3xl mx-auto">
+          <AnswerCapsule
+            question="What properties does Portugal Active offer?"
+            answer="Portugal Active operates a curated collection of 60+ private hotels across Portugal, spanning the Minho Coast, Porto, Douro Valley, Lisbon, Alentejo, and the Algarve. Each property is managed to five-star standards with dedicated concierge, daily housekeeping, and access to private chef, spa, and curated local experiences. Unlike standard rentals, every stay is fully operated by an in-house team. Book direct for the best rate guaranteed."
+            lastUpdated="2026-04-17"
+            author="Portugal Active concierge team"
+            cite={[
+              { label: 'About Portugal Active', href: '/about' },
+              { label: 'Concierge services', href: '/concierge' },
+              { label: 'Contact us', href: '/contact' },
+            ]}
+          />
         </div>
       </section>
 

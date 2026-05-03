@@ -868,7 +868,24 @@
     "recentGuestReview": "Recent guest review",
     "allExperiences": "All experiences",
     "sameExperienceOnOta": "Same experience on other platforms costs more.",
-    "youSavePerPerson": "You save €{{amount}} per person booking direct."
+    "youSavePerPerson": "You save €{{amount}} per person booking direct.",
+    "navOverview": "Overview",
+    "navHighlights": "Highlights",
+    "navIncluded": "Included",
+    "navReviews": "Reviews",
+    "navFaq": "FAQ",
+    "beforeYouGo": "Before you go",
+    "cancellationPolicyQ": "What is the cancellation policy?"
+  },
+  "bedTypes": {
+    "kingBed": "King Bed",
+    "queenBed": "Queen Bed",
+    "doubleBed": "Double Bed",
+    "singleBed": "Single Bed",
+    "sofaBed": "Sofa Bed",
+    "bunkBed": "Bunk Bed",
+    "airMattress": "Air Mattress",
+    "bed": "Bed"
   },
   "destinationDetail": {
     "breadcrumbHome": "Home",
