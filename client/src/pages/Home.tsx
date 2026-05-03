@@ -604,7 +604,7 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 2: USP BAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s2Ref} className="fade-in relative z-10 -mt-8 md:-mt-11 mb-2 md:mb-0 w-full min-w-0">
+      <section ref={s2Ref} className="fade-in relative z-10 mb-2 md:mb-0 w-full min-w-0">
         <div className="w-full bg-[#FAFAF7] border-y border-[#E8E4DC] shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
           <div className="container grid grid-cols-4 gap-0">
               {[
