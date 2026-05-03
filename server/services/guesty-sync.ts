@@ -167,6 +167,14 @@ function inferDestination(addr: any): string {
   const state = (addr.state || '').toLowerCase();
   const full = `${city} ${region} ${state}`;
 
+  // Porto & Douro — check BEFORE Minho because region "Norte" covers both
+  if (state === 'porto' ||
+      city.includes('porto') || city.includes('gaia') || city.includes('matosinhos') ||
+      city.includes('maia') || city.includes('gondomar') ||
+      region.includes('douro') || city.includes('peso da régua') || city.includes('lamego') ||
+      city.includes('pinhão') || city.includes('pinhao') ||
+      state.includes('vila real') || state.includes('viseu')) return 'porto';
+
   // Minho Coast — Viana do Castelo district + northern towns
   if (state.includes('viana do castelo') || state.includes('viana') ||
       city.includes('viana') || city.includes('caminha') || city.includes('moledo') ||
@@ -184,14 +192,6 @@ function inferDestination(addr: any): string {
       city.includes('famalicão') || city.includes('famalicao') ||
       city.includes('barcelos') || city.includes('esposende') ||
       city.includes('fafe') || city.includes('vizela')) return 'minho';
-
-  // Porto & Douro
-  if (state.includes('porto') ||
-      city.includes('porto') || city.includes('gaia') || city.includes('matosinhos') ||
-      city.includes('maia') || city.includes('gondomar') ||
-      region.includes('douro') || city.includes('peso da régua') || city.includes('lamego') ||
-      city.includes('pinhão') || city.includes('pinhao') ||
-      state.includes('vila real') || state.includes('viseu')) return 'porto';
 
   // Lisbon
   if (state.includes('lisboa') || state.includes('setúbal') || state.includes('setubal') ||
