@@ -1163,30 +1163,6 @@ export default function PropertyDetail() {
           </div>
         </div>
 
-        {/* Why book direct */}
-        <section className="py-16 lg:py-20 bg-[#F5F1EB]">
-          <div className="container max-w-4xl mx-auto text-center">
-            <p className="text-[11px] font-medium tracking-[0.14em] text-[#8B7355] uppercase mb-3">{t('whyBookDirect.overline', 'Why book with us')}</p>
-            <h2 className="font-display text-[clamp(1.5rem,3vw,2.25rem)] font-light text-[#1A1A18] mb-10">{t('whyBookDirect.headline', 'Book direct. Save more.')}</h2>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-              {[
-                { icon: ShieldCheck, title: t('whyBookDirect.bestRate', 'Best rate guaranteed'), desc: t('whyBookDirect.bestRateDesc', 'Always the lowest price — no middleman markup.') },
-                { icon: Headphones, title: t('whyBookDirect.concierge', 'Dedicated concierge'), desc: t('whyBookDirect.conciergeDesc', 'Personal support from booking to checkout.') },
-                { icon: Clock, title: t('whyBookDirect.flexible', 'Flexible cancellation'), desc: t('whyBookDirect.flexibleDesc', 'Change of plans? We make it easy.') },
-                { icon: Sparkles, title: t('whyBookDirect.curated', 'Curated by locals'), desc: t('whyBookDirect.curatedDesc', 'Every home hand-picked and operated by our team.') },
-              ].map((item, i) => (
-                <div key={i} className="flex flex-col items-center">
-                  <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center mb-4">
-                    <item.icon size={20} className="text-[#8B7355]" />
-                  </div>
-                  <h3 className="text-[13px] font-medium text-[#1A1A18] mb-1.5">{item.title}</h3>
-                  <p className="text-[12px] text-[#9E9A90] leading-relaxed" style={{ fontWeight: 300 }}>{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Related properties from same region */}
         {relatedProperties.length > 0 && (
           <section className="section-padding bg-white border-t border-[#E8E4DC]">

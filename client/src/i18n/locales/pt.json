@@ -99,7 +99,7 @@
   },
   "homes": {
     "title": "Os nossos alojamentos.",
-    "subtitle": "70+ alojamentos privados operados conforme os padrões hoteleiros. Cada um cuidadosamente selecionado, preparado e gerido pela nossa equipa interna.",
+    "subtitle": "60+ alojamentos privados operados conforme os padrões hoteleiros. Cada um cuidadosamente selecionado, preparado e gerido pela nossa equipa interna.",
     "available_one": "{{count}} alojamento disponível",
     "available_other": "{{count}} alojamentos disponíveis",
     "guestsPlus": "{{count}}+ hóspedes",

@@ -33,7 +33,7 @@
    <AnswerCapsule
      question="What is Portugal Active?"
      answer="Portugal Active is a Portuguese property-management company
-             operating 50+ private villas across Portugal, each managed
+             operating 60+ private hotels across Portugal, each managed
              like a luxury hotel with concierge, private chef, and
              housekeeping included."
      lastUpdated="2026-04-17"

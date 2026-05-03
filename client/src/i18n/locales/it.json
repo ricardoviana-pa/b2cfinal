@@ -99,7 +99,7 @@
   },
   "homes": {
     "title": "Le nostre case.",
-    "subtitle": "Oltre 70 case private gestite con standard alberghieri. Ogni casa curata, preparata e gestita dal nostro team interno.",
+    "subtitle": "Oltre 60 case private gestite con standard alberghieri. Ogni casa curata, preparata e gestita dal nostro team interno.",
     "available_one": "{{count}} casa disponibile",
     "available_other": "{{count}} case disponibili",
     "guestsPlus": "{{count}}+ ospiti",

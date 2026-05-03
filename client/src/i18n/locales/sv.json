@@ -99,7 +99,7 @@
   },
   "homes": {
     "title": "Våra hem.",
-    "subtitle": "Över 70 privata hem med hotellstandard. Varje hem utvalt, förberett och förvaltat av vårt eget team.",
+    "subtitle": "Över 60 privata hem med hotellstandard. Varje hem utvalt, förberett och förvaltat av vårt eget team.",
     "available_one": "{{count}} hem tillgängligt",
     "available_other": "{{count}} hem tillgängliga",
     "guestsPlus": "{{count}}+ gäster",

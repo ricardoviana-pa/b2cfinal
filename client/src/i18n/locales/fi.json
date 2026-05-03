@@ -99,7 +99,7 @@
   },
   "homes": {
     "title": "Kotimme.",
-    "subtitle": "Yli 70 yksityistä kotia hotellitasoisella palvelulla. Jokainen valittu, valmisteltu ja hallinnoitu oman tiimimme toimesta.",
+    "subtitle": "Yli 60 yksityistä kotia hotellitasoisella palvelulla. Jokainen valittu, valmisteltu ja hallinnoitu oman tiimimme toimesta.",
     "available_one": "{{count}} koti saatavilla",
     "available_other": "{{count}} kotia saatavilla",
     "guestsPlus": "{{count}}+ vierasta",

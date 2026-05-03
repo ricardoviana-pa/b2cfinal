@@ -1,6 +1,6 @@
 /* ==========================================================================
    HOMEPAGE Ã¢ÂÂ Prompt 1 spec
-   11 sections in exact order:
+   10 sections in exact order:
    1. Hero (overline, H1, subline, 2 CTAs, search bar)
    2. USP Bar (4 items, surface bg)
    3. Our Homes (overline, headline, subline, 5 tabs, 6 cards, link)
@@ -11,7 +11,6 @@
    8. Experiences (4 cards)
    9. Social Proof (3 reviews + proof strip)
    10. Owners CTA (dark bg)
-   11. Newsletter (standalone, before footer)
 
    COPY RULES:
    - No em/en dashes Ã¢ÂÂ use periods, commas, colons
@@ -825,12 +824,6 @@ export default function Home() {
                 ))}
               </div>
 
-              <Link
-                href="/about"
-                className="inline-flex items-center gap-2 text-[13px] font-medium text-[#1A1A18] hover:text-[#8B7355] transition-colors"
-              >
-                {t('home.discoverApproach', 'Discover our approach')} <ArrowRight className="w-4 h-4" />
-              </Link>
             </div>
           </div>
         </div>

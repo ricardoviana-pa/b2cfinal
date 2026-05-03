@@ -112,7 +112,7 @@ export default function About() {
   const { t } = useTranslation();
   usePageMeta({
     title: 'About Portugal Active | Private Hotels in Portugal Since 2017',
-    description: 'From adventure tourism in Viana do Castelo to 50+ operated homes across Portugal. How Portugal Active transforms private homes into private hotels. Featured in Forbes.',
+    description: 'From adventure tourism in Viana do Castelo to 60+ operated homes across Portugal. How Portugal Active transforms private homes into private hotels. Featured in Forbes.',
     url: '/about',
   });
 
@@ -125,7 +125,7 @@ export default function About() {
       name: 'Ricardo Viana',
       jobTitle: 'CEO & Founder',
       description:
-        'Founder and CEO of Portugal Active. Built the company from his home town of Viana do Castelo, starting in adventure tourism and scaling to 50+ operated private homes across Portugal.',
+        'Founder and CEO of Portugal Active. Built the company from his home town of Viana do Castelo, starting in adventure tourism and scaling to 60+ operated private homes across Portugal.',
       image: 'https://www.portugalactive.com/team/ricardo-viana.webp',
       url: 'https://www.portugalactive.com/about#ricardo-viana',
       sameAs: [

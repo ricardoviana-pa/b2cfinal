@@ -99,7 +99,7 @@
   },
   "homes": {
     "title": "Unsere Häuser.",
-    "subtitle": "Über 70 private Häuser auf Hotelniveau. Jedes einzelne kuratiert, vorbereitet und von unserem Team betreut.",
+    "subtitle": "Über 60 private Häuser auf Hotelniveau. Jedes einzelne kuratiert, vorbereitet und von unserem Team betreut.",
     "available_one": "{{count}} Haus verfügbar",
     "available_other": "{{count}} Häuser verfügbar",
     "guestsPlus": "{{count}}+ Gäste",
