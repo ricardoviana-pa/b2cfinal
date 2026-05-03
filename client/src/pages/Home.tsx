@@ -225,7 +225,7 @@ export default function Home() {
       <WhatsAppFloat />
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 1: HERO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section className="relative h-screen min-h-[600px] flex items-center lg:pb-28 overflow-hidden">
+      <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
           <img
@@ -303,8 +303,121 @@ export default function Home() {
           </div>
         </div>
 
-            {/* Search bar Ã¢ÂÂ centred, lower area, Le Collectionist style */}
-        <div className="absolute bottom-6 inset-x-0 mx-auto hidden lg:block w-full max-w-[860px] px-6 z-20">
+        {/* Mobile search bar — compact with destination */}
+        <div className="absolute bottom-4 left-0 right-0 lg:hidden px-5 z-10">
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg p-3 space-y-2">
+            {/* Destination */}
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9A90] pointer-events-none" />
+              <select
+                value={searchDest}
+                onChange={e => setSearchDest(e.target.value)}
+                className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white pl-9 pr-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer appearance-none"
+                style={{ fontFamily: 'var(--font-body)' }}
+              >
+                <option value="">{t('home.searchDestination')}</option>
+                {cities.map(city => (
+                  <option key={city.value} value={city.value}>{city.label}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9E9A90] pointer-events-none" />
+            </div>
+            {/* Dates */}
+            <div className="grid grid-cols-2 gap-2">
+              <div
+                className="relative"
+                onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
+              >
+                <input
+                  type="date"
+                  value={searchCheckin}
+                  min={today}
+                  onChange={e => handleCheckinChange(e.target.value, true)}
+                  className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                  placeholder={t('home.searchCheckin', 'Check-in')}
+                />
+              </div>
+              <div
+                className="relative"
+                onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
+              >
+                <input
+                  ref={checkoutMobileRef}
+                  type="date"
+                  value={searchCheckout}
+                  min={searchCheckin || today}
+                  onChange={e => setSearchCheckout(e.target.value)}
+                  className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                  placeholder={t('home.searchCheckout', 'Check-out')}
+                />
+              </div>
+            </div>
+            {/* Guests + Search */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 flex-1 h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 min-w-0">
+                <button
+                  type="button"
+                  onClick={() => setSearchGuests(g => Math.max(1, g - 1))}
+                  disabled={searchGuests <= 1}
+                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30 shrink-0"
+                  aria-label={t('home.decreaseGuests', 'Decrease guests')}
+                >
+                  <Minus className="w-3 h-3" />
+                </button>
+                <span className="text-[13px] text-[#1A1A18] tabular-nums flex-1 text-center whitespace-nowrap">{searchGuests} {t('home.searchGuests')}</span>
+                <button
+                  type="button"
+                  onClick={() => setSearchGuests(g => Math.min(30, g + 1))}
+                  disabled={searchGuests >= 30}
+                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30 shrink-0"
+                  aria-label={t('home.increaseGuests', 'Increase guests')}
+                >
+                  <Plus className="w-3 h-3" />
+                </button>
+              </div>
+              <Link
+                href={(() => {
+                  const p = new URLSearchParams();
+                  if (searchDest) p.set('location', searchDest);
+                  if (searchCheckin) p.set('checkin', searchCheckin);
+                  if (searchCheckout) p.set('checkout', searchCheckout);
+                  if (searchGuests > 1) p.set('guests', String(searchGuests));
+                  const qs = p.toString();
+                  return `/homes${qs ? `?${qs}` : ''}`;
+                })()}
+                onClick={() => {
+                  const nights = searchCheckin && searchCheckout
+                    ? Math.round((new Date(searchCheckout).getTime() - new Date(searchCheckin).getTime()) / 86400000)
+                    : null;
+                  pushDL({
+                    event: 'search',
+                    search_location: searchDest || 'All Destinations',
+                    search_location_type: searchDest ? 'city' : 'all',
+                    search_checkin: searchCheckin || null,
+                    search_checkout: searchCheckout || null,
+                    search_nights: nights,
+                    search_adults: searchGuests,
+                    search_children: 0,
+                    search_source: 'hero_mobile',
+                  });
+                }}
+                className="shrink-0 h-[40px] px-5 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
+                style={{ letterSpacing: '1.5px' }}
+              >
+                {t('home.searchButton')}
+              </Link>
+            </div>
+          </div>
+        </div>
+
+
+      </section>
+
+      {/* Desktop search bar — positioned outside hero for z-stacking above USP bar */}
+      <div className="hidden lg:flex justify-center relative z-20 -mt-[40px] pointer-events-none">
+        <div className="w-full max-w-[860px] px-6 pointer-events-auto">
           <div
             className="flex items-center rounded-full bg-white/95 backdrop-blur-sm shadow-xl overflow-hidden ring-1 ring-black/5"
             style={{ height: '64px' }}
@@ -427,117 +540,7 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        {/* Mobile search bar — compact with destination */}
-        <div className="absolute bottom-4 left-0 right-0 lg:hidden px-5 z-10">
-          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg p-3 space-y-2">
-            {/* Destination */}
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9A90] pointer-events-none" />
-              <select
-                value={searchDest}
-                onChange={e => setSearchDest(e.target.value)}
-                className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white pl-9 pr-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer appearance-none"
-                style={{ fontFamily: 'var(--font-body)' }}
-              >
-                <option value="">{t('home.searchDestination')}</option>
-                {cities.map(city => (
-                  <option key={city.value} value={city.value}>{city.label}</option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9E9A90] pointer-events-none" />
-            </div>
-            {/* Dates */}
-            <div className="grid grid-cols-2 gap-2">
-              <div
-                className="relative"
-                onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
-              >
-                <input
-                  type="date"
-                  value={searchCheckin}
-                  min={today}
-                  onChange={e => handleCheckinChange(e.target.value, true)}
-                  className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
-                  style={{ fontFamily: 'var(--font-body)' }}
-                  placeholder={t('home.searchCheckin', 'Check-in')}
-                />
-              </div>
-              <div
-                className="relative"
-                onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
-              >
-                <input
-                  ref={checkoutMobileRef}
-                  type="date"
-                  value={searchCheckout}
-                  min={searchCheckin || today}
-                  onChange={e => setSearchCheckout(e.target.value)}
-                  className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
-                  style={{ fontFamily: 'var(--font-body)' }}
-                  placeholder={t('home.searchCheckout', 'Check-out')}
-                />
-              </div>
-            </div>
-            {/* Guests + Search */}
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 flex-1 h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 min-w-0">
-                <button
-                  type="button"
-                  onClick={() => setSearchGuests(g => Math.max(1, g - 1))}
-                  disabled={searchGuests <= 1}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30 shrink-0"
-                  aria-label={t('home.decreaseGuests', 'Decrease guests')}
-                >
-                  <Minus className="w-3 h-3" />
-                </button>
-                <span className="text-[13px] text-[#1A1A18] tabular-nums flex-1 text-center whitespace-nowrap">{searchGuests} {t('home.searchGuests')}</span>
-                <button
-                  type="button"
-                  onClick={() => setSearchGuests(g => Math.min(30, g + 1))}
-                  disabled={searchGuests >= 30}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30 shrink-0"
-                  aria-label={t('home.increaseGuests', 'Increase guests')}
-                >
-                  <Plus className="w-3 h-3" />
-                </button>
-              </div>
-              <Link
-                href={(() => {
-                  const p = new URLSearchParams();
-                  if (searchDest) p.set('location', searchDest);
-                  if (searchCheckin) p.set('checkin', searchCheckin);
-                  if (searchCheckout) p.set('checkout', searchCheckout);
-                  if (searchGuests > 1) p.set('guests', String(searchGuests));
-                  const qs = p.toString();
-                  return `/homes${qs ? `?${qs}` : ''}`;
-                })()}
-                onClick={() => {
-                  const nights = searchCheckin && searchCheckout
-                    ? Math.round((new Date(searchCheckout).getTime() - new Date(searchCheckin).getTime()) / 86400000)
-                    : null;
-                  pushDL({
-                    event: 'search',
-                    search_location: searchDest || 'All Destinations',
-                    search_location_type: searchDest ? 'city' : 'all',
-                    search_checkin: searchCheckin || null,
-                    search_checkout: searchCheckout || null,
-                    search_nights: nights,
-                    search_adults: searchGuests,
-                    search_children: 0,
-                    search_source: 'hero_mobile',
-                  });
-                }}
-                className="shrink-0 h-[40px] px-5 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
-                style={{ letterSpacing: '1.5px' }}
-              >
-                {t('home.searchButton')}
-              </Link>
-            </div>
-          </div>
-        </div>
-
-
-      </section>
+      </div>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 2: USP BAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <section ref={s2Ref} className="fade-in relative z-10 -mt-8 md:-mt-11 mb-2 md:mb-0 w-full min-w-0">
