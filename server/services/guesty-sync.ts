@@ -162,13 +162,66 @@ function mapGuestyAmenities(listing: any) {
 }
 
 function inferDestination(addr: any): string {
-  const c = (addr.city || "").toLowerCase();
-  const r = (addr.region || "").toLowerCase();
-  if (c.includes("viana") || c.includes("porto") || r.includes("norte") || r.includes("minho")) return "minho";
-  if (c.includes("porto") || r.includes("douro")) return "porto";
-  if (c.includes("faro") || c.includes("albufeira") || c.includes("lagos") || r.includes("algarve")) return "algarve";
-  if (c.includes("lisboa") || r.includes("lisboa")) return "lisbon";
-  return "algarve";
+  const city = (addr.city || '').toLowerCase();
+  const region = (addr.region || '').toLowerCase();
+  const state = (addr.state || '').toLowerCase();
+  const full = `${city} ${region} ${state}`;
+
+  // Minho Coast — Viana do Castelo district + northern towns
+  if (state.includes('viana do castelo') || state.includes('viana') ||
+      city.includes('viana') || city.includes('caminha') || city.includes('moledo') ||
+      city.includes('âncora') || city.includes('ancora') || city.includes('afife') ||
+      city.includes('carreço') || city.includes('carreco') ||
+      city.includes('arcos de valdevez') || city.includes('ponte de lima') ||
+      city.includes('ponte da barca') || city.includes('monção') || city.includes('moncao') ||
+      city.includes('valença') || city.includes('valenca') ||
+      city.includes('paredes de coura') ||
+      region.includes('minho') || region.includes('norte')) return 'minho';
+
+  // Minho Coast — Braga district (close enough to Minho Coast for our purposes)
+  if (state.includes('braga') ||
+      city.includes('braga') || city.includes('guimarães') || city.includes('guimaraes') ||
+      city.includes('famalicão') || city.includes('famalicao') ||
+      city.includes('barcelos') || city.includes('esposende') ||
+      city.includes('fafe') || city.includes('vizela')) return 'minho';
+
+  // Porto & Douro
+  if (state.includes('porto') ||
+      city.includes('porto') || city.includes('gaia') || city.includes('matosinhos') ||
+      city.includes('maia') || city.includes('gondomar') ||
+      region.includes('douro') || city.includes('peso da régua') || city.includes('lamego') ||
+      city.includes('pinhão') || city.includes('pinhao') ||
+      state.includes('vila real') || state.includes('viseu')) return 'porto';
+
+  // Lisbon
+  if (state.includes('lisboa') || state.includes('setúbal') || state.includes('setubal') ||
+      city.includes('lisboa') || city.includes('lisbon') || city.includes('sintra') ||
+      city.includes('cascais') || city.includes('oeiras') || city.includes('estoril') ||
+      city.includes('almada') || city.includes('sesimbra') || city.includes('arrábida') ||
+      region.includes('lisboa')) return 'lisbon';
+
+  // Alentejo
+  if (state.includes('évora') || state.includes('evora') ||
+      state.includes('beja') || state.includes('portalegre') ||
+      city.includes('évora') || city.includes('evora') ||
+      city.includes('ferreira do alentejo') || city.includes('comporta') ||
+      city.includes('alcácer') || city.includes('grândola') || city.includes('grandola') ||
+      city.includes('santiago do cacém') || city.includes('mértola') ||
+      region.includes('alentejo')) return 'alentejo';
+
+  // Algarve
+  if (state.includes('faro') ||
+      city.includes('faro') || city.includes('albufeira') || city.includes('lagos') ||
+      city.includes('portimão') || city.includes('portimao') || city.includes('tavira') ||
+      city.includes('vilamoura') || city.includes('loulé') || city.includes('loule') ||
+      city.includes('olhão') || city.includes('olhao') || city.includes('silves') ||
+      city.includes('lagoa') || city.includes('aljezur') || city.includes('sagres') ||
+      city.includes('vila real de santo antónio') ||
+      region.includes('algarve')) return 'algarve';
+
+  // Fallback — log warning and default to minho (most properties are there)
+  console.warn(`[inferDestination] Unknown location: city="${addr.city}", region="${addr.region}", state="${addr.state}" — defaulting to minho`);
+  return 'minho';
 }
 
 function mapListingToProperty(listing: any, reviews: any[] = []) {

@@ -320,6 +320,17 @@ ${allUrls.join("\n")}
     }
   });
 
+  // Prerender.io — serve pre-rendered HTML to search engine bots
+  // Only active when PRERENDER_TOKEN env var is set (production).
+  if (process.env.PRERENDER_TOKEN) {
+    try {
+      const prerender = (await import('prerender-node')).default;
+      app.use(prerender.set('prerenderToken', process.env.PRERENDER_TOKEN));
+    } catch {
+      console.warn('[prerender] prerender-node not installed, skipping bot pre-rendering');
+    }
+  }
+
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
