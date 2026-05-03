@@ -501,7 +501,27 @@ export default function BookingWidget({
     setConfirmation(code);
     setSuccessMode("confirmed");
     setStep("success");
-  }, []);
+    pushEcommerce({
+      event: 'purchase',
+      ecommerce: {
+        transaction_id: code,
+        value: effectiveQuote?.total ?? undefined,
+        currency: effectiveQuote?.currency || currency,
+        items: [
+          {
+            item_id: `PROP-${guestyId}`,
+            item_name: propertyName,
+            item_category: 'villa',
+            price: effectiveQuote?.nightlyRate ?? undefined,
+            quantity: nights || undefined,
+            checkin_date: checkIn || undefined,
+            checkout_date: checkOut || undefined,
+            guests_adults: guests,
+          },
+        ],
+      },
+    });
+  }, [effectiveQuote, currency, guestyId, propertyName, nights, checkIn, checkOut, guests]);
 
   const resetDates = () => {
     setCheckIn("");
