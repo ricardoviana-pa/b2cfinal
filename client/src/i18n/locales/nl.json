@@ -1031,7 +1031,49 @@
     "instantConfirmation": "Directe bevestiging"
   },
   "reviews": {
-    "whatTheyRemember": "Wat ze zich het meest herinneren."
+    "ourGuests": "ONZE GASTEN",
+    "whatTheyRemember": "Wat ze zich het meest herinneren.",
+    "proofStrip": "4.8/5 bij meer dan 2.000 gastbeoordelingen"
+  },
+  "amenity": {
+    "outdoorPool": "Buiten & Zwembad",
+    "viewsLocation": "Uitzicht & Locatie",
+    "comfortClimate": "Comfort & Klimaat",
+    "kitchenDining": "Keuken & Eten",
+    "entertainment": "Entertainment",
+    "connectivityWork": "Connectiviteit & Werk",
+    "wellnessFitness": "Wellness & Fitness",
+    "parkingAccess": "Parkeren & Toegang",
+    "laundryHousekeeping": "Was & Huishouding",
+    "bathroom": "Badkamer",
+    "familyFriendly": "Gezinsvriendelijk",
+    "safety": "Veiligheid",
+    "other": "Overig"
+  },
+  "experience": {
+    "from": "Vanaf",
+    "perPerson": "/ persoon",
+    "bookNow": "Nu boeken",
+    "checkAvailability": "Beschikbaarheid controleren",
+    "reserve": "Reserveren",
+    "secureBooking": "Veilig boeken via Bókun",
+    "freeCancellation": "Gratis annulering tot {{hours}}u van tevoren",
+    "reserveNowPayLater": "Nu reserveren, later betalen",
+    "instantConfirmation": "Directe bevestiging",
+    "youMightAlsoLike": "Misschien vind je dit ook leuk",
+    "duration": "Duur",
+    "freeCancellationLabel": "Gratis annulering",
+    "upToHoursBefore": "Tot {{hours}}u van tevoren",
+    "groupSize": "Groepsgrootte",
+    "maxGuests": "Max. {{max}} deelnemers",
+    "languages": "Talen",
+    "mobileTicket": "Mobiel ticket",
+    "scanFromPhone": "Scan vanaf telefoon",
+    "pickup": "Ophaalservice",
+    "fromYourVilla": "Vanaf uw villa",
+    "messageWhatsApp": "Stuur ons een WhatsApp-bericht",
+    "messageWhatsAppShort": "stuur ons een WhatsApp-bericht",
+    "orLabel": "of"
   },
   "cancellationPolicy": {
     "overline": "JURIDISCH",

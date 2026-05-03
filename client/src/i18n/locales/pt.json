@@ -201,7 +201,9 @@
     "continueGuestDetails": "Continuar para detalhes do hóspede",
     "loadError": "Não foi possível carregar o resumo da estadia.",
     "priceError": "Não foi possível obter o preço em direto.",
-    "bookingOverline": "Reserva"
+    "bookingOverline": "Reserva",
+    "select": "Selecionar",
+    "cancellationPerPolicy": "Cancelamento sujeito à política do anúncio"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Preço sob consulta",
@@ -1031,7 +1033,49 @@
     "instantConfirmation": "Confirmação imediata"
   },
   "reviews": {
-    "whatTheyRemember": "O que mais recordam."
+    "ourGuests": "OS NOSSOS HÓSPEDES",
+    "whatTheyRemember": "O que mais recordam.",
+    "proofStrip": "4.8/5 em mais de 2.000 avaliações de hóspedes"
+  },
+  "amenity": {
+    "outdoorPool": "Exterior e Piscina",
+    "viewsLocation": "Vistas e Localização",
+    "comfortClimate": "Conforto e Climatização",
+    "kitchenDining": "Cozinha e Refeições",
+    "entertainment": "Entretenimento",
+    "connectivityWork": "Conectividade e Trabalho",
+    "wellnessFitness": "Bem-estar e Fitness",
+    "parkingAccess": "Estacionamento e Acesso",
+    "laundryHousekeeping": "Lavandaria e Limpeza",
+    "bathroom": "Casa de Banho",
+    "familyFriendly": "Para Famílias",
+    "safety": "Segurança",
+    "other": "Outros"
+  },
+  "experience": {
+    "from": "Desde",
+    "perPerson": "/ pessoa",
+    "bookNow": "Reservar agora",
+    "checkAvailability": "Ver disponibilidade",
+    "reserve": "Reservar",
+    "secureBooking": "Reserva segura por Bókun",
+    "freeCancellation": "Cancelamento gratuito até {{hours}}h antes",
+    "reserveNowPayLater": "Reserve agora, pague depois",
+    "instantConfirmation": "Confirmação imediata",
+    "youMightAlsoLike": "Também pode gostar",
+    "duration": "Duração",
+    "freeCancellationLabel": "Cancelamento gratuito",
+    "upToHoursBefore": "Até {{hours}}h antes",
+    "groupSize": "Tamanho do grupo",
+    "maxGuests": "Máx. {{max}} participantes",
+    "languages": "Idiomas",
+    "mobileTicket": "Bilhete digital",
+    "scanFromPhone": "Apresente no telemóvel",
+    "pickup": "Recolha",
+    "fromYourVilla": "Na sua villa",
+    "messageWhatsApp": "Envie-nos mensagem no WhatsApp",
+    "messageWhatsAppShort": "envie-nos mensagem no WhatsApp",
+    "orLabel": "ou"
   },
   "cancellationPolicy": {
     "overline": "LEGAL",

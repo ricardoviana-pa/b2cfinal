@@ -1031,7 +1031,49 @@
     "instantConfirmation": "Confirmation instantanée"
   },
   "reviews": {
-    "whatTheyRemember": "Ce dont ils se souviennent le plus."
+    "ourGuests": "NOS HÔTES",
+    "whatTheyRemember": "Ce dont ils se souviennent le plus.",
+    "proofStrip": "4.8/5 sur plus de 2 000 avis clients"
+  },
+  "amenity": {
+    "outdoorPool": "Extérieur et Piscine",
+    "viewsLocation": "Vues et Emplacement",
+    "comfortClimate": "Confort et Climatisation",
+    "kitchenDining": "Cuisine et Repas",
+    "entertainment": "Divertissement",
+    "connectivityWork": "Connectivité et Travail",
+    "wellnessFitness": "Bien-être et Fitness",
+    "parkingAccess": "Parking et Accès",
+    "laundryHousekeeping": "Blanchisserie et Ménage",
+    "bathroom": "Salle de bain",
+    "familyFriendly": "Pour les familles",
+    "safety": "Sécurité",
+    "other": "Autres"
+  },
+  "experience": {
+    "from": "À partir de",
+    "perPerson": "/ personne",
+    "bookNow": "Réserver",
+    "checkAvailability": "Vérifier la disponibilité",
+    "reserve": "Réserver",
+    "secureBooking": "Réservation sécurisée par Bókun",
+    "freeCancellation": "Annulation gratuite jusqu'à {{hours}}h avant",
+    "reserveNowPayLater": "Réservez maintenant, payez plus tard",
+    "instantConfirmation": "Confirmation immédiate",
+    "youMightAlsoLike": "Vous pourriez aussi aimer",
+    "duration": "Durée",
+    "freeCancellationLabel": "Annulation gratuite",
+    "upToHoursBefore": "Jusqu'à {{hours}}h avant",
+    "groupSize": "Taille du groupe",
+    "maxGuests": "Max {{max}} personnes",
+    "languages": "Langues",
+    "mobileTicket": "Billet mobile",
+    "scanFromPhone": "Scan depuis le téléphone",
+    "pickup": "Prise en charge",
+    "fromYourVilla": "Depuis votre villa",
+    "messageWhatsApp": "Contactez-nous sur WhatsApp",
+    "messageWhatsAppShort": "contactez-nous sur WhatsApp",
+    "orLabel": "ou"
   },
   "cancellationPolicy": {
     "overline": "LÉGAL",

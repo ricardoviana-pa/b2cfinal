@@ -1031,7 +1031,49 @@
     "instantConfirmation": "Välitön vahvistus"
   },
   "reviews": {
-    "whatTheyRemember": "Mitä he muistavat eniten."
+    "ourGuests": "VIERAAMME",
+    "whatTheyRemember": "Mitä he muistavat eniten.",
+    "proofStrip": "4.8/5 yli 2 000 vierasarvostelua"
+  },
+  "amenity": {
+    "outdoorPool": "Ulkotilat ja uima-allas",
+    "viewsLocation": "Näkymät ja sijainti",
+    "comfortClimate": "Mukavuus ja ilmastointi",
+    "kitchenDining": "Keittiö ja ruokailu",
+    "entertainment": "Viihde",
+    "connectivityWork": "Yhteydet ja työskentely",
+    "wellnessFitness": "Hyvinvointi ja kuntoilu",
+    "parkingAccess": "Pysäköinti ja kulku",
+    "laundryHousekeeping": "Pyykinpesu ja siivous",
+    "bathroom": "Kylpyhuone",
+    "familyFriendly": "Lapsiystävällinen",
+    "safety": "Turvallisuus",
+    "other": "Muut"
+  },
+  "experience": {
+    "from": "Alkaen",
+    "perPerson": "/ henkilö",
+    "bookNow": "Varaa nyt",
+    "checkAvailability": "Tarkista saatavuus",
+    "reserve": "Varaa",
+    "secureBooking": "Turvallinen varaus Bókun-palvelun kautta",
+    "freeCancellation": "Ilmainen peruutus {{hours}}h ennen",
+    "reserveNowPayLater": "Varaa nyt, maksa myöhemmin",
+    "instantConfirmation": "Välitön vahvistus",
+    "youMightAlsoLike": "Saatat pitää myös",
+    "duration": "Kesto",
+    "freeCancellationLabel": "Ilmainen peruutus",
+    "upToHoursBefore": "{{hours}}h ennen",
+    "groupSize": "Ryhmäkoko",
+    "maxGuests": "Max {{max}} osallistujaa",
+    "languages": "Kielet",
+    "mobileTicket": "Mobiililippu",
+    "scanFromPhone": "Skannaa puhelimesta",
+    "pickup": "Nouto",
+    "fromYourVilla": "Villaltasi",
+    "messageWhatsApp": "Ota yhteyttä WhatsAppissa",
+    "messageWhatsAppShort": "ota yhteyttä WhatsAppissa",
+    "orLabel": "tai"
   },
   "cancellationPolicy": {
     "overline": "OIKEUDELLINEN",

@@ -201,7 +201,9 @@
     "continueGuestDetails": "Continue to guest details",
     "loadError": "Could not load stay summary.",
     "priceError": "Could not get live price.",
-    "bookingOverline": "Booking"
+    "bookingOverline": "Booking",
+    "select": "Select",
+    "cancellationPerPolicy": "Cancellation subject to listing policy"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Price on request",
@@ -950,7 +952,49 @@
     "instantConfirmation": "Instant confirmation"
   },
   "reviews": {
-    "whatTheyRemember": "What they remember most."
+    "ourGuests": "OUR GUESTS",
+    "whatTheyRemember": "What they remember most.",
+    "proofStrip": "4.8/5 across 2,000+ guest reviews"
+  },
+  "amenity": {
+    "outdoorPool": "Outdoor & Pool",
+    "viewsLocation": "Views & Location",
+    "comfortClimate": "Comfort & Climate",
+    "kitchenDining": "Kitchen & Dining",
+    "entertainment": "Entertainment",
+    "connectivityWork": "Connectivity & Work",
+    "wellnessFitness": "Wellness & Fitness",
+    "parkingAccess": "Parking & Access",
+    "laundryHousekeeping": "Laundry & Housekeeping",
+    "bathroom": "Bathroom",
+    "familyFriendly": "Family Friendly",
+    "safety": "Safety",
+    "other": "Other"
+  },
+  "experience": {
+    "from": "From",
+    "perPerson": "/ person",
+    "bookNow": "Book now",
+    "checkAvailability": "Check availability",
+    "reserve": "Reserve",
+    "secureBooking": "Secure booking by Bókun",
+    "freeCancellation": "Free cancellation up to {{hours}}h before",
+    "reserveNowPayLater": "Reserve now, pay later",
+    "instantConfirmation": "Instant confirmation",
+    "youMightAlsoLike": "You might also like",
+    "duration": "Duration",
+    "freeCancellationLabel": "Free cancellation",
+    "upToHoursBefore": "Up to {{hours}}h before",
+    "groupSize": "Group size",
+    "maxGuests": "Max {{max}} guests",
+    "languages": "Languages",
+    "mobileTicket": "Mobile ticket",
+    "scanFromPhone": "Scan from phone",
+    "pickup": "Pickup",
+    "fromYourVilla": "From your villa",
+    "messageWhatsApp": "Message us on WhatsApp to book",
+    "messageWhatsAppShort": "message us on WhatsApp",
+    "orLabel": "or"
   },
   "careers": {
     "title": "Join our team",

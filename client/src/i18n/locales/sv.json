@@ -1031,7 +1031,49 @@
     "instantConfirmation": "Omedelbar bekräftelse"
   },
   "reviews": {
-    "whatTheyRemember": "Vad de minns mest."
+    "ourGuests": "VÅRA GÄSTER",
+    "whatTheyRemember": "Vad de minns mest.",
+    "proofStrip": "4.8/5 bland över 2 000 gästomdömen"
+  },
+  "amenity": {
+    "outdoorPool": "Utomhus & Pool",
+    "viewsLocation": "Utsikt & Läge",
+    "comfortClimate": "Komfort & Klimat",
+    "kitchenDining": "Kök & Matsal",
+    "entertainment": "Underhållning",
+    "connectivityWork": "Uppkoppling & Arbete",
+    "wellnessFitness": "Wellness & Fitness",
+    "parkingAccess": "Parkering & Tillgång",
+    "laundryHousekeeping": "Tvätt & Städning",
+    "bathroom": "Badrum",
+    "familyFriendly": "Barnvänligt",
+    "safety": "Säkerhet",
+    "other": "Övrigt"
+  },
+  "experience": {
+    "from": "Från",
+    "perPerson": "/ person",
+    "bookNow": "Boka nu",
+    "checkAvailability": "Kontrollera tillgänglighet",
+    "reserve": "Reservera",
+    "secureBooking": "Säker bokning via Bókun",
+    "freeCancellation": "Gratis avbokning upp till {{hours}}h innan",
+    "reserveNowPayLater": "Reservera nu, betala senare",
+    "instantConfirmation": "Omedelbar bekräftelse",
+    "youMightAlsoLike": "Du kanske också gillar",
+    "duration": "Längd",
+    "freeCancellationLabel": "Gratis avbokning",
+    "upToHoursBefore": "Upp till {{hours}}h innan",
+    "groupSize": "Gruppstorlek",
+    "maxGuests": "Max {{max}} deltagare",
+    "languages": "Språk",
+    "mobileTicket": "Mobilbiljett",
+    "scanFromPhone": "Skanna från telefon",
+    "pickup": "Upphämtning",
+    "fromYourVilla": "Från din villa",
+    "messageWhatsApp": "Kontakta oss på WhatsApp",
+    "messageWhatsAppShort": "kontakta oss på WhatsApp",
+    "orLabel": "eller"
   },
   "cancellationPolicy": {
     "overline": "JURIDISKT",

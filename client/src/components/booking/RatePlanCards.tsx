@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 function formatMoney(cents: number, currency = "EUR"): string {
   return new Intl.NumberFormat("pt-PT", {
@@ -30,6 +31,7 @@ export default function RatePlanCards({
   currency = "EUR",
   onSelect,
 }: RatePlanCardsProps) {
+  const { t } = useTranslation();
   if (!options.length) return null;
 
   return (
@@ -37,9 +39,9 @@ export default function RatePlanCards({
       {options.map((option) => {
         const title =
           option.type === "non_refundable"
-            ? "Nao reembolsavel"
+            ? t('booking.nonRefundable', 'Non-refundable')
             : option.type === "flexible"
-              ? "Tarifa flexivel"
+              ? t('booking.flexibleRate', 'Flexible rate')
               : option.name;
 
         return (
@@ -56,11 +58,11 @@ export default function RatePlanCards({
           >
             <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-3">{title}</p>
             <p className="text-[13px] text-[#6B6860] min-h-[40px]">
-              {option.cancellationPolicy?.[0] || (option.type === "non_refundable" ? "Sem cancelamento" : "Cancelamento sujeito a politica do anuncio")}
+              {option.cancellationPolicy?.[0] || (option.type === "non_refundable" ? t('booking.noCancellation', 'No cancellation') : t('booking.cancellationPerPolicy', 'Cancellation subject to listing policy'))}
             </p>
             <p className="headline-sm text-[#1A1A18] mt-4">{formatMoney(option.total, currency)}</p>
             <span className="inline-flex mt-4 rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 min-h-[48px] items-center justify-center">
-              Seleccionar
+              {t('booking.select', 'Select')}
             </span>
           </button>
         );

@@ -1031,7 +1031,49 @@
     "instantConfirmation": "Conferma immediata"
   },
   "reviews": {
-    "whatTheyRemember": "Ciò che ricordano di più."
+    "ourGuests": "I NOSTRI OSPITI",
+    "whatTheyRemember": "Ciò che ricordano di più.",
+    "proofStrip": "4.8/5 su oltre 2.000 recensioni degli ospiti"
+  },
+  "amenity": {
+    "outdoorPool": "Esterno e Piscina",
+    "viewsLocation": "Vista e Posizione",
+    "comfortClimate": "Comfort e Climatizzazione",
+    "kitchenDining": "Cucina e Pranzo",
+    "entertainment": "Intrattenimento",
+    "connectivityWork": "Connettività e Lavoro",
+    "wellnessFitness": "Benessere e Fitness",
+    "parkingAccess": "Parcheggio e Accesso",
+    "laundryHousekeeping": "Lavanderia e Pulizia",
+    "bathroom": "Bagno",
+    "familyFriendly": "Per famiglie",
+    "safety": "Sicurezza",
+    "other": "Altro"
+  },
+  "experience": {
+    "from": "Da",
+    "perPerson": "/ persona",
+    "bookNow": "Prenota ora",
+    "checkAvailability": "Verifica disponibilità",
+    "reserve": "Prenota",
+    "secureBooking": "Prenotazione sicura tramite Bókun",
+    "freeCancellation": "Cancellazione gratuita fino a {{hours}}h prima",
+    "reserveNowPayLater": "Prenota ora, paga dopo",
+    "instantConfirmation": "Conferma immediata",
+    "youMightAlsoLike": "Potrebbe piacerti anche",
+    "duration": "Durata",
+    "freeCancellationLabel": "Cancellazione gratuita",
+    "upToHoursBefore": "Fino a {{hours}}h prima",
+    "groupSize": "Dimensione del gruppo",
+    "maxGuests": "Max {{max}} partecipanti",
+    "languages": "Lingue",
+    "mobileTicket": "Biglietto digitale",
+    "scanFromPhone": "Scansiona dal telefono",
+    "pickup": "Prelievo",
+    "fromYourVilla": "Dalla tua villa",
+    "messageWhatsApp": "Contattaci su WhatsApp",
+    "messageWhatsAppShort": "contattaci su WhatsApp",
+    "orLabel": "o"
   },
   "cancellationPolicy": {
     "overline": "LEGALE",

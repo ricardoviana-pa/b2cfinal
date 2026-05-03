@@ -309,16 +309,6 @@ export default function PropertyCard({
                   );
                 })()}
               </div>
-              {/* Price detail line — for live, cached, or base (simulated) pricing */}
-              {liveQuote && liveQuote.available !== false &&
-                liveQuote.total > 0 && (
-                <p className="text-[0.6875rem] text-[#9E9A90] mt-0.5">
-                  {t('property.nightCleaningLine', {
-                    nightly: formatEur(liveQuote.nightlyRate),
-                    cleaning: formatEur(liveQuote.cleaningFee),
-                  })}
-                </p>
-              )}
             </>
           ) : (
             <div className="flex items-baseline justify-between">

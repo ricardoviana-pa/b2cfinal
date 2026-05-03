@@ -7,6 +7,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'wouter';
+import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 
 interface ExperienceData {
@@ -37,6 +38,7 @@ export default function ExperienceRelatedExperiences({
   currentSlug,
   relatedSlugs,
 }: ExperienceRelatedExperiencesProps) {
+  const { t } = useTranslation();
   const [experiencesData, setExperiencesData] = useState<ExperienceData[]>([]);
   const [servicesData, setServicesData] = useState<ServiceData[]>([]);
   const [scrollPos, setScrollPos] = useState(0);
@@ -103,7 +105,7 @@ export default function ExperienceRelatedExperiences({
         {/* Header */}
         <div className="flex items-end justify-between mb-10 md:mb-12">
           <h2 className="text-[28px] md:text-[36px] font-display text-[#1A1A18] leading-tight">
-            You might also like
+            {t('experience.youMightAlsoLike', 'You might also like')}
           </h2>
           {/* Navigation arrows - desktop only */}
           <div className="hidden md:flex gap-2">

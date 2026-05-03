@@ -6,6 +6,7 @@
    ========================================================================== */
 
 import { useMemo, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Check, MessageCircle } from 'lucide-react';
 import BokunCalendarWidget from './BokunCalendarWidget';
 import { pushEcommerce } from '@/lib/datalayer';
@@ -43,6 +44,7 @@ export default function ExperienceBookingCard({
   experienceCategory,
   priceOta,
 }: ExperienceBookingCardProps) {
+  const { t } = useTranslation();
   const hasBokun = !!bokunActivityId && !!BOKUN_CHANNEL_UUID;
 
   useEffect(() => {
@@ -140,7 +142,7 @@ export default function ExperienceBookingCard({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-[#8B7355] hover:text-[#1A1A18] transition-colors"
             >
-              <MessageCircle className="w-3 h-3" /> Message us on WhatsApp to book
+              <MessageCircle className="w-3 h-3" /> {t('experience.messageWhatsApp', 'Message us on WhatsApp to book')}
             </a>
           </p>
         </div>
@@ -151,29 +153,29 @@ export default function ExperienceBookingCard({
         <div className="space-y-2.5">
           <div className="flex items-center gap-2.5 text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>
             <Check className="w-3.5 h-3.5 text-[#6B8E4E] shrink-0" />
-            <span>Free cancellation up to {freeCancellationHours}h before</span>
+            <span>{t('experience.freeCancellation', 'Free cancellation up to {{hours}}h before', { hours: freeCancellationHours })}</span>
           </div>
           {reserveNowPayLater && (
             <div className="flex items-center gap-2.5 text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>
               <Check className="w-3.5 h-3.5 text-[#6B8E4E] shrink-0" />
-              <span>Reserve now, pay later</span>
+              <span>{t('experience.reserveNowPayLater', 'Reserve now, pay later')}</span>
             </div>
           )}
           <div className="flex items-center gap-2.5 text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>
             <Check className="w-3.5 h-3.5 text-[#6B8E4E] shrink-0" />
-            <span>Instant confirmation</span>
+            <span>{t('experience.instantConfirmation', 'Instant confirmation')}</span>
           </div>
         </div>
         {hasBokun && (
           <p className="text-center text-[12px] text-[#9E9A90] mt-4" style={{ fontWeight: 300 }}>
-            or{' '}
+            {t('experience.orLabel', 'or')}{' '}
             <a
               href={waHref}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-[#8B7355] hover:text-[#1A1A18] transition-colors"
             >
-              <MessageCircle className="w-3 h-3" /> message us on WhatsApp
+              <MessageCircle className="w-3 h-3" /> {t('experience.messageWhatsAppShort', 'message us on WhatsApp')}
             </a>
           </p>
         )}
