@@ -234,9 +234,9 @@ export default function Contact() {
         <img
           src={IMAGES.contactHero}
           alt={t('contact.heroAlt', 'Contact Portugal Active')}
-          className="absolute inset-0 w-full h-full object-cover"
-          width={1600}
-          height={900}
+          className="absolute inset-0 w-full h-full object-cover object-top"
+          width={1200}
+          height={674}
           fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/5" />

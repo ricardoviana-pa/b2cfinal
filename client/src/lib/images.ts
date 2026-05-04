@@ -22,8 +22,8 @@ export const IMAGES = {
   // About page
   aboutStory: '/hero/about-team-suite.webp',
 
-  // Contact page — Eben Lodge sunset deck with ocean view
-  contactHero: 'https://assets.guesty.com/image/upload/w_1600,h_900,c_fill,q_80/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533466d209c001510ecfe/d8b9cbbd-9e34-4e-av-4q',
+  // Contact page — Eben Lodge sunset deck with ocean view (native 1200×674)
+  contactHero: 'https://assets.guesty.com/image/upload/q_auto:best,f_auto/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533466d209c001510ecfe/d8b9cbbd-9e34-4e-av-4q',
 
   // Logo
   logoWhite: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp',
