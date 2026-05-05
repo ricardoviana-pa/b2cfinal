@@ -7,17 +7,26 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
-Disallow: /api/
-Disallow: /admin/
 Disallow: /*/admin/
+Disallow: /api/
 Disallow: /account
 Disallow: /*/account
 Disallow: /login
 Disallow: /*/login
-Disallow: /booking/confirmation/
-Disallow: /*/booking/confirmation/
+Disallow: /booking/
+Disallow: /*/booking/
 Disallow: /*.php$
 Disallow: /search?
+# Legacy paths that redirect — save crawl budget
+Disallow: /properties/
+Disallow: /rooms/
+Disallow: /lodges/
+Disallow: /journal/
+Disallow: /category/
+Disallow: /tag/
+Disallow: /author/
+Disallow: /wp-admin/
+Disallow: /wp-login.php
 
 # ── AI & LLM crawlers (training + retrieval + on-demand fetch) ───────
 # Grouped explicitly so they inherit the same disallow list as * above.
