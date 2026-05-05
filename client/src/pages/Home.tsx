@@ -234,51 +234,27 @@ export default function Home() {
   }, [featured.length]);
 
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#FAFAF7]">
-        <Header variant="transparent" />
-        {/* Hero skeleton */}
-        <div className="skeleton-shimmer w-full" style={{ height: '80vh', minHeight: 480 }} />
-        {/* Properties skeleton */}
-        <div className="container py-16">
-          <div className="skeleton-shimmer h-3 w-20 rounded mx-auto mb-4" />
-          <div className="skeleton-shimmer h-8 w-64 rounded mx-auto mb-10" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i}>
-                <div className="skeleton-shimmer" style={{ aspectRatio: '4/3' }} />
-                <div className="pt-3.5 space-y-2">
-                  <div className="skeleton-shimmer h-3 w-24 rounded" />
-                  <div className="skeleton-shimmer h-5 w-48 rounded" />
-                  <div className="skeleton-shimmer h-3 w-36 rounded" />
-                  <div className="skeleton-shimmer h-4 w-28 rounded mt-3" />
-                </div>
-              </div>
-            ))}
+  // Properties skeleton — shown inline within the page while data loads.
+  // Hero renders immediately (no data dependency) for fast LCP.
+  const PropertiesSkeleton = () => (
+    <div className="container py-16">
+      <div className="skeleton-shimmer h-3 w-20 rounded mx-auto mb-4" />
+      <div className="skeleton-shimmer h-8 w-64 rounded mx-auto mb-10" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i}>
+            <div className="skeleton-shimmer" style={{ aspectRatio: '4/3' }} />
+            <div className="pt-3.5 space-y-2">
+              <div className="skeleton-shimmer h-3 w-24 rounded" />
+              <div className="skeleton-shimmer h-5 w-48 rounded" />
+              <div className="skeleton-shimmer h-3 w-36 rounded" />
+              <div className="skeleton-shimmer h-4 w-28 rounded mt-3" />
+            </div>
           </div>
-        </div>
+        ))}
       </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="min-h-screen bg-[#FAFAF7]">
-        <Header />
-        <section className="section-padding">
-          <div className="container text-center">
-            <h2 className="headline-md text-[#1A1A18] mb-3">{t('home.errorTitle')}</h2>
-            <p className="body-md mb-6">{t('home.errorBody')}</p>
-            <Link href="/" className="btn-primary">{t('homes.tryAgain')}</Link>
-          </div>
-        </section>
-
-
-        <Footer />
-      </div>
-    );
-  }
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-[#FAFAF7] min-w-0 w-full">
@@ -658,6 +634,14 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Property cards — skeleton while loading, inline error, or actual cards */}
+          {isLoading ? <PropertiesSkeleton /> : isError ? (
+            <div className="text-center py-8">
+              <p className="body-md mb-4">{t('home.errorBody')}</p>
+              <Link href="/" className="btn-primary">{t('homes.tryAgain')}</Link>
+            </div>
+          ) : (
+          <>
           {/* Property cards Ã¢ÂÂ horizontal scroll on mobile, 3 per row on desktop */}
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:overflow-visible">
             {featured.map((property, index) => (
@@ -688,6 +672,8 @@ export default function Home() {
               {t('home.exploreAllHomes')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
+          </>
+          )}
         </div>
       </section>
 

@@ -93,7 +93,7 @@ function PageTransition({ children }: { children: ReactNode }) {
         document.documentElement.style.scrollBehavior = 'auto';
         window.scrollTo(0, 0);
         requestAnimationFrame(() => { document.documentElement.style.scrollBehavior = ''; });
-      }, 150);
+      }, 50);
       return () => clearTimeout(timer);
     } else if (pathChanged && wasPop) {
       setDisplayChildren(children);
@@ -106,7 +106,7 @@ function PageTransition({ children }: { children: ReactNode }) {
     <div
       style={{
         opacity: visible ? 1 : 0,
-        transition: visible ? 'opacity 300ms ease-out' : 'opacity 150ms ease-in',
+        transition: visible ? 'opacity 200ms ease-out' : 'opacity 50ms ease-in',
       }}
     >
       {displayChildren}
