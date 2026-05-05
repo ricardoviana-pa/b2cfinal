@@ -839,6 +839,8 @@ export default function Home() {
                         alt={dest.name}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                         loading="lazy"
+                        width={480}
+                        height={640}
                       />
                     ) : (
                       <div className="w-full h-full placeholder-image" />
@@ -915,6 +917,8 @@ export default function Home() {
                       alt={exp.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       loading="lazy"
+                      width={400}
+                      height={533}
                     />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />

@@ -185,6 +185,9 @@ export default defineConfig({
           if (id.includes('node_modules/@radix-ui')) return 'ui';
           if (id.includes('node_modules/wouter')) return 'router';
           if (id.includes('node_modules/@trpc')) return 'trpc';
+          if (id.includes('node_modules/lucide-react')) return 'icons';
+          if (id.includes('node_modules/framer-motion')) return 'motion';
+          if (id.includes('node_modules/date-fns')) return 'date-fns';
         },
       },
     },
