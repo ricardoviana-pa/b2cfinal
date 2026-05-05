@@ -57,16 +57,42 @@ describe("legacyRedirects.resolvePath", () => {
   });
 
   describe("offer → services", () => {
-    it("maps grocery-setup to grocery-delivery", () => {
+    it("maps grocery-setup to itself (services.json slug)", () => {
       expect(resolvePath("/offer/grocery-setup")).toBe(
-        "/services/grocery-delivery"
+        "/en/services/grocery-setup"
       );
     });
 
-    it("maps massage-therapist to in-villa-spa", () => {
+    it("maps massage-therapist to itself (services.json slug)", () => {
       expect(resolvePath("/offer/massage-therapist")).toBe(
-        "/services/in-villa-spa"
+        "/en/services/massage-therapist"
       );
+    });
+
+    it("maps stale 'in-villa-spa' target back to actual slug", () => {
+      expect(resolvePath("/services/in-villa-spa")).toBe(
+        "/en/services/massage-therapist"
+      );
+    });
+
+    it("maps stale 'grocery-delivery' target back to actual slug", () => {
+      expect(resolvePath("/services/grocery-delivery")).toBe(
+        "/en/services/grocery-setup"
+      );
+    });
+
+    it("maps stale 'personal-training' target back to actual slug", () => {
+      expect(resolvePath("/services/personal-training")).toBe(
+        "/en/services/personal-trainer"
+      );
+    });
+
+    it("passes through valid services.json slugs (no redirect chain)", () => {
+      // /services/private-chef is mapped to itself in SERVICE_REDIRECTS,
+      // so resolvePath returns null (pass through) — no redirect needed.
+      expect(resolvePath("/services/private-chef")).toBe(null);
+      expect(resolvePath("/services/airport-shuttle")).toBe(null);
+      expect(resolvePath("/services/babysitter")).toBe(null);
     });
   });
 

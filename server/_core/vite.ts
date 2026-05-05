@@ -90,6 +90,31 @@ async function getPropertyBySlugCached(slug: string): Promise<any | null> {
   return _propertySlugMap.data.get(slug) ?? null;
 }
 
+/** Cached service data from JSON file (services.json).
+ *  Services live in client/src/data/services.json (NOT in DB).
+ *  Map: slug → service object. Refreshed every 10 min. */
+let _serviceSlugMap: { expiresAt: number; data: Map<string, any> } | null = null;
+async function getServiceBySlugCached(slug: string): Promise<any | null> {
+  if (!_serviceSlugMap || Date.now() > _serviceSlugMap.expiresAt) {
+    try {
+      const svcPath = path.join(process.cwd(), "client", "src", "data", "services.json");
+      const raw = fs.readFileSync(svcPath, "utf-8");
+      const data = JSON.parse(raw);
+      const map = new Map<string, any>();
+      // services.json has shape { services: [...], activities: [...] }
+      const all = [...(data.services || []), ...(data.activities || [])];
+      for (const svc of all) {
+        if (svc.slug) map.set(svc.slug, svc);
+      }
+      _serviceSlugMap = { expiresAt: Date.now() + DYNAMIC_META_TTL_MS, data: map };
+    } catch (err) {
+      console.error("[Meta] Failed to load service data for meta injection:", err);
+      return null;
+    }
+  }
+  return _serviceSlugMap.data.get(slug) ?? null;
+}
+
 /** Cached experience data from JSON file (experienceDetails.json).
  *  Map: slug → experience object. Refreshed every 10 min. */
 let _experienceSlugMap: { expiresAt: number; data: Map<string, any> } | null = null;
@@ -992,19 +1017,29 @@ export function serveStatic(app: Express) {
         }
       }
 
-      // /services/:slug
+      // /services/:slug — tries JSON first (services.json), then DB as fallback
       if (!dynamicMeta) {
         const serviceMatch = p.match(/^\/services\/([^/]+)$/);
         if (serviceMatch) {
-          const { getServiceBySlug } = await import("../db");
-          const svc = await getServiceBySlug(serviceMatch[1]);
+          let svc = await getServiceBySlugCached(serviceMatch[1]);
+          if (!svc) {
+            try {
+              const { getServiceBySlug } = await import("../db");
+              svc = await getServiceBySlug(serviceMatch[1]);
+            } catch { /* DB not available, that's OK */ }
+          }
           if (svc) {
             const titleFn = SERVICE_TITLE[lang] ?? SERVICE_TITLE.en;
             const descFn = SERVICE_DESCRIPTION[lang] ?? SERVICE_DESCRIPTION.en;
+            // Resolve relative image to full URL for social sharing
+            let svcImage = svc.image ?? undefined;
+            if (svcImage && !svcImage.startsWith('http')) {
+              svcImage = `${BOT_BASE_URL}${svcImage.startsWith('/') ? '' : '/'}${svcImage}`;
+            }
             dynamicMeta = {
               title: titleFn({ name: svc.name }),
               description: descFn({ name: svc.name, tagline: svc.tagline, duration: svc.duration }).replace(/\s+/g, ' ').trim().slice(0, 155),
-              image: svc.image ?? undefined,
+              image: svcImage,
               url: `${BOT_BASE_URL}/${lang}/services/${svc.slug}`,
             };
           }

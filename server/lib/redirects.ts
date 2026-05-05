@@ -97,10 +97,13 @@ const EXPERIENCE_REDIRECTS: Record<string, string> = {
 const SERVICE_REDIRECTS: Record<string, string> = {
   "airport-shuttle": "airport-shuttle",
   "babysitter": "babysitter",
-  "grocery-setup": "grocery-delivery",
-  "grocery-setup-and-delivery": "grocery-delivery",
-  "massage-therapist": "in-villa-spa",
-  "personal-trainer": "personal-training",
+  "grocery-setup": "grocery-setup",            // was "grocery-delivery" — slug doesn't exist
+  "grocery-setup-and-delivery": "grocery-setup",
+  "grocery-delivery": "grocery-setup",          // catch stale cached target
+  "massage-therapist": "massage-therapist",     // was "in-villa-spa" — slug doesn't exist
+  "in-villa-spa": "massage-therapist",          // catch stale cached target
+  "personal-trainer": "personal-trainer",       // was "personal-training" — slug doesn't exist
+  "personal-training": "personal-trainer",      // catch stale cached target
   "private-chauffeur": "airport-shuttle",
   "private-chef": "private-chef",
   "private-yoga": "private-yoga",
@@ -224,13 +227,15 @@ const PATTERN_REDIRECTS: PatternRule[] = [
     },
   },
 
-  // /services/<slug> (Webflow) → /services/<slug> (still valid in new site for these)
+  // /services/<slug> (Webflow) → /services/<mapped> only for known legacy slugs.
+  // Unknown slugs pass through to the SPA (avoids redirect chains via locale-stripping).
   {
     pattern: /^\/services\/([^/?#]+)\/?$/i,
     resolve: (m) => {
       const slug = m[1];
       const mapped = SERVICE_REDIRECTS[slug];
-      return mapped ? `/en/services/${mapped}` : "/en/services";
+      if (!mapped || mapped === slug) return null as unknown as string; // pass through
+      return `/en/services/${mapped}`;
     },
   },
 
