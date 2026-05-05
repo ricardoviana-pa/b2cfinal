@@ -351,27 +351,47 @@ function resolvePath(path: string): string | null {
  *  - paths that already exist on disk (let static handler win)
  *  - paths starting with /api, /trpc, /admin, /__, /sitemap.xml (server routes)
  */
+const SUPPORTED_LANGS = new Set(["en", "pt", "fr", "es", "it", "fi", "de", "nl", "sv"]);
+
 export function legacyRedirects(req: Request, res: Response, next: NextFunction) {
   if (req.method !== "GET" && req.method !== "HEAD") return next();
 
-  const path = req.path;
+  const rawPath = req.path;
 
   // Skip server-internal paths
   if (
-    path.startsWith("/api/") ||
-    path.startsWith("/trpc/") ||
-    path.startsWith("/__") ||
-    path === "/sitemap.xml" ||
-    path === "/robots.txt"
+    rawPath.startsWith("/api/") ||
+    rawPath.startsWith("/trpc/") ||
+    rawPath.startsWith("/__") ||
+    rawPath === "/sitemap.xml" ||
+    rawPath === "/robots.txt"
   ) {
     return next();
   }
 
-  const target = resolvePath(path);
+  // Try bare path first (covers most legacy URLs)
+  let target = resolvePath(rawPath);
+
+  // If bare path didn't match, try stripping locale prefix and re-matching.
+  // This catches locale-prefixed old URLs like /en/properties/slug → /en/homes/new-slug
+  if (!target) {
+    const segments = rawPath.split("/").filter(Boolean);
+    if (segments.length >= 2 && SUPPORTED_LANGS.has(segments[0].toLowerCase())) {
+      const lang = segments[0].toLowerCase();
+      const barePath = "/" + segments.slice(1).join("/");
+      const bareTarget = resolvePath(barePath);
+      if (bareTarget) {
+        // Replace the /en/ prefix in the target with the original locale
+        // (legacy targets are hardcoded to /en/... so swap to the current locale)
+        target = bareTarget.replace(/^\/en(\/|$)/, `/${lang}$1`);
+      }
+    }
+  }
+
   if (!target) return next();
 
   // Don't redirect to self
-  if (target === path) return next();
+  if (target === rawPath) return next();
 
   // Preserve query string (e.g., utm_*) on redirect
   const query = req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : "";

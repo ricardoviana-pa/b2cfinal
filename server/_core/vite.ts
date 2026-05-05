@@ -65,7 +65,53 @@ let _cachedIndexHtml: string | null = null;
  *  so we can inject OG tags for ALL requests without hitting DB every time.
  *  TTL: 10 min — stale meta is better than wrong/missing meta. */
 const DYNAMIC_META_TTL_MS = 10 * 60 * 1000;
-const dynamicMetaCache = new Map<string, { expiresAt: number; meta: { title: string; description: string; image?: string; url: string; type?: string } | null }>();
+type DynamicMeta = { title: string; description: string; image?: string; url: string; type?: string };
+const dynamicMetaCache = new Map<string, { expiresAt: number; meta: DynamicMeta | null }>();
+
+/** Cached property data from JSON files (Guesty sync / static fallback).
+ *  Properties are NOT in the DB — they come from getPropertiesForSite().
+ *  Map: slug → property object. Refreshed every 10 min. */
+let _propertySlugMap: { expiresAt: number; data: Map<string, any> } | null = null;
+async function getPropertyBySlugCached(slug: string): Promise<any | null> {
+  if (!_propertySlugMap || Date.now() > _propertySlugMap.expiresAt) {
+    try {
+      const { getPropertiesForSite } = await import("../services/properties-store");
+      const properties = await getPropertiesForSite();
+      const map = new Map<string, any>();
+      for (const p of properties) {
+        if (p.slug) map.set(p.slug, p);
+      }
+      _propertySlugMap = { expiresAt: Date.now() + DYNAMIC_META_TTL_MS, data: map };
+    } catch (err) {
+      console.error("[Meta] Failed to load property data for meta injection:", err);
+      return null;
+    }
+  }
+  return _propertySlugMap.data.get(slug) ?? null;
+}
+
+/** Cached experience data from JSON file (experienceDetails.json).
+ *  Map: slug → experience object. Refreshed every 10 min. */
+let _experienceSlugMap: { expiresAt: number; data: Map<string, any> } | null = null;
+async function getExperienceBySlugCached(slug: string): Promise<any | null> {
+  if (!_experienceSlugMap || Date.now() > _experienceSlugMap.expiresAt) {
+    try {
+      // Use process.cwd() for consistent path resolution in both dev and production
+      const expPath = path.join(process.cwd(), "client", "src", "data", "experienceDetails.json");
+      const raw = fs.readFileSync(expPath, "utf-8");
+      const data = JSON.parse(raw);
+      const map = new Map<string, any>();
+      for (const exp of (data.experiences || [])) {
+        if (exp.slug) map.set(exp.slug, exp);
+      }
+      _experienceSlugMap = { expiresAt: Date.now() + DYNAMIC_META_TTL_MS, data: map };
+    } catch (err) {
+      console.error("[Meta] Failed to load experience data for meta injection:", err);
+      return null;
+    }
+  }
+  return _experienceSlugMap.data.get(slug) ?? null;
+}
 
 function getCachedDynamicMeta(key: string) {
   const cached = dynamicMetaCache.get(key);
@@ -77,7 +123,7 @@ function getCachedDynamicMeta(key: string) {
   return cached.meta; // may be null (= route was checked but no DB record found)
 }
 
-function setCachedDynamicMeta(key: string, meta: { title: string; description: string; image?: string; url: string; type?: string } | null) {
+function setCachedDynamicMeta(key: string, meta: DynamicMeta | null) {
   dynamicMetaCache.set(key, { expiresAt: Date.now() + DYNAMIC_META_TTL_MS, meta });
 }
 
@@ -802,12 +848,34 @@ export function serveStatic(app: Express) {
     return first && SUPPORTED_LANGS.includes(first) ? first : 'en';
   }
 
+  // ── Redirect /{lang}/journal/* → /{lang}/blog/* (TAREFA 3A) ─────────────
+  // Legacy journal URLs with locale prefix need to redirect to the blog
+  // equivalent. Bare /journal/* is already handled by legacyRedirects.
+  app.use("*", (req, res, next) => {
+    const p = req.originalUrl.split("?")[0];
+    const segments = p.split('/').filter(Boolean);
+    if (segments.length >= 2 && SUPPORTED_LANGS.includes(segments[0].toLowerCase()) && segments[1] === 'journal') {
+      const lang = segments[0].toLowerCase();
+      const rest = segments.slice(2).join('/');
+      const query = req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : '';
+      // Redirect /{lang}/journal/slug → /{lang}/blog/slug
+      return res.redirect(301, `/${lang}/blog${rest ? `/${rest}` : ''}${query}`);
+    }
+    return next();
+  });
+
+  // Dynamic content prefixes: if a slug under these paths doesn't match
+  // any record in the data source, we return 404 (not 200 = soft 404).
+  const DYNAMIC_CONTENT_PREFIXES = ["/homes/", "/blog/", "/services/", "/experiences/", "/activities/"];
+
   app.use("*", async (req, res) => {
     const rawPath = req.originalUrl.split("?")[0];
     const p = stripLocale(rawPath);
     const lang = extractLang(rawPath);
-    const isKnown = KNOWN_ROUTES.has(p) || KNOWN_PREFIXES.some(pre => p.startsWith(pre));
-    const status = isKnown ? 200 : 404;
+    const isStaticKnown = KNOWN_ROUTES.has(p);
+    const isDynamicPrefix = KNOWN_PREFIXES.some(pre => p.startsWith(pre));
+    // Initial status — will be refined for dynamic content below
+    let status = (isStaticKnown || isDynamicPrefix) ? 200 : 404;
     const indexPath = path.resolve(distPath, "index.html");
 
     // Load the shell (cached after first read).
@@ -839,15 +907,21 @@ export function serveStatic(app: Express) {
     }
 
     // ── Dynamic route meta: inject for ALL requests using in-memory cache.
-    // Cache avoids DB lookups on every page load (10 min TTL).
+    // Cache avoids lookups on every page load (10 min TTL).
     // Properties are the most shared content, so their OG tags must be correct
     // regardless of whether the requester is a bot or human.
     const dynamicCacheKey = `${lang}:${p}`;
     const cachedMeta = getCachedDynamicMeta(dynamicCacheKey);
 
     if (cachedMeta !== undefined) {
-      // Cache hit (may be null = no DB record found, which is fine)
-      if (cachedMeta) html = injectMeta(html, cachedMeta);
+      // Cache hit (may be null = no record found, which is fine)
+      if (cachedMeta) {
+        html = injectMeta(html, cachedMeta);
+      } else if (DYNAMIC_CONTENT_PREFIXES.some(pre => p.startsWith(pre))) {
+        // Cached null on a dynamic content route → content doesn't exist → 404
+        status = 404;
+        html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
+      }
       return res.status(status).set("Content-Type", "text/html").send(html);
     }
 
@@ -856,29 +930,29 @@ export function serveStatic(app: Express) {
       return res.status(status).set("Content-Type", "text/html").send(html);
     }
 
-    // Dynamic route — query DB, cache result, inject meta
+    // Dynamic route — look up content, cache result, inject meta
     try {
-      let dynamicMeta: { title: string; description: string; image?: string; url: string; type?: string } | null = null;
+      let dynamicMeta: DynamicMeta | null = null;
 
-      // /homes/:slug — localized title + description via per-lang templates
+      // /homes/:slug — uses JSON properties-store (NOT DB)
+      // Properties come from Guesty sync file or static JSON fallback.
       const homesMatch = p.match(/^\/homes\/([^/]+)$/);
       if (homesMatch) {
-        const { getPropertyBySlug } = await import("../db");
-        const prop = await getPropertyBySlug(homesMatch[1]);
+        const prop = await getPropertyBySlugCached(homesMatch[1]);
         if (prop) {
-          const useDbEn = lang === 'en' && (prop.seoTitle || prop.seoDescription);
+          const useCustomEn = lang === 'en' && (prop.seoTitle || prop.seoDescription);
           const titleFn = PROPERTY_TITLE[lang] ?? PROPERTY_TITLE.en;
           const descFn = PROPERTY_DESCRIPTION[lang] ?? PROPERTY_DESCRIPTION.en;
-          const title = useDbEn && prop.seoTitle
+          const title = useCustomEn && prop.seoTitle
             ? prop.seoTitle
-            : titleFn({ name: prop.name, bedrooms: prop.bedrooms, destination: prop.destination });
-          const rawDesc = useDbEn && prop.seoDescription
+            : titleFn({ name: prop.name || prop.title, bedrooms: prop.bedrooms, destination: prop.destination });
+          const rawDesc = useCustomEn && prop.seoDescription
             ? prop.seoDescription
-            : descFn({ tagline: prop.tagline, bedrooms: prop.bedrooms, maxGuests: prop.maxGuests, destination: prop.destination, name: prop.name });
+            : descFn({ tagline: prop.tagline, bedrooms: prop.bedrooms, maxGuests: prop.maxGuests, destination: prop.destination, name: prop.name || prop.title });
           dynamicMeta = {
             title,
             description: rawDesc.replace(/\s+/g, ' ').trim().slice(0, 155),
-            image: (prop.images as string[] | null)?.[0],
+            image: Array.isArray(prop.images) && prop.images.length > 0 ? prop.images[0] : undefined,
             url: `${BOT_BASE_URL}/${lang}/homes/${prop.slug}`,
             type: 'place',
           };
@@ -937,19 +1011,32 @@ export function serveStatic(app: Express) {
         }
       }
 
-      // /experiences/:slug and /activities/:slug
+      // /experiences/:slug and /activities/:slug — tries JSON first, then DB
       if (!dynamicMeta) {
         const expMatch = p.match(/^\/(?:experiences|activities)\/([^/]+)$/);
         if (expMatch) {
-          const { getExperienceBySlug } = await import("../db");
-          const exp = await getExperienceBySlug(expMatch[1]);
+          // Try JSON data first (curated experiences from experienceDetails.json)
+          let exp = await getExperienceBySlugCached(expMatch[1]);
+          // Fallback to DB if JSON doesn't have it
+          if (!exp) {
+            try {
+              const { getExperienceBySlug } = await import("../db");
+              exp = await getExperienceBySlug(expMatch[1]);
+            } catch { /* DB not available, that's OK */ }
+          }
           if (exp) {
             const titleFn = EXPERIENCE_TITLE[lang] ?? EXPERIENCE_TITLE.en;
             const descFn = EXPERIENCE_DESCRIPTION[lang] ?? EXPERIENCE_DESCRIPTION.en;
+            const destination = exp.destination || (Array.isArray(exp.destinations) ? exp.destinations[0] : '');
+            // Ensure image is a full URL for social sharing
+            let expImage = exp.image ?? (Array.isArray(exp.gallery) ? exp.gallery[0] : undefined);
+            if (expImage && !expImage.startsWith('http')) {
+              expImage = `${BOT_BASE_URL}${expImage.startsWith('/') ? '' : '/'}${expImage}`;
+            }
             dynamicMeta = {
-              title: titleFn({ name: exp.name, destination: exp.destination }),
-              description: descFn({ name: exp.name, tagline: exp.tagline, duration: exp.duration, destination: exp.destination }).replace(/\s+/g, ' ').trim().slice(0, 155),
-              image: exp.image ?? undefined,
+              title: titleFn({ name: exp.name, destination }),
+              description: descFn({ name: exp.name, tagline: exp.tagline, duration: exp.duration, destination }).replace(/\s+/g, ' ').trim().slice(0, 155),
+              image: expImage,
               url: `${BOT_BASE_URL}/${lang}${p}`,
             };
           }
@@ -958,9 +1045,20 @@ export function serveStatic(app: Express) {
 
       // Cache the result (even null = "no record found") and inject
       setCachedDynamicMeta(dynamicCacheKey, dynamicMeta);
-      if (dynamicMeta) html = injectMeta(html, dynamicMeta);
+      if (dynamicMeta) {
+        html = injectMeta(html, dynamicMeta);
+      } else if (DYNAMIC_CONTENT_PREFIXES.some(pre => p.startsWith(pre))) {
+        // Dynamic content route with no matching record → proper 404 (not soft 404)
+        status = 404;
+        html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
+      }
     } catch (err) {
       console.error("[Meta] Error injecting dynamic meta:", err);
+    }
+
+    // For any 404, ensure noindex so Google doesn't index dead pages
+    if (status === 404) {
+      html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
     }
 
     res.status(status).set("Content-Type", "text/html").send(html);
