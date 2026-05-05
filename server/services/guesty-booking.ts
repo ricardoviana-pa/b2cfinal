@@ -86,6 +86,8 @@ export interface BERatePlanOption {
   total: number;
   nightlyRate: number;
   cleaningFee: number;
+  /** Taxes, service fees, and other mandatory charges included in total */
+  taxesAndFees: number;
   cancellationPolicy?: string[];
   cancellationFee?: string;
 }
@@ -104,6 +106,8 @@ export interface BEQuoteResult {
     nightlyRate: number;
     totalNights: number;
     cleaningFee: number;
+    /** Taxes, service fees, and other mandatory charges included in total */
+    taxesAndFees: number;
   };
   /** All available rate plans (refundable, non-refundable, etc.) */
   ratePlanOptions?: BERatePlanOption[];
@@ -213,6 +217,11 @@ async function _createBEQuoteImpl(input: {
     // Support both nested { ratePlan: { _id, name, money, ... } } and flat structures
     const rp = p.ratePlan || p;
     const m = rp.money || p.money || {};
+
+    // Log the full money object on first plan for debugging (only keys + values)
+    console.info(`[BE Quote] money object keys:`, Object.keys(m).join(', '));
+    console.info(`[BE Quote] money object:`, JSON.stringify(m));
+
     // Use fareAccommodationAdjusted (after promos) for accurate nightly rate
     const fareAccommodation = Number(
       m.fareAccommodationAdjusted ?? m.fareAccommodation ?? m.accommodationFare ?? 0
@@ -222,6 +231,13 @@ async function _createBEQuoteImpl(input: {
       m.subTotalPrice ?? m.hostPayout ?? m.totalPrice ?? m.total ?? m.totalAmount ??
       fareAccommodation + fareCleaning
     ) || 0;
+
+    // Calculate taxes & fees as the difference between total and known components.
+    // This ensures the price breakdown always adds up to the total shown to the guest.
+    const taxesAndFees = Math.max(0, total - fareAccommodation - fareCleaning);
+
+    console.info(`[BE Quote] price breakdown: accommodation=${fareAccommodation}, cleaning=${fareCleaning}, taxesAndFees=${taxesAndFees}, total=${total}`);
+
     const cancellationPolicy = rp.cancellationPolicy
       ? [String(rp.cancellationPolicy)]
       : (p.cancellationPolicy ?? undefined);
@@ -231,6 +247,7 @@ async function _createBEQuoteImpl(input: {
       total,
       nightlyRate: nights > 0 ? fareAccommodation / nights : 0,
       cleaningFee: fareCleaning,
+      taxesAndFees,
       cancellationPolicy,
       cancellationFee: rp.cancellationFee ?? p.cancellationFee,
     };
@@ -252,8 +269,9 @@ async function _createBEQuoteImpl(input: {
     cancellationPolicy: selected.cancellationPolicy,
     pricing: {
       nightlyRate: selected.nightlyRate,
-      totalNights: selected.total - selected.cleaningFee,
+      totalNights: selected.nightlyRate * nights,
       cleaningFee: selected.cleaningFee,
+      taxesAndFees: selected.taxesAndFees,
     },
     ratePlanOptions: options,
   };

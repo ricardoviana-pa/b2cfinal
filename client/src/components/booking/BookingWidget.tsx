@@ -33,6 +33,8 @@ interface RatePlanOption {
   total: number;
   nightlyRate: number;
   cleaningFee: number;
+  /** Taxes, service fees, and other mandatory charges included in total */
+  taxesAndFees?: number;
   cancellationPolicy?: string[];
   priceOnRequest?: boolean;
   fallbackMessage?: string;
@@ -42,6 +44,8 @@ interface QuoteData {
   nightlyRate: number;
   totalNights: number;
   cleaningFee: number;
+  /** Taxes, service fees, and other mandatory charges included in total */
+  taxesAndFees?: number;
   total: number;
   nights: number;
   quoteId?: string;
@@ -331,11 +335,13 @@ export default function BookingWidget({
         fallbackMessage: undefined,
         currency: be.currency || prev.currency,
         cancellationPolicy: be.cancellationPolicy,
+        taxesAndFees: (be.pricing as any)?.taxesAndFees ?? 0,
         ratePlanOptions: be.ratePlanOptions?.map((opt: any) => ({
           ...opt,
           total: opt.total > 0 ? opt.total : prev.total,
           nightlyRate: opt.nightlyRate > 0 ? opt.nightlyRate : prev.nightlyRate,
           cleaningFee: opt.cleaningFee > 0 ? opt.cleaningFee : prev.cleaningFee,
+          taxesAndFees: opt.taxesAndFees ?? 0,
         })),
       } : null);
       if (be.ratePlanId) setSelectedRatePlanId(be.ratePlanId);
@@ -366,6 +372,7 @@ export default function BookingWidget({
         nightlyRate: opt.nightlyRate,
         totalNights: opt.nightlyRate * quote.nights,
         cleaningFee: opt.cleaningFee,
+        taxesAndFees: opt.taxesAndFees ?? 0,
         total: opt.total,
         ratePlanId: opt.ratePlanId,
         cancellationPolicy: opt.cancellationPolicy,
@@ -428,10 +435,12 @@ export default function BookingWidget({
       // quoteId is now returned directly from getQuote when source is "live" or "cached".
       // No background createBEQuote call needed — eliminates a redundant BE API round-trip.
       const beQuoteId: string | undefined = (d as any).quoteId;
+      const taxesAndFees = (d.pricing as any)?.taxesAndFees ?? 0;
       const quoteData: QuoteData = {
         nightlyRate: effectiveNightly,
         totalNights: d.pricing?.totalNights ?? effectiveNightly * d.nights,
         cleaningFee: cleaning,
+        taxesAndFees,
         total: effectiveTotal,
         nights: d.nights,
         source: (d as any).source || "base",
@@ -615,6 +624,12 @@ export default function BookingWidget({
                   <div className="flex justify-between text-[13px]">
                     <span className="text-black/50">{t("property.cleaningFee")}</span>
                     <span className="text-black tabular-nums">{formatEur(successQuote.cleaningFee)}</span>
+                  </div>
+                )}
+                {(successQuote.taxesAndFees ?? 0) > 0 && (
+                  <div className="flex justify-between text-[13px]">
+                    <span className="text-black/50">{t("bookingWidget.taxesAndFees", "Taxes & fees")}</span>
+                    <span className="text-black tabular-nums">{formatEur(successQuote.taxesAndFees!)}</span>
                   </div>
                 )}
                 <div className="border-t border-black/10 pt-2 flex justify-between">
@@ -1017,6 +1032,12 @@ export default function BookingWidget({
                       <span className="text-sm text-black tabular-nums">{formatEur(effectiveQuote.cleaningFee)}</span>
                     </div>
                   )}
+                  {(effectiveQuote.taxesAndFees ?? 0) > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-black/50">{t("bookingWidget.taxesAndFees", "Taxes & fees")}</span>
+                      <span className="text-sm text-black tabular-nums">{formatEur(effectiveQuote.taxesAndFees!)}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="border-t border-black/10 pt-3 flex justify-between items-baseline">
@@ -1176,11 +1197,13 @@ export default function BookingWidget({
                         ratePlanId: be.ratePlanId,
                         currency: be.currency || prev.currency,
                         cancellationPolicy: be.cancellationPolicy,
+                        taxesAndFees: (be.pricing as any)?.taxesAndFees ?? 0,
                         ratePlanOptions: be.ratePlanOptions?.map((opt: any) => ({
                           ...opt,
                           total: opt.total > 0 ? opt.total : prev.total,
                           nightlyRate: opt.nightlyRate > 0 ? opt.nightlyRate : prev.nightlyRate,
                           cleaningFee: opt.cleaningFee > 0 ? opt.cleaningFee : prev.cleaningFee,
+                          taxesAndFees: opt.taxesAndFees ?? 0,
                         })),
                       } : null);
                       if (be.ratePlanId) setSelectedRatePlanId(be.ratePlanId);

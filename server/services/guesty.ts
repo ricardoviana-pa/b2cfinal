@@ -60,6 +60,8 @@ export interface QuoteResult {
     cleaningFee: number;
     subtotal: number;
     total: number;
+    /** Taxes, service fees, and other mandatory charges included in total */
+    taxesAndFees?: number;
   };
   source?: QuoteSource;
   fallbackMessage?: string;
@@ -156,7 +158,8 @@ async function _getQuoteImpl(
             nightlyRate: beQuote.pricing.nightlyRate,
             totalNights: beQuote.pricing.totalNights,
             cleaningFee: beQuote.pricing.cleaningFee,
-            subtotal: beQuote.pricing.totalNights + beQuote.pricing.cleaningFee,
+            taxesAndFees: beQuote.pricing.taxesAndFees,
+            subtotal: beQuote.pricing.totalNights + beQuote.pricing.cleaningFee + beQuote.pricing.taxesAndFees,
             total: beQuote.total,
           },
           source: "live",
