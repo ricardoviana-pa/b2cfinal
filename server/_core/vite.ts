@@ -61,6 +61,26 @@ const BOT_UA_RE = /googlebot|google-extended|googleother|bingbot|slurp|duckduckb
 
 let _cachedIndexHtml: string | null = null;
 
+/** In-memory cache for dynamic route meta (properties, blog posts, etc.)
+ *  so we can inject OG tags for ALL requests without hitting DB every time.
+ *  TTL: 10 min — stale meta is better than wrong/missing meta. */
+const DYNAMIC_META_TTL_MS = 10 * 60 * 1000;
+const dynamicMetaCache = new Map<string, { expiresAt: number; meta: { title: string; description: string; image?: string; url: string; type?: string } | null }>();
+
+function getCachedDynamicMeta(key: string) {
+  const cached = dynamicMetaCache.get(key);
+  if (!cached) return undefined; // not cached
+  if (Date.now() > cached.expiresAt) {
+    dynamicMetaCache.delete(key);
+    return undefined;
+  }
+  return cached.meta; // may be null (= route was checked but no DB record found)
+}
+
+function setCachedDynamicMeta(key: string, meta: { title: string; description: string; image?: string; url: string; type?: string } | null) {
+  dynamicMetaCache.set(key, { expiresAt: Date.now() + DYNAMIC_META_TTL_MS, meta });
+}
+
 function isBotRequest(req: import('express').Request): boolean {
   return BOT_UA_RE.test(req.headers['user-agent'] ?? '');
 }
@@ -806,23 +826,39 @@ export function serveStatic(app: Express) {
     // /{lang}/{path} response tells Google it's a distinct indexable version.
     html = injectLocaleTags(html, { lang, pagePath: p });
 
-    // For bots, additionally inject localized title/description per route.
-    const isBot = isBotRequest(req);
-    if (!isBot) {
+    // ── ALWAYS inject per-route meta for static routes (instant lookup, no DB).
+    // This ensures OG tags are correct even when a CDN caches the response,
+    // or when social crawlers bypass bot detection.
+    const localized = getPageMeta(p, lang);
+    if (localized) {
+      html = injectMeta(html, {
+        title: localized.title,
+        description: localized.description,
+        url: `${BOT_BASE_URL}/${lang}${p === '/' ? '' : p}`,
+      });
+    }
+
+    // ── Dynamic route meta: inject for ALL requests using in-memory cache.
+    // Cache avoids DB lookups on every page load (10 min TTL).
+    // Properties are the most shared content, so their OG tags must be correct
+    // regardless of whether the requester is a bot or human.
+    const dynamicCacheKey = `${lang}:${p}`;
+    const cachedMeta = getCachedDynamicMeta(dynamicCacheKey);
+
+    if (cachedMeta !== undefined) {
+      // Cache hit (may be null = no DB record found, which is fine)
+      if (cachedMeta) html = injectMeta(html, cachedMeta);
       return res.status(status).set("Content-Type", "text/html").send(html);
     }
 
+    // If static route was already handled, no dynamic lookup needed
+    if (localized) {
+      return res.status(status).set("Content-Type", "text/html").send(html);
+    }
+
+    // Dynamic route — query DB, cache result, inject meta
     try {
-      // Static routes → localized title/description
-      const localized = getPageMeta(p, lang);
-      if (localized) {
-        html = injectMeta(html, {
-          title: localized.title,
-          description: localized.description,
-          url: `${BOT_BASE_URL}/${lang}${p === '/' ? '' : p}`,
-        });
-        return res.status(status).set("Content-Type", "text/html").send(html);
-      }
+      let dynamicMeta: { title: string; description: string; image?: string; url: string; type?: string } | null = null;
 
       // /homes/:slug — localized title + description via per-lang templates
       const homesMatch = p.match(/^\/homes\/([^/]+)$/);
@@ -830,7 +866,6 @@ export function serveStatic(app: Express) {
         const { getPropertyBySlug } = await import("../db");
         const prop = await getPropertyBySlug(homesMatch[1]);
         if (prop) {
-          // For English, prefer hand-crafted DB seoTitle/seoDescription when set.
           const useDbEn = lang === 'en' && (prop.seoTitle || prop.seoDescription);
           const titleFn = PROPERTY_TITLE[lang] ?? PROPERTY_TITLE.en;
           const descFn = PROPERTY_DESCRIPTION[lang] ?? PROPERTY_DESCRIPTION.en;
@@ -840,101 +875,94 @@ export function serveStatic(app: Express) {
           const rawDesc = useDbEn && prop.seoDescription
             ? prop.seoDescription
             : descFn({ tagline: prop.tagline, bedrooms: prop.bedrooms, maxGuests: prop.maxGuests, destination: prop.destination, name: prop.name });
-          const description = rawDesc.replace(/\s+/g, ' ').trim().slice(0, 155);
-          html = injectMeta(html, {
+          dynamicMeta = {
             title,
-            description,
+            description: rawDesc.replace(/\s+/g, ' ').trim().slice(0, 155),
             image: (prop.images as string[] | null)?.[0],
             url: `${BOT_BASE_URL}/${lang}/homes/${prop.slug}`,
             type: 'place',
-          });
+          };
         }
-        return res.status(status).set("Content-Type", "text/html").send(html);
       }
 
-      // /blog/:slug — localize suffix + fall back to auto-excerpt. Post title
-      // stays in its original language (blog content isn't translated).
-      const blogMatch = p.match(/^\/blog\/([^/]+)$/);
-      if (blogMatch) {
-        const { getBlogPostBySlug } = await import("../db");
-        const post = await getBlogPostBySlug(blogMatch[1]);
-        if (post) {
-          const suffix = BLOG_SUFFIX[lang] ?? BLOG_SUFFIX.en;
-          // For English, prefer DB seoTitle verbatim; for other langs, swap the suffix.
-          const title = lang === 'en'
-            ? (post.seoTitle || `${post.title}${suffix}`)
-            : `${post.title}${suffix}`;
-          const description = (lang === 'en' && post.seoDescription)
-            ? post.seoDescription
-            : (post.excerpt ?? post.seoDescription ?? '').slice(0, 155);
-          html = injectMeta(html, {
-            title,
-            description,
-            image: post.coverImage ?? undefined,
-            url: `${BOT_BASE_URL}/${lang}/blog/${post.slug}`,
-            type: 'article',
-          });
+      // /blog/:slug
+      if (!dynamicMeta) {
+        const blogMatch = p.match(/^\/blog\/([^/]+)$/);
+        if (blogMatch) {
+          const { getBlogPostBySlug } = await import("../db");
+          const post = await getBlogPostBySlug(blogMatch[1]);
+          if (post) {
+            const suffix = BLOG_SUFFIX[lang] ?? BLOG_SUFFIX.en;
+            dynamicMeta = {
+              title: lang === 'en' ? (post.seoTitle || `${post.title}${suffix}`) : `${post.title}${suffix}`,
+              description: ((lang === 'en' && post.seoDescription) ? post.seoDescription : (post.excerpt ?? post.seoDescription ?? '')).slice(0, 155),
+              image: post.coverImage ?? undefined,
+              url: `${BOT_BASE_URL}/${lang}/blog/${post.slug}`,
+              type: 'article',
+            };
+          }
         }
-        return res.status(status).set("Content-Type", "text/html").send(html);
       }
 
       // /destinations/:slug
-      const destMatch = p.match(/^\/destinations\/([^/]+)$/);
-      if (destMatch) {
-        const slug = destMatch[1];
-        const name = DESTINATION_NAME[slug];
-        const desc = DESTINATION_DESCRIPTION[slug]?.[lang] ?? DESTINATION_DESCRIPTION[slug]?.en;
-        const titleFn = DESTINATION_TITLE[lang] ?? DESTINATION_TITLE.en;
-        if (name && desc) {
-          html = injectMeta(html, {
-            title: titleFn(name),
-            description: desc,
-            url: `${BOT_BASE_URL}/${lang}/destinations/${slug}`,
-          });
+      if (!dynamicMeta) {
+        const destMatch = p.match(/^\/destinations\/([^/]+)$/);
+        if (destMatch) {
+          const slug = destMatch[1];
+          const name = DESTINATION_NAME[slug];
+          const desc = DESTINATION_DESCRIPTION[slug]?.[lang] ?? DESTINATION_DESCRIPTION[slug]?.en;
+          const titleFn = DESTINATION_TITLE[lang] ?? DESTINATION_TITLE.en;
+          if (name && desc) {
+            dynamicMeta = { title: titleFn(name), description: desc, url: `${BOT_BASE_URL}/${lang}/destinations/${slug}` };
+          }
         }
-        return res.status(status).set("Content-Type", "text/html").send(html);
       }
 
-      // /services/:slug — localized concierge service meta
-      const serviceMatch = p.match(/^\/services\/([^/]+)$/);
-      if (serviceMatch) {
-        const { getServiceBySlug } = await import("../db");
-        const svc = await getServiceBySlug(serviceMatch[1]);
-        if (svc) {
-          const titleFn = SERVICE_TITLE[lang] ?? SERVICE_TITLE.en;
-          const descFn = SERVICE_DESCRIPTION[lang] ?? SERVICE_DESCRIPTION.en;
-          html = injectMeta(html, {
-            title: titleFn({ name: svc.name }),
-            description: descFn({ name: svc.name, tagline: svc.tagline, duration: svc.duration }).replace(/\s+/g, ' ').trim().slice(0, 155),
-            image: svc.image ?? undefined,
-            url: `${BOT_BASE_URL}/${lang}/services/${svc.slug}`,
-          });
+      // /services/:slug
+      if (!dynamicMeta) {
+        const serviceMatch = p.match(/^\/services\/([^/]+)$/);
+        if (serviceMatch) {
+          const { getServiceBySlug } = await import("../db");
+          const svc = await getServiceBySlug(serviceMatch[1]);
+          if (svc) {
+            const titleFn = SERVICE_TITLE[lang] ?? SERVICE_TITLE.en;
+            const descFn = SERVICE_DESCRIPTION[lang] ?? SERVICE_DESCRIPTION.en;
+            dynamicMeta = {
+              title: titleFn({ name: svc.name }),
+              description: descFn({ name: svc.name, tagline: svc.tagline, duration: svc.duration }).replace(/\s+/g, ' ').trim().slice(0, 155),
+              image: svc.image ?? undefined,
+              url: `${BOT_BASE_URL}/${lang}/services/${svc.slug}`,
+            };
+          }
         }
-        return res.status(status).set("Content-Type", "text/html").send(html);
       }
 
-      // /experiences/:slug and /activities/:slug (legacy alias) — same handler
-      const expMatch = p.match(/^\/(?:experiences|activities)\/([^/]+)$/);
-      if (expMatch) {
-        const { getExperienceBySlug } = await import("../db");
-        const exp = await getExperienceBySlug(expMatch[1]);
-        if (exp) {
-          const titleFn = EXPERIENCE_TITLE[lang] ?? EXPERIENCE_TITLE.en;
-          const descFn = EXPERIENCE_DESCRIPTION[lang] ?? EXPERIENCE_DESCRIPTION.en;
-          html = injectMeta(html, {
-            title: titleFn({ name: exp.name, destination: exp.destination }),
-            description: descFn({ name: exp.name, tagline: exp.tagline, duration: exp.duration, destination: exp.destination }).replace(/\s+/g, ' ').trim().slice(0, 155),
-            image: exp.image ?? undefined,
-            url: `${BOT_BASE_URL}/${lang}${p}`,
-          });
+      // /experiences/:slug and /activities/:slug
+      if (!dynamicMeta) {
+        const expMatch = p.match(/^\/(?:experiences|activities)\/([^/]+)$/);
+        if (expMatch) {
+          const { getExperienceBySlug } = await import("../db");
+          const exp = await getExperienceBySlug(expMatch[1]);
+          if (exp) {
+            const titleFn = EXPERIENCE_TITLE[lang] ?? EXPERIENCE_TITLE.en;
+            const descFn = EXPERIENCE_DESCRIPTION[lang] ?? EXPERIENCE_DESCRIPTION.en;
+            dynamicMeta = {
+              title: titleFn({ name: exp.name, destination: exp.destination }),
+              description: descFn({ name: exp.name, tagline: exp.tagline, duration: exp.duration, destination: exp.destination }).replace(/\s+/g, ' ').trim().slice(0, 155),
+              image: exp.image ?? undefined,
+              url: `${BOT_BASE_URL}/${lang}${p}`,
+            };
+          }
         }
-        return res.status(status).set("Content-Type", "text/html").send(html);
       }
+
+      // Cache the result (even null = "no record found") and inject
+      setCachedDynamicMeta(dynamicCacheKey, dynamicMeta);
+      if (dynamicMeta) html = injectMeta(html, dynamicMeta);
     } catch (err) {
-      console.error("[BotMeta] Error injecting meta:", err);
+      console.error("[Meta] Error injecting dynamic meta:", err);
     }
 
-    // Fallback: send HTML with only the locale tags applied.
     res.status(status).set("Content-Type", "text/html").send(html);
   });
 }
