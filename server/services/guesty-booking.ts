@@ -222,7 +222,7 @@ async function _createBEQuoteImpl(input: {
     console.info(`[BE Quote] money object keys:`, Object.keys(m).join(', '));
     console.info(`[BE Quote] money object:`, JSON.stringify(m));
 
-    // Use fareAccommodationAdjusted (after promos) for accurate nightly rate
+    // Extract raw fare components for logging
     const fareAccommodation = Number(
       m.fareAccommodationAdjusted ?? m.fareAccommodation ?? m.accommodationFare ?? 0
     );
@@ -232,11 +232,15 @@ async function _createBEQuoteImpl(input: {
       fareAccommodation + fareCleaning
     ) || 0;
 
-    // Calculate taxes & fees as the difference between total and known components.
-    // This ensures the price breakdown always adds up to the total shown to the guest.
-    const taxesAndFees = Math.max(0, total - fareAccommodation - fareCleaning);
+    // Derive nightly rate from (total - cleaning) / nights so taxes/fees are
+    // absorbed into the per-night price.  The breakdown then adds up:
+    //   nightlyRate × nights + cleaning = total   ✓
+    // This avoids a confusing "Taxes & fees" line on a direct-booking site.
+    const allInAccommodation = total - fareCleaning;
+    const nightlyRate = nights > 0 ? allInAccommodation / nights : 0;
+    const taxesAndFees = 0; // folded into nightly rate
 
-    console.info(`[BE Quote] price breakdown: accommodation=${fareAccommodation}, cleaning=${fareCleaning}, taxesAndFees=${taxesAndFees}, total=${total}`);
+    console.info(`[BE Quote] price breakdown: fareAccommodation=${fareAccommodation}, cleaning=${fareCleaning}, allInNightly=${nightlyRate.toFixed(2)}, total=${total}`);
 
     const cancellationPolicy = rp.cancellationPolicy
       ? [String(rp.cancellationPolicy)]
@@ -245,7 +249,7 @@ async function _createBEQuoteImpl(input: {
       ratePlanId: resolvePlanId(p),
       name: rp.name || p.name || "Standard rate",
       total,
-      nightlyRate: nights > 0 ? fareAccommodation / nights : 0,
+      nightlyRate,
       cleaningFee: fareCleaning,
       taxesAndFees,
       cancellationPolicy,
