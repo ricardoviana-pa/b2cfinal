@@ -77,7 +77,7 @@ export default function Home() {
     },
     {
       question: 'Can I book adventure activities alongside my villa stay?',
-      answer: 'Yes. We offer curated experiences including horseback riding, canyoning, surfing, sailing, e-bike tours, and more. Our concierge team builds bespoke itineraries combining your villa, activities, private dining, and transfers.',
+      answer: 'Yes. We offer curated experiences including horseback riding, canyoning, surfing, sailing, e-bike tours, and more. Our concierge team builds bespoke itineraries combining your villa, activities, and private dining. Optional villa transfers can be arranged for an additional fee.',
     },
     {
       question: 'Is it cheaper to book direct with Portugal Active?',

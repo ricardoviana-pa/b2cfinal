@@ -1004,7 +1004,6 @@
     "localGuide": "Guia local",
     "meetingPoint": "Ponto de encontro",
     "openInGoogleMaps": "Abrir no Google Maps",
-    "complimentaryPickup": "Recolha gratuita na sua casa Portugal Active",
     "whatToBring": "O que trazer",
     "notAllowed": "Não permitido",
     "cancellationPolicy": "Política de cancelamento",
@@ -1012,7 +1011,8 @@
     "recentGuestReview": "Avaliação recente",
     "allExperiences": "Todas as experiências",
     "sameExperienceOnOta": "A mesma experiência noutras plataformas custa mais.",
-    "youSavePerPerson": "Poupa €{{amount}} por pessoa ao reservar diretamente."
+    "youSavePerPerson": "Poupa €{{amount}} por pessoa ao reservar diretamente.",
+    "optionalPickup": "Recolha opcional na villa"
   },
   "serviceDetail": {
     "backToExperiences": "Voltar às experiências",

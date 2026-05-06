@@ -1002,7 +1002,6 @@
     "localGuide": "Guida locale",
     "meetingPoint": "Punto d'incontro",
     "openInGoogleMaps": "Apri in Google Maps",
-    "complimentaryPickup": "Trasferimento gratuito dalla tua casa Portugal Active",
     "whatToBring": "Cosa portare",
     "notAllowed": "Non consentito",
     "cancellationPolicy": "Politica di cancellazione",
@@ -1010,7 +1009,8 @@
     "recentGuestReview": "Recensione recente di un ospite",
     "allExperiences": "Tutte le esperienze",
     "sameExperienceOnOta": "La stessa esperienza costa di più su altre piattaforme.",
-    "youSavePerPerson": "Risparmi €{{amount}} a persona prenotando direttamente."
+    "youSavePerPerson": "Risparmi €{{amount}} a persona prenotando direttamente.",
+    "optionalPickup": "Trasferimento opzionale dalla tua villa"
   },
   "serviceDetail": {
     "backToExperiences": "Torna alle esperienze",

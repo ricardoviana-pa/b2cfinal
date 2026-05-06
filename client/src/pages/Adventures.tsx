@@ -69,7 +69,7 @@ export default function Adventures() {
         },
         {
           question: 'Can I book adventure activities as part of my villa stay?',
-          answer: 'Yes. All adventure activities can be booked alongside your villa stay with Portugal Active. Our concierge team will build a bespoke itinerary combining your villa, activities, private chef, and transfers into a single plan.',
+          answer: 'Yes. All adventure activities can be booked alongside your villa stay with Portugal Active. Our concierge team will build a bespoke itinerary combining your villa, activities, and private chef into a single plan. Optional villa transfers can be arranged for an additional fee.',
         },
         {
           question: 'Where in Portugal do your adventures take place?',

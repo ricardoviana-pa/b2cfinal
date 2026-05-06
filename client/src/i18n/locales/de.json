@@ -1002,7 +1002,6 @@
     "localGuide": "Lokaler Guide",
     "meetingPoint": "Treffpunkt",
     "openInGoogleMaps": "In Google Maps öffnen",
-    "complimentaryPickup": "Kostenlose Abholung von Ihrem Portugal Active Haus",
     "whatToBring": "Was Sie mitbringen sollten",
     "notAllowed": "Nicht erlaubt",
     "cancellationPolicy": "Stornierungsbedingungen",
@@ -1010,7 +1009,8 @@
     "recentGuestReview": "Aktuelle Gästebewertung",
     "allExperiences": "Alle Erlebnisse",
     "sameExperienceOnOta": "Das gleiche Erlebnis kostet auf anderen Plattformen mehr.",
-    "youSavePerPerson": "Sie sparen €{{amount}} pro Person bei Direktbuchung."
+    "youSavePerPerson": "Sie sparen €{{amount}} pro Person bei Direktbuchung.",
+    "optionalPickup": "Optionale Abholung von Ihrer Villa"
   },
   "serviceDetail": {
     "backToExperiences": "Zurück zu den Erlebnissen",

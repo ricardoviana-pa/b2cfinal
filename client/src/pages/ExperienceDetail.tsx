@@ -657,7 +657,7 @@ export default function ExperienceDetail() {
                 {exp.meetingPoint.pickupAvailable && exp.meetingPoint.pickupNote && (
                   <div className="mt-5 pt-5 border-t border-[#E8E4DC]">
                     <p className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium mb-1">
-                      {t('experienceDetail.complimentaryPickup')}
+                      {t('experienceDetail.optionalPickup')}
                     </p>
                     <p className="text-[14px] text-[#6B6860]" style={{ fontWeight: 300 }}>
                       {exp.meetingPoint.pickupNote}

@@ -1002,7 +1002,6 @@
     "localGuide": "Lokal guide",
     "meetingPoint": "Mötesplats",
     "openInGoogleMaps": "Öppna i Google Maps",
-    "complimentaryPickup": "Gratis upphämtning från ditt Portugal Active-hem",
     "whatToBring": "Vad du ska ta med",
     "notAllowed": "Inte tillåtet",
     "cancellationPolicy": "Avbokningsvillkor",
@@ -1010,7 +1009,8 @@
     "recentGuestReview": "Senaste gästomdömet",
     "allExperiences": "Alla upplevelser",
     "sameExperienceOnOta": "Samma upplevelse kostar mer på andra plattformar.",
-    "youSavePerPerson": "Du sparar €{{amount}} per person vid direktbokning."
+    "youSavePerPerson": "Du sparar €{{amount}} per person vid direktbokning.",
+    "optionalPickup": "Valfri upphämtning från din villa"
   },
   "serviceDetail": {
     "backToExperiences": "Tillbaka till upplevelser",

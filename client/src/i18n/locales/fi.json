@@ -1002,7 +1002,6 @@
     "localGuide": "Paikallinen opas",
     "meetingPoint": "Kohtaamispaikka",
     "openInGoogleMaps": "Avaa Google Mapsissa",
-    "complimentaryPickup": "Ilmainen nouto Portugal Active -kodistasi",
     "whatToBring": "Mitä ottaa mukaan",
     "notAllowed": "Ei sallittu",
     "cancellationPolicy": "Peruutusehdot",
@@ -1010,7 +1009,8 @@
     "recentGuestReview": "Tuore vierasarvostelu",
     "allExperiences": "Kaikki elämykset",
     "sameExperienceOnOta": "Sama elämys maksaa enemmän muilla alustoilla.",
-    "youSavePerPerson": "Säästät €{{amount}} henkilöä kohti varaamalla suoraan."
+    "youSavePerPerson": "Säästät €{{amount}} henkilöä kohti varaamalla suoraan.",
+    "optionalPickup": "Valinnainen nouto villastasi"
   },
   "serviceDetail": {
     "backToExperiences": "Takaisin elämyksiin",

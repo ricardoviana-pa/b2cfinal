@@ -863,7 +863,6 @@
     "localGuide": "Local guide",
     "meetingPoint": "Meeting point",
     "openInGoogleMaps": "Open in Google Maps",
-    "complimentaryPickup": "Complimentary pickup from your Portugal Active home",
     "whatToBring": "What to bring",
     "notAllowed": "Not allowed",
     "cancellationPolicy": "Cancellation policy",
@@ -878,7 +877,8 @@
     "navReviews": "Reviews",
     "navFaq": "FAQ",
     "beforeYouGo": "Before you go",
-    "cancellationPolicyQ": "What is the cancellation policy?"
+    "cancellationPolicyQ": "What is the cancellation policy?",
+    "optionalPickup": "Optional villa pickup"
   },
   "bedTypes": {
     "kingBed": "King Bed",
@@ -956,21 +956,6 @@
     "ourGuests": "OUR GUESTS",
     "whatTheyRemember": "What they remember most.",
     "proofStrip": "4.8/5 across 2,000+ guest reviews"
-  },
-  "amenity": {
-    "outdoorPool": "Outdoor & Pool",
-    "viewsLocation": "Views & Location",
-    "comfortClimate": "Comfort & Climate",
-    "kitchenDining": "Kitchen & Dining",
-    "entertainment": "Entertainment",
-    "connectivityWork": "Connectivity & Work",
-    "wellnessFitness": "Wellness & Fitness",
-    "parkingAccess": "Parking & Access",
-    "laundryHousekeeping": "Laundry & Housekeeping",
-    "bathroom": "Bathroom",
-    "familyFriendly": "Family Friendly",
-    "safety": "Safety",
-    "other": "Other"
   },
   "experience": {
     "from": "From",
