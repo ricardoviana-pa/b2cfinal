@@ -71,7 +71,9 @@ function PageTransition({ children }: { children: ReactNode }) {
   const [visible, setVisible] = useState(true);
   const [displayChildren, setDisplayChildren] = useState(children);
   const prevLocation = useRef(location);
+  const prevPath = useRef(location.split('?')[0]);
   const isPopstate = useRef(false);
+  const pendingSwapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const onPop = () => { isPopstate.current = true; };
@@ -79,6 +81,27 @@ function PageTransition({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('popstate', onPop);
   }, []);
 
+  // Scroll-to-top runs in its OWN effect, keyed only by location.
+  // Previously this was coupled to the fade timer and the [location, children]
+  // dep array, which created a race: if App re-rendered during the 50ms fade
+  // window (Suspense resolving, context updates, etc.), the effect re-ran
+  // with the same location, cleared the pending timer, and skipped the scroll.
+  // Result: intermittent "page opens scrolled down" bug. Now decoupled.
+  useEffect(() => {
+    const currentPath = location.split('?')[0];
+    const pathChanged = currentPath !== prevPath.current;
+    const wasPop = isPopstate.current;
+    prevPath.current = currentPath;
+    if (pathChanged && !wasPop) {
+      document.documentElement.style.scrollBehavior = 'auto';
+      window.scrollTo(0, 0);
+      requestAnimationFrame(() => { document.documentElement.style.scrollBehavior = ''; });
+    }
+    // popstate flag is cleared by the fade effect below (single source of truth)
+  }, [location]);
+
+  // Fade transition — independent of scroll. Keyed by [location, children] so
+  // it still handles new children references when the route actually changes.
   useEffect(() => {
     const pathChanged = location.split('?')[0] !== prevLocation.current.split('?')[0];
     const wasPop = isPopstate.current;
@@ -87,19 +110,16 @@ function PageTransition({ children }: { children: ReactNode }) {
 
     if (pathChanged && !wasPop) {
       setVisible(false);
-      const timer = setTimeout(() => {
+      if (pendingSwapTimer.current) clearTimeout(pendingSwapTimer.current);
+      pendingSwapTimer.current = setTimeout(() => {
         setDisplayChildren(children);
         setVisible(true);
-        document.documentElement.style.scrollBehavior = 'auto';
-        window.scrollTo(0, 0);
-        requestAnimationFrame(() => { document.documentElement.style.scrollBehavior = ''; });
+        pendingSwapTimer.current = null;
       }, 50);
-      return () => clearTimeout(timer);
-    } else if (pathChanged && wasPop) {
-      setDisplayChildren(children);
-    } else {
-      setDisplayChildren(children);
+      return;
     }
+    // Same path (e.g. query-only change) or popstate: swap children without fade
+    setDisplayChildren(children);
   }, [location, children]);
 
   return (
