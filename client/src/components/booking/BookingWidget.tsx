@@ -499,9 +499,20 @@ export default function BookingWidget({
     return () => { cancelled = true; };
   }, [guestyId, today, utils.booking.getCalendar]);
 
-  // Scroll widget into view when advancing to a new step so content is visible
+  // Scroll widget into view when the user ADVANCES to a new step so content is visible.
+  // Important: do NOT scroll on the initial automatic transition from "dates" → "quote"
+  // that happens when the URL carries ?checkin=…&checkout=… params. That auto-quote
+  // would otherwise pull the user away from the top of the property page (especially
+  // on mobile, where the widget stacks below all the content).
+  const didInitialStepScrollSkipRef = useRef(false);
   useEffect(() => {
     if (step === "dates") return;
+    // Skip the very first non-"dates" step transition — it's the auto-quote fetch
+    // triggered by URL params, not a user-initiated step change.
+    if (!didInitialStepScrollSkipRef.current) {
+      didInitialStepScrollSkipRef.current = true;
+      return;
+    }
     widgetRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [step]);
 
