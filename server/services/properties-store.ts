@@ -58,9 +58,30 @@ export async function getPropertiesForSite(): Promise<any[]> {
   return [];
 }
 
-/** Filter out test listings and properties below minimum price threshold */
+/**
+ * Manual exclusion list — properties to hide from the public site regardless
+ * of their state in Guesty. Match by slug substring (case-insensitive) so we
+ * catch both the legacy short slug and the current `-by-portugal-active-XXXX`
+ * variants. To re-list, simply remove from this array.
+ */
+const EXCLUDED_SLUG_PATTERNS: string[] = [
+  "villa-luzia", // Removed per CEO request (2026-05-06)
+];
+
+function isExcluded(p: any): boolean {
+  const slug = (p.slug || "").toLowerCase();
+  if (!slug) return false;
+  return EXCLUDED_SLUG_PATTERNS.some(pattern => slug.includes(pattern));
+}
+
+/** Filter out test listings, properties below minimum price threshold, and manual exclusions */
 function filterPublicProperties(properties: any[]): any[] {
   return properties.filter(p => {
+    // Manual exclusion list (slug-based, survives Guesty re-syncs)
+    if (isExcluded(p)) {
+      console.debug(`[Properties] Filtered out excluded listing: ${p.slug}`);
+      return false;
+    }
     // Exclude properties with 'test' in title/name (case-insensitive)
     const propName = p.title || p.name || '';
     if (/test/i.test(propName)) {
