@@ -74,26 +74,53 @@ function isExcluded(p: any): boolean {
   return EXCLUDED_SLUG_PATTERNS.some(pattern => slug.includes(pattern));
 }
 
+/**
+ * Cover-photo overrides — move a specific image (by current index in the
+ * Guesty array) to position 0 so it becomes the card / hero cover. Keys are
+ * slug substrings (case-insensitive). Survives Guesty syncs as long as the
+ * target image keeps the same relative position; if the Guesty admin
+ * reorders photos this override should be revisited.
+ */
+const COVER_PHOTO_OVERRIDES: Record<string, number> = {
+  "nature-hill": 1, // Use 2nd photo as cover (CEO request 2026-05-06)
+};
+
+function applyCoverOverride(p: any): any {
+  const slug = (p.slug || "").toLowerCase();
+  if (!slug || !Array.isArray(p.images) || p.images.length < 2) return p;
+  for (const [pattern, idx] of Object.entries(COVER_PHOTO_OVERRIDES)) {
+    if (slug.includes(pattern) && idx > 0 && idx < p.images.length) {
+      const reordered = [...p.images];
+      const [picked] = reordered.splice(idx, 1);
+      reordered.unshift(picked);
+      return { ...p, images: reordered };
+    }
+  }
+  return p;
+}
+
 /** Filter out test listings, properties below minimum price threshold, and manual exclusions */
 function filterPublicProperties(properties: any[]): any[] {
-  return properties.filter(p => {
-    // Manual exclusion list (slug-based, survives Guesty re-syncs)
-    if (isExcluded(p)) {
-      console.debug(`[Properties] Filtered out excluded listing: ${p.slug}`);
-      return false;
-    }
-    // Exclude properties with 'test' in title/name (case-insensitive)
-    const propName = p.title || p.name || '';
-    if (/test/i.test(propName)) {
-      console.debug(`[Properties] Filtered out test listing: ${propName}`);
-      return false;
-    }
-    // Exclude properties with base price below €20/night
-    const basePrice = p.basePrice || p.pricePerNight || p.priceFrom || 0;
-    if (basePrice > 0 && basePrice < 20) {
-      console.debug(`[Properties] Filtered out low-price listing: ${propName} (€${basePrice}/night)`);
-      return false;
-    }
-    return true;
-  });
+  return properties
+    .filter(p => {
+      // Manual exclusion list (slug-based, survives Guesty re-syncs)
+      if (isExcluded(p)) {
+        console.debug(`[Properties] Filtered out excluded listing: ${p.slug}`);
+        return false;
+      }
+      // Exclude properties with 'test' in title/name (case-insensitive)
+      const propName = p.title || p.name || '';
+      if (/test/i.test(propName)) {
+        console.debug(`[Properties] Filtered out test listing: ${propName}`);
+        return false;
+      }
+      // Exclude properties with base price below €20/night
+      const basePrice = p.basePrice || p.pricePerNight || p.priceFrom || 0;
+      if (basePrice > 0 && basePrice < 20) {
+        console.debug(`[Properties] Filtered out low-price listing: ${propName} (€${basePrice}/night)`);
+        return false;
+      }
+      return true;
+    })
+    .map(applyCoverOverride);
 }
