@@ -63,10 +63,10 @@ function FAQItem({ item, isLast }: { item: { q: string; a: string }; isLast: boo
 const CONTACT_CHANNELS = [
   {
     icon: Phone,
-    href: 'tel:+351927161771',
+    href: 'tel:+351258358434',
     external: false,
     titleKey: 'contact.phoneNumber' as const,
-    titleFallback: '+351 927 161 771',
+    titleFallback: '+351 258 358 434',
     subKey: 'contact.phoneAvailable' as const,
   },
   {
@@ -264,7 +264,7 @@ export default function Contact() {
         <div className="container max-w-[1100px]">
           <AnswerCapsule
             question="How do I contact Portugal Active?"
-            answer="Portugal Active's concierge team is available by phone (+351 927 161 771), WhatsApp, or email (info@portugalactive.com). Response time is typically under two hours. You can also schedule a video call to plan your stay. The team assists with property selection, experience booking, airport transfers, private chefs, and any special requests. Book direct for the best rate and complimentary concierge planning."
+            answer="Portugal Active's concierge team is available by phone (+351 258 358 434), WhatsApp, or email (info@portugalactive.com). Response time is typically under two hours. You can also schedule a video call to plan your stay. The team assists with property selection, experience booking, airport transfers, private chefs, and any special requests. Book direct for the best rate and complimentary concierge planning."
             emitSchema
             schemaId="qa-contact"
           />

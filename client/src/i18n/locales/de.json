@@ -28,7 +28,8 @@
     "logoAlt": "Portugal Active",
     "skipToContent": "Zum Hauptinhalt springen",
     "menuLabel": "Website-Navigation",
-    "conciergeExclusive": "Exklusiv für unsere Gäste"
+    "conciergeExclusive": "Exklusiv für unsere Gäste",
+    "office": "Büro"
   },
   "destinations": {
     "minho": "Minho-Küste",
@@ -904,7 +905,7 @@
     "s5Title": "5. Haftung",
     "s5Body": "Portugal Active handelt als Verwaltungsgesellschaft und haftet nicht für Umstände außerhalb unserer Kontrolle, einschließlich, aber nicht beschränkt auf Naturereignisse, Versorgungsausfälle oder Störungen durch Dritte. Wir sind umfassend versichert und werden stets bestrebt sein, etwaige Probleme umgehend zu lösen.",
     "s6Title": "6. Kontakt",
-    "s6Body": "Bei Fragen zu diesen Bedingungen kontaktieren Sie uns unter info@portugalactive.com oder +351 927 161 771."
+    "s6Body": "Bei Fragen zu diesen Bedingungen kontaktieren Sie uns unter info@portugalactive.com oder +351 258 358 434."
   },
   "privacy": {
     "overline": "RECHTLICHES",
@@ -919,7 +920,7 @@
     "s4Title": "4. Ihre Rechte",
     "s4Body": "Gemäß der DSGVO haben Sie das Recht auf Zugang, Berichtigung, Löschung oder Übertragung Ihrer personenbezogenen Daten. Sie können Ihre Einwilligung zu Marketing-Mitteilungen jederzeit widerrufen. Kontaktieren Sie uns unter info@portugalactive.com, um diese Rechte auszuüben.",
     "s5Title": "5. Kontakt",
-    "s5Body": "Bei datenschutzbezogenen Fragen kontaktieren Sie uns unter info@portugalactive.com oder +351 927 161 771."
+    "s5Body": "Bei datenschutzbezogenen Fragen kontaktieren Sie uns unter info@portugalactive.com oder +351 258 358 434."
   },
   "cookiesPage": {
     "title": "Cookie-Richtlinie",

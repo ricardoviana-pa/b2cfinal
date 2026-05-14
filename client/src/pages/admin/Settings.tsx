@@ -131,7 +131,7 @@ export default function AdminSettings() {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <SettingField label="Email" settingKey="contact_email" settings={values} onChange={handleChange} placeholder="hello@portugalactive.com" />
-            <SettingField label="Phone" settingKey="contact_phone" settings={values} onChange={handleChange} placeholder="+351 927 161 771" />
+            <SettingField label="Phone" settingKey="contact_phone" settings={values} onChange={handleChange} placeholder="+351 258 358 434" />
             <SettingField label="WhatsApp number" settingKey="contact_whatsapp" settings={values} onChange={handleChange} placeholder="351927161771" />
             <SettingField label="Instagram" settingKey="social_instagram" settings={values} onChange={handleChange} placeholder="@portugalactive" />
           </div>

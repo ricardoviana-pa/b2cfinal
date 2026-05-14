@@ -28,7 +28,8 @@
     "logoAlt": "Portugal Active",
     "skipToContent": "Aller au contenu principal",
     "menuLabel": "Navigation du site",
-    "conciergeExclusive": "Exclusif pour nos hôtes"
+    "conciergeExclusive": "Exclusif pour nos hôtes",
+    "office": "Bureau"
   },
   "destinations": {
     "minho": "Côte du Minho",
@@ -904,7 +905,7 @@
     "s5Title": "5. Responsabilité",
     "s5Body": "Portugal Active agit en tant que société de gestion et n'est pas responsable des circonstances indépendantes de notre volonté, y compris, mais sans s'y limiter, les événements naturels, les pannes de services publics ou les perturbations de services tiers. Nous disposons d'une assurance complète et nous efforcerons toujours de résoudre tout problème rapidement.",
     "s6Title": "6. Contact",
-    "s6Body": "Pour toute question concernant ces conditions, veuillez nous contacter à info@portugalactive.com ou au +351 927 161 771."
+    "s6Body": "Pour toute question concernant ces conditions, veuillez nous contacter à info@portugalactive.com ou au +351 258 358 434."
   },
   "privacy": {
     "overline": "LÉGAL",
@@ -919,7 +920,7 @@
     "s4Title": "4. Vos droits",
     "s4Body": "En vertu du RGPD, vous avez le droit d'accéder, de corriger, de supprimer ou de transférer vos données personnelles. Vous pouvez également retirer votre consentement aux communications marketing à tout moment. Contactez-nous à info@portugalactive.com pour exercer ces droits.",
     "s5Title": "5. Contact",
-    "s5Body": "Pour toute question relative à la confidentialité, veuillez nous contacter à info@portugalactive.com ou au +351 927 161 771."
+    "s5Body": "Pour toute question relative à la confidentialité, veuillez nous contacter à info@portugalactive.com ou au +351 258 358 434."
   },
   "cookiesPage": {
     "title": "Politique de cookies",

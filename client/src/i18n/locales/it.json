@@ -28,7 +28,8 @@
     "logoAlt": "Portugal Active",
     "skipToContent": "Vai al contenuto principale",
     "menuLabel": "Navigazione del sito",
-    "conciergeExclusive": "Esclusivo per i nostri ospiti"
+    "conciergeExclusive": "Esclusivo per i nostri ospiti",
+    "office": "Ufficio"
   },
   "destinations": {
     "minho": "Costa del Minho",
@@ -904,7 +905,7 @@
     "s5Title": "5. Responsabilità",
     "s5Body": "Portugal Active agisce come società di gestione e non è responsabile per circostanze al di fuori del nostro controllo, inclusi ma non limitati a eventi naturali, guasti alle utenze o interruzioni di servizi di terze parti. Disponiamo di un'assicurazione completa e lavoreremo sempre per risolvere qualsiasi problema tempestivamente.",
     "s6Title": "6. Contatti",
-    "s6Body": "Per domande su questi termini, contattateci a info@portugalactive.com o +351 927 161 771."
+    "s6Body": "Per domande su questi termini, contattateci a info@portugalactive.com o +351 258 358 434."
   },
   "privacy": {
     "overline": "LEGALE",
@@ -919,7 +920,7 @@
     "s4Title": "4. I vostri diritti",
     "s4Body": "In base al GDPR, avete il diritto di accedere, correggere, cancellare o portare i vostri dati personali. Potete anche revocare il consenso alle comunicazioni di marketing in qualsiasi momento. Contattateci a info@portugalactive.com per esercitare questi diritti.",
     "s5Title": "5. Contatti",
-    "s5Body": "Per qualsiasi domanda sulla privacy, contattateci a info@portugalactive.com o +351 927 161 771."
+    "s5Body": "Per qualsiasi domanda sulla privacy, contattateci a info@portugalactive.com o +351 258 358 434."
   },
   "cookiesPage": {
     "title": "Politica sui cookie",

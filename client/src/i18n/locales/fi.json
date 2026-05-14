@@ -28,7 +28,8 @@
     "logoAlt": "Portugal Active",
     "skipToContent": "Siirry pääsisältöön",
     "menuLabel": "Sivuston navigointi",
-    "conciergeExclusive": "Yksinomaan vieraillemme"
+    "conciergeExclusive": "Yksinomaan vieraillemme",
+    "office": "Toimisto"
   },
   "destinations": {
     "minho": "Minhon rannikko",
@@ -904,7 +905,7 @@
     "s5Title": "5. Vastuu",
     "s5Body": "Portugal Active toimii hallinnointiyhtiönä eikä ole vastuussa hallintamme ulkopuolisista olosuhteista, mukaan lukien mutta ei rajoittuen luonnontapahtumiin, yleishyödykkeiden häiriöihin tai kolmansien osapuolten palvelukatkoksiin. Meillä on kattava vakuutus ja pyrimme aina ratkaisemaan mahdolliset ongelmat viipymättä.",
     "s6Title": "6. Yhteystiedot",
-    "s6Body": "Näitä ehtoja koskeviin kysymyksiin ota yhteyttä osoitteessa info@portugalactive.com tai +351 927 161 771."
+    "s6Body": "Näitä ehtoja koskeviin kysymyksiin ota yhteyttä osoitteessa info@portugalactive.com tai +351 258 358 434."
   },
   "privacy": {
     "overline": "OIKEUDELLINEN",
@@ -919,7 +920,7 @@
     "s4Title": "4. Oikeutesi",
     "s4Body": "GDPR:n nojalla sinulla on oikeus päästä käsiksi henkilötietoihisi, oikaista, poistaa tai siirtää ne. Voit myös peruuttaa suostumuksesi markkinointiviestintään milloin tahansa. Ota yhteyttä osoitteeseen info@portugalactive.com käyttääksesi näitä oikeuksia.",
     "s5Title": "5. Yhteystiedot",
-    "s5Body": "Tietosuojaan liittyvissä kysymyksissä ota yhteyttä osoitteeseen info@portugalactive.com tai +351 927 161 771."
+    "s5Body": "Tietosuojaan liittyvissä kysymyksissä ota yhteyttä osoitteeseen info@portugalactive.com tai +351 258 358 434."
   },
   "cookiesPage": {
     "title": "Evästekäytäntö",
