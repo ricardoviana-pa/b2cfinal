@@ -1019,7 +1019,8 @@
         "stand-up-paddle",
         "horseback-riding"
       ],
-      "whatsappMessage": "Hi Portugal Active, I'd like to book the Canyoning experience in Gerês. Could you confirm availability?"
+      "whatsappMessage": "Hi Portugal Active, I'd like to book the Canyoning experience in Gerês. Could you confirm availability?",
+      "bokunActivityId": 1215778
     },
     {
       "slug": "stand-up-paddle",
