@@ -5,7 +5,7 @@
  */
 
 import "dotenv/config";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { guestyClient, isGuestyConfigured } from "../lib/guesty";
 
@@ -84,6 +84,41 @@ function slugify(title: string, id: string): string {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "") || "property";
   return `${base}-${id.slice(-6)}`;
+}
+
+/**
+ * Build a stable guestyId → slug map from previously-synced data.
+ *
+ * Slugs are title-derived, so renaming a listing in Guesty regenerates a
+ * different slug and silently breaks the indexed URL. To prevent that, once
+ * a listing has a slug we PIN it: future syncs reuse the existing slug for
+ * that guestyId and never regenerate it. Only brand-new listings get a
+ * freshly slugified URL (once).
+ *
+ * Reads the runtime sync file first (freshest) then the committed fallback.
+ */
+async function loadExistingSlugMap(): Promise<Map<string, string>> {
+  const map = new Map<string, string>();
+  const candidates = [
+    join(process.cwd(), "data", "properties-synced.json"),
+    join(process.cwd(), "client", "src", "data", "properties.json"),
+  ];
+  for (const path of candidates) {
+    try {
+      const raw = await readFile(path, "utf-8");
+      const data = JSON.parse(raw);
+      if (Array.isArray(data)) {
+        for (const p of data) {
+          if (p?.guestyId && p?.slug && !map.has(p.guestyId)) {
+            map.set(p.guestyId, p.slug);
+          }
+        }
+      }
+    } catch {
+      // File missing or unreadable — skip, fall through to next candidate.
+    }
+  }
+  return map;
 }
 
 /** Fetch all reviews from Guesty, paginated */
@@ -224,10 +259,16 @@ function inferDestination(addr: any): string {
   return 'minho';
 }
 
-function mapListingToProperty(listing: any, reviews: any[] = []) {
+function mapListingToProperty(
+  listing: any,
+  reviews: any[] = [],
+  existingSlugMap?: Map<string, string>,
+) {
   const id = listing._id || listing.listingId || "";
   const title = listing.title || "Untitled";
-  const slug = slugify(title, id);
+  // Pin slugs: reuse the existing slug for this guestyId if we have one,
+  // so a Guesty title change never breaks the indexed URL.
+  const slug = existingSlugMap?.get(id) || slugify(title, id);
   const desc = listing.publicDescription || listing.publicDescriptions;
   const fullDesc = buildDescription(desc, listing.description);
   const tagline = buildTagline(desc, listing.description);
@@ -412,10 +453,12 @@ export async function runSync(): Promise<string> {
   }
 
   const reviewsByListing = buildReviewsByListing(allReviews);
+  const existingSlugMap = await loadExistingSlugMap();
+  console.log(`[Guesty Sync] Loaded ${existingSlugMap.size} pinned slugs from existing data`);
   const properties = listings.map((listing) => {
     const rawId = listing._id || listing.listingId || "";
     const listingReviews = reviewsByListing.get(rawId) || [];
-    return mapListingToProperty(listing, listingReviews);
+    return mapListingToProperty(listing, listingReviews, existingSlugMap);
   });
   const jsonContent = JSON.stringify(properties, null, 2);
 
