@@ -9,7 +9,7 @@ import { Link, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import {
   Menu, X, Phone, Mail, MessageCircle, Instagram, Facebook, Youtube, Linkedin,
-  ChevronDown
+  User, ChevronDown
 } from 'lucide-react';
 import { IMAGES } from '@/lib/images';
 import { trpc } from '@/lib/trpc';
@@ -21,13 +21,12 @@ interface HeaderProps {
 
 export default function Header({ variant = 'solid' }: HeaderProps) {
   const { t } = useTranslation();
-  // Auth temporarily disabled
-  // const meQuery = trpc.auth.me.useQuery(undefined, { retry: false, refetchOnWindowFocus: false });
-  // const authUser = meQuery.data;
+  const meQuery = trpc.auth.me.useQuery(undefined, { retry: false, refetchOnWindowFocus: false });
+  const authUser = meQuery.data;
   const navItems = useMemo(
     () => [
       { label: t('nav.properties'), href: '/homes', hasDropdown: true },
-      { label: t('nav.experiences'), href: '/experiences' },
+      { label: t('nav.experiences', 'Experiences'), href: '/experiences' },
       { label: t('nav.events'), href: '/events' },
       { label: t('nav.journal'), href: '/blog' },
       { label: t('nav.about'), href: '/about' },
@@ -38,7 +37,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
   const mobileNav = useMemo(
     () => [
       { label: t('nav.properties'), href: '/homes' },
-      { label: t('nav.experiences'), href: '/experiences' },
+      { label: t('nav.experiences', 'Experiences'), href: '/experiences' },
       { label: t('nav.concierge'), href: '/concierge' },
       { label: t('nav.destinations'), href: '/destinations' },
       { label: t('nav.events'), href: '/events' },
@@ -134,7 +133,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded-md focus:bg-[#1A1A18] focus:text-white focus:text-sm focus:outline-none"
       >
-        {t('header.skipToContent')}
+        {t('header.skipToContent', 'Skip to main content')}
       </a>
       <header
         role="banner"
@@ -226,7 +225,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                           className="block px-5 py-2.5 hover:bg-[#FAFAF7] transition-colors"
                         >
                           <span className="block text-[13px] text-[#6B6860] hover:text-[#1A1A18]">{t('nav.concierge')}</span>
-                          <span className="block text-[10px] text-[#9E9A90] mt-0.5">{t('header.conciergeExclusive')}</span>
+                          <span className="block text-[10px] text-[#9E9A90] mt-0.5">Exclusive to our guests</span>
                         </Link>
                       </div>
                     </div>
@@ -324,7 +323,24 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                 </div>
               </div>
 
-              {/* Account / Login — temporarily disabled */}
+              {/* Account / Login */}
+              <Link
+                href={authUser ? '/account' : '/login'}
+                className={`hidden md:inline-flex items-center justify-center w-9 h-9 rounded-full transition-all duration-300 ${
+                  isTransparent
+                    ? 'text-white/70 hover:text-white hover:bg-white/10'
+                    : 'text-[#6B6860] hover:text-[#1A1A18] hover:bg-[#F5F1EB]'
+                }`}
+                aria-label={authUser ? 'My Account' : 'Sign in'}
+              >
+                {authUser ? (
+                  <div className="w-7 h-7 rounded-full bg-[#8B7355] flex items-center justify-center text-white text-[11px] font-display">
+                    {(authUser.name || 'G')[0].toUpperCase()}
+                  </div>
+                ) : (
+                  <User size={18} />
+                )}
+              </Link>
 
               {/* Desktop: Reserve button */}
               <Link
@@ -371,7 +387,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
         id="mobile-menu-panel"
         role="dialog"
         aria-modal="true"
-        aria-label={t('header.menuLabel')}
+        aria-label={t('header.menuLabel', 'Site navigation')}
         className={`fixed top-0 left-0 bottom-0 z-[55] w-[85vw] sm:w-[380px] lg:w-[420px] bg-white shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="h-full flex flex-col overflow-y-auto">
@@ -417,7 +433,24 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                 </span>
               </Link>
             ))}
-            {/* Account link — temporarily disabled */}
+            {/* Account link */}
+            <Link
+              href={authUser ? '/account' : '/login'}
+              onClick={() => setMenuOpen(false)}
+              className={`flex items-center gap-3 py-3.5 border-b border-[#E8E4DC]/30 transition-all duration-500 ${menuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
+              style={{ transitionDelay: menuOpen ? '400ms' : '0ms' }}
+            >
+              {authUser ? (
+                <div className="w-6 h-6 rounded-full bg-[#8B7355] flex items-center justify-center text-white text-[10px] font-display">
+                  {(authUser.name || 'G')[0].toUpperCase()}
+                </div>
+              ) : (
+                <User size={18} className="text-[#8B7355]" />
+              )}
+              <span className="text-[1.3rem]" style={{ fontFamily: 'var(--font-display)', color: '#1A1A18', fontWeight: 400 }}>
+                {authUser ? t('nav.myAccount', 'My Account') : t('nav.signIn', 'Sign In')}
+              </span>
+            </Link>
           </nav>
 
           {/* Bottom: contact + language + social */}

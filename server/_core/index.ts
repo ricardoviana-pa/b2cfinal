@@ -1,12 +1,9 @@
 import "dotenv/config";
 import express from "express";
-import compression from "compression";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { createServer } from "http";
 import net from "net";
-import fs from "fs";
-import path from "path";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerDevAuthRoutes } from "./devAuth";
@@ -18,7 +15,6 @@ import { serveStatic, setupVite } from "./vite";
 import { isGuestyConfigured, warmUpOAuthTokens } from "../lib/guesty";
 import { runSync } from "../services/guesty-sync";
 import cron from "node-cron";
-import { legacyRedirects } from "../lib/redirects.js";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -45,41 +41,9 @@ async function startServer() {
 
   app.set("trust proxy", true);
 
-  // Canonical domain redirects — only fires for the exact production bare domain.
-  // Uses X-Forwarded-Host directly so dev/stg subdomains are never affected.
-  app.use((req, res, next) => {
-    const proto = req.headers['x-forwarded-proto'] as string | undefined;
-    const fwdHost = (req.headers['x-forwarded-host'] as string | undefined)
-      ?.split(',')[0].trim().split(':')[0];
-
-    // Non-www production → www (portug**al**active.com only, not dev/stg/www)
-    if (fwdHost === 'portug' + 'alactive.com') {
-      return res.redirect(301, `https://www.portug` + `alactive.com${req.originalUrl}`);
-    }
-
-    // HTTP → HTTPS for production domains only
-    if (proto === 'http' && fwdHost && (fwdHost === 'portug' + 'alactive.com' || fwdHost === 'www.portug' + 'alactive.com')) {
-      return res.redirect(301, `https://${fwdHost}${req.originalUrl}`);
-    }
-
-    next();
-  });
-
-  // Gzip/Brotli compression — reduces HTML/CSS/JS payload ~60-80%
-  app.use(compression({
-    level: 6,                         // balanced speed vs ratio
-    threshold: 1024,                  // skip tiny responses (<1KB)
-    filter: (req, res) => {
-      // Don't compress server-sent events
-      if (req.headers.accept === 'text/event-stream') return false;
-      return compression.filter(req, res);
-    },
-  }));
-
   app.use(helmet({
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
-    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
   }));
 
   const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false, message: { error: "Too many login attempts. Please try again later." } });
@@ -112,15 +76,20 @@ async function startServer() {
     })
   );
 
-  // 301 redirects for legacy URLs (Webflow / WP / Joomla migration).
-  // Replaces ~30 ad-hoc app.get(...) calls with a centralised, table-driven middleware.
-  // Source: Wayback Machine inventory + properties.json slug mapping.
-  // See server/lib/redirects.ts for full coverage and tests.
-  app.use(legacyRedirects);
+  // 301 redirects — old Webflow URLs → new SPA routes (preserves SEO equity)
+  app.get('/properties', (_req, res) => res.redirect(301, '/homes'));
+  app.get('/properties/:slug', (req, res) => res.redirect(301, `/homes/${req.params.slug}`));
+  app.get('/contact-us', (_req, res) => res.redirect(301, '/contact'));
+  app.get('/legal-terms', (_req, res) => res.redirect(301, '/legal/terms'));
+  app.get('/why-portugal-active', (_req, res) => res.redirect(301, '/about'));
+  app.get('/locations/minho', (_req, res) => res.redirect(301, '/destinations/minho'));
+  app.get('/locations/porto', (_req, res) => res.redirect(301, '/destinations/porto'));
+  app.get('/locations/algarve', (_req, res) => res.redirect(301, '/destinations/algarve'));
+  app.get('/locations/:slug', (_req, res) => res.redirect(301, '/destinations'));
+  app.get('/journal', (_req, res) => res.redirect(301, '/blog'));
+  app.get('/account/login', (_req, res) => res.redirect(301, '/login'));
 
-  // Dynamic sitemap.xml with multi-language support
-  const SITEMAP_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
-
+  // Dynamic sitemap.xml
   app.get("/sitemap.xml", async (_req, res) => {
     try {
       const { getPropertiesForSite } = await import("../services/properties-store");
@@ -128,6 +97,7 @@ async function startServer() {
       const properties = await getPropertiesForSite();
       const blogPosts = await listBlogPosts({ status: "published" });
       const serviceItems = await listServices({ activeOnly: true });
+      // Always use production domain for sitemap — this is for search engine indexing only
       const base = "https://www.portugalactive.com";
       const now = new Date().toISOString().split("T")[0];
 
@@ -154,65 +124,33 @@ async function startServer() {
         { loc: "/legal/cookies", priority: "0.3", changefreq: "yearly" },
       ];
 
-      /** Generate a <url> entry with hreflang alternates for all languages */
-      const url = (pagePath: string, lang: string, lastmod: string, changefreq: string, priority: string) => {
-        const loc = `${base}/${lang}${pagePath === '/' ? '' : pagePath}`;
-        const alternates = SITEMAP_LANGS.map(l =>
-          `    <xhtml:link rel="alternate" hreflang="${l}" href="${base}/${l}${pagePath === '/' ? '' : pagePath}" />`
-        ).join('\n');
-        const xDefault = `    <xhtml:link rel="alternate" hreflang="x-default" href="${base}/en${pagePath === '/' ? '' : pagePath}" />`;
-        return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n${alternates}\n${xDefault}\n  </url>`;
-      };
+      const url = (loc: string, lastmod: string, changefreq: string, priority: string) =>
+        `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
 
-      const allUrls: string[] = [];
+      const staticUrls = staticPages.map(p => url(`${base}${p.loc}`, now, p.changefreq, p.priority));
 
-      // Static pages × all languages
-      for (const lang of SITEMAP_LANGS) {
-        for (const p of staticPages) {
-          allUrls.push(url(p.loc, lang, now, p.changefreq, p.priority));
-        }
-      }
+      const propertyUrls = properties
+        .filter((p: any) => p.slug)
+        .map((p: any) => url(`${base}/homes/${p.slug}`, now, "weekly", "0.9"));
 
-      // Dynamic pages × all languages
-      const dynamicPages: { path: string; lastmod: string; changefreq: string; priority: string }[] = [];
+      const blogUrls = blogPosts
+        .filter((p: any) => p.slug)
+        .map((p: any) => {
+          const mod = p.updatedAt || p.publishedAt || p.createdAt;
+          const lastmod = mod ? new Date(mod).toISOString().split("T")[0] : now;
+          return url(`${base}/blog/${p.slug}`, lastmod, "monthly", "0.8");
+        });
 
-      for (const p of properties.filter((p: any) => p.slug)) {
-        dynamicPages.push({ path: `/homes/${(p as any).slug}`, lastmod: now, changefreq: "weekly", priority: "0.9" });
-      }
-
-      for (const p of blogPosts.filter((p: any) => p.slug)) {
-        const mod = (p as any).updatedAt || (p as any).publishedAt || (p as any).createdAt;
-        const lastmod = mod ? new Date(mod).toISOString().split("T")[0] : now;
-        dynamicPages.push({ path: `/blog/${(p as any).slug}`, lastmod, changefreq: "monthly", priority: "0.8" });
-      }
-
-      for (const s of serviceItems.filter((s: any) => s.slug)) {
-        dynamicPages.push({ path: `/services/${(s as any).slug}`, lastmod: now, changefreq: "monthly", priority: "0.8" });
-      }
-
-      // Experience detail pages (from static JSON — these are curated activity PDPs)
-      try {
-        const expPath = path.resolve(import.meta.dirname || __dirname, "..", "..", "client", "src", "data", "experienceDetails.json");
-        const expData = JSON.parse(fs.readFileSync(expPath, "utf-8"));
-        for (const exp of (expData.experiences || [])) {
-          if (exp.slug) {
-            dynamicPages.push({ path: `/experiences/${exp.slug}`, lastmod: now, changefreq: "monthly", priority: "0.8" });
-          }
-        }
-      } catch (e) {
-        console.warn("[Sitemap] could not load experienceDetails.json", e);
-      }
-
-      for (const lang of SITEMAP_LANGS) {
-        for (const dp of dynamicPages) {
-          allUrls.push(url(dp.path, lang, dp.lastmod, dp.changefreq, dp.priority));
-        }
-      }
+      const serviceUrls = serviceItems
+        .filter((s: any) => s.slug)
+        .map((s: any) => url(`${base}/services/${s.slug}`, now, "monthly", "0.8"));
 
       const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${allUrls.join("\n")}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${staticUrls.join("\n")}
+${propertyUrls.join("\n")}
+${blogUrls.join("\n")}
+${serviceUrls.join("\n")}
 </urlset>`;
 
       res.setHeader("Content-Type", "application/xml");
@@ -221,45 +159,6 @@ ${allUrls.join("\n")}
     } catch (err) {
       console.error("[Sitemap] Error generating sitemap:", err);
       res.status(500).send("Error generating sitemap");
-    }
-  });
-
-  // ── IndexNow: notify Bing/Yandex when content changes ──────────────
-  // POST /api/indexnow { urls: ["/homes/new-villa-slug"] }
-  // Protected by admin key. Call after property sync or blog publish.
-  const INDEXNOW_KEY = process.env.INDEXNOW_KEY || 'portugalactive2024indexnow';
-
-  // Serve the key verification file
-  app.get(`/${INDEXNOW_KEY}.txt`, (_req, res) => {
-    res.type('text/plain').send(INDEXNOW_KEY);
-  });
-
-  app.post('/api/indexnow', async (req, res) => {
-    const adminKey = req.headers['x-admin-key'];
-    if (!adminKey || adminKey !== process.env.ADMIN_API_KEY) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-    const { urls } = req.body as { urls?: string[] };
-    if (!urls || !urls.length) return res.status(400).json({ error: 'urls[] required' });
-
-    const base = 'https://www.portugalactive.com';
-    const fullUrls = urls.map(u => u.startsWith('http') ? u : `${base}${u}`);
-
-    try {
-      const resp = await fetch('https://api.indexnow.org/indexnow', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          host: 'www.portugalactive.com',
-          key: INDEXNOW_KEY,
-          keyLocation: `${base}/${INDEXNOW_KEY}.txt`,
-          urlList: fullUrls,
-        }),
-      });
-      res.json({ status: resp.status, submitted: fullUrls.length });
-    } catch (err) {
-      console.error('[IndexNow] ping failed:', err);
-      res.status(502).json({ error: 'IndexNow ping failed' });
     }
   });
 

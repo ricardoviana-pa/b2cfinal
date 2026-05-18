@@ -28,13 +28,13 @@ i18n
     },
     fallbackLng: "en",
     supportedLngs: ["en", "pt", "fr", "es", "it", "fi", "de", "nl", "sv"],
+    lng: "en",
     defaultNS: "translation",
     interpolation: { escapeValue: false },
     detection: {
-      order: ["path", "localStorage"],
+      order: ["localStorage"],
       caches: ["localStorage"],
       lookupLocalStorage: "i18nextLng",
-      lookupFromPathIndex: 0,
     },
   });
 

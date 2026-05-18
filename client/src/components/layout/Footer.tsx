@@ -31,7 +31,7 @@ export default function Footer() {
       setEmail('');
       pushDL({ event: 'generate_lead', lead_source: 'newsletter-footer', lead_type: 'newsletter' });
     } catch {
-      setNlError(t('footer.nlError'));
+      setNlError(t('footer.nlError', 'Something went wrong. Please try again.'));
     } finally {
       setSubscribing(false);
     }
@@ -60,19 +60,19 @@ export default function Footer() {
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
             <div className="max-w-md">
               <h3 className="font-display text-[clamp(1.25rem,2.5vw,1.75rem)] font-light text-white leading-tight mb-2">
-                {t('footer.nlHeadline')}
+                {t('footer.nlHeadline', 'Stay inspired.')}
               </h3>
               <p
                 className="text-[13px] text-white/40 leading-relaxed"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
               >
-                {t('footer.nlSub')}
+                {t('footer.nlSub', 'Curated stays, seasonal offers, and Portugal travel stories — delivered monthly.')}
               </p>
             </div>
             <div className="w-full lg:w-auto lg:min-w-[380px]">
               {subscribed ? (
                 <p className="text-[13px] flex items-center gap-2 text-[#C4A87C]" role="status" aria-live="polite">
-                  <Check className="w-3.5 h-3.5" /> {t('footer.welcomeInbox')}
+                  <Check className="w-3.5 h-3.5" /> {t('footer.welcomeInbox', 'Welcome to the list.')}
                 </p>
               ) : (
                 <form onSubmit={handleSubscribe} className="flex flex-col gap-1.5" noValidate>
@@ -81,7 +81,7 @@ export default function Footer() {
                       type="email"
                       value={email}
                       onChange={e => { setEmail(e.target.value); setNlError(''); }}
-                      placeholder={t('footer.emailPlaceholder')}
+                      placeholder={t('footer.emailPlaceholder', 'Your email address')}
                       required
                       autoComplete="email"
                       inputMode="email"
@@ -94,7 +94,7 @@ export default function Footer() {
                       className="h-[48px] px-6 bg-[#C4A87C] text-[#1A1A18] text-[11px] font-semibold hover:bg-[#D4B88C] transition-colors flex-shrink-0 disabled:opacity-50"
                       style={{ letterSpacing: '1.5px' }}
                     >
-                      {subscribing ? '...' : t('footer.subscribe')}
+                      {subscribing ? '...' : t('footer.subscribe', 'SUBSCRIBE')}
                     </button>
                   </div>
                   {nlError && <p className="text-[11px] text-red-400" role="alert" aria-live="assertive">{nlError}</p>}
@@ -118,7 +118,7 @@ export default function Footer() {
               className="text-[13px] text-white/35 mb-8 leading-relaxed max-w-[260px]"
               style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
             >
-              {t('footer.tagline')}
+              {t('footer.tagline', 'Private hotels across Portugal. Curated homes with hotel-level service.')}
             </p>
             {/* Contact shortcuts */}
             <div className="flex items-center gap-3 mb-2">
@@ -136,7 +136,7 @@ export default function Footer() {
             <div className="flex items-center gap-3">
               <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group" aria-label="WhatsApp">
                 <MessageCircle size={13} className="text-white/30 group-hover:text-[#C4A87C] transition-colors" />
-                <span className="text-[12px] text-white/40 group-hover:text-white transition-colors" style={{ fontWeight: 300 }}>{t('header.whatsapp')}</span>
+                <span className="text-[12px] text-white/40 group-hover:text-white transition-colors" style={{ fontWeight: 300 }}>{t('header.whatsapp', 'WhatsApp')}</span>
               </a>
             </div>
           </div>
@@ -144,17 +144,17 @@ export default function Footer() {
           {/* Column 2: Destinations */}
           <div>
             <h4 className="text-[10px] font-semibold text-white/60 uppercase mb-5" style={{ letterSpacing: '0.12em' }}>
-              {t('footer.destinationsTitle')}
+              {t('footer.destinationsTitle', 'Destinations')}
             </h4>
             <ul className="flex flex-col gap-3">
-              {footerLinks(t('footer.minhoCoast'), '/destinations/minho')}
-              {footerLinks(t('footer.portoDouro'), '/destinations/porto')}
-              {footerLinks(t('footer.lisbon'), '/destinations/lisbon')}
-              {footerLinks(t('footer.alentejo'), '/destinations/alentejo')}
-              {footerLinks(t('footer.algarve'), '/destinations/algarve')}
+              {footerLinks(t('footer.minhoCoast', 'Minho & Coast'), '/destinations/minho')}
+              {footerLinks(t('footer.portoDouro', 'Porto & Douro'), '/destinations/porto')}
+              {footerLinks(t('footer.lisbon', 'Lisbon & Sintra'), '/destinations/lisbon')}
+              {footerLinks(t('footer.alentejo', 'Alentejo'), '/destinations/alentejo')}
+              {footerLinks(t('footer.algarve', 'Algarve'), '/destinations/algarve')}
               <li>
                 <span className="text-[13px] text-white/20" style={{ fontWeight: 300 }}>
-                  {t('footer.brazil')} <span className="text-[9px] text-[#C4A87C]/40 ml-1 uppercase tracking-wider">{t('footer.soon')}</span>
+                  {t('footer.brazil', 'Brazil')} <span className="text-[9px] text-[#C4A87C]/40 ml-1 uppercase tracking-wider">{t('footer.soon', 'Soon')}</span>
                 </span>
               </li>
             </ul>
@@ -163,13 +163,13 @@ export default function Footer() {
           {/* Column 3: Services */}
           <div>
             <h4 className="text-[10px] font-semibold text-white/60 uppercase mb-5" style={{ letterSpacing: '0.12em' }}>
-              {t('footer.servicesTitle')}
+              {t('footer.servicesTitle', 'Services')}
             </h4>
             <ul className="flex flex-col gap-3">
-              {footerLinks(t('footer.bookStay'), '/homes')}
-              {footerLinks(t('footer.experiences'), '/experiences')}
-              {footerLinks(t('footer.conciergeServices'), '/concierge')}
-              {footerLinks(t('footer.events'), '/events')}
+              {footerLinks(t('footer.bookStay', 'Private homes'), '/homes')}
+              {footerLinks(t('footer.experiences', 'Experiences'), '/experiences')}
+              {footerLinks(t('footer.conciergeServices', 'Concierge services'), '/concierge')}
+              {footerLinks(t('footer.events', 'Events & retreats'), '/events')}
               <li>
                 <a
                   href="https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
@@ -178,7 +178,7 @@ export default function Footer() {
                   className="text-[13px] text-white/50 hover:text-white transition-colors duration-200"
                   style={{ fontWeight: 300 }}
                 >
-                  {t('footer.meetConcierge')}
+                  {t('footer.meetConcierge', 'Talk to concierge')}
                 </a>
               </li>
             </ul>
@@ -187,18 +187,15 @@ export default function Footer() {
           {/* Column 4: Company */}
           <div>
             <h4 className="text-[10px] font-semibold text-white/60 uppercase mb-5" style={{ letterSpacing: '0.12em' }}>
-              {t('footer.companyTitle')}
+              {t('footer.companyTitle', 'Company')}
             </h4>
             <ul className="flex flex-col gap-3">
-              {footerLinks(t('footer.about'), '/about')}
-              {footerLinks(t('footer.faq'), '/faq')}
-              {footerLinks(t('footer.journal'), '/blog')}
-              {footerLinks(t('footer.contact'), '/contact')}
-              <li>
-                <a href="https://management.portugalactive.com" target="_blank" rel="noopener noreferrer" className="text-[13px] text-white/40 hover:text-white transition-colors" style={{ fontWeight: 300 }}>
-                  {t('footer.forOwners', 'For property owners')} →
-                </a>
-              </li>
+              {footerLinks(t('footer.about', 'About us'), '/about')}
+              {footerLinks(t('footer.faq', 'FAQ'), '/faq')}
+              {footerLinks(t('footer.journal', 'Journal'), '/blog')}
+              {footerLinks(t('footer.careers', 'Careers'), '/careers')}
+              {footerLinks(t('footer.forOwners', 'For owners'), '/owners')}
+              {footerLinks(t('footer.contact', 'Contact'), '/contact')}
             </ul>
           </div>
         </div>
@@ -212,12 +209,13 @@ export default function Footer() {
             {/* Left: copyright + legal */}
             <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
               <span className="text-[11px] text-white/20" style={{ fontWeight: 300 }}>
-                {t('footer.copyrightLine', { year: new Date().getFullYear(), rights: t('footer.allRightsReserved') })}
+                {t('footer.copyrightLine', { year: new Date().getFullYear(), rights: t('footer.allRightsReserved', 'All rights reserved'), defaultValue: `© ${new Date().getFullYear()} Portugal Active. All rights reserved.` })}
               </span>
               <div className="flex items-center gap-4 text-[11px] text-white/20" style={{ fontWeight: 300 }}>
-                <Link href="/legal/privacy" className="hover:text-white/50 transition-colors">{t('footer.privacy')}</Link>
-                <Link href="/legal/terms" className="hover:text-white/50 transition-colors">{t('footer.terms')}</Link>
-                <Link href="/legal/cookies" className="hover:text-white/50 transition-colors">{t('footer.cookies')}</Link>
+                <Link href="/legal/privacy" className="hover:text-white/50 transition-colors">{t('footer.privacy', 'Privacy')}</Link>
+                <Link href="/legal/terms" className="hover:text-white/50 transition-colors">{t('footer.terms', 'Terms')}</Link>
+                <Link href="/legal/cookies" className="hover:text-white/50 transition-colors">{t('footer.cookies', 'Cookies')}</Link>
+                <Link href="/admin" className="hover:text-white/50 transition-colors">{t('footer.admin', 'Admin')}</Link>
               </div>
             </div>
 

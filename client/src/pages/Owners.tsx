@@ -10,7 +10,6 @@ import { ArrowRight, Check, ExternalLink, Loader2 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
-import AnswerCapsule from '@/components/seo/AnswerCapsule';
 import { trpc } from '@/lib/trpc';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -124,7 +123,7 @@ export default function Owners() {
       {/* Hero */}
       <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80&auto=format&fit=crop"
+          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80"
           alt="Portugal Active property management"
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -145,25 +144,13 @@ export default function Owners() {
         </div>
       </section>
 
-      {/* Quick Answer — SEO / AI citable summary */}
-      <section className="py-8 bg-[#FAFAF7]">
-        <div className="container max-w-3xl mx-auto">
-          <AnswerCapsule
-            question="Why list your property with Portugal Active?"
-            answer="Portugal Active manages 60+ private hotels across Portugal, delivering five-star hospitality to every guest while maximising owner returns. Services include professional photography, dynamic pricing, multi-channel distribution, 24/7 guest concierge, daily housekeeping, and preventive maintenance. Owners retain full use of their property and receive transparent monthly reporting. Average occupancy uplift is 40% in the first year. Request a free property assessment to see your projected revenue."
-            emitSchema
-            schemaId="qa-owners"
-          />
-        </div>
-      </section>
-
       {/* Impact Numbers */}
       <section className="section-padding bg-white border-b border-[#E8E4DC]">
         <div className="container">
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 lg:mx-0 lg:px-0 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible">
             {[
-              { stat: '60+', label: t('owners.statHomes') },
-              { stat: '4.8/5', label: t('owners.statRating') },
+              { stat: '70+', label: t('owners.statHomes') },
+              { stat: '4.9/5', label: t('owners.statRating') },
               { stat: '40%', label: t('owners.statRepeat') },
               { stat: '30+', label: t('owners.statTeam') },
             ].map(item => (

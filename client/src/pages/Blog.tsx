@@ -3,7 +3,7 @@
    Hero, 6 categories, featured article, article grid
    ========================================================================== */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { Link } from 'wouter';
@@ -11,18 +11,17 @@ import { Clock, ArrowRight, Calendar, Play } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
-import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import type { BlogArticle, BlogCategory } from '@/lib/types';
 import blogData from '@/data/blog.json';
 
 const articles = (blogData as any).articles as BlogArticle[];
 
 const FALLBACK_IMAGES: Record<string, string> = {
-  destinations: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&q=80&auto=format&fit=crop',
-  lifestyle: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80&auto=format&fit=crop',
-  'portugal-active': 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80&auto=format&fit=crop',
-  video: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&q=80&auto=format&fit=crop',
-  people: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80&auto=format&fit=crop',
+  destinations: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&q=80',
+  lifestyle: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80',
+  'portugal-active': 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
+  video: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&q=80',
+  people: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80',
 };
 
 function getArticleImage(article: BlogArticle): string {
@@ -30,46 +29,65 @@ function getArticleImage(article: BlogArticle): string {
 }
 
 export default function Blog() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   usePageMeta({ title: 'Portugal Travel Journal | Guides, Tips & Inspiration', description: 'Insider guides to Portugal — best beaches, hidden restaurants, wine regions, and travel tips from our local concierge team.', url: '/blog' });
   const [activeCategory, setActiveCategory] = useState<BlogCategory | 'all'>('all');
 
-  const blogGraph = useMemo(() => {
-    const publishedArticles = articles.filter((a) => a.status === 'published');
-    return [
-      {
-        '@context': 'https://schema.org',
-        '@type': 'CollectionPage',
-        '@id': 'https://www.portugalactive.com/blog',
-        name: 'Portugal Travel Journal',
-        description:
-          'Insider guides to Portugal — best beaches, hidden restaurants, wine regions, and travel tips from our local concierge team.',
-        url: 'https://www.portugalactive.com/blog',
-        mainEntity: {
-          '@type': 'ItemList',
-          itemListElement: publishedArticles.map((article, idx) => ({
-            '@type': 'ListItem',
-            position: idx + 1,
-            item: {
-              '@type': 'BlogPosting',
-              '@id': `https://www.portugalactive.com/blog/${article.slug}`,
-              headline: article.title,
-              description: article.excerpt,
-              image: getArticleImage(article),
-              datePublished: article.publishDate,
-              author: {
-                '@type': 'Person',
-                name: article.author.name,
-              },
+  // Add Schema.org BlogPosting list markup for SEO
+  useEffect(() => {
+    const publishedArticles = articles.filter(a => a.status === 'published');
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "@id": "https://www.portugalactive.com/blog",
+      "name": "Portugal Travel Journal",
+      "description": "Insider guides to Portugal — best beaches, hidden restaurants, wine regions, and travel tips from our local concierge team.",
+      "url": "https://www.portugalactive.com/blog",
+      "mainEntity": {
+        "@type": "ItemList",
+        "itemListElement": publishedArticles.map((article, idx) => ({
+          "@type": "ListItem",
+          "position": idx + 1,
+          "item": {
+            "@type": "BlogPosting",
+            "@id": `https://www.portugalactive.com/blog/${article.slug}`,
+            "headline": article.title,
+            "description": article.excerpt,
+            "image": getArticleImage(article),
+            "datePublished": article.publishDate,
+            "author": {
+              "@type": "Person",
+              "name": article.author.name,
             },
-          })),
-        },
+          },
+        })),
       },
-      buildBreadcrumbSchema([
-        { name: 'Home', item: '/' },
-        { name: 'Journal' },
-      ]),
-    ];
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(jsonLd);
+    script.id = "blog-list-jsonld";
+    document.querySelector("#blog-list-jsonld")?.remove();
+    document.head.appendChild(script);
+    return () => { document.querySelector("#blog-list-jsonld")?.remove(); };
+  }, []);
+
+  useEffect(() => {
+    const breadcrumbLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
+        { "@type": "ListItem", "position": 2, "name": "Journal" },
+      ],
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(breadcrumbLd);
+    script.id = "blog-breadcrumb-jsonld";
+    document.querySelector("#blog-breadcrumb-jsonld")?.remove();
+    document.head.appendChild(script);
+    return () => { document.querySelector("#blog-breadcrumb-jsonld")?.remove(); };
   }, []);
 
   const CATEGORIES = useMemo(() => [
@@ -93,7 +111,6 @@ export default function Blog() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
-      <StructuredData id="blog-graph" data={blogGraph} />
       <Header />
 
       {/* Hero */}
@@ -141,9 +158,6 @@ export default function Blog() {
                     alt={`${featured.title} – Portugal Active journal`}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
-                    width={800}
-                    height={600}
-                    decoding="async"
                   />
                   {((featured as any).videoId || (featured as any).vimeoId) && (
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -162,7 +176,7 @@ export default function Blog() {
                   <div className="flex items-center gap-4 text-[12px] text-[#9E9A90] mb-6">
                     <span className="flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5" />
-                      {new Date(featured.publishDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'short', year: 'numeric' })}
+                      {new Date(featured.publishDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </span>
                     <span className="flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5" />
@@ -196,9 +210,6 @@ export default function Blog() {
                       alt={`${article.title} – Portugal Active journal`}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
-                      width={800}
-                      height={600}
-                      decoding="async"
                     />
                     {((article as any).videoId || (article as any).vimeoId) && (
                       <div className="absolute inset-0 flex items-center justify-center">
@@ -214,7 +225,7 @@ export default function Blog() {
                   </h3>
                   <p className="text-[13px] text-[#6B6860] font-light line-clamp-2 mb-3">{article.excerpt}</p>
                   <div className="flex items-center gap-3 text-[11px] text-[#9E9A90]">
-                    <span>{new Date(article.publishDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    <span>{new Date(article.publishDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                     <span>·</span>
                     <span>{t('blog.minRead', { minutes: article.readTime })}</span>
                   </div>

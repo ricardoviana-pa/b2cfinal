@@ -3,7 +3,7 @@
    Sections: Gastronomy, Wellness, Mobility, Additional Services
    ========================================================================== */
 
-import { useMemo } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'wouter';
 import { MessageCircle, ArrowRight, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -14,8 +14,6 @@ import { formatEurEditorial } from '@/lib/format';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
-import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
-import AnswerCapsule from '@/components/seo/AnswerCapsule';
 
 const allProducts = productsData as unknown as Product[];
 const services = allProducts.filter(p => p.type === 'service' && p.isActive);
@@ -30,7 +28,6 @@ const ADDITIONAL_SLUGS = ['grocery-delivery', 'babysitter', 'daily-housekeeping'
 const WHATSAPP_BASE = 'https://wa.me/351927161771?text=';
 
 function ServiceCard({ product }: { product: Product | undefined }) {
-  const { t } = useTranslation();
   if (!product) return null;
   return (
     <div className="group block">
@@ -50,7 +47,7 @@ function ServiceCard({ product }: { product: Product | undefined }) {
       </div>
       {product.priceFrom && (
         <p className="mt-3 text-[12px] text-[#6B6860]">
-          <span className="text-[#1A1A18] font-medium">{t('common.from')} {formatEurEditorial(product.priceFrom)}</span>
+          <span className="text-[#1A1A18] font-medium">From {formatEurEditorial(product.priceFrom)}</span>
           <span className="text-[#9E9A90]"> {product.priceSuffix}</span>
         </p>
       )}
@@ -60,7 +57,6 @@ function ServiceCard({ product }: { product: Product | undefined }) {
 
 /** Single-product editorial layout: image left, copy right. Used when a section has exactly 1 product. */
 function SingleServiceFeature({ product, overline, title, body }: { product: Product | undefined; overline: string; title: string; body: string }) {
-  const { t } = useTranslation();
   if (!product) return null;
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
@@ -78,12 +74,12 @@ function SingleServiceFeature({ product, overline, title, body }: { product: Pro
           {product.tagline && <p className="body-md mb-4">{product.tagline}</p>}
           {product.priceFrom && (
             <p className="text-[13px] text-[#1A1A18] mb-6">
-              <span className="font-medium">{t('common.from')} {formatEurEditorial(product.priceFrom)}</span>
+              <span className="font-medium">From {formatEurEditorial(product.priceFrom)}</span>
               <span className="text-[#9E9A90] ml-1">{product.priceSuffix}</span>
             </p>
           )}
           <Link href={`/services/${product.slug}`} className="inline-flex items-center gap-2 text-[12px] font-medium tracking-[0.08em] uppercase text-[#8B7355] hover:text-[#1A1A18] transition-colors">
-            {t('services.learnMore')} <ArrowRight className="w-3.5 h-3.5" />
+            Learn more <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       </div>
@@ -95,62 +91,53 @@ export default function Concierge() {
   const { t } = useTranslation();
   usePageMeta({ title: 'Concierge Services | Exclusive to Portugal Active Guests', description: 'Private chef, in-house spa, airport transfers and additional services available exclusively to guests staying at our properties.', url: '/concierge' });
 
+  // Add Service schema markup for SEO
+  useEffect(() => {
+    const gastronomyProducts = GASTRONOMY_SLUGS.map(getService).filter(Boolean) as Product[];
+    const wellnessProducts = WELLNESS_SLUGS.map(getService).filter(Boolean) as Product[];
+    const mobilityProducts = MOBILITY_SLUGS.map(getService).filter(Boolean) as Product[];
+    const additionalProducts = ADDITIONAL_SLUGS.map(getService).filter(Boolean) as Product[];
+
+    const allServices = [...gastronomyProducts, ...wellnessProducts, ...mobilityProducts, ...additionalProducts];
+
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Portugal Active",
+      "url": "https://portugalactive.com/concierge",
+      "hasService": allServices.map(service => ({
+        "@type": "Service",
+        "name": service.name,
+        "description": service.tagline || service.name,
+        "areaServed": {
+          "@type": "AdministrativeArea",
+          "name": "Portugal"
+        },
+        ...(service.priceFrom && {
+          "priceRange": `€${service.priceFrom}${service.priceSuffix ? ` ${service.priceSuffix}` : ''}`
+        })
+      }))
+    };
+
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(jsonLd);
+    script.id = "services-schema";
+    document.querySelector("#services-schema")?.remove();
+    document.head.appendChild(script);
+
+    return () => { document.querySelector("#services-schema")?.remove(); };
+  }, []);
+
   const gastronomyProducts = GASTRONOMY_SLUGS.map(getService).filter(Boolean) as Product[];
   const wellnessProducts = WELLNESS_SLUGS.map(getService).filter(Boolean) as Product[];
   const mobilityProducts = MOBILITY_SLUGS.map(getService).filter(Boolean) as Product[];
   const additionalProducts = ADDITIONAL_SLUGS.map(getService).filter(Boolean) as Product[];
 
-  // Services are emitted as an ItemList of Service items. The brand entity
-  // (Organization) already exists once globally in index.html — we reference
-  // it via providedBy @id rather than re-declaring it here.
-  const servicesGraph = useMemo(() => {
-    const allServices = [
-      ...gastronomyProducts,
-      ...wellnessProducts,
-      ...mobilityProducts,
-      ...additionalProducts,
-    ];
-    return [
-      {
-        '@context': 'https://schema.org',
-        '@type': 'ItemList',
-        name: 'Portugal Active Concierge Services',
-        url: 'https://www.portugalactive.com/concierge',
-        numberOfItems: allServices.length,
-        itemListElement: allServices.map((service, idx) => ({
-          '@type': 'ListItem',
-          position: idx + 1,
-          item: {
-            '@type': 'Service',
-            name: service.name,
-            description: service.tagline || service.name,
-            url: `https://www.portugalactive.com/services/${service.slug}`,
-            ...(service.image && { image: service.image }),
-            areaServed: { '@type': 'Country', name: 'Portugal' },
-            provider: { '@id': 'https://www.portugalactive.com/#organization' },
-            ...(service.priceFrom && {
-              offers: {
-                '@type': 'Offer',
-                priceCurrency: 'EUR',
-                price: service.priceFrom,
-                ...(service.priceSuffix && { description: service.priceSuffix }),
-              },
-            }),
-          },
-        })),
-      },
-      buildBreadcrumbSchema([
-        { name: 'Home', item: '/' },
-        { name: 'Concierge' },
-      ]),
-    ];
-  }, [gastronomyProducts, wellnessProducts, mobilityProducts, additionalProducts]);
-
   const waConciergeMsgEncoded = encodeURIComponent("Hi, I'd like to talk to your concierge about planning my stay.");
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
-      <StructuredData id="services-graph" data={servicesGraph} />
       <Header />
 
       {/* Hero */}
@@ -159,14 +146,11 @@ export default function Concierge() {
           src="/experiences/pa-property-firepit.webp"
           alt="Portugal Active property terrace with fire pit at sunset"
           className="absolute inset-0 w-full h-full object-cover"
-          width={1600}
-          height={900}
-          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/15" />
         <div className="relative container pb-12 lg:pb-16 z-10">
           <p className="inline-flex items-center gap-1.5 text-[11px] font-medium text-white/90 mb-3 tracking-[0.12em] uppercase">
-            <Lock className="w-3 h-3" /> {t('services.exclusiveToGuests')}
+            <Lock className="w-3 h-3" /> Exclusive to our guests
           </p>
           <h1 className="headline-xl text-white mb-4">{t('services.heroTitle')}</h1>
           <p className="body-lg max-w-xl text-white/95">
@@ -179,31 +163,13 @@ export default function Concierge() {
       <div className="bg-[#F5F1EB] border-b border-[#E8E4DC]">
         <div className="container py-4 flex flex-wrap items-center justify-between gap-3">
           <p className="text-[13px] text-[#6B6860]">
-            <span className="font-medium text-[#1A1A18]">{t('services.guestsOnlyBanner')}</span> {t('services.guestsOnlyQuestion')}
+            <span className="font-medium text-[#1A1A18]">Concierge services are available only to guests staying at one of our properties.</span> Looking for activities open to everyone?
           </p>
           <Link href="/experiences" className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#8B7355] hover:text-[#1A1A18] transition-colors inline-flex items-center gap-1">
-            {t('services.browseExperiences')} <ArrowRight className="w-3.5 h-3.5" />
+            Browse experiences <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       </div>
-
-      {/* Answer capsule — citable concierge summary for AI engines */}
-      <section className="pt-10 pb-4 bg-[#FAFAF7]">
-        <div className="container max-w-3xl mx-auto">
-          <AnswerCapsule
-            question="What concierge services does Portugal Active offer?"
-            answer="Portugal Active provides hotel-grade concierge services exclusively to guests staying at its private hotels. Services include private chef dining, in-villa spa and wellness treatments, airport transfers, car rental, and curated local experiences. Every service is delivered by the in-house team or vetted local partners. These services are not available on third-party booking platforms."
-            lastUpdated="2026-04-17"
-            author="Portugal Active concierge team"
-            emitSchema
-            schemaId="qa-services"
-            cite={[
-              { label: 'Browse properties', href: '/homes' },
-              { label: 'Contact concierge', href: '/contact' },
-            ]}
-          />
-        </div>
-      </section>
 
       {/* Section Nav */}
       <div className="sticky top-16 md:top-20 z-30 bg-[#FAFAF7]/95 backdrop-blur-md border-b border-[#E8E4DC]">
@@ -294,35 +260,6 @@ export default function Concierge() {
               </div>
             </>
           )}
-        </div>
-      </section>
-
-      {/* Our Standards — PA Cleaning video proof */}
-      <section className="section-padding bg-white border-b border-[#E8E4DC]">
-        <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-            <div className="aspect-video w-full rounded-sm overflow-hidden bg-black">
-              <iframe
-                src="https://www.youtube.com/embed/OUgTpL2E15U?rel=0&modestbranding=1"
-                title="PA Cleaning — 47-point property preparation"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-                loading="lazy"
-                referrerPolicy="origin"
-              />
-            </div>
-            <div>
-              <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-4">{t('services.standardsOverline', 'OUR STANDARDS')}</p>
-              <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.standardsTitle', 'Hotel-grade housekeeping, every stay')}</h2>
-              <p className="body-lg mb-6">
-                {t('services.standardsBody', 'Before every guest arrives, our in-house team runs a 47-point preparation checklist. Linens pressed, amenities restocked, every surface inspected. No third-party crews, no shortcuts.')}
-              </p>
-              <p className="body-md text-[#9E9A90]">
-                {t('services.standardsNote', 'This is the standard across all 60+ properties. Every time.')}
-              </p>
-            </div>
-          </div>
         </div>
       </section>
 

@@ -26,12 +26,6 @@ import ReviewsSection from '@/components/property/ReviewsSection';
 import { trpc } from '@/lib/trpc';
 import { pushEcommerce } from '@/lib/datalayer';
 import { sanitizePropertyName } from '@/lib/format';
-import {
-  StructuredData,
-  buildVacationRentalSchema,
-  buildBreadcrumbSchema,
-} from '@/components/seo/StructuredData';
-import AnswerCapsule from '@/components/seo/AnswerCapsule';
 
 const allProducts = productsData as unknown as Product[];
 const destinations = destinationsData as unknown as Destination[];
@@ -40,43 +34,43 @@ const destinations = destinationsData as unknown as Destination[];
 
 /** Categories for grouping amenities — order determines display order */
 const AMENITY_CATEGORIES: { key: string; label: string; icon: LucideIcon; keywords: string[] }[] = [
-  { key: 'outdoor', label: 'amenity.outdoorPool', icon: Waves, keywords: [
+  { key: 'outdoor', label: 'Outdoor & Pool', icon: Waves, keywords: [
     'pool', 'swimming', 'infinity', 'heated pool', 'outdoor pool', 'private pool', 'hot tub', 'jacuzzi',
     'garden', 'backyard', 'terrace', 'patio', 'balcony', 'outdoor seating',
     'bbq', 'grill', 'barbecue', 'pool table', 'tennis', 'table tennis',
   ]},
-  { key: 'views', label: 'amenity.viewsLocation', icon: Mountain, keywords: [
+  { key: 'views', label: 'Views & Location', icon: Mountain, keywords: [
     'ocean view', 'sea view', 'beach', 'beachfront', 'mountain', 'garden view', 'lake', 'river', 'town',
   ]},
-  { key: 'comfort', label: 'amenity.comfortClimate', icon: Wind, keywords: [
+  { key: 'comfort', label: 'Comfort & Climate', icon: Wind, keywords: [
     'air conditioning', 'heating', 'indoor fireplace', 'fireplace',
   ]},
-  { key: 'kitchen', label: 'amenity.kitchenDining', icon: Utensils, keywords: [
+  { key: 'kitchen', label: 'Kitchen & Dining', icon: Utensils, keywords: [
     'kitchen', 'fully equipped', 'oven', 'microwave', 'stove', 'refrigerator',
     'coffee', 'nespresso', 'espresso', 'kettle', 'toaster', 'blender', 'dining',
   ]},
-  { key: 'entertainment', label: 'amenity.entertainment', icon: Tv, keywords: [
+  { key: 'entertainment', label: 'Entertainment', icon: Tv, keywords: [
     'tv', 'cable tv', 'smart tv', 'sound system', 'board games', 'books',
   ]},
-  { key: 'connectivity', label: 'amenity.connectivityWork', icon: Wifi, keywords: [
+  { key: 'connectivity', label: 'Connectivity & Work', icon: Wifi, keywords: [
     'wifi', 'internet', 'wireless', 'workspace', 'desk', 'laptop', 'home office', 'monitor',
   ]},
-  { key: 'wellness', label: 'amenity.wellnessFitness', icon: Mountain, keywords: [
+  { key: 'wellness', label: 'Wellness & Fitness', icon: Mountain, keywords: [
     'gym', 'fitness', 'workout', 'sauna', 'spa', 'yoga', 'horseback',
   ]},
-  { key: 'parking', label: 'amenity.parkingAccess', icon: Car, keywords: [
+  { key: 'parking', label: 'Parking & Access', icon: Car, keywords: [
     'parking', 'garage', 'ev charging', 'private entrance',
   ]},
-  { key: 'laundry', label: 'amenity.laundryHousekeeping', icon: Shirt, keywords: [
+  { key: 'laundry', label: 'Laundry & Housekeeping', icon: Shirt, keywords: [
     'washer', 'washing machine', 'clothes dryer', 'laundry', 'iron',
   ]},
-  { key: 'bathroom', label: 'amenity.bathroom', icon: Bath, keywords: [
+  { key: 'bathroom', label: 'Bathroom', icon: Bath, keywords: [
     'bathtub', 'hair dryer',
   ]},
-  { key: 'family', label: 'amenity.familyFriendly', icon: BedDouble, keywords: [
+  { key: 'family', label: 'Family Friendly', icon: BedDouble, keywords: [
     'crib', 'high chair', 'children', 'infants', 'baby',
   ]},
-  { key: 'safety', label: 'amenity.safety', icon: Award, keywords: [
+  { key: 'safety', label: 'Safety', icon: Award, keywords: [
     'smoke detector', 'fire extinguisher', 'first aid', 'security', 'safe',
   ]},
 ];
@@ -149,7 +143,7 @@ function categorizeAmenities(items: string[]): { category: string; label: string
     }
   }
   if (uncategorized.length) {
-    groups.push({ category: 'other', label: 'amenity.other', icon: Sparkles, items: uncategorized });
+    groups.push({ category: 'other', label: 'Other', icon: Sparkles, items: uncategorized });
   }
   return groups;
 }
@@ -427,50 +421,68 @@ export default function PropertyDetail() {
     type: 'place',
   });
 
-  // VacationRental + Breadcrumb JSON-LD (bundled via @graph by StructuredData).
-  // VacationRental is Google's dedicated subtype for short-term rentals; it
-  // surfaces richer fields (numberOfBedrooms, occupancy, amenityFeature as
-  // LocationFeatureSpecification) that AI Overviews quote directly.
-  const propertyGraph = useMemo(() => {
-    if (!property) return null;
+  useEffect(() => {
+    if (!property) return;
     const dest = destinations.find(d => d.slug === property.destination);
-    const amenityNames = Object.values(property.amenities || {})
-      .flatMap((items) => (Array.isArray(items) ? (items as string[]) : []));
-
-    return [
-      buildVacationRentalSchema({
-        name: property.name,
-        slug: property.slug,
-        description: property.tagline || property.description?.slice(0, 500),
-        images: property.images,
-        bedrooms: property.bedrooms,
-        bathrooms: (property as any).bathrooms ?? null,
-        maxGuests: (property as any).maxGuests ?? null,
-        priceFrom: property.priceFrom,
-        locality: property.locality || dest?.name,
-        region: dest?.name,
-        amenities: amenityNames,
-        checkinTime: (property as any).checkInTime ?? null,
-        checkoutTime: (property as any).checkOutTime ?? null,
-        // Guesty doesn't currently expose these — leave null until wired.
-        petsAllowed: (property as any).petsAllowed ?? null,
-        latitude: (property as any).latitude ?? null,
-        longitude: (property as any).longitude ?? null,
-        aggregateRating:
-          (property as any).averageRating && (property as any).reviewCount
-            ? {
-                ratingValue: Number((property as any).averageRating),
-                reviewCount: Number((property as any).reviewCount),
-              }
-            : null,
-        reviews: (property as any).reviews || null,
+    const amenityFeatures = Object.entries(property.amenities || {}).flatMap(([category, items]) =>
+      (items as string[]).map(item => ({ "@type": "PropertyValue", "name": item, "value": true }))
+    );
+    const jsonLd: Record<string, any> = {
+      "@context": "https://schema.org",
+      "@type": "LodgingBusiness",
+      "name": property.name,
+      "description": property.tagline || property.description?.slice(0, 300),
+      "url": `https://www.portugalactive.com/homes/${property.slug}`,
+      "image": property.images?.slice(0, 5),
+      "numberOfRooms": property.bedrooms,
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": property.locality || dest?.name,
+        "addressRegion": dest?.name || '',
+        "addressCountry": "PT",
+      },
+      ...(amenityFeatures.length > 0 && { "amenityFeature": amenityFeatures }),
+      ...(property.priceFrom > 0 && {
+        "priceRange": `From €${property.priceFrom} per night`,
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "EUR",
+          "price": property.priceFrom,
+          "availability": "https://schema.org/InStock",
+        },
       }),
-      buildBreadcrumbSchema([
-        { name: 'Home', item: '/' },
-        { name: 'Homes', item: '/homes' },
-        { name: property.name },
-      ]),
-    ];
+      "provider": {
+        "@type": "Organization",
+        "name": "Portugal Active",
+        "url": "https://www.portugalactive.com",
+      },
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(jsonLd);
+    script.id = "property-jsonld";
+    document.querySelector("#property-jsonld")?.remove();
+    document.head.appendChild(script);
+    // BreadcrumbList
+    const breadcrumbLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.portugalactive.com" },
+        { "@type": "ListItem", "position": 2, "name": "Homes", "item": "https://www.portugalactive.com/homes" },
+        { "@type": "ListItem", "position": 3, "name": property.name },
+      ],
+    };
+    const breadcrumbScript = document.createElement("script");
+    breadcrumbScript.type = "application/ld+json";
+    breadcrumbScript.text = JSON.stringify(breadcrumbLd);
+    breadcrumbScript.id = "property-breadcrumb-jsonld";
+    document.querySelector("#property-breadcrumb-jsonld")?.remove();
+    document.head.appendChild(breadcrumbScript);
+    return () => {
+      document.querySelector("#property-jsonld")?.remove();
+      document.querySelector("#property-breadcrumb-jsonld")?.remove();
+    };
   }, [property]);
 
   const whatsIncluded = useMemo(
@@ -732,16 +744,15 @@ export default function PropertyDetail() {
 
   return (
     <>
-      {propertyGraph && <StructuredData id={`property-${property.slug}`} data={propertyGraph} />}
       <div className="min-h-screen bg-[#FAFAF7]">
         <Header />
 
         {/* Breadcrumbs */}
         <nav aria-label="Breadcrumb" className="container pt-20 pb-3">
           <ol className="flex items-center gap-0.5 text-[12px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
-            <li><Link href="/" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">{t('propertyDetail.breadcrumbHome', 'Home')}</Link></li>
+            <li><Link href="/" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">Home</Link></li>
             <li className="text-[#E8E4DC]">/</li>
-            <li><Link href="/homes" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">{t('propertyDetail.breadcrumbHomes', 'Homes')}</Link></li>
+            <li><Link href="/homes" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">Homes</Link></li>
             {destObj && (
               <>
                 <li className="text-[#E8E4DC]">/</li>
@@ -837,16 +848,6 @@ export default function PropertyDetail() {
           <div className="flex items-center gap-3 mb-3">
             <p className="text-[11px] font-medium tracking-[0.12em] text-[#8B7355] uppercase">{destName}</p>
             <span className="h-px flex-1 max-w-[60px] bg-[#E8E4DC]" />
-            {property.tier === 'signature' && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-medium tracking-[0.04em] uppercase text-[#1A1A18] bg-[#F5F1EB] px-2.5 py-1 rounded-full">
-                <Flame size={11} className="text-[#8B7355]" /> {t('urgency.highDemand', 'High demand')}
-              </span>
-            )}
-            {(property as any).averageRating >= 4.8 && ((property as any).reviewCount || 0) >= 5 && property.tier !== 'signature' && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-medium tracking-[0.04em] uppercase text-[#8B7355] bg-[#F5F1EB] px-2.5 py-1 rounded-full">
-                <Award size={11} /> {t('urgency.guestFavourite', 'Guest favourite')}
-              </span>
-            )}
           </div>
           <h1 className="font-display text-[clamp(1.75rem,4vw,3rem)] font-light leading-[1.08] text-[#1A1A18] mb-3">
             {sanitizePropertyName(property.name)}
@@ -876,53 +877,23 @@ export default function PropertyDetail() {
           </div>
         </div>
 
+
         {/* Two-column layout: main content (left 2/3) + sticky booking (right 1/3) */}
         <div className={property.guestyId ? "container pb-8 lg:pb-16" : "container pb-24 lg:pb-16"}>
           <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
             {/* Main content — left 2/3 */}
             <div className="order-2 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12 pt-6">
-              {/* Answer capsule — citable summary for AI engines & search, inside the content column */}
-              <AnswerCapsule
-                question={`What is ${sanitizePropertyName(property.name)}?`}
-                answer={(() => {
-                  const name = sanitizePropertyName(property.name);
-                  const loc = property.locality || destName;
-                  const guests = property.maxGuests;
-                  const beds = property.bedrooms;
-                  const baths = property.bathrooms;
-                  const price = property.priceFrom;
-                  const tag = property.tagline;
-                  const parts: string[] = [];
-                  parts.push(`${name} is a private hotel in ${loc}, Portugal, operated by Portugal Active.`);
-                  parts.push(`It accommodates up to ${guests} guests across ${beds} bedrooms and ${baths} bathrooms.`);
-                  if (price) parts.push(`Rates start from €${price} per night.`);
-                  if (tag) parts.push(tag + (tag.endsWith('.') ? '' : '.'));
-                  parts.push(`Unlike a standard rental, every stay is fully managed: dedicated concierge, daily housekeeping, and access to private chef, spa, and curated local experiences.`);
-                  parts.push(`Book direct for the best rate and complimentary concierge planning.`);
-                  return parts.join(' ');
-                })()}
-                lastUpdated="2026-04-17"
-                author="Portugal Active concierge team"
-                emitSchema
-                schemaId={`qa-${property.slug}`}
-                cite={[
-                  { label: 'All properties', href: '/homes' },
-                  destObj ? { label: `${destObj.name} guide`, href: `/destinations/${destObj.slug}` } : null,
-                  { label: 'Concierge services', href: '/concierge' },
-                ].filter(Boolean) as { label: string; href: string }[]}
-              />
-
               {/* Bedrooms & Sleeping Arrangement */}
               {property.rooms && property.rooms.length > 0 && (
                 <section>
-                  <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-6">{t('propertyDetail.bedroomsTitle', 'Bedrooms & Sleeping Arrangements')}</h2>
+                  <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-6">Bedrooms & Sleeping Arrangements</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {property.rooms.map((room: any, roomIdx: number) => (
+                    {property.rooms.map((room, roomIdx) => (
                       <div key={roomIdx} className="bg-white border border-[#E8E4DC] p-5 rounded-lg">
                         <h3 className="text-[13px] font-medium text-[#1A1A18] mb-4">{room.name}</h3>
                         <div className="space-y-3">
                           {room.beds && room.beds.length > 0 ? (
-                            room.beds.map((bed: any, bedIdx: number) => {
+                            room.beds.map((bed, bedIdx) => {
                               const { label, icon: BedIcon } = getBedTypeDisplay(bed.type);
                               return (
                                 <div key={bedIdx} className="flex items-center gap-3">
@@ -930,13 +901,13 @@ export default function PropertyDetail() {
                                     <BedIcon size={16} className="text-[#8B7355]" />
                                   </div>
                                   <span className="text-[12px] text-[#6B6860]">
-                                    {bed.quantity > 1 ? `${bed.quantity} × ${t('bedType.' + label.replace(/\s/g, ''), label)}` : t('bedType.' + label.replace(/\s/g, ''), label)}
+                                    {bed.quantity > 1 ? `${bed.quantity} × ${label}` : label}
                                   </span>
                                 </div>
                               );
                             })
                           ) : (
-                            <span className="text-[12px] text-[#9E9A90]">{t('bedConfig.notAvailable')}</span>
+                            <span className="text-[12px] text-[#9E9A90]">Bed configuration details not available</span>
                           )}
                         </div>
                       </div>
@@ -979,7 +950,7 @@ export default function PropertyDetail() {
                       <div key={group.category}>
                         <div className="flex items-center gap-2 mb-3">
                           <group.icon size={16} className="text-[#8B7355]" />
-                          <h3 className="text-[13px] font-medium tracking-[0.04em] text-[#1A1A18]">{t(group.label)}</h3>
+                          <h3 className="text-[13px] font-medium tracking-[0.04em] text-[#1A1A18]">{group.label}</h3>
                         </div>
                         <div className="flex flex-wrap gap-2">
                           {group.items.map((item, idx) => (
@@ -1046,12 +1017,6 @@ export default function PropertyDetail() {
                       </Link>
                     ))}
                   </div>
-                  <Link
-                    href="/experiences"
-                    className="inline-flex items-center gap-2 mt-4 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors"
-                  >
-                    {t('propertyDetail.viewAllExperiences', 'View all experiences')} <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
                 </section>
               )}
 

@@ -6,10 +6,7 @@
    ========================================================================== */
 
 import { useEffect, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useRoute, Link } from 'wouter';
-import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
-import AnswerCapsule from '@/components/seo/AnswerCapsule';
 import {
   Check,
   X,
@@ -17,6 +14,7 @@ import {
   MapPin,
   MessageCircle,
   Share2,
+  Heart,
   Award,
   TrendingUp,
   Shield,
@@ -35,6 +33,7 @@ import ExperienceItinerary from '@/components/experience/ExperienceItinerary';
 import ExperienceReviews from '@/components/experience/ExperienceReviews';
 import ExperienceStickyNav from '@/components/experience/ExperienceStickyNav';
 import ExperienceMobileBookingBar from '@/components/experience/ExperienceMobileBookingBar';
+import ExperienceWhyBookDirect from '@/components/experience/ExperienceWhyBookDirect';
 import ExperienceGuideProfile from '@/components/experience/ExperienceGuideProfile';
 import ExperienceRelatedExperiences from '@/components/experience/ExperienceRelatedExperiences';
 
@@ -43,7 +42,6 @@ import servicesData from '@/data/services.json';
 import productsData from '@/data/products.json';
 import destinationsData from '@/data/destinations.json';
 import type { Destination } from '@/lib/types';
-import { pushEcommerce } from '@/lib/datalayer';
 
 /* ── Types ── */
 
@@ -134,11 +132,15 @@ interface RawExperience {
 
 const destinations = destinationsData as unknown as Destination[];
 
-const SECTION_KEYS = [
-  { id: 'overview', key: 'experienceDetail.navOverview' },
-  { id: 'highlights', key: 'experienceDetail.navHighlights' },
-  { id: 'included', key: 'experienceDetail.navIncluded' },
-  { id: 'reviews', key: 'experienceDetail.navReviews' },
+const SECTIONS = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'highlights', label: 'Highlights' },
+  { id: 'itinerary', label: 'Itinerary' },
+  { id: 'included', label: 'Included' },
+  { id: 'guide', label: 'Your guide' },
+  { id: 'meeting', label: 'Meeting point' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'reviews', label: 'Reviews' },
 ];
 
 const WHATSAPP_NUMBER = '351927161771';
@@ -186,7 +188,6 @@ function findExperience(slug: string): RawExperience | null {
 /* ── Component ── */
 
 export default function ExperienceDetail() {
-  const { t } = useTranslation();
   const [, params] = useRoute('/experiences/:slug');
   const [, actParams] = useRoute('/activities/:slug');
   const slug = params?.slug || actParams?.slug || '';
@@ -195,10 +196,10 @@ export default function ExperienceDetail() {
 
   usePageMeta({
     title: exp
-      ? `${exp.name} | ${t('experienceDetail.metaTitleSuffix')}`
-      : t('experienceDetail.metaNotFound'),
+      ? `${exp.name} | Luxury Experience in Portugal`
+      : 'Experience Not Found',
     description: exp
-      ? `${exp.tagline || exp.name}. ${t('experienceDetail.metaDescriptionSuffix')}`.slice(0, 155)
+      ? `${exp.tagline || exp.name}. Book this experience with Portugal Active.`.slice(0, 155)
       : undefined,
     image: exp?.image,
     url: exp ? `/experiences/${exp.slug}` : undefined,
@@ -206,49 +207,58 @@ export default function ExperienceDetail() {
   });
 
   /* ── JSON-LD structured data ── */
-  const experienceGraph = useMemo(() => {
-    if (!exp) return null;
-    const url = `https://www.portugalactive.com/experiences/${exp.slug}`;
-    const product: Record<string, unknown> = {
+  useEffect(() => {
+    if (!exp) return;
+    const scriptId = 'experience-jsonld';
+    const existing = document.getElementById(scriptId);
+    if (existing) existing.remove();
+
+    const jsonld: Record<string, unknown> = {
       '@context': 'https://schema.org',
-      '@type': ['Product', 'TouristTrip', 'TouristAttraction'],
+      '@type': ['Product', 'TouristTrip'],
       productID: `EXP-${exp.slug}`,
       name: exp.name,
-      description: typeof exp.description === 'string' ? exp.description.slice(0, 300) : (typeof exp.tagline === 'string' ? exp.tagline.slice(0, 300) : ''),
+      description: exp.tagline || exp.description,
       image: exp.gallery && exp.gallery.length ? exp.gallery : [exp.image],
-      url,
-      touristType: ['Adventure', 'Nature', 'Sport'],
-      brand: { '@id': 'https://www.portugalactive.com/#organization' },
-      provider: { '@id': 'https://www.portugalactive.com/#organization' },
+      url: `https://www.portugalactive.com/experiences/${exp.slug}`,
+      brand: { '@type': 'Brand', name: 'Portugal Active' },
+      provider: {
+        '@type': 'Organization',
+        name: 'Portugal Active',
+        url: 'https://www.portugalactive.com',
+      },
       offers: {
         '@type': 'Offer',
         price: exp.priceFrom || 0,
         priceCurrency: 'EUR',
         availability: 'https://schema.org/InStock',
-        url,
+        url: `https://www.portugalactive.com/experiences/${exp.slug}`,
         validFrom: new Date().toISOString().split('T')[0],
       },
       ...(exp.duration && { duration: exp.duration }),
+      ...(exp.category && { touristType: exp.category }),
       ...(exp.meetingPoint && {
         contentLocation: {
           '@type': 'Place',
-          name: (exp.meetingPoint as any).description || exp.meetingPoint.address,
+          name: exp.meetingPoint.description || exp.meetingPoint.address,
           ...(exp.meetingPoint.lat && {
             geo: { '@type': 'GeoCoordinates', latitude: exp.meetingPoint.lat, longitude: exp.meetingPoint.lng },
           }),
         },
       }),
     };
+
     if (exp.aggregateRating) {
-      product.aggregateRating = {
+      jsonld.aggregateRating = {
         '@type': 'AggregateRating',
         ratingValue: exp.aggregateRating.value,
         bestRating: exp.aggregateRating.bestRating || 5,
         reviewCount: exp.aggregateRating.count,
       };
     }
+
     if (exp.reviewsList && exp.reviewsList.length > 0) {
-      product.review = exp.reviewsList.slice(0, 10).map((r) => ({
+      jsonld.review = exp.reviewsList.slice(0, 10).map(r => ({
         '@type': 'Review',
         author: { '@type': 'Person', name: r.author },
         datePublished: r.date,
@@ -260,33 +270,32 @@ export default function ExperienceDetail() {
         },
       }));
     }
-    return [
-      product,
-      buildBreadcrumbSchema([
-        { name: 'Home', item: '/' },
-        { name: 'Experiences', item: '/experiences' },
-        { name: exp.name, item: `/experiences/${exp.slug}` },
-      ]),
-    ];
-  }, [exp]);
 
-  // GA4: view_item — fires once per experience slug
-  useEffect(() => {
-    if (!exp) return;
-    pushEcommerce({
-      event: 'view_item',
-      ecommerce: {
-        currency: 'EUR',
-        value: exp.priceOta || 0,
-        items: [{
-          item_id: `EXP-${exp.slug}`,
-          item_name: exp.name,
-          item_category: exp.experienceCategory || '',
-          price: exp.priceOta || 0,
-          quantity: 1,
-        }],
-      },
-    });
+    const breadcrumbs = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.portugalactive.com/' },
+        { '@type': 'ListItem', position: 2, name: 'Experiences', item: 'https://www.portugalactive.com/experiences' },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: exp.name,
+          item: `https://www.portugalactive.com/experiences/${exp.slug}`,
+        },
+      ],
+    };
+
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify([jsonld, breadcrumbs]);
+    document.head.appendChild(script);
+
+    return () => {
+      const s = document.getElementById(scriptId);
+      if (s) s.remove();
+    };
   }, [exp?.slug]);
 
   /* ── 404 ── */
@@ -296,9 +305,9 @@ export default function ExperienceDetail() {
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="headline-lg mb-4 text-[#1A1A18]">{t('experienceDetail.notFound')}</h1>
+            <h1 className="headline-lg mb-4 text-[#1A1A18]">Experience not found</h1>
             <Link href="/experiences" className="btn-ghost">
-              {t('experienceDetail.backToExperiences')}
+              Back to experiences
             </Link>
           </div>
         </div>
@@ -332,7 +341,6 @@ export default function ExperienceDetail() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
-      {experienceGraph && <StructuredData id={`experience-${exp.slug}`} data={experienceGraph} />}
       <Header />
 
       {/* ── Breadcrumb ── */}
@@ -343,7 +351,7 @@ export default function ExperienceDetail() {
               href="/"
               className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors"
             >
-              {t('experienceDetail.home')}
+              Home
             </Link>
           </li>
           <li className="text-[#E8E4DC]">/</li>
@@ -352,7 +360,7 @@ export default function ExperienceDetail() {
               href="/experiences"
               className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors"
             >
-              {t('experienceDetail.experiences')}
+              Experiences
             </Link>
           </li>
           {destObj && (
@@ -426,13 +434,13 @@ export default function ExperienceDetail() {
                 </span>
                 <span className="text-[#E8E4DC]">·</span>
                 <span className="text-[#6B6860]" style={{ fontWeight: 300 }}>
-                  {exp.aggregateRating.count} {t('experienceDetail.guestReviews')}
+                  {exp.aggregateRating.count} guest reviews
                 </span>
                 {exp.recommendedPercent && (
                   <>
                     <span className="text-[#E8E4DC]">·</span>
                     <span className="text-[#6B8E4E]" style={{ fontWeight: 300 }}>
-                      {t('experienceDetail.recommendedBy', { percent: exp.recommendedPercent })}
+                      Recommended by {exp.recommendedPercent}% of guests
                     </span>
                   </>
                 )}
@@ -459,14 +467,19 @@ export default function ExperienceDetail() {
                 }}
                 className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.08em] uppercase text-[#8B7355] hover:text-[#1A1A18] transition-colors font-medium"
               >
-                <Play className="w-3.5 h-3.5" /> {t('experienceDetail.watchVideo')}
+                <Play className="w-3.5 h-3.5" /> Watch video
               </a>
             )}
             <button
               onClick={handleShare}
               className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.08em] uppercase text-[#9E9A90] hover:text-[#1A1A18] transition-colors"
             >
-              <Share2 className="w-3.5 h-3.5" /> {t('experienceDetail.share')}
+              <Share2 className="w-3.5 h-3.5" /> Share
+            </button>
+            <button
+              className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.08em] uppercase text-[#9E9A90] hover:text-[#1A1A18] transition-colors"
+            >
+              <Heart className="w-3.5 h-3.5" /> Save
             </button>
           </div>
         </div>
@@ -476,9 +489,9 @@ export default function ExperienceDetail() {
           <div className="mt-4 inline-flex items-center gap-2 text-[11px] text-[#8B7355] bg-[#F5F1EB] border border-[#E8E4DC] px-4 py-2">
             <TrendingUp className="w-3 h-3" />
             <span style={{ fontWeight: 300 }}>
-              {t('experienceDetail.bookingsLastMonth', { count: exp.bookingsLastMonth })}
+              {exp.bookingsLastMonth}+ bookings last month
               {exp.averageBookingLeadDays && (
-                <> · {t('experienceDetail.bookedInAdvance', { days: exp.averageBookingLeadDays })}</>
+                <> · On average booked {exp.averageBookingLeadDays} days in advance</>
               )}
             </span>
           </div>
@@ -498,39 +511,16 @@ export default function ExperienceDetail() {
       </section>
 
       {/* ── Sticky section nav ── */}
-      <ExperienceStickyNav sections={SECTION_KEYS.map(s => ({ id: s.id, label: t(s.key) }))} />
+      <ExperienceStickyNav sections={SECTIONS} />
 
       {/* ── Content + booking card ── */}
       <section className="container pb-12 lg:pb-20">
         <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12 pt-10">
           {/* ───── LEFT COLUMN — main content ───── */}
           <div className="lg:col-span-2 space-y-12">
-            {/* Answer capsule — citable experience summary for AI engines */}
-            <AnswerCapsule
-              question={`What is the ${exp.name} experience?`}
-              answer={(() => {
-                const parts: string[] = [];
-                parts.push(`${exp.name} is a curated experience in ${destName}, Portugal, operated by Portugal Active.`);
-                if (exp.duration) parts.push(`Duration: ${exp.duration}.`);
-                if (exp.priceFrom) parts.push(`From €${exp.priceFrom} per person.`);
-                if (exp.tagline) parts.push(exp.tagline + (exp.tagline.endsWith('.') ? '' : '.'));
-                parts.push(`Led by local, certified guides and available exclusively to Portugal Active guests. Book direct for the best rate.`);
-                return parts.join(' ');
-              })()}
-              lastUpdated="2026-04-17"
-              author="Portugal Active experiences team"
-              emitSchema
-              schemaId={`qa-exp-${exp.slug}`}
-              cite={[
-                { label: 'All experiences', href: '/experiences' },
-                destObj ? { label: `${destObj.name} guide`, href: `/destinations/${destObj.slug}` } : null,
-                { label: 'Contact us', href: '/contact' },
-              ].filter(Boolean) as { label: string; href: string }[]}
-            />
-
             {/* Overview */}
             <section id="overview">
-              <h2 className="headline-md text-[#1A1A18] mb-5">{t('experienceDetail.aboutExperience')}</h2>
+              <h2 className="headline-md text-[#1A1A18] mb-5">About this experience</h2>
               <div className="body-lg space-y-4">
                 {paragraphs.map((p, i) => (
                   <p key={i} className="text-[15px] text-[#1A1A18] leading-relaxed" style={{ fontWeight: 300 }}>
@@ -543,7 +533,7 @@ export default function ExperienceDetail() {
               {exp.difficultyLevel && (
                 <div className="mt-6 inline-flex items-center gap-2 text-[12px] text-[#6B6860] bg-[#F5F1EB] px-4 py-2.5">
                   <span className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium">
-                    {t('experienceDetail.difficulty')}
+                    Difficulty:
                   </span>
                   <span style={{ fontWeight: 300 }}>{exp.difficultyLevel}</span>
                 </div>
@@ -553,7 +543,7 @@ export default function ExperienceDetail() {
             {/* Video embed */}
             {exp.videoUrl && (
               <section id="video">
-                <h2 className="headline-md text-[#1A1A18] mb-5">{t('experienceDetail.seeInAction')}</h2>
+                <h2 className="headline-md text-[#1A1A18] mb-5">See it in action</h2>
                 <div
                   className="relative w-full overflow-hidden bg-[#1A1A18]"
                   style={{ aspectRatio: '16/9' }}
@@ -573,7 +563,7 @@ export default function ExperienceDetail() {
             {/* Highlights */}
             {exp.highlights && exp.highlights.length > 0 && (
               <section id="highlights">
-                <h2 className="headline-md text-[#1A1A18] mb-5">{t('experienceDetail.highlights')}</h2>
+                <h2 className="headline-md text-[#1A1A18] mb-5">Highlights</h2>
                 <ul className="space-y-3">
                   {exp.highlights.map((h, i) => (
                     <li key={i} className="flex items-start gap-3">
@@ -590,7 +580,7 @@ export default function ExperienceDetail() {
             {/* Itinerary */}
             {exp.itinerary && exp.itinerary.length > 0 && (
               <section id="itinerary">
-                <h2 className="headline-md text-[#1A1A18] mb-6">{t('experienceDetail.whatToExpect')}</h2>
+                <h2 className="headline-md text-[#1A1A18] mb-6">What to expect</h2>
                 <ExperienceItinerary steps={exp.itinerary} />
               </section>
             )}
@@ -598,12 +588,12 @@ export default function ExperienceDetail() {
             {/* Included / Not included */}
             {(exp.included || exp.notIncluded) && (
               <section id="included">
-                <h2 className="headline-md text-[#1A1A18] mb-6">{t('experienceDetail.whatsIncluded')}</h2>
+                <h2 className="headline-md text-[#1A1A18] mb-6">What's included</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {exp.included && exp.included.length > 0 && (
                     <div>
                       <p className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium mb-4">
-                        {t('experienceDetail.included')}
+                        Included
                       </p>
                       <ul className="space-y-2.5">
                         {exp.included.map((item, i) => (
@@ -620,7 +610,7 @@ export default function ExperienceDetail() {
                   {exp.notIncluded && exp.notIncluded.length > 0 && (
                     <div>
                       <p className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium mb-4">
-                        {t('experienceDetail.notIncluded')}
+                        Not included
                       </p>
                       <ul className="space-y-2.5">
                         {exp.notIncluded.map((item, i) => (
@@ -639,7 +629,7 @@ export default function ExperienceDetail() {
                 {exp.notSuitableFor && exp.notSuitableFor.length > 0 && (
                   <div className="mt-8 p-5 bg-[#F5F1EB]">
                     <p className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium mb-3">
-                      {t('experienceDetail.notSuitableFor')}
+                      Not suitable for
                     </p>
                     <ul className="space-y-1.5">
                       {exp.notSuitableFor.map((item, i) => (
@@ -660,10 +650,10 @@ export default function ExperienceDetail() {
             {/* Guide profile */}
             {exp.guideName && exp.guideDescription && (
               <section id="guide">
-                <h2 className="headline-md text-[#1A1A18] mb-6">{t('experienceDetail.yourGuide')}</h2>
+                <h2 className="headline-md text-[#1A1A18] mb-6">Your guide</h2>
                 <ExperienceGuideProfile
                   guideName={exp.guideName}
-                  guideRole={exp.guideRole || t('experienceDetail.localGuide')}
+                  guideRole={exp.guideRole || 'Local Guide'}
                   guideDescription={exp.guideDescription}
                   guideLanguages={exp.guideLanguages || exp.languages || []}
                   guidePhoto={exp.guidePhoto}
@@ -674,7 +664,7 @@ export default function ExperienceDetail() {
             {/* Meeting point */}
             {exp.meetingPoint && (
               <section id="meeting">
-                <h2 className="headline-md text-[#1A1A18] mb-5">{t('experienceDetail.meetingPoint')}</h2>
+                <h2 className="headline-md text-[#1A1A18] mb-5">Meeting point</h2>
                 <div className="flex items-start gap-3 mb-4">
                   <MapPin className="w-5 h-5 text-[#8B7355] shrink-0 mt-0.5" />
                   <div>
@@ -694,12 +684,12 @@ export default function ExperienceDetail() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-[11px] tracking-[0.12em] uppercase text-[#1A1A18] border border-[#E8E4DC] px-5 py-3 hover:border-[#1A1A18] transition-colors"
                 >
-                  {t('experienceDetail.openInGoogleMaps')}
+                  Open in Google Maps
                 </a>
                 {exp.meetingPoint.pickupAvailable && exp.meetingPoint.pickupNote && (
                   <div className="mt-5 pt-5 border-t border-[#E8E4DC]">
                     <p className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium mb-1">
-                      {t('experienceDetail.complimentaryPickup')}
+                      Complimentary pickup
                     </p>
                     <p className="text-[14px] text-[#6B6860]" style={{ fontWeight: 300 }}>
                       {exp.meetingPoint.pickupNote}
@@ -712,12 +702,12 @@ export default function ExperienceDetail() {
             {/* What to bring / not allowed */}
             {(exp.whatToBring || exp.notAllowed) && (
               <section>
-                <h2 className="headline-md text-[#1A1A18] mb-6">{t('experienceDetail.importantInfo')}</h2>
+                <h2 className="headline-md text-[#1A1A18] mb-6">Important information</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {exp.whatToBring && exp.whatToBring.length > 0 && (
                     <div>
                       <h3 className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-4">
-                        {t('experienceDetail.whatToBring')}
+                        What to bring
                       </h3>
                       <ul className="space-y-2">
                         {exp.whatToBring.map((item, i) => (
@@ -735,7 +725,7 @@ export default function ExperienceDetail() {
                   {exp.notAllowed && exp.notAllowed.length > 0 && (
                     <div>
                       <h3 className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-4">
-                        {t('experienceDetail.notAllowed')}
+                        Not allowed
                       </h3>
                       <ul className="space-y-2">
                         {exp.notAllowed.map((item, i) => (
@@ -758,7 +748,7 @@ export default function ExperienceDetail() {
             {exp.cancellationPolicy && (
               <section className="border-y border-[#E8E4DC] py-6">
                 <h3 className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-3">
-                  {t('experienceDetail.cancellationPolicy')}
+                  Cancellation policy
                 </h3>
                 <p className="text-[14px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
                   {exp.cancellationPolicy}
@@ -769,7 +759,7 @@ export default function ExperienceDetail() {
             {/* FAQ */}
             {exp.faq && exp.faq.length > 0 && (
               <section id="faq">
-                <h2 className="headline-md text-[#1A1A18] mb-6">{t('experienceDetail.faq')}</h2>
+                <h2 className="headline-md text-[#1A1A18] mb-6">Frequently asked</h2>
                 <div className="space-y-0">
                   {exp.faq.map((f, i) => (
                     <details
@@ -810,20 +800,41 @@ export default function ExperienceDetail() {
                 whatsappMessage={exp.whatsappMessage || ''}
                 maxGroupSize={exp.groupSizeRange?.max}
                 bokunActivityId={(exp as any).bokunActivityId}
-                experienceSlug={exp.slug}
-                experienceCategory={exp.experienceCategory}
-                priceOta={exp.priceOta}
               />
+
+              {/* Mini review snippet — social proof near CTA */}
+              {exp.reviewsList && exp.reviewsList.length > 0 && (() => {
+                const topReview = exp.reviewsList
+                  .filter(r => r.rating >= 4 && r.text.length >= 40)
+                  .sort((a, b) => b.rating - a.rating || b.text.length - a.text.length)[0];
+                if (!topReview) return null;
+                const snippet = topReview.text.length > 120
+                  ? topReview.text.slice(0, 120).replace(/\s\S*$/, '') + '…'
+                  : topReview.text;
+                return (
+                  <div className="mt-4 p-4 border border-[#E8E4DC] bg-white">
+                    <p className="text-[10px] tracking-[0.08em] uppercase text-[#8B7355] font-medium mb-2">
+                      Recent guest review
+                    </p>
+                    <p className="text-[13px] text-[#1A1A18] italic leading-relaxed" style={{ fontWeight: 300 }}>
+                      "{snippet}"
+                    </p>
+                    <p className="text-[11px] text-[#9E9A90] mt-2" style={{ fontWeight: 300 }}>
+                      — {topReview.author}{topReview.rating && `, ${topReview.rating.toFixed(1)}/5`}
+                    </p>
+                  </div>
+                );
+              })()}
 
               {/* OTA price comparison */}
               {exp.priceOta && exp.priceOta > priceFrom && (
                 <div className="mt-3 p-4 bg-[#F5F1EB] border border-[#E8E4DC] text-center">
                   <p className="text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>
-                    {t('experienceDetail.sameExperienceOnOta')}{' '}
+                    Same experience on GetYourGuide:{' '}
                     <span className="line-through text-[#9E9A90]">€{exp.priceOta}</span>
                   </p>
                   <p className="text-[13px] text-[#8B7355] font-medium mt-1">
-                    {t('experienceDetail.youSavePerPerson', { amount: exp.priceOta - priceFrom })}
+                    You save €{exp.priceOta - priceFrom} per person booking direct
                   </p>
                 </div>
               )}
@@ -843,11 +854,17 @@ export default function ExperienceDetail() {
         </div>
       </section>
 
+      {/* ── Why book direct ── */}
+      <ExperienceWhyBookDirect
+        priceDirect={priceFrom}
+        priceOta={exp.priceOta}
+      />
+
       {/* ── Reviews ── */}
       {exp.reviewsList && exp.reviewsList.length > 0 && (
         <section id="reviews" className="section-padding bg-[#F5F1EB]">
           <div className="container">
-            <h2 className="headline-lg text-[#1A1A18] mb-10">{t('experienceDetail.whatGuestsSay')}</h2>
+            <h2 className="headline-lg text-[#1A1A18] mb-10">What guests say</h2>
             <ExperienceReviews reviews={exp.reviewsList} aggregate={exp.aggregateRating} />
           </div>
         </section>
@@ -872,7 +889,7 @@ export default function ExperienceDetail() {
             href="/experiences"
             className="inline-flex items-center gap-2 text-[13px] font-medium text-[#9E9A90] hover:text-[#1A1A18] transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" /> {t('experienceDetail.allExperiences')}
+            <ArrowLeft className="w-4 h-4" /> All experiences
           </Link>
         </div>
       </section>
@@ -890,9 +907,6 @@ export default function ExperienceDetail() {
         whatsappMessage={exp.whatsappMessage || ''}
         maxGroupSize={exp.groupSizeRange?.max}
         bokunActivityId={(exp as any).bokunActivityId}
-        experienceSlug={exp.slug}
-        experienceCategory={exp.experienceCategory}
-        priceOta={exp.priceOta}
       />
 
     </div>

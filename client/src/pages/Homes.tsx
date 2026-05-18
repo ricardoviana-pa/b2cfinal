@@ -4,7 +4,7 @@
    ========================================================================== */
 
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { useSearch, useLocation, useRouter } from 'wouter';
+import { useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { IMAGES } from '@/lib/images';
@@ -16,8 +16,6 @@ import { pushDL, pushEcommerce } from '@/lib/datalayer';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
-import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
-import AnswerCapsule from '@/components/seo/AnswerCapsule';
 
 interface LiveQuote {
   total: number;
@@ -31,39 +29,12 @@ interface LiveQuote {
 
 export default function Homes() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Luxury Holiday Homes in Portugal | Private Villas & Premium Rentals', description: 'Handpicked luxury holiday homes across Portugal. Each property managed to five-star hotel standards. Porto, Lisbon, Algarve, Douro and Minho.', image: IMAGES.heroHomes, url: '/homes' });
+  usePageMeta({ title: 'Private Villas Portugal | Luxury Holiday Homes', description: 'Browse 50+ handpicked private villas across Portugal. Pool, concierge, housekeeping included. Filter by region and book direct.', image: IMAGES.heroHomes, url: '/homes' });
   const [, navigate] = useLocation();
-  const router = useRouter();
 
   const { data: propsData, isLoading, isError, refetch } = trpc.properties.listForSite.useQuery();
   const allProperties = (propsData ?? []) as Property[];
   const cities = useMemo(() => getUniqueLocalities(allProperties), [allProperties]);
-
-  // ItemList + BreadcrumbList JSON-LD for the catalogue page
-  const homesGraph = useMemo(() => {
-    if (!allProperties.length) return null;
-    return [
-      {
-        '@context': 'https://schema.org',
-        '@type': 'ItemList',
-        name: 'Private Villas in Portugal',
-        description: 'Browse 60+ handpicked private villas across Portugal, each managed like a luxury hotel.',
-        url: 'https://www.portugalactive.com/homes',
-        numberOfItems: allProperties.length,
-        itemListElement: allProperties.slice(0, 30).map((p, i) => ({
-          '@type': 'ListItem',
-          position: i + 1,
-          name: p.name,
-          url: `https://www.portugalactive.com/homes/${p.slug}`,
-          ...(p.images?.[0] && { image: p.images[0] }),
-        })),
-      },
-      buildBreadcrumbSchema([
-        { name: 'Home', item: '/' },
-        { name: 'Homes' },
-      ]),
-    ];
-  }, [allProperties]);
 
   const SORT_OPTIONS = useMemo(
     (): { label: string; value: SortOption }[] => [
@@ -140,7 +111,7 @@ export default function Homes() {
     set('location', location, 'all');
     set('sort', sort, 'price-desc');
     const qs = params.toString();
-    const newUrl = `${router.base}/homes${qs ? `?${qs}` : ''}`;
+    const newUrl = `/homes${qs ? `?${qs}` : ''}`;
     if (newUrl !== window.location.pathname + window.location.search) {
       window.history.replaceState(null, '', newUrl);
     }
@@ -425,35 +396,17 @@ export default function Homes() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
-      {homesGraph && <StructuredData id="homes-graph" data={homesGraph} />}
       <Header />
 
       {/* Hero — editorial only; search lives in sticky toolbar below (less empty white, clearer PLP hierarchy) */}
       <section className="relative min-h-[300px] md:min-h-[340px] h-[38vh] max-h-[520px] overflow-hidden">
-        <img src={IMAGES.heroHomes} alt="Collection of luxury private villas across Portugal" className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" />
+        <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp" alt="Collection of luxury private villas across Portugal" className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/20" />
         <div className="relative z-10 container flex flex-col justify-end h-full min-h-[inherit] pt-28 md:pt-32 pb-10 md:pb-14">
           <h1 className="headline-xl text-white mb-3 max-w-2xl">{t('homes.title')}</h1>
           <p className="body-lg max-w-xl pb-1" style={{ color: 'rgba(255,255,255,0.75)' }}>
             {t('homes.subtitle')}
           </p>
-        </div>
-      </section>
-
-      {/* Answer capsule — citable collection summary for AI engines */}
-      <section className="pt-8 pb-4 bg-[#FAFAF7]">
-        <div className="container max-w-3xl mx-auto">
-          <AnswerCapsule
-            question="What properties does Portugal Active offer?"
-            answer="Portugal Active operates a curated collection of 60+ private hotels across Portugal, spanning the Minho Coast, Porto, Douro Valley, Lisbon, Alentejo, and the Algarve. Each property is managed to five-star standards with dedicated concierge, daily housekeeping, and access to private chef, spa, and curated local experiences. Unlike standard rentals, every stay is fully operated by an in-house team. Book direct for the best rate guaranteed."
-            lastUpdated="2026-04-17"
-            author="Portugal Active concierge team"
-            cite={[
-              { label: 'About Portugal Active', href: '/about' },
-              { label: 'Concierge services', href: '/concierge' },
-              { label: 'Contact us', href: '/contact' },
-            ]}
-          />
         </div>
       </section>
 

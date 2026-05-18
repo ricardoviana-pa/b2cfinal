@@ -37,7 +37,7 @@ export default function Careers() {
               {t('careers.sendCv')}
             </p>
             <a
-              href="mailto:people@portugalactive.com"
+              href="mailto:careers@portugalactive.com"
               className="btn-primary"
             >
               {t('careers.sendApplication')}

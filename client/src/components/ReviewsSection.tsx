@@ -4,7 +4,6 @@
    ========================================================================== */
 
 import { useState, useRef, useCallback, forwardRef, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const REVIEWS = [
@@ -107,7 +106,6 @@ const REVIEWS = [
 ];
 
 const ReviewsSection = forwardRef<HTMLDivElement>((_, ref) => {
-  const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -145,7 +143,7 @@ const ReviewsSection = forwardRef<HTMLDivElement>((_, ref) => {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
           <div>
             <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>OUR GUESTS</p>
-            <h2 className="headline-lg text-[#1A1A18]">{t('reviews.whatTheyRemember')}</h2>
+            <h2 className="headline-lg text-[#1A1A18]">What they remember most.</h2>
           </div>
 
           {/* Desktop arrows */}
@@ -220,7 +218,7 @@ const ReviewsSection = forwardRef<HTMLDivElement>((_, ref) => {
         {/* Proof strip */}
         <div className="text-center mt-8">
           <p className="text-[14px] font-medium text-[#6B6860]">
-            4.8/5 across 2,000+ guest reviews
+            4.9/5 across 2,000+ guest reviews
           </p>
         </div>
       </div>

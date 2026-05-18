@@ -3,14 +3,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
-import LocaleRouter from "./components/LocaleRouter";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ItineraryProvider } from "./contexts/ItineraryContext";
 import Home from "./pages/Home";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { WifiOff, ArrowUp } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import { detectAiReferrer } from "./lib/datalayer";
 
 const ItineraryDrawer = lazy(() => import("./components/itinerary/ItineraryDrawer"));
 const CookieBanner = lazy(() => import("./components/layout/CookieBanner"));
@@ -27,13 +24,13 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Cookies = lazy(() => import("./pages/Cookies"));
-const CancellationPolicy = lazy(() => import("./pages/CancellationPolicy"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
 const ExperienceDetail = lazy(() => import("./pages/ExperienceDetail"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogArticle = lazy(() => import("./pages/BlogArticle"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const Careers = lazy(() => import("./pages/Careers"));
+const Owners = lazy(() => import("./pages/Owners"));
 const BookingConfirmationPage = lazy(() => import("./pages/booking/BookingConfirmationPage"));
 const AdminRouter = lazy(() => import("./pages/admin/index"));
 const Login = lazy(() => import("./pages/Login"));
@@ -138,7 +135,7 @@ function Router() {
         <Route path="/blog/:slug" component={BlogArticle} />
         <Route path="/faq" component={FAQ} />
         <Route path="/careers" component={Careers} />
-        <Route path="/owners" component={OwnersRedirect} />
+        <Route path="/owners" component={Owners} />
         <Route path="/booking/confirmation/:id" component={BookingConfirmationPage} />
         <Route path="/login" component={Login} />
         <Route path="/account" component={Account} />
@@ -146,7 +143,6 @@ function Router() {
         <Route path="/legal/privacy" component={Privacy} />
         <Route path="/legal/terms" component={Terms} />
         <Route path="/legal/cookies" component={Cookies} />
-        <Route path="/legal/cancellation-policy" component={CancellationPolicy} />
         <Route path="/admin" nest component={AdminRouter} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
@@ -193,7 +189,6 @@ function BackToTop() {
 }
 
 function OfflineBanner() {
-  const { t } = useTranslation();
   const [offline, setOffline] = useState(!navigator.onLine);
   const handleOnline = useCallback(() => setOffline(false), []);
   const handleOffline = useCallback(() => setOffline(true), []);
@@ -215,39 +210,34 @@ function OfflineBanner() {
       style={{ backgroundColor: '#F5E6C8', color: '#7A5C2E', fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 400 }}
     >
       <WifiOff className="w-4 h-4 shrink-0" />
-      <span>{t('common.offline')}</span>
+      <span>You appear to be offline. Some features may not work.</span>
     </div>
   );
 }
 
 function App() {
-  // Fire AI referrer detection once on mount
-  useEffect(() => { detectAiReferrer(); }, []);
-
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
-        <LocaleRouter>
-          <ItineraryProvider>
-            <TooltipProvider>
-              <Toaster />
-              {/* Skip to content link for keyboard navigation */}
-              <a
-                href="#main-content"
-                className="absolute top-0 left-0 z-[9998] px-4 py-2 bg-[#8B7355] text-white text-sm font-medium rounded-b-md transform -translate-y-full focus:translate-y-0 transition-transform"
-              >
-                Skip to main content
-              </a>
-              <OfflineBanner />
-              <BackToTop />
-              <Suspense fallback={null}><ItineraryDrawer /></Suspense>
-              <Suspense fallback={null}><CookieBanner /></Suspense>
-              <main id="main-content" role="main">
-                <PageTransition><Router /></PageTransition>
-              </main>
-            </TooltipProvider>
-          </ItineraryProvider>
-        </LocaleRouter>
+        <ItineraryProvider>
+          <TooltipProvider>
+            <Toaster />
+            {/* Skip to content link for keyboard navigation */}
+            <a
+              href="#main-content"
+              className="absolute top-0 left-0 z-[9998] px-4 py-2 bg-[#8B7355] text-white text-sm font-medium rounded-b-md transform -translate-y-full focus:translate-y-0 transition-transform"
+            >
+              Skip to main content
+            </a>
+            <OfflineBanner />
+            <BackToTop />
+            <Suspense fallback={null}><ItineraryDrawer /></Suspense>
+            <Suspense fallback={null}><CookieBanner /></Suspense>
+            <main id="main-content" role="main">
+              <PageTransition><Router /></PageTransition>
+            </main>
+          </TooltipProvider>
+        </ItineraryProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );
