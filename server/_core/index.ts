@@ -399,7 +399,22 @@ ${allUrls.join("\n")}
         console.info("[Cron] Running scheduled Guesty sync...");
         runSync()
           .then((p) => console.info(`[Cron] Guesty sync complete → ${p}`))
-          .catch((e) => console.warn("[Cron] Guesty sync failed:", e.message));
+          .catch((e) => {
+            // Surface the real HTTP status + Guesty error body so failures are
+            // diagnosable without source access (401 = bad secret, 403 = missing
+            // scope, 400 = invalid_scope/grant). A GuestyClientError carries
+            // status/endpoint/details; plain errors fall back to the message.
+            const status = e?.status ?? "n/a";
+            const endpoint = e?.endpoint ?? "n/a";
+            let details = e?.details;
+            if (details && typeof details !== "string") {
+              try { details = JSON.stringify(details); } catch { details = String(details); }
+            }
+            console.warn(
+              `[Cron] Guesty sync failed: ${e?.message ?? e} ` +
+              `(status=${status}, endpoint=${endpoint}, details=${details ?? "none"})`
+            );
+          });
       }, { timezone: "Europe/Lisbon" });
       console.info("[Cron] Guesty sync scheduled — 07:00 and 19:00 Europe/Lisbon (no startup sync)");
     }
