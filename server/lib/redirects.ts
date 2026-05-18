@@ -54,7 +54,7 @@ const PROPERTY_REDIRECTS: Record<string, string> = {
   "nature-hill-duo": "portugal-active-nature-hill-duo-10-min-beach-742743",
   "ocean-bliss": "ocean-bliss-beach-bbq-apartment-5fe4bf",
   "oliveiras-farm": "portugal-active-oliveira-s-farm-01b62e",
-  "rose-dream-boat": "ros-dream-boat-up-to-4-guests-bb2b42",
+  "rose-dream-boat": "ros-dream-boat-by-portugal-active-bb2b42",
   "salty-escape": "salty-escape-by-portugal-active-01c7b8",
   "sao-juliao-retreat": "s-o-juli-o-retreat-pool-jacuzzi-garden-escape-743511",
   "seabreeze-duplex": "seabreeze-duplex-beach-terrace-e917bf",
@@ -65,7 +65,7 @@ const PROPERTY_REDIRECTS: Record<string, string> = {
   "stars-view": "stars-view-by-portugal-active-026fa9",
   "stone-by-the-sea": "stone-by-the-sea-mountain-beach-retreat-w-pool-7437cd",
   "sunset-beach-lodge": "portugal-active-sunset-beach-lodge-heated-pool-5ceb91",
-  "the-mill-retreat": "century-old-watermill-on-the-river-beach-by-portugal-active-47452c",
+  "the-mill-retreat": "historic-riverfront-watermill-private-beach-access-47452c",
   "tide-terrace-duplex": "tide-terrace-duplex-sea-escape-e28965",
   "urban-reflections": "urban-reflections-by-portugal-active-e919c6",
   "venade-mountain-house": "stone-by-the-sea-mountain-beach-retreat-w-pool-7437cd",
@@ -188,6 +188,17 @@ const STATIC_REDIRECTS: Record<string, string> = {
   "/new/author/luis/": "/en/about",
   "/event/sailing-": "/en/experiences/sailing",
   "/event/sailing-/": "/en/experiences/sailing",
+  // Property slug renames — Guesty listing titles changed (2026-05-18 sync).
+  // The id suffix is stable; only the title-derived prefix changed. Redirect
+  // old indexed URLs → new slugs so SEO equity transfers and no 404s.
+  "/homes/bob-dylan-loft-by-portugal-active-7188bd": "/en/homes/river-beach-loft-bob-dylan-at-the-watermill-7188bd",
+  "/homes/century-old-watermill-on-the-river-beach-by-portugal-active-47452c": "/en/homes/historic-riverfront-watermill-private-beach-access-47452c",
+  "/homes/granjas-house-at-fountain-retreat-i-pool-sports-ed2ed9": "/en/homes/fountain-cottage-at-fountain-retreat-i-pool-sports-ed2ed9",
+  "/homes/joe-cocker-loft-by-portugal-active-7188b5": "/en/homes/river-beach-suite-joe-cocker-at-the-watermill-7188b5",
+  "/homes/river-view-apartment-viana-do-castelo-8b7d5a": "/en/homes/river-view-by-portugal-active-8b7d5a",
+  "/homes/ros-dream-boat-up-to-4-guests-bb2b42": "/en/homes/ros-dream-boat-by-portugal-active-bb2b42",
+  "/homes/u2-loft-by-portugal-active-1bed48": "/en/homes/u2-loft-at-the-riverside-watermill-1bed48",
+  "/homes/watermill-main-house-by-portugal-active-7188ad": "/en/homes/riverside-watermill-house-private-beach-access-7188ad",
 };
 
 interface PatternRule {
