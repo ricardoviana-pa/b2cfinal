@@ -5939,6 +5939,38 @@
     "areaSquareFeet": 539,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Our stay in this apartment was excellent! The apartment was nice and cozy. Also, the jacuzzi is a great addition to the house, perfect after a long day of walking the hills of beautiful Porto!",
+        "guestName": "Guest",
+        "date": "2026-05-17T10:19:25.176Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "i really enjoyed my stay here. Such a lovely decorated place to stay. Walkable distance to shops and restaurants. Very easy check-in with clear instructions. Bed was very comfortable and had lots of access to charging ports. Would definitely stay again and would recommend it to others.",
         "guestName": "Guest",
@@ -6227,8 +6259,8 @@
         ]
       }
     ],
-    "averageRating": 4.4,
-    "reviewCount": 9
+    "averageRating": 4.5,
+    "reviewCount": 10
   },
   {
     "id": "guesty-69653390ecf7490014ed2d6c",
@@ -7750,6 +7782,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Zeer mooi appartement, heel mooi ingericht. Het appartement was heel proper. Tussentijds werd er gepoetst en de lakens ververst. Op wandelafstand van het strand.\nEen echte aanrader!",
+        "guestName": "Guest",
+        "date": "2026-05-18T15:42:48.414Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Duplex con todas las comodidades:\nCocina completa con menaje abundante. \nTodo súper limpio. \nNo hemos echado nada en falta. \nEl anfitrión de 10 incluso nos dejó un pack de bienvenida. \nVolveremos!!",
         "guestName": "Guest",
         "date": "2026-05-03T19:17:16.188Z",
@@ -7782,7 +7846,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-696533d34b583900135cfd96",
