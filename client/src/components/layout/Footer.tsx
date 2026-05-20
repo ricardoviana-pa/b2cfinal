@@ -195,7 +195,7 @@ export default function Footer() {
               {footerLinks(t('footer.journal'), '/blog')}
               {footerLinks(t('footer.contact'), '/contact')}
               <li>
-                <a href="https://management.portugalactive.com" target="_blank" rel="noopener noreferrer" className="text-[13px] text-white/40 hover:text-white transition-colors" style={{ fontWeight: 300 }}>
+                <a href="https://management.portugalactive.com" target="_blank" rel="noopener noreferrer nofollow" className="text-[13px] text-white/40 hover:text-white transition-colors" style={{ fontWeight: 300 }}>
                   {t('footer.forOwners', 'For property owners')} →
                 </a>
               </li>
