@@ -182,3 +182,19 @@ export function getPropertyImages(slug: string): string[] {
     'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80&auto=format&fit=crop',
   ];
 }
+
+/**
+ * Optimise a Guesty image URL via Cloudinary transforms.
+ *
+ * Guesty serves property photos through Cloudinary (assets.guesty.com/image/
+ * upload/...). Inserting `w_<width>,q_auto,f_auto` resizes the image and lets
+ * Cloudinary serve WebP/AVIF to supporting browsers — a ~30–60% byte saving.
+ * Non-Guesty URLs (Unsplash, CloudFront) and already-transformed URLs are
+ * returned untouched.
+ */
+export function optimizeGuestyImage(url: string | undefined | null, width = 900): string {
+  if (!url || !url.includes('assets.guesty.com/image/upload/')) return url || '';
+  // Already has a transform segment (starts with `x_` right after /upload/).
+  if (/\/image\/upload\/[a-z]{1,3}_/.test(url)) return url;
+  return url.replace('/image/upload/', `/image/upload/w_${width},q_auto,f_auto/`);
+}

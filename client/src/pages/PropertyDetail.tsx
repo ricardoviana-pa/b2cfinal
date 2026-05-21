@@ -17,7 +17,7 @@ const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItine
 import productsData from '@/data/products.json';
 import destinationsData from '@/data/destinations.json';
 import type { Product, Destination, Property } from '@/lib/types';
-import { getPropertyImages } from '@/lib/images';
+import { getPropertyImages, optimizeGuestyImage } from '@/lib/images';
 const BookingWidget = lazy(() => import('@/components/booking/BookingWidget'));
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -725,7 +725,10 @@ export default function PropertyDetail() {
     );
   }
 
-  const images = property.images?.length ? property.images : getPropertyImages(property.slug);
+  // Hero gallery images via Cloudinary transform (resize + WebP/AVIF). The
+  // full-resolution originals are kept for the lightbox (property.images).
+  const images = (property.images?.length ? property.images : getPropertyImages(property.slug))
+    .map((img: string) => optimizeGuestyImage(img, 1200));
   const totalImages = Math.max(images.length, 1);
   const whatsappUrl = `https://wa.me/351927161771?text=${encodeURIComponent(property.whatsappMessage || `Hi, I am interested in ${property.name}`)}`;
 
