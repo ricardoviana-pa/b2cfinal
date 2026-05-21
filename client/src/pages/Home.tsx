@@ -411,7 +411,7 @@ export default function Home() {
                   type="button"
                   onClick={() => setSearchGuests(g => Math.max(1, g - 1))}
                   disabled={searchGuests <= 1}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30 shrink-0"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30 shrink-0"
                   aria-label={t('home.decreaseGuests', 'Decrease guests')}
                 >
                   <Minus className="w-3 h-3" />
@@ -421,7 +421,7 @@ export default function Home() {
                   type="button"
                   onClick={() => setSearchGuests(g => Math.min(30, g + 1))}
                   disabled={searchGuests >= 30}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30 shrink-0"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30 shrink-0"
                   aria-label={t('home.increaseGuests', 'Increase guests')}
                 >
                   <Plus className="w-3 h-3" />
