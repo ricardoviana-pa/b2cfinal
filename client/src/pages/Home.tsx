@@ -59,8 +59,10 @@ function useFadeIn() {
 export default function Home() {
   const { t } = useTranslation();
   usePageMeta({
-    title: 'Premium Holiday Homes & Adventure Experiences in Portugal',
-    description: 'Luxury holiday rentals with five-star hotel service across Porto, Lisbon, Algarve and Douro. Private villas, curated adventures, and concierge service.',
+    // Must match the server-side PAGE_META '/' entry in server/_core/vite.ts —
+    // usePageMeta appends " | Portugal Active", so pass the title without it.
+    title: 'Luxury Private Villas in Portugal',
+    description: '5-star hotel experience in private holiday homes. Professionally managed villas in Algarve, Lisbon, Alentejo, Minho. Full-service concierge, private chefs, curated adventures. Book direct.',
     url: '/',
   });
   // FAQPage schema only — the Organization schema is global (index.html),
