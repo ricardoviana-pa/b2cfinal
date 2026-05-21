@@ -75,6 +75,9 @@ type DynamicMeta = {
    *  StructuredData convention (`sd-{id}`) so hydration replaces it cleanly. */
   schemaDomId?: string;
   schemaGraph?: Record<string, unknown>;
+  /** Optional crawlable body HTML — injected into a #seo-content block that an
+   *  inline script removes before React mounts (JS-less crawlers keep it). */
+  bodyHtml?: string;
 };
 const dynamicMetaCache = new Map<string, { expiresAt: number; meta: DynamicMeta | null }>();
 
@@ -775,6 +778,105 @@ function buildBlogGraph(post: any, lang: string): Record<string, unknown> {
   return { '@context': 'https://schema.org', '@graph': [article, breadcrumb] };
 }
 
+/* ── Server-rendered crawlable body content ────────────────────────────────
+   The SPA body is empty until JS runs, so JS-less crawlers (AI bots) see no
+   content. These builders emit a semantic HTML block injected into a
+   #seo-content div; an inline script removes it before React mounts, so JS
+   users never see it — flash-free, no duplicate content — while crawlers
+   that don't run JS read the full prose from the raw HTML. */
+
+const SEO_LABELS: Record<string, { home: string; homes: string; experiences: string; journal: string; amenities: string }> = {
+  en: { home: 'Home', homes: 'Homes', experiences: 'Experiences', journal: 'Journal', amenities: 'Amenities' },
+  pt: { home: 'Início', homes: 'Casas', experiences: 'Experiências', journal: 'Blog', amenities: 'Comodidades' },
+  es: { home: 'Inicio', homes: 'Casas', experiences: 'Experiencias', journal: 'Blog', amenities: 'Comodidades' },
+  fr: { home: 'Accueil', homes: 'Maisons', experiences: 'Expériences', journal: 'Blog', amenities: 'Équipements' },
+  de: { home: 'Startseite', homes: 'Häuser', experiences: 'Erlebnisse', journal: 'Blog', amenities: 'Ausstattung' },
+  it: { home: 'Home', homes: 'Case', experiences: 'Esperienze', journal: 'Blog', amenities: 'Servizi' },
+  nl: { home: 'Home', homes: 'Huizen', experiences: 'Ervaringen', journal: 'Blog', amenities: 'Voorzieningen' },
+  fi: { home: 'Etusivu', homes: 'Kodit', experiences: 'Elämykset', journal: 'Blogi', amenities: 'Mukavuudet' },
+  sv: { home: 'Hem', homes: 'Boenden', experiences: 'Upplevelser', journal: 'Blogg', amenities: 'Bekvämligheter' },
+};
+
+/** Split free text into escaped <p> paragraphs, capped at maxTotal chars. */
+function renderParagraphs(text: string, maxTotal = 3500): string {
+  if (!text || typeof text !== 'string') return '';
+  const parts = text.split(/\r?\n/).map(s => s.trim()).filter(s => s.length > 0);
+  let total = 0;
+  const out: string[] = [];
+  for (const part of parts) {
+    if (total >= maxTotal) break;
+    const slice = part.slice(0, maxTotal - total);
+    out.push(`<p>${escText(slice)}</p>`);
+    total += slice.length;
+  }
+  return out.join('');
+}
+
+function buildPropertySeoBody(prop: any, lang: string): string {
+  const L = SEO_LABELS[lang] ?? SEO_LABELS.en;
+  const name = prop.name || prop.title || 'Property';
+  const hero = Array.isArray(prop.images) && prop.images[0] ? String(prop.images[0]) : '';
+  let amenities: string[] = [];
+  if (Array.isArray(prop.amenities)) {
+    amenities = prop.amenities.filter((a: any) => typeof a === 'string');
+  } else if (prop.amenities && typeof prop.amenities === 'object') {
+    amenities = Object.values(prop.amenities).flat().filter((a: any) => typeof a === 'string') as string[];
+  }
+  const breadcrumb = `<nav aria-label="Breadcrumb"><a href="/${lang}">${escText(L.home)}</a> &rsaquo; <a href="/${lang}/homes">${escText(L.homes)}</a> &rsaquo; <span>${escText(name)}</span></nav>`;
+  const loc = prop.locality ? `<p>${escText(String(prop.locality))}, Portugal</p>` : '';
+  const img = hero ? `<img src="${escAttr(hero)}" alt="${escAttr(name)}" width="1200" height="800" />` : '';
+  const tagline = prop.tagline ? `<p>${escText(String(prop.tagline))}</p>` : '';
+  const desc = renderParagraphs(String(prop.description || ''));
+  const amenityList = amenities.length > 0
+    ? `<h2>${escText(L.amenities)}</h2><ul>${amenities.slice(0, 30).map(a => `<li>${escText(a)}</li>`).join('')}</ul>`
+    : '';
+  return `<article>${breadcrumb}<h1>${escText(name)}</h1>${loc}${img}${tagline}${desc}${amenityList}</article>`;
+}
+
+function buildExperienceSeoBody(exp: any, lang: string): string {
+  const L = SEO_LABELS[lang] ?? SEO_LABELS.en;
+  const name = exp.name || 'Experience';
+  const raw = exp.image || (Array.isArray(exp.gallery) ? exp.gallery[0] : '');
+  const hero = raw
+    ? (String(raw).startsWith('http') ? String(raw) : `${BOT_BASE_URL}${String(raw).startsWith('/') ? '' : '/'}${raw}`)
+    : '';
+  const breadcrumb = `<nav aria-label="Breadcrumb"><a href="/${lang}">${escText(L.home)}</a> &rsaquo; <a href="/${lang}/experiences">${escText(L.experiences)}</a> &rsaquo; <span>${escText(name)}</span></nav>`;
+  const img = hero ? `<img src="${escAttr(hero)}" alt="${escAttr(name)}" width="1200" height="800" />` : '';
+  const tagline = exp.tagline ? `<p>${escText(String(exp.tagline))}</p>` : '';
+  let descText = '';
+  if (Array.isArray(exp.aboutParagraphs) && exp.aboutParagraphs.length > 0) {
+    descText = exp.aboutParagraphs.filter((s: any) => typeof s === 'string').join('\n\n');
+  } else if (typeof exp.description === 'string') {
+    descText = exp.description;
+  }
+  return `<article>${breadcrumb}<h1>${escText(name)}</h1>${tagline}${img}${renderParagraphs(descText)}</article>`;
+}
+
+function buildBlogSeoBody(post: any, lang: string): string {
+  const L = SEO_LABELS[lang] ?? SEO_LABELS.en;
+  const title = String(post.title || '');
+  const breadcrumb = `<nav aria-label="Breadcrumb"><a href="/${lang}">${escText(L.home)}</a> &rsaquo; <a href="/${lang}/blog">${escText(L.journal)}</a> &rsaquo; <span>${escText(title)}</span></nav>`;
+  const img = post.coverImage ? `<img src="${escAttr(String(post.coverImage))}" alt="${escAttr(title)}" width="1200" height="800" />` : '';
+  const excerpt = post.excerpt ? `<p>${escText(String(post.excerpt))}</p>` : '';
+  let body = '';
+  if (typeof post.content === 'string' && post.content) {
+    const plain = post.content.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    body = renderParagraphs(plain, 4000);
+  }
+  return `<article>${breadcrumb}<h1>${escText(title)}</h1>${img}${excerpt}${body}</article>`;
+}
+
+/** Inject a crawlable body block after #root, plus an inline script that
+ *  removes it during HTML parse — before the React module executes — so JS
+ *  users never see it (no flash, no duplicate content). */
+function injectSeoBody(html: string, bodyHtml: string): string {
+  if (!bodyHtml) return html;
+  const block =
+    `<div id="seo-content">${bodyHtml}</div>` +
+    `<script>(function(){var e=document.getElementById('seo-content');if(e&&e.parentNode)e.parentNode.removeChild(e);})();</script>`;
+  return html.replace('<div id="root"></div>', `<div id="root"></div>\n    ${block}`);
+}
+
 /** Title template for a destination landing page, per language. */
 const DESTINATION_TITLE: Record<string, (name: string) => string> = {
   en: n => `${n} Portugal | Luxury Villas and Experiences | Portugal Active`,
@@ -1172,6 +1274,9 @@ export function serveStatic(app: Express) {
         if (cachedMeta.schemaDomId && cachedMeta.schemaGraph) {
           html = injectSchemaGraph(html, cachedMeta.schemaDomId, cachedMeta.schemaGraph);
         }
+        if (cachedMeta.bodyHtml) {
+          html = injectSeoBody(html, cachedMeta.bodyHtml);
+        }
       } else if (DYNAMIC_CONTENT_PREFIXES.some(pre => p.startsWith(pre))) {
         // Cached null on a dynamic content route → content doesn't exist → 404
         status = 404;
@@ -1214,6 +1319,7 @@ export function serveStatic(app: Express) {
             // matches the client `<StructuredData id={`property-${slug}`}>`.
             schemaDomId: `sd-property-${prop.slug}`,
             schemaGraph: buildPropertyGraph(prop, lang),
+            bodyHtml: buildPropertySeoBody(prop, lang),
           };
         }
       }
@@ -1234,6 +1340,7 @@ export function serveStatic(app: Express) {
               type: 'article',
               schemaDomId: `sd-article-${post.slug}`,
               schemaGraph: buildBlogGraph(post, lang),
+              bodyHtml: buildBlogSeoBody(post, lang),
             };
           }
         }
@@ -1311,6 +1418,7 @@ export function serveStatic(app: Express) {
               url: `${BOT_BASE_URL}/${lang}${p}`,
               schemaDomId: `sd-experience-${exp.slug}`,
               schemaGraph: buildExperienceGraph(exp, lang, p),
+              bodyHtml: buildExperienceSeoBody(exp, lang),
             };
           }
         }
@@ -1322,6 +1430,9 @@ export function serveStatic(app: Express) {
         html = injectMeta(html, dynamicMeta);
         if (dynamicMeta.schemaDomId && dynamicMeta.schemaGraph) {
           html = injectSchemaGraph(html, dynamicMeta.schemaDomId, dynamicMeta.schemaGraph);
+        }
+        if (dynamicMeta.bodyHtml) {
+          html = injectSeoBody(html, dynamicMeta.bodyHtml);
         }
       } else if (DYNAMIC_CONTENT_PREFIXES.some(pre => p.startsWith(pre))) {
         // Dynamic content route with no matching record → proper 404 (not soft 404)
