@@ -360,7 +360,9 @@ export default function Home() {
               </select>
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9E9A90] pointer-events-none" />
             </div>
-            {/* Dates */}
+            {/* Dates — type=date ignores `placeholder`, so an empty value renders
+                blank on mobile. Overlay a label while empty and keep the native
+                value text transparent until a date is picked. */}
             <div className="grid grid-cols-2 gap-2">
               <div
                 className="relative"
@@ -371,10 +373,15 @@ export default function Home() {
                   value={searchCheckin}
                   min={today}
                   onChange={e => handleCheckinChange(e.target.value, true)}
-                  className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
+                  aria-label={t('home.searchCheckin', 'Check-in')}
+                  className={`w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer ${searchCheckin ? 'text-[#1A1A18]' : 'text-transparent'}`}
                   style={{ fontFamily: 'var(--font-body)' }}
-                  placeholder={t('home.searchCheckin', 'Check-in')}
                 />
+                {!searchCheckin && (
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-[#9E9A90] pointer-events-none" style={{ fontFamily: 'var(--font-body)' }}>
+                    {t('home.searchCheckin', 'Check-in')}
+                  </span>
+                )}
               </div>
               <div
                 className="relative"
@@ -386,10 +393,15 @@ export default function Home() {
                   value={searchCheckout}
                   min={searchCheckin || today}
                   onChange={e => setSearchCheckout(e.target.value)}
-                  className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
+                  aria-label={t('home.searchCheckout', 'Check-out')}
+                  className={`w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer ${searchCheckout ? 'text-[#1A1A18]' : 'text-transparent'}`}
                   style={{ fontFamily: 'var(--font-body)' }}
-                  placeholder={t('home.searchCheckout', 'Check-out')}
                 />
+                {!searchCheckout && (
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-[#9E9A90] pointer-events-none" style={{ fontFamily: 'var(--font-body)' }}>
+                    {t('home.searchCheckout', 'Check-out')}
+                  </span>
+                )}
               </div>
             </div>
             {/* Guests + Search */}
@@ -479,7 +491,7 @@ export default function Home() {
 
             {/* Check-in */}
             <div
-              className="flex-1 h-full cursor-pointer"
+              className="flex-1 h-full cursor-pointer relative"
               onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
             >
               <input
@@ -487,10 +499,15 @@ export default function Home() {
                 value={searchCheckin}
                 min={today}
                 onChange={e => handleCheckinChange(e.target.value, false)}
-                placeholder="Check-in"
-                className="w-full h-full px-4 bg-transparent text-[#1A1A18] text-[14px] focus:outline-none cursor-pointer"
+                aria-label={t('home.searchCheckin', 'Check-in')}
+                className={`w-full h-full px-4 bg-transparent text-[14px] focus:outline-none cursor-pointer ${searchCheckin ? 'text-[#1A1A18]' : 'text-transparent'}`}
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               />
+              {!searchCheckin && (
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[14px] text-[#9E9A90] pointer-events-none" style={{ fontFamily: 'var(--font-body)' }}>
+                  {t('home.searchCheckin', 'Check-in')}
+                </span>
+              )}
             </div>
 
             {/* Arrow */}
@@ -498,7 +515,7 @@ export default function Home() {
 
             {/* Check-out */}
             <div
-              className="flex-1 h-full cursor-pointer"
+              className="flex-1 h-full cursor-pointer relative"
               onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
             >
               <input
@@ -507,10 +524,15 @@ export default function Home() {
                 value={searchCheckout}
                 min={searchCheckin || today}
                 onChange={e => setSearchCheckout(e.target.value)}
-                placeholder="Check-out"
-                className="w-full h-full px-4 bg-transparent text-[#1A1A18] text-[14px] focus:outline-none cursor-pointer"
+                aria-label={t('home.searchCheckout', 'Check-out')}
+                className={`w-full h-full px-4 bg-transparent text-[14px] focus:outline-none cursor-pointer ${searchCheckout ? 'text-[#1A1A18]' : 'text-transparent'}`}
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               />
+              {!searchCheckout && (
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[14px] text-[#9E9A90] pointer-events-none" style={{ fontFamily: 'var(--font-body)' }}>
+                  {t('home.searchCheckout', 'Check-out')}
+                </span>
+              )}
             </div>
 
             {/* Divider */}
