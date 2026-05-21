@@ -77,7 +77,60 @@ async function startServer() {
   }));
 
   app.use(helmet({
-    contentSecurityPolicy: false,
+    // Content-Security-Policy — generous allowlist covering every third party
+    // the site actually loads (GTM/GA, Stripe, Bókun, Google Fonts/Maps,
+    // Vimeo, the CloudFront + Guesty image CDNs). The goal is defence-in-depth
+    // against injected scripts/frames without breaking any known flow.
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: [
+          "'self'", "'unsafe-inline'",
+          "https://www.googletagmanager.com",
+          "https://*.google-analytics.com",
+          "https://js.stripe.com", "https://m.stripe.network",
+          "https://widgets.bokun.io",
+        ],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "data:", "https://fonts.gstatic.com"],
+        imgSrc: [
+          "'self'", "data:", "blob:",
+          "https://*.cloudfront.net",
+          "https://images.unsplash.com",
+          "https://*.guesty.com",
+          "https://imgcdn.bokun.tools", "https://*.bokun.io",
+          "https://www.googletagmanager.com",
+          "https://*.google-analytics.com",
+          "https://*.g.doubleclick.net",
+          "https://*.vimeocdn.com",
+          "https://maps.gstatic.com", "https://maps.googleapis.com",
+        ],
+        connectSrc: [
+          "'self'",
+          "https://api.stripe.com",
+          "https://*.cloudfront.net",
+          "https://*.guesty.com",
+          "https://*.bokun.io",
+          "https://www.googletagmanager.com",
+          "https://*.google-analytics.com",
+          "https://*.analytics.google.com",
+          "https://*.g.doubleclick.net",
+        ],
+        frameSrc: [
+          "'self'",
+          "https://js.stripe.com", "https://hooks.stripe.com",
+          "https://widgets.bokun.io",
+          "https://www.google.com", "https://maps.google.com",
+          "https://player.vimeo.com",
+        ],
+        mediaSrc: ["'self'", "https://*.cloudfront.net", "https://*.vimeocdn.com"],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+        frameAncestors: ["'self'"],
+        upgradeInsecureRequests: [],
+      },
+    },
     crossOriginEmbedderPolicy: false,
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
   }));

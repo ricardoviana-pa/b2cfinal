@@ -253,23 +253,23 @@ function injectLocaleTags(html: string, opts: { lang: string; pagePath: string }
 type MetaEntry = { title: string; description: string };
 const PAGE_META: Record<string, Record<string, MetaEntry>> = {
   '/': {
-    en: { title: 'Portugal Active — Luxury Holiday Homes & Private Villa Rentals in Portugal',
+    en: { title: 'Luxury Private Villas in Portugal | Portugal Active',
           description: '5-star hotel experience in private holiday homes. Professionally managed villas in Algarve, Lisbon, Alentejo, Minho. Full-service concierge, private chefs, curated adventures. Book direct.' },
-    pt: { title: 'Casas Privadas de Luxo em Portugal | Serviço de Hotel | Portugal Active',
+    pt: { title: 'Casas Privadas de Luxo em Portugal | Portugal Active',
           description: '60+ casas privadas em todo Portugal, geridas como hotéis de luxo. Chef privado, concierge, piscina. Reserve direto para o melhor preço.' },
-    es: { title: 'Villas Privadas de Lujo en Portugal | Servicio de Hotel | Portugal Active',
+    es: { title: 'Villas Privadas de Lujo en Portugal | Portugal Active',
           description: 'Más de 60 villas privadas en todo Portugal, gestionadas como hoteles de lujo. Chef privado, conserjería, piscina. Reserva directa al mejor precio.' },
-    fr: { title: 'Villas de Luxe Privées au Portugal | Service Hôtelier | Portugal Active',
+    fr: { title: 'Villas de Luxe Privées au Portugal | Portugal Active',
           description: '60+ villas privées à travers le Portugal, gérées comme des hôtels de luxe. Chef privé, conciergerie, piscine. Réservation directe au meilleur tarif.' },
-    de: { title: 'Private Luxusvillen in Portugal | Hotelservice | Portugal Active',
+    de: { title: 'Private Luxusvillen in Portugal | Portugal Active',
           description: 'Über 60 private Villen in ganz Portugal, geführt wie Luxushotels. Privatkoch, Concierge, Pool. Direkt buchen zum besten Preis.' },
-    it: { title: 'Ville di Lusso Private in Portogallo | Servizio Hotel | Portugal Active',
+    it: { title: 'Ville di Lusso Private in Portogallo | Portugal Active',
           description: 'Oltre 60 ville private in tutto il Portogallo, gestite come hotel di lusso. Chef privato, concierge, piscina. Prenota diretto al miglior prezzo.' },
-    nl: { title: 'Luxe Privévilla\'s in Portugal | Hotelservice | Portugal Active',
+    nl: { title: 'Luxe Privévilla\'s in Portugal | Portugal Active',
           description: '60+ privévilla\'s in heel Portugal, beheerd als luxe hotels. Privékok, conciërge, zwembad. Direct boeken voor de beste prijs.' },
-    fi: { title: 'Luksushuvilat Portugalissa | Hotellipalvelu | Portugal Active',
+    fi: { title: 'Luksushuvilat Portugalissa | Portugal Active',
           description: 'Yli 60 yksityistä huvilaa eri puolilla Portugalia, hoidettuna kuin luksushotelleja. Yksityiskokki, concierge, uima-allas. Varaa suoraan parhaaseen hintaan.' },
-    sv: { title: 'Privata Lyxvillor i Portugal | Hotellservice | Portugal Active',
+    sv: { title: 'Privata Lyxvillor i Portugal | Portugal Active',
           description: 'Över 60 privata villor runt om i Portugal, skötta som lyxhotell. Privat kock, concierge, pool. Boka direkt för bästa pris.' },
   },
   '/homes': {
@@ -653,6 +653,126 @@ function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
   };
 
   return { '@context': 'https://schema.org', '@graph': [vacationRental, breadcrumb] };
+}
+
+/** Safely convert any date-ish value to a YYYY-MM-DD string, or null. */
+function safeDateISO(d: any): string | null {
+  if (!d) return null;
+  const date = new Date(d);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString().split('T')[0];
+}
+
+/** Build the Product/TouristTrip/TouristAttraction + BreadcrumbList @graph for
+ *  an experience page. Mirrors the client experienceGraph builder. */
+function buildExperienceGraph(exp: any, lang: string, pagePath: string): Record<string, unknown> {
+  const url = `${BOT_BASE_URL}/${lang}${pagePath}`;
+  const name = exp.name || 'Experience';
+  const rawImages = Array.isArray(exp.gallery) && exp.gallery.length > 0
+    ? exp.gallery.slice(0, 6)
+    : (exp.image ? [exp.image] : []);
+  const images = rawImages
+    .filter((g: any) => typeof g === 'string')
+    .map((g: string) => (g.startsWith('http') ? g : `${BOT_BASE_URL}${g.startsWith('/') ? '' : '/'}${g}`));
+  const priceFrom = Number(exp.priceFrom ?? 0);
+  const desc = (typeof exp.description === 'string' ? exp.description
+    : typeof exp.tagline === 'string' ? exp.tagline : '')
+    .replace(/\s+/g, ' ').trim().slice(0, 300);
+
+  const product: Record<string, unknown> = {
+    '@type': ['Product', 'TouristTrip', 'TouristAttraction'],
+    '@id': url,
+    productID: `EXP-${exp.slug}`,
+    name,
+    ...(desc && { description: desc }),
+    ...(images.length > 0 && { image: images }),
+    url,
+    touristType: ['Adventure', 'Nature', 'Sport'],
+    brand: { '@type': 'Organization', name: 'Portugal Active', url: BOT_BASE_URL },
+    provider: { '@type': 'Organization', name: 'Portugal Active', url: BOT_BASE_URL },
+    ...(priceFrom > 0 && {
+      offers: {
+        '@type': 'Offer',
+        price: priceFrom,
+        priceCurrency: 'EUR',
+        availability: 'https://schema.org/InStock',
+        url,
+        validFrom: new Date().toISOString().split('T')[0],
+      },
+    }),
+    ...(exp.duration && { duration: exp.duration }),
+    ...(exp.meetingPoint && typeof exp.meetingPoint.lat === 'number' && {
+      contentLocation: {
+        '@type': 'Place',
+        name: exp.meetingPoint.address || name,
+        geo: {
+          '@type': 'GeoCoordinates',
+          latitude: exp.meetingPoint.lat,
+          longitude: exp.meetingPoint.lng,
+        },
+      },
+    }),
+    ...(exp.aggregateRating && exp.aggregateRating.count > 0 && {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: exp.aggregateRating.value,
+        reviewCount: exp.aggregateRating.count,
+        bestRating: exp.aggregateRating.bestRating || 5,
+        worstRating: 1,
+      },
+    }),
+  };
+
+  const breadcrumb = {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${BOT_BASE_URL}/${lang}` },
+      { '@type': 'ListItem', position: 2, name: 'Experiences', item: `${BOT_BASE_URL}/${lang}/experiences` },
+      { '@type': 'ListItem', position: 3, name },
+    ],
+  };
+
+  return { '@context': 'https://schema.org', '@graph': [product, breadcrumb] };
+}
+
+/** Build the BlogPosting + BreadcrumbList @graph for a blog article. */
+function buildBlogGraph(post: any, lang: string): Record<string, unknown> {
+  const url = `${BOT_BASE_URL}/${lang}/blog/${post.slug}`;
+  const published = safeDateISO(post.publishedAt || post.createdAt || post.date);
+  const modified = safeDateISO(post.updatedAt) || published;
+
+  const article: Record<string, unknown> = {
+    '@type': 'BlogPosting',
+    '@id': url,
+    headline: String(post.title || '').slice(0, 110),
+    ...((post.excerpt || post.seoDescription) && {
+      description: String(post.excerpt || post.seoDescription).slice(0, 250),
+    }),
+    ...(post.coverImage && { image: [post.coverImage] }),
+    ...(published && { datePublished: published }),
+    ...(modified && { dateModified: modified }),
+    author: { '@type': 'Person', name: post.author || 'Portugal Active' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Portugal Active',
+      url: BOT_BASE_URL,
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp',
+      },
+    },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+  };
+
+  const breadcrumb = {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${BOT_BASE_URL}/${lang}` },
+      { '@type': 'ListItem', position: 2, name: 'Journal', item: `${BOT_BASE_URL}/${lang}/blog` },
+      { '@type': 'ListItem', position: 3, name: String(post.title || '') },
+    ],
+  };
+
+  return { '@context': 'https://schema.org', '@graph': [article, breadcrumb] };
 }
 
 /** Title template for a destination landing page, per language. */
@@ -1112,6 +1232,8 @@ export function serveStatic(app: Express) {
               image: post.coverImage ?? undefined,
               url: `${BOT_BASE_URL}/${lang}/blog/${post.slug}`,
               type: 'article',
+              schemaDomId: `sd-article-${post.slug}`,
+              schemaGraph: buildBlogGraph(post, lang),
             };
           }
         }
@@ -1187,6 +1309,8 @@ export function serveStatic(app: Express) {
               description: descFn({ name: exp.name, tagline: exp.tagline, duration: exp.duration, destination }).replace(/\s+/g, ' ').trim().slice(0, 155),
               image: expImage,
               url: `${BOT_BASE_URL}/${lang}${p}`,
+              schemaDomId: `sd-experience-${exp.slug}`,
+              schemaGraph: buildExperienceGraph(exp, lang, p),
             };
           }
         }
