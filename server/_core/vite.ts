@@ -65,7 +65,17 @@ let _cachedIndexHtml: string | null = null;
  *  so we can inject OG tags for ALL requests without hitting DB every time.
  *  TTL: 10 min — stale meta is better than wrong/missing meta. */
 const DYNAMIC_META_TTL_MS = 10 * 60 * 1000;
-type DynamicMeta = { title: string; description: string; image?: string; url: string; type?: string };
+type DynamicMeta = {
+  title: string;
+  description: string;
+  image?: string;
+  url: string;
+  type?: string;
+  /** Optional JSON-LD graph to inject server-side. domId matches the client
+   *  StructuredData convention (`sd-{id}`) so hydration replaces it cleanly. */
+  schemaDomId?: string;
+  schemaGraph?: Record<string, unknown>;
+};
 const dynamicMetaCache = new Map<string, { expiresAt: number; meta: DynamicMeta | null }>();
 
 /** Cached property data from JSON files (Guesty sync / static fallback).
@@ -540,6 +550,17 @@ function injectMeta(html: string, meta: {
     .replace(/(<meta name="twitter:image" content=")[^"]*(")/,        (_m, open, close) => `${open}${image}${close}`);
 }
 
+/** Inject a JSON-LD <script> into <head>. The domId follows the client
+ *  StructuredData convention (`sd-{id}`); the client component removes any
+ *  element with that id before appending its own, so hydration cleanly
+ *  replaces the server-rendered schema — zero duplication. */
+function injectSchemaGraph(html: string, domId: string, graph: Record<string, unknown>): string {
+  // Escape `<` to prevent the JSON payload from prematurely closing the script.
+  const json = JSON.stringify(graph).replace(/</g, '\\u003c');
+  const tag = `<script type="application/ld+json" id="${domId}">${json}</script>`;
+  return html.replace('</head>', `    ${tag}\n  </head>`);
+}
+
 const DESTINATION_NAME: Record<string, string> = {
   'minho': 'Minho Coast',
   'porto': 'Porto & Douro',
@@ -547,6 +568,92 @@ const DESTINATION_NAME: Record<string, string> = {
   'alentejo': 'Alentejo',
   'algarve': 'Algarve',
 };
+
+/** Build the VacationRental + BreadcrumbList @graph for a property page.
+ *  Mirrors the client buildVacationRentalSchema so the server-rendered schema
+ *  is consistent with what the SPA would emit after hydration. This is what
+ *  makes property rich results / AI-citation eligible on Google's first pass,
+ *  since the SPA body is otherwise empty until JS executes. */
+function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
+  const url = `${BOT_BASE_URL}/${lang}/homes/${prop.slug}`;
+  const name = prop.name || prop.title || 'Property';
+  const images = Array.isArray(prop.images) ? prop.images.slice(0, 6) : [];
+
+  // Amenities arrive either as a flat array or a grouped dict { property: [...] }.
+  let amenities: string[] = [];
+  if (Array.isArray(prop.amenities)) {
+    amenities = prop.amenities.filter((a: any) => typeof a === 'string');
+  } else if (prop.amenities && typeof prop.amenities === 'object') {
+    amenities = Object.values(prop.amenities)
+      .flat()
+      .filter((a: any) => typeof a === 'string') as string[];
+  }
+
+  const lat = typeof prop.address?.lat === 'number' ? prop.address.lat : prop.latitude;
+  const lng = typeof prop.address?.lng === 'number' ? prop.address.lng : prop.longitude;
+  const region = prop.address?.state || DESTINATION_NAME[prop.destination] || undefined;
+  const priceFrom = Number(prop.priceFrom ?? prop.pricePerNight ?? 0);
+
+  const vacationRental: Record<string, unknown> = {
+    '@type': 'VacationRental',
+    '@id': url,
+    name,
+    url,
+    ...(prop.description && { description: String(prop.description).replace(/\s+/g, ' ').trim().slice(0, 500) }),
+    ...(images.length > 0 && { image: images }),
+    ...(prop.bedrooms != null && { numberOfBedrooms: prop.bedrooms }),
+    ...(prop.bathrooms != null && { numberOfBathroomsTotal: prop.bathrooms }),
+    ...(prop.maxGuests != null && {
+      occupancy: { '@type': 'QuantitativeValue', maxValue: prop.maxGuests, unitCode: 'C62' },
+    }),
+    ...(amenities.length > 0 && {
+      amenityFeature: amenities.slice(0, 30).map((a) => ({
+        '@type': 'LocationFeatureSpecification', name: a, value: true,
+      })),
+    }),
+    address: {
+      '@type': 'PostalAddress',
+      ...(prop.locality && { addressLocality: prop.locality }),
+      ...(region && { addressRegion: region }),
+      addressCountry: 'PT',
+    },
+    ...(typeof lat === 'number' && typeof lng === 'number' && {
+      geo: { '@type': 'GeoCoordinates', latitude: lat, longitude: lng },
+    }),
+    ...(priceFrom > 0 && {
+      priceRange: `From €${priceFrom} per night`,
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: 'EUR',
+        price: priceFrom,
+        availability: 'https://schema.org/InStock',
+        url,
+        priceValidUntil: new Date(Date.now() + 365 * 86400000).toISOString().split('T')[0],
+      },
+    }),
+    ...(prop.averageRating && prop.reviewCount > 0 && {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: prop.averageRating,
+        reviewCount: prop.reviewCount,
+        bestRating: 5,
+        worstRating: 1,
+      },
+    }),
+    brand: { '@type': 'Organization', name: 'Portugal Active', url: BOT_BASE_URL },
+  };
+
+  const breadcrumb = {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${BOT_BASE_URL}/${lang}` },
+      { '@type': 'ListItem', position: 2, name: 'Homes', item: `${BOT_BASE_URL}/${lang}/homes` },
+      { '@type': 'ListItem', position: 3, name },
+    ],
+  };
+
+  return { '@context': 'https://schema.org', '@graph': [vacationRental, breadcrumb] };
+}
 
 /** Title template for a destination landing page, per language. */
 const DESTINATION_TITLE: Record<string, (name: string) => string> = {
@@ -942,6 +1049,9 @@ export function serveStatic(app: Express) {
       // Cache hit (may be null = no record found, which is fine)
       if (cachedMeta) {
         html = injectMeta(html, cachedMeta);
+        if (cachedMeta.schemaDomId && cachedMeta.schemaGraph) {
+          html = injectSchemaGraph(html, cachedMeta.schemaDomId, cachedMeta.schemaGraph);
+        }
       } else if (DYNAMIC_CONTENT_PREFIXES.some(pre => p.startsWith(pre))) {
         // Cached null on a dynamic content route → content doesn't exist → 404
         status = 404;
@@ -980,6 +1090,10 @@ export function serveStatic(app: Express) {
             image: Array.isArray(prop.images) && prop.images.length > 0 ? prop.images[0] : undefined,
             url: `${BOT_BASE_URL}/${lang}/homes/${prop.slug}`,
             type: 'place',
+            // Server-render VacationRental + BreadcrumbList JSON-LD. domId
+            // matches the client `<StructuredData id={`property-${slug}`}>`.
+            schemaDomId: `sd-property-${prop.slug}`,
+            schemaGraph: buildPropertyGraph(prop, lang),
           };
         }
       }
@@ -1082,6 +1196,9 @@ export function serveStatic(app: Express) {
       setCachedDynamicMeta(dynamicCacheKey, dynamicMeta);
       if (dynamicMeta) {
         html = injectMeta(html, dynamicMeta);
+        if (dynamicMeta.schemaDomId && dynamicMeta.schemaGraph) {
+          html = injectSchemaGraph(html, dynamicMeta.schemaDomId, dynamicMeta.schemaGraph);
+        }
       } else if (DYNAMIC_CONTENT_PREFIXES.some(pre => p.startsWith(pre))) {
         // Dynamic content route with no matching record → proper 404 (not soft 404)
         status = 404;
