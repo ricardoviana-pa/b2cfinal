@@ -41,6 +41,13 @@ import { pushDL, pushEcommerce } from '@/lib/datalayer';
 
 const destinations = destinationsData as unknown as Destination[];
 
+/** Format an ISO date (YYYY-MM-DD) as DD/MM/YYYY for the search bar display.
+ *  Pure string ops — no Date object, so no timezone drift. */
+function fmtSearchDate(iso: string): string {
+  const [y, m, d] = iso.split('-');
+  return d && m && y ? `${d}/${m}/${y}` : iso;
+}
+
 function useFadeIn() {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -362,33 +369,33 @@ export default function Home() {
               </select>
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9E9A90] pointer-events-none" />
             </div>
-            {/* Dates — type=date ignores `placeholder`, so an empty value renders
-                blank on mobile. Overlay a label while empty and keep the native
-                value text transparent until a date is picked. */}
+            {/* Dates — <input type=date> ignores `placeholder`, and on iOS its
+                native render layer paints over any overlaid HTML label. So the
+                visible control is a plain styled div (label, or the chosen
+                date) with a fully transparent native date input on top to
+                drive the picker. Robust on iOS + Android + desktop. */}
             <div className="grid grid-cols-2 gap-2">
-              <div
-                className="relative"
-                onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
-              >
+              <div className="relative">
+                <div className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 flex items-center text-[13px]" style={{ fontFamily: 'var(--font-body)' }}>
+                  <span className={searchCheckin ? 'text-[#1A1A18]' : 'text-[#9E9A90]'}>
+                    {searchCheckin ? fmtSearchDate(searchCheckin) : t('home.searchCheckin', 'Check-in')}
+                  </span>
+                </div>
                 <input
                   type="date"
                   value={searchCheckin}
                   min={today}
                   onChange={e => handleCheckinChange(e.target.value, true)}
                   aria-label={t('home.searchCheckin', 'Check-in')}
-                  className={`w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer ${searchCheckin ? 'text-[#1A1A18]' : 'text-transparent'}`}
-                  style={{ fontFamily: 'var(--font-body)' }}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
-                {!searchCheckin && (
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-[#9E9A90] pointer-events-none" style={{ fontFamily: 'var(--font-body)' }}>
-                    {t('home.searchCheckin', 'Check-in')}
-                  </span>
-                )}
               </div>
-              <div
-                className="relative"
-                onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
-              >
+              <div className="relative">
+                <div className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 flex items-center text-[13px]" style={{ fontFamily: 'var(--font-body)' }}>
+                  <span className={searchCheckout ? 'text-[#1A1A18]' : 'text-[#9E9A90]'}>
+                    {searchCheckout ? fmtSearchDate(searchCheckout) : t('home.searchCheckout', 'Check-out')}
+                  </span>
+                </div>
                 <input
                   ref={checkoutMobileRef}
                   type="date"
@@ -396,14 +403,8 @@ export default function Home() {
                   min={searchCheckin || today}
                   onChange={e => setSearchCheckout(e.target.value)}
                   aria-label={t('home.searchCheckout', 'Check-out')}
-                  className={`w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer ${searchCheckout ? 'text-[#1A1A18]' : 'text-transparent'}`}
-                  style={{ fontFamily: 'var(--font-body)' }}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
-                {!searchCheckout && (
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-[#9E9A90] pointer-events-none" style={{ fontFamily: 'var(--font-body)' }}>
-                    {t('home.searchCheckout', 'Check-out')}
-                  </span>
-                )}
               </div>
             </div>
             {/* Guests + Search */}
