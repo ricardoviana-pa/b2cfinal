@@ -373,15 +373,35 @@ ${allUrls.join("\n")}
     }
   });
 
-  // Prerender.io — serve pre-rendered HTML to search engine bots
+  // Prerender.io — serve pre-rendered HTML to search engine + AI bots.
   // Only active when PRERENDER_TOKEN env var is set (production).
+  // Without it, JS-less crawlers (notably AI crawlers) get the empty SPA
+  // shell. Server-side meta + JSON-LD still describe the page, but the body
+  // prose only becomes crawlable once this is enabled.
   if (process.env.PRERENDER_TOKEN) {
     try {
       const prerender = (await import('prerender-node')).default;
-      app.use(prerender.set('prerenderToken', process.env.PRERENDER_TOKEN));
+      prerender.set('prerenderToken', process.env.PRERENDER_TOKEN);
+      // prerender-node's default UA list predates the AI crawlers, which are
+      // exactly the ones that DON'T execute JS and most need pre-rendering.
+      const aiCrawlers = [
+        'gptbot', 'oai-searchbot', 'chatgpt-user', 'perplexitybot',
+        'perplexity-user', 'claudebot', 'claude-web', 'anthropic-ai',
+        'google-extended', 'ccbot', 'meta-externalagent', 'bytespider',
+        'amazonbot', 'applebot-extended', 'diffbot',
+      ];
+      for (const ua of aiCrawlers) {
+        if (!prerender.crawlerUserAgents.includes(ua)) {
+          prerender.crawlerUserAgents.push(ua);
+        }
+      }
+      app.use(prerender);
+      console.info(`[prerender] Active — ${prerender.crawlerUserAgents.length} crawler UAs (incl. AI bots)`);
     } catch {
       console.warn('[prerender] prerender-node not installed, skipping bot pre-rendering');
     }
+  } else {
+    console.warn('[prerender] PRERENDER_TOKEN not set — bots receive the CSR shell (meta + JSON-LD only, no body prose).');
   }
 
   // development mode uses Vite, production mode uses static files
