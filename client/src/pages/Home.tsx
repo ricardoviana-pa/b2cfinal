@@ -48,6 +48,43 @@ function fmtSearchDate(iso: string): string {
   return d && m && y ? `${d}/${m}/${y}` : iso;
 }
 
+/** Lazy-loaded autoplay video. Until the card scrolls near the viewport it
+ *  renders only the poster image — so a heavy below-the-fold video never
+ *  competes for bandwidth during the initial page load (the homepage video
+ *  was ~5 MB, dominating the mobile payload). */
+function LazyVideo({ src, poster, title }: { src: string; poster?: string; title: string }) {
+  const ref = useRef<HTMLImageElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    if (inView) return;
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      (entries) => { if (entries[0]?.isIntersecting) setInView(true); },
+      { rootMargin: '300px' },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [inView]);
+  const cls = 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]';
+  if (!inView) {
+    return <img ref={ref} src={poster} alt={title} className={cls} width={400} height={533} loading="lazy" />;
+  }
+  return (
+    <video
+      src={src}
+      poster={poster}
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      aria-label={title}
+      className={cls}
+    />
+  );
+}
+
 function useFadeIn() {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -928,13 +965,10 @@ export default function Home() {
               <Link key={i} href={exp.href} className="group block flex-shrink-0 w-[220px] sm:w-auto" style={{ scrollSnapAlign: 'start' }}>
                 <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '3/4' }}>
                   {(exp as any).video ? (
-                    <video
+                    <LazyVideo
                       src={(exp as any).video}
                       poster={(exp as any).videoPoster}
-                      autoPlay muted loop playsInline
-                      preload="metadata"
-                      aria-label={exp.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      title={exp.title}
                     />
                   ) : (
                     <img

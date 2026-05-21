@@ -1182,6 +1182,12 @@ export function serveStatic(app: Express) {
 
   app.use(express.static(distPath, {
     maxAge: "1h",
+    // Do NOT let express.static serve index.html for directory requests.
+    // Otherwise "/" is served as the raw shell with a 200 before the
+    // bare-path redirect middleware runs — forcing a client-side
+    // LocaleRouter redirect to /en (a full second app boot, ~4s on mobile).
+    // With index:false, "/" falls through to the 301 → /en redirect.
+    index: false,
   }));
 
   const SUPPORTED_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
