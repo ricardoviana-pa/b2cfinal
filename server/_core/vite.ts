@@ -785,17 +785,44 @@ function buildBlogGraph(post: any, lang: string): Record<string, unknown> {
    users never see it — flash-free, no duplicate content — while crawlers
    that don't run JS read the full prose from the raw HTML. */
 
-const SEO_LABELS: Record<string, { home: string; homes: string; experiences: string; journal: string; amenities: string }> = {
-  en: { home: 'Home', homes: 'Homes', experiences: 'Experiences', journal: 'Journal', amenities: 'Amenities' },
-  pt: { home: 'Início', homes: 'Casas', experiences: 'Experiências', journal: 'Blog', amenities: 'Comodidades' },
-  es: { home: 'Inicio', homes: 'Casas', experiences: 'Experiencias', journal: 'Blog', amenities: 'Comodidades' },
-  fr: { home: 'Accueil', homes: 'Maisons', experiences: 'Expériences', journal: 'Blog', amenities: 'Équipements' },
-  de: { home: 'Startseite', homes: 'Häuser', experiences: 'Erlebnisse', journal: 'Blog', amenities: 'Ausstattung' },
-  it: { home: 'Home', homes: 'Case', experiences: 'Esperienze', journal: 'Blog', amenities: 'Servizi' },
-  nl: { home: 'Home', homes: 'Huizen', experiences: 'Ervaringen', journal: 'Blog', amenities: 'Voorzieningen' },
-  fi: { home: 'Etusivu', homes: 'Kodit', experiences: 'Elämykset', journal: 'Blogi', amenities: 'Mukavuudet' },
-  sv: { home: 'Hem', homes: 'Boenden', experiences: 'Upplevelser', journal: 'Blogg', amenities: 'Bekvämligheter' },
+type SeoLabelSet = {
+  home: string; homes: string; experiences: string; journal: string;
+  amenities: string; destinations: string; about: string; contact: string;
 };
+const SEO_LABELS: Record<string, SeoLabelSet> = {
+  en: { home: 'Home', homes: 'Homes', experiences: 'Experiences', journal: 'Journal', amenities: 'Amenities', destinations: 'Destinations', about: 'About', contact: 'Contact' },
+  pt: { home: 'Início', homes: 'Casas', experiences: 'Experiências', journal: 'Blog', amenities: 'Comodidades', destinations: 'Destinos', about: 'Sobre', contact: 'Contacto' },
+  es: { home: 'Inicio', homes: 'Casas', experiences: 'Experiencias', journal: 'Blog', amenities: 'Comodidades', destinations: 'Destinos', about: 'Nosotros', contact: 'Contacto' },
+  fr: { home: 'Accueil', homes: 'Maisons', experiences: 'Expériences', journal: 'Blog', amenities: 'Équipements', destinations: 'Destinations', about: 'À propos', contact: 'Contact' },
+  de: { home: 'Startseite', homes: 'Häuser', experiences: 'Erlebnisse', journal: 'Blog', amenities: 'Ausstattung', destinations: 'Reiseziele', about: 'Über uns', contact: 'Kontakt' },
+  it: { home: 'Home', homes: 'Case', experiences: 'Esperienze', journal: 'Blog', amenities: 'Servizi', destinations: 'Destinazioni', about: 'Chi siamo', contact: 'Contatti' },
+  nl: { home: 'Home', homes: 'Huizen', experiences: 'Ervaringen', journal: 'Blog', amenities: 'Voorzieningen', destinations: 'Bestemmingen', about: 'Over ons', contact: 'Contact' },
+  fi: { home: 'Etusivu', homes: 'Kodit', experiences: 'Elämykset', journal: 'Blogi', amenities: 'Mukavuudet', destinations: 'Kohteet', about: 'Tietoa', contact: 'Yhteystiedot' },
+  sv: { home: 'Hem', homes: 'Boenden', experiences: 'Upplevelser', journal: 'Blogg', amenities: 'Bekvämligheter', destinations: 'Destinationer', about: 'Om oss', contact: 'Kontakt' },
+};
+
+/** Derive a clean page heading from a meta title — the first segment before
+ *  a " | " or " — " separator (drops the brand/qualifier tail). */
+function pageHeadingFromTitle(title: string): string {
+  return title.split(/\s+[|—]\s+/)[0].trim() || 'Portugal Active';
+}
+
+/** Build a lean crawlable body for a static route: H1 + description + the
+ *  sitewide nav link graph. Static pages have hand-written React content that
+ *  can't be mirrored generically, but this gives JS-less crawlers a real H1,
+ *  a descriptive sentence, and the internal links to every main section. */
+function buildStaticSeoBody(lang: string, title: string, description: string): string {
+  const L = SEO_LABELS[lang] ?? SEO_LABELS.en;
+  const h1 = `<h1>${escText(pageHeadingFromTitle(title))}</h1>`;
+  const desc = description ? `<p>${escText(description)}</p>` : '';
+  const link = (path: string, label: string) => `<a href="/${lang}${path}">${escText(label)}</a>`;
+  const nav = `<nav aria-label="Site">` +
+    link('', L.home) + link('/homes', L.homes) + link('/experiences', L.experiences) +
+    link('/destinations', L.destinations) + link('/blog', L.journal) +
+    link('/about', L.about) + link('/contact', L.contact) +
+    `</nav>`;
+  return `<article>${h1}${desc}${nav}</article>`;
+}
 
 /** Split free text into escaped <p> paragraphs, capped at maxTotal chars. */
 function renderParagraphs(text: string, maxTotal = 3500): string {
@@ -1258,6 +1285,10 @@ export function serveStatic(app: Express) {
         description: localized.description,
         url: `${BOT_BASE_URL}/${lang}${p === '/' ? '' : p}`,
       });
+      // Static routes have hand-written React content; inject a lean
+      // crawlable body (H1 + description + sitewide nav) so JS-less
+      // crawlers still get a heading and the internal link graph.
+      html = injectSeoBody(html, buildStaticSeoBody(lang, localized.title, localized.description));
     }
 
     // ── Dynamic route meta: inject for ALL requests using in-memory cache.
