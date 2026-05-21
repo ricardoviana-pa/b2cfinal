@@ -396,6 +396,7 @@ export default function Home() {
               <select
                 value={searchDest}
                 onChange={e => setSearchDest(e.target.value)}
+                aria-label={t('home.searchDestination')}
                 className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white pl-9 pr-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer appearance-none"
                 style={{ fontFamily: 'var(--font-body)' }}
               >
@@ -414,7 +415,7 @@ export default function Home() {
             <div className="grid grid-cols-2 gap-2">
               <div className="relative">
                 <div className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 flex items-center text-[13px]" style={{ fontFamily: 'var(--font-body)' }}>
-                  <span className={searchCheckin ? 'text-[#1A1A18]' : 'text-[#9E9A90]'}>
+                  <span className={searchCheckin ? 'text-[#1A1A18]' : 'text-[#6B6860]'}>
                     {searchCheckin ? fmtSearchDate(searchCheckin) : t('home.searchCheckin', 'Check-in')}
                   </span>
                 </div>
@@ -429,7 +430,7 @@ export default function Home() {
               </div>
               <div className="relative">
                 <div className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 flex items-center text-[13px]" style={{ fontFamily: 'var(--font-body)' }}>
-                  <span className={searchCheckout ? 'text-[#1A1A18]' : 'text-[#9E9A90]'}>
+                  <span className={searchCheckout ? 'text-[#1A1A18]' : 'text-[#6B6860]'}>
                     {searchCheckout ? fmtSearchDate(searchCheckout) : t('home.searchCheckout', 'Check-out')}
                   </span>
                 </div>
@@ -515,6 +516,7 @@ export default function Home() {
               <select
                 value={searchDest}
                 onChange={e => setSearchDest(e.target.value)}
+                aria-label={t('home.searchDestination')}
                 className="w-full h-full pl-6 pr-3 bg-transparent text-[#1A1A18] text-[14px] focus:outline-none cursor-pointer appearance-none"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               >
