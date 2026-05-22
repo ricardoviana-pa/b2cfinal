@@ -1,7 +1,7 @@
 import "./i18n/index";
 import { trpc } from "@/lib/trpc";
 import { UNAUTHED_ERR_MSG } from '@shared/const';
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, hydrate } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import superjson from "superjson";
@@ -10,6 +10,21 @@ import { getLoginUrl } from "./const";
 import "./index.css";
 
 const queryClient = new QueryClient();
+
+// SSR hydration: when the server pre-rendered with data, it embedded the
+// dehydrated react-query cache as window.__RQ_STATE__. Hydrating it before
+// the first render means useQuery() has the data immediately — the client's
+// first render matches the server markup (no hydration mismatch, no flash).
+{
+  const ssrState = (window as unknown as { __RQ_STATE__?: string }).__RQ_STATE__;
+  if (ssrState) {
+    try {
+      hydrate(queryClient, superjson.parse(ssrState));
+    } catch (err) {
+      console.warn("[hydrate] failed to restore SSR query state:", err);
+    }
+  }
+}
 
 const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (!(error instanceof TRPCClientError)) return;
@@ -80,7 +95,17 @@ const tree = (
 // (CSR / SSR disabled) client-render. This lets the SSR_ENABLED server flag
 // be toggled freely without ever needing a matching client change.
 if (rootEl.hasChildNodes()) {
-  hydrateRoot(rootEl, tree);
+  hydrateRoot(rootEl, tree, {
+    onRecoverableError: (error) => {
+      // Hydration mismatches surface here. Record them for diagnostics and
+      // still log so they are visible during SSR validation.
+      const w = window as unknown as { __HYDRATION_ERRORS__?: string[] };
+      (w.__HYDRATION_ERRORS__ ||= []).push(
+        String((error as { message?: string })?.message ?? error),
+      );
+      console.error("[hydration]", error);
+    },
+  });
 } else {
   createRoot(rootEl).render(tree);
 }

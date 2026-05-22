@@ -1262,17 +1262,22 @@ export function serveStatic(app: Express) {
   const DYNAMIC_CONTENT_PREFIXES = ["/homes/", "/blog/", "/services/", "/experiences/", "/activities/"];
 
   // ── SSR (gated by SSR_ENABLED) ───────────────────────────────────────────
+  type SsrRender = (
+    url: string,
+    opts?: { prefetch?: Record<string, unknown> },
+  ) => Promise<{ appHtml: string; dehydratedState: string }>;
+
   // Lazily load the separately-built SSR bundle (dist/server/entry-server.js).
-  let _ssrRender: ((url: string) => Promise<{ appHtml: string }>) | null = null;
+  let _ssrRender: SsrRender | null = null;
   let _ssrUnavailable = false;
-  async function getSsrRender(): Promise<((url: string) => Promise<{ appHtml: string }>) | null> {
+  async function getSsrRender(): Promise<SsrRender | null> {
     if (_ssrRender) return _ssrRender;
     if (_ssrUnavailable) return null;
     try {
       const ssrEntry = path.resolve(distPath, "..", "server", "entry-server.js");
       const mod = await import(pathToFileURL(ssrEntry).href);
       if (typeof mod.render !== "function") throw new Error("entry-server exports no render()");
-      _ssrRender = mod.render;
+      _ssrRender = mod.render as SsrRender;
       console.info("[SSR] entry-server loaded — server-side rendering active");
       return _ssrRender;
     } catch (err) {
@@ -1282,16 +1287,51 @@ export function serveStatic(app: Express) {
     }
   }
 
+  /** Build the react-query prefetch payload for an SSR route, using the same
+   *  data the tRPC procedures return (the procedures are thin wrappers around
+   *  getPropertiesForSite), so the seeded cache matches the client exactly.
+   *
+   *  Only property-detail pages are prefetched: their single record is small
+   *  (~12 KB dehydrated) and they ARE the money pages. listForSite is NOT
+   *  prefetched — the full 66-property list dehydrates to ~1.3 MB, far too
+   *  heavy to embed; the homepage LCP is the static hero (already SSR'd), so
+   *  the property carousel / listing grid fill in client-side instead. */
+  async function buildPrefetch(strippedPath: string): Promise<Record<string, unknown> | undefined> {
+    const m = strippedPath.match(/^\/homes\/([^/]+)$/);
+    if (m) {
+      return { propertyBySlug: { slug: m[1], data: await getPropertyBySlugCached(m[1]) } };
+    }
+    return undefined;
+  }
+
+  /** Embed a string as a safe JS string literal inside a <script> tag. */
+  function scriptString(s: string): string {
+    return JSON.stringify(s).replace(/</g, "\\u003c");
+  }
+
   /** Fill <div id="root"> with real SSR markup when SSR is enabled; otherwise
    *  inject the lightweight crawlable #seo-content block. An SSR failure falls
    *  back to the seo-body so a render error can never break the page. */
-  async function injectBody(html: string, reqPath: string, seoBodyHtml?: string): Promise<string> {
+  async function injectBody(
+    html: string,
+    reqPath: string,
+    strippedPath: string,
+    seoBodyHtml?: string,
+  ): Promise<string> {
     if (SSR_ENABLED) {
       const render = await getSsrRender();
       if (render) {
         try {
-          const { appHtml } = await render(reqPath);
-          return html.replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
+          const prefetch = await buildPrefetch(strippedPath);
+          const { appHtml, dehydratedState } = await render(
+            reqPath,
+            prefetch ? { prefetch } : undefined,
+          );
+          const rqScript = `<script>window.__RQ_STATE__=${scriptString(dehydratedState)}</script>`;
+          return html.replace(
+            '<div id="root"></div>',
+            `<div id="root">${appHtml}</div>\n    ${rqScript}`,
+          );
         } catch (err) {
           console.error(`[SSR] render failed for ${reqPath}, falling back to CSR:`, (err as Error).message);
         }
@@ -1338,7 +1378,7 @@ export function serveStatic(app: Express) {
       });
       // Body: real SSR markup when enabled, else the lean crawlable
       // #seo-content block (H1 + description + sitewide nav).
-      html = await injectBody(html, rawPath, buildStaticSeoBody(lang, localized.title, localized.description));
+      html = await injectBody(html, rawPath, p, buildStaticSeoBody(lang, localized.title, localized.description));
     }
 
     // ── Dynamic route meta: inject for ALL requests using in-memory cache.
@@ -1355,7 +1395,7 @@ export function serveStatic(app: Express) {
         if (cachedMeta.schemaDomId && cachedMeta.schemaGraph) {
           html = injectSchemaGraph(html, cachedMeta.schemaDomId, cachedMeta.schemaGraph);
         }
-        html = await injectBody(html, rawPath, cachedMeta.bodyHtml);
+        html = await injectBody(html, rawPath, p, cachedMeta.bodyHtml);
       } else if (DYNAMIC_CONTENT_PREFIXES.some(pre => p.startsWith(pre))) {
         // Cached null on a dynamic content route → content doesn't exist → 404
         status = 404;
@@ -1510,7 +1550,7 @@ export function serveStatic(app: Express) {
         if (dynamicMeta.schemaDomId && dynamicMeta.schemaGraph) {
           html = injectSchemaGraph(html, dynamicMeta.schemaDomId, dynamicMeta.schemaGraph);
         }
-        html = await injectBody(html, rawPath, dynamicMeta.bodyHtml);
+        html = await injectBody(html, rawPath, p, dynamicMeta.bodyHtml);
       } else if (DYNAMIC_CONTENT_PREFIXES.some(pre => p.startsWith(pre))) {
         // Dynamic content route with no matching record → proper 404 (not soft 404)
         status = 404;

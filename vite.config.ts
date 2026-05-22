@@ -150,17 +150,21 @@ function vitePluginManusDebugCollector(): Plugin {
   };
 }
 
-export default defineConfig(({ isSsrBuild }) => ({
+export default defineConfig(({ command, isSsrBuild }) => ({
   define: {
     '__VITE_GA4_ID__': JSON.stringify(process.env.VITE_GA4_ID || ''),
   },
-  // jsxLocPlugin rewrites JSX to the `jsxDEV` runtime (it injects source
-  // locations) — that breaks a production SSR bundle ("jsxDEV is not a
-  // function"). The Manus dev plugins are likewise dev-only. Exclude all
-  // three from the SSR build; the client build is unchanged.
-  plugins: isSsrBuild
-    ? [react(), tailwindcss()]
-    : [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    // jsxLocPlugin injects `data-loc` debug attributes. It must run ONLY on
+    // the dev server: in a build it forces the jsxDEV runtime (breaks the SSR
+    // bundle) and, kept only in the client build, it desyncs client vs SSR
+    // markup → hydration mismatch. So: dev server only.
+    ...(command === "serve" ? [jsxLocPlugin()] : []),
+    // Manus preview tooling — client builds only, never the SSR bundle.
+    ...(isSsrBuild ? [] : [vitePluginManusRuntime(), vitePluginManusDebugCollector()]),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),

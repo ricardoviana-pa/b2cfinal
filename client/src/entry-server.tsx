@@ -7,13 +7,17 @@
  *
  * i18next is a singleton and therefore unsafe for concurrent SSR with
  * different locales — so every render() builds its OWN i18n instance for the
- * request's locale and provides it via <I18nextProvider>. The browser keeps
- * using the singleton (client/src/i18n/index.ts); both resolve the same
- * locale from the same URL, so the hydration markup matches.
+ * request's locale and provides it via <I18nextProvider>.
+ *
+ * Phase 3: the Express server passes already-loaded property data via
+ * `opts.prefetch`; it is seeded into the react-query cache so data-driven
+ * components render real content (not skeletons). The cache is dehydrated
+ * and returned so the client can hydrate it without re-fetching.
  */
 import { renderToPipeableStream } from 'react-dom/server';
 import { Writable } from 'node:stream';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, dehydrate } from '@tanstack/react-query';
+import { getQueryKey } from '@trpc/react-query';
 import { httpBatchLink } from '@trpc/client';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { createInstance } from 'i18next';
@@ -34,18 +38,30 @@ import sv from './i18n/locales/sv.json';
 const SUPPORTED = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'] as const;
 const RESOURCES: Record<string, unknown> = { en, pt, fr, es, it, fi, de, nl, sv };
 
+/** Property data the server has already loaded, to seed the query cache. */
+export interface RenderPrefetch {
+  /** Result of trpc.properties.listForSite (the full site property list). */
+  listForSite?: unknown;
+  /** Result of trpc.properties.getBySlugForSite for a single property page. */
+  propertyBySlug?: { slug: string; data: unknown };
+}
+
+export interface RenderOptions {
+  prefetch?: RenderPrefetch;
+}
+
 export interface RenderResult {
   /** The rendered app HTML — goes inside <div id="root">. */
   appHtml: string;
+  /** superjson-serialised react-query cache for the client to hydrate. */
+  dehydratedState: string;
 }
 
-/** First path segment, lower-cased, if it is a supported locale; else 'en'. */
 function localeFromUrl(url: string): string {
   const seg = url.split('?')[0].split('/').filter(Boolean)[0]?.toLowerCase();
   return (SUPPORTED as readonly string[]).includes(seg ?? '') ? (seg as string) : 'en';
 }
 
-/** Fresh i18n instance for one request, initialised with that request's locale. */
 async function createI18nForRequest(lng: string) {
   const instance = createInstance();
   await instance.use(initReactI18next).init({
@@ -67,13 +83,30 @@ async function createI18nForRequest(lng: string) {
  * Resolves once every Suspense boundary — including lazy route chunks — has
  * settled, so the returned HTML is complete.
  */
-export async function render(url: string): Promise<RenderResult> {
+export async function render(url: string, opts?: RenderOptions): Promise<RenderResult> {
   const i18n = await createI18nForRequest(localeFromUrl(url));
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+
+  // Seed the query cache with server-loaded data so trpc useQuery() calls
+  // render real content. getQueryKey produces the exact key the client hooks
+  // use, so the dehydrated state hydrates cleanly with no key mismatch.
+  const pf = opts?.prefetch;
+  if (pf?.listForSite !== undefined) {
+    queryClient.setQueryData(
+      getQueryKey(trpc.properties.listForSite, undefined, 'query'),
+      pf.listForSite,
+    );
+  }
+  if (pf?.propertyBySlug) {
+    queryClient.setQueryData(
+      getQueryKey(trpc.properties.getBySlugForSite, { slug: pf.propertyBySlug.slug }, 'query'),
+      pf.propertyBySlug.data,
+    );
+  }
 
   return new Promise<RenderResult>((resolve, reject) => {
-    const queryClient = new QueryClient({
-      defaultOptions: { queries: { retry: false } },
-    });
     const trpcClient = trpc.createClient({
       links: [httpBatchLink({ url: '/api/trpc', transformer: superjson })],
     });
@@ -82,7 +115,12 @@ export async function render(url: string): Promise<RenderResult> {
     const sink = new Writable({
       write(chunk, _enc, cb) { html += chunk.toString(); cb(); },
     });
-    sink.on('finish', () => resolve({ appHtml: html }));
+    sink.on('finish', () => {
+      resolve({
+        appHtml: html,
+        dehydratedState: superjson.stringify(dehydrate(queryClient)),
+      });
+    });
     sink.on('error', reject);
 
     let didError = false;

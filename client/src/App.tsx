@@ -214,12 +214,15 @@ function BackToTop() {
 
 function OfflineBanner() {
   const { t } = useTranslation();
-  // Lazy initializer + guard: `navigator` is undefined during SSR.
-  const [offline, setOffline] = useState(() => typeof navigator !== 'undefined' && !navigator.onLine);
+  // Always start `false` — the server has no `navigator` and renders nothing,
+  // so the client's first render must match (no hydration mismatch). The real
+  // online state is read in the effect below, right after mount.
+  const [offline, setOffline] = useState(false);
   const handleOnline = useCallback(() => setOffline(false), []);
   const handleOffline = useCallback(() => setOffline(true), []);
 
   useEffect(() => {
+    setOffline(!navigator.onLine);
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
     return () => {
