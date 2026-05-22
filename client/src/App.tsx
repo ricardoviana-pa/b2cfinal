@@ -214,7 +214,8 @@ function BackToTop() {
 
 function OfflineBanner() {
   const { t } = useTranslation();
-  const [offline, setOffline] = useState(!navigator.onLine);
+  // Lazy initializer + guard: `navigator` is undefined during SSR.
+  const [offline, setOffline] = useState(() => typeof navigator !== 'undefined' && !navigator.onLine);
   const handleOnline = useCallback(() => setOffline(false), []);
   const handleOffline = useCallback(() => setOffline(true), []);
 

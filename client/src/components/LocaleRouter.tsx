@@ -39,13 +39,19 @@ function detectLanguage(): string {
   return DEFAULT_LANG;
 }
 
-export default function LocaleRouter({ children }: { children: ReactNode }) {
+export default function LocaleRouter({ children, ssrPath }: { children: ReactNode; ssrPath?: string }) {
   const { i18n } = useTranslation();
-  const { lang, rest } = useMemo(() => extractLocale(window.location.pathname), []);
+  // SSR passes the request path via `ssrPath`; in the browser we read
+  // window.location. `window` is undefined during server render.
+  const pathname = ssrPath ?? (typeof window !== 'undefined' ? window.location.pathname : '/');
+  const { lang, rest } = useMemo(() => extractLocale(pathname), [pathname]);
 
   // If URL has no valid locale prefix, redirect with a real navigation
-  // so wouter initializes with the correct base path
+  // so wouter initializes with the correct base path.
   if (!lang) {
+    // On the server the bare-path → /{lang} redirect is handled by the
+    // request middleware, so there is nothing to do here.
+    if (typeof window === 'undefined') return null;
     const preferred = detectLanguage();
     const newPath = `/${preferred}${rest === '/' ? '' : rest}${window.location.search}${window.location.hash}`;
     window.location.replace(newPath);
