@@ -3,8 +3,14 @@ import fs from "fs";
 import { type Server } from "http";
 import { nanoid } from "nanoid";
 import path from "path";
+import { pathToFileURL } from "node:url";
 import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
+
+/** Server-side rendering kill-switch. When unset/false the server serves the
+ *  CSR shell exactly as before; flip the Render env var to true to enable SSR,
+ *  back to false to instantly roll back — no redeploy needed. */
+const SSR_ENABLED = process.env.SSR_ENABLED === "true";
 
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
@@ -1255,6 +1261,45 @@ export function serveStatic(app: Express) {
   // any record in the data source, we return 404 (not 200 = soft 404).
   const DYNAMIC_CONTENT_PREFIXES = ["/homes/", "/blog/", "/services/", "/experiences/", "/activities/"];
 
+  // ── SSR (gated by SSR_ENABLED) ───────────────────────────────────────────
+  // Lazily load the separately-built SSR bundle (dist/server/entry-server.js).
+  let _ssrRender: ((url: string) => Promise<{ appHtml: string }>) | null = null;
+  let _ssrUnavailable = false;
+  async function getSsrRender(): Promise<((url: string) => Promise<{ appHtml: string }>) | null> {
+    if (_ssrRender) return _ssrRender;
+    if (_ssrUnavailable) return null;
+    try {
+      const ssrEntry = path.resolve(distPath, "..", "server", "entry-server.js");
+      const mod = await import(pathToFileURL(ssrEntry).href);
+      if (typeof mod.render !== "function") throw new Error("entry-server exports no render()");
+      _ssrRender = mod.render;
+      console.info("[SSR] entry-server loaded — server-side rendering active");
+      return _ssrRender;
+    } catch (err) {
+      _ssrUnavailable = true;
+      console.error("[SSR] could not load entry-server, staying on CSR:", (err as Error).message);
+      return null;
+    }
+  }
+
+  /** Fill <div id="root"> with real SSR markup when SSR is enabled; otherwise
+   *  inject the lightweight crawlable #seo-content block. An SSR failure falls
+   *  back to the seo-body so a render error can never break the page. */
+  async function injectBody(html: string, reqPath: string, seoBodyHtml?: string): Promise<string> {
+    if (SSR_ENABLED) {
+      const render = await getSsrRender();
+      if (render) {
+        try {
+          const { appHtml } = await render(reqPath);
+          return html.replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
+        } catch (err) {
+          console.error(`[SSR] render failed for ${reqPath}, falling back to CSR:`, (err as Error).message);
+        }
+      }
+    }
+    return seoBodyHtml ? injectSeoBody(html, seoBodyHtml) : html;
+  }
+
   app.use("*", async (req, res) => {
     const rawPath = req.originalUrl.split("?")[0];
     const p = stripLocale(rawPath);
@@ -1291,10 +1336,9 @@ export function serveStatic(app: Express) {
         description: localized.description,
         url: `${BOT_BASE_URL}/${lang}${p === '/' ? '' : p}`,
       });
-      // Static routes have hand-written React content; inject a lean
-      // crawlable body (H1 + description + sitewide nav) so JS-less
-      // crawlers still get a heading and the internal link graph.
-      html = injectSeoBody(html, buildStaticSeoBody(lang, localized.title, localized.description));
+      // Body: real SSR markup when enabled, else the lean crawlable
+      // #seo-content block (H1 + description + sitewide nav).
+      html = await injectBody(html, rawPath, buildStaticSeoBody(lang, localized.title, localized.description));
     }
 
     // ── Dynamic route meta: inject for ALL requests using in-memory cache.
@@ -1311,9 +1355,7 @@ export function serveStatic(app: Express) {
         if (cachedMeta.schemaDomId && cachedMeta.schemaGraph) {
           html = injectSchemaGraph(html, cachedMeta.schemaDomId, cachedMeta.schemaGraph);
         }
-        if (cachedMeta.bodyHtml) {
-          html = injectSeoBody(html, cachedMeta.bodyHtml);
-        }
+        html = await injectBody(html, rawPath, cachedMeta.bodyHtml);
       } else if (DYNAMIC_CONTENT_PREFIXES.some(pre => p.startsWith(pre))) {
         // Cached null on a dynamic content route → content doesn't exist → 404
         status = 404;
@@ -1468,9 +1510,7 @@ export function serveStatic(app: Express) {
         if (dynamicMeta.schemaDomId && dynamicMeta.schemaGraph) {
           html = injectSchemaGraph(html, dynamicMeta.schemaDomId, dynamicMeta.schemaGraph);
         }
-        if (dynamicMeta.bodyHtml) {
-          html = injectSeoBody(html, dynamicMeta.bodyHtml);
-        }
+        html = await injectBody(html, rawPath, dynamicMeta.bodyHtml);
       } else if (DYNAMIC_CONTENT_PREFIXES.some(pre => p.startsWith(pre))) {
         // Dynamic content route with no matching record → proper 404 (not soft 404)
         status = 404;
