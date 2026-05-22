@@ -69,7 +69,7 @@ export default function LocaleRouter({ children, ssrPath }: { children: ReactNod
   }, [activeLang, i18n]);
 
   return (
-    <Router base={`/${activeLang}`}>
+    <Router base={`/${activeLang}`} ssrPath={ssrPath}>
       {children}
     </Router>
   );

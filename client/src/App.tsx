@@ -241,14 +241,14 @@ function OfflineBanner() {
   );
 }
 
-function App() {
+function App({ ssrLocation }: { ssrLocation?: string }) {
   // Fire AI referrer detection once on mount
   useEffect(() => { detectAiReferrer(); }, []);
 
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
-        <LocaleRouter>
+        <LocaleRouter ssrPath={ssrLocation}>
           <ItineraryProvider>
             <TooltipProvider>
               <Toaster />
