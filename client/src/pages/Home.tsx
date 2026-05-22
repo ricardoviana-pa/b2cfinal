@@ -686,7 +686,7 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 3: OUR HOMES Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s3Ref} className="fade-in section-padding bg-white">
+      <section ref={s3Ref} className="fade-in cv-auto section-padding bg-white">
         <div className="container">
           <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.homesOverline')}</p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
@@ -742,7 +742,7 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 4: STATS BAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s4Ref} className="fade-in relative bg-[#141412]">
+      <section ref={s4Ref} className="fade-in cv-auto relative bg-[#141412]">
         <div
           className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C4A87C]/30 to-transparent"
           aria-hidden
@@ -777,7 +777,7 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 5: HOW IT WORKS Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s5Ref} className="fade-in section-padding bg-white">
+      <section ref={s5Ref} className="fade-in cv-auto section-padding bg-white">
         <div className="container">
           <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.howItWorksOverline')}</p>
           <h2 className="headline-lg text-[#1A1A18] mb-10 max-w-lg">{t('home.howItWorksTitle')}</h2>
@@ -816,7 +816,7 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 6: THE CONCEPT (split layout) Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s6Ref} className="fade-in bg-white overflow-hidden">
+      <section ref={s6Ref} className="fade-in cv-auto bg-white overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-5">
           {/* Left: editorial image (60%) */}
           <div
@@ -880,7 +880,7 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 7: DESTINATIONS Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s7Ref} className="fade-in section-padding bg-[#FAFAF7]">
+      <section ref={s7Ref} className="fade-in cv-auto section-padding bg-[#FAFAF7]">
         <div className="container">
           <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.destOverline')}</p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
@@ -930,7 +930,7 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 8: EXPERIENCES Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s8Ref} className="fade-in section-padding bg-[#F5F1EB]">
+      <section ref={s8Ref} className="fade-in cv-auto section-padding bg-[#F5F1EB]">
         <div className="container">
           <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.expOverline')}</p>
           <h2 className="headline-lg text-[#1A1A18] mb-10">{t('home.expTitle')}</h2>
@@ -1000,7 +1000,7 @@ export default function Home() {
       </Suspense>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 10: OWNERS CTA Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s10Ref} className="fade-in bg-[#1A1A18]">
+      <section ref={s10Ref} className="fade-in cv-auto bg-[#1A1A18]">
         <div className="container py-16 lg:py-20">
           <div className="max-w-2xl mx-auto text-center">
             <p className="text-[12px] font-medium text-[#C4A87C] mb-4" style={{ letterSpacing: '0.08em' }}>{t('home.ownersOverline')}</p>
@@ -1026,7 +1026,7 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ PRESS BAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section className="bg-white">
+      <section className="cv-auto bg-white">
         <div className="container py-12 lg:py-16">
           <p
             className="text-center text-[11px] font-medium text-[#9E9A90] mb-8 lg:mb-10"

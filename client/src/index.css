@@ -837,3 +837,13 @@
     }
   }
 }
+
+/* Off-screen rendering optimisation — the browser skips layout/style/paint
+   for below-the-fold sections until they are scrolled near the viewport,
+   cutting main-thread work on initial load. `contain-intrinsic-size: auto`
+   reserves estimated space (and remembers the real size after first render)
+   so the scrollbar does not jump. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 700px;
+}
