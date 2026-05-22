@@ -307,9 +307,42 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 6287,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 4,
+        "text": "Leuk huis, erg groot waardoor het binnen wat sfeerloos is. Prachtige tuin en gezellige buitenkeuken. Tennisbaan valt tegen, geen lijnen op de baan en alleen maar oude kapotte rackets aanwezig. Badkamers zijn verouderd.",
+        "guestName": "Guest",
+        "date": "2026-05-19T14:56:12.764Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 3
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      }
+    ],
+    "averageRating": 4,
+    "reviewCount": 1
   },
   {
     "id": "guesty-69c567ad7f6873000e9a3c37",
@@ -4191,6 +4224,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Best place I’ve ever stayed. Had everything you could imagine and more. 10/10, would definitely stay again. \n\nAmazing bedrooms, kitchen, bbq area, swimming pool, tennis courts, the list goes on. Truly incredible!\n\nThank you",
+        "guestName": "Guest",
+        "date": "2026-05-21T11:08:41.067Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "espaço muito agradavel. passamos um fds excelente em familia",
         "guestName": "Guest",
         "date": "2026-04-27T16:41:59.076Z",
@@ -4254,8 +4319,8 @@
         ]
       }
     ],
-    "averageRating": 4.5,
-    "reviewCount": 2
+    "averageRating": 4.7,
+    "reviewCount": 3
   },
   {
     "id": "guesty-6965338cecf7490014ed2c2d",
@@ -5452,7 +5517,7 @@
     "maxGuests": 20,
     "priceFrom": 500,
     "pricePerNight": 500,
-    "cleaningFee": 200,
+    "cleaningFee": 380,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -11243,13 +11308,13 @@
     "seoDescription": "Escape to a stunning oasis of tranquility, where three isolated and fully equipped properties blend harmoniously with the natural environment",
     "address": {
       "full": "",
-      "street": "Estrada de Romãe",
+      "street": "Estrada de Romãe 680",
       "city": "Viana do Castelo",
       "state": "Viana do Castelo",
       "zipcode": "",
       "country": "Portugal",
-      "lat": 41.754763065975,
-      "lng": -8.7927579098564
+      "lat": 41.75541,
+      "lng": -8.7924743
     },
     "rooms": [
       {
@@ -11946,6 +12011,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Prachtige ervaring! Het huis was precies zoals op de foto’s. Hier en daar waren er enkele lichte gebruikssporen, maar verder was alles helemaal in orde. De service was ontzettend vriendelijk en er werd altijd goed contact gehouden. Als er iets was, werd het meteen opgepakt en geregeld. We hebben via hen ook een massage geboekt en een privéchef geregeld, wat echt een mooie extra was. De kinderen hebben er enorm van genoten en vonden het ook een geweldige belevenis. Wij zouden zeker nog eens terug",
+        "guestName": "Guest",
+        "date": "2026-05-21T16:23:17.107Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "La casa es muy espaciosa y muy comoda , deberían revisar algunas puertas que dan al exterior de los ventanales ya que la mayoría estaban estropeadas., por lo demás todo genial",
         "guestName": "Guest",
         "date": "2026-05-06T08:51:16.295Z",
@@ -12137,8 +12234,8 @@
         ]
       }
     ],
-    "averageRating": 4.8,
-    "reviewCount": 6
+    "averageRating": 4.9,
+    "reviewCount": 7
   },
   {
     "id": "guesty-69c415701b964f00157188bd",
@@ -17638,8 +17735,8 @@
     "tier": "select",
     "destination": "minho",
     "locality": "Caminha",
-    "bedrooms": 9,
-    "bathrooms": 1,
+    "bedrooms": 2,
+    "bathrooms": 0,
     "maxGuests": 4,
     "priceFrom": 450,
     "pricePerNight": 450,
@@ -17790,80 +17887,8 @@
         "name": "Bedroom 2",
         "beds": [
           {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 3",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 4",
-        "beds": [
-          {
             "type": "SINGLE_BED",
             "quantity": 2
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 5",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 6",
-        "beds": [
-          {
-            "type": "SINGLE_BED",
-            "quantity": 2
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 7",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 8",
-        "beds": [
-          {
-            "type": "SINGLE_BED",
-            "quantity": 2
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 9",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 10",
-        "beds": [
-          {
-            "type": "SOFA_BED",
-            "quantity": 1
           }
         ]
       }
