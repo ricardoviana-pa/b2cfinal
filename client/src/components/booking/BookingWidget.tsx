@@ -646,7 +646,7 @@ export default function BookingWidget({
 
   // ── MAIN WIDGET ──
   return (
-    <div ref={widgetRef} className="bg-white border border-black/10 overflow-hidden shadow-sm">
+    <div ref={widgetRef} className="booking-widget bg-white border border-black/10 overflow-hidden shadow-sm">
       {/* Price header */}
       <div className="px-6 pt-6 pb-4">
         {effectiveQuote && effectiveQuote.total > 0 ? (
