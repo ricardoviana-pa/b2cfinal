@@ -481,10 +481,7 @@ export default function Home() {
         <div className="absolute bottom-16 left-0 right-0 lg:hidden px-5 z-10">
           <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg p-4 space-y-3">
             <div className="grid grid-cols-2 gap-2">
-              <div
-                className="relative"
-                onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
-              >
+              <div className="relative">
                 <input
                   type="date"
                   value={searchCheckin}
@@ -495,10 +492,7 @@ export default function Home() {
                   placeholder={t('home.searchCheckin', 'Check-in')}
                 />
               </div>
-              <div
-                className="relative"
-                onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
-              >
+              <div className="relative">
                 <input
                   ref={checkoutMobileRef}
                   type="date"
