@@ -1964,7 +1964,8 @@
         "horseback-riding",
         "stand-up-paddle"
       ],
-      "whatsappMessage": "Hi Portugal Active, I'd like to book the E-Bike Tour in Viana do Castelo. Could you confirm availability?"
+      "whatsappMessage": "Hi Portugal Active, I'd like to book the E-Bike Tour in Viana do Castelo. Could you confirm availability?",
+      "bokunActivityId": 1219990
     },
     {
       "slug": "surf-lessons",
