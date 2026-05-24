@@ -29,24 +29,56 @@ export interface DestinationFAQ {
   answer: string;
 }
 
-export interface DestinationSeason {
-  /** Display label, e.g. "Spring (March–May)" */
-  label: string;
-  /** 80–120-word editorial paragraph. */
-  description: string;
+/* ── Seasons (object form, per Viana pilot Cowork editorial 2026-05) ───
+   Named keys make it natural to render a "Best for first-time visitors"
+   tag separately from the four standard seasons, and let translation
+   workflows key off a stable identifier rather than a localized label. */
+export interface DestinationSeasons {
+  spring?: string;
+  summer?: string;
+  autumn?: string;
+  winter?: string;
+  /** Free-form recommendation paragraph rendered after the four seasons. */
+  bestForFirstTime?: string;
 }
 
-export interface DestinationTransportOption {
-  /** "By air", "By train", "By car", "From Spain", etc. */
-  label: string;
-  description: string;
+/* ── Transport (object form) ──────────────────────────────────────────
+   Named keys map cleanly to the lucide icons in HowToGetHere and survive
+   reordering without breaking the iconography. `gettingAround` is the
+   in-destination block (cycling, parking, ride-hail). */
+export interface DestinationTransport {
+  byAir?: string;
+  byTrain?: string;
+  byCar?: string;
+  fromSpain?: string;
+  gettingAround?: string;
 }
 
 export interface DestinationCuration {
   name: string;
-  /** Free-form category tag — "Restaurant", "Wine", "Hike", "Surf", etc. */
-  category: string;
+  /** Free-form category tag — "Restaurant", "Wine", "Hike", "Surf", etc.
+   *  Optional so editorial entries (experiences, specialties) don't need
+   *  a fixed taxonomy. */
+  category?: string;
   description: string;
+}
+
+export interface DestinationExperience {
+  name: string;
+  description: string;
+  /** "Half day", "2-3 hours", "Evening", etc. */
+  duration?: string;
+  /** Season window — "Year-round", "April through October", etc. */
+  season?: string;
+}
+
+export interface DestinationEvent {
+  name: string;
+  /** Free-form date label, e.g. "15-23 August 2026". */
+  dates: string;
+  description: string;
+  /** Optional outbound URL for the official event page. */
+  url?: string;
 }
 
 export interface DestinationThingsToDoGroup {
@@ -58,10 +90,19 @@ export interface DestinationThingsToDoGroup {
 export interface DestinationPressQuote {
   /** Publication name, e.g. "Condé Nast Traveler" */
   source: string;
-  /** Up-to-15-word quote. */
+  /** Quote text. */
   quote: string;
+  /** Optional year for context, e.g. 2024. */
+  year?: number;
   /** Optional outbound URL for backlink credit. */
   url?: string;
+}
+
+export interface DestinationAccolade {
+  text: string;
+  source: string;
+  /** Optional secondary note, e.g. "First Portuguese city ranked in the global top three". */
+  note?: string;
 }
 
 export interface Destination {
@@ -80,32 +121,57 @@ export interface Destination {
   highlights: string[];       // 3-5 bullets: what makes this region special
   propertyCount: number;
   comingSoon: boolean;
-  /** Hero pull-quote shown over the cover image (Section 1). */
-  pullQuote?: { text: string; source: string };
+  /** Hero pull-quote — editorial quote rendered with the hero. */
+  pullQuote?: { text: string; source: string; year?: number };
+  /** Primary award/accolade — rendered as the hero badge when present. */
+  primaryAccolade?: DestinationAccolade;
   /** Section 1: editorial hero subtitle (one-line poetic positioning). */
   heroSubtitle?: string;
   howToGetHere?: string;
   bestTimeToVisit?: string;
   whatToExpect?: string;
   insiderRecommendations?: DestinationCuration[];
+  /** Section 3: editorial intro paragraph for "Where to stay". */
+  whereToStayIntro?: string;
+  /** Section 4: override the default journal heading. */
+  journalSectionTitle?: string;
+  /** Section 5: editorial intro paragraph for "What to see and do". */
+  thingsToDoIntro?: string;
   /** Section 5: "What to see and do" — curated groups (10–15 items total). */
   thingsToDo?: DestinationThingsToDoGroup[];
-  /** Section 6: seasonality, premium editorial. */
-  seasons?: DestinationSeason[];
-  /** Section 7: detailed transport options (per medium). */
-  transport?: DestinationTransportOption[];
+  /** Section 6: seasonality, premium editorial. Object-keyed for stable
+   *  per-locale translation. */
+  seasons?: DestinationSeasons;
+  /** Section 7: detailed transport options (per medium). Object-keyed. */
+  transport?: DestinationTransport;
+  /** Section 8: editorial intro paragraph for "Eat, drink, experience". */
+  eatDrinkIntro?: string;
   /** Section 8: curated restaurants. */
   restaurants?: DestinationCuration[];
+  /** Section 8: regional specialties (dishes, wines, products). */
+  specialties?: DestinationCuration[];
+  /** Section 8: editorial intro paragraph for the experiences list. */
+  experiencesIntro?: string;
   /** Section 8: curated experiences (kayak, surf lessons, tastings). */
-  experiences?: DestinationCuration[];
-  /** Section 9: press recognition for backlinks + trust. */
+  experiences?: DestinationExperience[];
+  /** Section 9 (new): editorial intro for the events block. */
+  eventsIntro?: string;
+  /** Section 9 (new): events worth planning around. */
+  events?: DestinationEvent[];
+  /** Section 10: editorial intro paragraph for press recognition. */
+  pressIntro?: string;
+  /** Section 10: press recognition for backlinks + trust. */
   pressQuotes?: DestinationPressQuote[];
-  /** Section 10: FAQ — emitted as FAQPage schema for rich snippets. */
+  /** Section 11: FAQ — emitted as FAQPage schema for rich snippets. */
   faqs?: DestinationFAQ[];
-  /** Section 11: sibling slugs to surface as "continue exploring". */
+  /** Section 12: sibling slugs to surface as "continue exploring".
+   *  Preferred name `relatedDestinations`; `relatedSlugs` kept as alias
+   *  for back-compat with the pre-pilot data. */
+  relatedDestinations?: DestinationSlug[];
+  /** @deprecated use `relatedDestinations`. */
   relatedSlugs?: DestinationSlug[];
-  /** Section 11: optional override for the owners CTA copy. */
-  ownersCTA?: { headline: string; body: string; cta: string };
+  /** Section 12: optional override for the owners CTA copy. */
+  ownersCTA?: { headline: string; body: string; cta: string; url?: string };
   seoTitle: string;
   seoDescription: string;
   status: 'active' | 'draft';

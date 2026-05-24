@@ -65,10 +65,12 @@ export default function DestinationDetail() {
 
   const related = useMemo<Destination[]>(() => {
     if (!dest) return [];
-    // Prefer the explicit relatedSlugs list when present; otherwise siblings
-    // in the same region, excluding self.
-    const slugs = dest.relatedSlugs && dest.relatedSlugs.length > 0
-      ? dest.relatedSlugs
+    // Prefer the explicit relatedDestinations list (Cowork editorial shape);
+    // fall back to the legacy relatedSlugs alias; finally siblings in the
+    // same region, excluding self.
+    const explicit = dest.relatedDestinations ?? dest.relatedSlugs;
+    const slugs = explicit && explicit.length > 0
+      ? explicit
       : destinations
           .filter(d => d.region === dest.region && d.slug !== dest.slug && !d.comingSoon)
           .map(d => d.slug);

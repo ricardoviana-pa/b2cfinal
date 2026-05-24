@@ -13,6 +13,7 @@ export {
   WhenToVisit,
   HowToGetHere,
   EatDrinkExperience,
+  EventsAndPlanning,
   PressAccolades,
   FAQSection,
   RelatedDestinationsAndOwnersCTA,

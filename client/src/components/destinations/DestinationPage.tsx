@@ -20,6 +20,7 @@ import {
   WhenToVisit,
   HowToGetHere,
   EatDrinkExperience,
+  EventsAndPlanning,
   PressAccolades,
   FAQSection,
   RelatedDestinationsAndOwnersCTA,
@@ -68,9 +69,10 @@ export function DestinationPage({
         adventures={adventures}
         onAddToItinerary={onAddToItinerary}
       />
-      {/* 9 */} <PressAccolades destination={destination} />
-      {/* 10 */} <FAQSection destination={destination} />
-      {/* 11 */} <RelatedDestinationsAndOwnersCTA destination={destination} related={related} />
+      {/* 9 */} <EventsAndPlanning destination={destination} />
+      {/* 10 */} <PressAccolades destination={destination} />
+      {/* 11 */} <FAQSection destination={destination} />
+      {/* 12 */} <RelatedDestinationsAndOwnersCTA destination={destination} related={related} />
     </>
   );
 }
