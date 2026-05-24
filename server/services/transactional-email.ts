@@ -14,18 +14,19 @@ const FROM_EMAIL = process.env.EMAIL_FROM || "Portugal Active <hello@portugalact
 /* ================================================================
    CORE SEND
    ================================================================ */
-async function sendEmail(to: string, subject: string, html: string): Promise<void> {
+async function sendEmail(to: string, subject: string, html: string, replyTo?: string): Promise<void> {
   if (isProduction && resend) {
     const { error } = await resend.emails.send({
       from: FROM_EMAIL,
       to,
       subject,
       html,
+      ...(replyTo ? { reply_to: replyTo } : {}),
     });
     if (error) throw new Error(`Resend error: ${error.message}`);
     console.info(`[EMAIL] Sent to ${to}: "${subject}"`);
   } else {
-    console.log(`\n[EMAIL SERVICE - DEV MODE] To: ${to} | Subject: ${subject}`);
+    console.log(`\n[EMAIL SERVICE - DEV MODE] To: ${to} | Subject: ${subject}${replyTo ? ` | Reply-To: ${replyTo}` : ""}`);
     console.log(html);
     console.log(`[EMAIL SERVICE - DEV MODE] End of email\n`);
   }
@@ -172,6 +173,7 @@ interface BookingFailureAlertData {
 }
 
 const BOOKING_ALERT_EMAIL = process.env.BOOKING_ALERT_EMAIL || "booking@portugalactive.com";
+const CONTACT_ALERT_EMAIL = process.env.CONTACT_ALERT_EMAIL || "info@portugalactive.com";
 
 export async function sendBookingFailureAlert(data: BookingFailureAlertData): Promise<void> {
   const subject = `BOOKING FAILED — ${data.propertyName || data.listingId || "Unknown"} — ${data.guestName} — €${data.totalPrice || "?"}`;
@@ -293,6 +295,71 @@ export async function sendBookingFailureAlert(data: BookingFailureAlertData): Pr
   } catch (emailErr: any) {
     // Alert email must NEVER throw — log and move on
     console.error(`[EMAIL] CRITICAL: Failed to send booking failure alert to ${BOOKING_ALERT_EMAIL}: ${emailErr.message}`);
+  }
+}
+
+/* ================================================================
+   CONTACT FORM TEAM ALERT (internal — to info team)
+   ================================================================ */
+interface ContactTeamAlertData {
+  name: string;
+  email: string;
+  phone?: string;
+  subject: string;
+  message: string;
+}
+
+export async function sendContactTeamAlert(data: ContactTeamAlertData): Promise<void> {
+  const emailSubject = `New contact: ${data.subject} — ${data.name}`;
+
+  const html = wrapTemplate(`
+<tr><td style="padding:0 0 24px 0;">
+  <h1 style="font-family:Georgia,serif;font-size:22px;color:#1A1A18;margin:0;font-weight:400;">New Contact Form Submission</h1>
+</td></tr>
+
+<tr><td style="padding:0 0 20px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAFAF7;border:1px solid #E8E4DC;">
+  <tr><td style="padding:20px;">
+    <p style="font-family:Arial,sans-serif;font-size:11px;color:#9E9A90;margin:0 0 12px 0;text-transform:uppercase;letter-spacing:0.05em;">Sender</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">Name</td>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;font-weight:600;">${data.name}</td>
+      </tr>
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">Email</td>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:14px;text-align:right;">
+          <a href="mailto:${data.email}" style="color:#8B7355;">${data.email}</a>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">Phone</td>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:14px;text-align:right;">
+          ${data.phone ? `<a href="https://wa.me/${data.phone.replace(/[^0-9]/g, '')}" style="color:#8B7355;">${data.phone}</a>` : '—'}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:13px;color:#6B6860;">Subject</td>
+        <td style="padding:4px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;">${data.subject}</td>
+      </tr>
+    </table>
+  </td></tr>
+</table>
+</td></tr>
+
+<tr><td style="padding:0 0 20px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAFAF7;border:1px solid #E8E4DC;">
+  <tr><td style="padding:20px;">
+    <p style="font-family:Arial,sans-serif;font-size:11px;color:#9E9A90;margin:0 0 12px 0;text-transform:uppercase;letter-spacing:0.05em;">Message</p>
+    <p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0;white-space:pre-wrap;">${data.message}</p>
+  </td></tr>
+</table>
+</td></tr>`);
+
+  try {
+    await sendEmail(CONTACT_ALERT_EMAIL, emailSubject, html, data.email);
+  } catch (err: any) {
+    console.error(`[EMAIL] Contact team alert failed: ${err.message}`);
   }
 }
 
