@@ -111,18 +111,24 @@ const SERVICE_REDIRECTS: Record<string, string> = {
 };
 
 // === LOCATIONS → DESTINATIONS =============================================
+// Maps legacy Webflow /locations/<city>-portugal slugs to the current
+// /destinations/<slug>. When a city has its own spoke (added per the May
+// 2026 destinations strategy doc) the redirect points to the spoke;
+// otherwise it lands on the parent region hub. Updated 2026-05-23 to
+// route Viana / Caminha / Esposende to their new spokes — these used to
+// land on /destinations/minho.
 const LOCATION_REDIRECTS: Record<string, string> = {
   "algarve-portugal": "algarve",
   "arcos-de-valdevez-portugal": "minho",
   "barcelos-potugal": "minho",
-  "caminha-portugal": "minho",
-  "esposende-portugal": "minho",
+  "caminha-portugal": "caminha",
+  "esposende-portugal": "esposende",
   "fafe-portugal": "minho",
   "guimaraes-portugal": "minho",
   "moimenta-da-beira-portugal": "porto",
   "ponte-de-lima-portugal": "minho",
   "porto-portugal": "porto",
-  "viana-do-castelo-portugal": "minho",
+  "viana-do-castelo-portugal": "viana-do-castelo",
   "vila-nova-de-famalicao-portugal": "minho",
 };
 

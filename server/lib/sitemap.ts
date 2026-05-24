@@ -49,10 +49,20 @@ function buildEntries(): SitemapEntry[] {
     });
   }
 
-  // Dynamic destination pages
+  // Dynamic destination pages — skip comingSoon / draft entries so we never
+  // ask Google to index a placeholder. Per the May 2026 destinations
+  // strategy doc the active set now includes city-level spokes
+  // (viana-do-castelo, caminha, esposende, douro) alongside the region
+  // hubs — they're picked up automatically because we iterate the JSON.
   try {
-    const destinations = loadJson("destinations.json");
+    const destinations = loadJson("destinations.json") as Array<{
+      slug: string;
+      comingSoon?: boolean;
+      status?: "active" | "draft";
+    }>;
     for (const dest of destinations) {
+      if (dest.comingSoon) continue;
+      if (dest.status === "draft") continue;
       entries.push({
         loc: `${BASE_URL}/destinations/${dest.slug}`,
         lastmod: date,
