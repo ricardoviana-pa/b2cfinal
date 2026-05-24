@@ -980,6 +980,27 @@ const DESTINATION_DESCRIPTION: Record<string, Record<string, string>> = {
     fi: 'Luksushuvilat Algarvessa, Portugalissa. Kalliopaikat, kultaiset rannat ja aurinkoa ympäri vuoden.',
     sv: 'Lyxvillor i Algarve, Portugal. Klippretreater, gyllene stränder och sol året runt.',
   },
+  /* ── Spoke destinations added per the May 2026 destinations strategy doc.
+     Region hubs (above) stay; these are the city-level spokes the editorial
+     hub now points to. Non-EN languages fall back to EN via the lookup so a
+     spoke is never meta-less; full per-language copy lands when the Cowork
+     deep-research output is in. */
+  'viana-do-castelo': {
+    en: 'Viana do Castelo: Northern Portugal\'s Atlantic capital. A complete guide to the third most welcoming city in the world, plus our curated villas in the Minho.',
+    pt: 'Viana do Castelo, a capital atlântica do norte de Portugal. Guia completo da terceira cidade mais acolhedora do mundo e das nossas casas de luxo no Minho.',
+  },
+  caminha: {
+    en: 'Caminha, Portugal: fortified border town facing Galicia across the Minho estuary. A guide to medieval walls, Moledo beach, and the ferry to Tui.',
+    pt: 'Caminha, Portugal: vila fortificada na fronteira com a Galiza, no estuário do Minho. Guia das muralhas medievais, da praia do Moledo e do ferry para Tui.',
+  },
+  esposende: {
+    en: 'Esposende, Portugal: Litoral Norte natural park, Atlantic dunes and the Cávado estuary. A guide to the quietest coastline 40 minutes north of Porto.',
+    pt: 'Esposende, Portugal: o Parque Natural do Litoral Norte, dunas atlânticas e o estuário do Cávado. Guia da costa mais sossegada a 40 minutos a norte do Porto.',
+  },
+  douro: {
+    en: 'Douro Valley, Portugal: UNESCO World Heritage vineyards, port-wine quintas and Pinhão river-cruises. A complete guide to Europe\'s most photographed wine landscape.',
+    pt: 'Vale do Douro, Portugal: vinhas Património Mundial UNESCO, quintas de vinho do Porto e cruzeiros fluviais no Pinhão. Guia completo da paisagem vinícola mais fotografada da Europa.',
+  },
 };
 
 /* ── Localized templates for dynamic DB-driven routes ─────────────────────

@@ -4,27 +4,112 @@
    ========================================================================== */
 
 // --- DESTINATIONS ---
-export type DestinationSlug = 'minho' | 'porto' | 'lisbon' | 'alentejo' | 'algarve' | 'brazil';
+// Region slugs (broad areas, kept for back-compat with existing property data).
+export type DestinationRegion = 'minho' | 'porto' | 'lisbon' | 'alentejo' | 'algarve' | 'brazil';
+
+// Destination slugs: region-level + city-level spokes per the destinations
+// strategy doc (May 2026, hub-and-spoke editorial). City spokes use flat URLs
+// (/destinations/viana-do-castelo) per the doc's URL scheme; the region they
+// belong to is captured in the `region` field for hub grouping and
+// "related destinations" linking.
+export type DestinationSlug =
+  | DestinationRegion
+  | 'douro'
+  | 'viana-do-castelo'
+  | 'caminha'
+  | 'esposende';
+
+/* ── 11-section template (per destinations strategy doc) ─────────────────
+   Every spoke fills the same shape; missing sections render nothing so the
+   pilot (Viana) shows everything while scaffolded spokes show only what
+   has been written. */
+
+export interface DestinationFAQ {
+  question: string;
+  answer: string;
+}
+
+export interface DestinationSeason {
+  /** Display label, e.g. "Spring (March–May)" */
+  label: string;
+  /** 80–120-word editorial paragraph. */
+  description: string;
+}
+
+export interface DestinationTransportOption {
+  /** "By air", "By train", "By car", "From Spain", etc. */
+  label: string;
+  description: string;
+}
+
+export interface DestinationCuration {
+  name: string;
+  /** Free-form category tag — "Restaurant", "Wine", "Hike", "Surf", etc. */
+  category: string;
+  description: string;
+}
+
+export interface DestinationThingsToDoGroup {
+  /** Subsection heading, e.g. "The historic centre". */
+  heading: string;
+  items: DestinationCuration[];
+}
+
+export interface DestinationPressQuote {
+  /** Publication name, e.g. "Condé Nast Traveler" */
+  source: string;
+  /** Up-to-15-word quote. */
+  quote: string;
+  /** Optional outbound URL for backlink credit. */
+  url?: string;
+}
 
 export interface Destination {
   id: string;
   slug: DestinationSlug;
   name: string;
+  /** Broad region this destination belongs to (for hub grouping + related). */
+  region: DestinationRegion;
+  /** Geographic coordinates — used for schema.org GeoCoordinates. */
+  geo?: { latitude: number; longitude: number };
   tagline: string;
   description: string;        // Short editorial description for cards
   coverImage: string;
   gallery: string[];
-  whyDescription: string;     // Rich editorial text for detail page
+  whyDescription: string;     // Section 2: editorial "why this place"
   highlights: string[];       // 3-5 bullets: what makes this region special
   propertyCount: number;
   comingSoon: boolean;
+  /** Hero pull-quote shown over the cover image (Section 1). */
+  pullQuote?: { text: string; source: string };
+  /** Section 1: editorial hero subtitle (one-line poetic positioning). */
+  heroSubtitle?: string;
   howToGetHere?: string;
   bestTimeToVisit?: string;
   whatToExpect?: string;
-  insiderRecommendations?: { name: string; category: string; description: string }[];
+  insiderRecommendations?: DestinationCuration[];
+  /** Section 5: "What to see and do" — curated groups (10–15 items total). */
+  thingsToDo?: DestinationThingsToDoGroup[];
+  /** Section 6: seasonality, premium editorial. */
+  seasons?: DestinationSeason[];
+  /** Section 7: detailed transport options (per medium). */
+  transport?: DestinationTransportOption[];
+  /** Section 8: curated restaurants. */
+  restaurants?: DestinationCuration[];
+  /** Section 8: curated experiences (kayak, surf lessons, tastings). */
+  experiences?: DestinationCuration[];
+  /** Section 9: press recognition for backlinks + trust. */
+  pressQuotes?: DestinationPressQuote[];
+  /** Section 10: FAQ — emitted as FAQPage schema for rich snippets. */
+  faqs?: DestinationFAQ[];
+  /** Section 11: sibling slugs to surface as "continue exploring". */
+  relatedSlugs?: DestinationSlug[];
+  /** Section 11: optional override for the owners CTA copy. */
+  ownersCTA?: { headline: string; body: string; cta: string };
   seoTitle: string;
   seoDescription: string;
   status: 'active' | 'draft';
+  whyOverline?: string;
 }
 
 // --- PROPERTY ---
