@@ -1589,3 +1589,20 @@ export function serveStatic(app: Express) {
     res.status(status).set("Content-Type", "text/html").send(html);
   });
 }
+
+/* ── Test hooks ───────────────────────────────────────────────────────────
+   Expose the SSR injection internals so vitest can lock in their behaviour
+   without booting the Express server (which needs Drizzle + env vars). This
+   mirrors the `__testing` pattern in `server/lib/redirects.ts`. */
+export const __testing = {
+  buildStaticSeoBody,
+  buildPropertySeoBody,
+  buildExperienceSeoBody,
+  buildBlogSeoBody,
+  injectSeoBody,
+  injectMeta,
+  injectSchemaGraph,
+  DESTINATION_DESCRIPTION,
+  DESTINATION_TITLE,
+  destLabel,
+};
