@@ -57,8 +57,12 @@ export default function BokunCalendarWidget({
   const containerRef = useRef<HTMLDivElement>(null);
   const fallbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  /* Use the full "experience" widget template (not "experience-calendar") so
+     activities with multiple rates/options (e.g. ebike: City 2hr, Road 4hr,
+     Gravel 4hr) render a selector instead of binding to a single default
+     rate. Also surfaces add-ons (e.g. "with transport") configured in Bókun. */
   const widgetUrl = BOKUN_CHANNEL_UUID
-    ? `https://widgets.bokun.io/online-sales/${BOKUN_CHANNEL_UUID}/experience-calendar/${bokunActivityId}`
+    ? `https://widgets.bokun.io/online-sales/${BOKUN_CHANNEL_UUID}/experience/${bokunActivityId}`
     : '';
 
   /* ------------------------------------------------------------------ */
