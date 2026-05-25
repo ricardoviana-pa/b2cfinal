@@ -70,11 +70,17 @@ export default function Destinations() {
   const active = destinations.filter(d => !d.comingSoon);
   const comingSoon = destinations.filter(d => d.comingSoon);
 
-  // Group active destinations by region, preserving REGION_ORDER. Within a
-  // region, the broad "region hub" entry (slug === region slug) sorts first,
-  // then city-level spokes alphabetically.
+  // Hub policy (HOT FIX 2026-05-25): the public destinations hub shows ONLY
+  // region-hub entries (slug === region slug). City-level spokes
+  // (viana-do-castelo, caminha, esposende, douro) still have live pages and
+  // appear in sitemap/SSR/related-destinations cross-links, but they are
+  // intentionally hidden from the hub grid until their editorial content
+  // and photography are production-ready. Promote a spoke by adding
+  // `publicHub: true` to its destinations.json entry once it is ready.
+  const hubItems = active.filter(d => d.slug === d.region || (d as any).publicHub === true);
+
   const byRegion = REGION_ORDER.map(region => {
-    const items = active
+    const items = hubItems
       .filter(d => d.region === region)
       .sort((a, b) => {
         if (a.slug === region) return -1;
@@ -114,28 +120,36 @@ export default function Destinations() {
         </div>
       </section>
 
-      {/* Destination groups, by region */}
+      {/* Destination grid — flat (one card per region hub). Region grouping
+          re-engages automatically once we promote city-level spokes via
+          `publicHub: true` on individual destinations.json entries. */}
       <section className="section-padding">
         <div className="container">
           <h2 className="sr-only">{t('destinationsPage.titleFull')}</h2>
 
-          {byRegion.map(group => (
-            <div key={group.region} className="mb-16 last:mb-0">
-              <div className="flex items-baseline justify-between mb-6 border-b border-[#E8E4DC] pb-3">
-                <h3
-                  className="text-[12px] font-medium tracking-[0.14em] uppercase text-[#8B7355]"
-                >
-                  {REGION_LABEL[group.region]}
-                </h3>
-                <span className="text-[12px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
-                  {group.items.length} destination{group.items.length !== 1 ? 's' : ''}
-                </span>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {group.items.map(d => <DestinationCard key={d.slug} dest={d} />)}
-              </div>
+          {byRegion.length === 1 || byRegion.every(g => g.items.length <= 1) ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {byRegion.flatMap(g => g.items).map(d => (
+                <DestinationCard key={d.slug} dest={d} />
+              ))}
             </div>
-          ))}
+          ) : (
+            byRegion.map(group => (
+              <div key={group.region} className="mb-16 last:mb-0">
+                <div className="flex items-baseline justify-between mb-6 border-b border-[#E8E4DC] pb-3">
+                  <h3 className="text-[12px] font-medium tracking-[0.14em] uppercase text-[#8B7355]">
+                    {REGION_LABEL[group.region]}
+                  </h3>
+                  <span className="text-[12px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
+                    {group.items.length} destination{group.items.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {group.items.map(d => <DestinationCard key={d.slug} dest={d} />)}
+                </div>
+              </div>
+            ))
+          )}
 
           {/* Coming soon — Brazil et al. */}
           {comingSoon.length > 0 && (
