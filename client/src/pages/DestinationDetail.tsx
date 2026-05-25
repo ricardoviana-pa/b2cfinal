@@ -1,16 +1,18 @@
 /* ==========================================================================
-   DESTINATION DETAIL — 2026-05 redesign
+   DESTINATION DETAIL — 2026-05 redesign (Pass 3)
    ========================================================================
 
-   Composes the 11-section <DestinationPage /> template defined by the
-   destinations strategy doc (May 2026, hub-and-spoke editorial). This page
-   is now a thin data-resolution layer: it looks the destination up by slug,
-   filters the properties / adventures / related destinations, builds the
-   schema graph, and hands everything to the template.
+   Thin data-resolution layer that hands data to <DestinationPage />.
+   Looks the destination up by slug, filters properties + adventures by
+   region, resolves related destinations (preferring the explicit
+   relatedDestinations array, falling back to same-region siblings),
+   builds the JSON-LD schema graph, and renders.
 
-   AnswerCapsule remains above the editorial content as the AI-engine TL;DR
-   (QAPage schema). The full FAQPage schema lives inside the template, in
-   the FAQ section, only when faqs are populated for that destination.
+   The previous QAPage AnswerCapsule was removed in Pass 3 — the rich
+   11-item FAQPage emitted by the template + the editorial body now
+   carry the AI-engine citation load, and the bottom-of-page AnswerCapsule
+   was awkward visually against the dual-funnel CTA below the related
+   destinations.
    ========================================================================== */
 
 import { useState, useMemo, lazy, Suspense } from 'react';
@@ -25,7 +27,6 @@ import destinationsData from '@/data/destinations.json';
 import productsData from '@/data/products.json';
 import { trpc } from '@/lib/trpc';
 import { StructuredData } from '@/components/seo/StructuredData';
-import AnswerCapsule from '@/components/seo/AnswerCapsule';
 import { DestinationPage, buildDestinationGraph } from '@/components/destinations';
 import type { Destination, Property, Product } from '@/lib/types';
 
@@ -65,9 +66,6 @@ export default function DestinationDetail() {
 
   const related = useMemo<Destination[]>(() => {
     if (!dest) return [];
-    // Prefer the explicit relatedDestinations list (Cowork editorial shape);
-    // fall back to the legacy relatedSlugs alias; finally siblings in the
-    // same region, excluding self.
     const explicit = dest.relatedDestinations ?? dest.relatedSlugs;
     const slugs = explicit && explicit.length > 0
       ? explicit
@@ -100,20 +98,22 @@ export default function DestinationDetail() {
     );
   }
 
-  // Blog tagging by destination is not yet wired up site-side. Once the
+  // Blog tagging by destination is not yet wired up site-side. When the
   // blog gets a `destinations: DestinationSlug[]` field, populate this from
   // the blog data source. Until then, section 4 (TheJournal) self-suppresses.
   const articles: never[] = [];
+
+  // Per-destination WhatsApp link — fed into the sticky bottom CTA so the
+  // concierge button has a real target on mobile.
+  const whatsappUrl = `https://wa.me/351258358434?text=${encodeURIComponent(
+    `Hi Portugal Active concierge, I'd like to learn more about a stay in ${dest.name}.`,
+  )}`;
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       {graph && <StructuredData id={`destination-${dest.slug}`} data={graph} />}
       <Header />
 
-      {/* AnswerCapsule sits between hero and editorial body — its role is to
-          give AI engines (ChatGPT, Perplexity, Claude, Gemini) a citable
-          TL;DR with QAPage schema. The full FAQPage schema lives in the
-          FAQ section inside <DestinationPage />. */}
       <DestinationPage
         destination={dest}
         properties={destProperties}
@@ -121,25 +121,8 @@ export default function DestinationDetail() {
         adventures={adventures}
         related={related}
         onAddToItinerary={p => setModalProduct(p)}
+        whatsappUrl={whatsappUrl}
       />
-
-      <section className="py-10 bg-[#FAFAF7]">
-        <div className="container max-w-3xl mx-auto">
-          <AnswerCapsule
-            question={`Why stay in ${dest.name} with Portugal Active?`}
-            answer={`${dest.name} is one of Portugal Active's curated destinations, featuring ${destProperties.length} private hotel${destProperties.length !== 1 ? 's' : ''} managed to five-star standards. ${dest.tagline || dest.description || ''} Every property includes a dedicated concierge, daily housekeeping, and access to private chef and curated local experiences. Book direct for the best rate and a fully managed stay.`}
-            lastUpdated="2026-05-23"
-            author="Portugal Active concierge team"
-            emitSchema={!dest.faqs || dest.faqs.length === 0}
-            schemaId={`qa-dest-${dest.slug}`}
-            cite={[
-              { label: `${dest.name} properties`, href: `/homes?destination=${dest.region}` },
-              { label: 'All destinations', href: '/destinations' },
-              { label: 'Concierge services', href: '/concierge' },
-            ]}
-          />
-        </div>
-      </section>
 
       {modalProduct && (
         <Suspense fallback={null}>

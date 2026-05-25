@@ -776,6 +776,116 @@
     animation: pageEnter 300ms ease-out both;
   }
 
+  /* ─────────────────────────────────────────────────────────────────────
+     Destination editorial template (May 2026 redesign).
+     Used by sections.tsx + DestinationPage.tsx to give the
+     hub-and-spoke chapter pages a magazine-grade visual register
+     (Ken Burns hero, scroll-triggered reveals, full-bleed
+     interludes). Kept here rather than in a module-scoped file
+     because Tailwind's @layer utilities cascade requires it.
+     ───────────────────────────────────────────────────────────────────── */
+
+  /* Ken Burns slow zoom — applied to <img> inside .editorial-ken-burns.
+     The transform-origin alternates to keep motion subtle.
+     Disabled under prefers-reduced-motion (declared globally below). */
+  @keyframes editorialKenBurns {
+    0% { transform: scale(1) translate(0, 0); }
+    100% { transform: scale(1.08) translate(-1%, -1.5%); }
+  }
+  .editorial-ken-burns > img,
+  .editorial-ken-burns > picture > img {
+    animation: editorialKenBurns 22s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  /* Scroll-triggered fade-up. JS adds .editorial-revealed via IntersectionObserver.
+     Uses transform + opacity (GPU compositable, no layout thrash). */
+  .editorial-reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+                transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+  .editorial-reveal.editorial-revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Sticky chapter index reveal — slide in from right after hero scrolled. */
+  @keyframes editorialTocReveal {
+    from { opacity: 0; transform: translateX(12px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .editorial-toc-enter {
+    animation: editorialTocReveal 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* Editorial chapter numeral — large serif numeral above section headings.
+     Cormorant Garamond, very light weight, brand-bronze color. */
+  .editorial-numeral {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 52px;
+    line-height: 1;
+    color: #B8985A;
+    letter-spacing: -0.02em;
+    font-feature-settings: 'lnum' 1, 'tnum' 1;
+  }
+
+  /* Hairline rule used between the numeral and the chapter overline. */
+  .editorial-rule {
+    display: inline-block;
+    width: 56px;
+    height: 1px;
+    background-color: #B8985A;
+    vertical-align: middle;
+  }
+
+  /* Gold-bordered award seal for the hero accolade (Aman / Mr & Mrs Smith
+     vintage seal register). Replaces the previous translucent panel. */
+  .editorial-award-seal {
+    position: relative;
+    border: 1px solid rgba(184, 152, 90, 0.65);
+    background: rgba(20, 20, 18, 0.32);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    padding: 18px 22px 16px;
+    max-width: 380px;
+  }
+  .editorial-award-seal::before,
+  .editorial-award-seal::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 1px solid rgba(184, 152, 90, 0.85);
+  }
+  .editorial-award-seal::before {
+    top: -1px; left: -1px;
+    border-right: none; border-bottom: none;
+  }
+  .editorial-award-seal::after {
+    bottom: -1px; right: -1px;
+    border-left: none; border-top: none;
+  }
+
+  /* Disable all editorial motion when the visitor opts out. */
+  @media (prefers-reduced-motion: reduce) {
+    .editorial-ken-burns > img,
+    .editorial-ken-burns > picture > img {
+      animation: none;
+    }
+    .editorial-reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .editorial-toc-enter {
+      animation: none;
+    }
+  }
+
   /* Line clamp */
   .line-clamp-2 {
     display: -webkit-box;

@@ -79,7 +79,7 @@
       {
         "heading": "The historic centre",
         "items": [
-          { "name": "Praça da República", "category": "Square", "description": "The city's beating heart — a Renaissance square that has held the same function for over five hundred years. The chafariz at its centre dates to 1554; the loggia of the Casa das Varandas opposite was built in 1589 for the Misericórdia brotherhood." },
+          { "name": "Praça da República", "category": "Square", "description": "The city's beating heart — a Renaissance square that has held the same function for over five hundred years. The chafariz at its centre dates to 1554; the loggia of the Casa das Varandas opposite was built in 1589 for the Misericórdia brotherhood.", "image": "https://images.unsplash.com/photo-1583416750470-965b2707b355?w=1200&q=80" },
           { "name": "Igreja da Misericórdia", "category": "Architecture", "description": "A loggia of arched windows above a cloister of azulejos. Step inside for the painted ceiling alone." },
           { "name": "Sé Catedral", "category": "Architecture", "description": "Romanesque-Gothic cathedral with two crenellated towers. A working parish, not a museum." },
           { "name": "Museu do Traje", "category": "Culture", "description": "The Minho's textile traditions in costume form — gold-filigree embroidery and ceremonial dress that still appear at the Romaria." }
@@ -88,7 +88,7 @@
       {
         "heading": "The hilltop",
         "items": [
-          { "name": "Santuário de Santa Luzia", "category": "Pilgrimage", "description": "Neo-Byzantine basilica designed by Miguel Ventura Terra and built between 1904 and 1943. The view from the cupola was named by National Geographic in 1927 as rivalled in the world only by those of Rio de Janeiro and Funchal." },
+          { "name": "Santuário de Santa Luzia", "category": "Pilgrimage", "description": "Neo-Byzantine basilica designed by Miguel Ventura Terra and built between 1904 and 1943. The view from the cupola was named by National Geographic in 1927 as rivalled in the world only by those of Rio de Janeiro and Funchal.", "image": "https://images.unsplash.com/photo-1545159860-b6f1c2d8bff7?w=1200&q=80" },
           { "name": "Citânia de Santa Luzia", "category": "Archaeology", "description": "Iron Age Celtic-Iberian hill fort behind the basilica. Stone foundations, panoramic views, almost no other visitors." },
           { "name": "Elevador de Santa Luzia", "category": "Transport", "description": "Portugal's longest funicular — 650m of track, inaugurated in 1923. Six and a half minutes to the top." }
         ]
@@ -96,7 +96,7 @@
       {
         "heading": "The waterfront",
         "items": [
-          { "name": "Navio Gil Eannes", "category": "Heritage", "description": "The 1955 hospital ship built in the local shipyards to support the cod fleet on the Newfoundland and Greenland banks. Now a museum moored on the Lima riverfront." },
+          { "name": "Navio Gil Eannes", "category": "Heritage", "description": "The 1955 hospital ship built in the local shipyards to support the cod fleet on the Newfoundland and Greenland banks. Now a museum moored on the Lima riverfront.", "image": "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=1200&q=80" },
           { "name": "Ponte Eiffel", "category": "Architecture", "description": "Drawn in Gustave Eiffel's Paris office and inaugurated on 30 June 1878. The first two-level iron bridge over the Lima, still in daily use carrying both road and rail." },
           { "name": "Praia Norte", "category": "Beach", "description": "City beach at the river mouth — Blue Flag-rated, with two saltwater tidal pools (one shallow enough for children)." },
           { "name": "Praia do Cabedelo", "category": "Beach", "description": "Across the river — one of Portugal's leading windsurf and kitesurf beaches. A five-minute river ferry runs through the day." },
@@ -106,7 +106,7 @@
       {
         "heading": "Outside the city",
         "items": [
-          { "name": "Vinho Verde valley", "category": "Wine", "description": "The Lima River valley behind Viana is one of the original sub-regions of the Vinho Verde appellation — the Loureiro grape's place of origin. Manor estates around Ponte de Lima open for tastings." },
+          { "name": "Vinho Verde valley", "category": "Wine", "description": "The Lima River valley behind Viana is one of the original sub-regions of the Vinho Verde appellation — the Loureiro grape's place of origin. Manor estates around Ponte de Lima open for tastings.", "image": "https://images.unsplash.com/photo-1485119502611-7c0e3f5cf3e7?w=1200&q=80" },
           { "name": "Caminha day trip", "category": "Excursion", "description": "Twenty-one kilometres north on the N13 coast road — a smaller riverside town on the Minho estuary, with a walled medieval-Renaissance core and a fountain by the same stoneworker as Viana's." },
           { "name": "Peneda-Gerês National Park", "category": "Nature", "description": "Portugal's only national park, an hour east by car. Granite villages, mountain trails, and the long-haired Garrano horses that have lived in these mountains since the Roman period." }
         ]
@@ -128,12 +128,12 @@
     },
     "eatDrinkIntro": "Viana does not have the Michelin density of Porto or Lisbon, but it has what those cities have largely lost: working-day restaurants run by the same families for three or four generations, fish that arrived that morning, and a generation of younger chefs returning to take regional cooking somewhere new. Two restaurants in the city hold Michelin Bib Gourmand status. The Pousada de Santa Luzia, on the hilltop, has the view. Below the bridge, on the river, the wholesalers sell to the restaurants in the morning and feed visitors in the evening.",
     "restaurants": [
-      { "name": "Tasquinha da Linda", "category": "Seafood", "description": "Owned by fish wholesalers. The freshest seafood in town. Reservation essential." },
-      { "name": "Camelo", "category": "Regional", "description": "Bib Gourmand-recognised. Modern Portuguese cooking that leans on Minho-grown ingredients and Vinho Verde from the valley behind the city." },
+      { "name": "Tasquinha da Linda", "category": "Seafood", "description": "Owned by fish wholesalers. The freshest seafood in town. Reservation essential.", "image": "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1200&q=80" },
+      { "name": "Camelo", "category": "Regional", "description": "Bib Gourmand-recognised. Modern Portuguese cooking that leans on Minho-grown ingredients and Vinho Verde from the valley behind the city.", "image": "https://images.unsplash.com/photo-1546548970-71785318a17b?w=1200&q=80" },
       { "name": "Os 3 Potes", "category": "Tavern", "description": "Sixteenth-century tavern serving regional classics — arroz de polvo, bacalhau à Viana, leitão à Bairrada." },
       { "name": "A Laranjeira", "category": "Family", "description": "Family-run, no menu. Whatever came in on the boat that morning, cooked the way the owner's grandmother taught her." },
-      { "name": "Pousada de Santa Luzia", "category": "View", "description": "Hilltop dining at the basilica, with the same panorama National Geographic put in the same league as Rio de Janeiro. Reservations essential at sunset." },
-      { "name": "Zé Natário", "category": "Pastry", "description": "Classic granite-counter pastelaria — cod fritters, bola de Berlim, milk-fed cinnamon coffees taken standing." }
+      { "name": "Pousada de Santa Luzia", "category": "View", "description": "Hilltop dining at the basilica, with the same panorama National Geographic put in the same league as Rio de Janeiro. Reservations essential at sunset.", "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80" },
+      { "name": "Zé Natário", "category": "Pastry", "description": "Classic granite-counter pastelaria — cod fritters, bola de Berlim, milk-fed cinnamon coffees taken standing.", "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1200&q=80" }
     ],
     "specialties": [
       { "name": "Bacalhau à moda de Viana", "category": "Dish", "description": "Salted cod baked with peppers, onions, potatoes and broa — the city's signature plate, on most menus year-round." },
@@ -143,19 +143,19 @@
     ],
     "experiencesIntro": "What follows is a selection of experiences that the concierge organizes, alone or in combination, for guests staying in Portugal Active homes. Each can be arranged with twenty-four hours' notice, most with less. None requires a car: the concierge handles transfers, reservations, and (where relevant) the introductions to growers, winemakers, and instructors who do not generally accept walk-ins.",
     "experiences": [
-      { "name": "Vinho Verde tasting in the Lima valley", "description": "A morning at a working quinta in the Loureiro grape's place of origin — typically four to six wines tasted with the producer, paired with regional cheese and bread. Twenty to thirty minutes from the city by car.", "duration": "Half day", "season": "Year-round; harvest visits September–October" },
-      { "name": "Atlantic surf or windsurf at Cabedelo", "description": "Private or small-group lessons at one of Portugal's leading windsurf and kitesurf beaches. Wetsuits and equipment included. Suitable for beginners through advanced; conditions best from late spring through early autumn.", "duration": "2–3 hours", "season": "April through October" },
-      { "name": "Kayaking the Lima estuary", "description": "From the marina upriver toward the wooded banks above the Eiffel bridge, with a stop at a small beach for swimming when conditions allow. Guided by a local instructor.", "duration": "Half day", "season": "May through September" },
+      { "name": "Vinho Verde tasting in the Lima valley", "description": "A morning at a working quinta in the Loureiro grape's place of origin — typically four to six wines tasted with the producer, paired with regional cheese and bread. Twenty to thirty minutes from the city by car.", "duration": "Half day", "season": "Year-round; harvest visits September–October", "image": "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=1200&q=80" },
+      { "name": "Atlantic surf or windsurf at Cabedelo", "description": "Private or small-group lessons at one of Portugal's leading windsurf and kitesurf beaches. Wetsuits and equipment included. Suitable for beginners through advanced; conditions best from late spring through early autumn.", "duration": "2–3 hours", "season": "April through October", "image": "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=1200&q=80" },
+      { "name": "Kayaking the Lima estuary", "description": "From the marina upriver toward the wooded banks above the Eiffel bridge, with a stop at a small beach for swimming when conditions allow. Guided by a local instructor.", "duration": "Half day", "season": "May through September", "image": "https://images.unsplash.com/photo-1463693396721-8ca0cfa2b3b5?w=1200&q=80" },
       { "name": "Day trip to Caminha and the Spanish border", "description": "Twenty-one kilometres north to a smaller riverside town on the Minho estuary, with a walled medieval-Renaissance core, a fountain from the same stoneworker as Viana's, and a view across to Galicia. Combined easily with a lunch stop on the way back.", "duration": "Half day to full day", "season": "Year-round" },
-      { "name": "Peneda-Gerês National Park", "description": "Portugal's only national park, an hour by car inland: granite villages, mountain trails, and the long-haired Garrano horses that have lived in these mountains since the Roman period. Best done as a guided private day.", "duration": "Full day", "season": "Year-round; trails best April–October" },
-      { "name": "Funicular ride to Santa Luzia at golden hour", "description": "The classical evening: the six-and-a-half-minute climb to the sanctuary, the panorama of the river meeting the ocean, dinner at the Pousada restaurant with the same view. Reservations are essential.", "duration": "Evening", "season": "Year-round" }
+      { "name": "Peneda-Gerês National Park", "description": "Portugal's only national park, an hour by car inland: granite villages, mountain trails, and the long-haired Garrano horses that have lived in these mountains since the Roman period. Best done as a guided private day.", "duration": "Full day", "season": "Year-round; trails best April–October", "image": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80" },
+      { "name": "Funicular ride to Santa Luzia at golden hour", "description": "The classical evening: the six-and-a-half-minute climb to the sanctuary, the panorama of the river meeting the ocean, dinner at the Pousada restaurant with the same view. Reservations are essential.", "duration": "Evening", "season": "Year-round", "image": "https://images.unsplash.com/photo-1518689907837-5b3a9e4b6f3b?w=1200&q=80" }
     ],
     "eventsIntro": "Two events dominate Viana's calendar, both in August, both worth planning either toward or around. Several smaller events through the year offer reasons to visit out of season — the spring blues festival on the Praça, the autumn vindima, the Christmas illuminations in the historic centre. Accommodation in Viana follows the festival calendar more sharply than elsewhere in the Norte.",
     "events": [
-      { "name": "Romaria de Nossa Senhora d'Agonia", "dates": "15–23 August 2026", "description": "The city's flagship festival, held annually since 1772. Boat processions, gold-filigree costume parades, fireworks over the Lima. Accommodation books out months in advance." },
-      { "name": "Neopop Electronic Music Festival", "dates": "6–8 August 2026", "description": "International electronic music on the waterfront. The first week of August is the tightest accommodation window of the year together with the Romaria." },
-      { "name": "Wine & Blues Festival", "dates": "Last weekend of May", "description": "Vinho Verde producers and blues acts on the Praça da República. The unofficial start of the spring travel season." },
-      { "name": "Vindima do Vinho Verde", "dates": "September into early October", "description": "Grape harvest across the Lima valley. Many quintas open their doors for working-harvest visits." },
+      { "name": "Romaria de Nossa Senhora d'Agonia", "dates": "15–23 August 2026", "description": "The city's flagship festival, held annually since 1772. Boat processions, gold-filigree costume parades, fireworks over the Lima. Accommodation books out months in advance.", "image": "https://images.unsplash.com/photo-1467810563316-b5476525c0f9?w=1200&q=80" },
+      { "name": "Neopop Electronic Music Festival", "dates": "6–8 August 2026", "description": "International electronic music on the waterfront. The first week of August is the tightest accommodation window of the year together with the Romaria.", "image": "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=1200&q=80" },
+      { "name": "Wine & Blues Festival", "dates": "Last weekend of May", "description": "Vinho Verde producers and blues acts on the Praça da República. The unofficial start of the spring travel season.", "image": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200&q=80" },
+      { "name": "Vindima do Vinho Verde", "dates": "September into early October", "description": "Grape harvest across the Lima valley. Many quintas open their doors for working-harvest visits.", "image": "https://images.unsplash.com/photo-1572025442646-866d16c84a54?w=1200&q=80" },
       { "name": "Christmas illuminations", "dates": "Early December through early January", "description": "Thirty-six illuminated locations in the historic centre, with an artisan market under the Eiffel bridge." },
       { "name": "Carnaval", "dates": "February (movable)", "description": "Smaller and more traditional than Torres Vedras or Madeira, but characteristically Minho — masked figures, regional brass bands, sardines on the grill." }
     ],
@@ -186,6 +186,14 @@
       "body": "Portugal Active manages premium properties across the Alto Minho: full-service management, marketing, concierge, and maintenance, operated to hotel standards. Our owners earn, on average, thirty percent more than self-managed properties in the region.",
       "cta": "Speak to our team",
       "url": "https://management.portugalactive.com/?utm_source=destinations&utm_medium=cta&utm_campaign=viana-do-castelo"
+    },
+    "imagery": {
+      "interludeMid": "https://images.unsplash.com/photo-1518509562904-e7ef99cddc85?w=1920&q=80",
+      "interludeLate": "https://images.unsplash.com/photo-1545159860-b6f1c2d8bff7?w=1920&q=80",
+      "seasonSpring": "https://images.unsplash.com/photo-1485119502611-7c0e3f5cf3e7?w=1200&q=80",
+      "seasonSummer": "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&q=80",
+      "seasonAutumn": "https://images.unsplash.com/photo-1572025442646-866d16c84a54?w=1200&q=80",
+      "seasonWinter": "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=1200&q=80"
     },
     "status": "active"
   },

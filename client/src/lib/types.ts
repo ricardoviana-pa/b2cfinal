@@ -61,6 +61,9 @@ export interface DestinationCuration {
    *  a fixed taxonomy. */
   category?: string;
   description: string;
+  /** Optional editorial image URL — when present, the card renders as an
+   *  image-led variant in the magazine layout. */
+  image?: string;
 }
 
 export interface DestinationExperience {
@@ -70,6 +73,8 @@ export interface DestinationExperience {
   duration?: string;
   /** Season window — "Year-round", "April through October", etc. */
   season?: string;
+  /** Optional editorial image URL. */
+  image?: string;
 }
 
 export interface DestinationEvent {
@@ -79,6 +84,24 @@ export interface DestinationEvent {
   description: string;
   /** Optional outbound URL for the official event page. */
   url?: string;
+  /** Optional editorial image URL. */
+  image?: string;
+}
+
+/** Optional editorial image bank, used by the section template for
+ *  full-bleed interludes, per-season images and other curator-driven
+ *  visual breaks. Keys are deliberately stable so per-locale variants
+ *  can swap the URL without restructuring. */
+export interface DestinationImagery {
+  /** Full-bleed pull-quote interlude shown after the "Why" section. */
+  interludeMid?: string;
+  /** Full-bleed pull-quote interlude shown after Eat-Drink-Experience. */
+  interludeLate?: string;
+  /** Per-season hero photos for the zigzag When-to-visit layout. */
+  seasonSpring?: string;
+  seasonSummer?: string;
+  seasonAutumn?: string;
+  seasonWinter?: string;
 }
 
 export interface DestinationThingsToDoGroup {
@@ -172,6 +195,9 @@ export interface Destination {
   relatedSlugs?: DestinationSlug[];
   /** Section 12: optional override for the owners CTA copy. */
   ownersCTA?: { headline: string; body: string; cta: string; url?: string };
+  /** Optional bank of editorial images keyed by named slots — used by the
+   *  template for full-bleed interludes and per-season zigzag layouts. */
+  imagery?: DestinationImagery;
   seoTitle: string;
   seoDescription: string;
   status: 'active' | 'draft';

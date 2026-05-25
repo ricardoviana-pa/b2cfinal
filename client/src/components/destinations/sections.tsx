@@ -1,29 +1,53 @@
 /* ==========================================================================
-   DESTINATION — 11-SECTION TEMPLATE COMPONENTS
+   DESTINATION — 12-SECTION TEMPLATE COMPONENTS (Pass 3 editorial redesign)
    ========================================================================
 
    Implements the 12-section template defined by the destinations strategy
-   doc (May 2026, hub-and-spoke editorial) plus the Cowork editorial
-   deliverable that adds `primaryAccolade`, intro paragraphs per section,
-   a standalone `Events` block, and richer per-mode transport / seasonal
-   copy. Each component renders its own slice of the Destination object
-   and returns null when its data slice is missing — so the Viana pilot
-   shows all twelve, while scaffolded spokes display only what has been
-   written.
+   doc (May 2026, hub-and-spoke editorial). This file went through three
+   passes:
 
-   The template is meant to read like Aman Journal / Six Senses Stories /
-   Mr & Mrs Smith — editorial first, conversion second. Section 12 carries
-   the dual funnel (guest CTA + owners CTA) per strategy doc §7.
+     v1 — text-only scaffolding, basic card grids.
+     v2 — adds Cowork editorial deliverable (primaryAccolade, intro
+          paragraphs, EventsAndPlanning, schema graph for Events).
+     v3 — Pass 3 redesign: every chapter rendered through <SectionChapter />
+          (numeral + overline + serif heading + scroll-fade), Ken Burns
+          hero with a gold-bordered award seal, zigzag layouts where the
+          data has imagery (When-to-visit, Eat-Drink, Things-to-do, Events),
+          full-bleed editorial interludes from DestinationPage, sticky TOC
+          via DestinationTOC, sticky bottom CTA via StickyBookingBar.
+
+   Reference benchmarks: Aman Journal, Six Senses Stories, Mr & Mrs Smith.
    ========================================================================== */
 
 import { Link } from 'wouter';
 import { useTranslation, Trans } from 'react-i18next';
-import { ArrowRight, Plane, Train, Car, Globe, Plus, Calendar, Award, Bike } from 'lucide-react';
+import { ArrowRight, Plane, Train, Car, Globe, Plus, Calendar, Bike } from 'lucide-react';
 import type { Destination, Property, Product } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
 import PropertyCard from '@/components/property/PropertyCard';
+import { SectionChapter } from './SectionChapter';
 
-/* ── 1. HERO EDITORIAL ────────────────────────────────────────────────── */
+/** Chapters published in this template, in render order. Used by
+ *  DestinationPage.tsx to feed both <DestinationTOC /> and the inline
+ *  EditorialInterludes. */
+export const CHAPTERS = [
+  { number: 1,  id: 'chapter-hero',     label: 'Welcome'         },
+  { number: 2,  id: 'chapter-why',      label: 'Why this place'  },
+  { number: 3,  id: 'chapter-stay',     label: 'Where to stay'   },
+  { number: 4,  id: 'chapter-journal',  label: 'The journal'     },
+  { number: 5,  id: 'chapter-do',       label: 'What to see'     },
+  { number: 6,  id: 'chapter-when',     label: 'When to visit'   },
+  { number: 7,  id: 'chapter-getting',  label: 'Getting here'    },
+  { number: 8,  id: 'chapter-eat',      label: 'Eat & experience' },
+  { number: 9,  id: 'chapter-events',   label: 'Events'          },
+  { number: 10, id: 'chapter-press',    label: 'Press'           },
+  { number: 11, id: 'chapter-faq',      label: 'FAQ'             },
+  { number: 12, id: 'chapter-related',  label: 'Keep exploring'  },
+] as const;
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/* 1. HERO EDITORIAL                                                       */
+/* ─────────────────────────────────────────────────────────────────────── */
 
 interface HeroEditorialProps {
   destination: Destination;
@@ -31,105 +55,186 @@ interface HeroEditorialProps {
 
 export function HeroEditorial({ destination: d }: HeroEditorialProps) {
   const { t } = useTranslation();
-  // `primaryAccolade` takes the hero overlay when present (it's the
-  // ranked award — most-prominent trust signal). The `pullQuote` then
-  // surfaces as a secondary inline blockquote so neither competes.
   return (
-    <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
-      {d.coverImage ? (
-        <img
-          src={d.coverImage}
-          alt={`${d.name}, Portugal — luxury villa destination`}
-          className="absolute inset-0 w-full h-full object-cover"
-          width={1600}
-          height={900}
-          fetchPriority="high"
-          decoding="async"
-        />
-      ) : (
-        <div className="absolute inset-0 placeholder-image" />
-      )}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-      <div className="relative container pb-12 lg:pb-16 z-10">
+    <section
+      id="chapter-hero"
+      data-chapter={1}
+      className="relative h-[88vh] min-h-[620px] flex items-end overflow-hidden bg-[#1A1A18]"
+    >
+      <div className="absolute inset-0 editorial-ken-burns">
+        {d.coverImage ? (
+          <img
+            src={d.coverImage}
+            alt={`${d.name}, Portugal — luxury villa destination`}
+            className="w-full h-full object-cover"
+            width={1920}
+            height={1280}
+            fetchPriority="high"
+            decoding="async"
+          />
+        ) : (
+          <div className="w-full h-full placeholder-image" />
+        )}
+      </div>
+      {/* Two stops + a subtle scrim from the right edge — gives the H1
+          dramatic contrast without flattening the photograph. */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0A]/85 via-[#0B0B0A]/35 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#0B0B0A]/25 to-transparent" />
+
+      <div className="relative container pb-14 lg:pb-20 z-10">
         <Link
           href="/destinations"
-          className="text-[13px] text-white/60 hover:text-white/80 transition-colors mb-3 inline-block"
+          className="inline-flex items-center gap-2 text-[12px] tracking-[0.14em] uppercase text-white/55 hover:text-white/85 transition-colors mb-6"
         >
-          ← {t('destinationsPage.backToDestinations')}
+          <span className="block w-6 h-px bg-current" />
+          {t('destinationsPage.backToDestinations')}
         </Link>
-        <h1 className="headline-xl text-white mb-3">{d.name}</h1>
-        {d.heroSubtitle && (
-          <p className="body-lg max-w-xl" style={{ color: 'rgba(255,255,255,0.8)' }}>
-            {d.heroSubtitle}
-          </p>
-        )}
-        {!d.heroSubtitle && d.tagline && (
-          <p className="body-lg max-w-lg" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            {d.tagline}
+        <p className="text-[11px] tracking-[0.22em] uppercase text-[#C4A87C] mb-4">
+          A Portugal Active destination
+        </p>
+        <h1
+          className="text-white tracking-[-0.015em] leading-[0.96] mb-6"
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontWeight: 300,
+            fontSize: 'clamp(48px, 8vw, 104px)',
+          }}
+        >
+          {d.name}
+        </h1>
+        {(d.heroSubtitle || d.tagline) && (
+          <p
+            className="max-w-2xl text-white/80 mb-8"
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontWeight: 300,
+              fontSize: 'clamp(16px, 1.6vw, 20px)',
+              lineHeight: 1.5,
+            }}
+          >
+            {d.heroSubtitle ?? d.tagline}
           </p>
         )}
         {d.primaryAccolade && (
-          <div className="mt-6 inline-flex items-start gap-3 bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-3 max-w-xl">
-            <Award className="w-4 h-4 text-white/80 mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="text-[13px] font-medium text-white leading-snug">
-                {d.primaryAccolade.text}
+          <div className="editorial-award-seal">
+            <p className="text-[10px] tracking-[0.22em] uppercase text-[#C4A87C] mb-2">
+              Awarded
+            </p>
+            <p
+              className="text-white leading-[1.18] mb-3"
+              style={{ fontFamily: 'var(--font-display)', fontSize: 19, fontWeight: 400 }}
+            >
+              {d.primaryAccolade.text}
+            </p>
+            <p className="text-[11px] tracking-[0.04em] text-white/65">
+              {d.primaryAccolade.source}
+            </p>
+            {d.primaryAccolade.note && (
+              <p className="text-[11px] text-white/45 italic mt-1">
+                {d.primaryAccolade.note}
               </p>
-              <p className="text-[11px] text-white/60 tracking-[0.04em] mt-1">
-                {d.primaryAccolade.source}
-              </p>
-              {d.primaryAccolade.note && (
-                <p className="text-[11px] text-white/50 italic mt-0.5">
-                  {d.primaryAccolade.note}
-                </p>
-              )}
-            </div>
+            )}
           </div>
         )}
+      </div>
+
+      {/* Soft scroll cue */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden md:block z-10">
+        <span className="block w-px h-10 bg-white/40 mx-auto" />
+        <span className="block text-[10px] tracking-[0.22em] uppercase text-white/45 mt-3">
+          Scroll
+        </span>
       </div>
     </section>
   );
 }
 
-/* ── 2. WHY THIS PLACE ────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────── */
+/* 2. WHY THIS PLACE                                                       */
+/* ─────────────────────────────────────────────────────────────────────── */
 
 export function WhyThisPlace({ destination: d }: { destination: Destination }) {
-  const { t } = useTranslation();
   if (!d.whyDescription) return null;
+  const paragraphs = d.whyDescription.split('\n\n');
   return (
-    <section className="section-padding bg-white">
-      <div className="container max-w-3xl mx-auto">
-        {d.whyOverline && (
-          <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">
-            {d.whyOverline}
+    <SectionChapter
+      id="chapter-why"
+      number={2}
+      overline={d.whyOverline ?? 'Why this place'}
+      heading={`Why ${d.name}`}
+      background="white"
+      maxWidth="3xl"
+    >
+      <div className="text-[#1A1A18]">
+        {paragraphs.map((para, i) => (
+          <p
+            key={i}
+            className="mb-6 last:mb-0"
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 17,
+              lineHeight: 1.7,
+              fontWeight: 300,
+              color: '#2A2A26',
+            }}
+          >
+            {/* Drop cap on the first paragraph — magazine register. */}
+            {i === 0 ? (
+              <>
+                <span
+                  className="float-left mr-3 mt-1"
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 74,
+                    lineHeight: 0.85,
+                    fontWeight: 300,
+                    color: '#B8985A',
+                  }}
+                >
+                  {para.charAt(0)}
+                </span>
+                {para.slice(1)}
+              </>
+            ) : (
+              para
+            )}
           </p>
-        )}
-        <h2 className="headline-lg text-[#1A1A18] mb-8">
-          {t('destinationDetail.whyTitle', { name: d.name })}
-        </h2>
-        {d.whyDescription.split('\n\n').map((para, i) => (
-          <p key={i} className="body-lg mb-5 last:mb-0">{para}</p>
         ))}
+
         {d.pullQuote && (
-          <blockquote className="mt-10 pl-5 border-l-2 border-[#8B7355] max-w-xl">
-            <p
-              className="text-[#3A3A35] italic"
-              style={{ fontFamily: 'var(--font-display)', fontSize: '19px', lineHeight: 1.45 }}
+          <blockquote className="mt-14 mx-auto max-w-2xl text-center">
+            <span
+              className="block text-[40px] leading-none text-[#B8985A] mb-3"
+              style={{ fontFamily: 'var(--font-display)', fontWeight: 300 }}
+              aria-hidden="true"
             >
-              “{d.pullQuote.text}”
+              &ldquo;
+            </span>
+            <p
+              className="text-[#1A1A18] italic"
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 24,
+                lineHeight: 1.4,
+                fontWeight: 400,
+              }}
+            >
+              {d.pullQuote.text}
             </p>
-            <footer className="text-[12px] text-[#6B6860] mt-3 tracking-[0.04em]">
-              — {d.pullQuote.source}
-              {d.pullQuote.year ? `, ${d.pullQuote.year}` : ''}
+            <footer className="mt-5 text-[11px] tracking-[0.14em] uppercase text-[#8B7355]">
+              {d.pullQuote.source}
+              {d.pullQuote.year ? ` · ${d.pullQuote.year}` : ''}
             </footer>
           </blockquote>
         )}
       </div>
-    </section>
+    </SectionChapter>
   );
 }
 
-/* ── 3. WHERE TO STAY ─────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────── */
+/* 3. WHERE TO STAY                                                        */
+/* ─────────────────────────────────────────────────────────────────────── */
 
 interface WhereToStayProps {
   destination: Destination;
@@ -138,54 +243,58 @@ interface WhereToStayProps {
 
 export function WhereToStay({ destination: d, properties }: WhereToStayProps) {
   const { t } = useTranslation();
-  if (properties.length === 0) {
-    if (d.comingSoon) return null;
-    return (
-      <section className="section-padding bg-white">
-        <div className="container max-w-xl text-center">
-          <h2 className="headline-lg text-[#1A1A18] mb-4">
+  if (properties.length === 0 && d.comingSoon) return null;
+
+  return (
+    <SectionChapter
+      id="chapter-stay"
+      number={3}
+      overline="Where to stay"
+      heading={t('destinationDetail.homesIn', { name: d.name })}
+      kicker={d.whereToStayIntro}
+      background="cream"
+      maxWidth="6xl"
+    >
+      {properties.length === 0 ? (
+        <div className="text-center max-w-xl mx-auto py-8">
+          <p
+            className="text-[17px] text-[#3A3A35] mb-6"
+            style={{ fontFamily: 'var(--font-display)', fontWeight: 400 }}
+          >
             {t('destinationDetail.newHomesComingSoon', { name: d.name })}
-          </h2>
-          <p className="body-lg">
+          </p>
+          <p className="text-[14px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
             {t('destinationDetail.newHomesComingSoonSubtitle', { name: d.name })}
           </p>
-        </div>
-      </section>
-    );
-  }
-  return (
-    <section className="section-padding bg-white">
-      <div className="container">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
-          <div className="max-w-2xl">
-            <h2 className="headline-lg text-[#1A1A18]">
-              {t('destinationDetail.homesIn', { name: d.name })}
-            </h2>
-            {d.whereToStayIntro && (
-              <p
-                className="body-lg text-[#3A3A35] mt-4 leading-relaxed"
-                style={{ fontWeight: 300 }}
-              >
-                {d.whereToStayIntro}
-              </p>
-            )}
-          </div>
           <a
-            href={`/homes?destination=${d.region}`}
-            className="hidden md:flex items-center gap-2 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors flex-shrink-0"
+            href="/contact"
+            className="inline-flex items-center gap-2 mt-8 text-[12px] tracking-[0.14em] uppercase text-[#1A1A18] border-b border-[#8B7355] pb-1 hover:border-[#1A1A18] transition-colors"
           >
-            {t('destinationDetail.viewAllHomes')} <ArrowRight className="w-4 h-4" />
+            Speak to the concierge <ArrowRight className="w-3.5 h-3.5" />
           </a>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {properties.map(p => <PropertyCard key={p.id} property={p} />)}
-        </div>
-      </div>
-    </section>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+            {properties.map(p => <PropertyCard key={p.id} property={p} />)}
+          </div>
+          <div className="mt-10 text-center">
+            <a
+              href={`/homes?destination=${d.region}`}
+              className="inline-flex items-center gap-2 text-[12px] tracking-[0.14em] uppercase text-[#1A1A18] border-b border-[#8B7355] pb-1 hover:border-[#1A1A18] transition-colors"
+            >
+              {t('destinationDetail.viewAllHomes')} <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        </>
+      )}
+    </SectionChapter>
   );
 }
 
-/* ── 4. THE JOURNAL ───────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────── */
+/* 4. THE JOURNAL                                                          */
+/* ─────────────────────────────────────────────────────────────────────── */
 
 interface JournalArticle {
   slug: string;
@@ -202,260 +311,412 @@ interface TheJournalProps {
 
 export function TheJournal({ destination: d, articles }: TheJournalProps) {
   if (articles.length === 0) return null;
-  const heading = d.journalSectionTitle ?? `From the journal — stories from ${d.name}`;
   return (
-    <section className="section-padding bg-[#FAFAF7]">
-      <div className="container">
-        <h2 className="headline-lg text-[#1A1A18] mb-3">{heading}</h2>
-        <p className="body-lg text-[#6B6860] mb-8">
-          Editorial dispatches from our concierge team and the writers we publish.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {articles.slice(0, 6).map(a => (
-            <Link key={a.slug} href={`/blog/${a.slug}`} className="group block">
-              <div
-                className="relative overflow-hidden bg-[#E8E4DC] mb-3"
-                style={{ aspectRatio: '4/3' }}
-              >
-                {a.coverImage ? (
-                  <img
-                    src={a.coverImage}
-                    alt={a.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                    loading="lazy"
-                    width={800}
-                    height={600}
-                  />
-                ) : (
-                  <div className="w-full h-full placeholder-image" />
-                )}
-              </div>
-              <h3
-                className="text-[16px] font-medium text-[#1A1A18] mb-1.5 group-hover:text-[#8B7355] transition-colors"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                {a.title}
-              </h3>
-              {a.excerpt && (
-                <p className="text-[13px] text-[#6B6860] leading-relaxed line-clamp-2" style={{ fontWeight: 300 }}>
-                  {a.excerpt}
-                </p>
+    <SectionChapter
+      id="chapter-journal"
+      number={4}
+      overline="From the journal"
+      heading={d.journalSectionTitle ?? `Stories from ${d.name}`}
+      kicker="Editorial dispatches from our concierge team and the writers we publish."
+      background="warm"
+      maxWidth="6xl"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+        {articles.slice(0, 6).map(a => (
+          <Link key={a.slug} href={`/blog/${a.slug}`} className="group block">
+            <div
+              className="relative overflow-hidden bg-[#E8E4DC] mb-4"
+              style={{ aspectRatio: '4/3' }}
+            >
+              {a.coverImage ? (
+                <img
+                  src={a.coverImage}
+                  alt={a.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                  loading="lazy"
+                  width={800}
+                  height={600}
+                />
+              ) : (
+                <div className="w-full h-full placeholder-image" />
               )}
-            </Link>
-          ))}
-        </div>
+            </div>
+            <h3
+              className="text-[19px] text-[#1A1A18] mb-2 group-hover:text-[#8B7355] transition-colors leading-snug"
+              style={{ fontFamily: 'var(--font-display)', fontWeight: 400 }}
+            >
+              {a.title}
+            </h3>
+            {a.excerpt && (
+              <p className="text-[14px] text-[#6B6860] leading-relaxed line-clamp-2" style={{ fontWeight: 300 }}>
+                {a.excerpt}
+              </p>
+            )}
+          </Link>
+        ))}
       </div>
-    </section>
+    </SectionChapter>
   );
 }
 
-/* ── 5. WHAT TO SEE AND DO ────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────── */
+/* 5. WHAT TO SEE AND DO                                                   */
+/* ─────────────────────────────────────────────────────────────────────── */
+
+/** Curated item card — image-led when an image is present, text-only
+ *  otherwise. The image variant uses a 4/3 aspect with a soft gradient
+ *  scrim so the category badge sits over the photo. */
+function CuratedCard({
+  name,
+  category,
+  description,
+  image,
+  variant = 'standard',
+}: {
+  name: string;
+  category?: string;
+  description: string;
+  image?: string;
+  variant?: 'standard' | 'feature';
+}) {
+  const isFeature = variant === 'feature';
+  if (image) {
+    return (
+      <article className="group">
+        <div
+          className="relative overflow-hidden bg-[#E8E4DC] mb-4"
+          style={{ aspectRatio: isFeature ? '5/3' : '4/3' }}
+        >
+          <img
+            src={image}
+            alt={name}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
+          {category && (
+            <span className="absolute top-3 left-3 text-[10px] font-medium tracking-[0.14em] uppercase text-white bg-black/35 backdrop-blur-sm px-2.5 py-1">
+              {category}
+            </span>
+          )}
+        </div>
+        <h4
+          className={`text-[#1A1A18] mb-2 ${isFeature ? 'text-[22px]' : 'text-[17px]'}`}
+          style={{ fontFamily: 'var(--font-display)', fontWeight: 400, lineHeight: 1.25 }}
+        >
+          {name}
+        </h4>
+        <p
+          className={`text-[#6B6860] leading-relaxed ${isFeature ? 'text-[15px]' : 'text-[13.5px]'}`}
+          style={{ fontWeight: 300 }}
+        >
+          {description}
+        </p>
+      </article>
+    );
+  }
+  return (
+    <article className="bg-white border border-[#E8E4DC] p-6 h-full flex flex-col">
+      {category && (
+        <span className="text-[10px] font-medium tracking-[0.14em] uppercase text-[#9E9A90] mb-3">
+          {category}
+        </span>
+      )}
+      <h4
+        className="text-[17px] text-[#1A1A18] mb-2"
+        style={{ fontFamily: 'var(--font-display)', fontWeight: 400, lineHeight: 1.25 }}
+      >
+        {name}
+      </h4>
+      <p className="text-[13.5px] text-[#6B6860] leading-relaxed flex-1" style={{ fontWeight: 300 }}>
+        {description}
+      </p>
+    </article>
+  );
+}
 
 export function WhatToSeeAndDo({ destination: d }: { destination: Destination }) {
-  const intro = d.thingsToDoIntro;
   if (!d.thingsToDo || d.thingsToDo.length === 0) {
     if (d.insiderRecommendations && d.insiderRecommendations.length > 0) {
       return (
-        <section className="section-padding bg-[#F5F1EB]">
-          <div className="container">
-            <h2 className="headline-lg text-[#1A1A18] mb-3">What to see and do</h2>
-            <p className="body-lg text-[#6B6860] mb-8">Our concierge picks in {d.name}.</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
-              {d.insiderRecommendations.map((rec, i) => (
-                <div key={i} className="bg-white border border-[#E8E4DC] p-6">
-                  {rec.category && (
-                    <span className="text-[11px] font-medium tracking-[0.02em] text-[#9E9A90] mb-2 block">
-                      {rec.category.replace('-', ' ')}
-                    </span>
-                  )}
-                  <h3 className="font-display text-lg text-[#1A1A18] mb-2">{rec.name}</h3>
-                  <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
-                    {rec.description}
-                  </p>
-                </div>
-              ))}
-            </div>
+        <SectionChapter
+          id="chapter-do"
+          number={5}
+          overline="What to do"
+          heading="What to see and do"
+          background="sand"
+          maxWidth="6xl"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {d.insiderRecommendations.map((rec, i) => (
+              <CuratedCard key={i} {...rec} />
+            ))}
           </div>
-        </section>
+        </SectionChapter>
       );
     }
     return null;
   }
   return (
-    <section className="section-padding bg-[#F5F1EB]">
-      <div className="container">
-        <h2 className="headline-lg text-[#1A1A18] mb-3">What to see and do in {d.name}</h2>
-        <p
-          className="body-lg text-[#3A3A35] mb-10 max-w-3xl leading-relaxed"
-          style={{ fontWeight: 300 }}
-        >
-          {intro ??
-            'A curated walk through the places, hills and bays we recommend to our guests — voice ours, ranking subjective.'}
-        </p>
-        <div className="space-y-12">
-          {d.thingsToDo.map(group => (
+    <SectionChapter
+      id="chapter-do"
+      number={5}
+      overline="What to do"
+      heading={`What to see and do in ${d.name}`}
+      kicker={d.thingsToDoIntro}
+      background="sand"
+      maxWidth="6xl"
+    >
+      <div className="space-y-16">
+        {d.thingsToDo.map(group => {
+          const [first, ...rest] = group.items;
+          const restHasImages = rest.some(i => !!i.image);
+          return (
             <div key={group.heading}>
-              <h3
-                className="text-[18px] font-medium text-[#1A1A18] mb-5 tracking-[0.01em]"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                {group.heading}
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {group.items.map(item => (
-                  <div key={item.name} className="bg-white border border-[#E8E4DC] p-5">
-                    {item.category && (
-                      <span className="text-[11px] font-medium tracking-[0.04em] text-[#9E9A90] mb-2 block uppercase">
-                        {item.category}
-                      </span>
-                    )}
-                    <h4
-                      className="text-[15px] font-medium text-[#1A1A18] mb-2"
-                      style={{ fontFamily: 'var(--font-display)' }}
-                    >
-                      {item.name}
-                    </h4>
-                    <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
-                      {item.description}
-                    </p>
-                  </div>
-                ))}
+              <div className="flex items-baseline gap-4 mb-7">
+                <h3
+                  className="text-[24px] text-[#1A1A18]"
+                  style={{ fontFamily: 'var(--font-display)', fontWeight: 400, lineHeight: 1 }}
+                >
+                  {group.heading}
+                </h3>
+                <span className="flex-1 h-px bg-[#1A1A18]/15" />
               </div>
+              {first && (
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-8">
+                  <div className="md:col-span-7">
+                    <CuratedCard {...first} variant="feature" />
+                  </div>
+                  {rest.length > 0 && (
+                    <div className="md:col-span-5 grid grid-cols-1 gap-5">
+                      {rest.slice(0, 2).map((item, i) => (
+                        <CuratedCard key={item.name + i} {...item} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              {rest.length > 2 && (
+                <div
+                  className={`grid gap-5 ${
+                    restHasImages ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                  }`}
+                >
+                  {rest.slice(2).map((item, i) => (
+                    <CuratedCard key={item.name + i} {...item} />
+                  ))}
+                </div>
+              )}
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
-    </section>
+    </SectionChapter>
   );
 }
 
-/* ── 6. WHEN TO VISIT ─────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────── */
+/* 6. WHEN TO VISIT — zigzag image+text per season                         */
+/* ─────────────────────────────────────────────────────────────────────── */
 
-const SEASON_LABEL: Record<string, string> = {
-  spring: 'Spring (March–May)',
-  summer: 'Summer (June–August)',
-  autumn: 'Autumn (September–November)',
-  winter: 'Winter (December–February)',
-};
+const SEASON_META = [
+  { key: 'spring' as const, label: 'Spring',  range: 'March – May'        },
+  { key: 'summer' as const, label: 'Summer',  range: 'June – August'      },
+  { key: 'autumn' as const, label: 'Autumn',  range: 'September – November' },
+  { key: 'winter' as const, label: 'Winter',  range: 'December – February' },
+];
 
 export function WhenToVisit({ destination: d }: { destination: Destination }) {
-  // No structured seasons → fall back to the single-line bestTimeToVisit.
   if (!d.seasons) {
     if (!d.bestTimeToVisit) return null;
     return (
-      <section className="py-12 bg-white">
-        <div className="container max-w-3xl mx-auto">
-          <h2 className="headline-lg text-[#1A1A18] mb-6">When to visit</h2>
-          <p className="body-lg">{d.bestTimeToVisit}</p>
-        </div>
-      </section>
+      <SectionChapter
+        id="chapter-when"
+        number={6}
+        overline="Plan the trip"
+        heading="When to visit"
+        background="white"
+        maxWidth="3xl"
+      >
+        <p className="text-[17px] text-[#2A2A26] leading-relaxed" style={{ fontWeight: 300 }}>
+          {d.bestTimeToVisit}
+        </p>
+      </SectionChapter>
     );
   }
-  const seasons: Array<{ key: string; label: string; text: string }> = [];
-  for (const key of ['spring', 'summer', 'autumn', 'winter'] as const) {
-    const text = d.seasons[key];
-    if (text) seasons.push({ key, label: SEASON_LABEL[key], text });
-  }
+  const seasons = SEASON_META.map(meta => ({
+    ...meta,
+    text: d.seasons![meta.key],
+    image: d.imagery?.[`season${meta.label}` as keyof typeof d.imagery] as string | undefined,
+  })).filter(s => !!s.text);
   if (seasons.length === 0 && !d.seasons.bestForFirstTime) return null;
 
   return (
-    <section className="section-padding bg-white">
-      <div className="container max-w-5xl mx-auto">
-        <h2 className="headline-lg text-[#1A1A18] mb-3">When to visit {d.name}</h2>
-        {d.bestTimeToVisit && (
-          <p className="body-lg text-[#6B6860] mb-10 max-w-2xl">{d.bestTimeToVisit}</p>
-        )}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {seasons.map(s => (
-            <div key={s.key} className="border-l-2 border-[#8B7355] pl-5 py-1">
-              <h3
-                className="text-[15px] font-medium text-[#1A1A18] mb-2 tracking-[0.02em]"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                {s.label}
-              </h3>
-              <p className="text-[14px] text-[#3A3A35] leading-relaxed" style={{ fontWeight: 300 }}>
-                {s.text}
-              </p>
+    <SectionChapter
+      id="chapter-when"
+      number={6}
+      overline="Plan the trip"
+      heading={`When to visit ${d.name}`}
+      kicker={d.bestTimeToVisit}
+      background="white"
+      maxWidth="6xl"
+    >
+      <div className="space-y-16 md:space-y-24">
+        {seasons.map((s, i) => {
+          const reversed = i % 2 === 1;
+          return (
+            <div
+              key={s.key}
+              className={`grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center ${
+                reversed ? 'md:[direction:rtl]' : ''
+              }`}
+            >
+              <div className="md:col-span-5 md:[direction:ltr]">
+                <div
+                  className="relative overflow-hidden bg-[#E8E4DC]"
+                  style={{ aspectRatio: '4/5' }}
+                >
+                  {s.image ? (
+                    <img
+                      src={s.image}
+                      alt={`${d.name} in ${s.label.toLowerCase()}`}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-full h-full placeholder-image" />
+                  )}
+                </div>
+              </div>
+              <div className="md:col-span-7 md:[direction:ltr]">
+                <p className="text-[11px] tracking-[0.18em] uppercase text-[#8B7355] mb-2">
+                  {s.range}
+                </p>
+                <h3
+                  className="text-[32px] md:text-[40px] text-[#1A1A18] mb-5"
+                  style={{ fontFamily: 'var(--font-display)', fontWeight: 400, lineHeight: 1 }}
+                >
+                  {s.label}
+                </h3>
+                <p
+                  className="text-[16px] text-[#2A2A26] leading-[1.7]"
+                  style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+                >
+                  {s.text}
+                </p>
+              </div>
             </div>
-          ))}
-        </div>
-        {d.seasons.bestForFirstTime && (
-          <div className="mt-10 max-w-3xl mx-auto bg-[#FAFAF7] border border-[#E8E4DC] p-6">
-            <p className="text-[11px] font-medium tracking-[0.14em] uppercase text-[#8B7355] mb-3">
-              Best for first-time visitors
-            </p>
-            <p className="text-[14px] text-[#1A1A18] leading-relaxed" style={{ fontWeight: 300 }}>
-              {d.seasons.bestForFirstTime}
-            </p>
-          </div>
-        )}
+          );
+        })}
       </div>
-    </section>
+      {d.seasons.bestForFirstTime && (
+        <div className="mt-20 max-w-3xl mx-auto bg-[#0B4541] text-white p-8 md:p-10 relative">
+          <span
+            className="absolute -top-3 left-8 bg-[#B8985A] text-white text-[10px] tracking-[0.18em] uppercase px-3 py-1"
+          >
+            Concierge picks
+          </span>
+          <p className="text-[11px] tracking-[0.18em] uppercase text-white/55 mb-4">
+            Best for first-time visitors
+          </p>
+          <p
+            className="text-[18px] leading-[1.6]"
+            style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+          >
+            {d.seasons.bestForFirstTime}
+          </p>
+        </div>
+      )}
+    </SectionChapter>
   );
 }
 
-/* ── 7. HOW TO GET HERE ───────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────── */
+/* 7. HOW TO GET HERE                                                      */
+/* ─────────────────────────────────────────────────────────────────────── */
 
-const TRANSPORT_META: Array<{ key: 'byAir' | 'byTrain' | 'byCar' | 'fromSpain' | 'gettingAround'; label: string; Icon: typeof Plane }> = [
-  { key: 'byAir', label: 'By air', Icon: Plane },
-  { key: 'byTrain', label: 'By train', Icon: Train },
-  { key: 'byCar', label: 'By car', Icon: Car },
-  { key: 'fromSpain', label: 'From Spain', Icon: Globe },
-  { key: 'gettingAround', label: 'Getting around', Icon: Bike },
+const TRANSPORT_META: Array<{
+  key: 'byAir' | 'byTrain' | 'byCar' | 'fromSpain' | 'gettingAround';
+  label: string;
+  Icon: typeof Plane;
+}> = [
+  { key: 'byAir',         label: 'By air',          Icon: Plane },
+  { key: 'byTrain',       label: 'By train',        Icon: Train },
+  { key: 'byCar',         label: 'By car',          Icon: Car },
+  { key: 'fromSpain',     label: 'From Spain',      Icon: Globe },
+  { key: 'gettingAround', label: 'Getting around',  Icon: Bike },
 ];
 
 export function HowToGetHere({ destination: d }: { destination: Destination }) {
   if (!d.transport) {
     if (!d.howToGetHere) return null;
     return (
-      <section className="py-12 bg-[#FAFAF7]">
-        <div className="container max-w-3xl mx-auto">
-          <h2 className="headline-lg text-[#1A1A18] mb-6">Getting to {d.name}</h2>
-          <p className="body-lg">{d.howToGetHere}</p>
-        </div>
-      </section>
+      <SectionChapter
+        id="chapter-getting"
+        number={7}
+        overline="Logistics"
+        heading={`Getting to ${d.name}`}
+        background="cream"
+        maxWidth="3xl"
+      >
+        <p className="text-[17px] text-[#2A2A26] leading-relaxed" style={{ fontWeight: 300 }}>
+          {d.howToGetHere}
+        </p>
+      </SectionChapter>
     );
   }
   const populated = TRANSPORT_META.filter(({ key }) => !!d.transport![key]);
   if (populated.length === 0) return null;
 
   return (
-    <section className="section-padding bg-[#FAFAF7]">
-      <div className="container max-w-4xl mx-auto">
-        <h2 className="headline-lg text-[#1A1A18] mb-8">Getting to {d.name}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {populated.map(({ key, label, Icon }) => (
-            <div
-              key={key}
-              className="flex items-start gap-4 p-5 bg-white border border-[#E8E4DC]"
-            >
-              <Icon className="w-5 h-5 text-[#8B7355] mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="text-[14px] font-medium text-[#1A1A18] mb-1.5">{label}</p>
-                <p
-                  className="text-[13px] text-[#6B6860] leading-relaxed"
-                  style={{ fontWeight: 300 }}
-                >
-                  {d.transport![key]}
-                </p>
-              </div>
+    <SectionChapter
+      id="chapter-getting"
+      number={7}
+      overline="Logistics"
+      heading={`Getting to ${d.name}`}
+      background="cream"
+      maxWidth="5xl"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {populated.map(({ key, label, Icon }) => (
+          <div
+            key={key}
+            className="bg-white p-7 border-l-2 border-[#B8985A]"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <Icon className="w-4 h-4 text-[#8B7355]" />
+              <p
+                className="text-[12px] tracking-[0.14em] uppercase text-[#1A1A18]"
+                style={{ fontWeight: 500 }}
+              >
+                {label}
+              </p>
             </div>
-          ))}
-        </div>
-        <p className="mt-8 text-[13px] text-[#6B6860] text-center" style={{ fontWeight: 300 }}>
-          Our concierge arranges private transfers from any airport or station to your villa.
-        </p>
+            <p
+              className="text-[14.5px] text-[#3A3A35] leading-[1.7]"
+              style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+            >
+              {d.transport![key]}
+            </p>
+          </div>
+        ))}
       </div>
-    </section>
+      <p
+        className="mt-10 text-[13px] text-[#6B6860] text-center italic"
+        style={{ fontWeight: 300, fontFamily: 'var(--font-display)' }}
+      >
+        Our concierge arranges private transfers from any airport or station to your villa.
+      </p>
+    </SectionChapter>
   );
 }
 
-/* ── 8. EAT, DRINK, EXPERIENCE ────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────── */
+/* 8. EAT, DRINK, EXPERIENCE                                               */
+/* ─────────────────────────────────────────────────────────────────────── */
 
 interface EatDrinkExperienceProps {
   destination: Destination;
-  /** Optional dynamic adventures pulled from products.json. */
   adventures?: Product[];
   onAddToItinerary?: (product: Product) => void;
 }
@@ -468,319 +729,390 @@ export function EatDrinkExperience({
   const hasRestaurants = (d.restaurants?.length ?? 0) > 0;
   const hasSpecialties = (d.specialties?.length ?? 0) > 0;
   const hasExperiences = (d.experiences?.length ?? 0) > 0;
-  if (!hasRestaurants && !hasSpecialties && !hasExperiences && adventures.length === 0)
-    return null;
-  return (
-    <section className="section-padding bg-white">
-      <div className="container max-w-6xl mx-auto">
-        <h2 className="headline-lg text-[#1A1A18] mb-3">Eat, drink, experience</h2>
-        <p
-          className="body-lg text-[#3A3A35] mb-10 max-w-3xl leading-relaxed"
-          style={{ fontWeight: 300 }}
-        >
-          {d.eatDrinkIntro ??
-            'Restaurants we send our guests to, and experiences our concierge arranges. Not a directory — a personal list.'}
-        </p>
+  if (!hasRestaurants && !hasSpecialties && !hasExperiences && adventures.length === 0) return null;
 
-        {hasRestaurants && (
-          <div className="mb-12">
+  return (
+    <SectionChapter
+      id="chapter-eat"
+      number={8}
+      overline="Concierge picks"
+      heading="Eat, drink, experience"
+      kicker={d.eatDrinkIntro}
+      background="white"
+      maxWidth="6xl"
+    >
+      {hasRestaurants && (
+        <div className="mb-16">
+          <div className="flex items-baseline gap-4 mb-7">
             <h3
-              className="text-[17px] font-medium text-[#1A1A18] mb-5"
-              style={{ fontFamily: 'var(--font-display)' }}
+              className="text-[22px] text-[#1A1A18]"
+              style={{ fontFamily: 'var(--font-display)', fontWeight: 400, lineHeight: 1 }}
             >
               Where to eat
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {d.restaurants!.map(r => (
-                <div key={r.name} className="bg-[#FAFAF7] border border-[#E8E4DC] p-5">
-                  {r.category && (
-                    <span className="text-[11px] font-medium tracking-[0.04em] text-[#9E9A90] mb-2 block uppercase">
-                      {r.category}
-                    </span>
-                  )}
-                  <h4
-                    className="text-[15px] font-medium text-[#1A1A18] mb-2"
-                    style={{ fontFamily: 'var(--font-display)' }}
-                  >
-                    {r.name}
-                  </h4>
-                  <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
-                    {r.description}
-                  </p>
-                </div>
-              ))}
-            </div>
+            <span className="flex-1 h-px bg-[#1A1A18]/15" />
           </div>
-        )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {d.restaurants!.map(r => <CuratedCard key={r.name} {...r} />)}
+          </div>
+        </div>
+      )}
 
-        {hasSpecialties && (
-          <div className="mb-12">
+      {hasSpecialties && (
+        <div className="mb-16 bg-[#F5F1EB] p-8 md:p-10">
+          <div className="flex items-baseline gap-4 mb-6">
             <h3
-              className="text-[17px] font-medium text-[#1A1A18] mb-5"
-              style={{ fontFamily: 'var(--font-display)' }}
+              className="text-[22px] text-[#1A1A18]"
+              style={{ fontFamily: 'var(--font-display)', fontWeight: 400, lineHeight: 1 }}
             >
-              Local specialties
+              On the table
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {d.specialties!.map(s => (
-                <div key={s.name} className="border-l-2 border-[#8B7355] pl-5 py-2">
+            <span className="flex-1 h-px bg-[#1A1A18]/15" />
+          </div>
+          <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+            {d.specialties!.map(s => (
+              <div key={s.name} className="flex gap-5">
+                <span
+                  className="text-[#B8985A] text-[20px] mt-1"
+                  style={{ fontFamily: 'var(--font-display)' }}
+                  aria-hidden="true"
+                >
+                  &mdash;
+                </span>
+                <div>
                   {s.category && (
-                    <span className="text-[11px] font-medium tracking-[0.04em] text-[#9E9A90] mb-1.5 block uppercase">
+                    <span className="text-[10px] font-medium tracking-[0.14em] uppercase text-[#9E9A90] block mb-1">
                       {s.category}
                     </span>
                   )}
-                  <h4
-                    className="text-[15px] font-medium text-[#1A1A18] mb-1.5"
-                    style={{ fontFamily: 'var(--font-display)' }}
+                  <dt
+                    className="text-[16px] text-[#1A1A18] mb-1.5"
+                    style={{ fontFamily: 'var(--font-display)', fontWeight: 400 }}
                   >
                     {s.name}
-                  </h4>
-                  <p className="text-[13px] text-[#3A3A35] leading-relaxed" style={{ fontWeight: 300 }}>
+                  </dt>
+                  <dd className="text-[13.5px] text-[#3A3A35] leading-relaxed" style={{ fontWeight: 300 }}>
                     {s.description}
-                  </p>
+                  </dd>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
+              </div>
+            ))}
+          </dl>
+        </div>
+      )}
 
-        {hasExperiences && (
-          <div>
+      {hasExperiences && (
+        <div>
+          <div className="flex items-baseline gap-4 mb-3">
             <h3
-              className="text-[17px] font-medium text-[#1A1A18] mb-3"
-              style={{ fontFamily: 'var(--font-display)' }}
+              className="text-[22px] text-[#1A1A18]"
+              style={{ fontFamily: 'var(--font-display)', fontWeight: 400, lineHeight: 1 }}
             >
               What to do
             </h3>
-            {d.experiencesIntro && (
-              <p
-                className="text-[14px] text-[#3A3A35] mb-6 max-w-3xl leading-relaxed"
-                style={{ fontWeight: 300 }}
-              >
-                {d.experiencesIntro}
-              </p>
-            )}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {d.experiences!.map(e => (
-                <div key={e.name} className="bg-[#FAFAF7] border border-[#E8E4DC] p-5">
-                  <h4
-                    className="text-[15px] font-medium text-[#1A1A18] mb-2"
-                    style={{ fontFamily: 'var(--font-display)' }}
-                  >
-                    {e.name}
-                  </h4>
-                  <p
-                    className="text-[13px] text-[#6B6860] leading-relaxed mb-3"
-                    style={{ fontWeight: 300 }}
-                  >
-                    {e.description}
-                  </p>
+            <span className="flex-1 h-px bg-[#1A1A18]/15" />
+          </div>
+          {d.experiencesIntro && (
+            <p
+              className="text-[15px] text-[#3A3A35] mb-7 max-w-3xl leading-relaxed"
+              style={{ fontWeight: 300 }}
+            >
+              {d.experiencesIntro}
+            </p>
+          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {d.experiences!.map(e => (
+              <article key={e.name} className="group">
+                <div
+                  className="relative overflow-hidden bg-[#E8E4DC] mb-4"
+                  style={{ aspectRatio: '4/3' }}
+                >
+                  {e.image ? (
+                    <img
+                      src={e.image}
+                      alt={e.name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-full h-full placeholder-image" />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent" />
                   {(e.duration || e.season) && (
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-[#8B7355] tracking-[0.02em]">
+                    <div className="absolute bottom-3 left-3 right-3 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-white tracking-[0.08em] uppercase">
                       {e.duration && <span>{e.duration}</span>}
-                      {e.season && <span>· {e.season}</span>}
+                      {e.season && <span className="opacity-80">· {e.season}</span>}
                     </div>
                   )}
-                  <p className="mt-3 text-[12px] text-[#8B7355] italic" style={{ fontWeight: 300 }}>
-                    Our concierge can arrange.
-                  </p>
                 </div>
-              ))}
-            </div>
+                <h4
+                  className="text-[18px] text-[#1A1A18] mb-2"
+                  style={{ fontFamily: 'var(--font-display)', fontWeight: 400, lineHeight: 1.25 }}
+                >
+                  {e.name}
+                </h4>
+                <p className="text-[13.5px] text-[#6B6860] leading-relaxed mb-3" style={{ fontWeight: 300 }}>
+                  {e.description}
+                </p>
+                <p
+                  className="text-[11px] tracking-[0.14em] uppercase text-[#8B7355]"
+                  style={{ fontWeight: 500 }}
+                >
+                  Concierge arranged
+                </p>
+              </article>
+            ))}
           </div>
-        )}
+        </div>
+      )}
 
-        {adventures.length > 0 && (
-          <div className="mt-12">
+      {adventures.length > 0 && (
+        <div className="mt-16">
+          <div className="flex items-baseline gap-4 mb-7">
             <h3
-              className="text-[17px] font-medium text-[#1A1A18] mb-5"
-              style={{ fontFamily: 'var(--font-display)' }}
+              className="text-[22px] text-[#1A1A18]"
+              style={{ fontFamily: 'var(--font-display)', fontWeight: 400, lineHeight: 1 }}
             >
               Book online
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {adventures.map(adv => (
-                <div key={adv.id} className="group">
-                  <div
-                    className="relative overflow-hidden bg-[#E8E4DC] mb-3"
-                    style={{ aspectRatio: '3/2' }}
-                  >
-                    {adv.image ? (
-                      <img
-                        src={adv.image}
-                        alt={`${adv.name} — outdoor experience in ${d.name}, Portugal`}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                        loading="lazy"
-                        width={800}
-                        height={600}
-                      />
-                    ) : (
-                      <div className="w-full h-full placeholder-image" />
-                    )}
-                  </div>
-                  <h4
-                    className="text-[15px] font-medium text-[#1A1A18] mb-1"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  >
-                    {adv.name}
-                  </h4>
-                  <p
-                    className="text-[13px] text-[#6B6860] mb-2 leading-relaxed line-clamp-2"
-                    style={{ fontWeight: 300 }}
-                  >
-                    {adv.description}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    {(adv.priceFrom ?? 0) > 0 && (
-                      <p className="text-[13px] text-[#8B7355]">
-                        from {formatEurEditorial(adv.priceFrom ?? 0)}
-                      </p>
-                    )}
-                    {onAddToItinerary && (
-                      <button
-                        onClick={() => onAddToItinerary(adv)}
-                        className="flex items-center gap-1.5 text-[12px] font-medium text-[#1A1A18] hover:text-[#8B7355] transition-colors"
-                        style={{ minHeight: 'auto', minWidth: 'auto' }}
-                      >
-                        <Plus className="w-3.5 h-3.5" /> Add to itinerary
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <span className="flex-1 h-px bg-[#1A1A18]/15" />
           </div>
-        )}
-      </div>
-    </section>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+            {adventures.map(adv => (
+              <div key={adv.id} className="group">
+                <div
+                  className="relative overflow-hidden bg-[#E8E4DC] mb-4"
+                  style={{ aspectRatio: '3/2' }}
+                >
+                  {adv.image ? (
+                    <img
+                      src={adv.image}
+                      alt={`${adv.name} — outdoor experience in ${d.name}, Portugal`}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                      loading="lazy"
+                      width={800}
+                      height={600}
+                    />
+                  ) : (
+                    <div className="w-full h-full placeholder-image" />
+                  )}
+                </div>
+                <h4
+                  className="text-[17px] text-[#1A1A18] mb-1.5"
+                  style={{ fontFamily: 'var(--font-display)', fontWeight: 400 }}
+                >
+                  {adv.name}
+                </h4>
+                <p
+                  className="text-[13.5px] text-[#6B6860] mb-3 leading-relaxed line-clamp-2"
+                  style={{ fontWeight: 300 }}
+                >
+                  {adv.description}
+                </p>
+                <div className="flex items-center justify-between">
+                  {(adv.priceFrom ?? 0) > 0 && (
+                    <p className="text-[12px] text-[#8B7355] tracking-[0.04em]">
+                      from {formatEurEditorial(adv.priceFrom ?? 0)}
+                    </p>
+                  )}
+                  {onAddToItinerary && (
+                    <button
+                      onClick={() => onAddToItinerary(adv)}
+                      className="flex items-center gap-1.5 text-[11px] tracking-[0.14em] uppercase text-[#1A1A18] hover:text-[#8B7355] transition-colors"
+                      style={{ minHeight: 'auto', minWidth: 'auto' }}
+                    >
+                      <Plus className="w-3 h-3" /> Itinerary
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </SectionChapter>
   );
 }
 
-/* ── 9. EVENTS WORTH PLANNING AROUND (added in Cowork editorial pass) ── */
+/* ─────────────────────────────────────────────────────────────────────── */
+/* 9. EVENTS WORTH PLANNING AROUND                                         */
+/* ─────────────────────────────────────────────────────────────────────── */
 
 export function EventsAndPlanning({ destination: d }: { destination: Destination }) {
   if (!d.events || d.events.length === 0) return null;
+  const hasImages = d.events.some(e => !!e.image);
   return (
-    <section className="section-padding bg-[#FAFAF7]">
-      <div className="container max-w-5xl mx-auto">
-        <h2 className="headline-lg text-[#1A1A18] mb-3">Events worth planning around</h2>
-        {d.eventsIntro && (
-          <p
-            className="body-lg text-[#3A3A35] mb-10 max-w-3xl leading-relaxed"
-            style={{ fontWeight: 300 }}
-          >
-            {d.eventsIntro}
-          </p>
-        )}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <SectionChapter
+      id="chapter-events"
+      number={9}
+      overline="The calendar"
+      heading="Events worth planning around"
+      kicker={d.eventsIntro}
+      background="cream"
+      maxWidth="6xl"
+    >
+      {hasImages ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {d.events.map(ev => (
-            <div
-              key={ev.name}
-              className="flex items-start gap-4 p-5 bg-white border border-[#E8E4DC]"
-            >
-              <Calendar className="w-5 h-5 text-[#8B7355] mt-0.5 flex-shrink-0" />
-              <div className="flex-1">
-                <h3
-                  className="text-[15px] font-medium text-[#1A1A18] mb-1"
-                  style={{ fontFamily: 'var(--font-display)' }}
-                >
-                  {ev.url ? (
-                    <a href={ev.url} target="_blank" rel="noopener noreferrer" className="hover:text-[#8B7355]">
-                      {ev.name}
-                    </a>
-                  ) : (
-                    ev.name
-                  )}
-                </h3>
-                <p className="text-[11px] font-medium tracking-[0.04em] uppercase text-[#8B7355] mb-2">
-                  {ev.dates}
-                </p>
-                <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
-                  {ev.description}
-                </p>
+            <article key={ev.name} className="group">
+              <div
+                className="relative overflow-hidden bg-[#E8E4DC] mb-4"
+                style={{ aspectRatio: '4/3' }}
+              >
+                {ev.image ? (
+                  <img
+                    src={ev.image}
+                    alt={ev.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="w-full h-full placeholder-image" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent" />
+                <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2">
+                  <Calendar className="w-3 h-3 text-white" />
+                  <span className="text-[10px] tracking-[0.14em] uppercase text-white">
+                    {ev.dates}
+                  </span>
+                </div>
               </div>
-            </div>
+              <h4
+                className="text-[18px] text-[#1A1A18] mb-2"
+                style={{ fontFamily: 'var(--font-display)', fontWeight: 400 }}
+              >
+                {ev.url ? (
+                  <a href={ev.url} target="_blank" rel="noopener noreferrer" className="hover:text-[#8B7355]">
+                    {ev.name}
+                  </a>
+                ) : (
+                  ev.name
+                )}
+              </h4>
+              <p className="text-[13.5px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
+                {ev.description}
+              </p>
+            </article>
           ))}
         </div>
-      </div>
-    </section>
+      ) : (
+        <div className="border-l border-[#1A1A18]/12 pl-8 ml-3 space-y-8">
+          {d.events.map(ev => (
+            <article key={ev.name} className="relative">
+              <span className="absolute -left-[35px] top-2 w-2.5 h-2.5 rounded-full bg-[#B8985A]" />
+              <p className="text-[11px] tracking-[0.18em] uppercase text-[#8B7355] mb-1.5">
+                {ev.dates}
+              </p>
+              <h4
+                className="text-[20px] text-[#1A1A18] mb-2"
+                style={{ fontFamily: 'var(--font-display)', fontWeight: 400 }}
+              >
+                {ev.url ? (
+                  <a href={ev.url} target="_blank" rel="noopener noreferrer" className="hover:text-[#8B7355]">
+                    {ev.name}
+                  </a>
+                ) : (
+                  ev.name
+                )}
+              </h4>
+              <p className="text-[14.5px] text-[#3A3A35] leading-relaxed max-w-2xl" style={{ fontWeight: 300 }}>
+                {ev.description}
+              </p>
+            </article>
+          ))}
+        </div>
+      )}
+    </SectionChapter>
   );
 }
 
-/* ── 10. PRESS & ACCOLADES ────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────── */
+/* 10. PRESS & ACCOLADES                                                   */
+/* ─────────────────────────────────────────────────────────────────────── */
 
 export function PressAccolades({ destination: d }: { destination: Destination }) {
   if (!d.pressQuotes || d.pressQuotes.length === 0) return null;
   return (
-    <section className="py-16 bg-[#1A1A18] text-white">
-      <div className="container max-w-5xl mx-auto">
-        <h2 className="text-[11px] font-medium tracking-[0.14em] uppercase text-white/60 mb-3 text-center">
-          Press & recognition
-        </h2>
-        {d.pressIntro && (
-          <p
-            className="text-[13px] text-white/70 max-w-2xl mx-auto mb-10 text-center leading-relaxed"
-            style={{ fontWeight: 300 }}
-          >
-            {d.pressIntro}
-          </p>
-        )}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {d.pressQuotes.map((q, i) => (
-            <blockquote key={`${q.source}-${i}`} className="text-center">
-              <p
-                className="text-white/90 italic mb-3 leading-relaxed"
-                style={{ fontFamily: 'var(--font-display)', fontSize: '17px' }}
-              >
-                “{q.quote}”
-              </p>
-              <footer className="text-[11px] tracking-[0.08em] uppercase text-white/50">
-                {q.url ? (
-                  <a href={q.url} target="_blank" rel="noopener noreferrer" className="hover:text-white">
-                    {q.source}
-                  </a>
-                ) : (
-                  q.source
-                )}
-                {q.year ? ` · ${q.year}` : ''}
-              </footer>
-            </blockquote>
-          ))}
-        </div>
+    <SectionChapter
+      id="chapter-press"
+      number={10}
+      overline="As featured in"
+      heading="Press & recognition"
+      kicker={d.pressIntro}
+      background="dark"
+      maxWidth="6xl"
+      centeredHeader
+    >
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        {d.pressQuotes.map((q, i) => (
+          <blockquote key={`${q.source}-${i}`} className="text-center">
+            <span
+              className="block text-[44px] leading-none text-[#C4A87C] mb-3"
+              style={{ fontFamily: 'var(--font-display)', fontWeight: 300 }}
+              aria-hidden="true"
+            >
+              &ldquo;
+            </span>
+            <p
+              className="text-white/90 italic mb-5 leading-relaxed"
+              style={{ fontFamily: 'var(--font-display)', fontSize: 19, fontWeight: 400 }}
+            >
+              {q.quote}
+            </p>
+            <footer className="text-[11px] tracking-[0.18em] uppercase text-white/55">
+              {q.url ? (
+                <a href={q.url} target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                  {q.source}
+                </a>
+              ) : (
+                q.source
+              )}
+              {q.year ? ` · ${q.year}` : ''}
+            </footer>
+          </blockquote>
+        ))}
       </div>
-    </section>
+    </SectionChapter>
   );
 }
 
-/* ── 11. FAQ SECTION (FAQPage schema is emitted by DestinationPage) ──── */
+/* ─────────────────────────────────────────────────────────────────────── */
+/* 11. FAQ                                                                 */
+/* ─────────────────────────────────────────────────────────────────────── */
 
 export function FAQSection({ destination: d }: { destination: Destination }) {
   if (!d.faqs || d.faqs.length === 0) return null;
   return (
-    <section className="section-padding bg-white">
-      <div className="container max-w-3xl mx-auto">
-        <h2 className="headline-lg text-[#1A1A18] mb-8">Frequently asked questions</h2>
-        <dl className="space-y-6">
-          {d.faqs.map((f, i) => (
-            <div key={i} className="border-b border-[#E8E4DC] pb-6 last:border-b-0">
-              <dt
-                className="text-[16px] font-medium text-[#1A1A18] mb-3"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                {f.question}
-              </dt>
-              <dd className="text-[14px] text-[#3A3A35] leading-relaxed" style={{ fontWeight: 300 }}>
-                {f.answer}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </section>
+    <SectionChapter
+      id="chapter-faq"
+      number={11}
+      overline="Practical answers"
+      heading="Frequently asked questions"
+      background="white"
+      maxWidth="3xl"
+    >
+      <dl className="divide-y divide-[#E8E4DC]">
+        {d.faqs.map((f, i) => (
+          <div key={i} className="py-7 first:pt-0 last:pb-0">
+            <dt
+              className="text-[18px] text-[#1A1A18] mb-3"
+              style={{ fontFamily: 'var(--font-display)', fontWeight: 400, lineHeight: 1.3 }}
+            >
+              {f.question}
+            </dt>
+            <dd className="text-[14.5px] text-[#3A3A35] leading-[1.7]" style={{ fontWeight: 300 }}>
+              {f.answer}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </SectionChapter>
   );
 }
 
-/* ── 12. RELATED DESTINATIONS + OWNERS CTA (DUAL FUNNEL) ──────────────── */
+/* ─────────────────────────────────────────────────────────────────────── */
+/* 12. RELATED DESTINATIONS + OWNERS CTA                                   */
+/* ─────────────────────────────────────────────────────────────────────── */
 
 interface RelatedDestinationsAndOwnersCTAProps {
   destination: Destination;
@@ -796,8 +1128,6 @@ export function RelatedDestinationsAndOwnersCTA({
     body: `Portugal Active operates private homes across Portugal end-to-end: marketing, bookings, concierge, maintenance, revenue optimisation. We turn private homes into private hotels.`,
     cta: 'Speak to our team',
   };
-  // Per-destination override takes priority; default builds a UTM-tagged
-  // link so booking-vs-owner attribution stays clean in Pipedrive.
   const ownersUrl =
     owners.url ??
     `https://management.portugalactive.com/?utm_source=destinations&utm_medium=banner&utm_campaign=${encodeURIComponent(d.slug)}`;
@@ -805,88 +1135,108 @@ export function RelatedDestinationsAndOwnersCTA({
   return (
     <>
       {related.length > 0 && (
-        <section className="section-padding bg-[#FAFAF7]">
-          <div className="container max-w-5xl mx-auto">
-            <h2 className="headline-lg text-[#1A1A18] mb-8">Continue exploring</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {related.slice(0, 3).map(r => (
-                <Link
-                  key={r.slug}
-                  href={`/destinations/${r.slug}`}
-                  className="group block relative overflow-hidden"
-                  style={{ aspectRatio: '4/5' }}
-                >
-                  {r.coverImage ? (
-                    <img
-                      src={r.coverImage}
-                      alt={r.name}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 placeholder-image" />
+        <SectionChapter
+          id="chapter-related"
+          number={12}
+          overline="The journey continues"
+          heading="Keep exploring"
+          background="cream"
+          maxWidth="6xl"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
+            {related.slice(0, 3).map(r => (
+              <Link
+                key={r.slug}
+                href={`/destinations/${r.slug}`}
+                className="group block relative overflow-hidden"
+                style={{ aspectRatio: '4/5' }}
+              >
+                {r.coverImage ? (
+                  <img
+                    src={r.coverImage}
+                    alt={r.name}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] group-hover:scale-[1.05]"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="absolute inset-0 placeholder-image" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
+                <div className="absolute top-5 left-5">
+                  <span className="text-[10px] tracking-[0.18em] uppercase text-white/75">
+                    {r.region === d.region ? 'Same region' : 'Nearby'}
+                  </span>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <h3
+                    className="text-white text-[24px] mb-1"
+                    style={{ fontFamily: 'var(--font-display)', fontWeight: 400, lineHeight: 1.1 }}
+                  >
+                    {r.name}
+                  </h3>
+                  {r.tagline && (
+                    <p className="text-[13px] text-white/75 line-clamp-2" style={{ fontWeight: 300 }}>
+                      {r.tagline}
+                    </p>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-5">
-                    <h3 className="text-white text-[18px] font-medium" style={{ fontFamily: 'var(--font-display)' }}>
-                      {r.name}
-                    </h3>
-                    {r.tagline && (
-                      <p className="text-[12px] text-white/70 line-clamp-2" style={{ fontWeight: 300 }}>
-                        {r.tagline}
-                      </p>
-                    )}
-                  </div>
-                </Link>
-              ))}
-            </div>
+                  <span className="mt-3 inline-flex items-center gap-1.5 text-[11px] tracking-[0.14em] uppercase text-[#C4A87C]">
+                    Read the guide <ArrowRight className="w-3 h-3" />
+                  </span>
+                </div>
+              </Link>
+            ))}
           </div>
-        </section>
+        </SectionChapter>
       )}
 
-      <section className="py-16 bg-[#0B4541] text-white">
-        <div className="container max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+      <section className="relative overflow-hidden bg-[#0B4541] text-white py-20 md:py-24">
+        <div className="absolute inset-0 opacity-15 mix-blend-overlay" aria-hidden="true">
+          <div className="w-full h-full" style={{
+            backgroundImage: 'radial-gradient(circle at 20% 30%, #C4A87C 0%, transparent 40%), radial-gradient(circle at 80% 70%, #C4A87C 0%, transparent 35%)',
+          }} />
+        </div>
+        <div className="relative container max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
             <div>
-              <p className="text-[11px] font-medium tracking-[0.14em] uppercase text-white/60 mb-3">
+              <p className="text-[11px] tracking-[0.22em] uppercase text-[#C4A87C] mb-4">
                 For travellers
               </p>
               <h3
-                className="text-[22px] font-medium text-white mb-3"
-                style={{ fontFamily: 'var(--font-display)', lineHeight: 1.25 }}
+                className="text-[30px] md:text-[36px] text-white mb-5"
+                style={{ fontFamily: 'var(--font-display)', fontWeight: 400, lineHeight: 1.15 }}
               >
                 Plan your stay in {d.name}
               </h3>
-              <p className="text-[14px] text-white/80 mb-5 leading-relaxed" style={{ fontWeight: 300 }}>
+              <p className="text-[15px] text-white/80 mb-7 leading-relaxed max-w-md" style={{ fontWeight: 300 }}>
                 See every home we operate in {d.name} — with concierge, daily housekeeping,
                 and private chef on call.
               </p>
               <Link
                 href={`/homes?destination=${d.region}`}
-                className="inline-flex items-center gap-2 text-[13px] font-medium text-white border-b border-white/40 pb-1 hover:border-white transition-colors"
+                className="inline-flex items-center gap-3 text-[12px] tracking-[0.14em] uppercase text-white border-b border-white/40 pb-1.5 hover:border-white transition-colors"
               >
                 See all villas <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
 
-            <div className="md:border-l md:border-white/15 md:pl-10">
-              <p className="text-[11px] font-medium tracking-[0.14em] uppercase text-white/60 mb-3">
+            <div className="md:border-l md:border-white/15 md:pl-12">
+              <p className="text-[11px] tracking-[0.22em] uppercase text-[#C4A87C] mb-4">
                 For owners
               </p>
               <h3
-                className="text-[22px] font-medium text-white mb-3"
-                style={{ fontFamily: 'var(--font-display)', lineHeight: 1.25 }}
+                className="text-[30px] md:text-[36px] text-white mb-5"
+                style={{ fontFamily: 'var(--font-display)', fontWeight: 400, lineHeight: 1.15 }}
               >
                 {owners.headline}
               </h3>
-              <p className="text-[14px] text-white/80 mb-5 leading-relaxed" style={{ fontWeight: 300 }}>
+              <p className="text-[15px] text-white/80 mb-7 leading-relaxed max-w-md" style={{ fontWeight: 300 }}>
                 {owners.body}
               </p>
               <a
                 href={ownersUrl}
                 target="_blank"
                 rel="noopener nofollow"
-                className="inline-flex items-center gap-2 text-[13px] font-medium text-white border-b border-white/40 pb-1 hover:border-white transition-colors"
+                className="inline-flex items-center gap-3 text-[12px] tracking-[0.14em] uppercase text-white border-b border-white/40 pb-1.5 hover:border-white transition-colors"
               >
                 {owners.cta} <ArrowRight className="w-4 h-4" />
               </a>
@@ -898,20 +1248,16 @@ export function RelatedDestinationsAndOwnersCTA({
   );
 }
 
-/* ── Schema graph builder ─────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────── */
+/* SCHEMA GRAPH                                                            */
+/* ─────────────────────────────────────────────────────────────────────── */
 
-/** Build the @graph for a destination page: TouristDestination + Article +
- *  FAQPage (when faqs present) + BreadcrumbList + Event nodes when events
- *  are populated. Returned as a flat array so it can be passed directly
- *  to <StructuredData data={...} /> which wraps it in a single @context
- *  root. */
 export function buildDestinationGraph(
   d: Destination,
   properties: Property[],
   baseUrl = 'https://www.portugalactive.com',
 ): Record<string, unknown>[] {
   const url = `${baseUrl}/destinations/${d.slug}`;
-
   const containsPlace = properties.map(p => ({
     '@type': 'VacationRental',
     name: p.name,
@@ -970,8 +1316,6 @@ export function buildDestinationGraph(
     });
   }
 
-  // Event nodes — surfaced separately rather than under @graph[0] because
-  // Google reads top-level Event schema for the events knowledge panel.
   if (d.events && d.events.length > 0) {
     for (const ev of d.events) {
       graph.push({
@@ -980,6 +1324,7 @@ export function buildDestinationGraph(
         name: ev.name,
         description: ev.description,
         ...(ev.url && { url: ev.url }),
+        ...(ev.image && { image: ev.image }),
         location: {
           '@type': 'Place',
           name: d.name,
@@ -995,7 +1340,6 @@ export function buildDestinationGraph(
   return graph;
 }
 
-// Silence unused-import warnings when Trans is bundled but unused per call
-// site. Trans is exported by react-i18next and may be used by future
-// editorial additions to the legacy "services" section.
+// Silence unused-import warning for Trans (used by ancestors via children
+// in some destinations).
 export const __ssrSilence = { Trans };
