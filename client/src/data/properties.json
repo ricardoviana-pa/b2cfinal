@@ -6617,6 +6617,38 @@
     "areaSquareFeet": 1615,
     "reviews": [
       {
+        "rating": 4,
+        "text": "The apartment has been recently renovated to a good standard and the photos are fairly accurate. However, there are several things which show that it’s managed by a company and lacking personal touch.\nFor instance - zero storage in one of the bedrooms - not even a door hook.\nMore importantly for a place that sleeps six lots of other things lacking.  2 wine glasses and nothing else resembling wine glasses - lots of shot glasses and massive tumblers.\nAnd zero cups or mugs or anything at all to mak",
+        "guestName": "Guest",
+        "date": "2026-05-25T20:45:23.499Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 2
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Alojamiento increíble y súper bonito. \nNos ha encantado disfrutar de unos días en esta casa con unas vistas impresionantes y un entorno fantástico.\nMuchas gracias por todo !!",
         "guestName": "Guest",
@@ -6713,8 +6745,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 3
+    "averageRating": 4.8,
+    "reviewCount": 4
   },
   {
     "id": "guesty-696533714b583900135cef22",
