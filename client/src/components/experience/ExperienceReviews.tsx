@@ -4,6 +4,7 @@
    ========================================================================== */
 
 import { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ExperienceReview, ExperienceAggregateRating } from '@/lib/types';
 // Icons removed — no OTA-style badges on our own site
 
@@ -21,6 +22,7 @@ const FLAG_MAP: Record<string, string> = {
 };
 
 export default function ExperienceReviews({ reviews, aggregate }: ExperienceReviewsProps) {
+  const { i18n } = useTranslation();
   const [sort, setSort] = useState<SortKey>('recent');
   const [limit, setLimit] = useState<number>(6);
 
@@ -144,7 +146,7 @@ export default function ExperienceReviews({ reviews, aggregate }: ExperienceRevi
                   )}
                 </div>
                 <p className="text-[11px] text-[#9E9A90]">
-                  {new Date(r.date).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}
+                  {new Date(r.date).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' })}
                 </p>
               </div>
               <span className="text-[13px] italic text-[#8B7355] shrink-0">

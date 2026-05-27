@@ -170,7 +170,7 @@ export default function About() {
   const { t } = useTranslation();
   usePageMeta({
     title: 'About Portugal Active | Private Hotels in Portugal Since 2017',
-    description: 'From adventure tourism in Viana do Castelo to 50+ operated homes across Portugal. How Portugal Active transforms private homes into private hotels. Featured in Forbes.',
+    description: 'From adventure tourism in Viana do Castelo to 60+ operated homes across Portugal. How Portugal Active transforms private homes into private hotels. Featured in Forbes.',
     url: '/about',
   });
 

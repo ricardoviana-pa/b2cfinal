@@ -1,6 +1,6 @@
 /* ==========================================================================
    HOMEPAGE Ã¢ÂÂ Prompt 1 spec
-   11 sections in exact order:
+   10 sections in exact order:
    1. Hero (overline, H1, subline, 2 CTAs, search bar)
    2. USP Bar (4 items, surface bg)
    3. Our Homes (overline, headline, subline, 5 tabs, 6 cards, link)
@@ -11,7 +11,6 @@
    8. Experiences (4 cards)
    9. Social Proof (3 reviews + proof strip)
    10. Owners CTA (dark bg)
-   11. Newsletter (standalone, before footer)
 
    COPY RULES:
    - No em/en dashes Ã¢ÂÂ use periods, commas, colons
@@ -25,8 +24,9 @@
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { StructuredData, buildFaqPageSchema } from '@/components/seo/StructuredData';
 import { Link } from 'wouter';
-import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Check, Quote, Minus, Plus } from 'lucide-react';
+import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Minus, Plus, Home as HomeIcon, Star, Headphones } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -40,6 +40,50 @@ import { getUniqueLocalities } from '@/lib/utils';
 import { pushDL, pushEcommerce } from '@/lib/datalayer';
 
 const destinations = destinationsData as unknown as Destination[];
+
+/** Format an ISO date (YYYY-MM-DD) as DD/MM/YYYY for the search bar display.
+ *  Pure string ops — no Date object, so no timezone drift. */
+function fmtSearchDate(iso: string): string {
+  const [y, m, d] = iso.split('-');
+  return d && m && y ? `${d}/${m}/${y}` : iso;
+}
+
+/** Lazy-loaded autoplay video. Until the card scrolls near the viewport it
+ *  renders only the poster image — so a heavy below-the-fold video never
+ *  competes for bandwidth during the initial page load (the homepage video
+ *  was ~5 MB, dominating the mobile payload). */
+function LazyVideo({ src, poster, title }: { src: string; poster?: string; title: string }) {
+  const ref = useRef<HTMLImageElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    if (inView) return;
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      (entries) => { if (entries[0]?.isIntersecting) setInView(true); },
+      { rootMargin: '300px' },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [inView]);
+  const cls = 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]';
+  if (!inView) {
+    return <img ref={ref} src={poster} alt={title} className={cls} width={400} height={533} loading="lazy" />;
+  }
+  return (
+    <video
+      src={src}
+      poster={poster}
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      aria-label={title}
+      className={cls}
+    />
+  );
+}
 
 function useFadeIn() {
   const ref = useRef<HTMLDivElement>(null);
@@ -59,93 +103,39 @@ function useFadeIn() {
 export default function Home() {
   const { t } = useTranslation();
   usePageMeta({
-    title: 'Luxury Private Villas in Portugal | Hotel Service',
-    description: '50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool. Book direct for best rates.',
+    // Must match the server-side PAGE_META '/' entry in server/_core/vite.ts —
+    // usePageMeta appends " | Portugal Active", so pass the title without it.
+    title: 'Luxury Private Villas in Portugal',
+    description: '5-star hotel experience in private holiday homes. Professionally managed villas in Algarve, Lisbon, Alentejo, Minho. Full-service concierge, private chefs, curated adventures. Book direct.',
     url: '/',
   });
-  useEffect(() => {
-    const jsonLd = {
-      "@context": "https://schema.org",
-      "@type": "LodgingBusiness",
-      "name": "Portugal Active",
-      "description": "50+ private villas across Portugal, each managed like a luxury hotel. Private chef, concierge, pool, housekeeping. Book direct for best rates.",
-      "url": "https://www.portugalactive.com",
-      "telephone": "+351927161771",
-      "email": "info@portugalactive.com",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Viana do Castelo",
-        "addressRegion": "Norte",
-        "addressCountry": "PT",
-      },
-      "areaServed": [
-        { "@type": "Place", "name": "Minho, Portugal" },
-        { "@type": "Place", "name": "Porto & Douro, Portugal" },
-        { "@type": "Place", "name": "Lisbon, Portugal" },
-        { "@type": "Place", "name": "Alentejo, Portugal" },
-        { "@type": "Place", "name": "Algarve, Portugal" },
-      ],
-      "priceRange": "€€€",
-      "sameAs": [
-        "https://www.instagram.com/portugal_active",
-      ],
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(jsonLd);
-    script.id = "home-localbusiness-jsonld";
-    document.querySelector("#home-localbusiness-jsonld")?.remove();
-    document.head.appendChild(script);
-    // FAQPage schema for homepage — targets "luxury villas Portugal" queries
-    const faqLd = {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What makes Portugal Active different from Airbnb or Booking.com?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Portugal Active operates each property like a private hotel — with a 47-point preparation checklist, dedicated concierge, optional private chef, and a local team minutes away. We don't just list homes; we manage them to hotel standards." }
-        },
-        {
-          "@type": "Question",
-          "name": "Which regions in Portugal does Portugal Active cover?",
-          "acceptedAnswer": { "@type": "Answer", "text": "We operate luxury villas across five regions: Minho Coast (Viana do Castelo area), Porto & Douro Valley, Lisbon & Sintra, Alentejo, and the Algarve. Each region offers a different character, from Atlantic beaches to wine country." }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I book adventure activities alongside my villa stay?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes. We offer curated experiences including horseback riding, canyoning, surfing, sailing, e-bike tours, and more. Our concierge team builds bespoke itineraries combining your villa, activities, private dining, and transfers." }
-        },
-        {
-          "@type": "Question",
-          "name": "Is it cheaper to book direct with Portugal Active?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Always. Booking direct means no middleman markup — you get the best rate guaranteed, plus complimentary concierge service and priority for special requests like early check-in or celebrations." }
-        },
-      ],
-    };
-    const faqScript = document.createElement("script");
-    faqScript.type = "application/ld+json";
-    faqScript.text = JSON.stringify(faqLd);
-    faqScript.id = "home-faq-jsonld";
-    document.querySelector("#home-faq-jsonld")?.remove();
-    document.head.appendChild(faqScript);
-
-    return () => {
-      document.querySelector("#home-localbusiness-jsonld")?.remove();
-      document.querySelector("#home-faq-jsonld")?.remove();
-    };
-  }, []);
+  // FAQPage schema only — the Organization schema is global (index.html),
+  // so we no longer emit LodgingBusiness here to avoid duplicating the
+  // brand entity on the homepage.
+  const homeFaq = useMemo(() => buildFaqPageSchema([
+    {
+      question: 'What makes Portugal Active different from Airbnb or Booking.com?',
+      answer: "Portugal Active operates each property like a private hotel — with a 47-point preparation checklist, dedicated concierge, optional private chef, and a local team minutes away. We don't just list homes; we manage them to hotel standards.",
+    },
+    {
+      question: 'Which regions in Portugal does Portugal Active cover?',
+      answer: 'We operate luxury villas across five regions: Minho Coast (Viana do Castelo area), Porto & Douro Valley, Lisbon & Sintra, Alentejo, and the Algarve. Each region offers a different character, from Atlantic beaches to wine country.',
+    },
+    {
+      question: 'Can I book adventure activities alongside my villa stay?',
+      answer: 'Yes. We offer curated experiences including horseback riding, canyoning, surfing, sailing, e-bike tours, and more. Our concierge team builds bespoke itineraries combining your villa, activities, and private dining. Optional villa transfers can be arranged for an additional fee.',
+    },
+    {
+      question: 'Is it cheaper to book direct with Portugal Active?',
+      answer: 'Always. Booking direct means no middleman markup — you get the best rate guaranteed, plus complimentary concierge service and priority for special requests like early check-in or celebrations.',
+    },
+  ]), []);
 
   const { data: propsData, isLoading, isError } = trpc.properties.listForSite.useQuery();
   const properties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
 
   const cities = useMemo(() => getUniqueLocalities(properties), [properties]);
 
-  const [activeTab, setActiveTab] = useState('all');
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
-  const [subscribing, setSubscribing] = useState(false);
-  const [nlError, setNlError] = useState('');
   const [searchDest, setSearchDest] = useState('');
   const [searchCheckin, setSearchCheckin] = useState('');
   const [searchCheckout, setSearchCheckout] = useState('');
@@ -153,6 +143,18 @@ export default function Home() {
   const today = new Date().toISOString().split("T")[0];
   const checkoutDesktopRef = useRef<HTMLInputElement>(null);
   const checkoutMobileRef = useRef<HTMLInputElement>(null);
+
+  // Live quotes for featured cards when dates are entered
+  const utils = trpc.useUtils();
+  const searchNights = useMemo(() => {
+    if (!searchCheckin || !searchCheckout) return 0;
+    return Math.round((new Date(searchCheckout).getTime() - new Date(searchCheckin).getTime()) / 86400000);
+  }, [searchCheckin, searchCheckout]);
+  const hasDates = searchNights > 0;
+
+  const [homeQuotes, setHomeQuotes] = useState<Record<string, { total: number; nightlyRate: number; cleaningFee: number; nights: number; source?: string; available?: boolean } | null>>({});
+  const [homeQuotesLoading, setHomeQuotesLoading] = useState(false);
+  const batchAbortRef = useRef<AbortController | null>(null);
 
   /** When check-in changes, auto-set checkout to +2 days and open checkout picker */
   const handleCheckinChange = (value: string, isMobile: boolean) => {
@@ -176,37 +178,94 @@ export default function Home() {
   const s8Ref = useFadeIn();
   const s9Ref = useFadeIn();
   const s10Ref = useFadeIn();
-  const s11Ref = useFadeIn();
 
-  const HOME_TABS = useMemo(() => [
-    { label: t('home.tabEditorsPicks'), value: 'all' },
-    { label: t('home.tabBeachfront'), value: 'beachfront' },
-    { label: t('home.tabCountryside'), value: 'countryside' },
-    { label: t('home.tabEstates'), value: 'estates' },
-    { label: t('home.tabNewArrivals'), value: 'new' },
-  ], [t]);
-
-  // Featured homes Ã¢ÂÂ Editor's Picks shows first 6 sorted by sortOrder
-  // Other tabs are placeholder filters (no tag system yet)
+  // Featured homes — Editor's Picks shows first 6 pinned by slug
   const FEATURED_SLUGS = [
     'portugal-active-eben-lodge-heated-pool-10ecfe',
     'portugal-active-sunset-beach-lodge-heated-pool-5ceb91',
     'abreu-retreat-palace-luxury-elegance-leisure-e914e2',
     'stars-view-by-portugal-active-026fa9',
-    'majestic-villa-retreat-infinity-pool-chef-7431cb',
-    'quinta-with-infinity-pool-and-sea-views-carre-o-83ef5f',
+    'alvarinho-villa-5-suites-heated-pool-4854c5',
+    'beach-farm-pool-and-jacuzzi-with-sea-view-83ef5f',
   ];
+  // Slugs that should never appear as auto-fillers
+  const EXCLUDED_FILLERS = ['fountain-retreat-i-pool-sports-escape-743e2d'];
   const featured = useMemo(() => {
     const bySlug = new Map(properties.map(p => [p.slug, p]));
     const pinned = FEATURED_SLUGS.map(s => bySlug.get(s)).filter(Boolean) as typeof properties;
     if (pinned.length >= 6) return pinned.slice(0, 6);
     const fillers = [...properties]
-      .filter(p => !FEATURED_SLUGS.includes(p.slug))
+      .filter(p => !FEATURED_SLUGS.includes(p.slug) && !EXCLUDED_FILLERS.includes(p.slug))
       .sort((a, b) => (b.priceFrom ?? 0) - (a.priceFrom ?? 0));
     return [...pinned, ...fillers].slice(0, 6);
   }, [properties]);
 
-  const activeDestinations = destinations.filter(d => d.status === 'active' || d.slug === 'brazil');
+  // Homepage geography block: show only region-hub entries
+  // (slug === region) plus any spoke explicitly opted in via `publicHub:
+  // true`. City spokes (viana-do-castelo, caminha, esposende, douro)
+  // still have their own pages + sitemap entries + SSR meta, but they
+  // do NOT pollute the homepage tiles until their editorial copy and
+  // photography are production-ready. Brazil stays because it is the
+  // "coming soon" tile, even though slug !== region in its case.
+  const activeDestinations = destinations.filter(
+    d =>
+      (d.status === 'active' || d.slug === 'brazil') &&
+      (d.slug === d.region || d.slug === 'brazil' || (d as any).publicHub === true),
+  );
+
+  // Fetch live quotes for featured cards when dates are entered
+  useEffect(() => {
+    if (!hasDates || featured.length === 0) {
+      setHomeQuotes({});
+      setHomeQuotesLoading(false);
+      return;
+    }
+    const listings = featured
+      .filter(p => (p as any).guestyId)
+      .map(p => ({ listingId: (p as any).guestyId!, slug: p.slug }));
+    if (listings.length === 0) return;
+
+    if (batchAbortRef.current) batchAbortRef.current.abort();
+    const controller = new AbortController();
+    batchAbortRef.current = controller;
+    setHomeQuotesLoading(true);
+
+    utils.booking.getBatchQuotes
+      .fetch({ listings, checkIn: searchCheckin, checkOut: searchCheckout, guests: searchGuests || 2 })
+      .then((data) => {
+        if (controller.signal.aborted) return;
+        const mapped: typeof homeQuotes = {};
+        for (const [slug, q] of Object.entries(data)) {
+          mapped[slug] = {
+            total: q.pricing.total,
+            nightlyRate: q.pricing.nightlyRate,
+            cleaningFee: q.pricing.cleaningFee,
+            nights: q.nights,
+            source: q.source,
+            available: q.available,
+          };
+        }
+        setHomeQuotes(mapped);
+        setHomeQuotesLoading(false);
+      })
+      .catch((err) => {
+        if (controller.signal.aborted) return;
+        console.error('[Home] Batch quotes failed:', err);
+        // Fallback: base price estimates
+        const computed: typeof homeQuotes = {};
+        for (const p of featured) {
+          const rate = (p as any).pricePerNight ?? p.priceFrom ?? 0;
+          const fee = (p as any).cleaningFee ?? 0;
+          if (rate > 0) {
+            computed[p.slug] = { total: rate * searchNights + fee, nightlyRate: rate, cleaningFee: fee, nights: searchNights, source: 'base', available: true };
+          }
+        }
+        setHomeQuotes(computed);
+        setHomeQuotesLoading(false);
+      });
+
+    return () => { controller.abort(); };
+  }, [hasDates, searchCheckin, searchCheckout, searchNights, searchGuests, featured, utils]);
 
   // GA4: view_item_list — fires when featured properties load
   useEffect(() => {
@@ -231,139 +290,245 @@ export default function Home() {
     });
   }, [featured.length]);
 
-  const createLead = trpc.leads.create.useMutation();
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setSubscribing(true);
-    setNlError('');
-    try {
-      await createLead.mutateAsync({ email, source: 'newsletter-home' });
-      setSubscribed(true);
-      setEmail('');
-      pushDL({ event: 'generate_lead', lead_source: 'newsletter-home', lead_type: 'newsletter' });
-    } catch {
-      setNlError(t('home.newsletterError', 'Something went wrong. Please try again.'));
-    } finally {
-      setSubscribing(false);
-    }
-  };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#FAFAF7]">
-        <Header variant="transparent" />
-        {/* Hero skeleton */}
-        <div className="skeleton-shimmer w-full" style={{ height: '80vh', minHeight: 480 }} />
-        {/* Properties skeleton */}
-        <div className="container py-16">
-          <div className="skeleton-shimmer h-3 w-20 rounded mx-auto mb-4" />
-          <div className="skeleton-shimmer h-8 w-64 rounded mx-auto mb-10" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i}>
-                <div className="skeleton-shimmer" style={{ aspectRatio: '4/3' }} />
-                <div className="pt-3.5 space-y-2">
-                  <div className="skeleton-shimmer h-3 w-24 rounded" />
-                  <div className="skeleton-shimmer h-5 w-48 rounded" />
-                  <div className="skeleton-shimmer h-3 w-36 rounded" />
-                  <div className="skeleton-shimmer h-4 w-28 rounded mt-3" />
-                </div>
-              </div>
-            ))}
+  // Properties skeleton — shown inline within the page while data loads.
+  // Hero renders immediately (no data dependency) for fast LCP.
+  const PropertiesSkeleton = () => (
+    <div className="container py-16">
+      <div className="skeleton-shimmer h-3 w-20 rounded mx-auto mb-4" />
+      <div className="skeleton-shimmer h-8 w-64 rounded mx-auto mb-10" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i}>
+            <div className="skeleton-shimmer" style={{ aspectRatio: '4/3' }} />
+            <div className="pt-3.5 space-y-2">
+              <div className="skeleton-shimmer h-3 w-24 rounded" />
+              <div className="skeleton-shimmer h-5 w-48 rounded" />
+              <div className="skeleton-shimmer h-3 w-36 rounded" />
+              <div className="skeleton-shimmer h-4 w-28 rounded mt-3" />
+            </div>
           </div>
-        </div>
+        ))}
       </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="min-h-screen bg-[#FAFAF7]">
-        <Header />
-        <section className="section-padding">
-          <div className="container text-center">
-            <h2 className="headline-md text-[#1A1A18] mb-3">{t('home.errorTitle')}</h2>
-            <p className="body-md mb-6">{t('home.errorBody')}</p>
-            <Link href="/" className="btn-primary">{t('homes.tryAgain')}</Link>
-          </div>
-        </section>
-        <Footer />
-      </div>
-    );
-  }
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-[#FAFAF7] min-w-0 w-full">
+      <StructuredData id="home-faq" data={homeFaq} />
       <Header variant="transparent" />
       <WhatsAppFloat />
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 1: HERO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section className="relative h-screen min-h-[600px] flex items-center">
+      <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden z-20">
         {/* Background */}
         <div className="absolute inset-0">
           <img
             src={IMAGES.heroMain}
             alt={t('home.heroAlt')}
             className="w-full h-full object-cover"
+            width={1600}
+            height={900}
             fetchPriority="high"
-            decoding="async"
+            loading="eager"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/30 to-transparent" />
         </div>
 
         {/* Hero content */}
         <div className="relative container z-10">
-          <div className="max-w-xl">
+          <div className="max-w-2xl">
             <p
-              className="text-[13px] font-medium text-white/70 mb-5"
+              className="text-[15px] font-medium text-white/70 mb-5"
               style={{ fontFamily: 'var(--font-body)', letterSpacing: '0.08em' }}
             >
               {t('home.heroOverline')}
             </p>
-            <h1 className="headline-xl text-white mb-5 leading-[1.1]">
+            <h1
+              className="text-white mb-6 leading-[1.08]"
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 400,
+                letterSpacing: '-0.02em',
+                fontSize: 'clamp(2.75rem, 6vw, 5.25rem)',
+              }}
+            >
               {t('home.heroTitle')}
             </h1>
             <p
-              className="text-[16px] text-white/75 mb-8 leading-relaxed max-w-lg"
+              className="text-[18px] md:text-[20px] text-white/80 mb-6 lg:mb-4 leading-relaxed max-w-xl"
               style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
             >
               {t('home.heroBody')}
             </p>
+
+            {/* Proof strip — above CTAs so it never collides with booking bar */}
+            <div className="hidden lg:flex hero-proof-strip flex-wrap items-center gap-x-5 gap-y-1 mb-4">
+              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+                {t('home.proofHotels', '60+ private hotels')}
+              </span>
+              <span className="text-white/25">·</span>
+              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+                {t('home.proofRating', '4.8★ guest rating')}
+              </span>
+              <span className="text-white/25">·</span>
+              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+                {t('home.proofManaged', 'Hotel-managed stays')}
+              </span>
+            </div>
+
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/homes"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white text-[#1A1A18] text-[11px] font-semibold hover:bg-[#F5F1EB] transition-colors"
+                className="inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full bg-white text-[#1A1A18] text-[13px] font-semibold hover:bg-[#F5F1EB] transition-colors"
                 style={{ letterSpacing: '1.5px' }}
               >
-                {t('home.heroCta')} <ArrowRight className="w-3.5 h-3.5" />
+                {t('home.heroCta')} <ArrowRight className="w-4 h-4" />
               </Link>
               <a
                 href="https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-white/50 text-white text-[11px] font-semibold hover:bg-white/10 transition-colors"
+                className="hidden sm:inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full border border-white/50 text-white text-[13px] font-semibold hover:bg-white/10 transition-colors"
                 style={{ letterSpacing: '1.5px' }}
               >
-                {t('home.heroCtaConcierge')} <ArrowRight className="w-3.5 h-3.5" />
+                {t('home.heroCtaConcierge')} <ArrowRight className="w-4 h-4" />
               </a>
             </div>
-            <p className="text-[12px] text-white/45 mt-3" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('home.heroGuarantee')}</p>
           </div>
         </div>
 
-        {/* Search bar Ã¢ÂÂ centred, lower area, Le Collectionist style */}
-        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 hidden lg:block w-full max-w-[780px] px-6 z-10">
+        {/* Mobile search bar — compact with destination */}
+        <div className="absolute bottom-4 left-0 right-0 lg:hidden px-5 z-10">
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg p-3 space-y-2">
+            {/* Destination */}
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9A90] pointer-events-none" />
+              <select
+                value={searchDest}
+                onChange={e => setSearchDest(e.target.value)}
+                aria-label={t('home.searchDestination')}
+                className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white pl-9 pr-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer appearance-none"
+                style={{ fontFamily: 'var(--font-body)' }}
+              >
+                <option value="">{t('home.searchDestination')}</option>
+                {cities.map(city => (
+                  <option key={city.value} value={city.value}>{city.label}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9E9A90] pointer-events-none" />
+            </div>
+            {/* Dates — <input type=date> ignores `placeholder`, and on iOS its
+                native render layer paints over any overlaid HTML label. So the
+                visible control is a plain styled div (label, or the chosen
+                date) with a fully transparent native date input on top to
+                drive the picker. Robust on iOS + Android + desktop. */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="relative">
+                <div className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 flex items-center text-[13px]" style={{ fontFamily: 'var(--font-body)' }}>
+                  <span className={searchCheckin ? 'text-[#1A1A18]' : 'text-[#6B6860]'}>
+                    {searchCheckin ? fmtSearchDate(searchCheckin) : t('home.searchCheckin', 'Check-in')}
+                  </span>
+                </div>
+                <input
+                  type="date"
+                  value={searchCheckin}
+                  min={today}
+                  onChange={e => handleCheckinChange(e.target.value, true)}
+                  aria-label={t('home.searchCheckin', 'Check-in')}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+              </div>
+              <div className="relative">
+                <div className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 flex items-center text-[13px]" style={{ fontFamily: 'var(--font-body)' }}>
+                  <span className={searchCheckout ? 'text-[#1A1A18]' : 'text-[#6B6860]'}>
+                    {searchCheckout ? fmtSearchDate(searchCheckout) : t('home.searchCheckout', 'Check-out')}
+                  </span>
+                </div>
+                <input
+                  ref={checkoutMobileRef}
+                  type="date"
+                  value={searchCheckout}
+                  min={searchCheckin || today}
+                  onChange={e => setSearchCheckout(e.target.value)}
+                  aria-label={t('home.searchCheckout', 'Check-out')}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+              </div>
+            </div>
+            {/* Guests + Search */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 flex-1 h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 min-w-0">
+                <button
+                  type="button"
+                  onClick={() => setSearchGuests(g => Math.max(1, g - 1))}
+                  disabled={searchGuests <= 1}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30 shrink-0"
+                  aria-label={t('home.decreaseGuests', 'Decrease guests')}
+                >
+                  <Minus className="w-3 h-3" />
+                </button>
+                <span className="text-[13px] text-[#1A1A18] tabular-nums flex-1 text-center whitespace-nowrap">{searchGuests} {t('home.searchGuests')}</span>
+                <button
+                  type="button"
+                  onClick={() => setSearchGuests(g => Math.min(30, g + 1))}
+                  disabled={searchGuests >= 30}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30 shrink-0"
+                  aria-label={t('home.increaseGuests', 'Increase guests')}
+                >
+                  <Plus className="w-3 h-3" />
+                </button>
+              </div>
+              <Link
+                href={(() => {
+                  const p = new URLSearchParams();
+                  if (searchDest) p.set('location', searchDest);
+                  if (searchCheckin) p.set('checkin', searchCheckin);
+                  if (searchCheckout) p.set('checkout', searchCheckout);
+                  if (searchGuests > 1) p.set('guests', String(searchGuests));
+                  const qs = p.toString();
+                  return `/homes${qs ? `?${qs}` : ''}`;
+                })()}
+                onClick={() => {
+                  const nights = searchCheckin && searchCheckout
+                    ? Math.round((new Date(searchCheckout).getTime() - new Date(searchCheckin).getTime()) / 86400000)
+                    : null;
+                  pushDL({
+                    event: 'search',
+                    search_location: searchDest || 'All Destinations',
+                    search_location_type: searchDest ? 'city' : 'all',
+                    search_checkin: searchCheckin || null,
+                    search_checkout: searchCheckout || null,
+                    search_nights: nights,
+                    search_adults: searchGuests,
+                    search_children: 0,
+                    search_source: 'hero_mobile',
+                  });
+                }}
+                className="shrink-0 h-[40px] px-5 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
+                style={{ letterSpacing: '1.5px' }}
+              >
+                {t('home.searchButton')}
+              </Link>
+            </div>
+          </div>
+        </div>
+
+
+
+        {/* Desktop search bar */}
+        <div className="absolute bottom-8 inset-x-0 mx-auto hidden lg:block w-full max-w-[860px] px-6 z-20">
           <div
-            className="flex items-center rounded-full bg-white shadow-lg overflow-hidden"
-            style={{ height: '56px' }}
+            className="flex items-center rounded-full bg-white/95 backdrop-blur-sm shadow-xl overflow-hidden ring-1 ring-black/5"
+            style={{ height: '64px' }}
           >
             {/* Destination */}
             <div className="flex-1 relative h-full">
               <select
                 value={searchDest}
                 onChange={e => setSearchDest(e.target.value)}
-                className="w-full h-full pl-6 pr-3 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer appearance-none"
+                aria-label={t('home.searchDestination')}
+                className="w-full h-full pl-6 pr-3 bg-transparent text-[#1A1A18] text-[14px] focus:outline-none cursor-pointer appearance-none"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               >
                 <option value="">{t('home.searchDestination')}</option>
@@ -379,7 +544,7 @@ export default function Home() {
 
             {/* Check-in */}
             <div
-              className="flex-1 h-full cursor-pointer"
+              className="flex-1 h-full cursor-pointer relative"
               onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
             >
               <input
@@ -387,10 +552,15 @@ export default function Home() {
                 value={searchCheckin}
                 min={today}
                 onChange={e => handleCheckinChange(e.target.value, false)}
-                placeholder="Check-in"
-                className="w-full h-full px-4 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer"
+                aria-label={t('home.searchCheckin', 'Check-in')}
+                className={`w-full h-full px-4 bg-transparent text-[14px] focus:outline-none cursor-pointer ${searchCheckin ? 'text-[#1A1A18]' : 'text-transparent'}`}
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               />
+              {!searchCheckin && (
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[14px] text-[#9E9A90] pointer-events-none" style={{ fontFamily: 'var(--font-body)' }}>
+                  {t('home.searchCheckin', 'Check-in')}
+                </span>
+              )}
             </div>
 
             {/* Arrow */}
@@ -398,7 +568,7 @@ export default function Home() {
 
             {/* Check-out */}
             <div
-              className="flex-1 h-full cursor-pointer"
+              className="flex-1 h-full cursor-pointer relative"
               onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
             >
               <input
@@ -407,10 +577,15 @@ export default function Home() {
                 value={searchCheckout}
                 min={searchCheckin || today}
                 onChange={e => setSearchCheckout(e.target.value)}
-                placeholder="Check-out"
-                className="w-full h-full px-4 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer"
+                aria-label={t('home.searchCheckout', 'Check-out')}
+                className={`w-full h-full px-4 bg-transparent text-[14px] focus:outline-none cursor-pointer ${searchCheckout ? 'text-[#1A1A18]' : 'text-transparent'}`}
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               />
+              {!searchCheckout && (
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[14px] text-[#9E9A90] pointer-events-none" style={{ fontFamily: 'var(--font-body)' }}>
+                  {t('home.searchCheckout', 'Check-out')}
+                </span>
+              )}
             </div>
 
             {/* Divider */}
@@ -428,7 +603,7 @@ export default function Home() {
               >
                 <Minus className="w-2.5 h-2.5" />
               </button>
-              <span className="text-[13px] text-[#1A1A18] tabular-nums whitespace-nowrap" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
+              <span className="text-[14px] text-[#1A1A18] tabular-nums whitespace-nowrap" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
                 {searchGuests} <span className="text-[#9E9A90] lowercase">{t('home.searchGuests')}</span>
               </span>
               <button
@@ -469,107 +644,17 @@ export default function Home() {
                   search_source: 'hero_desktop',
                 });
               }}
-              className="flex-shrink-0 h-[44px] mr-1.5 px-6 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
+              className="flex-shrink-0 h-[50px] mr-1.5 px-8 rounded-full bg-[#1A1A18] text-white text-[13px] font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
               style={{ letterSpacing: '1.5px' }}
             >
               {t('home.searchButton')}
             </Link>
           </div>
         </div>
-
-        {/* Mobile search bar — stacked layout */}
-        <div className="absolute bottom-16 left-0 right-0 lg:hidden px-5 z-10">
-          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg p-4 space-y-3">
-            <div className="grid grid-cols-2 gap-2">
-              <div className="relative">
-                <input
-                  type="date"
-                  value={searchCheckin}
-                  min={today}
-                  onChange={e => handleCheckinChange(e.target.value, true)}
-                  className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
-                  style={{ fontFamily: 'var(--font-body)' }}
-                  placeholder={t('home.searchCheckin', 'Check-in')}
-                />
-              </div>
-              <div className="relative">
-                <input
-                  ref={checkoutMobileRef}
-                  type="date"
-                  value={searchCheckout}
-                  min={searchCheckin || today}
-                  onChange={e => setSearchCheckout(e.target.value)}
-                  className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
-                  style={{ fontFamily: 'var(--font-body)' }}
-                  placeholder={t('home.searchCheckout', 'Check-out')}
-                />
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 flex-1 h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3">
-                <Users className="w-4 h-4 text-[#9E9A90] shrink-0" />
-                <button
-                  type="button"
-                  onClick={() => setSearchGuests(g => Math.max(1, g - 1))}
-                  disabled={searchGuests <= 1}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30"
-                  aria-label={t('home.decreaseGuests', 'Decrease guests')}
-                >
-                  <Minus className="w-3 h-3" />
-                </button>
-                <span className="text-[13px] text-[#1A1A18] tabular-nums flex-1 text-center">{searchGuests} {t('home.searchGuests')}</span>
-                <button
-                  type="button"
-                  onClick={() => setSearchGuests(g => Math.min(30, g + 1))}
-                  disabled={searchGuests >= 30}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30"
-                  aria-label={t('home.increaseGuests', 'Increase guests')}
-                >
-                  <Plus className="w-3 h-3" />
-                </button>
-              </div>
-              <Link
-                href={(() => {
-                  const p = new URLSearchParams();
-                  if (searchCheckin) p.set('checkin', searchCheckin);
-                  if (searchCheckout) p.set('checkout', searchCheckout);
-                  if (searchGuests > 1) p.set('guests', String(searchGuests));
-                  const qs = p.toString();
-                  return `/homes${qs ? `?${qs}` : ''}`;
-                })()}
-                onClick={() => {
-                  const nights = searchCheckin && searchCheckout
-                    ? Math.round((new Date(searchCheckout).getTime() - new Date(searchCheckin).getTime()) / 86400000)
-                    : null;
-                  pushDL({
-                    event: 'search',
-                    search_location: 'All Destinations',
-                    search_location_type: 'all',
-                    search_checkin: searchCheckin || null,
-                    search_checkout: searchCheckout || null,
-                    search_nights: nights,
-                    search_adults: searchGuests,
-                    search_children: 0,
-                    search_source: 'hero_mobile',
-                  });
-                }}
-                className="shrink-0 h-[48px] px-6 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
-                style={{ letterSpacing: '1.5px' }}
-              >
-                {t('home.searchButton')}
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 animate-bounce z-10 hidden lg:flex">
-          <ChevronDown className="w-5 h-5 text-white/40" />
-        </div>
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 2: USP BAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s2Ref} className="fade-in relative z-10 -mt-8 md:-mt-11 mb-2 md:mb-0 w-full min-w-0">
+      <section ref={s2Ref} className="fade-in relative z-10 mb-2 md:mb-0 w-full min-w-0">
         <div className="w-full bg-[#FAFAF7] border-y border-[#E8E4DC] shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
           <div className="container grid grid-cols-4 gap-0">
               {[
@@ -612,7 +697,7 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 3: OUR HOMES Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s3Ref} className="fade-in section-padding bg-white">
+      <section ref={s3Ref} className="fade-in cv-auto section-padding bg-white">
         <div className="container">
           <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.homesOverline')}</p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
@@ -624,24 +709,14 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Tabs */}
-          <div className="flex items-center gap-5 mb-8 overflow-x-auto no-scrollbar pb-1">
-            {HOME_TABS.map(tab => (
-              <button
-                key={tab.value}
-                onClick={() => setActiveTab(tab.value)}
-                className={`text-[13px] font-medium whitespace-nowrap pb-2 border-b-2 transition-all ${
-                  activeTab === tab.value
-                    ? 'text-[#1A1A18] border-[#1A1A18]'
-                    : 'text-[#9E9A90] border-transparent hover:text-[#6B6860]'
-                }`}
-                style={{ minHeight: 'auto', minWidth: 'auto', fontFamily: 'var(--font-body)' }}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
+          {/* Property cards — skeleton while loading, inline error, or actual cards */}
+          {isLoading ? <PropertiesSkeleton /> : isError ? (
+            <div className="text-center py-8">
+              <p className="body-md mb-4">{t('home.errorBody')}</p>
+              <Link href="/" className="btn-primary">{t('homes.tryAgain')}</Link>
+            </div>
+          ) : (
+          <>
           {/* Property cards Ã¢ÂÂ horizontal scroll on mobile, 3 per row on desktop */}
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:overflow-visible">
             {featured.map((property, index) => (
@@ -651,6 +726,10 @@ export default function Home() {
                   checkin={searchCheckin || undefined}
                   checkout={searchCheckout || undefined}
                   guests={searchGuests > 1 ? searchGuests : undefined}
+                  nights={searchNights}
+                  liveQuote={homeQuotes[property.slug] || undefined}
+                  quoteLoading={homeQuotesLoading}
+                  hidePrice={!hasDates}
                   listId="featured_homes"
                   listName="Editor's Picks"
                   itemIndex={index + 1}
@@ -668,11 +747,13 @@ export default function Home() {
               {t('home.exploreAllHomes')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
+          </>
+          )}
         </div>
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 4: STATS BAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s4Ref} className="fade-in relative bg-[#141412]">
+      <section ref={s4Ref} className="fade-in cv-auto relative bg-[#141412]">
         <div
           className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C4A87C]/30 to-transparent"
           aria-hidden
@@ -680,8 +761,8 @@ export default function Home() {
         <div className="container py-6 sm:py-8 md:py-9 lg:py-10">
           <div className="grid grid-cols-4 gap-0">
             {[
-              { value: '70+', label: t('home.statHomes') },
-              { value: '4.9/5', label: t('home.statRating') },
+              { value: '60+', label: t('home.statHomes') },
+              { value: '4.8/5', label: t('home.statRating') },
               { value: '40%', label: t('home.statRepeat') },
               { value: '2017', label: t('home.statFounded') },
             ].map((stat, i) => (
@@ -707,7 +788,7 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 5: HOW IT WORKS Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s5Ref} className="fade-in section-padding bg-white">
+      <section ref={s5Ref} className="fade-in cv-auto section-padding bg-white">
         <div className="container">
           <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.howItWorksOverline')}</p>
           <h2 className="headline-lg text-[#1A1A18] mb-10 max-w-lg">{t('home.howItWorksTitle')}</h2>
@@ -746,15 +827,22 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 6: THE CONCEPT (split layout) Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s6Ref} className="fade-in bg-white overflow-hidden">
+      <section ref={s6Ref} className="fade-in cv-auto bg-white overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-5">
           {/* Left: editorial image (60%) */}
-          <div className="lg:col-span-3 relative" style={{ minHeight: '480px' }}>
+          <div
+            className="lg:col-span-3 relative"
+            style={{ minHeight: '480px' }}
+          >
             <img
               src="/experiences/private-chef-concept.webp"
               alt="Private chef serving dinner at a Portugal Active home"
               className="w-full h-full object-cover"
               style={{ position: 'absolute', inset: 0 }}
+              loading="lazy"
+              width={960}
+              height={640}
+              decoding="async"
             />
           </div>
 
@@ -767,26 +855,28 @@ export default function Home() {
                 {t('home.conceptBody')}
               </p>
 
-              <div className="flex flex-col gap-5 mb-8">
+              <div className="flex flex-col gap-6 mb-8">
                 {[
                   {
-                    num: '01',
+                    icon: <HomeIcon className="w-5 h-5" strokeWidth={1.5} />,
                     title: t('home.conceptPoint1'),
                     body: t('home.conceptPoint1Body'),
                   },
                   {
-                    num: '02',
+                    icon: <Star className="w-5 h-5" strokeWidth={1.5} />,
                     title: t('home.conceptPoint2'),
                     body: t('home.conceptPoint2Body'),
                   },
                   {
-                    num: '03',
+                    icon: <Headphones className="w-5 h-5" strokeWidth={1.5} />,
                     title: t('home.conceptPoint3'),
                     body: t('home.conceptPoint3Body'),
                   },
                 ].map((pillar, i) => (
                   <div key={i} className="flex gap-4">
-                    <span className="text-[13px] font-medium text-[#C4A87C] flex-shrink-0 mt-0.5">{pillar.num}</span>
+                    <div className="flex-shrink-0 w-9 h-9 rounded-full bg-[#F5F1EB] flex items-center justify-center text-[#8B7355]">
+                      {pillar.icon}
+                    </div>
                     <div>
                       <p className="text-[14px] font-semibold text-[#1A1A18] mb-1">{pillar.title}</p>
                       <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{pillar.body}</p>
@@ -795,19 +885,13 @@ export default function Home() {
                 ))}
               </div>
 
-              <Link
-                href="/about"
-                className="inline-flex items-center gap-2 text-[13px] font-medium text-[#1A1A18] hover:text-[#8B7355] transition-colors"
-              >
-                Discover our approach <ArrowRight className="w-4 h-4" />
-              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 7: DESTINATIONS Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s7Ref} className="fade-in section-padding bg-[#FAFAF7]">
+      <section ref={s7Ref} className="fade-in cv-auto section-padding bg-[#FAFAF7]">
         <div className="container">
           <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.destOverline')}</p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
@@ -830,11 +914,13 @@ export default function Home() {
                         alt={dest.name}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                         loading="lazy"
+                        width={480}
+                        height={640}
                       />
                     ) : (
                       <div className="w-full h-full placeholder-image" />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                     {dest.comingSoon && (
                       <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 text-[10px] font-medium tracking-[0.06em] uppercase text-[#6B6860]">
                         {t('home.destComingSoon', 'Coming soon')}
@@ -855,7 +941,7 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 8: EXPERIENCES Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s8Ref} className="fade-in section-padding bg-[#F5F1EB]">
+      <section ref={s8Ref} className="fade-in cv-auto section-padding bg-[#F5F1EB]">
         <div className="container">
           <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.expOverline')}</p>
           <h2 className="headline-lg text-[#1A1A18] mb-10">{t('home.expTitle')}</h2>
@@ -866,6 +952,8 @@ export default function Home() {
                 title: t('home.expGastronomy'),
                 body: t('home.expGastronomyBody'),
                 img: IMAGES.expGastronomy,
+                video: '/videos/private-chef.mp4',
+                videoPoster: '/videos/private-chef-poster.webp',
                 href: '/services#gastronomy',
               },
               {
@@ -889,12 +977,22 @@ export default function Home() {
             ].map((exp, i) => (
               <Link key={i} href={exp.href} className="group block flex-shrink-0 w-[220px] sm:w-auto" style={{ scrollSnapAlign: 'start' }}>
                 <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '3/4' }}>
-                  <img
-                    src={exp.img}
-                    alt={exp.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                    loading="lazy"
-                  />
+                  {(exp as any).video ? (
+                    <LazyVideo
+                      src={(exp as any).video}
+                      poster={(exp as any).videoPoster}
+                      title={exp.title}
+                    />
+                  ) : (
+                    <img
+                      src={exp.img}
+                      alt={exp.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      loading="lazy"
+                      width={400}
+                      height={533}
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <h3 className="text-white text-[1rem] font-display mb-1">{exp.title}</h3>
@@ -913,7 +1011,7 @@ export default function Home() {
       </Suspense>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 10: OWNERS CTA Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s10Ref} className="fade-in bg-[#1A1A18]">
+      <section ref={s10Ref} className="fade-in cv-auto bg-[#1A1A18]">
         <div className="container py-16 lg:py-20">
           <div className="max-w-2xl mx-auto text-center">
             <p className="text-[12px] font-medium text-[#C4A87C] mb-4" style={{ letterSpacing: '0.08em' }}>{t('home.ownersOverline')}</p>
@@ -924,20 +1022,22 @@ export default function Home() {
             >
               {t('home.ownersBody')}
             </p>
-            <Link
-              href="/owners"
+            <a
+              href="https://management.portugalactive.com"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-white/30 text-white text-[11px] font-semibold hover:bg-white/10 transition-colors"
               style={{ letterSpacing: '1.5px' }}
             >
               {t('home.ownersCta')} <ArrowRight className="w-4 h-4" />
-            </Link>
+            </a>
             <p className="text-[12px] text-white/35 mt-3" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('home.ownersNote')}</p>
           </div>
         </div>
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ PRESS BAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section className="bg-white">
+      <section className="cv-auto bg-white">
         <div className="container py-12 lg:py-16">
           <p
             className="text-center text-[11px] font-medium text-[#9E9A90] mb-8 lg:mb-10"
@@ -976,50 +1076,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 11: NEWSLETTER Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s11Ref} className="fade-in bg-[#F5F1EB]">
-        <div className="container py-14 lg:py-16">
-          <div className="max-w-md mx-auto text-center">
-            <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.newsletterOverline')}</p>
-            <h2 className="headline-md text-[#1A1A18] mb-2">{t('home.newsletterTitle')}</h2>
-            <p className="text-[14px] text-[#9E9A90] mb-6" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
-              {t('home.newsletterBody')}
-            </p>
-
-            {subscribed ? (
-              <p className="text-[14px] font-medium text-[#8B7355]">
-                <Check className="w-4 h-4 inline mr-2" />
-                {t('home.newsletterSuccess')}
-              </p>
-            ) : (
-              <form onSubmit={handleSubscribe} className="flex flex-col gap-1.5 max-w-sm mx-auto" noValidate>
-                <div className="flex gap-0">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={e => { setEmail(e.target.value); setNlError(''); }}
-                    placeholder={t('home.newsletterPlaceholder')}
-                    required
-                    autoComplete="email"
-                    inputMode="email"
-                    className="flex-1 h-[48px] px-4 text-[13px] bg-white border border-[#E8E4DC] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:border-[#8B7355] transition-colors"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  />
-                  <button
-                    type="submit"
-                    disabled={subscribing}
-                    className="h-[48px] px-5 bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex-shrink-0 disabled:opacity-50"
-                    style={{ letterSpacing: '1.5px' }}
-                  >
-                    {subscribing ? '...' : t('home.newsletterCta')}
-                  </button>
-                </div>
-                {nlError && <p className="text-[12px] text-[#DC2626] text-center">{nlError}</p>}
-              </form>
-            )}
-          </div>
-        </div>
-      </section>
 
       <Footer />
     </div>

@@ -17,7 +17,7 @@ const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItine
 import productsData from '@/data/products.json';
 import destinationsData from '@/data/destinations.json';
 import type { Product, Destination, Property } from '@/lib/types';
-import { getPropertyImages } from '@/lib/images';
+import { getPropertyImages, optimizeGuestyImage } from '@/lib/images';
 const BookingWidget = lazy(() => import('@/components/booking/BookingWidget'));
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -26,6 +26,11 @@ import ReviewsSection from '@/components/property/ReviewsSection';
 import { trpc } from '@/lib/trpc';
 import { pushEcommerce } from '@/lib/datalayer';
 import { sanitizePropertyName } from '@/lib/format';
+import {
+  StructuredData,
+  buildVacationRentalSchema,
+  buildBreadcrumbSchema,
+} from '@/components/seo/StructuredData';
 
 const allProducts = productsData as unknown as Product[];
 const destinations = destinationsData as unknown as Destination[];
@@ -150,19 +155,19 @@ function categorizeAmenities(items: string[]): { category: string; label: string
 
 
 /** Humanize bed type names and get icon */
-function getBedTypeDisplay(bedType: string): { label: string; icon: LucideIcon } {
+function getBedTypeDisplay(bedType: string, t: (key: string, fallback: string) => string): { label: string; icon: LucideIcon } {
   const normalized = (bedType || '').toUpperCase().replace(/ /g, '_');
   const iconMap: Record<string, { label: string; icon: LucideIcon }> = {
-    'KING_BED': { label: 'King Bed', icon: BedDouble },
-    'QUEEN_BED': { label: 'Queen Bed', icon: BedDouble },
-    'DOUBLE_BED': { label: 'Double Bed', icon: BedDouble },
-    'SINGLE_BED': { label: 'Single Bed', icon: Bed },
-    'SOFA_BED': { label: 'Sofa Bed', icon: Sofa },
-    'BUNK_BED': { label: 'Bunk Bed', icon: Bed },
-    'COUCH': { label: 'Sofa Bed', icon: Sofa },
-    'AIR_MATTRESS': { label: 'Air Mattress', icon: Bed },
+    'KING_BED': { label: t('bedTypes.kingBed', 'King Bed'), icon: BedDouble },
+    'QUEEN_BED': { label: t('bedTypes.queenBed', 'Queen Bed'), icon: BedDouble },
+    'DOUBLE_BED': { label: t('bedTypes.doubleBed', 'Double Bed'), icon: BedDouble },
+    'SINGLE_BED': { label: t('bedTypes.singleBed', 'Single Bed'), icon: Bed },
+    'SOFA_BED': { label: t('bedTypes.sofaBed', 'Sofa Bed'), icon: Sofa },
+    'BUNK_BED': { label: t('bedTypes.bunkBed', 'Bunk Bed'), icon: Bed },
+    'COUCH': { label: t('bedTypes.sofaBed', 'Sofa Bed'), icon: Sofa },
+    'AIR_MATTRESS': { label: t('bedTypes.airMattress', 'Air Mattress'), icon: Bed },
   };
-  return iconMap[normalized] || { label: bedType || 'Bed', icon: Bed };
+  return iconMap[normalized] || { label: bedType || t('bedTypes.bed', 'Bed'), icon: Bed };
 }
 
 
@@ -738,7 +743,10 @@ export default function PropertyDetail() {
     );
   }
 
-  const images = property.images?.length ? property.images : getPropertyImages(property.slug);
+  // Hero gallery images via Cloudinary transform (resize + WebP/AVIF). The
+  // full-resolution originals are kept for the lightbox (property.images).
+  const images = (property.images?.length ? property.images : getPropertyImages(property.slug))
+    .map((img: string) => optimizeGuestyImage(img, 1200));
   const totalImages = Math.max(images.length, 1);
   const whatsappUrl = `https://wa.me/351927161771?text=${encodeURIComponent(property.whatsappMessage || `Hi, I am interested in ${property.name}`)}`;
 
@@ -893,8 +901,8 @@ export default function PropertyDetail() {
                         <h3 className="text-[13px] font-medium text-[#1A1A18] mb-4">{room.name}</h3>
                         <div className="space-y-3">
                           {room.beds && room.beds.length > 0 ? (
-                            room.beds.map((bed, bedIdx) => {
-                              const { label, icon: BedIcon } = getBedTypeDisplay(bed.type);
+                            room.beds.map((bed: any, bedIdx: number) => {
+                              const { label, icon: BedIcon } = getBedTypeDisplay(bed.type, t);
                               return (
                                 <div key={bedIdx} className="flex items-center gap-3">
                                   <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#F5F1EB] shrink-0">
@@ -1159,30 +1167,6 @@ export default function PropertyDetail() {
             )}
           </div>
         </div>
-
-        {/* Why book direct */}
-        <section className="py-16 lg:py-20 bg-[#F5F1EB]">
-          <div className="container max-w-4xl mx-auto text-center">
-            <p className="text-[11px] font-medium tracking-[0.14em] text-[#8B7355] uppercase mb-3">{t('whyBookDirect.overline', 'Why book with us')}</p>
-            <h2 className="font-display text-[clamp(1.5rem,3vw,2.25rem)] font-light text-[#1A1A18] mb-10">{t('whyBookDirect.headline', 'Book direct. Save more.')}</h2>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-              {[
-                { icon: ShieldCheck, title: t('whyBookDirect.bestRate', 'Best rate guaranteed'), desc: t('whyBookDirect.bestRateDesc', 'Always the lowest price — no middleman markup.') },
-                { icon: Headphones, title: t('whyBookDirect.concierge', 'Dedicated concierge'), desc: t('whyBookDirect.conciergeDesc', 'Personal support from booking to checkout.') },
-                { icon: Clock, title: t('whyBookDirect.flexible', 'Flexible cancellation'), desc: t('whyBookDirect.flexibleDesc', 'Change of plans? We make it easy.') },
-                { icon: Sparkles, title: t('whyBookDirect.curated', 'Curated by locals'), desc: t('whyBookDirect.curatedDesc', 'Every home hand-picked and operated by our team.') },
-              ].map((item, i) => (
-                <div key={i} className="flex flex-col items-center">
-                  <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center mb-4">
-                    <item.icon size={20} className="text-[#8B7355]" />
-                  </div>
-                  <h3 className="text-[13px] font-medium text-[#1A1A18] mb-1.5">{item.title}</h3>
-                  <p className="text-[12px] text-[#9E9A90] leading-relaxed" style={{ fontWeight: 300 }}>{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* Related properties from same region */}
         {relatedProperties.length > 0 && (

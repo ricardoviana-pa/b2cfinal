@@ -42,6 +42,14 @@ async function startServer() {
   app.set("trust proxy", true);
 
   app.use(helmet({
+    // Content-Security-Policy is intentionally disabled. The site runs Google
+    // Tag Manager, which injects marketing tags (Facebook Pixel, Microsoft
+    // Clarity, Google Ads, …) from domains that change over time. A script-src
+    // allowlist breaks those tags on every change — an earlier CSP attempt
+    // silently broke FB Pixel + Clarity in production. A correct CSP here needs
+    // a dedicated effort (Report-Only monitoring first); until then `false`.
+    // The other Helmet protections below (HSTS, X-Frame-Options, nosniff,
+    // Referrer-Policy) stay on — they add value without breaking anything.
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
   }));
@@ -219,6 +227,37 @@ ${serviceUrls.join("\n")}
     }
   });
 
+  // Prerender.io — serve pre-rendered HTML to search engine + AI bots.
+  // Only active when PRERENDER_TOKEN env var is set (production).
+  // Without it, JS-less crawlers (notably AI crawlers) get the empty SPA
+  // shell. Server-side meta + JSON-LD still describe the page, but the body
+  // prose only becomes crawlable once this is enabled.
+  if (process.env.PRERENDER_TOKEN) {
+    try {
+      const prerender = (await import('prerender-node')).default;
+      prerender.set('prerenderToken', process.env.PRERENDER_TOKEN);
+      // prerender-node's default UA list predates the AI crawlers, which are
+      // exactly the ones that DON'T execute JS and most need pre-rendering.
+      const aiCrawlers = [
+        'gptbot', 'oai-searchbot', 'chatgpt-user', 'perplexitybot',
+        'perplexity-user', 'claudebot', 'claude-web', 'anthropic-ai',
+        'google-extended', 'ccbot', 'meta-externalagent', 'bytespider',
+        'amazonbot', 'applebot-extended', 'diffbot',
+      ];
+      for (const ua of aiCrawlers) {
+        if (!prerender.crawlerUserAgents.includes(ua)) {
+          prerender.crawlerUserAgents.push(ua);
+        }
+      }
+      app.use(prerender);
+      console.info(`[prerender] Active — ${prerender.crawlerUserAgents.length} crawler UAs (incl. AI bots)`);
+    } catch {
+      console.warn('[prerender] prerender-node not installed, skipping bot pre-rendering');
+    }
+  } else {
+    console.warn('[prerender] PRERENDER_TOKEN not set — bots receive the CSR shell (meta + JSON-LD only, no body prose).');
+  }
+
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
@@ -287,7 +326,22 @@ ${serviceUrls.join("\n")}
         console.info("[Cron] Running scheduled Guesty sync...");
         runSync()
           .then((p) => console.info(`[Cron] Guesty sync complete → ${p}`))
-          .catch((e) => console.warn("[Cron] Guesty sync failed:", e.message));
+          .catch((e) => {
+            // Surface the real HTTP status + Guesty error body so failures are
+            // diagnosable without source access (401 = bad secret, 403 = missing
+            // scope, 400 = invalid_scope/grant). A GuestyClientError carries
+            // status/endpoint/details; plain errors fall back to the message.
+            const status = e?.status ?? "n/a";
+            const endpoint = e?.endpoint ?? "n/a";
+            let details = e?.details;
+            if (details && typeof details !== "string") {
+              try { details = JSON.stringify(details); } catch { details = String(details); }
+            }
+            console.warn(
+              `[Cron] Guesty sync failed: ${e?.message ?? e} ` +
+              `(status=${status}, endpoint=${endpoint}, details=${details ?? "none"})`
+            );
+          });
       }, { timezone: "Europe/Lisbon" });
       console.info("[Cron] Guesty sync scheduled — 07:00 and 19:00 Europe/Lisbon (no startup sync)");
     }

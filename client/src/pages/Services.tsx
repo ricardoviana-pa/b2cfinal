@@ -297,6 +297,24 @@ export default function Concierge() {
         </div>
       </section>
 
+      {/* Answer capsule — citable concierge summary for AI engines (bottom, not blocking listings) */}
+      <section className="pt-10 pb-4 bg-[#FAFAF7]">
+        <div className="container max-w-3xl mx-auto">
+          <AnswerCapsule
+            question="What concierge services does Portugal Active offer?"
+            answer="Portugal Active provides hotel-grade concierge services exclusively to guests staying at its private hotels. Services include private chef dining, in-villa spa and wellness treatments, airport transfers, car rental, and curated local experiences. Every service is delivered by the in-house team or vetted local partners. These services are not available on third-party booking platforms."
+            lastUpdated="2026-04-17"
+            author="Portugal Active concierge team"
+            emitSchema
+            schemaId="qa-services"
+            cite={[
+              { label: 'Browse properties', href: '/homes' },
+              { label: 'Contact concierge', href: '/contact' },
+            ]}
+          />
+        </div>
+      </section>
+
       <Footer />
       <WhatsAppFloat />
     </div>

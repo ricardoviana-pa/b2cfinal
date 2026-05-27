@@ -1,7 +1,26 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /*/admin/
 Disallow: /api/
-Disallow: /admin
+Disallow: /account
+Disallow: /*/account
+Disallow: /login
+Disallow: /*/login
+Disallow: /booking/
+Disallow: /*/booking/
+Disallow: /*.php$
+Disallow: /search?
+# Legacy paths that redirect — save crawl budget
+Disallow: /properties/
+Disallow: /rooms/
+Disallow: /lodges/
+Disallow: /journal/
+Disallow: /category/
+Disallow: /tag/
+Disallow: /author/
+Disallow: /wp-admin/
+Disallow: /wp-login.php
 
 # AI crawlers
 User-agent: GPTBot

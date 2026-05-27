@@ -61,10 +61,10 @@ function FAQItem({ item, isLast }: { item: { q: string; a: string }; isLast: boo
 const CONTACT_CHANNELS = [
   {
     icon: Phone,
-    href: 'tel:+351927161771',
+    href: 'tel:+351258358434',
     external: false,
     titleKey: 'contact.phoneNumber' as const,
-    titleFallback: '+351 927 161 771',
+    titleFallback: '+351 258 358 434',
     subKey: 'contact.phoneAvailable' as const,
   },
   {
@@ -257,7 +257,10 @@ export default function Contact() {
         <img
           src={IMAGES.contactHero}
           alt={t('contact.heroAlt', 'Contact Portugal Active')}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-top"
+          width={1200}
+          height={674}
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/5" />
         <div className="relative container max-w-[1100px] pb-12 lg:pb-16 z-10">

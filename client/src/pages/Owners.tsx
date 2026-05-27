@@ -218,7 +218,7 @@ export default function Owners() {
             <a
               href="https://management.portugalactive.com"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer nofollow"
               className="inline-flex items-center gap-2 rounded-full border border-[#1A1A18] text-[#1A1A18] text-[12px] tracking-[0.08em] font-medium px-7 py-4 hover:bg-[#1A1A18] hover:text-white transition-colors shrink-0"
             >
               {t('owners.portalCta')} <ExternalLink className="w-4 h-4" />

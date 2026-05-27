@@ -54,7 +54,7 @@ const PROPERTY_REDIRECTS: Record<string, string> = {
   "nature-hill-duo": "portugal-active-nature-hill-duo-10-min-beach-742743",
   "ocean-bliss": "ocean-bliss-beach-bbq-apartment-5fe4bf",
   "oliveiras-farm": "portugal-active-oliveira-s-farm-01b62e",
-  "rose-dream-boat": "ros-dream-boat-up-to-4-guests-bb2b42",
+  "rose-dream-boat": "ros-dream-boat-by-portugal-active-bb2b42",
   "salty-escape": "salty-escape-by-portugal-active-01c7b8",
   "sao-juliao-retreat": "s-o-juli-o-retreat-pool-jacuzzi-garden-escape-743511",
   "seabreeze-duplex": "seabreeze-duplex-beach-terrace-e917bf",
@@ -65,7 +65,7 @@ const PROPERTY_REDIRECTS: Record<string, string> = {
   "stars-view": "stars-view-by-portugal-active-026fa9",
   "stone-by-the-sea": "stone-by-the-sea-mountain-beach-retreat-w-pool-7437cd",
   "sunset-beach-lodge": "portugal-active-sunset-beach-lodge-heated-pool-5ceb91",
-  "the-mill-retreat": "century-old-watermill-on-the-river-beach-by-portugal-active-47452c",
+  "the-mill-retreat": "historic-riverfront-watermill-private-beach-access-47452c",
   "tide-terrace-duplex": "tide-terrace-duplex-sea-escape-e28965",
   "urban-reflections": "urban-reflections-by-portugal-active-e919c6",
   "venade-mountain-house": "stone-by-the-sea-mountain-beach-retreat-w-pool-7437cd",
@@ -97,10 +97,13 @@ const EXPERIENCE_REDIRECTS: Record<string, string> = {
 const SERVICE_REDIRECTS: Record<string, string> = {
   "airport-shuttle": "airport-shuttle",
   "babysitter": "babysitter",
-  "grocery-setup": "grocery-delivery",
-  "grocery-setup-and-delivery": "grocery-delivery",
-  "massage-therapist": "in-villa-spa",
-  "personal-trainer": "personal-training",
+  "grocery-setup": "grocery-setup",            // was "grocery-delivery" — slug doesn't exist
+  "grocery-setup-and-delivery": "grocery-setup",
+  "grocery-delivery": "grocery-setup",          // catch stale cached target
+  "massage-therapist": "massage-therapist",     // was "in-villa-spa" — slug doesn't exist
+  "in-villa-spa": "massage-therapist",          // catch stale cached target
+  "personal-trainer": "personal-trainer",       // was "personal-training" — slug doesn't exist
+  "personal-training": "personal-trainer",      // catch stale cached target
   "private-chauffeur": "airport-shuttle",
   "private-chef": "private-chef",
   "private-yoga": "private-yoga",
@@ -108,18 +111,24 @@ const SERVICE_REDIRECTS: Record<string, string> = {
 };
 
 // === LOCATIONS → DESTINATIONS =============================================
+// Maps legacy Webflow /locations/<city>-portugal slugs to the current
+// /destinations/<slug>. When a city has its own spoke (added per the May
+// 2026 destinations strategy doc) the redirect points to the spoke;
+// otherwise it lands on the parent region hub. Updated 2026-05-23 to
+// route Viana / Caminha / Esposende to their new spokes — these used to
+// land on /destinations/minho.
 const LOCATION_REDIRECTS: Record<string, string> = {
   "algarve-portugal": "algarve",
   "arcos-de-valdevez-portugal": "minho",
   "barcelos-potugal": "minho",
-  "caminha-portugal": "minho",
-  "esposende-portugal": "minho",
+  "caminha-portugal": "caminha",
+  "esposende-portugal": "esposende",
   "fafe-portugal": "minho",
   "guimaraes-portugal": "minho",
   "moimenta-da-beira-portugal": "porto",
   "ponte-de-lima-portugal": "minho",
   "porto-portugal": "porto",
-  "viana-do-castelo-portugal": "minho",
+  "viana-do-castelo-portugal": "viana-do-castelo",
   "vila-nova-de-famalicao-portugal": "minho",
 };
 
@@ -185,6 +194,17 @@ const STATIC_REDIRECTS: Record<string, string> = {
   "/new/author/luis/": "/en/about",
   "/event/sailing-": "/en/experiences/sailing",
   "/event/sailing-/": "/en/experiences/sailing",
+  // Property slug renames — Guesty listing titles changed (2026-05-18 sync).
+  // The id suffix is stable; only the title-derived prefix changed. Redirect
+  // old indexed URLs → new slugs so SEO equity transfers and no 404s.
+  "/homes/bob-dylan-loft-by-portugal-active-7188bd": "/en/homes/river-beach-loft-bob-dylan-at-the-watermill-7188bd",
+  "/homes/century-old-watermill-on-the-river-beach-by-portugal-active-47452c": "/en/homes/historic-riverfront-watermill-private-beach-access-47452c",
+  "/homes/granjas-house-at-fountain-retreat-i-pool-sports-ed2ed9": "/en/homes/fountain-cottage-at-fountain-retreat-i-pool-sports-ed2ed9",
+  "/homes/joe-cocker-loft-by-portugal-active-7188b5": "/en/homes/river-beach-suite-joe-cocker-at-the-watermill-7188b5",
+  "/homes/river-view-apartment-viana-do-castelo-8b7d5a": "/en/homes/river-view-by-portugal-active-8b7d5a",
+  "/homes/ros-dream-boat-up-to-4-guests-bb2b42": "/en/homes/ros-dream-boat-by-portugal-active-bb2b42",
+  "/homes/u2-loft-by-portugal-active-1bed48": "/en/homes/u2-loft-at-the-riverside-watermill-1bed48",
+  "/homes/watermill-main-house-by-portugal-active-7188ad": "/en/homes/riverside-watermill-house-private-beach-access-7188ad",
 };
 
 interface PatternRule {
@@ -224,13 +244,15 @@ const PATTERN_REDIRECTS: PatternRule[] = [
     },
   },
 
-  // /services/<slug> (Webflow) → /services/<slug> (still valid in new site for these)
+  // /services/<slug> (Webflow) → /services/<mapped> only for known legacy slugs.
+  // Unknown slugs pass through to the SPA (avoids redirect chains via locale-stripping).
   {
     pattern: /^\/services\/([^/?#]+)\/?$/i,
     resolve: (m) => {
       const slug = m[1];
       const mapped = SERVICE_REDIRECTS[slug];
-      return mapped ? `/en/services/${mapped}` : "/en/services";
+      if (!mapped || mapped === slug) return null as unknown as string; // pass through
+      return `/en/services/${mapped}`;
     },
   },
 
@@ -351,27 +373,47 @@ function resolvePath(path: string): string | null {
  *  - paths that already exist on disk (let static handler win)
  *  - paths starting with /api, /trpc, /admin, /__, /sitemap.xml (server routes)
  */
+const SUPPORTED_LANGS = new Set(["en", "pt", "fr", "es", "it", "fi", "de", "nl", "sv"]);
+
 export function legacyRedirects(req: Request, res: Response, next: NextFunction) {
   if (req.method !== "GET" && req.method !== "HEAD") return next();
 
-  const path = req.path;
+  const rawPath = req.path;
 
   // Skip server-internal paths
   if (
-    path.startsWith("/api/") ||
-    path.startsWith("/trpc/") ||
-    path.startsWith("/__") ||
-    path === "/sitemap.xml" ||
-    path === "/robots.txt"
+    rawPath.startsWith("/api/") ||
+    rawPath.startsWith("/trpc/") ||
+    rawPath.startsWith("/__") ||
+    rawPath === "/sitemap.xml" ||
+    rawPath === "/robots.txt"
   ) {
     return next();
   }
 
-  const target = resolvePath(path);
+  // Try bare path first (covers most legacy URLs)
+  let target = resolvePath(rawPath);
+
+  // If bare path didn't match, try stripping locale prefix and re-matching.
+  // This catches locale-prefixed old URLs like /en/properties/slug → /en/homes/new-slug
+  if (!target) {
+    const segments = rawPath.split("/").filter(Boolean);
+    if (segments.length >= 2 && SUPPORTED_LANGS.has(segments[0].toLowerCase())) {
+      const lang = segments[0].toLowerCase();
+      const barePath = "/" + segments.slice(1).join("/");
+      const bareTarget = resolvePath(barePath);
+      if (bareTarget) {
+        // Replace the /en/ prefix in the target with the original locale
+        // (legacy targets are hardcoded to /en/... so swap to the current locale)
+        target = bareTarget.replace(/^\/en(\/|$)/, `/${lang}$1`);
+      }
+    }
+  }
+
   if (!target) return next();
 
   // Don't redirect to self
-  if (target === path) return next();
+  if (target === rawPath) return next();
 
   // Preserve query string (e.g., utm_*) on redirect
   const query = req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : "";

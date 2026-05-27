@@ -5,6 +5,7 @@
    ========================================================================== */
 
 import { useEffect, useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, MessageCircle } from 'lucide-react';
 import BokunCalendarWidget from './BokunCalendarWidget';
 
@@ -17,7 +18,7 @@ interface ExperienceMobileBookingBarProps {
 }
 
 const WHATSAPP_NUMBER = '351927161771';
-const BOKUN_CHANNEL_UUID = import.meta.env.VITE_BOKUN_CHANNEL_UUID as string | undefined;
+const BOKUN_CHANNEL_UUID = import.meta.env.VITE_BOKUN_CHANNEL_UUID || 'a283fa3e-a892-41cd-a775-036ac351a454';
 
 export default function ExperienceMobileBookingBar({
   experienceName,
@@ -26,6 +27,7 @@ export default function ExperienceMobileBookingBar({
   maxGroupSize = 10,
   bokunActivityId,
 }: ExperienceMobileBookingBarProps) {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const [widgetOpen, setWidgetOpen] = useState(false);
   const hasBokun = !!bokunActivityId && !!BOKUN_CHANNEL_UUID;
@@ -64,12 +66,12 @@ export default function ExperienceMobileBookingBar({
         <div className="flex items-center justify-between px-5 py-4">
           <div>
             <p className="text-[10px] tracking-[0.08em] uppercase text-[#9E9A90] font-medium">
-              From
+              {t('experience.from', 'From')}
             </p>
             <p className="text-[18px] font-display text-[#1A1A18] leading-none mt-0.5">
               €{priceFrom}
               <span className="text-[11px] text-[#9E9A90] ml-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
-                / person
+                {t('experience.perPerson', '/ person')}
               </span>
             </p>
           </div>
@@ -79,7 +81,7 @@ export default function ExperienceMobileBookingBar({
               className="bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase px-8 py-3.5"
               style={{ minHeight: '48px' }}
             >
-              Book now
+              {t('experience.bookNow', 'Book now')}
             </button>
           ) : (
             <a
@@ -89,7 +91,7 @@ export default function ExperienceMobileBookingBar({
               className="bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase px-8 py-3.5 flex items-center"
               style={{ minHeight: '48px' }}
             >
-              Check availability
+              {t('experience.checkAvailability', 'Check availability')}
             </a>
           )}
         </div>
@@ -102,7 +104,7 @@ export default function ExperienceMobileBookingBar({
           <div className="flex items-center justify-between px-5 py-4 border-b border-[#E8E4DC] bg-white shrink-0">
             <div>
               <p className="text-[10px] tracking-[0.14em] uppercase text-[#9E9A90] font-medium">
-                Reserve
+                {t('experience.reserve', 'Reserve')}
               </p>
               <p className="text-[14px] font-display text-[#1A1A18] mt-0.5 leading-tight truncate max-w-[260px]">
                 {experienceName}
@@ -131,7 +133,7 @@ export default function ExperienceMobileBookingBar({
           <div className="px-5 py-3 flex items-center justify-between border-t border-[#E8E4DC] bg-white shrink-0"
                style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)' }}>
             <span className="text-[11px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
-              Secure booking by Bókun
+              {t('experience.secureBooking', 'Secure booking by Bókun')}
             </span>
             <a
               href={waHref}

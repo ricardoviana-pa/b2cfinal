@@ -225,6 +225,17 @@
     font-family: var(--font-body);
   }
 
+  /* iOS Safari auto-zooms when a focused input has font-size < 16px.
+     Tailwind utilities (e.g. text-[13px] on the hero search fields) sit in
+     a later cascade layer and override the 16px base rule, re-triggering the
+     zoom. Force 16px on touch-sized viewports so focusing any field never
+     zooms the page. Desktop keeps the design's smaller input text. */
+  @media (max-width: 1024px) {
+    input, textarea, select {
+      font-size: 16px !important;
+    }
+  }
+
   /* Selection */
   ::selection {
     background-color: #C4A87C;
@@ -826,4 +837,14 @@
       scroll-behavior: auto !important;
     }
   }
+}
+
+/* Off-screen rendering optimisation — the browser skips layout/style/paint
+   for below-the-fold sections until they are scrolled near the viewport,
+   cutting main-thread work on initial load. `contain-intrinsic-size: auto`
+   reserves estimated space (and remembers the real size after first render)
+   so the scrollbar does not jump. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 700px;
 }

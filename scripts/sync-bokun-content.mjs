@@ -38,7 +38,8 @@ const MAPPING = {
   'stand-up-paddle': 749994,
   'horseback-riding': 692748,
   'can-am-buggy': 1046807,
-  // Not yet in Bókun: canyoning, sailing, ebike-tours, surf-lessons
+  'ebike-tours': 1219990,
+  // Not yet in Bókun: canyoning, sailing, surf-lessons
 };
 
 function bokunDate() {

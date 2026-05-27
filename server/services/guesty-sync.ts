@@ -5,7 +5,7 @@
  */
 
 import "dotenv/config";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { guestyClient, isGuestyConfigured } from "../lib/guesty";
 
@@ -86,6 +86,41 @@ function slugify(title: string, id: string): string {
   return `${base}-${id.slice(-6)}`;
 }
 
+/**
+ * Build a stable guestyId → slug map from previously-synced data.
+ *
+ * Slugs are title-derived, so renaming a listing in Guesty regenerates a
+ * different slug and silently breaks the indexed URL. To prevent that, once
+ * a listing has a slug we PIN it: future syncs reuse the existing slug for
+ * that guestyId and never regenerate it. Only brand-new listings get a
+ * freshly slugified URL (once).
+ *
+ * Reads the runtime sync file first (freshest) then the committed fallback.
+ */
+async function loadExistingSlugMap(): Promise<Map<string, string>> {
+  const map = new Map<string, string>();
+  const candidates = [
+    join(process.cwd(), "data", "properties-synced.json"),
+    join(process.cwd(), "client", "src", "data", "properties.json"),
+  ];
+  for (const path of candidates) {
+    try {
+      const raw = await readFile(path, "utf-8");
+      const data = JSON.parse(raw);
+      if (Array.isArray(data)) {
+        for (const p of data) {
+          if (p?.guestyId && p?.slug && !map.has(p.guestyId)) {
+            map.set(p.guestyId, p.slug);
+          }
+        }
+      }
+    } catch {
+      // File missing or unreadable — skip, fall through to next candidate.
+    }
+  }
+  return map;
+}
+
 /** Fetch all reviews from Guesty, paginated */
 async function fetchAllReviews(): Promise<any[]> {
   const results: any[] = [];
@@ -162,19 +197,78 @@ function mapGuestyAmenities(listing: any) {
 }
 
 function inferDestination(addr: any): string {
-  const c = (addr.city || "").toLowerCase();
-  const r = (addr.region || "").toLowerCase();
-  if (c.includes("viana") || c.includes("porto") || r.includes("norte") || r.includes("minho")) return "minho";
-  if (c.includes("porto") || r.includes("douro")) return "porto";
-  if (c.includes("faro") || c.includes("albufeira") || c.includes("lagos") || r.includes("algarve")) return "algarve";
-  if (c.includes("lisboa") || r.includes("lisboa")) return "lisbon";
-  return "algarve";
+  const city = (addr.city || '').toLowerCase();
+  const region = (addr.region || '').toLowerCase();
+  const state = (addr.state || '').toLowerCase();
+  const full = `${city} ${region} ${state}`;
+
+  // Porto & Douro — check BEFORE Minho because region "Norte" covers both
+  if (state === 'porto' ||
+      city.includes('porto') || city.includes('gaia') || city.includes('matosinhos') ||
+      city.includes('maia') || city.includes('gondomar') ||
+      region.includes('douro') || city.includes('peso da régua') || city.includes('lamego') ||
+      city.includes('pinhão') || city.includes('pinhao') ||
+      state.includes('vila real') || state.includes('viseu')) return 'porto';
+
+  // Minho Coast — Viana do Castelo district + northern towns
+  if (state.includes('viana do castelo') || state.includes('viana') ||
+      city.includes('viana') || city.includes('caminha') || city.includes('moledo') ||
+      city.includes('âncora') || city.includes('ancora') || city.includes('afife') ||
+      city.includes('carreço') || city.includes('carreco') ||
+      city.includes('arcos de valdevez') || city.includes('ponte de lima') ||
+      city.includes('ponte da barca') || city.includes('monção') || city.includes('moncao') ||
+      city.includes('valença') || city.includes('valenca') ||
+      city.includes('paredes de coura') ||
+      region.includes('minho') || region.includes('norte')) return 'minho';
+
+  // Minho Coast — Braga district (close enough to Minho Coast for our purposes)
+  if (state.includes('braga') ||
+      city.includes('braga') || city.includes('guimarães') || city.includes('guimaraes') ||
+      city.includes('famalicão') || city.includes('famalicao') ||
+      city.includes('barcelos') || city.includes('esposende') ||
+      city.includes('fafe') || city.includes('vizela')) return 'minho';
+
+  // Lisbon
+  if (state.includes('lisboa') || state.includes('setúbal') || state.includes('setubal') ||
+      city.includes('lisboa') || city.includes('lisbon') || city.includes('sintra') ||
+      city.includes('cascais') || city.includes('oeiras') || city.includes('estoril') ||
+      city.includes('almada') || city.includes('sesimbra') || city.includes('arrábida') ||
+      region.includes('lisboa')) return 'lisbon';
+
+  // Alentejo
+  if (state.includes('évora') || state.includes('evora') ||
+      state.includes('beja') || state.includes('portalegre') ||
+      city.includes('évora') || city.includes('evora') ||
+      city.includes('ferreira do alentejo') || city.includes('comporta') ||
+      city.includes('alcácer') || city.includes('grândola') || city.includes('grandola') ||
+      city.includes('santiago do cacém') || city.includes('mértola') ||
+      region.includes('alentejo')) return 'alentejo';
+
+  // Algarve
+  if (state.includes('faro') ||
+      city.includes('faro') || city.includes('albufeira') || city.includes('lagos') ||
+      city.includes('portimão') || city.includes('portimao') || city.includes('tavira') ||
+      city.includes('vilamoura') || city.includes('loulé') || city.includes('loule') ||
+      city.includes('olhão') || city.includes('olhao') || city.includes('silves') ||
+      city.includes('lagoa') || city.includes('aljezur') || city.includes('sagres') ||
+      city.includes('vila real de santo antónio') ||
+      region.includes('algarve')) return 'algarve';
+
+  // Fallback — log warning and default to minho (most properties are there)
+  console.warn(`[inferDestination] Unknown location: city="${addr.city}", region="${addr.region}", state="${addr.state}" — defaulting to minho`);
+  return 'minho';
 }
 
-function mapListingToProperty(listing: any, reviews: any[] = []) {
+function mapListingToProperty(
+  listing: any,
+  reviews: any[] = [],
+  existingSlugMap?: Map<string, string>,
+) {
   const id = listing._id || listing.listingId || "";
   const title = listing.title || "Untitled";
-  const slug = slugify(title, id);
+  // Pin slugs: reuse the existing slug for this guestyId if we have one,
+  // so a Guesty title change never breaks the indexed URL.
+  const slug = existingSlugMap?.get(id) || slugify(title, id);
   const desc = listing.publicDescription || listing.publicDescriptions;
   const fullDesc = buildDescription(desc, listing.description);
   const tagline = buildTagline(desc, listing.description);
@@ -359,10 +453,12 @@ export async function runSync(): Promise<string> {
   }
 
   const reviewsByListing = buildReviewsByListing(allReviews);
+  const existingSlugMap = await loadExistingSlugMap();
+  console.log(`[Guesty Sync] Loaded ${existingSlugMap.size} pinned slugs from existing data`);
   const properties = listings.map((listing) => {
     const rawId = listing._id || listing.listingId || "";
     const listingReviews = reviewsByListing.get(rawId) || [];
-    return mapListingToProperty(listing, listingReviews);
+    return mapListingToProperty(listing, listingReviews, existingSlugMap);
   });
   const jsonContent = JSON.stringify(properties, null, 2);
 

@@ -279,15 +279,15 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                   }`}
                 >
                   <a
-                    href="tel:+351927161771"
+                    href="tel:+351258358434"
                     className="flex items-center gap-3 px-4 py-3 hover:bg-[#FAFAF7] transition-colors group"
                   >
                     <div className="w-8 h-8 flex items-center justify-center bg-[#F5F1EB] group-hover:bg-[#1A1A18] group-hover:text-white transition-colors">
                       <Phone className="w-3.5 h-3.5 text-[#8B7355] group-hover:text-white" />
                     </div>
                     <div>
-                      <p className="text-[13px] font-medium text-[#1A1A18]">+351 927 161 771</p>
-                      <p className="text-[11px] text-[#9E9A90]">{t('header.callUsDirectly')}</p>
+                      <p className="text-[13px] font-medium text-[#1A1A18]">+351 258 358 434</p>
+                      <p className="text-[11px] text-[#9E9A90]">{t('header.office', 'Office')} · {t('header.callUsDirectly')}</p>
                     </div>
                   </a>
 
@@ -316,8 +316,8 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                       <MessageCircle className="w-3.5 h-3.5 text-[#8B7355] group-hover:text-white" />
                     </div>
                     <div>
-                      <p className="text-[13px] font-medium text-[#1A1A18]">{t('header.whatsapp')}</p>
-                      <p className="text-[11px] text-[#9E9A90]">{t('header.chatConcierge')}</p>
+                      <p className="text-[13px] font-medium text-[#1A1A18]">+351 927 161 771</p>
+                      <p className="text-[11px] text-[#9E9A90]">{t('header.whatsapp')} · {t('header.chatConcierge')}</p>
                     </div>
                   </a>
                 </div>
@@ -459,9 +459,9 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
             style={{ transitionDelay: menuOpen ? '450ms' : '0ms' }}
           >
             <div className="flex flex-col gap-2.5">
-              <a href="tel:+351927161771" className="flex items-center gap-2.5 text-[13px] text-[#1A1A18] font-medium">
+              <a href="tel:+351258358434" className="flex items-center gap-2.5 text-[13px] text-[#1A1A18] font-medium">
                 <Phone className="w-4 h-4 text-[#8B7355]" />
-                +351 927 161 771
+                +351 258 358 434
               </a>
               <a href="mailto:info@portugalactive.com" className="flex items-center gap-2.5 text-[13px] text-[#6B6860]">
                 <Mail className="w-4 h-4 text-[#8B7355]" />

@@ -61,7 +61,7 @@ ${content}
 <!-- Footer -->
 <tr><td style="padding:30px 0 0 0;text-align:center;">
   <p style="font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;margin:0;">Portugal Active</p>
-  <p style="font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;margin:4px 0 0 0;">+351 927 161 771 &middot; hello@portugalactive.com</p>
+  <p style="font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;margin:4px 0 0 0;">+351 258 358 434 &middot; hello@portugalactive.com</p>
   <p style="font-family:Arial,sans-serif;font-size:11px;color:#C4C0B8;margin:16px 0 0 0;">Luxury private villas across Portugal, managed with hotel-grade service.</p>
 </td></tr>
 
@@ -377,7 +377,7 @@ interface PreArrivalData {
 
 export async function sendPreArrival(data: PreArrivalData): Promise<void> {
   const subject = `Your stay at ${data.propertyName} begins in 3 days`;
-  const phone = data.conciergePhone || "+351 927 161 771";
+  const phone = data.conciergePhone || "+351 258 358 434";
 
   const html = wrapTemplate(`
 <tr><td style="padding:0 0 24px 0;">

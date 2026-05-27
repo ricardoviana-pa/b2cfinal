@@ -233,6 +233,37 @@ export default function BlogArticle() {
                 return <h3 key={i} className="text-[#1A1A18] font-display text-xl md:text-2xl mt-10 mb-4">{renderInline(trimmed.slice(4))}</h3>;
               if (trimmed.startsWith('## '))
                 return <h2 key={i} className="text-[#1A1A18] font-display text-2xl md:text-3xl mt-12 mb-5">{renderInline(trimmed.slice(3))}</h2>;
+              /* ── Markdown table ── */
+              if (trimmed.startsWith('|') && trimmed.includes('|---')) {
+                const rows = trimmed.split('\n').filter(r => r.trim().startsWith('|'));
+                const headerCells = rows[0].split('|').filter(c => c.trim()).map(c => c.trim());
+                const dataRows = rows.slice(2); // skip header + separator
+                return (
+                  <div key={i} className="overflow-x-auto my-8 rounded-lg border border-[#E8E4DC]">
+                    <table className="w-full text-[13px] text-left border-collapse">
+                      <thead>
+                        <tr className="bg-[#F5F1EB]">
+                          {headerCells.map((cell, ci) => (
+                            <th key={ci} className="px-4 py-3 font-medium text-[#1A1A18] border-b border-[#E8E4DC] whitespace-nowrap">{cell}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {dataRows.map((row, ri) => {
+                          const cells = row.split('|').filter(c => c.trim()).map(c => c.trim());
+                          return (
+                            <tr key={ri} className={ri % 2 === 0 ? 'bg-white' : 'bg-[#FAFAF7]'}>
+                              {cells.map((cell, ci) => (
+                                <td key={ci} className="px-4 py-2.5 text-[#6B6860] border-b border-[#E8E4DC] whitespace-nowrap">{renderInline(cell)}</td>
+                              ))}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              }
               return <p key={i} className="text-[#6B6860] leading-relaxed mb-6">{renderInline(trimmed)}</p>;
             })}
           </div>

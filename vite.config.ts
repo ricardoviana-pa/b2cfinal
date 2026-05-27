@@ -150,13 +150,21 @@ function vitePluginManusDebugCollector(): Plugin {
   };
 }
 
-const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
-
-export default defineConfig({
+export default defineConfig(({ command, isSsrBuild }) => ({
   define: {
     '__VITE_GA4_ID__': JSON.stringify(process.env.VITE_GA4_ID || ''),
   },
-  plugins,
+  plugins: [
+    react(),
+    tailwindcss(),
+    // jsxLocPlugin injects `data-loc` debug attributes. It must run ONLY on
+    // the dev server: in a build it forces the jsxDEV runtime (breaks the SSR
+    // bundle) and, kept only in the client build, it desyncs client vs SSR
+    // markup → hydration mismatch. So: dev server only.
+    ...(command === "serve" ? [jsxLocPlugin()] : []),
+    // Manus preview tooling — client builds only, never the SSR bundle.
+    ...(isSsrBuild ? [] : [vitePluginManusRuntime(), vitePluginManusDebugCollector()]),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -185,6 +193,9 @@ export default defineConfig({
           if (id.includes('node_modules/@radix-ui')) return 'ui';
           if (id.includes('node_modules/wouter')) return 'router';
           if (id.includes('node_modules/@trpc')) return 'trpc';
+          if (id.includes('node_modules/lucide-react')) return 'icons';
+          if (id.includes('node_modules/framer-motion')) return 'motion';
+          if (id.includes('node_modules/date-fns')) return 'date-fns';
         },
       },
     },
@@ -205,4 +216,4 @@ export default defineConfig({
       deny: ["**/.*"],
     },
   },
-});
+}));

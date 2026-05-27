@@ -16,7 +16,7 @@ interface BokunCalendarWidgetProps {
   style?: React.CSSProperties;
 }
 
-const BOKUN_CHANNEL_UUID = import.meta.env.VITE_BOKUN_CHANNEL_UUID as string | undefined;
+const BOKUN_CHANNEL_UUID = import.meta.env.VITE_BOKUN_CHANNEL_UUID || 'a283fa3e-a892-41cd-a775-036ac351a454';
 
 /**
  * Renders a Bókun experience-calendar widget using the official

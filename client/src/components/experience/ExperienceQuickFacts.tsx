@@ -3,6 +3,7 @@
    ========================================================================== */
 
 import { Clock, Users, Globe, CheckCircle2, Smartphone } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface ExperienceQuickFactsProps {
   duration?: string;
@@ -21,44 +22,45 @@ export default function ExperienceQuickFacts({
   mobileTicket,
   pickupIncluded,
 }: ExperienceQuickFactsProps) {
+  const { t } = useTranslation();
   const items: { icon: typeof Clock; label: string; value: string }[] = [];
 
   if (duration) {
-    items.push({ icon: Clock, label: 'Duration', value: duration });
+    items.push({ icon: Clock, label: t('experience.duration', 'Duration'), value: duration });
   }
   if (freeCancellationHours) {
     items.push({
       icon: CheckCircle2,
-      label: 'Free cancellation',
-      value: `Up to ${freeCancellationHours}h before`,
+      label: t('experience.freeCancellationLabel', 'Free cancellation'),
+      value: t('experience.upToHoursBefore', 'Up to {{hours}}h before', { hours: freeCancellationHours }),
     });
   }
   if (groupSize) {
     items.push({
       icon: Users,
-      label: 'Group size',
-      value: `Max ${groupSize.max} guests`,
+      label: t('experience.groupSize', 'Group size'),
+      value: t('experience.maxGuests', 'Max {{max}} guests', { max: groupSize.max }),
     });
   }
   if (languages && languages.length > 0) {
     items.push({
       icon: Globe,
-      label: 'Languages',
+      label: t('experience.languages', 'Languages'),
       value: languages.slice(0, 3).join(' · '),
     });
   }
   if (mobileTicket) {
     items.push({
       icon: Smartphone,
-      label: 'Mobile ticket',
-      value: 'Scan from phone',
+      label: t('experience.mobileTicket', 'Mobile ticket'),
+      value: t('experience.scanFromPhone', 'Scan from phone'),
     });
   }
   if (pickupIncluded) {
     items.push({
       icon: CheckCircle2,
-      label: 'Pickup',
-      value: 'From your villa',
+      label: t('experience.pickup', 'Pickup'),
+      value: t('experience.fromYourVilla', 'From your villa'),
     });
   }
 

@@ -122,9 +122,9 @@ export default function Footer() {
             </p>
             {/* Contact shortcuts */}
             <div className="flex items-center gap-3 mb-2">
-              <a href="tel:+351927161771" className="flex items-center gap-2 group" aria-label="Call us">
+              <a href="tel:+351258358434" className="flex items-center gap-2 group" aria-label="Call us">
                 <Phone size={13} className="text-white/30 group-hover:text-[#C4A87C] transition-colors" />
-                <span className="text-[12px] text-white/40 group-hover:text-white transition-colors" style={{ fontWeight: 300 }}>+351 927 161 771</span>
+                <span className="text-[12px] text-white/40 group-hover:text-white transition-colors" style={{ fontWeight: 300 }}>+351 258 358 434</span>
               </a>
             </div>
             <div className="flex items-center gap-3 mb-2">
@@ -136,7 +136,7 @@ export default function Footer() {
             <div className="flex items-center gap-3">
               <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group" aria-label="WhatsApp">
                 <MessageCircle size={13} className="text-white/30 group-hover:text-[#C4A87C] transition-colors" />
-                <span className="text-[12px] text-white/40 group-hover:text-white transition-colors" style={{ fontWeight: 300 }}>{t('header.whatsapp', 'WhatsApp')}</span>
+                <span className="text-[12px] text-white/40 group-hover:text-white transition-colors" style={{ fontWeight: 300 }}>+351 927 161 771 · {t('header.whatsapp', 'WhatsApp')}</span>
               </a>
             </div>
           </div>
@@ -194,8 +194,12 @@ export default function Footer() {
               {footerLinks(t('footer.faq', 'FAQ'), '/faq')}
               {footerLinks(t('footer.journal', 'Journal'), '/blog')}
               {footerLinks(t('footer.careers', 'Careers'), '/careers')}
-              {footerLinks(t('footer.forOwners', 'For owners'), '/owners')}
               {footerLinks(t('footer.contact', 'Contact'), '/contact')}
+              <li>
+                <a href="https://management.portugalactive.com" target="_blank" rel="noopener noreferrer nofollow" className="text-[13px] text-white/40 hover:text-white transition-colors" style={{ fontWeight: 300 }}>
+                  {t('footer.forOwners', 'For property owners')} →
+                </a>
+              </li>
             </ul>
           </div>
         </div>

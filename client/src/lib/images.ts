@@ -22,8 +22,8 @@ export const IMAGES = {
   // About page
   aboutStory: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp',
 
-  // Contact page
-  contactHero: '/destinations/contact-hero.webp',
+  // Contact page — Eben Lodge sunset deck with ocean view (native 1200×674)
+  contactHero: 'https://assets.guesty.com/image/upload/q_auto:best,f_auto/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533466d209c001510ecfe/d8b9cbbd-9e34-4e-av-4q',
 
   // Logo
   logoWhite: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp',
@@ -181,4 +181,20 @@ export function getPropertyImages(slug: string): string[] {
     'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
     'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
   ];
+}
+
+/**
+ * Optimise a Guesty image URL via Cloudinary transforms.
+ *
+ * Guesty serves property photos through Cloudinary (assets.guesty.com/image/
+ * upload/...). Inserting `w_<width>,q_auto,f_auto` resizes the image and lets
+ * Cloudinary serve WebP/AVIF to supporting browsers — a ~30–60% byte saving.
+ * Non-Guesty URLs (Unsplash, CloudFront) and already-transformed URLs are
+ * returned untouched.
+ */
+export function optimizeGuestyImage(url: string | undefined | null, width = 900): string {
+  if (!url || !url.includes('assets.guesty.com/image/upload/')) return url || '';
+  // Already has a transform segment (starts with `x_` right after /upload/).
+  if (/\/image\/upload\/[a-z]{1,3}_/.test(url)) return url;
+  return url.replace('/image/upload/', `/image/upload/w_${width},q_auto,f_auto/`);
 }
