@@ -543,10 +543,7 @@ export default function Home() {
             <div className="w-px h-6 bg-[#E8E4DC]" />
 
             {/* Check-in */}
-            <div
-              className="flex-1 h-full cursor-pointer relative"
-              onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
-            >
+            <div className="relative flex-1 h-full cursor-pointer">
               <input
                 type="date"
                 value={searchCheckin}
@@ -567,10 +564,7 @@ export default function Home() {
             <ArrowRight className="w-3.5 h-3.5 text-[#9E9A90] flex-shrink-0" />
 
             {/* Check-out */}
-            <div
-              className="flex-1 h-full cursor-pointer relative"
-              onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); inp?.showPicker?.(); }}
-            >
+            <div className="relative flex-1 h-full cursor-pointer">
               <input
                 ref={checkoutDesktopRef}
                 type="date"
