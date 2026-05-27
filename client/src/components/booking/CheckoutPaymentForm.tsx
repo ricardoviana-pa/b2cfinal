@@ -81,7 +81,7 @@ function PaymentFormInner({
   propertyName,
   destination,
 }: Omit<CheckoutPaymentFormProps, "currency">) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState("");
@@ -243,6 +243,7 @@ function PaymentFormInner({
 }
 
 export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
+  const { i18n } = useTranslation();
   const { data: stripeConfig, isLoading: stripeConfigLoading } = trpc.booking.getStripeConfig.useQuery();
   // Per-listing payment provider: fetch the Stripe connected account for this property
   const { data: paymentProvider, isLoading: providerLoading } = trpc.booking.getPaymentProvider.useQuery(
@@ -274,6 +275,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
       amount: Math.round(props.total * 100), // Stripe expects cents
       currency: (props.currency || "eur").toLowerCase(),
       paymentMethodCreation: "manual" as const,
+      locale: i18n.language as any,
       appearance: {
         theme: "stripe" as const,
         variables: {
@@ -285,7 +287,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
         },
       },
     }),
-    [props.total, props.currency],
+    [props.total, props.currency, i18n.language],
   );
 
   // CRITICAL: Wait for BOTH queries to settle before rendering Stripe Elements.

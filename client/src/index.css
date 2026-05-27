@@ -847,3 +847,12 @@
   content-visibility: auto;
   contain-intrinsic-size: auto 700px;
 }
+
+/* ── BOOKING WIDGET — component-scoped overrides ── */
+/* Prevent the global 44px touch-target min-size rule from inflating
+   inline checkboxes and radios inside the booking widget */
+.booking-widget input[type="checkbox"],
+.booking-widget input[type="radio"] {
+  min-width: unset;
+  min-height: unset;
+}
