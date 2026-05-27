@@ -141,11 +141,12 @@ export const bookingRouter = router({
         checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
         checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
         guests: z.number().int().min(1).max(30).default(2),
+        couponCode: z.string().optional(),
       })
     )
     .query(async ({ input }) => {
       try {
-        return await getQuoteWithDeadline(input.listingId, input.checkIn, input.checkOut, input.guests, 20_000);
+        return await getQuoteWithDeadline(input.listingId, input.checkIn, input.checkOut, input.guests, 20_000, input.couponCode);
       } catch (error: any) {
         throw new Error(error.message || "Failed to get quote");
       }

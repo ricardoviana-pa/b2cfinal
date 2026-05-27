@@ -27,8 +27,8 @@ const inFlightBEQuotes = new Map<string, Promise<BEQuoteResult>>();
 /** Cooldown after a 429 on the quotes endpoint — set from Guesty's retryAfterMs. */
 let beQuoteCooldownUntil = 0;
 
-function getBEQuoteCacheKey(input: { listingId: string; checkIn: string; checkOut: string; guests: number }): string {
-  return `${input.listingId}:${input.checkIn}:${input.checkOut}:${input.guests}`;
+function getBEQuoteCacheKey(input: { listingId: string; checkIn: string; checkOut: string; guests: number; couponCode?: string }): string {
+  return `${input.listingId}:${input.checkIn}:${input.checkOut}:${input.guests}:${input.couponCode || ""}`;
 }
 
 /** Extract retryAfterMs from a Guesty 429 response body (details may be object or string). */
@@ -117,10 +117,11 @@ export async function createBEQuote(input: {
   guestFirstName?: string;
   guestLastName?: string;
   guestEmail?: string;
+  couponCode?: string;
 }): Promise<BEQuoteResult> {
-  // Only cache anonymous price-check calls (no guest data). Checkout calls with
-  // real guest info bypass the cache so they always produce a fresh quoteId.
-  const isAnonymous = !input.guestFirstName && !input.guestLastName && (!input.guestEmail || input.guestEmail === "guest@example.com");
+  // Only cache anonymous price-check calls (no guest data, no coupon). Checkout
+  // calls with real guest info or a coupon bypass the cache for a fresh quoteId.
+  const isAnonymous = !input.guestFirstName && !input.guestLastName && (!input.guestEmail || input.guestEmail === "guest@example.com") && !input.couponCode;
   if (isAnonymous) {
     const cacheKey = getBEQuoteCacheKey(input);
     const cached = beQuoteCache.get(cacheKey);
@@ -151,6 +152,7 @@ async function _createBEQuoteImpl(input: {
   guestFirstName?: string;
   guestLastName?: string;
   guestEmail?: string;
+  couponCode?: string;
 }): Promise<BEQuoteResult> {
   const body: Record<string, unknown> = {
     listingId: input.listingId,
@@ -164,6 +166,9 @@ async function _createBEQuoteImpl(input: {
       lastName: input.guestLastName || "Guest",
       email: input.guestEmail || "guest@example.com",
     };
+  }
+  if (input.couponCode) {
+    body.couponCode = input.couponCode;
   }
 
   // ── Rate-limit cooldown: respect Guesty's retryAfterMs from prior 429s ──

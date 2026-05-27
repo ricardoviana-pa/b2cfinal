@@ -269,6 +269,9 @@ export default function BookingWidget({
   const [beQuoteRetryFailed, setBeQuoteRetryFailed] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [phoneTouched, setPhoneTouched] = useState(false);
+  const [couponEnabled, setCouponEnabled] = useState(false);
+  const [couponInput, setCouponInput] = useState("");
+  const [couponCode, setCouponCode] = useState("");
   const quoteRequestRef = useRef(0);
   const lastQuoteKeyRef = useRef("");
   /** Avoids unstable `fetchQuote` when `quote` updates (prevents auto-quote useEffect loops). */
@@ -387,6 +390,7 @@ export default function BookingWidget({
       const d = await Promise.race([
         utils.booking.getQuote.fetch({
           listingId: guestyId, checkIn, checkOut, guests,
+          couponCode: couponCode || undefined,
         }),
         new Promise<never>((_, reject) => {
           setTimeout(() => reject(new Error(i18n.t("errors.quoteTimeout"))), 20000);
@@ -458,6 +462,15 @@ export default function BookingWidget({
     }, 450);
     return () => clearTimeout(timer);
   }, [checkIn, checkOut, guests, nights, minNights, step]);
+
+  // Pre-populate coupon from sessionStorage on mount
+  useEffect(() => {
+    const stored = sessionStorage.getItem("coupon");
+    if (stored) {
+      setCouponInput(stored);
+      setCouponEnabled(true);
+    }
+  }, []);
 
   // Fetch calendar availability on mount (and when guestyId changes)
   useEffect(() => {
@@ -960,6 +973,44 @@ export default function BookingWidget({
                 </p>
               </div>
             )}
+
+            {/* ── Coupon / Promo Code ── */}
+            <div>
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={couponEnabled}
+                  onChange={e => setCouponEnabled(e.target.checked)}
+                  className="w-3.5 h-3.5 accent-black"
+                />
+                <span className="text-xs text-black/50">{t("bookingWidget.havePromoCode", "Have a promo code?")}</span>
+              </label>
+
+              {couponEnabled && (
+                <div className="mt-2 flex gap-2">
+                  <input
+                    type="text"
+                    value={couponInput}
+                    onChange={e => setCouponInput(e.target.value.toUpperCase())}
+                    placeholder={t("bookingWidget.promoCodePlaceholder", "Enter code")}
+                    className="flex-1 border border-black/15 px-3 py-2 text-sm text-black placeholder:text-black/30 focus:outline-none focus:border-black/40 uppercase tracking-widest bg-transparent"
+                  />
+                  <button
+                    type="button"
+                    disabled={!couponInput.trim() || loading}
+                    onClick={() => {
+                      const code = couponInput.trim().toUpperCase();
+                      sessionStorage.setItem("coupon", code);
+                      setCouponCode(code);
+                      setTimeout(() => fetchQuote(), 0);
+                    }}
+                    className="px-4 py-2 text-xs font-medium tracking-[0.12em] uppercase bg-black text-white disabled:opacity-30 transition-colors hover:bg-black/80 whitespace-nowrap"
+                  >
+                    {t("bookingWidget.applyCode", "Apply")}
+                  </button>
+                </div>
+              )}
+            </div>
 
             {/* ── Price Breakdown Card ── */}
             <div className="bg-black/[0.02] border border-black/10 overflow-hidden">

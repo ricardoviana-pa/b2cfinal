@@ -17,8 +17,8 @@ const quoteCache = new Map<string, { expiresAt: number; value: QuoteResult }>();
 /** In-flight dedup: concurrent getQuote calls for same params share one promise. */
 const inFlightGetQuotes = new Map<string, Promise<QuoteResult>>();
 
-function getQuoteCacheKey(listingId: string, checkIn: string, checkOut: string, guests: number): string {
-  return `${listingId}:${checkIn}:${checkOut}:${guests}`;
+function getQuoteCacheKey(listingId: string, checkIn: string, checkOut: string, guests: number, couponCode?: string): string {
+  return `${listingId}:${checkIn}:${checkOut}:${guests}:${couponCode || ""}`;
 }
 
 function getCachedQuote(key: string): QuoteResult | null {
@@ -104,9 +104,10 @@ export async function getQuote(
   listingId: string,
   checkIn: string,
   checkOut: string,
-  guests: number = 2
+  guests: number = 2,
+  couponCode?: string
 ): Promise<QuoteResult> {
-  const cacheKey = getQuoteCacheKey(listingId, checkIn, checkOut, guests);
+  const cacheKey = getQuoteCacheKey(listingId, checkIn, checkOut, guests, couponCode);
 
   // ── Cache-first: return live/cached results immediately (no BE API call needed) ──
   const existingCache = getCachedQuote(cacheKey);
@@ -119,7 +120,7 @@ export async function getQuote(
   const inflight = inFlightGetQuotes.get(cacheKey);
   if (inflight) return inflight;
 
-  const promise = _getQuoteImpl(listingId, checkIn, checkOut, guests, cacheKey).finally(() => {
+  const promise = _getQuoteImpl(listingId, checkIn, checkOut, guests, cacheKey, couponCode).finally(() => {
     inFlightGetQuotes.delete(cacheKey);
   });
   inFlightGetQuotes.set(cacheKey, promise);
@@ -131,7 +132,8 @@ async function _getQuoteImpl(
   checkIn: string,
   checkOut: string,
   guests: number,
-  cacheKey: string
+  cacheKey: string,
+  couponCode?: string
 ): Promise<QuoteResult> {
   const nights = Math.ceil(
     (new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000
@@ -141,7 +143,7 @@ async function _getQuoteImpl(
   if (isBEApiConfigured()) {
     try {
       const beQuote = await Promise.race([
-        createBEQuote({ listingId, checkIn, checkOut, guests }),
+        createBEQuote({ listingId, checkIn, checkOut, guests, couponCode }),
         new Promise<never>((_, reject) => setTimeout(() => reject(new Error("be_quote_timeout")), 12_000)),
       ]);
       if (beQuote && beQuote.total > 0) {
@@ -302,10 +304,11 @@ export async function getQuoteWithDeadline(
   checkIn: string,
   checkOut: string,
   guests: number = 2,
-  deadlineMs = 12_000
+  deadlineMs = 12_000,
+  couponCode?: string
 ): Promise<QuoteResult> {
   return Promise.race([
-    getQuote(listingId, checkIn, checkOut, guests),
+    getQuote(listingId, checkIn, checkOut, guests, couponCode),
     new Promise<QuoteResult>((resolve) => {
       setTimeout(
         () => resolve(buildPriceOnRequestResult(listingId, checkIn, checkOut, guests)),
