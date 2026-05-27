@@ -4545,6 +4545,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Recomendo o aparte muito bom tudo próximo da pra fazer vários passeios caminhando tudo perfeito \nObrigado aos anfitriões pela estadia",
+        "guestName": "Guest",
+        "date": "2026-05-25T13:16:59.811Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "un très bon séjour dans ce logement. très agréable et plutôt bien situé par rapport au métro. il correspond bien aux photos, propre. attention à la porte coulissante de la salle de bain qui est apparemment souvent défectueuse. il serait bien de régler définitivement ce problème. cela ne nous a pas empêché de profiter pleinement du logement.",
         "guestName": "Guest",
         "date": "2026-05-15T19:57:19.634Z",
@@ -4609,7 +4641,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   },
   {
     "id": "guesty-696533a0ecf7490014ed31d5",
@@ -10488,6 +10520,38 @@
     "areaSquareFeet": 862,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Decent 1 bedroom walking distance from the beach. Main bed is comfortable, good a/c",
+        "guestName": "Guest",
+        "date": "2026-05-26T18:07:28.976Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Great location, cosy space 👍",
         "guestName": "Guest",
@@ -10616,8 +10680,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 4
+    "averageRating": 4.8,
+    "reviewCount": 5
   },
   {
     "id": "guesty-696533266dec35001492fdbb",
