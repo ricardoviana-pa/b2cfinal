@@ -2512,6 +2512,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Skønt sted. Nemt at komme til alt - gå eller metro. Kommer gerne igen😊",
+        "guestName": "Guest",
+        "date": "2026-05-26T15:14:22.510Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "I had a lovely stay at this apartment. The interior is very nice, just as the photos. The living room gets sunlight in the afternoon which makes it very bright and enjoyable. The terrace is also nice to enjoy some fresh air.\nThe apartment is very quiet and the bed comfortable so I slept really well. The kitchen is well equipped with everything I needed to cook. I especially appreciated having oil, vinegar and salt already available in the kitchen.\nI also liked the location, right in front of Mar",
         "guestName": "Guest",
         "date": "2026-05-02T15:14:32.794Z",
@@ -2544,7 +2576,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-696533d2ec19770014fd1b52",
@@ -2889,7 +2921,7 @@
     "id": "guesty-6965331fec80690013738c68",
     "slug": "connected-premium-lodge-cowork-and-5min-beach-738c68",
     "name": "Connected Premium Lodge - Cowork and 5min Beach",
-    "tagline": "Escape the hustle and bustle of the city and enjoy a peaceful and productive getaway at our stunning property. Perfect for co-working and group retrea…",
+    "tagline": "Escape to Portugal Active Connected Lodge, a stunning villa in Vila Nova de Anha, Viana do Castelo, offering a perfect blend of modern luxury and natu…",
     "tier": "select",
     "destination": "minho",
     "locality": "Viana do Castelo",
@@ -2903,11 +2935,9 @@
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/c047ab4e-76d5-41-QLYD8",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/6d9b171d-ddd3-43-v_Ie4",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/768913d2-8346-4e-tjTK1",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/3635ca35-8375-47-R9VyD",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/71f6a332-00b0-4d-_mnUE",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/e47da283-6254-4d-Yh7or",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/85c0ce96-fd53-48-PmoMT",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/98029be4-60d7-42-7qUZv",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/d5f6ca0e-bd43-47-KysQR",
@@ -2957,46 +2987,39 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/e2c50aed-e7f3-4c-1GFgr",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/bbd08635-e4fd-43-ovcP9",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/73136588-2174-41-v5_hh",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/ca752d4a-691b-48-WgO7w",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/3a5b8b4b-ad51-46-gVvYR",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/98e3e59b-4aad-49-3q1BI",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/33741366-7ae1-4d-CxurL",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/36abc009-ba32-47-kxvQn"
     ],
-    "description": "Escape the hustle and bustle of the city and enjoy a peaceful and productive getaway at our stunning property. Perfect for co-working and group retreats, the bright and spacious interior connects all the bedrooms, dining room, and kitchen to a tropical garden. Unwind outside with a great swimming pool, badminton set, outdoor fire pit, and amazing barbecue station. Our private garden offers both calmness and fun, making it the ideal retreat for your next vacation.\n\nLocated in Chafé, along the northern border of Viana do Castelo, Portugal Active Connected Lodge is a modern, beautiful, and full holiday home. It stands out thanks to its bright interior space, with an architecture that connects all the bedrooms, dining room, and kitchen to a very pleasing tropical garden. Outdoors, a great swimming pool, badminton set, an outdoor fire pit and amazing barbecue station. The calmness of surrounding nature within its private garden can easily suit those who look for calmness and fun!\n\nPortugal Active Connected Lodge is rented as a full property, the guests will be granted access to every spaces of the lodge.",
+    "description": "Escape to Portugal Active Connected Lodge, a stunning villa in Vila Nova de Anha, Viana do Castelo, offering a perfect blend of modern luxury and natural beauty. This stylish villa boasts a bright, open-plan design with a connection to a tropical garden, four comfortable bedrooms, and a range of amenities. Enjoy a refreshing outdoor pool, a cozy fire pit, and a barbecue area for unforgettable moments. Explore nearby beaches, charming cafes, and local attractions, or indulge in exclusive concierge services, including airport transfers and private chefs. Portugal Active Connected Lodge is your private hotel, promising an unforgettable stay.\n\nPortugal Active Connected Lodge offers spaces carefully designed for your comfort and enjoyment. The villa features four bedrooms, each designed to provide a restful and relaxing experience. In addition, the house has a fully equipped kitchen where you can prepare your favorite meals. The living room is a cozy space for socializing and entertainment. Outside, enjoy the garden, perfect for relaxing and appreciating nature, and the outdoor pool, ideal for moments of leisure and fun.\n\nNestled in the charming neighborhood of Vila Nova de Anha, Portugal Active Connected Lodge offers a tranquil escape with convenient access to local amenities. While the villa itself provides a serene retreat, you'll find a selection of shops and dining options within a short drive. Explore the local markets for fresh produce and experience the authentic flavors of Portuguese cuisine at nearby restaurants. For those seeking adventure, the stunning beaches of Viana do Castelo, Cabedelo and Amorosa, are a short drive away, perfect for a day of sun and surf. The area also boasts charming cafes and local bars, offering a taste of the relaxed Portuguese lifestyle. Discover the beauty and convenience of this delightful neighborhood, making your stay at Portugal Active Connected Lodge truly memorable.\n\nEnjoy exclusive access to the entire Portugal Active Connected Lodge villa and its many amenities. Guests have full access to all four private bedrooms, each designed for comfort and relaxation. The spacious living and dining areas are perfect for gatherings, and the fully equipped kitchen allows for convenient meal preparation. Step outside to discover the inviting outdoor spaces, including a refreshing swimming pool, a cozy fire pit, and a barbecue station, ideal for enjoying the beautiful Portuguese weather. Additional features include a laundry room, free parking, and high-speed internet. Our exclusive concierge services are also available to enhance your stay, offering luxury airport transfers, private chefs, and personalized experiences to make your stay truly unforgettable.\n\nGetting around Portugal Active Connected Lodge is easy! Free parking is available on-site for your convenience. For those arriving by air, Francisco Sá Carneiro Airport (OPO) in Porto is approximately a 45-minute drive away. Alternatively, Vigo–Peinador Airport (VGO) in Spain is about a 1-hour and 15-minute drive.. The nearest train station, Viana do Castelo, is a short drive away, offering connections to various destinations. Consider utilizing our exclusive concierge services for luxury airport transfers to make your arrival and departure seamless.\n\n--------Exclusive Concierge Services by Portugal Active--------\n\nEnhance Your Stay with Our Exclusive Services:\n\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from 30 euro/person.\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\n\n\n--------Adventure Experiences--------\n\n✔️ Horseback Riding:\nRide through scenic trails and beaches.\n\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\n\n✔️ E-Bike Wild Tour:\nDiscover Viana do Castelo on an e-bike.\n\nBook Your Stay.\nPortugal Active, Your Private Hotel.",
     "amenities": {
       "property": [
         "Air conditioning",
         "BBQ grill",
-        "Baby bath",
         "Baking sheet",
         "Barbeque utensils",
         "Bathtub",
-        "Beach access",
-        "Beach essentials",
         "Bed linens",
         "Blender",
         "Board games",
-        "Body soap",
+        "Cable TV",
         "Carbon monoxide detector",
-        "Changing table",
-        "Children’s books and toys",
-        "Children’s dinnerware",
+        "Cleaning Disinfection",
         "Cleaning before checkout",
         "Cleaning products",
         "Clothing storage",
         "Coffee",
         "Coffee maker",
-        "Coin Laundry",
-        "Conditioner",
         "Cookware",
         "Crib",
+        "Desk",
         "Dining table",
-        "Disabled parking spot",
         "Dishes and silverware",
         "Dishwasher",
         "Dryer",
         "EV charger",
+        "Enhanced cleaning practices",
         "Essentials",
         "Extra pillows and blankets",
         "Fire Pit",
@@ -3009,44 +3032,37 @@
         "Garden View",
         "Garden or backyard",
         "Hair dryer",
-        "Hammock",
         "Hangers",
         "Heating",
         "High chair",
+        "High touch surfaces disinfected",
         "Hot tub",
         "Hot water",
         "Indoor fireplace",
+        "Internet",
         "Iron",
         "Kettle",
         "Kitchen",
         "Laptop friendly workspace",
         "Long term stays allowed",
-        "Luggage dropoff allowed",
         "Microwave",
-        "Outdoor kitchen",
         "Outdoor pool",
         "Outdoor seating (furniture)",
-        "Outlet covers",
         "Oven",
-        "Pack ’n Play/travel crib",
         "Patio or balcony",
         "Pets allowed",
         "Ping pong table",
         "Private entrance",
         "Private pool",
         "Refrigerator",
-        "Rooftop pool",
-        "Room-darkening shades",
-        "Safe",
         "Shampoo",
         "Shower gel",
         "Smoke detector",
-        "Sound system",
         "Stove",
         "TV",
         "Toaster",
+        "Towels provided",
         "Washer",
-        "Waterfront",
         "Wine glasses",
         "Wireless Internet"
       ],
@@ -3065,16 +3081,16 @@
     "sortOrder": 0,
     "isActive": true,
     "seoTitle": "Connected Premium Lodge - Cowork and 5min Beach — Portugal Active",
-    "seoDescription": "Escape the hustle and bustle of the city and enjoy a peaceful and productive getaway at our stunning property. Perfect for co-working and group retreats, the br",
+    "seoDescription": "Escape to Portugal Active Connected Lodge, a stunning villa in Vila Nova de Anha, Viana do Castelo, offering a perfect blend of modern luxury and natural beauty",
     "address": {
       "full": "",
-      "street": "Travessa da Estrada Nova 1",
+      "street": "Travessa da Estrada Nova 187",
       "city": "Viana do Castelo",
       "state": "Viana do Castelo",
       "zipcode": "",
       "country": "Portugal",
-      "lat": 41.658012353148,
-      "lng": -8.7805911120949
+      "lat": 41.6579962,
+      "lng": -8.7805081
     },
     "rooms": [
       {
@@ -3124,9 +3140,9 @@
       }
     ],
     "propertyType": "Villa",
-    "checkInTime": "17:00",
+    "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 2152.78208,
+    "areaSquareFeet": 2152.782,
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0
@@ -3889,6 +3905,38 @@
     "areaSquareFeet": 1690,
     "reviews": [
       {
+        "rating": 4,
+        "text": "La casa es muy bonita, está nueva y en una zona muy tranquila. Además, la atención y las respuestas fueron rápidas en todo momento.\n\nAun así, hubo varios detalles que no nos gustaron. Echamos en falta más toallas y, además, el papel higiénico que dejaron no nos llegó para toda la estancia, así que tuvimos que ir a comprar más. También una persiana eléctrica de una habitación no funcionaba desde el primer día y tardaron tres días en arreglarla, dejando media estancia prácticamente inutilizable. D",
+        "guestName": "Guest",
+        "date": "2026-05-19T17:39:56.668Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Väldigt trevlig villa som hade allt vi önskade. Fina rum och stor öppen planlösning. Grillområdet var ett extra + som förgyllde vistelsen.",
         "guestName": "Guest",
@@ -3921,8 +3969,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 1
+    "averageRating": 4.5,
+    "reviewCount": 2
   },
   {
     "id": "guesty-69653394ecf7490014ed2ed9",
@@ -6348,6 +6396,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Logement parfait. Tout y est : accessoires de cuisine, condiments, eau fraîche préparée d'avance au frigo, jaccuzi opérationnel, shampooing et gel douche, etc. Tout est bien agencé, pratique, joli et calme ! Emplacement parfait, parking dans la rue (soit en stationnement en créneau, soit dans un parking sous-terrain), à produire centre ville (15min à pieds) et de très bons restaurants (directement dans la rue ou dans les rues voisines).\nPersonnel très réactif à toute heure de la semaine et du we",
+        "guestName": "Guest",
+        "date": "2026-05-27T06:45:40.389Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Our stay in this apartment was excellent! The apartment was nice and cozy. Also, the jacuzzi is a great addition to the house, perfect after a long day of walking the hills of beautiful Porto!",
         "guestName": "Guest",
         "date": "2026-05-17T10:19:25.176Z",
@@ -6668,7 +6748,7 @@
       }
     ],
     "averageRating": 4.5,
-    "reviewCount": 10
+    "reviewCount": 11
   },
   {
     "id": "guesty-69653390ecf7490014ed2d6c",
@@ -11488,231 +11568,6 @@
     ],
     "averageRating": 5,
     "reviewCount": 2
-  },
-  {
-    "id": "guesty-69821fb053fbb200138dfb5e",
-    "slug": "portugal-active-connected-lodge-8dfb5e",
-    "name": "Portugal Active Connected Lodge",
-    "tagline": "Escape to Portugal Active Connected Lodge, a stunning villa in Vila Nova de Anha, Viana do Castelo, offering a perfect blend of modern luxury and natu…",
-    "tier": "select",
-    "destination": "minho",
-    "locality": "Viana do Castelo",
-    "bedrooms": 4,
-    "bathrooms": 1,
-    "maxGuests": 12,
-    "priceFrom": 1000,
-    "pricePerNight": 1000,
-    "cleaningFee": 200,
-    "minNights": 2,
-    "currency": "EUR",
-    "images": [
-      "https://assets.guesty.com/image/upload/v1770135461/production/6957de4388cba42d9e7a905e/avan17u7isxk2rv4rswq.jpg",
-      "https://assets.guesty.com/image/upload/v1779883805/production/6957de4388cba42d9e7a905e/orodhzvjgk1mjn7yxaqe.jpg",
-      "https://assets.guesty.com/image/upload/v1779883825/production/6957de4388cba42d9e7a905e/vxu3k1sukx0ymjsz85ua.jpg",
-      "https://assets.guesty.com/image/upload/v1779883806/production/6957de4388cba42d9e7a905e/yjslhdy0gasdwaezj9oh.jpg",
-      "https://assets.guesty.com/image/upload/v1779883799/production/6957de4388cba42d9e7a905e/crodqbsldbtgb9h0bzeg.jpg",
-      "https://assets.guesty.com/image/upload/v1779883803/production/6957de4388cba42d9e7a905e/mcvosv5mql0vx5fsntoe.jpg",
-      "https://assets.guesty.com/image/upload/v1779883796/production/6957de4388cba42d9e7a905e/p5xsimxhghdfitqehlao.jpg",
-      "https://assets.guesty.com/image/upload/v1779883799/production/6957de4388cba42d9e7a905e/ayf5sokx2bngftaebvgo.jpg",
-      "https://assets.guesty.com/image/upload/v1779883796/production/6957de4388cba42d9e7a905e/cgimr9y0llazwwjepzn4.jpg",
-      "https://assets.guesty.com/image/upload/v1779883815/production/6957de4388cba42d9e7a905e/c6dl3obgahc38dbwpkib.jpg",
-      "https://assets.guesty.com/image/upload/v1779883796/production/6957de4388cba42d9e7a905e/lcawj7a3txttmsnakw6d.jpg",
-      "https://assets.guesty.com/image/upload/v1779883807/production/6957de4388cba42d9e7a905e/vezfjqpgrk9kxytnplnv.jpg",
-      "https://assets.guesty.com/image/upload/v1779883815/production/6957de4388cba42d9e7a905e/i2iipfpj6prqxavpqebw.jpg",
-      "https://assets.guesty.com/image/upload/v1779883799/production/6957de4388cba42d9e7a905e/jakp1nzwegppog6lerbf.jpg",
-      "https://assets.guesty.com/image/upload/v1779883809/production/6957de4388cba42d9e7a905e/zok0cmyrtvzxluysxj7e.jpg",
-      "https://assets.guesty.com/image/upload/v1779883805/production/6957de4388cba42d9e7a905e/ahh07xmpsxchywcvbq5k.jpg",
-      "https://assets.guesty.com/image/upload/v1779883803/production/6957de4388cba42d9e7a905e/pgvfgi02eyq24wkjbigf.jpg",
-      "https://assets.guesty.com/image/upload/v1779883812/production/6957de4388cba42d9e7a905e/izvwnhhxbnmeaxc9ih0a.jpg",
-      "https://assets.guesty.com/image/upload/v1779883828/production/6957de4388cba42d9e7a905e/y0ftaltk1esaimfdpyrq.jpg",
-      "https://assets.guesty.com/image/upload/v1779883812/production/6957de4388cba42d9e7a905e/ezjolhvhium1jizprpyj.jpg",
-      "https://assets.guesty.com/image/upload/v1779883813/production/6957de4388cba42d9e7a905e/gnqg9btno6zcc1rtm16f.jpg",
-      "https://assets.guesty.com/image/upload/v1779883807/production/6957de4388cba42d9e7a905e/zddk7nd6uutmq16qqiqh.jpg",
-      "https://assets.guesty.com/image/upload/v1779883814/production/6957de4388cba42d9e7a905e/rflffb0ikkllb2m5tppf.jpg",
-      "https://assets.guesty.com/image/upload/v1779883810/production/6957de4388cba42d9e7a905e/sbd7zydn9jhrr79fqsjd.jpg",
-      "https://assets.guesty.com/image/upload/v1779883810/production/6957de4388cba42d9e7a905e/x87zl0oy681qx0kakbod.jpg",
-      "https://assets.guesty.com/image/upload/v1779883812/production/6957de4388cba42d9e7a905e/pncacdbudkw9foiryss9.jpg",
-      "https://assets.guesty.com/image/upload/v1779883815/production/6957de4388cba42d9e7a905e/t092mvgygv60eaar30og.jpg",
-      "https://assets.guesty.com/image/upload/v1779883812/production/6957de4388cba42d9e7a905e/xvtzm1vvn20igrynnohu.jpg",
-      "https://assets.guesty.com/image/upload/v1779883816/production/6957de4388cba42d9e7a905e/dhht2tbggytul0cm19qh.jpg",
-      "https://assets.guesty.com/image/upload/v1779883817/production/6957de4388cba42d9e7a905e/ilo134vmuphq0ewemzmc.jpg",
-      "https://assets.guesty.com/image/upload/v1779883817/production/6957de4388cba42d9e7a905e/m06hmh9yu3bx5iyoodt9.jpg",
-      "https://assets.guesty.com/image/upload/v1779883802/production/6957de4388cba42d9e7a905e/zwnrdqjzd0ye5zyzg82j.jpg",
-      "https://assets.guesty.com/image/upload/v1779883818/production/6957de4388cba42d9e7a905e/bbo8cvi46wn5bwxfd7fr.jpg",
-      "https://assets.guesty.com/image/upload/v1779883822/production/6957de4388cba42d9e7a905e/h7q8milmjs0bppiar2vd.jpg",
-      "https://assets.guesty.com/image/upload/v1779883819/production/6957de4388cba42d9e7a905e/v2tbsz8rti9f8sswjhae.jpg",
-      "https://assets.guesty.com/image/upload/v1779883819/production/6957de4388cba42d9e7a905e/svpikfdk5htvvesriupx.jpg",
-      "https://assets.guesty.com/image/upload/v1779883819/production/6957de4388cba42d9e7a905e/zaou5a34tfbrhivhu81x.jpg",
-      "https://assets.guesty.com/image/upload/v1779883820/production/6957de4388cba42d9e7a905e/tckd0cr7rchlaowntevi.jpg",
-      "https://assets.guesty.com/image/upload/v1779883821/production/6957de4388cba42d9e7a905e/rnvk3uftbgbdvlunmj3e.jpg",
-      "https://assets.guesty.com/image/upload/v1779883829/production/6957de4388cba42d9e7a905e/j6pttiovos2izlh1zgb1.jpg",
-      "https://assets.guesty.com/image/upload/v1779883796/production/6957de4388cba42d9e7a905e/ioxzcjtr8swh8irhlqrf.jpg",
-      "https://assets.guesty.com/image/upload/v1779883822/production/6957de4388cba42d9e7a905e/w3z43vio1wirtaryq84b.jpg",
-      "https://assets.guesty.com/image/upload/v1779883822/production/6957de4388cba42d9e7a905e/vndgfvxwmjcnsdykqo19.jpg",
-      "https://assets.guesty.com/image/upload/v1779883823/production/6957de4388cba42d9e7a905e/qtcdxfv10s4gwc4mgm6h.jpg",
-      "https://assets.guesty.com/image/upload/v1779883825/production/6957de4388cba42d9e7a905e/obgwhixicg1tvjlisnbq.jpg",
-      "https://assets.guesty.com/image/upload/v1779883823/production/6957de4388cba42d9e7a905e/sbneexniudw2b9c111i2.jpg",
-      "https://assets.guesty.com/image/upload/v1779883825/production/6957de4388cba42d9e7a905e/ytqti8sdhyjdq9nolzk4.jpg",
-      "https://assets.guesty.com/image/upload/v1779883825/production/6957de4388cba42d9e7a905e/hxzcf7ykoo7ilitje4bd.jpg",
-      "https://assets.guesty.com/image/upload/v1779883826/production/6957de4388cba42d9e7a905e/vpl6fyxm19k1b1vu0kn4.jpg",
-      "https://assets.guesty.com/image/upload/v1779883827/production/6957de4388cba42d9e7a905e/jbqgd6ylrq4t1ncywjzj.jpg",
-      "https://assets.guesty.com/image/upload/v1779883856/production/6957de4388cba42d9e7a905e/jdeufl8brrxwmqnhsaw6.jpg",
-      "https://assets.guesty.com/image/upload/v1779883856/production/6957de4388cba42d9e7a905e/ymanh17q1tnt3terdu42.jpg",
-      "https://assets.guesty.com/image/upload/v1779883856/production/6957de4388cba42d9e7a905e/kzamn6mdyfavfsyexdcs.jpg",
-      "https://assets.guesty.com/image/upload/v1779883856/production/6957de4388cba42d9e7a905e/m7rsrxs9sgi47dwpl2lw.jpg"
-    ],
-    "description": "Escape to Portugal Active Connected Lodge, a stunning villa in Vila Nova de Anha, Viana do Castelo, offering a perfect blend of modern luxury and natural beauty. This stylish villa boasts a bright, open-plan design with a connection to a tropical garden, four comfortable bedrooms, and a range of amenities. Enjoy a refreshing outdoor pool, a cozy fire pit, and a barbecue area for unforgettable moments. Explore nearby beaches, charming cafes, and local attractions, or indulge in exclusive concierge services, including airport transfers and private chefs. Portugal Active Connected Lodge is your private hotel, promising an unforgettable stay.\n\nPortugal Active Connected Lodge offers spaces carefully designed for your comfort and enjoyment. The villa features four bedrooms, each designed to provide a restful and relaxing experience. In addition, the house has a fully equipped kitchen where you can prepare your favorite meals. The living room is a cozy space for socializing and entertainment. Outside, enjoy the garden, perfect for relaxing and appreciating nature, and the outdoor pool, ideal for moments of leisure and fun. \n\nNestled in the charming neighborhood of Vila Nova de Anha, Portugal Active Connected Lodge offers a tranquil escape with convenient access to local amenities. While the villa itself provides a serene retreat, you'll find a selection of shops and dining options within a short drive. Explore the local markets for fresh produce and experience the authentic flavors of Portuguese cuisine at nearby restaurants. For those seeking adventure, the stunning beaches of Viana do Castelo, Cabedelo and Amorosa, are a short drive away, perfect for a day of sun and surf. The area also boasts charming cafes and local bars, offering a taste of the relaxed Portuguese lifestyle. Discover the beauty and convenience of this delightful neighborhood, making your stay at Portugal Active Connected Lodge truly memorable.\n\nEnjoy exclusive access to the entire Portugal Active Connected Lodge villa and its many amenities. Guests have full access to all four private bedrooms, each designed for comfort and relaxation. The spacious living and dining areas are perfect for gatherings, and the fully equipped kitchen allows for convenient meal preparation. Step outside to discover the inviting outdoor spaces, including a refreshing swimming pool, a cozy fire pit, and a barbecue station, ideal for enjoying the beautiful Portuguese weather. Additional features include a laundry room, free parking, and high-speed internet. Our exclusive concierge services are also available to enhance your stay, offering luxury airport transfers, private chefs, and personalized experiences to make your stay truly unforgettable.\n\nGetting around Portugal Active Connected Lodge is easy! Free parking is available on-site for your convenience. For those arriving by air, Francisco Sá Carneiro Airport (OPO) in Porto is approximately a 45-minute drive away. Alternatively, Vigo–Peinador Airport (VGO) in Spain is about a 1-hour and 15-minute drive.. The nearest train station, Viana do Castelo, is a short drive away, offering connections to various destinations. Consider utilizing our exclusive concierge services for luxury airport transfers to make your arrival and departure seamless.\n\n--------Exclusive Concierge Services by Portugal Active--------\n\nEnhance Your Stay with Our Exclusive Services:\n\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from 30 euro/person.\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\n\n\n--------Adventure Experiences--------\n\n✔️ Horseback Riding:\nRide through scenic trails and beaches.\n\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\n\n✔️ E-Bike Wild Tour:\nDiscover Viana do Castelo on an e-bike.\n\nBook Your Stay.\nPortugal Active, Your Private Hotel.",
-    "amenities": {
-      "property": [
-        "Air conditioning",
-        "BBQ grill",
-        "Baking sheet",
-        "Barbeque utensils",
-        "Bathtub",
-        "Bed linens",
-        "Cable TV",
-        "Cleaning Disinfection",
-        "Cleaning products",
-        "Clothing storage",
-        "Coffee",
-        "Coffee maker",
-        "Cookware",
-        "Crib",
-        "Cycling",
-        "Desk",
-        "Dining table",
-        "Dishes and silverware",
-        "Dishwasher",
-        "Dryer",
-        "EV charger",
-        "Enhanced cleaning practices",
-        "Essentials",
-        "Fire Pit",
-        "Fire extinguisher",
-        "First aid kit",
-        "Fishing",
-        "Free parking on premises",
-        "Freezer",
-        "Garden or backyard",
-        "Gym",
-        "Hair dryer",
-        "Hangers",
-        "Heating",
-        "High chair",
-        "High touch surfaces disinfected",
-        "Horseback Riding",
-        "Hot water",
-        "Ice maker",
-        "Indoor fireplace",
-        "Internet",
-        "Iron",
-        "Kettle",
-        "Kitchen",
-        "Laptop friendly workspace",
-        "Microwave",
-        "Museums",
-        "Outdoor pool",
-        "Oven",
-        "Patio or balcony",
-        "Pets allowed",
-        "Ping pong table",
-        "Private entrance",
-        "Refrigerator",
-        "Sauna",
-        "Shampoo",
-        "Shopping",
-        "Shower gel",
-        "Stove",
-        "Suitable for children (2-12 years)",
-        "Suitable for infants (under 2 years)",
-        "TV",
-        "Toaster",
-        "Towels provided",
-        "Washer",
-        "Water Sports",
-        "Wine glasses",
-        "Wireless Internet"
-      ],
-      "bedrooms": [],
-      "kitchen": [],
-      "services": []
-    },
-    "stayIncludes": [],
-    "style": "",
-    "tags": [],
-    "occasions": [],
-    "bookingUrl": "",
-    "guestyId": "69821fb053fbb200138dfb5e",
-    "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Portugal Active Connected Lodge",
-    "sortOrder": 0,
-    "isActive": true,
-    "seoTitle": "Portugal Active Connected Lodge — Portugal Active",
-    "seoDescription": "Escape to Portugal Active Connected Lodge, a stunning villa in Vila Nova de Anha, Viana do Castelo, offering a perfect blend of modern luxury and natural beauty",
-    "address": {
-      "full": "",
-      "street": "Travessa da Estrada Nova 187",
-      "city": "Viana do Castelo",
-      "state": "Viana do Castelo",
-      "zipcode": "",
-      "country": "Portugal",
-      "lat": 41.6578882,
-      "lng": -8.780471799999999
-    },
-    "rooms": [
-      {
-        "name": "Bedroom 1",
-        "beds": [
-          {
-            "type": "SINGLE_BED",
-            "quantity": 2
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 2",
-        "beds": [
-          {
-            "type": "DOUBLE_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 3",
-        "beds": [
-          {
-            "type": "SINGLE_BED",
-            "quantity": 2
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 4",
-        "beds": [
-          {
-            "type": "DOUBLE_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 5",
-        "beds": [
-          {
-            "type": "BUNK_BED",
-            "quantity": 2
-          }
-        ]
-      }
-    ],
-    "propertyType": "Villa",
-    "checkInTime": "16:00",
-    "checkOutTime": "11:00",
-    "areaSquareFeet": 65,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
   },
   {
     "id": "guesty-69653335bf04fe0013742743",
@@ -17340,6 +17195,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Die Unterkunft von Portugal Active ist eine sehr schöne Möglichkeit abzuschalten und Sonne und Natur zu genießen. \nWir haben uns nie gelangweilt, auch wenn es abends gewittert hat. Man konnte innen sowie außen in großen Gruppen sitzen. \nWir würden uns freuen, wenn wir nochmal kommen könnten und möglicherweise auch weitere Unterkünfte von Portugal active verteilt im Land kennenlernen.",
+        "guestName": "Guest",
+        "date": "2026-05-28T12:18:34.706Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "3 dias muito bem passados neste alojamento. Casa fantástica, muito bem cuidada, com imenso terreno circundante para as crianças correrem e brincarem. Anfitrião bastante flexível e simpático. Pena o tempo ter sido chuvoso o que não deu tanto para aproveitar a piscina e o jacuzzi. A casa está muito bem apetrechada de louça, atoalhados, jogos, para passar o tempo com qualidade. Sem dúvida queremos voltar e recomendo.",
         "guestName": "Guest",
         "date": "2026-05-03T17:56:28.376Z",
@@ -17468,7 +17355,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 4
+    "reviewCount": 5
   },
   {
     "id": "guesty-696f6aad74604800452a40b8",
