@@ -14,18 +14,19 @@ const FROM_EMAIL = process.env.EMAIL_FROM || "Portugal Active <hello@portugalact
 /* ================================================================
    CORE SEND
    ================================================================ */
-async function sendEmail(to: string, subject: string, html: string): Promise<void> {
+async function sendEmail(to: string, subject: string, html: string, replyTo?: string): Promise<void> {
   if (isProduction && resend) {
     const { error } = await resend.emails.send({
       from: FROM_EMAIL,
       to,
       subject,
       html,
+      ...(replyTo ? { replyTo } : {}),
     });
     if (error) throw new Error(`Resend error: ${error.message}`);
     console.info(`[EMAIL] Sent to ${to}: "${subject}"`);
   } else {
-    console.log(`\n[EMAIL SERVICE - DEV MODE] To: ${to} | Subject: ${subject}`);
+    console.log(`\n[EMAIL SERVICE - DEV MODE] To: ${to}${replyTo ? ` | Reply-To: ${replyTo}` : ""} | Subject: ${subject}`);
     console.log(html);
     console.log(`[EMAIL SERVICE - DEV MODE] End of email\n`);
   }
@@ -383,4 +384,81 @@ export async function sendPostStay(data: PostStayData): Promise<void> {
 </td></tr>`);
 
   await sendEmail(data.guestEmail, subject, html);
+}
+
+/* ================================================================
+   CONTACT FORM INQUIRY (internal — to info@portugalactive.com)
+   Reply-To is set to the visitor's email so replies go directly to them.
+   ================================================================ */
+interface ContactInquiryData {
+  name: string;
+  email: string;
+  phone?: string;
+  subject: string;
+  message: string;
+}
+
+const CONTACT_NOTIFICATION_EMAIL = process.env.CONTACT_NOTIFICATION_EMAIL || "info@portugalactive.com";
+
+const SUBJECT_LABELS: Record<string, string> = {
+  "plan-my-stay": "Plan My Stay",
+  "property-info": "Property Information",
+  "services": "Services",
+  "partnerships": "Partnerships",
+  "other": "Other",
+  "general": "General",
+};
+
+export async function sendContactInquiryNotification(data: ContactInquiryData): Promise<void> {
+  const subjectLabel = SUBJECT_LABELS[data.subject] || data.subject;
+  const emailSubject = `New enquiry: ${subjectLabel} — ${data.name}`;
+
+  const html = wrapTemplate(`
+<tr><td style="padding:0 0 24px 0;">
+  <h1 style="font-family:Georgia,serif;font-size:22px;color:#1A1A18;margin:0;font-weight:400;">New contact form submission</h1>
+  <p style="font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;margin:6px 0 0 0;">Reply to this email to respond directly to the enquirer.</p>
+</td></tr>
+
+<tr><td style="padding:0 0 20px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAFAF7;border:1px solid #E8E4DC;">
+  <tr><td style="padding:20px;">
+    <p style="font-family:Arial,sans-serif;font-size:11px;color:#9E9A90;margin:0 0 12px 0;text-transform:uppercase;letter-spacing:0.05em;">Enquirer</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">
+      <tr>
+        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;width:80px;">Name</td>
+        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;font-weight:600;">${data.name}</td>
+      </tr>
+      <tr>
+        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;">Email</td>
+        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:14px;color:#8B7355;">
+          <a href="mailto:${data.email}" style="color:#8B7355;text-decoration:none;">${data.email}</a>
+        </td>
+      </tr>
+      ${data.phone ? `<tr>
+        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;">Phone</td>
+        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;">
+          <a href="https://wa.me/${data.phone.replace(/[^0-9+]/g, "")}" style="color:#1A1A18;text-decoration:none;">${data.phone}</a>
+        </td>
+      </tr>` : ""}
+      <tr>
+        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;">Subject</td>
+        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;">${subjectLabel}</td>
+      </tr>
+    </table>
+  </td></tr>
+</table>
+</td></tr>
+
+<tr><td style="padding:0 0 8px 0;">
+  <p style="font-family:Arial,sans-serif;font-size:11px;color:#9E9A90;margin:0;text-transform:uppercase;letter-spacing:0.05em;">Message</p>
+</td></tr>
+<tr><td style="padding:0 0 20px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAFAF7;border:1px solid #E8E4DC;">
+  <tr><td style="padding:20px;">
+    <p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0;white-space:pre-wrap;">${data.message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+  </td></tr>
+</table>
+</td></tr>`);
+
+  await sendEmail(CONTACT_NOTIFICATION_EMAIL, emailSubject, html, data.email);
 }

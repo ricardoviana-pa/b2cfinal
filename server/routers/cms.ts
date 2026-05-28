@@ -2,6 +2,7 @@ import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../_core/trpc";
 import * as db from "../db";
 import { sendContactConfirmation, sendContactNotification, sendNewsletterWelcome } from "../services/email";
+import { sendContactInquiryNotification } from "../services/transactional-email";
 
 /* ================================================================
    DESTINATIONS
@@ -261,6 +262,7 @@ export const leadsRouter = router({
         const messageBody = input.message?.replace(/^\[.*?\]\s*/, '') || '';
         sendContactConfirmation(input.email, input.name).catch(e => console.error("[Email] Contact confirmation failed:", e));
         sendContactNotification({ name: input.name, email: input.email, phone: input.phone, subject, message: messageBody }).catch(e => console.error("[Email] Team notification failed:", e));
+        sendContactInquiryNotification({ name: input.name, email: input.email, phone: input.phone, subject, message: messageBody }).catch(e => console.error("[Email] Contact inquiry notification failed:", e));
       } else if (input.source.startsWith('newsletter')) {
         sendNewsletterWelcome(input.email).catch(e => console.error("[Email] Newsletter welcome failed:", e));
       }
