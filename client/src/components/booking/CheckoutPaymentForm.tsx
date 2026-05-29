@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { trpc } from "@/lib/trpc";
+import { PayPalCheckoutButton } from "./PayPalCheckoutButton";
 
 const EUR = "\u20AC";
 
@@ -244,6 +245,8 @@ function PaymentFormInner({
 
 export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
   const { i18n } = useTranslation();
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "paypal">("card");
+  const [paypalError, setPaypalError] = useState("");
   const { data: stripeConfig, isLoading: stripeConfigLoading } = trpc.booking.getStripeConfig.useQuery();
   // Per-listing payment provider: fetch the Stripe connected account for this property
   const { data: paymentProvider, isLoading: providerLoading } = trpc.booking.getPaymentProvider.useQuery(
@@ -306,9 +309,91 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
     return null;
   }
 
+  const nameParts = props.guestName.trim().split(/\s+/);
+  const guestFirstName = nameParts[0] || props.guestName;
+  const guestLastName = nameParts.slice(1).join(" ") || guestFirstName;
+
   return (
-    <Elements stripe={stripePromise} options={elementsOptions}>
-      <PaymentFormInner {...props} />
-    </Elements>
+    <div className="space-y-4">
+      {/* Payment method toggle */}
+      <div style={{ display: "flex", gap: "8px" }}>
+        <button
+          type="button"
+          onClick={() => { setPaymentMethod("card"); setPaypalError(""); }}
+          style={{
+            flex: 1,
+            padding: "10px",
+            border: `2px solid ${paymentMethod === "card" ? "#1A1A18" : "#E8E4DC"}`,
+            background: paymentMethod === "card" ? "#1A1A18" : "#fff",
+            color: paymentMethod === "card" ? "#fff" : "#1A1A18",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontWeight: 600,
+            fontSize: "13px",
+          }}
+        >
+          Card / Apple Pay / MB Way
+        </button>
+        <button
+          type="button"
+          onClick={() => { setPaymentMethod("paypal"); setPaypalError(""); }}
+          style={{
+            flex: 1,
+            padding: "10px",
+            border: `2px solid ${paymentMethod === "paypal" ? "#003087" : "#E8E4DC"}`,
+            background: paymentMethod === "paypal" ? "#003087" : "#fff",
+            color: paymentMethod === "paypal" ? "#fff" : "#1A1A18",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontWeight: 600,
+            fontSize: "13px",
+          }}
+        >
+          PayPal
+        </button>
+      </div>
+
+      {paymentMethod === "card" && (
+        <Elements stripe={stripePromise} options={elementsOptions}>
+          <PaymentFormInner {...props} />
+        </Elements>
+      )}
+
+      {paymentMethod === "paypal" && (
+        <div className="space-y-3">
+          {paypalError && (
+            <div className="flex items-start gap-2 p-3 bg-[#F5F1EB] border border-[#DC2626] rounded-md">
+              <span className="text-[#DC2626] mt-0.5 shrink-0" aria-hidden>&#9888;</span>
+              <p className="text-[#DC2626] text-sm leading-snug">{paypalError}</p>
+            </div>
+          )}
+          <PayPalCheckoutButton
+            amount={props.total}
+            currency={props.currency || "eur"}
+            listingId={props.listingId}
+            checkIn={props.checkIn}
+            checkOut={props.checkOut}
+            guestDetails={{
+              firstName: guestFirstName,
+              lastName: guestLastName,
+              email: props.guestEmail,
+              phone: props.guestPhone || undefined,
+            }}
+            numberOfGuests={{
+              adults: props.guests || 2,
+              children: 0,
+              infants: 0,
+            }}
+            propertyName={props.propertyName}
+            destination={props.destination}
+            stripePublishableKey={stripeConfig.publishableKey}
+            onError={(msg) => setPaypalError(msg)}
+          />
+          <button type="button" onClick={props.onCancel} className="btn-ghost w-full">
+            Cancel
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
