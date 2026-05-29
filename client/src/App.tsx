@@ -35,6 +35,7 @@ const BlogArticle = lazy(() => import("./pages/BlogArticle"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const Careers = lazy(() => import("./pages/Careers"));
 const BookingConfirmationPage = lazy(() => import("./pages/booking/BookingConfirmationPage"));
+const PayPalReturnPage = lazy(() => import("./pages/booking/PayPalReturnPage"));
 const AdminRouter = lazy(() => import("./pages/admin/index"));
 const Login = lazy(() => import("./pages/Login"));
 const Account = lazy(() => import("./pages/Account"));
@@ -160,6 +161,7 @@ function Router() {
         <Route path="/careers" component={Careers} />
         <Route path="/owners" component={OwnersRedirect} />
         <Route path="/booking/confirmation/:id" component={BookingConfirmationPage} />
+        <Route path="/booking/paypal-return" component={PayPalReturnPage} />
         <Route path="/login" component={Login} />
         <Route path="/account" component={Account} />
         <Route path="/owners-portal" component={OwnersRedirect} />
