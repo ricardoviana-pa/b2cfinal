@@ -10847,6 +10847,38 @@
     "areaSquareFeet": 862,
     "reviews": [
       {
+        "rating": 5,
+        "text": "对于需要去海滩风筝冲浪和冲浪的玩家来说，位置非常方便。也有小庭院可以用！装修可能时间稍长了，但整体还算比较方便！房东基本上响应积极！",
+        "guestName": "Guest",
+        "date": "2026-05-29T05:18:25.281Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "Decent 1 bedroom walking distance from the beach. Main bed is comfortable, good a/c",
         "guestName": "Guest",
@@ -11008,7 +11040,7 @@
       }
     ],
     "averageRating": 4.8,
-    "reviewCount": 5
+    "reviewCount": 6
   },
   {
     "id": "guesty-696533266dec35001492fdbb",
