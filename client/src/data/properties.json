@@ -11914,6 +11914,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "One of the best places I have ever stayed, facilities were excellent and when we arrived everything so spotlessly clean we could have believe we were the first guests to stay! Staff on hand to help with any issues and a beautiful villa, well situated but necessary to have a car for sure - a beautiful scenic view and happily housed myself and 10 relatives for the week. \n\nSmall feedback; the check in process and keys/fobs alongside where to use them could have been more instructed to make for a sm",
+        "guestName": "Guest",
+        "date": "2026-05-29T11:35:06.977Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Todo perfecto.",
         "guestName": "Guest",
         "date": "2026-05-06T19:33:28.523Z",
@@ -11978,7 +12010,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   },
   {
     "id": "guesty-696533494b9b64001401b62e",
@@ -14542,6 +14574,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "We loved our stay, close to the beach an Ferry, very nice restaurants  close by, \nlovely biiiiig beach, perfect for surfing. \nWe enjoyed the terrace for a BBQ. \nonly downside was that the appartement is a bit badly soundproofed  so maybe not the best for light sleepers.",
+        "guestName": "Guest",
+        "date": "2026-05-29T19:20:56.081Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Gostamos muito da nossa estadia, zona bonita e agradável. O apartamento corresponde ao partilhado nas fotos, é impecável.",
         "guestName": "Guest",
         "date": "2026-04-05T19:22:07.615Z",
@@ -14605,8 +14669,8 @@
         ]
       }
     ],
-    "averageRating": 4.5,
-    "reviewCount": 2
+    "averageRating": 4.7,
+    "reviewCount": 3
   },
   {
     "id": "guesty-696533752def930014e9167c",
