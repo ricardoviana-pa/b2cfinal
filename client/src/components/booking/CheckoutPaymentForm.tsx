@@ -25,7 +25,7 @@ const STRIPE_METHOD_TYPES: Record<Exclude<PaymentMethodId, "paypal">, string[]> 
 
 function CardLogo() {
   return (
-    <svg width="36" height="25" viewBox="0 0 36 25" fill="none" aria-label="Card">
+    <svg width="36" height="25" viewBox="0 0 36 25" fill="none" aria-label="Card" role="img">
       <rect x="0.6" y="0.6" width="34.8" height="23.8" rx="4" fill="#fff" stroke="#d9d9e1" strokeWidth="1.2" />
       <rect x="0.6" y="5" width="34.8" height="5" fill="#3a3a46" />
       <rect x="5" y="15.5" width="11" height="3" rx="1.5" fill="#cfcfd8" />
