@@ -361,9 +361,9 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
       currency: (props.currency || "eur").toLowerCase(),
       paymentMethodCreation: "manual" as const,
       locale: i18n.language as any,
-      ...(paymentMethod !== "paypal" && {
-        paymentMethodTypes: STRIPE_METHOD_TYPES[paymentMethod as Exclude<PaymentMethodId, "paypal">],
-      }),
+      ...(paymentMethod !== "paypal"
+        ? { paymentMethodTypes: STRIPE_METHOD_TYPES[paymentMethod] }
+        : {}),
       appearance: {
         theme: "stripe" as const,
         variables: {
@@ -400,46 +400,60 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
 
   return (
     <div className="space-y-4">
-      {/* Payment method toggle */}
-      <div style={{ display: "flex", gap: "8px" }}>
-        <button
-          type="button"
-          onClick={() => { setPaymentMethod("card"); setPaypalError(""); }}
-          style={{
-            flex: 1,
-            padding: "10px",
-            border: `2px solid ${paymentMethod === "card" ? "#1A1A18" : "#E8E4DC"}`,
-            background: paymentMethod === "card" ? "#1A1A18" : "#fff",
-            color: paymentMethod === "card" ? "#fff" : "#1A1A18",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontWeight: 600,
-            fontSize: "13px",
-          }}
-        >
-          Card / Apple Pay / MB Way
-        </button>
-        <button
-          type="button"
-          onClick={() => { setPaymentMethod("paypal"); setPaypalError(""); }}
-          style={{
-            flex: 1,
-            padding: "10px",
-            border: `2px solid ${paymentMethod === "paypal" ? "#003087" : "#E8E4DC"}`,
-            background: paymentMethod === "paypal" ? "#003087" : "#fff",
-            color: paymentMethod === "paypal" ? "#fff" : "#1A1A18",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontWeight: 600,
-            fontSize: "13px",
-          }}
-        >
-          PayPal
-        </button>
+      {/* Payment method selector — 4 icon cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "9px" }}>
+        {PAYMENT_METHODS.map(({ id, label, Logo }) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => { setPaymentMethod(id); setPaypalError(""); }}
+            onMouseEnter={(e) => {
+              if (paymentMethod !== id) {
+                e.currentTarget.style.boxShadow = "0 4px 14px rgba(20,20,40,.08)";
+                e.currentTarget.style.borderColor = "#D4D4DC";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (paymentMethod !== id) {
+                e.currentTarget.style.boxShadow = "";
+                e.currentTarget.style.borderColor = "#E8E4DC";
+              }
+            }}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "11px",
+              padding: "18px 8px 15px",
+              borderRadius: "12px",
+              cursor: "pointer",
+              background: paymentMethod === id ? "#F5F1EB" : "#ffffff",
+              border: `1.5px solid ${paymentMethod === id ? "#8B7355" : "#E8E4DC"}`,
+              boxShadow: "none",
+              transition: "all .16s ease",
+              fontFamily: "inherit",
+            }}
+          >
+            <div style={{ height: "26px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Logo />
+            </div>
+            <span
+              style={{
+                fontSize: "12.5px",
+                fontWeight: paymentMethod === id ? 600 : 500,
+                color: paymentMethod === id ? "#8B7355" : "#45433d",
+                textAlign: "center",
+              }}
+            >
+              {label}
+            </span>
+          </button>
+        ))}
       </div>
 
-      {paymentMethod === "card" && (
-        <Elements stripe={stripePromise} options={elementsOptions}>
+      {paymentMethod !== "paypal" && (
+        <Elements key={paymentMethod} stripe={stripePromise} options={elementsOptions}>
           <PaymentFormInner {...props} />
         </Elements>
       )}
