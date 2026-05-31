@@ -326,8 +326,9 @@ function PaymentFormInner({
 }
 
 export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>("card");
+  const [hoveredMethod, setHoveredMethod] = useState<PaymentMethodId | null>(null);
   const [paypalError, setPaypalError] = useState("");
   const { data: stripeConfig, isLoading: stripeConfigLoading } = trpc.booking.getStripeConfig.useQuery();
   // Per-listing payment provider: fetch the Stripe connected account for this property
@@ -407,18 +408,8 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             key={id}
             type="button"
             onClick={() => { setPaymentMethod(id); setPaypalError(""); }}
-            onMouseEnter={(e) => {
-              if (paymentMethod !== id) {
-                e.currentTarget.style.boxShadow = "0 4px 14px rgba(20,20,40,.08)";
-                e.currentTarget.style.borderColor = "#D4D4DC";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (paymentMethod !== id) {
-                e.currentTarget.style.boxShadow = "";
-                e.currentTarget.style.borderColor = "#E8E4DC";
-              }
-            }}
+            onMouseEnter={() => setHoveredMethod(id)}
+            onMouseLeave={() => setHoveredMethod(null)}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -429,8 +420,16 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
               borderRadius: "12px",
               cursor: "pointer",
               background: paymentMethod === id ? "#F5F1EB" : "#ffffff",
-              border: `1.5px solid ${paymentMethod === id ? "#8B7355" : "#E8E4DC"}`,
-              boxShadow: "none",
+              border: `1.5px solid ${
+                paymentMethod === id
+                  ? "#8B7355"
+                  : hoveredMethod === id
+                  ? "#D4D4DC"
+                  : "#E8E4DC"
+              }`,
+              boxShadow: hoveredMethod === id && paymentMethod !== id
+                ? "0 4px 14px rgba(20,20,40,.08)"
+                : "none",
               transition: "all .16s ease",
               fontFamily: "inherit",
             }}
@@ -489,7 +488,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             onError={(msg) => setPaypalError(msg)}
           />
           <button type="button" onClick={props.onCancel} className="btn-ghost w-full">
-            Cancel
+            {t('payment.cancelButton')}
           </button>
         </div>
       )}
