@@ -327,7 +327,7 @@ function PaymentFormInner({
 
 export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
   const { i18n } = useTranslation();
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "paypal">("card");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>("card");
   const [paypalError, setPaypalError] = useState("");
   const { data: stripeConfig, isLoading: stripeConfigLoading } = trpc.booking.getStripeConfig.useQuery();
   // Per-listing payment provider: fetch the Stripe connected account for this property
@@ -361,6 +361,9 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
       currency: (props.currency || "eur").toLowerCase(),
       paymentMethodCreation: "manual" as const,
       locale: i18n.language as any,
+      ...(paymentMethod !== "paypal" && {
+        paymentMethodTypes: STRIPE_METHOD_TYPES[paymentMethod as Exclude<PaymentMethodId, "paypal">],
+      }),
       appearance: {
         theme: "stripe" as const,
         variables: {
@@ -372,7 +375,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
         },
       },
     }),
-    [props.total, props.currency, i18n.language],
+    [props.total, props.currency, i18n.language, paymentMethod],
   );
 
   // CRITICAL: Wait for BOTH queries to settle before rendering Stripe Elements.
