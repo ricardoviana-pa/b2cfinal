@@ -2930,7 +2930,7 @@
     "maxGuests": 12,
     "priceFrom": 459,
     "pricePerNight": 459,
-    "cleaningFee": 250,
+    "cleaningFee": 160,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -3611,6 +3611,38 @@
     "areaSquareFeet": 808,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Die Wohnung liegt sehr nah zum Strand und man hat auch einen Blick auf Viana.",
+        "guestName": "Guest",
+        "date": "2026-06-01T10:50:40.496Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Amazing!",
         "guestName": "Guest",
@@ -3707,8 +3739,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 3
+    "averageRating": 4.8,
+    "reviewCount": 4
   },
   {
     "id": "guesty-69dfa9cead7c9c0014cb71c9",
@@ -5202,7 +5234,7 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965330729bb8c00141e8cd6/83ba0952-e711-48-bGX3S",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965330729bb8c00141e8cd6/e687b76d-8a40-47-3IBok"
     ],
-    "description": "Enjoy an unforgettable stay at this villa in Cafhé, Viana do Castelo, where the countryside meets the sea.\nWith a private swimming pool, garden, and stunning views, this property offers the perfect getaway.\nExplore the nearby beaches or enjoy activities such as cycling and horse riding.\nIdeal for families and groups, the villa features 4 bedrooms and all the amenities needed for a comfortable stay.\n\nThe Portugal Active Habito's Lodge is a modern and luxurious villa, featuring a magnificent outdoor swimming pool with a waterfall.\nThe property offers 4 bedrooms designed to accommodate guests comfortably. The fully equipped kitchen allows you to prepare meals with ease, while the dining area provides an elegant space to enjoy them. The living room is a relaxing space to unwind, and the villa also includes an outdoor area with a swimming pool and garden to make the most of the fresh air.\nThe location is ideal, just a five-minute drive from the beach and close to the historic centre of Viana do Castelo.\n\n\nNestled in a tranquil area, Habito's Lodge offers the perfect blend of countryside serenity and coastal convenience. You're just a five-minute drive from the stunning beaches and the vibrant historic center of Viana do Castelo, offering a delightful array of dining options, from traditional Portuguese cuisine to modern international fare. Explore charming local shops and boutiques, or simply soak in the relaxed atmosphere of the neighborhood. With easy access to the city's attractions, you can enjoy the best of both worlds – a peaceful retreat with the excitement of Viana do Castelo just moments away.\n\nGuests have exclusive access to the entire property, including the pool, garden, and all indoor amenities. The Portugal Active concierge service is available 24/7 to cater to all your needs, such as organizing local excursions or booking private chef services. Please request any service at least 72 hours in advance.\n\nImportant Notes: \n- During high season (May to October), the pool is regularly maintained to ensure the best experience for guests. \n- The swimming pool is out of service from November to April.\n\nGetting around from Habito's Lodge is a breeze! While we recommend having a car to fully explore the beautiful Viana do Castelo region, you'll find some transportation options. The local bus service has stops within a short distance of the villa, providing access to the city center and surrounding areas. For those arriving by air, Francisco Sá Carneiro Airport (OPO) in Porto is approximately a 45-minute drive away. We offer private chauffeur services for airport transfers, ensuring a smooth and comfortable journey directly to the lodge. Free parking is available on the premises for guests who prefer to drive. Taxis and ride-sharing services are also readily available for easy access to local attractions, beaches, and dining destinations.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from 30 euro/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch: \r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour: \r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
+    "description": "Enjoy an unforgettable stay at this villa in Cafhé, Viana do Castelo, where the countryside meets the sea.\nWith a private swimming pool, garden, and stunning views, this property offers the perfect getaway.\nExplore the nearby beaches or enjoy activities such as cycling and horse riding.\nIdeal for families and groups, the villa features 4 bedrooms and all the amenities needed for a comfortable stay.\n\nThe Portugal Active Habito's Lodge is a modern and luxurious villa, featuring a magnificent outdoor swimming pool with a waterfall.\nThe property offers 4 bedrooms designed to accommodate guests comfortably. The fully equipped kitchen allows you to prepare meals with ease, while the dining area provides an elegant space to enjoy them. The living room is a relaxing space to unwind, and the villa also includes an outdoor area with a swimming pool and garden to make the most of the fresh air.\nThe location is ideal, just a five-minute drive from the beach and close to the historic centre of Viana do Castelo.\n\n\nNestled in a tranquil area, Habito's Lodge offers the perfect blend of countryside serenity and coastal convenience. You're just a five-minute drive from the stunning beaches and the vibrant historic center of Viana do Castelo, offering a delightful array of dining options, from traditional Portuguese cuisine to modern international fare. Explore charming local shops and boutiques, or simply soak in the relaxed atmosphere of the neighborhood. With easy access to the city's attractions, you can enjoy the best of both worlds – a peaceful retreat with the excitement of Viana do Castelo just moments away.\n\nGuests have exclusive access to the entire property, including the pool, garden, and all indoor amenities. The Portugal Active concierge service is available 24/7 to cater to all your needs, such as organizing local excursions or booking private chef services. Please request any service at least 72 hours in advance.\n\nImportant Notes: \n- During high season (May to October), the pool and the garden are regularly maintained to ensure the best experience for guests. \n- The swimming pool is out of service from November to April.\n\nGetting around from Habito's Lodge is a breeze! While we recommend having a car to fully explore the beautiful Viana do Castelo region, you'll find some transportation options. The local bus service has stops within a short distance of the villa, providing access to the city center and surrounding areas. For those arriving by air, Francisco Sá Carneiro Airport (OPO) in Porto is approximately a 45-minute drive away. We offer private chauffeur services for airport transfers, ensuring a smooth and comfortable journey directly to the lodge. Free parking is available on the premises for guests who prefer to drive. Taxis and ride-sharing services are also readily available for easy access to local attractions, beaches, and dining destinations.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from 30 euro/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch: \r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour: \r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
     "amenities": {
       "property": [
         "Air conditioning",
@@ -12289,7 +12321,7 @@
       }
     ],
     "propertyType": "Villa",
-    "checkInTime": "17:00",
+    "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 4554,
     "reviews": [
@@ -12867,8 +12899,8 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1778076252/production/6957de4388cba42d9e7a905e/qffohravqwhoydbt8ya4.jpg",
       "https://assets.guesty.com/image/upload/v1777998682/production/6957de4388cba42d9e7a905e/qpyza7v0qqtj1rbpknvw.jpg",
+      "https://assets.guesty.com/image/upload/v1778076252/production/6957de4388cba42d9e7a905e/qffohravqwhoydbt8ya4.jpg",
       "https://assets.guesty.com/image/upload/v1778076252/production/6957de4388cba42d9e7a905e/rrn5yfaquss7dvo830bc.jpg",
       "https://assets.guesty.com/image/upload/v1778076252/production/6957de4388cba42d9e7a905e/pft0bce3jtcnfwx3tqmj.jpg",
       "https://assets.guesty.com/image/upload/v1777972284/production/6957de4388cba42d9e7a905e/dkpcddwqi0auokcmgwml.jpg",
@@ -13030,6 +13062,7 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
+      "https://assets.guesty.com/image/upload/v1777992799/production/6957de4388cba42d9e7a905e/maetynyqqee5essizlxx.jpg",
       "https://assets.guesty.com/image/upload/v1778075213/production/6957de4388cba42d9e7a905e/prnssfnxu5ore9pyngtf.jpg",
       "https://assets.guesty.com/image/upload/v1777992797/production/6957de4388cba42d9e7a905e/ee89l3aiwnbw4v4phsal.jpg",
       "https://assets.guesty.com/image/upload/v1778075217/production/6957de4388cba42d9e7a905e/dvtijljgw6uzvjr0z8kq.jpg",
@@ -13047,7 +13080,6 @@
       "https://assets.guesty.com/image/upload/v1777992789/production/6957de4388cba42d9e7a905e/omxkakhtkdm9vtn9abhq.jpg",
       "https://assets.guesty.com/image/upload/v1777992789/production/6957de4388cba42d9e7a905e/rvzxwvjdlpmkp4anwkyn.jpg",
       "https://assets.guesty.com/image/upload/v1777992798/production/6957de4388cba42d9e7a905e/fwrvyvcqghurolfgsdhq.jpg",
-      "https://assets.guesty.com/image/upload/v1777992799/production/6957de4388cba42d9e7a905e/maetynyqqee5essizlxx.jpg",
       "https://assets.guesty.com/image/upload/v1777992799/production/6957de4388cba42d9e7a905e/esjnhbldwqfmybrzryqu.jpg",
       "https://assets.guesty.com/image/upload/v1777992799/production/6957de4388cba42d9e7a905e/bvmajhpdopkpbln8yib6.jpg",
       "https://assets.guesty.com/image/upload/v1778064180/production/6957de4388cba42d9e7a905e/hmtjw048r4glerepraf7.jpg",
@@ -13348,13 +13380,13 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
+      "https://assets.guesty.com/image/upload/v1777972278/production/6957de4388cba42d9e7a905e/ssakpyrepceprunrdvf8.jpg",
       "https://assets.guesty.com/image/upload/v1777972301/production/6957de4388cba42d9e7a905e/dtfxxowxt2up6jzm03ot.jpg",
       "https://assets.guesty.com/image/upload/v1777972299/production/6957de4388cba42d9e7a905e/jbcdrad4wkbfhngabwmr.jpg",
       "https://assets.guesty.com/image/upload/v1777972290/production/6957de4388cba42d9e7a905e/futnpf5dvemzioaqjh9e.jpg",
       "https://assets.guesty.com/image/upload/v1777972306/production/6957de4388cba42d9e7a905e/xdl9bk3zxxajzkg5n33s.jpg",
       "https://assets.guesty.com/image/upload/v1777972281/production/6957de4388cba42d9e7a905e/pa9ibq6ehuwtya3pft5x.jpg",
       "https://assets.guesty.com/image/upload/v1777972277/production/6957de4388cba42d9e7a905e/nkszumxuflzur3lcdsyx.jpg",
-      "https://assets.guesty.com/image/upload/v1777972278/production/6957de4388cba42d9e7a905e/ssakpyrepceprunrdvf8.jpg",
       "https://assets.guesty.com/image/upload/v1777972278/production/6957de4388cba42d9e7a905e/uvneqcp6fobjvs5hynmy.jpg",
       "https://assets.guesty.com/image/upload/v1777972300/production/6957de4388cba42d9e7a905e/fwmnx6gwip6cjyilmdhk.jpg",
       "https://assets.guesty.com/image/upload/v1777972299/production/6957de4388cba42d9e7a905e/gxcb2jcv2qnxuhwfpnzg.jpg",
@@ -18453,11 +18485,11 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
+      "https://assets.guesty.com/image/upload/v1777972308/production/6957de4388cba42d9e7a905e/fdfuvc9ocfgsqobwfbbl.jpg",
       "https://assets.guesty.com/image/upload/v1777972307/production/6957de4388cba42d9e7a905e/rfi6ul6ky4ptp27lglzg.jpg",
       "https://assets.guesty.com/image/upload/v1777972310/production/6957de4388cba42d9e7a905e/p6ad2xw3gukugejpghms.jpg",
-      "https://assets.guesty.com/image/upload/v1777972308/production/6957de4388cba42d9e7a905e/fdfuvc9ocfgsqobwfbbl.jpg",
-      "https://assets.guesty.com/image/upload/v1778075412/production/6957de4388cba42d9e7a905e/lv7dkke3yyeivgmb929c.jpg",
       "https://assets.guesty.com/image/upload/v1777972284/production/6957de4388cba42d9e7a905e/dkpcddwqi0auokcmgwml.jpg",
+      "https://assets.guesty.com/image/upload/v1778075412/production/6957de4388cba42d9e7a905e/lv7dkke3yyeivgmb929c.jpg",
       "https://assets.guesty.com/image/upload/v1777972281/production/6957de4388cba42d9e7a905e/pa9ibq6ehuwtya3pft5x.jpg",
       "https://assets.guesty.com/image/upload/v1777972310/production/6957de4388cba42d9e7a905e/fmxhtzuju5gs5qbzibo8.jpg",
       "https://assets.guesty.com/image/upload/v1777972311/production/6957de4388cba42d9e7a905e/zdhnlivut4wu13crcdld.jpg",
