@@ -128,7 +128,7 @@
     "estTotal": "est. total",
     "indicativeCatalogue": "Indicative from catalogue rate. Confirm for final total.",
     "indicativeUnavailable": "Indicative (catalogue). Live pricing unavailable — confirm on booking.",
-    "cleaningFee": "Cleaning fee",
+    "cleaningFee": "Final cleaning",
     "serviceFee": "Service fee",
     "touristTax": "Tourist tax",
     "vat": "VAT",
@@ -155,7 +155,7 @@
     "removeSaveAria": "Remove from saved",
     "imageAlt": "{{name}} — {{current}} of {{total}}",
     "checkingPriceAria": "Checking live price",
-    "nightCleaningLine": "{{nightly}} / night · cleaning {{cleaning}}",
+    "nightCleaningLine": "{{nightly}} / night · final cleaning {{cleaning}}",
     "includedShort": "Included",
     "plusMoreImages": "+{{count}}",
     "fiveStar": "5-Star",
@@ -375,7 +375,7 @@
     "closeGallery": "Close gallery",
     "minNights_one": "{{count}}-night minimum stay",
     "minNights_other": "{{count}}-night minimum stay",
-    "cleaningFeeRule": "Cleaning fee: €{{fee}}"
+    "cleaningFeeRule": "Final cleaning: €{{fee}}"
   },
   "priceBreakdown": {
     "title": "Price summary",
@@ -384,7 +384,7 @@
     "nights_other": "{{count}} nights",
     "viewDetails": "View price details",
     "accommodation": "Accommodation",
-    "cleaning": "Cleaning fee",
+    "cleaning": "Final cleaning",
     "serviceFee": "Service fee",
     "touristTax": "Tourist tax",
     "vat": "VAT",

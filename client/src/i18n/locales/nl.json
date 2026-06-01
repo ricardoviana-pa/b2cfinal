@@ -128,7 +128,7 @@
     "estTotal": "geschat totaal",
     "indicativeCatalogue": "Indicatief uit catalogus. Bevestig het totaal bij boeking.",
     "indicativeUnavailable": "Indicatief (catalogus). Live prijs niet beschikbaar — bevestig bij boeking.",
-    "cleaningFee": "Schoonmaakkosten",
+    "cleaningFee": "Eindschoonmaak",
     "serviceFee": "Servicekosten",
     "touristTax": "Toeristenbelasting",
     "vat": "BTW",
@@ -155,7 +155,7 @@
     "removeSaveAria": "Verwijderen uit opgeslagen",
     "imageAlt": "{{name}} — {{current}} van {{total}}",
     "checkingPriceAria": "Live prijs wordt geladen",
-    "nightCleaningLine": "{{nightly}} / nacht · schoonmaak {{cleaning}}",
+    "nightCleaningLine": "{{nightly}} / nacht · eindschoonmaak {{cleaning}}",
     "includedShort": "Inbegrepen",
     "plusMoreImages": "+{{count}}",
     "fiveStar": "5-sterren",
@@ -370,7 +370,7 @@
     "closeGallery": "Galerij sluiten",
     "minNights_one": "Minimaal verblijf van {{count}} nacht",
     "minNights_other": "Minimaal verblijf van {{count}} nachten",
-    "cleaningFeeRule": "Schoonmaakkosten: €{{fee}}"
+    "cleaningFeeRule": "Eindschoonmaak: €{{fee}}"
   },
   "priceBreakdown": {
     "title": "Prijsoverzicht",
@@ -379,7 +379,7 @@
     "nights_other": "{{count}} nachten",
     "viewDetails": "Prijsdetails bekijken",
     "accommodation": "Accommodatie",
-    "cleaning": "Schoonmaakkosten",
+    "cleaning": "Eindschoonmaak",
     "serviceFee": "Servicekosten",
     "touristTax": "Toeristenbelasting",
     "vat": "BTW",

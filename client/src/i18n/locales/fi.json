@@ -128,7 +128,7 @@
     "estTotal": "arvio yhteensä",
     "indicativeCatalogue": "Indikatiivinen hinnastosta. Vahvista lopullinen hinta varauksessa.",
     "indicativeUnavailable": "Indikatiivinen (hinnasto). Live-hinta ei saatavilla — vahvista varauksessa.",
-    "cleaningFee": "Siivousmaksu",
+    "cleaningFee": "Loppusiivous",
     "serviceFee": "Palvelumaksu",
     "touristTax": "Matkailuvero",
     "vat": "ALV",
@@ -155,7 +155,7 @@
     "removeSaveAria": "Poista tallennetuista",
     "imageAlt": "{{name}} — {{current}} / {{total}}",
     "checkingPriceAria": "Ladataan live-hintaa",
-    "nightCleaningLine": "{{nightly}} / yö · siivous {{cleaning}}",
+    "nightCleaningLine": "{{nightly}} / yö · loppusiivous {{cleaning}}",
     "includedShort": "Sisältyy",
     "plusMoreImages": "+{{count}}",
     "fiveStar": "5 tähteä",
@@ -370,7 +370,7 @@
     "closeGallery": "Sulje galleria",
     "minNights_one": "Vähintään {{count}} yö",
     "minNights_other": "Vähintään {{count}} yötä",
-    "cleaningFeeRule": "Siivousmaksu: €{{fee}}"
+    "cleaningFeeRule": "Loppusiivous: €{{fee}}"
   },
   "priceBreakdown": {
     "title": "Hintayhteenveto",
@@ -379,7 +379,7 @@
     "nights_other": "{{count}} yötä",
     "viewDetails": "Näytä hintatiedot",
     "accommodation": "Majoitus",
-    "cleaning": "Siivousmaksu",
+    "cleaning": "Loppusiivous",
     "serviceFee": "Palvelumaksu",
     "touristTax": "Matkailuvero",
     "vat": "ALV",

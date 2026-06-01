@@ -128,7 +128,7 @@
     "estTotal": "uppskattat totalt",
     "indicativeCatalogue": "Indikativt från katalog. Bekräfta slutpris vid bokning.",
     "indicativeUnavailable": "Indikativt (katalog). Livepris inte tillgängligt — bekräfta vid bokning.",
-    "cleaningFee": "Städavgift",
+    "cleaningFee": "Slutstädning",
     "serviceFee": "Serviceavgift",
     "touristTax": "Turistskatt",
     "vat": "Moms",
@@ -155,7 +155,7 @@
     "removeSaveAria": "Ta bort från sparade",
     "imageAlt": "{{name}} — {{current}} av {{total}}",
     "checkingPriceAria": "Hämtar livepris",
-    "nightCleaningLine": "{{nightly}} / natt · städning {{cleaning}}",
+    "nightCleaningLine": "{{nightly}} / natt · slutstädning {{cleaning}}",
     "includedShort": "Ingår",
     "plusMoreImages": "+{{count}}",
     "fiveStar": "5-stjärnig",
@@ -370,7 +370,7 @@
     "closeGallery": "Stäng galleri",
     "minNights_one": "Minst {{count}} natt",
     "minNights_other": "Minst {{count}} nätter",
-    "cleaningFeeRule": "Städavgift: €{{fee}}"
+    "cleaningFeeRule": "Slutstädning: €{{fee}}"
   },
   "priceBreakdown": {
     "title": "Prissammanfattning",
@@ -379,7 +379,7 @@
     "nights_other": "{{count}} nätter",
     "viewDetails": "Visa prisdetaljer",
     "accommodation": "Boende",
-    "cleaning": "Städavgift",
+    "cleaning": "Slutstädning",
     "serviceFee": "Serviceavgift",
     "touristTax": "Turistskatt",
     "vat": "Moms",
