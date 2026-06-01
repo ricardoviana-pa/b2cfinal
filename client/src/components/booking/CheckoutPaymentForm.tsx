@@ -297,6 +297,7 @@ function PaymentFormInner({
         <PaymentElement
           options={{
             layout: "tabs",
+            wallets: { googlePay: "never", applePay: "never" },
             fields: { billingDetails: { address: { country: "never", postalCode: "never" } } },
           }}
         />
@@ -373,6 +374,15 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
           colorText: "#1A1A18",
           fontFamily: "var(--font-body), Arial, sans-serif",
           borderRadius: "4px",
+        },
+        rules: {
+          // Hide Stripe's built-in payment method tab selector — we use our own selector UI
+          ".p-PaymentMethodSelector": { display: "none" },
+          // Keep Klarna hidden (visibility preserves layout slot for easy re-enable)
+          "button:has(span[aria-label='Klarna'])": {
+            visibility: "hidden",
+            pointerEvents: "none",
+          },
         },
       },
     }),
