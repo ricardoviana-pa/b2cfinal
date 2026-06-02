@@ -611,4 +611,167 @@ export const bookingRouter = router({
         status: reservation.status,
       };
     }),
+
+  createKlarnaPaymentIntent: publicProcedure
+    .input(
+      z.object({
+        amount: z.number().int().min(1000).max(10_000_000),
+        currency: z.string().length(3),
+        listingId: z.string().min(1),
+        checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        guestEmail: z.string().email(),
+        guestName: z.string().min(2),
+        numberOfAdults: z.number().int().min(1).max(30),
+        numberOfChildren: z.number().int().min(0).max(20).default(0),
+        numberOfInfants: z.number().int().min(0).max(10).default(0),
+        returnUrl: z.string().url(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { createKlarnaPaymentIntent } = await import("../services/stripe-klarna");
+      const pi = await createKlarnaPaymentIntent({
+        amount: input.amount,
+        currency: input.currency,
+        metadata: {
+          source: "website-klarna",
+          listingId: input.listingId,
+          checkIn: input.checkIn,
+          checkOut: input.checkOut,
+          guestEmail: input.guestEmail,
+          guestName: input.guestName,
+          numberOfAdults: String(input.numberOfAdults),
+          numberOfChildren: String(input.numberOfChildren),
+          numberOfInfants: String(input.numberOfInfants),
+        },
+      });
+      return {
+        clientSecret: pi.client_secret!,
+        paymentIntentId: pi.id,
+      };
+    }),
+
+  confirmKlarnaBooking: publicProcedure
+    .input(
+      z.object({
+        paymentIntentId: z.string().min(1),
+        listingId: z.string().min(1),
+        checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        guestFirstName: z.string().min(1),
+        guestLastName: z.string().min(1),
+        guestEmail: z.string().email(),
+        guestPhone: z.string().optional(),
+        numberOfAdults: z.number().int().min(1).max(30),
+        numberOfChildren: z.number().int().min(0).max(20).default(0),
+        numberOfInfants: z.number().int().min(0).max(10).default(0),
+        totalAmount: z.number().min(10).max(100_000),
+        currency: z.string().length(3),
+        propertyName: z.string().optional(),
+        propertyImage: z.string().optional(),
+        destination: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { getPaymentIntent } = await import("../services/stripe-klarna");
+      const { createReservationViaOpenApi, recordExternalPayment } = await import("../services/guesty-openapi-paypal");
+
+      const pi = await getPaymentIntent(input.paymentIntentId);
+      if (pi.status !== "succeeded") {
+        throw new Error(`Payment not completed. Status: ${pi.status}`);
+      }
+
+      const expectedCents = Math.round(input.totalAmount * 100);
+      if (Math.abs(pi.amount - expectedCents) > 100) {
+        console.error(`[Klarna] Amount mismatch: PI=${pi.amount}c expected=${expectedCents}c`);
+        throw new Error("Amount mismatch. Please contact support.");
+      }
+
+      let reservation: { reservationId: string; confirmationCode: string; status: string };
+      try {
+        reservation = await createReservationViaOpenApi({
+          listingId: input.listingId,
+          checkIn: input.checkIn,
+          checkOut: input.checkOut,
+          guestFirstName: input.guestFirstName,
+          guestLastName: input.guestLastName,
+          guestEmail: input.guestEmail,
+          guestPhone: input.guestPhone,
+          numberOfAdults: input.numberOfAdults,
+          numberOfChildren: input.numberOfChildren,
+          numberOfInfants: input.numberOfInfants,
+          stripePaymentIntentId: input.paymentIntentId,
+        });
+      } catch (guestyError: any) {
+        console.error("[Klarna] CRITICAL: Payment succeeded but Guesty reservation failed", {
+          paymentIntentId: input.paymentIntentId,
+          error: guestyError.message,
+        });
+        sendBookingFailureAlert({
+          quoteId: "N/A (Klarna)",
+          ratePlanId: "N/A",
+          ccTokenPrefix: "klarna",
+          guestName: `${input.guestFirstName} ${input.guestLastName}`,
+          guestEmail: input.guestEmail,
+          guestPhone: input.guestPhone || "",
+          propertyName: input.propertyName,
+          listingId: input.listingId,
+          checkIn: input.checkIn,
+          checkOut: input.checkOut,
+          guests: input.numberOfAdults + input.numberOfChildren,
+          totalPrice: input.totalAmount,
+          currency: input.currency,
+          errorMessage: guestyError.message,
+          timestamp: new Date().toISOString(),
+        }).catch(() => {});
+        throw new Error(
+          "Your payment was received but we couldn't create the reservation automatically. " +
+          `Our team has been notified. Reference: ${input.paymentIntentId}`
+        );
+      }
+
+      recordExternalPayment(
+        reservation.reservationId,
+        input.totalAmount,
+        input.currency,
+        input.paymentIntentId
+      ).catch((err: any) => {
+        console.warn(`[Klarna] recordExternalPayment failed (non-blocking): ${err.message}`);
+      });
+
+      recordTripForUser(ctx, {
+        listingId: input.listingId,
+        propertyName: input.propertyName || "Portugal Active Home",
+        propertyImage: input.propertyImage,
+        destination: input.destination,
+        checkIn: input.checkIn,
+        checkOut: input.checkOut,
+        guests: input.numberOfAdults + input.numberOfChildren,
+        totalPrice: input.totalAmount,
+        currency: input.currency,
+        confirmationCode: reservation.confirmationCode,
+        guestyReservationId: reservation.reservationId,
+        status: "upcoming",
+      });
+
+      sendBookingConfirmation({
+        guestName: `${input.guestFirstName} ${input.guestLastName}`,
+        guestEmail: input.guestEmail,
+        propertyName: input.propertyName || "Portugal Active Home",
+        destination: input.destination,
+        checkIn: input.checkIn,
+        checkOut: input.checkOut,
+        guests: input.numberOfAdults + input.numberOfChildren,
+        totalPrice: input.totalAmount,
+        confirmationCode: reservation.confirmationCode,
+      }).catch((err: any) => {
+        console.warn(`[Klarna] Confirmation email failed (non-blocking): ${err.message}`);
+      });
+
+      return {
+        reservationId: reservation.reservationId,
+        confirmationCode: reservation.confirmationCode,
+        status: reservation.status,
+      };
+    }),
 });
