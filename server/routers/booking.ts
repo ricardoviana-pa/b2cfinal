@@ -625,7 +625,6 @@ export const bookingRouter = router({
         numberOfAdults: z.number().int().min(1).max(30),
         numberOfChildren: z.number().int().min(0).max(20).default(0),
         numberOfInfants: z.number().int().min(0).max(10).default(0),
-        returnUrl: z.string().url(),
       })
     )
     .mutation(async ({ input }) => {
