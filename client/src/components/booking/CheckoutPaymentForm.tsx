@@ -12,15 +12,15 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { trpc } from "@/lib/trpc";
 import { PayPalCheckoutButton } from "./PayPalCheckoutButton";
+import { KlarnaCheckoutButton } from "./KlarnaCheckoutButton";
 
 const EUR = "\u20AC";
 
 type PaymentMethodId = "card" | "googlepay" | "paypal" | "klarna";
 
-const STRIPE_METHOD_TYPES: Record<Exclude<PaymentMethodId, "paypal">, string[]> = {
+const STRIPE_METHOD_TYPES: Record<Exclude<PaymentMethodId, "paypal" | "klarna">, string[]> = {
   card: ["card"],
   googlepay: ["google_pay"],
-  klarna: ["klarna"],
 };
 
 function CardLogo() {
@@ -331,6 +331,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>("card");
   const [hoveredMethod, setHoveredMethod] = useState<PaymentMethodId | null>(null);
   const [paypalError, setPaypalError] = useState("");
+  const [klarnaError, setKlarnaError] = useState("");
   const { data: stripeConfig, isLoading: stripeConfigLoading } = trpc.booking.getStripeConfig.useQuery();
   // Per-listing payment provider: fetch the Stripe connected account for this property
   const { data: paymentProvider, isLoading: providerLoading } = trpc.booking.getPaymentProvider.useQuery(
@@ -363,7 +364,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
       currency: (props.currency || "eur").toLowerCase(),
       paymentMethodCreation: "manual" as const,
       locale: i18n.language as any,
-      ...(paymentMethod !== "paypal"
+      ...(paymentMethod !== "paypal" && paymentMethod !== "klarna"
         ? { paymentMethodTypes: STRIPE_METHOD_TYPES[paymentMethod] }
         : {}),
       appearance: {
@@ -378,11 +379,6 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
         rules: {
           // Hide Stripe's built-in payment method tab selector — we use our own selector UI
           ".p-PaymentMethodSelector": { display: "none" },
-          // Keep Klarna hidden (visibility preserves layout slot for easy re-enable)
-          "button:has(span[aria-label='Klarna'])": {
-            visibility: "hidden",
-            pointerEvents: "none",
-          },
         },
       },
     }),
@@ -461,7 +457,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
         ))}
       </div>
 
-      {paymentMethod !== "paypal" && (
+      {paymentMethod !== "paypal" && paymentMethod !== "klarna" && (
         <Elements key={paymentMethod} stripe={stripePromise} options={elementsOptions}>
           <PaymentFormInner {...props} />
         </Elements>
@@ -496,6 +492,42 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             destination={props.destination}
             stripePublishableKey={stripeConfig.publishableKey}
             onError={(msg) => setPaypalError(msg)}
+          />
+          <button type="button" onClick={props.onCancel} className="btn-ghost w-full">
+            {t('payment.cancelButton')}
+          </button>
+        </div>
+      )}
+
+      {paymentMethod === "klarna" && (
+        <div className="space-y-3">
+          {klarnaError && (
+            <div className="flex items-start gap-2 p-3 bg-[#F5F1EB] border border-[#DC2626] rounded-md">
+              <span className="text-[#DC2626] mt-0.5 shrink-0" aria-hidden>&#9888;</span>
+              <p className="text-[#DC2626] text-sm leading-snug">{klarnaError}</p>
+            </div>
+          )}
+          <KlarnaCheckoutButton
+            amount={props.total}
+            currency={props.currency || "eur"}
+            listingId={props.listingId}
+            checkIn={props.checkIn}
+            checkOut={props.checkOut}
+            guestDetails={{
+              firstName: guestFirstName,
+              lastName: guestLastName,
+              email: props.guestEmail,
+              phone: props.guestPhone || undefined,
+            }}
+            numberOfGuests={{
+              adults: props.guests || 2,
+              children: 0,
+              infants: 0,
+            }}
+            propertyName={props.propertyName}
+            destination={props.destination}
+            stripePublishableKey={stripeConfig.publishableKey}
+            onError={(msg) => setKlarnaError(msg)}
           />
           <button type="button" onClick={props.onCancel} className="btn-ghost w-full">
             {t('payment.cancelButton')}
