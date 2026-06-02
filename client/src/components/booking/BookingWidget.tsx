@@ -4,7 +4,7 @@ import i18n from "@/i18n";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import { pushDL, pushEcommerce, ADDON_PREFIX } from "@/lib/datalayer";
-import { Calendar, Shield, Loader2, Check, ShoppingBag, Minus, Plus, UtensilsCrossed, Sparkles, Dumbbell, ShoppingCart, Baby, Car, SprayCanIcon, ChevronDown } from "lucide-react";
+import { Calendar, User, Shield, Loader2, Check, ShoppingBag, Minus, Plus, UtensilsCrossed, Sparkles, Dumbbell, ShoppingCart, Baby, Car, SprayCanIcon, ChevronDown } from "lucide-react";
 import AvailabilityCalendar from "./AvailabilityCalendar";
 import type { AvailabilityDay } from "./AvailabilityCalendar";
 import CheckoutPaymentForm from "./CheckoutPaymentForm";
@@ -1340,9 +1340,9 @@ export default function BookingWidget({
           <div className="space-y-3">
             <div className="flex items-center gap-2 mb-1">
               <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
-                <Shield className="w-2.5 h-2.5 text-white" />
+                <User className="w-2.5 h-2.5 text-white" />
               </div>
-              <p className="text-sm text-black font-medium">{t("bookingWidget.securePayment")}</p>
+              <p className="text-sm text-black font-medium">{t("bookingWidget.guestInformation")}</p>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <input type="text" placeholder={t("bookingWidget.firstNamePh")} value={guestFirstName}

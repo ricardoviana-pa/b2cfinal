@@ -202,8 +202,33 @@ async function _createBEQuoteImpl(input: {
   }
 
   const ratePlans = quote.rates?.ratePlans || [];
-  const plan = ratePlans[0];
-  if (!plan) throw new Error("No rate plan available for this property");
+  if (ratePlans.length === 0) throw new Error("No rate plan available for this property");
+
+  // Choose default rate plan with customer-friendly preference. Guesty returns
+  // ratePlans[] in arbitrary order — some properties have refundable first,
+  // others non-refundable first. To avoid showing "Non-Refundable" as the
+  // default surprise on properties that also have a refundable option, score
+  // each plan and pick the friendliest:
+  //   + flexible/refundable name or policy → preferred
+  //   – non-refundable / super_strict       → demoted
+  // If only one plan exists, it's used as-is.
+  const planFriendliness = (p: any): number => {
+    const rp = p?.ratePlan || p;
+    const name = String(rp?.name || p?.name || "").toLowerCase();
+    const policy = String(rp?.cancellationPolicy || p?.cancellationPolicy || "").toLowerCase();
+    let score = 0;
+    if (name.includes("non") && name.includes("refund")) score -= 10;
+    if (name.includes("não") && name.includes("reembols")) score -= 10;
+    if (policy === "super_strict") score -= 10;
+    if (policy === "strict") score -= 5;
+    if (policy === "firm") score -= 3;
+    if (name.includes("flex") || name.includes("free cancel")) score += 5;
+    if (name.includes("refund") && !name.includes("non")) score += 4;
+    if (policy === "flexible") score += 5;
+    if (policy === "moderate") score += 3;
+    return score;
+  };
+  const plan = [...ratePlans].sort((a, b) => planFriendliness(b) - planFriendliness(a))[0];
 
   const nights = Math.ceil(
     (new Date(input.checkOut).getTime() - new Date(input.checkIn).getTime()) / 86400000

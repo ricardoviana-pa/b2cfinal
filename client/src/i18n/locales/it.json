@@ -155,7 +155,7 @@
     "removeSaveAria": "Rimuovi dai salvati",
     "imageAlt": "{{name}} — {{current}} di {{total}}",
     "checkingPriceAria": "Calcolo prezzo live in corso",
-    "nightCleaningLine": "{{nightly}} / notte · pulizia {{cleaning}}",
+    "nightCleaningLine": "{{nightly}} / notte · pulizie finali {{cleaning}}",
     "includedShort": "Incluso",
     "plusMoreImages": "+{{count}}",
     "fiveStar": "5 stelle",
@@ -234,7 +234,7 @@
     "continueToPayment": "Continua al pagamento",
     "requestByEmail": "Richiedi via e-mail",
     "guestDetailsTitle": "Dati ospite",
-    "securePayment": "Pagamento sicuro",
+    "guestInformation": "Informazioni dell'ospite",
     "taxesAndFees": "Tasse e commissioni",
     "secureBooking": "Prenotazione sicura",
     "cancellationPolicyLink": "Politica di cancellazione",
@@ -370,7 +370,7 @@
     "closeGallery": "Chiudi galleria",
     "minNights_one": "Soggiorno minimo di {{count}} notte",
     "minNights_other": "Soggiorno minimo di {{count}} notti",
-    "cleaningFeeRule": "Tassa di pulizia: €{{fee}}"
+    "cleaningFeeRule": "Pulizie finali: €{{fee}}"
   },
   "priceBreakdown": {
     "title": "Riepilogo prezzo",
