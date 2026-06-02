@@ -13,6 +13,7 @@ import { registerDevAuthRoutes } from "./devAuth";
 import { registerGoogleAuthRoutes } from "./googleAuth";
 import { registerBookingRoutes, registerGuestyWebhookRoute } from "../routes/booking";
 import { registerStripePayPalWebhookRoute } from "../routes/stripe-paypal-webhook";
+import { registerStripeKlarnaWebhookRoute } from "../routes/stripe-klarna-webhook";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -104,6 +105,7 @@ async function startServer() {
   // Guesty webhook needs raw body for signature validation
   registerGuestyWebhookRoute(app);
   registerStripePayPalWebhookRoute(app); // must be before express.json() — needs raw body
+  registerStripeKlarnaWebhookRoute(app); // must be before express.json() — needs raw body
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
