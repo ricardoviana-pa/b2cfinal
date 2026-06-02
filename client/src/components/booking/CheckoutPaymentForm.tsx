@@ -413,7 +413,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
           <button
             key={id}
             type="button"
-            onClick={() => { setPaymentMethod(id); setPaypalError(""); }}
+            onClick={() => { setPaymentMethod(id); setPaypalError(""); setKlarnaError(""); }}
             onMouseEnter={() => setHoveredMethod(id)}
             onMouseLeave={() => setHoveredMethod(null)}
             style={{
