@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 const mockPaymentIntentCreate = vi.fn();
 const mockPaymentIntentRetrieve = vi.fn();
@@ -20,9 +20,12 @@ vi.mock("stripe", () => {
 describe("stripe-klarna service", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.resetModules();
     process.env.STRIPE_SECRET_KEY = "sk_test_mock_key";
     process.env.STRIPE_KLARNA_WEBHOOK_SECRET = "whsec_mock_klarna_secret";
+  });
+
+  afterEach(() => {
+    vi.resetModules();
   });
 
   describe("createKlarnaPaymentIntent", () => {
@@ -45,7 +48,12 @@ describe("stripe-klarna service", () => {
 
       expect(mockPaymentIntentCreate).toHaveBeenCalledOnce();
       expect(mockPaymentIntentCreate).toHaveBeenCalledWith(
-        expect.objectContaining({ amount: 5000, currency: "eur", metadata: { source: "website-klarna" } })
+        expect.objectContaining({
+          amount: 5000,
+          currency: "eur",
+          payment_method_types: ["klarna"],
+          metadata: { source: "website-klarna" },
+        })
       );
       expect(result).toEqual(mockIntent);
     });
