@@ -2269,6 +2269,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Pues fuimos un grupo de 9 adultos y tres niños y la verdad que lo pasamos verdaderamente bien. Diría que mejor los mayores que los pequeños! La empresa muy atenta a los pequeños eventos que pasaron, alguna bajada de luz y poquísimo más, que nos lo solucionaron rapidísimamente. Pena que dos noches se queden extremadamente cortos para lo guay que está la casa. Ojalá volvamos!! por ganas no va a ser. Por poner un pero, un pero muy pequeño, es q en la sala del billar olía a humedad, como a cerrado, ",
+        "guestName": "Guest",
+        "date": "2026-06-01T11:41:15.632Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "La casa era perfecta para un fin de semana en grupo. Fuimos 3 parejas con niños. Volveremos!",
         "guestName": "Guest",
         "date": "2026-04-15T14:23:04.828Z",
@@ -2301,7 +2333,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-6965338554dbb5001568a505",
@@ -5902,7 +5934,7 @@
     "tier": "select",
     "destination": "minho",
     "locality": "Caminha",
-    "bedrooms": 9,
+    "bedrooms": 8,
     "bathrooms": 7.5,
     "maxGuests": 20,
     "priceFrom": 500,
@@ -11272,6 +11304,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Thanks for this awesome beautiful apartment, it was a great experience",
+        "guestName": "Guest",
+        "date": "2026-06-01T12:01:28.869Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Great place and really friendly service people",
         "guestName": "Guest",
         "date": "2026-05-09T10:17:43.199Z",
@@ -11304,7 +11368,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-6965332327950e001416f0b2",
@@ -18477,7 +18541,7 @@
     "destination": "minho",
     "locality": "Caminha",
     "bedrooms": 2,
-    "bathrooms": 0,
+    "bathrooms": 1,
     "maxGuests": 4,
     "priceFrom": 450,
     "pricePerNight": 450,
