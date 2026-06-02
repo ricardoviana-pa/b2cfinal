@@ -1,3 +1,13 @@
+/**
+ * stripe-klarna.ts
+ *
+ * Stripe service for Klarna-based PaymentIntents.
+ *
+ * Uses a lazy singleton pattern: the Stripe instance is created on first
+ * call so that `STRIPE_SECRET_KEY` is read at call time, not at module load.
+ * This keeps the module test-friendly (vi.resetModules() + dynamic import).
+ */
+
 import Stripe from "stripe";
 
 let _stripe: Stripe | null = null;
@@ -17,11 +27,17 @@ function getStripe(): Stripe {
 }
 
 export interface CreateKlarnaPaymentIntentParams {
+  /** Amount in the smallest currency unit (e.g. cents for EUR). */
   amount: number;
+  /** ISO 4217 currency code in lowercase, e.g. "eur". */
   currency: string;
+  /** Optional metadata to attach to the PaymentIntent. */
   metadata?: Record<string, string>;
 }
 
+/**
+ * Create a Stripe PaymentIntent configured for Klarna.
+ */
 export async function createKlarnaPaymentIntent(
   params: CreateKlarnaPaymentIntentParams
 ): Promise<Stripe.PaymentIntent> {
@@ -29,11 +45,15 @@ export async function createKlarnaPaymentIntent(
   return stripe.paymentIntents.create({
     amount: params.amount,
     currency: params.currency,
+    // `as any` needed because Stripe SDK types don't enumerate all redirect-based methods like Klarna.
     payment_method_types: ["klarna"] as any,
     ...(params.metadata ? { metadata: params.metadata } : {}),
   });
 }
 
+/**
+ * Retrieve an existing PaymentIntent by its ID.
+ */
 export async function getPaymentIntent(
   paymentIntentId: string
 ): Promise<Stripe.PaymentIntent> {
@@ -41,6 +61,11 @@ export async function getPaymentIntent(
   return stripe.paymentIntents.retrieve(paymentIntentId);
 }
 
+/**
+ * Construct and verify a Stripe webhook event for Klarna events.
+ *
+ * Throws if the signature is invalid or `STRIPE_KLARNA_WEBHOOK_SECRET` is not set.
+ */
 export function constructStripeKlarnaWebhookEvent(
   payload: Buffer | string,
   signature: string
