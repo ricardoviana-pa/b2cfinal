@@ -17481,6 +17481,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Ótimo",
+        "guestName": "Guest",
+        "date": "2026-06-03T18:17:41.064Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Die Unterkunft von Portugal Active ist eine sehr schöne Möglichkeit abzuschalten und Sonne und Natur zu genießen. \nWir haben uns nie gelangweilt, auch wenn es abends gewittert hat. Man konnte innen sowie außen in großen Gruppen sitzen. \nWir würden uns freuen, wenn wir nochmal kommen könnten und möglicherweise auch weitere Unterkünfte von Portugal active verteilt im Land kennenlernen.",
         "guestName": "Guest",
         "date": "2026-05-28T12:18:34.706Z",
@@ -17641,7 +17673,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 5
+    "reviewCount": 6
   },
   {
     "id": "guesty-696f6aad74604800452a40b8",
