@@ -407,9 +407,9 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
 
   return (
     <div className="space-y-4">
-      {/* Payment method selector — 4 icon cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "9px" }}>
-        {PAYMENT_METHODS.map(({ id, label, Logo }) => (
+      {/* Payment method selector — 3 icon cards (Google Pay hidden) */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "9px" }}>
+        {PAYMENT_METHODS.filter(({ id }) => id !== "googlepay").map(({ id, label, Logo }) => (
           <button
             key={id}
             type="button"
