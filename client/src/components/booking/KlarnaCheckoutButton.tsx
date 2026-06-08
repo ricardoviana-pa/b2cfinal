@@ -80,6 +80,7 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
       const { error } = await (stripe as any).confirmKlarnaPayment(clientSecret, {
         payment_method: {
           billing_details: {
+            name: `${props.guestDetails.firstName} ${props.guestDetails.lastName}`,
             email: props.guestDetails.email,
             address: { country: "PT" },
           },

@@ -47,6 +47,9 @@ export async function createKlarnaPaymentIntent(
     currency: params.currency,
     // `as any` needed because Stripe SDK types don't enumerate all redirect-based methods like Klarna.
     payment_method_types: ["klarna"] as any,
+    payment_method_options: {
+      klarna: { preferred_locale: "en-PT" },
+    } as any,
     ...(params.metadata ? { metadata: params.metadata } : {}),
   });
 }
