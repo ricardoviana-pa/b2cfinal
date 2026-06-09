@@ -780,6 +780,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Adoramos a acomodação, tem todas as condições para receber famílias, muito bem equipada desde a cozinha, casas de banho, quartos luxuosos, zona super calma, previlegio de ter contato com a natureza. O Lidl  é algum comércio como cafés, bancos, farmácias e transportes públicos ficam a 6 minutos de carro. \nAs fotos não fazem tanto jus a tamanha beleza, voltaremos de certeza caso nós seja permitido. Super recomendo para famílias inteiras.",
+        "guestName": "Guest",
+        "date": "2026-06-08T22:09:04.743Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Casa otima para passar uma estadia com um grupo de amigos ou familia. Quartos muito confortáveis e espaço exterior excelente.",
         "guestName": "Guest",
         "date": "2026-05-05T09:16:36.729Z",
@@ -812,7 +844,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-6a0359b4e343150013abc14d",
@@ -17003,6 +17035,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Es war MEGA! \n\nWir wollten ein paar ruhige Tage mit Pool und Platz in Portugal für alle, diese Unterkunft hat es uns ermöglicht. \n\nSuper schnelle Kommunikation. Kleiner malerischer und idyllischer Ort zum entspannen und gleichzeitig bietet er die nötigen Einkaufsmöglichkeiten und der Strand ist einen schönen Spaziergang entfernt.",
+        "guestName": "Guest",
+        "date": "2026-06-07T18:32:37.274Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Fue una estancia muy agradable , disfrutamos de cada espacio de la casa y de sus alrededores .",
         "guestName": "Guest",
         "date": "2026-05-11T09:31:00.754Z",
@@ -17131,7 +17195,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 4
+    "reviewCount": 5
   },
   {
     "id": "guesty-69653365bf04fe0013743511",
