@@ -9,7 +9,7 @@ const resendKey = process.env.RESEND_API_KEY;
 const isProduction = !!resendKey;
 const resend = resendKey ? new Resend(resendKey) : null;
 
-const FROM_EMAIL = process.env.EMAIL_FROM || "Portugal Active <hello@portugalactive.com>";
+const FROM_EMAIL = process.env.EMAIL_FROM || "Portugal Active <info@portugalactive.com>";
 
 /* ================================================================
    CORE SEND
@@ -61,7 +61,7 @@ ${content}
 <!-- Footer -->
 <tr><td style="padding:30px 0 0 0;text-align:center;">
   <p style="font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;margin:0;">Portugal Active</p>
-  <p style="font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;margin:4px 0 0 0;">+351 258 358 434 &middot; hello@portugalactive.com</p>
+  <p style="font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;margin:4px 0 0 0;">+351 258 358 434 &middot; info@portugalactive.com</p>
   <p style="font-family:Arial,sans-serif;font-size:11px;color:#C4C0B8;margin:16px 0 0 0;">Luxury private villas across Portugal, managed with hotel-grade service.</p>
 </td></tr>
 
