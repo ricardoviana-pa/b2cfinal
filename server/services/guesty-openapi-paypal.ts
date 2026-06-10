@@ -45,10 +45,27 @@ export async function createReservationViaOpenApi(input: CreateReservationInput)
     },
   });
 
+  console.log("[Guesty] /v1/reservations-v3 raw response keys:", Object.keys(data || {}));
+
+  // Guesty's POST /v1/reservations-v3 returns the ID in `reservationId`:
+  //   { reservationId, quoteId, confirmationCode, status }
+  // Check `reservationId` FIRST, then fall back to `_id`/`id` and the nested shape
+  // in case Guesty changes the envelope on other plans.
+  const nested = data?.reservation ?? data?.data ?? null;
+  const reservationId: string | undefined =
+    data?.reservationId ?? data?._id ?? data?.id ?? nested?.reservationId ?? nested?._id ?? nested?.id;
+
+  if (!reservationId) {
+    console.error("[Guesty] /v1/reservations-v3 response missing reservation ID. Full response:", JSON.stringify(data));
+    throw new Error(
+      `Guesty reservation ID missing from response. Keys: ${Object.keys(data || {}).join(", ")}`
+    );
+  }
+
   return {
-    reservationId: data._id,
-    confirmationCode: data.confirmationCode,
-    status: data.status,
+    reservationId,
+    confirmationCode: data.confirmationCode ?? nested?.confirmationCode,
+    status: data.status ?? nested?.status ?? "confirmed",
   };
 }
 
@@ -62,7 +79,10 @@ export async function recordExternalPayment(
     body: {
       paymentMethod: { method: "OTHER" },
       amount,
-      note: `PayPal via Stripe — PaymentIntent: ${paymentIntentId}`,
+      // `paidAt` records the funds as ALREADY COLLECTED (external processor) rather than
+      // scheduled/owed — without it Guesty leaves the reservation balance unsettled.
+      paidAt: new Date().toISOString(),
+      note: `Stripe external payment (${currency}) — PaymentIntent: ${paymentIntentId}`,
     },
   });
 }

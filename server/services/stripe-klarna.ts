@@ -65,6 +65,22 @@ export async function getPaymentIntent(
 }
 
 /**
+ * Merge metadata into an existing PaymentIntent.
+ *
+ * Stripe merges the supplied keys with the PI's existing metadata (keys not passed
+ * are preserved), so this is used as a cross-process idempotency store: the first
+ * path to create a Guesty reservation stamps its id here, and any other path/instance
+ * reads it back instead of creating a duplicate.
+ */
+export async function updatePaymentIntentMetadata(
+  paymentIntentId: string,
+  metadata: Record<string, string>
+): Promise<void> {
+  const stripe = getStripe();
+  await stripe.paymentIntents.update(paymentIntentId, { metadata });
+}
+
+/**
  * Construct and verify a Stripe webhook event for Klarna events.
  *
  * Throws if the signature is invalid or `STRIPE_KLARNA_WEBHOOK_SECRET` is not set.

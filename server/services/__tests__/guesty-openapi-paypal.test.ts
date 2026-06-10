@@ -13,10 +13,12 @@ describe("guesty-openapi-paypal service", () => {
     vi.clearAllMocks();
   });
 
-  it("createReservationViaOpenApi calls POST /v1/reservations-v3 and returns mapped result", async () => {
+  it("createReservationViaOpenApi calls POST /v1/reservations-v3 and extracts reservationId", async () => {
+    // Real Guesty /v1/reservations-v3 response shape: { reservationId, quoteId, confirmationCode, status }
     (guestyClient.request as any).mockResolvedValueOnce({
-      _id: "res_abc123",
-      confirmationCode: "ABC-123",
+      reservationId: "667bc9e0319654c49fde9aff",
+      quoteId: "667bc383b119a5cd5f3bfbf6",
+      confirmationCode: "GY-aJ3WEcJU",
       status: "confirmed",
     });
 
@@ -41,9 +43,56 @@ describe("guesty-openapi-paypal service", () => {
         body: expect.objectContaining({ listingId: "listing123" }),
       })
     );
-    expect(result.reservationId).toBe("res_abc123");
-    expect(result.confirmationCode).toBe("ABC-123");
+    expect(result.reservationId).toBe("667bc9e0319654c49fde9aff");
+    expect(result.confirmationCode).toBe("GY-aJ3WEcJU");
     expect(result.status).toBe("confirmed");
+  });
+
+  it("createReservationViaOpenApi falls back to _id when reservationId is absent", async () => {
+    (guestyClient.request as any).mockResolvedValueOnce({
+      _id: "res_abc123",
+      confirmationCode: "ABC-123",
+      status: "confirmed",
+    });
+
+    const { createReservationViaOpenApi } = await import("../guesty-openapi-paypal");
+    const result = await createReservationViaOpenApi({
+      listingId: "listing123",
+      checkIn: "2026-07-01",
+      checkOut: "2026-07-08",
+      guestFirstName: "John",
+      guestLastName: "Doe",
+      guestEmail: "john@example.com",
+      numberOfAdults: 2,
+      numberOfChildren: 0,
+      numberOfInfants: 0,
+      stripePaymentIntentId: "pi_test123",
+    });
+
+    expect(result.reservationId).toBe("res_abc123");
+  });
+
+  it("createReservationViaOpenApi throws (never returns undefined id) when no id field present", async () => {
+    (guestyClient.request as any).mockResolvedValueOnce({
+      confirmationCode: "NO-ID",
+      status: "confirmed",
+    });
+
+    const { createReservationViaOpenApi } = await import("../guesty-openapi-paypal");
+    await expect(
+      createReservationViaOpenApi({
+        listingId: "listing123",
+        checkIn: "2026-07-01",
+        checkOut: "2026-07-08",
+        guestFirstName: "John",
+        guestLastName: "Doe",
+        guestEmail: "john@example.com",
+        numberOfAdults: 2,
+        numberOfChildren: 0,
+        numberOfInfants: 0,
+        stripePaymentIntentId: "pi_test123",
+      })
+    ).rejects.toThrow(/reservation ID/i);
   });
 
   it("createReservationViaOpenApi includes guest phone when provided", async () => {
@@ -91,7 +140,12 @@ describe("guesty-openapi-paypal service", () => {
       "POST",
       "/v1/reservations/res_abc123/payments",
       expect.objectContaining({
-        body: expect.objectContaining({ amount: 500.0 }),
+        body: expect.objectContaining({
+          amount: 500.0,
+          paymentMethod: { method: "OTHER" },
+          // paidAt marks the payment as already collected so Guesty settles the balance
+          paidAt: expect.any(String),
+        }),
       })
     );
   });

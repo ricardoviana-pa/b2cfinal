@@ -510,8 +510,9 @@ export const bookingRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { getPaymentIntent } = await import("../services/stripe-paypal");
+      const { getPaymentIntent, updatePaymentIntentMetadata } = await import("../services/stripe-paypal");
       const { createReservationViaOpenApi, recordExternalPayment } = await import("../services/guesty-openapi-paypal");
+      const { getOrCreateReservation } = await import("../lib/paypal-idempotency");
 
       const pi = await getPaymentIntent(input.paymentIntentId);
       if (pi.status !== "succeeded") {
@@ -524,20 +525,30 @@ export const bookingRouter = router({
         throw new Error("Amount mismatch. Please contact support.");
       }
 
+      const stripePort = {
+        getMetadata: async (id: string) => (await getPaymentIntent(id)).metadata ?? {},
+        setMetadata: (id: string, partial: Record<string, string>) => updatePaymentIntentMetadata(id, partial),
+      };
+
       let reservation: { reservationId: string; confirmationCode: string; status: string };
       try {
-        reservation = await createReservationViaOpenApi({
-          listingId: input.listingId,
-          checkIn: input.checkIn,
-          checkOut: input.checkOut,
-          guestFirstName: input.guestFirstName,
-          guestLastName: input.guestLastName,
-          guestEmail: input.guestEmail,
-          guestPhone: input.guestPhone,
-          numberOfAdults: input.numberOfAdults,
-          numberOfChildren: input.numberOfChildren,
-          numberOfInfants: input.numberOfInfants,
-          stripePaymentIntentId: input.paymentIntentId,
+        reservation = await getOrCreateReservation(input.paymentIntentId, stripePort, {
+          createReservation: () =>
+            createReservationViaOpenApi({
+              listingId: input.listingId,
+              checkIn: input.checkIn,
+              checkOut: input.checkOut,
+              guestFirstName: input.guestFirstName,
+              guestLastName: input.guestLastName,
+              guestEmail: input.guestEmail,
+              guestPhone: input.guestPhone,
+              numberOfAdults: input.numberOfAdults,
+              numberOfChildren: input.numberOfChildren,
+              numberOfInfants: input.numberOfInfants,
+              stripePaymentIntentId: input.paymentIntentId,
+            }),
+          recordPayment: (reservationId: string) =>
+            recordExternalPayment(reservationId, input.totalAmount, input.currency, input.paymentIntentId),
         });
       } catch (guestyError: any) {
         console.error("[PayPal] CRITICAL: Payment succeeded but Guesty reservation failed", {
@@ -566,15 +577,6 @@ export const bookingRouter = router({
           `Our team has been notified. Reference: ${input.paymentIntentId}`
         );
       }
-
-      recordExternalPayment(
-        reservation.reservationId,
-        input.totalAmount,
-        input.currency,
-        input.paymentIntentId
-      ).catch((err: any) => {
-        console.warn(`[PayPal] recordExternalPayment failed (non-blocking): ${err.message}`);
-      });
 
       recordTripForUser(ctx, {
         listingId: input.listingId,
@@ -672,8 +674,9 @@ export const bookingRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { getPaymentIntent } = await import("../services/stripe-klarna");
+      const { getPaymentIntent, updatePaymentIntentMetadata } = await import("../services/stripe-klarna");
       const { createReservationViaOpenApi, recordExternalPayment } = await import("../services/guesty-openapi-paypal");
+      const { getOrCreateReservation } = await import("../lib/paypal-idempotency");
 
       const pi = await getPaymentIntent(input.paymentIntentId);
       if (pi.status !== "succeeded") {
@@ -686,20 +689,30 @@ export const bookingRouter = router({
         throw new Error("Amount mismatch. Please contact support.");
       }
 
+      const stripePort = {
+        getMetadata: async (id: string) => (await getPaymentIntent(id)).metadata ?? {},
+        setMetadata: (id: string, partial: Record<string, string>) => updatePaymentIntentMetadata(id, partial),
+      };
+
       let reservation: { reservationId: string; confirmationCode: string; status: string };
       try {
-        reservation = await createReservationViaOpenApi({
-          listingId: input.listingId,
-          checkIn: input.checkIn,
-          checkOut: input.checkOut,
-          guestFirstName: input.guestFirstName,
-          guestLastName: input.guestLastName,
-          guestEmail: input.guestEmail,
-          guestPhone: input.guestPhone,
-          numberOfAdults: input.numberOfAdults,
-          numberOfChildren: input.numberOfChildren,
-          numberOfInfants: input.numberOfInfants,
-          stripePaymentIntentId: input.paymentIntentId,
+        reservation = await getOrCreateReservation(input.paymentIntentId, stripePort, {
+          createReservation: () =>
+            createReservationViaOpenApi({
+              listingId: input.listingId,
+              checkIn: input.checkIn,
+              checkOut: input.checkOut,
+              guestFirstName: input.guestFirstName,
+              guestLastName: input.guestLastName,
+              guestEmail: input.guestEmail,
+              guestPhone: input.guestPhone,
+              numberOfAdults: input.numberOfAdults,
+              numberOfChildren: input.numberOfChildren,
+              numberOfInfants: input.numberOfInfants,
+              stripePaymentIntentId: input.paymentIntentId,
+            }),
+          recordPayment: (reservationId: string) =>
+            recordExternalPayment(reservationId, input.totalAmount, input.currency, input.paymentIntentId),
         });
       } catch (guestyError: any) {
         console.error("[Klarna] CRITICAL: Payment succeeded but Guesty reservation failed", {
@@ -728,15 +741,6 @@ export const bookingRouter = router({
           `Our team has been notified. Reference: ${input.paymentIntentId}`
         );
       }
-
-      recordExternalPayment(
-        reservation.reservationId,
-        input.totalAmount,
-        input.currency,
-        input.paymentIntentId
-      ).catch((err: any) => {
-        console.warn(`[Klarna] recordExternalPayment failed (non-blocking): ${err.message}`);
-      });
 
       recordTripForUser(ctx, {
         listingId: input.listingId,

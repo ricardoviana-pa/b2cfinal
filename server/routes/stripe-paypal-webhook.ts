@@ -1,6 +1,8 @@
 import express, { type Express, type Request, type Response } from "express";
 import { constructStripePayPalWebhookEvent } from "../services/stripe-paypal";
 import { createReservationViaOpenApi, recordExternalPayment } from "../services/guesty-openapi-paypal";
+import { getOrCreateReservation } from "../lib/paypal-idempotency";
+import { getPaymentIntent, updatePaymentIntentMetadata } from "../services/stripe-paypal";
 import type Stripe from "stripe";
 
 // In-memory idempotency guard — prevents duplicate reservations when the
@@ -50,27 +52,29 @@ export function registerStripePayPalWebhookRoute(app: Express): void {
       setImmediate(async () => {
         try {
           const meta = pi.metadata;
-          const reservation = await createReservationViaOpenApi({
-            listingId: meta.listingId,
-            checkIn: meta.checkIn,
-            checkOut: meta.checkOut,
-            guestFirstName: meta.guestName.split(" ")[0] || meta.guestName,
-            guestLastName: meta.guestName.split(" ").slice(1).join(" ") || meta.guestName,
-            guestEmail: meta.guestEmail,
-            numberOfAdults: Number(meta.numberOfAdults) || 2,
-            numberOfChildren: Number(meta.numberOfChildren) || 0,
-            numberOfInfants: Number(meta.numberOfInfants) || 0,
-            stripePaymentIntentId: pi.id,
+          const stripePort = {
+            getMetadata: async (id: string) => (await getPaymentIntent(id)).metadata ?? {},
+            setMetadata: (id: string, partial: Record<string, string>) => updatePaymentIntentMetadata(id, partial),
+          };
+          const reservation = await getOrCreateReservation(pi.id, stripePort, {
+            createReservation: () =>
+              createReservationViaOpenApi({
+                listingId: meta.listingId,
+                checkIn: meta.checkIn,
+                checkOut: meta.checkOut,
+                guestFirstName: meta.guestName.split(" ")[0] || meta.guestName,
+                guestLastName: meta.guestName.split(" ").slice(1).join(" ") || meta.guestName,
+                guestEmail: meta.guestEmail,
+                numberOfAdults: Number(meta.numberOfAdults) || 2,
+                numberOfChildren: Number(meta.numberOfChildren) || 0,
+                numberOfInfants: Number(meta.numberOfInfants) || 0,
+                stripePaymentIntentId: pi.id,
+              }),
+            recordPayment: (reservationId: string) =>
+              recordExternalPayment(reservationId, pi.amount / 100, pi.currency.toUpperCase(), pi.id),
           });
 
-          await recordExternalPayment(
-            reservation.reservationId,
-            pi.amount / 100,
-            pi.currency.toUpperCase(),
-            pi.id
-          );
-
-          console.info(`[StripePayPalWebhook] Reservation created: ${reservation.reservationId} (${reservation.confirmationCode}) for PI ${pi.id}`);
+          console.info(`[StripePayPalWebhook] Reservation ready: ${reservation.reservationId} (${reservation.confirmationCode}) for PI ${pi.id}`);
         } catch (err: any) {
           console.error("[StripePayPalWebhook] CRITICAL: Webhook reservation failed", {
             paymentIntentId: pi.id,
