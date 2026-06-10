@@ -10356,6 +10356,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "What can I say .. apart from what a fabulous 4 days we have had in the villa . It’s in a residential area but we loved that . It’s close to the beach and the host was so helpful and super quick communication that we cannot fault our family getaway as everyone loved it . Thank you so much would definitely recommend if you want something away from the hustle and bustle of tourists",
+        "guestName": "Guest",
+        "date": "2026-06-08T15:19:07.011Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Casa espetacular!",
         "guestName": "Guest",
         "date": "2026-04-28T11:48:38.603Z",
@@ -10547,8 +10579,8 @@
         ]
       }
     ],
-    "averageRating": 4.8,
-    "reviewCount": 6
+    "averageRating": 4.9,
+    "reviewCount": 7
   },
   {
     "id": "guesty-6965333104b96f00147f5428",
