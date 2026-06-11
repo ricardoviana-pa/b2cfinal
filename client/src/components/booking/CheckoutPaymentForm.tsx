@@ -490,6 +490,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             }}
             propertyName={props.propertyName}
             destination={props.destination}
+            ratePlanId={props.ratePlanId}
             stripePublishableKey={stripeConfig.publishableKey}
             onError={(msg) => setPaypalError(msg)}
           />
@@ -526,6 +527,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             }}
             propertyName={props.propertyName}
             destination={props.destination}
+            ratePlanId={props.ratePlanId}
             stripePublishableKey={stripeConfig.publishableKey}
             onError={(msg) => setKlarnaError(msg)}
           />
