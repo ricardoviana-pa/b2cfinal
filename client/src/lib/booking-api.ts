@@ -114,10 +114,17 @@ export function fetchReservation(reservationId: string) {
     status: string;
     paymentStatus: string;
     listingName: string;
+    location?: string;
     checkIn: string;
     checkOut: string;
     guestsCount: number;
+    guestName?: string;
+    guestEmail?: string;
+    guestPhone?: string;
     totalCents: number | null;
+    nightlyRateCents?: number | null;
+    nights?: number | null;
+    cleaningFeeCents?: number | null;
     currency: string;
     cancellationPolicy: string[];
     checkInInstructions: string;

@@ -88,7 +88,7 @@ export default function KlarnaReturnPage() {
             },
           });
 
-          navigate(`/booking/confirmation/${result.reservationId}`);
+          navigate(`/booking/thank-you/${result.reservationId}?method=klarna`);
         } catch (err: any) {
           setStatus(
             `Payment received but reservation failed. Our team has been notified. Reference: ${paymentIntentId}`

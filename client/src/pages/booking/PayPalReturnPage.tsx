@@ -90,7 +90,7 @@ export default function PayPalReturnPage() {
             },
           });
 
-          navigate(`/booking/confirmation/${result.reservationId}`);
+          navigate(`/booking/thank-you/${result.reservationId}?method=paypal`);
         } catch (err: any) {
           setStatus(
             `Payment received but reservation failed. Our team has been notified. Reference: ${paymentIntentId}`
