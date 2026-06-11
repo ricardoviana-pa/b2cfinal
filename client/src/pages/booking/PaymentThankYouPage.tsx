@@ -5,7 +5,7 @@ import { Lock, ShieldCheck, Heart, Headphones, Clock, CheckCircle2 } from "lucid
 import { usePageMeta } from "@/hooks/usePageMeta";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { fetchReservation } from "@/lib/booking-api";
+import { fetchReservation, readThankYou } from "@/lib/booking-api";
 import { pushEcommerce } from "@/lib/datalayer";
 
 const CONCIERGE_EMAIL = "info@portugalactive.com";
@@ -82,14 +82,25 @@ export default function PaymentThankYouPage() {
 
   const { id } = useParams<{ id: string }>();
   const searchParams = new URLSearchParams(useSearch());
-  const method: PaymentMethod = searchParams.get("method") === "klarna" ? "klarna" : "paypal";
 
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const purchaseFiredRef = useRef(false);
 
+  // Prefer the payload stashed by the return page (Open-API reservations aren't
+  // reliably readable via GET right after creation). Fall back to the server
+  // fetch only when the stash is missing (e.g. a later direct visit).
+  const stash = readThankYou(id);
+  const method: PaymentMethod =
+    stash?.method ?? (searchParams.get("method") === "klarna" ? "klarna" : "paypal");
+
   useEffect(() => {
+    if (stash) {
+      setData(stash);
+      setLoading(false);
+      return;
+    }
     let active = true;
     fetchReservation(id)
       .then((response) => {

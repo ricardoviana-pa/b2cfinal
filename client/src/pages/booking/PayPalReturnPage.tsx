@@ -3,6 +3,7 @@ import { useSearch, useLocation } from "wouter";
 import { loadStripe } from "@stripe/stripe-js";
 import { trpc } from "@/lib/trpc";
 import { pushEcommerce } from "@/lib/datalayer";
+import { stashThankYou } from "@/lib/booking-api";
 
 // Platform Stripe instance (NO stripeAccount — platform key, not per-listing connected account).
 // PayPal PaymentIntents live on the platform account, so we must NOT pass stripeAccount here.
@@ -70,6 +71,27 @@ export default function PayPalReturnPage() {
           const result = await confirmBooking.mutateAsync({
             paymentIntentId,
             ...bookingData,
+          });
+
+          stashThankYou({
+            reservationId: result.reservationId,
+            confirmationCode: result.confirmationCode,
+            status: result.status,
+            method: "paypal",
+            listingName: bookingData.propertyName || "",
+            location: bookingData.destination || "",
+            checkIn: bookingData.checkIn,
+            checkOut: bookingData.checkOut,
+            guestsCount:
+              (bookingData.numberOfAdults || 0) +
+              (bookingData.numberOfChildren || 0) +
+              (bookingData.numberOfInfants || 0),
+            guestName: `${bookingData.guestFirstName || ""} ${bookingData.guestLastName || ""}`.trim(),
+            guestEmail: bookingData.guestEmail || "",
+            guestPhone: bookingData.guestPhone || "",
+            totalCents:
+              bookingData.totalAmount != null ? Math.round(Number(bookingData.totalAmount) * 100) : null,
+            currency: (bookingData.currency || "EUR").toUpperCase(),
           });
 
           sessionStorage.removeItem("paypal_booking_data");

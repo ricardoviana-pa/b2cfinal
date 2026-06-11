@@ -39,6 +39,49 @@ export interface BookingCalendarDay {
   price?: number;
 }
 
+/**
+ * Confirmation payload handed from the PayPal/Klarna return page to the
+ * thank-you page. Guesty's Open-API reservations are not reliably readable via
+ * GET immediately after creation, so we carry the data we already have client-
+ * side (booking input + mutation result) rather than re-fetching. Stored in
+ * sessionStorage so it survives a thank-you-page reload within the session.
+ */
+export interface ThankYouStash {
+  reservationId: string;
+  confirmationCode: string;
+  status?: string;
+  method: "paypal" | "klarna";
+  listingName?: string;
+  location?: string;
+  checkIn: string;
+  checkOut: string;
+  guestsCount?: number;
+  guestName?: string;
+  guestEmail?: string;
+  guestPhone?: string;
+  totalCents: number | null;
+  currency: string;
+}
+
+const thankYouKey = (reservationId: string) => `thankyou_${reservationId}`;
+
+export function stashThankYou(data: ThankYouStash): void {
+  try {
+    sessionStorage.setItem(thankYouKey(data.reservationId), JSON.stringify(data));
+  } catch {
+    /* sessionStorage unavailable — page falls back to fetchReservation */
+  }
+}
+
+export function readThankYou(reservationId: string): ThankYouStash | null {
+  try {
+    const raw = sessionStorage.getItem(thankYouKey(reservationId));
+    return raw ? (JSON.parse(raw) as ThankYouStash) : null;
+  } catch {
+    return null;
+  }
+}
+
 async function fetchJson<T>(url: string, init?: RequestInit, timeoutMs = 10000): Promise<T> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
