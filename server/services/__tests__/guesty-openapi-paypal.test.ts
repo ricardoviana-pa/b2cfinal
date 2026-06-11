@@ -40,7 +40,9 @@ describe("guesty-openapi-paypal service", () => {
       "POST",
       "/v1/reservations-v3",
       expect.objectContaining({
-        body: expect.objectContaining({ listingId: "listing123" }),
+        // applyPromotions must be false so the reservation is priced on the same basis as
+        // the (non-promo) checkout charge — otherwise balanceDue < charged amount.
+        body: expect.objectContaining({ listingId: "listing123", applyPromotions: false }),
       })
     );
     expect(result.reservationId).toBe("667bc9e0319654c49fde9aff");

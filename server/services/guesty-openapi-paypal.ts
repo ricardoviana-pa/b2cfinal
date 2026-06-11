@@ -38,7 +38,11 @@ export async function createReservationViaOpenApi(input: CreateReservationInput)
         numberOfInfants: input.numberOfInfants,
       },
       guestsCount: input.numberOfAdults + input.numberOfChildren,
-      applyPromotions: true,
+      // Price the reservation on the SAME basis as the checkout charge. The Booking Engine
+      // quote we charge the guest does NOT apply promotions, so applying them here would make
+      // the reservation cheaper than what was paid — Guesty then rejects the payment with
+      // "Payment amount can't be greater than balance due" and the reservation stays unpaid.
+      applyPromotions: false,
       ignoreCalendar: false,
       ignoreTerms: false,
       ignoreBlocks: false,
