@@ -504,6 +504,7 @@ export const bookingRouter = router({
         numberOfInfants: z.number().int().min(0).max(10).default(0),
         totalAmount: z.number().min(10).max(100_000),
         currency: z.string().length(3),
+        ratePlanId: z.string().optional(),
         propertyName: z.string().optional(),
         propertyImage: z.string().optional(),
         destination: z.string().optional(),
@@ -546,6 +547,7 @@ export const bookingRouter = router({
               numberOfChildren: input.numberOfChildren,
               numberOfInfants: input.numberOfInfants,
               stripePaymentIntentId: input.paymentIntentId,
+              ratePlanId: input.ratePlanId,
             }),
           recordPayment: (reservationId: string) =>
             recordExternalPayment(reservationId, input.totalAmount, input.currency, input.paymentIntentId),
@@ -668,6 +670,7 @@ export const bookingRouter = router({
         numberOfInfants: z.number().int().min(0).max(10).default(0),
         totalAmount: z.number().min(10).max(100_000),
         currency: z.string().length(3),
+        ratePlanId: z.string().optional(),
         propertyName: z.string().optional(),
         propertyImage: z.string().optional(),
         destination: z.string().optional(),
@@ -710,6 +713,7 @@ export const bookingRouter = router({
               numberOfChildren: input.numberOfChildren,
               numberOfInfants: input.numberOfInfants,
               stripePaymentIntentId: input.paymentIntentId,
+              ratePlanId: input.ratePlanId,
             }),
           recordPayment: (reservationId: string) =>
             recordExternalPayment(reservationId, input.totalAmount, input.currency, input.paymentIntentId),

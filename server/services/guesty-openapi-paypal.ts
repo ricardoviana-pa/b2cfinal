@@ -12,6 +12,14 @@ export interface CreateReservationInput {
   numberOfChildren: number;
   numberOfInfants: number;
   stripePaymentIntentId: string;
+  /**
+   * Rate plan the guest selected and PAID for at checkout. Without it, Guesty
+   * prices the reservation on the listing's DEFAULT rate plan (typically
+   * Non-refundable) — which both mis-prices it (payment then exceeds balance
+   * due and is rejected) and applies the wrong cancellation terms. Pass it so
+   * the reservation matches what the guest actually booked.
+   */
+  ratePlanId?: string;
 }
 
 export async function createReservationViaOpenApi(input: CreateReservationInput): Promise<{
@@ -38,10 +46,14 @@ export async function createReservationViaOpenApi(input: CreateReservationInput)
         numberOfInfants: input.numberOfInfants,
       },
       guestsCount: input.numberOfAdults + input.numberOfChildren,
-      // Price the reservation on the SAME basis as the checkout charge. The Booking Engine
-      // quote we charge the guest does NOT apply promotions, so applying them here would make
-      // the reservation cheaper than what was paid — Guesty then rejects the payment with
-      // "Payment amount can't be greater than balance due" and the reservation stays unpaid.
+      // Create the reservation on the SAME rate plan the guest selected and paid for.
+      // Without this, Guesty defaults to the listing's base rate plan (typically
+      // Non-refundable), which re-prices the reservation differently from the checkout
+      // quote — Guesty then rejects the payment with "Payment amount can't be greater than
+      // balance due" and the reservation stays unpaid AND on the wrong cancellation terms.
+      ...(input.ratePlanId && { ratePlanId: input.ratePlanId }),
+      // The Booking Engine quote we charge does NOT apply promotions; applying them here
+      // would make the reservation cheaper than what was paid, so keep them off.
       applyPromotions: false,
       ignoreCalendar: false,
       ignoreTerms: false,
