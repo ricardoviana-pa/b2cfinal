@@ -556,6 +556,25 @@
     "addToCalendar": "Add to Calendar",
     "whatsappConcierge": "WhatsApp concierge"
   },
+  "paymentThankYou": {
+    "title": "Booking Confirmed",
+    "reassurance": "A confirmation email is on its way. Your concierge will be in touch within 24 hours to help plan your stay.",
+    "emailSent": "Confirmation email sent to",
+    "bookedBy": "Booked by",
+    "priceSummary": "Price summary",
+    "nights": "{{count}} nights",
+    "cleaning": "Final cleaning",
+    "totalPaid": "Total paid",
+    "paidPaypal": "Paid in full with PayPal",
+    "paidKlarna": "Paying with Klarna",
+    "klarnaSub": "Interest-free instalments",
+    "cta": "Need Help? Talk With Your Concierge",
+    "ctaNote": "Your dedicated concierge will reach out within 24 hours to help plan your stay.",
+    "trustSecure": "Secure booking",
+    "trustRate": "Best rate guaranteed",
+    "trustCancel": "Flexible cancellation",
+    "trustConcierge": "Concierge included"
+  },
   "payment": {
     "failed": "Payment failed. Please try again.",
     "serviceBusy": "Booking service is temporarily busy. Please wait 1-2 minutes and try again.",

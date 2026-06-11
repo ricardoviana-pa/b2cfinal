@@ -3,6 +3,8 @@ import { useSearch, useLocation } from "wouter";
 import { loadStripe } from "@stripe/stripe-js";
 import { trpc } from "@/lib/trpc";
 import { pushEcommerce } from "@/lib/datalayer";
+import { stashThankYou } from "@/lib/booking-api";
+import PaymentProcessing from "@/components/booking/PaymentProcessing";
 
 // Platform Stripe instance (NO stripeAccount — platform key, not per-listing connected account).
 // PayPal PaymentIntents live on the platform account, so we must NOT pass stripeAccount here.
@@ -72,6 +74,27 @@ export default function PayPalReturnPage() {
             ...bookingData,
           });
 
+          stashThankYou({
+            reservationId: result.reservationId,
+            confirmationCode: result.confirmationCode,
+            status: result.status,
+            method: "paypal",
+            listingName: bookingData.propertyName || "",
+            location: bookingData.destination || "",
+            checkIn: bookingData.checkIn,
+            checkOut: bookingData.checkOut,
+            guestsCount:
+              (bookingData.numberOfAdults || 0) +
+              (bookingData.numberOfChildren || 0) +
+              (bookingData.numberOfInfants || 0),
+            guestName: `${bookingData.guestFirstName || ""} ${bookingData.guestLastName || ""}`.trim(),
+            guestEmail: bookingData.guestEmail || "",
+            guestPhone: bookingData.guestPhone || "",
+            totalCents:
+              bookingData.totalAmount != null ? Math.round(Number(bookingData.totalAmount) * 100) : null,
+            currency: (bookingData.currency || "EUR").toUpperCase(),
+          });
+
           sessionStorage.removeItem("paypal_booking_data");
 
           pushEcommerce({
@@ -90,7 +113,7 @@ export default function PayPalReturnPage() {
             },
           });
 
-          navigate(`/booking/confirmation/${result.reservationId}`);
+          navigate(`/booking/thank-you/${result.reservationId}?method=paypal`);
         } catch (err: any) {
           setStatus(
             `Payment received but reservation failed. Our team has been notified. Reference: ${paymentIntentId}`
@@ -104,10 +127,9 @@ export default function PayPalReturnPage() {
     });
   }, [stripeConfig?.publishableKey, search]);
 
-  return (
-    <div style={{ padding: "60px 20px", textAlign: "center", fontFamily: "Arial, sans-serif" }}>
-      <h1 style={{ fontSize: "24px", marginBottom: "16px" }}>Processing Your Booking</h1>
-      <p style={{ color: "#6B6860", fontSize: "16px" }}>{status}</p>
-    </div>
-  );
+  // Terminal-failure states (not the transient "still processing" wait) show
+  // the error variant; everything else keeps the spinner + progress bar.
+  const failed = /^Error|not completed|reservation failed|processor unavailable|Could not verify/i.test(status);
+
+  return <PaymentProcessing status={status} failed={failed} />;
 }

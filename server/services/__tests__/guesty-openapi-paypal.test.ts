@@ -40,7 +40,9 @@ describe("guesty-openapi-paypal service", () => {
       "POST",
       "/v1/reservations-v3",
       expect.objectContaining({
-        body: expect.objectContaining({ listingId: "listing123" }),
+        // applyPromotions must be false so the reservation is priced on the same basis as
+        // the (non-promo) checkout charge — otherwise balanceDue < charged amount.
+        body: expect.objectContaining({ listingId: "listing123", applyPromotions: false }),
       })
     );
     expect(result.reservationId).toBe("667bc9e0319654c49fde9aff");
@@ -130,8 +132,10 @@ describe("guesty-openapi-paypal service", () => {
     );
   });
 
-  it("recordExternalPayment calls POST /v1/reservations/{id}/payments", async () => {
-    (guestyClient.request as any).mockResolvedValueOnce({ _id: "payment_xyz" });
+  it("recordExternalPayment reads balanceDue then POSTs the payment", async () => {
+    (guestyClient.request as any)
+      .mockResolvedValueOnce({ money: { balanceDue: 500.0 } }) // GET reservation
+      .mockResolvedValueOnce({ _id: "payment_xyz" }); // POST payment
 
     const { recordExternalPayment } = await import("../guesty-openapi-paypal");
     await recordExternalPayment("res_abc123", 500.0, "EUR", "pi_test123");
@@ -147,6 +151,37 @@ describe("guesty-openapi-paypal service", () => {
           paidAt: expect.any(String),
         }),
       })
+    );
+  });
+
+  it("recordExternalPayment caps the recorded amount at the reservation balanceDue", async () => {
+    // Guesty re-priced the reservation lower (€238.40) than what we charged (€260)
+    (guestyClient.request as any)
+      .mockResolvedValueOnce({ money: { balanceDue: 238.4 } }) // GET reservation
+      .mockResolvedValueOnce({ _id: "payment_capped" }); // POST payment
+
+    const { recordExternalPayment } = await import("../guesty-openapi-paypal");
+    await recordExternalPayment("res_klarna", 260.0, "EUR", "pi_klarna");
+
+    expect(guestyClient.request).toHaveBeenLastCalledWith(
+      "POST",
+      "/v1/reservations/res_klarna/payments",
+      expect.objectContaining({ body: expect.objectContaining({ amount: 238.4 }) })
+    );
+  });
+
+  it("recordExternalPayment skips POST when the balance is already settled", async () => {
+    (guestyClient.request as any).mockResolvedValueOnce({ money: { balanceDue: 0 } }); // GET reservation
+
+    const { recordExternalPayment } = await import("../guesty-openapi-paypal");
+    await recordExternalPayment("res_paid", 260.0, "EUR", "pi_dup");
+
+    // Only the GET happened — no payment POST
+    expect(guestyClient.request).toHaveBeenCalledTimes(1);
+    expect(guestyClient.request).not.toHaveBeenCalledWith(
+      "POST",
+      expect.stringContaining("/payments"),
+      expect.anything()
     );
   });
 });

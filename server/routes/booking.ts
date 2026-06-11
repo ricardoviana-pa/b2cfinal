@@ -422,12 +422,14 @@ export function registerBookingRoutes(app: Express): void {
       const listingId = reservation?.listingId || reservation?.listing?._id || reservation?.listing?._idStr || "";
       let listingName = "";
       let checkInInstructions = "";
+      let listingAddress: any = reservation?.listing?.address || null;
 
       if (listingId) {
         try {
           const listing = await getListingCached(String(listingId));
           listingName = listing?.title || "";
           checkInInstructions = listing?.checkInInstructions || "";
+          listingAddress = listing?.address || listingAddress;
         } catch {
           /* non-blocking */
         }
@@ -462,21 +464,56 @@ export function registerBookingRoutes(app: Express): void {
           })
         : "";
 
+      // --- Price breakdown (additive; same money-field fallbacks as the BE quote mapping) ---
+      const money = reservation?.money || {};
+      const toCents = (v: any): number | null =>
+        v === undefined || v === null || v === "" ? null : Math.round(Number(v) * 100);
+      const fareAccommodationCents = toCents(
+        money.fareAccommodationAdjusted ?? money.fareAccommodation ?? money.accommodationFare,
+      );
+      const cleaningFeeCents = toCents(money.fareCleaning ?? money.cleaningFee);
+      const nights =
+        checkIn && checkOut
+          ? Math.max(
+              1,
+              Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000),
+            )
+          : null;
+      const nightlyRateCents =
+        fareAccommodationCents != null && nights ? Math.round(fareAccommodationCents / nights) : null;
+
+      // --- Guest details (additive) ---
+      const guestFirstName = reservation?.guest?.firstName || "";
+      const guestLastName = reservation?.guest?.lastName || "";
+      const guestName =
+        `${guestFirstName} ${guestLastName}`.trim() || reservation?.guest?.fullName || "";
+      const guestEmail = reservation?.guest?.email || "";
+      const guestPhone = reservation?.guest?.phone || "";
+      const location =
+        listingAddress?.city || listingAddress?.region || listingAddress?.state || "";
+
       res.json({
         reservationId: reservation?._id || req.params.id,
         confirmationCode: reservation?.confirmationCode || reservation?._id?.slice(-8) || "",
         status: reservation?.status || "",
         paymentStatus: reservation?.paymentStatus || reservation?.money?.paymentStatus || "unknown",
         listingName: title,
+        location,
         checkIn: checkIn || reservation?.checkInDateLocalized || "",
         checkOut: checkOut || reservation?.checkOutDateLocalized || "",
         guestsCount: reservation?.guestsCount || reservation?.guests || 0,
+        guestName,
+        guestEmail,
+        guestPhone,
         totalCents:
           reservation?.money?.hostPayout !== undefined
             ? Math.round(Number(reservation.money.hostPayout || 0) * 100)
             : reservation?.money?.total !== undefined
               ? Math.round(Number(reservation.money.total || 0) * 100)
               : null,
+        nightlyRateCents,
+        nights,
+        cleaningFeeCents,
         currency: reservation?.money?.currency || "EUR",
         cancellationPolicy:
           reservation?.cancellationPolicy ||
