@@ -4,6 +4,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { trpc } from "@/lib/trpc";
 import { pushEcommerce } from "@/lib/datalayer";
 import { stashThankYou } from "@/lib/booking-api";
+import PaymentProcessing from "@/components/booking/PaymentProcessing";
 
 // Platform Stripe instance (NO stripeAccount — platform key, not per-listing connected account).
 // PayPal PaymentIntents live on the platform account, so we must NOT pass stripeAccount here.
@@ -126,10 +127,9 @@ export default function PayPalReturnPage() {
     });
   }, [stripeConfig?.publishableKey, search]);
 
-  return (
-    <div style={{ padding: "60px 20px", textAlign: "center", fontFamily: "Arial, sans-serif" }}>
-      <h1 style={{ fontSize: "24px", marginBottom: "16px" }}>Processing Your Booking</h1>
-      <p style={{ color: "#6B6860", fontSize: "16px" }}>{status}</p>
-    </div>
-  );
+  // Terminal-failure states (not the transient "still processing" wait) show
+  // the error variant; everything else keeps the spinner + progress bar.
+  const failed = /^Error|not completed|reservation failed|processor unavailable|Could not verify/i.test(status);
+
+  return <PaymentProcessing status={status} failed={failed} />;
 }
