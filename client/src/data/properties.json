@@ -6469,9 +6469,7 @@
     "amenities": {
       "property": [
         "Air conditioning",
-        "BBQ grill",
         "Baking sheet",
-        "Barbeque utensils",
         "Bed linens",
         "Cleaning Disinfection",
         "Cleaning products",
@@ -7196,6 +7194,38 @@
     "areaSquareFeet": 1615,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Sítio fantástico, casa muito bem equipada e confortável, bom gosto, embora sem luxo.",
+        "guestName": "Guest",
+        "date": "2026-06-12T10:54:24.438Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 2
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "The apartment has been recently renovated to a good standard and the photos are fairly accurate. However, there are several things which show that it’s managed by a company and lacking personal touch.\nFor instance - zero storage in one of the bedrooms - not even a door hook.\nMore importantly for a place that sleeps six lots of other things lacking.  2 wine glasses and nothing else resembling wine glasses - lots of shot glasses and massive tumblers.\nAnd zero cups or mugs or anything at all to mak",
         "guestName": "Guest",
@@ -7325,7 +7355,7 @@
       }
     ],
     "averageRating": 4.8,
-    "reviewCount": 4
+    "reviewCount": 5
   },
   {
     "id": "guesty-696533714b583900135cef22",
