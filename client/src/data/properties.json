@@ -1315,6 +1315,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Quite simply the best stay in Portugal if you want to unwind with family and friends. Beautiful surroundings, incredible views, amazing pool and outdoor spaces. Very relaxing and easygoing.",
+        "guestName": "Guest",
+        "date": "2026-06-13T08:06:35.987Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "La casa es muy bonita, confortable y cuidada.\n(Puede mejorar algún mantenimiento , aunque es difícil, por ej olor a humedad en alguna zona)\nEn líneas generales muy satisfactoria nuestra estancia .\nÉramos ocho adultos y seis niños de 1 a 12 años, que disfrutaron mucho de las instalaciones",
         "guestName": "Guest",
         "date": "2026-05-11T15:57:29.599Z",
@@ -1475,7 +1507,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 5
+    "reviewCount": 6
   },
   {
     "id": "guesty-6965338a753fb0001424acf6",
