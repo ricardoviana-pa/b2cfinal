@@ -19063,6 +19063,38 @@
     "areaSquareFeet": 1680,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Recomendo",
+        "guestName": "Guest",
+        "date": "2026-06-11T13:06:52.354Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "Casa muito bem localizada e aconchegante, o único problema foi os bichos pequenos que havia pela casa.",
         "guestName": "Guest",
@@ -19255,8 +19287,8 @@
         ]
       }
     ],
-    "averageRating": 4.8,
-    "reviewCount": 6
+    "averageRating": 4.9,
+    "reviewCount": 7
   },
   {
     "id": "guesty-696533af4fe6a100145fecb6",
