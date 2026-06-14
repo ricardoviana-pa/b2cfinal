@@ -65,19 +65,51 @@ function reservationFromMetadata(meta: Record<string, string>): ReservationResul
 }
 
 /**
+ * In-memory single-flight for the WHOLE create-and-record flow, keyed by PaymentIntent.
+ *
+ * `claimOrAwaitReservation` only collapses the reservation *create*; the payment record
+ * runs after it, once per caller. When the webhook and the return-page mutation race a
+ * brand-new PI in the same process, both pass the create (deduped) but then each record a
+ * payment — the double-payment bug seen on GY-9XreERTc. Sharing one promise for the entire
+ * flow makes the payment record happen exactly once per PI in-process too. The entry is
+ * dropped once settled; any later retry re-validates through the Stripe-metadata guard
+ * below (which is what protects across instances/restarts).
+ */
+const reservationFlights = new Map<string, Promise<ReservationResult>>();
+
+/**
  * Create the Guesty reservation AND record its payment exactly once per PaymentIntent,
  * even across separate processes/instances.
  *
  * Idempotency is layered:
- *   1. Stripe PI metadata (`guestyReservationId`) — shared across instances.
- *   2. `claimOrAwaitReservation` in-memory map — collapses concurrent calls in one process.
- *   3. Conflict recovery — if Guesty rejects the create because the dates are already
+ *   1. `reservationFlights` in-memory map — collapses concurrent create+record in one process.
+ *   2. Stripe PI metadata (`guestyReservationId` / `guestyPaymentRecorded`) — shared across instances.
+ *   3. `claimOrAwaitReservation` in-memory map — collapses concurrent creates in one process.
+ *   4. Conflict recovery — if Guesty rejects the create because the dates are already
  *      booked (a racing instance won), we re-read the metadata and adopt that reservation.
  *
  * The payment is recorded behind the `guestyPaymentRecorded` flag so the webhook and the
  * return-page mutation don't each post a duplicate payment.
  */
-export async function getOrCreateReservation(
+export function getOrCreateReservation(
+  piId: string,
+  stripe: StripeMetadataPort,
+  ops: {
+    createReservation: () => Promise<ReservationResult>;
+    recordPayment: (reservationId: string) => Promise<void>;
+  }
+): Promise<ReservationResult> {
+  const inFlight = reservationFlights.get(piId);
+  if (inFlight) return inFlight;
+
+  const flight = createAndRecordReservation(piId, stripe, ops).finally(() => {
+    reservationFlights.delete(piId);
+  });
+  reservationFlights.set(piId, flight);
+  return flight;
+}
+
+async function createAndRecordReservation(
   piId: string,
   stripe: StripeMetadataPort,
   ops: {

@@ -129,6 +129,33 @@ describe("getOrCreateReservation", () => {
     expect(stripe.read(piId).guestyPaymentRecorded).toBe("true");
   });
 
+  it("records the payment only once when the webhook and return page race a brand-new PI", async () => {
+    // Reproduces the GY-9XreERTc incident: both the Stripe webhook and the
+    // confirmPayPalBooking return-page mutation hit getOrCreateReservation for the
+    // SAME fresh PaymentIntent before either has stamped metadata. The reservation
+    // must be created once and — critically — the payment must be recorded once.
+    const { getOrCreateReservation } = await import("./paypal-idempotency");
+    const stripe = fakeStripePort();
+    const piId = "pi_double_record_" + Date.now();
+
+    const createReservation = vi.fn().mockResolvedValue(reservation);
+    // recordPayment is a real Guesty round-trip — async, leaving a window for the
+    // racing caller to also record before the `guestyPaymentRecorded` flag is set.
+    const recordPayment = vi
+      .fn()
+      .mockImplementation(() => new Promise<void>((resolve) => setTimeout(resolve, 5)));
+
+    const [r1, r2] = await Promise.all([
+      getOrCreateReservation(piId, stripe.port, { createReservation, recordPayment }),
+      getOrCreateReservation(piId, stripe.port, { createReservation, recordPayment }),
+    ]);
+
+    expect(createReservation).toHaveBeenCalledTimes(1);
+    expect(recordPayment).toHaveBeenCalledTimes(1);
+    expect(r1.reservationId).toBe(reservation.reservationId);
+    expect(r2.reservationId).toBe(reservation.reservationId);
+  });
+
   it("resolves a 'listing not available' create conflict to the reservation a racing instance created", async () => {
     const { getOrCreateReservation } = await import("./paypal-idempotency");
     const stripe = fakeStripePort();
