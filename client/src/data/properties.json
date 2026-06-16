@@ -18307,6 +18307,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Una propiedad fantástica con todos los lujos para pasar unos días en familia o pareja con piscina de uso privado , terreno , jacuzzi , sauna o\nGimanasio entre las comodidades que ofrece . Menaje de cocina completo y distribución perfecta para alojarse",
+        "guestName": "Guest",
+        "date": "2026-06-14T15:42:39.049Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "This place was absolutely stunning, we felt lucky we found it available. The place had style and felt luxurious, and we immediately felt pampered. The hosts were very kind and accommodating. The sauna (and fireplace) were by far our favorite parts of the stay. It heated up quickly and the entire place felt very clean (including the jacuzzi). The private backyard was gorgeous with the beautiful lemon tree right outside the master bedroom. The kitchen was wonderful for cooking and the bedrooms/bat",
         "guestName": "Guest",
         "date": "2026-01-28T09:20:59.047Z",
@@ -18370,8 +18402,8 @@
         ]
       }
     ],
-    "averageRating": 4.5,
-    "reviewCount": 2
+    "averageRating": 4.7,
+    "reviewCount": 3
   },
   {
     "id": "guesty-696533616cff760015e28965",
