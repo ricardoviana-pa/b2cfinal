@@ -114,7 +114,8 @@
     "talkConcierge": "Fale com o nosso concierge",
     "bookingBarDestination": "Destino",
     "searchHomes": "Pesquisar alojamentos",
-    "heroAlt": "Coleção de alojamentos Portugal Active"
+    "heroAlt": "Coleção de alojamentos Portugal Active",
+    "batchError": "O preço em tempo real está temporariamente indisponível. Consulte a página de cada propriedade para o preço final."
   },
   "property": {
     "bedrooms": "Quartos",
@@ -204,7 +205,9 @@
     "priceError": "Não foi possível obter o preço em direto.",
     "bookingOverline": "Reserva",
     "select": "Selecionar",
-    "cancellationPerPolicy": "Cancelamento sujeito à política do anúncio"
+    "cancellationPerPolicy": "Cancelamento sujeito à política do anúncio",
+    "minStayNotice_one": "A estadia mínima para estas datas é de {{count}} noite",
+    "minStayNotice_other": "A estadia mínima para estas datas é de {{count}} noites"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Preço sob consulta",
@@ -255,7 +258,8 @@
     "reserveNow": "RESERVAR AGORA",
     "requestWithoutPayment": "Ou solicitar sem pagamento",
     "belowMinNightsWarning_one": "Por favor, selecione pelo menos {{count}} noite para continuar",
-    "belowMinNightsWarning_other": "Por favor, selecione pelo menos {{count}} noites para continuar"
+    "belowMinNightsWarning_other": "Por favor, selecione pelo menos {{count}} noites para continuar",
+    "pricingUnavailableMessage": "Não foi possível confirmar o preço para estas datas. Contacte um Concierge."
   },
   "common": {
     "loading": "A carregar…",

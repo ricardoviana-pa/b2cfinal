@@ -675,7 +675,7 @@ export default function Homes() {
             <div className="flex items-center gap-3 bg-[#FEF3C7] border border-[#F59E0B]/30 rounded-lg px-4 py-3 mb-6">
               <AlertTriangle className="w-4 h-4 text-[#D97706] shrink-0" />
               <p className="text-[13px] text-[#92400E]">
-                {t('homes.batchError', 'Live pricing is temporarily unavailable. Showing estimated rates — confirm final price on the property page.')}
+                {t('homes.batchError', 'Live pricing is temporarily unavailable. See each property page for final pricing.')}
               </p>
             </div>
           )}

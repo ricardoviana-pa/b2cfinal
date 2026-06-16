@@ -114,7 +114,8 @@
     "talkConcierge": "Hablar con concierge",
     "bookingBarDestination": "Destino",
     "searchHomes": "Buscar casas",
-    "heroAlt": "Colección Portugal Active"
+    "heroAlt": "Colección Portugal Active",
+    "batchError": "Los precios en tiempo real no están disponibles temporalmente. Consulte la página de cada propiedad para ver el precio final."
   },
   "property": {
     "bedrooms": "Dormitorios",
@@ -202,7 +203,9 @@
     "continueGuestDetails": "Continuar a datos del huésped",
     "loadError": "No se pudo cargar el resumen de la estancia.",
     "priceError": "No se pudo obtener el precio en vivo.",
-    "bookingOverline": "Reserva"
+    "bookingOverline": "Reserva",
+    "minStayNotice_one": "La estancia mínima para estas fechas es de {{count}} noche",
+    "minStayNotice_other": "La estancia mínima para estas fechas es de {{count}} noches"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Precio bajo consulta",
@@ -253,7 +256,8 @@
     "reserveNow": "RESERVAR AHORA",
     "requestWithoutPayment": "O solicitar sin pago",
     "belowMinNightsWarning_one": "Por favor, seleccione al menos {{count}} noche para continuar",
-    "belowMinNightsWarning_other": "Por favor, seleccione al menos {{count}} noches para continuar"
+    "belowMinNightsWarning_other": "Por favor, seleccione al menos {{count}} noches para continuar",
+    "pricingUnavailableMessage": "No pudimos confirmar el precio para estas fechas. Póngase en contacto con un Concierge."
   },
   "common": {
     "loading": "Cargando…",

@@ -114,7 +114,8 @@
     "talkConcierge": "Prata med vår concierge",
     "bookingBarDestination": "Destination",
     "searchHomes": "Sök hem",
-    "heroAlt": "Portugal Active hemkollektion"
+    "heroAlt": "Portugal Active hemkollektion",
+    "batchError": "Realtidspriser är tillfälligt otillgängliga. Se varje boendes sida för slutpris."
   },
   "property": {
     "bedrooms": "Sovrum",
@@ -202,7 +203,9 @@
     "continueGuestDetails": "Fortsätt till gästuppgifter",
     "loadError": "Kunde inte ladda vistelseöversikt.",
     "priceError": "Kunde inte hämta livepris.",
-    "bookingOverline": "Bokning"
+    "bookingOverline": "Bokning",
+    "minStayNotice_one": "Minsta vistelse för dessa datum är {{count}} natt",
+    "minStayNotice_other": "Minsta vistelse för dessa datum är {{count}} nätter"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Pris på förfrågan",
@@ -253,7 +256,8 @@
     "reserveNow": "RESERVERA NU",
     "requestWithoutPayment": "Eller förfråga utan betalning",
     "belowMinNightsWarning_one": "Välj minst {{count}} natt för att fortsätta",
-    "belowMinNightsWarning_other": "Välj minst {{count}} nätter för att fortsätta"
+    "belowMinNightsWarning_other": "Välj minst {{count}} nätter för att fortsätta",
+    "pricingUnavailableMessage": "Vi kunde inte bekräfta priset för dessa datum. Kontakta en Concierge."
   },
   "common": {
     "loading": "Laddar…",

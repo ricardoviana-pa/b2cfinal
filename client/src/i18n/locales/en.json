@@ -114,7 +114,8 @@
     "talkConcierge": "Talk to our concierge",
     "bookingBarDestination": "Destination",
     "searchHomes": "Search homes",
-    "heroAlt": "Portugal Active homes collection"
+    "heroAlt": "Portugal Active homes collection",
+    "batchError": "Live pricing is temporarily unavailable. See each property page for final pricing."
   },
   "property": {
     "bedrooms": "Bedrooms",
@@ -204,7 +205,9 @@
     "priceError": "Could not get live price.",
     "bookingOverline": "Booking",
     "select": "Select",
-    "cancellationPerPolicy": "Cancellation subject to listing policy"
+    "cancellationPerPolicy": "Cancellation subject to listing policy",
+    "minStayNotice_one": "Minimum stay for these dates is {{count}} night",
+    "minStayNotice_other": "Minimum stay for these dates is {{count}} nights"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Price on request",
@@ -255,7 +258,8 @@
     "reserveNow": "RESERVE NOW",
     "requestWithoutPayment": "Or request without payment",
     "belowMinNightsWarning_one": "Please select at least {{count}} night to continue",
-    "belowMinNightsWarning_other": "Please select at least {{count}} nights to continue"
+    "belowMinNightsWarning_other": "Please select at least {{count}} nights to continue",
+    "pricingUnavailableMessage": "We couldn't confirm pricing for these dates. Please contact a Concierge."
   },
   "common": {
     "loading": "Loading…",
