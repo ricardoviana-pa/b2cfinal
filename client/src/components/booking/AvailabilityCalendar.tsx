@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useIsMobile } from "@/hooks/useMobile";
 
@@ -94,8 +94,13 @@ export default function AvailabilityCalendar({
   const [viewMonth, setViewMonth] = useState(now.getMonth());
   const [viewYear, setViewYear] = useState(now.getFullYear());
 
-  // Selection phase
-  const phase: SelectionPhase = checkIn && !checkOut ? "check-out" : "check-in";
+  // Selection phase. Derived from the current selection, but the user can
+  // explicitly override it by clicking the Check-in / Check-out pills.
+  const [phaseOverride, setPhaseOverride] = useState<SelectionPhase | null>(null);
+  const derivedPhase: SelectionPhase = checkIn && !checkOut ? "check-out" : "check-in";
+  // A "check-out" override only makes sense once a check-in exists.
+  const phase: SelectionPhase =
+    phaseOverride === "check-out" && !checkIn ? "check-in" : phaseOverride ?? derivedPhase;
 
   // Per-day rule lookup (status, minNights, cta, ctd)
   const dayMap = useMemo(() => {
@@ -122,6 +127,13 @@ export default function AvailabilityCalendar({
 
   /** Minimum stay required for the currently selected check-in (1 if none chosen) */
   const requiredMinNights = checkIn ? minNightsFor(checkIn) : 1;
+
+  /** Earliest valid check-out date (in ms) for an arbitrary check-in, honoring minNights */
+  const earliestCheckoutFor = useCallback((ci: string) => {
+    const d = new Date(ci + "T00:00:00Z");
+    d.setUTCDate(d.getUTCDate() + minNightsFor(ci));
+    return d.getTime();
+  }, [minNightsFor]);
 
   /** Earliest valid check-out date (in ms) for the selected check-in, honoring minNights */
   const earliestCheckoutMs = useMemo(() => {
@@ -165,15 +177,24 @@ export default function AvailabilityCalendar({
     if (startOfDay(dateStr) < todayMs) return;
 
     if (phase === "check-in") {
-      // First click: set check-in, clear check-out. Closed-to-arrival days can't start a stay.
+      // Set/change check-in. Closed-to-arrival days can't start a stay.
       if (dayMap.get(dateStr)?.cta) return;
-      onSelectRange({ checkIn: dateStr, checkOut: "" });
+      // Preserve an existing check-out when the new check-in still leaves a
+      // valid range (honors min-stay and doesn't cross blocked dates).
+      const keepCheckOut =
+        !!checkOut &&
+        startOfDay(checkOut) >= earliestCheckoutFor(dateStr) &&
+        !dayMap.get(checkOut)?.ctd &&
+        !rangeHasBlockedDates(dateStr, checkOut);
+      onSelectRange({ checkIn: dateStr, checkOut: keepCheckOut ? checkOut : "" });
+      setPhaseOverride(null);
     } else {
-      // Second click: set check-out
+      // Set check-out
       if (startOfDay(dateStr) <= startOfDay(checkIn)) {
         // Clicked before/on check-in — restart with new check-in (if it's a valid arrival)
         if (dayMap.get(dateStr)?.cta) return;
         onSelectRange({ checkIn: dateStr, checkOut: "" });
+        setPhaseOverride(null);
         return;
       }
       // Enforce minimum stay for the selected check-in
@@ -184,11 +205,13 @@ export default function AvailabilityCalendar({
       if (rangeHasBlockedDates(checkIn, dateStr)) {
         // Reset — don't allow crossing blocked dates
         onSelectRange({ checkIn: dateStr, checkOut: "" });
+        setPhaseOverride(null);
         return;
       }
       onSelectRange({ checkIn, checkOut: dateStr });
+      setPhaseOverride(null);
     }
-  }, [phase, checkIn, onSelectRange, isBlocked, todayMs, rangeHasBlockedDates, dayMap, earliestCheckoutMs]);
+  }, [phase, checkIn, checkOut, onSelectRange, isBlocked, todayMs, rangeHasBlockedDates, dayMap, earliestCheckoutMs, earliestCheckoutFor]);
 
   const navigateMonth = useCallback((dir: -1 | 1) => {
     setViewMonth(prev => {
@@ -359,31 +382,43 @@ export default function AvailabilityCalendar({
 
   const calendarNode = (
     <div className="bg-white">
-      {/* Selection phase indicator */}
+      {/* Selection phase indicator — pills are clickable to choose which date to edit */}
       <div className="flex items-center gap-2 px-4 pt-4 pb-2">
-        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium tracking-wide transition-all ${
-          phase === "check-in"
-            ? "bg-black text-white"
-            : "bg-black/[0.04] text-black/40"
-        }`}>
+        <button
+          type="button"
+          onClick={() => setPhaseOverride("check-in")}
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium tracking-wide transition-all cursor-pointer ${
+            phase === "check-in"
+              ? "bg-black text-white"
+              : "bg-black/[0.04] text-black/40 hover:bg-black/[0.08] hover:text-black/60"
+          }`}
+        >
           {isPt ? "Entrada" : "Check-in"}
-        </div>
+        </button>
         <svg className="w-3 h-3 text-black/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
-        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium tracking-wide transition-all ${
-          phase === "check-out"
-            ? "bg-black text-white"
-            : "bg-black/[0.04] text-black/40"
-        }`}>
+        <button
+          type="button"
+          onClick={() => { if (checkIn) setPhaseOverride("check-out"); }}
+          disabled={!checkIn}
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium tracking-wide transition-all ${
+            !checkIn ? "cursor-not-allowed" : "cursor-pointer"
+          } ${
+            phase === "check-out"
+              ? "bg-black text-white"
+              : "bg-black/[0.04] text-black/40" + (checkIn ? " hover:bg-black/[0.08] hover:text-black/60" : "")
+          }`}
+        >
           {isPt ? "Saída" : "Check-out"}
-        </div>
+        </button>
         {checkIn && (
           <button
             type="button"
-            onClick={() => onSelectRange({ checkIn: "", checkOut: "" })}
-            className="ml-auto text-[11px] text-black/30 hover:text-black transition-colors"
+            onClick={() => { onSelectRange({ checkIn: "", checkOut: "" }); setPhaseOverride(null); }}
+            className="ml-auto flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium text-black/60 bg-black/[0.04] hover:bg-black/[0.08] hover:text-black transition-all"
           >
+            <X className="w-3 h-3" />
             {isPt ? "Limpar" : "Clear"}
           </button>
         )}
