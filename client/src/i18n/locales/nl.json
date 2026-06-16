@@ -114,7 +114,8 @@
     "talkConcierge": "Praat met onze concierge",
     "bookingBarDestination": "Bestemming",
     "searchHomes": "Huizen zoeken",
-    "heroAlt": "Portugal Active woningencollectie"
+    "heroAlt": "Portugal Active woningencollectie",
+    "batchError": "Live-prijzen zijn tijdelijk niet beschikbaar. Zie de pagina van elke accommodatie voor de definitieve prijs."
   },
   "property": {
     "bedrooms": "Slaapkamers",
@@ -202,7 +203,9 @@
     "continueGuestDetails": "Doorgaan naar gastgegevens",
     "loadError": "Kan verblijfsoverzicht niet laden.",
     "priceError": "Kan live prijs niet ophalen.",
-    "bookingOverline": "Boeking"
+    "bookingOverline": "Boeking",
+    "minStayNotice_one": "Het minimumverblijf voor deze data is {{count}} nacht",
+    "minStayNotice_other": "Het minimumverblijf voor deze data is {{count}} nachten"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Prijs op aanvraag",
@@ -253,7 +256,8 @@
     "reserveNow": "NU RESERVEREN",
     "requestWithoutPayment": "Of aanvragen zonder betaling",
     "belowMinNightsWarning_one": "Selecteer minimaal {{count}} nacht om door te gaan",
-    "belowMinNightsWarning_other": "Selecteer minimaal {{count}} nachten om door te gaan"
+    "belowMinNightsWarning_other": "Selecteer minimaal {{count}} nachten om door te gaan",
+    "pricingUnavailableMessage": "We konden de prijs voor deze data niet bevestigen. Neem contact op met een Concierge."
   },
   "common": {
     "loading": "Laden…",

@@ -9,12 +9,18 @@ export interface AvailabilityDay {
   status: string;
   minNights?: number;
   price?: number;
+  /** Closed to arrival — cannot be selected as a check-in date */
+  cta?: boolean;
+  /** Closed to departure — cannot be selected as a check-out date */
+  ctd?: boolean;
 }
 
 interface AvailabilityCalendarProps {
   days: AvailabilityDay[];
   checkIn: string;
   checkOut: string;
+  /** Global fallback minimum stay for days Guesty did not annotate */
+  minNights?: number;
   onSelectRange: (next: { checkIn: string; checkOut: string }) => void;
 }
 
@@ -71,9 +77,10 @@ export default function AvailabilityCalendar({
   days,
   checkIn,
   checkOut,
+  minNights,
   onSelectRange,
 }: AvailabilityCalendarProps) {
-  const { t, i18n } = useTranslation("booking");
+  const { t, i18n } = useTranslation();
   const isMobile = useIsMobile();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hoverDate, setHoverDate] = useState<string>("");
@@ -90,11 +97,11 @@ export default function AvailabilityCalendar({
   // Selection phase
   const phase: SelectionPhase = checkIn && !checkOut ? "check-out" : "check-in";
 
-  // Status lookup
-  const statusMap = useMemo(() => {
-    const map = new Map<string, string>();
+  // Per-day rule lookup (status, minNights, cta, ctd)
+  const dayMap = useMemo(() => {
+    const map = new Map<string, AvailabilityDay>();
     for (const day of days) {
-      map.set(day.date, day.status);
+      map.set(day.date, day);
     }
     return map;
   }, [days]);
@@ -104,9 +111,25 @@ export default function AvailabilityCalendar({
 
   /** Check if a date string is blocked/unavailable */
   const isBlocked = useCallback((dateStr: string) => {
-    const status = statusMap.get(dateStr);
+    const status = dayMap.get(dateStr)?.status;
     return status !== undefined && status !== "available";
-  }, [statusMap]);
+  }, [dayMap]);
+
+  /** Effective minimum stay when checking in on a given date */
+  const minNightsFor = useCallback((dateStr: string) => {
+    return dayMap.get(dateStr)?.minNights ?? minNights ?? 1;
+  }, [dayMap, minNights]);
+
+  /** Minimum stay required for the currently selected check-in (1 if none chosen) */
+  const requiredMinNights = checkIn ? minNightsFor(checkIn) : 1;
+
+  /** Earliest valid check-out date (in ms) for the selected check-in, honoring minNights */
+  const earliestCheckoutMs = useMemo(() => {
+    if (!checkIn) return 0;
+    const d = new Date(checkIn + "T00:00:00Z");
+    d.setUTCDate(d.getUTCDate() + requiredMinNights);
+    return d.getTime();
+  }, [checkIn, requiredMinNights]);
 
   /** First blocked date strictly after checkIn — caps the checkout selection range */
   const maxCheckoutDate = useMemo(() => {
@@ -142,15 +165,21 @@ export default function AvailabilityCalendar({
     if (startOfDay(dateStr) < todayMs) return;
 
     if (phase === "check-in") {
-      // First click: set check-in, clear check-out
+      // First click: set check-in, clear check-out. Closed-to-arrival days can't start a stay.
+      if (dayMap.get(dateStr)?.cta) return;
       onSelectRange({ checkIn: dateStr, checkOut: "" });
     } else {
       // Second click: set check-out
       if (startOfDay(dateStr) <= startOfDay(checkIn)) {
-        // Clicked before check-in — restart with new check-in
+        // Clicked before/on check-in — restart with new check-in (if it's a valid arrival)
+        if (dayMap.get(dateStr)?.cta) return;
         onSelectRange({ checkIn: dateStr, checkOut: "" });
         return;
       }
+      // Enforce minimum stay for the selected check-in
+      if (startOfDay(dateStr) < earliestCheckoutMs) return;
+      // Closed-to-departure days can't end a stay
+      if (dayMap.get(dateStr)?.ctd) return;
       // Check if range crosses blocked dates
       if (rangeHasBlockedDates(checkIn, dateStr)) {
         // Reset — don't allow crossing blocked dates
@@ -159,7 +188,7 @@ export default function AvailabilityCalendar({
       }
       onSelectRange({ checkIn, checkOut: dateStr });
     }
-  }, [phase, checkIn, onSelectRange, isBlocked, todayMs, rangeHasBlockedDates]);
+  }, [phase, checkIn, onSelectRange, isBlocked, todayMs, rangeHasBlockedDates, dayMap, earliestCheckoutMs]);
 
   const navigateMonth = useCallback((dir: -1 | 1) => {
     setViewMonth(prev => {
@@ -225,6 +254,7 @@ export default function AvailabilityCalendar({
 
             const dateStr = toIso(date);
             const dateMs = startOfDay(dateStr);
+            const dayInfo = dayMap.get(dateStr);
             const isPast = dateMs < todayMs;
             const blocked = isBlocked(dateStr);
             const isBlockedForCheckout =
@@ -233,7 +263,19 @@ export default function AvailabilityCalendar({
               dateMs > checkInMs &&
               maxCheckoutDate !== null &&
               dateMs >= startOfDay(maxCheckoutDate);
-            const isDisabled = isPast || blocked || isBlockedForCheckout;
+            // Check-in phase: closed-to-arrival days can't be selected.
+            const isClosedToArrival = phase === "check-in" && !!dayInfo?.cta;
+            // Check-out phase: enforce minimum stay + closed-to-departure.
+            const isBelowMinStay =
+              phase === "check-out" &&
+              !!checkIn &&
+              dateMs > checkInMs &&
+              dateMs < earliestCheckoutMs;
+            const isClosedToDeparture =
+              phase === "check-out" && !!checkIn && dateMs > checkInMs && !!dayInfo?.ctd;
+            const isDisabled =
+              isPast || blocked || isBlockedForCheckout ||
+              isClosedToArrival || isBelowMinStay || isClosedToDeparture;
             const isToday = dateStr === todayStr;
             const isCheckIn = checkIn && dateStr === checkIn;
             const isCheckOut = checkOut && dateStr === checkOut;
@@ -346,6 +388,16 @@ export default function AvailabilityCalendar({
           </button>
         )}
       </div>
+
+      {/* Minimum-stay notice — shown immediately while choosing check-out */}
+      {phase === "check-out" && requiredMinNights > 1 && (
+        <div className="mx-4 mb-1 flex items-start gap-2 px-3 py-2 bg-amber-50/80 border border-amber-200/60">
+          <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
+          <p className="text-[11px] text-amber-800 font-medium leading-snug">
+            {t("booking.minStayNotice", { count: requiredMinNights })}
+          </p>
+        </div>
+      )}
 
       {/* Calendar grid */}
       <div className={`px-3 pb-3 pt-1 ${isMobile ? "" : "flex gap-6"}`}>

@@ -279,14 +279,14 @@ export default function PropertyCard({
                   </div>
                 ) : (() => {
                   const fmt = formatEur;
-                  // Show total for live, cached, OR base (simulated) quotes
-                  const hasQuoteTotal = liveQuote && liveQuote.total > 0;
-                  if (hasQuoteTotal && liveQuote) {
-                    const isEstimate = liveQuote.source === 'base';
+                  // Only show a confirmed total for live/cached quotes — never an estimate.
+                  const hasLiveTotal = liveQuote && liveQuote.total > 0 &&
+                    (liveQuote.source === 'live' || liveQuote.source === 'cached');
+                  if (hasLiveTotal && liveQuote) {
                     return (
                       <>
                         <span className="text-[#1A1A18] font-medium">
-                          {isEstimate && t('property.fromPrefix', 'From ')}{fmt(liveQuote.total)} {t('property.totalLabel')}
+                          {fmt(liveQuote.total)} {t('property.totalLabel')}
                         </span>
                         <span className="text-[0.75rem] text-[#9E9A90]">
                           {t('booking.nights', { count: liveQuote.nights })}
@@ -294,7 +294,7 @@ export default function PropertyCard({
                       </>
                     );
                   }
-                  // No quote at all — show base rate from catalogue
+                  // No confirmed live price (base/estimate or missing) — show catalogue "From … / night"
                   if ((property.priceFrom ?? 0) > 0) {
                     return (
                       <>

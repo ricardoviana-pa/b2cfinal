@@ -278,8 +278,6 @@ export default function BookingWidget({
   const [confirmation, setConfirmation] = useState("");
   const [successMode, setSuccessMode] = useState<SuccessMode>("confirmed");
   const [beQuoteError, setBeQuoteError] = useState("");
-  const [isRetryingForLivePrice, setIsRetryingForLivePrice] = useState(false);
-  const [beQuoteRetryFailed, setBeQuoteRetryFailed] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [phoneTouched, setPhoneTouched] = useState(false);
   const quoteRequestRef = useRef(0);
@@ -294,12 +292,20 @@ export default function BookingWidget({
   const widgetRef = useRef<HTMLDivElement>(null);
 
   const today = new Date().toISOString().split("T")[0];
+
+  // Per-day minimum stay from Guesty's calendar for the selected check-in (seasonal),
+  // falling back to the static property minNights for days Guesty didn't annotate.
+  const effectiveMinNights = useMemo(() => {
+    if (!checkIn) return minNights;
+    return calendarDays.find(d => d.date === checkIn)?.minNights ?? minNights;
+  }, [checkIn, calendarDays, minNights]);
+
   const minCheckOut = useMemo(() => {
     if (!checkIn) return today;
     const d = new Date(checkIn);
-    d.setDate(d.getDate() + Math.max(minNights, 1));
+    d.setDate(d.getDate() + Math.max(effectiveMinNights, 1));
     return d.toISOString().split("T")[0];
-  }, [checkIn, minNights, today]);
+  }, [checkIn, effectiveMinNights, today]);
 
   const nights = useMemo(() => {
     if (!checkIn || !checkOut) return 0;
@@ -307,57 +313,13 @@ export default function BookingWidget({
     return diff > 0 ? Math.ceil(diff / 86400000) : 0;
   }, [checkIn, checkOut]);
 
-  const isBelow = nights > 0 && nights < minNights;
+  const isBelow = nights > 0 && nights < effectiveMinNights;
 
   const utils = trpc.useUtils();
   const { data: isBECheckoutAvailable } = trpc.booking.isBECheckoutAvailable.useQuery();
   const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
   const canPayOnSite = isBECheckoutAvailable && !!stripeConfig?.publishableKey;
   const createBEQuote = trpc.booking.createBEQuote.useMutation();
-
-  const handleRetryReserve = useCallback(async () => {
-    setIsRetryingForLivePrice(true);
-    setBeQuoteRetryFailed(false);
-    setBeQuoteError("");
-    try {
-      const be = await createBEQuote.mutateAsync({
-        listingId: guestyId, checkIn, checkOut, guests,
-        guestEmail: "guest@example.com",
-      });
-      if (!be?.quoteId) throw new Error("No quote ID returned");
-      setQuote(prev => prev ? {
-        ...prev,
-        quoteId: be.quoteId,
-        quoteCreatedAt: Date.now(),
-        ratePlanId: be.ratePlanId,
-        source: "live" as const,
-        priceOnRequest: false,
-        fallbackMessage: undefined,
-        currency: be.currency || prev.currency,
-        cancellationPolicy: be.cancellationPolicy,
-        taxesAndFees: (be.pricing as any)?.taxesAndFees ?? 0,
-        ratePlanOptions: be.ratePlanOptions?.map((opt: any) => ({
-          ...opt,
-          total: opt.total > 0 ? opt.total : prev.total,
-          nightlyRate: opt.nightlyRate > 0 ? opt.nightlyRate : prev.nightlyRate,
-          cleaningFee: opt.cleaningFee > 0 ? opt.cleaningFee : prev.cleaningFee,
-          taxesAndFees: opt.taxesAndFees ?? 0,
-        })),
-      } : null);
-      if (be.ratePlanId) setSelectedRatePlanId(be.ratePlanId);
-      setError("");
-      setTermsAccepted(false);
-      setStep("payment");
-    } catch (err: any) {
-      setBeQuoteRetryFailed(true);
-      setBeQuoteError(parseBookingError(err?.message || "Live pricing unavailable. Please contact our concierge."));
-    } finally {
-      setIsRetryingForLivePrice(false);
-    }
-  // createBEQuote intentionally omitted — tRPC useMutation returns a new object reference
-  // on every render; including it would invalidate this callback every render (defeating memoization).
-  // The mutateAsync function itself is stable per tRPC's contract.
-  }, [checkIn, checkOut, guests, guestyId]);
 
   useEffect(() => {
     quoteRef.current = quote;
@@ -381,10 +343,23 @@ export default function BookingWidget({
     return quote;
   }, [quote, selectedRatePlanId]);
 
+  /**
+   * A price may only be shown when it is a CONFIRMED live quote (has a BE quoteId and a
+   * live/cached source with a real total). Anything else — base/request fallbacks, errors,
+   * timeouts — must never render a price; it surfaces the "contact concierge" failure state.
+   */
+  const hasLivePrice = useMemo(() => {
+    return (
+      !!quote?.quoteId &&
+      (quote.source === "live" || quote.source === "cached") &&
+      (effectiveQuote?.total ?? 0) > 0
+    );
+  }, [quote, effectiveQuote]);
+
   const fetchQuote = useCallback(async () => {
     if (!checkIn || !checkOut) return;
-    if (nights > 0 && nights < minNights) {
-      setError(i18n.t("bookingWidget.minimumStay", { count: minNights }));
+    if (nights > 0 && nights < effectiveMinNights) {
+      setError(i18n.t("bookingWidget.minimumStay", { count: effectiveMinNights }));
       setQuote(null);
       return;
     }
@@ -458,26 +433,28 @@ export default function BookingWidget({
       setStep("quote");
     } catch (err: any) {
       if (quoteRequestRef.current !== requestId) return;
-      // Keep lastQuoteKeyRef set to prevent infinite retry loop for the same params
+      // Keep lastQuoteKeyRef set to prevent infinite retry loop for the same params.
+      // Any pricing failure surfaces the standardized "contact concierge" state — never an estimate.
       setError(parseBookingError(err?.message || i18n.t("errors.pricingUnavailable")));
       setQuote(null);
+      setStep("quote");
     } finally {
       if (quoteRequestRef.current === requestId) {
         setLoading(false);
       }
     }
-  }, [checkIn, checkOut, guests, guestyId, minNights, canPayOnSite, utils, nights]);
+  }, [checkIn, checkOut, guests, guestyId, effectiveMinNights, canPayOnSite, utils, nights]);
 
   const fetchQuoteRef = useRef(fetchQuote);
   fetchQuoteRef.current = fetchQuote;
 
   useEffect(() => {
-    if (!checkIn || !checkOut || (nights > 0 && nights < minNights) || step !== "dates") return;
+    if (!checkIn || !checkOut || (nights > 0 && nights < effectiveMinNights) || step !== "dates") return;
     const timer = setTimeout(() => {
       fetchQuoteRef.current();
     }, 450);
     return () => clearTimeout(timer);
-  }, [checkIn, checkOut, guests, nights, minNights, step]);
+  }, [checkIn, checkOut, guests, nights, effectiveMinNights, step]);
 
   // Fetch calendar availability on mount (and when guestyId changes)
   useEffect(() => {
@@ -549,8 +526,6 @@ export default function BookingWidget({
     setQuote(null);
     setError("");
     setBeQuoteError("");
-    setIsRetryingForLivePrice(false);
-    setBeQuoteRetryFailed(false);
     setPhoneTouched(false);
     setStep("dates");
   };
@@ -706,24 +681,19 @@ export default function BookingWidget({
     <div ref={widgetRef} className="booking-widget bg-white border border-black/10 overflow-hidden shadow-sm">
       {/* Price header */}
       <div className="px-6 pt-6 pb-4">
-        {effectiveQuote && effectiveQuote.total > 0 ? (
+        {hasLivePrice && effectiveQuote ? (
           <>
             <div className="flex items-baseline gap-2">
               <span className="text-[32px] font-light tracking-tight text-black tabular-nums">
-                {quote?.source && quote.source !== "live" ? "~" : ""}{formatEur(effectiveQuote.total)}
+                {formatEur(effectiveQuote.total)}
               </span>
               <span className="text-sm text-black/40 font-normal">{t("property.totalLabel")}</span>
             </div>
             <p className="text-sm text-black/50 mt-1 tracking-wide">
-              {quote?.source && quote.source !== "live"
-                ? t("bookingWidget.estimatedNightsLine", "~{{rate}} / night · {{count}} nights", {
-                    count: effectiveQuote.nights,
-                    rate: formatEur(effectiveQuote.nightlyRate),
-                  })
-                : t("bookingWidget.nightsLine", {
-                    count: effectiveQuote.nights,
-                    rate: formatEur(effectiveQuote.nightlyRate),
-                  })}
+              {t("bookingWidget.nightsLine", {
+                count: effectiveQuote.nights,
+                rate: formatEur(effectiveQuote.nightlyRate),
+              })}
             </p>
           </>
         ) : loading && checkIn && checkOut ? (
@@ -731,40 +701,19 @@ export default function BookingWidget({
             <div className="h-5 bg-black/5 rounded w-3/4" />
             <div className="h-4 bg-black/5 rounded w-1/2" />
           </div>
-        ) : error && checkIn && checkOut ? (
-          <div className="text-sm text-black/60">
-            <p className="font-medium text-black mb-1">{t("bookingWidget.priceOnRequestTitle")}</p>
-            <p className="text-xs">{t("bookingWidget.priceOnRequestBody")}</p>
-            <button
-              type="button"
-              onClick={fetchQuote}
-              className="mt-2 text-xs font-medium text-black/60 tracking-widest uppercase hover:text-black transition-colors"
-            >
-              {t("property.retry")}
-            </button>
-          </div>
         ) : (
+          /* Pre-selection / no confirmed live price — advertised "From" nightly rate only, never an estimate */
           <>
             <div className="flex items-baseline gap-1">
-              {quote?.priceOnRequest && quote.source !== "live" ? (
-                <>
-                  <span className="text-[22px] text-[#1A1A18]" style={{ fontFamily: "var(--font-display)" }}>
-                    {t("bookingWidget.priceOnRequestLabel", "Price on request")}
-                  </span>
-                </>
-              ) : (
-                <>
-                  <span className="text-[28px] text-[#1A1A18]" style={{ fontFamily: "var(--font-display)" }}>
-                    {displayRate > 0 ? formatEur(displayRate) : "---"}
-                  </span>
-                  <span className="text-[14px] text-[#9E9A90]">{t("property.perNight")}</span>
-                </>
-              )}
+              <span className="text-[28px] text-[#1A1A18]" style={{ fontFamily: "var(--font-display)" }}>
+                {displayRate > 0 ? t("property.fromPerNight", { price: Math.round(displayRate).toLocaleString() }) : "---"}
+              </span>
+              <span className="text-[14px] text-[#9E9A90]">{t("property.perNight")}</span>
             </div>
-            {minNights > 1 && (
+            {effectiveMinNights > 1 && (
               <p className="text-xs text-black/40 mt-1.5 flex items-center gap-1.5">
                 <Calendar className="w-3 h-3" />
-                {t("bookingWidget.minNightMinimum", { count: minNights })}
+                {t("bookingWidget.minNightMinimum", { count: effectiveMinNights })}
               </p>
             )}
           </>
@@ -813,12 +762,11 @@ export default function BookingWidget({
                 days={calendarDays}
                 checkIn={checkIn}
                 checkOut={checkOut}
+                minNights={minNights}
                 onSelectRange={({ checkIn: ci, checkOut: co }) => {
                   setCheckIn(ci);
                   setCheckOut(co);
                   setQuote(null);
-                  setIsRetryingForLivePrice(false);
-                  setBeQuoteRetryFailed(false);
                   setError("");
                   setBeQuoteError("");
                   setStep("dates");
@@ -830,10 +778,10 @@ export default function BookingWidget({
         )}
 
         {/* Min nights info */}
-        {minNights > 1 && (
+        {effectiveMinNights > 1 && (
           <p className="text-[11px] text-black/50 mt-2 flex items-center gap-1">
             <Calendar className="w-3 h-3" />
-            {t("bookingWidget.minNightMinimum", { count: minNights })}
+            {t("bookingWidget.minNightMinimum", { count: effectiveMinNights })}
           </p>
         )}
 
@@ -841,7 +789,7 @@ export default function BookingWidget({
           <div className="flex items-start gap-2.5 p-3 mt-2 bg-amber-50/80 border border-amber-200/60">
             <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
             <p className="text-xs text-amber-800 font-medium leading-snug">
-              {t("bookingWidget.belowMinNightsWarning", { count: minNights })}
+              {t("bookingWidget.belowMinNightsWarning", { count: effectiveMinNights })}
             </p>
           </div>
         )}
@@ -908,8 +856,8 @@ export default function BookingWidget({
           return null;
         })()}
 
-        {/* Error */}
-        {error && (
+        {/* Error (validation feedback while still choosing dates; pricing failures are handled in the quote step) */}
+        {error && step === "dates" && (
           <div className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50 text-sm" role="alert">
             <span className="text-red-500 mt-0.5 shrink-0 font-medium text-xs">!</span>
             <p className="text-red-600 leading-snug text-xs">{error}</p>
@@ -937,96 +885,51 @@ export default function BookingWidget({
           </div>
         )}
 
-        {/* Step: PRICE ON REQUEST — live price unavailable */}
-        {step === "quote" && quote?.priceOnRequest && (
+        {/* Step: PRICING UNAVAILABLE — no confirmed live price; never show an estimate */}
+        {step === "quote" && !hasLivePrice && (
           <>
-            {/* Price on Request card */}
-            <div className="bg-[#FAFAF7] rounded-lg border border-[#E8E4DC] overflow-hidden mb-4">
-              <div className="p-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-5 h-5 rounded-full bg-[#8B7355]/10 flex items-center justify-center">
-                    <span className="text-[10px] text-[#8B7355]">i</span>
-                  </div>
-                  <p className="text-[14px] font-medium text-[#1A1A18]">
-                    {t("bookingWidget.priceOnRequestLabel", "Price on request")}
-                  </p>
-                </div>
-                <p className="text-[12px] text-[#9E9A90] leading-relaxed">
-                  {t("bookingWidget.priceOnRequestExplain", "Our team will confirm the exact price and availability for your dates and send you a secure payment link.")}
-                </p>
-                {/* Show estimate if we have base rate data */}
-                {quote.total > 0 && (
-                  <div className="mt-4 pt-4 border-t border-[#E8E4DC]">
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="text-[12px] text-[#9E9A90] uppercase tracking-[0.06em]">
-                        {t("bookingWidget.estimateLabel", "Estimate")}
-                      </span>
-                      <span className="text-[12px] text-[#8B7355] font-medium">
-                        {t("bookingWidget.subjectToConfirmation", "Subject to confirmation")}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-baseline">
-                      <span className="text-[13px] text-[#6B6860]">
-                        {formatEur(quote.nightlyRate)} x {quote.nights} {t("bookingWidget.nightsLabel", "nights")}
-                        {quote.cleaningFee > 0 && ` + ${formatEur(quote.cleaningFee)}`}
-                      </span>
-                      <span className="text-[18px] text-[#9E9A90] line-through tabular-nums" style={{ fontFamily: "var(--font-display)" }}>
-                        ~{formatEur(quote.total)}
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
+            <div className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
+              <span className="text-red-500 mt-0.5 shrink-0 font-medium text-xs">!</span>
+              <p className="text-red-600 leading-snug text-xs font-medium">
+                {t("bookingWidget.pricingUnavailableMessage", "We couldn't confirm pricing for these dates. Please contact a Concierge.")}
+              </p>
             </div>
 
-            {/* Upsells still available for price-on-request */}
-            {UPSELL_ITEMS.length > 0 && (
-              <EnhanceYourStay
-                items={UPSELL_ITEMS}
-                selectedUpsells={selectedUpsells}
-                setSelectedUpsells={setSelectedUpsells}
-                t={t as any}
-              />
-            )}
-
-            {/* WhatsApp CTA */}
             <a
               href={`https://wa.me/351927161771?text=${encodeURIComponent(
-                `Hi Portugal Active! I'd like to request pricing for:\n\n` +
-                `🏠 ${propertyName}\n` +
-                `📅 ${checkIn} → ${checkOut} (${nights} nights)\n` +
-                `👥 ${guests} guests\n` +
-                (quote.total > 0 ? `💰 Estimated ~${formatEur(quote.total)}\n` : '') +
-                (selectedUpsells.size > 0 ? `\n✨ Interested in: ${UPSELL_ITEMS.filter(u => selectedUpsells.has(u.id)).map(u => u.name).join(', ')}\n` : '') +
-                `\nPlease confirm availability and final pricing.`
+                [
+                  `Hi, I'd like to book ${propertyName}.`,
+                  `Dates: ${checkIn} → ${checkOut} (${nights} nights)`,
+                  `Guests: ${guests}`,
+                  guestyId ? `Ref: ${guestyId}` : "",
+                  `Could you help me confirm availability and pricing?`,
+                ].filter(Boolean).join("\n")
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full min-h-[52px] rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[12px] font-medium tracking-[0.12em] uppercase px-8 py-4 hover:bg-[#2A2A28] transition-colors shadow-sm flex items-center justify-center gap-2"
+              className="w-full min-h-[52px] bg-black text-white text-[12px] font-medium tracking-[0.12em] uppercase px-8 py-4 hover:bg-black/85 transition-colors flex items-center justify-center gap-2"
             >
-              {t("bookingWidget.requestPricing", "Request Pricing")}
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.612.638l4.725-1.217A11.947 11.947 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.24 0-4.318-.722-6.004-1.948l-.42-.312-2.833.73.756-2.753-.343-.453A9.963 9.963 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+              {t("bookingWidget.contactConcierge", "Contact Concierge")}
             </a>
-            <p className="text-[11px] text-[#9E9A90] text-center leading-relaxed">
-              {t("bookingWidget.conciergeWillConfirm", "Our concierge will confirm availability and send you a secure payment link within 1 hour.")}
-            </p>
-            <button onClick={resetDates} className="w-full text-[12px] text-[#9E9A90] hover:text-[#1A1A18] transition py-1">
+
+            {/* Mini summary so the guest sees what they're requesting — no price */}
+            <div className="bg-black/[0.02] border border-black/5 p-3 space-y-1">
+              <p className="text-[12px] text-black">{propertyName}</p>
+              <p className="text-[11px] text-black/40">
+                {formatDateDisplay(checkIn, "pt-PT")} → {formatDateDisplay(checkOut, "pt-PT")} · {nights} {t("bookingWidget.nightsLabel", "nights")} · {guests} {t("booking.guestsLabel", "guests")}
+              </p>
+            </div>
+
+            <button onClick={resetDates} className="w-full text-[12px] text-black/30 hover:text-black transition py-1">
               {t("bookingWidget.changeDates")}
             </button>
           </>
         )}
 
-        {/* Step: QUOTE — price breakdown + booking */}
-        {step === "quote" && effectiveQuote && !quote?.priceOnRequest && (
+        {/* Step: QUOTE — confirmed live price breakdown + booking */}
+        {step === "quote" && hasLivePrice && effectiveQuote && (
           <>
-            {/* ── Estimate notice when price is not live ── */}
-            {quote?.source && quote.source !== "live" && (
-              <div className="bg-amber-50/60 border border-amber-200/40 px-4 py-2.5 mb-1">
-                <p className="text-xs text-amber-700/80">
-                  {t("bookingWidget.estimatedNotice", "Estimated price — final price confirmed upon booking")}
-                </p>
-              </div>
-            )}
-
             {/* ── Price Breakdown Card ── */}
             <div className="bg-black/[0.02] border border-black/10 overflow-hidden">
               <div className="p-5 space-y-3">
@@ -1054,7 +957,7 @@ export default function BookingWidget({
                 <div className="border-t border-black/10 pt-3 flex justify-between items-baseline">
                   <span className="text-[15px] font-medium text-black">{t("property.total")}</span>
                   <span className="text-[24px] font-light text-black tabular-nums tracking-tight">
-                    {quote?.source && quote.source !== "live" ? "~" : ""}{formatEur(effectiveQuote.total)}
+                    {formatEur(effectiveQuote.total)}
                   </span>
                 </div>
                 {selectedUpsells.size > 0 && (
@@ -1159,171 +1062,85 @@ export default function BookingWidget({
               />
             )}
 
-            {/* ── CTA Section ── */}
-            {canPayOnSite && quote?.quoteId ? (
-              /* Primary: Online payment available — direct booking */
-              <button
-                onClick={() => {
-                  // GA4: begin_checkout
-                  pushEcommerce({
-                    event: 'begin_checkout',
-                    ecommerce: {
-                      currency: quote.currency || currency,
-                      value: effectiveQuote?.total ?? quote.total,
-                      items: [
-                        {
-                          item_id: `PROP-${guestyId}`,
-                          item_name: propertyName,
-                          item_category: 'villa',
-                          item_variant: destination || '',
-                          price: effectiveQuote?.nightlyRate ?? quote.nightlyRate,
-                          quantity: effectiveQuote?.nights ?? quote.nights,
-                          checkin_date: checkIn,
-                          checkout_date: checkOut,
-                          guests_adults: guests,
-                        },
-                      ],
-                    },
-                  });
-                  // Check if BE quote has expired (24h validity)
-                  if (quote.quoteCreatedAt && (Date.now() - quote.quoteCreatedAt > QUOTE_EXPIRY_MS)) {
-                    // Auto-retry: clear expired quote and re-fetch
-                    setQuote(prev => prev ? { ...prev, quoteId: undefined, quoteCreatedAt: undefined } : null);
-                    setBeQuoteError("");
-                    setError("");
-                    // Trigger new BE quote fetch
-                    const beRefreshTimeout = setTimeout(() => {
-                      setBeQuoteError(t("bookingWidget.quoteExpired", { defaultValue: "Quote expired. Please try again." }));
-                    }, 12000);
-                    createBEQuote.mutateAsync({
-                      listingId: guestyId, checkIn, checkOut, guests,
-                      guestEmail: "guest@example.com",
-                    }).then((be: any) => {
-                      clearTimeout(beRefreshTimeout);
-                      if (!be?.quoteId) return;
-                      setQuote(prev => prev ? {
-                        ...prev,
-                        quoteId: be.quoteId,
-                        quoteCreatedAt: Date.now(),
-                        ratePlanId: be.ratePlanId,
-                        currency: be.currency || prev.currency,
-                        cancellationPolicy: be.cancellationPolicy,
-                        taxesAndFees: (be.pricing as any)?.taxesAndFees ?? 0,
-                        ratePlanOptions: be.ratePlanOptions?.map((opt: any) => ({
-                          ...opt,
-                          total: opt.total > 0 ? opt.total : prev.total,
-                          nightlyRate: opt.nightlyRate > 0 ? opt.nightlyRate : prev.nightlyRate,
-                          cleaningFee: opt.cleaningFee > 0 ? opt.cleaningFee : prev.cleaningFee,
-                          taxesAndFees: opt.taxesAndFees ?? 0,
-                        })),
-                      } : null);
-                      if (be.ratePlanId) setSelectedRatePlanId(be.ratePlanId);
-                      // Auto-proceed to payment after refresh
-                      setError("");
-                      setTermsAccepted(false);
-                      setStep("payment");
-                    }).catch(() => {
-                      clearTimeout(beRefreshTimeout);
-                      setBeQuoteError(t("bookingWidget.quoteRefreshFailed", { defaultValue: "Could not refresh pricing. Please contact our concierge." }));
-                    });
-                    return;
-                  }
+            {/* ── CTA Section — confirmed live price, direct booking ── */}
+            <button
+              onClick={() => {
+                // GA4: begin_checkout
+                pushEcommerce({
+                  event: 'begin_checkout',
+                  ecommerce: {
+                    currency: quote?.currency || currency,
+                    value: effectiveQuote?.total ?? quote?.total,
+                    items: [
+                      {
+                        item_id: `PROP-${guestyId}`,
+                        item_name: propertyName,
+                        item_category: 'villa',
+                        item_variant: destination || '',
+                        price: effectiveQuote?.nightlyRate ?? quote?.nightlyRate,
+                        quantity: effectiveQuote?.nights ?? quote?.nights,
+                        checkin_date: checkIn,
+                        checkout_date: checkOut,
+                        guests_adults: guests,
+                      },
+                    ],
+                  },
+                });
+                // Check if BE quote has expired (24h validity)
+                if (quote?.quoteCreatedAt && (Date.now() - quote.quoteCreatedAt > QUOTE_EXPIRY_MS)) {
+                  // Auto-retry: clear expired quote and re-fetch
+                  setQuote(prev => prev ? { ...prev, quoteId: undefined, quoteCreatedAt: undefined } : null);
+                  setBeQuoteError("");
                   setError("");
-                  setTermsAccepted(false);
-                  setStep("payment");
-                }}
-                className="w-full min-h-[52px] bg-black text-white text-xs font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors"
-              >
-                {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote.total)}
-              </button>
-            ) : canPayOnSite && quote?.source === "base" && isRetryingForLivePrice ? (
-              /* Retry in progress */
-              <button
-                disabled
-                className="w-full min-h-[52px] bg-black/50 text-white text-xs font-medium tracking-[0.15em] uppercase px-8 py-4 cursor-wait"
-              >
-                <span className="flex items-center justify-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  {t("bookingWidget.checkingLivePricing", "Checking live pricing…")}
-                </span>
-              </button>
-            ) : canPayOnSite && quote?.source === "base" && !quote?.quoteId && !isRetryingForLivePrice && !beQuoteRetryFailed ? (
-              /* Estimated price — show Reserve & Pay immediately; clicking triggers live pricing retry */
-              <button
-                onClick={() => {
-                  pushEcommerce({
-                    event: 'begin_checkout',
-                    ecommerce: {
-                      currency,
-                      value: effectiveQuote?.total ?? 0,
-                      items: [
-                        {
-                          item_id: `PROP-${guestyId}`,
-                          item_name: propertyName,
-                          item_category: 'villa',
-                          item_variant: destination || '',
-                          price: effectiveQuote?.nightlyRate ?? 0,
-                          quantity: effectiveQuote?.nights ?? nights,
-                          checkin_date: checkIn,
-                          checkout_date: checkOut,
-                          guests_adults: guests,
-                        },
-                      ],
-                    },
+                  // Trigger new BE quote fetch
+                  const beRefreshTimeout = setTimeout(() => {
+                    setBeQuoteError(t("bookingWidget.quoteExpired", { defaultValue: "Quote expired. Please try again." }));
+                  }, 12000);
+                  createBEQuote.mutateAsync({
+                    listingId: guestyId, checkIn, checkOut, guests,
+                    guestEmail: "guest@example.com",
+                  }).then((be: any) => {
+                    clearTimeout(beRefreshTimeout);
+                    if (!be?.quoteId) return;
+                    setQuote(prev => prev ? {
+                      ...prev,
+                      quoteId: be.quoteId,
+                      quoteCreatedAt: Date.now(),
+                      ratePlanId: be.ratePlanId,
+                      currency: be.currency || prev.currency,
+                      cancellationPolicy: be.cancellationPolicy,
+                      taxesAndFees: (be.pricing as any)?.taxesAndFees ?? 0,
+                      ratePlanOptions: be.ratePlanOptions?.map((opt: any) => ({
+                        ...opt,
+                        total: opt.total > 0 ? opt.total : prev.total,
+                        nightlyRate: opt.nightlyRate > 0 ? opt.nightlyRate : prev.nightlyRate,
+                        cleaningFee: opt.cleaningFee > 0 ? opt.cleaningFee : prev.cleaningFee,
+                        taxesAndFees: opt.taxesAndFees ?? 0,
+                      })),
+                    } : null);
+                    if (be.ratePlanId) setSelectedRatePlanId(be.ratePlanId);
+                    // Auto-proceed to payment after refresh
+                    setError("");
+                    setTermsAccepted(false);
+                    setStep("payment");
+                  }).catch(() => {
+                    clearTimeout(beRefreshTimeout);
+                    setBeQuoteError(t("bookingWidget.quoteRefreshFailed", { defaultValue: "Could not refresh pricing. Please contact our concierge." }));
                   });
-                  handleRetryReserve();
-                }}
-                className="w-full min-h-[52px] bg-black text-white text-xs font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors"
-              >
-                {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote?.total ?? 0)}
-              </button>
-            ) : canPayOnSite && !quote?.quoteId && !beQuoteError && quote?.source !== "base" ? (
-              /* Loading: BE quote still being fetched (live/cached source) — 8s timeout then show concierge */
-              <button
-                disabled
-                className="w-full min-h-[52px] bg-black/50 text-white text-xs font-medium tracking-[0.15em] uppercase px-8 py-4 cursor-wait"
-              >
-                <span className="flex items-center justify-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  {t("bookingWidget.preparingPayment", "Preparing secure payment...")}
-                </span>
-              </button>
-            ) : (
-              /* Fallback: Payment unavailable — concierge contact only, NO prices */
-              <div className="space-y-3">
-                {beQuoteRetryFailed && beQuoteError && (
-                  <div className="bg-red-50/60 border border-red-200/40 px-4 py-2.5 text-[11px] text-red-700">
-                    {beQuoteError}
-                  </div>
-                )}
-                <a
-                  href={`https://wa.me/351927161771?text=${encodeURIComponent(
-                    [
-                      `Hi, I'd like to book ${propertyName}.`,
-                      `Dates: ${checkIn} → ${checkOut} (${nights} nights)`,
-                      `Guests: ${guests}`,
-                      guestyId ? `Ref: ${guestyId}` : "",
-                      beQuoteError ? `Note: Online checkout unavailable` : "",
-                      `Could you help me complete this reservation?`,
-                    ].filter(Boolean).join("\n")
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full min-h-[52px] bg-black text-white text-[12px] font-medium tracking-[0.12em] uppercase px-8 py-4 hover:bg-black/85 transition-colors flex items-center justify-center gap-2"
-                >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.612.638l4.725-1.217A11.947 11.947 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.24 0-4.318-.722-6.004-1.948l-.42-.312-2.833.73.756-2.753-.343-.453A9.963 9.963 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-                  {t("bookingWidget.contactConcierge", "Contact Concierge")}
-                </a>
-                {/* Mini summary so guest sees what they're requesting */}
-                <div className="bg-black/[0.02] border border-black/5 p-3 space-y-1">
-                  <p className="text-[12px] text-black">{propertyName}</p>
-                  <p className="text-[11px] text-black/40">
-                    {formatDateDisplay(checkIn, "pt-PT")} → {formatDateDisplay(checkOut, "pt-PT")} · {nights} {t("bookingWidget.nightsLabel", "nights")} · {guests} {t("booking.guestsLabel", "guests")}
-                  </p>
-                </div>
-                <p className="text-[11px] text-black/30 text-center leading-relaxed">
-                  {t("bookingWidget.conciergeHelp", "Our team will check real-time availability and send you a secure payment link within minutes.")}
-                </p>
+                  return;
+                }
+                setError("");
+                setTermsAccepted(false);
+                setStep("payment");
+              }}
+              className="w-full min-h-[52px] bg-black text-white text-xs font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors"
+            >
+              {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote.total)}
+            </button>
+
+            {beQuoteError && (
+              <div className="bg-red-50/60 border border-red-200/40 px-4 py-2.5 text-[11px] text-red-700">
+                {beQuoteError}
               </div>
             )}
 

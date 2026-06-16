@@ -114,7 +114,8 @@
     "talkConcierge": "Keskustele concierge-palvelumme kanssa",
     "bookingBarDestination": "Kohde",
     "searchHomes": "Etsi koteja",
-    "heroAlt": "Portugal Active -kotikokoelma"
+    "heroAlt": "Portugal Active -kotikokoelma",
+    "batchError": "Reaaliaikainen hinnoittelu ei ole tilapäisesti saatavilla. Katso lopullinen hinta kunkin kohteen sivulta."
   },
   "property": {
     "bedrooms": "Makuuhuoneet",
@@ -202,7 +203,9 @@
     "continueGuestDetails": "Jatka vieraan tietoihin",
     "loadError": "Yhteenvetoa ei voitu ladata.",
     "priceError": "Live-hintaa ei voitu hakea.",
-    "bookingOverline": "Varaus"
+    "bookingOverline": "Varaus",
+    "minStayNotice_one": "Vähimmäisoleskelu näille päiville on {{count}} yö",
+    "minStayNotice_other": "Vähimmäisoleskelu näille päiville on {{count}} yötä"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Hinta pyynnöstä",
@@ -253,7 +256,8 @@
     "reserveNow": "VARAA NYT",
     "requestWithoutPayment": "Tai pyydä ilman maksua",
     "belowMinNightsWarning_one": "Valitse vähintään {{count}} yö jatkaaksesi",
-    "belowMinNightsWarning_other": "Valitse vähintään {{count}} yötä jatkaaksesi"
+    "belowMinNightsWarning_other": "Valitse vähintään {{count}} yötä jatkaaksesi",
+    "pricingUnavailableMessage": "Emme voineet vahvistaa hintaa näille päiville. Ota yhteyttä Concierge-palveluun."
   },
   "common": {
     "loading": "Ladataan…",
