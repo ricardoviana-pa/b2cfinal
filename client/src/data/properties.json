@@ -3109,241 +3109,6 @@
     "reviewCount": 4
   },
   {
-    "id": "guesty-6965331fec80690013738c68",
-    "slug": "connected-premium-lodge-cowork-and-5min-beach-738c68",
-    "name": "Connected Premium Lodge - Cowork and 5min Beach",
-    "tagline": "Discover Portugal Active Connected Lodge, a stunning villa in Vila Nova de Anha, Viana do Castelo, combining modern luxury, comfort and nature. With 4…",
-    "tier": "select",
-    "destination": "minho",
-    "locality": "Viana do Castelo",
-    "bedrooms": 4,
-    "bathrooms": 3.5,
-    "maxGuests": 12,
-    "priceFrom": 459,
-    "pricePerNight": 459,
-    "cleaningFee": 160,
-    "minNights": 4,
-    "currency": "EUR",
-    "images": [
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/c047ab4e-76d5-41-QLYD8",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/98029be4-60d7-42-7qUZv",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/d5f6ca0e-bd43-47-KysQR",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/71f6a332-00b0-4d-_mnUE",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/768913d2-8346-4e-tjTK1",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/3635ca35-8375-47-R9VyD",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/85c0ce96-fd53-48-PmoMT",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/890f9aa2-4e7d-4c-4lRY0",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/268e465b-3a41-41-ptxfx",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/6c8df3f0-501a-4f-W7_jr",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/26075154-4463-47-6g1jb",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/d4cc3a79-a0a4-4c-cvVh1",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/0aecb9a6-b1b7-4e-aIUot",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/96344874-699f-47-bcKnQ",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/f7b86080-6627-41-TTOkW",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/5d56ae85-9fc3-46-UYsew",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/784ca69b-6b06-4f-pCW4U",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/345faa9d-bb8a-4f-vmNHE",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/b3af0de0-cea7-4c-9Teqe",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/b6caf610-8dfa-46-f94tc",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/f9eeed6d-f3ff-45-weXVJ",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/375eb57f-dde3-4d-Pnku5",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/a4c8f30e-09af-40-hfyKZ",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/91d24cd5-f06f-46-fBKFY",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/b5caa1eb-4bda-41--T4Vh",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/b6baa14a-2b4f-40-P690e",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/1ea0c491-ddb0-4f-DPau4",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/329a3947-74c0-40-D_OT8",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/6029bf53-72f3-44-UWGhE",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/e6ba4321-a21d-40-qo-Lx",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/1cca3d5f-1cb9-40-eO2KU",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/d34d9dba-c6db-46-X1t2V",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/68600f21-3f80-4e-QCe3k",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/47e88db1-3888-44-YU93z",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/89cbf3e6-e7b1-41-rwjw5",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/2e8f8eeb-b3fa-40-PHRqz",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/ed5b66af-06d4-4c-U_YbZ",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/b5ef5469-ad10-44-KFffs",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/42701aac-739f-4e-CFO_w",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/f892f395-2770-4d-ydIIl",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/ce847eed-3592-40-Fl0lg",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/1cfad7ab-4f6b-4e-i682N",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/0ed8de16-8c41-43-L9NFF",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/ec522ffe-be19-48-EZUt3",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/254936ea-a6e8-48-3omcy",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/730f3c4e-a670-41-8woI9",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/c771642b-435a-49-mwN2_",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/f7f800ca-2c51-4d--n0WF",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/24596770-4d2a-4b-LkKVC",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/756b3f0d-a5d1-49-4F1Wg",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/e2c50aed-e7f3-4c-1GFgr",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/bbd08635-e4fd-43-ovcP9",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/73136588-2174-41-v5_hh",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/3a5b8b4b-ad51-46-gVvYR",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/98e3e59b-4aad-49-3q1BI",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/33741366-7ae1-4d-CxurL",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/36abc009-ba32-47-kxvQn"
-    ],
-    "description": "Discover Portugal Active Connected Lodge, a stunning villa in Vila Nova de Anha, Viana do Castelo, combining modern luxury, comfort and nature. With 4 bedrooms, air conditioning, Wi‑Fi and a fully equipped kitchen, it offers a bright space connected to a tropical garden. A pool, fire pit, barbecue and concierge services ensure a memorable stay in your own private hotel.\n\nPortugal Active Connected Lodge offers spaces carefully designed for your comfort and enjoyment. The villa features four bedrooms, each designed to provide a restful and relaxing experience. In addition, the house has a fully equipped kitchen where you can prepare your favorite meals. The living room is a cozy space for socializing and entertainment. Outside, enjoy the garden, perfect for relaxing and appreciating nature, and the outdoor pool, ideal for moments of leisure and fun.\n\nLocated in the charming neighborhood of Vila Nova de Anha, Portugal Active Connected Lodge offers a peaceful retreat with quick access to the region’s main attractions. While the villa provides a serene and relaxing environment, you’ll find shops, cafés, and restaurants just a short drive away, where you can enjoy authentic Portuguese cuisine and explore local markets with fresh produce.\nThe beaches of Cabedelo and Amorosa, along with other stunning beaches in Viana do Castelo, are only a few minutes away by car—perfect for a day of sun, sea, and outdoor activities. The villa’s proximity to the historic center of Viana do Castelo allows you to discover its fascinating architecture, traditional shops, and vibrant cultural atmosphere. Along the banks of the Lima River, you can enjoy breathtaking views and a variety of leisure activities.\nThe area offers the perfect balance of tranquility and convenience, with nature, culture, gastronomy, and relaxation all within easy reach—ensuring your stay at Portugal Active Connected Lodge is truly memorable.\n\nGuests at Portugal Active Connected Lodge enjoy full and exclusive access to the entire villa and all its amenities. This includes four private bedrooms, each thoughtfully designed to ensure maximum comfort and rest. The spacious living and dining areas are perfect for socializing, while the fully equipped kitchen allows you to prepare your favorite meals with ease.\nOutside, you’ll find inviting spaces to relax and enjoy the Portuguese climate: a refreshing outdoor pool, a cozy fire pit, a barbecue station, and a tranquil garden ideal for unwinding and connecting with nature. The villa also offers a laundry room, free parking, and high‑speed internet.\nTo make your stay even more special, our exclusive concierge services are available, including luxury airport transfers, private chefs, and personalized experiences that turn your visit into something truly unforgettable.\n\nGetting around Portugal Active Connected Lodge is simple and convenient. Free on‑site parking is available for guests traveling by car. For those arriving by air, Francisco Sá Carneiro Airport (OPO) in Porto is the closest option, located approximately 45 minutes to 1 hour away. Another alternative is Vigo–Peinador Airport (VGO) in Spain, about 1 hour and 15 minutes from the villa.\nIf you prefer public transportation, the Viana do Castelo train station is just a short drive away, offering easy connections to other cities and regions. To make your arrival and departure even smoother, you can also take advantage of our exclusive concierge services, including luxury airport transfers.\n\n--------Exclusive Concierge Services by Portugal Active--------\n\nEnhance Your Stay with Our Exclusive Services:\n\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from 30 euro/person.\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\n\n\n--------Adventure Experiences--------\n\n✔️ Horseback Riding:\nRide through scenic trails and beaches.\n\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\n\n✔️ E-Bike Wild Tour:\nDiscover Viana do Castelo on an e-bike.\n\nBook Your Stay.\nPortugal Active, Your Private Hotel.",
-    "amenities": {
-      "property": [
-        "Air conditioning",
-        "BBQ grill",
-        "Baking sheet",
-        "Barbeque utensils",
-        "Bathtub",
-        "Bed linens",
-        "Blender",
-        "Board games",
-        "Cable TV",
-        "Carbon monoxide detector",
-        "Cleaning Disinfection",
-        "Cleaning before checkout",
-        "Cleaning products",
-        "Clothing storage",
-        "Coffee",
-        "Coffee maker",
-        "Cookware",
-        "Crib",
-        "Desk",
-        "Dining table",
-        "Dishes and silverware",
-        "Dishwasher",
-        "Dryer",
-        "EV charger",
-        "Enhanced cleaning practices",
-        "Essentials",
-        "Extra pillows and blankets",
-        "Fire Pit",
-        "Fire extinguisher",
-        "Fireplace guards",
-        "First aid kit",
-        "Free parking on street",
-        "Freezer",
-        "Garage",
-        "Garden View",
-        "Garden or backyard",
-        "Gym",
-        "Hair dryer",
-        "Hangers",
-        "Heating",
-        "High chair",
-        "High touch surfaces disinfected",
-        "Hot tub",
-        "Hot water",
-        "Indoor fireplace",
-        "Internet",
-        "Iron",
-        "Kettle",
-        "Kitchen",
-        "Laptop friendly workspace",
-        "Long term stays allowed",
-        "Microwave",
-        "Outdoor pool",
-        "Outdoor seating (furniture)",
-        "Oven",
-        "Patio or balcony",
-        "Pets allowed",
-        "Ping pong table",
-        "Private entrance",
-        "Private pool",
-        "Refrigerator",
-        "Sauna",
-        "Shampoo",
-        "Shower gel",
-        "Smoke detector",
-        "Stove",
-        "Suitable for children (2-12 years)",
-        "Suitable for events",
-        "Suitable for infants (under 2 years)",
-        "TV",
-        "Toaster",
-        "Towels provided",
-        "Washer",
-        "Wine glasses",
-        "Wireless Internet"
-      ],
-      "bedrooms": [],
-      "kitchen": [],
-      "services": []
-    },
-    "stayIncludes": [],
-    "style": "",
-    "tags": [],
-    "occasions": [],
-    "bookingUrl": "",
-    "guestyId": "6965331fec80690013738c68",
-    "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Connected Premium Lodge - Cowork and 5min Beach",
-    "sortOrder": 0,
-    "isActive": true,
-    "seoTitle": "Connected Premium Lodge - Cowork and 5min Beach — Portugal Active",
-    "seoDescription": "Discover Portugal Active Connected Lodge, a stunning villa in Vila Nova de Anha, Viana do Castelo, combining modern luxury, comfort and nature. With 4 bedrooms,",
-    "address": {
-      "full": "",
-      "street": "Travessa da Estrada Nova 187",
-      "city": "Viana do Castelo",
-      "state": "Viana do Castelo",
-      "zipcode": "",
-      "country": "Portugal",
-      "lat": 41.6579962,
-      "lng": -8.7805081
-    },
-    "rooms": [
-      {
-        "name": "Bedroom 1",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 2",
-        "beds": [
-          {
-            "type": "SINGLE_BED",
-            "quantity": 2
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 3",
-        "beds": [
-          {
-            "type": "KING_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 4",
-        "beds": [
-          {
-            "type": "SINGLE_BED",
-            "quantity": 2
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 5",
-        "beds": [
-          {
-            "type": "BUNK_BED",
-            "quantity": 2
-          }
-        ]
-      }
-    ],
-    "propertyType": "Villa",
-    "checkInTime": "16:00",
-    "checkOutTime": "11:00",
-    "areaSquareFeet": 2152.782,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
-  },
-  {
     "id": "guesty-696532f3753fb0001424a570",
     "slug": "countryside-house-near-the-beach-and-city-center-24a570",
     "name": "Countryside House near the Beach and City center",
@@ -17247,6 +17012,227 @@
     "reviewCount": 5
   },
   {
+    "id": "guesty-6a312c59a705e1001327708c",
+    "slug": "sunset-cliffs-with-ocean-view-by-portugal-active-27708c",
+    "name": "Sunset Cliffs with Ocean View by Portugal Active ",
+    "tagline": "Sunset Cliffs with Ocean View is a luxury duplex with 5 en-suite bedrooms and breathtaking views over the ocean and the Nazaré cliffs. Two floors of c…",
+    "tier": "select",
+    "destination": "minho",
+    "locality": "Pataias",
+    "bedrooms": 5,
+    "bathrooms": 5.5,
+    "maxGuests": 10,
+    "priceFrom": 350,
+    "pricePerNight": 350,
+    "cleaningFee": 0,
+    "minNights": 2,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1781621409/production/6957de4388cba42d9e7a905e/xh4ih7cbk5xa0j61ydif.jpg",
+      "https://assets.guesty.com/image/upload/v1781621403/production/6957de4388cba42d9e7a905e/btboki9ti7dfywzgorkw.jpg",
+      "https://assets.guesty.com/image/upload/v1781621414/production/6957de4388cba42d9e7a905e/ahsjorzz9fo4ywbnvrx8.jpg",
+      "https://assets.guesty.com/image/upload/v1781621440/production/6957de4388cba42d9e7a905e/hgmsqg6zvxaiw36dnwwo.jpg",
+      "https://assets.guesty.com/image/upload/v1781621443/production/6957de4388cba42d9e7a905e/zzac6bcfitt7jhrz1uto.jpg",
+      "https://assets.guesty.com/image/upload/v1781621402/production/6957de4388cba42d9e7a905e/dwqtmt5vmfyexofbsu4f.jpg",
+      "https://assets.guesty.com/image/upload/v1781621452/production/6957de4388cba42d9e7a905e/yagwiqqpfv5dffjm4gzk.jpg",
+      "https://assets.guesty.com/image/upload/v1781621464/production/6957de4388cba42d9e7a905e/eqbadt1s9hkoaueev36m.jpg",
+      "https://assets.guesty.com/image/upload/v1781621403/production/6957de4388cba42d9e7a905e/xxp4chzo0mxjvvttxiqa.jpg",
+      "https://assets.guesty.com/image/upload/v1781621452/production/6957de4388cba42d9e7a905e/ogddn3izveihw36qbqus.jpg",
+      "https://assets.guesty.com/image/upload/v1781621455/production/6957de4388cba42d9e7a905e/oio6qeflnplxreeqg5dr.jpg",
+      "https://assets.guesty.com/image/upload/v1781621408/production/6957de4388cba42d9e7a905e/hdwyotk10ih9ee2xct8r.jpg",
+      "https://assets.guesty.com/image/upload/v1781621409/production/6957de4388cba42d9e7a905e/eu0xp9w6w7pc9xw3a7kl.jpg",
+      "https://assets.guesty.com/image/upload/v1781621410/production/6957de4388cba42d9e7a905e/xzbinrd0f12mwfcamfaf.jpg",
+      "https://assets.guesty.com/image/upload/v1781621412/production/6957de4388cba42d9e7a905e/fuaj9uhrldbqknnrqbgu.jpg",
+      "https://assets.guesty.com/image/upload/v1781621443/production/6957de4388cba42d9e7a905e/hzjzlywxz9jx4aagibwo.jpg",
+      "https://assets.guesty.com/image/upload/v1781621417/production/6957de4388cba42d9e7a905e/j1mwsx6xip24ir6qjx3r.jpg",
+      "https://assets.guesty.com/image/upload/v1781621439/production/6957de4388cba42d9e7a905e/gqhbjeckrcxyyggsrqlp.jpg",
+      "https://assets.guesty.com/image/upload/v1781621433/production/6957de4388cba42d9e7a905e/td5nwdrflloo5cnqsrna.jpg",
+      "https://assets.guesty.com/image/upload/v1781621438/production/6957de4388cba42d9e7a905e/zawbkgpbpnjon2yskpzb.jpg",
+      "https://assets.guesty.com/image/upload/v1781621437/production/6957de4388cba42d9e7a905e/wnyvpdhszzyiwixmozkn.jpg",
+      "https://assets.guesty.com/image/upload/v1781621423/production/6957de4388cba42d9e7a905e/n04ehoy4m5xvt4ntrkid.jpg",
+      "https://assets.guesty.com/image/upload/v1781621425/production/6957de4388cba42d9e7a905e/zfj7inwezzlhl4q3gk7l.jpg",
+      "https://assets.guesty.com/image/upload/v1781621424/production/6957de4388cba42d9e7a905e/x3waydp8hfwsiyimv5fs.jpg",
+      "https://assets.guesty.com/image/upload/v1781621435/production/6957de4388cba42d9e7a905e/kwteylbgwcy1n1jwntbx.jpg",
+      "https://assets.guesty.com/image/upload/v1781621419/production/6957de4388cba42d9e7a905e/l1zyktya4ohp2npqpnrf.jpg",
+      "https://assets.guesty.com/image/upload/v1781621425/production/6957de4388cba42d9e7a905e/jrifwsm5ce6fwrngq0kh.jpg",
+      "https://assets.guesty.com/image/upload/v1781621421/production/6957de4388cba42d9e7a905e/ieqmetrtg6uxa7hx7gzk.jpg",
+      "https://assets.guesty.com/image/upload/v1781621419/production/6957de4388cba42d9e7a905e/dtcbk9eevdbjori6vlpc.jpg",
+      "https://assets.guesty.com/image/upload/v1781621421/production/6957de4388cba42d9e7a905e/oullp3nc8y0zcejwxgrl.jpg",
+      "https://assets.guesty.com/image/upload/v1781621435/production/6957de4388cba42d9e7a905e/wmwkp0wcgckag36xk6p7.jpg",
+      "https://assets.guesty.com/image/upload/v1781621426/production/6957de4388cba42d9e7a905e/x6gp86nqutsajsmwg8hb.jpg",
+      "https://assets.guesty.com/image/upload/v1781621415/production/6957de4388cba42d9e7a905e/bjwtsqw2tgu4tjcyhohp.jpg",
+      "https://assets.guesty.com/image/upload/v1781621414/production/6957de4388cba42d9e7a905e/codfftodtxqooezh444l.jpg",
+      "https://assets.guesty.com/image/upload/v1781621426/production/6957de4388cba42d9e7a905e/flapm48kstjfo4axfucz.jpg",
+      "https://assets.guesty.com/image/upload/v1781621428/production/6957de4388cba42d9e7a905e/jvglbpa2tlmxhl76n5e9.jpg",
+      "https://assets.guesty.com/image/upload/v1781621436/production/6957de4388cba42d9e7a905e/fuv1eriw9jl6aidchxwe.jpg",
+      "https://assets.guesty.com/image/upload/v1781621430/production/6957de4388cba42d9e7a905e/ct1giyh1d9kpoiysvt22.jpg",
+      "https://assets.guesty.com/image/upload/v1781621429/production/6957de4388cba42d9e7a905e/qbu0scjyol8cbvkslbbx.jpg",
+      "https://assets.guesty.com/image/upload/v1781621431/production/6957de4388cba42d9e7a905e/ysmlz6b0a8h4rpnrex1s.jpg",
+      "https://assets.guesty.com/image/upload/v1781621432/production/6957de4388cba42d9e7a905e/imjhbccxtaao7clrcirh.jpg",
+      "https://assets.guesty.com/image/upload/v1781621430/production/6957de4388cba42d9e7a905e/rshdihvshu7sqgjhk8rt.jpg",
+      "https://assets.guesty.com/image/upload/v1781621409/production/6957de4388cba42d9e7a905e/usibdhywqvcr4axp4dbp.jpg",
+      "https://assets.guesty.com/image/upload/v1781621440/production/6957de4388cba42d9e7a905e/my7ebj5n2bm8qa8xqzbk.jpg",
+      "https://assets.guesty.com/image/upload/v1781621440/production/6957de4388cba42d9e7a905e/ta4x1yqmhoec4sejqovh.jpg",
+      "https://assets.guesty.com/image/upload/v1781621443/production/6957de4388cba42d9e7a905e/ytxfr7id4gaebixw5hhn.jpg",
+      "https://assets.guesty.com/image/upload/v1781621447/production/6957de4388cba42d9e7a905e/pq7odvbhdt1vwztzor1n.jpg",
+      "https://assets.guesty.com/image/upload/v1781621447/production/6957de4388cba42d9e7a905e/xsuagb6rgl2x45gwkid4.jpg",
+      "https://assets.guesty.com/image/upload/v1781621447/production/6957de4388cba42d9e7a905e/dw7oarkimicinpcp8cmg.jpg",
+      "https://assets.guesty.com/image/upload/v1781621447/production/6957de4388cba42d9e7a905e/ijzmxqegaicfclivcqno.jpg",
+      "https://assets.guesty.com/image/upload/v1781621460/production/6957de4388cba42d9e7a905e/o2jj10dkauvozb7filhz.jpg",
+      "https://assets.guesty.com/image/upload/v1781621452/production/6957de4388cba42d9e7a905e/pzt4nyvjfefbfbfnft8z.jpg",
+      "https://assets.guesty.com/image/upload/v1781621487/production/6957de4388cba42d9e7a905e/hdfyhvrao9uld0lr0mef.jpg",
+      "https://assets.guesty.com/image/upload/v1781621489/production/6957de4388cba42d9e7a905e/mn4ngzu0ls303ic1yw9u.jpg",
+      "https://assets.guesty.com/image/upload/v1781621490/production/6957de4388cba42d9e7a905e/crtlyp9dczcvpkfyigt3.jpg",
+      "https://assets.guesty.com/image/upload/v1781621491/production/6957de4388cba42d9e7a905e/oigepaftdmueygit6j1k.jpg"
+    ],
+    "description": "Sunset Cliffs with Ocean View is a luxury duplex with 5 en-suite bedrooms and breathtaking views over the ocean and the Nazaré cliffs. Two floors of contemporary design, a private terrace with sea views and fully equipped kitchen. Perfect for families or groups of up to 10 seeking a sophisticated stay on Portugal’s most impressive coastline. Minutes from Praia do Norte and the historic centre of Nazaré.\n\nSunset Cliffs with Ocean View offers two floors of contemporary elegance, with high-end finishes and minimalist décor in warm, neutral tones. The upper floor houses the master suite with direct terrace access, a spacious living room, a dining area with ocean views, and a fully equipped kitchen with modern appliances and coffee machine.\nThe lower floor features four additional suites, each with a private bathroom fitted with rain showers and marble-effect finishes, and a second living room, perfect for family gatherings. The floors are connected by an interior staircase with glass balustrade, creating an open, light-filled atmosphere.\n\n\nSunset Cliffs with Ocean View sits in an elevated position atop the coastal cliffs, within a private and peaceful condominium. The panoramic views over the Atlantic Ocean and rugged coastline are truly breathtaking, perfect for watching unforgettable sunsets. The natural surroundings, with coastal vegetation and the sound of the waves, create a genuine sense of retreat and privacy.\n\nGuests have exclusive access to the entire duplex, including both floors and the private terrace. \nSunset Cliffs is located within a private condominium, with parking inside the condominium grounds. \nGuests also have access to the condominium’s games room, equipped with a snooker table, foosball, table tennis and squash court. \n\nPlease note: the condominium has a private pool, which will be available from 2027.\n\nNazaré is just a short drive away, offering the best of Portuguese culture and cuisine: fresh seafood restaurants along the waterfront, the local market, and the historic funicular connecting the beach to the clifftop Sítio district. Praia do Norte, world-famous for its giant waves, is accessible within minutes. Nature lovers will enjoy coastal walking trails with stunning views. Óbidos, Alcobaça, and the Batalha Monastery are all within 30 minutes, making this region ideal for exploring central Portugal’s rich heritage.\n\nExclusive Concierge Services by Portugal Active\n\nEnhance your stay with our exclusive services:\n✔️ Luxury Transfers: Private driver from the airport to your villa\n✔️ Tailored Experiences: Personalise your stay, from a Private Chef to a Personal Trainer.\n✔️ Daily Cleaning & Babysitting: Enjoy our services for a worry-free stay.\n✔️ Local Team Available: Rest assured, a Portugal Active team member will be available to assist you throughout your stay.\n\nAdventure Experiences\n✔️ Horse Riding: Enjoy scenic trails and beach rides.\n✔️ Guided Hiking, Diving & Gastronomy (with Lunch): Explore landscapes, dive into a secret lagoon and savour traditional tapas.\n✔️ E-Bike Wild Tour: Discover Viana do Castelo by electric bike.\nBook your stay. Portugal Active, your Private Hotel.\n",
+    "amenities": {
+      "property": [
+        "Air conditioning",
+        "Baking sheet",
+        "Beach",
+        "Beach Front",
+        "Beach View",
+        "Beach access",
+        "Bed linens",
+        "Body soap",
+        "Cable TV",
+        "Cleaning Disinfection",
+        "Cleaning products",
+        "Clothing storage",
+        "Coffee maker",
+        "Cookware",
+        "Dining table",
+        "Dishes and silverware",
+        "Dishwasher",
+        "Dryer",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Family/kid friendly",
+        "Fire extinguisher",
+        "First aid kit",
+        "Foosball table",
+        "Free parking on premises",
+        "Freezer",
+        "Game room",
+        "Garden View",
+        "Garden or backyard",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High touch surfaces disinfected",
+        "Hot water",
+        "Internet",
+        "Iron",
+        "Kettle",
+        "Kitchen",
+        "Laptop friendly workspace",
+        "Long term stays allowed",
+        "Microwave",
+        "Near Ocean",
+        "Ocean Front",
+        "Oven",
+        "Patio or balcony",
+        "Pool table",
+        "Private entrance",
+        "Refrigerator",
+        "Sea view",
+        "Shampoo",
+        "Shower gel",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Washer",
+        "Water View",
+        "Waterfront",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "6a312c59a705e1001327708c",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Sunset Cliffs with Ocean View by Portugal Active ",
+    "sortOrder": 0,
+    "isActive": true,
+    "seoTitle": "Sunset Cliffs with Ocean View by Portugal Active  — Portugal Active",
+    "seoDescription": "Sunset Cliffs with Ocean View is a luxury duplex with 5 en-suite bedrooms and breathtaking views over the ocean and the Nazaré cliffs. Two floors of contemporar",
+    "address": {
+      "full": "",
+      "street": "Rua Mina do Azeiche",
+      "city": "Pataias",
+      "state": "Leiria",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 39.6950908,
+      "lng": -9.0498865
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 2369,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
+  },
+  {
     "id": "guesty-69653365bf04fe0013743511",
     "slug": "s-o-juli-o-retreat-pool-jacuzzi-garden-escape-743511",
     "name": "São Julião Retreat | Pool, Jacuzzi & Garden Escape",
@@ -19488,6 +19474,241 @@
     "reviewCount": 7
   },
   {
+    "id": "guesty-6965331fec80690013738c68",
+    "slug": "connected-premium-lodge-cowork-and-5min-beach-738c68",
+    "name": "Villa Aura · Sauna, Gym, 5min Beach & City",
+    "tagline": "Villa Aura is your premium escape on Portugal's north coast. Newly renovated 4-bedroom design villa with private sauna, in-house gym, outdoor pool and…",
+    "tier": "select",
+    "destination": "minho",
+    "locality": "Viana do Castelo",
+    "bedrooms": 4,
+    "bathrooms": 3.5,
+    "maxGuests": 12,
+    "priceFrom": 459,
+    "pricePerNight": 459,
+    "cleaningFee": 160,
+    "minNights": 4,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/c047ab4e-76d5-41-QLYD8",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/98029be4-60d7-42-7qUZv",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/d5f6ca0e-bd43-47-KysQR",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/71f6a332-00b0-4d-_mnUE",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/768913d2-8346-4e-tjTK1",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/3635ca35-8375-47-R9VyD",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/85c0ce96-fd53-48-PmoMT",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/890f9aa2-4e7d-4c-4lRY0",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/268e465b-3a41-41-ptxfx",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/6c8df3f0-501a-4f-W7_jr",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/26075154-4463-47-6g1jb",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/d4cc3a79-a0a4-4c-cvVh1",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/0aecb9a6-b1b7-4e-aIUot",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/96344874-699f-47-bcKnQ",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/f7b86080-6627-41-TTOkW",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/5d56ae85-9fc3-46-UYsew",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/784ca69b-6b06-4f-pCW4U",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/345faa9d-bb8a-4f-vmNHE",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/b3af0de0-cea7-4c-9Teqe",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/b6caf610-8dfa-46-f94tc",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/f9eeed6d-f3ff-45-weXVJ",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/375eb57f-dde3-4d-Pnku5",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/a4c8f30e-09af-40-hfyKZ",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/91d24cd5-f06f-46-fBKFY",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/b5caa1eb-4bda-41--T4Vh",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/b6baa14a-2b4f-40-P690e",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/1ea0c491-ddb0-4f-DPau4",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/329a3947-74c0-40-D_OT8",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/6029bf53-72f3-44-UWGhE",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/e6ba4321-a21d-40-qo-Lx",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/1cca3d5f-1cb9-40-eO2KU",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/d34d9dba-c6db-46-X1t2V",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/68600f21-3f80-4e-QCe3k",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/47e88db1-3888-44-YU93z",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/89cbf3e6-e7b1-41-rwjw5",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/2e8f8eeb-b3fa-40-PHRqz",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/ed5b66af-06d4-4c-U_YbZ",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/b5ef5469-ad10-44-KFffs",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/42701aac-739f-4e-CFO_w",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/f892f395-2770-4d-ydIIl",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/ce847eed-3592-40-Fl0lg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/1cfad7ab-4f6b-4e-i682N",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/0ed8de16-8c41-43-L9NFF",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/ec522ffe-be19-48-EZUt3",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/254936ea-a6e8-48-3omcy",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/730f3c4e-a670-41-8woI9",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/c771642b-435a-49-mwN2_",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/f7f800ca-2c51-4d--n0WF",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/24596770-4d2a-4b-LkKVC",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/756b3f0d-a5d1-49-4F1Wg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/e2c50aed-e7f3-4c-1GFgr",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/bbd08635-e4fd-43-ovcP9",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/73136588-2174-41-v5_hh",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/3a5b8b4b-ad51-46-gVvYR",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/98e3e59b-4aad-49-3q1BI",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/33741366-7ae1-4d-CxurL",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/36abc009-ba32-47-kxvQn"
+    ],
+    "description": "Villa Aura is your premium escape on Portugal's north coast. Newly renovated 4-bedroom design villa with private sauna, in-house gym, outdoor pool and tropical garden. Five minutes from the wild Atlantic beach at Cabedelo and from the historic center of Viana do Castelo. Sleeps up to 12 — ideal for families, group retreats and slow-living escapes. Concierge included: airport transfers, private chefs, surf and wine experiences. Northern Portugal at its finest.\n\nFrom sunrise sauna rituals to late dinners by the fire, Villa Aura is built for slowing down. Four bright bedrooms, each opening to the garden, sleep up to 12 in restful comfort. The open living and kitchen flow into the outdoor pool deck — fire pit, barbecue, and a curated outdoor lounge for long Portuguese nights.\n\nEvery space is freshly renovated with quiet-luxury detail: clean lines, natural materials, calming palette. The dedicated gym in the garage keeps your routine intact; the private sauna by the pool is the kind of detail you remember years later. High-speed internet, climate control in every room, laundry, free private parking — the practical essentials are covered.\n\nConcierge on request — airport transfers, private chefs, market mornings, surf lessons, Vinho Verde tastings — turn your stay into something curated.\n\nVilla Aura sits in Vila Nova de Anha, a serene residential pocket on the southern edge of Viana do Castelo. Five minutes drive from the wild Atlantic beach at Cabedelo — a surf and kitesurf destination. Five minutes from the city's historic center, with its Manuelino architecture and the iconic Praça da República. Ten minutes from the dramatic cliffs of Amorosa.\n\nWithin a 30-minute radius you have the Lima River, Monte de Santa Luzia sanctuary, the Vinho Verde wine country, and the Spanish border at Caminha. A rare base in Portugal where ocean, river, mountain and city converge in a single day.\n\nThe Friday-morning market is iconic. Family-run restaurants, traditional shops and bakeries are walking distance from the villa. Authentic, unrushed, and unmistakably northern Portugal.\n\nGuests have full and exclusive access to the entire villa and grounds: four private bedrooms, the open living and kitchen, the outdoor pool deck, the private sauna by the pool, the in-house gym in the garage, the tropical garden with fire pit and barbecue, and free private parking. The full property is yours for the stay — no shared spaces, no surprises. Concierge services available on request, never imposed.\n\nFree private parking on-site — recommended for full flexibility. By air: Porto Airport (OPO) 45 minutes south, Vigo Airport (VGO, Spain) 1h15 north. By train: Viana do Castelo station 5 minutes by car, direct connections to Porto and Lisbon. Concierge can arrange private airport transfers on request — just ask.\n\n--------Exclusive Concierge Services by Portugal Active--------\n\nEnhance Your Stay with Our Exclusive Services:\n\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from 30 euro/person.\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\n\n\n--------Adventure Experiences--------\n\n✔️ Horseback Riding:\nRide through scenic trails and beaches.\n\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\n\n✔️ E-Bike Wild Tour:\nDiscover Viana do Castelo on an e-bike.\n\nBook Your Stay.\nPortugal Active, Your Private Hotel.",
+    "amenities": {
+      "property": [
+        "Air conditioning",
+        "BBQ grill",
+        "Baking sheet",
+        "Barbeque utensils",
+        "Bathtub",
+        "Bed linens",
+        "Blender",
+        "Board games",
+        "Cable TV",
+        "Carbon monoxide detector",
+        "Cleaning Disinfection",
+        "Cleaning before checkout",
+        "Cleaning products",
+        "Clothing storage",
+        "Coffee",
+        "Coffee maker",
+        "Cookware",
+        "Crib",
+        "Desk",
+        "Dining table",
+        "Dishes and silverware",
+        "Dishwasher",
+        "Dryer",
+        "EV charger",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Extra pillows and blankets",
+        "Fire Pit",
+        "Fire extinguisher",
+        "Fireplace guards",
+        "First aid kit",
+        "Free parking on street",
+        "Freezer",
+        "Garage",
+        "Garden View",
+        "Garden or backyard",
+        "Gym",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High chair",
+        "High touch surfaces disinfected",
+        "Hot tub",
+        "Hot water",
+        "Indoor fireplace",
+        "Internet",
+        "Iron",
+        "Kettle",
+        "Kitchen",
+        "Laptop friendly workspace",
+        "Long term stays allowed",
+        "Microwave",
+        "Outdoor pool",
+        "Outdoor seating (furniture)",
+        "Oven",
+        "Patio or balcony",
+        "Pets allowed",
+        "Ping pong table",
+        "Private entrance",
+        "Private pool",
+        "Refrigerator",
+        "Sauna",
+        "Shampoo",
+        "Shower gel",
+        "Smoke detector",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for events",
+        "Suitable for infants (under 2 years)",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Washer",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "6965331fec80690013738c68",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Villa Aura · Sauna, Gym, 5min Beach & City",
+    "sortOrder": 0,
+    "isActive": true,
+    "seoTitle": "Villa Aura · Sauna, Gym, 5min Beach & City — Portugal Active",
+    "seoDescription": "Villa Aura is your premium escape on Portugal's north coast. Newly renovated 4-bedroom design villa with private sauna, in-house gym, outdoor pool and tropical ",
+    "address": {
+      "full": "",
+      "street": "Travessa da Estrada Nova 187",
+      "city": "Viana do Castelo",
+      "state": "Viana do Castelo",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 41.6579962,
+      "lng": -8.7805081
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "KING_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "BUNK_BED",
+            "quantity": 2
+          }
+        ]
+      }
+    ],
+    "propertyType": "Villa",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 2152.782,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
+  },
+  {
     "id": "guesty-696533af4fe6a100145fecb6",
     "slug": "white-charm-by-the-sea-5fecb6",
     "name": "White Charm by the Sea",
@@ -19672,6 +19893,38 @@
     "areaSquareFeet": 754,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Genial",
+        "guestName": "Guest",
+        "date": "2026-06-16T16:54:04.051Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "De uma forma geral correspodeu às expectativas. Um T1 com cerca de 40 anos, com cada de banho renovada. Algum pó nas dobras do sofá, resto da limpeza ok. Televisão não funcionava por falta de sinal da rede do edifício.",
         "guestName": "Guest",
@@ -19704,8 +19957,8 @@
         ]
       }
     ],
-    "averageRating": 4,
-    "reviewCount": 1
+    "averageRating": 4.5,
+    "reviewCount": 2
   },
   {
     "id": "guesty-696533794b583900135cf0fc",
