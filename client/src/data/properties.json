@@ -16447,6 +16447,38 @@
     "areaSquareFeet": 2961,
     "reviews": [
       {
+        "rating": 5,
+        "text": "This property was so beautiful and they have thought of every detail!",
+        "guestName": "Guest",
+        "date": "2026-06-17T13:36:45.808Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "Great value for money, if you enjoy privacy and rest. \n\nOutstanding property",
         "guestName": "Guest",
@@ -16608,7 +16640,7 @@
       }
     ],
     "averageRating": 4.8,
-    "reviewCount": 5
+    "reviewCount": 6
   },
   {
     "id": "guesty-69653381bf04fe00137437cd",
@@ -19477,16 +19509,16 @@
     "id": "guesty-6965331fec80690013738c68",
     "slug": "connected-premium-lodge-cowork-and-5min-beach-738c68",
     "name": "Villa Aura · Sauna, Gym, 5min Beach & City",
-    "tagline": "Villa Aura is your premium escape on Portugal's north coast. Newly renovated 4-bedroom design villa with private sauna, in-house gym, outdoor pool and…",
+    "tagline": "Villa Aura is your premium escape on Portugal's north coast. Newly renovated 5-bedroom design villa with private sauna, in-house gym, outdoor pool and…",
     "tier": "select",
     "destination": "minho",
     "locality": "Viana do Castelo",
-    "bedrooms": 4,
+    "bedrooms": 5,
     "bathrooms": 3.5,
     "maxGuests": 12,
     "priceFrom": 459,
     "pricePerNight": 459,
-    "cleaningFee": 160,
+    "cleaningFee": 250,
     "minNights": 4,
     "currency": "EUR",
     "images": [
@@ -19548,7 +19580,7 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/33741366-7ae1-4d-CxurL",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/36abc009-ba32-47-kxvQn"
     ],
-    "description": "Villa Aura is your premium escape on Portugal's north coast. Newly renovated 4-bedroom design villa with private sauna, in-house gym, outdoor pool and tropical garden. Five minutes from the wild Atlantic beach at Cabedelo and from the historic center of Viana do Castelo. Sleeps up to 12 — ideal for families, group retreats and slow-living escapes. Concierge included: airport transfers, private chefs, surf and wine experiences. Northern Portugal at its finest.\n\nFrom sunrise sauna rituals to late dinners by the fire, Villa Aura is built for slowing down. Four bright bedrooms, each opening to the garden, sleep up to 12 in restful comfort. The open living and kitchen flow into the outdoor pool deck — fire pit, barbecue, and a curated outdoor lounge for long Portuguese nights.\n\nEvery space is freshly renovated with quiet-luxury detail: clean lines, natural materials, calming palette. The dedicated gym in the garage keeps your routine intact; the private sauna by the pool is the kind of detail you remember years later. High-speed internet, climate control in every room, laundry, free private parking — the practical essentials are covered.\n\nConcierge on request — airport transfers, private chefs, market mornings, surf lessons, Vinho Verde tastings — turn your stay into something curated.\n\nVilla Aura sits in Vila Nova de Anha, a serene residential pocket on the southern edge of Viana do Castelo. Five minutes drive from the wild Atlantic beach at Cabedelo — a surf and kitesurf destination. Five minutes from the city's historic center, with its Manuelino architecture and the iconic Praça da República. Ten minutes from the dramatic cliffs of Amorosa.\n\nWithin a 30-minute radius you have the Lima River, Monte de Santa Luzia sanctuary, the Vinho Verde wine country, and the Spanish border at Caminha. A rare base in Portugal where ocean, river, mountain and city converge in a single day.\n\nThe Friday-morning market is iconic. Family-run restaurants, traditional shops and bakeries are walking distance from the villa. Authentic, unrushed, and unmistakably northern Portugal.\n\nGuests have full and exclusive access to the entire villa and grounds: four private bedrooms, the open living and kitchen, the outdoor pool deck, the private sauna by the pool, the in-house gym in the garage, the tropical garden with fire pit and barbecue, and free private parking. The full property is yours for the stay — no shared spaces, no surprises. Concierge services available on request, never imposed.\n\nFree private parking on-site — recommended for full flexibility. By air: Porto Airport (OPO) 45 minutes south, Vigo Airport (VGO, Spain) 1h15 north. By train: Viana do Castelo station 5 minutes by car, direct connections to Porto and Lisbon. Concierge can arrange private airport transfers on request — just ask.\n\n--------Exclusive Concierge Services by Portugal Active--------\n\nEnhance Your Stay with Our Exclusive Services:\n\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from 30 euro/person.\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\n\n\n--------Adventure Experiences--------\n\n✔️ Horseback Riding:\nRide through scenic trails and beaches.\n\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\n\n✔️ E-Bike Wild Tour:\nDiscover Viana do Castelo on an e-bike.\n\nBook Your Stay.\nPortugal Active, Your Private Hotel.",
+    "description": "Villa Aura is your premium escape on Portugal's north coast. Newly renovated 5-bedroom design villa with private sauna, in-house gym, outdoor pool and tropical garden. Five minutes from the wild Atlantic beach at Cabedelo and from the historic center of Viana do Castelo. Sleeps up to 12 — ideal for families, group retreats and slow-living escapes. Concierge included: airport transfers, private chefs, surf and wine experiences. Northern Portugal at its finest.\n\nFrom sunrise sauna rituals to late dinners by the fire, Villa Aura is built for slowing down. Five bright bedrooms, each opening to the garden, sleep up to 12 in restful comfort. The open living and kitchen flow into the outdoor pool deck — fire pit, barbecue, and a curated outdoor lounge for long Portuguese nights.\n\nEvery space is freshly renovated with quiet-luxury detail: clean lines, natural materials, calming palette. The dedicated gym in the garage keeps your routine intact; the private sauna by the pool is the kind of detail you remember years later. High-speed internet, climate control in every room, laundry, free private parking — the practical essentials are covered.\n\nConcierge on request — airport transfers, private chefs, market mornings, surf lessons, Vinho Verde tastings — turn your stay into something curated.\n\nVilla Aura sits in Vila Nova de Anha, a serene residential pocket on the southern edge of Viana do Castelo. Five minutes drive from the wild Atlantic beach at Cabedelo — a surf and kitesurf destination. Five minutes from the city's historic center, with its Manuelino architecture and the iconic Praça da República. Ten minutes from the dramatic cliffs of Amorosa.\n\nWithin a 30-minute radius you have the Lima River, Monte de Santa Luzia sanctuary, the Vinho Verde wine country, and the Spanish border at Caminha. A rare base in Portugal where ocean, river, mountain and city converge in a single day.\n\nThe Friday-morning market is iconic. Family-run restaurants, traditional shops and bakeries are walking distance from the villa. Authentic, unrushed, and unmistakably northern Portugal.\n\nGuests have full and exclusive access to the entire villa and grounds: five private bedrooms, the open living and kitchen, the outdoor pool deck, the private sauna by the pool, the in-house gym in the garage, the tropical garden with fire pit and barbecue, and free private parking. The full property is yours for the stay — no shared spaces, no surprises. Concierge services available on request, never imposed.\n\nFree private parking on-site — recommended for full flexibility. By air: Porto Airport (OPO) 45 minutes south, Vigo Airport (VGO, Spain) 1h15 north. By train: Viana do Castelo station 5 minutes by car, direct connections to Porto and Lisbon. Concierge can arrange private airport transfers on request — just ask.\n\n--------Exclusive Concierge Services by Portugal Active--------\n\nEnhance Your Stay with Our Exclusive Services:\n\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from 30 euro/person.\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\n\n\n--------Adventure Experiences--------\n\n✔️ Horseback Riding:\nRide through scenic trails and beaches.\n\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\n\n✔️ E-Bike Wild Tour:\nDiscover Viana do Castelo on an e-bike.\n\nBook Your Stay.\nPortugal Active, Your Private Hotel.",
     "amenities": {
       "property": [
         "Air conditioning",
@@ -19642,7 +19674,7 @@
     "sortOrder": 0,
     "isActive": true,
     "seoTitle": "Villa Aura · Sauna, Gym, 5min Beach & City — Portugal Active",
-    "seoDescription": "Villa Aura is your premium escape on Portugal's north coast. Newly renovated 4-bedroom design villa with private sauna, in-house gym, outdoor pool and tropical ",
+    "seoDescription": "Villa Aura is your premium escape on Portugal's north coast. Newly renovated 5-bedroom design villa with private sauna, in-house gym, outdoor pool and tropical ",
     "address": {
       "full": "",
       "street": "Travessa da Estrada Nova 187",
