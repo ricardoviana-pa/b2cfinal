@@ -2463,6 +2463,304 @@
     "reviewCount": 2
   },
   {
+    "id": "guesty-6a2ad70638d6620013badaef",
+    "slug": "carcavelos-house-by-portugal-active-badaef",
+    "name": "Carcavelos House by Portugal Active",
+    "tagline": "An 18th-century manor house, owned by the same family since it was built, carefully restored between 2022 and 2025. \nCarcavelos House offers 7 unique …",
+    "tier": "select",
+    "destination": "minho",
+    "locality": "Vila Verde",
+    "bedrooms": 7,
+    "bathrooms": 7.5,
+    "maxGuests": 14,
+    "priceFrom": 400,
+    "pricePerNight": 400,
+    "cleaningFee": 275,
+    "minNights": 3,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1781277465/production/6957de4388cba42d9e7a905e/zphr6gdhyxk0j36wwmsv.jpg",
+      "https://assets.guesty.com/image/upload/v1781277478/production/6957de4388cba42d9e7a905e/qi33usxzqiz3z7ich5zb.jpg",
+      "https://assets.guesty.com/image/upload/v1781277542/production/6957de4388cba42d9e7a905e/kvmleh28p0dxjt6lcj5a.jpg",
+      "https://assets.guesty.com/image/upload/v1781277553/production/6957de4388cba42d9e7a905e/gn1am0hwyapi9c9on3q5.jpg",
+      "https://assets.guesty.com/image/upload/v1781277465/production/6957de4388cba42d9e7a905e/ypkmxo9n7on6f4fefnrh.jpg",
+      "https://assets.guesty.com/image/upload/v1781277474/production/6957de4388cba42d9e7a905e/spmusp3vu2njsoleniaf.jpg",
+      "https://assets.guesty.com/image/upload/v1781277550/production/6957de4388cba42d9e7a905e/qrowiblqs6ncscdbor6k.jpg",
+      "https://assets.guesty.com/image/upload/v1781277473/production/6957de4388cba42d9e7a905e/ss3ztycb5mfv7xlsp9wj.jpg",
+      "https://assets.guesty.com/image/upload/v1781277468/production/6957de4388cba42d9e7a905e/oh16stufdlyy2l9ehuxm.jpg",
+      "https://assets.guesty.com/image/upload/v1781277472/production/6957de4388cba42d9e7a905e/bxyonsnw2zzbsaqtjyyf.jpg",
+      "https://assets.guesty.com/image/upload/v1781277563/production/6957de4388cba42d9e7a905e/pezocxw8endpaz9ql0ig.jpg",
+      "https://assets.guesty.com/image/upload/v1781277473/production/6957de4388cba42d9e7a905e/mclolikj6avjofssn699.jpg",
+      "https://assets.guesty.com/image/upload/v1781277492/production/6957de4388cba42d9e7a905e/kxqxqn2jiucocp3emtv5.jpg",
+      "https://assets.guesty.com/image/upload/v1781277475/production/6957de4388cba42d9e7a905e/xtsm07wza2moo6jbj7bv.jpg",
+      "https://assets.guesty.com/image/upload/v1781277567/production/6957de4388cba42d9e7a905e/pwgksal4y4ukgrt1nyhl.jpg",
+      "https://assets.guesty.com/image/upload/v1781277464/production/6957de4388cba42d9e7a905e/woijwo6h3uhbzzamv54v.jpg",
+      "https://assets.guesty.com/image/upload/v1781277491/production/6957de4388cba42d9e7a905e/joe5mu4rdn7vv4bfkcvn.jpg",
+      "https://assets.guesty.com/image/upload/v1781277537/production/6957de4388cba42d9e7a905e/qx6hkeu7rp12lfq1xq8k.jpg",
+      "https://assets.guesty.com/image/upload/v1781277492/production/6957de4388cba42d9e7a905e/pedpavc5vgaaqicmfnd9.jpg",
+      "https://assets.guesty.com/image/upload/v1781277530/production/6957de4388cba42d9e7a905e/to6ltcvlivknnv9yv41h.jpg",
+      "https://assets.guesty.com/image/upload/v1781277492/production/6957de4388cba42d9e7a905e/b43qwxqyfm2kskufbzoq.jpg",
+      "https://assets.guesty.com/image/upload/v1781277536/production/6957de4388cba42d9e7a905e/ec0yrn8o97q59j40wgnf.jpg",
+      "https://assets.guesty.com/image/upload/v1781277531/production/6957de4388cba42d9e7a905e/vnajc3rgbwn4wdveon82.jpg",
+      "https://assets.guesty.com/image/upload/v1781277532/production/6957de4388cba42d9e7a905e/xtwzfy6dlhqjr0jhydte.jpg",
+      "https://assets.guesty.com/image/upload/v1781277535/production/6957de4388cba42d9e7a905e/lra0hqtro9rv1jn93w5j.jpg",
+      "https://assets.guesty.com/image/upload/v1781277531/production/6957de4388cba42d9e7a905e/esp6ezts35wyeh3i6j9f.jpg",
+      "https://assets.guesty.com/image/upload/v1781277532/production/6957de4388cba42d9e7a905e/p9s0qaqabvo6zo5r4rs5.jpg",
+      "https://assets.guesty.com/image/upload/v1781277534/production/6957de4388cba42d9e7a905e/xhudwinbo67llsiosxeb.jpg",
+      "https://assets.guesty.com/image/upload/v1781277534/production/6957de4388cba42d9e7a905e/u18ucwnceyhbxip8uewh.jpg",
+      "https://assets.guesty.com/image/upload/v1781277565/production/6957de4388cba42d9e7a905e/b7fn17mmhfkkasxqxryd.jpg",
+      "https://assets.guesty.com/image/upload/v1781277565/production/6957de4388cba42d9e7a905e/ijxyqenbm0ehhvzhbtqu.jpg",
+      "https://assets.guesty.com/image/upload/v1781277540/production/6957de4388cba42d9e7a905e/fsdfkyy9ze56z2donuf3.jpg",
+      "https://assets.guesty.com/image/upload/v1781277490/production/6957de4388cba42d9e7a905e/hmnkmygw9kltnrnlgg1q.jpg",
+      "https://assets.guesty.com/image/upload/v1781277491/production/6957de4388cba42d9e7a905e/jp3ttqabruped2h8ujmm.jpg",
+      "https://assets.guesty.com/image/upload/v1781277542/production/6957de4388cba42d9e7a905e/jci2wnvedc7t6gihwa6g.jpg",
+      "https://assets.guesty.com/image/upload/v1781277542/production/6957de4388cba42d9e7a905e/lsh1mg1sqgflswghzmsg.jpg",
+      "https://assets.guesty.com/image/upload/v1781277542/production/6957de4388cba42d9e7a905e/bcqxf7a2msjracbvadzg.jpg",
+      "https://assets.guesty.com/image/upload/v1781277548/production/6957de4388cba42d9e7a905e/rfatyg7yxei5uu896rz1.jpg",
+      "https://assets.guesty.com/image/upload/v1781277547/production/6957de4388cba42d9e7a905e/nsb1y246gxllnnazypps.jpg",
+      "https://assets.guesty.com/image/upload/v1781277547/production/6957de4388cba42d9e7a905e/zqfejppnm3d1v1yaxtgs.jpg",
+      "https://assets.guesty.com/image/upload/v1781277546/production/6957de4388cba42d9e7a905e/erzsrf24pc1sk1bzqfzx.jpg",
+      "https://assets.guesty.com/image/upload/v1781277529/production/6957de4388cba42d9e7a905e/sfkckxmpviic00sr7ce0.jpg",
+      "https://assets.guesty.com/image/upload/v1781277546/production/6957de4388cba42d9e7a905e/xmzd6onn5dthtjslijpb.jpg",
+      "https://assets.guesty.com/image/upload/v1781277547/production/6957de4388cba42d9e7a905e/s6ezowfy2ovqd4vr2m7g.jpg",
+      "https://assets.guesty.com/image/upload/v1781277560/production/6957de4388cba42d9e7a905e/gd6jwy9dx4tsenfdvrrh.jpg",
+      "https://assets.guesty.com/image/upload/v1781277555/production/6957de4388cba42d9e7a905e/rau6nhscsusmedsanvtt.jpg",
+      "https://assets.guesty.com/image/upload/v1781277561/production/6957de4388cba42d9e7a905e/zlogxnsga8zileonrnwg.jpg",
+      "https://assets.guesty.com/image/upload/v1781277550/production/6957de4388cba42d9e7a905e/ovlayyavqrhv6v07bff1.jpg",
+      "https://assets.guesty.com/image/upload/v1781277554/production/6957de4388cba42d9e7a905e/af3boy0brfci0oo2ok8d.jpg",
+      "https://assets.guesty.com/image/upload/v1781277569/production/6957de4388cba42d9e7a905e/r6hr2hagbytzcdnamyxt.jpg",
+      "https://assets.guesty.com/image/upload/v1781277568/production/6957de4388cba42d9e7a905e/rxolecjqh4vlhinsbocq.jpg",
+      "https://assets.guesty.com/image/upload/v1781277556/production/6957de4388cba42d9e7a905e/vsxgsrrrhdpp4e0tcdhg.jpg",
+      "https://assets.guesty.com/image/upload/v1781277497/production/6957de4388cba42d9e7a905e/pypf2pzru7yq2zqxrkko.jpg",
+      "https://assets.guesty.com/image/upload/v1781277498/production/6957de4388cba42d9e7a905e/bcffbbmmqavuszqwngbe.jpg",
+      "https://assets.guesty.com/image/upload/v1781277498/production/6957de4388cba42d9e7a905e/vcbhcvrrcmetekuhrqzl.jpg",
+      "https://assets.guesty.com/image/upload/v1781277495/production/6957de4388cba42d9e7a905e/ntfxjblttj9rvluhidae.jpg",
+      "https://assets.guesty.com/image/upload/v1781277498/production/6957de4388cba42d9e7a905e/cnkiul69qltwiw3minou.jpg",
+      "https://assets.guesty.com/image/upload/v1781277498/production/6957de4388cba42d9e7a905e/jsdfb6rc5ggeojr6bf5x.jpg",
+      "https://assets.guesty.com/image/upload/v1781277475/production/6957de4388cba42d9e7a905e/v50vxduexf05rhwytmcu.jpg",
+      "https://assets.guesty.com/image/upload/v1781277521/production/6957de4388cba42d9e7a905e/vxkyqsuq1w0usk1riios.jpg",
+      "https://assets.guesty.com/image/upload/v1781277519/production/6957de4388cba42d9e7a905e/qz3oyrs5kxwpu39iwsma.jpg",
+      "https://assets.guesty.com/image/upload/v1781277478/production/6957de4388cba42d9e7a905e/lwq9lpchmll46a1zd9tx.jpg",
+      "https://assets.guesty.com/image/upload/v1781277551/production/6957de4388cba42d9e7a905e/edjs3buyrpeupmepcsvv.jpg",
+      "https://assets.guesty.com/image/upload/v1781277477/production/6957de4388cba42d9e7a905e/hvey2tqtyovqrknwosjj.jpg",
+      "https://assets.guesty.com/image/upload/v1781277477/production/6957de4388cba42d9e7a905e/sxqmfzfya8jmehcgfsyj.jpg",
+      "https://assets.guesty.com/image/upload/v1781277556/production/6957de4388cba42d9e7a905e/nefwd2gzdp9anukzuz3m.jpg",
+      "https://assets.guesty.com/image/upload/v1781277506/production/6957de4388cba42d9e7a905e/vtdhba2gluiwlbuqusp0.jpg",
+      "https://assets.guesty.com/image/upload/v1781277505/production/6957de4388cba42d9e7a905e/enzesdmwoociwzt5u0am.jpg",
+      "https://assets.guesty.com/image/upload/v1781277508/production/6957de4388cba42d9e7a905e/jstsst2hvco2zuvdpkal.jpg",
+      "https://assets.guesty.com/image/upload/v1781277507/production/6957de4388cba42d9e7a905e/gaq8dagps8z5ktkcmkiq.jpg",
+      "https://assets.guesty.com/image/upload/v1781277508/production/6957de4388cba42d9e7a905e/gybpmliusmulnpmgnacl.jpg",
+      "https://assets.guesty.com/image/upload/v1781277507/production/6957de4388cba42d9e7a905e/pufgjc6vfybhqgireywh.jpg",
+      "https://assets.guesty.com/image/upload/v1781277511/production/6957de4388cba42d9e7a905e/lb1d0yrcgqgvvqt49vji.jpg",
+      "https://assets.guesty.com/image/upload/v1781277464/production/6957de4388cba42d9e7a905e/kqp6jjriaco1bawbchzq.jpg",
+      "https://assets.guesty.com/image/upload/v1781277525/production/6957de4388cba42d9e7a905e/fjs71k0ieamwwtncksvg.jpg",
+      "https://assets.guesty.com/image/upload/v1781277516/production/6957de4388cba42d9e7a905e/refkyock7e2isf6vtru8.jpg",
+      "https://assets.guesty.com/image/upload/v1781277515/production/6957de4388cba42d9e7a905e/rlhzqjqdkuhoofles2dy.jpg",
+      "https://assets.guesty.com/image/upload/v1781277516/production/6957de4388cba42d9e7a905e/q3memlbszoykkzkygwwf.jpg",
+      "https://assets.guesty.com/image/upload/v1781277516/production/6957de4388cba42d9e7a905e/prfrvqdlzmostlygpggg.jpg",
+      "https://assets.guesty.com/image/upload/v1781277516/production/6957de4388cba42d9e7a905e/rlfqhwitf1md8p0qapye.jpg",
+      "https://assets.guesty.com/image/upload/v1781277516/production/6957de4388cba42d9e7a905e/lii0dsoequl58na0mvpp.jpg",
+      "https://assets.guesty.com/image/upload/v1781277525/production/6957de4388cba42d9e7a905e/zi8c4bnchbgpue9wjbvd.jpg",
+      "https://assets.guesty.com/image/upload/v1781277479/production/6957de4388cba42d9e7a905e/t0o156wsepnp58wsscuq.jpg",
+      "https://assets.guesty.com/image/upload/v1781277488/production/6957de4388cba42d9e7a905e/ntwapwpn7qx88zmtopnh.jpg",
+      "https://assets.guesty.com/image/upload/v1781277482/production/6957de4388cba42d9e7a905e/pfsnyb5euvv96548w4kf.jpg",
+      "https://assets.guesty.com/image/upload/v1781277479/production/6957de4388cba42d9e7a905e/mxrtrjafe63vzgsdm5jr.jpg",
+      "https://assets.guesty.com/image/upload/v1781277481/production/6957de4388cba42d9e7a905e/xoukrmxt5y5b7pillmj4.jpg",
+      "https://assets.guesty.com/image/upload/v1781277483/production/6957de4388cba42d9e7a905e/eyxfdlndljcgsod0mzs4.jpg",
+      "https://assets.guesty.com/image/upload/v1781277484/production/6957de4388cba42d9e7a905e/fgtcpueaxzpmpsobqavv.jpg",
+      "https://assets.guesty.com/image/upload/v1781277484/production/6957de4388cba42d9e7a905e/hcwqyiukigdomjavmxrm.jpg",
+      "https://assets.guesty.com/image/upload/v1781277486/production/6957de4388cba42d9e7a905e/ejkmds30rb9rby4rzvj3.jpg",
+      "https://assets.guesty.com/image/upload/v1781277484/production/6957de4388cba42d9e7a905e/bmmkiph1txsuspllx13w.jpg",
+      "https://assets.guesty.com/image/upload/v1781277486/production/6957de4388cba42d9e7a905e/rzklbfotgxqi3aqmtoaa.jpg",
+      "https://assets.guesty.com/image/upload/v1781277487/production/6957de4388cba42d9e7a905e/a4cjlkpwbgybruktuhuu.jpg",
+      "https://assets.guesty.com/image/upload/v1781277526/production/6957de4388cba42d9e7a905e/xiuragkbgasqfwzuxuwd.jpg",
+      "https://assets.guesty.com/image/upload/v1781277565/production/6957de4388cba42d9e7a905e/abwpgjbyrwkrh7p7zsx0.jpg",
+      "https://assets.guesty.com/image/upload/v1781277540/production/6957de4388cba42d9e7a905e/w8kxslksld9m8cgnbt4l.jpg",
+      "https://assets.guesty.com/image/upload/v1781277559/production/6957de4388cba42d9e7a905e/vh0koikoyjio3dm1xf6f.jpg",
+      "https://assets.guesty.com/image/upload/v1781277560/production/6957de4388cba42d9e7a905e/foxzyqd5ai9xryntqvla.jpg",
+      "https://assets.guesty.com/image/upload/v1781277464/production/6957de4388cba42d9e7a905e/o9tykngsn7b8blq43br2.jpg",
+      "https://assets.guesty.com/image/upload/v1781277469/production/6957de4388cba42d9e7a905e/eohgllesfq0j7lfajidt.jpg",
+      "https://assets.guesty.com/image/upload/v1781277570/production/6957de4388cba42d9e7a905e/mewdnz9t6vtogh32rram.jpg",
+      "https://assets.guesty.com/image/upload/v1781277469/production/6957de4388cba42d9e7a905e/oxa3ikjly6hakzjuzers.jpg",
+      "https://assets.guesty.com/image/upload/v1781277470/production/6957de4388cba42d9e7a905e/wflqv5tqbufvmnex86tb.jpg",
+      "https://assets.guesty.com/image/upload/v1781277571/production/6957de4388cba42d9e7a905e/mycnu04t5yhinwyzgmxb.jpg",
+      "https://assets.guesty.com/image/upload/v1781277464/production/6957de4388cba42d9e7a905e/fdqkdimvw6yntwmioypy.jpg",
+      "https://assets.guesty.com/image/upload/v1781277562/production/6957de4388cba42d9e7a905e/n5qnje56kr33foopvjpy.jpg",
+      "https://assets.guesty.com/image/upload/v1781277530/production/6957de4388cba42d9e7a905e/hsnt6sueuhphluyhczdr.jpg",
+      "https://assets.guesty.com/image/upload/v1781277553/production/6957de4388cba42d9e7a905e/l56awrz7bzunolz9gyyf.jpg",
+      "https://assets.guesty.com/image/upload/v1781277468/production/6957de4388cba42d9e7a905e/zdiumgbsjury6hbhyrfo.jpg",
+      "https://assets.guesty.com/image/upload/v1781277469/production/6957de4388cba42d9e7a905e/vxvmmp8mp6ze3vghtrvy.jpg",
+      "https://assets.guesty.com/image/upload/v1781279127/production/6957de4388cba42d9e7a905e/xsdqlpbegsyfbxpumluu.jpg",
+      "https://assets.guesty.com/image/upload/v1781279127/production/6957de4388cba42d9e7a905e/uln0gezc8nkjsixttkzb.jpg",
+      "https://assets.guesty.com/image/upload/v1781279127/production/6957de4388cba42d9e7a905e/xgslynoo39qmkuvewp5y.jpg",
+      "https://assets.guesty.com/image/upload/v1781279127/production/6957de4388cba42d9e7a905e/wiou4jg4renqn26ripgc.jpg"
+    ],
+    "description": "An 18th-century manor house, owned by the same family since it was built, carefully restored between 2022 and 2025. \nCarcavelos House offers 7 unique suites with original coffered ceilings, period furniture and modern bathrooms, set within a 6,000 sqm property with gardens, a saltwater pool and views over the Minho countryside. \n15 minutes from Braga and on the doorstep of Peneda-Geres National Park.\n\nCarcavelos House was built in the last quarter of the 18th century by Captain Joao Xavier Soares and his wife Maria Teresa de Azevedo. \nThe facade displays an imposing coat of arms and an adjoining chapel with a Baroque portal and pediment that opens directly onto the street, a testament to its tradition of serving the local community.\nThe restoration, completed in 2025, fully respected the original structure: no structural walls were demolished, the granite stonework and exterior openings were preserved, and the magnificent coffered ceilings, some with gilded carvings, were restored and reinterpreted in the new areas.\nThe ground floor houses common spaces such as the living room (a former granary) with whitewashed stone walls, blue-gray wood ceilings and a wood-burning stove; the dining room with exposed beams, a crystal chandelier and seating for 14; and the garden room with direct outdoor access. There is also a bedroom with a bathroom. The kitchen, with its central marble island, terracotta-toned cabinets and a handcrafted brass pendant light, is fully equipped.\nOn the noble floor, five suites preserve their original coffered ceilings, unique pieces of 18th-century carpentry with geometric moldings and gilded accents. \nEach room has its own personality: sage-green tones with an antique glass-fronted cabinet, lavender-blue with a bureau desk, antique-rose with a crystal chandelier and floral tapestry, or straw-yellow with carved headboards. \nAll suites have a private bathroom with black-and-white checkered mosaic flooring, a spacious shower and classic-style fixtures.\nIn the attic, beneath the centuries-old roof timbers, there is an additional twin suite, a cozy space with rustic character and a natural skylight.\nThe balconies with granite columns and wrought-iron railings offer open views over the garden and surrounding fields.\n\n\nCarcavelos House is located in Coucieiro, a rural parish in the municipality of Vila Verde.\nIt is a peaceful area of farmland and traditional granite houses, protected by agricultural reserve status, which ensures the landscape remains unspoiled.\nA few meters away stands the Romanesque Church of Coucieiro (12th century). The quiet is punctuated by birdsong and, in summer, the distant sounds of local festivals and processions.\n\n\nGuests have access to the entire social ground floor (living, dining and garden rooms, and kitchen), their respective bedrooms and bathrooms, the balconies and porches, and the full garden including the pool, sun loungers and barbecue area.\nParking is free and located outside the property.\nThe chapel, wine press, cellar, threshing floor, drying house and certain first-floor rooms (entrance hall, study and old kitchen) are reserved for the owners.\nThe house has a platform lift (available upon request) and one accessible twin suite for guests with reduced mobility.\n\n\nVila Verde is a 10-minute drive, with supermarkets, restaurants and all kinds of shops. Braga, the district capital, is 15 minutes away, the historic center, Bom Jesus and Sameiro are well worth a visit. Peneda-Geres National Park begins 20 minutes away. \nPonte de Lima and Guimaraes are about 30 minutes. \nPorto Airport is approximately 70 km away. \nNearby: the river beach \"As Garrafas\" in Coucieiro, Caldelas thermal baths, padel in Sabariz, and several hiking trails (Sapo Trail, Sao Juliao Trail, Citania de Sao Juliao). \nThe Sao Vicente Bridge, Rendufe Monastery and the Pousada de Santa Maria do Bouro are must-sees.",
+    "amenities": {
+      "property": [
+        "Air conditioning",
+        "Baking sheet",
+        "Bed linens",
+        "Body soap",
+        "Cable TV",
+        "Carbon monoxide detector",
+        "Cleaning Disinfection",
+        "Cleaning products",
+        "Clothing storage",
+        "Coffee",
+        "Coffee maker",
+        "Cookware",
+        "Desk",
+        "Dining table",
+        "Dishes and silverware",
+        "Dishwasher",
+        "Dryer",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Family/kid friendly",
+        "Fire extinguisher",
+        "First aid kit",
+        "Free parking on premises",
+        "Free parking on street",
+        "Freezer",
+        "Garden View",
+        "Garden or backyard",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High touch surfaces disinfected",
+        "Hot water",
+        "Internet",
+        "Iron",
+        "Kettle",
+        "Kitchen",
+        "Laptop friendly workspace",
+        "Microwave",
+        "Outdoor pool",
+        "Oven",
+        "Patio or balcony",
+        "Private entrance",
+        "Private pool",
+        "Refrigerator",
+        "Shampoo",
+        "Shower gel",
+        "Smoke detector",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "Swimming pool",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Town",
+        "Washer",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "6a2ad70638d6620013badaef",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Carcavelos House by Portugal Active",
+    "sortOrder": 0,
+    "isActive": true,
+    "seoTitle": "Carcavelos House by Portugal Active — Portugal Active",
+    "seoDescription": "An 18th-century manor house, owned by the same family since it was built, carefully restored between 2022 and 2025. \nCarcavelos House offers 7 unique suites wit",
+    "address": {
+      "full": "",
+      "street": "Rua Condes de Carcavelos 18",
+      "city": "Vila Verde",
+      "state": "Braga",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 41.6729503,
+      "lng": -8.395299
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          },
+          {
+            "type": "SINGLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 6",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 7",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 64584,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
+  },
+  {
     "id": "guesty-6965338554dbb5001568a505",
     "slug": "classic-meets-modern-downtown-balcony-retreat-68a505",
     "name": "Classic Meets Modern – Downtown Balcony Retreat",
@@ -7510,6 +7808,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "La Villa esta muy bien montada.\nPerfecta para grupos grandes\nEn General la impieza y ordenado de todo lo hacia sentir a uno como en casa.\nTiene un area de esparcimiento muy agradable para jugar o ver tv.\nPara familia con ni.os peque;os el parque es muy atractivo.\nDisfrutamos mucho de la estadia",
+        "guestName": "Guest",
+        "date": "2026-06-18T08:28:36.106Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Alojamento fantástico e pensado ao detalhe. Equipa de apoio muito prestável e resolveu todas as questões colocadas! Serviço 5 ⭐️",
         "guestName": "Guest",
         "date": "2026-05-03T20:24:25.582Z",
@@ -7574,7 +7904,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   },
   {
     "id": "guesty-696533616cff760015e28802",
@@ -17054,9 +17384,9 @@
     "bedrooms": 5,
     "bathrooms": 5.5,
     "maxGuests": 10,
-    "priceFrom": 350,
-    "pricePerNight": 350,
-    "cleaningFee": 0,
+    "priceFrom": 510,
+    "pricePerNight": 510,
+    "cleaningFee": 200,
     "minNights": 2,
     "currency": "EUR",
     "images": [
