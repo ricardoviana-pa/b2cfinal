@@ -152,6 +152,7 @@
     "askAboutHome": "VRAGEN OVER DEZE WONING",
     "needHelpConcierge": "Hulp nodig? Praat met concierge",
     "fromPerNight": "Vanaf €{{price}}",
+    "selectDatesForPrice": "Bekijk prijs met data",
     "saveAria": "Accommodatie opslaan",
     "removeSaveAria": "Verwijderen uit opgeslagen",
     "imageAlt": "{{name}} — {{current}} van {{total}}",

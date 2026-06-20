@@ -152,6 +152,7 @@
     "askAboutHome": "POSER UNE QUESTION",
     "needHelpConcierge": "Besoin d'aide ? Contactez le concierge",
     "fromPerNight": "À partir de {{price}} €",
+    "selectDatesForPrice": "Voir le prix avec les dates",
     "saveAria": "Enregistrer la propriété",
     "removeSaveAria": "Retirer des favoris",
     "imageAlt": "{{name}} — {{current}} sur {{total}}",

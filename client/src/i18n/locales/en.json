@@ -152,6 +152,7 @@
     "askAboutHome": "ASK ABOUT THIS HOME",
     "needHelpConcierge": "Need help? Talk to concierge",
     "fromPerNight": "From €{{price}}",
+    "selectDatesForPrice": "Select dates for price",
     "saveAria": "Save property",
     "removeSaveAria": "Remove from saved",
     "imageAlt": "{{name}} — {{current}} of {{total}}",

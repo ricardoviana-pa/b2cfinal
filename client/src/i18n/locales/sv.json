@@ -152,6 +152,7 @@
     "askAboutHome": "FRÅGA OM DETTA HEM",
     "needHelpConcierge": "Behöver du hjälp? Prata med concierge",
     "fromPerNight": "Från €{{price}}",
+    "selectDatesForPrice": "Se pris med datum",
     "saveAria": "Spara bostad",
     "removeSaveAria": "Ta bort från sparade",
     "imageAlt": "{{name}} — {{current}} av {{total}}",

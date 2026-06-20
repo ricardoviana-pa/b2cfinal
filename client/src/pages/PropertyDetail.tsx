@@ -1079,11 +1079,9 @@ export default function PropertyDetail() {
                   </>
                 ) : (
                   <div className="bg-[#FAFAF7] border border-[#E8E4DC] p-6">
-                    {property.priceFrom > 0 && (
-                      <p className="font-display text-[32px] font-light text-[#1A1A18] mb-2">
-                        {t('property.fromPerNight', { price: String(property.priceFrom) })} <span className="text-[18px] text-[#9E9A90]">{t('property.perNight')}</span>
-                      </p>
-                    )}
+                    <p className="font-display text-[20px] font-light text-[#1A1A18] mb-2">
+                      {t('property.priceOnRequest')}
+                    </p>
                     <div className="flex items-center gap-1.5 mb-4">
                       <BadgeCheck size={14} className="text-[#8B7355]" />
                       <span className="text-[11px] tracking-[0.02em] text-[#9E9A90] font-medium">{t('property.directConcierge')}</span>
@@ -1138,12 +1136,10 @@ export default function PropertyDetail() {
         >
           <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0">
-              {property.priceFrom > 0 && (
-                <p className="font-display text-[18px] font-light text-[#1A1A18]">
-                  {t('property.fromPerNight', { price: String(property.priceFrom) })} <span className="text-[12px] text-[#9E9A90]">{t('property.perNight')}</span>
-                </p>
-              )}
-              <p className="text-[11px] text-[#9E9A90] flex items-center gap-1">
+              <p className="text-[13px] text-[#1A1A18] font-medium">
+                {t('property.selectDatesForPrice')}
+              </p>
+              <p className="text-[11px] text-[#9E9A90] flex items-center gap-1 mt-0.5">
                 <BadgeCheck size={12} className="text-[#8B7355]" /> {t('property.conciergeShort')}
               </p>
             </div>

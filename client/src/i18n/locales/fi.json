@@ -152,6 +152,7 @@
     "askAboutHome": "KYSY TÄSTÄ KODISTA",
     "needHelpConcierge": "Tarvitsetko apua? Keskustele conciergen kanssa",
     "fromPerNight": "Alkaen €{{price}}",
+    "selectDatesForPrice": "Näe hinta päivillä",
     "saveAria": "Tallenna kohde",
     "removeSaveAria": "Poista tallennetuista",
     "imageAlt": "{{name}} — {{current}} / {{total}}",

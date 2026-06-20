@@ -294,17 +294,8 @@ export default function PropertyCard({
                       </>
                     );
                   }
-                  // No confirmed live price (base/estimate or missing) — show catalogue "From … / night"
-                  if ((property.priceFrom ?? 0) > 0) {
-                    return (
-                      <>
-                        <span className="text-[#1A1A18] font-medium">
-                          {t('property.fromPerNight', { price: property.priceFrom.toLocaleString() })}
-                        </span>
-                        <span className="text-[0.75rem] text-[#9E9A90]">{t('property.perNight')}</span>
-                      </>
-                    );
-                  }
+                  // No confirmed live price (base/estimate or missing) — show neutral request copy
+                  // instead of a stale catalogue "From €X" that misleads the user about live availability.
                   return (
                     <span className="text-[#9E9A90] text-[0.8125rem]">
                       {t('property.priceOnRequest')}
@@ -315,18 +306,10 @@ export default function PropertyCard({
             </>
           ) : (
             <div className="flex items-baseline justify-between">
-              {(property.priceFrom ?? 0) > 0 ? (
-                <>
-                  <span className="text-[#1A1A18] font-medium">
-                    {t('property.fromPerNight', { price: property.priceFrom.toLocaleString() })}
-                  </span>
-                  <span className="text-[0.75rem] text-[#9E9A90]">{t('property.perNight')}</span>
-                </>
-              ) : (
-                <span className="text-[#9E9A90] text-[0.8125rem]">
-                  {t('property.priceOnRequest')}
-                </span>
-              )}
+              {/* No dates selected — show neutral prompt instead of "From €X" placeholder. */}
+              <span className="text-[#9E9A90] text-[0.8125rem]">
+                {t('property.selectDatesForPrice')}
+              </span>
             </div>
           )}
         </div>}
