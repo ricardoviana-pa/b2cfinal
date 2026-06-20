@@ -12,6 +12,7 @@ import { Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, Mes
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
 import { filterProperties, sortProperties, getUniqueLocalities } from '@/lib/utils';
+import { isChildUnit, getGroupByParentGuestyId } from '@/config/propertyGroups';
 import { pushDL, pushEcommerce } from '@/lib/datalayer';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -153,7 +154,11 @@ export default function Homes() {
       searchGuestsCount > 0
         ? f.filter((property) => (property.maxGuests ?? 0) >= searchGuestsCount)
         : f;
-    return sortProperties(withGuestCapacity, sort);
+    // Hide listings that are child units of a multi-unit group — they show up
+    // inside the parent's PDP, not as standalone PLP cards. The parent listing
+    // stays in the list and renders with "X units" treatment.
+    const withoutChildUnits = withGuestCapacity.filter((p) => !isChildUnit(p.guestyId));
+    return sortProperties(withoutChildUnits, sort);
   }, [allProperties, destination, location, sort, searchGuestsCount]);
 
   // GA4: view_item_list — fires only for cards that enter the viewport
