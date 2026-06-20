@@ -153,6 +153,8 @@
     "needHelpConcierge": "Tarvitsetko apua? Keskustele conciergen kanssa",
     "fromPerNight": "Alkaen €{{price}}",
     "selectDatesForPrice": "Näe hinta päivillä",
+    "estimateForNights_one": "arvio {{count}} yölle",
+    "estimateForNights_other": "arvio {{count}} yölle",
     "unitsAvailable_one": "{{count}} yksikkö saatavilla",
     "unitsAvailable_other": "{{count}} yksikköä saatavilla",
     "viewUnits": "Näytä yksiköt ja hinnat",

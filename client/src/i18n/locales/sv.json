@@ -153,6 +153,8 @@
     "needHelpConcierge": "Behöver du hjälp? Prata med concierge",
     "fromPerNight": "Från €{{price}}",
     "selectDatesForPrice": "Se pris med datum",
+    "estimateForNights_one": "uppsk. {{count}} natt",
+    "estimateForNights_other": "uppsk. {{count}} nätter",
     "unitsAvailable_one": "{{count}} enhet tillgänglig",
     "unitsAvailable_other": "{{count}} enheter tillgängliga",
     "viewUnits": "Visa enheter och priser",

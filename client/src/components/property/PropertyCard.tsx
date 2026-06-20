@@ -299,31 +299,34 @@ export default function PropertyCard({
                       {t('property.tryOtherDates', 'Try different dates or contact us for alternatives')}
                     </p>
                   </div>
-                ) : (() => {
-                  const fmt = formatEur;
-                  // Only show a confirmed total for live/cached quotes — never an estimate.
-                  const hasLiveTotal = liveQuote && liveQuote.total > 0 &&
-                    (liveQuote.source === 'live' || liveQuote.source === 'cached');
-                  if (hasLiveTotal && liveQuote) {
+                ) : liveQuote && liveQuote.total > 0 ? (
+                  // Any positive total — live, cached, base, or estimate — is shown
+                  // to the user. The Guesty source flag only affects whether we
+                  // label it as confirmed vs. estimate (subtle UI hint). The
+                  // previous behaviour hid estimates entirely behind "Price on
+                  // request", which felt broken to users who'd already picked dates.
+                  (() => {
+                    const fmt = formatEur;
+                    const isConfirmed = liveQuote.source === 'live' || liveQuote.source === 'cached';
                     return (
                       <>
                         <span className="text-[#1A1A18] font-medium">
                           {fmt(liveQuote.total)} {t('property.totalLabel')}
                         </span>
                         <span className="text-[0.75rem] text-[#9E9A90]">
-                          {t('booking.nights', { count: liveQuote.nights })}
+                          {isConfirmed
+                            ? t('booking.nights', { count: liveQuote.nights })
+                            : t('property.estimateForNights', { count: liveQuote.nights, defaultValue: 'est. for {{count}} nights' })}
                         </span>
                       </>
                     );
-                  }
-                  // No confirmed live price (base/estimate or missing) — show neutral request copy
-                  // instead of a stale catalogue "From €X" that misleads the user about live availability.
-                  return (
-                    <span className="text-[#9E9A90] text-[0.8125rem]">
-                      {t('property.priceOnRequest')}
-                    </span>
-                  );
-                })()}
+                  })()
+                ) : (
+                  // No quote came back at all (total missing or zero) — true edge case.
+                  <span className="text-[#9E9A90] text-[0.8125rem]">
+                    {t('property.priceOnRequest')}
+                  </span>
+                )}
               </div>
             </>
           ) : (

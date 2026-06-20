@@ -153,6 +153,8 @@
     "needHelpConcierge": "¿Necesita ayuda? Hable con concierge",
     "fromPerNight": "Desde €{{price}}",
     "selectDatesForPrice": "Ver precio con fechas",
+    "estimateForNights_one": "est. para {{count}} noche",
+    "estimateForNights_other": "est. para {{count}} noches",
     "unitsAvailable_one": "{{count}} unidad disponible",
     "unitsAvailable_other": "{{count}} unidades disponibles",
     "viewUnits": "Ver unidades y precios",
