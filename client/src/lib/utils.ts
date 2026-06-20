@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { Property, FilterDestination, SortOption } from "./types";
+import { curatedPosition } from "@/config/propertyOrder";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -130,7 +131,17 @@ export function filterProperties(
 export function sortProperties(properties: Property[], sort: SortOption): Property[] {
   const sorted = [...properties];
   switch (sort) {
-    case 'recommended': return sorted.sort((a, b) => a.sortOrder - b.sortOrder);
+    case 'recommended':
+      // Curated top + secondary (sortOrder). Lead picks come from
+      // CURATED_PROPERTY_ORDER (an explicit guestyId array). Anything not
+      // in the array falls through to the default sortOrder ranking — stable
+      // and deterministic so the grid doesn't reshuffle between renders.
+      return sorted.sort((a, b) => {
+        const pa = curatedPosition(a.guestyId);
+        const pb = curatedPosition(b.guestyId);
+        if (pa !== pb) return pa - pb; // both curated → array order; one curated → curated first
+        return (a.sortOrder ?? 0) - (b.sortOrder ?? 0); // secondary
+      });
     case 'price-asc': return sorted.sort((a, b) => a.priceFrom - b.priceFrom);
     case 'price-desc': return sorted.sort((a, b) => b.priceFrom - a.priceFrom);
     case 'newest': return sorted.filter(p => p.tier === 'new').concat(sorted.filter(p => p.tier !== 'new'));
