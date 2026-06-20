@@ -22,7 +22,9 @@ const BookingWidget = lazy(() => import('@/components/booking/BookingWidget'));
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
+import PropertyUnitsSection from '@/components/property/PropertyUnitsSection';
 import ReviewsSection from '@/components/property/ReviewsSection';
+import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 import { trpc } from '@/lib/trpc';
 import { pushEcommerce } from '@/lib/datalayer';
 import { sanitizePropertyName } from '@/lib/format';
@@ -883,6 +885,24 @@ export default function PropertyDetail() {
           <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
             {/* Main content — left 2/3 */}
             <div className="order-2 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12 pt-6">
+              {/* Multi-unit Group: Units section (booking.com-style). When this listing
+                  is the parent of a curated group, the section lists every unit (parent
+                  + children) with photo, specs, and live quote, each linking to the
+                  unit's own PDP. Single-unit properties skip this entirely. */}
+              {(() => {
+                const group = getGroupByParentGuestyId(property.guestyId);
+                if (!group || !allPropsData) return null;
+                return (
+                  <PropertyUnitsSection
+                    group={group}
+                    allProperties={allPropsData as Property[]}
+                    checkin={initialCheckin}
+                    checkout={initialCheckout}
+                    guests={initialGuests}
+                  />
+                );
+              })()}
+
               {/* Bedrooms & Sleeping Arrangement */}
               {property.rooms && property.rooms.length > 0 && (
                 <section>
