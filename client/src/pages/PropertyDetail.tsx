@@ -404,14 +404,27 @@ export default function PropertyDetail() {
     { slug: slug ?? '' },
     { enabled: !!slug }
   );
+
+  // When this listing is the parent of a multi-unit group, swap the visible
+  // name for the group name (e.g. "Quinta de Parada do Vez" instead of
+  // "Luxury and Nature Retreat w/ pool, jacuzzi & BBQ"). Internal references
+  // (BookingWidget, structured data, GA4) keep the underlying property.name.
+  const propertyGroup = useMemo(
+    () => (property?.guestyId ? getGroupByParentGuestyId(property.guestyId) : null),
+    [property?.guestyId],
+  );
+  const displayName = useMemo(
+    () => propertyGroup?.name ?? (property ? sanitizePropertyName(property.name) : ''),
+    [propertyGroup, property],
+  );
+
   const pdpTitle = useMemo(() => {
     if (!property) return undefined;
     const dest = destinations.find(d => d.slug === property.destination);
     const beds = property.bedrooms ? `${property.bedrooms}-Bed` : '';
     const loc = dest?.name || property.region || '';
-    const clean = sanitizePropertyName(property.name);
-    return `${clean} — ${beds} Luxury Villa ${loc}`.replace(/\s+/g, ' ').trim();
-  }, [property]);
+    return `${displayName} — ${beds} Luxury Villa ${loc}`.replace(/\s+/g, ' ').trim();
+  }, [property, displayName]);
   const pdpDesc = useMemo(() => {
     if (!property) return undefined;
     const dest = destinations.find(d => d.slug === property.destination);
@@ -753,7 +766,7 @@ export default function PropertyDetail() {
               </>
             )}
             <li className="text-[#E8E4DC]">/</li>
-            <li className="text-[#6B6860] truncate max-w-[220px] inline-flex items-center min-h-[44px] px-1.5">{sanitizePropertyName(property.name)}</li>
+            <li className="text-[#6B6860] truncate max-w-[220px] inline-flex items-center min-h-[44px] px-1.5">{displayName}</li>
           </ol>
         </nav>
 
@@ -853,7 +866,7 @@ export default function PropertyDetail() {
             )}
           </div>
           <h1 className="font-display text-[clamp(1.75rem,4vw,3rem)] font-light leading-[1.08] text-[#1A1A18] mb-3">
-            {sanitizePropertyName(property.name)}
+            {displayName}
           </h1>
           {property.tagline && (
             <p className="text-[15px] text-[#6B6860] italic mb-4 max-w-2xl leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{property.tagline}</p>
@@ -885,23 +898,20 @@ export default function PropertyDetail() {
           <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
             {/* Main content — left 2/3 */}
             <div className="order-2 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12 pt-6">
-              {/* Multi-unit Group: Units section (booking.com-style). When this listing
-                  is the parent of a curated group, the section lists every unit (parent
-                  + children) with photo, specs, and live quote, each linking to the
-                  unit's own PDP. Single-unit properties skip this entirely. */}
-              {(() => {
-                const group = getGroupByParentGuestyId(property.guestyId);
-                if (!group || !allPropsData) return null;
-                return (
-                  <PropertyUnitsSection
-                    group={group}
-                    allProperties={allPropsData as Property[]}
-                    checkin={initialCheckin}
-                    checkout={initialCheckout}
-                    guests={initialGuests}
-                  />
-                );
-              })()}
+              {/* Multi-unit Group: Units section (booking.com-style). When this
+                  listing is the parent of a curated group, list every unit
+                  (parent + children) with photo, specs, and live quote, each
+                  linking to the unit's own PDP. Single-unit properties skip
+                  this entirely. */}
+              {propertyGroup && allPropsData && (
+                <PropertyUnitsSection
+                  group={propertyGroup}
+                  allProperties={allPropsData as Property[]}
+                  checkin={initialCheckin}
+                  checkout={initialCheckout}
+                  guests={initialGuests}
+                />
+              )}
 
               {/* Bedrooms & Sleeping Arrangement */}
               {property.rooms && property.rooms.length > 0 && (
