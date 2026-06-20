@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "db:push": "drizzle-kit generate && drizzle-kit migrate",
-    "sync:guesty": "tsx scripts/sync-guesty.ts"
+    "sync:guesty": "tsx scripts/sync-guesty.ts",
+    "multiunit:audit": "tsx scripts/multiunit-investigate.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",
