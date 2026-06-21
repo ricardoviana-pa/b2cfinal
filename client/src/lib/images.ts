@@ -17,7 +17,7 @@ export const IMAGES = {
   expGastronomy: '/experiences/pa-chef-cooking.webp',
   expWellness: '/experiences/exp-wellness.webp',
   expAdventure: '/experiences/sup-river.webp',
-  expMobility: 'https://images.unsplash.com/photo-1679007076103-9ffa7afa1bfb?w=800&q=80&auto=format&fit=crop',
+  expMobility: '/experiences/pa-mobility-maybach.webp',
 
   // About page
   aboutStory: '/hero/about-team-suite.webp',
