@@ -1017,22 +1017,6 @@ export default function BookingWidget({
                               <span className="text-[9px] font-semibold tracking-wider uppercase px-1.5 py-0.5 bg-green-50 text-green-700 border border-green-200/50">{t("bookingWidget.recommended", { defaultValue: "Recommended" })}</span>
                             )}
                           </div>
-                          {opt.cancellationPolicy?.[0] && (
-                            policyAnchor ? (
-                              <a
-                                href={`/legal/cancellation-policy${policyAnchor}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={e => e.stopPropagation()}
-                                aria-label={`${humanizeCancellationPolicy(opt.cancellationPolicy[0])} – opens cancellation policy in a new tab`}
-                                className="text-[11px] text-black/40 mt-0.5 underline underline-offset-2 hover:text-black/70 transition-colors block"
-                              >
-                                {humanizeCancellationPolicy(opt.cancellationPolicy[0])}
-                              </a>
-                            ) : (
-                              <p className="text-[11px] text-black/40 mt-0.5">{humanizeCancellationPolicy(opt.cancellationPolicy[0])}</p>
-                            )
-                          )}
                           {isNonRefundable && (
                             <p className="text-[10px] text-red-500/70 mt-0.5">{t("bookingWidget.nonRefundableWarning", { defaultValue: "No refund if you cancel or modify" })}</p>
                           )}

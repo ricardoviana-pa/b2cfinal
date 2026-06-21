@@ -247,14 +247,30 @@ export default function PropertyCard({
         </h3>
 
         {isGroup ? (
-          /* Group card — booking.com-style: name + location + "X units" CTA, no specs/price */
-          <div className="border-t border-[#E8E4DC] mt-3 pt-3">
-            <p className="text-[0.8125rem] text-[#1A1A18] font-medium">
-              {t('property.unitsAvailable', { count: group!.unitGuestyIds.length, defaultValue: '{{count}} units available' })}
-            </p>
-            <p className="text-[0.75rem] text-[#9E9A90] mt-0.5">
-              {t('property.viewUnits', 'View units and prices')}
-            </p>
+          /* Group card — whole-property specs on the left (parent's totals: max
+             guests / bedrooms / bathrooms across the whole complex), units CTA
+             on the right. Matches the visual rhythm of single-property cards
+             instead of leaving the group cards visibly emptier. */
+          <div className="border-t border-[#E8E4DC] mt-3 pt-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 text-[0.8125rem] text-[#6B6860]">
+              <span className="flex items-center gap-1.5">
+                <Users className="w-3.5 h-3.5" /> {property.maxGuests}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <BedDouble className="w-3.5 h-3.5" /> {property.bedrooms}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Bath className="w-3.5 h-3.5" /> {property.bathrooms}
+              </span>
+            </div>
+            <div className="text-right shrink-0">
+              <p className="text-[0.8125rem] text-[#1A1A18] font-medium leading-tight">
+                {t('property.unitsAvailable', { count: group!.unitGuestyIds.length, defaultValue: '{{count}} units available' })}
+              </p>
+              <p className="text-[0.6875rem] text-[#9E9A90] mt-0.5">
+                {t('property.viewUnits', 'View units and prices')}
+              </p>
+            </div>
           </div>
         ) : (
           <>

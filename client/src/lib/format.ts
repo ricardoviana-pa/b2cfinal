@@ -35,13 +35,21 @@ export const formatEurEditorial = (amount: number): string => {
  * Clean marketing noise from property names:
  * - strip pipes and everything after them ("Eben Lodge | Heated Pool" -> "Eben Lodge")
  * - strip "w/", "with", amenity callouts after a dash
- * - remove duplicated brand prefix "Portugal Active "
+ * - remove the brand prefix "Portugal Active " (legacy listings on Guesty)
+ * - remove the brand suffix "… by Portugal Active" / "… by PortugalActive…"
+ *   The brand attribution is needed on OTAs (Airbnb / Booking) for trust,
+ *   but on our own site the customer already knows where they are — shorter
+ *   names read better in cards and breadcrumbs.
  */
 export const sanitizePropertyName = (raw: string): string => {
   if (!raw) return raw;
   let name = raw.trim();
   // Drop brand prefix
   name = name.replace(/^Portugal Active\s+/i, '');
+  // Drop "… by Portugal Active" / "… By PortugalActive…" suffix and any
+  // noise that follows (handles e.g. "Habito's Lodge By PortugalActive/
+  // 5min Beach & Town").
+  name = name.replace(/\s+by\s+portugal\s*active\b.*$/i, '');
   // Drop everything after pipe / dash-em / dash-with-spaces callouts
   name = name.split('|')[0];
   name = name.split(/\s+[-–—]\s+/)[0];
