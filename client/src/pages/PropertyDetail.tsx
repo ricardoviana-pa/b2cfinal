@@ -1060,7 +1060,27 @@ export default function PropertyDetail() {
             {/* Sticky booking card — right 1/3 */}
             <aside id="property-booking" className="order-1 lg:order-2 lg:col-span-1 pt-6 lg:pt-0">
               <div className="property-sticky-card lg:sticky lg:top-[100px]">
-                {property.guestyId ? (
+                {(property as any).isPortfolio ? (
+                  <div className="bg-[#FAFAF7] border border-[#E8E4DC] p-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="inline-block px-3 py-1 text-[10px] font-semibold tracking-[0.15em] uppercase bg-[#1A1A18] text-white">Portfolio</span>
+                    </div>
+                    <p className="font-display text-[22px] font-light text-[#1A1A18] mb-2 leading-snug">
+                      {t('property.portfolioTitle', { defaultValue: 'This property is part of our curated portfolio' })}
+                    </p>
+                    <p className="text-[13px] text-[#9E9A90] mb-5 leading-relaxed">
+                      {t('property.portfolioDescription', { defaultValue: 'Currently not available for booking. Explore our other luxury homes or contact our concierge for similar properties.' })}
+                    </p>
+                    <div className="space-y-3">
+                      <a href="/homes" className="btn-primary w-full flex items-center justify-center gap-2">
+                        {t('property.exploreHomes', { defaultValue: 'Explore Available Homes' })}
+                      </a>
+                      <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-ghost w-full">
+                        {t('property.askAboutHome')}
+                      </a>
+                    </div>
+                  </div>
+                ) : property.guestyId ? (
                   <>
                     <Suspense fallback={<div className="h-[300px] bg-[#F5F1EB] animate-pulse border border-[#E8E4DC]" />}>
                     <BookingWidget

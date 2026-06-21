@@ -15,6 +15,38 @@ const GITHUB_REPO = process.env.GITHUB_REPO || "ricardoviana-pa/b2cfinal";
 const GITHUB_BRANCH = process.env.GITHUB_BRANCH || "main";
 const GITHUB_FILE_PATH = "client/src/data/properties.json";
 
+/**
+ * PORTFOLIO PROPERTIES — Inactive listings kept on the website for portfolio display.
+ * These are fetched individually by ID regardless of active/listed status.
+ * Calendar will show as fully blocked (no bookings possible).
+ */
+const PORTFOLIO_LISTING_IDS = [
+  "696533466d209c001510ecfe", // T5-Eben Lodge — sold, kept for portfolio showcase
+];
+
+/** Fetch portfolio listings (inactive properties kept for showcase) */
+async function fetchPortfolioListings(): Promise<any[]> {
+  if (PORTFOLIO_LISTING_IDS.length === 0) return [];
+
+  const fields =
+    "title publicDescription publicDescriptions description pictures address accommodates bedrooms bathrooms prices terms amenities amenitiesNotIncluded customFields listingRooms propertyType defaultCheckInTime defaultCheckOutTime areaSquareFeet";
+  const results: any[] = [];
+
+  for (const id of PORTFOLIO_LISTING_IDS) {
+    try {
+      const listing = await guestyClient.getListing(id, fields);
+      if (listing) {
+        listing._isPortfolio = true;
+        results.push(listing);
+        console.log(`[Guesty Sync] Portfolio listing fetched: ${listing.title || id}`);
+      }
+    } catch (err: any) {
+      console.warn(`[Guesty Sync] Could not fetch portfolio listing ${id}: ${err.message}`);
+    }
+  }
+  return results;
+}
+
 /** Fetch all listings with full details */
 async function fetchAllListings(): Promise<any[]> {
   const results: any[] = [];
@@ -342,6 +374,7 @@ function mapListingToProperty(
     whatsappMessage: `Hi, I am interested in ${title}`,
     sortOrder: 0,
     isActive: true,
+    isPortfolio: listing._isPortfolio || false,
     seoTitle: `${title} — Portugal Active`,
     seoDescription: summary.slice(0, 160) || `${title} in Portugal.`,
     address: addressData,
@@ -450,6 +483,17 @@ export async function runSync(): Promise<string> {
   if (listings.length === 0) {
     console.warn("[Guesty Sync] No listings returned — keeping existing data.");
     return "skipped (0 listings)";
+  }
+
+  // Fetch portfolio properties (inactive listings kept for website showcase)
+  const portfolioListings = await fetchPortfolioListings();
+  if (portfolioListings.length > 0) {
+    const activeIds = new Set(listings.map((l: any) => l._id || l.listingId));
+    const uniquePortfolio = portfolioListings.filter(
+      (l: any) => !activeIds.has(l._id || l.listingId)
+    );
+    listings.push(...uniquePortfolio);
+    console.log(`[Guesty Sync] Added ${uniquePortfolio.length} portfolio listings (total: ${listings.length})`);
   }
 
   const reviewsByListing = buildReviewsByListing(allReviews);
