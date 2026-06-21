@@ -22,7 +22,9 @@ const BookingWidget = lazy(() => import('@/components/booking/BookingWidget'));
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
+import PropertyUnitsSection from '@/components/property/PropertyUnitsSection';
 import ReviewsSection from '@/components/property/ReviewsSection';
+import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 import { trpc } from '@/lib/trpc';
 import { pushEcommerce } from '@/lib/datalayer';
 import { sanitizePropertyName } from '@/lib/format';
@@ -402,14 +404,27 @@ export default function PropertyDetail() {
     { slug: slug ?? '' },
     { enabled: !!slug }
   );
+
+  // When this listing is the parent of a multi-unit group, swap the visible
+  // name for the group name (e.g. "Quinta de Parada do Vez" instead of
+  // "Luxury and Nature Retreat w/ pool, jacuzzi & BBQ"). Internal references
+  // (BookingWidget, structured data, GA4) keep the underlying property.name.
+  const propertyGroup = useMemo(
+    () => (property?.guestyId ? getGroupByParentGuestyId(property.guestyId) : null),
+    [property?.guestyId],
+  );
+  const displayName = useMemo(
+    () => propertyGroup?.name ?? (property ? sanitizePropertyName(property.name) : ''),
+    [propertyGroup, property],
+  );
+
   const pdpTitle = useMemo(() => {
     if (!property) return undefined;
     const dest = destinations.find(d => d.slug === property.destination);
     const beds = property.bedrooms ? `${property.bedrooms}-Bed` : '';
     const loc = dest?.name || property.region || '';
-    const clean = sanitizePropertyName(property.name);
-    return `${clean} — ${beds} Luxury Villa ${loc}`.replace(/\s+/g, ' ').trim();
-  }, [property]);
+    return `${displayName} — ${beds} Luxury Villa ${loc}`.replace(/\s+/g, ' ').trim();
+  }, [property, displayName]);
   const pdpDesc = useMemo(() => {
     if (!property) return undefined;
     const dest = destinations.find(d => d.slug === property.destination);
@@ -751,7 +766,7 @@ export default function PropertyDetail() {
               </>
             )}
             <li className="text-[#E8E4DC]">/</li>
-            <li className="text-[#6B6860] truncate max-w-[220px] inline-flex items-center min-h-[44px] px-1.5">{sanitizePropertyName(property.name)}</li>
+            <li className="text-[#6B6860] truncate max-w-[220px] inline-flex items-center min-h-[44px] px-1.5">{displayName}</li>
           </ol>
         </nav>
 
@@ -844,14 +859,9 @@ export default function PropertyDetail() {
                 <Flame size={11} className="text-[#8B7355]" /> {t('urgency.highDemand', 'High demand')}
               </span>
             )}
-            {(property as any).averageRating >= 4.8 && ((property as any).reviewCount || 0) >= 5 && property.tier !== 'signature' && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-medium tracking-[0.04em] uppercase text-[#8B7355] bg-[#F5F1EB] px-2.5 py-1 rounded-full">
-                <Award size={11} /> {t('urgency.guestFavourite', 'Guest favourite')}
-              </span>
-            )}
           </div>
           <h1 className="font-display text-[clamp(1.75rem,4vw,3rem)] font-light leading-[1.08] text-[#1A1A18] mb-3">
-            {sanitizePropertyName(property.name)}
+            {displayName}
           </h1>
           {property.tagline && (
             <p className="text-[15px] text-[#6B6860] italic mb-4 max-w-2xl leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{property.tagline}</p>
@@ -883,6 +893,21 @@ export default function PropertyDetail() {
           <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
             {/* Main content — left 2/3 */}
             <div className="order-2 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12 pt-6">
+              {/* Multi-unit Group: Units section (booking.com-style). When this
+                  listing is the parent of a curated group, list every unit
+                  (parent + children) with photo, specs, and live quote, each
+                  linking to the unit's own PDP. Single-unit properties skip
+                  this entirely. */}
+              {propertyGroup && allPropsData && (
+                <PropertyUnitsSection
+                  group={propertyGroup}
+                  allProperties={allPropsData as Property[]}
+                  checkin={initialCheckin}
+                  checkout={initialCheckout}
+                  guests={initialGuests}
+                />
+              )}
+
               {/* Bedrooms & Sleeping Arrangement */}
               {property.rooms && property.rooms.length > 0 && (
                 <section>
@@ -1099,11 +1124,9 @@ export default function PropertyDetail() {
                   </>
                 ) : (
                   <div className="bg-[#FAFAF7] border border-[#E8E4DC] p-6">
-                    {property.priceFrom > 0 && (
-                      <p className="font-display text-[32px] font-light text-[#1A1A18] mb-2">
-                        {t('property.fromPerNight', { price: String(property.priceFrom) })} <span className="text-[18px] text-[#9E9A90]">{t('property.perNight')}</span>
-                      </p>
-                    )}
+                    <p className="font-display text-[20px] font-light text-[#1A1A18] mb-2">
+                      {t('property.priceOnRequest')}
+                    </p>
                     <div className="flex items-center gap-1.5 mb-4">
                       <BadgeCheck size={14} className="text-[#8B7355]" />
                       <span className="text-[11px] tracking-[0.02em] text-[#9E9A90] font-medium">{t('property.directConcierge')}</span>
@@ -1158,12 +1181,10 @@ export default function PropertyDetail() {
         >
           <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0">
-              {property.priceFrom > 0 && (
-                <p className="font-display text-[18px] font-light text-[#1A1A18]">
-                  {t('property.fromPerNight', { price: String(property.priceFrom) })} <span className="text-[12px] text-[#9E9A90]">{t('property.perNight')}</span>
-                </p>
-              )}
-              <p className="text-[11px] text-[#9E9A90] flex items-center gap-1">
+              <p className="text-[13px] text-[#1A1A18] font-medium">
+                {t('property.selectDatesForPrice')}
+              </p>
+              <p className="text-[11px] text-[#9E9A90] flex items-center gap-1 mt-0.5">
                 <BadgeCheck size={12} className="text-[#8B7355]" /> {t('property.conciergeShort')}
               </p>
             </div>

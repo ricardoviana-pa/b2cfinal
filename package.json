@@ -14,7 +14,8 @@
     "db:push": "drizzle-kit generate && drizzle-kit migrate",
     "sync:guesty": "tsx scripts/sync-guesty.ts",
     "cleaning:audit": "tsx scripts/cleaning-fees.ts audit",
-    "cleaning:sync": "tsx scripts/cleaning-fees.ts apply"
+    "cleaning:sync": "tsx scripts/cleaning-fees.ts apply",
+    "multiunit:audit": "tsx scripts/multiunit-investigate.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",

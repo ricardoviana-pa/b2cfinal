@@ -13,6 +13,7 @@ import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages, optimizeGuestyImage } from '@/lib/images';
 import destinationsData from '@/data/destinations.json';
 import { pushEcommerce } from '@/lib/datalayer';
+import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 
 const destinations = destinationsData as unknown as Destination[];
 const getDestName = (slug: string) => destinations.find(d => d.slug === slug)?.name || slug;
@@ -57,6 +58,13 @@ export default function PropertyCard({
   hidePrice = false,
 }: PropertyCardProps) {
   const { t } = useTranslation();
+  // Multi-unit treatment: when this listing is the parent of a curated group,
+  // the card swaps name → group name, hides specs/price, and shows a
+  // "X units available" line. The PDP route is unchanged — clicking opens the
+  // parent's PDP, which renders its own Units section.
+  const group = getGroupByParentGuestyId(property.guestyId);
+  const isGroup = !!group;
+  const displayName = group?.name ?? sanitizePropertyName(property.name);
   const [currentImage, setCurrentImage] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -128,15 +136,14 @@ export default function PropertyCard({
     });
   };
 
-  // Urgency badge — tier-based + review-driven signals
+  // Urgency badge — tier-based signals only. The review-driven "Guest
+  // favourite" badge (rating >= 4.8 && reviewCount >= 5) was removed —
+  // it appeared inconsistently across the portfolio and didn't pull its
+  // weight on conversion. Tier-driven badges remain because they're a
+  // deliberate editorial signal we control end-to-end.
   const urgencyBadge = useMemo(() => {
-    const rating = (property as any).averageRating;
-    const reviewCount = (property as any).reviewCount || 0;
     if (property.tier === 'signature') {
       return { label: t('urgency.highDemand', 'High demand'), icon: Flame, color: 'bg-[#1A1A18]/80' };
-    }
-    if (rating && rating >= 4.8 && reviewCount >= 5) {
-      return { label: t('urgency.guestFavourite', 'Guest favourite'), icon: Star, color: 'bg-[#8B7355]/90' };
     }
     if (property.tier === 'new') {
       return { label: t('urgency.justAdded', 'Just added'), icon: null, color: 'bg-[#8B7355]/90' };
@@ -236,27 +243,41 @@ export default function PropertyCard({
 
         {/* Name */}
         <h3 className="text-[1.0625rem] font-display text-[#1A1A18] mb-1 group-hover:text-[#8B7355] transition-colors leading-tight">
-          {sanitizePropertyName(property.name)}
+          {displayName}
         </h3>
 
-        {/* Tagline */}
-        <p className="text-[0.8125rem] text-[#9E9A90] mb-3 line-clamp-1">{property.tagline}</p>
+        {isGroup ? (
+          /* Group card — booking.com-style: name + location + "X units" CTA, no specs/price */
+          <div className="border-t border-[#E8E4DC] mt-3 pt-3">
+            <p className="text-[0.8125rem] text-[#1A1A18] font-medium">
+              {t('property.unitsAvailable', { count: group!.unitGuestyIds.length, defaultValue: '{{count}} units available' })}
+            </p>
+            <p className="text-[0.75rem] text-[#9E9A90] mt-0.5">
+              {t('property.viewUnits', 'View units and prices')}
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* Tagline */}
+            <p className="text-[0.8125rem] text-[#9E9A90] mb-3 line-clamp-1">{property.tagline}</p>
 
-        {/* Specs Row */}
-        <div className="flex items-center gap-4 text-[0.8125rem] text-[#6B6860] mb-3">
-          <span className="flex items-center gap-1.5">
-            <Users className="w-3.5 h-3.5" /> {property.maxGuests}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <BedDouble className="w-3.5 h-3.5" /> {property.bedrooms}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Bath className="w-3.5 h-3.5" /> {property.bathrooms}
-          </span>
-        </div>
+            {/* Specs Row */}
+            <div className="flex items-center gap-4 text-[0.8125rem] text-[#6B6860] mb-3">
+              <span className="flex items-center gap-1.5">
+                <Users className="w-3.5 h-3.5" /> {property.maxGuests}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <BedDouble className="w-3.5 h-3.5" /> {property.bedrooms}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Bath className="w-3.5 h-3.5" /> {property.bathrooms}
+              </span>
+            </div>
+          </>
+        )}
 
-        {/* Price + Best Rate Guarantee */}
-        {!hidePrice && <div className="border-t border-[#E8E4DC] pt-3">
+        {/* Price + Best Rate Guarantee — hidden for group cards (group reveals unit prices in PDP) */}
+        {!isGroup && !hidePrice && <div className="border-t border-[#E8E4DC] pt-3">
           {nights > 0 ? (
             <>
               <div className="flex items-baseline justify-between">
@@ -277,56 +298,42 @@ export default function PropertyCard({
                       {t('property.tryOtherDates', 'Try different dates or contact us for alternatives')}
                     </p>
                   </div>
-                ) : (() => {
-                  const fmt = formatEur;
-                  // Only show a confirmed total for live/cached quotes — never an estimate.
-                  const hasLiveTotal = liveQuote && liveQuote.total > 0 &&
-                    (liveQuote.source === 'live' || liveQuote.source === 'cached');
-                  if (hasLiveTotal && liveQuote) {
+                ) : liveQuote && liveQuote.total > 0 ? (
+                  // Any positive total — live, cached, base, or estimate — is shown
+                  // to the user. The Guesty source flag only affects whether we
+                  // label it as confirmed vs. estimate (subtle UI hint). The
+                  // previous behaviour hid estimates entirely behind "Price on
+                  // request", which felt broken to users who'd already picked dates.
+                  (() => {
+                    const fmt = formatEur;
+                    const isConfirmed = liveQuote.source === 'live' || liveQuote.source === 'cached';
                     return (
                       <>
                         <span className="text-[#1A1A18] font-medium">
                           {fmt(liveQuote.total)} {t('property.totalLabel')}
                         </span>
                         <span className="text-[0.75rem] text-[#9E9A90]">
-                          {t('booking.nights', { count: liveQuote.nights })}
+                          {isConfirmed
+                            ? t('booking.nights', { count: liveQuote.nights })
+                            : t('property.estimateForNights', { count: liveQuote.nights, defaultValue: 'est. for {{count}} nights' })}
                         </span>
                       </>
                     );
-                  }
-                  // No confirmed live price (base/estimate or missing) — show catalogue "From … / night"
-                  if ((property.priceFrom ?? 0) > 0) {
-                    return (
-                      <>
-                        <span className="text-[#1A1A18] font-medium">
-                          {t('property.fromPerNight', { price: property.priceFrom.toLocaleString() })}
-                        </span>
-                        <span className="text-[0.75rem] text-[#9E9A90]">{t('property.perNight')}</span>
-                      </>
-                    );
-                  }
-                  return (
-                    <span className="text-[#9E9A90] text-[0.8125rem]">
-                      {t('property.priceOnRequest')}
-                    </span>
-                  );
-                })()}
+                  })()
+                ) : (
+                  // No quote came back at all (total missing or zero) — true edge case.
+                  <span className="text-[#9E9A90] text-[0.8125rem]">
+                    {t('property.priceOnRequest')}
+                  </span>
+                )}
               </div>
             </>
           ) : (
             <div className="flex items-baseline justify-between">
-              {(property.priceFrom ?? 0) > 0 ? (
-                <>
-                  <span className="text-[#1A1A18] font-medium">
-                    {t('property.fromPerNight', { price: property.priceFrom.toLocaleString() })}
-                  </span>
-                  <span className="text-[0.75rem] text-[#9E9A90]">{t('property.perNight')}</span>
-                </>
-              ) : (
-                <span className="text-[#9E9A90] text-[0.8125rem]">
-                  {t('property.priceOnRequest')}
-                </span>
-              )}
+              {/* No dates selected — show neutral prompt instead of "From €X" placeholder. */}
+              <span className="text-[#9E9A90] text-[0.8125rem]">
+                {t('property.selectDatesForPrice')}
+              </span>
             </div>
           )}
         </div>}

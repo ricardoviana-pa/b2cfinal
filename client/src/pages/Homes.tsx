@@ -12,6 +12,8 @@ import { Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, Mes
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
 import { filterProperties, sortProperties, getUniqueLocalities } from '@/lib/utils';
+import { isChildUnit, getGroupByParentGuestyId } from '@/config/propertyGroups';
+import { curatedPosition } from '@/config/propertyOrder';
 import { pushDL, pushEcommerce } from '@/lib/datalayer';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -99,7 +101,7 @@ export default function Homes() {
   const [destination, setDestination] = useState<FilterDestination>(() => toFilterDestination(searchDestinationFromUrl));
   const [location, setLocation] = useState(() => searchLocationFromUrl || 'all');
   // Default to price-desc (premium positioning) — always show most expensive first
-  const [sort, setSort] = useState<SortOption>(() => (searchParams.get('sort') as SortOption) || 'price-desc');
+  const [sort, setSort] = useState<SortOption>(() => (searchParams.get('sort') as SortOption) || 'recommended');
   const [bookingDestination, setBookingDestination] = useState(searchDestinationFromUrl);
   const [bookingLocation, setBookingLocation] = useState(searchLocationFromUrl);
   const [bookingCheckin, setBookingCheckin] = useState(searchCheckin);
@@ -153,7 +155,11 @@ export default function Homes() {
       searchGuestsCount > 0
         ? f.filter((property) => (property.maxGuests ?? 0) >= searchGuestsCount)
         : f;
-    return sortProperties(withGuestCapacity, sort);
+    // Hide listings that are child units of a multi-unit group — they show up
+    // inside the parent's PDP, not as standalone PLP cards. The parent listing
+    // stays in the list and renders with "X units" treatment.
+    const withoutChildUnits = withGuestCapacity.filter((p) => !isChildUnit(p.guestyId));
+    return sortProperties(withoutChildUnits, sort);
   }, [allProperties, destination, location, sort, searchGuestsCount]);
 
   // GA4: view_item_list — fires only for cards that enter the viewport
@@ -236,18 +242,35 @@ export default function Homes() {
         available.push(p);
       }
     }
-    // Sort available by live total price descending (premium positioning)
-    available.sort((a, b) => {
-      const qa = quotes[a.slug];
-      const qb = quotes[b.slug];
-      const ta = qa?.total ?? (a.priceFrom * searchNights);
-      const tb = qb?.total ?? (b.priceFrom * searchNights);
-      return tb - ta; // Descending — most expensive first
-    });
-    // Sort unavailable by base price descending too
-    unavailable.sort((a, b) => b.priceFrom - a.priceFrom);
+    // Within the available bucket, honour the user's sort choice. The
+    // "recommended" sort puts curated picks at the top regardless of price;
+    // other sorts fall back to the live-total-descending positioning that
+    // already shipped (premium-first).
+    if (sort === 'recommended') {
+      available.sort((a, b) => {
+        const pa = curatedPosition(a.guestyId);
+        const pb = curatedPosition(b.guestyId);
+        if (pa !== pb) return pa - pb;
+        return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+      });
+      unavailable.sort((a, b) => {
+        const pa = curatedPosition(a.guestyId);
+        const pb = curatedPosition(b.guestyId);
+        if (pa !== pb) return pa - pb;
+        return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+      });
+    } else {
+      available.sort((a, b) => {
+        const qa = quotes[a.slug];
+        const qb = quotes[b.slug];
+        const ta = qa?.total ?? (a.priceFrom * searchNights);
+        const tb = qb?.total ?? (b.priceFrom * searchNights);
+        return tb - ta;
+      });
+      unavailable.sort((a, b) => b.priceFrom - a.priceFrom);
+    }
     return { availableProperties: available, unavailableProperties: unavailable };
-  }, [filtered, quotes, hasDates, searchNights]);
+  }, [filtered, quotes, hasDates, searchNights, sort]);
 
   const clearFilters = () => {
     setDestination('all');
