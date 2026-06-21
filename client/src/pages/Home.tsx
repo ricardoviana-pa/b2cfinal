@@ -38,6 +38,8 @@ import { trpc } from '@/lib/trpc';
 import type { Destination, Property } from '@/lib/types';
 import { getUniqueLocalities } from '@/lib/utils';
 import { pushDL, pushEcommerce } from '@/lib/datalayer';
+import { CURATED_PROPERTY_ORDER, curatedPosition } from '@/config/propertyOrder';
+import { isChildUnit } from '@/config/propertyGroups';
 
 const destinations = destinationsData as unknown as Destination[];
 
@@ -179,24 +181,37 @@ export default function Home() {
   const s9Ref = useFadeIn();
   const s10Ref = useFadeIn();
 
-  // Featured homes — Editor's Picks shows first 6 pinned by slug
-  const FEATURED_SLUGS = [
-    'portugal-active-eben-lodge-heated-pool-10ecfe',
-    'portugal-active-sunset-beach-lodge-heated-pool-5ceb91',
-    'abreu-retreat-palace-luxury-elegance-leisure-e914e2',
-    'stars-view-by-portugal-active-026fa9',
-    'alvarinho-villa-5-suites-heated-pool-4854c5',
-    'beach-farm-pool-and-jacuzzi-with-sea-view-83ef5f',
-  ];
-  // Slugs that should never appear as auto-fillers
-  const EXCLUDED_FILLERS = ['fountain-retreat-i-pool-sports-escape-743e2d'];
+  // Featured homes — top 6 of the commercial team's curated PLP order
+  // (src/config/propertyOrder.ts). The homepage and the PLP share the
+  // same source of truth, so reordering the ranking updates both in
+  // one place.
+  //
+  // Multi-unit child units are filtered out so a group's units never
+  // surface individually in the strip (the parent listing — which
+  // PropertyCard auto-renders as a group card — is what represents
+  // the cluster). If fewer than 6 curated entries exist in the
+  // current catalogue (e.g. a listing is temporarily unlisted in
+  // Guesty), the slot is filled by the next-highest-priced active
+  // property, skipping anything already chosen and any group child.
   const featured = useMemo(() => {
-    const bySlug = new Map(properties.map(p => [p.slug, p]));
-    const pinned = FEATURED_SLUGS.map(s => bySlug.get(s)).filter(Boolean) as typeof properties;
-    if (pinned.length >= 6) return pinned.slice(0, 6);
+    const byGuestyId = new Map(properties.filter(p => p.guestyId).map(p => [p.guestyId!, p]));
+    const pinned = CURATED_PROPERTY_ORDER
+      .map(id => byGuestyId.get(id))
+      .filter((p): p is NonNullable<typeof p> => !!p && !isChildUnit(p.guestyId))
+      .slice(0, 6);
+    if (pinned.length >= 6) return pinned;
+    const pinnedSet = new Set(pinned.map(p => p.guestyId));
     const fillers = [...properties]
-      .filter(p => !FEATURED_SLUGS.includes(p.slug) && !EXCLUDED_FILLERS.includes(p.slug))
-      .sort((a, b) => (b.priceFrom ?? 0) - (a.priceFrom ?? 0));
+      .filter(p => p.guestyId && !pinnedSet.has(p.guestyId) && !isChildUnit(p.guestyId))
+      .sort((a, b) => {
+        // Use the next curated ranks as the tie-breaker so fillers still
+        // come in commercial-team order, falling back to price descending
+        // for anything completely off the ranking.
+        const pa = curatedPosition(a.guestyId);
+        const pb = curatedPosition(b.guestyId);
+        if (pa !== pb) return pa - pb;
+        return (b.priceFrom ?? 0) - (a.priceFrom ?? 0);
+      });
     return [...pinned, ...fillers].slice(0, 6);
   }, [properties]);
 
