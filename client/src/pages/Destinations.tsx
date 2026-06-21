@@ -68,7 +68,12 @@ export default function Destinations() {
   });
 
   const active = destinations.filter(d => !d.comingSoon);
-  const comingSoon = destinations.filter(d => d.comingSoon);
+  // Brazil is excluded from the "Coming soon" strip too — we're not ready
+  // to reveal the expansion publicly. The entry still exists in
+  // destinations.json so /destinations/brazil keeps working for direct
+  // links; once we launch, flip its `status` to 'active' and
+  // `comingSoon` to false in destinations.json — no code change needed.
+  const comingSoon = destinations.filter(d => d.comingSoon && d.slug !== 'brazil');
 
   // Hub policy (HOT FIX 2026-05-25): the public destinations hub shows ONLY
   // region-hub entries (slug === region slug). City-level spokes
