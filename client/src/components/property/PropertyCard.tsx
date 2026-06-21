@@ -136,15 +136,14 @@ export default function PropertyCard({
     });
   };
 
-  // Urgency badge — tier-based + review-driven signals
+  // Urgency badge — tier-based signals only. The review-driven "Guest
+  // favourite" badge (rating >= 4.8 && reviewCount >= 5) was removed —
+  // it appeared inconsistently across the portfolio and didn't pull its
+  // weight on conversion. Tier-driven badges remain because they're a
+  // deliberate editorial signal we control end-to-end.
   const urgencyBadge = useMemo(() => {
-    const rating = (property as any).averageRating;
-    const reviewCount = (property as any).reviewCount || 0;
     if (property.tier === 'signature') {
       return { label: t('urgency.highDemand', 'High demand'), icon: Flame, color: 'bg-[#1A1A18]/80' };
-    }
-    if (rating && rating >= 4.8 && reviewCount >= 5) {
-      return { label: t('urgency.guestFavourite', 'Guest favourite'), icon: Star, color: 'bg-[#8B7355]/90' };
     }
     if (property.tier === 'new') {
       return { label: t('urgency.justAdded', 'Just added'), icon: null, color: 'bg-[#8B7355]/90' };

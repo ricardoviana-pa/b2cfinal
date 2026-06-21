@@ -859,11 +859,6 @@ export default function PropertyDetail() {
                 <Flame size={11} className="text-[#8B7355]" /> {t('urgency.highDemand', 'High demand')}
               </span>
             )}
-            {(property as any).averageRating >= 4.8 && ((property as any).reviewCount || 0) >= 5 && property.tier !== 'signature' && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-medium tracking-[0.04em] uppercase text-[#8B7355] bg-[#F5F1EB] px-2.5 py-1 rounded-full">
-                <Award size={11} /> {t('urgency.guestFavourite', 'Guest favourite')}
-              </span>
-            )}
           </div>
           <h1 className="font-display text-[clamp(1.75rem,4vw,3rem)] font-light leading-[1.08] text-[#1A1A18] mb-3">
             {displayName}
