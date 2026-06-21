@@ -205,12 +205,12 @@ export default function Home() {
   // true`. City spokes (viana-do-castelo, caminha, esposende, douro)
   // still have their own pages + sitemap entries + SSR meta, but they
   // do NOT pollute the homepage tiles until their editorial copy and
-  // photography are production-ready. Brazil stays because it is the
-  // "coming soon" tile, even though slug !== region in its case.
+  // photography are production-ready. Brazil is excluded entirely until
+  // we're ready to reveal the expansion publicly.
   const activeDestinations = destinations.filter(
     d =>
-      (d.status === 'active' || d.slug === 'brazil') &&
-      (d.slug === d.region || d.slug === 'brazil' || (d as any).publicHub === true),
+      d.status === 'active' &&
+      (d.slug === d.region || (d as any).publicHub === true),
   );
 
   // Fetch live quotes for featured cards when dates are entered
