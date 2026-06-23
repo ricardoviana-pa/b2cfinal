@@ -547,6 +547,7 @@ export default function PropertyDetail() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImage, setLightboxImage] = useState(0);
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
+  const [showAllAmenities, setShowAllAmenities] = useState(false);
   const touchStartX = useRef(0);
   const touchDeltaX = useRef(0);
   const touchStartTime = useRef(0);
@@ -691,6 +692,20 @@ export default function PropertyDetail() {
     const all = Object.values(property.amenities).flat().filter((x): x is string => typeof x === 'string' && x.length > 0);
     return categorizeAmenities(all);
   }, [property?.amenities]);
+
+  // Split categories into aspirational (always visible) vs practical/utility
+  // (Bathroom, Laundry, Family, Safety — necessary but not selling points).
+  // The utility groups only render once the guest expands "Show all amenities",
+  // keeping the default view focused on what makes the home special.
+  const UTILITY_CATEGORIES = useMemo(() => new Set(['laundry', 'bathroom', 'family', 'safety']), []);
+  const primaryAmenityGroups = useMemo(
+    () => amenityGroups.filter((g) => !UTILITY_CATEGORIES.has(g.category)),
+    [amenityGroups, UTILITY_CATEGORIES],
+  );
+  const utilityAmenityGroups = useMemo(
+    () => amenityGroups.filter((g) => UTILITY_CATEGORIES.has(g.category)),
+    [amenityGroups, UTILITY_CATEGORIES],
+  );
 
   const featuredAmenities = useMemo(() => {
     if (!property?.amenities || typeof property.amenities !== 'object') return [];
@@ -949,41 +964,19 @@ export default function PropertyDetail() {
                 />
               )}
 
-              {/* Bedrooms & Sleeping Arrangement */}
-              {property.rooms && property.rooms.length > 0 && (
-                <section>
-                  <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-6">{t('propertyDetail.bedroomsTitle', 'Bedrooms & Sleeping Arrangements')}</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {property.rooms.map((room: any, roomIdx: number) => (
-                      <div key={roomIdx} className="bg-white border border-[#E8E4DC] p-5 rounded-lg">
-                        <h3 className="text-[13px] font-medium text-[#1A1A18] mb-4">{room.name}</h3>
-                        <div className="space-y-3">
-                          {room.beds && room.beds.length > 0 ? (
-                            room.beds.map((bed: any, bedIdx: number) => {
-                              const { label, icon: BedIcon } = getBedTypeDisplay(bed.type, t);
-                              return (
-                                <div key={bedIdx} className="flex items-center gap-3">
-                                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#F5F1EB] shrink-0">
-                                    <BedIcon size={16} className="text-[#8B7355]" />
-                                  </div>
-                                  <span className="text-[12px] text-[#6B6860]">
-                                    {bed.quantity > 1 ? `${bed.quantity} × ${t('bedType.' + label.replace(/\s/g, ''), label)}` : t('bedType.' + label.replace(/\s/g, ''), label)}
-                                  </span>
-                                </div>
-                              );
-                            })
-                          ) : (
-                            <span className="text-[12px] text-[#9E9A90]">{t('bedConfig.notAvailable')}</span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              )}
+              {/* 1. About this home — lead with the narrative. A luxury PDP
+                  should open with the story, not a clinical bed inventory. */}
+              <DescriptionSection
+                description={property.description}
+                propertyName={property.name}
+                locality={property.locality}
+                destName={destName}
+                t={t}
+              />
 
-              {/* 1. What's included */}
-              <section className="p-6 lg:p-8 bg-[#F5F1EB] rounded-lg">
+              {/* 2. What's included in every stay — the hotel-grade promise that
+                  separates us from a marketplace listing. */}
+              <section className="p-6 lg:p-8 bg-[#F5F1EB] rounded-2xl">
                 <div className="flex items-center gap-3 mb-5">
                   <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18]">{t('propertyDetail.includedTitle')}</h2>
                   <span className="h-px flex-1 bg-[#E8E4DC]" />
@@ -998,15 +991,6 @@ export default function PropertyDetail() {
                 </div>
               </section>
 
-              {/* 2. Editorial description with Read more */}
-              <DescriptionSection
-                description={property.description}
-                propertyName={property.name}
-                locality={property.locality}
-                destName={destName}
-                t={t}
-              />
-
               {/* 3. Amenities — highlights row + clean per-category list (the
                   previous design rendered every item as a beige pill; it read as
                   a tag cloud and gave no signal as to what makes the property
@@ -1017,24 +1001,25 @@ export default function PropertyDetail() {
                 <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-6">{t('propertyDetail.amenitiesTitle')}</h2>
                 {amenityGroups.length > 0 ? (
                   <>
-                    {/* Featured highlights — surface the wow-factor first */}
+                    {/* Featured highlights — uniform white tiles, larger icons,
+                        2-line labels so the row stays even regardless of length */}
                     {featuredAmenities.length > 0 && (
                       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-10">
                         {featuredAmenities.map((amenity, idx) => (
                           <div
                             key={idx}
-                            className="flex flex-col items-center text-center bg-[#FAFAF7] border border-[#E8E4DC] rounded-xl px-3 py-4 sm:py-5 hover:border-[#8B7355]/40 hover:bg-white transition-colors duration-300"
+                            className="flex flex-col items-center justify-center text-center bg-white border border-[#E8E4DC] rounded-2xl px-3 min-h-[112px] shadow-[0_1px_2px_rgba(26,26,24,0.04)] hover:-translate-y-0.5 hover:border-[#8B7355]/40 hover:shadow-[0_8px_20px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
                           >
-                            <amenity.icon size={22} className="text-[#8B7355] mb-2" />
-                            <span className="text-[11px] sm:text-[12px] text-[#1A1A18] font-medium leading-tight">{amenity.label}</span>
+                            <amenity.icon size={28} strokeWidth={1.5} className="text-[#8B7355] mb-2.5" />
+                            <span className="text-[12px] text-[#1A1A18] font-medium leading-tight">{amenity.label}</span>
                           </div>
                         ))}
                       </div>
                     )}
 
-                    {/* All amenities — clean per-category lists, no pills */}
+                    {/* Primary categories — clean per-category lists, no pills */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 pt-2">
-                      {amenityGroups.map((group) => (
+                      {primaryAmenityGroups.map((group) => (
                         <div key={group.category}>
                           <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#E8E4DC]">
                             <group.icon size={14} className="text-[#8B7355] shrink-0" />
@@ -1043,7 +1028,7 @@ export default function PropertyDetail() {
                           <ul className="space-y-2">
                             {group.items.map((item, idx) => (
                               <li key={idx} className="flex items-start gap-2.5 text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
-                                <span className="mt-[7px] w-1 h-1 rounded-full bg-[#8B7355]/60 shrink-0" />
+                                <span className="mt-[7px] h-3 w-px bg-[#8B7355]/50 shrink-0" />
                                 <span>{item}</span>
                               </li>
                             ))}
@@ -1051,17 +1036,100 @@ export default function PropertyDetail() {
                         </div>
                       ))}
                     </div>
+
+                    {/* Practical/utility categories revealed on demand */}
+                    {utilityAmenityGroups.length > 0 && (
+                      <>
+                        {showAllAmenities && (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 pt-8 mt-2 border-t border-[#E8E4DC]">
+                            {utilityAmenityGroups.map((group) => (
+                              <div key={group.category}>
+                                <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#E8E4DC]">
+                                  <group.icon size={14} className="text-[#8B7355] shrink-0" />
+                                  <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#9E9A90]">{t(group.label)}</h3>
+                                </div>
+                                <ul className="space-y-2">
+                                  {group.items.map((item, idx) => (
+                                    <li key={idx} className="flex items-start gap-2.5 text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
+                                      <span className="mt-[7px] h-3 w-px bg-[#8B7355]/50 shrink-0" />
+                                      <span>{item}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => setShowAllAmenities((v) => !v)}
+                          className="inline-flex items-center gap-2 mt-8 text-[12px] font-medium tracking-[0.04em] uppercase text-[#8B7355] hover:text-[#1A1A18] transition-colors"
+                        >
+                          {showAllAmenities
+                            ? t('propertyDetail.showLessAmenities', 'Show fewer')
+                            : t('propertyDetail.showAllAmenities', 'Show all amenities')}
+                          {showAllAmenities ? <ChevronLeft className="w-3.5 h-3.5 rotate-90" /> : <ChevronRight className="w-3.5 h-3.5 rotate-90" />}
+                        </button>
+                      </>
+                    )}
                   </>
                 ) : (
                   <p className="body-md text-[#9E9A90]">{t('propertyDetail.amenitiesContact')}</p>
                 )}
               </section>
 
-              {/* 4. Services (add-on) — image-first cards. The previous design
-                  was text-only with a dark "Add" button and looked corporate;
-                  these are luxury concierge upsells (private chef, spa, etc.)
-                  and need imagery to land emotionally. Whole card opens the
-                  modal so the click target is large and intentional. */}
+              {/* Bedrooms & sleeping — moved below the amenities (practical info
+                  belongs after the guest is sold). Redesigned from heavy bordered
+                  boxes with circular bed icons to a calm editorial grid: a summary
+                  stat line, then borderless cards with a hairline top rule and the
+                  bed config as quiet typography. */}
+              {property.rooms && property.rooms.length > 0 && (
+                <section>
+                  <div className="flex items-baseline justify-between gap-4 mb-6">
+                    <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18]">{t('propertyDetail.bedroomsTitle', 'Bedrooms & Sleeping Arrangements')}</h2>
+                    <p className="text-[12px] text-[#9E9A90] hidden sm:block shrink-0">
+                      {t('propertyDetail.sleepsSummary', { beds: property.bedrooms, guests: property.maxGuests, defaultValue: '{{beds}} bedrooms · sleeps {{guests}}' })}
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-7">
+                    {property.rooms.map((room: any, roomIdx: number) => (
+                      <div key={roomIdx} className="pt-4 border-t border-[#E8E4DC]">
+                        <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#9E9A90] mb-3">{room.name}</h3>
+                        {room.beds && room.beds.length > 0 ? (
+                          <div className="space-y-2.5">
+                            {room.beds.map((bed: any, bedIdx: number) => {
+                              const { label, icon: BedIcon } = getBedTypeDisplay(bed.type, t);
+                              return (
+                                <div key={bedIdx} className="flex items-center gap-2.5">
+                                  <BedIcon size={18} strokeWidth={1.5} className="text-[#8B7355] shrink-0" />
+                                  <span className="text-[13px] text-[#1A1A18]" style={{ fontWeight: 300 }}>
+                                    {bed.quantity > 1 ? `${bed.quantity} × ${t('bedType.' + label.replace(/\s/g, ''), label)}` : t('bedType.' + label.replace(/\s/g, ''), label)}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <span className="text-[12px] text-[#9E9A90]">{t('bedConfig.notAvailable')}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* In-house promise banner — establishes the hotel-chain model:
+                  every service and experience below is delivered by Portugal
+                  Active's own team, not a third-party marketplace. This is the
+                  single biggest differentiator and frames both sections. */}
+              <section className="bg-[#1A1A18] rounded-2xl p-7 lg:p-9 text-white">
+                <p className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#C9A876] mb-3">{t('propertyDetail.inHouseOverline', 'One team, one standard')}</p>
+                <h2 className="font-display text-[clamp(1.2rem,2.4vw,1.7rem)] font-light leading-[1.2] mb-3 max-w-xl">{t('propertyDetail.inHouseTitle', 'Everything here is ours — chefs, drivers, therapists, guides.')}</h2>
+                <p className="text-[13.5px] text-white/70 leading-relaxed max-w-2xl" style={{ fontWeight: 300 }}>{t('propertyDetail.inHouseBody', 'Not a marketplace of strangers. Every service and experience is run by our own in-house team and trusted local partners we work with daily — booked, coordinated, and accountable through one concierge. The way a great hotel operates, in a private home.')}</p>
+              </section>
+
+              {/* 4. Services — in-house, delivered by our own team. Image-first
+                  cards; whole card opens the request modal. */}
               <section>
                 <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-2">{t('propertyDetail.servicesTitle')}</h2>
                 <p className="body-md text-[#9E9A90] mb-6">{t('propertyDetail.servicesSubtitle')}</p>
@@ -1093,7 +1161,7 @@ export default function PropertyDetail() {
                             <span className="text-[10px] text-[#9E9A90] font-normal ml-1">{service.priceSuffix}</span>
                           </p>
                           <span className="inline-flex items-center gap-1.5 text-[11px] font-medium tracking-[0.06em] uppercase text-[#8B7355] group-hover:text-[#1A1A18] transition-colors">
-                            {t('propertyDetail.add')} <Plus className="w-3 h-3" />
+                            {t('propertyDetail.requestService', 'Request')} <ArrowRight className="w-3 h-3" />
                           </span>
                         </div>
                       </div>
@@ -1102,17 +1170,15 @@ export default function PropertyDetail() {
                 </div>
               </section>
 
-              {/* 5. Adventures nearby — image-first cards. Adventures should
-                  inspire (canyoning, sailing, sunset trails), so let the
-                  photography lead. Optional metadata badges (difficulty,
-                  duration) overlay the image for at-a-glance context, and
-                  the whole card navigates to the experience detail page. */}
+              {/* 5. Experiences — in-house curated, image-first. Capped to 6 on
+                  the PDP so the section stays focused; the rest live behind the
+                  "View all experiences" link. */}
               {adventures.length > 0 && (
                 <section>
                   <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-2">{t('propertyDetail.adventuresTitle')}</h2>
                   <p className="body-md text-[#9E9A90] mb-6">{t('propertyDetail.adventuresSubtitle', { destination: destName })}</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-                    {adventures.map(adventure => {
+                    {adventures.slice(0, 6).map(adventure => {
                       const meta: string[] = [];
                       if ((adventure as any).duration) meta.push(String((adventure as any).duration));
                       if ((adventure as any).difficulty) meta.push(String((adventure as any).difficulty));
