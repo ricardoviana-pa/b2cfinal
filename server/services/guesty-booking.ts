@@ -282,7 +282,23 @@ async function _createBEQuoteImpl(input: {
     };
   };
 
-  const options = ratePlans.map(mapPlan);
+  const rawOptions = ratePlans.map(mapPlan);
+  // Defensive dedupe: Guesty BE sometimes returns multiple rate plans that
+  // share a display name AND an identical total (a "Flexible" plan
+  // duplicated in the Guesty dashboard, two non-refundable variants that
+  // collapse to the same money, etc.). They render as visually identical
+  // radio rows and confuse customers. Collapse on (name, total): keep the
+  // first occurrence, drop the rest.
+  const seenKeys = new Set<string>();
+  const options = rawOptions.filter((o) => {
+    const key = `${(o.name || "").trim().toLowerCase()}|${Math.round(o.total * 100)}`;
+    if (seenKeys.has(key)) {
+      console.info(`[BE Quote] dropped duplicate rate plan: name="${o.name}" total=${o.total} (id=${o.ratePlanId})`);
+      return false;
+    }
+    seenKeys.add(key);
+    return true;
+  });
   const selected = mapPlan(plan);
   const money = plan.ratePlan?.money || plan.money || {};
 
