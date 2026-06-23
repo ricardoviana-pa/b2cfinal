@@ -310,6 +310,38 @@
     "areaSquareFeet": 6287,
     "reviews": [
       {
+        "rating": 5,
+        "text": "The spacious and charming estate and house. Huge mature trees, large pool, accommodating living space. It was a pleasure.",
+        "guestName": "Guest",
+        "date": "2026-06-23T15:51:41.023Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "Leuk huis, erg groot waardoor het binnen wat sfeerloos is. Prachtige tuin en gezellige buitenkeuken. Tennisbaan valt tegen, geen lijnen op de baan en alleen maar oude kapotte rackets aanwezig. Badkamers zijn verouderd.",
         "guestName": "Guest",
@@ -342,8 +374,8 @@
         ]
       }
     ],
-    "averageRating": 4,
-    "reviewCount": 1
+    "averageRating": 4.5,
+    "reviewCount": 2
   },
   {
     "id": "guesty-69c567ad7f6873000e9a3c37",
@@ -783,6 +815,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Adorámos ficar hospedados nesta casa. A decoração é incrível, a casa muito confortável e espaçosa e o espaço exterior (onde se encontra a piscina) é a melhor parte! Pretendo voltar em breve.",
+        "guestName": "Guest",
+        "date": "2026-06-22T15:48:52.449Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Adoramos a acomodação, tem todas as condições para receber famílias, muito bem equipada desde a cozinha, casas de banho, quartos luxuosos, zona super calma, previlegio de ter contato com a natureza. O Lidl  é algum comércio como cafés, bancos, farmácias e transportes públicos ficam a 6 minutos de carro. \nAs fotos não fazem tanto jus a tamanha beleza, voltaremos de certeza caso nós seja permitido. Super recomendo para famílias inteiras.",
         "guestName": "Guest",
         "date": "2026-06-08T22:09:04.743Z",
@@ -847,7 +911,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   },
   {
     "id": "guesty-6a0359b4e343150013abc14d",
@@ -2471,6 +2535,261 @@
     "reviewCount": 2
   },
   {
+    "id": "guesty-6a3549e5edd13800142415e0",
+    "slug": "canopy-house-by-portgual-active-i-heated-pool-2415e0",
+    "name": "Canopy House by Portgual Active I Heated Pool",
+    "tagline": "Discover Canopy House with Heated Pool, an elegant villa located in Trofa, perfect for large families and groups seeking comfort, privacy, and a prime…",
+    "tier": "select",
+    "destination": "porto",
+    "locality": "Trofa",
+    "bedrooms": 6,
+    "bathrooms": 5,
+    "maxGuests": 12,
+    "priceFrom": 450,
+    "pricePerNight": 450,
+    "cleaningFee": 0,
+    "minNights": 3,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1782228978/production/6957de4388cba42d9e7a905e/zppiucnixexishllpldj.jpg",
+      "https://assets.guesty.com/image/upload/v1782229706/production/6957de4388cba42d9e7a905e/gtqvtk6ivteaod2hndns.jpg",
+      "https://assets.guesty.com/image/upload/v1782228316/production/6957de4388cba42d9e7a905e/yjinwlpfhzktcrk1kdzm.jpg",
+      "https://assets.guesty.com/image/upload/v1782229706/production/6957de4388cba42d9e7a905e/ckun68gs1btlbdajnpda.jpg",
+      "https://assets.guesty.com/image/upload/v1782229706/production/6957de4388cba42d9e7a905e/r6lbyyjzgwljh51ah6dp.jpg",
+      "https://assets.guesty.com/image/upload/v1782228322/production/6957de4388cba42d9e7a905e/mppeiebjh5rwpebvxhdg.jpg",
+      "https://assets.guesty.com/image/upload/v1782228301/production/6957de4388cba42d9e7a905e/g8xrdvdd0unxredcbpzw.jpg",
+      "https://assets.guesty.com/image/upload/v1782228300/production/6957de4388cba42d9e7a905e/z8lgr73tew4vxdhx6s8z.jpg",
+      "https://assets.guesty.com/image/upload/v1782228299/production/6957de4388cba42d9e7a905e/txpmnuwg4h4mnn0vcye2.jpg",
+      "https://assets.guesty.com/image/upload/v1782228301/production/6957de4388cba42d9e7a905e/zaohczfli0xpshjzc4dx.jpg",
+      "https://assets.guesty.com/image/upload/v1782228299/production/6957de4388cba42d9e7a905e/mgdzzfbqlhap12jvr93r.jpg",
+      "https://assets.guesty.com/image/upload/v1782229706/production/6957de4388cba42d9e7a905e/xjsu7rqrfm6tvkovaqmr.jpg",
+      "https://assets.guesty.com/image/upload/v1782229706/production/6957de4388cba42d9e7a905e/qe5coq2rzajqfjrcm64y.jpg",
+      "https://assets.guesty.com/image/upload/v1782228302/production/6957de4388cba42d9e7a905e/sdu1lwsvsiiffkqqu2pk.jpg",
+      "https://assets.guesty.com/image/upload/v1782230618/production/6957de4388cba42d9e7a905e/k2kkqkswejlwxafbb4av.jpg",
+      "https://assets.guesty.com/image/upload/v1782230618/production/6957de4388cba42d9e7a905e/xzfd95y0c6mi1847vgen.jpg",
+      "https://assets.guesty.com/image/upload/v1782228307/production/6957de4388cba42d9e7a905e/cuoscszn9ipfqcwnjfcm.jpg",
+      "https://assets.guesty.com/image/upload/v1782228305/production/6957de4388cba42d9e7a905e/iwcsbuyipa5kyqkgsefa.jpg",
+      "https://assets.guesty.com/image/upload/v1782228303/production/6957de4388cba42d9e7a905e/qsybgygtpunbevvqgmlm.jpg",
+      "https://assets.guesty.com/image/upload/v1782230618/production/6957de4388cba42d9e7a905e/legcygrci5kmi9irvb1k.jpg",
+      "https://assets.guesty.com/image/upload/v1782228306/production/6957de4388cba42d9e7a905e/twz1osymattspbpokahh.jpg",
+      "https://assets.guesty.com/image/upload/v1782228305/production/6957de4388cba42d9e7a905e/dyhxqi1odi7smhwe8wt0.jpg",
+      "https://assets.guesty.com/image/upload/v1782228308/production/6957de4388cba42d9e7a905e/nw5cj2m4z2fbba0ivaf3.jpg",
+      "https://assets.guesty.com/image/upload/v1782228307/production/6957de4388cba42d9e7a905e/qptfgwvoqejig193l5jo.jpg",
+      "https://assets.guesty.com/image/upload/v1782230618/production/6957de4388cba42d9e7a905e/l7ipgrdcf7zafbbglbiu.jpg",
+      "https://assets.guesty.com/image/upload/v1782230621/production/6957de4388cba42d9e7a905e/e3q39golmxeukotby1kb.jpg",
+      "https://assets.guesty.com/image/upload/v1782230618/production/6957de4388cba42d9e7a905e/cxf4iqsjkbjnefrg1359.jpg",
+      "https://assets.guesty.com/image/upload/v1782228310/production/6957de4388cba42d9e7a905e/mvvxs5agz1ejvlcbiqqz.jpg",
+      "https://assets.guesty.com/image/upload/v1782230618/production/6957de4388cba42d9e7a905e/ofuxtg0f5bumdldfz90y.jpg",
+      "https://assets.guesty.com/image/upload/v1782228317/production/6957de4388cba42d9e7a905e/g527h5m3euhwmhvm99bw.jpg",
+      "https://assets.guesty.com/image/upload/v1782228318/production/6957de4388cba42d9e7a905e/ouznceul9tqyjtkcizjg.jpg",
+      "https://assets.guesty.com/image/upload/v1782228318/production/6957de4388cba42d9e7a905e/guyas3qqup89zkofnagp.jpg",
+      "https://assets.guesty.com/image/upload/v1782228319/production/6957de4388cba42d9e7a905e/a2gmwz1grrhyuzjn20r8.jpg",
+      "https://assets.guesty.com/image/upload/v1782228290/production/6957de4388cba42d9e7a905e/nqb8dbmp6tdlyybmptxc.jpg",
+      "https://assets.guesty.com/image/upload/v1782228289/production/6957de4388cba42d9e7a905e/ciuua7cwsrh8ir94iqmq.jpg",
+      "https://assets.guesty.com/image/upload/v1782228289/production/6957de4388cba42d9e7a905e/hk19lj7jz4jffqhom4ge.jpg",
+      "https://assets.guesty.com/image/upload/v1782228288/production/6957de4388cba42d9e7a905e/vsd8m9l6woajjhhvsfvy.jpg",
+      "https://assets.guesty.com/image/upload/v1782231805/production/6957de4388cba42d9e7a905e/talgvp7chwwhactzpfgw.jpg",
+      "https://assets.guesty.com/image/upload/v1782231805/production/6957de4388cba42d9e7a905e/l7esmq7d3bigmkqd02v5.jpg",
+      "https://assets.guesty.com/image/upload/v1782231805/production/6957de4388cba42d9e7a905e/baavvjrb0jsqa6zszwpd.jpg",
+      "https://assets.guesty.com/image/upload/v1782231805/production/6957de4388cba42d9e7a905e/iuseintpffm0ylzz2rw4.jpg",
+      "https://assets.guesty.com/image/upload/v1782228291/production/6957de4388cba42d9e7a905e/az76bfuwqhhovz4ltoaa.jpg",
+      "https://assets.guesty.com/image/upload/v1782228293/production/6957de4388cba42d9e7a905e/cdta7er82frulayh7ryk.jpg",
+      "https://assets.guesty.com/image/upload/v1782228293/production/6957de4388cba42d9e7a905e/s8s49sm1ofptbpbzpiek.jpg",
+      "https://assets.guesty.com/image/upload/v1782231805/production/6957de4388cba42d9e7a905e/c4omwhrbtvzok0yrble2.jpg",
+      "https://assets.guesty.com/image/upload/v1782228291/production/6957de4388cba42d9e7a905e/ebrmtvrbmi6qlzv4wzxc.jpg",
+      "https://assets.guesty.com/image/upload/v1782228294/production/6957de4388cba42d9e7a905e/qurjtt6gqeahp4qfmjzq.jpg",
+      "https://assets.guesty.com/image/upload/v1782228294/production/6957de4388cba42d9e7a905e/i9ad6voboksek2acozvy.jpg",
+      "https://assets.guesty.com/image/upload/v1782228296/production/6957de4388cba42d9e7a905e/fptvxkhxzu2xfiocyrrq.jpg",
+      "https://assets.guesty.com/image/upload/v1782228294/production/6957de4388cba42d9e7a905e/oqbpxuhzza7r7cdznscy.jpg",
+      "https://assets.guesty.com/image/upload/v1782228297/production/6957de4388cba42d9e7a905e/te54cz9ybxgmivxyadir.jpg",
+      "https://assets.guesty.com/image/upload/v1782228298/production/6957de4388cba42d9e7a905e/fboxozhoygkqk4kfhdxp.jpg",
+      "https://assets.guesty.com/image/upload/v1782228296/production/6957de4388cba42d9e7a905e/zbvwq30qz86ouduud494.jpg",
+      "https://assets.guesty.com/image/upload/v1782228296/production/6957de4388cba42d9e7a905e/gows5jryiuihej4jsolo.jpg",
+      "https://assets.guesty.com/image/upload/v1782228297/production/6957de4388cba42d9e7a905e/yh4fxsy7hmjvnmmpsucr.jpg",
+      "https://assets.guesty.com/image/upload/v1782228302/production/6957de4388cba42d9e7a905e/fflkc6i7ii3vzg1rqnyb.jpg",
+      "https://assets.guesty.com/image/upload/v1782228298/production/6957de4388cba42d9e7a905e/tjvk9l0baetts5n8ouww.jpg",
+      "https://assets.guesty.com/image/upload/v1782228313/production/6957de4388cba42d9e7a905e/ph7w2rnpquupofwsgszq.jpg",
+      "https://assets.guesty.com/image/upload/v1782228314/production/6957de4388cba42d9e7a905e/c0la3j90o2g4fi19e4fe.jpg",
+      "https://assets.guesty.com/image/upload/v1782228314/production/6957de4388cba42d9e7a905e/rn0vv56w662hog806dve.jpg",
+      "https://assets.guesty.com/image/upload/v1782228312/production/6957de4388cba42d9e7a905e/y3dxv8h1ozsuena2wmpq.jpg",
+      "https://assets.guesty.com/image/upload/v1782228316/production/6957de4388cba42d9e7a905e/mawg6pnpolxl4btqqr4m.jpg",
+      "https://assets.guesty.com/image/upload/v1782228313/production/6957de4388cba42d9e7a905e/ra6nlmvxjhytuh2yj6va.jpg",
+      "https://assets.guesty.com/image/upload/v1782228312/production/6957de4388cba42d9e7a905e/dmlkaamu2lf4o765slw0.jpg",
+      "https://assets.guesty.com/image/upload/v1782228319/production/6957de4388cba42d9e7a905e/md34f0anb9mc1q99nzg1.jpg",
+      "https://assets.guesty.com/image/upload/v1782228320/production/6957de4388cba42d9e7a905e/go20totbrxtchvwbe6de.jpg",
+      "https://assets.guesty.com/image/upload/v1782228320/production/6957de4388cba42d9e7a905e/yrj61bekdb8yyo0p0xfg.jpg",
+      "https://assets.guesty.com/image/upload/v1782228312/production/6957de4388cba42d9e7a905e/ovkpwqfksn8utxddruor.jpg",
+      "https://assets.guesty.com/image/upload/v1782228322/production/6957de4388cba42d9e7a905e/yd3w1knqrxlv4jtbeojk.jpg",
+      "https://assets.guesty.com/image/upload/v1782228322/production/6957de4388cba42d9e7a905e/faibdmyipz5saztdvqk9.jpg",
+      "https://assets.guesty.com/image/upload/v1782228322/production/6957de4388cba42d9e7a905e/o0inovceatjktjqgvfuf.jpg",
+      "https://assets.guesty.com/image/upload/v1782231805/production/6957de4388cba42d9e7a905e/fahsera6ulq4lgdnlxwc.jpg",
+      "https://assets.guesty.com/image/upload/v1782228299/production/6957de4388cba42d9e7a905e/fxs7flgyonq1ugrtuolz.jpg",
+      "https://assets.guesty.com/image/upload/v1782228311/production/6957de4388cba42d9e7a905e/vtko2kcvdusnjxgbghdr.jpg",
+      "https://assets.guesty.com/image/upload/v1782228288/production/6957de4388cba42d9e7a905e/xcj2luabql9riskt5nst.jpg",
+      "https://assets.guesty.com/image/upload/v1782228288/production/6957de4388cba42d9e7a905e/kbhytn7lkwexk305pkm3.jpg",
+      "https://assets.guesty.com/image/upload/v1782228322/production/6957de4388cba42d9e7a905e/xjwzhflb5c2ojx4ga1qg.jpg",
+      "https://assets.guesty.com/image/upload/v1782228288/production/6957de4388cba42d9e7a905e/plbddjs8fgitemnxccx0.jpg",
+      "https://assets.guesty.com/image/upload/v1782228273/production/6957de4388cba42d9e7a905e/pf5vy4rpm3kmohihzmiu.jpg",
+      "https://assets.guesty.com/image/upload/v1782228273/production/6957de4388cba42d9e7a905e/mkdktqcekpr1dudlpvr0.jpg",
+      "https://assets.guesty.com/image/upload/v1782228273/production/6957de4388cba42d9e7a905e/ariwhwamkuiq2qthhbgz.jpg",
+      "https://assets.guesty.com/image/upload/v1782228273/production/6957de4388cba42d9e7a905e/mijrdjtsd4av42uvwb0n.jpg"
+    ],
+    "description": "Discover Canopy House with Heated Pool, an elegant villa located in Trofa, perfect for large families and groups seeking comfort, privacy, and a prime location from which to explore Northern Portugal.\nCanopy House with Heated Pool features six bedrooms, including a cozy en-suite bedroom located in an independent annex, offering ample space and convenience for all guests. With generous living areas, a private plunge pool, and thoughtfully designed outdoor spaces for relaxation and leisure, Canopy House provides the perfect setting for a memorable holiday.\nIdeally located between Porto and Braga, this villa combines the tranquility of a residential area with easy access to the region’s main attractions. Air conditioning, high-speed internet, and all essential amenities ensure a comfortable stay throughout the year.\n\n\nAt Canopy House with Heated Pool by Portugal Active, every detail has been carefully designed to provide an exceptional experience of comfort and well-being.\nThe villa offers spacious and bright interior areas, decorated in a contemporary and welcoming style. Its six bedrooms have been thoughtfully designed to ensure maximum comfort, including several en-suite rooms that provide additional privacy for guests. The common areas are perfect for socializing, featuring generous living spaces and dining areas ideal for gathering with family and friends.\nThe fully equipped kitchens allow guests to prepare meals with ease, providing all the appliances, cookware, and utensils needed for both short and extended stays.\nOutside, guests can enjoy a private leisure area designed for outdoor dining and relaxation. The private plunge pool* and barbecue area are the highlights of this space, creating the perfect setting to unwind and make the most of the warmer days in complete privacy.\n\n*Pool heating is available for an additional fee of €70 per day, with a minimum booking of 5 consecutive days. Please notify us at least 5 days in advance to ensure it is ready for your arrival.\n\nThe Canopy House enjoys a privileged location on a peaceful residential street in Trofa, offering all the privacy of an exclusive retreat just minutes away from the Nossa Senhora das Dores Park, an inviting setting for morning walks surrounded by nature.\nThe Ave River creates one of the most beautiful landscapes in the region, with its riverside park providing the perfect backdrop for sunset strolls along the water — the kind of moment that stays with you forever.\n\nCanopy House is exclusively yours throughout your stay.\nEvery corner of the property is yours to enjoy, from the bedrooms and kitchens to the terrace with its lounge and dining area, the private pool*, all bathrooms, and the social spaces throughout the villa.\nPortugal Active's concierge service is available 24 hours a day, 7 days a week, to make every wish a reality — private tours, in-villa chefs, massages, luxury transfers, or any special request. Please contact us at least 72 hours in advance so we can exceed your expectations.\n\nImportant Notes:\n- During your stay, regular pool maintenance may take place. These interventions are essential to ensure that all equipment remains clean, functional, and safe to use.\n- During the high season (May to October), the pool is maintained regularly to provide the best possible guest experience.\n- During the low season (November to April), the pool remains operational and is maintained regularly to ensure comfort and quality throughout the year.\n- *To heat the pool (additional cost of €70 per day with a minimum of 5 nights), please notify us at least 5 days in advance.\n\nCanopy House boasts a strategic and highly desirable location — between Porto (25 km / 15.5 miles) and Braga (30 km / 18.6 miles), two of Northern Portugal’s most captivating cities, and only 25 minutes from Francisco Sá Carneiro Airport.\nFor history enthusiasts, Castro de Alvarelhos reveals traces of more than two thousand years of history just a few miles away. The Trofa Cultural Center hosts exhibitions and events throughout the year.\nThe local dining scene is exceptional: Pintor Pobre delights visitors with creative cuisine, Casa da Eira and Os Braguinhas serve the finest Portuguese traditional dishes, and Flor do Ave is a must-visit for the iconic Bairrada-style roast suckling pig.\nFrom here, Northern Portugal unfolds before you — the Douro wine region, the wild Atlantic beaches, the historic center of Guimarães (the birthplace of Portugal), and the baroque beauty of Braga. All within an hour’s drive. All waiting to be discovered.\n\n-------- Portugal Active Exclusive Concierge Services --------\n\nEnhance your stay with our exclusive services:\n\n✔️ Luxury Transfers: Private chauffeur service from the airport directly to your villa.\n✔️ Personalized Experiences: Tailor your stay with services ranging from a Private Chef to a Personal Trainer.\n✔️ Daily Housekeeping & Babysitting: Take advantage of our services for a completely stress-free stay.\n✔️ Local Team Available: Enjoy peace of mind knowing a Portugal Active team member will be available to assist you throughout your stay.\n\n-------- Adventure Experiences --------\n✔️ Horseback Riding: Explore scenic trails and beautiful beaches on horseback.\n✔️ Guided Hiking, Swimming & Dining Experiences: Discover breathtaking landscapes, swim in a hidden lagoon, and enjoy traditional tapas.\n✔️ E-Bike Wild Tour: Explore Viana do Castelo on an electric bike.\n\nBook your stay today. Portugal Active, your private hotel.",
+    "amenities": {
+      "property": [
+        "Air conditioning",
+        "BBQ grill",
+        "Babysitter recommendations",
+        "Baking sheet",
+        "Barbeque utensils",
+        "Bed linens",
+        "Body soap",
+        "Cable TV",
+        "City View",
+        "Cleaning Disinfection",
+        "Cleaning products",
+        "Clothing storage",
+        "Coffee",
+        "Coffee maker",
+        "Cookware",
+        "Crib",
+        "Dining table",
+        "Dishes and silverware",
+        "Dishwasher",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Extra pillows and blankets",
+        "Family/kid friendly",
+        "Fire extinguisher",
+        "First aid kit",
+        "Free parking on street",
+        "Freezer",
+        "Garden View",
+        "Garden or backyard",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High chair",
+        "High touch surfaces disinfected",
+        "Hot water",
+        "Internet",
+        "Iron",
+        "Kettle",
+        "Kitchen",
+        "Laptop friendly workspace",
+        "Long term stays allowed",
+        "Microwave",
+        "Outdoor pool",
+        "Outdoor seating (furniture)",
+        "Oven",
+        "Patio or balcony",
+        "Private entrance",
+        "Refrigerator",
+        "Shampoo",
+        "Shower gel",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Town",
+        "Washer",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "6a3549e5edd13800142415e0",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Canopy House by Portgual Active I Heated Pool",
+    "sortOrder": 0,
+    "isActive": true,
+    "isPortfolio": false,
+    "seoTitle": "Canopy House by Portgual Active I Heated Pool — Portugal Active",
+    "seoDescription": "Discover Canopy House with Heated Pool, an elegant villa located in Trofa, perfect for large families and groups seeking comfort, privacy, and a prime location ",
+    "address": {
+      "full": "",
+      "street": "Rua Rainha Santa Isabel 101",
+      "city": "Trofa",
+      "state": "Porto",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 41.3354935,
+      "lng": -8.5571702
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 6",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 1507,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
+  },
+  {
     "id": "guesty-6a2ad70638d6620013badaef",
     "slug": "carcavelos-house-by-portugal-active-badaef",
     "name": "Carcavelos Manor House by Portugal Active",
@@ -2873,7 +3192,7 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/bf8924d4-1cbb-41-PpYj7",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/379dad2f-05e0-4f-SrNvR"
     ],
-    "description": "Experience the best of Porto with comfort and exclusivity.\r\nThis apartment offers a luxurious atmosphere, elegant décor, and an unbeatable central location.\r\nPerfect for couples seeking a romantic and memorable getaway.\n\nEvery detail of this apartment has been carefully designed to provide an unforgettable stay, blending charm, sophistication, and functionality.\r\nThe main bedroom features a comfortable double bed—an ideal space to unwind after a day exploring the city.\r\nThe bright living room invites you to relax with a cozy sofa bed and a TV for your entertainment.\r\nThe kitchen is fully equipped with modern appliances and quality utensils, ready for anything from a light breakfast to a romantic dinner.\r\n\r\nThe apartment also includes a delightful private balcony—perfect for enjoying a glass of wine at sunset or simply soaking in the ambiance of Porto.\r\nIts minimalist décor, clean lines, and soft lighting create a peaceful and airy environment. Every element was chosen with comfort and functionality in mind, complemented by modern, practical furnishings that bring harmony and calm to this stylish space in the heart of the city.\n\nLocated in the charming Praça Marquês de Pombal, the apartment sits in a quiet yet central area with quick access to Porto’s main attractions.\r\nCafés, restaurants, shops, and iconic landmarks like Avenida dos Aliados, Torre dos Clérigos, and the Ribeira are just a short walk away—making it the perfect base for discovering the city.\n\nGuests have exclusive access to the entire apartment. \r\nThe Portugal Active concierge service is available 24/7 to cater to any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\nThe Marquês metro station is only 350 meters (about a 5-minute walk) from the apartment, offering easy connections to the airport, train stations, and other key areas of Porto.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
+    "description": "Experience the best of Porto with comfort and exclusivity.\r\nThis apartment offers a luxurious atmosphere, elegant décor, and an unbeatable central location.\r\nPerfect for couples seeking a romantic and memorable getaway.\n\nEvery detail of this apartment has been carefully designed to provide an unforgettable stay, blending charm, sophistication, and functionality.\r\nThe main bedroom features a comfortable double bed—an ideal space to unwind after a day exploring the city.\r\nThe bright living room invites you to relax with a cozy sofa bed and a TV for your entertainment.\r\nThe kitchen is fully equipped with modern appliances and quality utensils, ready for anything from a light breakfast to a romantic dinner.\r\n\r\nThe apartment also includes a delightful private balcony—perfect for enjoying a glass of wine at sunset or simply soaking in the ambiance of Porto.\r\nIts minimalist décor, clean lines, and soft lighting create a peaceful and airy environment. Every element was chosen with comfort and functionality in mind, complemented by modern, practical furnishings that bring harmony and calm to this stylish space in the heart of the city.\n\nLocated in the charming Praça Marquês de Pombal, the apartment sits in a quiet yet central area with quick access to Porto’s main attractions.\nCafés, restaurants, shops, and iconic landmarks like Avenida dos Aliados, Torre dos Clérigos, and the Ribeira are just a short walk away—making it the perfect base for discovering the city.\n\nGuests have exclusive access to the entire apartment. \r\nThe Portugal Active concierge service is available 24/7 to cater to any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\nThe Marquês metro station is only 350 meters (about a 5-minute walk) from the apartment, offering easy connections to the airport, train stations, and other key areas of Porto.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
     "amenities": {
       "property": [
         "Air conditioning",
@@ -2979,6 +3298,38 @@
     "areaSquareFeet": 560,
     "reviews": [
       {
+        "rating": 4,
+        "text": "great place to stay! very nice and quiet area, check in instructions were clear and the process was overall easy. \n\nthe bathroom was clean but the shower head was unfortunately broken, water pressure was a but weak but of course usable, the wifi wasn’t working",
+        "guestName": "Guest",
+        "date": "2026-06-21T19:37:40.207Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Impecável,  espaço muito bem conseguido para dias pessoas, com todo o conforto, limpo, bem decorado e perto de tudo (restaurantes,  supermercados,  autocarro e metro).",
         "guestName": "Guest",
@@ -3075,8 +3426,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 3
+    "averageRating": 4.8,
+    "reviewCount": 4
   },
   {
     "id": "guesty-696533d2ec19770014fd1b52",
@@ -5283,7 +5634,7 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338cecf7490014ed2c2d/483ac1c1-913f-42-IAYcK",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338cecf7490014ed2c2d/e5537756-4d91-45-9h1Cp"
     ],
-    "description": "Framed Corner by Portugal Active, with its elegant interiors and curated design details, offers refined comfort on one of the city’s most iconic streets.\r\nPerfect for those seeking style, sophistication, and a prime location to experience the very best of Porto.\n\nStep into the sophisticated atmosphere of this bright and stylish apartment, where every detail has been thoughtfully designed to create an experience of comfort and elegance.\r\nThe open-concept living area is bathed in natural light through tall, striking windows that beautifully frame the vibrant energy of the city. The sofa easily transforms into a sofa-bed — perfect for hosting with charm.\r\nThe sleek, contemporary kitchen is equipped and invites leisurely mornings and intimate dinners alike. In the bedroom, a serene double bed promises restful nights in a setting of calm and taste, while the bathroom features a glass-enclosed shower and high-end finishes.\r\nNatural wooden floors, high ceilings with exposed beams, and a soft, harmonious décor elevate the ambience, making Framed Corner by Portugal Active the perfect setting for a refined city break or an extended stay with all the comforts of a luxury home.\n\nLocated on the iconic Rua de Santa Catarina, one of Porto’s liveliest and most emblematic streets, the apartment is surrounded by traditional shops, historic cafés, boutiques, and local restaurants.\r\nJust a few steps from the famous Café Majestic, Capela das Almas, and many cultural highlights, it’s the ideal base to explore the city on foot.\n\nGuests have exclusive access to the entire apartment. \r\nThe Portugal Active concierge service is available 24/7 to cater to any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\nThe nearest metro station is Bolhão, just a 5-minute walk away, offering direct connections to the airport and across the city.\r\nBus and tram stops are also nearby, making it easy and convenient to reach any point in Porto.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
+    "description": "Framed Corner by Portugal Active, with its elegant interiors and curated design details, offers refined comfort on one of the city’s most iconic streets.\r\nPerfect for those seeking style, sophistication, and a prime location to experience the very best of Porto.\n\nStep into the sophisticated atmosphere of this bright and stylish apartment, where every detail has been thoughtfully designed to create an experience of comfort and elegance.\nThe open-concept living area is bathed in natural light through tall, striking windows that beautifully frame the vibrant energy of the city. The sofa easily transforms into a sofa-bed — perfect for hosting with charm.\nThe sleek, contemporary kitchen is equipped and invites leisurely mornings and intimate dinners alike. In the bedroom, a serene double bed promises restful nights in a setting of calm and taste, while the bathroom features a glass-enclosed shower and high-end finishes.\nNatural wooden floors, high ceilings with exposed beams, and a soft, harmonious décor elevate the ambience, making Framed Corner by Portugal Active the perfect setting for a refined city break or an extended stay with all the comforts of a luxury home.\n\nLocated on the iconic Rua de Santa Catarina, one of Porto’s liveliest and most emblematic streets, the apartment is surrounded by traditional shops, historic cafés, boutiques, and local restaurants.\r\nJust a few steps from the famous Café Majestic, Capela das Almas, and many cultural highlights, it’s the ideal base to explore the city on foot.\n\nGuests have exclusive access to the entire apartment. \r\nThe Portugal Active concierge service is available 24/7 to cater to any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\nThe nearest metro station is Bolhão, just a 5-minute walk away, offering direct connections to the airport and across the city.\r\nBus and tram stops are also nearby, making it easy and convenient to reach any point in Porto.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
     "amenities": {
       "property": [
         "Air conditioning",
@@ -5554,7 +5905,7 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533a0ecf7490014ed31d5/5acf0800-acf5-45-eW3Hg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533a0ecf7490014ed31d5/203b8926-65ef-43-CTAYt"
     ],
-    "description": "Garden House, set within the enchanting Fountain Retreat I Pool, Jacuzzi & Sports Escape, offers a peaceful countryside getaway. Surrounded by flowering gardens and stunning views, it provides all the comfort you need and a genuine connection to nature — perfect for unwinding and enjoying the gentle rhythm of rural life in a warm and authentic setting.\n\nGarden House offers a welcoming and bright interior, thoughtfully designed to ensure comfort and relaxation. The spacious living area features a sofa bed and a dining space ideal for enjoying meals while looking out over the green fields. The fully equipped kitchenette includes a refrigerator, stovetop, microwave, toaster, and coffee machine, allowing you to prepare your favorite meals with ease.\r\n\r\nThe house has one double bedroom and a full bathroom with shower located just outside the bedroom, easily accessible from the common area.\r\n\r\nOutside, the private furnished terrace is the perfect spot to unwind in the open air, take in the scent of the flowers, and admire the surrounding landscape in a peaceful, charming setting. For added comfort year-round, the house also includes air conditioning, Wi‑Fi, a flat-screen TV, and heating — creating the perfect environment for a relaxing and memorable stay.\n\nLocated in Barroselas, Fountain Retreat I Pool, Jacuzzi & Sports Escape offers you the chance to experience the very best of northern Portugal. This charming rural retreat, just a few minutes from Viana do Castelo, invites you to discover the true essence of Minho — from its quiet village streets to the green hills and valleys that surround it.\r\nWander around traditional shops and local fairs, taste regional specialties in cozy family-run restaurants, and soak up the peaceful, authentic rhythm of village life. Nature lovers can explore nearby trails and bike paths winding through hills and fields, while Viana do Castelo’s historic center and its iconic landmarks — like the Santa Luzia Basilica — are only a short drive away.\r\nWhether you want to delve into history, embrace the outdoors, or simply relax in a welcoming, picturesque setting, Barroselas and its surroundings have something special for every visitor.\n\nGuests have full access to the entire property, including the outdoor areas shared with the other houses, such as the swimming pool, garden, minigolf, and tennis court — perfect for relaxing and enjoying the beautiful surroundings.\r\n\r\nThe Portugal Active concierge team is available 24/7 to cater to all requests, from organizing tours and local experiences to booking personalized services like a private chef. To guarantee availability, we kindly ask that you request any services at least 72 hours in advance.\r\n\r\nImportant Note:\r\nDuring high season (from May to October), the swimming pool is regularly maintained to ensure it is in perfect condition for guests. In low season (from November to April), the pool may be closed — please check with our team.\n\nPublic transport is readily available, making your arrival straightforward and convenient. The nearest train station is Barroselas Station, located only 3 km from the house — about a 5‑minute taxi ride or a short drive. The station offers direct connections to Viana do Castelo, Porto, and other towns across the region.\r\nAdditionally, there are bus stops within a short walking distance, providing easy access to Viana do Castelo’s center and the nearby beaches.\n\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
+    "description": "Garden House, set within the enchanting Fountain Retreat I Pool, Jacuzzi & Sports Escape, offers a peaceful countryside getaway. Surrounded by flowering gardens and stunning views, it provides all the comfort you need and a genuine connection to nature — perfect for unwinding and enjoying the gentle rhythm of rural life in a warm and authentic setting.\n\nGarden House offers a welcoming and bright interior, thoughtfully designed to ensure comfort and relaxation. The spacious living area features a sofa bed and a dining space ideal for enjoying meals while looking out over the green fields. The fully equipped kitchenette includes a refrigerator, stovetop, microwave, toaster, and coffee machine, allowing you to prepare your favorite meals with ease.\nThe house has one double bedroom and a full bathroom with shower located just outside the bedroom, easily accessible from the common area.\n\nOutside, the private furnished terrace is the perfect spot to unwind in the open air, take in the scent of the flowers, and admire the surrounding landscape in a peaceful, charming setting. For added comfort year-round, the house also includes air conditioning, Wi‑Fi, a flat-screen TV, and heating — creating the perfect environment for a relaxing and memorable stay.\n\nLocated in Barroselas, Fountain Retreat I Pool, Jacuzzi & Sports Escape offers you the chance to experience the very best of northern Portugal. This charming rural retreat, just a few minutes from Viana do Castelo, invites you to discover the true essence of Minho — from its quiet village streets to the green hills and valleys that surround it.\r\nWander around traditional shops and local fairs, taste regional specialties in cozy family-run restaurants, and soak up the peaceful, authentic rhythm of village life. Nature lovers can explore nearby trails and bike paths winding through hills and fields, while Viana do Castelo’s historic center and its iconic landmarks — like the Santa Luzia Basilica — are only a short drive away.\r\nWhether you want to delve into history, embrace the outdoors, or simply relax in a welcoming, picturesque setting, Barroselas and its surroundings have something special for every visitor.\n\nGuests have full access to the entire property, including the outdoor areas shared with the other houses, such as the swimming pool, garden, minigolf, and tennis court — perfect for relaxing and enjoying the beautiful surroundings.\nThe Portugal Active concierge team is available 24/7 to cater to all requests, from organizing tours and local experiences to booking personalized services like a private chef. To guarantee availability, we kindly ask that you request any services at least 72 hours in advance.\n\nImportant Note:\nDuring high season (from May to October), the swimming pool is regularly maintained to ensure it is in perfect condition for guests. In low season (from November to April), the pool may be closed — please check with our team.\n\nPublic transport is readily available, making your arrival straightforward and convenient. The nearest train station is Barroselas Station, located only 3 km from the house — about a 5‑minute taxi ride or a short drive. The station offers direct connections to Viana do Castelo, Porto, and other towns across the region.\r\nAdditionally, there are bus stops within a short walking distance, providing easy access to Viana do Castelo’s center and the nearby beaches.\n\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
     "amenities": {
       "property": [
         "Air conditioning",
@@ -6595,6 +6946,7 @@
         "Pets allowed",
         "Refrigerator",
         "River",
+        "River view",
         "Rural",
         "Shampoo",
         "Shower gel",
@@ -6608,8 +6960,7 @@
         "Village",
         "Waterfront",
         "Wine glasses",
-        "Wireless Internet",
-        "River view"
+        "Wireless Internet"
       ],
       "bedrooms": [],
       "kitchen": [],
@@ -14119,6 +14470,7 @@
         "Private entrance",
         "Refrigerator",
         "River",
+        "River view",
         "Rural",
         "Shampoo",
         "Shower gel",
@@ -14133,8 +14485,7 @@
         "Water View",
         "Waterfront",
         "Wine glasses",
-        "Wireless Internet",
-        "River view"
+        "Wireless Internet"
       ],
       "bedrooms": [],
       "kitchen": [],
@@ -14609,6 +14960,176 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 323,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
+  },
+  {
+    "id": "guesty-6a3a63f9e19cb0001db6a05e",
+    "slug": "saltwind-studio-by-portugal-active-b6a05e",
+    "name": "Saltwind Studio by Portugal Active",
+    "tagline": "Discover Saltwind Studio, your exclusive retreat in Viana do Castelo, perfectly located near Cabedelo Beach. This elegant apartment offers stunning vi…",
+    "tier": "select",
+    "destination": "minho",
+    "locality": "Viana do Castelo",
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "maxGuests": 4,
+    "priceFrom": 100,
+    "pricePerNight": 100,
+    "cleaningFee": 0,
+    "minNights": 3,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1782226216/production/6957de4388cba42d9e7a905e/b8ambooqmaikzdgsdce8.jpg",
+      "https://assets.guesty.com/image/upload/v1782226220/production/6957de4388cba42d9e7a905e/ncvwzaaaprznczowrtlt.jpg",
+      "https://assets.guesty.com/image/upload/v1782226212/production/6957de4388cba42d9e7a905e/vti4fptl7gll8x515dpd.jpg",
+      "https://assets.guesty.com/image/upload/v1782226224/production/6957de4388cba42d9e7a905e/jd6uwuzmpdobueh0km8v.jpg",
+      "https://assets.guesty.com/image/upload/v1782226203/production/6957de4388cba42d9e7a905e/z0mak81zfo2m8lmduu1s.jpg",
+      "https://assets.guesty.com/image/upload/v1782226209/production/6957de4388cba42d9e7a905e/gtvb46vgnetxyw4yhylg.jpg",
+      "https://assets.guesty.com/image/upload/v1782226203/production/6957de4388cba42d9e7a905e/dlisk7fxesxcdxlgfvyj.jpg",
+      "https://assets.guesty.com/image/upload/v1782226208/production/6957de4388cba42d9e7a905e/qpi5b9bbazeojcsep2iy.jpg",
+      "https://assets.guesty.com/image/upload/v1782226203/production/6957de4388cba42d9e7a905e/irgqks90amfa1mpjtdes.jpg",
+      "https://assets.guesty.com/image/upload/v1782226211/production/6957de4388cba42d9e7a905e/c5jz4kgovypcnxbvb0y0.jpg",
+      "https://assets.guesty.com/image/upload/v1782226203/production/6957de4388cba42d9e7a905e/nj5uokphlnucunzjre0g.jpg",
+      "https://assets.guesty.com/image/upload/v1782226208/production/6957de4388cba42d9e7a905e/efnuex5nneuzmion66nn.jpg",
+      "https://assets.guesty.com/image/upload/v1782226208/production/6957de4388cba42d9e7a905e/ft9a4zkxo5qiag9mp2u8.jpg",
+      "https://assets.guesty.com/image/upload/v1782226208/production/6957de4388cba42d9e7a905e/bcr0cgmoocu9uategmeg.jpg",
+      "https://assets.guesty.com/image/upload/v1782226208/production/6957de4388cba42d9e7a905e/z2xk3xrru05lsjz3xiz4.jpg",
+      "https://assets.guesty.com/image/upload/v1782226212/production/6957de4388cba42d9e7a905e/lstrwdmm4qbtp6a8wnjo.jpg",
+      "https://assets.guesty.com/image/upload/v1782226203/production/6957de4388cba42d9e7a905e/eoco7dcxoft3dmcynblo.jpg",
+      "https://assets.guesty.com/image/upload/v1782226213/production/6957de4388cba42d9e7a905e/aatw70jofd3jalctmz5n.jpg",
+      "https://assets.guesty.com/image/upload/v1782226213/production/6957de4388cba42d9e7a905e/mu23zg4y9alei6xyetmr.jpg",
+      "https://assets.guesty.com/image/upload/v1782226213/production/6957de4388cba42d9e7a905e/o3utjuacesvx02abvwsg.jpg",
+      "https://assets.guesty.com/image/upload/v1782226203/production/6957de4388cba42d9e7a905e/mmgjozttytzlpdoqvqtm.jpg",
+      "https://assets.guesty.com/image/upload/v1782226220/production/6957de4388cba42d9e7a905e/pcv42tzxpwpnlnyqh6sh.jpg",
+      "https://assets.guesty.com/image/upload/v1782226223/production/6957de4388cba42d9e7a905e/psroeffbbobqlovyjm8c.jpg",
+      "https://assets.guesty.com/image/upload/v1782226217/production/6957de4388cba42d9e7a905e/palhgug835c9vntmt3ba.jpg",
+      "https://assets.guesty.com/image/upload/v1782226216/production/6957de4388cba42d9e7a905e/ya6daa0q8ukxsix2qsoi.jpg",
+      "https://assets.guesty.com/image/upload/v1782232579/production/6957de4388cba42d9e7a905e/bqxncwgyfvnvvshfxv5e.jpg",
+      "https://assets.guesty.com/image/upload/v1782226220/production/6957de4388cba42d9e7a905e/bldfv5aqbk440attmqwl.jpg",
+      "https://assets.guesty.com/image/upload/v1782226217/production/6957de4388cba42d9e7a905e/rp772utwks6re9frmanj.jpg",
+      "https://assets.guesty.com/image/upload/v1782226219/production/6957de4388cba42d9e7a905e/kwwqo1cifld63qawxv0n.jpg",
+      "https://assets.guesty.com/image/upload/v1782232579/production/6957de4388cba42d9e7a905e/ylpr0qfprqopn8duifqx.jpg",
+      "https://assets.guesty.com/image/upload/v1782232579/production/6957de4388cba42d9e7a905e/fyoja4j9aofvfyv6y90f.jpg",
+      "https://assets.guesty.com/image/upload/v1782226224/production/6957de4388cba42d9e7a905e/o8o6ltdveukplibyt91n.jpg",
+      "https://assets.guesty.com/image/upload/v1782232579/production/6957de4388cba42d9e7a905e/vijee2jbflklgghxdxaw.jpg",
+      "https://assets.guesty.com/image/upload/v1782226225/production/6957de4388cba42d9e7a905e/nooiriuz6fvrl4olyjnf.jpg",
+      "https://assets.guesty.com/image/upload/v1782226239/production/6957de4388cba42d9e7a905e/sgylv4c0ejjg0wtwcczy.jpg",
+      "https://assets.guesty.com/image/upload/v1782226239/production/6957de4388cba42d9e7a905e/lvrv2fa8xbzlqzsftf4c.jpg",
+      "https://assets.guesty.com/image/upload/v1782226239/production/6957de4388cba42d9e7a905e/tmwvtin1rnukmnb1kjnq.jpg",
+      "https://assets.guesty.com/image/upload/v1782226239/production/6957de4388cba42d9e7a905e/kzynumlrjmjsfyxrjd5c.jpg"
+    ],
+    "description": "Discover Saltwind Studio, your exclusive retreat in Viana do Castelo, perfectly located near Cabedelo Beach. This elegant apartment offers stunning views of Monte de Santa Luzia and blends modern comfort with the tranquility of the Atlantic breeze. Featuring a sophisticated bedroom, a bright living room with balcony, a fully equipped kitchen, and a bathroom with bathtub, it's the ideal space for families or couples.\n\nSaltwind Studio is a charming retreat in the heart of Cabedelo, where sophistication meets the serenity of the Atlantic. Designed for those who appreciate the finer details, every corner has been thoughtfully curated to deliver a unique stay in Viana do Castelo. The living room is spacious and elegant, flooded with natural light streaming through generous glass doors. The space features a comfortable sofa bed, dining table, and television — perfect for unwinding. The balcony invites you to savor special moments, like a glass of wine at sunset with views of Monte de Santa Luzia. The bedroom is a true sanctuary of rest, fitted with a double bed, soft tones, delicate lighting, and premium bed linens. It also offers generous built-in closets and access to a private balcony. The full bathroom features a relaxing bathtub, LED-backlit mirror, and quality amenities. The fully equipped kitchen lets you prepare meals with fresh ingredients from the local market.\n\nCabedelo is one of the best-kept secrets of northern Portugal. Nestled between the Lima River and the Atlantic Ocean, this enchanting peninsula is a natural paradise of golden sand beaches, century-old pine groves, and pure ocean air. Here, life moves with the tides. The famous Cabedelo Beach — a world-class destination for surfing, kitesurfing, and windsurfing — is just steps away from Saltwind Studio. Restaurants serving the finest seafood and fresh fish from the Minho coast, cafés with sunny terraces, and local shops complete the picture. From Saltwind Studio, you can admire the iconic Monte de Santa Luzia, crowned by the Sacred Heart of Jesus Sanctuary — one of the most emblematic landmarks of the entire Minho region.\n\nGuests have exclusive and private access to the entire Saltwind Studio — living room and bedroom with balconies, bathroom, equipped kitchen, and entrance hall. The Portugal Active concierge service is available 24 hours a day, 7 days a week, to meet all your needs — from organizing local excursions to booking a private chef, massages, or babysitting services. Please request any service at least 72 hours in advance so we can ensure the best possible experience\n\nGetting to Saltwind Studio is simple and convenient. The apartment is located in Cabedelo, Viana do Castelo. For those traveling by car, we offer free street parking, making arrival and your stay hassle-free. If you prefer public transportation, the area is served by local bus routes connecting Cabedelo to the historic center of Viana do Castelo. Francisco Sá Carneiro Airport in Porto is the main international arrival point, approximately sixty minutes by car via the A28 highway. Viana do Castelo's train station is located in the city center, a short drive or public transit ride away, providing easy access to other regions of Portugal.\n\n-------- Exclusive Concierge Services by Portugal Active --------\nEnhance your stay with our exclusive services:\n✔️ Luxury transfers: Private chauffeur from the airport to Saltwind Studio.\n✔️ Personalized experiences: Customize your stay, from a Private Chef to a Personal Trainer.\n✔️ Daily cleaning and babysitting: Take advantage of our services for a stress-free stay.\n✔️ Local team available: Rest assured, a Portugal Active team member will be available to assist you throughout your stay.\n-------- Adventure Experiences --------\n✔️ Horseback riding: Ride along scenic trails and beaches.\n✔️ Guided hikes, wild swims & lunch: Explore stunning landscapes, swim in a secret lagoon, and enjoy traditional tapas.\n✔️ E-Bike Wild Tour: Discover Viana do Castelo by e-bike.\n✔️ Surf & Kitesurf: Lessons and equipment rental at Cabedelo Beach.\n✔️ Stand-Up Paddle on the Lima River: A peaceful experience at sunset.\nBook your stay. Portugal Active, your private hotel.\n",
+    "amenities": {
+      "property": [
+        "Babysitter recommendations",
+        "Baking sheet",
+        "Bathtub",
+        "Beach",
+        "Bed linens",
+        "Body soap",
+        "Cable TV",
+        "Cleaning Disinfection",
+        "Cleaning products",
+        "Clothing storage",
+        "Coffee",
+        "Coffee maker",
+        "Cookware",
+        "Crib",
+        "Dining table",
+        "Dishes and silverware",
+        "Dishwasher",
+        "Elevator",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Extra pillows and blankets",
+        "Family/kid friendly",
+        "Fire extinguisher",
+        "First aid kit",
+        "Free parking on street",
+        "Freezer",
+        "Garden View",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High chair",
+        "Hot water",
+        "Internet",
+        "Iron",
+        "Kettle",
+        "Kitchen",
+        "Laptop friendly workspace",
+        "Long term stays allowed",
+        "Microwave",
+        "Oven",
+        "Patio or balcony",
+        "Refrigerator",
+        "River",
+        "Shampoo",
+        "Shower gel",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Town",
+        "Washer",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "6a3a63f9e19cb0001db6a05e",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Saltwind Studio by Portugal Active",
+    "sortOrder": 0,
+    "isActive": true,
+    "isPortfolio": false,
+    "seoTitle": "Saltwind Studio by Portugal Active — Portugal Active",
+    "seoDescription": "Discover Saltwind Studio, your exclusive retreat in Viana do Castelo, perfectly located near Cabedelo Beach. This elegant apartment offers stunning views of Mon",
+    "address": {
+      "full": "",
+      "street": "Rua José do Rego Lopes 31",
+      "city": "Viana do Castelo",
+      "state": "Viana do Castelo",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 41.6822619,
+      "lng": -8.8177101
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 270,
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0
@@ -18378,6 +18899,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Estadia perfeita, casa muito bem  equipada! O local é lindo e de fácil acesso. 💖",
+        "guestName": "Guest",
+        "date": "2026-06-23T08:00:46.625Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Ótimo",
         "guestName": "Guest",
         "date": "2026-06-03T18:17:41.064Z",
@@ -18570,7 +19123,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 6
+    "reviewCount": 7
   },
   {
     "id": "guesty-696f6aad74604800452a40b8",
@@ -19726,6 +20279,7 @@
         "Private entrance",
         "Refrigerator",
         "River",
+        "River view",
         "Rural",
         "Shampoo",
         "Shower gel",
@@ -19740,8 +20294,7 @@
         "Water View",
         "Waterfront",
         "Wine glasses",
-        "Wireless Internet",
-        "River view"
+        "Wireless Internet"
       ],
       "bedrooms": [],
       "kitchen": [],
