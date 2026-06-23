@@ -156,6 +156,41 @@ function categorizeAmenities(items: string[]): { category: string; label: string
 }
 
 
+/**
+ * Pick up to 6 "highlight" amenities — the wow-factor items that deserve
+ * top-of-section prominence. Order = priority. Each entry is { pattern,
+ * icon, friendly label } so the highlight row can render its own short
+ * copy instead of leaving the raw Guesty wording. Patterns are matched
+ * case-insensitively against the property's amenity strings.
+ */
+const AMENITY_HIGHLIGHTS: { pattern: RegExp; icon: LucideIcon; label: string }[] = [
+  { pattern: /\b(heated|private)\s*pool|\bpool\b/i, icon: Waves, label: 'Private pool' },
+  { pattern: /\b(ocean|sea|beach(?:front)?)\b.*view|view.*\b(ocean|sea|beach)\b/i, icon: Mountain, label: 'Sea view' },
+  { pattern: /\b(jacuzzi|hot\s*tub)\b/i, icon: Waves, label: 'Jacuzzi' },
+  { pattern: /\bsauna\b|\bspa\b/i, icon: Sparkles, label: 'Sauna & spa' },
+  { pattern: /\bfireplace\b|fire\s*pit/i, icon: Flame, label: 'Fireplace' },
+  { pattern: /\b(bbq|grill|barbecue|outdoor\s*kitchen)\b/i, icon: UtensilsCrossed, label: 'BBQ / outdoor kitchen' },
+  { pattern: /\b(private\s*garden|garden|terrace|patio)\b/i, icon: TreePine, label: 'Private garden' },
+  { pattern: /\bair\s*conditioning\b|\bA\/C\b/i, icon: Wind, label: 'Air conditioning' },
+  { pattern: /\bwifi\b|\binternet\b/i, icon: Wifi, label: 'Wifi' },
+  { pattern: /\b(home\s*office|workspace|desk)\b/i, icon: Monitor, label: 'Workspace' },
+  { pattern: /\b(parking|garage|ev\s*charging)\b/i, icon: Car, label: 'Private parking' },
+];
+
+function pickFeaturedAmenities(allAmenityItems: string[]): { icon: LucideIcon; label: string }[] {
+  const out: { icon: LucideIcon; label: string }[] = [];
+  const usedLabels = new Set<string>();
+  for (const { pattern, icon, label } of AMENITY_HIGHLIGHTS) {
+    if (usedLabels.has(label)) continue;
+    if (allAmenityItems.some((it) => pattern.test(it))) {
+      out.push({ icon, label });
+      usedLabels.add(label);
+      if (out.length >= 6) break;
+    }
+  }
+  return out;
+}
+
 /** Humanize bed type names and get icon */
 function getBedTypeDisplay(bedType: string, t: (key: string, fallback: string) => string): { label: string; icon: LucideIcon } {
   const normalized = (bedType || '').toUpperCase().replace(/ /g, '_');
@@ -657,6 +692,12 @@ export default function PropertyDetail() {
     return categorizeAmenities(all);
   }, [property?.amenities]);
 
+  const featuredAmenities = useMemo(() => {
+    if (!property?.amenities || typeof property.amenities !== 'object') return [];
+    const all = Object.values(property.amenities).flat().filter((x): x is string => typeof x === 'string' && x.length > 0);
+    return pickFeaturedAmenities(all);
+  }, [property?.amenities]);
+
   const handleGalleryTouchStart = useCallback((e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
     touchDeltaX.current = 0;
@@ -966,85 +1007,161 @@ export default function PropertyDetail() {
                 t={t}
               />
 
-              {/* 3. Amenities — Le Collectionist style icon grid with expandable sections */}
+              {/* 3. Amenities — highlights row + clean per-category list (the
+                  previous design rendered every item as a beige pill; it read as
+                  a tag cloud and gave no signal as to what makes the property
+                  special. The new layout surfaces 6 hero amenities at the top
+                  with bigger icons, then drops a calm 2-column list per
+                  category so guests can scan without fatigue). */}
               <section>
                 <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-6">{t('propertyDetail.amenitiesTitle')}</h2>
                 {amenityGroups.length > 0 ? (
-                  <div className="space-y-6">
-                    {amenityGroups.map((group) => (
-                      <div key={group.category}>
-                        <div className="flex items-center gap-2 mb-3">
-                          <group.icon size={16} className="text-[#8B7355]" />
-                          <h3 className="text-[13px] font-medium tracking-[0.04em] text-[#1A1A18]">{t(group.label)}</h3>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {group.items.map((item, idx) => (
-                            <span
-                              key={idx}
-                              className="text-[12px] text-[#6B6860] bg-[#F5F1EB] px-3 py-1.5 rounded-full"
-                            >
-                              {item}
-                            </span>
-                          ))}
-                        </div>
+                  <>
+                    {/* Featured highlights — surface the wow-factor first */}
+                    {featuredAmenities.length > 0 && (
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-10">
+                        {featuredAmenities.map((amenity, idx) => (
+                          <div
+                            key={idx}
+                            className="flex flex-col items-center text-center bg-[#FAFAF7] border border-[#E8E4DC] rounded-xl px-3 py-4 sm:py-5 hover:border-[#8B7355]/40 hover:bg-white transition-colors duration-300"
+                          >
+                            <amenity.icon size={22} className="text-[#8B7355] mb-2" />
+                            <span className="text-[11px] sm:text-[12px] text-[#1A1A18] font-medium leading-tight">{amenity.label}</span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
+                    )}
+
+                    {/* All amenities — clean per-category lists, no pills */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 pt-2">
+                      {amenityGroups.map((group) => (
+                        <div key={group.category}>
+                          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#E8E4DC]">
+                            <group.icon size={14} className="text-[#8B7355] shrink-0" />
+                            <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#9E9A90]">{t(group.label)}</h3>
+                          </div>
+                          <ul className="space-y-2">
+                            {group.items.map((item, idx) => (
+                              <li key={idx} className="flex items-start gap-2.5 text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
+                                <span className="mt-[7px] w-1 h-1 rounded-full bg-[#8B7355]/60 shrink-0" />
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </>
                 ) : (
                   <p className="body-md text-[#9E9A90]">{t('propertyDetail.amenitiesContact')}</p>
                 )}
               </section>
 
-              {/* 4. Services (add-on) */}
+              {/* 4. Services (add-on) — image-first cards. The previous design
+                  was text-only with a dark "Add" button and looked corporate;
+                  these are luxury concierge upsells (private chef, spa, etc.)
+                  and need imagery to land emotionally. Whole card opens the
+                  modal so the click target is large and intentional. */}
               <section>
                 <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-2">{t('propertyDetail.servicesTitle')}</h2>
-                <p className="body-md text-[#9E9A90] mb-5">{t('propertyDetail.servicesSubtitle')}</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <p className="body-md text-[#9E9A90] mb-6">{t('propertyDetail.servicesSubtitle')}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                   {services.map(service => (
-                    <div key={service.slug} className="border border-[#E8E4DC] rounded-lg p-5 flex items-start justify-between gap-3 hover:border-[#8B7355]/40 hover:shadow-sm transition-all duration-200">
-                      <div className="min-w-0">
-                        <h3 className="font-display text-[15px] text-[#1A1A18] mb-1">{service.name}</h3>
-                        <p className="text-[12px] text-[#6B6860] leading-relaxed mb-2 line-clamp-2" style={{ fontWeight: 300 }}>{service.tagline}</p>
-                        <p className="text-[12px] text-[#8B7355] font-medium">
-                          {service.priceFrom ? t('propertyDetail.fromPrice', { price: String(service.priceFrom) }) : t('bookingWidget.included')} <span className="text-[10px] text-[#9E9A90] font-normal">{service.priceSuffix}</span>
-                        </p>
+                    <button
+                      key={service.slug}
+                      type="button"
+                      onClick={() => setModalProduct(service)}
+                      className="group block text-left bg-white border border-[#E8E4DC] rounded-xl overflow-hidden hover:border-[#8B7355]/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
+                    >
+                      <div className="relative aspect-[4/3] bg-[#F5F1EB] overflow-hidden">
+                        {service.image ? (
+                          <img
+                            src={service.image}
+                            alt={service.name}
+                            loading="lazy"
+                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
+                          />
+                        ) : null}
                       </div>
-                      <button
-                        onClick={() => setModalProduct(service)}
-                        className="flex items-center gap-1.5 rounded-full bg-[#1A1A18] text-white text-[11px] tracking-[0.06em] font-medium px-4 py-2.5 hover:bg-[#333] transition-colors shrink-0"
-                        style={{ minHeight: '44px', minWidth: '44px' }}
-                      >
-                        <Plus className="w-3.5 h-3.5" /> {t('propertyDetail.add')}
-                      </button>
-                    </div>
+                      <div className="p-5">
+                        <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-2">{t('propertyDetail.serviceOverline', 'Concierge service')}</p>
+                        <h3 className="font-display text-[16px] text-[#1A1A18] mb-1.5 group-hover:text-[#8B7355] transition-colors">{service.name}</h3>
+                        <p className="text-[12.5px] text-[#6B6860] leading-relaxed mb-4 line-clamp-2" style={{ fontWeight: 300 }}>{service.tagline}</p>
+                        <div className="flex items-baseline justify-between pt-3 border-t border-[#E8E4DC]">
+                          <p className="text-[13px] font-medium text-[#1A1A18]">
+                            {service.priceFrom ? t('propertyDetail.fromPrice', { price: String(service.priceFrom) }) : t('bookingWidget.included')}
+                            <span className="text-[10px] text-[#9E9A90] font-normal ml-1">{service.priceSuffix}</span>
+                          </p>
+                          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium tracking-[0.06em] uppercase text-[#8B7355] group-hover:text-[#1A1A18] transition-colors">
+                            {t('propertyDetail.add')} <Plus className="w-3 h-3" />
+                          </span>
+                        </div>
+                      </div>
+                    </button>
                   ))}
                 </div>
               </section>
 
-              {/* 5. Adventures nearby */}
+              {/* 5. Adventures nearby — image-first cards. Adventures should
+                  inspire (canyoning, sailing, sunset trails), so let the
+                  photography lead. Optional metadata badges (difficulty,
+                  duration) overlay the image for at-a-glance context, and
+                  the whole card navigates to the experience detail page. */}
               {adventures.length > 0 && (
                 <section>
                   <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-2">{t('propertyDetail.adventuresTitle')}</h2>
-                  <p className="body-md text-[#9E9A90] mb-5">{t('propertyDetail.adventuresSubtitle', { destination: destName })}</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {adventures.map(adventure => (
-                      <Link key={adventure.slug} href={`/experiences/${adventure.slug}`} className="border border-[#E8E4DC] rounded-lg p-5 flex items-start justify-between gap-3 hover:border-[#8B7355]/40 hover:shadow-sm transition-all duration-200 group">
-                        <div className="min-w-0">
-                          <h3 className="font-display text-[15px] text-[#1A1A18] mb-1 group-hover:text-[#8B7355] transition-colors">{adventure.name}</h3>
-                          <p className="text-[11px] text-[#6B6860] font-light leading-relaxed mb-2 line-clamp-2">{adventure.tagline}</p>
-                          <p className="text-[12px] text-[#9E9A90]">
-                            {adventure.priceFrom ? t('propertyDetail.fromPrice', { price: String(adventure.priceFrom) }) : t('propertyDetail.custom')} <span className="text-[10px]">{adventure.priceSuffix}</span>
-                          </p>
-                        </div>
-                        <span className="flex items-center gap-1.5 rounded-full bg-[#1A1A18] text-white text-[11px] tracking-[0.06em] font-medium px-4 py-2.5 group-hover:bg-[#333] transition-colors shrink-0" style={{ minHeight: '44px', minWidth: '44px' }}>
-                          <ArrowRight className="w-3.5 h-3.5" /> {t('propertyDetail.viewDetails', 'View')}
-                        </span>
-                      </Link>
-                    ))}
+                  <p className="body-md text-[#9E9A90] mb-6">{t('propertyDetail.adventuresSubtitle', { destination: destName })}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+                    {adventures.map(adventure => {
+                      const meta: string[] = [];
+                      if ((adventure as any).duration) meta.push(String((adventure as any).duration));
+                      if ((adventure as any).difficulty) meta.push(String((adventure as any).difficulty));
+                      return (
+                        <Link
+                          key={adventure.slug}
+                          href={`/experiences/${adventure.slug}`}
+                          className="group block bg-white border border-[#E8E4DC] rounded-xl overflow-hidden hover:border-[#8B7355]/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
+                        >
+                          <div className="relative aspect-[4/3] bg-[#F5F1EB] overflow-hidden">
+                            {adventure.image ? (
+                              <img
+                                src={adventure.image}
+                                alt={adventure.name}
+                                loading="lazy"
+                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
+                              />
+                            ) : null}
+                            {meta.length > 0 && (
+                              <div className="absolute bottom-3 left-3 right-3 flex flex-wrap gap-1.5">
+                                {meta.slice(0, 2).map((m, i) => (
+                                  <span key={i} className="text-[10px] tracking-[0.06em] uppercase font-medium px-2 py-1 bg-black/60 text-white backdrop-blur-sm rounded-full">
+                                    {m}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          <div className="p-5">
+                            <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-2">{t('propertyDetail.adventureOverline', 'Curated experience')}</p>
+                            <h3 className="font-display text-[16px] text-[#1A1A18] mb-1.5 group-hover:text-[#8B7355] transition-colors">{adventure.name}</h3>
+                            <p className="text-[12.5px] text-[#6B6860] leading-relaxed mb-4 line-clamp-2" style={{ fontWeight: 300 }}>{adventure.tagline}</p>
+                            <div className="flex items-baseline justify-between pt-3 border-t border-[#E8E4DC]">
+                              <p className="text-[13px] font-medium text-[#1A1A18]">
+                                {adventure.priceFrom ? t('propertyDetail.fromPrice', { price: String(adventure.priceFrom) }) : t('propertyDetail.custom')}
+                                <span className="text-[10px] text-[#9E9A90] font-normal ml-1">{adventure.priceSuffix}</span>
+                              </p>
+                              <span className="inline-flex items-center gap-1.5 text-[11px] font-medium tracking-[0.06em] uppercase text-[#8B7355] group-hover:text-[#1A1A18] transition-colors">
+                                {t('propertyDetail.viewDetails', 'View')} <ArrowRight className="w-3 h-3" />
+                              </span>
+                            </div>
+                          </div>
+                        </Link>
+                      );
+                    })}
                   </div>
                   <Link
                     href="/experiences"
-                    className="inline-flex items-center gap-2 mt-4 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors"
+                    className="inline-flex items-center gap-2 mt-6 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors"
                   >
                     {t('propertyDetail.viewAllExperiences', 'View all experiences')} <ArrowRight className="w-3.5 h-3.5" />
                   </Link>

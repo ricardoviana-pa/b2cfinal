@@ -382,6 +382,8 @@
     "openInMaps": "Open in Google Maps",
     "servicesTitle": "Services available (add on)",
     "servicesSubtitle": "Arranged by your concierge. Delivered by our in house team.",
+    "serviceOverline": "Concierge service",
+    "adventureOverline": "Curated experience",
     "fromPrice": "From €{{price}}",
     "adventuresTitle": "Adventures nearby",
     "adventuresSubtitle": "Experiences available in {{destination}}",
