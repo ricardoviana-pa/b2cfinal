@@ -1124,7 +1124,7 @@ export default function PropertyDetail() {
                   single biggest differentiator and frames both sections. */}
               <section className="bg-[#1A1A18] rounded-2xl p-7 lg:p-9 text-white">
                 <p className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#C9A876] mb-3">{t('propertyDetail.inHouseOverline', 'One team, one standard')}</p>
-                <h2 className="font-display text-[clamp(1.2rem,2.4vw,1.7rem)] font-light leading-[1.2] mb-3 max-w-xl">{t('propertyDetail.inHouseTitle', 'Everything here is ours — chefs, drivers, therapists, guides.')}</h2>
+                <h2 className="font-display text-[clamp(1.2rem,2.4vw,1.7rem)] font-light leading-[1.2] mb-3 max-w-xl text-white">{t('propertyDetail.inHouseTitle', 'Everything here is ours — chefs, drivers, therapists, guides.')}</h2>
                 <p className="text-[13.5px] text-white/70 leading-relaxed max-w-2xl" style={{ fontWeight: 300 }}>{t('propertyDetail.inHouseBody', 'Not a marketplace of strangers. Every service and experience is run by our own in-house team and trusted local partners we work with daily — booked, coordinated, and accountable through one concierge. The way a great hotel operates, in a private home.')}</p>
               </section>
 
