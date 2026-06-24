@@ -382,14 +382,102 @@ function Lightbox({ images, initialIndex, propertyName, destName, onClose, t }: 
 }
 
 /** Description with "Read more" truncation for long Guesty copy */
-function DescriptionSection({ description, propertyName, locality, destName, t }: {
+/** Ordered structured-description blocks. `summary` is the lead (no heading);
+ *  the rest get a titled block. `interaction` is intentionally excluded from
+ *  the default render — it's usually generic concierge boilerplate that
+ *  duplicates "What's included". */
+const DESCRIPTION_BLOCKS: { key: string; labelKey: string; fallback: string; lead?: boolean }[] = [
+  { key: 'summary', labelKey: '', fallback: '', lead: true },
+  { key: 'space', labelKey: 'propertyDetail.sectionSpace', fallback: 'The space' },
+  { key: 'access', labelKey: 'propertyDetail.sectionAccess', fallback: 'Guest access' },
+  { key: 'neighborhood', labelKey: 'propertyDetail.sectionNeighbourhood', fallback: 'The neighbourhood' },
+  { key: 'gettingAround', labelKey: 'propertyDetail.sectionGettingAround', fallback: 'Getting around' },
+  { key: 'notes', labelKey: 'propertyDetail.sectionGoodToKnow', fallback: 'Good to know' },
+];
+
+/** Apply the empty / garbage / duplicate heuristics the content audit flagged.
+ *  Returns the ordered, renderable blocks (each with cleaned paragraphs). */
+function buildStructuredBlocks(sections: Record<string, string> | undefined) {
+  if (!sections || typeof sections !== 'object') return [];
+  const out: { key: string; label: string | null; paragraphs: string[] }[] = [];
+  const shownOpenings: string[] = []; // first-80-chars of every block already shown
+
+  const summaryClean = cleanDescription(String(sections.summary || '')).trim();
+
+  for (const block of DESCRIPTION_BLOCKS) {
+    const raw = String(sections[block.key] || '');
+    const clean = cleanDescription(raw).trim();
+    // Empty / garbage filter (catches "", "/", single words, stray punctuation)
+    if (clean.replace(/[^a-zA-Z0-9]/g, '').length < 12) continue;
+    // Duplicate filter: skip if this block just repeats the summary, or repeats
+    // the opening of any block already shown (e.g. "The space" echoing Summary).
+    const opening = clean.slice(0, 80).toLowerCase();
+    if (!block.lead) {
+      if (summaryClean && opening === summaryClean.slice(0, 80).toLowerCase()) continue;
+      if (shownOpenings.some((o) => o === opening)) continue;
+    }
+    shownOpenings.push(opening);
+    out.push({
+      key: block.key,
+      label: block.lead ? null : block.fallback, // label resolved with t() at render
+      paragraphs: clean.split(/\n\n+/).flatMap((p) => p.split('\n')).map((p) => p.trim()).filter(Boolean),
+    });
+  }
+  return out;
+}
+
+function DescriptionSection({ description, sections, propertyName, locality, destName, t }: {
   description: unknown;
+  sections?: Record<string, string>;
   propertyName: string;
   locality: string;
   destName: string;
   t: ReturnType<typeof import('react-i18next').useTranslation>['t'];
 }) {
   const [expanded, setExpanded] = useState(false);
+
+  // Prefer the structured sub-fields when the listing has clean content for
+  // them; otherwise fall back to the legacy merged-blob rendering.
+  const blocks = buildStructuredBlocks(sections);
+  const useStructured = blocks.length >= 2; // need at least summary + 1 real block
+
+  if (useStructured) {
+    // Above the fold: lead + first titled block. The rest expand on "Read more".
+    const ABOVE = 2;
+    const visibleBlocks = expanded ? blocks : blocks.slice(0, ABOVE);
+    const hasMore = blocks.length > ABOVE;
+    const labelFor = (b: typeof blocks[number]) => {
+      const def = DESCRIPTION_BLOCKS.find((d) => d.key === b.key);
+      return def && def.labelKey ? t(def.labelKey, def.fallback) : null;
+    };
+    return (
+      <section>
+        <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-5">{t('propertyDetail.aboutTitle')}</h2>
+        <div className="space-y-7">
+          {visibleBlocks.map((b) => (
+            <div key={b.key} className={b.label ? '' : 'body-lg'}>
+              {b.label && (
+                <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#9E9A90] mb-2.5">{labelFor(b)}</h3>
+              )}
+              <div className={b.label ? 'space-y-3 text-[14px] text-[#6B6860] leading-relaxed' : 'space-y-4'} style={b.label ? { fontWeight: 300 } : undefined}>
+                {b.paragraphs.map((para, i) => <p key={i}>{para}</p>)}
+              </div>
+            </div>
+          ))}
+          {hasMore && (
+            <button
+              onClick={() => setExpanded((v) => !v)}
+              className="text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4"
+            >
+              {expanded ? t('common.readLess', 'Read less') : t('common.readMore', 'Read more')}
+            </button>
+          )}
+        </div>
+      </section>
+    );
+  }
+
+  // ── Legacy fallback: single merged blob with truncation ──
   const paragraphs = formatDescription(description);
   const MAX_VISIBLE = 3;
   const needsTruncation = paragraphs.length > MAX_VISIBLE;
@@ -968,6 +1056,7 @@ export default function PropertyDetail() {
                   should open with the story, not a clinical bed inventory. */}
               <DescriptionSection
                 description={property.description}
+                sections={(property as any).descriptionSections}
                 propertyName={property.name}
                 locality={property.locality}
                 destName={destName}

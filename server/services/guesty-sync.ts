@@ -63,6 +63,26 @@ function buildDescription(desc: any, legacyDescription?: string): string {
   return combined || legacyDescription || "";
 }
 
+/** Expose Guesty's public-description sub-fields as separate sections so the
+ *  PDP can render them as titled blocks ("The space", "The neighbourhood",
+ *  "Getting around", "Good to know") instead of one merged paragraph.
+ *  Sent lightly-trimmed and raw — the frontend applies the empty/garbage/
+ *  duplicate heuristics at render time (easier to tune there, and keeps the
+ *  per-listing content-quality decisions in the presentation layer). */
+function buildDescriptionSections(desc: any): Record<string, string> {
+  if (!desc || typeof desc !== "object") return {};
+  const pick = (v: unknown) => (typeof v === "string" ? v.trim() : "");
+  return {
+    summary: pick(desc.summary),
+    space: pick(desc.space),
+    access: pick(desc.access),
+    neighborhood: pick(desc.neighborhood),
+    gettingAround: pick(desc.transit),
+    notes: pick(desc.notes),
+    interaction: pick(desc.interaction ?? desc.interactionWithGuests),
+  };
+}
+
 /** Build tagline from description — ensure it's always populated */
 function buildTagline(desc: any, legacyDescription?: string): string {
   const summary = desc?.summary || desc?.space || desc?.neighborhood || "";
@@ -399,6 +419,7 @@ function mapListingToProperty(
     currency,
     images,
     description: fullDesc || summary || `Welcome to ${title}.`,
+    descriptionSections: buildDescriptionSections(desc),
     amenities,
     stayIncludes: [],
     style: "",
