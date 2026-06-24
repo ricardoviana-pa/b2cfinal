@@ -8,6 +8,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, MessageCircle } from 'lucide-react';
 import BokunCalendarWidget from './BokunCalendarWidget';
+import type { BokunOption } from './ExperienceBookingCard';
 import { pushEcommerce } from '@/lib/datalayer';
 
 interface ExperienceMobileBookingBarProps {
@@ -16,6 +17,9 @@ interface ExperienceMobileBookingBarProps {
   whatsappMessage: string;
   maxGroupSize?: number;
   bokunActivityId?: number;
+  /** Multiple rates/routes → the full-screen overlay shows the full Bókun
+   *  experience widget (with rate selector) instead of the single-rate one. */
+  bokunOptions?: BokunOption[];
   // Tracking
   experienceSlug?: string;
   experienceCategory?: string;
@@ -31,6 +35,7 @@ export default function ExperienceMobileBookingBar({
   whatsappMessage,
   maxGroupSize = 10,
   bokunActivityId,
+  bokunOptions,
   experienceSlug,
   experienceCategory,
   priceOta,
@@ -39,6 +44,7 @@ export default function ExperienceMobileBookingBar({
   const [visible, setVisible] = useState(false);
   const [widgetOpen, setWidgetOpen] = useState(false);
   const hasBokun = !!bokunActivityId && !!BOKUN_CHANNEL_UUID;
+  const isMultiOption = (bokunOptions?.length ?? 0) > 1;
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 100);
@@ -163,11 +169,14 @@ export default function ExperienceMobileBookingBar({
             </button>
           </div>
 
-          {/* Bókun calendar widget — fills remaining space, checkout via modal */}
+          {/* Bókun widget — fills remaining space, checkout via modal. Full
+              experience widget (rate selector) when the activity is
+              multi-option, else the compact calendar. */}
           <div className="flex-1 bg-white overflow-y-auto">
             <BokunCalendarWidget
               bokunActivityId={bokunActivityId!}
               experienceName={experienceName}
+              variant={isMultiOption ? 'experience' : 'calendar'}
               style={{ minHeight: '100%' }}
             />
           </div>

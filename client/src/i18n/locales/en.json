@@ -1011,6 +1011,8 @@
     "perPerson": "/ person",
     "bookNow": "Book now",
     "checkAvailability": "Check availability",
+    "chooseOption": "Choose your option",
+    "checkAvailabilityBook": "Check availability & book",
     "reserve": "Reserve",
     "secureBooking": "Secure booking by Bókun",
     "freeCancellation": "Free cancellation up to {{hours}}h before",

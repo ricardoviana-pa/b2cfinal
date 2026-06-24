@@ -1088,6 +1088,8 @@
     "perPerson": "/ pessoa",
     "bookNow": "Reservar agora",
     "checkAvailability": "Ver disponibilidade",
+    "chooseOption": "Escolha a sua opção",
+    "checkAvailabilityBook": "Ver disponibilidade e reservar",
     "reserve": "Reservar",
     "secureBooking": "Reserva segura por Bókun",
     "freeCancellation": "Cancelamento gratuito até {{hours}}h antes",

@@ -5,11 +5,18 @@
    Fallback: WhatsApp prefill when Bókun not configured or no activityId.
    ========================================================================== */
 
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, MessageCircle } from 'lucide-react';
+import { Check, MessageCircle, ChevronRight } from 'lucide-react';
 import BokunCalendarWidget from './BokunCalendarWidget';
+import BokunWidgetModal from './BokunWidgetModal';
 import { pushEcommerce } from '@/lib/datalayer';
+
+export interface BokunOption {
+  name: string;
+  detail?: string;
+  priceFrom?: number;
+}
 
 interface ExperienceBookingCardProps {
   experienceName: string;
@@ -21,6 +28,10 @@ interface ExperienceBookingCardProps {
   whatsappMessage: string;
   maxGroupSize?: number;
   bokunActivityId?: number;
+  /** When the Bókun activity has multiple rates/routes, list them here. The
+   *  card then shows the options + a button that opens the full widget modal
+   *  (with the rate selector) instead of the single-rate inline calendar. */
+  bokunOptions?: BokunOption[];
   // Tracking
   experienceSlug?: string;
   experienceCategory?: string;
@@ -40,12 +51,15 @@ export default function ExperienceBookingCard({
   whatsappMessage,
   maxGroupSize = 10,
   bokunActivityId,
+  bokunOptions,
   experienceSlug,
   experienceCategory,
   priceOta,
 }: ExperienceBookingCardProps) {
   const { t } = useTranslation();
   const hasBokun = !!bokunActivityId && !!BOKUN_CHANNEL_UUID;
+  const isMultiOption = (bokunOptions?.length ?? 0) > 1;
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     if (!hasBokun || !experienceSlug) return;
@@ -97,8 +111,56 @@ export default function ExperienceBookingCard({
         )}
       </div>
 
-      {/* Bókun inline calendar widget (checkout opens in Bókun modal overlay) */}
-      {hasBokun ? (
+      {/* Bókun booking. Multi-option activities (e.g. ebike: City / Road /
+          Gravel) list their routes and open the full widget modal with the
+          rate selector. Single-option activities embed the compact inline
+          calendar as before. */}
+      {hasBokun && isMultiOption ? (
+        <div className="bg-white px-7 py-6">
+          <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-3">
+            {t('experience.chooseOption', 'Choose your option')}
+          </p>
+          <ul className="space-y-2.5 mb-5">
+            {bokunOptions!.map((opt, i) => (
+              <li key={i} className="flex items-baseline justify-between gap-3 pb-2.5 border-b border-[#E8E4DC] last:border-0 last:pb-0">
+                <div className="min-w-0">
+                  <p className="text-[13px] text-[#1A1A18] font-medium leading-tight">{opt.name}</p>
+                  {opt.detail && <p className="text-[11px] text-[#9E9A90] mt-0.5">{opt.detail}</p>}
+                </div>
+                {opt.priceFrom ? (
+                  <span className="text-[12px] text-[#6B6860] whitespace-nowrap shrink-0">€{opt.priceFrom}</span>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+          <button
+            type="button"
+            onClick={() => {
+              setModalOpen(true);
+              if (experienceSlug) {
+                pushEcommerce({
+                  event: 'begin_checkout',
+                  ecommerce: {
+                    currency: 'EUR',
+                    value: priceOta || 0,
+                    items: [{ item_id: `EXP-${experienceSlug}`, item_name: experienceName, item_category: experienceCategory || '', price: priceOta || 0, quantity: 1 }],
+                  },
+                });
+              }
+            }}
+            className="w-full flex items-center justify-center gap-2 bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase py-4 hover:bg-black transition-colors"
+            style={{ minHeight: '52px' }}
+          >
+            {t('experience.checkAvailabilityBook', 'Check availability & book')} <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+          <BokunWidgetModal
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            bokunActivityId={bokunActivityId!}
+            experienceName={experienceName}
+          />
+        </div>
+      ) : hasBokun ? (
         <div className="bg-white">
           <BokunCalendarWidget
             bokunActivityId={bokunActivityId!}

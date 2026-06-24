@@ -14,6 +14,15 @@ interface BokunCalendarWidgetProps {
   experienceName?: string;
   className?: string;
   style?: React.CSSProperties;
+  /**
+   * 'calendar' (default) → compact experience-calendar widget, binds to the
+   *   activity's default rate. Good for single-option activities inline.
+   * 'experience' → the full experience widget, which includes the rate/option
+   *   selector (City / Road / Gravel, with-/without-transport add-ons, …).
+   *   Too tall for the sidebar, so it's used inside the booking modal where it
+   *   has room to breathe.
+   */
+  variant?: 'calendar' | 'experience';
 }
 
 const BOKUN_CHANNEL_UUID = import.meta.env.VITE_BOKUN_CHANNEL_UUID || 'a283fa3e-a892-41cd-a775-036ac351a454';
@@ -53,12 +62,14 @@ export default function BokunCalendarWidget({
   experienceName = 'Experience',
   className,
   style,
+  variant = 'calendar',
 }: BokunCalendarWidgetProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const fallbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const template = variant === 'experience' ? 'experience' : 'experience-calendar';
   const widgetUrl = BOKUN_CHANNEL_UUID
-    ? `https://widgets.bokun.io/online-sales/${BOKUN_CHANNEL_UUID}/experience-calendar/${bokunActivityId}`
+    ? `https://widgets.bokun.io/online-sales/${BOKUN_CHANNEL_UUID}/${template}/${bokunActivityId}`
     : '';
 
   /* ------------------------------------------------------------------ */
