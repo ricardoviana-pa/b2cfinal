@@ -145,19 +145,82 @@ async function fetchAllReviews(): Promise<any[]> {
   return results;
 }
 
-/** Group reviews by listingId, filter rating >= 4, sort newest first */
+/** First name only — warmer for the premium tier, and avoids exposing full
+ *  guest names. Prefers an explicit first-name field; else takes the first
+ *  token of the full reviewer name. Defensive across channel field shapes. */
+function reviewerFirstName(review: any, raw: any): string {
+  const explicit =
+    raw.reviewer_first_name ?? raw.reviewerFirstName ??
+    raw.reviewer?.first_name ?? raw.reviewer?.firstName ??
+    review.guest?.firstName ?? review.guestFirstName;
+  if (explicit) return String(explicit).trim();
+  const full =
+    review.guestName ?? raw.reviewer_name ?? raw.reviewerName ??
+    raw.reviewer?.name ?? raw.author?.name ?? "";
+  return String(full).trim().split(/\s+/)[0] || "Guest";
+}
+
+/** Avatar URL if the channel delivered one, else null. Airbnb almost always
+ *  has it; Booking.com rarely does. Render-time decides the fallback. */
+function reviewerPhoto(review: any, raw: any): string | null {
+  const url =
+    raw.reviewer_picture_url ?? raw.reviewerPictureUrl ??
+    raw.reviewer?.picture_url ?? raw.reviewer?.picture ?? raw.reviewer?.avatar ??
+    review.guest?.picture ?? review.guest?.avatar ?? review.guest?.pictureUrl ?? null;
+  return url ? String(url) : null;
+}
+
+/** Guest location ("London, UK") if present, else null. */
+function reviewerLocation(review: any, raw: any): string | null {
+  const loc =
+    raw.reviewer_location ?? raw.reviewerLocation ??
+    raw.reviewer?.location ?? review.guest?.location ?? review.guest?.city ?? null;
+  return loc ? String(loc).trim() : null;
+}
+
+/** Group reviews by listingId. Filters: guest-to-host only, public only,
+ *  rating >= 4 (normalised to a 5-star scale), non-empty text. Sorted newest
+ *  first. Exposes a privacy-safe payload (first name, optional photo/location;
+ *  never the channel or full name). */
 function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
   const byListing = new Map<string, any[]>();
+  let loggedSample = false;
 
   for (const review of reviews) {
     const listingId = review.listingId;
     if (!listingId) continue;
 
     const raw = review.rawReview || review;
-    const rating = Number(raw.overall_rating ?? raw.overallRating ?? raw.rating ?? 0);
+
+    // One-time diagnostic so the exact channel field names (avatar, location,
+    // type, private flag) are visible in the sync log. Lets us confirm the
+    // defensive extraction below hit the right fields once real data flows.
+    if (!loggedSample) {
+      loggedSample = true;
+      console.info("[Guesty Sync] Review sample — top-level keys:", Object.keys(review).join(","));
+      console.info("[Guesty Sync] Review sample — rawReview keys:", Object.keys(raw).join(","));
+    }
+
+    // Only guest-to-host reviews (exclude host-to-guest). Default missing type
+    // to guest-to-host — a review carrying reviewer_name + public_review is a
+    // guest review; the diagnostic log above reveals the real field if absent.
+    const type = String(review.type ?? raw.type ?? "guest-to-host");
+    if (type !== "guest-to-host") continue;
+
+    // Exclude private / non-public reviews.
+    const isPrivate =
+      review.private === true || review.isPrivate === true ||
+      raw.private === true || raw.is_private === true ||
+      String(review.status ?? "").toLowerCase() === "private";
+    if (isPrivate) continue;
+
+    // Normalise to a 5-star scale (Booking.com et al. use a 10-point scale).
+    let rating = Number(raw.overall_rating ?? raw.overallRating ?? raw.rating ?? review.rating ?? 0);
+    if (rating > 5) rating = rating / 2;
+    rating = Math.round(rating * 10) / 10;
+
     const text = (raw.public_review || raw.publicReview || raw.comments || "").trim();
 
-    // Only include reviews with rating >= 4 and non-empty text
     if (rating < 4 || !text) continue;
 
     // Build category ratings from flat fields (Guesty v1 format)
@@ -167,11 +230,16 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
       if (score > 0) categories.push({ name: cat, score });
     }
 
+    const firstName = reviewerFirstName(review, raw);
     const mapped = {
       rating,
       text: text.slice(0, 500),
-      guestName: review.guestName || raw.reviewer_name || "Guest",
-      date: review.createdAt || review.date || "",
+      // Privacy-safe identity: first name only, no full name, no channel.
+      guestDisplayName: firstName,
+      guestName: firstName, // backwards-compat with the current ReviewsSection
+      guestPhoto: reviewerPhoto(review, raw),
+      guestLocation: reviewerLocation(review, raw),
+      date: review.createdAt || review.date || raw.created_at || raw.submitted_at || "",
       categories,
     };
 
