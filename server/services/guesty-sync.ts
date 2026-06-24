@@ -95,6 +95,26 @@ function buildDescription(desc: any, legacyDescription?: string): string {
   return combined || legacyDescription || "";
 }
 
+/** Expose Guesty's public-description sub-fields as separate sections so the
+ *  PDP can render them as titled blocks ("The space", "The neighbourhood",
+ *  "Getting around", "Good to know") instead of one merged paragraph.
+ *  Sent lightly-trimmed and raw — the frontend applies the empty/garbage/
+ *  duplicate heuristics at render time (easier to tune there, and keeps the
+ *  per-listing content-quality decisions in the presentation layer). */
+function buildDescriptionSections(desc: any): Record<string, string> {
+  if (!desc || typeof desc !== "object") return {};
+  const pick = (v: unknown) => (typeof v === "string" ? v.trim() : "");
+  return {
+    summary: pick(desc.summary),
+    space: pick(desc.space),
+    access: pick(desc.access),
+    neighborhood: pick(desc.neighborhood),
+    gettingAround: pick(desc.transit),
+    notes: pick(desc.notes),
+    interaction: pick(desc.interaction ?? desc.interactionWithGuests),
+  };
+}
+
 /** Build tagline from description — ensure it's always populated */
 function buildTagline(desc: any, legacyDescription?: string): string {
   const summary = desc?.summary || desc?.space || desc?.neighborhood || "";
@@ -177,19 +197,82 @@ async function fetchAllReviews(): Promise<any[]> {
   return results;
 }
 
-/** Group reviews by listingId, filter rating >= 4, sort newest first */
+/** First name only — warmer for the premium tier, and avoids exposing full
+ *  guest names. Prefers an explicit first-name field; else takes the first
+ *  token of the full reviewer name. Defensive across channel field shapes. */
+function reviewerFirstName(review: any, raw: any): string {
+  const explicit =
+    raw.reviewer_first_name ?? raw.reviewerFirstName ??
+    raw.reviewer?.first_name ?? raw.reviewer?.firstName ??
+    review.guest?.firstName ?? review.guestFirstName;
+  if (explicit) return String(explicit).trim();
+  const full =
+    review.guestName ?? raw.reviewer_name ?? raw.reviewerName ??
+    raw.reviewer?.name ?? raw.author?.name ?? "";
+  return String(full).trim().split(/\s+/)[0] || "Guest";
+}
+
+/** Avatar URL if the channel delivered one, else null. Airbnb almost always
+ *  has it; Booking.com rarely does. Render-time decides the fallback. */
+function reviewerPhoto(review: any, raw: any): string | null {
+  const url =
+    raw.reviewer_picture_url ?? raw.reviewerPictureUrl ??
+    raw.reviewer?.picture_url ?? raw.reviewer?.picture ?? raw.reviewer?.avatar ??
+    review.guest?.picture ?? review.guest?.avatar ?? review.guest?.pictureUrl ?? null;
+  return url ? String(url) : null;
+}
+
+/** Guest location ("London, UK") if present, else null. */
+function reviewerLocation(review: any, raw: any): string | null {
+  const loc =
+    raw.reviewer_location ?? raw.reviewerLocation ??
+    raw.reviewer?.location ?? review.guest?.location ?? review.guest?.city ?? null;
+  return loc ? String(loc).trim() : null;
+}
+
+/** Group reviews by listingId. Filters: guest-to-host only, public only,
+ *  rating >= 4 (normalised to a 5-star scale), non-empty text. Sorted newest
+ *  first. Exposes a privacy-safe payload (first name, optional photo/location;
+ *  never the channel or full name). */
 function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
   const byListing = new Map<string, any[]>();
+  let loggedSample = false;
 
   for (const review of reviews) {
     const listingId = review.listingId;
     if (!listingId) continue;
 
     const raw = review.rawReview || review;
-    const rating = Number(raw.overall_rating ?? raw.overallRating ?? raw.rating ?? 0);
+
+    // One-time diagnostic so the exact channel field names (avatar, location,
+    // type, private flag) are visible in the sync log. Lets us confirm the
+    // defensive extraction below hit the right fields once real data flows.
+    if (!loggedSample) {
+      loggedSample = true;
+      console.info("[Guesty Sync] Review sample — top-level keys:", Object.keys(review).join(","));
+      console.info("[Guesty Sync] Review sample — rawReview keys:", Object.keys(raw).join(","));
+    }
+
+    // Only guest-to-host reviews (exclude host-to-guest). Default missing type
+    // to guest-to-host — a review carrying reviewer_name + public_review is a
+    // guest review; the diagnostic log above reveals the real field if absent.
+    const type = String(review.type ?? raw.type ?? "guest-to-host");
+    if (type !== "guest-to-host") continue;
+
+    // Exclude private / non-public reviews.
+    const isPrivate =
+      review.private === true || review.isPrivate === true ||
+      raw.private === true || raw.is_private === true ||
+      String(review.status ?? "").toLowerCase() === "private";
+    if (isPrivate) continue;
+
+    // Normalise to a 5-star scale (Booking.com et al. use a 10-point scale).
+    let rating = Number(raw.overall_rating ?? raw.overallRating ?? raw.rating ?? review.rating ?? 0);
+    if (rating > 5) rating = rating / 2;
+    rating = Math.round(rating * 10) / 10;
+
     const text = (raw.public_review || raw.publicReview || raw.comments || "").trim();
 
-    // Only include reviews with rating >= 4 and non-empty text
     if (rating < 4 || !text) continue;
 
     // Build category ratings from flat fields (Guesty v1 format)
@@ -199,11 +282,16 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
       if (score > 0) categories.push({ name: cat, score });
     }
 
+    const firstName = reviewerFirstName(review, raw);
     const mapped = {
       rating,
       text: text.slice(0, 500),
-      guestName: review.guestName || raw.reviewer_name || "Guest",
-      date: review.createdAt || review.date || "",
+      // Privacy-safe identity: first name only, no full name, no channel.
+      guestDisplayName: firstName,
+      guestName: firstName, // backwards-compat with the current ReviewsSection
+      guestPhoto: reviewerPhoto(review, raw),
+      guestLocation: reviewerLocation(review, raw),
+      date: review.createdAt || review.date || raw.created_at || raw.submitted_at || "",
       categories,
     };
 
@@ -260,12 +348,25 @@ function inferDestination(addr: any): string {
       city.includes('barcelos') || city.includes('esposende') ||
       city.includes('fafe') || city.includes('vizela')) return 'minho';
 
-  // Lisbon
+  // Lisbon + Silver Coast / Centro-Oeste. The site has no dedicated "Centro"
+  // or "Silver Coast" destination, so the Leiria/Oeste coastal belt (Nazaré,
+  // Alcobaça, Pataias, Óbidos, Caldas, Peniche, …) maps to Lisbon — it's the
+  // closest marketed region (≈1h, Silver Coast day-trips from Lisbon) and was
+  // previously falling through to Minho (≈2h north — geographically wrong).
   if (state.includes('lisboa') || state.includes('setúbal') || state.includes('setubal') ||
       city.includes('lisboa') || city.includes('lisbon') || city.includes('sintra') ||
       city.includes('cascais') || city.includes('oeiras') || city.includes('estoril') ||
       city.includes('almada') || city.includes('sesimbra') || city.includes('arrábida') ||
-      region.includes('lisboa')) return 'lisbon';
+      region.includes('lisboa') ||
+      // Leiria district / Oeste / Silver Coast
+      state.includes('leiria') || state.includes('santarém') || state.includes('santarem') ||
+      city.includes('nazaré') || city.includes('nazare') ||
+      city.includes('alcobaça') || city.includes('alcobaca') || city.includes('pataias') ||
+      city.includes('óbidos') || city.includes('obidos') ||
+      city.includes('caldas da rainha') || city.includes('peniche') ||
+      city.includes('marinha grande') || city.includes('bombarral') ||
+      city.includes('foz do arelho') || city.includes('são martinho do porto') ||
+      city.includes('sao martinho do porto') || city.includes('leiria')) return 'lisbon';
 
   // Alentejo
   if (state.includes('évora') || state.includes('evora') ||
@@ -363,6 +464,7 @@ function mapListingToProperty(
     currency,
     images,
     description: fullDesc || summary || `Welcome to ${title}.`,
+    descriptionSections: buildDescriptionSections(desc),
     amenities,
     stayIncludes: [],
     style: "",
@@ -383,9 +485,12 @@ function mapListingToProperty(
     checkInTime: listing.defaultCheckInTime || "16:00",
     checkOutTime: listing.defaultCheckOutTime || "11:00",
     areaSquareFeet: listing.areaSquareFeet || null,
-    reviews: reviews.slice(0, 20), // Cap at 20 most recent reviews per property
+    // Ship up to 20 review cards, but averageRating/reviewCount reflect the
+    // FULL filtered subset (4★+5★, guest-to-host, public) — never the sliced
+    // 20 and never the listing's global average. 2-decimal precision (4.87).
+    reviews: reviews.slice(0, 20),
     averageRating: reviews.length > 0
-      ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) * 10) / 10
+      ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) * 100) / 100
       : null,
     reviewCount: reviews.length,
   };
@@ -479,6 +584,15 @@ export async function runSync(): Promise<string> {
     }),
   ]);
   console.log(`[Guesty Sync] Got ${listings.length} listings, ${allReviews.length} reviews`);
+
+  // Diagnostic: log the exact field names on the first fetched review so we can
+  // confirm where guestPhoto / guestLocation live in this account's payload.
+  // Logged here (right after fetch, on the raw array) — guaranteed to run even
+  // if every review is later filtered out by buildReviewsByListing.
+  if (allReviews.length > 0) {
+    console.log("[Guesty Sync] Review sample — top-level keys:", Object.keys(allReviews[0]));
+    console.log("[Guesty Sync] Review sample — rawReview keys:", Object.keys(allReviews[0].rawReview ?? {}));
+  }
 
   if (listings.length === 0) {
     console.warn("[Guesty Sync] No listings returned — keeping existing data.");

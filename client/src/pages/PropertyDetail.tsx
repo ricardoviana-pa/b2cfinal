@@ -156,6 +156,41 @@ function categorizeAmenities(items: string[]): { category: string; label: string
 }
 
 
+/**
+ * Pick up to 6 "highlight" amenities — the wow-factor items that deserve
+ * top-of-section prominence. Order = priority. Each entry is { pattern,
+ * icon, friendly label } so the highlight row can render its own short
+ * copy instead of leaving the raw Guesty wording. Patterns are matched
+ * case-insensitively against the property's amenity strings.
+ */
+const AMENITY_HIGHLIGHTS: { pattern: RegExp; icon: LucideIcon; label: string }[] = [
+  { pattern: /\b(heated|private)\s*pool|\bpool\b/i, icon: Waves, label: 'Private pool' },
+  { pattern: /\b(ocean|sea|beach(?:front)?)\b.*view|view.*\b(ocean|sea|beach)\b/i, icon: Mountain, label: 'Sea view' },
+  { pattern: /\b(jacuzzi|hot\s*tub)\b/i, icon: Waves, label: 'Jacuzzi' },
+  { pattern: /\bsauna\b|\bspa\b/i, icon: Sparkles, label: 'Sauna & spa' },
+  { pattern: /\bfireplace\b|fire\s*pit/i, icon: Flame, label: 'Fireplace' },
+  { pattern: /\b(bbq|grill|barbecue|outdoor\s*kitchen)\b/i, icon: UtensilsCrossed, label: 'BBQ / outdoor kitchen' },
+  { pattern: /\b(private\s*garden|garden|terrace|patio)\b/i, icon: TreePine, label: 'Private garden' },
+  { pattern: /\bair\s*conditioning\b|\bA\/C\b/i, icon: Wind, label: 'Air conditioning' },
+  { pattern: /\bwifi\b|\binternet\b/i, icon: Wifi, label: 'Wifi' },
+  { pattern: /\b(home\s*office|workspace|desk)\b/i, icon: Monitor, label: 'Workspace' },
+  { pattern: /\b(parking|garage|ev\s*charging)\b/i, icon: Car, label: 'Private parking' },
+];
+
+function pickFeaturedAmenities(allAmenityItems: string[]): { icon: LucideIcon; label: string }[] {
+  const out: { icon: LucideIcon; label: string }[] = [];
+  const usedLabels = new Set<string>();
+  for (const { pattern, icon, label } of AMENITY_HIGHLIGHTS) {
+    if (usedLabels.has(label)) continue;
+    if (allAmenityItems.some((it) => pattern.test(it))) {
+      out.push({ icon, label });
+      usedLabels.add(label);
+      if (out.length >= 6) break;
+    }
+  }
+  return out;
+}
+
 /** Humanize bed type names and get icon */
 function getBedTypeDisplay(bedType: string, t: (key: string, fallback: string) => string): { label: string; icon: LucideIcon } {
   const normalized = (bedType || '').toUpperCase().replace(/ /g, '_');
@@ -347,14 +382,112 @@ function Lightbox({ images, initialIndex, propertyName, destName, onClose, t }: 
 }
 
 /** Description with "Read more" truncation for long Guesty copy */
-function DescriptionSection({ description, propertyName, locality, destName, t }: {
+/** Ordered structured-description blocks. `summary` is the lead (no heading);
+ *  the rest get a titled block. `interaction` is intentionally excluded from
+ *  the default render — it's usually generic concierge boilerplate that
+ *  duplicates "What's included". */
+const DESCRIPTION_BLOCKS: { key: string; labelKey: string; fallback: string; lead?: boolean }[] = [
+  { key: 'summary', labelKey: '', fallback: '', lead: true },
+  { key: 'space', labelKey: 'propertyDetail.sectionSpace', fallback: 'The space' },
+  { key: 'access', labelKey: 'propertyDetail.sectionAccess', fallback: 'Guest access' },
+  { key: 'neighborhood', labelKey: 'propertyDetail.sectionNeighbourhood', fallback: 'The neighbourhood' },
+  { key: 'gettingAround', labelKey: 'propertyDetail.sectionGettingAround', fallback: 'Getting around' },
+  { key: 'notes', labelKey: 'propertyDetail.sectionGoodToKnow', fallback: 'Good to know' },
+];
+
+/** Apply the empty / garbage / duplicate heuristics the content audit flagged.
+ *  Returns the ordered, renderable blocks (each with cleaned paragraphs). */
+function buildStructuredBlocks(sections: Record<string, string> | undefined) {
+  if (!sections || typeof sections !== 'object') return [];
+  const out: { key: string; label: string | null; paragraphs: string[] }[] = [];
+  const shownOpenings: string[] = []; // first-80-chars of every block already shown
+
+  const summaryClean = cleanDescription(String(sections.summary || '')).trim();
+
+  // Misplaced-upsell filter (content audit, Option A): ~25-35 older listings
+  // have the commercial "Exclusive Concierge Services / Adventure Experiences"
+  // block copy-pasted into "Other things to note". That belongs in the site's
+  // own Services/Experiences sections, not the property description — drop the
+  // whole notes block when it carries the upsell markers. Editorial cleanup in
+  // Guesty happens separately; this keeps the PDP clean immediately.
+  const UPSELL_MARKERS = /concierge services|adventure experiences|adventure tours/i;
+
+  for (const block of DESCRIPTION_BLOCKS) {
+    const raw = String(sections[block.key] || '');
+    const clean = cleanDescription(raw).trim();
+    // Empty / garbage filter (catches "", "/", single words, stray punctuation)
+    if (clean.replace(/[^a-zA-Z0-9]/g, '').length < 12) continue;
+    // Drop the notes block when it's the migrated commercial upsell.
+    if (block.key === 'notes' && UPSELL_MARKERS.test(clean)) continue;
+    // Duplicate filter: skip if this block just repeats the summary, or repeats
+    // the opening of any block already shown (e.g. "The space" echoing Summary).
+    const opening = clean.slice(0, 80).toLowerCase();
+    if (!block.lead) {
+      if (summaryClean && opening === summaryClean.slice(0, 80).toLowerCase()) continue;
+      if (shownOpenings.some((o) => o === opening)) continue;
+    }
+    shownOpenings.push(opening);
+    out.push({
+      key: block.key,
+      label: block.lead ? null : block.fallback, // label resolved with t() at render
+      paragraphs: clean.split(/\n\n+/).flatMap((p) => p.split('\n')).map((p) => p.trim()).filter(Boolean),
+    });
+  }
+  return out;
+}
+
+function DescriptionSection({ description, sections, propertyName, locality, destName, t }: {
   description: unknown;
+  sections?: Record<string, string>;
   propertyName: string;
   locality: string;
   destName: string;
   t: ReturnType<typeof import('react-i18next').useTranslation>['t'];
 }) {
   const [expanded, setExpanded] = useState(false);
+
+  // Prefer the structured sub-fields when the listing has clean content for
+  // them; otherwise fall back to the legacy merged-blob rendering.
+  const blocks = buildStructuredBlocks(sections);
+  const useStructured = blocks.length >= 2; // need at least summary + 1 real block
+
+  if (useStructured) {
+    // Above the fold: lead + first titled block. The rest expand on "Read more".
+    const ABOVE = 2;
+    const visibleBlocks = expanded ? blocks : blocks.slice(0, ABOVE);
+    const hasMore = blocks.length > ABOVE;
+    const labelFor = (b: typeof blocks[number]) => {
+      const def = DESCRIPTION_BLOCKS.find((d) => d.key === b.key);
+      return def && def.labelKey ? t(def.labelKey, def.fallback) : null;
+    };
+    return (
+      <section>
+        <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-5">{t('propertyDetail.aboutTitle')}</h2>
+        <div className="space-y-7">
+          {visibleBlocks.map((b) => (
+            <div key={b.key} className={b.label ? '' : 'body-lg'}>
+              {b.label && (
+                <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#9E9A90] mb-2.5">{labelFor(b)}</h3>
+              )}
+              <div className={b.label ? 'space-y-3 text-[14px] text-[#6B6860] leading-relaxed' : 'space-y-4'} style={b.label ? { fontWeight: 300 } : undefined}>
+                {b.paragraphs.map((para, i) => <p key={i}>{para}</p>)}
+              </div>
+            </div>
+          ))}
+          {hasMore && (
+            <button
+              onClick={() => setExpanded((v) => !v)}
+              className="text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4"
+            >
+              {expanded ? t('common.readLess', 'Read less') : t('common.readMore', 'Read more')}
+            </button>
+          )}
+        </div>
+      </section>
+    );
+  }
+
+  // ── Legacy fallback: single merged blob with truncation ──
   const paragraphs = formatDescription(description);
   const MAX_VISIBLE = 3;
   const needsTruncation = paragraphs.length > MAX_VISIBLE;
@@ -512,6 +645,7 @@ export default function PropertyDetail() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImage, setLightboxImage] = useState(0);
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
+  const [showAllAmenities, setShowAllAmenities] = useState(false);
   const touchStartX = useRef(0);
   const touchDeltaX = useRef(0);
   const touchStartTime = useRef(0);
@@ -655,6 +789,26 @@ export default function PropertyDetail() {
     if (!property?.amenities || typeof property.amenities !== 'object') return [];
     const all = Object.values(property.amenities).flat().filter((x): x is string => typeof x === 'string' && x.length > 0);
     return categorizeAmenities(all);
+  }, [property?.amenities]);
+
+  // Split categories into aspirational (always visible) vs practical/utility
+  // (Bathroom, Laundry, Family, Safety — necessary but not selling points).
+  // The utility groups only render once the guest expands "Show all amenities",
+  // keeping the default view focused on what makes the home special.
+  const UTILITY_CATEGORIES = useMemo(() => new Set(['laundry', 'bathroom', 'family', 'safety']), []);
+  const primaryAmenityGroups = useMemo(
+    () => amenityGroups.filter((g) => !UTILITY_CATEGORIES.has(g.category)),
+    [amenityGroups, UTILITY_CATEGORIES],
+  );
+  const utilityAmenityGroups = useMemo(
+    () => amenityGroups.filter((g) => UTILITY_CATEGORIES.has(g.category)),
+    [amenityGroups, UTILITY_CATEGORIES],
+  );
+
+  const featuredAmenities = useMemo(() => {
+    if (!property?.amenities || typeof property.amenities !== 'object') return [];
+    const all = Object.values(property.amenities).flat().filter((x): x is string => typeof x === 'string' && x.length > 0);
+    return pickFeaturedAmenities(all);
   }, [property?.amenities]);
 
   const handleGalleryTouchStart = useCallback((e: React.TouchEvent) => {
@@ -908,41 +1062,20 @@ export default function PropertyDetail() {
                 />
               )}
 
-              {/* Bedrooms & Sleeping Arrangement */}
-              {property.rooms && property.rooms.length > 0 && (
-                <section>
-                  <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-6">{t('propertyDetail.bedroomsTitle', 'Bedrooms & Sleeping Arrangements')}</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {property.rooms.map((room: any, roomIdx: number) => (
-                      <div key={roomIdx} className="bg-white border border-[#E8E4DC] p-5 rounded-lg">
-                        <h3 className="text-[13px] font-medium text-[#1A1A18] mb-4">{room.name}</h3>
-                        <div className="space-y-3">
-                          {room.beds && room.beds.length > 0 ? (
-                            room.beds.map((bed: any, bedIdx: number) => {
-                              const { label, icon: BedIcon } = getBedTypeDisplay(bed.type, t);
-                              return (
-                                <div key={bedIdx} className="flex items-center gap-3">
-                                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#F5F1EB] shrink-0">
-                                    <BedIcon size={16} className="text-[#8B7355]" />
-                                  </div>
-                                  <span className="text-[12px] text-[#6B6860]">
-                                    {bed.quantity > 1 ? `${bed.quantity} × ${t('bedType.' + label.replace(/\s/g, ''), label)}` : t('bedType.' + label.replace(/\s/g, ''), label)}
-                                  </span>
-                                </div>
-                              );
-                            })
-                          ) : (
-                            <span className="text-[12px] text-[#9E9A90]">{t('bedConfig.notAvailable')}</span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              )}
+              {/* 1. About this home — lead with the narrative. A luxury PDP
+                  should open with the story, not a clinical bed inventory. */}
+              <DescriptionSection
+                description={property.description}
+                sections={(property as any).descriptionSections}
+                propertyName={property.name}
+                locality={property.locality}
+                destName={destName}
+                t={t}
+              />
 
-              {/* 1. What's included */}
-              <section className="p-6 lg:p-8 bg-[#F5F1EB] rounded-lg">
+              {/* 2. What's included in every stay — the hotel-grade promise that
+                  separates us from a marketplace listing. */}
+              <section className="p-6 lg:p-8 bg-[#F5F1EB] rounded-2xl">
                 <div className="flex items-center gap-3 mb-5">
                   <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18]">{t('propertyDetail.includedTitle')}</h2>
                   <span className="h-px flex-1 bg-[#E8E4DC]" />
@@ -957,94 +1090,243 @@ export default function PropertyDetail() {
                 </div>
               </section>
 
-              {/* 2. Editorial description with Read more */}
-              <DescriptionSection
-                description={property.description}
-                propertyName={property.name}
-                locality={property.locality}
-                destName={destName}
-                t={t}
-              />
-
-              {/* 3. Amenities — Le Collectionist style icon grid with expandable sections */}
+              {/* 3. Amenities — highlights row + clean per-category list (the
+                  previous design rendered every item as a beige pill; it read as
+                  a tag cloud and gave no signal as to what makes the property
+                  special. The new layout surfaces 6 hero amenities at the top
+                  with bigger icons, then drops a calm 2-column list per
+                  category so guests can scan without fatigue). */}
               <section>
                 <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-6">{t('propertyDetail.amenitiesTitle')}</h2>
                 {amenityGroups.length > 0 ? (
-                  <div className="space-y-6">
-                    {amenityGroups.map((group) => (
-                      <div key={group.category}>
-                        <div className="flex items-center gap-2 mb-3">
-                          <group.icon size={16} className="text-[#8B7355]" />
-                          <h3 className="text-[13px] font-medium tracking-[0.04em] text-[#1A1A18]">{t(group.label)}</h3>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {group.items.map((item, idx) => (
-                            <span
-                              key={idx}
-                              className="text-[12px] text-[#6B6860] bg-[#F5F1EB] px-3 py-1.5 rounded-full"
-                            >
-                              {item}
-                            </span>
-                          ))}
-                        </div>
+                  <>
+                    {/* Featured highlights — uniform white tiles, larger icons,
+                        2-line labels so the row stays even regardless of length */}
+                    {featuredAmenities.length > 0 && (
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-10">
+                        {featuredAmenities.map((amenity, idx) => (
+                          <div
+                            key={idx}
+                            className="flex flex-col items-center justify-center text-center bg-white border border-[#E8E4DC] rounded-2xl px-3 min-h-[112px] shadow-[0_1px_2px_rgba(26,26,24,0.04)] hover:-translate-y-0.5 hover:border-[#8B7355]/40 hover:shadow-[0_8px_20px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
+                          >
+                            <amenity.icon size={28} strokeWidth={1.5} className="text-[#8B7355] mb-2.5" />
+                            <span className="text-[12px] text-[#1A1A18] font-medium leading-tight">{amenity.label}</span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
+                    )}
+
+                    {/* Primary categories — clean per-category lists, no pills */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 pt-2">
+                      {primaryAmenityGroups.map((group) => (
+                        <div key={group.category}>
+                          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#E8E4DC]">
+                            <group.icon size={14} className="text-[#8B7355] shrink-0" />
+                            <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#9E9A90]">{t(group.label)}</h3>
+                          </div>
+                          <ul className="space-y-2">
+                            {group.items.map((item, idx) => (
+                              <li key={idx} className="flex items-start gap-2.5 text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
+                                <span className="mt-[7px] h-3 w-px bg-[#8B7355]/50 shrink-0" />
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Practical/utility categories revealed on demand */}
+                    {utilityAmenityGroups.length > 0 && (
+                      <>
+                        {showAllAmenities && (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 pt-8 mt-2 border-t border-[#E8E4DC]">
+                            {utilityAmenityGroups.map((group) => (
+                              <div key={group.category}>
+                                <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#E8E4DC]">
+                                  <group.icon size={14} className="text-[#8B7355] shrink-0" />
+                                  <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#9E9A90]">{t(group.label)}</h3>
+                                </div>
+                                <ul className="space-y-2">
+                                  {group.items.map((item, idx) => (
+                                    <li key={idx} className="flex items-start gap-2.5 text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
+                                      <span className="mt-[7px] h-3 w-px bg-[#8B7355]/50 shrink-0" />
+                                      <span>{item}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => setShowAllAmenities((v) => !v)}
+                          className="inline-flex items-center gap-2 mt-8 text-[12px] font-medium tracking-[0.04em] uppercase text-[#8B7355] hover:text-[#1A1A18] transition-colors"
+                        >
+                          {showAllAmenities
+                            ? t('propertyDetail.showLessAmenities', 'Show fewer')
+                            : t('propertyDetail.showAllAmenities', 'Show all amenities')}
+                          {showAllAmenities ? <ChevronLeft className="w-3.5 h-3.5 rotate-90" /> : <ChevronRight className="w-3.5 h-3.5 rotate-90" />}
+                        </button>
+                      </>
+                    )}
+                  </>
                 ) : (
                   <p className="body-md text-[#9E9A90]">{t('propertyDetail.amenitiesContact')}</p>
                 )}
               </section>
 
-              {/* 4. Services (add-on) */}
+              {/* Bedrooms & sleeping — moved below the amenities (practical info
+                  belongs after the guest is sold). Redesigned from heavy bordered
+                  boxes with circular bed icons to a calm editorial grid: a summary
+                  stat line, then borderless cards with a hairline top rule and the
+                  bed config as quiet typography. */}
+              {property.rooms && property.rooms.length > 0 && (
+                <section>
+                  <div className="flex items-baseline justify-between gap-4 mb-6">
+                    <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18]">{t('propertyDetail.bedroomsTitle', 'Bedrooms & Sleeping Arrangements')}</h2>
+                    <p className="text-[12px] text-[#9E9A90] hidden sm:block shrink-0">
+                      {t('propertyDetail.sleepsSummary', { beds: property.bedrooms, guests: property.maxGuests, defaultValue: '{{beds}} bedrooms · sleeps {{guests}}' })}
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-7">
+                    {property.rooms.map((room: any, roomIdx: number) => (
+                      <div key={roomIdx} className="pt-4 border-t border-[#E8E4DC]">
+                        <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#9E9A90] mb-3">{room.name}</h3>
+                        {room.beds && room.beds.length > 0 ? (
+                          <div className="space-y-2.5">
+                            {room.beds.map((bed: any, bedIdx: number) => {
+                              const { label, icon: BedIcon } = getBedTypeDisplay(bed.type, t);
+                              return (
+                                <div key={bedIdx} className="flex items-center gap-2.5">
+                                  <BedIcon size={18} strokeWidth={1.5} className="text-[#8B7355] shrink-0" />
+                                  <span className="text-[13px] text-[#1A1A18]" style={{ fontWeight: 300 }}>
+                                    {bed.quantity > 1 ? `${bed.quantity} × ${t('bedType.' + label.replace(/\s/g, ''), label)}` : t('bedType.' + label.replace(/\s/g, ''), label)}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <span className="text-[12px] text-[#9E9A90]">{t('bedConfig.notAvailable')}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* In-house promise banner — establishes the hotel-chain model:
+                  every service and experience below is delivered by Portugal
+                  Active's own team, not a third-party marketplace. This is the
+                  single biggest differentiator and frames both sections. */}
+              <section className="bg-[#1A1A18] rounded-2xl p-7 lg:p-9 text-white">
+                <p className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#C9A876] mb-3">{t('propertyDetail.inHouseOverline', 'One team, one standard')}</p>
+                <h2 className="font-display text-[clamp(1.2rem,2.4vw,1.7rem)] font-light leading-[1.2] mb-3 max-w-xl text-white">{t('propertyDetail.inHouseTitle', 'Everything here is ours — chefs, drivers, therapists, guides.')}</h2>
+                <p className="text-[13.5px] text-white/70 leading-relaxed max-w-2xl" style={{ fontWeight: 300 }}>{t('propertyDetail.inHouseBody', 'Not a marketplace of strangers. Every service and experience is run by our own in-house team and trusted local partners we work with daily — booked, coordinated, and accountable through one concierge. The way a great hotel operates, in a private home.')}</p>
+              </section>
+
+              {/* 4. Services — in-house, delivered by our own team. Image-first
+                  cards; whole card opens the request modal. */}
               <section>
                 <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-2">{t('propertyDetail.servicesTitle')}</h2>
-                <p className="body-md text-[#9E9A90] mb-5">{t('propertyDetail.servicesSubtitle')}</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <p className="body-md text-[#9E9A90] mb-6">{t('propertyDetail.servicesSubtitle')}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                   {services.map(service => (
-                    <div key={service.slug} className="border border-[#E8E4DC] rounded-lg p-5 flex items-start justify-between gap-3 hover:border-[#8B7355]/40 hover:shadow-sm transition-all duration-200">
-                      <div className="min-w-0">
-                        <h3 className="font-display text-[15px] text-[#1A1A18] mb-1">{service.name}</h3>
-                        <p className="text-[12px] text-[#6B6860] leading-relaxed mb-2 line-clamp-2" style={{ fontWeight: 300 }}>{service.tagline}</p>
-                        <p className="text-[12px] text-[#8B7355] font-medium">
-                          {service.priceFrom ? t('propertyDetail.fromPrice', { price: String(service.priceFrom) }) : t('bookingWidget.included')} <span className="text-[10px] text-[#9E9A90] font-normal">{service.priceSuffix}</span>
-                        </p>
+                    <button
+                      key={service.slug}
+                      type="button"
+                      onClick={() => setModalProduct(service)}
+                      className="group block text-left bg-white border border-[#E8E4DC] rounded-xl overflow-hidden hover:border-[#8B7355]/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
+                    >
+                      <div className="relative aspect-[4/3] bg-[#F5F1EB] overflow-hidden">
+                        {service.image ? (
+                          <img
+                            src={service.image}
+                            alt={service.name}
+                            loading="lazy"
+                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
+                          />
+                        ) : null}
                       </div>
-                      <button
-                        onClick={() => setModalProduct(service)}
-                        className="flex items-center gap-1.5 rounded-full bg-[#1A1A18] text-white text-[11px] tracking-[0.06em] font-medium px-4 py-2.5 hover:bg-[#333] transition-colors shrink-0"
-                        style={{ minHeight: '44px', minWidth: '44px' }}
-                      >
-                        <Plus className="w-3.5 h-3.5" /> {t('propertyDetail.add')}
-                      </button>
-                    </div>
+                      <div className="p-5">
+                        <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-2">{t('propertyDetail.serviceOverline', 'Concierge service')}</p>
+                        <h3 className="font-display text-[16px] text-[#1A1A18] mb-1.5 group-hover:text-[#8B7355] transition-colors">{service.name}</h3>
+                        <p className="text-[12.5px] text-[#6B6860] leading-relaxed mb-4 line-clamp-2" style={{ fontWeight: 300 }}>{service.tagline}</p>
+                        <div className="flex items-baseline justify-between pt-3 border-t border-[#E8E4DC]">
+                          <p className="text-[13px] font-medium text-[#1A1A18]">
+                            {service.priceFrom ? t('propertyDetail.fromPrice', { price: String(service.priceFrom) }) : t('bookingWidget.included')}
+                            <span className="text-[10px] text-[#9E9A90] font-normal ml-1">{service.priceSuffix}</span>
+                          </p>
+                          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium tracking-[0.06em] uppercase text-[#8B7355] group-hover:text-[#1A1A18] transition-colors">
+                            {t('propertyDetail.requestService', 'Request')} <ArrowRight className="w-3 h-3" />
+                          </span>
+                        </div>
+                      </div>
+                    </button>
                   ))}
                 </div>
               </section>
 
-              {/* 5. Adventures nearby */}
+              {/* 5. Experiences — in-house curated, image-first. Capped to 6 on
+                  the PDP so the section stays focused; the rest live behind the
+                  "View all experiences" link. */}
               {adventures.length > 0 && (
                 <section>
                   <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-2">{t('propertyDetail.adventuresTitle')}</h2>
-                  <p className="body-md text-[#9E9A90] mb-5">{t('propertyDetail.adventuresSubtitle', { destination: destName })}</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {adventures.map(adventure => (
-                      <Link key={adventure.slug} href={`/experiences/${adventure.slug}`} className="border border-[#E8E4DC] rounded-lg p-5 flex items-start justify-between gap-3 hover:border-[#8B7355]/40 hover:shadow-sm transition-all duration-200 group">
-                        <div className="min-w-0">
-                          <h3 className="font-display text-[15px] text-[#1A1A18] mb-1 group-hover:text-[#8B7355] transition-colors">{adventure.name}</h3>
-                          <p className="text-[11px] text-[#6B6860] font-light leading-relaxed mb-2 line-clamp-2">{adventure.tagline}</p>
-                          <p className="text-[12px] text-[#9E9A90]">
-                            {adventure.priceFrom ? t('propertyDetail.fromPrice', { price: String(adventure.priceFrom) }) : t('propertyDetail.custom')} <span className="text-[10px]">{adventure.priceSuffix}</span>
-                          </p>
-                        </div>
-                        <span className="flex items-center gap-1.5 rounded-full bg-[#1A1A18] text-white text-[11px] tracking-[0.06em] font-medium px-4 py-2.5 group-hover:bg-[#333] transition-colors shrink-0" style={{ minHeight: '44px', minWidth: '44px' }}>
-                          <ArrowRight className="w-3.5 h-3.5" /> {t('propertyDetail.viewDetails', 'View')}
-                        </span>
-                      </Link>
-                    ))}
+                  <p className="body-md text-[#9E9A90] mb-6">{t('propertyDetail.adventuresSubtitle', { destination: destName })}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+                    {adventures.slice(0, 6).map(adventure => {
+                      const meta: string[] = [];
+                      if ((adventure as any).duration) meta.push(String((adventure as any).duration));
+                      if ((adventure as any).difficulty) meta.push(String((adventure as any).difficulty));
+                      return (
+                        <Link
+                          key={adventure.slug}
+                          href={`/experiences/${adventure.slug}`}
+                          className="group block bg-white border border-[#E8E4DC] rounded-xl overflow-hidden hover:border-[#8B7355]/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
+                        >
+                          <div className="relative aspect-[4/3] bg-[#F5F1EB] overflow-hidden">
+                            {adventure.image ? (
+                              <img
+                                src={adventure.image}
+                                alt={adventure.name}
+                                loading="lazy"
+                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
+                              />
+                            ) : null}
+                            {meta.length > 0 && (
+                              <div className="absolute bottom-3 left-3 right-3 flex flex-wrap gap-1.5">
+                                {meta.slice(0, 2).map((m, i) => (
+                                  <span key={i} className="text-[10px] tracking-[0.06em] uppercase font-medium px-2 py-1 bg-black/60 text-white backdrop-blur-sm rounded-full">
+                                    {m}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          <div className="p-5">
+                            <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-2">{t('propertyDetail.adventureOverline', 'Curated experience')}</p>
+                            <h3 className="font-display text-[16px] text-[#1A1A18] mb-1.5 group-hover:text-[#8B7355] transition-colors">{adventure.name}</h3>
+                            <p className="text-[12.5px] text-[#6B6860] leading-relaxed mb-4 line-clamp-2" style={{ fontWeight: 300 }}>{adventure.tagline}</p>
+                            <div className="flex items-baseline justify-between pt-3 border-t border-[#E8E4DC]">
+                              <p className="text-[13px] font-medium text-[#1A1A18]">
+                                {adventure.priceFrom ? t('propertyDetail.fromPrice', { price: String(adventure.priceFrom) }) : t('propertyDetail.custom')}
+                                <span className="text-[10px] text-[#9E9A90] font-normal ml-1">{adventure.priceSuffix}</span>
+                              </p>
+                              <span className="inline-flex items-center gap-1.5 text-[11px] font-medium tracking-[0.06em] uppercase text-[#8B7355] group-hover:text-[#1A1A18] transition-colors">
+                                {t('propertyDetail.viewDetails', 'View')} <ArrowRight className="w-3 h-3" />
+                              </span>
+                            </div>
+                          </div>
+                        </Link>
+                      );
+                    })}
                   </div>
                   <Link
                     href="/experiences"
-                    className="inline-flex items-center gap-2 mt-4 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors"
+                    className="inline-flex items-center gap-2 mt-6 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors"
                   >
                     {t('propertyDetail.viewAllExperiences', 'View all experiences')} <ArrowRight className="w-3.5 h-3.5" />
                   </Link>

@@ -5,6 +5,12 @@ interface Review {
   rating: number;
   text: string;
   guestName: string;
+  /** First name only (privacy-safe). Falls back to guestName if absent. */
+  guestDisplayName?: string;
+  /** Avatar URL if the channel delivered one — else null/undefined (no photo). */
+  guestPhoto?: string | null;
+  /** "London, UK" if present — else null/undefined (line hidden). */
+  guestLocation?: string | null;
   date: string;
   categories?: Array<{ name: string; score: number }>;
 }
@@ -57,16 +63,28 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
           <div key={idx} className="bg-[#FAFAF7] border border-[#E8E4DC] rounded-lg p-5 hover:border-[#8B7355]/30 transition-colors">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-[#8B7355] flex items-center justify-center text-[#FAFAF7] text-[12px] font-medium shrink-0">
-                  {review.guestName.charAt(0).toUpperCase()}
-                </div>
+                {review.guestPhoto ? (
+                  <img
+                    src={review.guestPhoto}
+                    alt={review.guestDisplayName || review.guestName}
+                    loading="lazy"
+                    className="w-8 h-8 rounded-full object-cover shrink-0"
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-[#8B7355] flex items-center justify-center text-[#FAFAF7] text-[12px] font-medium shrink-0">
+                    {(review.guestDisplayName || review.guestName).charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <div>
-                  <p className="text-[13px] font-medium text-[#1A1A18]">{review.guestName}</p>
-                  {review.date && (
-                    <p className="text-[11px] text-[#9E9A90]">
-                      {new Date(review.date).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' })}
-                    </p>
-                  )}
+                  <p className="text-[13px] font-medium text-[#1A1A18]">{review.guestDisplayName || review.guestName}</p>
+                  <div className="flex items-center gap-1.5 text-[11px] text-[#9E9A90]">
+                    {review.guestLocation && <span>{review.guestLocation}</span>}
+                    {review.guestLocation && review.date && <span className="text-[#D8D2C6]">·</span>}
+                    {review.date && (
+                      <span>{new Date(review.date).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' })}</span>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="flex gap-0.5">

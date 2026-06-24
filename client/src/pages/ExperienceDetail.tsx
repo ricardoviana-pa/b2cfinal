@@ -778,6 +778,7 @@ export default function ExperienceDetail() {
                 whatsappMessage={exp.whatsappMessage || ''}
                 maxGroupSize={exp.groupSizeRange?.max}
                 bokunActivityId={(exp as any).bokunActivityId}
+                bokunOptions={(exp as any).bokunOptions}
                 experienceSlug={exp.slug}
                 experienceCategory={exp.experienceCategory}
                 priceOta={exp.priceOta}
@@ -858,6 +859,7 @@ export default function ExperienceDetail() {
         whatsappMessage={exp.whatsappMessage || ''}
         maxGroupSize={exp.groupSizeRange?.max}
         bokunActivityId={(exp as any).bokunActivityId}
+        bokunOptions={(exp as any).bokunOptions}
         experienceSlug={exp.slug}
         experienceCategory={exp.experienceCategory}
         priceOta={exp.priceOta}
