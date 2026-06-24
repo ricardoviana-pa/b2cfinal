@@ -166,9 +166,11 @@ async function fetchAllReviews(): Promise<any[]> {
 }
 
 /** First name only — warmer for the premium tier, and avoids exposing full
- *  guest names. Prefers an explicit first-name field; else takes the first
- *  token of the full reviewer name. Defensive across channel field shapes. */
-function reviewerFirstName(review: any, raw: any): string {
+ *  guest names. Returns null when the payload carries no name at all (this
+ *  Guesty account's Airbnb-style reviews only expose opaque reviewer_id /
+ *  guestId, no name/photo/location), so the frontend can show a neutral
+ *  "Verified guest" label instead of a fake one. */
+function reviewerFirstName(review: any, raw: any): string | null {
   const explicit =
     raw.reviewer_first_name ?? raw.reviewerFirstName ??
     raw.reviewer?.first_name ?? raw.reviewer?.firstName ??
@@ -177,7 +179,8 @@ function reviewerFirstName(review: any, raw: any): string {
   const full =
     review.guestName ?? raw.reviewer_name ?? raw.reviewerName ??
     raw.reviewer?.name ?? raw.author?.name ?? "";
-  return String(full).trim().split(/\s+/)[0] || "Guest";
+  const first = String(full).trim().split(/\s+/)[0];
+  return first || null;
 }
 
 /** Avatar URL if the channel delivered one, else null. Airbnb almost always
@@ -221,20 +224,23 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
       console.info("[Guesty Sync] Review sample — rawReview keys:", Object.keys(raw).join(","));
     }
 
-    // Only guest-to-host reviews (exclude host-to-guest). Default missing type
-    // to guest-to-host — a review carrying reviewer_name + public_review is a
-    // guest review; the diagnostic log above reveals the real field if absent.
-    const type = String(review.type ?? raw.type ?? "guest-to-host");
-    if (type !== "guest-to-host") continue;
+    // Only guest-to-host reviews — exclude host-to-guest. The real payload
+    // carries reviewer_role ("guest" | "host"), not a top-level `type`. If
+    // reviewer_role is present and not "guest", drop it; if absent, keep.
+    const reviewerRole = String(raw.reviewer_role ?? review.type ?? "").toLowerCase();
+    if (reviewerRole && reviewerRole !== "guest" && reviewerRole !== "guest-to-host") continue;
 
-    // Exclude private / non-public reviews.
+    // Exclude hidden / private / unsubmitted reviews (real fields: `hidden`,
+    // `submitted`), plus the earlier defensive flags.
+    if (raw.hidden === true || raw.submitted === false) continue;
     const isPrivate =
       review.private === true || review.isPrivate === true ||
       raw.private === true || raw.is_private === true ||
       String(review.status ?? "").toLowerCase() === "private";
     if (isPrivate) continue;
 
-    // Normalise to a 5-star scale (Booking.com et al. use a 10-point scale).
+    // overall_rating is a 1-5 Airbnb-style score here; the >5 guard only kicks
+    // in for channels that hand back a 10-point scale.
     let rating = Number(raw.overall_rating ?? raw.overallRating ?? raw.rating ?? review.rating ?? 0);
     if (rating > 5) rating = rating / 2;
     rating = Math.round(rating * 10) / 10;
@@ -250,16 +256,19 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
       if (score > 0) categories.push({ name: cat, score });
     }
 
-    const firstName = reviewerFirstName(review, raw);
+    const firstName = reviewerFirstName(review, raw); // null when no name in payload
     const mapped = {
       rating,
       text: text.slice(0, 500),
-      // Privacy-safe identity: first name only, no full name, no channel.
+      // Privacy-safe identity. This account's reviews have no name/photo/
+      // location — only opaque ids — so these are usually null; the frontend
+      // renders a neutral "Verified guest" card. Kept the extractors so that
+      // if a channel ever does deliver them, they flow through unchanged.
       guestDisplayName: firstName,
-      guestName: firstName, // backwards-compat with the current ReviewsSection
+      guestName: firstName ?? "", // backwards-compat; empty when anonymous
       guestPhoto: reviewerPhoto(review, raw),
       guestLocation: reviewerLocation(review, raw),
-      date: review.createdAt || review.date || raw.created_at || raw.submitted_at || "",
+      date: review.createdAt || raw.submitted_at || review.date || raw.created_at || "",
       categories,
     };
 
