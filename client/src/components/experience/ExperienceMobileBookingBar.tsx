@@ -171,8 +171,33 @@ export default function ExperienceMobileBookingBar({
 
           {/* Bókun widget — fills remaining space, checkout via modal. Full
               experience widget (rate selector) when the activity is
-              multi-option, else the compact calendar. */}
+              multi-option, else the compact calendar. Multi-option also shows
+              the route chooser at the top (mirrors the desktop card) so the
+              guest sees each tour's schedule/price before the calendar. */}
           <div className="flex-1 bg-white overflow-y-auto">
+            {isMultiOption && (
+              <div className="px-5 pt-5 pb-4 border-b border-[#E8E4DC]">
+                <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-3">
+                  {t('experience.chooseOption', 'Choose your option')}
+                </p>
+                <div className="space-y-2">
+                  {bokunOptions!.map((opt, i) => (
+                    <div key={i} className="flex items-center justify-between gap-3 p-3 border border-[#E8E4DC] rounded-lg">
+                      <div className="min-w-0">
+                        <p className="text-[13px] text-[#1A1A18] font-medium leading-tight">{opt.name}</p>
+                        {opt.detail && <p className="text-[11px] text-[#9E9A90] mt-0.5">{opt.detail}</p>}
+                      </div>
+                      {opt.priceFrom ? (
+                        <span className="text-[13px] text-[#1A1A18] font-medium whitespace-nowrap shrink-0">€{opt.priceFrom}</span>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[11px] text-[#9E9A90] mt-3" style={{ fontWeight: 300 }}>
+                  {t('experience.pickOptionHint', 'Select a tour to check live availability')}
+                </p>
+              </div>
+            )}
             <BokunCalendarWidget
               bokunActivityId={bokunActivityId!}
               experienceName={experienceName}
