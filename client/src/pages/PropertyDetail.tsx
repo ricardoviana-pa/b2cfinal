@@ -24,6 +24,7 @@ import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
 import PropertyUnitsSection from '@/components/property/PropertyUnitsSection';
 import ReviewsSection from '@/components/property/ReviewsSection';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from '@/components/ui/drawer';
 import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 import { trpc } from '@/lib/trpc';
 import { pushEcommerce } from '@/lib/datalayer';
@@ -640,6 +641,7 @@ export default function PropertyDetail() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImage, setLightboxImage] = useState(0);
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
+  const [bookingOpen, setBookingOpen] = useState(false);
   const [showAllAmenities, setShowAllAmenities] = useState(false);
   const touchStartX = useRef(0);
   const touchDeltaX = useRef(0);
@@ -895,6 +897,75 @@ export default function PropertyDetail() {
     .map((img: string) => optimizeGuestyImage(img, 1200));
   const totalImages = Math.max(images.length, 1);
   const whatsappUrl = `https://wa.me/351927161771?text=${encodeURIComponent(property.whatsappMessage || `Hi, I am interested in ${property.name}`)}`;
+
+  // Booking panel — shared between the desktop sticky sidebar and the mobile
+  // bottom-sheet drawer so the two stay in sync (single source of truth).
+  const bookingPanel = (
+    <>
+      {property.guestyId ? (
+        <Suspense fallback={<div className="h-[300px] bg-[#F5F1EB] animate-pulse border border-[#E8E4DC]" />}>
+          <BookingWidget
+            guestyId={property.guestyId}
+            propertyName={property.name}
+            pricePerNight={(property as any).pricePerNight || property.priceFrom || 0}
+            maxGuests={property.maxGuests || 10}
+            minNights={(property as any).minNights}
+            cleaningFee={(property as any).cleaningFee}
+            destination={property.destination}
+            initialCheckIn={initialCheckin}
+            initialCheckOut={initialCheckout}
+            initialGuests={initialGuests}
+          />
+        </Suspense>
+      ) : (
+        <div className="bg-[#FAFAF7] border border-[#E8E4DC] p-6">
+          <p className="font-display text-[20px] font-light text-[#1A1A18] mb-2">
+            {t('property.priceOnRequest')}
+          </p>
+          <div className="flex items-center gap-1.5 mb-4">
+            <BadgeCheck size={14} className="text-[#8B7355]" />
+            <span className="text-[11px] tracking-[0.02em] text-[#9E9A90] font-medium">{t('property.directConcierge')}</span>
+          </div>
+          <div className="space-y-3">
+            <Link
+              href={`/contact?property=${encodeURIComponent(property.slug)}&intent=availability`}
+              className="btn-primary w-full flex items-center justify-center gap-2"
+            >
+              {t('property.checkAvailability')}
+            </Link>
+            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-ghost w-full">
+              {t('property.askAboutHome')}
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* Concierge CTA — secondary, doesn't compete with primary Reserve */}
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn-ghost w-full mt-4 flex items-center justify-center gap-2 text-[#8B7355]"
+      >
+        {t('property.needHelpConcierge')}
+      </a>
+
+      {/* Trust strip */}
+      <div className="grid grid-cols-2 gap-x-4 gap-y-3 mt-6 pt-5 border-t border-[#E8E4DC]">
+        {([
+          { icon: Lock, label: t('trust.secureBooking', 'Secure booking') },
+          { icon: ShieldCheck, label: t('trust.bestRate', 'Best rate guaranteed') },
+          { icon: Clock, label: t('trust.flexibleOptions', 'Flexible cancellation options') },
+          { icon: Headphones, label: t('trust.conciergeIncluded', 'Concierge included') },
+        ] as const).map((item, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <item.icon size={14} className="text-[#9E9A90] shrink-0" />
+            <span className="text-[12px] text-[#9E9A90] leading-tight" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{item.label}</span>
+          </div>
+        ))}
+      </div>
+    </>
+  );
 
   return (
     <>
@@ -1359,76 +1430,13 @@ export default function PropertyDetail() {
 
             </div>
 
-            {/* Sticky booking card — right 1/3 on desktop. On mobile it sits
-                AFTER the content (order-2) so the page leads with the home's
-                story instead of an empty booking form; the fixed bottom bar
-                keeps booking one tap away throughout the scroll. */}
-            <aside id="property-booking" className="order-2 lg:order-2 lg:col-span-1 pt-10 lg:pt-0">
+            {/* Booking — desktop only: a sticky sidebar on the right. On mobile
+                the inline card is gone entirely; booking happens in a bottom
+                sheet opened from the fixed bar (see below), so the page leads
+                with the home's story, uninterrupted. */}
+            <aside id="property-booking" className="hidden lg:block lg:order-2 lg:col-span-1 lg:pt-0">
               <div className="property-sticky-card lg:sticky lg:top-[100px]">
-                {property.guestyId ? (
-                  <>
-                    <Suspense fallback={<div className="h-[300px] bg-[#F5F1EB] animate-pulse border border-[#E8E4DC]" />}>
-                    <BookingWidget
-                      guestyId={property.guestyId}
-                      propertyName={property.name}
-                      pricePerNight={(property as any).pricePerNight || property.priceFrom || 0}
-                      maxGuests={property.maxGuests || 10}
-                      minNights={(property as any).minNights}
-                      cleaningFee={(property as any).cleaningFee}
-                      destination={property.destination}
-                      initialCheckIn={initialCheckin}
-                      initialCheckOut={initialCheckout}
-                      initialGuests={initialGuests}
-                    />
-                    </Suspense>
-                  </>
-                ) : (
-                  <div className="bg-[#FAFAF7] border border-[#E8E4DC] p-6">
-                    <p className="font-display text-[20px] font-light text-[#1A1A18] mb-2">
-                      {t('property.priceOnRequest')}
-                    </p>
-                    <div className="flex items-center gap-1.5 mb-4">
-                      <BadgeCheck size={14} className="text-[#8B7355]" />
-                      <span className="text-[11px] tracking-[0.02em] text-[#9E9A90] font-medium">{t('property.directConcierge')}</span>
-                    </div>
-                    <div className="space-y-3">
-                      <Link
-                        href={`/contact?property=${encodeURIComponent(property.slug)}&intent=availability`}
-                        className="btn-primary w-full flex items-center justify-center gap-2"
-                      >
-                        {t('property.checkAvailability')}
-                      </Link>
-                      <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-ghost w-full">
-                        {t('property.askAboutHome')}
-                      </a>
-                    </div>
-                  </div>
-                )}
-
-                {/* Concierge CTA — secondary, doesn't compete with primary Reserve */}
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-ghost w-full mt-4 flex items-center justify-center gap-2 text-[#8B7355]"
-                >
-                  {t('property.needHelpConcierge')}
-                </a>
-
-                {/* Trust strip */}
-                <div className="grid grid-cols-2 gap-x-4 gap-y-3 mt-6 pt-5 border-t border-[#E8E4DC]">
-                  {([
-                    { icon: Lock, label: t('trust.secureBooking', 'Secure booking') },
-                    { icon: ShieldCheck, label: t('trust.bestRate', 'Best rate guaranteed') },
-                    { icon: Clock, label: t('trust.flexibleOptions', 'Flexible cancellation options') },
-                    { icon: Headphones, label: t('trust.conciergeIncluded', 'Concierge included') },
-                  ] as const).map((item, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                      <item.icon size={14} className="text-[#9E9A90] shrink-0" />
-                      <span className="text-[12px] text-[#9E9A90] leading-tight" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{item.label}</span>
-                    </div>
-                  ))}
-                </div>
+                {bookingPanel}
               </div>
             </aside>
           </div>
@@ -1451,7 +1459,7 @@ export default function PropertyDetail() {
             {property.guestyId ? (
               <button
                 type="button"
-                onClick={() => document.getElementById('property-booking')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                onClick={() => setBookingOpen(true)}
                 className="btn-primary shrink-0"
               >
                 {t('property.checkAvailability')}
@@ -1466,6 +1474,27 @@ export default function PropertyDetail() {
             )}
           </div>
         </div>
+
+        {/* Mobile: booking bottom-sheet — opened from the fixed bar. Keeps the
+            full availability flow (calendar, guests, live quote) one tap away
+            without an inline form blocking the content. Mobile only. */}
+        {property.guestyId && (
+          <Drawer open={bookingOpen} onOpenChange={setBookingOpen}>
+            <DrawerContent className="lg:hidden bg-white max-h-[92vh]">
+              <DrawerHeader className="flex-row items-center justify-between gap-3 border-b border-[#E8E4DC] px-5 py-4 text-left">
+                <DrawerTitle className="font-display text-[16px] font-light text-[#1A1A18] truncate">
+                  {property.name}
+                </DrawerTitle>
+                <DrawerClose className="shrink-0 text-[#9E9A90] hover:text-[#1A1A18] transition-colors">
+                  <X size={20} />
+                </DrawerClose>
+              </DrawerHeader>
+              <div className="flex-1 min-h-0 overflow-y-auto px-5 py-5">
+                {bookingPanel}
+              </div>
+            </DrawerContent>
+          </Drawer>
+        )}
 
         {/* Related properties from same region */}
         {relatedProperties.length > 0 && (
