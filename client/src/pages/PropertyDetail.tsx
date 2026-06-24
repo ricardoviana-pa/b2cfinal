@@ -1209,14 +1209,17 @@ export default function PropertyDetail() {
                 </section>
               )}
 
-              {/* In-house promise banner — establishes the hotel-chain model:
-                  every service and experience below is delivered by Portugal
-                  Active's own team, not a third-party marketplace. This is the
-                  single biggest differentiator and frames both sections. */}
-              <section className="bg-[#1A1A18] rounded-2xl p-7 lg:p-9 text-white">
-                <p className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#C9A876] mb-3">{t('propertyDetail.inHouseOverline', 'One team, one standard')}</p>
-                <h2 className="font-display text-[clamp(1.2rem,2.4vw,1.7rem)] font-light leading-[1.2] mb-3 max-w-xl text-white">{t('propertyDetail.inHouseTitle', 'Everything here is ours — chefs, drivers, therapists, guides.')}</h2>
-                <p className="text-[13.5px] text-white/70 leading-relaxed max-w-2xl" style={{ fontWeight: 300 }}>{t('propertyDetail.inHouseBody', 'Not a marketplace of strangers. Every service and experience is run by our own in-house team and trusted local partners we work with daily — booked, coordinated, and accountable through one concierge. The way a great hotel operates, in a private home.')}</p>
+              {/* In-house promise — establishes the hotel-chain model: every
+                  service and experience below is delivered by Portugal Active's
+                  own team, not a third-party marketplace. Framed as a quiet
+                  centred editorial statement (a fine gold rule its only accent)
+                  rather than a heavy filled banner — the brand "moment" between
+                  the practical info above and the services below. */}
+              <section className="py-6 lg:py-10 text-center">
+                <span className="mx-auto block h-px w-10 bg-[#C9A876]/70 mb-7" />
+                <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#8B7355] mb-4">{t('propertyDetail.inHouseOverline', 'One team, one standard')}</p>
+                <h2 className="font-display text-[clamp(1.35rem,2.6vw,1.85rem)] font-light leading-[1.3] text-[#1A1A18] mb-5 max-w-[34rem] mx-auto">{t('propertyDetail.inHouseTitle', 'Everything here is ours — chefs, drivers, therapists, guides.')}</h2>
+                <p className="text-[14px] text-[#6B6860] leading-relaxed max-w-[40rem] mx-auto" style={{ fontWeight: 300 }}>{t('propertyDetail.inHouseBody', 'Not a marketplace of strangers. Every service and experience is run by our own in-house team and trusted local partners we work with daily — booked, coordinated, and accountable through one concierge. The way a great hotel operates, in a private home.')}</p>
               </section>
 
               {/* 4. Services — in-house, delivered by our own team. Image-first
