@@ -2545,9 +2545,9 @@
     "bedrooms": 6,
     "bathrooms": 5,
     "maxGuests": 12,
-    "priceFrom": 450,
-    "pricePerNight": 450,
-    "cleaningFee": 0,
+    "priceFrom": 420,
+    "pricePerNight": 420,
+    "cleaningFee": 225,
     "minNights": 3,
     "currency": "EUR",
     "images": [
@@ -13272,6 +13272,38 @@
     "reviews": [
       {
         "rating": 4,
+        "text": "Espaço muito agradável preparado para crianças. \nQuartos amplos com wcs privados \nEstava tudo bem higienizado.\nBoa biblioteca de livros e jogos.\nCaminhar sempre com calçado na relva pois tem espinhos.",
+        "guestName": "Guest",
+        "date": "2026-06-22T09:45:06.879Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
         "text": "Obrigado Portugal Active pelo excelente suporte.",
         "guestName": "Guest",
         "date": "2026-02-17T20:56:40.598Z",
@@ -13304,7 +13336,7 @@
       }
     ],
     "averageRating": 4,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-696533284b583900135ceb91",
@@ -14975,17 +15007,17 @@
     "bedrooms": 1,
     "bathrooms": 1,
     "maxGuests": 4,
-    "priceFrom": 100,
-    "pricePerNight": 100,
-    "cleaningFee": 0,
+    "priceFrom": 104,
+    "pricePerNight": 104,
+    "cleaningFee": 50,
     "minNights": 3,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1782226216/production/6957de4388cba42d9e7a905e/b8ambooqmaikzdgsdce8.jpg",
+      "https://assets.guesty.com/image/upload/v1782226203/production/6957de4388cba42d9e7a905e/z0mak81zfo2m8lmduu1s.jpg",
       "https://assets.guesty.com/image/upload/v1782226220/production/6957de4388cba42d9e7a905e/ncvwzaaaprznczowrtlt.jpg",
       "https://assets.guesty.com/image/upload/v1782226212/production/6957de4388cba42d9e7a905e/vti4fptl7gll8x515dpd.jpg",
+      "https://assets.guesty.com/image/upload/v1782226216/production/6957de4388cba42d9e7a905e/b8ambooqmaikzdgsdce8.jpg",
       "https://assets.guesty.com/image/upload/v1782226224/production/6957de4388cba42d9e7a905e/jd6uwuzmpdobueh0km8v.jpg",
-      "https://assets.guesty.com/image/upload/v1782226203/production/6957de4388cba42d9e7a905e/z0mak81zfo2m8lmduu1s.jpg",
       "https://assets.guesty.com/image/upload/v1782226209/production/6957de4388cba42d9e7a905e/gtvb46vgnetxyw4yhylg.jpg",
       "https://assets.guesty.com/image/upload/v1782226203/production/6957de4388cba42d9e7a905e/dlisk7fxesxcdxlgfvyj.jpg",
       "https://assets.guesty.com/image/upload/v1782226208/production/6957de4388cba42d9e7a905e/qpi5b9bbazeojcsep2iy.jpg",
@@ -17356,6 +17388,38 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Estadia incrível, a casa tem um espaço muito bom, principalmente a zona da churrasqueira/mesa exterior que são ótimas para jantares de Verão e ficam muito perto da cozinha para todo o apoio necessário, zona da piscina muito porreira também, gostamos muito da casa e tem um espaço mais que confortável para 8 pessoas. Aconselho vivamente!",
+        "guestName": "Guest",
+        "date": "2026-06-23T22:34:50.731Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Toda a casa estava muito bem equipada!",
         "guestName": "Guest",
         "date": "2026-01-03T10:43:03.898Z",
@@ -17388,7 +17452,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-696533abf142270014026fa9",
