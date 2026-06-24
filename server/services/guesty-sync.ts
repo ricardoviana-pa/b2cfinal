@@ -316,12 +316,25 @@ function inferDestination(addr: any): string {
       city.includes('barcelos') || city.includes('esposende') ||
       city.includes('fafe') || city.includes('vizela')) return 'minho';
 
-  // Lisbon
+  // Lisbon + Silver Coast / Centro-Oeste. The site has no dedicated "Centro"
+  // or "Silver Coast" destination, so the Leiria/Oeste coastal belt (Nazaré,
+  // Alcobaça, Pataias, Óbidos, Caldas, Peniche, …) maps to Lisbon — it's the
+  // closest marketed region (≈1h, Silver Coast day-trips from Lisbon) and was
+  // previously falling through to Minho (≈2h north — geographically wrong).
   if (state.includes('lisboa') || state.includes('setúbal') || state.includes('setubal') ||
       city.includes('lisboa') || city.includes('lisbon') || city.includes('sintra') ||
       city.includes('cascais') || city.includes('oeiras') || city.includes('estoril') ||
       city.includes('almada') || city.includes('sesimbra') || city.includes('arrábida') ||
-      region.includes('lisboa')) return 'lisbon';
+      region.includes('lisboa') ||
+      // Leiria district / Oeste / Silver Coast
+      state.includes('leiria') || state.includes('santarém') || state.includes('santarem') ||
+      city.includes('nazaré') || city.includes('nazare') ||
+      city.includes('alcobaça') || city.includes('alcobaca') || city.includes('pataias') ||
+      city.includes('óbidos') || city.includes('obidos') ||
+      city.includes('caldas da rainha') || city.includes('peniche') ||
+      city.includes('marinha grande') || city.includes('bombarral') ||
+      city.includes('foz do arelho') || city.includes('são martinho do porto') ||
+      city.includes('sao martinho do porto') || city.includes('leiria')) return 'lisbon';
 
   // Alentejo
   if (state.includes('évora') || state.includes('evora') ||
@@ -538,6 +551,15 @@ export async function runSync(): Promise<string> {
     }),
   ]);
   console.log(`[Guesty Sync] Got ${listings.length} listings, ${allReviews.length} reviews`);
+
+  // Diagnostic: log the exact field names on the first fetched review so we can
+  // confirm where guestPhoto / guestLocation live in this account's payload.
+  // Logged here (right after fetch, on the raw array) — guaranteed to run even
+  // if every review is later filtered out by buildReviewsByListing.
+  if (allReviews.length > 0) {
+    console.log("[Guesty Sync] Review sample — top-level keys:", Object.keys(allReviews[0]));
+    console.log("[Guesty Sync] Review sample — rawReview keys:", Object.keys(allReviews[0].rawReview ?? {}));
+  }
 
   if (listings.length === 0) {
     console.warn("[Guesty Sync] No listings returned — keeping existing data.");

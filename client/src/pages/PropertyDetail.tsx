@@ -404,11 +404,21 @@ function buildStructuredBlocks(sections: Record<string, string> | undefined) {
 
   const summaryClean = cleanDescription(String(sections.summary || '')).trim();
 
+  // Misplaced-upsell filter (content audit, Option A): ~25-35 older listings
+  // have the commercial "Exclusive Concierge Services / Adventure Experiences"
+  // block copy-pasted into "Other things to note". That belongs in the site's
+  // own Services/Experiences sections, not the property description — drop the
+  // whole notes block when it carries the upsell markers. Editorial cleanup in
+  // Guesty happens separately; this keeps the PDP clean immediately.
+  const UPSELL_MARKERS = /concierge services|adventure experiences|adventure tours/i;
+
   for (const block of DESCRIPTION_BLOCKS) {
     const raw = String(sections[block.key] || '');
     const clean = cleanDescription(raw).trim();
     // Empty / garbage filter (catches "", "/", single words, stray punctuation)
     if (clean.replace(/[^a-zA-Z0-9]/g, '').length < 12) continue;
+    // Drop the notes block when it's the migrated commercial upsell.
+    if (block.key === 'notes' && UPSELL_MARKERS.test(clean)) continue;
     // Duplicate filter: skip if this block just repeats the summary, or repeats
     // the opening of any block already shown (e.g. "The space" echoing Summary).
     const opening = clean.slice(0, 80).toLowerCase();
