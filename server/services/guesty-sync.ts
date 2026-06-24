@@ -95,22 +95,70 @@ function buildDescription(desc: any, legacyDescription?: string): string {
   return combined || legacyDescription || "";
 }
 
-/** Expose Guesty's public-description sub-fields as separate sections so the
- *  PDP can render them as titled blocks ("The space", "The neighbourhood",
- *  "Getting around", "Good to know") instead of one merged paragraph.
- *  Sent lightly-trimmed and raw — the frontend applies the empty/garbage/
- *  duplicate heuristics at render time (easier to tune there, and keeps the
- *  per-listing content-quality decisions in the presentation layer). */
+/** Content-quality metrics for the structured descriptions, accumulated across
+ *  a sync run and logged at the end so we can track the editorial cleanup of
+ *  the ~25-35 older listings over time. Reset at the start of runSync. */
+const descMetrics = { notesUpsellFiltered: 0, spaceDeduped: 0, gettingAroundGarbage: 0 };
+
+/** Markers of the commercial upsell block ("Exclusive Concierge Services /
+ *  Adventure Experiences") that was copy-pasted into "Other things to note"
+ *  on older listings. That content belongs in the site's own Services /
+ *  Experiences sections, not the property description. */
+const NOTES_UPSELL_MARKERS = [
+  "exclusive concierge services",
+  "adventure experiences",
+  "enhance your stay with our exclusive services",
+  "portugal active, your private hotel",
+];
+
+/** Drop the "Other things to note" block when it's the migrated upsell or
+ *  garbage; else return the trimmed text. */
+function cleanOtherNotes(raw: string): string {
+  const trimmed = raw.trim();
+  if (trimmed.replace(/[^a-zA-Z0-9]/g, "").length < 10) return ""; // "", "/", stray punctuation
+  const lower = trimmed.toLowerCase();
+  if (NOTES_UPSELL_MARKERS.some((m) => lower.includes(m))) {
+    descMetrics.notesUpsellFiltered++;
+    return "";
+  }
+  return trimmed;
+}
+
+/** Hide "The space" when it just repeats the Summary opening (older listings
+ *  copy-pasted Summary into Space). Distinct content (e.g. Carcavelos) passes. */
+function dedupSpace(summary: string, space: string): string {
+  const s = space.trim();
+  if (!s) return "";
+  const summaryHead = summary.slice(0, 80).toLowerCase().trim();
+  const spaceHead = s.slice(0, 80).toLowerCase().trim();
+  if (summaryHead && spaceHead === summaryHead) {
+    descMetrics.spaceDeduped++;
+    return "";
+  }
+  return s;
+}
+
+/** Expose Guesty's public-description sub-fields as separate, cleaned sections
+ *  so the PDP can render them as titled blocks ("The space", "The
+ *  neighbourhood", "Getting around", "Good to know") instead of one merged
+ *  paragraph. Cleaning lives here (not the React component) so the frontend
+ *  stays business-rule-agnostic and the filtering is metric-tracked per sync.
+ *  Only `notes` (upsell/garbage) and `space` (Summary duplicate) are filtered;
+ *  summary / access / neighborhood / interaction are passed through. */
 function buildDescriptionSections(desc: any): Record<string, string> {
   if (!desc || typeof desc !== "object") return {};
   const pick = (v: unknown) => (typeof v === "string" ? v.trim() : "");
+  const summary = pick(desc.summary);
+  const gettingAroundRaw = pick(desc.transit);
+  const gettingAround = gettingAroundRaw.replace(/[^a-zA-Z0-9]/g, "").length < 10 ? "" : gettingAroundRaw;
+  if (gettingAroundRaw && !gettingAround) descMetrics.gettingAroundGarbage++;
   return {
-    summary: pick(desc.summary),
-    space: pick(desc.space),
+    summary,
+    space: dedupSpace(summary, pick(desc.space)),
     access: pick(desc.access),
     neighborhood: pick(desc.neighborhood),
-    gettingAround: pick(desc.transit),
-    notes: pick(desc.notes),
+    gettingAround,
+    notes: cleanOtherNotes(pick(desc.notes)),
     interaction: pick(desc.interaction ?? desc.interactionWithGuests),
   };
 }
@@ -658,6 +706,11 @@ export async function runSync(): Promise<string> {
     throw new Error("Guesty is not configured. Set GUESTY_CLIENT_ID/GUESTY_CLIENT_SECRET.");
   }
 
+  // Reset per-run content-quality counters.
+  descMetrics.notesUpsellFiltered = 0;
+  descMetrics.spaceDeduped = 0;
+  descMetrics.gettingAroundGarbage = 0;
+
   console.log("[Guesty Sync] Fetching listings and reviews...");
   const [listings, allReviews] = await Promise.all([
     fetchAllListings(),
@@ -708,6 +761,13 @@ export async function runSync(): Promise<string> {
     const listingReviews = reviewsByListing.get(rawId) || [];
     return mapListingToProperty(listing, listingReviews, existingSlugMap);
   });
+
+  // Content-quality report — tracks the editorial cleanup of older listings.
+  console.log(
+    `[Guesty Sync] Description hygiene — notes upsell filtered: ${descMetrics.notesUpsellFiltered}, ` +
+      `space deduped: ${descMetrics.spaceDeduped}, getting-around garbage: ${descMetrics.gettingAroundGarbage}`,
+  );
+
   const jsonContent = JSON.stringify(properties, null, 2);
 
   // 1. Write to local runtime file (fast reads during this server's lifetime)
