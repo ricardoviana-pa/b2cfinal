@@ -1098,33 +1098,33 @@ export default function PropertyDetail() {
                     {/* Featured highlights — uniform white tiles, larger icons,
                         2-line labels so the row stays even regardless of length */}
                     {featuredAmenities.length > 0 && (
-                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-10">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
                         {featuredAmenities.map((amenity, idx) => (
                           <div
                             key={idx}
-                            className="flex flex-col items-center justify-center text-center bg-white border border-[#E8E4DC] rounded-2xl px-3 min-h-[112px] shadow-[0_1px_2px_rgba(26,26,24,0.04)] hover:-translate-y-0.5 hover:border-[#8B7355]/40 hover:shadow-[0_8px_20px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
+                            className="flex flex-col items-center justify-center text-center bg-white border border-[#E8E4DC] rounded-2xl px-3 min-h-[108px] shadow-[0_1px_2px_rgba(26,26,24,0.04)] hover:-translate-y-0.5 hover:border-[#8B7355]/40 hover:shadow-[0_8px_20px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
                           >
-                            <amenity.icon size={28} strokeWidth={1.5} className="text-[#8B7355] mb-2.5" />
+                            <amenity.icon size={26} strokeWidth={1.5} className="text-[#8B7355] mb-2.5" />
                             <span className="text-[12px] text-[#1A1A18] font-medium leading-tight">{amenity.label}</span>
                           </div>
                         ))}
                       </div>
                     )}
 
-                    {/* Primary categories — clean per-category lists, no pills */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 pt-2">
+                    {/* Primary categories — CSS multi-column so the categories
+                        pack tightly (masonry-style) instead of leaving big holes
+                        when one column has many items and another has one. Items
+                        are clean text rows — no bullets. */}
+                    <div className="columns-1 sm:columns-2 lg:columns-3 gap-x-10 pt-1">
                       {primaryAmenityGroups.map((group) => (
-                        <div key={group.category}>
-                          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#E8E4DC]">
-                            <group.icon size={14} className="text-[#8B7355] shrink-0" />
-                            <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#9E9A90]">{t(group.label)}</h3>
+                        <div key={group.category} className="break-inside-avoid mb-6">
+                          <div className="flex items-center gap-2 mb-2.5">
+                            <group.icon size={13} className="text-[#8B7355] shrink-0" />
+                            <h3 className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#9E9A90]">{t(group.label)}</h3>
                           </div>
-                          <ul className="space-y-2">
+                          <ul className="space-y-1.5">
                             {group.items.map((item, idx) => (
-                              <li key={idx} className="flex items-start gap-2.5 text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
-                                <span className="mt-[7px] h-3 w-px bg-[#8B7355]/50 shrink-0" />
-                                <span>{item}</span>
-                              </li>
+                              <li key={idx} className="text-[13px] text-[#6B6860] leading-snug" style={{ fontWeight: 300 }}>{item}</li>
                             ))}
                           </ul>
                         </div>
@@ -1135,19 +1135,16 @@ export default function PropertyDetail() {
                     {utilityAmenityGroups.length > 0 && (
                       <>
                         {showAllAmenities && (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 pt-8 mt-2 border-t border-[#E8E4DC]">
+                          <div className="columns-1 sm:columns-2 lg:columns-3 gap-x-10 pt-7 mt-1 border-t border-[#E8E4DC]">
                             {utilityAmenityGroups.map((group) => (
-                              <div key={group.category}>
-                                <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#E8E4DC]">
-                                  <group.icon size={14} className="text-[#8B7355] shrink-0" />
-                                  <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#9E9A90]">{t(group.label)}</h3>
+                              <div key={group.category} className="break-inside-avoid mb-6">
+                                <div className="flex items-center gap-2 mb-2.5">
+                                  <group.icon size={13} className="text-[#8B7355] shrink-0" />
+                                  <h3 className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#9E9A90]">{t(group.label)}</h3>
                                 </div>
-                                <ul className="space-y-2">
+                                <ul className="space-y-1.5">
                                   {group.items.map((item, idx) => (
-                                    <li key={idx} className="flex items-start gap-2.5 text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>
-                                      <span className="mt-[7px] h-3 w-px bg-[#8B7355]/50 shrink-0" />
-                                      <span>{item}</span>
-                                    </li>
+                                    <li key={idx} className="text-[13px] text-[#6B6860] leading-snug" style={{ fontWeight: 300 }}>{item}</li>
                                   ))}
                                 </ul>
                               </div>
@@ -1157,7 +1154,7 @@ export default function PropertyDetail() {
                         <button
                           type="button"
                           onClick={() => setShowAllAmenities((v) => !v)}
-                          className="inline-flex items-center gap-2 mt-8 text-[12px] font-medium tracking-[0.04em] uppercase text-[#8B7355] hover:text-[#1A1A18] transition-colors"
+                          className="inline-flex items-center gap-1.5 mt-6 text-[12px] font-medium tracking-[0.04em] uppercase text-[#8B7355] hover:text-[#1A1A18] transition-colors"
                         >
                           {showAllAmenities
                             ? t('propertyDetail.showLessAmenities', 'Show fewer')
