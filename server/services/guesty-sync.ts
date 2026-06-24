@@ -288,20 +288,21 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
       if (score > 0) categories.push({ name: cat, score });
     }
 
-    const firstName = reviewerFirstName(review, raw); // null when no name in payload
+    const firstName = reviewerFirstName(review, raw); // null when not in payload
     const mapped = {
       rating,
       text: text.slice(0, 500),
-      // Privacy-safe identity. This account's reviews have no name/photo/
-      // location — only opaque ids — so these are usually null; the frontend
-      // renders a neutral "Verified guest" card. Kept the extractors so that
-      // if a channel ever does deliver them, they flow through unchanged.
+      // Privacy-safe identity. The review payload itself is anonymised, so
+      // these start null/empty; resolveGuestNames() then fills the first name
+      // (+ photo) from the guest record. `_guestId` is the resolver's key and
+      // is stripped before the data is written.
       guestDisplayName: firstName,
-      guestName: firstName ?? "", // backwards-compat; empty when anonymous
+      guestName: firstName ?? "",
       guestPhoto: reviewerPhoto(review, raw),
       guestLocation: reviewerLocation(review, raw),
       date: review.createdAt || raw.submitted_at || review.date || raw.created_at || "",
       categories,
+      _guestId: review.guestId ?? null,
     };
 
     if (!byListing.has(listingId)) byListing.set(listingId, []);
@@ -314,6 +315,79 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
   }
 
   return byListing;
+}
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** Extract a profile photo URL from a Guesty guest's `pictures` field
+ *  (shape varies: array of {original,thumbnail}, an object, or a string). */
+function guestPictureUrl(guest: any): string | null {
+  const p = guest?.pictures ?? guest?.picture;
+  if (!p) return null;
+  const one = Array.isArray(p) ? p[0] : p;
+  if (typeof one === "string") return one;
+  return one?.original || one?.large || one?.thumbnail || null;
+}
+
+/**
+ * Resolve the first name (and photo, if any) for each review's guest via
+ * GET /v1/guests/{id}. The review payload is anonymised (opaque ids only),
+ * but the guest record exposes firstName/lastName/fullName + pictures —
+ * confirmed by scripts/test-guest-name.ts.
+ *
+ * Privacy: only the FIRST name is attached (never last/full). Resilient:
+ * dedupes by guestId, throttles to stay well under Guesty's 275/min Open
+ * API limit, and on any failure leaves the review as the neutral
+ * "Verified guest" card. Mutates the reviews in place and strips _guestId.
+ */
+async function resolveGuestNames(byListing: Map<string, any[]>): Promise<void> {
+  // Collect unique guestIds across all reviews (only those still anonymous).
+  const ids = new Set<string>();
+  for (const arr of Array.from(byListing.values())) {
+    for (const r of arr) {
+      if (r._guestId && !r.guestDisplayName) ids.add(String(r._guestId));
+    }
+  }
+  if (ids.size === 0) {
+    // Nothing to resolve — still strip the helper key.
+    for (const arr of Array.from(byListing.values())) for (const r of arr) delete r._guestId;
+    return;
+  }
+
+  console.log(`[Guesty Sync] Resolving ${ids.size} unique guest names…`);
+  const nameById = new Map<string, { firstName: string | null; photo: string | null }>();
+
+  // Throttled sequential resolve (~4/sec → ~240/min, under the 275/min cap).
+  let done = 0;
+  let failed = 0;
+  for (const id of Array.from(ids)) {
+    try {
+      const g: any = await guestyClient.request("GET", `/v1/guests/${id}`);
+      const first = typeof g?.firstName === "string" ? g.firstName.trim() : "";
+      nameById.set(id, { firstName: first || null, photo: guestPictureUrl(g) });
+    } catch (err: any) {
+      failed++;
+      nameById.set(id, { firstName: null, photo: null });
+      // Back off a little harder on rate-limit responses.
+      if (err?.status === 429) await sleep(2000);
+    }
+    done++;
+    await sleep(220); // ~4.5 req/s ceiling
+  }
+  console.log(`[Guesty Sync] Guest names resolved: ${done - failed}/${done} ok, ${failed} failed`);
+
+  // Attach + strip helper key.
+  for (const arr of Array.from(byListing.values())) {
+    for (const r of arr) {
+      const resolved = r._guestId ? nameById.get(String(r._guestId)) : undefined;
+      if (resolved?.firstName) {
+        r.guestDisplayName = resolved.firstName;
+        r.guestName = resolved.firstName;
+      }
+      if (resolved?.photo && !r.guestPhoto) r.guestPhoto = resolved.photo;
+      delete r._guestId;
+    }
+  }
 }
 
 function mapGuestyAmenities(listing: any) {
@@ -620,6 +694,13 @@ export async function runSync(): Promise<string> {
   }
 
   const reviewsByListing = buildReviewsByListing(allReviews);
+  // Enrich each review with the guest's first name (+ photo) from the guest
+  // record. Non-blocking: any failure leaves "Verified guest" cards intact.
+  try {
+    await resolveGuestNames(reviewsByListing);
+  } catch (err: any) {
+    console.warn(`[Guesty Sync] Guest-name resolution failed (non-blocking): ${err?.message ?? err}`);
+  }
   const existingSlugMap = await loadExistingSlugMap();
   console.log(`[Guesty Sync] Loaded ${existingSlugMap.size} pinned slugs from existing data`);
   const properties = listings.map((listing) => {
