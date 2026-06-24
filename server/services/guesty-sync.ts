@@ -439,9 +439,12 @@ function mapListingToProperty(
     checkInTime: listing.defaultCheckInTime || "16:00",
     checkOutTime: listing.defaultCheckOutTime || "11:00",
     areaSquareFeet: listing.areaSquareFeet || null,
-    reviews: reviews.slice(0, 20), // Cap at 20 most recent reviews per property
+    // Ship up to 20 review cards, but averageRating/reviewCount reflect the
+    // FULL filtered subset (4★+5★, guest-to-host, public) — never the sliced
+    // 20 and never the listing's global average. 2-decimal precision (4.87).
+    reviews: reviews.slice(0, 20),
     averageRating: reviews.length > 0
-      ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) * 10) / 10
+      ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) * 100) / 100
       : null,
     reviewCount: reviews.length,
   };
