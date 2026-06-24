@@ -1967,9 +1967,9 @@
       "whatsappMessage": "Hi Portugal Active, I'd like to book the E-Bike Tour in Viana do Castelo. Could you confirm availability?",
       "bokunActivityId": 1219990,
       "bokunOptions": [
-        { "name": "Guided City Tour", "detail": "2 hours · daily 09:30", "priceFrom": 45 },
-        { "name": "Guided Road Tour", "detail": "4 hours · Saturdays 10:00", "priceFrom": 70 },
-        { "name": "Guided Gravel / MTB Tour", "detail": "4 hours · Tue, Wed & Sun 10:00", "priceFrom": 70 }
+        { "name": "Guided City Tour", "detail": "2 hours · daily 09:30", "priceFrom": 49 },
+        { "name": "Guided Road Tour", "detail": "4 hours · Saturdays 10:00", "priceFrom": 76 },
+        { "name": "Guided Gravel / MTB Tour", "detail": "4 hours · Tue, Wed & Sun 10:00", "priceFrom": 76 }
       ]
     },
     {
