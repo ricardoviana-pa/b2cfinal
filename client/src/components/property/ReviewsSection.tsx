@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Check } from 'lucide-react';
 
 interface Review {
   rating: number;
@@ -24,7 +25,7 @@ interface ReviewsSectionProps {
 }
 
 export default function ReviewsSection({ propertyName, reviews, averageRating, reviewCount }: ReviewsSectionProps) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [showAll, setShowAll] = useState(false);
 
   if (!reviews || reviews.length === 0) return null;
@@ -59,25 +60,36 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
 
       {/* Reviews grid */}
       <div className="grid gap-4 md:grid-cols-2">
-        {displayed.map((review, idx) => (
+        {displayed.map((review, idx) => {
+          // This account's reviews are anonymised (no name/photo/location).
+          // When there's a real name we show it with an initial avatar; when
+          // there isn't, we show a neutral "Verified guest" with a checkmark
+          // avatar — credible and premium, no fake initials.
+          const realName = (review.guestDisplayName || review.guestName || '').trim();
+          const displayName = realName || t('reviews.verifiedGuest', 'Verified guest');
+          return (
           <div key={idx} className="bg-[#FAFAF7] border border-[#E8E4DC] rounded-lg p-5 hover:border-[#8B7355]/30 transition-colors">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2.5">
                 {review.guestPhoto ? (
                   <img
                     src={review.guestPhoto}
-                    alt={review.guestDisplayName || review.guestName}
+                    alt={displayName}
                     loading="lazy"
                     className="w-8 h-8 rounded-full object-cover shrink-0"
                     onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
                   />
-                ) : (
+                ) : realName ? (
                   <div className="w-8 h-8 rounded-full bg-[#8B7355] flex items-center justify-center text-[#FAFAF7] text-[12px] font-medium shrink-0">
-                    {(review.guestDisplayName || review.guestName).charAt(0).toUpperCase()}
+                    {realName.charAt(0).toUpperCase()}
+                  </div>
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-[#8B7355] flex items-center justify-center text-[#FAFAF7] shrink-0">
+                    <Check className="w-4 h-4" />
                   </div>
                 )}
                 <div>
-                  <p className="text-[13px] font-medium text-[#1A1A18]">{review.guestDisplayName || review.guestName}</p>
+                  <p className="text-[13px] font-medium text-[#1A1A18]">{displayName}</p>
                   <div className="flex items-center gap-1.5 text-[11px] text-[#9E9A90]">
                     {review.guestLocation && <span>{review.guestLocation}</span>}
                     {review.guestLocation && review.date && <span className="text-[#D8D2C6]">·</span>}
@@ -102,7 +114,8 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
             </div>
             <p className="text-[13px] text-[#6B6860] leading-relaxed line-clamp-4 font-light italic">"{review.text}"</p>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Show more / less */}
