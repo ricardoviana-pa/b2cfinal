@@ -1041,7 +1041,7 @@ export default function PropertyDetail() {
         <div className={property.guestyId ? "container pb-8 lg:pb-16" : "container pb-24 lg:pb-16"}>
           <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
             {/* Main content — left 2/3 */}
-            <div className="order-2 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12 pt-6">
+            <div className="order-1 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12 pt-6">
               {/* Multi-unit Group: Units section (booking.com-style). When this
                   listing is the parent of a curated group, list every unit
                   (parent + children) with photo, specs, and live quote, each
@@ -1356,8 +1356,11 @@ export default function PropertyDetail() {
 
             </div>
 
-            {/* Sticky booking card — right 1/3 */}
-            <aside id="property-booking" className="order-1 lg:order-2 lg:col-span-1 pt-6 lg:pt-0">
+            {/* Sticky booking card — right 1/3 on desktop. On mobile it sits
+                AFTER the content (order-2) so the page leads with the home's
+                story instead of an empty booking form; the fixed bottom bar
+                keeps booking one tap away throughout the scroll. */}
+            <aside id="property-booking" className="order-2 lg:order-2 lg:col-span-1 pt-10 lg:pt-0">
               <div className="property-sticky-card lg:sticky lg:top-[100px]">
                 {property.guestyId ? (
                   <>
