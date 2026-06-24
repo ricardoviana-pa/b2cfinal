@@ -120,39 +120,42 @@ export default function ExperienceBookingCard({
           <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-3">
             {t('experience.chooseOption', 'Choose your option')}
           </p>
-          <ul className="space-y-2.5 mb-5">
+          <div className="space-y-2.5 mb-5">
             {bokunOptions!.map((opt, i) => (
-              <li key={i} className="flex items-baseline justify-between gap-3 pb-2.5 border-b border-[#E8E4DC] last:border-0 last:pb-0">
+              <button
+                key={i}
+                type="button"
+                onClick={() => {
+                  setModalOpen(true);
+                  if (experienceSlug) {
+                    pushEcommerce({
+                      event: 'begin_checkout',
+                      ecommerce: {
+                        currency: 'EUR',
+                        value: opt.priceFrom || priceOta || 0,
+                        items: [{ item_id: `EXP-${experienceSlug}-${i}`, item_name: `${experienceName} — ${opt.name}`, item_category: experienceCategory || '', price: opt.priceFrom || priceOta || 0, quantity: 1 }],
+                      },
+                    });
+                  }
+                }}
+                className="group w-full flex items-center justify-between gap-3 text-left p-3.5 border border-[#E8E4DC] rounded-lg hover:border-[#1A1A18] hover:bg-[#FAFAF7] transition-all"
+              >
                 <div className="min-w-0">
                   <p className="text-[13px] text-[#1A1A18] font-medium leading-tight">{opt.name}</p>
                   {opt.detail && <p className="text-[11px] text-[#9E9A90] mt-0.5">{opt.detail}</p>}
                 </div>
-                {opt.priceFrom ? (
-                  <span className="text-[12px] text-[#6B6860] whitespace-nowrap shrink-0">€{opt.priceFrom}</span>
-                ) : null}
-              </li>
+                <div className="flex items-center gap-2 shrink-0">
+                  {opt.priceFrom ? (
+                    <span className="text-[13px] text-[#1A1A18] font-medium whitespace-nowrap">€{opt.priceFrom}</span>
+                  ) : null}
+                  <ChevronRight className="w-4 h-4 text-[#9E9A90] group-hover:text-[#1A1A18] group-hover:translate-x-0.5 transition-all" />
+                </div>
+              </button>
             ))}
-          </ul>
-          <button
-            type="button"
-            onClick={() => {
-              setModalOpen(true);
-              if (experienceSlug) {
-                pushEcommerce({
-                  event: 'begin_checkout',
-                  ecommerce: {
-                    currency: 'EUR',
-                    value: priceOta || 0,
-                    items: [{ item_id: `EXP-${experienceSlug}`, item_name: experienceName, item_category: experienceCategory || '', price: priceOta || 0, quantity: 1 }],
-                  },
-                });
-              }
-            }}
-            className="w-full flex items-center justify-center gap-2 bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase py-4 hover:bg-black transition-colors"
-            style={{ minHeight: '52px' }}
-          >
-            {t('experience.checkAvailabilityBook', 'Check availability & book')} <ChevronRight className="w-3.5 h-3.5" />
-          </button>
+          </div>
+          <p className="text-center text-[11px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
+            {t('experience.pickOptionHint', 'Select a tour to check live availability')}
+          </p>
           <BokunWidgetModal
             open={modalOpen}
             onClose={() => setModalOpen(false)}
