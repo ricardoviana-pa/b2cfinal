@@ -5,14 +5,16 @@
    the unit's own PDP — where the full booking widget completes the flow.
    ========================================================================== */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { BedDouble, Bath, Users } from 'lucide-react';
+import { BedDouble, Bath, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import useEmblaCarousel from 'embla-carousel-react';
 import type { Property } from '@/lib/types';
 import { formatEur, sanitizePropertyName } from '@/lib/format';
 import { getPropertyImages, optimizeGuestyImage } from '@/lib/images';
 import { trpc } from '@/lib/trpc';
+import { cn } from '@/lib/utils';
 import type { PropertyGroup } from '@/config/propertyGroups';
 
 interface UnitQuote {
@@ -131,8 +133,10 @@ export default function PropertyUnitsSection({
         {units.map((unit) => {
           const q = quotes[unit.slug];
           const isParent = unit.guestyId === group.parentGuestyId;
-          const cover = (unit.images?.length ? unit.images : getPropertyImages(unit.slug))[0];
-          const coverUrl = cover ? optimizeGuestyImage(cover, 800) : '';
+          const unitImages = (unit.images?.length ? unit.images : getPropertyImages(unit.slug))
+            .slice(0, 8)
+            .map((img) => optimizeGuestyImage(img, 800))
+            .filter(Boolean);
 
           return (
             <Link
@@ -140,21 +144,13 @@ export default function PropertyUnitsSection({
               href={`/homes/${unit.slug}${qs}`}
               className="group flex flex-col bg-white border border-[#E8E4DC] hover:border-[#8B7355] transition-colors overflow-hidden"
             >
-              <div className="relative aspect-[5/3] bg-[#F5F1EB] overflow-hidden">
-                {coverUrl ? (
-                  <img
-                    src={coverUrl}
-                    alt={unit.name}
-                    loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
-                  />
-                ) : null}
-                {isParent && (
-                  <span className="absolute top-3 left-3 bg-[#1A1A18] text-white text-[10px] font-medium tracking-[0.04em] uppercase px-2 py-1">
-                    {t('property.wholeProperty', 'Whole property')}
-                  </span>
-                )}
-              </div>
+              <UnitImageCarousel
+                images={unitImages}
+                alt={unit.name}
+                badge={isParent ? t('property.wholeProperty', 'Whole property') : undefined}
+                prevLabel={t('property.prevPhoto', 'Previous photo')}
+                nextLabel={t('property.nextPhoto', 'Next photo')}
+              />
 
               <div className="p-4 lg:p-5 flex-1 flex flex-col">
                 <h3 className="text-[15px] lg:text-[16px] font-display text-[#1A1A18] leading-tight mb-1 group-hover:text-[#8B7355] transition-colors">
@@ -215,5 +211,111 @@ export default function PropertyUnitsSection({
         })}
       </div>
     </section>
+  );
+}
+
+/* -------------------------------------------------------------------------
+   Per-card image carousel — lets guests browse a unit's photos in place
+   (swipe on mobile, hover arrows on desktop, dot indicators) without
+   leaving the parent PDP. The whole card stays a link to the unit; the
+   arrows stop the click from bubbling so they only change the slide, while
+   a tap on the photo still opens the unit.
+   ------------------------------------------------------------------------- */
+function UnitImageCarousel({
+  images,
+  alt,
+  badge,
+  prevLabel,
+  nextLabel,
+}: {
+  images: string[];
+  alt: string;
+  badge?: string;
+  prevLabel: string;
+  nextLabel: string;
+}) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [selected, setSelected] = useState(0);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelected(emblaApi.selectedScrollSnap());
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', onSelect);
+    onSelect();
+    return () => {
+      emblaApi.off('select', onSelect);
+      emblaApi.off('reInit', onSelect);
+    };
+  }, [emblaApi]);
+
+  // Prevent arrow clicks from triggering the card's <Link> navigation.
+  const guard = useCallback(
+    (fn?: () => void) => (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      fn?.();
+    },
+    [],
+  );
+
+  return (
+    <div className="relative aspect-[5/3] bg-[#F5F1EB] overflow-hidden">
+      {images.length > 0 && (
+        <div className="overflow-hidden h-full" ref={emblaRef}>
+          <div className="flex h-full">
+            {images.map((src, i) => (
+              <div key={i} className="relative flex-[0_0_100%] min-w-0 h-full">
+                <img
+                  src={src}
+                  alt={alt}
+                  loading="lazy"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {badge && (
+        <span className="absolute top-3 left-3 z-10 bg-[#1A1A18] text-white text-[10px] font-medium tracking-[0.04em] uppercase px-2 py-1">
+          {badge}
+        </span>
+      )}
+
+      {images.length > 1 && (
+        <>
+          <button
+            type="button"
+            aria-label={prevLabel}
+            onClick={guard(() => emblaApi?.scrollPrev())}
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 grid place-items-center w-8 h-8 rounded-full bg-white/90 text-[#1A1A18] shadow-sm opacity-0 group-hover:opacity-100 hover:bg-white transition-opacity duration-200"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <button
+            type="button"
+            aria-label={nextLabel}
+            onClick={guard(() => emblaApi?.scrollNext())}
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 grid place-items-center w-8 h-8 rounded-full bg-white/90 text-[#1A1A18] shadow-sm opacity-0 group-hover:opacity-100 hover:bg-white transition-opacity duration-200"
+          >
+            <ChevronRight size={16} />
+          </button>
+
+          <div className="absolute bottom-2.5 left-0 right-0 z-10 flex justify-center gap-1.5 pointer-events-none">
+            {images.map((_, i) => (
+              <span
+                key={i}
+                className={cn(
+                  'h-1.5 rounded-full transition-all duration-200',
+                  i === selected ? 'w-4 bg-white' : 'w-1.5 bg-white/60',
+                )}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
   );
 }
