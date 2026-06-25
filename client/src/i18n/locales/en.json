@@ -163,6 +163,8 @@
     "unitsHint": "Each unit can be reserved independently",
     "wholeProperty": "Whole property",
     "viewUnit": "View unit",
+    "prevPhoto": "Previous photo",
+    "nextPhoto": "Next photo",
     "saveAria": "Save property",
     "removeSaveAria": "Remove from saved",
     "imageAlt": "{{name}} — {{current}} of {{total}}",
