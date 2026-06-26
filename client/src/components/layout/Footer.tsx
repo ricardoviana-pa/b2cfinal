@@ -236,17 +236,21 @@ export default function Footer() {
 
           {/* Row 2: copyright + legal — single baseline, hairline divider */}
           <div
-            className="mt-7 pt-6 border-t border-white/[0.05] flex flex-col items-center gap-3 text-[11px] text-white/25 md:flex-row md:items-baseline md:justify-between"
+            className="mt-7 pt-6 border-t border-white/[0.05] flex flex-col items-center gap-3 text-[11px] leading-none text-white/25 md:flex-row md:items-center md:justify-between"
             style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
           >
-            <span>
+            <span className="leading-none">
               {t('footer.copyrightLine', { year: new Date().getFullYear(), rights: t('footer.allRightsReserved') })}
             </span>
-            <div className="flex items-baseline gap-5">
+            {/* Inline links (with middot separators) so they share the copyright's
+                text baseline reliably — a nested flex row mis-aligned them. */}
+            <span className="leading-none">
               <Link href="/legal/privacy" className="hover:text-white/60 transition-colors">{t('footer.privacy')}</Link>
+              <span className="mx-3 text-white/15" aria-hidden="true">·</span>
               <Link href="/legal/terms" className="hover:text-white/60 transition-colors">{t('footer.terms')}</Link>
+              <span className="mx-3 text-white/15" aria-hidden="true">·</span>
               <Link href="/legal/cookies" className="hover:text-white/60 transition-colors">{t('footer.cookies')}</Link>
-            </div>
+            </span>
           </div>
 
         </div>
