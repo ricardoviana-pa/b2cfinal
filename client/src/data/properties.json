@@ -2689,7 +2689,7 @@
     "minNights": 3,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1782228978/production/6957de4388cba42d9e7a905e/zppiucnixexishllpldj.jpg",
+      "https://assets.guesty.com/image/upload/v1782465285/production/6957de4388cba42d9e7a905e/cpj8ykpunwm6oiw2lwk2.jpg",
       "https://assets.guesty.com/image/upload/v1782229706/production/6957de4388cba42d9e7a905e/gtqvtk6ivteaod2hndns.jpg",
       "https://assets.guesty.com/image/upload/v1782406067/production/6957de4388cba42d9e7a905e/rbiu5xpp8otuhtjn3fxe.jpg",
       "https://assets.guesty.com/image/upload/v1782406066/production/6957de4388cba42d9e7a905e/wsw9awktckjwcvuzwwbp.jpg",
@@ -2738,9 +2738,9 @@
       "https://assets.guesty.com/image/upload/v1782406089/production/6957de4388cba42d9e7a905e/uenbzcn6njj4zfjdoicb.jpg",
       "https://assets.guesty.com/image/upload/v1782406090/production/6957de4388cba42d9e7a905e/qcta7tnw2vw3lh3g6bsf.jpg",
       "https://assets.guesty.com/image/upload/v1782406091/production/6957de4388cba42d9e7a905e/u3mncvbsdvdgjhfqehfx.jpg",
+      "https://assets.guesty.com/image/upload/v1782406093/production/6957de4388cba42d9e7a905e/vi3o2r3vrmebnwgzyzgd.jpg",
       "https://assets.guesty.com/image/upload/v1782406093/production/6957de4388cba42d9e7a905e/i3wqgldplu6ipb5ybmrl.jpg",
       "https://assets.guesty.com/image/upload/v1782406093/production/6957de4388cba42d9e7a905e/ii1xwuykassqmbkpl2f0.jpg",
-      "https://assets.guesty.com/image/upload/v1782406093/production/6957de4388cba42d9e7a905e/vi3o2r3vrmebnwgzyzgd.jpg",
       "https://assets.guesty.com/image/upload/v1782406095/production/6957de4388cba42d9e7a905e/kzizwneocjyecj0jf1mn.jpg",
       "https://assets.guesty.com/image/upload/v1782406095/production/6957de4388cba42d9e7a905e/hwvsgwsma12lpblizifm.jpg",
       "https://assets.guesty.com/image/upload/v1782406096/production/6957de4388cba42d9e7a905e/igmrpb9vhz5bw8tudu5s.jpg",
@@ -2754,16 +2754,16 @@
       "https://assets.guesty.com/image/upload/v1782406104/production/6957de4388cba42d9e7a905e/o3zyljyjqmfboejsjufz.jpg",
       "https://assets.guesty.com/image/upload/v1782406107/production/6957de4388cba42d9e7a905e/yvydch59n9mfhxon6o46.jpg",
       "https://assets.guesty.com/image/upload/v1782406107/production/6957de4388cba42d9e7a905e/xwrtmhwgzzgtfpluctac.jpg",
+      "https://assets.guesty.com/image/upload/v1782406110/production/6957de4388cba42d9e7a905e/trraoouwuz5v545jyal1.jpg",
       "https://assets.guesty.com/image/upload/v1782406107/production/6957de4388cba42d9e7a905e/z59prirpk8k63rcor1ep.jpg",
       "https://assets.guesty.com/image/upload/v1782406109/production/6957de4388cba42d9e7a905e/q8nkvmtwuqs3xto3lnjq.jpg",
       "https://assets.guesty.com/image/upload/v1782406110/production/6957de4388cba42d9e7a905e/ktu7d45h86va6qiwkckb.jpg",
-      "https://assets.guesty.com/image/upload/v1782406110/production/6957de4388cba42d9e7a905e/trraoouwuz5v545jyal1.jpg",
       "https://assets.guesty.com/image/upload/v1782406112/production/6957de4388cba42d9e7a905e/xu7hmrebyw0loiesdftj.jpg",
+      "https://assets.guesty.com/image/upload/v1782406116/production/6957de4388cba42d9e7a905e/n2bohu9axofonyw1sg3d.jpg",
       "https://assets.guesty.com/image/upload/v1782406113/production/6957de4388cba42d9e7a905e/luhaedpes2zmgxobcaie.jpg",
       "https://assets.guesty.com/image/upload/v1782228319/production/6957de4388cba42d9e7a905e/md34f0anb9mc1q99nzg1.jpg",
       "https://assets.guesty.com/image/upload/v1782406113/production/6957de4388cba42d9e7a905e/bsiwknufk35ivooanaqn.jpg",
       "https://assets.guesty.com/image/upload/v1782406114/production/6957de4388cba42d9e7a905e/tubmf4pywb6d0oj1sykk.jpg",
-      "https://assets.guesty.com/image/upload/v1782406116/production/6957de4388cba42d9e7a905e/n2bohu9axofonyw1sg3d.jpg",
       "https://assets.guesty.com/image/upload/v1782406117/production/6957de4388cba42d9e7a905e/dujsqojmxld1ulhb1jv8.jpg",
       "https://assets.guesty.com/image/upload/v1782406118/production/6957de4388cba42d9e7a905e/gqyvvvnbo1qndwmfviv6.jpg",
       "https://assets.guesty.com/image/upload/v1782406118/production/6957de4388cba42d9e7a905e/aetgdfl3rc88dipuht5n.jpg",
@@ -7602,6 +7602,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "This was a really great location, plenty of amenities with a lively patio area! great value for money - would recommend",
+        "guestDisplayName": "Erin",
+        "guestName": "Erin",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-25T17:34:27.920Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Melhor alojamento local no centro do Porto, calmo, cumpre tudo o que promete! Voltaremos sem dúvida !",
         "guestDisplayName": "Rafaela",
         "guestName": "Rafaela",
@@ -8021,8 +8056,8 @@
         ]
       }
     ],
-    "averageRating": 4.58,
-    "reviewCount": 12
+    "averageRating": 4.62,
+    "reviewCount": 13
   },
   {
     "id": "guesty-69653390ecf7490014ed2d6c",
@@ -9839,23 +9874,24 @@
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1782378394/production/6957de4388cba42d9e7a905e/vqhdntsg1n27rplx1bye.jpg",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533d34b583900135cfd96/6bbaca4b-220f-45-KH2kt",
-      "https://assets.guesty.com/image/upload/v1782378394/production/6957de4388cba42d9e7a905e/esonm5ak2uu2gb3hfqqo.jpg",
+      "https://assets.guesty.com/image/upload/v1782378407/production/6957de4388cba42d9e7a905e/yoxm34fqbqipjoupxj7c.jpg",
+      "https://assets.guesty.com/image/upload/v1782382713/production/6957de4388cba42d9e7a905e/ehel7ovuydej2zj4he2m.jpg",
       "https://assets.guesty.com/image/upload/v1782378404/production/6957de4388cba42d9e7a905e/xkhrii1onm8wmqtluffi.jpg",
       "https://assets.guesty.com/image/upload/v1782381826/production/6957de4388cba42d9e7a905e/w93ns1qtbzx0tfydjju0.jpg",
-      "https://assets.guesty.com/image/upload/v1782378397/production/6957de4388cba42d9e7a905e/xtdkajjvxk0voqiyundh.jpg",
+      "https://assets.guesty.com/image/upload/v1782378394/production/6957de4388cba42d9e7a905e/esonm5ak2uu2gb3hfqqo.jpg",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533d34b583900135cfd96/6bbaca4b-220f-45-KH2kt",
       "https://assets.guesty.com/image/upload/v1782378383/production/6957de4388cba42d9e7a905e/ic6nxkzkcifvjamnoqza.jpg",
       "https://assets.guesty.com/image/upload/v1782378383/production/6957de4388cba42d9e7a905e/pemujimms41vy3vdzpbf.jpg",
       "https://assets.guesty.com/image/upload/v1782378387/production/6957de4388cba42d9e7a905e/rzp3dts2mwm64ja48enk.jpg",
       "https://assets.guesty.com/image/upload/v1782378383/production/6957de4388cba42d9e7a905e/pybfdfj8k2paxqbay2t4.jpg",
       "https://assets.guesty.com/image/upload/v1782378386/production/6957de4388cba42d9e7a905e/hxc3dj14i3qwandooxet.jpg",
       "https://assets.guesty.com/image/upload/v1782378387/production/6957de4388cba42d9e7a905e/pcmplsldlhd4biicrqft.jpg",
+      "https://assets.guesty.com/image/upload/v1782378397/production/6957de4388cba42d9e7a905e/xtdkajjvxk0voqiyundh.jpg",
       "https://assets.guesty.com/image/upload/v1782378410/production/6957de4388cba42d9e7a905e/wpcrzegws7tezdvmnhvh.jpg",
       "https://assets.guesty.com/image/upload/v1782378406/production/6957de4388cba42d9e7a905e/fdznw2kb7vwztvpxgy8s.jpg",
       "https://assets.guesty.com/image/upload/v1782379271/production/6957de4388cba42d9e7a905e/i8ffmw4yawcyvd1xqwrx.jpg",
       "https://assets.guesty.com/image/upload/v1782378396/production/6957de4388cba42d9e7a905e/c2srcbcmhi8xn0fyztwx.jpg",
       "https://assets.guesty.com/image/upload/v1782378407/production/6957de4388cba42d9e7a905e/fldndbfmqgujnml4lomw.jpg",
-      "https://assets.guesty.com/image/upload/v1782378407/production/6957de4388cba42d9e7a905e/yoxm34fqbqipjoupxj7c.jpg",
       "https://assets.guesty.com/image/upload/v1782378408/production/6957de4388cba42d9e7a905e/lyawmyfwlaleqyb3fowp.jpg",
       "https://assets.guesty.com/image/upload/v1782378409/production/6957de4388cba42d9e7a905e/zfy9qlpt9atszayiao68.jpg",
       "https://assets.guesty.com/image/upload/v1782378409/production/6957de4388cba42d9e7a905e/tr1qgd0gxq5kzpaxf8ai.jpg",
@@ -9887,7 +9923,6 @@
       "https://assets.guesty.com/image/upload/v1782378403/production/6957de4388cba42d9e7a905e/bpsqifxbm3urvamxlgcm.jpg",
       "https://assets.guesty.com/image/upload/v1782378403/production/6957de4388cba42d9e7a905e/reoc42stubqput1sqmdz.jpg",
       "https://assets.guesty.com/image/upload/v1782378404/production/6957de4388cba42d9e7a905e/xvh8qexw41yiwrqxjlzz.jpg",
-      "https://assets.guesty.com/image/upload/v1782382713/production/6957de4388cba42d9e7a905e/ehel7ovuydej2zj4he2m.jpg",
       "https://assets.guesty.com/image/upload/v1782382713/production/6957de4388cba42d9e7a905e/gooua0guuzful2mzkxul.jpg",
       "https://assets.guesty.com/image/upload/v1782378405/production/6957de4388cba42d9e7a905e/v9sormal98a6crc6yvzj.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533d34b583900135cfd96/f8fd64d3-c1c4-4d-tOMDf",
@@ -14238,6 +14273,41 @@
     "areaSquareFeet": 8612,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Villa incroyable ! Nous avons passé un agréable moment",
+        "guestDisplayName": "Quentin",
+        "guestName": "Quentin",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-26T16:31:42.749Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "Très belle Villa avec des activités en supplément super mais un des lits était cassé.",
         "guestDisplayName": "Léa",
@@ -14553,8 +14623,8 @@
         ]
       }
     ],
-    "averageRating": 4.67,
-    "reviewCount": 9
+    "averageRating": 4.7,
+    "reviewCount": 10
   },
   {
     "id": "guesty-69c415701b964f00157188bd",
@@ -22056,7 +22126,7 @@
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/26075154-4463-47-6g1jb",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/71f6a332-00b0-4d-_mnUE",
+      "https://assets.guesty.com/image/upload/v1782394815/production/6957de4388cba42d9e7a905e/xkfkigaoizy9ocmbqt1x.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/c047ab4e-76d5-41-QLYD8",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/98029be4-60d7-42-7qUZv",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/768913d2-8346-4e-tjTK1",
@@ -22070,7 +22140,6 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/d5f6ca0e-bd43-47-KysQR",
       "https://assets.guesty.com/image/upload/v1782394815/production/6957de4388cba42d9e7a905e/agem8erehci3mikya5zg.jpg",
       "https://assets.guesty.com/image/upload/v1782394815/production/6957de4388cba42d9e7a905e/kodqjaqkpauy4zmjm49o.jpg",
-      "https://assets.guesty.com/image/upload/v1782394815/production/6957de4388cba42d9e7a905e/xkfkigaoizy9ocmbqt1x.jpg",
       "https://assets.guesty.com/image/upload/v1782394822/production/6957de4388cba42d9e7a905e/eb63qyz5bxhffynx0ugw.jpg",
       "https://assets.guesty.com/image/upload/v1782394823/production/6957de4388cba42d9e7a905e/qpeca63p93wknfavexmk.jpg",
       "https://assets.guesty.com/image/upload/v1782394823/production/6957de4388cba42d9e7a905e/odfqoiylq1eebc5yf5ep.jpg",
