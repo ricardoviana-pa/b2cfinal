@@ -15,7 +15,7 @@ export default function FooterPaymentLogos() {
           key={p.alt}
           src={p.src}
           alt={p.alt}
-          className={`${p.h} w-auto brightness-0 invert opacity-[0.22]`}
+          className={`${p.h} w-auto brightness-0 invert opacity-40 hover:opacity-60 transition-opacity`}
           loading="lazy"
         />
       ))}
