@@ -115,8 +115,16 @@ const TEAM = [
 const HOME_COUNT = 70;
 const YOUTUBE_ID = 'OUgTpL2E15U'; // PA Cleaning — 47-point preparation
 
-/* Press mentions — rendered as restrained wordmarks (no logo assets needed). */
-const PRESS = ['Forbes', 'The Times', 'The Guardian'];
+/* Press — real outlet logos, same treatment as the homepage press bar
+   (grayscale-ish PNGs at opacity-40, per-logo heights). */
+const PRESS_LOGOS = [
+  { src: IMAGES.pressForbes, alt: 'Featured in Forbes', h: 'h-5 md:h-6' },
+  { src: IMAGES.pressTheTimes, alt: 'Featured in The Times', h: 'h-7 md:h-8' },
+  { src: IMAGES.pressTheGuardian, alt: 'Featured in The Guardian', h: 'h-4 md:h-5' },
+  { src: IMAGES.pressTimeOut, alt: 'Featured in Time Out', h: 'h-5 md:h-6' },
+  { src: IMAGES.pressMensHealth, alt: "Featured in Men's Health", h: 'h-4 md:h-5' },
+  { src: IMAGES.pressArquitectura, alt: 'Featured in Arquitectura y Diseño', h: 'h-4 md:h-5' },
+];
 
 
 export default function About() {
@@ -206,23 +214,6 @@ export default function About() {
           >
             {t('about.heroSubtitle', { count: HOME_COUNT })}
           </p>
-        </div>
-      </section>
-
-      {/* ANSWER CAPSULE — citable founder/company summary (SEO) */}
-      <section className="bg-[#FAFAF7] pt-10 md:pt-14">
-        <div className="container max-w-3xl">
-          <AnswerCapsule
-            question="Who runs Portugal Active and what do they do?"
-            answer={`Portugal Active was founded in 2017 by Ricardo Viana in Viana do Castelo, Minho. The company operates ${HOME_COUNT} private hotels across Portugal, each managed to five-star standards with a dedicated concierge, private chefs, housekeeping, and curated local experiences. Every property is run by an in-house team, not through third-party intermediaries. Guests book direct for the best rate and a fully managed stay.`}
-            lastUpdated="2026-04-17"
-            author="Ricardo Viana, CEO"
-            cite={[
-              { label: 'Founder on LinkedIn', href: 'https://www.linkedin.com/in/ricardo-viana-portugalactive/' },
-              { label: 'Concierge services', href: '/concierge' },
-              { label: 'Contact the team', href: '/contact' },
-            ]}
-          />
         </div>
       </section>
 
@@ -319,19 +310,22 @@ export default function About() {
             ))}
           </div>
 
-          <div className="mt-12 pt-10 border-t border-[#E1DACE] flex flex-col items-center gap-5">
-            <p className="text-[10px] tracking-[0.22em] uppercase text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)' }}>
+          <div className="mt-12 pt-10 border-t border-[#E1DACE]">
+            <p className="text-center text-[10px] tracking-[0.22em] uppercase text-[#9E9A90] mb-7" style={{ fontFamily: 'var(--font-body)' }}>
               {t('about.pressOverline', 'As featured in')}
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
-              {PRESS.map((name) => (
-                <span
-                  key={name}
-                  className="text-[#6B6860] whitespace-nowrap"
-                  style={{ fontFamily: 'var(--font-display)', fontWeight: 400, fontSize: 'clamp(17px, 2.4vw, 22px)', letterSpacing: '0.01em' }}
-                >
-                  {name}
-                </span>
+            {/* Mobile: marquee scroll (same as homepage press bar) */}
+            <div className="overflow-hidden md:hidden">
+              <div className="flex items-center gap-12 w-max" style={{ animation: 'marquee 25s linear infinite' }}>
+                {[...PRESS_LOGOS, ...PRESS_LOGOS].map((logo, i) => (
+                  <img key={i} src={logo.src} alt={logo.alt} className={`${logo.h} w-auto object-contain opacity-40 shrink-0`} loading="lazy" />
+                ))}
+              </div>
+            </div>
+            {/* Desktop: static, centred */}
+            <div className="hidden md:flex items-center justify-center gap-10 lg:gap-14">
+              {PRESS_LOGOS.map((logo, i) => (
+                <img key={i} src={logo.src} alt={logo.alt} className={`${logo.h} w-auto object-contain opacity-40`} loading="lazy" />
               ))}
             </div>
           </div>
@@ -504,6 +498,28 @@ export default function About() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* ANSWER CAPSULE — citable founder/company summary. Kept for AEO (it
+          stays in the DOM with role=doc-abstract + cites) but moved down here
+          and rendered small, so it reads as a quiet footnote rather than a
+          headline beat right under the hero. */}
+      <section className="bg-[#FDFBF7] pt-4 pb-16 lg:pb-20">
+        <div className="container max-w-2xl">
+          <div className="scale-[0.92] origin-top opacity-90">
+            <AnswerCapsule
+              question="Who runs Portugal Active and what do they do?"
+              answer={`Portugal Active was founded in 2017 by Ricardo Viana in Viana do Castelo, Minho. The company operates ${HOME_COUNT} private hotels across Portugal, each managed to five-star standards with a dedicated concierge, private chefs, housekeeping, and curated local experiences. Every property is run by an in-house team, not through third-party intermediaries. Guests book direct for the best rate and a fully managed stay.`}
+              lastUpdated="2026-04-17"
+              author="Ricardo Viana, CEO"
+              cite={[
+                { label: 'Founder on LinkedIn', href: 'https://www.linkedin.com/in/ricardo-viana-portugalactive/' },
+                { label: 'Concierge services', href: '/concierge' },
+                { label: 'Contact the team', href: '/contact' },
+              ]}
+            />
           </div>
         </div>
       </section>
