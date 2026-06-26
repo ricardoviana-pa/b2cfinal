@@ -1,11 +1,24 @@
+const PAYMENTS = [
+  { src: '/payments/visa.svg', alt: 'Visa', h: 'h-5' },
+  { src: '/payments/mastercard.svg', alt: 'Mastercard', h: 'h-6' },
+  { src: '/payments/amex.svg', alt: 'American Express', h: 'h-[22px]' },
+  { src: '/payments/apple-pay.svg', alt: 'Apple Pay', h: 'h-[22px]' },
+  { src: '/payments/paypal.svg', alt: 'PayPal', h: 'h-[18px]' },
+  { src: '/payments/klarna.svg', alt: 'Klarna', h: 'h-4' },
+];
+
 export default function FooterPaymentLogos() {
   return (
     <div className="flex items-center gap-5">
-      <img src="/payments/visa.svg" alt="Visa" className="h-5 w-auto brightness-0 invert opacity-[0.22]" />
-      <img src="/payments/mastercard.svg" alt="Mastercard" className="h-6 w-auto brightness-0 invert opacity-[0.22]" />
-      <img src="/payments/amex.svg" alt="American Express" className="h-[22px] w-auto brightness-0 invert opacity-[0.22]" />
-      <img src="/payments/apple-pay.svg" alt="Apple Pay" className="h-[22px] w-auto brightness-0 invert opacity-[0.22]" />
-      <img src="/payments/mbway.svg" alt="MB Way" className="h-4 w-auto brightness-0 invert opacity-[0.22]" />
+      {PAYMENTS.map((p) => (
+        <img
+          key={p.alt}
+          src={p.src}
+          alt={p.alt}
+          className={`${p.h} w-auto brightness-0 invert opacity-[0.22]`}
+          loading="lazy"
+        />
+      ))}
     </div>
   );
 }

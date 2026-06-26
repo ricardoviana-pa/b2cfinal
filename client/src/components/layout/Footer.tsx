@@ -206,23 +206,12 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-white/[0.06]">
-        <div className="container py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="container py-7">
 
-            {/* Left: copyright + legal */}
-            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
-              <span className="text-[11px] text-white/20" style={{ fontWeight: 300 }}>
-                {t('footer.copyrightLine', { year: new Date().getFullYear(), rights: t('footer.allRightsReserved') })}
-              </span>
-              <div className="flex items-center gap-4 text-[11px] text-white/20" style={{ fontWeight: 300 }}>
-                <Link href="/legal/privacy" className="hover:text-white/50 transition-colors">{t('footer.privacy')}</Link>
-                <Link href="/legal/terms" className="hover:text-white/50 transition-colors">{t('footer.terms')}</Link>
-                <Link href="/legal/cookies" className="hover:text-white/50 transition-colors">{t('footer.cookies')}</Link>
-              </div>
-            </div>
-
-            {/* Center: social */}
-            <div className="flex items-center gap-0.5">
+          {/* Row 1: social + payments */}
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            {/* Social */}
+            <div className="flex items-center justify-center gap-0.5 md:justify-start">
               {[
                 { href: 'https://instagram.com/portugalactive', label: 'Instagram', Icon: Instagram },
                 { href: 'https://www.youtube.com/@portugalactivechannel', label: 'YouTube', Icon: Youtube },
@@ -236,10 +225,30 @@ export default function Footer() {
               ))}
             </div>
 
-            {/* Right: payment */}
-            <FooterPaymentLogos />
-
+            {/* Payments */}
+            <div className="flex items-center justify-center gap-4 md:justify-end">
+              <span className="hidden lg:inline text-[10px] uppercase tracking-[0.16em] text-white/25" style={{ fontFamily: 'var(--font-body)' }}>
+                {t('footer.paymentSecure', 'Secure payment')}
+              </span>
+              <FooterPaymentLogos />
+            </div>
           </div>
+
+          {/* Row 2: copyright + legal — single baseline, hairline divider */}
+          <div
+            className="mt-7 pt-6 border-t border-white/[0.05] flex flex-col items-center gap-3 text-[11px] text-white/25 md:flex-row md:items-baseline md:justify-between"
+            style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+          >
+            <span>
+              {t('footer.copyrightLine', { year: new Date().getFullYear(), rights: t('footer.allRightsReserved') })}
+            </span>
+            <div className="flex items-baseline gap-5">
+              <Link href="/legal/privacy" className="hover:text-white/60 transition-colors">{t('footer.privacy')}</Link>
+              <Link href="/legal/terms" className="hover:text-white/60 transition-colors">{t('footer.terms')}</Link>
+              <Link href="/legal/cookies" className="hover:text-white/60 transition-colors">{t('footer.cookies')}</Link>
+            </div>
+          </div>
+
         </div>
       </div>
     </footer>

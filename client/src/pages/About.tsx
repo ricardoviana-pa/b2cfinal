@@ -113,7 +113,7 @@ const TEAM = [
    capsule and metadata never drift apart (they previously read 50 / 60+ /
    sixty). Bump this one number when the portfolio grows. */
 const HOME_COUNT = 70;
-const YOUTUBE_ID = 'OUgTpL2E15U'; // PA Cleaning — 47-point preparation
+const YOUTUBE_ID = 'OUgTpL2E15U'; // PA Cleaning — 147-point preparation
 
 /* Press — real outlet logos, same treatment as the homepage press bar
    (grayscale-ish PNGs at opacity-40, per-logo heights). */
@@ -373,13 +373,13 @@ export default function About() {
                 className="text-[#1A1A18] mb-5"
                 style={{ fontFamily: 'var(--font-display)', fontWeight: 300, fontSize: 'clamp(28px, 4vw, 36px)', lineHeight: 1.2 }}
               >
-                {t('about.behindScenesTitle', 'The 47-point checklist')}
+                {t('about.behindScenesTitle', 'The 147-point checklist')}
               </h2>
               <p
                 className="text-[#6B6860] mb-5"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '16px', lineHeight: 1.7 }}
               >
-                {t('about.behindScenesP1', 'Before every guest arrives, our in-house team runs a 47-point preparation checklist. Linens pressed, amenities restocked, every surface inspected. This is what hotel-grade service looks like when applied to a private home.')}
+                {t('about.behindScenesP1', 'Before every guest arrives, our in-house team runs a 147-point preparation checklist. Linens pressed, amenities restocked, every surface inspected. This is what hotel-grade service looks like when applied to a private home.')}
               </p>
               <p
                 className="text-[#6B6860]"
@@ -581,7 +581,7 @@ export default function About() {
           <div className="w-full max-w-4xl aspect-video" onClick={(e) => e.stopPropagation()}>
             <iframe
               src={`https://www.youtube.com/embed/${YOUTUBE_ID}?autoplay=1&rel=0&modestbranding=1`}
-              title="PA Cleaning — 47-point property preparation"
+              title="PA Cleaning — 147-point property preparation"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               className="w-full h-full rounded-sm bg-black"
