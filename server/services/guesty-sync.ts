@@ -66,7 +66,7 @@ function buildDescription(desc: any, legacyDescription?: string): string {
 /** Content-quality metrics for the structured descriptions, accumulated across
  *  a sync run and logged at the end so we can track the editorial cleanup of
  *  the ~25-35 older listings over time. Reset at the start of runSync. */
-const descMetrics = { notesUpsellFiltered: 0, spaceDeduped: 0, gettingAroundGarbage: 0 };
+const descMetrics = { notesUpsellFiltered: 0, spaceDeduped: 0, gettingAroundGarbage: 0, carriageReturns: 0 };
 
 /** Markers of the commercial upsell block ("Exclusive Concierge Services /
  *  Adventure Experiences") that was copy-pasted into "Other things to note"
@@ -115,7 +115,13 @@ function dedupSpace(summary: string, space: string): string {
  *  summary / access / neighborhood / interaction are passed through. */
 function buildDescriptionSections(desc: any): Record<string, string> {
   if (!desc || typeof desc !== "object") return {};
-  const pick = (v: unknown) => (typeof v === "string" ? v.trim() : "");
+  // Normalise carriage returns (\r\n and lone \r → \n) — Guesty fields arrive
+  // with Windows line endings that otherwise render as stray breaks.
+  const pick = (v: unknown) => {
+    if (typeof v !== "string") return "";
+    if (v.includes("\r")) descMetrics.carriageReturns++;
+    return v.replace(/\r\n?/g, "\n").trim();
+  };
   const summary = pick(desc.summary);
   const gettingAroundRaw = pick(desc.transit);
   const gettingAround = gettingAroundRaw.replace(/[^a-zA-Z0-9]/g, "").length < 10 ? "" : gettingAroundRaw;
@@ -677,6 +683,7 @@ export async function runSync(): Promise<string> {
   descMetrics.notesUpsellFiltered = 0;
   descMetrics.spaceDeduped = 0;
   descMetrics.gettingAroundGarbage = 0;
+  descMetrics.carriageReturns = 0;
 
   console.log("[Guesty Sync] Fetching listings and reviews...");
   const [listings, allReviews] = await Promise.all([
@@ -721,7 +728,8 @@ export async function runSync(): Promise<string> {
   // Content-quality report — tracks the editorial cleanup of older listings.
   console.log(
     `[Guesty Sync] Description hygiene — notes upsell filtered: ${descMetrics.notesUpsellFiltered}, ` +
-      `space deduped: ${descMetrics.spaceDeduped}, getting-around garbage: ${descMetrics.gettingAroundGarbage}`,
+      `space deduped: ${descMetrics.spaceDeduped}, getting-around garbage: ${descMetrics.gettingAroundGarbage}, ` +
+      `carriage returns normalised: ${descMetrics.carriageReturns}`,
   );
 
   const jsonContent = JSON.stringify(properties, null, 2);
