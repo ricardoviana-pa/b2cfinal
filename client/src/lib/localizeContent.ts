@@ -15,6 +15,7 @@
 import experiencesI18n from '@/data/experienceDetails.i18n.json';
 import servicesI18n from '@/data/services.i18n.json';
 import productsI18n from '@/data/products.i18n.json';
+import destinationsI18n from '@/data/destinations.i18n.json';
 
 type Dict = Record<string, any>;
 
@@ -75,4 +76,10 @@ export function localizeService<T extends Dict>(svc: T | null | undefined, lang:
 export function localizeProduct<T extends Dict>(prod: T | null | undefined, lang: string | undefined): T | null | undefined {
   if (!prod) return prod;
   return localizeItem(prod, productsI18n as Dict, prod.slug, lang);
+}
+
+/** Localise a single destination object (destinations.json) for the active language. */
+export function localizeDestination<T extends Dict>(dest: T | null | undefined, lang: string | undefined): T | null | undefined {
+  if (!dest) return dest;
+  return localizeItem(dest, destinationsI18n as Dict, dest.slug, lang);
 }

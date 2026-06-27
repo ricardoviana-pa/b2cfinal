@@ -13,6 +13,7 @@ import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import destinationsData from '@/data/destinations.json';
+import { localizeDestination } from '@/lib/localizeContent';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -60,20 +61,21 @@ function DestinationCard({ dest }: { dest: Destination }) {
 }
 
 export default function Destinations() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   usePageMeta({
     title: 'Destinations in Portugal | Minho, Porto, Algarve & More',
     description: 'Explore our luxury villa destinations across Portugal — Minho Coast, Porto & Douro, Algarve, Lisbon, Alentejo. Find your perfect region.',
     url: '/destinations',
   });
 
-  const active = destinations.filter(d => !d.comingSoon);
+  const localized = destinations.map(d => localizeDestination(d, i18n.language)!);
+  const active = localized.filter(d => !d.comingSoon);
   // Brazil is excluded from the "Coming soon" strip too — we're not ready
   // to reveal the expansion publicly. The entry still exists in
   // destinations.json so /destinations/brazil keeps working for direct
   // links; once we launch, flip its `status` to 'active' and
   // `comingSoon` to false in destinations.json — no code change needed.
-  const comingSoon = destinations.filter(d => d.comingSoon && d.slug !== 'brazil');
+  const comingSoon = localized.filter(d => d.comingSoon && d.slug !== 'brazil');
 
   // Hub policy (HOT FIX 2026-05-25): the public destinations hub shows ONLY
   // region-hub entries (slug === region slug). City-level spokes

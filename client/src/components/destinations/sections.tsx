@@ -252,14 +252,15 @@ export function TheJournal({ destination: d, articles }: TheJournalProps) {
 /* ── 5. WHAT TO SEE AND DO ────────────────────────────────────────────── */
 
 export function WhatToSeeAndDo({ destination: d }: { destination: Destination }) {
+  const { t } = useTranslation();
   const intro = d.thingsToDoIntro;
   if (!d.thingsToDo || d.thingsToDo.length === 0) {
     if (d.insiderRecommendations && d.insiderRecommendations.length > 0) {
       return (
         <section className="section-padding bg-[#F5F1EB]">
           <div className="container">
-            <h2 className="headline-lg text-[#1A1A18] mb-3">What to see and do</h2>
-            <p className="body-lg text-[#6B6860] mb-8">Our concierge picks in {d.name}.</p>
+            <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.seeAndDoTitle')}</h2>
+            <p className="body-lg text-[#6B6860] mb-8">{t('destinationDetail.guide.conciergePicks', { name: d.name })}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
               {d.insiderRecommendations.map((rec, i) => (
                 <div key={i} className="bg-white border border-[#E8E4DC] p-6">
@@ -284,13 +285,12 @@ export function WhatToSeeAndDo({ destination: d }: { destination: Destination })
   return (
     <section className="section-padding bg-[#F5F1EB]">
       <div className="container">
-        <h2 className="headline-lg text-[#1A1A18] mb-3">What to see and do in {d.name}</h2>
+        <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.seeAndDoTitleNamed', { name: d.name })}</h2>
         <p
           className="body-lg text-[#3A3A35] mb-10 max-w-3xl leading-relaxed"
           style={{ fontWeight: 300 }}
         >
-          {intro ??
-            'A curated walk through the places, hills and bays we recommend to our guests — voice ours, ranking subjective.'}
+          {intro ?? t('destinationDetail.guide.seeAndDoIntroFallback')}
         </p>
         <div className="space-y-12">
           {d.thingsToDo.map(group => (
@@ -331,21 +331,22 @@ export function WhatToSeeAndDo({ destination: d }: { destination: Destination })
 
 /* ── 6. WHEN TO VISIT ─────────────────────────────────────────────────── */
 
-const SEASON_LABEL: Record<string, string> = {
-  spring: 'Spring (March–May)',
-  summer: 'Summer (June–August)',
-  autumn: 'Autumn (September–November)',
-  winter: 'Winter (December–February)',
+const SEASON_LABEL_KEY: Record<string, string> = {
+  spring: 'seasonSpring',
+  summer: 'seasonSummer',
+  autumn: 'seasonAutumn',
+  winter: 'seasonWinter',
 };
 
 export function WhenToVisit({ destination: d }: { destination: Destination }) {
+  const { t } = useTranslation();
   // No structured seasons → fall back to the single-line bestTimeToVisit.
   if (!d.seasons) {
     if (!d.bestTimeToVisit) return null;
     return (
       <section className="py-12 bg-white">
         <div className="container max-w-3xl mx-auto">
-          <h2 className="headline-lg text-[#1A1A18] mb-6">When to visit</h2>
+          <h2 className="headline-lg text-[#1A1A18] mb-6">{t('destinationDetail.guide.whenToVisitTitle')}</h2>
           <p className="body-lg">{d.bestTimeToVisit}</p>
         </div>
       </section>
@@ -354,14 +355,14 @@ export function WhenToVisit({ destination: d }: { destination: Destination }) {
   const seasons: Array<{ key: string; label: string; text: string }> = [];
   for (const key of ['spring', 'summer', 'autumn', 'winter'] as const) {
     const text = d.seasons[key];
-    if (text) seasons.push({ key, label: SEASON_LABEL[key], text });
+    if (text) seasons.push({ key, label: t('destinationDetail.guide.' + SEASON_LABEL_KEY[key]), text });
   }
   if (seasons.length === 0 && !d.seasons.bestForFirstTime) return null;
 
   return (
     <section className="section-padding bg-white">
       <div className="container max-w-5xl mx-auto">
-        <h2 className="headline-lg text-[#1A1A18] mb-3">When to visit {d.name}</h2>
+        <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.whenToVisitTitleNamed', { name: d.name })}</h2>
         {d.bestTimeToVisit && (
           <p className="body-lg text-[#6B6860] mb-10 max-w-2xl">{d.bestTimeToVisit}</p>
         )}
@@ -383,7 +384,7 @@ export function WhenToVisit({ destination: d }: { destination: Destination }) {
         {d.seasons.bestForFirstTime && (
           <div className="mt-10 max-w-3xl mx-auto bg-[#FAFAF7] border border-[#E8E4DC] p-6">
             <p className="text-[11px] font-medium tracking-[0.14em] uppercase text-[#8B7355] mb-3">
-              Best for first-time visitors
+              {t('destinationDetail.guide.bestForFirstTime')}
             </p>
             <p className="text-[14px] text-[#1A1A18] leading-relaxed" style={{ fontWeight: 300 }}>
               {d.seasons.bestForFirstTime}
@@ -397,21 +398,22 @@ export function WhenToVisit({ destination: d }: { destination: Destination }) {
 
 /* ── 7. HOW TO GET HERE ───────────────────────────────────────────────── */
 
-const TRANSPORT_META: Array<{ key: 'byAir' | 'byTrain' | 'byCar' | 'fromSpain' | 'gettingAround'; label: string; Icon: typeof Plane }> = [
-  { key: 'byAir', label: 'By air', Icon: Plane },
-  { key: 'byTrain', label: 'By train', Icon: Train },
-  { key: 'byCar', label: 'By car', Icon: Car },
-  { key: 'fromSpain', label: 'From Spain', Icon: Globe },
-  { key: 'gettingAround', label: 'Getting around', Icon: Bike },
+const TRANSPORT_META: Array<{ key: 'byAir' | 'byTrain' | 'byCar' | 'fromSpain' | 'gettingAround'; Icon: typeof Plane }> = [
+  { key: 'byAir', Icon: Plane },
+  { key: 'byTrain', Icon: Train },
+  { key: 'byCar', Icon: Car },
+  { key: 'fromSpain', Icon: Globe },
+  { key: 'gettingAround', Icon: Bike },
 ];
 
 export function HowToGetHere({ destination: d }: { destination: Destination }) {
+  const { t } = useTranslation();
   if (!d.transport) {
     if (!d.howToGetHere) return null;
     return (
       <section className="py-12 bg-[#FAFAF7]">
         <div className="container max-w-3xl mx-auto">
-          <h2 className="headline-lg text-[#1A1A18] mb-6">Getting to {d.name}</h2>
+          <h2 className="headline-lg text-[#1A1A18] mb-6">{t('destinationDetail.guide.getHereTitleNamed', { name: d.name })}</h2>
           <p className="body-lg">{d.howToGetHere}</p>
         </div>
       </section>
@@ -423,16 +425,16 @@ export function HowToGetHere({ destination: d }: { destination: Destination }) {
   return (
     <section className="section-padding bg-[#FAFAF7]">
       <div className="container max-w-4xl mx-auto">
-        <h2 className="headline-lg text-[#1A1A18] mb-8">Getting to {d.name}</h2>
+        <h2 className="headline-lg text-[#1A1A18] mb-8">{t('destinationDetail.guide.getHereTitleNamed', { name: d.name })}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {populated.map(({ key, label, Icon }) => (
+          {populated.map(({ key, Icon }) => (
             <div
               key={key}
               className="flex items-start gap-4 p-5 bg-white border border-[#E8E4DC]"
             >
               <Icon className="w-5 h-5 text-[#8B7355] mt-0.5 flex-shrink-0" />
               <div>
-                <p className="text-[14px] font-medium text-[#1A1A18] mb-1.5">{label}</p>
+                <p className="text-[14px] font-medium text-[#1A1A18] mb-1.5">{t('destinationDetail.guide.' + key)}</p>
                 <p
                   className="text-[13px] text-[#6B6860] leading-relaxed"
                   style={{ fontWeight: 300 }}
@@ -444,7 +446,7 @@ export function HowToGetHere({ destination: d }: { destination: Destination }) {
           ))}
         </div>
         <p className="mt-8 text-[13px] text-[#6B6860] text-center" style={{ fontWeight: 300 }}>
-          Our concierge arranges private transfers from any airport or station to your villa.
+          {t('destinationDetail.guide.transferNote')}
         </p>
       </div>
     </section>
@@ -465,6 +467,7 @@ export function EatDrinkExperience({
   adventures = [],
   onAddToItinerary,
 }: EatDrinkExperienceProps) {
+  const { t } = useTranslation();
   const hasRestaurants = (d.restaurants?.length ?? 0) > 0;
   const hasSpecialties = (d.specialties?.length ?? 0) > 0;
   const hasExperiences = (d.experiences?.length ?? 0) > 0;
@@ -473,13 +476,12 @@ export function EatDrinkExperience({
   return (
     <section className="section-padding bg-white">
       <div className="container max-w-6xl mx-auto">
-        <h2 className="headline-lg text-[#1A1A18] mb-3">Eat, drink, experience</h2>
+        <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.eatDrinkTitle')}</h2>
         <p
           className="body-lg text-[#3A3A35] mb-10 max-w-3xl leading-relaxed"
           style={{ fontWeight: 300 }}
         >
-          {d.eatDrinkIntro ??
-            'Restaurants we send our guests to, and experiences our concierge arranges. Not a directory — a personal list.'}
+          {d.eatDrinkIntro ?? t('destinationDetail.guide.eatDrinkIntroFallback')}
         </p>
 
         {hasRestaurants && (
@@ -488,7 +490,7 @@ export function EatDrinkExperience({
               className="text-[17px] font-medium text-[#1A1A18] mb-5"
               style={{ fontFamily: 'var(--font-display)' }}
             >
-              Where to eat
+              {t('destinationDetail.guide.whereToEat')}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {d.restaurants!.map(r => (
@@ -519,7 +521,7 @@ export function EatDrinkExperience({
               className="text-[17px] font-medium text-[#1A1A18] mb-5"
               style={{ fontFamily: 'var(--font-display)' }}
             >
-              Local specialties
+              {t('destinationDetail.guide.localSpecialties')}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {d.specialties!.map(s => (
@@ -550,7 +552,7 @@ export function EatDrinkExperience({
               className="text-[17px] font-medium text-[#1A1A18] mb-3"
               style={{ fontFamily: 'var(--font-display)' }}
             >
-              What to do
+              {t('destinationDetail.guide.whatToDo')}
             </h3>
             {d.experiencesIntro && (
               <p
@@ -582,7 +584,7 @@ export function EatDrinkExperience({
                     </div>
                   )}
                   <p className="mt-3 text-[12px] text-[#8B7355] italic" style={{ fontWeight: 300 }}>
-                    Our concierge can arrange.
+                    {t('destinationDetail.guide.conciergeArrange')}
                   </p>
                 </div>
               ))}
@@ -596,7 +598,7 @@ export function EatDrinkExperience({
               className="text-[17px] font-medium text-[#1A1A18] mb-5"
               style={{ fontFamily: 'var(--font-display)' }}
             >
-              Book online
+              {t('destinationDetail.guide.bookOnline')}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {adventures.map(adv => (
@@ -642,7 +644,7 @@ export function EatDrinkExperience({
                         className="flex items-center gap-1.5 text-[12px] font-medium text-[#1A1A18] hover:text-[#8B7355] transition-colors"
                         style={{ minHeight: 'auto', minWidth: 'auto' }}
                       >
-                        <Plus className="w-3.5 h-3.5" /> Add to itinerary
+                        <Plus className="w-3.5 h-3.5" /> {t('destinationDetail.guide.addToItinerary')}
                       </button>
                     )}
                   </div>
@@ -659,11 +661,12 @@ export function EatDrinkExperience({
 /* ── 9. EVENTS WORTH PLANNING AROUND (added in Cowork editorial pass) ── */
 
 export function EventsAndPlanning({ destination: d }: { destination: Destination }) {
+  const { t } = useTranslation();
   if (!d.events || d.events.length === 0) return null;
   return (
     <section className="section-padding bg-[#FAFAF7]">
       <div className="container max-w-5xl mx-auto">
-        <h2 className="headline-lg text-[#1A1A18] mb-3">Events worth planning around</h2>
+        <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.eventsTitle')}</h2>
         {d.eventsIntro && (
           <p
             className="body-lg text-[#3A3A35] mb-10 max-w-3xl leading-relaxed"
@@ -710,12 +713,13 @@ export function EventsAndPlanning({ destination: d }: { destination: Destination
 /* ── 10. PRESS & ACCOLADES ────────────────────────────────────────────── */
 
 export function PressAccolades({ destination: d }: { destination: Destination }) {
+  const { t } = useTranslation();
   if (!d.pressQuotes || d.pressQuotes.length === 0) return null;
   return (
     <section className="py-16 bg-[#1A1A18] text-white">
       <div className="container max-w-5xl mx-auto">
         <h2 className="text-[11px] font-medium tracking-[0.14em] uppercase text-white/60 mb-3 text-center">
-          Press & recognition
+          {t('destinationDetail.guide.pressTitle')}
         </h2>
         {d.pressIntro && (
           <p
@@ -755,11 +759,12 @@ export function PressAccolades({ destination: d }: { destination: Destination })
 /* ── 11. FAQ SECTION (FAQPage schema is emitted by DestinationPage) ──── */
 
 export function FAQSection({ destination: d }: { destination: Destination }) {
+  const { t } = useTranslation();
   if (!d.faqs || d.faqs.length === 0) return null;
   return (
     <section className="section-padding bg-white">
       <div className="container max-w-3xl mx-auto">
-        <h2 className="headline-lg text-[#1A1A18] mb-8">Frequently asked questions</h2>
+        <h2 className="headline-lg text-[#1A1A18] mb-8">{t('destinationDetail.guide.faqsTitle')}</h2>
         <dl className="space-y-6">
           {d.faqs.map((f, i) => (
             <div key={i} className="border-b border-[#E8E4DC] pb-6 last:border-b-0">
@@ -791,10 +796,11 @@ export function RelatedDestinationsAndOwnersCTA({
   destination: d,
   related,
 }: RelatedDestinationsAndOwnersCTAProps) {
+  const { t } = useTranslation();
   const owners = d.ownersCTA ?? {
-    headline: `Own a home in ${d.name}?`,
-    body: `Portugal Active operates private homes across Portugal end-to-end: marketing, bookings, concierge, maintenance, revenue optimisation. We turn private homes into private hotels.`,
-    cta: 'Speak to our team',
+    headline: t('destinationDetail.guide.ownersHeadline', { name: d.name }),
+    body: t('destinationDetail.guide.ownersBody'),
+    cta: t('destinationDetail.guide.ownersCta'),
   };
   // Per-destination override takes priority; default builds a UTM-tagged
   // link so booking-vs-owner attribution stays clean in Pipedrive.
@@ -807,7 +813,7 @@ export function RelatedDestinationsAndOwnersCTA({
       {related.length > 0 && (
         <section className="section-padding bg-[#FAFAF7]">
           <div className="container max-w-5xl mx-auto">
-            <h2 className="headline-lg text-[#1A1A18] mb-8">Continue exploring</h2>
+            <h2 className="headline-lg text-[#1A1A18] mb-8">{t('destinationDetail.guide.relatedTitle')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {related.slice(0, 3).map(r => (
                 <Link
