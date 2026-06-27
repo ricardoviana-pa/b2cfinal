@@ -1,0 +1,98 @@
+{
+  "private-chef": { "pt": {
+    "name": "Chef Privado",
+    "tagline": "De jantares intimistas a banquetes em família. Os nossos chefs criam menus com os melhores ingredientes regionais.",
+    "description": "De jantares intimistas a banquetes em família. Os nossos chefs criam menus com os melhores ingredientes regionais. Cozinha portuguesa, mediterrânica ou à medida das suas preferências.",
+    "priceSuffix": "por pessoa"
+  } },
+  "in-villa-spa": { "pt": {
+    "name": "Spa e Massagem na Villa",
+    "tagline": "Terapeutas profissionais vão até si. Massagem de tecido profundo, pedras quentes, aromaterapia ou massagem de casal.",
+    "description": "Terapeutas profissionais vão até si. Massagem de tecido profundo, pedras quentes, aromaterapia ou massagem de casal — na sua sala, no jardim ou à beira da piscina.",
+    "priceSuffix": "por sessão"
+  } },
+  "private-yoga": { "pt": {
+    "name": "Yoga Privado",
+    "tagline": "Comece a manhã com uma sessão privada no jardim, no terraço ou à beira da piscina.",
+    "description": "Comece a manhã com uma sessão privada no jardim, no terraço ou à beira da piscina. Todos os níveis são bem-vindos.",
+    "priceSuffix": "por sessão"
+  } },
+  "personal-training": { "pt": {
+    "name": "Treino Personalizado",
+    "tagline": "Treino ao ar livre pensado para os seus objetivos. Força, HIIT, mobilidade ou fitness em família.",
+    "description": "Treino ao ar livre pensado para os seus objetivos. Força, HIIT, mobilidade ou fitness em família. Equipamento incluído.",
+    "priceSuffix": "por sessão"
+  } },
+  "grocery-delivery": { "pt": {
+    "name": "Compras e Entrega de Mercearia",
+    "tagline": "Chegue a uma cozinha totalmente abastecida. Partilhe as suas preferências e tratamos de tudo.",
+    "description": "Chegue a uma cozinha totalmente abastecida. Partilhe as suas preferências e tratamos de tudo. Frigorífico organizado, vinho fresco.",
+    "priceSuffix": "+ compras"
+  } },
+  "babysitter": { "pt": {
+    "name": "Babysitter",
+    "tagline": "Profissionais de acompanhamento infantil certificados e experientes, para o dia ou para a noite.",
+    "description": "Profissionais de acompanhamento infantil certificados e experientes, para o dia ou para a noite. Tranquilidade incluída.",
+    "priceSuffix": "por hora"
+  } },
+  "airport-shuttle": { "pt": {
+    "name": "Transfer de Aeroporto e Motorista Privado",
+    "tagline": "Transfers sem complicações do Porto, Lisboa ou qualquer aeroporto. Veículos premium, motoristas locais.",
+    "description": "Transfers sem complicações do Porto, Lisboa ou qualquer aeroporto. Veículos premium, motoristas locais que também são guias.",
+    "priceSuffix": "por transfer"
+  } },
+  "daily-housekeeping": { "pt": {
+    "name": "Limpeza Diária",
+    "tagline": "Limpeza ao nível de hotel durante a sua estadia. Três níveis: Quick Refresh, Full Service ou À Medida.",
+    "description": "Limpeza ao nível de hotel durante a sua estadia. Quick Refresh (arrumação, lixos, camas feitas), Full Service (lençóis e toalhas lavados, limpeza completa, amenities repostos) ou À Medida (diga-nos o que precisa).",
+    "priceSuffix": "por visita"
+  } },
+  "canyoning": { "pt": {
+    "name": "Canyoning",
+    "tagline": "Desça desfiladeiros de rio escondidos, salte para piscinas naturais e faça rappel por cascatas.",
+    "description": "Desça desfiladeiros de rio escondidos, salte para piscinas naturais e faça rappel por cascatas nas gargantas mais espetaculares do Norte de Portugal.",
+    "priceSuffix": "por pessoa"
+  } },
+  "stand-up-paddle": { "pt": {
+    "name": "Stand Up Paddle",
+    "tagline": "Sessões ao nascer do sol no rio Lima, remadas ao pôr do sol pela costa atlântica.",
+    "description": "Sessões ao nascer do sol no rio Lima, remadas ao pôr do sol pela costa atlântica ou uma manhã tranquila numa lagoa escondida.",
+    "priceSuffix": "por pessoa"
+  } },
+  "horseback-riding": { "pt": {
+    "name": "Passeio a Cavalo",
+    "tagline": "Cavalgue por praias desertas, pinhais e dunas costeiras.",
+    "description": "Cavalgue por praias desertas, pinhais e dunas costeiras. Adequado a principiantes e cavaleiros experientes.",
+    "priceSuffix": "por pessoa"
+  } },
+  "hike-dive-dine": { "pt": {
+    "name": "Caminhada, Mergulho e Jantar",
+    "tagline": "Uma aventura de dia inteiro: caminhe até cascatas escondidas, nade em piscinas naturais e termine com um almoço tradicional.",
+    "description": "Uma aventura de dia inteiro: caminhe até cascatas escondidas, nade em piscinas naturais e termine com um almoço tradicional num restaurante de família local.",
+    "priceSuffix": "por pessoa"
+  } },
+  "can-am-buggy": { "pt": {
+    "name": "Experiência Can-Am / Buggy",
+    "tagline": "Todo-o-terreno por trilhos de montanha e caminhos florestais. Tours guiados com miradouros panorâmicos.",
+    "description": "Todo-o-terreno por trilhos de montanha e caminhos florestais. Tours guiados com paragens em miradouros panorâmicos.",
+    "priceSuffix": "por buggy"
+  } },
+  "sailing": { "pt": {
+    "name": "Vela e Passeios de Barco",
+    "tagline": "Vela ao pôr do sol pela costa atlântica, charters de barco privados ou um cruzeiro tranquilo.",
+    "description": "Vela ao pôr do sol pela costa atlântica, charters de barco privados ou um cruzeiro tranquilo pelo estuário do Lima.",
+    "priceSuffix": "por pessoa"
+  } },
+  "ebike-tours": { "pt": {
+    "name": "Tours de E-Bike e Fat Bike",
+    "tagline": "Explore trilhos costeiros, dunas de praia e caminhos de montanha em bicicletas elétricas ou de pneus largos.",
+    "description": "Explore trilhos costeiros, dunas de praia e caminhos de montanha em bicicletas elétricas ou de pneus largos. Guiado por locais.",
+    "priceSuffix": "por pessoa"
+  } },
+  "surf-lessons": { "pt": {
+    "name": "Aulas de Surf",
+    "tagline": "Aprenda a surfar nas melhores ondas atlânticas de Portugal. Aulas privadas ou em grupo pequeno.",
+    "description": "Aprenda a surfar nas melhores ondas atlânticas de Portugal. Aulas privadas ou em grupo pequeno com instrutores certificados.",
+    "priceSuffix": "por pessoa"
+  } }
+}

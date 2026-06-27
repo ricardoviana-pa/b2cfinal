@@ -9,6 +9,7 @@ import { MessageCircle, ArrowRight, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import productsData from '@/data/products.json';
+import { localizeProduct } from '@/lib/localizeContent';
 import type { Product } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
 import Header from '@/components/layout/Header';
@@ -92,13 +93,14 @@ function SingleServiceFeature({ product, overline, title, body }: { product: Pro
 }
 
 export default function Concierge() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   usePageMeta({ title: 'Concierge Services | Exclusive to Portugal Active Guests', description: 'Private chef, in-house spa, airport transfers and additional services available exclusively to guests staying at our properties.', url: '/concierge' });
 
-  const gastronomyProducts = GASTRONOMY_SLUGS.map(getService).filter(Boolean) as Product[];
-  const wellnessProducts = WELLNESS_SLUGS.map(getService).filter(Boolean) as Product[];
-  const mobilityProducts = MOBILITY_SLUGS.map(getService).filter(Boolean) as Product[];
-  const additionalProducts = ADDITIONAL_SLUGS.map(getService).filter(Boolean) as Product[];
+  const loc = (p: Product | undefined) => localizeProduct(p, i18n.language) as Product;
+  const gastronomyProducts = GASTRONOMY_SLUGS.map(getService).filter(Boolean).map(loc) as Product[];
+  const wellnessProducts = WELLNESS_SLUGS.map(getService).filter(Boolean).map(loc) as Product[];
+  const mobilityProducts = MOBILITY_SLUGS.map(getService).filter(Boolean).map(loc) as Product[];
+  const additionalProducts = ADDITIONAL_SLUGS.map(getService).filter(Boolean).map(loc) as Product[];
 
   // Services are emitted as an ItemList of Service items. The brand entity
   // (Organization) already exists once globally in index.html — we reference

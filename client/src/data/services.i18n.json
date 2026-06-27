@@ -1,0 +1,74 @@
+{
+  "private-chef": { "pt": {
+    "name": "Chef Privado",
+    "tagline": "Jantares com qualidade de restaurante no conforto da sua casa.",
+    "description": "Desfrute de uma experiência culinária personalizada no conforto da sua casa de férias, preparada pelo nosso talentoso chef. Quer queira celebrar uma data especial, reunir família e amigos, organizar um evento corporativo ou simplesmente relaxar e desfrutar da sua casa, esta é a melhor forma de o fazer.\n\nConfecionado com ingredientes frescos e de origem local, cada prato é sempre preparado com o objetivo de ser delicioso e saudável. Só tem de escolher o menu ou uma refeição personalizada, a data e a hora — nós tratamos de todo o resto.",
+    "details": ["Refeição completa", "Menu personalizado", "Disponível em todas as casas", "Bebidas incluídas", "Ingredientes locais", "Limpeza incluída"],
+    "price": "Desde €85 por pessoa",
+    "duration": "3-4 horas",
+    "availability": "Disponível em todas as casas"
+  } },
+  "massage-therapist": { "pt": {
+    "name": "Terapeuta de Massagem",
+    "tagline": "Tratamentos de spa profissionais na privacidade da sua villa.",
+    "description": "Transforme a sua villa num retiro de bem-estar privado. A nossa rede de terapeutas certificados leva a experiência de spa completa diretamente à sua casa — no seu horário, no seu espaço, com total privacidade.\n\nEscolha entre massagem sueca, de tecido profundo, pedras quentes, aromaterapia ou desportiva. Todo o equipamento e óleos premium são fornecidos. As sessões podem realizar-se à beira da piscina, no terraço ou na divisão que preferir.",
+    "details": ["Terapeutas certificados", "Várias técnicas", "Todo o equipamento incluído", "Óleos premium incluídos", "Interior ou exterior", "Disponível para casais"],
+    "price": "Desde €75 por sessão",
+    "duration": "60-90 minutos",
+    "availability": "Disponível em todas as casas"
+  } },
+  "private-yoga": { "pt": {
+    "name": "Sessão de Yoga Privada",
+    "tagline": "Serenidade matinal no seu terraço privado.",
+    "description": "Comece o dia com uma sessão de yoga privada conduzida por um instrutor certificado no seu terraço, jardim ou à beira da piscina. Todos os níveis são bem-vindos — do principiante absoluto ao praticante avançado.\n\nOs nossos instrutores adaptam cada sessão às necessidades e preferências do seu grupo. O equipamento é fornecido, incluindo tapetes, blocos e cintos. As sessões podem focar-se em Hatha, Vinyasa, Yin ou yoga restaurativo.",
+    "details": ["Instrutores certificados", "Todos os níveis bem-vindos", "Equipamento incluído", "Interior ou exterior", "Em grupo ou individual", "Vários estilos de yoga"],
+    "price": "Desde €60 por sessão",
+    "duration": "60 minutos",
+    "availability": "Disponível em todas as casas"
+  } },
+  "personal-trainer": { "pt": {
+    "name": "Personal Trainer",
+    "tagline": "Mantenha-se ativo de férias com orientação especializada.",
+    "description": "Mantenha a sua rotina de treino — ou comece uma nova — com um personal trainer certificado que vai até à sua propriedade. As sessões são adaptadas ao seu nível físico, objetivos e espaço disponível.\n\nQuer seja treino de força à beira da piscina, uma sessão de HIIT no jardim ou um treino suave de mobilidade no terraço, os nossos treinadores trazem todo o equipamento necessário para uma sessão eficaz.",
+    "details": ["Treinadores certificados", "Sessões à medida", "Todo o equipamento incluído", "Força e cardio", "Todos os níveis físicos", "Sessões ao ar livre"],
+    "price": "Desde €55 por sessão",
+    "duration": "60 minutos",
+    "availability": "Disponível em todas as casas"
+  } },
+  "airport-shuttle": { "pt": {
+    "name": "Transfer de Aeroporto",
+    "tagline": "Transfers sem complicações, da aterragem à porta de casa.",
+    "description": "As suas férias começam no momento em que aterra. O nosso serviço de transfer privado de aeroporto garante uma viagem suave e confortável do aeroporto do Porto, Lisboa ou Faro diretamente à sua propriedade.\n\nMotoristas profissionais em veículos premium recebem-no nas chegadas com uma placa com o seu nome. Cadeiras para crianças disponíveis a pedido. Monitorizamos os horários dos voos — mesmo que o seu voo se atrase, o seu motorista estará lá.",
+    "details": ["Veículos premium", "Receção personalizada", "Monitorização de voos", "Cadeiras para crianças disponíveis", "Porta a porta", "Disponível 24/7"],
+    "price": "Desde €65 por transfer",
+    "duration": "Varia consoante a distância",
+    "availability": "Aeroportos do Porto, Lisboa e Faro"
+  } },
+  "private-chauffeur": { "pt": {
+    "name": "Motorista Privado",
+    "tagline": "O seu motorista dedicado para cada viagem.",
+    "description": "Um motorista dedicado à sua disposição para passeios de um dia, tours de vinhos, explorações pela cidade ou transfers para restaurantes. Relaxe e desfrute da paisagem enquanto o seu motorista trata da logística.\n\nOs nossos motoristas são especialistas locais que podem recomendar os melhores percursos, restaurantes escondidos e paragens panorâmicas pelo caminho. Disponível para reservas de meio dia ou dia inteiro.",
+    "details": ["Motoristas especialistas locais", "Veículos premium", "Meio dia ou dia inteiro", "Itinerário flexível", "Transfers para restaurantes", "Especialista em tours de vinho"],
+    "price": "Desde €180 por meio dia",
+    "duration": "Meio dia ou dia inteiro",
+    "availability": "Todas as regiões"
+  } },
+  "grocery-setup": { "pt": {
+    "name": "Compras e Entrega de Mercearia",
+    "tagline": "O seu frigorífico abastecido antes de chegar.",
+    "description": "Chegue a uma cozinha totalmente abastecida com produtos locais, pão artesanal, queijo regional, fruta fresca e os seus vinhos favoritos. Tratamos das compras para que possa começar a desfrutar das férias desde o primeiro momento.\n\nEscolha entre os nossos pacotes de boas-vindas selecionados ou envie-nos a sua lista de compras pessoal. Adquirimos tudo em mercados locais e fornecedores de confiança.",
+    "details": ["Produtos locais", "Produtos artesanais", "Listas de compras à medida", "Pacotes de boas-vindas", "Seleção de vinhos", "Necessidades alimentares contempladas"],
+    "price": "Desde €45 por preparação",
+    "duration": "Pronto à chegada",
+    "availability": "Disponível em todas as casas"
+  } },
+  "babysitter": { "pt": {
+    "name": "Babysitter",
+    "tagline": "Acompanhamento infantil de confiança para poder desfrutar da sua noite.",
+    "description": "Profissionais de acompanhamento infantil certificados, disponíveis para noites fora, excursões de dia ou sempre que precise de algumas horas para si. Todas as nossas babysitters são verificadas, experientes e falam inglês.\n\nQuer queira um jantar romântico, uma sessão de spa ou simplesmente um pouco de sossego, as nossas babysitters garantem que as suas crianças estão seguras, entretidas e felizes.",
+    "details": ["Profissionais certificadas", "Falam inglês", "Verificadas e experientes", "Horários flexíveis", "Noite ou dia", "Todas as idades"],
+    "price": "Desde €20 por hora",
+    "duration": "Mínimo 3 horas",
+    "availability": "Disponível em todas as casas"
+  } }
+}

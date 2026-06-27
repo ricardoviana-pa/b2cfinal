@@ -13,6 +13,8 @@
    - arrays of strings and primitives are replaced by the override.
    ========================================================================== */
 import experiencesI18n from '@/data/experienceDetails.i18n.json';
+import servicesI18n from '@/data/services.i18n.json';
+import productsI18n from '@/data/products.i18n.json';
 
 type Dict = Record<string, any>;
 
@@ -58,7 +60,19 @@ export function localizeItem<T extends Dict>(
 }
 
 /** Localise a single experience object for the active language. */
-export function localizeExperience<T extends Dict>(exp: T | null, lang: string | undefined): T | null {
+export function localizeExperience<T extends Dict>(exp: T | null | undefined, lang: string | undefined): T | null | undefined {
   if (!exp) return exp;
   return localizeItem(exp, experiencesI18n as Dict, exp.slug, lang);
+}
+
+/** Localise a single service object (services.json) for the active language. */
+export function localizeService<T extends Dict>(svc: T | null | undefined, lang: string | undefined): T | null | undefined {
+  if (!svc) return svc;
+  return localizeItem(svc, servicesI18n as Dict, svc.slug, lang);
+}
+
+/** Localise a single product/card object (products.json) for the active language. */
+export function localizeProduct<T extends Dict>(prod: T | null | undefined, lang: string | undefined): T | null | undefined {
+  if (!prod) return prod;
+  return localizeItem(prod, productsI18n as Dict, prod.slug, lang);
 }

@@ -8,6 +8,7 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import { useRoute, Link } from 'wouter';
 import { Check, Clock, MapPin, ArrowLeft, MessageCircle } from 'lucide-react';
 import servicesData from '@/data/services.json';
+import { localizeService } from '@/lib/localizeContent';
 import destinationsData from '@/data/destinations.json';
 import type { Destination } from '@/lib/types';
 import Header from '@/components/layout/Header';
@@ -17,14 +18,14 @@ import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 const destinations = (destinationsData as unknown as Destination[]).filter(d => d.status === 'active' && !d.comingSoon);
 
 export default function ServiceDetail() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [, params] = useRoute('/services/:slug');
   const [, actParams] = useRoute('/activities/:slug');
   const [, expParams] = useRoute('/experiences/:slug');
   const slug = params?.slug || actParams?.slug || expParams?.slug;
 
   const allItems = [...servicesData.services, ...servicesData.activities];
-  const item = allItems.find(s => s.slug === slug);
+  const item = localizeService(allItems.find(s => s.slug === slug), i18n.language);
 
   usePageMeta({
     title: item ? `${item.name} | Portugal Active` : 'Service Not Found',
@@ -45,7 +46,7 @@ export default function ServiceDetail() {
   }
 
   const isService = item.category === 'service';
-  const otherItems = allItems.filter(s => s.slug !== slug).slice(0, 4);
+  const otherItems = allItems.filter(s => s.slug !== slug).slice(0, 4).map(s => localizeService(s, i18n.language)!);
   const whatsappMsg = encodeURIComponent(`Hi, I'm interested in ${item.name}. Can you tell me more?`);
 
   return (
