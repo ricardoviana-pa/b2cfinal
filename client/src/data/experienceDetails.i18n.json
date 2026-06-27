@@ -1,0 +1,81 @@
+{
+  "horseback-riding": {
+    "pt": {
+      "name": "Passeio a Cavalo em Viana do Castelo — Praia, Montanha e Campos de Flores",
+      "tagline": "Um passeio a cavalo por campos de flores, trilhos de montanha e praias paradisíacas — pensado para todos os níveis, do principiante ao cavaleiro experiente.",
+      "badges": ["Mais procurado", "Grupo pequeno"],
+      "price": "Desde €75 por pessoa",
+      "duration": "2h 30m",
+      "difficultyLevel": "Fácil a moderado",
+      "availability": "Todo o ano, conforme as condições meteorológicas",
+      "aboutParagraphs": [
+        "É o passeio sobre o qual ainda estará a falar daqui a um ano. A partir de um rancho tradicional em plena atividade nos arredores de Viana do Castelo, será emparelhado com um cavalo adequado ao seu nível — do principiante absoluto ao cavaleiro confiante — por um dos nossos instrutores certificados.",
+        "O percurso leva-o pelos campos de flores e pinhais que cobrem as encostas acima do Vale do Lima, com vistas panorâmicas que se estendem da Serra d'Arga ao Atlântico. O troço final acompanha a costa: um passeio na praia ao pôr do sol, o som dos cascos na areia molhada, o ar salgado no cabelo.",
+        "Cada detalhe é tratado por nós. Recolhemo-lo na sua villa Portugal Active, fornecemos todo o equipamento de segurança e mantemos os grupos pequenos — nunca mais de 8 cavaleiros — para que o instrutor possa dar atenção individual a cada hóspede. Água, uma recordação fotográfica e um lanche no rancho ao final do passeio estão incluídos.",
+        "Esta experiência está disponível todo o ano, conforme as condições meteorológicas. A primavera (abril a junho) é a época mais espetacular, quando os campos estão em plena floração e a luz é extraordinária. Durante a época balnear, há restrições legais à equitação na areia da praia — o percurso é adaptado em conformidade, com trilhos costeiros igualmente deslumbrantes."
+      ],
+      "highlights": [
+        "Cavalgar pelas paisagens deslumbrantes de Viana do Castelo — campos de flores, pinhais, praias atlânticas",
+        "Acompanhamento permanente pela Diana, Claudia ou um dos nossos instrutores equestres certificados",
+        "Todos os níveis são bem-vindos: do principiante absoluto ao cavaleiro experiente",
+        "Termine com um passeio costeiro ao longo da margem atlântica",
+        "Grupos pequenos de no máximo 8 cavaleiros para atenção personalizada",
+        "Os cavalos são selecionados e emparelhados com cada hóspede pelo instrutor",
+        "Recordação fotográfica e lanche no rancho ao final do passeio"
+      ],
+      "included": [
+        "Instrução profissional de equitação por um equestre certificado",
+        "Todo o equipamento de segurança e ajuste de capacete",
+        "Seguro para todos os participantes",
+        "Água durante o passeio",
+        "Recordação fotográfica"
+      ],
+      "notIncluded": [
+        "Recolha/transfer na villa (opcional — coordenado pela nossa equipa de concierge mediante taxa adicional)",
+        "Comida e refeições (podem ser organizadas à parte)",
+        "Gratificações (ao seu critério)"
+      ],
+      "notSuitableFor": [
+        "Crianças com menos de 10 anos",
+        "Hóspedes com mais de 100 kg",
+        "Hóspedes grávidas"
+      ],
+      "whatToBring": [
+        "Calças compridas (jeans ou calças de montar)",
+        "Calçado fechado — botas de montar ideais, mas não obrigatórias",
+        "Protetor solar e óculos de sol",
+        "Um casaco leve ou roupa em camadas para mudanças de tempo"
+      ],
+      "notAllowed": [
+        "Sandálias ou chinelos",
+        "Calções",
+        "Cachecóis soltos ou malas abertas"
+      ],
+      "cancellationPolicy": "Cancelamento gratuito até 24 horas antes da experiência, com reembolso total. Cancelamentos dentro das 24 horas não são reembolsáveis. Em caso de meteorologia adversa, remarcamos ou oferecemos reembolso total.",
+      "guideRole": "Instrutoras Equestres Certificadas",
+      "guideDescription": "A Diana e a Claudia são instrutoras equestres certificadas com mais de 15 anos de experiência combinada. Cresceram a cavalgar no campo minhoto e conhecem cada trilho, cada cavalo e cada flor pelo nome. O seu dom é emparelhar cavaleiros e cavalos — leem a linguagem corporal, adaptam o ritmo e fazem os principiantes sentirem-se naturais. O rancho acolhe também a Laura, vários cavalos Frísios e Lusitanos lindamente tratados, cães e gatos meigos e até um mini pónei.",
+      "languages": ["Português", "Inglês", "Francês", "Espanhol"],
+      "itinerary": [
+        { "time": "09:30", "title": "Recolha na villa", "description": "O seu motorista privado recolhe-o na sua villa Portugal Active num veículo com ar condicionado. Descontraia e desfrute do percurso panorâmico até Viana do Castelo." },
+        { "time": "10:15", "title": "Chegada ao rancho e briefing de segurança", "description": "Conheça o seu instrutor certificado — Diana, Claudia ou alguém da nossa equipa — no rancho em atividade. Ajuste de equipamento, briefing de segurança e uma breve orientação no picadeiro para se ambientar com o seu cavalo." },
+        { "time": "10:45", "title": "Trilhos de montanha pelos campos de flores", "description": "Parta pelos pinhais e prados floridos que cobrem as encostas acima de Viana. Vistas panorâmicas do Vale do Lima e da Serra d'Arga. O ritmo é adaptado ao nível do grupo." },
+        { "time": "11:30", "title": "Passeio na praia ao longo do Atlântico", "description": "Desça até à costa e cavalgue ao longo da praia atlântica. Sinta a brisa do mar, ouça as ondas e viva a magia de cavalgar na areia molhada à beira-água." },
+        { "time": "12:15", "title": "Regresso ao rancho e lanche", "description": "De volta ao rancho, despeça-se do seu cavalo e desfrute de um lanche. O seu motorista estará pronto para o transfer de regresso à villa." }
+      ],
+      "faq": [
+        { "q": "Preciso de experiência prévia de equitação?", "a": "De todo. Os nossos instrutores adaptam cada passeio ao nível do grupo. Os principiantes absolutos são emparelhados com cavalos calmos e bem treinados e recebem uma orientação no picadeiro antes do passeio." },
+        { "q": "O que acontece se chover?", "a": "Chuva fraca não impede a experiência. Em caso de chuva forte ou trovoada, entramos em contacto na véspera para remarcar ou oferecer reembolso total." },
+        { "q": "As minhas crianças podem participar?", "a": "Crianças a partir dos 10 anos podem cavalgar de forma autónoma. Crianças mais novas podem cavalgar com um guia no mesmo cavalo, mediante combinação prévia." },
+        { "q": "O transfer da villa está incluído?", "a": "A recolha na villa é opcional e pode ser organizada pela nossa equipa de concierge mediante taxa adicional — contacte-nos para preços. A recolha no Porto, Braga ou outros locais também pode ser coordenada a pedido." },
+        { "q": "Posso cavalgar na própria praia?", "a": "Durante a época balnear (aproximadamente de junho a setembro), há restrições legais à equitação na areia da praia. O percurso é adaptado a trilhos costeiros igualmente deslumbrantes. Fora da época balnear, o passeio na praia é a experiência completa." },
+        { "q": "Qual é o limite de peso?", "a": "Para o bem-estar dos cavalos, o peso máximo é de 100 kg por cavaleiro." },
+        { "q": "Este é um passeio privado ou partilhado?", "a": "É um passeio privado — participa apenas o seu grupo. Máximo de 8 cavaleiros." },
+        { "q": "Porque devo reservar diretamente com a Portugal Active?", "a": "Reservar diretamente significa sem intermediários e sem comissões. Fica com o melhor preço, uma linha direta de WhatsApp para a nossa equipa e a flexibilidade de alterar datas com uma só mensagem." }
+      ],
+      "meetingPoint": {
+        "instructions": "Recolhemo-lo diretamente na sua villa Portugal Active. Se preferir conduzir, procure um portão cinzento com uma placa informativa. A placa VianoEquestre está no muro de blocos — o estábulo fica escondido da estrada, ao fundo de um pequeno caminho.",
+        "pickupNote": "Recolha opcional na villa — coordenada pela nossa equipa de concierge mediante taxa adicional. Contacte-nos para preços."
+      }
+    }
+  }
+}
