@@ -22,6 +22,7 @@ import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 import destinationsData from '@/data/destinations.json';
+import { localizeDestination } from '@/lib/localizeContent';
 import productsData from '@/data/products.json';
 import { trpc } from '@/lib/trpc';
 import { StructuredData } from '@/components/seo/StructuredData';
@@ -33,14 +34,14 @@ const destinations = destinationsData as unknown as Destination[];
 const allProducts = productsData as unknown as Product[];
 
 export default function DestinationDetail() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const { data: propsData } = trpc.properties.listForSite.useQuery();
   const allProperties = ((propsData ?? []).filter(
     (p: any) => p.isActive !== false,
   )) as Property[];
 
-  const dest = destinations.find(d => d.slug === slug);
+  const dest = localizeDestination(destinations.find(d => d.slug === slug), i18n.language);
 
   usePageMeta({
     title: dest?.seoTitle ?? (dest ? `${dest.name} Portugal | Luxury Villas and Experiences` : undefined),
@@ -75,10 +76,10 @@ export default function DestinationDetail() {
           .filter(d => d.region === dest.region && d.slug !== dest.slug && !d.comingSoon)
           .map(d => d.slug);
     const ordered = slugs
-      .map(s => destinations.find(d => d.slug === s))
+      .map(s => localizeDestination(destinations.find(d => d.slug === s), i18n.language))
       .filter((d): d is Destination => !!d && !d.comingSoon);
     return ordered.slice(0, 3);
-  }, [dest]);
+  }, [dest, i18n.language]);
 
   const graph = useMemo(() => (dest ? buildDestinationGraph(dest, destProperties) : null), [
     dest,
