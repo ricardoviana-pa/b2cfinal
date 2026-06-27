@@ -1,74 +1,914 @@
 {
-  "private-chef": { "pt": {
-    "name": "Chef Privado",
-    "tagline": "Jantares com qualidade de restaurante no conforto da sua casa.",
-    "description": "Desfrute de uma experiência culinária personalizada no conforto da sua casa de férias, preparada pelo nosso talentoso chef. Quer queira celebrar uma data especial, reunir família e amigos, organizar um evento corporativo ou simplesmente relaxar e desfrutar da sua casa, esta é a melhor forma de o fazer.\n\nConfecionado com ingredientes frescos e de origem local, cada prato é sempre preparado com o objetivo de ser delicioso e saudável. Só tem de escolher o menu ou uma refeição personalizada, a data e a hora — nós tratamos de todo o resto.",
-    "details": ["Refeição completa", "Menu personalizado", "Disponível em todas as casas", "Bebidas incluídas", "Ingredientes locais", "Limpeza incluída"],
-    "price": "Desde €85 por pessoa",
-    "duration": "3-4 horas",
-    "availability": "Disponível em todas as casas"
-  } },
-  "massage-therapist": { "pt": {
-    "name": "Terapeuta de Massagem",
-    "tagline": "Tratamentos de spa profissionais na privacidade da sua villa.",
-    "description": "Transforme a sua villa num retiro de bem-estar privado. A nossa rede de terapeutas certificados leva a experiência de spa completa diretamente à sua casa — no seu horário, no seu espaço, com total privacidade.\n\nEscolha entre massagem sueca, de tecido profundo, pedras quentes, aromaterapia ou desportiva. Todo o equipamento e óleos premium são fornecidos. As sessões podem realizar-se à beira da piscina, no terraço ou na divisão que preferir.",
-    "details": ["Terapeutas certificados", "Várias técnicas", "Todo o equipamento incluído", "Óleos premium incluídos", "Interior ou exterior", "Disponível para casais"],
-    "price": "Desde €75 por sessão",
-    "duration": "60-90 minutos",
-    "availability": "Disponível em todas as casas"
-  } },
-  "private-yoga": { "pt": {
-    "name": "Sessão de Yoga Privada",
-    "tagline": "Serenidade matinal no seu terraço privado.",
-    "description": "Comece o dia com uma sessão de yoga privada conduzida por um instrutor certificado no seu terraço, jardim ou à beira da piscina. Todos os níveis são bem-vindos — do principiante absoluto ao praticante avançado.\n\nOs nossos instrutores adaptam cada sessão às necessidades e preferências do seu grupo. O equipamento é fornecido, incluindo tapetes, blocos e cintos. As sessões podem focar-se em Hatha, Vinyasa, Yin ou yoga restaurativo.",
-    "details": ["Instrutores certificados", "Todos os níveis bem-vindos", "Equipamento incluído", "Interior ou exterior", "Em grupo ou individual", "Vários estilos de yoga"],
-    "price": "Desde €60 por sessão",
-    "duration": "60 minutos",
-    "availability": "Disponível em todas as casas"
-  } },
-  "personal-trainer": { "pt": {
-    "name": "Personal Trainer",
-    "tagline": "Mantenha-se ativo de férias com orientação especializada.",
-    "description": "Mantenha a sua rotina de treino — ou comece uma nova — com um personal trainer certificado que vai até à sua propriedade. As sessões são adaptadas ao seu nível físico, objetivos e espaço disponível.\n\nQuer seja treino de força à beira da piscina, uma sessão de HIIT no jardim ou um treino suave de mobilidade no terraço, os nossos treinadores trazem todo o equipamento necessário para uma sessão eficaz.",
-    "details": ["Treinadores certificados", "Sessões à medida", "Todo o equipamento incluído", "Força e cardio", "Todos os níveis físicos", "Sessões ao ar livre"],
-    "price": "Desde €55 por sessão",
-    "duration": "60 minutos",
-    "availability": "Disponível em todas as casas"
-  } },
-  "airport-shuttle": { "pt": {
-    "name": "Transfer de Aeroporto",
-    "tagline": "Transfers sem complicações, da aterragem à porta de casa.",
-    "description": "As suas férias começam no momento em que aterra. O nosso serviço de transfer privado de aeroporto garante uma viagem suave e confortável do aeroporto do Porto, Lisboa ou Faro diretamente à sua propriedade.\n\nMotoristas profissionais em veículos premium recebem-no nas chegadas com uma placa com o seu nome. Cadeiras para crianças disponíveis a pedido. Monitorizamos os horários dos voos — mesmo que o seu voo se atrase, o seu motorista estará lá.",
-    "details": ["Veículos premium", "Receção personalizada", "Monitorização de voos", "Cadeiras para crianças disponíveis", "Porta a porta", "Disponível 24/7"],
-    "price": "Desde €65 por transfer",
-    "duration": "Varia consoante a distância",
-    "availability": "Aeroportos do Porto, Lisboa e Faro"
-  } },
-  "private-chauffeur": { "pt": {
-    "name": "Motorista Privado",
-    "tagline": "O seu motorista dedicado para cada viagem.",
-    "description": "Um motorista dedicado à sua disposição para passeios de um dia, tours de vinhos, explorações pela cidade ou transfers para restaurantes. Relaxe e desfrute da paisagem enquanto o seu motorista trata da logística.\n\nOs nossos motoristas são especialistas locais que podem recomendar os melhores percursos, restaurantes escondidos e paragens panorâmicas pelo caminho. Disponível para reservas de meio dia ou dia inteiro.",
-    "details": ["Motoristas especialistas locais", "Veículos premium", "Meio dia ou dia inteiro", "Itinerário flexível", "Transfers para restaurantes", "Especialista em tours de vinho"],
-    "price": "Desde €180 por meio dia",
-    "duration": "Meio dia ou dia inteiro",
-    "availability": "Todas as regiões"
-  } },
-  "grocery-setup": { "pt": {
-    "name": "Compras e Entrega de Mercearia",
-    "tagline": "O seu frigorífico abastecido antes de chegar.",
-    "description": "Chegue a uma cozinha totalmente abastecida com produtos locais, pão artesanal, queijo regional, fruta fresca e os seus vinhos favoritos. Tratamos das compras para que possa começar a desfrutar das férias desde o primeiro momento.\n\nEscolha entre os nossos pacotes de boas-vindas selecionados ou envie-nos a sua lista de compras pessoal. Adquirimos tudo em mercados locais e fornecedores de confiança.",
-    "details": ["Produtos locais", "Produtos artesanais", "Listas de compras à medida", "Pacotes de boas-vindas", "Seleção de vinhos", "Necessidades alimentares contempladas"],
-    "price": "Desde €45 por preparação",
-    "duration": "Pronto à chegada",
-    "availability": "Disponível em todas as casas"
-  } },
-  "babysitter": { "pt": {
-    "name": "Babysitter",
-    "tagline": "Acompanhamento infantil de confiança para poder desfrutar da sua noite.",
-    "description": "Profissionais de acompanhamento infantil certificados, disponíveis para noites fora, excursões de dia ou sempre que precise de algumas horas para si. Todas as nossas babysitters são verificadas, experientes e falam inglês.\n\nQuer queira um jantar romântico, uma sessão de spa ou simplesmente um pouco de sossego, as nossas babysitters garantem que as suas crianças estão seguras, entretidas e felizes.",
-    "details": ["Profissionais certificadas", "Falam inglês", "Verificadas e experientes", "Horários flexíveis", "Noite ou dia", "Todas as idades"],
-    "price": "Desde €20 por hora",
-    "duration": "Mínimo 3 horas",
-    "availability": "Disponível em todas as casas"
-  } }
+  "private-chef": {
+    "pt": {
+      "name": "Chef Privado",
+      "tagline": "Jantares com qualidade de restaurante no conforto da sua casa.",
+      "description": "Desfrute de uma experiência culinária personalizada no conforto da sua casa de férias, preparada pelo nosso talentoso chef. Quer queira celebrar uma data especial, reunir família e amigos, organizar um evento corporativo ou simplesmente relaxar e desfrutar da sua casa, esta é a melhor forma de o fazer.\n\nConfecionado com ingredientes frescos e de origem local, cada prato é sempre preparado com o objetivo de ser delicioso e saudável. Só tem de escolher o menu ou uma refeição personalizada, a data e a hora — nós tratamos de todo o resto.",
+      "details": [
+        "Refeição completa",
+        "Menu personalizado",
+        "Disponível em todas as casas",
+        "Bebidas incluídas",
+        "Ingredientes locais",
+        "Limpeza incluída"
+      ],
+      "price": "Desde €85 por pessoa",
+      "duration": "3-4 horas",
+      "availability": "Disponível em todas as casas"
+    },
+    "fr": {
+      "name": "Chef privé",
+      "tagline": "Des dîners dignes d'un restaurant dans le confort de votre maison.",
+      "description": "Profitez d'une expérience culinaire personnalisée dans le confort de votre maison de vacances, préparée par notre talentueux chef. Que vous souhaitiez célébrer une occasion spéciale, réunir famille et amis, organiser un événement d'entreprise ou simplement vous détendre et profiter de votre maison, c'est la meilleure façon de le faire.\n\nConfectionné avec des ingrédients frais et de provenance locale, chaque plat est toujours préparé dans le but d'être délicieux et sain. Il vous suffit de choisir le menu ou un repas personnalisé, la date et l'heure — nous nous occupons de tout le reste.",
+      "details": [
+        "Repas complet",
+        "Menu personnalisé",
+        "Disponible dans toutes les maisons",
+        "Boissons incluses",
+        "Ingrédients locaux",
+        "Nettoyage inclus"
+      ],
+      "price": "À partir de 85 € par personne",
+      "duration": "3-4 heures",
+      "availability": "Disponible dans toutes les maisons"
+    },
+    "es": {
+      "name": "Chef Privado",
+      "tagline": "Cenas con calidad de restaurante en la comodidad de su casa.",
+      "description": "Disfrute de una experiencia culinaria personalizada en la comodidad de su casa de vacaciones, preparada por nuestro talentoso chef. Ya sea para celebrar una ocasión especial, reunir a familia y amigos, organizar un evento corporativo o simplemente relajarse y disfrutar de su casa, esta es la mejor manera de hacerlo.\n\nElaborado con ingredientes frescos y de origen local, cada plato se prepara siempre con el objetivo de ser delicioso y saludable. Solo tiene que elegir el menú o una comida personalizada, la fecha y la hora — nosotros nos encargamos de todo lo demás.",
+      "details": [
+        "Comida completa",
+        "Menú personalizado",
+        "Disponible en todas las casas",
+        "Bebidas incluidas",
+        "Ingredientes locales",
+        "Limpieza incluida"
+      ],
+      "price": "Desde 85 € por persona",
+      "duration": "3-4 horas",
+      "availability": "Disponible en todas las casas"
+    },
+    "it": {
+      "name": "Chef Privato",
+      "tagline": "Cene di qualità da ristorante nel comfort di casa vostra.",
+      "description": "Vivi un'esperienza culinaria personalizzata nel comfort della tua casa vacanze, preparata dal nostro talentuoso chef. Che tu voglia festeggiare una ricorrenza speciale, riunire famiglia e amici, organizzare un evento aziendale o semplicemente rilassarti e goderti la tua casa, questo è il modo migliore per farlo.\n\nPreparato con ingredienti freschi e di provenienza locale, ogni piatto è sempre realizzato con l'obiettivo di essere delizioso e sano. Devi solo scegliere il menu o un pasto personalizzato, la data e l'ora — al resto pensiamo noi.",
+      "details": [
+        "Pasto completo",
+        "Menu personalizzato",
+        "Disponibile in tutte le case",
+        "Bevande incluse",
+        "Ingredienti locali",
+        "Pulizia inclusa"
+      ],
+      "price": "Da 85 € a persona",
+      "duration": "3-4 ore",
+      "availability": "Disponibile in tutte le case"
+    },
+    "de": {
+      "name": "Privatkoch",
+      "tagline": "Abendessen auf Restaurantniveau im Komfort Ihres Zuhauses.",
+      "description": "Genießen Sie ein individuelles kulinarisches Erlebnis im Komfort Ihres Ferienhauses, zubereitet von unserem talentierten Koch. Ob Sie einen besonderen Anlass feiern, Familie und Freunde zusammenbringen, eine Firmenveranstaltung ausrichten oder einfach entspannen und Ihr Zuhause genießen möchten — dies ist die beste Art, es zu tun.\n\nMit frischen und lokal bezogenen Zutaten zubereitet, wird jedes Gericht stets mit dem Ziel kreiert, köstlich und gesund zu sein. Sie müssen nur das Menü oder eine individuelle Mahlzeit, das Datum und die Uhrzeit wählen — um alles Weitere kümmern wir uns.",
+      "details": [
+        "Komplette Mahlzeit",
+        "Individuelles Menü",
+        "In allen Häusern verfügbar",
+        "Getränke inbegriffen",
+        "Lokale Zutaten",
+        "Reinigung inbegriffen"
+      ],
+      "price": "Ab 85 € pro Person",
+      "duration": "3–4 Stunden",
+      "availability": "In allen Häusern verfügbar"
+    },
+    "nl": {
+      "name": "Privéchef",
+      "tagline": "Diners van restaurantkwaliteit in het comfort van uw eigen huis.",
+      "description": "Geniet van een gepersonaliseerde culinaire ervaring in het comfort van uw vakantiehuis, bereid door onze getalenteerde chef. Of u nu een bijzondere gelegenheid wilt vieren, familie en vrienden samenbrengt, een zakelijk evenement organiseert of gewoon wilt ontspannen en van uw huis wilt genieten — dit is de mooiste manier om dat te doen.\n\nBereid met verse, lokaal verkregen ingrediënten wordt elk gerecht altijd gemaakt met het doel zowel heerlijk als gezond te zijn. U hoeft alleen het menu of een gepersonaliseerde maaltijd te kiezen, plus de datum en het tijdstip — wij regelen al het overige.",
+      "details": [
+        "Volledige maaltijd",
+        "Gepersonaliseerd menu",
+        "Beschikbaar in alle huizen",
+        "Drankjes inbegrepen",
+        "Lokale ingrediënten",
+        "Schoonmaak inbegrepen"
+      ],
+      "price": "Vanaf € 85 per persoon",
+      "duration": "3-4 uur",
+      "availability": "Beschikbaar in alle huizen"
+    },
+    "sv": {
+      "name": "Privatkock",
+      "tagline": "Middagar med restaurangkvalitet i ditt hems bekvämlighet.",
+      "description": "Njut av en personlig kulinarisk upplevelse i ditt semesterhems bekvämlighet, tillagad av vår begåvade kock. Oavsett om du vill fira ett särskilt tillfälle, samla familj och vänner, anordna ett företagsevent eller helt enkelt slappna av och njuta av ditt hem, är detta det bästa sättet att göra det.\n\nTillagad med färska och lokalt producerade råvaror är varje rätt alltid framtagen med målet att vara läcker och hälsosam. Du behöver bara välja menyn eller en skräddarsydd måltid, datum och tid — vi tar hand om allt det övriga.",
+      "details": [
+        "Komplett måltid",
+        "Skräddarsydd meny",
+        "Tillgängligt i alla hem",
+        "Drycker ingår",
+        "Lokala råvaror",
+        "Städning ingår"
+      ],
+      "price": "Från 85 € per person",
+      "duration": "3–4 timmar",
+      "availability": "Tillgängligt i alla hem"
+    }
+  },
+  "massage-therapist": {
+    "pt": {
+      "name": "Terapeuta de Massagem",
+      "tagline": "Tratamentos de spa profissionais na privacidade da sua villa.",
+      "description": "Transforme a sua villa num retiro de bem-estar privado. A nossa rede de terapeutas certificados leva a experiência de spa completa diretamente à sua casa — no seu horário, no seu espaço, com total privacidade.\n\nEscolha entre massagem sueca, de tecido profundo, pedras quentes, aromaterapia ou desportiva. Todo o equipamento e óleos premium são fornecidos. As sessões podem realizar-se à beira da piscina, no terraço ou na divisão que preferir.",
+      "details": [
+        "Terapeutas certificados",
+        "Várias técnicas",
+        "Todo o equipamento incluído",
+        "Óleos premium incluídos",
+        "Interior ou exterior",
+        "Disponível para casais"
+      ],
+      "price": "Desde €75 por sessão",
+      "duration": "60-90 minutos",
+      "availability": "Disponível em todas as casas"
+    },
+    "fr": {
+      "name": "Masseur-thérapeute",
+      "tagline": "Des soins de spa professionnels dans l'intimité de votre villa.",
+      "description": "Transformez votre villa en retraite bien-être privée. Notre réseau de thérapeutes certifiés apporte l'expérience spa complète directement chez vous — à votre rythme, dans votre espace, en toute intimité.\n\nChoisissez parmi le massage suédois, des tissus profonds, aux pierres chaudes, l'aromathérapie ou le massage sportif. Tout le matériel et les huiles haut de gamme sont fournis. Les séances peuvent se dérouler au bord de la piscine, sur la terrasse ou dans la pièce de votre choix.",
+      "details": [
+        "Thérapeutes certifiés",
+        "Plusieurs techniques",
+        "Tout le matériel inclus",
+        "Huiles haut de gamme incluses",
+        "Intérieur ou extérieur",
+        "Disponible pour les couples"
+      ],
+      "price": "À partir de 75 € par séance",
+      "duration": "60-90 minutes",
+      "availability": "Disponible dans toutes les maisons"
+    },
+    "es": {
+      "name": "Terapeuta de Masaje",
+      "tagline": "Tratamientos de spa profesionales en la intimidad de su villa.",
+      "description": "Transforme su villa en un retiro de bienestar privado. Nuestra red de terapeutas certificados lleva la experiencia de spa completa directamente a su casa — en su horario, en su espacio, con total privacidad.\n\nElija entre masaje sueco, de tejido profundo, con piedras calientes, aromaterapia o deportivo. Se proporciona todo el equipo y aceites premium. Las sesiones pueden realizarse junto a la piscina, en la terraza o en la estancia que prefiera.",
+      "details": [
+        "Terapeutas certificados",
+        "Varias técnicas",
+        "Todo el equipo incluido",
+        "Aceites premium incluidos",
+        "Interior o exterior",
+        "Disponible para parejas"
+      ],
+      "price": "Desde 75 € por sesión",
+      "duration": "60-90 minutos",
+      "availability": "Disponible en todas las casas"
+    },
+    "it": {
+      "name": "Terapista di Massaggi",
+      "tagline": "Trattamenti spa professionali nella privacy della tua villa.",
+      "description": "Trasforma la tua villa in un ritiro di benessere privato. La nostra rete di terapisti certificati porta l'esperienza spa completa direttamente a casa tua — secondo i tuoi orari, nel tuo spazio, con totale privacy.\n\nScegli tra massaggio svedese, sui tessuti profondi, pietre calde, aromaterapia o sportivo. Vengono forniti tutta l'attrezzatura e gli oli premium. Le sessioni possono svolgersi a bordo piscina, in terrazza o nella stanza che preferisci.",
+      "details": [
+        "Terapisti certificati",
+        "Diverse tecniche",
+        "Tutta l'attrezzatura inclusa",
+        "Oli premium inclusi",
+        "Interno o esterno",
+        "Disponibile per coppie"
+      ],
+      "price": "Da 75 € a sessione",
+      "duration": "60-90 minuti",
+      "availability": "Disponibile in tutte le case"
+    },
+    "de": {
+      "name": "Massagetherapeut",
+      "tagline": "Professionelle Spa-Behandlungen in der Privatsphäre Ihrer Villa.",
+      "description": "Verwandeln Sie Ihre Villa in ein privates Wellness-Refugium. Unser Netzwerk zertifizierter Therapeuten bringt das komplette Spa-Erlebnis direkt zu Ihnen nach Hause — zu Ihrer Zeit, in Ihrem Raum, mit völliger Privatsphäre.\n\nWählen Sie zwischen schwedischer Massage, Tiefengewebsmassage, Hot Stone, Aromatherapie oder Sportmassage. Sämtliche Ausrüstung und hochwertige Öle werden gestellt. Die Sitzungen können am Pool, auf der Terrasse oder im Raum Ihrer Wahl stattfinden.",
+      "details": [
+        "Zertifizierte Therapeuten",
+        "Verschiedene Techniken",
+        "Sämtliche Ausrüstung inbegriffen",
+        "Hochwertige Öle inbegriffen",
+        "Drinnen oder draußen",
+        "Für Paare verfügbar"
+      ],
+      "price": "Ab 75 € pro Sitzung",
+      "duration": "60–90 Minuten",
+      "availability": "In allen Häusern verfügbar"
+    },
+    "nl": {
+      "name": "Massagetherapeut",
+      "tagline": "Professionele spabehandelingen in de privacy van uw villa.",
+      "description": "Verander uw villa in een privé-wellnessretraite. Ons netwerk van gecertificeerde therapeuten brengt de complete spa-ervaring rechtstreeks naar uw huis — op uw tijd, in uw ruimte, met volledige privacy.\n\nKies uit Zweedse massage, deep tissue, hot stones, aromatherapie of sportmassage. Alle apparatuur en premium oliën worden geleverd. De sessies kunnen plaatsvinden aan de rand van het zwembad, op het terras of in de kamer van uw voorkeur.",
+      "details": [
+        "Gecertificeerde therapeuten",
+        "Verschillende technieken",
+        "Alle apparatuur inbegrepen",
+        "Premium oliën inbegrepen",
+        "Binnen of buiten",
+        "Beschikbaar voor koppels"
+      ],
+      "price": "Vanaf € 75 per sessie",
+      "duration": "60-90 minuten",
+      "availability": "Beschikbaar in alle huizen"
+    },
+    "sv": {
+      "name": "Massageterapeut",
+      "tagline": "Professionella spabehandlingar i din villas avskildhet.",
+      "description": "Förvandla din villa till en privat wellnessfristad. Vårt nätverk av certifierade terapeuter tar med den fullständiga spaupplevelsen direkt till ditt hem — på dina tider, i ditt utrymme, med fullständig avskildhet.\n\nVälj mellan svensk massage, djupgående vävnadsmassage, varma stenar, aromaterapi eller idrottsmassage. All utrustning och premiumoljor tillhandahålls. Sessionerna kan hållas vid poolen, på terrassen eller i det rum du föredrar.",
+      "details": [
+        "Certifierade terapeuter",
+        "Flera tekniker",
+        "All utrustning ingår",
+        "Premiumoljor ingår",
+        "Inomhus eller utomhus",
+        "Tillgängligt för par"
+      ],
+      "price": "Från 75 € per session",
+      "duration": "60–90 minuter",
+      "availability": "Tillgängligt i alla hem"
+    }
+  },
+  "private-yoga": {
+    "pt": {
+      "name": "Sessão de Yoga Privada",
+      "tagline": "Serenidade matinal no seu terraço privado.",
+      "description": "Comece o dia com uma sessão de yoga privada conduzida por um instrutor certificado no seu terraço, jardim ou à beira da piscina. Todos os níveis são bem-vindos — do principiante absoluto ao praticante avançado.\n\nOs nossos instrutores adaptam cada sessão às necessidades e preferências do seu grupo. O equipamento é fornecido, incluindo tapetes, blocos e cintos. As sessões podem focar-se em Hatha, Vinyasa, Yin ou yoga restaurativo.",
+      "details": [
+        "Instrutores certificados",
+        "Todos os níveis bem-vindos",
+        "Equipamento incluído",
+        "Interior ou exterior",
+        "Em grupo ou individual",
+        "Vários estilos de yoga"
+      ],
+      "price": "Desde €60 por sessão",
+      "duration": "60 minutos",
+      "availability": "Disponível em todas as casas"
+    },
+    "fr": {
+      "name": "Séance de yoga privée",
+      "tagline": "Sérénité matinale sur votre terrasse privée.",
+      "description": "Commencez la journée par une séance de yoga privée animée par un instructeur certifié sur votre terrasse, au jardin ou au bord de la piscine. Tous les niveaux sont les bienvenus — du débutant absolu au pratiquant avancé.\n\nNos instructeurs adaptent chaque séance aux besoins et aux préférences de votre groupe. Le matériel est fourni, notamment tapis, blocs et sangles. Les séances peuvent se concentrer sur le Hatha, le Vinyasa, le Yin ou le yoga restauratif.",
+      "details": [
+        "Instructeurs certifiés",
+        "Tous les niveaux bienvenus",
+        "Matériel inclus",
+        "Intérieur ou extérieur",
+        "En groupe ou individuel",
+        "Plusieurs styles de yoga"
+      ],
+      "price": "À partir de 60 € par séance",
+      "duration": "60 minutes",
+      "availability": "Disponible dans toutes les maisons"
+    },
+    "es": {
+      "name": "Sesión de Yoga Privada",
+      "tagline": "Serenidad matinal en su terraza privada.",
+      "description": "Comience el día con una sesión de yoga privada impartida por un instructor certificado en su terraza, jardín o junto a la piscina. Todos los niveles son bienvenidos — desde el principiante absoluto hasta el practicante avanzado.\n\nNuestros instructores adaptan cada sesión a las necesidades y preferencias de su grupo. Se proporciona el equipo, incluyendo esterillas, bloques y cinturones. Las sesiones pueden centrarse en Hatha, Vinyasa, Yin o yoga restaurativo.",
+      "details": [
+        "Instructores certificados",
+        "Todos los niveles bienvenidos",
+        "Equipo incluido",
+        "Interior o exterior",
+        "En grupo o individual",
+        "Varios estilos de yoga"
+      ],
+      "price": "Desde 60 € por sesión",
+      "duration": "60 minutos",
+      "availability": "Disponible en todas las casas"
+    },
+    "it": {
+      "name": "Sessione di Yoga Privata",
+      "tagline": "Serenità mattutina nella tua terrazza privata.",
+      "description": "Inizia la giornata con una sessione di yoga privata condotta da un istruttore certificato sulla tua terrazza, in giardino o a bordo piscina. Tutti i livelli sono benvenuti — dal principiante assoluto al praticante avanzato.\n\nI nostri istruttori adattano ogni sessione alle esigenze e alle preferenze del tuo gruppo. L'attrezzatura è fornita, inclusi tappetini, blocchi e cinghie. Le sessioni possono concentrarsi su Hatha, Vinyasa, Yin o yoga rigenerativo.",
+      "details": [
+        "Istruttori certificati",
+        "Tutti i livelli benvenuti",
+        "Attrezzatura inclusa",
+        "Interno o esterno",
+        "Di gruppo o individuale",
+        "Diversi stili di yoga"
+      ],
+      "price": "Da 60 € a sessione",
+      "duration": "60 minuti",
+      "availability": "Disponibile in tutte le case"
+    },
+    "de": {
+      "name": "Private Yoga-Sitzung",
+      "tagline": "Morgendliche Gelassenheit auf Ihrer privaten Terrasse.",
+      "description": "Beginnen Sie den Tag mit einer privaten Yoga-Sitzung unter Anleitung eines zertifizierten Instruktors auf Ihrer Terrasse, im Garten oder am Pool. Alle Niveaus sind willkommen — vom absoluten Anfänger bis zum fortgeschrittenen Praktizierenden.\n\nUnsere Instruktoren passen jede Sitzung an die Bedürfnisse und Vorlieben Ihrer Gruppe an. Die Ausrüstung wird gestellt, einschließlich Matten, Blöcken und Gurten. Die Sitzungen können sich auf Hatha, Vinyasa, Yin oder Restorative Yoga konzentrieren.",
+      "details": [
+        "Zertifizierte Instruktoren",
+        "Alle Niveaus willkommen",
+        "Ausrüstung inbegriffen",
+        "Drinnen oder draußen",
+        "In der Gruppe oder einzeln",
+        "Verschiedene Yoga-Stile"
+      ],
+      "price": "Ab 60 € pro Sitzung",
+      "duration": "60 Minuten",
+      "availability": "In allen Häusern verfügbar"
+    },
+    "nl": {
+      "name": "Privé-yogasessie",
+      "tagline": "Ochtendsereniteit op uw eigen terras.",
+      "description": "Begin de dag met een privé-yogasessie onder leiding van een gecertificeerde instructeur op uw terras, in de tuin of aan de rand van het zwembad. Alle niveaus zijn welkom — van de absolute beginner tot de gevorderde beoefenaar.\n\nOnze instructeurs stemmen elke sessie af op de behoeften en voorkeuren van uw groep. De uitrusting wordt geleverd, inclusief matten, blokken en riemen. De sessies kunnen zich richten op Hatha, Vinyasa, Yin of herstellende yoga.",
+      "details": [
+        "Gecertificeerde instructeurs",
+        "Alle niveaus welkom",
+        "Uitrusting inbegrepen",
+        "Binnen of buiten",
+        "In groep of individueel",
+        "Verschillende yogastijlen"
+      ],
+      "price": "Vanaf € 60 per sessie",
+      "duration": "60 minuten",
+      "availability": "Beschikbaar in alle huizen"
+    },
+    "sv": {
+      "name": "Privat yogasession",
+      "tagline": "Morgonstillhet på din privata terrass.",
+      "description": "Inled dagen med en privat yogasession ledd av en certifierad instruktör på din terrass, i trädgården eller vid poolen. Alla nivåer är välkomna — från absoluta nybörjare till avancerade utövare.\n\nVåra instruktörer anpassar varje session efter din grupps behov och preferenser. Utrustning tillhandahålls, inklusive mattor, block och remmar. Sessionerna kan inriktas på Hatha, Vinyasa, Yin eller restorativ yoga.",
+      "details": [
+        "Certifierade instruktörer",
+        "Alla nivåer välkomna",
+        "Utrustning ingår",
+        "Inomhus eller utomhus",
+        "I grupp eller enskilt",
+        "Flera yogastilar"
+      ],
+      "price": "Från 60 € per session",
+      "duration": "60 minuter",
+      "availability": "Tillgängligt i alla hem"
+    }
+  },
+  "personal-trainer": {
+    "pt": {
+      "name": "Personal Trainer",
+      "tagline": "Mantenha-se ativo de férias com orientação especializada.",
+      "description": "Mantenha a sua rotina de treino — ou comece uma nova — com um personal trainer certificado que vai até à sua propriedade. As sessões são adaptadas ao seu nível físico, objetivos e espaço disponível.\n\nQuer seja treino de força à beira da piscina, uma sessão de HIIT no jardim ou um treino suave de mobilidade no terraço, os nossos treinadores trazem todo o equipamento necessário para uma sessão eficaz.",
+      "details": [
+        "Treinadores certificados",
+        "Sessões à medida",
+        "Todo o equipamento incluído",
+        "Força e cardio",
+        "Todos os níveis físicos",
+        "Sessões ao ar livre"
+      ],
+      "price": "Desde €55 por sessão",
+      "duration": "60 minutos",
+      "availability": "Disponível em todas as casas"
+    },
+    "fr": {
+      "name": "Coach personnel",
+      "tagline": "Restez actif en vacances avec un accompagnement expert.",
+      "description": "Maintenez votre routine d'entraînement — ou commencez-en une nouvelle — avec un coach personnel certifié qui se déplace jusqu'à votre propriété. Les séances sont adaptées à votre niveau physique, à vos objectifs et à l'espace disponible.\n\nQu'il s'agisse de renforcement musculaire au bord de la piscine, d'une séance de HIIT au jardin ou d'un entraînement de mobilité en douceur sur la terrasse, nos coachs apportent tout le matériel nécessaire pour une séance efficace.",
+      "details": [
+        "Coachs certifiés",
+        "Séances sur mesure",
+        "Tout le matériel inclus",
+        "Renforcement et cardio",
+        "Tous les niveaux physiques",
+        "Séances en plein air"
+      ],
+      "price": "À partir de 55 € par séance",
+      "duration": "60 minutes",
+      "availability": "Disponible dans toutes les maisons"
+    },
+    "es": {
+      "name": "Entrenador Personal",
+      "tagline": "Manténgase activo en vacaciones con orientación experta.",
+      "description": "Mantenga su rutina de entrenamiento — o empiece una nueva — con un entrenador personal certificado que se desplaza a su propiedad. Las sesiones se adaptan a su nivel físico, a sus objetivos y al espacio disponible.\n\nYa sea entrenamiento de fuerza junto a la piscina, una sesión de HIIT en el jardín o un entrenamiento suave de movilidad en la terraza, nuestros entrenadores traen todo el equipo necesario para una sesión eficaz.",
+      "details": [
+        "Entrenadores certificados",
+        "Sesiones a medida",
+        "Todo el equipo incluido",
+        "Fuerza y cardio",
+        "Todos los niveles físicos",
+        "Sesiones al aire libre"
+      ],
+      "price": "Desde 55 € por sesión",
+      "duration": "60 minutos",
+      "availability": "Disponible en todas las casas"
+    },
+    "it": {
+      "name": "Personal Trainer",
+      "tagline": "Resta attivo in vacanza con una guida esperta.",
+      "description": "Mantieni la tua routine di allenamento — o iniziane una nuova — con un personal trainer certificato che viene fino alla tua proprietà. Le sessioni sono adattate al tuo livello fisico, ai tuoi obiettivi e allo spazio disponibile.\n\nChe si tratti di allenamento di forza a bordo piscina, di una sessione di HIIT in giardino o di un allenamento dolce di mobilità in terrazza, i nostri trainer portano tutta l'attrezzatura necessaria per una sessione efficace.",
+      "details": [
+        "Trainer certificati",
+        "Sessioni su misura",
+        "Tutta l'attrezzatura inclusa",
+        "Forza e cardio",
+        "Tutti i livelli fisici",
+        "Sessioni all'aperto"
+      ],
+      "price": "Da 55 € a sessione",
+      "duration": "60 minuti",
+      "availability": "Disponibile in tutte le case"
+    },
+    "de": {
+      "name": "Personal Trainer",
+      "tagline": "Bleiben Sie im Urlaub aktiv mit fachkundiger Anleitung.",
+      "description": "Behalten Sie Ihre Trainingsroutine bei — oder beginnen Sie eine neue — mit einem zertifizierten Personal Trainer, der zu Ihrer Unterkunft kommt. Die Sitzungen werden an Ihr Fitnessniveau, Ihre Ziele und den verfügbaren Raum angepasst.\n\nOb Krafttraining am Pool, eine HIIT-Sitzung im Garten oder ein sanftes Mobilitätstraining auf der Terrasse — unsere Trainer bringen die gesamte für eine effektive Sitzung benötigte Ausrüstung mit.",
+      "details": [
+        "Zertifizierte Trainer",
+        "Maßgeschneiderte Sitzungen",
+        "Sämtliche Ausrüstung inbegriffen",
+        "Kraft und Cardio",
+        "Alle Fitnessniveaus",
+        "Sitzungen im Freien"
+      ],
+      "price": "Ab 55 € pro Sitzung",
+      "duration": "60 Minuten",
+      "availability": "In allen Häusern verfügbar"
+    },
+    "nl": {
+      "name": "Personal trainer",
+      "tagline": "Blijf actief op vakantie met deskundige begeleiding.",
+      "description": "Houd uw trainingsroutine vast — of begin een nieuwe — met een gecertificeerde personal trainer die naar uw accommodatie komt. De sessies worden afgestemd op uw fitnessniveau, uw doelen en de beschikbare ruimte.\n\nOf het nu gaat om krachttraining aan de rand van het zwembad, een HIIT-sessie in de tuin of een rustige mobiliteitstraining op het terras, onze trainers brengen alle benodigde uitrusting mee voor een effectieve sessie.",
+      "details": [
+        "Gecertificeerde trainers",
+        "Sessies op maat",
+        "Alle apparatuur inbegrepen",
+        "Kracht en cardio",
+        "Alle fitnessniveaus",
+        "Sessies in de buitenlucht"
+      ],
+      "price": "Vanaf € 55 per sessie",
+      "duration": "60 minuten",
+      "availability": "Beschikbaar in alle huizen"
+    },
+    "sv": {
+      "name": "Personlig tränare",
+      "tagline": "Håll dig aktiv på semestern med expertvägledning.",
+      "description": "Behåll din träningsrutin — eller börja en ny — med en certifierad personlig tränare som kommer till din fastighet. Sessionerna anpassas efter din fysiska nivå, dina mål och tillgängligt utrymme.\n\nOavsett om det är styrketräning vid poolen, ett HIIT-pass i trädgården eller en mild rörlighetsträning på terrassen, tar våra tränare med all utrustning som behövs för en effektiv session.",
+      "details": [
+        "Certifierade tränare",
+        "Skräddarsydda sessioner",
+        "All utrustning ingår",
+        "Styrka och kondition",
+        "Alla fysiska nivåer",
+        "Utomhussessioner"
+      ],
+      "price": "Från 55 € per session",
+      "duration": "60 minuter",
+      "availability": "Tillgängligt i alla hem"
+    }
+  },
+  "airport-shuttle": {
+    "pt": {
+      "name": "Transfer de Aeroporto",
+      "tagline": "Transfers sem complicações, da aterragem à porta de casa.",
+      "description": "As suas férias começam no momento em que aterra. O nosso serviço de transfer privado de aeroporto garante uma viagem suave e confortável do aeroporto do Porto, Lisboa ou Faro diretamente à sua propriedade.\n\nMotoristas profissionais em veículos premium recebem-no nas chegadas com uma placa com o seu nome. Cadeiras para crianças disponíveis a pedido. Monitorizamos os horários dos voos — mesmo que o seu voo se atrase, o seu motorista estará lá.",
+      "details": [
+        "Veículos premium",
+        "Receção personalizada",
+        "Monitorização de voos",
+        "Cadeiras para crianças disponíveis",
+        "Porta a porta",
+        "Disponível 24/7"
+      ],
+      "price": "Desde €65 por transfer",
+      "duration": "Varia consoante a distância",
+      "availability": "Aeroportos do Porto, Lisboa e Faro"
+    },
+    "fr": {
+      "name": "Transfert aéroport",
+      "tagline": "Des transferts sans tracas, de l'atterrissage à votre porte.",
+      "description": "Vos vacances commencent dès l'instant où vous atterrissez. Notre service de transfert privé garantit un trajet fluide et confortable depuis l'aéroport de Porto, Lisbonne ou Faro directement jusqu'à votre propriété.\n\nDes chauffeurs professionnels en véhicules haut de gamme vous accueillent aux arrivées avec une pancarte à votre nom. Sièges enfants disponibles sur demande. Nous suivons les horaires des vols — même si votre vol a du retard, votre chauffeur sera là.",
+      "details": [
+        "Véhicules haut de gamme",
+        "Accueil personnalisé",
+        "Suivi des vols",
+        "Sièges enfants disponibles",
+        "Porte à porte",
+        "Disponible 24h/24 et 7j/7"
+      ],
+      "price": "À partir de 65 € par transfert",
+      "duration": "Variable selon la distance",
+      "availability": "Aéroports de Porto, Lisbonne et Faro"
+    },
+    "es": {
+      "name": "Traslado de Aeropuerto",
+      "tagline": "Traslados sin complicaciones, del aterrizaje a la puerta de casa.",
+      "description": "Sus vacaciones comienzan en el momento en que aterriza. Nuestro servicio de traslado privado de aeropuerto garantiza un viaje cómodo y sin sobresaltos desde el aeropuerto de Porto, Lisboa o Faro directamente a su propiedad.\n\nConductores profesionales en vehículos premium le reciben en llegadas con un cartel con su nombre. Sillas para niños disponibles a petición. Monitorizamos los horarios de los vuelos — aunque su vuelo se retrase, su conductor estará allí.",
+      "details": [
+        "Vehículos premium",
+        "Recepción personalizada",
+        "Seguimiento de vuelos",
+        "Sillas para niños disponibles",
+        "Puerta a puerta",
+        "Disponible 24/7"
+      ],
+      "price": "Desde 65 € por traslado",
+      "duration": "Varía según la distancia",
+      "availability": "Aeropuertos de Porto, Lisboa y Faro"
+    },
+    "it": {
+      "name": "Transfer Aeroportuale",
+      "tagline": "Transfer senza complicazioni, dall'atterraggio alla porta di casa.",
+      "description": "La tua vacanza inizia nel momento in cui atterri. Il nostro servizio di transfer aeroportuale privato garantisce un viaggio comodo e senza intoppi dall'aeroporto di Porto, Lisbona o Faro direttamente alla tua proprietà.\n\nAutisti professionisti su veicoli premium ti accolgono agli arrivi con un cartello con il tuo nome. Seggiolini per bambini disponibili su richiesta. Monitoriamo gli orari dei voli — anche se il tuo volo è in ritardo, il tuo autista sarà lì.",
+      "details": [
+        "Veicoli premium",
+        "Accoglienza personalizzata",
+        "Monitoraggio dei voli",
+        "Seggiolini per bambini disponibili",
+        "Porta a porta",
+        "Disponibile 24/7"
+      ],
+      "price": "Da 65 € a transfer",
+      "duration": "Varia in base alla distanza",
+      "availability": "Aeroporti di Porto, Lisbona e Faro"
+    },
+    "de": {
+      "name": "Flughafentransfer",
+      "tagline": "Unkomplizierte Transfers, von der Landung bis vor die Haustür.",
+      "description": "Ihr Urlaub beginnt in dem Moment, in dem Sie landen. Unser privater Flughafentransfer-Service sorgt für eine reibungslose und komfortable Fahrt vom Flughafen Porto, Lisboa oder Faro direkt zu Ihrer Unterkunft.\n\nProfessionelle Fahrer in Premium-Fahrzeugen empfangen Sie in der Ankunftshalle mit einem Schild mit Ihrem Namen. Kindersitze auf Anfrage verfügbar. Wir überwachen die Flugzeiten — selbst wenn sich Ihr Flug verspätet, ist Ihr Fahrer zur Stelle.",
+      "details": [
+        "Premium-Fahrzeuge",
+        "Persönlicher Empfang",
+        "Flugüberwachung",
+        "Kindersitze verfügbar",
+        "Von Tür zu Tür",
+        "Rund um die Uhr verfügbar"
+      ],
+      "price": "Ab 65 € pro Transfer",
+      "duration": "Variiert je nach Entfernung",
+      "availability": "Flughäfen Porto, Lisboa und Faro"
+    },
+    "nl": {
+      "name": "Luchthaventransfer",
+      "tagline": "Zorgeloze transfers, van de landing tot uw voordeur.",
+      "description": "Uw vakantie begint op het moment dat u landt. Onze privé-luchthaventransferservice zorgt voor een soepele en comfortabele reis vanaf de luchthaven van Porto, Lisboa of Faro rechtstreeks naar uw accommodatie.\n\nProfessionele chauffeurs in premium voertuigen ontvangen u bij aankomst met een bordje met uw naam. Kinderzitjes zijn op aanvraag beschikbaar. Wij volgen de vluchttijden op — ook als uw vlucht vertraging heeft, staat uw chauffeur klaar.",
+      "details": [
+        "Premium voertuigen",
+        "Persoonlijke ontvangst",
+        "Vluchtmonitoring",
+        "Kinderzitjes beschikbaar",
+        "Deur tot deur",
+        "24/7 beschikbaar"
+      ],
+      "price": "Vanaf € 65 per transfer",
+      "duration": "Varieert naargelang de afstand",
+      "availability": "Luchthavens van Porto, Lisboa en Faro"
+    },
+    "sv": {
+      "name": "Flygplatstransfer",
+      "tagline": "Bekymmersfria transfers, från landning till dörren.",
+      "description": "Din semester börjar i samma stund du landar. Vår privata flygplatstransfertjänst garanterar en smidig och bekväm resa från flygplatsen i Porto, Lisboa eller Faro direkt till din fastighet.\n\nProfessionella chaufförer i premiumfordon möter dig vid ankomsthallen med en skylt med ditt namn. Bilbarnstolar tillgängliga på begäran. Vi övervakar flygtiderna — även om ditt flyg är försenat kommer din chaufför att vara där.",
+      "details": [
+        "Premiumfordon",
+        "Personligt mottagande",
+        "Flygövervakning",
+        "Bilbarnstolar tillgängliga",
+        "Dörr till dörr",
+        "Tillgängligt dygnet runt"
+      ],
+      "price": "Från 65 € per transfer",
+      "duration": "Varierar beroende på avstånd",
+      "availability": "Flygplatserna i Porto, Lisboa och Faro"
+    }
+  },
+  "private-chauffeur": {
+    "pt": {
+      "name": "Motorista Privado",
+      "tagline": "O seu motorista dedicado para cada viagem.",
+      "description": "Um motorista dedicado à sua disposição para passeios de um dia, tours de vinhos, explorações pela cidade ou transfers para restaurantes. Relaxe e desfrute da paisagem enquanto o seu motorista trata da logística.\n\nOs nossos motoristas são especialistas locais que podem recomendar os melhores percursos, restaurantes escondidos e paragens panorâmicas pelo caminho. Disponível para reservas de meio dia ou dia inteiro.",
+      "details": [
+        "Motoristas especialistas locais",
+        "Veículos premium",
+        "Meio dia ou dia inteiro",
+        "Itinerário flexível",
+        "Transfers para restaurantes",
+        "Especialista em tours de vinho"
+      ],
+      "price": "Desde €180 por meio dia",
+      "duration": "Meio dia ou dia inteiro",
+      "availability": "Todas as regiões"
+    },
+    "fr": {
+      "name": "Chauffeur privé",
+      "tagline": "Votre chauffeur dédié pour chaque trajet.",
+      "description": "Un chauffeur dédié à votre disposition pour des excursions à la journée, des tours de vignobles, des découvertes de la ville ou des transferts vers les restaurants. Détendez-vous et profitez du paysage pendant que votre chauffeur s'occupe de la logistique.\n\nNos chauffeurs sont des spécialistes locaux qui peuvent recommander les meilleurs itinéraires, des restaurants confidentiels et des arrêts panoramiques en chemin. Disponible pour des réservations en demi-journée ou journée complète.",
+      "details": [
+        "Chauffeurs spécialistes locaux",
+        "Véhicules haut de gamme",
+        "Demi-journée ou journée complète",
+        "Itinéraire flexible",
+        "Transferts vers les restaurants",
+        "Spécialiste des tours de vignobles"
+      ],
+      "price": "À partir de 180 € par demi-journée",
+      "duration": "Demi-journée ou journée complète",
+      "availability": "Toutes les régions"
+    },
+    "es": {
+      "name": "Conductor Privado",
+      "tagline": "Su conductor dedicado para cada trayecto.",
+      "description": "Un conductor dedicado a su disposición para excursiones de un día, rutas de vinos, paseos por la ciudad o traslados a restaurantes. Relájese y disfrute del paisaje mientras su conductor se ocupa de la logística.\n\nNuestros conductores son expertos locales que pueden recomendar las mejores rutas, restaurantes escondidos y paradas panorámicas por el camino. Disponible para reservas de medio día o día completo.",
+      "details": [
+        "Conductores expertos locales",
+        "Vehículos premium",
+        "Medio día o día completo",
+        "Itinerario flexible",
+        "Traslados a restaurantes",
+        "Experto en rutas de vino"
+      ],
+      "price": "Desde 180 € por medio día",
+      "duration": "Medio día o día completo",
+      "availability": "Todas las regiones"
+    },
+    "it": {
+      "name": "Autista Privato",
+      "tagline": "Il tuo autista dedicato per ogni spostamento.",
+      "description": "Un autista dedicato a tua disposizione per gite di un giorno, tour del vino, esplorazioni in città o transfer verso i ristoranti. Rilassati e goditi il paesaggio mentre il tuo autista si occupa della logistica.\n\nI nostri autisti sono esperti locali che sanno consigliarti i migliori percorsi, i ristoranti nascosti e le soste panoramiche lungo il cammino. Disponibile per prenotazioni di mezza giornata o di giornata intera.",
+      "details": [
+        "Autisti esperti locali",
+        "Veicoli premium",
+        "Mezza giornata o giornata intera",
+        "Itinerario flessibile",
+        "Transfer verso i ristoranti",
+        "Esperto in tour del vino"
+      ],
+      "price": "Da 180 € a mezza giornata",
+      "duration": "Mezza giornata o giornata intera",
+      "availability": "Tutte le regioni"
+    },
+    "de": {
+      "name": "Privatchauffeur",
+      "tagline": "Ihr persönlicher Fahrer für jede Fahrt.",
+      "description": "Ein persönlicher Fahrer steht Ihnen zur Verfügung für Tagesausflüge, Weintouren, Stadterkundungen oder Transfers zu Restaurants. Entspannen Sie sich und genießen Sie die Landschaft, während sich Ihr Fahrer um die Logistik kümmert.\n\nUnsere Fahrer sind lokale Experten, die Ihnen die schönsten Routen, verborgene Restaurants und malerische Zwischenstopps unterwegs empfehlen können. Verfügbar für Halbtags- oder Ganztagsbuchungen.",
+      "details": [
+        "Lokale Experten als Fahrer",
+        "Premium-Fahrzeuge",
+        "Halb- oder ganztägig",
+        "Flexibler Reiseplan",
+        "Transfers zu Restaurants",
+        "Experte für Weintouren"
+      ],
+      "price": "Ab 180 € pro Halbtag",
+      "duration": "Halb- oder ganztägig",
+      "availability": "Alle Regionen"
+    },
+    "nl": {
+      "name": "Privéchauffeur",
+      "tagline": "Uw toegewijde chauffeur voor elke rit.",
+      "description": "Een toegewijde chauffeur tot uw beschikking voor dagtochten, wijntours, stadsverkenningen of transfers naar restaurants. Ontspan en geniet van het landschap terwijl uw chauffeur de logistiek regelt.\n\nOnze chauffeurs zijn lokale experts die u de mooiste routes, verborgen restaurants en panoramische stopplaatsen onderweg kunnen aanbevelen. Beschikbaar voor reserveringen van een halve of een hele dag.",
+      "details": [
+        "Lokale expertchauffeurs",
+        "Premium voertuigen",
+        "Halve of hele dag",
+        "Flexibel reisplan",
+        "Transfers naar restaurants",
+        "Expert in wijntours"
+      ],
+      "price": "Vanaf € 180 per halve dag",
+      "duration": "Halve of hele dag",
+      "availability": "Alle regio's"
+    },
+    "sv": {
+      "name": "Privat chaufför",
+      "tagline": "Din dedikerade chaufför för varje resa.",
+      "description": "En dedikerad chaufför till ditt förfogande för dagsutflykter, vinturer, stadsutforskningar eller restaurangtransfers. Slappna av och njut av landskapet medan din chaufför sköter logistiken.\n\nVåra chaufförer är lokala experter som kan rekommendera de bästa rutterna, dolda restauranger och natursköna stopp längs vägen. Tillgängligt för bokningar på halvdag eller heldag.",
+      "details": [
+        "Lokala expertchaufförer",
+        "Premiumfordon",
+        "Halvdag eller heldag",
+        "Flexibel resplan",
+        "Restaurangtransfers",
+        "Expert på vinturer"
+      ],
+      "price": "Från 180 € per halvdag",
+      "duration": "Halvdag eller heldag",
+      "availability": "Alla regioner"
+    }
+  },
+  "grocery-setup": {
+    "pt": {
+      "name": "Compras e Entrega de Mercearia",
+      "tagline": "O seu frigorífico abastecido antes de chegar.",
+      "description": "Chegue a uma cozinha totalmente abastecida com produtos locais, pão artesanal, queijo regional, fruta fresca e os seus vinhos favoritos. Tratamos das compras para que possa começar a desfrutar das férias desde o primeiro momento.\n\nEscolha entre os nossos pacotes de boas-vindas selecionados ou envie-nos a sua lista de compras pessoal. Adquirimos tudo em mercados locais e fornecedores de confiança.",
+      "details": [
+        "Produtos locais",
+        "Produtos artesanais",
+        "Listas de compras à medida",
+        "Pacotes de boas-vindas",
+        "Seleção de vinhos",
+        "Necessidades alimentares contempladas"
+      ],
+      "price": "Desde €45 por preparação",
+      "duration": "Pronto à chegada",
+      "availability": "Disponível em todas as casas"
+    },
+    "fr": {
+      "name": "Courses et livraison de provisions",
+      "tagline": "Votre réfrigérateur approvisionné avant votre arrivée.",
+      "description": "Arrivez dans une cuisine entièrement approvisionnée en produits locaux, pain artisanal, fromage régional, fruits frais et vos vins préférés. Nous nous occupons des courses afin que vous puissiez commencer à profiter de vos vacances dès le premier instant.\n\nChoisissez parmi nos paniers de bienvenue sélectionnés ou envoyez-nous votre liste de courses personnelle. Nous nous approvisionnons sur les marchés locaux et auprès de fournisseurs de confiance.",
+      "details": [
+        "Produits locaux",
+        "Produits artisanaux",
+        "Listes de courses sur mesure",
+        "Paniers de bienvenue",
+        "Sélection de vins",
+        "Besoins alimentaires pris en compte"
+      ],
+      "price": "À partir de 45 € par préparation",
+      "duration": "Prêt à l'arrivée",
+      "availability": "Disponible dans toutes les maisons"
+    },
+    "es": {
+      "name": "Compra y Entrega de Provisiones",
+      "tagline": "Su nevera abastecida antes de llegar.",
+      "description": "Llegue a una cocina totalmente abastecida con productos locales, pan artesano, queso regional, fruta fresca y sus vinos favoritos. Nos encargamos de la compra para que pueda empezar a disfrutar de las vacaciones desde el primer momento.\n\nElija entre nuestros paquetes de bienvenida seleccionados o envíenos su lista de la compra personal. Adquirimos todo en mercados locales y proveedores de confianza.",
+      "details": [
+        "Productos locales",
+        "Productos artesanos",
+        "Listas de la compra a medida",
+        "Paquetes de bienvenida",
+        "Selección de vinos",
+        "Necesidades dietéticas contempladas"
+      ],
+      "price": "Desde 45 € por preparación",
+      "duration": "Listo a la llegada",
+      "availability": "Disponible en todas las casas"
+    },
+    "it": {
+      "name": "Spesa e Consegna della Spesa",
+      "tagline": "Il tuo frigorifero rifornito prima del tuo arrivo.",
+      "description": "Arriva in una cucina completamente rifornita con prodotti locali, pane artigianale, formaggio regionale, frutta fresca e i tuoi vini preferiti. Pensiamo noi alla spesa così puoi iniziare a goderti la vacanza fin dal primo momento.\n\nScegli tra i nostri pacchetti di benvenuto selezionati o inviaci la tua lista della spesa personale. Acquistiamo tutto nei mercati locali e presso fornitori di fiducia.",
+      "details": [
+        "Prodotti locali",
+        "Prodotti artigianali",
+        "Liste della spesa su misura",
+        "Pacchetti di benvenuto",
+        "Selezione di vini",
+        "Esigenze alimentari soddisfatte"
+      ],
+      "price": "Da 45 € a preparazione",
+      "duration": "Pronto all'arrivo",
+      "availability": "Disponibile in tutte le case"
+    },
+    "de": {
+      "name": "Lebensmitteleinkauf und -lieferung",
+      "tagline": "Ihr Kühlschrank ist gefüllt, bevor Sie ankommen.",
+      "description": "Kommen Sie in eine vollständig gefüllte Küche mit lokalen Produkten, handwerklichem Brot, regionalem Käse, frischem Obst und Ihren Lieblingsweinen an. Wir übernehmen den Einkauf, damit Sie Ihren Urlaub vom ersten Moment an genießen können.\n\nWählen Sie zwischen unseren kuratierten Willkommenspaketen oder senden Sie uns Ihre persönliche Einkaufsliste. Wir beziehen alles von lokalen Märkten und vertrauenswürdigen Anbietern.",
+      "details": [
+        "Lokale Produkte",
+        "Handwerkliche Erzeugnisse",
+        "Maßgeschneiderte Einkaufslisten",
+        "Willkommenspakete",
+        "Weinauswahl",
+        "Ernährungswünsche berücksichtigt"
+      ],
+      "price": "Ab 45 € pro Vorbereitung",
+      "duration": "Bei Ankunft bereit",
+      "availability": "In allen Häusern verfügbar"
+    },
+    "nl": {
+      "name": "Boodschappen kopen en bezorgen",
+      "tagline": "Uw koelkast gevuld voordat u aankomt.",
+      "description": "Kom aan in een volledig gevulde keuken met lokale producten, ambachtelijk brood, regionale kaas, vers fruit en uw favoriete wijnen. Wij regelen de boodschappen zodat u vanaf het eerste moment van uw vakantie kunt genieten.\n\nKies uit onze zorgvuldig samengestelde welkomstpakketten of stuur ons uw persoonlijke boodschappenlijst. Wij kopen alles in bij lokale markten en betrouwbare leveranciers.",
+      "details": [
+        "Lokale producten",
+        "Ambachtelijke producten",
+        "Boodschappenlijsten op maat",
+        "Welkomstpakketten",
+        "Wijnselectie",
+        "Rekening houdend met dieetwensen"
+      ],
+      "price": "Vanaf € 45 per voorbereiding",
+      "duration": "Klaar bij aankomst",
+      "availability": "Beschikbaar in alle huizen"
+    },
+    "sv": {
+      "name": "Inköp och leverans av matvaror",
+      "tagline": "Ditt kylskåp påfyllt innan du anländer.",
+      "description": "Anländ till ett fullt påfyllt kök med lokala produkter, hantverksbröd, regional ost, färsk frukt och dina favoritviner. Vi tar hand om inköpen så att du kan börja njuta av semestern från första stund.\n\nVälj mellan våra utvalda välkomstpaket eller skicka oss din personliga inköpslista. Vi köper allt på lokala marknader och hos betrodda leverantörer.",
+      "details": [
+        "Lokala produkter",
+        "Hantverksprodukter",
+        "Skräddarsydda inköpslistor",
+        "Välkomstpaket",
+        "Vinurval",
+        "Kostbehov tillgodosedda"
+      ],
+      "price": "Från 45 € per förberedelse",
+      "duration": "Redo vid ankomst",
+      "availability": "Tillgängligt i alla hem"
+    }
+  },
+  "babysitter": {
+    "pt": {
+      "name": "Babysitter",
+      "tagline": "Acompanhamento infantil de confiança para poder desfrutar da sua noite.",
+      "description": "Profissionais de acompanhamento infantil certificados, disponíveis para noites fora, excursões de dia ou sempre que precise de algumas horas para si. Todas as nossas babysitters são verificadas, experientes e falam inglês.\n\nQuer queira um jantar romântico, uma sessão de spa ou simplesmente um pouco de sossego, as nossas babysitters garantem que as suas crianças estão seguras, entretidas e felizes.",
+      "details": [
+        "Profissionais certificadas",
+        "Falam inglês",
+        "Verificadas e experientes",
+        "Horários flexíveis",
+        "Noite ou dia",
+        "Todas as idades"
+      ],
+      "price": "Desde €20 por hora",
+      "duration": "Mínimo 3 horas",
+      "availability": "Disponível em todas as casas"
+    },
+    "fr": {
+      "name": "Garde d'enfants",
+      "tagline": "Une garde d'enfants de confiance pour profiter de votre soirée.",
+      "description": "Des professionnels de la garde d'enfants certifiés, disponibles pour les soirées, les excursions à la journée ou chaque fois que vous avez besoin de quelques heures pour vous. Toutes nos baby-sitters sont vérifiées, expérimentées et parlent anglais.\n\nQue vous souhaitiez un dîner romantique, une séance de spa ou simplement un peu de tranquillité, nos baby-sitters veillent à ce que vos enfants soient en sécurité, divertis et heureux.",
+      "details": [
+        "Professionnelles certifiées",
+        "Parlent anglais",
+        "Vérifiées et expérimentées",
+        "Horaires flexibles",
+        "Soir ou jour",
+        "Tous les âges"
+      ],
+      "price": "À partir de 20 € par heure",
+      "duration": "Minimum 3 heures",
+      "availability": "Disponible dans toutes les maisons"
+    },
+    "es": {
+      "name": "Canguro",
+      "tagline": "Cuidado infantil de confianza para que pueda disfrutar de su velada.",
+      "description": "Profesionales de cuidado infantil certificados, disponibles para noches fuera, excursiones de un día o siempre que necesite unas horas para usted. Todos nuestros canguros están verificados, son experimentados y hablan inglés.\n\nYa sea para una cena romántica, una sesión de spa o simplemente un poco de tranquilidad, nuestros canguros garantizan que sus hijos estén seguros, entretenidos y felices.",
+      "details": [
+        "Profesionales certificados",
+        "Hablan inglés",
+        "Verificados y experimentados",
+        "Horarios flexibles",
+        "Noche o día",
+        "Todas las edades"
+      ],
+      "price": "Desde 20 € por hora",
+      "duration": "Mínimo 3 horas",
+      "availability": "Disponible en todas las casas"
+    },
+    "it": {
+      "name": "Babysitter",
+      "tagline": "Assistenza all'infanzia di fiducia per goderti la tua serata.",
+      "description": "Professionisti dell'assistenza all'infanzia certificati, disponibili per serate fuori, escursioni diurne o ogni volta che hai bisogno di qualche ora per te. Tutte le nostre babysitter sono verificate, esperte e parlano inglese.\n\nChe tu voglia una cena romantica, una sessione spa o semplicemente un po' di tranquillità, le nostre babysitter assicurano che i tuoi bambini siano al sicuro, intrattenuti e felici.",
+      "details": [
+        "Professioniste certificate",
+        "Parlano inglese",
+        "Verificate ed esperte",
+        "Orari flessibili",
+        "Sera o giorno",
+        "Tutte le età"
+      ],
+      "price": "Da 20 € all'ora",
+      "duration": "Minimo 3 ore",
+      "availability": "Disponibile in tutte le case"
+    },
+    "de": {
+      "name": "Babysitter",
+      "tagline": "Vertrauenswürdige Kinderbetreuung, damit Sie Ihren Abend genießen können.",
+      "description": "Zertifizierte Kinderbetreuungsfachkräfte, verfügbar für Abende außer Haus, Tagesausflüge oder wann immer Sie einige Stunden für sich brauchen. Alle unsere Babysitter sind geprüft, erfahren und sprechen Englisch.\n\nOb Sie ein romantisches Abendessen, eine Spa-Sitzung oder einfach etwas Ruhe wünschen — unsere Babysitter sorgen dafür, dass Ihre Kinder sicher, gut unterhalten und glücklich sind.",
+      "details": [
+        "Zertifizierte Fachkräfte",
+        "Sprechen Englisch",
+        "Geprüft und erfahren",
+        "Flexible Zeiten",
+        "Abends oder tagsüber",
+        "Alle Altersgruppen"
+      ],
+      "price": "Ab 20 € pro Stunde",
+      "duration": "Mindestens 3 Stunden",
+      "availability": "In allen Häusern verfügbar"
+    },
+    "nl": {
+      "name": "Babysitter",
+      "tagline": "Betrouwbare kinderopvang zodat u van uw avond kunt genieten.",
+      "description": "Gecertificeerde professionals in kinderopvang, beschikbaar voor avondjes uit, dagexcursies of wanneer u maar een paar uur voor uzelf nodig hebt. Al onze babysitters zijn gescreend, ervaren en spreken Engels.\n\nOf u nu een romantisch diner, een spasessie of gewoon wat rust wilt, onze babysitters zorgen ervoor dat uw kinderen veilig, vermaakt en gelukkig zijn.",
+      "details": [
+        "Gecertificeerde professionals",
+        "Spreken Engels",
+        "Gescreend en ervaren",
+        "Flexibele tijden",
+        "Avond of dag",
+        "Alle leeftijden"
+      ],
+      "price": "Vanaf € 20 per uur",
+      "duration": "Minimaal 3 uur",
+      "availability": "Beschikbaar in alle huizen"
+    },
+    "sv": {
+      "name": "Barnvakt",
+      "tagline": "Pålitlig barnomsorg så att du kan njuta av din kväll.",
+      "description": "Certifierade barnomsorgsproffs, tillgängliga för kvällar ute, dagsutflykter eller närhelst du behöver några timmar för dig själv. Alla våra barnvakter är kontrollerade, erfarna och talar engelska.\n\nOavsett om du vill ha en romantisk middag, en spasession eller helt enkelt lite lugn och ro ser våra barnvakter till att dina barn är trygga, underhållna och glada.",
+      "details": [
+        "Certifierade proffs",
+        "Talar engelska",
+        "Kontrollerade och erfarna",
+        "Flexibla tider",
+        "Kväll eller dag",
+        "Alla åldrar"
+      ],
+      "price": "Från 20 € per timme",
+      "duration": "Minst 3 timmar",
+      "availability": "Tillgängligt i alla hem"
+    }
+  }
 }

@@ -1,98 +1,706 @@
 {
-  "private-chef": { "pt": {
-    "name": "Chef Privado",
-    "tagline": "De jantares intimistas a banquetes em família. Os nossos chefs criam menus com os melhores ingredientes regionais.",
-    "description": "De jantares intimistas a banquetes em família. Os nossos chefs criam menus com os melhores ingredientes regionais. Cozinha portuguesa, mediterrânica ou à medida das suas preferências.",
-    "priceSuffix": "por pessoa"
-  } },
-  "in-villa-spa": { "pt": {
-    "name": "Spa e Massagem na Villa",
-    "tagline": "Terapeutas profissionais vão até si. Massagem de tecido profundo, pedras quentes, aromaterapia ou massagem de casal.",
-    "description": "Terapeutas profissionais vão até si. Massagem de tecido profundo, pedras quentes, aromaterapia ou massagem de casal — na sua sala, no jardim ou à beira da piscina.",
-    "priceSuffix": "por sessão"
-  } },
-  "private-yoga": { "pt": {
-    "name": "Yoga Privado",
-    "tagline": "Comece a manhã com uma sessão privada no jardim, no terraço ou à beira da piscina.",
-    "description": "Comece a manhã com uma sessão privada no jardim, no terraço ou à beira da piscina. Todos os níveis são bem-vindos.",
-    "priceSuffix": "por sessão"
-  } },
-  "personal-training": { "pt": {
-    "name": "Treino Personalizado",
-    "tagline": "Treino ao ar livre pensado para os seus objetivos. Força, HIIT, mobilidade ou fitness em família.",
-    "description": "Treino ao ar livre pensado para os seus objetivos. Força, HIIT, mobilidade ou fitness em família. Equipamento incluído.",
-    "priceSuffix": "por sessão"
-  } },
-  "grocery-delivery": { "pt": {
-    "name": "Compras e Entrega de Mercearia",
-    "tagline": "Chegue a uma cozinha totalmente abastecida. Partilhe as suas preferências e tratamos de tudo.",
-    "description": "Chegue a uma cozinha totalmente abastecida. Partilhe as suas preferências e tratamos de tudo. Frigorífico organizado, vinho fresco.",
-    "priceSuffix": "+ compras"
-  } },
-  "babysitter": { "pt": {
-    "name": "Babysitter",
-    "tagline": "Profissionais de acompanhamento infantil certificados e experientes, para o dia ou para a noite.",
-    "description": "Profissionais de acompanhamento infantil certificados e experientes, para o dia ou para a noite. Tranquilidade incluída.",
-    "priceSuffix": "por hora"
-  } },
-  "airport-shuttle": { "pt": {
-    "name": "Transfer de Aeroporto e Motorista Privado",
-    "tagline": "Transfers sem complicações do Porto, Lisboa ou qualquer aeroporto. Veículos premium, motoristas locais.",
-    "description": "Transfers sem complicações do Porto, Lisboa ou qualquer aeroporto. Veículos premium, motoristas locais que também são guias.",
-    "priceSuffix": "por transfer"
-  } },
-  "daily-housekeeping": { "pt": {
-    "name": "Limpeza Diária",
-    "tagline": "Limpeza ao nível de hotel durante a sua estadia. Três níveis: Quick Refresh, Full Service ou À Medida.",
-    "description": "Limpeza ao nível de hotel durante a sua estadia. Quick Refresh (arrumação, lixos, camas feitas), Full Service (lençóis e toalhas lavados, limpeza completa, amenities repostos) ou À Medida (diga-nos o que precisa).",
-    "priceSuffix": "por visita"
-  } },
-  "canyoning": { "pt": {
-    "name": "Canyoning",
-    "tagline": "Desça desfiladeiros de rio escondidos, salte para piscinas naturais e faça rappel por cascatas.",
-    "description": "Desça desfiladeiros de rio escondidos, salte para piscinas naturais e faça rappel por cascatas nas gargantas mais espetaculares do Norte de Portugal.",
-    "priceSuffix": "por pessoa"
-  } },
-  "stand-up-paddle": { "pt": {
-    "name": "Stand Up Paddle",
-    "tagline": "Sessões ao nascer do sol no rio Lima, remadas ao pôr do sol pela costa atlântica.",
-    "description": "Sessões ao nascer do sol no rio Lima, remadas ao pôr do sol pela costa atlântica ou uma manhã tranquila numa lagoa escondida.",
-    "priceSuffix": "por pessoa"
-  } },
-  "horseback-riding": { "pt": {
-    "name": "Passeio a Cavalo",
-    "tagline": "Cavalgue por praias desertas, pinhais e dunas costeiras.",
-    "description": "Cavalgue por praias desertas, pinhais e dunas costeiras. Adequado a principiantes e cavaleiros experientes.",
-    "priceSuffix": "por pessoa"
-  } },
-  "hike-dive-dine": { "pt": {
-    "name": "Caminhada, Mergulho e Jantar",
-    "tagline": "Uma aventura de dia inteiro: caminhe até cascatas escondidas, nade em piscinas naturais e termine com um almoço tradicional.",
-    "description": "Uma aventura de dia inteiro: caminhe até cascatas escondidas, nade em piscinas naturais e termine com um almoço tradicional num restaurante de família local.",
-    "priceSuffix": "por pessoa"
-  } },
-  "can-am-buggy": { "pt": {
-    "name": "Experiência Can-Am / Buggy",
-    "tagline": "Todo-o-terreno por trilhos de montanha e caminhos florestais. Tours guiados com miradouros panorâmicos.",
-    "description": "Todo-o-terreno por trilhos de montanha e caminhos florestais. Tours guiados com paragens em miradouros panorâmicos.",
-    "priceSuffix": "por buggy"
-  } },
-  "sailing": { "pt": {
-    "name": "Vela e Passeios de Barco",
-    "tagline": "Vela ao pôr do sol pela costa atlântica, charters de barco privados ou um cruzeiro tranquilo.",
-    "description": "Vela ao pôr do sol pela costa atlântica, charters de barco privados ou um cruzeiro tranquilo pelo estuário do Lima.",
-    "priceSuffix": "por pessoa"
-  } },
-  "ebike-tours": { "pt": {
-    "name": "Tours de E-Bike e Fat Bike",
-    "tagline": "Explore trilhos costeiros, dunas de praia e caminhos de montanha em bicicletas elétricas ou de pneus largos.",
-    "description": "Explore trilhos costeiros, dunas de praia e caminhos de montanha em bicicletas elétricas ou de pneus largos. Guiado por locais.",
-    "priceSuffix": "por pessoa"
-  } },
-  "surf-lessons": { "pt": {
-    "name": "Aulas de Surf",
-    "tagline": "Aprenda a surfar nas melhores ondas atlânticas de Portugal. Aulas privadas ou em grupo pequeno.",
-    "description": "Aprenda a surfar nas melhores ondas atlânticas de Portugal. Aulas privadas ou em grupo pequeno com instrutores certificados.",
-    "priceSuffix": "por pessoa"
-  } }
+  "private-chef": {
+    "pt": {
+      "name": "Chef Privado",
+      "tagline": "De jantares intimistas a banquetes em família. Os nossos chefs criam menus com os melhores ingredientes regionais.",
+      "description": "De jantares intimistas a banquetes em família. Os nossos chefs criam menus com os melhores ingredientes regionais. Cozinha portuguesa, mediterrânica ou à medida das suas preferências.",
+      "priceSuffix": "por pessoa"
+    },
+    "fr": {
+      "name": "Chef privé",
+      "tagline": "Des dîners intimes aux banquets en famille. Nos chefs créent des menus avec les meilleurs ingrédients régionaux.",
+      "description": "Des dîners intimes aux banquets en famille. Nos chefs créent des menus avec les meilleurs ingrédients régionaux. Cuisine portugaise, méditerranéenne ou sur mesure selon vos préférences.",
+      "priceSuffix": "par personne"
+    },
+    "es": {
+      "name": "Chef Privado",
+      "tagline": "Desde cenas íntimas a banquetes en familia. Nuestros chefs crean menús con los mejores ingredientes regionales.",
+      "description": "Desde cenas íntimas a banquetes en familia. Nuestros chefs crean menús con los mejores ingredientes regionales. Cocina portuguesa, mediterránea o a la medida de sus preferencias.",
+      "priceSuffix": "por persona"
+    },
+    "it": {
+      "name": "Chef Privato",
+      "tagline": "Da cene intime a banchetti in famiglia. I nostri chef creano menu con i migliori ingredienti regionali.",
+      "description": "Da cene intime a banchetti in famiglia. I nostri chef creano menu con i migliori ingredienti regionali. Cucina portoghese, mediterranea o su misura secondo le vostre preferenze.",
+      "priceSuffix": "a persona"
+    },
+    "de": {
+      "name": "Privatkoch",
+      "tagline": "Von intimen Abendessen bis zu Familienbanketten. Unsere Köche kreieren Menüs aus den besten regionalen Zutaten.",
+      "description": "Von intimen Abendessen bis zu Familienbanketten. Unsere Köche kreieren Menüs aus den besten regionalen Zutaten. Portugiesische, mediterrane oder ganz nach Ihren Vorlieben gestaltete Küche.",
+      "priceSuffix": "pro Person"
+    },
+    "nl": {
+      "name": "Privéchef",
+      "tagline": "Van intieme diners tot familiebanketten. Onze chefs stellen menu's samen met de beste regionale ingrediënten.",
+      "description": "Van intieme diners tot familiebanketten. Onze chefs stellen menu's samen met de beste regionale ingrediënten. Portugese, mediterrane of geheel naar uw voorkeur samengestelde keuken.",
+      "priceSuffix": "per persoon"
+    },
+    "sv": {
+      "name": "Privatkock",
+      "tagline": "Från intima middagar till familjebanketter. Våra kockar skapar menyer med de bästa regionala råvarorna.",
+      "description": "Från intima middagar till familjebanketter. Våra kockar skapar menyer med de bästa regionala råvarorna. Portugisiskt, medelhavskök eller helt efter dina önskemål.",
+      "priceSuffix": "per person"
+    }
+  },
+  "in-villa-spa": {
+    "pt": {
+      "name": "Spa e Massagem na Villa",
+      "tagline": "Terapeutas profissionais vão até si. Massagem de tecido profundo, pedras quentes, aromaterapia ou massagem de casal.",
+      "description": "Terapeutas profissionais vão até si. Massagem de tecido profundo, pedras quentes, aromaterapia ou massagem de casal — na sua sala, no jardim ou à beira da piscina.",
+      "priceSuffix": "por sessão"
+    },
+    "fr": {
+      "name": "Spa et massage à la villa",
+      "tagline": "Des thérapeutes professionnels viennent à vous. Massage des tissus profonds, pierres chaudes, aromathérapie ou massage en couple.",
+      "description": "Des thérapeutes professionnels viennent à vous. Massage des tissus profonds, pierres chaudes, aromathérapie ou massage en couple — dans votre salon, au jardin ou au bord de la piscine.",
+      "priceSuffix": "par séance"
+    },
+    "es": {
+      "name": "Spa y Masaje en la Villa",
+      "tagline": "Terapeutas profesionales se desplazan hasta usted. Masaje de tejido profundo, piedras calientes, aromaterapia o masaje en pareja.",
+      "description": "Terapeutas profesionales se desplazan hasta usted. Masaje de tejido profundo, piedras calientes, aromaterapia o masaje en pareja — en su salón, en el jardín o junto a la piscina.",
+      "priceSuffix": "por sesión"
+    },
+    "it": {
+      "name": "Spa e Massaggi in Villa",
+      "tagline": "Terapisti professionisti vengono da voi. Massaggio sui tessuti profondi, pietre calde, aromaterapia o massaggio di coppia.",
+      "description": "Terapisti professionisti vengono da voi. Massaggio sui tessuti profondi, pietre calde, aromaterapia o massaggio di coppia — in salotto, in giardino o a bordo piscina.",
+      "priceSuffix": "a sessione"
+    },
+    "de": {
+      "name": "Spa und Massage in der Villa",
+      "tagline": "Professionelle Therapeuten kommen zu Ihnen. Tiefengewebsmassage, Hot Stone, Aromatherapie oder Paarmassage.",
+      "description": "Professionelle Therapeuten kommen zu Ihnen. Tiefengewebsmassage, Hot Stone, Aromatherapie oder Paarmassage — in Ihrem Wohnzimmer, im Garten oder am Pool.",
+      "priceSuffix": "pro Sitzung"
+    },
+    "nl": {
+      "name": "Spa en massage in de villa",
+      "tagline": "Professionele therapeuten komen naar u toe. Deep tissue, hot stones, aromatherapie of koppelmassage.",
+      "description": "Professionele therapeuten komen naar u toe. Deep tissue, hot stones, aromatherapie of koppelmassage — in uw woonkamer, in de tuin of aan de rand van het zwembad.",
+      "priceSuffix": "per sessie"
+    },
+    "sv": {
+      "name": "Spa och massage i villan",
+      "tagline": "Professionella terapeuter kommer till dig. Djupgående vävnadsmassage, varma stenar, aromaterapi eller parmassage.",
+      "description": "Professionella terapeuter kommer till dig. Djupgående vävnadsmassage, varma stenar, aromaterapi eller parmassage — i ditt vardagsrum, i trädgården eller vid poolen.",
+      "priceSuffix": "per session"
+    }
+  },
+  "private-yoga": {
+    "pt": {
+      "name": "Yoga Privado",
+      "tagline": "Comece a manhã com uma sessão privada no jardim, no terraço ou à beira da piscina.",
+      "description": "Comece a manhã com uma sessão privada no jardim, no terraço ou à beira da piscina. Todos os níveis são bem-vindos.",
+      "priceSuffix": "por sessão"
+    },
+    "fr": {
+      "name": "Yoga privé",
+      "tagline": "Commencez la matinée par une séance privée au jardin, sur la terrasse ou au bord de la piscine.",
+      "description": "Commencez la matinée par une séance privée au jardin, sur la terrasse ou au bord de la piscine. Tous les niveaux sont les bienvenus.",
+      "priceSuffix": "par séance"
+    },
+    "es": {
+      "name": "Yoga Privado",
+      "tagline": "Empiece la mañana con una sesión privada en el jardín, en la terraza o junto a la piscina.",
+      "description": "Empiece la mañana con una sesión privada en el jardín, en la terraza o junto a la piscina. Todos los niveles son bienvenidos.",
+      "priceSuffix": "por sesión"
+    },
+    "it": {
+      "name": "Yoga Privato",
+      "tagline": "Inizia la mattina con una sessione privata in giardino, in terrazza o a bordo piscina.",
+      "description": "Inizia la mattina con una sessione privata in giardino, in terrazza o a bordo piscina. Tutti i livelli sono benvenuti.",
+      "priceSuffix": "a sessione"
+    },
+    "de": {
+      "name": "Privat-Yoga",
+      "tagline": "Beginnen Sie den Morgen mit einer privaten Sitzung im Garten, auf der Terrasse oder am Pool.",
+      "description": "Beginnen Sie den Morgen mit einer privaten Sitzung im Garten, auf der Terrasse oder am Pool. Alle Niveaus sind willkommen.",
+      "priceSuffix": "pro Sitzung"
+    },
+    "nl": {
+      "name": "Privé-yoga",
+      "tagline": "Begin de ochtend met een privésessie in de tuin, op het terras of aan de rand van het zwembad.",
+      "description": "Begin de ochtend met een privésessie in de tuin, op het terras of aan de rand van het zwembad. Alle niveaus zijn welkom.",
+      "priceSuffix": "per sessie"
+    },
+    "sv": {
+      "name": "Privat yoga",
+      "tagline": "Inled morgonen med en privat session i trädgården, på terrassen eller vid poolen.",
+      "description": "Inled morgonen med en privat session i trädgården, på terrassen eller vid poolen. Alla nivåer är välkomna.",
+      "priceSuffix": "per session"
+    }
+  },
+  "personal-training": {
+    "pt": {
+      "name": "Treino Personalizado",
+      "tagline": "Treino ao ar livre pensado para os seus objetivos. Força, HIIT, mobilidade ou fitness em família.",
+      "description": "Treino ao ar livre pensado para os seus objetivos. Força, HIIT, mobilidade ou fitness em família. Equipamento incluído.",
+      "priceSuffix": "por sessão"
+    },
+    "fr": {
+      "name": "Coaching personnel",
+      "tagline": "Un entraînement en plein air pensé pour vos objectifs. Renforcement, HIIT, mobilité ou fitness en famille.",
+      "description": "Un entraînement en plein air pensé pour vos objectifs. Renforcement, HIIT, mobilité ou fitness en famille. Équipement inclus.",
+      "priceSuffix": "par séance"
+    },
+    "es": {
+      "name": "Entrenamiento Personalizado",
+      "tagline": "Entrenamiento al aire libre pensado para sus objetivos. Fuerza, HIIT, movilidad o fitness en familia.",
+      "description": "Entrenamiento al aire libre pensado para sus objetivos. Fuerza, HIIT, movilidad o fitness en familia. Equipo incluido.",
+      "priceSuffix": "por sesión"
+    },
+    "it": {
+      "name": "Allenamento Personalizzato",
+      "tagline": "Allenamento all'aperto pensato per i tuoi obiettivi. Forza, HIIT, mobilità o fitness in famiglia.",
+      "description": "Allenamento all'aperto pensato per i tuoi obiettivi. Forza, HIIT, mobilità o fitness in famiglia. Attrezzatura inclusa.",
+      "priceSuffix": "a sessione"
+    },
+    "de": {
+      "name": "Personal Training",
+      "tagline": "Outdoor-Training, abgestimmt auf Ihre Ziele. Kraft, HIIT, Beweglichkeit oder Familienfitness.",
+      "description": "Outdoor-Training, abgestimmt auf Ihre Ziele. Kraft, HIIT, Beweglichkeit oder Familienfitness. Ausrüstung inbegriffen.",
+      "priceSuffix": "pro Sitzung"
+    },
+    "nl": {
+      "name": "Personal training",
+      "tagline": "Buitentraining afgestemd op uw doelen. Kracht, HIIT, mobiliteit of fitness met het gezin.",
+      "description": "Buitentraining afgestemd op uw doelen. Kracht, HIIT, mobiliteit of fitness met het gezin. Uitrusting inbegrepen.",
+      "priceSuffix": "per sessie"
+    },
+    "sv": {
+      "name": "Personlig träning",
+      "tagline": "Utomhusträning anpassad efter dina mål. Styrka, HIIT, rörlighet eller familjeträning.",
+      "description": "Utomhusträning anpassad efter dina mål. Styrka, HIIT, rörlighet eller familjeträning. Utrustning ingår.",
+      "priceSuffix": "per session"
+    }
+  },
+  "grocery-delivery": {
+    "pt": {
+      "name": "Compras e Entrega de Mercearia",
+      "tagline": "Chegue a uma cozinha totalmente abastecida. Partilhe as suas preferências e tratamos de tudo.",
+      "description": "Chegue a uma cozinha totalmente abastecida. Partilhe as suas preferências e tratamos de tudo. Frigorífico organizado, vinho fresco.",
+      "priceSuffix": "+ compras"
+    },
+    "fr": {
+      "name": "Courses et livraison de provisions",
+      "tagline": "Arrivez dans une cuisine entièrement approvisionnée. Partagez vos préférences et nous nous occupons de tout.",
+      "description": "Arrivez dans une cuisine entièrement approvisionnée. Partagez vos préférences et nous nous occupons de tout. Réfrigérateur organisé, vin au frais.",
+      "priceSuffix": "+ courses"
+    },
+    "es": {
+      "name": "Compra y Entrega de Provisiones",
+      "tagline": "Llegue a una cocina totalmente abastecida. Comparta sus preferencias y nos encargamos de todo.",
+      "description": "Llegue a una cocina totalmente abastecida. Comparta sus preferencias y nos encargamos de todo. Nevera organizada, vino fresco.",
+      "priceSuffix": "+ compra"
+    },
+    "it": {
+      "name": "Spesa e Consegna della Spesa",
+      "tagline": "Arriva in una cucina già rifornita. Condividi le tue preferenze e pensiamo a tutto noi.",
+      "description": "Arriva in una cucina già rifornita. Condividi le tue preferenze e pensiamo a tutto noi. Frigorifero organizzato, vino fresco.",
+      "priceSuffix": "+ spesa"
+    },
+    "de": {
+      "name": "Lebensmitteleinkauf und -lieferung",
+      "tagline": "Kommen Sie in eine vollständig gefüllte Küche. Teilen Sie uns Ihre Vorlieben mit, und wir kümmern uns um alles.",
+      "description": "Kommen Sie in eine vollständig gefüllte Küche. Teilen Sie uns Ihre Vorlieben mit, und wir kümmern uns um alles. Organisierter Kühlschrank, gekühlter Wein.",
+      "priceSuffix": "+ Einkäufe"
+    },
+    "nl": {
+      "name": "Boodschappen kopen en bezorgen",
+      "tagline": "Kom aan in een volledig gevulde keuken. Deel uw voorkeuren en wij regelen alles.",
+      "description": "Kom aan in een volledig gevulde keuken. Deel uw voorkeuren en wij regelen alles. Georganiseerde koelkast, gekoelde wijn.",
+      "priceSuffix": "+ boodschappen"
+    },
+    "sv": {
+      "name": "Inköp och leverans av matvaror",
+      "tagline": "Kom hem till ett fullt påfyllt kök. Dela dina preferenser så ordnar vi resten.",
+      "description": "Kom hem till ett fullt påfyllt kök. Dela dina preferenser så ordnar vi resten. Organiserat kylskåp, kylt vin.",
+      "priceSuffix": "+ inköp"
+    }
+  },
+  "babysitter": {
+    "pt": {
+      "name": "Babysitter",
+      "tagline": "Profissionais de acompanhamento infantil certificados e experientes, para o dia ou para a noite.",
+      "description": "Profissionais de acompanhamento infantil certificados e experientes, para o dia ou para a noite. Tranquilidade incluída.",
+      "priceSuffix": "por hora"
+    },
+    "fr": {
+      "name": "Garde d'enfants",
+      "tagline": "Des professionnels de la garde d'enfants certifiés et expérimentés, pour la journée ou la soirée.",
+      "description": "Des professionnels de la garde d'enfants certifiés et expérimentés, pour la journée ou la soirée. Tranquillité d'esprit comprise.",
+      "priceSuffix": "par heure"
+    },
+    "es": {
+      "name": "Canguro",
+      "tagline": "Profesionales de cuidado infantil certificados y experimentados, para el día o para la noche.",
+      "description": "Profesionales de cuidado infantil certificados y experimentados, para el día o para la noche. Tranquilidad incluida.",
+      "priceSuffix": "por hora"
+    },
+    "it": {
+      "name": "Babysitter",
+      "tagline": "Professionisti dell'assistenza all'infanzia certificati ed esperti, per il giorno o per la sera.",
+      "description": "Professionisti dell'assistenza all'infanzia certificati ed esperti, per il giorno o per la sera. Tranquillità inclusa.",
+      "priceSuffix": "all'ora"
+    },
+    "de": {
+      "name": "Babysitter",
+      "tagline": "Zertifizierte und erfahrene Kinderbetreuungsfachkräfte, für tagsüber oder abends.",
+      "description": "Zertifizierte und erfahrene Kinderbetreuungsfachkräfte, für tagsüber oder abends. Sorgenfreiheit inklusive.",
+      "priceSuffix": "pro Stunde"
+    },
+    "nl": {
+      "name": "Babysitter",
+      "tagline": "Gecertificeerde en ervaren professionals in kinderopvang, voor overdag of 's avonds.",
+      "description": "Gecertificeerde en ervaren professionals in kinderopvang, voor overdag of 's avonds. Gemoedsrust inbegrepen.",
+      "priceSuffix": "per uur"
+    },
+    "sv": {
+      "name": "Barnvakt",
+      "tagline": "Certifierade och erfarna barnomsorgsproffs, för dagen eller kvällen.",
+      "description": "Certifierade och erfarna barnomsorgsproffs, för dagen eller kvällen. Sinnesro ingår.",
+      "priceSuffix": "per timme"
+    }
+  },
+  "airport-shuttle": {
+    "pt": {
+      "name": "Transfer de Aeroporto e Motorista Privado",
+      "tagline": "Transfers sem complicações do Porto, Lisboa ou qualquer aeroporto. Veículos premium, motoristas locais.",
+      "description": "Transfers sem complicações do Porto, Lisboa ou qualquer aeroporto. Veículos premium, motoristas locais que também são guias.",
+      "priceSuffix": "por transfer"
+    },
+    "fr": {
+      "name": "Transfert aéroport et chauffeur privé",
+      "tagline": "Des transferts sans souci depuis Porto, Lisbonne ou n'importe quel aéroport. Véhicules haut de gamme, chauffeurs locaux.",
+      "description": "Des transferts sans souci depuis Porto, Lisbonne ou n'importe quel aéroport. Véhicules haut de gamme, chauffeurs locaux qui sont aussi des guides.",
+      "priceSuffix": "par transfert"
+    },
+    "es": {
+      "name": "Traslado de Aeropuerto y Conductor Privado",
+      "tagline": "Traslados sin complicaciones desde Porto, Lisboa o cualquier aeropuerto. Vehículos premium, conductores locales.",
+      "description": "Traslados sin complicaciones desde Porto, Lisboa o cualquier aeropuerto. Vehículos premium, conductores locales que también son guías.",
+      "priceSuffix": "por traslado"
+    },
+    "it": {
+      "name": "Transfer Aeroportuale e Autista Privato",
+      "tagline": "Transfer senza complicazioni da Porto, Lisbona o qualsiasi aeroporto. Veicoli premium, autisti locali.",
+      "description": "Transfer senza complicazioni da Porto, Lisbona o qualsiasi aeroporto. Veicoli premium, autisti locali che sono anche guide.",
+      "priceSuffix": "a transfer"
+    },
+    "de": {
+      "name": "Flughafentransfer und Privatchauffeur",
+      "tagline": "Unkomplizierte Transfers von Porto, Lisboa oder jedem Flughafen. Premium-Fahrzeuge, einheimische Fahrer.",
+      "description": "Unkomplizierte Transfers von Porto, Lisboa oder jedem Flughafen. Premium-Fahrzeuge, einheimische Fahrer, die zugleich Reiseführer sind.",
+      "priceSuffix": "pro Transfer"
+    },
+    "nl": {
+      "name": "Luchthaventransfer en privéchauffeur",
+      "tagline": "Zorgeloze transfers vanaf Porto, Lisboa of elke luchthaven. Premium voertuigen, lokale chauffeurs.",
+      "description": "Zorgeloze transfers vanaf Porto, Lisboa of elke luchthaven. Premium voertuigen, lokale chauffeurs die ook gids zijn.",
+      "priceSuffix": "per transfer"
+    },
+    "sv": {
+      "name": "Flygplatstransfer och privat chaufför",
+      "tagline": "Bekymmersfria transfers från Porto, Lisboa eller valfri flygplats. Premiumfordon, lokala chaufförer.",
+      "description": "Bekymmersfria transfers från Porto, Lisboa eller valfri flygplats. Premiumfordon, lokala chaufförer som också är guider.",
+      "priceSuffix": "per transfer"
+    }
+  },
+  "daily-housekeeping": {
+    "pt": {
+      "name": "Limpeza Diária",
+      "tagline": "Limpeza ao nível de hotel durante a sua estadia. Três níveis: Quick Refresh, Full Service ou À Medida.",
+      "description": "Limpeza ao nível de hotel durante a sua estadia. Quick Refresh (arrumação, lixos, camas feitas), Full Service (lençóis e toalhas lavados, limpeza completa, amenities repostos) ou À Medida (diga-nos o que precisa).",
+      "priceSuffix": "por visita"
+    },
+    "fr": {
+      "name": "Ménage quotidien",
+      "tagline": "Un ménage digne d'un hôtel pendant tout votre séjour. Trois niveaux : Quick Refresh, Full Service ou Sur Mesure.",
+      "description": "Un ménage digne d'un hôtel pendant tout votre séjour. Quick Refresh (rangement, poubelles, lits faits), Full Service (draps et serviettes lavés, ménage complet, produits d'accueil réapprovisionnés) ou Sur Mesure (dites-nous ce dont vous avez besoin).",
+      "priceSuffix": "par visite"
+    },
+    "es": {
+      "name": "Limpieza Diaria",
+      "tagline": "Limpieza al nivel de un hotel durante su estancia. Tres niveles: Quick Refresh, Full Service o A Medida.",
+      "description": "Limpieza al nivel de un hotel durante su estancia. Quick Refresh (orden, basuras, camas hechas), Full Service (sábanas y toallas lavadas, limpieza completa, amenities repuestos) o A Medida (díganos lo que necesita).",
+      "priceSuffix": "por visita"
+    },
+    "it": {
+      "name": "Pulizie Giornaliere",
+      "tagline": "Pulizie a livello d'hotel durante il soggiorno. Tre livelli: Quick Refresh, Full Service o Su Misura.",
+      "description": "Pulizie a livello d'hotel durante il soggiorno. Quick Refresh (riordino, rifiuti, letti rifatti), Full Service (lenzuola e asciugamani lavati, pulizia completa, amenities riforniti) o Su Misura (dicci di cosa hai bisogno).",
+      "priceSuffix": "a visita"
+    },
+    "de": {
+      "name": "Tägliche Reinigung",
+      "tagline": "Reinigung auf Hotelniveau während Ihres Aufenthalts. Drei Stufen: Quick Refresh, Full Service oder Maßgeschneidert.",
+      "description": "Reinigung auf Hotelniveau während Ihres Aufenthalts. Quick Refresh (Aufräumen, Müll, Betten machen), Full Service (Bettwäsche und Handtücher gewaschen, komplette Reinigung, Amenities aufgefüllt) oder Maßgeschneidert (sagen Sie uns, was Sie brauchen).",
+      "priceSuffix": "pro Besuch"
+    },
+    "nl": {
+      "name": "Dagelijkse schoonmaak",
+      "tagline": "Schoonmaak op hotelniveau tijdens uw verblijf. Drie niveaus: Quick Refresh, Full Service of Op Maat.",
+      "description": "Schoonmaak op hotelniveau tijdens uw verblijf. Quick Refresh (opruimen, afval, bedden opgemaakt), Full Service (gewassen lakens en handdoeken, volledige schoonmaak, aangevulde amenities) of Op Maat (vertel ons wat u nodig hebt).",
+      "priceSuffix": "per bezoek"
+    },
+    "sv": {
+      "name": "Daglig städning",
+      "tagline": "Städning på hotellnivå under din vistelse. Tre nivåer: Quick Refresh, Full Service eller Skräddarsytt.",
+      "description": "Städning på hotellnivå under din vistelse. Quick Refresh (uppfräschning, sopor, bäddade sängar), Full Service (tvättade lakan och handdukar, fullständig städning, påfyllda amenities) eller Skräddarsytt (berätta vad du behöver).",
+      "priceSuffix": "per besök"
+    }
+  },
+  "canyoning": {
+    "pt": {
+      "name": "Canyoning",
+      "tagline": "Desça desfiladeiros de rio escondidos, salte para piscinas naturais e faça rappel por cascatas.",
+      "description": "Desça desfiladeiros de rio escondidos, salte para piscinas naturais e faça rappel por cascatas nas gargantas mais espetaculares do Norte de Portugal.",
+      "priceSuffix": "por pessoa"
+    },
+    "fr": {
+      "name": "Canyoning",
+      "tagline": "Descendez des gorges fluviales cachées, sautez dans des piscines naturelles et descendez en rappel le long de cascades.",
+      "description": "Descendez des gorges fluviales cachées, sautez dans des piscines naturelles et descendez en rappel le long de cascades dans les gorges les plus spectaculaires du Nord du Portugal.",
+      "priceSuffix": "par personne"
+    },
+    "es": {
+      "name": "Barranquismo",
+      "tagline": "Descienda barrancos fluviales escondidos, salte a piscinas naturales y haga rápel por cascadas.",
+      "description": "Descienda barrancos fluviales escondidos, salte a piscinas naturales y haga rápel por cascadas en las gargantas más espectaculares del Norte de Portugal.",
+      "priceSuffix": "por persona"
+    },
+    "it": {
+      "name": "Canyoning",
+      "tagline": "Discendi gole fluviali nascoste, tuffati in piscine naturali e fai rappel lungo le cascate.",
+      "description": "Discendi gole fluviali nascoste, tuffati in piscine naturali e fai rappel lungo le cascate nelle gole più spettacolari del Nord del Portogallo.",
+      "priceSuffix": "a persona"
+    },
+    "de": {
+      "name": "Canyoning",
+      "tagline": "Steigen Sie in verborgene Flussschluchten hinab, springen Sie in Naturbecken und seilen Sie sich an Wasserfällen ab.",
+      "description": "Steigen Sie in verborgene Flussschluchten hinab, springen Sie in Naturbecken und seilen Sie sich an Wasserfällen ab — in den spektakulärsten Schluchten Nordportugals.",
+      "priceSuffix": "pro Person"
+    },
+    "nl": {
+      "name": "Canyoning",
+      "tagline": "Daal af door verborgen rivierkloven, spring in natuurlijke poelen en abseil langs watervallen.",
+      "description": "Daal af door verborgen rivierkloven, spring in natuurlijke poelen en abseil langs watervallen in de meest spectaculaire kloven van Noord-Portugal.",
+      "priceSuffix": "per persoon"
+    },
+    "sv": {
+      "name": "Canyoning",
+      "tagline": "Ta dig nedför dolda flodraviner, hoppa i naturliga pooler och fira ner längs vattenfall.",
+      "description": "Ta dig nedför dolda flodraviner, hoppa i naturliga pooler och fira ner längs vattenfall i de mest spektakulära ravinerna i norra Portugal.",
+      "priceSuffix": "per person"
+    }
+  },
+  "stand-up-paddle": {
+    "pt": {
+      "name": "Stand Up Paddle",
+      "tagline": "Sessões ao nascer do sol no rio Lima, remadas ao pôr do sol pela costa atlântica.",
+      "description": "Sessões ao nascer do sol no rio Lima, remadas ao pôr do sol pela costa atlântica ou uma manhã tranquila numa lagoa escondida.",
+      "priceSuffix": "por pessoa"
+    },
+    "fr": {
+      "name": "Stand Up Paddle",
+      "tagline": "Des sessions au lever du soleil sur le fleuve Lima, des balades au coucher du soleil le long de la côte atlantique.",
+      "description": "Des sessions au lever du soleil sur le fleuve Lima, des balades au coucher du soleil le long de la côte atlantique ou une matinée paisible sur un lagon caché.",
+      "priceSuffix": "par personne"
+    },
+    "es": {
+      "name": "Stand Up Paddle",
+      "tagline": "Sesiones al amanecer en el río Lima, remadas al atardecer por la costa atlántica.",
+      "description": "Sesiones al amanecer en el río Lima, remadas al atardecer por la costa atlántica o una mañana tranquila en una laguna escondida.",
+      "priceSuffix": "por persona"
+    },
+    "it": {
+      "name": "Stand Up Paddle",
+      "tagline": "Sessioni all'alba sul fiume Lima, pagaiate al tramonto lungo la costa atlantica.",
+      "description": "Sessioni all'alba sul fiume Lima, pagaiate al tramonto lungo la costa atlantica o una mattinata tranquilla in una laguna nascosta.",
+      "priceSuffix": "a persona"
+    },
+    "de": {
+      "name": "Stand-up-Paddling",
+      "tagline": "Sonnenaufgangs-Sessions auf dem Rio Lima, Paddeltouren bei Sonnenuntergang entlang der Atlantikküste.",
+      "description": "Sonnenaufgangs-Sessions auf dem Rio Lima, Paddeltouren bei Sonnenuntergang entlang der Atlantikküste oder ein ruhiger Morgen an einer verborgenen Lagune.",
+      "priceSuffix": "pro Person"
+    },
+    "nl": {
+      "name": "Stand-up paddle",
+      "tagline": "Sessies bij zonsopgang op de rivier de Lima, peddeltochten bij zonsondergang langs de Atlantische kust.",
+      "description": "Sessies bij zonsopgang op de rivier de Lima, peddeltochten bij zonsondergang langs de Atlantische kust of een rustige ochtend op een verborgen lagune.",
+      "priceSuffix": "per persoon"
+    },
+    "sv": {
+      "name": "Stand Up Paddle",
+      "tagline": "Soluppgångssessioner på floden Lima, solnedgångsturer längs atlantkusten.",
+      "description": "Soluppgångssessioner på floden Lima, solnedgångsturer längs atlantkusten eller en stillsam morgon i en dold lagun.",
+      "priceSuffix": "per person"
+    }
+  },
+  "horseback-riding": {
+    "pt": {
+      "name": "Passeio a Cavalo",
+      "tagline": "Cavalgue por praias desertas, pinhais e dunas costeiras.",
+      "description": "Cavalgue por praias desertas, pinhais e dunas costeiras. Adequado a principiantes e cavaleiros experientes.",
+      "priceSuffix": "por pessoa"
+    },
+    "fr": {
+      "name": "Promenade à cheval",
+      "tagline": "Chevauchez le long de plages désertes, à travers pinèdes et dunes côtières.",
+      "description": "Chevauchez le long de plages désertes, à travers pinèdes et dunes côtières. Adapté aux débutants comme aux cavaliers expérimentés.",
+      "priceSuffix": "par personne"
+    },
+    "es": {
+      "name": "Paseo a Caballo",
+      "tagline": "Cabalgue por playas desiertas, pinares y dunas costeras.",
+      "description": "Cabalgue por playas desiertas, pinares y dunas costeras. Adecuado para principiantes y jinetes experimentados.",
+      "priceSuffix": "por persona"
+    },
+    "it": {
+      "name": "Passeggiata a Cavallo",
+      "tagline": "Cavalca lungo spiagge deserte, pinete e dune costiere.",
+      "description": "Cavalca lungo spiagge deserte, pinete e dune costiere. Adatto a principianti e cavalieri esperti.",
+      "priceSuffix": "a persona"
+    },
+    "de": {
+      "name": "Reitausflug",
+      "tagline": "Reiten Sie über einsame Strände, durch Pinienwälder und über Küstendünen.",
+      "description": "Reiten Sie über einsame Strände, durch Pinienwälder und über Küstendünen. Geeignet für Anfänger und erfahrene Reiter.",
+      "priceSuffix": "pro Person"
+    },
+    "nl": {
+      "name": "Paardrijden",
+      "tagline": "Rijd over verlaten stranden, door dennenbossen en kustduinen.",
+      "description": "Rijd over verlaten stranden, door dennenbossen en kustduinen. Geschikt voor beginners en ervaren ruiters.",
+      "priceSuffix": "per persoon"
+    },
+    "sv": {
+      "name": "Ridtur",
+      "tagline": "Rid längs öde stränder, genom tallskogar och kustdyner.",
+      "description": "Rid längs öde stränder, genom tallskogar och kustdyner. Lämpligt för både nybörjare och erfarna ryttare.",
+      "priceSuffix": "per person"
+    }
+  },
+  "hike-dive-dine": {
+    "pt": {
+      "name": "Caminhada, Mergulho e Jantar",
+      "tagline": "Uma aventura de dia inteiro: caminhe até cascatas escondidas, nade em piscinas naturais e termine com um almoço tradicional.",
+      "description": "Uma aventura de dia inteiro: caminhe até cascatas escondidas, nade em piscinas naturais e termine com um almoço tradicional num restaurante de família local.",
+      "priceSuffix": "por pessoa"
+    },
+    "fr": {
+      "name": "Randonnée, baignade et dîner",
+      "tagline": "Une aventure d'une journée : randonnez jusqu'à des cascades cachées, baignez-vous dans des piscines naturelles et terminez par un déjeuner traditionnel.",
+      "description": "Une aventure d'une journée : randonnez jusqu'à des cascades cachées, baignez-vous dans des piscines naturelles et terminez par un déjeuner traditionnel dans un restaurant familial local.",
+      "priceSuffix": "par personne"
+    },
+    "es": {
+      "name": "Senderismo, Baño y Cena",
+      "tagline": "Una aventura de día completo: camine hasta cascadas escondidas, báñese en piscinas naturales y termine con un almuerzo tradicional.",
+      "description": "Una aventura de día completo: camine hasta cascadas escondidas, báñese en piscinas naturales y termine con un almuerzo tradicional en un restaurante familiar local.",
+      "priceSuffix": "por persona"
+    },
+    "it": {
+      "name": "Escursione, Tuffo e Cena",
+      "tagline": "Un'avventura di un'intera giornata: cammina fino a cascate nascoste, nuota in piscine naturali e concludi con un pranzo tradizionale.",
+      "description": "Un'avventura di un'intera giornata: cammina fino a cascate nascoste, nuota in piscine naturali e concludi con un pranzo tradizionale in un ristorante di famiglia locale.",
+      "priceSuffix": "a persona"
+    },
+    "de": {
+      "name": "Wandern, Baden und Genießen",
+      "tagline": "Ein ganztägiges Abenteuer: Wandern Sie zu verborgenen Wasserfällen, baden Sie in Naturbecken und lassen Sie den Tag mit einem traditionellen Mittagessen ausklingen.",
+      "description": "Ein ganztägiges Abenteuer: Wandern Sie zu verborgenen Wasserfällen, baden Sie in Naturbecken und lassen Sie den Tag mit einem traditionellen Mittagessen in einem lokalen Familienrestaurant ausklingen.",
+      "priceSuffix": "pro Person"
+    },
+    "nl": {
+      "name": "Wandelen, duiken en dineren",
+      "tagline": "Een avontuur van een hele dag: wandel naar verborgen watervallen, zwem in natuurlijke poelen en sluit af met een traditionele lunch.",
+      "description": "Een avontuur van een hele dag: wandel naar verborgen watervallen, zwem in natuurlijke poelen en sluit af met een traditionele lunch in een lokaal familierestaurant.",
+      "priceSuffix": "per persoon"
+    },
+    "sv": {
+      "name": "Vandring, bad och middag",
+      "tagline": "Ett heldagsäventyr: vandra till dolda vattenfall, bada i naturliga pooler och avsluta med en traditionell lunch.",
+      "description": "Ett heldagsäventyr: vandra till dolda vattenfall, bada i naturliga pooler och avsluta med en traditionell lunch på en lokal familjerestaurang.",
+      "priceSuffix": "per person"
+    }
+  },
+  "can-am-buggy": {
+    "pt": {
+      "name": "Experiência Can-Am / Buggy",
+      "tagline": "Todo-o-terreno por trilhos de montanha e caminhos florestais. Tours guiados com miradouros panorâmicos.",
+      "description": "Todo-o-terreno por trilhos de montanha e caminhos florestais. Tours guiados com paragens em miradouros panorâmicos.",
+      "priceSuffix": "por buggy"
+    },
+    "fr": {
+      "name": "Expérience Can-Am / Buggy",
+      "tagline": "Tout-terrain à travers sentiers de montagne et chemins forestiers. Tours guidés avec belvédères panoramiques.",
+      "description": "Tout-terrain à travers sentiers de montagne et chemins forestiers. Tours guidés avec arrêts aux belvédères panoramiques.",
+      "priceSuffix": "par buggy"
+    },
+    "es": {
+      "name": "Experiencia Can-Am / Buggy",
+      "tagline": "Todoterreno por senderos de montaña y caminos forestales. Tours guiados con miradores panorámicos.",
+      "description": "Todoterreno por senderos de montaña y caminos forestales. Tours guiados con paradas en miradores panorámicos.",
+      "priceSuffix": "por buggy"
+    },
+    "it": {
+      "name": "Esperienza Can-Am / Buggy",
+      "tagline": "Fuoristrada lungo sentieri di montagna e strade forestali. Tour guidati con punti panoramici.",
+      "description": "Fuoristrada lungo sentieri di montagna e strade forestali. Tour guidati con soste in punti panoramici.",
+      "priceSuffix": "a buggy"
+    },
+    "de": {
+      "name": "Can-Am-/Buggy-Erlebnis",
+      "tagline": "Geländefahrten über Bergpfade und Waldwege. Geführte Touren mit Panorama-Aussichtspunkten.",
+      "description": "Geländefahrten über Bergpfade und Waldwege. Geführte Touren mit Halten an Panorama-Aussichtspunkten.",
+      "priceSuffix": "pro Buggy"
+    },
+    "nl": {
+      "name": "Can-Am / buggy-ervaring",
+      "tagline": "Offroad over bergpaden en bospaden. Begeleide tochten met panoramische uitkijkpunten.",
+      "description": "Offroad over bergpaden en bospaden. Begeleide tochten met stops bij panoramische uitkijkpunten.",
+      "priceSuffix": "per buggy"
+    },
+    "sv": {
+      "name": "Can-Am-/buggyupplevelse",
+      "tagline": "Offroad längs bergsleder och skogsstigar. Guidade turer med panoramautsiktspunkter.",
+      "description": "Offroad längs bergsleder och skogsstigar. Guidade turer med stopp vid panoramautsiktspunkter.",
+      "priceSuffix": "per buggy"
+    }
+  },
+  "sailing": {
+    "pt": {
+      "name": "Vela e Passeios de Barco",
+      "tagline": "Vela ao pôr do sol pela costa atlântica, charters de barco privados ou um cruzeiro tranquilo.",
+      "description": "Vela ao pôr do sol pela costa atlântica, charters de barco privados ou um cruzeiro tranquilo pelo estuário do Lima.",
+      "priceSuffix": "por pessoa"
+    },
+    "fr": {
+      "name": "Voile et sorties en bateau",
+      "tagline": "Voile au coucher du soleil le long de la côte atlantique, location de bateaux privés ou croisière paisible.",
+      "description": "Voile au coucher du soleil le long de la côte atlantique, location de bateaux privés ou croisière paisible sur l'estuaire du Lima.",
+      "priceSuffix": "par personne"
+    },
+    "es": {
+      "name": "Vela y Paseos en Barco",
+      "tagline": "Vela al atardecer por la costa atlántica, chárteres de barco privados o un crucero tranquilo.",
+      "description": "Vela al atardecer por la costa atlántica, chárteres de barco privados o un crucero tranquilo por el estuario del Lima.",
+      "priceSuffix": "por persona"
+    },
+    "it": {
+      "name": "Vela e Gite in Barca",
+      "tagline": "Vela al tramonto lungo la costa atlantica, charter privati o una crociera tranquilla.",
+      "description": "Vela al tramonto lungo la costa atlantica, charter privati o una crociera tranquilla lungo l'estuario del Lima.",
+      "priceSuffix": "a persona"
+    },
+    "de": {
+      "name": "Segeln und Bootsausflüge",
+      "tagline": "Segeln bei Sonnenuntergang entlang der Atlantikküste, private Bootscharter oder ein ruhiger Törn.",
+      "description": "Segeln bei Sonnenuntergang entlang der Atlantikküste, private Bootscharter oder ein ruhiger Törn durch das Mündungsgebiet des Lima.",
+      "priceSuffix": "pro Person"
+    },
+    "nl": {
+      "name": "Zeilen en boottochten",
+      "tagline": "Zeilen bij zonsondergang langs de Atlantische kust, privé-bootcharters of een rustige cruise.",
+      "description": "Zeilen bij zonsondergang langs de Atlantische kust, privé-bootcharters of een rustige cruise over de monding van de Lima.",
+      "priceSuffix": "per persoon"
+    },
+    "sv": {
+      "name": "Segling och båtturer",
+      "tagline": "Solnedgångssegling längs atlantkusten, privata båtcharter eller en stillsam kryssning.",
+      "description": "Solnedgångssegling längs atlantkusten, privata båtcharter eller en stillsam kryssning på Limas flodmynning.",
+      "priceSuffix": "per person"
+    }
+  },
+  "ebike-tours": {
+    "pt": {
+      "name": "Tours de E-Bike e Fat Bike",
+      "tagline": "Explore trilhos costeiros, dunas de praia e caminhos de montanha em bicicletas elétricas ou de pneus largos.",
+      "description": "Explore trilhos costeiros, dunas de praia e caminhos de montanha em bicicletas elétricas ou de pneus largos. Guiado por locais.",
+      "priceSuffix": "por pessoa"
+    },
+    "fr": {
+      "name": "Tours en e-bike et fat bike",
+      "tagline": "Explorez sentiers côtiers, dunes de plage et chemins de montagne sur des vélos électriques ou à pneus larges.",
+      "description": "Explorez sentiers côtiers, dunes de plage et chemins de montagne sur des vélos électriques ou à pneus larges. Guidé par des locaux.",
+      "priceSuffix": "par personne"
+    },
+    "es": {
+      "name": "Tours de E-Bike y Fat Bike",
+      "tagline": "Explore senderos costeros, dunas de playa y caminos de montaña en bicicletas eléctricas o de neumáticos anchos.",
+      "description": "Explore senderos costeros, dunas de playa y caminos de montaña en bicicletas eléctricas o de neumáticos anchos. Guiado por locales.",
+      "priceSuffix": "por persona"
+    },
+    "it": {
+      "name": "Tour in E-Bike e Fat Bike",
+      "tagline": "Esplora sentieri costieri, dune di spiaggia e percorsi di montagna su biciclette elettriche o a ruote larghe.",
+      "description": "Esplora sentieri costieri, dune di spiaggia e percorsi di montagna su biciclette elettriche o a ruote larghe. Guidato da gente del posto.",
+      "priceSuffix": "a persona"
+    },
+    "de": {
+      "name": "E-Bike- und Fat-Bike-Touren",
+      "tagline": "Erkunden Sie Küstenpfade, Stranddünen und Bergwege auf Elektro- oder Fat-Bikes.",
+      "description": "Erkunden Sie Küstenpfade, Stranddünen und Bergwege auf Elektro- oder Fat-Bikes. Geführt von Einheimischen.",
+      "priceSuffix": "pro Person"
+    },
+    "nl": {
+      "name": "E-bike- en fatbike-tochten",
+      "tagline": "Verken kustpaden, strandduinen en bergpaden op elektrische of dikkebandfietsen.",
+      "description": "Verken kustpaden, strandduinen en bergpaden op elektrische of dikkebandfietsen. Begeleid door locals.",
+      "priceSuffix": "per persoon"
+    },
+    "sv": {
+      "name": "E-bike- och fat bike-turer",
+      "tagline": "Utforska kustleder, stranddyner och bergsstigar på el- eller fatbike-cyklar.",
+      "description": "Utforska kustleder, stranddyner och bergsstigar på el- eller fatbike-cyklar. Guidat av lokalbor.",
+      "priceSuffix": "per person"
+    }
+  },
+  "surf-lessons": {
+    "pt": {
+      "name": "Aulas de Surf",
+      "tagline": "Aprenda a surfar nas melhores ondas atlânticas de Portugal. Aulas privadas ou em grupo pequeno.",
+      "description": "Aprenda a surfar nas melhores ondas atlânticas de Portugal. Aulas privadas ou em grupo pequeno com instrutores certificados.",
+      "priceSuffix": "por pessoa"
+    },
+    "fr": {
+      "name": "Cours de surf",
+      "tagline": "Apprenez à surfer sur les meilleures vagues atlantiques du Portugal. Cours privés ou en petit groupe.",
+      "description": "Apprenez à surfer sur les meilleures vagues atlantiques du Portugal. Cours privés ou en petit groupe avec des moniteurs certifiés.",
+      "priceSuffix": "par personne"
+    },
+    "es": {
+      "name": "Clases de Surf",
+      "tagline": "Aprenda a surfear en las mejores olas atlánticas de Portugal. Clases privadas o en grupo reducido.",
+      "description": "Aprenda a surfear en las mejores olas atlánticas de Portugal. Clases privadas o en grupo reducido con instructores certificados.",
+      "priceSuffix": "por persona"
+    },
+    "it": {
+      "name": "Lezioni di Surf",
+      "tagline": "Impara a surfare sulle migliori onde atlantiche del Portogallo. Lezioni private o in piccoli gruppi.",
+      "description": "Impara a surfare sulle migliori onde atlantiche del Portogallo. Lezioni private o in piccoli gruppi con istruttori certificati.",
+      "priceSuffix": "a persona"
+    },
+    "de": {
+      "name": "Surfunterricht",
+      "tagline": "Lernen Sie das Surfen in den besten Atlantikwellen Portugals. Privat- oder Kleingruppenunterricht.",
+      "description": "Lernen Sie das Surfen in den besten Atlantikwellen Portugals. Privat- oder Kleingruppenunterricht mit zertifizierten Instruktoren.",
+      "priceSuffix": "pro Person"
+    },
+    "nl": {
+      "name": "Surflessen",
+      "tagline": "Leer surfen op de beste Atlantische golven van Portugal. Privélessen of in kleine groepen.",
+      "description": "Leer surfen op de beste Atlantische golven van Portugal. Privélessen of in kleine groepen met gecertificeerde instructeurs.",
+      "priceSuffix": "per persoon"
+    },
+    "sv": {
+      "name": "Surflektioner",
+      "tagline": "Lär dig surfa på Portugals bästa atlantvågor. Privata lektioner eller i liten grupp.",
+      "description": "Lär dig surfa på Portugals bästa atlantvågor. Privata lektioner eller i liten grupp med certifierade instruktörer.",
+      "priceSuffix": "per person"
+    }
+  }
 }
