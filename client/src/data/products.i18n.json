@@ -41,6 +41,12 @@
       "tagline": "Från intima middagar till familjebanketter. Våra kockar skapar menyer med de bästa regionala råvarorna.",
       "description": "Från intima middagar till familjebanketter. Våra kockar skapar menyer med de bästa regionala råvarorna. Portugisiskt, medelhavskök eller helt efter dina önskemål.",
       "priceSuffix": "per person"
+    },
+    "fi": {
+      "name": "Yksityiskokki",
+      "tagline": "Intiimeistä illallisista perhejuhliin. Kokkimme luovat menut parhaista alueellisista raaka-aineista.",
+      "description": "Intiimeistä illallisista perhejuhliin. Kokkimme luovat menut parhaista alueellisista raaka-aineista. Portugalilaista, välimerellistä tai täysin mieltymystesi mukaan.",
+      "priceSuffix": "per henkilö"
     }
   },
   "in-villa-spa": {
@@ -85,6 +91,12 @@
       "tagline": "Professionella terapeuter kommer till dig. Djupgående vävnadsmassage, varma stenar, aromaterapi eller parmassage.",
       "description": "Professionella terapeuter kommer till dig. Djupgående vävnadsmassage, varma stenar, aromaterapi eller parmassage — i ditt vardagsrum, i trädgården eller vid poolen.",
       "priceSuffix": "per session"
+    },
+    "fi": {
+      "name": "Spa ja hieronta huvilalla",
+      "tagline": "Ammattilaisterapeutit tulevat luoksesi. Syväkudoshieronta, kuumakivihieronta, aromaterapia tai parihieronta.",
+      "description": "Ammattilaisterapeutit tulevat luoksesi. Syväkudoshieronta, kuumakivihieronta, aromaterapia tai parihieronta — olohuoneessasi, puutarhassa tai altaan reunalla.",
+      "priceSuffix": "per istunto"
     }
   },
   "private-yoga": {
@@ -129,6 +141,12 @@
       "tagline": "Inled morgonen med en privat session i trädgården, på terrassen eller vid poolen.",
       "description": "Inled morgonen med en privat session i trädgården, på terrassen eller vid poolen. Alla nivåer är välkomna.",
       "priceSuffix": "per session"
+    },
+    "fi": {
+      "name": "Yksityisjooga",
+      "tagline": "Aloita aamu yksityisellä istunnolla puutarhassa, terassilla tai altaan reunalla.",
+      "description": "Aloita aamu yksityisellä istunnolla puutarhassa, terassilla tai altaan reunalla. Kaikki tasot ovat tervetulleita.",
+      "priceSuffix": "per istunto"
     }
   },
   "personal-training": {
@@ -173,6 +191,12 @@
       "tagline": "Utomhusträning anpassad efter dina mål. Styrka, HIIT, rörlighet eller familjeträning.",
       "description": "Utomhusträning anpassad efter dina mål. Styrka, HIIT, rörlighet eller familjeträning. Utrustning ingår.",
       "priceSuffix": "per session"
+    },
+    "fi": {
+      "name": "Personal training",
+      "tagline": "Tavoitteisiisi suunniteltua ulkoharjoittelua. Voima, HIIT, liikkuvuus tai perheliikunta.",
+      "description": "Tavoitteisiisi suunniteltua ulkoharjoittelua. Voima, HIIT, liikkuvuus tai perheliikunta. Välineet sisältyvät.",
+      "priceSuffix": "per istunto"
     }
   },
   "grocery-delivery": {
@@ -217,6 +241,12 @@
       "tagline": "Kom hem till ett fullt påfyllt kök. Dela dina preferenser så ordnar vi resten.",
       "description": "Kom hem till ett fullt påfyllt kök. Dela dina preferenser så ordnar vi resten. Organiserat kylskåp, kylt vin.",
       "priceSuffix": "+ inköp"
+    },
+    "fi": {
+      "name": "Ruokaostokset ja toimitus",
+      "tagline": "Saavu täysin varustettuun keittiöön. Kerro mieltymyksesi, niin hoidamme kaiken.",
+      "description": "Saavu täysin varustettuun keittiöön. Kerro mieltymyksesi, niin hoidamme kaiken. Järjestetty jääkaappi, viini viilennettynä.",
+      "priceSuffix": "+ ostokset"
     }
   },
   "babysitter": {
@@ -261,6 +291,12 @@
       "tagline": "Certifierade och erfarna barnomsorgsproffs, för dagen eller kvällen.",
       "description": "Certifierade och erfarna barnomsorgsproffs, för dagen eller kvällen. Sinnesro ingår.",
       "priceSuffix": "per timme"
+    },
+    "fi": {
+      "name": "Lastenhoitaja",
+      "tagline": "Sertifioituja ja kokeneita lastenhoidon ammattilaisia, päiväksi tai illaksi.",
+      "description": "Sertifioituja ja kokeneita lastenhoidon ammattilaisia, päiväksi tai illaksi. Mielenrauha sisältyy.",
+      "priceSuffix": "per tunti"
     }
   },
   "airport-shuttle": {
@@ -305,6 +341,12 @@
       "tagline": "Bekymmersfria transfers från Porto, Lisboa eller valfri flygplats. Premiumfordon, lokala chaufförer.",
       "description": "Bekymmersfria transfers från Porto, Lisboa eller valfri flygplats. Premiumfordon, lokala chaufförer som också är guider.",
       "priceSuffix": "per transfer"
+    },
+    "fi": {
+      "name": "Lentokenttäkuljetus ja yksityiskuljettaja",
+      "tagline": "Vaivattomat kuljetukset Portosta, Lissabonista tai miltä tahansa lentokentältä. Premium-ajoneuvot, paikalliset kuljettajat.",
+      "description": "Vaivattomat kuljetukset Portosta, Lissabonista tai miltä tahansa lentokentältä. Premium-ajoneuvot, paikalliset kuljettajat, jotka toimivat myös oppaina.",
+      "priceSuffix": "per kuljetus"
     }
   },
   "daily-housekeeping": {
@@ -349,6 +391,12 @@
       "tagline": "Städning på hotellnivå under din vistelse. Tre nivåer: Quick Refresh, Full Service eller Skräddarsytt.",
       "description": "Städning på hotellnivå under din vistelse. Quick Refresh (uppfräschning, sopor, bäddade sängar), Full Service (tvättade lakan och handdukar, fullständig städning, påfyllda amenities) eller Skräddarsytt (berätta vad du behöver).",
       "priceSuffix": "per besök"
+    },
+    "fi": {
+      "name": "Päivittäinen siivous",
+      "tagline": "Hotellitasoinen siivous vierailusi ajan. Kolme tasoa: Quick Refresh, Full Service tai Räätälöity.",
+      "description": "Hotellitasoinen siivous vierailusi ajan. Quick Refresh (järjestely, roskat, petatut sängyt), Full Service (lakanat ja pyyhkeet pestyinä, täydellinen siivous, tarvikkeet täydennettyinä) tai Räätälöity (kerro, mitä tarvitset).",
+      "priceSuffix": "per käynti"
     }
   },
   "canyoning": {
@@ -393,6 +441,12 @@
       "tagline": "Ta dig nedför dolda flodraviner, hoppa i naturliga pooler och fira ner längs vattenfall.",
       "description": "Ta dig nedför dolda flodraviner, hoppa i naturliga pooler och fira ner längs vattenfall i de mest spektakulära ravinerna i norra Portugal.",
       "priceSuffix": "per person"
+    },
+    "fi": {
+      "name": "Canyoning",
+      "tagline": "Laskeudu kätkettyihin jokirotkoihin, hyppää luonnonaltaisiin ja köysilaskeudu vesiputouksia.",
+      "description": "Laskeudu kätkettyihin jokirotkoihin, hyppää luonnonaltaisiin ja köysilaskeudu vesiputouksia Pohjois-Portugalin näyttävimmissä rotkoissa.",
+      "priceSuffix": "per henkilö"
     }
   },
   "stand-up-paddle": {
@@ -437,6 +491,12 @@
       "tagline": "Soluppgångssessioner på floden Lima, solnedgångsturer längs atlantkusten.",
       "description": "Soluppgångssessioner på floden Lima, solnedgångsturer längs atlantkusten eller en stillsam morgon i en dold lagun.",
       "priceSuffix": "per person"
+    },
+    "fi": {
+      "name": "Stand Up Paddle",
+      "tagline": "Auringonnousun istuntoja Lima-joella, auringonlaskun melontaa Atlantin rannikolla.",
+      "description": "Auringonnousun istuntoja Lima-joella, auringonlaskun melontaa Atlantin rannikolla tai rauhallinen aamu kätketyllä laguunilla.",
+      "priceSuffix": "per henkilö"
     }
   },
   "horseback-riding": {
@@ -481,6 +541,12 @@
       "tagline": "Rid längs öde stränder, genom tallskogar och kustdyner.",
       "description": "Rid längs öde stränder, genom tallskogar och kustdyner. Lämpligt för både nybörjare och erfarna ryttare.",
       "priceSuffix": "per person"
+    },
+    "fi": {
+      "name": "Ratsastusretki",
+      "tagline": "Ratsasta autioilla rannoilla, mäntymetsissä ja rannikon dyyneillä.",
+      "description": "Ratsasta autioilla rannoilla, mäntymetsissä ja rannikon dyyneillä. Sopii sekä aloittelijoille että kokeneille ratsastajille.",
+      "priceSuffix": "per henkilö"
     }
   },
   "hike-dive-dine": {
@@ -525,6 +591,12 @@
       "tagline": "Ett heldagsäventyr: vandra till dolda vattenfall, bada i naturliga pooler och avsluta med en traditionell lunch.",
       "description": "Ett heldagsäventyr: vandra till dolda vattenfall, bada i naturliga pooler och avsluta med en traditionell lunch på en lokal familjerestaurang.",
       "priceSuffix": "per person"
+    },
+    "fi": {
+      "name": "Vaellus, uinti ja illallinen",
+      "tagline": "Koko päivän seikkailu: vaella kätkettyihin vesiputouksiin, ui luonnonaltaissa ja päätä perinteiseen lounaaseen.",
+      "description": "Koko päivän seikkailu: vaella kätkettyihin vesiputouksiin, ui luonnonaltaissa ja päätä perinteiseen lounaaseen paikallisessa perheravintolassa.",
+      "priceSuffix": "per henkilö"
     }
   },
   "can-am-buggy": {
@@ -568,6 +640,12 @@
       "name": "Can-Am-/buggyupplevelse",
       "tagline": "Offroad längs bergsleder och skogsstigar. Guidade turer med panoramautsiktspunkter.",
       "description": "Offroad längs bergsleder och skogsstigar. Guidade turer med stopp vid panoramautsiktspunkter.",
+      "priceSuffix": "per buggy"
+    },
+    "fi": {
+      "name": "Can-Am-/buggy-elämys",
+      "tagline": "Maastoajoa vuoristopolkuja ja metsäteitä pitkin. Opastetut kierrokset panoraamanäköalapaikoilla.",
+      "description": "Maastoajoa vuoristopolkuja ja metsäteitä pitkin. Opastetut kierrokset pysähdyksin panoraamanäköalapaikoilla.",
       "priceSuffix": "per buggy"
     }
   },
@@ -613,6 +691,12 @@
       "tagline": "Solnedgångssegling längs atlantkusten, privata båtcharter eller en stillsam kryssning.",
       "description": "Solnedgångssegling längs atlantkusten, privata båtcharter eller en stillsam kryssning på Limas flodmynning.",
       "priceSuffix": "per person"
+    },
+    "fi": {
+      "name": "Purjehdus ja veneretket",
+      "tagline": "Auringonlaskun purjehdusta Atlantin rannikolla, yksityisiä venecharttereita tai rauhallinen risteily.",
+      "description": "Auringonlaskun purjehdusta Atlantin rannikolla, yksityisiä venecharttereita tai rauhallinen risteily Lima-joen suistossa.",
+      "priceSuffix": "per henkilö"
     }
   },
   "ebike-tours": {
@@ -657,6 +741,12 @@
       "tagline": "Utforska kustleder, stranddyner och bergsstigar på el- eller fatbike-cyklar.",
       "description": "Utforska kustleder, stranddyner och bergsstigar på el- eller fatbike-cyklar. Guidat av lokalbor.",
       "priceSuffix": "per person"
+    },
+    "fi": {
+      "name": "Sähköpyörä- ja fatbike-kierrokset",
+      "tagline": "Tutustu rannikkopolkuihin, rantadyyneihin ja vuoristoteihin sähkö- tai leveärenkaisilla pyörillä.",
+      "description": "Tutustu rannikkopolkuihin, rantadyyneihin ja vuoristoteihin sähkö- tai leveärenkaisilla pyörillä. Paikallisten opastamana.",
+      "priceSuffix": "per henkilö"
     }
   },
   "surf-lessons": {
@@ -701,6 +791,12 @@
       "tagline": "Lär dig surfa på Portugals bästa atlantvågor. Privata lektioner eller i liten grupp.",
       "description": "Lär dig surfa på Portugals bästa atlantvågor. Privata lektioner eller i liten grupp med certifierade instruktörer.",
       "priceSuffix": "per person"
+    },
+    "fi": {
+      "name": "Surffaustunnit",
+      "tagline": "Opi surffaamaan Portugalin parhailla Atlantin aalloilla. Yksityis- tai pienryhmätunteja.",
+      "description": "Opi surffaamaan Portugalin parhailla Atlantin aalloilla. Yksityis- tai pienryhmätunteja sertifioitujen ohjaajien kanssa.",
+      "priceSuffix": "per henkilö"
     }
   }
 }

@@ -902,6 +902,135 @@
         "instructions": "Vi hämtar dig direkt vid din Portugal Active-villa. Om du föredrar att köra själv, leta efter en grå grind med en informationsskylt. VianoEquestre-skylten sitter på blockmuren — stallet ligger dolt från vägen, längst in på en liten stig.",
         "pickupNote": "Valfri hämtning vid villan — samordnas av vårt conciergeteam mot extra avgift. Kontakta oss för priser."
       }
+    },
+    "fi": {
+      "name": "Ratsastusretki Viana do Castelossa — ranta, vuoristo ja kukkakedot",
+      "tagline": "Ratsastusretki kukkaketojen, vuoristopolkujen ja paratiisirantojen halki — suunniteltu kaikille tasoille, aloittelijasta kokeneeseen ratsastajaan.",
+      "badges": [
+        "Kysytyin",
+        "Pieni ryhmä"
+      ],
+      "price": "Alkaen 75 € per henkilö",
+      "duration": "2 h 30 min",
+      "difficultyLevel": "Helppo–kohtalainen",
+      "availability": "Ympäri vuoden, sääolosuhteiden mukaan",
+      "aboutParagraphs": [
+        "Tämä on se retki, josta puhut vielä vuoden kuluttua. Toiminnassa olevalta perinteiseltä ranchilta Viana do Castelon laitamilla yksi sertifioiduista ohjaajistamme yhdistää sinut tasoosi sopivaan hevoseen — täydellisestä aloittelijasta itsevarmaan ratsastajaan.",
+        "Reitti vie sinut kukkaketojen ja mäntymetsien halki, jotka peittävät Lima-laakson yläpuoliset rinteet, panoraamanäköalojen avautuessa Serra d'Argasta Atlantille. Viimeinen osuus seuraa rannikkoa: kävely rannalla auringonlaskussa, kavioiden ääni märällä hiekalla, suolainen ilma hiuksissa.",
+        "Me hoidamme jokaisen yksityiskohdan. Noudamme sinut Portugal Active -huvilaltasi, tarjoamme kaikki turvavarusteet ja pidämme ryhmät pieninä — koskaan yli 8 ratsastajaa — jotta ohjaaja voi antaa jokaiselle vieraalle henkilökohtaista huomiota. Vesi, valokuvamuisto ja välipala ranchilla retken päätteeksi sisältyvät.",
+        "Tämä elämys on saatavilla ympäri vuoden, sääolosuhteiden mukaan. Kevät (huhtikuusta kesäkuuhun) on näyttävin aika, jolloin kedot ovat täydessä kukassa ja valo on poikkeuksellista. Uimakauden aikana ratsastusta rannan hiekalla rajoittavat lait — reitti mukautetaan sen mukaisesti, yhtä upeilla rannikkopoluilla."
+      ],
+      "highlights": [
+        "Ratsasta Viana do Castelon upeissa maisemissa — kukkakedot, mäntymetsät, Atlantin rannat",
+        "Jatkuva opastus Dianan, Claudian tai jonkun sertifioidun ratsastusohjaajamme kanssa",
+        "Kaikki tasot ovat tervetulleita: täydellisestä aloittelijasta kokeneeseen ratsastajaan",
+        "Päätä rannikkoratsastukseen Atlantin rantaa pitkin",
+        "Pienet ryhmät, korkeintaan 8 ratsastajaa, henkilökohtaisen huomion takaamiseksi",
+        "Ohjaaja valitsee ja yhdistää hevoset jokaiselle vieraalle",
+        "Valokuvamuisto ja välipala ranchilla retken päätteeksi"
+      ],
+      "included": [
+        "Ammattimainen ratsastusopastus sertifioidulta ratsastusohjaajalta",
+        "Kaikki turvavarusteet ja kypärän sovitus",
+        "Vakuutus kaikille osallistujille",
+        "Vesi retken aikana",
+        "Valokuvamuisto"
+      ],
+      "notIncluded": [
+        "Nouto/kuljetus huvilalta (valinnainen — concierge-tiimimme järjestää lisämaksusta)",
+        "Ruoka ja ateriat (voidaan järjestää erikseen)",
+        "Juomarahat (harkintasi mukaan)"
+      ],
+      "notSuitableFor": [
+        "Alle 10-vuotiaat lapset",
+        "Yli 100 kg painavat vieraat",
+        "Raskaana olevat vieraat"
+      ],
+      "whatToBring": [
+        "Pitkät housut (farkut tai ratsastushousut)",
+        "Umpinaiset kengät — ratsastussaappaat ihanteelliset, mutta eivät pakolliset",
+        "Aurinkovoide ja aurinkolasit",
+        "Kevyt takki tai kerrospukeutuminen sään muutoksia varten"
+      ],
+      "notAllowed": [
+        "Sandaalit tai varvastossut",
+        "Shortsit",
+        "Löysät huivit tai avoimet laukut"
+      ],
+      "cancellationPolicy": "Maksuton peruutus 24 tuntiin asti ennen elämystä, täydellä hyvityksellä. Peruutuksia 24 tunnin sisällä ei hyvitetä. Huonon sään sattuessa siirrämme ajankohtaa tai tarjoamme täyden hyvityksen.",
+      "guideRole": "Sertifioidut ratsastusohjaajat",
+      "guideDescription": "Diana ja Claudia ovat sertifioituja ratsastusohjaajia, joilla on yli 15 vuoden yhteinen kokemus. He kasvoivat ratsastaen Minhon maaseudulla ja tuntevat jokaisen polun, jokaisen hevosen ja jokaisen kukan nimeltä. Heidän lahjansa on yhdistää ratsastajat ja hevoset — he lukevat kehonkieltä, mukauttavat tahtia ja saavat aloittelijat tuntemaan olonsa luontevaksi. Ranchilla asuvat myös Laura, useita kauniisti hoidettuja friisiläis- ja lusitano-hevosia, lempeitä koiria ja kissoja sekä jopa miniponi.",
+      "languages": [
+        "Portugali",
+        "Englanti",
+        "Ranska",
+        "Espanja"
+      ],
+      "itinerary": [
+        {
+          "time": "09:30",
+          "title": "Nouto huvilalta",
+          "description": "Yksityiskuljettajasi noutaa sinut Portugal Active -huvilaltasi ilmastoidulla ajoneuvolla. Rentoudu ja nauti maisemallisesta matkasta Viana do Casteloon."
+        },
+        {
+          "time": "10:15",
+          "title": "Saapuminen ranchille ja turvallisuusinfo",
+          "description": "Tapaa sertifioitu ohjaajasi — Diana, Claudia tai joku tiimistämme — toiminnassa olevalla ranchilla. Varusteiden sovitus, turvallisuusinfo ja lyhyt perehdytys ratsastuskentällä, jotta totut hevoseesi."
+        },
+        {
+          "time": "10:45",
+          "title": "Vuoristopolut kukkaketojen halki",
+          "description": "Lähde mäntymetsien ja kukkivien niittyjen halki, jotka peittävät Vianan yläpuoliset rinteet. Panoraamanäköalat Lima-laaksoon ja Serra d'Argaan. Tahti mukautetaan ryhmän tasoon."
+        },
+        {
+          "time": "11:30",
+          "title": "Rantaratsastus Atlantin rantaa pitkin",
+          "description": "Laskeudu rannikolle ja ratsasta Atlantin rantaa pitkin. Tunne merituuli, kuuntele aaltoja ja koe taika, kun ratsastat märällä hiekalla veden äärellä."
+        },
+        {
+          "time": "12:15",
+          "title": "Paluu ranchille ja välipala",
+          "description": "Takaisin ranchilla hyvästele hevosesi ja nauti välipalasta. Kuljettajasi on valmiina paluukuljetukseen huvilalle."
+        }
+      ],
+      "faq": [
+        {
+          "q": "Tarvitsenko aiempaa ratsastuskokemusta?",
+          "a": "En lainkaan. Ohjaajamme mukauttavat jokaisen retken ryhmän tasoon. Täydelliset aloittelijat yhdistetään rauhallisiin, hyvin koulutettuihin hevosiin ja saavat perehdytyksen ratsastuskentällä ennen retkeä."
+        },
+        {
+          "q": "Mitä tapahtuu, jos sataa?",
+          "a": "Kevyt sade ei estä elämystä. Rankkasateen tai ukkosen sattuessa otamme yhteyttä edellisenä päivänä siirtääksemme ajankohtaa tai tarjotaksemme täyden hyvityksen."
+        },
+        {
+          "q": "Voivatko lapseni osallistua?",
+          "a": "Yli 10-vuotiaat lapset voivat ratsastaa itsenäisesti. Pienemmät lapset voivat ratsastaa oppaan kanssa samalla hevosella ennakkojärjestelyin."
+        },
+        {
+          "q": "Sisältyykö kuljetus huvilalta?",
+          "a": "Nouto huvilalta on valinnainen ja concierge-tiimimme voi järjestää sen lisämaksusta — ota yhteyttä hintoja varten. Nouto Portosta, Bragasta tai muista paikoista voidaan myös järjestää pyynnöstä."
+        },
+        {
+          "q": "Voinko ratsastaa itse rannalla?",
+          "a": "Uimakauden aikana (suunnilleen kesäkuusta syyskuuhun) ratsastusta rannan hiekalla rajoittavat lait. Reitti mukautetaan yhtä upeille rannikkopoluille. Uimakauden ulkopuolella rantaratsastus on koko elämys."
+        },
+        {
+          "q": "Mikä on painoraja?",
+          "a": "Hevosten hyvinvoinnin vuoksi enimmäispaino on 100 kg ratsastajaa kohden."
+        },
+        {
+          "q": "Onko tämä yksityinen vai jaettu retki?",
+          "a": "Se on yksityinen retki — vain oma ryhmäsi osallistuu. Korkeintaan 8 ratsastajaa."
+        },
+        {
+          "q": "Miksi minun kannattaa varata suoraan Portugal Activelta?",
+          "a": "Suoraan varaaminen tarkoittaa ei välikäsiä eikä komissioita. Saat parhaan hinnan, suoran WhatsApp-yhteyden tiimiimme ja joustavuuden muuttaa päivämääriä yhdellä viestillä."
+        }
+      ],
+      "meetingPoint": {
+        "instructions": "Noudamme sinut suoraan Portugal Active -huvilaltasi. Jos haluat ajaa itse, etsi harmaa portti opastekyltillä. VianoEquestre-kyltti on harkkomuurilla — talli on piilossa tieltä, pienen polun päässä.",
+        "pickupNote": "Valinnainen nouto huvilalta — concierge-tiimimme järjestää lisämaksusta. Ota yhteyttä hintoja varten."
+      }
     }
   },
   "canyoning": {
@@ -1751,6 +1880,127 @@
         "instructions": "Vi hämtar dig direkt vid din Portugal Active-villa. Om du föredrar att köra själv bekräftas den exakta mötesplatsen 24 timmar i förväg via WhatsApp, med GPS-koordinater.",
         "pickupNote": "Valfri hämtning vid villan — samordnas av vårt conciergeteam mot extra avgift. Kontakta oss för priser."
       }
+    },
+    "fi": {
+      "name": "Canyoning-seikkailu Peneda-Gerêsin kansallispuistossa",
+      "tagline": "Laskeudu kätkettyihin jokirotkoihin, hyppää luonnonaltaisiin ja köysilaskeudu vesiputouksia Portugalin ainoassa kansallispuistossa.",
+      "badges": [
+        "Pieni ryhmä",
+        "Kaikki välineet sisältyvät"
+      ],
+      "price": "Alkaen 65 € per henkilö",
+      "duration": "3–4 tuntia",
+      "difficultyLevel": "Kohtalainen — vaatii perustason kuntoa",
+      "availability": "Huhtikuusta lokakuuhun (vedenkorkeuden mukaan)",
+      "aboutParagraphs": [
+        "Tämä on Minhon parhaiten varjeltu adrenaliinisalaisuus. Syvällä Peneda-Gerêsin kansallispuistossa Varziela-joki on kaivertanut graniittirotkon, jonka harva turisti koskaan näkee — maailman kristallinkirkkaita altaita, luonnonliukumäkiä ja pystysuoria putouksia, joita kehystävät ikivanhat tammimetsät.",
+        "Kansainvälisen canyoning-komission (CIC) sertifioimien oppaiden valvonnassa uit kapeiden rotkojen läpi, liukastelet kiillotettuja graniittikouruja pitkin, hyppäät turkooseihin altaisiin ja köysilaskeudut vesiputousten vierellä. Jokainen osa on valinnainen — oppaasi lukee ryhmää ja mukauttaa reitin niin, että aloittelijat tuntevat olonsa haastetuiksi mutta turvallisiksi ja kokeneemmat saavat adrenaliiniannoksensa.",
+        "Kaikki tekniset varusteet tarjotaan: tehokas märkäpuku, valjaat, kypärä, canyoning-kengät ja vesitiiviit pussit. Ryhmät ovat pieniä — koskaan yli 12 — turvallisuuden ja yksilöllisen elämyksen takaamiseksi. Lopussa mikään ei vedä vertoja canyoning-jälkeiselle hehkulle: uupunut, euforinen ja jo suunnittelemassa paluuta.",
+        "Kausi kestää huhtikuusta lokakuuhun. Vedenkorkeus ja -lämpötila vaihtelevat — kevät tuo suuremmat virtaamat ja dramaattisemmat vesiputoukset, kun taas kesä tarjoaa lämpimämmän veden ja rennomman tahdin."
+      ],
+      "highlights": [
+        "Tutustu kätkettyyn graniittirotkoon Peneda-Gerêsin kansallispuistossa",
+        "Ui, liu'u, hyppää ja köysilaskeudu kristallinkirkkaiden luonnonaltaiden läpi",
+        "Ammattimaiset CIC-sertifioidut oppaat, kaikki turvavarusteet sisältyvät",
+        "Pienet ryhmät, korkeintaan 12, henkilökohtaisen huomion takaamiseksi",
+        "Kaikki hypyt, liukumäet ja köysilaskut ovat valinnaisia — mukautettu mukavuustasoosi",
+        "Maksuton kuljetus Portugal Active -huvilaltasi",
+        "Vesitiiviit pussit suojaamaan tavaroitasi",
+        "Kuvat seikkailustasi sisältyvät"
+      ],
+      "included": [
+        "Ammattimainen CIC-sertifioitu canyoning-opas",
+        "Tehokas märkäpuku (miesten ja naisten mallit)",
+        "Canyoning-kengät, kypärä, valjaat ja kaksoissliing",
+        "Vesitiivis tynnyri ja canyoning-pussit",
+        "Vakuutus kaikille osallistujille",
+        "Kuvat seikkailustasi"
+      ],
+      "notIncluded": [
+        "Nouto/kuljetus huvilalta (valinnainen — concierge-tiimimme järjestää lisämaksusta)",
+        "Ruoka ja juomat (tuo eväät ja vesi)",
+        "Uimapuku (käytä märkäpuvun alla)",
+        "Juomarahat (harkintasi mukaan)"
+      ],
+      "notSuitableFor": [
+        "Alle 14-vuotiaat lapset",
+        "Liikuntarajoitteiset tai vakavista selkä-/polviongelmista kärsivät vieraat",
+        "Raskaana olevat vieraat",
+        "Henkilöt, jotka eivät osaa uida (perustason uimataito vaaditaan)"
+      ],
+      "whatToBring": [
+        "Uimapuku (puettuna märkäpuvun alle)",
+        "Pyyhe ja kuivat vaatteet loppuun",
+        "Vesi ja kevyt välipala",
+        "Aurinkovoide",
+        "Seikkailunhalu"
+      ],
+      "notAllowed": [
+        "Korut tai kellot (katoamisen riski)",
+        "Varvastossut pääasiallisina kenkinä",
+        "Dronet kansallispuiston sisällä"
+      ],
+      "cancellationPolicy": "Maksuton peruutus 24 tuntiin asti ennen elämystä, täydellä hyvityksellä. Peruutuksia 24 tunnin sisällä ei hyvitetä. Huonon sään tai turvattoman vedenkorkeuden sattuessa siirrämme ajankohtaa tai tarjoamme täyden hyvityksen.",
+      "guideRole": "CIC-sertifioitu canyoning-opas",
+      "guideDescription": "Jorge on Kansainvälisen canyoning-komission sertifioima canyoning-opas, joka on tutkinut Gerêsin rotkoja yli vuosikymmenen ajan. Hän tuntee jokaisen altaan, jokaisen hypyn ja jokaisen kätketyn kulkureitin graniitissa. Hänen erikoisalansa on ryhmien lukeminen — reitin ja tahdin mukauttaminen niin, että aloittelijat tuntevat olonsa turvalliseksi ja seikkailunhaluisemmat saavat haastetta. Veden ulkopuolella Jorge on myös vuoristo-opas ja intohimoinen Peneda-Gerêsin kansallispuiston suojelun puolestapuhuja.",
+      "languages": [
+        "Portugali",
+        "Englanti",
+        "Espanja"
+      ],
+      "itinerary": [
+        {
+          "time": "09:00",
+          "title": "Nouto huvilalta ja matka Gerêsiin",
+          "description": "Yksityiskuljettajasi noutaa sinut Portugal Active -huvilaltasi. Maisemallinen matka Minhon maaseudun halki Peneda-Gerêsin kansallispuistoon kestää noin 45 minuuttia."
+        },
+        {
+          "time": "09:45",
+          "title": "Varusteiden sovitus ja turvallisuusinfo",
+          "description": "Tapaa CIC-sertifioitu oppaasi rotkon pohjalla. Pukeudu märkäpukuun, valjaisiin, kypärään ja canyoning-kenkiin. Täydellinen turvallisuusinfo uima-, hyppy-, liuku- ja köysilaskutekniikoineen."
+        },
+        {
+          "time": "10:15",
+          "title": "Sisäänmeno rotkoon — uintia ja liukumäkiä",
+          "description": "Astu Varziela-jokeen ja aloita laskeutuminen. Ensimmäisellä osuudella on loivia graniittiliukumäkiä ja vyötärösyviä altaita — täydellinen lämmittely. Opas näyttää jokaisen tekniikan ennen kuin kokeilet sitä."
+        },
+        {
+          "time": "11:00",
+          "title": "Hypyt, köysilaskut ja pääputous",
+          "description": "Rotko syvenee. Luonnonhypyt vaihtelevat 2 ja 8 metrin välillä — kaikki valinnaisia. Kohokohta: köysilasku vesiputouksen vierellä syvään turkoosiin altaaseen. Puhdasta adrenaliinia, täysi turvallisuus."
+        },
+        {
+          "time": "12:30",
+          "title": "Poistuminen rotkosta ja paluu",
+          "description": "Poistu rotkosta tuon erehtymättömän seikkailunjälkeisen hehkun kanssa. Pukeudu kuiviin vaatteisiin, selaa kuvat ja nauti paluumatkasta huvilalle."
+        }
+      ],
+      "faq": [
+        {
+          "q": "Tarvitsenko aiempaa canyoning-kokemusta?",
+          "a": "En lainkaan. Oppaamme opettavat jokaisen tekniikan paikan päällä. Kaikki hypyt, liukumäet ja köysilaskut ovat valinnaisia — sinä päätät mukavuustasosi."
+        },
+        {
+          "q": "Voivatko lapseni osallistua?",
+          "a": "Alaikäraja on 14 vuotta. Pienemmät lapset voivat nauttia SUP- tai ratsastuselämyksistämme."
+        },
+        {
+          "q": "Entä jos en ui kovin hyvin?",
+          "a": "Perustason uimataito vaaditaan. Märkäpuku antaa runsaasti kelluvuutta ja oppaasi on aina lähellä. Jos et tunne oloasi varmaksi avovedessä, suosittelemme toista elämystä."
+        },
+        {
+          "q": "Mitä tapahtuu, jos sataa?",
+          "a": "Kevyt sade ei estä elämystä — kastut joka tapauksessa. Rankkasade tai turvaton vedenkorkeus voi pakottaa siirtämään ajankohtaa. Seuraamme olosuhteita päivittäin ja otamme sinuun yhteyttä edellisenä päivänä, jos jokin muuttuu."
+        },
+        {
+          "q": "Miksi minun kannattaa varata suoraan Portugal Activelta?",
+          "a": "Saat alhaisemman hinnan kuin millään OTA:lla, suoran yhteyden oppaaseesi WhatsAppin kautta ja joustavan ajankohdan siirron. Olemme operaattori — ei välikäsiä."
+        }
+      ],
+      "meetingPoint": {
+        "instructions": "Noudamme sinut suoraan Portugal Active -huvilaltasi. Jos haluat ajaa itse, tarkka tapaamispaikka vahvistetaan 24 tuntia etukäteen WhatsAppin kautta GPS-koordinaatteineen.",
+        "pickupNote": "Valinnainen nouto huvilalta — concierge-tiimimme järjestää lisämaksusta. Ota yhteyttä hintoja varten."
+      }
     }
   },
   "ebike-tours": {
@@ -2564,6 +2814,122 @@
       "meetingPoint": {
         "instructions": "Vi hämtar dig direkt vid din Portugal Active-villa. Om du föredrar att köra själv, möt oss vid Vira Maria, Vira Manel, intill tågstationen.",
         "pickupNote": "Valfri hämtning vid villan — samordnas av vårt conciergeteam mot extra avgift. Kontakta oss för priser."
+      }
+    },
+    "fi": {
+      "name": "Villi sähköpyöräkierros — kaupunki-, vuoristo- ja rannikkopolut",
+      "tagline": "Tutustu Viana do Castelon henkeäsalpaavaan kauneuteen sähköpyörällä — historialliset kadut, Santa Lúzian pyhäkkö, Atlantin näköalat ja kätketyt polut.",
+      "badges": [
+        "Pieni ryhmä",
+        "Kaikki tasot"
+      ],
+      "price": "Alkaen 55 € per henkilö",
+      "duration": "3 tuntia",
+      "difficultyLevel": "Helppo–kohtalainen (sähköpyörä auttaa ylämäissä)",
+      "availability": "Ympäri vuoden, sääolosuhteiden mukaan",
+      "aboutParagraphs": [
+        "Viana do Castelo on yksi Portugalin kauneimmista kaupungeista, ja paras tapa tutustua siihen on kahdella pyörällä. Tämä sähköpyöräkierros vie sinut historiallisesta keskustasta Santa Lúzian vuoren huipulle, Atlantin rannikkoa pitkin ja polkuja, joita useimmat kävijät eivät koskaan löydä.",
+        "Sähkömoottori hoitaa ylämäet, jotta voit keskittyä näköaloihin. Santa Lúzian huipulla panoraama avautuu Lima-joelta Atlantille — Pyhän Sydämen pyhäkkö kruunaa kukkulan, näkyen kilometrien päähän. Oppaasi jakaa tarinoita kaupungin merenkulkuhistoriasta, sen art déco -arkkitehtuurista ja kalastusperinteistä, jotka yhä määrittävät paikallista elämää.",
+        "Reitti yhdistää kivetyt kadut, rannikkopolut ja maastoiset metsäpolut — sähköpyörä selviää kaikesta. Matkan varrella on pysähdyksiä valokuville, vedelle ja paikallisille välipaloille. Ryhmät on rajattu korkeintaan 10 pyöräilijään turvallisuuden vuoksi ja rennon, henkilökohtaisen tahdin ylläpitämiseksi.",
+        "Tarjolla on fatbike-vaihtoehto niille, jotka haluavat ottaa maasto-osuudet tosissaan. Molemmat pyörätyypit ovat premium-laatua, täysjousituksella ja tehokkailla moottoreilla."
+      ],
+      "highlights": [
+        "Polje Santa Lúzian vuoren huipulle 360 asteen panoraamanäköaloja varten",
+        "Tutustu historialliseen keskustaan, Atlantin rannikkoon ja kätkettyihin metsäpolkuihin",
+        "Premium-sähköpyörät tehokkailla moottoreilla — ylämäistä tulee helppoja",
+        "Pienet ryhmät, korkeintaan 10 pyöräilijää, ammattimaisen paikallisoppaan kanssa",
+        "Fatbike-vaihtoehto saatavilla maastoharrastajille",
+        "Välipalat ja vesi sisältyvät",
+        "Maksuton kuljetus Portugal Active -huvilaltasi",
+        "Sopii kaikille kuntotasoille — moottori tekee raskaan työn"
+      ],
+      "included": [
+        "Premium-sähköpyörä (tai fatbike pyynnöstä) kypärän kanssa",
+        "Ammattimainen paikallisopas",
+        "Välipalat ja vesi",
+        "Vakuutus kaikille osallistujille"
+      ],
+      "notIncluded": [
+        "Nouto/kuljetus huvilalta (valinnainen — concierge-tiimimme järjestää lisämaksusta)",
+        "Ateriat (voidaan järjestää kierroksen jälkeen)",
+        "Juomarahat (harkintasi mukaan)"
+      ],
+      "notSuitableFor": [
+        "Alle 12-vuotiaat lapset",
+        "Vieraat, jotka eivät osaa ajaa polkupyörää"
+      ],
+      "whatToBring": [
+        "Mukavat urheiluvaatteet",
+        "Umpinaiset kengät (lenkkarit tai pyöräilykengät)",
+        "Aurinkovoide ja aurinkolasit",
+        "Kevyt takki tai kerrospukeutuminen",
+        "Kamera"
+      ],
+      "notAllowed": [
+        "Sandaalit tai avoimet jalkineet",
+        "Ajaminen alkoholin vaikutuksen alaisena"
+      ],
+      "cancellationPolicy": "Maksuton peruutus 24 tuntiin asti ennen elämystä, täydellä hyvityksellä. Sääperusteiset peruutukset siirretään tai hyvitetään kokonaan.",
+      "guideRole": "Ammattimaiset pyöräilyoppaat",
+      "guideDescription": "Sähköpyöräoppaamme ovat paikallisia pyöräilijöitä, jotka tuntevat jokaisen Viana do Castelon polun, oikoreitin ja näköalapaikan. He asettavat tahdin, joka sopii kaikille — sähköpyörän moottori hoitaa ponnistelun ja opas hoitaa tarinat. Voit odottaa oppivasi kaupungin merenkulkuhistoriasta, sen kalastusperinteistä ja parhaista paikoista syödä retken jälkeen.",
+      "languages": [
+        "Portugali",
+        "Englanti",
+        "Espanja",
+        "Ranska"
+      ],
+      "itinerary": [
+        {
+          "time": "09:30",
+          "title": "Nouto huvilalta ja pyörän sovitus",
+          "description": "Kuljettajasi noutaa sinut Portugal Active -huvilaltasi. Lähtöpisteessä opas sovittaa sinulle premium-sähköpyörän (tai fatbiken) ja kypärän sekä antaa lyhyen perehdytyksen hallintalaitteisiin."
+        },
+        {
+          "time": "10:00",
+          "title": "Historiallinen keskusta ja rantakatu",
+          "description": "Polje Viana do Castelon historiallisen keskustan kivettyjä katuja pitkin — ohi art déco -rakennusten, keskiaikaisen kirkon ja Lima-joen rantakatua pitkin."
+        },
+        {
+          "time": "10:30",
+          "title": "Nousu Santa Lúzian pyhäkölle",
+          "description": "Sähköpyörän moottori tekee nousun Santa Lúzian vuorelle helpoksi. Huipulla Pyhän Sydämen pyhäkkö ja 360 asteen panoraama kaupungin, joen ja valtameren yli. Valokuvapysähdys."
+        },
+        {
+          "time": "11:15",
+          "title": "Rannikkopolut ja Praia do Cabedelo",
+          "description": "Laskeudu metsäpolkuja ja rannikkoteitä pitkin Praia do Cabedelolle. Tunne suolainen ilma poljellessasi Atlanttia pitkin. Välipala- ja vesitauko rannalla."
+        },
+        {
+          "time": "12:30",
+          "title": "Paluu ja kuljetus",
+          "description": "Suorita lenkki takaisin lähtöpisteeseen. Palauta pyörä, ja kuljettaja vie sinut takaisin huvilalle — tai jää kaupunkiin lounaalle (opas suosittelee parhaat paikat)."
+        }
+      ],
+      "faq": [
+        {
+          "q": "Pitääkö minun olla hyvässä kunnossa?",
+          "a": "Ei. Sähköpyörän moottori auttaa jokaisessa ylämäessä. Jos osaat ajaa pyörää, selviät tästä kierroksesta. Ryhmä asettaa tahdin — oppaasi mukautuu."
+        },
+        {
+          "q": "Mikä on ero sähköpyörän ja fatbiken välillä?",
+          "a": "Sähköpyörä on ihanteellinen sekamaastoon (tiet + kevyet polut). Fatbikessä on leveämmät renkaat hiekalle ja vaativammille osuuksille. Molemmissa on sähkömoottori. Ilmoita mieltymyksesi varatessasi."
+        },
+        {
+          "q": "Voivatko lapset osallistua?",
+          "a": "Yli 12-vuotiaat lapset, jotka osaavat ajaa pyörää itsenäisesti, ovat tervetulleita. Meillä on eri kokoisia pyöriä."
+        },
+        {
+          "q": "Mitä tapahtuu, jos sataa?",
+          "a": "Kevyt sade ei estä kierrosta. Rankkasateen sattuessa siirrämme ajankohtaa tai tarjoamme täyden hyvityksen. Sinuun otetaan yhteyttä edellisenä päivänä."
+        },
+        {
+          "q": "Miksi minun kannattaa varata suoraan Portugal Activelta?",
+          "a": "Parempi hinta kuin varausalustoilla, joustava aikataulutus, ja oppaasi voi suositella ravintoloita ja aktiviteetteja loppupäivälle."
+        }
+      ],
+      "meetingPoint": {
+        "instructions": "Noudamme sinut suoraan Portugal Active -huvilaltasi. Jos haluat ajaa itse, tapaa meidät paikassa Vira Maria, Vira Manel, junaaseman vieressä.",
+        "pickupNote": "Valinnainen nouto huvilalta — concierge-tiimimme järjestää lisämaksusta. Ota yhteyttä hintoja varten."
       }
     }
   },
@@ -3392,6 +3758,124 @@
       "meetingPoint": {
         "instructions": "Vi hämtar dig direkt vid din Portugal Active-villa. Om du föredrar att köra själv, parkera på parkeringen vid Praia do Cabedelo och möt din instruktör vid surfskolans stuga.",
         "pickupNote": "Valfri hämtning vid villan — samordnas av vårt conciergeteam mot extra avgift. Kontakta oss för priser."
+      }
+    },
+    "fi": {
+      "name": "Surffaustunnit — Atlantin aaltoja Minhon rannikolla",
+      "tagline": "Opi surffaamaan Portugalin parhailla Atlantin aalloilla sertifioitujen ohjaajien kanssa — yksityis- tai pienryhmätunteja Minhon rannikon rannoilla.",
+      "badges": [
+        "Kaikki tasot",
+        "Välineet sisältyvät"
+      ],
+      "price": "Alkaen 60 € per henkilö",
+      "duration": "2–3 tuntia",
+      "difficultyLevel": "Kaikki tasot — aloittelijasta edistyneeseen",
+      "availability": "Ympäri vuoden (parhaat olosuhteet huhtikuusta lokakuuhun)",
+      "aboutParagraphs": [
+        "Minhon rannikko on yksi Portugalin parhaiten varjelluista surffaussalaisuuksista. Kun joukot suuntaavat etelään, Viana do Castelon ympäristön rannat tarjoavat tasaiset Atlantin maininkit, pitkät hiekkapohjaiset aallot ja niin lämmintä vettä, että riittää märkäpuku (ei kuivapukua). Erityisesti Praia do Cabedelo on maailmanluokan surffauspaikka, jota Lima-joen aallonmurtaja suojaa — luoden täydelliset olosuhteet oppimiseen.",
+        "Surffaustuntimme antavat sertifioidut ohjaajat, jotka mukautuvat tasoosi. Täydelliset aloittelijat aloittavat hiekalla tekniikan ja turvallisuuden parissa ja etenevät sitten veteen kärsivällisen, käytännönläheisen opastuksen kanssa. Keskitason ja edistyneet surffaajat viedään päivän olosuhteisiin parhaiten sopivalle aalloille — ohjaaja tuntee jokaisen hiekkasärkän, jokaisen vuorovesimuutoksen ja jokaisen paikallisen salaisuuden.",
+        "Kaikki välineet tarjotaan: premium-laudat (pehmolaudat aloittelijoille, kovat laudat edistyneille), märkäpuvut ja lycra-paidat. Ryhmät ovat pieniä — korkeintaan 6 ohjaajaa kohden — jotta saat aitoa huomiota ja aitoa edistymistä.",
+        "Tunnin jälkeen Praia do Cabedelo on yksi Minhon kauneimmista hiekkarannoista. Jää, kuivu ja katsele aaltoja. Ohjaajasi voi vinkata parhaan rantabaarin surffauksen jälkeiseen juomaan."
+      ],
+      "highlights": [
+        "Sertifioidut surffausohjaajat, jotka mukautuvat jokaiseen tasoon",
+        "Premium-laudat ja märkäpuvut sisältyvät",
+        "Pienet ryhmät, korkeintaan 6 ohjaajaa kohden",
+        "Praia do Cabedelo — maailmanluokan surffauspaikka aloittelijaystävällisin olosuhtein",
+        "Rantainfo tekniikasta ja meriturvallisuudesta ennen veteen menoa",
+        "Kaikki ikäryhmät tervetulleita (6-vuotiaista alkaen)",
+        "Maksuton kuljetus Portugal Active -huvilaltasi",
+        "Saatavilla ympäri vuoden — Minhon rannikolla on tasaiset maininkit"
+      ],
+      "included": [
+        "Sertifioitu surffausohjaaja (yksityis- tai pienryhmä)",
+        "Premium-lauta (pehmolauta tai kova lauta tason mukaan)",
+        "Märkäpuku ja lycra-paita",
+        "Vakuutus kaikille osallistujille",
+        "Turvallisuusinfo rannalla"
+      ],
+      "notIncluded": [
+        "Nouto/kuljetus huvilalta (valinnainen — concierge-tiimimme järjestää lisämaksusta)",
+        "Pyyhe (tuo omasi)",
+        "Ruoka ja juomat (rantabaarit lähellä)",
+        "Juomarahat (harkintasi mukaan)"
+      ],
+      "notSuitableFor": [
+        "Alle 6-vuotiaat lapset",
+        "Henkilöt, jotka eivät osaa uida"
+      ],
+      "whatToBring": [
+        "Uimapuku (puettuna märkäpuvun alle)",
+        "Pyyhe",
+        "Aurinkovoide (mieluiten riuttaystävällinen)",
+        "Vesi ja välipala",
+        "Positiivinen asenne ja halu kastua"
+      ],
+      "notAllowed": [
+        "Surffaaminen merkityn alueen ulkopuolella ilman ohjaajan hyväksyntää",
+        "Lasi rannalla"
+      ],
+      "cancellationPolicy": "Maksuton peruutus 24 tuntiin asti ennen elämystä, täydellä hyvityksellä. Olosuhteista riippuvat peruutukset (vaarallinen meri) siirretään tai hyvitetään.",
+      "guideRole": "Sertifioidut surffausohjaajat",
+      "guideDescription": "Surffausohjaajamme ovat Minhon rannikon sertifioituja ammattilaisia, jotka kasvoivat näillä aalloilla. He tuntevat jokaisen rannan, jokaisen vuoroveden ja jokaisen olosuhteen. Olitpa laudalla ensimmäistä kertaa tai haluaisitpa hioa tekniikkaasi muotoutuneella aallolla, he mukauttavat tunnin tasoosi ja tavoitteisiisi. Kärsivällisiä, kannustavia ja intohimoisia jakamaan valtameren.",
+      "languages": [
+        "Portugali",
+        "Englanti",
+        "Espanja",
+        "Ranska"
+      ],
+      "itinerary": [
+        {
+          "time": "09:30",
+          "title": "Nouto huvilalta ja matka Praia do Cabedelolle",
+          "description": "Kuljettajasi noutaa sinut Portugal Active -huvilaltasi. Lyhyt matka Praia do Cabedelolle — yhdelle Minhon rannikon parhaista surffausrannoista."
+        },
+        {
+          "time": "10:00",
+          "title": "Varusteiden sovitus ja info rannalla",
+          "description": "Tapaa sertifioitu ohjaajasi rannalla. Märkäpuvun sovitus, laudan valinta tasosi mukaan ja täydellinen info melontatekniikasta, ylösnoususta ja meriturvallisuudesta."
+        },
+        {
+          "time": "10:30",
+          "title": "Vedessä — ensimmäiset aallot",
+          "description": "Astu Atlanttiin ja aloita vaahdon pyydystäminen. Ohjaaja on kanssasi vedessä, asemoiden sinua, ajoittaen aaltoja ja valmentaen jokaista yritystä. Useimmat aloittelijat nousevat pystyyn ensimmäisen tunnin aikana."
+        },
+        {
+          "time": "11:30",
+          "title": "Edistyminen ja harjoittelu",
+          "description": "Syvennä tekniikkaasi. Aloittelijat etenevät suurempaan vaahtoon; keskitason surffaajat pyydystävät muotoutuneita aaltoja. Ohjaaja antaa henkilökohtaista palautetta ja vinkkejä koko tunnin ajan."
+        },
+        {
+          "time": "12:30",
+          "title": "Rentoudu ja paluu",
+          "description": "Peseydy, vaihda vaatteet ja nauti surffauksenjälkeisestä hehkusta rannalla. Kuljettajasi vie sinut takaisin huvilalle — tai jää rannalle tutkimaan lähellä olevia baareja ja ravintoloita."
+        }
+      ],
+      "faq": [
+        {
+          "q": "En ole koskaan surffannut. Voinko silti osallistua?",
+          "a": "Ehdottomasti. Useimmat vieraistamme surffaavat ensimmäistä kertaa. Tunti alkaa rannalla tekniikasta, ja sitten ohjaaja on kanssasi vedessä joka askeleella."
+        },
+        {
+          "q": "Minkä ikäisinä lapset voivat aloittaa?",
+          "a": "Yli 6-vuotiaat lapset voivat osallistua. Meillä on pienempiä lautoja ja ohjaajia, joilla on kokemusta nuorista surffaajista."
+        },
+        {
+          "q": "Entä jos aaltoja ei ole?",
+          "a": "Minhon rannikolla on tasaiset Atlantin maininkit. Aallottomat päivät ovat hyvin harvinaisia huhtikuun ja lokakuun välillä. Jos olosuhteet ovat todella sopimattomat, siirrämme ajankohtaa tai tarjoamme täyden hyvityksen."
+        },
+        {
+          "q": "Voinko varata yksityistunnin?",
+          "a": "Kyllä. Yksityistunteja (1 ohjaaja, 1–2 oppilasta) on saatavilla, ja niitä suositellaan nopeimpaan edistymiseen. Ota yhteyttä WhatsAppin kautta hintoja varten."
+        },
+        {
+          "q": "Miksi minun kannattaa varata suoraan Portugal Activelta?",
+          "a": "Parempi hinta, joustava aikataulutus, ja ohjaajasi voidaan valita tavoitteidesi mukaan."
+        }
+      ],
+      "meetingPoint": {
+        "instructions": "Noudamme sinut suoraan Portugal Active -huvilaltasi. Jos haluat ajaa itse, pysäköi Praia do Cabedelon pysäköintialueelle ja etsi ohjaajasi surffauskoulun kojusta.",
+        "pickupNote": "Valinnainen nouto huvilalta — concierge-tiimimme järjestää lisämaksusta. Ota yhteyttä hintoja varten."
       }
     }
   },
@@ -4340,6 +4824,141 @@
         "instructions": "Vi hämtar dig direkt vid din Portugal Active-villa. Alternativt möter du oss på Praça da República i Viana do Castelo — den vanliga mötesplatsen är intill det gamla rådhuset (Antigos Paços do Concelho). Var redo 10 minuter före den schemalagda hämtningstiden.",
         "pickupNote": "Valfri hämtning vid villan — samordnas av vårt conciergeteam mot extra avgift. Kontakta oss för priser."
       }
+    },
+    "fi": {
+      "name": "Serra d'Arga: vaella, ui ja syö kuin paikallinen salaisessa keitaassa",
+      "tagline": "Löydä Minhon parhaiten varjellut salaisuudet. Vaella kätketylle vesiputoukselle, ui kristallinkirkkaissa lammissa ja päätä perinteiseen portugalilaiseen keittiöön salaisessa vuoristoravintolassa.",
+      "badges": [
+        "Erinomaisuuden merkki",
+        "100 % suositeltu",
+        "Sisältää aterian"
+      ],
+      "price": "Alkaen 95 € per henkilö",
+      "duration": "4 h 30 min",
+      "difficultyLevel": "Kohtalainen",
+      "availability": "Ympäri vuoden (talvipäivät varauksesta)",
+      "aboutParagraphs": [
+        "Tämä on tunnuselämyksemme Minhossa — se, jota vieraat arvioivat korkeimmalle ja varaavat uudelleen seuraavalla matkallaan. Se yhdistää kolme asiaa, jotka tekevät Pohjois-Portugalista unohtumattoman: villin luonnon, poikkeuksellisen ruoan ja paikallistuntemuksen, jota et löydä mistään opaskirjasta.",
+        "Oppaasi — syntynyt ja kasvanut Minhossa — vie sinut tammi- ja kastanjametsien halki Serra d'Argassa kätketylle vesiputoukselle ja luonnonlammelle, jonka vain paikalliset tuntevat. Vaellus on kohtalainen (noin 40 minuuttia kumpaankin suuntaan, hyvin merkitty polku) ja palkinto on uinti kristallinkirkkaassa vuoristovedessä, ympärillä vain metsää ja linnunlaulua.",
+        "Elämys huipentuu perinteiseen vuoristoravintolaan, jolla ei ole verkkosivustoa, Instagramia eikä kylttejä tien varressa. Pöytä on katettu maissileivällä, paahdetulla makkaralla, vuoristojuustolla, paikallisella hunajalla ja alueellisella viinillä. Se on sellainen ateria, joka saa ymmärtämään, miksi Minho on Portugalin parhaiten varjeltu gastronominen salaisuus.",
+        "Kaikki sisältyy: välipalat vaelluksen aikana, täydellinen perinteinen ateria viiniparituksineen ja polaroid-muisto. Ryhmät ovat pieniä — koskaan yli 10 vierasta — jotta elämys olisi henkilökohtainen ja kiireetön."
+      ],
+      "highlights": [
+        "Löydä kätketty vesiputous ja salainen lampi — aito Viana do Castelon helmi",
+        "Ui kristallinkirkkaissa luonnonaltaissa Serra d'Argassa",
+        "Perinteisiä portugalilaisia herkkuja vuoristoravintolassa ilman verkkosivustoa — pelkkää uskomatonta ruokaa",
+        "Vietä päivä uppoutuneena Minhon luontoon paikallisen asiantuntijaoppaan kanssa",
+        "Polaroid-muisto ryhmästäsi vesiputouksella",
+        "100 % matkailijoiden suosittelema — Erinomaisuuden merkki",
+        "Yksityinen kierros tarkoittaa henkilökohtaista elämystä"
+      ],
+      "included": [
+        "Paikallinen asiantuntijaopas",
+        "Illallinen — täydellinen perinteinen portugalilainen ateria",
+        "Alkoholijuomat (paritus paikallisen viinin tai oluen kanssa)",
+        "Välipalat vaelluksen aikana",
+        "Vakuutus kaikille osallistujille",
+        "Polaroid-muistovalokuva"
+      ],
+      "notIncluded": [
+        "Nouto/kuljetus huvilalta (valinnainen — concierge-tiimimme järjestää lisämaksusta)",
+        "Lisäjuomat sisältyvän parituksen lisäksi",
+        "Juomarahat (harkintasi mukaan)"
+      ],
+      "notSuitableFor": [
+        "Raskaana olevat matkailijat",
+        "Liikuntarajoitteiset vieraat",
+        "Alle 8-vuotiaat lapset"
+      ],
+      "whatToBring": [
+        "Pyyhe",
+        "Mukavat, kerroksittaiset vaatteet",
+        "Urheilu- tai polkujuoksukengät hyvällä pidolla",
+        "Aurinkovoide",
+        "Uimapuku"
+      ],
+      "notAllowed": [
+        "Lasiastiat",
+        "Kertakäyttömuovit"
+      ],
+      "cancellationPolicy": "Maksuton peruutus 24 tuntiin asti ennen elämystä, täydellä hyvityksellä. Peruutuksia 24 tunnin sisällä ei hyvitetä. Huonon sään sattuessa siirrämme ajankohtaa tai hyvitämme.",
+      "guideRole": "Paikallinen luonto-opas Minhosta",
+      "guideDescription": "Jorge syntyi kylässä Serra d'Argan juurella ja on tutkinut näitä vuoria siitä asti, kun oppi kävelemään. Hänen tietämyksensä ja intohimonsa aluetta kohtaan tekevät jokaisesta retkestä unohtumattoman. Hän on ystävällinen, helposti lähestyttävä ja luo mukavan tunnelman alusta loppuun. Vieraat mainitsevat hänet jatkuvasti nimeltä elämyksen kohokohtana. Hän puhuu portugalia, englantia ja espanjaa, kantaa mukanaan polaroid-kameraa ja hänellä on lahja löytää täydellinen uimapaikka vuodenajan ja vedenkorkeuden mukaan.",
+      "languages": [
+        "Portugali",
+        "Englanti",
+        "Espanja"
+      ],
+      "itinerary": [
+        {
+          "time": "16:00",
+          "title": "Nouto ja kuljetus",
+          "description": "Oppaasi noutaa sinut Portugal Active -huvilaltasi tai tapaamispaikalta Praça da Repúblicalta Viana do Castelossa. Kahvia ja lyhyt esittely pakettiautossa matkalla Serra d'Argaan."
+        },
+        {
+          "time": "16:30",
+          "title": "Maisemallinen kuljetus Serra d'Argaan",
+          "description": "30 minuutin matka vuoren halki. Opas jakaa tarinoita alueesta ja pysähtyy valokuville näköalapaikoilla Lima-laakson yllä."
+        },
+        {
+          "time": "17:00",
+          "title": "Vaellus kätketylle vesiputoukselle",
+          "description": "Kohtalainen vaellus ikivanhan tammi- ja kastanjametsän halki. Polku seuraa puroa rinnettä ylös, pieniä kivisiltoja ylittäen, kunnes kuulet vesiputouksen ennen kuin näet sen."
+        },
+        {
+          "time": "17:45",
+          "title": "Uinti salaisessa lammessa",
+          "description": "Saavu vesiputoukselle ja luonnonaltaalle. Vesi on kristallinkirkasta ja virkistävää. Ui, kellu tai hyppää kallioilta. Tämä on polaroidin hetki."
+        },
+        {
+          "time": "18:45",
+          "title": "Perinteinen illallinen salaisessa vuoristoravintolassa",
+          "description": "Kävely ravintolaan ilman verkkosivustoa, ilman Instagramia ja ilman kylttiä tien varressa. Pöytä on katettu: maissileipää, paahdettua makkaraa, vuoristojuustoa, paikallista hunajaa, kinkkua ja paritus alueellisen viinin kanssa. Omistaja on oppaan perheen ystävä."
+        },
+        {
+          "time": "20:30",
+          "title": "Paluu huvilallesi",
+          "description": "Tyytyväisenä, onnellisena ja polaroid kädessä. Rento paluumatka kestää noin 30 minuuttia. Opas jättää sinut huvilan ovelle."
+        }
+      ],
+      "faq": [
+        {
+          "q": "Onko ravintolassa kasvis- tai vegaanivaihtoehtoja?",
+          "a": "Kyllä. Kasvis-, vegaani- ja pescetaarivaihtoehtoja on saatavilla. Kerro ruokavaliotarpeesi varatessasi."
+        },
+        {
+          "q": "Kuinka vaikea vaellus on?",
+          "a": "Kohtalainen. Maasto vaihtelee tiheistä metsistä kristallinkirkkaisiin puroihin, mukana muutamia kivisiä osuuksia. Hyvät urheilukengät pitävällä pohjalla ovat välttämättömät. Useimmat matkailijat pystyvät osallistumaan."
+        },
+        {
+          "q": "Entä jos en halua uida?",
+          "a": "Ei ongelmaa. Uinti on valinnaista. Monet vieraat jäävät lammen äärelle, nauttivat vesiputouksen näkymästä ja ottavat valokuvia."
+        },
+        {
+          "q": "Onko tämä elämys yksityinen vai jaettu?",
+          "a": "Se on yksityinen kierros — vain oma ryhmäsi osallistuu. Korkeintaan 10 matkailijaa."
+        },
+        {
+          "q": "Mihin aikaan se alkaa?",
+          "a": "Elämys alkaa yleensä klo 16:00. Voimme mukauttaa aikatauluja ohjelmaasi — ota yhteyttä."
+        },
+        {
+          "q": "Voivatko lapset osallistua?",
+          "a": "Yli 8-vuotiaat lapset, jotka tuntevat olonsa mukavaksi kohtalaisella vaelluksella, ovat tervetulleita. Polulla on muutamia kivisiä osuuksia."
+        },
+        {
+          "q": "Kuinka paljon ruokaa sisältyy?",
+          "a": "Täydellinen perinteinen ateria: maissileipää, paahdettua makkaraa, vuoristojuustoa, kinkkua, paikallista hunajaa ja paritus alueellisen viinin tai oluen kanssa. Kukaan ei lähde nälkäisenä."
+        },
+        {
+          "q": "Miksi minun kannattaa varata suoraan Portugal Activelta?",
+          "a": "Suoraan varaaminen tarkoittaa parasta hintaa, ei välikäsiä. Sama elämys, sama opas, sama ravintola — ja suora WhatsApp-yhteys tiimiimme kaikkia muutoksia tai kysymyksiä varten."
+        }
+      ],
+      "meetingPoint": {
+        "instructions": "Noudamme sinut suoraan Portugal Active -huvilaltasi. Vaihtoehtoisesti tapaa meidät Praça da Repúblicalla Viana do Castelossa — tavallinen tapaamispaikka on entisen raatihuoneen (Antigos Paços do Concelho) vieressä. Ole valmiina 10 minuuttia ennen sovittua noutoaikaa.",
+        "pickupNote": "Valinnainen nouto huvilalta — concierge-tiimimme järjestää lisämaksusta. Ota yhteyttä hintoja varten."
+      }
     }
   },
   "stand-up-paddle": {
@@ -5160,6 +5779,123 @@
       "meetingPoint": {
         "instructions": "Vi hämtar dig direkt vid din Portugal Active-villa. Om du föredrar att köra själv, möt oss vid Vira Maria, Vira Manel, intill tågstationen i Viana do Castelo.",
         "pickupNote": "Valfri hämtning vid villan — samordnas av vårt conciergeteam mot extra avgift. Kontakta oss för priser."
+      }
+    },
+    "fi": {
+      "name": "SUP Sun Experience — Lima-joen lasku Ponte de Limasta",
+      "tagline": "Melo koko Lima-joen pituuden auringonnousussa tai -laskussa — keskiaikaisesta Ponte de Liman kylästä Atlantille Praia do Cabedelolle.",
+      "badges": [
+        "Pieni ryhmä",
+        "Sisältää virvokkeet"
+      ],
+      "price": "Alkaen 45 € per henkilö",
+      "duration": "3 tuntia",
+      "difficultyLevel": "Helppo — sopii kaikille tasoille",
+      "availability": "Ympäri vuoden, sääolosuhteiden mukaan",
+      "aboutParagraphs": [
+        "Tämä on elämys, jonka vieraat kuvaavat yhdellä sanalla: taianomainen. Keskiaikaisesta Ponte de Liman kylästä — yhdestä Portugalin vanhimmista — melot koko Lima-joen matkan, kun valo muuttuu kullasta kupariin ja roosaan. Virta tekee suurimman osan työstä; sinä tarjoat läsnäolon.",
+        "Reitti seuraa jokea suistoa kohti, viljelysmaiden halki, vanhojen kivisiltojen alitse, haikaroiden ja kuninkaankalastajien ohi, kohti pistettä, jossa Lima kohtaa Atlantin Praia do Cabedelolla. Puolimatkassa oppaasi pitää kahvitauon rannalla — tilaisuus uida, venytellä ja imeä itseensä hiljaisuus.",
+        "Aiempaa SUP-kokemusta ei tarvita. Oppaasi aloittaa lyhyellä infolla rannalla, ja muutamassa minuutissa seisot, melot ja hymyilet. Ryhmät on rajattu korkeintaan 8 osallistujaan, jotta joki pysyy rauhallisena ja elämys henkilökohtaisena.",
+        "Auringonlaskun istunnot ovat kysytyimpiä — valo Liman yllä on poikkeuksellinen. Auringonnousun istunnot tarjoavat täysin erilaisen energian: sumua veden yllä, kylä yhä unessa ja tunne, että koko joki on vain sinun."
+      ],
+      "highlights": [
+        "Melo koko Lima-joen pituuden, Ponte de Limasta Praia do Cabedelolle",
+        "Näyttäviä istuntoja auringonnousussa tai -laskussa — valo joen yllä on poikkeuksellinen",
+        "Kaikki välineet tarjotaan, mukaan lukien premium-melontalaudat",
+        "Kahvitauko joen rannalla puolimatkassa",
+        "Ei kokemusta tarvita — aloittelijat tervetulleita opastuksen kanssa vedessä",
+        "Pienet ryhmät, korkeintaan 8, rauhallisen ja henkilökohtaisen elämyksen takaamiseksi",
+        "Maksuton kuljetus Portugal Active -huvilaltasi",
+        "Reitti kulkee keskiaikaisten kivisiltojen alitse vuoristonäkymin"
+      ],
+      "included": [
+        "Ammattimainen SUP-opas",
+        "Premium stand-up-melontalauta ja mela",
+        "Turvavarusteet (pelastusliivit, leash)",
+        "Kahvitauko välipaloineen ja juomineen",
+        "Vesitiivis pussi henkilökohtaisille tavaroille",
+        "Vakuutus kaikille osallistujille"
+      ],
+      "notIncluded": [
+        "Nouto/kuljetus huvilalta (valinnainen — concierge-tiimimme järjestää lisämaksusta)",
+        "Ateriat (voidaan järjestää erikseen)",
+        "Juomarahat (harkintasi mukaan)"
+      ],
+      "notSuitableFor": [
+        "Alle 10-vuotiaat lapset",
+        "Vieraat, joilla on vakavia tasapaino-ongelmia"
+      ],
+      "whatToBring": [
+        "Uimapuku ja kevyt kerros vettä varten",
+        "Aurinkovoide ja aurinkolasit (nauhalla)",
+        "Pyyhe ja kuivat vaatteet loppuun",
+        "Vesikengät tai sandaalit, jotka voivat kastua",
+        "Kamera tai vesitiivis suoja puhelimelle"
+      ],
+      "notAllowed": [
+        "Lasipullot vedessä",
+        "Bluetooth-kaiuttimet (suojelemme joen rauhaa)"
+      ],
+      "cancellationPolicy": "Maksuton peruutus 24 tuntiin asti ennen elämystä, täydellä hyvityksellä. Sääperusteiset peruutukset siirretään tai hyvitetään kokonaan.",
+      "guideRole": "SUP-opas ja jokiasiantuntija",
+      "guideDescription": "Ricardo on meloen Limalla jo ennen kuin SUP oli muodissa. Hän tuntee jokaisen mutkan, jokaisen hiekkasärkän ja jokaisen pisteen, jossa kuninkaankalastajat pesivät. Hänen opetustyylinsä on rento ja kannustava — aloittelijat nousevat pystyyn minuuteissa ja kokeneemmat viedään kätkettyihin kanaviin pääjoen ulkopuolelle. Ricardo on myös sertifioitu hengenpelastaja ja luonnonympäristön ensiapuhenkilö.",
+      "languages": [
+        "Portugali",
+        "Englanti",
+        "Espanja"
+      ],
+      "itinerary": [
+        {
+          "time": "Joustava",
+          "title": "Nouto huvilalta ja matka Ponte de Limaan",
+          "description": "Kuljettajasi noutaa sinut Portugal Active -huvilaltasi ja vie sinut Ponte de Liman historialliselle rantavyöhykkeelle — yhteen Portugalin vanhimmista kylistä."
+        },
+        {
+          "time": "+15 min",
+          "title": "Varusteet ja SUP-info",
+          "description": "Tapaa oppaasi joen rannalla. Lyhyt info melontatekniikasta, tasapainosta ja jokiturvallisuudesta. Muutamassa minuutissa seisot ja melot itsevarmasti."
+        },
+        {
+          "time": "+30 min",
+          "title": "Lasku Lima-laakson halki",
+          "description": "Loiva virta vie sinut viljelysmaiden ja metsän halki. Kulje vanhojen kivisiltojen alitse näkymin Serra d'Argaan. Haikarat, kuninkaankalastajat ja merimetsot ovat usein seuranasi."
+        },
+        {
+          "time": "+90 min",
+          "title": "Kahvitauko rannalla",
+          "description": "Oppaasi pysähtyy rauhalliselle rannalle. Ui jos haluat, venytä jalkoja ja nauti kahvista, mehusta ja kevyistä välipaloista, kun valo muuttuu veden yllä."
+        },
+        {
+          "time": "+150 min",
+          "title": "Loppuosuus Praia do Cabedelolle",
+          "description": "Melo viimeinen osuus, kun joki levenee ja kohtaa Atlantin. Saavu Praia do Cabedelolle — yhdelle Minhon kauneimmista hiekkarannoista. Kuljettajasi odottaa paluukuljetukseen."
+        }
+      ],
+      "faq": [
+        {
+          "q": "Tarvitsenko aiempaa SUP-kokemusta?",
+          "a": "En lainkaan. Oppaamme opettaa sinut rannalla, ja seisot pystyssä muutamassa minuutissa. Joen virta on loiva — tämä on melontaa tyynessä vedessä, ei koskissa."
+        },
+        {
+          "q": "Mihin aikaan auringonlaskun istunnot ovat?",
+          "a": "Aikataulu vaihtelee vuodenajan mukaan. Kesällä lähdemme yleensä noin klo 18:00. Oppaasi vahvistaa tarkan ajan 24 tuntia etukäteen auringonlaskun ajankohdan mukaan."
+        },
+        {
+          "q": "Voivatko lapset osallistua?",
+          "a": "Yli 10-vuotiaat lapset voivat meloa omalla laudallaan. Pienemmät lapset voivat jakaa laudan aikuisen kanssa ennakkojärjestelyin."
+        },
+        {
+          "q": "Entä jos putoan veteen?",
+          "a": "Sinulla on pelastusliivit, ja joki on rauhallinen. Veteen putoaminen on osa hauskuutta — vesi on puhdasta ja virkistävää. Oppaasi on aina lähellä."
+        },
+        {
+          "q": "Miksi minun kannattaa varata suoraan Portugal Activelta?",
+          "a": "Alhaisempi hinta kuin millään varausalustalla, suora yhteys oppaaseesi WhatsAppin kautta ja joustava ajankohdan siirto."
+        }
+      ],
+      "meetingPoint": {
+        "instructions": "Noudamme sinut suoraan Portugal Active -huvilaltasi. Jos haluat ajaa itse, tapaa meidät paikassa Vira Maria, Vira Manel, junaaseman vieressä Viana do Castelossa.",
+        "pickupNote": "Valinnainen nouto huvilalta — concierge-tiimimme järjestää lisämaksusta. Ota yhteyttä hintoja varten."
       }
     }
   },
@@ -5996,6 +6732,125 @@
         "instructions": "Vi hämtar dig direkt vid din Portugal Active-villa. Den exakta mötesplatsen i Serra da Nó bekräftas 24 timmar i förväg via WhatsApp.",
         "pickupNote": "Valfri hämtning vid villan — samordnas av vårt conciergeteam mot extra avgift. Kontakta oss för priser."
       }
+    },
+    "fi": {
+      "name": "Can-Am-maisema-ajokierros — Serra da Nó, Pohjois-Portugali",
+      "tagline": "Maastoajoa vuoristopolkuja, metsäteitä ja panoraamanäköalapaikkoja pitkin Ponte de Liman ja Viana do Castelon yläpuolella Can-Am-buggyssa.",
+      "badges": [
+        "Adrenaliini",
+        "Panoraamanäköalat"
+      ],
+      "price": "Alkaen 120 € per buggy",
+      "duration": "3 tuntia",
+      "difficultyLevel": "Kohtalainen — maastoajoa",
+      "availability": "Ympäri vuoden, sääolosuhteiden mukaan",
+      "aboutParagraphs": [
+        "Serra da Nón huipulta koko Minho avautuu jalkojesi juureen — Lima- ja Minho-jokien laaksot, Atlantin rannikko, vihreät vuoret, jotka jatkuvat aina Galiciaan asti. Kuvittele nyt kulkevasi tämä kaikki läpi Can-Am-buggyssa, maastossa, ammattimaisen oppaan johtaessa tietä.",
+        "Tämä ei ole teemapuistoajelu. Maasto on aitoa: vuoristopolkuja, metsäteitä, joenylityksiä ja kivisiä osuuksia, jotka panevat ajotaitosi koetukselle. Buggyt ovat tehokkaita, turvallisia ja varustettu turvakehikolla, valjailla ja kaikilla tarvittavilla turvaelementeillä. Oppaasi asettaa tahdin — haastava adrenaliinille, hallittu turvallisuudelle.",
+        "Reitti kulkee luonnonmonumenttien, perinteisten kivikylien ja näköalapaikkojen ohi, joita yksikään turistibussi ei tavoita. Matkan varrella opas jakaa tarinoita maisemasta, paikallishistoriasta ja graniittimegaliiteista, jotka ovat hajallaan vuorella. Se on jännittävä ja monipuolinen retki kaiken ikäisille, jotka rakastavat luontoa, ajamista ja haastetta.",
+        "Elämys veloitetaan buggya kohden (2 henkilöä ajoneuvoa kohti). Yksi ajaa, toinen on kyydissä — ja te voitte vaihtaa puolimatkassa. Kuljettajalla on oltava voimassa oleva ajokortti."
+      ],
+      "highlights": [
+        "Aja Can-Am-buggya Serra da Nón vuorilla",
+        "Panoraamanäköalat Ponte de Liman, Viana do Castelon ja Atlantin yli",
+        "Maastoreitti metsän, vuoristopolkujen ja joenylitysten halki",
+        "Ammattimainen opas johtaa kolonnaa ja asettaa turvallisen mutta jännittävän tahdin",
+        "Kulje luonnonmonumenttien ja perinteisten kivikylien ohi",
+        "Täydelliset turvavarusteet: kehikko, valjaat, kypärät, suojalasit",
+        "Veloitetaan buggya kohden — täydellinen pareille tai ystäville",
+        "Maksuton kuljetus Portugal Active -huvilaltasi"
+      ],
+      "included": [
+        "Can-Am-buggy kahdelle hengelle (kuljettaja + matkustaja)",
+        "Ammattimainen ajo-opas johtamassa kolonnaa",
+        "Täydelliset turvavarusteet (kypärä, suojalasit, valjaat)",
+        "Vakuutus kaikille osallistujille",
+        "Turvallisuusinfo ja ajotekniikan opastus"
+      ],
+      "notIncluded": [
+        "Nouto/kuljetus huvilalta (valinnainen — concierge-tiimimme järjestää lisämaksusta)",
+        "Ruoka ja juomat (tuo vesi)",
+        "Juomarahat (harkintasi mukaan)"
+      ],
+      "notSuitableFor": [
+        "Alle 18-vuotiaat kuljettajat (matkustajat tervetulleita 10-vuotiaista alkaen)",
+        "Vieraat ilman voimassa olevaa ajokorttia (vain kuljettaja)",
+        "Raskaana olevat vieraat"
+      ],
+      "whatToBring": [
+        "Voimassa oleva ajokortti (kuljettajalle)",
+        "Mukavat vaatteet, jotka voivat pölyyntyä",
+        "Umpinaiset kengät (ei sandaaleja)",
+        "Aurinkovoide ja aurinkolasit",
+        "Vesi",
+        "Kamera (kiinnitettynä nauhalla)"
+      ],
+      "notAllowed": [
+        "Ajaminen ilman voimassa olevaa ajokorttia",
+        "Oppaan ohjeiden sivuuttaminen (aktiviteetti päättyy välittömästi)",
+        "Turvavyön tai suojalasien poistaminen reitin aikana"
+      ],
+      "cancellationPolicy": "Maksuton peruutus 24 tuntiin asti ennen elämystä, täydellä hyvityksellä. Sääperusteiset peruutukset siirretään tai hyvitetään kokonaan.",
+      "guideRole": "Ammattimaiset ajo-oppaat",
+      "guideDescription": "Can-Am-elämyksemme toteutetaan yhteistyössä PLV Center Parkin kanssa, joka on Serra da Nón alueen kokenein maastokierrosten operaattori. Heidän oppaansa tuntevat jokaisen polun, jokaisen näköalapaikan ja jokaisen joenylityksen vuorella. He asettavat tahdin, joka jännittää tinkimättä turvallisuudesta — ja jakavat tarinat graniittimonumenttien ja kivikylien takaa matkan varrella.",
+      "languages": [
+        "Portugali",
+        "Englanti",
+        "Espanja"
+      ],
+      "itinerary": [
+        {
+          "time": "09:30",
+          "title": "Nouto huvilalta ja matka Serra da Nóhon",
+          "description": "Yksityiskuljettajasi noutaa sinut Portugal Active -huvilaltasi ja vie sinut lähtöpisteeseen Serra da Nóhon, Ponte de Liman yläpuolelle."
+        },
+        {
+          "time": "10:15",
+          "title": "Turvallisuusinfo ja ajoneuvon perehdytys",
+          "description": "Tapaa ajo-oppaasi. Täydellinen info Can-Amin hallintalaitteista, turvavarusteiden sovitus (kypärä, valjaat, suojalasit) ja ajotekniikat erityyppisille maastoille."
+        },
+        {
+          "time": "10:30",
+          "title": "Vuoristopolut ja metsätiet",
+          "description": "Kolonna lähtee mäntymetsän ja vuoristopolkujen halki. Maasto vaihtelee loivien teiden ja teknisten kivisten osuuksien välillä. Oppaasi asettaa tahdin — haastava mutta turvallinen."
+        },
+        {
+          "time": "11:30",
+          "title": "Panoraamanäköalapaikat ja luonnonmonumentit",
+          "description": "Pysähdys Serra da Nón korkeimmilla näköalapaikoilla, 360 asteen näkymin Ponte de Liman, Viana do Castelon ja Atlantin rannikon yli. Kulje graniittimegaliittien ja perinteisten kivikylien ohi."
+        },
+        {
+          "time": "12:30",
+          "title": "Loppulasku ja paluu",
+          "description": "Viimeinen osuus laskee eukalyptusmetsän halki takaisin lähtöpisteeseen. Mahdollisuus vaihtaa kuljettajaa puolimatkassa. Kuljetus huvilallesi odottaa."
+        }
+      ],
+      "faq": [
+        {
+          "q": "Tarvitsenko ajokortin?",
+          "a": "Kyllä, kuljettajalla on oltava voimassa oleva ajokortti (henkilöauton ajokortti riittää). Matkustajat eivät tarvitse ajokorttia. Voitte vaihtaa kuljettajaa ja matkustajaa puolimatkassa."
+        },
+        {
+          "q": "Onko hinta per henkilö vai per buggy?",
+          "a": "Per buggy. Jokainen Can-Am vie 2 henkilöä — yksi kuljettaja, yksi matkustaja. Ihanteellinen pareille tai ystäville."
+        },
+        {
+          "q": "Kuinka vaikeaa ajaminen on?",
+          "a": "Kohtalaista. Can-Am on tehokas mutta vakaa, automaattivaihteistolla. Oppaasi näyttää jokaisen osuuden ja asettaa tahdin. Aiempaa maastoajokokemusta ei tarvita."
+        },
+        {
+          "q": "Voivatko lapset osallistua?",
+          "a": "Yli 10-vuotiaat lapset voivat osallistua matkustajina. Heidän on oltava riittävän pitkiä, jotta valjaat istuvat hyvin."
+        },
+        {
+          "q": "Miksi minun kannattaa varata suoraan Portugal Activelta?",
+          "a": "Parempi hinta kuin millään varausalustalla, joustava aikataulutus ja suora yhteys WhatsAppin kautta kaikkia kysymyksiä varten."
+        }
+      ],
+      "meetingPoint": {
+        "instructions": "Noudamme sinut suoraan Portugal Active -huvilaltasi. Tarkka tapaamispaikka Serra da Nóssa vahvistetaan 24 tuntia etukäteen WhatsAppin kautta.",
+        "pickupNote": "Valinnainen nouto huvilalta — concierge-tiimimme järjestää lisämaksusta. Ota yhteyttä hintoja varten."
+      }
     }
   },
   "sailing": {
@@ -6795,6 +7650,120 @@
       "meetingPoint": {
         "instructions": "Marinans entré ligger intill Ponte Eiffel. Anmäl din ankomst för att öppna bommen och gå sedan till den sista kajen, bredvid gångbron.",
         "pickupNote": "Transfer till marinan kan ordnas på begäran. Marinan ligger 5 minuters promenad från tågstationen i Viana do Castelo."
+      }
+    },
+    "fi": {
+      "name": "Yksityinen purjehduselämys — Viana do Castelon rannikko",
+      "tagline": "Yksityinen purjevene pitkin Lima-joen suistoa ja Viana do Castelon Atlantin rannikkoa — juomineen, herkkuineen ja valinnaisine SUP-mahdollisuuksineen kannella.",
+      "badges": [
+        "Yksityinen elämys",
+        "Juomat sisältyvät"
+      ],
+      "price": "Alkaen 85 € per henkilö",
+      "duration": "2–4 tuntia",
+      "difficultyLevel": "Helppo — ei kokemusta tarvita",
+      "availability": "Huhtikuusta lokakuuhun, sääolosuhteiden mukaan",
+      "aboutParagraphs": [
+        "Lima-joen suistosta villiin Atlantin rannikkoon, tämä yksityinen purjehduselämys on yksi tyylikkäimmistä tavoista tutustua Viana do Casteloon. 39-jalkainen purjevene on vain sinun — ei muukalaisia, ei aikatauluja, vain oma ryhmäsi, miehistö ja valtameri.",
+        "Kun purjehdit aallonmurtajan ohi, Minhon rannikko avautuu: Praia do Cabedelo, vanha kalastajakortteli, Santa Lúzian pyhäkkö kukkulan huipulla ja avoin Atlantti ulottuen horisonttiin asti. Vene on varustettu melontalaudoilla, snorklausvälineillä ja täydellä keittiöllä — pysähdy uimaan, melomaan SUP:lla tai yksinkertaisesti makaamaan kannella juoman kanssa.",
+        "Tervetulojuoma ja herkut sisältyvät. Erityistilaisuuksia varten täydellinen gastronominen elämys voidaan järjestää kannelle etukäteen — ajattele paikallisia juustoja, makkaroita, tuoretta äyriäistä ja portugalilaisia viinejä.",
+        "2 tunnin vaihtoehto on täydellinen auringonlaskuristeilyyn. 4 tunnin elämys lisää aikaa uimapysähdyksille, SUP:lle ja pidemmälle rannikkotutkimukselle. Varaa vähintään viikko etukäteen — vene on hyvin kysytty ja saatavuus rajallinen."
+      ],
+      "highlights": [
+        "Yksityinen 39-jalkainen purjevene — yksinomaan ryhmällesi (jopa 10 vierasta)",
+        "Purjehdi Lima-joen suistossa ja Viana do Castelon Atlantin rannikolla",
+        "Tervetulojuoma ja herkut sisältyvät",
+        "SUP-melontalaudat, snorklausvälineet ja uintitikkaat kannella",
+        "Valinnainen gastronominen elämys paikallisin juustoin, äyriäisin ja viinein",
+        "Katso auringonlasku vedeltä — Vianan näyttävin näköalapaikka",
+        "Ammattimainen miehistö paikallistuntemuksella",
+        "2 tai 4 tunnin vaihtoehdot saatavilla"
+      ],
+      "included": [
+        "Yksityinen purjevenechartteri ammattimaisella miehistöllä",
+        "Tervetulojuoma ja herkut",
+        "SUP-melontalaudat ja snorklausvälineet kannella",
+        "Virvoitusjuomat ja vesi",
+        "Miehistövakuutus",
+        "WiFi kannella"
+      ],
+      "notIncluded": [
+        "Illallinen kannella (saatavilla pyynnöstä etukäteen)",
+        "Kuljetus marinaan (voidaan järjestää)",
+        "Juomarahat (harkintasi mukaan)"
+      ],
+      "notSuitableFor": [
+        "Vieraat, jotka ovat alttiita vakavalle merisairaudelle"
+      ],
+      "whatToBring": [
+        "Uimapuku ja pyyhe",
+        "Aurinkovoide ja aurinkolasit",
+        "Kevyt takki kannen tuulta varten",
+        "Kamera"
+      ],
+      "notAllowed": [
+        "Kovapohjaiset kengät kannella (vain pehmeäpohjaiset tai paljain jaloin)",
+        "Tupakointi kannella"
+      ],
+      "cancellationPolicy": "Maksuton peruutus 48 tuntiin asti ennen elämystä. Peruutuksia 48 tunnin sisällä ei hyvitetä. Sääperusteiset peruutukset siirretään tai hyvitetään.",
+      "guideRole": "Ammattimainen purjehdusmiehistö",
+      "guideDescription": "Purjehduselämyksemme toteutetaan yhteistyössä Amazing Experiencesin kanssa, joka on Viana do Castelon marinaan sijoittuva boutique-merioperaattori. Kapteeni ja miehistö tuntevat jokaisen poukaman, jokaisen virtauksen ja jokaisen delfiinipaikan Minhon rannikolla. He hoitavat purjehduksen, jotta voit keskittyä täysin elämykseen — juomiin, herkkuihin, uintiin tai vain rannikon seuraamiseen ohitse.",
+      "languages": [
+        "Portugali",
+        "Englanti"
+      ],
+      "itinerary": [
+        {
+          "time": "Joustava",
+          "title": "Saapuminen Viana do Castelon marinaan",
+          "description": "Tapaa miehistö paikassa Cerqueira's in Rio, Eiffel-sillan vieressä. Marinan portti aukeaa sinulle — kävele viimeiselle laiturille, kävelysillan viereen, jossa purjevene on kiinnitetty."
+        },
+        {
+          "time": "+15 min",
+          "title": "Tervetulojuoma ja lähtö",
+          "description": "Astu 39-jalkaiseen purjeveneeseen. Tervetulojuoma kädessä miehistö irrottaa köydet ja purjehtii Lima-jokea pitkin kohti suistoa."
+        },
+        {
+          "time": "+45 min",
+          "title": "Purjehdus Atlantin rannikkoa pitkin",
+          "description": "Ohita aallonmurtaja ja purjehdi Minhon rannikkoa pitkin. Praia do Cabedelo, vanha kalastajakortteli ja Santa Lúzian pyhäkkö korkealla. Tuuli purjeissa, vain valtameri edessä."
+        },
+        {
+          "time": "+90 min",
+          "title": "Uintia, SUP:ia ja rentoutumista",
+          "description": "Ankkuroidu suojaiseen paikkaan. Ui, kokeile kannella olevia SUP-melontalautoja, snorklaa tai vain rentoudu kannella herkkujen ja juomien kanssa. Miehistö hoitaa kaiken."
+        },
+        {
+          "time": "+180 min",
+          "title": "Paluu marinaan auringonlaskussa",
+          "description": "Purjehdi takaisin, kun aurinko laskee Atlantille ja Viana do Castelon kaupungin valot alkavat loistaa. Unohtumaton päätös unohtumattomalle päivälle."
+        }
+      ],
+      "faq": [
+        {
+          "q": "Tarvitsenko purjehduskokemusta?",
+          "a": "En lainkaan. Ammattimainen miehistö hoitaa kaiken. Olet vieras, et merimies. Vain rentoudu ja nauti."
+        },
+        {
+          "q": "Mikä on ero 2 ja 4 tunnin elämyksen välillä?",
+          "a": "2 tunnin vaihtoehto on auringonlaskuristeily rannikkoa pitkin, juomineen ja herkkuineen. 4 tunnin elämys lisää uima- ja SUP-pysähdyksen, pidemmän rannikkotutkimuksen ja enemmän aikaa vedessä."
+        },
+        {
+          "q": "Voinko järjestää illallisen kannelle?",
+          "a": "Kyllä. Vähintään 48 tunnin varoitusajalla voidaan valmistella täydellinen gastronominen elämys: paikallisia juustoja, makkaroita, tuoretta äyriäistä ja portugalilaisia viinejä."
+        },
+        {
+          "q": "Kuinka monta henkilöä vene vie?",
+          "a": "Jopa 10 vierasta. Se on yksityinen chartteri — vain oma ryhmäsi kannella."
+        },
+        {
+          "q": "Miksi minun kannattaa varata suoraan Portugal Activelta?",
+          "a": "Alhaisempi hinta, joustava aikataulutus, suora yhteys miehistöön, ja voimme yhdistää purjehduksen muihin elämyksiin (SUP, illallinen paikallisessa ravintolassa) täydelliseksi päiväksi."
+        }
+      ],
+      "meetingPoint": {
+        "instructions": "Marinan sisäänkäynti on Eiffel-sillan vieressä. Ilmoita saapumisestasi avataksesi puomin ja kävele sitten viimeiselle laiturille, kävelysillan viereen.",
+        "pickupNote": "Kuljetus marinaan voidaan järjestää pyynnöstä. Marina on 5 minuutin kävelymatkan päässä Viana do Castelon junaasemalta."
       }
     }
   }

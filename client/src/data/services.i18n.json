@@ -111,6 +111,22 @@
       "price": "Från 85 € per person",
       "duration": "3–4 timmar",
       "availability": "Tillgängligt i alla hem"
+    },
+    "fi": {
+      "name": "Yksityiskokki",
+      "tagline": "Ravintolatasoisia illallisia kotisi mukavuudessa.",
+      "description": "Nauti yksilöllisestä kulinaarisesta elämyksestä lomakotisi mukavuudessa, lahjakkaan kokkimme valmistamana. Halusitpa juhlistaa erityistä tilaisuutta, koota perheen ja ystävät yhteen, järjestää yritystapahtuman tai yksinkertaisesti rentoutua ja nauttia kodistasi, tämä on paras tapa tehdä se.\n\nTuoreista ja paikallisista raaka-aineista valmistettuna jokainen annos tehdään aina tavoitteena olla herkullinen ja terveellinen. Sinun tarvitsee vain valita menu tai räätälöity ateria, päivämäärä ja aika — me hoidamme kaiken muun.",
+      "details": [
+        "Täysi ateria",
+        "Räätälöity menu",
+        "Saatavilla kaikissa kodeissa",
+        "Juomat sisältyvät",
+        "Paikalliset raaka-aineet",
+        "Siivous sisältyy"
+      ],
+      "price": "Alkaen 85 € per henkilö",
+      "duration": "3–4 tuntia",
+      "availability": "Saatavilla kaikissa kodeissa"
     }
   },
   "massage-therapist": {
@@ -225,6 +241,22 @@
       "price": "Från 75 € per session",
       "duration": "60–90 minuter",
       "availability": "Tillgängligt i alla hem"
+    },
+    "fi": {
+      "name": "Hierontaterapeutti",
+      "tagline": "Ammattimaisia spa-hoitoja huvilasi yksityisyydessä.",
+      "description": "Muuta huvilasi yksityiseksi hyvinvointikeitaaksi. Sertifioitujen terapeuttien verkostomme tuo täydellisen spa-elämyksen suoraan kotiisi — sinun aikatauluusi, sinun tilaasi, täydellisessä yksityisyydessä.\n\nValitse ruotsalaisen hieronnan, syväkudoshieronnan, kuumakivihieronnan, aromaterapian tai urheiluhieronnan väliltä. Kaikki välineet ja laadukkaat öljyt tarjotaan. Istunnot voidaan pitää altaan reunalla, terassilla tai haluamassasi huoneessa.",
+      "details": [
+        "Sertifioidut terapeutit",
+        "Useita tekniikoita",
+        "Kaikki välineet sisältyvät",
+        "Laadukkaat öljyt sisältyvät",
+        "Sisällä tai ulkona",
+        "Saatavilla pareille"
+      ],
+      "price": "Alkaen 75 € per istunto",
+      "duration": "60–90 minuuttia",
+      "availability": "Saatavilla kaikissa kodeissa"
     }
   },
   "private-yoga": {
@@ -339,6 +371,22 @@
       "price": "Från 60 € per session",
       "duration": "60 minuter",
       "availability": "Tillgängligt i alla hem"
+    },
+    "fi": {
+      "name": "Yksityinen joogaistunto",
+      "tagline": "Aamuista seesteisyyttä yksityisellä terassillasi.",
+      "description": "Aloita päivä yksityisellä joogaistunnolla sertifioidun ohjaajan johdolla terassillasi, puutarhassa tai altaan reunalla. Kaikki tasot ovat tervetulleita — täydellisestä aloittelijasta edistyneeseen harjoittajaan.\n\nOhjaajamme mukauttavat jokaisen istunnon ryhmäsi tarpeisiin ja mieltymyksiin. Välineet tarjotaan, mukaan lukien matot, palikat ja vyöt. Istunnot voivat keskittyä Hathaan, Vinyasaan, Yiniin tai palauttavaan joogaan.",
+      "details": [
+        "Sertifioidut ohjaajat",
+        "Kaikki tasot tervetulleita",
+        "Välineet sisältyvät",
+        "Sisällä tai ulkona",
+        "Ryhmässä tai yksilöllisesti",
+        "Useita joogatyylejä"
+      ],
+      "price": "Alkaen 60 € per istunto",
+      "duration": "60 minuuttia",
+      "availability": "Saatavilla kaikissa kodeissa"
     }
   },
   "personal-trainer": {
@@ -453,6 +501,22 @@
       "price": "Från 55 € per session",
       "duration": "60 minuter",
       "availability": "Tillgängligt i alla hem"
+    },
+    "fi": {
+      "name": "Personal trainer",
+      "tagline": "Pysy aktiivisena lomalla asiantuntevan ohjauksen avulla.",
+      "description": "Ylläpidä harjoitusrutiiniasi — tai aloita uusi — sertifioidun personal trainerin kanssa, joka tulee kohteeseesi. Istunnot mukautetaan fyysiseen tasoosi, tavoitteisiisi ja käytettävissä olevaan tilaan.\n\nOlipa kyseessä voimaharjoittelu altaan reunalla, HIIT-istunto puutarhassa tai kevyt liikkuvuusharjoittelu terassilla, valmentajamme tuovat kaikki tehokkaaseen istuntoon tarvittavat välineet.",
+      "details": [
+        "Sertifioidut valmentajat",
+        "Räätälöidyt istunnot",
+        "Kaikki välineet sisältyvät",
+        "Voima ja kestävyys",
+        "Kaikki kuntotasot",
+        "Ulkoistunnot"
+      ],
+      "price": "Alkaen 55 € per istunto",
+      "duration": "60 minuuttia",
+      "availability": "Saatavilla kaikissa kodeissa"
     }
   },
   "airport-shuttle": {
@@ -567,6 +631,22 @@
       "price": "Från 65 € per transfer",
       "duration": "Varierar beroende på avstånd",
       "availability": "Flygplatserna i Porto, Lisboa och Faro"
+    },
+    "fi": {
+      "name": "Lentokenttäkuljetus",
+      "tagline": "Vaivattomat kuljetukset, laskeutumisesta kotiovelle.",
+      "description": "Lomasi alkaa sillä hetkellä, kun laskeudut. Yksityinen lentokenttäkuljetuspalvelumme takaa sujuvan ja mukavan matkan Porton, Lissabonin tai Faron lentokentältä suoraan kohteeseesi.\n\nAmmattikuljettajat premium-ajoneuvoissa ottavat sinut vastaan saapumisaulassa kyltti nimelläsi. Lasten turvaistuimet saatavilla pyynnöstä. Seuraamme lentoaikoja — vaikka lentosi myöhästyisi, kuljettajasi on paikalla.",
+      "details": [
+        "Premium-ajoneuvot",
+        "Henkilökohtainen vastaanotto",
+        "Lentojen seuranta",
+        "Lasten turvaistuimet saatavilla",
+        "Ovelta ovelle",
+        "Saatavilla 24/7"
+      ],
+      "price": "Alkaen 65 € per kuljetus",
+      "duration": "Vaihtelee etäisyyden mukaan",
+      "availability": "Porton, Lissabonin ja Faron lentokentät"
     }
   },
   "private-chauffeur": {
@@ -681,6 +761,22 @@
       "price": "Från 180 € per halvdag",
       "duration": "Halvdag eller heldag",
       "availability": "Alla regioner"
+    },
+    "fi": {
+      "name": "Yksityiskuljettaja",
+      "tagline": "Oma kuljettajasi jokaiselle matkalle.",
+      "description": "Oma kuljettaja käytettävissäsi päiväretkille, viinikierroksille, kaupunkikierroksille tai ravintolakuljetuksiin. Rentoudu ja nauti maisemista, kun kuljettajasi hoitaa logistiikan.\n\nKuljettajamme ovat paikallisia asiantuntijoita, jotka voivat suositella parhaita reittejä, kätkettyjä ravintoloita ja maisemallisia pysähdyksiä matkan varrella. Saatavilla puolen päivän tai koko päivän varauksiin.",
+      "details": [
+        "Paikalliset asiantuntijakuljettajat",
+        "Premium-ajoneuvot",
+        "Puoli päivää tai koko päivä",
+        "Joustava matkasuunnitelma",
+        "Ravintolakuljetukset",
+        "Viinikierrosten asiantuntija"
+      ],
+      "price": "Alkaen 180 € per puoli päivää",
+      "duration": "Puoli päivää tai koko päivä",
+      "availability": "Kaikki alueet"
     }
   },
   "grocery-setup": {
@@ -795,6 +891,22 @@
       "price": "Från 45 € per förberedelse",
       "duration": "Redo vid ankomst",
       "availability": "Tillgängligt i alla hem"
+    },
+    "fi": {
+      "name": "Ruokaostokset ja toimitus",
+      "tagline": "Jääkaappisi täytettynä ennen saapumistasi.",
+      "description": "Saavu täysin varustettuun keittiöön, jossa on paikallisia tuotteita, käsityöleipää, alueellista juustoa, tuoreita hedelmiä ja suosikkiviinejäsi. Hoidamme ostokset, jotta voit alkaa nauttia lomastasi heti ensihetkestä lähtien.\n\nValitse valikoiduista tervetulopaketeistamme tai lähetä meille henkilökohtainen ostoslistasi. Hankimme kaiken paikallisilta toreilta ja luotetuilta toimittajilta.",
+      "details": [
+        "Paikalliset tuotteet",
+        "Käsityötuotteet",
+        "Räätälöidyt ostoslistat",
+        "Tervetulopaketit",
+        "Viinivalikoima",
+        "Ruokavaliotarpeet huomioidaan"
+      ],
+      "price": "Alkaen 45 € per valmistelu",
+      "duration": "Valmiina saapuessa",
+      "availability": "Saatavilla kaikissa kodeissa"
     }
   },
   "babysitter": {
@@ -909,6 +1021,22 @@
       "price": "Från 20 € per timme",
       "duration": "Minst 3 timmar",
       "availability": "Tillgängligt i alla hem"
+    },
+    "fi": {
+      "name": "Lastenhoitaja",
+      "tagline": "Luotettavaa lastenhoitoa, jotta voit nauttia illastasi.",
+      "description": "Sertifioituja lastenhoidon ammattilaisia, saatavilla iltoja varten, päiväretkille tai aina kun tarvitset muutaman tunnin itsellesi. Kaikki lastenhoitajamme ovat taustatarkistettuja, kokeneita ja puhuvat englantia.\n\nHalusitpa romanttisen illallisen, spa-istunnon tai yksinkertaisesti hieman rauhaa, lastenhoitajamme huolehtivat siitä, että lapsesi ovat turvassa, viihtyvät ja ovat onnellisia.",
+      "details": [
+        "Sertifioidut ammattilaiset",
+        "Puhuvat englantia",
+        "Taustatarkistetut ja kokeneet",
+        "Joustavat ajat",
+        "Ilta tai päivä",
+        "Kaikki ikäryhmät"
+      ],
+      "price": "Alkaen 20 € per tunti",
+      "duration": "Vähintään 3 tuntia",
+      "availability": "Saatavilla kaikissa kodeissa"
     }
   }
 }
