@@ -8,6 +8,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { getSetting, upsertSetting } from "../db";
 
 type GuestyMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -64,6 +65,17 @@ const TOKEN_CACHE_DIR = path.resolve(process.cwd(), ".cache");
 const OPEN_TOKEN_CACHE_FILE = path.join(TOKEN_CACHE_DIR, "guesty-open-token.json");
 const BE_TOKEN_CACHE_FILE = path.join(TOKEN_CACHE_DIR, "guesty-be-token.json");
 const BE_COOLDOWN_CACHE_FILE = path.join(TOKEN_CACHE_DIR, "guesty-be-cooldown.json");
+
+// Durable token store keys (site_settings KV table). Render's filesystem is
+// ephemeral — every deploy starts a fresh disk, wiping the local token cache and
+// FORCING a new OAuth token request. Guesty caps renewals at 3/24h, so a handful
+// of deploys in one day exhausts the quota and the API starts returning 429,
+// killing live pricing site-wide. Persisting the token (and BE cooldown) in the
+// DB lets it survive deploys; disk stays as a fast best-effort fallback.
+const TOKEN_STORE_CATEGORY = "guesty_auth";
+const OPEN_TOKEN_DB_KEY = "guesty_open_token";
+const BE_TOKEN_DB_KEY = "guesty_be_token";
+const BE_COOLDOWN_DB_KEY = "guesty_be_cooldown";
 
 let oauthCache: TokenCache | null = null;
 let oauthRefreshPromise: Promise<string> | null = null;
@@ -163,6 +175,85 @@ function writeTokenCacheToDisk(filePath: string, value: TokenCache): void {
     fs.writeFileSync(filePath, JSON.stringify(value), "utf8");
   } catch {
     /* ignore token cache write errors */
+  }
+}
+
+/**
+ * Load a token cache entry, DB first (survives Render deploys), disk fallback.
+ * Returns null if neither source holds a valid token.
+ */
+async function loadTokenCache(dbKey: string, filePath: string): Promise<TokenCache | null> {
+  try {
+    const raw = await getSetting(dbKey);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed?.token && parsed?.expiresAt && parsed?.refreshAt) return parsed as TokenCache;
+    }
+  } catch {
+    /* DB unavailable — fall through to disk */
+  }
+  return readTokenCacheFromDisk(filePath);
+}
+
+/** Persist a token cache entry to both disk (fast, local) and DB (durable across deploys). */
+async function saveTokenCache(dbKey: string, filePath: string, value: TokenCache): Promise<void> {
+  writeTokenCacheToDisk(filePath, value);
+  try {
+    await upsertSetting(dbKey, JSON.stringify(value), TOKEN_STORE_CATEGORY);
+  } catch {
+    /* best effort — disk copy still written */
+  }
+}
+
+/** Read the BE OAuth cooldown deadline, DB first, disk fallback. 0 = no cooldown. */
+async function loadBeCooldownUntil(): Promise<number> {
+  try {
+    const raw = await getSetting(BE_COOLDOWN_DB_KEY);
+    if (raw) {
+      const n = JSON.parse(raw)?.cooldownUntil;
+      if (typeof n === "number") return n;
+    }
+  } catch {
+    /* fall through to disk */
+  }
+  try {
+    const raw = fs.existsSync(BE_COOLDOWN_CACHE_FILE) ? fs.readFileSync(BE_COOLDOWN_CACHE_FILE, "utf8") : null;
+    if (raw) {
+      const n = JSON.parse(raw)?.cooldownUntil;
+      if (typeof n === "number") return n;
+    }
+  } catch {
+    /* ignore */
+  }
+  return 0;
+}
+
+/** Persist the BE OAuth cooldown deadline to disk + DB so restarts and deploys respect it. */
+async function saveBeCooldownUntil(until: number): Promise<void> {
+  try {
+    ensureTokenCacheDir();
+    fs.writeFileSync(BE_COOLDOWN_CACHE_FILE, JSON.stringify({ cooldownUntil: until }), "utf8");
+  } catch {
+    /* ignore */
+  }
+  try {
+    await upsertSetting(BE_COOLDOWN_DB_KEY, JSON.stringify({ cooldownUntil: until }), TOKEN_STORE_CATEGORY);
+  } catch {
+    /* best effort */
+  }
+}
+
+/** Clear the BE OAuth cooldown from disk + DB after a successful token acquisition. */
+async function clearBeCooldown(): Promise<void> {
+  try {
+    if (fs.existsSync(BE_COOLDOWN_CACHE_FILE)) fs.unlinkSync(BE_COOLDOWN_CACHE_FILE);
+  } catch {
+    /* ignore */
+  }
+  try {
+    await upsertSetting(BE_COOLDOWN_DB_KEY, JSON.stringify({ cooldownUntil: 0 }), TOKEN_STORE_CATEGORY);
+  } catch {
+    /* best effort */
   }
 }
 
@@ -327,7 +418,7 @@ async function fetchOAuthToken(): Promise<string> {
         refreshAt,
       };
       guestyAuthConsecutive429s = 0; // Reset backoff on success
-      writeTokenCacheToDisk(OPEN_TOKEN_CACHE_FILE, oauthCache);
+      await saveTokenCache(OPEN_TOKEN_DB_KEY, OPEN_TOKEN_CACHE_FILE, oauthCache);
       console.info("[Guesty] OAuth token acquired successfully, expires in", Math.round((expiresAt - Date.now()) / 1000), "s");
       return oauthCache.token;
     }
@@ -387,7 +478,7 @@ async function fetchOAuthToken(): Promise<string> {
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
   if (!oauthCache) {
-    oauthCache = readTokenCacheFromDisk(OPEN_TOKEN_CACHE_FILE);
+    oauthCache = await loadTokenCache(OPEN_TOKEN_DB_KEY, OPEN_TOKEN_CACHE_FILE);
   }
   if (oauthCache && Date.now() < oauthCache.refreshAt) {
     return { Authorization: `Bearer ${oauthCache.token}` };
@@ -681,18 +772,14 @@ async function fetchBEOAuthToken(): Promise<string> {
   if (!GUESTY_BE_CLIENT_ID || !GUESTY_BE_CLIENT_SECRET) {
     throw new Error("Guesty Booking Engine auth not configured.");
   }
-  // Restore persisted cooldown after process restarts (Render ephemeral instances reset in-memory state).
+  // Restore persisted cooldown after process restarts/deploys (Render ephemeral
+  // instances reset in-memory state; the DB-backed copy survives deploys).
   if (guestyBeAuthCooldownUntil === 0) {
-    try {
-      const raw = fs.existsSync(BE_COOLDOWN_CACHE_FILE) ? fs.readFileSync(BE_COOLDOWN_CACHE_FILE, "utf8") : null;
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (typeof parsed?.cooldownUntil === "number" && parsed.cooldownUntil > Date.now()) {
-          guestyBeAuthCooldownUntil = parsed.cooldownUntil;
-          console.warn(`[BE OAuth] Restored cooldown from disk — ${Math.round((guestyBeAuthCooldownUntil - Date.now()) / 1000)}s remaining`);
-        }
-      }
-    } catch { /* ignore */ }
+    const persisted = await loadBeCooldownUntil();
+    if (persisted > Date.now()) {
+      guestyBeAuthCooldownUntil = persisted;
+      console.warn(`[BE OAuth] Restored cooldown — ${Math.round((guestyBeAuthCooldownUntil - Date.now()) / 1000)}s remaining`);
+    }
   }
   if (Date.now() < guestyBeAuthCooldownUntil) {
     const remaining = guestyBeAuthCooldownUntil - Date.now();
@@ -740,9 +827,9 @@ async function fetchBEOAuthToken(): Promise<string> {
         expiresAt,
         refreshAt,
       };
-      writeTokenCacheToDisk(BE_TOKEN_CACHE_FILE, beOauthCache);
+      await saveTokenCache(BE_TOKEN_DB_KEY, BE_TOKEN_CACHE_FILE, beOauthCache);
       // Clear persisted cooldown — token acquired successfully.
-      try { if (fs.existsSync(BE_COOLDOWN_CACHE_FILE)) fs.unlinkSync(BE_COOLDOWN_CACHE_FILE); } catch { /* ignore */ }
+      await clearBeCooldown();
       guestyBeAuthCooldownUntil = 0;
       return beOauthCache.token;
     }
@@ -750,8 +837,8 @@ async function fetchBEOAuthToken(): Promise<string> {
     if (response.status === 429) {
       guestyBeAuthCooldownUntil =
         Date.now() + capOAuthCooldownMs(parseRetryAfterMs(response.headers, 60_000), MAX_GUESTY_BE_OAUTH_COOLDOWN_MS);
-      // Persist cooldown to disk so process restarts (e.g. Render ephemeral instances) respect it.
-      try { ensureTokenCacheDir(); fs.writeFileSync(BE_COOLDOWN_CACHE_FILE, JSON.stringify({ cooldownUntil: guestyBeAuthCooldownUntil }), "utf8"); } catch { /* ignore */ }
+      // Persist cooldown to disk + DB so process restarts/deploys respect it.
+      await saveBeCooldownUntil(guestyBeAuthCooldownUntil);
       const details = parseJsonSafe(await response.text());
       logError({
         method: "POST",
@@ -810,7 +897,7 @@ async function fetchBEOAuthToken(): Promise<string> {
 
 async function getBEAuthHeaders(): Promise<Record<string, string>> {
   if (!beOauthCache) {
-    beOauthCache = readTokenCacheFromDisk(BE_TOKEN_CACHE_FILE);
+    beOauthCache = await loadTokenCache(BE_TOKEN_DB_KEY, BE_TOKEN_CACHE_FILE);
   }
   if (beOauthCache && Date.now() < beOauthCache.refreshAt) {
     return { Authorization: `Bearer ${beOauthCache.token}` };
