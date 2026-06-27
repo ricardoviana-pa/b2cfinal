@@ -173,7 +173,9 @@
     "fiveStar": "5 estrellas",
     "serviceLabel": "Servicio",
     "bed": "cama",
-    "nightPrice": "/ noche"
+    "nightPrice": "/ noche",
+    "prevPhoto": "Foto anterior",
+    "nextPhoto": "Foto siguiente"
   },
   "booking": {
     "summary": "Resumen de reserva",
@@ -216,7 +218,9 @@
     "priceError": "No se pudo obtener el precio en vivo.",
     "bookingOverline": "Reserva",
     "minStayNotice_one": "La estancia mínima para estas fechas es de {{count}} noche",
-    "minStayNotice_other": "La estancia mínima para estas fechas es de {{count}} noches"
+    "minStayNotice_other": "La estancia mínima para estas fechas es de {{count}} noches",
+    "select": "Seleccionar",
+    "cancellationPerPolicy": "Cancelación sujeta a la política del alojamiento"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Precio bajo consulta",
@@ -385,7 +389,24 @@
     "closeGallery": "Cerrar galería",
     "cleaningFeeRule": "Limpieza final: €{{fee}}",
     "minNights_one": "Estancia mínima de {{count}} noche",
-    "minNights_other": "Estancia mínima de {{count}} noches"
+    "minNights_other": "Estancia mínima de {{count}} noches",
+    "breadcrumbHome": "Inicio",
+    "breadcrumbHomes": "Alojamientos",
+    "bedroomsTitle": "Habitaciones y camas",
+    "serviceOverline": "Servicio de conserjería",
+    "adventureOverline": "Experiencia seleccionada",
+    "sleepsSummary": "{{beds}} habitaciones · hasta {{guests}} huéspedes",
+    "sectionSpace": "El espacio",
+    "sectionAccess": "Acceso de huéspedes",
+    "sectionNeighbourhood": "El barrio",
+    "sectionGettingAround": "Cómo moverse",
+    "sectionGoodToKnow": "Información útil",
+    "showAllAmenities": "Ver todas las comodidades",
+    "showLessAmenities": "Ver menos",
+    "requestService": "Solicitar",
+    "inHouseOverline": "Un equipo, un estándar",
+    "inHouseTitle": "Aquí todo es nuestro — chefs, choferes, terapeutas, guías.",
+    "inHouseBody": "No somos un mercado de desconocidos. Cada servicio y experiencia lo gestiona nuestro propio equipo interno y socios locales de confianza con los que trabajamos a diario — reservados, coordinados y bajo la responsabilidad de un único conserje. Como funciona un gran hotel, en una casa privada."
   },
   "priceBreakdown": {
     "title": "Resumen de precios",
@@ -684,7 +705,12 @@
     "socialProofAttribution": "Reseña de huésped verificado",
     "ownersTitle": "¿Tiene una propiedad en Portugal?",
     "ownersBody": "Nos asociamos con propietarios que quieren que su propiedad sea gestionada con el más alto estándar. Operación completa, cero implicación, y rendimientos que reflejan la calidad de su casa. Si tiene curiosidad sobre lo que hacemos para los propietarios, estaremos encantados de conversar.",
-    "ownersCta": "CONOZCA NUESTRA GESTIÓN DE PROPIEDADES"
+    "ownersCta": "CONOZCA NUESTRA GESTIÓN DE PROPIEDADES",
+    "behindScenesWatch": "Ver el vídeo",
+    "statFounded": "Fundada",
+    "statHomes": "Hoteles privados",
+    "statRegions": "Regiones",
+    "statConcierge": "Conserjería"
   },
   "services": {
     "heroAlt": "Experiencias Portugal Active",
@@ -1026,7 +1052,14 @@
     "allExperiences": "Todas las experiencias",
     "sameExperienceOnOta": "La misma experiencia cuesta más en otras plataformas.",
     "youSavePerPerson": "Ahorra €{{amount}} por persona reservando directamente.",
-    "optionalPickup": "Recogida opcional desde la villa"
+    "optionalPickup": "Recogida opcional desde la villa",
+    "navOverview": "Resumen",
+    "navHighlights": "Lo más destacado",
+    "navIncluded": "Incluido",
+    "navReviews": "Opiniones",
+    "navFaq": "FAQ",
+    "beforeYouGo": "Antes de ir",
+    "cancellationPolicyQ": "¿Cuál es la política de cancelación?"
   },
   "serviceDetail": {
     "backToExperiences": "Volver a experiencias",
@@ -1050,7 +1083,8 @@
   "reviews": {
     "ourGuests": "NUESTROS HUÉSPEDES",
     "whatTheyRemember": "Lo que más recuerdan.",
-    "proofStrip": "4.8/5 en más de 2.000 opiniones de huéspedes"
+    "proofStrip": "4.8/5 en más de 2.000 opiniones de huéspedes",
+    "verifiedGuest": "Huésped verificado"
   },
   "amenity": {
     "outdoorPool": "Exterior y Piscina",
@@ -1090,7 +1124,10 @@
     "fromYourVilla": "Desde tu villa",
     "messageWhatsApp": "Escríbenos por WhatsApp",
     "messageWhatsAppShort": "escríbenos por WhatsApp",
-    "orLabel": "o"
+    "orLabel": "o",
+    "chooseOption": "Elija su opción",
+    "checkAvailabilityBook": "Ver disponibilidad y reservar",
+    "pickOptionHint": "Seleccione un tour para ver la disponibilidad en tiempo real"
   },
   "cancellationPolicy": {
     "overline": "LEGAL",
@@ -1135,5 +1172,44 @@
     "highDemand": "Alta demanda",
     "guestFavourite": "Favorito de huéspedes",
     "justAdded": "Recién añadido"
+  },
+  "paymentThankYou": {
+    "title": "Reserva confirmada",
+    "reassurance": "Un correo de confirmación está en camino. Su conserje se pondrá en contacto en un plazo de 24 horas para ayudarle a planificar su estancia.",
+    "emailSent": "Correo de confirmación enviado a",
+    "bookedBy": "Reservado por",
+    "priceSummary": "Resumen del precio",
+    "nights": "{{count}} noches",
+    "cleaning": "Limpieza final",
+    "totalPaid": "Total pagado",
+    "paidPaypal": "Pagado en su totalidad con PayPal",
+    "paidKlarna": "Pagando con Klarna",
+    "klarnaSub": "Pagos a plazos sin intereses",
+    "cta": "¿Necesita ayuda? Hable con su conserje",
+    "ctaNote": "Su conserje dedicado se pondrá en contacto en un plazo de 24 horas para ayudarle a planificar su estancia.",
+    "trustSecure": "Reserva segura",
+    "trustRate": "Mejor precio garantizado",
+    "trustCancel": "Cancelación flexible",
+    "trustConcierge": "Conserjería incluida"
+  },
+  "bedType": {
+    "KingBed": "Cama King",
+    "QueenBed": "Cama Queen",
+    "DoubleBed": "Cama de Matrimonio",
+    "SingleBed": "Cama Individual",
+    "SofaBed": "Sofá cama",
+    "BunkBed": "Litera",
+    "AirMattress": "Colchón de aire",
+    "Bed": "Cama"
+  },
+  "bedTypes": {
+    "kingBed": "Cama King",
+    "queenBed": "Cama Queen",
+    "doubleBed": "Cama de Matrimonio",
+    "singleBed": "Cama Individual",
+    "sofaBed": "Sofá cama",
+    "bunkBed": "Litera",
+    "airMattress": "Colchón de aire",
+    "bed": "Cama"
   }
 }

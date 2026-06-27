@@ -173,7 +173,9 @@
     "fiveStar": "5 tähteä",
     "serviceLabel": "Palvelu",
     "bed": "vuode",
-    "nightPrice": "/ yö"
+    "nightPrice": "/ yö",
+    "prevPhoto": "Edellinen kuva",
+    "nextPhoto": "Seuraava kuva"
   },
   "booking": {
     "summary": "Varauksen yhteenveto",
@@ -216,7 +218,9 @@
     "priceError": "Live-hintaa ei voitu hakea.",
     "bookingOverline": "Varaus",
     "minStayNotice_one": "Vähimmäisoleskelu näille päiville on {{count}} yö",
-    "minStayNotice_other": "Vähimmäisoleskelu näille päiville on {{count}} yötä"
+    "minStayNotice_other": "Vähimmäisoleskelu näille päiville on {{count}} yötä",
+    "select": "Valitse",
+    "cancellationPerPolicy": "Peruutus majoituksen ehtojen mukaan"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Hinta pyynnöstä",
@@ -385,7 +389,24 @@
     "closeGallery": "Sulje galleria",
     "minNights_one": "Vähintään {{count}} yö",
     "minNights_other": "Vähintään {{count}} yötä",
-    "cleaningFeeRule": "Loppusiivous: €{{fee}}"
+    "cleaningFeeRule": "Loppusiivous: €{{fee}}",
+    "breadcrumbHome": "Etusivu",
+    "breadcrumbHomes": "Kohteet",
+    "bedroomsTitle": "Makuuhuoneet ja nukkumajärjestelyt",
+    "serviceOverline": "Concierge-palvelu",
+    "adventureOverline": "Räätälöity elämys",
+    "sleepsSummary": "{{beds}} makuuhuonetta · {{guests}} vierasta",
+    "sectionSpace": "Tila",
+    "sectionAccess": "Vieraiden pääsy",
+    "sectionNeighbourhood": "Lähialue",
+    "sectionGettingAround": "Liikkuminen",
+    "sectionGoodToKnow": "Hyvä tietää",
+    "showAllAmenities": "Näytä kaikki mukavuudet",
+    "showLessAmenities": "Näytä vähemmän",
+    "requestService": "Pyydä",
+    "inHouseOverline": "Yksi tiimi, yksi standardi",
+    "inHouseTitle": "Täällä kaikki on omaamme — kokit, kuljettajat, terapeutit, oppaat.",
+    "inHouseBody": "Emme ole tuntemattomien markkinapaikka. Jokaisesta palvelusta ja elämyksestä vastaa oma sisäinen tiimimme ja luotetut paikalliset kumppanit, joiden kanssa työskentelemme päivittäin — varattuna, koordinoituna ja yhden conciergen vastuulla. Kuten huippuhotellissa, mutta yksityiskodissa."
   },
   "priceBreakdown": {
     "title": "Hintayhteenveto",
@@ -684,7 +705,12 @@
     "socialProofAttribution": "Vahvistettu vierasarvostelu",
     "ownersTitle": "Omistatko kiinteistön Portugalissa?",
     "ownersBody": "Teemme yhteistyötä kiinteistönomistajien kanssa, jotka haluavat kiinteistönsä hallinnoitavan korkeimman standardin mukaisesti. Täysi toiminta, nolla osallistumista ja tuotot, jotka heijastavat kotisi laatua. Jos olet utelias siitä, mitä teemme omistajille, keskustelemme mielellämme.",
-    "ownersCta": "TUTUSTU KIINTEISTÖNHALLINTAAN"
+    "ownersCta": "TUTUSTU KIINTEISTÖNHALLINTAAN",
+    "behindScenesWatch": "Katso video",
+    "statFounded": "Perustettu",
+    "statHomes": "Yksityishotellit",
+    "statRegions": "Alueet",
+    "statConcierge": "Concierge"
   },
   "services": {
     "heroAlt": "Portugal Active -elämykset",
@@ -1026,7 +1052,14 @@
     "allExperiences": "Kaikki elämykset",
     "sameExperienceOnOta": "Sama elämys maksaa enemmän muilla alustoilla.",
     "youSavePerPerson": "Säästät €{{amount}} henkilöä kohti varaamalla suoraan.",
-    "optionalPickup": "Valinnainen nouto villastasi"
+    "optionalPickup": "Valinnainen nouto villastasi",
+    "navOverview": "Yleiskatsaus",
+    "navHighlights": "Kohokohdat",
+    "navIncluded": "Sisältyy",
+    "navReviews": "Arvostelut",
+    "navFaq": "UKK",
+    "beforeYouGo": "Ennen lähtöä",
+    "cancellationPolicyQ": "Mikä on peruutusehto?"
   },
   "serviceDetail": {
     "backToExperiences": "Takaisin elämyksiin",
@@ -1050,7 +1083,8 @@
   "reviews": {
     "ourGuests": "VIERAAMME",
     "whatTheyRemember": "Mitä he muistavat eniten.",
-    "proofStrip": "4.8/5 yli 2 000 vierasarvostelua"
+    "proofStrip": "4.8/5 yli 2 000 vierasarvostelua",
+    "verifiedGuest": "Vahvistettu vieras"
   },
   "amenity": {
     "outdoorPool": "Ulkotilat ja uima-allas",
@@ -1090,7 +1124,10 @@
     "fromYourVilla": "Villaltasi",
     "messageWhatsApp": "Ota yhteyttä WhatsAppissa",
     "messageWhatsAppShort": "ota yhteyttä WhatsAppissa",
-    "orLabel": "tai"
+    "orLabel": "tai",
+    "chooseOption": "Valitse vaihtoehto",
+    "checkAvailabilityBook": "Tarkista saatavuus ja varaa",
+    "pickOptionHint": "Valitse retki nähdäksesi saatavuuden reaaliajassa"
   },
   "cancellationPolicy": {
     "overline": "OIKEUDELLINEN",
@@ -1135,5 +1172,44 @@
     "highDemand": "Suosittu",
     "guestFavourite": "Vieraiden suosikki",
     "justAdded": "Juuri lisätty"
+  },
+  "paymentThankYou": {
+    "title": "Varaus vahvistettu",
+    "reassurance": "Vahvistussähköposti on tulossa. Conciergesi ottaa yhteyttä 24 tunnin kuluessa auttaakseen suunnittelemaan oleskelusi.",
+    "emailSent": "Vahvistussähköposti lähetetty osoitteeseen",
+    "bookedBy": "Varaaja",
+    "priceSummary": "Hintayhteenveto",
+    "nights": "{{count}} yötä",
+    "cleaning": "Loppusiivous",
+    "totalPaid": "Maksettu yhteensä",
+    "paidPaypal": "Maksettu kokonaan PayPalilla",
+    "paidKlarna": "Maksetaan Klarnalla",
+    "klarnaSub": "Korottomat erät",
+    "cta": "Tarvitsetko apua? Keskustele conciergesi kanssa",
+    "ctaNote": "Oma conciergesi ottaa yhteyttä 24 tunnin kuluessa auttaakseen suunnittelemaan oleskelusi.",
+    "trustSecure": "Turvallinen varaus",
+    "trustRate": "Paras hinta taattu",
+    "trustCancel": "Joustava peruutus",
+    "trustConcierge": "Concierge sisältyy"
+  },
+  "bedType": {
+    "KingBed": "King-sänky",
+    "QueenBed": "Queen-sänky",
+    "DoubleBed": "Parisänky",
+    "SingleBed": "Yhden hengen sänky",
+    "SofaBed": "Vuodesohva",
+    "BunkBed": "Kerrossänky",
+    "AirMattress": "Ilmapatja",
+    "Bed": "Sänky"
+  },
+  "bedTypes": {
+    "kingBed": "King-sänky",
+    "queenBed": "Queen-sänky",
+    "doubleBed": "Parisänky",
+    "singleBed": "Yhden hengen sänky",
+    "sofaBed": "Vuodesohva",
+    "bunkBed": "Kerrossänky",
+    "airMattress": "Ilmapatja",
+    "bed": "Sänky"
   }
 }
