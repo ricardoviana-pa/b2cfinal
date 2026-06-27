@@ -233,14 +233,14 @@ export default function Contact() {
           polished banner; bottom scrim keeps the headline legible. */}
       <section className="relative h-[56vh] min-h-[460px] flex items-end overflow-hidden">
         <img
-          src={IMAGES.heroMain}
-          alt={t('contact.heroAlt', 'Contact Portugal Active')}
-          className="absolute inset-0 w-full h-full object-cover"
+          src={IMAGES.contactHero}
+          alt={t('contact.heroAlt', 'The Portugal Active in-house team preparing fresh linen')}
+          className="absolute inset-0 w-full h-full object-cover object-[center_35%]"
           width={1600}
-          height={900}
+          height={1067}
           fetchPriority="high"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/5" />
         <div className="relative container max-w-[1100px] pb-12 lg:pb-16 z-10">
           <p
             className="text-[11px] font-medium tracking-[0.14em] uppercase text-white/50 mb-4"
