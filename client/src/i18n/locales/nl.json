@@ -173,7 +173,9 @@
     "fiveStar": "5-sterren",
     "serviceLabel": "Service",
     "bed": "bed",
-    "nightPrice": "/ nacht"
+    "nightPrice": "/ nacht",
+    "prevPhoto": "Vorige foto",
+    "nextPhoto": "Volgende foto"
   },
   "booking": {
     "summary": "Boekingsoverzicht",
@@ -216,7 +218,9 @@
     "priceError": "Kan live prijs niet ophalen.",
     "bookingOverline": "Boeking",
     "minStayNotice_one": "Het minimumverblijf voor deze data is {{count}} nacht",
-    "minStayNotice_other": "Het minimumverblijf voor deze data is {{count}} nachten"
+    "minStayNotice_other": "Het minimumverblijf voor deze data is {{count}} nachten",
+    "select": "Selecteren",
+    "cancellationPerPolicy": "Annulering volgens het beleid van de accommodatie"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Prijs op aanvraag",
@@ -385,7 +389,24 @@
     "closeGallery": "Galerij sluiten",
     "minNights_one": "Minimaal verblijf van {{count}} nacht",
     "minNights_other": "Minimaal verblijf van {{count}} nachten",
-    "cleaningFeeRule": "Eindschoonmaak: €{{fee}}"
+    "cleaningFeeRule": "Eindschoonmaak: €{{fee}}",
+    "breadcrumbHome": "Home",
+    "breadcrumbHomes": "Verblijven",
+    "bedroomsTitle": "Slaapkamers & slaapindeling",
+    "serviceOverline": "Conciërgeservice",
+    "adventureOverline": "Samengestelde ervaring",
+    "sleepsSummary": "{{beds}} slaapkamers · tot {{guests}} gasten",
+    "sectionSpace": "De ruimte",
+    "sectionAccess": "Toegang voor gasten",
+    "sectionNeighbourhood": "De buurt",
+    "sectionGettingAround": "Vervoer",
+    "sectionGoodToKnow": "Goed om te weten",
+    "showAllAmenities": "Alle voorzieningen tonen",
+    "showLessAmenities": "Minder tonen",
+    "requestService": "Aanvragen",
+    "inHouseOverline": "Eén team, één standaard",
+    "inHouseTitle": "Alles hier is van ons — chefs, chauffeurs, therapeuten, gidsen.",
+    "inHouseBody": "Geen marktplaats van vreemden. Elke service en ervaring wordt verzorgd door ons eigen interne team en vertrouwde lokale partners met wie we dagelijks samenwerken — geboekt, gecoördineerd en onder verantwoordelijkheid van één conciërge. Zoals een tophotel werkt, maar in een privéwoning."
   },
   "priceBreakdown": {
     "title": "Prijsoverzicht",
@@ -684,7 +705,12 @@
     "socialProofAttribution": "Geverifieerde gastrecensie",
     "ownersTitle": "Bezit u een eigendom in Portugal?",
     "ownersBody": "Wij werken samen met huiseigenaren die hun eigendom op het hoogste niveau willen laten beheren. Volledige exploitatie, geen eigen betrokkenheid en rendement dat de kwaliteit van uw woning weerspiegelt. Als u benieuwd bent naar wat wij voor eigenaren doen, horen wij het graag.",
-    "ownersCta": "MEER OVER VASTGOEDBEHEER"
+    "ownersCta": "MEER OVER VASTGOEDBEHEER",
+    "behindScenesWatch": "Bekijk de film",
+    "statFounded": "Opgericht",
+    "statHomes": "Privéhotels",
+    "statRegions": "Regio’s",
+    "statConcierge": "Conciërge"
   },
   "services": {
     "heroAlt": "Portugal Active ervaringen",
@@ -1026,7 +1052,14 @@
     "allExperiences": "Alle ervaringen",
     "sameExperienceOnOta": "Dezelfde ervaring kost meer op andere platforms.",
     "youSavePerPerson": "U bespaart €{{amount}} per persoon bij directe boeking.",
-    "optionalPickup": "Optionele ophaalservice vanaf uw villa"
+    "optionalPickup": "Optionele ophaalservice vanaf uw villa",
+    "navOverview": "Overzicht",
+    "navHighlights": "Hoogtepunten",
+    "navIncluded": "Inbegrepen",
+    "navReviews": "Beoordelingen",
+    "navFaq": "FAQ",
+    "beforeYouGo": "Voordat je gaat",
+    "cancellationPolicyQ": "Wat is het annuleringsbeleid?"
   },
   "serviceDetail": {
     "backToExperiences": "Terug naar ervaringen",
@@ -1050,7 +1083,8 @@
   "reviews": {
     "ourGuests": "ONZE GASTEN",
     "whatTheyRemember": "Wat ze zich het meest herinneren.",
-    "proofStrip": "4.8/5 bij meer dan 2.000 gastbeoordelingen"
+    "proofStrip": "4.8/5 bij meer dan 2.000 gastbeoordelingen",
+    "verifiedGuest": "Geverifieerde gast"
   },
   "amenity": {
     "outdoorPool": "Buiten & Zwembad",
@@ -1090,7 +1124,10 @@
     "fromYourVilla": "Vanaf uw villa",
     "messageWhatsApp": "Stuur ons een WhatsApp-bericht",
     "messageWhatsAppShort": "stuur ons een WhatsApp-bericht",
-    "orLabel": "of"
+    "orLabel": "of",
+    "chooseOption": "Kies uw optie",
+    "checkAvailabilityBook": "Beschikbaarheid bekijken & boeken",
+    "pickOptionHint": "Selecteer een tour om de actuele beschikbaarheid te bekijken"
   },
   "cancellationPolicy": {
     "overline": "JURIDISCH",
@@ -1135,5 +1172,44 @@
     "highDemand": "Veel vraag",
     "guestFavourite": "Favoriet bij gasten",
     "justAdded": "Net toegevoegd"
+  },
+  "paymentThankYou": {
+    "title": "Boeking bevestigd",
+    "reassurance": "Een bevestigingsmail is onderweg. Uw conciërge neemt binnen 24 uur contact op om uw verblijf te helpen plannen.",
+    "emailSent": "Bevestigingsmail verzonden naar",
+    "bookedBy": "Geboekt door",
+    "priceSummary": "Prijsoverzicht",
+    "nights": "{{count}} nachten",
+    "cleaning": "Eindschoonmaak",
+    "totalPaid": "Totaal betaald",
+    "paidPaypal": "Volledig betaald met PayPal",
+    "paidKlarna": "Betalen met Klarna",
+    "klarnaSub": "Renteloze termijnen",
+    "cta": "Hulp nodig? Praat met uw conciërge",
+    "ctaNote": "Uw persoonlijke conciërge neemt binnen 24 uur contact op om uw verblijf te helpen plannen.",
+    "trustSecure": "Veilig boeken",
+    "trustRate": "Beste prijs gegarandeerd",
+    "trustCancel": "Flexibel annuleren",
+    "trustConcierge": "Conciërge inbegrepen"
+  },
+  "bedType": {
+    "KingBed": "Kingsize bed",
+    "QueenBed": "Queensize bed",
+    "DoubleBed": "Tweepersoonsbed",
+    "SingleBed": "Eenpersoonsbed",
+    "SofaBed": "Slaapbank",
+    "BunkBed": "Stapelbed",
+    "AirMattress": "Luchtbed",
+    "Bed": "Bed"
+  },
+  "bedTypes": {
+    "kingBed": "Kingsize bed",
+    "queenBed": "Queensize bed",
+    "doubleBed": "Tweepersoonsbed",
+    "singleBed": "Eenpersoonsbed",
+    "sofaBed": "Slaapbank",
+    "bunkBed": "Stapelbed",
+    "airMattress": "Luchtbed",
+    "bed": "Bed"
   }
 }

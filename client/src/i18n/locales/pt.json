@@ -403,7 +403,10 @@
     "closeGallery": "Fechar galeria",
     "minNights_one": "Estadia mínima de {{count}} noite",
     "minNights_other": "Estadia mínima de {{count}} noites",
-    "cleaningFeeRule": "Limpeza final: €{{fee}}"
+    "cleaningFeeRule": "Limpeza final: €{{fee}}",
+    "breadcrumbHome": "Início",
+    "breadcrumbHomes": "Alojamentos",
+    "bedroomsTitle": "Quartos e distribuição de camas"
   },
   "priceBreakdown": {
     "title": "Resumo de preço",
@@ -681,7 +684,7 @@
     "heroOverline": "Hotéis Privados em Portugal",
     "heroSubtitle": "Uma equipa. Um padrão. {{count}} alojamentos em Portugal, cada um gerido de ponta a ponta pela nossa equipa.",
     "founderCaption": "Ricardo Viana, Fundador. Viana do Castelo.",
-    "pressOverline": "Na imprensa",
+    "pressOverline": "Destaque em",
     "modelP3": "É isto que queremos dizer com \"Hotéis Privados\". A privacidade e o espaço de uma casa, com a fiabilidade e a profundidade de serviço de um hotel. Uma marca. Um padrão operacional. Independentemente da propriedade que escolher.",
     "standardOverline": "O QUE ESTÁ INCLUÍDO",
     "standardTitle": "Cada estadia. Cada alojamento. Sem exceções.",
@@ -705,7 +708,6 @@
     "statHomes": "Hotéis privados",
     "statRegions": "Regiões",
     "statConcierge": "Concierge",
-    "pressOverline": "Destaque em",
     "ownersTitle": "Tem uma propriedade em Portugal?",
     "ownersBody": "Estabelecemos parcerias com proprietários que querem a sua propriedade gerida segundo o mais alto padrão. Operação completa, zero envolvimento, e retornos que refletem a qualidade do seu alojamento. Se tem curiosidade sobre o que fazemos para proprietários, teremos prazer na conversa.",
     "ownersCta": "SAIBA MAIS SOBRE GESTÃO DE PROPRIEDADES"
@@ -1050,7 +1052,14 @@
     "allExperiences": "Todas as experiências",
     "sameExperienceOnOta": "A mesma experiência noutras plataformas custa mais.",
     "youSavePerPerson": "Poupa €{{amount}} por pessoa ao reservar diretamente.",
-    "optionalPickup": "Recolha opcional na villa"
+    "optionalPickup": "Recolha opcional na villa",
+    "navOverview": "Visão geral",
+    "navHighlights": "Destaques",
+    "navIncluded": "Incluído",
+    "navReviews": "Avaliações",
+    "navFaq": "FAQ",
+    "beforeYouGo": "Antes de ir",
+    "cancellationPolicyQ": "Qual é a política de cancelamento?"
   },
   "serviceDetail": {
     "backToExperiences": "Voltar às experiências",
@@ -1163,5 +1172,44 @@
     "highDemand": "Alta procura",
     "guestFavourite": "Favorito dos hóspedes",
     "justAdded": "Novidade"
+  },
+  "paymentThankYou": {
+    "title": "Reserva confirmada",
+    "reassurance": "Um email de confirmação está a caminho. O seu concierge entrará em contacto nas próximas 24 horas para ajudar a planear a sua estadia.",
+    "emailSent": "Email de confirmação enviado para",
+    "bookedBy": "Reservado por",
+    "priceSummary": "Resumo do preço",
+    "nights": "{{count}} noites",
+    "cleaning": "Limpeza final",
+    "totalPaid": "Total pago",
+    "paidPaypal": "Pago na totalidade com PayPal",
+    "paidKlarna": "A pagar com Klarna",
+    "klarnaSub": "Prestações sem juros",
+    "cta": "Precisa de ajuda? Fale com o seu concierge",
+    "ctaNote": "O seu concierge dedicado entrará em contacto nas próximas 24 horas para ajudar a planear a sua estadia.",
+    "trustSecure": "Reserva segura",
+    "trustRate": "Melhor preço garantido",
+    "trustCancel": "Cancelamento flexível",
+    "trustConcierge": "Concierge incluído"
+  },
+  "bedType": {
+    "KingBed": "Cama King",
+    "QueenBed": "Cama Queen",
+    "DoubleBed": "Cama de Casal",
+    "SingleBed": "Cama Individual",
+    "SofaBed": "Sofá-cama",
+    "BunkBed": "Beliche",
+    "AirMattress": "Colchão de ar",
+    "Bed": "Cama"
+  },
+  "bedTypes": {
+    "kingBed": "Cama King",
+    "queenBed": "Cama Queen",
+    "doubleBed": "Cama de Casal",
+    "singleBed": "Cama Individual",
+    "sofaBed": "Sofá-cama",
+    "bunkBed": "Beliche",
+    "airMattress": "Colchão de ar",
+    "bed": "Cama"
   }
 }

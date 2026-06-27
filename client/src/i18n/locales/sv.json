@@ -173,7 +173,9 @@
     "fiveStar": "5-stjärnig",
     "serviceLabel": "Service",
     "bed": "säng",
-    "nightPrice": "/ natt"
+    "nightPrice": "/ natt",
+    "prevPhoto": "Föregående bild",
+    "nextPhoto": "Nästa bild"
   },
   "booking": {
     "summary": "Bokningsöversikt",
@@ -216,7 +218,9 @@
     "priceError": "Kunde inte hämta livepris.",
     "bookingOverline": "Bokning",
     "minStayNotice_one": "Minsta vistelse för dessa datum är {{count}} natt",
-    "minStayNotice_other": "Minsta vistelse för dessa datum är {{count}} nätter"
+    "minStayNotice_other": "Minsta vistelse för dessa datum är {{count}} nätter",
+    "select": "Välj",
+    "cancellationPerPolicy": "Avbokning enligt boendets villkor"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Pris på förfrågan",
@@ -385,7 +389,24 @@
     "closeGallery": "Stäng galleri",
     "minNights_one": "Minst {{count}} natt",
     "minNights_other": "Minst {{count}} nätter",
-    "cleaningFeeRule": "Slutstädning: €{{fee}}"
+    "cleaningFeeRule": "Slutstädning: €{{fee}}",
+    "breadcrumbHome": "Hem",
+    "breadcrumbHomes": "Boenden",
+    "bedroomsTitle": "Sovrum & sängplatser",
+    "serviceOverline": "Concierge-tjänst",
+    "adventureOverline": "Kurerad upplevelse",
+    "sleepsSummary": "{{beds}} sovrum · upp till {{guests}} gäster",
+    "sectionSpace": "Utrymmet",
+    "sectionAccess": "Gästernas tillgång",
+    "sectionNeighbourhood": "Området",
+    "sectionGettingAround": "Ta sig runt",
+    "sectionGoodToKnow": "Bra att veta",
+    "showAllAmenities": "Visa alla bekvämligheter",
+    "showLessAmenities": "Visa färre",
+    "requestService": "Begär",
+    "inHouseOverline": "Ett team, en standard",
+    "inHouseTitle": "Allt här är vårt — kockar, chaufförer, terapeuter, guider.",
+    "inHouseBody": "Ingen marknadsplats med främlingar. Varje tjänst och upplevelse sköts av vårt eget interna team och betrodda lokala partner som vi arbetar med dagligen — bokade, samordnade och med en enda concierge som ansvarig. Som ett förstklassigt hotell fungerar, fast i ett privat hem."
   },
   "priceBreakdown": {
     "title": "Prissammanfattning",
@@ -684,7 +705,12 @@
     "socialProofAttribution": "Verifierat gästomdöme",
     "ownersTitle": "Äger du en fastighet i Portugal?",
     "ownersBody": "Vi samarbetar med husägare som vill att deras fastighet förvaltas på högsta nivå. Full drift, inget engagemang och avkastning som återspeglar kvaliteten på ditt hem. Om du är nyfiken på vad vi gör för ägare tar vi gärna en pratstund.",
-    "ownersCta": "LÄS OM FASTIGHETSFÖRVALTNING"
+    "ownersCta": "LÄS OM FASTIGHETSFÖRVALTNING",
+    "behindScenesWatch": "Se filmen",
+    "statFounded": "Grundat",
+    "statHomes": "Privata hotell",
+    "statRegions": "Regioner",
+    "statConcierge": "Concierge"
   },
   "services": {
     "heroAlt": "Portugal Active-upplevelser",
@@ -1026,7 +1052,14 @@
     "allExperiences": "Alla upplevelser",
     "sameExperienceOnOta": "Samma upplevelse kostar mer på andra plattformar.",
     "youSavePerPerson": "Du sparar €{{amount}} per person vid direktbokning.",
-    "optionalPickup": "Valfri upphämtning från din villa"
+    "optionalPickup": "Valfri upphämtning från din villa",
+    "navOverview": "Översikt",
+    "navHighlights": "Höjdpunkter",
+    "navIncluded": "Ingår",
+    "navReviews": "Recensioner",
+    "navFaq": "FAQ",
+    "beforeYouGo": "Innan du åker",
+    "cancellationPolicyQ": "Vad gäller för avbokning?"
   },
   "serviceDetail": {
     "backToExperiences": "Tillbaka till upplevelser",
@@ -1050,7 +1083,8 @@
   "reviews": {
     "ourGuests": "VÅRA GÄSTER",
     "whatTheyRemember": "Vad de minns mest.",
-    "proofStrip": "4.8/5 bland över 2 000 gästomdömen"
+    "proofStrip": "4.8/5 bland över 2 000 gästomdömen",
+    "verifiedGuest": "Verifierad gäst"
   },
   "amenity": {
     "outdoorPool": "Utomhus & Pool",
@@ -1090,7 +1124,10 @@
     "fromYourVilla": "Från din villa",
     "messageWhatsApp": "Kontakta oss på WhatsApp",
     "messageWhatsAppShort": "kontakta oss på WhatsApp",
-    "orLabel": "eller"
+    "orLabel": "eller",
+    "chooseOption": "Välj ditt alternativ",
+    "checkAvailabilityBook": "Se tillgänglighet & boka",
+    "pickOptionHint": "Välj en tur för att se tillgänglighet i realtid"
   },
   "cancellationPolicy": {
     "overline": "JURIDISKT",
@@ -1135,5 +1172,44 @@
     "highDemand": "Hög efterfrågan",
     "guestFavourite": "Gästfavorit",
     "justAdded": "Nyligen tillagd"
+  },
+  "paymentThankYou": {
+    "title": "Bokning bekräftad",
+    "reassurance": "Ett bekräftelsemejl är på väg. Din concierge hör av sig inom 24 timmar för att hjälpa dig planera vistelsen.",
+    "emailSent": "Bekräftelsemejl skickat till",
+    "bookedBy": "Bokad av",
+    "priceSummary": "Prissammanfattning",
+    "nights": "{{count}} nätter",
+    "cleaning": "Slutstädning",
+    "totalPaid": "Totalt betalt",
+    "paidPaypal": "Betalt i sin helhet med PayPal",
+    "paidKlarna": "Betalar med Klarna",
+    "klarnaSub": "Räntefria delbetalningar",
+    "cta": "Behöver du hjälp? Prata med din concierge",
+    "ctaNote": "Din personliga concierge hör av sig inom 24 timmar för att hjälpa dig planera vistelsen.",
+    "trustSecure": "Säker bokning",
+    "trustRate": "Bästa pris garanterat",
+    "trustCancel": "Flexibel avbokning",
+    "trustConcierge": "Concierge ingår"
+  },
+  "bedType": {
+    "KingBed": "King-säng",
+    "QueenBed": "Queen-säng",
+    "DoubleBed": "Dubbelsäng",
+    "SingleBed": "Enkelsäng",
+    "SofaBed": "Bäddsoffa",
+    "BunkBed": "Våningssäng",
+    "AirMattress": "Luftmadrass",
+    "Bed": "Säng"
+  },
+  "bedTypes": {
+    "kingBed": "King-säng",
+    "queenBed": "Queen-säng",
+    "doubleBed": "Dubbelsäng",
+    "singleBed": "Enkelsäng",
+    "sofaBed": "Bäddsoffa",
+    "bunkBed": "Våningssäng",
+    "airMattress": "Luftmadrass",
+    "bed": "Säng"
   }
 }
