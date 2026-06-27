@@ -106,6 +106,39 @@ function humanizeRatePlanName(raw: string): string {
   return raw;
 }
 
+/** Is this a non-refundable / strict rate plan? */
+function isNonRefundablePlan(o: RatePlanOption): boolean {
+  const n = (o.name || '').toLowerCase();
+  const code = o.cancellationPolicy?.[0];
+  return (
+    (n.includes('non') && n.includes('refund')) ||
+    (n.includes('não') && n.includes('reembols')) ||
+    code === 'super_strict' ||
+    code === 'strict'
+  );
+}
+
+/** Guesty often returns several messy rate plans (duplicate "Flexible",
+ *  bespoke names like "Rembolsável Premium High 26"). The PDP must only ever
+ *  surface two: one refundable (Flexible) and one Non-Refundable. Collapse to
+ *  a representative of each — cheapest non-refundable, and the best refundable
+ *  (one explicitly named flexible/refundable, else cheapest) — ordered
+ *  refundable first. Returns ≤2 items. */
+function pickTwoRatePlans(options?: RatePlanOption[]): RatePlanOption[] {
+  if (!options || options.length === 0) return [];
+  const cheapest = (arr: RatePlanOption[]) => arr.slice().sort((a, b) => a.total - b.total)[0];
+  const nonRefs = options.filter(isNonRefundablePlan);
+  const refunds = options.filter((o) => !isNonRefundablePlan(o));
+
+  const out: RatePlanOption[] = [];
+  if (refunds.length) {
+    const named = refunds.find((o) => /flex|refund|reembols/i.test(o.name || ''));
+    out.push(named || cheapest(refunds));
+  }
+  if (nonRefs.length) out.push(cheapest(nonRefs));
+  return out;
+}
+
 /** Humanize raw Guesty cancellation policy code */
 function humanizeCancellationPolicy(raw: string): string {
   const policyMap: Record<string, string> = {
@@ -424,11 +457,18 @@ export default function BookingWidget({
         quoteId: beQuoteId,
         quoteCreatedAt: beQuoteId ? Date.now() : undefined,
         ratePlanId: (d as any).ratePlanId,
-        ratePlanOptions: (d as any).ratePlanOptions,
+        // Collapse Guesty's messy plan list to exactly two: Flexible + Non-Refundable.
+        ratePlanOptions: pickTwoRatePlans((d as any).ratePlanOptions),
       };
 
       setQuote(quoteData);
-      if ((d as any).ratePlanId) setSelectedRatePlanId((d as any).ratePlanId);
+      // Default the selection to a plan that is actually shown. Honour the
+      // backend default only if it survived the collapse, else pick the first
+      // (refundable) of the two.
+      const shownPlans = quoteData.ratePlanOptions || [];
+      const backendDefault = (d as any).ratePlanId as string | undefined;
+      const defaultPlan = shownPlans.find(o => o.ratePlanId === backendDefault) || shownPlans[0];
+      setSelectedRatePlanId(defaultPlan ? defaultPlan.ratePlanId : null);
 
       setStep("quote");
     } catch (err: any) {

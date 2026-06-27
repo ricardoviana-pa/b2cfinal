@@ -117,7 +117,7 @@ export default function Home() {
   const homeFaq = useMemo(() => buildFaqPageSchema([
     {
       question: 'What makes Portugal Active different from Airbnb or Booking.com?',
-      answer: "Portugal Active operates each property like a private hotel — with a 47-point preparation checklist, dedicated concierge, optional private chef, and a local team minutes away. We don't just list homes; we manage them to hotel standards.",
+      answer: "Portugal Active operates each property like a private hotel — with a 147-point preparation checklist, dedicated concierge, optional private chef, and a local team minutes away. We don't just list homes; we manage them to hotel standards.",
     },
     {
       question: 'Which regions in Portugal does Portugal Active cover?',
