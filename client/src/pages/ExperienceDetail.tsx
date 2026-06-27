@@ -38,6 +38,7 @@ import ExperienceGuideProfile from '@/components/experience/ExperienceGuideProfi
 import ExperienceRelatedExperiences from '@/components/experience/ExperienceRelatedExperiences';
 
 import experienceDetailsData from '@/data/experienceDetails.json';
+import { localizeExperience } from '@/lib/localizeContent';
 import servicesData from '@/data/services.json';
 import productsData from '@/data/products.json';
 import destinationsData from '@/data/destinations.json';
@@ -185,12 +186,15 @@ function findExperience(slug: string): RawExperience | null {
 /* ── Component ── */
 
 export default function ExperienceDetail() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [, params] = useRoute('/experiences/:slug');
   const [, actParams] = useRoute('/activities/:slug');
   const slug = params?.slug || actParams?.slug || '';
 
-  const exp = useMemo(() => (slug ? findExperience(slug) : null), [slug]);
+  const exp = useMemo(
+    () => (slug ? localizeExperience(findExperience(slug), i18n.language) : null),
+    [slug, i18n.language],
+  );
 
   usePageMeta({
     title: exp
