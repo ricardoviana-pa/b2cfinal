@@ -229,17 +229,18 @@ export default function Contact() {
       <StructuredData id="contact-graph" data={contactGraph} />
       <Header />
 
-      {/* Hero with image */}
-      <section className="relative h-[50vh] min-h-[380px] flex items-end overflow-hidden">
+      {/* Hero with image — curated brand hero (not a raw listing photo) for a
+          polished banner; bottom scrim keeps the headline legible. */}
+      <section className="relative h-[56vh] min-h-[460px] flex items-end overflow-hidden">
         <img
           src={IMAGES.contactHero}
-          alt={t('contact.heroAlt', 'Contact Portugal Active')}
-          className="absolute inset-0 w-full h-full object-cover object-top"
-          width={1200}
-          height={674}
+          alt={t('contact.heroAlt', 'A Portugal Active property terrace with a firepit at golden hour')}
+          className="absolute inset-0 w-full h-full object-cover object-[center_55%]"
+          width={1600}
+          height={1067}
           fetchPriority="high"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/5" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
         <div className="relative container max-w-[1100px] pb-12 lg:pb-16 z-10">
           <p
             className="text-[11px] font-medium tracking-[0.14em] uppercase text-white/50 mb-4"
@@ -256,18 +257,6 @@ export default function Contact() {
           >
             {t('contact.heroSubtitle')}
           </p>
-        </div>
-      </section>
-
-      {/* Quick Answer — SEO / AI citable summary */}
-      <section className="py-8 bg-[#FAFAF7]">
-        <div className="container max-w-[1100px]">
-          <AnswerCapsule
-            question="How do I contact Portugal Active?"
-            answer="Portugal Active's concierge team is available by phone (+351 258 358 434), WhatsApp, or email (info@portugalactive.com). Response time is typically under two hours. You can also schedule a video call to plan your stay. The team assists with property selection, experience booking, airport transfers, private chefs, and any special requests. Book direct for the best rate and complimentary concierge planning."
-            emitSchema
-            schemaId="qa-contact"
-          />
         </div>
       </section>
 
@@ -421,7 +410,7 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#333330] active:bg-[#0D0D0C] transition-colors self-start inline-flex items-center gap-2.5 min-h-[48px] disabled:opacity-50"
+                    className="rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#333330] active:bg-[#0D0D0C] transition-colors self-start md:self-end inline-flex items-center gap-2.5 min-h-[48px] disabled:opacity-50"
                   >
                     {submitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                     {submitting ? t('contact.sending', 'Sending...') : t('contact.sendMessage')}
@@ -483,6 +472,22 @@ export default function Contact() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Answer — citable AEO summary. Kept in the DOM (role=doc-abstract
+          + schema) but moved down by the FAQ and scaled down, so it reads as a
+          quiet footnote rather than a headline beat under the hero. */}
+      <section className="bg-[#FAFAF7] pt-2 pb-12">
+        <div className="container max-w-2xl">
+          <div className="scale-[0.92] origin-top opacity-90">
+            <AnswerCapsule
+              question="How do I contact Portugal Active?"
+              answer="Portugal Active's concierge team is available by phone (+351 258 358 434), WhatsApp, or email (info@portugalactive.com). Response time is typically under two hours. You can also schedule a video call to plan your stay. The team assists with property selection, experience booking, airport transfers, private chefs, and any special requests. Book direct for the best rate and complimentary concierge planning."
+              emitSchema
+              schemaId="qa-contact"
+            />
           </div>
         </div>
       </section>
