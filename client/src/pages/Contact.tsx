@@ -410,7 +410,7 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#333330] active:bg-[#0D0D0C] transition-colors self-start inline-flex items-center gap-2.5 min-h-[48px] disabled:opacity-50"
+                    className="rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#333330] active:bg-[#0D0D0C] transition-colors self-start md:self-end inline-flex items-center gap-2.5 min-h-[48px] disabled:opacity-50"
                   >
                     {submitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                     {submitting ? t('contact.sending', 'Sending...') : t('contact.sendMessage')}
