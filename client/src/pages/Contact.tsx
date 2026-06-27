@@ -234,13 +234,13 @@ export default function Contact() {
       <section className="relative h-[56vh] min-h-[460px] flex items-end overflow-hidden">
         <img
           src={IMAGES.contactHero}
-          alt={t('contact.heroAlt', 'The Portugal Active in-house team preparing fresh linen')}
-          className="absolute inset-0 w-full h-full object-cover object-[center_35%]"
+          alt={t('contact.heroAlt', 'A Portugal Active property terrace with a firepit at golden hour')}
+          className="absolute inset-0 w-full h-full object-cover object-[center_55%]"
           width={1600}
           height={1067}
           fetchPriority="high"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/5" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
         <div className="relative container max-w-[1100px] pb-12 lg:pb-16 z-10">
           <p
             className="text-[11px] font-medium tracking-[0.14em] uppercase text-white/50 mb-4"

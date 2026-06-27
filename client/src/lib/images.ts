@@ -22,9 +22,9 @@ export const IMAGES = {
   // About page
   aboutStory: '/hero/about-team-suite.webp',
 
-  // Contact page — the in-house team folding fresh linen: human, on-brand
-  // ("our own team, not a marketplace"), and distinct from the villa heroes.
-  contactHero: '/hero/about-team-laundry.webp',
+  // Contact page — a Portugal Active property terrace with a lit firepit at
+  // golden hour: aspirational and warm, distinct from the villa heroes.
+  contactHero: '/experiences/pa-property-firepit.webp',
 
   // Logo
   logoWhite: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp',
