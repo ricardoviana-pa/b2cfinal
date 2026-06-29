@@ -6,6 +6,8 @@
 import { useState, useMemo, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
 import { useParams, Link, useSearch } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { localizeProperty } from '@/lib/localizeProperty';
+import { localizeProduct } from '@/lib/localizeContent';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck,
@@ -527,11 +529,17 @@ function DescriptionSection({ description, sections, propertyName, locality, des
 }
 
 export default function PropertyDetail() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
-  const { data: property, isLoading, error, refetch } = trpc.properties.getBySlugForSite.useQuery(
+  const { data: rawProperty, isLoading, error, refetch } = trpc.properties.getBySlugForSite.useQuery(
     { slug: slug ?? '' },
     { enabled: !!slug }
+  );
+  // Property descriptions come from Guesty in English; overlay per-locale
+  // translations (guestyId-keyed) with English fallback.
+  const property = useMemo(
+    () => localizeProperty(rawProperty, i18n.language),
+    [rawProperty, i18n.language],
   );
 
   // When this listing is the parent of a multi-unit group, swap the visible
@@ -693,14 +701,17 @@ export default function PropertyDetail() {
     });
   }, [property?.id]);
 
-  const services = useMemo(() => allProducts.filter(p => p.type === 'service' && p.isActive), []);
+  const services = useMemo(
+    () => allProducts.filter(p => p.type === 'service' && p.isActive).map(p => localizeProduct(p, i18n.language)!),
+    [i18n.language],
+  );
   const adventures = useMemo(() => {
     if (!property) return [];
     return allProducts.filter(p =>
       p.type === 'adventure' && p.isActive &&
       (Array.isArray(p.destinations) ? (p.destinations.length === 0 || p.destinations.includes(property.destination)) : true)
-    );
-  }, [property]);
+    ).map(p => localizeProduct(p, i18n.language)!);
+  }, [property, i18n.language]);
 
   const destObj = useMemo(() => {
     if (!property) return null;
@@ -723,8 +734,9 @@ export default function PropertyDetail() {
     if (!property || !allPropsData) return [];
     return (allPropsData as Property[])
       .filter(p => p.isActive !== false && p.destination === property.destination && p.slug !== property.slug)
-      .slice(0, 3);
-  }, [property, allPropsData]);
+      .slice(0, 3)
+      .map(p => localizeProperty(p, i18n.language)!);
+  }, [property, allPropsData, i18n.language]);
 
   // GA4: view_item_list for related properties — fires when cards enter the viewport
   useEffect(() => {
