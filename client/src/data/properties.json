@@ -1444,6 +1444,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Nous avons passé un moment incroyable. La villa est magnifique, très propre et parfaitement équipée. La piscine est superbe, surtout au coucher du soleil, avec une vue magnifique. L’endroit est calme, idéal pour se détendre entre amis ou en famille. Tout était conforme aux photos, voire mieux. Je recommande sans hésiter et j’y retournerais avec plaisir !",
+        "guestDisplayName": "Dany Soares",
+        "guestName": "Dany Soares",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-30T06:09:43.270Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Quite simply the best stay in Portugal if you want to unwind with family and friends. Beautiful surroundings, incredible views, amazing pool and outdoor spaces. Very relaxing and easygoing.",
         "guestDisplayName": "Philip",
         "guestName": "Philip",
@@ -1654,7 +1689,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 6
+    "reviewCount": 7
   },
   {
     "id": "guesty-6965338a753fb0001424acf6",
@@ -9564,6 +9599,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Casa increíble! Muy bonita y muy cómoda! Portugal Active respondía al momento cualquier duda que teníamos,  muy contentos con la casa! Saludos",
+        "guestDisplayName": "Samuel",
+        "guestName": "Samuel",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-29T06:58:33.446Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Casa incrível para convívio de amigos",
         "guestDisplayName": "Diogo",
         "guestName": "Diogo",
@@ -9634,7 +9704,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   },
   {
     "id": "guesty-69e7552df2f71100122bbb35",
@@ -13561,6 +13631,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Espectacular la casa. Todo nuevo, limpio y con todas las comodidades para pasar unos días increíbles con amigos. El exterior con la piscina es un sueño. Repetiremos",
+        "guestDisplayName": "Nuria",
+        "guestName": "Nuria",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-06-28T18:59:07.065Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Excelentes instalaciones, ubicación, limpieza y comodidad.  ¡sin duda volvemos! Los recomiendo. \nGracias al anfitrión por recibirnos.",
         "guestDisplayName": "Angelica",
         "guestName": "Angelica",
@@ -13701,7 +13806,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 4
+    "reviewCount": 5
   },
   {
     "id": "guesty-696533494b9b64001401b62e",
