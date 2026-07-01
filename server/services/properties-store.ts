@@ -68,7 +68,38 @@ const EXCLUDED_SLUG_PATTERNS: string[] = [
   "villa-luzia", // Removed per CEO request (2026-05-06)
 ];
 
+/**
+ * Brand-cleanup exclusions (2026-06-28) — weaker listings kept OFF the primary
+ * site (www.portugalactive.com) to protect the luxury positioning. They REMAIN
+ * live on the OTAs and on the secondary direct site (booking.portugalactive.com,
+ * the Guesty Booking Engine), which are unaffected by this filter. Matched by
+ * Guesty listing id so it survives re-syncs and slug changes. To re-list, remove
+ * the id here.
+ */
+const EXCLUDED_GUESTY_IDS = new Set<string>([
+  "6965338ed1c09900156e8502", // Calejo House
+  "696532fa6d209c001510d5ee", // Ocean view Cabedelo Beach Duplex
+  "696533762def930014e917bf", // Seabreeze Duplex
+  "696533616cff760015e28965", // Tide Terrace Duplex
+  "6a341163c50f210012f12b80", // Douro Garden
+  "6a0359b4e343150013abc14d", // Atlas Hideway
+  "696533d2ec19770014fd1b52", // Coastal Horizon
+  "696533752def930014e9167c", // Seaside Urban Retreat
+  "6965332c6d209c001510e1c1", // Slow Living Countryside House
+  "696532f3753fb0001424a570", // Countryside House near the Beach
+  "696533af4fe6a100145fecb6", // White Charm by the Sea
+  "69ca869e5b0a0500158b7d5a", // River View
+  "6965333104b96f00147f5428", // Bandeira Retreat
+  "696533794fe6a100145fe4bf", // Ocean Bliss
+  "6965335df1c3a8001597c8e4", // Divine Waves Duplex
+  "6965337d2def930014e919c6", // Urban Reflections
+  "696533cf4b583900135cfb02", // Shoreline Escape
+  "6a3a63f9e19cb0001db6a05e", // Saltwind Studio
+]);
+
 function isExcluded(p: any): boolean {
+  const gid = p.guestyId || p.listingId || "";
+  if (gid && EXCLUDED_GUESTY_IDS.has(gid)) return true;
   const slug = (p.slug || "").toLowerCase();
   if (!slug) return false;
   return EXCLUDED_SLUG_PATTERNS.some(pattern => slug.includes(pattern));
