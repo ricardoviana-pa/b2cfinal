@@ -19,7 +19,7 @@ import destinationsI18n from '@/data/destinations.i18n.json';
 
 type Dict = Record<string, any>;
 
-function deepMerge(base: any, ov: any): any {
+export function deepMerge(base: any, ov: any): any {
   if (Array.isArray(ov)) {
     if (Array.isArray(base)) {
       return ov.map((v, i) =>
