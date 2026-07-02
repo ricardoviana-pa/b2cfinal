@@ -6,7 +6,7 @@
 import { useState, useMemo, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
 import { useParams, Link, useSearch } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { localizeProperty } from '@/lib/localizeProperty';
+import { loadPropertyOverrides, mergePropertyOverrides } from '@/lib/localizeProperty';
 import { localizeProduct } from '@/lib/localizeContent';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import {
@@ -536,10 +536,18 @@ export default function PropertyDetail() {
     { enabled: !!slug }
   );
   // Property descriptions come from Guesty in English; overlay per-locale
-  // translations (guestyId-keyed) with English fallback.
+  // translations (guestyId-keyed) with English fallback. Only the active
+  // language's overrides are fetched (code-split), so we load them async and
+  // fall back to English until they arrive.
+  const [propOverrides, setPropOverrides] = useState<Record<string, any>>({});
+  useEffect(() => {
+    let alive = true;
+    loadPropertyOverrides(i18n.language).then(o => { if (alive) setPropOverrides(o); });
+    return () => { alive = false; };
+  }, [i18n.language]);
   const property = useMemo(
-    () => localizeProperty(rawProperty, i18n.language),
-    [rawProperty, i18n.language],
+    () => mergePropertyOverrides(rawProperty, propOverrides),
+    [rawProperty, propOverrides],
   );
 
   // When this listing is the parent of a multi-unit group, swap the visible
@@ -735,8 +743,8 @@ export default function PropertyDetail() {
     return (allPropsData as Property[])
       .filter(p => p.isActive !== false && p.destination === property.destination && p.slug !== property.slug)
       .slice(0, 3)
-      .map(p => localizeProperty(p, i18n.language)!);
-  }, [property, allPropsData, i18n.language]);
+      .map(p => mergePropertyOverrides(p, propOverrides)!);
+  }, [property, allPropsData, propOverrides]);
 
   // GA4: view_item_list for related properties — fires when cards enter the viewport
   useEffect(() => {
