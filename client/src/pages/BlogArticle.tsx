@@ -2,7 +2,7 @@
    BLOG ARTICLE — Single article view with editorial layout
    ========================================================================== */
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useParams, Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -13,6 +13,7 @@ import { StructuredData, buildArticleSchema, buildBreadcrumbSchema } from '@/com
 import AnswerCapsule from '@/components/seo/AnswerCapsule';
 import type { BlogArticle as BlogArticleType } from '@/lib/types';
 import blogData from '@/data/blog.json';
+import { loadBlogOverrides, mergeBlogOverride } from '@/lib/localizeBlog';
 
 const articles = (blogData as any).articles as BlogArticleType[];
 
@@ -105,7 +106,16 @@ function VideoEmbed({ vimeoId, videoId, title }: { vimeoId?: string; videoId?: s
 export default function BlogArticle() {
   const { t, i18n } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
-  const article = articles.find(a => a.slug === slug);
+  // Articles are authored in English; overlay per-locale translations
+  // (slug-keyed), loading only the active language's file. EN fallback.
+  const [blogOverrides, setBlogOverrides] = useState<Record<string, any>>({});
+  useEffect(() => {
+    let alive = true;
+    loadBlogOverrides(i18n.language).then(o => { if (alive) setBlogOverrides(o); });
+    return () => { alive = false; };
+  }, [i18n.language]);
+  const rawArticle = articles.find(a => a.slug === slug);
+  const article = useMemo(() => mergeBlogOverride(rawArticle, blogOverrides), [rawArticle, blogOverrides]);
   usePageMeta({
     title: article?.title,
     description: article ? `${article.excerpt?.slice(0, 130) || article.title}. Read on the Portugal Active journal.`.slice(0, 155) : undefined,

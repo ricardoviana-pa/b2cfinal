@@ -3,8 +3,9 @@
    Hero, 6 categories, featured article, article grid
    ========================================================================== */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { loadBlogOverrides, mergeBlogOverride } from '@/lib/localizeBlog';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { Link } from 'wouter';
 import { Clock, ArrowRight, Calendar, Play } from 'lucide-react';
@@ -33,6 +34,15 @@ export default function Blog() {
   const { t, i18n } = useTranslation();
   usePageMeta({ title: 'Portugal Travel Journal | Guides, Tips & Inspiration', description: 'Insider guides to Portugal — best beaches, hidden restaurants, wine regions, and travel tips from our local concierge team.', url: '/blog' });
   const [activeCategory, setActiveCategory] = useState<BlogCategory | 'all'>('all');
+
+  // Overlay per-locale article translations (slug-keyed), active language only.
+  const [blogOverrides, setBlogOverrides] = useState<Record<string, any>>({});
+  useEffect(() => {
+    let alive = true;
+    loadBlogOverrides(i18n.language).then(o => { if (alive) setBlogOverrides(o); });
+    return () => { alive = false; };
+  }, [i18n.language]);
+  const locArticles = useMemo(() => articles.map(a => mergeBlogOverride(a, blogOverrides)!), [blogOverrides]);
 
   const blogGraph = useMemo(() => {
     const publishedArticles = articles.filter((a) => a.status === 'published');
@@ -83,12 +93,12 @@ export default function Blog() {
   ], [t]);
 
   const filtered = useMemo(() => {
-    const published = articles.filter(a => a.status === 'published');
+    const published = locArticles.filter(a => a.status === 'published');
     if (activeCategory === 'all') return published;
     return published.filter(a => a.category === activeCategory);
-  }, [activeCategory]);
+  }, [activeCategory, locArticles]);
 
-  const featured = articles.find(a => a.isFeatured && a.status === 'published');
+  const featured = locArticles.find(a => a.isFeatured && a.status === 'published');
   const rest = filtered.filter(a => a.id !== featured?.id);
 
   return (
