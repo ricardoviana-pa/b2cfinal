@@ -45,42 +45,43 @@ export const CURATED_PROPERTY_ORDER: string[] = [
   '696533aaf142270014026d70', // #20 Skyline Retreat with pool
   '69653381bf04fe00137437cd', // #21 Stone by the Sea - Mountain & Beach Retreat w/Pool
   '696533494b9b64001401b62e', // #22 Portugal Active Oliveira's Farm
-  '696533b2e44e1a0015bb2b42', // #23 Rose Dream Boat by Portugal Active
-  '6970af61638a8a0015eaa850', // #24 Moledo Front Beach w/Sunset Views and Pool
-  '6965339dbf04fe0013743e2d', // #25 Fountain Retreat - Quinta da Fonte (multi-unit)
-  '69dfa9cead7c9c0014cb71c9', // #26 Dunes Beach House with Ocean Views
-  '6a312c59a705e1001327708c', // #27 Sunset Cliffs with Ocean View
-  '69653390ecf7490014ed2d6c', // #28 Lighthouse View by Portugal Active
-  '69b3f4234aafb300134e52a9', // #29 Madorra House - Heated Pool
-  '69e7552df2f71100122bbb35', // #30 Lumina Duplex by Portugal Active
-  '696533266dec35001492fdbb', // #31 Portugal Active BlueGreen Beach Apartment
-  '6965338ed1c09900156e8502', // #32 Calejo House Pool & Sports & Grill Retreat
-  '696533814b9b64001401c7b8', // #33 Salty Escape by Portugal Active
-  '696533d8753fb0001424b10d', // #34 The Nature Princess by Portugal Active
-  '696533762def930014e917bf', // #35 Seabreeze Duplex Beach & Terrace
-  '696533616cff760015e28965', // #36 Tide Terrace Duplex - Sea Escape
-  '6965338a753fb0001424acf6', // #37 Blue Tile Hideaway by Portugal Active
-  '696532fa6d209c001510d5ee', // #38 Ocean view Cabedelo Beach Duplex
-  '6a341163c50f210012f12b80', // #39 Douro Garden by Portugal Active
-  '696533b7bf04fe00137440f8', // #40 Heritage Loft in the Cradle of Portugal
-  '6a0359b4e343150013abc14d', // #41 Atlas Hideway by Portugal Active
-  '69653388753fb0001424abad', // #42 Invictus Escape Jacuzzi & Charm in the City
-  '696533794b583900135cf0fc', // #43 Yellow Breeze Apartment
-  '696532eee44e1a0015bb2460', // #44 Portugal Active Beach Flat
-  '6965338cecf7490014ed2c2d', // #45 Framed Corner by Portugal Active
-  '6965338554dbb5001568a505', // #46 Classic Meets Modern Downtown Balcony Retreat
-  '696533752def930014e9167c', // #47 Seaside Urban Retreat 5min to Esposende Beach
-  '696533d2ec19770014fd1b52', // #48 Coastal Horizon by Portugal Active
-  '696532f3753fb0001424a570', // #49 Countryside House near the Beach and City
-  '6965332c6d209c001510e1c1', // #50 Slow Living Countryside House
-  '696533af4fe6a100145fecb6', // #51 White Charm by the Sea
-  '69ca869e5b0a0500158b7d5a', // #52 River View by Portugal Active
-  '6965333104b96f00147f5428', // #53 Portugal Active Bandeira Retreat
-  '696533794fe6a100145fe4bf', // #54 Ocean Bliss - Beach & BBQ Apartment
-  '6965335df1c3a8001597c8e4', // #55 Divine Waves Duplex by Portugal Active
-  '6965337d2def930014e919c6', // #56 Urban Reflections by Portugal Active
-  '696533cf4b583900135cfb02', // #57 Shoreline Escape by Portugal Active
-  // #58 Portugal Active Encosta House — guestyId unknown (not in current Guesty
+  '6a3549e5edd13800142415e0', // #23 Canopy House by Portugal Active - Heated Pool
+  '696533b2e44e1a0015bb2b42', // #24 Rose Dream Boat by Portugal Active
+  '6970af61638a8a0015eaa850', // #25 Moledo Front Beach w/Sunset Views and Pool
+  '6965339dbf04fe0013743e2d', // #26 Fountain Retreat - Quinta da Fonte (multi-unit)
+  '69dfa9cead7c9c0014cb71c9', // #27 Dunes Beach House with Ocean Views
+  '6a312c59a705e1001327708c', // #28 Sunset Cliffs with Ocean View
+  '69653390ecf7490014ed2d6c', // #29 Lighthouse View by Portugal Active
+  '69b3f4234aafb300134e52a9', // #30 Madorra House - Heated Pool
+  '69e7552df2f71100122bbb35', // #31 Lumina Duplex by Portugal Active
+  '696533266dec35001492fdbb', // #32 Portugal Active BlueGreen Beach Apartment
+  '6965338ed1c09900156e8502', // #33 Calejo House Pool & Sports & Grill Retreat
+  '696533814b9b64001401c7b8', // #34 Salty Escape by Portugal Active
+  '696533d8753fb0001424b10d', // #35 The Nature Princess by Portugal Active
+  '696533762def930014e917bf', // #36 Seabreeze Duplex Beach & Terrace
+  '696533616cff760015e28965', // #37 Tide Terrace Duplex - Sea Escape
+  '6965338a753fb0001424acf6', // #38 Blue Tile Hideaway by Portugal Active
+  '696532fa6d209c001510d5ee', // #39 Ocean view Cabedelo Beach Duplex
+  '6a341163c50f210012f12b80', // #40 Douro Garden by Portugal Active
+  '696533b7bf04fe00137440f8', // #41 Heritage Loft in the Cradle of Portugal
+  '6a0359b4e343150013abc14d', // #42 Atlas Hideway by Portugal Active
+  '69653388753fb0001424abad', // #43 Invictus Escape Jacuzzi & Charm in the City
+  '696533794b583900135cf0fc', // #44 Yellow Breeze Apartment
+  '696532eee44e1a0015bb2460', // #45 Portugal Active Beach Flat
+  '6965338cecf7490014ed2c2d', // #46 Framed Corner by Portugal Active
+  '6965338554dbb5001568a505', // #47 Classic Meets Modern Downtown Balcony Retreat
+  '696533752def930014e9167c', // #48 Seaside Urban Retreat 5min to Esposende Beach
+  '696533d2ec19770014fd1b52', // #49 Coastal Horizon by Portugal Active
+  '696532f3753fb0001424a570', // #50 Countryside House near the Beach and City
+  '6965332c6d209c001510e1c1', // #51 Slow Living Countryside House
+  '696533af4fe6a100145fecb6', // #52 White Charm by the Sea
+  '69ca869e5b0a0500158b7d5a', // #53 River View by Portugal Active
+  '6965333104b96f00147f5428', // #54 Portugal Active Bandeira Retreat
+  '696533794fe6a100145fe4bf', // #55 Ocean Bliss - Beach & BBQ Apartment
+  '6965335df1c3a8001597c8e4', // #56 Divine Waves Duplex by Portugal Active
+  '6965337d2def930014e919c6', // #57 Urban Reflections by Portugal Active
+  '696533cf4b583900135cfb02', // #58 Shoreline Escape by Portugal Active
+  // #59 Portugal Active Encosta House — guestyId unknown (not in current Guesty
   //     catalogue). Add the id here when the listing is back active/listed.
 ];
 
