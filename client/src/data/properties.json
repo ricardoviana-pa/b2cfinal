@@ -12,7 +12,7 @@
     "maxGuests": 10,
     "priceFrom": 500,
     "pricePerNight": 500,
-    "cleaningFee": 200,
+    "cleaningFee": 278,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -405,7 +405,7 @@
     "maxGuests": 10,
     "priceFrom": 380,
     "pricePerNight": 380,
-    "cleaningFee": 230,
+    "cleaningFee": 232,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -625,7 +625,7 @@
     "maxGuests": 10,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 250,
+    "cleaningFee": 278,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -968,7 +968,7 @@
     "maxGuests": 4,
     "priceFrom": 105,
     "pricePerNight": 105,
-    "cleaningFee": 90,
+    "cleaningFee": 91,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -1148,7 +1148,7 @@
     "maxGuests": 14,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 220,
+    "cleaningFee": 296,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -1704,7 +1704,7 @@
     "maxGuests": 6,
     "priceFrom": 120,
     "pricePerNight": 120,
-    "cleaningFee": 60,
+    "cleaningFee": 82,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -2218,7 +2218,7 @@
     "maxGuests": 2,
     "priceFrom": 80,
     "pricePerNight": 80,
-    "cleaningFee": 40,
+    "cleaningFee": 74,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -2389,7 +2389,7 @@
     "maxGuests": 10,
     "priceFrom": 260,
     "pricePerNight": 260,
-    "cleaningFee": 150,
+    "cleaningFee": 279,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -2720,7 +2720,7 @@
     "maxGuests": 14,
     "priceFrom": 420,
     "pricePerNight": 420,
-    "cleaningFee": 225,
+    "cleaningFee": 289,
     "minNights": 3,
     "currency": "EUR",
     "images": [
@@ -3000,7 +3000,7 @@
     "maxGuests": 14,
     "priceFrom": 400,
     "pricePerNight": 400,
-    "cleaningFee": 275,
+    "cleaningFee": 297,
     "minNights": 3,
     "currency": "EUR",
     "images": [
@@ -3309,7 +3309,7 @@
     "maxGuests": 2,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 50,
+    "cleaningFee": 72,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -3705,7 +3705,7 @@
     "maxGuests": 9,
     "priceFrom": 220,
     "pricePerNight": 220,
-    "cleaningFee": 120,
+    "cleaningFee": 221,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -4066,7 +4066,7 @@
     "maxGuests": 8,
     "priceFrom": 99,
     "pricePerNight": 99,
-    "cleaningFee": 75,
+    "cleaningFee": 143,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -4346,7 +4346,7 @@
     "maxGuests": 5,
     "priceFrom": 100,
     "pricePerNight": 100,
-    "cleaningFee": 60,
+    "cleaningFee": 82,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -4734,7 +4734,7 @@
     "maxGuests": 9,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 195,
+    "cleaningFee": 224,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -4961,7 +4961,7 @@
     "maxGuests": 6,
     "priceFrom": 190,
     "pricePerNight": 190,
-    "cleaningFee": 75,
+    "cleaningFee": 141,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -5239,41 +5239,43 @@
     "maxGuests": 2,
     "priceFrom": 150,
     "pricePerNight": 150,
-    "cleaningFee": 50,
+    "cleaningFee": 73,
     "minNights": 3,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1782293636/production/6957de4388cba42d9e7a905e/nalwntu7xdrxlc1x0axg.jpg",
-      "https://assets.guesty.com/image/upload/v1782292499/production/6957de4388cba42d9e7a905e/d5npdyqxkoz4rnogpakb.jpg",
-      "https://assets.guesty.com/image/upload/v1782296559/production/6957de4388cba42d9e7a905e/qy1lytcwwk8mg2klalvw.jpg",
-      "https://assets.guesty.com/image/upload/v1782293630/production/6957de4388cba42d9e7a905e/zprrfv8kjm5wfpzm2pnb.jpg",
-      "https://assets.guesty.com/image/upload/v1782293641/production/6957de4388cba42d9e7a905e/aubxcluk48td7uvfkxjg.jpg",
-      "https://assets.guesty.com/image/upload/v1782293639/production/6957de4388cba42d9e7a905e/k2aqkg76uqfaikxeott8.jpg",
-      "https://assets.guesty.com/image/upload/v1782293642/production/6957de4388cba42d9e7a905e/u3yj9ug1ddsxhbwsyzup.jpg",
-      "https://assets.guesty.com/image/upload/v1782296559/production/6957de4388cba42d9e7a905e/vzdgos1oilo2gejfpg2g.jpg",
-      "https://assets.guesty.com/image/upload/v1782293636/production/6957de4388cba42d9e7a905e/junkdwolixxas4iy0vdi.jpg",
-      "https://assets.guesty.com/image/upload/v1782293636/production/6957de4388cba42d9e7a905e/yvcqtntuwkkwo6d9iusp.jpg",
-      "https://assets.guesty.com/image/upload/v1782293639/production/6957de4388cba42d9e7a905e/mnml7jthgworldb3wdcu.jpg",
+      "https://assets.guesty.com/image/upload/v1782894202/production/6957de4388cba42d9e7a905e/ihtu5ymajnyh7agqnreq.jpg",
+      "https://assets.guesty.com/image/upload/v1782894204/production/6957de4388cba42d9e7a905e/zd1ayzwu7wznvaecsktn.jpg",
+      "https://assets.guesty.com/image/upload/v1782894178/production/6957de4388cba42d9e7a905e/yyztawmvwdpzsrokj8wt.jpg",
+      "https://assets.guesty.com/image/upload/v1782894181/production/6957de4388cba42d9e7a905e/c5gpyo8em1hrzgo88vac.jpg",
+      "https://assets.guesty.com/image/upload/v1782894185/production/6957de4388cba42d9e7a905e/m4bwdusmsmytkfawd64x.jpg",
+      "https://assets.guesty.com/image/upload/v1782894196/production/6957de4388cba42d9e7a905e/azbthn9aiwh1gkhqfeps.jpg",
+      "https://assets.guesty.com/image/upload/v1782894198/production/6957de4388cba42d9e7a905e/j6ffd8a4a3jpqkkdwgwh.jpg",
+      "https://assets.guesty.com/image/upload/v1782894198/production/6957de4388cba42d9e7a905e/pu6dkbqw62taasrngq5j.jpg",
+      "https://assets.guesty.com/image/upload/v1782894199/production/6957de4388cba42d9e7a905e/qyvew7pfsz4ztot2aczi.jpg",
+      "https://assets.guesty.com/image/upload/v1782894200/production/6957de4388cba42d9e7a905e/yi3eujedq26pa9skrx8k.jpg",
+      "https://assets.guesty.com/image/upload/v1782894202/production/6957de4388cba42d9e7a905e/voledp6wefsxclw5oihf.jpg",
       "https://assets.guesty.com/image/upload/v1782296559/production/6957de4388cba42d9e7a905e/dcbarrs0hi5vclbqvzfi.jpg",
+      "https://assets.guesty.com/image/upload/v1782894182/production/6957de4388cba42d9e7a905e/hfv4p31l0drlubltauz2.jpg",
       "https://assets.guesty.com/image/upload/v1782296562/production/6957de4388cba42d9e7a905e/d2iufm3jsi1lt8s6riki.jpg",
-      "https://assets.guesty.com/image/upload/v1782293641/production/6957de4388cba42d9e7a905e/u1rzhie82t0xntqfxlwk.jpg",
-      "https://assets.guesty.com/image/upload/v1782293642/production/6957de4388cba42d9e7a905e/db5amysofi1hdelyh1hm.jpg",
-      "https://assets.guesty.com/image/upload/v1782296559/production/6957de4388cba42d9e7a905e/djn1zvwedasb0lk83qu5.jpg",
-      "https://assets.guesty.com/image/upload/v1782293633/production/6957de4388cba42d9e7a905e/ghxhhyxdtyln70vuxcz3.jpg",
-      "https://assets.guesty.com/image/upload/v1782293633/production/6957de4388cba42d9e7a905e/pjw49kzpngu14mfenhy5.jpg",
-      "https://assets.guesty.com/image/upload/v1782293635/production/6957de4388cba42d9e7a905e/zlcnivbhp59p7zmxrg6f.jpg",
-      "https://assets.guesty.com/image/upload/v1782293630/production/6957de4388cba42d9e7a905e/daxjyobmnex9ajkjanxn.jpg",
-      "https://assets.guesty.com/image/upload/v1782293633/production/6957de4388cba42d9e7a905e/wueppsuc5cwpzbl6krx6.jpg",
-      "https://assets.guesty.com/image/upload/v1782293630/production/6957de4388cba42d9e7a905e/h3lmygclga3irifvrnah.jpg",
-      "https://assets.guesty.com/image/upload/v1782293633/production/6957de4388cba42d9e7a905e/wxlovbpodbtx51tkffnr.jpg",
-      "https://assets.guesty.com/image/upload/v1782293630/production/6957de4388cba42d9e7a905e/xld6ps7ocbe75y3ztr7g.jpg",
-      "https://assets.guesty.com/image/upload/v1782293633/production/6957de4388cba42d9e7a905e/fmrmyfzsavldcwrqarue.jpg",
+      "https://assets.guesty.com/image/upload/v1782894174/production/6957de4388cba42d9e7a905e/tx9vlz8yu7vii8phkabm.jpg",
+      "https://assets.guesty.com/image/upload/v1782894195/production/6957de4388cba42d9e7a905e/wenni8gov2cwwo1pups2.jpg",
+      "https://assets.guesty.com/image/upload/v1782894196/production/6957de4388cba42d9e7a905e/n3o2kqbxj0yjuhghvpop.jpg",
+      "https://assets.guesty.com/image/upload/v1782894206/production/6957de4388cba42d9e7a905e/kykbp8escjrzwdipi1dn.jpg",
+      "https://assets.guesty.com/image/upload/v1782894206/production/6957de4388cba42d9e7a905e/qjh0qhxgu9y9onadpg1f.jpg",
+      "https://assets.guesty.com/image/upload/v1782894183/production/6957de4388cba42d9e7a905e/tydossvkgy0zl7smzxgu.jpg",
+      "https://assets.guesty.com/image/upload/v1782894181/production/6957de4388cba42d9e7a905e/v95xek2aakwpunvz39uk.jpg",
+      "https://assets.guesty.com/image/upload/v1782894190/production/6957de4388cba42d9e7a905e/nsoowmqr2nma75fdlzna.jpg",
+      "https://assets.guesty.com/image/upload/v1782894190/production/6957de4388cba42d9e7a905e/o8ivrfejnlbwvusoe8g4.jpg",
+      "https://assets.guesty.com/image/upload/v1782894191/production/6957de4388cba42d9e7a905e/cxh0o8srxrndhgjlhbv5.jpg",
+      "https://assets.guesty.com/image/upload/v1782894191/production/6957de4388cba42d9e7a905e/b9owxqhonca735ki9xdn.jpg",
+      "https://assets.guesty.com/image/upload/v1782894180/production/6957de4388cba42d9e7a905e/p6dbjmtngw8hnbgdx0lr.jpg",
+      "https://assets.guesty.com/image/upload/v1782894173/production/6957de4388cba42d9e7a905e/uy3yboj0ilygyjlnbf1l.jpg",
       "https://assets.guesty.com/image/upload/v1782293636/production/6957de4388cba42d9e7a905e/yoqdu9b1dmieubywhrts.jpg",
       "https://assets.guesty.com/image/upload/v1782296559/production/6957de4388cba42d9e7a905e/qln2jcalg68rtbclhcsv.jpg",
-      "https://assets.guesty.com/image/upload/v1782293639/production/6957de4388cba42d9e7a905e/csgurk8fdg4rydysilh8.jpg",
-      "https://assets.guesty.com/image/upload/v1782293642/production/6957de4388cba42d9e7a905e/lvsqks99gl2xn3tujcxm.jpg",
+      "https://assets.guesty.com/image/upload/v1782894187/production/6957de4388cba42d9e7a905e/wwqdzvaffykd0a8rmlaj.jpg",
+      "https://assets.guesty.com/image/upload/v1782894187/production/6957de4388cba42d9e7a905e/lxwhljffn96qm5hshksj.jpg",
       "https://assets.guesty.com/image/upload/v1782293638/production/6957de4388cba42d9e7a905e/thp789xqj0idaixmhxpd.jpg",
-      "https://assets.guesty.com/image/upload/v1782296559/production/6957de4388cba42d9e7a905e/wmuptjiywua4ydpyrabw.jpg",
+      "https://assets.guesty.com/image/upload/v1782894189/production/6957de4388cba42d9e7a905e/mxotpwlsqhiszsbjn39g.jpg",
       "https://assets.guesty.com/image/upload/v1782293646/production/6957de4388cba42d9e7a905e/jvea9b3gotvuucsr54bh.jpg",
       "https://assets.guesty.com/image/upload/v1782293647/production/6957de4388cba42d9e7a905e/ydlii3f9rny1oeacjsmb.jpg",
       "https://assets.guesty.com/image/upload/v1782293647/production/6957de4388cba42d9e7a905e/znjrye6t4wifbotohp4n.jpg",
@@ -5403,7 +5405,7 @@
     "maxGuests": 2,
     "priceFrom": 70,
     "pricePerNight": 70,
-    "cleaningFee": 40,
+    "cleaningFee": 71,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -5609,7 +5611,7 @@
     "maxGuests": 28,
     "priceFrom": 700,
     "pricePerNight": 700,
-    "cleaningFee": 380,
+    "cleaningFee": 381,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -5796,7 +5798,6 @@
         "High chair",
         "High touch surfaces disinfected",
         "Horseback Riding",
-        "Hot tub",
         "Hot water",
         "Indoor fireplace",
         "Iron",
@@ -6109,7 +6110,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 50,
+    "cleaningFee": 72,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -6325,7 +6326,7 @@
     "maxGuests": 8,
     "priceFrom": 300,
     "pricePerNight": 300,
-    "cleaningFee": 120,
+    "cleaningFee": 222,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -6694,7 +6695,7 @@
     "maxGuests": 3,
     "priceFrom": 80,
     "pricePerNight": 80,
-    "cleaningFee": 60,
+    "cleaningFee": 83,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -7133,7 +7134,7 @@
     "maxGuests": 20,
     "priceFrom": 500,
     "pricePerNight": 500,
-    "cleaningFee": 260,
+    "cleaningFee": 304,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -7468,7 +7469,7 @@
     "maxGuests": 4,
     "priceFrom": 180,
     "pricePerNight": 180,
-    "cleaningFee": 60,
+    "cleaningFee": 81,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -8142,7 +8143,7 @@
     "maxGuests": 6,
     "priceFrom": 150,
     "pricePerNight": 150,
-    "cleaningFee": 75,
+    "cleaningFee": 143,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -8556,7 +8557,7 @@
     "maxGuests": 12,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 180,
+    "cleaningFee": 285,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -8992,7 +8993,7 @@
     "maxGuests": 4,
     "priceFrom": 170,
     "pricePerNight": 170,
-    "cleaningFee": 60,
+    "cleaningFee": 82,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -9242,7 +9243,7 @@
     "maxGuests": 16,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 230,
+    "cleaningFee": 303,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -9719,7 +9720,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 60,
+    "cleaningFee": 81,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -9974,7 +9975,7 @@
     "maxGuests": 23,
     "priceFrom": 700,
     "pricePerNight": 700,
-    "cleaningFee": 250,
+    "cleaningFee": 330,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -10289,7 +10290,7 @@
     "maxGuests": 6,
     "priceFrom": 180,
     "pricePerNight": 180,
-    "cleaningFee": 75,
+    "cleaningFee": 142,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -10585,7 +10586,7 @@
     "maxGuests": 12,
     "priceFrom": 400,
     "pricePerNight": 400,
-    "cleaningFee": 160,
+    "cleaningFee": 287,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -10884,7 +10885,7 @@
     "maxGuests": 2,
     "priceFrom": 100,
     "pricePerNight": 100,
-    "cleaningFee": 50,
+    "cleaningFee": 73,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -11194,7 +11195,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 60,
+    "cleaningFee": 82,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -11383,7 +11384,7 @@
     "maxGuests": 12,
     "priceFrom": 300,
     "pricePerNight": 300,
-    "cleaningFee": 180,
+    "cleaningFee": 287,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -11906,7 +11907,7 @@
     "maxGuests": 8,
     "priceFrom": 110,
     "pricePerNight": 110,
-    "cleaningFee": 75,
+    "cleaningFee": 140,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -12259,7 +12260,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 50,
+    "cleaningFee": 74,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -12699,7 +12700,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 50,
+    "cleaningFee": 71,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -12725,13 +12726,13 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533266dec35001492fdbb/785fd1be-a69f-46-6y7fe",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533266dec35001492fdbb/78c0d701-3fb2-4f-t9P-y"
     ],
-    "description": "Escape to Viana do Castelo's exclusive beachfront paradise with Portugal Active. Immerse yourself in luxury and adventure in our one-bedroom apartment, meticulously designed for the ultimate comfort. With stunning beach views, a private condominium, and a plethora of services, including a personal chef, guided tours, and more, this is your dream getaway come to life\n\nDiscover pure bliss in our meticulously designed one-bedroom apartment. Recently renovated and redecorated, it exudes a premium and relaxed atmosphere. Unwind in the superior quality king-sized bed in the spacious bedroom, while the living room offers an excellent quality sofa bed for extra guests. Embrace beach vibes and enjoy stunning views from your doorstep, as we provide you with the perfect haven for a peaceful and rejuvenating stay.\n\n/\n\nGuests have exclusive access to the entire property, including the garden and all indoor amenities. The Portugal Active concierge service is available 24/7 to cater to any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\n/\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
+    "description": "Escape to Viana do Castelo's exclusive beachfront paradise with Portugal Active. Immerse yourself in luxury and adventure in our one-bedroom apartment, meticulously designed for the ultimate comfort. With stunning views, a private condominium, and a plethora of services, including a personal chef, guided tours, and more, this is your dream getaway come to life\n\nDiscover pure bliss in our meticulously designed one-bedroom apartment. Recently renovated and redecorated, it exudes a premium and relaxed atmosphere. Unwind in the superior quality king-sized bed in the spacious bedroom, while the living room offers an excellent quality sofa bed for extra guests. Embrace beach vibes and enjoy stunning views from your doorstep, as we provide you with the perfect haven for a peaceful and rejuvenating stay.\n\nLocated on the stunning Cabedelo Beach in Viana do Castelo, this apartment is perfectly situated for those looking to combine seaside relaxation with adventure.\n\nJust a few steps from the beach, you'll enjoy direct access to one of the region's most iconic stretches of coastline, renowned for water sports such as surfing and kitesurfing. Within a short drive, you'll find a variety of local restaurants where you can savour the traditional flavours of the Minho region, as well as shops and essential services.\n\nThe area is also ideal for leisurely walks and cycling, allowing you to explore the natural beauty of Viana do Castelo's coastline with ease.\n\nGuests have exclusive access to the entire property, including the garden and all indoor amenities. The Portugal Active concierge service is available 24/7 to cater to any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\nOur property in Viana do Castelo enjoys a prime location on Avenida do Cabedelo.\nFor guests travelling by public transport, nearby bus stops provide convenient connections to the city's historic centre. Francisco Sá Carneiro Airport in Porto is approximately a 60-minute drive away and serves as the main gateway for international flights.\nThe area is ideal for exploring on foot or by bicycle, with the beach and a variety of leisure and recreational areas just a short distance away.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour:\r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
     "descriptionSections": {
-      "summary": "Escape to Viana do Castelo's exclusive beachfront paradise with Portugal Active. Immerse yourself in luxury and adventure in our one-bedroom apartment, meticulously designed for the ultimate comfort. With stunning beach views, a private condominium, and a plethora of services, including a personal chef, guided tours, and more, this is your dream getaway come to life",
+      "summary": "Escape to Viana do Castelo's exclusive beachfront paradise with Portugal Active. Immerse yourself in luxury and adventure in our one-bedroom apartment, meticulously designed for the ultimate comfort. With stunning views, a private condominium, and a plethora of services, including a personal chef, guided tours, and more, this is your dream getaway come to life",
       "space": "Discover pure bliss in our meticulously designed one-bedroom apartment. Recently renovated and redecorated, it exudes a premium and relaxed atmosphere. Unwind in the superior quality king-sized bed in the spacious bedroom, while the living room offers an excellent quality sofa bed for extra guests. Embrace beach vibes and enjoy stunning views from your doorstep, as we provide you with the perfect haven for a peaceful and rejuvenating stay.",
       "access": "Guests have exclusive access to the entire property, including the garden and all indoor amenities. The Portugal Active concierge service is available 24/7 to cater to any needs, from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.",
-      "neighborhood": "/",
-      "gettingAround": "",
+      "neighborhood": "Located on the stunning Cabedelo Beach in Viana do Castelo, this apartment is perfectly situated for those looking to combine seaside relaxation with adventure.\n\nJust a few steps from the beach, you'll enjoy direct access to one of the region's most iconic stretches of coastline, renowned for water sports such as surfing and kitesurfing. Within a short drive, you'll find a variety of local restaurants where you can savour the traditional flavours of the Minho region, as well as shops and essential services.\n\nThe area is also ideal for leisurely walks and cycling, allowing you to explore the natural beauty of Viana do Castelo's coastline with ease.",
+      "gettingAround": "Our property in Viana do Castelo enjoys a prime location on Avenida do Cabedelo.\nFor guests travelling by public transport, nearby bus stops provide convenient connections to the city's historic centre. Francisco Sá Carneiro Airport in Porto is approximately a 60-minute drive away and serves as the main gateway for international flights.\nThe area is ideal for exploring on foot or by bicycle, with the beach and a variety of leisure and recreational areas just a short distance away.",
       "notes": "",
       "interaction": "The Portugal Active team is committed to ensuring your stay is memorable and enjoyable. We are always available to support, advise, and accompany you during your visit. From the moment you arrive, we are here to make you feel at home.\nWe offer an excellent range of experiences to enhance your vacation, including adventure tours, private chefs, massages, babysitting services, and much more. Whatever your needs, we are here to help you create unforgettable memories. If you have any questions, feel free to contact us."
     },
@@ -12741,11 +12742,10 @@
         "Babysitter recommendations",
         "Baking sheet",
         "Beach",
-        "Beach Front",
         "Beach access",
-        "Beach essentials",
         "Bed linens",
         "Blender",
+        "Cable TV",
         "Carbon monoxide detector",
         "Cleaning Disinfection",
         "Cleaning products",
@@ -12782,7 +12782,6 @@
         "Microwave",
         "Museums",
         "Near Ocean",
-        "Ocean Front",
         "Outdoor seating (furniture)",
         "Oven",
         "Patio or balcony",
@@ -12803,7 +12802,6 @@
         "Washer in common space",
         "Water Parks",
         "Water Sports",
-        "Waterfront",
         "Window guards",
         "Wine glasses",
         "Wireless Internet"
@@ -12947,7 +12945,7 @@
     "maxGuests": 14,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 220,
+    "cleaningFee": 296,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -13322,7 +13320,7 @@
     "maxGuests": 12,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 260,
+    "cleaningFee": 302,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -13821,7 +13819,7 @@
     "maxGuests": 10,
     "priceFrom": 280,
     "pricePerNight": 280,
-    "cleaningFee": 150,
+    "cleaningFee": 277,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -14154,7 +14152,7 @@
     "maxGuests": 11,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 140,
+    "cleaningFee": 222,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -14412,6 +14410,41 @@
     "checkOutTime": "11:00",
     "areaSquareFeet": 8612,
     "reviews": [
+      {
+        "rating": 5,
+        "text": "Eu e minha família que inclui 5 adultos, uma adolescente e um bebê de 3 semanas passamos um fim de semana ótimo nessa casa.",
+        "guestDisplayName": "Luciana",
+        "guestName": "Luciana",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-01T09:44:06.682Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
       {
         "rating": 5,
         "text": "Villa incroyable ! Nous avons passé un agréable moment",
@@ -14798,8 +14831,8 @@
         ]
       }
     ],
-    "averageRating": 4.73,
-    "reviewCount": 11
+    "averageRating": 4.75,
+    "reviewCount": 12
   },
   {
     "id": "guesty-69c415701b964f00157188bd",
@@ -14814,7 +14847,7 @@
     "maxGuests": 4,
     "priceFrom": 450,
     "pricePerNight": 450,
-    "cleaningFee": 90,
+    "cleaningFee": 93,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -14986,7 +15019,7 @@
     "maxGuests": 4,
     "priceFrom": 450,
     "pricePerNight": 450,
-    "cleaningFee": 90,
+    "cleaningFee": 93,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -15153,7 +15186,7 @@
     "maxGuests": 4,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 60,
+    "cleaningFee": 81,
     "minNights": 3,
     "currency": "EUR",
     "images": [
@@ -15360,7 +15393,7 @@
     "maxGuests": 8,
     "priceFrom": 450,
     "pricePerNight": 450,
-    "cleaningFee": 200,
+    "cleaningFee": 223,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -15585,7 +15618,7 @@
     "maxGuests": 6,
     "priceFrom": 100,
     "pricePerNight": 100,
-    "cleaningFee": 60,
+    "cleaningFee": 81,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -15820,7 +15853,7 @@
     "maxGuests": 4,
     "priceFrom": 70,
     "pricePerNight": 70,
-    "cleaningFee": 50,
+    "cleaningFee": 74,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -16010,7 +16043,7 @@
     "maxGuests": 4,
     "priceFrom": 104,
     "pricePerNight": 104,
-    "cleaningFee": 50,
+    "cleaningFee": 71,
     "minNights": 3,
     "currency": "EUR",
     "images": [
@@ -16188,7 +16221,7 @@
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 75,
+    "cleaningFee": 142,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -16640,7 +16673,7 @@
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 75,
+    "cleaningFee": 141,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -17025,7 +17058,7 @@
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 75,
+    "cleaningFee": 143,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -17314,7 +17347,7 @@
     "maxGuests": 14,
     "priceFrom": 450,
     "pricePerNight": 450,
-    "cleaningFee": 220,
+    "cleaningFee": 297,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -17729,7 +17762,7 @@
     "maxGuests": 7,
     "priceFrom": 140,
     "pricePerNight": 140,
-    "cleaningFee": 75,
+    "cleaningFee": 142,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -17943,7 +17976,7 @@
     "maxGuests": 8,
     "priceFrom": 250,
     "pricePerNight": 250,
-    "cleaningFee": 150,
+    "cleaningFee": 275,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -18306,7 +18339,7 @@
     "maxGuests": 10,
     "priceFrom": 175,
     "pricePerNight": 175,
-    "cleaningFee": 120,
+    "cleaningFee": 221,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -18628,7 +18661,7 @@
     "maxGuests": 7,
     "priceFrom": 280,
     "pricePerNight": 280,
-    "cleaningFee": 110,
+    "cleaningFee": 223,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -19159,7 +19192,7 @@
     "maxGuests": 8,
     "priceFrom": 280,
     "pricePerNight": 280,
-    "cleaningFee": 110,
+    "cleaningFee": 223,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -19585,7 +19618,7 @@
     "maxGuests": 10,
     "priceFrom": 510,
     "pricePerNight": 510,
-    "cleaningFee": 200,
+    "cleaningFee": 279,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -19816,7 +19849,7 @@
     "maxGuests": 10,
     "priceFrom": 280,
     "pricePerNight": 280,
-    "cleaningFee": 110,
+    "cleaningFee": 223,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -20523,7 +20556,7 @@
     "maxGuests": 19,
     "priceFrom": 500,
     "pricePerNight": 500,
-    "cleaningFee": 220,
+    "cleaningFee": 299,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -20806,7 +20839,7 @@
     "maxGuests": 4,
     "priceFrom": 220,
     "pricePerNight": 220,
-    "cleaningFee": 60,
+    "cleaningFee": 81,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -21144,7 +21177,7 @@
     "maxGuests": 6,
     "priceFrom": 180,
     "pricePerNight": 180,
-    "cleaningFee": 75,
+    "cleaningFee": 142,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -21635,7 +21668,7 @@
     "maxGuests": 4,
     "priceFrom": 450,
     "pricePerNight": 450,
-    "cleaningFee": 90,
+    "cleaningFee": 93,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -21819,7 +21852,7 @@
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 75,
+    "cleaningFee": 143,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -22366,7 +22399,7 @@
     "maxGuests": 12,
     "priceFrom": 459,
     "pricePerNight": 459,
-    "cleaningFee": 250,
+    "cleaningFee": 276,
     "minNights": 4,
     "currency": "EUR",
     "images": [
@@ -22629,7 +22662,7 @@
     "maxGuests": 4,
     "priceFrom": 80,
     "pricePerNight": 80,
-    "cleaningFee": 50,
+    "cleaningFee": 71,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -22897,7 +22930,7 @@
     "maxGuests": 3,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 50,
+    "cleaningFee": 72,
     "minNights": 1,
     "currency": "EUR",
     "images": [
