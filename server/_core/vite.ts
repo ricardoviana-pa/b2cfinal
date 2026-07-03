@@ -157,6 +157,80 @@ async function getExperienceBySlugCached(slug: string): Promise<any | null> {
   return _experienceSlugMap.data.get(slug) ?? null;
 }
 
+/** Blog articles live in client/src/data/blog.json (NOT the DB); per-locale
+ *  overrides in client/src/data/blog.i18n/<lang>.json (slug → fields). Returns
+ *  the article with the active language's title/excerpt/content/seo* applied so
+ *  bots get the localised meta + body. */
+let _blogArticles: { expiresAt: number; data: Map<string, any> } | null = null;
+const _i18nOverrides = new Map<string, { expiresAt: number; data: Record<string, any> }>();
+function loadI18nOverrides(kind: "blog" | "properties", lang: string): Record<string, any> {
+  const code = (lang || "en").split("-")[0];
+  if (code === "en") return {};
+  const cacheKey = `${kind}:${code}`;
+  const cached = _i18nOverrides.get(cacheKey);
+  if (cached && Date.now() < cached.expiresAt) return cached.data;
+  let data: Record<string, any> = {};
+  try {
+    const p = path.join(process.cwd(), "client", "src", "data", `${kind}.i18n`, `${code}.json`);
+    data = JSON.parse(fs.readFileSync(p, "utf-8"));
+  } catch { data = {}; }
+  _i18nOverrides.set(cacheKey, { expiresAt: Date.now() + DYNAMIC_META_TTL_MS, data });
+  return data;
+}
+async function getBlogArticleBySlugCached(slug: string, lang: string): Promise<any | null> {
+  try {
+    if (!_blogArticles || Date.now() > _blogArticles.expiresAt) {
+      const p = path.join(process.cwd(), "client", "src", "data", "blog.json");
+      const data = JSON.parse(fs.readFileSync(p, "utf-8"));
+      const map = new Map<string, any>();
+      for (const a of (data.articles || [])) if (a.slug) map.set(a.slug, a);
+      _blogArticles = { expiresAt: Date.now() + DYNAMIC_META_TTL_MS, data: map };
+    }
+    const base = _blogArticles.data.get(slug);
+    if (!base) return null;
+    const ov = loadI18nOverrides("blog", lang)[slug];
+    return ov ? { ...base, ...ov } : base;
+  } catch (err) {
+    console.error("[Meta] Failed to load blog data for meta injection:", err);
+    return null;
+  }
+}
+
+/** Destinations live in client/src/data/destinations.json; overrides in
+ *  destinations.i18n.json ({ slug: { lang: fields } }). Returns { name, desc }
+ *  in the active language for meta. */
+let _destinations: { expiresAt: number; data: Map<string, any> } | null = null;
+let _destOverrides: { expiresAt: number; data: Record<string, any> } | null = null;
+async function getDestinationBySlugCached(slug: string, lang: string): Promise<{ name: string; desc: string } | null> {
+  try {
+    if (!_destinations || Date.now() > _destinations.expiresAt) {
+      const p = path.join(process.cwd(), "client", "src", "data", "destinations.json");
+      const arr = JSON.parse(fs.readFileSync(p, "utf-8"));
+      const map = new Map<string, any>();
+      for (const d of (Array.isArray(arr) ? arr : [])) if (d.slug) map.set(d.slug, d);
+      _destinations = { expiresAt: Date.now() + DYNAMIC_META_TTL_MS, data: map };
+    }
+    const base = _destinations.data.get(slug);
+    if (!base) return null;
+    if (!_destOverrides || Date.now() > _destOverrides.expiresAt) {
+      let data: Record<string, any> = {};
+      try {
+        const p = path.join(process.cwd(), "client", "src", "data", "destinations.i18n.json");
+        data = JSON.parse(fs.readFileSync(p, "utf-8"));
+      } catch { data = {}; }
+      _destOverrides = { expiresAt: Date.now() + DYNAMIC_META_TTL_MS, data };
+    }
+    const code = (lang || "en").split("-")[0];
+    const ov = code === "en" ? null : _destOverrides.data[slug]?.[code];
+    const name = ov?.name || base.name || slug;
+    const desc = (ov?.seoDescription || ov?.description || base.seoDescription || base.description || base.tagline || "").replace(/\s+/g, " ").trim().slice(0, 155);
+    return desc ? { name, desc } : null;
+  } catch (err) {
+    console.error("[Meta] Failed to load destination data for meta injection:", err);
+    return null;
+  }
+}
+
 function getCachedDynamicMeta(key: string) {
   const cached = dynamicMetaCache.get(key);
   if (!cached) return undefined; // not cached
@@ -746,8 +820,9 @@ function buildExperienceGraph(exp: any, lang: string, pagePath: string): Record<
 /** Build the BlogPosting + BreadcrumbList @graph for a blog article. */
 function buildBlogGraph(post: any, lang: string): Record<string, unknown> {
   const url = `${BOT_BASE_URL}/${lang}/blog/${post.slug}`;
-  const published = safeDateISO(post.publishedAt || post.createdAt || post.date);
+  const published = safeDateISO(post.publishedAt || post.publishDate || post.createdAt || post.date);
   const modified = safeDateISO(post.updatedAt) || published;
+  const authorName = (typeof post.author === "object" ? post.author?.name : post.author) || "Portugal Active";
 
   const article: Record<string, unknown> = {
     '@type': 'BlogPosting',
@@ -759,7 +834,7 @@ function buildBlogGraph(post: any, lang: string): Record<string, unknown> {
     ...(post.coverImage && { image: [post.coverImage] }),
     ...(published && { datePublished: published }),
     ...(modified && { dateModified: modified }),
-    author: { '@type': 'Person', name: post.author || 'Portugal Active' },
+    author: { '@type': 'Person', name: authorName },
     publisher: {
       '@type': 'Organization',
       name: 'Portugal Active',
@@ -1438,7 +1513,13 @@ export function serveStatic(app: Express) {
       // Properties come from Guesty sync file or static JSON fallback.
       const homesMatch = p.match(/^\/homes\/([^/]+)$/);
       if (homesMatch) {
-        const prop = await getPropertyBySlugCached(homesMatch[1]);
+        let prop = await getPropertyBySlugCached(homesMatch[1]);
+        // Descriptions come from Guesty in English; apply the per-locale
+        // overrides (guestyId-keyed) so bots get the localised meta + body too.
+        if (prop && lang !== 'en' && prop.guestyId) {
+          const ov = loadI18nOverrides("properties", lang)[prop.guestyId];
+          if (ov) prop = { ...prop, ...ov };
+        }
         if (prop) {
           const useCustomEn = lang === 'en' && (prop.seoTitle || prop.seoDescription);
           const titleFn = PROPERTY_TITLE[lang] ?? PROPERTY_TITLE.en;
@@ -1464,18 +1545,18 @@ export function serveStatic(app: Express) {
         }
       }
 
-      // /blog/:slug
+      // /blog/:slug — from blog.json + per-locale overrides (NOT the DB, where
+      // these static articles don't exist — that was returning generic meta).
       if (!dynamicMeta) {
         const blogMatch = p.match(/^\/blog\/([^/]+)$/);
         if (blogMatch) {
-          const { getBlogPostBySlug } = await import("../db");
-          const post = await getBlogPostBySlug(blogMatch[1]);
+          const post = await getBlogArticleBySlugCached(blogMatch[1], lang);
           if (post) {
             const suffix = BLOG_SUFFIX[lang] ?? BLOG_SUFFIX.en;
             dynamicMeta = {
-              title: lang === 'en' ? (post.seoTitle || `${post.title}${suffix}`) : `${post.title}${suffix}`,
-              description: ((lang === 'en' && post.seoDescription) ? post.seoDescription : (post.excerpt ?? post.seoDescription ?? '')).slice(0, 155),
-              image: post.coverImage ?? undefined,
+              title: post.seoTitle || `${post.title}${suffix}`,
+              description: (post.seoDescription || post.excerpt || '').replace(/\s+/g, ' ').trim().slice(0, 155),
+              image: post.coverImage ?? post.featuredImage ?? undefined,
               url: `${BOT_BASE_URL}/${lang}/blog/${post.slug}`,
               type: 'article',
               schemaDomId: `sd-article-${post.slug}`,
@@ -1486,14 +1567,16 @@ export function serveStatic(app: Express) {
         }
       }
 
-      // /destinations/:slug
+      // /destinations/:slug — from destinations.json + i18n overrides, falling
+      // back to the built-in maps (which lacked most non-EN descriptions).
       if (!dynamicMeta) {
         const destMatch = p.match(/^\/destinations\/([^/]+)$/);
         if (destMatch) {
           const slug = destMatch[1];
-          const name = DESTINATION_NAME[slug];
-          const desc = DESTINATION_DESCRIPTION[slug]?.[lang] ?? DESTINATION_DESCRIPTION[slug]?.en;
           const titleFn = DESTINATION_TITLE[lang] ?? DESTINATION_TITLE.en;
+          const resolved = await getDestinationBySlugCached(slug, lang);
+          const name = resolved?.name || DESTINATION_NAME[slug];
+          const desc = resolved?.desc || DESTINATION_DESCRIPTION[slug]?.[lang] || DESTINATION_DESCRIPTION[slug]?.en;
           if (name && desc) {
             dynamicMeta = { title: titleFn(name), description: desc, url: `${BOT_BASE_URL}/${lang}/destinations/${slug}` };
           }
