@@ -28,15 +28,22 @@ const MAX_SAMPLES = 6; // quotes per listing on a cache miss
 const STORE_CAT = "lowest_nightly";
 const WARM_PER_REQUEST = 10; // how many never-computed listings to warm per PLP batch call
 
+const NULL_TTL_MS = 30 * 60 * 1000; // retry no-value results (rate-limited / no availability) after 30 min, not 8h
+
 type Result = { from: number | null; source: "calendar" | "fallback" | "none"; currency: string };
 const CACHE = new Map<string, { value: number | null; source: Result["source"]; at: number }>();
 
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
+/** A cached entry is fresh for 8h when it has a real value, but only 30 min when
+ *  it's null — so a listing that came back empty (rate-limited or no availability
+ *  at the time) is retried soon instead of showing "select dates" for 8h. */
+const isFresh = (c: { value: number | null; at: number }) =>
+  Date.now() - c.at < (c.value !== null ? TTL_MS : NULL_TTL_MS);
 
 /** Lowest real nightly rate bookable in the next 90 days, cached. */
 export async function getLowestNightly(listingId: string, basePriceHint?: number): Promise<Result> {
   const cached = CACHE.get(listingId);
-  if (cached && Date.now() - cached.at < TTL_MS) {
+  if (cached && isFresh(cached)) {
     return { from: cached.value, source: cached.source, currency: "EUR" };
   }
 
@@ -120,7 +127,7 @@ export async function getLowestNightlyBatch(listingIds: string[]): Promise<Recor
   const missing: string[] = [];
   for (const id of listingIds) {
     const c = CACHE.get(id);
-    if (c && Date.now() - c.at < TTL_MS) out[id] = c.value;
+    if (c && isFresh(c) && c.value !== null) out[id] = c.value;
     else missing.push(id);
   }
   await Promise.all(missing.map(async (id) => {
