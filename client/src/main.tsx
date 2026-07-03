@@ -9,7 +9,23 @@ import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
 
-const queryClient = new QueryClient();
+// Sensible caching defaults. Without these, staleTime=0 makes every query
+// refetch on mount AND on window-focus — so the 149 KB property list
+// (listForSite, used on Home, Homes, PDP, destinations, 404) was re-fetched on
+// every navigation and every tab-focus. Site content is edge-cached and only
+// changes ~twice a day, so a short client staleTime + no focus-refetch cuts a
+// lot of redundant network without risking stale prices (quote queries are
+// keyed by dates and stay fresh within the window).
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 min
+      gcTime: 30 * 60 * 1000,   // 30 min
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 // SSR hydration: when the server pre-rendered with data, it embedded the
 // dehydrated react-query cache as window.__RQ_STATE__. Hydrating it before
