@@ -18,6 +18,7 @@ const LOADERS: Record<string, () => Promise<{ default: Dict }>> = {
   de: () => import('@/data/properties.i18n/de.json'),
   nl: () => import('@/data/properties.i18n/nl.json'),
   sv: () => import('@/data/properties.i18n/sv.json'),
+  fi: () => import('@/data/properties.i18n/fi.json'),
 };
 
 const cache: Record<string, Dict> = {};
