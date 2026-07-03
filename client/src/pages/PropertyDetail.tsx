@@ -738,6 +738,12 @@ export default function PropertyDetail() {
   const destName = destObj?.name || property?.destination || '';
 
   const { data: allPropsData } = trpc.properties.listForSite.useQuery();
+  // "From €X per night" = lowest REAL bookable nightly (next 90 days), not the
+  // Guesty basePrice placeholder. Cached server-side; lazy per viewed listing.
+  const { data: lowestNightly } = trpc.booking.lowestNightly.useQuery(
+    { listingId: property?.guestyId ?? '', basePrice: (property?.priceFrom as number) || undefined },
+    { enabled: !!property?.guestyId, staleTime: 8 * 60 * 60 * 1000 },
+  );
   const relatedProperties = useMemo(() => {
     if (!property || !allPropsData) return [];
     return (allPropsData as Property[])
@@ -927,7 +933,7 @@ export default function PropertyDetail() {
           <BookingWidget
             guestyId={property.guestyId}
             propertyName={property.name}
-            pricePerNight={(property as any).pricePerNight || property.priceFrom || 0}
+            pricePerNight={lowestNightly?.from ?? (property as any).pricePerNight ?? property.priceFrom ?? 0}
             maxGuests={property.maxGuests || 10}
             minNights={(property as any).minNights}
             cleaningFee={(property as any).cleaningFee}
