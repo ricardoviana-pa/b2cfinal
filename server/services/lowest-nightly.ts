@@ -26,6 +26,7 @@ const TTL_MS = 8 * 60 * 60 * 1000; // 8h in-memory cache
 const HORIZON_DAYS = 90;
 const MAX_SAMPLES = 6; // quotes per listing on a cache miss
 const STORE_CAT = "lowest_nightly";
+const WARM_PER_REQUEST = 10; // how many never-computed listings to warm per PLP batch call
 
 type Result = { from: number | null; source: "calendar" | "fallback" | "none"; currency: string };
 const CACHE = new Map<string, { value: number | null; source: Result["source"]; at: number }>();
@@ -106,4 +107,33 @@ export async function getLowestNightly(listingId: string, basePriceHint?: number
   const fb = candidates.length ? Math.min(...candidates) : null;
   CACHE.set(listingId, { value: fb, source: fb !== null ? "fallback" : "none", at: Date.now() });
   return { from: fb, source: fb !== null ? "fallback" : "none", currency: "EUR" };
+}
+
+/**
+ * "From €X" for a page of PLP cards. FAST: reads only the in-memory cache and
+ * the DB-persisted last-known values (no quotes on the request path). Listings
+ * that have never been computed are warmed in the background (capped, paced),
+ * so their price appears on a later load rather than blocking this one.
+ */
+export async function getLowestNightlyBatch(listingIds: string[]): Promise<Record<string, number | null>> {
+  const out: Record<string, number | null> = {};
+  const missing: string[] = [];
+  for (const id of listingIds) {
+    const c = CACHE.get(id);
+    if (c && Date.now() - c.at < TTL_MS) out[id] = c.value;
+    else missing.push(id);
+  }
+  await Promise.all(missing.map(async (id) => {
+    try {
+      const raw = await getSetting(`${STORE_CAT}_${id}`);
+      const n = raw ? Number(raw) : NaN;
+      out[id] = Number.isFinite(n) && n > 0 ? n : null;
+    } catch {
+      out[id] = null;
+    }
+  }));
+  // Background-warm listings we have no value for yet (fire-and-forget, capped).
+  const toWarm = missing.filter((id) => out[id] == null).slice(0, WARM_PER_REQUEST);
+  for (const id of toWarm) void getLowestNightly(id).catch(() => {});
+  return out;
 }

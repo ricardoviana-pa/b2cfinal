@@ -40,6 +40,15 @@ export default function Homes() {
   const { data: propsData, isLoading, isError, refetch } = trpc.properties.listForSite.useQuery();
   const allProperties = (propsData ?? []) as Property[];
   const cities = useMemo(() => getUniqueLocalities(allProperties), [allProperties]);
+  // "From €X" per card (lowest real bookable nightly), when no dates are picked.
+  const fromListingIds = useMemo(
+    () => allProperties.filter(p => p.guestyId).map(p => p.guestyId!),
+    [allProperties],
+  );
+  const { data: fromPrices } = trpc.booking.lowestNightlyBatch.useQuery(
+    { listingIds: fromListingIds },
+    { enabled: fromListingIds.length > 0, staleTime: 5 * 60 * 1000 },
+  );
 
   // ItemList + BreadcrumbList JSON-LD for the catalogue page
   const homesGraph = useMemo(() => {
@@ -746,6 +755,7 @@ export default function Homes() {
                       liveQuote={quotes[property.slug] || undefined}
                       quoteLoading={quotesLoading}
                       batchFailed={batchFailed}
+                      fromPrice={fromPrices?.[property.guestyId ?? '']}
                       listId="search_results"
                       listName="Search Results"
                       itemIndex={index + 1}
