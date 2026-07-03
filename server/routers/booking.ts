@@ -8,7 +8,7 @@ import {
   getPaymentProvider,
 } from "../services/guesty-booking";
 import { guestyBEClient, type BEListingWithPrice } from "../lib/guesty";
-import { getLowestNightly } from "../services/lowest-nightly";
+import { getLowestNightly, getLowestNightlyBatch } from "../services/lowest-nightly";
 import * as db from "../db";
 import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
 
@@ -128,6 +128,14 @@ export const bookingRouter = router({
     .query(async ({ input, ctx }) => {
       ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=28800, stale-while-revalidate=3600");
       return getLowestNightly(input.listingId, input.basePrice);
+    }),
+
+  /** "From €X" for a page of PLP cards — cached/DB-backed, warms in background. */
+  lowestNightlyBatch: publicProcedure
+    .input(z.object({ listingIds: z.array(z.string().min(1)).max(120) }))
+    .query(async ({ input, ctx }) => {
+      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=3600");
+      return getLowestNightlyBatch(input.listingIds);
     }),
 
   checkAvailability: publicProcedure

@@ -41,6 +41,9 @@ interface PropertyCardProps {
   batchFailed?: boolean;
   /** When true, the price/rate row is hidden entirely (e.g. homepage showcase). */
   hidePrice?: boolean;
+  /** Lowest real bookable nightly (next 90d) — shown as "From €X" when no dates
+   *  are picked. Undefined = not computed yet → neutral "select dates" prompt. */
+  fromPrice?: number | null;
 }
 
 export default function PropertyCard({
@@ -56,6 +59,7 @@ export default function PropertyCard({
   quoteLoading = false,
   batchFailed = false,
   hidePrice = false,
+  fromPrice,
 }: PropertyCardProps) {
   const { t } = useTranslation();
   // Multi-unit treatment: when this listing is the parent of a curated group,
@@ -346,10 +350,19 @@ export default function PropertyCard({
             </>
           ) : (
             <div className="flex items-baseline justify-between">
-              {/* No dates selected — show neutral prompt instead of "From €X" placeholder. */}
-              <span className="text-[#9E9A90] text-[0.8125rem]">
-                {t('property.selectDatesForPrice')}
-              </span>
+              {/* No dates selected. Show the real lowest bookable nightly ("From
+                  €X") when we've computed it; otherwise the neutral prompt (never
+                  the old basePrice placeholder). */}
+              {typeof fromPrice === 'number' && fromPrice > 0 ? (
+                <span className="text-[0.8125rem]">
+                  <span className="text-[#1A1A18] font-medium">{t('common.from')} {formatEur(fromPrice)}</span>
+                  <span className="text-[#9E9A90]"> {t('property.perNight')}</span>
+                </span>
+              ) : (
+                <span className="text-[#9E9A90] text-[0.8125rem]">
+                  {t('property.selectDatesForPrice')}
+                </span>
+              )}
             </div>
           )}
         </div>}
