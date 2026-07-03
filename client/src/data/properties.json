@@ -22635,8 +22635,8 @@
         "name": "Bedroom 5",
         "beds": [
           {
-            "type": "BUNK_BED",
-            "quantity": 2
+            "type": "SINGLE_BED",
+            "quantity": 4
           }
         ]
       }
