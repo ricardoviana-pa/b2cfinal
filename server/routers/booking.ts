@@ -8,6 +8,7 @@ import {
   getPaymentProvider,
 } from "../services/guesty-booking";
 import { guestyBEClient, type BEListingWithPrice } from "../lib/guesty";
+import { getLowestNightly } from "../services/lowest-nightly";
 import * as db from "../db";
 import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
 
@@ -116,6 +117,17 @@ export const bookingRouter = router({
         console.error(`[Booking] getCalendar FAILED: ${error.message}`);
         return { days: [] };
       }
+    }),
+
+  /**
+   * "From €X per night" for the PDP — the LOWEST real bookable nightly rate in
+   * the next 90 days (never the Guesty basePrice placeholder). Cached 8h.
+   */
+  lowestNightly: publicProcedure
+    .input(z.object({ listingId: z.string().min(1), basePrice: z.number().optional() }))
+    .query(async ({ input, ctx }) => {
+      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=28800, stale-while-revalidate=3600");
+      return getLowestNightly(input.listingId, input.basePrice);
     }),
 
   checkAvailability: publicProcedure
