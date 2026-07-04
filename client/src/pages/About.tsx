@@ -190,13 +190,17 @@ export default function About() {
           SECTION 1: HERO
           ═══════════════════════════════════════════════════════════════════ */}
       <section className="relative h-[70vh] min-h-[440px] lg:min-h-[520px] flex items-center overflow-hidden">
-        <img
-          src={IMAGES.aboutStory}
-          alt="Interior of a luxury private villa managed by Portugal Active"
-          className="absolute inset-0 w-full h-full object-cover"
-          width={1600} height={900}
-          fetchPriority="high"
-        />
+        <picture className="absolute inset-0 w-full h-full">
+          {/* Portrait crop on phones keeps both team members in frame */}
+          <source media="(max-width: 767px)" srcSet={IMAGES.aboutHeroMobile} />
+          <img
+            src={IMAGES.aboutHero}
+            alt="Portugal Active housekeeping team preparing a luxury private villa"
+            className="absolute inset-0 w-full h-full object-cover"
+            width={1600} height={1067}
+            fetchPriority="high"
+          />
+        </picture>
         <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/30 to-transparent" />
         <div className="relative container z-10 max-w-[1200px] mx-auto">
           <p className="text-[13px] font-medium uppercase tracking-[2px] text-white/70 mb-5" style={{ fontFamily: 'var(--font-body)' }}>

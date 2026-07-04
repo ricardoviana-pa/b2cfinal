@@ -19,7 +19,11 @@ export const IMAGES = {
   expAdventure: '/experiences/sup-river.webp',
   expMobility: '/experiences/pa-mobility-maybach.webp',
 
-  // About page
+  // About page — hero housekeeping scene. The wide crop frames both team
+  // members on desktop; the portrait crop keeps BOTH in frame on narrow
+  // phones (a single centred cover-crop would drop the right-hand one).
+  aboutHero: '/hero/about-cleaning-suite.webp',
+  aboutHeroMobile: '/hero/about-cleaning-suite-mobile.webp',
   aboutStory: '/hero/about-team-suite.webp',
 
   // Contact page — a Portugal Active property terrace with a lit firepit at
