@@ -57,42 +57,42 @@ export default function Events() {
       title: t('events.typeCorporate'),
       subtitle: t('events.subtitleCorporate'),
       guestCount: 80,
-      image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80&auto=format&fit=crop',
+      image: '/events/event-corporate-retreats.webp',
     },
     {
       id: 'weddings',
       title: t('events.typeWeddings'),
       subtitle: t('events.subtitleWeddings'),
       guestCount: 120,
-      image: 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800&q=80&auto=format&fit=crop',
+      image: '/events/event-weddings.webp',
     },
     {
       id: 'brand',
       title: t('events.typeBrand'),
       subtitle: t('events.subtitleBrand'),
       guestCount: 50,
-      image: 'https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=800&q=80&auto=format&fit=crop',
+      image: '/events/event-brand-activations.webp',
     },
     {
       id: 'celebrations',
       title: t('events.typeCelebrations'),
       subtitle: t('events.subtitleCelebrations'),
       guestCount: 60,
-      image: 'https://images.unsplash.com/photo-1529636798458-92182e662485?w=800&q=80&auto=format&fit=crop',
+      image: '/events/event-celebrations.webp',
     },
     {
       id: 'wellness',
       title: t('events.typeWellness'),
       subtitle: t('events.subtitleWellness'),
       guestCount: 40,
-      image: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&q=80&auto=format&fit=crop',
+      image: '/events/event-wellness-retreats.webp',
     },
     {
       id: 'creative',
       title: t('events.typeCreative'),
       subtitle: t('events.subtitleCreative'),
       guestCount: 30,
-      image: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&q=80&auto=format&fit=crop',
+      image: '/events/event-creative-workshops.webp',
     },
   ], [t]);
 
@@ -117,8 +117,8 @@ export default function Events() {
           ================================================================ */}
       <section className="relative h-[70vh] min-h-[500px] flex items-end overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1600&q=80&auto=format&fit=crop"
-          alt="Private villa event setting in Portugal"
+          src="/events/events-hero.webp"
+          alt="Long dinner table set for a private event on a stone terrace overlooking vineyards in Northern Portugal at golden hour"
           className="absolute inset-0 w-full h-full object-cover"
           width={1600}
           height={900}
@@ -237,8 +237,8 @@ export default function Events() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="relative">
               <img
-                src="https://images.unsplash.com/photo-1510076857177-7470076d4098?w=1000&q=80&auto=format&fit=crop"
-                alt="Luxury villa terrace set for a private dinner in Portugal"
+                src="/events/events-venue-showcase.webp"
+                alt="Luxury private villa with pool at twilight — your own home in Portugal"
                 className="w-full object-cover"
                 style={{ aspectRatio: '4/3' }}
                 loading="lazy"
