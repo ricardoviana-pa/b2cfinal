@@ -53,7 +53,7 @@ const BRAND_LOGOS = [
   { src: '/brands/farm-rio.png', alt: 'Farm Rio', h: 'h-5 md:h-6' },
   { src: '/brands/mini.png', alt: 'MINI', h: 'h-8 md:h-9' },
   { src: '/brands/sagres.png', alt: 'Sagres', h: 'h-8 md:h-9' },
-  { src: '/brands/bmw-wordmark.svg', alt: 'BMW', h: 'h-5 md:h-6' },
+  { src: '/brands/bmw-official.svg', alt: 'BMW', h: 'h-8 md:h-9' },
   { src: '/brands/uphold.png', alt: 'Uphold', h: 'h-5 md:h-6' },
   { src: '/brands/mecwide.png', alt: 'Mecwide', h: 'h-6 md:h-7' },
   { src: '/brands/sanjo.png', alt: 'Sanjo', h: 'h-8 md:h-9' },
