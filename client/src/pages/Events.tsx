@@ -46,6 +46,20 @@ const EVENTS_GRAPH = [
   ]),
 ];
 
+/* Real brands we've produced events for. Sizes are tuned for optical balance
+   (wordmarks sit a touch shorter than the round marks) so no single logo
+   looks oversized in the drifting marquee. */
+const BRAND_LOGOS = [
+  { src: '/brands/farm-rio.png', alt: 'Farm Rio', h: 'h-5 md:h-6' },
+  { src: '/brands/mini.png', alt: 'MINI', h: 'h-8 md:h-9' },
+  { src: '/brands/sagres.png', alt: 'Sagres', h: 'h-8 md:h-9' },
+  { src: '/brands/bmw-roundel.svg', alt: 'BMW', h: 'h-8 md:h-9' },
+  { src: '/brands/uphold.png', alt: 'Uphold', h: 'h-5 md:h-6' },
+  { src: '/brands/mecwide.png', alt: 'Mecwide', h: 'h-6 md:h-7' },
+  { src: '/brands/sanjo.png', alt: 'Sanjo', h: 'h-8 md:h-9' },
+  { src: '/brands/vodafone-wordmark.svg', alt: 'Vodafone', h: 'h-5 md:h-6' },
+];
+
 export default function Events() {
   const { t } = useTranslation();
   usePageMeta({ title: 'Private Events Portugal | Weddings, Retreats, Celebrations', description: 'Host weddings, corporate retreats, and private celebrations in luxury Portuguese villas. Full event planning and concierge.', url: '/events' });
@@ -233,27 +247,31 @@ export default function Events() {
           BRAND TRUST — real brands we've produced events for. Sits right
           after the event-types offering, at peak interest, as social proof.
           ================================================================ */}
-      <section className="bg-[#FAFAF7] py-14 md:py-16 border-y border-[#E8E4DC]">
+      <section className="bg-[#FAFAF7] py-14 md:py-16 border-y border-[#E8E4DC] overflow-hidden">
         <div className="container">
           <p className="text-center text-[11px] font-medium text-[#8B7355] mb-10 tracking-[0.16em] uppercase">
             {t('events.brandsOverline', 'Brands that have trusted our company')}
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-8 md:gap-x-9 lg:gap-x-11">
-            {[
-              { src: '/brands/farm-rio.png', alt: 'Farm Rio', h: 'h-5 md:h-6' },
-              { src: '/brands/mini.png', alt: 'MINI', h: 'h-9 md:h-11' },
-              { src: '/brands/sagres.png', alt: 'Sagres', h: 'h-9 md:h-11' },
-              { src: '/brands/bmw.svg', alt: 'BMW', h: 'h-7 md:h-9' },
-              { src: '/brands/uphold.png', alt: 'Uphold', h: 'h-5 md:h-6' },
-              { src: '/brands/mecwide.png', alt: 'Mecwide', h: 'h-6 md:h-7' },
-              { src: '/brands/sanjo.png', alt: 'Sanjo', h: 'h-10 md:h-13' },
-              { src: '/brands/vodafone-wordmark.svg', alt: 'Vodafone', h: 'h-5 md:h-6' },
-            ].map((b) => (
+        </div>
+        {/* Slow marquee — the logos drift across so the wall feels alive and
+            reads as "many brands" rather than a static row. The list is
+            duplicated for a seamless loop, edges fade out, and it pauses on
+            hover. */}
+        <div
+          className="relative"
+          style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, #000 7%, #000 93%, transparent)', maskImage: 'linear-gradient(to right, transparent, #000 7%, #000 93%, transparent)' }}
+        >
+          <div
+            className="flex w-max items-center gap-14 md:gap-20 hover:[animation-play-state:paused]"
+            style={{ animation: 'marquee 55s linear infinite' }}
+          >
+            {[...BRAND_LOGOS, ...BRAND_LOGOS].map((b, i) => (
               <img
-                key={b.alt}
+                key={i}
                 src={b.src}
-                alt={`${b.alt} — event client of Portugal Active`}
-                className={`${b.h} w-auto object-contain grayscale opacity-50 hover:opacity-90 transition-opacity duration-300`}
+                alt={i < BRAND_LOGOS.length ? `${b.alt} — event client of Portugal Active` : ''}
+                aria-hidden={i >= BRAND_LOGOS.length ? true : undefined}
+                className={`${b.h} w-auto object-contain grayscale opacity-45 hover:opacity-80 transition-opacity duration-300 shrink-0`}
                 loading="lazy"
               />
             ))}
