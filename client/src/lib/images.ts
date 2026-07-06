@@ -26,9 +26,10 @@ export const IMAGES = {
   aboutHeroMobile: '/hero/about-cleaning-suite-mobile.webp',
   aboutStory: '/hero/about-team-suite.webp',
 
-  // Contact page — a Portugal Active property terrace with a lit firepit at
-  // golden hour: aspirational and warm, distinct from the villa heroes.
-  contactHero: '/experiences/pa-property-firepit.webp',
+  // Contact page — a Portugal Active villa at blue hour, warm light pouring
+  // from every window, infinity pool and full deck: "arrive to everything
+  // ready", the right note for "Let us plan your stay."
+  contactHero: '/experiences/pa-contact-villa-twilight.webp',
 
   // Logo
   logoWhite: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp',
