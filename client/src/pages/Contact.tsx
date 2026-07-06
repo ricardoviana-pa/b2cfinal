@@ -235,7 +235,7 @@ export default function Contact() {
         <img
           src={IMAGES.contactHero}
           alt={t('contact.heroAlt', 'A Portugal Active villa glowing at twilight with an infinity pool — arrive to everything ready')}
-          className="absolute inset-0 w-full h-full object-cover object-[center_65%]"
+          className="absolute inset-0 w-full h-full object-cover object-[center_40%]"
           width={1600}
           height={1067}
           fetchPriority="high"
