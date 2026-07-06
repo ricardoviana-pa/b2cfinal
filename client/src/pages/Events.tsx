@@ -230,6 +230,37 @@ export default function Events() {
       </section>
 
       {/* ================================================================
+          BRAND TRUST — real brands we've produced events for. Sits right
+          after the event-types offering, at peak interest, as social proof.
+          ================================================================ */}
+      <section className="bg-[#FAFAF7] py-14 md:py-16 border-y border-[#E8E4DC]">
+        <div className="container">
+          <p className="text-center text-[11px] font-medium text-[#8B7355] mb-10 tracking-[0.16em] uppercase">
+            {t('events.brandsOverline', 'Brands that have trusted our company')}
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-8 md:gap-x-16">
+            {[
+              { src: '/brands/farm-rio.png', alt: 'Farm Rio', h: 'h-5 md:h-6' },
+              { src: '/brands/mini.png', alt: 'MINI', h: 'h-10 md:h-12' },
+              { src: '/brands/sagres.png', alt: 'Sagres', h: 'h-10 md:h-12' },
+              { src: '/brands/bmw.svg', alt: 'BMW', h: 'h-8 md:h-10' },
+              { src: '/brands/uphold.png', alt: 'Uphold', h: 'h-5 md:h-6' },
+              { src: '/brands/mecwide.png', alt: 'Mecwide', h: 'h-7 md:h-8' },
+              { src: '/brands/sanjo.png', alt: 'Sanjo', h: 'h-11 md:h-14' },
+            ].map((b) => (
+              <img
+                key={b.alt}
+                src={b.src}
+                alt={`${b.alt} — event client of Portugal Active`}
+                className={`${b.h} w-auto object-contain grayscale opacity-50 hover:opacity-90 transition-opacity duration-300`}
+                loading="lazy"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================
           VENUE SHOWCASE — Split image + text
           ================================================================ */}
       <section className="section-padding bg-[#F5F1EB]">
