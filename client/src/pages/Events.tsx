@@ -58,6 +58,7 @@ const BRAND_LOGOS = [
   { src: '/brands/mecwide.png', alt: 'Mecwide', h: 'h-6 md:h-7' },
   { src: '/brands/sanjo.png', alt: 'Sanjo', h: 'h-8 md:h-9' },
   { src: '/brands/vodafone-wordmark.svg', alt: 'Vodafone', h: 'h-5 md:h-6' },
+  { src: '/brands/eme-beauty.png', alt: 'ÈME Beauty', h: 'h-9 md:h-11' },
 ];
 
 export default function Events() {
