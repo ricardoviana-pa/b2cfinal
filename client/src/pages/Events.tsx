@@ -247,6 +247,7 @@ export default function Events() {
               { src: '/brands/uphold.png', alt: 'Uphold', h: 'h-5 md:h-6' },
               { src: '/brands/mecwide.png', alt: 'Mecwide', h: 'h-7 md:h-8' },
               { src: '/brands/sanjo.png', alt: 'Sanjo', h: 'h-11 md:h-14' },
+              { src: '/brands/vodafone.svg', alt: 'Vodafone', h: 'h-8 md:h-9' },
             ].map((b) => (
               <img
                 key={b.alt}
