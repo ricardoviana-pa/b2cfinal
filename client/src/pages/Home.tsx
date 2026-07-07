@@ -34,6 +34,7 @@ import PropertyCard from '@/components/property/PropertyCard';
 import { IMAGES } from '@/lib/images';
 const ReviewsSection = lazy(() => import('@/components/ReviewsSection'));
 import destinationsData from '@/data/destinations.json';
+import { localizeDestination } from '@/lib/localizeContent';
 import { trpc } from '@/lib/trpc';
 import type { Destination, Property } from '@/lib/types';
 import { getUniqueLocalities } from '@/lib/utils';
@@ -103,7 +104,7 @@ function useFadeIn() {
 }
 
 export default function Home() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   usePageMeta({
     // Must match the server-side PAGE_META '/' entry in server/_core/vite.ts —
     // usePageMeta appends " | Portugal Active", so pass the title without it.
@@ -222,11 +223,15 @@ export default function Home() {
   // do NOT pollute the homepage tiles until their editorial copy and
   // photography are production-ready. Brazil is excluded entirely until
   // we're ready to reveal the expansion publicly.
-  const activeDestinations = destinations.filter(
-    d =>
-      d.status === 'active' &&
-      (d.slug === d.region || (d as any).publicHub === true),
-  );
+  const activeDestinations = destinations
+    .filter(
+      d =>
+        d.status === 'active' &&
+        (d.slug === d.region || (d as any).publicHub === true),
+    )
+    // Destination cards are authored in English; overlay the active locale so
+    // the homepage tiles read in the user's language.
+    .map(d => localizeDestination(d, i18n.language) as Destination);
 
   // Fetch live quotes for featured cards when dates are entered
   useEffect(() => {
