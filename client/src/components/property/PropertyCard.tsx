@@ -245,127 +245,117 @@ export default function PropertyCard({
           {property.locality}, Portugal
         </p>
 
-        {/* Name */}
-        <h3 className="text-[1.0625rem] font-display text-[#1A1A18] mb-1 group-hover:text-[#8B7355] transition-colors leading-tight">
-          {displayName}
-        </h3>
+        {/* Name + specs — the detail icons sit to the right of the name on
+            every card (single and multi-unit), so the row reads consistently. */}
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="text-[1.0625rem] font-display text-[#1A1A18] group-hover:text-[#8B7355] transition-colors leading-tight flex-1 min-w-0">
+            {displayName}
+          </h3>
+          <div className="flex items-center gap-2.5 text-[0.8125rem] text-[#6B6860] shrink-0 pt-1">
+            <span className="flex items-center gap-1">
+              <Users className="w-3.5 h-3.5" /> {property.maxGuests}
+            </span>
+            <span className="flex items-center gap-1">
+              <BedDouble className="w-3.5 h-3.5" /> {property.bedrooms}
+            </span>
+            <span className="flex items-center gap-1">
+              <Bath className="w-3.5 h-3.5" /> {property.bathrooms}
+            </span>
+          </div>
+        </div>
 
-        {isGroup ? (
-          /* Group card — whole-property specs on the left (parent's totals: max
-             guests / bedrooms / bathrooms across the whole complex), units CTA
-             on the right. Matches the visual rhythm of single-property cards
-             instead of leaving the group cards visibly emptier. */
-          <div className="border-t border-[#E8E4DC] mt-3 pt-3 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3 text-[0.8125rem] text-[#6B6860]">
-              <span className="flex items-center gap-1.5">
-                <Users className="w-3.5 h-3.5" /> {property.maxGuests}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <BedDouble className="w-3.5 h-3.5" /> {property.bedrooms}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Bath className="w-3.5 h-3.5" /> {property.bathrooms}
-              </span>
+        {/* Tagline — single-property cards only */}
+        {!isGroup && <p className="text-[0.8125rem] text-[#9E9A90] mt-1 line-clamp-1">{property.tagline}</p>}
+
+        {/* Price row — whole-house price on the LEFT, context on the RIGHT
+            (units for groups, nights for single stays). Group cards show the
+            parent (whole-property) listing's price on purpose: selling the
+            complete house is the focus; individual units stay explorable in the
+            PDP. Groups never show "unavailable" here — units may still be free. */}
+        {!hidePrice && (
+          <div className="border-t border-[#E8E4DC] mt-3 pt-3 flex items-baseline justify-between gap-3">
+            {/* LEFT — price */}
+            <div className="min-w-0">
+              {(() => {
+                if (isGroup) {
+                  if (nights > 0 && liveQuote && liveQuote.available !== false && liveQuote.total > 0) {
+                    return (
+                      <span className="text-[0.8125rem] text-[#1A1A18] font-medium">
+                        {formatEur(liveQuote.total)} {t('property.totalLabel')}
+                      </span>
+                    );
+                  }
+                  if (typeof fromPrice === 'number' && fromPrice > 0) {
+                    return (
+                      <span className="text-[0.8125rem]">
+                        <span className="text-[#1A1A18] font-medium">{t('common.from')} {formatEur(fromPrice)}</span>
+                        <span className="text-[#9E9A90]"> {t('property.perNight')}</span>
+                      </span>
+                    );
+                  }
+                  return <span className="text-[#9E9A90] text-[0.8125rem]">{t('property.selectDatesForPrice')}</span>;
+                }
+                if (nights > 0) {
+                  if (quoteLoading && !liveQuote) {
+                    return (
+                      <div className="flex flex-col gap-1.5 w-full max-w-[200px]" aria-busy="true" aria-label={t('property.checkingPriceAria')}>
+                        <div className="h-3.5 bg-[#F5F1EB] rounded-md animate-pulse w-4/5" />
+                        <div className="h-3 bg-[#F5F1EB] rounded-md animate-pulse w-1/2" />
+                      </div>
+                    );
+                  }
+                  if (liveQuote && liveQuote.available === false) {
+                    return (
+                      <div className="w-full">
+                        <div className="flex items-center gap-1.5">
+                          <span className="inline-block w-2 h-2 rounded-full bg-[#DC2626] shrink-0" />
+                          <span className="text-[#DC2626] text-[0.8125rem] font-medium">
+                            {t('property.unavailableForDates', 'Unavailable for these dates')}
+                          </span>
+                        </div>
+                        <p className="text-[0.6875rem] text-[#9E9A90] mt-1">
+                          {t('property.tryOtherDates', 'Try different dates or contact us for alternatives')}
+                        </p>
+                      </div>
+                    );
+                  }
+                  if (liveQuote && liveQuote.total > 0) {
+                    return (
+                      <span className="text-[0.8125rem] text-[#1A1A18] font-medium">
+                        {formatEur(liveQuote.total)} {t('property.totalLabel')}
+                      </span>
+                    );
+                  }
+                  return <span className="text-[#9E9A90] text-[0.8125rem]">{t('property.priceOnRequest')}</span>;
+                }
+                if (typeof fromPrice === 'number' && fromPrice > 0) {
+                  return (
+                    <span className="text-[0.8125rem]">
+                      <span className="text-[#1A1A18] font-medium">{t('common.from')} {formatEur(fromPrice)}</span>
+                      <span className="text-[#9E9A90]"> {t('property.perNight')}</span>
+                    </span>
+                  );
+                }
+                return <span className="text-[#9E9A90] text-[0.8125rem]">{t('property.selectDatesForPrice')}</span>;
+              })()}
             </div>
+
+            {/* RIGHT — context: units (groups) or nights (single stays) */}
             <div className="text-right shrink-0">
-              <p className="text-[0.8125rem] text-[#1A1A18] font-medium leading-tight">
-                {t('property.unitsAvailable', { count: group!.unitGuestyIds.length, defaultValue: '{{count}} units available' })}
-              </p>
-              <p className="text-[0.6875rem] text-[#9E9A90] mt-0.5">
-                {t('property.viewUnits', 'View units and prices')}
-              </p>
+              {isGroup ? (
+                <p className="text-[0.8125rem] text-[#6B6860] font-medium leading-tight">
+                  {t('property.unitsAvailable', { count: group!.unitGuestyIds.length, defaultValue: '{{count}} units available' })}
+                </p>
+              ) : nights > 0 && liveQuote && liveQuote.available !== false && liveQuote.total > 0 ? (
+                <p className="text-[0.75rem] text-[#9E9A90] leading-tight">
+                  {liveQuote.source === 'live' || liveQuote.source === 'cached'
+                    ? t('booking.nights', { count: liveQuote.nights })
+                    : t('property.estimateForNights', { count: liveQuote.nights, defaultValue: 'est. for {{count}} nights' })}
+                </p>
+              ) : null}
             </div>
           </div>
-        ) : (
-          <>
-            {/* Tagline */}
-            <p className="text-[0.8125rem] text-[#9E9A90] mb-3 line-clamp-1">{property.tagline}</p>
-
-            {/* Specs Row */}
-            <div className="flex items-center gap-4 text-[0.8125rem] text-[#6B6860] mb-3">
-              <span className="flex items-center gap-1.5">
-                <Users className="w-3.5 h-3.5" /> {property.maxGuests}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <BedDouble className="w-3.5 h-3.5" /> {property.bedrooms}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Bath className="w-3.5 h-3.5" /> {property.bathrooms}
-              </span>
-            </div>
-          </>
         )}
-
-        {/* Price + Best Rate Guarantee — hidden for group cards (group reveals unit prices in PDP) */}
-        {!isGroup && !hidePrice && <div className="border-t border-[#E8E4DC] pt-3">
-          {nights > 0 ? (
-            <>
-              <div className="flex items-baseline justify-between">
-                {quoteLoading && !liveQuote ? (
-                  <div className="flex flex-col gap-1.5 w-full max-w-[200px]" aria-busy="true" aria-label={t('property.checkingPriceAria')}>
-                    <div className="h-3.5 bg-[#F5F1EB] rounded-md animate-pulse w-4/5" />
-                    <div className="h-3 bg-[#F5F1EB] rounded-md animate-pulse w-1/2" />
-                  </div>
-                ) : liveQuote && liveQuote.available === false ? (
-                  <div className="w-full">
-                    <div className="flex items-center gap-1.5">
-                      <span className="inline-block w-2 h-2 rounded-full bg-[#DC2626] shrink-0" />
-                      <span className="text-[#DC2626] text-[0.8125rem] font-medium">
-                        {t('property.unavailableForDates', 'Unavailable for these dates')}
-                      </span>
-                    </div>
-                    <p className="text-[0.6875rem] text-[#9E9A90] mt-1">
-                      {t('property.tryOtherDates', 'Try different dates or contact us for alternatives')}
-                    </p>
-                  </div>
-                ) : liveQuote && liveQuote.total > 0 ? (
-                  // Any positive total — live, cached, base, or estimate — is shown
-                  // to the user. The Guesty source flag only affects whether we
-                  // label it as confirmed vs. estimate (subtle UI hint). The
-                  // previous behaviour hid estimates entirely behind "Price on
-                  // request", which felt broken to users who'd already picked dates.
-                  (() => {
-                    const fmt = formatEur;
-                    const isConfirmed = liveQuote.source === 'live' || liveQuote.source === 'cached';
-                    return (
-                      <>
-                        <span className="text-[#1A1A18] font-medium">
-                          {fmt(liveQuote.total)} {t('property.totalLabel')}
-                        </span>
-                        <span className="text-[0.75rem] text-[#9E9A90]">
-                          {isConfirmed
-                            ? t('booking.nights', { count: liveQuote.nights })
-                            : t('property.estimateForNights', { count: liveQuote.nights, defaultValue: 'est. for {{count}} nights' })}
-                        </span>
-                      </>
-                    );
-                  })()
-                ) : (
-                  // No quote came back at all (total missing or zero) — true edge case.
-                  <span className="text-[#9E9A90] text-[0.8125rem]">
-                    {t('property.priceOnRequest')}
-                  </span>
-                )}
-              </div>
-            </>
-          ) : (
-            <div className="flex items-baseline justify-between">
-              {/* No dates selected. Show the real lowest bookable nightly ("From
-                  €X") when we've computed it; otherwise the neutral prompt (never
-                  the old basePrice placeholder). */}
-              {typeof fromPrice === 'number' && fromPrice > 0 ? (
-                <span className="text-[0.8125rem]">
-                  <span className="text-[#1A1A18] font-medium">{t('common.from')} {formatEur(fromPrice)}</span>
-                  <span className="text-[#9E9A90]"> {t('property.perNight')}</span>
-                </span>
-              ) : (
-                <span className="text-[#9E9A90] text-[0.8125rem]">
-                  {t('property.selectDatesForPrice')}
-                </span>
-              )}
-            </div>
-          )}
-        </div>}
       </div>
       </article>
     </Link>
