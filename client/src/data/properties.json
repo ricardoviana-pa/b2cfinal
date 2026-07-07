@@ -11402,9 +11402,45 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 1077,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "nous avons passer un agréable séjour. logement impeccable et bien situé à proximité de la plage et de restaurants. nous sommes venues pour les sports nautique, c'est un bon Spot ou on peut pratiquer du windsurf, Wingfoil,Kitesurf,surf et autre...je recommande le logement.\nmerci proactive 🤙",
+        "guestDisplayName": "Daniel",
+        "guestName": "Daniel",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-03T20:43:30.225Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-6965330b6d209c001510dd49",
@@ -14101,6 +14137,41 @@
     "areaSquareFeet": 4554,
     "reviews": [
       {
+        "rating": 5,
+        "text": "O espaço da casa é lindíssimo. A piscina fez as delícias de pequenos e graúdos (esteve muito calor durante a nossa estadia). Recomendo a instalação de um corrimão nas escadas da piscina para facilitar o acesso à pessoas com mobilidade mais reduzida. \nA casa está muito bem decorada e com muito espaço de arrumação. Está muito bem equipada com todos os utensílios. A 5 minutos de carro temos 2 hipermercados (Intermarche e Lidl) e o retail park do Lima. Viana do fica a 10 minutos. Recomendo vivamente",
+        "guestDisplayName": "Tiago",
+        "guestName": "Tiago",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-05T17:22:01.838Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "Espaço muito agradável preparado para crianças. \nQuartos amplos com wcs privados \nEstava tudo bem higienizado.\nBoa biblioteca de livros e jogos.\nCaminhar sempre com calçado na relva pois tem espinhos.",
         "guestDisplayName": "Filipa",
@@ -14171,8 +14242,8 @@
         ]
       }
     ],
-    "averageRating": 4,
-    "reviewCount": 2
+    "averageRating": 4.33,
+    "reviewCount": 3
   },
   {
     "id": "guesty-696533284b583900135ceb91",
@@ -16061,9 +16132,45 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 323,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Todo muy bien especialmente Ju que nos ayudado en todo.",
+        "guestDisplayName": "Manuel",
+        "guestName": "Manuel",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-05T18:43:43.008Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-6a3a63f9e19cb0001db6a05e",
