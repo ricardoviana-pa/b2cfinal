@@ -167,7 +167,7 @@ export default function Adventures() {
       <Header />
 
       {/* Hero */}
-      <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
+      <section className="relative h-[62vh] min-h-[460px] flex items-end overflow-hidden">
         <img src="/experiences/horseback-riding/01.webp" alt="Horseback riding on the beach at sunset – adventure experiences in Portugal" className="absolute inset-0 w-full h-full object-cover" width={1600} height={1067} fetchPriority="high" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/15" />
         <div className="relative container pb-12 lg:pb-16 z-10">

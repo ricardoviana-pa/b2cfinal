@@ -189,7 +189,7 @@ export default function About() {
       {/* ═══════════════════════════════════════════════════════════════════
           SECTION 1: HERO
           ═══════════════════════════════════════════════════════════════════ */}
-      <section className="relative h-[70vh] min-h-[440px] lg:min-h-[520px] flex items-center overflow-hidden">
+      <section className="relative h-[62vh] min-h-[460px] flex items-center overflow-hidden">
         <picture className="absolute inset-0 w-full h-full">
           {/* Portrait crop on phones keeps both team members in frame */}
           <source media="(max-width: 767px)" srcSet={IMAGES.aboutHeroMobile} />

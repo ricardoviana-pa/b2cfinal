@@ -156,7 +156,7 @@ export default function Concierge() {
       <Header />
 
       {/* Hero */}
-      <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
+      <section className="relative h-[62vh] min-h-[460px] flex items-end overflow-hidden">
         <img
           src="/experiences/pa-property-firepit.webp"
           alt="Portugal Active property terrace with fire pit at sunset"

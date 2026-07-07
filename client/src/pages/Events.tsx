@@ -130,7 +130,7 @@ export default function Events() {
       {/* ================================================================
           HERO — Cinematic full-bleed with villa imagery
           ================================================================ */}
-      <section className="relative h-[70vh] min-h-[500px] flex items-end overflow-hidden">
+      <section className="relative h-[62vh] min-h-[460px] flex items-end overflow-hidden">
         <img
           src="/events/events-hero.webp"
           alt="Long dinner table set for a private event on a stone terrace overlooking vineyards in Northern Portugal at golden hour"
