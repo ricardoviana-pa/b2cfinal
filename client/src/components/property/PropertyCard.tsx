@@ -264,8 +264,6 @@ export default function PropertyCard({
           </div>
         </div>
 
-        {/* Tagline — single-property cards only */}
-        {!isGroup && <p className="text-[0.8125rem] text-[#9E9A90] mt-1 line-clamp-1">{property.tagline}</p>}
 
         {/* Price row — whole-house price on the LEFT, context on the RIGHT
             (units for groups, nights for single stays). Group cards show the
