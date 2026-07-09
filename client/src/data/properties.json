@@ -12,7 +12,7 @@
     "maxGuests": 10,
     "priceFrom": 500,
     "pricePerNight": 500,
-    "cleaningFee": 278,
+    "cleaningFee": 347,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -405,7 +405,7 @@
     "maxGuests": 10,
     "priceFrom": 380,
     "pricePerNight": 380,
-    "cleaningFee": 232,
+    "cleaningFee": 291,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -625,7 +625,7 @@
     "maxGuests": 10,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 278,
+    "cleaningFee": 347,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -968,7 +968,7 @@
     "maxGuests": 4,
     "priceFrom": 105,
     "pricePerNight": 105,
-    "cleaningFee": 91,
+    "cleaningFee": 114,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -1148,7 +1148,7 @@
     "maxGuests": 14,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 296,
+    "cleaningFee": 370,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -1704,7 +1704,7 @@
     "maxGuests": 6,
     "priceFrom": 120,
     "pricePerNight": 120,
-    "cleaningFee": 82,
+    "cleaningFee": 102,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -2218,7 +2218,7 @@
     "maxGuests": 2,
     "priceFrom": 80,
     "pricePerNight": 80,
-    "cleaningFee": 74,
+    "cleaningFee": 92,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -2389,7 +2389,7 @@
     "maxGuests": 10,
     "priceFrom": 260,
     "pricePerNight": 260,
-    "cleaningFee": 279,
+    "cleaningFee": 348,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -2720,7 +2720,7 @@
     "maxGuests": 14,
     "priceFrom": 420,
     "pricePerNight": 420,
-    "cleaningFee": 289,
+    "cleaningFee": 361,
     "minNights": 3,
     "currency": "EUR",
     "images": [
@@ -3000,7 +3000,7 @@
     "maxGuests": 14,
     "priceFrom": 400,
     "pricePerNight": 400,
-    "cleaningFee": 297,
+    "cleaningFee": 371,
     "minNights": 3,
     "currency": "EUR",
     "images": [
@@ -3309,7 +3309,7 @@
     "maxGuests": 2,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 72,
+    "cleaningFee": 91,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -3740,7 +3740,7 @@
     "maxGuests": 9,
     "priceFrom": 220,
     "pricePerNight": 220,
-    "cleaningFee": 221,
+    "cleaningFee": 277,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -4101,7 +4101,7 @@
     "maxGuests": 8,
     "priceFrom": 99,
     "pricePerNight": 99,
-    "cleaningFee": 143,
+    "cleaningFee": 178,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -4381,7 +4381,7 @@
     "maxGuests": 5,
     "priceFrom": 100,
     "pricePerNight": 100,
-    "cleaningFee": 82,
+    "cleaningFee": 103,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -4769,7 +4769,7 @@
     "maxGuests": 9,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 224,
+    "cleaningFee": 280,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -4996,7 +4996,7 @@
     "maxGuests": 6,
     "priceFrom": 190,
     "pricePerNight": 190,
-    "cleaningFee": 141,
+    "cleaningFee": 176,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -5309,7 +5309,7 @@
     "maxGuests": 2,
     "priceFrom": 150,
     "pricePerNight": 150,
-    "cleaningFee": 73,
+    "cleaningFee": 92,
     "minNights": 3,
     "currency": "EUR",
     "images": [
@@ -5475,7 +5475,7 @@
     "maxGuests": 2,
     "priceFrom": 70,
     "pricePerNight": 70,
-    "cleaningFee": 71,
+    "cleaningFee": 89,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -5681,7 +5681,7 @@
     "maxGuests": 28,
     "priceFrom": 700,
     "pricePerNight": 700,
-    "cleaningFee": 381,
+    "cleaningFee": 477,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -6178,7 +6178,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 72,
+    "cleaningFee": 90,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -6394,7 +6394,7 @@
     "maxGuests": 8,
     "priceFrom": 300,
     "pricePerNight": 300,
-    "cleaningFee": 222,
+    "cleaningFee": 278,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -6763,7 +6763,7 @@
     "maxGuests": 3,
     "priceFrom": 80,
     "pricePerNight": 80,
-    "cleaningFee": 83,
+    "cleaningFee": 104,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -7202,7 +7202,7 @@
     "maxGuests": 20,
     "priceFrom": 500,
     "pricePerNight": 500,
-    "cleaningFee": 304,
+    "cleaningFee": 379,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -7537,7 +7537,7 @@
     "maxGuests": 4,
     "priceFrom": 180,
     "pricePerNight": 180,
-    "cleaningFee": 81,
+    "cleaningFee": 101,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -8211,7 +8211,7 @@
     "maxGuests": 6,
     "priceFrom": 150,
     "pricePerNight": 150,
-    "cleaningFee": 143,
+    "cleaningFee": 178,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -8625,7 +8625,7 @@
     "maxGuests": 12,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 285,
+    "cleaningFee": 357,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -9061,7 +9061,7 @@
     "maxGuests": 4,
     "priceFrom": 170,
     "pricePerNight": 170,
-    "cleaningFee": 82,
+    "cleaningFee": 102,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -9311,7 +9311,7 @@
     "maxGuests": 16,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 303,
+    "cleaningFee": 379,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -9788,7 +9788,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 81,
+    "cleaningFee": 101,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -10043,7 +10043,7 @@
     "maxGuests": 23,
     "priceFrom": 700,
     "pricePerNight": 700,
-    "cleaningFee": 330,
+    "cleaningFee": 413,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -10359,7 +10359,7 @@
     "maxGuests": 6,
     "priceFrom": 180,
     "pricePerNight": 180,
-    "cleaningFee": 142,
+    "cleaningFee": 178,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -10655,7 +10655,7 @@
     "maxGuests": 12,
     "priceFrom": 400,
     "pricePerNight": 400,
-    "cleaningFee": 287,
+    "cleaningFee": 359,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -10954,7 +10954,7 @@
     "maxGuests": 2,
     "priceFrom": 100,
     "pricePerNight": 100,
-    "cleaningFee": 73,
+    "cleaningFee": 91,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -11264,7 +11264,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 82,
+    "cleaningFee": 102,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -11489,7 +11489,7 @@
     "maxGuests": 12,
     "priceFrom": 300,
     "pricePerNight": 300,
-    "cleaningFee": 287,
+    "cleaningFee": 359,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -12012,7 +12012,7 @@
     "maxGuests": 8,
     "priceFrom": 110,
     "pricePerNight": 110,
-    "cleaningFee": 140,
+    "cleaningFee": 176,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -12365,7 +12365,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 74,
+    "cleaningFee": 92,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -12805,7 +12805,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 71,
+    "cleaningFee": 88,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -13050,7 +13050,7 @@
     "maxGuests": 14,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 296,
+    "cleaningFee": 370,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -13425,7 +13425,7 @@
     "maxGuests": 12,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 302,
+    "cleaningFee": 377,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -13924,7 +13924,7 @@
     "maxGuests": 10,
     "priceFrom": 280,
     "pricePerNight": 280,
-    "cleaningFee": 277,
+    "cleaningFee": 346,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -14292,7 +14292,7 @@
     "maxGuests": 11,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 222,
+    "cleaningFee": 277,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -14987,7 +14987,7 @@
     "maxGuests": 4,
     "priceFrom": 175,
     "pricePerNight": 175,
-    "cleaningFee": 93,
+    "cleaningFee": 116,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -15159,7 +15159,7 @@
     "maxGuests": 4,
     "priceFrom": 145,
     "pricePerNight": 145,
-    "cleaningFee": 93,
+    "cleaningFee": 117,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -15326,7 +15326,7 @@
     "maxGuests": 4,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 81,
+    "cleaningFee": 101,
     "minNights": 3,
     "currency": "EUR",
     "images": [
@@ -15533,7 +15533,7 @@
     "maxGuests": 8,
     "priceFrom": 450,
     "pricePerNight": 450,
-    "cleaningFee": 223,
+    "cleaningFee": 279,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -15758,7 +15758,7 @@
     "maxGuests": 6,
     "priceFrom": 100,
     "pricePerNight": 100,
-    "cleaningFee": 81,
+    "cleaningFee": 102,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -15993,7 +15993,7 @@
     "maxGuests": 4,
     "priceFrom": 70,
     "pricePerNight": 70,
-    "cleaningFee": 74,
+    "cleaningFee": 92,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -16219,7 +16219,7 @@
     "maxGuests": 4,
     "priceFrom": 104,
     "pricePerNight": 104,
-    "cleaningFee": 71,
+    "cleaningFee": 89,
     "minNights": 3,
     "currency": "EUR",
     "images": [
@@ -16397,7 +16397,7 @@
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 142,
+    "cleaningFee": 178,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -16849,7 +16849,7 @@
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 141,
+    "cleaningFee": 176,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -17234,7 +17234,7 @@
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 143,
+    "cleaningFee": 179,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -17523,7 +17523,7 @@
     "maxGuests": 14,
     "priceFrom": 450,
     "pricePerNight": 450,
-    "cleaningFee": 297,
+    "cleaningFee": 372,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -17933,7 +17933,7 @@
     "maxGuests": 7,
     "priceFrom": 140,
     "pricePerNight": 140,
-    "cleaningFee": 142,
+    "cleaningFee": 178,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -18147,7 +18147,7 @@
     "maxGuests": 8,
     "priceFrom": 250,
     "pricePerNight": 250,
-    "cleaningFee": 275,
+    "cleaningFee": 344,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -18510,7 +18510,7 @@
     "maxGuests": 10,
     "priceFrom": 175,
     "pricePerNight": 175,
-    "cleaningFee": 221,
+    "cleaningFee": 276,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -18832,7 +18832,7 @@
     "maxGuests": 7,
     "priceFrom": 280,
     "pricePerNight": 280,
-    "cleaningFee": 223,
+    "cleaningFee": 279,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -19363,7 +19363,7 @@
     "maxGuests": 8,
     "priceFrom": 280,
     "pricePerNight": 280,
-    "cleaningFee": 223,
+    "cleaningFee": 278,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -19788,7 +19788,7 @@
     "maxGuests": 10,
     "priceFrom": 510,
     "pricePerNight": 510,
-    "cleaningFee": 279,
+    "cleaningFee": 348,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -20019,7 +20019,7 @@
     "maxGuests": 10,
     "priceFrom": 280,
     "pricePerNight": 280,
-    "cleaningFee": 223,
+    "cleaningFee": 279,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -20726,7 +20726,7 @@
     "maxGuests": 19,
     "priceFrom": 500,
     "pricePerNight": 500,
-    "cleaningFee": 299,
+    "cleaningFee": 373,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -21009,7 +21009,7 @@
     "maxGuests": 4,
     "priceFrom": 220,
     "pricePerNight": 220,
-    "cleaningFee": 81,
+    "cleaningFee": 101,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -21347,7 +21347,7 @@
     "maxGuests": 6,
     "priceFrom": 180,
     "pricePerNight": 180,
-    "cleaningFee": 142,
+    "cleaningFee": 178,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -21838,7 +21838,7 @@
     "maxGuests": 4,
     "priceFrom": 190,
     "pricePerNight": 190,
-    "cleaningFee": 93,
+    "cleaningFee": 116,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -22022,7 +22022,7 @@
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 143,
+    "cleaningFee": 179,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -22569,13 +22569,13 @@
     "maxGuests": 12,
     "priceFrom": 459,
     "pricePerNight": 459,
-    "cleaningFee": 276,
+    "cleaningFee": 345,
     "minNights": 4,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/26075154-4463-47-6g1jb",
       "https://assets.guesty.com/image/upload/v1783467648/production/6957de4388cba42d9e7a905e/d7husr1yl8z7lcbcsood.jpg",
-      "https://assets.guesty.com/image/upload/v1782394819/production/6957de4388cba42d9e7a905e/fyvvv1cgsidavqddie2m.jpg",
+      "https://assets.guesty.com/image/upload/v1783607615/production/6957de4388cba42d9e7a905e/ucebeytprmjdxieshtz2.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/c047ab4e-76d5-41-QLYD8",
       "https://assets.guesty.com/image/upload/v1783467641/production/6957de4388cba42d9e7a905e/nocvufavjejcrz0hweeq.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/98029be4-60d7-42-7qUZv",
@@ -22590,15 +22590,15 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/0aecb9a6-b1b7-4e-aIUot",
       "https://assets.guesty.com/image/upload/v1783467628/production/6957de4388cba42d9e7a905e/fttpwr6xelezextab2ua.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/d5f6ca0e-bd43-47-KysQR",
-      "https://assets.guesty.com/image/upload/v1782394823/production/6957de4388cba42d9e7a905e/odfqoiylq1eebc5yf5ep.jpg",
-      "https://assets.guesty.com/image/upload/v1782394823/production/6957de4388cba42d9e7a905e/jys3x82zi9k0ocmzcxxl.jpg",
-      "https://assets.guesty.com/image/upload/v1782394825/production/6957de4388cba42d9e7a905e/etfxhp5axkxskgmbwqsc.jpg",
+      "https://assets.guesty.com/image/upload/v1783607580/production/6957de4388cba42d9e7a905e/ojuj2t1vv2wrejf3c4aa.jpg",
+      "https://assets.guesty.com/image/upload/v1783607585/production/6957de4388cba42d9e7a905e/wiiivtxkytn30ca0elmy.jpg",
+      "https://assets.guesty.com/image/upload/v1783607589/production/6957de4388cba42d9e7a905e/hvvbbtm3gjxp0cyvj6qu.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/96344874-699f-47-bcKnQ",
-      "https://assets.guesty.com/image/upload/v1782394826/production/6957de4388cba42d9e7a905e/pejt99zazij01alojxkc.jpg",
-      "https://assets.guesty.com/image/upload/v1782394826/production/6957de4388cba42d9e7a905e/agp9kqnm5u5msajmnpgw.jpg",
-      "https://assets.guesty.com/image/upload/v1782394819/production/6957de4388cba42d9e7a905e/ykljbumzqbn7sx0st8b4.jpg",
-      "https://assets.guesty.com/image/upload/v1782394819/production/6957de4388cba42d9e7a905e/olj6z6kapgjldctkute4.jpg",
-      "https://assets.guesty.com/image/upload/v1782394822/production/6957de4388cba42d9e7a905e/f04kankobctxye5ldemw.jpg",
+      "https://assets.guesty.com/image/upload/v1783607611/production/6957de4388cba42d9e7a905e/hk4g1kffb6o6h3dxgvrg.jpg",
+      "https://assets.guesty.com/image/upload/v1783607623/production/6957de4388cba42d9e7a905e/cxswhving0gvwob5tnga.jpg",
+      "https://assets.guesty.com/image/upload/v1783607638/production/6957de4388cba42d9e7a905e/miktbbifoq37cezesy9k.jpg",
+      "https://assets.guesty.com/image/upload/v1783607634/production/6957de4388cba42d9e7a905e/g9idr1phvviavpf5ahah.jpg",
+      "https://assets.guesty.com/image/upload/v1783607645/production/6957de4388cba42d9e7a905e/shpvuoc4l4udsqafes7i.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/f7b86080-6627-41-TTOkW",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/5d56ae85-9fc3-46-UYsew",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/784ca69b-6b06-4f-pCW4U",
@@ -22633,13 +22633,13 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/756b3f0d-a5d1-49-4F1Wg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/e2c50aed-e7f3-4c-1GFgr",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/bbd08635-e4fd-43-ovcP9",
-      "https://assets.guesty.com/image/upload/v1782394815/production/6957de4388cba42d9e7a905e/xkfkigaoizy9ocmbqt1x.jpg",
-      "https://assets.guesty.com/image/upload/v1782394815/production/6957de4388cba42d9e7a905e/vkeddaeqcqp9va4cb7e2.jpg",
-      "https://assets.guesty.com/image/upload/v1782394815/production/6957de4388cba42d9e7a905e/ld86bckrbb7fzi8bsrwd.jpg",
-      "https://assets.guesty.com/image/upload/v1782394819/production/6957de4388cba42d9e7a905e/qitylwdqfudolhoagett.jpg",
-      "https://assets.guesty.com/image/upload/v1782394819/production/6957de4388cba42d9e7a905e/d87vhllajf3vschwvbcf.jpg",
-      "https://assets.guesty.com/image/upload/v1782394815/production/6957de4388cba42d9e7a905e/ma9hzmq7unatpopgrodw.jpg",
-      "https://assets.guesty.com/image/upload/v1782394819/production/6957de4388cba42d9e7a905e/glzrl9nlclpq9cqqe985.jpg",
+      "https://assets.guesty.com/image/upload/v1783607542/production/6957de4388cba42d9e7a905e/ptya7dpsx2vc9iuvkp5m.jpg",
+      "https://assets.guesty.com/image/upload/v1783607538/production/6957de4388cba42d9e7a905e/iealwf5ohotaajykx9yy.jpg",
+      "https://assets.guesty.com/image/upload/v1783607589/production/6957de4388cba42d9e7a905e/gstvdtdbnayentdtvytk.jpg",
+      "https://assets.guesty.com/image/upload/v1783607574/production/6957de4388cba42d9e7a905e/bofrgq05exqtchagmuak.jpg",
+      "https://assets.guesty.com/image/upload/v1783607640/production/6957de4388cba42d9e7a905e/etigrn16h0ninku9zwjq.jpg",
+      "https://assets.guesty.com/image/upload/v1783607633/production/6957de4388cba42d9e7a905e/wlnz832bcywazk9houkq.jpg",
+      "https://assets.guesty.com/image/upload/v1783607643/production/6957de4388cba42d9e7a905e/dea50rqrlmupv0igxydv.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/3a5b8b4b-ad51-46-gVvYR",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/98e3e59b-4aad-49-3q1BI",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965331fec80690013738c68/33741366-7ae1-4d-CxurL",
@@ -22830,7 +22830,7 @@
     "maxGuests": 4,
     "priceFrom": 80,
     "pricePerNight": 80,
-    "cleaningFee": 71,
+    "cleaningFee": 89,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -23098,7 +23098,7 @@
     "maxGuests": 3,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 72,
+    "cleaningFee": 90,
     "minNights": 1,
     "currency": "EUR",
     "images": [
