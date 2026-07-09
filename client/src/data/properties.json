@@ -5188,6 +5188,41 @@
     "areaSquareFeet": 1690,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Lovely villa, felt like it was quite new, probably was. Had everything we needed and very close to some nice beaches, local cafes/restaurants, little supermarket that serves fresh fish. Nice convenience and certainly good enough. \nWe hired bikes at the sport hotel to get into town and have activities to do, but can also use Bolt or local taxis. Big supermarkets are probably 10-15mins drive. Charging for early or late check out is not something I have ever witnessed but there is a grace of 1 hour",
+        "guestDisplayName": "Matt",
+        "guestName": "Matt",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-08T20:28:30.611Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "La casa es muy bonita, está nueva y en una zona muy tranquila. Además, la atención y las respuestas fueron rápidas en todo momento.\n\nAun así, hubo varios detalles que no nos gustaron. Echamos en falta más toallas y, además, el papel higiénico que dejaron no nos llegó para toda la estancia, así que tuvimos que ir a comprar más. También una persiana eléctrica de una habitación no funcionaba desde el primer día y tardaron tres días en arreglarla, dejando media estancia prácticamente inutilizable. D",
         "guestDisplayName": "Patricia",
@@ -5258,8 +5293,8 @@
         ]
       }
     ],
-    "averageRating": 4.5,
-    "reviewCount": 2
+    "averageRating": 4.67,
+    "reviewCount": 3
   },
   {
     "id": "guesty-6a3ba1fce19cb0001dc57ea6",
