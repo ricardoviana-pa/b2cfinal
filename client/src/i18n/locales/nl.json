@@ -1081,6 +1081,11 @@
     "instantConfirmation": "Directe bevestiging"
   },
   "reviews": {
+    "title": "Gastenbeoordelingen",
+    "singular": "beoordeling",
+    "plural": "beoordelingen",
+    "showMore": "Meer tonen",
+    "showFewer": "Minder tonen",
     "ourGuests": "ONZE GASTEN",
     "whatTheyRemember": "Wat ze zich het meest herinneren.",
     "proofStrip": "4.8/5 bij meer dan 2.000 gastbeoordelingen",

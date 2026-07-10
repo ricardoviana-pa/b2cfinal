@@ -1081,6 +1081,11 @@
     "instantConfirmation": "Confirmación instantánea"
   },
   "reviews": {
+    "title": "Opiniones de huéspedes",
+    "singular": "opinión",
+    "plural": "opiniones",
+    "showMore": "Ver más",
+    "showFewer": "Ver menos",
     "ourGuests": "NUESTROS HUÉSPEDES",
     "whatTheyRemember": "Lo que más recuerdan.",
     "proofStrip": "4.8/5 en más de 2.000 opiniones de huéspedes",
