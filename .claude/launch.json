@@ -4,7 +4,20 @@
     {
       "name": "dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "port": 3000,
+      "autoPort": true
+    },
+    {
+      "name": "prod",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "JWT_SECRET=local-qa-throwaway-secret-not-used-in-prod npm run start"
+      ],
       "port": 3000,
       "autoPort": true
     }

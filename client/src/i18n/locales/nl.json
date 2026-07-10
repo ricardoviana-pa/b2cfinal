@@ -129,7 +129,7 @@
     "estTotal": "geschat totaal",
     "indicativeCatalogue": "Indicatief uit catalogus. Bevestig het totaal bij boeking.",
     "indicativeUnavailable": "Indicatief (catalogus). Live prijs niet beschikbaar — bevestig bij boeking.",
-    "cleaningFee": "Eindschoonmaak",
+    "cleaningFee": "Voorbereiding van de woning",
     "serviceFee": "Servicekosten",
     "touristTax": "Toeristenbelasting",
     "vat": "BTW",
@@ -220,7 +220,9 @@
     "minStayNotice_one": "Het minimumverblijf voor deze data is {{count}} nacht",
     "minStayNotice_other": "Het minimumverblijf voor deze data is {{count}} nachten",
     "select": "Selecteren",
-    "cancellationPerPolicy": "Annulering volgens het beleid van de accommodatie"
+    "cancellationPerPolicy": "Annulering volgens het beleid van de accommodatie",
+    "decreaseGuests": "Minder gasten",
+    "increaseGuests": "Meer gasten"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Prijs op aanvraag",
@@ -272,7 +274,47 @@
     "requestWithoutPayment": "Of aanvragen zonder betaling",
     "belowMinNightsWarning_one": "Selecteer minimaal {{count}} nacht om door te gaan",
     "belowMinNightsWarning_other": "Selecteer minimaal {{count}} nachten om door te gaan",
-    "pricingUnavailableMessage": "We konden de prijs voor deze data niet bevestigen. Neem contact op met een Concierge."
+    "pricingUnavailableMessage": "We konden de prijs voor deze data niet bevestigen. Neem contact op met een Concierge.",
+    "recommended": "Aanbevolen",
+    "nonRefundableWarning": "Geen terugbetaling bij annulering of wijziging",
+    "save": "Bespaar",
+    "quoteExpired": "De offerte is verlopen. Probeer het opnieuw.",
+    "quoteRefreshFailed": "De prijs kon niet worden bijgewerkt. Neem contact op met onze concierge.",
+    "termsAcceptLabel": "Ik accepteer de",
+    "termsLink": "Algemene voorwaarden",
+    "termsAnd": "en het",
+    "invalidEmail": "Voer een geldig e-mailadres in",
+    "invalidPhone": "Voer een geldig telefoonnummer in",
+    "bookingSummary": "Boekingsoverzicht",
+    "proceedToPayment": "Doorgaan naar betaling",
+    "priceSummary": "Prijsoverzicht",
+    "bookedBy": "Geboekt door",
+    "servicesRequested": "Aangevraagde services",
+    "servicesConfirmNote": "Onze concierge neemt binnen 2 uur contact op om details en prijzen te bevestigen.",
+    "chatConcierge": "Chat met uw concierge",
+    "conciergeReachOut": "Uw persoonlijke concierge neemt binnen 24 uur contact op om uw verblijf te plannen.",
+    "confirmationEmailSent": "Bevestigingsmail verzonden naar",
+    "contactConcierge": "Contact opnemen met concierge",
+    "selectDate": "Selecteer",
+    "loadingCalendar": "Beschikbaarheid laden...",
+    "fromPrice": "vanaf",
+    "showAllServices": "Alle services tonen",
+    "servicesNote": "Services worden na de boeking apart bevestigd door onze concierge. Nu geen kosten.",
+    "checkInToday": "Check-in is vandaag",
+    "checkInTomorrow": "Check-in is morgen",
+    "checkInSoon": "Check-in is over 2 dagen",
+    "advanceNoticeNote": "Sommige huizen vereisen een aankondigingstermijn. Directe bevestiging is mogelijk niet beschikbaar.",
+    "nightsLabel": "nachten",
+    "servicesSelected_one": "{{count}} service aangevraagd — bevestigd na de boeking",
+    "servicesSelected_other": "{{count}} services aangevraagd — bevestigd na de boeking",
+    "phonePh": "Telefoonnummer *",
+    "ratePlanPolicyAria": "opent het annuleringsbeleid in een nieuw tabblad",
+    "waSuccessMessage": "Hallo! Ik heb zojuist mijn boeking bij {{property}} bevestigd.\nBevestiging: {{code}}\nData: {{checkIn}} → {{checkOut}}\nGasten: {{guests}}\nIk kijk ernaar uit!",
+    "waPricingHelp": "Hallo, ik wil graag {{property}} boeken.\nData: {{checkIn}} → {{checkOut}}\nNachten: {{nights}}\nGasten: {{guests}}\nKunnen jullie helpen met beschikbaarheid en prijs?",
+    "clearDates": "Wissen",
+    "availableLabel": "Beschikbaar",
+    "unavailableLabel": "Niet beschikbaar",
+    "confirmDates": "Bevestigen"
   },
   "common": {
     "loading": "Laden…",
@@ -415,7 +457,7 @@
     "nights_other": "{{count}} nachten",
     "viewDetails": "Prijsdetails bekijken",
     "accommodation": "Accommodatie",
-    "cleaning": "Eindschoonmaak",
+    "cleaning": "Voorbereiding van de woning",
     "serviceFee": "Servicekosten",
     "touristTax": "Toeristenbelasting",
     "vat": "BTW",
@@ -585,7 +627,10 @@
     "checkInInstructions": "Incheckinstructies",
     "checkInDefault": "Ons team deelt alle instructies per e-mail met u.",
     "addToCalendar": "Toevoegen aan agenda",
-    "whatsappConcierge": "WhatsApp concierge"
+    "whatsappConcierge": "WhatsApp concierge",
+    "pageTitle": "Boeking bevestigd | Bedankt",
+    "pageDescription": "Uw Portugal Active-boeking is bevestigd. Controleer uw e-mail en bereid uw verblijf voor.",
+    "whatsappPrefill": "Hallo, ik heb hulp nodig met mijn boeking"
   },
   "payment": {
     "failed": "Betaling mislukt. Probeer het opnieuw.",
@@ -608,10 +653,18 @@
       "requiredFields": "Vul alle verplichte velden in.",
       "cardNotReady": "Kaartelement is niet gereed. Vernieuw de pagina en probeer het opnieuw.",
       "cardValidationFailed": "Kaartvalidatie is mislukt. Controleer uw kaartgegevens.",
-      "couldNotCreatePaymentMethod": "Betaalmethode kon niet worden gemaakt. Probeer het opnieuw."
+      "couldNotCreatePaymentMethod": "Betaalmethode kon niet worden gemaakt. Probeer het opnieuw.",
+      "contactSupport": "Als het bedrag is afgeschreven, neem dan contact op via reservations@portugalactive.com of WhatsApp +351 927 161 771. Probeer niet opnieuw te betalen."
     },
-    "payButton": "Betaal {{currency}} {{amount}}",
-    "cancelButton": "Annuleren"
+    "payButton": "{{amount}} betalen",
+    "cancelButton": "Annuleren",
+    "methodCard": "Kaart",
+    "preparingSecure": "Veilige betaling wordt voorbereid…",
+    "payWithKlarna": "{{amount}} betalen met Klarna",
+    "payWithPaypal": "{{amount}} betalen met PayPal",
+    "preparingKlarna": "Klarna-betaling wordt voorbereid…",
+    "preparingPaypal": "PayPal-betaling wordt voorbereid…",
+    "redirecting": "Doorsturen…"
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",
@@ -1140,7 +1193,16 @@
     "strictTitle": "Strikt Annuleringsbeleid",
     "strictBody": "50% terugbetaling bij annulering minimaal 60 dagen voor inchecken. Geen terugbetaling bij annuleringen minder dan 60 dagen voor inchecken. Niet restitueerbaar na inchecken.",
     "nonRefundableTitle": "Niet Restitueerbaar",
-    "nonRefundableBody": "Dit tarief wordt aangeboden tegen een gereduceerde prijs in ruil voor een niet-restitutiebeleid. Eenmaal geboekt, wordt er geen terugbetaling gedaan ongeacht de annuleringsdatum. Wij raden ten zeerste aan een reisverzekering te kopen bij het kiezen van dit tarief."
+    "nonRefundableBody": "Dit tarief wordt aangeboden tegen een gereduceerde prijs in ruil voor een niet-restitutiebeleid. Eenmaal geboekt, wordt er geen terugbetaling gedaan ongeacht de annuleringsdatum. Wij raden ten zeerste aan een reisverzekering te kopen bij het kiezen van dit tarief.",
+    "shortFree": "Gratis annuleren tot {{date}}",
+    "shortFreeNoDate_one": "Gratis annuleren tot {{count}} dag vóór check-in",
+    "shortFreeNoDate_other": "Gratis annuleren tot {{count}} dagen vóór check-in",
+    "shortHalf": "50% terugbetaling tot {{date}} — daarna niet restitueerbaar",
+    "shortHalfNoDate_one": "50% terugbetaling tot {{count}} dag vóór check-in — daarna niet restitueerbaar",
+    "shortHalfNoDate_other": "50% terugbetaling tot {{count}} dagen vóór check-in — daarna niet restitueerbaar",
+    "shortNonRefundable": "Niet-restitueerbaar tarief — geen terugbetaling bij annulering",
+    "shortWindowPassed": "Voor deze data is de boeking bij annulering niet restitueerbaar",
+    "shortGeneric": "Er gelden annuleringsvoorwaarden — zie ons annuleringsbeleid"
   },
   "whatsapp": {
     "title": "Contact via WhatsApp",
@@ -1215,7 +1277,7 @@
     "bookedBy": "Geboekt door",
     "priceSummary": "Prijsoverzicht",
     "nights": "{{count}} nachten",
-    "cleaning": "Eindschoonmaak",
+    "cleaning": "Voorbereiding van de woning",
     "totalPaid": "Totaal betaald",
     "paidPaypal": "Volledig betaald met PayPal",
     "paidKlarna": "Betalen met Klarna",
@@ -1225,7 +1287,12 @@
     "trustSecure": "Veilig boeken",
     "trustRate": "Beste prijs gegarandeerd",
     "trustCancel": "Flexibel annuleren",
-    "trustConcierge": "Conciërge inbegrepen"
+    "trustConcierge": "Conciërge inbegrepen",
+    "pageTitle": "Boeking bevestigd | Bedankt",
+    "pageDescription": "Uw Portugal Active-boeking is bevestigd. Controleer uw e-mail en bereid uw verblijf voor.",
+    "mailSubject": "Reservering {{code}} — Informatieverzoek",
+    "mailBody": "Hallo,\n\nik heb een vraag over mijn reservering {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
+    "trustFees": "Geen boekingskosten"
   },
   "bedType": {
     "KingBed": "Kingsize bed",
@@ -1246,5 +1313,36 @@
     "bunkBed": "Stapelbed",
     "airMattress": "Luchtbed",
     "bed": "Bed"
+  },
+  "paymentReturn": {
+    "verifying": "Uw betaling wordt gecontroleerd…",
+    "missingInfo": "Betalingsgegevens niet gevonden. Neem contact op met support.",
+    "dataLost": "Uw boekingsgegevens zijn verloren gegaan tijdens het doorsturen. Neem contact op met support met referentie {{ref}}.",
+    "dataCorrupted": "Uw boekingsgegevens konden niet worden gelezen. Neem contact op met support.",
+    "processorUnavailable": "De betalingsprovider is niet beschikbaar. Neem contact op met support.",
+    "verifyFailed": "De betalingsstatus kon niet worden gecontroleerd. Neem contact op met support.",
+    "confirmedCreating": "Betaling bevestigd! Uw reservering wordt aangemaakt…",
+    "reservationFailed": "Uw betaling is ontvangen, maar de reservering kon niet automatisch worden aangemaakt. Ons team is op de hoogte en bevestigt uw boeking spoedig. Referentie: {{ref}}",
+    "stillProcessing": "Uw betaling wordt nog verwerkt. Wacht even en vernieuw deze pagina.",
+    "notCompleted": "De betaling is niet voltooid. Probeer het opnieuw of kies een andere betaalmethode.",
+    "processingTitle": "Uw boeking wordt verwerkt",
+    "failedTitle": "Betaling niet voltooid",
+    "secureNote": "Veilige betaling — sluit dit venster niet"
+  },
+  "trust": {
+    "secureBooking": "Veilig boeken",
+    "bestRate": "Beste prijs gegarandeerd",
+    "noBookingFees": "Geen boekingskosten",
+    "conciergeIncluded": "Concierge inbegrepen"
+  },
+  "bookingStatus": {
+    "confirmed": "Bevestigd",
+    "reserved": "Gereserveerd",
+    "pending": "In afwachting van bevestiging",
+    "canceled": "Geannuleerd",
+    "declined": "Geweigerd",
+    "expired": "Verlopen",
+    "inquiry": "Aanvraag",
+    "processing": "In behandeling"
   }
 }

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearch, useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
 import { loadStripe } from "@stripe/stripe-js";
 import { trpc } from "@/lib/trpc";
-import { pushEcommerce } from "@/lib/datalayer";
+import { pushPurchaseOnce } from "@/lib/datalayer";
 import { stashThankYou } from "@/lib/booking-api";
 import PaymentProcessing from "@/components/booking/PaymentProcessing";
 
@@ -14,10 +15,18 @@ function getPlatformStripe(publishableKey: string) {
   return platformStripePromise;
 }
 
+/** Translatable status: key + interpolation params + explicit failure flag (no string sniffing). */
+interface ReturnStatus {
+  key: string;
+  params?: Record<string, unknown>;
+  failed?: boolean;
+}
+
 export default function KlarnaReturnPage() {
+  const { t } = useTranslation();
   const search = useSearch();
   const [, navigate] = useLocation();
-  const [status, setStatus] = useState("Verifying your payment…");
+  const [status, setStatus] = useState<ReturnStatus>({ key: "paymentReturn.verifying" });
   const processed = useRef(false);
 
   const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
@@ -31,13 +40,13 @@ export default function KlarnaReturnPage() {
     const paymentIntentId = params.get("payment_intent");
 
     if (!clientSecret || !paymentIntentId) {
-      setStatus("Error: Missing payment information. Please contact support.");
+      setStatus({ key: "paymentReturn.missingInfo", failed: true });
       return;
     }
 
     const bookingDataRaw = sessionStorage.getItem("klarna_booking_data");
     if (!bookingDataRaw) {
-      setStatus(`Error: Booking data was lost. Please contact support with reference: ${paymentIntentId}`);
+      setStatus({ key: "paymentReturn.dataLost", params: { ref: paymentIntentId }, failed: true });
       return;
     }
 
@@ -45,7 +54,7 @@ export default function KlarnaReturnPage() {
     try {
       bookingData = JSON.parse(bookingDataRaw);
     } catch {
-      setStatus("Error: Corrupted booking data. Please contact support.");
+      setStatus({ key: "paymentReturn.dataCorrupted", failed: true });
       return;
     }
 
@@ -53,19 +62,19 @@ export default function KlarnaReturnPage() {
 
     getPlatformStripe(stripeConfig.publishableKey).then(async (stripe) => {
       if (!stripe) {
-        setStatus("Error: Payment processor unavailable.");
+        setStatus({ key: "paymentReturn.processorUnavailable", failed: true });
         return;
       }
 
       const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
 
       if (!paymentIntent) {
-        setStatus("Error: Could not verify payment status.");
+        setStatus({ key: "paymentReturn.verifyFailed", failed: true });
         return;
       }
 
       if (paymentIntent.status === "succeeded") {
-        setStatus("Payment confirmed! Creating your reservation…");
+        setStatus({ key: "paymentReturn.confirmedCreating" });
         try {
           const result = await confirmBooking.mutateAsync({
             paymentIntentId,
@@ -95,7 +104,9 @@ export default function KlarnaReturnPage() {
 
           sessionStorage.removeItem("klarna_booking_data");
 
-          pushEcommerce({
+          // Deduped by transaction_id — the thank-you page also reports this
+          // purchase, but only the first push wins (pushPurchaseOnce).
+          pushPurchaseOnce(result.confirmationCode, {
             event: "purchase",
             ecommerce: {
               transaction_id: result.confirmationCode,
@@ -107,27 +118,24 @@ export default function KlarnaReturnPage() {
                 item_category: "villa",
                 price: bookingData.totalAmount,
                 quantity: 1,
+                checkin_date: bookingData.checkIn,
+                checkout_date: bookingData.checkOut,
+                guests_adults: bookingData.numberOfAdults || undefined,
               }],
             },
           });
 
           navigate(`/booking/thank-you/${result.reservationId}?method=klarna`);
         } catch (err: any) {
-          setStatus(
-            `Payment received but reservation failed. Our team has been notified. Reference: ${paymentIntentId}`
-          );
+          setStatus({ key: "paymentReturn.reservationFailed", params: { ref: paymentIntentId }, failed: true });
         }
       } else if (paymentIntent.status === "processing") {
-        setStatus("Payment is still processing. Please wait a moment and refresh.");
+        setStatus({ key: "paymentReturn.stillProcessing" });
       } else {
-        setStatus("Payment was not completed. Please try again or use a different payment method.");
+        setStatus({ key: "paymentReturn.notCompleted", failed: true });
       }
     });
   }, [stripeConfig?.publishableKey, search]);
 
-  // Terminal-failure states (not the transient "still processing" wait) show
-  // the error variant; everything else keeps the spinner + progress bar.
-  const failed = /^Error|not completed|reservation failed|processor unavailable|Could not verify/i.test(status);
-
-  return <PaymentProcessing status={status} failed={failed} />;
+  return <PaymentProcessing status={t(status.key, status.params as any) as string} failed={!!status.failed} />;
 }

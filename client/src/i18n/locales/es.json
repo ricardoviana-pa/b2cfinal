@@ -129,7 +129,7 @@
     "estTotal": "total est.",
     "indicativeCatalogue": "Indicativo del catálogo. Confirme el total final al reservar.",
     "indicativeUnavailable": "Indicativo (catálogo). Precio en vivo no disponible — confirme al reservar.",
-    "cleaningFee": "Limpieza final",
+    "cleaningFee": "Servicio de preparación de la casa",
     "serviceFee": "Tasa de servicio",
     "touristTax": "Tasa turística",
     "vat": "IVA",
@@ -220,7 +220,9 @@
     "minStayNotice_one": "La estancia mínima para estas fechas es de {{count}} noche",
     "minStayNotice_other": "La estancia mínima para estas fechas es de {{count}} noches",
     "select": "Seleccionar",
-    "cancellationPerPolicy": "Cancelación sujeta a la política del alojamiento"
+    "cancellationPerPolicy": "Cancelación sujeta a la política del alojamiento",
+    "decreaseGuests": "Reducir huéspedes",
+    "increaseGuests": "Aumentar huéspedes"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Precio bajo consulta",
@@ -272,7 +274,47 @@
     "requestWithoutPayment": "O solicitar sin pago",
     "belowMinNightsWarning_one": "Por favor, seleccione al menos {{count}} noche para continuar",
     "belowMinNightsWarning_other": "Por favor, seleccione al menos {{count}} noches para continuar",
-    "pricingUnavailableMessage": "No pudimos confirmar el precio para estas fechas. Póngase en contacto con un Concierge."
+    "pricingUnavailableMessage": "No pudimos confirmar el precio para estas fechas. Póngase en contacto con un Concierge.",
+    "recommended": "Recomendada",
+    "nonRefundableWarning": "Sin reembolso en caso de cancelación o modificación",
+    "save": "Ahorra",
+    "quoteExpired": "El presupuesto ha caducado. Inténtelo de nuevo.",
+    "quoteRefreshFailed": "No se pudo actualizar el precio. Contacte con nuestro concierge.",
+    "termsAcceptLabel": "Acepto los",
+    "termsLink": "Términos y Condiciones",
+    "termsAnd": "y la",
+    "invalidEmail": "Introduzca una dirección de correo válida",
+    "invalidPhone": "Introduzca un número de teléfono válido",
+    "bookingSummary": "Resumen de la reserva",
+    "proceedToPayment": "Continuar al pago",
+    "priceSummary": "Resumen del precio",
+    "bookedBy": "Reservado por",
+    "servicesRequested": "Servicios solicitados",
+    "servicesConfirmNote": "Nuestro concierge le contactará en las próximas 2 horas para confirmar detalles y precios.",
+    "chatConcierge": "Hablar con su concierge",
+    "conciergeReachOut": "Su concierge dedicado le contactará en las próximas 24 horas para ayudarle a planificar su estancia.",
+    "confirmationEmailSent": "Correo de confirmación enviado a",
+    "contactConcierge": "Contactar con el concierge",
+    "selectDate": "Seleccionar",
+    "loadingCalendar": "Cargando disponibilidad...",
+    "fromPrice": "desde",
+    "showAllServices": "Ver todos los servicios",
+    "servicesNote": "Servicios confirmados por separado por nuestro concierge tras la reserva. Sin cargo ahora.",
+    "checkInToday": "La llegada es hoy",
+    "checkInTomorrow": "La llegada es mañana",
+    "checkInSoon": "La llegada es en 2 días",
+    "advanceNoticeNote": "Algunas casas requieren antelación. La confirmación instantánea puede no estar disponible.",
+    "nightsLabel": "noches",
+    "servicesSelected_one": "{{count}} servicio solicitado — confirmado tras la reserva",
+    "servicesSelected_other": "{{count}} servicios solicitados — confirmados tras la reserva",
+    "phonePh": "Número de teléfono *",
+    "ratePlanPolicyAria": "abre la política de cancelación en una pestaña nueva",
+    "waSuccessMessage": "¡Hola! Acabo de confirmar mi reserva en {{property}}.\nConfirmación: {{code}}\nFechas: {{checkIn}} → {{checkOut}}\nHuéspedes: {{guests}}\n¡Deseando que llegue la estancia!",
+    "waPricingHelp": "Hola, me gustaría reservar {{property}}.\nFechas: {{checkIn}} → {{checkOut}}\nNoches: {{nights}}\nHuéspedes: {{guests}}\n¿Podrían ayudarme a confirmar disponibilidad y precio?",
+    "clearDates": "Borrar",
+    "availableLabel": "Disponible",
+    "unavailableLabel": "No disponible",
+    "confirmDates": "Confirmar"
   },
   "common": {
     "loading": "Cargando…",
@@ -415,7 +457,7 @@
     "nights_other": "{{count}} noches",
     "viewDetails": "Ver detalles del precio",
     "accommodation": "Alojamiento",
-    "cleaning": "Limpieza final",
+    "cleaning": "Servicio de preparación de la casa",
     "serviceFee": "Tasa de servicio",
     "touristTax": "Tasa turística",
     "vat": "IVA",
@@ -585,7 +627,10 @@
     "checkInInstructions": "Instrucciones de entrada",
     "checkInDefault": "Nuestro equipo le enviará todas las instrucciones por correo electrónico.",
     "addToCalendar": "Añadir al calendario",
-    "whatsappConcierge": "Concierge por WhatsApp"
+    "whatsappConcierge": "Concierge por WhatsApp",
+    "pageTitle": "Reserva confirmada | Gracias",
+    "pageDescription": "Su reserva de Portugal Active está confirmada. Revise su correo y prepare su estancia.",
+    "whatsappPrefill": "Hola, necesito ayuda con mi reserva"
   },
   "payment": {
     "failed": "El pago ha fallado. Inténtelo de nuevo.",
@@ -608,10 +653,18 @@
       "requiredFields": "Por favor, rellene todos los campos obligatorios.",
       "cardNotReady": "El elemento de la tarjeta no está listo. Por favor, actualice e inténtelo de nuevo.",
       "cardValidationFailed": "La validación de la tarjeta ha fallado. Por favor, compruebe los datos de su tarjeta.",
-      "couldNotCreatePaymentMethod": "No se ha podido crear el método de pago. Por favor, inténtelo de nuevo."
+      "couldNotCreatePaymentMethod": "No se ha podido crear el método de pago. Por favor, inténtelo de nuevo.",
+      "contactSupport": "Si se le ha cobrado, contáctenos en reservations@portugalactive.com o por WhatsApp al +351 927 161 771. No intente pagar de nuevo."
     },
-    "payButton": "Pagar {{currency}} {{amount}}",
-    "cancelButton": "Cancelar"
+    "payButton": "Pagar {{amount}}",
+    "cancelButton": "Cancelar",
+    "methodCard": "Tarjeta",
+    "preparingSecure": "Preparando el pago seguro…",
+    "payWithKlarna": "Pagar {{amount}} con Klarna",
+    "payWithPaypal": "Pagar {{amount}} con PayPal",
+    "preparingKlarna": "Preparando el pago con Klarna…",
+    "preparingPaypal": "Preparando el pago con PayPal…",
+    "redirecting": "Redirigiendo…"
   },
   "contact": {
     "heroAlt": "Contactar Portugal Active",
@@ -1140,7 +1193,16 @@
     "strictTitle": "Cancelación Estricta",
     "strictBody": "50% de reembolso si se cancela al menos 60 días antes del check-in. Sin reembolso para cancelaciones con menos de 60 días de antelación. No reembolsable después del check-in.",
     "nonRefundableTitle": "No Reembolsable",
-    "nonRefundableBody": "Esta tarifa se ofrece a un precio reducido a cambio de una política de no reembolso. Una vez reservado, no se emitirá ningún reembolso independientemente de la fecha de cancelación. Recomendamos encarecidamente contratar un seguro de viaje al elegir esta tarifa."
+    "nonRefundableBody": "Esta tarifa se ofrece a un precio reducido a cambio de una política de no reembolso. Una vez reservado, no se emitirá ningún reembolso independientemente de la fecha de cancelación. Recomendamos encarecidamente contratar un seguro de viaje al elegir esta tarifa.",
+    "shortFree": "Cancelación gratuita hasta el {{date}}",
+    "shortFreeNoDate_one": "Cancelación gratuita hasta {{count}} día antes de la llegada",
+    "shortFreeNoDate_other": "Cancelación gratuita hasta {{count}} días antes de la llegada",
+    "shortHalf": "Reembolso del 50% hasta el {{date}} — no reembolsable después",
+    "shortHalfNoDate_one": "Reembolso del 50% hasta {{count}} día antes de la llegada — no reembolsable después",
+    "shortHalfNoDate_other": "Reembolso del 50% hasta {{count}} días antes de la llegada — no reembolsable después",
+    "shortNonRefundable": "Tarifa no reembolsable — sin reembolso en caso de cancelación",
+    "shortWindowPassed": "Para estas fechas, la reserva no es reembolsable en caso de cancelación",
+    "shortGeneric": "Se aplican condiciones de cancelación — consulte nuestra política de cancelación"
   },
   "whatsapp": {
     "title": "Contactar por WhatsApp",
@@ -1215,7 +1277,7 @@
     "bookedBy": "Reservado por",
     "priceSummary": "Resumen del precio",
     "nights": "{{count}} noches",
-    "cleaning": "Limpieza final",
+    "cleaning": "Servicio de preparación de la casa",
     "totalPaid": "Total pagado",
     "paidPaypal": "Pagado en su totalidad con PayPal",
     "paidKlarna": "Pagando con Klarna",
@@ -1225,7 +1287,12 @@
     "trustSecure": "Reserva segura",
     "trustRate": "Mejor precio garantizado",
     "trustCancel": "Cancelación flexible",
-    "trustConcierge": "Conserjería incluida"
+    "trustConcierge": "Conserjería incluida",
+    "pageTitle": "Reserva confirmada | Gracias",
+    "pageDescription": "Su reserva de Portugal Active está confirmada. Revise su correo y prepare su estancia.",
+    "mailSubject": "Reserva {{code}} — Solicitud de información",
+    "mailBody": "Hola:\n\nTengo una pregunta sobre mi reserva {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
+    "trustFees": "Sin comisiones de reserva"
   },
   "bedType": {
     "KingBed": "Cama King",
@@ -1246,5 +1313,36 @@
     "bunkBed": "Litera",
     "airMattress": "Colchón de aire",
     "bed": "Cama"
+  },
+  "paymentReturn": {
+    "verifying": "Verificando su pago…",
+    "missingInfo": "No encontramos la información del pago. Contacte con el soporte.",
+    "dataLost": "Los datos de la reserva se perdieron durante la redirección. Contacte con el soporte con la referencia {{ref}}.",
+    "dataCorrupted": "No se pudieron leer los datos de la reserva. Contacte con el soporte.",
+    "processorUnavailable": "El procesador de pagos no está disponible. Contacte con el soporte.",
+    "verifyFailed": "No se pudo verificar el estado del pago. Contacte con el soporte.",
+    "confirmedCreating": "¡Pago confirmado! Creando su reserva…",
+    "reservationFailed": "Su pago se recibió pero la reserva no pudo crearse automáticamente. Nuestro equipo ha sido avisado y confirmará su reserva en breve. Referencia: {{ref}}",
+    "stillProcessing": "Su pago aún se está procesando. Espere un momento y actualice esta página.",
+    "notCompleted": "El pago no se completó. Inténtelo de nuevo o elija otro método de pago.",
+    "processingTitle": "Procesando su reserva",
+    "failedTitle": "Pago no completado",
+    "secureNote": "Pago seguro — no cierre esta ventana"
+  },
+  "trust": {
+    "secureBooking": "Reserva segura",
+    "bestRate": "Mejor precio garantizado",
+    "noBookingFees": "Sin comisiones de reserva",
+    "conciergeIncluded": "Concierge incluido"
+  },
+  "bookingStatus": {
+    "confirmed": "Confirmada",
+    "reserved": "Reservada",
+    "pending": "Pendiente de confirmación",
+    "canceled": "Cancelada",
+    "declined": "Rechazada",
+    "expired": "Caducada",
+    "inquiry": "Solicitud de información",
+    "processing": "En proceso"
   }
 }

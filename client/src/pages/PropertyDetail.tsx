@@ -30,7 +30,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from '@
 import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 import { trpc } from '@/lib/trpc';
 import { pushEcommerce } from '@/lib/datalayer';
-import { sanitizePropertyName } from '@/lib/format';
+import { sanitizePropertyName, intlLocale } from '@/lib/format';
 import {
   StructuredData,
   buildVacationRentalSchema,
@@ -981,7 +981,9 @@ export default function PropertyDetail() {
         {([
           { icon: Lock, label: t('trust.secureBooking', 'Secure booking') },
           { icon: ShieldCheck, label: t('trust.bestRate', 'Best rate guaranteed') },
-          { icon: Clock, label: t('trust.flexibleOptions', 'Flexible cancellation options') },
+          // "Flexible cancellation" was contradictory on non-refundable-only homes —
+          // the no-fees claim is unconditionally true (F1 honesty rule)
+          { icon: Clock, label: t('trust.noBookingFees', 'No booking fees') },
           { icon: Headphones, label: t('trust.conciergeIncluded', 'Concierge included') },
         ] as const).map((item, i) => (
           <div key={i} className="flex items-center gap-2">
@@ -1348,7 +1350,7 @@ export default function PropertyDetail() {
                         <p className="text-[12.5px] text-[#6B6860] leading-relaxed mb-4 line-clamp-2" style={{ fontWeight: 300 }}>{service.tagline}</p>
                         <div className="flex items-baseline justify-between pt-3 border-t border-[#E8E4DC]">
                           <p className="text-[13px] font-medium text-[#1A1A18]">
-                            {service.priceFrom ? t('propertyDetail.fromPrice', { price: String(service.priceFrom) }) : t('bookingWidget.included')}
+                            {service.priceFrom ? t('propertyDetail.fromPrice', { price: Math.round(service.priceFrom).toLocaleString(intlLocale(i18n.language)) }) : t('bookingWidget.included')}
                             <span className="text-[10px] text-[#9E9A90] font-normal ml-1">{service.priceSuffix}</span>
                           </p>
                           <span className="inline-flex items-center gap-1.5 text-[11px] font-medium tracking-[0.06em] uppercase text-[#8B7355] group-hover:text-[#1A1A18] transition-colors">
@@ -1404,7 +1406,7 @@ export default function PropertyDetail() {
                             <p className="text-[12.5px] text-[#6B6860] leading-relaxed mb-4 line-clamp-2" style={{ fontWeight: 300 }}>{adventure.tagline}</p>
                             <div className="flex items-baseline justify-between pt-3 border-t border-[#E8E4DC]">
                               <p className="text-[13px] font-medium text-[#1A1A18]">
-                                {adventure.priceFrom ? t('propertyDetail.fromPrice', { price: String(adventure.priceFrom) }) : t('propertyDetail.custom')}
+                                {adventure.priceFrom ? t('propertyDetail.fromPrice', { price: Math.round(adventure.priceFrom).toLocaleString(intlLocale(i18n.language)) }) : t('propertyDetail.custom')}
                                 <span className="text-[10px] text-[#9E9A90] font-normal ml-1">{adventure.priceSuffix}</span>
                               </p>
                               <span className="inline-flex items-center gap-1.5 text-[11px] font-medium tracking-[0.06em] uppercase text-[#8B7355] group-hover:text-[#1A1A18] transition-colors">

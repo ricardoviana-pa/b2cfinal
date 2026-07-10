@@ -2,6 +2,23 @@
  * Shared formatting utilities.
  */
 
+/** Site language (2-letter i18n code) → BCP47 locale for Intl formatting. */
+const BCP47: Record<string, string> = {
+  en: 'en-GB',
+  pt: 'pt-PT',
+  fr: 'fr-FR',
+  es: 'es-ES',
+  it: 'it-IT',
+  de: 'de-DE',
+  nl: 'nl-NL',
+  fi: 'fi-FI',
+  sv: 'sv-SE',
+};
+
+/** Resolve the active i18n language to a region-qualified Intl locale. */
+export const intlLocale = (lang?: string): string =>
+  BCP47[(lang || '').slice(0, 2).toLowerCase()] || 'pt-PT';
+
 /** Format a number as currency (default: EUR, pt-PT locale). */
 export const formatCurrency = (
   amount: number,
@@ -16,8 +33,38 @@ export const formatCurrency = (
   }).format(amount);
 };
 
-/** Shorthand: format EUR with 2 decimals (matches Guesty pricing display). */
-export const formatEur = (amount: number): string => formatCurrency(amount);
+/**
+ * Brand rule: prices are always whole euros, everywhere (F4).
+ * Pass the active i18n language for locale-correct separators; defaults to pt-PT.
+ */
+export const formatEur = (amount: number, lang?: string): string =>
+  formatCurrency(Math.round(amount), { locale: intlLocale(lang), decimals: 0 });
+
+/** Same as formatEur but for integer-cent amounts (reservation API / ThankYouStash). */
+export const formatEurCents = (
+  cents: number | null | undefined,
+  lang?: string,
+  fallback = '—',
+): string => (cents == null ? fallback : formatEur(cents / 100, lang));
+
+/**
+ * Booking date display: zero-padded day + short month (+ year), in the SITE
+ * locale — never the browser locale (F6). E.g. "08 Apr" / "08 abr. 2026".
+ */
+export const formatBookingDate = (
+  dateStr: string,
+  lang?: string,
+  includeYear = false,
+): string => {
+  if (!dateStr) return '';
+  const iso = dateStr.length === 10 ? `${dateStr}T12:00:00` : dateStr;
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return dateStr;
+  const day = String(date.getDate()).padStart(2, '0');
+  const options: Intl.DateTimeFormatOptions = { month: 'short' };
+  if (includeYear) options.year = 'numeric';
+  return `${day} ${date.toLocaleDateString(intlLocale(lang), options)}`;
+};
 
 /** Editorial EUR formatting: no decimals for whole amounts, symbol prefix, en-US comma separator. */
 export const formatEurEditorial = (amount: number): string => {

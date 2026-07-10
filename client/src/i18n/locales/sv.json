@@ -129,7 +129,7 @@
     "estTotal": "uppskattat totalt",
     "indicativeCatalogue": "Indikativt från katalog. Bekräfta slutpris vid bokning.",
     "indicativeUnavailable": "Indikativt (katalog). Livepris inte tillgängligt — bekräfta vid bokning.",
-    "cleaningFee": "Slutstädning",
+    "cleaningFee": "Förberedelse av huset",
     "serviceFee": "Serviceavgift",
     "touristTax": "Turistskatt",
     "vat": "Moms",
@@ -220,7 +220,9 @@
     "minStayNotice_one": "Minsta vistelse för dessa datum är {{count}} natt",
     "minStayNotice_other": "Minsta vistelse för dessa datum är {{count}} nätter",
     "select": "Välj",
-    "cancellationPerPolicy": "Avbokning enligt boendets villkor"
+    "cancellationPerPolicy": "Avbokning enligt boendets villkor",
+    "decreaseGuests": "Färre gäster",
+    "increaseGuests": "Fler gäster"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Pris på förfrågan",
@@ -272,7 +274,47 @@
     "requestWithoutPayment": "Eller förfråga utan betalning",
     "belowMinNightsWarning_one": "Välj minst {{count}} natt för att fortsätta",
     "belowMinNightsWarning_other": "Välj minst {{count}} nätter för att fortsätta",
-    "pricingUnavailableMessage": "Vi kunde inte bekräfta priset för dessa datum. Kontakta en Concierge."
+    "pricingUnavailableMessage": "Vi kunde inte bekräfta priset för dessa datum. Kontakta en Concierge.",
+    "recommended": "Rekommenderad",
+    "nonRefundableWarning": "Ingen återbetalning vid avbokning eller ändring",
+    "save": "Spara",
+    "quoteExpired": "Offerten har gått ut. Försök igen.",
+    "quoteRefreshFailed": "Priset kunde inte uppdateras. Kontakta vår concierge.",
+    "termsAcceptLabel": "Jag godkänner",
+    "termsLink": "Allmänna villkor",
+    "termsAnd": "och",
+    "invalidEmail": "Ange en giltig e-postadress",
+    "invalidPhone": "Ange ett giltigt telefonnummer",
+    "bookingSummary": "Bokningsöversikt",
+    "proceedToPayment": "Fortsätt till betalning",
+    "priceSummary": "Prisöversikt",
+    "bookedBy": "Bokad av",
+    "servicesRequested": "Begärda tjänster",
+    "servicesConfirmNote": "Vår concierge kontaktar dig inom 2 timmar för att bekräfta detaljer och priser.",
+    "chatConcierge": "Chatta med din concierge",
+    "conciergeReachOut": "Din personliga concierge hör av sig inom 24 timmar för att hjälpa dig planera vistelsen.",
+    "confirmationEmailSent": "Bekräftelsemejl skickat till",
+    "contactConcierge": "Kontakta concierge",
+    "selectDate": "Välj",
+    "loadingCalendar": "Laddar tillgänglighet...",
+    "fromPrice": "från",
+    "showAllServices": "Visa alla tjänster",
+    "servicesNote": "Tjänster bekräftas separat av vår concierge efter bokningen. Ingen debitering nu.",
+    "checkInToday": "Incheckning är idag",
+    "checkInTomorrow": "Incheckning är imorgon",
+    "checkInSoon": "Incheckning är om 2 dagar",
+    "advanceNoticeNote": "Vissa hus kräver framförhållning. Omedelbar bekräftelse kanske inte är tillgänglig.",
+    "nightsLabel": "nätter",
+    "servicesSelected_one": "{{count}} tjänst begärd — bekräftas efter bokningen",
+    "servicesSelected_other": "{{count}} tjänster begärda — bekräftas efter bokningen",
+    "phonePh": "Telefonnummer *",
+    "ratePlanPolicyAria": "öppnar avbokningspolicyn i en ny flik",
+    "waSuccessMessage": "Hej! Jag har precis bekräftat min bokning på {{property}}.\nBekräftelse: {{code}}\nDatum: {{checkIn}} → {{checkOut}}\nGäster: {{guests}}\nSer fram emot vistelsen!",
+    "waPricingHelp": "Hej, jag skulle vilja boka {{property}}.\nDatum: {{checkIn}} → {{checkOut}}\nNätter: {{nights}}\nGäster: {{guests}}\nKan ni hjälpa mig att bekräfta tillgänglighet och pris?",
+    "clearDates": "Rensa",
+    "availableLabel": "Tillgänglig",
+    "unavailableLabel": "Ej tillgänglig",
+    "confirmDates": "Bekräfta"
   },
   "common": {
     "loading": "Laddar…",
@@ -415,7 +457,7 @@
     "nights_other": "{{count}} nätter",
     "viewDetails": "Visa prisdetaljer",
     "accommodation": "Boende",
-    "cleaning": "Slutstädning",
+    "cleaning": "Förberedelse av huset",
     "serviceFee": "Serviceavgift",
     "touristTax": "Turistskatt",
     "vat": "Moms",
@@ -585,7 +627,10 @@
     "checkInInstructions": "Incheckningsinstruktioner",
     "checkInDefault": "Vårt team delar alla instruktioner med dig via e-post.",
     "addToCalendar": "Lägg till i kalender",
-    "whatsappConcierge": "WhatsApp concierge"
+    "whatsappConcierge": "WhatsApp concierge",
+    "pageTitle": "Bokning bekräftad | Tack",
+    "pageDescription": "Din Portugal Active-bokning är bekräftad. Kolla din e-post och förbered din vistelse.",
+    "whatsappPrefill": "Hej, jag behöver hjälp med min bokning"
   },
   "payment": {
     "failed": "Betalning misslyckades. Försök igen.",
@@ -608,10 +653,18 @@
       "requiredFields": "Fyll i alla obligatoriska fält.",
       "cardNotReady": "Kortelementet är inte klart. Uppdatera sidan och försök igen.",
       "cardValidationFailed": "Kortvalidering misslyckades. Kontrollera dina kortuppgifter.",
-      "couldNotCreatePaymentMethod": "Kunde inte skapa betalningsmetod. Försök igen."
+      "couldNotCreatePaymentMethod": "Kunde inte skapa betalningsmetod. Försök igen.",
+      "contactSupport": "Om beloppet har dragits, kontakta oss på reservations@portugalactive.com eller WhatsApp +351 927 161 771. Försök inte betala igen."
     },
-    "payButton": "Betala {{currency}} {{amount}}",
-    "cancelButton": "Avbryt"
+    "payButton": "Betala {{amount}}",
+    "cancelButton": "Avbryt",
+    "methodCard": "Kort",
+    "preparingSecure": "Förbereder säker betalning…",
+    "payWithKlarna": "Betala {{amount}} med Klarna",
+    "payWithPaypal": "Betala {{amount}} med PayPal",
+    "preparingKlarna": "Förbereder Klarna-betalning…",
+    "preparingPaypal": "Förbereder PayPal-betalning…",
+    "redirecting": "Omdirigerar…"
   },
   "contact": {
     "heroAlt": "Kontakta Portugal Active",
@@ -1140,7 +1193,16 @@
     "strictTitle": "Strikt Avbokning",
     "strictBody": "50% återbetalning vid avbokning minst 60 dagar före incheckning. Ingen återbetalning vid avbokningar med mindre än 60 dagars varsel. Ej återbetalningsbar efter incheckning.",
     "nonRefundableTitle": "Ej Återbetalningsbar",
-    "nonRefundableBody": "Detta pris erbjuds till ett reducerat pris i utbyte mot en policy om ingen återbetalning. När bokningen är gjord utfärdas ingen återbetalning oavsett avbokningsdatum. Vi rekommenderar starkt att köpa reseförsäkring när du väljer detta pris."
+    "nonRefundableBody": "Detta pris erbjuds till ett reducerat pris i utbyte mot en policy om ingen återbetalning. När bokningen är gjord utfärdas ingen återbetalning oavsett avbokningsdatum. Vi rekommenderar starkt att köpa reseförsäkring när du väljer detta pris.",
+    "shortFree": "Gratis avbokning till {{date}}",
+    "shortFreeNoDate_one": "Gratis avbokning fram till {{count}} dag före incheckning",
+    "shortFreeNoDate_other": "Gratis avbokning fram till {{count}} dagar före incheckning",
+    "shortHalf": "50 % återbetalning till {{date}} — därefter ej återbetalningsbar",
+    "shortHalfNoDate_one": "50 % återbetalning fram till {{count}} dag före incheckning — därefter ej återbetalningsbar",
+    "shortHalfNoDate_other": "50 % återbetalning fram till {{count}} dagar före incheckning — därefter ej återbetalningsbar",
+    "shortNonRefundable": "Ej återbetalningsbar taxa — ingen återbetalning vid avbokning",
+    "shortWindowPassed": "För dessa datum är bokningen ej återbetalningsbar vid avbokning",
+    "shortGeneric": "Avbokningsvillkor gäller — se vår avbokningspolicy"
   },
   "whatsapp": {
     "title": "Kontakta via WhatsApp",
@@ -1215,7 +1277,7 @@
     "bookedBy": "Bokad av",
     "priceSummary": "Prissammanfattning",
     "nights": "{{count}} nätter",
-    "cleaning": "Slutstädning",
+    "cleaning": "Förberedelse av huset",
     "totalPaid": "Totalt betalt",
     "paidPaypal": "Betalt i sin helhet med PayPal",
     "paidKlarna": "Betalar med Klarna",
@@ -1225,7 +1287,12 @@
     "trustSecure": "Säker bokning",
     "trustRate": "Bästa pris garanterat",
     "trustCancel": "Flexibel avbokning",
-    "trustConcierge": "Concierge ingår"
+    "trustConcierge": "Concierge ingår",
+    "pageTitle": "Bokning bekräftad | Tack",
+    "pageDescription": "Din Portugal Active-bokning är bekräftad. Kolla din e-post och förbered din vistelse.",
+    "mailSubject": "Bokning {{code}} — Informationsförfrågan",
+    "mailBody": "Hej,\n\njag har en fråga om min bokning {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
+    "trustFees": "Inga bokningsavgifter"
   },
   "bedType": {
     "KingBed": "King-säng",
@@ -1246,5 +1313,36 @@
     "bunkBed": "Våningssäng",
     "airMattress": "Luftmadrass",
     "bed": "Säng"
+  },
+  "paymentReturn": {
+    "verifying": "Verifierar din betalning…",
+    "missingInfo": "Betalningsinformation saknas. Kontakta supporten.",
+    "dataLost": "Dina bokningsuppgifter gick förlorade vid omdirigeringen. Kontakta supporten med referens {{ref}}.",
+    "dataCorrupted": "Dina bokningsuppgifter kunde inte läsas. Kontakta supporten.",
+    "processorUnavailable": "Betalningsleverantören är inte tillgänglig. Kontakta supporten.",
+    "verifyFailed": "Betalningsstatusen kunde inte verifieras. Kontakta supporten.",
+    "confirmedCreating": "Betalning bekräftad! Skapar din bokning…",
+    "reservationFailed": "Din betalning har tagits emot men bokningen kunde inte skapas automatiskt. Vårt team har meddelats och bekräftar din bokning inom kort. Referens: {{ref}}",
+    "stillProcessing": "Din betalning behandlas fortfarande. Vänta en stund och uppdatera sidan.",
+    "notCompleted": "Betalningen slutfördes inte. Försök igen eller välj en annan betalningsmetod.",
+    "processingTitle": "Din bokning behandlas",
+    "failedTitle": "Betalningen slutfördes inte",
+    "secureNote": "Säker betalning — stäng inte det här fönstret"
+  },
+  "trust": {
+    "secureBooking": "Säker bokning",
+    "bestRate": "Bästa pris garanterat",
+    "noBookingFees": "Inga bokningsavgifter",
+    "conciergeIncluded": "Concierge ingår"
+  },
+  "bookingStatus": {
+    "confirmed": "Bekräftad",
+    "reserved": "Reserverad",
+    "pending": "Väntar på bekräftelse",
+    "canceled": "Avbokad",
+    "declined": "Nekad",
+    "expired": "Utgången",
+    "inquiry": "Förfrågan",
+    "processing": "Under behandling"
   }
 }

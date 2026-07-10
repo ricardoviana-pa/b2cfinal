@@ -129,7 +129,7 @@
     "estTotal": "ca. Gesamt",
     "indicativeCatalogue": "Indikativ aus dem Katalog. Endpreis bei Buchung bestätigen.",
     "indicativeUnavailable": "Indikativ (Katalog). Live-Preis nicht verfügbar — bei Buchung bestätigen.",
-    "cleaningFee": "Endreinigung",
+    "cleaningFee": "Service zur Vorbereitung des Hauses",
     "serviceFee": "Servicegebühr",
     "touristTax": "Kurtaxe",
     "vat": "MwSt.",
@@ -220,7 +220,9 @@
     "minStayNotice_one": "Der Mindestaufenthalt für diese Daten beträgt {{count}} Nacht",
     "minStayNotice_other": "Der Mindestaufenthalt für diese Daten beträgt {{count}} Nächte",
     "select": "Auswählen",
-    "cancellationPerPolicy": "Stornierung gemäß den Bedingungen der Unterkunft"
+    "cancellationPerPolicy": "Stornierung gemäß den Bedingungen der Unterkunft",
+    "decreaseGuests": "Weniger Gäste",
+    "increaseGuests": "Mehr Gäste"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Preis auf Anfrage",
@@ -272,7 +274,47 @@
     "requestWithoutPayment": "Oder Anfrage ohne Zahlung",
     "belowMinNightsWarning_one": "Bitte wählen Sie mindestens {{count}} Nacht aus, um fortzufahren",
     "belowMinNightsWarning_other": "Bitte wählen Sie mindestens {{count}} Nächte aus, um fortzufahren",
-    "pricingUnavailableMessage": "Wir konnten den Preis für diese Daten nicht bestätigen. Bitte kontaktieren Sie einen Concierge."
+    "pricingUnavailableMessage": "Wir konnten den Preis für diese Daten nicht bestätigen. Bitte kontaktieren Sie einen Concierge.",
+    "recommended": "Empfohlen",
+    "nonRefundableWarning": "Keine Erstattung bei Stornierung oder Änderung",
+    "save": "Sparen Sie",
+    "quoteExpired": "Das Angebot ist abgelaufen. Bitte versuchen Sie es erneut.",
+    "quoteRefreshFailed": "Der Preis konnte nicht aktualisiert werden. Bitte kontaktieren Sie unseren Concierge.",
+    "termsAcceptLabel": "Ich akzeptiere die",
+    "termsLink": "Allgemeinen Geschäftsbedingungen",
+    "termsAnd": "und die",
+    "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+    "invalidPhone": "Bitte geben Sie eine gültige Telefonnummer ein",
+    "bookingSummary": "Buchungsübersicht",
+    "proceedToPayment": "Weiter zur Zahlung",
+    "priceSummary": "Preisübersicht",
+    "bookedBy": "Gebucht von",
+    "servicesRequested": "Angefragte Services",
+    "servicesConfirmNote": "Unser Concierge meldet sich innerhalb von 2 Stunden, um Details und Preise zu bestätigen.",
+    "chatConcierge": "Mit Ihrem Concierge chatten",
+    "conciergeReachOut": "Ihr persönlicher Concierge meldet sich innerhalb von 24 Stunden, um Ihren Aufenthalt zu planen.",
+    "confirmationEmailSent": "Bestätigungs-E-Mail gesendet an",
+    "contactConcierge": "Concierge kontaktieren",
+    "selectDate": "Auswählen",
+    "loadingCalendar": "Verfügbarkeit wird geladen...",
+    "fromPrice": "ab",
+    "showAllServices": "Alle Services anzeigen",
+    "servicesNote": "Services werden nach der Buchung separat von unserem Concierge bestätigt. Jetzt keine Zahlung.",
+    "checkInToday": "Check-in ist heute",
+    "checkInTomorrow": "Check-in ist morgen",
+    "checkInSoon": "Check-in ist in 2 Tagen",
+    "advanceNoticeNote": "Einige Häuser erfordern eine Vorlaufzeit. Sofortige Bestätigung ist eventuell nicht möglich.",
+    "nightsLabel": "Nächte",
+    "servicesSelected_one": "{{count}} Service angefragt — Bestätigung nach der Buchung",
+    "servicesSelected_other": "{{count}} Services angefragt — Bestätigung nach der Buchung",
+    "phonePh": "Telefonnummer *",
+    "ratePlanPolicyAria": "öffnet die Stornierungsbedingungen in einem neuen Tab",
+    "waSuccessMessage": "Hallo! Ich habe soeben meine Buchung für {{property}} bestätigt.\nBestätigung: {{code}}\nDaten: {{checkIn}} → {{checkOut}}\nGäste: {{guests}}\nIch freue mich auf den Aufenthalt!",
+    "waPricingHelp": "Hallo, ich möchte {{property}} buchen.\nDaten: {{checkIn}} → {{checkOut}}\nNächte: {{nights}}\nGäste: {{guests}}\nKönnten Sie mir helfen, Verfügbarkeit und Preis zu bestätigen?",
+    "clearDates": "Zurücksetzen",
+    "availableLabel": "Verfügbar",
+    "unavailableLabel": "Nicht verfügbar",
+    "confirmDates": "Bestätigen"
   },
   "common": {
     "loading": "Wird geladen…",
@@ -415,7 +457,7 @@
     "nights_other": "{{count}} Nächte",
     "viewDetails": "Preisdetails ansehen",
     "accommodation": "Unterkunft",
-    "cleaning": "Endreinigung",
+    "cleaning": "Service zur Vorbereitung des Hauses",
     "serviceFee": "Servicegebühr",
     "touristTax": "Kurtaxe",
     "vat": "MwSt.",
@@ -585,7 +627,10 @@
     "checkInInstructions": "Anreise-Anweisungen",
     "checkInDefault": "Unser Team wird Ihnen alle Anweisungen per E-Mail zukommen lassen.",
     "addToCalendar": "Zum Kalender hinzufügen",
-    "whatsappConcierge": "WhatsApp Concierge"
+    "whatsappConcierge": "WhatsApp Concierge",
+    "pageTitle": "Buchung bestätigt | Vielen Dank",
+    "pageDescription": "Ihre Portugal-Active-Buchung ist bestätigt. Prüfen Sie Ihre E-Mails und freuen Sie sich auf Ihren Aufenthalt.",
+    "whatsappPrefill": "Hallo, ich brauche Hilfe mit meiner Buchung"
   },
   "payment": {
     "failed": "Zahlung fehlgeschlagen. Bitte erneut versuchen.",
@@ -608,10 +653,18 @@
       "requiredFields": "Bitte füllen Sie alle erforderlichen Felder aus.",
       "cardNotReady": "Kartenelement nicht bereit. Bitte aktualisieren Sie die Seite und versuchen Sie es erneut.",
       "cardValidationFailed": "Kartenvalidierung fehlgeschlagen. Bitte überprüfen Sie Ihre Kartendaten.",
-      "couldNotCreatePaymentMethod": "Zahlungsmethode konnte nicht erstellt werden. Bitte versuchen Sie es erneut."
+      "couldNotCreatePaymentMethod": "Zahlungsmethode konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
+      "contactSupport": "Falls der Betrag abgebucht wurde, kontaktieren Sie uns unter reservations@portugalactive.com oder per WhatsApp unter +351 927 161 771. Versuchen Sie nicht, erneut zu zahlen."
     },
-    "payButton": "{{currency}} {{amount}} zahlen",
-    "cancelButton": "Abbrechen"
+    "payButton": "{{amount}} zahlen",
+    "cancelButton": "Abbrechen",
+    "methodCard": "Karte",
+    "preparingSecure": "Sichere Zahlung wird vorbereitet…",
+    "payWithKlarna": "{{amount}} mit Klarna zahlen",
+    "payWithPaypal": "{{amount}} mit PayPal zahlen",
+    "preparingKlarna": "Klarna-Zahlung wird vorbereitet…",
+    "preparingPaypal": "PayPal-Zahlung wird vorbereitet…",
+    "redirecting": "Weiterleitung…"
   },
   "contact": {
     "heroAlt": "Portugal Active kontaktieren",
@@ -1140,7 +1193,16 @@
     "strictTitle": "Strenge Stornierung",
     "strictBody": "50 % Rückerstattung bei Stornierung mindestens 60 Tage vor dem Check-in. Keine Rückerstattung bei Stornierungen weniger als 60 Tage vor dem Check-in. Nach dem Check-in nicht erstattungsfähig.",
     "nonRefundableTitle": "Nicht erstattungsfähig",
-    "nonRefundableBody": "Dieser Tarif wird zu einem reduzierten Preis angeboten im Gegenzug für eine Nicht-Erstattungsrichtlinie. Nach der Buchung wird unabhängig vom Stornierungsdatum keine Rückerstattung gewährt. Wir empfehlen dringend den Abschluss einer Reiseversicherung bei der Wahl dieses Tarifs."
+    "nonRefundableBody": "Dieser Tarif wird zu einem reduzierten Preis angeboten im Gegenzug für eine Nicht-Erstattungsrichtlinie. Nach der Buchung wird unabhängig vom Stornierungsdatum keine Rückerstattung gewährt. Wir empfehlen dringend den Abschluss einer Reiseversicherung bei der Wahl dieses Tarifs.",
+    "shortFree": "Kostenlose Stornierung bis {{date}}",
+    "shortFreeNoDate_one": "Kostenlose Stornierung bis {{count}} Tag vor Check-in",
+    "shortFreeNoDate_other": "Kostenlose Stornierung bis {{count}} Tage vor Check-in",
+    "shortHalf": "50 % Erstattung bis {{date}} — danach keine Erstattung",
+    "shortHalfNoDate_one": "50 % Erstattung bis {{count}} Tag vor Check-in — danach keine Erstattung",
+    "shortHalfNoDate_other": "50 % Erstattung bis {{count}} Tage vor Check-in — danach keine Erstattung",
+    "shortNonRefundable": "Nicht erstattbarer Tarif — keine Erstattung bei Stornierung",
+    "shortWindowPassed": "Für diese Daten ist die Buchung bei Stornierung nicht erstattbar",
+    "shortGeneric": "Es gelten Stornierungsbedingungen — siehe unsere Stornierungsrichtlinie"
   },
   "whatsapp": {
     "title": "Über WhatsApp kontaktieren",
@@ -1215,7 +1277,7 @@
     "bookedBy": "Gebucht von",
     "priceSummary": "Preisübersicht",
     "nights": "{{count}} Nächte",
-    "cleaning": "Endreinigung",
+    "cleaning": "Service zur Vorbereitung des Hauses",
     "totalPaid": "Gesamt bezahlt",
     "paidPaypal": "Vollständig mit PayPal bezahlt",
     "paidKlarna": "Zahlung mit Klarna",
@@ -1225,7 +1287,12 @@
     "trustSecure": "Sichere Buchung",
     "trustRate": "Bestpreisgarantie",
     "trustCancel": "Flexible Stornierung",
-    "trustConcierge": "Concierge inklusive"
+    "trustConcierge": "Concierge inklusive",
+    "pageTitle": "Buchung bestätigt | Vielen Dank",
+    "pageDescription": "Ihre Portugal-Active-Buchung ist bestätigt. Prüfen Sie Ihre E-Mails und freuen Sie sich auf Ihren Aufenthalt.",
+    "mailSubject": "Reservierung {{code}} — Informationsanfrage",
+    "mailBody": "Guten Tag,\n\nich habe eine Frage zu meiner Reservierung {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
+    "trustFees": "Keine Buchungsgebühren"
   },
   "bedType": {
     "KingBed": "Kingsize-Bett",
@@ -1246,5 +1313,36 @@
     "bunkBed": "Etagenbett",
     "airMattress": "Luftmatratze",
     "bed": "Bett"
+  },
+  "paymentReturn": {
+    "verifying": "Ihre Zahlung wird überprüft…",
+    "missingInfo": "Zahlungsinformationen nicht gefunden. Bitte kontaktieren Sie den Support.",
+    "dataLost": "Ihre Buchungsdaten sind bei der Weiterleitung verloren gegangen. Kontaktieren Sie den Support mit der Referenz {{ref}}.",
+    "dataCorrupted": "Ihre Buchungsdaten konnten nicht gelesen werden. Bitte kontaktieren Sie den Support.",
+    "processorUnavailable": "Der Zahlungsdienstleister ist nicht erreichbar. Bitte kontaktieren Sie den Support.",
+    "verifyFailed": "Der Zahlungsstatus konnte nicht überprüft werden. Bitte kontaktieren Sie den Support.",
+    "confirmedCreating": "Zahlung bestätigt! Ihre Reservierung wird erstellt…",
+    "reservationFailed": "Ihre Zahlung ist eingegangen, aber die Reservierung konnte nicht automatisch erstellt werden. Unser Team wurde benachrichtigt und bestätigt Ihre Buchung in Kürze. Referenz: {{ref}}",
+    "stillProcessing": "Ihre Zahlung wird noch verarbeitet. Bitte warten Sie einen Moment und aktualisieren Sie diese Seite.",
+    "notCompleted": "Die Zahlung wurde nicht abgeschlossen. Versuchen Sie es erneut oder wählen Sie eine andere Zahlungsmethode.",
+    "processingTitle": "Ihre Buchung wird verarbeitet",
+    "failedTitle": "Zahlung nicht abgeschlossen",
+    "secureNote": "Sichere Zahlung — bitte schließen Sie dieses Fenster nicht"
+  },
+  "trust": {
+    "secureBooking": "Sichere Buchung",
+    "bestRate": "Bestpreisgarantie",
+    "noBookingFees": "Keine Buchungsgebühren",
+    "conciergeIncluded": "Concierge inklusive"
+  },
+  "bookingStatus": {
+    "confirmed": "Bestätigt",
+    "reserved": "Reserviert",
+    "pending": "Bestätigung ausstehend",
+    "canceled": "Storniert",
+    "declined": "Abgelehnt",
+    "expired": "Abgelaufen",
+    "inquiry": "Anfrage",
+    "processing": "In Bearbeitung"
   }
 }

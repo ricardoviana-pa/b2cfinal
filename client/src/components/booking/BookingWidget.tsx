@@ -3,7 +3,9 @@ import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
-import { pushDL, pushEcommerce, ADDON_PREFIX } from "@/lib/datalayer";
+import { pushDL, pushEcommerce, pushPurchaseOnce, ADDON_PREFIX } from "@/lib/datalayer";
+import { cancellationPolicyText } from "@/lib/cancellation";
+import { localizeProduct } from "@/lib/localizeContent";
 import { Calendar, User, Shield, Loader2, Check, ShoppingBag, Minus, Plus, UtensilsCrossed, Sparkles, Dumbbell, ShoppingCart, Baby, Car, SprayCanIcon, ChevronDown } from "lucide-react";
 import AvailabilityCalendar from "./AvailabilityCalendar";
 import type { AvailabilityDay } from "./AvailabilityCalendar";
@@ -11,7 +13,7 @@ import CheckoutPaymentForm from "./CheckoutPaymentForm";
 import PhoneInput from "./PhoneInput";
 import productsData from "@/data/products.json";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
-import { formatEur } from "@/lib/format";
+import { formatEur, formatBookingDate, intlLocale } from "@/lib/format";
 
 interface BookingWidgetProps {
   guestyId: string;
@@ -96,16 +98,6 @@ function parseBookingError(msg: string): string {
   return msg;
 }
 
-/** Humanize raw Guesty rate-plan name */
-function humanizeRatePlanName(raw: string): string {
-  const lower = raw.toLowerCase();
-  if ((lower.includes('non') && lower.includes('refund')) || (lower.includes('não') && lower.includes('reembols'))) return 'Non-Refundable';
-  if (lower.includes('refund') || lower.includes('reembols')) return 'Flexible';
-  if (lower.includes('standard')) return 'Standard';
-  if (lower.includes('moderate')) return 'Moderate';
-  return raw;
-}
-
 /** Is this a non-refundable / strict rate plan? */
 function isNonRefundablePlan(o: RatePlanOption): boolean {
   const n = (o.name || '').toLowerCase();
@@ -139,18 +131,6 @@ function pickTwoRatePlans(options?: RatePlanOption[]): RatePlanOption[] {
   return out;
 }
 
-/** Humanize raw Guesty cancellation policy code */
-function humanizeCancellationPolicy(raw: string): string {
-  const policyMap: Record<string, string> = {
-    'super_strict': 'Non-refundable',
-    'strict': 'Strict cancellation',
-    'moderate': 'Free cancellation (14+ days before)',
-    'flexible': 'Free cancellation (24h before)',
-    'firm': 'Firm cancellation policy',
-  };
-  return policyMap[raw.toLowerCase()] || raw;
-}
-
 /** Map Guesty policy code to cancellation-policy page anchor, or null if no dedicated section */
 function policyPageAnchor(raw: string): string | null {
   const map: Record<string, string> = {
@@ -158,17 +138,6 @@ function policyPageAnchor(raw: string): string | null {
     firm: '#firm',
   };
   return map[raw.toLowerCase()] ?? null;
-}
-
-/** Format date with zero-padded day and month name (e.g., "08 Apr") */
-function formatDateDisplay(dateStr: string, locale: string = "en-US", includeYear: boolean = false): string {
-  const date = new Date(dateStr + "T12:00:00");
-  const day = String(date.getDate()).padStart(2, '0');
-  const options: Intl.DateTimeFormatOptions = { month: 'short' };
-  if (includeYear) options.year = 'numeric';
-  const formatted = date.toLocaleDateString(locale, options);
-  // formatted is like "Apr" or "Apr 2026", prepend the zero-padded day
-  return `${day} ${formatted}`;
 }
 
 const UPSELL_ITEMS = (productsData as any[])
@@ -195,6 +164,8 @@ function EnhanceYourStay({
   setSelectedUpsells: React.Dispatch<React.SetStateAction<Set<string>>>;
   t: (key: string, fallback?: string | Record<string, unknown>) => string;
 }) {
+  const { i18n: i18nActive } = useTranslation();
+  const lang = i18nActive.language;
   const [expanded, setExpanded] = useState(false);
   const visible = expanded ? items : items.slice(0, 4);
 
@@ -253,7 +224,7 @@ function EnhanceYourStay({
               <Icon className={cn("w-4 h-4 mb-1.5", selected ? "text-black/50" : "text-black/30")} />
               <p className="text-[12px] text-black font-medium leading-tight">{item.name}</p>
               <p className="text-[10px] text-black/50 mt-1 tabular-nums">
-                {t("bookingWidget.fromPrice", "from")} {formatEur(item.priceFrom)}
+                {t("bookingWidget.fromPrice", "from")} {formatEur(item.priceFrom, lang)}
                 <span className="text-black/30 font-normal"> / {item.priceSuffix}</span>
               </p>
             </button>
@@ -292,7 +263,8 @@ export default function BookingWidget({
   initialCheckOut = "",
   initialGuests = 0,
 }: BookingWidgetProps) {
-  const { t } = useTranslation();
+  const { t, i18n: i18nActive } = useTranslation();
+  const lang = i18nActive.language;
   const [checkIn, setCheckIn] = useState(initialCheckIn);
   const [checkOut, setCheckOut] = useState(initialCheckOut);
   const [guests, setGuests] = useState(initialGuests > 0 ? initialGuests : 2);
@@ -435,6 +407,15 @@ export default function BookingWidget({
           source: (d as any).source || "request",
           fallbackMessage: (d as any).fallbackMessage || t("bookingWidget.priceOnRequestTitle"),
         });
+        // GA4: funnel fallback — quote requested but no bookable price returned
+        pushDL({
+          event: "quote_unavailable",
+          reason: "no_price",
+          property_id: guestyId,
+          checkin_date: checkIn,
+          checkout_date: checkOut,
+          guests_adults: guests,
+        });
         setStep("quote");
         setLoading(false);
         return;
@@ -470,11 +451,55 @@ export default function BookingWidget({
       const defaultPlan = shownPlans.find(o => o.ratePlanId === backendDefault) || shownPlans[0];
       setSelectedRatePlanId(defaultPlan ? defaultPlan.ratePlanId : null);
 
+      // GA4: quote_viewed — a live, bookable price was shown for these dates
+      if (beQuoteId && (quoteData.source === "live" || quoteData.source === "cached")) {
+        pushEcommerce({
+          event: "quote_viewed",
+          property_id: guestyId,
+          ecommerce: {
+            currency: "EUR",
+            value: effectiveTotal,
+            items: [
+              {
+                item_id: `PROP-${guestyId}`,
+                item_name: propertyName,
+                item_category: "villa",
+                item_variant: destination || "",
+                price: effectiveNightly,
+                quantity: d.nights,
+                checkin_date: checkIn,
+                checkout_date: checkOut,
+                guests_adults: guests,
+              },
+            ],
+          },
+        });
+      } else {
+        // Price exists but no bookable BE quote — the UI shows the
+        // "contact concierge" state, so the funnel must record it too.
+        pushDL({
+          event: "quote_unavailable",
+          reason: "no_bookable_quote",
+          property_id: guestyId,
+          checkin_date: checkIn,
+          checkout_date: checkOut,
+          guests_adults: guests,
+        });
+      }
+
       setStep("quote");
     } catch (err: any) {
       if (quoteRequestRef.current !== requestId) return;
       // Keep lastQuoteKeyRef set to prevent infinite retry loop for the same params.
       // Any pricing failure surfaces the standardized "contact concierge" state — never an estimate.
+      pushDL({
+        event: "quote_unavailable",
+        reason: "error",
+        property_id: guestyId,
+        checkin_date: checkIn,
+        checkout_date: checkOut,
+        guests_adults: guests,
+      });
       setError(parseBookingError(err?.message || i18n.t("errors.pricingUnavailable")));
       setQuote(null);
       setStep("quote");
@@ -483,7 +508,7 @@ export default function BookingWidget({
         setLoading(false);
       }
     }
-  }, [checkIn, checkOut, guests, guestyId, effectiveMinNights, canPayOnSite, utils, nights]);
+  }, [checkIn, checkOut, guests, guestyId, effectiveMinNights, canPayOnSite, utils, nights, propertyName, destination]);
 
   const fetchQuoteRef = useRef(fetchQuote);
   fetchQuoteRef.current = fetchQuote;
@@ -534,11 +559,26 @@ export default function BookingWidget({
   }, [step]);
 
 
+  // GA4: add_contact_info — fires once when the guest completes valid contact details
+  const contactInfoFiredRef = useRef(false);
+  useEffect(() => {
+    if (contactInfoFiredRef.current || step !== "payment") return;
+    if (
+      guestFirstName.trim() &&
+      guestLastName.trim() &&
+      isValidEmail(guestEmail) &&
+      isValidPhone(guestPhone)
+    ) {
+      contactInfoFiredRef.current = true;
+      pushDL({ event: "add_contact_info", property_id: guestyId });
+    }
+  }, [step, guestFirstName, guestLastName, guestEmail, guestPhone, guestyId]);
+
   const handlePaymentSuccess = useCallback((code: string) => {
     setConfirmation(code);
     setSuccessMode("confirmed");
     setStep("success");
-    pushEcommerce({
+    pushPurchaseOnce(code, {
       event: 'purchase',
       ecommerce: {
         transaction_id: code,
@@ -570,8 +610,13 @@ export default function BookingWidget({
     setStep("dates");
   };
 
-  // Upsell total from selected items
-  // Build upsell note for reservation payload (no pricing — varies per person/date)
+  // Upsell items localized for the active language (names/suffixes come from products.i18n.json)
+  const upsellItems = useMemo(
+    () => UPSELL_ITEMS.map((p: any) => localizeProduct(p, lang)),
+    [lang],
+  );
+
+  // Upsell note for the reservation payload (staff-facing — stays in PT for operations)
   const upsellNote = useMemo(() => {
     if (selectedUpsells.size === 0) return "";
     const lines = Array.from(selectedUpsells).map(id => {
@@ -587,13 +632,13 @@ export default function BookingWidget({
   // ── SUCCESS ──
   if (step === "success") {
     const waConfirmLink = `https://wa.me/351927161771?text=${encodeURIComponent(
-      [
-        `Hi! I just confirmed my booking at ${propertyName}.`,
-        `Confirmation: ${confirmation}`,
-        `Dates: ${checkIn} → ${checkOut} (${guests} guests)`,
-        guestyId ? `Ref: ${guestyId}` : "",
-        `Looking forward to my stay!`,
-      ].filter(Boolean).join("\n")
+      t("bookingWidget.waSuccessMessage", {
+        property: propertyName,
+        code: confirmation,
+        checkIn: formatBookingDate(checkIn, lang, true),
+        checkOut: formatBookingDate(checkOut, lang, true),
+        guests,
+      }) + (guestyId ? `\nRef: ${guestyId}` : "")
     )}`;
     const successQuote = effectiveQuote || quote;
     return (
@@ -624,11 +669,11 @@ export default function BookingWidget({
             <div className="grid grid-cols-3 gap-3 pt-1">
               <div>
                 <p className="text-[10px] text-black/30 uppercase tracking-wider">{t("bookingWidget.checkInLabel")}</p>
-                <p className="text-[13px] text-black mt-0.5">{formatDateDisplay(checkIn, "pt-PT", true)}</p>
+                <p className="text-[13px] text-black mt-0.5">{formatBookingDate(checkIn, lang, true)}</p>
               </div>
               <div>
                 <p className="text-[10px] text-black/30 uppercase tracking-wider">{t("bookingWidget.checkOutLabel")}</p>
-                <p className="text-[13px] text-black mt-0.5">{formatDateDisplay(checkOut, "pt-PT", true)}</p>
+                <p className="text-[13px] text-black mt-0.5">{formatBookingDate(checkOut, lang, true)}</p>
               </div>
               <div>
                 <p className="text-[10px] text-black/30 uppercase tracking-wider">{t("booking.guestsLabel", "Guests")}</p>
@@ -643,30 +688,30 @@ export default function BookingWidget({
               <p className="text-[10px] text-black/30 uppercase tracking-wider">{t("bookingWidget.priceSummary", { defaultValue: "Price summary" })}</p>
               <div className="space-y-1.5">
                 <div className="flex justify-between text-[13px]">
-                  <span className="text-black/50">{formatEur(successQuote.nightlyRate)} x {successQuote.nights} {t("bookingWidget.nightsLabel", "nights")}</span>
-                  <span className="text-black tabular-nums">{formatEur(successQuote.totalNights)}</span>
+                  <span className="text-black/50">{formatEur(successQuote.nightlyRate, lang)} x {successQuote.nights} {t("bookingWidget.nightsLabel", "nights")}</span>
+                  <span className="text-black tabular-nums">{formatEur(successQuote.totalNights, lang)}</span>
                 </div>
                 {successQuote.cleaningFee > 0 && (
                   <div className="flex justify-between text-[13px]">
                     <span className="text-black/50">{t("property.cleaningFee")}</span>
-                    <span className="text-black tabular-nums">{formatEur(successQuote.cleaningFee)}</span>
+                    <span className="text-black tabular-nums">{formatEur(successQuote.cleaningFee, lang)}</span>
                   </div>
                 )}
                 {(successQuote.taxesAndFees ?? 0) > 0 && (
                   <div className="flex justify-between text-[13px]">
                     <span className="text-black/50">{t("bookingWidget.taxesAndFees", "Taxes & fees")}</span>
-                    <span className="text-black tabular-nums">{formatEur(successQuote.taxesAndFees!)}</span>
+                    <span className="text-black tabular-nums">{formatEur(successQuote.taxesAndFees!, lang)}</span>
                   </div>
                 )}
                 <div className="border-t border-black/10 pt-2 flex justify-between">
                   <span className="text-[14px] text-black font-medium">{t("property.total")}</span>
-                  <span className="text-[16px] text-black font-medium tabular-nums">{formatEur(successQuote.total)}</span>
+                  <span className="text-[16px] text-black font-medium tabular-nums">{formatEur(successQuote.total, lang)}</span>
                 </div>
               </div>
               {/* Cancellation policy */}
               {successQuote.cancellationPolicy?.[0] && (
                 <p className="text-[11px] text-black/30 pt-1">
-                  {humanizeCancellationPolicy(successQuote.cancellationPolicy[0])}
+                  {cancellationPolicyText(successQuote.cancellationPolicy[0], checkIn, t, lang)}
                 </p>
               )}
             </div>
@@ -685,7 +730,7 @@ export default function BookingWidget({
               <p className="text-[10px] text-black/30 uppercase tracking-wider">{t("bookingWidget.servicesRequested", { defaultValue: "Services requested" })}</p>
               <div className="space-y-1">
                 {Array.from(selectedUpsells).map(id => {
-                  const item = UPSELL_ITEMS.find((u: any) => u.id === id);
+                  const item = upsellItems.find((u: any) => u.id === id);
                   return item ? (
                     <p key={id} className="text-[13px] text-black">{item.name}</p>
                   ) : null;
@@ -702,6 +747,7 @@ export default function BookingWidget({
             href={waConfirmLink}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => pushDL({ event: "whatsapp_click", source: "booking_success", property_id: guestyId })}
             className="w-full flex items-center justify-center gap-2 min-h-[48px] bg-black text-white text-[12px] font-medium tracking-[0.12em] uppercase px-6 py-3.5 hover:bg-black/85 transition-colors"
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.612.638l4.725-1.217A11.947 11.947 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.24 0-4.318-.722-6.004-1.948l-.42-.312-2.833.73.756-2.753-.343-.453A9.963 9.963 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
@@ -725,14 +771,14 @@ export default function BookingWidget({
           <>
             <div className="flex items-baseline gap-2">
               <span className="text-[32px] font-light tracking-tight text-black tabular-nums">
-                {formatEur(effectiveQuote.total)}
+                {formatEur(effectiveQuote.total, lang)}
               </span>
               <span className="text-sm text-black/40 font-normal">{t("property.totalLabel")}</span>
             </div>
             <p className="text-sm text-black/50 mt-1 tracking-wide">
               {t("bookingWidget.nightsLine", {
                 count: effectiveQuote.nights,
-                rate: formatEur(effectiveQuote.nightlyRate),
+                rate: formatEur(effectiveQuote.nightlyRate, lang),
               })}
             </p>
           </>
@@ -746,7 +792,7 @@ export default function BookingWidget({
           <>
             <div className="flex items-baseline gap-1">
               <span className="text-[28px] text-[#1A1A18]" style={{ fontFamily: "var(--font-display)" }}>
-                {displayRate > 0 ? t("property.fromPerNight", { price: Math.round(displayRate).toLocaleString() }) : "---"}
+                {displayRate > 0 ? t("property.fromPerNight", { price: Math.round(displayRate).toLocaleString(intlLocale(lang)) }) : "---"}
               </span>
               <span className="text-[14px] text-[#9E9A90]">{t("property.perNight")}</span>
             </div>
@@ -775,7 +821,7 @@ export default function BookingWidget({
             }`}>
               <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-black/35 mb-1">{t("bookingWidget.checkInLabel")}</p>
               <p className={`text-[15px] font-normal ${checkIn ? "text-black" : "text-black/30"}`}>
-                {checkIn ? formatDateDisplay(checkIn, "pt-PT", false) : t("bookingWidget.selectDate", "Select")}
+                {checkIn ? formatBookingDate(checkIn, lang) : t("bookingWidget.selectDate", "Select")}
               </p>
             </div>
             <div className={`px-4 py-3.5 transition-colors ${
@@ -783,7 +829,7 @@ export default function BookingWidget({
             }`}>
               <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-black/35 mb-1">{t("bookingWidget.checkOutLabel")}</p>
               <p className={`text-[15px] font-normal ${checkOut ? "text-black" : "text-black/30"}`}>
-                {checkOut ? formatDateDisplay(checkOut, "pt-PT", false) : t("bookingWidget.selectDate", "Select")}
+                {checkOut ? formatBookingDate(checkOut, lang) : t("bookingWidget.selectDate", "Select")}
               </p>
             </div>
           </div>
@@ -937,16 +983,17 @@ export default function BookingWidget({
 
             <a
               href={`https://wa.me/351927161771?text=${encodeURIComponent(
-                [
-                  `Hi, I'd like to book ${propertyName}.`,
-                  `Dates: ${checkIn} → ${checkOut} (${nights} nights)`,
-                  `Guests: ${guests}`,
-                  guestyId ? `Ref: ${guestyId}` : "",
-                  `Could you help me confirm availability and pricing?`,
-                ].filter(Boolean).join("\n")
+                t("bookingWidget.waPricingHelp", {
+                  property: propertyName,
+                  checkIn: formatBookingDate(checkIn, lang, true),
+                  checkOut: formatBookingDate(checkOut, lang, true),
+                  nights,
+                  guests,
+                }) + (guestyId ? `\nRef: ${guestyId}` : "")
               )}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => pushDL({ event: "whatsapp_click", source: "pricing_unavailable", property_id: guestyId })}
               className="w-full min-h-[52px] bg-black text-white text-[12px] font-medium tracking-[0.12em] uppercase px-8 py-4 hover:bg-black/85 transition-colors flex items-center justify-center gap-2"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.612.638l4.725-1.217A11.947 11.947 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.24 0-4.318-.722-6.004-1.948l-.42-.312-2.833.73.756-2.753-.343-.453A9.963 9.963 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
@@ -957,7 +1004,7 @@ export default function BookingWidget({
             <div className="bg-black/[0.02] border border-black/5 p-3 space-y-1">
               <p className="text-[12px] text-black">{propertyName}</p>
               <p className="text-[11px] text-black/40">
-                {formatDateDisplay(checkIn, "pt-PT")} → {formatDateDisplay(checkOut, "pt-PT")} · {nights} {t("bookingWidget.nightsLabel", "nights")} · {guests} {t("booking.guestsLabel", "guests")}
+                {formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)} · {nights} {t("bookingWidget.nightsLabel", "nights")} · {guests} {t("booking.guestsLabel", "guests")}
               </p>
             </div>
 
@@ -976,20 +1023,20 @@ export default function BookingWidget({
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-black/50">
-                      {formatEur(effectiveQuote.nightlyRate)} x {effectiveQuote.nights} {t("bookingWidget.nightsLabel", "nights")}
+                      {formatEur(effectiveQuote.nightlyRate, lang)} x {effectiveQuote.nights} {t("bookingWidget.nightsLabel", "nights")}
                     </span>
-                    <span className="text-sm text-black tabular-nums">{formatEur(effectiveQuote.totalNights)}</span>
+                    <span className="text-sm text-black tabular-nums">{formatEur(effectiveQuote.totalNights, lang)}</span>
                   </div>
                   {effectiveQuote.cleaningFee > 0 && (
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-black/50">{t("property.cleaningFee")}</span>
-                      <span className="text-sm text-black tabular-nums">{formatEur(effectiveQuote.cleaningFee)}</span>
+                      <span className="text-sm text-black tabular-nums">{formatEur(effectiveQuote.cleaningFee, lang)}</span>
                     </div>
                   )}
                   {(effectiveQuote.taxesAndFees ?? 0) > 0 && (
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-black/50">{t("bookingWidget.taxesAndFees", "Taxes & fees")}</span>
-                      <span className="text-sm text-black tabular-nums">{formatEur(effectiveQuote.taxesAndFees!)}</span>
+                      <span className="text-sm text-black tabular-nums">{formatEur(effectiveQuote.taxesAndFees!, lang)}</span>
                     </div>
                   )}
                 </div>
@@ -997,12 +1044,12 @@ export default function BookingWidget({
                 <div className="border-t border-black/10 pt-3 flex justify-between items-baseline">
                   <span className="text-[15px] font-medium text-black">{t("property.total")}</span>
                   <span className="text-[24px] font-light text-black tabular-nums tracking-tight">
-                    {formatEur(effectiveQuote.total)}
+                    {formatEur(effectiveQuote.total, lang)}
                   </span>
                 </div>
                 {selectedUpsells.size > 0 && (
                   <p className="text-[11px] text-black/35 pt-1">
-                    + {selectedUpsells.size} {selectedUpsells.size === 1 ? 'service' : 'services'} requested — confirmed after booking
+                    + {t("bookingWidget.servicesSelected", { count: selectedUpsells.size })}
                   </p>
                 )}
               </div>
@@ -1017,9 +1064,15 @@ export default function BookingWidget({
                   {quote.ratePlanOptions!.map(opt => {
                     const isSelected = selectedRatePlanId === opt.ratePlanId;
                     const savings = maxTotal - opt.total;
-                    const isNonRefundable = opt.name.toLowerCase().includes("non") && opt.name.toLowerCase().includes("refund");
-                    const isFlexible = opt.name.toLowerCase().includes("flex") || opt.name.toLowerCase().includes("free");
+                    // Plans are collapsed to exactly one refundable + one non-refundable
+                    // (pickTwoRatePlans), so the label comes from the bucket — never the
+                    // raw Guesty plan name (F1).
+                    const isNonRefundable = isNonRefundablePlan(opt);
+                    const planLabel = isNonRefundable ? t("booking.nonRefundable") : t("booking.flexibleRate");
                     const policyAnchor = opt.cancellationPolicy?.[0] ? policyPageAnchor(opt.cancellationPolicy[0]) : null;
+                    const policyLine = opt.cancellationPolicy?.[0]
+                      ? cancellationPolicyText(opt.cancellationPolicy[0], checkIn, t, lang)
+                      : null;
                     return (
                       <label
                         key={opt.ratePlanId}
@@ -1034,7 +1087,16 @@ export default function BookingWidget({
                           type="radio"
                           name="ratePlan"
                           checked={isSelected}
-                          onChange={() => setSelectedRatePlanId(opt.ratePlanId)}
+                          onChange={() => {
+                            setSelectedRatePlanId(opt.ratePlanId);
+                            // GA4: rate_plan_selected — user-initiated only
+                            pushDL({
+                              event: "rate_plan_selected",
+                              rate_plan: isNonRefundable ? "non_refundable" : "flexible",
+                              value: opt.total,
+                              property_id: guestyId,
+                            });
+                          }}
                           className="accent-black w-4 h-4 shrink-0"
                         />
                         <div className="flex-1 min-w-0">
@@ -1045,27 +1107,31 @@ export default function BookingWidget({
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={e => e.stopPropagation()}
-                                aria-label={`${humanizeRatePlanName(opt.name)} – opens cancellation policy in a new tab`}
+                                aria-label={`${planLabel} – ${t("bookingWidget.ratePlanPolicyAria")}`}
                                 className="text-[13px] text-black font-medium underline underline-offset-2 hover:text-black/70 transition-colors"
                               >
-                                {humanizeRatePlanName(opt.name)}
+                                {planLabel}
                               </a>
                             ) : (
-                              <p className="text-[13px] text-black font-medium">{humanizeRatePlanName(opt.name)}</p>
+                              <p className="text-[13px] text-black font-medium">{planLabel}</p>
                             )}
-                            {isFlexible && (
+                            {!isNonRefundable && (
                               <span className="text-[9px] font-semibold tracking-wider uppercase px-1.5 py-0.5 bg-green-50 text-green-700 border border-green-200/50">{t("bookingWidget.recommended", { defaultValue: "Recommended" })}</span>
                             )}
                           </div>
-                          {isNonRefundable && (
-                            <p className="text-[10px] text-red-500/70 mt-0.5">{t("bookingWidget.nonRefundableWarning", { defaultValue: "No refund if you cancel or modify" })}</p>
+                          {(isNonRefundable || policyLine) && (
+                            <p className={cn("text-[10px] mt-0.5", isNonRefundable ? "text-red-500/70" : "text-black/40")}>
+                              {isNonRefundable
+                                ? t("bookingWidget.nonRefundableWarning", { defaultValue: "No refund if you cancel or modify" })
+                                : policyLine}
+                            </p>
                           )}
                         </div>
                         <div className="text-right shrink-0">
-                          <span className="text-[14px] text-black font-medium whitespace-nowrap tabular-nums">{formatEur(opt.total)}</span>
+                          <span className="text-[14px] text-black font-medium whitespace-nowrap tabular-nums">{formatEur(opt.total, lang)}</span>
                           {savings > 0 && (
                             <p className="text-[10px] text-green-600 font-medium mt-0.5">
-                              {t("bookingWidget.save", { defaultValue: "Save" })} {formatEur(savings)}
+                              {t("bookingWidget.save", { defaultValue: "Save" })} {formatEur(savings, lang)}
                             </p>
                           )}
                         </div>
@@ -1077,9 +1143,9 @@ export default function BookingWidget({
             })()}
 
             {/* ── Enhance Your Stay — Full Service Grid ── */}
-            {UPSELL_ITEMS.length > 0 && (
+            {upsellItems.length > 0 && (
               <EnhanceYourStay
-                items={UPSELL_ITEMS}
+                items={upsellItems}
                 selectedUpsells={selectedUpsells}
                 setSelectedUpsells={setSelectedUpsells}
                 t={t as any}
@@ -1159,7 +1225,7 @@ export default function BookingWidget({
               }}
               className="w-full min-h-[52px] bg-black text-white text-xs font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors"
             >
-              {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote.total)}
+              {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote.total, lang)}
             </button>
 
             {beQuoteError && (
@@ -1199,7 +1265,7 @@ export default function BookingWidget({
               onChange={e => setGuestEmail(e.target.value)}
               className="w-full h-[48px] border border-black/15 bg-white px-3 py-2 text-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black font-normal"
             />
-            <PhoneInput value={guestPhone} onChange={setGuestPhone} onBlur={() => setPhoneTouched(true)} />
+            <PhoneInput value={guestPhone} onChange={setGuestPhone} onBlur={() => setPhoneTouched(true)} placeholder={t("bookingWidget.phonePh", "Phone number *")} />
             {/* Terms & Cancellation Policy acceptance */}
             <label className="flex items-start gap-2 cursor-pointer select-none">
               <input
@@ -1214,7 +1280,7 @@ export default function BookingWidget({
                 })}{" "}
                 <a href="/terms" target="_blank" className="text-black underline hover:text-black/70">{t("bookingWidget.termsLink", { defaultValue: "Terms & Conditions" })}</a>
                 {" "}{t("bookingWidget.termsAnd", { defaultValue: "and" })}{" "}
-                <a href="/faq#cancellation" target="_blank" className="text-black underline hover:text-black/70">{t("bookingWidget.cancellationPolicyLink")}</a>
+                <a href="/legal/cancellation-policy" target="_blank" className="text-black underline hover:text-black/70">{t("bookingWidget.cancellationPolicyLink")}</a>
               </span>
             </label>
 
@@ -1234,9 +1300,9 @@ export default function BookingWidget({
                   <p className="text-[11px] font-semibold tracking-[0.06em] uppercase text-black/30">{t("bookingWidget.bookingSummary", { defaultValue: "Booking summary" })}</p>
                   <p className="text-[13px] text-black">{propertyName}</p>
                   <p className="text-[12px] text-black/50">
-                    {formatDateDisplay(checkIn, "pt-PT")} → {formatDateDisplay(checkOut, "pt-PT")} · {effectiveQuote?.nights || nights} {t("bookingWidget.nightsLabel", "nights")} · {guests} {t("booking.guestsLabel", "guests")}
+                    {formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)} · {effectiveQuote?.nights || nights} {t("bookingWidget.nightsLabel", "nights")} · {guests} {t("booking.guestsLabel", "guests")}
                   </p>
-                  <p className="text-[15px] text-black font-medium tabular-nums">{t("property.total")}: {formatEur(effectiveQuote?.total ?? quote.total)}</p>
+                  <p className="text-[15px] text-black font-medium tabular-nums">{t("property.total")}: {formatEur(effectiveQuote?.total ?? quote.total, lang)}</p>
                   <p className="text-[11px] text-black/30">{guestFirstName} {guestLastName} · {guestEmail}</p>
                 </div>
                 <CheckoutPaymentForm
@@ -1280,9 +1346,9 @@ export default function BookingWidget({
 
         {/* Cancellation policy */}
         <p className="text-[11px] text-black/30 text-center">
-          <a href="/faq#cancellation" className="text-black/50 hover:underline">{t("bookingWidget.cancellationPolicyLink")}</a>
+          <a href="/legal/cancellation-policy" className="text-black/50 hover:underline">{t("bookingWidget.cancellationPolicyLink")}</a>
           {(effectiveQuote?.cancellationPolicy?.length ?? 0) > 0 && (
-            <span className="block mt-1 text-black/30">{humanizeCancellationPolicy(effectiveQuote?.cancellationPolicy?.[0] || '')}</span>
+            <span className="block mt-1 text-black/30">{cancellationPolicyText(effectiveQuote?.cancellationPolicy?.[0], checkIn, t, lang)}</span>
           )}
         </p>
       </div>

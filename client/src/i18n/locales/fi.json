@@ -129,7 +129,7 @@
     "estTotal": "arvio yhteensä",
     "indicativeCatalogue": "Indikatiivinen hinnastosta. Vahvista lopullinen hinta varauksessa.",
     "indicativeUnavailable": "Indikatiivinen (hinnasto). Live-hinta ei saatavilla — vahvista varauksessa.",
-    "cleaningFee": "Loppusiivous",
+    "cleaningFee": "Talon valmistelupalvelu",
     "serviceFee": "Palvelumaksu",
     "touristTax": "Matkailuvero",
     "vat": "ALV",
@@ -220,7 +220,9 @@
     "minStayNotice_one": "Vähimmäisoleskelu näille päiville on {{count}} yö",
     "minStayNotice_other": "Vähimmäisoleskelu näille päiville on {{count}} yötä",
     "select": "Valitse",
-    "cancellationPerPolicy": "Peruutus majoituksen ehtojen mukaan"
+    "cancellationPerPolicy": "Peruutus majoituksen ehtojen mukaan",
+    "decreaseGuests": "Vähennä vieraita",
+    "increaseGuests": "Lisää vieraita"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Hinta pyynnöstä",
@@ -272,7 +274,47 @@
     "requestWithoutPayment": "Tai pyydä ilman maksua",
     "belowMinNightsWarning_one": "Valitse vähintään {{count}} yö jatkaaksesi",
     "belowMinNightsWarning_other": "Valitse vähintään {{count}} yötä jatkaaksesi",
-    "pricingUnavailableMessage": "Emme voineet vahvistaa hintaa näille päiville. Ota yhteyttä Concierge-palveluun."
+    "pricingUnavailableMessage": "Emme voineet vahvistaa hintaa näille päiville. Ota yhteyttä Concierge-palveluun.",
+    "recommended": "Suositeltu",
+    "nonRefundableWarning": "Ei hyvitystä peruutuksen tai muutoksen yhteydessä",
+    "save": "Säästä",
+    "quoteExpired": "Tarjous on vanhentunut. Yritä uudelleen.",
+    "quoteRefreshFailed": "Hintaa ei voitu päivittää. Ota yhteyttä conciergeemme.",
+    "termsAcceptLabel": "Hyväksyn",
+    "termsLink": "käyttöehdot",
+    "termsAnd": "ja",
+    "invalidEmail": "Anna kelvollinen sähköpostiosoite",
+    "invalidPhone": "Anna kelvollinen puhelinnumero",
+    "bookingSummary": "Varauksen yhteenveto",
+    "proceedToPayment": "Jatka maksamaan",
+    "priceSummary": "Hinnan yhteenveto",
+    "bookedBy": "Varaaja",
+    "servicesRequested": "Pyydetyt palvelut",
+    "servicesConfirmNote": "Conciergemme ottaa yhteyttä 2 tunnin kuluessa vahvistaakseen tiedot ja hinnat.",
+    "chatConcierge": "Keskustele conciergesi kanssa",
+    "conciergeReachOut": "Oma conciergesi ottaa yhteyttä 24 tunnin kuluessa auttaakseen majoituksesi suunnittelussa.",
+    "confirmationEmailSent": "Vahvistussähköposti lähetetty osoitteeseen",
+    "contactConcierge": "Ota yhteyttä conciergeen",
+    "selectDate": "Valitse",
+    "loadingCalendar": "Ladataan saatavuutta...",
+    "fromPrice": "alkaen",
+    "showAllServices": "Näytä kaikki palvelut",
+    "servicesNote": "Conciergemme vahvistaa palvelut erikseen varauksen jälkeen. Ei veloitusta nyt.",
+    "checkInToday": "Sisäänkirjautuminen on tänään",
+    "checkInTomorrow": "Sisäänkirjautuminen on huomenna",
+    "checkInSoon": "Sisäänkirjautuminen on 2 päivän päästä",
+    "advanceNoticeNote": "Jotkin talot vaativat ennakkovarausajan. Välitön vahvistus ei ehkä ole mahdollinen.",
+    "nightsLabel": "yötä",
+    "servicesSelected_one": "{{count}} palvelu pyydetty — vahvistetaan varauksen jälkeen",
+    "servicesSelected_other": "{{count}} palvelua pyydetty — vahvistetaan varauksen jälkeen",
+    "phonePh": "Puhelinnumero *",
+    "ratePlanPolicyAria": "avaa peruutusehdot uuteen välilehteen",
+    "waSuccessMessage": "Hei! Vahvistin juuri varaukseni kohteeseen {{property}}.\nVahvistus: {{code}}\nPäivät: {{checkIn}} → {{checkOut}}\nVieraat: {{guests}}\nOdotan innolla!",
+    "waPricingHelp": "Hei, haluaisin varata kohteen {{property}}.\nPäivät: {{checkIn}} → {{checkOut}}\nYöt: {{nights}}\nVieraat: {{guests}}\nVoisitteko auttaa vahvistamaan saatavuuden ja hinnan?",
+    "clearDates": "Tyhjennä",
+    "availableLabel": "Vapaa",
+    "unavailableLabel": "Varattu",
+    "confirmDates": "Vahvista"
   },
   "common": {
     "loading": "Ladataan…",
@@ -415,7 +457,7 @@
     "nights_other": "{{count}} yötä",
     "viewDetails": "Näytä hintatiedot",
     "accommodation": "Majoitus",
-    "cleaning": "Loppusiivous",
+    "cleaning": "Talon valmistelupalvelu",
     "serviceFee": "Palvelumaksu",
     "touristTax": "Matkailuvero",
     "vat": "ALV",
@@ -585,7 +627,10 @@
     "checkInInstructions": "Sisäänkirjausohjeet",
     "checkInDefault": "Tiimimme jakaa kaikki ohjeet sinulle sähköpostitse.",
     "addToCalendar": "Lisää kalenteriin",
-    "whatsappConcierge": "WhatsApp concierge"
+    "whatsappConcierge": "WhatsApp concierge",
+    "pageTitle": "Varaus vahvistettu | Kiitos",
+    "pageDescription": "Portugal Active -varauksesi on vahvistettu. Tarkista sähköpostisi ja valmistaudu majoitukseen.",
+    "whatsappPrefill": "Hei, tarvitsen apua varaukseni kanssa"
   },
   "payment": {
     "failed": "Maksu epäonnistui. Yritä uudelleen.",
@@ -608,10 +653,18 @@
       "requiredFields": "Täytä kaikki pakolliset kentät.",
       "cardNotReady": "Korttielementti ei ole valmis. Päivitä sivu ja yritä uudelleen.",
       "cardValidationFailed": "Kortin vahvistus epäonnistui. Tarkista kortin tiedot.",
-      "couldNotCreatePaymentMethod": "Maksutapaa ei voitu luoda. Yritä uudelleen."
+      "couldNotCreatePaymentMethod": "Maksutapaa ei voitu luoda. Yritä uudelleen.",
+      "contactSupport": "Jos maksu veloitettiin, ota yhteyttä osoitteeseen reservations@portugalactive.com tai WhatsAppilla +351 927 161 771. Älä yritä maksaa uudelleen."
     },
-    "payButton": "Maksa {{currency}} {{amount}}",
-    "cancelButton": "Peruuta"
+    "payButton": "Maksa {{amount}}",
+    "cancelButton": "Peruuta",
+    "methodCard": "Kortti",
+    "preparingSecure": "Valmistellaan turvallista maksua…",
+    "payWithKlarna": "Maksa {{amount}} Klarnalla",
+    "payWithPaypal": "Maksa {{amount}} PayPalilla",
+    "preparingKlarna": "Valmistellaan Klarna-maksua…",
+    "preparingPaypal": "Valmistellaan PayPal-maksua…",
+    "redirecting": "Uudelleenohjataan…"
   },
   "contact": {
     "heroAlt": "Ota yhteyttä Portugal Activeen",
@@ -1140,7 +1193,16 @@
     "strictTitle": "Tiukka Peruutus",
     "strictBody": "50 %:n hyvitys, jos peruutus tehdään vähintään 60 päivää ennen sisäänkirjautumista. Ei hyvitystä peruutuksille, jotka tehdään alle 60 päivää ennen sisäänkirjautumisesta. Ei hyvityskelpoinen sisäänkirjautumisen jälkeen.",
     "nonRefundableTitle": "Ei Hyvityskelpoinen",
-    "nonRefundableBody": "Tämä hinta tarjotaan alennettuun hintaan vastineena ei-palautusmaksukäytännöstä. Varauksen jälkeen hyvitystä ei myönnetä peruutuspäivämäärästä riippumatta. Suosittelemme vahvasti matkavakuutuksen ostamista tätä hintaa valittaessa."
+    "nonRefundableBody": "Tämä hinta tarjotaan alennettuun hintaan vastineena ei-palautusmaksukäytännöstä. Varauksen jälkeen hyvitystä ei myönnetä peruutuspäivämäärästä riippumatta. Suosittelemme vahvasti matkavakuutuksen ostamista tätä hintaa valittaessa.",
+    "shortFree": "Maksuton peruutus {{date}} asti",
+    "shortFreeNoDate_one": "Maksuton peruutus {{count}} päivä ennen sisäänkirjautumista",
+    "shortFreeNoDate_other": "Maksuton peruutus {{count}} päivää ennen sisäänkirjautumista",
+    "shortHalf": "50 %:n hyvitys {{date}} asti — sen jälkeen ei hyvitystä",
+    "shortHalfNoDate_one": "50 %:n hyvitys {{count}} päivä ennen sisäänkirjautumista — sen jälkeen ei hyvitystä",
+    "shortHalfNoDate_other": "50 %:n hyvitys {{count}} päivää ennen sisäänkirjautumista — sen jälkeen ei hyvitystä",
+    "shortNonRefundable": "Hinta ei ole hyvitettävissä — peruutuksesta ei makseta hyvitystä",
+    "shortWindowPassed": "Näille päiville varaus ei ole hyvitettävissä peruutuksen yhteydessä",
+    "shortGeneric": "Peruutusehdot ovat voimassa — katso peruutuskäytäntömme"
   },
   "whatsapp": {
     "title": "Ota yhteyttä WhatsAppissa",
@@ -1215,7 +1277,7 @@
     "bookedBy": "Varaaja",
     "priceSummary": "Hintayhteenveto",
     "nights": "{{count}} yötä",
-    "cleaning": "Loppusiivous",
+    "cleaning": "Talon valmistelupalvelu",
     "totalPaid": "Maksettu yhteensä",
     "paidPaypal": "Maksettu kokonaan PayPalilla",
     "paidKlarna": "Maksetaan Klarnalla",
@@ -1225,7 +1287,12 @@
     "trustSecure": "Turvallinen varaus",
     "trustRate": "Paras hinta taattu",
     "trustCancel": "Joustava peruutus",
-    "trustConcierge": "Concierge sisältyy"
+    "trustConcierge": "Concierge sisältyy",
+    "pageTitle": "Varaus vahvistettu | Kiitos",
+    "pageDescription": "Portugal Active -varauksesi on vahvistettu. Tarkista sähköpostisi ja valmistaudu majoitukseen.",
+    "mailSubject": "Varaus {{code}} — Tietopyyntö",
+    "mailBody": "Hei,\n\nminulla on kysymys varauksestani {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
+    "trustFees": "Ei varausmaksuja"
   },
   "bedType": {
     "KingBed": "King-sänky",
@@ -1246,5 +1313,36 @@
     "bunkBed": "Kerrossänky",
     "airMattress": "Ilmapatja",
     "bed": "Sänky"
+  },
+  "paymentReturn": {
+    "verifying": "Vahvistetaan maksuasi…",
+    "missingInfo": "Maksutietoja ei löytynyt. Ota yhteyttä tukeen.",
+    "dataLost": "Varaustiedot katosivat uudelleenohjauksen aikana. Ota yhteyttä tukeen viitteellä {{ref}}.",
+    "dataCorrupted": "Varaustietoja ei voitu lukea. Ota yhteyttä tukeen.",
+    "processorUnavailable": "Maksupalvelu ei ole käytettävissä. Ota yhteyttä tukeen.",
+    "verifyFailed": "Maksun tilaa ei voitu vahvistaa. Ota yhteyttä tukeen.",
+    "confirmedCreating": "Maksu vahvistettu! Luodaan varaustasi…",
+    "reservationFailed": "Maksusi vastaanotettiin, mutta varausta ei voitu luoda automaattisesti. Tiimimme on saanut ilmoituksen ja vahvistaa varauksesi pian. Viite: {{ref}}",
+    "stillProcessing": "Maksuasi käsitellään vielä. Odota hetki ja päivitä tämä sivu.",
+    "notCompleted": "Maksua ei suoritettu loppuun. Yritä uudelleen tai valitse toinen maksutapa.",
+    "processingTitle": "Varaustasi käsitellään",
+    "failedTitle": "Maksua ei suoritettu",
+    "secureNote": "Turvallinen maksu — älä sulje tätä ikkunaa"
+  },
+  "trust": {
+    "secureBooking": "Turvallinen varaus",
+    "bestRate": "Paras hinta taattu",
+    "noBookingFees": "Ei varausmaksuja",
+    "conciergeIncluded": "Concierge sisältyy"
+  },
+  "bookingStatus": {
+    "confirmed": "Vahvistettu",
+    "reserved": "Varattu",
+    "pending": "Odottaa vahvistusta",
+    "canceled": "Peruutettu",
+    "declined": "Hylätty",
+    "expired": "Vanhentunut",
+    "inquiry": "Tiedustelu",
+    "processing": "Käsittelyssä"
   }
 }

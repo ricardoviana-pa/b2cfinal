@@ -1,14 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-
-function formatMoney(cents: number, currency = "EUR"): string {
-  return new Intl.NumberFormat("pt-PT", {
-    style: "currency",
-    currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(cents / 100);
-}
+import { formatEurCents } from "@/lib/format";
 
 interface PriceBreakdownProps {
   currency?: string;
@@ -35,7 +27,8 @@ export default function PriceBreakdown({
   totalAfterTax,
   loading = false,
 }: PriceBreakdownProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
   if (loading) {
     return <div className="rounded-lg bg-[#F5F1EB] border border-[#E8E4DC] h-[120px] animate-pulse" />;
   }
@@ -47,8 +40,8 @@ export default function PriceBreakdown({
       <div className="flex items-end justify-between gap-4 mb-4">
         <div>
           <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-2">{t("priceBreakdown.title")}</p>
-          <p className="headline-sm text-[#1A1A18]">{formatMoney(totalAfterTax, currency)}</p>
-          <p className="body-sm mt-1">{t("priceBreakdown.perNightLabel", { amount: formatMoney(perNight, currency) })}</p>
+          <p className="headline-sm text-[#1A1A18]">{formatEurCents(totalAfterTax, lang)}</p>
+          <p className="body-sm mt-1">{t("priceBreakdown.perNightLabel", { amount: formatEurCents(perNight, lang) })}</p>
         </div>
         <p className="text-[12px] text-[#9E9A90]">{t("priceBreakdown.nights", { count: nights })}</p>
       </div>
@@ -62,31 +55,31 @@ export default function PriceBreakdown({
             <div className="space-y-3 text-[13px]">
               <div className="flex justify-between">
                 <span className="text-[#6B6860]">{t("priceBreakdown.accommodation")}</span>
-                <span className="text-[#1A1A18]">{formatMoney(baseRent, currency)}</span>
+                <span className="text-[#1A1A18]">{formatEurCents(baseRent, lang)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[#6B6860]">{t("priceBreakdown.cleaning")}</span>
-                <span className="text-[#1A1A18]">{formatMoney(cleaningFee, currency)}</span>
+                <span className="text-[#1A1A18]">{formatEurCents(cleaningFee, lang)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[#6B6860]">{t("priceBreakdown.serviceFee")}</span>
-                <span className="text-[#1A1A18]">{formatMoney(serviceFee, currency)}</span>
+                <span className="text-[#1A1A18]">{formatEurCents(serviceFee, lang)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[#6B6860]">{t("priceBreakdown.touristTax")}</span>
-                <span className="text-[#1A1A18]">{formatMoney(touristTax, currency)}</span>
+                <span className="text-[#1A1A18]">{formatEurCents(touristTax, lang)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[#6B6860]">{t("priceBreakdown.vat")}</span>
-                <span className="text-[#1A1A18]">{formatMoney(vat, currency)}</span>
+                <span className="text-[#1A1A18]">{formatEurCents(vat, lang)}</span>
               </div>
               <div className="flex justify-between pt-3 border-t border-[#E8E4DC]">
                 <span className="text-[#6B6860]">{t("priceBreakdown.subtotal")}</span>
-                <span className="text-[#1A1A18]">{formatMoney(totalBeforeTax, currency)}</span>
+                <span className="text-[#1A1A18]">{formatEurCents(totalBeforeTax, lang)}</span>
               </div>
               <div className="flex justify-between text-[14px] font-medium">
                 <span className="text-[#1A1A18]">{t("property.total")}</span>
-                <span className="text-[#1A1A18]">{formatMoney(totalAfterTax, currency)}</span>
+                <span className="text-[#1A1A18]">{formatEurCents(totalAfterTax, lang)}</span>
               </div>
             </div>
           </AccordionContent>

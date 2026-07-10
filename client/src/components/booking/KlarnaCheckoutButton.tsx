@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { loadStripe } from "@stripe/stripe-js";
 import { trpc } from "@/lib/trpc";
+import { formatEur } from "@/lib/format";
+import { pushEcommerce } from "@/lib/datalayer";
 
 interface KlarnaCheckoutButtonProps {
   amount: number;
@@ -30,6 +33,7 @@ interface KlarnaCheckoutButtonProps {
 }
 
 export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
+  const { t, i18n } = useTranslation();
   const [isProcessing, setIsProcessing] = useState(false);
   const [statusMsg, setStatusMsg] = useState("");
 
@@ -37,7 +41,15 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
 
   const handleClick = async () => {
     setIsProcessing(true);
-    setStatusMsg("Preparing Klarna payment…");
+    setStatusMsg(t("payment.preparingKlarna"));
+
+    // GA4: add_payment_info — must fire before the redirect navigates away
+    pushEcommerce({
+      event: "add_payment_info",
+      payment_type: "klarna",
+      property_id: props.listingId,
+      ecommerce: { currency: "EUR", value: props.amount },
+    });
 
     try {
       const stripe = await loadStripe(props.stripePublishableKey);
@@ -79,7 +91,7 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
         numberOfInfants: props.numberOfGuests.infants,
       });
 
-      setStatusMsg("Redirecting to Klarna…");
+      setStatusMsg(t("payment.redirecting"));
 
       const { error } = await (stripe as any).confirmKlarnaPayment(clientSecret, {
         payment_method: {
@@ -121,7 +133,7 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
         letterSpacing: "0.04em",
       }}
     >
-      {isProcessing ? statusMsg : "Pay with Klarna"}
+      {isProcessing ? statusMsg : t("payment.payWithKlarna", { amount: formatEur(props.amount, i18n.language) })}
     </button>
   );
 }

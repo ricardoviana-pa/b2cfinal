@@ -11,10 +11,10 @@ import { useTranslation } from "react-i18next";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { trpc } from "@/lib/trpc";
+import { formatEur } from "@/lib/format";
+import { pushEcommerce } from "@/lib/datalayer";
 import { PayPalCheckoutButton } from "./PayPalCheckoutButton";
 import { KlarnaCheckoutButton } from "./KlarnaCheckoutButton";
-
-const EUR = "\u20AC";
 
 type PaymentMethodId = "card" | "googlepay" | "paypal" | "klarna";
 
@@ -170,6 +170,7 @@ function PaymentFormInner({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const submittedRef = useRef(false);
+  const paymentInfoFiredRef = useRef(false);
   const createReservation = trpc.booking.createBEInstantReservation.useMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -178,6 +179,17 @@ function PaymentFormInner({
     if (!stripe || !elements || !guestName.trim() || !guestEmail.trim() || !guestPhone.trim()) {
       setError(t('payment.errors.requiredFields'));
       return;
+    }
+
+    // GA4: add_payment_info — guest submitted payment details (card flow)
+    if (!paymentInfoFiredRef.current) {
+      paymentInfoFiredRef.current = true;
+      pushEcommerce({
+        event: "add_payment_info",
+        payment_type: "card",
+        property_id: listingId,
+        ecommerce: { currency: "EUR", value: total },
+      });
     }
 
     submittedRef.current = true;
@@ -316,7 +328,7 @@ function PaymentFormInner({
           disabled={!stripe || loading || !guestName.trim() || !guestEmail.trim() || !guestPhone.trim()}
           className="btn-primary w-full disabled:opacity-50"
         >
-          {loading ? t('payment.processing') : t('payment.payButton', { currency: EUR, amount: total })}
+          {loading ? t('payment.processing') : t('payment.payButton', { amount: formatEur(total, i18n.language) })}
         </button>
         <button type="button" onClick={onCancel} className="btn-ghost">
           {t('payment.cancelButton')}
@@ -392,7 +404,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
     return (
       <div className="flex items-center justify-center py-8 gap-2 text-sm text-black/40">
         <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-        Preparing secure payment...
+        {t('payment.preparingSecure')}
       </div>
     );
   }
@@ -451,7 +463,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
                 textAlign: "center",
               }}
             >
-              {label}
+              {id === "card" ? t('payment.methodCard') : label}
             </span>
           </button>
         ))}

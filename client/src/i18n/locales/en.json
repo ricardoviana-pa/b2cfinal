@@ -129,7 +129,7 @@
     "estTotal": "est. total",
     "indicativeCatalogue": "Indicative from catalogue rate. Confirm for final total.",
     "indicativeUnavailable": "Indicative (catalogue). Live pricing unavailable — confirm on booking.",
-    "cleaningFee": "Final cleaning",
+    "cleaningFee": "Home preparation service",
     "serviceFee": "Service fee",
     "touristTax": "Tourist tax",
     "vat": "VAT",
@@ -220,7 +220,9 @@
     "select": "Select",
     "cancellationPerPolicy": "Cancellation subject to listing policy",
     "minStayNotice_one": "Minimum stay for these dates is {{count}} night",
-    "minStayNotice_other": "Minimum stay for these dates is {{count}} nights"
+    "minStayNotice_other": "Minimum stay for these dates is {{count}} nights",
+    "decreaseGuests": "Decrease guests",
+    "increaseGuests": "Increase guests"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Price on request",
@@ -272,7 +274,47 @@
     "requestWithoutPayment": "Or request without payment",
     "belowMinNightsWarning_one": "Please select at least {{count}} night to continue",
     "belowMinNightsWarning_other": "Please select at least {{count}} nights to continue",
-    "pricingUnavailableMessage": "We couldn't confirm pricing for these dates. Please contact a Concierge."
+    "pricingUnavailableMessage": "We couldn't confirm pricing for these dates. Please contact a Concierge.",
+    "recommended": "Recommended",
+    "nonRefundableWarning": "No refund if you cancel or modify",
+    "save": "Save",
+    "quoteExpired": "Quote expired. Please try again.",
+    "quoteRefreshFailed": "Could not refresh pricing. Please contact our concierge.",
+    "termsAcceptLabel": "I accept the",
+    "termsLink": "Terms & Conditions",
+    "termsAnd": "and the",
+    "invalidEmail": "Please enter a valid email address",
+    "invalidPhone": "Please enter a valid phone number",
+    "bookingSummary": "Booking summary",
+    "proceedToPayment": "Proceed to Payment",
+    "priceSummary": "Price summary",
+    "bookedBy": "Booked by",
+    "servicesRequested": "Services requested",
+    "servicesConfirmNote": "Our concierge will contact you within 2 hours to confirm details and pricing.",
+    "chatConcierge": "Chat with your concierge",
+    "conciergeReachOut": "Your dedicated concierge will reach out within 24 hours to help plan your stay.",
+    "confirmationEmailSent": "Confirmation email sent to",
+    "contactConcierge": "Contact Concierge",
+    "selectDate": "Select",
+    "loadingCalendar": "Loading availability...",
+    "fromPrice": "from",
+    "showAllServices": "Show all services",
+    "servicesNote": "Services confirmed separately by our concierge after booking. No charge now.",
+    "checkInToday": "Check-in is today",
+    "checkInTomorrow": "Check-in is tomorrow",
+    "checkInSoon": "Check-in is in 2 days",
+    "advanceNoticeNote": "Some properties require advance notice. Instant confirmation may not be available.",
+    "nightsLabel": "nights",
+    "servicesSelected_one": "{{count}} service requested — confirmed after booking",
+    "servicesSelected_other": "{{count}} services requested — confirmed after booking",
+    "phonePh": "Phone number *",
+    "ratePlanPolicyAria": "opens the cancellation policy in a new tab",
+    "waSuccessMessage": "Hi! I just confirmed my booking at {{property}}.\nConfirmation: {{code}}\nDates: {{checkIn}} → {{checkOut}}\nGuests: {{guests}}\nLooking forward to my stay!",
+    "waPricingHelp": "Hi, I'd like to book {{property}}.\nDates: {{checkIn}} → {{checkOut}}\nNights: {{nights}}\nGuests: {{guests}}\nCould you help me confirm availability and pricing?",
+    "clearDates": "Clear",
+    "availableLabel": "Available",
+    "unavailableLabel": "Unavailable",
+    "confirmDates": "Confirm"
   },
   "common": {
     "loading": "Loading…",
@@ -415,7 +457,7 @@
     "nights_other": "{{count}} nights",
     "viewDetails": "View price details",
     "accommodation": "Accommodation",
-    "cleaning": "Final cleaning",
+    "cleaning": "Home preparation service",
     "serviceFee": "Service fee",
     "touristTax": "Tourist tax",
     "vat": "VAT",
@@ -585,7 +627,10 @@
     "checkInInstructions": "Check-in instructions",
     "checkInDefault": "Our team will share all instructions with you by email.",
     "addToCalendar": "Add to Calendar",
-    "whatsappConcierge": "WhatsApp concierge"
+    "whatsappConcierge": "WhatsApp concierge",
+    "pageTitle": "Booking Confirmed | Thank You",
+    "pageDescription": "Your Portugal Active booking is confirmed. Check your email for details and prepare for your stay.",
+    "whatsappPrefill": "Hi, I need help with my booking"
   },
   "paymentThankYou": {
     "title": "Booking Confirmed",
@@ -594,7 +639,7 @@
     "bookedBy": "Booked by",
     "priceSummary": "Price summary",
     "nights": "{{count}} nights",
-    "cleaning": "Final cleaning",
+    "cleaning": "Home preparation service",
     "totalPaid": "Total paid",
     "paidPaypal": "Paid in full with PayPal",
     "paidKlarna": "Paying with Klarna",
@@ -604,7 +649,12 @@
     "trustSecure": "Secure booking",
     "trustRate": "Best rate guaranteed",
     "trustCancel": "Flexible cancellation",
-    "trustConcierge": "Concierge included"
+    "trustConcierge": "Concierge included",
+    "pageTitle": "Booking Confirmed | Thank You",
+    "pageDescription": "Your Portugal Active booking is confirmed. Check your email for details and prepare for your stay.",
+    "mailSubject": "Reservation {{code}} — Information request",
+    "mailBody": "Hello,\n\nI have a question about my reservation {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
+    "trustFees": "No booking fees"
   },
   "payment": {
     "failed": "Payment failed. Please try again.",
@@ -627,10 +677,18 @@
       "requiredFields": "Please fill in all required fields.",
       "cardNotReady": "Card element not ready. Please refresh and try again.",
       "cardValidationFailed": "Card validation failed. Please check your card details.",
-      "couldNotCreatePaymentMethod": "Could not create payment method. Please try again."
+      "couldNotCreatePaymentMethod": "Could not create payment method. Please try again.",
+      "contactSupport": "If you were charged, please contact us at reservations@portugalactive.com or WhatsApp +351 927 161 771. Do not attempt to pay again."
     },
-    "payButton": "Pay {{currency}} {{amount}}",
-    "cancelButton": "Cancel"
+    "payButton": "Pay {{amount}}",
+    "cancelButton": "Cancel",
+    "methodCard": "Card",
+    "preparingSecure": "Preparing secure payment…",
+    "payWithKlarna": "Pay {{amount}} with Klarna",
+    "payWithPaypal": "Pay {{amount}} with PayPal",
+    "preparingKlarna": "Preparing Klarna payment…",
+    "preparingPaypal": "Preparing PayPal payment…",
+    "redirecting": "Redirecting…"
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",
@@ -1240,11 +1298,51 @@
     "strictTitle": "Strict Cancellation",
     "strictBody": "50% refund if cancelled at least 60 days before check-in. No refund for cancellations made less than 60 days before check-in. Non-refundable after check-in.",
     "nonRefundableTitle": "Non-Refundable",
-    "nonRefundableBody": "This rate is offered at a reduced price in exchange for a no-refund policy. Once booked, no refund will be issued regardless of the cancellation date. We strongly recommend purchasing travel insurance when choosing this rate."
+    "nonRefundableBody": "This rate is offered at a reduced price in exchange for a no-refund policy. Once booked, no refund will be issued regardless of the cancellation date. We strongly recommend purchasing travel insurance when choosing this rate.",
+    "shortFree": "Free cancellation until {{date}}",
+    "shortFreeNoDate_one": "Free cancellation until {{count}} day before check-in",
+    "shortFreeNoDate_other": "Free cancellation until {{count}} days before check-in",
+    "shortHalf": "50% refund until {{date}} — non-refundable after",
+    "shortHalfNoDate_one": "50% refund until {{count}} day before check-in — non-refundable after",
+    "shortHalfNoDate_other": "50% refund until {{count}} days before check-in — non-refundable after",
+    "shortNonRefundable": "Non-refundable rate — no refund if you cancel",
+    "shortWindowPassed": "For these dates the booking is non-refundable if cancelled",
+    "shortGeneric": "Cancellation terms apply — see our cancellation policy"
   },
   "urgency": {
     "highDemand": "High demand",
     "guestFavourite": "Guest favourite",
     "justAdded": "Just added"
+  },
+  "paymentReturn": {
+    "verifying": "Verifying your payment…",
+    "missingInfo": "We couldn't find your payment information. Please contact support.",
+    "dataLost": "Your booking data was lost during the redirect. Please contact support with reference {{ref}}.",
+    "dataCorrupted": "We couldn't read your booking data. Please contact support.",
+    "processorUnavailable": "The payment processor is unavailable. Please contact support.",
+    "verifyFailed": "We couldn't verify your payment status. Please contact support.",
+    "confirmedCreating": "Payment confirmed! Creating your reservation…",
+    "reservationFailed": "Your payment was received but the reservation could not be created automatically. Our team has been notified and will confirm your booking shortly. Reference: {{ref}}",
+    "stillProcessing": "Your payment is still processing. Please wait a moment and refresh this page.",
+    "notCompleted": "The payment was not completed. Please try again or choose a different payment method.",
+    "processingTitle": "Processing Your Booking",
+    "failedTitle": "Payment Not Completed",
+    "secureNote": "Secure payment — please don't close this window"
+  },
+  "trust": {
+    "secureBooking": "Secure booking",
+    "bestRate": "Best rate guaranteed",
+    "noBookingFees": "No booking fees",
+    "conciergeIncluded": "Concierge included"
+  },
+  "bookingStatus": {
+    "confirmed": "Confirmed",
+    "reserved": "Reserved",
+    "pending": "Awaiting confirmation",
+    "canceled": "Cancelled",
+    "declined": "Declined",
+    "expired": "Expired",
+    "inquiry": "Enquiry",
+    "processing": "Being processed"
   }
 }

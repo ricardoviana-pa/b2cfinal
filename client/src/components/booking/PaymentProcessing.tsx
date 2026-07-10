@@ -1,4 +1,5 @@
 import { Loader2, AlertCircle, ShieldCheck } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import Header from "@/components/layout/Header";
 
 /**
@@ -16,6 +17,7 @@ export default function PaymentProcessing({
   failed?: boolean;
   title?: string;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <Header />
@@ -34,7 +36,7 @@ export default function PaymentProcessing({
           </div>
 
           <h1 className="headline-md mb-2 text-[#1A1A18]">
-            {title || (failed ? "Payment Not Completed" : "Processing Your Booking")}
+            {title || (failed ? t("paymentReturn.failedTitle") : t("paymentReturn.processingTitle"))}
           </h1>
           <p className="body-sm mx-auto max-w-[340px] text-[#6b6860]">{status}</p>
 
@@ -45,7 +47,7 @@ export default function PaymentProcessing({
               </div>
               <div className="mt-6 flex items-center justify-center gap-2 text-[12px] text-[#9E9A90]">
                 <ShieldCheck className="h-3.5 w-3.5 text-[#8B7355]" strokeWidth={1.8} />
-                Secure payment — please don't close this window
+                {t("paymentReturn.secureNote")}
               </div>
             </>
           )}

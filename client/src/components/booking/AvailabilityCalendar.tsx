@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useIsMobile } from "@/hooks/useMobile";
+import { intlLocale } from "@/lib/format";
 
 export interface AvailabilityDay {
   date: string;
@@ -26,10 +27,26 @@ interface AvailabilityCalendarProps {
 
 type SelectionPhase = "check-in" | "check-out";
 
-const WEEKDAYS_EN = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
-const WEEKDAYS_PT = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
-const MONTHS_EN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const MONTHS_PT = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/** Monday-first short weekday labels for the active site locale (all 9 languages).
+ *  timeZone MUST stay pinned to UTC — the reference instants are UTC midnights;
+ *  formatting them in the browser zone shifts the whole row for UTC-negative visitors. */
+function buildWeekdays(locale: string): string[] {
+  const fmt = new Intl.DateTimeFormat(locale, { weekday: "short", timeZone: "UTC" });
+  // 2024-01-01 is a Monday
+  return Array.from({ length: 7 }, (_, i) =>
+    capitalize(fmt.format(new Date(Date.UTC(2024, 0, 1 + i))).replace(/\.$/, "")),
+  );
+}
+
+/** Full month names for the active site locale. */
+function buildMonths(locale: string): string[] {
+  const fmt = new Intl.DateTimeFormat(locale, { month: "long", timeZone: "UTC" });
+  return Array.from({ length: 12 }, (_, i) =>
+    capitalize(fmt.format(new Date(Date.UTC(2024, i, 15)))),
+  );
+}
 
 /** YYYY-MM-DD from Date — uses local date parts to avoid UTC timezone shift */
 function toIso(d: Date): string {
@@ -85,9 +102,10 @@ export default function AvailabilityCalendar({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hoverDate, setHoverDate] = useState<string>("");
 
-  const isPt = i18n.language?.startsWith("pt");
-  const weekdays = isPt ? WEEKDAYS_PT : WEEKDAYS_EN;
-  const months = isPt ? MONTHS_PT : MONTHS_EN;
+  // Month/weekday labels come from Intl for the SITE locale (F6) — all 9 languages
+  const locale = intlLocale(i18n.language);
+  const weekdays = useMemo(() => buildWeekdays(locale), [locale]);
+  const months = useMemo(() => buildMonths(locale), [locale]);
 
   // Current view: start from the current month
   const now = new Date();
@@ -393,7 +411,7 @@ export default function AvailabilityCalendar({
               : "bg-black/[0.04] text-black/40 hover:bg-black/[0.08] hover:text-black/60"
           }`}
         >
-          {isPt ? "Entrada" : "Check-in"}
+          {t("bookingWidget.checkInLabel")}
         </button>
         <svg className="w-3 h-3 text-black/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -410,7 +428,7 @@ export default function AvailabilityCalendar({
               : "bg-black/[0.04] text-black/40" + (checkIn ? " hover:bg-black/[0.08] hover:text-black/60" : "")
           }`}
         >
-          {isPt ? "Saída" : "Check-out"}
+          {t("bookingWidget.checkOutLabel")}
         </button>
         {checkIn && (
           <button
@@ -419,7 +437,7 @@ export default function AvailabilityCalendar({
             className="ml-auto flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium text-black/60 bg-black/[0.04] hover:bg-black/[0.08] hover:text-black transition-all"
           >
             <X className="w-3 h-3" />
-            {isPt ? "Limpar" : "Clear"}
+            {t("bookingWidget.clearDates")}
           </button>
         )}
       </div>
@@ -444,13 +462,13 @@ export default function AvailabilityCalendar({
       <div className="flex items-center gap-5 px-4 pb-4 pt-1 border-t border-black/[0.04]">
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-black" />
-          <span className="text-[10px] text-black/40 tracking-wide">{isPt ? "Disponível" : "Available"}</span>
+          <span className="text-[10px] text-black/40 tracking-wide">{t("bookingWidget.availableLabel")}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-black/10 flex items-center justify-center">
             <span className="block w-1.5 h-px bg-black/25" />
           </span>
-          <span className="text-[10px] text-black/40 tracking-wide">{isPt ? "Indisponível" : "Unavailable"}</span>
+          <span className="text-[10px] text-black/40 tracking-wide">{t("bookingWidget.unavailableLabel")}</span>
         </div>
       </div>
     </div>
@@ -465,14 +483,14 @@ export default function AvailabilityCalendar({
         onClick={() => setMobileOpen(true)}
         className="w-full bg-black text-white text-xs font-medium tracking-widest uppercase px-8 py-3.5 min-h-[48px]"
       >
-        {isPt ? "Selecionar datas" : "Select Dates"}
+        {t("booking.selectDates")}
       </button>
       <Dialog open={mobileOpen} onOpenChange={setMobileOpen}>
         <DialogContent className="max-w-none w-screen h-screen top-0 left-0 translate-x-0 translate-y-0 rounded-none p-0 bg-white">
           <div className="flex flex-col h-full">
             <div className="flex items-center justify-between px-5 pt-5 pb-3">
               <p className="text-[13px] font-medium tracking-wide text-black">
-                {isPt ? "Selecionar datas" : "Select dates"}
+                {t("booking.selectDates")}
               </p>
               <button
                 type="button"
@@ -495,7 +513,7 @@ export default function AvailabilityCalendar({
                   onClick={() => setMobileOpen(false)}
                   className="w-full bg-black text-white text-xs font-medium tracking-widest uppercase py-4"
                 >
-                  {isPt ? "Confirmar" : "Confirm"}
+                  {t("bookingWidget.confirmDates")}
                 </button>
               </div>
             )}

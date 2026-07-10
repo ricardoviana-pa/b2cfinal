@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { loadStripe } from "@stripe/stripe-js";
 import { trpc } from "@/lib/trpc";
+import { formatEur } from "@/lib/format";
+import { pushEcommerce } from "@/lib/datalayer";
 
 interface PayPalCheckoutButtonProps {
   amount: number;           // currency units (e.g. 500.00)
@@ -30,6 +33,7 @@ interface PayPalCheckoutButtonProps {
 }
 
 export function PayPalCheckoutButton(props: PayPalCheckoutButtonProps) {
+  const { t, i18n } = useTranslation();
   const [isProcessing, setIsProcessing] = useState(false);
   const [statusMsg, setStatusMsg] = useState("");
 
@@ -37,7 +41,15 @@ export function PayPalCheckoutButton(props: PayPalCheckoutButtonProps) {
 
   const handleClick = async () => {
     setIsProcessing(true);
-    setStatusMsg("Preparing PayPal payment…");
+    setStatusMsg(t("payment.preparingPaypal"));
+
+    // GA4: add_payment_info — must fire before the redirect navigates away
+    pushEcommerce({
+      event: "add_payment_info",
+      payment_type: "paypal",
+      property_id: props.listingId,
+      ecommerce: { currency: "EUR", value: props.amount },
+    });
 
     try {
       // Load platform Stripe — do NOT pass stripeAccount option.
@@ -83,7 +95,7 @@ export function PayPalCheckoutButton(props: PayPalCheckoutButtonProps) {
         returnUrl,
       });
 
-      setStatusMsg("Redirecting to PayPal…");
+      setStatusMsg(t("payment.redirecting"));
 
       const { error } = await (stripe as any).confirmPayPalPayment(clientSecret, {
         return_url: returnUrl,
@@ -120,7 +132,7 @@ export function PayPalCheckoutButton(props: PayPalCheckoutButtonProps) {
         letterSpacing: "0.04em",
       }}
     >
-      {isProcessing ? statusMsg : "Pay with PayPal"}
+      {isProcessing ? statusMsg : t("payment.payWithPaypal", { amount: formatEur(props.amount, i18n.language) })}
     </button>
   );
 }
