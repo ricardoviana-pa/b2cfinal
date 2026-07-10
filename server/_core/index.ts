@@ -101,6 +101,7 @@ async function startServer() {
   app.use("/api/reservations", apiLimiter);
   app.use("/api/trpc/leads.create", leadLimiter);
   app.use("/api/trpc/booking", apiLimiter);
+  app.use("/api/trpc/checkout", apiLimiter); // checkout_v2 intents + lead capture
 
   // Guesty webhook needs raw body for signature validation
   registerGuestyWebhookRoute(app);
@@ -412,6 +413,51 @@ ${allUrls.join("\n")}
     }
   } catch (migErr: any) {
     console.warn("[Migration] property_referrals:", migErr.message);
+  }
+
+  // Checkout 2.0 (Fase 1): booking_intents — server-side checkout state.
+  // Same idempotent boot-migration pattern as property_referrals above.
+  try {
+    const { getDb } = await import("../db");
+    const db = await getDb();
+    if (db) {
+      await (db as any).execute(`
+        CREATE TABLE IF NOT EXISTS \`booking_intents\` (
+          \`id\` varchar(36) NOT NULL,
+          \`listingId\` varchar(64) NOT NULL,
+          \`propertyName\` varchar(255),
+          \`propertySlug\` varchar(255),
+          \`destination\` varchar(255),
+          \`guestyQuoteId\` varchar(64),
+          \`checkIn\` varchar(10) NOT NULL,
+          \`checkOut\` varchar(10) NOT NULL,
+          \`guests\` int NOT NULL,
+          \`ratePlanId\` varchar(64),
+          \`ratePlanType\` enum('flexible','non_refundable','other'),
+          \`email\` varchar(320),
+          \`guestFirstName\` varchar(100),
+          \`guestLastName\` varchar(100),
+          \`guestPhone\` varchar(50),
+          \`nif\` varchar(20),
+          \`quote\` json,
+          \`extras\` json,
+          \`flex\` boolean NOT NULL DEFAULT false,
+          \`status\` enum('draft','contact_captured','payment_pending','paid','expired') NOT NULL DEFAULT 'draft',
+          \`locale\` varchar(5),
+          \`reservationId\` varchar(64),
+          \`confirmationCode\` varchar(64),
+          \`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          \`expiresAt\` timestamp NULL,
+          PRIMARY KEY(\`id\`),
+          INDEX \`idx_booking_intents_status\` (\`status\`),
+          INDEX \`idx_booking_intents_email\` (\`email\`)
+        )
+      `);
+      console.info("[Migration] booking_intents table OK");
+    }
+  } catch (migErr: any) {
+    console.warn("[Migration] booking_intents:", migErr.message);
   }
 
   server.listen(port, () => {

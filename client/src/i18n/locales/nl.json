@@ -1292,7 +1292,9 @@
     "pageDescription": "Uw Portugal Active-boeking is bevestigd. Controleer uw e-mail en bereid uw verblijf voor.",
     "mailSubject": "Reservering {{code}} — Informatieverzoek",
     "mailBody": "Hallo,\n\nik heb een vraag over mijn reservering {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
-    "trustFees": "Geen boekingskosten"
+    "trustFees": "Geen boekingskosten",
+    "paidCard": "Volledig betaald met kaart",
+    "cardSub": "Veilige kaartbetaling"
   },
   "bedType": {
     "KingBed": "Kingsize bed",
@@ -1344,5 +1346,38 @@
     "expired": "Verlopen",
     "inquiry": "Aanvraag",
     "processing": "In behandeling"
+  },
+  "checkout": {
+    "pageTitle": "Afrekenen",
+    "stepStay": "Uw verblijf",
+    "stepPay": "Betaling",
+    "stepsAria": "Stappen bij het afrekenen",
+    "autosaved": "Automatisch opgeslagen",
+    "closeAria": "Terug naar de woning",
+    "loading": "Uw checkout wordt voorbereid…",
+    "notFoundTitle": "Checkout niet gevonden",
+    "notFoundBody": "Deze link is verlopen of ongeldig. Uw data zijn niet verloren — begin opnieuw vanaf de pagina van de woning.",
+    "quoteExpiredBanner": "Deze prijs is verlopen. Vernieuw om de actuele prijs voor uw data te zien — uw gegevens blijven bewaard.",
+    "refreshPrice": "Prijs vernieuwen",
+    "datesUnavailable": "We konden geen prijs bevestigen voor deze data — mogelijk zijn ze niet meer beschikbaar. Probeer opnieuw, kies hieronder nieuwe data of neem contact op met onze concierge.",
+    "stayTitle": "Uw verblijf",
+    "staySubtitle": "Bevestig uw data en kies uw tarief.",
+    "edit": "Bewerken",
+    "doneEditing": "Klaar",
+    "emailLabel": "Uw e-mailadres",
+    "emailPh": "naam@email.com",
+    "emailSupport": "We houden uw reservering 24 uur vast en mailen u de offerte. Geen spam.",
+    "backToStay": "Terug naar het verblijf",
+    "payTitle": "Betaling",
+    "paySubtitle": "Uw gegevens, daarna een veilige betaling.",
+    "nifPh": "NIF — optioneel, voor een Portugese factuur",
+    "directTitle": "Direct boeken bij Portugal Active",
+    "refreshBeforePay": "Vernieuw de prijs hierboven voordat u betaalt.",
+    "secureNote": "Versleutelde, veilige betaling",
+    "viewDetails": "Details bekijken",
+    "priceGuaranteed": "Prijs gegarandeerd tot {{date}}, {{time}}",
+    "alreadyPaidTitle": "Deze boeking is al bevestigd",
+    "alreadyPaidBody": "De betaling voor dit verblijf is voltooid. Controleer uw e-mail of bekijk uw boeking hieronder.",
+    "viewBooking": "Mijn boeking bekijken"
   }
 }

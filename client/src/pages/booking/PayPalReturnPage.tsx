@@ -33,6 +33,7 @@ export default function PayPalReturnPage() {
 
   const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
   const confirmBooking = trpc.booking.confirmPayPalBooking.useMutation();
+  const updateIntent = trpc.checkout.updateIntent.useMutation();
 
   useEffect(() => {
     if (processed.current || !stripeConfig?.publishableKey) return;
@@ -105,6 +106,20 @@ export default function PayPalReturnPage() {
           });
 
           sessionStorage.removeItem("paypal_booking_data");
+
+          // Checkout 2.0: mark the intent paid (fire-and-forget — never blocks the funnel)
+          if (bookingData.intentId) {
+            updateIntent
+              .mutateAsync({
+                intentId: bookingData.intentId,
+                patch: {
+                  status: "paid",
+                  reservationId: result.reservationId || undefined,
+                  confirmationCode: result.confirmationCode || undefined,
+                },
+              })
+              .catch(() => {/* non-blocking */});
+          }
 
           // Deduped by transaction_id — the thank-you page also reports this
           // purchase, but only the first push wins (pushPurchaseOnce).

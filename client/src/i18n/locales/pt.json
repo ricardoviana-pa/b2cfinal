@@ -1292,7 +1292,9 @@
     "pageDescription": "A sua reserva Portugal Active está confirmada. Verifique o seu email e prepare a sua estadia.",
     "mailSubject": "Reserva {{code}} — Pedido de informação",
     "mailBody": "Olá,\n\nTenho uma questão sobre a minha reserva {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
-    "trustFees": "Sem taxas de reserva"
+    "trustFees": "Sem taxas de reserva",
+    "paidCard": "Pago na totalidade com cartão",
+    "cardSub": "Pagamento seguro com cartão"
   },
   "bedType": {
     "KingBed": "Cama King",
@@ -1344,5 +1346,38 @@
     "expired": "Expirada",
     "inquiry": "Pedido de informação",
     "processing": "Em processamento"
+  },
+  "checkout": {
+    "pageTitle": "Checkout",
+    "stepStay": "A sua estadia",
+    "stepPay": "Pagamento",
+    "stepsAria": "Passos do checkout",
+    "autosaved": "Guardado automaticamente",
+    "closeAria": "Voltar à casa",
+    "loading": "A preparar o seu checkout…",
+    "notFoundTitle": "Checkout não encontrado",
+    "notFoundBody": "Este link de checkout expirou ou é inválido. As suas datas não se perderam — recomece a partir da página da casa.",
+    "quoteExpiredBanner": "Este preço expirou. Atualize para ver o preço atual das suas datas — os seus dados ficam guardados.",
+    "refreshPrice": "Atualizar preço",
+    "datesUnavailable": "Não conseguimos confirmar o preço para estas datas — podem já não estar disponíveis. Tente novamente, escolha novas datas abaixo ou contacte o nosso concierge.",
+    "stayTitle": "A sua estadia",
+    "staySubtitle": "Confirme as datas e escolha a sua tarifa.",
+    "edit": "Editar",
+    "doneEditing": "Concluir",
+    "emailLabel": "O seu email",
+    "emailPh": "nome@email.com",
+    "emailSupport": "Guardamos a sua reserva por 24 horas e enviamos o orçamento. Sem spam.",
+    "backToStay": "Voltar à estadia",
+    "payTitle": "Pagamento",
+    "paySubtitle": "Os seus dados e um pagamento seguro.",
+    "nifPh": "NIF — opcional, para fatura portuguesa",
+    "directTitle": "Reserva direta com a Portugal Active",
+    "refreshBeforePay": "Atualize o preço acima antes de pagar.",
+    "secureNote": "Pagamento seguro e cifrado",
+    "viewDetails": "Ver detalhes",
+    "priceGuaranteed": "Preço garantido até {{date}}, {{time}}",
+    "alreadyPaidTitle": "Esta reserva já está confirmada",
+    "alreadyPaidBody": "O pagamento desta estadia foi concluído. Verifique o seu email ou consulte a sua reserva abaixo.",
+    "viewBooking": "Ver a minha reserva"
   }
 }

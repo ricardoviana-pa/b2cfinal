@@ -50,7 +50,7 @@ export interface ThankYouStash {
   reservationId: string;
   confirmationCode: string;
   status?: string;
-  method: "paypal" | "klarna";
+  method: "paypal" | "klarna" | "card";
   listingName?: string;
   location?: string;
   checkIn: string;

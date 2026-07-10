@@ -35,6 +35,7 @@ const BlogArticle = lazy(() => import("./pages/BlogArticle"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const Careers = lazy(() => import("./pages/Careers"));
 const BookingConfirmationPage = lazy(() => import("./pages/booking/BookingConfirmationPage"));
+const CheckoutPage = lazy(() => import("./pages/checkout/CheckoutPage"));
 const PaymentThankYouPage = lazy(() => import("./pages/booking/PaymentThankYouPage"));
 const PayPalReturnPage = lazy(() => import("./pages/booking/PayPalReturnPage"));
 const KlarnaReturnPage = lazy(() => import("./pages/booking/KlarnaReturnPage"));
@@ -162,6 +163,7 @@ function Router() {
         <Route path="/faq" component={FAQ} />
         <Route path="/careers" component={Careers} />
         <Route path="/owners" component={OwnersRedirect} />
+        <Route path="/checkout/:intentId" component={CheckoutPage} />
         <Route path="/booking/confirmation/:id" component={BookingConfirmationPage} />
         <Route path="/booking/thank-you/:id" component={PaymentThankYouPage} />
         <Route path="/booking/paypal-return" component={PayPalReturnPage} />

@@ -27,6 +27,8 @@ interface KlarnaCheckoutButtonProps {
   // Rate plan the guest selected — carried through so the Guesty reservation is
   // created on the correct plan (right price + cancellation terms).
   ratePlanId?: string;
+  /** Checkout 2.0: intent id — return page marks the intent paid after confirmation */
+  intentId?: string;
   // Platform Stripe publishable key (NOT the per-listing connected account key)
   stripePublishableKey: string;
   onError: (msg: string) => void;
@@ -75,6 +77,7 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
           ratePlanId: props.ratePlanId,
           propertyName: props.propertyName,
           destination: props.destination,
+          intentId: props.intentId,
         })
       );
 

@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "wouter";
 import i18n from "@/i18n";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
@@ -18,6 +19,8 @@ import { formatEur, formatBookingDate, intlLocale } from "@/lib/format";
 interface BookingWidgetProps {
   guestyId: string;
   propertyName: string;
+  /** Property slug — persisted on the BookingIntent for checkout's back-link (checkout_v2) */
+  propertySlug?: string;
   pricePerNight: number;
   maxGuests: number;
   minNights?: number;
@@ -27,6 +30,29 @@ interface BookingWidgetProps {
   initialCheckIn?: string;
   initialCheckOut?: string;
   initialGuests?: number;
+}
+
+/** checkout_v2 local override for testing on dev: ?checkoutv2=1|0.
+ *  Stored with a timestamp and honored for 24h only — a shared URL with the
+ *  param must not opt a visitor into the beta funnel forever. */
+const CHECKOUT_V2_OVERRIDE_TTL_MS = 24 * 60 * 60 * 1000;
+function readCheckoutV2Override(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const param = new URLSearchParams(window.location.search).get("checkoutv2");
+    if (param === "1") window.localStorage.setItem("checkout_v2", String(Date.now()));
+    if (param === "0") window.localStorage.removeItem("checkout_v2");
+    const raw = window.localStorage.getItem("checkout_v2");
+    if (!raw) return false;
+    const ts = Number(raw);
+    if (!Number.isFinite(ts) || Date.now() - ts > CHECKOUT_V2_OVERRIDE_TTL_MS) {
+      window.localStorage.removeItem("checkout_v2");
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 interface RatePlanOption {
@@ -253,6 +279,7 @@ function EnhanceYourStay({
 export default function BookingWidget({
   guestyId,
   propertyName,
+  propertySlug,
   pricePerNight,
   maxGuests,
   minNights = 1,
@@ -325,6 +352,13 @@ export default function BookingWidget({
   const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
   const canPayOnSite = isBECheckoutAvailable && !!stripeConfig?.publishableKey;
   const createBEQuote = trpc.booking.createBEQuote.useMutation();
+
+  // Checkout 2.0: server flag OR local ?checkoutv2=1 override (for dev testing)
+  const [, navigate] = useLocation();
+  const { data: checkoutV2Flag } = trpc.checkout.isEnabled.useQuery();
+  const checkoutV2Override = useMemo(() => readCheckoutV2Override(), []);
+  const checkoutV2Active = !!checkoutV2Flag?.enabled || checkoutV2Override;
+  const createIntent = trpc.checkout.createIntent.useMutation();
 
   useEffect(() => {
     quoteRef.current = quote;
@@ -1180,6 +1214,64 @@ export default function BookingWidget({
                     ],
                   },
                 });
+                // Checkout 2.0: create the server-side intent and hand off to
+                // the fullscreen checkout. Any failure (DB down, network) falls
+                // back to the legacy in-widget flow — never a dead end.
+                if (
+                  checkoutV2Active &&
+                  quote?.quoteId &&
+                  !(quote?.quoteCreatedAt && Date.now() - quote.quoteCreatedAt > QUOTE_EXPIRY_MS)
+                ) {
+                  const base = quote;
+                  createIntent
+                    .mutateAsync({
+                      listingId: guestyId,
+                      propertyName,
+                      propertySlug,
+                      destination,
+                      guestyQuoteId: base.quoteId,
+                      checkIn,
+                      checkOut,
+                      guests,
+                      ratePlanId: selectedRatePlanId ?? base.ratePlanId,
+                      locale: lang,
+                      quote: {
+                        nightlyRate: base.nightlyRate,
+                        totalNights: base.totalNights,
+                        cleaningFee: base.cleaningFee,
+                        taxesAndFees: base.taxesAndFees ?? 0,
+                        total: base.total,
+                        nights: base.nights,
+                        currency: base.currency || "EUR",
+                        quoteCreatedAt: base.quoteCreatedAt ?? null,
+                        ratePlanOptions: base.ratePlanOptions?.map(o => ({
+                          ratePlanId: o.ratePlanId,
+                          name: o.name,
+                          total: o.total,
+                          nightlyRate: o.nightlyRate,
+                          cleaningFee: o.cleaningFee,
+                          taxesAndFees: o.taxesAndFees ?? 0,
+                          cancellationPolicy: o.cancellationPolicy,
+                        })),
+                      },
+                    })
+                    .then(({ intentId }) => {
+                      if (intentId) {
+                        try { sessionStorage.setItem(`checkout_created_${intentId}`, "1"); } catch { /* ok */ }
+                        navigate(`/checkout/${intentId}`);
+                      } else {
+                        setError("");
+                        setTermsAccepted(false);
+                        setStep("payment");
+                      }
+                    })
+                    .catch(() => {
+                      setError("");
+                      setTermsAccepted(false);
+                      setStep("payment");
+                    });
+                  return;
+                }
                 // Check if BE quote has expired (24h validity)
                 if (quote?.quoteCreatedAt && (Date.now() - quote.quoteCreatedAt > QUOTE_EXPIRY_MS)) {
                   // Auto-retry: clear expired quote and re-fetch
@@ -1227,9 +1319,16 @@ export default function BookingWidget({
                 setTermsAccepted(false);
                 setStep("payment");
               }}
-              className="w-full min-h-[52px] bg-black text-white text-xs font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors"
+              disabled={createIntent.isPending}
+              className="w-full min-h-[52px] bg-black text-white text-xs font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors disabled:opacity-60"
             >
-              {t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote.total, lang)}
+              {createIntent.isPending ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" /> {t("bookingWidget.reserveAndPay", "Reserve & Pay")}
+                </span>
+              ) : (
+                <>{t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote.total, lang)}</>
+              )}
             </button>
 
             {beQuoteError && (
@@ -1282,7 +1381,7 @@ export default function BookingWidget({
                 {t("bookingWidget.termsAcceptLabel", {
                   defaultValue: "I accept the"
                 })}{" "}
-                <a href="/terms" target="_blank" className="text-black underline hover:text-black/70">{t("bookingWidget.termsLink", { defaultValue: "Terms & Conditions" })}</a>
+                <a href="/legal/terms" target="_blank" className="text-black underline hover:text-black/70">{t("bookingWidget.termsLink", { defaultValue: "Terms & Conditions" })}</a>
                 {" "}{t("bookingWidget.termsAnd", { defaultValue: "and" })}{" "}
                 <a href="/legal/cancellation-policy" target="_blank" className="text-black underline hover:text-black/70">{t("bookingWidget.cancellationPolicyLink")}</a>
               </span>

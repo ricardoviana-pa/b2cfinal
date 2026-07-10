@@ -45,6 +45,8 @@ interface PageMetaOpts {
   /** Page path without locale prefix, e.g. '/homes' or '/homes/villa-x' */
   url?: string;
   type?: 'website' | 'article' | 'place';
+  /** Transactional pages (checkout) — sets robots noindex and skips hreflang/canonical */
+  noindex?: boolean;
 }
 
 export function usePageMeta(opts?: PageMetaOpts) {
@@ -62,6 +64,14 @@ export function usePageMeta(opts?: PageMetaOpts) {
 
     document.title = title;
     setMeta('meta[name="description"]', 'content', description);
+
+    if (opts?.noindex) {
+      // Transactional page: never indexable, no alt-language variants
+      setMeta('meta[name="robots"]', 'content', 'noindex, nofollow');
+      clearHreflang();
+      return () => { setMeta('meta[name="robots"]', 'content', 'index, follow'); };
+    }
+    setMeta('meta[name="robots"]', 'content', 'index, follow');
     setMeta('link[rel="canonical"]', 'href', fullUrl);
 
     setMeta('meta[property="og:title"]', 'content', title);
@@ -79,5 +89,5 @@ export function usePageMeta(opts?: PageMetaOpts) {
     setHreflang(pagePath);
 
     return () => { clearHreflang(); };
-  }, [opts?.title, opts?.description, opts?.image, opts?.url, opts?.type]);
+  }, [opts?.title, opts?.description, opts?.image, opts?.url, opts?.type, opts?.noindex]);
 }

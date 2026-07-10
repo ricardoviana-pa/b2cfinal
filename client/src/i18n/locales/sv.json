@@ -1292,7 +1292,9 @@
     "pageDescription": "Din Portugal Active-bokning är bekräftad. Kolla din e-post och förbered din vistelse.",
     "mailSubject": "Bokning {{code}} — Informationsförfrågan",
     "mailBody": "Hej,\n\njag har en fråga om min bokning {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
-    "trustFees": "Inga bokningsavgifter"
+    "trustFees": "Inga bokningsavgifter",
+    "paidCard": "Betalat i sin helhet med kort",
+    "cardSub": "Säker kortbetalning"
   },
   "bedType": {
     "KingBed": "King-säng",
@@ -1344,5 +1346,38 @@
     "expired": "Utgången",
     "inquiry": "Förfrågan",
     "processing": "Under behandling"
+  },
+  "checkout": {
+    "pageTitle": "Kassa",
+    "stepStay": "Din vistelse",
+    "stepPay": "Betalning",
+    "stepsAria": "Kassasteg",
+    "autosaved": "Sparas automatiskt",
+    "closeAria": "Tillbaka till huset",
+    "loading": "Förbereder din kassa…",
+    "notFoundTitle": "Kassan hittades inte",
+    "notFoundBody": "Länken har gått ut eller är ogiltig. Dina datum är inte förlorade — börja om från husets sida.",
+    "quoteExpiredBanner": "Priset har gått ut. Uppdatera för att se aktuellt pris för dina datum — dina uppgifter sparas.",
+    "refreshPrice": "Uppdatera pris",
+    "datesUnavailable": "Vi kunde inte bekräfta ett pris för dessa datum — de kanske inte längre är tillgängliga. Försök igen, välj nya datum nedan eller kontakta vår concierge.",
+    "stayTitle": "Din vistelse",
+    "staySubtitle": "Bekräfta dina datum och välj din taxa.",
+    "edit": "Redigera",
+    "doneEditing": "Klar",
+    "emailLabel": "Din e-post",
+    "emailPh": "namn@email.com",
+    "emailSupport": "Vi håller din bokning i 24 timmar och mejlar dig offerten. Ingen spam.",
+    "backToStay": "Tillbaka till vistelsen",
+    "payTitle": "Betalning",
+    "paySubtitle": "Dina uppgifter, sedan en säker betalning.",
+    "nifPh": "NIF — valfritt, för portugisisk faktura",
+    "directTitle": "Boka direkt hos Portugal Active",
+    "refreshBeforePay": "Uppdatera priset ovan innan du betalar.",
+    "secureNote": "Krypterad, säker betalning",
+    "viewDetails": "Visa detaljer",
+    "priceGuaranteed": "Priset garanteras till {{date}}, {{time}}",
+    "alreadyPaidTitle": "Denna bokning är redan bekräftad",
+    "alreadyPaidBody": "Betalningen för denna vistelse är slutförd. Kolla din e-post eller se din bokning nedan.",
+    "viewBooking": "Visa min bokning"
   }
 }

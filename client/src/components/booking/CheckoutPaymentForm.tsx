@@ -134,7 +134,9 @@ interface CheckoutPaymentFormProps {
   propertyName: string;
   destination?: string;
   notes?: string;
-  onSuccess: (confirmationCode: string) => void;
+  /** Checkout 2.0: intent id carried through redirect flows so return pages can mark it paid */
+  intentId?: string;
+  onSuccess: (confirmationCode: string, reservationId?: string) => void;
   onCancel: () => void;
 }
 
@@ -266,7 +268,7 @@ function PaymentFormInner({
           setTimeout(() => reject(new Error("Payment provider timeout")), 45000);
         }),
       ]);
-      onSuccess(response.confirmationCode);
+      onSuccess(response.confirmationCode, (response as any).reservationId || undefined);
     } catch (err: any) {
       const message = parseApiError(err?.message || t('payment.errors.defaultError'), t);
       const rawMsg = String(err?.message || "").toLowerCase();
@@ -503,6 +505,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             propertyName={props.propertyName}
             destination={props.destination}
             ratePlanId={props.ratePlanId}
+            intentId={props.intentId}
             stripePublishableKey={stripeConfig.publishableKey}
             onError={(msg) => setPaypalError(msg)}
           />
@@ -540,6 +543,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             propertyName={props.propertyName}
             destination={props.destination}
             ratePlanId={props.ratePlanId}
+            intentId={props.intentId}
             stripePublishableKey={stripeConfig.publishableKey}
             onError={(msg) => setKlarnaError(msg)}
           />

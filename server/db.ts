@@ -18,6 +18,7 @@ import {
   referrals, InsertReferral,
   customerTrips, InsertCustomerTrip,
   propertyReferrals, InsertPropertyReferral,
+  bookingIntents, InsertBookingIntent, BookingIntent,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -758,4 +759,48 @@ export async function uploadFile(fileBuffer: Buffer, fileName: string, contentTy
   const randomSuffix = Math.random().toString(36).substring(2, 8);
   const key = `uploads/${fileName}-${randomSuffix}`;
   return storagePut(key, fileBuffer, contentType);
+}
+
+/* ================================================================
+   BOOKING INTENTS — Checkout 2.0 (Fase 1)
+   All helpers fail SOFT (return null) when the DB is unavailable so
+   the client can fall back to the legacy in-widget flow.
+   ================================================================ */
+export async function createBookingIntent(data: InsertBookingIntent): Promise<string | null> {
+  const db = await getDb();
+  if (!db) { console.warn("[Database] Cannot create booking intent: database not available"); return null; }
+  try {
+    await db.insert(bookingIntents).values(data);
+    return data.id;
+  } catch (error) {
+    console.error("[Database] createBookingIntent failed:", error);
+    return null;
+  }
+}
+
+export async function getBookingIntent(id: string): Promise<BookingIntent | null> {
+  const db = await getDb();
+  if (!db) return null;
+  try {
+    const rows = await db.select().from(bookingIntents).where(eq(bookingIntents.id, id)).limit(1);
+    return rows[0] ?? null;
+  } catch (error) {
+    console.error("[Database] getBookingIntent failed:", error);
+    return null;
+  }
+}
+
+export async function updateBookingIntent(
+  id: string,
+  data: Partial<InsertBookingIntent>,
+): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    await db.update(bookingIntents).set(data).where(eq(bookingIntents.id, id));
+    return true;
+  } catch (error) {
+    console.error("[Database] updateBookingIntent failed:", error);
+    return false;
+  }
 }

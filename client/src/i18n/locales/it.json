@@ -1292,7 +1292,9 @@
     "pageDescription": "La tua prenotazione Portugal Active è confermata. Controlla la tua email e prepara il soggiorno.",
     "mailSubject": "Prenotazione {{code}} — Richiesta di informazioni",
     "mailBody": "Buongiorno,\n\nho una domanda sulla mia prenotazione {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
-    "trustFees": "Nessuna commissione di prenotazione"
+    "trustFees": "Nessuna commissione di prenotazione",
+    "paidCard": "Pagato interamente con carta",
+    "cardSub": "Pagamento sicuro con carta"
   },
   "bedType": {
     "KingBed": "Letto King",
@@ -1344,5 +1346,38 @@
     "expired": "Scaduta",
     "inquiry": "Richiesta di informazioni",
     "processing": "In elaborazione"
+  },
+  "checkout": {
+    "pageTitle": "Pagamento",
+    "stepStay": "Il tuo soggiorno",
+    "stepPay": "Pagamento",
+    "stepsAria": "Passaggi del pagamento",
+    "autosaved": "Salvato automaticamente",
+    "closeAria": "Torna alla casa",
+    "loading": "Preparazione del pagamento…",
+    "notFoundTitle": "Pagamento non trovato",
+    "notFoundBody": "Questo link è scaduto o non è valido. Le tue date non sono perse — ricomincia dalla pagina della casa.",
+    "quoteExpiredBanner": "Questo prezzo è scaduto. Aggiorna per vedere il prezzo attuale delle tue date — i tuoi dati sono conservati.",
+    "refreshPrice": "Aggiorna prezzo",
+    "datesUnavailable": "Non siamo riusciti a confermare un prezzo per queste date — potrebbero non essere più disponibili. Riprova, scegli nuove date qui sotto o contatta il nostro concierge.",
+    "stayTitle": "Il tuo soggiorno",
+    "staySubtitle": "Conferma le date e scegli la tua tariffa.",
+    "edit": "Modifica",
+    "doneEditing": "Fatto",
+    "emailLabel": "La tua email",
+    "emailPh": "nome@email.com",
+    "emailSupport": "Teniamo la tua prenotazione per 24 ore e ti inviamo il preventivo. Niente spam.",
+    "backToStay": "Torna al soggiorno",
+    "payTitle": "Pagamento",
+    "paySubtitle": "I tuoi dati e un pagamento sicuro.",
+    "nifPh": "NIF — facoltativo, per fattura portoghese",
+    "directTitle": "Prenotazione diretta con Portugal Active",
+    "refreshBeforePay": "Aggiorna il prezzo qui sopra prima di pagare.",
+    "secureNote": "Pagamento crittografato e sicuro",
+    "viewDetails": "Vedi dettagli",
+    "priceGuaranteed": "Prezzo garantito fino al {{date}}, {{time}}",
+    "alreadyPaidTitle": "Questa prenotazione è già confermata",
+    "alreadyPaidBody": "Il pagamento di questo soggiorno è stato completato. Controlla la tua email o vedi la tua prenotazione qui sotto.",
+    "viewBooking": "Vedi la mia prenotazione"
   }
 }

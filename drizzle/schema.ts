@@ -410,3 +410,70 @@ export const propertyReferrals = mysqlTable("property_referrals", {
 
 export type PropertyReferral = typeof propertyReferrals.$inferSelect;
 export type InsertPropertyReferral = typeof propertyReferrals.$inferInsert;
+
+/* ================================================================
+   BOOKING INTENTS — Checkout 2.0 server-side state (Fase 1)
+   The intent id is a capability: it goes into resume links and the
+   record holds guest PII, so it MUST be unguessable (UUID, never a
+   sequential int).
+   ================================================================ */
+export const bookingIntents = mysqlTable("booking_intents", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  listingId: varchar("listingId", { length: 64 }).notNull(),
+  propertyName: varchar("propertyName", { length: 255 }),
+  propertySlug: varchar("propertySlug", { length: 255 }),
+  destination: varchar("destination", { length: 255 }),
+  guestyQuoteId: varchar("guestyQuoteId", { length: 64 }),
+  checkIn: varchar("checkIn", { length: 10 }).notNull(),
+  checkOut: varchar("checkOut", { length: 10 }).notNull(),
+  guests: int("guests").notNull(),
+  ratePlanId: varchar("ratePlanId", { length: 64 }),
+  ratePlanType: mysqlEnum("ratePlanType", ["flexible", "non_refundable", "other"]),
+  email: varchar("email", { length: 320 }),
+  guestFirstName: varchar("guestFirstName", { length: 100 }),
+  guestLastName: varchar("guestLastName", { length: 100 }),
+  guestPhone: varchar("guestPhone", { length: 50 }),
+  nif: varchar("nif", { length: 20 }),
+  /** Snapshot of the live quote shown to the guest (euros, floats) */
+  quote: json("quote").$type<{
+    nightlyRate: number;
+    totalNights: number;
+    cleaningFee: number;
+    taxesAndFees: number;
+    total: number;
+    nights: number;
+    currency: string;
+    quoteCreatedAt: number | null;
+    ratePlanOptions?: Array<{
+      ratePlanId: string;
+      name: string;
+      total: number;
+      nightlyRate: number;
+      cleaningFee: number;
+      taxesAndFees?: number;
+      cancellationPolicy?: string[];
+    }>;
+  }>(),
+  /** Fase 2: extras selection (sku, qty, people, preferred dates) */
+  extras: json("extras").$type<Array<Record<string, unknown>>>(),
+  /** Fase 3: Flex rebooking option */
+  flex: boolean("flex").default(false).notNull(),
+  status: mysqlEnum("status", [
+    "draft",
+    "contact_captured",
+    "payment_pending",
+    "paid",
+    "expired",
+  ])
+    .default("draft")
+    .notNull(),
+  locale: varchar("locale", { length: 5 }),
+  reservationId: varchar("reservationId", { length: 64 }),
+  confirmationCode: varchar("confirmationCode", { length: 64 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  expiresAt: timestamp("expiresAt"),
+});
+
+export type BookingIntent = typeof bookingIntents.$inferSelect;
+export type InsertBookingIntent = typeof bookingIntents.$inferInsert;

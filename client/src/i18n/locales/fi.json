@@ -1292,7 +1292,9 @@
     "pageDescription": "Portugal Active -varauksesi on vahvistettu. Tarkista sähköpostisi ja valmistaudu majoitukseen.",
     "mailSubject": "Varaus {{code}} — Tietopyyntö",
     "mailBody": "Hei,\n\nminulla on kysymys varauksestani {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
-    "trustFees": "Ei varausmaksuja"
+    "trustFees": "Ei varausmaksuja",
+    "paidCard": "Maksettu kokonaan kortilla",
+    "cardSub": "Turvallinen korttimaksu"
   },
   "bedType": {
     "KingBed": "King-sänky",
@@ -1344,5 +1346,38 @@
     "expired": "Vanhentunut",
     "inquiry": "Tiedustelu",
     "processing": "Käsittelyssä"
+  },
+  "checkout": {
+    "pageTitle": "Kassa",
+    "stepStay": "Majoituksesi",
+    "stepPay": "Maksu",
+    "stepsAria": "Kassavaiheet",
+    "autosaved": "Tallennetaan automaattisesti",
+    "closeAria": "Takaisin taloon",
+    "loading": "Valmistellaan kassaa…",
+    "notFoundTitle": "Kassaa ei löytynyt",
+    "notFoundBody": "Tämä linkki on vanhentunut tai virheellinen. Päivämääräsi eivät ole kadonneet — aloita uudelleen talon sivulta.",
+    "quoteExpiredBanner": "Tämä hinta on vanhentunut. Päivitä nähdäksesi päivien nykyisen hinnan — tietosi säilyvät.",
+    "refreshPrice": "Päivitä hinta",
+    "datesUnavailable": "Emme voineet vahvistaa hintaa näille päiville — ne eivät ehkä ole enää saatavilla. Yritä uudelleen, valitse uudet päivät alta tai ota yhteyttä conciergeemme.",
+    "stayTitle": "Majoituksesi",
+    "staySubtitle": "Vahvista päivät ja valitse hintasi.",
+    "edit": "Muokkaa",
+    "doneEditing": "Valmis",
+    "emailLabel": "Sähköpostisi",
+    "emailPh": "nimi@email.com",
+    "emailSupport": "Pidämme varaustasi 24 tuntia ja lähetämme tarjouksen sähköpostitse. Ei roskapostia.",
+    "backToStay": "Takaisin majoitukseen",
+    "payTitle": "Maksu",
+    "paySubtitle": "Tietosi ja sitten turvallinen maksu.",
+    "nifPh": "NIF — valinnainen, portugalilaista laskua varten",
+    "directTitle": "Varaa suoraan Portugal Activelta",
+    "refreshBeforePay": "Päivitä yllä oleva hinta ennen maksamista.",
+    "secureNote": "Salattu, turvallinen maksu",
+    "viewDetails": "Näytä tiedot",
+    "priceGuaranteed": "Hinta taattu {{date}} klo {{time}} asti",
+    "alreadyPaidTitle": "Tämä varaus on jo vahvistettu",
+    "alreadyPaidBody": "Tämän majoituksen maksu on suoritettu. Tarkista sähköpostisi tai katso varauksesi alta.",
+    "viewBooking": "Näytä varaukseni"
   }
 }

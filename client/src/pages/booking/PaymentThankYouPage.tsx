@@ -12,7 +12,18 @@ import { cancellationPolicyText } from "@/lib/cancellation";
 
 const CONCIERGE_EMAIL = "info@portugalactive.com";
 
-type PaymentMethod = "paypal" | "klarna";
+type PaymentMethod = "paypal" | "klarna" | "card";
+
+function CardLogo() {
+  return (
+    <svg width="36" height="25" viewBox="0 0 36 25" fill="none" aria-label="Card" role="img">
+      <rect x="0.6" y="0.6" width="34.8" height="23.8" rx="4" fill="#fff" stroke="#d9d9e1" strokeWidth="1.2" />
+      <rect x="0.6" y="5" width="34.8" height="5" fill="#3a3a46" />
+      <rect x="5" y="15.5" width="11" height="3" rx="1.5" fill="#cfcfd8" />
+      <rect x="24" y="15" width="7" height="5" rx="1.2" fill="#f0a92e" />
+    </svg>
+  );
+}
 
 function PayPalLogo() {
   return (
@@ -72,8 +83,10 @@ export default function PaymentThankYouPage() {
   // reliably readable via GET right after creation). Fall back to the server
   // fetch only when the stash is missing (e.g. a later direct visit).
   const stash = readThankYou(id);
+  const methodParam = searchParams.get("method");
   const method: PaymentMethod =
-    stash?.method ?? (searchParams.get("method") === "klarna" ? "klarna" : "paypal");
+    stash?.method ??
+    (methodParam === "klarna" ? "klarna" : methodParam === "card" ? "card" : "paypal");
 
   useEffect(() => {
     if (stash) {
@@ -284,18 +297,22 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
               {/* Paid row */}
               <div className="mt-[22px] flex items-center gap-3 rounded-lg border border-pa-sand px-4 py-3.5">
                 <div className="flex w-[46px] shrink-0 items-center justify-center">
-                  {method === "klarna" ? <KlarnaLogo /> : <PayPalLogo />}
+                  {method === "klarna" ? <KlarnaLogo /> : method === "card" ? <CardLogo /> : <PayPalLogo />}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-[13.5px] font-medium text-pa-dark">
                     {method === "klarna"
                       ? t("paymentThankYou.paidKlarna", { defaultValue: "Paying with Klarna" })
-                      : t("paymentThankYou.paidPaypal", { defaultValue: "Paid in full with PayPal" })}
+                      : method === "card"
+                        ? t("paymentThankYou.paidCard", { defaultValue: "Paid in full by card" })
+                        : t("paymentThankYou.paidPaypal", { defaultValue: "Paid in full with PayPal" })}
                   </div>
                   <div className="mt-0.5 text-[11.5px] tabular-nums text-pa-earth">
                     {method === "klarna"
                       ? t("paymentThankYou.klarnaSub", { defaultValue: "Interest-free instalments" })
-                      : `PayPal · ${data.guestEmail || ""}`}
+                      : method === "card"
+                        ? t("paymentThankYou.cardSub", { defaultValue: "Secure card payment" })
+                        : `PayPal · ${data.guestEmail || ""}`}
                   </div>
                 </div>
                 <div className="whitespace-nowrap text-[14.5px] font-medium tabular-nums text-pa-dark">

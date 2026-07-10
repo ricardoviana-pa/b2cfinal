@@ -933,6 +933,7 @@ export default function PropertyDetail() {
           <BookingWidget
             guestyId={property.guestyId}
             propertyName={property.name}
+            propertySlug={property.slug}
             pricePerNight={lowestNightly?.from ?? (property as any).pricePerNight ?? property.priceFrom ?? 0}
             maxGuests={property.maxGuests || 10}
             minNights={(property as any).minNights}

@@ -654,7 +654,9 @@
     "pageDescription": "Your Portugal Active booking is confirmed. Check your email for details and prepare for your stay.",
     "mailSubject": "Reservation {{code}} — Information request",
     "mailBody": "Hello,\n\nI have a question about my reservation {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
-    "trustFees": "No booking fees"
+    "trustFees": "No booking fees",
+    "paidCard": "Paid in full by card",
+    "cardSub": "Secure card payment"
   },
   "payment": {
     "failed": "Payment failed. Please try again.",
@@ -1344,5 +1346,38 @@
     "expired": "Expired",
     "inquiry": "Enquiry",
     "processing": "Being processed"
+  },
+  "checkout": {
+    "pageTitle": "Checkout",
+    "stepStay": "Your stay",
+    "stepPay": "Payment",
+    "stepsAria": "Checkout steps",
+    "autosaved": "Saved automatically",
+    "closeAria": "Back to the property",
+    "loading": "Preparing your checkout…",
+    "notFoundTitle": "Checkout not found",
+    "notFoundBody": "This checkout link has expired or is invalid. Your dates are not lost — start again from the property page.",
+    "quoteExpiredBanner": "This price has expired. Refresh to see the current price for your dates — your details are kept.",
+    "refreshPrice": "Refresh price",
+    "datesUnavailable": "We couldn't confirm a price for these dates — they may no longer be available. Try again, choose new dates below, or contact our concierge.",
+    "stayTitle": "Your stay",
+    "staySubtitle": "Confirm your dates and choose your rate.",
+    "edit": "Edit",
+    "doneEditing": "Done",
+    "emailLabel": "Your email",
+    "emailPh": "name@email.com",
+    "emailSupport": "We hold your reservation for 24 hours and email you the quote. No spam.",
+    "backToStay": "Back to your stay",
+    "payTitle": "Payment",
+    "paySubtitle": "Your details, then a secure payment.",
+    "nifPh": "NIF — optional, for a Portuguese invoice",
+    "directTitle": "Booking direct with Portugal Active",
+    "refreshBeforePay": "Refresh the price above before paying.",
+    "secureNote": "Encrypted, secure payment",
+    "viewDetails": "View details",
+    "priceGuaranteed": "Price guaranteed until {{date}}, {{time}}",
+    "alreadyPaidTitle": "This booking is already confirmed",
+    "alreadyPaidBody": "The payment for this stay was completed. Check your email for the confirmation, or view your booking below.",
+    "viewBooking": "View my booking"
   }
 }
