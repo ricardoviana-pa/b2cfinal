@@ -521,7 +521,11 @@ export default function BookingWidget({
     return () => clearTimeout(timer);
   }, [checkIn, checkOut, guests, nights, effectiveMinNights, step]);
 
-  // Fetch calendar availability on mount (and when guestyId changes)
+  // Fetch calendar availability on mount (and when guestyId changes).
+  // Depend on the root `utils` proxy (memoized by tRPC), matching every other
+  // effect in the codebase. Sub-property deps like `utils.booking.getCalendar`
+  // happen to be stable too (tRPC v11 memoizes proxy paths) but that's an
+  // internal detail we shouldn't lean on.
   useEffect(() => {
     let cancelled = false;
     setCalendarLoading(true);
@@ -539,7 +543,7 @@ export default function BookingWidget({
       .catch(() => { /* calendar fetch failed — fallback to basic inputs */ })
       .finally(() => { if (!cancelled) setCalendarLoading(false); });
     return () => { cancelled = true; };
-  }, [guestyId, today, utils.booking.getCalendar]);
+  }, [guestyId, today, utils]);
 
   // Scroll widget into view when the user ADVANCES to a new step so content is visible.
   // Important: do NOT scroll on the initial automatic transition from "dates" → "quote"

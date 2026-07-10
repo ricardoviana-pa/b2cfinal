@@ -20,6 +20,13 @@
       ],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "prod",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "JWT_SECRET=local-test-secret npm run start"],
+      "port": 3000,
+      "autoPort": true
     }
   ]
 }
