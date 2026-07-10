@@ -326,7 +326,7 @@ export default function Adventures() {
               <p className="text-[#6B6860] text-lg mb-6">
                 {t('adventures.noAdventures')}
               </p>
-              <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="btn-primary inline-flex items-center gap-2">
+              <a href="https://wa.me/351962680031" target="_blank" rel="noopener noreferrer" className="btn-primary inline-flex items-center gap-2">
                 {t('adventures.talkToTeam')}
               </a>
             </div>
@@ -341,7 +341,7 @@ export default function Adventures() {
           <p className="body-md mb-8">
             {t('adventures.customBody')}
           </p>
-          <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="btn-primary inline-flex items-center gap-2">
+          <a href="https://wa.me/351962680031" target="_blank" rel="noopener noreferrer" className="btn-primary inline-flex items-center gap-2">
             {t('adventures.customCta')}
           </a>
         </div>

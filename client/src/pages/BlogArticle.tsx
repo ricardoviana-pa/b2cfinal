@@ -309,7 +309,7 @@ export default function BlogArticle() {
             <Link href="/homes" className="btn-white inline-flex items-center gap-2">
               {t('blogArticle.ctaExplore')} <ArrowRight size={14} />
             </Link>
-            <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="btn-ghost-light inline-flex items-center gap-2">
+            <a href="https://wa.me/351962680031" target="_blank" rel="noopener noreferrer" className="btn-ghost-light inline-flex items-center gap-2">
               {t('blogArticle.ctaConcierge')}
             </a>
           </div>

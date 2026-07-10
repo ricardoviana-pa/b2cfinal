@@ -71,7 +71,7 @@ const CONTACT_CHANNELS = [
   },
   {
     icon: MessageCircle,
-    href: 'https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20talk%20to%20your%20concierge.',
+    href: 'https://wa.me/351962680031?text=Hi%2C%20I%27d%20like%20to%20talk%20to%20your%20concierge.',
     external: true,
     titleKey: 'contact.whatsapp' as const,
     titleFallback: 'WhatsApp',

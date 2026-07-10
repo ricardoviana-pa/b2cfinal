@@ -840,7 +840,7 @@ export default function Homes() {
               <div className="flex items-center justify-center gap-4 flex-wrap">
                 <button onClick={clearFilters} className="btn-primary">{t('filters.clearAll')}</button>
                 <a
-                  href="https://wa.me/351927161771?text=Hi%2C%20I%27m%20looking%20for%20a%20property%20but%20can%27t%20find%20the%20right%20match.%20Can%20you%20help%3F"
+                  href="https://wa.me/351962680031?text=Hi%2C%20I%27m%20looking%20for%20a%20property%20but%20can%27t%20find%20the%20right%20match.%20Can%20you%20help%3F"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-ghost inline-flex items-center gap-2"
@@ -862,7 +862,7 @@ export default function Homes() {
                 {t('homes.noneAvailableHint', 'Try adjusting your dates or speak with our concierge')}
               </p>
               <a
-                href={`https://wa.me/351927161771?text=${encodeURIComponent(`Hi, I'm looking for a property from ${searchCheckin} to ${searchCheckout} for ${effectiveGuests} guests but nothing seems available. Can you help?`)}`}
+                href={`https://wa.me/351962680031?text=${encodeURIComponent(`Hi, I'm looking for a property from ${searchCheckin} to ${searchCheckout} for ${effectiveGuests} guests but nothing seems available. Can you help?`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-ghost inline-flex items-center gap-2"

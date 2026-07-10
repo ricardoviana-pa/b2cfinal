@@ -28,7 +28,7 @@ const WELLNESS_SLUGS = ['in-villa-spa', 'private-yoga', 'personal-training'];
 const MOBILITY_SLUGS = ['airport-shuttle'];
 const ADDITIONAL_SLUGS = ['grocery-delivery', 'babysitter', 'daily-housekeeping'];
 
-const WHATSAPP_BASE = 'https://wa.me/351927161771?text=';
+const WHATSAPP_BASE = 'https://wa.me/351962680031?text=';
 
 function ServiceCard({ product }: { product: Product | undefined }) {
   const { t } = useTranslation();

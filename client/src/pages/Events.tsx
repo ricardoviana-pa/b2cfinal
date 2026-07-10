@@ -229,7 +229,7 @@ export default function Events() {
                       {t('events.upToGuests', { count: event.guestCount })}
                     </span>
                     <a
-                      href={`https://wa.me/351927161771?text=${enquireMsg(event.title)}`}
+                      href={`https://wa.me/351962680031?text=${enquireMsg(event.title)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 text-[#1A1A18] text-[11px] tracking-[0.08em] font-medium hover:text-[#8B7355] transition-colors"
@@ -392,7 +392,7 @@ export default function Events() {
                 {t('events.ctaButton')} <ArrowRight className="w-4 h-4" />
               </Link>
               <a
-                href="https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20discuss%20hosting%20a%20private%20event%20with%20Portugal%20Active."
+                href="https://wa.me/351962680031?text=Hi%2C%20I%27d%20like%20to%20discuss%20hosting%20a%20private%20event%20with%20Portugal%20Active."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 border border-white/30 text-white text-[11px] tracking-[0.14em] font-medium px-8 py-4 hover:bg-white/10 transition-colors"

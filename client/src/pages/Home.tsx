@@ -406,7 +406,7 @@ export default function Home() {
                 {t('home.heroCta')} <ArrowRight className="w-4 h-4" />
               </Link>
               <a
-                href="https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
+                href="https://wa.me/351962680031?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hidden sm:inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full border border-white/50 text-white text-[13px] font-semibold hover:bg-white/10 transition-colors"

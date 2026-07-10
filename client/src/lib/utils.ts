@@ -77,7 +77,7 @@ export function formatPrice(price: number): string {
 }
 
 export function formatWhatsAppUrl(message: string): string {
-  return `https://wa.me/351927161771?text=${encodeURIComponent(message)}`;
+  return `https://wa.me/351962680031?text=${encodeURIComponent(message)}`;
 }
 
 export function filterProperties(

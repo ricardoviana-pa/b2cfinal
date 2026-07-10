@@ -5,7 +5,7 @@ import WhatsAppModal from './WhatsAppModal';
 export default function WhatsAppFloat() {
   const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const whatsappUrl = 'https://wa.me/351927161771';
+  const whatsappUrl = 'https://wa.me/351962680031';
 
   return (
     <>

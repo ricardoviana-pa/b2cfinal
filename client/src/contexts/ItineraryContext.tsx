@@ -178,7 +178,7 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
 
   const sendToWhatsApp = useCallback((guestName: string, guestEmail: string, property: string, generalNotes: string) => {
     const msg = buildMessage(items, guestName, guestEmail, property, generalNotes);
-    window.open(`https://wa.me/351927161771?text=${encodeURIComponent(msg)}`, '_blank');
+    window.open(`https://wa.me/351962680031?text=${encodeURIComponent(msg)}`, '_blank');
     clearItinerary();
   }, [items, clearItinerary]);
 

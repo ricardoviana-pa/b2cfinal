@@ -142,7 +142,7 @@ export default function ServiceDetail() {
                   </h3>
                   <p className="body-sm mb-6">{t('serviceDetail.whatsappSubtitle', 'Message our concierge team directly. We typically reply within minutes.')}</p>
                   <a
-                    href={`https://wa.me/351927161771?text=${whatsappMsg}`}
+                    href={`https://wa.me/351962680031?text=${whatsappMsg}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-3 w-full bg-[#1A1A18] text-white text-[13px] tracking-[0.08em] font-semibold py-5 hover:bg-[#333330] transition-colors"

@@ -138,7 +138,7 @@ export default function BookingConfirmationPage() {
                   </a>
                 ) : null}
                 <a
-                  href="https://wa.me/351927161771?text=Hi%2C%20I%20need%20help%20with%20my%20booking"
+                  href="https://wa.me/351962680031?text=Hi%2C%20I%20need%20help%20with%20my%20booking"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-primary"

@@ -308,7 +308,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                   <div className="mx-4 my-1 border-t border-[#E8E4DC]/50" />
 
                   <a
-                    href="https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
+                    href="https://wa.me/351962680031?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 px-4 py-3 hover:bg-[#FAFAF7] transition-colors group"

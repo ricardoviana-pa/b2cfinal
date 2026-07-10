@@ -586,7 +586,7 @@ export default function BookingWidget({
 
   // ── SUCCESS ──
   if (step === "success") {
-    const waConfirmLink = `https://wa.me/351927161771?text=${encodeURIComponent(
+    const waConfirmLink = `https://wa.me/351962680031?text=${encodeURIComponent(
       [
         `Hi! I just confirmed my booking at ${propertyName}.`,
         `Confirmation: ${confirmation}`,
@@ -934,7 +934,7 @@ export default function BookingWidget({
             </div>
 
             <a
-              href={`https://wa.me/351927161771?text=${encodeURIComponent(
+              href={`https://wa.me/351962680031?text=${encodeURIComponent(
                 [
                   `Hi, I'd like to book ${propertyName}.`,
                   `Dates: ${checkIn} → ${checkOut} (${nights} nights)`,
