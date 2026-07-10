@@ -141,7 +141,7 @@ const SECTION_KEYS = [
   { id: 'reviews', key: 'experienceDetail.navReviews' },
 ];
 
-const WHATSAPP_NUMBER = '351962680031';
+const WHATSAPP_NUMBER = '351927161771';
 
 /* ── Data lookup ── */
 

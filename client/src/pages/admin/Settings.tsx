@@ -132,7 +132,7 @@ export default function AdminSettings() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <SettingField label="Email" settingKey="contact_email" settings={values} onChange={handleChange} placeholder="info@portugalactive.com" />
             <SettingField label="Phone" settingKey="contact_phone" settings={values} onChange={handleChange} placeholder="+351 258 358 434" />
-            <SettingField label="WhatsApp number" settingKey="contact_whatsapp" settings={values} onChange={handleChange} placeholder="351962680031" />
+            <SettingField label="WhatsApp number" settingKey="contact_whatsapp" settings={values} onChange={handleChange} placeholder="351927161771" />
             <SettingField label="Instagram" settingKey="social_instagram" settings={values} onChange={handleChange} placeholder="@portugalactive" />
           </div>
           <SettingField label="Address" settingKey="contact_address" settings={values} onChange={handleChange} multiline placeholder="Full address" />

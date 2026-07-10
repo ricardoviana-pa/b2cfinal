@@ -89,7 +89,7 @@ interface BookingConfirmationData {
 
 export async function sendBookingConfirmation(data: BookingConfirmationData): Promise<void> {
   const subject = `Your stay at ${data.propertyName} is confirmed`;
-  const waLink = `https://wa.me/351962680031?text=${encodeURIComponent(`Hi, I just booked ${data.propertyName} (${data.confirmationCode}). Looking forward to my stay!`)}`;
+  const waLink = `https://wa.me/351927161771?text=${encodeURIComponent(`Hi, I just booked ${data.propertyName} (${data.confirmationCode}). Looking forward to my stay!`)}`;
 
   const html = wrapTemplate(`
 <tr><td style="padding:0 0 24px 0;">

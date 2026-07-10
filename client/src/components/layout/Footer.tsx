@@ -134,7 +134,7 @@ export default function Footer() {
               </a>
             </div>
             <div className="flex items-center gap-3">
-              <a href="https://wa.me/351962680031" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group" aria-label="WhatsApp">
+              <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group" aria-label="WhatsApp">
                 <MessageCircle size={13} className="text-white/30 group-hover:text-[#C4A87C] transition-colors" />
                 <span className="text-[12px] text-white/40 group-hover:text-white transition-colors" style={{ fontWeight: 300 }}>+351 927 161 771 · {t('header.whatsapp')}</span>
               </a>
@@ -167,7 +167,7 @@ export default function Footer() {
               {footerLinks(t('footer.events'), '/events')}
               <li>
                 <a
-                  href="https://wa.me/351962680031?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
+                  href="https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[13px] text-white/50 hover:text-white transition-colors duration-200"

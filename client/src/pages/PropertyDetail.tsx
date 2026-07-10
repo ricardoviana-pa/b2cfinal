@@ -922,7 +922,7 @@ export default function PropertyDetail() {
   const images = (property.images?.length ? property.images : getPropertyImages(property.slug))
     .map((img: string) => optimizeGuestyImage(img, 1200));
   const totalImages = Math.max(images.length, 1);
-  const whatsappUrl = `https://wa.me/351962680031?text=${encodeURIComponent(property.whatsappMessage || `Hi, I am interested in ${property.name}`)}`;
+  const whatsappUrl = `https://wa.me/351927161771?text=${encodeURIComponent(property.whatsappMessage || `Hi, I am interested in ${property.name}`)}`;
 
   // Booking panel — shared between the desktop sticky sidebar and the mobile
   // bottom-sheet drawer so the two stay in sync (single source of truth).
