@@ -315,7 +315,8 @@
     "availableLabel": "Beschikbaar",
     "unavailableLabel": "Niet beschikbaar",
     "confirmDates": "Bevestigen",
-    "tariffInCheckout": "Twee tarieven beschikbaar. Kies het uwe in de volgende stap."
+    "tariffInCheckout": "Twee tarieven beschikbaar. Kies het uwe in de volgende stap.",
+    "reserve": "RESERVEREN"
   },
   "common": {
     "loading": "Laden…",

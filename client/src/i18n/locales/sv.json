@@ -315,7 +315,8 @@
     "availableLabel": "Tillgänglig",
     "unavailableLabel": "Ej tillgänglig",
     "confirmDates": "Bekräfta",
-    "tariffInCheckout": "Två priser tillgängliga. Välj ditt i nästa steg."
+    "tariffInCheckout": "Två priser tillgängliga. Välj ditt i nästa steg.",
+    "reserve": "RESERVERA"
   },
   "common": {
     "loading": "Laddar…",

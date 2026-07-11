@@ -939,6 +939,7 @@ export default function PropertyDetail() {
             minNights={(property as any).minNights}
             cleaningFee={(property as any).cleaningFee}
             destination={property.destination}
+            conciergeUrl={whatsappUrl}
             initialCheckIn={initialCheckin}
             initialCheckOut={initialCheckout}
             initialGuests={initialGuests}
@@ -967,15 +968,6 @@ export default function PropertyDetail() {
         </div>
       )}
 
-      {/* Concierge CTA — secondary, doesn't compete with primary Reserve */}
-      <a
-        href={whatsappUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="btn-ghost w-full mt-4 flex items-center justify-center gap-2 text-[#8B7355]"
-      >
-        {t('property.needHelpConcierge')}
-      </a>
 
       {/* Trust strip */}
       <div className="grid grid-cols-2 gap-x-4 gap-y-3 mt-6 pt-5 border-t border-[#E8E4DC]">

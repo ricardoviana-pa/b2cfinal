@@ -315,7 +315,8 @@
     "availableLabel": "Disponible",
     "unavailableLabel": "Indisponible",
     "confirmDates": "Confirmer",
-    "tariffInCheckout": "Deux tarifs disponibles. Choisissez le vôtre à l'étape suivante."
+    "tariffInCheckout": "Deux tarifs disponibles. Choisissez le vôtre à l'étape suivante.",
+    "reserve": "RÉSERVER"
   },
   "common": {
     "loading": "Chargement…",

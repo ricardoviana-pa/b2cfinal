@@ -315,7 +315,8 @@
     "availableLabel": "Vapaa",
     "unavailableLabel": "Varattu",
     "confirmDates": "Vahvista",
-    "tariffInCheckout": "Kaksi hintaa saatavilla. Valitse omasi seuraavassa vaiheessa."
+    "tariffInCheckout": "Kaksi hintaa saatavilla. Valitse omasi seuraavassa vaiheessa.",
+    "reserve": "VARAA"
   },
   "common": {
     "loading": "Ladataan…",

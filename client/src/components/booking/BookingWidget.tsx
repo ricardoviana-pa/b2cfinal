@@ -30,6 +30,8 @@ interface BookingWidgetProps {
   initialCheckIn?: string;
   initialCheckOut?: string;
   initialGuests?: number;
+  /** WhatsApp do concierge — integrado no rodapé do widget (12 jul) */
+  conciergeUrl?: string;
 }
 
 /** checkout_v2 local override for testing on dev: ?checkoutv2=1|0.
@@ -289,6 +291,7 @@ export default function BookingWidget({
   initialCheckIn = "",
   initialCheckOut = "",
   initialGuests = 0,
+  conciergeUrl,
 }: BookingWidgetProps) {
   const { t, i18n: i18nActive } = useTranslation();
   const lang = i18nActive.language;
@@ -1332,8 +1335,12 @@ export default function BookingWidget({
             >
               {createIntent.isPending ? (
                 <span className="flex items-center justify-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" /> {t("bookingWidget.reserveAndPay", "Reserve & Pay")}
+                  <Loader2 className="w-4 h-4 animate-spin" /> {checkoutV2Active ? t("bookingWidget.reserve", "Reserve") : t("bookingWidget.reserveAndPay", "Reserve & Pay")}
                 </span>
+              ) : checkoutV2Active ? (
+                /* v2: o pagamento acontece no passo 3 do checkout — prometer
+                   "e pagar" aqui mente e o valor final depende da tarifa/extras */
+                <>{t("bookingWidget.reserve", "Reserve")}</>
               ) : (
                 <>{t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote.total, lang)}</>
               )}
@@ -1455,13 +1462,31 @@ export default function BookingWidget({
           </div>
         </div>
 
-        {/* Cancellation policy */}
-        <p className="text-[11px] text-black/30 text-center">
-          <a href="/legal/cancellation-policy" className="text-black/50 hover:underline">{t("bookingWidget.cancellationPolicyLink")}</a>
-          {(effectiveQuote?.cancellationPolicy?.length ?? 0) > 0 && (
-            <span className="block mt-1 text-black/30">{cancellationPolicyText(effectiveQuote?.cancellationPolicy?.[0], checkIn, t, lang)}</span>
-          )}
-        </p>
+        {/* Política humana com data concreta — sem legalês nem salto para FAQs.
+            Sem política conhecida, não se mostra nada (o passo 1 do checkout
+            mostra a política por tarifa). */}
+        {(() => {
+          const code = effectiveQuote?.cancellationPolicy?.[0];
+          if (!code || String(code).toLowerCase() === "unknown") return null;
+          return (
+            <p className="text-[11px] text-black/35 text-center">
+              {cancellationPolicyText(code, checkIn, t, lang)}
+            </p>
+          );
+        })()}
+
+        {/* Concierge integrado no cartão (12 jul) — discreto, não compete com o CTA */}
+        {conciergeUrl && (
+          <a
+            href={conciergeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => pushDL({ event: "whatsapp_click", source: "booking_widget", property_id: guestyId })}
+            className="flex items-center justify-center gap-1.5 text-[12px] text-[#8B7355] hover:text-black transition-colors pt-3 mt-1 border-t border-black/[0.06]"
+          >
+            {t("property.needHelpConcierge", "Need help? Talk to the concierge")}
+          </a>
+        )}
       </div>
     </div>
   );
