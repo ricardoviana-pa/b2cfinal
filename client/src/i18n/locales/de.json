@@ -1588,6 +1588,8 @@
         "name": "Persönlicher Empfang",
         "desc": "Ein Gastgeber empfängt Sie, zeigt das Haus und bringt alles zum Laufen."
       }
-    }
+    },
+    "seeAll": "Alle Services ansehen",
+    "seeAllExperiences": "Alle Erlebnisse ansehen"
   }
 }

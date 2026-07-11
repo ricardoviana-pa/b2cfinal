@@ -174,7 +174,8 @@ export function curateExtras(ctx: CurationContext): CuratedExtra[] {
       }
       if (e.sku === "linen-change") {
         rank -= 4;
-        out.suggestedQty = Math.max(1, Math.floor(ctx.nights / 3));
+        const suggested = Math.max(1, Math.floor(ctx.nights / 3));
+        out.suggestedQty = Math.min(e.maxQty ?? suggested, suggested);
       }
     }
     // ≥6 hóspedes: sobe chef privado e transfer van

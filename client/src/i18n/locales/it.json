@@ -1588,6 +1588,8 @@
         "name": "Accoglienza in persona",
         "desc": "Un host ti accoglie, mostra la casa e mette tutto in funzione."
       }
-    }
+    },
+    "seeAll": "Vedi tutti i servizi",
+    "seeAllExperiences": "Vedi tutte le esperienze"
   }
 }

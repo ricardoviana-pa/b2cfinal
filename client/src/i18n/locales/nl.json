@@ -1588,6 +1588,8 @@
         "name": "Persoonlijke ontvangst",
         "desc": "Een gastheer verwelkomt u, geeft een rondleiding en zet alles klaar."
       }
-    }
+    },
+    "seeAll": "Alle services bekijken",
+    "seeAllExperiences": "Alle ervaringen bekijken"
   }
 }

@@ -1588,6 +1588,8 @@
         "name": "Accueil en personne",
         "desc": "Un hôte vous accueille, visite la maison et met tout en marche."
       }
-    }
+    },
+    "seeAll": "Voir tous les services",
+    "seeAllExperiences": "Voir toutes les expériences"
   }
 }

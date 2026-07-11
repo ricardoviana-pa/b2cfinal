@@ -1588,6 +1588,8 @@
         "name": "Receção presencial",
         "desc": "Um anfitrião recebe os hóspedes, faz o tour da casa e deixa tudo a funcionar."
       }
-    }
+    },
+    "seeAll": "Ver todos os serviços",
+    "seeAllExperiences": "Ver todas as experiências"
   }
 }

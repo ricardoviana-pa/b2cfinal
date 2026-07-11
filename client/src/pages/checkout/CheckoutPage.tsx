@@ -713,8 +713,10 @@ export default function CheckoutPage() {
           <span className="text-pa-dark tabular-nums">{formatEur(effective.taxesAndFees, lang)}</span>
         </div>
       )}
-      {/* Receção (escolha obrigatória) */}
-      {receptionChoice && (
+      {/* Receção (escolha obrigatória). Uma receção presencial só mostra valor
+          quando a config do catálogo já carregou — evita rotular como "Incluído"
+          e somar 0€ durante o loading numa retoma a frio. */}
+      {receptionChoice && (receptionChoice.type === "self" || receptionConfig) && (
         <div className="flex justify-between text-[13px] checkout-row-in">
           <span className="text-pa-earth">
             {receptionChoice.type === "hosted" ? t("checkout.reception.hosted.name") : t("checkout.reception.self.name")}
@@ -1356,7 +1358,12 @@ export default function CheckoutPage() {
             </button>
           )}
           {step === "customize" && (
-            <button type="button" onClick={continueToPay} className="btn-primary flex-1 max-w-[220px]">
+            <button
+              type="button"
+              onClick={continueToPay}
+              disabled={!receptionChoice}
+              className="btn-primary flex-1 max-w-[220px] disabled:opacity-40"
+            >
               {t("booking.continue", "Continue")}
             </button>
           )}

@@ -194,7 +194,7 @@ export const checkoutRouter = router({
       z
         .object({
           destination: z.string().max(64).optional(),
-          nights: z.number().int().min(1).max(90).optional(),
+          nights: z.number().int().min(1).max(400).optional(),
           guests: z.number().int().min(1).max(30).optional(),
           month: z.number().int().min(1).max(12).optional(),
         })

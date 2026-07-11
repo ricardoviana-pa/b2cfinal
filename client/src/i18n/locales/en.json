@@ -1588,6 +1588,8 @@
         "name": "Hosted reception",
         "desc": "A host welcomes you, tours the house and gets everything running."
       }
-    }
+    },
+    "seeAll": "See all services",
+    "seeAllExperiences": "See all experiences"
   }
 }

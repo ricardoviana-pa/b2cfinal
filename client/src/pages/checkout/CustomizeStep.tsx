@@ -51,6 +51,9 @@ export interface ExtraSelection {
 
 export const EXTRA_CHAPTERS: ExtraChapter[] = ["arrival", "home", "table", "wellness", "experiences"];
 
+/** Máximo de cards por capítulo (§5.3); o resto vive no catálogo completo. */
+const MAX_CARDS_PER_CHAPTER = 6;
+
 /** Whole-EUR amount for a selection, or null for on_request items */
 export function extraAmount(item: CatalogExtra, sel: ExtraSelection): number | null {
   if (item.pricingModel === "on_request" || item.unitPrice == null) return null;
@@ -356,9 +359,11 @@ export default function CustomizeStep({
         </div>
       </div>
 
-      {/* Chapters */}
+      {/* Chapters — máximo 6 cards por capítulo (§5.3) */}
       {EXTRA_CHAPTERS.map((chapter) => {
-        const items = catalog.filter((i) => i.chapter === chapter);
+        const allItems = catalog.filter((i) => i.chapter === chapter);
+        const items = allItems.slice(0, MAX_CARDS_PER_CHAPTER);
+        const truncated = allItems.length > items.length;
         const isArrival = chapter === "arrival";
         if (!items.length && !(isArrival && reception)) return null;
         return (
@@ -388,6 +393,18 @@ export default function CustomizeStep({
                   />
                 ))}
               </div>
+            )}
+
+            {/* "Ver todas" — abre o catálogo completo sem sair do checkout (§5.3) */}
+            {truncated && (
+              <a
+                href={chapter === "experiences" ? `/${lang}/experiences` : `/${lang}/services`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-[12px] text-pa-gold hover:text-pa-dark transition-colors underline underline-offset-2"
+              >
+                {chapter === "experiences" ? t("checkout.seeAllExperiences") : t("checkout.seeAll")}
+              </a>
             )}
           </div>
         );

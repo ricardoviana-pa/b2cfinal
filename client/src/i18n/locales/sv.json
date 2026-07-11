@@ -1588,6 +1588,8 @@
         "name": "Personlig mottagning",
         "desc": "En värd tar emot dig, visar huset och får allt att fungera."
       }
-    }
+    },
+    "seeAll": "Se alla tjänster",
+    "seeAllExperiences": "Se alla upplevelser"
   }
 }

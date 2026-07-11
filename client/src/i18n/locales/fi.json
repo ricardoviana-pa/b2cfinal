@@ -1588,6 +1588,8 @@
         "name": "Henkilökohtainen vastaanotto",
         "desc": "Isäntä ottaa sinut vastaan, esittelee talon ja laittaa kaiken valmiiksi."
       }
-    }
+    },
+    "seeAll": "Näytä kaikki palvelut",
+    "seeAllExperiences": "Näytä kaikki elämykset"
   }
 }
