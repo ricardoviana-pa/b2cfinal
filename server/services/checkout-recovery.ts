@@ -17,6 +17,7 @@
  */
 import { listRecoveryCandidates, claimRecoveryStage } from "../db";
 import { sendCheckoutRecovery } from "./transactional-email";
+import { getPropertiesForSite } from "./properties-store";
 import type { BookingIntent } from "../../drizzle/schema";
 
 const HOUR_MS = 60 * 60 * 1000;
@@ -38,6 +39,43 @@ function resumeUrl(intent: BookingIntent, stage: 1 | 2): string {
   return `${publicBaseUrl()}/${locale}/checkout/${intent.id}?${utm}`;
 }
 
+/** Mirror of client/src/lib/format.ts sanitizePropertyName — the email shows
+ *  the same clean name the checkout shows, not the OTA marketing title. */
+function sanitizePropertyName(raw: string): string {
+  if (!raw) return raw;
+  let name = raw.trim();
+  name = name.replace(/^Portugal Active\s+/i, "");
+  name = name.replace(/\s+by\s+portugal\s*active\b.*$/i, "");
+  name = name.split("|")[0];
+  name = name.split(/\s+[-–—]\s+/)[0];
+  name = name.replace(/\s+(w\/|with)\s+.*$/i, "");
+  return name.replace(/\s{2,}/g, " ").trim();
+}
+
+/** Mirror of client/src/lib/images.ts optimizeGuestyImage, with a 4:3 crop so
+ *  the email card matches the checkout's aspect-[4/3] hero. */
+function heroImageUrl(raw: string | undefined): string | undefined {
+  if (!raw) return undefined;
+  if (!raw.includes("assets.guesty.com/image/upload/")) return raw;
+  if (/\/image\/upload\/[a-z]{1,3}_/.test(raw)) return raw;
+  return raw.replace("/image/upload/", "/image/upload/w_1200,ar_4:3,c_fill,q_auto,f_auto/");
+}
+
+/** First photo of the intent's property, by slug or Guesty listing id. Fail-soft. */
+async function resolvePropertyPhoto(intent: BookingIntent): Promise<string | undefined> {
+  try {
+    const props = await getPropertiesForSite();
+    const prop = (props as any[]).find(
+      (p) =>
+        (intent.propertySlug && p.slug === intent.propertySlug) ||
+        (p.guestyId || p.listingId) === intent.listingId,
+    );
+    return heroImageUrl(prop?.images?.[0]);
+  } catch {
+    return undefined;
+  }
+}
+
 /**
  * One pass over the abandoned intents. Exported for manual triggering/tests.
  * Never throws — recovery must not take the server down.
@@ -45,6 +83,9 @@ function resumeUrl(intent: BookingIntent, stage: 1 | 2): string {
 export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checked: number }> {
   let sent = 0;
   let checked = 0;
+  // Kill switch por tick: respeita CHECKOUT_RECOVERY=false mesmo se o
+  // scheduler já tiver arrancado (belt and braces)
+  if (process.env.CHECKOUT_RECOVERY === "false") return { sent, checked };
   try {
     const candidates = await listRecoveryCandidates();
     checked = candidates.length;
@@ -64,15 +105,22 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
       if (!claimed) continue;
 
       try {
+        const quote = intent.quote as {
+          nightlyRate?: number; nights?: number; totalNights?: number;
+          cleaningFee?: number; taxesAndFees?: number; total?: number;
+        } | null;
         await sendCheckoutRecovery({
           guestEmail: intent.email,
           guestFirstName: intent.guestFirstName,
-          propertyName: intent.propertyName,
+          propertyName: sanitizePropertyName(intent.propertyName || ""),
           destination: intent.destination,
           checkIn: intent.checkIn,
           checkOut: intent.checkOut,
           guests: intent.guests,
-          total: (intent.quote as { total?: number } | null)?.total,
+          total: quote?.total,
+          quote,
+          imageUrl: await resolvePropertyPhoto(intent),
+          expiresAt: intent.expiresAt,
           resumeUrl: resumeUrl(intent, target),
           locale: intent.locale,
           stage: target,
@@ -95,6 +143,11 @@ let started = false;
 
 /** 10-minute interval sweep, started once at boot. Fail-soft if the DB is down. */
 export function startCheckoutRecoveryScheduler(): void {
+  // Kill switch: CHECKOUT_RECOVERY=false desliga a automação sem redeploy
+  if (process.env.CHECKOUT_RECOVERY === "false") {
+    console.info("[Recovery] Desativado (CHECKOUT_RECOVERY=false)");
+    return;
+  }
   if (started) return;
   started = true;
   const timer = setInterval(() => {

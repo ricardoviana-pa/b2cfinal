@@ -97,6 +97,53 @@ async function listingAllowsPets(listingId?: string): Promise<boolean> {
   }
 }
 
+/** Espelho de client/src/lib/format.ts sanitizePropertyName — o email mostra o
+ *  nome limpo que o checkout mostra, não o título de marketing das OTAs. */
+function sanitizePropertyName(raw: string): string {
+  if (!raw) return raw;
+  let name = raw.trim();
+  name = name.replace(/^Portugal Active\s+/i, "");
+  name = name.replace(/\s+by\s+portugal\s*active\b.*$/i, "");
+  name = name.split("|")[0];
+  name = name.split(/\s+[-–—]\s+/)[0];
+  name = name.replace(/\s+(w\/|with)\s+.*$/i, "");
+  return name.replace(/\s{2,}/g, " ").trim();
+}
+
+/** Espelho de client/src/lib/images.ts optimizeGuestyImage, com crop 3:2 para
+ *  o hero do email (600px de largura no cartão). */
+function heroImageUrl(raw: string | undefined): string | undefined {
+  if (!raw) return undefined;
+  if (!raw.includes("assets.guesty.com/image/upload/")) return raw;
+  if (/\/image\/upload\/[a-z]{1,3}_/.test(raw)) return raw;
+  return raw.replace("/image/upload/", "/image/upload/w_1200,ar_3:2,c_fill,q_auto,f_auto/");
+}
+
+/** Primeira foto da casa do intent, por slug ou id Guesty. Fail-soft. */
+async function resolveIntentPhoto(intent: {
+  propertySlug?: string | null;
+  listingId?: string | null;
+}): Promise<string | undefined> {
+  try {
+    const props = await getPropertiesForSite();
+    const prop = (props as any[]).find(
+      (p) =>
+        (intent.propertySlug && p.slug === intent.propertySlug) ||
+        (p.guestyId || p.listingId) === intent.listingId,
+    );
+    return heroImageUrl(prop?.images?.[0]);
+  } catch {
+    return undefined;
+  }
+}
+
+/** Origem pública para links de email. Env primeiro para stg/prod. */
+function publicBaseUrl(): string {
+  const fromEnv =
+    process.env.PUBLIC_BASE_URL || process.env.PUBLIC_URL || process.env.APP_URL;
+  return (fromEnv || "https://dev.portugalactive.com").replace(/\/+$/, "");
+}
+
 export const checkoutRouter = router({
   /**
    * Feature flag. Enabled by env (CHECKOUT_V2=true) anywhere, and ALWAYS on
@@ -221,24 +268,41 @@ export const checkoutRouter = router({
           flex: m.flex, intentId: input.intentId,
         });
         // Confirmação premium ao hóspede — o email do Guesty é genérico, este
-        // é ao nível do site (fire-and-forget, nunca trava o funil)
+        // replica o checkout do site: foto da casa, cartão de resumo com o
+        // breakdown e total, estadia à medida (fire-and-forget, nunca trava o funil)
         if (m.email) {
-          void sendCheckoutGuestConfirmation({
-            email: m.email,
-            guestFirstName: m.guestFirstName,
-            propertyName: m.propertyName,
-            destination: m.destination,
-            checkIn: m.checkIn,
-            checkOut: m.checkOut,
-            guests: m.guests,
-            confirmationCode: m.confirmationCode,
-            reception: m.reception,
-            extras: m.extras,
-            flex: m.flex,
-            total: m.quote?.total ?? null,
-            locale: m.locale,
-            intentId: input.intentId,
-          });
+          const receptionAmount =
+            m.reception?.type === "hosted"
+              ? m.reception.late
+                ? CHECKOUT_RECEPTION.hostedLatePrice
+                : CHECKOUT_RECEPTION.hostedPrice
+              : 0;
+          void resolveIntentPhoto(m)
+            .then((imageUrl) =>
+              sendCheckoutGuestConfirmation({
+                email: m.email,
+                guestFirstName: m.guestFirstName,
+                propertyName: sanitizePropertyName(m.propertyName || ""),
+                destination: m.destination,
+                checkIn: m.checkIn,
+                checkOut: m.checkOut,
+                guests: m.guests,
+                confirmationCode: m.confirmationCode,
+                reception: m.reception,
+                receptionAmount,
+                extras: m.extras,
+                flex: m.flex,
+                flexPrice: FLEX_CONFIG.price,
+                quote: m.quote ?? null,
+                imageUrl,
+                viewUrl: `${publicBaseUrl()}/${m.locale || "en"}/checkout/${input.intentId}`,
+                locale: m.locale,
+                intentId: input.intentId,
+              }),
+            )
+            .catch((err: any) =>
+              console.error(`[GuestConfirmation] falhou (intent ${input.intentId}):`, err?.message),
+            );
         }
         const hasPayload = m.reception || (Array.isArray(m.extras) && m.extras.length) || m.flex;
         if (m.reservationId && hasPayload) {
