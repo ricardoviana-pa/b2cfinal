@@ -207,7 +207,7 @@ export const checkoutRouter = router({
       const ok = await updateBookingIntent(input.intentId, patch);
       // Transicao para paid: ficha de servicos ao CS + manifesto na nota Guesty
       // (todos os metodos, fire-and-forget)
-      if (ok && patch.status === "paid" && current.status !== "paid") {
+      if (ok && patch.status === "paid") {
         const m = { ...current, ...patch } as any;
         void sendCheckoutOpsManifest({
           confirmationCode: m.confirmationCode, reservationId: m.reservationId,
