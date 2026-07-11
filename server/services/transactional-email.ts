@@ -526,7 +526,7 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
         ? `${greeting} guardámos tudo tal como deixou. Pode retomar a sua reserva em ${house} a qualquer momento, no mesmo dispositivo ou noutro, exatamente onde parou.`
         : `${greeting} we kept everything exactly as you left it. You can pick up your booking at ${house} anytime, on this device or another, right where you stopped.`
       : pt
-        ? `${greeting} a sua reserva em ${house} ainda está guardada, mas o preço garantido termina dentro de algumas horas. Depois disso teremos de calcular um novo valor para as suas datas.`
+        ? `${greeting} o preço garantido da sua estadia em ${house} termina dentro de algumas horas. Depois disso teremos de calcular um novo valor, e as datas continuam abertas a outros hóspedes até ao pagamento.`
         : `${greeting} your booking at ${house} is still saved, but the guaranteed price ends in a few hours. After that we will need to work out a new rate for your dates.`;
 
   const cta = pt ? "RETOMAR A MINHA RESERVA" : "RESUME MY BOOKING";
