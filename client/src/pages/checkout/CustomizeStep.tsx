@@ -177,12 +177,13 @@ function ChapterHeader({ num, chapter }: { num: string; chapter: ExtraChapter })
 
 /** 3.1 Receção: par de cartões tipográficos iguais, semântica radio, sem imagem. */
 function ReceptionChoiceCards({
-  config, choice, lang, onChoose,
+  config, choice, lang, onChoose, nudge,
 }: {
   config: ReceptionConfig;
   choice: ReceptionChoice;
   lang: string;
   onChoose: (c: ReceptionChoice) => void;
+  nudge?: boolean;
 }) {
   const { t } = useTranslation();
 
@@ -218,8 +219,14 @@ function ReceptionChoiceCards({
 
   return (
     <div id="reception-choice" className="space-y-2.5 scroll-mt-[150px]">
-      <p className="text-[13px] text-pa-earth">{t("checkout.reception.prompt")}</p>
-      <div role="radiogroup" className="grid sm:grid-cols-2 gap-3">
+      {nudge && !choice ? (
+        <p className="text-[13px] text-pa-dark bg-pa-warm border border-pa-gold rounded-md px-3 py-2.5">
+          {t("checkout.reception.required")}
+        </p>
+      ) : (
+        <p className="text-[13px] text-pa-earth">{t("checkout.reception.prompt")}</p>
+      )}
+      <div role="radiogroup" className={cn("grid sm:grid-cols-2 gap-3 rounded-lg transition-shadow", nudge && !choice && "ring-2 ring-pa-gold ring-offset-2")}>
         <Card
           selected={choice?.type === "self"}
           name={t("checkout.reception.self.name")}
@@ -431,7 +438,7 @@ function FeatureCard(props: {
 
 export default function CustomizeStep({
   catalog, included, reception, receptionChoice, selection, nights, guests, propertyName, lang,
-  onToggle, onAdjust, onChooseReception, onSkip,
+  onToggle, onAdjust, onChooseReception, onSkip, receptionNudge,
 }: {
   catalog: CatalogExtra[];
   included: readonly string[];
@@ -446,6 +453,8 @@ export default function CustomizeStep({
   onAdjust: (sku: string, patch: ExtraSelection) => void;
   onChooseReception: (c: ReceptionChoice) => void;
   onSkip: () => void;
+  /** true quando o hóspede tentou saltar sem escolher a receção */
+  receptionNudge?: boolean;
 }) {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -538,7 +547,7 @@ export default function CustomizeStep({
       </div>
 
       {/* Nav de capítulos sticky com scrollspy + saltar (2.1 §1.2) */}
-      <nav className="sticky top-[61px] z-30 -mx-1 px-1 mt-6 bg-pa-cream/95 backdrop-blur-sm border-b border-pa-sand">
+      <nav className="sticky top-[61px] z-30 -mx-1 px-1 mt-6 bg-white/95 backdrop-blur-sm border-b border-pa-sand">
         <div className="flex items-center justify-between gap-3">
           <div className="chapter-nav-scroll flex items-center gap-5 overflow-x-auto py-3">
             {EXTRA_CHAPTERS.map((c) => (
@@ -587,7 +596,7 @@ export default function CustomizeStep({
             {/* Decisão primeiro (receção, cap 01) */}
             {isArrival && reception && (
               <div className="mb-6">
-                <ReceptionChoiceCards config={reception} choice={receptionChoice} lang={lang} onChoose={onChooseReception} />
+                <ReceptionChoiceCards config={reception} choice={receptionChoice} lang={lang} onChoose={onChooseReception} nudge={receptionNudge} />
               </div>
             )}
 

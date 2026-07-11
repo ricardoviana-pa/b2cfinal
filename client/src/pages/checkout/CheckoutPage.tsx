@@ -225,6 +225,7 @@ export default function CheckoutPage() {
   const [extraSel, setExtraSel] = useState<Record<string, ExtraSelection>>({});
   const [flexSelected, setFlexSelected] = useState(false);
   const [receptionChoice, setReceptionChoice] = useState<ReceptionChoice>(null);
+  const [receptionNudge, setReceptionNudge] = useState(false);
   // Código promocional (cupões do Revenue Management do Guesty — 12 jul)
   const [couponOpen, setCouponOpen] = useState(false);
   const [couponInput, setCouponInput] = useState("");
@@ -506,6 +507,7 @@ export default function CheckoutPage() {
   const chooseReception = useCallback(
     (choice: ReceptionChoice) => {
       setReceptionChoice(choice);
+      setReceptionNudge(false);
       syncIntent({ reception: choice });
       if (choice && !isDemo) {
         pushDL({
@@ -616,6 +618,9 @@ export default function CheckoutPage() {
     if (receptionChoice) {
       continueToPay();
     } else {
+      // A receção pode já estar visível no ecrã — só o scroll era impercetível
+      // e o botão parecia morto (12 jul). O nudge destaca a decisão em falta.
+      setReceptionNudge(true);
       document.getElementById("reception-choice")?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   }, [receptionChoice, continueToPay]);
@@ -720,7 +725,7 @@ export default function CheckoutPage() {
   // ── Loading / not-found states ──
   if (intentQuery.isLoading && !isDemo) {
     return (
-      <div className="min-h-screen bg-pa-cream">
+      <div className="min-h-screen bg-white">
         <div className="sticky top-0 bg-white/95 border-b border-pa-sand h-[60px]" />
         <div className="max-w-[1100px] mx-auto px-4 pt-8 lg:grid lg:grid-cols-[minmax(0,640px)_380px] lg:gap-12">
           <div className="space-y-5">
@@ -741,7 +746,7 @@ export default function CheckoutPage() {
   }
   if (!intent) {
     return (
-      <div className="min-h-screen bg-pa-cream flex items-center justify-center px-6">
+      <div className="min-h-screen bg-white flex items-center justify-center px-6">
         <div className="max-w-[420px] text-center space-y-4">
           <h1 className="headline-md text-pa-dark">{t("checkout.notFoundTitle", "Checkout not found")}</h1>
           <p className="body-sm">{t("checkout.notFoundBody", "This checkout link has expired or is invalid. Your dates are not lost — start again from the property page.")}</p>
@@ -754,7 +759,7 @@ export default function CheckoutPage() {
   // payment form (double-charge risk via a second Stripe PaymentIntent).
   if (intent.status === "paid") {
     return (
-      <div className="min-h-screen bg-pa-cream flex items-center justify-center px-6">
+      <div className="min-h-screen bg-white flex items-center justify-center px-6">
         <div className="max-w-[440px] text-center space-y-4">
           <div className="mx-auto w-12 h-12 rounded-full bg-pa-dark flex items-center justify-center">
             <Check className="w-6 h-6 text-white" />
@@ -935,11 +940,15 @@ export default function CheckoutPage() {
         {summaryLines}
         {couponRow}
         {conciergeRequests}
-        {effective?.cancellationPolicy?.[0] && (
-          <p className="text-[11px] text-pa-stone-aa leading-snug">
-            {cancellationPolicyText(effective.cancellationPolicy[0], checkIn, t, lang)}
-          </p>
-        )}
+        {(() => {
+          const code = effective?.cancellationPolicy?.[0];
+          if (!code) return null;
+          const text = cancellationPolicyText(code, checkIn, t, lang);
+          // Sem política conhecida o helper devolve o texto genérico de
+          // legalês — nesse caso não mostramos nada (noise, 12 jul)
+          if (text === t("cancellationPolicy.shortGeneric")) return null;
+          return <p className="text-[11px] text-pa-stone-aa leading-snug">{text}</p>;
+        })()}
         {guaranteeLabel && (
           <p className="flex items-start gap-1.5 text-[11px] text-pa-gold leading-snug">
             <Clock3 className="w-3 h-3 shrink-0 mt-[1px]" /> {guaranteeLabel}
@@ -950,7 +959,7 @@ export default function CheckoutPage() {
   );
 
   return (
-    <div className="checkout-page min-h-screen bg-pa-cream pb-28 lg:pb-12">
+    <div className="checkout-page min-h-screen bg-white pb-28 lg:pb-12">
       {/* Discreet motion (spec §9): 200ms step transitions, rows sliding toward the summary */}
       <style>{`
         /* The global 44px touch-target rule inflates radios/checkboxes — scope them back */
@@ -1276,6 +1285,7 @@ export default function CheckoutPage() {
                   onAdjust={adjustExtra}
                   onChooseReception={chooseReception}
                   onSkip={skipCustomize}
+                  receptionNudge={receptionNudge}
                 />
               )}
               {/* Flex closes the Personalizar step (spec §5/§6) — protection, not a service */}

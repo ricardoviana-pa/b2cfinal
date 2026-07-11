@@ -311,7 +311,10 @@ function PaymentFormInner({
         <PaymentElement
           options={{
             layout: "tabs",
-            wallets: { googlePay: "never", applePay: "never" },
+            // "auto": o botão Apple Pay/Google Pay só aparece quando o ambiente
+            // suporta (Safari com Wallet + domínio registado na conta Stripe
+            // que cobra — a do Guesty, por listing). Onde não há, nada muda.
+            wallets: { googlePay: "auto", applePay: "auto" },
             fields: { billingDetails: { address: { country: "never", postalCode: "never" } } },
           }}
         />
