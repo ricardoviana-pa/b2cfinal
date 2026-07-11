@@ -101,6 +101,7 @@ export default function KlarnaReturnPage() {
             totalCents:
               bookingData.totalAmount != null ? Math.round(Number(bookingData.totalAmount) * 100) : null,
             currency: (bookingData.currency || "EUR").toUpperCase(),
+            couponCode: bookingData.couponCode || undefined,
           });
 
           sessionStorage.removeItem("klarna_booking_data");
@@ -127,6 +128,7 @@ export default function KlarnaReturnPage() {
               transaction_id: result.confirmationCode,
               value: bookingData.totalAmount,
               currency: (bookingData.currency || "EUR").toUpperCase(),
+              ...(bookingData.couponCode ? { coupon: bookingData.couponCode } : {}),
               items: [{
                 item_id: `PROP-${bookingData.listingId}`,
                 item_name: bookingData.propertyName || "Portugal Active Home",

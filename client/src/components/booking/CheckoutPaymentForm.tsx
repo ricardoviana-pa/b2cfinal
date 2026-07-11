@@ -136,6 +136,8 @@ interface CheckoutPaymentFormProps {
   notes?: string;
   /** Checkout 2.0: intent id carried through redirect flows so return pages can mark it paid */
   intentId?: string;
+  /** Promo code applied to the quote — carried through for GA4 purchase attribution */
+  couponCode?: string;
   onSuccess: (confirmationCode: string, reservationId?: string) => void;
   onCancel: () => void;
 }
@@ -509,6 +511,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             destination={props.destination}
             ratePlanId={props.ratePlanId}
             intentId={props.intentId}
+            couponCode={props.couponCode}
             stripePublishableKey={stripeConfig.publishableKey}
             onError={(msg) => setPaypalError(msg)}
           />
@@ -547,6 +550,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             destination={props.destination}
             ratePlanId={props.ratePlanId}
             intentId={props.intentId}
+            couponCode={props.couponCode}
             stripePublishableKey={stripeConfig.publishableKey}
             onError={(msg) => setKlarnaError(msg)}
           />

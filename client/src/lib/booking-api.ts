@@ -61,6 +61,8 @@ export interface ThankYouStash {
   guestPhone?: string;
   totalCents: number | null;
   currency: string;
+  /** Promo code applied to the quote — carried into the GA4 purchase event */
+  couponCode?: string;
 }
 
 const thankYouKey = (reservationId: string) => `thankyou_${reservationId}`;

@@ -702,6 +702,7 @@ export default function CheckoutPage() {
         guestPhone: phone,
         totalCents: effective ? Math.round(effective.total * 100) : null,
         currency: "EUR",
+        couponCode: quote?.couponCode || undefined,
       });
       syncIntent({
         status: "paid",
@@ -710,7 +711,7 @@ export default function CheckoutPage() {
       });
       navigate(`/booking/thank-you/${rid}?method=card`);
     },
-    [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, effective, syncIntent, navigate],
+    [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, effective, quote?.couponCode, syncIntent, navigate],
   );
 
   // ── Price-guarantee deadline label ──
@@ -1510,6 +1511,7 @@ export default function CheckoutPage() {
                     guestPhone={phone}
                     notes={extrasNote || undefined}
                     intentId={intent.id}
+                    couponCode={quote?.couponCode || undefined}
                     onSuccess={handleCardSuccess}
                     onCancel={() => setStep("stay")}
                   />

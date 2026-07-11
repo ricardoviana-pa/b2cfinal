@@ -121,6 +121,7 @@ export default function PaymentThankYouPage() {
         transaction_id: data.confirmationCode,
         value: data.totalCents != null ? data.totalCents / 100 : undefined,
         currency: data.currency || "EUR",
+        ...(data.couponCode ? { coupon: data.couponCode } : {}),
         items: [
           {
             item_id: data.listingId ? `PROP-${data.listingId}` : data.listingName,
