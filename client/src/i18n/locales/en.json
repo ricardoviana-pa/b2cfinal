@@ -314,7 +314,8 @@
     "clearDates": "Clear",
     "availableLabel": "Available",
     "unavailableLabel": "Unavailable",
-    "confirmDates": "Confirm"
+    "confirmDates": "Confirm",
+    "tariffInCheckout": "Two rates available. Choose yours in the next step."
   },
   "common": {
     "loading": "Loading…",
@@ -1574,7 +1575,8 @@
       "apply": "Apply",
       "ph": "PROMO CODE",
       "invalid": "Code not recognized. Check it and try again.",
-      "applied": "Code {{code}} applied"
+      "applied": "Code {{code}} applied",
+      "field": "Promo code"
     },
     "prev": "Previous",
     "next": "Next"

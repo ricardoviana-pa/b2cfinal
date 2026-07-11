@@ -314,7 +314,8 @@
     "clearDates": "Zurücksetzen",
     "availableLabel": "Verfügbar",
     "unavailableLabel": "Nicht verfügbar",
-    "confirmDates": "Bestätigen"
+    "confirmDates": "Bestätigen",
+    "tariffInCheckout": "Zwei Tarife verfügbar. Wählen Sie Ihren im nächsten Schritt."
   },
   "common": {
     "loading": "Wird geladen…",
@@ -1574,7 +1575,8 @@
       "apply": "Anwenden",
       "ph": "PROMOCODE",
       "invalid": "Code nicht erkannt. Bitte prüfen und erneut versuchen.",
-      "applied": "Code {{code}} angewendet"
+      "applied": "Code {{code}} angewendet",
+      "field": "Promocode"
     },
     "prev": "Zurück",
     "next": "Weiter"

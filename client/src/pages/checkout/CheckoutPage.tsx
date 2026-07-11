@@ -840,10 +840,53 @@ export default function CheckoutPage() {
         <span className="text-[14px] font-medium text-pa-dark">{t("checkout.todayTotal", "Total today")}</span>
         <span className="text-[20px] font-light text-pa-dark tabular-nums">{formatEur(animatedTotal, lang)}</span>
       </div>
-      {quote?.couponCode && (
-        <p className="flex items-center gap-1.5 text-[11px] text-pa-gold">
-          <Tag className="w-3 h-3" /> {t("checkout.coupon.applied", { code: quote.couponCode })}
-        </p>
+
+    </div>
+  );
+
+  // Código promocional estilo Shopify: campo sempre visível no cartão do
+  // resumo; aplicado → pill com remover (12 jul).
+  const couponRow = (
+    <div className="border-t border-pa-sand pt-3">
+      {quote?.couponCode ? (
+        <div className="flex items-center justify-between gap-2">
+          <span className="inline-flex items-center gap-1.5 text-[12px] text-pa-dark bg-pa-warm border border-pa-sand rounded-full px-2.5 py-1">
+            <Tag className="w-3 h-3 text-pa-gold" /> {quote.couponCode}
+          </span>
+          <button
+            type="button"
+            onClick={() => applyCoupon("")}
+            disabled={couponBusy}
+            aria-label={t("checkout.remove", "Remove")}
+            className="text-[11px] text-pa-stone-aa hover:text-pa-dark underline underline-offset-2 transition-colors"
+          >
+            {t("checkout.remove", "Remove")}
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-1.5">
+          <div className="flex gap-2">
+            <input
+              value={couponInput}
+              onChange={(e) => { setCouponInput(e.target.value.toUpperCase().replace(/[^A-Z0-9_-]/g, "")); setCouponError(false); }}
+              onKeyDown={(e) => { if (e.key === "Enter" && couponInput.trim()) applyCoupon(couponInput.trim()); }}
+              placeholder={t("checkout.coupon.field", "Promo code")}
+              maxLength={40}
+              className="flex-1 min-w-0 h-[38px] border border-pa-sand bg-white px-3 rounded-md text-[12.5px] tracking-[0.04em] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
+            />
+            <button
+              type="button"
+              onClick={() => applyCoupon(couponInput.trim())}
+              disabled={couponBusy || !couponInput.trim() || (!isDemo && !quoteId)}
+              className="shrink-0 h-[38px] px-4 rounded-md border border-pa-sand text-[10.5px] font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors disabled:opacity-40"
+            >
+              {couponBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : t("checkout.coupon.apply", "Apply")}
+            </button>
+          </div>
+          {couponError && (
+            <p className="text-[11px] text-pa-earth">{t("checkout.coupon.invalid", "Code not recognized. Check it and try again.")}</p>
+          )}
+        </div>
       )}
     </div>
   );
@@ -890,6 +933,7 @@ export default function CheckoutPage() {
           {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)} · {guests} {t("booking.guestsLabel", "guests")}
         </div>
         {summaryLines}
+        {couponRow}
         {conciergeRequests}
         {effective?.cancellationPolicy?.[0] && (
           <p className="text-[11px] text-pa-stone-aa leading-snug">
@@ -1163,58 +1207,6 @@ export default function CheckoutPage() {
                 <div className="lg:hidden bg-white border border-pa-sand rounded-lg p-5">{summaryLines}</div>
               )}
 
-              {/* Código promocional (12 jul) */}
-              <div className="bg-white border border-pa-sand rounded-lg px-5 py-4">
-                {quote?.couponCode ? (
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="flex items-center gap-1.5 text-[12.5px] text-pa-dark">
-                      <Tag className="w-3.5 h-3.5 text-pa-gold" />
-                      {t("checkout.coupon.applied", { code: quote.couponCode })}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => applyCoupon("")}
-                      disabled={couponBusy}
-                      className="text-[11px] text-pa-stone-aa hover:text-pa-dark underline underline-offset-2 transition-colors"
-                    >
-                      {t("checkout.remove", "Remove")}
-                    </button>
-                  </div>
-                ) : !couponOpen ? (
-                  <button
-                    type="button"
-                    onClick={() => setCouponOpen(true)}
-                    className="text-[12px] text-pa-gold hover:text-pa-dark underline underline-offset-2 transition-colors"
-                  >
-                    {t("checkout.coupon.have", "Have a promo code?")}
-                  </button>
-                ) : (
-                  <div className="space-y-1.5">
-                    <div className="flex gap-2">
-                      <input
-                        value={couponInput}
-                        onChange={(e) => { setCouponInput(e.target.value.toUpperCase().replace(/[^A-Z0-9_-]/g, "")); setCouponError(false); }}
-                        onKeyDown={(e) => { if (e.key === "Enter" && couponInput.trim()) applyCoupon(couponInput.trim()); }}
-                        placeholder={t("checkout.coupon.ph", "PROMO CODE")}
-                        maxLength={40}
-                        className="flex-1 h-[42px] border border-pa-sand bg-white px-3 rounded-md text-[13px] tracking-[0.06em] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => applyCoupon(couponInput.trim())}
-                        disabled={couponBusy || !couponInput.trim() || (!isDemo && !quoteId)}
-                        className="h-[42px] px-5 rounded-md border border-pa-dark text-[11px] font-medium tracking-[0.08em] uppercase text-pa-dark hover:bg-pa-dark hover:text-white transition-colors disabled:opacity-40"
-                      >
-                        {couponBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : t("checkout.coupon.apply", "Apply")}
-                      </button>
-                    </div>
-                    {couponError && (
-                      <p className="text-[11px] text-pa-earth">{t("checkout.coupon.invalid", "Code not recognized. Check it and try again.")}</p>
-                    )}
-                  </div>
-                )}
-              </div>
-
               {/* Email capture */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
                 <h2 className="font-display text-[19px] text-pa-dark leading-snug">
@@ -1486,6 +1478,7 @@ export default function CheckoutPage() {
               </div>
             </div>
             {summaryLines}
+            {couponRow}
             {conciergeRequests}
             {guaranteeLabel && (
               <p className="flex items-start gap-1.5 text-[11px] text-pa-gold leading-snug">

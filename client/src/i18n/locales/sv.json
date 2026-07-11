@@ -314,7 +314,8 @@
     "clearDates": "Rensa",
     "availableLabel": "Tillgänglig",
     "unavailableLabel": "Ej tillgänglig",
-    "confirmDates": "Bekräfta"
+    "confirmDates": "Bekräfta",
+    "tariffInCheckout": "Två priser tillgängliga. Välj ditt i nästa steg."
   },
   "common": {
     "loading": "Laddar…",
@@ -1574,7 +1575,8 @@
       "apply": "Använd",
       "ph": "RABATTKOD",
       "invalid": "Koden känns inte igen. Kontrollera och försök igen.",
-      "applied": "Kod {{code}} tillämpad"
+      "applied": "Kod {{code}} tillämpad",
+      "field": "Rabattkod"
     },
     "prev": "Föregående",
     "next": "Nästa"

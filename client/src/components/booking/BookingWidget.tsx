@@ -1094,7 +1094,13 @@ export default function BookingWidget({
             </div>
 
             {/* ── Rate Plan Options ── */}
-            {quote?.ratePlanOptions && quote.ratePlanOptions.length > 1 && (() => {
+            {checkoutV2Active && quote?.ratePlanOptions && quote.ratePlanOptions.length > 1 && (
+              <p className="text-[11.5px] text-black/45 flex items-center gap-1.5">
+                <Check className="w-3 h-3 shrink-0" />
+                {t("bookingWidget.tariffInCheckout", "Two rates available. Choose yours in the next step.")}
+              </p>
+            )}
+            {!checkoutV2Active && quote?.ratePlanOptions && quote.ratePlanOptions.length > 1 && (() => {
               const maxTotal = Math.max(...quote.ratePlanOptions!.map(o => o.total));
               return (
                 <div className="space-y-2">

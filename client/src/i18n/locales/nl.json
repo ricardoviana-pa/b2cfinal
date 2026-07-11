@@ -314,7 +314,8 @@
     "clearDates": "Wissen",
     "availableLabel": "Beschikbaar",
     "unavailableLabel": "Niet beschikbaar",
-    "confirmDates": "Bevestigen"
+    "confirmDates": "Bevestigen",
+    "tariffInCheckout": "Twee tarieven beschikbaar. Kies het uwe in de volgende stap."
   },
   "common": {
     "loading": "Laden…",
@@ -1574,7 +1575,8 @@
       "apply": "Toepassen",
       "ph": "PROMOCODE",
       "invalid": "Code niet herkend. Controleer en probeer opnieuw.",
-      "applied": "Code {{code}} toegepast"
+      "applied": "Code {{code}} toegepast",
+      "field": "Promocode"
     },
     "prev": "Vorige",
     "next": "Volgende"

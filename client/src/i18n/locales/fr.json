@@ -314,7 +314,8 @@
     "clearDates": "Effacer",
     "availableLabel": "Disponible",
     "unavailableLabel": "Indisponible",
-    "confirmDates": "Confirmer"
+    "confirmDates": "Confirmer",
+    "tariffInCheckout": "Deux tarifs disponibles. Choisissez le vôtre à l'étape suivante."
   },
   "common": {
     "loading": "Chargement…",
@@ -1574,7 +1575,8 @@
       "apply": "Appliquer",
       "ph": "CODE PROMO",
       "invalid": "Code non reconnu. Vérifiez et réessayez.",
-      "applied": "Code {{code}} appliqué"
+      "applied": "Code {{code}} appliqué",
+      "field": "Code promo"
     },
     "prev": "Précédent",
     "next": "Suivant"
