@@ -109,7 +109,7 @@ export default function Destinations() {
       <Header />
 
       {/* Hero */}
-      <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
+      <section className="relative h-[62vh] min-h-[460px] flex items-end overflow-hidden">
         <img
           src={IMAGES.destinationMinho}
           alt="Portugal destinations"

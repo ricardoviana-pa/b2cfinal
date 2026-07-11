@@ -1134,6 +1134,11 @@
     "instantConfirmation": "Välitön vahvistus"
   },
   "reviews": {
+    "title": "Vieraiden arvostelut",
+    "singular": "arvostelu",
+    "plural": "arvostelut",
+    "showMore": "Näytä lisää",
+    "showFewer": "Näytä vähemmän",
     "ourGuests": "VIERAAMME",
     "whatTheyRemember": "Mitä he muistavat eniten.",
     "proofStrip": "4.8/5 yli 2 000 vierasarvostelua",

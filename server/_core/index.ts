@@ -19,6 +19,7 @@ import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { isGuestyConfigured, warmUpOAuthTokens } from "../lib/guesty";
 import { runSync } from "../services/guesty-sync";
+import { applyCleaningFeeFix } from "../services/cleaning-fee-sync";
 import cron from "node-cron";
 import { legacyRedirects } from "../lib/redirects.js";
 
@@ -495,6 +496,30 @@ ${allUrls.join("\n")}
           });
       }, { timezone: "Europe/Lisbon" });
       console.info("[Cron] Guesty sync scheduled — 07:00 and 19:00 Europe/Lisbon (no startup sync)");
+
+      // Cleaning-fee drift sync — forces every rate plan's cleaning fee to
+      // match its listing's cleaningFee field. Runs 15 min after each Guesty
+      // pull so the audit uses fresh data. Gated by CLEANING_FEE_SYNC_ENABLED
+      // until manual dry-run validates write capability — see
+      // scripts/cleaning-fees.ts.
+      const cleaningSyncMode = process.env.CLEANING_FEE_SYNC_ENABLED;
+      if (cleaningSyncMode === "dryrun" || cleaningSyncMode === "apply") {
+        const dryRun = cleaningSyncMode !== "apply";
+        cron.schedule("15 7,19 * * *", () => {
+          console.info(`[Cron] Cleaning-fee sync (${dryRun ? "DRY-RUN" : "APPLY"})...`);
+          applyCleaningFeeFix({ dryRun, onStep: (m) => console.info(`[Cron]  ${m}`) })
+            .then((r) =>
+              console.info(
+                `[Cron] Cleaning-fee sync done: scanned=${r.scannedRatePlans}, drift=${r.outOfSync.length}, ` +
+                  `${dryRun ? "would-update" : "updated"}=${r.succeeded}, failed=${r.failed.length}`,
+              ),
+            )
+            .catch((e) => console.warn(`[Cron] Cleaning-fee sync failed: ${e?.message ?? e}`));
+        }, { timezone: "Europe/Lisbon" });
+        console.info(`[Cron] Cleaning-fee sync scheduled — 07:15 and 19:15 Europe/Lisbon (${dryRun ? "dry-run" : "APPLY"})`);
+      } else {
+        console.info("[Cron] Cleaning-fee sync DISABLED (set CLEANING_FEE_SYNC_ENABLED=dryrun or apply)");
+      }
     }
   });
 }

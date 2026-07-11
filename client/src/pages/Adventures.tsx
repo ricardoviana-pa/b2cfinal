@@ -12,6 +12,7 @@ import productsData from '@/data/products.json';
 import experienceDetailsData from '@/data/experienceDetails.json';
 import type { Product, DestinationSlug } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
+import { localizeProduct } from '@/lib/localizeContent';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -36,8 +37,16 @@ const experienceData: Record<string, { experienceCategory: string; priceOta: num
 });
 
 export default function Adventures() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   usePageMeta({ title: 'Adventure Activities in Portugal | Hiking, Horse Riding, Surfing & More', description: 'Premium adventure experiences across Portugal. Expert-guided hiking, horseback riding, surfing, kayaking and outdoor activities in Porto, Algarve and Minho.', url: '/experiences' });
+
+  // Card name/tagline come from products.json (English). Overlay the active
+  // language's overrides (products.i18n.json) so cards read in the user's
+  // locale instead of always English.
+  const localizedAdventures = useMemo(
+    () => adventures.map(a => localizeProduct(a, i18n.language) as Product),
+    [i18n.language],
+  );
 
   const adventuresGraph = useMemo(
     () => [
@@ -91,9 +100,9 @@ export default function Adventures() {
   ], [t]);
 
   const filtered = useMemo(() => {
-    if (destination === 'all') return adventures;
-    return adventures.filter(a => a.destinations.includes(destination as DestinationSlug));
-  }, [destination]);
+    if (destination === 'all') return localizedAdventures;
+    return localizedAdventures.filter(a => a.destinations.includes(destination as DestinationSlug));
+  }, [destination, localizedAdventures]);
 
   // GA4 view_item_list refs — same pattern as Homes.tsx
   const cardDataRef = useRef<Map<string, { adventure: Product; index: number }>>(new Map());
@@ -167,7 +176,7 @@ export default function Adventures() {
       <Header />
 
       {/* Hero */}
-      <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
+      <section className="relative h-[62vh] min-h-[460px] flex items-end overflow-hidden">
         <img src="/experiences/horseback-riding/01.webp" alt="Horseback riding on the beach at sunset – adventure experiences in Portugal" className="absolute inset-0 w-full h-full object-cover" width={1600} height={1067} fetchPriority="high" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/15" />
         <div className="relative container pb-12 lg:pb-16 z-10">

@@ -1104,6 +1104,11 @@
     "instantConfirmation": "Instant confirmation"
   },
   "reviews": {
+    "title": "Guest reviews",
+    "singular": "review",
+    "plural": "reviews",
+    "showMore": "Show more",
+    "showFewer": "Show fewer",
     "verifiedGuest": "Verified guest",
     "ourGuests": "OUR GUESTS",
     "whatTheyRemember": "What they remember most.",

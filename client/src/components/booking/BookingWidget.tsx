@@ -955,23 +955,21 @@ export default function BookingWidget({
 
       {/* Action area */}
       <div className="px-5 pt-5 pb-6 space-y-3">
-        {/* Advance notice warning — check-in too soon */}
+        {/* Advance notice warning — ONLY for same-day check-in. We always
+            accept 24h+ notice, so warning on tomorrow / 2-days-out just
+            scared off bookings that would confirm fine. */}
         {checkIn && (() => {
           const daysUntilCheckIn = Math.ceil((new Date(checkIn).getTime() - Date.now()) / 86400000);
-          if (daysUntilCheckIn >= 0 && daysUntilCheckIn <= 2) {
+          if (daysUntilCheckIn === 0) {
             return (
               <div className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60">
                 <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
                 <div>
                   <p className="text-xs text-amber-800 font-medium leading-snug">
-                    {daysUntilCheckIn === 0
-                      ? t("bookingWidget.checkInToday", "Check-in is today")
-                      : daysUntilCheckIn === 1
-                        ? t("bookingWidget.checkInTomorrow", "Check-in is tomorrow")
-                        : t("bookingWidget.checkInSoon", "Check-in is in 2 days")}
+                    {t("bookingWidget.checkInToday", "Check-in is today")}
                   </p>
                   <p className="text-[11px] text-amber-700/60 mt-0.5 leading-snug">
-                    {t("bookingWidget.advanceNoticeNote", "Some properties require advance notice. Instant confirmation may not be available.")}
+                    {t("bookingWidget.advanceNoticeNote", "Same-day check-in may need advance notice. Instant confirmation may not be available.")}
                   </p>
                 </div>
               </div>

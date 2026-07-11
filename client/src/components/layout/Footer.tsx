@@ -152,11 +152,6 @@ export default function Footer() {
               {footerLinks(t('footer.lisbon'), '/destinations/lisbon')}
               {footerLinks(t('footer.alentejo'), '/destinations/alentejo')}
               {footerLinks(t('footer.algarve'), '/destinations/algarve')}
-              <li>
-                <span className="text-[13px] text-white/20" style={{ fontWeight: 300 }}>
-                  {t('footer.brazil')} <span className="text-[9px] text-[#C4A87C]/40 ml-1 uppercase tracking-wider">{t('footer.soon')}</span>
-                </span>
-              </li>
             </ul>
           </div>
 

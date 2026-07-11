@@ -1134,6 +1134,11 @@
     "instantConfirmation": "Confirmação imediata"
   },
   "reviews": {
+    "title": "Avaliações de hóspedes",
+    "singular": "avaliação",
+    "plural": "avaliações",
+    "showMore": "Ver mais",
+    "showFewer": "Ver menos",
     "verifiedGuest": "Hóspede verificado",
     "ourGuests": "OS NOSSOS HÓSPEDES",
     "whatTheyRemember": "O que mais recordam.",

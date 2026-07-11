@@ -1134,6 +1134,11 @@
     "instantConfirmation": "Confirmation instantanée"
   },
   "reviews": {
+    "title": "Avis des clients",
+    "singular": "avis",
+    "plural": "avis",
+    "showMore": "Voir plus",
+    "showFewer": "Voir moins",
     "ourGuests": "NOS HÔTES",
     "whatTheyRemember": "Ce dont ils se souviennent le plus.",
     "proofStrip": "4.8/5 sur plus de 2 000 avis clients",

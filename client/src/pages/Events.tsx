@@ -46,6 +46,21 @@ const EVENTS_GRAPH = [
   ]),
 ];
 
+/* Real brands we've produced events for. Sizes are tuned for optical balance
+   (wordmarks sit a touch shorter than the round marks) so no single logo
+   looks oversized in the drifting marquee. */
+const BRAND_LOGOS = [
+  { src: '/brands/farm-rio.png', alt: 'Farm Rio', h: 'h-5 md:h-6' },
+  { src: '/brands/mini.png', alt: 'MINI', h: 'h-8 md:h-9' },
+  { src: '/brands/sagres.png', alt: 'Sagres', h: 'h-8 md:h-9' },
+  { src: '/brands/bmw-official.svg', alt: 'BMW', h: 'h-8 md:h-9' },
+  { src: '/brands/uphold.png', alt: 'Uphold', h: 'h-5 md:h-6' },
+  { src: '/brands/mecwide.png', alt: 'Mecwide', h: 'h-6 md:h-7' },
+  { src: '/brands/sanjo.png', alt: 'Sanjo', h: 'h-8 md:h-9' },
+  { src: '/brands/vodafone-wordmark.svg', alt: 'Vodafone', h: 'h-5 md:h-6' },
+  { src: '/brands/eme-beauty.png', alt: 'ÈME Beauty', h: 'h-9 md:h-11' },
+];
+
 export default function Events() {
   const { t } = useTranslation();
   usePageMeta({ title: 'Private Events Portugal | Weddings, Retreats, Celebrations', description: 'Host weddings, corporate retreats, and private celebrations in luxury Portuguese villas. Full event planning and concierge.', url: '/events' });
@@ -57,42 +72,42 @@ export default function Events() {
       title: t('events.typeCorporate'),
       subtitle: t('events.subtitleCorporate'),
       guestCount: 80,
-      image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80&auto=format&fit=crop',
+      image: '/events/event-corporate-retreats.webp',
     },
     {
       id: 'weddings',
       title: t('events.typeWeddings'),
       subtitle: t('events.subtitleWeddings'),
       guestCount: 120,
-      image: 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800&q=80&auto=format&fit=crop',
+      image: '/events/event-weddings.webp',
     },
     {
       id: 'brand',
       title: t('events.typeBrand'),
       subtitle: t('events.subtitleBrand'),
       guestCount: 50,
-      image: 'https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=800&q=80&auto=format&fit=crop',
+      image: '/events/event-brand-activations.webp',
     },
     {
       id: 'celebrations',
       title: t('events.typeCelebrations'),
       subtitle: t('events.subtitleCelebrations'),
       guestCount: 60,
-      image: 'https://images.unsplash.com/photo-1529636798458-92182e662485?w=800&q=80&auto=format&fit=crop',
+      image: '/events/event-celebrations.webp',
     },
     {
       id: 'wellness',
       title: t('events.typeWellness'),
       subtitle: t('events.subtitleWellness'),
       guestCount: 40,
-      image: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&q=80&auto=format&fit=crop',
+      image: '/events/event-wellness-retreats.webp',
     },
     {
       id: 'creative',
       title: t('events.typeCreative'),
       subtitle: t('events.subtitleCreative'),
       guestCount: 30,
-      image: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&q=80&auto=format&fit=crop',
+      image: '/events/event-creative-workshops.webp',
     },
   ], [t]);
 
@@ -115,10 +130,10 @@ export default function Events() {
       {/* ================================================================
           HERO — Cinematic full-bleed with villa imagery
           ================================================================ */}
-      <section className="relative h-[70vh] min-h-[500px] flex items-end overflow-hidden">
+      <section className="relative h-[62vh] min-h-[460px] flex items-end overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1600&q=80&auto=format&fit=crop"
-          alt="Private villa event setting in Portugal"
+          src="/events/events-hero.webp"
+          alt="Long dinner table set for a private event on a stone terrace overlooking vineyards in Northern Portugal at golden hour"
           className="absolute inset-0 w-full h-full object-cover"
           width={1600}
           height={900}
@@ -230,6 +245,42 @@ export default function Events() {
       </section>
 
       {/* ================================================================
+          BRAND TRUST — real brands we've produced events for. Sits right
+          after the event-types offering, at peak interest, as social proof.
+          ================================================================ */}
+      <section className="bg-[#FAFAF7] py-14 md:py-16 border-y border-[#E8E4DC] overflow-hidden">
+        <div className="container">
+          <p className="text-center text-[11px] font-medium text-[#8B7355] mb-10 tracking-[0.16em] uppercase">
+            {t('events.brandsOverline', 'Brands that have trusted our company')}
+          </p>
+        </div>
+        {/* Slow marquee — the logos drift across so the wall feels alive and
+            reads as "many brands" rather than a static row. The list is
+            duplicated for a seamless loop, edges fade out, and it pauses on
+            hover. */}
+        <div
+          className="relative"
+          style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, #000 7%, #000 93%, transparent)', maskImage: 'linear-gradient(to right, transparent, #000 7%, #000 93%, transparent)' }}
+        >
+          <div
+            className="flex w-max items-center gap-14 md:gap-20 hover:[animation-play-state:paused]"
+            style={{ animation: 'marquee 55s linear infinite' }}
+          >
+            {[...BRAND_LOGOS, ...BRAND_LOGOS].map((b, i) => (
+              <img
+                key={i}
+                src={b.src}
+                alt={i < BRAND_LOGOS.length ? `${b.alt} — event client of Portugal Active` : ''}
+                aria-hidden={i >= BRAND_LOGOS.length ? true : undefined}
+                className={`${b.h} w-auto object-contain grayscale opacity-45 hover:opacity-80 transition-opacity duration-300 shrink-0`}
+                loading="lazy"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================
           VENUE SHOWCASE — Split image + text
           ================================================================ */}
       <section className="section-padding bg-[#F5F1EB]">
@@ -237,8 +288,8 @@ export default function Events() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="relative">
               <img
-                src="https://images.unsplash.com/photo-1510076857177-7470076d4098?w=1000&q=80&auto=format&fit=crop"
-                alt="Luxury villa terrace set for a private dinner in Portugal"
+                src="/events/events-venue-showcase.webp"
+                alt="Luxury private villa with pool at twilight — your own home in Portugal"
                 className="w-full object-cover"
                 style={{ aspectRatio: '4/3' }}
                 loading="lazy"

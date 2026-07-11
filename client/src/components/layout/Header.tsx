@@ -38,8 +38,8 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
   const mobileNav = useMemo(
     () => [
       { label: t('nav.properties'), href: '/homes' },
-      { label: t('nav.experiences'), href: '/experiences' },
       { label: t('nav.concierge'), href: '/concierge' },
+      { label: t('nav.experiences'), href: '/experiences' },
       { label: t('nav.destinations'), href: '/destinations' },
       { label: t('nav.events'), href: '/events' },
       { label: t('nav.journal'), href: '/blog' },

@@ -80,6 +80,11 @@ function PageTransition({ children }: { children: ReactNode }) {
   const pendingSwapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    // Take scroll control away from the browser. With the default 'auto',
+    // Chrome restores the previous entry's scroll offset onto the newly
+    // swapped page (worsened by the 50ms fade delay below), so navigating
+    // could land you partway down / at the bottom of the new page.
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     const onPop = () => { isPopstate.current = true; };
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
@@ -119,6 +124,10 @@ function PageTransition({ children }: { children: ReactNode }) {
         setDisplayChildren(children);
         setVisible(true);
         pendingSwapTimer.current = null;
+        // Reset scroll again as the new page is committed — the earlier
+        // location-keyed reset ran against the outgoing page; this guarantees
+        // the freshly-mounted page starts at the top.
+        window.scrollTo(0, 0);
       }, 50);
       return;
     }

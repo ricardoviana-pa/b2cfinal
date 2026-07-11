@@ -1134,6 +1134,11 @@
     "instantConfirmation": "Omedelbar bekräftelse"
   },
   "reviews": {
+    "title": "Gästrecensioner",
+    "singular": "recension",
+    "plural": "recensioner",
+    "showMore": "Visa fler",
+    "showFewer": "Visa färre",
     "ourGuests": "VÅRA GÄSTER",
     "whatTheyRemember": "Vad de minns mest.",
     "proofStrip": "4.8/5 bland över 2 000 gästomdömen",

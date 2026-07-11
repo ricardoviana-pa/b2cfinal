@@ -33,7 +33,9 @@ function getArticleImage(article: BlogArticle): string {
 export default function Blog() {
   const { t, i18n } = useTranslation();
   usePageMeta({ title: 'Portugal Travel Journal | Guides, Tips & Inspiration', description: 'Insider guides to Portugal — best beaches, hidden restaurants, wine regions, and travel tips from our local concierge team.', url: '/blog' });
-  const [activeCategory, setActiveCategory] = useState<BlogCategory | 'all'>('all');
+  // Journal opens on the Video tab by default — the video content is what we
+  // most want to surface. Users can still switch to All / other categories.
+  const [activeCategory, setActiveCategory] = useState<BlogCategory | 'all'>('video');
 
   // Overlay per-locale article translations (slug-keyed), active language only.
   const [blogOverrides, setBlogOverrides] = useState<Record<string, any>>({});

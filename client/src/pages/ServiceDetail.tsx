@@ -8,7 +8,9 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import { useRoute, Link } from 'wouter';
 import { Check, Clock, MapPin, ArrowLeft, MessageCircle } from 'lucide-react';
 import servicesData from '@/data/services.json';
-import { localizeService } from '@/lib/localizeContent';
+import productsData from '@/data/products.json';
+import { localizeService, localizeProduct } from '@/lib/localizeContent';
+import { formatEurEditorial } from '@/lib/format';
 import destinationsData from '@/data/destinations.json';
 import type { Destination } from '@/lib/types';
 import Header from '@/components/layout/Header';
@@ -25,7 +27,32 @@ export default function ServiceDetail() {
   const slug = params?.slug || actParams?.slug || expParams?.slug;
 
   const allItems = [...servicesData.services, ...servicesData.activities];
-  const item = localizeService(allItems.find(s => s.slug === slug), i18n.language);
+  let item: any = localizeService(allItems.find(s => s.slug === slug), i18n.language);
+
+  // Concierge fallback: /concierge (Services.tsx) lists services from
+  // products.json under its own slugs (in-villa-spa, personal-training,
+  // grocery-delivery, daily-housekeeping) that don't exist in services.json.
+  // Resolve those from products.json so every "learn more" link opens with the
+  // same name the card showed, instead of a "Not found". Detail-only fields
+  // (itemised inclusions, duration, availability) simply don't render.
+  if (!item && slug) {
+    const prod = (productsData as any[]).find(p => p.type === 'service' && p.slug === slug && p.isActive);
+    if (prod) {
+      const lp = localizeProduct(prod, i18n.language) as any;
+      item = {
+        name: lp.name,
+        tagline: lp.tagline,
+        image: lp.image,
+        description: lp.description || lp.tagline || '',
+        category: 'service',
+        details: [],
+        price: lp.priceFrom
+          ? `${t('common.from')} ${formatEurEditorial(lp.priceFrom)}${lp.priceSuffix ? ' ' + lp.priceSuffix : ''}`
+          : undefined,
+        slug: lp.slug,
+      };
+    }
+  }
 
   usePageMeta({
     title: item ? `${item.name} | Portugal Active` : 'Service Not Found',
@@ -85,7 +112,7 @@ export default function ServiceDetail() {
                     ? t('serviceDetail.aboutService', 'About this service')
                     : t('serviceDetail.aboutExperience', 'About this experience')}
                 </h2>
-                {item.description.split('\n\n').map((para: string, i: number) => (
+                {(item.description || '').split('\n\n').map((para: string, i: number) => (
                   <p key={i} className="body-lg mb-4">{para}</p>
                 ))}
                 <p className="body-lg mb-4">
@@ -99,36 +126,46 @@ export default function ServiceDetail() {
                 </p>
               </div>
 
-              <div className="mb-10">
-                <h3 className="text-[11px] font-medium tracking-[0.02em] text-[#8B7355] mb-5">{t('serviceDetail.whatIsIncluded')}</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {item.details.map((detail: string, i: number) => (
-                    <div key={i} className="flex items-center gap-3 py-2">
-                      <Check className="w-4 h-4 shrink-0 text-[#8B7355]" />
-                      <span className="text-[15px] text-[#1A1A18]" style={{ fontWeight: 300 }}>{detail}</span>
-                    </div>
-                  ))}
+              {item.details && item.details.length > 0 && (
+                <div className="mb-10">
+                  <h3 className="text-[11px] font-medium tracking-[0.02em] text-[#8B7355] mb-5">{t('serviceDetail.whatIsIncluded')}</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {item.details.map((detail: string, i: number) => (
+                      <div key={i} className="flex items-center gap-3 py-2">
+                        <Check className="w-4 h-4 shrink-0 text-[#8B7355]" />
+                        <span className="text-[15px] text-[#1A1A18]" style={{ fontWeight: 300 }}>{detail}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div className="flex flex-wrap gap-10 py-8 border-t border-b border-[#E8E4DC]">
-                <div>
-                  <p className="text-[10px] tracking-[0.02em] font-medium text-[#9E9A90] mb-1">{t('serviceDetail.price', 'Price')}</p>
-                  <p className="text-[18px] text-[#1A1A18]">{item.price}</p>
+              {(item.price || item.duration || item.availability) && (
+                <div className="flex flex-wrap gap-10 py-8 border-t border-b border-[#E8E4DC]">
+                  {item.price && (
+                    <div>
+                      <p className="text-[10px] tracking-[0.02em] font-medium text-[#9E9A90] mb-1">{t('serviceDetail.price', 'Price')}</p>
+                      <p className="text-[18px] text-[#1A1A18]">{item.price}</p>
+                    </div>
+                  )}
+                  {item.duration && (
+                    <div>
+                      <p className="text-[10px] tracking-[0.02em] font-medium text-[#9E9A90] mb-1">{t('serviceDetail.duration', 'Duration')}</p>
+                      <p className="text-[18px] text-[#1A1A18] flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-[#8B7355]" /> {item.duration}
+                      </p>
+                    </div>
+                  )}
+                  {item.availability && (
+                    <div>
+                      <p className="text-[10px] tracking-[0.02em] font-medium text-[#9E9A90] mb-1">{t('serviceDetail.availability', 'Availability')}</p>
+                      <p className="text-[18px] text-[#1A1A18] flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-[#8B7355]" /> {item.availability}
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <p className="text-[10px] tracking-[0.02em] font-medium text-[#9E9A90] mb-1">{t('serviceDetail.duration', 'Duration')}</p>
-                  <p className="text-[18px] text-[#1A1A18] flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-[#8B7355]" /> {item.duration}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-[10px] tracking-[0.02em] font-medium text-[#9E9A90] mb-1">{t('serviceDetail.availability', 'Availability')}</p>
-                  <p className="text-[18px] text-[#1A1A18] flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-[#8B7355]" /> {item.availability}
-                  </p>
-                </div>
-              </div>
+              )}
             </div>
 
             {/* Sidebar — single WhatsApp CTA */}

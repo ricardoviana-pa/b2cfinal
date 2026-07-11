@@ -210,6 +210,7 @@ export interface Property {
   eventCapacity?: number;     // For events venue showcase
   sortOrder: number;
   isActive: boolean;
+  isPortfolio?: boolean;       // Portfolio-only property — display but no bookings
   seoTitle: string;
   seoDescription: string;
   address?: {

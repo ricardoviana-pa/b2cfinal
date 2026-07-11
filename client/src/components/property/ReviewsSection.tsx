@@ -1,6 +1,11 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Check } from 'lucide-react';
+
+// White-label: never surface a quote that names the booking channel, even
+// though the channel is never stored as a field — a guest sometimes writes it
+// into their own review text.
+const CHANNEL_RE = /\bairbnb\b|booking\.com|\bvrbo\b|\bexpedia\b|homeaway/i;
 
 interface Review {
   rating: number;
@@ -28,16 +33,37 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
   const { t, i18n } = useTranslation();
   const [showAll, setShowAll] = useState(false);
 
-  if (!reviews || reviews.length === 0) return null;
+  // Only genuine top-rated reviews with text, most recent first. Booking's
+  // 0–10 scale is normalised to 1–5 upstream, so a 10 arrives here as a 5.
+  const topReviews = useMemo(
+    () =>
+      (reviews ?? [])
+        .filter(r => {
+          const text = (r.text || '').trim();
+          // Real text only: a placeholder like "." or "…" is effectively a
+          // note-only review — drop it (needs at least 3 actual letters).
+          const letters = text.replace(/[^\p{L}]/gu, '').length;
+          return Math.round(r.rating) === 5 && letters >= 3 && !CHANNEL_RE.test(text);
+        })
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+    [reviews],
+  );
 
-  const displayed = showAll ? reviews.slice(0, 20) : reviews.slice(0, 4);
-  const totalCount = reviewCount || reviews.length;
+  // No qualifying 5★-with-text reviews → hide the section entirely (no sad
+  // empty state).
+  if (topReviews.length === 0) return null;
+
+  const INITIAL = 6;
+  const displayed = showAll ? topReviews : topReviews.slice(0, INITIAL);
+  // Header shows the REAL aggregate across all reviews (kept as-is — we never
+  // fabricate a 5.0 average from the filtered set).
+  const totalCount = reviewCount || reviews?.length || 0;
 
   return (
     <section>
       {/* Header with aggregate rating */}
       <div className="flex items-baseline gap-3 mb-6">
-        <h2 className="headline-sm text-[#1A1A18]">Guest Reviews</h2>
+        <h2 className="headline-sm text-[#1A1A18]">{t('reviews.title', 'Guest reviews')}</h2>
         {averageRating && averageRating > 0 && (
           <div className="flex items-center gap-1.5">
             <span className="text-[20px] font-display font-light text-[#1A1A18]">{averageRating}</span>
@@ -53,7 +79,7 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
                 </svg>
               ))}
             </div>
-            <span className="text-[13px] text-[#9E9A90]">({totalCount} {totalCount === 1 ? 'review' : 'reviews'})</span>
+            <span className="text-[13px] text-[#9E9A90]">({totalCount} {totalCount === 1 ? t('reviews.singular', 'review') : t('reviews.plural', 'reviews')})</span>
           </div>
         )}
       </div>
@@ -118,14 +144,15 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
         })}
       </div>
 
-      {/* Show more / less */}
-      {reviews.length > 4 && (
+      {/* Show more / less — no count in the label, so it never contradicts the
+          real aggregate count shown in the header. */}
+      {topReviews.length > INITIAL && (
         <button
           type="button"
           onClick={() => setShowAll(prev => !prev)}
           className="mt-5 text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] hover:text-[#6B5A3F] transition-colors"
         >
-          {showAll ? 'Show fewer reviews' : `Show all ${reviews.length} reviews`}
+          {showAll ? t('reviews.showFewer', 'Show fewer') : t('reviews.showMore', 'Show more')}
         </button>
       )}
 

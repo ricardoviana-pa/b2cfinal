@@ -1134,6 +1134,11 @@
     "instantConfirmation": "Sofortige Bestätigung"
   },
   "reviews": {
+    "title": "Gästebewertungen",
+    "singular": "Bewertung",
+    "plural": "Bewertungen",
+    "showMore": "Mehr anzeigen",
+    "showFewer": "Weniger anzeigen",
     "ourGuests": "UNSERE GÄSTE",
     "whatTheyRemember": "Woran sie sich am meisten erinnern.",
     "proofStrip": "4.8/5 bei über 2.000 Gästebewertungen",
