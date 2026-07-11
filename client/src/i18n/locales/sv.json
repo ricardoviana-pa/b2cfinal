@@ -1509,6 +1509,18 @@
       "pet-food": {
         "name": "Djurfoder",
         "desc": "Berätta märke och diet, vi fyller på före ankomst."
+      },
+      "breakfast-box": {
+        "name": "Breakfast box",
+        "desc": "Färsk frukost levererad de morgnar du väljer. Hotellkomfort, hemma."
+      },
+      "transfer-lisbon": {
+        "name": "Flygplatstransfer Lissabon",
+        "desc": "Privatbil, per resa, upp till 4 gäster."
+      },
+      "transfer-lisbon-van": {
+        "name": "Flygplatstransfer Lissabon, van",
+        "desc": "Privat van, per resa, upp till 8 gäster."
       }
     },
     "emailTitle": "Vart skickar vi din bokning?",
@@ -1556,7 +1568,8 @@
       },
       "table": {
         "title": "Bordet",
-        "line": "Minho lagar mat åt dig."
+        "line": "Regionen lagar mat åt dig.",
+        "line_minho": "Minho lagar mat åt dig."
       },
       "wellness": {
         "title": "Välmående",
@@ -1610,7 +1623,10 @@
     "flexAddShort": "Lägg till",
     "proof": {
       "transfer-porto": "Förare från vårt eget team, aldrig utlagt",
-      "hamper-gourmet": "Minho-producenter valda av vår concierge"
-    }
+      "hamper-gourmet": "Lokala producenter valda av vår concierge",
+      "breakfast-box": "Private hotel-konceptet, varje morgon"
+    },
+    "perPersonDay": "per person · dag",
+    "allDays": "Varje dag"
   }
 }

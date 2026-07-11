@@ -1509,6 +1509,18 @@
       "pet-food": {
         "name": "Tierfutter",
         "desc": "Nennen Sie uns Marke und Ernährung, wir besorgen alles vor Ihrer Ankunft."
+      },
+      "breakfast-box": {
+        "name": "Breakfast box",
+        "desc": "Frisches Frühstück an jedem gewünschten Morgen geliefert. Hotelkomfort, zu Hause."
+      },
+      "transfer-lisbon": {
+        "name": "Flughafentransfer Lissabon",
+        "desc": "Privatwagen, pro Fahrt, bis zu 4 Gäste."
+      },
+      "transfer-lisbon-van": {
+        "name": "Flughafentransfer Lissabon, Van",
+        "desc": "Privater Van, pro Fahrt, bis zu 8 Gäste."
       }
     },
     "emailTitle": "Wohin senden wir Ihre Buchung?",
@@ -1556,7 +1568,8 @@
       },
       "table": {
         "title": "Der Tisch",
-        "line": "Der Minho kocht für Sie."
+        "line": "Die Region kocht für Sie.",
+        "line_minho": "Der Minho kocht für Sie."
       },
       "wellness": {
         "title": "Wohlbefinden",
@@ -1610,7 +1623,10 @@
     "flexAddShort": "Hinzufügen",
     "proof": {
       "transfer-porto": "Fahrer aus unserem Team, nie ausgelagert",
-      "hamper-gourmet": "Minho-Produzenten, ausgewählt von unserem Concierge"
-    }
+      "hamper-gourmet": "Lokale Produzenten, ausgewählt von unserem Concierge",
+      "breakfast-box": "Das Private-Hotel-Konzept, jeden Morgen"
+    },
+    "perPersonDay": "pro Person · Tag",
+    "allDays": "Jeden Tag"
   }
 }

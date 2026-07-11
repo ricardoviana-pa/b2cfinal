@@ -1509,6 +1509,18 @@
       "pet-food": {
         "name": "Lemmikin ruoka",
         "desc": "Kerro merkki ja ruokavalio, hankimme kaiken ennen saapumistasi."
+      },
+      "breakfast-box": {
+        "name": "Breakfast box",
+        "desc": "Tuore aamiainen toimitettuna valitsemasi aamuina. Hotellin mukavuus, kotona."
+      },
+      "transfer-lisbon": {
+        "name": "Lentokenttäkuljetus Lissabon",
+        "desc": "Yksityisauto, per matka, enintään 4 vierasta."
+      },
+      "transfer-lisbon-van": {
+        "name": "Lentokenttäkuljetus Lissabon, tila-auto",
+        "desc": "Yksityinen tila-auto, per matka, enintään 8 vierasta."
       }
     },
     "emailTitle": "Minne lähetämme varauksesi?",
@@ -1556,7 +1568,8 @@
       },
       "table": {
         "title": "Pöytä",
-        "line": "Minho kokkaa sinulle."
+        "line": "Alue kokkaa sinulle.",
+        "line_minho": "Minho kokkaa sinulle."
       },
       "wellness": {
         "title": "Hyvinvointi",
@@ -1610,7 +1623,10 @@
     "flexAddShort": "Lisää",
     "proof": {
       "transfer-porto": "Oman tiimimme kuljettaja, ei koskaan alihankittu",
-      "hamper-gourmet": "Conciergemme valitsemat Minhon tuottajat"
-    }
+      "hamper-gourmet": "Conciergemme valitsemat paikalliset tuottajat",
+      "breakfast-box": "Private hotel -konsepti, joka aamu"
+    },
+    "perPersonDay": "per henkilö · päivä",
+    "allDays": "Joka päivä"
   }
 }

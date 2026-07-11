@@ -33,7 +33,7 @@ export type ExtraChapter = "arrival" | "home" | "table" | "wellness" | "experien
 export interface CatalogExtra {
   sku: string;
   chapter: ExtraChapter;
-  pricingModel: "per_stay" | "per_day" | "per_person" | "per_unit" | "per_person_per_unit" | "included_selectable" | "on_request";
+  pricingModel: "per_stay" | "per_day" | "per_person" | "per_unit" | "per_person_per_unit" | "included_selectable" | "per_person_per_day" | "on_request";
   fulfillment: "instant" | "needs_confirmation" | "on_request";
   unitPrice?: number;
   priceFrom?: number;
@@ -96,6 +96,8 @@ export function extraAmount(item: CatalogExtra, sel: ExtraSelection): number | n
     case "included_selectable":
       // 1.ª unidade incluída; extras a unitPrice (§5.0)
       return item.unitPrice * Math.max(0, (sel.qty ?? 1) - 1);
+    case "per_person_per_day":
+      return item.unitPrice * (sel.people ?? 1) * (sel.days ?? 1);
   }
 }
 
@@ -160,8 +162,13 @@ function ChapterReveal({ children, className, id }: { children: React.ReactNode;
 }
 
 /** Cabeçalho de capítulo (2.1 §2): overline numerada + serif grande + linha. */
-function ChapterHeader({ num, chapter }: { num: string; chapter: ExtraChapter }) {
+function ChapterHeader({ num, chapter, destination }: { num: string; chapter: ExtraChapter; destination?: string }) {
   const { t } = useTranslation();
+  // Linha editorial regional quando existe (ex: table.line_minho) — uma casa no
+  // Alentejo nunca deve ler "O Minho cozinha para si" (12 jul)
+  const line = destination
+    ? t(`checkout.chapter.${chapter}.line_${destination}`, t(`checkout.chapter.${chapter}.line`))
+    : t(`checkout.chapter.${chapter}.line`);
   return (
     <div className="mb-8">
       <p className="text-[12px] font-medium tracking-[0.14em] uppercase text-pa-gold mb-2.5">
@@ -170,7 +177,7 @@ function ChapterHeader({ num, chapter }: { num: string; chapter: ExtraChapter })
       <h2 className="font-display font-normal text-[32px] lg:text-[48px] leading-[1.05] text-pa-dark">
         {t(`checkout.chapter.${chapter}.title`)}
       </h2>
-      <p className="text-[16px] lg:text-[17px] text-pa-earth mt-2.5">{t(`checkout.chapter.${chapter}.line`)}</p>
+      <p className="text-[16px] lg:text-[17px] text-pa-earth mt-2.5">{line}</p>
     </div>
   );
 }
@@ -311,6 +318,7 @@ function OptionRow({
       case "per_unit":
         return item.sku.startsWith("transfer") ? t("checkout.perTrip", "per trip") : t("checkout.perChange", "per change");
       case "per_person_per_unit": return t("checkout.perPersonSession", "per person · session");
+      case "per_person_per_day": return t("checkout.perPersonDay", "per person · day");
       default: return "";
     }
   };
@@ -319,12 +327,16 @@ function OptionRow({
     <div className={cn("px-5 py-4 transition-colors", selected && "bg-pa-warm")}>
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          {item.popular && (
-            <p className="text-[9px] font-medium tracking-[0.12em] uppercase text-pa-gold mb-1">
-              {/* D3: prova específica e verdadeira por sku quando existe; senão o badge genérico */}
-              {t(`checkout.proof.${item.sku}`, t("checkout.mostChosen", "Most chosen"))}
-            </p>
-          )}
+          {(() => {
+            /* D3: prova específica por sku quando existe; badge genérico só com popular */
+            const proof = t(`checkout.proof.${item.sku}`, { defaultValue: "" });
+            if (!proof && !item.popular) return null;
+            return (
+              <p className="text-[9px] font-medium tracking-[0.12em] uppercase text-pa-gold mb-1">
+                {proof || t("checkout.mostChosen", "Most chosen")}
+              </p>
+            );
+          })()}
           <p className="flex items-center gap-1.5 text-[15px] font-medium text-pa-dark">
             {selected && <Check className="w-3.5 h-3.5 text-pa-gold shrink-0" strokeWidth={2.5} />}
             {t(`checkout.extras.${item.sku}.name`)}
@@ -391,9 +403,27 @@ function OptionRow({
               <div className="flex items-center gap-2"><span className="text-[11px] text-pa-stone-aa">{item.sku.startsWith("transfer") ? t("checkout.tripsLabel", "Trips") : t("checkout.qtyLabel", "Quantity")}</span>
                 <Stepper value={sel!.qty ?? 1} min={item.minQty ?? 1} max={item.maxQty ?? 10} onChange={(v) => onAdjust(item.sku, { qty: v })} ariaLabel={t("checkout.qtyLabel", "Quantity")} /></div>
             )}
-            {(item.pricingModel === "per_person" || item.pricingModel === "per_person_per_unit") && (
+            {(item.pricingModel === "per_person" || item.pricingModel === "per_person_per_unit" || item.pricingModel === "per_person_per_day") && (
               <div className="flex items-center gap-2"><span className="text-[11px] text-pa-stone-aa">{t("checkout.peopleLabel", "People")}</span>
                 <Stepper value={sel!.people ?? item.minPeople ?? Math.min(guests, 30)} min={item.minPeople ?? 1} max={30} onChange={(v) => onAdjust(item.sku, { people: v })} ariaLabel={t("checkout.peopleLabel", "People")} /></div>
+            )}
+            {item.pricingModel === "per_person_per_day" && (
+              <>
+                <div className="flex items-center gap-2"><span className="text-[11px] text-pa-stone-aa">{t("checkout.daysLabel", "Days")}</span>
+                  <Stepper value={sel!.days ?? 1} min={1} max={Math.max(1, nights)} onChange={(v) => onAdjust(item.sku, { days: v })} ariaLabel={t("checkout.daysLabel", "Days")} /></div>
+                <button
+                  type="button"
+                  onClick={() => onAdjust(item.sku, { days: Math.max(1, nights) })}
+                  className={cn(
+                    "text-[11px] px-3 py-1.5 rounded-full border transition-colors",
+                    (sel!.days ?? 1) === Math.max(1, nights)
+                      ? "border-pa-dark bg-pa-dark text-white"
+                      : "border-pa-sand text-pa-earth hover:border-pa-dark",
+                  )}
+                >
+                  {t("checkout.allDays", "Every day")}
+                </button>
+              </>
             )}
             {item.pricingModel === "per_person_per_unit" && (
               <div className="flex items-center gap-2"><span className="text-[11px] text-pa-stone-aa">{t("checkout.sessionsLabel", "Sessions")}</span>
@@ -444,7 +474,7 @@ function FeatureCard(props: {
       )}
     >
       <div className="sm:w-[40%] shrink-0 aspect-[3/2] sm:aspect-auto bg-pa-warm">
-        <img src={item.photo} alt="" className="w-full h-full object-cover" loading="lazy" />
+        <img src={item.photo} alt="" className="w-full h-full object-cover" loading="eager" onError={(e) => { const c = (e.currentTarget.parentElement as HTMLElement); if (c) c.style.display = "none"; }} />
       </div>
       <div className="flex-1 min-w-0 flex flex-col justify-center">
         <OptionRow {...props} />
@@ -454,7 +484,7 @@ function FeatureCard(props: {
 }
 
 export default function CustomizeStep({
-  catalog, included, reception, receptionChoice, selection, nights, guests, propertyName, lang,
+  catalog, included, reception, receptionChoice, selection, nights, guests, propertyName, lang, destination,
   onToggle, onAdjust, onChooseReception, onSkip, receptionNudge,
 }: {
   catalog: CatalogExtra[];
@@ -466,6 +496,7 @@ export default function CustomizeStep({
   guests: number;
   propertyName: string;
   lang: string;
+  destination?: string;
   onToggle: (item: CatalogExtra) => void;
   onAdjust: (sku: string, patch: ExtraSelection) => void;
   onChooseReception: (c: ReceptionChoice) => void;
@@ -591,7 +622,7 @@ export default function CustomizeStep({
 
         return (
           <ChapterReveal key={chapter} id={`chapter-${chapter}`} className={cn("scroll-mt-[130px]", idx === 0 ? "mt-10" : "mt-24 lg:mt-28")}>
-            <ChapterHeader num={String(idx + 1).padStart(2, "0")} chapter={chapter} />
+            <ChapterHeader num={String(idx + 1).padStart(2, "0")} chapter={chapter} destination={destination} />
 
             {/* Decisão primeiro (receção, cap 01) */}
             {isArrival && reception && (
@@ -677,7 +708,7 @@ export default function CustomizeStep({
                       >
                         {item.photo && (
                           <div className="aspect-[3/2] bg-pa-warm relative">
-                            <img src={item.photo} alt="" className="w-full h-full object-cover" loading="lazy" />
+                            <img src={item.photo} alt="" className="w-full h-full object-cover" loading="eager" onError={(e) => { const c = (e.currentTarget.parentElement as HTMLElement); if (c) c.style.display = "none"; }} />
                             {selected && (
                               <span className="absolute top-2 right-2 w-6 h-6 rounded-full bg-pa-dark flex items-center justify-center">
                                 <Check className="w-3.5 h-3.5 text-white" />

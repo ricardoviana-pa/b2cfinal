@@ -23,6 +23,8 @@ export type ExtraPricingModel =
   | "per_person_per_unit"
   /** 1.ª unidade incluída (0 €), unidades adicionais a unitPrice (spec §5.0) */
   | "included_selectable"
+  /** por pessoa e por dia (breakfast box): unitPrice × pessoas × dias */
+  | "per_person_per_day"
   | "on_request";
 
 export type ExtraFulfillment = "instant" | "needs_confirmation" | "on_request";
@@ -66,6 +68,9 @@ export interface CheckoutExtra {
   /** D4: capacidade finita real (chef, transfers em pico) — mostra a linha
    *  "confirmação sujeita a disponibilidade, garantimos ao reservar agora" */
   scarcity?: boolean;
+  /** Transfers: região do aeroporto — filtrado pela localização da casa (interim
+   *  até ao motor por distância do Bloco B2) */
+  region?: "north" | "south";
   /** Curadoria: ranking base (menor = mais acima) antes das regras dinâmicas */
   baseRank: number;
 }
@@ -91,8 +96,12 @@ export const CHECKOUT_INCLUDED_KEYS = [
 
 export const CHECKOUT_EXTRAS: CheckoutExtra[] = [
   // ── Capítulo 01 · A chegada ── (receção obrigatória tratada à parte; linhas)
-  { sku: "transfer-porto", chapter: "arrival", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 120, minQty: 1, maxQty: 4, popular: true, scarcity: true, baseRank: 10 },
-  { sku: "transfer-porto-van", chapter: "arrival", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 160, minQty: 1, maxQty: 4, scarcity: true, baseRank: 11 },
+  { sku: "transfer-porto", chapter: "arrival", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 120, minQty: 1, maxQty: 4, popular: true, scarcity: true, region: "north", baseRank: 10 },
+  { sku: "transfer-porto-van", chapter: "arrival", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 160, minQty: 1, maxQty: 4, scarcity: true, region: "north", baseRank: 11 },
+
+  // Transfers de Lisboa para casas do sul (preços INDICATIVOS até B2)
+  { sku: "transfer-lisbon", chapter: "arrival", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 280, minQty: 1, maxQty: 4, scarcity: true, region: "south", baseRank: 10 },
+  { sku: "transfer-lisbon-van", chapter: "arrival", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 350, minQty: 1, maxQty: 4, scarcity: true, region: "south", baseRank: 11 },
 
   // ── Capítulo 02 · A casa ── (babysitter atrás de "ver mais" por rank)
   { sku: "daily-cleaning", chapter: "home", pricingModel: "per_day", fulfillment: "instant", unitPrice: 60, baseRank: 20 },
@@ -109,6 +118,9 @@ export const CHECKOUT_EXTRAS: CheckoutExtra[] = [
   { sku: "pet-food", chapter: "home", pricingModel: "on_request", fulfillment: "on_request", petsOnly: true, parentSku: "pet-fee", baseRank: 27 },
 
   // ── Capítulo 03 · A mesa ── (chef = único destaque com imagem dos caps 01-04)
+  // Breakfast box: materializa o conceito private hotels (12 jul) — por pessoa
+  // e por dia, com atalho "todos os dias"
+  { sku: "breakfast-box", chapter: "table", pricingModel: "per_person_per_day", fulfillment: "instant", unitPrice: 25, baseRank: 29 },
   { sku: "private-chef", chapter: "table", pricingModel: "per_person", fulfillment: "needs_confirmation", unitPrice: 95, minPeople: 4, feature: true, scarcity: true, photo: "/experiences/private-chef-dinner.webp", baseRank: 30 },
   { sku: "hamper-essentials", chapter: "table", pricingModel: "per_stay", fulfillment: "instant", unitPrice: 75, baseRank: 31 },
   { sku: "hamper-gourmet", chapter: "table", pricingModel: "per_stay", fulfillment: "instant", unitPrice: 150, popular: true, baseRank: 32 },
@@ -166,7 +178,11 @@ export function curateExtras(ctx: CurationContext): CuratedExtra[] {
   const coastal = ctx.destination ? COASTAL.has(ctx.destination.toLowerCase()) : false;
   const summer = ctx.month != null && ctx.month >= 5 && ctx.month <= 9;
 
-  return CHECKOUT_EXTRAS.filter((e) => !e.petsOnly || ctx.petsAllowed).map((e): CuratedExtra => {
+  const SOUTH = new Set(["lisbon", "alentejo", "algarve"]);
+  const isSouth = ctx.destination ? SOUTH.has(ctx.destination.toLowerCase()) : false;
+  return CHECKOUT_EXTRAS.filter((e) => !e.petsOnly || ctx.petsAllowed)
+    .filter((e) => !e.region || (e.region === "south") === isSouth)
+    .map((e): CuratedExtra => {
     let rank = e.baseRank;
     const out: CuratedExtra = { ...e, rank };
 

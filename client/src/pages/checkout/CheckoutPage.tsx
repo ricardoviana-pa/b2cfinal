@@ -539,6 +539,8 @@ export default function CheckoutPage() {
                 ? { people: Math.max(item.minPeople ?? 1, Math.min(guests, 30)) }
                 : item.pricingModel === "per_person_per_unit"
                   ? { people: 1, sessions: 1 }
+                  : item.pricingModel === "per_person_per_day"
+                    ? { people: Math.min(guests, 30), days: Math.max(1, quote?.nights ?? 1) }
                   : item.pricingModel === "per_unit" || item.pricingModel === "included_selectable"
                     ? { qty: item.suggestedQty ?? item.minQty ?? 1 }
                     : {};
@@ -1299,6 +1301,7 @@ export default function CheckoutPage() {
                   guests={guests}
                   propertyName={displayName}
                   lang={lang}
+                  destination={intent.destination ?? undefined}
                   onToggle={toggleExtra}
                   onAdjust={adjustExtra}
                   onChooseReception={chooseReception}
