@@ -31,12 +31,14 @@ const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /** Monday-first short weekday labels for the active site locale (all 9 languages).
  *  timeZone MUST stay pinned to UTC — the reference instants are UTC midnights;
- *  formatting them in the browser zone shifts the whole row for UTC-negative visitors. */
+ *  formatting them in the browser zone shifts the whole row for UTC-negative visitors.
+ *  Labels are clamped to 3 chars: CLDR pt-PT "abbreviated" weekdays are the FULL
+ *  names ("segunda", "terça"…) and overflow the 7-column grid. */
 function buildWeekdays(locale: string): string[] {
   const fmt = new Intl.DateTimeFormat(locale, { weekday: "short", timeZone: "UTC" });
   // 2024-01-01 is a Monday
   return Array.from({ length: 7 }, (_, i) =>
-    capitalize(fmt.format(new Date(Date.UTC(2024, 0, 1 + i))).replace(/\.$/, "")),
+    capitalize(fmt.format(new Date(Date.UTC(2024, 0, 1 + i))).replace(/\.$/, "").slice(0, 3)),
   );
 }
 
