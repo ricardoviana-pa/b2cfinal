@@ -129,7 +129,7 @@
     "estTotal": "geschat totaal",
     "indicativeCatalogue": "Indicatief uit catalogus. Bevestig het totaal bij boeking.",
     "indicativeUnavailable": "Indicatief (catalogus). Live prijs niet beschikbaar — bevestig bij boeking.",
-    "cleaningFee": "Voorbereiding van de woning",
+    "cleaningFee": "Servicekosten",
     "serviceFee": "Servicekosten",
     "touristTax": "Toeristenbelasting",
     "vat": "BTW",
@@ -1441,7 +1441,7 @@
         "desc": "Selectie van regionale wijnen en delicatessen."
       },
       "grocery-list": {
-        "name": "Persoonlijke boodschappenlijst",
+        "name": "Koelkast gevuld bij aankomst",
         "desc": "Stuur uw lijst, de koelkast is gevuld voor aankomst."
       },
       "massage": {
@@ -1520,7 +1520,7 @@
       "badge": "Inbegrepen",
       "concierge": "Een persoonlijke concierge op WhatsApp",
       "linen": "Hotelbeddengoed en handdoeken",
-      "welcome": "Welkomstpakket bij aankomst",
+      "welcome": "Welcoming pack",
       "bestRate": "Beste prijs gegarandeerd"
     },
     "chapter": {
@@ -1552,7 +1552,7 @@
       "beforeLate": "Voor {{hour}}u",
       "afterLate": "Na {{hour}}u",
       "self": {
-        "name": "Self check in",
+        "name": "Self check-in",
         "desc": "Zelfstandige toegang met code, instructies de dag ervoor verzonden, WhatsApp-ondersteuning op elk moment."
       },
       "hosted": {
@@ -1568,6 +1568,15 @@
     "remove": "Verwijderen",
     "conciergeQuote": "Offerte door uw concierge",
     "fromPrice": "vanaf {{price}}",
-    "requested": "Aangevraagd"
+    "requested": "Aangevraagd",
+    "coupon": {
+      "have": "Heeft u een promocode?",
+      "apply": "Toepassen",
+      "ph": "PROMOCODE",
+      "invalid": "Code niet herkend. Controleer en probeer opnieuw.",
+      "applied": "Code {{code}} toegepast"
+    },
+    "prev": "Vorige",
+    "next": "Volgende"
   }
 }

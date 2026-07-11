@@ -6,6 +6,7 @@ import {
   createBEQuote,
   createBEInstantReservation,
   getPaymentProvider,
+  applyCouponToBEQuote,
 } from "../services/guesty-booking";
 import { guestyBEClient, type BEListingWithPrice } from "../lib/guesty";
 import { getLowestNightly, getLowestNightlyBatch } from "../services/lowest-nightly";
@@ -151,6 +152,47 @@ export const bookingRouter = router({
         return await checkAvailability(input.listingId, input.checkIn, input.checkOut);
       } catch (error: any) {
         throw new Error(error.message || "Failed to check availability");
+      }
+    }),
+
+  /**
+   * Aplica um código promocional à quote BE existente (Revenue Management do
+   * Guesty). O quoteId mantém-se válido para a reserva instantânea; devolve os
+   * rates atualizados no mesmo formato do getQuote. Código vazio = remover.
+   */
+  applyCoupon: publicProcedure
+    .input(
+      z.object({
+        quoteId: z.string().regex(/^[0-9a-f]{24}$/i),
+        listingId: z.string().min(1).max(64),
+        checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        coupon: z.string().regex(/^[A-Za-z0-9_-]{0,40}$/),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const coupons = input.coupon.trim() ? [input.coupon.trim().toUpperCase()] : [];
+      try {
+        const r = await applyCouponToBEQuote({
+          quoteId: input.quoteId,
+          coupons,
+          listingId: input.listingId,
+          checkIn: input.checkIn,
+          checkOut: input.checkOut,
+        });
+        return {
+          ok: true as const,
+          quoteId: r.quoteId,
+          nights: r.nights,
+          ratePlanId: r.ratePlanId,
+          pricing: r.pricing,
+          total: r.total,
+          ratePlanOptions: r.ratePlanOptions,
+          coupons: r.coupons,
+        };
+      } catch (error: any) {
+        if (error?.message === "INVALID_COUPON") return { ok: false as const, reason: "invalid" as const };
+        throw new Error(error?.message || "Failed to apply promo code");
       }
     }),
 

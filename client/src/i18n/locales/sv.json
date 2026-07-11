@@ -129,7 +129,7 @@
     "estTotal": "uppskattat totalt",
     "indicativeCatalogue": "Indikativt från katalog. Bekräfta slutpris vid bokning.",
     "indicativeUnavailable": "Indikativt (katalog). Livepris inte tillgängligt — bekräfta vid bokning.",
-    "cleaningFee": "Förberedelse av huset",
+    "cleaningFee": "Serviceavgift",
     "serviceFee": "Serviceavgift",
     "touristTax": "Turistskatt",
     "vat": "Moms",
@@ -1441,7 +1441,7 @@
         "desc": "Utvalda regionala viner och delikatesser."
       },
       "grocery-list": {
-        "name": "Personlig inköpslista",
+        "name": "Kylskåpet fyllt vid ankomst",
         "desc": "Skicka din lista, kylskåpet är fyllt före ankomst."
       },
       "massage": {
@@ -1520,7 +1520,7 @@
       "badge": "Ingår",
       "concierge": "En personlig concierge på WhatsApp",
       "linen": "Hotellsänglinne och handdukar",
-      "welcome": "Välkomstpaket vid ankomst",
+      "welcome": "Welcoming pack",
       "bestRate": "Bästa pris garanterat"
     },
     "chapter": {
@@ -1552,7 +1552,7 @@
       "beforeLate": "Före kl {{hour}}",
       "afterLate": "Efter kl {{hour}}",
       "self": {
-        "name": "Självincheckning",
+        "name": "Self check-in",
         "desc": "Självständig entré med kod, instruktioner skickade dagen innan, WhatsApp-support när som helst."
       },
       "hosted": {
@@ -1568,6 +1568,15 @@
     "remove": "Ta bort",
     "conciergeQuote": "Offert från din concierge",
     "fromPrice": "från {{price}}",
-    "requested": "Begärd"
+    "requested": "Begärd",
+    "coupon": {
+      "have": "Har du en rabattkod?",
+      "apply": "Använd",
+      "ph": "RABATTKOD",
+      "invalid": "Koden känns inte igen. Kontrollera och försök igen.",
+      "applied": "Kod {{code}} tillämpad"
+    },
+    "prev": "Föregående",
+    "next": "Nästa"
   }
 }

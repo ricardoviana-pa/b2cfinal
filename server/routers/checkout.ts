@@ -38,6 +38,7 @@ const quoteSnapshotSchema = z.object({
   nights: z.number().int().positive(),
   currency: z.string().default("EUR"),
   quoteCreatedAt: z.number().nullable(),
+  couponCode: z.string().max(40).optional(),
   ratePlanOptions: z
     .array(
       z.object({

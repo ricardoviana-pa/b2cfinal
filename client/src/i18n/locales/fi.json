@@ -129,7 +129,7 @@
     "estTotal": "arvio yhteensä",
     "indicativeCatalogue": "Indikatiivinen hinnastosta. Vahvista lopullinen hinta varauksessa.",
     "indicativeUnavailable": "Indikatiivinen (hinnasto). Live-hinta ei saatavilla — vahvista varauksessa.",
-    "cleaningFee": "Talon valmistelupalvelu",
+    "cleaningFee": "Palvelumaksu",
     "serviceFee": "Palvelumaksu",
     "touristTax": "Matkailuvero",
     "vat": "ALV",
@@ -1441,7 +1441,7 @@
         "desc": "Valikoima alueen viinejä ja herkkuja."
       },
       "grocery-list": {
-        "name": "Henkilökohtainen ostoslista",
+        "name": "Jääkaappi täytettynä saapuessa",
         "desc": "Lähetä listasi, jääkaappi on täytetty ennen saapumistasi."
       },
       "massage": {
@@ -1520,7 +1520,7 @@
       "badge": "Sisältyy",
       "concierge": "Oma concierge WhatsAppissa",
       "linen": "Hotellin liinavaatteet ja pyyhkeet",
-      "welcome": "Tervetuliaispaketti saapuessa",
+      "welcome": "Welcoming pack",
       "bestRate": "Paras hinta taattu"
     },
     "chapter": {
@@ -1552,7 +1552,7 @@
       "beforeLate": "Ennen klo {{hour}}",
       "afterLate": "Klo {{hour}} jälkeen",
       "self": {
-        "name": "Itsesisäänkirjautuminen",
+        "name": "Self check-in",
         "desc": "Itsenäinen sisäänpääsy koodilla, ohjeet lähetetään edellisenä päivänä, WhatsApp-tuki milloin tahansa."
       },
       "hosted": {
@@ -1568,6 +1568,15 @@
     "remove": "Poista",
     "conciergeQuote": "Conciergen hinnoittelema",
     "fromPrice": "alk. {{price}}",
-    "requested": "Pyydetty"
+    "requested": "Pyydetty",
+    "coupon": {
+      "have": "Onko sinulla kampanjakoodi?",
+      "apply": "Käytä",
+      "ph": "KOODI",
+      "invalid": "Koodia ei tunnistettu. Tarkista ja yritä uudelleen.",
+      "applied": "Koodi {{code}} käytössä"
+    },
+    "prev": "Edellinen",
+    "next": "Seuraava"
   }
 }

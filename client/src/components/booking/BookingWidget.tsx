@@ -319,7 +319,8 @@ export default function BookingWidget({
 
   const [calendarDays, setCalendarDays] = useState<AvailabilityDay[]>([]);
   const [calendarLoading, setCalendarLoading] = useState(false);
-  const [showCalendar, setShowCalendar] = useState(true);
+  // Fechado por defeito: o widget cabe no viewport; clicar nas datas abre (12 jul)
+  const [showCalendar, setShowCalendar] = useState(false);
 
   const widgetRef = useRef<HTMLDivElement>(null);
 
@@ -849,9 +850,9 @@ export default function BookingWidget({
         {/* Date display / toggle — clicking either box opens calendar */}
         <div
           className={`border overflow-hidden cursor-pointer transition-colors ${
-            showCalendar ? "border-black" : "border-black/15 hover:border-black/30"
+            showCalendar ? "border-black rounded-t-lg" : "border-black/15 hover:border-black/30 rounded-lg"
           }`}
-          onClick={() => setShowCalendar(true)}
+          onClick={() => setShowCalendar((v) => !v)}
         >
           <div className="grid grid-cols-2 divide-x divide-black/10">
             <div className={`px-4 py-3.5 transition-colors ${
@@ -875,7 +876,7 @@ export default function BookingWidget({
 
         {/* Availability Calendar — always custom, never native date inputs */}
         {showCalendar && (
-          <div className="border border-black/10 border-t-0 overflow-hidden">
+          <div className="border border-black border-t-0 rounded-b-lg overflow-hidden shadow-[0_8px_24px_rgba(26,26,24,0.08)] bg-white">
             {calendarLoading ? (
               <div className="flex items-center justify-center py-10">
                 <Loader2 className="w-4 h-4 animate-spin text-black/30" />
@@ -883,6 +884,7 @@ export default function BookingWidget({
               </div>
             ) : (
               <AvailabilityCalendar
+                singleMonth
                 days={calendarDays}
                 checkIn={checkIn}
                 checkOut={checkOut}

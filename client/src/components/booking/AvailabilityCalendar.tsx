@@ -18,6 +18,9 @@ export interface AvailabilityDay {
 
 interface AvailabilityCalendarProps {
   days: AvailabilityDay[];
+  /** Sidebar mode: render one month with both nav arrows (two side-by-side
+   *  months don't fit a 400px column and blow up the widget height). */
+  singleMonth?: boolean;
   checkIn: string;
   checkOut: string;
   /** Global fallback minimum stay for days Guesty did not annotate */
@@ -93,6 +96,7 @@ function buildMonthGrid(year: number, month: number): (Date | null)[][] {
 }
 
 export default function AvailabilityCalendar({
+  singleMonth,
   days,
   checkIn,
   checkOut,
@@ -455,9 +459,9 @@ export default function AvailabilityCalendar({
       )}
 
       {/* Calendar grid */}
-      <div className={`px-3 pb-3 pt-1 ${isMobile ? "" : "flex gap-6"}`}>
+      <div className={`px-3 pb-3 pt-1 ${isMobile || singleMonth ? "" : "flex gap-6"}`}>
         {renderMonth(viewYear, viewMonth, true)}
-        {!isMobile && renderMonth(secondYear, secondMonth, false)}
+        {!isMobile && !singleMonth && renderMonth(secondYear, secondMonth, false)}
       </div>
 
       {/* Legend */}

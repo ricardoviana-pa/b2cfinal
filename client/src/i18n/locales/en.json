@@ -129,7 +129,7 @@
     "estTotal": "est. total",
     "indicativeCatalogue": "Indicative from catalogue rate. Confirm for final total.",
     "indicativeUnavailable": "Indicative (catalogue). Live pricing unavailable — confirm on booking.",
-    "cleaningFee": "Home preparation service",
+    "cleaningFee": "Service fee",
     "serviceFee": "Service fee",
     "touristTax": "Tourist tax",
     "vat": "VAT",
@@ -1441,7 +1441,7 @@
         "desc": "A curated selection of regional wines and delicacies."
       },
       "grocery-list": {
-        "name": "Personal grocery list",
+        "name": "Fridge stocked on arrival",
         "desc": "Send us your list, the fridge is stocked before you arrive."
       },
       "massage": {
@@ -1520,7 +1520,7 @@
       "badge": "Included",
       "concierge": "A dedicated concierge on WhatsApp",
       "linen": "Hotel bed linen and towels",
-      "welcome": "Welcome pack on arrival",
+      "welcome": "Welcoming pack",
       "bestRate": "Best rate guaranteed"
     },
     "chapter": {
@@ -1552,7 +1552,7 @@
       "beforeLate": "Before {{hour}}h",
       "afterLate": "After {{hour}}h",
       "self": {
-        "name": "Self check in",
+        "name": "Self check-in",
         "desc": "Autonomous entry with a code, instructions sent the day before, WhatsApp support any time."
       },
       "hosted": {
@@ -1568,6 +1568,15 @@
     "remove": "Remove",
     "conciergeQuote": "Quoted by your concierge",
     "fromPrice": "from {{price}}",
-    "requested": "Requested"
+    "requested": "Requested",
+    "coupon": {
+      "have": "Have a promo code?",
+      "apply": "Apply",
+      "ph": "PROMO CODE",
+      "invalid": "Code not recognized. Check it and try again.",
+      "applied": "Code {{code}} applied"
+    },
+    "prev": "Previous",
+    "next": "Next"
   }
 }

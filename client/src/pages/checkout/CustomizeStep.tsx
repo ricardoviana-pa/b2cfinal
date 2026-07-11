@@ -22,6 +22,8 @@ import {
   Plus,
   Clock3,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   MessageCircle,
   BedDouble,
   Gift,
@@ -493,8 +495,18 @@ export default function CustomizeStep({
     bestRate: BadgeCheck,
   };
 
-  // Única zona fotográfica do passo: 3 cartões com asset aprovado
-  const expCards = catalog.filter((i) => i.chapter === "experiences" && i.photo).slice(0, 3);
+  // Única zona fotográfica do passo. Carrossel com setas (12 jul): todos os
+  // produtos, fotos aprovadas primeiro; sem asset = cartão tipográfico.
+  const expCards = [...catalog.filter((i) => i.chapter === "experiences")].sort(
+    (a, b) => Number(!!b.photo) - Number(!!a.photo),
+  );
+  const expScrollRef = useRef<HTMLDivElement | null>(null);
+  const scrollExp = (dir: 1 | -1) => {
+    const el = expScrollRef.current;
+    if (!el) return;
+    const card = el.querySelector(":scope > div") as HTMLElement | null;
+    el.scrollBy({ left: dir * ((card?.offsetWidth ?? 300) + 12), behavior: "smooth" });
+  };
 
   return (
     <div>
@@ -624,29 +636,56 @@ export default function CustomizeStep({
             {/* 3.4 Experiências: única zona fotográfica — 3 cartões reais */}
             {isExperiences && (
               <>
-                <div className="flex sm:grid sm:grid-cols-3 gap-3 overflow-x-auto sm:overflow-visible snap-x pb-1">
+                {/* Setas do carrossel (12 jul): scroll em vez de sair do checkout */}
+                <div className="flex items-center justify-end gap-2 mb-3">
+                  <button
+                    type="button"
+                    onClick={() => scrollExp(-1)}
+                    aria-label={t("checkout.prev", "Previous")}
+                    className="w-10 h-10 rounded-full border border-pa-sand bg-white flex items-center justify-center text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollExp(1)}
+                    aria-label={t("checkout.next", "Next")}
+                    className="w-10 h-10 rounded-full border border-pa-sand bg-white flex items-center justify-center text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+                <div ref={expScrollRef} className="chapter-nav-scroll flex gap-3 overflow-x-auto snap-x pb-1">
                   {expCards.map((item) => {
                     const selected = selection[item.sku] != null;
                     return (
                       <div
                         key={item.sku}
                         className={cn(
-                          "shrink-0 w-[70%] sm:w-auto snap-start rounded-lg overflow-hidden bg-white transition-all",
+                          "shrink-0 w-[70%] sm:w-[calc((100%-24px)/3)] snap-start rounded-lg overflow-hidden bg-white transition-all flex flex-col",
                           selected ? "border-[1.5px] border-pa-dark" : "border border-pa-sand",
                         )}
                       >
-                        <div className="aspect-[3/2] bg-pa-warm relative">
-                          <img src={item.photo} alt="" className="w-full h-full object-cover" loading="lazy" />
-                          {selected && (
-                            <span className="absolute top-2 right-2 w-6 h-6 rounded-full bg-pa-dark flex items-center justify-center">
-                              <Check className="w-3.5 h-3.5 text-white" />
-                            </span>
-                          )}
-                        </div>
-                        <div className="p-4">
-                          <p className="text-[14px] font-medium text-pa-dark leading-snug">
+                        {item.photo && (
+                          <div className="aspect-[3/2] bg-pa-warm relative">
+                            <img src={item.photo} alt="" className="w-full h-full object-cover" loading="lazy" />
+                            {selected && (
+                              <span className="absolute top-2 right-2 w-6 h-6 rounded-full bg-pa-dark flex items-center justify-center">
+                                <Check className="w-3.5 h-3.5 text-white" />
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        <div className="p-4 flex flex-col flex-1">
+                          <p className="flex items-center gap-1.5 text-[14px] font-medium text-pa-dark leading-snug">
+                            {selected && !item.photo && <Check className="w-3.5 h-3.5 text-pa-gold shrink-0" strokeWidth={2.5} />}
                             {t(`checkout.extras.${item.sku}.name`)}
                           </p>
+                          {!item.photo && (
+                            <p className="text-[12px] text-pa-earth leading-snug mt-1 flex-1">
+                              {t(`checkout.extras.${item.sku}.desc`)}
+                            </p>
+                          )}
                           <div className="flex items-center justify-between gap-2 mt-2">
                             <p className="text-[12.5px] text-pa-earth">
                               {item.priceFrom != null
@@ -671,14 +710,6 @@ export default function CustomizeStep({
                     );
                   })}
                 </div>
-                <a
-                  href={`/${lang}/experiences`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-4 inline-flex items-center gap-1 text-[12px] text-pa-gold hover:text-pa-dark underline underline-offset-2 transition-colors"
-                >
-                  {t("checkout.seeAllExperiences")}
-                </a>
               </>
             )}
           </ChapterReveal>

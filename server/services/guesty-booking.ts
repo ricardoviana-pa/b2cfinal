@@ -147,60 +147,9 @@ export async function createBEQuote(input: {
   return _createBEQuoteImpl(input);
 }
 
-async function _createBEQuoteImpl(input: {
-  listingId: string;
-  checkIn: string;
-  checkOut: string;
-  guests: number;
-  guestFirstName?: string;
-  guestLastName?: string;
-  guestEmail?: string;
-}): Promise<BEQuoteResult> {
-  const body: Record<string, unknown> = {
-    listingId: input.listingId,
-    checkInDateLocalized: input.checkIn,
-    checkOutDateLocalized: input.checkOut,
-    guestsCount: input.guests,
-  };
-  if (input.guestFirstName || input.guestLastName || input.guestEmail) {
-    body.guest = {
-      firstName: input.guestFirstName || "Guest",
-      lastName: input.guestLastName || "Guest",
-      email: input.guestEmail || "guest@example.com",
-    };
-  }
-
-  // ── Rate-limit cooldown: respect Guesty's retryAfterMs from prior 429s ──
-  const cooldownRemaining = beQuoteCooldownUntil - Date.now();
-  if (cooldownRemaining > 0) {
-    console.warn(`[BE Quote] Skipping — quotes endpoint in cooldown for ${Math.ceil(cooldownRemaining / 1000)}s`);
-    throw new Error(GUESTY_BE_AUTH_ERROR);
-  }
-
-  let quote: any;
-  try {
-    quote = await guestyBEClient.request<any>("POST", "/api/reservations/quotes", { body });
-  } catch (error: any) {
-    const status = error?.status ?? 0;
-    const details = error?.details ?? null;
-    const rawBody = typeof details === "string"
-      ? details.slice(0, 500)
-      : JSON.stringify(details ?? {}).slice(0, 500);
-    const credentialId = process.env.GUESTY_BE_CLIENT_ID
-      ? process.env.GUESTY_BE_CLIENT_ID.slice(0, 6) + "..."
-      : "NOT SET";
-    console.error(`[BE Quote] createBEQuote FAILED — status=${status}, credentialId=${credentialId}, listingId=${input.listingId}, body=${rawBody}`);
-    if (status === 429) {
-      const waitMs = parseRetryAfterMs(details);
-      beQuoteCooldownUntil = Date.now() + waitMs;
-      console.warn(`[BE Quote] 429 received — quotes endpoint cooldown for ${Math.ceil(waitMs / 1000)}s (until ${new Date(beQuoteCooldownUntil).toISOString()})`);
-      throw new Error(GUESTY_BE_AUTH_ERROR);
-    }
-    const friendly = parseBEError(JSON.stringify(details ?? error?.message ?? ""));
-    if (status === 422) throw new Error(friendly || "This property is not available for the selected dates.");
-    throw new Error(friendly || error?.message || "Unable to get live quote from Guesty.");
-  }
-
+/** Parse a Guesty BE quote payload into the shared BEQuoteResult shape.
+ *  Reused by quote creation AND coupon application (both return the quote). */
+function parseBEQuote(quote: any, listingId: string, checkIn: string, checkOut: string): BEQuoteResult {
   const ratePlans = quote.rates?.ratePlans || [];
   if (ratePlans.length === 0) throw new Error("No rate plan available for this property");
 
@@ -231,7 +180,7 @@ async function _createBEQuoteImpl(input: {
   const plan = [...ratePlans].sort((a, b) => planFriendliness(b) - planFriendliness(a))[0];
 
   const nights = Math.ceil(
-    (new Date(input.checkOut).getTime() - new Date(input.checkIn).getTime()) / 86400000
+    (new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000
   );
 
   // Guesty BE wraps rate plan data under a nested "ratePlan" key
@@ -304,9 +253,9 @@ async function _createBEQuoteImpl(input: {
 
   return {
     quoteId: quote._id,
-    listingId: input.listingId,
-    checkIn: input.checkIn,
-    checkOut: input.checkOut,
+    listingId: listingId,
+    checkIn: checkIn,
+    checkOut: checkOut,
     nights,
     currency: money.currency || "EUR",
     total: selected.total,
@@ -320,6 +269,63 @@ async function _createBEQuoteImpl(input: {
     },
     ratePlanOptions: options,
   };
+}
+
+async function _createBEQuoteImpl(input: {
+  listingId: string;
+  checkIn: string;
+  checkOut: string;
+  guests: number;
+  guestFirstName?: string;
+  guestLastName?: string;
+  guestEmail?: string;
+}): Promise<BEQuoteResult> {
+  const body: Record<string, unknown> = {
+    listingId: input.listingId,
+    checkInDateLocalized: input.checkIn,
+    checkOutDateLocalized: input.checkOut,
+    guestsCount: input.guests,
+  };
+  if (input.guestFirstName || input.guestLastName || input.guestEmail) {
+    body.guest = {
+      firstName: input.guestFirstName || "Guest",
+      lastName: input.guestLastName || "Guest",
+      email: input.guestEmail || "guest@example.com",
+    };
+  }
+
+  // ── Rate-limit cooldown: respect Guesty's retryAfterMs from prior 429s ──
+  const cooldownRemaining = beQuoteCooldownUntil - Date.now();
+  if (cooldownRemaining > 0) {
+    console.warn(`[BE Quote] Skipping — quotes endpoint in cooldown for ${Math.ceil(cooldownRemaining / 1000)}s`);
+    throw new Error(GUESTY_BE_AUTH_ERROR);
+  }
+
+  let quote: any;
+  try {
+    quote = await guestyBEClient.request<any>("POST", "/api/reservations/quotes", { body });
+  } catch (error: any) {
+    const status = error?.status ?? 0;
+    const details = error?.details ?? null;
+    const rawBody = typeof details === "string"
+      ? details.slice(0, 500)
+      : JSON.stringify(details ?? {}).slice(0, 500);
+    const credentialId = process.env.GUESTY_BE_CLIENT_ID
+      ? process.env.GUESTY_BE_CLIENT_ID.slice(0, 6) + "..."
+      : "NOT SET";
+    console.error(`[BE Quote] createBEQuote FAILED — status=${status}, credentialId=${credentialId}, listingId=${input.listingId}, body=${rawBody}`);
+    if (status === 429) {
+      const waitMs = parseRetryAfterMs(details);
+      beQuoteCooldownUntil = Date.now() + waitMs;
+      console.warn(`[BE Quote] 429 received — quotes endpoint cooldown for ${Math.ceil(waitMs / 1000)}s (until ${new Date(beQuoteCooldownUntil).toISOString()})`);
+      throw new Error(GUESTY_BE_AUTH_ERROR);
+    }
+    const friendly = parseBEError(JSON.stringify(details ?? error?.message ?? ""));
+    if (status === 422) throw new Error(friendly || "This property is not available for the selected dates.");
+    throw new Error(friendly || error?.message || "Unable to get live quote from Guesty.");
+  }
+
+  return parseBEQuote(quote, input.listingId, input.checkIn, input.checkOut);
 }
 
 export interface BEInstantReservationResult {
@@ -450,4 +456,51 @@ export async function getPaymentProvider(listingId: string): Promise<{
     providerType: provider.providerType || "unknown",
     providerAccountId: provider.providerAccountId,
   };
+}
+
+export interface BECouponInfo {
+  code: string;
+  type?: string;
+  adjustment?: number;
+}
+
+/**
+ * Aplica (ou remove, com []) cupões a uma quote BE existente. O quoteId
+ * mantém-se — a reserva instantânea continua a usar a mesma quote, agora com
+ * os rates descontados. Cupões vivem no Revenue Management do Guesty.
+ * Docs: POST /api/reservations/quotes/{quoteId}/coupons
+ */
+export async function applyCouponToBEQuote(input: {
+  quoteId: string;
+  coupons: string[];
+  listingId: string;
+  checkIn: string;
+  checkOut: string;
+}): Promise<BEQuoteResult & { coupons: BECouponInfo[] }> {
+  let quote: any;
+  try {
+    quote = await guestyBEClient.request<any>(
+      "POST",
+      `/api/reservations/quotes/${input.quoteId}/coupons`,
+      { body: { coupons: input.coupons } },
+    );
+  } catch (error: any) {
+    const status = error?.status ?? 0;
+    const details = JSON.stringify(error?.details ?? error?.message ?? "");
+    console.error(`[BE Coupon] apply FAILED — status=${status}, quoteId=${input.quoteId}, body=${details.slice(0, 300)}`);
+    // 400/422 = código desconhecido/expirado para o Guesty
+    if (status === 400 || status === 422 || /coupon/i.test(details)) throw new Error("INVALID_COUPON");
+    throw new Error(parseBEError(details) || "Unable to apply the promo code.");
+  }
+  const parsed = parseBEQuote(quote, input.listingId, input.checkIn, input.checkOut);
+  const coupons: BECouponInfo[] = Array.isArray(quote.coupons)
+    ? quote.coupons
+        .map((c: any) => ({
+          code: String(c.code ?? c.name ?? ""),
+          type: c.type ? String(c.type) : undefined,
+          adjustment: typeof c.adjustment === "number" ? c.adjustment : undefined,
+        }))
+        .filter((c: BECouponInfo) => c.code)
+    : [];
+  return { ...parsed, coupons };
 }

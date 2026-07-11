@@ -83,6 +83,14 @@ Capítulos, cada um com título em serif, uma linha editorial e cards com fotogr
 
 Fecho do passo: bloco Flex (secção 6) e CTA que reflete o estado ("Continuar sem extras" ou "Continuar com N extras"), como já está na demo.
 
+### 5.0 Itens de catálogo decididos a 12 de julho
+
+* Berço de viagem e cadeira de bebé (capítulo A casa): o primeiro de cada é incluído mas exige seleção, porque a equipa precisa de saber para preparar a casa. Novo modelo de preço `included_selectable`: 0 € na primeira unidade, unidades adicionais a 25 €. Badge "Incluído" na linha; entra sempre no manifesto de operações. A curadoria promove estes itens para os visíveis quando a reserva tem crianças (requer o campo crianças no seletor de hóspedes, que o Guesty suporta).
+* Animais (capítulo A casa): taxa de 45 € por estadia. Visibilidade condicionada pelo próprio listing Guesty: o item só existe quando a casa aceita animais. Ao adicionar a taxa, a linha revela extras pet por progressive disclosure: kit de cama e taças a 25 €, e comida para o animal por pedido (`on_request`).
+* Late check out: decidido, não existe como produto. Uma noite seguinte vendável vale ordens de grandeza acima do valor do extra e o risco de conflito com chegadas é operacionalmente inaceitável.
+* Early check in garantido: apenas como proposta condicionada (secção 15): só apareceria quando a noite anterior está livre no calendário Guesty, com venda instantânea e risco zero. Sem essa condição verificada, o item não é mostrado sequer.
+* Grocery: os cabazes mantêm; "Lista de compras personalizada" é renomeada para vender o resultado, por exemplo "Frigorífico pronto à chegada".
+
 ### 5.1 Express vs etapas obrigatórias: decisão
 
 Nem checkout express separado, nem sequência forçada de páginas ao estilo companhia low cost.
@@ -266,6 +274,8 @@ Em aberto para o Ricardo:
 7. MB Way e wallets: depende do spike de pagamento.
 8. Base de dados: Postgres no Render ou Supabase.
 9. Copy e termos do Flex validados pelo André.
+10. Early check in garantido, condicionado ao calendário (só quando a noite anterior está vazia no Guesty, venda instantânea). Sim ou não.
+11. Dispensa de caução (proteção de danos): decisão adiada até haver dados. Pedir à operação o histórico 2025 de incidentes (quantos, custo médio, quanto foi de facto recuperado via caução) antes de decidir. Piloto proposto: manter a caução como default e oferecer a dispensa como alternativa no passo 3 (39 a 49 € casas standard, 69 a 79 € tier superior, cobertura de danos acidentais até um limite por tier, exclusões para negligência, festas e fumo), medir um trimestre. Termos com o André antes de produção.
 
 ## 16. Plano de execução em Claude Code
 

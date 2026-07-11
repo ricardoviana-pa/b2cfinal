@@ -27,6 +27,7 @@ import {
   Plus,
   ChevronUp,
   ChevronDown,
+  Tag,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
@@ -62,6 +63,7 @@ interface QuoteSnapshot {
   nights: number;
   currency: string;
   quoteCreatedAt: number | null;
+  couponCode?: string;
   ratePlanOptions?: Array<{
     ratePlanId: string;
     name: string;
@@ -223,6 +225,12 @@ export default function CheckoutPage() {
   const [extraSel, setExtraSel] = useState<Record<string, ExtraSelection>>({});
   const [flexSelected, setFlexSelected] = useState(false);
   const [receptionChoice, setReceptionChoice] = useState<ReceptionChoice>(null);
+  // Código promocional (cupões do Revenue Management do Guesty — 12 jul)
+  const [couponOpen, setCouponOpen] = useState(false);
+  const [couponInput, setCouponInput] = useState("");
+  const [couponBusy, setCouponBusy] = useState(false);
+  const [couponError, setCouponError] = useState(false);
+  const applyCouponMut = trpc.booking.applyCoupon.useMutation();
 
   // The global CookieBanner (fixed bottom, z-60) legally must stay on top; while
   // consent is pending we lift the checkout's own bottom bar above it so the
@@ -262,6 +270,7 @@ export default function CheckoutPage() {
     if (intent.email) contactFiredRef.current = true;
     if (intent.flex) setFlexSelected(true);
     if (intent.reception?.type) setReceptionChoice(intent.reception as ReceptionChoice);
+    if (intent.quote?.couponCode) setCouponInput(String(intent.quote.couponCode));
     if (Array.isArray(intent.extras)) {
       const seeded: Record<string, ExtraSelection> = {};
       for (const e of intent.extras as Array<Record<string, unknown>>) {
@@ -425,6 +434,73 @@ export default function CheckoutPage() {
     setStep("customize");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [intent, email, lang, captureLead, utils, isDemo]);
+
+  /**
+   * Aplica/remove o código promocional na quote BE existente (o quoteId
+   * mantém-se válido para a reserva). Demo: só DEMO10 funciona, 10 por cento.
+   */
+  const applyCoupon = useCallback(
+    async (code: string) => {
+      if (!intent) return;
+      setCouponBusy(true);
+      setCouponError(false);
+      try {
+        if (isDemo) {
+          if (code && code !== "DEMO10") { setCouponError(true); return; }
+          const base = buildDemoIntent().quote as QuoteSnapshot;
+          const f = code ? 0.9 : 1;
+          const adj = (n: number) => Math.round(n * f);
+          setQuote({
+            ...base,
+            nightlyRate: adj(base.nightlyRate),
+            totalNights: adj(base.totalNights),
+            total: adj(base.total - base.cleaningFee) + base.cleaningFee,
+            couponCode: code || undefined,
+            ratePlanOptions: base.ratePlanOptions?.map((o) => ({
+              ...o,
+              nightlyRate: adj(o.nightlyRate),
+              total: adj(o.total - o.cleaningFee) + o.cleaningFee,
+            })),
+          });
+          if (!code) setCouponInput("");
+          setCouponOpen(!!code);
+          return;
+        }
+        if (!quoteId) { setCouponError(true); return; }
+        const r = await applyCouponMut.mutateAsync({
+          quoteId,
+          listingId: intent.listingId,
+          checkIn,
+          checkOut,
+          coupon: code,
+        });
+        if (!r.ok) { setCouponError(true); return; }
+        const fresh: QuoteSnapshot = {
+          nightlyRate: r.pricing.nightlyRate,
+          totalNights: r.pricing.totalNights,
+          cleaningFee: r.pricing.cleaningFee,
+          taxesAndFees: r.pricing.taxesAndFees ?? 0,
+          total: r.total,
+          nights: r.nights,
+          currency: "EUR",
+          quoteCreatedAt: Date.now(),
+          couponCode: r.coupons?.[0]?.code || undefined,
+          ratePlanOptions: r.ratePlanOptions,
+        };
+        const stillThere = fresh.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
+        setQuote(fresh);
+        setSelectedRatePlanId(stillThere?.ratePlanId ?? r.ratePlanId ?? fresh.ratePlanOptions?.[0]?.ratePlanId ?? null);
+        syncIntent({ quote: fresh });
+        if (!code) setCouponInput("");
+        if (code) pushDL({ event: "coupon_applied", coupon: code, property_id: intent.listingId });
+      } catch {
+        setCouponError(true);
+      } finally {
+        setCouponBusy(false);
+      }
+    },
+    [intent, isDemo, quoteId, checkIn, checkOut, selectedRatePlanId, applyCouponMut, syncIntent],
+  );
 
   // ── Reception: mandatory choice (§5.2). Persisted on the intent. ──
   const chooseReception = useCallback(
@@ -764,6 +840,11 @@ export default function CheckoutPage() {
         <span className="text-[14px] font-medium text-pa-dark">{t("checkout.todayTotal", "Total today")}</span>
         <span className="text-[20px] font-light text-pa-dark tabular-nums">{formatEur(animatedTotal, lang)}</span>
       </div>
+      {quote?.couponCode && (
+        <p className="flex items-center gap-1.5 text-[11px] text-pa-gold">
+          <Tag className="w-3 h-3" /> {t("checkout.coupon.applied", { code: quote.couponCode })}
+        </p>
+      )}
     </div>
   );
 
@@ -1081,6 +1162,58 @@ export default function CheckoutPage() {
               {effective && (
                 <div className="lg:hidden bg-white border border-pa-sand rounded-lg p-5">{summaryLines}</div>
               )}
+
+              {/* Código promocional (12 jul) */}
+              <div className="bg-white border border-pa-sand rounded-lg px-5 py-4">
+                {quote?.couponCode ? (
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="flex items-center gap-1.5 text-[12.5px] text-pa-dark">
+                      <Tag className="w-3.5 h-3.5 text-pa-gold" />
+                      {t("checkout.coupon.applied", { code: quote.couponCode })}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => applyCoupon("")}
+                      disabled={couponBusy}
+                      className="text-[11px] text-pa-stone-aa hover:text-pa-dark underline underline-offset-2 transition-colors"
+                    >
+                      {t("checkout.remove", "Remove")}
+                    </button>
+                  </div>
+                ) : !couponOpen ? (
+                  <button
+                    type="button"
+                    onClick={() => setCouponOpen(true)}
+                    className="text-[12px] text-pa-gold hover:text-pa-dark underline underline-offset-2 transition-colors"
+                  >
+                    {t("checkout.coupon.have", "Have a promo code?")}
+                  </button>
+                ) : (
+                  <div className="space-y-1.5">
+                    <div className="flex gap-2">
+                      <input
+                        value={couponInput}
+                        onChange={(e) => { setCouponInput(e.target.value.toUpperCase().replace(/[^A-Z0-9_-]/g, "")); setCouponError(false); }}
+                        onKeyDown={(e) => { if (e.key === "Enter" && couponInput.trim()) applyCoupon(couponInput.trim()); }}
+                        placeholder={t("checkout.coupon.ph", "PROMO CODE")}
+                        maxLength={40}
+                        className="flex-1 h-[42px] border border-pa-sand bg-white px-3 rounded-md text-[13px] tracking-[0.06em] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => applyCoupon(couponInput.trim())}
+                        disabled={couponBusy || !couponInput.trim() || (!isDemo && !quoteId)}
+                        className="h-[42px] px-5 rounded-md border border-pa-dark text-[11px] font-medium tracking-[0.08em] uppercase text-pa-dark hover:bg-pa-dark hover:text-white transition-colors disabled:opacity-40"
+                      >
+                        {couponBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : t("checkout.coupon.apply", "Apply")}
+                      </button>
+                    </div>
+                    {couponError && (
+                      <p className="text-[11px] text-pa-earth">{t("checkout.coupon.invalid", "Code not recognized. Check it and try again.")}</p>
+                    )}
+                  </div>
+                )}
+              </div>
 
               {/* Email capture */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
