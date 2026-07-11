@@ -13,7 +13,7 @@
 import { randomUUID } from "crypto";
 import { z } from "zod";
 import { publicProcedure, router } from "../_core/trpc";
-import { CHECKOUT_EXTRAS } from "../config/checkout-extras";
+import { CHECKOUT_EXTRAS, FLEX_CONFIG } from "../config/checkout-extras";
 import {
   createBookingIntent,
   getBookingIntent,
@@ -145,6 +145,7 @@ export const checkoutRouter = router({
           guestyQuoteId: z.string().max(64).optional(),
           quote: quoteSnapshotSchema.optional(),
           extras: z.array(extraSelectionSchema).max(20).optional(),
+          flex: z.boolean().optional(),
           status: z
             .enum(["draft", "contact_captured", "payment_pending", "paid"])
             .optional(),
@@ -171,7 +172,7 @@ export const checkoutRouter = router({
     }),
 
   /** Launch catalog for the Personalizar step (global scope in v1, spec §5). */
-  getExtras: publicProcedure.query(() => ({ extras: CHECKOUT_EXTRAS })),
+  getExtras: publicProcedure.query(() => ({ extras: CHECKOUT_EXTRAS, flex: FLEX_CONFIG })),
 
   /**
    * Email capture at the end of passo 1 (spec §4): stores the email on the

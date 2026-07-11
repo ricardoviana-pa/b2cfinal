@@ -1474,6 +1474,26 @@
       }
     },
     "emailTitle": "¿A dónde enviamos su reserva?",
-    "perStay": "por estancia"
+    "perStay": "por estancia",
+    "flex": {
+      "title": "Flex — cambio de fechas garantizado",
+      "tagline": "Cambie de fechas cuando quiera. El importe pagado nunca se pierde.",
+      "perBooking": "pago único, por reserva",
+      "benefit1": "Cambie de fechas hasta {{days}} días antes de la llegada, sin coste",
+      "benefit2": "El importe pagado queda protegido — nunca se pierde",
+      "benefit3": "Crédito válido durante {{months}} meses, en cualquier casa del portafolio",
+      "copyNonRefundable": "Eligió el mejor precio. Con Flex, el importe nunca se pierde: cambie de fechas hasta {{days}} días antes de la llegada.",
+      "copyFlexible": "Su tarifa permite cancelación gratuita hasta el {{date}}. Después de esa fecha, Flex le garantiza cambiar de fechas hasta {{days}} días antes de la llegada sin perder el importe.",
+      "howItWorks": "Cómo funciona",
+      "add": "Añadir Flex",
+      "added": "Añadido",
+      "rule1": "Cambie de fechas sin coste hasta {{days}} días antes de la llegada, tantas veces como necesite — con una reserva activa cada vez.",
+      "rule2": "Lo protegido es el importe pagado — no las fechas ni la casa. Los precios vigentes se aplican a las nuevas fechas.",
+      "rule3": "Al cambiar, el importe pagado se convierte en crédito válido durante {{months}} meses, utilizable en cualquier casa del portafolio.",
+      "rule4": "Nueva estancia más cara: solo paga la diferencia. Más barata: el saldo permanece como crédito.",
+      "rule5": "Los extras se trasladan con su reserva cuando el servicio lo permite; si no, su importe también se convierte en crédito.",
+      "rule6": "Flex solo se adquiere en el pago y no es reembolsable.",
+      "honesty": "Si cancela dentro de la ventana de cancelación gratuita de su tarifa, le devolvemos el dinero según la política. Flex nunca sustituye ese derecho — añade protección más allá de él."
+    }
   }
 }

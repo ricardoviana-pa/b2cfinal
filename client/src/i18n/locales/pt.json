@@ -1474,6 +1474,26 @@
       }
     },
     "emailTitle": "Para onde enviamos a sua reserva?",
-    "perStay": "por estadia"
+    "perStay": "por estadia",
+    "flex": {
+      "title": "Flex — remarcação garantida",
+      "tagline": "Remarque quando quiser. O valor que pagou nunca se perde.",
+      "perBooking": "pagamento único, por reserva",
+      "benefit1": "Remarque até {{days}} dias antes do check-in, sem custo",
+      "benefit2": "O valor pago fica sempre protegido — nunca se perde",
+      "benefit3": "Crédito válido por {{months}} meses, em qualquer casa do portefólio",
+      "copyNonRefundable": "Escolheu o melhor preço. Com Flex, o valor nunca se perde: remarque até {{days}} dias antes do check-in.",
+      "copyFlexible": "A sua tarifa permite cancelamento gratuito até {{date}}. Depois dessa data, o Flex garante que remarca até {{days}} dias antes do check-in sem perder o valor.",
+      "howItWorks": "Como funciona",
+      "add": "Adicionar Flex",
+      "added": "Adicionado",
+      "rule1": "Remarque sem custo até {{days}} dias antes do check-in, as vezes que precisar — com uma reserva ativa de cada vez.",
+      "rule2": "O que fica protegido é o valor pago — não as datas nem a casa. Os preços em vigor aplicam-se às novas datas.",
+      "rule3": "Ao remarcar, o valor pago converte-se em crédito válido por {{months}} meses, utilizável em qualquer casa do portefólio.",
+      "rule4": "Nova estadia mais cara: paga apenas a diferença. Mais barata: o saldo permanece em crédito.",
+      "rule5": "Os extras remarcam juntos sempre que o serviço o permitir; caso contrário, o seu valor converte-se também em crédito.",
+      "rule6": "O Flex adquire-se apenas no checkout e não é reembolsável.",
+      "honesty": "Se cancelar dentro da janela de cancelamento gratuito da sua tarifa, devolvemos o dinheiro conforme a política. O Flex nunca substitui esse direito — acrescenta proteção para lá dele."
+    }
   }
 }

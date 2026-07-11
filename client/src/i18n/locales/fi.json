@@ -1474,6 +1474,26 @@
       }
     },
     "emailTitle": "Minne lähetämme varauksesi?",
-    "perStay": "per majoitus"
+    "perStay": "per majoitus",
+    "flex": {
+      "title": "Flex — taattu uudelleenvaraus",
+      "tagline": "Siirrä varaustasi milloin tahansa. Maksettu summa ei koskaan mene hukkaan.",
+      "perBooking": "kertamaksu, per varaus",
+      "benefit1": "Siirrä varausta {{days}} päivään asti ennen sisäänkirjautumista, maksutta",
+      "benefit2": "Maksettu summa pysyy suojattuna — se ei koskaan mene hukkaan",
+      "benefit3": "Hyvitys voimassa {{months}} kuukautta, missä tahansa portfolion talossa",
+      "copyNonRefundable": "Valitsit parhaan hinnan. Flexin kanssa summa ei koskaan mene hukkaan: siirrä varausta {{days}} päivään asti ennen sisäänkirjautumista.",
+      "copyFlexible": "Hintasi sallii maksuttoman peruutuksen {{date}} asti. Sen jälkeen Flex takaa, että voit siirtää varausta {{days}} päivään asti ennen sisäänkirjautumista menettämättä summaa.",
+      "howItWorks": "Näin se toimii",
+      "add": "Lisää Flex",
+      "added": "Lisätty",
+      "rule1": "Siirrä varausta maksutta {{days}} päivään asti ennen sisäänkirjautumista, niin monta kertaa kuin tarvitset — yksi aktiivinen varaus kerrallaan.",
+      "rule2": "Suojattuna on maksettu summa — ei päivät eikä talo. Uusiin päiviin sovelletaan voimassa olevia hintoja.",
+      "rule3": "Kun siirrät varausta, maksettu summa muuttuu hyvitykseksi, joka on voimassa {{months}} kuukautta ja käytettävissä missä tahansa portfolion talossa.",
+      "rule4": "Jos uusi majoitus on kalliimpi, maksat vain erotuksen. Jos halvempi, loppusumma säilyy hyvityksenä.",
+      "rule5": "Lisäpalvelut siirtyvät mukana aina kun palvelu sen sallii; muuten niidenkin summa muuttuu hyvitykseksi.",
+      "rule6": "Flex on ostettavissa vain kassalla, eikä sitä hyvitetä.",
+      "honesty": "Jos peruutat hintasi maksuttoman peruutusikkunan sisällä, palautamme rahasi käytännön mukaisesti. Flex ei koskaan korvaa tätä oikeutta — se lisää suojaa sen yli."
+    }
   }
 }

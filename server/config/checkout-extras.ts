@@ -65,3 +65,16 @@ export const CHECKOUT_EXTRAS: CheckoutExtra[] = [
   { sku: "exp-wine", category: "experiences", pricingModel: "on_request", fulfillment: "on_request" },
   { sku: "exp-heritage", category: "experiences", pricingModel: "on_request", fulfillment: "on_request" },
 ];
+
+/**
+ * Flex — remarcação garantida (Fase 3, spec §6). NUNCA "seguro" (ASF).
+ * Valores afináveis no fim (spec §15): preço fixo, limiar de visibilidade,
+ * prazo mínimo de remarcação e validade do crédito.
+ */
+export const FLEX_CONFIG = {
+  price: 250,
+  /** Só visível em reservas acima deste total (recomendação spec §6) */
+  minTotal: 1500,
+  rescheduleDaysBefore: 7,
+  creditMonths: 18,
+};

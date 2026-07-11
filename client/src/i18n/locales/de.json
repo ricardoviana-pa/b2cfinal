@@ -1474,6 +1474,26 @@
       }
     },
     "emailTitle": "Wohin senden wir Ihre Buchung?",
-    "perStay": "pro Aufenthalt"
+    "perStay": "pro Aufenthalt",
+    "flex": {
+      "title": "Flex — garantierte Umbuchung",
+      "tagline": "Buchen Sie um, wann immer nötig. Der gezahlte Betrag geht nie verloren.",
+      "perBooking": "einmalig, pro Buchung",
+      "benefit1": "Umbuchen bis {{days}} Tage vor Check-in, kostenlos",
+      "benefit2": "Der gezahlte Betrag bleibt geschützt — er geht nie verloren",
+      "benefit3": "Guthaben {{months}} Monate gültig, in jedem Haus des Portfolios",
+      "copyNonRefundable": "Sie haben den besten Preis gewählt. Mit Flex geht der Betrag nie verloren: Buchen Sie bis {{days}} Tage vor Check-in um.",
+      "copyFlexible": "Ihr Tarif erlaubt kostenlose Stornierung bis {{date}}. Danach garantiert Flex, dass Sie bis {{days}} Tage vor Check-in umbuchen können, ohne den Betrag zu verlieren.",
+      "howItWorks": "So funktioniert es",
+      "add": "Flex hinzufügen",
+      "added": "Hinzugefügt",
+      "rule1": "Kostenlos umbuchen bis {{days}} Tage vor Check-in, so oft nötig — mit jeweils einer aktiven Buchung.",
+      "rule2": "Geschützt ist der gezahlte Betrag — nicht die Daten oder das Haus. Für neue Daten gelten die aktuellen Preise.",
+      "rule3": "Beim Umbuchen wird der gezahlte Betrag zu Guthaben, {{months}} Monate gültig, einlösbar in jedem Haus des Portfolios.",
+      "rule4": "Ist der neue Aufenthalt teurer, zahlen Sie nur die Differenz. Ist er günstiger, bleibt der Rest als Guthaben.",
+      "rule5": "Extras ziehen mit um, wann immer der Service es erlaubt; andernfalls wird auch ihr Betrag zu Guthaben.",
+      "rule6": "Flex ist nur beim Checkout erhältlich und nicht erstattbar.",
+      "honesty": "Stornieren Sie innerhalb des kostenlosen Stornierungsfensters Ihres Tarifs, erstatten wir Ihr Geld gemäß der Richtlinie. Flex ersetzt dieses Recht nie — es ergänzt Schutz darüber hinaus."
+    }
   }
 }

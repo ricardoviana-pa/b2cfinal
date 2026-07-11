@@ -32,13 +32,14 @@ import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { formatEur, formatBookingDate, intlLocale, sanitizePropertyName } from "@/lib/format";
-import { cancellationPolicyText } from "@/lib/cancellation";
+import { cancellationPolicyText, freeCancellationDeadline } from "@/lib/cancellation";
 import { IMAGES, optimizeGuestyImage } from "@/lib/images";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
 import { pushDL, pushEcommerce } from "@/lib/datalayer";
 import { stashThankYou } from "@/lib/booking-api";
 import AvailabilityCalendar, { type AvailabilityDay } from "@/components/booking/AvailabilityCalendar";
 import CustomizeStep, { extraAmount, type CatalogExtra, type ExtraSelection } from "./CustomizeStep";
+import FlexBlock, { type FlexConfig } from "./FlexBlock";
 import CheckoutPaymentForm from "@/components/booking/CheckoutPaymentForm";
 import PhoneInput from "@/components/booking/PhoneInput";
 
@@ -212,6 +213,7 @@ export default function CheckoutPage() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const contactFiredRef = useRef(false);
   const [extraSel, setExtraSel] = useState<Record<string, ExtraSelection>>({});
+  const [flexSelected, setFlexSelected] = useState(false);
 
   // The global CookieBanner (fixed bottom, z-60) legally must stay on top; while
   // consent is pending we lift the checkout's own bottom bar above it so the
@@ -249,6 +251,7 @@ export default function CheckoutPage() {
       sessionStorage.setItem(`checkout_created_${intent.id}`, "1");
     } catch { /* storage unavailable */ }
     if (intent.email) contactFiredRef.current = true;
+    if (intent.flex) setFlexSelected(true);
     if (Array.isArray(intent.extras)) {
       const seeded: Record<string, ExtraSelection> = {};
       for (const e of intent.extras as Array<Record<string, unknown>>) {
@@ -299,6 +302,7 @@ export default function CheckoutPage() {
   // ── Extras catalog (Fase 2 — Personalizar) ──
   const extrasQuery = trpc.checkout.getExtras.useQuery(undefined, { staleTime: 60 * 60 * 1000 });
   const catalog: CatalogExtra[] = (extrasQuery.data?.extras as CatalogExtra[]) ?? [];
+  const flexConfig: FlexConfig | null = (extrasQuery.data as any)?.flex ?? null;
 
   // Animated money totals (spec §9)
   const animatedTotal = useCountUp(effective?.total ?? 0);
@@ -457,11 +461,21 @@ export default function CheckoutPage() {
     [selectedExtras],
   );
 
+  // Flex contextual copy inputs: which rate family is selected + the concrete
+  // free-cancellation date of the CURRENT selection (coherence with the policy)
+  const selectedPlanOption = quote?.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
+  const nonRefundableSelected = selectedPlanOption ? isNonRefundableOption(selectedPlanOption) : false;
+  const freeCancelUntil = freeCancellationDeadline(
+    selectedPlanOption?.cancellationPolicy?.[0],
+    checkIn,
+  );
+
   /** Customize → Pay: persist the selection and flip the intent to payment_pending */
   const continueToPay = useCallback(() => {
     if (!intent) return;
     syncIntent({
       status: "payment_pending",
+      flex: flexSelected,
       extras: selectedExtras.map(({ item, sel, amount }) => ({
         sku: item.sku,
         qty: sel.qty,
@@ -474,7 +488,7 @@ export default function CheckoutPage() {
     });
     setStep("pay");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [intent, selectedExtras, syncIntent]);
+  }, [intent, selectedExtras, flexSelected, syncIntent]);
 
   /** Ops manifest (PT, staff-facing) appended to the Guesty reservation notes —
    *  same pattern the legacy widget uses, so operations see the requests. */
@@ -663,6 +677,12 @@ export default function CheckoutPage() {
           {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)} · {guests} {t("booking.guestsLabel", "guests")}
         </div>
         {summaryLines}
+        {flexSelected && flexConfig && (
+          <div className="border-t border-pa-sand pt-3 flex justify-between text-[12.5px] checkout-row-in">
+            <span className="text-pa-gold font-medium">{t("checkout.flex.title", "Flex — guaranteed rebooking")}</span>
+            <span className="text-pa-dark tabular-nums">{formatEur(flexConfig.price, lang)}</span>
+          </div>
+        )}
         {selectedExtras.length > 0 && (
           <div className="border-t border-pa-sand pt-3 space-y-1.5">
             <p className="text-[10px] tracking-[0.12em] uppercase text-pa-stone-aa">
@@ -676,7 +696,7 @@ export default function CheckoutPage() {
                 </span>
               </div>
             ))}
-            {extrasTotal > 0 && (
+            {(extrasTotal > 0 || flexSelected) && (
               <p className="text-[10.5px] text-pa-stone-aa leading-snug pt-0.5">
                 {t("checkout.extrasChargedLater", "Charged after concierge confirmation — not included in today's payment.")}
               </p>
@@ -1019,6 +1039,23 @@ export default function CheckoutPage() {
                   onAdjust={adjustExtra}
                 />
               )}
+              {/* Flex closes the Personalizar step (spec §5/§6) — protection, not a service */}
+              {flexConfig && effective && (
+                <FlexBlock
+                  config={flexConfig}
+                  selected={flexSelected}
+                  stayTotal={effective.total}
+                  nonRefundableSelected={nonRefundableSelected}
+                  freeCancelUntil={freeCancelUntil}
+                  lang={lang}
+                  listingId={intent.listingId}
+                  demo={isDemo}
+                  onToggle={(next) => {
+                    setFlexSelected(next);
+                    syncIntent({ flex: next });
+                  }}
+                />
+              )}
               <button type="button" onClick={continueToPay} className="btn-primary w-full">
                 {selectedExtras.length > 0
                   ? t("checkout.continueWithExtras", { count: selectedExtras.length })
@@ -1193,6 +1230,12 @@ export default function CheckoutPage() {
               </div>
             </div>
             {summaryLines}
+            {flexSelected && flexConfig && (
+              <div className="border-t border-pa-sand pt-3 flex justify-between text-[12.5px]">
+                <span className="text-pa-gold font-medium">{t("checkout.flex.title", "Flex — guaranteed rebooking")}</span>
+                <span className="text-pa-dark tabular-nums">{formatEur(flexConfig.price, lang)}</span>
+              </div>
+            )}
             {selectedExtras.length > 0 && (
               <div className="border-t border-pa-sand pt-3 space-y-1.5">
                 <p className="text-[10px] tracking-[0.12em] uppercase text-pa-stone-aa">

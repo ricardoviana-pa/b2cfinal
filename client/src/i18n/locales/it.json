@@ -1474,6 +1474,26 @@
       }
     },
     "emailTitle": "Dove inviamo la tua prenotazione?",
-    "perStay": "per soggiorno"
+    "perStay": "per soggiorno",
+    "flex": {
+      "title": "Flex — nuova prenotazione garantita",
+      "tagline": "Cambia date quando vuoi. L'importo pagato non si perde mai.",
+      "perBooking": "pagamento unico, per prenotazione",
+      "benefit1": "Cambia date fino a {{days}} giorni prima del check-in, senza costi",
+      "benefit2": "L'importo pagato resta protetto — non si perde mai",
+      "benefit3": "Credito valido {{months}} mesi, in qualsiasi casa del portfolio",
+      "copyNonRefundable": "Hai scelto il miglior prezzo. Con Flex l'importo non si perde mai: cambia date fino a {{days}} giorni prima del check-in.",
+      "copyFlexible": "La tua tariffa consente la cancellazione gratuita fino al {{date}}. Dopo quella data, Flex ti garantisce di cambiare date fino a {{days}} giorni prima del check-in senza perdere l'importo.",
+      "howItWorks": "Come funziona",
+      "add": "Aggiungi Flex",
+      "added": "Aggiunto",
+      "rule1": "Cambia date senza costi fino a {{days}} giorni prima del check-in, tutte le volte che serve — con una prenotazione attiva alla volta.",
+      "rule2": "Ciò che è protetto è l'importo pagato — non le date né la casa. Alle nuove date si applicano i prezzi in vigore.",
+      "rule3": "Quando cambi, l'importo pagato diventa credito valido {{months}} mesi, utilizzabile in qualsiasi casa del portfolio.",
+      "rule4": "Nuovo soggiorno più caro: paghi solo la differenza. Più economico: il saldo resta come credito.",
+      "rule5": "Gli extra si spostano con la prenotazione quando il servizio lo consente; altrimenti il loro importo si converte anch'esso in credito.",
+      "rule6": "Flex si acquista solo al momento del pagamento e non è rimborsabile.",
+      "honesty": "Se cancelli entro la finestra di cancellazione gratuita della tua tariffa, ti rimborsiamo secondo la politica. Flex non sostituisce mai quel diritto — aggiunge protezione oltre di esso."
+    }
   }
 }

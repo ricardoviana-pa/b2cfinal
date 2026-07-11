@@ -1474,6 +1474,26 @@
       }
     },
     "emailTitle": "Vart skickar vi din bokning?",
-    "perStay": "per vistelse"
+    "perStay": "per vistelse",
+    "flex": {
+      "title": "Flex — garanterad ombokning",
+      "tagline": "Boka om när du behöver. Beloppet du betalat går aldrig förlorat.",
+      "perBooking": "engångsbelopp, per bokning",
+      "benefit1": "Boka om upp till {{days}} dagar före incheckning, utan kostnad",
+      "benefit2": "Beloppet du betalat förblir skyddat — det går aldrig förlorat",
+      "benefit3": "Tillgodohavande giltigt i {{months}} månader, i alla hus i portföljen",
+      "copyNonRefundable": "Du valde det bästa priset. Med Flex går beloppet aldrig förlorat: boka om upp till {{days}} dagar före incheckning.",
+      "copyFlexible": "Din taxa tillåter gratis avbokning till {{date}}. Efter det datumet garanterar Flex att du kan boka om upp till {{days}} dagar före incheckning utan att förlora beloppet.",
+      "howItWorks": "Så fungerar det",
+      "add": "Lägg till Flex",
+      "added": "Tillagd",
+      "rule1": "Boka om utan kostnad upp till {{days}} dagar före incheckning, så många gånger du behöver — med en aktiv bokning åt gången.",
+      "rule2": "Det som skyddas är beloppet du betalat — inte datumen eller huset. Aktuella priser gäller för de nya datumen.",
+      "rule3": "När du bokar om blir det betalda beloppet ett tillgodohavande giltigt i {{months}} månader, användbart i alla hus i portföljen.",
+      "rule4": "Kostar den nya vistelsen mer betalar du bara mellanskillnaden. Kostar den mindre står resten kvar som tillgodohavande.",
+      "rule5": "Tillval flyttar med när tjänsten tillåter det; annars omvandlas även deras belopp till tillgodohavande.",
+      "rule6": "Flex kan endast köpas i kassan och återbetalas inte.",
+      "honesty": "Avbokar du inom din taxas fria avbokningsfönster återbetalar vi dina pengar enligt policyn. Flex ersätter aldrig den rätten — det lägger till skydd bortom den."
+    }
   }
 }

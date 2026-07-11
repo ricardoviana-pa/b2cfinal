@@ -92,6 +92,23 @@ export function cancellationPolicyText(
   return t("cancellationPolicy.shortGeneric");
 }
 
+/**
+ * Concrete free-cancellation deadline (YYYY-MM-DD) for a policy code, or null
+ * when the code has no free window / the window already passed. Used by the
+ * Flex block's contextual copy (spec §6).
+ */
+export function freeCancellationDeadline(
+  rawCode: string | null | undefined,
+  checkIn: string | undefined,
+): string | null {
+  const code = (rawCode || "").toLowerCase().trim();
+  const days = FREE_UNTIL_DAYS[code];
+  if (days == null) return null;
+  const d = deadlineFor(checkIn, days);
+  if (!d || isPast(d)) return null;
+  return toLocalYMD(d);
+}
+
 /** Is this raw policy code one of the non-refundable family? */
 export function isNonRefundableCode(rawCode: string | null | undefined): boolean {
   const code = (rawCode || "").toLowerCase().trim();

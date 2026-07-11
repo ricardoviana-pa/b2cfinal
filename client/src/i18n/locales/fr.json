@@ -1474,6 +1474,26 @@
       }
     },
     "emailTitle": "Où envoyons-nous votre réservation ?",
-    "perStay": "par séjour"
+    "perStay": "par séjour",
+    "flex": {
+      "title": "Flex — nouvelle réservation garantie",
+      "tagline": "Changez de dates quand vous voulez. Le montant payé n'est jamais perdu.",
+      "perBooking": "paiement unique, par réservation",
+      "benefit1": "Changez de dates jusqu'à {{days}} jours avant l'arrivée, sans frais",
+      "benefit2": "Le montant payé reste protégé — il n'est jamais perdu",
+      "benefit3": "Avoir valable {{months}} mois, dans toutes les maisons du portefeuille",
+      "copyNonRefundable": "Vous avez choisi le meilleur prix. Avec Flex, le montant n'est jamais perdu : changez de dates jusqu'à {{days}} jours avant l'arrivée.",
+      "copyFlexible": "Votre tarif permet l'annulation gratuite jusqu'au {{date}}. Après cette date, Flex vous garantit de pouvoir changer de dates jusqu'à {{days}} jours avant l'arrivée sans perdre le montant.",
+      "howItWorks": "Comment ça marche",
+      "add": "Ajouter Flex",
+      "added": "Ajouté",
+      "rule1": "Changez de dates sans frais jusqu'à {{days}} jours avant l'arrivée, autant de fois que nécessaire — avec une réservation active à la fois.",
+      "rule2": "Ce qui est protégé, c'est le montant payé — pas les dates ni la maison. Les prix en vigueur s'appliquent aux nouvelles dates.",
+      "rule3": "Lors du changement, le montant payé devient un avoir valable {{months}} mois, utilisable dans toutes les maisons du portefeuille.",
+      "rule4": "Nouveau séjour plus cher : vous payez seulement la différence. Moins cher : le solde reste en avoir.",
+      "rule5": "Les extras suivent votre réservation quand le service le permet ; sinon leur montant se convertit aussi en avoir.",
+      "rule6": "Flex s'achète uniquement au moment du paiement et n'est pas remboursable.",
+      "honesty": "Si vous annulez pendant la fenêtre d'annulation gratuite de votre tarif, nous vous remboursons selon la politique. Flex ne remplace jamais ce droit — il ajoute une protection au-delà."
+    }
   }
 }
