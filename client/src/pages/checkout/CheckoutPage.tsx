@@ -334,6 +334,8 @@ export default function CheckoutPage() {
   const catalog: CatalogExtra[] = (extrasQuery.data?.extras as CatalogExtra[]) ?? [];
   const flexConfig: FlexConfig | null = (extrasQuery.data as any)?.flex ?? null;
   const receptionConfig: ReceptionConfig | null = (extrasQuery.data as any)?.reception ?? null;
+  // C6: campo de promo vazio convida a sair à procura de códigos — só com campanha ativa
+  const promoEnabled: boolean = (extrasQuery.data as any)?.promoEnabled ?? false;
   const includedKeys: string[] = (extrasQuery.data as any)?.included ?? [];
 
   // ── Property (photo + slug for the back link) ──
@@ -858,7 +860,7 @@ export default function CheckoutPage() {
 
   // Código promocional estilo Shopify: campo sempre visível no cartão do
   // resumo; aplicado → pill com remover (12 jul).
-  const couponRow = (
+  const couponRow = !promoEnabled && !quote?.couponCode ? null : (
     <div className="border-t border-pa-sand pt-3">
       {quote?.couponCode ? (
         <div className="flex items-center justify-between gap-2">
@@ -992,7 +994,18 @@ export default function CheckoutPage() {
             {steps.map((s, i) => (
               <div key={s.key} className="flex items-center gap-2 sm:gap-3">
                 {i > 0 && <span className="w-6 sm:w-10 h-px bg-pa-sand" />}
-                <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  disabled={i >= stepIndex}
+                  onClick={() => {
+                    // C3: retroceder por clique no indicador, mantendo o estado
+                    if (i < stepIndex) {
+                      setStep(s.key as Step);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }
+                  }}
+                  className={cn("flex items-center gap-1.5", i < stepIndex && "cursor-pointer")}
+                >
                   <span
                     className={cn(
                       "w-5 h-5 rounded-full text-[10px] flex items-center justify-center border",
@@ -1013,7 +1026,7 @@ export default function CheckoutPage() {
                   >
                     {s.label}
                   </span>
-                </div>
+                </button>
               </div>
             ))}
           </nav>

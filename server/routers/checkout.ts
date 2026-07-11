@@ -235,6 +235,9 @@ export const checkoutRouter = router({
       reception: CHECKOUT_RECEPTION,
       included: CHECKOUT_INCLUDED_KEYS,
       flex: FLEX_CONFIG,
+      // C6: o campo de promo só aparece com campanha ativa (CHECKOUT_PROMO=true
+      // no Render; sempre visível no dev para testes)
+      promoEnabled: process.env.CHECKOUT_PROMO !== "false",
     })),
 
   /**

@@ -504,7 +504,7 @@ export default function CustomizeStep({
     // destino, completa de forma instantânea.
     window.setTimeout(() => {
       if (Math.abs(window.scrollY - target) > 60) window.scrollTo({ top: target, behavior: "auto" });
-    }, 800);
+    }, 500);
   };
 
   // Única zona fotográfica do passo. Carrossel com setas (12 jul): todos os
@@ -531,6 +531,9 @@ export default function CustomizeStep({
         }
         .chapter-nav-scroll { scrollbar-width: none; }
         .chapter-nav-scroll::-webkit-scrollbar { display: none; }
+        /* O scroll anchoring do Chrome luta com o smooth scroll programático
+           enquanto os reveals acima mudam de transform — desativar (C1) */
+        .checkout-page { overflow-anchor: none; }
       `}</style>
 
       {/* Abertura direta na nav + Capítulo 01 (12 jul, estilo Apple): o cabeçalho
@@ -711,29 +714,6 @@ export default function CustomizeStep({
                 </div>
               </>
             )}
-            {/* Guiar secção a secção (12 jul): um clique e o site anda para a
-                frente, sem caçar o caminho com scroll */}
-            <div className="mt-10 flex justify-end">
-              {idx < EXTRA_CHAPTERS.length - 1 ? (
-                <button
-                  type="button"
-                  onClick={() => jumpTo(EXTRA_CHAPTERS[idx + 1])}
-                  className="inline-flex items-center gap-2 min-h-[44px] px-5 rounded-full border border-pa-sand bg-white text-[11px] font-medium tracking-[0.08em] uppercase text-pa-dark hover:border-pa-dark transition-colors"
-                >
-                  {t("checkout.nextChapter", { chapter: t(`checkout.chapter.${EXTRA_CHAPTERS[idx + 1]}.title`) })}
-                  <ChevronDown className="w-3.5 h-3.5" />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={onSkip}
-                  className="inline-flex items-center gap-2 min-h-[44px] px-6 rounded-full bg-pa-dark text-white text-[11px] font-medium tracking-[0.08em] uppercase hover:bg-pa-dark/85 transition-colors"
-                >
-                  {t("checkout.continueToPayment", "Continue to payment")}
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
           </ChapterReveal>
         );
       })}
