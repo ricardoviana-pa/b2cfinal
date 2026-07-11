@@ -10,9 +10,31 @@
  * confirmation — stated plainly under the list (spec §15.5 option b).
  */
 import { useTranslation } from "react-i18next";
-import { Check, Minus, Plus, Clock3, ConciergeBell } from "lucide-react";
+import {
+  Check, Minus, Plus, Clock3, ConciergeBell,
+  Moon, Car, Bus, SprayCan, BedDouble, ChefHat, ShoppingBasket, Wine, ListChecks,
+  Flower2, Waves, Wind, Grape, Landmark, type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatEur } from "@/lib/format";
+
+/** Small brand icon per catalog item (spec §5 asks for a small visual per card) */
+const EXTRA_ICONS: Record<string, LucideIcon> = {
+  "late-checkin": Moon,
+  "transfer-porto": Car,
+  "transfer-porto-van": Bus,
+  "daily-cleaning": SprayCan,
+  "linen-change": BedDouble,
+  "private-chef": ChefHat,
+  "hamper-essentials": ShoppingBasket,
+  "hamper-gourmet": Wine,
+  "grocery-list": ListChecks,
+  "massage": Flower2,
+  "exp-surf": Waves,
+  "exp-kitesurf": Wind,
+  "exp-wine": Grape,
+  "exp-heritage": Landmark,
+};
 
 export interface CatalogExtra {
   sku: string;
@@ -116,6 +138,7 @@ export default function CustomizeStep({
 
   const unitSuffix = (item: CatalogExtra): string => {
     switch (item.pricingModel) {
+      case "per_stay": return t("checkout.perStay", "per stay");
       case "per_day": return t("checkout.perDay", "per day");
       case "per_person": return t("checkout.perPerson", "per person");
       case "per_unit":
@@ -149,6 +172,19 @@ export default function CustomizeStep({
                   )}
                 >
                   <div className="flex items-start gap-3">
+                    {(() => {
+                      const Icon = EXTRA_ICONS[item.sku] ?? ConciergeBell;
+                      return (
+                        <span
+                          className={cn(
+                            "shrink-0 w-9 h-9 rounded-md flex items-center justify-center transition-colors",
+                            selected ? "bg-pa-dark text-white" : "bg-pa-warm text-pa-gold",
+                          )}
+                        >
+                          <Icon className="w-4 h-4" strokeWidth={1.8} />
+                        </span>
+                      );
+                    })()}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <p className="text-[13.5px] text-pa-dark font-medium">

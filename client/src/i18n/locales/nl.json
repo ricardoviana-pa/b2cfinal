@@ -1472,6 +1472,8 @@
         "name": "Erfgoed & cultuur",
         "desc": "Privégids door de geschiedenis van de regio."
       }
-    }
+    },
+    "emailTitle": "Waar sturen we uw boeking naartoe?",
+    "perStay": "per verblijf"
   }
 }

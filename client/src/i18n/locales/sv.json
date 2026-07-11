@@ -1472,6 +1472,8 @@
         "name": "Kulturarvstur",
         "desc": "Privat guide genom regionens historia."
       }
-    }
+    },
+    "emailTitle": "Vart skickar vi din bokning?",
+    "perStay": "per vistelse"
   }
 }

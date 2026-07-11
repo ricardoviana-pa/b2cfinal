@@ -1472,6 +1472,8 @@
         "name": "Heritage & culture tour",
         "desc": "Private guide through the region's history."
       }
-    }
+    },
+    "emailTitle": "Where should we send your booking?",
+    "perStay": "per stay"
   }
 }

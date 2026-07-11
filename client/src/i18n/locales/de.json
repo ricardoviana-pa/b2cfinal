@@ -1472,6 +1472,8 @@
         "name": "Kultur- und Geschichtstour",
         "desc": "Privater Guide durch die Geschichte der Region."
       }
-    }
+    },
+    "emailTitle": "Wohin senden wir Ihre Buchung?",
+    "perStay": "pro Aufenthalt"
   }
 }

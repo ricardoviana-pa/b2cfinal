@@ -61,9 +61,12 @@ export const formatBookingDate = (
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return dateStr;
   const day = String(date.getDate()).padStart(2, '0');
-  const options: Intl.DateTimeFormatOptions = { month: 'short' };
-  if (includeYear) options.year = 'numeric';
-  return `${day} ${date.toLocaleDateString(intlLocale(lang), options)}`;
+  // Month is formatted ALONE: pairing {month:'short', year:'numeric'} makes
+  // some CLDR locales (pt-PT) fall back to numeric "08/2026".
+  const month = date
+    .toLocaleDateString(intlLocale(lang), { month: 'short' })
+    .replace(/\.$/, '');
+  return includeYear ? `${day} ${month} ${date.getFullYear()}` : `${day} ${month}`;
 };
 
 /** Editorial EUR formatting: no decimals for whole amounts, symbol prefix, en-US comma separator. */

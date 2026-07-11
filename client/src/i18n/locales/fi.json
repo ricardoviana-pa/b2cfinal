@@ -1472,6 +1472,8 @@
         "name": "Kulttuuri- ja perintökierros",
         "desc": "Yksityisopas alueen historiaan."
       }
-    }
+    },
+    "emailTitle": "Minne lähetämme varauksesi?",
+    "perStay": "per majoitus"
   }
 }

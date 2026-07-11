@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import {
   X,
   Check,
+  Clock3,
   Loader2,
   Lock,
   ShieldCheck,
@@ -66,6 +67,82 @@ interface QuoteSnapshot {
 
 const QUOTE_EXPIRY_MS = 23 * 60 * 60 * 1000;
 
+/**
+ * Design/demo mode: /checkout/demo renders the full checkout with mock data,
+ * no server round-trips and no possible charge (the fake quoteId fails the
+ * server's 24-hex validation). Used for UX iteration and stakeholder review.
+ */
+function buildDemoIntent(): any {
+  const d = (offset: number) => {
+    const x = new Date();
+    x.setDate(x.getDate() + offset);
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${x.getFullYear()}-${pad(x.getMonth() + 1)}-${pad(x.getDate())}`;
+  };
+  return {
+    id: "demo",
+    listingId: "demo-listing",
+    propertyName: "Abreu Retreat Palace – Luxury, Elegance & Leisure",
+    propertySlug: "abreu-retreat-palace-luxury-elegance-leisure-e914e2",
+    destination: "minho",
+    guestyQuoteId: "demo",
+    checkIn: d(30),
+    checkOut: d(35),
+    guests: 4,
+    ratePlanId: "demo-flex",
+    email: "",
+    guestFirstName: "",
+    guestLastName: "",
+    guestPhone: "",
+    nif: "",
+    quote: {
+      nightlyRate: 500,
+      totalNights: 2500,
+      cleaningFee: 200,
+      taxesAndFees: 0,
+      total: 2700,
+      nights: 5,
+      currency: "EUR",
+      quoteCreatedAt: Date.now(),
+      ratePlanOptions: [
+        { ratePlanId: "demo-flex", name: "Flexible", total: 2700, nightlyRate: 500, cleaningFee: 200, taxesAndFees: 0, cancellationPolicy: ["moderate"] },
+        { ratePlanId: "demo-nr", name: "Non-refundable", total: 2430, nightlyRate: 446, cleaningFee: 200, taxesAndFees: 0, cancellationPolicy: ["super_strict"] },
+      ],
+    },
+    extras: [],
+    flex: false,
+    status: "draft",
+    locale: null,
+    reservationId: null,
+    confirmationCode: null,
+    expiresAt: new Date(Date.now() + QUOTE_EXPIRY_MS),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+}
+
+/** Animated count-up for money totals (spec §9: "total com contagem animada"). */
+function useCountUp(value: number, duration = 400): number {
+  const [display, setDisplay] = useState(value);
+  const prevRef = useRef(value);
+  useEffect(() => {
+    const from = prevRef.current;
+    if (from === value) return;
+    prevRef.current = value;
+    const start = performance.now();
+    let raf: number;
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setDisplay(Math.round(from + (value - from) * eased));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [value, duration]);
+  return display;
+}
+
 function isNonRefundableOption(o: { name: string; cancellationPolicy?: string[] }): boolean {
   const n = (o.name || "").toLowerCase();
   const code = (o.cancellationPolicy?.[0] || "").toLowerCase();
@@ -86,26 +163,29 @@ export default function CheckoutPage() {
 
   usePageMeta({ title: t("checkout.pageTitle", "Checkout"), noindex: true });
 
+  const isDemo = intentId === "demo";
+  const demoIntent = useMemo(() => (isDemo ? buildDemoIntent() : null), [isDemo]);
+
   const intentQuery = trpc.checkout.getIntent.useQuery(
     { intentId: intentId ?? "" },
-    { enabled: !!intentId, refetchOnWindowFocus: false, retry: 1 },
+    { enabled: !!intentId && !isDemo, refetchOnWindowFocus: false, retry: 1 },
   );
   const updateIntent = trpc.checkout.updateIntent.useMutation();
   const captureLead = trpc.checkout.captureLead.useMutation();
 
-  const intent = intentQuery.data?.intent ?? null;
+  const intent = isDemo ? demoIntent : (intentQuery.data?.intent ?? null);
 
   /** Patch the server intent AND the React Query cache in lockstep — otherwise a
    *  remount within staleTime re-seeds the page from pre-edit data (stale quote). */
   const syncIntent = useCallback(
     (patch: Record<string, unknown>) => {
-      if (!intentId) return;
+      if (!intentId || isDemo) return;
       utils.checkout.getIntent.setData({ intentId }, (prev) =>
         prev?.intent ? { ...prev, intent: { ...prev.intent, ...patch } as typeof prev.intent } : prev,
       );
       updateIntent.mutate({ intentId, patch: patch as any });
     },
-    [intentId, utils, updateIntent],
+    [intentId, isDemo, utils, updateIntent],
   );
 
   // ── Local editable state, seeded ONCE from the intent ──
@@ -183,7 +263,7 @@ export default function CheckoutPage() {
       }
       setExtraSel(seeded);
     }
-    if (resumed) {
+    if (resumed && !isDemo) {
       pushDL({ event: "checkout_resume", property_id: intent.listingId });
       if (intent.status === "contact_captured") setStep("customize");
       if (intent.status === "payment_pending") setStep("pay");
@@ -219,6 +299,9 @@ export default function CheckoutPage() {
   // ── Extras catalog (Fase 2 — Personalizar) ──
   const extrasQuery = trpc.checkout.getExtras.useQuery(undefined, { staleTime: 60 * 60 * 1000 });
   const catalog: CatalogExtra[] = (extrasQuery.data?.extras as CatalogExtra[]) ?? [];
+
+  // Animated money totals (spec §9)
+  const animatedTotal = useCountUp(effective?.total ?? 0);
 
   // ── Property (photo + slug for the back link) ──
   const propertyQuery = trpc.properties.getBySlugForSite.useQuery(
@@ -305,19 +388,21 @@ export default function CheckoutPage() {
   const submitEmail = useCallback(() => {
     setEmailTouched(true);
     if (!intent || !isValidEmail(email)) return;
-    captureLead
-      .mutateAsync({ intentId: intent.id, email, locale: lang })
-      .catch(() => {/* fail-soft: the step advance below never blocks on persistence */});
+    if (!isDemo) {
+      captureLead
+        .mutateAsync({ intentId: intent.id, email, locale: lang })
+        .catch(() => {/* fail-soft: the step advance below never blocks on persistence */});
+    }
     utils.checkout.getIntent.setData({ intentId: intent.id }, (prev) =>
       prev?.intent ? { ...prev, intent: { ...prev.intent, email } } : prev,
     );
-    if (!contactFiredRef.current) {
+    if (!contactFiredRef.current && !isDemo) {
       contactFiredRef.current = true;
       pushDL({ event: "add_contact_info", property_id: intent.listingId, source: "checkout_v2" });
     }
     setStep("customize");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [intent, email, lang, captureLead, utils]);
+  }, [intent, email, lang, captureLead, utils, isDemo]);
 
   // ── Extras handlers (Fase 2) ──
   const toggleExtra = useCallback(
@@ -479,13 +564,24 @@ export default function CheckoutPage() {
   const stepIndex = steps.findIndex((s) => s.key === step);
 
   // ── Loading / not-found states ──
-  if (intentQuery.isLoading) {
+  if (intentQuery.isLoading && !isDemo) {
     return (
-      <div className="min-h-screen bg-pa-cream flex items-center justify-center">
-        <div className="flex items-center gap-3 text-pa-earth text-sm">
-          <Loader2 className="w-5 h-5 animate-spin text-pa-gold" />
-          {t("checkout.loading", "Preparing your checkout…")}
+      <div className="min-h-screen bg-pa-cream">
+        <div className="sticky top-0 bg-white/95 border-b border-pa-sand h-[60px]" />
+        <div className="max-w-[1100px] mx-auto px-4 pt-8 lg:grid lg:grid-cols-[minmax(0,640px)_380px] lg:gap-12">
+          <div className="space-y-5">
+            <div className="skeleton-shimmer h-8 w-56 rounded" />
+            <div className="skeleton-shimmer h-[110px] w-full rounded-lg" />
+            <div className="skeleton-shimmer h-[72px] w-full rounded-lg" />
+            <div className="skeleton-shimmer h-[72px] w-full rounded-lg" />
+            <div className="skeleton-shimmer h-[170px] w-full rounded-lg" />
+          </div>
+          <div className="hidden lg:block">
+            <div className="skeleton-shimmer w-full rounded-lg" style={{ aspectRatio: "4/3" }} />
+            <div className="skeleton-shimmer h-[140px] w-full rounded-lg mt-3" />
+          </div>
         </div>
+        <p className="sr-only">{t("checkout.loading", "Preparing your checkout…")}</p>
       </div>
     );
   }
@@ -548,7 +644,7 @@ export default function CheckoutPage() {
       )}
       <div className="flex justify-between items-baseline border-t border-pa-sand pt-2.5">
         <span className="text-[14px] font-medium text-pa-dark">{t("property.total")}</span>
-        <span className="text-[20px] font-light text-pa-dark tabular-nums">{formatEur(effective.total, lang)}</span>
+        <span className="text-[20px] font-light text-pa-dark tabular-nums">{formatEur(animatedTotal, lang)}</span>
       </div>
     </div>
   );
@@ -560,8 +656,8 @@ export default function CheckoutPage() {
       )}
       <div className="p-5 space-y-4">
         <div>
-          <p className="text-[15px] text-pa-dark font-medium leading-snug">{displayName}</p>
-          {intent.destination && <p className="text-[12px] text-pa-stone-aa mt-0.5 capitalize">{intent.destination}</p>}
+          <p className="font-display text-[18px] text-pa-dark leading-snug">{displayName}</p>
+          {intent.destination && <p className="text-[11px] tracking-[0.08em] uppercase text-pa-stone-aa mt-1">{intent.destination}</p>}
         </div>
         <div className="text-[12.5px] text-pa-earth">
           {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)} · {guests} {t("booking.guestsLabel", "guests")}
@@ -573,7 +669,7 @@ export default function CheckoutPage() {
               {t("checkout.extrasSummary", "Extras — confirmed by your concierge")}
             </p>
             {selectedExtras.map(({ item, amount }) => (
-              <div key={item.sku} className="flex justify-between text-[12.5px]">
+              <div key={item.sku} className="flex justify-between text-[12.5px] checkout-row-in">
                 <span className="text-pa-earth">{t(`checkout.extras.${item.sku}.name`)}</span>
                 <span className="text-pa-dark tabular-nums">
                   {amount != null ? formatEur(amount, lang) : t("checkout.onRequestShort", "on request")}
@@ -593,14 +689,31 @@ export default function CheckoutPage() {
           </p>
         )}
         {guaranteeLabel && (
-          <p className="text-[11px] text-pa-gold leading-snug">{guaranteeLabel}</p>
+          <p className="flex items-start gap-1.5 text-[11px] text-pa-gold leading-snug">
+            <Clock3 className="w-3 h-3 shrink-0 mt-[1px]" /> {guaranteeLabel}
+          </p>
         )}
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-pa-cream pb-28 lg:pb-12">
+    <div className="checkout-page min-h-screen bg-pa-cream pb-28 lg:pb-12">
+      {/* Discreet motion (spec §9): 200ms step transitions, rows sliding toward the summary */}
+      <style>{`
+        /* The global 44px touch-target rule inflates radios/checkboxes — scope them back */
+        .checkout-page input[type="radio"],
+        .checkout-page input[type="checkbox"] {
+          min-height: 16px; min-width: 16px; height: 16px; width: 16px;
+        }
+        @keyframes checkoutStepIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        .checkout-step-in { animation: checkoutStepIn 220ms ease-out; }
+        @keyframes checkoutRowIn { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+        .checkout-row-in { animation: checkoutRowIn 200ms ease-out; }
+        @media (prefers-reduced-motion: reduce) {
+          .checkout-step-in, .checkout-row-in { animation: none; }
+        }
+      `}</style>
       {/* ── Minimal top bar: logo · stepper · autosave + close ── */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-pa-sand">
         <div className="max-w-[1100px] mx-auto px-4 h-[60px] flex items-center justify-between gap-4">
@@ -626,8 +739,8 @@ export default function CheckoutPage() {
                   </span>
                   <span
                     className={cn(
-                      "text-[11px] tracking-[0.06em] uppercase hidden sm:inline",
-                      i === stepIndex ? "text-pa-dark font-medium" : "text-pa-stone-aa",
+                      "text-[11px] tracking-[0.06em] uppercase",
+                      i === stepIndex ? "inline text-pa-dark font-medium" : "hidden sm:inline text-pa-stone-aa",
                     )}
                   >
                     {s.label}
@@ -653,7 +766,7 @@ export default function CheckoutPage() {
 
       <main className="max-w-[1100px] mx-auto px-4 pt-8 lg:grid lg:grid-cols-[minmax(0,640px)_380px] lg:gap-12 lg:items-start">
         {/* ══════════ CONTENT COLUMN ══════════ */}
-        <section className="space-y-6">
+        <section key={step} className="space-y-6 checkout-step-in">
           {/* Stale quote / unavailable banners */}
           {quoteStale && !datesUnavailable && (
             <div className="flex items-start justify-between gap-4 p-4 bg-pa-warm border border-pa-sand rounded-lg">
@@ -773,10 +886,11 @@ export default function CheckoutPage() {
               {(quote?.ratePlanOptions?.length ?? 0) > 1 && (
                 <div className="space-y-2">
                   <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-pa-gold">{t("bookingWidget.ratePlan", "Rate plan")}</p>
-                  {quote!.ratePlanOptions!.map((opt) => {
+                  {(() => { const maxTotal = Math.max(...quote!.ratePlanOptions!.map(o => o.total)); return quote!.ratePlanOptions!.map((opt) => {
                     const isSelected = selectedRatePlanId === opt.ratePlanId;
                     const nonRef = isNonRefundableOption(opt);
                     const label = nonRef ? t("booking.nonRefundable") : t("booking.flexibleRate");
+                    const savings = maxTotal - opt.total;
                     const policyLine = opt.cancellationPolicy?.[0]
                       ? cancellationPolicyText(opt.cancellationPolicy[0], checkIn, t, lang)
                       : null;
@@ -805,19 +919,33 @@ export default function CheckoutPage() {
                           className="accent-black w-4 h-4 shrink-0"
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="text-[13.5px] text-pa-dark font-medium">{label}</p>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="text-[13.5px] text-pa-dark font-medium">{label}</p>
+                            {!nonRef && (
+                              <span className="text-[9px] font-medium tracking-wider uppercase px-1.5 py-0.5 bg-pa-warm text-pa-gold border border-pa-sand rounded-sm">
+                                {t("bookingWidget.recommended", "Recommended")}
+                              </span>
+                            )}
+                          </div>
                           <p className={cn("text-[11px] mt-0.5", nonRef ? "text-red-500/80" : "text-pa-earth")}>
                             {nonRef
                               ? t("bookingWidget.nonRefundableWarning", "No refund if you cancel or modify")
                               : policyLine}
                           </p>
                         </div>
-                        <span className="text-[14.5px] text-pa-dark font-medium tabular-nums shrink-0">
-                          {formatEur(opt.total, lang)}
-                        </span>
+                        <div className="text-right shrink-0">
+                          <span className="text-[14.5px] text-pa-dark font-medium tabular-nums">
+                            {formatEur(opt.total, lang)}
+                          </span>
+                          {savings > 0 && (
+                            <p className="text-[10px] text-green-700 font-medium mt-0.5">
+                              {t("bookingWidget.save", "Save")} {formatEur(savings, lang)}
+                            </p>
+                          )}
+                        </div>
                       </label>
                     );
-                  })}
+                  }); })()}
                 </div>
               )}
 
@@ -828,7 +956,10 @@ export default function CheckoutPage() {
 
               {/* Email capture */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
-                <label htmlFor="checkout-email" className="block text-[13px] font-medium text-pa-dark">
+                <h2 className="font-display text-[19px] text-pa-dark leading-snug">
+                  {t("checkout.emailTitle", "Where should we send your booking?")}
+                </h2>
+                <label htmlFor="checkout-email" className="block text-[12px] font-medium text-pa-earth">
                   {t("checkout.emailLabel", "Your email")}
                 </label>
                 <input
@@ -1049,8 +1180,39 @@ export default function CheckoutPage() {
       {/* ══════════ MOBILE: bottom bar + expandable summary sheet ══════════ */}
       <div className="lg:hidden fixed inset-x-0 z-40" style={{ bottom: consentPending ? "120px" : 0 }}>
         {sheetOpen && (
-          <div className="max-h-[60vh] overflow-y-auto bg-white border-t border-pa-sand px-4 pt-4 pb-2 shadow-[0_-8px_32px_rgba(26,26,24,0.10)]">
-            {summaryCard}
+          <div className="max-h-[60vh] overflow-y-auto bg-white border-t border-pa-sand px-5 pt-4 pb-3 shadow-[0_-8px_32px_rgba(26,26,24,0.10)] space-y-4 checkout-step-in">
+            <div className="flex items-center gap-3">
+              {heroImage && (
+                <img src={heroImage} alt="" className="w-14 h-14 rounded-md object-cover shrink-0" width={56} height={56} />
+              )}
+              <div className="min-w-0">
+                <p className="font-display text-[15px] text-pa-dark leading-snug truncate">{displayName}</p>
+                <p className="text-[11.5px] text-pa-earth mt-0.5">
+                  {formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)} · {guests} {t("booking.guestsLabel", "guests")}
+                </p>
+              </div>
+            </div>
+            {summaryLines}
+            {selectedExtras.length > 0 && (
+              <div className="border-t border-pa-sand pt-3 space-y-1.5">
+                <p className="text-[10px] tracking-[0.12em] uppercase text-pa-stone-aa">
+                  {t("checkout.extrasSummary", "Extras — confirmed by your concierge")}
+                </p>
+                {selectedExtras.map(({ item, amount }) => (
+                  <div key={item.sku} className="flex justify-between text-[12.5px]">
+                    <span className="text-pa-earth">{t(`checkout.extras.${item.sku}.name`)}</span>
+                    <span className="text-pa-dark tabular-nums">
+                      {amount != null ? formatEur(amount, lang) : t("checkout.onRequestShort", "on request")}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {guaranteeLabel && (
+              <p className="flex items-start gap-1.5 text-[11px] text-pa-gold leading-snug">
+                <Clock3 className="w-3 h-3 shrink-0 mt-[1px]" /> {guaranteeLabel}
+              </p>
+            )}
           </div>
         )}
         <div className="bg-white border-t border-pa-sand px-4 py-3 flex items-center justify-between gap-3" style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom, 0px))" }}>
@@ -1062,7 +1224,7 @@ export default function CheckoutPage() {
           >
             <div>
               <p className="text-[16px] font-medium text-pa-dark tabular-nums leading-tight">
-                {effective ? formatEur(effective.total, lang) : "—"}
+                {effective ? formatEur(animatedTotal, lang) : "—"}
               </p>
               <p className="text-[10.5px] text-pa-stone-aa flex items-center gap-1">
                 {t("checkout.viewDetails", "View details")}

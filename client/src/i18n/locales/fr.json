@@ -1472,6 +1472,8 @@
         "name": "Patrimoine et culture",
         "desc": "Guide privé à travers l'histoire de la région."
       }
-    }
+    },
+    "emailTitle": "Où envoyons-nous votre réservation ?",
+    "perStay": "par séjour"
   }
 }
