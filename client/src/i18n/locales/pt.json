@@ -1432,7 +1432,7 @@
       },
       "private-chef": {
         "name": "Chef privado ao jantar",
-        "desc": "Um chef cozinha em sua casa, menu combinado com o concierge."
+        "desc": "Um chef cozinha em sua casa, menu combinado com o concierge. O preço de um bom restaurante na região, com a privacidade da casa."
       },
       "hamper-essentials": {
         "name": "Cabaz de boas vindas, essenciais",
@@ -1440,7 +1440,7 @@
       },
       "hamper-gourmet": {
         "name": "Cabaz de boas vindas, gourmet regional",
-        "desc": "Seleção curada de vinhos e iguarias da região."
+        "desc": "Seleção curada de vinhos e iguarias da região. O gasto de uma semana de compras, escolhido por quem sabe."
       },
       "grocery-list": {
         "name": "Frigorífico pronto à chegada",
@@ -1603,6 +1603,14 @@
     "next": "Seguinte",
     "firstIncluded": "1.º incluído, extra a {{price}}",
     "nextChapter": "Seguinte: {{chapter}}",
-    "continueToPayment": "Continuar para pagamento"
+    "continueToPayment": "Continuar para pagamento",
+    "scarcityNote": "Sujeito a disponibilidade nas datas de pico. Reservar agora garante.",
+    "tailoredTitle": "A sua estadia à medida",
+    "flexLastCall": "Um clique para proteger esta reserva: Flex, remarcação garantida.",
+    "flexAddShort": "Adicionar",
+    "proof": {
+      "transfer-porto": "Motorista da nossa equipa, nunca subcontratado",
+      "hamper-gourmet": "Produtores do Minho escolhidos pelo nosso concierge"
+    }
   }
 }

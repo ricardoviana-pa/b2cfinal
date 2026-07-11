@@ -1432,7 +1432,7 @@
       },
       "private-chef": {
         "name": "Chef privado para la cena",
-        "desc": "Un chef cocina en su casa, menú acordado con el concierge."
+        "desc": "Un chef cocina en su casa, menú acordado con el concierge. El precio de un buen restaurante de la región, con la privacidad de la casa."
       },
       "hamper-essentials": {
         "name": "Cesta de bienvenida, esenciales",
@@ -1440,7 +1440,7 @@
       },
       "hamper-gourmet": {
         "name": "Cesta de bienvenida, gourmet regional",
-        "desc": "Selección de vinos y delicias de la región."
+        "desc": "Selección de vinos y delicias de la región. El gasto de una semana de compras, elegido por quien sabe."
       },
       "grocery-list": {
         "name": "Nevera lista a la llegada",
@@ -1603,6 +1603,14 @@
     "next": "Siguiente",
     "firstIncluded": "Primero incluido, extra a {{price}}",
     "nextChapter": "Siguiente: {{chapter}}",
-    "continueToPayment": "Continuar al pago"
+    "continueToPayment": "Continuar al pago",
+    "scarcityNote": "Sujeto a disponibilidad en fechas punta. Reservar ahora lo garantiza.",
+    "tailoredTitle": "Su estancia, a medida",
+    "flexLastCall": "Un clic para proteger esta reserva: Flex, cambio de fechas garantizado.",
+    "flexAddShort": "Añadir",
+    "proof": {
+      "transfer-porto": "Conductor de nuestro equipo, nunca subcontratado",
+      "hamper-gourmet": "Productores del Minho elegidos por nuestro concierge"
+    }
   }
 }

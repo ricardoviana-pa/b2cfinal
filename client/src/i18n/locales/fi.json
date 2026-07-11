@@ -1432,7 +1432,7 @@
       },
       "private-chef": {
         "name": "Yksityiskokki illalliselle",
-        "desc": "Kokki valmistaa aterian kotonasi, menu sovitaan conciergen kanssa."
+        "desc": "Kokki valmistaa aterian kotonasi, menu sovitaan conciergen kanssa. Alueen hyvän ravintolan hinta, talon yksityisyydellä."
       },
       "hamper-essentials": {
         "name": "Tervetuliaiskori, perus",
@@ -1440,7 +1440,7 @@
       },
       "hamper-gourmet": {
         "name": "Tervetuliaiskori, alueen gourmet",
-        "desc": "Valikoima alueen viinejä ja herkkuja."
+        "desc": "Valikoima alueen viinejä ja herkkuja. Viikon ruokaostokset, tuntijan valitsemina."
       },
       "grocery-list": {
         "name": "Jääkaappi täytettynä saapuessa",
@@ -1603,6 +1603,14 @@
     "next": "Seuraava",
     "firstIncluded": "Ensimmäinen sisältyy, lisä {{price}}",
     "nextChapter": "Seuraava: {{chapter}}",
-    "continueToPayment": "Jatka maksuun"
+    "continueToPayment": "Jatka maksuun",
+    "scarcityNote": "Saatavuuden mukaan huippupäivinä. Varaaminen nyt takaa sen.",
+    "tailoredTitle": "Majoituksesi, räätälöitynä",
+    "flexLastCall": "Yksi klikkaus suojaa varauksen: Flex, taattu uudelleenvaraus.",
+    "flexAddShort": "Lisää",
+    "proof": {
+      "transfer-porto": "Oman tiimimme kuljettaja, ei koskaan alihankittu",
+      "hamper-gourmet": "Conciergemme valitsemat Minhon tuottajat"
+    }
   }
 }

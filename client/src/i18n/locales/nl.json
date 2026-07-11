@@ -1432,7 +1432,7 @@
       },
       "private-chef": {
         "name": "Privéchef bij het diner",
-        "desc": "Een chef kookt bij u thuis, menu afgestemd met de concierge."
+        "desc": "Een chef kookt bij u thuis, menu afgestemd met de concierge. De prijs van een goed restaurant in de regio, met de privacy van het huis."
       },
       "hamper-essentials": {
         "name": "Welkomstmand, essentials",
@@ -1440,7 +1440,7 @@
       },
       "hamper-gourmet": {
         "name": "Welkomstmand, regionale gourmet",
-        "desc": "Selectie van regionale wijnen en delicatessen."
+        "desc": "Selectie van regionale wijnen en delicatessen. Een week boodschappen, gekozen door een kenner."
       },
       "grocery-list": {
         "name": "Koelkast gevuld bij aankomst",
@@ -1603,6 +1603,14 @@
     "next": "Volgende",
     "firstIncluded": "Eerste inbegrepen, extra voor {{price}}",
     "nextChapter": "Volgende: {{chapter}}",
-    "continueToPayment": "Doorgaan naar betaling"
+    "continueToPayment": "Doorgaan naar betaling",
+    "scarcityNote": "Onder voorbehoud van beschikbaarheid op piekdata. Nu boeken stelt het veilig.",
+    "tailoredTitle": "Uw verblijf, op maat",
+    "flexLastCall": "Eén klik om deze boeking te beschermen: Flex, gegarandeerd omboeken.",
+    "flexAddShort": "Toevoegen",
+    "proof": {
+      "transfer-porto": "Chauffeur uit ons eigen team, nooit uitbesteed",
+      "hamper-gourmet": "Minho-producenten gekozen door onze concierge"
+    }
   }
 }

@@ -1432,7 +1432,7 @@
       },
       "private-chef": {
         "name": "Privatkoch am Abend",
-        "desc": "Ein Koch kocht bei Ihnen, Menü mit dem Concierge abgestimmt."
+        "desc": "Ein Koch kocht bei Ihnen, Menü mit dem Concierge abgestimmt. Der Preis eines guten Restaurants der Region, mit der Privatsphäre des Hauses."
       },
       "hamper-essentials": {
         "name": "Willkommenskorb, Essentials",
@@ -1440,7 +1440,7 @@
       },
       "hamper-gourmet": {
         "name": "Willkommenskorb, regionaler Gourmet",
-        "desc": "Auswahl regionaler Weine und Delikatessen."
+        "desc": "Auswahl regionaler Weine und Delikatessen. Ein Wocheneinkauf, ausgewählt von Kennern."
       },
       "grocery-list": {
         "name": "Kühlschrank gefüllt bei Ankunft",
@@ -1603,6 +1603,14 @@
     "next": "Weiter",
     "firstIncluded": "Erstes inklusive, weitere zu {{price}}",
     "nextChapter": "Weiter: {{chapter}}",
-    "continueToPayment": "Weiter zur Zahlung"
+    "continueToPayment": "Weiter zur Zahlung",
+    "scarcityNote": "Vorbehaltlich Verfügbarkeit an Spitzenterminen. Jetzt buchen sichert es.",
+    "tailoredTitle": "Ihr Aufenthalt, maßgeschneidert",
+    "flexLastCall": "Ein Klick zum Schutz dieser Buchung: Flex, garantierte Umbuchung.",
+    "flexAddShort": "Hinzufügen",
+    "proof": {
+      "transfer-porto": "Fahrer aus unserem Team, nie ausgelagert",
+      "hamper-gourmet": "Minho-Produzenten, ausgewählt von unserem Concierge"
+    }
   }
 }

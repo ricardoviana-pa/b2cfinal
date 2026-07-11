@@ -63,6 +63,9 @@ export interface CheckoutExtra {
   parentSku?: string;
   /** Só existe quando a casa aceita animais (amenity "pets allowed" do listing) */
   petsOnly?: boolean;
+  /** D4: capacidade finita real (chef, transfers em pico) — mostra a linha
+   *  "confirmação sujeita a disponibilidade, garantimos ao reservar agora" */
+  scarcity?: boolean;
   /** Curadoria: ranking base (menor = mais acima) antes das regras dinâmicas */
   baseRank: number;
 }
@@ -88,8 +91,8 @@ export const CHECKOUT_INCLUDED_KEYS = [
 
 export const CHECKOUT_EXTRAS: CheckoutExtra[] = [
   // ── Capítulo 01 · A chegada ── (receção obrigatória tratada à parte; linhas)
-  { sku: "transfer-porto", chapter: "arrival", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 120, minQty: 1, maxQty: 4, popular: true, baseRank: 10 },
-  { sku: "transfer-porto-van", chapter: "arrival", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 160, minQty: 1, maxQty: 4, baseRank: 11 },
+  { sku: "transfer-porto", chapter: "arrival", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 120, minQty: 1, maxQty: 4, popular: true, scarcity: true, baseRank: 10 },
+  { sku: "transfer-porto-van", chapter: "arrival", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 160, minQty: 1, maxQty: 4, scarcity: true, baseRank: 11 },
 
   // ── Capítulo 02 · A casa ── (babysitter atrás de "ver mais" por rank)
   { sku: "daily-cleaning", chapter: "home", pricingModel: "per_day", fulfillment: "instant", unitPrice: 60, baseRank: 20 },
@@ -106,7 +109,7 @@ export const CHECKOUT_EXTRAS: CheckoutExtra[] = [
   { sku: "pet-food", chapter: "home", pricingModel: "on_request", fulfillment: "on_request", petsOnly: true, parentSku: "pet-fee", baseRank: 27 },
 
   // ── Capítulo 03 · A mesa ── (chef = único destaque com imagem dos caps 01-04)
-  { sku: "private-chef", chapter: "table", pricingModel: "per_person", fulfillment: "needs_confirmation", unitPrice: 95, minPeople: 4, feature: true, photo: "/experiences/private-chef-dinner.webp", baseRank: 30 },
+  { sku: "private-chef", chapter: "table", pricingModel: "per_person", fulfillment: "needs_confirmation", unitPrice: 95, minPeople: 4, feature: true, scarcity: true, photo: "/experiences/private-chef-dinner.webp", baseRank: 30 },
   { sku: "hamper-essentials", chapter: "table", pricingModel: "per_stay", fulfillment: "instant", unitPrice: 75, baseRank: 31 },
   { sku: "hamper-gourmet", chapter: "table", pricingModel: "per_stay", fulfillment: "instant", unitPrice: 150, popular: true, baseRank: 32 },
   { sku: "grocery-list", chapter: "table", pricingModel: "on_request", fulfillment: "on_request", baseRank: 33 },
@@ -212,3 +215,18 @@ export const FLEX_CONFIG = {
   rescheduleDaysBefore: 7,
   creditMonths: 18,
 };
+
+/**
+ * D5: bundles de chegada — MODELO PREPARADO, INATIVO. Não ativar sem o
+ * desconto definido pelo Ricardo (spec: preço único ligeiramente abaixo da
+ * soma; máximo 1-2 bundles nomeados). price: null = não aparece.
+ */
+export interface CheckoutBundle {
+  sku: string;
+  itemSkus: string[];
+  /** preço fechado do bundle em EUR; null = inativo */
+  price: number | null;
+}
+export const CHECKOUT_BUNDLES: CheckoutBundle[] = [
+  // { sku: "bundle-arrival", itemSkus: ["reception-hosted", "transfer-porto", "hamper-gourmet"], price: null },
+];

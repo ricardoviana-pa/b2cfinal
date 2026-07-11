@@ -1432,7 +1432,7 @@
       },
       "private-chef": {
         "name": "Privat kock till middag",
-        "desc": "En kock lagar mat hemma hos er, meny bestäms med conciergen."
+        "desc": "En kock lagar mat hemma hos er, meny bestäms med conciergen. Priset för en bra restaurang i regionen, med husets avskildhet."
       },
       "hamper-essentials": {
         "name": "Välkomstkorg, basics",
@@ -1440,7 +1440,7 @@
       },
       "hamper-gourmet": {
         "name": "Välkomstkorg, regional gourmet",
-        "desc": "Utvalda regionala viner och delikatesser."
+        "desc": "Utvalda regionala viner och delikatesser. En veckas matinköp, valda av en kännare."
       },
       "grocery-list": {
         "name": "Kylskåpet fyllt vid ankomst",
@@ -1603,6 +1603,14 @@
     "next": "Nästa",
     "firstIncluded": "Första ingår, extra för {{price}}",
     "nextChapter": "Nästa: {{chapter}}",
-    "continueToPayment": "Fortsätt till betalning"
+    "continueToPayment": "Fortsätt till betalning",
+    "scarcityNote": "Med förbehåll för tillgänglighet under högsäsong. Boka nu säkrar det.",
+    "tailoredTitle": "Din vistelse, skräddarsydd",
+    "flexLastCall": "Ett klick för att skydda bokningen: Flex, garanterad ombokning.",
+    "flexAddShort": "Lägg till",
+    "proof": {
+      "transfer-porto": "Förare från vårt eget team, aldrig utlagt",
+      "hamper-gourmet": "Minho-producenter valda av vår concierge"
+    }
   }
 }

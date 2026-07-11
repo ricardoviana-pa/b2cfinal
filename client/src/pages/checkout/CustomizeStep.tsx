@@ -44,6 +44,7 @@ export interface CatalogExtra {
   photo?: string;
   feature?: boolean;
   parentSku?: string;
+  scarcity?: boolean;
   rank?: number;
   suggestedQty?: number;
   suggestedDays?: number;
@@ -320,7 +321,8 @@ function OptionRow({
         <div className="min-w-0">
           {item.popular && (
             <p className="text-[9px] font-medium tracking-[0.12em] uppercase text-pa-gold mb-1">
-              {t("checkout.mostChosen", "Most chosen")}
+              {/* D3: prova específica e verdadeira por sku quando existe; senão o badge genérico */}
+              {t(`checkout.proof.${item.sku}`, t("checkout.mostChosen", "Most chosen"))}
             </p>
           )}
           <p className="flex items-center gap-1.5 text-[15px] font-medium text-pa-dark">
@@ -335,6 +337,11 @@ function OptionRow({
           {item.fulfillment === "needs_confirmation" && !selected && (
             <p className="inline-flex items-center gap-1 text-[10.5px] text-pa-stone-aa mt-1">
               <Clock3 className="w-2.5 h-2.5" /> {t("checkout.confirm24h", "Confirmed within 24h")}
+            </p>
+          )}
+          {item.scarcity && !selected && (
+            <p className="text-[10.5px] text-pa-earth mt-1">
+              {t("checkout.scarcityNote", "Subject to availability at peak dates. Booking now secures it.")}
             </p>
           )}
         </div>

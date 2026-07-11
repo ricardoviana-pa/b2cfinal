@@ -1432,7 +1432,7 @@
       },
       "private-chef": {
         "name": "Private chef dinner",
-        "desc": "A chef cooks in your home, menu agreed with the concierge."
+        "desc": "A chef cooks in your home, menu agreed with the concierge. The price of a fine restaurant in the region, with the privacy of the house."
       },
       "hamper-essentials": {
         "name": "Welcome hamper, essentials",
@@ -1440,7 +1440,7 @@
       },
       "hamper-gourmet": {
         "name": "Welcome hamper, regional gourmet",
-        "desc": "A curated selection of regional wines and delicacies."
+        "desc": "A curated selection of regional wines and delicacies. A week of groceries, chosen by someone who knows."
       },
       "grocery-list": {
         "name": "Fridge stocked on arrival",
@@ -1603,6 +1603,14 @@
     "next": "Next",
     "firstIncluded": "First included, extra at {{price}}",
     "nextChapter": "Next: {{chapter}}",
-    "continueToPayment": "Continue to payment"
+    "continueToPayment": "Continue to payment",
+    "scarcityNote": "Subject to availability at peak dates. Booking now secures it.",
+    "tailoredTitle": "Your stay, tailored",
+    "flexLastCall": "One click to protect this booking: Flex, guaranteed rebooking.",
+    "flexAddShort": "Add",
+    "proof": {
+      "transfer-porto": "Driven by our own team, never outsourced",
+      "hamper-gourmet": "Minho producers chosen by our concierge"
+    }
   }
 }
