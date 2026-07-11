@@ -44,16 +44,18 @@ function wrapTemplate(content: string): string {
 <tr><td align="center" style="padding:40px 20px;">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
-<!-- Logo -->
-<tr><td style="padding:0 0 30px 0;text-align:center;">
-  <span style="font-family:Georgia,serif;font-size:22px;color:#1A1A18;letter-spacing:0.02em;">Portugal Active</span>
+<!-- Brand band: dark ground with the white site logo -->
+<tr><td style="background:#1A1A18;text-align:center;padding:22px 20px;border-radius:10px 10px 0 0;">
+  <img src="${LOGO_URL}" alt="Portugal Active" height="30" style="height:30px;display:inline-block;" />
 </td></tr>
-
-<!-- Divider -->
-<tr><td style="padding:0 0 30px 0;"><div style="height:1px;background:#8B7355;"></div></td></tr>
+<tr><td style="height:26px;background:#FFFFFF;border-left:1px solid #E8E4DC;border-right:1px solid #E8E4DC;"></td></tr>
 
 <!-- Content -->
+<tr><td style="background:#FFFFFF;border-left:1px solid #E8E4DC;border-right:1px solid #E8E4DC;border-bottom:1px solid #E8E4DC;border-radius:0 0 10px 10px;padding:0 28px 28px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
 ${content}
+</table>
+</td></tr>
 
 <!-- Divider -->
 <tr><td style="padding:30px 0 0 0;"><div style="height:1px;background:#8B7355;"></div></td></tr>
