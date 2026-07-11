@@ -947,7 +947,7 @@ export default function CheckoutPage() {
                               </span>
                             )}
                           </div>
-                          <p className={cn("text-[11px] mt-0.5", nonRef ? "text-red-500/80" : "text-pa-earth")}>
+                          <p className="text-[11px] mt-0.5 text-pa-earth">
                             {nonRef
                               ? t("bookingWidget.nonRefundableWarning", "No refund if you cancel or modify")
                               : policyLine}
@@ -969,9 +969,10 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              {/* Price breakdown */}
+              {/* Price breakdown — mobile only: on desktop the lateral summary
+                  already shows it and the duplication reads noisy (spec v1.2 §4) */}
               {effective && (
-                <div className="bg-white border border-pa-sand rounded-lg p-5">{summaryLines}</div>
+                <div className="lg:hidden bg-white border border-pa-sand rounded-lg p-5">{summaryLines}</div>
               )}
 
               {/* Email capture */}
