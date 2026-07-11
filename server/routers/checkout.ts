@@ -26,7 +26,10 @@ import {
   createLead,
 } from "../db";
 import { getPropertiesForSite } from "../services/properties-store";
-import { sendCheckoutOpsManifest } from "../services/transactional-email";
+import {
+  sendCheckoutOpsManifest,
+  sendCheckoutGuestConfirmation,
+} from "../services/transactional-email";
 import { appendReservationNote } from "../services/guesty-openapi-paypal";
 
 /** Intent (and its resume link) lives as long as the Guesty quote: ~23h. */
@@ -217,6 +220,26 @@ export const checkoutRouter = router({
           guestPhone: m.guestPhone, reception: m.reception, extras: m.extras,
           flex: m.flex, intentId: input.intentId,
         });
+        // Confirmação premium ao hóspede — o email do Guesty é genérico, este
+        // é ao nível do site (fire-and-forget, nunca trava o funil)
+        if (m.email) {
+          void sendCheckoutGuestConfirmation({
+            email: m.email,
+            guestFirstName: m.guestFirstName,
+            propertyName: m.propertyName,
+            destination: m.destination,
+            checkIn: m.checkIn,
+            checkOut: m.checkOut,
+            guests: m.guests,
+            confirmationCode: m.confirmationCode,
+            reception: m.reception,
+            extras: m.extras,
+            flex: m.flex,
+            total: m.quote?.total ?? null,
+            locale: m.locale,
+            intentId: input.intentId,
+          });
+        }
         const hasPayload = m.reception || (Array.isArray(m.extras) && m.extras.length) || m.flex;
         if (m.reservationId && hasPayload) {
           const lines = (Array.isArray(m.extras) ? m.extras : []).map((e: any) =>
