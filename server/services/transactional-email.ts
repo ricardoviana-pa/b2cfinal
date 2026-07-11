@@ -9,7 +9,7 @@ const resendKey = process.env.RESEND_API_KEY;
 const isProduction = !!resendKey;
 const resend = resendKey ? new Resend(resendKey) : null;
 
-const FROM_EMAIL = process.env.EMAIL_FROM || "Portugal Active <info@portugalactive.com>";
+const FROM_EMAIL = process.env.EMAIL_FROM || "Portugal Active <booking@portugalactive.com>";
 
 /* ================================================================
    CORE SEND
@@ -479,11 +479,41 @@ interface CheckoutRecoveryData {
   checkOut: string;
   guests: number;
   total?: number | null;
+  /** Quote snapshot from the intent — drives the checkout-style price breakdown */
+  quote?: {
+    nightlyRate?: number;
+    nights?: number;
+    totalNights?: number;
+    cleaningFee?: number;
+    taxesAndFees?: number;
+    total?: number;
+  } | null;
+  /** Hero photo of the property (Guesty/Cloudinary URL, already sized) */
+  imageUrl?: string | null;
+  /** Real quote expiry — powers the "guaranteed until" line (spec: real urgency only) */
+  expiresAt?: Date | null;
   resumeUrl: string;
   locale?: string | null;
   /** 1 = 1h email, 2 = 20h email */
   stage: 1 | 2;
 }
+
+/* Brand tokens mirrored from client/src/index.css (@theme --color-pa-*) so the
+   email reads as one system with the checkout page. */
+const PA = {
+  dark: "#1A1A18",
+  earth: "#6B6860",
+  stoneAA: "#78756F",
+  sand: "#E8E4DC",
+  warm: "#F5F1EB",
+  gold: "#8B7355",
+} as const;
+/** Same asset the site header uses (client/src/lib/images.ts logoColor) */
+const LOGO_URL =
+  "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo_0b76cb12.webp";
+/** Site display font with the email-safe serif fallback */
+const SERIF = "'Cormorant Garamond',Georgia,'Times New Roman',serif";
+const SANS = "'DM Sans',Arial,Helvetica,sans-serif";
 
 function formatStayDate(iso: string, locale: "pt" | "en"): string {
   try {
@@ -493,6 +523,41 @@ function formatStayDate(iso: string, locale: "pt" | "en"): string {
     }).format(new Date(`${iso}T12:00:00Z`));
   } catch {
     return iso;
+  }
+}
+
+/** Whole-euro currency in the site's format (formatEur: rounded, 0 decimals) */
+function eur(amount: number, pt: boolean): string {
+  try {
+    return new Intl.NumberFormat(pt ? "pt-PT" : "en-GB", {
+      style: "currency",
+      currency: "EUR",
+      maximumFractionDigits: 0,
+      minimumFractionDigits: 0,
+    }).format(Math.round(amount));
+  } catch {
+    return `€${Math.round(amount)}`;
+  }
+}
+
+/** "sábado, 12 de julho às 21:45" / "Saturday, 12 July at 21:45" (Lisbon time) */
+function formatGuaranteeUntil(expiresAt: Date, pt: boolean): string {
+  try {
+    const day = new Intl.DateTimeFormat(pt ? "pt-PT" : "en-GB", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      timeZone: "Europe/Lisbon",
+    }).format(expiresAt);
+    const time = new Intl.DateTimeFormat(pt ? "pt-PT" : "en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: "Europe/Lisbon",
+    }).format(expiresAt);
+    return pt ? `${day} às ${time}` : `${day} at ${time}`;
+  } catch {
+    return "";
   }
 }
 
@@ -529,55 +594,124 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
         ? `${greeting} o preço garantido da sua estadia em ${house} termina dentro de algumas horas. Depois disso teremos de calcular um novo valor, e as datas continuam abertas a outros hóspedes até ao pagamento.`
         : `${greeting} your booking at ${house} is still saved, but the guaranteed price ends in a few hours. After that we will need to work out a new rate for your dates.`;
 
-  const cta = pt ? "RETOMAR A MINHA RESERVA" : "RESUME MY BOOKING";
-  const labels = pt
-    ? { checkIn: "Check-in", checkOut: "Check-out", guests: "Hóspedes", total: "Total" }
-    : { checkIn: "Check-in", checkOut: "Check-out", guests: "Guests", total: "Total" };
+  const cta = pt ? "Retomar a minha reserva" : "Resume my booking";
   const closing = pt
     ? "Se tiver alguma dúvida, basta responder a este email. A nossa equipa ajuda com todo o gosto."
     : "If you have any questions, just reply to this email. Our team is happy to help.";
 
-  const detailRow = (k: string, v: string) => `
+  const nightsLabel = pt ? "noites" : "nights";
+  const guestsLabel = pt ? "hóspedes" : "guests";
+  const cleaningLabel = pt ? "Taxa de limpeza" : "Cleaning fee";
+  const taxesLabel = pt ? "Taxas" : "Taxes & fees";
+  const totalLabel = "Total";
+
+  // Price lines exactly like the checkout summary (CheckoutPage summaryLines)
+  const q = data.quote || {};
+  const line = (label: string, value: string) => `
       <tr>
-        <td style="padding:6px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;">${k}</td>
-        <td style="padding:6px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;">${v}</td>
+        <td style="padding:5px 0;font-family:${SANS};font-size:13px;color:${PA.earth};">${label}</td>
+        <td style="padding:5px 0;font-family:${SANS};font-size:13px;color:${PA.dark};text-align:right;">${value}</td>
       </tr>`;
+  let priceLines = "";
+  if (q.nightlyRate && q.nights && q.totalNights) {
+    priceLines += line(`${eur(q.nightlyRate, pt)} × ${q.nights} ${nightsLabel}`, eur(q.totalNights, pt));
+  }
+  if (q.cleaningFee && q.cleaningFee > 0) priceLines += line(cleaningLabel, eur(q.cleaningFee, pt));
+  if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(taxesLabel, eur(q.taxesAndFees, pt));
 
-  const html = wrapTemplate(`
-<tr><td style="padding:0 0 24px 0;">
-  <h1 style="font-family:Georgia,serif;font-size:26px;color:#1A1A18;margin:0;font-weight:400;">${headline}</h1>
-</td></tr>
-<tr><td style="padding:0 0 20px 0;">
-  <p style="font-family:Arial,sans-serif;font-size:15px;color:#6B6860;line-height:1.6;margin:0;">${body}</p>
+  const total = q.total ?? data.total;
+  const destination = data.destination
+    ? data.destination.charAt(0).toUpperCase() + data.destination.slice(1)
+    : "";
+
+  const guaranteeUntil = data.expiresAt ? formatGuaranteeUntil(data.expiresAt, pt) : "";
+  const guaranteeLine = guaranteeUntil
+    ? `<tr><td style="padding:14px 24px 0 24px;">
+        <p style="font-family:${SANS};font-size:11.5px;color:${PA.gold};line-height:1.5;margin:0;">
+          ${pt ? "Preço garantido até" : "Price guaranteed until"} ${guaranteeUntil}
+        </p>
+      </td></tr>`
+    : "";
+
+  const photo = data.imageUrl
+    ? `<tr><td style="border-radius:12px 12px 0 0;overflow:hidden;">
+        <img src="${data.imageUrl}" alt="${house}" width="600" style="display:block;width:100%;height:auto;border-radius:12px 12px 0 0;" />
+      </td></tr>`
+    : "";
+
+  const html = `<!DOCTYPE html>
+<html lang="${lang}">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:${PA.warm};font-family:${SANS};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PA.warm};">
+
+<!-- Top bar: brand-dark band with the white logo (the logoColor asset is
+     white-on-transparent, so it needs the dark background to show) -->
+<tr><td style="background:${PA.dark};padding:18px 20px;text-align:center;">
+  <img src="${LOGO_URL}" alt="Portugal Active" height="30" style="height:30px;width:auto;display:inline-block;" />
 </td></tr>
 
-<!-- Stay details -->
+<tr><td align="center" style="padding:36px 20px 44px 20px;">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+<!-- Headline -->
+<tr><td style="padding:0 0 12px 0;">
+  <h1 style="font-family:${SERIF};font-size:30px;line-height:1.2;color:${PA.dark};margin:0;font-weight:400;">${headline}</h1>
+</td></tr>
 <tr><td style="padding:0 0 24px 0;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAFAF7;border:1px solid #E8E4DC;">
-  <tr><td style="padding:20px;">
-    <p style="font-family:Georgia,serif;font-size:18px;color:#1A1A18;margin:0 0 16px 0;">${house}</p>
-    ${data.destination ? `<p style="font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;margin:-8px 0 12px 0;">${data.destination}</p>` : ""}
-    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">
-      ${detailRow(labels.checkIn, formatStayDate(data.checkIn, lang))}
-      ${detailRow(labels.checkOut, formatStayDate(data.checkOut, lang))}
-      ${detailRow(labels.guests, String(data.guests))}
-      ${data.total ? `<tr>
-        <td style="padding:6px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;">${labels.total}</td>
-        <td style="padding:6px 0;font-family:Georgia,serif;font-size:16px;color:#1A1A18;text-align:right;">&euro;${Math.round(data.total).toLocaleString(pt ? "pt-PT" : "en-GB")}</td>
-      </tr>` : ""}
-    </table>
+  <p style="font-family:${SANS};font-size:15px;color:${PA.earth};line-height:1.65;margin:0;">${body}</p>
+</td></tr>
+
+<!-- Summary card: photo + stay + breakdown, mirroring the checkout's lateral summary -->
+<tr><td style="padding:0 0 24px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid ${PA.sand};border-radius:12px;">
+  ${photo}
+  <tr><td style="padding:22px 24px 4px 24px;">
+    <p style="font-family:${SERIF};font-size:21px;line-height:1.3;color:${PA.dark};margin:0;">${house}</p>
+    ${destination ? `<p style="font-family:${SANS};font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:${PA.stoneAA};margin:5px 0 0 0;">${destination}</p>` : ""}
+    <p style="font-family:${SANS};font-size:13px;color:${PA.earth};margin:10px 0 0 0;">
+      ${formatStayDate(data.checkIn, lang)} &rarr; ${formatStayDate(data.checkOut, lang)} &nbsp;&middot;&nbsp; ${data.guests} ${guestsLabel}
+    </p>
   </td></tr>
+  ${priceLines ? `<tr><td style="padding:14px 24px 0 24px;">
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">
+      ${priceLines}
+    </table>
+  </td></tr>` : ""}
+  ${total ? `<tr><td style="padding:10px 24px 0 24px;">
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-top:1px solid ${PA.sand};">
+      <tr>
+        <td style="padding:12px 0 0 0;font-family:${SANS};font-size:14px;font-weight:500;color:${PA.dark};">${totalLabel}</td>
+        <td style="padding:12px 0 0 0;font-family:${SANS};font-size:21px;color:${PA.dark};text-align:right;">${eur(total, pt)}</td>
+      </tr>
+    </table>
+  </td></tr>` : ""}
+  ${guaranteeLine}
+  <tr><td style="padding:0 0 20px 0;"></td></tr>
 </table>
 </td></tr>
 
-<!-- Resume CTA -->
-<tr><td style="padding:0 0 20px 0;text-align:center;">
-  <a href="${data.resumeUrl}" target="_blank" style="display:inline-block;background:#1A1A18;color:#ffffff;font-family:Arial,sans-serif;font-size:13px;font-weight:600;text-decoration:none;padding:12px 24px;letter-spacing:0.04em;">${cta}</a>
+<!-- Resume CTA: full-width black button like the checkout's continue bar -->
+<tr><td style="padding:0 0 24px 0;">
+  <a href="${data.resumeUrl}" target="_blank" style="display:block;background:${PA.dark};color:#ffffff;font-family:${SANS};font-size:13px;font-weight:600;text-decoration:none;text-align:center;padding:15px 24px;letter-spacing:0.1em;text-transform:uppercase;border-radius:8px;">${cta}</a>
 </td></tr>
 
-<tr><td style="padding:0 0 10px 0;">
-  <p style="font-family:Arial,sans-serif;font-size:14px;color:#6B6860;line-height:1.6;margin:0;">${closing}</p>
-</td></tr>`);
+<tr><td style="padding:0 0 8px 0;">
+  <p style="font-family:${SANS};font-size:13.5px;color:${PA.earth};line-height:1.6;margin:0;">${closing}</p>
+</td></tr>
+
+<!-- Footer -->
+<tr><td style="padding:28px 0 0 0;border-top:1px solid ${PA.sand};">
+  <p style="font-family:${SERIF};font-size:16px;color:${PA.dark};margin:24px 0 0 0;text-align:center;">Portugal Active</p>
+  <p style="font-family:${SANS};font-size:12px;color:${PA.stoneAA};margin:6px 0 0 0;text-align:center;">+351 258 358 434 &middot; info@portugalactive.com</p>
+  <p style="font-family:${SANS};font-size:11px;color:${PA.stoneAA};margin:14px 0 0 0;text-align:center;">${pt ? "Villas privadas de luxo em Portugal, geridas com serviço de hotel." : "Luxury private villas across Portugal, managed with hotel-grade service."}</p>
+</td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
 
   await sendEmail(data.guestEmail, subject, html);
 }
@@ -585,9 +719,11 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 /* ================================================================
    CHECKOUT 2.0 — CONFIRMAÇÃO PREMIUM AO HÓSPEDE
    Enviada no hook paid do updateIntent, a seguir à ficha do CS.
-   O email do Guesty é genérico; este é ao nível do site. PT quando
-   o locale do intent começa por pt, EN para o resto. Fire-and-forget:
-   nunca trava um pagamento nem lança erro.
+   O email do Guesty é genérico; este replica o checkout do site:
+   logótipo, foto da casa como hero, cartão de resumo com o breakdown
+   de preços e o total, "A sua estadia à medida" e próximos passos.
+   PT quando o locale do intent começa por pt, EN para o resto.
+   Fire-and-forget: nunca trava um pagamento nem lança erro.
    ================================================================ */
 
 const CONCIERGE_WA_LINK = "https://wa.me/351927161771";
@@ -596,20 +732,6 @@ const CONCIERGE_WA_LINK = "https://wa.me/351927161771";
 function skuLabel(sku: string): string {
   const s = String(sku).replace(/-/g, " ").trim();
   return s ? s.charAt(0).toUpperCase() + s.slice(1) : String(sku);
-}
-
-/** "2026-08-12" → "12 de agosto de 2026" / "12 August 2026" (com ano, para a confirmação) */
-function formatFullDate(ymd: string | null | undefined, pt: boolean): string {
-  if (!ymd || !/^\d{4}-\d{2}-\d{2}$/.test(ymd)) return ymd || "?";
-  try {
-    return new Intl.DateTimeFormat(pt ? "pt-PT" : "en-GB", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).format(new Date(`${ymd}T12:00:00Z`));
-  } catch {
-    return ymd;
-  }
 }
 
 export async function sendCheckoutGuestConfirmation(d: {
@@ -622,169 +744,238 @@ export async function sendCheckoutGuestConfirmation(d: {
   guests?: number | null;
   confirmationCode?: string | null;
   reception?: { type: string; late?: boolean } | null;
+  /** Preço da receção presencial calculado pelo caller a partir da config */
+  receptionAmount?: number | null;
   extras?: Array<Record<string, unknown>> | null;
   flex?: boolean | null;
-  total?: number | null;
+  /** Preço do Flex (config do servidor), só usado quando flex é true */
+  flexPrice?: number | null;
+  /** Snapshot da quote do intent — alimenta o breakdown igual ao checkout */
+  quote?: {
+    nightlyRate?: number;
+    nights?: number;
+    totalNights?: number;
+    cleaningFee?: number;
+    taxesAndFees?: number;
+    total?: number;
+  } | null;
+  /** Foto da casa (CDN Guesty, já dimensionada). Sem foto o cartão segue sem hero. */
+  imageUrl?: string | null;
+  /** Link "Ver a minha reserva" (checkout pago mostra o estado confirmado) */
+  viewUrl?: string | null;
   locale?: string | null;
   intentId: string;
 }): Promise<void> {
   try {
     const pt = String(d.locale || "").toLowerCase().startsWith("pt");
-    const property = d.propertyName || (pt ? "a sua casa" : "your home");
+    const lang: "pt" | "en" = pt ? "pt" : "en";
+    const house = d.propertyName || (pt ? "a sua casa" : "your home");
     const subject = pt
-      ? `A sua estadia na ${property} está confirmada`
-      : `Your stay at ${property} is confirmed`;
+      ? `A sua estadia na ${house} está confirmada`
+      : `Your stay at ${house} is confirmed`;
 
     const firstName = (d.guestFirstName || "").trim().split(" ")[0];
-    const euro = (n: number) =>
-      "&euro;" + Math.round(n).toLocaleString(pt ? "pt-PT" : "en-GB");
+    const inShort = d.checkIn ? formatStayDate(d.checkIn, lang) : "?";
+    const outShort = d.checkOut ? formatStayDate(d.checkOut, lang) : "?";
 
-    const detailRow = (k: string, v: string, serifValue = false) => `
-      <tr>
-        <td style="padding:6px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;">${k}</td>
-        <td style="padding:6px 0;font-family:${serifValue ? "Georgia,serif" : "Arial,sans-serif"};font-size:${serifValue ? "16px" : "14px"};color:#1A1A18;text-align:right;">${v}</td>
-      </tr>`;
+    const headline = pt
+      ? `Está confirmada. A ${house} é sua de ${inShort} a ${outShort}.`
+      : `It's confirmed. ${house} is yours from ${inShort} to ${outShort}.`;
 
-    // ── "A sua estadia à medida": receção + extras pagos + Flex ──
+    const body = pt
+      ? `${firstName ? `Olá ${firstName}, bem` : "Bem"}-vindo à Portugal Active. A nossa equipa já está a preparar a casa para a sua chegada e o seu concierge acompanha tudo a partir de agora. Guarde o código abaixo, é a sua referência para qualquer pedido.`
+      : `${firstName ? `Hello ${firstName}, welcome` : "Welcome"} to Portugal Active. Our team is already preparing the house for your arrival and your concierge is with you from here on. Keep the code below, it is your reference for any request.`;
+
+    // ── Extras: pagos entram no cartão de preços; on_request vão ao concierge ──
     const extras = Array.isArray(d.extras) ? d.extras : [];
     const paidExtras = extras.filter((e) => e.amount != null);
     const requestExtras = extras.filter((e) => e.amount == null);
 
     const unit = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
-    const extraLine = (e: Record<string, unknown>): string => {
+    const extraLabel = (e: Record<string, unknown>): string => {
       const bits: string[] = [skuLabel(String(e.sku))];
       if (e.qty && Number(e.qty) > 1) bits.push("x" + e.qty);
       if (e.people) bits.push(unit(Number(e.people), pt ? "pessoa" : "person", pt ? "pessoas" : "people"));
       if (e.sessions) bits.push(unit(Number(e.sessions), pt ? "sessão" : "session", pt ? "sessões" : "sessions"));
       if (e.days) bits.push(unit(Number(e.days), pt ? "dia" : "day", pt ? "dias" : "days"));
-      return `
-      <tr>
-        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;">${bits.join(" · ")}</td>
-        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;">${e.amount != null ? euro(Number(e.amount)) : ""}</td>
-      </tr>`;
+      return bits.join(" · ");
     };
 
-    const receptionLabel = d.reception
-      ? d.reception.type === "hosted"
-        ? pt
-          ? `Receção presencial${d.reception.late ? " após as 21h" : ""}`
-          : `Hosted arrival${d.reception.late ? " after 9pm" : ""}`
-        : pt
-          ? "Self check-in, incluído na estadia"
-          : "Self check-in, included in your stay"
+    // ── Cartão de resumo: linhas de preço iguais ao resumo do checkout ──
+    const q = d.quote || {};
+    const line = (label: string, value: string) => `
+      <tr>
+        <td style="padding:5px 0;font-family:${SANS};font-size:13px;color:${PA.earth};">${label}</td>
+        <td style="padding:5px 0;font-family:${SANS};font-size:13px;color:${PA.dark};text-align:right;">${value}</td>
+      </tr>`;
+
+    let priceLines = "";
+    if (q.nightlyRate && q.nights && q.totalNights) {
+      priceLines += line(`${eur(q.nightlyRate, pt)} × ${q.nights} ${pt ? "noites" : "nights"}`, eur(q.totalNights, pt));
+    }
+    if (q.cleaningFee && q.cleaningFee > 0) priceLines += line(pt ? "Taxa de limpeza" : "Cleaning fee", eur(q.cleaningFee, pt));
+    if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(pt ? "Taxas" : "Taxes & fees", eur(q.taxesAndFees, pt));
+    const receptionAmt = d.receptionAmount ?? 0;
+    if (d.reception?.type === "hosted" && receptionAmt > 0) {
+      priceLines += line(
+        pt ? `Receção presencial${d.reception.late ? " após as 21h" : ""}` : `Hosted arrival${d.reception.late ? " after 9pm" : ""}`,
+        eur(receptionAmt, pt),
+      );
+    }
+    for (const e of paidExtras) priceLines += line(extraLabel(e), eur(Number(e.amount), pt));
+    const flexAmt = d.flex && d.flexPrice ? d.flexPrice : 0;
+    if (flexAmt > 0) priceLines += line(pt ? "Flex, remarcação garantida" : "Flex, guaranteed rebooking", eur(flexAmt, pt));
+
+    const extrasSum = paidExtras.reduce((s, e) => s + Number(e.amount || 0), 0);
+    const total = (q.total ?? 0) + receptionAmt + extrasSum + flexAmt;
+
+    const destination = d.destination
+      ? d.destination.charAt(0).toUpperCase() + d.destination.slice(1)
       : "";
 
-    const tailoredRows: string[] = [];
-    if (receptionLabel) {
-      tailoredRows.push(`
-      <tr>
-        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;">${pt ? "Chegada" : "Arrival"}</td>
-        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;">${receptionLabel}</td>
-      </tr>`);
-    }
-    for (const e of paidExtras) tailoredRows.push(extraLine(e));
-    if (d.flex) {
-      tailoredRows.push(`
-      <tr>
-        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;">Flex</td>
-        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:14px;color:#8B7355;text-align:right;">${pt ? "Remarcação garantida ativa" : "Guaranteed rebooking active"}</td>
-      </tr>`);
-    }
-
-    const tailoredBlock = tailoredRows.length
-      ? `
-<tr><td style="padding:0 0 24px 0;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FBF8F3;border:1px solid #E8E4DC;">
-  <tr><td style="padding:20px;">
-    <p style="font-family:Georgia,serif;font-size:17px;color:#1A1A18;margin:0 0 12px 0;font-weight:400;">${pt ? "A sua estadia à medida" : "Your stay, tailored"}</p>
-    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">${tailoredRows.join("")}</table>
-  </td></tr>
-</table>
-</td></tr>`
+    const photo = d.imageUrl
+      ? `<tr><td style="border-radius:12px 12px 0 0;overflow:hidden;">
+        <img src="${d.imageUrl}" alt="${house}" width="600" style="display:block;width:100%;height:auto;border-radius:12px 12px 0 0;" />
+      </td></tr>`
       : "";
 
+    // ── Chegada quando é self check-in (sem custo, não entra nas linhas de preço) ──
+    const selfCheckInLine =
+      d.reception && d.reception.type !== "hosted"
+        ? `<p style="font-family:${SANS};font-size:12px;color:${PA.gold};margin:10px 0 0 0;">${pt ? "Self check-in, incluído na estadia" : "Self check-in, included in your stay"}</p>`
+        : "";
+
+    // ── Pedidos ao concierge (on_request, sob orçamento) ──
     const conciergeBlock = requestExtras.length
       ? `
 <tr><td style="padding:0 0 24px 0;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAFAF7;border:1px solid #E8E4DC;">
-  <tr><td style="padding:20px;">
-    <p style="font-family:Georgia,serif;font-size:17px;color:#1A1A18;margin:0 0 10px 0;font-weight:400;">${pt ? "Pedidos ao concierge" : "Concierge requests"}</p>
-    ${requestExtras.map((e) => `<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;margin:3px 0;">&bull; ${skuLabel(String(e.sku))}</p>`).join("")}
-    <p style="font-family:Arial,sans-serif;font-size:13px;color:#6B6860;line-height:1.6;margin:12px 0 0 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid ${PA.sand};border-radius:12px;">
+  <tr><td style="padding:22px 24px;">
+    <p style="font-family:${SERIF};font-size:19px;color:${PA.dark};margin:0 0 10px 0;font-weight:400;">${pt ? "Pedidos ao concierge" : "Concierge requests"}</p>
+    ${requestExtras.map((e) => `<p style="font-family:${SANS};font-size:13.5px;color:${PA.dark};margin:4px 0;">&bull; ${extraLabel(e)}</p>`).join("")}
+    <p style="font-family:${SANS};font-size:12.5px;color:${PA.earth};line-height:1.6;margin:12px 0 0 0;">
       ${pt
-        ? "O nosso concierge envia-lhe um orçamento personalizado nas próximas 24 horas. Estes pedidos só são confirmados depois da sua aprovação."
-        : "Our concierge will send you a tailored quote within the next 24 hours. These requests are only confirmed after your approval."}
+        ? "O seu concierge envia-lhe um orçamento personalizado nas próximas 24 horas. Estes pedidos só são confirmados depois da sua aprovação."
+        : "Your concierge will send you a tailored quote within the next 24 hours. These requests are only confirmed after your approval."}
     </p>
   </td></tr>
 </table>
 </td></tr>`
       : "";
 
-    const html = wrapTemplate(`
-<tr><td style="padding:0 0 24px 0;">
-  <h1 style="font-family:Georgia,serif;font-size:26px;color:#1A1A18;margin:0;font-weight:400;">${pt ? "A sua estadia está confirmada." : "Your stay is confirmed."}</h1>
+    const cta = pt ? "Ver a minha reserva" : "View my booking";
+    const ctaBlock = d.viewUrl
+      ? `
+<tr><td style="padding:0 0 14px 0;">
+  <a href="${d.viewUrl}" target="_blank" style="display:block;background:${PA.dark};color:#ffffff;font-family:${SANS};font-size:13px;font-weight:600;text-decoration:none;text-align:center;padding:15px 24px;letter-spacing:0.1em;text-transform:uppercase;border-radius:8px;">${cta}</a>
+</td></tr>`
+      : "";
+
+    const html = `<!DOCTYPE html>
+<html lang="${lang}">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:${PA.warm};font-family:${SANS};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PA.warm};">
+
+<!-- Top bar: brand-dark band with the white logo (the logoColor asset is
+     white-on-transparent, so it needs the dark background to show) -->
+<tr><td style="background:${PA.dark};padding:18px 20px;text-align:center;">
+  <img src="${LOGO_URL}" alt="Portugal Active" height="30" style="height:30px;width:auto;display:inline-block;" />
+</td></tr>
+
+<tr><td align="center" style="padding:36px 20px 44px 20px;">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+<!-- Headline -->
+<tr><td style="padding:0 0 12px 0;">
+  <h1 style="font-family:${SERIF};font-size:30px;line-height:1.25;color:${PA.dark};margin:0;font-weight:400;">${headline}</h1>
 </td></tr>
 <tr><td style="padding:0 0 24px 0;">
-  <p style="font-family:Arial,sans-serif;font-size:15px;color:#6B6860;line-height:1.6;margin:0;">
-    ${firstName ? (pt ? `Olá ${firstName}, obrigado` : `Hello ${firstName}, thank you`) : pt ? "Obrigado" : "Thank you"}
-    ${pt
-      ? `por reservar diretamente com a Portugal Active. A nossa equipa já começou a preparar a ${property} para o receber.`
-      : `for booking directly with Portugal Active. Our team has already started preparing ${property} for your arrival.`}
-  </p>
+  <p style="font-family:${SANS};font-size:15px;color:${PA.earth};line-height:1.65;margin:0;">${body}</p>
 </td></tr>
 
 <!-- Código de confirmação -->
 <tr><td style="padding:0 0 24px 0;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FBF8F3;border:1px solid #E8E4DC;">
-  <tr><td style="padding:24px;text-align:center;">
-    <p style="font-family:Arial,sans-serif;font-size:11px;color:#9E9A90;margin:0 0 8px 0;text-transform:uppercase;letter-spacing:0.08em;">${pt ? "Código de confirmação" : "Confirmation code"}</p>
-    <p style="font-family:Georgia,serif;font-size:30px;color:#1A1A18;margin:0;letter-spacing:0.04em;font-weight:400;">${d.confirmationCode || "&mdash;"}</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid ${PA.sand};border-radius:12px;">
+  <tr><td style="padding:22px 24px;text-align:center;">
+    <p style="font-family:${SANS};font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:${PA.stoneAA};margin:0 0 8px 0;">${pt ? "Código de confirmação" : "Confirmation code"}</p>
+    <p style="font-family:${SERIF};font-size:30px;color:${PA.dark};margin:0;letter-spacing:0.05em;font-weight:400;">${d.confirmationCode || "&mdash;"}</p>
   </td></tr>
 </table>
 </td></tr>
 
-<!-- Bloco da estadia -->
+<!-- Summary card: photo + stay + breakdown, mirroring the checkout's lateral summary -->
 <tr><td style="padding:0 0 24px 0;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAFAF7;border:1px solid #E8E4DC;">
-  <tr><td style="padding:20px;">
-    <p style="font-family:Georgia,serif;font-size:18px;color:#1A1A18;margin:0 0 4px 0;font-weight:400;">${property}</p>
-    ${d.destination ? `<p style="font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;margin:0 0 14px 0;">${d.destination}</p>` : `<div style="height:10px;"></div>`}
-    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">
-      ${detailRow("Check-in", formatFullDate(d.checkIn, pt))}
-      ${detailRow("Check-out", formatFullDate(d.checkOut, pt))}
-      ${detailRow(pt ? "Hóspedes" : "Guests", String(d.guests ?? "?"))}
-      ${d.total != null && d.total > 0 ? detailRow(pt ? "Total da estadia" : "Stay total", euro(d.total), true) : ""}
-    </table>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid ${PA.sand};border-radius:12px;">
+  ${photo}
+  <tr><td style="padding:22px 24px 4px 24px;">
+    <p style="font-family:${SERIF};font-size:21px;line-height:1.3;color:${PA.dark};margin:0;">${house}</p>
+    ${destination ? `<p style="font-family:${SANS};font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:${PA.stoneAA};margin:5px 0 0 0;">${destination}</p>` : ""}
+    <p style="font-family:${SANS};font-size:13px;color:${PA.earth};margin:10px 0 0 0;">
+      ${inShort} &rarr; ${outShort} &nbsp;&middot;&nbsp; ${d.guests ?? "?"} ${pt ? "hóspedes" : "guests"}
+    </p>
+    ${selfCheckInLine}
   </td></tr>
+  ${priceLines ? `<tr><td style="padding:14px 24px 0 24px;">
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">
+      ${priceLines}
+    </table>
+  </td></tr>` : ""}
+  ${total > 0 ? `<tr><td style="padding:10px 24px 0 24px;">
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-top:1px solid ${PA.sand};">
+      <tr>
+        <td style="padding:12px 0 0 0;font-family:${SANS};font-size:14px;font-weight:500;color:${PA.dark};">Total</td>
+        <td style="padding:12px 0 0 0;font-family:${SANS};font-size:21px;color:${PA.dark};text-align:right;">${eur(total, pt)}</td>
+      </tr>
+    </table>
+  </td></tr>` : ""}
+  <tr><td style="padding:0 0 20px 0;"></td></tr>
 </table>
 </td></tr>
 
-${tailoredBlock}
 ${conciergeBlock}
 
 <!-- Próximos passos -->
-<tr><td style="padding:0 0 20px 0;">
-  <p style="font-family:Georgia,serif;font-size:17px;color:#1A1A18;margin:0 0 10px 0;font-weight:400;">${pt ? "Próximos passos" : "What happens next"}</p>
-  <p style="font-family:Arial,sans-serif;font-size:14px;color:#6B6860;line-height:1.7;margin:0;">
-    ${pt
-      ? "Na véspera da chegada recebe por email as instruções de check-in, com todos os detalhes de acesso à casa. Até lá, o seu concierge está disponível para qualquer pedido, de reservas de restaurante a transferes."
-      : "The day before arrival you will receive your check-in instructions by email, with every detail you need to reach the house. Until then, your concierge is available for any request, from restaurant reservations to transfers."}
-  </p>
+<tr><td style="padding:0 0 24px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid ${PA.sand};border-radius:12px;">
+  <tr><td style="padding:22px 24px;">
+    <p style="font-family:${SERIF};font-size:19px;color:${PA.dark};margin:0 0 10px 0;font-weight:400;">${pt ? "Próximos passos" : "What happens next"}</p>
+    <p style="font-family:${SANS};font-size:13.5px;color:${PA.earth};line-height:1.7;margin:0;">
+      ${pt
+        ? "Na véspera da chegada recebe por email as instruções de check-in, com todos os detalhes de acesso à casa. Até lá, o seu concierge está disponível para qualquer pedido, de reservas de restaurante a transferes."
+        : "The day before arrival you will receive your check-in instructions by email, with every detail you need to reach the house. Until then, your concierge is available for any request, from restaurant reservations to transfers."}
+    </p>
+  </td></tr>
+</table>
 </td></tr>
 
-<!-- Concierge CTA -->
+<!-- CTAs -->
+${ctaBlock}
 <tr><td style="padding:0 0 24px 0;text-align:center;">
-  <a href="${CONCIERGE_WA_LINK}" target="_blank" style="display:inline-block;background:#1A1A18;color:#ffffff;font-family:Arial,sans-serif;font-size:13px;font-weight:600;text-decoration:none;padding:13px 26px;letter-spacing:0.04em;">${pt ? "FALAR COM O CONCIERGE" : "CHAT WITH YOUR CONCIERGE"}</a>
+  <a href="${CONCIERGE_WA_LINK}" target="_blank" style="font-family:${SANS};font-size:13px;color:${PA.gold};text-decoration:underline;">${pt ? "Falar com o seu concierge no WhatsApp" : "Chat with your concierge on WhatsApp"}</a>
 </td></tr>
 
 <!-- Melhor preço garantido -->
-<tr><td style="padding:0 0 10px 0;text-align:center;">
-  <p style="font-family:Arial,sans-serif;font-size:12px;color:#9E9A90;line-height:1.6;margin:0;">
+<tr><td style="padding:0 0 8px 0;text-align:center;">
+  <p style="font-family:${SANS};font-size:12px;color:${PA.stoneAA};line-height:1.6;margin:0;">
     ${pt
       ? "Reservou diretamente com a Portugal Active, com o melhor preço garantido."
       : "You booked directly with Portugal Active, with our best price guaranteed."}
   </p>
-</td></tr>`);
+</td></tr>
+
+<!-- Footer -->
+<tr><td style="padding:28px 0 0 0;border-top:1px solid ${PA.sand};">
+  <p style="font-family:${SERIF};font-size:16px;color:${PA.dark};margin:24px 0 0 0;text-align:center;">Portugal Active</p>
+  <p style="font-family:${SANS};font-size:12px;color:${PA.stoneAA};margin:6px 0 0 0;text-align:center;">+351 258 358 434 &middot; info@portugalactive.com</p>
+  <p style="font-family:${SANS};font-size:11px;color:${PA.stoneAA};margin:14px 0 0 0;text-align:center;">${pt ? "Villas privadas de luxo em Portugal, geridas com serviço de hotel." : "Luxury private villas across Portugal, managed with hotel-grade service."}</p>
+</td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
 
     await sendEmail(d.email, subject, html);
     console.info(`[GuestConfirmation] enviado a ${d.email} (intent ${d.intentId})`);
