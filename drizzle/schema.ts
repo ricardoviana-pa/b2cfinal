@@ -460,6 +460,9 @@ export const bookingIntents = mysqlTable("booking_intents", {
   reception: json("reception").$type<{ type: "self" | "hosted"; late?: boolean }>(),
   /** Fase 3: Flex rebooking option */
   flex: boolean("flex").default(false).notNull(),
+  /** Fase 4: abandonment recovery emails sent (0 = none, 1 = 1h, 2 = 20h).
+   *  Monotonic — a stage is never re-sent (spec §12/§16). */
+  recoveryStage: int("recovery_stage").default(0).notNull(),
   status: mysqlEnum("status", [
     "draft",
     "contact_captured",

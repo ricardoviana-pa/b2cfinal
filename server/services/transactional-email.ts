@@ -463,6 +463,125 @@ export async function sendContactInquiryNotification(data: ContactInquiryData): 
   await sendEmail(CONTACT_NOTIFICATION_EMAIL, emailSubject, html, data.email);
 }
 
+/* ================================================================
+   CHECKOUT RECOVERY — Fase 4 (spec §12/§16)
+   Two-touch abandonment sequence: a gentle reminder ~1h after the
+   guest leaves, and a guaranteed-price nudge ~20h in (the Guesty
+   quote dies at ~23h, so the urgency is real, per spec §2).
+   PT copy when the intent locale is pt; EN for everything else.
+   ================================================================ */
+interface CheckoutRecoveryData {
+  guestEmail: string;
+  guestFirstName?: string | null;
+  propertyName?: string | null;
+  destination?: string | null;
+  checkIn: string;
+  checkOut: string;
+  guests: number;
+  total?: number | null;
+  resumeUrl: string;
+  locale?: string | null;
+  /** 1 = 1h email, 2 = 20h email */
+  stage: 1 | 2;
+}
+
+function formatStayDate(iso: string, locale: "pt" | "en"): string {
+  try {
+    return new Intl.DateTimeFormat(locale === "pt" ? "pt-PT" : "en-GB", {
+      day: "numeric",
+      month: "long",
+    }).format(new Date(`${iso}T12:00:00Z`));
+  } catch {
+    return iso;
+  }
+}
+
+export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<void> {
+  const pt = (data.locale || "").toLowerCase().startsWith("pt");
+  const lang: "pt" | "en" = pt ? "pt" : "en";
+  const house = data.propertyName || (pt ? "a sua casa" : "your home");
+  const firstName = (data.guestFirstName || "").trim().split(" ")[0];
+
+  const subject =
+    data.stage === 1
+      ? pt
+        ? `A sua estadia em ${house} está guardada`
+        : `Your stay at ${house} is saved`
+      : pt
+        ? `O preço garantido para ${house} termina em breve`
+        : `Your guaranteed price for ${house} ends soon`;
+
+  const greeting = firstName
+    ? pt ? `Olá ${firstName},` : `Hello ${firstName},`
+    : pt ? "Olá," : "Hello,";
+
+  const headline =
+    data.stage === 1
+      ? pt ? "A sua estadia está guardada." : "Your stay is saved."
+      : pt ? "O seu preço garantido termina em breve." : "Your guaranteed price ends soon.";
+
+  const body =
+    data.stage === 1
+      ? pt
+        ? `${greeting} guardámos tudo tal como deixou. Pode retomar a sua reserva em ${house} a qualquer momento, no mesmo dispositivo ou noutro, exatamente onde parou.`
+        : `${greeting} we kept everything exactly as you left it. You can pick up your booking at ${house} anytime, on this device or another, right where you stopped.`
+      : pt
+        ? `${greeting} a sua reserva em ${house} ainda está guardada, mas o preço garantido termina dentro de algumas horas. Depois disso teremos de calcular um novo valor para as suas datas.`
+        : `${greeting} your booking at ${house} is still saved, but the guaranteed price ends in a few hours. After that we will need to work out a new rate for your dates.`;
+
+  const cta = pt ? "RETOMAR A MINHA RESERVA" : "RESUME MY BOOKING";
+  const labels = pt
+    ? { checkIn: "Check-in", checkOut: "Check-out", guests: "Hóspedes", total: "Total" }
+    : { checkIn: "Check-in", checkOut: "Check-out", guests: "Guests", total: "Total" };
+  const closing = pt
+    ? "Se tiver alguma dúvida, basta responder a este email. A nossa equipa ajuda com todo o gosto."
+    : "If you have any questions, just reply to this email. Our team is happy to help.";
+
+  const detailRow = (k: string, v: string) => `
+      <tr>
+        <td style="padding:6px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;">${k}</td>
+        <td style="padding:6px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;">${v}</td>
+      </tr>`;
+
+  const html = wrapTemplate(`
+<tr><td style="padding:0 0 24px 0;">
+  <h1 style="font-family:Georgia,serif;font-size:26px;color:#1A1A18;margin:0;font-weight:400;">${headline}</h1>
+</td></tr>
+<tr><td style="padding:0 0 20px 0;">
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:#6B6860;line-height:1.6;margin:0;">${body}</p>
+</td></tr>
+
+<!-- Stay details -->
+<tr><td style="padding:0 0 24px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAFAF7;border:1px solid #E8E4DC;">
+  <tr><td style="padding:20px;">
+    <p style="font-family:Georgia,serif;font-size:18px;color:#1A1A18;margin:0 0 16px 0;">${house}</p>
+    ${data.destination ? `<p style="font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;margin:-8px 0 12px 0;">${data.destination}</p>` : ""}
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">
+      ${detailRow(labels.checkIn, formatStayDate(data.checkIn, lang))}
+      ${detailRow(labels.checkOut, formatStayDate(data.checkOut, lang))}
+      ${detailRow(labels.guests, String(data.guests))}
+      ${data.total ? `<tr>
+        <td style="padding:6px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;">${labels.total}</td>
+        <td style="padding:6px 0;font-family:Georgia,serif;font-size:16px;color:#1A1A18;text-align:right;">&euro;${Math.round(data.total).toLocaleString(pt ? "pt-PT" : "en-GB")}</td>
+      </tr>` : ""}
+    </table>
+  </td></tr>
+</table>
+</td></tr>
+
+<!-- Resume CTA -->
+<tr><td style="padding:0 0 20px 0;text-align:center;">
+  <a href="${data.resumeUrl}" target="_blank" style="display:inline-block;background:#1A1A18;color:#ffffff;font-family:Arial,sans-serif;font-size:13px;font-weight:600;text-decoration:none;padding:12px 24px;letter-spacing:0.04em;">${cta}</a>
+</td></tr>
+
+<tr><td style="padding:0 0 10px 0;">
+  <p style="font-family:Arial,sans-serif;font-size:14px;color:#6B6860;line-height:1.6;margin:0;">${closing}</p>
+</td></tr>`);
+
+  await sendEmail(data.guestEmail, subject, html);
+}
+
 /** Ficha de serviços do checkout 2.0 para o CS — enviada quando um intent passa
  *  a paid (todos os métodos; hook no updateIntent). Nunca trava um pagamento. */
 export async function sendCheckoutOpsManifest(d: {

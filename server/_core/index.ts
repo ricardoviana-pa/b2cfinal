@@ -444,6 +444,7 @@ ${allUrls.join("\n")}
           \`extras\` json,
           \`reception\` json,
           \`flex\` boolean NOT NULL DEFAULT false,
+          \`recovery_stage\` int NOT NULL DEFAULT 0,
           \`status\` enum('draft','contact_captured','payment_pending','paid','expired') NOT NULL DEFAULT 'draft',
           \`locale\` varchar(5),
           \`reservationId\` varchar(64),
@@ -467,6 +468,16 @@ ${allUrls.join("\n")}
           console.warn("[Migration] booking_intents.reception:", alterErr.message);
         }
       }
+      // Fase 4: recovery_stage tracks the abandonment emails already sent
+      // (0 = none, 1 = 1h, 2 = 20h) — same add-column pattern as reception.
+      try {
+        await (db as any).execute("ALTER TABLE `booking_intents` ADD COLUMN `recovery_stage` int NOT NULL DEFAULT 0");
+        console.info("[Migration] booking_intents.recovery_stage column added");
+      } catch (alterErr: any) {
+        if (!/duplicate column|exists/i.test(alterErr?.message || "")) {
+          console.warn("[Migration] booking_intents.recovery_stage:", alterErr.message);
+        }
+      }
       console.info("[Migration] booking_intents table OK");
     }
   } catch (migErr: any) {
@@ -475,6 +486,16 @@ ${allUrls.join("\n")}
 
   server.listen(port, () => {
     console.info(`Server running on http://localhost:${port}/`);
+
+    // Checkout 2.0 (Fase 4): abandonment recovery emails (1h + 20h).
+    // Fail-soft — the sweep no-ops when the DB is unavailable.
+    try {
+      import("../services/checkout-recovery")
+        .then(({ startCheckoutRecoveryScheduler }) => startCheckoutRecoveryScheduler())
+        .catch((e) => console.warn("[Recovery] Scheduler not started:", e?.message ?? e));
+    } catch (e: any) {
+      console.warn("[Recovery] Scheduler not started:", e?.message ?? e);
+    }
 
     // Guesty sync: pull listings (photos, texts, pricing).
     // DISABLED on startup to prevent OAuth rate-limit exhaustion during deploys.
