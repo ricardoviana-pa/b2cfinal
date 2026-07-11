@@ -1489,6 +1489,26 @@
       "exp-buggy": {
         "name": "Can Am Buggy Erlebnis",
         "desc": "Abseits der Straße über die Pfade der Region."
+      },
+      "travel-crib": {
+        "name": "Reisebett",
+        "desc": "Vor Ihrer Ankunft aufgebaut. Sagen Sie uns wie viele, damit das Haus bereit ist."
+      },
+      "baby-chair": {
+        "name": "Hochstuhl",
+        "desc": "Bei Ankunft am Tisch. Sagen Sie uns wie viele, damit das Haus bereit ist."
+      },
+      "pet-fee": {
+        "name": "Haustier mitbringen",
+        "desc": "Dieses Haus heißt Haustiere willkommen. Eine Gebühr pro Aufenthalt deckt die Vorbereitung."
+      },
+      "pet-kit": {
+        "name": "Haustier-Set, Bett und Näpfe",
+        "desc": "Ein bequemes Bett und Näpfe warten auf Ihren Begleiter."
+      },
+      "pet-food": {
+        "name": "Tierfutter",
+        "desc": "Nennen Sie uns Marke und Ernährung, wir besorgen alles vor Ihrer Ankunft."
       }
     },
     "emailTitle": "Wohin senden wir Ihre Buchung?",
@@ -1580,6 +1600,7 @@
       "field": "Promocode"
     },
     "prev": "Zurück",
-    "next": "Weiter"
+    "next": "Weiter",
+    "firstIncluded": "Erstes inklusive, weitere zu {{price}}"
   }
 }

@@ -1489,6 +1489,26 @@
       "exp-buggy": {
         "name": "Can Am buggy-upplevelse",
         "desc": "Offroad genom regionens leder."
+      },
+      "travel-crib": {
+        "name": "Resesäng",
+        "desc": "Uppställd före ankomst. Säg hur många så huset är redo."
+      },
+      "baby-chair": {
+        "name": "Barnstol",
+        "desc": "Vid bordet vid ankomst. Säg hur många så huset är redo."
+      },
+      "pet-fee": {
+        "name": "Ta med husdjur",
+        "desc": "Det här huset välkomnar husdjur. En avgift per vistelse täcker förberedelserna."
+      },
+      "pet-kit": {
+        "name": "Husdjurskit, säng och skålar",
+        "desc": "En bekväm säng och skålar väntar på din följeslagare."
+      },
+      "pet-food": {
+        "name": "Djurfoder",
+        "desc": "Berätta märke och diet, vi fyller på före ankomst."
       }
     },
     "emailTitle": "Vart skickar vi din bokning?",
@@ -1580,6 +1600,7 @@
       "field": "Rabattkod"
     },
     "prev": "Föregående",
-    "next": "Nästa"
+    "next": "Nästa",
+    "firstIncluded": "Första ingår, extra för {{price}}"
   }
 }

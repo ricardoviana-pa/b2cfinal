@@ -1489,6 +1489,26 @@
       "exp-buggy": {
         "name": "Can Am buggy ervaring",
         "desc": "Offroad over de paden van de regio."
+      },
+      "travel-crib": {
+        "name": "Campingbedje",
+        "desc": "Opgezet voor aankomst. Zeg ons hoeveel zodat het huis klaar is."
+      },
+      "baby-chair": {
+        "name": "Kinderstoel",
+        "desc": "Aan tafel bij aankomst. Zeg ons hoeveel zodat het huis klaar is."
+      },
+      "pet-fee": {
+        "name": "Huisdier meenemen",
+        "desc": "Dit huis verwelkomt huisdieren. Eén toeslag per verblijf dekt de extra voorbereiding."
+      },
+      "pet-kit": {
+        "name": "Huisdierkit, mand en bakjes",
+        "desc": "Een comfortabele mand en bakjes wachten op uw metgezel."
+      },
+      "pet-food": {
+        "name": "Dierenvoer",
+        "desc": "Zeg ons het merk en dieet, wij zorgen dat alles klaarstaat."
       }
     },
     "emailTitle": "Waar sturen we uw boeking naartoe?",
@@ -1580,6 +1600,7 @@
       "field": "Promocode"
     },
     "prev": "Vorige",
-    "next": "Volgende"
+    "next": "Volgende",
+    "firstIncluded": "Eerste inbegrepen, extra voor {{price}}"
   }
 }

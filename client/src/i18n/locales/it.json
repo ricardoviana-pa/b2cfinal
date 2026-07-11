@@ -1489,6 +1489,26 @@
       "exp-buggy": {
         "name": "Esperienza buggy Can Am",
         "desc": "Fuoristrada per i sentieri della regione."
+      },
+      "travel-crib": {
+        "name": "Culla da viaggio",
+        "desc": "Montata prima dell'arrivo. Dicci quante per preparare la casa."
+      },
+      "baby-chair": {
+        "name": "Seggiolone",
+        "desc": "A tavola all'arrivo. Dicci quanti per preparare la casa."
+      },
+      "pet-fee": {
+        "name": "Portare un animale",
+        "desc": "Questa casa accetta animali. Una tariffa per soggiorno copre la preparazione."
+      },
+      "pet-kit": {
+        "name": "Kit pet, cuccia e ciotole",
+        "desc": "Una cuccia comoda e ciotole ad attendere il tuo compagno."
+      },
+      "pet-food": {
+        "name": "Cibo per l'animale",
+        "desc": "Dicci marca e dieta, prepariamo tutto prima del tuo arrivo."
       }
     },
     "emailTitle": "Dove inviamo la tua prenotazione?",
@@ -1580,6 +1600,7 @@
       "field": "Codice promo"
     },
     "prev": "Precedente",
-    "next": "Successivo"
+    "next": "Successivo",
+    "firstIncluded": "Primo incluso, extra a {{price}}"
   }
 }

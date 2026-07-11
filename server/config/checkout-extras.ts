@@ -21,6 +21,8 @@ export type ExtraPricingModel =
   | "per_person"
   | "per_unit"
   | "per_person_per_unit"
+  /** 1.ª unidade incluída (0 €), unidades adicionais a unitPrice (spec §5.0) */
+  | "included_selectable"
   | "on_request";
 
 export type ExtraFulfillment = "instant" | "needs_confirmation" | "on_request";
@@ -57,6 +59,10 @@ export interface CheckoutExtra {
   photo?: string;
   /** Destaque com imagem (2.1 §3.3) — máximo 1 por capítulo, só onde vende. */
   feature?: boolean;
+  /** Progressive disclosure: só aparece quando o item pai está selecionado (§5.0 animais) */
+  parentSku?: string;
+  /** Só existe quando a casa aceita animais (amenity "pets allowed" do listing) */
+  petsOnly?: boolean;
   /** Curadoria: ranking base (menor = mais acima) antes das regras dinâmicas */
   baseRank: number;
 }
@@ -89,6 +95,15 @@ export const CHECKOUT_EXTRAS: CheckoutExtra[] = [
   { sku: "daily-cleaning", chapter: "home", pricingModel: "per_day", fulfillment: "instant", unitPrice: 60, baseRank: 20 },
   { sku: "linen-change", chapter: "home", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 45, minQty: 1, maxQty: 10, baseRank: 21 },
   { sku: "babysitter", chapter: "home", pricingModel: "per_person_per_unit", fulfillment: "needs_confirmation", unitPrice: 20, baseRank: 22 },
+  // §5.0: 1.º incluído mas exige seleção (a equipa prepara a casa); extra a 25 €.
+  // Entram SEMPRE no manifesto de operações.
+  { sku: "travel-crib", chapter: "home", pricingModel: "included_selectable", fulfillment: "instant", unitPrice: 25, minQty: 1, maxQty: 3, baseRank: 23 },
+  { sku: "baby-chair", chapter: "home", pricingModel: "included_selectable", fulfillment: "instant", unitPrice: 25, minQty: 1, maxQty: 3, baseRank: 24 },
+  // §5.0: taxa de animais — só quando o listing aceita; ao adicionar revela os
+  // extras pet (progressive disclosure)
+  { sku: "pet-fee", chapter: "home", pricingModel: "per_stay", fulfillment: "instant", unitPrice: 45, petsOnly: true, baseRank: 25 },
+  { sku: "pet-kit", chapter: "home", pricingModel: "per_stay", fulfillment: "instant", unitPrice: 25, petsOnly: true, parentSku: "pet-fee", baseRank: 26 },
+  { sku: "pet-food", chapter: "home", pricingModel: "on_request", fulfillment: "on_request", petsOnly: true, parentSku: "pet-fee", baseRank: 27 },
 
   // ── Capítulo 03 · A mesa ── (chef = único destaque com imagem dos caps 01-04)
   { sku: "private-chef", chapter: "table", pricingModel: "per_person", fulfillment: "needs_confirmation", unitPrice: 95, minPeople: 4, feature: true, photo: "/experiences/private-chef-dinner.webp", baseRank: 30 },
@@ -124,6 +139,10 @@ export interface CurationContext {
   guests: number;
   /** mês do check-in, 1-12 */
   month?: number;
+  /** a casa aceita animais (amenity do listing) — sem isto os itens pet não existem */
+  petsAllowed?: boolean;
+  /** nº de crianças na reserva — promove berço/cadeira (seletor Guesty, a ligar) */
+  children?: number;
 }
 
 /** Destinos com forte componente costeira/aquática (sobem experiências de água). */
@@ -144,7 +163,7 @@ export function curateExtras(ctx: CurationContext): CuratedExtra[] {
   const coastal = ctx.destination ? COASTAL.has(ctx.destination.toLowerCase()) : false;
   const summer = ctx.month != null && ctx.month >= 5 && ctx.month <= 9;
 
-  return CHECKOUT_EXTRAS.map((e): CuratedExtra => {
+  return CHECKOUT_EXTRAS.filter((e) => !e.petsOnly || ctx.petsAllowed).map((e): CuratedExtra => {
     let rank = e.baseRank;
     const out: CuratedExtra = { ...e, rank };
 
@@ -159,6 +178,10 @@ export function curateExtras(ctx: CurationContext): CuratedExtra[] {
         const suggested = Math.max(1, Math.floor(ctx.nights / 3));
         out.suggestedQty = Math.min(e.maxQty ?? suggested, suggested);
       }
+    }
+    // Crianças na reserva: berço e cadeira sobem para os visíveis (§5.0)
+    if ((ctx.children ?? 0) > 0 && (e.sku === "travel-crib" || e.sku === "baby-chair")) {
+      rank -= 8;
     }
     // ≥6 hóspedes: sobe chef privado e transfer van
     if (ctx.guests >= 6) {

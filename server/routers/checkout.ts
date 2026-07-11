@@ -25,6 +25,7 @@ import {
   updateBookingIntent,
   createLead,
 } from "../db";
+import { getPropertiesForSite } from "../services/properties-store";
 
 /** Intent (and its resume link) lives as long as the Guesty quote: ~23h. */
 const INTENT_TTL_MS = 23 * 60 * 60 * 1000;
@@ -69,6 +70,27 @@ const extraSelectionSchema = z.object({
   amount: z.number().nullable(),
   fulfillment: z.enum(["instant", "needs_confirmation", "on_request"]).optional(),
 });
+
+/** A casa aceita animais? Amenity "pets allowed" do listing (fail-soft: false). */
+async function listingAllowsPets(listingId?: string): Promise<boolean> {
+  if (!listingId) return false;
+  // Demo de design: mostra o circuito pet completo para revisão
+  if (listingId === "demo-listing") return true;
+  try {
+    const props = await getPropertiesForSite();
+    const prop = props.find((p: any) => (p.guestyId || p.listingId) === listingId);
+    if (!prop) return false;
+    const am = prop.amenities;
+    const flat = Array.isArray(am)
+      ? am
+      : am && typeof am === "object"
+        ? Object.values(am).flat()
+        : [];
+    return flat.some((a: any) => String(a).toLowerCase().includes("pets allowed"));
+  } catch {
+    return false;
+  }
+}
 
 export const checkoutRouter = router({
   /**
@@ -194,6 +216,7 @@ export const checkoutRouter = router({
     .input(
       z
         .object({
+          listingId: z.string().max(64).optional(),
           destination: z.string().max(64).optional(),
           nights: z.number().int().min(1).max(400).optional(),
           guests: z.number().int().min(1).max(30).optional(),
@@ -201,12 +224,13 @@ export const checkoutRouter = router({
         })
         .optional(),
     )
-    .query(({ input }) => ({
+    .query(async ({ input }) => ({
       extras: curateExtras({
         destination: input?.destination,
         nights: input?.nights ?? 1,
         guests: input?.guests ?? 2,
         month: input?.month,
+        petsAllowed: await listingAllowsPets(input?.listingId),
       }),
       reception: CHECKOUT_RECEPTION,
       included: CHECKOUT_INCLUDED_KEYS,

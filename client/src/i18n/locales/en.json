@@ -1489,6 +1489,26 @@
       "exp-buggy": {
         "name": "Can Am buggy experience",
         "desc": "Off road through the region's tracks."
+      },
+      "travel-crib": {
+        "name": "Travel crib",
+        "desc": "Set up before you arrive. Tell us how many so the home is ready."
+      },
+      "baby-chair": {
+        "name": "High chair",
+        "desc": "At the table on arrival. Tell us how many so the home is ready."
+      },
+      "pet-fee": {
+        "name": "Bringing a pet",
+        "desc": "This home welcomes pets. One fee per stay covers the extra preparation."
+      },
+      "pet-kit": {
+        "name": "Pet kit, bed and bowls",
+        "desc": "A comfortable bed and bowls waiting for your companion."
+      },
+      "pet-food": {
+        "name": "Pet food",
+        "desc": "Tell us the brand and diet, we stock it before you arrive."
       }
     },
     "emailTitle": "Where should we send your booking?",
@@ -1580,6 +1600,7 @@
       "field": "Promo code"
     },
     "prev": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "firstIncluded": "First included, extra at {{price}}"
   }
 }

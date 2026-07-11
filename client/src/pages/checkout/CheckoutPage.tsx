@@ -323,6 +323,7 @@ export default function CheckoutPage() {
   const checkInMonth = checkIn ? Number(checkIn.slice(5, 7)) : undefined;
   const extrasQuery = trpc.checkout.getExtras.useQuery(
     {
+      listingId: intent?.listingId ?? undefined,
       destination: intent?.destination ?? undefined,
       nights: quote?.nights ?? 1,
       guests,
@@ -536,11 +537,15 @@ export default function CheckoutPage() {
                 ? { people: Math.max(item.minPeople ?? 1, Math.min(guests, 30)) }
                 : item.pricingModel === "per_person_per_unit"
                   ? { people: 1, sessions: 1 }
-                  : item.pricingModel === "per_unit"
+                  : item.pricingModel === "per_unit" || item.pricingModel === "included_selectable"
                     ? { qty: item.suggestedQty ?? item.minQty ?? 1 }
                     : {};
         } else {
           delete next[item.sku];
+          // Cascata (§5.0): remover o pai remove os filhos revelados por ele
+          for (const child of catalog) {
+            if (child.parentSku === item.sku) delete next[child.sku];
+          }
         }
         const amount = adding ? extraAmount(item, next[item.sku] ?? {}) : extraAmount(item, prev[item.sku] ?? {});
         pushEcommerce({
@@ -555,7 +560,7 @@ export default function CheckoutPage() {
         return next;
       });
     },
-    [guests, quote?.nights, intent?.listingId],
+    [guests, quote?.nights, intent?.listingId, catalog],
   );
   const adjustExtra = useCallback((sku: string, patch: ExtraSelection) => {
     setExtraSel((prev) => ({ ...prev, [sku]: { ...prev[sku], ...patch } }));
@@ -831,7 +836,9 @@ export default function CheckoutPage() {
             </button>
             <span className="truncate">{t(`checkout.extras.${item.sku}.name`)}</span>
           </span>
-          <span className="text-pa-dark tabular-nums shrink-0">{formatEur(amount!, lang)}</span>
+          <span className={cn("tabular-nums shrink-0", amount === 0 ? "text-pa-gold text-[11px] uppercase tracking-[0.08em]" : "text-pa-dark")}>
+            {amount === 0 ? t("checkout.included.badge") : formatEur(amount!, lang)}
+          </span>
         </div>
       ))}
       {/* Flex */}

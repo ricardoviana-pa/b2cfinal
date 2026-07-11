@@ -38,7 +38,7 @@ export type ExtraChapter = "arrival" | "home" | "table" | "wellness" | "experien
 export interface CatalogExtra {
   sku: string;
   chapter: ExtraChapter;
-  pricingModel: "per_stay" | "per_day" | "per_person" | "per_unit" | "per_person_per_unit" | "on_request";
+  pricingModel: "per_stay" | "per_day" | "per_person" | "per_unit" | "per_person_per_unit" | "included_selectable" | "on_request";
   fulfillment: "instant" | "needs_confirmation" | "on_request";
   unitPrice?: number;
   priceFrom?: number;
@@ -48,6 +48,7 @@ export interface CatalogExtra {
   popular?: boolean;
   photo?: string;
   feature?: boolean;
+  parentSku?: string;
   rank?: number;
   suggestedQty?: number;
   suggestedDays?: number;
@@ -96,6 +97,9 @@ export function extraAmount(item: CatalogExtra, sel: ExtraSelection): number | n
       return item.unitPrice * (sel.qty ?? 1);
     case "per_person_per_unit":
       return item.unitPrice * (sel.people ?? 1) * (sel.sessions ?? 1);
+    case "included_selectable":
+      // 1.ª unidade incluída; extras a unitPrice (§5.0)
+      return item.unitPrice * Math.max(0, (sel.qty ?? 1) - 1);
   }
 }
 
@@ -280,7 +284,9 @@ function selectionSummary(item: CatalogExtra, sel: ExtraSelection, amount: numbe
   if (sel.qty) bits.push(`${sel.qty}×`);
   if (sel.people) bits.push(`${sel.people} ${String(t("checkout.peopleLabel", "People")).toLowerCase()}`);
   if (sel.sessions && sel.sessions > 1) bits.push(`${sel.sessions} ${String(t("checkout.sessionsLabel", "Sessions")).toLowerCase()}`);
-  if (amount != null) bits.push(formatEur(amount, lang));
+  if (amount != null) {
+    bits.push(amount === 0 && item.pricingModel === "included_selectable" ? t("checkout.included.badge") : formatEur(amount, lang));
+  }
   return bits.join(" · ");
 }
 
@@ -341,6 +347,11 @@ function OptionRow({
         <div className="shrink-0 text-right">
           {onRequest ? (
             <p className="text-[12px] text-pa-stone-aa max-w-[130px]">{t("checkout.conciergeQuote", "Quoted by your concierge")}</p>
+          ) : item.pricingModel === "included_selectable" ? (
+            <>
+              <p className="text-[11px] font-medium tracking-[0.1em] uppercase text-pa-gold">{t("checkout.included.badge")}</p>
+              <p className="text-[10.5px] text-pa-stone-aa">{t("checkout.firstIncluded", { price: formatEur(item.unitPrice!, lang) })}</p>
+            </>
           ) : (
             <p className="text-[14px] text-pa-dark tabular-nums">
               {formatEur(item.unitPrice!, lang)}{" "}
@@ -369,6 +380,10 @@ function OptionRow({
             {item.pricingModel === "per_day" && (
               <div className="flex items-center gap-2"><span className="text-[11px] text-pa-stone-aa">{t("checkout.daysLabel", "Days")}</span>
                 <Stepper value={sel!.days ?? 1} min={1} max={Math.max(1, nights)} onChange={(v) => onAdjust(item.sku, { days: v })} ariaLabel={t("checkout.daysLabel", "Days")} /></div>
+            )}
+            {item.pricingModel === "included_selectable" && (
+              <div className="flex items-center gap-2"><span className="text-[11px] text-pa-stone-aa">{t("checkout.qtyLabel", "Quantity")}</span>
+                <Stepper value={sel!.qty ?? 1} min={item.minQty ?? 1} max={item.maxQty ?? 3} onChange={(v) => onAdjust(item.sku, { qty: v })} ariaLabel={t("checkout.qtyLabel", "Quantity")} /></div>
             )}
             {item.pricingModel === "per_unit" && (
               <div className="flex items-center gap-2"><span className="text-[11px] text-pa-stone-aa">{item.sku.startsWith("transfer") ? t("checkout.tripsLabel", "Trips") : t("checkout.qtyLabel", "Quantity")}</span>
@@ -584,7 +599,9 @@ export default function CustomizeStep({
         if (!chapterItems.length && !(isArrival && reception)) return null;
 
         const featureItem = !isExperiences ? chapterItems.find((i) => i.feature && i.photo) : undefined;
-        const rows = chapterItems.filter((i) => i !== featureItem);
+        // Progressive disclosure (§5.0): filhos (kit pet, comida) só aparecem
+        // com o pai (taxa de animais) selecionado
+        const rows = chapterItems.filter((i) => i !== featureItem && (!i.parentSku || selection[i.parentSku] != null));
         const isOpen = !!expanded[chapter];
         const visibleRows = isExperiences ? [] : isOpen ? rows : rows.slice(0, GROUP_VISIBLE[chapter]);
         const hiddenCount = isExperiences ? 0 : rows.length - visibleRows.length;

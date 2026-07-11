@@ -1489,6 +1489,26 @@
       "exp-buggy": {
         "name": "Can Am buggy-elämys",
         "desc": "Maastossa alueen reittejä pitkin."
+      },
+      "travel-crib": {
+        "name": "Matkasänky",
+        "desc": "Koottu ennen saapumista. Kerro määrä, jotta talo on valmis."
+      },
+      "baby-chair": {
+        "name": "Syöttötuoli",
+        "desc": "Pöydässä saapuessa. Kerro määrä, jotta talo on valmis."
+      },
+      "pet-fee": {
+        "name": "Lemmikki mukaan",
+        "desc": "Tämä talo toivottaa lemmikit tervetulleiksi. Yksi maksu per majoitus kattaa valmistelut."
+      },
+      "pet-kit": {
+        "name": "Lemmikkisetti, peti ja kupit",
+        "desc": "Mukava peti ja kupit odottavat kumppaniasi."
+      },
+      "pet-food": {
+        "name": "Lemmikin ruoka",
+        "desc": "Kerro merkki ja ruokavalio, hankimme kaiken ennen saapumistasi."
       }
     },
     "emailTitle": "Minne lähetämme varauksesi?",
@@ -1580,6 +1600,7 @@
       "field": "Kampanjakoodi"
     },
     "prev": "Edellinen",
-    "next": "Seuraava"
+    "next": "Seuraava",
+    "firstIncluded": "Ensimmäinen sisältyy, lisä {{price}}"
   }
 }
