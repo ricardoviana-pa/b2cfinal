@@ -996,41 +996,58 @@ export async function sendCheckoutOpsManifest(d: {
   extras?: Array<Record<string, unknown>> | null; flex?: boolean | null; intentId: string;
 }): Promise<void> {
   try {
+    const extras = Array.isArray(d.extras) ? d.extras : [];
+    const needs = extras.filter((e) => e.fulfillment === "needs_confirmation");
+    const requests = extras.filter((e) => e.amount == null);
+    const paid = extras.filter((e) => e.amount != null && e.fulfillment !== "needs_confirmation");
+    const nice = (sku: unknown) => String(sku).replace(/-/g, " ");
+    const qty = (e: Record<string, unknown>) =>
+      [e.qty ? "x" + e.qty : "", e.days ? e.days + " dias" : "", e.people ? e.people + " pessoas" : "", e.sessions ? e.sessions + " sessoes" : ""].filter(Boolean).join(" ");
+    const deadline = new Date(Date.now() + 24 * 3600_000).toLocaleString("pt-PT", { timeZone: "Europe/Lisbon", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+
+    // ── AÇÕES: o que a equipa tem de tratar, por ordem de urgência ──
+    const actions: Array<{ urgent: boolean; text: string }> = [];
+    for (const e of needs) {
+      actions.push({ urgent: true, text: `CONFIRMAR ${nice(e.sku)} ${qty(e)} ATE ${deadline}. Sem fornecedor disponivel: avisar o hospede e reembolsar a linha (${e.amount} EUR).` });
+    }
+    if (requests.length) {
+      actions.push({ urgent: true, text: `ORGANIZAR COM O CLIENTE: ligar ou WhatsApp a ${d.guestName || "hospede"} (${d.guestPhone || d.email || "?"}) para orcamentar: ${requests.map((e) => nice(e.sku)).join(", ")}.` });
+    }
+    if (d.reception?.type === "hosted") {
+      actions.push({ urgent: false, text: `AGENDAR ANFITRIAO para a chegada de ${d.checkIn || "?"}${d.reception.late ? " APOS AS 21H" : ""} (rececao presencial paga).` });
+    }
+    for (const e of paid) {
+      actions.push({ urgent: false, text: `PREPARAR ${nice(e.sku)} ${qty(e)}${e.amount === 0 ? " (incluido, exige preparacao)" : ""}.` });
+    }
+    if (d.flex) actions.push({ urgent: false, text: "REGISTAR Flex ativo nesta reserva (remarcacao garantida)." });
+
+    const actionHtml = actions.length
+      ? `<div style="border:2px solid ${actions.some((a) => a.urgent) ? "#B23A2E" : "#8B7355"};border-radius:8px;padding:16px 18px;margin:0 0 20px;">
+           <p style="font:700 13px Arial;color:#B23A2E;margin:0 0 10px;letter-spacing:.06em;">TRATAR AGORA — POR ORDEM</p>
+           ${actions.map((a, i) => `<p style="font:${a.urgent ? "700" : "400"} 14px Arial;color:${a.urgent ? "#B23A2E" : "#1A1A18"};margin:0 0 8px;">${i + 1}. ${a.text}</p>`).join("")}
+         </div>`
+      : "";
+
     const rows: string[] = [];
     const row = (k: string, v: string) =>
-      rows.push('<tr><td style="padding:4px 12px 4px 0;color:#6B6860;font:13px Arial;">' + k + '</td><td style="padding:4px 0;color:#1A1A18;font:13px Arial;">' + v + "</td></tr>");
+      rows.push(`<tr><td style="padding:4px 12px 4px 0;color:#6B6860;font:13px Arial;">${k}</td><td style="padding:4px 0;color:#1A1A18;font:13px Arial;">${v}</td></tr>`);
     row("Casa", d.propertyName || "?");
-    row("Datas", (d.checkIn || "?") + " ate " + (d.checkOut || "?") + " · " + (d.guests ?? "?") + " hospedes");
-    row("Hospede", (d.guestName || "?") + " · " + (d.email || "?") + " · " + (d.guestPhone || "?"));
-    row("Reserva", (d.confirmationCode || "pendente") + " (Guesty " + (d.reservationId || "?") + ")");
-    row("Rececao", d.reception?.type === "hosted" ? "PRESENCIAL" + (d.reception.late ? " (apos as 21h)" : "") : "self check-in (incluido)");
-    row("Flex", d.flex ? "SIM (remarcacao garantida)" : "nao");
-    const extras = Array.isArray(d.extras) ? d.extras : [];
-    const fmt = (e: Record<string, unknown>) => {
-      const bits = [String(e.sku)];
-      if (e.qty) bits.push("x" + e.qty);
-      if (e.days) bits.push(e.days + " dias");
-      if (e.people) bits.push(e.people + " pessoas");
-      if (e.sessions) bits.push(e.sessions + " sessoes");
-      bits.push(e.amount != null ? e.amount + " EUR" : "(sob orcamento)");
-      if (e.fulfillment === "needs_confirmation") bits.push("CONFIRMAR EM 24H");
-      return bits.join(" · ");
-    };
-    const paid = extras.filter((e) => e.amount != null);
-    const reqs = extras.filter((e) => e.amount == null);
-    const list = (title: string, items: Array<Record<string, unknown>>) =>
-      items.length
-        ? '<p style="font:600 13px Arial;color:#1A1A18;margin:14px 0 4px;">' + title + "</p>" +
-          items.map((e) => '<p style="font:13px Arial;color:#1A1A18;margin:2px 0;">• ' + fmt(e) + "</p>").join("")
-        : "";
+    row("Datas", `${d.checkIn || "?"} ate ${d.checkOut || "?"} · ${d.guests ?? "?"} hospedes`);
+    row("Hospede", `${d.guestName || "?"} · ${d.email || "?"} · ${d.guestPhone || "?"}`);
+    row("Reserva", `${d.confirmationCode || "pendente"} (Guesty ${d.reservationId || "?"})`);
+    const fmtLine = (e: Record<string, unknown>) =>
+      `<p style="font:13px Arial;color:#1A1A18;margin:2px 0;">• ${nice(e.sku)} ${qty(e)} · ${e.amount != null ? e.amount + " EUR" : "sob orcamento"}</p>`;
     const html =
-      '<h2 style="font:400 20px Georgia;color:#1A1A18;">Ficha de servicos, checkout</h2>' +
-      "<table>" + rows.join("") + "</table>" +
-      list("Extras pagos", paid) + list("Pedidos ao concierge (orcamentar)", reqs) +
-      '<p style="font:11px Arial;color:#9E9A90;margin-top:16px;">Intent ' + d.intentId + " · gerado pelo checkout 2.0</p>";
-    await sendEmail(BOOKING_ALERT_EMAIL, "[CS] Servicos da reserva " + (d.confirmationCode || d.intentId.slice(0, 8)) + " - " + (d.propertyName || ""), html);
-    console.info("[OpsManifest] enviado (intent " + d.intentId + ")");
+      `<h2 style="font:400 20px Georgia;color:#1A1A18;margin:0 0 14px;">Nova reserva com servicos — ${d.propertyName || ""}</h2>` +
+      actionHtml +
+      `<table>${rows.join("")}</table>` +
+      (extras.length ? `<p style="font:600 13px Arial;margin:14px 0 4px;color:#1A1A18;">Detalhe dos servicos</p>` + extras.map(fmtLine).join("") : "") +
+      `<p style="font:11px Arial;color:#9E9A90;margin-top:16px;">Intent ${d.intentId} · gerado pelo checkout 2.0</p>`;
+    const urgentFlag = needs.length || requests.length ? "ACAO ATE 24H — " : "";
+    await sendEmail(BOOKING_ALERT_EMAIL, `[CS] ${urgentFlag}Reserva ${d.confirmationCode || d.intentId.slice(0, 8)} · ${d.propertyName || ""}`, html);
+    console.info(`[OpsManifest] enviado (intent ${d.intentId}, ${actions.length} acoes)`);
   } catch (err: any) {
-    console.error("[OpsManifest] falhou (intent " + d.intentId + "):", err?.message);
+    console.error(`[OpsManifest] falhou (intent ${d.intentId}):`, err?.message);
   }
 }
+
