@@ -145,3 +145,17 @@ export async function recordExternalPayment(
     },
   });
 }
+
+/** Manifesto de serviços na nota da reserva Guesty (best-effort; fecha o gap
+ *  Klarna/PayPal). Nunca bloqueia o pagamento. */
+export async function appendReservationNote(reservationId: string, note: string): Promise<boolean> {
+  try {
+    await guestyClient.request("PUT", "/v1/reservations/" + reservationId, {
+      body: { notes: { other: note.slice(0, 4000) } },
+    });
+    return true;
+  } catch (err: any) {
+    console.warn("[Guesty] appendReservationNote falhou (" + reservationId + "):", err?.message);
+    return false;
+  }
+}

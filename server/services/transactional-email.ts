@@ -462,3 +462,52 @@ export async function sendContactInquiryNotification(data: ContactInquiryData): 
 
   await sendEmail(CONTACT_NOTIFICATION_EMAIL, emailSubject, html, data.email);
 }
+
+/** Ficha de serviços do checkout 2.0 para o CS — enviada quando um intent passa
+ *  a paid (todos os métodos; hook no updateIntent). Nunca trava um pagamento. */
+export async function sendCheckoutOpsManifest(d: {
+  confirmationCode?: string | null; reservationId?: string | null;
+  propertyName?: string | null; checkIn?: string | null; checkOut?: string | null;
+  guests?: number | null; email?: string | null; guestName?: string | null;
+  guestPhone?: string | null; reception?: { type: string; late?: boolean } | null;
+  extras?: Array<Record<string, unknown>> | null; flex?: boolean | null; intentId: string;
+}): Promise<void> {
+  try {
+    const rows: string[] = [];
+    const row = (k: string, v: string) =>
+      rows.push('<tr><td style="padding:4px 12px 4px 0;color:#6B6860;font:13px Arial;">' + k + '</td><td style="padding:4px 0;color:#1A1A18;font:13px Arial;">' + v + "</td></tr>");
+    row("Casa", d.propertyName || "?");
+    row("Datas", (d.checkIn || "?") + " ate " + (d.checkOut || "?") + " · " + (d.guests ?? "?") + " hospedes");
+    row("Hospede", (d.guestName || "?") + " · " + (d.email || "?") + " · " + (d.guestPhone || "?"));
+    row("Reserva", (d.confirmationCode || "pendente") + " (Guesty " + (d.reservationId || "?") + ")");
+    row("Rececao", d.reception?.type === "hosted" ? "PRESENCIAL" + (d.reception.late ? " (apos as 21h)" : "") : "self check-in (incluido)");
+    row("Flex", d.flex ? "SIM (remarcacao garantida)" : "nao");
+    const extras = Array.isArray(d.extras) ? d.extras : [];
+    const fmt = (e: Record<string, unknown>) => {
+      const bits = [String(e.sku)];
+      if (e.qty) bits.push("x" + e.qty);
+      if (e.days) bits.push(e.days + " dias");
+      if (e.people) bits.push(e.people + " pessoas");
+      if (e.sessions) bits.push(e.sessions + " sessoes");
+      bits.push(e.amount != null ? e.amount + " EUR" : "(sob orcamento)");
+      if (e.fulfillment === "needs_confirmation") bits.push("CONFIRMAR EM 24H");
+      return bits.join(" · ");
+    };
+    const paid = extras.filter((e) => e.amount != null);
+    const reqs = extras.filter((e) => e.amount == null);
+    const list = (title: string, items: Array<Record<string, unknown>>) =>
+      items.length
+        ? '<p style="font:600 13px Arial;color:#1A1A18;margin:14px 0 4px;">' + title + "</p>" +
+          items.map((e) => '<p style="font:13px Arial;color:#1A1A18;margin:2px 0;">• ' + fmt(e) + "</p>").join("")
+        : "";
+    const html =
+      '<h2 style="font:400 20px Georgia;color:#1A1A18;">Ficha de servicos, checkout</h2>' +
+      "<table>" + rows.join("") + "</table>" +
+      list("Extras pagos", paid) + list("Pedidos ao concierge (orcamentar)", reqs) +
+      '<p style="font:11px Arial;color:#9E9A90;margin-top:16px;">Intent ' + d.intentId + " · gerado pelo checkout 2.0</p>";
+    await sendEmail(BOOKING_ALERT_EMAIL, "[CS] Servicos da reserva " + (d.confirmationCode || d.intentId.slice(0, 8)) + " - " + (d.propertyName || ""), html);
+    console.info("[OpsManifest] enviado (intent " + d.intentId + ")");
+  } catch (err: any) {
+    console.error("[OpsManifest] falhou (intent " + d.intentId + "):", err?.message);
+  }
+}

@@ -26,6 +26,8 @@ import {
   createLead,
 } from "../db";
 import { getPropertiesForSite } from "../services/properties-store";
+import { sendCheckoutOpsManifest } from "../services/transactional-email";
+import { appendReservationNote } from "../services/guesty-openapi-paypal";
 
 /** Intent (and its resume link) lives as long as the Guesty quote: ~23h. */
 const INTENT_TTL_MS = 23 * 60 * 60 * 1000;
@@ -203,6 +205,26 @@ export const checkoutRouter = router({
         delete patch.status;
       }
       const ok = await updateBookingIntent(input.intentId, patch);
+      // Transicao para paid: ficha de servicos ao CS + manifesto na nota Guesty
+      // (todos os metodos, fire-and-forget)
+      if (ok && patch.status === "paid" && current.status !== "paid") {
+        const m = { ...current, ...patch } as any;
+        void sendCheckoutOpsManifest({
+          confirmationCode: m.confirmationCode, reservationId: m.reservationId,
+          propertyName: m.propertyName, checkIn: m.checkIn, checkOut: m.checkOut,
+          guests: m.guests, email: m.email,
+          guestName: [m.guestFirstName, m.guestLastName].filter(Boolean).join(" "),
+          guestPhone: m.guestPhone, reception: m.reception, extras: m.extras,
+          flex: m.flex, intentId: input.intentId,
+        });
+        const hasPayload = m.reception || (Array.isArray(m.extras) && m.extras.length) || m.flex;
+        if (m.reservationId && hasPayload) {
+          const lines = (Array.isArray(m.extras) ? m.extras : []).map((e: any) =>
+            "- " + e.sku + (e.qty ? " x" + e.qty : "") + (e.days ? " " + e.days + " dias" : "") + (e.people ? " " + e.people + "p" : "") + " " + (e.amount != null ? e.amount + " EUR" : "(sob orcamento)") + (e.fulfillment === "needs_confirmation" ? " [CONFIRMAR 24H]" : ""));
+          const note = "SERVICOS DO CHECKOUT:\nRececao: " + (m.reception?.type === "hosted" ? "presencial" + (m.reception.late ? " apos 21h" : "") : "self check-in") + "\nFlex: " + (m.flex ? "SIM" : "nao") + "\n" + lines.join("\n");
+          void appendReservationNote(String(m.reservationId), note);
+        }
+      }
       return { ok };
     }),
 
