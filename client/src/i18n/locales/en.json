@@ -1377,7 +1377,7 @@
     "backToStay": "Back to your stay",
     "payTitle": "Payment",
     "paySubtitle": "Your details, then a secure payment.",
-    "nifPh": "NIF, optional, for a Portuguese invoice",
+    "nifPh": "Tax ID or VAT number, optional, for your invoice",
     "directTitle": "Booking direct with Portugal Active",
     "refreshBeforePay": "Refresh the price above before paying.",
     "secureNote": "Encrypted, secure payment",
