@@ -37,7 +37,7 @@ console.log = (...args: unknown[]) => {
 };
 
 const DEMO_IMAGE =
-  "https://assets.guesty.com/image/upload/w_1200,ar_3:2,c_fill,q_auto,f_auto/v1690000000/production/listings/sample.jpg";
+  "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533722def930014e914e2/41dffdd6-99b5-4f-GO4s9";
 
 async function main() {
   const { sendCheckoutRecovery, sendCheckoutGuestConfirmation } = await import(
