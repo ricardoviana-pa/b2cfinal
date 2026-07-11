@@ -1361,10 +1361,10 @@
     "closeAria": "Torna alla casa",
     "loading": "Preparazione del pagamento…",
     "notFoundTitle": "Pagamento non trovato",
-    "notFoundBody": "Questo link è scaduto o non è valido. Le tue date non sono perse — ricomincia dalla pagina della casa.",
-    "quoteExpiredBanner": "Questo prezzo è scaduto. Aggiorna per vedere il prezzo attuale delle tue date — i tuoi dati sono conservati.",
+    "notFoundBody": "Questo link è scaduto o non è valido. Le tue date non sono perse, ricomincia dalla pagina della casa.",
+    "quoteExpiredBanner": "Questo prezzo è scaduto. Aggiorna per vedere il prezzo attuale delle tue date, i tuoi dati sono conservati.",
     "refreshPrice": "Aggiorna prezzo",
-    "datesUnavailable": "Non siamo riusciti a confermare un prezzo per queste date — potrebbero non essere più disponibili. Riprova, scegli nuove date qui sotto o contatta il nostro concierge.",
+    "datesUnavailable": "Non siamo riusciti a confermare un prezzo per queste date, potrebbero non essere più disponibili. Riprova, scegli nuove date qui sotto o contatta il nostro concierge.",
     "stayTitle": "Il tuo soggiorno",
     "staySubtitle": "Conferma le date e scegli la tua tariffa.",
     "edit": "Modifica",
@@ -1375,7 +1375,7 @@
     "backToStay": "Torna al soggiorno",
     "payTitle": "Pagamento",
     "paySubtitle": "I tuoi dati e un pagamento sicuro.",
-    "nifPh": "NIF — facoltativo, per fattura portoghese",
+    "nifPh": "NIF, facoltativo, per fattura portoghese",
     "directTitle": "Prenotazione diretta con Portugal Active",
     "refreshBeforePay": "Aggiorna il prezzo qui sopra prima di pagare.",
     "secureNote": "Pagamento crittografato e sicuro",
@@ -1386,14 +1386,14 @@
     "viewBooking": "Vedi la mia prenotazione",
     "stepCustomize": "Personalizza",
     "customizeTitle": "Personalizza il tuo soggiorno",
-    "customizeSubtitle": "Aggiungi servizi ed esperienze — o continua senza extra. Niente è preselezionato.",
+    "customizeSubtitle": "Aggiungi servizi ed esperienze, o continua senza extra. Niente è preselezionato.",
     "backToCustomize": "Torna alla personalizzazione",
-    "continueWithExtras_one": "Continua — {{count}} extra aggiunto",
-    "continueWithExtras_other": "Continua — {{count}} extra aggiunti",
+    "continueWithExtras_one": "Continua, {{count}} extra aggiunto",
+    "continueWithExtras_other": "Continua, {{count}} extra aggiunti",
     "continueWithoutExtras": "Continua senza extra",
     "mostChosen": "Il più scelto",
     "confirm24h": "Conferma entro 24 ore",
-    "onRequest": "Su richiesta — nessun addebito ora",
+    "onRequest": "Su richiesta, nessun addebito ora",
     "onRequestShort": "su richiesta",
     "add": "Aggiungi",
     "added": "Aggiunto",
@@ -1410,21 +1410,8 @@
     "qtyLabel": "Quantità",
     "peopleLabel": "Persone",
     "sessionsLabel": "Sessioni",
-    "extrasSummary": "Extra — confermati dal tuo concierge",
-    "extrasChargedLater": "Addebitati dopo la conferma del concierge — non inclusi nel pagamento di oggi.",
-    "extrasChargeNote": "Gli extra sono confermati dal nostro concierge e addebitati solo dopo la conferma — oggi non viene addebitato nulla. Gli articoli su richiesta sono preventivati individualmente.",
-    "cat": {
-      "arrival": "Arrivo",
-      "home": "La casa",
-      "table": "La tavola",
-      "wellness": "Benessere",
-      "experiences": "Esperienze"
-    },
+    "extrasChargeNote": "Gli extra sono confermati dal nostro concierge e addebitati solo dopo la conferma, oggi non viene addebitato nulla. Gli articoli su richiesta sono preventivati individualmente.",
     "extras": {
-      "late-checkin": {
-        "name": "Arrivo dopo le 21",
-        "desc": "Check-in di persona con tour della casa, fuori orario."
-      },
       "transfer-porto": {
         "name": "Transfer aeroporto di Porto",
         "desc": "Auto privata, a tratta, fino a 4 ospiti."
@@ -1460,22 +1447,6 @@
       "massage": {
         "name": "Massaggio a domicilio",
         "desc": "Sessione di 60 minuti in casa, a persona."
-      },
-      "exp-surf": {
-        "name": "Esperienza surf",
-        "desc": "Lezioni o guida sulle migliori onde della regione."
-      },
-      "exp-kitesurf": {
-        "name": "Esperienza kitesurf",
-        "desc": "Sessioni con istruttori locali, attrezzatura inclusa."
-      },
-      "exp-wine": {
-        "name": "Strada del Vinho Verde",
-        "desc": "Degustazioni e visite alle cantine della regione."
-      },
-      "exp-heritage": {
-        "name": "Patrimonio e cultura",
-        "desc": "Guida privata nella storia della regione."
       },
       "babysitter": {
         "name": "Babysitter",
@@ -1521,24 +1492,24 @@
     "emailTitle": "Dove inviamo la tua prenotazione?",
     "perStay": "per soggiorno",
     "flex": {
-      "title": "Flex — nuova prenotazione garantita",
+      "title": "Flex, nuova prenotazione garantita",
       "tagline": "Cambia date quando vuoi. L'importo pagato non si perde mai.",
       "perBooking": "pagamento unico, per prenotazione",
-      "benefit1": "Cambia date fino a {{days}} giorni prima del check-in, senza costi",
-      "benefit2": "L'importo pagato resta protetto — non si perde mai",
+      "benefit1": "Cambia date fino a {{days}} giorni prima del check in, senza costi",
+      "benefit2": "L'importo pagato resta protetto, non si perde mai",
       "benefit3": "Credito valido {{months}} mesi, in qualsiasi casa del portfolio",
-      "copyNonRefundable": "Hai scelto il miglior prezzo. Con Flex l'importo non si perde mai: cambia date fino a {{days}} giorni prima del check-in.",
-      "copyFlexible": "La tua tariffa consente la cancellazione gratuita fino al {{date}}. Dopo quella data, Flex ti garantisce di cambiare date fino a {{days}} giorni prima del check-in senza perdere l'importo.",
+      "copyNonRefundable": "Hai scelto il miglior prezzo. Con Flex l'importo non si perde mai: cambia date fino a {{days}} giorni prima del check in.",
+      "copyFlexible": "La tua tariffa consente la cancellazione gratuita fino al {{date}}. Dopo quella data, Flex ti garantisce di cambiare date fino a {{days}} giorni prima del check in senza perdere l'importo.",
       "howItWorks": "Come funziona",
       "add": "Aggiungi Flex",
       "added": "Aggiunto",
-      "rule1": "Cambia date senza costi fino a {{days}} giorni prima del check-in, tutte le volte che serve — con una prenotazione attiva alla volta.",
-      "rule2": "Ciò che è protetto è l'importo pagato — non le date né la casa. Alle nuove date si applicano i prezzi in vigore.",
+      "rule1": "Cambia date senza costi fino a {{days}} giorni prima del check in, tutte le volte che serve, con una prenotazione attiva alla volta.",
+      "rule2": "Ciò che è protetto è l'importo pagato, non le date né la casa. Alle nuove date si applicano i prezzi in vigore.",
       "rule3": "Quando cambi, l'importo pagato diventa credito valido {{months}} mesi, utilizzabile in qualsiasi casa del portfolio.",
       "rule4": "Nuovo soggiorno più caro: paghi solo la differenza. Più economico: il saldo resta come credito.",
       "rule5": "Gli extra si spostano con la prenotazione quando il servizio lo consente; altrimenti il loro importo si converte anch'esso in credito.",
       "rule6": "Flex si acquista solo al momento del pagamento e non è rimborsabile.",
-      "honesty": "Se cancelli entro la finestra di cancellazione gratuita della tua tariffa, ti rimborsiamo secondo la politica. Flex non sostituisce mai quel diritto — aggiunge protezione oltre di esso."
+      "honesty": "Se cancelli entro la finestra di cancellazione gratuita della tua tariffa, ti rimborsiamo secondo la politica. Flex non sostituisce mai quel diritto, aggiunge protezione oltre di esso."
     },
     "curatedFor": "Selezionato per {{property}}",
     "todayTotal": "Totale di oggi",
@@ -1590,6 +1561,13 @@
       }
     },
     "seeAll": "Vedi tutti i servizi",
-    "seeAllExperiences": "Vedi tutte le esperienze"
+    "seeAllExperiences": "Vedi tutte le esperienze",
+    "chapterLabel": "Capitolo {{num}}",
+    "skipCustomize": "Salta la personalizzazione",
+    "seeMore": "Vedi altri {{count}}",
+    "remove": "Rimuovi",
+    "conciergeQuote": "Preventivo dal tuo concierge",
+    "fromPrice": "da {{price}}",
+    "requested": "Richiesto"
   }
 }

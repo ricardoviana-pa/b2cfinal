@@ -1361,10 +1361,10 @@
     "closeAria": "Back to the property",
     "loading": "Preparing your checkout…",
     "notFoundTitle": "Checkout not found",
-    "notFoundBody": "This checkout link has expired or is invalid. Your dates are not lost — start again from the property page.",
-    "quoteExpiredBanner": "This price has expired. Refresh to see the current price for your dates — your details are kept.",
+    "notFoundBody": "This checkout link has expired or is invalid. Your dates are not lost, start again from the property page.",
+    "quoteExpiredBanner": "This price has expired. Refresh to see the current price for your dates, your details are kept.",
     "refreshPrice": "Refresh price",
-    "datesUnavailable": "We couldn't confirm a price for these dates — they may no longer be available. Try again, choose new dates below, or contact our concierge.",
+    "datesUnavailable": "We couldn't confirm a price for these dates, they may no longer be available. Try again, choose new dates below, or contact our concierge.",
     "stayTitle": "Your stay",
     "staySubtitle": "Confirm your dates and choose your rate.",
     "edit": "Edit",
@@ -1375,7 +1375,7 @@
     "backToStay": "Back to your stay",
     "payTitle": "Payment",
     "paySubtitle": "Your details, then a secure payment.",
-    "nifPh": "NIF — optional, for a Portuguese invoice",
+    "nifPh": "NIF, optional, for a Portuguese invoice",
     "directTitle": "Booking direct with Portugal Active",
     "refreshBeforePay": "Refresh the price above before paying.",
     "secureNote": "Encrypted, secure payment",
@@ -1386,14 +1386,14 @@
     "viewBooking": "View my booking",
     "stepCustomize": "Personalize",
     "customizeTitle": "Personalize your stay",
-    "customizeSubtitle": "Add services and experiences — or continue as is. Nothing is pre-selected.",
+    "customizeSubtitle": "Add services and experiences, or continue as is. Nothing is pre selected.",
     "backToCustomize": "Back to personalization",
-    "continueWithExtras_one": "Continue — {{count}} extra added",
-    "continueWithExtras_other": "Continue — {{count}} extras added",
+    "continueWithExtras_one": "Continue, {{count}} extra added",
+    "continueWithExtras_other": "Continue, {{count}} extras added",
     "continueWithoutExtras": "Continue without extras",
     "mostChosen": "Most chosen",
     "confirm24h": "Confirmed within 24h",
-    "onRequest": "On request — no charge now",
+    "onRequest": "On request, no charge now",
     "onRequestShort": "on request",
     "add": "Add",
     "added": "Added",
@@ -1410,21 +1410,8 @@
     "qtyLabel": "Quantity",
     "peopleLabel": "People",
     "sessionsLabel": "Sessions",
-    "extrasSummary": "Extras — confirmed by your concierge",
-    "extrasChargedLater": "Charged after concierge confirmation — not included in today's payment.",
-    "extrasChargeNote": "Extras are confirmed by our concierge and charged only after confirmation — nothing is charged for them today. On-request items are quoted individually.",
-    "cat": {
-      "arrival": "Arrival",
-      "home": "The home",
-      "table": "The table",
-      "wellness": "Wellness",
-      "experiences": "Experiences"
-    },
+    "extrasChargeNote": "Extras are confirmed by our concierge and charged only after confirmation, nothing is charged for them today. On request items are quoted individually.",
     "extras": {
-      "late-checkin": {
-        "name": "Arrival after 9pm",
-        "desc": "In-person check-in with a tour of the home, outside regular hours."
-      },
       "transfer-porto": {
         "name": "Porto airport transfer",
         "desc": "Private car, per trip, up to 4 guests."
@@ -1460,22 +1447,6 @@
       "massage": {
         "name": "In home massage",
         "desc": "60 minute session at the house, per person."
-      },
-      "exp-surf": {
-        "name": "Surf experience",
-        "desc": "Lessons or guiding on the region's best waves."
-      },
-      "exp-kitesurf": {
-        "name": "Kitesurf experience",
-        "desc": "Sessions with local instructors, gear included."
-      },
-      "exp-wine": {
-        "name": "Vinho Verde wine tour",
-        "desc": "Tastings and cellar visits in the region."
-      },
-      "exp-heritage": {
-        "name": "Heritage & culture tour",
-        "desc": "Private guide through the region's history."
       },
       "babysitter": {
         "name": "Babysitter",
@@ -1521,24 +1492,24 @@
     "emailTitle": "Where should we send your booking?",
     "perStay": "per stay",
     "flex": {
-      "title": "Flex — guaranteed rebooking",
+      "title": "Flex, guaranteed rebooking",
       "tagline": "Rebook whenever you need. The amount you paid is never lost.",
-      "perBooking": "one-time, per booking",
-      "benefit1": "Rebook up to {{days}} days before check-in, at no cost",
-      "benefit2": "The amount you paid stays protected — it is never lost",
+      "perBooking": "one time, per booking",
+      "benefit1": "Rebook up to {{days}} days before check in, at no cost",
+      "benefit2": "The amount you paid stays protected, it is never lost",
       "benefit3": "Credit valid for {{months}} months, at any home in the portfolio",
-      "copyNonRefundable": "You chose the best price. With Flex, the value is never lost: rebook up to {{days}} days before check-in.",
-      "copyFlexible": "Your rate allows free cancellation until {{date}}. After that date, Flex guarantees you can rebook up to {{days}} days before check-in without losing the value.",
+      "copyNonRefundable": "You chose the best price. With Flex, the value is never lost: rebook up to {{days}} days before check in.",
+      "copyFlexible": "Your rate allows free cancellation until {{date}}. After that date, Flex guarantees you can rebook up to {{days}} days before check in without losing the value.",
       "howItWorks": "How it works",
       "add": "Add Flex",
       "added": "Added",
-      "rule1": "Rebook at no cost up to {{days}} days before check-in, as many times as you need — with one active booking at a time.",
-      "rule2": "What is protected is the amount you paid — not the dates or the home. Current prices apply to the new dates.",
+      "rule1": "Rebook at no cost up to {{days}} days before check in, as many times as you need, with one active booking at a time.",
+      "rule2": "What is protected is the amount you paid, not the dates or the home. Current prices apply to the new dates.",
       "rule3": "When you rebook, the amount paid becomes credit valid for {{months}} months, usable at any home in the portfolio.",
       "rule4": "If the new stay costs more, you only pay the difference. If it costs less, the balance stays as credit.",
       "rule5": "Extras move with your booking whenever the service allows; otherwise their value also converts to credit.",
-      "rule6": "Flex can only be purchased at checkout and is non-refundable.",
-      "honesty": "If you cancel within your rate's free-cancellation window, we refund your money as per the policy. Flex never replaces that right — it adds protection beyond it."
+      "rule6": "Flex can only be purchased at checkout and is non refundable.",
+      "honesty": "If you cancel within your rate's free cancellation window, we refund your money as per the policy. Flex never replaces that right, it adds protection beyond it."
     },
     "curatedFor": "Selected for {{property}}",
     "todayTotal": "Total today",
@@ -1590,6 +1561,13 @@
       }
     },
     "seeAll": "See all services",
-    "seeAllExperiences": "See all experiences"
+    "seeAllExperiences": "See all experiences",
+    "chapterLabel": "Chapter {{num}}",
+    "skipCustomize": "Skip personalization",
+    "seeMore": "See {{count}} more",
+    "remove": "Remove",
+    "conciergeQuote": "Quoted by your concierge",
+    "fromPrice": "from {{price}}",
+    "requested": "Requested"
   }
 }

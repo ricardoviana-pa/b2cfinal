@@ -1361,10 +1361,10 @@
     "closeAria": "Tillbaka till huset",
     "loading": "Förbereder din kassa…",
     "notFoundTitle": "Kassan hittades inte",
-    "notFoundBody": "Länken har gått ut eller är ogiltig. Dina datum är inte förlorade — börja om från husets sida.",
-    "quoteExpiredBanner": "Priset har gått ut. Uppdatera för att se aktuellt pris för dina datum — dina uppgifter sparas.",
+    "notFoundBody": "Länken har gått ut eller är ogiltig. Dina datum är inte förlorade, börja om från husets sida.",
+    "quoteExpiredBanner": "Priset har gått ut. Uppdatera för att se aktuellt pris för dina datum, dina uppgifter sparas.",
     "refreshPrice": "Uppdatera pris",
-    "datesUnavailable": "Vi kunde inte bekräfta ett pris för dessa datum — de kanske inte längre är tillgängliga. Försök igen, välj nya datum nedan eller kontakta vår concierge.",
+    "datesUnavailable": "Vi kunde inte bekräfta ett pris för dessa datum, de kanske inte längre är tillgängliga. Försök igen, välj nya datum nedan eller kontakta vår concierge.",
     "stayTitle": "Din vistelse",
     "staySubtitle": "Bekräfta dina datum och välj din taxa.",
     "edit": "Redigera",
@@ -1375,7 +1375,7 @@
     "backToStay": "Tillbaka till vistelsen",
     "payTitle": "Betalning",
     "paySubtitle": "Dina uppgifter, sedan en säker betalning.",
-    "nifPh": "NIF — valfritt, för portugisisk faktura",
+    "nifPh": "NIF, valfritt, för portugisisk faktura",
     "directTitle": "Boka direkt hos Portugal Active",
     "refreshBeforePay": "Uppdatera priset ovan innan du betalar.",
     "secureNote": "Krypterad, säker betalning",
@@ -1386,14 +1386,14 @@
     "viewBooking": "Visa min bokning",
     "stepCustomize": "Anpassa",
     "customizeTitle": "Anpassa din vistelse",
-    "customizeSubtitle": "Lägg till tjänster och upplevelser — eller fortsätt utan extra. Inget är förvalt.",
+    "customizeSubtitle": "Lägg till tjänster och upplevelser, eller fortsätt utan extra. Inget är förvalt.",
     "backToCustomize": "Tillbaka till anpassning",
-    "continueWithExtras_one": "Fortsätt — {{count}} tillval tillagt",
-    "continueWithExtras_other": "Fortsätt — {{count}} tillval tillagda",
+    "continueWithExtras_one": "Fortsätt, {{count}} tillval tillagt",
+    "continueWithExtras_other": "Fortsätt, {{count}} tillval tillagda",
     "continueWithoutExtras": "Fortsätt utan tillval",
     "mostChosen": "Mest vald",
     "confirm24h": "Bekräftas inom 24h",
-    "onRequest": "På förfrågan — ingen debitering nu",
+    "onRequest": "På förfrågan, ingen debitering nu",
     "onRequestShort": "på förfrågan",
     "add": "Lägg till",
     "added": "Tillagd",
@@ -1410,21 +1410,8 @@
     "qtyLabel": "Antal",
     "peopleLabel": "Personer",
     "sessionsLabel": "Sessioner",
-    "extrasSummary": "Tillval — bekräftas av din concierge",
-    "extrasChargedLater": "Debiteras efter conciergens bekräftelse — ingår inte i dagens betalning.",
-    "extrasChargeNote": "Tillval bekräftas av vår concierge och debiteras först efter bekräftelse — inget debiteras för dem idag. Artiklar på förfrågan offereras individuellt.",
-    "cat": {
-      "arrival": "Ankomst",
-      "home": "Huset",
-      "table": "Bordet",
-      "wellness": "Välmående",
-      "experiences": "Upplevelser"
-    },
+    "extrasChargeNote": "Tillval bekräftas av vår concierge och debiteras först efter bekräftelse, inget debiteras för dem idag. Artiklar på förfrågan offereras individuellt.",
     "extras": {
-      "late-checkin": {
-        "name": "Ankomst efter kl. 21",
-        "desc": "Personlig incheckning med husvisning, utanför ordinarie tider."
-      },
       "transfer-porto": {
         "name": "Flygplatstransfer Porto",
         "desc": "Privatbil, per resa, upp till 4 gäster."
@@ -1460,22 +1447,6 @@
       "massage": {
         "name": "Massage i huset",
         "desc": "60 minuters session i huset, per person."
-      },
-      "exp-surf": {
-        "name": "Surfupplevelse",
-        "desc": "Lektioner eller guidning på regionens bästa vågor."
-      },
-      "exp-kitesurf": {
-        "name": "Kitesurfupplevelse",
-        "desc": "Sessioner med lokala instruktörer, utrustning ingår."
-      },
-      "exp-wine": {
-        "name": "Vinho Verde-vintur",
-        "desc": "Provningar och källarbesök i regionen."
-      },
-      "exp-heritage": {
-        "name": "Kulturarvstur",
-        "desc": "Privat guide genom regionens historia."
       },
       "babysitter": {
         "name": "Barnvakt",
@@ -1521,24 +1492,24 @@
     "emailTitle": "Vart skickar vi din bokning?",
     "perStay": "per vistelse",
     "flex": {
-      "title": "Flex — garanterad ombokning",
+      "title": "Flex, garanterad ombokning",
       "tagline": "Boka om när du behöver. Beloppet du betalat går aldrig förlorat.",
       "perBooking": "engångsbelopp, per bokning",
       "benefit1": "Boka om upp till {{days}} dagar före incheckning, utan kostnad",
-      "benefit2": "Beloppet du betalat förblir skyddat — det går aldrig förlorat",
+      "benefit2": "Beloppet du betalat förblir skyddat, det går aldrig förlorat",
       "benefit3": "Tillgodohavande giltigt i {{months}} månader, i alla hus i portföljen",
       "copyNonRefundable": "Du valde det bästa priset. Med Flex går beloppet aldrig förlorat: boka om upp till {{days}} dagar före incheckning.",
       "copyFlexible": "Din taxa tillåter gratis avbokning till {{date}}. Efter det datumet garanterar Flex att du kan boka om upp till {{days}} dagar före incheckning utan att förlora beloppet.",
       "howItWorks": "Så fungerar det",
       "add": "Lägg till Flex",
       "added": "Tillagd",
-      "rule1": "Boka om utan kostnad upp till {{days}} dagar före incheckning, så många gånger du behöver — med en aktiv bokning åt gången.",
-      "rule2": "Det som skyddas är beloppet du betalat — inte datumen eller huset. Aktuella priser gäller för de nya datumen.",
+      "rule1": "Boka om utan kostnad upp till {{days}} dagar före incheckning, så många gånger du behöver, med en aktiv bokning åt gången.",
+      "rule2": "Det som skyddas är beloppet du betalat, inte datumen eller huset. Aktuella priser gäller för de nya datumen.",
       "rule3": "När du bokar om blir det betalda beloppet ett tillgodohavande giltigt i {{months}} månader, användbart i alla hus i portföljen.",
       "rule4": "Kostar den nya vistelsen mer betalar du bara mellanskillnaden. Kostar den mindre står resten kvar som tillgodohavande.",
       "rule5": "Tillval flyttar med när tjänsten tillåter det; annars omvandlas även deras belopp till tillgodohavande.",
       "rule6": "Flex kan endast köpas i kassan och återbetalas inte.",
-      "honesty": "Avbokar du inom din taxas fria avbokningsfönster återbetalar vi dina pengar enligt policyn. Flex ersätter aldrig den rätten — det lägger till skydd bortom den."
+      "honesty": "Avbokar du inom din taxas fria avbokningsfönster återbetalar vi dina pengar enligt policyn. Flex ersätter aldrig den rätten, det lägger till skydd bortom den."
     },
     "curatedFor": "Utvalt för {{property}}",
     "todayTotal": "Totalt idag",
@@ -1590,6 +1561,13 @@
       }
     },
     "seeAll": "Se alla tjänster",
-    "seeAllExperiences": "Se alla upplevelser"
+    "seeAllExperiences": "Se alla upplevelser",
+    "chapterLabel": "Kapitel {{num}}",
+    "skipCustomize": "Hoppa över anpassning",
+    "seeMore": "Se {{count}} till",
+    "remove": "Ta bort",
+    "conciergeQuote": "Offert från din concierge",
+    "fromPrice": "från {{price}}",
+    "requested": "Begärd"
   }
 }

@@ -1361,10 +1361,10 @@
     "closeAria": "Volver a la casa",
     "loading": "Preparando su pago…",
     "notFoundTitle": "Pago no encontrado",
-    "notFoundBody": "Este enlace ha caducado o no es válido. Sus fechas no se han perdido — empiece de nuevo desde la página de la casa.",
-    "quoteExpiredBanner": "Este precio ha caducado. Actualice para ver el precio actual de sus fechas — sus datos se conservan.",
+    "notFoundBody": "Este enlace ha caducado o no es válido. Sus fechas no se han perdido, empiece de nuevo desde la página de la casa.",
+    "quoteExpiredBanner": "Este precio ha caducado. Actualice para ver el precio actual de sus fechas, sus datos se conservan.",
     "refreshPrice": "Actualizar precio",
-    "datesUnavailable": "No pudimos confirmar un precio para estas fechas — puede que ya no estén disponibles. Inténtelo de nuevo, elija nuevas fechas abajo o contacte con nuestro concierge.",
+    "datesUnavailable": "No pudimos confirmar un precio para estas fechas, puede que ya no estén disponibles. Inténtelo de nuevo, elija nuevas fechas abajo o contacte con nuestro concierge.",
     "stayTitle": "Su estancia",
     "staySubtitle": "Confirme sus fechas y elija su tarifa.",
     "edit": "Editar",
@@ -1375,7 +1375,7 @@
     "backToStay": "Volver a la estancia",
     "payTitle": "Pago",
     "paySubtitle": "Sus datos y un pago seguro.",
-    "nifPh": "NIF — opcional, para factura portuguesa",
+    "nifPh": "NIF, opcional, para factura portuguesa",
     "directTitle": "Reserva directa con Portugal Active",
     "refreshBeforePay": "Actualice el precio de arriba antes de pagar.",
     "secureNote": "Pago cifrado y seguro",
@@ -1386,14 +1386,14 @@
     "viewBooking": "Ver mi reserva",
     "stepCustomize": "Personalizar",
     "customizeTitle": "Personalice su estancia",
-    "customizeSubtitle": "Añada servicios y experiencias — o continúe sin extras. Nada viene preseleccionado.",
+    "customizeSubtitle": "Añada servicios y experiencias, o continúe sin extras. Nada viene preseleccionado.",
     "backToCustomize": "Volver a la personalización",
-    "continueWithExtras_one": "Continuar — {{count}} extra añadido",
-    "continueWithExtras_other": "Continuar — {{count}} extras añadidos",
+    "continueWithExtras_one": "Continuar, {{count}} extra añadido",
+    "continueWithExtras_other": "Continuar, {{count}} extras añadidos",
     "continueWithoutExtras": "Continuar sin extras",
     "mostChosen": "Más elegido",
     "confirm24h": "Confirmación en 24 horas",
-    "onRequest": "Bajo petición — sin cargo ahora",
+    "onRequest": "Bajo petición, sin cargo ahora",
     "onRequestShort": "bajo petición",
     "add": "Añadir",
     "added": "Añadido",
@@ -1410,21 +1410,8 @@
     "qtyLabel": "Cantidad",
     "peopleLabel": "Personas",
     "sessionsLabel": "Sesiones",
-    "extrasSummary": "Extras — confirmados por su concierge",
-    "extrasChargedLater": "Se cobran tras la confirmación del concierge — no incluidos en el pago de hoy.",
-    "extrasChargeNote": "Los extras los confirma nuestro concierge y se cobran solo tras la confirmación — hoy no se cobra nada por ellos. Los artículos bajo petición se presupuestan individualmente.",
-    "cat": {
-      "arrival": "Llegada",
-      "home": "La casa",
-      "table": "La mesa",
-      "wellness": "Bienestar",
-      "experiences": "Experiencias"
-    },
+    "extrasChargeNote": "Los extras los confirma nuestro concierge y se cobran solo tras la confirmación, hoy no se cobra nada por ellos. Los artículos bajo petición se presupuestan individualmente.",
     "extras": {
-      "late-checkin": {
-        "name": "Llegada después de las 21h",
-        "desc": "Check-in presencial con tour de la casa, fuera de horario."
-      },
       "transfer-porto": {
         "name": "Traslado aeropuerto de Oporto",
         "desc": "Coche privado, por trayecto, hasta 4 huéspedes."
@@ -1460,22 +1447,6 @@
       "massage": {
         "name": "Masaje en la casa",
         "desc": "Sesión de 60 minutos en casa, por persona."
-      },
-      "exp-surf": {
-        "name": "Experiencia de surf",
-        "desc": "Clases o guía en las mejores olas de la región."
-      },
-      "exp-kitesurf": {
-        "name": "Experiencia de kitesurf",
-        "desc": "Sesiones con instructores locales, equipo incluido."
-      },
-      "exp-wine": {
-        "name": "Ruta del Vinho Verde",
-        "desc": "Catas y visitas a bodegas de la región."
-      },
-      "exp-heritage": {
-        "name": "Patrimonio y cultura",
-        "desc": "Guía privado por la historia de la región."
       },
       "babysitter": {
         "name": "Niñera",
@@ -1521,24 +1492,24 @@
     "emailTitle": "¿A dónde enviamos su reserva?",
     "perStay": "por estancia",
     "flex": {
-      "title": "Flex — cambio de fechas garantizado",
+      "title": "Flex, cambio de fechas garantizado",
       "tagline": "Cambie de fechas cuando quiera. El importe pagado nunca se pierde.",
       "perBooking": "pago único, por reserva",
       "benefit1": "Cambie de fechas hasta {{days}} días antes de la llegada, sin coste",
-      "benefit2": "El importe pagado queda protegido — nunca se pierde",
+      "benefit2": "El importe pagado queda protegido, nunca se pierde",
       "benefit3": "Crédito válido durante {{months}} meses, en cualquier casa del portafolio",
       "copyNonRefundable": "Eligió el mejor precio. Con Flex, el importe nunca se pierde: cambie de fechas hasta {{days}} días antes de la llegada.",
       "copyFlexible": "Su tarifa permite cancelación gratuita hasta el {{date}}. Después de esa fecha, Flex le garantiza cambiar de fechas hasta {{days}} días antes de la llegada sin perder el importe.",
       "howItWorks": "Cómo funciona",
       "add": "Añadir Flex",
       "added": "Añadido",
-      "rule1": "Cambie de fechas sin coste hasta {{days}} días antes de la llegada, tantas veces como necesite — con una reserva activa cada vez.",
-      "rule2": "Lo protegido es el importe pagado — no las fechas ni la casa. Los precios vigentes se aplican a las nuevas fechas.",
+      "rule1": "Cambie de fechas sin coste hasta {{days}} días antes de la llegada, tantas veces como necesite, con una reserva activa cada vez.",
+      "rule2": "Lo protegido es el importe pagado, no las fechas ni la casa. Los precios vigentes se aplican a las nuevas fechas.",
       "rule3": "Al cambiar, el importe pagado se convierte en crédito válido durante {{months}} meses, utilizable en cualquier casa del portafolio.",
       "rule4": "Nueva estancia más cara: solo paga la diferencia. Más barata: el saldo permanece como crédito.",
       "rule5": "Los extras se trasladan con su reserva cuando el servicio lo permite; si no, su importe también se convierte en crédito.",
       "rule6": "Flex solo se adquiere en el pago y no es reembolsable.",
-      "honesty": "Si cancela dentro de la ventana de cancelación gratuita de su tarifa, le devolvemos el dinero según la política. Flex nunca sustituye ese derecho — añade protección más allá de él."
+      "honesty": "Si cancela dentro de la ventana de cancelación gratuita de su tarifa, le devolvemos el dinero según la política. Flex nunca sustituye ese derecho, añade protección más allá de él."
     },
     "curatedFor": "Seleccionado para {{property}}",
     "todayTotal": "Total de hoy",
@@ -1590,6 +1561,13 @@
       }
     },
     "seeAll": "Ver todos los servicios",
-    "seeAllExperiences": "Ver todas las experiencias"
+    "seeAllExperiences": "Ver todas las experiencias",
+    "chapterLabel": "Capítulo {{num}}",
+    "skipCustomize": "Omitir personalización",
+    "seeMore": "Ver {{count}} más",
+    "remove": "Quitar",
+    "conciergeQuote": "Presupuesto por su concierge",
+    "fromPrice": "desde {{price}}",
+    "requested": "Solicitado"
   }
 }

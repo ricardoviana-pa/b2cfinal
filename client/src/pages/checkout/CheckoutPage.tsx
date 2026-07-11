@@ -534,6 +534,16 @@ export default function CheckoutPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [intent, receptionChoice, selectedExtras, flexSelected, syncIntent]);
 
+  /** "Saltar personalização" (2.1 §1.2): segue para pagamento se a receção já
+   *  foi escolhida; caso contrário leva o hóspede à decisão obrigatória. */
+  const skipCustomize = useCallback(() => {
+    if (receptionChoice) {
+      continueToPay();
+    } else {
+      document.getElementById("reception-choice")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [receptionChoice, continueToPay]);
+
   /** Ops manifest (PT, staff-facing) appended to the Guesty reservation notes —
    *  same pattern the legacy widget uses, so operations see the requests. */
   const extrasNote = useMemo(() => {
@@ -1120,6 +1130,7 @@ export default function CheckoutPage() {
                   onToggle={toggleExtra}
                   onAdjust={adjustExtra}
                   onChooseReception={chooseReception}
+                  onSkip={skipCustomize}
                 />
               )}
               {/* Flex closes the Personalizar step (spec §5/§6) — protection, not a service */}

@@ -91,7 +91,7 @@ export default function FlexBlock({
   return (
     <div
       className={cn(
-        "rounded-lg border bg-white p-5 transition-all",
+        "rounded-lg border bg-pa-warm p-5 transition-all",
         selected ? "border-pa-gold ring-1 ring-pa-gold" : "border-pa-gold/50",
       )}
     >
@@ -105,7 +105,7 @@ export default function FlexBlock({
           <CalendarClock className="w-5 h-5" strokeWidth={1.8} />
         </span>
         <div className="flex-1 min-w-0">
-          <p className="font-display text-[17px] text-pa-dark leading-snug">
+          <p className="font-display text-[22px] text-pa-dark leading-snug">
             {t("checkout.flex.title", "Flex — guaranteed rebooking")}
           </p>
           <p className="text-[12.5px] text-pa-earth mt-0.5">

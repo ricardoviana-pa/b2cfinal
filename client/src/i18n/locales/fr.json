@@ -1361,10 +1361,10 @@
     "closeAria": "Retour à la maison",
     "loading": "Préparation de votre paiement…",
     "notFoundTitle": "Paiement introuvable",
-    "notFoundBody": "Ce lien a expiré ou est invalide. Vos dates ne sont pas perdues — recommencez depuis la page de la maison.",
-    "quoteExpiredBanner": "Ce prix a expiré. Actualisez pour voir le prix actuel de vos dates — vos informations sont conservées.",
+    "notFoundBody": "Ce lien a expiré ou est invalide. Vos dates ne sont pas perdues, recommencez depuis la page de la maison.",
+    "quoteExpiredBanner": "Ce prix a expiré. Actualisez pour voir le prix actuel de vos dates, vos informations sont conservées.",
     "refreshPrice": "Actualiser le prix",
-    "datesUnavailable": "Impossible de confirmer un prix pour ces dates — elles ne sont peut-être plus disponibles. Réessayez, choisissez de nouvelles dates ci-dessous ou contactez notre concierge.",
+    "datesUnavailable": "Impossible de confirmer un prix pour ces dates, elles ne sont peut-être plus disponibles. Réessayez, choisissez de nouvelles dates ci-dessous ou contactez notre concierge.",
     "stayTitle": "Votre séjour",
     "staySubtitle": "Confirmez vos dates et choisissez votre tarif.",
     "edit": "Modifier",
@@ -1375,7 +1375,7 @@
     "backToStay": "Retour au séjour",
     "payTitle": "Paiement",
     "paySubtitle": "Vos coordonnées, puis un paiement sécurisé.",
-    "nifPh": "NIF — facultatif, pour une facture portugaise",
+    "nifPh": "NIF, facultatif, pour une facture portugaise",
     "directTitle": "Réservation directe avec Portugal Active",
     "refreshBeforePay": "Actualisez le prix ci-dessus avant de payer.",
     "secureNote": "Paiement chiffré et sécurisé",
@@ -1386,14 +1386,14 @@
     "viewBooking": "Voir ma réservation",
     "stepCustomize": "Personnaliser",
     "customizeTitle": "Personnalisez votre séjour",
-    "customizeSubtitle": "Ajoutez des services et des expériences — ou continuez sans extras. Rien n'est présélectionné.",
+    "customizeSubtitle": "Ajoutez des services et des expériences, ou continuez sans extras. Rien n'est présélectionné.",
     "backToCustomize": "Retour à la personnalisation",
-    "continueWithExtras_one": "Continuer — {{count}} extra ajouté",
-    "continueWithExtras_other": "Continuer — {{count}} extras ajoutés",
+    "continueWithExtras_one": "Continuer, {{count}} extra ajouté",
+    "continueWithExtras_other": "Continuer, {{count}} extras ajoutés",
     "continueWithoutExtras": "Continuer sans extras",
     "mostChosen": "Le plus choisi",
     "confirm24h": "Confirmé sous 24h",
-    "onRequest": "Sur demande — aucun débit maintenant",
+    "onRequest": "Sur demande, aucun débit maintenant",
     "onRequestShort": "sur demande",
     "add": "Ajouter",
     "added": "Ajouté",
@@ -1410,21 +1410,8 @@
     "qtyLabel": "Quantité",
     "peopleLabel": "Personnes",
     "sessionsLabel": "Séances",
-    "extrasSummary": "Extras — confirmés par votre concierge",
-    "extrasChargedLater": "Débités après confirmation du concierge — non inclus dans le paiement d'aujourd'hui.",
-    "extrasChargeNote": "Les extras sont confirmés par notre concierge et débités uniquement après confirmation — rien n'est débité pour eux aujourd'hui. Les demandes sur mesure sont devisées individuellement.",
-    "cat": {
-      "arrival": "Arrivée",
-      "home": "La maison",
-      "table": "La table",
-      "wellness": "Bien-être",
-      "experiences": "Expériences"
-    },
+    "extrasChargeNote": "Les extras sont confirmés par notre concierge et débités uniquement après confirmation, rien n'est débité pour eux aujourd'hui. Les demandes sur mesure sont devisées individuellement.",
     "extras": {
-      "late-checkin": {
-        "name": "Arrivée après 21h",
-        "desc": "Check-in en personne avec visite de la maison, hors horaires."
-      },
       "transfer-porto": {
         "name": "Transfert aéroport de Porto",
         "desc": "Voiture privée, par trajet, jusqu'à 4 voyageurs."
@@ -1460,22 +1447,6 @@
       "massage": {
         "name": "Massage à domicile",
         "desc": "Séance de 60 minutes à la maison, par personne."
-      },
-      "exp-surf": {
-        "name": "Expérience surf",
-        "desc": "Cours ou guiding sur les meilleures vagues de la région."
-      },
-      "exp-kitesurf": {
-        "name": "Expérience kitesurf",
-        "desc": "Séances avec moniteurs locaux, matériel inclus."
-      },
-      "exp-wine": {
-        "name": "Route du Vinho Verde",
-        "desc": "Dégustations et visites de caves de la région."
-      },
-      "exp-heritage": {
-        "name": "Patrimoine et culture",
-        "desc": "Guide privé à travers l'histoire de la région."
       },
       "babysitter": {
         "name": "Baby-sitter",
@@ -1521,24 +1492,24 @@
     "emailTitle": "Où envoyons-nous votre réservation ?",
     "perStay": "par séjour",
     "flex": {
-      "title": "Flex — nouvelle réservation garantie",
+      "title": "Flex, nouvelle réservation garantie",
       "tagline": "Changez de dates quand vous voulez. Le montant payé n'est jamais perdu.",
       "perBooking": "paiement unique, par réservation",
       "benefit1": "Changez de dates jusqu'à {{days}} jours avant l'arrivée, sans frais",
-      "benefit2": "Le montant payé reste protégé — il n'est jamais perdu",
+      "benefit2": "Le montant payé reste protégé, il n'est jamais perdu",
       "benefit3": "Avoir valable {{months}} mois, dans toutes les maisons du portefeuille",
       "copyNonRefundable": "Vous avez choisi le meilleur prix. Avec Flex, le montant n'est jamais perdu : changez de dates jusqu'à {{days}} jours avant l'arrivée.",
       "copyFlexible": "Votre tarif permet l'annulation gratuite jusqu'au {{date}}. Après cette date, Flex vous garantit de pouvoir changer de dates jusqu'à {{days}} jours avant l'arrivée sans perdre le montant.",
       "howItWorks": "Comment ça marche",
       "add": "Ajouter Flex",
       "added": "Ajouté",
-      "rule1": "Changez de dates sans frais jusqu'à {{days}} jours avant l'arrivée, autant de fois que nécessaire — avec une réservation active à la fois.",
-      "rule2": "Ce qui est protégé, c'est le montant payé — pas les dates ni la maison. Les prix en vigueur s'appliquent aux nouvelles dates.",
+      "rule1": "Changez de dates sans frais jusqu'à {{days}} jours avant l'arrivée, autant de fois que nécessaire, avec une réservation active à la fois.",
+      "rule2": "Ce qui est protégé, c'est le montant payé, pas les dates ni la maison. Les prix en vigueur s'appliquent aux nouvelles dates.",
       "rule3": "Lors du changement, le montant payé devient un avoir valable {{months}} mois, utilisable dans toutes les maisons du portefeuille.",
       "rule4": "Nouveau séjour plus cher : vous payez seulement la différence. Moins cher : le solde reste en avoir.",
       "rule5": "Les extras suivent votre réservation quand le service le permet ; sinon leur montant se convertit aussi en avoir.",
       "rule6": "Flex s'achète uniquement au moment du paiement et n'est pas remboursable.",
-      "honesty": "Si vous annulez pendant la fenêtre d'annulation gratuite de votre tarif, nous vous remboursons selon la politique. Flex ne remplace jamais ce droit — il ajoute une protection au-delà."
+      "honesty": "Si vous annulez pendant la fenêtre d'annulation gratuite de votre tarif, nous vous remboursons selon la politique. Flex ne remplace jamais ce droit, il ajoute une protection au-delà."
     },
     "curatedFor": "Sélectionné pour {{property}}",
     "todayTotal": "Total aujourd'hui",
@@ -1590,6 +1561,13 @@
       }
     },
     "seeAll": "Voir tous les services",
-    "seeAllExperiences": "Voir toutes les expériences"
+    "seeAllExperiences": "Voir toutes les expériences",
+    "chapterLabel": "Chapitre {{num}}",
+    "skipCustomize": "Passer la personnalisation",
+    "seeMore": "Voir {{count}} de plus",
+    "remove": "Retirer",
+    "conciergeQuote": "Devis par votre concierge",
+    "fromPrice": "dès {{price}}",
+    "requested": "Demandé"
   }
 }

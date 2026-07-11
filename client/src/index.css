@@ -143,7 +143,12 @@
     @apply bg-background text-foreground;
     font-family: var(--font-body);
     min-height: 100dvh;
+    /* hidden cria um scroll container e QUEBRA position:sticky em todos os
+       descendentes (header do checkout, nav de capítulos). clip corta na
+       horizontal sem criar scroll container; o hidden fica como fallback
+       para browsers antigos que ignoram clip. */
     overflow-x: hidden;
+    overflow-x: clip;
   }
 
   #root {
@@ -153,6 +158,7 @@
     min-width: 0;
     width: 100%;
     overflow-x: hidden;
+    overflow-x: clip;
   }
 
   /* Headings â Playfair Display */

@@ -1361,10 +1361,10 @@
     "closeAria": "Terug naar de woning",
     "loading": "Uw checkout wordt voorbereid…",
     "notFoundTitle": "Checkout niet gevonden",
-    "notFoundBody": "Deze link is verlopen of ongeldig. Uw data zijn niet verloren — begin opnieuw vanaf de pagina van de woning.",
-    "quoteExpiredBanner": "Deze prijs is verlopen. Vernieuw om de actuele prijs voor uw data te zien — uw gegevens blijven bewaard.",
+    "notFoundBody": "Deze link is verlopen of ongeldig. Uw data zijn niet verloren, begin opnieuw vanaf de pagina van de woning.",
+    "quoteExpiredBanner": "Deze prijs is verlopen. Vernieuw om de actuele prijs voor uw data te zien, uw gegevens blijven bewaard.",
     "refreshPrice": "Prijs vernieuwen",
-    "datesUnavailable": "We konden geen prijs bevestigen voor deze data — mogelijk zijn ze niet meer beschikbaar. Probeer opnieuw, kies hieronder nieuwe data of neem contact op met onze concierge.",
+    "datesUnavailable": "We konden geen prijs bevestigen voor deze data, mogelijk zijn ze niet meer beschikbaar. Probeer opnieuw, kies hieronder nieuwe data of neem contact op met onze concierge.",
     "stayTitle": "Uw verblijf",
     "staySubtitle": "Bevestig uw data en kies uw tarief.",
     "edit": "Bewerken",
@@ -1375,7 +1375,7 @@
     "backToStay": "Terug naar het verblijf",
     "payTitle": "Betaling",
     "paySubtitle": "Uw gegevens, daarna een veilige betaling.",
-    "nifPh": "NIF — optioneel, voor een Portugese factuur",
+    "nifPh": "NIF, optioneel, voor een Portugese factuur",
     "directTitle": "Direct boeken bij Portugal Active",
     "refreshBeforePay": "Vernieuw de prijs hierboven voordat u betaalt.",
     "secureNote": "Versleutelde, veilige betaling",
@@ -1386,14 +1386,14 @@
     "viewBooking": "Mijn boeking bekijken",
     "stepCustomize": "Personaliseren",
     "customizeTitle": "Personaliseer uw verblijf",
-    "customizeSubtitle": "Voeg services en ervaringen toe — of ga verder zonder extra's. Niets is vooraf geselecteerd.",
+    "customizeSubtitle": "Voeg services en ervaringen toe, of ga verder zonder extra's. Niets is vooraf geselecteerd.",
     "backToCustomize": "Terug naar personalisatie",
-    "continueWithExtras_one": "Doorgaan — {{count}} extra toegevoegd",
-    "continueWithExtras_other": "Doorgaan — {{count}} extra's toegevoegd",
+    "continueWithExtras_one": "Doorgaan, {{count}} extra toegevoegd",
+    "continueWithExtras_other": "Doorgaan, {{count}} extra's toegevoegd",
     "continueWithoutExtras": "Doorgaan zonder extra's",
     "mostChosen": "Meest gekozen",
     "confirm24h": "Bevestiging binnen 24 uur",
-    "onRequest": "Op aanvraag — nu geen kosten",
+    "onRequest": "Op aanvraag, nu geen kosten",
     "onRequestShort": "op aanvraag",
     "add": "Toevoegen",
     "added": "Toegevoegd",
@@ -1410,21 +1410,8 @@
     "qtyLabel": "Aantal",
     "peopleLabel": "Personen",
     "sessionsLabel": "Sessies",
-    "extrasSummary": "Extra's — bevestigd door uw concierge",
-    "extrasChargedLater": "In rekening gebracht na bevestiging door de concierge — niet inbegrepen in de betaling van vandaag.",
-    "extrasChargeNote": "Extra's worden bevestigd door onze concierge en pas na bevestiging in rekening gebracht — vandaag wordt er niets voor afgeschreven. Items op aanvraag worden individueel geoffreerd.",
-    "cat": {
-      "arrival": "Aankomst",
-      "home": "Het huis",
-      "table": "De tafel",
-      "wellness": "Wellness",
-      "experiences": "Ervaringen"
-    },
+    "extrasChargeNote": "Extra's worden bevestigd door onze concierge en pas na bevestiging in rekening gebracht, vandaag wordt er niets voor afgeschreven. Items op aanvraag worden individueel geoffreerd.",
     "extras": {
-      "late-checkin": {
-        "name": "Aankomst na 21u",
-        "desc": "Persoonlijke check-in met rondleiding, buiten de normale uren."
-      },
       "transfer-porto": {
         "name": "Luchthaventransfer Porto",
         "desc": "Privéauto, per rit, tot 4 gasten."
@@ -1460,22 +1447,6 @@
       "massage": {
         "name": "Massage aan huis",
         "desc": "Sessie van 60 minuten in huis, per persoon."
-      },
-      "exp-surf": {
-        "name": "Surfervaring",
-        "desc": "Lessen of begeleiding op de beste golven van de regio."
-      },
-      "exp-kitesurf": {
-        "name": "Kitesurfervaring",
-        "desc": "Sessies met lokale instructeurs, materiaal inbegrepen."
-      },
-      "exp-wine": {
-        "name": "Vinho Verde-wijnroute",
-        "desc": "Proeverijen en kelderbezoeken in de regio."
-      },
-      "exp-heritage": {
-        "name": "Erfgoed & cultuur",
-        "desc": "Privégids door de geschiedenis van de regio."
       },
       "babysitter": {
         "name": "Oppas",
@@ -1521,24 +1492,24 @@
     "emailTitle": "Waar sturen we uw boeking naartoe?",
     "perStay": "per verblijf",
     "flex": {
-      "title": "Flex — gegarandeerd omboeken",
+      "title": "Flex, gegarandeerd omboeken",
       "tagline": "Boek om wanneer u wilt. Het betaalde bedrag gaat nooit verloren.",
       "perBooking": "eenmalig, per boeking",
-      "benefit1": "Boek om tot {{days}} dagen vóór check-in, kosteloos",
-      "benefit2": "Het betaalde bedrag blijft beschermd — het gaat nooit verloren",
+      "benefit1": "Boek om tot {{days}} dagen vóór check in, kosteloos",
+      "benefit2": "Het betaalde bedrag blijft beschermd, het gaat nooit verloren",
       "benefit3": "Tegoed {{months}} maanden geldig, bij elk huis in het portfolio",
-      "copyNonRefundable": "U koos de beste prijs. Met Flex gaat het bedrag nooit verloren: boek om tot {{days}} dagen vóór check-in.",
-      "copyFlexible": "Uw tarief staat gratis annuleren toe tot {{date}}. Daarna garandeert Flex dat u tot {{days}} dagen vóór check-in kunt omboeken zonder het bedrag te verliezen.",
+      "copyNonRefundable": "U koos de beste prijs. Met Flex gaat het bedrag nooit verloren: boek om tot {{days}} dagen vóór check in.",
+      "copyFlexible": "Uw tarief staat gratis annuleren toe tot {{date}}. Daarna garandeert Flex dat u tot {{days}} dagen vóór check in kunt omboeken zonder het bedrag te verliezen.",
       "howItWorks": "Hoe het werkt",
       "add": "Flex toevoegen",
       "added": "Toegevoegd",
-      "rule1": "Boek kosteloos om tot {{days}} dagen vóór check-in, zo vaak als nodig — met één actieve boeking tegelijk.",
-      "rule2": "Beschermd is het betaalde bedrag — niet de data of het huis. Voor nieuwe data gelden de actuele prijzen.",
+      "rule1": "Boek kosteloos om tot {{days}} dagen vóór check in, zo vaak als nodig, met één actieve boeking tegelijk.",
+      "rule2": "Beschermd is het betaalde bedrag, niet de data of het huis. Voor nieuwe data gelden de actuele prijzen.",
       "rule3": "Bij omboeken wordt het betaalde bedrag tegoed, {{months}} maanden geldig, bruikbaar bij elk huis in het portfolio.",
       "rule4": "Is het nieuwe verblijf duurder, dan betaalt u alleen het verschil. Goedkoper: het saldo blijft als tegoed staan.",
       "rule5": "Extra's verhuizen mee wanneer de service het toelaat; anders wordt hun bedrag ook tegoed.",
       "rule6": "Flex is alleen bij het afrekenen verkrijgbaar en niet restitueerbaar.",
-      "honesty": "Annuleert u binnen het gratis annuleringsvenster van uw tarief, dan betalen we uw geld terug volgens het beleid. Flex vervangt dat recht nooit — het voegt bescherming toe daarbuiten."
+      "honesty": "Annuleert u binnen het gratis annuleringsvenster van uw tarief, dan betalen we uw geld terug volgens het beleid. Flex vervangt dat recht nooit, het voegt bescherming toe daarbuiten."
     },
     "curatedFor": "Geselecteerd voor {{property}}",
     "todayTotal": "Totaal vandaag",
@@ -1590,6 +1561,13 @@
       }
     },
     "seeAll": "Alle services bekijken",
-    "seeAllExperiences": "Alle ervaringen bekijken"
+    "seeAllExperiences": "Alle ervaringen bekijken",
+    "chapterLabel": "Hoofdstuk {{num}}",
+    "skipCustomize": "Personalisatie overslaan",
+    "seeMore": "Nog {{count}} bekijken",
+    "remove": "Verwijderen",
+    "conciergeQuote": "Offerte door uw concierge",
+    "fromPrice": "vanaf {{price}}",
+    "requested": "Aangevraagd"
   }
 }

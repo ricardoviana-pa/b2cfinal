@@ -1386,7 +1386,7 @@
     "viewBooking": "Ver a minha reserva",
     "stepCustomize": "Personalizar",
     "customizeTitle": "Personalize a sua estadia",
-    "customizeSubtitle": "Adicione serviços e experiências, ou continue sem extras. Nada vem pré-selecionado.",
+    "customizeSubtitle": "Adicione serviços e experiências, ou continue sem extras. Nada vem pré selecionado.",
     "backToCustomize": "Voltar à personalização",
     "continueWithExtras_one": "Continuar com {{count}} extra",
     "continueWithExtras_other": "Continuar com {{count}} extras",
@@ -1410,21 +1410,8 @@
     "qtyLabel": "Quantidade",
     "peopleLabel": "Pessoas",
     "sessionsLabel": "Sessões",
-    "extrasSummary": "Extras confirmados pelo seu concierge",
-    "extrasChargedLater": "Cobrados após confirmação do concierge, fora do pagamento de hoje.",
     "extrasChargeNote": "Os extras são confirmados pelo nosso concierge e cobrados apenas após confirmação. Hoje não é cobrado nada por eles. Os itens sob pedido são orçamentados individualmente.",
-    "cat": {
-      "arrival": "Chegada",
-      "home": "A casa",
-      "table": "A mesa",
-      "wellness": "Bem-estar",
-      "experiences": "Experiências"
-    },
     "extras": {
-      "late-checkin": {
-        "name": "Chegada depois das 21h",
-        "desc": "Check-in presencial com tour da casa, fora do horário normal."
-      },
       "transfer-porto": {
         "name": "Transfer aeroporto do Porto",
         "desc": "Carro privado, por trajeto, até 4 hóspedes."
@@ -1460,22 +1447,6 @@
       "massage": {
         "name": "Massagem na casa",
         "desc": "Sessão de 60 minutos em casa, por pessoa."
-      },
-      "exp-surf": {
-        "name": "Experiência de surf",
-        "desc": "Aulas ou guiamento nas melhores ondas da região."
-      },
-      "exp-kitesurf": {
-        "name": "Experiência de kitesurf",
-        "desc": "Sessões com instrutores locais, equipamento incluído."
-      },
-      "exp-wine": {
-        "name": "Rota do Vinho Verde",
-        "desc": "Provas e visitas a adegas da região."
-      },
-      "exp-heritage": {
-        "name": "Património e cultura",
-        "desc": "Guia privado pela história da região."
       },
       "babysitter": {
         "name": "Babysitter",
@@ -1590,6 +1561,13 @@
       }
     },
     "seeAll": "Ver todos os serviços",
-    "seeAllExperiences": "Ver todas as experiências"
+    "seeAllExperiences": "Ver todas as experiências",
+    "chapterLabel": "Capítulo {{num}}",
+    "skipCustomize": "Saltar personalização",
+    "seeMore": "Ver mais {{count}}",
+    "remove": "Remover",
+    "conciergeQuote": "Orçamento pelo concierge",
+    "fromPrice": "desde {{price}}",
+    "requested": "Pedido"
   }
 }

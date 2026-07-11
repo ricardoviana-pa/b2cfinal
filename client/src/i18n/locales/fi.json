@@ -1361,10 +1361,10 @@
     "closeAria": "Takaisin taloon",
     "loading": "Valmistellaan kassaa…",
     "notFoundTitle": "Kassaa ei löytynyt",
-    "notFoundBody": "Tämä linkki on vanhentunut tai virheellinen. Päivämääräsi eivät ole kadonneet — aloita uudelleen talon sivulta.",
-    "quoteExpiredBanner": "Tämä hinta on vanhentunut. Päivitä nähdäksesi päivien nykyisen hinnan — tietosi säilyvät.",
+    "notFoundBody": "Tämä linkki on vanhentunut tai virheellinen. Päivämääräsi eivät ole kadonneet, aloita uudelleen talon sivulta.",
+    "quoteExpiredBanner": "Tämä hinta on vanhentunut. Päivitä nähdäksesi päivien nykyisen hinnan, tietosi säilyvät.",
     "refreshPrice": "Päivitä hinta",
-    "datesUnavailable": "Emme voineet vahvistaa hintaa näille päiville — ne eivät ehkä ole enää saatavilla. Yritä uudelleen, valitse uudet päivät alta tai ota yhteyttä conciergeemme.",
+    "datesUnavailable": "Emme voineet vahvistaa hintaa näille päiville, ne eivät ehkä ole enää saatavilla. Yritä uudelleen, valitse uudet päivät alta tai ota yhteyttä conciergeemme.",
     "stayTitle": "Majoituksesi",
     "staySubtitle": "Vahvista päivät ja valitse hintasi.",
     "edit": "Muokkaa",
@@ -1375,7 +1375,7 @@
     "backToStay": "Takaisin majoitukseen",
     "payTitle": "Maksu",
     "paySubtitle": "Tietosi ja sitten turvallinen maksu.",
-    "nifPh": "NIF — valinnainen, portugalilaista laskua varten",
+    "nifPh": "NIF, valinnainen, portugalilaista laskua varten",
     "directTitle": "Varaa suoraan Portugal Activelta",
     "refreshBeforePay": "Päivitä yllä oleva hinta ennen maksamista.",
     "secureNote": "Salattu, turvallinen maksu",
@@ -1386,14 +1386,14 @@
     "viewBooking": "Näytä varaukseni",
     "stepCustomize": "Mukauta",
     "customizeTitle": "Mukauta majoitustasi",
-    "customizeSubtitle": "Lisää palveluita ja elämyksiä — tai jatka ilman lisäpalveluita. Mitään ei ole esivalittu.",
+    "customizeSubtitle": "Lisää palveluita ja elämyksiä, tai jatka ilman lisäpalveluita. Mitään ei ole esivalittu.",
     "backToCustomize": "Takaisin mukauttamiseen",
-    "continueWithExtras_one": "Jatka — {{count}} lisäpalvelu lisätty",
-    "continueWithExtras_other": "Jatka — {{count}} lisäpalvelua lisätty",
+    "continueWithExtras_one": "Jatka, {{count}} lisäpalvelu lisätty",
+    "continueWithExtras_other": "Jatka, {{count}} lisäpalvelua lisätty",
     "continueWithoutExtras": "Jatka ilman lisäpalveluita",
     "mostChosen": "Suosituin",
     "confirm24h": "Vahvistus 24 tunnissa",
-    "onRequest": "Pyynnöstä — ei veloitusta nyt",
+    "onRequest": "Pyynnöstä, ei veloitusta nyt",
     "onRequestShort": "pyynnöstä",
     "add": "Lisää",
     "added": "Lisätty",
@@ -1410,21 +1410,8 @@
     "qtyLabel": "Määrä",
     "peopleLabel": "Henkilöt",
     "sessionsLabel": "Kerrat",
-    "extrasSummary": "Lisäpalvelut — conciergesi vahvistaa",
-    "extrasChargedLater": "Veloitetaan conciergen vahvistuksen jälkeen — ei sisälly tämän päivän maksuun.",
-    "extrasChargeNote": "Conciergemme vahvistaa lisäpalvelut, ja ne veloitetaan vasta vahvistuksen jälkeen — tänään niistä ei veloiteta mitään. Pyynnöstä saatavat palvelut hinnoitellaan erikseen.",
-    "cat": {
-      "arrival": "Saapuminen",
-      "home": "Talo",
-      "table": "Pöytä",
-      "wellness": "Hyvinvointi",
-      "experiences": "Elämykset"
-    },
+    "extrasChargeNote": "Conciergemme vahvistaa lisäpalvelut, ja ne veloitetaan vasta vahvistuksen jälkeen, tänään niistä ei veloiteta mitään. Pyynnöstä saatavat palvelut hinnoitellaan erikseen.",
     "extras": {
-      "late-checkin": {
-        "name": "Saapuminen klo 21 jälkeen",
-        "desc": "Henkilökohtainen sisäänkirjautuminen ja talon esittely, normaaliaikojen ulkopuolella."
-      },
       "transfer-porto": {
         "name": "Lentokenttäkuljetus Porto",
         "desc": "Yksityisauto, per matka, enintään 4 vierasta."
@@ -1460,22 +1447,6 @@
       "massage": {
         "name": "Hieronta talossa",
         "desc": "60 minuutin hoito talossa, per henkilö."
-      },
-      "exp-surf": {
-        "name": "Surffauselämys",
-        "desc": "Tunteja tai opastusta alueen parhailla aalloilla."
-      },
-      "exp-kitesurf": {
-        "name": "Leijalautailuelämys",
-        "desc": "Kertoja paikallisten ohjaajien kanssa, välineet mukana."
-      },
-      "exp-wine": {
-        "name": "Vinho Verde -viinikierros",
-        "desc": "Maisteluja ja kellarikäyntejä alueella."
-      },
-      "exp-heritage": {
-        "name": "Kulttuuri- ja perintökierros",
-        "desc": "Yksityisopas alueen historiaan."
       },
       "babysitter": {
         "name": "Lastenhoitaja",
@@ -1521,24 +1492,24 @@
     "emailTitle": "Minne lähetämme varauksesi?",
     "perStay": "per majoitus",
     "flex": {
-      "title": "Flex — taattu uudelleenvaraus",
+      "title": "Flex, taattu uudelleenvaraus",
       "tagline": "Siirrä varaustasi milloin tahansa. Maksettu summa ei koskaan mene hukkaan.",
       "perBooking": "kertamaksu, per varaus",
       "benefit1": "Siirrä varausta {{days}} päivään asti ennen sisäänkirjautumista, maksutta",
-      "benefit2": "Maksettu summa pysyy suojattuna — se ei koskaan mene hukkaan",
+      "benefit2": "Maksettu summa pysyy suojattuna, se ei koskaan mene hukkaan",
       "benefit3": "Hyvitys voimassa {{months}} kuukautta, missä tahansa portfolion talossa",
       "copyNonRefundable": "Valitsit parhaan hinnan. Flexin kanssa summa ei koskaan mene hukkaan: siirrä varausta {{days}} päivään asti ennen sisäänkirjautumista.",
       "copyFlexible": "Hintasi sallii maksuttoman peruutuksen {{date}} asti. Sen jälkeen Flex takaa, että voit siirtää varausta {{days}} päivään asti ennen sisäänkirjautumista menettämättä summaa.",
       "howItWorks": "Näin se toimii",
       "add": "Lisää Flex",
       "added": "Lisätty",
-      "rule1": "Siirrä varausta maksutta {{days}} päivään asti ennen sisäänkirjautumista, niin monta kertaa kuin tarvitset — yksi aktiivinen varaus kerrallaan.",
-      "rule2": "Suojattuna on maksettu summa — ei päivät eikä talo. Uusiin päiviin sovelletaan voimassa olevia hintoja.",
+      "rule1": "Siirrä varausta maksutta {{days}} päivään asti ennen sisäänkirjautumista, niin monta kertaa kuin tarvitset, yksi aktiivinen varaus kerrallaan.",
+      "rule2": "Suojattuna on maksettu summa, ei päivät eikä talo. Uusiin päiviin sovelletaan voimassa olevia hintoja.",
       "rule3": "Kun siirrät varausta, maksettu summa muuttuu hyvitykseksi, joka on voimassa {{months}} kuukautta ja käytettävissä missä tahansa portfolion talossa.",
       "rule4": "Jos uusi majoitus on kalliimpi, maksat vain erotuksen. Jos halvempi, loppusumma säilyy hyvityksenä.",
       "rule5": "Lisäpalvelut siirtyvät mukana aina kun palvelu sen sallii; muuten niidenkin summa muuttuu hyvitykseksi.",
       "rule6": "Flex on ostettavissa vain kassalla, eikä sitä hyvitetä.",
-      "honesty": "Jos peruutat hintasi maksuttoman peruutusikkunan sisällä, palautamme rahasi käytännön mukaisesti. Flex ei koskaan korvaa tätä oikeutta — se lisää suojaa sen yli."
+      "honesty": "Jos peruutat hintasi maksuttoman peruutusikkunan sisällä, palautamme rahasi käytännön mukaisesti. Flex ei koskaan korvaa tätä oikeutta, se lisää suojaa sen yli."
     },
     "curatedFor": "Valittu kohteelle {{property}}",
     "todayTotal": "Yhteensä tänään",
@@ -1590,6 +1561,13 @@
       }
     },
     "seeAll": "Näytä kaikki palvelut",
-    "seeAllExperiences": "Näytä kaikki elämykset"
+    "seeAllExperiences": "Näytä kaikki elämykset",
+    "chapterLabel": "Luku {{num}}",
+    "skipCustomize": "Ohita mukautus",
+    "seeMore": "Näytä {{count}} lisää",
+    "remove": "Poista",
+    "conciergeQuote": "Conciergen hinnoittelema",
+    "fromPrice": "alk. {{price}}",
+    "requested": "Pyydetty"
   }
 }
