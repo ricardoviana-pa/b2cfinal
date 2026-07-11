@@ -1378,6 +1378,100 @@
     "priceGuaranteed": "Priset garanteras till {{date}}, {{time}}",
     "alreadyPaidTitle": "Denna bokning är redan bekräftad",
     "alreadyPaidBody": "Betalningen för denna vistelse är slutförd. Kolla din e-post eller se din bokning nedan.",
-    "viewBooking": "Visa min bokning"
+    "viewBooking": "Visa min bokning",
+    "stepCustomize": "Anpassa",
+    "customizeTitle": "Anpassa din vistelse",
+    "customizeSubtitle": "Lägg till tjänster och upplevelser — eller fortsätt utan extra. Inget är förvalt.",
+    "backToCustomize": "Tillbaka till anpassning",
+    "continueWithExtras_one": "Fortsätt — {{count}} tillval tillagt",
+    "continueWithExtras_other": "Fortsätt — {{count}} tillval tillagda",
+    "continueWithoutExtras": "Fortsätt utan tillval",
+    "mostChosen": "Mest vald",
+    "confirm24h": "Bekräftas inom 24h",
+    "onRequest": "På förfrågan — ingen debitering nu",
+    "onRequestShort": "på förfrågan",
+    "add": "Lägg till",
+    "added": "Tillagd",
+    "request": "Begär",
+    "perDay": "per dag",
+    "perPerson": "per person",
+    "perTrip": "per resa",
+    "perChange": "per byte",
+    "perPersonSession": "per person · session",
+    "minPeople_one": "minst {{count}} person",
+    "minPeople_other": "minst {{count}} personer",
+    "daysLabel": "Dagar",
+    "tripsLabel": "Resor",
+    "qtyLabel": "Antal",
+    "peopleLabel": "Personer",
+    "sessionsLabel": "Sessioner",
+    "extrasSummary": "Tillval — bekräftas av din concierge",
+    "extrasChargedLater": "Debiteras efter conciergens bekräftelse — ingår inte i dagens betalning.",
+    "extrasChargeNote": "Tillval bekräftas av vår concierge och debiteras först efter bekräftelse — inget debiteras för dem idag. Artiklar på förfrågan offereras individuellt.",
+    "cat": {
+      "arrival": "Ankomst",
+      "home": "Huset",
+      "table": "Bordet",
+      "wellness": "Välmående",
+      "experiences": "Upplevelser"
+    },
+    "extras": {
+      "late-checkin": {
+        "name": "Ankomst efter kl. 21",
+        "desc": "Personlig incheckning med husvisning, utanför ordinarie tider."
+      },
+      "transfer-porto": {
+        "name": "Flygplatstransfer Porto (upp till 4)",
+        "desc": "Privatbil, per resa, upp till 4 gäster."
+      },
+      "transfer-porto-van": {
+        "name": "Flygplatstransfer — van (upp till 8)",
+        "desc": "Privat van, per resa, upp till 8 gäster."
+      },
+      "daily-cleaning": {
+        "name": "Daglig städning",
+        "desc": "Fullständig städning de dagar du väljer."
+      },
+      "linen-change": {
+        "name": "Byte av sängkläder och handdukar",
+        "desc": "Komplett byte av sängkläder och handdukar."
+      },
+      "private-chef": {
+        "name": "Privat kock till middag",
+        "desc": "En kock lagar mat hemma hos er — menyn bestäms med conciergen."
+      },
+      "hamper-essentials": {
+        "name": "Välkomstkorg — basics",
+        "desc": "Det viktigaste vid ankomst: frukost, vatten, frukt."
+      },
+      "hamper-gourmet": {
+        "name": "Välkomstkorg — regional gourmet",
+        "desc": "Utvalda regionala viner och delikatesser."
+      },
+      "grocery-list": {
+        "name": "Personlig inköpslista",
+        "desc": "Skicka din lista — kylskåpet är fyllt före ankomst."
+      },
+      "massage": {
+        "name": "Massage i huset",
+        "desc": "60-minuterssession i huset, per person."
+      },
+      "exp-surf": {
+        "name": "Surfupplevelse",
+        "desc": "Lektioner eller guidning på regionens bästa vågor."
+      },
+      "exp-kitesurf": {
+        "name": "Kitesurfupplevelse",
+        "desc": "Sessioner med lokala instruktörer, utrustning ingår."
+      },
+      "exp-wine": {
+        "name": "Vinho Verde-vintur",
+        "desc": "Provningar och källarbesök i regionen."
+      },
+      "exp-heritage": {
+        "name": "Kulturarvstur",
+        "desc": "Privat guide genom regionens historia."
+      }
+    }
   }
 }

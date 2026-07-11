@@ -1378,6 +1378,100 @@
     "priceGuaranteed": "Price guaranteed until {{date}}, {{time}}",
     "alreadyPaidTitle": "This booking is already confirmed",
     "alreadyPaidBody": "The payment for this stay was completed. Check your email for the confirmation, or view your booking below.",
-    "viewBooking": "View my booking"
+    "viewBooking": "View my booking",
+    "stepCustomize": "Personalize",
+    "customizeTitle": "Personalize your stay",
+    "customizeSubtitle": "Add services and experiences — or continue as is. Nothing is pre-selected.",
+    "backToCustomize": "Back to personalization",
+    "continueWithExtras_one": "Continue — {{count}} extra added",
+    "continueWithExtras_other": "Continue — {{count}} extras added",
+    "continueWithoutExtras": "Continue without extras",
+    "mostChosen": "Most chosen",
+    "confirm24h": "Confirmed within 24h",
+    "onRequest": "On request — no charge now",
+    "onRequestShort": "on request",
+    "add": "Add",
+    "added": "Added",
+    "request": "Request",
+    "perDay": "per day",
+    "perPerson": "per person",
+    "perTrip": "per trip",
+    "perChange": "per change",
+    "perPersonSession": "per person · session",
+    "minPeople_one": "min. {{count}} person",
+    "minPeople_other": "min. {{count}} people",
+    "daysLabel": "Days",
+    "tripsLabel": "Trips",
+    "qtyLabel": "Quantity",
+    "peopleLabel": "People",
+    "sessionsLabel": "Sessions",
+    "extrasSummary": "Extras — confirmed by your concierge",
+    "extrasChargedLater": "Charged after concierge confirmation — not included in today's payment.",
+    "extrasChargeNote": "Extras are confirmed by our concierge and charged only after confirmation — nothing is charged for them today. On-request items are quoted individually.",
+    "cat": {
+      "arrival": "Arrival",
+      "home": "The home",
+      "table": "The table",
+      "wellness": "Wellness",
+      "experiences": "Experiences"
+    },
+    "extras": {
+      "late-checkin": {
+        "name": "Arrival after 9pm",
+        "desc": "In-person check-in with a tour of the home, outside regular hours."
+      },
+      "transfer-porto": {
+        "name": "Porto airport transfer (up to 4)",
+        "desc": "Private car, per trip, up to 4 guests."
+      },
+      "transfer-porto-van": {
+        "name": "Porto airport transfer — van (up to 8)",
+        "desc": "Private van, per trip, up to 8 guests."
+      },
+      "daily-cleaning": {
+        "name": "Daily housekeeping",
+        "desc": "Full daily clean on the days you choose."
+      },
+      "linen-change": {
+        "name": "Linen & towel change",
+        "desc": "Complete change of bed linen and towels."
+      },
+      "private-chef": {
+        "name": "Private chef dinner",
+        "desc": "A chef cooks in your home — menu agreed with the concierge."
+      },
+      "hamper-essentials": {
+        "name": "Welcome hamper — essentials",
+        "desc": "The basics waiting on arrival: breakfast, water, fruit."
+      },
+      "hamper-gourmet": {
+        "name": "Welcome hamper — regional gourmet",
+        "desc": "A curated selection of regional wines and delicacies."
+      },
+      "grocery-list": {
+        "name": "Personal grocery list",
+        "desc": "Send us your list — the fridge is stocked before you arrive."
+      },
+      "massage": {
+        "name": "In-home massage",
+        "desc": "60-minute session at the house, per person."
+      },
+      "exp-surf": {
+        "name": "Surf experience",
+        "desc": "Lessons or guiding on the region's best waves."
+      },
+      "exp-kitesurf": {
+        "name": "Kitesurf experience",
+        "desc": "Sessions with local instructors, gear included."
+      },
+      "exp-wine": {
+        "name": "Vinho Verde wine tour",
+        "desc": "Tastings and cellar visits in the region."
+      },
+      "exp-heritage": {
+        "name": "Heritage & culture tour",
+        "desc": "Private guide through the region's history."
+      }
+    }
   }
 }

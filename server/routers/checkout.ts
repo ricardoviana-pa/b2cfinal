@@ -13,6 +13,7 @@
 import { randomUUID } from "crypto";
 import { z } from "zod";
 import { publicProcedure, router } from "../_core/trpc";
+import { CHECKOUT_EXTRAS } from "../config/checkout-extras";
 import {
   createBookingIntent,
   getBookingIntent,
@@ -49,11 +50,34 @@ const quoteSnapshotSchema = z.object({
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
+/** One selected extra as persisted on the intent (Fase 2) */
+const extraSelectionSchema = z.object({
+  sku: z.string().max(64),
+  qty: z.number().int().min(1).max(30).optional(),
+  people: z.number().int().min(1).max(30).optional(),
+  sessions: z.number().int().min(1).max(30).optional(),
+  days: z.number().int().min(1).max(60).optional(),
+  /** Whole EUR computed client-side for display; null for on_request. The
+   *  charged amount is NEVER taken from here — pricing is re-derived
+   *  server-side when the single-charge path lands (2b). */
+  amount: z.number().nullable(),
+  fulfillment: z.enum(["instant", "needs_confirmation", "on_request"]).optional(),
+});
+
 export const checkoutRouter = router({
-  /** Feature flag — checkout_v2 rollout is controlled by env on the server. */
-  isEnabled: publicProcedure.query(() => ({
-    enabled: process.env.CHECKOUT_V2 === "true",
-  })),
+  /**
+   * Feature flag. Enabled by env (CHECKOUT_V2=true) anywhere, and ALWAYS on
+   * for the dev deployment (host dev.portugalactive.com) — so the dev site
+   * runs checkout 2.0 for everyone while production stays on the legacy flow
+   * even after dev merges to main.
+   */
+  isEnabled: publicProcedure.query(({ ctx }) => {
+    if (process.env.CHECKOUT_V2 === "true") return { enabled: true };
+    const host = String(
+      ctx.req.headers["x-forwarded-host"] || ctx.req.headers.host || "",
+    ).toLowerCase();
+    return { enabled: host.startsWith("dev.") || host.startsWith("localhost") };
+  }),
 
   createIntent: publicProcedure
     .input(
@@ -120,6 +144,7 @@ export const checkoutRouter = router({
           guests: z.number().int().min(1).max(30).optional(),
           guestyQuoteId: z.string().max(64).optional(),
           quote: quoteSnapshotSchema.optional(),
+          extras: z.array(extraSelectionSchema).max(20).optional(),
           status: z
             .enum(["draft", "contact_captured", "payment_pending", "paid"])
             .optional(),
@@ -144,6 +169,9 @@ export const checkoutRouter = router({
       const ok = await updateBookingIntent(input.intentId, patch);
       return { ok };
     }),
+
+  /** Launch catalog for the Personalizar step (global scope in v1, spec §5). */
+  getExtras: publicProcedure.query(() => ({ extras: CHECKOUT_EXTRAS })),
 
   /**
    * Email capture at the end of passo 1 (spec §4): stores the email on the

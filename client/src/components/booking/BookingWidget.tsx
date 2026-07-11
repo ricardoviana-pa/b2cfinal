@@ -1180,8 +1180,10 @@ export default function BookingWidget({
               );
             })()}
 
-            {/* ── Enhance Your Stay — Full Service Grid ── */}
-            {upsellItems.length > 0 && (
+            {/* ── Enhance Your Stay — legacy flow only. With checkout_v2 the
+                 widget keeps just dates/guests/quote/CTA (spec §3); services
+                 live in the checkout's "Personalizar" step. ── */}
+            {!checkoutV2Active && upsellItems.length > 0 && (
               <EnhanceYourStay
                 items={upsellItems}
                 selectedUpsells={selectedUpsells}

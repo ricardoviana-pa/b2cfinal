@@ -34,13 +34,14 @@ import { formatEur, formatBookingDate, intlLocale, sanitizePropertyName } from "
 import { cancellationPolicyText } from "@/lib/cancellation";
 import { IMAGES, optimizeGuestyImage } from "@/lib/images";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
-import { pushDL } from "@/lib/datalayer";
+import { pushDL, pushEcommerce } from "@/lib/datalayer";
 import { stashThankYou } from "@/lib/booking-api";
 import AvailabilityCalendar, { type AvailabilityDay } from "@/components/booking/AvailabilityCalendar";
+import CustomizeStep, { extraAmount, type CatalogExtra, type ExtraSelection } from "./CustomizeStep";
 import CheckoutPaymentForm from "@/components/booking/CheckoutPaymentForm";
 import PhoneInput from "@/components/booking/PhoneInput";
 
-type Step = "stay" | "pay";
+type Step = "stay" | "customize" | "pay";
 
 /** Quote snapshot mirrored from the intent (euro floats, same shape as the server json column) */
 interface QuoteSnapshot {
@@ -130,6 +131,7 @@ export default function CheckoutPage() {
   const [datesUnavailable, setDatesUnavailable] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const contactFiredRef = useRef(false);
+  const [extraSel, setExtraSel] = useState<Record<string, ExtraSelection>>({});
 
   // The global CookieBanner (fixed bottom, z-60) legally must stay on top; while
   // consent is pending we lift the checkout's own bottom bar above it so the
@@ -167,9 +169,24 @@ export default function CheckoutPage() {
       sessionStorage.setItem(`checkout_created_${intent.id}`, "1");
     } catch { /* storage unavailable */ }
     if (intent.email) contactFiredRef.current = true;
+    if (Array.isArray(intent.extras)) {
+      const seeded: Record<string, ExtraSelection> = {};
+      for (const e of intent.extras as Array<Record<string, unknown>>) {
+        if (typeof e?.sku === "string") {
+          seeded[e.sku] = {
+            qty: typeof e.qty === "number" ? e.qty : undefined,
+            people: typeof e.people === "number" ? e.people : undefined,
+            sessions: typeof e.sessions === "number" ? e.sessions : undefined,
+            days: typeof e.days === "number" ? e.days : undefined,
+          };
+        }
+      }
+      setExtraSel(seeded);
+    }
     if (resumed) {
       pushDL({ event: "checkout_resume", property_id: intent.listingId });
-      if (intent.status === "contact_captured" || intent.status === "payment_pending") setStep("pay");
+      if (intent.status === "contact_captured") setStep("customize");
+      if (intent.status === "payment_pending") setStep("pay");
     }
     // Quote freshness — the BE quote dies after ~24h; warn at 23h
     const createdAt = (intent.quote as QuoteSnapshot | null)?.quoteCreatedAt;
@@ -198,6 +215,10 @@ export default function CheckoutPage() {
       cancellationPolicy: opt.cancellationPolicy,
     };
   }, [quote, selectedRatePlanId]);
+
+  // ── Extras catalog (Fase 2 — Personalizar) ──
+  const extrasQuery = trpc.checkout.getExtras.useQuery(undefined, { staleTime: 60 * 60 * 1000 });
+  const catalog: CatalogExtra[] = (extrasQuery.data?.extras as CatalogExtra[]) ?? [];
 
   // ── Property (photo + slug for the back link) ──
   const propertyQuery = trpc.properties.getBySlugForSite.useQuery(
@@ -284,11 +305,8 @@ export default function CheckoutPage() {
   const submitEmail = useCallback(() => {
     setEmailTouched(true);
     if (!intent || !isValidEmail(email)) return;
-    // Sequence the two writes: batched-concurrent mutations race server-side
-    // (captureLead's read-then-write vs the status update).
     captureLead
       .mutateAsync({ intentId: intent.id, email, locale: lang })
-      .then(() => syncIntent({ status: "payment_pending" }))
       .catch(() => {/* fail-soft: the step advance below never blocks on persistence */});
     utils.checkout.getIntent.setData({ intentId: intent.id }, (prev) =>
       prev?.intent ? { ...prev, intent: { ...prev.intent, email } } : prev,
@@ -297,9 +315,100 @@ export default function CheckoutPage() {
       contactFiredRef.current = true;
       pushDL({ event: "add_contact_info", property_id: intent.listingId, source: "checkout_v2" });
     }
+    setStep("customize");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [intent, email, lang, captureLead, utils]);
+
+  // ── Extras handlers (Fase 2) ──
+  const toggleExtra = useCallback(
+    (item: CatalogExtra) => {
+      setExtraSel((prev) => {
+        const next = { ...prev };
+        const adding = !(item.sku in next);
+        if (adding) {
+          next[item.sku] =
+            item.pricingModel === "per_day"
+              ? { days: Math.max(1, quote?.nights ?? 1) }
+              : item.pricingModel === "per_person"
+                ? { people: Math.max(item.minPeople ?? 1, Math.min(guests, 30)) }
+                : item.pricingModel === "per_person_per_unit"
+                  ? { people: 1, sessions: 1 }
+                  : item.pricingModel === "per_unit"
+                    ? { qty: item.minQty ?? 1 }
+                    : {};
+        } else {
+          delete next[item.sku];
+        }
+        const amount = adding ? extraAmount(item, next[item.sku] ?? {}) : extraAmount(item, prev[item.sku] ?? {});
+        pushEcommerce({
+          event: adding ? "add_to_cart" : "remove_from_cart",
+          property_id: intent?.listingId,
+          ecommerce: {
+            currency: "EUR",
+            value: amount ?? 0,
+            items: [{ item_id: item.sku, item_name: item.sku, item_category: "extra", item_category2: item.category, price: item.unitPrice ?? 0, quantity: 1 }],
+          },
+        });
+        return next;
+      });
+    },
+    [guests, quote?.nights, intent?.listingId],
+  );
+  const adjustExtra = useCallback((sku: string, patch: ExtraSelection) => {
+    setExtraSel((prev) => ({ ...prev, [sku]: { ...prev[sku], ...patch } }));
+  }, []);
+
+  const selectedExtras = useMemo(() => {
+    return Object.entries(extraSel)
+      .map(([sku, sel]) => {
+        const item = catalog.find((c) => c.sku === sku);
+        if (!item) return null;
+        return { item, sel, amount: extraAmount(item, sel) };
+      })
+      .filter(Boolean) as Array<{ item: CatalogExtra; sel: ExtraSelection; amount: number | null }>;
+  }, [extraSel, catalog]);
+  const extrasTotal = useMemo(
+    () => selectedExtras.reduce((sum, e) => sum + (e.amount ?? 0), 0),
+    [selectedExtras],
+  );
+
+  /** Customize → Pay: persist the selection and flip the intent to payment_pending */
+  const continueToPay = useCallback(() => {
+    if (!intent) return;
+    syncIntent({
+      status: "payment_pending",
+      extras: selectedExtras.map(({ item, sel, amount }) => ({
+        sku: item.sku,
+        qty: sel.qty,
+        people: sel.people,
+        sessions: sel.sessions,
+        days: sel.days,
+        amount,
+        fulfillment: item.fulfillment,
+      })),
+    });
     setStep("pay");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [intent, email, lang, captureLead, syncIntent, utils]);
+  }, [intent, selectedExtras, syncIntent]);
+
+  /** Ops manifest (PT, staff-facing) appended to the Guesty reservation notes —
+   *  same pattern the legacy widget uses, so operations see the requests. */
+  const extrasNote = useMemo(() => {
+    if (!selectedExtras.length) return "";
+    const lines = selectedExtras.map(({ item, sel, amount }) => {
+      const parts = [
+        `- ${item.sku}`,
+        sel.qty ? `x${sel.qty}` : "",
+        sel.days ? `${sel.days} dias` : "",
+        sel.people ? `${sel.people} pessoas` : "",
+        sel.sessions ? `${sel.sessions} sessões` : "",
+        amount != null ? `≈ ${amount} EUR` : "(sob pedido)",
+        item.fulfillment === "needs_confirmation" ? "[CONFIRMAR 24H]" : "",
+      ].filter(Boolean);
+      return parts.join(" ");
+    });
+    return `\n\n⚠️ EXTRAS PEDIDOS NO CHECKOUT (confirmar e cobrar após confirmação):\n${lines.join("\n")}`;
+  }, [selectedExtras]);
 
   // Persist guest details when they become valid (debounced-ish: on blur via effect)
   const guestDetailsValid =
@@ -364,6 +473,7 @@ export default function CheckoutPage() {
 
   const steps: Array<{ key: Step; label: string }> = [
     { key: "stay", label: t("checkout.stepStay", "Your stay") },
+    { key: "customize", label: t("checkout.stepCustomize", "Personalize") },
     { key: "pay", label: t("checkout.stepPay", "Payment") },
   ];
   const stepIndex = steps.findIndex((s) => s.key === step);
@@ -457,6 +567,26 @@ export default function CheckoutPage() {
           {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)} · {guests} {t("booking.guestsLabel", "guests")}
         </div>
         {summaryLines}
+        {selectedExtras.length > 0 && (
+          <div className="border-t border-pa-sand pt-3 space-y-1.5">
+            <p className="text-[10px] tracking-[0.12em] uppercase text-pa-stone-aa">
+              {t("checkout.extrasSummary", "Extras — confirmed by your concierge")}
+            </p>
+            {selectedExtras.map(({ item, amount }) => (
+              <div key={item.sku} className="flex justify-between text-[12.5px]">
+                <span className="text-pa-earth">{t(`checkout.extras.${item.sku}.name`)}</span>
+                <span className="text-pa-dark tabular-nums">
+                  {amount != null ? formatEur(amount, lang) : t("checkout.onRequestShort", "on request")}
+                </span>
+              </div>
+            ))}
+            {extrasTotal > 0 && (
+              <p className="text-[10.5px] text-pa-stone-aa leading-snug pt-0.5">
+                {t("checkout.extrasChargedLater", "Charged after concierge confirmation — not included in today's payment.")}
+              </p>
+            )}
+          </div>
+        )}
         {effective?.cancellationPolicy?.[0] && (
           <p className="text-[11px] text-pa-stone-aa leading-snug">
             {cancellationPolicyText(effective.cancellationPolicy[0], checkIn, t, lang)}
@@ -729,8 +859,8 @@ export default function CheckoutPage() {
             </>
           )}
 
-          {/* ── PASSO PAGAMENTO ── */}
-          {step === "pay" && (
+          {/* ── PASSO 2: PERSONALIZAR (Fase 2) ── */}
+          {step === "customize" && (
             <>
               <div>
                 <button
@@ -739,6 +869,43 @@ export default function CheckoutPage() {
                   className="text-[12px] text-pa-stone-aa hover:text-pa-dark transition-colors mb-3"
                 >
                   ← {t("checkout.backToStay", "Back to your stay")}
+                </button>
+                <h1 className="headline-md text-pa-dark mb-1">{t("checkout.customizeTitle", "Personalize your stay")}</h1>
+                <p className="body-sm">{t("checkout.customizeSubtitle", "Add services and experiences — or continue as is. Nothing is pre-selected.")}</p>
+              </div>
+              {extrasQuery.isLoading ? (
+                <div className="flex items-center justify-center py-10 gap-2 text-[12px] text-pa-stone-aa">
+                  <Loader2 className="w-4 h-4 animate-spin" /> {t("checkout.loading", "Preparing your checkout…")}
+                </div>
+              ) : (
+                <CustomizeStep
+                  catalog={catalog}
+                  selection={extraSel}
+                  nights={quote?.nights ?? 1}
+                  guests={guests}
+                  lang={lang}
+                  onToggle={toggleExtra}
+                  onAdjust={adjustExtra}
+                />
+              )}
+              <button type="button" onClick={continueToPay} className="btn-primary w-full">
+                {selectedExtras.length > 0
+                  ? t("checkout.continueWithExtras", { count: selectedExtras.length })
+                  : t("checkout.continueWithoutExtras", "Continue without extras")}
+              </button>
+            </>
+          )}
+
+          {/* ── PASSO PAGAMENTO ── */}
+          {step === "pay" && (
+            <>
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setStep("customize")}
+                  className="text-[12px] text-pa-stone-aa hover:text-pa-dark transition-colors mb-3"
+                >
+                  ← {t("checkout.backToCustomize", "Back to personalization")}
                 </button>
                 <h1 className="headline-md text-pa-dark mb-1">{t("checkout.payTitle", "Payment")}</h1>
                 <p className="body-sm">{t("checkout.paySubtitle", "Your details, then a secure payment.")}</p>
@@ -846,6 +1013,7 @@ export default function CheckoutPage() {
                     guestName={`${firstName.trim()} ${lastName.trim()}`}
                     guestEmail={email}
                     guestPhone={phone}
+                    notes={extrasNote || undefined}
                     intentId={intent.id}
                     onSuccess={handleCardSuccess}
                     onCancel={() => setStep("stay")}
@@ -909,6 +1077,11 @@ export default function CheckoutPage() {
               disabled={!isValidEmail(email) || quoteStale || datesUnavailable}
               className="btn-primary flex-1 max-w-[220px] disabled:opacity-40"
             >
+              {t("booking.continue", "Continue")}
+            </button>
+          )}
+          {step === "customize" && (
+            <button type="button" onClick={continueToPay} className="btn-primary flex-1 max-w-[220px]">
               {t("booking.continue", "Continue")}
             </button>
           )}

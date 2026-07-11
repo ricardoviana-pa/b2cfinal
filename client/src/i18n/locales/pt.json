@@ -1378,6 +1378,100 @@
     "priceGuaranteed": "Preço garantido até {{date}}, {{time}}",
     "alreadyPaidTitle": "Esta reserva já está confirmada",
     "alreadyPaidBody": "O pagamento desta estadia foi concluído. Verifique o seu email ou consulte a sua reserva abaixo.",
-    "viewBooking": "Ver a minha reserva"
+    "viewBooking": "Ver a minha reserva",
+    "stepCustomize": "Personalizar",
+    "customizeTitle": "Personalize a sua estadia",
+    "customizeSubtitle": "Adicione serviços e experiências — ou continue sem extras. Nada vem pré-selecionado.",
+    "backToCustomize": "Voltar à personalização",
+    "continueWithExtras_one": "Continuar — {{count}} extra adicionado",
+    "continueWithExtras_other": "Continuar — {{count}} extras adicionados",
+    "continueWithoutExtras": "Continuar sem extras",
+    "mostChosen": "Mais escolhido",
+    "confirm24h": "Confirmação em 24 horas",
+    "onRequest": "Sob pedido — sem cobrança agora",
+    "onRequestShort": "sob pedido",
+    "add": "Adicionar",
+    "added": "Adicionado",
+    "request": "Pedir",
+    "perDay": "por dia",
+    "perPerson": "por pessoa",
+    "perTrip": "por trajeto",
+    "perChange": "por muda",
+    "perPersonSession": "por pessoa · sessão",
+    "minPeople_one": "mín. {{count}} pessoa",
+    "minPeople_other": "mín. {{count}} pessoas",
+    "daysLabel": "Dias",
+    "tripsLabel": "Trajetos",
+    "qtyLabel": "Quantidade",
+    "peopleLabel": "Pessoas",
+    "sessionsLabel": "Sessões",
+    "extrasSummary": "Extras — confirmados pelo seu concierge",
+    "extrasChargedLater": "Cobrados após confirmação do concierge — não incluídos no pagamento de hoje.",
+    "extrasChargeNote": "Os extras são confirmados pelo nosso concierge e cobrados apenas após confirmação — hoje não é cobrado nada por eles. Os itens sob pedido são orçamentados individualmente.",
+    "cat": {
+      "arrival": "Chegada",
+      "home": "A casa",
+      "table": "A mesa",
+      "wellness": "Bem-estar",
+      "experiences": "Experiências"
+    },
+    "extras": {
+      "late-checkin": {
+        "name": "Chegada depois das 21h",
+        "desc": "Check-in presencial com tour da casa, fora do horário normal."
+      },
+      "transfer-porto": {
+        "name": "Transfer aeroporto do Porto (até 4)",
+        "desc": "Carro privado, por trajeto, até 4 hóspedes."
+      },
+      "transfer-porto-van": {
+        "name": "Transfer aeroporto do Porto — van (até 8)",
+        "desc": "Van privada, por trajeto, até 8 hóspedes."
+      },
+      "daily-cleaning": {
+        "name": "Limpeza diária",
+        "desc": "Limpeza completa nos dias que escolher."
+      },
+      "linen-change": {
+        "name": "Muda de lençóis e toalhas",
+        "desc": "Muda completa de roupa de cama e toalhas."
+      },
+      "private-chef": {
+        "name": "Chef privado ao jantar",
+        "desc": "Um chef cozinha em sua casa — menu combinado com o concierge."
+      },
+      "hamper-essentials": {
+        "name": "Cabaz de boas-vindas — essenciais",
+        "desc": "O essencial à chegada: pequeno-almoço, água, fruta."
+      },
+      "hamper-gourmet": {
+        "name": "Cabaz de boas-vindas — gourmet regional",
+        "desc": "Seleção curada de vinhos e iguarias da região."
+      },
+      "grocery-list": {
+        "name": "Lista de compras personalizada",
+        "desc": "Envie a sua lista — o frigorífico fica pronto antes de chegar."
+      },
+      "massage": {
+        "name": "Massagem na casa",
+        "desc": "Sessão de 60 minutos em casa, por pessoa."
+      },
+      "exp-surf": {
+        "name": "Experiência de surf",
+        "desc": "Aulas ou guiamento nas melhores ondas da região."
+      },
+      "exp-kitesurf": {
+        "name": "Experiência de kitesurf",
+        "desc": "Sessões com instrutores locais, equipamento incluído."
+      },
+      "exp-wine": {
+        "name": "Rota do Vinho Verde",
+        "desc": "Provas e visitas a adegas da região."
+      },
+      "exp-heritage": {
+        "name": "Património e cultura",
+        "desc": "Guia privado pela história da região."
+      }
+    }
   }
 }

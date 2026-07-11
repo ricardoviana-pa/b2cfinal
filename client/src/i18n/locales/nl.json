@@ -1378,6 +1378,100 @@
     "priceGuaranteed": "Prijs gegarandeerd tot {{date}}, {{time}}",
     "alreadyPaidTitle": "Deze boeking is al bevestigd",
     "alreadyPaidBody": "De betaling voor dit verblijf is voltooid. Controleer uw e-mail of bekijk uw boeking hieronder.",
-    "viewBooking": "Mijn boeking bekijken"
+    "viewBooking": "Mijn boeking bekijken",
+    "stepCustomize": "Personaliseren",
+    "customizeTitle": "Personaliseer uw verblijf",
+    "customizeSubtitle": "Voeg services en ervaringen toe — of ga verder zonder extra's. Niets is vooraf geselecteerd.",
+    "backToCustomize": "Terug naar personalisatie",
+    "continueWithExtras_one": "Doorgaan — {{count}} extra toegevoegd",
+    "continueWithExtras_other": "Doorgaan — {{count}} extra's toegevoegd",
+    "continueWithoutExtras": "Doorgaan zonder extra's",
+    "mostChosen": "Meest gekozen",
+    "confirm24h": "Bevestiging binnen 24 uur",
+    "onRequest": "Op aanvraag — nu geen kosten",
+    "onRequestShort": "op aanvraag",
+    "add": "Toevoegen",
+    "added": "Toegevoegd",
+    "request": "Aanvragen",
+    "perDay": "per dag",
+    "perPerson": "per persoon",
+    "perTrip": "per rit",
+    "perChange": "per wissel",
+    "perPersonSession": "per persoon · sessie",
+    "minPeople_one": "min. {{count}} persoon",
+    "minPeople_other": "min. {{count}} personen",
+    "daysLabel": "Dagen",
+    "tripsLabel": "Ritten",
+    "qtyLabel": "Aantal",
+    "peopleLabel": "Personen",
+    "sessionsLabel": "Sessies",
+    "extrasSummary": "Extra's — bevestigd door uw concierge",
+    "extrasChargedLater": "In rekening gebracht na bevestiging door de concierge — niet inbegrepen in de betaling van vandaag.",
+    "extrasChargeNote": "Extra's worden bevestigd door onze concierge en pas na bevestiging in rekening gebracht — vandaag wordt er niets voor afgeschreven. Items op aanvraag worden individueel geoffreerd.",
+    "cat": {
+      "arrival": "Aankomst",
+      "home": "Het huis",
+      "table": "De tafel",
+      "wellness": "Wellness",
+      "experiences": "Ervaringen"
+    },
+    "extras": {
+      "late-checkin": {
+        "name": "Aankomst na 21u",
+        "desc": "Persoonlijke check-in met rondleiding, buiten de normale uren."
+      },
+      "transfer-porto": {
+        "name": "Luchthaventransfer Porto (tot 4)",
+        "desc": "Privéauto, per rit, tot 4 gasten."
+      },
+      "transfer-porto-van": {
+        "name": "Luchthaventransfer — van (tot 8)",
+        "desc": "Privévan, per rit, tot 8 gasten."
+      },
+      "daily-cleaning": {
+        "name": "Dagelijkse schoonmaak",
+        "desc": "Volledige schoonmaak op de dagen die u kiest."
+      },
+      "linen-change": {
+        "name": "Linnen- en handdoekenwissel",
+        "desc": "Complete wissel van beddengoed en handdoeken."
+      },
+      "private-chef": {
+        "name": "Privéchef bij het diner",
+        "desc": "Een chef kookt bij u thuis — menu afgestemd met de concierge."
+      },
+      "hamper-essentials": {
+        "name": "Welkomstmand — essentials",
+        "desc": "De basis bij aankomst: ontbijt, water, fruit."
+      },
+      "hamper-gourmet": {
+        "name": "Welkomstmand — regionale gourmet",
+        "desc": "Gecureerde selectie regionale wijnen en delicatessen."
+      },
+      "grocery-list": {
+        "name": "Persoonlijke boodschappenlijst",
+        "desc": "Stuur uw lijst — de koelkast is gevuld vóór aankomst."
+      },
+      "massage": {
+        "name": "Massage aan huis",
+        "desc": "Sessie van 60 minuten in huis, per persoon."
+      },
+      "exp-surf": {
+        "name": "Surfervaring",
+        "desc": "Lessen of begeleiding op de beste golven van de regio."
+      },
+      "exp-kitesurf": {
+        "name": "Kitesurfervaring",
+        "desc": "Sessies met lokale instructeurs, materiaal inbegrepen."
+      },
+      "exp-wine": {
+        "name": "Vinho Verde-wijnroute",
+        "desc": "Proeverijen en kelderbezoeken in de regio."
+      },
+      "exp-heritage": {
+        "name": "Erfgoed & cultuur",
+        "desc": "Privégids door de geschiedenis van de regio."
+      }
+    }
   }
 }

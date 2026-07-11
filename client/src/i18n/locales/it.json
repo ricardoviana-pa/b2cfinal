@@ -1378,6 +1378,100 @@
     "priceGuaranteed": "Prezzo garantito fino al {{date}}, {{time}}",
     "alreadyPaidTitle": "Questa prenotazione è già confermata",
     "alreadyPaidBody": "Il pagamento di questo soggiorno è stato completato. Controlla la tua email o vedi la tua prenotazione qui sotto.",
-    "viewBooking": "Vedi la mia prenotazione"
+    "viewBooking": "Vedi la mia prenotazione",
+    "stepCustomize": "Personalizza",
+    "customizeTitle": "Personalizza il tuo soggiorno",
+    "customizeSubtitle": "Aggiungi servizi ed esperienze — o continua senza extra. Niente è preselezionato.",
+    "backToCustomize": "Torna alla personalizzazione",
+    "continueWithExtras_one": "Continua — {{count}} extra aggiunto",
+    "continueWithExtras_other": "Continua — {{count}} extra aggiunti",
+    "continueWithoutExtras": "Continua senza extra",
+    "mostChosen": "Il più scelto",
+    "confirm24h": "Conferma entro 24 ore",
+    "onRequest": "Su richiesta — nessun addebito ora",
+    "onRequestShort": "su richiesta",
+    "add": "Aggiungi",
+    "added": "Aggiunto",
+    "request": "Richiedi",
+    "perDay": "al giorno",
+    "perPerson": "a persona",
+    "perTrip": "a tratta",
+    "perChange": "a cambio",
+    "perPersonSession": "a persona · sessione",
+    "minPeople_one": "min. {{count}} persona",
+    "minPeople_other": "min. {{count}} persone",
+    "daysLabel": "Giorni",
+    "tripsLabel": "Tratte",
+    "qtyLabel": "Quantità",
+    "peopleLabel": "Persone",
+    "sessionsLabel": "Sessioni",
+    "extrasSummary": "Extra — confermati dal tuo concierge",
+    "extrasChargedLater": "Addebitati dopo la conferma del concierge — non inclusi nel pagamento di oggi.",
+    "extrasChargeNote": "Gli extra sono confermati dal nostro concierge e addebitati solo dopo la conferma — oggi non viene addebitato nulla. Gli articoli su richiesta sono preventivati individualmente.",
+    "cat": {
+      "arrival": "Arrivo",
+      "home": "La casa",
+      "table": "La tavola",
+      "wellness": "Benessere",
+      "experiences": "Esperienze"
+    },
+    "extras": {
+      "late-checkin": {
+        "name": "Arrivo dopo le 21",
+        "desc": "Check-in di persona con tour della casa, fuori orario."
+      },
+      "transfer-porto": {
+        "name": "Transfer aeroporto di Porto (fino a 4)",
+        "desc": "Auto privata, a tratta, fino a 4 ospiti."
+      },
+      "transfer-porto-van": {
+        "name": "Transfer aeroporto — van (fino a 8)",
+        "desc": "Van privato, a tratta, fino a 8 ospiti."
+      },
+      "daily-cleaning": {
+        "name": "Pulizia giornaliera",
+        "desc": "Pulizia completa nei giorni che scegli."
+      },
+      "linen-change": {
+        "name": "Cambio biancheria e asciugamani",
+        "desc": "Cambio completo di lenzuola e asciugamani."
+      },
+      "private-chef": {
+        "name": "Chef privato a cena",
+        "desc": "Uno chef cucina a casa tua — menu concordato con il concierge."
+      },
+      "hamper-essentials": {
+        "name": "Cesto di benvenuto — essenziali",
+        "desc": "L'essenziale all'arrivo: colazione, acqua, frutta."
+      },
+      "hamper-gourmet": {
+        "name": "Cesto di benvenuto — gourmet regionale",
+        "desc": "Selezione curata di vini e specialità della regione."
+      },
+      "grocery-list": {
+        "name": "Lista della spesa personalizzata",
+        "desc": "Invia la tua lista — il frigo è pronto prima del tuo arrivo."
+      },
+      "massage": {
+        "name": "Massaggio a domicilio",
+        "desc": "Sessione di 60 minuti in casa, a persona."
+      },
+      "exp-surf": {
+        "name": "Esperienza surf",
+        "desc": "Lezioni o guida sulle migliori onde della regione."
+      },
+      "exp-kitesurf": {
+        "name": "Esperienza kitesurf",
+        "desc": "Sessioni con istruttori locali, attrezzatura inclusa."
+      },
+      "exp-wine": {
+        "name": "Strada del Vinho Verde",
+        "desc": "Degustazioni e visite alle cantine della regione."
+      },
+      "exp-heritage": {
+        "name": "Patrimonio e cultura",
+        "desc": "Guida privata nella storia della regione."
+      }
+    }
   }
 }

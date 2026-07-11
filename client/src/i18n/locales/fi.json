@@ -1378,6 +1378,100 @@
     "priceGuaranteed": "Hinta taattu {{date}} klo {{time}} asti",
     "alreadyPaidTitle": "Tämä varaus on jo vahvistettu",
     "alreadyPaidBody": "Tämän majoituksen maksu on suoritettu. Tarkista sähköpostisi tai katso varauksesi alta.",
-    "viewBooking": "Näytä varaukseni"
+    "viewBooking": "Näytä varaukseni",
+    "stepCustomize": "Mukauta",
+    "customizeTitle": "Mukauta majoitustasi",
+    "customizeSubtitle": "Lisää palveluita ja elämyksiä — tai jatka ilman lisäpalveluita. Mitään ei ole esivalittu.",
+    "backToCustomize": "Takaisin mukauttamiseen",
+    "continueWithExtras_one": "Jatka — {{count}} lisäpalvelu lisätty",
+    "continueWithExtras_other": "Jatka — {{count}} lisäpalvelua lisätty",
+    "continueWithoutExtras": "Jatka ilman lisäpalveluita",
+    "mostChosen": "Suosituin",
+    "confirm24h": "Vahvistus 24 tunnissa",
+    "onRequest": "Pyynnöstä — ei veloitusta nyt",
+    "onRequestShort": "pyynnöstä",
+    "add": "Lisää",
+    "added": "Lisätty",
+    "request": "Pyydä",
+    "perDay": "per päivä",
+    "perPerson": "per henkilö",
+    "perTrip": "per matka",
+    "perChange": "per vaihto",
+    "perPersonSession": "per henkilö · kerta",
+    "minPeople_one": "väh. {{count}} henkilö",
+    "minPeople_other": "väh. {{count}} henkilöä",
+    "daysLabel": "Päivät",
+    "tripsLabel": "Matkat",
+    "qtyLabel": "Määrä",
+    "peopleLabel": "Henkilöt",
+    "sessionsLabel": "Kerrat",
+    "extrasSummary": "Lisäpalvelut — conciergesi vahvistaa",
+    "extrasChargedLater": "Veloitetaan conciergen vahvistuksen jälkeen — ei sisälly tämän päivän maksuun.",
+    "extrasChargeNote": "Conciergemme vahvistaa lisäpalvelut, ja ne veloitetaan vasta vahvistuksen jälkeen — tänään niistä ei veloiteta mitään. Pyynnöstä saatavat palvelut hinnoitellaan erikseen.",
+    "cat": {
+      "arrival": "Saapuminen",
+      "home": "Talo",
+      "table": "Pöytä",
+      "wellness": "Hyvinvointi",
+      "experiences": "Elämykset"
+    },
+    "extras": {
+      "late-checkin": {
+        "name": "Saapuminen klo 21 jälkeen",
+        "desc": "Henkilökohtainen sisäänkirjautuminen ja talon esittely, normaaliaikojen ulkopuolella."
+      },
+      "transfer-porto": {
+        "name": "Lentokenttäkuljetus Porto (enint. 4)",
+        "desc": "Yksityisauto, per matka, enintään 4 vierasta."
+      },
+      "transfer-porto-van": {
+        "name": "Lentokenttäkuljetus — tila-auto (enint. 8)",
+        "desc": "Yksityinen tila-auto, per matka, enintään 8 vierasta."
+      },
+      "daily-cleaning": {
+        "name": "Päivittäinen siivous",
+        "desc": "Täysi siivous valitseminasi päivinä."
+      },
+      "linen-change": {
+        "name": "Liinavaatteiden ja pyyhkeiden vaihto",
+        "desc": "Täydellinen vuodevaatteiden ja pyyhkeiden vaihto."
+      },
+      "private-chef": {
+        "name": "Yksityiskokki illalliselle",
+        "desc": "Kokki valmistaa aterian kotonasi — menu sovitaan conciergen kanssa."
+      },
+      "hamper-essentials": {
+        "name": "Tervetuliaiskori — perus",
+        "desc": "Perusasiat saapuessa: aamiainen, vesi, hedelmät."
+      },
+      "hamper-gourmet": {
+        "name": "Tervetuliaiskori — alueen gourmet",
+        "desc": "Valikoima alueen viinejä ja herkkuja."
+      },
+      "grocery-list": {
+        "name": "Henkilökohtainen ostoslista",
+        "desc": "Lähetä listasi — jääkaappi on täytetty ennen saapumistasi."
+      },
+      "massage": {
+        "name": "Hieronta talossa",
+        "desc": "60 minuutin hoito talossa, per henkilö."
+      },
+      "exp-surf": {
+        "name": "Surffauselämys",
+        "desc": "Tunteja tai opastusta alueen parhailla aalloilla."
+      },
+      "exp-kitesurf": {
+        "name": "Leijalautailuelämys",
+        "desc": "Kertoja paikallisten ohjaajien kanssa, välineet mukana."
+      },
+      "exp-wine": {
+        "name": "Vinho Verde -viinikierros",
+        "desc": "Maisteluja ja kellarikäyntejä alueella."
+      },
+      "exp-heritage": {
+        "name": "Kulttuuri- ja perintökierros",
+        "desc": "Yksityisopas alueen historiaan."
+      }
+    }
   }
 }

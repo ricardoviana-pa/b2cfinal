@@ -1378,6 +1378,100 @@
     "priceGuaranteed": "Prix garanti jusqu'au {{date}}, {{time}}",
     "alreadyPaidTitle": "Cette réservation est déjà confirmée",
     "alreadyPaidBody": "Le paiement de ce séjour a été effectué. Consultez votre email ou votre réservation ci-dessous.",
-    "viewBooking": "Voir ma réservation"
+    "viewBooking": "Voir ma réservation",
+    "stepCustomize": "Personnaliser",
+    "customizeTitle": "Personnalisez votre séjour",
+    "customizeSubtitle": "Ajoutez des services et des expériences — ou continuez sans extras. Rien n'est présélectionné.",
+    "backToCustomize": "Retour à la personnalisation",
+    "continueWithExtras_one": "Continuer — {{count}} extra ajouté",
+    "continueWithExtras_other": "Continuer — {{count}} extras ajoutés",
+    "continueWithoutExtras": "Continuer sans extras",
+    "mostChosen": "Le plus choisi",
+    "confirm24h": "Confirmé sous 24h",
+    "onRequest": "Sur demande — aucun débit maintenant",
+    "onRequestShort": "sur demande",
+    "add": "Ajouter",
+    "added": "Ajouté",
+    "request": "Demander",
+    "perDay": "par jour",
+    "perPerson": "par personne",
+    "perTrip": "par trajet",
+    "perChange": "par change",
+    "perPersonSession": "par personne · séance",
+    "minPeople_one": "min. {{count}} personne",
+    "minPeople_other": "min. {{count}} personnes",
+    "daysLabel": "Jours",
+    "tripsLabel": "Trajets",
+    "qtyLabel": "Quantité",
+    "peopleLabel": "Personnes",
+    "sessionsLabel": "Séances",
+    "extrasSummary": "Extras — confirmés par votre concierge",
+    "extrasChargedLater": "Débités après confirmation du concierge — non inclus dans le paiement d'aujourd'hui.",
+    "extrasChargeNote": "Les extras sont confirmés par notre concierge et débités uniquement après confirmation — rien n'est débité pour eux aujourd'hui. Les demandes sur mesure sont devisées individuellement.",
+    "cat": {
+      "arrival": "Arrivée",
+      "home": "La maison",
+      "table": "La table",
+      "wellness": "Bien-être",
+      "experiences": "Expériences"
+    },
+    "extras": {
+      "late-checkin": {
+        "name": "Arrivée après 21h",
+        "desc": "Check-in en personne avec visite de la maison, hors horaires."
+      },
+      "transfer-porto": {
+        "name": "Transfert aéroport de Porto (jusqu'à 4)",
+        "desc": "Voiture privée, par trajet, jusqu'à 4 voyageurs."
+      },
+      "transfer-porto-van": {
+        "name": "Transfert aéroport — van (jusqu'à 8)",
+        "desc": "Van privé, par trajet, jusqu'à 8 voyageurs."
+      },
+      "daily-cleaning": {
+        "name": "Ménage quotidien",
+        "desc": "Ménage complet les jours de votre choix."
+      },
+      "linen-change": {
+        "name": "Change de linge et serviettes",
+        "desc": "Change complet du linge de lit et des serviettes."
+      },
+      "private-chef": {
+        "name": "Chef privé au dîner",
+        "desc": "Un chef cuisine chez vous — menu convenu avec le concierge."
+      },
+      "hamper-essentials": {
+        "name": "Panier de bienvenue — essentiels",
+        "desc": "L'essentiel à l'arrivée : petit-déjeuner, eau, fruits."
+      },
+      "hamper-gourmet": {
+        "name": "Panier de bienvenue — gourmet régional",
+        "desc": "Sélection de vins et spécialités de la région."
+      },
+      "grocery-list": {
+        "name": "Liste de courses personnalisée",
+        "desc": "Envoyez votre liste — le frigo est prêt avant votre arrivée."
+      },
+      "massage": {
+        "name": "Massage à domicile",
+        "desc": "Séance de 60 minutes à la maison, par personne."
+      },
+      "exp-surf": {
+        "name": "Expérience surf",
+        "desc": "Cours ou guiding sur les meilleures vagues de la région."
+      },
+      "exp-kitesurf": {
+        "name": "Expérience kitesurf",
+        "desc": "Séances avec moniteurs locaux, matériel inclus."
+      },
+      "exp-wine": {
+        "name": "Route du Vinho Verde",
+        "desc": "Dégustations et visites de caves de la région."
+      },
+      "exp-heritage": {
+        "name": "Patrimoine et culture",
+        "desc": "Guide privé à travers l'histoire de la région."
+      }
+    }
   }
 }
