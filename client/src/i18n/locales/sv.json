@@ -1426,11 +1426,11 @@
         "desc": "Personlig incheckning med husvisning, utanför ordinarie tider."
       },
       "transfer-porto": {
-        "name": "Flygplatstransfer Porto (upp till 4)",
+        "name": "Flygplatstransfer Porto",
         "desc": "Privatbil, per resa, upp till 4 gäster."
       },
       "transfer-porto-van": {
-        "name": "Flygplatstransfer — van (upp till 8)",
+        "name": "Flygplatstransfer Porto, van",
         "desc": "Privat van, per resa, upp till 8 gäster."
       },
       "daily-cleaning": {
@@ -1438,28 +1438,28 @@
         "desc": "Fullständig städning de dagar du väljer."
       },
       "linen-change": {
-        "name": "Byte av sängkläder och handdukar",
-        "desc": "Komplett byte av sängkläder och handdukar."
+        "name": "Byte av linne och handdukar",
+        "desc": "Komplett byte av sänglinne och handdukar."
       },
       "private-chef": {
         "name": "Privat kock till middag",
-        "desc": "En kock lagar mat hemma hos er — menyn bestäms med conciergen."
+        "desc": "En kock lagar mat hemma hos er, meny bestäms med conciergen."
       },
       "hamper-essentials": {
-        "name": "Välkomstkorg — basics",
+        "name": "Välkomstkorg, basics",
         "desc": "Det viktigaste vid ankomst: frukost, vatten, frukt."
       },
       "hamper-gourmet": {
-        "name": "Välkomstkorg — regional gourmet",
+        "name": "Välkomstkorg, regional gourmet",
         "desc": "Utvalda regionala viner och delikatesser."
       },
       "grocery-list": {
         "name": "Personlig inköpslista",
-        "desc": "Skicka din lista — kylskåpet är fyllt före ankomst."
+        "desc": "Skicka din lista, kylskåpet är fyllt före ankomst."
       },
       "massage": {
         "name": "Massage i huset",
-        "desc": "60-minuterssession i huset, per person."
+        "desc": "60 minuters session i huset, per person."
       },
       "exp-surf": {
         "name": "Surfupplevelse",
@@ -1476,6 +1476,46 @@
       "exp-heritage": {
         "name": "Kulturarvstur",
         "desc": "Privat guide genom regionens historia."
+      },
+      "babysitter": {
+        "name": "Barnvakt",
+        "desc": "Pålitlig barnpassning i huset, per timme."
+      },
+      "private-yoga": {
+        "name": "Privat yogasession",
+        "desc": "En session i huset med privat instruktör."
+      },
+      "personal-trainer": {
+        "name": "Personlig tränare",
+        "desc": "Ett träningspass i huset eller utomhus."
+      },
+      "exp-sup": {
+        "name": "Stand up paddle",
+        "desc": "På regionens lugna vatten, utrustning ingår."
+      },
+      "exp-hikedive": {
+        "name": "Vandra, dyk och ät",
+        "desc": "En dag mellan stigen, vattnet och bordet."
+      },
+      "exp-ebike": {
+        "name": "E bike tur",
+        "desc": "Landsbygden på elcykel, med guide."
+      },
+      "exp-horseback": {
+        "name": "Ridtur",
+        "desc": "Stigar till häst genom regionen."
+      },
+      "exp-canyoning": {
+        "name": "Canyoning",
+        "desc": "Nedstigningar genom floder och vattenfall med guide."
+      },
+      "exp-biketour": {
+        "name": "Stads och bergscykeltur",
+        "desc": "Två hjul, från staden till kullarna."
+      },
+      "exp-buggy": {
+        "name": "Can Am buggy-upplevelse",
+        "desc": "Offroad genom regionens leder."
       }
     },
     "emailTitle": "Vart skickar vi din bokning?",
@@ -1499,6 +1539,55 @@
       "rule5": "Tillval flyttar med när tjänsten tillåter det; annars omvandlas även deras belopp till tillgodohavande.",
       "rule6": "Flex kan endast köpas i kassan och återbetalas inte.",
       "honesty": "Avbokar du inom din taxas fria avbokningsfönster återbetalar vi dina pengar enligt policyn. Flex ersätter aldrig den rätten — det lägger till skydd bortom den."
+    },
+    "curatedFor": "Utvalt för {{property}}",
+    "todayTotal": "Totalt idag",
+    "conciergeRequests": "Concierge-förfrågningar",
+    "conciergeRequestsNote": "Offereras individuellt av din concierge, ingår inte i dagens betalning.",
+    "included": {
+      "title": "Ingår i din vistelse",
+      "badge": "Ingår",
+      "concierge": "En personlig concierge på WhatsApp",
+      "linen": "Hotellsänglinne och handdukar",
+      "welcome": "Välkomstpaket vid ankomst",
+      "bestRate": "Bästa pris garanterat"
+    },
+    "chapter": {
+      "arrival": {
+        "title": "Ankomsten",
+        "line": "Från flygplansdörren till husets dörr."
+      },
+      "home": {
+        "title": "Huset",
+        "line": "Hotellservice, varje dag du önskar."
+      },
+      "table": {
+        "title": "Bordet",
+        "line": "Minho lagar mat åt dig."
+      },
+      "wellness": {
+        "title": "Välmående",
+        "line": "Riktig vila."
+      },
+      "experiences": {
+        "title": "Upplevelser",
+        "line": "Regionen, med dem som känner den."
+      }
+    },
+    "reception": {
+      "prompt": "Hur vill du anlända? Välj ett alternativ för att fortsätta.",
+      "required": "Välj hur du vill anlända för att fortsätta.",
+      "arrivalWindow": "Ankomst:",
+      "beforeLate": "Före kl {{hour}}",
+      "afterLate": "Efter kl {{hour}}",
+      "self": {
+        "name": "Självincheckning",
+        "desc": "Självständig entré med kod, instruktioner skickade dagen innan, WhatsApp-support när som helst."
+      },
+      "hosted": {
+        "name": "Personlig mottagning",
+        "desc": "En värd tar emot dig, visar huset och får allt att fungera."
+      }
     }
   }
 }

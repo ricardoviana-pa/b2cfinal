@@ -442,6 +442,7 @@ ${allUrls.join("\n")}
           \`nif\` varchar(20),
           \`quote\` json,
           \`extras\` json,
+          \`reception\` json,
           \`flex\` boolean NOT NULL DEFAULT false,
           \`status\` enum('draft','contact_captured','payment_pending','paid','expired') NOT NULL DEFAULT 'draft',
           \`locale\` varchar(5),
@@ -455,6 +456,17 @@ ${allUrls.join("\n")}
           INDEX \`idx_booking_intents_email\` (\`email\`)
         )
       `);
+      // Fase 2 added the `reception` column — add it to tables created before
+      // that (CREATE TABLE IF NOT EXISTS above is a no-op on existing tables).
+      // A duplicate-column error just means it's already there.
+      try {
+        await (db as any).execute("ALTER TABLE `booking_intents` ADD COLUMN `reception` json");
+        console.info("[Migration] booking_intents.reception column added");
+      } catch (alterErr: any) {
+        if (!/duplicate column|exists/i.test(alterErr?.message || "")) {
+          console.warn("[Migration] booking_intents.reception:", alterErr.message);
+        }
+      }
       console.info("[Migration] booking_intents table OK");
     }
   } catch (migErr: any) {

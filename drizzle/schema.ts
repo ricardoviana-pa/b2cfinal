@@ -456,6 +456,8 @@ export const bookingIntents = mysqlTable("booking_intents", {
   }>(),
   /** Fase 2: extras selection (sku, qty, people, preferred dates) */
   extras: json("extras").$type<Array<Record<string, unknown>>>(),
+  /** Fase 2: mandatory reception choice (self included | hosted, with late flag) */
+  reception: json("reception").$type<{ type: "self" | "hosted"; late?: boolean }>(),
   /** Fase 3: Flex rebooking option */
   flex: boolean("flex").default(false).notNull(),
   status: mysqlEnum("status", [

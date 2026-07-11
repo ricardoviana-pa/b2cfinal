@@ -1426,11 +1426,11 @@
         "desc": "Persoonlijke check-in met rondleiding, buiten de normale uren."
       },
       "transfer-porto": {
-        "name": "Luchthaventransfer Porto (tot 4)",
+        "name": "Luchthaventransfer Porto",
         "desc": "Privéauto, per rit, tot 4 gasten."
       },
       "transfer-porto-van": {
-        "name": "Luchthaventransfer — van (tot 8)",
+        "name": "Luchthaventransfer Porto, van",
         "desc": "Privévan, per rit, tot 8 gasten."
       },
       "daily-cleaning": {
@@ -1438,24 +1438,24 @@
         "desc": "Volledige schoonmaak op de dagen die u kiest."
       },
       "linen-change": {
-        "name": "Linnen- en handdoekenwissel",
+        "name": "Linnen en handdoekenwissel",
         "desc": "Complete wissel van beddengoed en handdoeken."
       },
       "private-chef": {
         "name": "Privéchef bij het diner",
-        "desc": "Een chef kookt bij u thuis — menu afgestemd met de concierge."
+        "desc": "Een chef kookt bij u thuis, menu afgestemd met de concierge."
       },
       "hamper-essentials": {
-        "name": "Welkomstmand — essentials",
+        "name": "Welkomstmand, essentials",
         "desc": "De basis bij aankomst: ontbijt, water, fruit."
       },
       "hamper-gourmet": {
-        "name": "Welkomstmand — regionale gourmet",
-        "desc": "Gecureerde selectie regionale wijnen en delicatessen."
+        "name": "Welkomstmand, regionale gourmet",
+        "desc": "Selectie van regionale wijnen en delicatessen."
       },
       "grocery-list": {
         "name": "Persoonlijke boodschappenlijst",
-        "desc": "Stuur uw lijst — de koelkast is gevuld vóór aankomst."
+        "desc": "Stuur uw lijst, de koelkast is gevuld voor aankomst."
       },
       "massage": {
         "name": "Massage aan huis",
@@ -1476,6 +1476,46 @@
       "exp-heritage": {
         "name": "Erfgoed & cultuur",
         "desc": "Privégids door de geschiedenis van de regio."
+      },
+      "babysitter": {
+        "name": "Oppas",
+        "desc": "Betrouwbare kinderopvang in het huis, per uur."
+      },
+      "private-yoga": {
+        "name": "Privé yogasessie",
+        "desc": "Een sessie in huis met een privé-instructeur."
+      },
+      "personal-trainer": {
+        "name": "Personal trainer",
+        "desc": "Een trainingssessie in huis of buiten."
+      },
+      "exp-sup": {
+        "name": "Stand up paddle",
+        "desc": "Op de kalme wateren van de regio, uitrusting inbegrepen."
+      },
+      "exp-hikedive": {
+        "name": "Wandelen, duiken en tafelen",
+        "desc": "Een dag tussen het pad, het water en de tafel."
+      },
+      "exp-ebike": {
+        "name": "E bike tour",
+        "desc": "Het platteland op een elektrische fiets, met gids."
+      },
+      "exp-horseback": {
+        "name": "Paardrijden",
+        "desc": "Ruiterpaden door de regio."
+      },
+      "exp-canyoning": {
+        "name": "Canyoning",
+        "desc": "Afdalingen door rivieren en watervallen met gids."
+      },
+      "exp-biketour": {
+        "name": "Stad en berg fietstocht",
+        "desc": "Twee wielen, van de stad naar de heuvels."
+      },
+      "exp-buggy": {
+        "name": "Can Am buggy ervaring",
+        "desc": "Offroad over de paden van de regio."
       }
     },
     "emailTitle": "Waar sturen we uw boeking naartoe?",
@@ -1499,6 +1539,55 @@
       "rule5": "Extra's verhuizen mee wanneer de service het toelaat; anders wordt hun bedrag ook tegoed.",
       "rule6": "Flex is alleen bij het afrekenen verkrijgbaar en niet restitueerbaar.",
       "honesty": "Annuleert u binnen het gratis annuleringsvenster van uw tarief, dan betalen we uw geld terug volgens het beleid. Flex vervangt dat recht nooit — het voegt bescherming toe daarbuiten."
+    },
+    "curatedFor": "Geselecteerd voor {{property}}",
+    "todayTotal": "Totaal vandaag",
+    "conciergeRequests": "Concierge-verzoeken",
+    "conciergeRequestsNote": "Individueel geoffreerd door uw concierge, geen deel van de betaling van vandaag.",
+    "included": {
+      "title": "Inbegrepen in uw verblijf",
+      "badge": "Inbegrepen",
+      "concierge": "Een persoonlijke concierge op WhatsApp",
+      "linen": "Hotelbeddengoed en handdoeken",
+      "welcome": "Welkomstpakket bij aankomst",
+      "bestRate": "Beste prijs gegarandeerd"
+    },
+    "chapter": {
+      "arrival": {
+        "title": "De aankomst",
+        "line": "Van de vliegtuigdeur tot de deur van het huis."
+      },
+      "home": {
+        "title": "Het huis",
+        "line": "Hotelservice, elke dag die u wenst."
+      },
+      "table": {
+        "title": "De tafel",
+        "line": "De Minho kookt voor u."
+      },
+      "wellness": {
+        "title": "Welzijn",
+        "line": "Echte rust."
+      },
+      "experiences": {
+        "title": "Ervaringen",
+        "line": "De regio, met wie haar kent."
+      }
+    },
+    "reception": {
+      "prompt": "Hoe wilt u aankomen? Kies een optie om door te gaan.",
+      "required": "Kies hoe u wilt aankomen om door te gaan.",
+      "arrivalWindow": "Aankomst:",
+      "beforeLate": "Voor {{hour}}u",
+      "afterLate": "Na {{hour}}u",
+      "self": {
+        "name": "Self check in",
+        "desc": "Zelfstandige toegang met code, instructies de dag ervoor verzonden, WhatsApp-ondersteuning op elk moment."
+      },
+      "hosted": {
+        "name": "Persoonlijke ontvangst",
+        "desc": "Een gastheer verwelkomt u, geeft een rondleiding en zet alles klaar."
+      }
     }
   }
 }

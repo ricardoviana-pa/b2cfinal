@@ -1426,11 +1426,11 @@
         "desc": "Check-in di persona con tour della casa, fuori orario."
       },
       "transfer-porto": {
-        "name": "Transfer aeroporto di Porto (fino a 4)",
+        "name": "Transfer aeroporto di Porto",
         "desc": "Auto privata, a tratta, fino a 4 ospiti."
       },
       "transfer-porto-van": {
-        "name": "Transfer aeroporto — van (fino a 8)",
+        "name": "Transfer aeroporto di Porto, van",
         "desc": "Van privato, a tratta, fino a 8 ospiti."
       },
       "daily-cleaning": {
@@ -1443,19 +1443,19 @@
       },
       "private-chef": {
         "name": "Chef privato a cena",
-        "desc": "Uno chef cucina a casa tua — menu concordato con il concierge."
+        "desc": "Uno chef cucina a casa tua, menu concordato con il concierge."
       },
       "hamper-essentials": {
-        "name": "Cesto di benvenuto — essenziali",
+        "name": "Cesto di benvenuto, essenziali",
         "desc": "L'essenziale all'arrivo: colazione, acqua, frutta."
       },
       "hamper-gourmet": {
-        "name": "Cesto di benvenuto — gourmet regionale",
-        "desc": "Selezione curata di vini e specialità della regione."
+        "name": "Cesto di benvenuto, gourmet regionale",
+        "desc": "Selezione di vini e specialità della regione."
       },
       "grocery-list": {
         "name": "Lista della spesa personalizzata",
-        "desc": "Invia la tua lista — il frigo è pronto prima del tuo arrivo."
+        "desc": "Invia la tua lista, il frigo è pronto prima del tuo arrivo."
       },
       "massage": {
         "name": "Massaggio a domicilio",
@@ -1476,6 +1476,46 @@
       "exp-heritage": {
         "name": "Patrimonio e cultura",
         "desc": "Guida privata nella storia della regione."
+      },
+      "babysitter": {
+        "name": "Babysitter",
+        "desc": "Assistenza ai bambini di fiducia in casa, a ore."
+      },
+      "private-yoga": {
+        "name": "Sessione di yoga privata",
+        "desc": "Una sessione in casa con istruttore privato."
+      },
+      "personal-trainer": {
+        "name": "Personal trainer",
+        "desc": "Una sessione di allenamento in casa o all'aperto."
+      },
+      "exp-sup": {
+        "name": "Stand up paddle",
+        "desc": "Sulle acque calme della regione, attrezzatura inclusa."
+      },
+      "exp-hikedive": {
+        "name": "Cammino, tuffo e tavola",
+        "desc": "Una giornata tra il sentiero, l'acqua e la tavola."
+      },
+      "exp-ebike": {
+        "name": "Giro in e bike",
+        "desc": "La campagna in bici elettrica, con guida."
+      },
+      "exp-horseback": {
+        "name": "Passeggiata a cavallo",
+        "desc": "Sentieri a cavallo per la regione."
+      },
+      "exp-canyoning": {
+        "name": "Canyoning",
+        "desc": "Discese tra fiumi e cascate con guida."
+      },
+      "exp-biketour": {
+        "name": "Giro in bici, città e montagna",
+        "desc": "Due ruote, dalla città alle colline."
+      },
+      "exp-buggy": {
+        "name": "Esperienza buggy Can Am",
+        "desc": "Fuoristrada per i sentieri della regione."
       }
     },
     "emailTitle": "Dove inviamo la tua prenotazione?",
@@ -1499,6 +1539,55 @@
       "rule5": "Gli extra si spostano con la prenotazione quando il servizio lo consente; altrimenti il loro importo si converte anch'esso in credito.",
       "rule6": "Flex si acquista solo al momento del pagamento e non è rimborsabile.",
       "honesty": "Se cancelli entro la finestra di cancellazione gratuita della tua tariffa, ti rimborsiamo secondo la politica. Flex non sostituisce mai quel diritto — aggiunge protezione oltre di esso."
+    },
+    "curatedFor": "Selezionato per {{property}}",
+    "todayTotal": "Totale di oggi",
+    "conciergeRequests": "Richieste al concierge",
+    "conciergeRequestsNote": "Preventivate singolarmente dal tuo concierge, fuori dal pagamento di oggi.",
+    "included": {
+      "title": "Incluso nel tuo soggiorno",
+      "badge": "Incluso",
+      "concierge": "Un concierge dedicato su WhatsApp",
+      "linen": "Biancheria e asciugamani da hotel",
+      "welcome": "Welcome pack all'arrivo",
+      "bestRate": "Miglior prezzo garantito"
+    },
+    "chapter": {
+      "arrival": {
+        "title": "L'arrivo",
+        "line": "Dalla porta dell'aereo alla porta della casa."
+      },
+      "home": {
+        "title": "La casa",
+        "line": "Il servizio d'hotel, ogni giorno che vuoi."
+      },
+      "table": {
+        "title": "La tavola",
+        "line": "Il Minho cucina per te."
+      },
+      "wellness": {
+        "title": "Benessere",
+        "line": "Riposo vero."
+      },
+      "experiences": {
+        "title": "Esperienze",
+        "line": "La regione, con chi la conosce."
+      }
+    },
+    "reception": {
+      "prompt": "Come preferisci arrivare? Scegli un'opzione per continuare.",
+      "required": "Scegli come preferisci arrivare per continuare.",
+      "arrivalWindow": "Arrivo:",
+      "beforeLate": "Prima delle {{hour}}",
+      "afterLate": "Dopo le {{hour}}",
+      "self": {
+        "name": "Check in autonomo",
+        "desc": "Ingresso autonomo con codice, istruzioni inviate il giorno prima, supporto WhatsApp a qualsiasi ora."
+      },
+      "hosted": {
+        "name": "Accoglienza in persona",
+        "desc": "Un host ti accoglie, mostra la casa e mette tutto in funzione."
+      }
     }
   }
 }

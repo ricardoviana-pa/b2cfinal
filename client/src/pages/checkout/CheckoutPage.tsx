@@ -38,7 +38,14 @@ import { isValidEmail, isValidPhone } from "@/lib/validation";
 import { pushDL, pushEcommerce } from "@/lib/datalayer";
 import { stashThankYou } from "@/lib/booking-api";
 import AvailabilityCalendar, { type AvailabilityDay } from "@/components/booking/AvailabilityCalendar";
-import CustomizeStep, { extraAmount, type CatalogExtra, type ExtraSelection } from "./CustomizeStep";
+import CustomizeStep, {
+  extraAmount,
+  receptionAmount,
+  type CatalogExtra,
+  type ExtraSelection,
+  type ReceptionConfig,
+  type ReceptionChoice,
+} from "./CustomizeStep";
 import FlexBlock, { type FlexConfig } from "./FlexBlock";
 import CheckoutPaymentForm from "@/components/booking/CheckoutPaymentForm";
 import PhoneInput from "@/components/booking/PhoneInput";
@@ -111,6 +118,7 @@ function buildDemoIntent(): any {
       ],
     },
     extras: [],
+    reception: null,
     flex: false,
     status: "draft",
     locale: null,
@@ -214,6 +222,7 @@ export default function CheckoutPage() {
   const contactFiredRef = useRef(false);
   const [extraSel, setExtraSel] = useState<Record<string, ExtraSelection>>({});
   const [flexSelected, setFlexSelected] = useState(false);
+  const [receptionChoice, setReceptionChoice] = useState<ReceptionChoice>(null);
 
   // The global CookieBanner (fixed bottom, z-60) legally must stay on top; while
   // consent is pending we lift the checkout's own bottom bar above it so the
@@ -252,6 +261,7 @@ export default function CheckoutPage() {
     } catch { /* storage unavailable */ }
     if (intent.email) contactFiredRef.current = true;
     if (intent.flex) setFlexSelected(true);
+    if (intent.reception?.type) setReceptionChoice(intent.reception as ReceptionChoice);
     if (Array.isArray(intent.extras)) {
       const seeded: Record<string, ExtraSelection> = {};
       for (const e of intent.extras as Array<Record<string, unknown>>) {
@@ -299,13 +309,21 @@ export default function CheckoutPage() {
     };
   }, [quote, selectedRatePlanId]);
 
-  // ── Extras catalog (Fase 2 — Personalizar) ──
-  const extrasQuery = trpc.checkout.getExtras.useQuery(undefined, { staleTime: 60 * 60 * 1000 });
+  // ── Extras catalog (Fase 2 — Personalizar), curado no servidor pelo contexto ──
+  const checkInMonth = checkIn ? Number(checkIn.slice(5, 7)) : undefined;
+  const extrasQuery = trpc.checkout.getExtras.useQuery(
+    {
+      destination: intent?.destination ?? undefined,
+      nights: quote?.nights ?? 1,
+      guests,
+      month: checkInMonth,
+    },
+    { staleTime: 30 * 60 * 1000, enabled: !!intent },
+  );
   const catalog: CatalogExtra[] = (extrasQuery.data?.extras as CatalogExtra[]) ?? [];
   const flexConfig: FlexConfig | null = (extrasQuery.data as any)?.flex ?? null;
-
-  // Animated money totals (spec §9)
-  const animatedTotal = useCountUp(effective?.total ?? 0);
+  const receptionConfig: ReceptionConfig | null = (extrasQuery.data as any)?.reception ?? null;
+  const includedKeys: string[] = (extrasQuery.data as any)?.included ?? [];
 
   // ── Property (photo + slug for the back link) ──
   const propertyQuery = trpc.properties.getBySlugForSite.useQuery(
@@ -408,7 +426,25 @@ export default function CheckoutPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [intent, email, lang, captureLead, utils, isDemo]);
 
-  // ── Extras handlers (Fase 2) ──
+  // ── Reception: mandatory choice (§5.2). Persisted on the intent. ──
+  const chooseReception = useCallback(
+    (choice: ReceptionChoice) => {
+      setReceptionChoice(choice);
+      syncIntent({ reception: choice });
+      if (choice && !isDemo) {
+        pushDL({
+          event: "reception_selected",
+          reception_type: choice.type,
+          reception_late: !!choice.late,
+          property_id: intent?.listingId,
+        });
+      }
+    },
+    [syncIntent, isDemo, intent?.listingId],
+  );
+
+  // ── Extras handlers (Fase 2). Stepper defaults come from the server curation
+  //    (suggestedDays/suggestedQty) — the "stepper certo à partida" of §5.3. ──
   const toggleExtra = useCallback(
     (item: CatalogExtra) => {
       setExtraSel((prev) => {
@@ -417,13 +453,13 @@ export default function CheckoutPage() {
         if (adding) {
           next[item.sku] =
             item.pricingModel === "per_day"
-              ? { days: Math.max(1, quote?.nights ?? 1) }
+              ? { days: item.suggestedDays ?? Math.max(1, quote?.nights ?? 1) }
               : item.pricingModel === "per_person"
                 ? { people: Math.max(item.minPeople ?? 1, Math.min(guests, 30)) }
                 : item.pricingModel === "per_person_per_unit"
                   ? { people: 1, sessions: 1 }
                   : item.pricingModel === "per_unit"
-                    ? { qty: item.minQty ?? 1 }
+                    ? { qty: item.suggestedQty ?? item.minQty ?? 1 }
                     : {};
         } else {
           delete next[item.sku];
@@ -435,7 +471,7 @@ export default function CheckoutPage() {
           ecommerce: {
             currency: "EUR",
             value: amount ?? 0,
-            items: [{ item_id: item.sku, item_name: item.sku, item_category: "extra", item_category2: item.category, price: item.unitPrice ?? 0, quantity: 1 }],
+            items: [{ item_id: item.sku, item_name: item.sku, item_category: "extra", item_category2: item.chapter, price: item.unitPrice ?? 0, quantity: 1 }],
           },
         });
         return next;
@@ -456,10 +492,17 @@ export default function CheckoutPage() {
       })
       .filter(Boolean) as Array<{ item: CatalogExtra; sel: ExtraSelection; amount: number | null }>;
   }, [extraSel, catalog]);
-  const extrasTotal = useMemo(
-    () => selectedExtras.reduce((sum, e) => sum + (e.amount ?? 0), 0),
-    [selectedExtras],
-  );
+  // Priced add-ons enter today's total; on-request items go to "Pedidos ao
+  // concierge" without a value (§7).
+  const paidExtras = useMemo(() => selectedExtras.filter((e) => e.amount != null), [selectedExtras]);
+  const requestExtras = useMemo(() => selectedExtras.filter((e) => e.amount == null), [selectedExtras]);
+  const extrasTotal = useMemo(() => paidExtras.reduce((sum, e) => sum + (e.amount ?? 0), 0), [paidExtras]);
+
+  const receptionAmt = receptionConfig ? receptionAmount(receptionConfig, receptionChoice) : 0;
+  const flexPrice = flexSelected && flexConfig ? flexConfig.price : 0;
+  // Total de hoje: tudo o que tem preço fixo num só número (§7)
+  const todayTotal = (effective?.total ?? 0) + receptionAmt + extrasTotal + flexPrice;
+  const animatedTotal = useCountUp(todayTotal);
 
   // Flex contextual copy inputs: which rate family is selected + the concrete
   // free-cancellation date of the CURRENT selection (coherence with the policy)
@@ -470,12 +513,13 @@ export default function CheckoutPage() {
     checkIn,
   );
 
-  /** Customize → Pay: persist the selection and flip the intent to payment_pending */
+  /** Customize → Pay: reception is mandatory (§5.2); persist everything. */
   const continueToPay = useCallback(() => {
-    if (!intent) return;
+    if (!intent || !receptionChoice) return;
     syncIntent({
       status: "payment_pending",
       flex: flexSelected,
+      reception: receptionChoice,
       extras: selectedExtras.map(({ item, sel, amount }) => ({
         sku: item.sku,
         qty: sel.qty,
@@ -488,26 +532,36 @@ export default function CheckoutPage() {
     });
     setStep("pay");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [intent, selectedExtras, flexSelected, syncIntent]);
+  }, [intent, receptionChoice, selectedExtras, flexSelected, syncIntent]);
 
   /** Ops manifest (PT, staff-facing) appended to the Guesty reservation notes —
    *  same pattern the legacy widget uses, so operations see the requests. */
   const extrasNote = useMemo(() => {
-    if (!selectedExtras.length) return "";
-    const lines = selectedExtras.map(({ item, sel, amount }) => {
-      const parts = [
-        `- ${item.sku}`,
-        sel.qty ? `x${sel.qty}` : "",
-        sel.days ? `${sel.days} dias` : "",
-        sel.people ? `${sel.people} pessoas` : "",
-        sel.sessions ? `${sel.sessions} sessões` : "",
-        amount != null ? `≈ ${amount} EUR` : "(sob pedido)",
-        item.fulfillment === "needs_confirmation" ? "[CONFIRMAR 24H]" : "",
-      ].filter(Boolean);
-      return parts.join(" ");
-    });
-    return `\n\n⚠️ EXTRAS PEDIDOS NO CHECKOUT (confirmar e cobrar após confirmação):\n${lines.join("\n")}`;
-  }, [selectedExtras]);
+    const blocks: string[] = [];
+    if (receptionChoice) {
+      blocks.push(
+        receptionChoice.type === "hosted"
+          ? `\n\n✔ RECEÇÃO: presencial${receptionChoice.late ? ` (após as ${receptionConfig?.lateFromHour ?? 21}h, ${receptionConfig?.hostedLatePrice ?? 90} EUR)` : ` (${receptionConfig?.hostedPrice ?? 50} EUR)`}`
+          : `\n\n✔ RECEÇÃO: self check-in (incluído)`,
+      );
+    }
+    if (selectedExtras.length) {
+      const lines = selectedExtras.map(({ item, sel, amount }) => {
+        const parts = [
+          `- ${item.sku}`,
+          sel.qty ? `x${sel.qty}` : "",
+          sel.days ? `${sel.days} dias` : "",
+          sel.people ? `${sel.people} pessoas` : "",
+          sel.sessions ? `${sel.sessions} sessoes` : "",
+          amount != null ? `≈ ${amount} EUR` : "(sob pedido)",
+          item.fulfillment === "needs_confirmation" ? "[CONFIRMAR 24H]" : "",
+        ].filter(Boolean);
+        return parts.join(" ");
+      });
+      blocks.push(`\n\n⚠️ EXTRAS PEDIDOS NO CHECKOUT:\n${lines.join("\n")}`);
+    }
+    return blocks.join("");
+  }, [receptionChoice, receptionConfig, selectedExtras]);
 
   // Persist guest details when they become valid (debounced-ish: on blur via effect)
   const guestDetailsValid =
@@ -636,6 +690,9 @@ export default function CheckoutPage() {
     );
   }
 
+  // Resumo com hierarquia única (§7/§8): Estadia · Receção · Extras · Flex ·
+  // Total de hoje. Tudo o que tem preço fixo entra no total; os pedidos sob
+  // orçamento vivem numa secção própria (renderizada no summaryCard).
   const summaryLines = effective && (
     <div className="space-y-2">
       <div className="flex justify-between text-[13px]">
@@ -656,10 +713,53 @@ export default function CheckoutPage() {
           <span className="text-pa-dark tabular-nums">{formatEur(effective.taxesAndFees, lang)}</span>
         </div>
       )}
+      {/* Receção (escolha obrigatória) */}
+      {receptionChoice && (
+        <div className="flex justify-between text-[13px] checkout-row-in">
+          <span className="text-pa-earth">
+            {receptionChoice.type === "hosted" ? t("checkout.reception.hosted.name") : t("checkout.reception.self.name")}
+          </span>
+          <span className={cn("tabular-nums", receptionAmt > 0 ? "text-pa-dark" : "text-pa-gold")}>
+            {receptionAmt > 0 ? formatEur(receptionAmt, lang) : t("checkout.included.badge")}
+          </span>
+        </div>
+      )}
+      {/* Extras com preço fixo */}
+      {paidExtras.map(({ item, amount }) => (
+        <div key={item.sku} className="flex justify-between text-[13px] checkout-row-in">
+          <span className="text-pa-earth">{t(`checkout.extras.${item.sku}.name`)}</span>
+          <span className="text-pa-dark tabular-nums">{formatEur(amount!, lang)}</span>
+        </div>
+      ))}
+      {/* Flex */}
+      {flexSelected && flexConfig && (
+        <div className="flex justify-between text-[13px] checkout-row-in">
+          <span className="text-pa-gold font-medium">{t("checkout.flex.title", "Flex — guaranteed rebooking")}</span>
+          <span className="text-pa-dark tabular-nums">{formatEur(flexConfig.price, lang)}</span>
+        </div>
+      )}
       <div className="flex justify-between items-baseline border-t border-pa-sand pt-2.5">
-        <span className="text-[14px] font-medium text-pa-dark">{t("property.total")}</span>
+        <span className="text-[14px] font-medium text-pa-dark">{t("checkout.todayTotal", "Total today")}</span>
         <span className="text-[20px] font-light text-pa-dark tabular-nums">{formatEur(animatedTotal, lang)}</span>
       </div>
+    </div>
+  );
+
+  // "Pedidos ao concierge" — itens sob orçamento, sem valores somados (§7/§8)
+  const conciergeRequests = requestExtras.length > 0 && (
+    <div className="border-t border-pa-sand pt-3 space-y-1.5">
+      <p className="text-[10px] tracking-[0.12em] uppercase text-pa-stone-aa">
+        {t("checkout.conciergeRequests", "Concierge requests")}
+      </p>
+      {requestExtras.map(({ item }) => (
+        <div key={item.sku} className="flex justify-between text-[12.5px]">
+          <span className="text-pa-earth">{t(`checkout.extras.${item.sku}.name`)}</span>
+          <span className="text-pa-stone-aa">{t("checkout.onRequestShort", "on request")}</span>
+        </div>
+      ))}
+      <p className="text-[10.5px] text-pa-stone-aa leading-snug pt-0.5">
+        {t("checkout.conciergeRequestsNote", "Quoted individually by your concierge — not part of today's payment.")}
+      </p>
     </div>
   );
 
@@ -677,32 +777,7 @@ export default function CheckoutPage() {
           {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)} · {guests} {t("booking.guestsLabel", "guests")}
         </div>
         {summaryLines}
-        {flexSelected && flexConfig && (
-          <div className="border-t border-pa-sand pt-3 flex justify-between text-[12.5px] checkout-row-in">
-            <span className="text-pa-gold font-medium">{t("checkout.flex.title", "Flex — guaranteed rebooking")}</span>
-            <span className="text-pa-dark tabular-nums">{formatEur(flexConfig.price, lang)}</span>
-          </div>
-        )}
-        {selectedExtras.length > 0 && (
-          <div className="border-t border-pa-sand pt-3 space-y-1.5">
-            <p className="text-[10px] tracking-[0.12em] uppercase text-pa-stone-aa">
-              {t("checkout.extrasSummary", "Extras — confirmed by your concierge")}
-            </p>
-            {selectedExtras.map(({ item, amount }) => (
-              <div key={item.sku} className="flex justify-between text-[12.5px] checkout-row-in">
-                <span className="text-pa-earth">{t(`checkout.extras.${item.sku}.name`)}</span>
-                <span className="text-pa-dark tabular-nums">
-                  {amount != null ? formatEur(amount, lang) : t("checkout.onRequestShort", "on request")}
-                </span>
-              </div>
-            ))}
-            {(extrasTotal > 0 || flexSelected) && (
-              <p className="text-[10.5px] text-pa-stone-aa leading-snug pt-0.5">
-                {t("checkout.extrasChargedLater", "Charged after concierge confirmation — not included in today's payment.")}
-              </p>
-            )}
-          </div>
-        )}
+        {conciergeRequests}
         {effective?.cancellationPolicy?.[0] && (
           <p className="text-[11px] text-pa-stone-aa leading-snug">
             {cancellationPolicyText(effective.cancellationPolicy[0], checkIn, t, lang)}
@@ -1032,12 +1107,17 @@ export default function CheckoutPage() {
               ) : (
                 <CustomizeStep
                   catalog={catalog}
+                  included={includedKeys}
+                  reception={receptionConfig}
+                  receptionChoice={receptionChoice}
                   selection={extraSel}
                   nights={quote?.nights ?? 1}
                   guests={guests}
+                  propertyName={displayName}
                   lang={lang}
                   onToggle={toggleExtra}
                   onAdjust={adjustExtra}
+                  onChooseReception={chooseReception}
                 />
               )}
               {/* Flex closes the Personalizar step (spec §5/§6) — protection, not a service */}
@@ -1057,7 +1137,16 @@ export default function CheckoutPage() {
                   }}
                 />
               )}
-              <button type="button" onClick={continueToPay} className="btn-primary w-full">
+              {/* Reception is a mandatory choice (§5.2) — block continue until made */}
+              {!receptionChoice && (
+                <p className="text-[12px] text-pa-earth text-center">{t("checkout.reception.required")}</p>
+              )}
+              <button
+                type="button"
+                onClick={continueToPay}
+                disabled={!receptionChoice}
+                className="btn-primary w-full disabled:opacity-40"
+              >
                 {selectedExtras.length > 0
                   ? t("checkout.continueWithExtras", { count: selectedExtras.length })
                   : t("checkout.continueWithoutExtras", "Continue without extras")}
@@ -1231,27 +1320,7 @@ export default function CheckoutPage() {
               </div>
             </div>
             {summaryLines}
-            {flexSelected && flexConfig && (
-              <div className="border-t border-pa-sand pt-3 flex justify-between text-[12.5px]">
-                <span className="text-pa-gold font-medium">{t("checkout.flex.title", "Flex — guaranteed rebooking")}</span>
-                <span className="text-pa-dark tabular-nums">{formatEur(flexConfig.price, lang)}</span>
-              </div>
-            )}
-            {selectedExtras.length > 0 && (
-              <div className="border-t border-pa-sand pt-3 space-y-1.5">
-                <p className="text-[10px] tracking-[0.12em] uppercase text-pa-stone-aa">
-                  {t("checkout.extrasSummary", "Extras — confirmed by your concierge")}
-                </p>
-                {selectedExtras.map(({ item, amount }) => (
-                  <div key={item.sku} className="flex justify-between text-[12.5px]">
-                    <span className="text-pa-earth">{t(`checkout.extras.${item.sku}.name`)}</span>
-                    <span className="text-pa-dark tabular-nums">
-                      {amount != null ? formatEur(amount, lang) : t("checkout.onRequestShort", "on request")}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
+            {conciergeRequests}
             {guaranteeLabel && (
               <p className="flex items-start gap-1.5 text-[11px] text-pa-gold leading-snug">
                 <Clock3 className="w-3 h-3 shrink-0 mt-[1px]" /> {guaranteeLabel}

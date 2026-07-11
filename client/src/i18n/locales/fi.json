@@ -1426,11 +1426,11 @@
         "desc": "Henkilökohtainen sisäänkirjautuminen ja talon esittely, normaaliaikojen ulkopuolella."
       },
       "transfer-porto": {
-        "name": "Lentokenttäkuljetus Porto (enint. 4)",
+        "name": "Lentokenttäkuljetus Porto",
         "desc": "Yksityisauto, per matka, enintään 4 vierasta."
       },
       "transfer-porto-van": {
-        "name": "Lentokenttäkuljetus — tila-auto (enint. 8)",
+        "name": "Lentokenttäkuljetus Porto, tila-auto",
         "desc": "Yksityinen tila-auto, per matka, enintään 8 vierasta."
       },
       "daily-cleaning": {
@@ -1443,19 +1443,19 @@
       },
       "private-chef": {
         "name": "Yksityiskokki illalliselle",
-        "desc": "Kokki valmistaa aterian kotonasi — menu sovitaan conciergen kanssa."
+        "desc": "Kokki valmistaa aterian kotonasi, menu sovitaan conciergen kanssa."
       },
       "hamper-essentials": {
-        "name": "Tervetuliaiskori — perus",
+        "name": "Tervetuliaiskori, perus",
         "desc": "Perusasiat saapuessa: aamiainen, vesi, hedelmät."
       },
       "hamper-gourmet": {
-        "name": "Tervetuliaiskori — alueen gourmet",
+        "name": "Tervetuliaiskori, alueen gourmet",
         "desc": "Valikoima alueen viinejä ja herkkuja."
       },
       "grocery-list": {
         "name": "Henkilökohtainen ostoslista",
-        "desc": "Lähetä listasi — jääkaappi on täytetty ennen saapumistasi."
+        "desc": "Lähetä listasi, jääkaappi on täytetty ennen saapumistasi."
       },
       "massage": {
         "name": "Hieronta talossa",
@@ -1476,6 +1476,46 @@
       "exp-heritage": {
         "name": "Kulttuuri- ja perintökierros",
         "desc": "Yksityisopas alueen historiaan."
+      },
+      "babysitter": {
+        "name": "Lastenhoitaja",
+        "desc": "Luotettava lastenhoito talossa, tunneittain."
+      },
+      "private-yoga": {
+        "name": "Yksityinen joogatunti",
+        "desc": "Tunti talossa yksityisen ohjaajan kanssa."
+      },
+      "personal-trainer": {
+        "name": "Personal trainer",
+        "desc": "Harjoitus talossa tai ulkona."
+      },
+      "exp-sup": {
+        "name": "Stand up paddle",
+        "desc": "Alueen tyynillä vesillä, välineet mukana."
+      },
+      "exp-hikedive": {
+        "name": "Vaellus, sukellus ja pöytä",
+        "desc": "Päivä polun, veden ja pöydän välillä."
+      },
+      "exp-ebike": {
+        "name": "Sähköpyöräretki",
+        "desc": "Maaseutu sähköpyörällä, oppaan kanssa."
+      },
+      "exp-horseback": {
+        "name": "Ratsastus",
+        "desc": "Polkuja hevosella alueen halki."
+      },
+      "exp-canyoning": {
+        "name": "Koskenlasku",
+        "desc": "Laskeutumisia jokia ja vesiputouksia pitkin oppaan kanssa."
+      },
+      "exp-biketour": {
+        "name": "Kaupunki ja vuoristopyöräretki",
+        "desc": "Kaksi pyörää, kaupungista kukkuloille."
+      },
+      "exp-buggy": {
+        "name": "Can Am buggy-elämys",
+        "desc": "Maastossa alueen reittejä pitkin."
       }
     },
     "emailTitle": "Minne lähetämme varauksesi?",
@@ -1499,6 +1539,55 @@
       "rule5": "Lisäpalvelut siirtyvät mukana aina kun palvelu sen sallii; muuten niidenkin summa muuttuu hyvitykseksi.",
       "rule6": "Flex on ostettavissa vain kassalla, eikä sitä hyvitetä.",
       "honesty": "Jos peruutat hintasi maksuttoman peruutusikkunan sisällä, palautamme rahasi käytännön mukaisesti. Flex ei koskaan korvaa tätä oikeutta — se lisää suojaa sen yli."
+    },
+    "curatedFor": "Valittu kohteelle {{property}}",
+    "todayTotal": "Yhteensä tänään",
+    "conciergeRequests": "Concierge-pyynnöt",
+    "conciergeRequestsNote": "Conciergesi hinnoittelee erikseen, ei sisälly tämän päivän maksuun.",
+    "included": {
+      "title": "Sisältyy majoitukseesi",
+      "badge": "Sisältyy",
+      "concierge": "Oma concierge WhatsAppissa",
+      "linen": "Hotellin liinavaatteet ja pyyhkeet",
+      "welcome": "Tervetuliaispaketti saapuessa",
+      "bestRate": "Paras hinta taattu"
+    },
+    "chapter": {
+      "arrival": {
+        "title": "Saapuminen",
+        "line": "Lentokoneen ovelta talon ovelle."
+      },
+      "home": {
+        "title": "Talo",
+        "line": "Hotellipalvelua, jokaisena haluamanasi päivänä."
+      },
+      "table": {
+        "title": "Pöytä",
+        "line": "Minho kokkaa sinulle."
+      },
+      "wellness": {
+        "title": "Hyvinvointi",
+        "line": "Aitoa lepoa."
+      },
+      "experiences": {
+        "title": "Elämykset",
+        "line": "Alue, niiden kanssa jotka sen tuntevat."
+      }
+    },
+    "reception": {
+      "prompt": "Miten haluat saapua? Valitse vaihtoehto jatkaaksesi.",
+      "required": "Valitse miten haluat saapua jatkaaksesi.",
+      "arrivalWindow": "Saapuminen:",
+      "beforeLate": "Ennen klo {{hour}}",
+      "afterLate": "Klo {{hour}} jälkeen",
+      "self": {
+        "name": "Itsesisäänkirjautuminen",
+        "desc": "Itsenäinen sisäänpääsy koodilla, ohjeet lähetetään edellisenä päivänä, WhatsApp-tuki milloin tahansa."
+      },
+      "hosted": {
+        "name": "Henkilökohtainen vastaanotto",
+        "desc": "Isäntä ottaa sinut vastaan, esittelee talon ja laittaa kaiken valmiiksi."
+      }
     }
   }
 }

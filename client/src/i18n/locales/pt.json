@@ -1361,10 +1361,10 @@
     "closeAria": "Voltar à casa",
     "loading": "A preparar o seu checkout…",
     "notFoundTitle": "Checkout não encontrado",
-    "notFoundBody": "Este link de checkout expirou ou é inválido. As suas datas não se perderam — recomece a partir da página da casa.",
-    "quoteExpiredBanner": "Este preço expirou. Atualize para ver o preço atual das suas datas — os seus dados ficam guardados.",
+    "notFoundBody": "Este link de checkout expirou ou é inválido. As suas datas não se perderam. Recomece a partir da página da casa.",
+    "quoteExpiredBanner": "Este preço expirou. Atualize para ver o preço atual das suas datas. Os seus dados ficam guardados.",
     "refreshPrice": "Atualizar preço",
-    "datesUnavailable": "Não conseguimos confirmar o preço para estas datas — podem já não estar disponíveis. Tente novamente, escolha novas datas abaixo ou contacte o nosso concierge.",
+    "datesUnavailable": "Não conseguimos confirmar o preço para estas datas, que podem já não estar disponíveis. Tente novamente, escolha novas datas abaixo ou contacte o nosso concierge.",
     "stayTitle": "A sua estadia",
     "staySubtitle": "Confirme as datas e escolha a sua tarifa.",
     "edit": "Editar",
@@ -1375,7 +1375,7 @@
     "backToStay": "Voltar à estadia",
     "payTitle": "Pagamento",
     "paySubtitle": "Os seus dados e um pagamento seguro.",
-    "nifPh": "NIF — opcional, para fatura portuguesa",
+    "nifPh": "NIF, opcional, para fatura portuguesa",
     "directTitle": "Reserva direta com a Portugal Active",
     "refreshBeforePay": "Atualize o preço acima antes de pagar.",
     "secureNote": "Pagamento seguro e cifrado",
@@ -1386,14 +1386,14 @@
     "viewBooking": "Ver a minha reserva",
     "stepCustomize": "Personalizar",
     "customizeTitle": "Personalize a sua estadia",
-    "customizeSubtitle": "Adicione serviços e experiências — ou continue sem extras. Nada vem pré-selecionado.",
+    "customizeSubtitle": "Adicione serviços e experiências, ou continue sem extras. Nada vem pré-selecionado.",
     "backToCustomize": "Voltar à personalização",
-    "continueWithExtras_one": "Continuar — {{count}} extra adicionado",
-    "continueWithExtras_other": "Continuar — {{count}} extras adicionados",
+    "continueWithExtras_one": "Continuar com {{count}} extra",
+    "continueWithExtras_other": "Continuar com {{count}} extras",
     "continueWithoutExtras": "Continuar sem extras",
     "mostChosen": "Mais escolhido",
     "confirm24h": "Confirmação em 24 horas",
-    "onRequest": "Sob pedido — sem cobrança agora",
+    "onRequest": "Sob pedido, sem cobrança agora",
     "onRequestShort": "sob pedido",
     "add": "Adicionar",
     "added": "Adicionado",
@@ -1410,9 +1410,9 @@
     "qtyLabel": "Quantidade",
     "peopleLabel": "Pessoas",
     "sessionsLabel": "Sessões",
-    "extrasSummary": "Extras — confirmados pelo seu concierge",
-    "extrasChargedLater": "Cobrados após confirmação do concierge — não incluídos no pagamento de hoje.",
-    "extrasChargeNote": "Os extras são confirmados pelo nosso concierge e cobrados apenas após confirmação — hoje não é cobrado nada por eles. Os itens sob pedido são orçamentados individualmente.",
+    "extrasSummary": "Extras confirmados pelo seu concierge",
+    "extrasChargedLater": "Cobrados após confirmação do concierge, fora do pagamento de hoje.",
+    "extrasChargeNote": "Os extras são confirmados pelo nosso concierge e cobrados apenas após confirmação. Hoje não é cobrado nada por eles. Os itens sob pedido são orçamentados individualmente.",
     "cat": {
       "arrival": "Chegada",
       "home": "A casa",
@@ -1426,11 +1426,11 @@
         "desc": "Check-in presencial com tour da casa, fora do horário normal."
       },
       "transfer-porto": {
-        "name": "Transfer aeroporto do Porto (até 4)",
+        "name": "Transfer aeroporto do Porto",
         "desc": "Carro privado, por trajeto, até 4 hóspedes."
       },
       "transfer-porto-van": {
-        "name": "Transfer aeroporto do Porto — van (até 8)",
+        "name": "Transfer aeroporto do Porto, van",
         "desc": "Van privada, por trajeto, até 8 hóspedes."
       },
       "daily-cleaning": {
@@ -1443,19 +1443,19 @@
       },
       "private-chef": {
         "name": "Chef privado ao jantar",
-        "desc": "Um chef cozinha em sua casa — menu combinado com o concierge."
+        "desc": "Um chef cozinha em sua casa, menu combinado com o concierge."
       },
       "hamper-essentials": {
-        "name": "Cabaz de boas-vindas — essenciais",
-        "desc": "O essencial à chegada: pequeno-almoço, água, fruta."
+        "name": "Cabaz de boas vindas, essenciais",
+        "desc": "O essencial à chegada: pequeno almoço, água, fruta."
       },
       "hamper-gourmet": {
-        "name": "Cabaz de boas-vindas — gourmet regional",
+        "name": "Cabaz de boas vindas, gourmet regional",
         "desc": "Seleção curada de vinhos e iguarias da região."
       },
       "grocery-list": {
         "name": "Lista de compras personalizada",
-        "desc": "Envie a sua lista — o frigorífico fica pronto antes de chegar."
+        "desc": "Envie a sua lista, o frigorífico fica pronto antes de chegar."
       },
       "massage": {
         "name": "Massagem na casa",
@@ -1476,29 +1476,118 @@
       "exp-heritage": {
         "name": "Património e cultura",
         "desc": "Guia privado pela história da região."
+      },
+      "babysitter": {
+        "name": "Babysitter",
+        "desc": "Apoio de confiança com as crianças em casa, à hora."
+      },
+      "private-yoga": {
+        "name": "Sessão de yoga privada",
+        "desc": "Uma sessão em casa com instrutor privado."
+      },
+      "personal-trainer": {
+        "name": "Personal trainer",
+        "desc": "Uma sessão de treino em casa ou ao ar livre."
+      },
+      "exp-sup": {
+        "name": "Stand up paddle",
+        "desc": "Nas águas calmas da região, equipamento incluído."
+      },
+      "exp-hikedive": {
+        "name": "Caminhada, mergulho e mesa",
+        "desc": "Um dia entre o trilho, a água e a mesa."
+      },
+      "exp-ebike": {
+        "name": "Passeio em e bike",
+        "desc": "O campo numa bicicleta elétrica, com guia."
+      },
+      "exp-horseback": {
+        "name": "Passeio a cavalo",
+        "desc": "Trilhos a cavalo pela região."
+      },
+      "exp-canyoning": {
+        "name": "Canyoning",
+        "desc": "Descidas por rios e cascatas com guia."
+      },
+      "exp-biketour": {
+        "name": "Passeio de bicicleta, cidade e montanha",
+        "desc": "Duas rodas, da cidade às colinas."
+      },
+      "exp-buggy": {
+        "name": "Experiência de buggy Can Am",
+        "desc": "Fora de estrada pelos trilhos da região."
       }
     },
     "emailTitle": "Para onde enviamos a sua reserva?",
     "perStay": "por estadia",
     "flex": {
-      "title": "Flex — remarcação garantida",
+      "title": "Flex, remarcação garantida",
       "tagline": "Remarque quando quiser. O valor que pagou nunca se perde.",
       "perBooking": "pagamento único, por reserva",
-      "benefit1": "Remarque até {{days}} dias antes do check-in, sem custo",
-      "benefit2": "O valor pago fica sempre protegido — nunca se perde",
+      "benefit1": "Remarque até {{days}} dias antes do check in, sem custo",
+      "benefit2": "O valor pago fica sempre protegido, nunca se perde",
       "benefit3": "Crédito válido por {{months}} meses, em qualquer casa do portefólio",
-      "copyNonRefundable": "Escolheu o melhor preço. Com Flex, o valor nunca se perde: remarque até {{days}} dias antes do check-in.",
-      "copyFlexible": "A sua tarifa permite cancelamento gratuito até {{date}}. Depois dessa data, o Flex garante que remarca até {{days}} dias antes do check-in sem perder o valor.",
+      "copyNonRefundable": "Escolheu o melhor preço. Com Flex, o valor nunca se perde: remarque até {{days}} dias antes do check in.",
+      "copyFlexible": "A sua tarifa permite cancelamento gratuito até {{date}}. Depois dessa data, o Flex garante que remarca até {{days}} dias antes do check in sem perder o valor.",
       "howItWorks": "Como funciona",
       "add": "Adicionar Flex",
       "added": "Adicionado",
-      "rule1": "Remarque sem custo até {{days}} dias antes do check-in, as vezes que precisar — com uma reserva ativa de cada vez.",
-      "rule2": "O que fica protegido é o valor pago — não as datas nem a casa. Os preços em vigor aplicam-se às novas datas.",
+      "rule1": "Remarque sem custo até {{days}} dias antes do check in, as vezes que precisar, com uma reserva ativa de cada vez.",
+      "rule2": "O que fica protegido é o valor pago, não as datas nem a casa. Os preços em vigor aplicam-se às novas datas.",
       "rule3": "Ao remarcar, o valor pago converte-se em crédito válido por {{months}} meses, utilizável em qualquer casa do portefólio.",
       "rule4": "Nova estadia mais cara: paga apenas a diferença. Mais barata: o saldo permanece em crédito.",
       "rule5": "Os extras remarcam juntos sempre que o serviço o permitir; caso contrário, o seu valor converte-se também em crédito.",
       "rule6": "O Flex adquire-se apenas no checkout e não é reembolsável.",
-      "honesty": "Se cancelar dentro da janela de cancelamento gratuito da sua tarifa, devolvemos o dinheiro conforme a política. O Flex nunca substitui esse direito — acrescenta proteção para lá dele."
+      "honesty": "Se cancelar dentro da janela de cancelamento gratuito da sua tarifa, devolvemos o dinheiro conforme a política. O Flex nunca substitui esse direito: acrescenta proteção para lá dele."
+    },
+    "curatedFor": "Selecionado para {{property}}",
+    "todayTotal": "Total de hoje",
+    "conciergeRequests": "Pedidos ao concierge",
+    "conciergeRequestsNote": "Orçamentados individualmente pelo seu concierge, fora do pagamento de hoje.",
+    "included": {
+      "title": "Incluído na sua estadia",
+      "badge": "Incluído",
+      "concierge": "Um concierge dedicado por WhatsApp",
+      "linen": "Roupa de cama e toalhas de hotel",
+      "welcome": "Welcome pack à chegada",
+      "bestRate": "Melhor preço garantido"
+    },
+    "chapter": {
+      "arrival": {
+        "title": "A chegada",
+        "line": "Da porta do avião à porta da casa."
+      },
+      "home": {
+        "title": "A casa",
+        "line": "O serviço de hotel, todos os dias que quiser."
+      },
+      "table": {
+        "title": "A mesa",
+        "line": "O Minho cozinha para si."
+      },
+      "wellness": {
+        "title": "Bem estar",
+        "line": "Descanso a sério."
+      },
+      "experiences": {
+        "title": "Experiências",
+        "line": "A região, com quem a conhece."
+      }
+    },
+    "reception": {
+      "prompt": "Como prefere chegar? Escolha uma opção para continuar.",
+      "required": "Escolha como prefere chegar para continuar.",
+      "arrivalWindow": "Chegada:",
+      "beforeLate": "Antes das {{hour}}h",
+      "afterLate": "Depois das {{hour}}h",
+      "self": {
+        "name": "Self check in",
+        "desc": "Entrada autónoma com código, instruções enviadas na véspera, apoio por WhatsApp a qualquer hora."
+      },
+      "hosted": {
+        "name": "Receção presencial",
+        "desc": "Um anfitrião recebe os hóspedes, faz o tour da casa e deixa tudo a funcionar."
+      }
     }
   }
 }

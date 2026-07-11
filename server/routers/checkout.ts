@@ -13,7 +13,12 @@
 import { randomUUID } from "crypto";
 import { z } from "zod";
 import { publicProcedure, router } from "../_core/trpc";
-import { CHECKOUT_EXTRAS, FLEX_CONFIG } from "../config/checkout-extras";
+import {
+  curateExtras,
+  FLEX_CONFIG,
+  CHECKOUT_RECEPTION,
+  CHECKOUT_INCLUDED_KEYS,
+} from "../config/checkout-extras";
 import {
   createBookingIntent,
   getBookingIntent,
@@ -145,6 +150,13 @@ export const checkoutRouter = router({
           guestyQuoteId: z.string().max(64).optional(),
           quote: quoteSnapshotSchema.optional(),
           extras: z.array(extraSelectionSchema).max(20).optional(),
+          reception: z
+            .object({
+              type: z.enum(["self", "hosted"]),
+              late: z.boolean().optional(),
+            })
+            .nullable()
+            .optional(),
           flex: z.boolean().optional(),
           status: z
             .enum(["draft", "contact_captured", "payment_pending", "paid"])
@@ -171,8 +183,34 @@ export const checkoutRouter = router({
       return { ok };
     }),
 
-  /** Launch catalog for the Personalizar step (global scope in v1, spec §5). */
-  getExtras: publicProcedure.query(() => ({ extras: CHECKOUT_EXTRAS, flex: FLEX_CONFIG })),
+  /**
+   * Catálogo curado para o passo Personalizar (spec §5). A curadoria é
+   * determinista e avaliada no servidor a partir do contexto da reserva
+   * (região, noites, hóspedes, mês) — devolve os extras já ordenados, mais a
+   * receção (escolha obrigatória) e o bloco "Incluído na sua estadia".
+   */
+  getExtras: publicProcedure
+    .input(
+      z
+        .object({
+          destination: z.string().max(64).optional(),
+          nights: z.number().int().min(1).max(90).optional(),
+          guests: z.number().int().min(1).max(30).optional(),
+          month: z.number().int().min(1).max(12).optional(),
+        })
+        .optional(),
+    )
+    .query(({ input }) => ({
+      extras: curateExtras({
+        destination: input?.destination,
+        nights: input?.nights ?? 1,
+        guests: input?.guests ?? 2,
+        month: input?.month,
+      }),
+      reception: CHECKOUT_RECEPTION,
+      included: CHECKOUT_INCLUDED_KEYS,
+      flex: FLEX_CONFIG,
+    })),
 
   /**
    * Email capture at the end of passo 1 (spec §4): stores the email on the
