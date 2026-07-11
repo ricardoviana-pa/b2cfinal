@@ -706,26 +706,28 @@ export default function CustomizeStep({
                           selected ? "border-[1.5px] border-pa-dark" : "border border-pa-sand",
                         )}
                       >
-                        {item.photo && (
-                          <div className="aspect-[3/2] bg-pa-warm relative">
-                            <img src={item.photo} alt="" className="w-full h-full object-cover" loading="eager" onError={(e) => { const c = (e.currentTarget.parentElement as HTMLElement); if (c) c.style.display = "none"; }} />
-                            {selected && (
-                              <span className="absolute top-2 right-2 w-6 h-6 rounded-full bg-pa-dark flex items-center justify-center">
-                                <Check className="w-3.5 h-3.5 text-white" />
-                              </span>
-                            )}
-                          </div>
-                        )}
+                        {/* Capa 3:2 SEMPRE — foto real do produto ou capa
+                            tipográfica; alturas iguais em todo o carrossel */}
+                        <div className="aspect-[3/2] bg-pa-warm relative">
+                          {item.photo ? (
+                            <img src={item.photo} alt="" className="w-full h-full object-cover" loading="eager" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center px-4">
+                              <p className="font-display text-[20px] text-pa-earth text-center leading-snug">
+                                {t(`checkout.extras.${item.sku}.name`)}
+                              </p>
+                            </div>
+                          )}
+                          {selected && (
+                            <span className="absolute top-2 right-2 w-6 h-6 rounded-full bg-pa-dark flex items-center justify-center">
+                              <Check className="w-3.5 h-3.5 text-white" />
+                            </span>
+                          )}
+                        </div>
                         <div className="p-4 flex flex-col flex-1">
-                          <p className="flex items-center gap-1.5 text-[14px] font-medium text-pa-dark leading-snug">
-                            {selected && !item.photo && <Check className="w-3.5 h-3.5 text-pa-gold shrink-0" strokeWidth={2.5} />}
+                          <p className="text-[14px] font-medium text-pa-dark leading-snug">
                             {t(`checkout.extras.${item.sku}.name`)}
                           </p>
-                          {!item.photo && (
-                            <p className="text-[12px] text-pa-earth leading-snug mt-1 flex-1">
-                              {t(`checkout.extras.${item.sku}.desc`)}
-                            </p>
-                          )}
                           <div className="flex items-center justify-between gap-2 mt-2">
                             <p className="text-[12.5px] text-pa-earth">
                               {item.priceFrom != null

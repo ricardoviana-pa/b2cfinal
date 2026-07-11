@@ -135,10 +135,10 @@ export const CHECKOUT_EXTRAS: CheckoutExtra[] = [
   // do domínio próprio; preços "desde" reais de services.json. hike-dive e
   // bike-tour não têm asset aprovado → sem photo → não entram nos 3 cards.
   { sku: "exp-sup", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 45, photo: "/experiences/sup-river.webp", baseRank: 50 },
-  { sku: "exp-canyoning", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 65, photo: "/experiences/canyoning-adventure.webp", baseRank: 51 },
+  { sku: "exp-canyoning", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 65, photo: "/experiences/canyoning/01.webp", baseRank: 51 },
   { sku: "exp-ebike", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 55, photo: "/experiences/ebike-tours/cover.webp", baseRank: 52 },
-  { sku: "exp-horseback", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 75, photo: "/experiences/horseback-beach.webp", baseRank: 53 },
-  { sku: "exp-buggy", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 120, photo: "/videos/can-am-poster.webp", baseRank: 54 },
+  { sku: "exp-horseback", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 75, photo: "/experiences/horseback-riding/cover.webp", baseRank: 53 },
+  { sku: "exp-buggy", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 120, baseRank: 54 },
   { sku: "exp-hikedive", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 95, baseRank: 55 },
   { sku: "exp-biketour", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 45, baseRank: 56 },
 ];
