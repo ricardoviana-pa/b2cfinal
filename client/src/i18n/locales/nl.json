@@ -1601,6 +1601,8 @@
     },
     "prev": "Vorige",
     "next": "Volgende",
-    "firstIncluded": "Eerste inbegrepen, extra voor {{price}}"
+    "firstIncluded": "Eerste inbegrepen, extra voor {{price}}",
+    "nextChapter": "Volgende: {{chapter}}",
+    "continueToPayment": "Doorgaan naar betaling"
   }
 }

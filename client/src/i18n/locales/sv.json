@@ -1601,6 +1601,8 @@
     },
     "prev": "Föregående",
     "next": "Nästa",
-    "firstIncluded": "Första ingår, extra för {{price}}"
+    "firstIncluded": "Första ingår, extra för {{price}}",
+    "nextChapter": "Nästa: {{chapter}}",
+    "continueToPayment": "Fortsätt till betalning"
   }
 }

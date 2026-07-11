@@ -1601,6 +1601,8 @@
     },
     "prev": "Précédent",
     "next": "Suivant",
-    "firstIncluded": "Premier inclus, supplément à {{price}}"
+    "firstIncluded": "Premier inclus, supplément à {{price}}",
+    "nextChapter": "Suivant : {{chapter}}",
+    "continueToPayment": "Continuer vers le paiement"
   }
 }

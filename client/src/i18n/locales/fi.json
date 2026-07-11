@@ -1601,6 +1601,8 @@
     },
     "prev": "Edellinen",
     "next": "Seuraava",
-    "firstIncluded": "Ensimmäinen sisältyy, lisä {{price}}"
+    "firstIncluded": "Ensimmäinen sisältyy, lisä {{price}}",
+    "nextChapter": "Seuraava: {{chapter}}",
+    "continueToPayment": "Jatka maksuun"
   }
 }

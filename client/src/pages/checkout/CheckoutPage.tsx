@@ -1270,8 +1270,6 @@ export default function CheckoutPage() {
                 >
                   ← {t("checkout.backToStay", "Back to your stay")}
                 </button>
-                <h1 className="headline-md text-pa-dark mb-1">{t("checkout.customizeTitle", "Personalize your stay")}</h1>
-                <p className="body-sm">{t("checkout.customizeSubtitle", "Add services and experiences — or continue as is. Nothing is pre-selected.")}</p>
               </div>
               {extrasQuery.isLoading ? (
                 <div className="flex items-center justify-center py-10 gap-2 text-[12px] text-pa-stone-aa">

@@ -24,11 +24,6 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  MessageCircle,
-  BedDouble,
-  Gift,
-  BadgeCheck,
-  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatEur } from "@/lib/format";
@@ -512,13 +507,6 @@ export default function CustomizeStep({
     }, 800);
   };
 
-  const INCLUDED_ICONS: Record<string, typeof Check> = {
-    concierge: MessageCircle,
-    linen: BedDouble,
-    welcome: Gift,
-    bestRate: BadgeCheck,
-  };
-
   // Única zona fotográfica do passo. Carrossel com setas (12 jul): todos os
   // produtos, fotos aprovadas primeiro; sem asset = cartão tipográfico.
   const expCards = [...catalog.filter((i) => i.chapter === "experiences")].sort(
@@ -545,24 +533,9 @@ export default function CustomizeStep({
         .chapter-nav-scroll::-webkit-scrollbar { display: none; }
       `}</style>
 
-      {/* Abertura: contexto + incluído numa linha discreta, sem caixa (2.1 §1.1) */}
-      <p className="flex items-center gap-1.5 text-[12px] text-pa-gold">
-        <Sparkles className="w-3.5 h-3.5" /> {t("checkout.curatedFor", { property: propertyName })}
-      </p>
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 mt-4 pb-1">
-        {included.map((key) => {
-          const Icon = INCLUDED_ICONS[key] ?? Check;
-          return (
-            <span key={key} className="inline-flex items-center gap-1.5 text-[12.5px] text-pa-earth">
-              <Icon className="w-3.5 h-3.5 text-pa-gold" strokeWidth={1.8} />
-              {t(`checkout.included.${key}`)}
-            </span>
-          );
-        })}
-      </div>
-
-      {/* Nav de capítulos sticky com scrollspy + saltar (2.1 §1.2) */}
-      <nav className="sticky top-[61px] z-30 -mx-1 px-1 mt-6 bg-white/95 backdrop-blur-sm border-b border-pa-sand">
+      {/* Abertura direta na nav + Capítulo 01 (12 jul, estilo Apple): o cabeçalho
+          verboso repetia o stepper e adiava a venda. */}
+      <nav className="sticky top-[61px] z-30 -mx-1 px-1 bg-white/95 backdrop-blur-sm border-b border-pa-sand">
         <div className="flex items-center justify-between gap-3">
           <div className="chapter-nav-scroll flex items-center gap-5 overflow-x-auto py-3">
             {EXTRA_CHAPTERS.map((c) => (
@@ -607,7 +580,7 @@ export default function CustomizeStep({
         const hiddenCount = isExperiences ? 0 : rows.length - visibleRows.length;
 
         return (
-          <ChapterReveal key={chapter} id={`chapter-${chapter}`} className={cn("scroll-mt-[130px]", idx === 0 ? "mt-12" : "mt-24 lg:mt-28")}>
+          <ChapterReveal key={chapter} id={`chapter-${chapter}`} className={cn("scroll-mt-[130px]", idx === 0 ? "mt-10" : "mt-24 lg:mt-28")}>
             <ChapterHeader num={String(idx + 1).padStart(2, "0")} chapter={chapter} />
 
             {/* Decisão primeiro (receção, cap 01) */}
@@ -738,6 +711,29 @@ export default function CustomizeStep({
                 </div>
               </>
             )}
+            {/* Guiar secção a secção (12 jul): um clique e o site anda para a
+                frente, sem caçar o caminho com scroll */}
+            <div className="mt-10 flex justify-end">
+              {idx < EXTRA_CHAPTERS.length - 1 ? (
+                <button
+                  type="button"
+                  onClick={() => jumpTo(EXTRA_CHAPTERS[idx + 1])}
+                  className="inline-flex items-center gap-2 min-h-[44px] px-5 rounded-full border border-pa-sand bg-white text-[11px] font-medium tracking-[0.08em] uppercase text-pa-dark hover:border-pa-dark transition-colors"
+                >
+                  {t("checkout.nextChapter", { chapter: t(`checkout.chapter.${EXTRA_CHAPTERS[idx + 1]}.title`) })}
+                  <ChevronDown className="w-3.5 h-3.5" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={onSkip}
+                  className="inline-flex items-center gap-2 min-h-[44px] px-6 rounded-full bg-pa-dark text-white text-[11px] font-medium tracking-[0.08em] uppercase hover:bg-pa-dark/85 transition-colors"
+                >
+                  {t("checkout.continueToPayment", "Continue to payment")}
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
           </ChapterReveal>
         );
       })}
