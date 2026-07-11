@@ -1,0 +1,1 @@
+import{r as n}from"./index-ConVoz6r.js";function c(t){const e=n.useRef(t);e.current=t;const r=n.useRef(null);return r.current||(r.current=function(...u){return e.current.apply(this,u)}),r.current}export{c as u};
