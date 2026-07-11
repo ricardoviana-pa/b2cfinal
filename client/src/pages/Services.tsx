@@ -83,9 +83,6 @@ function SingleServiceFeature({ product, overline, title, body }: { product: Pro
               <span className="text-[#9E9A90] ml-1">{product.priceSuffix}</span>
             </p>
           )}
-          <Link href={`/services/${product.slug}`} className="inline-flex items-center gap-2 text-[12px] font-medium tracking-[0.08em] uppercase text-[#8B7355] hover:text-[#1A1A18] transition-colors">
-            {t('services.learnMore')} <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
         </div>
       </div>
     </div>
@@ -230,7 +227,7 @@ export default function Concierge() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {gastronomyProducts.map(p => (
-                  <Link key={p.slug} href={`/services/${p.slug}`}><ServiceCard product={p} /></Link>
+                  <ServiceCard key={p.slug} product={p} />
                 ))}
               </div>
             </>
@@ -248,7 +245,7 @@ export default function Concierge() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {wellnessProducts.map(p => (
-              <Link key={p.slug} href={`/services/${p.slug}`}><ServiceCard product={p} /></Link>
+              <ServiceCard key={p.slug} product={p} />
             ))}
           </div>
         </div>
@@ -273,7 +270,7 @@ export default function Concierge() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {mobilityProducts.map(p => (
-                  <Link key={p.slug} href={`/services/${p.slug}`}><ServiceCard product={p} /></Link>
+                  <ServiceCard key={p.slug} product={p} />
                 ))}
               </div>
             </>
@@ -320,7 +317,7 @@ export default function Concierge() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {additionalProducts.map(p => (
-              <Link key={p.slug} href={`/services/${p.slug}`}><ServiceCard product={p} /></Link>
+              <ServiceCard key={p.slug} product={p} />
             ))}
           </div>
         </div>
