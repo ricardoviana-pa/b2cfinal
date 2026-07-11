@@ -1534,9 +1534,9 @@
       "honesty": "If you cancel within your rate's free cancellation window, we refund your money as per the policy. Flex never replaces that right, it adds protection beyond it."
     },
     "curatedFor": "Selected for {{property}}",
-    "todayTotal": "Total today",
+    "todayTotal": "Total",
     "conciergeRequests": "Concierge requests",
-    "conciergeRequestsNote": "Quoted individually by your concierge, not part of today's payment.",
+    "conciergeRequestsNote": "Quoted individually by your concierge. No charge now.",
     "included": {
       "title": "Included in your stay",
       "badge": "Included",

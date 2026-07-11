@@ -1534,9 +1534,9 @@
       "honesty": "Jos peruutat hintasi maksuttoman peruutusikkunan sisällä, palautamme rahasi käytännön mukaisesti. Flex ei koskaan korvaa tätä oikeutta, se lisää suojaa sen yli."
     },
     "curatedFor": "Valittu kohteelle {{property}}",
-    "todayTotal": "Yhteensä tänään",
+    "todayTotal": "Yhteensä",
     "conciergeRequests": "Concierge-pyynnöt",
-    "conciergeRequestsNote": "Conciergesi hinnoittelee erikseen, ei sisälly tämän päivän maksuun.",
+    "conciergeRequestsNote": "Conciergesi hinnoittelee erikseen. Ei veloitusta nyt.",
     "included": {
       "title": "Sisältyy majoitukseesi",
       "badge": "Sisältyy",

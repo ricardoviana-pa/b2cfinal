@@ -1534,9 +1534,9 @@
       "honesty": "Annuleert u binnen het gratis annuleringsvenster van uw tarief, dan betalen we uw geld terug volgens het beleid. Flex vervangt dat recht nooit, het voegt bescherming toe daarbuiten."
     },
     "curatedFor": "Geselecteerd voor {{property}}",
-    "todayTotal": "Totaal vandaag",
+    "todayTotal": "Totaal",
     "conciergeRequests": "Concierge-verzoeken",
-    "conciergeRequestsNote": "Individueel geoffreerd door uw concierge, geen deel van de betaling van vandaag.",
+    "conciergeRequestsNote": "Individueel geoffreerd door uw concierge. Nu geen kosten.",
     "included": {
       "title": "Inbegrepen in uw verblijf",
       "badge": "Inbegrepen",

@@ -1534,9 +1534,9 @@
       "honesty": "Si cancela dentro de la ventana de cancelación gratuita de su tarifa, le devolvemos el dinero según la política. Flex nunca sustituye ese derecho, añade protección más allá de él."
     },
     "curatedFor": "Seleccionado para {{property}}",
-    "todayTotal": "Total de hoy",
+    "todayTotal": "Total",
     "conciergeRequests": "Solicitudes al concierge",
-    "conciergeRequestsNote": "Presupuestadas individualmente por su concierge, fuera del pago de hoy.",
+    "conciergeRequestsNote": "Presupuestados individualmente por su concierge. Sin ningún cobro ahora.",
     "included": {
       "title": "Incluido en su estancia",
       "badge": "Incluido",

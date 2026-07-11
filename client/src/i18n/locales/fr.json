@@ -1534,9 +1534,9 @@
       "honesty": "Si vous annulez pendant la fenêtre d'annulation gratuite de votre tarif, nous vous remboursons selon la politique. Flex ne remplace jamais ce droit, il ajoute une protection au-delà."
     },
     "curatedFor": "Sélectionné pour {{property}}",
-    "todayTotal": "Total aujourd'hui",
+    "todayTotal": "Total",
     "conciergeRequests": "Demandes au concierge",
-    "conciergeRequestsNote": "Devis individuel par votre concierge, hors du paiement d'aujourd'hui.",
+    "conciergeRequestsNote": "Devis individuel par votre concierge. Aucun débit maintenant.",
     "included": {
       "title": "Inclus dans votre séjour",
       "badge": "Inclus",

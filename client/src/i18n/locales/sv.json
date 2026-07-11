@@ -1534,9 +1534,9 @@
       "honesty": "Avbokar du inom din taxas fria avbokningsfönster återbetalar vi dina pengar enligt policyn. Flex ersätter aldrig den rätten, det lägger till skydd bortom den."
     },
     "curatedFor": "Utvalt för {{property}}",
-    "todayTotal": "Totalt idag",
+    "todayTotal": "Totalt",
     "conciergeRequests": "Concierge-förfrågningar",
-    "conciergeRequestsNote": "Offereras individuellt av din concierge, ingår inte i dagens betalning.",
+    "conciergeRequestsNote": "Offereras individuellt av din concierge. Ingen debitering nu.",
     "included": {
       "title": "Ingår i din vistelse",
       "badge": "Ingår",

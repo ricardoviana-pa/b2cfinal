@@ -1534,9 +1534,9 @@
       "honesty": "Stornieren Sie innerhalb des kostenlosen Stornierungsfensters Ihres Tarifs, erstatten wir Ihr Geld gemäß der Richtlinie. Flex ersetzt dieses Recht nie, es ergänzt Schutz darüber hinaus."
     },
     "curatedFor": "Ausgewählt für {{property}}",
-    "todayTotal": "Gesamt heute",
+    "todayTotal": "Gesamt",
     "conciergeRequests": "Concierge-Anfragen",
-    "conciergeRequestsNote": "Einzeln von Ihrem Concierge angeboten, nicht Teil der heutigen Zahlung.",
+    "conciergeRequestsNote": "Einzeln von Ihrem Concierge angeboten. Jetzt keine Belastung.",
     "included": {
       "title": "In Ihrem Aufenthalt enthalten",
       "badge": "Inklusive",
