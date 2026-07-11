@@ -7923,6 +7923,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "The apartment was easy to find, well equipped and beautifully decorated and furnished. It was immaculately clean too. \n\nThe outdoor space was fabulous, and the hot tub is a great addition. However, the weather was so hot when we visited we didn't use the hot tub!\n\nThe apartment is a little bit out of the way from the hustle and bustle which has pros and cons. It's very peaceful, feels safe, and the neighbourhood has everything you need. \n\nThere are nice bars and restaurants a little walk away, a",
+        "guestDisplayName": "Kim",
+        "guestName": "Kim",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-11T10:22:57.529Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "This was a really great location, plenty of amenities with a lively patio area! great value for money - would recommend",
         "guestDisplayName": "Erin",
         "guestName": "Erin",
@@ -8377,8 +8412,8 @@
         ]
       }
     ],
-    "averageRating": 4.62,
-    "reviewCount": 13
+    "averageRating": 4.64,
+    "reviewCount": 14
   },
   {
     "id": "guesty-69653390ecf7490014ed2d6c",
