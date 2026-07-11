@@ -505,8 +505,8 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
   const subject =
     data.stage === 1
       ? pt
-        ? `A sua estadia em ${house} está guardada`
-        : `Your stay at ${house} is saved`
+        ? `A sua estadia em ${house} está a um passo`
+        : `Your stay at ${house} is one step away`
       : pt
         ? `O preço garantido para ${house} termina em breve`
         : `Your guaranteed price for ${house} ends soon`;
@@ -517,7 +517,7 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 
   const headline =
     data.stage === 1
-      ? pt ? "A sua estadia está guardada." : "Your stay is saved."
+      ? pt ? "O seu preço está garantido." : "Your price is guaranteed."
       : pt ? "O seu preço garantido termina em breve." : "Your guaranteed price ends soon.";
 
   const body =
