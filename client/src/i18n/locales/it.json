@@ -1202,12 +1202,12 @@
     "shortFree": "Cancellazione gratuita fino al {{date}}",
     "shortFreeNoDate_one": "Cancellazione gratuita fino a {{count}} giorno prima del check-in",
     "shortFreeNoDate_other": "Cancellazione gratuita fino a {{count}} giorni prima del check-in",
-    "shortHalf": "Rimborso del 50% fino al {{date}} — non rimborsabile dopo",
-    "shortHalfNoDate_one": "Rimborso del 50% fino a {{count}} giorno prima del check-in — non rimborsabile dopo",
-    "shortHalfNoDate_other": "Rimborso del 50% fino a {{count}} giorni prima del check-in — non rimborsabile dopo",
-    "shortNonRefundable": "Tariffa non rimborsabile — nessun rimborso in caso di cancellazione",
+    "shortHalf": "Rimborso del 50% fino al {{date}}: non rimborsabile dopo",
+    "shortHalfNoDate_one": "Rimborso del 50% fino a {{count}} giorno prima del check-in: non rimborsabile dopo",
+    "shortHalfNoDate_other": "Rimborso del 50% fino a {{count}} giorni prima del check-in: non rimborsabile dopo",
+    "shortNonRefundable": "Tariffa non rimborsabile: nessun rimborso in caso di cancellazione",
     "shortWindowPassed": "Per queste date la prenotazione non è rimborsabile in caso di cancellazione",
-    "shortGeneric": "Si applicano condizioni di cancellazione — consulta la nostra politica di cancellazione"
+    "shortGeneric": "Si applicano condizioni di cancellazione: consulta la nostra politica di cancellazione"
   },
   "whatsapp": {
     "title": "Contatta via WhatsApp",
@@ -1410,7 +1410,7 @@
     "qtyLabel": "Quantità",
     "peopleLabel": "Persone",
     "sessionsLabel": "Sessioni",
-    "extrasChargeNote": "Gli extra sono confermati dal nostro concierge e addebitati solo dopo la conferma, oggi non viene addebitato nulla. Gli articoli su richiesta sono preventivati individualmente.",
+    "extrasChargeNote": "Gli articoli a prezzo fisso vengono addebitati oggi, in un unico pagamento. I servizi con conferma del concierge vengono addebitati oggi e rimborsati automaticamente entro 24 ore se non possono essere garantiti. Le richieste su preventivo non comportano alcun addebito ora.",
     "extras": {
       "transfer-porto": {
         "name": "Transfer aeroporto di Porto",
@@ -1469,7 +1469,7 @@
         "desc": "Una giornata tra il sentiero, l'acqua e la tavola."
       },
       "exp-ebike": {
-        "name": "Giro in e bike",
+        "name": "Giro in bici elettrica",
         "desc": "La campagna in bici elettrica, con guida."
       },
       "exp-horseback": {
@@ -1564,7 +1564,7 @@
     "seeAllExperiences": "Vedi tutte le esperienze",
     "chapterLabel": "Capitolo {{num}}",
     "skipCustomize": "Salta la personalizzazione",
-    "seeMore": "Vedi altri {{count}}",
+    "seeMore": "Vedi altri ({{count}})",
     "remove": "Rimuovi",
     "conciergeQuote": "Preventivo dal tuo concierge",
     "fromPrice": "da {{price}}",

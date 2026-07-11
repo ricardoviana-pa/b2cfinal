@@ -1202,12 +1202,12 @@
     "shortFree": "Kostenlose Stornierung bis {{date}}",
     "shortFreeNoDate_one": "Kostenlose Stornierung bis {{count}} Tag vor Check-in",
     "shortFreeNoDate_other": "Kostenlose Stornierung bis {{count}} Tage vor Check-in",
-    "shortHalf": "50 % Erstattung bis {{date}} — danach keine Erstattung",
-    "shortHalfNoDate_one": "50 % Erstattung bis {{count}} Tag vor Check-in — danach keine Erstattung",
-    "shortHalfNoDate_other": "50 % Erstattung bis {{count}} Tage vor Check-in — danach keine Erstattung",
-    "shortNonRefundable": "Nicht erstattbarer Tarif — keine Erstattung bei Stornierung",
+    "shortHalf": "50 % Erstattung bis {{date}}: danach keine Erstattung",
+    "shortHalfNoDate_one": "50 % Erstattung bis {{count}} Tag vor Check-in: danach keine Erstattung",
+    "shortHalfNoDate_other": "50 % Erstattung bis {{count}} Tage vor Check-in: danach keine Erstattung",
+    "shortNonRefundable": "Nicht erstattbarer Tarif: keine Erstattung bei Stornierung",
     "shortWindowPassed": "Für diese Daten ist die Buchung bei Stornierung nicht erstattbar",
-    "shortGeneric": "Es gelten Stornierungsbedingungen — siehe unsere Stornierungsrichtlinie"
+    "shortGeneric": "Es gelten Stornierungsbedingungen: siehe unsere Stornierungsrichtlinie"
   },
   "whatsapp": {
     "title": "Über WhatsApp kontaktieren",
@@ -1410,7 +1410,7 @@
     "qtyLabel": "Anzahl",
     "peopleLabel": "Personen",
     "sessionsLabel": "Sitzungen",
-    "extrasChargeNote": "Extras werden von unserem Concierge bestätigt und erst nach Bestätigung berechnet, heute wird dafür nichts abgebucht. Artikel auf Anfrage werden individuell angeboten.",
+    "extrasChargeNote": "Artikel mit festem Preis werden heute in einer einzigen Zahlung abgebucht. Vom Concierge zu bestätigende Services werden heute abgebucht und automatisch innerhalb von 24 Stunden erstattet, falls sie nicht garantiert werden können. Anfragen auf Angebot werden jetzt nicht belastet.",
     "extras": {
       "transfer-porto": {
         "name": "Flughafentransfer Porto",
@@ -1469,7 +1469,7 @@
         "desc": "Ein Tag zwischen Pfad, Wasser und Tisch."
       },
       "exp-ebike": {
-        "name": "E Bike Tour",
+        "name": "Tour mit dem E-Bike",
         "desc": "Das Land auf einem E-Bike, mit Guide."
       },
       "exp-horseback": {
@@ -1564,7 +1564,7 @@
     "seeAllExperiences": "Alle Erlebnisse ansehen",
     "chapterLabel": "Kapitel {{num}}",
     "skipCustomize": "Personalisierung überspringen",
-    "seeMore": "{{count}} weitere ansehen",
+    "seeMore": "Mehr ansehen ({{count}})",
     "remove": "Entfernen",
     "conciergeQuote": "Angebot durch Ihren Concierge",
     "fromPrice": "ab {{price}}",

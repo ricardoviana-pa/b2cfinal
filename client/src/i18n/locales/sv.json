@@ -1202,12 +1202,12 @@
     "shortFree": "Gratis avbokning till {{date}}",
     "shortFreeNoDate_one": "Gratis avbokning fram till {{count}} dag före incheckning",
     "shortFreeNoDate_other": "Gratis avbokning fram till {{count}} dagar före incheckning",
-    "shortHalf": "50 % återbetalning till {{date}} — därefter ej återbetalningsbar",
-    "shortHalfNoDate_one": "50 % återbetalning fram till {{count}} dag före incheckning — därefter ej återbetalningsbar",
-    "shortHalfNoDate_other": "50 % återbetalning fram till {{count}} dagar före incheckning — därefter ej återbetalningsbar",
-    "shortNonRefundable": "Ej återbetalningsbar taxa — ingen återbetalning vid avbokning",
+    "shortHalf": "50 % återbetalning till {{date}}: därefter ej återbetalningsbar",
+    "shortHalfNoDate_one": "50 % återbetalning fram till {{count}} dag före incheckning: därefter ej återbetalningsbar",
+    "shortHalfNoDate_other": "50 % återbetalning fram till {{count}} dagar före incheckning: därefter ej återbetalningsbar",
+    "shortNonRefundable": "Ej återbetalningsbar taxa: ingen återbetalning vid avbokning",
     "shortWindowPassed": "För dessa datum är bokningen ej återbetalningsbar vid avbokning",
-    "shortGeneric": "Avbokningsvillkor gäller — se vår avbokningspolicy"
+    "shortGeneric": "Avbokningsvillkor gäller: se vår avbokningspolicy"
   },
   "whatsapp": {
     "title": "Kontakta via WhatsApp",
@@ -1410,7 +1410,7 @@
     "qtyLabel": "Antal",
     "peopleLabel": "Personer",
     "sessionsLabel": "Sessioner",
-    "extrasChargeNote": "Tillval bekräftas av vår concierge och debiteras först efter bekräftelse, inget debiteras för dem idag. Artiklar på förfrågan offereras individuellt.",
+    "extrasChargeNote": "Artiklar med fast pris debiteras idag, i en enda betalning. Tjänster som bekräftas av conciergen debiteras idag och återbetalas automatiskt inom 24 timmar om de inte kan garanteras. Förfrågningar med offert debiteras inte nu.",
     "extras": {
       "transfer-porto": {
         "name": "Flygplatstransfer Porto",
@@ -1469,7 +1469,7 @@
         "desc": "En dag mellan stigen, vattnet och bordet."
       },
       "exp-ebike": {
-        "name": "E bike tur",
+        "name": "Elcykeltur",
         "desc": "Landsbygden på elcykel, med guide."
       },
       "exp-horseback": {
@@ -1564,7 +1564,7 @@
     "seeAllExperiences": "Se alla upplevelser",
     "chapterLabel": "Kapitel {{num}}",
     "skipCustomize": "Hoppa över anpassning",
-    "seeMore": "Se {{count}} till",
+    "seeMore": "Se fler ({{count}})",
     "remove": "Ta bort",
     "conciergeQuote": "Offert från din concierge",
     "fromPrice": "från {{price}}",

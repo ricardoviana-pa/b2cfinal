@@ -1202,12 +1202,12 @@
     "shortFree": "Maksuton peruutus {{date}} asti",
     "shortFreeNoDate_one": "Maksuton peruutus {{count}} päivä ennen sisäänkirjautumista",
     "shortFreeNoDate_other": "Maksuton peruutus {{count}} päivää ennen sisäänkirjautumista",
-    "shortHalf": "50 %:n hyvitys {{date}} asti — sen jälkeen ei hyvitystä",
-    "shortHalfNoDate_one": "50 %:n hyvitys {{count}} päivä ennen sisäänkirjautumista — sen jälkeen ei hyvitystä",
-    "shortHalfNoDate_other": "50 %:n hyvitys {{count}} päivää ennen sisäänkirjautumista — sen jälkeen ei hyvitystä",
-    "shortNonRefundable": "Hinta ei ole hyvitettävissä — peruutuksesta ei makseta hyvitystä",
+    "shortHalf": "50 %:n hyvitys {{date}} asti: sen jälkeen ei hyvitystä",
+    "shortHalfNoDate_one": "50 %:n hyvitys {{count}} päivä ennen sisäänkirjautumista: sen jälkeen ei hyvitystä",
+    "shortHalfNoDate_other": "50 %:n hyvitys {{count}} päivää ennen sisäänkirjautumista: sen jälkeen ei hyvitystä",
+    "shortNonRefundable": "Hinta ei ole hyvitettävissä: peruutuksesta ei makseta hyvitystä",
     "shortWindowPassed": "Näille päiville varaus ei ole hyvitettävissä peruutuksen yhteydessä",
-    "shortGeneric": "Peruutusehdot ovat voimassa — katso peruutuskäytäntömme"
+    "shortGeneric": "Peruutusehdot ovat voimassa: katso peruutuskäytäntömme"
   },
   "whatsapp": {
     "title": "Ota yhteyttä WhatsAppissa",
@@ -1410,7 +1410,7 @@
     "qtyLabel": "Määrä",
     "peopleLabel": "Henkilöt",
     "sessionsLabel": "Kerrat",
-    "extrasChargeNote": "Conciergemme vahvistaa lisäpalvelut, ja ne veloitetaan vasta vahvistuksen jälkeen, tänään niistä ei veloiteta mitään. Pyynnöstä saatavat palvelut hinnoitellaan erikseen.",
+    "extrasChargeNote": "Kiinteähintaiset palvelut veloitetaan tänään yhdellä maksulla. Conciergen vahvistamat palvelut veloitetaan tänään ja hyvitetään automaattisesti 24 tunnin kuluessa, jos niitä ei voida taata. Tarjouspyynnöistä ei veloiteta nyt mitään.",
     "extras": {
       "transfer-porto": {
         "name": "Lentokenttäkuljetus Porto",
@@ -1564,7 +1564,7 @@
     "seeAllExperiences": "Näytä kaikki elämykset",
     "chapterLabel": "Luku {{num}}",
     "skipCustomize": "Ohita mukautus",
-    "seeMore": "Näytä {{count}} lisää",
+    "seeMore": "Näytä lisää ({{count}})",
     "remove": "Poista",
     "conciergeQuote": "Conciergen hinnoittelema",
     "fromPrice": "alk. {{price}}",

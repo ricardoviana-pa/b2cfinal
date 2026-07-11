@@ -736,11 +736,21 @@ export default function CheckoutPage() {
           </span>
         </div>
       )}
-      {/* Extras com preço fixo */}
+      {/* Extras com preço fixo — com remover inline (spec §8) */}
       {paidExtras.map(({ item, amount }) => (
-        <div key={item.sku} className="flex justify-between text-[13px] checkout-row-in">
-          <span className="text-pa-earth">{t(`checkout.extras.${item.sku}.name`)}</span>
-          <span className="text-pa-dark tabular-nums">{formatEur(amount!, lang)}</span>
+        <div key={item.sku} className="flex justify-between items-center gap-2 text-[13px] checkout-row-in">
+          <span className="flex items-center gap-1.5 text-pa-earth min-w-0">
+            <button
+              type="button"
+              onClick={() => toggleExtra(item)}
+              aria-label={`${t("checkout.remove", "Remove")}: ${t(`checkout.extras.${item.sku}.name`)}`}
+              className="shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors"
+            >
+              <X className="w-3 h-3" />
+            </button>
+            <span className="truncate">{t(`checkout.extras.${item.sku}.name`)}</span>
+          </span>
+          <span className="text-pa-dark tabular-nums shrink-0">{formatEur(amount!, lang)}</span>
         </div>
       ))}
       {/* Flex */}
@@ -764,9 +774,19 @@ export default function CheckoutPage() {
         {t("checkout.conciergeRequests", "Concierge requests")}
       </p>
       {requestExtras.map(({ item }) => (
-        <div key={item.sku} className="flex justify-between text-[12.5px]">
-          <span className="text-pa-earth">{t(`checkout.extras.${item.sku}.name`)}</span>
-          <span className="text-pa-stone-aa">{t("checkout.onRequestShort", "on request")}</span>
+        <div key={item.sku} className="flex justify-between items-center gap-2 text-[12.5px]">
+          <span className="flex items-center gap-1.5 text-pa-earth min-w-0">
+            <button
+              type="button"
+              onClick={() => toggleExtra(item)}
+              aria-label={`${t("checkout.remove", "Remove")}: ${t(`checkout.extras.${item.sku}.name`)}`}
+              className="shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors"
+            >
+              <X className="w-3 h-3" />
+            </button>
+            <span className="truncate">{t(`checkout.extras.${item.sku}.name`)}</span>
+          </span>
+          <span className="text-pa-stone-aa shrink-0">{t("checkout.onRequestShort", "on request")}</span>
         </div>
       ))}
       <p className="text-[10.5px] text-pa-stone-aa leading-snug pt-0.5">

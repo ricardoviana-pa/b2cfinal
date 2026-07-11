@@ -1309,12 +1309,12 @@
     "shortFree": "Free cancellation until {{date}}",
     "shortFreeNoDate_one": "Free cancellation until {{count}} day before check-in",
     "shortFreeNoDate_other": "Free cancellation until {{count}} days before check-in",
-    "shortHalf": "50% refund until {{date}} — non-refundable after",
-    "shortHalfNoDate_one": "50% refund until {{count}} day before check-in — non-refundable after",
-    "shortHalfNoDate_other": "50% refund until {{count}} days before check-in — non-refundable after",
-    "shortNonRefundable": "Non-refundable rate — no refund if you cancel",
+    "shortHalf": "50% refund until {{date}}: non-refundable after",
+    "shortHalfNoDate_one": "50% refund until {{count}} day before check-in: non-refundable after",
+    "shortHalfNoDate_other": "50% refund until {{count}} days before check-in: non-refundable after",
+    "shortNonRefundable": "Non-refundable rate: no refund if you cancel",
     "shortWindowPassed": "For these dates the booking is non-refundable if cancelled",
-    "shortGeneric": "Cancellation terms apply — see our cancellation policy"
+    "shortGeneric": "Cancellation terms apply: see our cancellation policy"
   },
   "urgency": {
     "highDemand": "High demand",
@@ -1410,7 +1410,7 @@
     "qtyLabel": "Quantity",
     "peopleLabel": "People",
     "sessionsLabel": "Sessions",
-    "extrasChargeNote": "Extras are confirmed by our concierge and charged only after confirmation, nothing is charged for them today. On request items are quoted individually.",
+    "extrasChargeNote": "Items with a fixed price are charged today, in a single payment. Services confirmed by the concierge are charged today and automatically refunded within 24 hours if they cannot be guaranteed. Requests under quotation carry no charge now.",
     "extras": {
       "transfer-porto": {
         "name": "Porto airport transfer",
@@ -1469,7 +1469,7 @@
         "desc": "A day between the trail, the water and the table."
       },
       "exp-ebike": {
-        "name": "E bike wild tour",
+        "name": "Electric bike tour",
         "desc": "The countryside on an electric bike, with a guide."
       },
       "exp-horseback": {
@@ -1564,7 +1564,7 @@
     "seeAllExperiences": "See all experiences",
     "chapterLabel": "Chapter {{num}}",
     "skipCustomize": "Skip personalization",
-    "seeMore": "See {{count}} more",
+    "seeMore": "See more ({{count}})",
     "remove": "Remove",
     "conciergeQuote": "Quoted by your concierge",
     "fromPrice": "from {{price}}",

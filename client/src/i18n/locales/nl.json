@@ -1202,12 +1202,12 @@
     "shortFree": "Gratis annuleren tot {{date}}",
     "shortFreeNoDate_one": "Gratis annuleren tot {{count}} dag vóór check-in",
     "shortFreeNoDate_other": "Gratis annuleren tot {{count}} dagen vóór check-in",
-    "shortHalf": "50% terugbetaling tot {{date}} — daarna niet restitueerbaar",
-    "shortHalfNoDate_one": "50% terugbetaling tot {{count}} dag vóór check-in — daarna niet restitueerbaar",
-    "shortHalfNoDate_other": "50% terugbetaling tot {{count}} dagen vóór check-in — daarna niet restitueerbaar",
-    "shortNonRefundable": "Niet-restitueerbaar tarief — geen terugbetaling bij annulering",
+    "shortHalf": "50% terugbetaling tot {{date}}: daarna niet restitueerbaar",
+    "shortHalfNoDate_one": "50% terugbetaling tot {{count}} dag vóór check-in: daarna niet restitueerbaar",
+    "shortHalfNoDate_other": "50% terugbetaling tot {{count}} dagen vóór check-in: daarna niet restitueerbaar",
+    "shortNonRefundable": "Niet-restitueerbaar tarief: geen terugbetaling bij annulering",
     "shortWindowPassed": "Voor deze data is de boeking bij annulering niet restitueerbaar",
-    "shortGeneric": "Er gelden annuleringsvoorwaarden — zie ons annuleringsbeleid"
+    "shortGeneric": "Er gelden annuleringsvoorwaarden: zie ons annuleringsbeleid"
   },
   "whatsapp": {
     "title": "Contact via WhatsApp",
@@ -1410,7 +1410,7 @@
     "qtyLabel": "Aantal",
     "peopleLabel": "Personen",
     "sessionsLabel": "Sessies",
-    "extrasChargeNote": "Extra's worden bevestigd door onze concierge en pas na bevestiging in rekening gebracht, vandaag wordt er niets voor afgeschreven. Items op aanvraag worden individueel geoffreerd.",
+    "extrasChargeNote": "Items met een vaste prijs worden vandaag in één betaling afgerekend. Services met bevestiging door de concierge worden vandaag afgerekend en automatisch binnen 24 uur terugbetaald als ze niet gegarandeerd kunnen worden. Aanvragen op offerte worden nu niet in rekening gebracht.",
     "extras": {
       "transfer-porto": {
         "name": "Luchthaventransfer Porto",
@@ -1469,7 +1469,7 @@
         "desc": "Een dag tussen het pad, het water en de tafel."
       },
       "exp-ebike": {
-        "name": "E bike tour",
+        "name": "Elektrische fietstocht",
         "desc": "Het platteland op een elektrische fiets, met gids."
       },
       "exp-horseback": {
@@ -1564,7 +1564,7 @@
     "seeAllExperiences": "Alle ervaringen bekijken",
     "chapterLabel": "Hoofdstuk {{num}}",
     "skipCustomize": "Personalisatie overslaan",
-    "seeMore": "Nog {{count}} bekijken",
+    "seeMore": "Meer bekijken ({{count}})",
     "remove": "Verwijderen",
     "conciergeQuote": "Offerte door uw concierge",
     "fromPrice": "vanaf {{price}}",

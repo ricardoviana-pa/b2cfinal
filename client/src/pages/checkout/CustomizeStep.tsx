@@ -68,6 +68,9 @@ export interface ExtraSelection {
 
 export const EXTRA_CHAPTERS: ExtraChapter[] = ["arrival", "home", "table", "wellness", "experiences"];
 
+/** Altura somada dos dois headers fixos: top bar do checkout (61px) + nav de capítulos (~45px). */
+const STICKY_OFFSET = 106;
+
 /** Linhas visíveis por grupo antes de "Ver mais" (2.1 §1 e critério 6). */
 const GROUP_VISIBLE: Record<ExtraChapter, number> = {
   arrival: 3,
@@ -139,7 +142,10 @@ function ChapterReveal({ children, className, id }: { children: React.ReactNode;
           io.disconnect();
         }
       },
-      { rootMargin: "0px 0px -10% 0px" },
+      // Trigger antecipado (fixes 12 jul §3): revela 240px antes de entrar no
+      // viewport — em scroll rápido a secção já está visível quando o hóspede
+      // chega, eliminando o "ecrã vazio" da secção por revelar.
+      { rootMargin: "0px 0px 240px 0px" },
     );
     io.observe(el);
     return () => io.disconnect();
@@ -302,14 +308,14 @@ function OptionRow({
     <div className={cn("px-5 py-4 transition-colors", selected && "bg-pa-warm")}>
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="flex items-center gap-1.5 flex-wrap text-[15px] font-medium text-pa-dark">
+          {item.popular && (
+            <p className="text-[9px] font-medium tracking-[0.12em] uppercase text-pa-gold mb-1">
+              {t("checkout.mostChosen", "Most chosen")}
+            </p>
+          )}
+          <p className="flex items-center gap-1.5 text-[15px] font-medium text-pa-dark">
             {selected && <Check className="w-3.5 h-3.5 text-pa-gold shrink-0" strokeWidth={2.5} />}
             {t(`checkout.extras.${item.sku}.name`)}
-            {item.popular && (
-              <span className="text-[9px] font-medium tracking-wider uppercase px-1.5 py-0.5 bg-white text-pa-gold border border-pa-sand rounded-sm">
-                {t("checkout.mostChosen", "Most chosen")}
-              </span>
-            )}
           </p>
           <p className={cn("text-[13px] leading-snug mt-0.5", selected && !onRequest ? "text-pa-dark" : "text-pa-earth")}>
             {selected && !onRequest
@@ -339,7 +345,7 @@ function OptionRow({
             <button
               type="button"
               onClick={() => onToggle(item)}
-              className="mt-1.5 min-h-[32px] px-4 rounded-full border border-pa-sand bg-white text-[11px] font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors"
+              className="mt-1.5 min-h-[44px] sm:min-h-[32px] px-4 rounded-full border border-pa-sand bg-white text-[11px] font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors"
             >
               {onRequest ? t("checkout.request", "Request") : t("checkout.add", "Add")}
             </button>
@@ -443,26 +449,41 @@ export default function CustomizeStep({
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [activeChapter, setActiveChapter] = useState<ExtraChapter>("arrival");
 
-  // Scrollspy (2.1 §5): o capítulo na zona de leitura fica ativo na nav
+  // Scrollspy por posição de scroll (fixes 12 jul §2): o ativo é o ÚLTIMO
+  // capítulo cujo título já passou o offset dos dois headers fixos — um e um
+  // só, determinista em qualquer posição da página (bandas de interseção
+  // permitiam dois ativos e falhavam no topo).
   useEffect(() => {
-    const sections = EXTRA_CHAPTERS.map((c) => document.getElementById(`chapter-${c}`)).filter(Boolean) as HTMLElement[];
-    if (!sections.length) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveChapter(entry.target.id.replace("chapter-", "") as ExtraChapter);
-          }
-        }
-      },
-      { rootMargin: "-25% 0px -65% 0px" },
-    );
-    sections.forEach((s) => io.observe(s));
-    return () => io.disconnect();
+    const onScroll = () => {
+      let current: ExtraChapter = EXTRA_CHAPTERS[0];
+      for (const c of EXTRA_CHAPTERS) {
+        const el = document.getElementById(`chapter-${c}`);
+        if (el && el.getBoundingClientRect().top <= STICKY_OFFSET + 48) current = c;
+      }
+      setActiveChapter((prev) => (prev === current ? prev : current));
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, [catalog.length]);
 
+  // Salto calculado (não scrollIntoView: frágil com dois headers sticky) —
+  // deixa o título do capítulo visível logo abaixo da nav.
   const jumpTo = (chapter: ExtraChapter) => {
-    document.getElementById(`chapter-${chapter}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const el = document.getElementById(`chapter-${chapter}`);
+    if (!el) return;
+    const target = Math.max(0, el.getBoundingClientRect().top + window.scrollY - STICKY_OFFSET - 16);
+    window.scrollTo({ top: target, behavior: "smooth" });
+    // O smooth scroll pode ser interrompido (rAF pausado, gesto do utilizador,
+    // Safari antigo). Garante a chegada: se ao fim de 800ms estamos longe do
+    // destino, completa de forma instantânea.
+    window.setTimeout(() => {
+      if (Math.abs(window.scrollY - target) > 60) window.scrollTo({ top: target, behavior: "auto" });
+    }, 800);
   };
 
   const INCLUDED_ICONS: Record<string, typeof Check> = {
@@ -594,7 +615,7 @@ export default function CustomizeStep({
               <button
                 type="button"
                 onClick={() => setExpanded((prev) => ({ ...prev, [chapter]: true }))}
-                className="mt-3 inline-flex items-center gap-1 text-[12px] text-pa-gold hover:text-pa-dark underline underline-offset-2 transition-colors"
+                className="mt-1 inline-flex items-center gap-1 min-h-[44px] text-[12px] text-pa-gold hover:text-pa-dark underline underline-offset-2 transition-colors"
               >
                 {t("checkout.seeMore", { count: hiddenCount })} <ChevronDown className="w-3 h-3" />
               </button>
@@ -636,7 +657,7 @@ export default function CustomizeStep({
                               type="button"
                               onClick={() => onToggle(item)}
                               className={cn(
-                                "min-h-[30px] px-3.5 rounded-full border text-[10.5px] font-medium tracking-[0.08em] uppercase transition-colors",
+                                "min-h-[44px] sm:min-h-[30px] px-3.5 rounded-full border text-[10.5px] font-medium tracking-[0.08em] uppercase transition-colors",
                                 selected
                                   ? "bg-pa-dark border-pa-dark text-white"
                                   : "border-pa-sand text-pa-earth hover:border-pa-dark hover:text-pa-dark",

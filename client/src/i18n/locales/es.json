@@ -1202,12 +1202,12 @@
     "shortFree": "Cancelación gratuita hasta el {{date}}",
     "shortFreeNoDate_one": "Cancelación gratuita hasta {{count}} día antes de la llegada",
     "shortFreeNoDate_other": "Cancelación gratuita hasta {{count}} días antes de la llegada",
-    "shortHalf": "Reembolso del 50% hasta el {{date}} — no reembolsable después",
-    "shortHalfNoDate_one": "Reembolso del 50% hasta {{count}} día antes de la llegada — no reembolsable después",
-    "shortHalfNoDate_other": "Reembolso del 50% hasta {{count}} días antes de la llegada — no reembolsable después",
-    "shortNonRefundable": "Tarifa no reembolsable — sin reembolso en caso de cancelación",
+    "shortHalf": "Reembolso del 50% hasta el {{date}}: no reembolsable después",
+    "shortHalfNoDate_one": "Reembolso del 50% hasta {{count}} día antes de la llegada: no reembolsable después",
+    "shortHalfNoDate_other": "Reembolso del 50% hasta {{count}} días antes de la llegada: no reembolsable después",
+    "shortNonRefundable": "Tarifa no reembolsable: sin reembolso en caso de cancelación",
     "shortWindowPassed": "Para estas fechas, la reserva no es reembolsable en caso de cancelación",
-    "shortGeneric": "Se aplican condiciones de cancelación — consulte nuestra política de cancelación"
+    "shortGeneric": "Se aplican condiciones de cancelación: consulte nuestra política de cancelación"
   },
   "whatsapp": {
     "title": "Contactar por WhatsApp",
@@ -1410,7 +1410,7 @@
     "qtyLabel": "Cantidad",
     "peopleLabel": "Personas",
     "sessionsLabel": "Sesiones",
-    "extrasChargeNote": "Los extras los confirma nuestro concierge y se cobran solo tras la confirmación, hoy no se cobra nada por ellos. Los artículos bajo petición se presupuestan individualmente.",
+    "extrasChargeNote": "Los artículos con precio cerrado se cobran hoy, en un único pago. Los servicios con confirmación del concierge se cobran hoy y se reembolsan automáticamente en 24 horas si no se pueden garantizar. Las solicitudes bajo presupuesto no conllevan ningún cobro ahora.",
     "extras": {
       "transfer-porto": {
         "name": "Traslado aeropuerto de Oporto",
@@ -1469,7 +1469,7 @@
         "desc": "Un día entre el sendero, el agua y la mesa."
       },
       "exp-ebike": {
-        "name": "Paseo en e bike",
+        "name": "Paseo en bicicleta eléctrica",
         "desc": "El campo en bicicleta eléctrica, con guía."
       },
       "exp-horseback": {
@@ -1564,7 +1564,7 @@
     "seeAllExperiences": "Ver todas las experiencias",
     "chapterLabel": "Capítulo {{num}}",
     "skipCustomize": "Omitir personalización",
-    "seeMore": "Ver {{count}} más",
+    "seeMore": "Ver más ({{count}})",
     "remove": "Quitar",
     "conciergeQuote": "Presupuesto por su concierge",
     "fromPrice": "desde {{price}}",

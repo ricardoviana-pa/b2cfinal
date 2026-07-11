@@ -1202,12 +1202,12 @@
     "shortFree": "Annulation gratuite jusqu'au {{date}}",
     "shortFreeNoDate_one": "Annulation gratuite jusqu'à {{count}} jour avant l'arrivée",
     "shortFreeNoDate_other": "Annulation gratuite jusqu'à {{count}} jours avant l'arrivée",
-    "shortHalf": "Remboursement de 50 % jusqu'au {{date}} — non remboursable ensuite",
-    "shortHalfNoDate_one": "Remboursement de 50 % jusqu'à {{count}} jour avant l'arrivée — non remboursable ensuite",
-    "shortHalfNoDate_other": "Remboursement de 50 % jusqu'à {{count}} jours avant l'arrivée — non remboursable ensuite",
-    "shortNonRefundable": "Tarif non remboursable — aucun remboursement en cas d'annulation",
+    "shortHalf": "Remboursement de 50 % jusqu'au {{date}}: non remboursable ensuite",
+    "shortHalfNoDate_one": "Remboursement de 50 % jusqu'à {{count}} jour avant l'arrivée: non remboursable ensuite",
+    "shortHalfNoDate_other": "Remboursement de 50 % jusqu'à {{count}} jours avant l'arrivée: non remboursable ensuite",
+    "shortNonRefundable": "Tarif non remboursable: aucun remboursement en cas d'annulation",
     "shortWindowPassed": "Pour ces dates, la réservation n'est pas remboursable en cas d'annulation",
-    "shortGeneric": "Des conditions d'annulation s'appliquent — consultez notre politique d'annulation"
+    "shortGeneric": "Des conditions d'annulation s'appliquent: consultez notre politique d'annulation"
   },
   "whatsapp": {
     "title": "Contacter via WhatsApp",
@@ -1410,7 +1410,7 @@
     "qtyLabel": "Quantité",
     "peopleLabel": "Personnes",
     "sessionsLabel": "Séances",
-    "extrasChargeNote": "Les extras sont confirmés par notre concierge et débités uniquement après confirmation, rien n'est débité pour eux aujourd'hui. Les demandes sur mesure sont devisées individuellement.",
+    "extrasChargeNote": "Les éléments à prix fixe sont débités aujourd'hui, en un seul paiement. Les services confirmés par le concierge sont débités aujourd'hui et remboursés automatiquement sous 24 heures s'ils ne peuvent pas être garantis. Les demandes sur devis ne donnent lieu à aucun débit maintenant.",
     "extras": {
       "transfer-porto": {
         "name": "Transfert aéroport de Porto",
@@ -1564,7 +1564,7 @@
     "seeAllExperiences": "Voir toutes les expériences",
     "chapterLabel": "Chapitre {{num}}",
     "skipCustomize": "Passer la personnalisation",
-    "seeMore": "Voir {{count}} de plus",
+    "seeMore": "Voir plus ({{count}})",
     "remove": "Retirer",
     "conciergeQuote": "Devis par votre concierge",
     "fromPrice": "dès {{price}}",
