@@ -15,6 +15,7 @@ import { z } from "zod";
 import { publicProcedure, router } from "../_core/trpc";
 import {
   curateExtras,
+  destinationIsSouth,
   FLEX_CONFIG,
   CHECKOUT_RECEPTION,
   CHECKOUT_INCLUDED_KEYS,
@@ -341,6 +342,9 @@ export const checkoutRouter = router({
         month: input?.month,
         petsAllowed: await listingAllowsPets(input?.listingId),
       }),
+      // B2: aeroporto proposto por defeito (o par Porto/Lisboa vai completo;
+      // o cliente mostra um seletor no card)
+      defaultAirport: destinationIsSouth(input?.destination) ? ("lisbon" as const) : ("porto" as const),
       reception: CHECKOUT_RECEPTION,
       included: CHECKOUT_INCLUDED_KEYS,
       flex: FLEX_CONFIG,

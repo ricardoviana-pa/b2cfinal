@@ -45,6 +45,7 @@ export interface CatalogExtra {
   feature?: boolean;
   parentSku?: string;
   scarcity?: boolean;
+  region?: "north" | "south";
   rank?: number;
   suggestedQty?: number;
   suggestedDays?: number;
@@ -515,7 +516,7 @@ function FeatureCard(props: {
 }
 
 export default function CustomizeStep({
-  catalog, included, reception, receptionChoice, selection, nights, guests, propertyName, lang, destination,
+  catalog, included, reception, receptionChoice, selection, nights, guests, propertyName, lang, destination, defaultAirport,
   onToggle, onAdjust, onChooseReception, onSkip, receptionNudge,
 }: {
   catalog: CatalogExtra[];
@@ -528,6 +529,7 @@ export default function CustomizeStep({
   propertyName: string;
   lang: string;
   destination?: string;
+  defaultAirport?: "porto" | "lisbon";
   onToggle: (item: CatalogExtra) => void;
   onAdjust: (sku: string, patch: ExtraSelection) => void;
   onChooseReception: (c: ReceptionChoice) => void;
@@ -537,6 +539,7 @@ export default function CustomizeStep({
 }) {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [airportBySku, setAirportBySku] = useState<Record<string, string>>({});
   const [activeChapter, setActiveChapter] = useState<ExtraChapter>("arrival");
 
   // Scrollspy por posição de scroll (fixes 12 jul §2): o ativo é o ÚLTIMO
@@ -644,9 +647,18 @@ export default function CustomizeStep({
         if (!chapterItems.length && !(isArrival && reception)) return null;
 
         const featureItem = !isExperiences ? chapterItems.find((i) => i.feature && i.photo) : undefined;
+        // B2 (12 jul): o par de transfers Porto/Lisboa vira UMA linha por
+        // viatura com seletor de aeroporto; o defeito é o mais próximo da casa
+        const transferPair = (skus: string[]) => {
+          const found = skus.map((k) => chapterItems.find((i) => i.sku === k)).filter(Boolean) as CatalogExtra[];
+          return found.length === 2 ? found : null;
+        };
+        const carPair = isArrival ? transferPair(["transfer-porto", "transfer-lisbon"]) : null;
+        const vanPair = isArrival ? transferPair(["transfer-porto-van", "transfer-lisbon-van"]) : null;
+        const pairedSkus = new Set([...(carPair ?? []), ...(vanPair ?? [])].map((i) => i.sku));
         // Progressive disclosure (§5.0): filhos (kit pet, comida) só aparecem
         // com o pai (taxa de animais) selecionado
-        const rows = chapterItems.filter((i) => i !== featureItem && (!i.parentSku || selection[i.parentSku] != null));
+        const rows = chapterItems.filter((i) => i !== featureItem && !pairedSkus.has(i.sku) && (!i.parentSku || selection[i.parentSku] != null));
         const isOpen = !!expanded[chapter];
         const visibleRows = isExperiences ? [] : isOpen ? rows : rows.slice(0, GROUP_VISIBLE[chapter]);
         const hiddenCount = isExperiences ? 0 : rows.length - visibleRows.length;
@@ -674,6 +686,65 @@ export default function CustomizeStep({
                   onToggle={onToggle}
                   onAdjust={onAdjust}
                 />
+              </div>
+            )}
+
+            {/* Transfers com seletor de aeroporto (B2) */}
+            {(carPair || vanPair) && (
+              <div className="bg-white border border-pa-sand rounded-lg divide-y divide-pa-sand overflow-hidden mb-3">
+                {[carPair, vanPair].filter(Boolean).map((pair) => {
+                  const [porto, lisbon] = (pair as CatalogExtra[])[0].sku.includes("porto")
+                    ? (pair as CatalogExtra[])
+                    : [...(pair as CatalogExtra[])].reverse();
+                  const activeSku = selection[lisbon.sku] != null ? "lisbon" : selection[porto.sku] != null ? "porto" : (defaultAirport ?? "porto");
+                  const active = activeSku === "lisbon" ? lisbon : porto;
+                  const other = activeSku === "lisbon" ? porto : lisbon;
+                  const switchAirport = (to: "porto" | "lisbon") => {
+                    if (to === activeSku) return;
+                    const target = to === "lisbon" ? lisbon : porto;
+                    const prev = selection[active.sku];
+                    if (prev) {
+                      onToggle(active); // remove o atual
+                      onToggle(target); // adiciona o novo
+                      if (prev.qty && prev.qty > 1) onAdjust(target.sku, { qty: prev.qty });
+                    }
+                    setAirportBySku((m) => ({ ...m, [porto.sku]: to }));
+                  };
+                  const shownAirport = (airportBySku[porto.sku] as "porto" | "lisbon" | undefined) ?? activeSku;
+                  const shown = shownAirport === "lisbon" ? lisbon : porto;
+                  const shownFinal = selection[active.sku] != null ? active : shown;
+                  return (
+                    <div key={porto.sku}>
+                      <div className="px-5 pt-3.5 pb-0 flex items-center gap-2">
+                        <span className="text-[11px] text-pa-stone-aa">{t("checkout.airport", "Airport")}:</span>
+                        {(["porto", "lisbon"] as const).map((ap) => (
+                          <button
+                            key={ap}
+                            type="button"
+                            onClick={() => { switchAirport(ap); setAirportBySku((m) => ({ ...m, [porto.sku]: ap })); }}
+                            className={cn(
+                              "text-[11.5px] px-3 py-1 rounded-full border transition-colors",
+                              (selection[active.sku] != null ? activeSku : shownAirport) === ap
+                                ? "border-pa-dark bg-pa-dark text-white"
+                                : "border-pa-sand text-pa-earth hover:border-pa-dark",
+                            )}
+                          >
+                            {ap === "porto" ? "Porto" : "Lisboa"}
+                          </button>
+                        ))}
+                      </div>
+                      <OptionRow
+                        item={shownFinal}
+                        sel={selection[shownFinal.sku]}
+                        lang={lang}
+                        guests={guests}
+                        nights={nights}
+                        onToggle={onToggle}
+                        onAdjust={onAdjust}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             )}
 

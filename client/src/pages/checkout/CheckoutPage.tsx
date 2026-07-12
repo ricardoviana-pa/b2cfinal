@@ -1323,6 +1323,7 @@ export default function CheckoutPage() {
                   propertyName={displayName}
                   lang={lang}
                   destination={intent.destination ?? undefined}
+                  defaultAirport={(extrasQuery.data as any)?.defaultAirport}
                   onToggle={toggleExtra}
                   onAdjust={adjustExtra}
                   onChooseReception={chooseReception}

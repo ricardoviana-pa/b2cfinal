@@ -174,14 +174,18 @@ export interface CuratedExtra extends CheckoutExtra {
   suggestedDays?: number;
 }
 
+const SOUTH_DESTINATIONS = new Set(["lisbon", "alentejo", "algarve"]);
+/** Aeroporto proposto por defeito para a casa (B2: o mais próximo, trocável). */
+export function destinationIsSouth(destination?: string): boolean {
+  return destination ? SOUTH_DESTINATIONS.has(destination.toLowerCase()) : false;
+}
+
 export function curateExtras(ctx: CurationContext): CuratedExtra[] {
   const coastal = ctx.destination ? COASTAL.has(ctx.destination.toLowerCase()) : false;
   const summer = ctx.month != null && ctx.month >= 5 && ctx.month <= 9;
 
-  const SOUTH = new Set(["lisbon", "alentejo", "algarve"]);
-  const isSouth = ctx.destination ? SOUTH.has(ctx.destination.toLowerCase()) : false;
+  const isSouth = destinationIsSouth(ctx.destination);
   return CHECKOUT_EXTRAS.filter((e) => !e.petsOnly || ctx.petsAllowed)
-    .filter((e) => !e.region || (e.region === "south") === isSouth)
     .map((e): CuratedExtra => {
     let rank = e.baseRank;
     const out: CuratedExtra = { ...e, rank };
@@ -198,6 +202,9 @@ export function curateExtras(ctx: CurationContext): CuratedExtra[] {
         out.suggestedQty = Math.min(e.maxQty ?? suggested, suggested);
       }
     }
+    // Transfers do aeroporto não-defeito ficam atrás (o cliente junta o par
+    // numa linha com seletor; B2 12 jul)
+    if (e.region && (e.region === "south") !== isSouth) rank += 1;
     // Crianças na reserva: berço e cadeira sobem para os visíveis (§5.0)
     if ((ctx.children ?? 0) > 0 && (e.sku === "travel-crib" || e.sku === "baby-chair")) {
       rank -= 8;
