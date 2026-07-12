@@ -675,7 +675,12 @@ export default function CustomizeStep({
         // com o pai (taxa de animais) selecionado
         const rows = chapterItems.filter((i) => i !== featureItem && !pairedSkus.has(i.sku) && (!i.parentSku || selection[i.parentSku] != null));
         const isOpen = !!expanded[chapter];
-        const visibleRows = isExperiences ? [] : isOpen ? rows : rows.slice(0, GROUP_VISIBLE[chapter]);
+        // Casa pet-friendly: 3 linhas visíveis para a taxa de animais aparecer
+        // (máximo do critério 6; babysitter continua no Ver mais)
+        const visibleCount = chapter === "home" && rows.some((r) => r.sku === "pet-fee")
+          ? 3
+          : GROUP_VISIBLE[chapter];
+        const visibleRows = isExperiences ? [] : isOpen ? rows : rows.slice(0, visibleCount);
         const hiddenCount = isExperiences ? 0 : rows.length - visibleRows.length;
 
         return (
