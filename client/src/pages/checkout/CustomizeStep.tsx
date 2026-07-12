@@ -680,7 +680,12 @@ export default function CustomizeStep({
         const visibleCount = chapter === "home" && rows.some((r) => r.sku === "pet-fee")
           ? 3
           : GROUP_VISIBLE[chapter];
-        const visibleRows = isExperiences ? [] : isOpen ? rows : rows.slice(0, visibleCount);
+        // Filhos revelados por progressive disclosure (kit/comida pet) são
+        // contextuais, não "catálogo" — aparecem SEMPRE logo abaixo do pai
+        // selecionado, nunca escondidos atrás do Ver mais.
+        const baseVisible = isExperiences ? [] : isOpen ? rows : rows.slice(0, visibleCount);
+        const revealedChildren = rows.filter((i) => i.parentSku && !baseVisible.includes(i));
+        const visibleRows = [...baseVisible, ...revealedChildren];
         const hiddenCount = isExperiences ? 0 : rows.length - visibleRows.length;
 
         return (
