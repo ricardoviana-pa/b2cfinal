@@ -207,6 +207,9 @@ export function curateExtras(ctx: CurationContext): CuratedExtra[] {
     // Transfers do aeroporto não-defeito ficam atrás (o cliente junta o par
     // numa linha com seletor; B2 12 jul)
     if (e.region && (e.region === "south") !== isSouth) rank += 1;
+    // Casa pet-friendly: a taxa de animais sobe para os visíveis — quem traz
+    // animal tem de a declarar; atrás do Ver mais era invisível (12 jul)
+    if (e.sku === "pet-fee" && ctx.petsAllowed) rank -= 6;
     // Crianças na reserva: berço e cadeira sobem para os visíveis (§5.0)
     if ((ctx.children ?? 0) > 0 && (e.sku === "travel-crib" || e.sku === "baby-chair")) {
       rank -= 8;
