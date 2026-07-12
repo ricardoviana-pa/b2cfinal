@@ -21,6 +21,8 @@ There is a widespread worry that "we broke payments / Guesty sync." Here is the 
 
 If you read nothing else, read §2 and §3.
 
+> **Everything still pending is in a single companion file: [`docs/checkout_pending.md`](./checkout_pending.md)** — the complete backlog by owner (critical path, product decisions, engineering queue) and inviolable rules. §7 below is a condensed version of it.
+
 ---
 
 ## 1. What this project is
