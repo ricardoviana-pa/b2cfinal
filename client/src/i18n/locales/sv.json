@@ -1593,7 +1593,8 @@
       "hosted": {
         "name": "Personlig mottagning",
         "desc": "En värd tar emot dig, visar huset och får allt att fungera."
-      }
+      },
+      "lateNote": "Efter kl {{hour}}: {{price}}."
     },
     "seeAll": "Se alla tjänster",
     "seeAllExperiences": "Se alla upplevelser",
@@ -1628,6 +1629,11 @@
     },
     "perPersonDay": "per person · dag",
     "allDays": "Varje dag",
-    "airport": "Flygplats"
+    "airport": "Flygplats",
+    "confirm24hNote": "Om vi inte kan garantera det återbetalas raden automatiskt.",
+    "noChargeNow": "ingen debitering nu",
+    "perPersonHour": "per barn · timme",
+    "hoursLabel": "Timmar",
+    "saveIssue": "Återansluter, ändringar väntar"
   }
 }

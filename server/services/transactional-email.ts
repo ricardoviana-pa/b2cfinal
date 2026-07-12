@@ -824,7 +824,11 @@ export async function sendCheckoutGuestConfirmation(d: {
         eur(receptionAmt, pt),
       );
     }
-    for (const e of paidExtras) priceLines += line(extraLabel(e), eur(Number(e.amount), pt));
+    for (const e of paidExtras) {
+      // included_selectable com qty 1: mostrar Incluído, nunca 0 €
+      const v = Number(e.amount) === 0 ? (pt ? "Incluído" : "Included") : eur(Number(e.amount), pt);
+      priceLines += line(extraLabel(e), v);
+    }
     const flexAmt = d.flex && d.flexPrice ? d.flexPrice : 0;
     if (flexAmt > 0) priceLines += line(pt ? "Flex, remarcação garantida" : "Flex, guaranteed rebooking", eur(flexAmt, pt));
 

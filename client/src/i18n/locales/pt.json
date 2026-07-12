@@ -1593,7 +1593,8 @@
       "hosted": {
         "name": "Receção presencial",
         "desc": "Um anfitrião recebe os hóspedes, faz o tour da casa e deixa tudo a funcionar."
-      }
+      },
+      "lateNote": "Depois das {{hour}}h: {{price}}."
     },
     "seeAll": "Ver todos os serviços",
     "seeAllExperiences": "Ver todas as experiências",
@@ -1628,6 +1629,11 @@
     },
     "perPersonDay": "por pessoa · dia",
     "allDays": "Todos os dias",
-    "airport": "Aeroporto"
+    "airport": "Aeroporto",
+    "confirm24hNote": "Se não conseguirmos garantir, devolvemos essa linha automaticamente.",
+    "noChargeNow": "sem cobrança agora",
+    "perPersonHour": "por criança · hora",
+    "hoursLabel": "Horas",
+    "saveIssue": "A restabelecer ligação, alterações por guardar"
   }
 }

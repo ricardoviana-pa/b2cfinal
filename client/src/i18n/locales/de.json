@@ -1593,7 +1593,8 @@
       "hosted": {
         "name": "Persönlicher Empfang",
         "desc": "Ein Gastgeber empfängt Sie, zeigt das Haus und bringt alles zum Laufen."
-      }
+      },
+      "lateNote": "Nach {{hour}} Uhr: {{price}}."
     },
     "seeAll": "Alle Services ansehen",
     "seeAllExperiences": "Alle Erlebnisse ansehen",
@@ -1628,6 +1629,11 @@
     },
     "perPersonDay": "pro Person · Tag",
     "allDays": "Jeden Tag",
-    "airport": "Flughafen"
+    "airport": "Flughafen",
+    "confirm24hNote": "Können wir es nicht garantieren, wird die Position automatisch erstattet.",
+    "noChargeNow": "jetzt keine Belastung",
+    "perPersonHour": "pro Kind · Stunde",
+    "hoursLabel": "Stunden",
+    "saveIssue": "Verbindung wird wiederhergestellt, Änderungen ausstehend"
   }
 }

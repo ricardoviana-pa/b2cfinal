@@ -46,6 +46,7 @@ export interface CatalogExtra {
   parentSku?: string;
   scarcity?: boolean;
   region?: "north" | "south";
+  unitKey?: "hour";
   rank?: number;
   suggestedQty?: number;
   suggestedDays?: number;
@@ -250,7 +251,7 @@ function ReceptionChoiceCards({
               {formatEur(choice?.type === "hosted" && choice?.late ? config.hostedLatePrice : config.hostedPrice, lang)}
             </span>
           }
-          desc={t("checkout.reception.hosted.desc")}
+          desc={`${t("checkout.reception.hosted.desc")} ${t("checkout.reception.lateNote", { hour: config.lateFromHour, price: formatEur(config.hostedLatePrice, lang) })}`}
           onClick={() => onChoose({ type: "hosted", late: choice?.type === "hosted" ? choice.late : false })}
         />
       </div>
@@ -292,7 +293,10 @@ function priceFormula(item: CatalogExtra, sel: ExtraSelection, lang: string, t: 
     case "per_day": return `${d(sel.days ?? 1)} × ${u}`;
     case "per_unit": return `${sel.qty ?? 1} × ${u}`;
     case "per_person": return `${p(sel.people ?? item.minPeople ?? 1)} × ${u}`;
-    case "per_person_per_unit": return `${p(sel.people ?? 1)} × ${sel.sessions ?? 1} × ${u}`;
+    case "per_person_per_unit": {
+      const unit = item.unitKey === "hour" ? t("checkout.hoursLabel", "Hours") : t("checkout.sessionsLabel", "Sessions");
+      return `${p(sel.people ?? 1)} × ${sel.sessions ?? 1} ${String(unit).toLowerCase()} × ${u}`;
+    }
     case "per_person_per_day": return `${p(sel.people ?? 1)} × ${d(sel.days ?? 1)} × ${u}`;
     case "included_selectable": {
       const extra = Math.max(0, (sel.qty ?? 1) - 1);
@@ -339,7 +343,8 @@ function OptionRow({
       case "per_person": return t("checkout.perPerson", "per person");
       case "per_unit":
         return item.sku.startsWith("transfer") ? t("checkout.perTrip", "per trip") : t("checkout.perChange", "per change");
-      case "per_person_per_unit": return t("checkout.perPersonSession", "per person · session");
+      case "per_person_per_unit":
+        return item.unitKey === "hour" ? t("checkout.perPersonHour", "per child · hour") : t("checkout.perPersonSession", "per person · session");
       case "per_person_per_day": return t("checkout.perPersonDay", "per person · day");
       default: return "";
     }
@@ -364,13 +369,23 @@ function OptionRow({
             {t(`checkout.extras.${item.sku}.name`)}
           </p>
           <p className={cn("text-[13px] leading-snug mt-0.5", selected && !onRequest ? "text-pa-dark" : "text-pa-earth")}>
-            {selected && !onRequest
+            {selected && !onRequest && item.pricingModel !== "per_stay"
               ? selectionSummary(item, sel!, amount, lang, t)
               : t(`checkout.extras.${item.sku}.desc`)}
           </p>
           {item.fulfillment === "needs_confirmation" && !selected && (
             <p className="inline-flex items-center gap-1 text-[10.5px] text-pa-stone-aa mt-1">
               <Clock3 className="w-2.5 h-2.5" /> {t("checkout.confirm24h", "Confirmed within 24h")}
+            </p>
+          )}
+          {!selected && item.pricingModel === "per_person_per_day" && item.unitPrice != null && (
+            <p className="text-[11px] text-pa-stone-aa mt-1 tabular-nums">
+              {`${Math.min(guests, 30)} ${String(t("checkout.peopleLabel", "People")).toLowerCase()} × ${Math.max(1, nights)} ${String(t("checkout.daysLabel", "Days")).toLowerCase()} = ${formatEur(item.unitPrice * Math.min(guests, 30) * Math.max(1, nights), lang)}`}
+            </p>
+          )}
+          {item.fulfillment === "needs_confirmation" && !selected && (
+            <p className="text-[10.5px] text-pa-stone-aa mt-0.5">
+              {t("checkout.confirm24hNote", "If we cannot secure it, the line is refunded automatically.")}
             </p>
           )}
           {item.scarcity && !selected && (
@@ -448,7 +463,7 @@ function OptionRow({
               </>
             )}
             {item.pricingModel === "per_person_per_unit" && (
-              <div className="flex items-center gap-2"><span className="text-[11px] text-pa-stone-aa">{t("checkout.sessionsLabel", "Sessions")}</span>
+              <div className="flex items-center gap-2"><span className="text-[11px] text-pa-stone-aa">{item.unitKey === "hour" ? t("checkout.hoursLabel", "Hours") : t("checkout.sessionsLabel", "Sessions")}</span>
                 <Stepper value={sel!.sessions ?? 1} min={1} max={10} onChange={(v) => onAdjust(item.sku, { sessions: v })} ariaLabel={t("checkout.sessionsLabel", "Sessions")} /></div>
             )}
           </div>
@@ -833,7 +848,7 @@ export default function CustomizeStep({
                           <div className="flex items-center justify-between gap-2 mt-2">
                             <p className="text-[12.5px] text-pa-earth">
                               {item.priceFrom != null
-                                ? t("checkout.fromPrice", { price: formatEur(item.priceFrom, lang) })
+                                ? `${t("checkout.fromPrice", { price: formatEur(item.priceFrom, lang) })} · ${t("checkout.noChargeNow", "no charge now")}`
                                 : t("checkout.onRequestShort", "on request")}
                             </p>
                             <button

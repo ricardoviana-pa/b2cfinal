@@ -1593,7 +1593,8 @@
       "hosted": {
         "name": "Henkilökohtainen vastaanotto",
         "desc": "Isäntä ottaa sinut vastaan, esittelee talon ja laittaa kaiken valmiiksi."
-      }
+      },
+      "lateNote": "Klo {{hour}} jälkeen: {{price}}."
     },
     "seeAll": "Näytä kaikki palvelut",
     "seeAllExperiences": "Näytä kaikki elämykset",
@@ -1628,6 +1629,11 @@
     },
     "perPersonDay": "per henkilö · päivä",
     "allDays": "Joka päivä",
-    "airport": "Lentokenttä"
+    "airport": "Lentokenttä",
+    "confirm24hNote": "Jos emme voi taata sitä, rivi hyvitetään automaattisesti.",
+    "noChargeNow": "ei veloitusta nyt",
+    "perPersonHour": "per lapsi · tunti",
+    "hoursLabel": "Tunnit",
+    "saveIssue": "Yhdistetään uudelleen, muutokset odottavat"
   }
 }

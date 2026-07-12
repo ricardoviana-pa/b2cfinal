@@ -1593,7 +1593,8 @@
       "hosted": {
         "name": "Persoonlijke ontvangst",
         "desc": "Een gastheer verwelkomt u, geeft een rondleiding en zet alles klaar."
-      }
+      },
+      "lateNote": "Na {{hour}}u: {{price}}."
     },
     "seeAll": "Alle services bekijken",
     "seeAllExperiences": "Alle ervaringen bekijken",
@@ -1628,6 +1629,11 @@
     },
     "perPersonDay": "per persoon · dag",
     "allDays": "Elke dag",
-    "airport": "Luchthaven"
+    "airport": "Luchthaven",
+    "confirm24hNote": "Als we het niet kunnen garanderen, wordt de regel automatisch terugbetaald.",
+    "noChargeNow": "nu geen kosten",
+    "perPersonHour": "per kind · uur",
+    "hoursLabel": "Uren",
+    "saveIssue": "Opnieuw verbinden, wijzigingen in behandeling"
   }
 }

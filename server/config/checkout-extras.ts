@@ -71,6 +71,8 @@ export interface CheckoutExtra {
   /** Transfers: região do aeroporto — filtrado pela localização da casa (interim
    *  até ao motor por distância do Bloco B2) */
   region?: "north" | "south";
+  /** Unidade humana do "per_unit" interno (babysitter à hora) */
+  unitKey?: "hour";
   /** Curadoria: ranking base (menor = mais acima) antes das regras dinâmicas */
   baseRank: number;
 }
@@ -106,7 +108,7 @@ export const CHECKOUT_EXTRAS: CheckoutExtra[] = [
   // ── Capítulo 02 · A casa ── (babysitter atrás de "ver mais" por rank)
   { sku: "daily-cleaning", chapter: "home", pricingModel: "per_day", fulfillment: "instant", unitPrice: 60, baseRank: 20 },
   { sku: "linen-change", chapter: "home", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 45, minQty: 1, maxQty: 10, baseRank: 21 },
-  { sku: "babysitter", chapter: "home", pricingModel: "per_person_per_unit", fulfillment: "needs_confirmation", unitPrice: 20, baseRank: 22 },
+  { sku: "babysitter", chapter: "home", pricingModel: "per_person_per_unit", fulfillment: "needs_confirmation", unitPrice: 20, unitKey: "hour", baseRank: 22 },
   // §5.0: 1.º incluído mas exige seleção (a equipa prepara a casa); extra a 25 €.
   // Entram SEMPRE no manifesto de operações.
   { sku: "travel-crib", chapter: "home", pricingModel: "included_selectable", fulfillment: "instant", unitPrice: 25, minQty: 1, maxQty: 3, baseRank: 23 },

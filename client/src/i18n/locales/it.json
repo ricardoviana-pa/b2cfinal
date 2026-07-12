@@ -1593,7 +1593,8 @@
       "hosted": {
         "name": "Accoglienza in persona",
         "desc": "Un host ti accoglie, mostra la casa e mette tutto in funzione."
-      }
+      },
+      "lateNote": "Dopo le {{hour}}: {{price}}."
     },
     "seeAll": "Vedi tutti i servizi",
     "seeAllExperiences": "Vedi tutte le esperienze",
@@ -1628,6 +1629,11 @@
     },
     "perPersonDay": "a persona · giorno",
     "allDays": "Tutti i giorni",
-    "airport": "Aeroporto"
+    "airport": "Aeroporto",
+    "confirm24hNote": "Se non possiamo garantirlo, la riga viene rimborsata automaticamente.",
+    "noChargeNow": "nessun addebito ora",
+    "perPersonHour": "per bambino · ora",
+    "hoursLabel": "Ore",
+    "saveIssue": "Riconnessione, modifiche in sospeso"
   }
 }

@@ -1593,7 +1593,8 @@
       "hosted": {
         "name": "Accueil en personne",
         "desc": "Un hôte vous accueille, visite la maison et met tout en marche."
-      }
+      },
+      "lateNote": "Après {{hour}}h : {{price}}."
     },
     "seeAll": "Voir tous les services",
     "seeAllExperiences": "Voir toutes les expériences",
@@ -1628,6 +1629,11 @@
     },
     "perPersonDay": "par personne · jour",
     "allDays": "Tous les jours",
-    "airport": "Aéroport"
+    "airport": "Aéroport",
+    "confirm24hNote": "Si nous ne pouvons pas le garantir, la ligne est remboursée automatiquement.",
+    "noChargeNow": "aucun débit maintenant",
+    "perPersonHour": "par enfant · heure",
+    "hoursLabel": "Heures",
+    "saveIssue": "Reconnexion, modifications en attente"
   }
 }

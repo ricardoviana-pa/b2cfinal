@@ -195,7 +195,11 @@ export default function CheckoutPage() {
     { intentId: intentId ?? "" },
     { enabled: !!intentId && !isDemo, refetchOnWindowFocus: false, retry: 1 },
   );
-  const updateIntent = trpc.checkout.updateIntent.useMutation();
+  const [saveIssue, setSaveIssue] = useState(false);
+  const updateIntent = trpc.checkout.updateIntent.useMutation({
+    onError: () => setSaveIssue(true),
+    onSuccess: () => setSaveIssue(false),
+  });
   const captureLead = trpc.checkout.captureLead.useMutation();
 
   const intent = isDemo ? demoIntent : (intentQuery.data?.intent ?? null);
@@ -415,6 +419,43 @@ export default function CheckoutPage() {
         // Re-resolve the plan selection: ids can change between quotes
         const stillThere = fresh.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
         const nextPlan = stillThere?.ratePlanId ?? (d as any).ratePlanId ?? fresh.ratePlanOptions?.[0]?.ratePlanId ?? null;
+        // AUDIT A3: menos noites → clamp dos dias selecionados nos extras
+        setExtraSel((prev) => {
+          const next: typeof prev = {};
+          for (const [sku, sel] of Object.entries(prev)) {
+            next[sku] = sel.days ? { ...sel, days: Math.min(sel.days, Math.max(1, fresh.nights)) } : sel;
+          }
+          return next;
+        });
+        // AUDIT A4: estadia caiu abaixo do limiar do Flex → desmarcar (o bloco
+        // desaparece e deixava o valor preso no total sem forma de o tirar)
+        if (flexConfig && fresh.total < flexConfig.minTotal && flexSelected) {
+          setFlexSelected(false);
+          syncIntent({ flex: false });
+        }
+        // AUDIT A5: o cupão vivia na quote antiga — re-aplicar na nova; se o
+        // código já não for válido, o campo reaparece em vez de fingir desconto
+        const prevCoupon = quote?.couponCode;
+        if (prevCoupon) {
+          void applyCouponMut
+            .mutateAsync({ quoteId: liveQuoteId, listingId: intent.listingId, checkIn: ci, checkOut: co, coupon: prevCoupon })
+            .then((r) => {
+              if (!r.ok) return;
+              const withCoupon: QuoteSnapshot = {
+                ...fresh,
+                nightlyRate: r.pricing.nightlyRate,
+                totalNights: r.pricing.totalNights,
+                cleaningFee: r.pricing.cleaningFee,
+                taxesAndFees: r.pricing.taxesAndFees ?? 0,
+                total: r.total,
+                couponCode: r.coupons?.[0]?.code || undefined,
+                ratePlanOptions: collapseRatePlans(r.ratePlanOptions as any),
+              };
+              setQuote(withCoupon);
+              syncIntent({ quote: withCoupon });
+            })
+            .catch(() => {});
+        }
         setQuote(fresh);
         setQuoteId(liveQuoteId);
         setSelectedRatePlanId(nextPlan);
@@ -507,9 +548,10 @@ export default function CheckoutPage() {
           total: r.total,
           nights: r.nights,
           currency: "EUR",
-          quoteCreatedAt: Date.now(),
+          // o quoteId mantém-se: preservar o relógio de expiração original
+          quoteCreatedAt: quote?.quoteCreatedAt ?? Date.now(),
           couponCode: r.coupons?.[0]?.code || undefined,
-          ratePlanOptions: r.ratePlanOptions,
+          ratePlanOptions: collapseRatePlans(r.ratePlanOptions as any),
         };
         const stillThere = fresh.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
         setQuote(fresh);
@@ -619,6 +661,26 @@ export default function CheckoutPage() {
     selectedPlanOption?.cancellationPolicy?.[0],
     checkIn,
   );
+
+  // AUDIT A1: extras/flex sincronizam com o intent a cada alteração (debounce
+  // 600ms) — antes só persistiam no continueToPay: um refresh no Personalizar
+  // perdia a seleção toda e remoções no passo 3 nunca chegavam ao manifesto.
+  const extrasSyncReady = useRef(false);
+  useEffect(() => {
+    if (!intent || isDemo) return;
+    if (!extrasSyncReady.current) { extrasSyncReady.current = true; return; }
+    const t = window.setTimeout(() => {
+      syncIntent({
+        flex: flexSelected,
+        extras: selectedExtras.map(({ item, sel, amount }) => ({
+          sku: item.sku, qty: sel.qty, people: sel.people, sessions: sel.sessions, days: sel.days,
+          amount, fulfillment: item.fulfillment,
+        })),
+      });
+    }, 600);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [extraSel, flexSelected]);
 
   /** Customize → Pay: reception is mandatory (§5.2); persist everything. */
   const continueToPay = useCallback(() => {
@@ -848,7 +910,7 @@ export default function CheckoutPage() {
         </div>
       )}
       {/* Extras com preço fixo — com remover inline (spec §8) */}
-      {paidExtras.map(({ item, amount }) => (
+      {paidExtras.map(({ item, sel, amount }) => (
         <div key={item.sku} className="flex justify-between items-center gap-2 text-[13px] checkout-row-in">
           <span className="flex items-center gap-1.5 text-pa-earth min-w-0">
             <button
@@ -859,7 +921,17 @@ export default function CheckoutPage() {
             >
               <X className="w-3 h-3" />
             </button>
-            <span className="truncate">{t(`checkout.extras.${item.sku}.name`)}</span>
+            <span className="truncate">
+              {t(`checkout.extras.${item.sku}.name`)}
+              {(() => {
+                const bits: string[] = [];
+                if (sel.people) bits.push(`${sel.people}p`);
+                if (sel.days) bits.push(`${sel.days}d`);
+                if (sel.qty && sel.qty > 1) bits.push(`×${sel.qty}`);
+                if (sel.sessions && sel.sessions > 1) bits.push(`×${sel.sessions}`);
+                return bits.length ? <span className="text-pa-stone-aa"> · {bits.join(" · ")}</span> : null;
+              })()}
+            </span>
           </span>
           <span className={cn("tabular-nums shrink-0", amount === 0 ? "text-pa-gold text-[11px] uppercase tracking-[0.08em]" : "text-pa-dark")}>
             {amount === 0 ? t("checkout.included.badge") : formatEur(amount!, lang)}
@@ -1055,7 +1127,7 @@ export default function CheckoutPage() {
           </nav>
           <div className="flex items-center gap-3 shrink-0">
             <span className="hidden md:inline text-[11px] text-pa-stone-aa">
-              {t("checkout.autosaved", "Saved automatically")}
+              {saveIssue ? t("checkout.saveIssue", "Reconnecting, changes pending") : t("checkout.autosaved", "Saved automatically")}
             </span>
             <Link
               href={backHref}
@@ -1403,6 +1475,11 @@ export default function CheckoutPage() {
                         <Check className="w-3 h-3 text-pa-gold" /> Flex
                       </span>
                     )}
+                    {requestExtras.map(({ item }) => (
+                      <span key={item.sku} className="inline-flex items-center gap-1 text-[11.5px] text-pa-stone-aa border border-dashed border-pa-sand rounded-full px-2.5 py-1">
+                        {t(`checkout.extras.${item.sku}.name`)} · {t("checkout.onRequestShort", "on request")}
+                      </span>
+                    ))}
                   </div>
                 </div>
               )}

@@ -225,7 +225,7 @@ export const checkoutRouter = router({
           guests: z.number().int().min(1).max(30).optional(),
           guestyQuoteId: z.string().max(64).optional(),
           quote: quoteSnapshotSchema.optional(),
-          extras: z.array(extraSelectionSchema).max(20).optional(),
+          extras: z.array(extraSelectionSchema).max(40).optional(),
           reception: z
             .object({
               type: z.enum(["self", "hosted"]),
@@ -255,7 +255,12 @@ export const checkoutRouter = router({
       if (patch.status === "paid" && !patch.confirmationCode && !current.confirmationCode) {
         delete patch.status;
       }
-      const ok = await updateBookingIntent(input.intentId, patch);
+      // Requote com quote nova renova a validade do link de retoma (AUDIT)
+      const dbPatch: Record<string, unknown> = { ...patch };
+      if (patch.quote && patch.guestyQuoteId) {
+        dbPatch.expiresAt = new Date(Date.now() + INTENT_TTL_MS);
+      }
+      const ok = await updateBookingIntent(input.intentId, dbPatch as any);
       // Transicao para paid: ficha de servicos ao CS + manifesto na nota Guesty
       // (todos os metodos, fire-and-forget)
       if (ok && patch.status === "paid") {
@@ -334,7 +339,7 @@ export const checkoutRouter = router({
         })
         .optional(),
     )
-    .query(async ({ input }) => ({
+    .query(async ({ input, ctx }) => ({
       extras: curateExtras({
         destination: input?.destination,
         nights: input?.nights ?? 1,
@@ -350,7 +355,10 @@ export const checkoutRouter = router({
       flex: FLEX_CONFIG,
       // C6: o campo de promo só aparece com campanha ativa (CHECKOUT_PROMO=true
       // no Render; sempre visível no dev para testes)
-      promoEnabled: process.env.CHECKOUT_PROMO !== "false",
+      promoEnabled:
+        process.env.CHECKOUT_PROMO === "true" ||
+        String(ctx.req.headers["x-forwarded-host"] || ctx.req.headers.host || "").toLowerCase().startsWith("dev.") ||
+        String(ctx.req.headers["x-forwarded-host"] || ctx.req.headers.host || "").toLowerCase().startsWith("localhost"),
     })),
 
   /**

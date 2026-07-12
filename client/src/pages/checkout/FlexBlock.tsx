@@ -55,10 +55,10 @@ export default function FlexBlock({
 
   // GA4: flex_viewed — once per mount when the block is actually shown
   useEffect(() => {
-    if (viewedRef.current || demo) return;
+    if (viewedRef.current || demo || stayTotal < config.minTotal) return;
     viewedRef.current = true;
     pushDL({ event: "flex_viewed", property_id: listingId, value: config.price });
-  }, [demo, listingId, config.price]);
+  }, [demo, listingId, config.price, stayTotal, config.minTotal]);
 
   if (stayTotal < config.minTotal) return null;
 

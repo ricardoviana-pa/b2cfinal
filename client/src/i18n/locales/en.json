@@ -1593,7 +1593,8 @@
       "hosted": {
         "name": "Hosted reception",
         "desc": "A host welcomes you, tours the house and gets everything running."
-      }
+      },
+      "lateNote": "After {{hour}}h: {{price}}."
     },
     "seeAll": "See all services",
     "seeAllExperiences": "See all experiences",
@@ -1628,6 +1629,11 @@
     },
     "perPersonDay": "per person · day",
     "allDays": "Every day",
-    "airport": "Airport"
+    "airport": "Airport",
+    "confirm24hNote": "If we cannot secure it, the line is refunded automatically.",
+    "noChargeNow": "no charge now",
+    "perPersonHour": "per child · hour",
+    "hoursLabel": "Hours",
+    "saveIssue": "Reconnecting, changes pending"
   }
 }
