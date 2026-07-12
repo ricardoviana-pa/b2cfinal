@@ -313,10 +313,11 @@ function PaymentFormInner({
         <PaymentElement
           options={{
             layout: "tabs",
-            // "auto": o botão Apple Pay/Google Pay só aparece quando o ambiente
-            // suporta (Safari com Wallet + domínio registado na conta Stripe
-            // que cobra — a do Guesty, por listing). Onde não há, nada muda.
-            wallets: { googlePay: "auto", applePay: "auto" },
+            // Wallets DESLIGADOS aqui: em modo auto o PaymentElement cria abas internas
+            // (Cartao + Google Pay) que duplicam o nosso seletor externo (bug 12 jul).
+            // Apple/Google Pay entram pelo padrao certo (Express Checkout Element
+            // separado, acima do seletor) na Fase 2b.
+            wallets: { googlePay: "never", applePay: "never" },
             fields: { billingDetails: { address: { country: "never", postalCode: "never" } } },
           }}
         />

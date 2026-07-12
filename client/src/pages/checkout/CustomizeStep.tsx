@@ -280,6 +280,27 @@ function ReceptionChoiceCards({
   );
 }
 
+/** Fórmula explícita do preço — mata a ambiguidade dos steppers (12 jul):
+ *  "4 pessoas × 5 dias × 25 € = 500 €". */
+function priceFormula(item: CatalogExtra, sel: ExtraSelection, lang: string, t: any): string | null {
+  if (item.unitPrice == null) return null;
+  const u = formatEur(item.unitPrice, lang);
+  const p = (n: number) => `${n} ${String(t("checkout.peopleLabel", "People")).toLowerCase()}`;
+  const d = (n: number) => `${n} ${String(t("checkout.daysLabel", "Days")).toLowerCase()}`;
+  switch (item.pricingModel) {
+    case "per_day": return `${d(sel.days ?? 1)} × ${u}`;
+    case "per_unit": return `${sel.qty ?? 1} × ${u}`;
+    case "per_person": return `${p(sel.people ?? item.minPeople ?? 1)} × ${u}`;
+    case "per_person_per_unit": return `${p(sel.people ?? 1)} × ${sel.sessions ?? 1} × ${u}`;
+    case "per_person_per_day": return `${p(sel.people ?? 1)} × ${d(sel.days ?? 1)} × ${u}`;
+    case "included_selectable": {
+      const extra = Math.max(0, (sel.qty ?? 1) - 1);
+      return extra === 0 ? String(t("checkout.included.badge")) : `1 ${String(t("checkout.included.badge")).toLowerCase()} + ${extra} × ${u}`;
+    }
+    default: return null;
+  }
+}
+
 /** Resumo curto da seleção para a linha adicionada ("2 mudas · 90 €"). */
 function selectionSummary(item: CatalogExtra, sel: ExtraSelection, amount: number | null, lang: string, t: any): string {
   const bits: string[] = [];
@@ -430,13 +451,23 @@ function OptionRow({
                 <Stepper value={sel!.sessions ?? 1} min={1} max={10} onChange={(v) => onAdjust(item.sku, { sessions: v })} ariaLabel={t("checkout.sessionsLabel", "Sessions")} /></div>
             )}
           </div>
-          <button
-            type="button"
-            onClick={() => onToggle(item)}
-            className="text-[11px] text-pa-stone-aa hover:text-pa-dark underline underline-offset-2 transition-colors"
-          >
-            {t("checkout.remove", "Remove")}
-          </button>
+          <div className="flex items-center gap-3">
+            {(() => {
+              const f = priceFormula(item, sel!, lang, t);
+              return f ? (
+                <span className="text-[12px] text-pa-earth tabular-nums whitespace-nowrap">
+                  {f}{amount != null && amount > 0 ? ` = ${formatEur(amount, lang)}` : ""}
+                </span>
+              ) : null;
+            })()}
+            <button
+              type="button"
+              onClick={() => onToggle(item)}
+              className="text-[11px] text-pa-stone-aa hover:text-pa-dark underline underline-offset-2 transition-colors"
+            >
+              {t("checkout.remove", "Remove")}
+            </button>
+          </div>
         </div>
       )}
       {/* Pedido sob orçamento adicionado: só o desfazer */}

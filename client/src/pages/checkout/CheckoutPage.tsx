@@ -154,6 +154,20 @@ function useCountUp(value: number, duration = 400): number {
   return display;
 }
 
+/** Máximo 2 tarifas visíveis: a flexível e a não reembolsável mais baratas. */
+function collapseRatePlans<T extends { name: string; total: number; cancellationPolicy?: string[] }>(
+  options?: T[],
+): T[] | undefined {
+  if (!options || options.length <= 2) return options;
+  const cheapest = (arr: T[]) => [...arr].sort((a, b) => a.total - b.total)[0];
+  const nonRef = options.filter((o) => isNonRefundableOption(o));
+  const flex = options.filter((o) => !isNonRefundableOption(o));
+  const out: T[] = [];
+  if (flex.length) out.push(cheapest(flex));
+  if (nonRef.length) out.push(cheapest(nonRef));
+  return out.length ? out : options.slice(0, 2);
+}
+
 function isNonRefundableOption(o: { name: string; cancellationPolicy?: string[] }): boolean {
   const n = (o.name || "").toLowerCase();
   const code = (o.cancellationPolicy?.[0] || "").toLowerCase();
@@ -286,10 +300,13 @@ export default function CheckoutPage() {
       }
       setExtraSel(seeded);
     }
+    // O passo restaura SEMPRE do estado do intent — um refresh não pode
+    // atirar o hóspede para o início (bug 12 jul). O evento checkout_resume
+    // continua a disparar só em retoma real (outro dispositivo/sessão).
+    if (intent.status === "contact_captured") setStep("customize");
+    if (intent.status === "payment_pending") setStep("pay");
     if (resumed && !isDemo) {
       pushDL({ event: "checkout_resume", property_id: intent.listingId });
-      if (intent.status === "contact_captured") setStep("customize");
-      if (intent.status === "payment_pending") setStep("pay");
     }
     // Quote freshness — the BE quote dies after ~24h; warn at 23h
     const createdAt = (intent.quote as QuoteSnapshot | null)?.quoteCreatedAt;
@@ -390,7 +407,10 @@ export default function CheckoutPage() {
           nights: d.nights,
           currency: "EUR",
           quoteCreatedAt: Date.now(),
-          ratePlanOptions: (d as any).ratePlanOptions,
+          // Colapsa a 2 tarifas (1 flexível + 1 não reembolsável, as mais
+          // baratas de cada balde) — o Guesty pode devolver variantes
+          // duplicadas e o requote mostrava-as todas (bug 12 jul)
+          ratePlanOptions: collapseRatePlans((d as any).ratePlanOptions),
         };
         // Re-resolve the plan selection: ids can change between quotes
         const stillThere = fresh.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
