@@ -146,6 +146,38 @@ export async function recordExternalPayment(
   });
 }
 
+/**
+ * Estado de cobrança de uma reserva, lido pela Open API. O Guesty só cobra o
+ * cartão de uma reserva BE API através da política de Auto Payments do listing;
+ * se nenhuma regra disparar, a reserva fica "Not paid" com "Next payment:
+ * Unscheduled" sem qualquer erro. Devolve null se não conseguir ler.
+ */
+export async function fetchReservationPaymentState(reservationId: string): Promise<{
+  totalPaid: number | null;
+  balanceDue: number | null;
+  payments: Array<{ status?: string; amount?: number; scheduledFor?: string }>;
+} | null> {
+  try {
+    const data = await guestyClient.request<any>("GET", `/v1/reservations/${reservationId}`, {
+      query: { fields: "money status" },
+    });
+    const m = data?.money ?? {};
+    const payments = Array.isArray(m.payments) ? m.payments : [];
+    return {
+      totalPaid: typeof m.totalPaid === "number" ? m.totalPaid : null,
+      balanceDue: typeof m.balanceDue === "number" ? m.balanceDue : null,
+      payments: payments.map((p: any) => ({
+        status: p?.status,
+        amount: p?.amount,
+        scheduledFor: p?.shouldBePaidAt ?? p?.paidAt ?? undefined,
+      })),
+    };
+  } catch (err: any) {
+    console.warn(`[Guesty] Could not read payment state for ${reservationId}: ${err?.message || err}`);
+    return null;
+  }
+}
+
 /** Manifesto de serviços na nota da reserva Guesty (best-effort; fecha o gap
  *  Klarna/PayPal). Nunca bloqueia o pagamento. */
 export async function appendReservationNote(reservationId: string, note: string): Promise<boolean> {

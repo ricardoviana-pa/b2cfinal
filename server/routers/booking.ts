@@ -420,6 +420,47 @@ export const bookingRouter = router({
           policy: input.policy || {},
         });
 
+        // ── Post-charge verification (fire-and-forget, never blocks the booking) ──
+        // Guesty does NOT charge the card at /instant time: the charge is executed by
+        // the listing's Auto-Payment policy. If no policy fires, the reservation
+        // silently stays "Not paid" with "Next payment: Unscheduled". Check after a
+        // grace period (Guesty folio settles within ~60s) and alert operations.
+        if (result.reservationId) {
+          setTimeout(async () => {
+            try {
+              const { fetchReservationPaymentState } = await import("../services/guesty-openapi-paypal");
+              const state = await fetchReservationPaymentState(result.reservationId);
+              if (!state) return; // could not read — don't alarm on API noise
+              const hasMoneyMovement =
+                (state.totalPaid ?? 0) > 0 || state.payments.length > 0;
+              if (!hasMoneyMovement) {
+                console.error(
+                  `[BE Booking] UNPAID: reservation ${result.reservationId} (${result.confirmationCode}) has no payment collected or scheduled — check the listing's Guesty Auto-Payment policy. balanceDue=${state.balanceDue}`
+                );
+                sendBookingFailureAlert({
+                  quoteId: input.quoteId,
+                  ratePlanId: input.ratePlanId,
+                  ccTokenPrefix: input.ccToken.slice(0, 6),
+                  guestName: input.guestName,
+                  guestEmail: input.guestEmail,
+                  guestPhone: input.guestPhone,
+                  propertyName: input.propertyName,
+                  listingId: input.listingId,
+                  checkIn: input.checkIn,
+                  checkOut: input.checkOut,
+                  guests: input.guests,
+                  totalPrice: input.totalPrice,
+                  currency: input.currency,
+                  errorMessage: `Reservation ${result.confirmationCode} was CREATED but no payment was collected or scheduled (Guesty shows "Not paid"). Likely missing Auto-Payment policy on the listing. Collect the payment manually in Guesty.`,
+                  timestamp: new Date().toISOString(),
+                }).catch(() => {});
+              }
+            } catch (verifyErr: any) {
+              console.warn(`[BE Booking] Payment verification failed (non-blocking): ${verifyErr?.message || verifyErr}`);
+            }
+          }, 120_000);
+        }
+
         // Record to customer account (non-blocking)
         if (input.checkIn && input.checkOut) {
           await recordTripForUser(ctx, {
@@ -524,6 +565,7 @@ export const bookingRouter = router({
         numberOfAdults: z.number().int().min(1).max(30),
         numberOfChildren: z.number().int().min(0).max(20).default(0),
         numberOfInfants: z.number().int().min(0).max(10).default(0),
+        ratePlanId: z.string().optional(),
         returnUrl: z.string().url(),
       })
     )
@@ -542,6 +584,10 @@ export const bookingRouter = router({
           numberOfAdults: String(input.numberOfAdults),
           numberOfChildren: String(input.numberOfChildren),
           numberOfInfants: String(input.numberOfInfants),
+          // The webhook creates the Guesty reservation from this metadata alone;
+          // without ratePlanId it lands on the listing's default rate plan, gets
+          // re-priced, and the payment record is rejected ("Not paid").
+          ...(input.ratePlanId ? { ratePlanId: input.ratePlanId } : {}),
         },
       });
       return {
@@ -613,6 +659,25 @@ export const bookingRouter = router({
             }),
           recordPayment: (reservationId: string) =>
             recordExternalPayment(reservationId, input.totalAmount, input.currency, input.paymentIntentId),
+          onRecordPaymentFailure: (reservationId, error) => {
+            sendBookingFailureAlert({
+              quoteId: `PayPal PI ${input.paymentIntentId}`,
+              ratePlanId: input.ratePlanId || "N/A",
+              ccTokenPrefix: "paypal",
+              guestName: `${input.guestFirstName} ${input.guestLastName}`,
+              guestEmail: input.guestEmail,
+              guestPhone: input.guestPhone || "",
+              propertyName: input.propertyName,
+              listingId: input.listingId,
+              checkIn: input.checkIn,
+              checkOut: input.checkOut,
+              guests: input.numberOfAdults + input.numberOfChildren,
+              totalPrice: input.totalAmount,
+              currency: input.currency,
+              errorMessage: `Guest PAID but the payment could not be recorded on Guesty reservation ${reservationId} — it shows as NOT PAID. Record the payment manually. Error: ${(error as any)?.message || error}`,
+              timestamp: new Date().toISOString(),
+            }).catch(() => {});
+          },
         });
       } catch (guestyError: any) {
         console.error("[PayPal] CRITICAL: Payment succeeded but Guesty reservation failed", {
@@ -691,6 +756,7 @@ export const bookingRouter = router({
         numberOfAdults: z.number().int().min(1).max(30),
         numberOfChildren: z.number().int().min(0).max(20).default(0),
         numberOfInfants: z.number().int().min(0).max(10).default(0),
+        ratePlanId: z.string().optional(),
       })
     )
     .mutation(async ({ input }) => {
@@ -708,6 +774,10 @@ export const bookingRouter = router({
           numberOfAdults: String(input.numberOfAdults),
           numberOfChildren: String(input.numberOfChildren),
           numberOfInfants: String(input.numberOfInfants),
+          // The webhook creates the Guesty reservation from this metadata alone;
+          // without ratePlanId it lands on the listing's default rate plan, gets
+          // re-priced, and the payment record is rejected ("Not paid").
+          ...(input.ratePlanId ? { ratePlanId: input.ratePlanId } : {}),
         },
       });
       return {
@@ -779,6 +849,25 @@ export const bookingRouter = router({
             }),
           recordPayment: (reservationId: string) =>
             recordExternalPayment(reservationId, input.totalAmount, input.currency, input.paymentIntentId),
+          onRecordPaymentFailure: (reservationId, error) => {
+            sendBookingFailureAlert({
+              quoteId: `Klarna PI ${input.paymentIntentId}`,
+              ratePlanId: input.ratePlanId || "N/A",
+              ccTokenPrefix: "klarna",
+              guestName: `${input.guestFirstName} ${input.guestLastName}`,
+              guestEmail: input.guestEmail,
+              guestPhone: input.guestPhone || "",
+              propertyName: input.propertyName,
+              listingId: input.listingId,
+              checkIn: input.checkIn,
+              checkOut: input.checkOut,
+              guests: input.numberOfAdults + input.numberOfChildren,
+              totalPrice: input.totalAmount,
+              currency: input.currency,
+              errorMessage: `Guest PAID but the payment could not be recorded on Guesty reservation ${reservationId} — it shows as NOT PAID. Record the payment manually. Error: ${(error as any)?.message || error}`,
+              timestamp: new Date().toISOString(),
+            }).catch(() => {});
+          },
         });
       } catch (guestyError: any) {
         console.error("[Klarna] CRITICAL: Payment succeeded but Guesty reservation failed", {

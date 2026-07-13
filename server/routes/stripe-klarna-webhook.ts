@@ -66,9 +66,33 @@ export function registerStripeKlarnaWebhookRoute(app: Express): void {
                 numberOfChildren: Number(meta.numberOfChildren) || 0,
                 numberOfInfants: Number(meta.numberOfInfants) || 0,
                 stripePaymentIntentId: pi.id,
+                // Same rate plan the guest paid for — without it the reservation is
+                // re-priced on the default plan and the payment record gets rejected.
+                ratePlanId: meta.ratePlanId || undefined,
               }),
             recordPayment: (reservationId: string) =>
               recordExternalPayment(reservationId, pi.amount / 100, pi.currency.toUpperCase(), pi.id),
+            onRecordPaymentFailure: (reservationId, error) => {
+              import("../services/transactional-email")
+                .then(({ sendBookingFailureAlert }) =>
+                  sendBookingFailureAlert({
+                    quoteId: `Klarna PI ${pi.id}`,
+                    ratePlanId: meta.ratePlanId || "N/A",
+                    ccTokenPrefix: "klarna",
+                    guestName: meta.guestName || "?",
+                    guestEmail: meta.guestEmail || "?",
+                    guestPhone: "",
+                    listingId: meta.listingId,
+                    checkIn: meta.checkIn,
+                    checkOut: meta.checkOut,
+                    totalPrice: pi.amount / 100,
+                    currency: pi.currency.toUpperCase(),
+                    errorMessage: `Guest PAID but the payment could not be recorded on Guesty reservation ${reservationId} — it shows as NOT PAID. Record the payment manually. Error: ${(error as any)?.message || error}`,
+                    timestamp: new Date().toISOString(),
+                  })
+                )
+                .catch(() => {});
+            },
           });
 
           console.info(`[StripeKlarnaWebhook] Reservation ready: ${reservation.reservationId} (${reservation.confirmationCode}) for PI ${pi.id}`);

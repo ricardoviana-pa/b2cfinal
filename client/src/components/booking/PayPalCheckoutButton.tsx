@@ -98,6 +98,7 @@ export function PayPalCheckoutButton(props: PayPalCheckoutButtonProps) {
         numberOfAdults: props.numberOfGuests.adults,
         numberOfChildren: props.numberOfGuests.children,
         numberOfInfants: props.numberOfGuests.infants,
+        ratePlanId: props.ratePlanId,
         returnUrl,
       });
 

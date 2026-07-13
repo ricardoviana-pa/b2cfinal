@@ -97,6 +97,10 @@ export function getOrCreateReservation(
   ops: {
     createReservation: () => Promise<ReservationResult>;
     recordPayment: (reservationId: string) => Promise<void>;
+    /** Called when the payment record fails after the reservation was created —
+     * the guest paid but Guesty shows the reservation as unpaid. Use it to alert
+     * operations; the booking itself still succeeds. */
+    onRecordPaymentFailure?: (reservationId: string, error: unknown) => void;
   }
 ): Promise<ReservationResult> {
   const inFlight = reservationFlights.get(piId);
@@ -115,6 +119,7 @@ async function createAndRecordReservation(
   ops: {
     createReservation: () => Promise<ReservationResult>;
     recordPayment: (reservationId: string) => Promise<void>;
+    onRecordPaymentFailure?: (reservationId: string, error: unknown) => void;
   }
 ): Promise<ReservationResult> {
   const existingMeta = await stripe.getMetadata(piId).catch(() => ({} as Record<string, string>));
@@ -123,7 +128,7 @@ async function createAndRecordReservation(
   if (fromMeta) {
     // Another path already created the reservation. Make sure the payment is recorded too.
     if (existingMeta[PAYMENT_RECORDED_KEY] !== "true") {
-      await recordPaymentOnce(piId, stripe, fromMeta.reservationId, ops.recordPayment);
+      await recordPaymentOnce(piId, stripe, fromMeta.reservationId, ops.recordPayment, ops.onRecordPaymentFailure);
     }
     return fromMeta;
   }
@@ -154,7 +159,7 @@ async function createAndRecordReservation(
     })
     .catch((e) => console.warn(`[Reservation] Failed to stamp PI ${piId} metadata: ${e?.message || e}`));
 
-  await recordPaymentOnce(piId, stripe, result.reservationId, ops.recordPayment);
+  await recordPaymentOnce(piId, stripe, result.reservationId, ops.recordPayment, ops.onRecordPaymentFailure);
 
   return result;
 }
@@ -163,7 +168,8 @@ async function recordPaymentOnce(
   piId: string,
   stripe: StripeMetadataPort,
   reservationId: string,
-  recordPayment: (reservationId: string) => Promise<void>
+  recordPayment: (reservationId: string) => Promise<void>,
+  onFailure?: (reservationId: string, error: unknown) => void
 ): Promise<void> {
   try {
     await recordPayment(reservationId);
@@ -171,6 +177,13 @@ async function recordPaymentOnce(
       .setMetadata(piId, { [PAYMENT_RECORDED_KEY]: "true" })
       .catch((e) => console.warn(`[Reservation] Failed to set ${PAYMENT_RECORDED_KEY} for ${piId}: ${e?.message || e}`));
   } catch (e: any) {
-    console.warn(`[Reservation] recordPayment failed (non-blocking) for ${reservationId}: ${e?.message || e}`);
+    // The guest HAS paid (Stripe PI succeeded) but Guesty will show "Not paid" —
+    // this must reach a human, never just a log line.
+    console.error(`[Reservation] CRITICAL: recordPayment failed for ${reservationId} (PI ${piId}) — guest paid but Guesty reservation is UNPAID: ${e?.message || e}`);
+    try {
+      onFailure?.(reservationId, e);
+    } catch (alertErr: any) {
+      console.error(`[Reservation] onRecordPaymentFailure handler threw: ${alertErr?.message || alertErr}`);
+    }
   }
 }

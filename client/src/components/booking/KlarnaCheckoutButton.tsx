@@ -95,6 +95,7 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
         numberOfAdults: props.numberOfGuests.adults,
         numberOfChildren: props.numberOfGuests.children,
         numberOfInfants: props.numberOfGuests.infants,
+        ratePlanId: props.ratePlanId,
       });
 
       setStatusMsg(t("payment.redirecting"));
