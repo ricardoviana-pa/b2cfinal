@@ -401,7 +401,7 @@
     "destination": "minho",
     "locality": "Ponte de Lima",
     "bedrooms": 3,
-    "bathrooms": 0,
+    "bathrooms": 3,
     "maxGuests": 6,
     "priceFrom": 360,
     "pricePerNight": 360,
@@ -565,7 +565,35 @@
       "lat": 41.7903099,
       "lng": -8.5853352
     },
-    "rooms": [],
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "SINGLE_BED",
+            "quantity": 2
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
     "propertyType": "House",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
@@ -6522,7 +6550,7 @@
     "propertyType": "House",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 646,
+    "areaSquareFeet": 377,
     "reviews": [
       {
         "rating": 4,
@@ -20009,7 +20037,7 @@
     "minNights": 3,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1783586667/production/6957de4388cba42d9e7a905e/faycgonbv7z5yp7evcgs.jpg",
+      "https://assets.guesty.com/image/upload/v1783951623/production/6957de4388cba42d9e7a905e/g3m5o8ixhrrwerae9x1y.jpg",
       "https://assets.guesty.com/image/upload/v1783585238/production/6957de4388cba42d9e7a905e/b76r52ag9uxpifnecuxu.jpg",
       "https://assets.guesty.com/image/upload/v1783585241/production/6957de4388cba42d9e7a905e/nk6tq0lh8krlwpli8uyz.jpg",
       "https://assets.guesty.com/image/upload/v1783585245/production/6957de4388cba42d9e7a905e/d8rtgjyqee9hfia54nmo.jpg",
@@ -20043,7 +20071,6 @@
       "https://assets.guesty.com/image/upload/v1783585273/production/6957de4388cba42d9e7a905e/hy4ejvmwomje043z2rnt.jpg",
       "https://assets.guesty.com/image/upload/v1783585255/production/6957de4388cba42d9e7a905e/bkiyr9g7vhxy41tauhaz.jpg",
       "https://assets.guesty.com/image/upload/v1783585255/production/6957de4388cba42d9e7a905e/achhvdt9yyb8cytsvskj.jpg",
-      "https://assets.guesty.com/image/upload/v1783585256/production/6957de4388cba42d9e7a905e/yu6ljv48cminjji260hl.jpg",
       "https://assets.guesty.com/image/upload/v1783585256/production/6957de4388cba42d9e7a905e/nxn1exkyxhccrgo3qhfk.jpg",
       "https://assets.guesty.com/image/upload/v1783616368/production/6957de4388cba42d9e7a905e/sfruemhe0uzd2pxxomdk.jpg",
       "https://assets.guesty.com/image/upload/v1783585273/production/6957de4388cba42d9e7a905e/szvhyw0fxmt2pfkmaggv.jpg",
