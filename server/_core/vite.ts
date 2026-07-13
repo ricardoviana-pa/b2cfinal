@@ -19,8 +19,15 @@ export async function setupVite(app: Express, server: Server) {
     allowedHosts: true as const,
   };
 
+  // vite.config exports a function of ConfigEnv (command/isSsrBuild); resolve
+  // it before spreading — spreading the function itself yields an empty config
+  // (no root/plugins), which broke every module request in local dev.
+  const resolvedViteConfig = await (typeof viteConfig === "function"
+    ? (viteConfig as any)({ command: "serve", mode: "development", isSsrBuild: false })
+    : viteConfig);
+
   const vite = await createViteServer({
-    ...viteConfig,
+    ...resolvedViteConfig,
     configFile: false,
     server: serverOptions,
     appType: "custom",

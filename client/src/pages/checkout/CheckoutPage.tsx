@@ -251,19 +251,6 @@ export default function CheckoutPage() {
   const [couponError, setCouponError] = useState(false);
   const applyCouponMut = trpc.booking.applyCoupon.useMutation();
 
-  // The global CookieBanner (fixed bottom, z-60) legally must stay on top; while
-  // consent is pending we lift the checkout's own bottom bar above it so the
-  // total + Continue CTA stay reachable. Polls briefly until consent is given.
-  const [consentPending, setConsentPending] = useState(false);
-  useEffect(() => {
-    const check = () => {
-      try { setConsentPending(!localStorage.getItem("pa-cookies-consent")); } catch { setConsentPending(false); }
-    };
-    check();
-    const timer = setInterval(check, 1500);
-    return () => clearInterval(timer);
-  }, []);
-
   useEffect(() => {
     if (!intent || seededRef.current) return;
     seededRef.current = true;
@@ -682,9 +669,16 @@ export default function CheckoutPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [extraSel, flexSelected]);
 
-  /** Customize → Pay: reception is mandatory (§5.2); persist everything. */
+  /** Customize → Pay: reception is mandatory (§5.2); persist everything.
+   *  Without the reception choice the CTA stays clickable but nudges the
+   *  guest to the missing decision instead of silently doing nothing. */
   const continueToPay = useCallback(() => {
-    if (!intent || !receptionChoice) return;
+    if (!intent) return;
+    if (!receptionChoice) {
+      setReceptionNudge(true);
+      document.getElementById("reception-choice")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
     syncIntent({
       status: "payment_pending",
       flex: flexSelected,
@@ -704,17 +698,8 @@ export default function CheckoutPage() {
   }, [intent, receptionChoice, selectedExtras, flexSelected, syncIntent]);
 
   /** "Saltar personalização" (2.1 §1.2): segue para pagamento se a receção já
-   *  foi escolhida; caso contrário leva o hóspede à decisão obrigatória. */
-  const skipCustomize = useCallback(() => {
-    if (receptionChoice) {
-      continueToPay();
-    } else {
-      // A receção pode já estar visível no ecrã — só o scroll era impercetível
-      // e o botão parecia morto (12 jul). O nudge destaca a decisão em falta.
-      setReceptionNudge(true);
-      document.getElementById("reception-choice")?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  }, [receptionChoice, continueToPay]);
+   *  foi escolhida; caso contrário `continueToPay` nudge a decisão em falta. */
+  const skipCustomize = continueToPay;
 
   /** Ops manifest (PT, staff-facing) appended to the Guesty reservation notes —
    *  same pattern the legacy widget uses, so operations see the requests. */
@@ -1422,13 +1407,22 @@ export default function CheckoutPage() {
               )}
               {/* Reception is a mandatory choice (§5.2) — block continue until made */}
               {!receptionChoice && (
-                <p className="text-[12px] text-pa-earth text-center">{t("checkout.reception.required")}</p>
+                <p
+                  className={cn(
+                    "text-center",
+                    receptionNudge
+                      ? "text-[13px] text-pa-dark bg-pa-warm border border-pa-gold rounded-md px-3 py-2.5"
+                      : "text-[12px] text-pa-earth",
+                  )}
+                >
+                  {t("checkout.reception.required")}
+                </p>
               )}
               <button
                 type="button"
                 onClick={continueToPay}
-                disabled={!receptionChoice}
-                className="btn-primary w-full disabled:opacity-40"
+                aria-disabled={!receptionChoice}
+                className={cn("btn-primary w-full", !receptionChoice && "opacity-40")}
               >
                 {selectedExtras.length > 0
                   ? t("checkout.continueWithExtras", { count: selectedExtras.length })
@@ -1641,8 +1635,13 @@ export default function CheckoutPage() {
         <aside className="hidden lg:block sticky top-[84px]">{summaryCard}</aside>
       </main>
 
+      {/* Keeps in-flow content (desktop Continue CTA) scrollable clear of the
+          fixed cookie banner; collapses to 0 the moment consent is given. */}
+      <div aria-hidden style={{ height: "var(--cookie-banner-h, 0px)" }} />
+
       {/* ══════════ MOBILE: bottom bar + expandable summary sheet ══════════ */}
-      <div className="lg:hidden fixed inset-x-0 z-40" style={{ bottom: consentPending ? "120px" : 0 }}>
+      {/* Sits directly on top of the cookie banner while consent is pending. */}
+      <div className="lg:hidden fixed inset-x-0 z-40" style={{ bottom: "var(--cookie-banner-h, 0px)" }}>
         {sheetOpen && (
           <div className="max-h-[60vh] overflow-y-auto bg-white border-t border-pa-sand px-5 pt-4 pb-3 shadow-[0_-8px_32px_rgba(26,26,24,0.10)] space-y-4 checkout-step-in">
             <div className="flex items-center gap-3">
@@ -1697,8 +1696,8 @@ export default function CheckoutPage() {
             <button
               type="button"
               onClick={continueToPay}
-              disabled={!receptionChoice}
-              className="btn-primary flex-1 max-w-[220px] disabled:opacity-40"
+              aria-disabled={!receptionChoice}
+              className={cn("btn-primary flex-1 max-w-[220px]", !receptionChoice && "opacity-40")}
             >
               {t("booking.continue", "Continue")}
             </button>
