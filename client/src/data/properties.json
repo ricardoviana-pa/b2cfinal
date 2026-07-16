@@ -13809,7 +13809,7 @@
     "locality": "Viana do Castelo",
     "bedrooms": 8,
     "bathrooms": 8,
-    "maxGuests": 12,
+    "maxGuests": 16,
     "priceFrom": 550,
     "pricePerNight": 550,
     "cleaningFee": 377,
@@ -19560,6 +19560,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "We had a wonderful stay, plenty of space for 4 of us. \nThe house is stunning and we had 5 days of pure relaxation.",
+        "guestDisplayName": "Gail",
+        "guestName": "Gail",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-16T13:57:15.443Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "This property was so beautiful and they have thought of every detail!",
         "guestDisplayName": "Jade",
         "guestName": "Jade",
@@ -19769,8 +19804,8 @@
         ]
       }
     ],
-    "averageRating": 4.83,
-    "reviewCount": 6
+    "averageRating": 4.86,
+    "reviewCount": 7
   },
   {
     "id": "guesty-69653381bf04fe00137437cd",
