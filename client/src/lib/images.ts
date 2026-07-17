@@ -5,10 +5,9 @@
 
 export const IMAGES = {
   // Hero images
-  // Homepage cover — a lit pool at dusk under a pink sky: intimate and
-  // secluded, which reads as "the privacy of a home" better than a wide
-  // daylight aerial.
-  heroMain: '/hero/home-pool-twilight.webp',
+  // Homepage cover — Carcavelos Manor House: the 18th-century estate with its
+  // lap pool and mature grounds.
+  heroMain: '/hero/home-carcavelos-manor.webp',
   heroHomes: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp',
 
   // Destination images
