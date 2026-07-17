@@ -2169,6 +2169,41 @@
     "areaSquareFeet": 915,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Läget på detta boende var fantastiskt! Speciellt om man gillar att strosa i butiker. Även en massor av fik i närheten. Boendet var rent och hemtrevligt!",
+        "guestDisplayName": "Sonja",
+        "guestName": "Sonja",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-16T23:05:40.203Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "Alles bestens. Mit vier Erwachsenen hat man auf jeden Fall genug Platz in der Wohnung und gute Schlafmöglichkeiten. Die Lage ist top. Waren insgesamt sehr zufrieden. Einen Stern Abzug gab’s für den nicht angeschlossenen Geschirrspüler und die schlechte Schlafcouch (die für unsere Tochter gedacht war, dann aber bei uns im Bett geschlafen hat).",
         "guestDisplayName": "Florian",
@@ -2484,8 +2519,8 @@
         ]
       }
     ],
-    "averageRating": 4.67,
-    "reviewCount": 9
+    "averageRating": 4.7,
+    "reviewCount": 10
   },
   {
     "id": "guesty-6965339404b96f00147f571a",
