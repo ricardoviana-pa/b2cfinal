@@ -767,32 +767,26 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 4: STATS BAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s4Ref} className="fade-in cv-auto relative bg-[#141412]">
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C4A87C]/30 to-transparent"
-          aria-hidden
-        />
-        <div className="container py-6 sm:py-8 md:py-9 lg:py-10">
-          <div className="grid grid-cols-4 gap-0">
+      {/* Quiet credibility band — warm surface with hairlines (same treatment
+          as the About stats band) instead of the old near-black slab, which
+          broke the page's light rhythm mid-scroll. */}
+      <section ref={s4Ref} className="fade-in cv-auto bg-[#F5F1EB] border-y border-[#E8E4DC]">
+        <div className="container py-12 lg:py-16">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 divide-x divide-[#E1DACE]">
             {[
-              { value: '60+', label: t('home.statHomes') },
+              { value: '70', label: t('home.statHomes') },
               { value: '4.8/5', label: t('home.statRating') },
               { value: '40%', label: t('home.statRepeat') },
               { value: '2017', label: t('home.statFounded') },
             ].map((stat, i) => (
-              <div
-                key={i}
-                className={`flex min-h-0 min-w-0 flex-col items-center justify-center text-center px-1.5 py-1 sm:px-2 md:px-5 lg:px-8 ${
-                  i > 0 ? 'border-l border-white/10' : ''
-                }`}
-              >
-                <p className="font-display text-[clamp(0.95rem,3.4vw,2.375rem)] font-light leading-none tracking-[-0.02em] text-[#FAFAF7]">
+              <div key={i} className="text-center px-2">
+                <p
+                  className="text-[#1A1A18]"
+                  style={{ fontFamily: 'var(--font-display)', fontWeight: 300, fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1 }}
+                >
                   {stat.value}
                 </p>
-                <p
-                  className="mt-1.5 sm:mt-2.5 max-w-none text-[9px] leading-tight text-white/48 sm:text-[10px] sm:leading-snug md:text-[12px] md:leading-snug"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
-                >
+                <p className="mt-2 text-[11px] tracking-[0.18em] uppercase text-[#8B7355]" style={{ fontFamily: 'var(--font-body)' }}>
                   {stat.label}
                 </p>
               </div>
