@@ -5331,9 +5331,45 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 1077,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "War alles mega schön. Mann muss ein wenig aufpassen wohin Google Maps einen führt, aber sonst kann man gut mit dem Auto dorthin gelangen. Der Gegend ist mega ruhig, nette Nachbarn, Einkaufsladen und Meer in der Nähe. \nPasst alles supper.",
+        "guestDisplayName": "Fanni",
+        "guestName": "Fanni",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-16T23:36:06.702Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-69dfa9cead7c9c0014cb71c9",
@@ -16955,9 +16991,45 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 270,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "très bon séjour!! \nl appart est vraiment bien  \ntrès calme,  rien a dire!!! \ntop",
+        "guestDisplayName": "Guillaume",
+        "guestName": "Guillaume",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-09T16:09:43.521Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-696533814b9b64001401c7b8",
@@ -17654,6 +17726,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "We had a very nice stay at this apartment. It was very spacious, nicely decorated, and extremely well equipped, with plenty of plates, cups, and everything else we needed. The terrace was a great bonus, and the apartment is conveniently located close to the beach. Overall, a very comfortable and enjoyable place to stay — highly recommended!",
+        "guestDisplayName": "Lukas",
+        "guestName": "Lukas",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-17T15:34:58.870Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Wir hatten eine schöne Zeit in dieser Unterkunft. \n\nDie Wohnung ist sehr gut ausgestattet, geräumig und in den heißen Tagen kühl. \n\nDer Cabedelo Strand befindet sich ca 5 Minuten zu Fuß entfernt.",
         "guestDisplayName": "Nuno",
         "guestName": "Nuno",
@@ -17793,8 +17900,8 @@
         ]
       }
     ],
-    "averageRating": 4.75,
-    "reviewCount": 4
+    "averageRating": 4.8,
+    "reviewCount": 5
   },
   {
     "id": "guesty-696533752def930014e9167c",
@@ -21258,6 +21365,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Vidunderligt sted! Vi havde den dejligste uge med vores børn. Stort og rent og rummeligt hus med ren og velholdt pool. Haven med frugter var fantastisk. Kommunikationen var meget god, og vi havde god hjælp og kontakt med udlejer. Vi vil meget gerne tilbage.",
+        "guestDisplayName": "Line",
+        "guestName": "Line",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-19T07:05:09.855Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Estadia perfeita, casa muito bem  equipada! O local é lindo e de fácil acesso. 💖",
         "guestDisplayName": "Flavine",
         "guestName": "Flavine",
@@ -21503,7 +21645,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 7
+    "reviewCount": 8
   },
   {
     "id": "guesty-696f6aad74604800452a40b8",
