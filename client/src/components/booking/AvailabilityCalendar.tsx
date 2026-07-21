@@ -173,8 +173,13 @@ export default function AvailabilityCalendar({
 
   /** Handle clicking a day */
   const handleDayClick = useCallback((dateStr: string) => {
-    if (isBlocked(dateStr)) return;
     if (startOfDay(dateStr) < todayMs) return;
+    // Blocked days can't be clicked — EXCEPT a check-out on the turnover day
+    // (the first blocked day after check-in): you depart the morning the next
+    // booking begins, so that day is a valid departure.
+    const clickIsTurnoverCheckout =
+      phase === "check-out" && !!checkIn && dateStr === maxCheckoutDate;
+    if (isBlocked(dateStr) && !clickIsTurnoverCheckout) return;
 
     if (phase === "check-in") {
       // Set/change check-in. Closed-to-arrival days can't start a stay.
@@ -211,7 +216,7 @@ export default function AvailabilityCalendar({
       onSelectRange({ checkIn, checkOut: dateStr });
       setPhaseOverride(null);
     }
-  }, [phase, checkIn, checkOut, onSelectRange, isBlocked, todayMs, rangeHasBlockedDates, dayMap, earliestCheckoutMs, earliestCheckoutFor]);
+  }, [phase, checkIn, checkOut, onSelectRange, isBlocked, todayMs, rangeHasBlockedDates, dayMap, earliestCheckoutMs, earliestCheckoutFor, maxCheckoutDate]);
 
   const navigateMonth = useCallback((dir: -1 | 1) => {
     setViewMonth(prev => {
@@ -280,12 +285,23 @@ export default function AvailabilityCalendar({
             const dayInfo = dayMap.get(dateStr);
             const isPast = dateMs < todayMs;
             const blocked = isBlocked(dateStr);
+            // A check-out may land ON the first blocked day after check-in (the
+            // turnover day) — the guest departs the morning the next booking
+            // starts. It must still satisfy min-stay and not be closed to
+            // departure.
+            const isTurnoverCheckout =
+              phase === "check-out" &&
+              !!checkIn &&
+              maxCheckoutDate !== null &&
+              dateStr === maxCheckoutDate &&
+              dateMs >= earliestCheckoutMs &&
+              !dayInfo?.ctd;
             const isBlockedForCheckout =
               phase === "check-out" &&
               !!checkIn &&
               dateMs > checkInMs &&
               maxCheckoutDate !== null &&
-              dateMs >= startOfDay(maxCheckoutDate);
+              dateMs > startOfDay(maxCheckoutDate);
             // Check-in phase: closed-to-arrival days can't be selected.
             const isClosedToArrival = phase === "check-in" && !!dayInfo?.cta;
             // Check-out phase: enforce minimum stay + closed-to-departure.
@@ -297,7 +313,7 @@ export default function AvailabilityCalendar({
             const isClosedToDeparture =
               phase === "check-out" && !!checkIn && dateMs > checkInMs && !!dayInfo?.ctd;
             const isDisabled =
-              isPast || blocked || isBlockedForCheckout ||
+              isPast || (blocked && !isTurnoverCheckout) || isBlockedForCheckout ||
               isClosedToArrival || isBelowMinStay || isClosedToDeparture;
             const isToday = dateStr === todayStr;
             const isCheckIn = checkIn && dateStr === checkIn;
@@ -364,7 +380,7 @@ export default function AvailabilityCalendar({
                   ].filter(Boolean).join(" ")}
                   aria-label={dateStr}
                 >
-                  <span className={blocked ? "line-through decoration-black/20 decoration-1" : ""}>
+                  <span className={blocked && !isTurnoverCheckout ? "line-through decoration-black/20 decoration-1" : ""}>
                     {date.getDate()}
                   </span>
                 </button>
