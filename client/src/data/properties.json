@@ -19538,6 +19538,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "It is an amazing house located in the beautiful area. It had everything we needed. It might be the cleanest house we have ever stayed in - absolutely 10 out of 10!",
+        "guestDisplayName": "Kamil",
+        "guestName": "Kamil",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-21T17:30:55.553Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Estadia incrível, a casa tem um espaço muito bom, principalmente a zona da churrasqueira/mesa exterior que são ótimas para jantares de Verão e ficam muito perto da cozinha para todo o apoio necessário, zona da piscina muito porreira também, gostamos muito da casa e tem um espaço mais que confortável para 8 pessoas. Aconselho vivamente!",
         "guestDisplayName": "Diogo",
         "guestName": "Diogo",
@@ -19608,7 +19643,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   },
   {
     "id": "guesty-696533abf142270014026fa9",
