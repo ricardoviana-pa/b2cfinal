@@ -11452,6 +11452,41 @@
     "areaSquareFeet": 10763.91042,
     "reviews": [
       {
+        "rating": 4,
+        "text": "We had a great stay at Montaria Lodge, and Sam was very helpful / quick to reply. You will probably be best to hire a car if staying here, we used the taxis arranged prior to arriving through Portugal active which was really convenient and the drivers were lovely. There isn’t aircon in the downstairs bedrooms, and the only downside was the flies & ants we couldn’t keep out of the kitchen - but they did drop us some fly spray as soon as we reported this problem",
+        "guestDisplayName": "Gabbie",
+        "guestName": "Gabbie",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-23T05:44:58.403Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Espaço calmo, com boas áreas. Perfeito para estadias com amigos e família. \nSempre que foi preciso o host respondeu a tudo com rapidez e simpatia.",
         "guestDisplayName": "João",
@@ -11522,8 +11557,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 2
+    "averageRating": 4.67,
+    "reviewCount": 3
   },
   {
     "id": "guesty-696533794fe6a100145fe4bf",
