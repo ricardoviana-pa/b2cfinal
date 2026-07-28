@@ -1296,7 +1296,7 @@
     "maxGuests": 4,
     "priceFrom": 105,
     "pricePerNight": 105,
-    "cleaningFee": 114,
+    "cleaningFee": 147,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -1512,7 +1512,7 @@
     "maxGuests": 14,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 370,
+    "cleaningFee": 383,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -2103,7 +2103,7 @@
     "maxGuests": 6,
     "priceFrom": 120,
     "pricePerNight": 120,
-    "cleaningFee": 102,
+    "cleaningFee": 127,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -4911,7 +4911,7 @@
     "maxGuests": 5,
     "priceFrom": 100,
     "pricePerNight": 100,
-    "cleaningFee": 103,
+    "cleaningFee": 122,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -5546,6 +5546,41 @@
     "areaSquareFeet": 1077,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Conforme conversa tive checkin flexível, atendeu meu pedido… \nCasa como nas fotos, grande, vista linda…. porém móveis da sala muito antigos, desconforto do sofá… achei que pelo numero de pessoas que a casa comporta só 2 banheiros foi pouco…",
+        "guestDisplayName": "Carla",
+        "guestName": "Carla",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-28T07:46:29.211Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 3
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 2
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "War alles mega schön. Mann muss ein wenig aufpassen wohin Google Maps einen führt, aber sonst kann man gut mit dem Auto dorthin gelangen. Der Gegend ist mega ruhig, nette Nachbarn, Einkaufsladen und Meer in der Nähe. \nPasst alles supper.",
         "guestDisplayName": "Fanni",
@@ -5581,8 +5616,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 1
+    "averageRating": 4.5,
+    "reviewCount": 2
   },
   {
     "id": "guesty-69dfa9cead7c9c0014cb71c9",
@@ -5597,7 +5632,7 @@
     "maxGuests": 6,
     "priceFrom": 190,
     "pricePerNight": 190,
-    "cleaningFee": 176,
+    "cleaningFee": 203,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -5910,7 +5945,7 @@
     "maxGuests": 4,
     "priceFrom": 150,
     "pricePerNight": 150,
-    "cleaningFee": 92,
+    "cleaningFee": 98,
     "minNights": 3,
     "currency": "EUR",
     "images": [
@@ -6290,7 +6325,7 @@
     "maxGuests": 28,
     "priceFrom": 700,
     "pricePerNight": 700,
-    "cleaningFee": 477,
+    "cleaningFee": 572,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -6851,7 +6886,6 @@
         "Cleaning Disinfection",
         "Clothing storage",
         "Coffee maker",
-        "Communal pool",
         "Cookware",
         "Crib",
         "Dining table",
@@ -6891,7 +6925,6 @@
         "Stove",
         "Suitable for children (2-12 years)",
         "Suitable for infants (under 2 years)",
-        "Swimming pool",
         "TV",
         "Toaster",
         "Towels provided",
@@ -7407,7 +7440,7 @@
     "maxGuests": 3,
     "priceFrom": 80,
     "pricePerNight": 80,
-    "cleaningFee": 104,
+    "cleaningFee": 121,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -7844,7 +7877,7 @@
     "maxGuests": 20,
     "priceFrom": 500,
     "pricePerNight": 500,
-    "cleaningFee": 379,
+    "cleaningFee": 430,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -8187,7 +8220,7 @@
     "maxGuests": 4,
     "priceFrom": 180,
     "pricePerNight": 180,
-    "cleaningFee": 101,
+    "cleaningFee": 144,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -8929,7 +8962,7 @@
     "maxGuests": 6,
     "priceFrom": 150,
     "pricePerNight": 150,
-    "cleaningFee": 178,
+    "cleaningFee": 191,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -9814,7 +9847,7 @@
     "maxGuests": 4,
     "priceFrom": 170,
     "pricePerNight": 170,
-    "cleaningFee": 102,
+    "cleaningFee": 162,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -10064,7 +10097,7 @@
     "maxGuests": 16,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 379,
+    "cleaningFee": 427,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -10541,7 +10574,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 101,
+    "cleaningFee": 148,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -10796,7 +10829,7 @@
     "maxGuests": 23,
     "priceFrom": 700,
     "pricePerNight": 700,
-    "cleaningFee": 413,
+    "cleaningFee": 485,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -11111,7 +11144,7 @@
     "maxGuests": 6,
     "priceFrom": 180,
     "pricePerNight": 180,
-    "cleaningFee": 178,
+    "cleaningFee": 212,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -11740,7 +11773,7 @@
     "locality": "Viana do Castelo",
     "bedrooms": 1,
     "bathrooms": 1,
-    "maxGuests": 2,
+    "maxGuests": 3,
     "priceFrom": 100,
     "pricePerNight": 100,
     "cleaningFee": 91,
@@ -12049,11 +12082,11 @@
     "destination": "minho",
     "locality": "Viana do Castelo",
     "bedrooms": 2,
-    "bathrooms": 2,
+    "bathrooms": 1,
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 102,
+    "cleaningFee": 148,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -13181,7 +13214,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 92,
+    "cleaningFee": 98,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -13901,7 +13934,7 @@
     "maxGuests": 14,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 370,
+    "cleaningFee": 384,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -14276,7 +14309,7 @@
     "maxGuests": 16,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 377,
+    "cleaningFee": 416,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -16942,7 +16975,11 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b2e44e1a0015bb2b42/78a2b674-1f35-49-xNEvy",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b2e44e1a0015bb2b42/23c59bed-f67e-43-8wmaB",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b2e44e1a0015bb2b42/404d3eff-a3aa-4a-US9_g",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b2e44e1a0015bb2b42/1eaa537d-54e9-4f-HRHyR"
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b2e44e1a0015bb2b42/1eaa537d-54e9-4f-HRHyR",
+      "https://assets.guesty.com/image/upload/v1785236718/production/6957de4388cba42d9e7a905e/mypludp66hdqhzxsk8gy.jpg",
+      "https://assets.guesty.com/image/upload/v1785236717/production/6957de4388cba42d9e7a905e/jlwdpyr8ito2tjbh8zmt.jpg",
+      "https://assets.guesty.com/image/upload/v1785236718/production/6957de4388cba42d9e7a905e/nlgpah2oixlymytfavp1.jpg",
+      "https://assets.guesty.com/image/upload/v1785236716/production/6957de4388cba42d9e7a905e/jichxxfhonfv8k7ifuoh.jpg"
     ],
     "description": "Experience a unique stay aboard a luxury boat, where every detail has been designed for comfort and well-being. \r\nRelax in an exclusive environment with breathtaking water views and elegant interiors, blending nautical sophistication with premium comfort. \r\nA floating retreat perfect for unforgettable moments.\n\nAboard the Rosé Dream Boat, enjoy a one of a kind experience of floating comfort and elegance. \nThe boat features a cozy double bedroom and a second space with two single beds, ideal for families or small groups. \nThe living area combines style and functionality, with a kitchenette equipped with a coffee machine, a small oven and gas stove, and a compact refrigerator. \nA private bathroom completes the experience, ensuring privacy and convenience, while the carefully curated interior creates an intimate and luxurious atmosphere.\n\nImportant Notice:\nThe Rosé Dream Boat is located in the centre of Viana do Castelo, a lively and vibrant area of the city. During the month of August, particularly during the Nossa Senhora d’Agonia festivities, higher noise levels may occur due to celebrations, concerts, and cultural events. These events are part of local traditions and are beyond our control. However, they provide a unique opportunity to experience one of Portugal’s largest and most iconic traditional festivals.\n\nThe Rosé Dream Boat is moored in Viana do Castelo, a city renowned for its historic charm and coastal beauty. The area combines elegant streets, traditional shops, sophisticated cafés, and stunning views of the Lima River. Located close to the historic center, it allows you to explore local culture, award-winning cuisine, and the vibrant urban life, all just steps from your floating retreat.\n\nGuests have exclusive access to the entire boat. \r\nThe concierge service from Portugal Active is available 24 hours a day, 7 days a week, to assist with any needs, from organizing local excursions to booking personalized services, such as a private chef. To ensure availability, please request any services at least 72 hours in advance.\r\n\r\nNote:\r\n- For safety reasons, the vessel will remain moored and does not operate sightseeing trips.\r\n- To ensure the utmost safety of both guests and the vessel, the location may vary depending on the season and weather conditions. The exact location will be confirmed prior to check-in.\n\nThe location of the Rosé Dream Boat is well served by public transport, making it easy to get around the city and beyond. The train station and bus terminal are just a few minutes’ walk away, providing quick access to the center of Viana do Castelo and various points of interest in the region.\n\n-------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch: \r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour: \r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
     "descriptionSections": {
@@ -23340,6 +23377,7 @@
         "Private entrance",
         "Refrigerator",
         "River",
+        "River view",
         "Rural",
         "Shampoo",
         "Shower gel",
@@ -23354,8 +23392,7 @@
         "Water View",
         "Waterfront",
         "Wine glasses",
-        "Wireless Internet",
-        "River view"
+        "Wireless Internet"
       ],
       "bedrooms": [],
       "kitchen": [],
@@ -24579,7 +24616,6 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533794b583900135cf0fc/43119ce7-430b-4b-8bKz2",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533794b583900135cf0fc/13dd068b-3322-4c-OxkzM",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533794b583900135cf0fc/61189351-ca56-42-xTDwj",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533794b583900135cf0fc/47d0d430-f8d5-49-7PYyx",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533794b583900135cf0fc/c02ab24c-9c68-47-Gqko6",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533794b583900135cf0fc/6b5598e0-fea2-40-Dihwa",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533794b583900135cf0fc/94bf5b07-6028-45-ArXlZ",
