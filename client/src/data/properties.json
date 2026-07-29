@@ -1077,7 +1077,6 @@
         "Outdoor seating (furniture)",
         "Oven",
         "Patio or balcony",
-        "Private pool",
         "Refrigerator",
         "Rural",
         "Shampoo",
@@ -1087,7 +1086,6 @@
         "Stove",
         "Suitable for children (2-12 years)",
         "Suitable for infants (under 2 years)",
-        "Swimming pool",
         "TV",
         "Toaster",
         "Towels provided",
@@ -2208,7 +2206,6 @@
         "Museums",
         "Oven",
         "Paid parking off premises",
-        "Patio or balcony",
         "Refrigerator",
         "Shampoo",
         "Shopping",
@@ -2968,7 +2965,6 @@
         "Ping pong table",
         "Pool table",
         "Private entrance",
-        "Private pool",
         "Refrigerator",
         "Safe",
         "Sauna",
@@ -2978,7 +2974,6 @@
         "Stove",
         "Suitable for children (2-12 years)",
         "Suitable for infants (under 2 years)",
-        "Swimming pool",
         "TV",
         "Toaster",
         "Towels provided",
@@ -6525,7 +6520,6 @@
         "Patio or balcony",
         "Pool table",
         "Private entrance",
-        "Private pool",
         "Refrigerator",
         "Rural",
         "Shampoo",
@@ -6533,7 +6527,6 @@
         "Stove",
         "Suitable for children (2-12 years)",
         "Suitable for infants (under 2 years)",
-        "Swimming pool",
         "TV",
         "Toaster",
         "Towels provided",
@@ -10912,7 +10905,6 @@
         "Cleaning Disinfection",
         "Clothing storage",
         "Coffee maker",
-        "Communal pool",
         "Cookware",
         "Crib",
         "Desk",
@@ -10951,7 +10943,6 @@
         "Pets allowed",
         "Piano",
         "Private entrance",
-        "Private pool",
         "Refrigerator",
         "Sauna",
         "Shampoo",
@@ -10959,7 +10950,6 @@
         "Stove",
         "Suitable for children (2-12 years)",
         "Suitable for infants (under 2 years)",
-        "Swimming pool",
         "TV",
         "Toaster",
         "Towels provided",
@@ -11264,7 +11254,6 @@
         "Clothing storage",
         "Coffee",
         "Coffee maker",
-        "Communal pool",
         "Cookware",
         "Crib",
         "Cycling",
@@ -11390,6 +11379,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Wir hatten einen wunderbaren Aufenthalt. Das Haus ist sehr schön, bestens ausgestattet und es hat uns an nichts gefehlt. Besonders genossen haben wir die Nähe zum Meer und den Pool. Ein weiteres Highlight war die Dachterrasse mit ihrem tollen Ausblick – der perfekte Ort, um den Tag ausklingen zu lassen. Wir würden jederzeit wiederkommen und können die Unterkunft uneingeschränkt weiterempfehlen.",
+        "guestDisplayName": "Tobias",
+        "guestName": "Tobias",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-27T12:55:38.591Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Excelente localização.",
         "guestDisplayName": "João Alpedrinha",
         "guestName": "João Alpedrinha",
@@ -11425,7 +11449,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-6965334abf04fe0013742da8",
@@ -12421,7 +12445,6 @@
         "Patio or balcony",
         "Pets allowed",
         "Private entrance",
-        "Private pool",
         "Refrigerator",
         "Room-darkening shades",
         "Rural",
@@ -12434,7 +12457,6 @@
         "Stove",
         "Suitable for children (2-12 years)",
         "Suitable for infants (under 2 years)",
-        "Swimming pool",
         "TV",
         "Toaster",
         "Towels provided",
@@ -15328,7 +15350,6 @@
         "Pets allowed",
         "Ping pong table",
         "Private entrance",
-        "Private pool",
         "Refrigerator",
         "Safe",
         "Sea view",
@@ -15340,7 +15361,6 @@
         "Stove",
         "Suitable for children (2-12 years)",
         "Suitable for infants (under 2 years)",
-        "Swimming pool",
         "TV",
         "Toaster",
         "Towels provided",
@@ -15432,6 +15452,41 @@
     "checkOutTime": "11:00",
     "areaSquareFeet": 8612,
     "reviews": [
+      {
+        "rating": 4,
+        "text": "Gorgeous villa with excellent facilities.\nHad a wonderful weekend away and the villa was a comfortable place to stay.\nLocal taxi drivers helped with transport around to local restaurants/ pubs / bars / beaches as the villa is located in a remote area. \nHosts - Portugal Active were absolutely fabulous with communication. \nI would recommend",
+        "guestDisplayName": "Natalie",
+        "guestName": "Natalie",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-29T12:33:16.957Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
       {
         "rating": 5,
         "text": "Eu e minha família que inclui 5 adultos, uma adolescente e um bebê de 3 semanas passamos um fim de semana ótimo nessa casa.",
@@ -15853,8 +15908,8 @@
         ]
       }
     ],
-    "averageRating": 4.75,
-    "reviewCount": 12
+    "averageRating": 4.69,
+    "reviewCount": 13
   },
   {
     "id": "guesty-69c415701b964f00157188bd",
@@ -16048,7 +16103,7 @@
     "maxGuests": 4,
     "priceFrom": 145,
     "pricePerNight": 145,
-    "cleaningFee": 117,
+    "cleaningFee": 123,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -16222,7 +16277,7 @@
     "maxGuests": 4,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 101,
+    "cleaningFee": 148,
     "minNights": 3,
     "currency": "EUR",
     "images": [
@@ -16687,7 +16742,7 @@
     "maxGuests": 6,
     "priceFrom": 100,
     "pricePerNight": 100,
-    "cleaningFee": 102,
+    "cleaningFee": 158,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -16922,7 +16977,7 @@
     "maxGuests": 4,
     "priceFrom": 70,
     "pricePerNight": 70,
-    "cleaningFee": 92,
+    "cleaningFee": 123,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -17187,7 +17242,7 @@
     "maxGuests": 4,
     "priceFrom": 104,
     "pricePerNight": 104,
-    "cleaningFee": 89,
+    "cleaningFee": 98,
     "minNights": 3,
     "currency": "EUR",
     "images": [
@@ -17888,7 +17943,7 @@
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 176,
+    "cleaningFee": 186,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -18308,7 +18363,7 @@
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 179,
+    "cleaningFee": 186,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -19007,7 +19062,7 @@
     "maxGuests": 7,
     "priceFrom": 140,
     "pricePerNight": 140,
-    "cleaningFee": 178,
+    "cleaningFee": 186,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -19403,7 +19458,6 @@
         "Oven",
         "Patio or balcony",
         "Private entrance",
-        "Private pool",
         "Refrigerator",
         "Shampoo",
         "Shopping",
@@ -20158,7 +20212,6 @@
         "Patio or balcony",
         "Pets allowed",
         "Private entrance",
-        "Private pool",
         "Refrigerator",
         "Rural",
         "Shampoo",
@@ -20166,7 +20219,6 @@
         "Stove",
         "Suitable for children (2-12 years)",
         "Suitable for infants (under 2 years)",
-        "Swimming pool",
         "TV",
         "Toaster",
         "Towels provided",
@@ -22444,7 +22496,7 @@
     "maxGuests": 4,
     "priceFrom": 220,
     "pricePerNight": 220,
-    "cleaningFee": 101,
+    "cleaningFee": 168,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -23273,7 +23325,7 @@
     "maxGuests": 4,
     "priceFrom": 190,
     "pricePerNight": 190,
-    "cleaningFee": 116,
+    "cleaningFee": 147,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -24191,7 +24243,6 @@
         "Pets allowed",
         "Ping pong table",
         "Private entrance",
-        "Private pool",
         "Refrigerator",
         "Sauna",
         "Shampoo",
@@ -24303,7 +24354,7 @@
     "maxGuests": 4,
     "priceFrom": 80,
     "pricePerNight": 80,
-    "cleaningFee": 89,
+    "cleaningFee": 98,
     "minNights": 2,
     "currency": "EUR",
     "images": [
