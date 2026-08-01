@@ -12630,6 +12630,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Excelente alojamiento",
+        "guestDisplayName": "Lore",
+        "guestName": "Lore",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-30T10:16:23.462Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Very happy with the property and facilities. Communication with Portugal Active was great. Quick responses",
         "guestDisplayName": "Celia",
         "guestName": "Celia",
@@ -12944,8 +12979,8 @@
         ]
       }
     ],
-    "averageRating": 4.89,
-    "reviewCount": 9
+    "averageRating": 4.9,
+    "reviewCount": 10
   },
   {
     "id": "guesty-6965333104b96f00147f5428",
@@ -19293,6 +19328,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Très satisfaits de ces quelques jours passés à Esposende ! L'appartement était très propre et bien situé (plage à 400m). \nL'équipe de Portugal Active était très disponible. Merci.",
+        "guestDisplayName": "Clémence",
+        "guestName": "Clémence",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-07-31T21:27:33.174Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "El apartamento está muy bien ubicado fácil de llegar y en zona sin ruidos. Aparcamiento delante delante de la casa sin problemas.\nBuena comunicación con los anfitriones.\nLas instrucciones de acceso con llegada autónoma muy claras y sin problemas.\n En cuanto a la limpieza, insuperable en todas las zonas de la casa.\nConfortable y con todo lo necesario (calefacción, electrodomésticos, tv, cafeteras, utensilios de cocina, etc..)\nCamas  y almohadas muy cómodas.\nMuy recomendable.",
         "guestDisplayName": "Jesús Humberto",
         "guestName": "Jesús Humberto",
@@ -19328,7 +19398,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-696533aaf142270014026d70",
