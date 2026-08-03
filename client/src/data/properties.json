@@ -23772,9 +23772,45 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 1808.3369472,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 4,
+        "text": "Nice domain, well maintained. Easy With the codes.",
+        "guestDisplayName": "Floris",
+        "guestName": "Floris",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-01T10:48:03.739Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      }
+    ],
+    "averageRating": 4,
+    "reviewCount": 1
   },
   {
     "id": "guesty-6965337d2def930014e919c6",
