@@ -26,7 +26,7 @@ const TTL_MS = 8 * 60 * 60 * 1000; // 8h in-memory cache
 const HORIZON_DAYS = 90;
 const MAX_SAMPLES = 14; // quotes per listing on a cache miss
 const SAMPLE_CADENCE_DAYS = 7; // probe ~every week so no seasonal low (a whole cheap month) is missed
-const QUOTE_CHUNK = 4; // paced concurrency per listing — smooths the Guesty quote burst
+const MAX_CONCURRENT_QUOTES = 4; // GLOBAL cap on in-flight Guesty quotes (across all warming listings)
 const STORE_CAT = "lowest_nightly";
 const WARM_PER_REQUEST = 10; // how many never-computed listings to warm per PLP batch call
 
@@ -36,6 +36,24 @@ type Result = { from: number | null; source: "calendar" | "fallback" | "none"; c
 const CACHE = new Map<string, { value: number | null; source: Result["source"]; at: number }>();
 
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
+
+/** Global semaphore so a burst of concurrent listing warms can't exceed Guesty's
+ *  quote rate limit. Slots are acquired only when the quote actually runs, so the
+ *  20s per-quote deadline never starts ticking while a call is still queued. */
+let activeQuotes = 0;
+const quoteWaiters: Array<() => void> = [];
+async function withQuoteSlot<T>(fn: () => Promise<T>): Promise<T> {
+  if (activeQuotes >= MAX_CONCURRENT_QUOTES) {
+    await new Promise<void>((resolve) => quoteWaiters.push(resolve));
+  }
+  activeQuotes++;
+  try {
+    return await fn();
+  } finally {
+    activeQuotes--;
+    quoteWaiters.shift()?.();
+  }
+}
 
 /** Persisted values carry a timestamp ("706@<epochMs>") so the PLP batch can tell
  *  a stale price from a fresh one and refresh it in the background. Legacy plain
@@ -48,11 +66,13 @@ function parseStored(raw: string | undefined | null): { price: number | null; at
   return { price: Number.isFinite(p) && p > 0 ? p : null, at: Number.isFinite(t) ? t : 0 };
 }
 const encodeStored = (price: number, at: number) => `${price}@${at}`;
-/** A cached entry is fresh for 8h when it has a real value, but only 30 min when
- *  it's null — so a listing that came back empty (rate-limited or no availability
- *  at the time) is retried soon instead of showing "select dates" for 8h. */
-const isFresh = (c: { value: number | null; at: number }) =>
-  Date.now() - c.at < (c.value !== null ? TTL_MS : NULL_TTL_MS);
+/** A cached entry is fresh for 8h only when we have a CONFIDENT value — a real
+ *  price computed from the calendar. A null (no availability / rate-limited) or a
+ *  `fallback` (quotes failed, we reused a last-known/base price) is retried after
+ *  30 min instead, so a transient quote failure never locks in a wrong "from" for
+ *  8h. */
+const isFresh = (c: { value: number | null; source: Result["source"]; at: number }) =>
+  Date.now() - c.at < (c.value !== null && c.source === "calendar" ? TTL_MS : NULL_TTL_MS);
 
 /** Lowest real nightly rate bookable in the next 90 days, cached. */
 export async function getLowestNightly(listingId: string, basePriceHint?: number): Promise<Result> {
@@ -104,26 +124,24 @@ export async function getLowestNightly(listingId: string, basePriceHint?: number
       samples.push({ ci, co: ymd(new Date(start.getTime() + mn * 86400000)) });
     }
 
-    // Quote in paced chunks so a listing spreads its ~14 quotes over a couple of
-    // seconds instead of firing them all at once (keeps us inside Guesty's limits
-    // even when several listings warm concurrently).
-    for (let i = 0; i < samples.length; i += QUOTE_CHUNK) {
-      const chunk = samples.slice(i, i + QUOTE_CHUNK);
-      const quotes = await Promise.allSettled(
-        chunk.map((s) => getQuoteWithDeadline(listingId, s.ci, s.co, 2, 20_000)),
-      );
-      for (const r of quotes) {
-        if (r.status !== "fulfilled" || !r.value) continue;
-        const q: any = r.value;
-        // Only trust real live/cached prices — ignore "price on request" fallbacks.
-        if (q.source !== "live" && q.source !== "cached") continue;
-        const candidates: number[] = [];
-        for (const p of q.ratePlanOptions || []) if (typeof p.nightlyRate === "number" && p.nightlyRate > 0) candidates.push(p.nightlyRate);
-        if (typeof q.pricing?.nightlyRate === "number" && q.pricing.nightlyRate > 0) candidates.push(q.pricing.nightlyRate);
-        if (candidates.length) {
-          const m = Math.min(...candidates);
-          if (lowest === null || m < lowest) lowest = m;
-        }
+    // Quote every sampled window, but through a GLOBAL concurrency gate so that
+    // no matter how many listings warm at once, we never exceed Guesty's rate
+    // limit. Bursting past it makes quotes fail and degrades the "from" to a
+    // fallback (wrong) price — exactly what we're trying to fix.
+    const quotes = await Promise.allSettled(
+      samples.map((s) => withQuoteSlot(() => getQuoteWithDeadline(listingId, s.ci, s.co, 2, 20_000))),
+    );
+    for (const r of quotes) {
+      if (r.status !== "fulfilled" || !r.value) continue;
+      const q: any = r.value;
+      // Only trust real live/cached prices — ignore "price on request" fallbacks.
+      if (q.source !== "live" && q.source !== "cached") continue;
+      const candidates: number[] = [];
+      for (const p of q.ratePlanOptions || []) if (typeof p.nightlyRate === "number" && p.nightlyRate > 0) candidates.push(p.nightlyRate);
+      if (typeof q.pricing?.nightlyRate === "number" && q.pricing.nightlyRate > 0) candidates.push(q.pricing.nightlyRate);
+      if (candidates.length) {
+        const m = Math.min(...candidates);
+        if (lowest === null || m < lowest) lowest = m;
       }
     }
   } catch (err: any) {
