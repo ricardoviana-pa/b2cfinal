@@ -317,6 +317,41 @@
     "areaSquareFeet": 6287,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Beautiful place!",
+        "guestDisplayName": "Bianca",
+        "guestName": "Bianca",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-03T09:41:38.374Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "The property is gorgeous, even more beautiful than the pictures. Really great for a family of 10 people. Well maintained and very high end.\n\nThe location appears remote on a map but in fact there are amenities all around, Uber is available, and Guimares is close and has lots of entertainment. We didn't mind the location as a trade-off for the size of the property.\n\nHost was very responsive, but check in procedure was very annoying, requiring me to obtain selfies with IDs from 10 guests prior to ",
         "guestDisplayName": "Ramsey",
@@ -457,8 +492,8 @@
         ]
       }
     ],
-    "averageRating": 4.75,
-    "reviewCount": 4
+    "averageRating": 4.6,
+    "reviewCount": 5
   },
   {
     "id": "guesty-6a50d66857c8010015595ad0",
@@ -679,9 +714,45 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 1076.39104,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 4,
+        "text": "Wij hadden een leuk verblijf in dit huis en hebben veel uitstapjes in de omgeving gedaan. We waren geen fan van alle geurstokjes in huis. Het was ook niet tiptop schoon overal wat je wel zou verwachten in deze categorie huizen.",
+        "guestDisplayName": "Geert",
+        "guestName": "Geert",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-03T07:29:21.101Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 2
+          }
+        ]
+      }
+    ],
+    "averageRating": 4,
+    "reviewCount": 1
   },
   {
     "id": "guesty-69c567ad7f6873000e9a3c37",
@@ -899,7 +970,7 @@
     "propertyType": "Villa",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 209,
+    "areaSquareFeet": 209.03514035640003,
     "reviews": [
       {
         "rating": 5,
@@ -2315,7 +2386,7 @@
     "propertyType": "Apartment",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 915,
+    "areaSquareFeet": 914.9323857,
     "reviews": [
       {
         "rating": 5,
@@ -3632,7 +3703,6 @@
         "Iron",
         "Kettle",
         "Kitchen",
-        "Laptop friendly workspace",
         "Microwave",
         "Outdoor pool",
         "Oven",
@@ -4467,7 +4537,7 @@
     "propertyType": "House",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 2928,
+    "areaSquareFeet": 2927.78363424,
     "reviews": [
       {
         "rating": 5,
@@ -4817,7 +4887,7 @@
     "propertyType": "House",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": null,
+    "areaSquareFeet": 3767.3686470000002,
     "reviews": [
       {
         "rating": 5,
@@ -8019,10 +8089,10 @@
       "https://assets.guesty.com/image/upload/v1774957436/production/6957de4388cba42d9e7a905e/firjkd5pmmvqoiofyho3.jpg",
       "https://assets.guesty.com/image/upload/v1774957436/production/6957de4388cba42d9e7a905e/nupgor3oftejnenyb0bv.jpg"
     ],
-    "description": "Book the entire 300-year-old riverside watermill: 9 bedrooms, 7 bathrooms, 20 guests, private river beach. Four restored stone houses on the banks of the River Coura in Vilar de Mouros — the only property with direct access to a stunning river beach. 5 km from Caminha, 10 km from the Atlantic coast. Ideal for family reunions, group retreats and celebrations.\n\nThree hundred years of history lie within the granite walls of this restored watermill in Vilar de Mouros, where the constant murmur of the River Coura drifts through dark wooden windows. The complex brings together four independent stone houses, with a total capacity for 20 guests, sharing private gardens and direct access to a river beach.\n\nThe main house, the largest of the group, accommodates 10 guests in 4 bedrooms with queen‑size beds and bunk beds. The two intermediate houses each offer two bedrooms (one queen and two single beds). The smaller house includes one queen bedroom with a sofa bed. Inside, the original granite blends with walnut‑tone hardwood floors, exposed beams, and a striking detail: a glass floor panel revealing the century‑old milling mechanisms beneath.\n\nThe houses in the complex\nMain House (T4) — 4 bedrooms, 4 bathrooms, sleeps 10. Three queen bedrooms plus one twin room. Fully equipped kitchen and living room with river views.\n\nBob Dylan House — 1 queen bedroom, 1 bathroom, sofa bed in the living room, sleeps 4. Direct access to the river.\n\nJoe Cocker House — 2 bedrooms (1 queen + 2 singles), 1 bathroom, sleeps 4. Kitchenette and private entrance.\n\nU2 Loft — compact mezzanine studio with 1 queen bedroom and 1 bathroom, sleeps 2, set above the old mill race.\n\nAll houses preserve their original features — granite, walnut flooring, timber beams — while offering modern comforts such as Wi‑Fi, heating and fully equipped kitchens. Outside, guests enjoy shared gardens, a BBQ area, sun terraces, and a private path leading down to the river beach.\n\nThe River Coura curves gently around the property, creating a crystal‑clear river beach right at the doorstep. Vilar de Mouros, a quiet riverside village in the Minho region, is a place where silence is broken only by birdsong and the sound of water running over the rocks — and it is also famous for hosting Portugal’s oldest music festival. In summer, the Coura offers excellent swimming, with calm, clean water and sandy banks.\n\nJust a few kilometres away, Caminha (5 km) preserves its medieval centre, with the Clock Tower, the granite square, restaurants and the ferry to Spain. Vila Nova de Cerveira, even closer, invites you to explore its art scene, the castle and the riverfront along the Minho. Spain is only 20 km away: La Guardia, renowned for its seafood preserves, is a classic day trip.\n\nFurther highlights include the Atlantic beaches of Moledo and Vila Praia de Âncora (10 km), Viana do Castelo (25 km) with the Basilica of Santa Luzia perched on the hilltop, Ponte de Lima (30 km) and the Peneda‑Gerês National Park (40 km). For longer journeys, both Porto Airport and Santiago de Compostela lie about 90 km away.\n\nGuests have exclusive access to the entire property including all four houses, private gardens, BBQ area, and the path leading directly to the River Coura beach. Each house has its own private entrance and fully equipped kitchen. Free private parking for multiple vehicles on the property grounds.\n\nCar is the most convenient way to explore the region. Caminha is 5 minutes away, Viana do Castelo 30 minutes, and Porto just over an hour, with the A28 motorway providing fast access both north and south. The Spanish border in Caminha opens the way to the Galician Rías Baixas. The property offers free private parking for multiple vehicles.\n\nFor longer journeys, access is straightforward:\n\nPorto Airport — 1 hour via A28\n\nLisbon — 4 hours via A1/A28\n\nSantiago de Compostela Airport — 1 hour via AP‑9/A28\n\nVigo (Spain) — 45 minutes\n\nThose who prefer public transport also have good options: Transdev buses connect Vilar de Mouros to Caminha, where you’ll find the train station (5 km) on the scenic Minho coastal line, with direct service to Porto. The nearest bus stop is in the village, about 500 metres away.",
+    "description": "Book the entire 300-year-old riverside watermill: 9 bedrooms, 7 bathrooms, 20 guests, private river beach. Four restored stone houses on the banks of the River Coura in Vilar de Mouros — the only property with direct access to a stunning river beach. 5 km from Caminha, 10 km from the Atlantic coast. Ideal for family reunions, group retreats and celebrations.\n\nThree hundred years of history lie within the granite walls of this restored watermill in Vilar de Mouros, where the constant murmur of the River Coura drifts through dark wooden windows. The complex brings together four independent stone houses, with a total capacity for 20 guests, sharing private gardens and direct access to a river beach.\n\nThe main house, the largest of the group, accommodates 10 guests in 4 bedrooms with queen‑size beds and bunk beds. The two intermediate houses each offer two bedrooms (one queen and two single beds). The smaller house includes one queen bedroom with a sofa bed. Inside, the original granite blends with walnut‑tone hardwood floors, exposed beams, and a striking detail: a glass floor panel revealing the century‑old milling mechanisms beneath.\n\nThe houses in the complex\nMain House (T4) — 4 bedrooms, 4 bathrooms, sleeps 10. Three queen bedrooms plus one twin room. Fully equipped kitchen and living room with river views.\n\nBob Dylan House — 1 queen bedroom, 1 bathroom, sofa bed in the living room, sleeps 4. Direct access to the river.\n\nJoe Cocker House — 2 bedrooms (1 queen + 2 singles), 1 bathroom, sleeps 4. Kitchenette and private entrance.\n\nU2 Loft — compact mezzanine studio with 1 queen bedroom and 1 bathroom, sleeps 2, set above the old mill race.\n\nAll houses preserve their original elements — granite, walnut flooring, and wooden beams — while offering modern comfort, including Wi‑Fi, heating, and fully equipped kitchens. Outside, guests enjoy shared gardens, a barbecue area, sun‑drenched terraces, and a private path exclusive to the property that leads to the riverside beach, which is open for public use.\n\nThe River Coura curves gently around the property, creating a crystal‑clear river beach right at the doorstep. Vilar de Mouros, a quiet riverside village in the Minho region, is a place where silence is broken only by birdsong and the sound of water running over the rocks — and it is also famous for hosting Portugal’s oldest music festival. In summer, the Coura offers excellent swimming, with calm, clean water and sandy banks.\n\nJust a few kilometres away, Caminha (5 km) preserves its medieval centre, with the Clock Tower, the granite square, restaurants and the ferry to Spain. Vila Nova de Cerveira, even closer, invites you to explore its art scene, the castle and the riverfront along the Minho. Spain is only 20 km away: La Guardia, renowned for its seafood preserves, is a classic day trip.\n\nFurther highlights include the Atlantic beaches of Moledo and Vila Praia de Âncora (10 km), Viana do Castelo (25 km) with the Basilica of Santa Luzia perched on the hilltop, Ponte de Lima (30 km) and the Peneda‑Gerês National Park (40 km). For longer journeys, both Porto Airport and Santiago de Compostela lie about 90 km away.\n\nGuests have exclusive access to the entire property including all four houses, private gardens, BBQ area, and the path leading directly to the River Coura beach. Each house has its own private entrance and fully equipped kitchen. Free private parking for multiple vehicles on the property grounds.\n\nCar is the most convenient way to explore the region. Caminha is 5 minutes away, Viana do Castelo 30 minutes, and Porto just over an hour, with the A28 motorway providing fast access both north and south. The Spanish border in Caminha opens the way to the Galician Rías Baixas. The property offers free private parking for multiple vehicles.\n\nFor longer journeys, access is straightforward:\n\nPorto Airport — 1 hour via A28\n\nLisbon — 4 hours via A1/A28\n\nSantiago de Compostela Airport — 1 hour via AP‑9/A28\n\nVigo (Spain) — 45 minutes\n\nThose who prefer public transport also have good options: Transdev buses connect Vilar de Mouros to Caminha, where you’ll find the train station (5 km) on the scenic Minho coastal line, with direct service to Porto. The nearest bus stop is in the village, about 500 metres away.",
     "descriptionSections": {
       "summary": "Book the entire 300-year-old riverside watermill: 9 bedrooms, 7 bathrooms, 20 guests, private river beach. Four restored stone houses on the banks of the River Coura in Vilar de Mouros — the only property with direct access to a stunning river beach. 5 km from Caminha, 10 km from the Atlantic coast. Ideal for family reunions, group retreats and celebrations.",
-      "space": "Three hundred years of history lie within the granite walls of this restored watermill in Vilar de Mouros, where the constant murmur of the River Coura drifts through dark wooden windows. The complex brings together four independent stone houses, with a total capacity for 20 guests, sharing private gardens and direct access to a river beach.\n\nThe main house, the largest of the group, accommodates 10 guests in 4 bedrooms with queen‑size beds and bunk beds. The two intermediate houses each offer two bedrooms (one queen and two single beds). The smaller house includes one queen bedroom with a sofa bed. Inside, the original granite blends with walnut‑tone hardwood floors, exposed beams, and a striking detail: a glass floor panel revealing the century‑old milling mechanisms beneath.\n\nThe houses in the complex\nMain House (T4) — 4 bedrooms, 4 bathrooms, sleeps 10. Three queen bedrooms plus one twin room. Fully equipped kitchen and living room with river views.\n\nBob Dylan House — 1 queen bedroom, 1 bathroom, sofa bed in the living room, sleeps 4. Direct access to the river.\n\nJoe Cocker House — 2 bedrooms (1 queen + 2 singles), 1 bathroom, sleeps 4. Kitchenette and private entrance.\n\nU2 Loft — compact mezzanine studio with 1 queen bedroom and 1 bathroom, sleeps 2, set above the old mill race.\n\nAll houses preserve their original features — granite, walnut flooring, timber beams — while offering modern comforts such as Wi‑Fi, heating and fully equipped kitchens. Outside, guests enjoy shared gardens, a BBQ area, sun terraces, and a private path leading down to the river beach.",
+      "space": "Three hundred years of history lie within the granite walls of this restored watermill in Vilar de Mouros, where the constant murmur of the River Coura drifts through dark wooden windows. The complex brings together four independent stone houses, with a total capacity for 20 guests, sharing private gardens and direct access to a river beach.\n\nThe main house, the largest of the group, accommodates 10 guests in 4 bedrooms with queen‑size beds and bunk beds. The two intermediate houses each offer two bedrooms (one queen and two single beds). The smaller house includes one queen bedroom with a sofa bed. Inside, the original granite blends with walnut‑tone hardwood floors, exposed beams, and a striking detail: a glass floor panel revealing the century‑old milling mechanisms beneath.\n\nThe houses in the complex\nMain House (T4) — 4 bedrooms, 4 bathrooms, sleeps 10. Three queen bedrooms plus one twin room. Fully equipped kitchen and living room with river views.\n\nBob Dylan House — 1 queen bedroom, 1 bathroom, sofa bed in the living room, sleeps 4. Direct access to the river.\n\nJoe Cocker House — 2 bedrooms (1 queen + 2 singles), 1 bathroom, sleeps 4. Kitchenette and private entrance.\n\nU2 Loft — compact mezzanine studio with 1 queen bedroom and 1 bathroom, sleeps 2, set above the old mill race.\n\nAll houses preserve their original elements — granite, walnut flooring, and wooden beams — while offering modern comfort, including Wi‑Fi, heating, and fully equipped kitchens. Outside, guests enjoy shared gardens, a barbecue area, sun‑drenched terraces, and a private path exclusive to the property that leads to the riverside beach, which is open for public use.",
       "access": "Guests have exclusive access to the entire property including all four houses, private gardens, BBQ area, and the path leading directly to the River Coura beach. Each house has its own private entrance and fully equipped kitchen. Free private parking for multiple vehicles on the property grounds.",
       "neighborhood": "The River Coura curves gently around the property, creating a crystal‑clear river beach right at the doorstep. Vilar de Mouros, a quiet riverside village in the Minho region, is a place where silence is broken only by birdsong and the sound of water running over the rocks — and it is also famous for hosting Portugal’s oldest music festival. In summer, the Coura offers excellent swimming, with calm, clean water and sandy banks.\n\nJust a few kilometres away, Caminha (5 km) preserves its medieval centre, with the Clock Tower, the granite square, restaurants and the ferry to Spain. Vila Nova de Cerveira, even closer, invites you to explore its art scene, the castle and the riverfront along the Minho. Spain is only 20 km away: La Guardia, renowned for its seafood preserves, is a classic day trip.\n\nFurther highlights include the Atlantic beaches of Moledo and Vila Praia de Âncora (10 km), Viana do Castelo (25 km) with the Basilica of Santa Luzia perched on the hilltop, Ponte de Lima (30 km) and the Peneda‑Gerês National Park (40 km). For longer journeys, both Porto Airport and Santiago de Compostela lie about 90 km away.",
       "gettingAround": "Car is the most convenient way to explore the region. Caminha is 5 minutes away, Viana do Castelo 30 minutes, and Porto just over an hour, with the A28 motorway providing fast access both north and south. The Spanish border in Caminha opens the way to the Galician Rías Baixas. The property offers free private parking for multiple vehicles.\n\nFor longer journeys, access is straightforward:\n\nPorto Airport — 1 hour via A28\n\nLisbon — 4 hours via A1/A28\n\nSantiago de Compostela Airport — 1 hour via AP‑9/A28\n\nVigo (Spain) — 45 minutes\n\nThose who prefer public transport also have good options: Transdev buses connect Vilar de Mouros to Caminha, where you’ll find the train station (5 km) on the scenic Minho coastal line, with direct service to Porto. The nearest bus stop is in the village, about 500 metres away.",
@@ -9245,7 +9315,7 @@
     "propertyType": "House",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 1615,
+    "areaSquareFeet": 1614.586563,
     "reviews": [
       {
         "rating": 4,
@@ -12386,7 +12456,7 @@
     "propertyType": "Apartment",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 1077,
+    "areaSquareFeet": 1076.391042,
     "reviews": [
       {
         "rating": 5,
@@ -13587,7 +13657,7 @@
     "propertyType": "Apartment",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 862,
+    "areaSquareFeet": 861.1128336,
     "reviews": [
       {
         "rating": 5,
@@ -17922,7 +17992,7 @@
     "propertyType": "House",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 1077,
+    "areaSquareFeet": 1076.391042,
     "reviews": [
       {
         "rating": 5,
@@ -19282,12 +19352,12 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/d33de14c-8f5e-42-_NL5U",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/a389db53-f962-4a-NY5w1",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/dd0299d4-8cd3-44-BdKix",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/5d965389-bfdb-41-tSfX6",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/39d9ccf9-2d6a-4f-xTln8",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/5d965389-bfdb-41-tSfX6",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/07cf9d1e-1834-45-WOdYe",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/62c93c30-727a-4b-90j7M",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/e570e4ac-1618-44-AAcV0",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/093da1e8-b857-47-mdQ7H",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/e570e4ac-1618-44-AAcV0",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/27dff3ff-877e-40-tQFkN",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/e5bd686b-1a7f-4a-sDJ6A",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/fc186bff-a5f8-4d-G084S",
@@ -19429,7 +19499,7 @@
     "propertyType": "Apartment",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 1077,
+    "areaSquareFeet": 1076.391042,
     "reviews": [
       {
         "rating": 5,
@@ -19791,7 +19861,7 @@
     "propertyType": "Villa",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 1669,
+    "areaSquareFeet": 1668.4061151,
     "reviews": [
       {
         "rating": 4,
@@ -20537,7 +20607,7 @@
     "propertyType": "House",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 2961,
+    "areaSquareFeet": 2960.0753655,
     "reviews": [
       {
         "rating": 5,
@@ -24038,7 +24108,7 @@
     "propertyType": "Townhouse",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 1680,
+    "areaSquareFeet": 1679.17002552,
     "reviews": [
       {
         "rating": 5,
@@ -24844,7 +24914,7 @@
     "propertyType": "Apartment",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 754,
+    "areaSquareFeet": 753.4737294,
     "reviews": [
       {
         "rating": 5,
