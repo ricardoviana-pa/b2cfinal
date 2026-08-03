@@ -24,7 +24,9 @@ import { getSetting, upsertSetting } from "../db";
 
 const TTL_MS = 8 * 60 * 60 * 1000; // 8h in-memory cache
 const HORIZON_DAYS = 90;
-const MAX_SAMPLES = 6; // quotes per listing on a cache miss
+const MAX_SAMPLES = 14; // quotes per listing on a cache miss
+const SAMPLE_CADENCE_DAYS = 7; // probe ~every week so no seasonal low (a whole cheap month) is missed
+const QUOTE_CHUNK = 4; // paced concurrency per listing — smooths the Guesty quote burst
 const STORE_CAT = "lowest_nightly";
 const WARM_PER_REQUEST = 10; // how many never-computed listings to warm per PLP batch call
 
@@ -34,6 +36,18 @@ type Result = { from: number | null; source: "calendar" | "fallback" | "none"; c
 const CACHE = new Map<string, { value: number | null; source: Result["source"]; at: number }>();
 
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
+
+/** Persisted values carry a timestamp ("706@<epochMs>") so the PLP batch can tell
+ *  a stale price from a fresh one and refresh it in the background. Legacy plain
+ *  numbers parse with at=0 → always treated as stale (refreshed once). */
+function parseStored(raw: string | undefined | null): { price: number | null; at: number } {
+  if (!raw) return { price: null, at: 0 };
+  const [pStr, tStr] = String(raw).split("@");
+  const p = Number(pStr);
+  const t = Number(tStr);
+  return { price: Number.isFinite(p) && p > 0 ? p : null, at: Number.isFinite(t) ? t : 0 };
+}
+const encodeStored = (price: number, at: number) => `${price}@${at}`;
 /** A cached entry is fresh for 8h when it has a real value, but only 30 min when
  *  it's null — so a listing that came back empty (rate-limited or no availability
  *  at the time) is retried soon instead of showing "select dates" for 8h. */
@@ -60,12 +74,24 @@ export async function getLowestNightly(listingId: string, basePriceHint?: number
       .map((d: any) => d.date)
       .sort();
 
-    // Pick up to MAX_SAMPLES check-ins spread across the horizon, each with
-    // min-nights of consecutive availability so the quote actually succeeds.
+    // Probe the horizon at a WEEKLY cadence, not a sparse even-index spread.
+    // PriceLabs seasonality moves week-to-week, so the true "from" often lives in
+    // a shoulder-season pocket (e.g. October). Sampling ~6 evenly-spread windows
+    // used to skip whole cheap months and overshoot the real floor by ~40-60%
+    // (Carcavelos showed "from €1243" while October genuinely booked at ~€700).
+    // For each weekly target we snap to the first available date on/after it that
+    // has min-nights of consecutive availability so the quote actually succeeds.
+    const availSet = new Set<string>(availDates);
     const samples: Array<{ ci: string; co: string }> = [];
-    const step = Math.max(1, Math.floor(availDates.length / MAX_SAMPLES));
-    for (let i = 0; i < availDates.length && samples.length < MAX_SAMPLES; i += step) {
-      const ci = availDates[i];
+    const seen = new Set<string>();
+    for (let offset = 0; offset < HORIZON_DAYS && samples.length < MAX_SAMPLES; offset += SAMPLE_CADENCE_DAYS) {
+      const target = new Date(today.getTime() + offset * 86400000);
+      let ci: string | null = null;
+      for (let k = 0; k < SAMPLE_CADENCE_DAYS; k++) {
+        const cand = ymd(new Date(target.getTime() + k * 86400000));
+        if (availSet.has(cand)) { ci = cand; break; }
+      }
+      if (!ci || seen.has(ci)) continue;
       const mn = Math.max(1, byDate.get(ci)?.minNights ?? 2);
       const start = new Date(ci + "T00:00:00Z");
       let ok = true;
@@ -74,23 +100,30 @@ export async function getLowestNightly(listingId: string, basePriceHint?: number
         if (!day || day.status !== "available") { ok = false; break; }
       }
       if (!ok) continue;
+      seen.add(ci);
       samples.push({ ci, co: ymd(new Date(start.getTime() + mn * 86400000)) });
     }
 
-    const quotes = await Promise.allSettled(
-      samples.map((s) => getQuoteWithDeadline(listingId, s.ci, s.co, 2, 20_000)),
-    );
-    for (const r of quotes) {
-      if (r.status !== "fulfilled" || !r.value) continue;
-      const q: any = r.value;
-      // Only trust real live/cached prices — ignore "price on request" fallbacks.
-      if (q.source !== "live" && q.source !== "cached") continue;
-      const candidates: number[] = [];
-      for (const p of q.ratePlanOptions || []) if (typeof p.nightlyRate === "number" && p.nightlyRate > 0) candidates.push(p.nightlyRate);
-      if (typeof q.pricing?.nightlyRate === "number" && q.pricing.nightlyRate > 0) candidates.push(q.pricing.nightlyRate);
-      if (candidates.length) {
-        const m = Math.min(...candidates);
-        if (lowest === null || m < lowest) lowest = m;
+    // Quote in paced chunks so a listing spreads its ~14 quotes over a couple of
+    // seconds instead of firing them all at once (keeps us inside Guesty's limits
+    // even when several listings warm concurrently).
+    for (let i = 0; i < samples.length; i += QUOTE_CHUNK) {
+      const chunk = samples.slice(i, i + QUOTE_CHUNK);
+      const quotes = await Promise.allSettled(
+        chunk.map((s) => getQuoteWithDeadline(listingId, s.ci, s.co, 2, 20_000)),
+      );
+      for (const r of quotes) {
+        if (r.status !== "fulfilled" || !r.value) continue;
+        const q: any = r.value;
+        // Only trust real live/cached prices — ignore "price on request" fallbacks.
+        if (q.source !== "live" && q.source !== "cached") continue;
+        const candidates: number[] = [];
+        for (const p of q.ratePlanOptions || []) if (typeof p.nightlyRate === "number" && p.nightlyRate > 0) candidates.push(p.nightlyRate);
+        if (typeof q.pricing?.nightlyRate === "number" && q.pricing.nightlyRate > 0) candidates.push(q.pricing.nightlyRate);
+        if (candidates.length) {
+          const m = Math.min(...candidates);
+          if (lowest === null || m < lowest) lowest = m;
+        }
       }
     }
   } catch (err: any) {
@@ -98,17 +131,16 @@ export async function getLowestNightly(listingId: string, basePriceHint?: number
   }
 
   if (lowest !== null && lowest > 0) {
-    CACHE.set(listingId, { value: lowest, source: "calendar", at: Date.now() });
-    upsertSetting(`${STORE_CAT}_${listingId}`, String(lowest), STORE_CAT).catch(() => {});
+    const at = Date.now();
+    CACHE.set(listingId, { value: lowest, source: "calendar", at });
+    upsertSetting(`${STORE_CAT}_${listingId}`, encodeStored(lowest, at), STORE_CAT).catch(() => {});
     return { from: lowest, source: "calendar", currency: "EUR" };
   }
 
   // Fallback: min(basePrice, last-known-good). Never higher than the real lowest we've seen.
   let lastKnown: number | null = null;
   try {
-    const raw = await getSetting(`${STORE_CAT}_${listingId}`);
-    const n = raw ? Number(raw) : NaN;
-    if (Number.isFinite(n) && n > 0) lastKnown = n;
+    lastKnown = parseStored(await getSetting(`${STORE_CAT}_${listingId}`)).price;
   } catch { /* db unavailable */ }
   const candidates = [basePriceHint, lastKnown].filter((x): x is number => typeof x === "number" && x > 0);
   const fb = candidates.length ? Math.min(...candidates) : null;
@@ -124,23 +156,31 @@ export async function getLowestNightly(listingId: string, basePriceHint?: number
  */
 export async function getLowestNightlyBatch(listingIds: string[]): Promise<Record<string, number | null>> {
   const out: Record<string, number | null> = {};
-  const missing: string[] = [];
+  const dbReads: string[] = [];
   for (const id of listingIds) {
     const c = CACHE.get(id);
     if (c && isFresh(c) && c.value !== null) out[id] = c.value;
-    else missing.push(id);
+    else dbReads.push(id);
   }
-  await Promise.all(missing.map(async (id) => {
+
+  const noValue: string[] = []; // never computed → warm to get a first value
+  const stale: string[] = [];   // has a persisted value but it's old → refresh in background
+  await Promise.all(dbReads.map(async (id) => {
     try {
-      const raw = await getSetting(`${STORE_CAT}_${id}`);
-      const n = raw ? Number(raw) : NaN;
-      out[id] = Number.isFinite(n) && n > 0 ? n : null;
+      const { price, at } = parseStored(await getSetting(`${STORE_CAT}_${id}`));
+      out[id] = price;
+      if (price === null) noValue.push(id);
+      else if (Date.now() - at >= TTL_MS) stale.push(id);
     } catch {
       out[id] = null;
+      noValue.push(id);
     }
   }));
-  // Background-warm listings we have no value for yet (fire-and-forget, capped).
-  const toWarm = missing.filter((id) => out[id] == null).slice(0, WARM_PER_REQUEST);
+
+  // Background-warm (fire-and-forget, capped). Listings with no value first, then
+  // stale ones — so the whole portfolio self-heals onto the current (accurate)
+  // sampling without ever blanking the price already on the page.
+  const toWarm = [...noValue, ...stale].slice(0, WARM_PER_REQUEST);
   for (const id of toWarm) void getLowestNightly(id).catch(() => {});
   return out;
 }
