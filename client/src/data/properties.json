@@ -8882,6 +8882,41 @@
     "areaSquareFeet": 538.195521,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Good location, nice terrace and jacuzzi. Very convenient to relax after your visit!",
+        "guestDisplayName": "Alberto",
+        "guestName": "Alberto",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-07T08:17:28.864Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "We very much enjoyed our stay in this lovely apartment. The space is clean and beautifully presented. It is a little walk away from the main centre of Porto, but that makes it much quieter and more relaxed. There are necessary amenities very near by.",
         "guestDisplayName": "Kate",
@@ -9442,8 +9477,8 @@
         ]
       }
     ],
-    "averageRating": 4.63,
-    "reviewCount": 16
+    "averageRating": 4.65,
+    "reviewCount": 17
   },
   {
     "id": "guesty-69653390ecf7490014ed2d6c",
@@ -17634,6 +17669,41 @@
     "areaSquareFeet": 322.9173126,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Le bateau est propre mais Dès notre arrivée et suite pas un manque d’eau , la pompe de distribution du bateau s’est arrêtée ! Nous ( 2 adultes et 2 filles ) privant de douche et laver la vaisselle ! J’ai dus faire le plein d’eau et attendre une réponse le lendemain matin pour arranger la situation! Je déplore le fait par exemple de b’avoir qu’un seul bol sachant que la location est de 4 personnes ! Sam a cependant été très cordiale ! Je pourrais éventuellement conseiller de mettre un micro-ondes",
+        "guestDisplayName": "Greg",
+        "guestName": "Greg",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-08T07:00:55.187Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 2
+          },
+          {
+            "name": "value",
+            "score": 2
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Location of boat good  short walk around the marina to reach the centre. Secure location with keys to the boat and the jetty. Would recommend for a few nights if you want to try something different",
         "guestDisplayName": "Tina",
@@ -17704,8 +17774,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 2
+    "averageRating": 4.67,
+    "reviewCount": 3
   },
   {
     "id": "guesty-69653398bf04fe0013743b98",
@@ -24579,6 +24649,41 @@
     "areaSquareFeet": 1679.17002552,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Un alojamiento impresionante, cuidado, con unas prestaciones y unos servicios que superaban cualquier expectativa. La empresa responde rápido y siempre soluciona cualquier inconveniente, duda o incidencia posible. Un éxito",
+        "guestDisplayName": "Marta",
+        "guestName": "Marta",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-08T10:11:09.554Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "a parte qualche cialda di caffè non abbiamo trovato niente in dotazione almento per fare colazione il primo giorno, neanche una bottiglia d'acqua.\nLo stendibiancheria è troppo piccolo per le possibili 6 persone che possono abitare\nla wifi non ha funzionato perchè mancava il collegamento a internet",
         "guestDisplayName": "Michele",
@@ -24964,8 +25069,8 @@
         ]
       }
     ],
-    "averageRating": 4.82,
-    "reviewCount": 11
+    "averageRating": 4.83,
+    "reviewCount": 12
   },
   {
     "id": "guesty-6965331fec80690013738c68",
