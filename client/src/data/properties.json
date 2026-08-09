@@ -24382,6 +24382,41 @@
     "areaSquareFeet": 1808.3369472,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Nous avons adoré notre séjour ! Le logement était vraiment top, très agréable et idéalement situé. La localisation est géniale et le Rio juste à côté est magnifique, on a vraiment adoré pouvoir en profiter. 🥰\nL’hôte est également super : très réactif, toujours rapide à répondre et plein de bons conseils pour découvrir les alentours. Nous avons passé un excellent séjour et nous reviendrons avec grand plaisir. Je recommande à 100 % ! ✨",
+        "guestDisplayName": "Nawel",
+        "guestName": "Nawel",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-08T20:58:33.477Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "Nice domain, well maintained. Easy With the codes.",
         "guestDisplayName": "Floris",
@@ -24417,8 +24452,8 @@
         ]
       }
     ],
-    "averageRating": 4,
-    "reviewCount": 1
+    "averageRating": 4.5,
+    "reviewCount": 2
   },
   {
     "id": "guesty-6965337d2def930014e919c6",
