@@ -293,15 +293,17 @@ export const checkoutRouter = router({
           try { const b = breakdownFromIntent(m); return { lines: b.lines, receptionCents: b.receptionCents, flexCents: b.flexCents, totalCents: b.totalCents }; }
           catch { return null; }
         })();
-        void sendCheckoutOpsManifest({
+        const photoPromise = resolveIntentPhoto(m).catch(() => undefined);
+        void photoPromise.then((imageUrl) => sendCheckoutOpsManifest({
           canonical,
+          imageUrl,
           confirmationCode: m.confirmationCode, reservationId: m.reservationId,
           propertyName: m.propertyName, checkIn: m.checkIn, checkOut: m.checkOut,
           guests: m.guests, email: m.email,
           guestName: [m.guestFirstName, m.guestLastName].filter(Boolean).join(" "),
           guestPhone: m.guestPhone, reception: m.reception, extras: m.extras,
           flex: m.flex, intentId: input.intentId,
-        });
+        }));
         // Confirmação premium ao hóspede — o email do Guesty é genérico, este
         // replica o checkout do site: foto da casa, cartão de resumo com o
         // breakdown e total, estadia à medida (fire-and-forget, nunca trava o funil)
@@ -312,7 +314,7 @@ export const checkoutRouter = router({
                 ? CHECKOUT_RECEPTION.hostedLatePrice
                 : CHECKOUT_RECEPTION.hostedPrice
               : 0;
-          void resolveIntentPhoto(m)
+          void photoPromise
             .then((imageUrl) =>
               sendCheckoutGuestConfirmation({
                 canonical,

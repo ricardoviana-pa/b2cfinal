@@ -105,6 +105,7 @@ async function main() {
 
   await sendCheckoutOpsManifest({
     canonical,
+    imageUrl: DEMO_IMAGE,
     confirmationCode: "PA-48291",
     reservationId: "res-demo",
     propertyName: "Villa Aurora",

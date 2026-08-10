@@ -1039,6 +1039,7 @@ export async function sendCheckoutOpsManifest(d: {
   guestPhone?: string | null; reception?: { type: string; late?: boolean } | null;
   extras?: Array<Record<string, unknown>> | null; flex?: boolean | null; intentId: string;
   canonical?: CanonicalCharge | null;
+  imageUrl?: string | null;
 }): Promise<void> {
   try {
     const extras = Array.isArray(d.extras) ? d.extras : [];
@@ -1104,12 +1105,19 @@ export async function sendCheckoutOpsManifest(d: {
     row("Reserva", `${d.confirmationCode || "pendente"} (Guesty ${d.reservationId || "?"})`);
     const fmtLine = (e: Record<string, unknown>) =>
       `<p style="font:13px Arial;color:#1A1A18;margin:2px 0;">• ${nice(e.sku)} ${qty(e)} · ${e.amount != null ? amountOf(e) + " EUR" : "sob orcamento"}</p>`;
-    const html =
+    // Sempre com a marca: moldura com logo (wrapTemplate) + foto da casa —
+    // a equipa reconhece a propriedade num relance (12 jul, Ricardo)
+    const photoHtml = d.imageUrl
+      ? `<img src="${d.imageUrl}" alt="${d.propertyName || ""}" width="600" style="display:block;width:100%;height:auto;border-radius:8px;margin:0 0 16px;" />`
+      : "";
+    const html = wrapTemplate(
       `<h2 style="font:400 20px Georgia;color:#1A1A18;margin:0 0 14px;">Nova reserva com servicos — ${d.propertyName || ""}</h2>` +
       actionHtml +
+      photoHtml +
       `<table>${rows.join("")}</table>` +
       (extras.length ? `<p style="font:600 13px Arial;margin:14px 0 4px;color:#1A1A18;">Detalhe dos servicos</p>` + extras.map(fmtLine).join("") : "") +
-      `<p style="font:11px Arial;color:#9E9A90;margin-top:16px;">Intent ${d.intentId} · gerado pelo checkout 2.0</p>`;
+      `<p style="font:11px Arial;color:#9E9A90;margin-top:16px;">Intent ${d.intentId} · gerado pelo checkout 2.0</p>`,
+    );
     const urgentFlag = needs.length || requests.length ? "ACAO ATE 24H — " : "";
     await sendEmail(BOOKING_ALERT_EMAIL, `[CS] ${urgentFlag}Reserva ${d.confirmationCode || d.intentId.slice(0, 8)} · ${d.propertyName || ""}`, html);
     console.info(`[OpsManifest] enviado (intent ${d.intentId}, ${actions.length} acoes)`);
