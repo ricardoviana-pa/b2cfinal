@@ -205,6 +205,9 @@ const STATIC_REDIRECTS: Record<string, string> = {
   "/homes/ros-dream-boat-up-to-4-guests-bb2b42": "/en/homes/ros-dream-boat-by-portugal-active-bb2b42",
   "/homes/u2-loft-by-portugal-active-1bed48": "/en/homes/u2-loft-at-the-riverside-watermill-1bed48",
   "/homes/watermill-main-house-by-portugal-active-7188ad": "/en/homes/riverside-watermill-house-private-beach-access-7188ad",
+  // Villa Aura — slug was pinned to the old Guesty title ("Connected Premium
+  // Lodge…"); renamed 2026-08-06 to match the current brand name (2026-08-06).
+  "/homes/connected-premium-lodge-cowork-and-5min-beach-738c68": "/en/homes/villa-aura-sauna-gym-5min-beach-city-738c68",
 };
 
 interface PatternRule {
