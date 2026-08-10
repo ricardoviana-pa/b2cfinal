@@ -1367,6 +1367,17 @@ export function serveStatic(app: Express) {
   // Lazily load the separately-built SSR bundle (dist/server/entry-server.js).
   let _ssrRender: SsrRender | null = null;
   let _ssrUnavailable = false;
+
+  // Memoise the SSR render output per locale-prefixed path. The render is
+  // deterministic per path (live pricing is client-hydrated, so it isn't in this
+  // markup; property data has its own cache) and query strings don't affect it.
+  // Cloudflare serves the HTML as `DYNAMIC` (uncached), so WITHOUT this every
+  // request re-runs the full React render on the origin — the source of the TTFB
+  // tail latency and the per-request server load. With it, repeat views of a URL
+  // skip the render entirely. 5-min TTL keeps content fresh after a Guesty sync.
+  const SSR_RENDER_TTL_MS = 5 * 60 * 1000;
+  const SSR_RENDER_CACHE_MAX = 400;
+  const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: string; at: number }>();
   async function getSsrRender(): Promise<SsrRender | null> {
     if (_ssrRender) return _ssrRender;
     if (_ssrUnavailable) return null;
@@ -1419,15 +1430,22 @@ export function serveStatic(app: Express) {
       const render = await getSsrRender();
       if (render) {
         try {
-          const prefetch = await buildPrefetch(strippedPath);
-          const { appHtml, dehydratedState } = await render(
-            reqPath,
-            prefetch ? { prefetch } : undefined,
-          );
-          const rqScript = `<script>window.__RQ_STATE__=${scriptString(dehydratedState)}</script>`;
+          let entry = _ssrRenderCache.get(reqPath);
+          if (!entry || Date.now() - entry.at >= SSR_RENDER_TTL_MS) {
+            const prefetch = await buildPrefetch(strippedPath);
+            const out = await render(reqPath, prefetch ? { prefetch } : undefined);
+            entry = { appHtml: out.appHtml, dehydratedState: out.dehydratedState, at: Date.now() };
+            // Simple FIFO cap — evict the oldest entry when full.
+            if (_ssrRenderCache.size >= SSR_RENDER_CACHE_MAX) {
+              const oldest = _ssrRenderCache.keys().next().value;
+              if (oldest !== undefined) _ssrRenderCache.delete(oldest);
+            }
+            _ssrRenderCache.set(reqPath, entry);
+          }
+          const rqScript = `<script>window.__RQ_STATE__=${scriptString(entry.dehydratedState)}</script>`;
           return html.replace(
             '<div id="root"></div>',
-            `<div id="root">${appHtml}</div>\n    ${rqScript}`,
+            `<div id="root">${entry.appHtml}</div>\n    ${rqScript}`,
           );
         } catch (err) {
           console.error(`[SSR] render failed for ${reqPath}, falling back to CSR:`, (err as Error).message);
