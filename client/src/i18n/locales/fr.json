@@ -1500,7 +1500,7 @@
       },
       "pet-fee": {
         "name": "Venir avec un animal",
-        "desc": "Cette maison accepte les animaux. Un forfait par séjour couvre la préparation."
+        "desc": "Cette maison accepte les animaux. 50 € pour le premier, 100 € pour le second. Deux maximum."
       },
       "pet-kit": {
         "name": "Kit animal, panier et gamelles",
@@ -1525,6 +1525,10 @@
       "deep-cleaning": {
         "name": "Grand ménage",
         "desc": "Nettoyage complet de fond en comble : salles de bain et cuisine en profondeur, tout le linge et les serviettes changés, toutes les surfaces et sols."
+      },
+      "grocery-setup": {
+        "name": "Courses faites et livrées",
+        "desc": "Envoyez-nous votre liste. Nous faisons les courses et laissons tout installé avant votre arrivée. La note du supermarché est facturée à part, au prix coûtant."
       }
     },
     "emailTitle": "Où envoyons-nous votre réservation ?",
@@ -1644,6 +1648,7 @@
       "title": "Détails du séjour"
     },
     "arrivalAirport": "Aéroport d'arrivée",
-    "perCleaning": "par ménage"
+    "perCleaning": "par ménage",
+    "perPetStay": "par animal · séjour"
   }
 }

@@ -1500,7 +1500,7 @@
       },
       "pet-fee": {
         "name": "Bringing a pet",
-        "desc": "This home welcomes pets. One fee per stay covers the extra preparation."
+        "desc": "This home welcomes pets. 50 € for the first, 100 € for the second. Maximum of two."
       },
       "pet-kit": {
         "name": "Pet kit, bed and bowls",
@@ -1525,6 +1525,10 @@
       "deep-cleaning": {
         "name": "Deep cleaning",
         "desc": "Full top-to-bottom clean: bathrooms and kitchen deep-cleaned, all linen and towels changed, every surface and floor."
+      },
+      "grocery-setup": {
+        "name": "Grocery setup and delivery",
+        "desc": "Send us your list. We do the shopping and leave everything set up before you arrive. The supermarket bill is charged separately, at cost."
       }
     },
     "emailTitle": "Where should we send your booking?",
@@ -1644,6 +1648,7 @@
       "title": "Stay details"
     },
     "arrivalAirport": "Arrival airport",
-    "perCleaning": "per cleaning"
+    "perCleaning": "per cleaning",
+    "perPetStay": "per pet · stay"
   }
 }

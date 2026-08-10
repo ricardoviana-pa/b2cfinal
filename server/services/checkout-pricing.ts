@@ -54,7 +54,9 @@ export function extraAmountServer(sku: string, sel: IntentExtraSelection, unitPr
     case "per_stay": return base;
     case "per_day": return base * days;
     case "per_person": return base * people;
-    case "per_unit": return base * qty;
+    case "per_unit":
+      if (item.tierPrices?.length) return item.tierPrices[Math.min(qty, item.tierPrices.length) - 1];
+      return base * qty;
     case "per_person_per_unit": return base * people * sessions;
     case "included_selectable": return base * Math.max(0, qty - 1);
     case "per_person_per_day": return base * people * days;

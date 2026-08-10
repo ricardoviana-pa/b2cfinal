@@ -1500,7 +1500,7 @@
       },
       "pet-fee": {
         "name": "Ta med husdjur",
-        "desc": "Det här huset välkomnar husdjur. En avgift per vistelse täcker förberedelserna."
+        "desc": "Det här huset välkomnar husdjur. 50 € för det första, 100 € för det andra. Högst två."
       },
       "pet-kit": {
         "name": "Husdjurskit, säng och skålar",
@@ -1525,6 +1525,10 @@
       "deep-cleaning": {
         "name": "Djuprengöring",
         "desc": "Fullständig städning uppifrån och ner: badrum och kök på djupet, alla sängkläder och handdukar byts, alla ytor och golv."
+      },
+      "grocery-setup": {
+        "name": "Inköp gjorda och levererade",
+        "desc": "Skicka oss din lista. Vi handlar och ställer allt i ordning före ankomst. Matbutikens nota debiteras separat, till självkostnadspris."
       }
     },
     "emailTitle": "Vart skickar vi din bokning?",
@@ -1644,6 +1648,7 @@
       "title": "Vistelsens detaljer"
     },
     "arrivalAirport": "Ankomstflygplats",
-    "perCleaning": "per städning"
+    "perCleaning": "per städning",
+    "perPetStay": "per husdjur · vistelse"
   }
 }

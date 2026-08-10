@@ -74,6 +74,8 @@ export interface CheckoutExtra {
   region?: "north" | "south";
   /** Unidade humana do "per_unit" interno (babysitter à hora) */
   unitKey?: "hour" | "cleaning";
+  /** Preço TOTAL cumulativo por quantidade (escalões não lineares, ex.: animais) */
+  tierPrices?: number[];
   /** Curadoria: ranking base (menor = mais acima) antes das regras dinâmicas */
   baseRank: number;
 }
@@ -119,7 +121,9 @@ export const CHECKOUT_EXTRAS: CheckoutExtra[] = [
   { sku: "baby-chair", chapter: "home", pricingModel: "included_selectable", fulfillment: "instant", unitPrice: 25, minQty: 1, maxQty: 3, baseRank: 24 },
   // §5.0: taxa de animais — só quando o listing aceita; ao adicionar revela os
   // extras pet (progressive disclosure)
-  { sku: "pet-fee", chapter: "home", pricingModel: "per_stay", fulfillment: "instant", unitPrice: 45, petsOnly: true, baseRank: 25 },
+  // 12 jul: 50 € o 1.º animal, o 2.º são 100 € (total 150 €), máximo 2 —
+  // tierPrices é o TOTAL cumulativo por quantidade
+  { sku: "pet-fee", chapter: "home", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 50, minQty: 1, maxQty: 2, tierPrices: [50, 150], petsOnly: true, baseRank: 25 },
   { sku: "pet-kit", chapter: "home", pricingModel: "per_stay", fulfillment: "instant", unitPrice: 25, petsOnly: true, parentSku: "pet-fee", baseRank: 26 },
   { sku: "pet-food", chapter: "home", pricingModel: "on_request", fulfillment: "on_request", petsOnly: true, parentSku: "pet-fee", baseRank: 27 },
 
@@ -128,9 +132,9 @@ export const CHECKOUT_EXTRAS: CheckoutExtra[] = [
   // e por dia, com atalho "todos os dias"
   { sku: "breakfast-box", chapter: "table", pricingModel: "per_person_per_day", fulfillment: "instant", unitPrice: 25, baseRank: 29 },
   { sku: "private-chef", chapter: "table", pricingModel: "per_person", fulfillment: "needs_confirmation", unitPrice: 95, minPeople: 4, popular: true, scarcity: true, baseRank: 28 },
-  { sku: "hamper-essentials", chapter: "table", pricingModel: "per_stay", fulfillment: "instant", unitPrice: 75, baseRank: 31 },
-  { sku: "hamper-gourmet", chapter: "table", pricingModel: "per_stay", fulfillment: "instant", unitPrice: 150, popular: true, baseRank: 32 },
-  { sku: "grocery-list", chapter: "table", pricingModel: "on_request", fulfillment: "on_request", baseRank: 33 },
+  // 12 jul (Ricardo): cabazes e frigorífico substituídos por UM serviço claro —
+  // fazemos as compras e entregamos; a conta do supermercado é à parte, ao custo.
+  { sku: "grocery-setup", chapter: "table", pricingModel: "per_stay", fulfillment: "instant", unitPrice: 120, popular: true, baseRank: 31 },
 
   // ── Capítulo 04 · Bem estar ── (treino atrás de "ver mais" por rank)
   { sku: "massage", chapter: "wellness", pricingModel: "per_person_per_unit", fulfillment: "needs_confirmation", unitPrice: 90, baseRank: 40 },
@@ -269,5 +273,5 @@ export interface CheckoutBundle {
   price: number | null;
 }
 export const CHECKOUT_BUNDLES: CheckoutBundle[] = [
-  // { sku: "bundle-arrival", itemSkus: ["reception-hosted", "transfer-porto", "hamper-gourmet"], price: null },
+  // { sku: "bundle-arrival", itemSkus: ["reception-hosted", "transfer-porto", "grocery-setup"], price: null },
 ];

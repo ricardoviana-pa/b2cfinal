@@ -47,6 +47,7 @@ export interface CatalogExtra {
   scarcity?: boolean;
   region?: "north" | "south";
   unitKey?: "hour" | "cleaning";
+  tierPrices?: number[];
   rank?: number;
   suggestedQty?: number;
   suggestedDays?: number;
@@ -91,8 +92,11 @@ export function extraAmount(item: CatalogExtra, sel: ExtraSelection): number | n
       return item.unitPrice * (sel.days ?? 1);
     case "per_person":
       return item.unitPrice * (sel.people ?? item.minPeople ?? 1);
-    case "per_unit":
-      return item.unitPrice * (sel.qty ?? 1);
+    case "per_unit": {
+      const q = sel.qty ?? 1;
+      if (item.tierPrices?.length) return item.tierPrices[Math.min(q, item.tierPrices.length) - 1];
+      return item.unitPrice * q;
+    }
     case "per_person_per_unit":
       return item.unitPrice * (sel.people ?? 1) * (sel.sessions ?? 1);
     case "included_selectable":
@@ -294,7 +298,15 @@ function priceFormula(item: CatalogExtra, sel: ExtraSelection, lang: string, t: 
   const d = (n: number) => `${n} ${String(t("checkout.daysLabel", "Days")).toLowerCase()}`;
   switch (item.pricingModel) {
     case "per_day": return `${d(sel.days ?? 1)} × ${u}`;
-    case "per_unit": return `${sel.qty ?? 1} × ${u}`;
+    case "per_unit": {
+      const q = sel.qty ?? 1;
+      if (item.tierPrices?.length) {
+        // escalões: mostrar a soma real (50 € + 100 €), não qty × unit
+        const parts = item.tierPrices.slice(0, q).map((tot, i) => (i === 0 ? tot : tot - item.tierPrices![i - 1]));
+        return parts.map((v) => formatEur(v, lang)).join(" + ");
+      }
+      return `${q} × ${u}`;
+    }
     case "per_person": return `${p(sel.people ?? item.minPeople ?? 1)} × ${u}`;
     case "per_person_per_unit": {
       const unit = item.unitKey === "hour" ? t("checkout.hoursLabel", "Hours") : t("checkout.sessionsLabel", "Sessions");
@@ -349,7 +361,9 @@ function OptionRow({
           ? t("checkout.perTrip", "per trip")
           : item.unitKey === "cleaning"
             ? t("checkout.perCleaning", "per cleaning")
-            : t("checkout.perChange", "per change");
+            : item.sku === "pet-fee"
+              ? t("checkout.perPetStay", "per pet · stay")
+              : t("checkout.perChange", "per change");
       case "per_person_per_unit":
         return item.unitKey === "hour" ? t("checkout.perPersonHour", "per child · hour") : t("checkout.perPersonSession", "per person · session");
       case "per_person_per_day": return t("checkout.perPersonDay", "per person · day");

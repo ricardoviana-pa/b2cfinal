@@ -1500,7 +1500,7 @@
       },
       "pet-fee": {
         "name": "Lemmikki mukaan",
-        "desc": "Tämä talo toivottaa lemmikit tervetulleiksi. Yksi maksu per majoitus kattaa valmistelut."
+        "desc": "Tämä talo toivottaa lemmikit tervetulleiksi. 50 € ensimmäisestä, 100 € toisesta. Enintään kaksi."
       },
       "pet-kit": {
         "name": "Lemmikkisetti, peti ja kupit",
@@ -1525,6 +1525,10 @@
       "deep-cleaning": {
         "name": "Perusteellinen siivous",
         "desc": "Täydellinen siivous ylhäältä alas: kylpyhuoneet ja keittiö perusteellisesti, kaikki liinavaatteet ja pyyhkeet vaihdettuina, kaikki pinnat ja lattiat."
+      },
+      "grocery-setup": {
+        "name": "Ostokset tehtynä ja toimitettuna",
+        "desc": "Lähetä meille listasi. Teemme ostokset ja järjestämme kaiken valmiiksi ennen saapumistasi. Kaupan lasku veloitetaan erikseen, omakustannehintaan."
       }
     },
     "emailTitle": "Minne lähetämme varauksesi?",
@@ -1644,6 +1648,7 @@
       "title": "Majoituksen tiedot"
     },
     "arrivalAirport": "Saapumislentokenttä",
-    "perCleaning": "per siivous"
+    "perCleaning": "per siivous",
+    "perPetStay": "per lemmikki · majoitus"
   }
 }

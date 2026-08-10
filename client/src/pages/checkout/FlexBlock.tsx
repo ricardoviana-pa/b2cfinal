@@ -112,11 +112,17 @@ export default function FlexBlock({
             {t("checkout.flex.tagline", "Rebook whenever you need. The amount you paid is never lost.")}
           </p>
         </div>
-        <div className="text-right shrink-0">
+        <div className="text-right shrink-0 hidden sm:block max-w-[150px]">
           <p className="text-[15px] text-pa-dark font-medium tabular-nums">{formatEur(config.price, lang)}</p>
-          <p className="text-[10px] text-pa-stone-aa">{t("checkout.flex.percentNote", "10% of the nightly total, one-time")}</p>
+          <p className="text-[10px] text-pa-stone-aa leading-snug">{t("checkout.flex.percentNote", "10% of the nightly total, one-time")}</p>
         </div>
       </div>
+
+      {/* Mobile: preço numa linha própria — à direita do título fazia cascata */}
+      <p className="sm:hidden mt-2 text-[13px] text-pa-dark tabular-nums">
+        <span className="font-medium">{formatEur(config.price, lang)}</span>
+        <span className="text-pa-stone-aa text-[11px]"> · {t("checkout.flex.percentNote", "10% of the nightly total, one-time")}</span>
+      </p>
 
       <div className="mt-4 space-y-2">
         {benefits.map(({ icon: Icon, text }, i) => (

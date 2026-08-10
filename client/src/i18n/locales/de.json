@@ -1500,7 +1500,7 @@
       },
       "pet-fee": {
         "name": "Haustier mitbringen",
-        "desc": "Dieses Haus heißt Haustiere willkommen. Eine Gebühr pro Aufenthalt deckt die Vorbereitung."
+        "desc": "Dieses Haus heißt Haustiere willkommen. 50 € für das erste, 100 € für das zweite. Maximal zwei."
       },
       "pet-kit": {
         "name": "Haustier-Set, Bett und Näpfe",
@@ -1525,6 +1525,10 @@
       "deep-cleaning": {
         "name": "Grundreinigung",
         "desc": "Komplette Reinigung von oben bis unten: Bäder und Küche gründlich, sämtliche Wäsche und Handtücher gewechselt, alle Flächen und Böden."
+      },
+      "grocery-setup": {
+        "name": "Einkauf erledigt und geliefert",
+        "desc": "Senden Sie uns Ihre Liste. Wir erledigen den Einkauf und richten alles vor Ihrer Ankunft her. Die Supermarktrechnung wird separat zum Selbstkostenpreis berechnet."
       }
     },
     "emailTitle": "Wohin senden wir Ihre Buchung?",
@@ -1644,6 +1648,7 @@
       "title": "Details des Aufenthalts"
     },
     "arrivalAirport": "Ankunftsflughafen",
-    "perCleaning": "pro Reinigung"
+    "perCleaning": "pro Reinigung",
+    "perPetStay": "pro Tier · Aufenthalt"
   }
 }

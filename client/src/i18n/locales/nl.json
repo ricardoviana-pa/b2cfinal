@@ -1500,7 +1500,7 @@
       },
       "pet-fee": {
         "name": "Huisdier meenemen",
-        "desc": "Dit huis verwelkomt huisdieren. Eén toeslag per verblijf dekt de extra voorbereiding."
+        "desc": "Dit huis verwelkomt huisdieren. 50 € voor het eerste, 100 € voor het tweede. Maximaal twee."
       },
       "pet-kit": {
         "name": "Huisdierkit, mand en bakjes",
@@ -1525,6 +1525,10 @@
       "deep-cleaning": {
         "name": "Dieptereiniging",
         "desc": "Volledige schoonmaak van boven tot onder: badkamers en keuken grondig, al het linnengoed en alle handdoeken verschoond, elk oppervlak en elke vloer."
+      },
+      "grocery-setup": {
+        "name": "Boodschappen gedaan en bezorgd",
+        "desc": "Stuur ons uw lijst. Wij doen de boodschappen en zetten alles klaar vóór uw aankomst. De supermarktrekening wordt apart en tegen kostprijs in rekening gebracht."
       }
     },
     "emailTitle": "Waar sturen we uw boeking naartoe?",
@@ -1644,6 +1648,7 @@
       "title": "Verblijfsdetails"
     },
     "arrivalAirport": "Aankomstluchthaven",
-    "perCleaning": "per schoonmaak"
+    "perCleaning": "per schoonmaak",
+    "perPetStay": "per huisdier · verblijf"
   }
 }

@@ -1500,7 +1500,7 @@
       },
       "pet-fee": {
         "name": "Trazer animal de estimação",
-        "desc": "Esta casa aceita animais. Uma taxa por estadia cobre a preparação extra."
+        "desc": "Esta casa aceita animais. 50 € pelo primeiro, 100 € pelo segundo. Máximo de dois."
       },
       "pet-kit": {
         "name": "Kit pet, cama e taças",
@@ -1525,6 +1525,10 @@
       "deep-cleaning": {
         "name": "Limpeza profunda",
         "desc": "Limpeza completa de alto a baixo: casas de banho e cozinha a fundo, toda a roupa de cama e toalhas mudadas, todas as superfícies e chãos."
+      },
+      "grocery-setup": {
+        "name": "Compras feitas e entregues",
+        "desc": "Envie-nos a sua lista. Fazemos as compras e deixamos tudo arrumado antes de chegar. A conta do supermercado é cobrada à parte, ao custo."
       }
     },
     "emailTitle": "Para onde enviamos a sua reserva?",
@@ -1644,6 +1648,7 @@
       "title": "Detalhes da estadia"
     },
     "arrivalAirport": "Aeroporto de chegada",
-    "perCleaning": "por limpeza"
+    "perCleaning": "por limpeza",
+    "perPetStay": "por animal · estadia"
   }
 }

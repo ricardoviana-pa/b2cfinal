@@ -1500,7 +1500,7 @@
       },
       "pet-fee": {
         "name": "Portare un animale",
-        "desc": "Questa casa accetta animali. Una tariffa per soggiorno copre la preparazione."
+        "desc": "Questa casa accetta animali. 50 € per il primo, 100 € per il secondo. Massimo due."
       },
       "pet-kit": {
         "name": "Kit pet, cuccia e ciotole",
@@ -1525,6 +1525,10 @@
       "deep-cleaning": {
         "name": "Pulizia profonda",
         "desc": "Pulizia completa da cima a fondo: bagni e cucina a fondo, tutta la biancheria e gli asciugamani cambiati, ogni superficie e pavimento."
+      },
+      "grocery-setup": {
+        "name": "Spesa fatta e consegnata",
+        "desc": "Inviaci la tua lista. Facciamo la spesa e lasciamo tutto sistemato prima del tuo arrivo. Il conto del supermercato viene addebitato a parte, al costo."
       }
     },
     "emailTitle": "Dove inviamo la tua prenotazione?",
@@ -1644,6 +1648,7 @@
       "title": "Dettagli del soggiorno"
     },
     "arrivalAirport": "Aeroporto di arrivo",
-    "perCleaning": "per pulizia"
+    "perCleaning": "per pulizia",
+    "perPetStay": "per animale · soggiorno"
   }
 }

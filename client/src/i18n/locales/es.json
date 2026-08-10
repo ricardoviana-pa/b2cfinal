@@ -1500,7 +1500,7 @@
       },
       "pet-fee": {
         "name": "Traer mascota",
-        "desc": "Esta casa acepta mascotas. Una tarifa por estancia cubre la preparación extra."
+        "desc": "Esta casa acepta mascotas. 50 € por la primera, 100 € por la segunda. Máximo dos."
       },
       "pet-kit": {
         "name": "Kit mascota, cama y cuencos",
@@ -1525,6 +1525,10 @@
       "deep-cleaning": {
         "name": "Limpieza profunda",
         "desc": "Limpieza completa de arriba abajo: baños y cocina a fondo, toda la ropa de cama y toallas cambiadas, todas las superficies y suelos."
+      },
+      "grocery-setup": {
+        "name": "Compra hecha y entregada",
+        "desc": "Envíenos su lista. Hacemos la compra y dejamos todo colocado antes de su llegada. La cuenta del supermercado se cobra aparte, a precio de coste."
       }
     },
     "emailTitle": "¿A dónde enviamos su reserva?",
@@ -1644,6 +1648,7 @@
       "title": "Detalles de la estancia"
     },
     "arrivalAirport": "Aeropuerto de llegada",
-    "perCleaning": "por limpieza"
+    "perCleaning": "por limpieza",
+    "perPetStay": "por mascota · estancia"
   }
 }
