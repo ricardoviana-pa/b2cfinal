@@ -99,6 +99,9 @@ export const CHECKOUT_INCLUDED_KEYS = [
   "bestRate",
 ] as const;
 
+/** Skus que só existem em casas pet-friendly (gate Guesty via amenity) */
+export const PETS_ONLY_SKUS: string[] = ["pet-fee", "pet-kit", "pet-food"];
+
 export const CHECKOUT_EXTRAS: CheckoutExtra[] = [
   // ── Capítulo 01 · A chegada ── (receção obrigatória tratada à parte; linhas)
   { sku: "transfer-porto", chapter: "arrival", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 120, minQty: 1, maxQty: 4, scarcity: true, region: "north", baseRank: 10 },

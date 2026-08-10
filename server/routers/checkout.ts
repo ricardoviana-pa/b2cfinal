@@ -29,6 +29,7 @@ import {
 } from "../db";
 import { getPropertiesForSite } from "../services/properties-store";
 import { resolveCleaningRates } from "../config/cleaning-rates";
+import { PETS_ONLY_SKUS } from "../config/checkout-extras";
 import {
   sendCheckoutOpsManifest,
   sendCheckoutGuestConfirmation,
@@ -276,6 +277,15 @@ export const checkoutRouter = router({
       if (patch.status === "paid" && !patch.confirmationCode && !current.confirmationCode) {
         delete patch.status;
       }
+      // Gate Guesty sempre ligado: extras pet nunca persistem numa casa que
+      // não aceita animais (defesa contra adulteração/dados desatualizados)
+      if (patch.extras?.some((e) => PETS_ONLY_SKUS.includes(e.sku))) {
+        const facts = await listingFacts((current as any).listingId);
+        if (!facts.pets) {
+          console.warn(`[Checkout] intent ${input.intentId}: extras pet removidos — listing não aceita animais`);
+          patch.extras = patch.extras.filter((e) => !PETS_ONLY_SKUS.includes(e.sku));
+        }
+      }
       // Requote com quote nova renova a validade do link de retoma (AUDIT)
       const dbPatch: Record<string, unknown> = { ...patch };
       if (patch.quote && patch.guestyQuoteId) {
@@ -368,7 +378,11 @@ export const checkoutRouter = router({
       if ((m as any).status === "paid") throw new TRPCError({ code: "PRECONDITION_FAILED", message: "already paid" });
       const { breakdownFromIntent } = await import("../services/checkout-card-charge");
       const { createCardPaymentIntent } = await import("../services/stripe-klarna");
-      const b = breakdownFromIntent(m);
+      const factsForCharge = await listingFacts((m as any).listingId);
+      const mSafe = factsForCharge.pets
+        ? m
+        : { ...m, extras: ((m as any).extras ?? []).filter((e: any) => !PETS_ONLY_SKUS.includes(e.sku)) };
+      const b = breakdownFromIntent(mSafe);
       if (b.totalCents < 100) throw new TRPCError({ code: "PRECONDITION_FAILED", message: "empty total" });
       if (b.divergent.length) console.warn(`[Card2b] client amounts diverged intent=${input.intentId}: ${b.divergent.join(",")}`);
       const pi = await createCardPaymentIntent({
