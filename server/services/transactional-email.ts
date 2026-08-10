@@ -512,7 +512,7 @@ const PA = {
 } as const;
 /** Same asset the site header uses (client/src/lib/images.ts logoColor) */
 const LOGO_URL =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo_0b76cb12.webp";
+  "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp";
 /** Site display font with the email-safe serif fallback */
 const SERIF = "'Cormorant Garamond',Georgia,'Times New Roman',serif";
 const SANS = "'DM Sans',Arial,Helvetica,sans-serif";

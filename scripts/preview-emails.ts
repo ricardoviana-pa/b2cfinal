@@ -90,7 +90,7 @@ async function main() {
     checkIn: "2026-08-12",
     checkOut: "2026-08-16",
     guests: 6,
-    confirmationCode: "PA-48291",
+    confirmationCode: "18293476",
     reception: { type: "hosted", late: true },
     receptionAmount: 90,
     extras,
@@ -106,7 +106,7 @@ async function main() {
   await sendCheckoutOpsManifest({
     canonical,
     imageUrl: DEMO_IMAGE,
-    confirmationCode: "PA-48291",
+    confirmationCode: "18293476",
     reservationId: "res-demo",
     propertyName: "Villa Aurora",
     checkIn: "2026-08-12",
