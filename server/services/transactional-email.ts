@@ -63,7 +63,7 @@ ${content}
 <!-- Footer -->
 <tr><td style="padding:30px 0 0 0;text-align:center;">
   <p style="font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;margin:0;">Portugal Active</p>
-  <p style="font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;margin:4px 0 0 0;">+351 258 358 434 &middot; info@portugalactive.com</p>
+  <p style="font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;margin:4px 0 0 0;">+351 258 358 434 &middot; booking@portugalactive.com</p>
   <p style="font-family:Arial,sans-serif;font-size:11px;color:#C4C0B8;margin:16px 0 0 0;">Luxury private villas across Portugal, managed with hotel-grade service.</p>
 </td></tr>
 
@@ -641,10 +641,15 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
       </td></tr>`
     : "";
 
+  const preheader =
+    data.stage === 1
+      ? (pt ? "Guardámos tudo tal como deixou. Retome quando quiser, em qualquer dispositivo." : "We saved everything just as you left it. Pick up whenever you like, on any device.")
+      : (pt ? "Depois desta hora o valor é recalculado. As datas seguem abertas a outros hóspedes." : "After this window the price is recalculated. The dates remain open to other guests.");
   const html = `<!DOCTYPE html>
 <html lang="${lang}">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
 <body style="margin:0;padding:0;background:${PA.warm};font-family:${SANS};">
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${preheader}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PA.warm};">
 
 <!-- Top bar: brand-dark band with the white logo (the logoColor asset is
@@ -696,6 +701,7 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 <!-- Resume CTA: full-width black button like the checkout's continue bar -->
 <tr><td style="padding:0 0 24px 0;">
   <a href="${data.resumeUrl}" target="_blank" style="display:block;background:${PA.dark};color:#ffffff;font-family:${SANS};font-size:13px;font-weight:600;text-decoration:none;text-align:center;padding:15px 24px;letter-spacing:0.1em;text-transform:uppercase;border-radius:8px;">${cta}</a>
+  <p style="text-align:center;margin:14px 0 0;"><a href="https://wa.me/351927161771?text=${encodeURIComponent(pt ? `Olá! Estava a reservar ${data.propertyName} e tenho uma questão.` : `Hello! I was booking ${data.propertyName} and have a question.`)}" style="font-family:${SANS};font-size:13px;color:${PA.gold};text-decoration:underline;">${pt ? "Prefere WhatsApp? Fale com o seu concierge." : "Prefer WhatsApp? Talk to your concierge."}</a></p>
 </td></tr>
 
 <tr><td style="padding:0 0 8px 0;">
@@ -705,7 +711,7 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 <!-- Footer -->
 <tr><td style="padding:28px 0 0 0;border-top:1px solid ${PA.sand};">
   <p style="font-family:${SERIF};font-size:16px;color:${PA.dark};margin:24px 0 0 0;text-align:center;">Portugal Active</p>
-  <p style="font-family:${SANS};font-size:12px;color:${PA.stoneAA};margin:6px 0 0 0;text-align:center;">+351 258 358 434 &middot; info@portugalactive.com</p>
+  <p style="font-family:${SANS};font-size:12px;color:${PA.stoneAA};margin:6px 0 0 0;text-align:center;">+351 258 358 434 &middot; booking@portugalactive.com</p>
   <p style="font-family:${SANS};font-size:11px;color:${PA.stoneAA};margin:14px 0 0 0;text-align:center;">${pt ? "Villas privadas de luxo em Portugal, geridas com serviço de hotel." : "Luxury private villas across Portugal, managed with hotel-grade service."}</p>
 </td></tr>
 
@@ -818,7 +824,7 @@ export async function sendCheckoutGuestConfirmation(d: {
       : `It's confirmed. ${house} is yours from ${inShort} to ${outShort}.`;
 
     const body = pt
-      ? `${firstName ? `Olá ${firstName}, bem` : "Bem"}-vindo à Portugal Active. A nossa equipa já está a preparar a casa para a sua chegada e o seu concierge acompanha tudo a partir de agora. Guarde o código abaixo, é a sua referência para qualquer pedido.`
+      ? `${firstName ? `Olá ${firstName}, boas` : "Boas"}-vindas à Portugal Active. A nossa equipa já está a preparar a casa para a sua chegada e o seu concierge acompanha tudo a partir de agora. Guarde o código abaixo, é a sua referência para qualquer pedido.`
       : `${firstName ? `Hello ${firstName}, welcome` : "Welcome"} to Portugal Active. Our team is already preparing the house for your arrival and your concierge is with you from here on. Keep the code below, it is your reference for any request.`;
 
     // ── Extras: pagos entram no cartão de preços; on_request vão ao concierge ──
@@ -921,6 +927,7 @@ export async function sendCheckoutGuestConfirmation(d: {
 <html lang="${lang}">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
 <body style="margin:0;padding:0;background:${PA.warm};font-family:${SANS};">
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${pt ? "A casa já está a ser preparada. O seu concierge acompanha tudo a partir de agora." : "The house is already being prepared. Your concierge takes it from here."}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PA.warm};">
 
 <!-- Top bar: brand-dark band with the white logo (the logoColor asset is
@@ -1013,7 +1020,7 @@ ${ctaBlock}
 <!-- Footer -->
 <tr><td style="padding:28px 0 0 0;border-top:1px solid ${PA.sand};">
   <p style="font-family:${SERIF};font-size:16px;color:${PA.dark};margin:24px 0 0 0;text-align:center;">Portugal Active</p>
-  <p style="font-family:${SANS};font-size:12px;color:${PA.stoneAA};margin:6px 0 0 0;text-align:center;">+351 258 358 434 &middot; info@portugalactive.com</p>
+  <p style="font-family:${SANS};font-size:12px;color:${PA.stoneAA};margin:6px 0 0 0;text-align:center;">+351 258 358 434 &middot; booking@portugalactive.com</p>
   <p style="font-family:${SANS};font-size:11px;color:${PA.stoneAA};margin:14px 0 0 0;text-align:center;">${pt ? "Villas privadas de luxo em Portugal, geridas com serviço de hotel." : "Luxury private villas across Portugal, managed with hotel-grade service."}</p>
 </td></tr>
 
