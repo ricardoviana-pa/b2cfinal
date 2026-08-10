@@ -135,7 +135,7 @@ export default function PropertyUnitsSection({
           const isParent = unit.guestyId === group.parentGuestyId;
           const unitImages = (unit.images?.length ? unit.images : getPropertyImages(unit.slug))
             .slice(0, 8)
-            .map((img) => optimizeGuestyImage(img, 800))
+            .map((img) => optimizeGuestyImage(img, 1080))
             .filter(Boolean);
 
           return (

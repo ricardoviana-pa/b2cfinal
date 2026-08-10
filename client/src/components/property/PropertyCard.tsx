@@ -81,7 +81,7 @@ export default function PropertyCard({
   const images = ((property.images && property.images.length > 0
     ? property.images
     : getPropertyImages(property.slug)) as string[])
-    .map((img) => optimizeGuestyImage(img, 800));
+    .map((img) => optimizeGuestyImage(img, 1080));
   const total = images.length;
 
   const nextImage = useCallback((e: React.MouseEvent) => {

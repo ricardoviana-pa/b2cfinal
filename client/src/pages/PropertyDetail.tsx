@@ -917,10 +917,14 @@ export default function PropertyDetail() {
     );
   }
 
-  // Hero gallery images via Cloudinary transform (resize + WebP/AVIF). The
-  // full-resolution originals are kept for the lightbox (property.images).
-  const images = (property.images?.length ? property.images : getPropertyImages(property.slug))
-    .map((img: string) => optimizeGuestyImage(img, 1200));
+  // Gallery images via Cloudinary transform (resize + WebP/AVIF). Two sizes:
+  // 1600px for the hero/grid (crisp on retina without bloating LCP), and 2560px
+  // for the full-screen lightbox where photos are scrutinised — the Guesty
+  // masters are ≥2560px, so this is real detail, not upscaling. Serving 1200px
+  // everywhere is what made photos look pixelated full-screen.
+  const sourceImages = property.images?.length ? property.images : getPropertyImages(property.slug);
+  const images = sourceImages.map((img: string) => optimizeGuestyImage(img, 1600));
+  const lightboxImages = sourceImages.map((img: string) => optimizeGuestyImage(img, 2560));
   const totalImages = Math.max(images.length, 1);
   const whatsappUrl = `https://wa.me/351927161771?text=${encodeURIComponent(property.whatsappMessage || `Hi, I am interested in ${property.name}`)}`;
 
@@ -1581,7 +1585,7 @@ export default function PropertyDetail() {
       {/* Fullscreen lightbox */}
       {lightboxOpen && (
         <Lightbox
-          images={images}
+          images={lightboxImages}
           initialIndex={lightboxImage}
           propertyName={property.name}
           destName={destName}
