@@ -1543,7 +1543,8 @@
       "rule4": "Nouveau séjour plus cher : vous payez seulement la différence. Moins cher : le solde reste en avoir.",
       "rule5": "Les extras suivent votre réservation quand le service le permet ; sinon leur montant se convertit aussi en avoir.",
       "rule6": "Flex s'achète uniquement au moment du paiement et n'est pas remboursable.",
-      "honesty": "Si vous annulez pendant la fenêtre d'annulation gratuite de votre tarif, nous vous remboursons selon la politique. Flex ne remplace jamais ce droit, il ajoute une protection au-delà."
+      "honesty": "Si vous annulez pendant la fenêtre d'annulation gratuite de votre tarif, nous vous remboursons selon la politique. Flex ne remplace jamais ce droit, il ajoute une protection au-delà.",
+      "percentNote": "10 % du total des nuits, paiement unique"
     },
     "curatedFor": "Sélectionné pour {{property}}",
     "todayTotal": "Total",
@@ -1634,6 +1635,9 @@
     "noChargeNow": "aucun débit maintenant",
     "perPersonHour": "par enfant · heure",
     "hoursLabel": "Heures",
-    "saveIssue": "Reconnexion, modifications en attente"
+    "saveIssue": "Reconnexion, modifications en attente",
+    "stayDetails": {
+      "title": "Détails du séjour"
+    }
   }
 }

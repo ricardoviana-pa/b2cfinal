@@ -1543,7 +1543,8 @@
       "rule4": "Kostar den nya vistelsen mer betalar du bara mellanskillnaden. Kostar den mindre står resten kvar som tillgodohavande.",
       "rule5": "Tillval flyttar med när tjänsten tillåter det; annars omvandlas även deras belopp till tillgodohavande.",
       "rule6": "Flex kan endast köpas i kassan och återbetalas inte.",
-      "honesty": "Avbokar du inom din taxas fria avbokningsfönster återbetalar vi dina pengar enligt policyn. Flex ersätter aldrig den rätten, det lägger till skydd bortom den."
+      "honesty": "Avbokar du inom din taxas fria avbokningsfönster återbetalar vi dina pengar enligt policyn. Flex ersätter aldrig den rätten, det lägger till skydd bortom den.",
+      "percentNote": "10 % av nätternas totalsumma, engångsbelopp"
     },
     "curatedFor": "Utvalt för {{property}}",
     "todayTotal": "Totalt",
@@ -1634,6 +1635,9 @@
     "noChargeNow": "ingen debitering nu",
     "perPersonHour": "per barn · timme",
     "hoursLabel": "Timmar",
-    "saveIssue": "Återansluter, ändringar väntar"
+    "saveIssue": "Återansluter, ändringar väntar",
+    "stayDetails": {
+      "title": "Vistelsens detaljer"
+    }
   }
 }

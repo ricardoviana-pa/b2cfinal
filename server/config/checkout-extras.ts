@@ -99,7 +99,7 @@ export const CHECKOUT_INCLUDED_KEYS = [
 
 export const CHECKOUT_EXTRAS: CheckoutExtra[] = [
   // ── Capítulo 01 · A chegada ── (receção obrigatória tratada à parte; linhas)
-  { sku: "transfer-porto", chapter: "arrival", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 120, minQty: 1, maxQty: 4, popular: true, scarcity: true, region: "north", baseRank: 10 },
+  { sku: "transfer-porto", chapter: "arrival", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 120, minQty: 1, maxQty: 4, scarcity: true, region: "north", baseRank: 10 },
   { sku: "transfer-porto-van", chapter: "arrival", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 160, minQty: 1, maxQty: 4, scarcity: true, region: "north", baseRank: 11 },
 
   // Transfers de Lisboa para casas do sul (preços INDICATIVOS até B2)
@@ -124,7 +124,7 @@ export const CHECKOUT_EXTRAS: CheckoutExtra[] = [
   // Breakfast box: materializa o conceito private hotels (12 jul) — por pessoa
   // e por dia, com atalho "todos os dias"
   { sku: "breakfast-box", chapter: "table", pricingModel: "per_person_per_day", fulfillment: "instant", unitPrice: 25, baseRank: 29 },
-  { sku: "private-chef", chapter: "table", pricingModel: "per_person", fulfillment: "needs_confirmation", unitPrice: 95, minPeople: 4, feature: true, scarcity: true, photo: "/experiences/private-chef-dinner.webp", baseRank: 30 },
+  { sku: "private-chef", chapter: "table", pricingModel: "per_person", fulfillment: "needs_confirmation", unitPrice: 95, minPeople: 4, popular: true, scarcity: true, baseRank: 28 },
   { sku: "hamper-essentials", chapter: "table", pricingModel: "per_stay", fulfillment: "instant", unitPrice: 75, baseRank: 31 },
   { sku: "hamper-gourmet", chapter: "table", pricingModel: "per_stay", fulfillment: "instant", unitPrice: 150, popular: true, baseRank: 32 },
   { sku: "grocery-list", chapter: "table", pricingModel: "on_request", fulfillment: "on_request", baseRank: 33 },
@@ -239,11 +239,20 @@ export function curateExtras(ctx: CurationContext): CuratedExtra[] {
  * Valores afináveis no fim (spec §15).
  */
 export const FLEX_CONFIG = {
+  /** Dinâmico (12 jul): 10% do valor das noites, arredondado ao euro */
+  pricePercent: 10,
+  /** Fallback/piso quando a quote ainda não tem totalNights */
   price: 250,
   minTotal: 1500,
   rescheduleDaysBefore: 7,
   creditMonths: 18,
 };
+
+/** Preço do Flex para uma estadia: 10% das noites, ao euro. */
+export function flexPriceFor(totalNights: number | null | undefined): number {
+  const base = Number(totalNights ?? 0);
+  return base > 0 ? Math.round((base * FLEX_CONFIG.pricePercent) / 100) : FLEX_CONFIG.price;
+}
 
 /**
  * D5: bundles de chegada — MODELO PREPARADO, INATIVO. Não ativar sem o

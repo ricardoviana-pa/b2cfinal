@@ -1543,7 +1543,8 @@
       "rule4": "Ist der neue Aufenthalt teurer, zahlen Sie nur die Differenz. Ist er günstiger, bleibt der Rest als Guthaben.",
       "rule5": "Extras ziehen mit um, wann immer der Service es erlaubt; andernfalls wird auch ihr Betrag zu Guthaben.",
       "rule6": "Flex ist nur beim Checkout erhältlich und nicht erstattbar.",
-      "honesty": "Stornieren Sie innerhalb des kostenlosen Stornierungsfensters Ihres Tarifs, erstatten wir Ihr Geld gemäß der Richtlinie. Flex ersetzt dieses Recht nie, es ergänzt Schutz darüber hinaus."
+      "honesty": "Stornieren Sie innerhalb des kostenlosen Stornierungsfensters Ihres Tarifs, erstatten wir Ihr Geld gemäß der Richtlinie. Flex ersetzt dieses Recht nie, es ergänzt Schutz darüber hinaus.",
+      "percentNote": "10 % des Übernachtungsbetrags, einmalig"
     },
     "curatedFor": "Ausgewählt für {{property}}",
     "todayTotal": "Gesamt",
@@ -1634,6 +1635,9 @@
     "noChargeNow": "jetzt keine Belastung",
     "perPersonHour": "pro Kind · Stunde",
     "hoursLabel": "Stunden",
-    "saveIssue": "Verbindung wird wiederhergestellt, Änderungen ausstehend"
+    "saveIssue": "Verbindung wird wiederhergestellt, Änderungen ausstehend",
+    "stayDetails": {
+      "title": "Details des Aufenthalts"
+    }
   }
 }

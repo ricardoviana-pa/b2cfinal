@@ -17,6 +17,7 @@ import {
   curateExtras,
   destinationIsSouth,
   FLEX_CONFIG,
+  flexPriceFor,
   CHECKOUT_RECEPTION,
   CHECKOUT_INCLUDED_KEYS,
 } from "../config/checkout-extras";
@@ -298,7 +299,7 @@ export const checkoutRouter = router({
                 receptionAmount,
                 extras: m.extras,
                 flex: m.flex,
-                flexPrice: FLEX_CONFIG.price,
+                flexPrice: flexPriceFor((m.quote as any)?.totalNights),
                 quote: m.quote ?? null,
                 imageUrl,
                 viewUrl: `${publicBaseUrl()}/${m.locale || "en"}/checkout/${input.intentId}`,

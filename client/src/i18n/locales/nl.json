@@ -1543,7 +1543,8 @@
       "rule4": "Is het nieuwe verblijf duurder, dan betaalt u alleen het verschil. Goedkoper: het saldo blijft als tegoed staan.",
       "rule5": "Extra's verhuizen mee wanneer de service het toelaat; anders wordt hun bedrag ook tegoed.",
       "rule6": "Flex is alleen bij het afrekenen verkrijgbaar en niet restitueerbaar.",
-      "honesty": "Annuleert u binnen het gratis annuleringsvenster van uw tarief, dan betalen we uw geld terug volgens het beleid. Flex vervangt dat recht nooit, het voegt bescherming toe daarbuiten."
+      "honesty": "Annuleert u binnen het gratis annuleringsvenster van uw tarief, dan betalen we uw geld terug volgens het beleid. Flex vervangt dat recht nooit, het voegt bescherming toe daarbuiten.",
+      "percentNote": "10% van het totaal van de nachten, eenmalig"
     },
     "curatedFor": "Geselecteerd voor {{property}}",
     "todayTotal": "Totaal",
@@ -1634,6 +1635,9 @@
     "noChargeNow": "nu geen kosten",
     "perPersonHour": "per kind · uur",
     "hoursLabel": "Uren",
-    "saveIssue": "Opnieuw verbinden, wijzigingen in behandeling"
+    "saveIssue": "Opnieuw verbinden, wijzigingen in behandeling",
+    "stayDetails": {
+      "title": "Verblijfsdetails"
+    }
   }
 }

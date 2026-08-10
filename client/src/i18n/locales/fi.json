@@ -1543,7 +1543,8 @@
       "rule4": "Jos uusi majoitus on kalliimpi, maksat vain erotuksen. Jos halvempi, loppusumma säilyy hyvityksenä.",
       "rule5": "Lisäpalvelut siirtyvät mukana aina kun palvelu sen sallii; muuten niidenkin summa muuttuu hyvitykseksi.",
       "rule6": "Flex on ostettavissa vain kassalla, eikä sitä hyvitetä.",
-      "honesty": "Jos peruutat hintasi maksuttoman peruutusikkunan sisällä, palautamme rahasi käytännön mukaisesti. Flex ei koskaan korvaa tätä oikeutta, se lisää suojaa sen yli."
+      "honesty": "Jos peruutat hintasi maksuttoman peruutusikkunan sisällä, palautamme rahasi käytännön mukaisesti. Flex ei koskaan korvaa tätä oikeutta, se lisää suojaa sen yli.",
+      "percentNote": "10 % öiden kokonaishinnasta, kertamaksu"
     },
     "curatedFor": "Valittu kohteelle {{property}}",
     "todayTotal": "Yhteensä",
@@ -1634,6 +1635,9 @@
     "noChargeNow": "ei veloitusta nyt",
     "perPersonHour": "per lapsi · tunti",
     "hoursLabel": "Tunnit",
-    "saveIssue": "Yhdistetään uudelleen, muutokset odottavat"
+    "saveIssue": "Yhdistetään uudelleen, muutokset odottavat",
+    "stayDetails": {
+      "title": "Majoituksen tiedot"
+    }
   }
 }

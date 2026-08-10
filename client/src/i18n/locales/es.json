@@ -1543,7 +1543,8 @@
       "rule4": "Nueva estancia más cara: solo paga la diferencia. Más barata: el saldo permanece como crédito.",
       "rule5": "Los extras se trasladan con su reserva cuando el servicio lo permite; si no, su importe también se convierte en crédito.",
       "rule6": "Flex solo se adquiere en el pago y no es reembolsable.",
-      "honesty": "Si cancela dentro de la ventana de cancelación gratuita de su tarifa, le devolvemos el dinero según la política. Flex nunca sustituye ese derecho, añade protección más allá de él."
+      "honesty": "Si cancela dentro de la ventana de cancelación gratuita de su tarifa, le devolvemos el dinero según la política. Flex nunca sustituye ese derecho, añade protección más allá de él.",
+      "percentNote": "10% del total de las noches, pago único"
     },
     "curatedFor": "Seleccionado para {{property}}",
     "todayTotal": "Total",
@@ -1634,6 +1635,9 @@
     "noChargeNow": "sin cobro ahora",
     "perPersonHour": "por niño · hora",
     "hoursLabel": "Horas",
-    "saveIssue": "Reconectando, cambios pendientes"
+    "saveIssue": "Reconectando, cambios pendientes",
+    "stayDetails": {
+      "title": "Detalles de la estancia"
+    }
   }
 }

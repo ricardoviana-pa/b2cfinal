@@ -679,19 +679,14 @@ export default function CustomizeStep({
         const pairedSkus = new Set([...(carPair ?? []), ...(vanPair ?? [])].map((i) => i.sku));
         // Progressive disclosure (§5.0): filhos (kit pet, comida) só aparecem
         // com o pai (taxa de animais) selecionado
-        const rows = chapterItems.filter((i) => i !== featureItem && !pairedSkus.has(i.sku) && (!i.parentSku || selection[i.parentSku] != null));
+        const allRows = chapterItems.filter((i) => i !== featureItem && !pairedSkus.has(i.sku) && (!i.parentSku || selection[i.parentSku] != null));
+        // Detalhes da reserva (12 jul): berço, cadeira e animais não são
+        // concierge — são preparação da casa. Vivem num cartão próprio, sempre
+        // visível, fora da lógica comercial do Ver mais.
+        const detailRows = allRows.filter((i) => i.pricingModel === "included_selectable" || (i as any).petsOnly);
+        const rows = allRows.filter((i) => !detailRows.includes(i));
         const isOpen = !!expanded[chapter];
-        // Casa pet-friendly: 3 linhas visíveis para a taxa de animais aparecer
-        // (máximo do critério 6; babysitter continua no Ver mais)
-        const visibleCount = chapter === "home" && rows.some((r) => r.sku === "pet-fee")
-          ? 3
-          : GROUP_VISIBLE[chapter];
-        // Filhos revelados por progressive disclosure (kit/comida pet) são
-        // contextuais, não "catálogo" — aparecem SEMPRE logo abaixo do pai
-        // selecionado, nunca escondidos atrás do Ver mais.
-        const baseVisible = isExperiences ? [] : isOpen ? rows : rows.slice(0, visibleCount);
-        const revealedChildren = rows.filter((i) => i.parentSku && !baseVisible.includes(i));
-        const visibleRows = [...baseVisible, ...revealedChildren];
+        const visibleRows = isExperiences ? [] : isOpen ? rows : rows.slice(0, GROUP_VISIBLE[chapter]);
         const hiddenCount = isExperiences ? 0 : rows.length - visibleRows.length;
 
         return (
@@ -805,6 +800,28 @@ export default function CustomizeStep({
                 ))}
               </div>
             )}
+            {detailRows.length > 0 && (
+              <div className="mt-3">
+                <p className="text-[12px] font-medium tracking-[0.08em] uppercase text-pa-stone-aa mb-2">
+                  {t("checkout.stayDetails.title", "Stay details")}
+                </p>
+                <div className="bg-white border border-pa-sand rounded-lg divide-y divide-pa-sand overflow-hidden">
+                  {detailRows.map((item) => (
+                    <OptionRow
+                      key={item.sku}
+                      item={item}
+                      sel={selection[item.sku]}
+                      lang={lang}
+                      guests={guests}
+                      nights={nights}
+                      onToggle={onToggle}
+                      onAdjust={onAdjust}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
             {hiddenCount > 0 && (
               <button
                 type="button"

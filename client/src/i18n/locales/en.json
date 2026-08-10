@@ -1543,7 +1543,8 @@
       "rule4": "If the new stay costs more, you only pay the difference. If it costs less, the balance stays as credit.",
       "rule5": "Extras move with your booking whenever the service allows; otherwise their value also converts to credit.",
       "rule6": "Flex can only be purchased at checkout and is non-refundable.",
-      "honesty": "If you cancel within your rate's free cancellation window, we refund your money as per the policy. Flex never replaces that right, it adds protection beyond it."
+      "honesty": "If you cancel within your rate's free cancellation window, we refund your money as per the policy. Flex never replaces that right, it adds protection beyond it.",
+      "percentNote": "10% of the nightly total, one-time"
     },
     "curatedFor": "Selected for {{property}}",
     "todayTotal": "Total",
@@ -1634,6 +1635,9 @@
     "noChargeNow": "no charge now",
     "perPersonHour": "per child · hour",
     "hoursLabel": "Hours",
-    "saveIssue": "Reconnecting, changes pending"
+    "saveIssue": "Reconnecting, changes pending",
+    "stayDetails": {
+      "title": "Stay details"
+    }
   }
 }

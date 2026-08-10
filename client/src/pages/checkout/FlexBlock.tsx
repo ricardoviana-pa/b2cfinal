@@ -114,7 +114,7 @@ export default function FlexBlock({
         </div>
         <div className="text-right shrink-0">
           <p className="text-[15px] text-pa-dark font-medium tabular-nums">{formatEur(config.price, lang)}</p>
-          <p className="text-[10px] text-pa-stone-aa">{t("checkout.flex.perBooking", "one-time, per booking")}</p>
+          <p className="text-[10px] text-pa-stone-aa">{t("checkout.flex.percentNote", "10% of the nightly total, one-time")}</p>
         </div>
       </div>
 

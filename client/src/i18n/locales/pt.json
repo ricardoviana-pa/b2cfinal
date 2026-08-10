@@ -1543,7 +1543,8 @@
       "rule4": "Nova estadia mais cara: paga apenas a diferença. Mais barata: o saldo permanece em crédito.",
       "rule5": "Os extras remarcam juntos sempre que o serviço o permitir; caso contrário, o seu valor converte-se também em crédito.",
       "rule6": "O Flex adquire-se apenas no checkout e não é reembolsável.",
-      "honesty": "Se cancelar dentro da janela de cancelamento gratuito da sua tarifa, devolvemos o dinheiro conforme a política. O Flex nunca substitui esse direito: acrescenta proteção para lá dele."
+      "honesty": "Se cancelar dentro da janela de cancelamento gratuito da sua tarifa, devolvemos o dinheiro conforme a política. O Flex nunca substitui esse direito: acrescenta proteção para lá dele.",
+      "percentNote": "10% do valor das noites, pagamento único"
     },
     "curatedFor": "Selecionado para {{property}}",
     "todayTotal": "Total",
@@ -1634,6 +1635,9 @@
     "noChargeNow": "sem cobrança agora",
     "perPersonHour": "por criança · hora",
     "hoursLabel": "Horas",
-    "saveIssue": "A restabelecer ligação, alterações por guardar"
+    "saveIssue": "A restabelecer ligação, alterações por guardar",
+    "stayDetails": {
+      "title": "Detalhes da estadia"
+    }
   }
 }

@@ -635,7 +635,13 @@ export default function CheckoutPage() {
   const extrasTotal = useMemo(() => paidExtras.reduce((sum, e) => sum + (e.amount ?? 0), 0), [paidExtras]);
 
   const receptionAmt = receptionConfig ? receptionAmount(receptionConfig, receptionChoice) : 0;
-  const flexPrice = flexSelected && flexConfig ? flexConfig.price : 0;
+  // Flex dinâmico: 10% do valor das noites (piso: config.price)
+  const flexUnit = flexConfig
+    ? (quote?.totalNights ?? 0) > 0
+      ? Math.round(((quote?.totalNights ?? 0) * ((flexConfig as any).pricePercent ?? 10)) / 100)
+      : flexConfig.price
+    : 0;
+  const flexPrice = flexSelected && flexConfig ? flexUnit : 0;
   // Total de hoje: tudo o que tem preço fixo num só número (§7)
   const todayTotal = (effective?.total ?? 0) + receptionAmt + extrasTotal + flexPrice;
   const animatedTotal = useCountUp(todayTotal);
@@ -927,7 +933,7 @@ export default function CheckoutPage() {
       {flexSelected && flexConfig && (
         <div className="flex justify-between text-[13px] checkout-row-in">
           <span className="text-pa-gold font-medium">{t("checkout.flex.title", "Flex — guaranteed rebooking")}</span>
-          <span className="text-pa-dark tabular-nums">{formatEur(flexConfig.price, lang)}</span>
+          <span className="text-pa-dark tabular-nums">{formatEur(flexUnit, lang)}</span>
         </div>
       )}
       <div className="flex justify-between items-baseline border-t border-pa-sand pt-2.5">
@@ -1399,7 +1405,7 @@ export default function CheckoutPage() {
               {/* Flex closes the Personalizar step (spec §5/§6) — protection, not a service */}
               {flexConfig && effective && (
                 <FlexBlock
-                  config={flexConfig}
+                  config={{ ...flexConfig, price: flexUnit }}
                   selected={flexSelected}
                   stayTotal={effective.total}
                   nonRefundableSelected={nonRefundableSelected}
@@ -1498,11 +1504,11 @@ export default function CheckoutPage() {
                     onClick={() => {
                       setFlexSelected(true);
                       syncIntent({ flex: true });
-                      if (!isDemo) pushDL({ event: "flex_added", property_id: intent.listingId, value: flexConfig.price, source: "step3" });
+                      if (!isDemo) pushDL({ event: "flex_added", property_id: intent.listingId, value: flexUnit, source: "step3" });
                     }}
                     className="shrink-0 min-h-[38px] px-4 rounded-full border border-pa-gold text-[11px] font-medium tracking-[0.08em] uppercase text-pa-gold hover:bg-pa-gold hover:text-white transition-colors"
                   >
-                    {t("checkout.flexAddShort", "Add")} · {formatEur(flexConfig.price, lang)}
+                    {t("checkout.flexAddShort", "Add")} · {formatEur(flexUnit, lang)}
                   </button>
                 </div>
               )}
