@@ -1424,7 +1424,7 @@
       },
       "daily-cleaning": {
         "name": "Ménage quotidien",
-        "desc": "Ménage complet les jours de votre choix."
+        "desc": "Rafraîchissement des salles de bain et de la cuisine, lits faits, parties communes balayées. Linge changé toutes les 4 nuits."
       },
       "linen-change": {
         "name": "Change de linge et serviettes",
@@ -1521,6 +1521,10 @@
       "transfer-lisbon-van": {
         "name": "Transfert aéroport de Lisbonne, van",
         "desc": "Van privé, par trajet, jusqu'à 8 voyageurs."
+      },
+      "deep-cleaning": {
+        "name": "Grand ménage",
+        "desc": "Nettoyage complet de fond en comble : salles de bain et cuisine en profondeur, tout le linge et les serviettes changés, toutes les surfaces et sols."
       }
     },
     "emailTitle": "Où envoyons-nous votre réservation ?",
@@ -1639,6 +1643,7 @@
     "stayDetails": {
       "title": "Détails du séjour"
     },
-    "arrivalAirport": "Aéroport d'arrivée"
+    "arrivalAirport": "Aéroport d'arrivée",
+    "perCleaning": "par ménage"
   }
 }

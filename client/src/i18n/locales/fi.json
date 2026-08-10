@@ -1424,7 +1424,7 @@
       },
       "daily-cleaning": {
         "name": "Päivittäinen siivous",
-        "desc": "Täysi siivous valitseminasi päivinä."
+        "desc": "Kylpyhuoneiden ja keittiön siistiminen, vuoteet sijattuina, yleiset tilat lakaistuina. Liinavaatteet vaihdetaan 4 yön välein."
       },
       "linen-change": {
         "name": "Liinavaatteiden ja pyyhkeiden vaihto",
@@ -1521,6 +1521,10 @@
       "transfer-lisbon-van": {
         "name": "Lentokenttäkuljetus Lissabon, tila-auto",
         "desc": "Yksityinen tila-auto, per matka, enintään 8 vierasta."
+      },
+      "deep-cleaning": {
+        "name": "Perusteellinen siivous",
+        "desc": "Täydellinen siivous ylhäältä alas: kylpyhuoneet ja keittiö perusteellisesti, kaikki liinavaatteet ja pyyhkeet vaihdettuina, kaikki pinnat ja lattiat."
       }
     },
     "emailTitle": "Minne lähetämme varauksesi?",
@@ -1639,6 +1643,7 @@
     "stayDetails": {
       "title": "Majoituksen tiedot"
     },
-    "arrivalAirport": "Saapumislentokenttä"
+    "arrivalAirport": "Saapumislentokenttä",
+    "perCleaning": "per siivous"
   }
 }

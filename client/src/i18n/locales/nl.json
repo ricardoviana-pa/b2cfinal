@@ -1424,7 +1424,7 @@
       },
       "daily-cleaning": {
         "name": "Dagelijkse schoonmaak",
-        "desc": "Volledige schoonmaak op de dagen die u kiest."
+        "desc": "Opfrissen van badkamers en keuken, bedden opgemaakt, gemeenschappelijke ruimtes geveegd. Linnen elke 4 nachten verschoond."
       },
       "linen-change": {
         "name": "Linnen en handdoekenwissel",
@@ -1521,6 +1521,10 @@
       "transfer-lisbon-van": {
         "name": "Luchthaventransfer Lissabon, van",
         "desc": "Privévan, per rit, tot 8 gasten."
+      },
+      "deep-cleaning": {
+        "name": "Dieptereiniging",
+        "desc": "Volledige schoonmaak van boven tot onder: badkamers en keuken grondig, al het linnengoed en alle handdoeken verschoond, elk oppervlak en elke vloer."
       }
     },
     "emailTitle": "Waar sturen we uw boeking naartoe?",
@@ -1639,6 +1643,7 @@
     "stayDetails": {
       "title": "Verblijfsdetails"
     },
-    "arrivalAirport": "Aankomstluchthaven"
+    "arrivalAirport": "Aankomstluchthaven",
+    "perCleaning": "per schoonmaak"
   }
 }

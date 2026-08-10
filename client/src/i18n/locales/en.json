@@ -1423,8 +1423,8 @@
         "desc": "Private van, per trip, up to 8 guests."
       },
       "daily-cleaning": {
-        "name": "Daily housekeeping",
-        "desc": "Full daily clean on the days you choose."
+        "name": "Daily cleaning",
+        "desc": "Bathroom and kitchen refresh, beds made, common areas swept. Linen changed every 4 nights."
       },
       "linen-change": {
         "name": "Linen and towel change",
@@ -1521,6 +1521,10 @@
       "transfer-lisbon-van": {
         "name": "Lisbon airport transfer, van",
         "desc": "Private van, per trip, up to 8 guests."
+      },
+      "deep-cleaning": {
+        "name": "Deep cleaning",
+        "desc": "Full top-to-bottom clean: bathrooms and kitchen deep-cleaned, all linen and towels changed, every surface and floor."
       }
     },
     "emailTitle": "Where should we send your booking?",
@@ -1639,6 +1643,7 @@
     "stayDetails": {
       "title": "Stay details"
     },
-    "arrivalAirport": "Arrival airport"
+    "arrivalAirport": "Arrival airport",
+    "perCleaning": "per cleaning"
   }
 }

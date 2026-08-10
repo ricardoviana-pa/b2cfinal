@@ -28,6 +28,7 @@ import {
   createLead,
 } from "../db";
 import { getPropertiesForSite } from "../services/properties-store";
+import { resolveCleaningRates } from "../config/cleaning-rates";
 import {
   sendCheckoutOpsManifest,
   sendCheckoutGuestConfirmation,
@@ -77,6 +78,25 @@ const extraSelectionSchema = z.object({
   amount: z.number().nullable(),
   fulfillment: z.enum(["instant", "needs_confirmation", "on_request"]).optional(),
 });
+
+/** Dados do listing usados pelo catálogo (fail-soft). */
+export async function listingFacts(listingId?: string): Promise<{ pets: boolean; bedrooms: number | null }> {
+  if (!listingId) return { pets: false, bedrooms: null };
+  if (listingId === "demo-listing") return { pets: true, bedrooms: 4 };
+  try {
+    const props = await getPropertiesForSite();
+    const prop = props.find((p: any) => (p.guestyId || p.listingId) === listingId);
+    if (!prop) return { pets: false, bedrooms: null };
+    const am = prop.amenities;
+    const flat = Array.isArray(am) ? am : am && typeof am === "object" ? Object.values(am).flat() : [];
+    return {
+      pets: flat.some((a: any) => String(a).toLowerCase().includes("pets allowed")),
+      bedrooms: prop.bedrooms != null ? Number(prop.bedrooms) : null,
+    };
+  } catch {
+    return { pets: false, bedrooms: null };
+  }
+}
 
 /** A casa aceita animais? Amenity "pets allowed" do listing (fail-soft: false). */
 async function listingAllowsPets(listingId?: string): Promise<boolean> {
@@ -374,14 +394,24 @@ export const checkoutRouter = router({
         })
         .optional(),
     )
-    .query(async ({ input, ctx }) => ({
-      extras: curateExtras({
+    .query(async ({ input, ctx }) => {
+      const facts = await listingFacts(input?.listingId);
+      const cleaning = resolveCleaningRates(input?.listingId, facts.bedrooms);
+      const curated = curateExtras({
         destination: input?.destination,
         nights: input?.nights ?? 1,
         guests: input?.guests ?? 2,
         month: input?.month,
-        petsAllowed: await listingAllowsPets(input?.listingId),
-      }),
+        petsAllowed: facts.pets,
+      }).map((e) =>
+        e.sku === "daily-cleaning"
+          ? { ...e, unitPrice: cleaning.daily }
+          : e.sku === "deep-cleaning"
+            ? { ...e, unitPrice: cleaning.deep }
+            : e,
+      );
+      return {
+      extras: curated,
       // B2: aeroporto proposto por defeito (o par Porto/Lisboa vai completo;
       // o cliente mostra um seletor no card)
       defaultAirport: destinationIsSouth(input?.destination) ? ("lisbon" as const) : ("porto" as const),
@@ -394,7 +424,8 @@ export const checkoutRouter = router({
         process.env.CHECKOUT_PROMO === "true" ||
         String(ctx.req.headers["x-forwarded-host"] || ctx.req.headers.host || "").toLowerCase().startsWith("dev.") ||
         String(ctx.req.headers["x-forwarded-host"] || ctx.req.headers.host || "").toLowerCase().startsWith("localhost"),
-    })),
+      };
+    }),
 
   /**
    * Email capture at the end of passo 1 (spec §4): stores the email on the

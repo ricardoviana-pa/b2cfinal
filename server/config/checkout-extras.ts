@@ -73,7 +73,7 @@ export interface CheckoutExtra {
    *  até ao motor por distância do Bloco B2) */
   region?: "north" | "south";
   /** Unidade humana do "per_unit" interno (babysitter à hora) */
-  unitKey?: "hour";
+  unitKey?: "hour" | "cleaning";
   /** Curadoria: ranking base (menor = mais acima) antes das regras dinâmicas */
   baseRank: number;
 }
@@ -107,7 +107,11 @@ export const CHECKOUT_EXTRAS: CheckoutExtra[] = [
   { sku: "transfer-lisbon-van", chapter: "arrival", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 350, minQty: 1, maxQty: 4, scarcity: true, region: "south", baseRank: 11 },
 
   // ── Capítulo 02 · A casa ── (babysitter atrás de "ver mais" por rank)
-  { sku: "daily-cleaning", chapter: "home", pricingModel: "per_day", fulfillment: "instant", unitPrice: 60, baseRank: 20 },
+  // Limpezas por casa (Excel Ops Revamp 12 jul): unitPrice é substituído no
+  // getExtras e no pricing canónico por resolveCleaningRates(listing, quartos).
+  // Cobrado POR LIMPEZA (qty = nº de limpezas na estadia).
+  { sku: "daily-cleaning", chapter: "home", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 65, minQty: 1, maxQty: 30, unitKey: "cleaning", baseRank: 20 },
+  { sku: "deep-cleaning", chapter: "home", pricingModel: "per_unit", fulfillment: "instant", unitPrice: 165, minQty: 1, maxQty: 5, unitKey: "cleaning", baseRank: 21 },
   { sku: "babysitter", chapter: "home", pricingModel: "per_person_per_unit", fulfillment: "needs_confirmation", unitPrice: 20, unitKey: "hour", baseRank: 22 },
   // §5.0: 1.º incluído mas exige seleção (a equipa prepara a casa); extra a 25 €.
   // Entram SEMPRE no manifesto de operações.

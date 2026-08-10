@@ -7,6 +7,7 @@
  */
 import { getBookingIntent, updateBookingIntent } from "../db";
 import { computeChargeBreakdown } from "./checkout-pricing";
+import { resolveCleaningRates } from "../config/cleaning-rates";
 import { getPaymentIntent, updatePaymentIntentMetadata } from "./stripe-klarna";
 import {
   createReservationViaOpenApi,
@@ -23,6 +24,10 @@ export function breakdownFromIntent(m: any) {
     reception: (m?.reception as any) ?? null,
     extras: (m?.extras as any) ?? null,
     flex: !!m?.flex,
+    unitPriceOverrides: (() => {
+      const r = resolveCleaningRates((m as any)?.listingId, null);
+      return { "daily-cleaning": r.daily, "deep-cleaning": r.deep };
+    })(),
   });
 }
 

@@ -1424,7 +1424,7 @@
       },
       "daily-cleaning": {
         "name": "Limpeza diária",
-        "desc": "Limpeza completa nos dias que escolher."
+        "desc": "Refresh de casas de banho e cozinha, camas feitas, áreas comuns varridas. Roupa de cama mudada a cada 4 noites."
       },
       "linen-change": {
         "name": "Muda de lençóis e toalhas",
@@ -1521,6 +1521,10 @@
       "transfer-lisbon-van": {
         "name": "Transfer aeroporto de Lisboa, van",
         "desc": "Van privada, por trajeto, até 8 hóspedes."
+      },
+      "deep-cleaning": {
+        "name": "Limpeza profunda",
+        "desc": "Limpeza completa de alto a baixo: casas de banho e cozinha a fundo, toda a roupa de cama e toalhas mudadas, todas as superfícies e chãos."
       }
     },
     "emailTitle": "Para onde enviamos a sua reserva?",
@@ -1639,6 +1643,7 @@
     "stayDetails": {
       "title": "Detalhes da estadia"
     },
-    "arrivalAirport": "Aeroporto de chegada"
+    "arrivalAirport": "Aeroporto de chegada",
+    "perCleaning": "por limpeza"
   }
 }

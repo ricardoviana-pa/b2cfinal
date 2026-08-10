@@ -41,21 +41,23 @@ export interface ChargeBreakdown {
 }
 
 /** Espelho servidor do extraAmount do cliente (EUR inteiros → cêntimos). */
-export function extraAmountServer(sku: string, sel: IntentExtraSelection): number | null {
+export function extraAmountServer(sku: string, sel: IntentExtraSelection, unitPriceOverride?: number): number | null {
   const item = CHECKOUT_EXTRAS.find((e) => e.sku === sku);
-  if (!item || item.pricingModel === "on_request" || item.unitPrice == null) return null;
+  if (!item || item.pricingModel === "on_request") return null;
+  const base = unitPriceOverride ?? item.unitPrice;
+  if (base == null) return null;
   const qty = Math.max(1, Math.min(sel.qty ?? 1, item.maxQty ?? 30));
   const people = Math.max(1, Math.min(sel.people ?? item.minPeople ?? 1, 30));
   const sessions = Math.max(1, Math.min(sel.sessions ?? 1, 30));
   const days = Math.max(1, Math.min(sel.days ?? 1, 400));
   switch (item.pricingModel) {
-    case "per_stay": return item.unitPrice;
-    case "per_day": return item.unitPrice * days;
-    case "per_person": return item.unitPrice * people;
-    case "per_unit": return item.unitPrice * qty;
-    case "per_person_per_unit": return item.unitPrice * people * sessions;
-    case "included_selectable": return item.unitPrice * Math.max(0, qty - 1);
-    case "per_person_per_day": return item.unitPrice * people * days;
+    case "per_stay": return base;
+    case "per_day": return base * days;
+    case "per_person": return base * people;
+    case "per_unit": return base * qty;
+    case "per_person_per_unit": return base * people * sessions;
+    case "included_selectable": return base * Math.max(0, qty - 1);
+    case "per_person_per_day": return base * people * days;
   }
 }
 
@@ -70,6 +72,8 @@ export function computeChargeBreakdown(input: {
   reception?: { type: "self" | "hosted"; late?: boolean | null } | null;
   extras?: IntentExtraSelection[] | null;
   flex?: boolean | null;
+  /** Preços por casa (limpezas): sku → EUR */
+  unitPriceOverrides?: Record<string, number> | null;
 }): ChargeBreakdown {
   const stayCents = Math.round((input.quoteTotal ?? 0) * 100);
 
@@ -87,7 +91,7 @@ export function computeChargeBreakdown(input: {
     const capped = input.nights
       ? { ...sel, days: sel.days ? Math.min(sel.days, Math.max(1, input.nights)) : sel.days }
       : sel;
-    const eur = extraAmountServer(sel.sku, capped);
+    const eur = extraAmountServer(sel.sku, capped, input.unitPriceOverrides?.[sel.sku]);
     if (eur == null) continue; // on_request nunca entra na cobrança
     extrasEur += eur;
     lines.push({ sku: sel.sku, cents: eur * 100 });

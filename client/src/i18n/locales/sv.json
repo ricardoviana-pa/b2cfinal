@@ -1424,7 +1424,7 @@
       },
       "daily-cleaning": {
         "name": "Daglig städning",
-        "desc": "Fullständig städning de dagar du väljer."
+        "desc": "Uppfräschning av badrum och kök, bäddade sängar, sopade gemensamma ytor. Sängkläder byts var 4:e natt."
       },
       "linen-change": {
         "name": "Byte av linne och handdukar",
@@ -1521,6 +1521,10 @@
       "transfer-lisbon-van": {
         "name": "Flygplatstransfer Lissabon, van",
         "desc": "Privat van, per resa, upp till 8 gäster."
+      },
+      "deep-cleaning": {
+        "name": "Djuprengöring",
+        "desc": "Fullständig städning uppifrån och ner: badrum och kök på djupet, alla sängkläder och handdukar byts, alla ytor och golv."
       }
     },
     "emailTitle": "Vart skickar vi din bokning?",
@@ -1639,6 +1643,7 @@
     "stayDetails": {
       "title": "Vistelsens detaljer"
     },
-    "arrivalAirport": "Ankomstflygplats"
+    "arrivalAirport": "Ankomstflygplats",
+    "perCleaning": "per städning"
   }
 }

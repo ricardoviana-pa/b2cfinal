@@ -46,7 +46,7 @@ export interface CatalogExtra {
   parentSku?: string;
   scarcity?: boolean;
   region?: "north" | "south";
-  unitKey?: "hour";
+  unitKey?: "hour" | "cleaning";
   rank?: number;
   suggestedQty?: number;
   suggestedDays?: number;
@@ -345,7 +345,11 @@ function OptionRow({
       case "per_day": return t("checkout.perDay", "per day");
       case "per_person": return t("checkout.perPerson", "per person");
       case "per_unit":
-        return item.sku.startsWith("transfer") ? t("checkout.perTrip", "per trip") : t("checkout.perChange", "per change");
+        return item.sku.startsWith("transfer")
+          ? t("checkout.perTrip", "per trip")
+          : item.unitKey === "cleaning"
+            ? t("checkout.perCleaning", "per cleaning")
+            : t("checkout.perChange", "per change");
       case "per_person_per_unit":
         return item.unitKey === "hour" ? t("checkout.perPersonHour", "per child · hour") : t("checkout.perPersonSession", "per person · session");
       case "per_person_per_day": return t("checkout.perPersonDay", "per person · day");
