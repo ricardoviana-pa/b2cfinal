@@ -61,7 +61,9 @@ The new checkout sells **extras, reception, and Flex** and shows a **single comb
 
 **Current interim behavior (deliberate):** extras/Flex/reception are captured on the intent, shown to the guest, sent to operations (CS email + Guesty reservation note), and **charged later by the concierge** ("confirmed & charged after concierge confirmation"). The `todayTotal` shown in the summary is the **design target** for when 2b lands, not what the card actually captures today. On the **demo** (`/checkout/demo`) nothing is ever charged.
 
-**The two ways to close this (Phase 2b), blocked on a human-run spike:**
+**DECIDED 12 Jul 2026 (supersedes the A/B fork below):** extras revenue must never enter the Guesty reservation — its totals drive owner revenue splits and extras are Portugal Active's own revenue. **Phase 2b = path B**: one platform Stripe charge for stay+extras, Guesty reservation via Open API with the stay amount only + `recordExternalPayment` (the existing Klarna/PayPal rails extended to card). The invoice-items spike is no longer a decision gate; the script remains for reference. The historical A/B analysis follows:
+
+**The two ways this could have closed (kept for context):**
 - **Path A — invoice items:** `POST /v1/invoice-items/reservation/{id}` (Open API, `normalType AFE`, `isUpsellFee:true`) **before** `POST /v1/reservations/{id}/payments` (payments rejected above `balanceDue`). Raises the Guesty reservation total → one charge. Preferred **if** Hostkit imports the itemized lines (see §7).
 - **Path B — external single charge (spec §7 "fallback"):** one Stripe PaymentIntent for the whole total, reservation marked paid-outside — the pattern Klarna already uses. `needs_confirmation` lines refunded via partial PaymentIntent refund if the concierge can't deliver.
 

@@ -6,8 +6,9 @@ Companion to `docs/HANDOVER.md`. English mirror of `docs/checkout_pendentes.md`.
 ---
 
 ## A · CRITICAL PATH TO GO LIVE — only Ricardo can do these (in order)
-1. **Spike** — `node scripts/spike-invoice-items.mjs --reservation <TEST_ID> --execute` → decides how the single charge works (invoice items = path A, external charge = path B). IRREVERSIBLE records; test reservation only.
-2. **Hostkit test** — add a €1 invoice item to a Guesty test reservation → does the (AT-certified) Hostkit invoice show it as a discriminated line with correct VAT? Plus accountant: same invoice or separate; VAT per extra category; intra-EU VAT (B2B reverse charge).
+> **DECISION (12 Jul 2026, Ricardo): extras revenue must NEVER enter the Guesty reservation** — Guesty totals feed owner revenue splits and extras are Portugal Active's own revenue ("bolo à parte"). This kills path A (invoice items) for business reasons and settles Phase 2b on **path B: single platform charge**. Mechanics: guest pays ONE charge (stay+extras) on our platform Stripe; reservation created via Open API with the STAY amount only + `recordExternalPayment` — exactly the existing Klarna/PayPal rails, extended to card. `needs_confirmation` failures = partial refund on our PI. Bonus: Apple/Google Pay become straightforward (platform account, no Guesty domain dependency). Accepted trade-offs: card fees + chargebacks on our account; Guesty shows the stay as externally paid.
+1. ~~Spike invoice-items~~ **SETTLED by the decision above** — the spike script stays in the repo for reference only. Do NOT implement invoice items for extras.
+2. **Accountant/Hostkit question (changed)** — the stay keeps its Hostkit invoice as today; extras need a SEPARATE services invoice (ours). Ask: emit via Hostkit API as a second document, or another invoicing tool? VAT per extra category; intra-EU B2B reverse charge.
 3. **End-to-end test booking** on dev (cheap house, real card, then refund) — validates funnel, CS email, Guesty note, confirmation email, lead row. Bonus: cross-device resume (open the checkout link on a phone).
 4. **GTM** (container GTM-TRPCDT3): create the tags from `docs/marketing-tracking.md` (without them the new events never reach GA4/Meta).
 5. **Guesty**: request domain registration for Apple Pay on the connected Stripe accounts (dev. and www.).
@@ -28,7 +29,7 @@ Companion to `docs/HANDOVER.md`. English mirror of `docs/checkout_pendentes.md`.
 18. Email footers show info@ as contact — keep or switch to booking@?
 
 ## C · ENGINEERING — the owner's queue, in order (dependencies noted)
-19. **PHASE 2B — real single charge** ⚠️ top priority (depends on A1+A2): extras/Flex/reception actually charged in one payment + partial refund tested. TODAY the card charges only the stay while the copy already promises a single charge — do not open real traffic with paid extras before this.
+19. **PHASE 2B — real single charge** ⚠️ top priority (path DECIDED, see banner in section A): move the card flow onto the Klarna/PayPal rails — one platform PaymentIntent for stay+extras, Open API reservation with the stay amount only, `recordExternalPayment`, partial-refund path tested. TODAY the card charges only the stay while the copy already promises a single charge — do not open real traffic with paid extras before this.
 20. **BLOCK B**: B1 per-house-type pricing (housekeeping/linen resolved from the listing bedroom count) · B2 distance-based transfer engine with airport selector (replaces the interim region filter) · B3 private chauffeur · B8 The table chapter before The home.
 21. **Children field** in the guest selector (widget+intent+quote) → curation promotes crib/high-chair/babysitter.
 22. **Phase 3** complete: `flex_credits` ledger + events, Flex inside the real charged total (with 2b).
