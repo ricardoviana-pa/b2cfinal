@@ -328,6 +328,40 @@ export const checkoutRouter = router({
    * (região, noites, hóspedes, mês) — devolve os extras já ordenados, mais a
    * receção (escolha obrigatória) e o bloco "Incluído na sua estadia".
    */
+  /** 2b: cria o PI de plataforma com o total canonico (nunca valores do cliente) */
+  createCardCharge: publicProcedure
+    .input(z.object({ intentId: z.string().uuid() }))
+    .mutation(async ({ input }) => {
+      const m = await getBookingIntent(input.intentId);
+      if (!m) throw new TRPCError({ code: "NOT_FOUND" });
+      if ((m as any).status === "paid") throw new TRPCError({ code: "PRECONDITION_FAILED", message: "already paid" });
+      const { breakdownFromIntent } = await import("../services/checkout-card-charge");
+      const { createCardPaymentIntent } = await import("../services/stripe-klarna");
+      const b = breakdownFromIntent(m);
+      if (b.totalCents < 100) throw new TRPCError({ code: "PRECONDITION_FAILED", message: "empty total" });
+      if (b.divergent.length) console.warn(`[Card2b] client amounts diverged intent=${input.intentId}: ${b.divergent.join(",")}`);
+      const pi = await createCardPaymentIntent({
+        amount: b.totalCents,
+        currency: "eur",
+        metadata: {
+          flow: "card_v2",
+          intentId: input.intentId,
+          listingId: (m as any).listingId,
+          stayCents: String(b.stayCents),
+          extrasCents: String(b.extrasCents + b.receptionCents + b.flexCents),
+        },
+      });
+      return { clientSecret: pi.client_secret!, paymentIntentId: pi.id, totalCents: b.totalCents };
+    }),
+
+  /** 2b: finaliza apos confirmPayment — cria a reserva Guesty (so estadia). */
+  finalizeCardCharge: publicProcedure
+    .input(z.object({ intentId: z.string().uuid(), paymentIntentId: z.string().min(1) }))
+    .mutation(async ({ input }) => {
+      const { settleCardCharge } = await import("../services/checkout-card-charge");
+      return settleCardCharge(input.intentId, input.paymentIntentId);
+    }),
+
   getExtras: publicProcedure
     .input(
       z

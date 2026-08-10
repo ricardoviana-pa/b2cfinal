@@ -1608,7 +1608,7 @@ export default function CheckoutPage() {
                     guests={guests}
                     quoteId={quoteId}
                     ratePlanId={effective.ratePlanId ?? selectedRatePlanId ?? ""}
-                    total={effective.total}
+                    total={todayTotal}
                     currency="EUR"
                     propertyName={intent.propertyName || displayName}
                     destination={intent.destination || undefined}

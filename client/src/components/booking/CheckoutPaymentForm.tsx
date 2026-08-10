@@ -152,6 +152,7 @@ function buildPolicyPayload() {
 }
 
 function PaymentFormInner({
+  intentId,
   listingId,
   checkIn,
   checkOut,
@@ -171,6 +172,8 @@ function PaymentFormInner({
   const { t, i18n } = useTranslation();
   const stripe = useStripe();
   const elements = useElements();
+  const createCardCharge = trpc.checkout.createCardCharge.useMutation();
+  const finalizeCardCharge = trpc.checkout.finalizeCardCharge.useMutation();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const submittedRef = useRef(false);
@@ -206,6 +209,37 @@ function PaymentFormInner({
       setError(submitError.message || t('payment.errors.cardValidationFailed'));
       setLoading(false);
       submittedRef.current = false; // Safe: no payment method created yet
+      return;
+    }
+
+    // ═══ Checkout 2.0 (2b): cobrança única na PLATAFORMA ═══
+    // PI criado lazy AGORA (total canónico do servidor); confirmPayment inline;
+    // finalize cria a reserva Guesty só com a estadia. Legacy segue em baixo.
+    if (intentId) {
+      try {
+        const { clientSecret, paymentIntentId } = await createCardCharge.mutateAsync({ intentId });
+        const { error: confirmErr, paymentIntent } = await stripe.confirmPayment({
+          elements,
+          clientSecret,
+          confirmParams: { return_url: window.location.href },
+          redirect: "if_required",
+        });
+        if (confirmErr) {
+          setError(confirmErr.message || t("payment.errors.cardValidationFailed"));
+          setLoading(false);
+          submittedRef.current = false;
+          return;
+        }
+        const fin = await finalizeCardCharge.mutateAsync({
+          intentId,
+          paymentIntentId: paymentIntent?.id ?? paymentIntentId,
+        });
+        onSuccess(fin.confirmationCode, fin.reservationId);
+      } catch (e: any) {
+        // pagamento pode ter sido capturado — o webhook completa; não re-tentar às cegas
+        setError(e?.message || t("payment.errors.cardValidationFailed"));
+        setLoading(false);
+      }
       return;
     }
 
@@ -361,7 +395,8 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
 
   // Per-listing Stripe connected account is the ONLY source of truth.
   // Never fall back to stripeConfig.stripeAccountId (env var may be wrong/stale).
-  const stripeAccountId = paymentProvider?.providerAccountId || null;
+  // 2b: no checkout v2 o PI vive na conta de PLATAFORMA — nunca ligar a conectada
+  const stripeAccountId = props.intentId ? null : (paymentProvider?.providerAccountId || null);
 
   // Hooks must be called unconditionally before any early returns.
   const stripePromise = useMemo(

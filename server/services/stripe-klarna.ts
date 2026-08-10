@@ -54,6 +54,17 @@ export async function createKlarnaPaymentIntent(
   });
 }
 
+/** Fase 2b: PI de cartão na conta da PLATAFORMA (cobrança única estadia+extras). */
+export async function createCardPaymentIntent(params: CreateKlarnaPaymentIntentParams): Promise<Stripe.PaymentIntent> {
+  const stripe = getStripe();
+  return stripe.paymentIntents.create({
+    amount: params.amount,
+    currency: params.currency,
+    payment_method_types: ["card"],
+    ...(params.metadata ? { metadata: params.metadata } : {}),
+  });
+}
+
 /**
  * Retrieve an existing PaymentIntent by its ID.
  */
