@@ -1638,6 +1638,7 @@
     "saveIssue": "Verbindung wird wiederhergestellt, Änderungen ausstehend",
     "stayDetails": {
       "title": "Details des Aufenthalts"
-    }
+    },
+    "arrivalAirport": "Ankunftsflughafen"
   }
 }

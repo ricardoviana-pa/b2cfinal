@@ -1638,6 +1638,7 @@
     "saveIssue": "Återansluter, ändringar väntar",
     "stayDetails": {
       "title": "Vistelsens detaljer"
-    }
+    },
+    "arrivalAirport": "Ankomstflygplats"
   }
 }

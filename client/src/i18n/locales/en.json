@@ -1638,6 +1638,7 @@
     "saveIssue": "Reconnecting, changes pending",
     "stayDetails": {
       "title": "Stay details"
-    }
+    },
+    "arrivalAirport": "Arrival airport"
   }
 }

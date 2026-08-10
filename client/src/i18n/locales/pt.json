@@ -1638,6 +1638,7 @@
     "saveIssue": "A restabelecer ligação, alterações por guardar",
     "stayDetails": {
       "title": "Detalhes da estadia"
-    }
+    },
+    "arrivalAirport": "Aeroporto de chegada"
   }
 }

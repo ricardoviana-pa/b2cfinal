@@ -1638,6 +1638,7 @@
     "saveIssue": "Riconnessione, modifiche in sospeso",
     "stayDetails": {
       "title": "Dettagli del soggiorno"
-    }
+    },
+    "arrivalAirport": "Aeroporto di arrivo"
   }
 }

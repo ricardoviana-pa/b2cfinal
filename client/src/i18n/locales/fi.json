@@ -1638,6 +1638,7 @@
     "saveIssue": "Yhdistetään uudelleen, muutokset odottavat",
     "stayDetails": {
       "title": "Majoituksen tiedot"
-    }
+    },
+    "arrivalAirport": "Saapumislentokenttä"
   }
 }

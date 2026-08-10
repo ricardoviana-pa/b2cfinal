@@ -685,9 +685,9 @@ export default function CustomizeStep({
         // visível, fora da lógica comercial do Ver mais.
         const detailRows = allRows.filter((i) => i.pricingModel === "included_selectable" || (i as any).petsOnly);
         const rows = allRows.filter((i) => !detailRows.includes(i));
-        const isOpen = !!expanded[chapter];
-        const visibleRows = isExperiences ? [] : isOpen ? rows : rows.slice(0, GROUP_VISIBLE[chapter]);
-        const hiddenCount = isExperiences ? 0 : rows.length - visibleRows.length;
+        // 12 jul (Ricardo): tudo aberto — o Ver mais escondia o catálogo
+        const visibleRows = isExperiences ? [] : rows;
+        const hiddenCount = 0;
 
         return (
           <ChapterReveal key={chapter} id={`chapter-${chapter}`} className={cn("scroll-mt-[130px]", idx === 0 ? "mt-10" : "mt-24 lg:mt-28")}>
@@ -745,7 +745,7 @@ export default function CustomizeStep({
               return (
                 <div className="bg-white border border-pa-sand rounded-lg divide-y divide-pa-sand overflow-hidden mb-3">
                   <div className="px-5 py-3 flex items-center justify-between gap-2">
-                    <span className="text-[12px] text-pa-earth">{t("checkout.airport", "Airport")}</span>
+                    <span className="text-[12px] text-pa-earth">{t("checkout.arrivalAirport", "Arrival airport")}</span>
                     <div className="flex items-center gap-1.5">
                       {(["porto", "lisbon"] as const).map((ap) => (
                         <button
@@ -887,17 +887,18 @@ export default function CustomizeStep({
                           <p className="text-[14px] font-medium text-pa-dark leading-snug">
                             {t(`checkout.extras.${item.sku}.name`)}
                           </p>
-                          <div className="flex items-center justify-between gap-2 mt-2">
-                            <p className="text-[12.5px] text-pa-earth">
+                          <div className="mt-2 mt-auto space-y-2">
+                            <p className="text-[12px] text-pa-earth leading-snug">
                               {item.priceFrom != null
-                                ? `${t("checkout.fromPrice", { price: formatEur(item.priceFrom, lang) })} · ${t("checkout.noChargeNow", "no charge now")}`
+                                ? t("checkout.fromPrice", { price: formatEur(item.priceFrom, lang) })
                                 : t("checkout.onRequestShort", "on request")}
+                              <span className="text-pa-stone-aa"> · {t("checkout.noChargeNow", "no charge now")}</span>
                             </p>
                             <button
                               type="button"
                               onClick={() => onToggle(item)}
                               className={cn(
-                                "min-h-[44px] sm:min-h-[30px] px-3.5 rounded-full border text-[10.5px] font-medium tracking-[0.08em] uppercase transition-colors",
+                                "w-full min-h-[44px] sm:min-h-[36px] rounded-full border text-[10.5px] font-medium tracking-[0.08em] uppercase transition-colors",
                                 selected
                                   ? "bg-pa-dark border-pa-dark text-white"
                                   : "border-pa-sand text-pa-earth hover:border-pa-dark hover:text-pa-dark",

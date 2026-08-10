@@ -1638,6 +1638,7 @@
     "saveIssue": "Opnieuw verbinden, wijzigingen in behandeling",
     "stayDetails": {
       "title": "Verblijfsdetails"
-    }
+    },
+    "arrivalAirport": "Aankomstluchthaven"
   }
 }

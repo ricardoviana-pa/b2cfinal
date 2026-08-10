@@ -1638,6 +1638,7 @@
     "saveIssue": "Reconectando, cambios pendientes",
     "stayDetails": {
       "title": "Detalles de la estancia"
-    }
+    },
+    "arrivalAirport": "Aeropuerto de llegada"
   }
 }

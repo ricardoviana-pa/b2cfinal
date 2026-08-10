@@ -1638,6 +1638,7 @@
     "saveIssue": "Reconnexion, modifications en attente",
     "stayDetails": {
       "title": "Détails du séjour"
-    }
+    },
+    "arrivalAirport": "Aéroport d'arrivée"
   }
 }
