@@ -603,7 +603,7 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 
   const nightsLabel = pt ? "noites" : "nights";
   const guestsLabel = pt ? "hóspedes" : "guests";
-  const cleaningLabel = pt ? "Taxa de limpeza" : "Cleaning fee";
+  const cleaningLabel = "Service fee"; // rótulo do site (decisão 12 jul)
   const taxesLabel = pt ? "Taxas" : "Taxes & fees";
   const totalLabel = "Total";
 
@@ -706,6 +706,7 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 
 <tr><td style="padding:0 0 8px 0;">
   <p style="font-family:${SANS};font-size:13.5px;color:${PA.earth};line-height:1.6;margin:0;">${closing}</p>
+  <p style="font-family:${SANS};font-size:13.5px;color:${PA.dark};margin:16px 0 0 0;">${pt ? "Com os melhores cumprimentos," : "Warm regards,"}<br/><span style="font-family:${SERIF};font-size:16px;">Sara</span> <span style="color:${PA.stoneAA};font-size:12px;">· ${pt ? "a sua concierge" : "your concierge"}</span></p>
 </td></tr>
 
 <!-- Footer -->
@@ -854,7 +855,7 @@ export async function sendCheckoutGuestConfirmation(d: {
     if (q.nightlyRate && q.nights && q.totalNights) {
       priceLines += line(`${eur(q.nightlyRate, pt)} × ${q.nights} ${pt ? "noites" : "nights"}`, eur(q.totalNights, pt));
     }
-    if (q.cleaningFee && q.cleaningFee > 0) priceLines += line(pt ? "Taxa de limpeza" : "Cleaning fee", eur(q.cleaningFee, pt));
+    if (q.cleaningFee && q.cleaningFee > 0) priceLines += line("Service fee", eur(q.cleaningFee, pt));
     if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(pt ? "Taxas" : "Taxes & fees", eur(q.taxesAndFees, pt));
     const receptionAmt = d.receptionAmount ?? 0;
     if (d.reception?.type === "hosted" && receptionAmt > 0) {
@@ -864,15 +865,27 @@ export async function sendCheckoutGuestConfirmation(d: {
       );
     }
     const canonBySku = new Map((d.canonical?.lines ?? []).map((l) => [l.sku, l.cents / 100]));
+    let hasNeedsConfirmation = false;
     for (const e of paidExtras) {
       // valor canónico quando existe (o que foi cobrado); Incluído em vez de 0 €
       const amt = canonBySku.has(String(e.sku)) ? canonBySku.get(String(e.sku))! : Number(e.amount);
       const v = amt === 0 ? (pt ? "Incluído" : "Included") : eur(amt, pt);
-      priceLines += line(extraLabel(e), v);
+      // Mesma honestidade do checkout: itens a confirmar em 24h dizem-no aqui
+      const needs = e.fulfillment === "needs_confirmation";
+      if (needs) hasNeedsConfirmation = true;
+      const label = needs
+        ? `${extraLabel(e)} <span style="color:${PA.stoneAA};font-size:11.5px;">· ${pt ? "confirmação em 24 horas" : "confirmed within 24 hours"}</span>`
+        : extraLabel(e);
+      priceLines += line(label, v);
     }
     const flexAmt = d.canonical ? d.canonical.flexCents / 100 : d.flex && d.flexPrice ? d.flexPrice : 0;
     if (flexAmt > 0) priceLines += line(pt ? "Flex, remarcação garantida" : "Flex, guaranteed rebooking", eur(flexAmt, pt));
     // Compras: a conta do supermercado é à parte, ao custo — dizê-lo também aqui
+    if (hasNeedsConfirmation) {
+      priceLines += `<tr><td colspan="2" style="padding:2px 0 6px;font-family:${SANS};font-size:11.5px;color:${PA.stone};">${
+        pt ? "Se não conseguirmos garantir um serviço com confirmação em 24 horas, devolvemos essa linha automaticamente." : "If we cannot secure a service marked for 24-hour confirmation, that line is refunded automatically."
+      }</td></tr>`;
+    }
     if (paidExtras.some((e) => e.sku === "grocery-setup")) {
       priceLines += `<tr><td colspan="2" style="padding:2px 0 6px;font-family:${SANS};font-size:11.5px;color:${PA.stone};">${
         pt ? "Compras: a conta do supermercado é apresentada à parte, ao custo." : "Groceries: the supermarket bill is presented separately, at cost."
@@ -1015,6 +1028,10 @@ ${ctaBlock}
       ? "Reservou diretamente com a Portugal Active, com o melhor preço garantido."
       : "You booked directly with Portugal Active, with our best price guaranteed."}
   </p>
+</td></tr>
+
+<tr><td style="padding:0 0 8px 0;">
+  <p style="font-family:${SANS};font-size:13.5px;color:${PA.dark};margin:0;">${pt ? "Com os melhores cumprimentos," : "Warm regards,"}<br/><span style="font-family:${SERIF};font-size:16px;">Sara</span> <span style="color:${PA.stoneAA};font-size:12px;">· ${pt ? "a sua concierge" : "your concierge"}</span></p>
 </td></tr>
 
 <!-- Footer -->
