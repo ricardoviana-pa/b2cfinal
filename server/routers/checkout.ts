@@ -286,7 +286,15 @@ export const checkoutRouter = router({
       // (todos os metodos, fire-and-forget)
       if (ok && patch.status === "paid") {
         const m = { ...current, ...patch } as any;
+        // Fonte única de verdade: o mesmo cálculo que cobra o cartão alimenta
+        // o manifesto do CS e a confirmação do hóspede
+        const { breakdownFromIntent } = await import("../services/checkout-card-charge");
+        const canonical = (() => {
+          try { const b = breakdownFromIntent(m); return { lines: b.lines, receptionCents: b.receptionCents, flexCents: b.flexCents, totalCents: b.totalCents }; }
+          catch { return null; }
+        })();
         void sendCheckoutOpsManifest({
+          canonical,
           confirmationCode: m.confirmationCode, reservationId: m.reservationId,
           propertyName: m.propertyName, checkIn: m.checkIn, checkOut: m.checkOut,
           guests: m.guests, email: m.email,
@@ -307,6 +315,7 @@ export const checkoutRouter = router({
           void resolveIntentPhoto(m)
             .then((imageUrl) =>
               sendCheckoutGuestConfirmation({
+                canonical,
                 email: m.email,
                 guestFirstName: m.guestFirstName,
                 propertyName: sanitizePropertyName(m.propertyName || ""),

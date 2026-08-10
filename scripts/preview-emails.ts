@@ -40,7 +40,7 @@ const DEMO_IMAGE =
   "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533722def930014e914e2/41dffdd6-99b5-4f-GO4s9";
 
 async function main() {
-  const { sendCheckoutRecovery, sendCheckoutGuestConfirmation } = await import(
+  const { sendCheckoutRecovery, sendCheckoutGuestConfirmation, sendCheckoutOpsManifest } = await import(
     "../server/services/transactional-email"
   );
 
@@ -61,7 +61,28 @@ async function main() {
 
   await sendCheckoutRecovery({ ...base, stage: 1, resumeUrl: "https://dev.portugalactive.com/pt/checkout/demo?utm_campaign=cart_recovery&utm_content=1h" });
   await sendCheckoutRecovery({ ...base, stage: 2, resumeUrl: "https://dev.portugalactive.com/pt/checkout/demo?utm_campaign=cart_recovery&utm_content=20h" });
+  // Catálogo real (12 jul): grocery-setup, limpezas por casa, pets em escalão
+  const extras = [
+    { sku: "transfer-porto", qty: 1, amount: 120, fulfillment: "instant" },
+    { sku: "grocery-setup", qty: 1, amount: 120, fulfillment: "instant" },
+    { sku: "daily-cleaning", qty: 3, amount: 255, fulfillment: "instant" },
+    { sku: "breakfast-box", people: 6, days: 4, amount: 600, fulfillment: "instant" },
+    { sku: "pet-fee", qty: 2, amount: 150, fulfillment: "instant" },
+    { sku: "travel-crib", qty: 1, amount: 0, fulfillment: "instant" },
+    { sku: "private-chef", people: 6, amount: 570, fulfillment: "needs_confirmation" },
+    { sku: "canyoning", amount: null, fulfillment: "on_request" },
+  ];
+  const { computeChargeBreakdown } = await import("../server/services/checkout-pricing");
+  const b = computeChargeBreakdown({
+    quoteTotal: 3300, totalNights: 3000, nights: 4,
+    reception: { type: "hosted", late: true },
+    extras: extras as any, flex: true,
+    unitPriceOverrides: { "daily-cleaning": 85, "deep-cleaning": 240 },
+  });
+  const canonical = { lines: b.lines, receptionCents: b.receptionCents, flexCents: b.flexCents, totalCents: b.totalCents };
+
   await sendCheckoutGuestConfirmation({
+    canonical,
     email: "demo@example.com",
     guestFirstName: "Maria",
     propertyName: "Villa Aurora",
@@ -72,13 +93,9 @@ async function main() {
     confirmationCode: "PA-48291",
     reception: { type: "hosted", late: true },
     receptionAmount: 90,
-    extras: [
-      { sku: "private-chef", people: 6, amount: 480, fulfillment: "needs_confirmation" },
-      { sku: "grocery-delivery", qty: 1, amount: 60 },
-      { sku: "in-villa-spa", amount: null, fulfillment: "on_request" },
-    ],
+    extras,
     flex: true,
-    flexPrice: 250,
+    flexPrice: 300,
     quote: base.quote,
     imageUrl: DEMO_IMAGE,
     viewUrl: "https://dev.portugalactive.com/pt/checkout/demo",
@@ -86,8 +103,25 @@ async function main() {
     intentId: "demo-intent",
   });
 
+  await sendCheckoutOpsManifest({
+    canonical,
+    confirmationCode: "PA-48291",
+    reservationId: "res-demo",
+    propertyName: "Villa Aurora",
+    checkIn: "2026-08-12",
+    checkOut: "2026-08-16",
+    guests: 6,
+    email: "demo@example.com",
+    guestName: "Maria Fonseca",
+    guestPhone: "+351 910 000 000",
+    reception: { type: "hosted", late: true },
+    extras,
+    flex: true,
+    intentId: "demo-intent",
+  });
+
   console.log = origLog;
-  const names = ["recovery-1h", "recovery-20h", "confirmation"];
+  const names = ["recovery-1h", "recovery-20h", "confirmation", "cs-manifest"];
   captured.forEach((c, i) => {
     const file = path.join(OUT_DIR, `${names[i] ?? `email-${i}`}.html`);
     fs.writeFileSync(file, c.html, "utf-8");

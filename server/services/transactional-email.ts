@@ -731,9 +731,41 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 const CONCIERGE_WA_LINK = "https://wa.me/351927161771";
 
 /** "private-chef" → "Private chef" (nome legível a partir do sku, PT/EN apenas) */
-function skuLabel(sku: string): string {
+const SKU_LABELS: Record<string, { pt: string; en: string }> = {
+  "transfer-porto": { pt: "Transfer aeroporto do Porto", en: "Porto airport transfer" },
+  "transfer-porto-van": { pt: "Transfer aeroporto do Porto, van", en: "Porto airport transfer, van" },
+  "transfer-lisbon": { pt: "Transfer aeroporto de Lisboa", en: "Lisbon airport transfer" },
+  "transfer-lisbon-van": { pt: "Transfer aeroporto de Lisboa, van", en: "Lisbon airport transfer, van" },
+  "daily-cleaning": { pt: "Limpeza diária", en: "Daily cleaning" },
+  "deep-cleaning": { pt: "Limpeza profunda", en: "Deep cleaning" },
+  "babysitter": { pt: "Babysitter", en: "Babysitter" },
+  "travel-crib": { pt: "Berço de viagem", en: "Travel crib" },
+  "baby-chair": { pt: "Cadeira de bebé", en: "High chair" },
+  "pet-fee": { pt: "Animais de estimação", en: "Pets" },
+  "pet-kit": { pt: "Kit pet, cama e taças", en: "Pet kit, bed and bowls" },
+  "pet-food": { pt: "Comida para o animal", en: "Pet food" },
+  "breakfast-box": { pt: "Breakfast box", en: "Breakfast box" },
+  "private-chef": { pt: "Chef privado", en: "Private chef" },
+  "grocery-setup": { pt: "Compras feitas e entregues", en: "Grocery setup and delivery" },
+  "massage": { pt: "Massagem na casa", en: "In-home massage" },
+  "private-yoga": { pt: "Yoga privado", en: "Private yoga" },
+  "personal-trainer": { pt: "Personal trainer", en: "Personal trainer" },
+};
+
+function skuLabel(sku: string, pt = false): string {
+  const known = SKU_LABELS[String(sku)];
+  if (known) return pt ? known.pt : known.en;
   const s = String(sku).replace(/-/g, " ").trim();
   return s ? s.charAt(0).toUpperCase() + s.slice(1) : String(sku);
+}
+
+/** Valores canónicos (computeChargeBreakdown) — quando presentes, os emails
+ *  mostram EXATAMENTE o que foi cobrado, nunca valores vindos do cliente. */
+export interface CanonicalCharge {
+  lines: Array<{ sku: string; cents: number }>;
+  receptionCents: number;
+  flexCents: number;
+  totalCents: number;
 }
 
 export async function sendCheckoutGuestConfirmation(d: {
@@ -752,6 +784,7 @@ export async function sendCheckoutGuestConfirmation(d: {
   flex?: boolean | null;
   /** Preço do Flex (config do servidor), só usado quando flex é true */
   flexPrice?: number | null;
+  canonical?: CanonicalCharge | null;
   /** Snapshot da quote do intent — alimenta o breakdown igual ao checkout */
   quote?: {
     nightlyRate?: number;
@@ -795,7 +828,7 @@ export async function sendCheckoutGuestConfirmation(d: {
 
     const unit = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
     const extraLabel = (e: Record<string, unknown>): string => {
-      const bits: string[] = [skuLabel(String(e.sku))];
+      const bits: string[] = [skuLabel(String(e.sku), pt)];
       if (e.qty && Number(e.qty) > 1) bits.push("x" + e.qty);
       if (e.people) bits.push(unit(Number(e.people), pt ? "pessoa" : "person", pt ? "pessoas" : "people"));
       if (e.sessions) bits.push(unit(Number(e.sessions), pt ? "sessão" : "session", pt ? "sessões" : "sessions"));
@@ -824,16 +857,23 @@ export async function sendCheckoutGuestConfirmation(d: {
         eur(receptionAmt, pt),
       );
     }
+    const canonBySku = new Map((d.canonical?.lines ?? []).map((l) => [l.sku, l.cents / 100]));
     for (const e of paidExtras) {
-      // included_selectable com qty 1: mostrar Incluído, nunca 0 €
-      const v = Number(e.amount) === 0 ? (pt ? "Incluído" : "Included") : eur(Number(e.amount), pt);
+      // valor canónico quando existe (o que foi cobrado); Incluído em vez de 0 €
+      const amt = canonBySku.has(String(e.sku)) ? canonBySku.get(String(e.sku))! : Number(e.amount);
+      const v = amt === 0 ? (pt ? "Incluído" : "Included") : eur(amt, pt);
       priceLines += line(extraLabel(e), v);
     }
-    const flexAmt = d.flex && d.flexPrice ? d.flexPrice : 0;
+    const flexAmt = d.canonical ? d.canonical.flexCents / 100 : d.flex && d.flexPrice ? d.flexPrice : 0;
     if (flexAmt > 0) priceLines += line(pt ? "Flex, remarcação garantida" : "Flex, guaranteed rebooking", eur(flexAmt, pt));
-
-    const extrasSum = paidExtras.reduce((s, e) => s + Number(e.amount || 0), 0);
-    const total = (q.total ?? 0) + receptionAmt + extrasSum + flexAmt;
+    // Compras: a conta do supermercado é à parte, ao custo — dizê-lo também aqui
+    if (paidExtras.some((e) => e.sku === "grocery-setup")) {
+      priceLines += `<tr><td colspan="2" style="padding:2px 0 6px;font-family:${SANS};font-size:11.5px;color:${PA.stone};">${
+        pt ? "Compras: a conta do supermercado é apresentada à parte, ao custo." : "Groceries: the supermarket bill is presented separately, at cost."
+      }</td></tr>`;
+    }
+    const extrasSum = paidExtras.reduce((s, e) => s + (canonBySku.has(String(e.sku)) ? canonBySku.get(String(e.sku))! : Number(e.amount || 0)), 0);
+    const total = d.canonical ? d.canonical.totalCents / 100 : (q.total ?? 0) + receptionAmt + extrasSum + flexAmt;
 
     const destination = d.destination
       ? d.destination.charAt(0).toUpperCase() + d.destination.slice(1)
@@ -998,21 +1038,43 @@ export async function sendCheckoutOpsManifest(d: {
   guests?: number | null; email?: string | null; guestName?: string | null;
   guestPhone?: string | null; reception?: { type: string; late?: boolean } | null;
   extras?: Array<Record<string, unknown>> | null; flex?: boolean | null; intentId: string;
+  canonical?: CanonicalCharge | null;
 }): Promise<void> {
   try {
     const extras = Array.isArray(d.extras) ? d.extras : [];
     const needs = extras.filter((e) => e.fulfillment === "needs_confirmation");
     const requests = extras.filter((e) => e.amount == null);
     const paid = extras.filter((e) => e.amount != null && e.fulfillment !== "needs_confirmation");
-    const nice = (sku: unknown) => String(sku).replace(/-/g, " ");
+    const nice = (sku: unknown) => skuLabel(String(sku), true);
+    const canonBySku = new Map((d.canonical?.lines ?? []).map((l) => [l.sku, l.cents / 100]));
+    const amountOf = (e: Record<string, unknown>) =>
+      canonBySku.has(String(e.sku)) ? canonBySku.get(String(e.sku))! : Number(e.amount ?? 0);
     const qty = (e: Record<string, unknown>) =>
       [e.qty ? "x" + e.qty : "", e.days ? e.days + " dias" : "", e.people ? e.people + " pessoas" : "", e.sessions ? e.sessions + " sessoes" : ""].filter(Boolean).join(" ");
     const deadline = new Date(Date.now() + 24 * 3600_000).toLocaleString("pt-PT", { timeZone: "Europe/Lisbon", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
     // ── AÇÕES: o que a equipa tem de tratar, por ordem de urgência ──
+    // Regras específicas por sku primeiro (operação real); genéricas depois.
     const actions: Array<{ urgent: boolean; text: string }> = [];
+    const handled = new Set<string>();
+    for (const e of paid) {
+      const sku = String(e.sku);
+      if (sku === "grocery-setup") {
+        actions.push({ urgent: true, text: `PEDIR JA A LISTA DE COMPRAS a ${d.guestName || "hospede"} (${d.guestPhone || d.email || "?"}) e agendar compra e entrega antes do check-in de ${d.checkIn || "?"}. Conta do supermercado a parte, ao custo (fee de ${amountOf(e)} EUR ja cobrado).` });
+        handled.add(sku);
+      } else if (sku === "daily-cleaning" || sku === "deep-cleaning") {
+        actions.push({ urgent: false, text: `AGENDAR ${e.qty || 1} ${sku === "daily-cleaning" ? "limpeza(s) diaria(s)" : "limpeza(s) profunda(s)"} com a equipa e combinar datas com o hospede (${amountOf(e)} EUR cobrados).` });
+        handled.add(sku);
+      } else if (sku.startsWith("transfer-")) {
+        actions.push({ urgent: true, text: `CONFIRMAR VOO E HORA de recolha do ${nice(sku)} ${qty(e)} com o hospede (${amountOf(e)} EUR cobrados).` });
+        handled.add(sku);
+      } else if (sku === "pet-fee") {
+        actions.push({ urgent: false, text: `PREPARAR a casa para ${e.qty || 1} animal(is) de estimacao (taxa ${amountOf(e)} EUR cobrada).` });
+        handled.add(sku);
+      }
+    }
     for (const e of needs) {
-      actions.push({ urgent: true, text: `CONFIRMAR ${nice(e.sku)} ${qty(e)} ATE ${deadline}. Sem fornecedor disponivel: avisar o hospede e reembolsar a linha (${e.amount} EUR).` });
+      actions.push({ urgent: true, text: `CONFIRMAR ${nice(e.sku)} ${qty(e)} ATE ${deadline}. Sem fornecedor disponivel: avisar o hospede e reembolsar a linha (${amountOf(e)} EUR).` });
     }
     if (requests.length) {
       actions.push({ urgent: true, text: `ORGANIZAR COM O CLIENTE: ligar ou WhatsApp a ${d.guestName || "hospede"} (${d.guestPhone || d.email || "?"}) para orcamentar: ${requests.map((e) => nice(e.sku)).join(", ")}.` });
@@ -1021,9 +1083,10 @@ export async function sendCheckoutOpsManifest(d: {
       actions.push({ urgent: false, text: `AGENDAR ANFITRIAO para a chegada de ${d.checkIn || "?"}${d.reception.late ? " APOS AS 21H" : ""} (rececao presencial paga).` });
     }
     for (const e of paid) {
-      actions.push({ urgent: false, text: `PREPARAR ${nice(e.sku)} ${qty(e)}${e.amount === 0 ? " (incluido, exige preparacao)" : ""}.` });
+      if (handled.has(String(e.sku))) continue;
+      actions.push({ urgent: false, text: `PREPARAR ${nice(e.sku)} ${qty(e)}${amountOf(e) === 0 ? " (incluido, exige preparacao)" : ""}.` });
     }
-    if (d.flex) actions.push({ urgent: false, text: "REGISTAR Flex ativo nesta reserva (remarcacao garantida)." });
+    if (d.flex) actions.push({ urgent: false, text: `REGISTAR Flex ativo nesta reserva (remarcacao garantida${d.canonical ? `, ${d.canonical.flexCents / 100} EUR` : ""}).` });
 
     const actionHtml = actions.length
       ? `<div style="border:2px solid ${actions.some((a) => a.urgent) ? "#B23A2E" : "#8B7355"};border-radius:8px;padding:16px 18px;margin:0 0 20px;">
@@ -1040,7 +1103,7 @@ export async function sendCheckoutOpsManifest(d: {
     row("Hospede", `${d.guestName || "?"} · ${d.email || "?"} · ${d.guestPhone || "?"}`);
     row("Reserva", `${d.confirmationCode || "pendente"} (Guesty ${d.reservationId || "?"})`);
     const fmtLine = (e: Record<string, unknown>) =>
-      `<p style="font:13px Arial;color:#1A1A18;margin:2px 0;">• ${nice(e.sku)} ${qty(e)} · ${e.amount != null ? e.amount + " EUR" : "sob orcamento"}</p>`;
+      `<p style="font:13px Arial;color:#1A1A18;margin:2px 0;">• ${nice(e.sku)} ${qty(e)} · ${e.amount != null ? amountOf(e) + " EUR" : "sob orcamento"}</p>`;
     const html =
       `<h2 style="font:400 20px Georgia;color:#1A1A18;margin:0 0 14px;">Nova reserva com servicos — ${d.propertyName || ""}</h2>` +
       actionHtml +
