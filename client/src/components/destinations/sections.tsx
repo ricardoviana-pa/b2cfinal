@@ -265,7 +265,7 @@ export function WhatToSeeAndDo({ destination: d }: { destination: Destination })
               {d.insiderRecommendations.map((rec, i) => (
                 <div key={i} className="bg-white border border-[#E8E4DC] p-6">
                   {rec.category && (
-                    <span className="text-[11px] font-medium tracking-[0.02em] text-[#9E9A90] mb-2 block">
+                    <span className="text-[11px] font-medium tracking-[0.02em] text-[#726D63] mb-2 block">
                       {rec.category.replace('-', ' ')}
                     </span>
                   )}
@@ -305,7 +305,7 @@ export function WhatToSeeAndDo({ destination: d }: { destination: Destination })
                 {group.items.map(item => (
                   <div key={item.name} className="bg-white border border-[#E8E4DC] p-5">
                     {item.category && (
-                      <span className="text-[11px] font-medium tracking-[0.04em] text-[#9E9A90] mb-2 block uppercase">
+                      <span className="text-[11px] font-medium tracking-[0.04em] text-[#726D63] mb-2 block uppercase">
                         {item.category}
                       </span>
                     )}
@@ -496,7 +496,7 @@ export function EatDrinkExperience({
               {d.restaurants!.map(r => (
                 <div key={r.name} className="bg-[#FAFAF7] border border-[#E8E4DC] p-5">
                   {r.category && (
-                    <span className="text-[11px] font-medium tracking-[0.04em] text-[#9E9A90] mb-2 block uppercase">
+                    <span className="text-[11px] font-medium tracking-[0.04em] text-[#726D63] mb-2 block uppercase">
                       {r.category}
                     </span>
                   )}
@@ -527,7 +527,7 @@ export function EatDrinkExperience({
               {d.specialties!.map(s => (
                 <div key={s.name} className="border-l-2 border-[#8B7355] pl-5 py-2">
                   {s.category && (
-                    <span className="text-[11px] font-medium tracking-[0.04em] text-[#9E9A90] mb-1.5 block uppercase">
+                    <span className="text-[11px] font-medium tracking-[0.04em] text-[#726D63] mb-1.5 block uppercase">
                       {s.category}
                     </span>
                   )}

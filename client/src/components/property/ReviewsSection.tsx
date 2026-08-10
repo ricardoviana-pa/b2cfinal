@@ -79,7 +79,7 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
                 </svg>
               ))}
             </div>
-            <span className="text-[13px] text-[#9E9A90]">({totalCount} {totalCount === 1 ? t('reviews.singular', 'review') : t('reviews.plural', 'reviews')})</span>
+            <span className="text-[13px] text-[#726D63]">({totalCount} {totalCount === 1 ? t('reviews.singular', 'review') : t('reviews.plural', 'reviews')})</span>
           </div>
         )}
       </div>
@@ -116,7 +116,7 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
                 )}
                 <div>
                   <p className="text-[13px] font-medium text-[#1A1A18]">{displayName}</p>
-                  <div className="flex items-center gap-1.5 text-[11px] text-[#9E9A90]">
+                  <div className="flex items-center gap-1.5 text-[11px] text-[#726D63]">
                     {review.guestLocation && <span>{review.guestLocation}</span>}
                     {review.guestLocation && review.date && <span className="text-[#D8D2C6]">·</span>}
                     {review.date && (

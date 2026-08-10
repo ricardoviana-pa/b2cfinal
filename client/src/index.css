@@ -53,7 +53,7 @@
   --color-pa-cream: #FAFAF7;
   --color-pa-warm: #F5F1EB;
   --color-pa-sand: #E8E4DC;
-  --color-pa-stone: #9E9A90;
+  --color-pa-stone: #726D63;
   --color-pa-stone-aa: #78756F; /* WCAG AA compliant on #FAFAF7 (4.5:1) */
   --color-pa-earth: #6B6860;
   --color-pa-dark: #1A1A18;
@@ -89,7 +89,7 @@
   --chart-1: #8B7355;
   --chart-2: #C4A87C;
   --chart-3: #6B6860;
-  --chart-4: #9E9A90;
+  --chart-4: #726D63;
   --chart-5: #E8E4DC;
   --sidebar: #FFFFFF;
   --sidebar-foreground: #1A1A18;
@@ -393,7 +393,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #9E9A90;
+    color: #726D63;
     font-family: var(--font-body);
     font-size: 0.75rem;
     font-weight: 400;
@@ -611,7 +611,7 @@
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .pa-card:hover {
-    border-color: #9E9A90;
+    border-color: #726D63;
     box-shadow: 0 8px 32px rgba(26, 26, 24, 0.08);
     transform: translateY(-2px);
   }
@@ -680,7 +680,7 @@
     border-radius: 2px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #9E9A90;
+    background: #726D63;
   }
 }
 
@@ -699,7 +699,7 @@
 
   .text-pa-dark { color: #1A1A18; }
   .text-pa-earth { color: #6B6860; }
-  .text-pa-stone { color: #9E9A90; }
+  .text-pa-stone { color: #726D63; }
   .text-pa-gold { color: #8B7355; }
   .text-pa-gold-light { color: #C4A87C; }
 
@@ -710,7 +710,7 @@
   .bg-pa-gold { background-color: #8B7355; }
 
   .border-pa-sand { border-color: #E8E4DC; }
-  .border-pa-stone { border-color: #9E9A90; }
+  .border-pa-stone { border-color: #726D63; }
 
   /* Hide scrollbar but keep scrollable */
   .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -836,7 +836,7 @@
     position: absolute;
     inset: 0;
     background-color: #F5F1EB;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239E9A90' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z'/%3E%3Ccircle cx='12' cy='13' r='3'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23726D63' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z'/%3E%3Ccircle cx='12' cy='13' r='3'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: center;
     background-size: 24px 24px;

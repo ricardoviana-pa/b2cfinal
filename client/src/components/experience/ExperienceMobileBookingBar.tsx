@@ -79,12 +79,12 @@ export default function ExperienceMobileBookingBar({
       >
         <div className="flex items-center justify-between px-5 py-4">
           <div>
-            <p className="text-[10px] tracking-[0.08em] uppercase text-[#9E9A90] font-medium">
+            <p className="text-[10px] tracking-[0.08em] uppercase text-[#726D63] font-medium">
               {t('experience.from', 'From')}
             </p>
             <p className="text-[18px] font-display text-[#1A1A18] leading-none mt-0.5">
               €{priceFrom}
-              <span className="text-[11px] text-[#9E9A90] ml-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+              <span className="text-[11px] text-[#726D63] ml-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
                 {t('experience.perPerson', '/ person')}
               </span>
             </p>
@@ -152,7 +152,7 @@ export default function ExperienceMobileBookingBar({
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-[#E8E4DC] bg-white shrink-0">
             <div>
-              <p className="text-[10px] tracking-[0.14em] uppercase text-[#9E9A90] font-medium">
+              <p className="text-[10px] tracking-[0.14em] uppercase text-[#726D63] font-medium">
                 {t('experience.reserve', 'Reserve')}
               </p>
               <p className="text-[14px] font-display text-[#1A1A18] mt-0.5 leading-tight truncate max-w-[260px]">
@@ -177,7 +177,7 @@ export default function ExperienceMobileBookingBar({
           <div className="flex-1 bg-white overflow-y-auto">
             {isMultiOption && (
               <div className="px-5 pt-5 pb-4 border-b border-[#E8E4DC]">
-                <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-3">
+                <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-3">
                   {t('experience.chooseOption', 'Choose your option')}
                 </p>
                 <div className="space-y-2">
@@ -185,7 +185,7 @@ export default function ExperienceMobileBookingBar({
                     <div key={i} className="flex items-center justify-between gap-3 p-3 border border-[#E8E4DC] rounded-lg">
                       <div className="min-w-0">
                         <p className="text-[13px] text-[#1A1A18] font-medium leading-tight">{opt.name}</p>
-                        {opt.detail && <p className="text-[11px] text-[#9E9A90] mt-0.5">{opt.detail}</p>}
+                        {opt.detail && <p className="text-[11px] text-[#726D63] mt-0.5">{opt.detail}</p>}
                       </div>
                       {opt.priceFrom ? (
                         <span className="text-[13px] text-[#1A1A18] font-medium whitespace-nowrap shrink-0">€{opt.priceFrom}</span>
@@ -193,7 +193,7 @@ export default function ExperienceMobileBookingBar({
                     </div>
                   ))}
                 </div>
-                <p className="text-[11px] text-[#9E9A90] mt-3" style={{ fontWeight: 300 }}>
+                <p className="text-[11px] text-[#726D63] mt-3" style={{ fontWeight: 300 }}>
                   {t('experience.pickOptionHint', 'Select a tour to check live availability')}
                 </p>
               </div>
@@ -209,7 +209,7 @@ export default function ExperienceMobileBookingBar({
           {/* Footer */}
           <div className="px-5 py-3 flex items-center justify-between border-t border-[#E8E4DC] bg-white shrink-0"
                style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)' }}>
-            <span className="text-[11px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
+            <span className="text-[11px] text-[#726D63]" style={{ fontWeight: 300 }}>
               {t('experience.secureBooking', 'Secure booking by Bókun')}
             </span>
             <a

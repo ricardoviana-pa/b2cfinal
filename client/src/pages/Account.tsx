@@ -23,7 +23,7 @@ type Tab = 'dashboard' | 'trips' | 'points' | 'refer-friend' | 'refer-property' 
 function TierBadge({ tier }: { tier: string }) {
   const colors: Record<string, string> = {
     bronze: 'bg-[#CD7F32]/10 text-[#CD7F32] border-[#CD7F32]/20',
-    silver: 'bg-[#9E9A90]/10 text-[#6B6860] border-[#9E9A90]/20',
+    silver: 'bg-[#726D63]/10 text-[#6B6860] border-[#726D63]/20',
     gold: 'bg-[#C4A87C]/15 text-[#8B7355] border-[#C4A87C]/30',
     platinum: 'bg-[#1A1A18]/8 text-[#1A1A18] border-[#1A1A18]/15',
   };
@@ -44,7 +44,7 @@ function StatusBadge({ status }: { status: string }) {
     under_review: { bg: 'bg-purple-50 border-purple-100', text: 'text-purple-700', icon: FileText },
     signed: { bg: 'bg-emerald-50 border-emerald-100', text: 'text-emerald-700', icon: CheckCircle2 },
     rejected: { bg: 'bg-red-50 border-red-100', text: 'text-red-700', icon: XCircle },
-    pending: { bg: 'bg-[#F5F1EB] border-[#E8E4DC]', text: 'text-[#9E9A90]', icon: Clock },
+    pending: { bg: 'bg-[#F5F1EB] border-[#E8E4DC]', text: 'text-[#726D63]', icon: Clock },
     signed_up: { bg: 'bg-blue-50 border-blue-100', text: 'text-blue-700', icon: CheckCircle2 },
     booked: { bg: 'bg-[#C4A87C]/15 border-[#C4A87C]/30', text: 'text-[#8B7355]', icon: CheckCircle2 },
     completed: { bg: 'bg-emerald-50 border-emerald-100', text: 'text-emerald-700', icon: CheckCircle2 },
@@ -158,7 +158,7 @@ export default function Account() {
               <h1 className="font-display text-[22px] md:text-[28px] font-light text-[#1A1A18] tracking-tight">
                 {t('account.welcome', 'Welcome')}, {profile.name?.split(' ')[0] || t('account.guest', 'Guest')}
               </h1>
-              <span className="text-[12px] text-[#9E9A90] mt-1 block" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+              <span className="text-[12px] text-[#726D63] mt-1 block" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
                 {t('account.memberSince', 'Member since')} {new Date(profile.memberSince).getFullYear()}
               </span>
             </div>
@@ -198,7 +198,7 @@ export default function Account() {
               <div className="mt-4 pt-4 border-t border-[#E8E4DC] lg:border-t lg:mt-4 lg:pt-4">
                 <button
                   onClick={async () => { await logout(); navigate('/'); }}
-                  className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-[13px] text-[#9E9A90] hover:bg-red-50 hover:text-red-600 transition-all duration-200 w-full"
+                  className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-[13px] text-[#726D63] hover:bg-red-50 hover:text-red-600 transition-all duration-200 w-full"
                   style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                 >
                   <LogOut size={15} />
@@ -226,8 +226,8 @@ export default function Account() {
                       return (
                         <div key={i} className="rounded-xl border border-[#E8E4DC] bg-white p-5 hover:shadow-sm transition-shadow duration-200">
                           <div className="flex items-center gap-2 mb-3">
-                            <Icon size={14} className="text-[#9E9A90]" />
-                            <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)' }}>{s.label}</p>
+                            <Icon size={14} className="text-[#726D63]" />
+                            <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#726D63]" style={{ fontFamily: 'var(--font-body)' }}>{s.label}</p>
                           </div>
                           <p className={`font-display text-[26px] font-light tracking-tight ${s.accent ? 'text-[#8B7355]' : 'text-[#1A1A18]'}`}>{s.value}</p>
                         </div>
@@ -364,7 +364,7 @@ export default function Account() {
                         </div>
                         <button
                           onClick={copyReferralCode}
-                          className="flex h-[50px] w-[50px] items-center justify-center rounded-xl border border-[#E8E4DC] text-[#9E9A90] hover:border-[#8B7355] hover:text-[#8B7355] transition-all duration-200"
+                          className="flex h-[50px] w-[50px] items-center justify-center rounded-xl border border-[#E8E4DC] text-[#726D63] hover:border-[#8B7355] hover:text-[#8B7355] transition-all duration-200"
                         >
                           {copiedCode ? <Check size={18} className="text-emerald-600" /> : <Copy size={18} />}
                         </button>
@@ -377,7 +377,7 @@ export default function Account() {
                         value={referralEmail}
                         onChange={e => setReferralEmail(e.target.value)}
                         placeholder={t('account.referEmailPlaceholder', "Friend's email")}
-                        className="flex-1 h-[50px] rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[13px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200"
+                        className="flex-1 h-[50px] rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[13px] text-[#1A1A18] placeholder:text-[#726D63] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200"
                         style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                       />
                       <button
@@ -398,7 +398,7 @@ export default function Account() {
                           <div key={ref.id} className="flex items-center justify-between px-5 py-4 hover:bg-[#FAFAF7]/50 transition-colors">
                             <div>
                               <p className="text-[13px] text-[#1A1A18]">{ref.referredEmail}</p>
-                              <p className="text-[11px] text-[#9E9A90] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                              <p className="text-[11px] text-[#726D63] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
                                 {new Date(ref.createdAt).toLocaleDateString('pt-PT', { day: 'numeric', month: 'short', year: 'numeric' })}
                               </p>
                             </div>
@@ -523,7 +523,7 @@ function PropertyReferralTab({ t, propRefs, submitPropertyReferral }: {
 
         {/* How it works */}
         <div className="px-8 py-6 border-t border-[#E8E4DC]">
-          <h3 className="text-[12px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-4" style={{ fontFamily: 'var(--font-body)' }}>
+          <h3 className="text-[12px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-4" style={{ fontFamily: 'var(--font-body)' }}>
             {t('account.propRefHowItWorks', 'How it works')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -537,7 +537,7 @@ function PropertyReferralTab({ t, propRefs, submitPropertyReferral }: {
                 <span className="text-[22px] font-display font-light text-[#E8E4DC]">{s.step}</span>
                 <div>
                   <p className="text-[13px] text-[#1A1A18]" style={{ fontWeight: 500 }}>{s.title}</p>
-                  <p className="text-[12px] text-[#9E9A90] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{s.desc}</p>
+                  <p className="text-[12px] text-[#726D63] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{s.desc}</p>
                 </div>
               </div>
             ))}
@@ -555,7 +555,7 @@ function PropertyReferralTab({ t, propRefs, submitPropertyReferral }: {
           <div className="space-y-5">
             {/* Owner info section */}
             <div>
-              <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-3" style={{ fontFamily: 'var(--font-body)' }}>
+              <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-3" style={{ fontFamily: 'var(--font-body)' }}>
                 {t('account.propRefOwnerSection', 'Property owner')}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -567,7 +567,7 @@ function PropertyReferralTab({ t, propRefs, submitPropertyReferral }: {
 
             {/* Property info section */}
             <div>
-              <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-3" style={{ fontFamily: 'var(--font-body)' }}>
+              <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-3" style={{ fontFamily: 'var(--font-body)' }}>
                 {t('account.propRefPropertySection', 'Property details')}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -578,7 +578,7 @@ function PropertyReferralTab({ t, propRefs, submitPropertyReferral }: {
               </div>
               <div className="grid grid-cols-1 gap-4 mt-4">
                 <div>
-                  <label className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#9E9A90] mb-1.5 block" style={{ fontFamily: 'var(--font-body)' }}>
+                  <label className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#726D63] mb-1.5 block" style={{ fontFamily: 'var(--font-body)' }}>
                     {t('account.propRefType', 'Property type')}
                   </label>
                   <select
@@ -597,7 +597,7 @@ function PropertyReferralTab({ t, propRefs, submitPropertyReferral }: {
                   </select>
                 </div>
                 <div>
-                  <label className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#9E9A90] mb-1.5 block" style={{ fontFamily: 'var(--font-body)' }}>
+                  <label className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#726D63] mb-1.5 block" style={{ fontFamily: 'var(--font-body)' }}>
                     {t('account.propRefDescription', 'Brief description')}
                   </label>
                   <textarea
@@ -605,12 +605,12 @@ function PropertyReferralTab({ t, propRefs, submitPropertyReferral }: {
                     onChange={e => updateField('propertyDescription', e.target.value)}
                     placeholder={t('account.propRefDescPlaceholder', 'What makes this property special? Pool, views, location...')}
                     rows={3}
-                    className="w-full rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 py-3 text-[13px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200 resize-none"
+                    className="w-full rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 py-3 text-[13px] text-[#1A1A18] placeholder:text-[#726D63] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200 resize-none"
                     style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#9E9A90] mb-1.5 block" style={{ fontFamily: 'var(--font-body)' }}>
+                  <label className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#726D63] mb-1.5 block" style={{ fontFamily: 'var(--font-body)' }}>
                     {t('account.propRefNotes', 'Additional notes')}
                   </label>
                   <textarea
@@ -618,7 +618,7 @@ function PropertyReferralTab({ t, propRefs, submitPropertyReferral }: {
                     onChange={e => updateField('notes', e.target.value)}
                     placeholder={t('account.propRefNotesPlaceholder', 'How do you know the owner? Any context for our team...')}
                     rows={2}
-                    className="w-full rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 py-3 text-[13px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200 resize-none"
+                    className="w-full rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 py-3 text-[13px] text-[#1A1A18] placeholder:text-[#726D63] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200 resize-none"
                     style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                   />
                 </div>
@@ -669,7 +669,7 @@ function PropertyReferralTab({ t, propRefs, submitPropertyReferral }: {
             <h3 className="font-display text-[18px] font-light text-[#1A1A18]">{t('account.propRefHistory', 'Your property referrals')}</h3>
             {propRefs.totalSigned > 0 && (
               <div className="flex items-center gap-2 text-[12px]">
-                <span className="text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('account.propRefTotalEarned', 'Total earned')}:</span>
+                <span className="text-[#726D63]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('account.propRefTotalEarned', 'Total earned')}:</span>
                 <span className="font-display text-[#8B7355] text-[15px]">{'\u20AC'}{propRefs.totalReward.toLocaleString()}</span>
               </div>
             )}
@@ -691,7 +691,7 @@ function PropertyReferralTab({ t, propRefs, submitPropertyReferral }: {
                         </span>
                       )}
                     </div>
-                    <p className="text-[11px] text-[#9E9A90] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                    <p className="text-[11px] text-[#726D63] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
                       {[ref.propertyCity, ref.propertyRegion].filter(Boolean).join(', ') || 'Portugal'} · {new Date(ref.createdAt).toLocaleDateString('pt-PT', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </p>
                   </div>
@@ -727,14 +727,14 @@ function FormField({ icon: Icon, label, value, onChange, type = 'text', required
 }) {
   return (
     <div>
-      <label className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#9E9A90] mb-1.5 flex items-center gap-1.5" style={{ fontFamily: 'var(--font-body)' }}>
+      <label className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#726D63] mb-1.5 flex items-center gap-1.5" style={{ fontFamily: 'var(--font-body)' }}>
         <Icon size={12} /> {label} {required && <span className="text-[#C4A87C]">*</span>}
       </label>
       <input
         type={type}
         value={value}
         onChange={e => onChange(e.target.value)}
-        className="w-full h-[46px] rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[13px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200"
+        className="w-full h-[46px] rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[13px] text-[#1A1A18] placeholder:text-[#726D63] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200"
         style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
       />
     </div>
@@ -757,7 +757,7 @@ function TripCard({ trip, t, isPast }: { trip: any; t: any; isPast?: boolean }) 
       <div className="flex-1 min-w-0">
         <p className="text-[14px] text-[#1A1A18] truncate" style={{ fontWeight: 500 }}>{trip.propertyName}</p>
         {trip.destination && <p className="text-[12px] text-[#8B7355] capitalize mt-0.5">{trip.destination}</p>}
-        <p className="text-[12px] text-[#9E9A90] mt-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+        <p className="text-[12px] text-[#726D63] mt-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
           {trip.checkIn} → {trip.checkOut} · {trip.nights} {t('account.nights', 'nights')} · {trip.guests} {t('account.guests', 'guests')}
         </p>
         {trip.pointsEarned > 0 && (
@@ -832,7 +832,7 @@ function ReturningGuestTab({ profile }: { profile: any }) {
   };
 
   const inputClass = "w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[14px] text-[#1A1A18] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200";
-  const labelClass = "text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block";
+  const labelClass = "text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block";
 
   return (
     <div className="space-y-8">
@@ -947,7 +947,7 @@ function ReturningGuestTab({ profile }: { profile: any }) {
 function StatCard({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
     <div className="rounded-xl border border-[#E8E4DC] bg-white p-5 hover:shadow-sm transition-shadow duration-200">
-      <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2" style={{ fontFamily: 'var(--font-body)' }}>{label}</p>
+      <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2" style={{ fontFamily: 'var(--font-body)' }}>{label}</p>
       <p className={`font-display text-[26px] font-light tracking-tight ${accent ? 'text-[#8B7355]' : 'text-[#1A1A18]'}`}>{value}</p>
     </div>
   );
@@ -962,7 +962,7 @@ function EmptyState({ icon: Icon, message, cta, href }: { icon: typeof MapPin; m
       <div className="w-12 h-12 rounded-xl bg-[#F5F1EB] flex items-center justify-center mx-auto mb-4">
         <Icon size={20} className="text-[#C4A87C]" />
       </div>
-      <p className="text-[14px] text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{message}</p>
+      <p className="text-[14px] text-[#726D63]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{message}</p>
       {cta && href && (
         <a href={href} className="inline-flex items-center gap-1.5 mt-5 text-[12px] font-medium tracking-[0.1em] uppercase text-[#8B7355] hover:text-[#6B5A42] transition-colors">
           {cta} <ArrowUpRight size={13} />
@@ -993,7 +993,7 @@ function ProfileTab({ profile, t, updateProfile }: { profile: any; t: any; updat
         <h2 className="font-display text-[20px] font-light text-[#1A1A18] mb-6">{t('account.profileInfo', 'Personal information')}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div>
-            <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+            <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
               {t('account.profileName', 'Full name')}
             </label>
             <input
@@ -1005,19 +1005,19 @@ function ProfileTab({ profile, t, updateProfile }: { profile: any; t: any; updat
             />
           </div>
           <div>
-            <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+            <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
               {t('account.profileEmail', 'Email')}
             </label>
             <input
               type="email"
               value={profile.email || ''}
               disabled
-              className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-[#F5F1EB] px-4 text-[14px] text-[#9E9A90] cursor-not-allowed"
+              className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-[#F5F1EB] px-4 text-[14px] text-[#726D63] cursor-not-allowed"
               style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
             />
           </div>
           <div>
-            <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+            <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
               {t('account.profilePhone', 'Phone')}
             </label>
             <input
@@ -1025,12 +1025,12 @@ function ProfileTab({ profile, t, updateProfile }: { profile: any; t: any; updat
               value={phone}
               onChange={e => setPhone(e.target.value)}
               placeholder="+351 ..."
-              className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[14px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200"
+              className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[14px] text-[#1A1A18] placeholder:text-[#726D63] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200"
               style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
             />
           </div>
           <div>
-            <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+            <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
               {t('account.profileNationality', 'Nationality')}
             </label>
             <input
@@ -1038,7 +1038,7 @@ function ProfileTab({ profile, t, updateProfile }: { profile: any; t: any; updat
               value={nationality}
               onChange={e => setNationality(e.target.value)}
               placeholder="Portuguese, British, German..."
-              className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[14px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200"
+              className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-[#FAFAF7] px-4 text-[14px] text-[#1A1A18] placeholder:text-[#726D63] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 focus:border-[#8B7355] transition-all duration-200"
               style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
             />
           </div>
@@ -1064,11 +1064,11 @@ function ProfileTab({ profile, t, updateProfile }: { profile: any; t: any; updat
         <h2 className="font-display text-[20px] font-light text-[#1A1A18] mb-4">{t('account.accountInfo', 'Account details')}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[13px]">
           <div className="flex items-center gap-3 p-3 rounded-lg bg-[#FAFAF7] border border-[#E8E4DC]/50">
-            <span className="text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('account.loginMethod', 'Login method')}:</span>
+            <span className="text-[#726D63]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('account.loginMethod', 'Login method')}:</span>
             <span className="text-[#1A1A18] capitalize" style={{ fontWeight: 500 }}>{profile.loginMethod || 'Google'}</span>
           </div>
           <div className="flex items-center gap-3 p-3 rounded-lg bg-[#FAFAF7] border border-[#E8E4DC]/50">
-            <span className="text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('account.referCode', 'Referral code')}:</span>
+            <span className="text-[#726D63]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('account.referCode', 'Referral code')}:</span>
             <span className="text-[#1A1A18] font-medium tracking-[0.08em]">{profile.referralCode || 'N/A'}</span>
           </div>
         </div>

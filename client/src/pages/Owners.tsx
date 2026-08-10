@@ -169,7 +169,7 @@ export default function Owners() {
             ].map(item => (
               <div key={item.label} className="text-center py-4 flex-shrink-0 w-[200px] lg:w-auto" style={{ scrollSnapAlign: 'start' }}>
                 <div className="font-display text-[2.8rem] lg:text-[3.5rem] text-[#1A1A18] leading-none mb-2">{item.stat}</div>
-                <div className="text-[12px] font-medium text-[#9E9A90] tracking-[0.06em]">{item.label}</div>
+                <div className="text-[12px] font-medium text-[#726D63] tracking-[0.06em]">{item.label}</div>
               </div>
             ))}
           </div>
@@ -261,7 +261,7 @@ export default function Owners() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-2 block">{t('owners.formName')} <span className="text-[#DC2626]">*</span></label>
+                  <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-2 block">{t('owners.formName')} <span className="text-[#DC2626]">*</span></label>
                   <input
                     type="text"
                     required
@@ -275,7 +275,7 @@ export default function Owners() {
                   {touched.ownerName && fieldErrors.ownerName && <p className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.ownerName}</p>}
                 </div>
                 <div>
-                  <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-2 block">{t('owners.formEmail')} <span className="text-[#DC2626]">*</span></label>
+                  <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-2 block">{t('owners.formEmail')} <span className="text-[#DC2626]">*</span></label>
                   <input
                     type="email"
                     required
@@ -291,7 +291,7 @@ export default function Owners() {
                 </div>
               </div>
               <div>
-                <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-2 block">{t('owners.formPhone')}</label>
+                <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-2 block">{t('owners.formPhone')}</label>
                 <input
                   type="tel"
                   value={ownerPhone}
@@ -303,7 +303,7 @@ export default function Owners() {
                 />
               </div>
               <div>
-                <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-2 block">{t('owners.formLocation')} <span className="text-[#DC2626]">*</span></label>
+                <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-2 block">{t('owners.formLocation')} <span className="text-[#DC2626]">*</span></label>
                 <input
                   type="text"
                   required
@@ -312,13 +312,13 @@ export default function Owners() {
                   onBlur={() => handleFieldBlur('ownerLocation', ownerLocation)}
                   placeholder={t('owners.formLocationPh')}
                   autoComplete="address-level2"
-                  className={`w-full h-[52px] px-4 bg-white border text-[16px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none transition-colors ${touched.ownerLocation && fieldErrors.ownerLocation ? 'border-[#DC2626] ring-2 ring-[#DC2626]/10' : 'border-[#E8E4DC] focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C]'}`}
+                  className={`w-full h-[52px] px-4 bg-white border text-[16px] text-[#1A1A18] placeholder:text-[#726D63] focus:outline-none transition-colors ${touched.ownerLocation && fieldErrors.ownerLocation ? 'border-[#DC2626] ring-2 ring-[#DC2626]/10' : 'border-[#E8E4DC] focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C]'}`}
                   style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                 />
                 {touched.ownerLocation && fieldErrors.ownerLocation && <p className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.ownerLocation}</p>}
               </div>
               <div>
-                <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-2 block">{t('owners.formType')}</label>
+                <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-2 block">{t('owners.formType')}</label>
                 <select
                   value={ownerType}
                   onChange={e => setOwnerType(e.target.value)}
@@ -334,13 +334,13 @@ export default function Owners() {
                 </select>
               </div>
               <div>
-                <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-2 block">{t('owners.formDescription')}</label>
+                <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-2 block">{t('owners.formDescription')}</label>
                 <textarea
                   rows={4}
                   value={ownerDescription}
                   onChange={e => setOwnerDescription(e.target.value)}
                   placeholder={t('owners.formDescriptionPh')}
-                  className="w-full px-4 py-3.5 bg-white border border-[#E8E4DC] text-[16px] text-[#1A1A18] placeholder:text-[#9E9A90] focus:outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C] transition-colors resize-none"
+                  className="w-full px-4 py-3.5 bg-white border border-[#E8E4DC] text-[16px] text-[#1A1A18] placeholder:text-[#726D63] focus:outline-none focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10 hover:border-[#C4A87C] transition-colors resize-none"
                   style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                 />
               </div>

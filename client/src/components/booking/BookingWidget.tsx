@@ -750,7 +750,7 @@ export default function BookingWidget({
               <span className="text-[28px] text-[#1A1A18]" style={{ fontFamily: "var(--font-display)" }}>
                 {displayRate > 0 ? t("property.fromPerNight", { price: Math.round(displayRate).toLocaleString() }) : "---"}
               </span>
-              <span className="text-[14px] text-[#9E9A90]">{t("property.perNight")}</span>
+              <span className="text-[14px] text-[#726D63]">{t("property.perNight")}</span>
             </div>
             {effectiveMinNights > 1 && (
               <p className="text-xs text-black/40 mt-1.5 flex items-center gap-1.5">

@@ -179,7 +179,7 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
           <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
             {fields.map(field => (
               <div key={field.key}>
-                <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-1.5 block">
+                <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-1.5 block">
                   {field.label.toUpperCase()}{field.required ? ' *' : ''}
                 </label>
                 {field.type === 'text' && (
@@ -269,7 +269,7 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
             ))}
 
             {(product.priceFrom ?? 0) > 0 && (
-              <p className="text-[13px] text-[#9E9A90]">
+              <p className="text-[13px] text-[#726D63]">
                 Starting from €{(product.priceFrom ?? 0).toLocaleString()} per {product.priceSuffix || 'session'}
               </p>
             )}
@@ -277,7 +277,7 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
 
           {/* Footer */}
           <div className="border-t border-[#E8E4DC] px-6 py-4 space-y-3">
-            <p className="text-[11px] text-[#9E9A90] italic leading-relaxed">
+            <p className="text-[11px] text-[#726D63] italic leading-relaxed">
               This is a request, not a confirmed booking. Our concierge will confirm availability and pricing.
             </p>
             <button

@@ -44,7 +44,7 @@ export default function ExperienceItinerary({ steps }: ExperienceItineraryProps)
               {/* Content */}
               <div className="flex-1 min-w-0 pt-1">
                 <div className="flex items-baseline gap-3 mb-1.5">
-                  <span className="text-[10px] tracking-[0.08em] uppercase text-[#9E9A90] font-medium">
+                  <span className="text-[10px] tracking-[0.08em] uppercase text-[#726D63] font-medium">
                     Stop {step.stepNumber}
                   </span>
                   {step.time && (

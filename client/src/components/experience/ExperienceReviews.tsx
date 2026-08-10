@@ -72,7 +72,7 @@ export default function ExperienceReviews({ reviews, aggregate }: ExperienceRevi
             <span className="font-display text-[52px] leading-none text-[#1A1A18]">
               {avgValue.toFixed(1)}
             </span>
-            <span className="text-[14px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
+            <span className="text-[14px] text-[#726D63]" style={{ fontWeight: 300 }}>
               / 5
             </span>
           </div>
@@ -107,7 +107,7 @@ export default function ExperienceReviews({ reviews, aggregate }: ExperienceRevi
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className="w-8 text-right text-[#9E9A90] tabular-nums" style={{ fontWeight: 300 }}>
+                  <span className="w-8 text-right text-[#726D63] tabular-nums" style={{ fontWeight: 300 }}>
                     {count}
                   </span>
                 </div>
@@ -145,7 +145,7 @@ export default function ExperienceReviews({ reviews, aggregate }: ExperienceRevi
                     <span className="text-[13px]">{FLAG_MAP[r.countryCode]}</span>
                   )}
                 </div>
-                <p className="text-[11px] text-[#9E9A90]">
+                <p className="text-[11px] text-[#726D63]">
                   {new Date(r.date).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' })}
                 </p>
               </div>

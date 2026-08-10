@@ -39,7 +39,7 @@ function FAQItem({ item, isLast }: { item: { q: string; a: string }; isLast: boo
           <ChevronDown
             size={13}
             className="transition-transform duration-300"
-            style={{ color: open ? '#FAFAF7' : '#9E9A90', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
+            style={{ color: open ? '#FAFAF7' : '#726D63', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
           />
         </div>
       </button>
@@ -273,7 +273,7 @@ export default function Contact() {
                 {t('contact.formTitle', 'Send us a message')}
               </h2>
               <p
-                className="text-[14px] text-[#9E9A90] mb-8"
+                className="text-[14px] text-[#726D63] mb-8"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
               >
                 {t('contact.formSubtitle', 'We typically respond within 2 hours.')}
@@ -313,7 +313,7 @@ export default function Contact() {
                   />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
                         {t('contact.nameLabel')} <span className="text-[#DC2626]">*</span>
                       </label>
                       <input
@@ -330,7 +330,7 @@ export default function Contact() {
                       {touched.name && fieldErrors.name && <p className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.name}</p>}
                     </div>
                     <div>
-                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
                         {t('contact.emailLabel')} <span className="text-[#DC2626]">*</span>
                       </label>
                       <input
@@ -351,7 +351,7 @@ export default function Contact() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
                         {t('contact.phoneLabel')}
                       </label>
                       <PhoneInput
@@ -361,7 +361,7 @@ export default function Contact() {
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
                         {t('contact.subjectLabel')}
                       </label>
                       <select
@@ -380,7 +380,7 @@ export default function Contact() {
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                    <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
                       {t('contact.messageLabel')} <span className="text-[#DC2626]">*</span>
                     </label>
                     <textarea
@@ -390,7 +390,7 @@ export default function Contact() {
                       onChange={e => { setMessage(e.target.value); if (touched.message) setFieldErrors(prev => ({ ...prev, message: validateField('message', e.target.value) })); }}
                       onBlur={() => handleBlur('message', message)}
                       placeholder={t('contact.messagePlaceholder', 'Tell us about your trip — dates, group size, anything we should know...')}
-                      className={`w-full rounded-md border bg-white px-4 py-3.5 text-[16px] text-[#1A1A18] placeholder:text-[#9E9A90] transition-all duration-200 focus:outline-none resize-none ${
+                      className={`w-full rounded-md border bg-white px-4 py-3.5 text-[16px] text-[#1A1A18] placeholder:text-[#726D63] transition-all duration-200 focus:outline-none resize-none ${
                         touched.message && fieldErrors.message
                           ? 'border-[#DC2626] ring-2 ring-[#DC2626]/10'
                           : 'border-[#E8E4DC] hover:border-[#C4A87C] focus:border-[#8B7355] focus:ring-2 focus:ring-[#8B7355]/10'
@@ -428,7 +428,7 @@ export default function Contact() {
                   >
                     {t('contact.preferToTalk')}
                   </h3>
-                  <p className="text-[13px] text-[#9E9A90]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                  <p className="text-[13px] text-[#726D63]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
                     {t('contact.preferToTalkSub', 'Reach us however works best for you.')}
                   </p>
                 </div>
@@ -453,7 +453,7 @@ export default function Contact() {
                           <p className="text-[14px] text-[#1A1A18] group-hover:text-[#8B7355] transition-colors truncate" style={{ fontWeight: 500 }}>
                             {title}
                           </p>
-                          <p className="text-[12px] text-[#9E9A90] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                          <p className="text-[12px] text-[#726D63] mt-0.5" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
                             {sub}
                           </p>
                         </div>
@@ -465,7 +465,7 @@ export default function Contact() {
 
                 {/* HQ */}
                 <div className="bg-[#F5F1EB]/50 px-6 py-4 flex items-center gap-3">
-                  <MapPin size={14} className="text-[#9E9A90] shrink-0" />
+                  <MapPin size={14} className="text-[#726D63] shrink-0" />
                   <p className="text-[12px] text-[#6B6860]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
                     {t('contact.hqLocation')} {t('contact.hqOperating')}
                   </p>

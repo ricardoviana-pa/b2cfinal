@@ -288,11 +288,11 @@ export default function PropertyCard({
                     return (
                       <span className="text-[0.8125rem]">
                         <span className="text-[#1A1A18] font-medium">{t('common.from')} {formatEur(fromPrice)}</span>
-                        <span className="text-[#9E9A90]"> {t('property.perNight')}</span>
+                        <span className="text-[#726D63]"> {t('property.perNight')}</span>
                       </span>
                     );
                   }
-                  return <span className="text-[#9E9A90] text-[0.8125rem]">{t('property.selectDatesForPrice')}</span>;
+                  return <span className="text-[#726D63] text-[0.8125rem]">{t('property.selectDatesForPrice')}</span>;
                 }
                 if (nights > 0) {
                   if (quoteLoading && !liveQuote) {
@@ -312,7 +312,7 @@ export default function PropertyCard({
                             {t('property.unavailableForDates', 'Unavailable for these dates')}
                           </span>
                         </div>
-                        <p className="text-[0.6875rem] text-[#9E9A90] mt-1">
+                        <p className="text-[0.6875rem] text-[#726D63] mt-1">
                           {t('property.tryOtherDates', 'Try different dates or contact us for alternatives')}
                         </p>
                       </div>
@@ -325,17 +325,17 @@ export default function PropertyCard({
                       </span>
                     );
                   }
-                  return <span className="text-[#9E9A90] text-[0.8125rem]">{t('property.priceOnRequest')}</span>;
+                  return <span className="text-[#726D63] text-[0.8125rem]">{t('property.priceOnRequest')}</span>;
                 }
                 if (typeof fromPrice === 'number' && fromPrice > 0) {
                   return (
                     <span className="text-[0.8125rem]">
                       <span className="text-[#1A1A18] font-medium">{t('common.from')} {formatEur(fromPrice)}</span>
-                      <span className="text-[#9E9A90]"> {t('property.perNight')}</span>
+                      <span className="text-[#726D63]"> {t('property.perNight')}</span>
                     </span>
                   );
                 }
-                return <span className="text-[#9E9A90] text-[0.8125rem]">{t('property.selectDatesForPrice')}</span>;
+                return <span className="text-[#726D63] text-[0.8125rem]">{t('property.selectDatesForPrice')}</span>;
               })()}
             </div>
 
@@ -346,7 +346,7 @@ export default function PropertyCard({
                   {t('property.unitsAvailable', { count: group!.unitGuestyIds.length, defaultValue: '{{count}} units available' })}
                 </p>
               ) : nights > 0 && liveQuote && liveQuote.available !== false && liveQuote.total > 0 ? (
-                <p className="text-[0.75rem] text-[#9E9A90] leading-tight">
+                <p className="text-[0.75rem] text-[#726D63] leading-tight">
                   {liveQuote.source === 'live' || liveQuote.source === 'cached'
                     ? t('booking.nights', { count: liveQuote.nights })
                     : t('property.estimateForNights', { count: liveQuote.nights, defaultValue: 'est. for {{count}} nights' })}

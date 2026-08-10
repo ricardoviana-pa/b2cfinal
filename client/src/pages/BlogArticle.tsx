@@ -173,12 +173,12 @@ export default function BlogArticle() {
       {/* Article Header */}
       <section className="pt-28 md:pt-36 pb-8">
         <div className="container max-w-3xl mx-auto">
-          <Link href="/blog" className="inline-flex items-center gap-2 text-[0.8125rem] text-[#9E9A90] hover:text-[#1A1A18] transition-colors mb-8">
+          <Link href="/blog" className="inline-flex items-center gap-2 text-[0.8125rem] text-[#726D63] hover:text-[#1A1A18] transition-colors mb-8">
             <ArrowLeft className="w-4 h-4" /> {t('blogArticle.backToJournal')}
           </Link>
           <p className="overline mb-4">{article.category.replace('-', ' ')}</p>
           <h1 className="text-[#1A1A18] mb-6">{article.title}</h1>
-          <div className="flex flex-wrap items-center gap-4 text-sm text-[#9E9A90]">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-[#726D63]">
             <span className="flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5" />
               {new Date(article.publishDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' })}
@@ -289,7 +289,7 @@ export default function BlogArticle() {
             </div>
             <div>
               <p className="text-sm font-medium text-[#1A1A18]">{article.author.name}</p>
-              <p className="text-xs text-[#9E9A90]">{article.author.role}</p>
+              <p className="text-xs text-[#726D63]">{article.author.role}</p>
             </div>
           </div>
         </div>

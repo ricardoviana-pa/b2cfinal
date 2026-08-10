@@ -95,7 +95,7 @@ export default function ServiceDetail() {
 
       {/* Back link */}
       <div className="container py-5 border-b border-[#E8E4DC]">
-        <Link href={isService ? '/concierge' : '/experiences'} className="inline-flex items-center gap-2 text-[13px] font-medium text-[#9E9A90] hover:text-[#1A1A18] transition-colors">
+        <Link href={isService ? '/concierge' : '/experiences'} className="inline-flex items-center gap-2 text-[13px] font-medium text-[#726D63] hover:text-[#1A1A18] transition-colors">
           <ArrowLeft className="w-4 h-4" /> {isService ? t('serviceDetail.allServices', 'All concierge services') : t('serviceDetail.allExperiences', 'All experiences')}
         </Link>
       </div>
@@ -144,13 +144,13 @@ export default function ServiceDetail() {
                 <div className="flex flex-wrap gap-10 py-8 border-t border-b border-[#E8E4DC]">
                   {item.price && (
                     <div>
-                      <p className="text-[10px] tracking-[0.02em] font-medium text-[#9E9A90] mb-1">{t('serviceDetail.price', 'Price')}</p>
+                      <p className="text-[10px] tracking-[0.02em] font-medium text-[#726D63] mb-1">{t('serviceDetail.price', 'Price')}</p>
                       <p className="text-[18px] text-[#1A1A18]">{item.price}</p>
                     </div>
                   )}
                   {item.duration && (
                     <div>
-                      <p className="text-[10px] tracking-[0.02em] font-medium text-[#9E9A90] mb-1">{t('serviceDetail.duration', 'Duration')}</p>
+                      <p className="text-[10px] tracking-[0.02em] font-medium text-[#726D63] mb-1">{t('serviceDetail.duration', 'Duration')}</p>
                       <p className="text-[18px] text-[#1A1A18] flex items-center gap-2">
                         <Clock className="w-4 h-4 text-[#8B7355]" /> {item.duration}
                       </p>
@@ -158,7 +158,7 @@ export default function ServiceDetail() {
                   )}
                   {item.availability && (
                     <div>
-                      <p className="text-[10px] tracking-[0.02em] font-medium text-[#9E9A90] mb-1">{t('serviceDetail.availability', 'Availability')}</p>
+                      <p className="text-[10px] tracking-[0.02em] font-medium text-[#726D63] mb-1">{t('serviceDetail.availability', 'Availability')}</p>
                       <p className="text-[18px] text-[#1A1A18] flex items-center gap-2">
                         <MapPin className="w-4 h-4 text-[#8B7355]" /> {item.availability}
                       </p>
@@ -188,7 +188,7 @@ export default function ServiceDetail() {
                     <MessageCircle className="w-5 h-5" />
                     {t('serviceDetail.chatOnWhatsApp', 'Chat on WhatsApp')}
                   </a>
-                  <p className="text-[11px] text-[#9E9A90] mt-4">{t('serviceDetail.whatsappNote', 'Available every day, 9 am – 9 pm (Lisbon time)')}</p>
+                  <p className="text-[11px] text-[#726D63] mt-4">{t('serviceDetail.whatsappNote', 'Available every day, 9 am – 9 pm (Lisbon time)')}</p>
                 </div>
               </div>
             </div>

@@ -425,7 +425,7 @@ export default function Home() {
           <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg p-3 space-y-2">
             {/* Destination */}
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9A90] pointer-events-none" />
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#726D63] pointer-events-none" />
               <select
                 value={searchDest}
                 onChange={e => setSearchDest(e.target.value)}
@@ -438,7 +438,7 @@ export default function Home() {
                   <option key={city.value} value={city.value}>{city.label}</option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9E9A90] pointer-events-none" />
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#726D63] pointer-events-none" />
             </div>
             {/* Dates — <input type=date> ignores `placeholder`, and on iOS its
                 native render layer paints over any overlaid HTML label. So the
@@ -485,7 +485,7 @@ export default function Home() {
                   type="button"
                   onClick={() => setSearchGuests(g => Math.max(1, g - 1))}
                   disabled={searchGuests <= 1}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30 shrink-0"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] disabled:opacity-30 shrink-0"
                   aria-label={t('home.decreaseGuests', 'Decrease guests')}
                 >
                   <Minus className="w-3 h-3" />
@@ -495,7 +495,7 @@ export default function Home() {
                   type="button"
                   onClick={() => setSearchGuests(g => Math.min(30, g + 1))}
                   disabled={searchGuests >= 30}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30 shrink-0"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] disabled:opacity-30 shrink-0"
                   aria-label={t('home.increaseGuests', 'Increase guests')}
                 >
                   <Plus className="w-3 h-3" />
@@ -558,7 +558,7 @@ export default function Home() {
                   <option key={city.value} value={city.value}>{city.label}</option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9E9A90] pointer-events-none" />
+              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#726D63] pointer-events-none" />
             </div>
 
             {/* Divider */}
@@ -576,14 +576,14 @@ export default function Home() {
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               />
               {!searchCheckin && (
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[14px] text-[#9E9A90] pointer-events-none" style={{ fontFamily: 'var(--font-body)' }}>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[14px] text-[#726D63] pointer-events-none" style={{ fontFamily: 'var(--font-body)' }}>
                   {t('home.searchCheckin', 'Check-in')}
                 </span>
               )}
             </div>
 
             {/* Arrow */}
-            <ArrowRight className="w-3.5 h-3.5 text-[#9E9A90] flex-shrink-0" />
+            <ArrowRight className="w-3.5 h-3.5 text-[#726D63] flex-shrink-0" />
 
             {/* Check-out */}
             <div className="relative flex-1 h-full cursor-pointer">
@@ -598,7 +598,7 @@ export default function Home() {
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               />
               {!searchCheckout && (
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[14px] text-[#9E9A90] pointer-events-none" style={{ fontFamily: 'var(--font-body)' }}>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[14px] text-[#726D63] pointer-events-none" style={{ fontFamily: 'var(--font-body)' }}>
                   {t('home.searchCheckout', 'Check-out')}
                 </span>
               )}
@@ -609,24 +609,24 @@ export default function Home() {
 
             {/* Guests */}
             <div className="flex items-center h-full px-4 gap-2.5">
-              <Users className="w-3.5 h-3.5 text-[#9E9A90] flex-shrink-0" />
+              <Users className="w-3.5 h-3.5 text-[#726D63] flex-shrink-0" />
               <button
                 type="button"
                 onClick={() => setSearchGuests(g => Math.max(1, g - 1))}
                 disabled={searchGuests <= 1}
-                className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
                 aria-label={t('home.decreaseGuests', 'Decrease guests')}
               >
                 <Minus className="w-2.5 h-2.5" />
               </button>
               <span className="text-[14px] text-[#1A1A18] tabular-nums whitespace-nowrap" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
-                {searchGuests} <span className="text-[#9E9A90] lowercase">{t('home.searchGuests')}</span>
+                {searchGuests} <span className="text-[#726D63] lowercase">{t('home.searchGuests')}</span>
               </span>
               <button
                 type="button"
                 onClick={() => setSearchGuests(g => Math.min(30, g + 1))}
                 disabled={searchGuests >= 30}
-                className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
                 aria-label={t('home.increaseGuests', 'Increase guests')}
               >
                 <Plus className="w-2.5 h-2.5" />
@@ -705,7 +705,7 @@ export default function Home() {
                     {item.icon}
                   </div>
                   <p className="text-[9px] font-medium uppercase leading-tight tracking-[0.08em] text-[#1A1A18] sm:text-[10px] sm:tracking-[0.1em] md:text-[11px] md:tracking-[0.12em]">{item.title}</p>
-                  <p className="mt-1 max-w-none text-[9px] leading-tight text-[#9E9A90] sm:text-[10px] sm:leading-snug md:text-[12px] md:leading-[1.55]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{item.sub}</p>
+                  <p className="mt-1 max-w-none text-[9px] leading-tight text-[#726D63] sm:text-[10px] sm:leading-snug md:text-[12px] md:leading-[1.55]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{item.sub}</p>
                 </div>
               ))}
           </div>
@@ -1050,7 +1050,7 @@ export default function Home() {
       <section className="cv-auto bg-white">
         <div className="container py-12 lg:py-16">
           <p
-            className="text-center text-[11px] font-medium text-[#9E9A90] mb-8 lg:mb-10"
+            className="text-center text-[11px] font-medium text-[#726D63] mb-8 lg:mb-10"
             style={{ letterSpacing: '0.14em', fontFamily: 'var(--font-body)' }}
           >
             {t('home.pressOverline')}

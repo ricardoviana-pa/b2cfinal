@@ -70,7 +70,7 @@ export default function CookieBanner() {
             <div className="flex items-center gap-3 flex-shrink-0">
               <button
                 onClick={handleEssentialOnly}
-                className="px-5 py-2.5 text-[11px] font-medium tracking-[0.1em] uppercase text-[#9E9A90] hover:text-white border border-[#3A3A38] hover:border-[#6B6860] transition-all whitespace-nowrap"
+                className="px-5 py-2.5 text-[11px] font-medium tracking-[0.1em] uppercase text-[#C9C3B8] hover:text-white border border-[#3A3A38] hover:border-[#6B6860] transition-all whitespace-nowrap"
               >
                 {t('cookieBanner.essentialOnly')}
               </button>

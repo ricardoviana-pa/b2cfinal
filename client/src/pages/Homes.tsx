@@ -444,7 +444,7 @@ export default function Homes() {
         <section className="section-padding">
           <div className="container max-w-lg text-center">
             <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#F5F1EB]">
-              <AlertTriangle className="w-6 h-6 text-[#9E9A90]" />
+              <AlertTriangle className="w-6 h-6 text-[#726D63]" />
             </div>
             <h2 className="headline-md text-[#1A1A18] mb-3">{t('homes.loadErrorTitle', 'Something went wrong')}</h2>
             <p className="body-md mb-8">{t('homes.loadErrorBody', 'We couldn\'t load the properties. Please try again.')}</p>
@@ -498,7 +498,7 @@ export default function Homes() {
                     <option key={city.value} value={city.value}>{city.label}</option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9E9A90] pointer-events-none" />
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#726D63] pointer-events-none" />
               </div>
               <div className="w-px h-6 bg-[#E8E4DC] shrink-0" />
               <div
@@ -519,7 +519,7 @@ export default function Homes() {
                   style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                 />
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-[#9E9A90] flex-shrink-0" aria-hidden />
+              <ArrowRight className="w-3.5 h-3.5 text-[#726D63] flex-shrink-0" aria-hidden />
               <div
                 className="flex-1 min-w-0 h-full cursor-pointer"
                 onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); (inp as HTMLInputElement | null)?.showPicker?.(); }}
@@ -536,24 +536,24 @@ export default function Homes() {
               </div>
               <div className="w-px h-6 bg-[#E8E4DC] shrink-0" />
               <div className="flex items-center h-full px-3 gap-2 shrink-0">
-                <Users className="w-3.5 h-3.5 text-[#9E9A90] flex-shrink-0" aria-hidden />
+                <Users className="w-3.5 h-3.5 text-[#726D63] flex-shrink-0" aria-hidden />
                 <button
                   type="button"
                   onClick={() => setBookingGuests(g => Math.max(1, g - 1))}
                   disabled={bookingGuests <= 1}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
                   aria-label={t('home.decreaseGuests', 'Decrease guests')}
                 >
                   <Minus className="w-2.5 h-2.5" />
                 </button>
                 <span className="text-[13px] text-[#1A1A18] tabular-nums whitespace-nowrap" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
-                  {bookingGuests} <span className="text-[#9E9A90] lowercase">{t('home.searchGuests')}</span>
+                  {bookingGuests} <span className="text-[#726D63] lowercase">{t('home.searchGuests')}</span>
                 </span>
                 <button
                   type="button"
                   onClick={() => setBookingGuests(g => Math.min(30, g + 1))}
                   disabled={bookingGuests >= 30}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
                   aria-label={t('home.increaseGuests', 'Increase guests')}
                 >
                   <Plus className="w-2.5 h-2.5" />
@@ -589,7 +589,7 @@ export default function Homes() {
                     <option key={city.value} value={city.value}>{city.label}</option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9A90] pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#726D63] pointer-events-none" />
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div
@@ -626,12 +626,12 @@ export default function Homes() {
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2 flex-1 h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3">
-                  <Users className="w-4 h-4 text-[#9E9A90] shrink-0" aria-hidden />
+                  <Users className="w-4 h-4 text-[#726D63] shrink-0" aria-hidden />
                   <button
                     type="button"
                     onClick={() => setBookingGuests(g => Math.max(1, g - 1))}
                     disabled={bookingGuests <= 1}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] disabled:opacity-30"
                     aria-label={t('home.decreaseGuests', 'Decrease guests')}
                   >
                     <Minus className="w-3 h-3" />
@@ -641,7 +641,7 @@ export default function Homes() {
                     type="button"
                     onClick={() => setBookingGuests(g => Math.min(30, g + 1))}
                     disabled={bookingGuests >= 30}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#9E9A90] disabled:opacity-30"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] disabled:opacity-30"
                     aria-label={t('home.increaseGuests', 'Increase guests')}
                   >
                     <Plus className="w-3 h-3" />
@@ -781,12 +781,12 @@ export default function Homes() {
             <div className="mt-12 md:mt-16">
               <div className="border-t border-[#E8E4DC] pt-8 mb-6">
                 <div className="flex items-center gap-2 mb-1">
-                  <div className="w-2 h-2 rounded-full bg-[#9E9A90]" />
-                  <h2 className="text-[13px] font-semibold tracking-[0.06em] uppercase text-[#9E9A90]">
+                  <div className="w-2 h-2 rounded-full bg-[#726D63]" />
+                  <h2 className="text-[13px] font-semibold tracking-[0.06em] uppercase text-[#726D63]">
                     {t('homes.unavailableSection', 'Unavailable for selected dates')}
                   </h2>
                 </div>
-                <p className="text-[12px] text-[#9E9A90] ml-4">
+                <p className="text-[12px] text-[#726D63] ml-4">
                   {t('homes.unavailableHint', 'These homes may be available for different dates. Contact our concierge for alternatives.')}
                 </p>
               </div>
@@ -833,7 +833,7 @@ export default function Homes() {
           {filtered.length === 0 && (
             <div className="text-center py-16 md:py-24 max-w-md mx-auto">
               <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#F5F1EB]">
-                <Search className="w-5 h-5 text-[#9E9A90]" />
+                <Search className="w-5 h-5 text-[#726D63]" />
               </div>
               <h3 className="headline-sm text-[#1A1A18] mb-2">{t('homes.noMatch', 'No homes match your criteria')}</h3>
               <p className="body-md mb-8">{t('homes.noMatchHint', 'Try adjusting your filters or contact our team for help.')}</p>
@@ -858,7 +858,7 @@ export default function Homes() {
               <p className="text-[15px] font-display text-[#1A1A18] mb-2">
                 {t('homes.noneAvailable', 'No homes available for these dates')}
               </p>
-              <p className="text-[13px] text-[#9E9A90] mb-4">
+              <p className="text-[13px] text-[#726D63] mb-4">
                 {t('homes.noneAvailableHint', 'Try adjusting your dates or speak with our concierge')}
               </p>
               <a

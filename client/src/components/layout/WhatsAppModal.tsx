@@ -20,7 +20,7 @@ export default function WhatsAppModal({ isOpen, onClose, whatsappUrl }: WhatsApp
           className="absolute top-4 right-4 p-1 hover:bg-[#F5F1EB] rounded-full transition-colors"
           aria-label={t('whatsapp.close')}
         >
-          <X size={20} className="text-[#9E9A90]" />
+          <X size={20} className="text-[#726D63]" />
         </button>
 
         {/* Content */}
@@ -37,7 +37,7 @@ export default function WhatsAppModal({ isOpen, onClose, whatsappUrl }: WhatsApp
         <div className="flex gap-3 pt-2">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-3 rounded-full border border-[#E8E4DC] text-[12px] font-medium tracking-[0.06em] uppercase text-[#6B6860] hover:border-[#9E9A90] hover:text-[#1A1A18] transition-colors"
+            className="flex-1 px-4 py-3 rounded-full border border-[#E8E4DC] text-[12px] font-medium tracking-[0.06em] uppercase text-[#6B6860] hover:border-[#726D63] hover:text-[#1A1A18] transition-colors"
           >
             {t('whatsapp.cancel')}
           </button>

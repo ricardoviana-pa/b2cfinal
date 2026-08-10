@@ -100,27 +100,27 @@ export default function BookingConfirmationPage() {
               <div className="rounded-lg bg-white border border-[#E8E4DC] shadow-[0_4px_24px_rgba(0,0,0,0.08)] p-6">
                 <div className="grid md:grid-cols-2 gap-4 text-[13px]">
                   <div>
-                    <p className="text-[#9E9A90] mb-1">{t('bookingConfirmation.accommodation')}</p>
+                    <p className="text-[#726D63] mb-1">{t('bookingConfirmation.accommodation')}</p>
                     <p className="text-[#1A1A18]">{data.listingName}</p>
                   </div>
                   <div>
-                    <p className="text-[#9E9A90] mb-1">{t('bookingConfirmation.status')}</p>
+                    <p className="text-[#726D63] mb-1">{t('bookingConfirmation.status')}</p>
                     <p className="text-[#1A1A18]">{data.status}</p>
                   </div>
                   <div>
-                    <p className="text-[#9E9A90] mb-1">{t('bookingConfirmation.checkIn')}</p>
+                    <p className="text-[#726D63] mb-1">{t('bookingConfirmation.checkIn')}</p>
                     <p className="text-[#1A1A18]">{data.checkIn}</p>
                   </div>
                   <div>
-                    <p className="text-[#9E9A90] mb-1">{t('bookingConfirmation.checkOut')}</p>
+                    <p className="text-[#726D63] mb-1">{t('bookingConfirmation.checkOut')}</p>
                     <p className="text-[#1A1A18]">{data.checkOut}</p>
                   </div>
                   <div>
-                    <p className="text-[#9E9A90] mb-1">{t('bookingConfirmation.guests')}</p>
+                    <p className="text-[#726D63] mb-1">{t('bookingConfirmation.guests')}</p>
                     <p className="text-[#1A1A18]">{data.guestsCount}</p>
                   </div>
                   <div>
-                    <p className="text-[#9E9A90] mb-1">{t('bookingConfirmation.total')}</p>
+                    <p className="text-[#726D63] mb-1">{t('bookingConfirmation.total')}</p>
                     <p className="text-[#1A1A18]">{formatMoney(data.totalCents, data.currency, t)}</p>
                   </div>
                 </div>

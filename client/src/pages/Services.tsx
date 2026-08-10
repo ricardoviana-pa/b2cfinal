@@ -52,7 +52,7 @@ function ServiceCard({ product }: { product: Product | undefined }) {
       {product.priceFrom && (
         <p className="mt-3 text-[12px] text-[#6B6860]">
           <span className="text-[#1A1A18] font-medium">{t('common.from')} {formatEurEditorial(product.priceFrom)}</span>
-          <span className="text-[#9E9A90]"> {product.priceSuffix}</span>
+          <span className="text-[#726D63]"> {product.priceSuffix}</span>
         </p>
       )}
     </div>
@@ -80,7 +80,7 @@ function SingleServiceFeature({ product, overline, title, body }: { product: Pro
           {product.priceFrom && (
             <p className="text-[13px] text-[#1A1A18] mb-6">
               <span className="font-medium">{t('common.from')} {formatEurEditorial(product.priceFrom)}</span>
-              <span className="text-[#9E9A90] ml-1">{product.priceSuffix}</span>
+              <span className="text-[#726D63] ml-1">{product.priceSuffix}</span>
             </p>
           )}
         </div>
@@ -299,7 +299,7 @@ export default function Concierge() {
               <p className="body-lg mb-6">
                 {t('services.standardsBody', 'Before every guest arrives, our in-house team runs a 147-point preparation checklist. Linens pressed, amenities restocked, every surface inspected. No third-party crews, no shortcuts.')}
               </p>
-              <p className="body-md text-[#9E9A90]">
+              <p className="body-md text-[#726D63]">
                 {t('services.standardsNote', 'This is the standard across all 60+ properties. Every time.')}
               </p>
             </div>

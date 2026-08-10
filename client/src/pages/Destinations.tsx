@@ -147,7 +147,7 @@ export default function Destinations() {
                   <h3 className="text-[12px] font-medium tracking-[0.14em] uppercase text-[#8B7355]">
                     {REGION_LABEL[group.region]}
                   </h3>
-                  <span className="text-[12px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
+                  <span className="text-[12px] text-[#726D63]" style={{ fontWeight: 300 }}>
                     {group.items.length} destination{group.items.length !== 1 ? 's' : ''}
                   </span>
                 </div>
@@ -161,7 +161,7 @@ export default function Destinations() {
           {/* Coming soon — Brazil et al. */}
           {comingSoon.length > 0 && (
             <div className="mt-16 border-t border-[#E8E4DC] pt-10">
-              <h3 className="text-[12px] font-medium tracking-[0.14em] uppercase text-[#9E9A90] mb-6">
+              <h3 className="text-[12px] font-medium tracking-[0.14em] uppercase text-[#726D63] mb-6">
                 {t('common.comingSoon')}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

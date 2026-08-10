@@ -124,7 +124,7 @@ export default function PropertyUnitsSection({
         <h2 className="text-[24px] lg:text-[28px] font-display text-[#1A1A18]">
           {t('property.unitsInPropertyTitle', { count: units.length, defaultValue: '{{count}} units in this property' })}
         </h2>
-        <p className="text-[12px] text-[#9E9A90] hidden sm:block">
+        <p className="text-[12px] text-[#726D63] hidden sm:block">
           {t('property.unitsHint', 'Each unit can be reserved independently')}
         </p>
       </div>
@@ -185,12 +185,12 @@ export default function PropertyUnitsSection({
                         <span className="text-[14px] text-[#1A1A18] font-medium">
                           {formatEur(q.total)}
                         </span>
-                        <span className="text-[11px] text-[#9E9A90]">
+                        <span className="text-[11px] text-[#726D63]">
                           {t('booking.nights', { count: q.nights })}
                         </span>
                       </div>
                     ) : (
-                      <span className="text-[12px] text-[#9E9A90]">
+                      <span className="text-[12px] text-[#726D63]">
                         {t('property.priceOnRequest')}
                       </span>
                     )

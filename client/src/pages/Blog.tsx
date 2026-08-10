@@ -171,7 +171,7 @@ export default function Blog() {
                     {featured.title}
                   </h2>
                   <p className="text-[15px] text-[#6B6860] font-light leading-relaxed mb-6 line-clamp-3">{featured.excerpt}</p>
-                  <div className="flex items-center gap-4 text-[12px] text-[#9E9A90] mb-6">
+                  <div className="flex items-center gap-4 text-[12px] text-[#726D63] mb-6">
                     <span className="flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5" />
                       {new Date(featured.publishDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'short', year: 'numeric' })}
@@ -196,7 +196,7 @@ export default function Blog() {
         <div className="container">
           {rest.length === 0 ? (
             <div className="text-center py-16">
-              <p className="text-[#9E9A90]">{t('blog.noArticles')}</p>
+              <p className="text-[#726D63]">{t('blog.noArticles')}</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -225,7 +225,7 @@ export default function Blog() {
                     {article.title}
                   </h3>
                   <p className="text-[13px] text-[#6B6860] font-light line-clamp-2 mb-3">{article.excerpt}</p>
-                  <div className="flex items-center gap-3 text-[11px] text-[#9E9A90]">
+                  <div className="flex items-center gap-3 text-[11px] text-[#726D63]">
                     <span>{new Date(article.publishDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                     <span>·</span>
                     <span>{t('blog.minRead', { minutes: article.readTime })}</span>
