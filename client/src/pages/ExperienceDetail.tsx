@@ -223,14 +223,18 @@ export default function ExperienceDetail() {
       touristType: ['Adventure', 'Nature', 'Sport'],
       brand: { '@id': 'https://www.portugalactive.com/#organization' },
       provider: { '@id': 'https://www.portugalactive.com/#organization' },
-      offers: {
-        '@type': 'Offer',
-        price: exp.priceFrom || 0,
-        priceCurrency: 'EUR',
-        availability: 'https://schema.org/InStock',
-        url,
-        validFrom: new Date().toISOString().split('T')[0],
-      },
+      // Only emit an Offer with a real price — a price:0 offer is invalid
+      // structured data (e.g. the yacht defers pricing to the live Bókun widget).
+      ...(exp.priceFrom && exp.priceFrom > 0 ? {
+        offers: {
+          '@type': 'Offer',
+          price: exp.priceFrom,
+          priceCurrency: 'EUR',
+          availability: 'https://schema.org/InStock',
+          url,
+          validFrom: new Date().toISOString().split('T')[0],
+        },
+      } : {}),
       ...(exp.duration && { duration: exp.duration }),
       ...(exp.meetingPoint && {
         contentLocation: {
@@ -860,6 +864,7 @@ export default function ExperienceDetail() {
       <ExperienceMobileBookingBar
         experienceName={exp.name}
         priceFrom={priceFrom}
+        priceLabel={exp.price}
         whatsappMessage={exp.whatsappMessage || ''}
         maxGroupSize={exp.groupSizeRange?.max}
         bokunActivityId={(exp as any).bokunActivityId}

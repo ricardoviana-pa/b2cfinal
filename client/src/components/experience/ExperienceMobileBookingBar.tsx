@@ -14,6 +14,7 @@ import { pushEcommerce } from '@/lib/datalayer';
 interface ExperienceMobileBookingBarProps {
   experienceName: string;
   priceFrom: number;
+  priceLabel?: string;
   whatsappMessage: string;
   maxGroupSize?: number;
   bokunActivityId?: number;
@@ -32,6 +33,7 @@ const BOKUN_CHANNEL_UUID = import.meta.env.VITE_BOKUN_CHANNEL_UUID || 'a283fa3e-
 export default function ExperienceMobileBookingBar({
   experienceName,
   priceFrom,
+  priceLabel,
   whatsappMessage,
   maxGroupSize = 10,
   bokunActivityId,
@@ -79,15 +81,23 @@ export default function ExperienceMobileBookingBar({
       >
         <div className="flex items-center justify-between px-5 py-4">
           <div>
-            <p className="text-[10px] tracking-[0.08em] uppercase text-[#726D63] font-medium">
-              {t('experience.from', 'From')}
-            </p>
-            <p className="text-[18px] font-display text-[#1A1A18] leading-none mt-0.5">
-              €{priceFrom}
-              <span className="text-[11px] text-[#726D63] ml-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
-                {t('experience.perPerson', '/ person')}
-              </span>
-            </p>
+            {priceFrom > 0 ? (
+              <>
+                <p className="text-[10px] tracking-[0.08em] uppercase text-[#726D63] font-medium">
+                  {t('experience.from', 'From')}
+                </p>
+                <p className="text-[18px] font-display text-[#1A1A18] leading-none mt-0.5">
+                  €{priceFrom}
+                  <span className="text-[11px] text-[#726D63] ml-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                    {t('experience.perPerson', '/ person')}
+                  </span>
+                </p>
+              </>
+            ) : (
+              <p className="text-[15px] font-display text-[#1A1A18] leading-tight">
+                {priceLabel || t('experience.priceOnRequest', 'Price on request')}
+              </p>
+            )}
           </div>
           {hasBokun ? (
             <button

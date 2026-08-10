@@ -97,13 +97,23 @@ export default function ExperienceBookingCard({
     <div className="bg-[#F5F1EB] border border-[#E8E4DC]">
       {/* Price headline */}
       <div className="px-7 pt-7 pb-5 border-b border-[#E8E4DC]">
-        <p className="text-[10px] tracking-[0.08em] uppercase text-[#726D63] font-medium mb-1">From</p>
-        <p className="text-[28px] font-display text-[#1A1A18] leading-none">
-          €{priceFrom}
-          <span className="text-[12px] text-[#726D63] ml-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
-            / person
-          </span>
-        </p>
+        {priceFrom > 0 ? (
+          <>
+            <p className="text-[10px] tracking-[0.08em] uppercase text-[#726D63] font-medium mb-1">From</p>
+            <p className="text-[28px] font-display text-[#1A1A18] leading-none">
+              €{priceFrom}
+              <span className="text-[12px] text-[#726D63] ml-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                / person
+              </span>
+            </p>
+          </>
+        ) : (
+          /* No fixed per-person price (e.g. private charter) — show the label;
+             exact pricing comes from the live Bókun widget below. */
+          <p className="text-[22px] font-display text-[#1A1A18] leading-tight">
+            {priceLabel || 'Price on request'}
+          </p>
+        )}
         {duration && (
           <p className="text-[11px] text-[#6B6860] mt-2" style={{ fontWeight: 300 }}>
             {duration} · Private experience
