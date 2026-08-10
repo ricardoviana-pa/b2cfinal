@@ -12,7 +12,7 @@ import { BedDouble, Bath, Users, ChevronLeft, ChevronRight } from 'lucide-react'
 import useEmblaCarousel from 'embla-carousel-react';
 import type { Property } from '@/lib/types';
 import { formatEur, sanitizePropertyName } from '@/lib/format';
-import { getPropertyImages, optimizeGuestyImage } from '@/lib/images';
+import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
 import { trpc } from '@/lib/trpc';
 import { cn } from '@/lib/utils';
 import type { PropertyGroup } from '@/config/propertyGroups';
@@ -133,9 +133,9 @@ export default function PropertyUnitsSection({
         {units.map((unit) => {
           const q = quotes[unit.slug];
           const isParent = unit.guestyId === group.parentGuestyId;
+          // Raw urls — the carousel builds a responsive src + srcSet per image.
           const unitImages = (unit.images?.length ? unit.images : getPropertyImages(unit.slug))
             .slice(0, 8)
-            .map((img) => optimizeGuestyImage(img, 1080))
             .filter(Boolean);
 
           return (
@@ -267,7 +267,9 @@ function UnitImageCarousel({
             {images.map((src, i) => (
               <div key={i} className="relative flex-[0_0_100%] min-w-0 h-full">
                 <img
-                  src={src}
+                  src={optimizeGuestyImage(src, 1080)}
+                  srcSet={guestySrcSet(src, [400, 640, 828])}
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                   alt={alt}
                   loading="lazy"
                   className="w-full h-full object-cover"

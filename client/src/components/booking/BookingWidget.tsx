@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect, useMemo } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
 import { trpc } from "@/lib/trpc";
@@ -7,7 +7,9 @@ import { pushDL, pushEcommerce, ADDON_PREFIX } from "@/lib/datalayer";
 import { Calendar, User, Shield, Loader2, Check, ShoppingBag, Minus, Plus, UtensilsCrossed, Sparkles, Dumbbell, ShoppingCart, Baby, Car, SprayCanIcon, ChevronDown } from "lucide-react";
 import AvailabilityCalendar from "./AvailabilityCalendar";
 import type { AvailabilityDay } from "./AvailabilityCalendar";
-import CheckoutPaymentForm from "./CheckoutPaymentForm";
+// Lazy-loaded: pulls in @stripe/stripe-js + js.stripe.com/v3 (~246KB). Split so
+// it loads only when the guest reaches the payment step, not on every PDP view.
+const CheckoutPaymentForm = lazy(() => import("./CheckoutPaymentForm"));
 import PhoneInput from "./PhoneInput";
 import productsData from "@/data/products.json";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
@@ -1237,24 +1239,26 @@ export default function BookingWidget({
                   <p className="text-[15px] text-black font-medium tabular-nums">{t("property.total")}: {formatEur(effectiveQuote?.total ?? quote.total)}</p>
                   <p className="text-[11px] text-black/30">{guestFirstName} {guestLastName} · {guestEmail}</p>
                 </div>
-                <CheckoutPaymentForm
-                  listingId={guestyId}
-                  checkIn={checkIn}
-                  checkOut={checkOut}
-                  guests={guests}
-                  quoteId={quote.quoteId}
-                  ratePlanId={effectiveQuote?.ratePlanId ?? quote.ratePlanId ?? ""}
-                  total={effectiveQuote?.total ?? quote.total}
-                  currency={quote.currency || currency}
-                  propertyName={propertyName}
-                  destination={destination}
-                  guestName={`${guestFirstName} ${guestLastName}`}
-                  guestEmail={guestEmail}
-                  guestPhone={guestPhone}
-                  notes={(notes + upsellNote).trim() || undefined}
-                  onSuccess={handlePaymentSuccess}
-                  onCancel={() => setStep("quote")}
-                />
+                <Suspense fallback={<div className="flex items-center justify-center py-10"><Loader2 className="w-5 h-5 animate-spin text-black/40" /></div>}>
+                  <CheckoutPaymentForm
+                    listingId={guestyId}
+                    checkIn={checkIn}
+                    checkOut={checkOut}
+                    guests={guests}
+                    quoteId={quote.quoteId}
+                    ratePlanId={effectiveQuote?.ratePlanId ?? quote.ratePlanId ?? ""}
+                    total={effectiveQuote?.total ?? quote.total}
+                    currency={quote.currency || currency}
+                    propertyName={propertyName}
+                    destination={destination}
+                    guestName={`${guestFirstName} ${guestLastName}`}
+                    guestEmail={guestEmail}
+                    guestPhone={guestPhone}
+                    notes={(notes + upsellNote).trim() || undefined}
+                    onSuccess={handlePaymentSuccess}
+                    onCancel={() => setStep("quote")}
+                  />
+                </Suspense>
               </>
             ) : (
               <div className="flex flex-col gap-3">

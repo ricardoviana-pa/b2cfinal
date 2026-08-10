@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Flame, Star } from 'lucide-react';
 import { formatEur, sanitizePropertyName } from '@/lib/format';
 import type { Property, Destination } from '@/lib/types';
-import { getPropertyImages, optimizeGuestyImage } from '@/lib/images';
+import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
 import destinationsData from '@/data/destinations.json';
 import { pushEcommerce } from '@/lib/datalayer';
 import { getGroupByParentGuestyId } from '@/config/propertyGroups';
@@ -76,13 +76,13 @@ export default function PropertyCard({
   const touchCurrentX = useRef(0);
 
   // Use property.images if available, otherwise fall back to curated Unsplash images.
-  // Guesty URLs are run through Cloudinary transforms (resize + WebP/AVIF) —
-  // card images display at ~400px, so 800px covers retina with far fewer bytes.
-  const images = ((property.images && property.images.length > 0
+  // Keep the RAW urls so we can emit a responsive srcSet (see below); the browser
+  // then downloads a variant matched to the card's rendered size × DPR instead of
+  // one fixed 1080px file on every device.
+  const rawImages = ((property.images && property.images.length > 0
     ? property.images
-    : getPropertyImages(property.slug)) as string[])
-    .map((img) => optimizeGuestyImage(img, 1080));
-  const total = images.length;
+    : getPropertyImages(property.slug)) as string[]);
+  const total = rawImages.length;
 
   const nextImage = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -170,7 +170,8 @@ export default function PropertyCard({
         onTouchEnd={handleTouchEnd}
       >
         <img
-          src={images[currentImage]}
+          src={optimizeGuestyImage(rawImages[currentImage], 1080)}
+          srcSet={guestySrcSet(rawImages[currentImage], [400, 640, 768, 1080])}
           alt={t('property.imageAlt', { name: property.name, current: currentImage + 1, total })}
           className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03] ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
           loading="lazy"
@@ -225,7 +226,7 @@ export default function PropertyCard({
         {/* Dots */}
         {total > 1 && (
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex gap-1.5">
-            {images.slice(0, 5).map((_, i) => (
+            {rawImages.slice(0, 5).map((_, i) => (
               <div
                 key={i}
                 className={`h-1.5 rounded-full transition-all duration-300 ${

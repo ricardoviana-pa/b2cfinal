@@ -63,7 +63,7 @@ export default function LanguageSwitcher({
         onClick={() => setOpen((v) => !v)}
         className={`flex items-center gap-1.5 justify-center h-9 px-2 transition-all duration-200 cursor-pointer ${iconColor}`}
         style={{ minHeight: "auto", minWidth: "auto" }}
-        aria-label={t("common.language")}
+        aria-label={`${t("common.language")}: ${activeLabel}`}
       >
         <Globe className="w-[17px] h-[17px]" />
         <span className="text-[11px] font-medium tracking-wide">

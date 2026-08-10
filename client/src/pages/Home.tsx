@@ -345,6 +345,8 @@ export default function Home() {
         <div className="absolute inset-0">
           <img
             src={IMAGES.heroMain}
+            srcSet="/hero/home-carcavelos-manor-768.webp 768w, /hero/home-carcavelos-manor-1280.webp 1280w, /hero/home-carcavelos-manor.webp 1920w"
+            sizes="100vw"
             alt={t('home.heroAlt')}
             className="w-full h-full object-cover"
             width={1600}
