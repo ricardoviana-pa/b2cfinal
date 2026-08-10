@@ -340,6 +340,29 @@ export default function CheckoutPage() {
     { staleTime: 30 * 60 * 1000, enabled: !!intent },
   );
   const catalog: CatalogExtra[] = (extrasQuery.data?.extras as CatalogExtra[]) ?? [];
+
+  // Modo apresentação do demo (?case=full[&step=pay]): pré-carrega o caso
+  // completo de add-ons para revisão da equipa e capturas — só no demo.
+  const caseSeeded = useRef(false);
+  useEffect(() => {
+    if (!isDemo || caseSeeded.current || !extrasQuery.data) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("case") !== "full") return;
+    caseSeeded.current = true;
+    setReceptionChoice({ type: "hosted", late: true });
+    setExtraSel({
+      "transfer-porto": { qty: 1 },
+      "grocery-setup": { qty: 1 },
+      "daily-cleaning": { qty: 3 },
+      "breakfast-box": { people: 4, days: 5 },
+      "pet-fee": { qty: 2 },
+      "travel-crib": { qty: 1 },
+      "private-chef": { people: 4 },
+      "exp-canyoning": {},
+    });
+    setFlexSelected(true);
+    setStep(params.get("step") === "pay" ? "pay" : "customize");
+  }, [isDemo, extrasQuery.data]);
   const flexConfig: FlexConfig | null = (extrasQuery.data as any)?.flex ?? null;
   const receptionConfig: ReceptionConfig | null = (extrasQuery.data as any)?.reception ?? null;
   // C6: campo de promo vazio convida a sair à procura de códigos — só com campanha ativa
