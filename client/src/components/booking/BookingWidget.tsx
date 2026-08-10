@@ -697,8 +697,8 @@ export default function BookingWidget({
         <div className="p-6 space-y-4">
           {/* Email confirmation notice */}
           {guestEmail && (
-            <div className="bg-green-50/60 border border-green-200/40 px-4 py-3 text-center">
-              <p className="text-[12px] text-green-700">
+            <div className="bg-pa-warm border border-pa-sand px-4 py-3 text-center">
+              <p className="text-[12px] text-pa-earth">
                 {t("bookingWidget.confirmationEmailSent", { defaultValue: "Confirmation email sent to" })} <span className="font-medium">{guestEmail}</span>
               </p>
             </div>
@@ -1163,7 +1163,7 @@ export default function BookingWidget({
                               <p className="text-[13px] text-black font-medium">{planLabel}</p>
                             )}
                             {!isNonRefundable && (
-                              <span className="text-[9px] font-semibold tracking-wider uppercase px-1.5 py-0.5 bg-green-50 text-green-700 border border-green-200/50">{t("bookingWidget.recommended", { defaultValue: "Recommended" })}</span>
+                              <span className="text-[9px] font-semibold tracking-wider uppercase px-1.5 py-0.5 bg-pa-warm text-pa-gold border border-pa-sand">{t("bookingWidget.recommended", { defaultValue: "Recommended" })}</span>
                             )}
                           </div>
                           {(isNonRefundable || policyLine) && (
@@ -1177,7 +1177,7 @@ export default function BookingWidget({
                         <div className="text-right shrink-0">
                           <span className="text-[14px] text-black font-medium whitespace-nowrap tabular-nums">{formatEur(opt.total, lang)}</span>
                           {savings > 0 && (
-                            <p className="text-[10px] text-green-600 font-medium mt-0.5">
+                            <p className="text-[10px] text-pa-gold font-medium mt-0.5">
                               {t("bookingWidget.save", { defaultValue: "Save" })} {formatEur(savings, lang)}
                             </p>
                           )}

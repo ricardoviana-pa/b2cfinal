@@ -942,7 +942,15 @@ export default function CheckoutPage() {
   // resumo; aplicado → pill com remover (12 jul).
   const couponRow = !promoEnabled && !quote?.couponCode ? null : (
     <div className="border-t border-pa-sand pt-3">
-      {quote?.couponCode ? (
+      {!quote?.couponCode && !couponOpen ? (
+        <button
+          type="button"
+          onClick={() => setCouponOpen(true)}
+          className="text-[12px] text-pa-stone-aa hover:text-pa-dark underline underline-offset-2 transition-colors"
+        >
+          {t("checkout.coupon.have", "Have a promo code?")}
+        </button>
+      ) : quote?.couponCode ? (
         <div className="flex items-center justify-between gap-2">
           <span className="inline-flex items-center gap-1.5 text-[12px] text-pa-dark bg-pa-warm border border-pa-sand rounded-full px-2.5 py-1">
             <Tag className="w-3 h-3 text-pa-gold" /> {quote.couponCode}
@@ -1299,7 +1307,7 @@ export default function CheckoutPage() {
                             {formatEur(opt.total, lang)}
                           </span>
                           {savings > 0 && (
-                            <p className="text-[10px] text-green-700 font-medium mt-0.5">
+                            <p className="text-[10px] text-pa-gold font-medium mt-0.5">
                               {t("bookingWidget.save", "Save")} {formatEur(savings, lang)}
                             </p>
                           )}
@@ -1359,7 +1367,7 @@ export default function CheckoutPage() {
                 <button
                   type="button"
                   onClick={() => setStep("stay")}
-                  className="text-[12px] text-pa-stone-aa hover:text-pa-dark transition-colors mb-3"
+                  className="text-[12px] text-pa-stone-aa hover:text-pa-dark transition-colors"
                 >
                   ← {t("checkout.backToStay", "Back to your stay")}
                 </button>
@@ -1438,7 +1446,7 @@ export default function CheckoutPage() {
                 <button
                   type="button"
                   onClick={() => setStep("customize")}
-                  className="text-[12px] text-pa-stone-aa hover:text-pa-dark transition-colors mb-3"
+                  className="text-[12px] text-pa-stone-aa hover:text-pa-dark transition-colors"
                 >
                   ← {t("checkout.backToCustomize", "Back to personalization")}
                 </button>

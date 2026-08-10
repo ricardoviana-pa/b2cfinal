@@ -67,7 +67,7 @@ export interface ExtraSelection {
   days?: number;
 }
 
-export const EXTRA_CHAPTERS: ExtraChapter[] = ["arrival", "home", "table", "wellness", "experiences"];
+export const EXTRA_CHAPTERS: ExtraChapter[] = ["arrival", "table", "home", "wellness", "experiences"];
 
 /** Altura somada dos dois headers fixos: top bar do checkout (61px) + nav de capítulos (~45px). */
 const STICKY_OFFSET = 106;
@@ -154,7 +154,10 @@ function ChapterReveal({ children, className, id }: { children: React.ReactNode;
       { rootMargin: "0px 0px 240px 0px" },
     );
     io.observe(el);
-    return () => io.disconnect();
+    // Robustez: se o IO não disparar (tab em fundo, browsers antigos, poupança
+    // de energia), o conteúdo aparece na mesma — checkout nunca fica invisível
+    const fallback = window.setTimeout(() => setShown(true), 1200);
+    return () => { io.disconnect(); window.clearTimeout(fallback); };
   }, []);
   return (
     <section ref={ref as any} id={id} className={cn("chapter-reveal", shown && "chapter-reveal-in", className)}>
@@ -354,16 +357,11 @@ function OptionRow({
     <div className={cn("px-5 py-4 transition-colors", selected && "bg-pa-warm")}>
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          {(() => {
-            /* D3: prova específica por sku quando existe; badge genérico só com popular */
-            const proof = t(`checkout.proof.${item.sku}`, { defaultValue: "" });
-            if (!proof && !item.popular) return null;
-            return (
-              <p className="text-[9px] font-medium tracking-[0.12em] uppercase text-pa-gold mb-1">
-                {proof || t("checkout.mostChosen", "Most chosen")}
-              </p>
-            );
-          })()}
+          {item.popular && (
+            <p className="text-[9px] font-medium tracking-[0.12em] uppercase text-pa-gold mb-1">
+              {t("checkout.mostChosen", "Most chosen")}
+            </p>
+          )}
           <p className="flex items-center gap-1.5 text-[15px] font-medium text-pa-dark">
             {selected && <Check className="w-3.5 h-3.5 text-pa-gold shrink-0" strokeWidth={2.5} />}
             {t(`checkout.extras.${item.sku}.name`)}
@@ -373,6 +371,14 @@ function OptionRow({
               ? selectionSummary(item, sel!, amount, lang, t)
               : t(`checkout.extras.${item.sku}.desc`)}
           </p>
+          {(() => {
+            /* D3: prova específica por sku — discreta, sob a descrição (Apple: a
+               confiança sussurra, não grita) */
+            const proof = t(`checkout.proof.${item.sku}`, { defaultValue: "" });
+            return proof && !selected ? (
+              <p className="text-[11px] text-pa-stone-aa mt-0.5">{proof}</p>
+            ) : null;
+          })()}
           {item.fulfillment === "needs_confirmation" && !selected && (
             <p className="inline-flex items-center gap-1 text-[10.5px] text-pa-stone-aa mt-1">
               <Clock3 className="w-2.5 h-2.5" /> {t("checkout.confirm24h", "Confirmed within 24h")}
@@ -714,64 +720,73 @@ export default function CustomizeStep({
               </div>
             )}
 
-            {/* Transfers com seletor de aeroporto (B2) */}
-            {(carPair || vanPair) && (
-              <div className="bg-white border border-pa-sand rounded-lg divide-y divide-pa-sand overflow-hidden mb-3">
-                {[carPair, vanPair].filter(Boolean).map((pair) => {
-                  const [porto, lisbon] = (pair as CatalogExtra[])[0].sku.includes("porto")
-                    ? (pair as CatalogExtra[])
-                    : [...(pair as CatalogExtra[])].reverse();
-                  const activeSku = selection[lisbon.sku] != null ? "lisbon" : selection[porto.sku] != null ? "porto" : (defaultAirport ?? "porto");
-                  const active = activeSku === "lisbon" ? lisbon : porto;
-                  const other = activeSku === "lisbon" ? porto : lisbon;
-                  const switchAirport = (to: "porto" | "lisbon") => {
-                    if (to === activeSku) return;
-                    const target = to === "lisbon" ? lisbon : porto;
-                    const prev = selection[active.sku];
-                    if (prev) {
-                      onToggle(active); // remove o atual
-                      onToggle(target); // adiciona o novo
-                      if (prev.qty && prev.qty > 1) onAdjust(target.sku, { qty: prev.qty });
-                    }
-                    setAirportBySku((m) => ({ ...m, [porto.sku]: to }));
-                  };
-                  const shownAirport = (airportBySku[porto.sku] as "porto" | "lisbon" | undefined) ?? activeSku;
-                  const shown = shownAirport === "lisbon" ? lisbon : porto;
-                  const shownFinal = selection[active.sku] != null ? active : shown;
-                  return (
-                    <div key={porto.sku}>
-                      <div className="px-5 pt-3.5 pb-0 flex items-center gap-2">
-                        <span className="text-[11px] text-pa-stone-aa">{t("checkout.airport", "Airport")}:</span>
-                        {(["porto", "lisbon"] as const).map((ap) => (
-                          <button
-                            key={ap}
-                            type="button"
-                            onClick={() => { switchAirport(ap); setAirportBySku((m) => ({ ...m, [porto.sku]: ap })); }}
-                            className={cn(
-                              "text-[11.5px] px-3 py-1 rounded-full border transition-colors",
-                              (selection[active.sku] != null ? activeSku : shownAirport) === ap
-                                ? "border-pa-dark bg-pa-dark text-white"
-                                : "border-pa-sand text-pa-earth hover:border-pa-dark",
-                            )}
-                          >
-                            {ap === "porto" ? "Porto" : "Lisboa"}
-                          </button>
-                        ))}
-                      </div>
+            {/* Transfers (B2): UMA decisão de aeroporto para o cartão inteiro —
+                o seletor por linha duplicava o mesmo controlo (auditoria Apple) */}
+            {(carPair || vanPair) && (() => {
+              const pairs = [carPair, vanPair].filter(Boolean) as CatalogExtra[][];
+              const norm = pairs.map((pair) =>
+                pair[0].sku.includes("porto") ? pair : [...pair].reverse(),
+              ) as [CatalogExtra, CatalogExtra][];
+              const selectedAp = norm.some(([, l]) => selection[l.sku] != null)
+                ? "lisbon"
+                : norm.some(([p]) => selection[p.sku] != null)
+                  ? "porto"
+                  : null;
+              const shownAp = (selectedAp ?? (airportBySku.__all as "porto" | "lisbon" | undefined) ?? defaultAirport ?? "porto") as "porto" | "lisbon";
+              const switchAll = (to: "porto" | "lisbon") => {
+                if (to === shownAp) return;
+                norm.forEach(([p, l]) => {
+                  const from = to === "lisbon" ? p : l;
+                  const target = to === "lisbon" ? l : p;
+                  const prev = selection[from.sku];
+                  if (prev) {
+                    onToggle(from);
+                    onToggle(target);
+                    if (prev.qty && prev.qty > 1) onAdjust(target.sku, { qty: prev.qty });
+                  }
+                });
+                setAirportBySku({ __all: to });
+              };
+              return (
+                <div className="bg-white border border-pa-sand rounded-lg divide-y divide-pa-sand overflow-hidden mb-3">
+                  <div className="px-5 py-3 flex items-center justify-between gap-2">
+                    <span className="text-[12px] text-pa-earth">{t("checkout.airport", "Airport")}</span>
+                    <div className="flex items-center gap-1.5">
+                      {(["porto", "lisbon"] as const).map((ap) => (
+                        <button
+                          key={ap}
+                          type="button"
+                          onClick={() => switchAll(ap)}
+                          className={cn(
+                            "text-[11.5px] px-3 py-1 rounded-full border transition-colors",
+                            shownAp === ap
+                              ? "border-pa-dark bg-pa-dark text-white"
+                              : "border-pa-sand text-pa-earth hover:border-pa-dark",
+                          )}
+                        >
+                          {ap === "porto" ? "Porto" : "Lisboa"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {norm.map(([p, l]) => {
+                    const item = shownAp === "lisbon" ? l : p;
+                    return (
                       <OptionRow
-                        item={shownFinal}
-                        sel={selection[shownFinal.sku]}
+                        key={p.sku}
+                        item={item}
+                        sel={selection[item.sku]}
                         lang={lang}
                         guests={guests}
                         nights={nights}
                         onToggle={onToggle}
                         onAdjust={onAdjust}
                       />
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+                    );
+                  })}
+                </div>
+              );
+            })()}
 
             {/* Grupo de opções: um cartão, linhas com hairlines (3.2) */}
             {!isExperiences && visibleRows.length > 0 && (

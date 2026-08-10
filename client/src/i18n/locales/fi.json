@@ -1606,7 +1606,7 @@
     "fromPrice": "alk. {{price}}",
     "requested": "Pyydetty",
     "coupon": {
-      "have": "Onko sinulla kampanjakoodi?",
+      "have": "Onko sinulla tarjouskoodi?",
       "apply": "Käytä",
       "ph": "KOODI",
       "invalid": "Koodia ei tunnistettu. Tarkista ja yritä uudelleen.",

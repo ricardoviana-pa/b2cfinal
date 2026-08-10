@@ -1606,7 +1606,7 @@
     "fromPrice": "dès {{price}}",
     "requested": "Demandé",
     "coupon": {
-      "have": "Vous avez un code promo ?",
+      "have": "Vous avez un code promotionnel ?",
       "apply": "Appliquer",
       "ph": "CODE PROMO",
       "invalid": "Code non reconnu. Vérifiez et réessayez.",

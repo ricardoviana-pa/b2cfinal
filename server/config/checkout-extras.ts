@@ -33,8 +33,9 @@ export type ExtraChapter = "arrival" | "home" | "table" | "wellness" | "experien
 
 export const EXTRA_CHAPTERS: ExtraChapter[] = [
   "arrival",
-  "home",
+  // B8: A mesa antes de A casa — o emocional vende primeiro, o funcional depois
   "table",
+  "home",
   "wellness",
   "experiences",
 ];
