@@ -7,10 +7,11 @@ import { pathToFileURL } from "node:url";
 import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
 
-/** Server-side rendering kill-switch. When unset/false the server serves the
- *  CSR shell exactly as before; flip the Render env var to true to enable SSR,
- *  back to false to instantly roll back — no redeploy needed. */
-const SSR_ENABLED = process.env.SSR_ENABLED === "true";
+/** Server-side rendering kill-switch. SSR is ON by default (phases 0-3 shipped,
+ *  tested, hydration verified clean); set the Render env var SSR_ENABLED=false to
+ *  instantly roll back to the CSR shell — no redeploy needed. Any SSR render error
+ *  already falls back to CSR per-request, so this switch is only for a full revert. */
+const SSR_ENABLED = process.env.SSR_ENABLED !== "false";
 
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
