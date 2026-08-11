@@ -92,6 +92,47 @@ export async function updatePaymentIntentMetadata(
 }
 
 /**
+ * Bloco 4: encontra o PI pago de um intent do checkout v2 (conta de
+ * PLATAFORMA — cartão card_v2, wallet, Klarna ou PayPal, todos carimbam
+ * metadata.intentId). Devolve null se não houver pagamento bem-sucedido.
+ */
+export async function findSucceededPaymentIntentByIntentId(
+  intentId: string,
+): Promise<Stripe.PaymentIntent | null> {
+  const stripe = getStripe();
+  const res = await stripe.paymentIntents.search({
+    query: `metadata['intentId']:'${intentId.replace(/['\\]/g, "")}' AND status:'succeeded'`,
+    limit: 10,
+  });
+  const pi = res.data.find((p) => p.status === "succeeded") ?? null;
+  if (!pi) return null;
+  // Retrieve com o charge expandido para saber o que já foi reembolsado
+  return stripe.paymentIntents.retrieve(pi.id, { expand: ["latest_charge"] });
+}
+
+/**
+ * Bloco 4: reembolso parcial no PI original, SEMPRE na conta de plataforma.
+ * Idempotente por (PI, sku) via idempotency key do Stripe.
+ */
+export async function createPartialRefund(params: {
+  paymentIntentId: string;
+  amountCents: number;
+  intentId: string;
+  sku: string;
+}): Promise<Stripe.Refund> {
+  const stripe = getStripe();
+  return stripe.refunds.create(
+    {
+      payment_intent: params.paymentIntentId,
+      amount: params.amountCents,
+      reason: "requested_by_customer",
+      metadata: { flow: "checkout_v2_line_refund", intentId: params.intentId, sku: params.sku },
+    },
+    { idempotencyKey: `checkout-line-refund-${params.paymentIntentId}-${params.sku}` },
+  );
+}
+
+/**
  * Construct and verify a Stripe webhook event for Klarna events.
  *
  * Throws if the signature is invalid or `STRIPE_KLARNA_WEBHOOK_SECRET` is not set.

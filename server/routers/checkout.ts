@@ -389,13 +389,22 @@ export const checkoutRouter = router({
       const pi = await createCardPaymentIntent({
         amount: b.totalCents,
         currency: "eur",
-        metadata: {
-          flow: "card_v2",
-          intentId: input.intentId,
-          listingId: (m as any).listingId,
-          stayCents: String(b.stayCents),
-          extrasCents: String(b.extrasCents + b.receptionCents + b.flexCents),
-        },
+        metadata: (() => {
+          const metadata: Record<string, string> = {
+            flow: "card_v2",
+            intentId: input.intentId,
+            listingId: (m as any).listingId,
+            stayCents: String(b.stayCents),
+            extrasCents: String(b.extrasCents + b.receptionCents + b.flexCents),
+            receptionCents: String(b.receptionCents),
+            flexCents: String(b.flexCents),
+          };
+          // Bloco 4: linhas por sku para reembolso parcial (limite Stripe:
+          // 500 chars por valor — se não couber, o refund recalcula do intent)
+          const lines = b.lines.map((l) => `${l.sku}:${l.cents}`).join("|");
+          if (lines && lines.length <= 480) metadata.lines = lines;
+          return metadata;
+        })(),
       });
       return { clientSecret: pi.client_secret!, paymentIntentId: pi.id, totalCents: b.totalCents };
     }),

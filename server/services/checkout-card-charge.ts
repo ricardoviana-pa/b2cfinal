@@ -8,7 +8,12 @@
 import { getBookingIntent, updateBookingIntent } from "../db";
 import { computeChargeBreakdown } from "./checkout-pricing";
 import { resolveCleaningRates } from "../config/cleaning-rates";
-import { getPaymentIntent, updatePaymentIntentMetadata } from "./stripe-klarna";
+import {
+  getPaymentIntent,
+  updatePaymentIntentMetadata,
+  findSucceededPaymentIntentByIntentId,
+  createPartialRefund,
+} from "./stripe-klarna";
 import {
   createReservationViaOpenApi,
   recordExternalPayment,
@@ -94,4 +99,123 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
     confirmationCode: res.confirmationCode,
   } as any);
   return { reservationId: res.reservationId, confirmationCode: res.confirmationCode };
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Bloco 4 — reembolso parcial por linha (2b_plan §5).
+   Quando o concierge não consegue entregar uma linha needs_confirmation,
+   o hóspede recebe EXATAMENTE essa linha de volta, no PI original, pela
+   conta de plataforma. Fonte do valor: as lines gravadas na metadata do
+   PI na criação; fallback: recomputar do intent (imutável depois de paid).
+   ════════════════════════════════════════════════════════════════ */
+
+export interface RefundLineResult {
+  paymentIntentId: string;
+  sku: string;
+  cents: number;
+  executed: boolean;
+  refundId?: string;
+  /** Reembolsável que sobra no PI depois (ou antes, em dry-run) desta linha */
+  remainingCents: number;
+  /** Linhas conhecidas do PI (para o dry-run da equipa) */
+  lines: Array<{ sku: string; cents: number }>;
+  alreadyRefundedSkus: string[];
+}
+
+function parseLinesMetadata(raw: string | undefined | null): Array<{ sku: string; cents: number }> {
+  if (!raw) return [];
+  return raw
+    .split("|")
+    .map((part) => {
+      const i = part.lastIndexOf(":");
+      if (i <= 0) return null;
+      const cents = Number(part.slice(i + 1));
+      const sku = part.slice(0, i);
+      return sku && Number.isFinite(cents) && cents > 0 ? { sku, cents } : null;
+    })
+    .filter(Boolean) as Array<{ sku: string; cents: number }>;
+}
+
+/**
+ * Reembolsa uma linha (sku de extra, ou os pseudo-skus "reception" e "flex")
+ * do pagamento único de um intent. Dry-run por omissão; `execute: true` faz
+ * o reembolso real. Idempotente por (PI, sku): a metadata `refunded_skus`
+ * bloqueia repetições e a idempotency key do Stripe cobre corridas.
+ */
+export async function refundCheckoutLine(
+  intentId: string,
+  sku: string,
+  opts: { execute?: boolean } = {},
+): Promise<RefundLineResult> {
+  const pi = await findSucceededPaymentIntentByIntentId(intentId);
+  if (!pi) throw new Error(`No succeeded platform PaymentIntent found for intent ${intentId}`);
+
+  // Linhas: metadata primeiro; fallback recomputa do intent (paid = imutável)
+  let lines = parseLinesMetadata(pi.metadata?.lines);
+  let receptionCents = Number(pi.metadata?.receptionCents ?? NaN);
+  let flexCents = Number(pi.metadata?.flexCents ?? NaN);
+  if (!lines.length || !Number.isFinite(receptionCents) || !Number.isFinite(flexCents)) {
+    const m = await getBookingIntent(intentId);
+    if (m) {
+      const b = breakdownFromIntent(m);
+      if (!lines.length) lines = b.lines;
+      if (!Number.isFinite(receptionCents)) receptionCents = b.receptionCents;
+      if (!Number.isFinite(flexCents)) flexCents = b.flexCents;
+    }
+  }
+  receptionCents = Number.isFinite(receptionCents) ? receptionCents : 0;
+  flexCents = Number.isFinite(flexCents) ? flexCents : 0;
+
+  const cents =
+    sku === "reception" ? receptionCents
+    : sku === "flex" ? flexCents
+    : lines.find((l) => l.sku === sku)?.cents ?? 0;
+  if (!cents || cents <= 0) {
+    throw new Error(
+      `Line "${sku}" not found (or zero) on PI ${pi.id}. Known lines: ` +
+        [...lines.map((l) => `${l.sku}:${l.cents}c`),
+          receptionCents ? `reception:${receptionCents}c` : null,
+          flexCents ? `flex:${flexCents}c` : null,
+        ].filter(Boolean).join(", "),
+    );
+  }
+
+  const alreadyRefundedSkus = (pi.metadata?.refunded_skus ?? "").split(",").filter(Boolean);
+  if (alreadyRefundedSkus.includes(sku)) {
+    throw new Error(`Line "${sku}" was already refunded on PI ${pi.id} (refunded_skus=${alreadyRefundedSkus.join(",")})`);
+  }
+
+  const charge = pi.latest_charge as import("stripe").default.Charge | null;
+  const alreadyRefundedCents = typeof charge === "object" && charge ? (charge.amount_refunded ?? 0) : 0;
+  const remainingCents = pi.amount - alreadyRefundedCents;
+  if (cents > remainingCents) {
+    throw new Error(
+      `Refund of ${cents}c exceeds refundable remainder ${remainingCents}c on PI ${pi.id} (amount ${pi.amount}c, refunded ${alreadyRefundedCents}c)`,
+    );
+  }
+
+  if (!opts.execute) {
+    return { paymentIntentId: pi.id, sku, cents, executed: false, remainingCents, lines, alreadyRefundedSkus };
+  }
+
+  const refund = await createPartialRefund({
+    paymentIntentId: pi.id,
+    amountCents: cents,
+    intentId,
+    sku,
+  });
+  await updatePaymentIntentMetadata(pi.id, {
+    refunded_skus: [...alreadyRefundedSkus, sku].join(","),
+  });
+  console.info(`[Card2b] Refunded line ${sku} (${cents}c) on PI ${pi.id} — refund ${refund.id}`);
+  return {
+    paymentIntentId: pi.id,
+    sku,
+    cents,
+    executed: true,
+    refundId: refund.id,
+    remainingCents: remainingCents - cents,
+    lines,
+    alreadyRefundedSkus: [...alreadyRefundedSkus, sku],
+  };
 }
