@@ -14,6 +14,48 @@ import * as db from "../db";
 import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
 
 /**
+ * Checkout 2.0 (Bloco 1): total canónico do servidor para Klarna/PayPal.
+ * O amount do cliente é só uma pista — valida-se contra computeChargeBreakdown
+ * (via breakdownFromIntent, com o mesmo gate de animais do createCardCharge) e
+ * o PI é criado SEMPRE com a matemática do servidor. A reserva Guesty continua
+ * a ser criada só com a estadia; o recordExternalPayment já tem cap ao
+ * balanceDue. Sem intentId (widget legacy) nada muda.
+ */
+async function canonicalIntentTotalCents(intentId: string): Promise<number> {
+  const m = await db.getBookingIntent(intentId);
+  if (!m) throw new Error("Checkout session not found — please refresh and try again.");
+  if ((m as any).status === "paid") throw new Error("This booking is already paid.");
+  const { breakdownFromIntent } = await import("../services/checkout-card-charge");
+  const { listingFacts } = await import("./checkout");
+  const { PETS_ONLY_SKUS } = await import("../config/checkout-extras");
+  const facts = await listingFacts((m as any).listingId);
+  const mSafe = facts.pets
+    ? m
+    : { ...m, extras: ((m as any).extras ?? []).filter((e: any) => !PETS_ONLY_SKUS.includes(e.sku)) };
+  const b = breakdownFromIntent(mSafe);
+  if (b.divergent.length) {
+    console.warn(`[CheckoutV2] client amounts diverged intent=${intentId}: ${b.divergent.join(",")}`);
+  }
+  return b.totalCents;
+}
+
+/** Valida o amount do cliente (cêntimos) contra o canónico, tolerância 1 EUR. */
+async function resolveV2AmountCents(
+  label: string,
+  intentId: string,
+  clientAmountCents: number,
+): Promise<number> {
+  const totalCents = await canonicalIntentTotalCents(intentId);
+  if (Math.abs(clientAmountCents - totalCents) > 100) {
+    console.error(
+      `[${label}] v2 amount mismatch intent=${intentId} client=${clientAmountCents}c server=${totalCents}c — PI NÃO criado`,
+    );
+    throw new Error("The price has changed — please refresh the page and try again.");
+  }
+  return totalCents;
+}
+
+/**
  * Save a trip to the customer's account and award loyalty points.
  * Called after a successful reservation (inquiry or instant).
  * Silently skipped when user is not authenticated.
@@ -567,12 +609,17 @@ export const bookingRouter = router({
         numberOfInfants: z.number().int().min(0).max(10).default(0),
         ratePlanId: z.string().optional(),
         returnUrl: z.string().url(),
+        /** Checkout 2.0: quando presente, o amount é validado e substituído pelo total canónico do servidor */
+        intentId: z.string().max(64).optional(),
       })
     )
     .mutation(async ({ input }) => {
+      const amountCents = input.intentId
+        ? await resolveV2AmountCents("PayPal", input.intentId, input.amount)
+        : input.amount;
       const { createPayPalPaymentIntent } = await import("../services/stripe-paypal");
       const pi = await createPayPalPaymentIntent({
-        amount: input.amount,
+        amount: amountCents,
         currency: input.currency,
         metadata: {
           source: "website-paypal",
@@ -588,6 +635,7 @@ export const bookingRouter = router({
           // without ratePlanId it lands on the listing's default rate plan, gets
           // re-priced, and the payment record is rejected ("Not paid").
           ...(input.ratePlanId ? { ratePlanId: input.ratePlanId } : {}),
+          ...(input.intentId ? { intentId: input.intentId } : {}),
         },
       });
       return {
@@ -757,12 +805,17 @@ export const bookingRouter = router({
         numberOfChildren: z.number().int().min(0).max(20).default(0),
         numberOfInfants: z.number().int().min(0).max(10).default(0),
         ratePlanId: z.string().optional(),
+        /** Checkout 2.0: quando presente, o amount é validado e substituído pelo total canónico do servidor */
+        intentId: z.string().max(64).optional(),
       })
     )
     .mutation(async ({ input }) => {
+      const amountCents = input.intentId
+        ? await resolveV2AmountCents("Klarna", input.intentId, input.amount)
+        : input.amount;
       const { createKlarnaPaymentIntent } = await import("../services/stripe-klarna");
       const pi = await createKlarnaPaymentIntent({
-        amount: input.amount,
+        amount: amountCents,
         currency: input.currency,
         metadata: {
           source: "website-klarna",
@@ -778,6 +831,7 @@ export const bookingRouter = router({
           // without ratePlanId it lands on the listing's default rate plan, gets
           // re-priced, and the payment record is rejected ("Not paid").
           ...(input.ratePlanId ? { ratePlanId: input.ratePlanId } : {}),
+          ...(input.intentId ? { intentId: input.intentId } : {}),
         },
       });
       return {

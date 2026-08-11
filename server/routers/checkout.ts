@@ -12,6 +12,7 @@
  */
 import { randomUUID } from "crypto";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 import { publicProcedure, router } from "../_core/trpc";
 import {
   curateExtras,

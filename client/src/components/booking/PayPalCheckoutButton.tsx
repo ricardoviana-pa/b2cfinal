@@ -100,6 +100,9 @@ export function PayPalCheckoutButton(props: PayPalCheckoutButtonProps) {
         numberOfInfants: props.numberOfGuests.infants,
         ratePlanId: props.ratePlanId,
         returnUrl,
+        // Checkout 2.0: o servidor valida o amount contra o breakdown canónico
+        // do intent (tolerância 1 EUR) e cobra sempre a matemática do servidor
+        intentId: props.intentId,
       });
 
       setStatusMsg(t("payment.redirecting"));

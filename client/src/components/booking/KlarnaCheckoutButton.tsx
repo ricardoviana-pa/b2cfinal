@@ -96,6 +96,9 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
         numberOfChildren: props.numberOfGuests.children,
         numberOfInfants: props.numberOfGuests.infants,
         ratePlanId: props.ratePlanId,
+        // Checkout 2.0: o servidor valida o amount contra o breakdown canónico
+        // do intent (tolerância 1 EUR) e cobra sempre a matemática do servidor
+        intentId: props.intentId,
       });
 
       setStatusMsg(t("payment.redirecting"));
