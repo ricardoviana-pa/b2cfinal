@@ -140,7 +140,10 @@ export default function PayPalReturnPage() {
                 checkin_date: bookingData.checkIn,
                 checkout_date: bookingData.checkOut,
                 guests_adults: bookingData.numberOfAdults || undefined,
-              }],
+              },
+              // Bloco 6: serviços comprados (extras, receção, Flex) — o
+              // purchase leva o carrinho completo em todos os métodos
+              ...(Array.isArray(bookingData.purchaseItems) ? bookingData.purchaseItems : [])],
             },
           });
 

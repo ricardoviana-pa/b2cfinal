@@ -31,6 +31,8 @@ interface KlarnaCheckoutButtonProps {
   intentId?: string;
   /** Promo code applied to the quote — carried through for GA4 purchase attribution */
   couponCode?: string;
+  /** Bloco 6: items GA4 dos serviços (extras, receção, Flex) para o purchase da return page */
+  purchaseItems?: Array<Record<string, unknown>>;
   // Platform Stripe publishable key (NOT the per-listing connected account key)
   stripePublishableKey: string;
   onError: (msg: string) => void;
@@ -81,6 +83,7 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
           destination: props.destination,
           intentId: props.intentId,
           couponCode: props.couponCode,
+          purchaseItems: props.purchaseItems,
         })
       );
 

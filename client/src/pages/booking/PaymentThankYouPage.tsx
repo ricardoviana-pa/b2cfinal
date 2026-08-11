@@ -133,6 +133,9 @@ export default function PaymentThankYouPage() {
             checkout_date: data.checkOut ?? undefined,
             guests_adults: data.guestsCount ?? undefined,
           },
+          // Bloco 6: serviços comprados (extras, receção, Flex) — o cartão e
+          // as wallets reportam o purchase aqui, com o carrinho completo
+          ...(Array.isArray(data.purchaseItems) ? data.purchaseItems : []),
         ],
       },
     });

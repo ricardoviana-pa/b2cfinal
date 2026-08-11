@@ -63,6 +63,10 @@ export interface ThankYouStash {
   currency: string;
   /** Promo code applied to the quote — carried into the GA4 purchase event */
   couponCode?: string;
+  /** Guesty listing id — usado no item_id PROP-<id> do purchase */
+  listingId?: string;
+  /** Bloco 6: items GA4 dos serviços (extras, receção, Flex) para o purchase */
+  purchaseItems?: Array<Record<string, unknown>>;
 }
 
 const thankYouKey = (reservationId: string) => `thankyou_${reservationId}`;

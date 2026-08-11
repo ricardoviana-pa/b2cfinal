@@ -779,6 +779,45 @@ export default function CheckoutPage() {
     return () => clearTimeout(timer);
   }, [intent, guestDetailsValid, firstName, lastName, phone, nif, syncIntent]);
 
+  // ── Bloco 6: items[] GA4 do purchase — todos os extras pagos, receção e
+  // Flex (sku, nome, preço, quantidade). price × quantity = valor da linha;
+  // on_request fica de fora (não é comprado, é um pedido sob orçamento).
+  // Viaja com todos os métodos: stash do cartão/wallets e sessionStorage
+  // do Klarna/PayPal, e é anexado ao item da casa no evento purchase.
+  const purchaseItems = useMemo(() => {
+    const items: Array<Record<string, unknown>> = [];
+    for (const { item, sel, amount } of paidExtras) {
+      const qty = Math.max(1, Number(sel.qty ?? 1));
+      items.push({
+        item_id: `EXTRA-${item.sku}`,
+        item_name: t(`checkout.extras.${item.sku}.name`, item.sku),
+        item_category: "extra",
+        item_category2: item.chapter,
+        price: Math.round(((amount ?? 0) / qty) * 100) / 100,
+        quantity: qty,
+      });
+    }
+    if (receptionChoice?.type === "hosted" && receptionAmt > 0) {
+      items.push({
+        item_id: receptionChoice.late ? "RECEPTION-HOSTED-LATE" : "RECEPTION-HOSTED",
+        item_name: t("checkout.reception.hosted.name", "Hosted reception"),
+        item_category: "reception",
+        price: receptionAmt,
+        quantity: 1,
+      });
+    }
+    if (flexSelected && flexPrice > 0) {
+      items.push({
+        item_id: "FLEX",
+        item_name: t("checkout.flex.title", "Flex, guaranteed rebooking"),
+        item_category: "protection",
+        price: flexPrice,
+        quantity: 1,
+      });
+    }
+    return items;
+  }, [paidExtras, receptionChoice, receptionAmt, flexSelected, flexPrice, t]);
+
   // ── Card payment success → unified branded thank-you page ──
   const handleCardSuccess = useCallback(
     (confirmationCode: string, reservationId?: string) => {
@@ -788,6 +827,7 @@ export default function CheckoutPage() {
         reservationId: rid,
         confirmationCode,
         method: "card",
+        listingId: intent.listingId,
         listingName: displayName,
         location: intent.destination || "",
         checkIn,
@@ -796,9 +836,11 @@ export default function CheckoutPage() {
         guestName: `${firstName} ${lastName}`.trim(),
         guestEmail: email,
         guestPhone: phone,
-        totalCents: effective ? Math.round(effective.total * 100) : null,
+        // 2b: o cartão v2 cobra o todayTotal (estadia + serviços) num só PI
+        totalCents: Math.round(todayTotal * 100),
         currency: "EUR",
         couponCode: quote?.couponCode || undefined,
+        purchaseItems,
       });
       syncIntent({
         status: "paid",
@@ -807,7 +849,7 @@ export default function CheckoutPage() {
       });
       navigate(`/booking/thank-you/${rid}?method=card`);
     },
-    [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, effective, quote?.couponCode, syncIntent, navigate],
+    [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, todayTotal, quote?.couponCode, purchaseItems, syncIntent, navigate],
   );
 
   // ── Price-guarantee deadline label ──
@@ -1641,6 +1683,7 @@ export default function CheckoutPage() {
                     notes={extrasNote || undefined}
                     intentId={intent.id}
                     couponCode={quote?.couponCode || undefined}
+                    purchaseItems={purchaseItems}
                     onSuccess={handleCardSuccess}
                     onCancel={() => setStep("stay")}
                   />

@@ -144,6 +144,9 @@ interface CheckoutPaymentFormProps {
   intentId?: string;
   /** Promo code applied to the quote — carried through for GA4 purchase attribution */
   couponCode?: string;
+  /** Bloco 6: items GA4 dos serviços (extras, receção, Flex) — viajam com o
+   *  stash Klarna/PayPal para o purchase da return page incluir tudo */
+  purchaseItems?: Array<Record<string, unknown>>;
   onSuccess: (confirmationCode: string, reservationId?: string) => void;
   onCancel: () => void;
 }
@@ -679,6 +682,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             ratePlanId={props.ratePlanId}
             intentId={props.intentId}
             couponCode={props.couponCode}
+            purchaseItems={props.purchaseItems}
             stripePublishableKey={stripeConfig.publishableKey}
             onError={(msg) => setPaypalError(msg)}
           />
@@ -718,6 +722,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             ratePlanId={props.ratePlanId}
             intentId={props.intentId}
             couponCode={props.couponCode}
+            purchaseItems={props.purchaseItems}
             stripePublishableKey={stripeConfig.publishableKey}
             onError={(msg) => setKlarnaError(msg)}
           />
