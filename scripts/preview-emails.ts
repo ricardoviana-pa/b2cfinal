@@ -122,8 +122,30 @@ async function main() {
     intentId: "demo-intent",
   });
 
+  // Bloco 5: as 9 línguas da confirmação e da recuperação 1h, para revisão
+  const { EMAIL_LANGS } = await import("../server/services/email-i18n");
+  for (const l of EMAIL_LANGS) {
+    if (l === "pt") continue; // já gerado acima
+    await sendCheckoutRecovery({ ...base, locale: l, stage: 1, optoutUrl: demoOptout, resumeUrl: `https://dev.portugalactive.com/${l}/checkout/demo` });
+    await sendCheckoutGuestConfirmation({
+      canonical,
+      email: "demo@example.com", guestFirstName: "Maria",
+      propertyName: "Abreu Retreat Palace", destination: "minho",
+      checkIn: "2026-09-09", checkOut: "2026-09-14", guests: 4,
+      confirmationCode: "18293476",
+      reception: { type: "hosted", late: true }, receptionAmount: 90,
+      extras, flex: true, flexPrice: 250, quote: base.quote,
+      imageUrl: DEMO_IMAGE,
+      viewUrl: `https://dev.portugalactive.com/${l}/checkout/demo`,
+      locale: l, intentId: "demo-intent",
+    });
+  }
+
   console.log = origLog;
   const names = ["recovery-1h", "recovery-20h", "confirmation", "cs-manifest"];
+  for (const l of ["en", "fr", "es", "it", "de", "nl", "sv", "fi"]) {
+    names.push(`recovery-1h.${l}`, `confirmation.${l}`);
+  }
   captured.forEach((c, i) => {
     const file = path.join(OUT_DIR, `${names[i] ?? `email-${i}`}.html`);
     fs.writeFileSync(file, c.html, "utf-8");

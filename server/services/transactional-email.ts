@@ -4,6 +4,14 @@
  */
 
 import { Resend } from "resend";
+import {
+  emailLang,
+  skuNameFor,
+  INTL_TAG,
+  RECOVERY_I18N,
+  CONFIRMATION_I18N,
+  type EmailLang,
+} from "./email-i18n";
 
 const resendKey = process.env.RESEND_API_KEY;
 const isProduction = !!resendKey;
@@ -519,9 +527,9 @@ const LOGO_URL =
 const SERIF = "'Cormorant Garamond',Georgia,'Times New Roman',serif";
 const SANS = "'DM Sans',Arial,Helvetica,sans-serif";
 
-function formatStayDate(iso: string, locale: "pt" | "en"): string {
+function formatStayDate(iso: string, lang: EmailLang): string {
   try {
-    return new Intl.DateTimeFormat(locale === "pt" ? "pt-PT" : "en-GB", {
+    return new Intl.DateTimeFormat(INTL_TAG[lang] ?? "en-GB", {
       day: "numeric",
       month: "long",
     }).format(new Date(`${iso}T12:00:00Z`));
@@ -531,9 +539,9 @@ function formatStayDate(iso: string, locale: "pt" | "en"): string {
 }
 
 /** Whole-euro currency in the site's format (formatEur: rounded, 0 decimals) */
-function eur(amount: number, pt: boolean): string {
+function eur(amount: number, lang: EmailLang): string {
   try {
-    return new Intl.NumberFormat(pt ? "pt-PT" : "en-GB", {
+    return new Intl.NumberFormat(INTL_TAG[lang] ?? "en-GB", {
       style: "currency",
       currency: "EUR",
       maximumFractionDigits: 0,
@@ -545,68 +553,49 @@ function eur(amount: number, pt: boolean): string {
 }
 
 /** "sábado, 12 de julho às 21:45" / "Saturday, 12 July at 21:45" (Lisbon time) */
-function formatGuaranteeUntil(expiresAt: Date, pt: boolean): string {
+function formatGuaranteeUntil(expiresAt: Date, lang: EmailLang, atWord: string): string {
   try {
-    const day = new Intl.DateTimeFormat(pt ? "pt-PT" : "en-GB", {
+    const tag = INTL_TAG[lang] ?? "en-GB";
+    const day = new Intl.DateTimeFormat(tag, {
       weekday: "long",
       day: "numeric",
       month: "long",
       timeZone: "Europe/Lisbon",
     }).format(expiresAt);
-    const time = new Intl.DateTimeFormat(pt ? "pt-PT" : "en-GB", {
+    const time = new Intl.DateTimeFormat(tag, {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
       timeZone: "Europe/Lisbon",
     }).format(expiresAt);
-    return pt ? `${day} às ${time}` : `${day} at ${time}`;
+    return `${day} ${atWord} ${time}`;
   } catch {
     return "";
   }
 }
 
 export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<void> {
-  const pt = (data.locale || "").toLowerCase().startsWith("pt");
-  const lang: "pt" | "en" = pt ? "pt" : "en";
-  const house = data.propertyName || (pt ? "a sua casa" : "your home");
+  // Bloco 5: 9 línguas pelo locale do intent (fallback EN, como o site)
+  const lang = emailLang(data.locale);
+  const T = RECOVERY_I18N[lang];
+  const house = data.propertyName || CONFIRMATION_I18N[lang].yourHome;
   const firstName = (data.guestFirstName || "").trim().split(" ")[0];
 
-  const subject =
-    data.stage === 1
-      ? pt
-        ? `A sua estadia em ${house} está a um passo`
-        : `Your stay at ${house} is one step away`
-      : pt
-        ? `O preço garantido para ${house} termina em breve`
-        : `Your guaranteed price for ${house} ends soon`;
+  const subject = data.stage === 1 ? T.subject1(house) : T.subject2(house);
 
-  const greeting = firstName
-    ? pt ? `Olá ${firstName},` : `Hello ${firstName},`
-    : pt ? "Olá," : "Hello,";
+  const greeting = firstName ? T.greetingNamed(firstName) : T.greeting;
 
-  const headline =
-    data.stage === 1
-      ? pt ? "O seu preço está garantido." : "Your price is guaranteed."
-      : pt ? "O seu preço garantido termina em breve." : "Your guaranteed price ends soon.";
+  const headline = data.stage === 1 ? T.headline1 : T.headline2;
 
-  const body =
-    data.stage === 1
-      ? pt
-        ? `${greeting} guardámos tudo tal como deixou. Pode retomar a sua reserva em ${house} a qualquer momento, no mesmo dispositivo ou noutro, exatamente onde parou.`
-        : `${greeting} we kept everything exactly as you left it. You can pick up your booking at ${house} anytime, on this device or another, right where you stopped.`
-      : pt
-        ? `${greeting} o preço garantido da sua estadia em ${house} termina dentro de algumas horas. Depois disso teremos de calcular um novo valor, e as datas continuam abertas a outros hóspedes até ao pagamento.`
-        : `${greeting} your booking at ${house} is still saved, but the guaranteed price ends in a few hours. After that we will need to work out a new rate for your dates.`;
+  const body = data.stage === 1 ? T.body1(greeting, house) : T.body2(greeting, house);
 
-  const cta = pt ? "Retomar a minha reserva" : "Resume my booking";
-  const closing = pt
-    ? "Se tiver alguma dúvida, basta responder a este email. A nossa equipa ajuda com todo o gosto."
-    : "If you have any questions, just reply to this email. Our team is happy to help.";
+  const cta = T.cta;
+  const closing = T.closing;
 
-  const nightsLabel = pt ? "noites" : "nights";
-  const guestsLabel = pt ? "hóspedes" : "guests";
+  const nightsLabel = T.nightsLabel;
+  const guestsLabel = T.guestsLabel;
   const cleaningLabel = "Service fee"; // rótulo do site (decisão 12 jul)
-  const taxesLabel = pt ? "Taxas" : "Taxes & fees";
+  const taxesLabel = T.taxesLabel;
   const totalLabel = "Total";
 
   // Price lines exactly like the checkout summary (CheckoutPage summaryLines)
@@ -618,21 +607,21 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
       </tr>`;
   let priceLines = "";
   if (q.nightlyRate && q.nights && q.totalNights) {
-    priceLines += line(`${eur(q.nightlyRate, pt)} × ${q.nights} ${nightsLabel}`, eur(q.totalNights, pt));
+    priceLines += line(`${eur(q.nightlyRate, lang)} × ${q.nights} ${nightsLabel}`, eur(q.totalNights, lang));
   }
-  if (q.cleaningFee && q.cleaningFee > 0) priceLines += line(cleaningLabel, eur(q.cleaningFee, pt));
-  if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(taxesLabel, eur(q.taxesAndFees, pt));
+  if (q.cleaningFee && q.cleaningFee > 0) priceLines += line(cleaningLabel, eur(q.cleaningFee, lang));
+  if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(taxesLabel, eur(q.taxesAndFees, lang));
 
   const total = q.total ?? data.total;
   const destination = data.destination
     ? data.destination.charAt(0).toUpperCase() + data.destination.slice(1)
     : "";
 
-  const guaranteeUntil = data.expiresAt ? formatGuaranteeUntil(data.expiresAt, pt) : "";
+  const guaranteeUntil = data.expiresAt ? formatGuaranteeUntil(data.expiresAt, lang, T.atTime) : "";
   const guaranteeLine = guaranteeUntil
     ? `<tr><td style="padding:14px 24px 0 24px;">
         <p style="font-family:${SANS};font-size:11.5px;color:${PA.gold};line-height:1.5;margin:0;">
-          ${pt ? "Preço garantido até" : "Price guaranteed until"} ${guaranteeUntil}
+          ${T.guaranteedUntil} ${guaranteeUntil}
         </p>
       </td></tr>`
     : "";
@@ -643,10 +632,7 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
       </td></tr>`
     : "";
 
-  const preheader =
-    data.stage === 1
-      ? (pt ? "Guardámos tudo tal como deixou. Retome quando quiser, em qualquer dispositivo." : "We saved everything just as you left it. Pick up whenever you like, on any device.")
-      : (pt ? "Depois desta hora o valor é recalculado. As datas seguem abertas a outros hóspedes." : "After this window the price is recalculated. The dates remain open to other guests.");
+  const preheader = data.stage === 1 ? T.preheader1 : T.preheader2;
   const html = `<!DOCTYPE html>
 <html lang="${lang}">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
@@ -691,7 +677,7 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
     <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-top:1px solid ${PA.sand};">
       <tr>
         <td style="padding:12px 0 0 0;font-family:${SANS};font-size:14px;font-weight:500;color:${PA.dark};">${totalLabel}</td>
-        <td style="padding:12px 0 0 0;font-family:${SANS};font-size:21px;color:${PA.dark};text-align:right;">${eur(total, pt)}</td>
+        <td style="padding:12px 0 0 0;font-family:${SANS};font-size:21px;color:${PA.dark};text-align:right;">${eur(total, lang)}</td>
       </tr>
     </table>
   </td></tr>` : ""}
@@ -703,20 +689,20 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 <!-- Resume CTA: full-width black button like the checkout's continue bar -->
 <tr><td style="padding:0 0 24px 0;">
   <a href="${data.resumeUrl}" target="_blank" style="display:block;background:${PA.dark};color:#ffffff;font-family:${SANS};font-size:13px;font-weight:600;text-decoration:none;text-align:center;padding:15px 24px;letter-spacing:0.1em;text-transform:uppercase;border-radius:8px;">${cta}</a>
-  <p style="text-align:center;margin:14px 0 0;"><a href="https://wa.me/351927161771?text=${encodeURIComponent(pt ? `Olá! Estava a reservar ${data.propertyName} e tenho uma questão.` : `Hello! I was booking ${data.propertyName} and have a question.`)}" style="font-family:${SANS};font-size:13px;color:${PA.gold};text-decoration:underline;">${pt ? "Prefere WhatsApp? Fale com o seu concierge." : "Prefer WhatsApp? Talk to your concierge."}</a></p>
+  <p style="text-align:center;margin:14px 0 0;"><a href="https://wa.me/351927161771?text=${encodeURIComponent(T.whatsappMsg(String(data.propertyName ?? house)))}" style="font-family:${SANS};font-size:13px;color:${PA.gold};text-decoration:underline;">${T.whatsappLine}</a></p>
 </td></tr>
 
 <tr><td style="padding:0 0 8px 0;">
   <p style="font-family:${SANS};font-size:13.5px;color:${PA.earth};line-height:1.6;margin:0;">${closing}</p>
-  <p style="font-family:${SANS};font-size:13.5px;color:${PA.dark};margin:16px 0 0 0;">${pt ? "Com os melhores cumprimentos," : "Warm regards,"}<br/><span style="font-family:${SERIF};font-size:16px;">Sara</span> <span style="color:${PA.stoneAA};font-size:12px;">· ${pt ? "a sua concierge" : "your concierge"}</span></p>
+  <p style="font-family:${SANS};font-size:13.5px;color:${PA.dark};margin:16px 0 0 0;">${CONFIRMATION_I18N[lang].regards}<br/><span style="font-family:${SERIF};font-size:16px;">Sara</span> <span style="color:${PA.stoneAA};font-size:12px;">· ${CONFIRMATION_I18N[lang].yourConcierge}</span></p>
 </td></tr>
 
 <!-- Footer -->
 <tr><td style="padding:28px 0 0 0;border-top:1px solid ${PA.sand};">
   <p style="font-family:${SERIF};font-size:16px;color:${PA.dark};margin:24px 0 0 0;text-align:center;">Portugal Active</p>
   <p style="font-family:${SANS};font-size:12px;color:${PA.stoneAA};margin:6px 0 0 0;text-align:center;">+351 258 358 434 &middot; booking@portugalactive.com</p>
-  <p style="font-family:${SANS};font-size:11px;color:${PA.stoneAA};margin:14px 0 0 0;text-align:center;">${pt ? "Villas privadas de luxo em Portugal, geridas com serviço de hotel." : "Luxury private villas across Portugal, managed with hotel-grade service."}</p>
-  ${data.optoutUrl ? `<p style="font-family:${SANS};font-size:11px;margin:14px 0 0 0;text-align:center;"><a href="${data.optoutUrl}" target="_blank" style="color:${PA.stoneAA};text-decoration:underline;">${pt ? "Não quero receber estes lembretes" : "I don't want to receive these reminders"}</a></p>` : ""}
+  <p style="font-family:${SANS};font-size:11px;color:${PA.stoneAA};margin:14px 0 0 0;text-align:center;">${T.footerTagline}</p>
+  ${data.optoutUrl ? `<p style="font-family:${SANS};font-size:11px;margin:14px 0 0 0;text-align:center;"><a href="${data.optoutUrl}" target="_blank" style="color:${PA.stoneAA};text-decoration:underline;">${T.optout}</a></p>` : ""}
 </td></tr>
 
 </table>
@@ -769,6 +755,12 @@ function skuLabel(sku: string, pt = false): string {
   return s ? s.charAt(0).toUpperCase() + s.slice(1) : String(sku);
 }
 
+/** Bloco 5: nome do extra na língua do intent — 1.º os i18n do site (o que o
+ *  hóspede viu no checkout), depois o dicionário PT/EN local, depois o sku. */
+function skuLabelLang(sku: string, lang: EmailLang): string {
+  return skuNameFor(String(sku), lang) ?? skuLabel(String(sku), lang === "pt");
+}
+
 /** Valores canónicos (computeChargeBreakdown) — quando presentes, os emails
  *  mostram EXATAMENTE o que foi cobrado, nunca valores vindos do cliente. */
 export interface CanonicalCharge {
@@ -812,24 +804,19 @@ export async function sendCheckoutGuestConfirmation(d: {
   intentId: string;
 }): Promise<void> {
   try {
-    const pt = String(d.locale || "").toLowerCase().startsWith("pt");
-    const lang: "pt" | "en" = pt ? "pt" : "en";
-    const house = d.propertyName || (pt ? "a sua casa" : "your home");
-    const subject = pt
-      ? `A sua estadia na ${house} está confirmada`
-      : `Your stay at ${house} is confirmed`;
+    // Bloco 5: 9 línguas pelo locale do intent (fallback EN, como o site)
+    const lang = emailLang(d.locale);
+    const C = CONFIRMATION_I18N[lang];
+    const house = d.propertyName || C.yourHome;
+    const subject = C.subject(house);
 
     const firstName = (d.guestFirstName || "").trim().split(" ")[0];
     const inShort = d.checkIn ? formatStayDate(d.checkIn, lang) : "?";
     const outShort = d.checkOut ? formatStayDate(d.checkOut, lang) : "?";
 
-    const headline = pt
-      ? `Está confirmada. A ${house} é sua de ${inShort} a ${outShort}.`
-      : `It's confirmed. ${house} is yours from ${inShort} to ${outShort}.`;
+    const headline = C.headline(house, inShort, outShort);
 
-    const body = pt
-      ? `${firstName ? `Olá ${firstName}, boas` : "Boas"}-vindas à Portugal Active. A nossa equipa já está a preparar a casa para a sua chegada e o seu concierge acompanha tudo a partir de agora. Guarde o código abaixo, é a sua referência para qualquer pedido.`
-      : `${firstName ? `Hello ${firstName}, welcome` : "Welcome"} to Portugal Active. Our team is already preparing the house for your arrival and your concierge is with you from here on. Keep the code below, it is your reference for any request.`;
+    const body = firstName ? C.bodyNamed(firstName) : C.body;
 
     // ── Extras: pagos entram no cartão de preços; on_request vão ao concierge ──
     const extras = Array.isArray(d.extras) ? d.extras : [];
@@ -838,11 +825,11 @@ export async function sendCheckoutGuestConfirmation(d: {
 
     const unit = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
     const extraLabel = (e: Record<string, unknown>): string => {
-      const bits: string[] = [skuLabel(String(e.sku), pt)];
+      const bits: string[] = [skuLabelLang(String(e.sku), lang)];
       if (e.qty && Number(e.qty) > 1) bits.push("x" + e.qty);
-      if (e.people) bits.push(unit(Number(e.people), pt ? "pessoa" : "person", pt ? "pessoas" : "people"));
-      if (e.sessions) bits.push(unit(Number(e.sessions), pt ? "sessão" : "session", pt ? "sessões" : "sessions"));
-      if (e.days) bits.push(unit(Number(e.days), pt ? "dia" : "day", pt ? "dias" : "days"));
+      if (e.people) bits.push(unit(Number(e.people), C.personOne, C.personMany));
+      if (e.sessions) bits.push(unit(Number(e.sessions), C.sessionOne, C.sessionMany));
+      if (e.days) bits.push(unit(Number(e.days), C.dayOne, C.dayMany));
       return bits.join(" · ");
     };
 
@@ -856,15 +843,15 @@ export async function sendCheckoutGuestConfirmation(d: {
 
     let priceLines = "";
     if (q.nightlyRate && q.nights && q.totalNights) {
-      priceLines += line(`${eur(q.nightlyRate, pt)} × ${q.nights} ${pt ? "noites" : "nights"}`, eur(q.totalNights, pt));
+      priceLines += line(`${eur(q.nightlyRate, lang)} × ${q.nights} ${C.nightsLabel}`, eur(q.totalNights, lang));
     }
-    if (q.cleaningFee && q.cleaningFee > 0) priceLines += line("Service fee", eur(q.cleaningFee, pt));
-    if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(pt ? "Taxas" : "Taxes & fees", eur(q.taxesAndFees, pt));
+    if (q.cleaningFee && q.cleaningFee > 0) priceLines += line("Service fee", eur(q.cleaningFee, lang));
+    if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(C.taxesLabel, eur(q.taxesAndFees, lang));
     const receptionAmt = d.receptionAmount ?? 0;
     if (d.reception?.type === "hosted" && receptionAmt > 0) {
       priceLines += line(
-        pt ? `Receção presencial${d.reception.late ? " após as 21h" : ""}` : `Hosted arrival${d.reception.late ? " after 9pm" : ""}`,
-        eur(receptionAmt, pt),
+        d.reception.late ? C.hostedArrivalLate : C.hostedArrival,
+        eur(receptionAmt, lang),
       );
     }
     const canonBySku = new Map((d.canonical?.lines ?? []).map((l) => [l.sku, l.cents / 100]));
@@ -872,27 +859,23 @@ export async function sendCheckoutGuestConfirmation(d: {
     for (const e of paidExtras) {
       // valor canónico quando existe (o que foi cobrado); Incluído em vez de 0 €
       const amt = canonBySku.has(String(e.sku)) ? canonBySku.get(String(e.sku))! : Number(e.amount);
-      const v = amt === 0 ? (pt ? "Incluído" : "Included") : eur(amt, pt);
+      const v = amt === 0 ? C.included : eur(amt, lang);
       // Mesma honestidade do checkout: itens a confirmar em 24h dizem-no aqui
       const needs = e.fulfillment === "needs_confirmation";
       if (needs) hasNeedsConfirmation = true;
       const label = needs
-        ? `${extraLabel(e)} <span style="color:${PA.stoneAA};font-size:11.5px;">· ${pt ? "confirmação em 24 horas" : "confirmed within 24 hours"}</span>`
+        ? `${extraLabel(e)} <span style="color:${PA.stoneAA};font-size:11.5px;">· ${C.confirm24h}</span>`
         : extraLabel(e);
       priceLines += line(label, v);
     }
     const flexAmt = d.canonical ? d.canonical.flexCents / 100 : d.flex && d.flexPrice ? d.flexPrice : 0;
-    if (flexAmt > 0) priceLines += line(pt ? "Flex, remarcação garantida" : "Flex, guaranteed rebooking", eur(flexAmt, pt));
+    if (flexAmt > 0) priceLines += line(C.flexLine, eur(flexAmt, lang));
     // Compras: a conta do supermercado é à parte, ao custo — dizê-lo também aqui
     if (hasNeedsConfirmation) {
-      priceLines += `<tr><td colspan="2" style="padding:2px 0 6px;font-family:${SANS};font-size:11.5px;color:${PA.stone};">${
-        pt ? "Se não conseguirmos garantir um serviço com confirmação em 24 horas, devolvemos essa linha automaticamente." : "If we cannot secure a service marked for 24-hour confirmation, that line is refunded automatically."
-      }</td></tr>`;
+      priceLines += `<tr><td colspan="2" style="padding:2px 0 6px;font-family:${SANS};font-size:11.5px;color:${PA.stoneAA};">${C.refund24hNote}</td></tr>`;
     }
     if (paidExtras.some((e) => e.sku === "grocery-setup")) {
-      priceLines += `<tr><td colspan="2" style="padding:2px 0 6px;font-family:${SANS};font-size:11.5px;color:${PA.stone};">${
-        pt ? "Compras: a conta do supermercado é apresentada à parte, ao custo." : "Groceries: the supermarket bill is presented separately, at cost."
-      }</td></tr>`;
+      priceLines += `<tr><td colspan="2" style="padding:2px 0 6px;font-family:${SANS};font-size:11.5px;color:${PA.stoneAA};">${C.groceriesNote}</td></tr>`;
     }
     const extrasSum = paidExtras.reduce((s, e) => s + (canonBySku.has(String(e.sku)) ? canonBySku.get(String(e.sku))! : Number(e.amount || 0)), 0);
     const total = d.canonical ? d.canonical.totalCents / 100 : (q.total ?? 0) + receptionAmt + extrasSum + flexAmt;
@@ -910,7 +893,7 @@ export async function sendCheckoutGuestConfirmation(d: {
     // ── Chegada quando é self check-in (sem custo, não entra nas linhas de preço) ──
     const selfCheckInLine =
       d.reception && d.reception.type !== "hosted"
-        ? `<p style="font-family:${SANS};font-size:12px;color:${PA.gold};margin:10px 0 0 0;">${pt ? "Self check-in, incluído na estadia" : "Self check-in, included in your stay"}</p>`
+        ? `<p style="font-family:${SANS};font-size:12px;color:${PA.gold};margin:10px 0 0 0;">${C.selfCheckIn}</p>`
         : "";
 
     // ── Pedidos ao concierge (on_request, sob orçamento) ──
@@ -919,19 +902,17 @@ export async function sendCheckoutGuestConfirmation(d: {
 <tr><td style="padding:0 0 24px 0;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid ${PA.sand};border-radius:12px;">
   <tr><td style="padding:22px 24px;">
-    <p style="font-family:${SERIF};font-size:19px;color:${PA.dark};margin:0 0 10px 0;font-weight:400;">${pt ? "Pedidos ao concierge" : "Concierge requests"}</p>
+    <p style="font-family:${SERIF};font-size:19px;color:${PA.dark};margin:0 0 10px 0;font-weight:400;">${C.conciergeRequestsTitle}</p>
     ${requestExtras.map((e) => `<p style="font-family:${SANS};font-size:13.5px;color:${PA.dark};margin:4px 0;">&bull; ${extraLabel(e)}</p>`).join("")}
     <p style="font-family:${SANS};font-size:12.5px;color:${PA.earth};line-height:1.6;margin:12px 0 0 0;">
-      ${pt
-        ? "O seu concierge envia-lhe um orçamento personalizado nas próximas 24 horas. Estes pedidos só são confirmados depois da sua aprovação."
-        : "Your concierge will send you a tailored quote within the next 24 hours. These requests are only confirmed after your approval."}
+      ${C.conciergeRequestsBody}
     </p>
   </td></tr>
 </table>
 </td></tr>`
       : "";
 
-    const cta = pt ? "Ver a minha reserva" : "View my booking";
+    const cta = C.cta;
     const ctaBlock = d.viewUrl
       ? `
 <tr><td style="padding:0 0 14px 0;">
@@ -943,7 +924,7 @@ export async function sendCheckoutGuestConfirmation(d: {
 <html lang="${lang}">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
 <body style="margin:0;padding:0;background:${PA.warm};font-family:${SANS};">
-<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${pt ? "A casa já está a ser preparada. O seu concierge acompanha tudo a partir de agora." : "The house is already being prepared. Your concierge takes it from here."}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${C.preheader}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PA.warm};">
 
 <!-- Top bar: brand-dark band with the white logo (the logoColor asset is
@@ -967,7 +948,7 @@ export async function sendCheckoutGuestConfirmation(d: {
 <tr><td style="padding:0 0 24px 0;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid ${PA.sand};border-radius:12px;">
   <tr><td style="padding:22px 24px;text-align:center;">
-    <p style="font-family:${SANS};font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:${PA.stoneAA};margin:0 0 8px 0;">${pt ? "Código de confirmação" : "Confirmation code"}</p>
+    <p style="font-family:${SANS};font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:${PA.stoneAA};margin:0 0 8px 0;">${C.confirmationCodeLabel}</p>
     <p style="font-family:${SERIF};font-size:30px;color:${PA.dark};margin:0;letter-spacing:0.05em;font-weight:400;">${d.confirmationCode || "&mdash;"}</p>
   </td></tr>
 </table>
@@ -981,7 +962,7 @@ export async function sendCheckoutGuestConfirmation(d: {
     <p style="font-family:${SERIF};font-size:21px;line-height:1.3;color:${PA.dark};margin:0;">${house}</p>
     ${destination ? `<p style="font-family:${SANS};font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:${PA.stoneAA};margin:5px 0 0 0;">${destination}</p>` : ""}
     <p style="font-family:${SANS};font-size:13px;color:${PA.earth};margin:10px 0 0 0;">
-      ${inShort} &rarr; ${outShort} &nbsp;&middot;&nbsp; ${d.guests ?? "?"} ${pt ? "hóspedes" : "guests"}
+      ${inShort} &rarr; ${outShort} &nbsp;&middot;&nbsp; ${d.guests ?? "?"} ${C.guestsLabel}
     </p>
     ${selfCheckInLine}
   </td></tr>
@@ -994,7 +975,7 @@ export async function sendCheckoutGuestConfirmation(d: {
     <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-top:1px solid ${PA.sand};">
       <tr>
         <td style="padding:12px 0 0 0;font-family:${SANS};font-size:14px;font-weight:500;color:${PA.dark};">Total</td>
-        <td style="padding:12px 0 0 0;font-family:${SANS};font-size:21px;color:${PA.dark};text-align:right;">${eur(total, pt)}</td>
+        <td style="padding:12px 0 0 0;font-family:${SANS};font-size:21px;color:${PA.dark};text-align:right;">${eur(total, lang)}</td>
       </tr>
     </table>
   </td></tr>` : ""}
@@ -1008,11 +989,9 @@ ${conciergeBlock}
 <tr><td style="padding:0 0 24px 0;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid ${PA.sand};border-radius:12px;">
   <tr><td style="padding:22px 24px;">
-    <p style="font-family:${SERIF};font-size:19px;color:${PA.dark};margin:0 0 10px 0;font-weight:400;">${pt ? "Próximos passos" : "What happens next"}</p>
+    <p style="font-family:${SERIF};font-size:19px;color:${PA.dark};margin:0 0 10px 0;font-weight:400;">${C.nextTitle}</p>
     <p style="font-family:${SANS};font-size:13.5px;color:${PA.earth};line-height:1.7;margin:0;">
-      ${pt
-        ? "Na véspera da chegada recebe por email as instruções de check-in, com todos os detalhes de acesso à casa. Até lá, o seu concierge está disponível para qualquer pedido, de reservas de restaurante a transferes."
-        : "The day before arrival you will receive your check-in instructions by email, with every detail you need to reach the house. Until then, your concierge is available for any request, from restaurant reservations to transfers."}
+      ${C.nextBody}
     </p>
   </td></tr>
 </table>
@@ -1021,27 +1000,25 @@ ${conciergeBlock}
 <!-- CTAs -->
 ${ctaBlock}
 <tr><td style="padding:0 0 24px 0;text-align:center;">
-  <a href="${CONCIERGE_WA_LINK}" target="_blank" style="font-family:${SANS};font-size:13px;color:${PA.gold};text-decoration:underline;">${pt ? "Falar com o seu concierge no WhatsApp" : "Chat with your concierge on WhatsApp"}</a>
+  <a href="${CONCIERGE_WA_LINK}" target="_blank" style="font-family:${SANS};font-size:13px;color:${PA.gold};text-decoration:underline;">${C.whatsappLine}</a>
 </td></tr>
 
 <!-- Melhor preço garantido -->
 <tr><td style="padding:0 0 8px 0;text-align:center;">
   <p style="font-family:${SANS};font-size:12px;color:${PA.stoneAA};line-height:1.6;margin:0;">
-    ${pt
-      ? "Reservou diretamente com a Portugal Active, com o melhor preço garantido."
-      : "You booked directly with Portugal Active, with our best price guaranteed."}
+    ${C.bestPriceLine}
   </p>
 </td></tr>
 
 <tr><td style="padding:0 0 8px 0;">
-  <p style="font-family:${SANS};font-size:13.5px;color:${PA.dark};margin:0;">${pt ? "Com os melhores cumprimentos," : "Warm regards,"}<br/><span style="font-family:${SERIF};font-size:16px;">Sara</span> <span style="color:${PA.stoneAA};font-size:12px;">· ${pt ? "a sua concierge" : "your concierge"}</span></p>
+  <p style="font-family:${SANS};font-size:13.5px;color:${PA.dark};margin:0;">${C.regards}<br/><span style="font-family:${SERIF};font-size:16px;">Sara</span> <span style="color:${PA.stoneAA};font-size:12px;">· ${C.yourConcierge}</span></p>
 </td></tr>
 
 <!-- Footer -->
 <tr><td style="padding:28px 0 0 0;border-top:1px solid ${PA.sand};">
   <p style="font-family:${SERIF};font-size:16px;color:${PA.dark};margin:24px 0 0 0;text-align:center;">Portugal Active</p>
   <p style="font-family:${SANS};font-size:12px;color:${PA.stoneAA};margin:6px 0 0 0;text-align:center;">+351 258 358 434 &middot; booking@portugalactive.com</p>
-  <p style="font-family:${SANS};font-size:11px;color:${PA.stoneAA};margin:14px 0 0 0;text-align:center;">${pt ? "Villas privadas de luxo em Portugal, geridas com serviço de hotel." : "Luxury private villas across Portugal, managed with hotel-grade service."}</p>
+  <p style="font-family:${SANS};font-size:11px;color:${PA.stoneAA};margin:14px 0 0 0;text-align:center;">${C.footerTagline}</p>
 </td></tr>
 
 </table>
