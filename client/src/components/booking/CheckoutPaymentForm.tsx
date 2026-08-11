@@ -9,7 +9,13 @@
 import { useState, useMemo, useRef, type ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { loadStripe } from "@stripe/stripe-js";
-import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import {
+  Elements,
+  PaymentElement,
+  ExpressCheckoutElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
 import { trpc } from "@/lib/trpc";
 import { formatEur } from "@/lib/format";
 import { pushEcommerce } from "@/lib/datalayer";
@@ -140,6 +146,101 @@ interface CheckoutPaymentFormProps {
   couponCode?: string;
   onSuccess: (confirmationCode: string, reservationId?: string) => void;
   onCancel: () => void;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Bloco 3 — Apple Pay / Google Pay via ExpressCheckoutElement.
+   SÓ no checkout v2 (intentId presente) e SEMPRE na conta de
+   PLATAFORMA: mesmo padrão do cartão v2 — createCardCharge lazy no
+   confirm (total canónico do servidor), confirmPayment inline,
+   finalizeCardCharge cria a reserva Guesty só com a estadia.
+   O legacy (sem intentId) nunca monta este bloco.
+   ════════════════════════════════════════════════════════════════ */
+function ExpressWalletInner({
+  intentId,
+  listingId,
+  total,
+  onSuccess,
+}: {
+  intentId: string;
+  listingId: string;
+  total: number;
+  onSuccess: (confirmationCode: string, reservationId?: string) => void;
+}) {
+  const { t } = useTranslation();
+  const stripe = useStripe();
+  const elements = useElements();
+  const createCardCharge = trpc.checkout.createCardCharge.useMutation();
+  const finalizeCardCharge = trpc.checkout.finalizeCardCharge.useMutation();
+  const [error, setError] = useState("");
+  const [available, setAvailable] = useState(false);
+  const processingRef = useRef(false);
+
+  const handleConfirm = async (event: { expressPaymentType?: string }) => {
+    if (!stripe || !elements || processingRef.current) return;
+    processingRef.current = true;
+    setError("");
+
+    pushEcommerce({
+      event: "add_payment_info",
+      payment_type: event.expressPaymentType || "wallet",
+      property_id: listingId,
+      ecommerce: { currency: "EUR", value: total },
+    });
+
+    try {
+      // Deferred flow: validar o elemento antes de criar o PI (regra Stripe)
+      const { error: submitError } = await elements.submit();
+      if (submitError) {
+        setError(submitError.message || t("payment.errors.cardValidationFailed"));
+        processingRef.current = false;
+        return;
+      }
+      // PI lazy com o total canónico do servidor — nunca o valor do cliente
+      const { clientSecret, paymentIntentId } = await createCardCharge.mutateAsync({ intentId });
+      const { error: confirmErr, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        clientSecret,
+        confirmParams: { return_url: window.location.href },
+        redirect: "if_required",
+      });
+      if (confirmErr) {
+        setError(confirmErr.message || t("payment.errors.cardValidationFailed"));
+        processingRef.current = false;
+        return;
+      }
+      const fin = await finalizeCardCharge.mutateAsync({
+        intentId,
+        paymentIntentId: paymentIntent?.id ?? paymentIntentId,
+      });
+      onSuccess(fin.confirmationCode, fin.reservationId);
+    } catch (e: any) {
+      // O pagamento pode ter sido capturado — o webhook card_v2 completa a
+      // reserva; não permitir novo clique às cegas
+      setError(e?.message || t("payment.errors.cardValidationFailed"));
+    }
+  };
+
+  return (
+    <div style={{ display: available ? "block" : "none" }} className="space-y-3">
+      <ExpressCheckoutElement
+        options={{
+          // Só wallets: cartão, PayPal e Klarna já têm caminho próprio em baixo
+          paymentMethods: { applePay: "auto", googlePay: "auto", link: "never" } as any,
+          layout: { maxColumns: 2, maxRows: 1 } as any,
+        }}
+        onReady={({ availablePaymentMethods }) => setAvailable(!!availablePaymentMethods)}
+        onConfirm={handleConfirm}
+      />
+      {error && (
+        <div className="flex items-start gap-2 p-3 bg-[#F5F1EB] border border-[#DC2626] rounded-md">
+          <span className="text-[#DC2626] mt-0.5 shrink-0" aria-hidden>&#9888;</span>
+          <p className="text-[#DC2626] text-sm leading-snug">{error}</p>
+        </div>
+      )}
+      <div aria-hidden style={{ borderTop: "1px solid #E8E4DC" }} />
+    </div>
+  );
 }
 
 /** Policy acceptance object sent to Guesty BE API instant booking */
@@ -440,6 +541,23 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
     [props.total, props.currency, i18n.language, paymentMethod],
   );
 
+  // Bloco 3: opções do Elements para o ExpressCheckoutElement (wallets).
+  // Instância separada do PaymentElement: sem paymentMethodCreation manual e
+  // sem paymentMethodTypes — o ECE só mostra wallets elegíveis no dispositivo.
+  const expressElementsOptions = useMemo(
+    () => ({
+      mode: "payment" as const,
+      amount: Math.round(props.total * 100),
+      currency: (props.currency || "eur").toLowerCase(),
+      locale: i18n.language as any,
+      appearance: {
+        theme: "stripe" as const,
+        variables: { colorPrimary: "#1A1A18", borderRadius: "4px" },
+      },
+    }),
+    [props.total, props.currency, i18n.language],
+  );
+
   // CRITICAL: Wait for BOTH queries to settle before rendering Stripe Elements.
   // Without this, the component renders with the wrong Stripe account (from env var)
   // and then re-mounts when the per-listing account loads, breaking the PaymentElement.
@@ -462,6 +580,19 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
 
   return (
     <div className="space-y-4">
+      {/* Bloco 3: Apple Pay / Google Pay (Express Checkout, conta de plataforma)
+          — só no checkout v2; o legacy nunca monta este bloco */}
+      {props.intentId && (
+        <Elements stripe={stripePromise} options={expressElementsOptions}>
+          <ExpressWalletInner
+            intentId={props.intentId}
+            listingId={props.listingId}
+            total={props.total}
+            onSuccess={props.onSuccess}
+          />
+        </Elements>
+      )}
+
       {/* Payment method selector — 3 icon cards (Google Pay hidden) */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "9px" }}>
         {PAYMENT_METHODS.filter(({ id }) => id !== "googlepay").map(({ id, label, Logo }) => (
