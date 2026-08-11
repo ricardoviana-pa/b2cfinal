@@ -20,7 +20,7 @@ Companion to `docs/HANDOVER.md`. English mirror of `docs/checkout_pendentes.md`.
 9. Chef: pre-booking base price per person (placeholder 95€).
 10. Hosted reception: 50€ / 90€ after 21h (validate vs real team travel cost).
 11. Prices of ALL extras with Susana and Diogo (incl. interim Lisbon transfers 280/350€, breakfast 25€, pet 45€).
-12. Flex: 1500€ threshold / 7-day window / 18-month validity (recommended) + copy and terms validated by **André Feiteiro** (mandatory before production — legal).
+12. ~~Flex legal validation~~ **DONE 12 Jul 2026: André Feiteiro approved the Flex copy and terms** (dynamic 10% pricing included). The rule stands forever: never call it insurance, in any language. Remaining tunables: 1500€ threshold / 7-day window / 18-month validity.
 13. Arrival bundle (D5): define the discount — model is built and inactive in code.
 14. Early check-in gated to the calendar (spec 15.10): yes or no.
 15. Deposit waiver (spec 15.11): request the 2025 incident history from operations before deciding.
