@@ -1903,6 +1903,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "We hebben heerlijk genoten van de rust. Het is een heerlijke optrek en een fijn zwembad met zout. Verwarmde zwembad was echt heerlijk. Groot terrein waar je gewoon lekker van geniet. Schaduw voor de auto om te parkeren was echt perfect. Heerlijk was het om hier te verblijven.",
+        "guestDisplayName": "Stefanus",
+        "guestName": "Stefanus",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-09T10:01:32.079Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Where to start. I’ve just got home from the most magical holiday in this beautiful villa. We visited Portugal as our friends were getting married. We bought our family and made a week of it. The property was incredible! We all had bedrooms with en-suite’s. The rooms were beautiful. The place was spotless, and we had everything we could possibly need. The kitchen is so well equipped. We also loved the second  living room. We hired a car which is essentially due to the location of the property. Th",
         "guestDisplayName": "Grace",
         "guestName": "Grace",
@@ -1973,7 +2008,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   },
   {
     "id": "guesty-69e7350685a8b000124854c5",
@@ -5470,6 +5505,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Beautiful location and great for large families or sharing with friends",
+        "guestDisplayName": "Jessica",
+        "guestName": "Jessica",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-10T22:03:46.657Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Adorei o fim de semana, a casa é impecável.",
         "guestDisplayName": "Rui",
         "guestName": "Rui",
@@ -5610,7 +5680,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 4
+    "reviewCount": 5
   },
   {
     "id": "guesty-696532f3753fb0001424a570",
@@ -13945,6 +14015,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Trés bon séjour familial, quartier calme et authentique. Maison accueillante oû on se sent vite chez soit.\nJuste quelques désagréments  sur une partie du mobilier.d extérieur qui est aussi  en nombre insuffisant.\nLa piscine à permis aux enfants et aux adultes de passer de bons moments ensemble.",
+        "guestDisplayName": "Annick",
+        "guestName": "Annick",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-10T06:53:55.608Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Excelente alojamiento",
         "guestDisplayName": "Lore",
         "guestName": "Lore",
@@ -14294,8 +14399,8 @@
         ]
       }
     ],
-    "averageRating": 4.9,
-    "reviewCount": 10
+    "averageRating": 4.91,
+    "reviewCount": 11
   },
   {
     "id": "guesty-6965333104b96f00147f5428",
@@ -25954,6 +26059,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Bel appartement propre et bien situé",
+        "guestDisplayName": "Jean-Marie",
+        "guestName": "Jean-Marie",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-09T16:42:37.259Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Alles gut",
         "guestDisplayName": "Olivera",
         "guestName": "Olivera",
@@ -26198,8 +26338,8 @@
         ]
       }
     ],
-    "averageRating": 4.71,
-    "reviewCount": 7
+    "averageRating": 4.75,
+    "reviewCount": 8
   },
   {
     "id": "guesty-696533466d209c001510ecfe",
