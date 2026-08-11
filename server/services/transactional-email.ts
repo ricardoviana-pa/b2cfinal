@@ -495,6 +495,8 @@ interface CheckoutRecoveryData {
   /** Real quote expiry — powers the "guaranteed until" line (spec: real urgency only) */
   expiresAt?: Date | null;
   resumeUrl: string;
+  /** Bloco 2: link de opt-out dos lembretes (rodapé). Sem ele o rodapé segue sem link. */
+  optoutUrl?: string | null;
   locale?: string | null;
   /** 1 = 1h email, 2 = 20h email */
   stage: 1 | 2;
@@ -714,6 +716,7 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
   <p style="font-family:${SERIF};font-size:16px;color:${PA.dark};margin:24px 0 0 0;text-align:center;">Portugal Active</p>
   <p style="font-family:${SANS};font-size:12px;color:${PA.stoneAA};margin:6px 0 0 0;text-align:center;">+351 258 358 434 &middot; booking@portugalactive.com</p>
   <p style="font-family:${SANS};font-size:11px;color:${PA.stoneAA};margin:14px 0 0 0;text-align:center;">${pt ? "Villas privadas de luxo em Portugal, geridas com serviço de hotel." : "Luxury private villas across Portugal, managed with hotel-grade service."}</p>
+  ${data.optoutUrl ? `<p style="font-family:${SANS};font-size:11px;margin:14px 0 0 0;text-align:center;"><a href="${data.optoutUrl}" target="_blank" style="color:${PA.stoneAA};text-decoration:underline;">${pt ? "Não quero receber estes lembretes" : "I don't want to receive these reminders"}</a></p>` : ""}
 </td></tr>
 
 </table>

@@ -830,6 +830,9 @@ export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent
           gt(bookingIntents.expiresAt, new Date()),
           lt(bookingIntents.recoveryStage, 2),
           lt(bookingIntents.createdAt, oneHourAgo),
+          // Bloco 2: quem carregou em "Não quero receber estes lembretes"
+          // sai da automação para sempre
+          eq(bookingIntents.recoveryOptout, false),
         ),
       )
       .orderBy(asc(bookingIntents.createdAt))
@@ -837,6 +840,31 @@ export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent
   } catch (error) {
     console.error("[Database] listRecoveryCandidates failed:", error);
     return [];
+  }
+}
+
+/**
+ * Bloco 2: marca o opt-out dos lembretes de recuperação. Idempotente — marcar
+ * duas vezes é um no-op. Devolve false só quando a DB está indisponível ou o
+ * intent não existe.
+ */
+export async function markRecoveryOptout(id: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    const res: any = await db
+      .update(bookingIntents)
+      .set({ recoveryOptout: true })
+      .where(eq(bookingIntents.id, id));
+    const affected = Array.isArray(res) ? res[0]?.affectedRows : res?.affectedRows;
+    if ((affected ?? 0) > 0) return true;
+    // affectedRows 0 pode ser "já estava true" (MySQL não conta updates sem
+    // alteração) — confirma que o intent existe antes de devolver false
+    const row = await db.select({ id: bookingIntents.id }).from(bookingIntents).where(eq(bookingIntents.id, id)).limit(1);
+    return row.length > 0;
+  } catch (error) {
+    console.error("[Database] markRecoveryOptout failed:", error);
+    return false;
   }
 }
 

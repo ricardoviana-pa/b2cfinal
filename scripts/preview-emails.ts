@@ -59,8 +59,9 @@ async function main() {
     locale: "pt",
   };
 
-  await sendCheckoutRecovery({ ...base, stage: 1, resumeUrl: "https://dev.portugalactive.com/pt/checkout/demo?utm_campaign=cart_recovery&utm_content=1h" });
-  await sendCheckoutRecovery({ ...base, stage: 2, resumeUrl: "https://dev.portugalactive.com/pt/checkout/demo?utm_campaign=cart_recovery&utm_content=20h" });
+  const demoOptout = "https://dev.portugalactive.com/api/checkout/recovery-optout?intent=demo&t=00000000000000000000000000000000";
+  await sendCheckoutRecovery({ ...base, stage: 1, optoutUrl: demoOptout, resumeUrl: "https://dev.portugalactive.com/pt/checkout/demo?utm_campaign=cart_recovery&utm_content=1h" });
+  await sendCheckoutRecovery({ ...base, stage: 2, optoutUrl: demoOptout, resumeUrl: "https://dev.portugalactive.com/pt/checkout/demo?utm_campaign=cart_recovery&utm_content=20h" });
   // Catálogo real (12 jul): grocery-setup, limpezas por casa, pets em escalão
   const extras = [
     { sku: "transfer-porto", qty: 1, amount: 120, fulfillment: "instant" },

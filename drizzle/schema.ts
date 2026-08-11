@@ -463,6 +463,9 @@ export const bookingIntents = mysqlTable("booking_intents", {
   /** Fase 4: abandonment recovery emails sent (0 = none, 1 = 1h, 2 = 20h).
    *  Monotonic — a stage is never re-sent (spec §12/§16). */
   recoveryStage: int("recovery_stage").default(0).notNull(),
+  /** Opt-out dos lembretes de recuperação (link no rodapé dos emails).
+   *  Uma vez true, o scheduler nunca mais toca neste intent. */
+  recoveryOptout: boolean("recovery_optout").default(false).notNull(),
   status: mysqlEnum("status", [
     "draft",
     "contact_captured",

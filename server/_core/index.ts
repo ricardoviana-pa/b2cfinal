@@ -12,6 +12,7 @@ import { registerOAuthRoutes } from "./oauth";
 import { registerDevAuthRoutes } from "./devAuth";
 import { registerGoogleAuthRoutes } from "./googleAuth";
 import { registerBookingRoutes, registerGuestyWebhookRoute } from "../routes/booking";
+import { registerRecoveryOptoutRoute } from "../routes/checkout-recovery-optout";
 import { registerStripePayPalWebhookRoute } from "../routes/stripe-paypal-webhook";
 import { registerStripeKlarnaWebhookRoute } from "../routes/stripe-klarna-webhook";
 import { registerStripeCardWebhookRoute } from "../routes/stripe-card-webhook";
@@ -115,6 +116,8 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // REST booking endpoints (frontend booking flow)
   registerBookingRoutes(app);
+  // Bloco 2: opt-out dos lembretes de recuperação (link no rodapé dos emails)
+  registerRecoveryOptoutRoute(app);
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
   registerDevAuthRoutes(app);
@@ -478,6 +481,16 @@ ${allUrls.join("\n")}
       } catch (alterErr: any) {
         if (!/duplicate column|exists/i.test(alterErr?.message || "")) {
           console.warn("[Migration] booking_intents.recovery_stage:", alterErr.message);
+        }
+      }
+      // Bloco 2: opt-out dos lembretes de recuperação (link no rodapé dos
+      // emails) — mesmo padrão idempotente de add-column.
+      try {
+        await (db as any).execute("ALTER TABLE `booking_intents` ADD COLUMN `recovery_optout` boolean NOT NULL DEFAULT false");
+        console.info("[Migration] booking_intents.recovery_optout column added");
+      } catch (alterErr: any) {
+        if (!/duplicate column|exists/i.test(alterErr?.message || "")) {
+          console.warn("[Migration] booking_intents.recovery_optout:", alterErr.message);
         }
       }
       console.info("[Migration] booking_intents table OK");

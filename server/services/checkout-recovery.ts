@@ -15,12 +15,50 @@
  * client already fires the `checkout_resume` analytics event for sessions
  * that did not create the intent (CheckoutPage.tsx).
  */
+import { createHmac, timingSafeEqual } from "crypto";
 import { listRecoveryCandidates, claimRecoveryStage } from "../db";
 import { sendCheckoutRecovery } from "./transactional-email";
 import { getPropertiesForSite } from "./properties-store";
 import type { BookingIntent } from "../../drizzle/schema";
 
 const HOUR_MS = 60 * 60 * 1000;
+
+/* ────────────────────────────────────────────────────────────────
+   Bloco 2 — opt-out dos lembretes (link discreto no rodapé).
+   Token HMAC simples sobre o id do intent: o link só funciona para
+   quem recebeu o email; sem estado extra na DB além do booleano.
+   ──────────────────────────────────────────────────────────────── */
+
+function optoutSecret(): string {
+  return (
+    process.env.RECOVERY_OPTOUT_SECRET ||
+    process.env.JWT_SECRET ||
+    "pa-recovery-optout-dev"
+  );
+}
+
+/** Token HMAC-SHA256(intentId) truncado a 32 hex — chega para um opt-out. */
+export function recoveryOptoutToken(intentId: string): string {
+  return createHmac("sha256", optoutSecret()).update(intentId).digest("hex").slice(0, 32);
+}
+
+/** Comparação em tempo constante; qualquer formato inesperado falha. */
+export function verifyRecoveryOptoutToken(intentId: string, token: string): boolean {
+  if (!intentId || !token || token.length !== 32) return false;
+  try {
+    return timingSafeEqual(
+      Buffer.from(recoveryOptoutToken(intentId), "utf8"),
+      Buffer.from(token.toLowerCase(), "utf8"),
+    );
+  } catch {
+    return false;
+  }
+}
+
+/** Link de opt-out para o rodapé dos emails de recuperação. */
+export function recoveryOptoutUrl(intentId: string): string {
+  return `${publicBaseUrl()}/api/checkout/recovery-optout?intent=${encodeURIComponent(intentId)}&t=${recoveryOptoutToken(intentId)}`;
+}
 const STAGE_1_AFTER_MS = 1 * HOUR_MS;
 const STAGE_2_AFTER_MS = 20 * HOUR_MS;
 const SWEEP_INTERVAL_MS = 10 * 60 * 1000;
@@ -99,6 +137,8 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
       if (age >= STAGE_2_AFTER_MS && stage < 2) target = 2;
       else if (age >= STAGE_1_AFTER_MS && stage < 1) target = 1;
       if (!target || !intent.email) continue;
+      // Belt and braces: a query já filtra, mas o opt-out nunca recebe email
+      if ((intent as any).recoveryOptout) continue;
 
       // Claim before sending — losing an email beats repeating one.
       const claimed = await claimRecoveryStage(intent.id, stage, target);
@@ -122,6 +162,7 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
           imageUrl: await resolvePropertyPhoto(intent),
           expiresAt: intent.expiresAt,
           resumeUrl: resumeUrl(intent, target),
+          optoutUrl: recoveryOptoutUrl(intent.id),
           locale: intent.locale,
           stage: target,
         });
