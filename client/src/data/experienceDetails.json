@@ -1248,7 +1248,7 @@
       },
       "relatedSlugs": [
         "canyoning",
-        "sailing",
+        "yacht",
         "horseback-riding"
       ],
       "whatsappMessage": "Hi Portugal Active, I'd like to book the SUP Sun Experience on the Lima River. Could you confirm availability?",
@@ -1507,231 +1507,81 @@
       }
     },
     {
-      "slug": "sailing",
-      "name": "Private Sailing Experience — Viana do Castelo Coastline",
+      "slug": "yacht",
+      "name": "Private Yacht Experience — Viana do Castelo",
       "category": "activity",
       "experienceCategory": "adventure",
-      "tagline": "A private sailboat along the Lima River mouth and the Atlantic coastline of Viana do Castelo — with drinks, appetizers, and optional SUP on board.",
+      "tagline": "Sunset, sea and the Lima River aboard a private yacht — river cruising, paddleboarding, swimming and dolphin watching off the Viana do Castelo coast.",
       "badges": [
         "Private experience",
-        "Drinks included"
+        "Sunset & sea"
       ],
-      "videoUrl": "https://vimeo.com/784519252",
       "destinations": [
         "minho"
       ],
       "locality": "Viana do Castelo Marina",
-      "price": "From €85 per person",
-      "priceFrom": 85,
-      "priceOta": 110,
-      "duration": "2–4 hours",
+      "price": "Private charter",
+      "priceFrom": 0,
+      "duration": "Flexible — sunset cruise to full day",
       "difficultyLevel": "Easy — no experience needed",
-      "availability": "April to October, weather permitting",
-      "image": "/experiences/sailing/cover.webp",
+      "availability": "Weather permitting",
+      "image": "https://imgcdn.bokun.tools/d0c24ab9-e777-4870-a93c-7eb35e0be160.jpeg?w=1600",
       "gallery": [
-        "/experiences/sailing/cover.webp",
-        "/experiences/sailing/01.webp",
-        "/experiences/sailing/02.webp",
-        "/experiences/sailing/03.webp",
-        "/experiences/sailing/04.webp",
-        "/experiences/sailing/05.webp",
-        "/experiences/sailing/06.webp",
-        "/experiences/sailing/07.webp",
-        "/experiences/sailing/08.webp",
-        "/experiences/sailing/09.webp",
-        "/experiences/sailing/10.webp",
-        "/experiences/sailing/11.webp",
-        "/experiences/sailing/12.webp",
-        "/experiences/sailing/13.webp",
-        "/experiences/sailing/14.webp",
-        "/experiences/sailing/15.webp",
-        "/experiences/sailing/16.webp"
+        "https://imgcdn.bokun.tools/d0c24ab9-e777-4870-a93c-7eb35e0be160.jpeg?w=1600",
+        "https://imgcdn.bokun.tools/ef079c49-8fc5-4c04-9045-f1b288af69e6.jpeg?w=1600",
+        "https://imgcdn.bokun.tools/7ca6168b-9713-415d-b445-df2902b518ea.jpeg?w=1600",
+        "https://imgcdn.bokun.tools/9ecfd5a7-2989-4242-9fae-8faffa8af846.jpeg?w=1600",
+        "https://imgcdn.bokun.tools/fb17b118-e179-4ae2-9d37-ded412c91406.jpeg?w=1600",
+        "https://imgcdn.bokun.tools/1159e417-609a-4d22-821a-197a1a134159.jpeg?w=1600",
+        "https://imgcdn.bokun.tools/964dc0be-fc24-4acd-a15a-05590ac96bcb.jpeg?w=1600",
+        "https://imgcdn.bokun.tools/96a8e6ce-48f9-4f85-8130-b2b305a64422.jpeg?w=1600",
+        "https://imgcdn.bokun.tools/d3a3235a-b987-481a-9b6b-78f2180239f0.png?w=1600",
+        "https://imgcdn.bokun.tools/d2500d3f-de93-4c3b-8e57-e6f7b4ebd4cd.png?w=1600",
+        "https://imgcdn.bokun.tools/ed431477-933d-4828-a0bf-22524045b0bb.png?w=1600",
+        "https://imgcdn.bokun.tools/7afc3480-5718-4cae-9955-ced3189ce6ae.png?w=1600"
       ],
       "aboutParagraphs": [
-        "From the mouth of the Lima River to the wild Atlantic coastline, this private sailing experience is one of the most elegant ways to see Viana do Castelo. The 39-foot sailboat is yours — no strangers, no schedule, just your group, the crew, and the ocean.",
-        "As you sail past the breakwater, the coastline of the Minho unfolds: Cabedelo Beach, the old fishing quarter, the Sanctuary of Santa Luzia on the hilltop, and the open Atlantic stretching to the horizon. The boat is equipped with paddle boards, snorkel gear, and a full kitchen — stop to swim, SUP, or simply lie on deck with a drink.",
-        "A welcome drink and appetizers are included. For special occasions, a full gastronomic experience can be arranged on board with advance notice — think local cheeses, cured meats, fresh seafood, and Portuguese wines.",
-        "The 2-hour option is perfect for a sunset cruise. The 4-hour experience adds time for swimming stops, SUP, and a longer coastal exploration. Book at least a week ahead — the boat is popular and availability is limited."
+        "Where the Atlantic meets the Lima River, a world of experiences opens up on the water. Step aboard and feel the rhythm of the ocean give way to the calm of the estuary — a rare stretch of coastline where rugged surf and sheltered waters sit side by side.",
+        "From leisurely river cruises and paddleboarding to swimming in crystal-clear water and dolphin watching, the day is built around whatever you're in the mood for — from a two-hour sunset cruise to a full day on the water.",
+        "Celebrating a birthday, a bachelor or bachelorette weekend, or simply craving a day that feels nothing like ordinary? The experience is tailored to match. This is Viana do Castelo from its best angle — the Santa Luzia hilltop behind you and the open Atlantic ahead."
       ],
       "highlights": [
-        "Private 39-foot sailboat — exclusively for your group (up to 10 guests)",
-        "Sail the Lima River mouth and the Atlantic coastline of Viana do Castelo",
-        "Welcome drink and appetizers included",
-        "Onboard SUP boards, snorkel equipment, and bath ladder",
-        "Optional gastronomic experience with local cheeses, seafood, and wine",
-        "Watch the sunset from the water — Viana's most spectacular viewpoint",
-        "Professional crew with local knowledge",
-        "2-hour or 4-hour options available"
+        "Private yacht, exclusively for your group (up to 17 guests)",
+        "Where the open Atlantic meets the calm of the Lima River estuary",
+        "Golden-hour sunsets over the Minho coastline",
+        "River cruising, paddleboarding, swimming and dolphin watching",
+        "Tailored to the occasion — birthdays, celebrations or a relaxed day out",
+        "Santa Luzia hilltop behind you, the Atlantic ahead"
       ],
       "included": [
-        "Private sailboat charter with professional crew",
-        "Welcome drink and appetizers",
-        "Onboard SUP boards and snorkel equipment",
-        "Soft drinks and water",
-        "Crew insurance",
-        "WiFi on board"
+        "Private yacht charter with professional skipper",
+        "Time on the water tailored to your group — cruise, swim, paddleboard or watch the sunset"
       ],
-      "notIncluded": [
-        "Dinner on board (available on request with advance notice)",
-        "Transfer to the marina (can be arranged)",
-        "Gratuities (at your discretion)"
-      ],
-      "notSuitableFor": [
-        "Guests prone to severe seasickness"
-      ],
+      "notIncluded": [],
       "whatToBring": [
         "Swimwear and towel",
         "Sunscreen and sunglasses",
-        "Light jacket for wind on deck",
+        "A light layer for wind on deck",
         "Camera"
       ],
-      "notAllowed": [
-        "Hard-soled shoes on deck (soft soles or barefoot only)",
-        "Smoking on board"
-      ],
-      "itinerary": [
-        {
-          "stepNumber": 1,
-          "time": "Flexible",
-          "title": "Arrive at Viana do Castelo Marina",
-          "description": "Meet the crew at Cerqueira's in Rio, next to the Eiffel Bridge. The marina entrance opens for you — walk to the last pier, next to the pedestrian bridge, where the sailboat is moored.",
-          "icon": "sail"
-        },
-        {
-          "stepNumber": 2,
-          "time": "+15 min",
-          "title": "Welcome drink and departure",
-          "description": "Step aboard the 39-foot sailboat. Welcome drink in hand, the crew casts off and navigates down the Lima River towards the river mouth.",
-          "icon": "dine"
-        },
-        {
-          "stepNumber": 3,
-          "time": "+45 min",
-          "title": "Atlantic coastline sailing",
-          "description": "Pass the breakwater and sail along the Minho coastline. Cabedelo Beach, the old fishing quarter, and the Sanctuary of Santa Luzia above. Wind in the sails, nothing but ocean ahead.",
-          "icon": "sail"
-        },
-        {
-          "stepNumber": 4,
-          "time": "+90 min",
-          "title": "Swimming, SUP, and relaxation",
-          "description": "Anchor in a sheltered spot. Swim, try the onboard SUP boards, snorkel, or simply relax on deck with appetizers and drinks. The crew handles everything.",
-          "icon": "swim"
-        },
-        {
-          "stepNumber": 5,
-          "time": "+180 min",
-          "title": "Sunset return to the marina",
-          "description": "Sail back as the sun sets over the Atlantic and the city lights of Viana do Castelo begin to twinkle. An unforgettable finish to an unforgettable day.",
-          "icon": "sail"
-        }
-      ],
-      "meetingPoint": {
-        "address": "R. de Limia 4900, Viana do Castelo, Portugal (Cerqueira's in Rio, next to Eiffel Bridge)",
-        "lat": 41.69,
-        "lng": -8.835,
-        "instructions": "The entrance to the marina is next to the Eiffel Bridge. Communicate your arrival to open the barrier, then walk to the last pier next to the pedestrian bridge.",
-        "googleMapsUrl": "https://maps.google.com/?q=41.690,-8.835",
-        "pickupAvailable": false,
-        "pickupNote": "Transfer to the marina can be arranged on request. The marina is a 5-minute walk from the Viana do Castelo train station."
-      },
-      "cancellationPolicy": "Free cancellation up to 48 hours before the experience. Cancellations within 48 hours are non-refundable. Weather cancellations are rescheduled or refunded.",
-      "languages": [
-        "Portuguese",
-        "English"
-      ],
-      "groupSizeRange": {
-        "min": 2,
-        "max": 10
-      },
-      "freeCancellationHours": 48,
-      "reserveNowPayLater": true,
-      "mobileTicket": true,
-      "pickupIncluded": false,
-      "bookingsLastMonth": 2,
-      "averageBookingLeadDays": 18,
-      "recommendedPercent": 100,
-      "guideName": "Captain & Crew",
-      "guideRole": "Professional Sailing Crew",
-      "guideDescription": "Our sailing experiences are operated in partnership with Amazing Experiences, a boutique maritime operator based in Viana do Castelo marina. The captain and crew know every cove, every current, and every dolphin hotspot along the Minho coastline. They handle the sailing so you can focus entirely on the experience — drinks, appetizers, swimming, or simply watching the coast slide by.",
-      "guideLanguages": [
-        "Portuguese",
-        "English"
-      ],
-      "faq": [
-        {
-          "q": "Do I need sailing experience?",
-          "a": "Not at all. The professional crew handles everything. You are a guest, not a sailor. Just relax and enjoy."
-        },
-        {
-          "q": "What is the difference between the 2-hour and 4-hour experience?",
-          "a": "The 2-hour option is a sunset cruise along the coastline with drinks and appetizers. The 4-hour experience adds a swimming and SUP stop, longer coastal exploration, and more time on the water."
-        },
-        {
-          "q": "Can I arrange dinner on board?",
-          "a": "Yes. With at least 48 hours advance notice, a full gastronomic experience can be prepared: local cheeses, cured meats, fresh seafood, and Portuguese wines."
-        },
-        {
-          "q": "How many people can the boat hold?",
-          "a": "Up to 10 guests. It is a private charter — only your group on board."
-        },
-        {
-          "q": "Why should I book directly with Portugal Active?",
-          "a": "Lower price, flexible scheduling, direct communication with the crew, and we can pair the sailing with other experiences (SUP, dinner at a local restaurant) for a complete day."
-        }
-      ],
-      "reviewsList": [
-        {
-          "author": "Luis",
-          "countryCode": "PT",
-          "rating": 5,
-          "date": "2023-09-15",
-          "title": "Unforgettable sunset on the water",
-          "text": "The coastline at Viana is so amazing. The Lima river turns the Atlantic into warmer waters. The sunset, the dolphins, the city lights of Viana when we returned were unforgettable.",
-          "source": "tripadvisor",
-          "verified": true
-        },
-        {
-          "author": "Sarah & David",
-          "countryCode": "GB",
-          "rating": 5,
-          "date": "2024-07-28",
-          "title": "The perfect anniversary experience",
-          "text": "We booked the 4-hour experience for our anniversary and it exceeded every expectation. The crew were wonderful, the boat is beautiful, and the swimming stop was magical. The appetizers and wine were generous and delicious.",
-          "source": "direct",
-          "verified": true
-        },
-        {
-          "author": "Joana C.",
-          "countryCode": "PT",
-          "rating": 5,
-          "date": "2024-08-10",
-          "title": "Perfeito para celebrar",
-          "text": "Celebrámos o aniversário do meu marido no veleiro e foi perfeito. O capitão é muito simpático, as bebidas e petiscos eram excelentes, e o pôr-do-sol visto da água é incomparável. Já reservámos para o próximo ano.",
-          "source": "direct",
-          "verified": true
-        }
-      ],
-      "aggregateRating": {
-        "value": 5,
-        "count": 4,
-        "source": "Portugal Active",
-        "bestRating": 5,
-        "ratingBreakdown": {
-          "1": 0,
-          "2": 0,
-          "3": 0,
-          "4": 0,
-          "5": 4
-        },
-        "recommendedPercent": 100
-      },
+      "whatsappMessage": "Hi Portugal Active, I'd like to book the Private Yacht Experience in Viana do Castelo. Could you confirm availability?",
       "relatedSlugs": [
         "stand-up-paddle",
         "horseback-riding",
         "hike-dive-dine"
       ],
-      "whatsappMessage": "Hi Portugal Active, I'd like to book the Sailing Experience in Viana do Castelo. Could you confirm availability?"
+      "bokunActivityId": 1237963,
+      "bokunContent": {
+        "title": "Private Yacht Experience in Viana do Castelo",
+        "descriptionParagraphs": [
+          "Where the Atlantic meets the Lima River, a world of experiences awaits on the water. Step aboard and feel the rhythm of the ocean give way to the calm of the estuary — a rare stretch of coastline where rugged surf and sheltered waters sit side by side. Whether you're chasing the golden light of a Minho sunset or diving into crystal-clear waters, every moment on deck is one to remember. From leisurely river cruises and paddleboarding to dolphin watching, our yacht experiences are built around whatever you're in the mood for. Celebrating a birthday, a bachelor or bachelorette weekend, or simply craving a day that feels nothing like ordinary? We'll tailor the trip to match. This is Viana do Castelo from its best angle — out on the water, with the Santa Luzia hilltop behind you and the open Atlantic ahead."
+        ],
+        "included": [],
+        "excluded": [],
+        "requirements": null,
+        "photoCount": 12,
+        "lastSynced": "2026-08-10T00:00:00.000Z"
+      }
     },
     {
       "slug": "ebike-tours",
@@ -1967,9 +1817,21 @@
       "whatsappMessage": "Hi Portugal Active, I'd like to book the E-Bike Tour in Viana do Castelo. Could you confirm availability?",
       "bokunActivityId": 1219990,
       "bokunOptions": [
-        { "name": "Guided City Tour", "detail": "2 hours · daily 09:30", "priceFrom": 49 },
-        { "name": "Guided Road Tour", "detail": "4 hours · Saturdays 10:00", "priceFrom": 76 },
-        { "name": "Guided Gravel / MTB Tour", "detail": "4 hours · Tue, Wed & Sun 10:00", "priceFrom": 76 }
+        {
+          "name": "Guided City Tour",
+          "detail": "2 hours · daily 09:30",
+          "priceFrom": 49
+        },
+        {
+          "name": "Guided Road Tour",
+          "detail": "4 hours · Saturdays 10:00",
+          "priceFrom": 76
+        },
+        {
+          "name": "Guided Gravel / MTB Tour",
+          "detail": "4 hours · Tue, Wed & Sun 10:00",
+          "priceFrom": 76
+        }
       ]
     },
     {
@@ -2184,7 +2046,7 @@
       },
       "relatedSlugs": [
         "stand-up-paddle",
-        "sailing",
+        "yacht",
         "canyoning"
       ],
       "whatsappMessage": "Hi Portugal Active, I'd like to book Surf Lessons at Cabedelo Beach. Could you confirm availability?"

@@ -43,7 +43,7 @@ export default function PriceBreakdown({
           <p className="headline-sm text-[#1A1A18]">{formatEurCents(totalAfterTax, lang)}</p>
           <p className="body-sm mt-1">{t("priceBreakdown.perNightLabel", { amount: formatEurCents(perNight, lang) })}</p>
         </div>
-        <p className="text-[12px] text-[#9E9A90]">{t("priceBreakdown.nights", { count: nights })}</p>
+        <p className="text-[12px] text-[#726D63]">{t("priceBreakdown.nights", { count: nights })}</p>
       </div>
 
       <Accordion type="single" collapsible defaultValue="closed">

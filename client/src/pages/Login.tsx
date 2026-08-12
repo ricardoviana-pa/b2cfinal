@@ -123,7 +123,7 @@ export default function Login() {
                 <ArrowRight size={16} />
               </a>
               <p
-                className="text-[12px] text-[#9E9A90] mt-6 leading-relaxed"
+                className="text-[12px] text-[#726D63] mt-6 leading-relaxed"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
               >
                 {t('login.ownerHelp', 'Need help? Contact us at')}{' '}
@@ -178,7 +178,7 @@ export default function Login() {
                   </a>
 
                   <p
-                    className="text-[12px] text-[#9E9A90] mt-5 text-center leading-relaxed"
+                    className="text-[12px] text-[#726D63] mt-5 text-center leading-relaxed"
                     style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                   >
                     {t('login.terms', 'By signing in you agree to our Privacy Policy and Terms of Service.')}

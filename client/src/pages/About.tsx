@@ -266,7 +266,7 @@ export default function About() {
                     loading="lazy"
                   />
                 </div>
-                <p className="text-[13px] text-[#9E9A90] mt-3" style={{ fontFamily: 'var(--font-body)' }}>
+                <p className="text-[13px] text-[#726D63] mt-3" style={{ fontFamily: 'var(--font-body)' }}>
                   {t('about.founderCaption')}
                 </p>
               </div>
@@ -283,7 +283,7 @@ export default function About() {
                 loading="lazy"
               />
             </div>
-            <p className="text-[13px] text-[#9E9A90] mt-3" style={{ fontFamily: 'var(--font-body)' }}>
+            <p className="text-[13px] text-[#726D63] mt-3" style={{ fontFamily: 'var(--font-body)' }}>
               {t('about.founderCaption')}
             </p>
           </div>
@@ -315,7 +315,7 @@ export default function About() {
           </div>
 
           <div className="mt-12 pt-10 border-t border-[#E1DACE]">
-            <p className="text-center text-[10px] tracking-[0.22em] uppercase text-[#9E9A90] mb-7" style={{ fontFamily: 'var(--font-body)' }}>
+            <p className="text-center text-[10px] tracking-[0.22em] uppercase text-[#726D63] mb-7" style={{ fontFamily: 'var(--font-body)' }}>
               {t('about.pressOverline', 'As featured in')}
             </p>
             {/* Mobile: marquee scroll (same as homepage press bar) */}
@@ -410,7 +410,7 @@ export default function About() {
             &ldquo;{t('about.socialProofQuote')}&rdquo;
           </blockquote>
           <p
-            className="text-[#9E9A90] mt-6 text-[12px] tracking-[0.14em] uppercase"
+            className="text-[#726D63] mt-6 text-[12px] tracking-[0.14em] uppercase"
             style={{ fontFamily: 'var(--font-body)', fontWeight: 500 }}
           >
             {t('about.socialProofAttribution')}
@@ -492,7 +492,7 @@ export default function About() {
                     <p className="text-[12px] text-[#8B7355] tracking-wider uppercase">{member.role}</p>
                     {member.oneLiner && (
                       <p
-                        className="text-[#9E9A90] mt-1"
+                        className="text-[#726D63] mt-1"
                         style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '13px', lineHeight: 1.4 }}
                       >
                         {member.oneLiner}

@@ -69,7 +69,7 @@ export default function ExperienceGuideProfile({
           {/* Languages */}
           {guideLanguages.length > 0 && (
             <div>
-              <p className="text-[10px] tracking-[0.08em] uppercase text-[#9E9A90] font-medium mb-2">
+              <p className="text-[10px] tracking-[0.08em] uppercase text-[#726D63] font-medium mb-2">
                 Languages
               </p>
               <div className="flex flex-wrap gap-2">

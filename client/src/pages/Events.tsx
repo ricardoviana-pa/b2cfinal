@@ -224,7 +224,7 @@ export default function Events() {
                     {event.subtitle}
                   </p>
                   <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 text-[11px] text-[#9E9A90]">
+                    <span className="inline-flex items-center gap-1.5 text-[11px] text-[#726D63]">
                       <Users className="w-3.5 h-3.5" />
                       {t('events.upToGuests', { count: event.guestCount })}
                     </span>
@@ -362,7 +362,7 @@ export default function Events() {
             {t('events.testimonialQuote')}
           </blockquote>
           <p className="text-[13px] text-[#6B6860]">{t('events.testimonialAuthor')}</p>
-          <p className="text-[11px] text-[#9E9A90] mt-1">{t('events.testimonialRole')}</p>
+          <p className="text-[11px] text-[#726D63] mt-1">{t('events.testimonialRole')}</p>
         </div>
       </section>
 

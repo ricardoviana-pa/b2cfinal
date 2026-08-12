@@ -97,13 +97,23 @@ export default function ExperienceBookingCard({
     <div className="bg-[#F5F1EB] border border-[#E8E4DC]">
       {/* Price headline */}
       <div className="px-7 pt-7 pb-5 border-b border-[#E8E4DC]">
-        <p className="text-[10px] tracking-[0.08em] uppercase text-[#9E9A90] font-medium mb-1">From</p>
-        <p className="text-[28px] font-display text-[#1A1A18] leading-none">
-          €{priceFrom}
-          <span className="text-[12px] text-[#9E9A90] ml-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
-            / person
-          </span>
-        </p>
+        {priceFrom > 0 ? (
+          <>
+            <p className="text-[10px] tracking-[0.08em] uppercase text-[#726D63] font-medium mb-1">From</p>
+            <p className="text-[28px] font-display text-[#1A1A18] leading-none">
+              €{priceFrom}
+              <span className="text-[12px] text-[#726D63] ml-1" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                / person
+              </span>
+            </p>
+          </>
+        ) : (
+          /* No fixed per-person price (e.g. private charter) — show the label;
+             exact pricing comes from the live Bókun widget below. */
+          <p className="text-[22px] font-display text-[#1A1A18] leading-tight">
+            {priceLabel || 'Price on request'}
+          </p>
+        )}
         {duration && (
           <p className="text-[11px] text-[#6B6860] mt-2" style={{ fontWeight: 300 }}>
             {duration} · Private experience
@@ -117,7 +127,7 @@ export default function ExperienceBookingCard({
           calendar as before. */}
       {hasBokun && isMultiOption ? (
         <div className="bg-white px-7 py-6">
-          <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#9E9A90] mb-3">
+          <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-3">
             {t('experience.chooseOption', 'Choose your option')}
           </p>
           <div className="space-y-2.5 mb-5">
@@ -142,18 +152,18 @@ export default function ExperienceBookingCard({
               >
                 <div className="min-w-0">
                   <p className="text-[13px] text-[#1A1A18] font-medium leading-tight">{opt.name}</p>
-                  {opt.detail && <p className="text-[11px] text-[#9E9A90] mt-0.5">{opt.detail}</p>}
+                  {opt.detail && <p className="text-[11px] text-[#726D63] mt-0.5">{opt.detail}</p>}
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   {opt.priceFrom ? (
                     <span className="text-[13px] text-[#1A1A18] font-medium whitespace-nowrap">€{opt.priceFrom}</span>
                   ) : null}
-                  <ChevronRight className="w-4 h-4 text-[#9E9A90] group-hover:text-[#1A1A18] group-hover:translate-x-0.5 transition-all" />
+                  <ChevronRight className="w-4 h-4 text-[#726D63] group-hover:text-[#1A1A18] group-hover:translate-x-0.5 transition-all" />
                 </div>
               </button>
             ))}
           </div>
-          <p className="text-center text-[11px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
+          <p className="text-center text-[11px] text-[#726D63]" style={{ fontWeight: 300 }}>
             {t('experience.pickOptionHint', 'Select a tour to check live availability')}
           </p>
           <BokunWidgetModal
@@ -200,7 +210,7 @@ export default function ExperienceBookingCard({
           >
             Check availability
           </a>
-          <p className="text-center text-[12px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
+          <p className="text-center text-[12px] text-[#726D63]" style={{ fontWeight: 300 }}>
             <a
               href={waHref}
               target="_blank"
@@ -232,7 +242,7 @@ export default function ExperienceBookingCard({
           </div>
         </div>
         {hasBokun && (
-          <p className="text-center text-[12px] text-[#9E9A90] mt-4" style={{ fontWeight: 300 }}>
+          <p className="text-center text-[12px] text-[#726D63] mt-4" style={{ fontWeight: 300 }}>
             {t('experience.orLabel', 'or')}{' '}
             <a
               href={waHref}

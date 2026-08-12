@@ -5,7 +5,9 @@
 
 export const IMAGES = {
   // Hero images
-  heroMain: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-main-96HXfBCK752avi2daWhgmd.webp',
+  // Homepage cover — Carcavelos Manor House: the 18th-century estate with its
+  // lap pool and mature grounds.
+  heroMain: '/hero/home-carcavelos-manor.webp',
   heroHomes: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp',
 
   // Destination images
@@ -203,4 +205,18 @@ export function optimizeGuestyImage(url: string | undefined | null, width = 900)
   // Already has a transform segment (starts with `x_` right after /upload/).
   if (/\/image\/upload\/[a-z]{1,3}_/.test(url)) return url;
   return url.replace('/image/upload/', `/image/upload/w_${width},q_auto,f_auto/`);
+}
+
+/**
+ * Build a responsive `srcSet` for a Guesty image at several widths, so the
+ * browser (guided by the element's `sizes`) downloads a variant matched to the
+ * display size × DPR — small on phones, full-res on retina desktops. Returns ""
+ * for non-Guesty or already-transformed URLs (in which case just use `src`).
+ */
+export function guestySrcSet(url: string | undefined | null, widths: number[]): string {
+  if (!url || !url.includes('assets.guesty.com/image/upload/')) return '';
+  if (/\/image\/upload\/[a-z]{1,3}_/.test(url)) return '';
+  return widths
+    .map((w) => `${url.replace('/image/upload/', `/image/upload/w_${w},q_auto,f_auto/`)} ${w}w`)
+    .join(', ');
 }

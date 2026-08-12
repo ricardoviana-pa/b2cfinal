@@ -141,7 +141,7 @@ export default function ExperienceRelatedExperiences({
               const hasImage = !!item.image;
               const imageUrl =
                 item.image ||
-                'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23E8E4DC" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="system-ui" font-size="14" fill="%239E9A90"%3ENo image%3C/text%3E%3C/svg%3E';
+                'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23E8E4DC" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="system-ui" font-size="14" fill="%23726D63"%3ENo image%3C/text%3E%3C/svg%3E';
 
               return (
                 <Link key={idx} href={href} className="flex-shrink-0 w-full md:w-80 snap-start block bg-white border border-[#E8E4DC] overflow-hidden hover:shadow-md transition-shadow">
@@ -192,7 +192,7 @@ export default function ExperienceRelatedExperiences({
                       {/* Metadata row: duration + price */}
                       <div className="flex items-baseline justify-between">
                         {item.duration && (
-                          <p className="text-[11px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
+                          <p className="text-[11px] text-[#726D63]" style={{ fontWeight: 300 }}>
                             {item.duration}
                           </p>
                         )}

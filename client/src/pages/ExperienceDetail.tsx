@@ -223,14 +223,18 @@ export default function ExperienceDetail() {
       touristType: ['Adventure', 'Nature', 'Sport'],
       brand: { '@id': 'https://www.portugalactive.com/#organization' },
       provider: { '@id': 'https://www.portugalactive.com/#organization' },
-      offers: {
-        '@type': 'Offer',
-        price: exp.priceFrom || 0,
-        priceCurrency: 'EUR',
-        availability: 'https://schema.org/InStock',
-        url,
-        validFrom: new Date().toISOString().split('T')[0],
-      },
+      // Only emit an Offer with a real price — a price:0 offer is invalid
+      // structured data (e.g. the yacht defers pricing to the live Bókun widget).
+      ...(exp.priceFrom && exp.priceFrom > 0 ? {
+        offers: {
+          '@type': 'Offer',
+          price: exp.priceFrom,
+          priceCurrency: 'EUR',
+          availability: 'https://schema.org/InStock',
+          url,
+          validFrom: new Date().toISOString().split('T')[0],
+        },
+      } : {}),
       ...(exp.duration && { duration: exp.duration }),
       ...(exp.meetingPoint && {
         contentLocation: {
@@ -340,7 +344,7 @@ export default function ExperienceDetail() {
 
       {/* ── Breadcrumb ── */}
       <nav aria-label="Breadcrumb" className="container pt-20 pb-3">
-        <ol className="flex items-center gap-0.5 text-[12px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
+        <ol className="flex items-center gap-0.5 text-[12px] text-[#726D63]" style={{ fontWeight: 300 }}>
           <li>
             <Link
               href="/"
@@ -467,7 +471,7 @@ export default function ExperienceDetail() {
             )}
             <button
               onClick={handleShare}
-              className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.08em] uppercase text-[#9E9A90] hover:text-[#1A1A18] transition-colors"
+              className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.08em] uppercase text-[#726D63] hover:text-[#1A1A18] transition-colors"
             >
               <Share2 className="w-3.5 h-3.5" /> {t('experienceDetail.share')}
             </button>
@@ -605,7 +609,7 @@ export default function ExperienceDetail() {
                       <ul className="space-y-2.5">
                         {exp.notIncluded.map((item, i) => (
                           <li key={i} className="flex items-start gap-3">
-                            <X className="w-4 h-4 text-[#9E9A90] shrink-0 mt-0.5" />
+                            <X className="w-4 h-4 text-[#726D63] shrink-0 mt-0.5" />
                             <span className="text-[14px] text-[#6B6860]" style={{ fontWeight: 300 }}>
                               {item}
                             </span>
@@ -793,7 +797,7 @@ export default function ExperienceDetail() {
                 <div className="mt-3 p-4 bg-[#F5F1EB] border border-[#E8E4DC] text-center">
                   <p className="text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>
                     {t('experienceDetail.sameExperienceOnOta')}{' '}
-                    <span className="line-through text-[#9E9A90]">€{exp.priceOta}</span>
+                    <span className="line-through text-[#726D63]">€{exp.priceOta}</span>
                   </p>
                   <p className="text-[13px] text-[#8B7355] font-medium mt-1">
                     {t('experienceDetail.youSavePerPerson', { amount: exp.priceOta - priceFrom })}
@@ -843,7 +847,7 @@ export default function ExperienceDetail() {
         <div className="flex items-center justify-end">
           <Link
             href="/experiences"
-            className="inline-flex items-center gap-2 text-[13px] font-medium text-[#9E9A90] hover:text-[#1A1A18] transition-colors"
+            className="inline-flex items-center gap-2 text-[13px] font-medium text-[#726D63] hover:text-[#1A1A18] transition-colors"
           >
             <ArrowLeft className="w-4 h-4" /> {t('experienceDetail.allExperiences')}
           </Link>
@@ -860,6 +864,7 @@ export default function ExperienceDetail() {
       <ExperienceMobileBookingBar
         experienceName={exp.name}
         priceFrom={priceFrom}
+        priceLabel={exp.price}
         whatsappMessage={exp.whatsappMessage || ''}
         maxGroupSize={exp.groupSizeRange?.max}
         bokunActivityId={(exp as any).bokunActivityId}

@@ -19,7 +19,7 @@ const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItine
 import productsData from '@/data/products.json';
 import destinationsData from '@/data/destinations.json';
 import type { Product, Destination, Property } from '@/lib/types';
-import { getPropertyImages, optimizeGuestyImage } from '@/lib/images';
+import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
 const BookingWidget = lazy(() => import('@/components/booking/BookingWidget'));
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -249,8 +249,9 @@ function cleanDescription(raw: string): string {
     .trim();
 }
 
-function Lightbox({ images, initialIndex, propertyName, destName, onClose, t }: {
+function Lightbox({ images, rawImages, initialIndex, propertyName, destName, onClose, t }: {
   images: string[];
+  rawImages?: string[];
   initialIndex: number;
   propertyName: string;
   destName: string;
@@ -370,6 +371,8 @@ function Lightbox({ images, initialIndex, propertyName, destName, onClose, t }: 
 
         <img
           src={images[idx]}
+          srcSet={guestySrcSet(rawImages?.[idx], [1080, 1600, 2560])}
+          sizes="100vw"
           alt={`${propertyName} – ${destName} – image ${idx + 1} of ${total}`}
           className="max-w-full max-h-full object-contain select-none"
           decoding="async"
@@ -465,7 +468,7 @@ function DescriptionSection({ description, sections, propertyName, locality, des
           {visibleBlocks.map((b) => (
             <div key={b.key} className={b.label ? '' : 'body-lg'}>
               {b.label && (
-                <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#9E9A90] mb-2.5">{labelFor(b)}</h3>
+                <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#726D63] mb-2.5">{labelFor(b)}</h3>
               )}
               <div className={b.label ? 'space-y-3 text-[14px] text-[#6B6860] leading-relaxed' : 'space-y-4'} style={b.label ? { fontWeight: 300 } : undefined}>
                 {b.paragraphs.map((para, i) => <p key={i}>{para}</p>)}
@@ -903,7 +906,7 @@ export default function PropertyDetail() {
         <Header />
         <div className="container max-w-lg py-24 text-center">
           <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#F5F1EB]">
-            <AlertTriangle className="w-6 h-6 text-[#9E9A90]" />
+            <AlertTriangle className="w-6 h-6 text-[#726D63]" />
           </div>
           <h1 className="headline-md mb-3">{t('propertyDetail.errorTitle', 'Something went wrong')}</h1>
           <p className="body-lg mb-8">{t('propertyDetail.errorBody', 'We couldn\'t load this property. Please try again.')}</p>
@@ -917,10 +920,14 @@ export default function PropertyDetail() {
     );
   }
 
-  // Hero gallery images via Cloudinary transform (resize + WebP/AVIF). The
-  // full-resolution originals are kept for the lightbox (property.images).
-  const images = (property.images?.length ? property.images : getPropertyImages(property.slug))
-    .map((img: string) => optimizeGuestyImage(img, 1200));
+  // Gallery images via Cloudinary transform (resize + WebP/AVIF). Two sizes:
+  // 1600px for the hero/grid (crisp on retina without bloating LCP), and 2560px
+  // for the full-screen lightbox where photos are scrutinised — the Guesty
+  // masters are ≥2560px, so this is real detail, not upscaling. Serving 1200px
+  // everywhere is what made photos look pixelated full-screen.
+  const sourceImages = property.images?.length ? property.images : getPropertyImages(property.slug);
+  const images = sourceImages.map((img: string) => optimizeGuestyImage(img, 1600));
+  const lightboxImages = sourceImages.map((img: string) => optimizeGuestyImage(img, 2560));
   const totalImages = Math.max(images.length, 1);
   const whatsappUrl = `https://wa.me/351927161771?text=${encodeURIComponent(property.whatsappMessage || `Hi, I am interested in ${property.name}`)}`;
 
@@ -952,7 +959,7 @@ export default function PropertyDetail() {
           </p>
           <div className="flex items-center gap-1.5 mb-4">
             <BadgeCheck size={14} className="text-[#8B7355]" />
-            <span className="text-[11px] tracking-[0.02em] text-[#9E9A90] font-medium">{t('property.directConcierge')}</span>
+            <span className="text-[11px] tracking-[0.02em] text-[#726D63] font-medium">{t('property.directConcierge')}</span>
           </div>
           <div className="space-y-3">
             <Link
@@ -980,8 +987,8 @@ export default function PropertyDetail() {
           { icon: Headphones, label: t('trust.conciergeIncluded', 'Concierge included') },
         ] as const).map((item, i) => (
           <div key={i} className="flex items-center gap-2">
-            <item.icon size={14} className="text-[#9E9A90] shrink-0" />
-            <span className="text-[12px] text-[#9E9A90] leading-tight" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{item.label}</span>
+            <item.icon size={14} className="text-[#726D63] shrink-0" />
+            <span className="text-[12px] text-[#726D63] leading-tight" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{item.label}</span>
           </div>
         ))}
       </div>
@@ -996,7 +1003,7 @@ export default function PropertyDetail() {
 
         {/* Breadcrumbs */}
         <nav aria-label="Breadcrumb" className="container pt-20 pb-3">
-          <ol className="flex items-center gap-0.5 text-[12px] text-[#9E9A90]" style={{ fontWeight: 300 }}>
+          <ol className="flex items-center gap-0.5 text-[12px] text-[#726D63]" style={{ fontWeight: 300 }}>
             <li><Link href="/" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">{t('propertyDetail.breadcrumbHome', 'Home')}</Link></li>
             <li className="text-[#E8E4DC]">/</li>
             <li><Link href="/homes" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">{t('propertyDetail.breadcrumbHomes', 'Homes')}</Link></li>
@@ -1032,9 +1039,9 @@ export default function PropertyDetail() {
             {(images.length ? images : ['']).map((img: string, idx: number) => (
               <div key={idx} className="relative shrink-0 h-full bg-[#E8E4DC] img-fallback" style={{ width: `${100 / totalImages}%` }}>
                 {img ? (
-                  <img src={img} alt={`${property.name} – luxury villa in ${destName}, Portugal – image ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" width={1200} height={900} loading={idx === 0 ? 'eager' : 'lazy'} decoding="async" {...(idx === 0 ? { fetchPriority: 'high' as const } : {})} draggable={false} onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }} />
+                  <img src={img} srcSet={guestySrcSet(sourceImages[idx], [640, 828, 1080, 1440])} sizes="100vw" alt={`${property.name} – luxury villa in ${destName}, Portugal – image ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" width={1200} height={900} loading={idx === 0 ? 'eager' : 'lazy'} decoding="async" {...(idx === 0 ? { fetchPriority: 'high' as const } : {})} draggable={false} onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }} />
                 ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-[#9E9A90] text-sm">{t('propertyDetail.noImage')}</div>
+                  <div className="absolute inset-0 flex items-center justify-center text-[#726D63] text-sm">{t('propertyDetail.noImage')}</div>
                 )}
               </div>
             ))}
@@ -1061,7 +1068,7 @@ export default function PropertyDetail() {
               onClick={() => { setLightboxImage(0); setLightboxOpen(true); }}
             >
               {images[0] && (
-                <img src={images[0]} alt={`${property.name} – luxury villa in ${destName}, Portugal`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" loading="eager" fetchPriority="high" draggable={false} />
+                <img src={images[0]} srcSet={guestySrcSet(sourceImages[0], [768, 1080, 1440])} sizes="(min-width: 1024px) 50vw, 100vw" alt={`${property.name} – luxury villa in ${destName}, Portugal`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" loading="eager" fetchPriority="high" draggable={false} />
               )}
             </div>
             {/* 4 smaller images — right half */}
@@ -1072,7 +1079,7 @@ export default function PropertyDetail() {
                 onClick={() => { if (images[idx]) { setLightboxImage(idx); setLightboxOpen(true); } }}
               >
                 {images[idx] ? (
-                  <img src={images[idx]} alt={`${property.name} – image ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" decoding="async" draggable={false} />
+                  <img src={images[idx]} srcSet={guestySrcSet(sourceImages[idx], [400, 640, 828])} sizes="(min-width: 1024px) 25vw, 0px" alt={`${property.name} – image ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" decoding="async" draggable={false} />
                 ) : (
                   <div className="absolute inset-0 bg-[#F5F1EB]" />
                 )}
@@ -1108,7 +1115,7 @@ export default function PropertyDetail() {
             <p className="text-[15px] text-[#6B6860] italic mb-4 max-w-2xl leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{property.tagline}</p>
           )}
           <div className="flex items-center gap-2 text-[#6B6860] mb-8">
-            <MapPin size={14} className="text-[#9E9A90]" />
+            <MapPin size={14} className="text-[#726D63]" />
             <span className="text-[13px]" style={{ fontWeight: 300 }}>{property.locality}, Portugal</span>
           </div>
 
@@ -1212,7 +1219,7 @@ export default function PropertyDetail() {
                         <div key={group.category} className="break-inside-avoid mb-6">
                           <div className="flex items-center gap-2 mb-2.5">
                             <group.icon size={13} className="text-[#8B7355] shrink-0" />
-                            <h3 className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#9E9A90]">{t(group.label)}</h3>
+                            <h3 className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#726D63]">{t(group.label)}</h3>
                           </div>
                           <ul className="space-y-1.5">
                             {group.items.map((item, idx) => (
@@ -1232,7 +1239,7 @@ export default function PropertyDetail() {
                               <div key={group.category} className="break-inside-avoid mb-6">
                                 <div className="flex items-center gap-2 mb-2.5">
                                   <group.icon size={13} className="text-[#8B7355] shrink-0" />
-                                  <h3 className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#9E9A90]">{t(group.label)}</h3>
+                                  <h3 className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#726D63]">{t(group.label)}</h3>
                                 </div>
                                 <ul className="space-y-1.5">
                                   {group.items.map((item, idx) => (
@@ -1257,7 +1264,7 @@ export default function PropertyDetail() {
                     )}
                   </>
                 ) : (
-                  <p className="body-md text-[#9E9A90]">{t('propertyDetail.amenitiesContact')}</p>
+                  <p className="body-md text-[#726D63]">{t('propertyDetail.amenitiesContact')}</p>
                 )}
               </section>
 
@@ -1270,14 +1277,14 @@ export default function PropertyDetail() {
                 <section>
                   <div className="flex items-baseline justify-between gap-4 mb-6">
                     <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18]">{t('propertyDetail.bedroomsTitle', 'Bedrooms & Sleeping Arrangements')}</h2>
-                    <p className="text-[12px] text-[#9E9A90] hidden sm:block shrink-0">
+                    <p className="text-[12px] text-[#726D63] hidden sm:block shrink-0">
                       {t('propertyDetail.sleepsSummary', { beds: property.bedrooms, guests: property.maxGuests, defaultValue: '{{beds}} bedrooms · sleeps {{guests}}' })}
                     </p>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-7">
                     {property.rooms.map((room: any, roomIdx: number) => (
                       <div key={roomIdx} className="pt-4 border-t border-[#E8E4DC]">
-                        <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#9E9A90] mb-3">{room.name}</h3>
+                        <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#726D63] mb-3">{room.name}</h3>
                         {room.beds && room.beds.length > 0 ? (
                           <div className="space-y-2.5">
                             {room.beds.map((bed: any, bedIdx: number) => {
@@ -1293,7 +1300,7 @@ export default function PropertyDetail() {
                             })}
                           </div>
                         ) : (
-                          <span className="text-[12px] text-[#9E9A90]">{t('bedConfig.notAvailable')}</span>
+                          <span className="text-[12px] text-[#726D63]">{t('bedConfig.notAvailable')}</span>
                         )}
                       </div>
                     ))}
@@ -1318,7 +1325,7 @@ export default function PropertyDetail() {
                   cards; whole card opens the request modal. */}
               <section>
                 <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-2">{t('propertyDetail.servicesTitle')}</h2>
-                <p className="body-md text-[#9E9A90] mb-6">{t('propertyDetail.servicesSubtitle')}</p>
+                <p className="body-md text-[#726D63] mb-6">{t('propertyDetail.servicesSubtitle')}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                   {services.map(service => (
                     <button
@@ -1344,7 +1351,7 @@ export default function PropertyDetail() {
                         <div className="flex items-baseline justify-between pt-3 border-t border-[#E8E4DC]">
                           <p className="text-[13px] font-medium text-[#1A1A18]">
                             {service.priceFrom ? t('propertyDetail.fromPrice', { price: Math.round(service.priceFrom).toLocaleString(intlLocale(i18n.language)) }) : t('bookingWidget.included')}
-                            <span className="text-[10px] text-[#9E9A90] font-normal ml-1">{service.priceSuffix}</span>
+                            <span className="text-[10px] text-[#726D63] font-normal ml-1">{service.priceSuffix}</span>
                           </p>
                           <span className="inline-flex items-center gap-1.5 text-[11px] font-medium tracking-[0.06em] uppercase text-[#8B7355] group-hover:text-[#1A1A18] transition-colors">
                             {t('propertyDetail.requestService', 'Request')} <ArrowRight className="w-3 h-3" />
@@ -1362,7 +1369,7 @@ export default function PropertyDetail() {
               {adventures.length > 0 && (
                 <section>
                   <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-2">{t('propertyDetail.adventuresTitle')}</h2>
-                  <p className="body-md text-[#9E9A90] mb-6">{t('propertyDetail.adventuresSubtitle', { destination: destName })}</p>
+                  <p className="body-md text-[#726D63] mb-6">{t('propertyDetail.adventuresSubtitle', { destination: destName })}</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                     {adventures.slice(0, 6).map(adventure => {
                       const meta: string[] = [];
@@ -1400,7 +1407,7 @@ export default function PropertyDetail() {
                             <div className="flex items-baseline justify-between pt-3 border-t border-[#E8E4DC]">
                               <p className="text-[13px] font-medium text-[#1A1A18]">
                                 {adventure.priceFrom ? t('propertyDetail.fromPrice', { price: Math.round(adventure.priceFrom).toLocaleString(intlLocale(i18n.language)) }) : t('propertyDetail.custom')}
-                                <span className="text-[10px] text-[#9E9A90] font-normal ml-1">{adventure.priceSuffix}</span>
+                                <span className="text-[10px] text-[#726D63] font-normal ml-1">{adventure.priceSuffix}</span>
                               </p>
                               <span className="inline-flex items-center gap-1.5 text-[11px] font-medium tracking-[0.06em] uppercase text-[#8B7355] group-hover:text-[#1A1A18] transition-colors">
                                 {t('propertyDetail.viewDetails', 'View')} <ArrowRight className="w-3 h-3" />
@@ -1473,7 +1480,7 @@ export default function PropertyDetail() {
               <p className="text-[13px] text-[#1A1A18] font-medium">
                 {t('property.selectDatesForPrice')}
               </p>
-              <p className="text-[11px] text-[#9E9A90] flex items-center gap-1 mt-0.5">
+              <p className="text-[11px] text-[#726D63] flex items-center gap-1 mt-0.5">
                 <BadgeCheck size={12} className="text-[#8B7355]" /> {t('property.conciergeShort')}
               </p>
             </div>
@@ -1506,7 +1513,7 @@ export default function PropertyDetail() {
                 <DrawerTitle className="font-display text-[16px] font-light text-[#1A1A18] truncate">
                   {property.name}
                 </DrawerTitle>
-                <DrawerClose className="shrink-0 text-[#9E9A90] hover:text-[#1A1A18] transition-colors">
+                <DrawerClose className="shrink-0 text-[#726D63] hover:text-[#1A1A18] transition-colors">
                   <X size={20} />
                 </DrawerClose>
               </DrawerHeader>
@@ -1576,7 +1583,8 @@ export default function PropertyDetail() {
       {/* Fullscreen lightbox */}
       {lightboxOpen && (
         <Lightbox
-          images={images}
+          images={lightboxImages}
+          rawImages={sourceImages}
           initialIndex={lightboxImage}
           propertyName={property.name}
           destName={destName}

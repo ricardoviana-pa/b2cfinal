@@ -67,7 +67,7 @@ export default function ItineraryDrawer() {
             <ClipboardCheck className="w-5 h-5 text-[#8B7355]" />
             <h2 className="text-[1.125rem] font-display text-[#1A1A18]">My Itinerary</h2>
             {itemCount > 0 && (
-              <span className="text-[12px] text-[#9E9A90]">({itemCount})</span>
+              <span className="text-[12px] text-[#726D63]">({itemCount})</span>
             )}
           </div>
           <button
@@ -85,8 +85,8 @@ export default function ItineraryDrawer() {
           {items.length === 0 ? (
             <div className="text-center py-16">
               <ClipboardCheck className="w-10 h-10 text-[#E8E4DC] mx-auto mb-4" />
-              <p className="text-[15px] text-[#9E9A90] mb-2">{t('itinerary.empty')}</p>
-              <p className="text-[13px] text-[#9E9A90]/70 leading-relaxed">{t('itinerary.emptyBody')}</p>
+              <p className="text-[15px] text-[#726D63] mb-2">{t('itinerary.empty')}</p>
+              <p className="text-[13px] text-[#726D63]/70 leading-relaxed">{t('itinerary.emptyBody')}</p>
               <button
                 onClick={() => setIsOpen(false)}
                 className="mt-6 text-[12px] tracking-[0.08em] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors"
@@ -100,7 +100,7 @@ export default function ItineraryDrawer() {
               {/* Guest info */}
               <div className="space-y-3 mb-6">
                 <div>
-                  <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-1.5 block">
+                  <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-1.5 block">
                     YOUR NAME *
                   </label>
                   <input
@@ -114,7 +114,7 @@ export default function ItineraryDrawer() {
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-1.5 block">
+                  <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-1.5 block">
                     YOUR EMAIL *
                   </label>
                   <input
@@ -128,7 +128,7 @@ export default function ItineraryDrawer() {
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-1.5 block">
+                  <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-1.5 block">
                     PROPERTY / DATES
                   </label>
                   <input
@@ -150,7 +150,7 @@ export default function ItineraryDrawer() {
                     <div key={item.id} className="flex items-start justify-between py-3 border-b border-[#E8E4DC]/50">
                       <div className="flex-1 min-w-0">
                         <p className="text-[14px] font-medium text-[#1A1A18]">{item.product.name}</p>
-                        <div className="text-[12px] text-[#9E9A90] mt-1 space-y-0.5">
+                        <div className="text-[12px] text-[#726D63] mt-1 space-y-0.5">
                           {Object.entries(item.fields).map(([key, val]) => {
                             if (!val || val === 0 || (Array.isArray(val) && val.length === 0)) return null;
                             const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase());
@@ -163,7 +163,7 @@ export default function ItineraryDrawer() {
                       </div>
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="w-8 h-8 flex items-center justify-center text-[#9E9A90] hover:text-[#DC2626] transition-colors flex-shrink-0"
+                        className="w-8 h-8 flex items-center justify-center text-[#726D63] hover:text-[#DC2626] transition-colors flex-shrink-0"
                         style={{ minHeight: 'auto', minWidth: 'auto' }}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -181,7 +181,7 @@ export default function ItineraryDrawer() {
                     <div key={item.id} className="flex items-start justify-between py-3 border-b border-[#E8E4DC]/50">
                       <div className="flex-1 min-w-0">
                         <p className="text-[14px] font-medium text-[#1A1A18]">{item.product.name}</p>
-                        <div className="text-[12px] text-[#9E9A90] mt-1 space-y-0.5">
+                        <div className="text-[12px] text-[#726D63] mt-1 space-y-0.5">
                           {Object.entries(item.fields).map(([key, val]) => {
                             if (!val || val === 0 || (Array.isArray(val) && val.length === 0)) return null;
                             const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase());
@@ -194,7 +194,7 @@ export default function ItineraryDrawer() {
                       </div>
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="w-8 h-8 flex items-center justify-center text-[#9E9A90] hover:text-[#DC2626] transition-colors flex-shrink-0"
+                        className="w-8 h-8 flex items-center justify-center text-[#726D63] hover:text-[#DC2626] transition-colors flex-shrink-0"
                         style={{ minHeight: 'auto', minWidth: 'auto' }}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -206,7 +206,7 @@ export default function ItineraryDrawer() {
 
               {/* Notes */}
               <div className="mb-5">
-                <label className="text-[10px] font-medium tracking-[0.12em] text-[#9E9A90] mb-1.5 block">
+                <label className="text-[10px] font-medium tracking-[0.12em] text-[#726D63] mb-1.5 block">
                   NOTES FOR YOUR CONCIERGE
                 </label>
                 <textarea
@@ -231,7 +231,7 @@ export default function ItineraryDrawer() {
                 <span className="text-[18px] font-display text-[#1A1A18]">€{estimatedTotal.toLocaleString()}</span>
               </div>
             )}
-            <p className="text-[11px] text-[#9E9A90] leading-relaxed">
+            <p className="text-[11px] text-[#726D63] leading-relaxed">
               Prices are estimated. Your concierge will confirm final pricing and availability.
             </p>
             <button
@@ -252,7 +252,7 @@ export default function ItineraryDrawer() {
             </button>
             <button
               onClick={() => setIsOpen(false)}
-              className="w-full text-center text-[12px] tracking-[0.08em] text-[#9E9A90] hover:text-[#1A1A18] transition-colors py-2"
+              className="w-full text-center text-[12px] tracking-[0.08em] text-[#726D63] hover:text-[#1A1A18] transition-colors py-2"
               style={{ minHeight: 'auto' }}
             >
               CONTINUE BROWSING

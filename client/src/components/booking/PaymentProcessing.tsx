@@ -45,7 +45,7 @@ export default function PaymentProcessing({
               <div className="relative mx-auto mt-7 h-1.5 w-full overflow-hidden rounded-full bg-[#EFEBE3]">
                 <span className="progress-indeterminate" />
               </div>
-              <div className="mt-6 flex items-center justify-center gap-2 text-[12px] text-[#9E9A90]">
+              <div className="mt-6 flex items-center justify-center gap-2 text-[12px] text-[#726D63]">
                 <ShieldCheck className="h-3.5 w-3.5 text-[#8B7355]" strokeWidth={1.8} />
                 {t("paymentReturn.secureNote")}
               </div>

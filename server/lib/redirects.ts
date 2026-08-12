@@ -87,10 +87,11 @@ const EXPERIENCE_REDIRECTS: Record<string, string> = {
   "trek-dive-dine": "hike-dive-dine",
   "horseback-riding": "horseback-riding",
   "horse": "horseback-riding",
-  "sailing-experience": "sailing",
+  "sailing-experience": "yacht",
   "stand-up-paddle-experience": "stand-up-paddle",
   "sun-sup-experience": "stand-up-paddle",
-  "sailing-": "sailing",
+  "sailing-": "yacht",
+  "sailing": "yacht",
 };
 
 // === SERVICES / OFFERS ====================================================
@@ -192,8 +193,11 @@ const STATIC_REDIRECTS: Record<string, string> = {
   "/new/author/ricardo/": "/en/about",
   "/new/author/portugalactive/": "/en/about",
   "/new/author/luis/": "/en/about",
-  "/event/sailing-": "/en/experiences/sailing",
-  "/event/sailing-/": "/en/experiences/sailing",
+  "/event/sailing-": "/en/experiences/yacht",
+  "/event/sailing-/": "/en/experiences/yacht",
+  // 2026-08-10: the sailing listing was replaced by the bookable Bókun yacht
+  // experience; 301 the old /experiences/sailing URL so SEO equity carries over.
+  "/experiences/sailing": "/en/experiences/yacht",
   // Property slug renames — Guesty listing titles changed (2026-05-18 sync).
   // The id suffix is stable; only the title-derived prefix changed. Redirect
   // old indexed URLs → new slugs so SEO equity transfers and no 404s.
@@ -205,6 +209,12 @@ const STATIC_REDIRECTS: Record<string, string> = {
   "/homes/ros-dream-boat-up-to-4-guests-bb2b42": "/en/homes/ros-dream-boat-by-portugal-active-bb2b42",
   "/homes/u2-loft-by-portugal-active-1bed48": "/en/homes/u2-loft-at-the-riverside-watermill-1bed48",
   "/homes/watermill-main-house-by-portugal-active-7188ad": "/en/homes/riverside-watermill-house-private-beach-access-7188ad",
+  // Villa Aura — slug was pinned to the old Guesty title ("Connected Premium
+  // Lodge…"); renamed 2026-08-06 to match the current brand name.
+  "/homes/connected-premium-lodge-cowork-and-5min-beach-738c68": "/en/homes/villa-aura-sauna-gym-5min-beach-city-738c68",
+  // 7 Suites & Pool, Gerês Gateway — slug was pinned to an earlier title
+  // ("Golden Valley Retreat"); renamed 2026-08-06 to match the current name.
+  "/homes/golden-valley-retreat-by-portugal-active-013634": "/en/homes/7-suites-pool-geres-gateway-portugal-active-013634",
 };
 
 interface PatternRule {

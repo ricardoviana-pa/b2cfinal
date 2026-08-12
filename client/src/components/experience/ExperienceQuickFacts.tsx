@@ -77,7 +77,7 @@ export default function ExperienceQuickFacts({
                 <Icon className="w-4 h-4 text-[#8B7355]" />
               </div>
               <div className="min-w-0">
-                <p className="text-[10px] tracking-[0.08em] uppercase text-[#9E9A90] font-medium mb-0.5">
+                <p className="text-[10px] tracking-[0.08em] uppercase text-[#726D63] font-medium mb-0.5">
                   {item.label}
                 </p>
                 <p className="text-[13px] text-[#1A1A18]" style={{ fontWeight: 300 }}>

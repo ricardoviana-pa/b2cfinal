@@ -39,7 +39,9 @@ const MAPPING = {
   'horseback-riding': 692748,
   'can-am-buggy': 1046807,
   'ebike-tours': 1219990,
-  // Not yet in Bókun: canyoning, sailing, surf-lessons
+  'yacht': 1237963,
+  // Not yet in Bókun: surf-lessons. (canyoning=1215778 exists but stays unmapped
+  // until its page copy is ready; sailing was replaced by the yacht experience.)
 };
 
 function bokunDate() {
