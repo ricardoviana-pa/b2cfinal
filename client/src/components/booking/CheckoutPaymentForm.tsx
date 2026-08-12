@@ -325,7 +325,12 @@ function PaymentFormInner({
         const { error: confirmErr, paymentIntent } = await stripe.confirmPayment({
           elements,
           clientSecret,
-          confirmParams: { return_url: window.location.href },
+          confirmParams: {
+            return_url: window.location.href,
+            // O Element esconde país/código postal (fields: never, herdado do
+            // legacy) — o Stripe EXIGE que venham no confirm (teste 12 ago)
+            payment_method_data: { billing_details: { address: { country: "PT", postal_code: "" } } },
+          },
           redirect: "if_required",
         });
         if (confirmErr) {
