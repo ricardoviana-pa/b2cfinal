@@ -5,6 +5,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { bokunResize, bokunSrcSet } from '@/lib/images';
 
 interface ExperienceGalleryProps {
   images: string[];
@@ -45,6 +46,16 @@ export default function ExperienceGallery({ images, alt }: ExperienceGalleryProp
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, [lightboxOpen, next, prev]);
+
+  // Preload the neighbouring lightbox images so ←/→ navigation is instant
+  // instead of "click and wait for it to load".
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    [lightboxIndex - 1, lightboxIndex + 1].forEach((n) => {
+      const src = safeImages[(n + total) % total];
+      if (src) { const im = new Image(); im.src = bokunResize(src, 1600); }
+    });
+  }, [lightboxOpen, lightboxIndex, safeImages, total]);
 
   // Mobile touch handlers
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -87,7 +98,9 @@ export default function ExperienceGallery({ images, alt }: ExperienceGalleryProp
             <div key={i} className="relative shrink-0 h-full" style={{ width: `${100 / total}%` }}>
               {img && (
                 <img
-                  src={img}
+                  src={bokunResize(img, 1080)}
+                  srcSet={bokunSrcSet(img, [640, 1080])}
+                  sizes="100vw"
                   alt={`${alt} – image ${i + 1}`}
                   className="absolute inset-0 w-full h-full object-cover"
                   loading={i === 0 ? 'eager' : 'lazy'}
@@ -111,7 +124,9 @@ export default function ExperienceGallery({ images, alt }: ExperienceGalleryProp
         >
           {main && (
             <img
-              src={main}
+              src={bokunResize(main, 1200)}
+              srcSet={bokunSrcSet(main, [768, 1200, 1600])}
+              sizes="(min-width: 1024px) 58vw, 100vw"
               alt={`${alt} – main image`}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
               loading="eager"
@@ -132,10 +147,12 @@ export default function ExperienceGallery({ images, alt }: ExperienceGalleryProp
               >
                 {img ? (
                   <img
-                    src={img}
+                    src={bokunResize(img, 700)}
+                    srcSet={bokunSrcSet(img, [400, 700])}
+                    sizes="(min-width: 1024px) 21vw, 50vw"
                     alt={`${alt} – image ${i + 2}`}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-                    loading="eager"
+                    loading="lazy"
                     decoding="async"
                   />
                 ) : (
@@ -189,9 +206,12 @@ export default function ExperienceGallery({ images, alt }: ExperienceGalleryProp
             <ChevronRight className="w-8 h-8" />
           </button>
           <img
-            src={safeImages[lightboxIndex]}
+            src={bokunResize(safeImages[lightboxIndex], 1600)}
+            srcSet={bokunSrcSet(safeImages[lightboxIndex], [1080, 1600, 2048])}
+            sizes="92vw"
             alt={`${alt} – lightbox image ${lightboxIndex + 1}`}
             className="max-w-[92vw] max-h-[88vh] object-contain"
+            decoding="async"
             onClick={e => e.stopPropagation()}
           />
           <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-white/70 text-[12px] tracking-[0.08em]">

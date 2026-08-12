@@ -220,3 +220,22 @@ export function guestySrcSet(url: string | undefined | null, widths: number[]): 
     .map((w) => `${url.replace('/image/upload/', `/image/upload/w_${w},q_auto,f_auto/`)} ${w}w`)
     .join(', ');
 }
+
+/**
+ * Resize a Bókun CDN image (imgcdn.bokun.tools) to `w` px wide. Bókun photos are
+ * stored at a fixed width (e.g. ?w=1600), so a gallery/lightbox that shows them
+ * at every context downloads full-size images on each scroll/click. This sets a
+ * context-appropriate width; non-Bókun URLs (local, Guesty) pass through.
+ */
+export function bokunResize(url: string | undefined | null, w: number): string {
+  if (!url) return '';
+  if (!url.includes('imgcdn.bokun.tools')) return url;
+  return `${url.split('?')[0]}?w=${w}`;
+}
+
+/** Responsive srcSet for a Bókun CDN image. Returns "" for non-Bókun URLs. */
+export function bokunSrcSet(url: string | undefined | null, widths: number[]): string {
+  if (!url || !url.includes('imgcdn.bokun.tools')) return '';
+  const base = url.split('?')[0];
+  return widths.map((w) => `${base}?w=${w} ${w}w`).join(', ');
+}

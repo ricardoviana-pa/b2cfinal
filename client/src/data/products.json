@@ -294,6 +294,7 @@
     "slug": "yacht",
     "name": "Private Yacht Experience",
     "type": "adventure",
+    "isActive": true,
     "tagline": "Sunset, sea and the Lima River aboard a private yacht in Viana do Castelo.",
     "description": "River cruises, paddleboarding, swimming, dolphin watching or a golden-hour sunset — a private yacht experience where the Atlantic meets the Lima River, tailored to your day.",
     "image": "https://imgcdn.bokun.tools/d0c24ab9-e777-4870-a93c-7eb35e0be160.jpeg?w=1600",
