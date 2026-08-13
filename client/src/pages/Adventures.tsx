@@ -10,6 +10,7 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import { MapPin, Clock, Check, Play } from 'lucide-react';
 import productsData from '@/data/products.json';
 import experienceDetailsData from '@/data/experienceDetails.json';
+import { cdnResize, cdnSrcSet } from '@/lib/images';
 import type { Product, DestinationSlug } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
 import { localizeProduct } from '@/lib/localizeContent';
@@ -264,7 +265,7 @@ export default function Adventures() {
                   >
                     <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '4/5' }}>
                       {adventure.image ? (
-                        <img src={adventure.image} alt={`${adventure.name} – guided experience in Portugal`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" loading="lazy" width={800} height={1000} decoding="async" />
+                        <img src={cdnResize(adventure.image, 800)} srcSet={cdnSrcSet(adventure.image, [400, 640, 800])} sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw" alt={`${adventure.name} – guided experience in Portugal`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" loading="lazy" width={800} height={1000} decoding="async" />
                       ) : (
                         <div className="w-full h-full placeholder-image" />
                       )}

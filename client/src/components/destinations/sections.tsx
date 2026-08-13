@@ -21,6 +21,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import { ArrowRight, Plane, Train, Car, Globe, Plus, Calendar, Award, Bike } from 'lucide-react';
 import type { Destination, Property, Product } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
+import { cdnResize, cdnSrcSet } from '@/lib/images';
 import PropertyCard from '@/components/property/PropertyCard';
 
 /* ── 1. HERO EDITORIAL ────────────────────────────────────────────────── */
@@ -38,7 +39,9 @@ export function HeroEditorial({ destination: d }: HeroEditorialProps) {
     <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
       {d.coverImage ? (
         <img
-          src={d.coverImage}
+          src={cdnResize(d.coverImage, 1600)}
+          srcSet={cdnSrcSet(d.coverImage, [768, 1280, 1920])}
+          sizes="100vw"
           alt={`${d.name}, Portugal — luxury villa destination`}
           className="absolute inset-0 w-full h-full object-cover"
           width={1600}

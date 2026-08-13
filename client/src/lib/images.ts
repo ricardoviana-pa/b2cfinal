@@ -239,3 +239,30 @@ export function bokunSrcSet(url: string | undefined | null, widths: number[]): s
   const base = url.split('?')[0];
   return widths.map((w) => `${base}?w=${w} ${w}w`).join(', ');
 }
+
+/**
+ * Return a width→url resizer for any image host we can resize on the fly
+ * (Guesty, Bókun, Unsplash, Pexels), or null for hosts we can't (local files,
+ * CloudFront, Webflow) — those keep their single original size.
+ */
+function cdnVariant(url?: string | null): ((w: number) => string) | null {
+  if (!url) return null;
+  if (url.includes('assets.guesty.com/image/upload/') && !/\/image\/upload\/[a-z]{1,3}_/.test(url))
+    return (w) => url.replace('/image/upload/', `/image/upload/w_${w},q_auto,f_auto/`);
+  if (url.includes('imgcdn.bokun.tools')) { const b = url.split('?')[0]; return (w) => `${b}?w=${w}`; }
+  if (url.includes('images.unsplash.com')) { const b = url.split('?')[0]; return (w) => `${b}?w=${w}&q=80&auto=format&fit=crop`; }
+  if (url.includes('images.pexels.com')) { const b = url.split('?')[0]; return (w) => `${b}?auto=compress&cs=tinysrgb&w=${w}`; }
+  return null;
+}
+
+/** Context-appropriate src for any resizable host; passes non-resizable urls through. */
+export function cdnResize(url: string | undefined | null, w: number): string {
+  const v = cdnVariant(url);
+  return v ? v(w) : (url || '');
+}
+
+/** Responsive srcSet across all resizable hosts. "" when the host can't resize. */
+export function cdnSrcSet(url: string | undefined | null, widths: number[]): string {
+  const v = cdnVariant(url);
+  return v ? widths.map((w) => `${v(w)} ${w}w`).join(', ') : '';
+}

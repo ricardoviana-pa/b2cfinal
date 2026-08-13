@@ -7,6 +7,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { loadBlogOverrides, mergeBlogOverride } from '@/lib/localizeBlog';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { cdnResize, cdnSrcSet } from '@/lib/images';
 import { Link } from 'wouter';
 import { Clock, ArrowRight, Calendar, Play } from 'lucide-react';
 import Header from '@/components/layout/Header';
@@ -149,7 +150,9 @@ export default function Blog() {
               <div className="grid md:grid-cols-2 gap-8 md:gap-12">
                 <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] relative">
                   <img
-                    src={getArticleImage(featured)}
+                    src={cdnResize(getArticleImage(featured), 1080)}
+                    srcSet={cdnSrcSet(getArticleImage(featured), [400, 768, 1080])}
+                    sizes="(min-width: 768px) 50vw, 100vw"
                     alt={`${featured.title} – Portugal Active journal`}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
@@ -204,7 +207,9 @@ export default function Blog() {
                 <Link key={article.id} href={`/blog/${article.slug}`} className="group block">
                   <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] mb-4 relative">
                     <img
-                      src={getArticleImage(article)}
+                      src={cdnResize(getArticleImage(article), 768)}
+                      srcSet={cdnSrcSet(getArticleImage(article), [400, 640, 768])}
+                      sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw"
                       alt={`${article.title} – Portugal Active journal`}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"

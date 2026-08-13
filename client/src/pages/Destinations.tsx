@@ -18,7 +18,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
-import { IMAGES } from '@/lib/images';
+import { IMAGES, cdnResize, cdnSrcSet } from '@/lib/images';
 import type { Destination, DestinationRegion } from '@/lib/types';
 
 const destinations = destinationsData as unknown as Destination[];
@@ -43,7 +43,9 @@ function DestinationCard({ dest }: { dest: Destination }) {
     >
       {dest.coverImage ? (
         <img
-          src={dest.coverImage}
+          src={cdnResize(dest.coverImage, 1080)}
+          srcSet={cdnSrcSet(dest.coverImage, [400, 768, 1080])}
+          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
           alt={dest.name}
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
           loading="lazy"
@@ -173,7 +175,9 @@ export default function Destinations() {
                   >
                     {dest.coverImage ? (
                       <img
-                        src={dest.coverImage}
+                        src={cdnResize(dest.coverImage, 768)}
+                        srcSet={cdnSrcSet(dest.coverImage, [400, 640, 768])}
+                        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
                         alt={dest.name}
                         className="absolute inset-0 w-full h-full object-cover"
                         loading="lazy"
