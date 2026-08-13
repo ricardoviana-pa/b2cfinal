@@ -389,6 +389,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Spacious with huge garden surroundings. 3 big bedrooms a large kitchen, places to sit outside, a great pool, bbq and jacuzzi 😀",
+        "guestDisplayName": "Joerg",
+        "guestName": "Joerg",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-13T12:09:20.591Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Alles problemlos geklappt, gute Kommunikation.",
         "guestDisplayName": "Tim",
         "guestName": "Tim",
@@ -704,7 +739,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 9
+    "reviewCount": 10
   },
   {
     "id": "guesty-6a7079007df813008d013634",
@@ -2032,12 +2067,12 @@
       "https://assets.guesty.com/image/upload/v1778167875/production/6957de4388cba42d9e7a905e/yo31tplog4lxbs936b8y.jpg",
       "https://assets.guesty.com/image/upload/v1778167869/production/6957de4388cba42d9e7a905e/qlnjlwdgbkptvxnzrqi8.jpg",
       "https://assets.guesty.com/image/upload/v1778167887/production/6957de4388cba42d9e7a905e/jzmhvmsc0ydgwfms0f6d.jpg",
-      "https://assets.guesty.com/image/upload/v1778167848/production/6957de4388cba42d9e7a905e/zvtzhpybiipo4xhkfjdp.jpg",
       "https://assets.guesty.com/image/upload/v1778167802/production/6957de4388cba42d9e7a905e/fz1fbqa79jeh9d86p7od.jpg",
       "https://assets.guesty.com/image/upload/v1778167869/production/6957de4388cba42d9e7a905e/q3vxi7zktfwm1hhfqtkv.jpg",
       "https://assets.guesty.com/image/upload/v1778167872/production/6957de4388cba42d9e7a905e/liqq64ziqgmllzwtpkuq.jpg",
       "https://assets.guesty.com/image/upload/v1778167830/production/6957de4388cba42d9e7a905e/ipawhw5vq1wyezhaqkzi.jpg",
       "https://assets.guesty.com/image/upload/v1778167834/production/6957de4388cba42d9e7a905e/o2so0108ui6n7av8fsyj.jpg",
+      "https://assets.guesty.com/image/upload/v1778167848/production/6957de4388cba42d9e7a905e/zvtzhpybiipo4xhkfjdp.jpg",
       "https://assets.guesty.com/image/upload/v1778167886/production/6957de4388cba42d9e7a905e/ftylutw0mgeul5oggt4v.jpg",
       "https://assets.guesty.com/image/upload/v1778167889/production/6957de4388cba42d9e7a905e/wvuwlw3gjgjr1033utma.jpg",
       "https://assets.guesty.com/image/upload/v1778167873/production/6957de4388cba42d9e7a905e/ptmdh5m5acmdwhae5tvh.jpg",
@@ -2049,6 +2084,7 @@
       "https://assets.guesty.com/image/upload/v1778167832/production/6957de4388cba42d9e7a905e/npfjii8fz0xombszuokc.jpg",
       "https://assets.guesty.com/image/upload/v1778167866/production/6957de4388cba42d9e7a905e/zyc7ikmojlhwcyi8hbql.jpg",
       "https://assets.guesty.com/image/upload/v1778167869/production/6957de4388cba42d9e7a905e/pbp7fxqpemw5bhgchpmf.jpg",
+      "https://assets.guesty.com/image/upload/v1778167874/production/6957de4388cba42d9e7a905e/ina7sv3qoochdxremhmf.jpg",
       "https://assets.guesty.com/image/upload/v1778167823/production/6957de4388cba42d9e7a905e/vkqvbqgqljzys4rhmswa.jpg",
       "https://assets.guesty.com/image/upload/v1778167844/production/6957de4388cba42d9e7a905e/dig0lvyzodij59wbxuen.jpg",
       "https://assets.guesty.com/image/upload/v1778167790/production/6957de4388cba42d9e7a905e/dgsbgkliuzhzpybfac3m.jpg",
@@ -2079,12 +2115,11 @@
       "https://assets.guesty.com/image/upload/v1778167880/production/6957de4388cba42d9e7a905e/urtjf56s7jbk3nvwhhsp.jpg",
       "https://assets.guesty.com/image/upload/v1778167880/production/6957de4388cba42d9e7a905e/km0h1qa1a84mpaknjxfc.jpg",
       "https://assets.guesty.com/image/upload/v1778167883/production/6957de4388cba42d9e7a905e/dcrvnnvhvqlv9hufhfdy.jpg",
-      "https://assets.guesty.com/image/upload/v1778167874/production/6957de4388cba42d9e7a905e/ina7sv3qoochdxremhmf.jpg",
       "https://assets.guesty.com/image/upload/v1778167867/production/6957de4388cba42d9e7a905e/zkkhniijhqvlyzgpebly.jpg",
       "https://assets.guesty.com/image/upload/v1778167603/production/6957de4388cba42d9e7a905e/cqgdfmzupd8m50tqijj9.jpg",
       "https://assets.guesty.com/image/upload/v1778167600/production/6957de4388cba42d9e7a905e/resh8qqryhjqzi6pnoll.jpg",
-      "https://assets.guesty.com/image/upload/v1778167598/production/6957de4388cba42d9e7a905e/wcreme66xdjuas8mwzz4.jpg",
-      "https://assets.guesty.com/image/upload/v1778167602/production/6957de4388cba42d9e7a905e/owyr8ns4aq0fqqjudmiq.jpg"
+      "https://assets.guesty.com/image/upload/v1778167602/production/6957de4388cba42d9e7a905e/owyr8ns4aq0fqqjudmiq.jpg",
+      "https://assets.guesty.com/image/upload/v1778167598/production/6957de4388cba42d9e7a905e/wcreme66xdjuas8mwzz4.jpg"
     ],
     "description": "At the heart of the Alvarinho region, set among vineyards and the green hills of the Tâmega Valley, lies Alvarinho Villa — a contemporary luxury property designed for exclusive stays. With five private en-suite bedrooms, signature minimalist architecture, a heated granite infinity pool, and a sophisticated, intimate atmosphere, this villa offers a rare experience where design, nature, and comfort live in perfect harmony. Just ten minutes from Amarante, it is the ideal retreat for those seeking privacy, elegance, and truly memorable moments.\n\nSet on an open plateau among the vineyards of northern Portugal, this private villa pairs the clean lines of exposed-concrete architecture with the quiet soul of a restored country estate. Five en-suite bedrooms, each finished with hand-selected materials, are arranged to grant absolute privacy among all guests. The main living room rises in double-height volume, with floor-to-ceiling glass that dissolves the line between inside and garden. The fully equipped designer kitchen is the perfect stage for private chefs or for guests themselves. The dining room, with a table for up to ten, looks directly onto the vines. Outdoors, the heated infinity pool* stretches over the horizon. A covered terrace with barbecue, a fire-pit patio, shaded loungers, and a private bar built into an antique wine barrel invite long, unhurried stays.\n\n*Pool heating is available at an additional cost of €70 per day, with a minimum stay of 5 days. Requests must be made at least 4 days in advance.\n\nAlvarinho Villa sits among the vineyards of the Basto-Amarante sub-region, home to some of the most distinctive red Vinho Verde wines in Portugal. Just 10 minutes from the historic center of Amarante and 50 minutes from Porto, it offers a rare balance between rural seclusion and easy city access. The region is the gateway to the Marão mountains and the Douro wine country, layering landscape, gastronomy, and history within a small radius.\n\nGuests enjoy exclusive access to the entire property, including the heated infinity pool, the gardens, and all interior amenities of the villa. To ensure a truly comfortable and personalized experience, the Portugal Active concierge service is available 24 hours a day, 7 days a week, ready to fulfill any request — from arranging private wine experiences and regional activities to booking private chefs, premium transfers, or bespoke exclusive services. We kindly ask that any additional service be requested at least 72 hours in advance.\n\nImportant notes:\n- During high season (May to October), the pool is regularly serviced to ensure the best possible guest experience.\n- During low season (November to April), the pool is closed.\n- Pool heating is available at an additional cost of €70 per day, with a minimum stay of 5 days. Requests must be made at least 4 days in advance.\n\nIn Amarante, the iconic São Gonçalo Bridge over the Tâmega River, the 16th-century São Gonçalo Church and Monastery, the Amadeo de Souza-Cardoso Museum, and the conventual pastries that made the town famous. Close by, tastings at historic Vinho Verde estates, hiking and gastronomy in the Serra do Marão, day trips to the Douro Valley, Gerês National Park, or downtown Porto.\n\nA stay tailored to each guest. Through Portugal Active, the experience can be complemented with carefully curated exclusive services and activities, designed to make every stay truly memorable.\n\nAmong the available experiences: \nprivate dinners with a chef; \nwine tastings at regional estates; \ntailored wine tours; \npremium transfers; \n24-hour concierge; \ne-MTB routes through the Tâmega Valley; \ncanyoning experiences in the Serra do Marão; \nprivate nature and adventure activities.\n\nAll services and experiences are delivered by certified professionals and can be fully personalized.",
     "descriptionSections": {
@@ -3920,22 +3955,27 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/0ea1e0a7-052e-48-O40lW",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/6421ebd2-5113-46-r2IzL",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/271885f5-bc01-45-J5yNo",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/06a02a89-1cfa-4f-qi7N4",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/7f79c802-ff1c-43-i6zYE",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/2e393b20-8672-46-7Z7Wm",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/ed6bf20d-b94c-46-Bhlzs",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/17950c4f-b8ed-49-2Yokr",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/7f79c802-ff1c-43-i6zYE",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/ed6bf20d-b94c-46-Bhlzs",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/d8b74920-4ce5-45-gBK8q",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/2fc4cdf2-4e4c-4b-NMTvG",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/df685610-dc6d-41-L5NOM",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/e9686a7b-f082-41-WY_WF",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/2e393b20-8672-46-7Z7Wm",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/06a02a89-1cfa-4f-qi7N4",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/5ca9f815-7e97-46-Im1yX",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/35eb9d35-e077-49-RpUNQ",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/409cd36c-da56-47-iAbOA",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/ce93ff5a-3597-43-mQm1U",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/92788232-cf2e-4e-N-cvK",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/400551ae-f6be-4a-nJLo1",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/0cf909d6-376f-48-dzFiY",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/dbfd2439-753b-40-wBXaz",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/ccfd5f80-cbc8-42-m7dQo",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/ef3061f8-827f-40-XtAl8",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/a4c2ea92-c2b3-4d-pwy8t",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/064385e5-63da-47-HHsWS",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/536aa7f9-181e-44-G5KbD",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/5d088d1c-5f8f-4d-R2VL-",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/bac6cd27-09f6-44-tdr2l",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/b23b21a1-e526-45-bpOI6",
@@ -3953,20 +3993,15 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/70681965-e64a-43-pymBJ",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/5d36a653-f1e7-4c-qeYEF",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/6cb1925f-71ca-4f-ovt66",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/536aa7f9-181e-44-G5KbD",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/9c6743b8-3be4-47-jnkiR",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/9ce9fad7-de79-40-PCHK7",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/8e39919b-1e30-44-fpWs9",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/92788232-cf2e-4e-N-cvK",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/400551ae-f6be-4a-nJLo1",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/d8b74920-4ce5-45-gBK8q",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/2fc4cdf2-4e4c-4b-NMTvG",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/df685610-dc6d-41-L5NOM",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/e9686a7b-f082-41-WY_WF",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/1afa9888-9935-46-EN7xn",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/541f3ce1-3e81-47-H5YiB",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/c685ab22-1519-4b-frKIq",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/8471124d-551b-4e-XrCGl",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/4e031727-6af0-45-oIA9W",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/c685ab22-1519-4b-frKIq",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/c9debd21-408f-44-fBIXf"
     ],
     "description": "Calejo House – Pool & Sports & Grill Retreat is a luxury hideaway in the lush heart of Nogueira.\r\nWith five bedrooms, swimming pools for adults and children, a sports court, and an exclusive basement with a billiards room and wine cellar, this home is the perfect retreat for families, groups, or private getaways.\r\nIt’s a space where comfort, privacy, and nature meet with elegance.\n\nCalejo House – Pool & Sports & Grill Retreat is much more than a holiday home — it's a true sanctuary where comfort, leisure, and exclusivity come together to create truly unforgettable moments.\r\n\r\nUpon entering, you're welcomed by a warm entrance hall that provides smooth access to the different areas of the house. On the left, you’ll find a functional, fully equipped kitchen with a guest WC — perfect for shared culinary moments with family or friends. On the right, the simple yet comfortable living room invites you to relax and enjoy laid-back time together. Also on this floor is a more private area with two bedrooms (one with an en-suite bathroom and shower) and a shared bathroom — ideal for those who prefer to avoid stairs.\r\n\r\nUpstairs, two additional bedrooms benefit from natural light and views of the surrounding area, complemented by a shared bathroom — perfect for comfortably hosting larger families or groups.\r\n\r\nThe basement is a true leisure and charm area: a billiards room for lively games and an impressive wine cellar that can hold around 1,000 bottles — an exclusive feature that is sure to delight wine lovers.\r\n\r\nThe property also includes a cosy mini apartment with an independent entrance, fully integrated into the house’s dynamic. This self-contained space, with a double bedroom, bathroom with shower, and kitchen, is ideal for couples, relatives, or guests who value autonomy and privacy during their stay.\r\n\r\nBut it’s outdoors where Calejo House truly shines. Surrounded by a manicured garden, the house offers multiple seating and dining areas, equipped with comfortable furniture — perfect for long afternoons of leisure and open-air dinners under the stars. The BBQ area sets the stage for relaxed, flavourful moments shared in great company.\r\n\r\nThe two swimming pools — one for adults and one for children — are true oases of fun and relaxation. While not heated, they benefit from the naturally warm regional climate, often reaching 28ºC during the summer months. The result? A refreshing and invigorating swimming experience, ideal for every summer day.\r\n\r\nFor those who enjoy staying active, the property features a multi-sport court suitable for tennis, football, or basketball. Right next to it, there is a versatile hall — a multi-purpose space that can host retreats, workshops, family gatherings, or special events, adapting to each guest’s needs and imagination.\r\n\r\nWhether you’re looking for total relaxation, quality time with your loved ones, or an inspiring setting for a unique event, Calejo House – Pool & Grill Retreat has everything you need for a memorable stay — where every detail matters, and each day brings a new discovery.\n\nLocated in the charming and peaceful parish of Nogueira, in the lush heart of Minho, Calejo House – Pool & Sports & Grill Retreat is a true haven for those who value tranquility, comfort, and authenticity.\r\nSurrounded by abundant nature, it invites you to refreshing walks, moments of contemplation, and absolute relaxation at the gentle pace of rural life.\r\n\r\nOne of the parish’s highlights is the Church of São Cláudio de Nogueira, a site of great heritage and spiritual significance that bears witness to centuries of history and religious tradition in the region. Its simple yet imposing architecture, set within a picturesque landscape, calls visitors to explore, reflect, and discover the local cultural heritage.\r\n\r\nDespite its bucolic surroundings, the property is strategically located just minutes from the historic center of Viana do Castelo, the stunning Atlantic beaches, and a rich cultural and gastronomic offer.\r\nNearby, you will find Mini Mercado Regueira, which is usually open Monday to Saturday from 9:00 AM to 8:30 PM, and Sundays from 9:00 AM to 1:00 PM, offering a convenient option for daily shopping (hours may vary).\r\n\r\nCalejo House – Pool & Sports & Grill Retreat is the ideal place for those wishing to escape the hectic pace of everyday life without giving up proximity to everything the region has to offer.\r\n\r\nHere, the balance between seclusion and convenience reaches perfect harmony.\n\nGuests have exclusive access to the entire property, including the pool and indoor facilities. The concierge service from Portugal Active is available 24 hours a day, 7 days a week, to assist with any needs, from organizing local excursions to booking personalized services, such as a private chef. To ensure availability, please request any services at least 72 hours in advance.\r\n\r\nImportant Note:\r\nDuring your stay, regular garden and pool maintenance may take place. These interventions are important to ensure that all equipment remains clean, functional, and safe to use.\r\nDuring the high season (May to October), the pool is regularly maintained to ensure an impeccable experience for guests. During the low season (November to April), the pool will be closed.\n\nThough nestled in a more secluded setting, Calejo House – Pool & Sports & Grill Retreat is accessible via public transport.\r\nThe “Nogueira (Igreja)” bus stop is just a 2-minute walk away and connects to other areas of the municipality, including the centre of Viana do Castelo.\r\nFor those travelling by train, Viana do Castelo station is around a 15-minute drive.\r\nHowever, we recommend arriving by car for greater convenience and freedom during your stay — and to make the most of everything this beautiful region has to offer.\n\n--------Exclusive Concierge Services by Portugal Active--------\r\n\r\nEnhance Your Stay with Our Exclusive Services:\r\n\r\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\r\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\r\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\r\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\r\n\r\n\r\n--------Adventure Experiences--------\r\n\r\n✔️ Horseback Riding:\r\nRide through scenic trails and beaches.\r\n\r\n✔️ Guided Hike, Dive & Dine Tours with Lunch: \r\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\r\n\r\n✔️ E-Bike Wild Tour: \r\nDiscover Viana do Castelo on an e-bike.\r\n\r\nBook Your Stay.\r\nPortugal Active, Your Private Hotel.",
@@ -4112,8 +4147,8 @@
         "name": "Bedroom 4",
         "beds": [
           {
-            "type": "DOUBLE_BED",
-            "quantity": 1
+            "type": "SINGLE_BED",
+            "quantity": 2
           }
         ]
       },
@@ -18542,6 +18577,41 @@
     "areaSquareFeet": 322.9173126,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Really nice and comfy boat in a great location. Had a great time staying there.",
+        "guestDisplayName": "Alec",
+        "guestName": "Alec",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-13T06:17:15.638Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "Le bateau est propre mais Dès notre arrivée et suite pas un manque d’eau , la pompe de distribution du bateau s’est arrêtée ! Nous ( 2 adultes et 2 filles ) privant de douche et laver la vaisselle ! J’ai dus faire le plein d’eau et attendre une réponse le lendemain matin pour arranger la situation! Je déplore le fait par exemple de b’avoir qu’un seul bol sachant que la location est de 4 personnes ! Sam a cependant été très cordiale ! Je pourrais éventuellement conseiller de mettre un micro-ondes",
         "guestDisplayName": "Greg",
@@ -18647,8 +18717,8 @@
         ]
       }
     ],
-    "averageRating": 4.67,
-    "reviewCount": 3
+    "averageRating": 4.75,
+    "reviewCount": 4
   },
   {
     "id": "guesty-69653398bf04fe0013743b98",
