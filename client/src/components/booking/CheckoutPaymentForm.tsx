@@ -229,7 +229,7 @@ function ExpressWalletInner({
       <ExpressCheckoutElement
         options={{
           // Só wallets: cartão, PayPal e Klarna já têm caminho próprio em baixo
-          paymentMethods: { applePay: "auto", googlePay: "auto", link: "never" } as any,
+          paymentMethods: { applePay: "auto", googlePay: "auto", link: "never", klarna: "never", paypal: "never", amazonPay: "never" } as any,
           layout: { maxColumns: 2, maxRows: 1 } as any,
         }}
         onReady={({ availablePaymentMethods }) => setAvailable(!!availablePaymentMethods)}

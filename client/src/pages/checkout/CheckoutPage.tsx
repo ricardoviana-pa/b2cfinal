@@ -1643,25 +1643,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Direct-booking assurance (audit finding D1) */}
-              <div className="bg-pa-warm border border-pa-sand rounded-lg p-4">
-                <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-pa-gold mb-2.5">
-                  {t("checkout.directTitle", "Booking direct with Portugal Active")}
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                  <div className="flex items-center gap-2 text-[12px] text-pa-earth">
-                    <ShieldCheck className="w-4 h-4 text-pa-gold shrink-0" strokeWidth={1.8} />
-                    {t("trust.bestRate", "Best rate guaranteed")}
-                  </div>
-                  <div className="flex items-center gap-2 text-[12px] text-pa-earth">
-                    <BadgeCheck className="w-4 h-4 text-pa-gold shrink-0" strokeWidth={1.8} />
-                    {t("trust.noBookingFees", "No booking fees")}
-                  </div>
-                  <div className="flex items-center gap-2 text-[12px] text-pa-earth">
-                    <Headphones className="w-4 h-4 text-pa-gold shrink-0" strokeWidth={1.8} />
-                    {t("trust.conciergeIncluded", "Concierge included")}
-                  </div>
-                </div>
-              </div>
+              
 
               {/* Payment */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-4">

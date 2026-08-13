@@ -8,6 +8,8 @@ import Footer from "@/components/layout/Footer";
 import { fetchReservation, readThankYou } from "@/lib/booking-api";
 import { pushPurchaseOnce } from "@/lib/datalayer";
 import { formatEurCents, formatBookingDate } from "@/lib/format";
+import { optimizeGuestyImage } from "@/lib/images";
+import propertiesData from "@/data/properties.json";
 import { cancellationPolicyText } from "@/lib/cancellation";
 
 const CONCIERGE_EMAIL = "info@portugalactive.com";
@@ -83,6 +85,7 @@ export default function PaymentThankYouPage() {
   // reliably readable via GET right after creation). Fall back to the server
   // fetch only when the stash is missing (e.g. a later direct visit).
   const stash = readThankYou(id);
+
   const methodParam = searchParams.get("method");
   const method: PaymentMethod =
     stash?.method ??
@@ -163,6 +166,16 @@ export default function PaymentThankYouPage() {
 }
 
 function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
+  // Foto real da casa (feedback 13 ago): lookup local por listingId
+  const propertyPhoto = (() => {
+    try {
+      const items: any[] = Array.isArray(propertiesData) ? (propertiesData as any[]) : (propertiesData as any).properties;
+      const prop = items.find((pr) => (pr.guestyId || String(pr.id || "").replace("guesty-", "")) === (data.listingId ?? ""));
+      const img = Array.isArray(prop?.images) && prop.images.length ? prop.images[0] : null;
+      return img ? optimizeGuestyImage(typeof img === "string" ? img : img.url, 1080) : null;
+    } catch { return null; }
+  })();
+
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
   const currency = data.currency || "EUR";
@@ -221,6 +234,9 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                 </div>
               ) : null}
 
+              {propertyPhoto && (
+                <img src={propertyPhoto} alt={data.listingName || ""} className="mb-5 w-full aspect-[3/2] rounded-lg object-cover" />
+              )}
               <h2 className="headline-sm mb-1.5 text-pa-dark">
                 {data.listingName}
               </h2>

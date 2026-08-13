@@ -43,7 +43,7 @@ async function sendEmail(to: string, subject: string, html: string, replyTo?: st
 /* ================================================================
    TEMPLATE BASE
    ================================================================ */
-function wrapTemplate(content: string): string {
+function wrapTemplate(content: string, _preheader?: string, pt = false): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
@@ -53,8 +53,8 @@ function wrapTemplate(content: string): string {
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
 <!-- Brand band: dark ground with the white site logo -->
-<tr><td style="background:#1A1A18;text-align:center;padding:22px 20px;border-radius:10px 10px 0 0;">
-  <img src="${LOGO_URL}" alt="Portugal Active" height="30" style="height:30px;display:inline-block;" />
+<tr><td style="background:#FDFBF7;text-align:center;padding:24px 20px 18px;border-radius:10px 10px 0 0;">
+  <img src="${LOGO_URL}" alt="Portugal Active" height="32" style="height:32px;display:inline-block;border-radius:6px;" />
 </td></tr>
 <tr><td style="height:26px;background:#FFFFFF;border-left:1px solid #E8E4DC;border-right:1px solid #E8E4DC;"></td></tr>
 
@@ -69,11 +69,7 @@ ${content}
 <tr><td style="padding:30px 0 0 0;"><div style="height:1px;background:#8B7355;"></div></td></tr>
 
 <!-- Footer -->
-<tr><td style="padding:30px 0 0 0;text-align:center;">
-  <p style="font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;margin:0;">Portugal Active</p>
-  <p style="font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;margin:4px 0 0 0;">+351 258 358 434 &middot; booking@portugalactive.com</p>
-  <p style="font-family:Arial,sans-serif;font-size:11px;color:#C4C0B8;margin:16px 0 0 0;">Luxury private villas across Portugal, managed with hotel-grade service.</p>
-</td></tr>
+${brandFooter(pt)}
 
 </table>
 </td></tr>
@@ -521,8 +517,25 @@ const PA = {
   gold: "#8B7355",
 } as const;
 /** Same asset the site header uses (client/src/lib/images.ts logoColor) */
+/** Badge da marca (logo com fundo cozido) — imutável em dark mode dos clientes
+ *  de email; a versão transparente ficava invisível/encaixotada no Gmail dark. */
 const LOGO_URL =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp";
+  "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo_0b76cb12.webp";
+
+/** Rodapé de marca partilhado: hairline dourada, badge, contactos, tagline */
+function brandFooter(pt: boolean): string {
+  return `
+<tr><td style="padding:30px 20px 36px;text-align:center;">
+  <div style="height:1px;background:#C9A96A;opacity:.5;max-width:120px;margin:0 auto 22px;"></div>
+  <img src="${LOGO_URL}" alt="Portugal Active" height="26" style="height:26px;width:auto;display:inline-block;border-radius:5px;" />
+  <p style="font-family:Arial,sans-serif;font-size:12px;color:#726D63;margin:14px 0 0;">
+    <a href="tel:+351258358434" style="color:#726D63;text-decoration:none;">+351 258 358 434</a>
+    &nbsp;·&nbsp;<a href="mailto:booking@portugalactive.com" style="color:#8B7355;text-decoration:none;">booking@portugalactive.com</a>
+    &nbsp;·&nbsp;<a href="https://wa.me/351927161771" style="color:#8B7355;text-decoration:none;">WhatsApp</a>
+  </p>
+  <p style="font-family:Georgia,serif;font-style:italic;font-size:12.5px;color:#9E9A90;margin:10px 0 0;">${pt ? "A privacidade de uma casa. O serviço de um hotel." : "The privacy of a home. The service of a hotel."}</p>
+</td></tr>`;
+}
 /** Site display font with the email-safe serif fallback */
 const SERIF = "'Cormorant Garamond',Georgia,'Times New Roman',serif";
 const SANS = "'DM Sans',Arial,Helvetica,sans-serif";
@@ -642,8 +655,8 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 
 <!-- Top bar: brand-dark band with the white logo (the logoColor asset is
      white-on-transparent, so it needs the dark background to show) -->
-<tr><td style="background:${PA.dark};padding:18px 20px;text-align:center;">
-  <img src="${LOGO_URL}" alt="Portugal Active" height="30" style="height:30px;width:auto;display:inline-block;" />
+<tr><td style="background:#FDFBF7;padding:22px 20px 18px;text-align:center;">
+  <img src="${LOGO_URL}" alt="Portugal Active" height="34" style="height:34px;width:auto;display:inline-block;border-radius:6px;" />
 </td></tr>
 
 <tr><td align="center" style="padding:36px 20px 44px 20px;">
@@ -698,12 +711,7 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 </td></tr>
 
 <!-- Footer -->
-<tr><td style="padding:28px 0 0 0;border-top:1px solid ${PA.sand};">
-  <p style="font-family:${SERIF};font-size:16px;color:${PA.dark};margin:24px 0 0 0;text-align:center;">Portugal Active</p>
-  <p style="font-family:${SANS};font-size:12px;color:${PA.stoneAA};margin:6px 0 0 0;text-align:center;">+351 258 358 434 &middot; booking@portugalactive.com</p>
-  <p style="font-family:${SANS};font-size:11px;color:${PA.stoneAA};margin:14px 0 0 0;text-align:center;">${T.footerTagline}</p>
-  ${data.optoutUrl ? `<p style="font-family:${SANS};font-size:11px;margin:14px 0 0 0;text-align:center;"><a href="${data.optoutUrl}" target="_blank" style="color:${PA.stoneAA};text-decoration:underline;">${T.optout}</a></p>` : ""}
-</td></tr>
+${brandFooter(lang === "pt")}
 
 </table>
 </td></tr>
@@ -929,8 +937,8 @@ export async function sendCheckoutGuestConfirmation(d: {
 
 <!-- Top bar: brand-dark band with the white logo (the logoColor asset is
      white-on-transparent, so it needs the dark background to show) -->
-<tr><td style="background:${PA.dark};padding:18px 20px;text-align:center;">
-  <img src="${LOGO_URL}" alt="Portugal Active" height="30" style="height:30px;width:auto;display:inline-block;" />
+<tr><td style="background:#FDFBF7;padding:22px 20px 18px;text-align:center;">
+  <img src="${LOGO_URL}" alt="Portugal Active" height="34" style="height:34px;width:auto;display:inline-block;border-radius:6px;" />
 </td></tr>
 
 <tr><td align="center" style="padding:36px 20px 44px 20px;">
@@ -1015,11 +1023,7 @@ ${ctaBlock}
 </td></tr>
 
 <!-- Footer -->
-<tr><td style="padding:28px 0 0 0;border-top:1px solid ${PA.sand};">
-  <p style="font-family:${SERIF};font-size:16px;color:${PA.dark};margin:24px 0 0 0;text-align:center;">Portugal Active</p>
-  <p style="font-family:${SANS};font-size:12px;color:${PA.stoneAA};margin:6px 0 0 0;text-align:center;">+351 258 358 434 &middot; booking@portugalactive.com</p>
-  <p style="font-family:${SANS};font-size:11px;color:${PA.stoneAA};margin:14px 0 0 0;text-align:center;">${C.footerTagline}</p>
-</td></tr>
+${brandFooter(lang === "pt")}
 
 </table>
 </td></tr>
@@ -1094,9 +1098,13 @@ export async function sendCheckoutOpsManifest(d: {
     if (d.flex) actions.push({ urgent: false, text: `REGISTAR Flex ativo nesta reserva (remarcacao garantida${d.canonical ? `, ${d.canonical.flexCents / 100} EUR` : ""}).` });
 
     const actionHtml = actions.length
-      ? `<div style="border:2px solid ${actions.some((a) => a.urgent) ? "#B23A2E" : "#8B7355"};border-radius:8px;padding:16px 18px;margin:0 0 20px;">
-           <p style="font:700 13px Arial;color:#B23A2E;margin:0 0 10px;letter-spacing:.06em;">TRATAR AGORA — POR ORDEM</p>
-           ${actions.map((a, i) => `<p style="font:${a.urgent ? "700" : "400"} 14px Arial;color:${a.urgent ? "#B23A2E" : "#1A1A18"};margin:0 0 8px;">${i + 1}. ${a.text}</p>`).join("")}
+      ? `<div style="background:#FDFBF7;border:1px solid #E5DFD3;border-left:4px solid ${actions.some((a) => a.urgent) ? "#B23A2E" : "#C9A96A"};border-radius:10px;padding:18px 20px;margin:0 0 22px;">
+           <p style="font:700 11px Arial;color:${actions.some((a) => a.urgent) ? "#B23A2E" : "#8B7355"};margin:0 0 14px;letter-spacing:.14em;">TRATAR AGORA · POR ORDEM</p>
+           ${actions.map((a, i) => `
+           <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 10px;"><tr>
+             <td valign="top" style="padding-right:12px;"><div style="width:22px;height:22px;border-radius:11px;background:${a.urgent ? "#B23A2E" : "#1A1A18"};color:#fff;font:700 12px/22px Arial;text-align:center;">${i + 1}</div></td>
+             <td style="font:${a.urgent ? "600" : "400"} 13.5px/1.55 Arial;color:#1A1A18;">${a.text}</td>
+           </tr></table>`).join("")}
          </div>`
       : "";
 
@@ -1115,12 +1123,18 @@ export async function sendCheckoutOpsManifest(d: {
       ? `<img src="${d.imageUrl}" alt="${d.propertyName || ""}" width="600" style="display:block;width:100%;height:auto;border-radius:8px;margin:0 0 16px;" />`
       : "";
     const html = wrapTemplate(
-      `<h2 style="font:400 20px Georgia;color:#1A1A18;margin:0 0 14px;">Nova reserva com servicos — ${d.propertyName || ""}</h2>` +
+      `<p style="font:700 10.5px Arial;color:#8B7355;letter-spacing:.16em;margin:0 0 6px;">NOVA RESERVA DIRETA · CHECKOUT 2.0</p>` +
+      `<h2 style="font:400 24px Georgia;color:#1A1A18;margin:0 0 16px;">${d.propertyName || ""}</h2>` +
       actionHtml +
       photoHtml +
       `<table>${rows.join("")}</table>` +
       (extras.length ? `<p style="font:600 13px Arial;margin:14px 0 4px;color:#1A1A18;">Detalhe dos servicos</p>` + extras.map(fmtLine).join("") : "") +
-      `<p style="font:11px Arial;color:#9E9A90;margin-top:16px;">Intent ${d.intentId} · gerado pelo checkout 2.0</p>`,
+      (d.reservationId ? `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:18px 0 0;"><tr><td style="background:#1A1A18;border-radius:8px;">
+        <a href="https://app.guesty.com/reservations/${d.reservationId}" style="display:inline-block;padding:12px 22px;font:600 12px Arial;letter-spacing:.1em;color:#ffffff;text-decoration:none;">ABRIR NO GUESTY →</a>
+      </td></tr></table>` : "") +
+      `<p style="font:10.5px Arial;color:#9E9A90;margin-top:16px;">Intent ${d.intentId} · gerado pelo checkout 2.0</p>`,
+      undefined,
+      true,
     );
     const urgentFlag = needs.length || requests.length ? "ACAO ATE 24H — " : "";
     await sendEmail(BOOKING_ALERT_EMAIL, `[CS] ${urgentFlag}Reserva ${d.confirmationCode || d.intentId.slice(0, 8)} · ${d.propertyName || ""}`, html);
