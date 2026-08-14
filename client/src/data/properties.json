@@ -8525,6 +8525,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Super séjour ! La maison est vraiment top et conforme à 100 % à la description. La clim marche super bien et un grand merci pour la piscine qui a été nettoyée dès le deuxième matin. L'emplacement est génial, à seulement 3 minutes de la plage, et Chafé est vraiment un super joli village. Le propriétaire est super sympa et l'équipe de Portugal Active est au top du service : super réactifs et communication impeccable du début à la fin. On recommande sans hésiter !",
+        "guestDisplayName": "Benjamin",
+        "guestName": "Benjamin",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-13T19:27:57.091Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Nothing to complain about. Everything went smoothly! This is the perfect stay for å trip to Portugal",
         "guestDisplayName": "Daniel",
         "guestName": "Daniel",
@@ -8699,8 +8734,8 @@
         ]
       }
     ],
-    "averageRating": 4.8,
-    "reviewCount": 5
+    "averageRating": 4.83,
+    "reviewCount": 6
   },
   {
     "id": "guesty-696533b7bf04fe00137440f8",
