@@ -1246,6 +1246,41 @@
     "areaSquareFeet": 6287,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Magnifique domaine. Le jardin est exceptionnel, la piscine est immense, et le tennis a été refait récemment. Nous avons passé une superbe semaine à 2 familles. Le village autour n'a pas d'intérêt, mais on l'oublie vite une fois dans le domaine. La cuisine pourrait être mieux équipée et refaite. Il n'y a bizarrement pas de machine à laver...mais c'est bien fait au supermarché à 1mn.",
+        "guestDisplayName": "Michael",
+        "guestName": "Michael",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-14T06:36:30.377Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 2
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "Beautiful place!",
         "guestDisplayName": "Bianca",
@@ -1421,8 +1456,8 @@
         ]
       }
     ],
-    "averageRating": 4.6,
-    "reviewCount": 5
+    "averageRating": 4.67,
+    "reviewCount": 6
   },
   {
     "id": "guesty-6a50d66857c8010015595ad0",
@@ -3947,9 +3982,9 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/d88b1120-c662-46-zwVw0",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/43fef953-c3ee-42-jtPyl",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/c828e75f-545f-4f-RfsmO",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/33aa549d-419d-4d-xYSk6",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/20681724-77d2-4a-WJQiN",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/bd9d3d6f-a328-4d-OTKD0",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/33aa549d-419d-4d-xYSk6",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/93607210-b691-43-kkQlX",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/f172feb6-2a1a-45-_yo6U",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338ed1c09900156e8502/0ea1e0a7-052e-48-O40lW",
@@ -7067,6 +7102,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "La maison correspondant aux descriptifs, propre, lumineuse, bien agencée……\nL’hôte est très agréable et réactif.\nNous y avons passé des vacances en famille géniale.\nJe reviendrai sans hésité.\nJe recommande à 100%.",
+        "guestDisplayName": "Fatima",
+        "guestName": "Fatima",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-12T17:33:40.622Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Super verblijf gehad. Heerlijk uitgerust en optimaal gebruik gemaakt van het privé zwembad.\nAlles was super schoon en zoals omschreven in de advertentie. \nZeker aan te raden.",
         "guestDisplayName": "Nathalie",
         "guestName": "Nathalie",
@@ -7206,8 +7276,8 @@
         ]
       }
     ],
-    "averageRating": 4.75,
-    "reviewCount": 4
+    "averageRating": 4.8,
+    "reviewCount": 5
   },
   {
     "id": "guesty-6a3ba1fce19cb0001dc57ea6",
@@ -12468,7 +12538,6 @@
         "Outdoor seating (furniture)",
         "Oven",
         "Patio or balcony",
-        "Pets allowed",
         "Piano",
         "Private entrance",
         "Refrigerator",
@@ -16527,7 +16596,7 @@
     "destination": "minho",
     "locality": "Viana do Castelo",
     "bedrooms": 5,
-    "bathrooms": 6,
+    "bathrooms": 5.5,
     "maxGuests": 10,
     "priceFrom": 280,
     "pricePerNight": 280,
@@ -16536,11 +16605,12 @@
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/9068b6f2-71ee-4b-0sEWX",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/7c141a39-fab6-4f-7xLWe",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/2fbdc8c6-ab7a-45-2kU-l",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/786428d3-2791-4f-K98Pm",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/acdc50ee-4f5f-41-Ho_L1",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/c10c2e16-b744-44-m6okK",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/424895ec-a425-4a-SX9v_",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/7c141a39-fab6-4f-7xLWe",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/2fbdc8c6-ab7a-45-2kU-l",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/02e25e3b-d8b6-4e-qPkPU",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/664952cd-4311-44-dbrrm",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/495ef1de-acde-4e-QeMUR",
@@ -16555,9 +16625,6 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/2405f245-f042-45-Uht34",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/65b2c783-7610-4a-iV6lW",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/7091502d-06cd-47-wfWK_",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/d6be177b-a1f2-4a-qncFL",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/2199dce1-0062-4a-vpt2N",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/79d0dbca-c4b4-4e-MO2PC",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/8ba029bf-4c47-41-VpuAe",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/128c825d-0fb3-43-VINh2",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/13ddd1b0-24b9-48-DnLZ8",
@@ -16572,7 +16639,6 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/d1e765a5-1b6f-40-9-W2Q",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/67404574-4b57-4a-gRq5e",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/4cdcf918-e3be-40-Kbgvo",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/786428d3-2791-4f-K98Pm",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/2ff05a82-613c-4c-2S0lx",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/2c49ed38-6b21-48-ZmGLc",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/2a133ce6-ce79-4a-zg1gy",
@@ -16583,6 +16649,13 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/b8792cc7-925f-44-GoPRK",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/9bde1c95-6e9b-4c-8kCOr",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/df454ed4-0918-4a-5PRYy",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/c11ac450-6aa3-40-wzAxf",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/d6be177b-a1f2-4a-qncFL",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/72bba2cc-a813-4d-zPsYy",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/35e51c71-7e69-46-NhVQG",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/b9d7af4b-60b8-43-wzKmJ",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/2199dce1-0062-4a-vpt2N",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/fae473a3-9604-47-oVmIy",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/d50638d9-6feb-49-OxBbz",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/6c0369bf-4dc7-4e-hjFcv",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/1d6f59c8-cc06-4b-GXOKP",
@@ -16595,15 +16668,11 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/a1b28933-6693-42-4ktiS",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/28738cfa-a3cf-43-8XEa9",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/5db724b7-6da6-43-xXHIg",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/cbfb6977-4925-4f-5_reg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/f5eea88e-f17d-41-PItcB",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/52e436aa-3a2b-4c-PqoHB",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/c11ac450-6aa3-40-wzAxf",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/cbfb6977-4925-4f-5_reg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/0d5ebe61-c47c-45-zXNt7",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/72bba2cc-a813-4d-zPsYy",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/35e51c71-7e69-46-NhVQG",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/b9d7af4b-60b8-43-wzKmJ",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/fae473a3-9604-47-oVmIy",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/79d0dbca-c4b4-4e-MO2PC",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/ecc9a7d6-cdab-43-85W6U",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/70efa536-c2fa-43-uurcL",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533494b9b64001401b62e/895c28df-437d-46-sS7_B",
@@ -17146,6 +17215,41 @@
     "areaSquareFeet": 8612,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Estancia magnífica en Carreço, amplia luminosa limpia y con todas las comodidades q anunciaban.\nVolveremos a este paraíso",
+        "guestDisplayName": "Carmen",
+        "guestName": "Carmen",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-12T17:38:15.284Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "Gorgeous villa with excellent facilities.\nHad a wonderful weekend away and the villa was a comfortable place to stay.\nLocal taxi drivers helped with transport around to local restaurants/ pubs / bars / beaches as the villa is located in a remote area. \nHosts - Portugal Active were absolutely fabulous with communication. \nI would recommend",
         "guestDisplayName": "Natalie",
@@ -17601,8 +17705,8 @@
         ]
       }
     ],
-    "averageRating": 4.69,
-    "reviewCount": 13
+    "averageRating": 4.71,
+    "reviewCount": 14
   },
   {
     "id": "guesty-69c415701b964f00157188bd",
@@ -23484,7 +23588,6 @@
         "Microwave",
         "Oven",
         "Patio or balcony",
-        "Pets allowed",
         "Piano",
         "Private entrance",
         "Refrigerator",
@@ -23768,7 +23871,6 @@
         "Outdoor seating (furniture)",
         "Oven",
         "Patio or balcony",
-        "Pets allowed",
         "Private entrance",
         "Refrigerator",
         "Sauna",
