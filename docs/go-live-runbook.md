@@ -5,7 +5,7 @@ Para executar a dois (Ricardo + colaborador). Contexto completo: `docs/HANDOVER.
 ## 0 · Limpeza pendente de testes (fazer ANTES do merge, com OAuth fresco)
 - Cancelar no Guesty a reserva de teste **Villa Aura 18–23 jan 2027** (criada hoje pelo settle; hóspede "Teste Wallet PA").
 - Reembolsar TODOS os PIs de teste de **3 309,17 €** de 15 ago (1–2, modo teste) — Stripe test → Payments → refund.
-- Mistério a fechar: `getIntent` devolveu `intent:null` para `c5af7d0e-…` após o deploy da migração `payment_intent_id` — verificar logs do boot (a migração correu? erro de coluna?) antes do merge. ⚠️ Se a migração falhou, o retry-fix não persiste o PI.
+- ~~Mistério `getIntent intent:null`~~ **RESOLVIDO (15 ago)**: a migração de boot do `payment_intent_id` nunca correu — o bloco anterior (`recovery_optout`) fazia `throw` em erros embrulhados pelo drizzle e abortava a cadeia; o drizzle passou a selecionar uma coluna fantasma e TODAS as leituras de intents devolviam null. Fix em `0ed6df8` (cada ALTER independente, regex cobre `.cause`); coluna adicionada à mão no dev via Web Shell. Produção adiciona a coluna sozinha no primeiro boot pós-merge — confirmar `[Migration] booking_intents.payment_intent_id column added` nos logs do Production.
 - NÃO usar scripts avulsos contra o Guesty Open API (as 3 renovações OAuth/24h são partilhadas com produção — foi a causa dos 500 de dia 15).
 
 ## 1 · Pré-merge (dev, ~20 min)
