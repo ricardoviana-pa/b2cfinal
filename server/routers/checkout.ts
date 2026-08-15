@@ -222,7 +222,12 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string): Promise<
             flexPrice: flexPriceFor((m.quote as any)?.totalNights),
             quote: m.quote ?? null,
             imageUrl,
-            viewUrl: `${publicBaseUrl()}/${m.locale || "en"}/checkout/${intentId}`,
+            // Direto à página da reserva (foto, valores, código) — o link de
+            // retoma do checkout mostrava um interstício seco "verifique o seu
+            // email" a quem vinha DO email (16 ago).
+            viewUrl: m.reservationId
+              ? `${publicBaseUrl()}/${m.locale || "en"}/booking/thank-you/${m.reservationId}?method=card`
+              : `${publicBaseUrl()}/${m.locale || "en"}/checkout/${intentId}`,
             locale: m.locale,
             intentId,
           }),
