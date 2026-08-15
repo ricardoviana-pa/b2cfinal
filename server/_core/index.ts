@@ -494,6 +494,12 @@ ${allUrls.join("\n")}
       try {
         await (db as any).execute("ALTER TABLE `booking_intents` ADD COLUMN `recovery_optout` boolean NOT NULL DEFAULT false");
         console.info("[Migration] booking_intents.recovery_optout column added");
+      } catch (e: any) {
+        if (!/Duplicate column/i.test(e.message)) throw e;
+      }
+      try {
+        await (db as any).execute("ALTER TABLE `booking_intents` ADD COLUMN `payment_intent_id` varchar(64)");
+        console.info("[Migration] booking_intents.payment_intent_id column added");
       } catch (alterErr: any) {
         if (!/duplicate column|exists/i.test(alterErr?.message || "")) {
           console.warn("[Migration] booking_intents.recovery_optout:", alterErr.message);

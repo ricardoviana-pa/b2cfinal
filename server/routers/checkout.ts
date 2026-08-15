@@ -385,6 +385,21 @@ export const checkoutRouter = router({
         : { ...m, extras: ((m as any).extras ?? []).filter((e: any) => !PETS_ONLY_SKUS.includes(e.sku)) };
       const b = breakdownFromIntent(mSafe);
       if (b.totalCents < 100) throw new TRPCError({ code: "PRECONDITION_FAILED", message: "empty total" });
+      // RETRY SEGURO (finding 15 ago): se já existe um PI para este intent,
+      // retoma-o — nunca criar um segundo e arriscar dupla cobrança
+      const priorPi = (m as any).paymentIntentId as string | null;
+      if (priorPi) {
+        const { getPaymentIntent } = await import("../services/stripe-klarna");
+        const prev = await getPaymentIntent(priorPi).catch(() => null);
+        if (prev && prev.amount === b.totalCents) {
+          if (prev.status === "succeeded") {
+            return { clientSecret: null, paymentIntentId: prev.id, totalCents: b.totalCents, alreadyPaid: true };
+          }
+          if (["requires_payment_method", "requires_confirmation", "requires_action", "processing"].includes(prev.status)) {
+            return { clientSecret: prev.client_secret!, paymentIntentId: prev.id, totalCents: b.totalCents, alreadyPaid: false };
+          }
+        }
+      }
       if (b.divergent.length) console.warn(`[Card2b] client amounts diverged intent=${input.intentId}: ${b.divergent.join(",")}`);
       const pi = await createCardPaymentIntent({
         amount: b.totalCents,
@@ -406,7 +421,8 @@ export const checkoutRouter = router({
           return metadata;
         })(),
       });
-      return { clientSecret: pi.client_secret!, paymentIntentId: pi.id, totalCents: b.totalCents };
+      await updateBookingIntent(input.intentId, { paymentIntentId: pi.id } as any).catch(() => {});
+      return { clientSecret: pi.client_secret!, paymentIntentId: pi.id, totalCents: b.totalCents, alreadyPaid: false };
     }),
 
   /** 2b: finaliza apos confirmPayment — cria a reserva Guesty (so estadia). */

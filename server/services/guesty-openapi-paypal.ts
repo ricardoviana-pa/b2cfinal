@@ -33,7 +33,7 @@ export async function createReservationViaOpenApi(input: CreateReservationInput)
       checkInDateLocalized: input.checkIn,
       checkOutDateLocalized: input.checkOut,
       status: "confirmed",
-      source: "website-paypal",
+      source: "website-direct",
       guest: {
         firstName: input.guestFirstName,
         lastName: input.guestLastName,

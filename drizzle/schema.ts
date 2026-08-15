@@ -466,6 +466,8 @@ export const bookingIntents = mysqlTable("booking_intents", {
   /** Opt-out dos lembretes de recuperação (link no rodapé dos emails).
    *  Uma vez true, o scheduler nunca mais toca neste intent. */
   recoveryOptout: boolean("recovery_optout").default(false).notNull(),
+  /** 2b: PI pendente/capturado — o retry retoma este em vez de criar novo */
+  paymentIntentId: varchar("payment_intent_id", { length: 64 }),
   status: mysqlEnum("status", [
     "draft",
     "contact_captured",

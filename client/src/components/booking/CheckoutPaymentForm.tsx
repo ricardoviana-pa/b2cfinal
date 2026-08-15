@@ -200,7 +200,13 @@ function ExpressWalletInner({
         return;
       }
       // PI lazy com o total canónico do servidor — nunca o valor do cliente
-      const { clientSecret, paymentIntentId } = await createCardCharge.mutateAsync({ intentId });
+      const { clientSecret, paymentIntentId, alreadyPaid } = (await createCardCharge.mutateAsync({ intentId })) as any;
+      if (alreadyPaid) {
+        // pagamento já capturado numa tentativa anterior — só falta a reserva
+        const fin = await finalizeCardCharge.mutateAsync({ intentId, paymentIntentId });
+        onSuccess(fin.confirmationCode, fin.reservationId);
+        return;
+      }
       const { error: confirmErr, paymentIntent } = await stripe.confirmPayment({
         elements,
         clientSecret,
