@@ -9,13 +9,20 @@ Para executar a dois (Ricardo + colaborador). Contexto completo: `docs/HANDOVER.
 - O teste apanhou e corrigiu 2 bugs reais de produção (`5ecb59e`): race do Guesty pós-criação (balanceDue ilegível → pagamento recusado) e settle não-retomável (risco de 2.ª reserva num retry). Settle agora carimba a reserva de imediato e é retomável.
 - **Smoke produção**: homepage 200 · `/.well-known/apple-developer-merchantid-domain-association` 200 (9094 bytes) no www · API checkout viva (extras + Flex 10% + limpezas por listing).
 
-## O QUE FALTA PARA LIGAR (3 ações de dashboard, ~5 min, Ricardo)
+## ✅ ATUALIZAÇÃO 15 ago, 23h — TUDO AUTOMATIZADO E VERIFICADO; FALTA SÓ A FLAG
 
-1. **`SITE_URL` no serviço Production** está `https://dev.portugalactive.com` (o boot registou o domínio Apple Pay errado no modo live) → mudar para `https://www.portugalactive.com`. No boot seguinte o Apple Pay live regista www+apex sozinho (confirmar `[ApplePay]` nos logs).
-2. **`EMAIL_FROM`** (dev E produção): `Portugal Active <booking@portugalactive.com>` (hoje sai info@).
-3. **Webhook do cartão** (rede de segurança; o finalize síncrono está provado): Stripe → Webhooks → endpoint `https://www.portugalactive.com/api/webhooks/stripe-card`, evento `payment_intent.succeeded` → colar `whsec_` como `STRIPE_CARD_WEBHOOK_SECRET` no Production (test idem no b2c-dev com dev.portugalactive.com, se quiseres a rede também no dev).
-4. Confirmar `BOOKING_ALERT_EMAIL` no Production = caixa real da equipa CS.
-5. **Ligar**: `CHECKOUT_V2=true` no Production → redeploy → smoke `?checkoutv2=1` já nem é preciso (flag global) → primeira reserva real pequena vigiada (Stripe live + Guesty + emails). **Rollback = apagar a flag.**
+Feito e confirmado nos logs do boot de produção (22:56, deploy `fc5881e`):
+- **Apple Pay live registado sozinho**: `www.portugalactive.com` E `portugalactive.com` (apex), `apple_pay=active` — o código agora tem fallback www, a env `SITE_URL` foi removida do Production (dev mantém a sua).
+- **Webhook do cartão AUTO-REGISTADO em modo live**: `[CardWebhook] endpoint criado e secret guardado (live) — https://www.portugalactive.com/api/webhooks/stripe-card`. O signing secret vive na tabela `app_config` (nunca passou por mãos humanas); o mesmo aconteceu no dev em modo test. NÃO é preciso criar nada no dashboard do Stripe.
+- **`EMAIL_FROM` removida** → default do código `Portugal Active <booking@portugalactive.com>` em produção e dev.
+- **Links de emails corrigidos**: a cadeia de URLs usa `SITE_URL` e cai para `www.portugalactive.com` (antes, produção geraria links para dev.portugalactive.com).
+- Feedback da equipa aplicado: nota de cobrança reordenada (fim da leitura contraditória nas experiências), chef com menu de mercado/bebidas não incluídas, babysitter na casa dia=noite, vans com nota de bagagem desportiva — nas 9 línguas; assinatura da Sara redesenhada (cartão com hairline dourada).
+
+### Para LIGAR (o único passo restante — 20 segundos no dashboard)
+Render → serviço **Production** → Environment → Edit → **Add variable** → `CHECKOUT_V2` = `true` → Save, rebuild, and deploy. (A automação parou aqui de propósito: a página de envs contém segredos e o assistente não escreve nela.)
+Depois do deploy: primeira reserva real pequena vigiada (Stripe live + Guesty + emails). **Rollback = apagar a flag** (instantâneo, volta ao legacy).
+
+Pendentes não-bloqueantes: `BOOKING_ALERT_EMAIL` no Production = caixa real da equipa CS (hoje default booking@) · sheet do Google Pay e botão Apple Pay em Safari confirmados por um humano · GTM (docs/marketing-tracking.md).
 
 Verificações humanas que só o Ricardo pode fazer quando quiser: sheet do Google Pay (o botão renderiza — clicar e ver o sheet abrir), botão Apple Pay em Safari (após o fix do SITE_URL).
 
