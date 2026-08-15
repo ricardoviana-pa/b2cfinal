@@ -111,6 +111,12 @@ async function startServer() {
   registerStripePayPalWebhookRoute(app); // must be before express.json() — needs raw body
   registerStripeKlarnaWebhookRoute(app);
   registerStripeCardWebhookRoute(app); // must be before express.json() — needs raw body
+  // Apple Pay: ficheiro de verificação de domínio da Apple (exigido pelo
+  // Stripe payment_method_domains; sem ele o botão nunca aparece em Safari)
+  app.get("/.well-known/apple-developer-merchantid-domain-association", (_req, res) => {
+    res.type("text/plain");
+    res.sendFile(path.resolve(process.cwd(), "server", "config", "apple-developer-merchantid-domain-association"));
+  });
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
@@ -501,6 +507,12 @@ ${allUrls.join("\n")}
 
   server.listen(port, () => {
     console.info(`Server running on http://localhost:${port}/`);
+
+    // Apple Pay: garante o domínio registado na conta Stripe da plataforma
+    // (idempotente; dev regista dev., produção regista o domínio live)
+    import("../services/apple-pay-domain")
+      .then((m) => m.ensureApplePayDomain())
+      .catch((e) => console.warn("[ApplePay] boot:", e?.message));
 
     // Checkout 2.0 (Fase 4): abandonment recovery emails (1h + 20h).
     // Fail-soft — the sweep no-ops when the DB is unavailable.
