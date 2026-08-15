@@ -29,22 +29,34 @@ export async function ensureApplePayDomain(): Promise<void> {
     if (!domain) console.info("[ApplePay] sem SITE_URL válido — registo de domínio ignorado");
     return;
   }
+  // Cobrir apex e www do domínio do site + extras por env. Em produção
+  // (chaves live) o primeiro boot após o merge regista e valida o domínio
+  // definitivo sozinho — os payment_method_domains são por modo (test/live),
+  // por isso o live só pode nascer quando as chaves live arrancarem.
+  const wanted = new Set<string>([domain]);
+  if (domain.startsWith("www.")) wanted.add(domain.slice(4));
+  else if (domain.split(".").length === 2) wanted.add("www." + domain);
+  for (const extra of (process.env.APPLE_PAY_EXTRA_DOMAINS || "").split(",")) {
+    const t = extra.trim();
+    if (t) wanted.add(t);
+  }
   try {
     const stripe = new Stripe(key);
     const existing = await stripe.paymentMethodDomains.list({ limit: 100 });
-    const found = existing.data.find((d) => d.domain_name === domain);
-    if (found) {
-      const status = found.apple_pay?.status;
-      console.info(`[ApplePay] domínio ${domain} já registado (apple_pay=${status})`);
-      // Revalida se ficou inválido (ex.: ficheiro passou a ser servido depois)
-      if (status !== "active") {
-        const v = await stripe.paymentMethodDomains.validate(found.id);
-        console.info(`[ApplePay] revalidação de ${domain}: apple_pay=${v.apple_pay?.status}`);
+    for (const d of wanted) {
+      const found = existing.data.find((x) => x.domain_name === d);
+      if (found) {
+        const status = found.apple_pay?.status;
+        console.info(`[ApplePay] domínio ${d} já registado (apple_pay=${status})`);
+        if (status !== "active") {
+          const v = await stripe.paymentMethodDomains.validate(found.id).catch(() => null);
+          if (v) console.info(`[ApplePay] revalidação de ${d}: apple_pay=${v.apple_pay?.status}`);
+        }
+        continue;
       }
-      return;
+      const created = await stripe.paymentMethodDomains.create({ domain_name: d }).catch((e) => { console.warn(`[ApplePay] ${d}: ${e?.message}`); return null; });
+      if (created) console.info(`[ApplePay] domínio ${d} registado: apple_pay=${created.apple_pay?.status}`);
     }
-    const created = await stripe.paymentMethodDomains.create({ domain_name: domain });
-    console.info(`[ApplePay] domínio ${domain} registado: apple_pay=${created.apple_pay?.status}`);
   } catch (err: any) {
     console.warn(`[ApplePay] registo de domínio falhou (${domain}):`, err?.message);
   }
