@@ -1412,7 +1412,7 @@
     "qtyLabel": "Antal",
     "peopleLabel": "Personer",
     "sessionsLabel": "Sessioner",
-    "extrasChargeNote": "Artiklar med fast pris debiteras idag, i en enda betalning. Tjänster som bekräftas av conciergen debiteras idag och återbetalas automatiskt inom 24 timmar om de inte kan garanteras. Förfrågningar med offert debiteras inte nu.",
+    "extrasChargeNote": "Förfrågningar om upplevelser och tjänster med individuell offert debiteras aldrig nu. Artiklar med fast pris debiteras idag, i en enda betalning. Tjänster som väntar på conciergens bekräftelse debiteras idag och återbetalas automatiskt inom 24 timmar om vi inte kan garantera dem.",
     "extras": {
       "transfer-porto": {
         "name": "Flygplatstransfer Porto",
@@ -1420,7 +1420,7 @@
       },
       "transfer-porto-van": {
         "name": "Flygplatstransfer Porto, van",
-        "desc": "Privat van, per resa, upp till 8 gäster."
+        "desc": "Privat van, per resa, upp till 8 gäster. Perfekt med sportbagage: brädor, cyklar, golf."
       },
       "daily-cleaning": {
         "name": "Daglig städning",
@@ -1432,7 +1432,7 @@
       },
       "private-chef": {
         "name": "Privat kock till middag",
-        "desc": "En kock lagar mat hemma hos er, meny bestäms med conciergen. Priset för en bra restaurang i regionen, med husets avskildhet."
+        "desc": "En kock lagar mat i ert hus: marknadsmeny som bestäms med conciergen, anpassad efter önskemål och allergier. Dryck ingår ej. Priset för en bra restaurang, med hemmets avskildhet."
       },
       "hamper-essentials": {
         "name": "Välkomstkorg, basics",
@@ -1452,7 +1452,7 @@
       },
       "babysitter": {
         "name": "Barnvakt",
-        "desc": "Pålitlig barnpassning i huset, per timme."
+        "desc": "Pålitlig barnpassning, alltid i huset. Samma pris dag som natt."
       },
       "private-yoga": {
         "name": "Privat yogasession",
@@ -1520,7 +1520,7 @@
       },
       "transfer-lisbon-van": {
         "name": "Flygplatstransfer Lissabon, van",
-        "desc": "Privat van, per resa, upp till 8 gäster."
+        "desc": "Privat van, per resa, upp till 8 gäster. Perfekt med sportbagage: brädor, cyklar, golf."
       },
       "deep-cleaning": {
         "name": "Djuprengöring",

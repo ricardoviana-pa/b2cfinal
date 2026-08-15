@@ -63,11 +63,12 @@ const STAGE_1_AFTER_MS = 1 * HOUR_MS;
 const STAGE_2_AFTER_MS = 20 * HOUR_MS;
 const SWEEP_INTERVAL_MS = 10 * 60 * 1000;
 
-/** Public origin for resume links. Env first so stg/prod deploys keep working. */
+/** Public origin for resume links. SITE_URL first (the env real deploys set);
+ *  production fallback — dev sets SITE_URL, production may omit it. */
 function publicBaseUrl(): string {
   const fromEnv =
-    process.env.PUBLIC_BASE_URL || process.env.PUBLIC_URL || process.env.APP_URL;
-  const base = fromEnv || "https://dev.portugalactive.com";
+    process.env.SITE_URL || process.env.PUBLIC_BASE_URL || process.env.PUBLIC_URL || process.env.APP_URL;
+  const base = fromEnv || "https://www.portugalactive.com";
   return base.replace(/\/+$/, "");
 }
 

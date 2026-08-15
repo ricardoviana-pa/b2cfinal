@@ -1412,7 +1412,7 @@
     "qtyLabel": "Aantal",
     "peopleLabel": "Personen",
     "sessionsLabel": "Sessies",
-    "extrasChargeNote": "Items met een vaste prijs worden vandaag in één betaling afgerekend. Services met bevestiging door de concierge worden vandaag afgerekend en automatisch binnen 24 uur terugbetaald als ze niet gegarandeerd kunnen worden. Aanvragen op offerte worden nu niet in rekening gebracht.",
+    "extrasChargeNote": "Aanvragen voor ervaringen en diensten op offerte worden nu niet in rekening gebracht. Items met een vaste prijs worden vandaag in één betaling afgerekend. Diensten met concierge-bevestiging worden vandaag afgerekend en automatisch binnen 24 uur terugbetaald als we ze niet kunnen garanderen.",
     "extras": {
       "transfer-porto": {
         "name": "Luchthaventransfer Porto",
@@ -1420,7 +1420,7 @@
       },
       "transfer-porto-van": {
         "name": "Luchthaventransfer Porto, van",
-        "desc": "Privévan, per rit, tot 8 gasten."
+        "desc": "Privévan, per rit, tot 8 gasten. Ideaal met sportbagage: boards, fietsen, golf."
       },
       "daily-cleaning": {
         "name": "Dagelijkse schoonmaak",
@@ -1432,7 +1432,7 @@
       },
       "private-chef": {
         "name": "Privéchef bij het diner",
-        "desc": "Een chef kookt bij u thuis, menu afgestemd met de concierge. De prijs van een goed restaurant in de regio, met de privacy van het huis."
+        "desc": "Een chef kookt bij u thuis: marktmenu afgestemd met de concierge, aangepast aan voorkeuren en allergieën. Drankjes niet inbegrepen. De prijs van een goed restaurant, met de privacy van thuis."
       },
       "hamper-essentials": {
         "name": "Welkomstmand, essentials",
@@ -1452,7 +1452,7 @@
       },
       "babysitter": {
         "name": "Oppas",
-        "desc": "Betrouwbare kinderopvang in het huis, per uur."
+        "desc": "Vertrouwde kinderopvang, altijd in huis. Zelfde tarief dag en nacht."
       },
       "private-yoga": {
         "name": "Privé yogasessie",
@@ -1520,7 +1520,7 @@
       },
       "transfer-lisbon-van": {
         "name": "Luchthaventransfer Lissabon, van",
-        "desc": "Privévan, per rit, tot 8 gasten."
+        "desc": "Privévan, per rit, tot 8 gasten. Ideaal met sportbagage: boards, fietsen, golf."
       },
       "deep-cleaning": {
         "name": "Dieptereiniging",

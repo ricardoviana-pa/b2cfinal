@@ -1412,7 +1412,7 @@
     "qtyLabel": "Anzahl",
     "peopleLabel": "Personen",
     "sessionsLabel": "Sitzungen",
-    "extrasChargeNote": "Artikel mit festem Preis werden heute in einer einzigen Zahlung abgebucht. Vom Concierge zu bestätigende Services werden heute abgebucht und automatisch innerhalb von 24 Stunden erstattet, falls sie nicht garantiert werden können. Anfragen auf Angebot werden jetzt nicht belastet.",
+    "extrasChargeNote": "Erlebnis-Anfragen und individuell angebotene Leistungen werden jetzt nicht berechnet. Artikel mit Festpreis werden heute in einer einzigen Zahlung abgerechnet. Leistungen mit Concierge-Bestätigung werden heute berechnet und automatisch innerhalb von 24 Stunden erstattet, falls wir sie nicht garantieren können.",
     "extras": {
       "transfer-porto": {
         "name": "Flughafentransfer Porto",
@@ -1420,7 +1420,7 @@
       },
       "transfer-porto-van": {
         "name": "Flughafentransfer Porto, Van",
-        "desc": "Privater Van, pro Fahrt, bis zu 8 Gäste."
+        "desc": "Privater Van, pro Fahrt, bis zu 8 Gäste. Ideal mit Sportgepäck: Boards, Fahrräder, Golf."
       },
       "daily-cleaning": {
         "name": "Tägliche Reinigung",
@@ -1432,7 +1432,7 @@
       },
       "private-chef": {
         "name": "Privatkoch am Abend",
-        "desc": "Ein Koch kocht bei Ihnen, Menü mit dem Concierge abgestimmt. Der Preis eines guten Restaurants der Region, mit der Privatsphäre des Hauses."
+        "desc": "Ein Koch kocht in Ihrem Haus: Marktmenü, mit dem Concierge abgestimmt und an Vorlieben und Allergien angepasst. Getränke nicht inbegriffen. Der Preis eines guten Restaurants, mit der Privatsphäre des Hauses."
       },
       "hamper-essentials": {
         "name": "Willkommenskorb, Essentials",
@@ -1452,7 +1452,7 @@
       },
       "babysitter": {
         "name": "Babysitter",
-        "desc": "Vertrauensvolle Kinderbetreuung im Haus, stundenweise."
+        "desc": "Vertrauensvolle Kinderbetreuung, immer im Haus. Gleicher Preis bei Tag und Nacht."
       },
       "private-yoga": {
         "name": "Private Yoga-Sitzung",
@@ -1520,7 +1520,7 @@
       },
       "transfer-lisbon-van": {
         "name": "Flughafentransfer Lissabon, Van",
-        "desc": "Privater Van, pro Fahrt, bis zu 8 Gäste."
+        "desc": "Privater Van, pro Fahrt, bis zu 8 Gäste. Ideal mit Sportgepäck: Boards, Fahrräder, Golf."
       },
       "deep-cleaning": {
         "name": "Grundreinigung",

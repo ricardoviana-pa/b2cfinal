@@ -707,7 +707,11 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 
 <tr><td style="padding:0 0 8px 0;">
   <p style="font-family:${SANS};font-size:13.5px;color:${PA.earth};line-height:1.6;margin:0;">${closing}</p>
-  <p style="font-family:${SANS};font-size:13.5px;color:${PA.dark};margin:16px 0 0 0;">${CONFIRMATION_I18N[lang].regards}<br/><span style="font-family:${SERIF};font-size:16px;">Sara</span> <span style="color:${PA.stoneAA};font-size:12px;">· ${CONFIRMATION_I18N[lang].yourConcierge}</span></p>
+  <table role="presentation" cellpadding="0" cellspacing="0" style="margin:22px 0 0 0;"><tr><td style="border-left:2px solid ${PA.gold};padding:2px 0 2px 14px;">
+    <p style="font-family:${SANS};font-size:12.5px;color:${PA.stoneAA};margin:0 0 5px 0;">${CONFIRMATION_I18N[lang].regards}</p>
+    <p style="font-family:${SERIF};font-size:21px;color:${PA.dark};margin:0;letter-spacing:.2px;">Sara</p>
+    <p style="font-family:${SANS};font-size:10.5px;color:${PA.gold};letter-spacing:.16em;text-transform:uppercase;margin:5px 0 0 0;">${CONFIRMATION_I18N[lang].yourConcierge} · Portugal Active</p>
+  </td></tr></table>
 </td></tr>
 
 <!-- Footer -->
@@ -1019,7 +1023,11 @@ ${ctaBlock}
 </td></tr>
 
 <tr><td style="padding:0 0 8px 0;">
-  <p style="font-family:${SANS};font-size:13.5px;color:${PA.dark};margin:0;">${C.regards}<br/><span style="font-family:${SERIF};font-size:16px;">Sara</span> <span style="color:${PA.stoneAA};font-size:12px;">· ${C.yourConcierge}</span></p>
+  <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0;"><tr><td style="border-left:2px solid ${PA.gold};padding:2px 0 2px 14px;">
+    <p style="font-family:${SANS};font-size:12.5px;color:${PA.stoneAA};margin:0 0 5px 0;">${C.regards}</p>
+    <p style="font-family:${SERIF};font-size:21px;color:${PA.dark};margin:0;letter-spacing:.2px;">Sara</p>
+    <p style="font-family:${SANS};font-size:10.5px;color:${PA.gold};letter-spacing:.16em;text-transform:uppercase;margin:5px 0 0 0;">${C.yourConcierge} · Portugal Active</p>
+  </td></tr></table>
 </td></tr>
 
 <!-- Footer -->

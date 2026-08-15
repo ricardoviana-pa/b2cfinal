@@ -524,6 +524,12 @@ ${allUrls.join("\n")}
       .then((m) => m.ensureApplePayDomain())
       .catch((e) => console.warn("[ApplePay] boot:", e?.message));
 
+    // Rede de segurança do cartão 2b: auto-regista o webhook no Stripe e
+    // guarda o signing secret na app_config (sem passos manuais nem env).
+    import("../services/stripe-card-webhook-setup")
+      .then((m) => m.ensureCardWebhookEndpoint())
+      .catch((e) => console.warn("[CardWebhook] boot:", e?.message));
+
     // Checkout 2.0 (Fase 4): abandonment recovery emails (1h + 20h).
     // Fail-soft — the sweep no-ops when the DB is unavailable.
     try {

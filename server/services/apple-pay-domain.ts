@@ -13,7 +13,11 @@
 import Stripe from "stripe";
 
 function siteDomain(): string | null {
-  const raw = process.env.SITE_URL || process.env.PUBLIC_BASE_URL || process.env.APP_URL || "";
+  // Produção pode omitir SITE_URL — o domínio definitivo é o fallback; o dev
+  // define SITE_URL=dev.portugalactive.com e regista o seu próprio domínio.
+  const raw =
+    process.env.SITE_URL || process.env.PUBLIC_BASE_URL || process.env.APP_URL ||
+    "https://www.portugalactive.com";
   try {
     const host = new URL(raw).hostname;
     return host && host !== "localhost" ? host : null;

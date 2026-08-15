@@ -1412,7 +1412,7 @@
     "qtyLabel": "Cantidad",
     "peopleLabel": "Personas",
     "sessionsLabel": "Sesiones",
-    "extrasChargeNote": "Los artículos con precio cerrado se cobran hoy, en un único pago. Los servicios con confirmación del concierge se cobran hoy y se reembolsan automáticamente en 24 horas si no se pueden garantizar. Las solicitudes bajo presupuesto no conllevan ningún cobro ahora.",
+    "extrasChargeNote": "Las solicitudes de experiencias y los servicios con presupuesto individual no se cobran ahora. Los artículos con precio cerrado se cobran hoy, en un único pago. Los servicios pendientes de confirmación del concierge se cobran hoy y se reembolsan automáticamente en 24 horas si no podemos garantizarlos.",
     "extras": {
       "transfer-porto": {
         "name": "Traslado aeropuerto de Oporto",
@@ -1420,7 +1420,7 @@
       },
       "transfer-porto-van": {
         "name": "Traslado aeropuerto de Oporto, van",
-        "desc": "Van privada, por trayecto, hasta 8 huéspedes."
+        "desc": "Furgoneta privada, por trayecto, hasta 8 huéspedes. Ideal con equipaje deportivo: tablas, bicicletas, golf."
       },
       "daily-cleaning": {
         "name": "Limpieza diaria",
@@ -1432,7 +1432,7 @@
       },
       "private-chef": {
         "name": "Chef privado para la cena",
-        "desc": "Un chef cocina en su casa, menú acordado con el concierge. El precio de un buen restaurante de la región, con la privacidad de la casa."
+        "desc": "Un chef cocina en su casa: menú de mercado acordado con el concierge, adaptado a preferencias y alergias. Bebidas no incluidas. El precio de un buen restaurante, con la privacidad de la casa."
       },
       "hamper-essentials": {
         "name": "Cesta de bienvenida, esenciales",
@@ -1452,7 +1452,7 @@
       },
       "babysitter": {
         "name": "Niñera",
-        "desc": "Cuidado de niños de confianza en la casa, por hora."
+        "desc": "Cuidado de confianza para los niños, siempre en la casa. Misma tarifa de día y de noche."
       },
       "private-yoga": {
         "name": "Sesión de yoga privada",
@@ -1520,7 +1520,7 @@
       },
       "transfer-lisbon-van": {
         "name": "Traslado aeropuerto de Lisboa, van",
-        "desc": "Van privada, por trayecto, hasta 8 huéspedes."
+        "desc": "Furgoneta privada, por trayecto, hasta 8 huéspedes. Ideal con equipaje deportivo: tablas, bicicletas, golf."
       },
       "deep-cleaning": {
         "name": "Limpieza profunda",
