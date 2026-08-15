@@ -1973,6 +1973,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Excellent séjour passé avec une autre famille amis dans le Monte de Sossego a Ferreira do Alentejo. \nQuelle belle maison ,simple , joliment décorée au calme avec toutes les installations nécessaires. \nPropreté de la maison au top , l équipe de nettoyage était encore sur place a notre arrivée, et ils ont tout fait pour nous mettre a l aise . \nChambres spacieuses, lit fraîchement faits , propreté irréprochable. \nCuisine super équipée,avec également dans une pièce a part un lave linge et un sèche l",
+        "guestDisplayName": "Dalia",
+        "guestName": "Dalia",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-13T14:41:13.571Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "We hebben heerlijk genoten van de rust. Het is een heerlijke optrek en een fijn zwembad met zout. Verwarmde zwembad was echt heerlijk. Groot terrein waar je gewoon lekker van geniet. Schaduw voor de auto om te parkeren was echt perfect. Heerlijk was het om hier te verblijven.",
         "guestDisplayName": "Stefanus",
         "guestName": "Stefanus",
@@ -2078,7 +2113,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 3
+    "reviewCount": 4
   },
   {
     "id": "guesty-69e7350685a8b000124854c5",
@@ -9837,6 +9872,41 @@
     "areaSquareFeet": 538.195521,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Clean and tidy. Hot tub was a nice extra and the outside area was lovely. Third bed is a pull out single under the one upstairs so take note of this as we didn’t think it was quite clear that’s what it was on booking and the upstairs area is pretty small. Noise travels, you can clearly hear people walking about in the apartment above. Wasn’t too much of an issue for us as we only heard them coming and going a few times. Otherwise great location lots of brunch spots nearby and walkable everywhere",
+        "guestDisplayName": "Kate",
+        "guestName": "Kate",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-15T16:51:48.132Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Good location, nice terrace and jacuzzi. Very convenient to relax after your visit!",
         "guestDisplayName": "Alberto",
@@ -10432,8 +10502,8 @@
         ]
       }
     ],
-    "averageRating": 4.65,
-    "reviewCount": 17
+    "averageRating": 4.61,
+    "reviewCount": 18
   },
   {
     "id": "guesty-69653390ecf7490014ed2d6c",
