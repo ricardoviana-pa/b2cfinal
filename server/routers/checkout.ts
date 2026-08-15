@@ -397,7 +397,16 @@ export const checkoutRouter = router({
             return { clientSecret: null, paymentIntentId: prev.id, totalCents: b.totalCents, alreadyPaid: true };
           }
           if (["requires_payment_method", "requires_confirmation", "requires_action", "processing"].includes(prev.status)) {
-            return { clientSecret: prev.client_secret!, paymentIntentId: prev.id, totalCents: b.totalCents, alreadyPaid: false };
+            // PIs criados antes do fix dos wallets (payment_method_types em vez
+            // de automatic_payment_methods) não confirmam via fila express —
+            // cancela e cria um novo no formato certo (nada foi cobrado ainda).
+            if (!prev.automatic_payment_methods?.enabled && prev.status === "requires_payment_method") {
+              const { cancelPaymentIntent } = await import("../services/stripe-klarna");
+              await cancelPaymentIntent(prev.id).catch(() => {});
+              console.info(`[Card2b] PI ${prev.id} em formato antigo cancelado — a criar novo (intent ${input.intentId})`);
+            } else {
+              return { clientSecret: prev.client_secret!, paymentIntentId: prev.id, totalCents: b.totalCents, alreadyPaid: false };
+            }
           }
         }
       }

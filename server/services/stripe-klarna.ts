@@ -54,15 +54,26 @@ export async function createKlarnaPaymentIntent(
   });
 }
 
-/** Fase 2b: PI de cartão na conta da PLATAFORMA (cobrança única estadia+extras). */
+/** Fase 2b: PI de cartão na conta da PLATAFORMA (cobrança única estadia+extras).
+ *  automatic_payment_methods (sem redirects) em vez de payment_method_types:
+ *  a fila express (Apple/Google Pay) recolhe pelo Element em modo automático
+ *  e o Stripe recusa confirmar contra um PI restringido por types — apanhado
+ *  no primeiro toque real de Google Pay em produção. O form de cartão usa o
+ *  mesmo PI sem alteração; o cliente já limita os wallets visíveis. */
 export async function createCardPaymentIntent(params: CreateKlarnaPaymentIntentParams): Promise<Stripe.PaymentIntent> {
   const stripe = getStripe();
   return stripe.paymentIntents.create({
     amount: params.amount,
     currency: params.currency,
-    payment_method_types: ["card"],
+    automatic_payment_methods: { enabled: true, allow_redirects: "never" },
     ...(params.metadata ? { metadata: params.metadata } : {}),
   });
+}
+
+/** Cancela um PI não-capturado (usado para reformar PIs em formato antigo). */
+export async function cancelPaymentIntent(paymentIntentId: string): Promise<void> {
+  const stripe = getStripe();
+  await stripe.paymentIntents.cancel(paymentIntentId);
 }
 
 /**
