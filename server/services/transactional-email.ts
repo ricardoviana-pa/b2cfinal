@@ -179,6 +179,8 @@ interface BookingFailureAlertData {
 }
 
 const BOOKING_ALERT_EMAIL = process.env.BOOKING_ALERT_EMAIL || "booking@portugalactive.com";
+/** Cópia de cada venda direta para a gestão (mudar/desligar via env). */
+const SALES_COPY_EMAIL = process.env.SALES_COPY_EMAIL ?? "ricardo.viana@portugalactive.com";
 
 export async function sendBookingFailureAlert(data: BookingFailureAlertData): Promise<void> {
   const subject = `BOOKING FAILED — ${data.propertyName || data.listingId || "Unknown"} — ${data.guestName} — €${data.totalPrice || "?"}`;
@@ -1147,6 +1149,13 @@ export async function sendCheckoutOpsManifest(d: {
     const urgentFlag = needs.length || requests.length ? "ACAO ATE 24H — " : "";
     await sendEmail(BOOKING_ALERT_EMAIL, `[CS] ${urgentFlag}Reserva ${d.confirmationCode || d.intentId.slice(0, 8)} · ${d.propertyName || ""}`, html);
     console.info(`[OpsManifest] enviado (intent ${d.intentId}, ${actions.length} acoes)`);
+    // Cópia de vendas para a gestão: cada reserva direta com casa, valor e
+    // extras — pedido do Ricardo (16 ago) para acompanhar o que o site vende.
+    if (SALES_COPY_EMAIL && SALES_COPY_EMAIL !== BOOKING_ALERT_EMAIL) {
+      await sendEmail(SALES_COPY_EMAIL, `[Venda direta] ${d.propertyName || ""} · ${d.confirmationCode || d.intentId.slice(0, 8)}`, html).catch((err: any) =>
+        console.error(`[OpsManifest] copia de vendas falhou (intent ${d.intentId}):`, err?.message),
+      );
+    }
   } catch (err: any) {
     console.error(`[OpsManifest] falhou (intent ${d.intentId}):`, err?.message);
   }
