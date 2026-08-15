@@ -169,6 +169,80 @@ function publicBaseUrl(): string {
   return (fromEnv || "https://www.portugalactive.com").replace(/\/+$/, "");
 }
 
+/**
+ * Emails + nota Guesty da transição para paid (manifesto CS + confirmação
+ * premium do hóspede). Partilhado: o updateIntent chama-o no caminho normal
+ * (cliente fecha a reserva) e o webhook chama-o quando é ele a fechar (o
+ * cliente morreu depois do pagamento). Fire-and-forget, nunca lança.
+ */
+export async function fireCheckoutPaidEmails(m: any, intentId: string): Promise<void> {
+  try {
+    const { breakdownFromIntent } = await import("../services/checkout-card-charge");
+    const canonical = (() => {
+      try { const b = breakdownFromIntent(m); return { lines: b.lines, receptionCents: b.receptionCents, flexCents: b.flexCents, totalCents: b.totalCents }; }
+      catch { return null; }
+    })();
+    const photoPromise = resolveIntentPhoto(m).catch(() => undefined);
+    void photoPromise.then((imageUrl) => sendCheckoutOpsManifest({
+      canonical,
+      imageUrl,
+      confirmationCode: m.confirmationCode, reservationId: m.reservationId,
+      propertyName: m.propertyName, checkIn: m.checkIn, checkOut: m.checkOut,
+      guests: m.guests, email: m.email,
+      guestName: [m.guestFirstName, m.guestLastName].filter(Boolean).join(" "),
+      guestPhone: m.guestPhone, reception: m.reception, extras: m.extras,
+      flex: m.flex, intentId,
+    }));
+    // Confirmação premium ao hóspede — o email do Guesty é genérico, este
+    // replica o checkout do site: foto da casa, cartão de resumo com o
+    // breakdown e total, estadia à medida (fire-and-forget, nunca trava o funil)
+    if (m.email) {
+      const receptionAmount =
+        m.reception?.type === "hosted"
+          ? m.reception.late
+            ? CHECKOUT_RECEPTION.hostedLatePrice
+            : CHECKOUT_RECEPTION.hostedPrice
+          : 0;
+      void photoPromise
+        .then((imageUrl) =>
+          sendCheckoutGuestConfirmation({
+            canonical,
+            email: m.email,
+            guestFirstName: m.guestFirstName,
+            propertyName: sanitizePropertyName(m.propertyName || ""),
+            destination: m.destination,
+            checkIn: m.checkIn,
+            checkOut: m.checkOut,
+            guests: m.guests,
+            confirmationCode: m.confirmationCode,
+            reception: m.reception,
+            receptionAmount,
+            extras: m.extras,
+            flex: m.flex,
+            flexPrice: flexPriceFor((m.quote as any)?.totalNights),
+            quote: m.quote ?? null,
+            imageUrl,
+            viewUrl: `${publicBaseUrl()}/${m.locale || "en"}/checkout/${intentId}`,
+            locale: m.locale,
+            intentId,
+          }),
+        )
+        .catch((err: any) =>
+          console.error(`[GuestConfirmation] falhou (intent ${intentId}):`, err?.message),
+        );
+    }
+    const hasPayload = m.reception || (Array.isArray(m.extras) && m.extras.length) || m.flex;
+    if (m.reservationId && hasPayload) {
+      const lines = (Array.isArray(m.extras) ? m.extras : []).map((e: any) =>
+        "- " + e.sku + (e.qty ? " x" + e.qty : "") + (e.days ? " " + e.days + " dias" : "") + (e.people ? " " + e.people + "p" : "") + " " + (e.amount != null ? e.amount + " EUR" : "(sob orcamento)") + (e.fulfillment === "needs_confirmation" ? " [CONFIRMAR 24H]" : ""));
+      const note = "SERVICOS DO CHECKOUT:\nRececao: " + (m.reception?.type === "hosted" ? "presencial" + (m.reception.late ? " apos 21h" : "") : "self check-in") + "\nFlex: " + (m.flex ? "SIM" : "nao") + "\n" + lines.join("\n");
+      void appendReservationNote(String(m.reservationId), note);
+    }
+  } catch (err: any) {
+    console.error(`[Card2b] fireCheckoutPaidEmails falhou (intent ${intentId}):`, err?.message);
+  }
+}
+
 export const checkoutRouter = router({
   /**
    * Feature flag. Enabled by env (CHECKOUT_V2=true) anywhere, and ALWAYS on
@@ -297,70 +371,7 @@ export const checkoutRouter = router({
       // Transicao para paid: ficha de servicos ao CS + manifesto na nota Guesty
       // (todos os metodos, fire-and-forget)
       if (ok && patch.status === "paid") {
-        const m = { ...current, ...patch } as any;
-        // Fonte única de verdade: o mesmo cálculo que cobra o cartão alimenta
-        // o manifesto do CS e a confirmação do hóspede
-        const { breakdownFromIntent } = await import("../services/checkout-card-charge");
-        const canonical = (() => {
-          try { const b = breakdownFromIntent(m); return { lines: b.lines, receptionCents: b.receptionCents, flexCents: b.flexCents, totalCents: b.totalCents }; }
-          catch { return null; }
-        })();
-        const photoPromise = resolveIntentPhoto(m).catch(() => undefined);
-        void photoPromise.then((imageUrl) => sendCheckoutOpsManifest({
-          canonical,
-          imageUrl,
-          confirmationCode: m.confirmationCode, reservationId: m.reservationId,
-          propertyName: m.propertyName, checkIn: m.checkIn, checkOut: m.checkOut,
-          guests: m.guests, email: m.email,
-          guestName: [m.guestFirstName, m.guestLastName].filter(Boolean).join(" "),
-          guestPhone: m.guestPhone, reception: m.reception, extras: m.extras,
-          flex: m.flex, intentId: input.intentId,
-        }));
-        // Confirmação premium ao hóspede — o email do Guesty é genérico, este
-        // replica o checkout do site: foto da casa, cartão de resumo com o
-        // breakdown e total, estadia à medida (fire-and-forget, nunca trava o funil)
-        if (m.email) {
-          const receptionAmount =
-            m.reception?.type === "hosted"
-              ? m.reception.late
-                ? CHECKOUT_RECEPTION.hostedLatePrice
-                : CHECKOUT_RECEPTION.hostedPrice
-              : 0;
-          void photoPromise
-            .then((imageUrl) =>
-              sendCheckoutGuestConfirmation({
-                canonical,
-                email: m.email,
-                guestFirstName: m.guestFirstName,
-                propertyName: sanitizePropertyName(m.propertyName || ""),
-                destination: m.destination,
-                checkIn: m.checkIn,
-                checkOut: m.checkOut,
-                guests: m.guests,
-                confirmationCode: m.confirmationCode,
-                reception: m.reception,
-                receptionAmount,
-                extras: m.extras,
-                flex: m.flex,
-                flexPrice: flexPriceFor((m.quote as any)?.totalNights),
-                quote: m.quote ?? null,
-                imageUrl,
-                viewUrl: `${publicBaseUrl()}/${m.locale || "en"}/checkout/${input.intentId}`,
-                locale: m.locale,
-                intentId: input.intentId,
-              }),
-            )
-            .catch((err: any) =>
-              console.error(`[GuestConfirmation] falhou (intent ${input.intentId}):`, err?.message),
-            );
-        }
-        const hasPayload = m.reception || (Array.isArray(m.extras) && m.extras.length) || m.flex;
-        if (m.reservationId && hasPayload) {
-          const lines = (Array.isArray(m.extras) ? m.extras : []).map((e: any) =>
-            "- " + e.sku + (e.qty ? " x" + e.qty : "") + (e.days ? " " + e.days + " dias" : "") + (e.people ? " " + e.people + "p" : "") + " " + (e.amount != null ? e.amount + " EUR" : "(sob orcamento)") + (e.fulfillment === "needs_confirmation" ? " [CONFIRMAR 24H]" : ""));
-          const note = "SERVICOS DO CHECKOUT:\nRececao: " + (m.reception?.type === "hosted" ? "presencial" + (m.reception.late ? " apos 21h" : "") : "self check-in") + "\nFlex: " + (m.flex ? "SIM" : "nao") + "\n" + lines.join("\n");
-          void appendReservationNote(String(m.reservationId), note);
-        }
+        void fireCheckoutPaidEmails({ ...current, ...patch }, input.intentId);
       }
       return { ok };
     }),
