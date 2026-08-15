@@ -23,14 +23,34 @@ export function registerStripeCardWebhookRoute(app: Express) {
       if (event.type === "payment_intent.succeeded") {
         const pi = event.data.object as any;
         if (pi.metadata?.flow === "card_v2" && pi.metadata?.intentId) {
-          const { settleCardCharge } = await import("../services/checkout-card-charge");
-          const { updateBookingIntent, getBookingIntent } = await import("../db");
-          const r = await settleCardCharge(pi.metadata.intentId, pi.id);
-          const m = await getBookingIntent(pi.metadata.intentId);
-          if (m && (m as any).status !== "paid") {
-            await updateBookingIntent(pi.metadata.intentId, { status: "paid" } as any);
-            console.info(`[Card2b] webhook finalizou intent ${pi.metadata.intentId} → ${r.confirmationCode}`);
-          }
+          const intentId = pi.metadata.intentId as string;
+          // Cortesia ao finalize síncrono do cliente: o webhook chega muitas
+          // vezes ANTES de o browser fechar a reserva; se ambos correm em
+          // simultâneo, o cliente tropeça (visto na 1.ª reserva live). Responde
+          // já ao Stripe e processa daqui a 15s — na esmagadora maioria o
+          // cliente já fechou tudo e isto é um no-op; se o browser morreu, o
+          // webhook fecha a reserva E envia os emails que o cliente enviaria.
+          setTimeout(async () => {
+            try {
+              const { settleCardCharge } = await import("../services/checkout-card-charge");
+              const { updateBookingIntent, getBookingIntent } = await import("../db");
+              const before = await getBookingIntent(intentId);
+              if (before && (before as any).status === "paid") return; // cliente fechou — nada a fazer
+              const r = await settleCardCharge(intentId, pi.id);
+              const m = await getBookingIntent(intentId);
+              if (m && (m as any).status !== "paid") {
+                await updateBookingIntent(intentId, { status: "paid" } as any);
+                console.info(`[Card2b] webhook finalizou intent ${intentId} → ${r.confirmationCode} (cliente não fechou)`);
+                const { fireCheckoutPaidEmails } = await import("../routers/checkout");
+                void fireCheckoutPaidEmails(
+                  { ...m, status: "paid", reservationId: r.reservationId, confirmationCode: r.confirmationCode },
+                  intentId,
+                );
+              }
+            } catch (err: any) {
+              console.error(`[Card2b] webhook (diferido) falhou intent ${intentId}:`, err?.message);
+            }
+          }, 15_000);
         }
       }
       res.json({ received: true });
