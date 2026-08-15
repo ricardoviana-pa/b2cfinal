@@ -18,6 +18,7 @@ import {
   createReservationViaOpenApi,
   recordExternalPayment,
   appendReservationNote,
+  fetchReservationConfirmationCode,
 } from "./guesty-openapi-paypal";
 
 export function breakdownFromIntent(m: any) {
@@ -46,59 +47,78 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
   if (pi.metadata?.flow !== "card_v2" || pi.metadata?.intentId !== intentId) {
     throw new Error("PI does not belong to this intent");
   }
-  // Idempotência entre finalize e webhook: o primeiro caminho carimba o PI
-  if (pi.metadata.guestyReservationId && pi.metadata.guestyConfirmationCode) {
-    return {
-      reservationId: pi.metadata.guestyReservationId,
-      confirmationCode: pi.metadata.guestyConfirmationCode,
-    };
-  }
   const m = await getBookingIntent(intentId);
   if (!m) throw new Error("intent not found");
-  if ((m as any).reservationId) {
-    return {
-      reservationId: (m as any).reservationId,
-      confirmationCode: (m as any).confirmationCode ?? "",
-    };
-  }
-  // Defesa central: o valor cobrado TEM de bater com a matemática do servidor
   const b = breakdownFromIntent(m);
-  if (Math.abs(pi.amount - b.totalCents) > 100) {
-    console.error(`[Card2b] AMOUNT MISMATCH intent=${intentId} pi=${pi.amount}c expected=${b.totalCents}c — reserva NÃO criada`);
-    throw new Error("charged amount does not match server pricing");
+
+  // Retomável: a reserva pode já existir de uma tentativa anterior (metadata do
+  // PI, ou intent — inclui recuperação manual de um settle que morreu a meio).
+  let reservationId: string | null =
+    pi.metadata.guestyReservationId || (m as any).reservationId || null;
+  let confirmationCode: string =
+    pi.metadata.guestyConfirmationCode || (m as any).confirmationCode || "";
+
+  if (!reservationId) {
+    // Defesa central: o valor cobrado TEM de bater com a matemática do servidor
+    if (Math.abs(pi.amount - b.totalCents) > 100) {
+      console.error(`[Card2b] AMOUNT MISMATCH intent=${intentId} pi=${pi.amount}c expected=${b.totalCents}c — reserva NÃO criada`);
+      throw new Error("charged amount does not match server pricing");
+    }
+    const name = String((m as any).guestName ?? "").trim();
+    const [firstName, ...rest] = name.split(/\s+/);
+    const q = ((m as any).quote ?? {}) as any;
+    const res = await createReservationViaOpenApi({
+      listingId: (m as any).listingId,
+      checkIn: (m as any).checkIn,
+      checkOut: (m as any).checkOut,
+      guestFirstName: firstName || "Guest",
+      guestLastName: rest.join(" ") || "-",
+      guestEmail: (m as any).email,
+      guestPhone: (m as any).guestPhone ?? undefined,
+      numberOfAdults: Number((m as any).guests ?? 2),
+      numberOfChildren: 0,
+      numberOfInfants: 0,
+      ...(q.ratePlanId ? { ratePlanId: q.ratePlanId } : {}),
+    } as any);
+    reservationId = res.reservationId;
+    confirmationCode = res.confirmationCode;
+    // Carimbo IMEDIATO, antes de qualquer passo falível (payment/nota): se o
+    // resto falhar, o retry retoma ESTA reserva em vez de criar uma segunda.
+    await updatePaymentIntentMetadata(paymentIntentId, {
+      guestyReservationId: reservationId,
+      guestyConfirmationCode: confirmationCode,
+    }).catch((e: any) => console.error("[Card2b] stamp PI falhou:", e?.message));
+    await updateBookingIntent(intentId, {
+      reservationId,
+      confirmationCode,
+    } as any).catch((e: any) => console.error("[Card2b] stamp intent falhou:", e?.message));
   }
-  const name = String((m as any).guestName ?? "").trim();
-  const [firstName, ...rest] = name.split(/\s+/);
-  const q = ((m as any).quote ?? {}) as any;
-  const res = await createReservationViaOpenApi({
-    listingId: (m as any).listingId,
-    checkIn: (m as any).checkIn,
-    checkOut: (m as any).checkOut,
-    guestFirstName: firstName || "Guest",
-    guestLastName: rest.join(" ") || "-",
-    guestEmail: (m as any).email,
-    guestPhone: (m as any).guestPhone ?? undefined,
-    numberOfAdults: Number((m as any).guests ?? 2),
-    numberOfChildren: 0,
-    numberOfInfants: 0,
-    ...(q.ratePlanId ? { ratePlanId: q.ratePlanId } : {}),
-  } as any);
-  // SÓ a estadia entra no Guesty (EUR) — extras ficam na plataforma
-  await recordExternalPayment(res.reservationId, b.stayCents / 100, "EUR", paymentIntentId);
-  await appendReservationNote(
-    res.reservationId,
-    `Checkout 2.0: pagamento unico ${(pi.amount / 100).toFixed(2)} EUR na plataforma ` +
-      `(estadia ${(b.stayCents / 100).toFixed(2)} registada aqui; servicos ${((pi.amount - b.stayCents) / 100).toFixed(2)} faturados pela Portugal Active). PI ${paymentIntentId}.`,
-  ).catch(() => {});
+  if (!confirmationCode) {
+    confirmationCode = (await fetchReservationConfirmationCode(reservationId)) ?? "";
+  }
+
+  // SÓ a estadia entra no Guesty (EUR) — extras ficam na plataforma. Idempotente:
+  // com balanceDue=0 (já registado) devolve sem fazer nada.
+  await recordExternalPayment(reservationId, b.stayCents / 100, "EUR", paymentIntentId);
+  if (pi.metadata.splitNoteAdded !== "1") {
+    const noted = await appendReservationNote(
+      reservationId,
+      `Checkout 2.0: pagamento unico ${(pi.amount / 100).toFixed(2)} EUR na plataforma ` +
+        `(estadia ${(b.stayCents / 100).toFixed(2)} registada aqui; servicos ${((pi.amount - b.stayCents) / 100).toFixed(2)} faturados pela Portugal Active). PI ${paymentIntentId}.`,
+    ).catch(() => false);
+    if (noted) {
+      await updatePaymentIntentMetadata(paymentIntentId, { splitNoteAdded: "1" }).catch(() => {});
+    }
+  }
   await updatePaymentIntentMetadata(paymentIntentId, {
-    guestyReservationId: res.reservationId,
-    guestyConfirmationCode: res.confirmationCode,
+    guestyReservationId: reservationId,
+    guestyConfirmationCode: confirmationCode,
   });
   await updateBookingIntent(intentId, {
-    reservationId: res.reservationId,
-    confirmationCode: res.confirmationCode,
+    reservationId,
+    confirmationCode,
   } as any);
-  return { reservationId: res.reservationId, confirmationCode: res.confirmationCode };
+  return { reservationId, confirmationCode };
 }
 
 /* ════════════════════════════════════════════════════════════════

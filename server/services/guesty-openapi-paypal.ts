@@ -99,14 +99,39 @@ export async function createReservationViaOpenApi(input: CreateReservationInput)
  * guestyClient's built-in 500-retry.
  */
 async function fetchReservationBalanceDue(reservationId: string): Promise<number | null> {
+  // A freshly created reservation 404s on GET for a few seconds (Guesty eventual
+  // consistency) — and the client's 500-retry does not cover 404s. Retry here:
+  // recording a payment without the real balanceDue is how payments get rejected
+  // ("amount can't be greater than balance due"), so waiting beats guessing.
+  for (let attempt = 1; attempt <= 6; attempt++) {
+    try {
+      const data = await guestyClient.request<any>("GET", `/v1/reservations/${reservationId}`, {
+        query: { fields: "money status" },
+      });
+      const balanceDue = data?.money?.balanceDue;
+      return typeof balanceDue === "number" ? balanceDue : null;
+    } catch (err: any) {
+      if (attempt === 6) {
+        console.warn(`[Guesty] Could not read balanceDue for ${reservationId} after ${attempt} tries: ${err?.message || err}`);
+        return null;
+      }
+      await new Promise((r) => setTimeout(r, attempt * 1000));
+    }
+  }
+  return null;
+}
+
+/** Confirmation code of an existing reservation (used to resume a settle that
+ *  crashed between creating the reservation and stamping the intent/PI). */
+export async function fetchReservationConfirmationCode(reservationId: string): Promise<string | null> {
   try {
     const data = await guestyClient.request<any>("GET", `/v1/reservations/${reservationId}`, {
-      query: { fields: "money status" },
+      query: { fields: "confirmationCode" },
     });
-    const balanceDue = data?.money?.balanceDue;
-    return typeof balanceDue === "number" ? balanceDue : null;
+    const code = data?.confirmationCode;
+    return typeof code === "string" && code ? code : null;
   } catch (err: any) {
-    console.warn(`[Guesty] Could not read balanceDue for ${reservationId}: ${err?.message || err}`);
+    console.warn(`[Guesty] Could not read confirmationCode for ${reservationId}: ${err?.message || err}`);
     return null;
   }
 }
@@ -129,8 +154,14 @@ export async function recordExternalPayment(
     return;
   }
 
-  const amountToRecord = balanceDue !== null ? Math.min(amount, balanceDue) : amount;
-  if (balanceDue !== null && amountToRecord !== amount) {
+  // Never post the charged amount blind: Guesty re-prices the reservation, and an
+  // amount above its balanceDue is rejected outright — better to fail retryably
+  // (settle/webhook will come back) than to burn retries on a doomed request.
+  if (balanceDue === null) {
+    throw new Error(`balanceDue unreadable for ${reservationId} — payment not recorded (will retry)`);
+  }
+  const amountToRecord = Math.min(amount, balanceDue);
+  if (amountToRecord !== amount) {
     console.warn(`[Guesty] Charged ${amount} ${currency} but reservation ${reservationId} balanceDue is ${balanceDue}; recording ${amountToRecord} (PI ${paymentIntentId}). Reconcile the difference manually.`);
   }
 
