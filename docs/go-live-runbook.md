@@ -1,6 +1,29 @@
 # Checkout 2.0 — Runbook de Go-Live (16 ago 2026)
 
-Para executar a dois (Ricardo + colaborador). Contexto completo: `docs/HANDOVER.md`, `docs/checkout_test_report.md`. Estado: **código pronto e testado em dev com pagamento real de teste** (E2E de 13 ago: PI único 3 909 €, reserva Guesty só com a estadia, manifesto CS). Fixes de 15 ago já no dev: retry retoma o mesmo PI (fim da dupla cobrança), Apple Pay com registo automático de domínio, `source: website-direct`.
+Para executar a dois (Ricardo + colaborador). Contexto completo: `docs/HANDOVER.md`, `docs/checkout_test_report.md`.
+
+## ✅ ESTADO 15 ago, 22h30 — MERGE FEITO, produção com flag desligada
+
+- **Merge `dev`→`main` feito e em produção** (`00f9334`, deploy live 22:19). Site público inalterado (`CHECKOUT_V2` ausente). Boot de produção limpo: migrações OK, tokens Guesty quentes, tráfego normal.
+- **Teste E2E final no dev (15 ago, 22h)**: funil completo → cartão 4242 → PI único 3 364,17 € → reserva Guesty `GY-bn8NMB6W` SÓ com a estadia (2 729,87 €, Fully paid, channel website-direct) → **email de confirmação do hóspede recebido e verificado** (código Guesty, breakdown canónico, Sara) → manifesto CS recebido em booking@ → notas "SERVICOS DO CHECKOUT" confirmadas visualmente no Guesty → reserva cancelada + refund `re_3U4oeoGsqyDlHBJE0Jt4e3Q5` de 3 364,17 € succeeded. **Recovery 1h observado ao vivo** no mesmo período.
+- O teste apanhou e corrigiu 2 bugs reais de produção (`5ecb59e`): race do Guesty pós-criação (balanceDue ilegível → pagamento recusado) e settle não-retomável (risco de 2.ª reserva num retry). Settle agora carimba a reserva de imediato e é retomável.
+- **Smoke produção**: homepage 200 · `/.well-known/apple-developer-merchantid-domain-association` 200 (9094 bytes) no www · API checkout viva (extras + Flex 10% + limpezas por listing).
+
+## O QUE FALTA PARA LIGAR (3 ações de dashboard, ~5 min, Ricardo)
+
+1. **`SITE_URL` no serviço Production** está `https://dev.portugalactive.com` (o boot registou o domínio Apple Pay errado no modo live) → mudar para `https://www.portugalactive.com`. No boot seguinte o Apple Pay live regista www+apex sozinho (confirmar `[ApplePay]` nos logs).
+2. **`EMAIL_FROM`** (dev E produção): `Portugal Active <booking@portugalactive.com>` (hoje sai info@).
+3. **Webhook do cartão** (rede de segurança; o finalize síncrono está provado): Stripe → Webhooks → endpoint `https://www.portugalactive.com/api/webhooks/stripe-card`, evento `payment_intent.succeeded` → colar `whsec_` como `STRIPE_CARD_WEBHOOK_SECRET` no Production (test idem no b2c-dev com dev.portugalactive.com, se quiseres a rede também no dev).
+4. Confirmar `BOOKING_ALERT_EMAIL` no Production = caixa real da equipa CS.
+5. **Ligar**: `CHECKOUT_V2=true` no Production → redeploy → smoke `?checkoutv2=1` já nem é preciso (flag global) → primeira reserva real pequena vigiada (Stripe live + Guesty + emails). **Rollback = apagar a flag.**
+
+Verificações humanas que só o Ricardo pode fazer quando quiser: sheet do Google Pay (o botão renderiza — clicar e ver o sheet abrir), botão Apple Pay em Safari (após o fix do SITE_URL).
+
+---
+
+Histórico e detalhe por baixo (estado 15 ago de manhã).
+
+Estado: **código pronto e testado em dev com pagamento real de teste** (E2E de 13 ago: PI único 3 909 €, reserva Guesty só com a estadia, manifesto CS). Fixes de 15 ago já no dev: retry retoma o mesmo PI (fim da dupla cobrança), Apple Pay com registo automático de domínio, `source: website-direct`.
 
 ## 0 · Limpeza pendente de testes (fazer ANTES do merge, com OAuth fresco)
 - Cancelar no Guesty a reserva de teste **Villa Aura 18–23 jan 2027** (criada hoje pelo settle; hóspede "Teste Wallet PA").
