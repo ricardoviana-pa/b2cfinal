@@ -1412,7 +1412,7 @@
     "qtyLabel": "Määrä",
     "peopleLabel": "Henkilöt",
     "sessionsLabel": "Kerrat",
-    "extrasChargeNote": "Kiinteähintaiset palvelut veloitetaan tänään yhdellä maksulla. Conciergen vahvistamat palvelut veloitetaan tänään ja hyvitetään automaattisesti 24 tunnin kuluessa, jos niitä ei voida taata. Tarjouspyynnöistä ei veloiteta nyt mitään.",
+    "extrasChargeNote": "Elämyspyyntöjä ja erikseen hinnoiteltavia palveluita ei veloiteta nyt. Kiinteähintaiset palvelut veloitetaan tänään yhtenä maksuna. Concierge-vahvistusta odottavat palvelut veloitetaan tänään ja hyvitetään automaattisesti 24 tunnin kuluessa, jos emme voi taata niitä.",
     "extras": {
       "transfer-porto": {
         "name": "Lentokenttäkuljetus Porto",
@@ -1420,7 +1420,7 @@
       },
       "transfer-porto-van": {
         "name": "Lentokenttäkuljetus Porto, tila-auto",
-        "desc": "Yksityinen tila-auto, per matka, enintään 8 vierasta."
+        "desc": "Yksityinen tila-auto, per matka, enintään 8 vierasta. Ihanteellinen urheiluvarusteille: laudat, pyörät, golf."
       },
       "daily-cleaning": {
         "name": "Päivittäinen siivous",
@@ -1432,7 +1432,7 @@
       },
       "private-chef": {
         "name": "Yksityiskokki illalliselle",
-        "desc": "Kokki valmistaa aterian kotonasi, menu sovitaan conciergen kanssa. Alueen hyvän ravintolan hinta, talon yksityisyydellä."
+        "desc": "Kokki valmistaa ateriat kotonanne: markkinamenu sovitaan conciergen kanssa ja mukautetaan toiveisiin ja allergioihin. Juomat eivät sisälly hintaan. Hyvän ravintolan hinta, kodin yksityisyydellä."
       },
       "hamper-essentials": {
         "name": "Tervetuliaiskori, perus",
@@ -1452,7 +1452,7 @@
       },
       "babysitter": {
         "name": "Lastenhoitaja",
-        "desc": "Luotettava lastenhoito talossa, tunneittain."
+        "desc": "Luotettava lastenhoito, aina talossa. Sama hinta päivällä ja yöllä."
       },
       "private-yoga": {
         "name": "Yksityinen joogatunti",
@@ -1520,7 +1520,7 @@
       },
       "transfer-lisbon-van": {
         "name": "Lentokenttäkuljetus Lissabon, tila-auto",
-        "desc": "Yksityinen tila-auto, per matka, enintään 8 vierasta."
+        "desc": "Yksityinen tila-auto, per matka, enintään 8 vierasta. Ihanteellinen urheiluvarusteille: laudat, pyörät, golf."
       },
       "deep-cleaning": {
         "name": "Perusteellinen siivous",

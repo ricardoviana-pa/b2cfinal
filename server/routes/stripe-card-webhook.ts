@@ -5,13 +5,17 @@
  */
 import type { Express, Request, Response } from "express";
 import express from "express";
+import { cardWebhookSecretFromSetup } from "../services/stripe-card-webhook-setup";
 
 export function registerStripeCardWebhookRoute(app: Express) {
   app.post("/api/webhooks/stripe-card", express.raw({ type: "application/json" }), async (req: Request, res: Response) => {
     try {
       const sig = req.headers["stripe-signature"];
       if (!sig || typeof sig !== "string") return res.status(400).send("missing signature");
-      const secret = process.env.STRIPE_CARD_WEBHOOK_SECRET || process.env.STRIPE_KLARNA_WEBHOOK_SECRET;
+      const secret =
+        process.env.STRIPE_CARD_WEBHOOK_SECRET ||
+        cardWebhookSecretFromSetup() ||
+        process.env.STRIPE_KLARNA_WEBHOOK_SECRET;
       if (!secret) return res.status(500).send("webhook secret not configured");
       const Stripe = (await import("stripe")).default;
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);

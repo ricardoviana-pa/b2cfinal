@@ -161,11 +161,12 @@ async function resolveIntentPhoto(intent: {
   }
 }
 
-/** Origem pública para links de email. Env primeiro para stg/prod. */
+/** Origem pública para links de email. SITE_URL primeiro (a env real dos
+ *  deploys); fallback produção — dev define SITE_URL, produção pode omitir. */
 function publicBaseUrl(): string {
   const fromEnv =
-    process.env.PUBLIC_BASE_URL || process.env.PUBLIC_URL || process.env.APP_URL;
-  return (fromEnv || "https://dev.portugalactive.com").replace(/\/+$/, "");
+    process.env.SITE_URL || process.env.PUBLIC_BASE_URL || process.env.PUBLIC_URL || process.env.APP_URL;
+  return (fromEnv || "https://www.portugalactive.com").replace(/\/+$/, "");
 }
 
 export const checkoutRouter = router({

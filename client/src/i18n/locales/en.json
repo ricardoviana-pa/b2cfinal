@@ -1412,7 +1412,7 @@
     "qtyLabel": "Quantity",
     "peopleLabel": "People",
     "sessionsLabel": "Sessions",
-    "extrasChargeNote": "Items with a fixed price are charged today, in a single payment. Services confirmed by the concierge are charged today and automatically refunded within 24 hours if they cannot be guaranteed. Requests under quotation carry no charge now.",
+    "extrasChargeNote": "Experience requests and services quoted individually are never charged now. Items with a fixed price are charged today, in a single payment. Services pending concierge confirmation are charged today and automatically refunded within 24 hours if we cannot guarantee them.",
     "extras": {
       "transfer-porto": {
         "name": "Porto airport transfer",
@@ -1420,7 +1420,7 @@
       },
       "transfer-porto-van": {
         "name": "Porto airport transfer, van",
-        "desc": "Private van, per trip, up to 8 guests."
+        "desc": "Private van, per journey, up to 8 guests. Ideal with sports luggage: boards, bikes, golf."
       },
       "daily-cleaning": {
         "name": "Daily cleaning",
@@ -1432,7 +1432,7 @@
       },
       "private-chef": {
         "name": "Private chef dinner",
-        "desc": "A chef cooks in your home, menu agreed with the concierge. The price of a fine restaurant in the region, with the privacy of the house."
+        "desc": "A chef cooks in your villa: a market menu arranged with the concierge, adapted to preferences and allergies. Drinks not included. The price of a good restaurant, with the privacy of home."
       },
       "hamper-essentials": {
         "name": "Welcome hamper, essentials",
@@ -1452,7 +1452,7 @@
       },
       "babysitter": {
         "name": "Babysitter",
-        "desc": "Trusted childcare at the house, by the hour."
+        "desc": "Trusted childcare, always at the villa. Same rate day and night."
       },
       "private-yoga": {
         "name": "Private yoga session",
@@ -1520,7 +1520,7 @@
       },
       "transfer-lisbon-van": {
         "name": "Lisbon airport transfer, van",
-        "desc": "Private van, per trip, up to 8 guests."
+        "desc": "Private van, per journey, up to 8 guests. Ideal with sports luggage: boards, bikes, golf."
       },
       "deep-cleaning": {
         "name": "Deep cleaning",
