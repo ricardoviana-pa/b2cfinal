@@ -3,7 +3,7 @@
    Compact bottom bar matching Portugal Active design language
    ========================================================================== */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 
@@ -12,6 +12,7 @@ const COOKIE_KEY = 'pa-cookies-consent';
 export default function CookieBanner() {
   const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const consent = localStorage.getItem(COOKIE_KEY);
@@ -20,6 +21,26 @@ export default function CookieBanner() {
       return () => clearTimeout(timer);
     }
   }, []);
+
+  // Publish the banner's real height as --cookie-banner-h so fixed/bottom UI
+  // elsewhere (e.g. the checkout bottom bar) can sit above it instead of
+  // being covered by this z-[60] overlay.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (!visible || !wrapperRef.current) {
+      root.style.setProperty('--cookie-banner-h', '0px');
+      return;
+    }
+    const el = wrapperRef.current;
+    const update = () => root.style.setProperty('--cookie-banner-h', `${el.offsetHeight}px`);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      root.style.setProperty('--cookie-banner-h', '0px');
+    };
+  }, [visible]);
 
   const handleAcceptAll = () => {
     localStorage.setItem(COOKIE_KEY, 'all');
@@ -35,6 +56,7 @@ export default function CookieBanner() {
 
   return (
     <div
+      ref={wrapperRef}
       className="fixed bottom-0 left-0 right-0 z-[60]"
       style={{
         animation: 'cookieSlideUp 0.5s cubic-bezier(0.16,1,0.3,1)',

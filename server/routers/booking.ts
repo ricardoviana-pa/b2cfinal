@@ -6,11 +6,54 @@ import {
   createBEQuote,
   createBEInstantReservation,
   getPaymentProvider,
+  applyCouponToBEQuote,
 } from "../services/guesty-booking";
 import { guestyBEClient, type BEListingWithPrice } from "../lib/guesty";
 import { getLowestNightly, getLowestNightlyBatch } from "../services/lowest-nightly";
 import * as db from "../db";
 import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
+
+/**
+ * Checkout 2.0 (Bloco 1): total canónico do servidor para Klarna/PayPal.
+ * O amount do cliente é só uma pista — valida-se contra computeChargeBreakdown
+ * (via breakdownFromIntent, com o mesmo gate de animais do createCardCharge) e
+ * o PI é criado SEMPRE com a matemática do servidor. A reserva Guesty continua
+ * a ser criada só com a estadia; o recordExternalPayment já tem cap ao
+ * balanceDue. Sem intentId (widget legacy) nada muda.
+ */
+async function canonicalIntentTotalCents(intentId: string): Promise<number> {
+  const m = await db.getBookingIntent(intentId);
+  if (!m) throw new Error("Checkout session not found — please refresh and try again.");
+  if ((m as any).status === "paid") throw new Error("This booking is already paid.");
+  const { breakdownFromIntent } = await import("../services/checkout-card-charge");
+  const { listingFacts } = await import("./checkout");
+  const { PETS_ONLY_SKUS } = await import("../config/checkout-extras");
+  const facts = await listingFacts((m as any).listingId);
+  const mSafe = facts.pets
+    ? m
+    : { ...m, extras: ((m as any).extras ?? []).filter((e: any) => !PETS_ONLY_SKUS.includes(e.sku)) };
+  const b = breakdownFromIntent(mSafe);
+  if (b.divergent.length) {
+    console.warn(`[CheckoutV2] client amounts diverged intent=${intentId}: ${b.divergent.join(",")}`);
+  }
+  return b.totalCents;
+}
+
+/** Valida o amount do cliente (cêntimos) contra o canónico, tolerância 1 EUR. */
+async function resolveV2AmountCents(
+  label: string,
+  intentId: string,
+  clientAmountCents: number,
+): Promise<number> {
+  const totalCents = await canonicalIntentTotalCents(intentId);
+  if (Math.abs(clientAmountCents - totalCents) > 100) {
+    console.error(
+      `[${label}] v2 amount mismatch intent=${intentId} client=${clientAmountCents}c server=${totalCents}c — PI NÃO criado`,
+    );
+    throw new Error("The price has changed — please refresh the page and try again.");
+  }
+  return totalCents;
+}
 
 /**
  * Save a trip to the customer's account and award loyalty points.
@@ -151,6 +194,47 @@ export const bookingRouter = router({
         return await checkAvailability(input.listingId, input.checkIn, input.checkOut);
       } catch (error: any) {
         throw new Error(error.message || "Failed to check availability");
+      }
+    }),
+
+  /**
+   * Aplica um código promocional à quote BE existente (Revenue Management do
+   * Guesty). O quoteId mantém-se válido para a reserva instantânea; devolve os
+   * rates atualizados no mesmo formato do getQuote. Código vazio = remover.
+   */
+  applyCoupon: publicProcedure
+    .input(
+      z.object({
+        quoteId: z.string().regex(/^[0-9a-f]{24}$/i),
+        listingId: z.string().min(1).max(64),
+        checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        coupon: z.string().regex(/^[A-Za-z0-9_-]{0,40}$/),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const coupons = input.coupon.trim() ? [input.coupon.trim().toUpperCase()] : [];
+      try {
+        const r = await applyCouponToBEQuote({
+          quoteId: input.quoteId,
+          coupons,
+          listingId: input.listingId,
+          checkIn: input.checkIn,
+          checkOut: input.checkOut,
+        });
+        return {
+          ok: true as const,
+          quoteId: r.quoteId,
+          nights: r.nights,
+          ratePlanId: r.ratePlanId,
+          pricing: r.pricing,
+          total: r.total,
+          ratePlanOptions: r.ratePlanOptions,
+          coupons: r.coupons,
+        };
+      } catch (error: any) {
+        if (error?.message === "INVALID_COUPON") return { ok: false as const, reason: "invalid" as const };
+        throw new Error(error?.message || "Failed to apply promo code");
       }
     }),
 
@@ -378,6 +462,47 @@ export const bookingRouter = router({
           policy: input.policy || {},
         });
 
+        // ── Post-charge verification (fire-and-forget, never blocks the booking) ──
+        // Guesty does NOT charge the card at /instant time: the charge is executed by
+        // the listing's Auto-Payment policy. If no policy fires, the reservation
+        // silently stays "Not paid" with "Next payment: Unscheduled". Check after a
+        // grace period (Guesty folio settles within ~60s) and alert operations.
+        if (result.reservationId) {
+          setTimeout(async () => {
+            try {
+              const { fetchReservationPaymentState } = await import("../services/guesty-openapi-paypal");
+              const state = await fetchReservationPaymentState(result.reservationId);
+              if (!state) return; // could not read — don't alarm on API noise
+              const hasMoneyMovement =
+                (state.totalPaid ?? 0) > 0 || state.payments.length > 0;
+              if (!hasMoneyMovement) {
+                console.error(
+                  `[BE Booking] UNPAID: reservation ${result.reservationId} (${result.confirmationCode}) has no payment collected or scheduled — check the listing's Guesty Auto-Payment policy. balanceDue=${state.balanceDue}`
+                );
+                sendBookingFailureAlert({
+                  quoteId: input.quoteId,
+                  ratePlanId: input.ratePlanId,
+                  ccTokenPrefix: input.ccToken.slice(0, 6),
+                  guestName: input.guestName,
+                  guestEmail: input.guestEmail,
+                  guestPhone: input.guestPhone,
+                  propertyName: input.propertyName,
+                  listingId: input.listingId,
+                  checkIn: input.checkIn,
+                  checkOut: input.checkOut,
+                  guests: input.guests,
+                  totalPrice: input.totalPrice,
+                  currency: input.currency,
+                  errorMessage: `Reservation ${result.confirmationCode} was CREATED but no payment was collected or scheduled (Guesty shows "Not paid"). Likely missing Auto-Payment policy on the listing. Collect the payment manually in Guesty.`,
+                  timestamp: new Date().toISOString(),
+                }).catch(() => {});
+              }
+            } catch (verifyErr: any) {
+              console.warn(`[BE Booking] Payment verification failed (non-blocking): ${verifyErr?.message || verifyErr}`);
+            }
+          }, 120_000);
+        }
+
         // Record to customer account (non-blocking)
         if (input.checkIn && input.checkOut) {
           await recordTripForUser(ctx, {
@@ -482,13 +607,19 @@ export const bookingRouter = router({
         numberOfAdults: z.number().int().min(1).max(30),
         numberOfChildren: z.number().int().min(0).max(20).default(0),
         numberOfInfants: z.number().int().min(0).max(10).default(0),
+        ratePlanId: z.string().optional(),
         returnUrl: z.string().url(),
+        /** Checkout 2.0: quando presente, o amount é validado e substituído pelo total canónico do servidor */
+        intentId: z.string().max(64).optional(),
       })
     )
     .mutation(async ({ input }) => {
+      const amountCents = input.intentId
+        ? await resolveV2AmountCents("PayPal", input.intentId, input.amount)
+        : input.amount;
       const { createPayPalPaymentIntent } = await import("../services/stripe-paypal");
       const pi = await createPayPalPaymentIntent({
-        amount: input.amount,
+        amount: amountCents,
         currency: input.currency,
         metadata: {
           source: "website-paypal",
@@ -500,6 +631,11 @@ export const bookingRouter = router({
           numberOfAdults: String(input.numberOfAdults),
           numberOfChildren: String(input.numberOfChildren),
           numberOfInfants: String(input.numberOfInfants),
+          // The webhook creates the Guesty reservation from this metadata alone;
+          // without ratePlanId it lands on the listing's default rate plan, gets
+          // re-priced, and the payment record is rejected ("Not paid").
+          ...(input.ratePlanId ? { ratePlanId: input.ratePlanId } : {}),
+          ...(input.intentId ? { intentId: input.intentId } : {}),
         },
       });
       return {
@@ -571,6 +707,25 @@ export const bookingRouter = router({
             }),
           recordPayment: (reservationId: string) =>
             recordExternalPayment(reservationId, input.totalAmount, input.currency, input.paymentIntentId),
+          onRecordPaymentFailure: (reservationId, error) => {
+            sendBookingFailureAlert({
+              quoteId: `PayPal PI ${input.paymentIntentId}`,
+              ratePlanId: input.ratePlanId || "N/A",
+              ccTokenPrefix: "paypal",
+              guestName: `${input.guestFirstName} ${input.guestLastName}`,
+              guestEmail: input.guestEmail,
+              guestPhone: input.guestPhone || "",
+              propertyName: input.propertyName,
+              listingId: input.listingId,
+              checkIn: input.checkIn,
+              checkOut: input.checkOut,
+              guests: input.numberOfAdults + input.numberOfChildren,
+              totalPrice: input.totalAmount,
+              currency: input.currency,
+              errorMessage: `Guest PAID but the payment could not be recorded on Guesty reservation ${reservationId} — it shows as NOT PAID. Record the payment manually. Error: ${(error as any)?.message || error}`,
+              timestamp: new Date().toISOString(),
+            }).catch(() => {});
+          },
         });
       } catch (guestyError: any) {
         console.error("[PayPal] CRITICAL: Payment succeeded but Guesty reservation failed", {
@@ -649,12 +804,18 @@ export const bookingRouter = router({
         numberOfAdults: z.number().int().min(1).max(30),
         numberOfChildren: z.number().int().min(0).max(20).default(0),
         numberOfInfants: z.number().int().min(0).max(10).default(0),
+        ratePlanId: z.string().optional(),
+        /** Checkout 2.0: quando presente, o amount é validado e substituído pelo total canónico do servidor */
+        intentId: z.string().max(64).optional(),
       })
     )
     .mutation(async ({ input }) => {
+      const amountCents = input.intentId
+        ? await resolveV2AmountCents("Klarna", input.intentId, input.amount)
+        : input.amount;
       const { createKlarnaPaymentIntent } = await import("../services/stripe-klarna");
       const pi = await createKlarnaPaymentIntent({
-        amount: input.amount,
+        amount: amountCents,
         currency: input.currency,
         metadata: {
           source: "website-klarna",
@@ -666,6 +827,11 @@ export const bookingRouter = router({
           numberOfAdults: String(input.numberOfAdults),
           numberOfChildren: String(input.numberOfChildren),
           numberOfInfants: String(input.numberOfInfants),
+          // The webhook creates the Guesty reservation from this metadata alone;
+          // without ratePlanId it lands on the listing's default rate plan, gets
+          // re-priced, and the payment record is rejected ("Not paid").
+          ...(input.ratePlanId ? { ratePlanId: input.ratePlanId } : {}),
+          ...(input.intentId ? { intentId: input.intentId } : {}),
         },
       });
       return {
@@ -737,6 +903,25 @@ export const bookingRouter = router({
             }),
           recordPayment: (reservationId: string) =>
             recordExternalPayment(reservationId, input.totalAmount, input.currency, input.paymentIntentId),
+          onRecordPaymentFailure: (reservationId, error) => {
+            sendBookingFailureAlert({
+              quoteId: `Klarna PI ${input.paymentIntentId}`,
+              ratePlanId: input.ratePlanId || "N/A",
+              ccTokenPrefix: "klarna",
+              guestName: `${input.guestFirstName} ${input.guestLastName}`,
+              guestEmail: input.guestEmail,
+              guestPhone: input.guestPhone || "",
+              propertyName: input.propertyName,
+              listingId: input.listingId,
+              checkIn: input.checkIn,
+              checkOut: input.checkOut,
+              guests: input.numberOfAdults + input.numberOfChildren,
+              totalPrice: input.totalAmount,
+              currency: input.currency,
+              errorMessage: `Guest PAID but the payment could not be recorded on Guesty reservation ${reservationId} — it shows as NOT PAID. Record the payment manually. Error: ${(error as any)?.message || error}`,
+              timestamp: new Date().toISOString(),
+            }).catch(() => {});
+          },
         });
       } catch (guestyError: any) {
         console.error("[Klarna] CRITICAL: Payment succeeded but Guesty reservation failed", {

@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { loadStripe } from "@stripe/stripe-js";
 import { trpc } from "@/lib/trpc";
+import { formatEur } from "@/lib/format";
+import { pushEcommerce } from "@/lib/datalayer";
 
 interface KlarnaCheckoutButtonProps {
   amount: number;
@@ -24,12 +27,19 @@ interface KlarnaCheckoutButtonProps {
   // Rate plan the guest selected — carried through so the Guesty reservation is
   // created on the correct plan (right price + cancellation terms).
   ratePlanId?: string;
+  /** Checkout 2.0: intent id — return page marks the intent paid after confirmation */
+  intentId?: string;
+  /** Promo code applied to the quote — carried through for GA4 purchase attribution */
+  couponCode?: string;
+  /** Bloco 6: items GA4 dos serviços (extras, receção, Flex) para o purchase da return page */
+  purchaseItems?: Array<Record<string, unknown>>;
   // Platform Stripe publishable key (NOT the per-listing connected account key)
   stripePublishableKey: string;
   onError: (msg: string) => void;
 }
 
 export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
+  const { t, i18n } = useTranslation();
   const [isProcessing, setIsProcessing] = useState(false);
   const [statusMsg, setStatusMsg] = useState("");
 
@@ -37,7 +47,15 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
 
   const handleClick = async () => {
     setIsProcessing(true);
-    setStatusMsg("Preparing Klarna payment…");
+    setStatusMsg(t("payment.preparingKlarna"));
+
+    // GA4: add_payment_info — must fire before the redirect navigates away
+    pushEcommerce({
+      event: "add_payment_info",
+      payment_type: "klarna",
+      property_id: props.listingId,
+      ecommerce: { currency: "EUR", value: props.amount },
+    });
 
     try {
       const stripe = await loadStripe(props.stripePublishableKey);
@@ -63,6 +81,9 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
           ratePlanId: props.ratePlanId,
           propertyName: props.propertyName,
           destination: props.destination,
+          intentId: props.intentId,
+          couponCode: props.couponCode,
+          purchaseItems: props.purchaseItems,
         })
       );
 
@@ -77,9 +98,13 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
         numberOfAdults: props.numberOfGuests.adults,
         numberOfChildren: props.numberOfGuests.children,
         numberOfInfants: props.numberOfGuests.infants,
+        ratePlanId: props.ratePlanId,
+        // Checkout 2.0: o servidor valida o amount contra o breakdown canónico
+        // do intent (tolerância 1 EUR) e cobra sempre a matemática do servidor
+        intentId: props.intentId,
       });
 
-      setStatusMsg("Redirecting to Klarna…");
+      setStatusMsg(t("payment.redirecting"));
 
       const { error } = await (stripe as any).confirmKlarnaPayment(clientSecret, {
         payment_method: {
@@ -121,7 +146,7 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
         letterSpacing: "0.04em",
       }}
     >
-      {isProcessing ? statusMsg : "Pay with Klarna"}
+      {isProcessing ? statusMsg : t("payment.payWithKlarna", { amount: formatEur(props.amount, i18n.language) })}
     </button>
   );
 }

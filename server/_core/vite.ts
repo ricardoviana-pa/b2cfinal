@@ -20,8 +20,15 @@ export async function setupVite(app: Express, server: Server) {
     allowedHosts: true as const,
   };
 
+  // vite.config exports a function of ConfigEnv (command/isSsrBuild); resolve
+  // it before spreading — spreading the function itself yields an empty config
+  // (no root/plugins), which broke every module request in local dev.
+  const resolvedViteConfig = await (typeof viteConfig === "function"
+    ? (viteConfig as any)({ command: "serve", mode: "development", isSsrBuild: false })
+    : viteConfig);
+
   const vite = await createViteServer({
-    ...viteConfig,
+    ...resolvedViteConfig,
     configFile: false,
     server: serverOptions,
     appType: "custom",
@@ -1301,7 +1308,7 @@ export function serveStatic(app: Express) {
     "/legal/privacy", "/legal/terms", "/legal/cookies", "/admin", "/404",
     "/destinations", "/experiences", "/concierge",
   ]);
-  const KNOWN_PREFIXES = ["/homes/", "/destinations/", "/blog/", "/services/", "/admin/", "/booking/", "/experiences/", "/activities/"];
+  const KNOWN_PREFIXES = ["/homes/", "/destinations/", "/blog/", "/services/", "/admin/", "/booking/", "/experiences/", "/activities/", "/checkout/"];
 
   /** Strip locale prefix from path: /pt/homes → /homes */
   function stripLocale(pathname: string): string {
@@ -1480,6 +1487,12 @@ export function serveStatic(app: Express) {
     // og:locale, and <html lang>. This is the critical SEO fix: every
     // /{lang}/{path} response tells Google it's a distinct indexable version.
     html = injectLocaleTags(html, { lang, pagePath: p });
+
+    // Checkout pages are transactional capability URLs — never indexable.
+    // Must happen HERE: several branches below return early (cache hits).
+    if (p.startsWith("/checkout/")) {
+      html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
+    }
 
     // ── ALWAYS inject per-route meta for static routes (instant lookup, no DB).
     // This ensures OG tags are correct even when a CDN caches the response,

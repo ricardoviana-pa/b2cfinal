@@ -129,7 +129,7 @@
     "estTotal": "uppskattat totalt",
     "indicativeCatalogue": "Indikativt från katalog. Bekräfta slutpris vid bokning.",
     "indicativeUnavailable": "Indikativt (katalog). Livepris inte tillgängligt — bekräfta vid bokning.",
-    "cleaningFee": "Slutstädning",
+    "cleaningFee": "Serviceavgift",
     "serviceFee": "Serviceavgift",
     "touristTax": "Turistskatt",
     "vat": "Moms",
@@ -220,7 +220,9 @@
     "minStayNotice_one": "Minsta vistelse för dessa datum är {{count}} natt",
     "minStayNotice_other": "Minsta vistelse för dessa datum är {{count}} nätter",
     "select": "Välj",
-    "cancellationPerPolicy": "Avbokning enligt boendets villkor"
+    "cancellationPerPolicy": "Avbokning enligt boendets villkor",
+    "decreaseGuests": "Färre gäster",
+    "increaseGuests": "Fler gäster"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Pris på förfrågan",
@@ -272,7 +274,49 @@
     "requestWithoutPayment": "Eller förfråga utan betalning",
     "belowMinNightsWarning_one": "Välj minst {{count}} natt för att fortsätta",
     "belowMinNightsWarning_other": "Välj minst {{count}} nätter för att fortsätta",
-    "pricingUnavailableMessage": "Vi kunde inte bekräfta priset för dessa datum. Kontakta en Concierge."
+    "pricingUnavailableMessage": "Vi kunde inte bekräfta priset för dessa datum. Kontakta en Concierge.",
+    "recommended": "Rekommenderad",
+    "nonRefundableWarning": "Ingen återbetalning vid avbokning eller ändring",
+    "save": "Spara",
+    "quoteExpired": "Offerten har gått ut. Försök igen.",
+    "quoteRefreshFailed": "Priset kunde inte uppdateras. Kontakta vår concierge.",
+    "termsAcceptLabel": "Jag godkänner",
+    "termsLink": "Allmänna villkor",
+    "termsAnd": "och",
+    "invalidEmail": "Ange en giltig e-postadress",
+    "invalidPhone": "Ange ett giltigt telefonnummer",
+    "bookingSummary": "Bokningsöversikt",
+    "proceedToPayment": "Fortsätt till betalning",
+    "priceSummary": "Prisöversikt",
+    "bookedBy": "Bokad av",
+    "servicesRequested": "Begärda tjänster",
+    "servicesConfirmNote": "Vår concierge kontaktar dig inom 2 timmar för att bekräfta detaljer och priser.",
+    "chatConcierge": "Chatta med din concierge",
+    "conciergeReachOut": "Din personliga concierge hör av sig inom 24 timmar för att hjälpa dig planera vistelsen.",
+    "confirmationEmailSent": "Bekräftelsemejl skickat till",
+    "contactConcierge": "Kontakta concierge",
+    "selectDate": "Välj",
+    "loadingCalendar": "Laddar tillgänglighet...",
+    "fromPrice": "från",
+    "showAllServices": "Visa alla tjänster",
+    "servicesNote": "Tjänster bekräftas separat av vår concierge efter bokningen. Ingen debitering nu.",
+    "checkInToday": "Incheckning är idag",
+    "checkInTomorrow": "Incheckning är imorgon",
+    "checkInSoon": "Incheckning är om 2 dagar",
+    "advanceNoticeNote": "Vissa hus kräver framförhållning. Omedelbar bekräftelse kanske inte är tillgänglig.",
+    "nightsLabel": "nätter",
+    "servicesSelected_one": "{{count}} tjänst begärd — bekräftas efter bokningen",
+    "servicesSelected_other": "{{count}} tjänster begärda — bekräftas efter bokningen",
+    "phonePh": "Telefonnummer *",
+    "ratePlanPolicyAria": "öppnar avbokningspolicyn i en ny flik",
+    "waSuccessMessage": "Hej! Jag har precis bekräftat min bokning på {{property}}.\nBekräftelse: {{code}}\nDatum: {{checkIn}} → {{checkOut}}\nGäster: {{guests}}\nSer fram emot vistelsen!",
+    "waPricingHelp": "Hej, jag skulle vilja boka {{property}}.\nDatum: {{checkIn}} → {{checkOut}}\nNätter: {{nights}}\nGäster: {{guests}}\nKan ni hjälpa mig att bekräfta tillgänglighet och pris?",
+    "clearDates": "Rensa",
+    "availableLabel": "Tillgänglig",
+    "unavailableLabel": "Ej tillgänglig",
+    "confirmDates": "Bekräfta",
+    "tariffInCheckout": "Två priser tillgängliga. Välj ditt i nästa steg.",
+    "reserve": "RESERVERA"
   },
   "common": {
     "loading": "Laddar…",
@@ -415,7 +459,7 @@
     "nights_other": "{{count}} nätter",
     "viewDetails": "Visa prisdetaljer",
     "accommodation": "Boende",
-    "cleaning": "Slutstädning",
+    "cleaning": "Förberedelse av huset",
     "serviceFee": "Serviceavgift",
     "touristTax": "Turistskatt",
     "vat": "Moms",
@@ -585,7 +629,10 @@
     "checkInInstructions": "Incheckningsinstruktioner",
     "checkInDefault": "Vårt team delar alla instruktioner med dig via e-post.",
     "addToCalendar": "Lägg till i kalender",
-    "whatsappConcierge": "WhatsApp concierge"
+    "whatsappConcierge": "WhatsApp concierge",
+    "pageTitle": "Bokning bekräftad | Tack",
+    "pageDescription": "Din Portugal Active-bokning är bekräftad. Kolla din e-post och förbered din vistelse.",
+    "whatsappPrefill": "Hej, jag behöver hjälp med min bokning"
   },
   "payment": {
     "failed": "Betalning misslyckades. Försök igen.",
@@ -608,10 +655,18 @@
       "requiredFields": "Fyll i alla obligatoriska fält.",
       "cardNotReady": "Kortelementet är inte klart. Uppdatera sidan och försök igen.",
       "cardValidationFailed": "Kortvalidering misslyckades. Kontrollera dina kortuppgifter.",
-      "couldNotCreatePaymentMethod": "Kunde inte skapa betalningsmetod. Försök igen."
+      "couldNotCreatePaymentMethod": "Kunde inte skapa betalningsmetod. Försök igen.",
+      "contactSupport": "Om beloppet har dragits, kontakta oss på reservations@portugalactive.com eller WhatsApp +351 927 161 771. Försök inte betala igen."
     },
-    "payButton": "Betala {{currency}} {{amount}}",
-    "cancelButton": "Avbryt"
+    "payButton": "Betala {{amount}}",
+    "cancelButton": "Avbryt",
+    "methodCard": "Kort",
+    "preparingSecure": "Förbereder säker betalning…",
+    "payWithKlarna": "Betala {{amount}} med Klarna",
+    "payWithPaypal": "Betala {{amount}} med PayPal",
+    "preparingKlarna": "Förbereder Klarna-betalning…",
+    "preparingPaypal": "Förbereder PayPal-betalning…",
+    "redirecting": "Omdirigerar…"
   },
   "contact": {
     "heroAlt": "Kontakta Portugal Active",
@@ -1145,7 +1200,16 @@
     "strictTitle": "Strikt Avbokning",
     "strictBody": "50% återbetalning vid avbokning minst 60 dagar före incheckning. Ingen återbetalning vid avbokningar med mindre än 60 dagars varsel. Ej återbetalningsbar efter incheckning.",
     "nonRefundableTitle": "Ej Återbetalningsbar",
-    "nonRefundableBody": "Detta pris erbjuds till ett reducerat pris i utbyte mot en policy om ingen återbetalning. När bokningen är gjord utfärdas ingen återbetalning oavsett avbokningsdatum. Vi rekommenderar starkt att köpa reseförsäkring när du väljer detta pris."
+    "nonRefundableBody": "Detta pris erbjuds till ett reducerat pris i utbyte mot en policy om ingen återbetalning. När bokningen är gjord utfärdas ingen återbetalning oavsett avbokningsdatum. Vi rekommenderar starkt att köpa reseförsäkring när du väljer detta pris.",
+    "shortFree": "Gratis avbokning till {{date}}",
+    "shortFreeNoDate_one": "Gratis avbokning fram till {{count}} dag före incheckning",
+    "shortFreeNoDate_other": "Gratis avbokning fram till {{count}} dagar före incheckning",
+    "shortHalf": "50 % återbetalning till {{date}}: därefter ej återbetalningsbar",
+    "shortHalfNoDate_one": "50 % återbetalning fram till {{count}} dag före incheckning: därefter ej återbetalningsbar",
+    "shortHalfNoDate_other": "50 % återbetalning fram till {{count}} dagar före incheckning: därefter ej återbetalningsbar",
+    "shortNonRefundable": "Ej återbetalningsbar taxa: ingen återbetalning vid avbokning",
+    "shortWindowPassed": "För dessa datum är bokningen ej återbetalningsbar vid avbokning",
+    "shortGeneric": "Avbokningsvillkor gäller: se vår avbokningspolicy"
   },
   "whatsapp": {
     "title": "Kontakta via WhatsApp",
@@ -1220,7 +1284,7 @@
     "bookedBy": "Bokad av",
     "priceSummary": "Prissammanfattning",
     "nights": "{{count}} nätter",
-    "cleaning": "Slutstädning",
+    "cleaning": "Förberedelse av huset",
     "totalPaid": "Totalt betalt",
     "paidPaypal": "Betalt i sin helhet med PayPal",
     "paidKlarna": "Betalar med Klarna",
@@ -1230,7 +1294,14 @@
     "trustSecure": "Säker bokning",
     "trustRate": "Bästa pris garanterat",
     "trustCancel": "Flexibel avbokning",
-    "trustConcierge": "Concierge ingår"
+    "trustConcierge": "Concierge ingår",
+    "pageTitle": "Bokning bekräftad | Tack",
+    "pageDescription": "Din Portugal Active-bokning är bekräftad. Kolla din e-post och förbered din vistelse.",
+    "mailSubject": "Bokning {{code}} — Informationsförfrågan",
+    "mailBody": "Hej,\n\njag har en fråga om min bokning {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
+    "trustFees": "Inga bokningsavgifter",
+    "paidCard": "Betalat i sin helhet med kort",
+    "cardSub": "Säker kortbetalning"
   },
   "bedType": {
     "KingBed": "King-säng",
@@ -1251,5 +1322,333 @@
     "bunkBed": "Våningssäng",
     "airMattress": "Luftmadrass",
     "bed": "Säng"
+  },
+  "paymentReturn": {
+    "verifying": "Verifierar din betalning…",
+    "missingInfo": "Betalningsinformation saknas. Kontakta supporten.",
+    "dataLost": "Dina bokningsuppgifter gick förlorade vid omdirigeringen. Kontakta supporten med referens {{ref}}.",
+    "dataCorrupted": "Dina bokningsuppgifter kunde inte läsas. Kontakta supporten.",
+    "processorUnavailable": "Betalningsleverantören är inte tillgänglig. Kontakta supporten.",
+    "verifyFailed": "Betalningsstatusen kunde inte verifieras. Kontakta supporten.",
+    "confirmedCreating": "Betalning bekräftad! Skapar din bokning…",
+    "reservationFailed": "Din betalning har tagits emot men bokningen kunde inte skapas automatiskt. Vårt team har meddelats och bekräftar din bokning inom kort. Referens: {{ref}}",
+    "stillProcessing": "Din betalning behandlas fortfarande. Vänta en stund och uppdatera sidan.",
+    "notCompleted": "Betalningen slutfördes inte. Försök igen eller välj en annan betalningsmetod.",
+    "processingTitle": "Din bokning behandlas",
+    "failedTitle": "Betalningen slutfördes inte",
+    "secureNote": "Säker betalning — stäng inte det här fönstret"
+  },
+  "trust": {
+    "secureBooking": "Säker bokning",
+    "bestRate": "Bästa pris garanterat",
+    "noBookingFees": "Inga bokningsavgifter",
+    "conciergeIncluded": "Concierge ingår"
+  },
+  "bookingStatus": {
+    "confirmed": "Bekräftad",
+    "reserved": "Reserverad",
+    "pending": "Väntar på bekräftelse",
+    "canceled": "Avbokad",
+    "declined": "Nekad",
+    "expired": "Utgången",
+    "inquiry": "Förfrågan",
+    "processing": "Under behandling"
+  },
+  "checkout": {
+    "pageTitle": "Kassa",
+    "stepStay": "Din vistelse",
+    "stepPay": "Betalning",
+    "stepsAria": "Kassasteg",
+    "autosaved": "Sparas automatiskt",
+    "closeAria": "Tillbaka till huset",
+    "loading": "Förbereder din kassa…",
+    "notFoundTitle": "Kassan hittades inte",
+    "notFoundBody": "Länken har gått ut eller är ogiltig. Dina datum är inte förlorade, börja om från husets sida.",
+    "quoteExpiredBanner": "Priset har gått ut. Uppdatera för att se aktuellt pris för dina datum, dina uppgifter sparas.",
+    "refreshPrice": "Uppdatera pris",
+    "datesUnavailable": "Vi kunde inte bekräfta ett pris för dessa datum, de kanske inte längre är tillgängliga. Försök igen, välj nya datum nedan eller kontakta vår concierge.",
+    "stayTitle": "Din vistelse",
+    "staySubtitle": "Bekräfta dina datum och välj din taxa.",
+    "edit": "Redigera",
+    "doneEditing": "Klar",
+    "emailLabel": "Din e-post",
+    "emailPh": "namn@email.com",
+    "emailSupport": "Vi håller ditt pris i 24 timmar och mejlar offerten. Datumen säkras först efter betalning. Ingen skräppost.",
+    "backToStay": "Tillbaka till vistelsen",
+    "payTitle": "Betalning",
+    "paySubtitle": "Dina uppgifter, sedan en säker betalning.",
+    "nifPh": "Skattenummer eller momsnummer, valfritt, för din faktura",
+    "directTitle": "Boka direkt hos Portugal Active",
+    "refreshBeforePay": "Uppdatera priset ovan innan du betalar.",
+    "secureNote": "Krypterad, säker betalning",
+    "viewDetails": "Visa detaljer",
+    "priceGuaranteed": "Priset garanteras till {{date}}, {{time}}",
+    "alreadyPaidTitle": "Denna bokning är redan bekräftad",
+    "alreadyPaidBody": "Betalningen för denna vistelse är slutförd. Kolla din e-post eller se din bokning nedan.",
+    "viewBooking": "Visa min bokning",
+    "stepCustomize": "Anpassa",
+    "customizeTitle": "Anpassa din vistelse",
+    "customizeSubtitle": "Lägg till tjänster och upplevelser, eller fortsätt utan extra. Inget är förvalt.",
+    "backToCustomize": "Tillbaka till anpassning",
+    "continueWithExtras_one": "Fortsätt, {{count}} tillval tillagt",
+    "continueWithExtras_other": "Fortsätt, {{count}} tillval tillagda",
+    "continueWithoutExtras": "Fortsätt utan tillval",
+    "mostChosen": "Mest vald",
+    "confirm24h": "Bekräftas inom 24h",
+    "onRequest": "På förfrågan, ingen debitering nu",
+    "onRequestShort": "på förfrågan",
+    "add": "Lägg till",
+    "added": "Tillagd",
+    "request": "Begär",
+    "perDay": "per dag",
+    "perPerson": "per person",
+    "perTrip": "per resa",
+    "perChange": "per byte",
+    "perPersonSession": "per person · session",
+    "minPeople_one": "minst {{count}} person",
+    "minPeople_other": "minst {{count}} personer",
+    "daysLabel": "Dagar",
+    "tripsLabel": "Resor",
+    "qtyLabel": "Antal",
+    "peopleLabel": "Personer",
+    "sessionsLabel": "Sessioner",
+    "extrasChargeNote": "Artiklar med fast pris debiteras idag, i en enda betalning. Tjänster som bekräftas av conciergen debiteras idag och återbetalas automatiskt inom 24 timmar om de inte kan garanteras. Förfrågningar med offert debiteras inte nu.",
+    "extras": {
+      "transfer-porto": {
+        "name": "Flygplatstransfer Porto",
+        "desc": "Privatbil, per resa, upp till 4 gäster."
+      },
+      "transfer-porto-van": {
+        "name": "Flygplatstransfer Porto, van",
+        "desc": "Privat van, per resa, upp till 8 gäster."
+      },
+      "daily-cleaning": {
+        "name": "Daglig städning",
+        "desc": "Uppfräschning av badrum och kök, bäddade sängar, sopade gemensamma ytor. Sängkläder byts var 4:e natt."
+      },
+      "linen-change": {
+        "name": "Byte av linne och handdukar",
+        "desc": "Komplett byte av sänglinne och handdukar."
+      },
+      "private-chef": {
+        "name": "Privat kock till middag",
+        "desc": "En kock lagar mat hemma hos er, meny bestäms med conciergen. Priset för en bra restaurang i regionen, med husets avskildhet."
+      },
+      "hamper-essentials": {
+        "name": "Välkomstkorg, basics",
+        "desc": "Det viktigaste vid ankomst: frukost, vatten, frukt."
+      },
+      "hamper-gourmet": {
+        "name": "Välkomstkorg, regional gourmet",
+        "desc": "Utvalda regionala viner och delikatesser. En veckas matinköp, valda av en kännare."
+      },
+      "grocery-list": {
+        "name": "Kylskåpet fyllt vid ankomst",
+        "desc": "Skicka din lista, kylskåpet är fyllt före ankomst."
+      },
+      "massage": {
+        "name": "Massage i huset",
+        "desc": "60 minuters session i huset, per person."
+      },
+      "babysitter": {
+        "name": "Barnvakt",
+        "desc": "Pålitlig barnpassning i huset, per timme."
+      },
+      "private-yoga": {
+        "name": "Privat yogasession",
+        "desc": "En session i huset med privat instruktör."
+      },
+      "personal-trainer": {
+        "name": "Personlig tränare",
+        "desc": "Ett träningspass i huset eller utomhus."
+      },
+      "exp-sup": {
+        "name": "Stand up paddle",
+        "desc": "På regionens lugna vatten, utrustning ingår."
+      },
+      "exp-hikedive": {
+        "name": "Vandra, dyk och ät",
+        "desc": "En dag mellan stigen, vattnet och bordet."
+      },
+      "exp-ebike": {
+        "name": "Elcykeltur",
+        "desc": "Landsbygden på elcykel, med guide."
+      },
+      "exp-horseback": {
+        "name": "Ridtur",
+        "desc": "Stigar till häst genom regionen."
+      },
+      "exp-canyoning": {
+        "name": "Canyoning",
+        "desc": "Nedstigningar genom floder och vattenfall med guide."
+      },
+      "exp-biketour": {
+        "name": "Stads och bergscykeltur",
+        "desc": "Två hjul, från staden till kullarna."
+      },
+      "exp-buggy": {
+        "name": "Can Am buggy-upplevelse",
+        "desc": "Offroad genom regionens leder."
+      },
+      "travel-crib": {
+        "name": "Resesäng",
+        "desc": "Uppställd före ankomst. Säg hur många så huset är redo."
+      },
+      "baby-chair": {
+        "name": "Barnstol",
+        "desc": "Vid bordet vid ankomst. Säg hur många så huset är redo."
+      },
+      "pet-fee": {
+        "name": "Ta med husdjur",
+        "desc": "Det här huset välkomnar husdjur. 50 € för det första, 100 € för det andra. Högst två."
+      },
+      "pet-kit": {
+        "name": "Husdjurskit, säng och skålar",
+        "desc": "En bekväm säng och skålar väntar på din följeslagare."
+      },
+      "pet-food": {
+        "name": "Djurfoder",
+        "desc": "Berätta märke och diet, vi fyller på före ankomst."
+      },
+      "breakfast-box": {
+        "name": "Breakfast box",
+        "desc": "Färsk frukost levererad de morgnar du väljer. Hotellkomfort, hemma."
+      },
+      "transfer-lisbon": {
+        "name": "Flygplatstransfer Lissabon",
+        "desc": "Privatbil, per resa, upp till 4 gäster."
+      },
+      "transfer-lisbon-van": {
+        "name": "Flygplatstransfer Lissabon, van",
+        "desc": "Privat van, per resa, upp till 8 gäster."
+      },
+      "deep-cleaning": {
+        "name": "Djuprengöring",
+        "desc": "Fullständig städning uppifrån och ner: badrum och kök på djupet, alla sängkläder och handdukar byts, alla ytor och golv."
+      },
+      "grocery-setup": {
+        "name": "Inköp gjorda och levererade",
+        "desc": "Skicka oss din lista. Vi handlar och ställer allt i ordning före ankomst. Matbutikens nota debiteras separat, till självkostnadspris."
+      }
+    },
+    "emailTitle": "Vart skickar vi din bokning?",
+    "perStay": "per vistelse",
+    "flex": {
+      "title": "Flex, garanterad ombokning",
+      "tagline": "Boka om när du behöver. Beloppet du betalat går aldrig förlorat.",
+      "perBooking": "engångsbelopp, per bokning",
+      "benefit1": "Boka om upp till {{days}} dagar före incheckning, utan kostnad",
+      "benefit2": "Beloppet du betalat förblir skyddat, det går aldrig förlorat",
+      "benefit3": "Tillgodohavande giltigt i {{months}} månader, i alla hus i portföljen",
+      "copyNonRefundable": "Du valde det bästa priset. Med Flex går beloppet aldrig förlorat: boka om upp till {{days}} dagar före incheckning.",
+      "copyFlexible": "Din taxa tillåter gratis avbokning till {{date}}. Efter det datumet garanterar Flex att du kan boka om upp till {{days}} dagar före incheckning utan att förlora beloppet.",
+      "howItWorks": "Så fungerar det",
+      "add": "Lägg till Flex",
+      "added": "Tillagd",
+      "rule1": "Boka om utan kostnad upp till {{days}} dagar före incheckning, så många gånger du behöver, med en aktiv bokning åt gången.",
+      "rule2": "Det som skyddas är beloppet du betalat, inte datumen eller huset. Aktuella priser gäller för de nya datumen.",
+      "rule3": "När du bokar om blir det betalda beloppet ett tillgodohavande giltigt i {{months}} månader, användbart i alla hus i portföljen.",
+      "rule4": "Kostar den nya vistelsen mer betalar du bara mellanskillnaden. Kostar den mindre står resten kvar som tillgodohavande.",
+      "rule5": "Tillval flyttar med när tjänsten tillåter det; annars omvandlas även deras belopp till tillgodohavande.",
+      "rule6": "Flex kan endast köpas i kassan och återbetalas inte.",
+      "honesty": "Avbokar du inom din taxas fria avbokningsfönster återbetalar vi dina pengar enligt policyn. Flex ersätter aldrig den rätten, det lägger till skydd bortom den.",
+      "percentNote": "10 % av nätternas totalsumma, engångsbelopp"
+    },
+    "curatedFor": "Utvalt för {{property}}",
+    "todayTotal": "Totalt",
+    "conciergeRequests": "Concierge-förfrågningar",
+    "conciergeRequestsNote": "Offereras individuellt av din concierge. Ingen debitering nu.",
+    "included": {
+      "title": "Ingår i din vistelse",
+      "badge": "Ingår",
+      "concierge": "En personlig concierge på WhatsApp",
+      "linen": "Hotellsänglinne och handdukar",
+      "welcome": "Welcoming pack",
+      "bestRate": "Bästa pris garanterat"
+    },
+    "chapter": {
+      "arrival": {
+        "title": "Ankomsten",
+        "line": "Från flygplansdörren till husets dörr."
+      },
+      "home": {
+        "title": "Huset",
+        "line": "Hotellservice, varje dag du önskar."
+      },
+      "table": {
+        "title": "Bordet",
+        "line": "Regionen lagar mat åt dig.",
+        "line_minho": "Minho lagar mat åt dig."
+      },
+      "wellness": {
+        "title": "Välmående",
+        "line": "Riktig vila."
+      },
+      "experiences": {
+        "title": "Upplevelser",
+        "line": "Regionen, med dem som känner den."
+      }
+    },
+    "reception": {
+      "prompt": "Hur vill du anlända? Välj ett alternativ för att fortsätta.",
+      "required": "Välj hur du vill anlända för att fortsätta.",
+      "arrivalWindow": "Ankomst:",
+      "beforeLate": "Före kl {{hour}}",
+      "afterLate": "Efter kl {{hour}}",
+      "self": {
+        "name": "Self check-in",
+        "desc": "Självständig entré med kod, instruktioner skickade dagen innan, WhatsApp-support när som helst."
+      },
+      "hosted": {
+        "name": "Personlig mottagning",
+        "desc": "En värd tar emot dig, visar huset och får allt att fungera."
+      },
+      "lateNote": "Efter kl {{hour}}: {{price}}."
+    },
+    "seeAll": "Se alla tjänster",
+    "seeAllExperiences": "Se alla upplevelser",
+    "chapterLabel": "Kapitel {{num}}",
+    "skipCustomize": "Hoppa över anpassning",
+    "seeMore": "Se fler ({{count}})",
+    "remove": "Ta bort",
+    "conciergeQuote": "Offert från din concierge",
+    "fromPrice": "från {{price}}",
+    "requested": "Begärd",
+    "coupon": {
+      "have": "Har du en rabattkod?",
+      "apply": "Använd",
+      "ph": "RABATTKOD",
+      "invalid": "Koden känns inte igen. Kontrollera och försök igen.",
+      "applied": "Kod {{code}} tillämpad",
+      "field": "Rabattkod"
+    },
+    "prev": "Föregående",
+    "next": "Nästa",
+    "firstIncluded": "Första ingår, extra för {{price}}",
+    "nextChapter": "Nästa: {{chapter}}",
+    "continueToPayment": "Fortsätt till betalning",
+    "scarcityNote": "Med förbehåll för tillgänglighet under högsäsong. Boka nu säkrar det.",
+    "tailoredTitle": "Din vistelse, skräddarsydd",
+    "flexLastCall": "Ett klick för att skydda bokningen: Flex, garanterad ombokning.",
+    "flexAddShort": "Lägg till",
+    "proof": {
+      "transfer-porto": "Förare från vårt eget team, aldrig utlagt",
+      "hamper-gourmet": "Lokala producenter valda av vår concierge",
+      "breakfast-box": "Private hotel-konceptet, varje morgon"
+    },
+    "perPersonDay": "per person · dag",
+    "allDays": "Varje dag",
+    "airport": "Flygplats",
+    "confirm24hNote": "Om vi inte kan garantera det återbetalas raden automatiskt.",
+    "noChargeNow": "ingen debitering nu",
+    "perPersonHour": "per barn · timme",
+    "hoursLabel": "Timmar",
+    "saveIssue": "Återansluter, ändringar väntar",
+    "stayDetails": {
+      "title": "Vistelsens detaljer"
+    },
+    "arrivalAirport": "Ankomstflygplats",
+    "perCleaning": "per städning",
+    "perPetStay": "per husdjur · vistelse"
   }
 }

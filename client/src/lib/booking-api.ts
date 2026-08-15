@@ -50,7 +50,7 @@ export interface ThankYouStash {
   reservationId: string;
   confirmationCode: string;
   status?: string;
-  method: "paypal" | "klarna";
+  method: "paypal" | "klarna" | "card";
   listingName?: string;
   location?: string;
   checkIn: string;
@@ -61,6 +61,12 @@ export interface ThankYouStash {
   guestPhone?: string;
   totalCents: number | null;
   currency: string;
+  /** Promo code applied to the quote — carried into the GA4 purchase event */
+  couponCode?: string;
+  /** Guesty listing id — usado no item_id PROP-<id> do purchase */
+  listingId?: string;
+  /** Bloco 6: items GA4 dos serviços (extras, receção, Flex) para o purchase */
+  purchaseItems?: Array<Record<string, unknown>>;
 }
 
 const thankYouKey = (reservationId: string) => `thankyou_${reservationId}`;

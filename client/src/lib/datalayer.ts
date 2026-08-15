@@ -36,6 +36,29 @@ export function pushEcommerce(event: Record<string, unknown>): void {
   window.dataLayer.push(event);
 }
 
+/**
+ * Push a GA4 `purchase` exactly once per transaction, across page refreshes,
+ * redirects and the multiple funnel surfaces that can report the same booking
+ * (return pages → thank-you page → confirmation page). Guarded by a
+ * localStorage key per transaction_id; if storage is unavailable we still
+ * push (a duplicate beats a lost purchase).
+ */
+export function pushPurchaseOnce(
+  transactionId: string | null | undefined,
+  event: Record<string, unknown>,
+): void {
+  if (transactionId) {
+    const key = `dl_purchase_${transactionId}`;
+    try {
+      if (window.localStorage.getItem(key)) return;
+      window.localStorage.setItem(key, String(Date.now()));
+    } catch {
+      /* storage unavailable — push anyway */
+    }
+  }
+  pushEcommerce(event);
+}
+
 /** Build a GA4 addon item object from a service/adventure product */
 export function buildAddonItem(product: {
   id: string | number;

@@ -1,0 +1,1771 @@
+/**
+ * Checkout 2.0 — Fase 1 (docs/checkout_spec.md §3, §4, §16).
+ *
+ * Fullscreen checkout at /checkout/:intentId (behind the checkout_v2 flag).
+ * The server-side BookingIntent is the source of truth from the moment the
+ * guest lands here; every mutation is synced back via trpc.checkout.updateIntent,
+ * which is what makes resume-by-link on another device work.
+ *
+ * Fase 1 ships two steps — "A sua estadia" (recap + rate plan + email capture)
+ * and "Pagamento" (guest details + payment). Fase 2 inserts "Personalizar"
+ * between them; the stepper is data-driven so that is a one-line change.
+ */
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useParams, useLocation, Link } from "wouter";
+import { useTranslation } from "react-i18next";
+import {
+  X,
+  Check,
+  Clock3,
+  Loader2,
+  Lock,
+  ShieldCheck,
+  Headphones,
+  BadgeCheck,
+  Pencil,
+  Minus,
+  Plus,
+  ChevronUp,
+  ChevronDown,
+  Tag,
+} from "lucide-react";
+import { trpc } from "@/lib/trpc";
+import { cn } from "@/lib/utils";
+import { usePageMeta } from "@/hooks/usePageMeta";
+import { formatEur, formatBookingDate, intlLocale, sanitizePropertyName } from "@/lib/format";
+import { cancellationPolicyText, freeCancellationDeadline } from "@/lib/cancellation";
+import { IMAGES, optimizeGuestyImage } from "@/lib/images";
+import { isValidEmail, isValidPhone } from "@/lib/validation";
+import { pushDL, pushEcommerce } from "@/lib/datalayer";
+import { stashThankYou } from "@/lib/booking-api";
+import AvailabilityCalendar, { type AvailabilityDay } from "@/components/booking/AvailabilityCalendar";
+import CustomizeStep, {
+  extraAmount,
+  receptionAmount,
+  type CatalogExtra,
+  type ExtraSelection,
+  type ReceptionConfig,
+  type ReceptionChoice,
+} from "./CustomizeStep";
+import FlexBlock, { type FlexConfig } from "./FlexBlock";
+import CheckoutPaymentForm from "@/components/booking/CheckoutPaymentForm";
+import PhoneInput from "@/components/booking/PhoneInput";
+
+type Step = "stay" | "customize" | "pay";
+
+/** Quote snapshot mirrored from the intent (euro floats, same shape as the server json column) */
+interface QuoteSnapshot {
+  nightlyRate: number;
+  totalNights: number;
+  cleaningFee: number;
+  taxesAndFees: number;
+  total: number;
+  nights: number;
+  currency: string;
+  quoteCreatedAt: number | null;
+  couponCode?: string;
+  ratePlanOptions?: Array<{
+    ratePlanId: string;
+    name: string;
+    total: number;
+    nightlyRate: number;
+    cleaningFee: number;
+    taxesAndFees?: number;
+    cancellationPolicy?: string[];
+  }>;
+}
+
+const QUOTE_EXPIRY_MS = 23 * 60 * 60 * 1000;
+
+/**
+ * Design/demo mode: /checkout/demo renders the full checkout with mock data,
+ * no server round-trips and no possible charge (the fake quoteId fails the
+ * server's 24-hex validation). Used for UX iteration and stakeholder review.
+ */
+function buildDemoIntent(): any {
+  const d = (offset: number) => {
+    const x = new Date();
+    x.setDate(x.getDate() + offset);
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${x.getFullYear()}-${pad(x.getMonth() + 1)}-${pad(x.getDate())}`;
+  };
+  return {
+    id: "demo",
+    listingId: "demo-listing",
+    propertyName: "Abreu Retreat Palace – Luxury, Elegance & Leisure",
+    propertySlug: "abreu-retreat-palace-luxury-elegance-leisure-e914e2",
+    destination: "minho",
+    guestyQuoteId: "demo",
+    checkIn: d(30),
+    checkOut: d(35),
+    guests: 4,
+    ratePlanId: "demo-flex",
+    email: "",
+    guestFirstName: "",
+    guestLastName: "",
+    guestPhone: "",
+    nif: "",
+    quote: {
+      nightlyRate: 500,
+      totalNights: 2500,
+      cleaningFee: 200,
+      taxesAndFees: 0,
+      total: 2700,
+      nights: 5,
+      currency: "EUR",
+      quoteCreatedAt: Date.now(),
+      ratePlanOptions: [
+        { ratePlanId: "demo-flex", name: "Flexible", total: 2700, nightlyRate: 500, cleaningFee: 200, taxesAndFees: 0, cancellationPolicy: ["moderate"] },
+        { ratePlanId: "demo-nr", name: "Non-refundable", total: 2430, nightlyRate: 446, cleaningFee: 200, taxesAndFees: 0, cancellationPolicy: ["super_strict"] },
+      ],
+    },
+    extras: [],
+    reception: null,
+    flex: false,
+    status: "draft",
+    locale: null,
+    reservationId: null,
+    confirmationCode: null,
+    expiresAt: new Date(Date.now() + QUOTE_EXPIRY_MS),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+}
+
+/** Animated count-up for money totals (spec §9: "total com contagem animada"). */
+function useCountUp(value: number, duration = 400): number {
+  const [display, setDisplay] = useState(value);
+  const prevRef = useRef(value);
+  useEffect(() => {
+    const from = prevRef.current;
+    if (from === value) return;
+    prevRef.current = value;
+    const start = performance.now();
+    let raf: number;
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setDisplay(Math.round(from + (value - from) * eased));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [value, duration]);
+  return display;
+}
+
+/** Máximo 2 tarifas visíveis: a flexível e a não reembolsável mais baratas. */
+function collapseRatePlans<T extends { name: string; total: number; cancellationPolicy?: string[] }>(
+  options?: T[],
+): T[] | undefined {
+  if (!options || options.length <= 2) return options;
+  const cheapest = (arr: T[]) => [...arr].sort((a, b) => a.total - b.total)[0];
+  const nonRef = options.filter((o) => isNonRefundableOption(o));
+  const flex = options.filter((o) => !isNonRefundableOption(o));
+  const out: T[] = [];
+  if (flex.length) out.push(cheapest(flex));
+  if (nonRef.length) out.push(cheapest(nonRef));
+  return out.length ? out : options.slice(0, 2);
+}
+
+function isNonRefundableOption(o: { name: string; cancellationPolicy?: string[] }): boolean {
+  const n = (o.name || "").toLowerCase();
+  const code = (o.cancellationPolicy?.[0] || "").toLowerCase();
+  return (
+    (n.includes("non") && n.includes("refund")) ||
+    (n.includes("não") && n.includes("reembols")) ||
+    code === "super_strict" ||
+    code === "strict"
+  );
+}
+
+export default function CheckoutPage() {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
+  const { intentId } = useParams<{ intentId: string }>();
+  const [, navigate] = useLocation();
+  const utils = trpc.useUtils();
+
+  usePageMeta({ title: t("checkout.pageTitle", "Checkout"), noindex: true });
+
+  const isDemo = intentId === "demo";
+  const demoIntent = useMemo(() => (isDemo ? buildDemoIntent() : null), [isDemo]);
+
+  const intentQuery = trpc.checkout.getIntent.useQuery(
+    { intentId: intentId ?? "" },
+    { enabled: !!intentId && !isDemo, refetchOnWindowFocus: false, retry: 1 },
+  );
+  const [saveIssue, setSaveIssue] = useState(false);
+  const updateIntent = trpc.checkout.updateIntent.useMutation({
+    onError: () => setSaveIssue(true),
+    onSuccess: () => setSaveIssue(false),
+  });
+  const captureLead = trpc.checkout.captureLead.useMutation();
+
+  const intent = isDemo ? demoIntent : (intentQuery.data?.intent ?? null);
+
+  /** Patch the server intent AND the React Query cache in lockstep — otherwise a
+   *  remount within staleTime re-seeds the page from pre-edit data (stale quote). */
+  const syncIntent = useCallback(
+    (patch: Record<string, unknown>) => {
+      if (!intentId || isDemo) return;
+      utils.checkout.getIntent.setData({ intentId }, (prev) =>
+        prev?.intent ? { ...prev, intent: { ...prev.intent, ...patch } as typeof prev.intent } : prev,
+      );
+      updateIntent.mutate({ intentId, patch: patch as any });
+    },
+    [intentId, isDemo, utils, updateIntent],
+  );
+
+  // ── Local editable state, seeded ONCE from the intent ──
+  const seededRef = useRef(false);
+  const [step, setStep] = useState<Step>("stay");
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
+  const [guests, setGuests] = useState(2);
+  const [quote, setQuote] = useState<QuoteSnapshot | null>(null);
+  const [quoteId, setQuoteId] = useState<string | null>(null);
+  const [selectedRatePlanId, setSelectedRatePlanId] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [phoneTouched, setPhoneTouched] = useState(false);
+  const [nif, setNif] = useState("");
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [editingStay, setEditingStay] = useState(false);
+  const [requoting, setRequoting] = useState(false);
+  const [quoteStale, setQuoteStale] = useState(false);
+  const [datesUnavailable, setDatesUnavailable] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const contactFiredRef = useRef(false);
+  const [extraSel, setExtraSel] = useState<Record<string, ExtraSelection>>({});
+  const [flexSelected, setFlexSelected] = useState(false);
+  const [receptionChoice, setReceptionChoice] = useState<ReceptionChoice>(null);
+  const [receptionNudge, setReceptionNudge] = useState(false);
+  // Código promocional (cupões do Revenue Management do Guesty — 12 jul)
+  const [couponOpen, setCouponOpen] = useState(false);
+  const [couponInput, setCouponInput] = useState("");
+  const [couponBusy, setCouponBusy] = useState(false);
+  const [couponError, setCouponError] = useState(false);
+  const applyCouponMut = trpc.booking.applyCoupon.useMutation();
+
+  useEffect(() => {
+    if (!intent || seededRef.current) return;
+    seededRef.current = true;
+    setCheckIn(intent.checkIn);
+    setCheckOut(intent.checkOut);
+    setGuests(intent.guests);
+    setQuote((intent.quote as QuoteSnapshot) ?? null);
+    setQuoteId(intent.guestyQuoteId ?? null);
+    setSelectedRatePlanId(intent.ratePlanId ?? null);
+    if (intent.email) setEmail(intent.email);
+    if (intent.guestFirstName) setFirstName(intent.guestFirstName);
+    if (intent.guestLastName) setLastName(intent.guestLastName);
+    if (intent.guestPhone) setPhone(intent.guestPhone);
+    if (intent.nif) setNif(intent.nif);
+    // Resume from a link (another device/session)? The widget marks the
+    // session it created the intent in; absence of the marker = resume.
+    let resumed = false;
+    try {
+      resumed = !sessionStorage.getItem(`checkout_created_${intent.id}`);
+      // Mark this tab so refreshes / re-mounts don't re-fire checkout_resume
+      sessionStorage.setItem(`checkout_created_${intent.id}`, "1");
+    } catch { /* storage unavailable */ }
+    if (intent.email) contactFiredRef.current = true;
+    if (intent.flex) setFlexSelected(true);
+    if (intent.reception?.type) setReceptionChoice(intent.reception as ReceptionChoice);
+    if (intent.quote?.couponCode) setCouponInput(String(intent.quote.couponCode));
+    if (Array.isArray(intent.extras)) {
+      const seeded: Record<string, ExtraSelection> = {};
+      for (const e of intent.extras as Array<Record<string, unknown>>) {
+        if (typeof e?.sku === "string") {
+          seeded[e.sku] = {
+            qty: typeof e.qty === "number" ? e.qty : undefined,
+            people: typeof e.people === "number" ? e.people : undefined,
+            sessions: typeof e.sessions === "number" ? e.sessions : undefined,
+            days: typeof e.days === "number" ? e.days : undefined,
+          };
+        }
+      }
+      setExtraSel(seeded);
+    }
+    // O passo restaura SEMPRE do estado do intent — um refresh não pode
+    // atirar o hóspede para o início (bug 12 jul). O evento checkout_resume
+    // continua a disparar só em retoma real (outro dispositivo/sessão).
+    if (intent.status === "contact_captured") setStep("customize");
+    if (intent.status === "payment_pending") setStep("pay");
+    if (resumed && !isDemo) {
+      pushDL({ event: "checkout_resume", property_id: intent.listingId });
+    }
+    // Quote freshness — the BE quote dies after ~24h; warn at 23h
+    const createdAt = (intent.quote as QuoteSnapshot | null)?.quoteCreatedAt;
+    if (
+      intentQuery.data?.expired ||
+      !intent.guestyQuoteId ||
+      (createdAt != null && Date.now() - createdAt > QUOTE_EXPIRY_MS)
+    ) {
+      setQuoteStale(true);
+    }
+  }, [intent, intentQuery.data?.expired]);
+
+  // ── Derived pricing (selected rate plan overlays the base quote) ──
+  const effective = useMemo(() => {
+    if (!quote) return null;
+    const opt = quote.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
+    if (!opt) return { ...quote, ratePlanId: selectedRatePlanId ?? undefined, cancellationPolicy: undefined as string[] | undefined };
+    return {
+      ...quote,
+      nightlyRate: opt.nightlyRate,
+      totalNights: opt.nightlyRate * quote.nights,
+      cleaningFee: opt.cleaningFee,
+      taxesAndFees: opt.taxesAndFees ?? 0,
+      total: opt.total,
+      ratePlanId: opt.ratePlanId,
+      cancellationPolicy: opt.cancellationPolicy,
+    };
+  }, [quote, selectedRatePlanId]);
+
+  // ── Extras catalog (Fase 2 — Personalizar), curado no servidor pelo contexto ──
+  const checkInMonth = checkIn ? Number(checkIn.slice(5, 7)) : undefined;
+  const extrasQuery = trpc.checkout.getExtras.useQuery(
+    {
+      listingId: intent?.listingId ?? undefined,
+      destination: intent?.destination ?? undefined,
+      nights: quote?.nights ?? 1,
+      guests,
+      month: checkInMonth,
+    },
+    { staleTime: 30 * 60 * 1000, enabled: !!intent },
+  );
+  const catalog: CatalogExtra[] = (extrasQuery.data?.extras as CatalogExtra[]) ?? [];
+
+  // Modo apresentação do demo (?case=full[&step=pay]): pré-carrega o caso
+  // completo de add-ons para revisão da equipa e capturas — só no demo.
+  const caseSeeded = useRef(false);
+  useEffect(() => {
+    if (!isDemo || caseSeeded.current || !extrasQuery.data) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("case") !== "full") return;
+    caseSeeded.current = true;
+    setReceptionChoice({ type: "hosted", late: true });
+    setExtraSel({
+      "transfer-porto": { qty: 1 },
+      "grocery-setup": { qty: 1 },
+      "daily-cleaning": { qty: 3 },
+      "breakfast-box": { people: 4, days: 5 },
+      "pet-fee": { qty: 2 },
+      "travel-crib": { qty: 1 },
+      "private-chef": { people: 4 },
+      "exp-canyoning": {},
+    });
+    setFlexSelected(true);
+    setStep(params.get("step") === "pay" ? "pay" : "customize");
+  }, [isDemo, extrasQuery.data]);
+  const flexConfig: FlexConfig | null = (extrasQuery.data as any)?.flex ?? null;
+  const receptionConfig: ReceptionConfig | null = (extrasQuery.data as any)?.reception ?? null;
+  // C6: campo de promo vazio convida a sair à procura de códigos — só com campanha ativa
+  const promoEnabled: boolean = (extrasQuery.data as any)?.promoEnabled ?? false;
+  const includedKeys: string[] = (extrasQuery.data as any)?.included ?? [];
+
+  // ── Property (photo + slug for the back link) ──
+  const propertyQuery = trpc.properties.getBySlugForSite.useQuery(
+    { slug: intent?.propertySlug ?? "" },
+    { enabled: !!intent?.propertySlug, staleTime: 60 * 60 * 1000 },
+  );
+  const property = propertyQuery.data as any;
+  const heroImage = property?.images?.[0]
+    ? optimizeGuestyImage(property.images[0], 800)
+    : undefined;
+  const displayName = sanitizePropertyName(intent?.propertyName || property?.name || "");
+  const backHref = intent?.propertySlug ? `/homes/${intent.propertySlug}` : "/homes";
+
+  // ── Calendar days for inline date editing ──
+  const calendarQuery = trpc.booking.getCalendar.useQuery(
+    {
+      listingId: intent?.listingId ?? "",
+      from: new Date().toISOString().split("T")[0],
+      to: (() => { const d = new Date(); d.setMonth(d.getMonth() + 18); return d.toISOString().split("T")[0]; })(),
+    },
+    { enabled: !!intent?.listingId && editingStay, staleTime: 10 * 60 * 1000 },
+  );
+  const calendarDays: AvailabilityDay[] = calendarQuery.data?.days ?? [];
+
+  // ── Re-quote (dates/guests changed or quote expired) ──
+  const requote = useCallback(
+    async (ci: string, co: string, g: number) => {
+      if (!intent) return;
+      setRequoting(true);
+      setDatesUnavailable(false);
+      try {
+        const d = await utils.booking.getQuote.fetch({
+          listingId: intent.listingId,
+          checkIn: ci,
+          checkOut: co,
+          guests: g,
+        });
+        const liveQuoteId: string | undefined = (d as any).quoteId;
+        const source = (d as any).source;
+        const total = d.pricing?.total ?? 0;
+        if (!liveQuoteId || (source !== "live" && source !== "cached") || total <= 0) {
+          setDatesUnavailable(true);
+          return;
+        }
+        const fresh: QuoteSnapshot = {
+          nightlyRate: d.pricing?.nightlyRate ?? 0,
+          totalNights: d.pricing?.totalNights ?? 0,
+          cleaningFee: d.pricing?.cleaningFee ?? 0,
+          taxesAndFees: (d.pricing as any)?.taxesAndFees ?? 0,
+          total,
+          nights: d.nights,
+          currency: "EUR",
+          quoteCreatedAt: Date.now(),
+          // Colapsa a 2 tarifas (1 flexível + 1 não reembolsável, as mais
+          // baratas de cada balde) — o Guesty pode devolver variantes
+          // duplicadas e o requote mostrava-as todas (bug 12 jul)
+          ratePlanOptions: collapseRatePlans((d as any).ratePlanOptions),
+        };
+        // Re-resolve the plan selection: ids can change between quotes
+        const stillThere = fresh.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
+        const nextPlan = stillThere?.ratePlanId ?? (d as any).ratePlanId ?? fresh.ratePlanOptions?.[0]?.ratePlanId ?? null;
+        // AUDIT A3: menos noites → clamp dos dias selecionados nos extras
+        setExtraSel((prev) => {
+          const next: typeof prev = {};
+          for (const [sku, sel] of Object.entries(prev)) {
+            next[sku] = sel.days ? { ...sel, days: Math.min(sel.days, Math.max(1, fresh.nights)) } : sel;
+          }
+          return next;
+        });
+        // AUDIT A4: estadia caiu abaixo do limiar do Flex → desmarcar (o bloco
+        // desaparece e deixava o valor preso no total sem forma de o tirar)
+        if (flexConfig && fresh.total < flexConfig.minTotal && flexSelected) {
+          setFlexSelected(false);
+          syncIntent({ flex: false });
+        }
+        // AUDIT A5: o cupão vivia na quote antiga — re-aplicar na nova; se o
+        // código já não for válido, o campo reaparece em vez de fingir desconto
+        const prevCoupon = quote?.couponCode;
+        if (prevCoupon) {
+          void applyCouponMut
+            .mutateAsync({ quoteId: liveQuoteId, listingId: intent.listingId, checkIn: ci, checkOut: co, coupon: prevCoupon })
+            .then((r) => {
+              if (!r.ok) return;
+              const withCoupon: QuoteSnapshot = {
+                ...fresh,
+                nightlyRate: r.pricing.nightlyRate,
+                totalNights: r.pricing.totalNights,
+                cleaningFee: r.pricing.cleaningFee,
+                taxesAndFees: r.pricing.taxesAndFees ?? 0,
+                total: r.total,
+                couponCode: r.coupons?.[0]?.code || undefined,
+                ratePlanOptions: collapseRatePlans(r.ratePlanOptions as any),
+              };
+              setQuote(withCoupon);
+              syncIntent({ quote: withCoupon });
+            })
+            .catch(() => {});
+        }
+        setQuote(fresh);
+        setQuoteId(liveQuoteId);
+        setSelectedRatePlanId(nextPlan);
+        setCheckIn(ci);
+        setCheckOut(co);
+        setGuests(g);
+        setQuoteStale(false);
+        syncIntent({
+          checkIn: ci,
+          checkOut: co,
+          guests: g,
+          guestyQuoteId: liveQuoteId,
+          ratePlanId: nextPlan ?? undefined,
+          quote: fresh,
+        });
+      } catch {
+        setDatesUnavailable(true);
+      } finally {
+        setRequoting(false);
+      }
+    },
+    [intent, selectedRatePlanId, syncIntent, utils],
+  );
+
+  // ── Step 1 → 2: email capture ──
+  const submitEmail = useCallback(() => {
+    setEmailTouched(true);
+    if (!intent || !isValidEmail(email)) return;
+    if (!isDemo) {
+      captureLead
+        .mutateAsync({ intentId: intent.id, email, locale: lang })
+        .catch(() => {/* fail-soft: the step advance below never blocks on persistence */});
+    }
+    utils.checkout.getIntent.setData({ intentId: intent.id }, (prev) =>
+      prev?.intent ? { ...prev, intent: { ...prev.intent, email } } : prev,
+    );
+    if (!contactFiredRef.current && !isDemo) {
+      contactFiredRef.current = true;
+      pushDL({ event: "add_contact_info", property_id: intent.listingId, source: "checkout_v2" });
+    }
+    setStep("customize");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [intent, email, lang, captureLead, utils, isDemo]);
+
+  /**
+   * Aplica/remove o código promocional na quote BE existente (o quoteId
+   * mantém-se válido para a reserva). Demo: só DEMO10 funciona, 10 por cento.
+   */
+  const applyCoupon = useCallback(
+    async (code: string) => {
+      if (!intent) return;
+      setCouponBusy(true);
+      setCouponError(false);
+      try {
+        if (isDemo) {
+          if (code && code !== "DEMO10") { setCouponError(true); return; }
+          const base = buildDemoIntent().quote as QuoteSnapshot;
+          const f = code ? 0.9 : 1;
+          const adj = (n: number) => Math.round(n * f);
+          setQuote({
+            ...base,
+            nightlyRate: adj(base.nightlyRate),
+            totalNights: adj(base.totalNights),
+            total: adj(base.total - base.cleaningFee) + base.cleaningFee,
+            couponCode: code || undefined,
+            ratePlanOptions: base.ratePlanOptions?.map((o) => ({
+              ...o,
+              nightlyRate: adj(o.nightlyRate),
+              total: adj(o.total - o.cleaningFee) + o.cleaningFee,
+            })),
+          });
+          if (!code) setCouponInput("");
+          setCouponOpen(!!code);
+          return;
+        }
+        if (!quoteId) { setCouponError(true); return; }
+        const r = await applyCouponMut.mutateAsync({
+          quoteId,
+          listingId: intent.listingId,
+          checkIn,
+          checkOut,
+          coupon: code,
+        });
+        if (!r.ok) { setCouponError(true); return; }
+        const fresh: QuoteSnapshot = {
+          nightlyRate: r.pricing.nightlyRate,
+          totalNights: r.pricing.totalNights,
+          cleaningFee: r.pricing.cleaningFee,
+          taxesAndFees: r.pricing.taxesAndFees ?? 0,
+          total: r.total,
+          nights: r.nights,
+          currency: "EUR",
+          // o quoteId mantém-se: preservar o relógio de expiração original
+          quoteCreatedAt: quote?.quoteCreatedAt ?? Date.now(),
+          couponCode: r.coupons?.[0]?.code || undefined,
+          ratePlanOptions: collapseRatePlans(r.ratePlanOptions as any),
+        };
+        const stillThere = fresh.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
+        setQuote(fresh);
+        setSelectedRatePlanId(stillThere?.ratePlanId ?? r.ratePlanId ?? fresh.ratePlanOptions?.[0]?.ratePlanId ?? null);
+        syncIntent({ quote: fresh });
+        if (!code) setCouponInput("");
+        if (code) pushDL({ event: "coupon_applied", coupon: code, property_id: intent.listingId });
+      } catch {
+        setCouponError(true);
+      } finally {
+        setCouponBusy(false);
+      }
+    },
+    [intent, isDemo, quoteId, checkIn, checkOut, selectedRatePlanId, applyCouponMut, syncIntent],
+  );
+
+  // ── Reception: mandatory choice (§5.2). Persisted on the intent. ──
+  const chooseReception = useCallback(
+    (choice: ReceptionChoice) => {
+      setReceptionChoice(choice);
+      setReceptionNudge(false);
+      syncIntent({ reception: choice });
+      if (choice && !isDemo) {
+        pushDL({
+          event: "reception_selected",
+          reception_type: choice.type,
+          reception_late: !!choice.late,
+          property_id: intent?.listingId,
+        });
+      }
+    },
+    [syncIntent, isDemo, intent?.listingId],
+  );
+
+  // ── Extras handlers (Fase 2). Stepper defaults come from the server curation
+  //    (suggestedDays/suggestedQty) — the "stepper certo à partida" of §5.3. ──
+  const toggleExtra = useCallback(
+    (item: CatalogExtra) => {
+      setExtraSel((prev) => {
+        const next = { ...prev };
+        const adding = !(item.sku in next);
+        if (adding) {
+          next[item.sku] =
+            item.pricingModel === "per_day"
+              ? { days: item.suggestedDays ?? Math.max(1, quote?.nights ?? 1) }
+              : item.pricingModel === "per_person"
+                ? { people: Math.max(item.minPeople ?? 1, Math.min(guests, 30)) }
+                : item.pricingModel === "per_person_per_unit"
+                  ? { people: 1, sessions: 1 }
+                  : item.pricingModel === "per_person_per_day"
+                    ? { people: Math.min(guests, 30), days: Math.max(1, quote?.nights ?? 1) }
+                  : item.pricingModel === "per_unit" || item.pricingModel === "included_selectable"
+                    ? { qty: item.suggestedQty ?? item.minQty ?? 1 }
+                    : {};
+        } else {
+          delete next[item.sku];
+          // Cascata (§5.0): remover o pai remove os filhos revelados por ele
+          for (const child of catalog) {
+            if (child.parentSku === item.sku) delete next[child.sku];
+          }
+        }
+        const amount = adding ? extraAmount(item, next[item.sku] ?? {}) : extraAmount(item, prev[item.sku] ?? {});
+        pushEcommerce({
+          event: adding ? "add_to_cart" : "remove_from_cart",
+          property_id: intent?.listingId,
+          ecommerce: {
+            currency: "EUR",
+            value: amount ?? 0,
+            items: [{ item_id: item.sku, item_name: item.sku, item_category: "extra", item_category2: item.chapter, price: item.unitPrice ?? 0, quantity: 1 }],
+          },
+        });
+        return next;
+      });
+    },
+    [guests, quote?.nights, intent?.listingId, catalog],
+  );
+  const adjustExtra = useCallback((sku: string, patch: ExtraSelection) => {
+    setExtraSel((prev) => ({ ...prev, [sku]: { ...prev[sku], ...patch } }));
+  }, []);
+
+  const selectedExtras = useMemo(() => {
+    return Object.entries(extraSel)
+      .map(([sku, sel]) => {
+        const item = catalog.find((c) => c.sku === sku);
+        if (!item) return null;
+        return { item, sel, amount: extraAmount(item, sel) };
+      })
+      .filter(Boolean) as Array<{ item: CatalogExtra; sel: ExtraSelection; amount: number | null }>;
+  }, [extraSel, catalog]);
+  // Priced add-ons enter today's total; on-request items go to "Pedidos ao
+  // concierge" without a value (§7).
+  const paidExtras = useMemo(() => selectedExtras.filter((e) => e.amount != null), [selectedExtras]);
+  const requestExtras = useMemo(() => selectedExtras.filter((e) => e.amount == null), [selectedExtras]);
+  const extrasTotal = useMemo(() => paidExtras.reduce((sum, e) => sum + (e.amount ?? 0), 0), [paidExtras]);
+
+  const receptionAmt = receptionConfig ? receptionAmount(receptionConfig, receptionChoice) : 0;
+  // Flex dinâmico: 10% do valor das noites (piso: config.price)
+  const flexUnit = flexConfig
+    ? (quote?.totalNights ?? 0) > 0
+      ? Math.round(((quote?.totalNights ?? 0) * ((flexConfig as any).pricePercent ?? 10)) / 100)
+      : flexConfig.price
+    : 0;
+  const flexPrice = flexSelected && flexConfig ? flexUnit : 0;
+  // Total de hoje: tudo o que tem preço fixo num só número (§7)
+  const todayTotal = (effective?.total ?? 0) + receptionAmt + extrasTotal + flexPrice;
+  const animatedTotal = useCountUp(todayTotal);
+
+  // Flex contextual copy inputs: which rate family is selected + the concrete
+  // free-cancellation date of the CURRENT selection (coherence with the policy)
+  const selectedPlanOption = quote?.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
+  const nonRefundableSelected = selectedPlanOption ? isNonRefundableOption(selectedPlanOption) : false;
+  const freeCancelUntil = freeCancellationDeadline(
+    selectedPlanOption?.cancellationPolicy?.[0],
+    checkIn,
+  );
+
+  // AUDIT A1: extras/flex sincronizam com o intent a cada alteração (debounce
+  // 600ms) — antes só persistiam no continueToPay: um refresh no Personalizar
+  // perdia a seleção toda e remoções no passo 3 nunca chegavam ao manifesto.
+  const extrasSyncReady = useRef(false);
+  useEffect(() => {
+    if (!intent || isDemo) return;
+    if (!extrasSyncReady.current) { extrasSyncReady.current = true; return; }
+    const t = window.setTimeout(() => {
+      syncIntent({
+        flex: flexSelected,
+        extras: selectedExtras.map(({ item, sel, amount }) => ({
+          sku: item.sku, qty: sel.qty, people: sel.people, sessions: sel.sessions, days: sel.days,
+          amount, fulfillment: item.fulfillment,
+        })),
+      });
+    }, 600);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [extraSel, flexSelected]);
+
+  /** Customize → Pay: reception is mandatory (§5.2); persist everything.
+   *  Without the reception choice the CTA stays clickable but nudges the
+   *  guest to the missing decision instead of silently doing nothing. */
+  const continueToPay = useCallback(() => {
+    if (!intent) return;
+    if (!receptionChoice) {
+      setReceptionNudge(true);
+      document.getElementById("reception-choice")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    syncIntent({
+      status: "payment_pending",
+      flex: flexSelected,
+      reception: receptionChoice,
+      extras: selectedExtras.map(({ item, sel, amount }) => ({
+        sku: item.sku,
+        qty: sel.qty,
+        people: sel.people,
+        sessions: sel.sessions,
+        days: sel.days,
+        amount,
+        fulfillment: item.fulfillment,
+      })),
+    });
+    setStep("pay");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [intent, receptionChoice, selectedExtras, flexSelected, syncIntent]);
+
+  /** "Saltar personalização" (2.1 §1.2): segue para pagamento se a receção já
+   *  foi escolhida; caso contrário `continueToPay` nudge a decisão em falta. */
+  const skipCustomize = continueToPay;
+
+  /** Ops manifest (PT, staff-facing) appended to the Guesty reservation notes —
+   *  same pattern the legacy widget uses, so operations see the requests. */
+  const extrasNote = useMemo(() => {
+    const blocks: string[] = [];
+    if (receptionChoice) {
+      blocks.push(
+        receptionChoice.type === "hosted"
+          ? `\n\n✔ RECEÇÃO: presencial${receptionChoice.late ? ` (após as ${receptionConfig?.lateFromHour ?? 21}h, ${receptionConfig?.hostedLatePrice ?? 90} EUR)` : ` (${receptionConfig?.hostedPrice ?? 50} EUR)`}`
+          : `\n\n✔ RECEÇÃO: self check-in (incluído)`,
+      );
+    }
+    if (selectedExtras.length) {
+      const lines = selectedExtras.map(({ item, sel, amount }) => {
+        const parts = [
+          `- ${item.sku}`,
+          sel.qty ? `x${sel.qty}` : "",
+          sel.days ? `${sel.days} dias` : "",
+          sel.people ? `${sel.people} pessoas` : "",
+          sel.sessions ? `${sel.sessions} sessoes` : "",
+          amount != null ? `≈ ${amount} EUR` : "(sob pedido)",
+          item.fulfillment === "needs_confirmation" ? "[CONFIRMAR 24H]" : "",
+        ].filter(Boolean);
+        return parts.join(" ");
+      });
+      blocks.push(`\n\n⚠️ EXTRAS PEDIDOS NO CHECKOUT:\n${lines.join("\n")}`);
+    }
+    return blocks.join("");
+  }, [receptionChoice, receptionConfig, selectedExtras]);
+
+  // Persist guest details when they become valid (debounced-ish: on blur via effect)
+  const guestDetailsValid =
+    firstName.trim().length > 0 && lastName.trim().length > 0 && isValidPhone(phone);
+  const detailsSyncedRef = useRef("");
+  useEffect(() => {
+    if (!intent || !guestDetailsValid) return;
+    const key = `${firstName}|${lastName}|${phone}|${nif}`;
+    if (detailsSyncedRef.current === key) return;
+    const timer = setTimeout(() => {
+      detailsSyncedRef.current = key;
+      syncIntent({
+        guestFirstName: firstName.trim(),
+        guestLastName: lastName.trim(),
+        guestPhone: phone,
+        nif: nif.trim(),
+      });
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [intent, guestDetailsValid, firstName, lastName, phone, nif, syncIntent]);
+
+  // ── Bloco 6: items[] GA4 do purchase — todos os extras pagos, receção e
+  // Flex (sku, nome, preço, quantidade). price × quantity = valor da linha;
+  // on_request fica de fora (não é comprado, é um pedido sob orçamento).
+  // Viaja com todos os métodos: stash do cartão/wallets e sessionStorage
+  // do Klarna/PayPal, e é anexado ao item da casa no evento purchase.
+  const purchaseItems = useMemo(() => {
+    const items: Array<Record<string, unknown>> = [];
+    for (const { item, sel, amount } of paidExtras) {
+      const qty = Math.max(1, Number(sel.qty ?? 1));
+      items.push({
+        item_id: `EXTRA-${item.sku}`,
+        item_name: t(`checkout.extras.${item.sku}.name`, item.sku),
+        item_category: "extra",
+        item_category2: item.chapter,
+        price: Math.round(((amount ?? 0) / qty) * 100) / 100,
+        quantity: qty,
+      });
+    }
+    if (receptionChoice?.type === "hosted" && receptionAmt > 0) {
+      items.push({
+        item_id: receptionChoice.late ? "RECEPTION-HOSTED-LATE" : "RECEPTION-HOSTED",
+        item_name: t("checkout.reception.hosted.name", "Hosted reception"),
+        item_category: "reception",
+        price: receptionAmt,
+        quantity: 1,
+      });
+    }
+    if (flexSelected && flexPrice > 0) {
+      items.push({
+        item_id: "FLEX",
+        item_name: t("checkout.flex.title", "Flex, guaranteed rebooking"),
+        item_category: "protection",
+        price: flexPrice,
+        quantity: 1,
+      });
+    }
+    return items;
+  }, [paidExtras, receptionChoice, receptionAmt, flexSelected, flexPrice, t]);
+
+  // ── Card payment success → unified branded thank-you page ──
+  const handleCardSuccess = useCallback(
+    (confirmationCode: string, reservationId?: string) => {
+      if (!intent) return;
+      const rid = reservationId || confirmationCode;
+      stashThankYou({
+        reservationId: rid,
+        confirmationCode,
+        method: "card",
+        listingId: intent.listingId,
+        listingName: displayName,
+        location: intent.destination || "",
+        checkIn,
+        checkOut,
+        guestsCount: guests,
+        guestName: `${firstName} ${lastName}`.trim(),
+        guestEmail: email,
+        guestPhone: phone,
+        // 2b: o cartão v2 cobra o todayTotal (estadia + serviços) num só PI
+        totalCents: Math.round(todayTotal * 100),
+        currency: "EUR",
+        couponCode: quote?.couponCode || undefined,
+        purchaseItems,
+      });
+      syncIntent({
+        status: "paid",
+        reservationId: reservationId || undefined,
+        confirmationCode,
+      });
+      navigate(`/booking/thank-you/${rid}?method=card`);
+    },
+    [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, todayTotal, quote?.couponCode, purchaseItems, syncIntent, navigate],
+  );
+
+  // ── Price-guarantee deadline label ──
+  const guaranteeLabel = useMemo(() => {
+    if (!intent?.expiresAt) return null;
+    const d = new Date(intent.expiresAt);
+    if (Number.isNaN(d.getTime()) || d.getTime() < Date.now()) return null;
+    const time = d.toLocaleTimeString(intlLocale(lang), { hour: "2-digit", minute: "2-digit" });
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const localYmd = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    return t("checkout.priceGuaranteed", { date: formatBookingDate(localYmd, lang), time });
+  }, [intent?.expiresAt, lang, t]);
+
+  const steps: Array<{ key: Step; label: string }> = [
+    { key: "stay", label: t("checkout.stepStay", "Your stay") },
+    { key: "customize", label: t("checkout.stepCustomize", "Personalize") },
+    { key: "pay", label: t("checkout.stepPay", "Payment") },
+  ];
+  const stepIndex = steps.findIndex((s) => s.key === step);
+
+  // ── Loading / not-found states ──
+  if (intentQuery.isLoading && !isDemo) {
+    return (
+      <div className="min-h-screen bg-white">
+        <div className="sticky top-0 bg-white/95 border-b border-pa-sand h-[60px]" />
+        <div className="max-w-[1100px] mx-auto px-4 pt-8 lg:grid lg:grid-cols-[minmax(0,640px)_380px] lg:gap-12">
+          <div className="space-y-5">
+            <div className="skeleton-shimmer h-8 w-56 rounded" />
+            <div className="skeleton-shimmer h-[110px] w-full rounded-lg" />
+            <div className="skeleton-shimmer h-[72px] w-full rounded-lg" />
+            <div className="skeleton-shimmer h-[72px] w-full rounded-lg" />
+            <div className="skeleton-shimmer h-[170px] w-full rounded-lg" />
+          </div>
+          <div className="hidden lg:block">
+            <div className="skeleton-shimmer w-full rounded-lg" style={{ aspectRatio: "4/3" }} />
+            <div className="skeleton-shimmer h-[140px] w-full rounded-lg mt-3" />
+          </div>
+        </div>
+        <p className="sr-only">{t("checkout.loading", "Preparing your checkout…")}</p>
+      </div>
+    );
+  }
+  if (!intent) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center px-6">
+        <div className="max-w-[420px] text-center space-y-4">
+          <h1 className="headline-md text-pa-dark">{t("checkout.notFoundTitle", "Checkout not found")}</h1>
+          <p className="body-sm">{t("checkout.notFoundBody", "This checkout link has expired or is invalid. Your dates are not lost — start again from the property page.")}</p>
+          <Link href="/homes" className="btn-primary inline-flex">{t("booking.backToProperty", "Back to the property")}</Link>
+        </div>
+      </div>
+    );
+  }
+  // A paid intent is terminal: reopening the resume link must NEVER re-arm the
+  // payment form (double-charge risk via a second Stripe PaymentIntent).
+  if (intent.status === "paid") {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center px-6">
+        <div className="max-w-[440px] text-center space-y-4">
+          <div className="mx-auto w-12 h-12 rounded-full bg-pa-dark flex items-center justify-center">
+            <Check className="w-6 h-6 text-white" />
+          </div>
+          <h1 className="headline-md text-pa-dark">{t("checkout.alreadyPaidTitle", "This booking is already confirmed")}</h1>
+          <p className="body-sm">
+            {t("checkout.alreadyPaidBody", "The payment for this stay was completed. Check your email for the confirmation, or view your booking below.")}
+            {intent.confirmationCode ? ` (${intent.confirmationCode})` : ""}
+          </p>
+          {intent.reservationId ? (
+            <Link href={`/booking/thank-you/${intent.reservationId}?method=card`} className="btn-primary inline-flex">
+              {t("checkout.viewBooking", "View my booking")}
+            </Link>
+          ) : (
+            <Link href={backHref} className="btn-primary inline-flex">{t("booking.backToProperty", "Back to the property")}</Link>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Resumo com hierarquia única (§7/§8): Estadia · Receção · Extras · Flex ·
+  // Total de hoje. Tudo o que tem preço fixo entra no total; os pedidos sob
+  // orçamento vivem numa secção própria (renderizada no summaryCard).
+  const summaryLines = effective && (
+    <div className="space-y-2">
+      <div className="flex justify-between text-[13px]">
+        <span className="text-pa-earth">
+          {formatEur(effective.nightlyRate, lang)} × {effective.nights} {t("bookingWidget.nightsLabel", "nights")}
+        </span>
+        <span className="text-pa-dark tabular-nums">{formatEur(effective.totalNights, lang)}</span>
+      </div>
+      {effective.cleaningFee > 0 && (
+        <div className="flex justify-between text-[13px]">
+          <span className="text-pa-earth">{t("property.cleaningFee")}</span>
+          <span className="text-pa-dark tabular-nums">{formatEur(effective.cleaningFee, lang)}</span>
+        </div>
+      )}
+      {effective.taxesAndFees > 0 && (
+        <div className="flex justify-between text-[13px]">
+          <span className="text-pa-earth">{t("bookingWidget.taxesAndFees", "Taxes & fees")}</span>
+          <span className="text-pa-dark tabular-nums">{formatEur(effective.taxesAndFees, lang)}</span>
+        </div>
+      )}
+      {/* Receção (escolha obrigatória). Uma receção presencial só mostra valor
+          quando a config do catálogo já carregou — evita rotular como "Incluído"
+          e somar 0€ durante o loading numa retoma a frio. */}
+      {receptionChoice && (receptionChoice.type === "self" || receptionConfig) && (
+        <div className="flex justify-between text-[13px] checkout-row-in">
+          <span className="text-pa-earth">
+            {receptionChoice.type === "hosted" ? t("checkout.reception.hosted.name") : t("checkout.reception.self.name")}
+          </span>
+          <span className={cn("tabular-nums", receptionAmt > 0 ? "text-pa-dark" : "text-pa-gold")}>
+            {receptionAmt > 0 ? formatEur(receptionAmt, lang) : t("checkout.included.badge")}
+          </span>
+        </div>
+      )}
+      {/* Extras com preço fixo — com remover inline (spec §8) */}
+      {paidExtras.map(({ item, sel, amount }) => (
+        <div key={item.sku} className="flex justify-between items-center gap-2 text-[13px] checkout-row-in">
+          <span className="flex items-center gap-1.5 text-pa-earth min-w-0">
+            <button
+              type="button"
+              onClick={() => toggleExtra(item)}
+              aria-label={`${t("checkout.remove", "Remove")}: ${t(`checkout.extras.${item.sku}.name`)}`}
+              className="shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors"
+            >
+              <X className="w-3 h-3" />
+            </button>
+            <span className="truncate">
+              {t(`checkout.extras.${item.sku}.name`)}
+              {(() => {
+                const bits: string[] = [];
+                if (sel.people) bits.push(`${sel.people}p`);
+                if (sel.days) bits.push(`${sel.days}d`);
+                if (sel.qty && sel.qty > 1) bits.push(`×${sel.qty}`);
+                if (sel.sessions && sel.sessions > 1) bits.push(`×${sel.sessions}`);
+                return bits.length ? <span className="text-pa-stone-aa"> · {bits.join(" · ")}</span> : null;
+              })()}
+            </span>
+          </span>
+          <span className={cn("tabular-nums shrink-0", amount === 0 ? "text-pa-gold text-[11px] uppercase tracking-[0.08em]" : "text-pa-dark")}>
+            {amount === 0 ? t("checkout.included.badge") : formatEur(amount!, lang)}
+          </span>
+        </div>
+      ))}
+      {/* Flex */}
+      {flexSelected && flexConfig && (
+        <div className="flex justify-between text-[13px] checkout-row-in">
+          <span className="text-pa-gold font-medium">{t("checkout.flex.title", "Flex — guaranteed rebooking")}</span>
+          <span className="text-pa-dark tabular-nums">{formatEur(flexUnit, lang)}</span>
+        </div>
+      )}
+      <div className="flex justify-between items-baseline border-t border-pa-sand pt-2.5">
+        <span className="text-[14px] font-medium text-pa-dark">{t("checkout.todayTotal", "Total today")}</span>
+        <span className="text-[20px] font-light text-pa-dark tabular-nums">{formatEur(animatedTotal, lang)}</span>
+      </div>
+
+    </div>
+  );
+
+  // Código promocional estilo Shopify: campo sempre visível no cartão do
+  // resumo; aplicado → pill com remover (12 jul).
+  const couponRow = !promoEnabled && !quote?.couponCode ? null : (
+    <div className="border-t border-pa-sand pt-3">
+      {!quote?.couponCode && !couponOpen ? (
+        <button
+          type="button"
+          onClick={() => setCouponOpen(true)}
+          className="text-[12px] text-pa-stone-aa hover:text-pa-dark underline underline-offset-2 transition-colors"
+        >
+          {t("checkout.coupon.have", "Have a promo code?")}
+        </button>
+      ) : quote?.couponCode ? (
+        <div className="flex items-center justify-between gap-2">
+          <span className="inline-flex items-center gap-1.5 text-[12px] text-pa-dark bg-pa-warm border border-pa-sand rounded-full px-2.5 py-1">
+            <Tag className="w-3 h-3 text-pa-gold" /> {quote.couponCode}
+          </span>
+          <button
+            type="button"
+            onClick={() => applyCoupon("")}
+            disabled={couponBusy}
+            aria-label={t("checkout.remove", "Remove")}
+            className="text-[11px] text-pa-stone-aa hover:text-pa-dark underline underline-offset-2 transition-colors"
+          >
+            {t("checkout.remove", "Remove")}
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-1.5">
+          <div className="flex gap-2">
+            <input
+              value={couponInput}
+              onChange={(e) => { setCouponInput(e.target.value.toUpperCase().replace(/[^A-Z0-9_-]/g, "")); setCouponError(false); }}
+              onKeyDown={(e) => { if (e.key === "Enter" && couponInput.trim()) applyCoupon(couponInput.trim()); }}
+              placeholder={t("checkout.coupon.field", "Promo code")}
+              maxLength={40}
+              className="flex-1 min-w-0 h-[38px] border border-pa-sand bg-white px-3 rounded-md text-[12.5px] tracking-[0.04em] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
+            />
+            <button
+              type="button"
+              onClick={() => applyCoupon(couponInput.trim())}
+              disabled={couponBusy || !couponInput.trim() || (!isDemo && !quoteId)}
+              className="shrink-0 h-[38px] px-4 rounded-md border border-pa-sand text-[10.5px] font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors disabled:opacity-40"
+            >
+              {couponBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : t("checkout.coupon.apply", "Apply")}
+            </button>
+          </div>
+          {couponError && (
+            <p className="text-[11px] text-pa-earth">{t("checkout.coupon.invalid", "Code not recognized. Check it and try again.")}</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
+  // "Pedidos ao concierge" — itens sob orçamento, sem valores somados (§7/§8)
+  const conciergeRequests = requestExtras.length > 0 && (
+    <div className="border-t border-pa-sand pt-3 space-y-1.5">
+      <p className="text-[10px] tracking-[0.12em] uppercase text-pa-stone-aa">
+        {t("checkout.conciergeRequests", "Concierge requests")}
+      </p>
+      {requestExtras.map(({ item }) => (
+        <div key={item.sku} className="flex justify-between items-center gap-2 text-[12.5px]">
+          <span className="flex items-center gap-1.5 text-pa-earth min-w-0">
+            <button
+              type="button"
+              onClick={() => toggleExtra(item)}
+              aria-label={`${t("checkout.remove", "Remove")}: ${t(`checkout.extras.${item.sku}.name`)}`}
+              className="shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors"
+            >
+              <X className="w-3 h-3" />
+            </button>
+            <span className="truncate">{t(`checkout.extras.${item.sku}.name`)}</span>
+          </span>
+          <span className="text-pa-stone-aa shrink-0">{t("checkout.onRequestShort", "on request")}</span>
+        </div>
+      ))}
+      <p className="text-[10.5px] text-pa-stone-aa leading-snug pt-0.5">
+        {t("checkout.conciergeRequestsNote", "Quoted individually by your concierge — not part of today's payment.")}
+      </p>
+    </div>
+  );
+
+  const summaryCard = (
+    <div className="bg-white border border-pa-sand rounded-lg overflow-hidden shadow-[0_4px_24px_rgba(26,26,24,0.06)]">
+      {heroImage && (
+        <img src={heroImage} alt={displayName} className="w-full aspect-[4/3] object-cover" width={800} height={600} />
+      )}
+      <div className="p-5 space-y-4">
+        <div>
+          <p className="font-display text-[18px] text-pa-dark leading-snug">{displayName}</p>
+          {intent.destination && <p className="text-[11px] tracking-[0.08em] uppercase text-pa-stone-aa mt-1">{intent.destination}</p>}
+        </div>
+        <div className="text-[12.5px] text-pa-earth">
+          {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)} · {guests} {t("booking.guestsLabel", "guests")}
+        </div>
+        {summaryLines}
+        {couponRow}
+        {conciergeRequests}
+        {(() => {
+          const code = effective?.cancellationPolicy?.[0];
+          if (!code) return null;
+          const text = cancellationPolicyText(code, checkIn, t, lang);
+          // Sem política conhecida o helper devolve o texto genérico de
+          // legalês — nesse caso não mostramos nada (noise, 12 jul)
+          if (text === t("cancellationPolicy.shortGeneric")) return null;
+          return <p className="text-[11px] text-pa-stone-aa leading-snug">{text}</p>;
+        })()}
+        {guaranteeLabel && (
+          <p className="flex items-start gap-1.5 text-[11px] text-pa-gold leading-snug">
+            <Clock3 className="w-3 h-3 shrink-0 mt-[1px]" /> {guaranteeLabel}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="checkout-page min-h-screen bg-white pb-28 lg:pb-12">
+      {/* Discreet motion (spec §9): 200ms step transitions, rows sliding toward the summary */}
+      <style>{`
+        /* The global 44px touch-target rule inflates radios/checkboxes — scope them back */
+        .checkout-page input[type="radio"],
+        .checkout-page input[type="checkbox"] {
+          min-height: 16px; min-width: 16px; height: 16px; width: 16px;
+        }
+        @keyframes checkoutStepIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        .checkout-step-in { animation: checkoutStepIn 220ms ease-out; }
+        @keyframes checkoutRowIn { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+        .checkout-row-in { animation: checkoutRowIn 200ms ease-out; }
+        @media (prefers-reduced-motion: reduce) {
+          .checkout-step-in, .checkout-row-in { animation: none; }
+        }
+      `}</style>
+      {/* ── Minimal top bar: logo · stepper · autosave + close ── */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-pa-sand">
+        <div className="max-w-[1100px] mx-auto px-4 h-[60px] flex items-center justify-between gap-4">
+          <Link href="/" className="shrink-0" aria-label="Portugal Active">
+            <img src={IMAGES.logoColor} alt="Portugal Active" className="h-[26px] w-auto" />
+          </Link>
+          <nav aria-label={t("checkout.stepsAria", "Checkout steps")} className="flex items-center gap-2 sm:gap-3">
+            {steps.map((s, i) => (
+              <div key={s.key} className="flex items-center gap-2 sm:gap-3">
+                {i > 0 && <span className="w-6 sm:w-10 h-px bg-pa-sand" />}
+                <button
+                  type="button"
+                  disabled={i >= stepIndex}
+                  onClick={() => {
+                    // C3: retroceder por clique no indicador, mantendo o estado
+                    if (i < stepIndex) {
+                      setStep(s.key as Step);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }
+                  }}
+                  className={cn("flex items-center gap-1.5", i < stepIndex && "cursor-pointer")}
+                >
+                  <span
+                    className={cn(
+                      "w-5 h-5 rounded-full text-[10px] flex items-center justify-center border",
+                      i < stepIndex
+                        ? "bg-pa-dark border-pa-dark text-white"
+                        : i === stepIndex
+                          ? "border-pa-dark text-pa-dark"
+                          : "border-pa-sand text-pa-stone-aa",
+                    )}
+                  >
+                    {i < stepIndex ? <Check className="w-3 h-3" /> : i + 1}
+                  </span>
+                  <span
+                    className={cn(
+                      "text-[11px] tracking-[0.06em] uppercase",
+                      i === stepIndex ? "inline text-pa-dark font-medium" : "hidden sm:inline text-pa-stone-aa",
+                    )}
+                  >
+                    {s.label}
+                  </span>
+                </button>
+              </div>
+            ))}
+          </nav>
+          <div className="flex items-center gap-3 shrink-0">
+            <span className="hidden md:inline text-[11px] text-pa-stone-aa">
+              {saveIssue ? t("checkout.saveIssue", "Reconnecting, changes pending") : t("checkout.autosaved", "Saved automatically")}
+            </span>
+            <Link
+              href={backHref}
+              aria-label={t("checkout.closeAria", "Back to the property")}
+              className="w-9 h-9 rounded-full border border-pa-sand flex items-center justify-center text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-[1100px] mx-auto px-4 pt-8 lg:grid lg:grid-cols-[minmax(0,640px)_380px] lg:gap-12 lg:items-start">
+        {/* ══════════ CONTENT COLUMN ══════════ */}
+        <section key={step} className="space-y-6 checkout-step-in">
+          {/* Stale quote / unavailable banners */}
+          {quoteStale && !datesUnavailable && (
+            <div className="flex items-start justify-between gap-4 p-4 bg-pa-warm border border-pa-sand rounded-lg">
+              <p className="text-[13px] text-pa-earth leading-snug">
+                {t("checkout.quoteExpiredBanner", "This price has expired. Refresh to see the current price for your dates — your details are kept.")}
+              </p>
+              <button
+                type="button"
+                onClick={() => requote(checkIn, checkOut, guests)}
+                disabled={requoting}
+                className="shrink-0 text-[12px] font-medium text-pa-dark underline underline-offset-2 disabled:opacity-40"
+              >
+                {requoting ? <Loader2 className="w-4 h-4 animate-spin" /> : t("checkout.refreshPrice", "Refresh price")}
+              </button>
+            </div>
+          )}
+          {datesUnavailable && (
+            <div className="p-4 bg-red-50/70 border border-red-200/60 rounded-lg space-y-2" role="alert">
+              <p className="text-[13px] text-red-700 leading-snug">
+                {t("checkout.datesUnavailable", "These dates are no longer available. Please choose new dates below or contact our concierge.")}
+              </p>
+              <button
+                type="button"
+                onClick={() => { setStep("stay"); setEditingStay(true); setDatesUnavailable(false); }}
+                className="text-[12px] font-medium text-red-700 underline underline-offset-2"
+              >
+                {t("bookingWidget.changeDates", "Change dates")}
+              </button>
+            </div>
+          )}
+
+          {/* ── PASSO 1: A SUA ESTADIA ── */}
+          {step === "stay" && (
+            <>
+              <div>
+                <h1 className="headline-md text-pa-dark mb-1">{t("checkout.stayTitle", "Your stay")}</h1>
+                <p className="body-sm">{t("checkout.staySubtitle", "Confirm your dates and choose your rate.")}</p>
+              </div>
+
+              {/* Editable recap */}
+              <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="grid grid-cols-3 gap-4 flex-1">
+                    <div>
+                      <p className="text-[10px] tracking-[0.12em] uppercase text-pa-stone-aa mb-1">{t("bookingWidget.checkInLabel")}</p>
+                      <p className="text-[14px] text-pa-dark">{formatBookingDate(checkIn, lang, true)}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] tracking-[0.12em] uppercase text-pa-stone-aa mb-1">{t("bookingWidget.checkOutLabel")}</p>
+                      <p className="text-[14px] text-pa-dark">{formatBookingDate(checkOut, lang, true)}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] tracking-[0.12em] uppercase text-pa-stone-aa mb-1">{t("booking.guestsLabel")}</p>
+                      <p className="text-[14px] text-pa-dark">{guests}</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setEditingStay((v) => !v)}
+                    className="shrink-0 flex items-center gap-1.5 text-[12px] text-pa-gold hover:text-pa-dark transition-colors"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                    {editingStay ? t("checkout.doneEditing", "Done") : t("checkout.edit", "Edit")}
+                  </button>
+                </div>
+
+                {editingStay && (
+                  <div className="border-t border-pa-sand pt-4 space-y-4">
+                    {calendarQuery.isLoading ? (
+                      <div className="flex items-center justify-center py-8 gap-2 text-[12px] text-pa-stone-aa">
+                        <Loader2 className="w-4 h-4 animate-spin" /> {t("bookingWidget.loadingCalendar", "Loading availability...")}
+                      </div>
+                    ) : (
+                      <AvailabilityCalendar
+                        days={calendarDays}
+                        checkIn={checkIn}
+                        checkOut={checkOut}
+                        minNights={property?.minNights}
+                        onSelectRange={({ checkIn: ci, checkOut: co }) => {
+                          if (ci && co) {
+                            requote(ci, co, guests);
+                            setEditingStay(false);
+                          }
+                        }}
+                      />
+                    )}
+                    <div className="flex items-center gap-4">
+                      <p className="text-[10px] tracking-[0.12em] uppercase text-pa-stone-aa">{t("booking.guestsLabel")}</p>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => { const g = Math.max(1, guests - 1); if (g !== guests) requote(checkIn, checkOut, g); }}
+                          disabled={guests <= 1 || requoting}
+                          className="flex h-8 w-8 items-center justify-center rounded-full border border-pa-sand text-pa-earth hover:border-pa-dark hover:text-pa-dark disabled:opacity-25 transition-colors"
+                          aria-label={t("booking.decreaseGuests", "Decrease guests")}
+                        >
+                          <Minus className="w-3 h-3" />
+                        </button>
+                        <span className="min-w-[2ch] text-center text-[14px] text-pa-dark tabular-nums">{guests}</span>
+                        <button
+                          type="button"
+                          onClick={() => { const max = property?.maxGuests || 30; const g = Math.min(max, guests + 1); if (g !== guests) requote(checkIn, checkOut, g); }}
+                          disabled={requoting || guests >= (property?.maxGuests || 30)}
+                          className="flex h-8 w-8 items-center justify-center rounded-full border border-pa-sand text-pa-earth hover:border-pa-dark hover:text-pa-dark disabled:opacity-25 transition-colors"
+                          aria-label={t("booking.increaseGuests", "Increase guests")}
+                        >
+                          <Plus className="w-3 h-3" />
+                        </button>
+                      </div>
+                      {requoting && <Loader2 className="w-4 h-4 animate-spin text-pa-gold" />}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Rate plan choice */}
+              {(quote?.ratePlanOptions?.length ?? 0) > 1 && (
+                <div className="space-y-2">
+                  <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-pa-gold">{t("bookingWidget.ratePlan", "Rate plan")}</p>
+                  {(() => { const maxTotal = Math.max(...quote!.ratePlanOptions!.map(o => o.total)); return quote!.ratePlanOptions!.map((opt) => {
+                    const isSelected = selectedRatePlanId === opt.ratePlanId;
+                    const nonRef = isNonRefundableOption(opt);
+                    const label = nonRef ? t("booking.nonRefundable") : t("booking.flexibleRate");
+                    const savings = maxTotal - opt.total;
+                    const policyLine = opt.cancellationPolicy?.[0]
+                      ? cancellationPolicyText(opt.cancellationPolicy[0], checkIn, t, lang)
+                      : null;
+                    return (
+                      <label
+                        key={opt.ratePlanId}
+                        className={cn(
+                          "flex items-center gap-3 p-4 bg-white border rounded-lg cursor-pointer transition-all",
+                          isSelected ? "border-pa-dark ring-1 ring-pa-dark" : "border-pa-sand hover:border-pa-gold",
+                        )}
+                      >
+                        <input
+                          type="radio"
+                          name="checkoutRatePlan"
+                          checked={isSelected}
+                          onChange={() => {
+                            setSelectedRatePlanId(opt.ratePlanId);
+                            syncIntent({ ratePlanId: opt.ratePlanId });
+                            pushDL({
+                              event: "rate_plan_selected",
+                              rate_plan: nonRef ? "non_refundable" : "flexible",
+                              value: opt.total,
+                              property_id: intent.listingId,
+                            });
+                          }}
+                          className="accent-black w-4 h-4 shrink-0"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="text-[13.5px] text-pa-dark font-medium">{label}</p>
+                            {!nonRef && (
+                              <span className="text-[9px] font-medium tracking-wider uppercase px-1.5 py-0.5 bg-pa-warm text-pa-gold border border-pa-sand rounded-sm">
+                                {t("bookingWidget.recommended", "Recommended")}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[11px] mt-0.5 text-pa-earth">
+                            {nonRef
+                              ? t("bookingWidget.nonRefundableWarning", "No refund if you cancel or modify")
+                              : policyLine}
+                          </p>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <span className="text-[14.5px] text-pa-dark font-medium tabular-nums">
+                            {formatEur(opt.total, lang)}
+                          </span>
+                          {savings > 0 && (
+                            <p className="text-[10px] text-pa-gold font-medium mt-0.5">
+                              {t("bookingWidget.save", "Save")} {formatEur(savings, lang)}
+                            </p>
+                          )}
+                        </div>
+                      </label>
+                    );
+                  }); })()}
+                </div>
+              )}
+
+              {/* Price breakdown — mobile only: on desktop the lateral summary
+                  already shows it and the duplication reads noisy (spec v1.2 §4) */}
+              {effective && (
+                <div className="lg:hidden bg-white border border-pa-sand rounded-lg p-5">{summaryLines}</div>
+              )}
+
+              {/* Email capture */}
+              <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
+                <h2 className="font-display text-[19px] text-pa-dark leading-snug">
+                  {t("checkout.emailTitle", "Where should we send your booking?")}
+                </h2>
+                <label htmlFor="checkout-email" className="block text-[12px] font-medium text-pa-earth">
+                  {t("checkout.emailLabel", "Your email")}
+                </label>
+                <input
+                  id="checkout-email"
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onBlur={() => setEmailTouched(true)}
+                  placeholder={t("checkout.emailPh", "name@email.com")}
+                  className="w-full h-[48px] border border-pa-sand bg-white px-3 rounded-md text-[15px] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
+                />
+                {emailTouched && email.length > 0 && !isValidEmail(email) && (
+                  <p className="text-[11px] text-red-500">{t("bookingWidget.invalidEmail", "Please enter a valid email address")}</p>
+                )}
+                <p className="text-[11.5px] text-pa-stone-aa leading-relaxed">
+                  {t("checkout.emailSupport", "We hold your reservation for 24 hours and email you the quote. No spam.")}
+                </p>
+                <button
+                  type="button"
+                  onClick={submitEmail}
+                  disabled={!isValidEmail(email) || quoteStale || datesUnavailable}
+                  className="btn-primary w-full disabled:opacity-40"
+                >
+                  {t("booking.continue", "Continue")}
+                </button>
+              </div>
+            </>
+          )}
+
+          {/* ── PASSO 2: PERSONALIZAR (Fase 2) ── */}
+          {step === "customize" && (
+            <>
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setStep("stay")}
+                  className="text-[12px] text-pa-stone-aa hover:text-pa-dark transition-colors"
+                >
+                  ← {t("checkout.backToStay", "Back to your stay")}
+                </button>
+              </div>
+              {extrasQuery.isLoading ? (
+                <div className="flex items-center justify-center py-10 gap-2 text-[12px] text-pa-stone-aa">
+                  <Loader2 className="w-4 h-4 animate-spin" /> {t("checkout.loading", "Preparing your checkout…")}
+                </div>
+              ) : (
+                <CustomizeStep
+                  catalog={catalog}
+                  included={includedKeys}
+                  reception={receptionConfig}
+                  receptionChoice={receptionChoice}
+                  selection={extraSel}
+                  nights={quote?.nights ?? 1}
+                  guests={guests}
+                  propertyName={displayName}
+                  lang={lang}
+                  destination={intent.destination ?? undefined}
+                  defaultAirport={(extrasQuery.data as any)?.defaultAirport}
+                  onToggle={toggleExtra}
+                  onAdjust={adjustExtra}
+                  onChooseReception={chooseReception}
+                  onSkip={skipCustomize}
+                  receptionNudge={receptionNudge}
+                />
+              )}
+              {/* Flex closes the Personalizar step (spec §5/§6) — protection, not a service */}
+              {flexConfig && effective && (
+                <FlexBlock
+                  config={{ ...flexConfig, price: flexUnit }}
+                  selected={flexSelected}
+                  stayTotal={effective.total}
+                  nonRefundableSelected={nonRefundableSelected}
+                  freeCancelUntil={freeCancelUntil}
+                  lang={lang}
+                  listingId={intent.listingId}
+                  demo={isDemo}
+                  onToggle={(next) => {
+                    setFlexSelected(next);
+                    syncIntent({ flex: next });
+                  }}
+                />
+              )}
+              {/* Reception is a mandatory choice (§5.2) — block continue until made */}
+              {!receptionChoice && (
+                <p
+                  className={cn(
+                    "text-center",
+                    receptionNudge
+                      ? "text-[13px] text-pa-dark bg-pa-warm border border-pa-gold rounded-md px-3 py-2.5"
+                      : "text-[12px] text-pa-earth",
+                  )}
+                >
+                  {t("checkout.reception.required")}
+                </p>
+              )}
+              <button
+                type="button"
+                onClick={continueToPay}
+                aria-disabled={!receptionChoice}
+                className={cn("btn-primary w-full", !receptionChoice && "opacity-40")}
+              >
+                {selectedExtras.length > 0
+                  ? t("checkout.continueWithExtras", { count: selectedExtras.length })
+                  : t("checkout.continueWithoutExtras", "Continue without extras")}
+              </button>
+            </>
+          )}
+
+          {/* ── PASSO PAGAMENTO ── */}
+          {step === "pay" && (
+            <>
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setStep("customize")}
+                  className="text-[12px] text-pa-stone-aa hover:text-pa-dark transition-colors"
+                >
+                  ← {t("checkout.backToCustomize", "Back to personalization")}
+                </button>
+                <h1 className="headline-md text-pa-dark mb-1">{t("checkout.payTitle", "Payment")}</h1>
+                <p className="body-sm">{t("checkout.paySubtitle", "Your details, then a secure payment.")}</p>
+              </div>
+
+              {/* D6: micro-resumo do valor construído, antes do formulário */}
+              {(receptionChoice || paidExtras.length > 0 || flexSelected) && (
+                <div className="bg-white border border-pa-sand rounded-lg px-5 py-4">
+                  <p className="font-display text-[18px] text-pa-dark leading-snug mb-2">
+                    {t("checkout.tailoredTitle", "Your stay, tailored")}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {receptionChoice && (
+                      <span className="inline-flex items-center gap-1 text-[11.5px] text-pa-earth bg-pa-warm border border-pa-sand rounded-full px-2.5 py-1">
+                        <Check className="w-3 h-3 text-pa-gold" />
+                        {receptionChoice.type === "hosted" ? t("checkout.reception.hosted.name") : t("checkout.reception.self.name")}
+                      </span>
+                    )}
+                    {paidExtras.map(({ item }) => (
+                      <span key={item.sku} className="inline-flex items-center gap-1 text-[11.5px] text-pa-earth bg-pa-warm border border-pa-sand rounded-full px-2.5 py-1">
+                        <Check className="w-3 h-3 text-pa-gold" /> {t(`checkout.extras.${item.sku}.name`)}
+                      </span>
+                    ))}
+                    {flexSelected && flexConfig && (
+                      <span className="inline-flex items-center gap-1 text-[11.5px] text-pa-dark bg-pa-warm border border-pa-gold rounded-full px-2.5 py-1">
+                        <Check className="w-3 h-3 text-pa-gold" /> Flex
+                      </span>
+                    )}
+                    {requestExtras.map(({ item }) => (
+                      <span key={item.sku} className="inline-flex items-center gap-1 text-[11.5px] text-pa-stone-aa border border-dashed border-pa-sand rounded-full px-2.5 py-1">
+                        {t(`checkout.extras.${item.sku}.name`)} · {t("checkout.onRequestShort", "on request")}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* D1: última chamada do Flex — linha discreta, um clique, SÓ o Flex
+                  (guardrail: nunca uma bandeja de extras aqui) */}
+              {!flexSelected && flexConfig && effective && effective.total >= flexConfig.minTotal && (
+                <div className="bg-pa-warm border border-pa-gold/50 rounded-lg px-5 py-3.5 flex items-center justify-between gap-3">
+                  <p className="text-[12.5px] text-pa-dark leading-snug">
+                    {t("checkout.flexLastCall", "One click to protect this booking: Flex, guaranteed rebooking.")}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFlexSelected(true);
+                      syncIntent({ flex: true });
+                      if (!isDemo) pushDL({ event: "flex_added", property_id: intent.listingId, value: flexUnit, source: "step3" });
+                    }}
+                    className="shrink-0 min-h-[38px] px-4 rounded-full border border-pa-gold text-[11px] font-medium tracking-[0.08em] uppercase text-pa-gold hover:bg-pa-gold hover:text-white transition-colors"
+                  >
+                    {t("checkout.flexAddShort", "Add")} · {formatEur(flexUnit, lang)}
+                  </button>
+                </div>
+              )}
+
+              {/* Guest details */}
+              <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
+                <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-pa-gold">
+                  {t("bookingWidget.guestInformation", "Guest information")}
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    type="text"
+                    autoComplete="given-name"
+                    placeholder={t("bookingWidget.firstNamePh")}
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="w-full h-[48px] border border-pa-sand bg-white px-3 rounded-md text-[14px] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
+                  />
+                  <input
+                    type="text"
+                    autoComplete="family-name"
+                    placeholder={t("bookingWidget.lastNamePh")}
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="w-full h-[48px] border border-pa-sand bg-white px-3 rounded-md text-[14px] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
+                  />
+                </div>
+                <input
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full h-[48px] border border-pa-sand bg-white px-3 rounded-md text-[14px] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
+                />
+                <PhoneInput
+                  value={phone}
+                  onChange={setPhone}
+                  onBlur={() => setPhoneTouched(true)}
+                  placeholder={t("bookingWidget.phonePh", "Phone number *")}
+                />
+                {phoneTouched && phone && !isValidPhone(phone) && (
+                  <p className="text-[11px] text-red-500">{t("bookingWidget.invalidPhone", "Please enter a valid phone number")}</p>
+                )}
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={20}
+                  value={nif}
+                  onChange={(e) => setNif(e.target.value)}
+                  placeholder={t("checkout.nifPh", "NIF — optional, for a Portuguese invoice")}
+                  className="w-full h-[48px] border border-pa-sand bg-white px-3 rounded-md text-[14px] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
+                />
+                <label className="flex items-start gap-2 cursor-pointer select-none pt-1">
+                  <input
+                    type="checkbox"
+                    checked={termsAccepted}
+                    onChange={(e) => setTermsAccepted(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 accent-black border-pa-sand rounded"
+                  />
+                  <span className="text-[12px] text-pa-earth leading-snug">
+                    {t("bookingWidget.termsAcceptLabel", "I accept the")}{" "}
+                    <a href="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-pa-dark underline hover:text-pa-gold">{t("bookingWidget.termsLink", "Terms & Conditions")}</a>
+                    {" "}{t("bookingWidget.termsAnd", "and the")}{" "}
+                    <a href="/legal/cancellation-policy" target="_blank" rel="noopener noreferrer" className="text-pa-dark underline hover:text-pa-gold">{t("bookingWidget.cancellationPolicyLink")}</a>
+                  </span>
+                </label>
+              </div>
+
+              {/* Direct-booking assurance (audit finding D1) */}
+              
+
+              {/* Payment */}
+              <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-4">
+                {termsAccepted && firstName.trim() && lastName.trim() && isValidEmail(email) && isValidPhone(phone) && quoteId && effective && !quoteStale ? (
+                  <CheckoutPaymentForm
+                    listingId={intent.listingId}
+                    checkIn={checkIn}
+                    checkOut={checkOut}
+                    guests={guests}
+                    quoteId={quoteId}
+                    ratePlanId={effective.ratePlanId ?? selectedRatePlanId ?? ""}
+                    total={todayTotal}
+                    currency="EUR"
+                    propertyName={intent.propertyName || displayName}
+                    destination={intent.destination || undefined}
+                    guestName={`${firstName.trim()} ${lastName.trim()}`}
+                    guestEmail={email}
+                    guestPhone={phone}
+                    notes={extrasNote || undefined}
+                    intentId={intent.id}
+                    couponCode={quote?.couponCode || undefined}
+                    purchaseItems={purchaseItems}
+                    onSuccess={handleCardSuccess}
+                    onCancel={() => setStep("stay")}
+                  />
+                ) : (
+                  <div className="space-y-3">
+                    {quoteStale && (
+                      <p className="text-[12px] text-pa-earth">{t("checkout.refreshBeforePay", "Refresh the price above before paying.")}</p>
+                    )}
+                    <button disabled className="btn-primary w-full opacity-40 cursor-not-allowed">
+                      {t("bookingWidget.proceedToPayment", "Proceed to Payment")}
+                    </button>
+                  </div>
+                )}
+                {/* Cancellation policy repeated in human text next to the pay button (spec §7) */}
+                {effective?.cancellationPolicy?.[0] && (
+                  <p className="text-[11.5px] text-pa-stone-aa text-center leading-snug">
+                    {cancellationPolicyText(effective.cancellationPolicy[0], checkIn, t, lang)}
+                  </p>
+                )}
+                <p className="flex items-center justify-center gap-1.5 text-[11px] text-pa-stone-aa">
+                  <Lock className="w-3 h-3" /> {t("checkout.secureNote", "Encrypted, secure payment")}
+                </p>
+              </div>
+            </>
+          )}
+        </section>
+
+        {/* ══════════ SUMMARY COLUMN (desktop) ══════════ */}
+        <aside className="hidden lg:block sticky top-[84px]">{summaryCard}</aside>
+      </main>
+
+      {/* Keeps in-flow content (desktop Continue CTA) scrollable clear of the
+          fixed cookie banner; collapses to 0 the moment consent is given. */}
+      <div aria-hidden style={{ height: "var(--cookie-banner-h, 0px)" }} />
+
+      {/* ══════════ MOBILE: bottom bar + expandable summary sheet ══════════ */}
+      {/* Sits directly on top of the cookie banner while consent is pending. */}
+      <div className="lg:hidden fixed inset-x-0 z-40" style={{ bottom: "var(--cookie-banner-h, 0px)" }}>
+        {sheetOpen && (
+          <div className="max-h-[60vh] overflow-y-auto bg-white border-t border-pa-sand px-5 pt-4 pb-3 shadow-[0_-8px_32px_rgba(26,26,24,0.10)] space-y-4 checkout-step-in">
+            <div className="flex items-center gap-3">
+              {heroImage && (
+                <img src={heroImage} alt="" className="w-14 h-14 rounded-md object-cover shrink-0" width={56} height={56} />
+              )}
+              <div className="min-w-0">
+                <p className="font-display text-[15px] text-pa-dark leading-snug truncate">{displayName}</p>
+                <p className="text-[11.5px] text-pa-earth mt-0.5">
+                  {formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)} · {guests} {t("booking.guestsLabel", "guests")}
+                </p>
+              </div>
+            </div>
+            {summaryLines}
+            {couponRow}
+            {conciergeRequests}
+            {guaranteeLabel && (
+              <p className="flex items-start gap-1.5 text-[11px] text-pa-gold leading-snug">
+                <Clock3 className="w-3 h-3 shrink-0 mt-[1px]" /> {guaranteeLabel}
+              </p>
+            )}
+          </div>
+        )}
+        <div className="bg-white border-t border-pa-sand px-4 py-3 flex items-center justify-between gap-3" style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom, 0px))" }}>
+          <button
+            type="button"
+            onClick={() => setSheetOpen((v) => !v)}
+            className="flex items-center gap-1.5 text-left"
+            aria-expanded={sheetOpen}
+          >
+            <div>
+              <p className="text-[16px] font-medium text-pa-dark tabular-nums leading-tight">
+                {effective ? formatEur(animatedTotal, lang) : "—"}
+              </p>
+              <p className="text-[10.5px] text-pa-stone-aa flex items-center gap-1">
+                {t("checkout.viewDetails", "View details")}
+                {sheetOpen ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
+              </p>
+            </div>
+          </button>
+          {step === "stay" && (
+            <button
+              type="button"
+              onClick={submitEmail}
+              disabled={!isValidEmail(email) || quoteStale || datesUnavailable}
+              className="btn-primary flex-1 max-w-[220px] disabled:opacity-40"
+            >
+              {t("booking.continue", "Continue")}
+            </button>
+          )}
+          {step === "customize" && (
+            <button
+              type="button"
+              onClick={continueToPay}
+              aria-disabled={!receptionChoice}
+              className={cn("btn-primary flex-1 max-w-[220px]", !receptionChoice && "opacity-40")}
+            >
+              {t("booking.continue", "Continue")}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

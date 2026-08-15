@@ -129,7 +129,7 @@
     "estTotal": "est. total",
     "indicativeCatalogue": "Indicative from catalogue rate. Confirm for final total.",
     "indicativeUnavailable": "Indicative (catalogue). Live pricing unavailable — confirm on booking.",
-    "cleaningFee": "Final cleaning",
+    "cleaningFee": "Service fee",
     "serviceFee": "Service fee",
     "touristTax": "Tourist tax",
     "vat": "VAT",
@@ -220,7 +220,9 @@
     "select": "Select",
     "cancellationPerPolicy": "Cancellation subject to listing policy",
     "minStayNotice_one": "Minimum stay for these dates is {{count}} night",
-    "minStayNotice_other": "Minimum stay for these dates is {{count}} nights"
+    "minStayNotice_other": "Minimum stay for these dates is {{count}} nights",
+    "decreaseGuests": "Decrease guests",
+    "increaseGuests": "Increase guests"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Price on request",
@@ -272,7 +274,49 @@
     "requestWithoutPayment": "Or request without payment",
     "belowMinNightsWarning_one": "Please select at least {{count}} night to continue",
     "belowMinNightsWarning_other": "Please select at least {{count}} nights to continue",
-    "pricingUnavailableMessage": "We couldn't confirm pricing for these dates. Please contact a Concierge."
+    "pricingUnavailableMessage": "We couldn't confirm pricing for these dates. Please contact a Concierge.",
+    "recommended": "Recommended",
+    "nonRefundableWarning": "No refund if you cancel or modify",
+    "save": "Save",
+    "quoteExpired": "Quote expired. Please try again.",
+    "quoteRefreshFailed": "Could not refresh pricing. Please contact our concierge.",
+    "termsAcceptLabel": "I accept the",
+    "termsLink": "Terms & Conditions",
+    "termsAnd": "and the",
+    "invalidEmail": "Please enter a valid email address",
+    "invalidPhone": "Please enter a valid phone number",
+    "bookingSummary": "Booking summary",
+    "proceedToPayment": "Proceed to Payment",
+    "priceSummary": "Price summary",
+    "bookedBy": "Booked by",
+    "servicesRequested": "Services requested",
+    "servicesConfirmNote": "Our concierge will contact you within 2 hours to confirm details and pricing.",
+    "chatConcierge": "Chat with your concierge",
+    "conciergeReachOut": "Your dedicated concierge will reach out within 24 hours to help plan your stay.",
+    "confirmationEmailSent": "Confirmation email sent to",
+    "contactConcierge": "Contact Concierge",
+    "selectDate": "Select",
+    "loadingCalendar": "Loading availability...",
+    "fromPrice": "from",
+    "showAllServices": "Show all services",
+    "servicesNote": "Services confirmed separately by our concierge after booking. No charge now.",
+    "checkInToday": "Check-in is today",
+    "checkInTomorrow": "Check-in is tomorrow",
+    "checkInSoon": "Check-in is in 2 days",
+    "advanceNoticeNote": "Some properties require advance notice. Instant confirmation may not be available.",
+    "nightsLabel": "nights",
+    "servicesSelected_one": "{{count}} service requested — confirmed after booking",
+    "servicesSelected_other": "{{count}} services requested — confirmed after booking",
+    "phonePh": "Phone number *",
+    "ratePlanPolicyAria": "opens the cancellation policy in a new tab",
+    "waSuccessMessage": "Hi! I just confirmed my booking at {{property}}.\nConfirmation: {{code}}\nDates: {{checkIn}} → {{checkOut}}\nGuests: {{guests}}\nLooking forward to my stay!",
+    "waPricingHelp": "Hi, I'd like to book {{property}}.\nDates: {{checkIn}} → {{checkOut}}\nNights: {{nights}}\nGuests: {{guests}}\nCould you help me confirm availability and pricing?",
+    "clearDates": "Clear",
+    "availableLabel": "Available",
+    "unavailableLabel": "Unavailable",
+    "confirmDates": "Confirm",
+    "tariffInCheckout": "Two rates available. Choose yours in the next step.",
+    "reserve": "RESERVE"
   },
   "common": {
     "loading": "Loading…",
@@ -415,7 +459,7 @@
     "nights_other": "{{count}} nights",
     "viewDetails": "View price details",
     "accommodation": "Accommodation",
-    "cleaning": "Final cleaning",
+    "cleaning": "Home preparation service",
     "serviceFee": "Service fee",
     "touristTax": "Tourist tax",
     "vat": "VAT",
@@ -585,7 +629,10 @@
     "checkInInstructions": "Check-in instructions",
     "checkInDefault": "Our team will share all instructions with you by email.",
     "addToCalendar": "Add to Calendar",
-    "whatsappConcierge": "WhatsApp concierge"
+    "whatsappConcierge": "WhatsApp concierge",
+    "pageTitle": "Booking Confirmed | Thank You",
+    "pageDescription": "Your Portugal Active booking is confirmed. Check your email for details and prepare for your stay.",
+    "whatsappPrefill": "Hi, I need help with my booking"
   },
   "paymentThankYou": {
     "title": "Booking Confirmed",
@@ -594,7 +641,7 @@
     "bookedBy": "Booked by",
     "priceSummary": "Price summary",
     "nights": "{{count}} nights",
-    "cleaning": "Final cleaning",
+    "cleaning": "Home preparation service",
     "totalPaid": "Total paid",
     "paidPaypal": "Paid in full with PayPal",
     "paidKlarna": "Paying with Klarna",
@@ -604,7 +651,14 @@
     "trustSecure": "Secure booking",
     "trustRate": "Best rate guaranteed",
     "trustCancel": "Flexible cancellation",
-    "trustConcierge": "Concierge included"
+    "trustConcierge": "Concierge included",
+    "pageTitle": "Booking Confirmed | Thank You",
+    "pageDescription": "Your Portugal Active booking is confirmed. Check your email for details and prepare for your stay.",
+    "mailSubject": "Reservation {{code}} — Information request",
+    "mailBody": "Hello,\n\nI have a question about my reservation {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
+    "trustFees": "No booking fees",
+    "paidCard": "Paid in full by card",
+    "cardSub": "Secure card payment"
   },
   "payment": {
     "failed": "Payment failed. Please try again.",
@@ -627,10 +681,18 @@
       "requiredFields": "Please fill in all required fields.",
       "cardNotReady": "Card element not ready. Please refresh and try again.",
       "cardValidationFailed": "Card validation failed. Please check your card details.",
-      "couldNotCreatePaymentMethod": "Could not create payment method. Please try again."
+      "couldNotCreatePaymentMethod": "Could not create payment method. Please try again.",
+      "contactSupport": "If you were charged, please contact us at reservations@portugalactive.com or WhatsApp +351 927 161 771. Do not attempt to pay again."
     },
-    "payButton": "Pay {{currency}} {{amount}}",
-    "cancelButton": "Cancel"
+    "payButton": "Pay {{amount}}",
+    "cancelButton": "Cancel",
+    "methodCard": "Card",
+    "preparingSecure": "Preparing secure payment…",
+    "payWithKlarna": "Pay {{amount}} with Klarna",
+    "payWithPaypal": "Pay {{amount}} with PayPal",
+    "preparingKlarna": "Preparing Klarna payment…",
+    "preparingPaypal": "Preparing PayPal payment…",
+    "redirecting": "Redirecting…"
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",
@@ -1245,11 +1307,348 @@
     "strictTitle": "Strict Cancellation",
     "strictBody": "50% refund if cancelled at least 60 days before check-in. No refund for cancellations made less than 60 days before check-in. Non-refundable after check-in.",
     "nonRefundableTitle": "Non-Refundable",
-    "nonRefundableBody": "This rate is offered at a reduced price in exchange for a no-refund policy. Once booked, no refund will be issued regardless of the cancellation date. We strongly recommend purchasing travel insurance when choosing this rate."
+    "nonRefundableBody": "This rate is offered at a reduced price in exchange for a no-refund policy. Once booked, no refund will be issued regardless of the cancellation date. We strongly recommend purchasing travel insurance when choosing this rate.",
+    "shortFree": "Free cancellation until {{date}}",
+    "shortFreeNoDate_one": "Free cancellation until {{count}} day before check-in",
+    "shortFreeNoDate_other": "Free cancellation until {{count}} days before check-in",
+    "shortHalf": "50% refund until {{date}}: non-refundable after",
+    "shortHalfNoDate_one": "50% refund until {{count}} day before check-in: non-refundable after",
+    "shortHalfNoDate_other": "50% refund until {{count}} days before check-in: non-refundable after",
+    "shortNonRefundable": "Non-refundable rate: no refund if you cancel",
+    "shortWindowPassed": "For these dates the booking is non-refundable if cancelled",
+    "shortGeneric": "Cancellation terms apply: see our cancellation policy"
   },
   "urgency": {
     "highDemand": "High demand",
     "guestFavourite": "Guest favourite",
     "justAdded": "Just added"
+  },
+  "paymentReturn": {
+    "verifying": "Verifying your payment…",
+    "missingInfo": "We couldn't find your payment information. Please contact support.",
+    "dataLost": "Your booking data was lost during the redirect. Please contact support with reference {{ref}}.",
+    "dataCorrupted": "We couldn't read your booking data. Please contact support.",
+    "processorUnavailable": "The payment processor is unavailable. Please contact support.",
+    "verifyFailed": "We couldn't verify your payment status. Please contact support.",
+    "confirmedCreating": "Payment confirmed! Creating your reservation…",
+    "reservationFailed": "Your payment was received but the reservation could not be created automatically. Our team has been notified and will confirm your booking shortly. Reference: {{ref}}",
+    "stillProcessing": "Your payment is still processing. Please wait a moment and refresh this page.",
+    "notCompleted": "The payment was not completed. Please try again or choose a different payment method.",
+    "processingTitle": "Processing Your Booking",
+    "failedTitle": "Payment Not Completed",
+    "secureNote": "Secure payment — please don't close this window"
+  },
+  "trust": {
+    "secureBooking": "Secure booking",
+    "bestRate": "Best rate guaranteed",
+    "noBookingFees": "No booking fees",
+    "conciergeIncluded": "Concierge included"
+  },
+  "bookingStatus": {
+    "confirmed": "Confirmed",
+    "reserved": "Reserved",
+    "pending": "Awaiting confirmation",
+    "canceled": "Cancelled",
+    "declined": "Declined",
+    "expired": "Expired",
+    "inquiry": "Enquiry",
+    "processing": "Being processed"
+  },
+  "checkout": {
+    "pageTitle": "Checkout",
+    "stepStay": "Your stay",
+    "stepPay": "Payment",
+    "stepsAria": "Checkout steps",
+    "autosaved": "Saved automatically",
+    "closeAria": "Back to the property",
+    "loading": "Preparing your checkout…",
+    "notFoundTitle": "Checkout not found",
+    "notFoundBody": "This checkout link has expired or is invalid. Your dates are not lost, start again from the property page.",
+    "quoteExpiredBanner": "This price has expired. Refresh to see the current price for your dates, your details are kept.",
+    "refreshPrice": "Refresh price",
+    "datesUnavailable": "We couldn't confirm a price for these dates, they may no longer be available. Try again, choose new dates below, or contact our concierge.",
+    "stayTitle": "Your stay",
+    "staySubtitle": "Confirm your dates and choose your rate.",
+    "edit": "Edit",
+    "doneEditing": "Done",
+    "emailLabel": "Your email",
+    "emailPh": "name@email.com",
+    "emailSupport": "We hold your price for 24 hours and email you the quote. Dates are only secured after payment. No spam.",
+    "backToStay": "Back to your stay",
+    "payTitle": "Payment",
+    "paySubtitle": "Your details, then a secure payment.",
+    "nifPh": "Tax ID or VAT number, optional, for your invoice",
+    "directTitle": "Booking direct with Portugal Active",
+    "refreshBeforePay": "Refresh the price above before paying.",
+    "secureNote": "Encrypted, secure payment",
+    "viewDetails": "View details",
+    "priceGuaranteed": "Price guaranteed until {{date}}, {{time}}",
+    "alreadyPaidTitle": "This booking is already confirmed",
+    "alreadyPaidBody": "The payment for this stay was completed. Check your email for the confirmation, or view your booking below.",
+    "viewBooking": "View my booking",
+    "stepCustomize": "Personalize",
+    "customizeTitle": "Personalize your stay",
+    "customizeSubtitle": "Add services and experiences, or continue as is. Nothing is pre-selected.",
+    "backToCustomize": "Back to personalization",
+    "continueWithExtras_one": "Continue, {{count}} extra added",
+    "continueWithExtras_other": "Continue, {{count}} extras added",
+    "continueWithoutExtras": "Continue without extras",
+    "mostChosen": "Most chosen",
+    "confirm24h": "Confirmed within 24h",
+    "onRequest": "On request, no charge now",
+    "onRequestShort": "on request",
+    "add": "Add",
+    "added": "Added",
+    "request": "Request",
+    "perDay": "per day",
+    "perPerson": "per person",
+    "perTrip": "per trip",
+    "perChange": "per change",
+    "perPersonSession": "per person · session",
+    "minPeople_one": "min. {{count}} person",
+    "minPeople_other": "min. {{count}} people",
+    "daysLabel": "Days",
+    "tripsLabel": "Trips",
+    "qtyLabel": "Quantity",
+    "peopleLabel": "People",
+    "sessionsLabel": "Sessions",
+    "extrasChargeNote": "Items with a fixed price are charged today, in a single payment. Services confirmed by the concierge are charged today and automatically refunded within 24 hours if they cannot be guaranteed. Requests under quotation carry no charge now.",
+    "extras": {
+      "transfer-porto": {
+        "name": "Porto airport transfer",
+        "desc": "Private car, per trip, up to 4 guests."
+      },
+      "transfer-porto-van": {
+        "name": "Porto airport transfer, van",
+        "desc": "Private van, per trip, up to 8 guests."
+      },
+      "daily-cleaning": {
+        "name": "Daily cleaning",
+        "desc": "Bathroom and kitchen refresh, beds made, common areas swept. Linen changed every 4 nights."
+      },
+      "linen-change": {
+        "name": "Linen and towel change",
+        "desc": "Complete change of bed linen and towels."
+      },
+      "private-chef": {
+        "name": "Private chef dinner",
+        "desc": "A chef cooks in your home, menu agreed with the concierge. The price of a fine restaurant in the region, with the privacy of the house."
+      },
+      "hamper-essentials": {
+        "name": "Welcome hamper, essentials",
+        "desc": "The basics waiting on arrival: breakfast, water, fruit."
+      },
+      "hamper-gourmet": {
+        "name": "Welcome hamper, regional gourmet",
+        "desc": "A curated selection of regional wines and delicacies. A week of groceries, chosen by someone who knows."
+      },
+      "grocery-list": {
+        "name": "Fridge stocked on arrival",
+        "desc": "Send us your list, the fridge is stocked before you arrive."
+      },
+      "massage": {
+        "name": "In home massage",
+        "desc": "60 minute session at the house, per person."
+      },
+      "babysitter": {
+        "name": "Babysitter",
+        "desc": "Trusted childcare at the house, by the hour."
+      },
+      "private-yoga": {
+        "name": "Private yoga session",
+        "desc": "A session at the house with a private instructor."
+      },
+      "personal-trainer": {
+        "name": "Personal trainer",
+        "desc": "A training session at the house or outdoors."
+      },
+      "exp-sup": {
+        "name": "Stand up paddle",
+        "desc": "On the region's calm waters, gear included."
+      },
+      "exp-hikedive": {
+        "name": "Hike, dive and dine",
+        "desc": "A day between the trail, the water and the table."
+      },
+      "exp-ebike": {
+        "name": "Electric bike tour",
+        "desc": "The countryside on an electric bike, with a guide."
+      },
+      "exp-horseback": {
+        "name": "Horseback riding",
+        "desc": "Trails on horseback through the region."
+      },
+      "exp-canyoning": {
+        "name": "Canyoning",
+        "desc": "Descents through rivers and waterfalls with a guide."
+      },
+      "exp-biketour": {
+        "name": "City and mountain bike tour",
+        "desc": "Two wheels, from the city to the hills."
+      },
+      "exp-buggy": {
+        "name": "Can Am buggy experience",
+        "desc": "Off road through the region's tracks."
+      },
+      "travel-crib": {
+        "name": "Travel crib",
+        "desc": "Set up before you arrive. Tell us how many so the home is ready."
+      },
+      "baby-chair": {
+        "name": "High chair",
+        "desc": "At the table on arrival. Tell us how many so the home is ready."
+      },
+      "pet-fee": {
+        "name": "Bringing a pet",
+        "desc": "This home welcomes pets. 50 € for the first, 100 € for the second. Maximum of two."
+      },
+      "pet-kit": {
+        "name": "Pet kit, bed and bowls",
+        "desc": "A comfortable bed and bowls waiting for your companion."
+      },
+      "pet-food": {
+        "name": "Pet food",
+        "desc": "Tell us the brand and diet, we stock it before you arrive."
+      },
+      "breakfast-box": {
+        "name": "Breakfast box",
+        "desc": "Fresh breakfast delivered every morning you choose. Hotel comfort, at home."
+      },
+      "transfer-lisbon": {
+        "name": "Lisbon airport transfer",
+        "desc": "Private car, per trip, up to 4 guests."
+      },
+      "transfer-lisbon-van": {
+        "name": "Lisbon airport transfer, van",
+        "desc": "Private van, per trip, up to 8 guests."
+      },
+      "deep-cleaning": {
+        "name": "Deep cleaning",
+        "desc": "Full top-to-bottom clean: bathrooms and kitchen deep-cleaned, all linen and towels changed, every surface and floor."
+      },
+      "grocery-setup": {
+        "name": "Grocery setup and delivery",
+        "desc": "Send us your list. We do the shopping and leave everything set up before you arrive. The supermarket bill is charged separately, at cost."
+      }
+    },
+    "emailTitle": "Where should we send your booking?",
+    "perStay": "per stay",
+    "flex": {
+      "title": "Flex, guaranteed rebooking",
+      "tagline": "Rebook whenever you need. The amount you paid is never lost.",
+      "perBooking": "one-time, per booking",
+      "benefit1": "Rebook up to {{days}} days before check-in, at no cost",
+      "benefit2": "The amount you paid stays protected, it is never lost",
+      "benefit3": "Credit valid for {{months}} months, at any home in the portfolio",
+      "copyNonRefundable": "You chose the best price. With Flex, the value is never lost: rebook up to {{days}} days before check-in.",
+      "copyFlexible": "Your rate allows free cancellation until {{date}}. After that date, Flex guarantees you can rebook up to {{days}} days before check-in without losing the value.",
+      "howItWorks": "How it works",
+      "add": "Add Flex",
+      "added": "Added",
+      "rule1": "Rebook at no cost up to {{days}} days before check-in, as many times as you need, with one active booking at a time.",
+      "rule2": "What is protected is the amount you paid, not the dates or the home. Current prices apply to the new dates.",
+      "rule3": "When you rebook, the amount paid becomes credit valid for {{months}} months, usable at any home in the portfolio.",
+      "rule4": "If the new stay costs more, you only pay the difference. If it costs less, the balance stays as credit.",
+      "rule5": "Extras move with your booking whenever the service allows; otherwise their value also converts to credit.",
+      "rule6": "Flex can only be purchased at checkout and is non-refundable.",
+      "honesty": "If you cancel within your rate's free cancellation window, we refund your money as per the policy. Flex never replaces that right, it adds protection beyond it.",
+      "percentNote": "10% of the nightly total, one-time"
+    },
+    "curatedFor": "Selected for {{property}}",
+    "todayTotal": "Total",
+    "conciergeRequests": "Concierge requests",
+    "conciergeRequestsNote": "Quoted individually by your concierge. No charge now.",
+    "included": {
+      "title": "Included in your stay",
+      "badge": "Included",
+      "concierge": "A dedicated concierge on WhatsApp",
+      "linen": "Hotel bed linen and towels",
+      "welcome": "Welcoming pack",
+      "bestRate": "Best rate guaranteed"
+    },
+    "chapter": {
+      "arrival": {
+        "title": "The arrival",
+        "line": "From the plane door to the door of the house."
+      },
+      "home": {
+        "title": "The home",
+        "line": "Hotel service, every day you wish."
+      },
+      "table": {
+        "title": "The table",
+        "line": "The region cooks for you.",
+        "line_minho": "The Minho cooks for you."
+      },
+      "wellness": {
+        "title": "Wellbeing",
+        "line": "Real rest."
+      },
+      "experiences": {
+        "title": "Experiences",
+        "line": "The region, with those who know it."
+      }
+    },
+    "reception": {
+      "prompt": "How would you like to arrive? Choose one to continue.",
+      "required": "Choose how you would like to arrive to continue.",
+      "arrivalWindow": "Arrival:",
+      "beforeLate": "Before {{hour}}h",
+      "afterLate": "After {{hour}}h",
+      "self": {
+        "name": "Self check-in",
+        "desc": "Autonomous entry with a code, instructions sent the day before, WhatsApp support any time."
+      },
+      "hosted": {
+        "name": "Hosted reception",
+        "desc": "A host welcomes you, tours the house and gets everything running."
+      },
+      "lateNote": "After {{hour}}h: {{price}}."
+    },
+    "seeAll": "See all services",
+    "seeAllExperiences": "See all experiences",
+    "chapterLabel": "Chapter {{num}}",
+    "skipCustomize": "Skip personalization",
+    "seeMore": "See more ({{count}})",
+    "remove": "Remove",
+    "conciergeQuote": "Quoted by your concierge",
+    "fromPrice": "from {{price}}",
+    "requested": "Requested",
+    "coupon": {
+      "have": "Have a promo code?",
+      "apply": "Apply",
+      "ph": "PROMO CODE",
+      "invalid": "Code not recognized. Check it and try again.",
+      "applied": "Code {{code}} applied",
+      "field": "Promo code"
+    },
+    "prev": "Previous",
+    "next": "Next",
+    "firstIncluded": "First included, extra at {{price}}",
+    "nextChapter": "Next: {{chapter}}",
+    "continueToPayment": "Continue to payment",
+    "scarcityNote": "Subject to availability at peak dates. Booking now secures it.",
+    "tailoredTitle": "Your stay, tailored",
+    "flexLastCall": "One click to protect this booking: Flex, guaranteed rebooking.",
+    "flexAddShort": "Add",
+    "proof": {
+      "transfer-porto": "Driven by our own team, never outsourced",
+      "hamper-gourmet": "Local producers chosen by our concierge",
+      "breakfast-box": "The private hotel concept, every morning"
+    },
+    "perPersonDay": "per person · day",
+    "allDays": "Every day",
+    "airport": "Airport",
+    "confirm24hNote": "If we cannot secure it, the line is refunded automatically.",
+    "noChargeNow": "no charge now",
+    "perPersonHour": "per child · hour",
+    "hoursLabel": "Hours",
+    "saveIssue": "Reconnecting, changes pending",
+    "stayDetails": {
+      "title": "Stay details"
+    },
+    "arrivalAirport": "Arrival airport",
+    "perCleaning": "per cleaning",
+    "perPetStay": "per pet · stay"
   }
 }

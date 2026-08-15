@@ -9,12 +9,18 @@
 import { useState, useMemo, useRef, type ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { loadStripe } from "@stripe/stripe-js";
-import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import {
+  Elements,
+  PaymentElement,
+  ExpressCheckoutElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
 import { trpc } from "@/lib/trpc";
+import { formatEur } from "@/lib/format";
+import { pushEcommerce } from "@/lib/datalayer";
 import { PayPalCheckoutButton } from "./PayPalCheckoutButton";
 import { KlarnaCheckoutButton } from "./KlarnaCheckoutButton";
-
-const EUR = "\u20AC";
 
 type PaymentMethodId = "card" | "googlepay" | "paypal" | "klarna";
 
@@ -134,8 +140,116 @@ interface CheckoutPaymentFormProps {
   propertyName: string;
   destination?: string;
   notes?: string;
-  onSuccess: (confirmationCode: string) => void;
+  /** Checkout 2.0: intent id carried through redirect flows so return pages can mark it paid */
+  intentId?: string;
+  /** Promo code applied to the quote — carried through for GA4 purchase attribution */
+  couponCode?: string;
+  /** Bloco 6: items GA4 dos serviços (extras, receção, Flex) — viajam com o
+   *  stash Klarna/PayPal para o purchase da return page incluir tudo */
+  purchaseItems?: Array<Record<string, unknown>>;
+  onSuccess: (confirmationCode: string, reservationId?: string) => void;
   onCancel: () => void;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Bloco 3 — Apple Pay / Google Pay via ExpressCheckoutElement.
+   SÓ no checkout v2 (intentId presente) e SEMPRE na conta de
+   PLATAFORMA: mesmo padrão do cartão v2 — createCardCharge lazy no
+   confirm (total canónico do servidor), confirmPayment inline,
+   finalizeCardCharge cria a reserva Guesty só com a estadia.
+   O legacy (sem intentId) nunca monta este bloco.
+   ════════════════════════════════════════════════════════════════ */
+function ExpressWalletInner({
+  intentId,
+  listingId,
+  total,
+  onSuccess,
+}: {
+  intentId: string;
+  listingId: string;
+  total: number;
+  onSuccess: (confirmationCode: string, reservationId?: string) => void;
+}) {
+  const { t } = useTranslation();
+  const stripe = useStripe();
+  const elements = useElements();
+  const createCardCharge = trpc.checkout.createCardCharge.useMutation();
+  const finalizeCardCharge = trpc.checkout.finalizeCardCharge.useMutation();
+  const [error, setError] = useState("");
+  const [available, setAvailable] = useState(false);
+  const processingRef = useRef(false);
+
+  const handleConfirm = async (event: { expressPaymentType?: string }) => {
+    if (!stripe || !elements || processingRef.current) return;
+    processingRef.current = true;
+    setError("");
+
+    pushEcommerce({
+      event: "add_payment_info",
+      payment_type: event.expressPaymentType || "wallet",
+      property_id: listingId,
+      ecommerce: { currency: "EUR", value: total },
+    });
+
+    try {
+      // Deferred flow: validar o elemento antes de criar o PI (regra Stripe)
+      const { error: submitError } = await elements.submit();
+      if (submitError) {
+        setError(submitError.message || t("payment.errors.cardValidationFailed"));
+        processingRef.current = false;
+        return;
+      }
+      // PI lazy com o total canónico do servidor — nunca o valor do cliente
+      const { clientSecret, paymentIntentId, alreadyPaid } = (await createCardCharge.mutateAsync({ intentId })) as any;
+      if (alreadyPaid) {
+        // pagamento já capturado numa tentativa anterior — só falta a reserva
+        const fin = await finalizeCardCharge.mutateAsync({ intentId, paymentIntentId });
+        onSuccess(fin.confirmationCode, fin.reservationId);
+        return;
+      }
+      const { error: confirmErr, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        clientSecret,
+        confirmParams: { return_url: window.location.href },
+        redirect: "if_required",
+      });
+      if (confirmErr) {
+        setError(confirmErr.message || t("payment.errors.cardValidationFailed"));
+        processingRef.current = false;
+        return;
+      }
+      const fin = await finalizeCardCharge.mutateAsync({
+        intentId,
+        paymentIntentId: paymentIntent?.id ?? paymentIntentId,
+      });
+      onSuccess(fin.confirmationCode, fin.reservationId);
+    } catch (e: any) {
+      // O pagamento pode ter sido capturado — o webhook card_v2 completa a
+      // reserva; não permitir novo clique às cegas
+      setError(e?.message || t("payment.errors.cardValidationFailed"));
+    }
+  };
+
+  return (
+    <div style={{ display: available ? "block" : "none" }} className="space-y-3">
+      <ExpressCheckoutElement
+        options={{
+          // Só wallets: cartão, PayPal e Klarna já têm caminho próprio em baixo
+          paymentMethods: { applePay: "auto", googlePay: "auto", link: "never", klarna: "never", paypal: "never", amazonPay: "never" } as any,
+          layout: { maxColumns: 2, maxRows: 1 } as any,
+        }}
+        onReady={({ availablePaymentMethods }) => setAvailable(!!availablePaymentMethods)}
+        onConfirm={handleConfirm}
+      />
+      {error && (
+        <div className="flex items-start gap-2 p-3 bg-[#F5F1EB] border border-[#DC2626] rounded-md">
+          <span className="text-[#DC2626] mt-0.5 shrink-0" aria-hidden>&#9888;</span>
+          <p className="text-[#DC2626] text-sm leading-snug">{error}</p>
+        </div>
+      )}
+      <div aria-hidden style={{ borderTop: "1px solid #E8E4DC" }} />
+    </div>
+  );
 }
 
 /** Policy acceptance object sent to Guesty BE API instant booking */
@@ -148,6 +262,7 @@ function buildPolicyPayload() {
 }
 
 function PaymentFormInner({
+  intentId,
   listingId,
   checkIn,
   checkOut,
@@ -167,9 +282,12 @@ function PaymentFormInner({
   const { t, i18n } = useTranslation();
   const stripe = useStripe();
   const elements = useElements();
+  const createCardCharge = trpc.checkout.createCardCharge.useMutation();
+  const finalizeCardCharge = trpc.checkout.finalizeCardCharge.useMutation();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const submittedRef = useRef(false);
+  const paymentInfoFiredRef = useRef(false);
   const createReservation = trpc.booking.createBEInstantReservation.useMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -178,6 +296,17 @@ function PaymentFormInner({
     if (!stripe || !elements || !guestName.trim() || !guestEmail.trim() || !guestPhone.trim()) {
       setError(t('payment.errors.requiredFields'));
       return;
+    }
+
+    // GA4: add_payment_info — guest submitted payment details (card flow)
+    if (!paymentInfoFiredRef.current) {
+      paymentInfoFiredRef.current = true;
+      pushEcommerce({
+        event: "add_payment_info",
+        payment_type: "card",
+        property_id: listingId,
+        ecommerce: { currency: "EUR", value: total },
+      });
     }
 
     submittedRef.current = true;
@@ -190,6 +319,42 @@ function PaymentFormInner({
       setError(submitError.message || t('payment.errors.cardValidationFailed'));
       setLoading(false);
       submittedRef.current = false; // Safe: no payment method created yet
+      return;
+    }
+
+    // ═══ Checkout 2.0 (2b): cobrança única na PLATAFORMA ═══
+    // PI criado lazy AGORA (total canónico do servidor); confirmPayment inline;
+    // finalize cria a reserva Guesty só com a estadia. Legacy segue em baixo.
+    if (intentId) {
+      try {
+        const { clientSecret, paymentIntentId } = await createCardCharge.mutateAsync({ intentId });
+        const { error: confirmErr, paymentIntent } = await stripe.confirmPayment({
+          elements,
+          clientSecret,
+          confirmParams: {
+            return_url: window.location.href,
+            // O Element esconde país/código postal (fields: never, herdado do
+            // legacy) — o Stripe EXIGE que venham no confirm (teste 12 ago)
+            payment_method_data: { billing_details: { address: { country: "PT", postal_code: "" } } },
+          },
+          redirect: "if_required",
+        });
+        if (confirmErr) {
+          setError(confirmErr.message || t("payment.errors.cardValidationFailed"));
+          setLoading(false);
+          submittedRef.current = false;
+          return;
+        }
+        const fin = await finalizeCardCharge.mutateAsync({
+          intentId,
+          paymentIntentId: paymentIntent?.id ?? paymentIntentId,
+        });
+        onSuccess(fin.confirmationCode, fin.reservationId);
+      } catch (e: any) {
+        // pagamento pode ter sido capturado — o webhook completa; não re-tentar às cegas
+        setError(e?.message || t("payment.errors.cardValidationFailed"));
+        setLoading(false);
+      }
       return;
     }
 
@@ -254,7 +419,7 @@ function PaymentFormInner({
           setTimeout(() => reject(new Error("Payment provider timeout")), 45000);
         }),
       ]);
-      onSuccess(response.confirmationCode);
+      onSuccess(response.confirmationCode, (response as any).reservationId || undefined);
     } catch (err: any) {
       const message = parseApiError(err?.message || t('payment.errors.defaultError'), t);
       const rawMsg = String(err?.message || "").toLowerCase();
@@ -297,6 +462,10 @@ function PaymentFormInner({
         <PaymentElement
           options={{
             layout: "tabs",
+            // Wallets DESLIGADOS aqui: em modo auto o PaymentElement cria abas internas
+            // (Cartao + Google Pay) que duplicam o nosso seletor externo (bug 12 jul).
+            // Apple/Google Pay entram pelo padrao certo (Express Checkout Element
+            // separado, acima do seletor) na Fase 2b.
             wallets: { googlePay: "never", applePay: "never" },
             fields: { billingDetails: { address: { country: "never", postalCode: "never" } } },
           }}
@@ -316,7 +485,7 @@ function PaymentFormInner({
           disabled={!stripe || loading || !guestName.trim() || !guestEmail.trim() || !guestPhone.trim()}
           className="btn-primary w-full disabled:opacity-50"
         >
-          {loading ? t('payment.processing') : t('payment.payButton', { currency: EUR, amount: total })}
+          {loading ? t('payment.processing') : t('payment.payButton', { amount: formatEur(total, i18n.language) })}
         </button>
         <button type="button" onClick={onCancel} className="btn-ghost">
           {t('payment.cancelButton')}
@@ -341,7 +510,8 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
 
   // Per-listing Stripe connected account is the ONLY source of truth.
   // Never fall back to stripeConfig.stripeAccountId (env var may be wrong/stale).
-  const stripeAccountId = paymentProvider?.providerAccountId || null;
+  // 2b: no checkout v2 o PI vive na conta de PLATAFORMA — nunca ligar a conectada
+  const stripeAccountId = props.intentId ? null : (paymentProvider?.providerAccountId || null);
 
   // Hooks must be called unconditionally before any early returns.
   const stripePromise = useMemo(
@@ -385,6 +555,23 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
     [props.total, props.currency, i18n.language, paymentMethod],
   );
 
+  // Bloco 3: opções do Elements para o ExpressCheckoutElement (wallets).
+  // Instância separada do PaymentElement: sem paymentMethodCreation manual e
+  // sem paymentMethodTypes — o ECE só mostra wallets elegíveis no dispositivo.
+  const expressElementsOptions = useMemo(
+    () => ({
+      mode: "payment" as const,
+      amount: Math.round(props.total * 100),
+      currency: (props.currency || "eur").toLowerCase(),
+      locale: i18n.language as any,
+      appearance: {
+        theme: "stripe" as const,
+        variables: { colorPrimary: "#1A1A18", borderRadius: "4px" },
+      },
+    }),
+    [props.total, props.currency, i18n.language],
+  );
+
   // CRITICAL: Wait for BOTH queries to settle before rendering Stripe Elements.
   // Without this, the component renders with the wrong Stripe account (from env var)
   // and then re-mounts when the per-listing account loads, breaking the PaymentElement.
@@ -392,7 +579,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
     return (
       <div className="flex items-center justify-center py-8 gap-2 text-sm text-black/40">
         <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-        Preparing secure payment...
+        {t('payment.preparingSecure')}
       </div>
     );
   }
@@ -407,6 +594,19 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
 
   return (
     <div className="space-y-4">
+      {/* Bloco 3: Apple Pay / Google Pay (Express Checkout, conta de plataforma)
+          — só no checkout v2; o legacy nunca monta este bloco */}
+      {props.intentId && (
+        <Elements stripe={stripePromise} options={expressElementsOptions}>
+          <ExpressWalletInner
+            intentId={props.intentId}
+            listingId={props.listingId}
+            total={props.total}
+            onSuccess={props.onSuccess}
+          />
+        </Elements>
+      )}
+
       {/* Payment method selector — 3 icon cards (Google Pay hidden) */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "9px" }}>
         {PAYMENT_METHODS.filter(({ id }) => id !== "googlepay").map(({ id, label, Logo }) => (
@@ -451,7 +651,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
                 textAlign: "center",
               }}
             >
-              {label}
+              {id === "card" ? t('payment.methodCard') : label}
             </span>
           </button>
         ))}
@@ -491,6 +691,9 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             propertyName={props.propertyName}
             destination={props.destination}
             ratePlanId={props.ratePlanId}
+            intentId={props.intentId}
+            couponCode={props.couponCode}
+            purchaseItems={props.purchaseItems}
             stripePublishableKey={stripeConfig.publishableKey}
             onError={(msg) => setPaypalError(msg)}
           />
@@ -528,6 +731,9 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             propertyName={props.propertyName}
             destination={props.destination}
             ratePlanId={props.ratePlanId}
+            intentId={props.intentId}
+            couponCode={props.couponCode}
+            purchaseItems={props.purchaseItems}
             stripePublishableKey={stripeConfig.publishableKey}
             onError={(msg) => setKlarnaError(msg)}
           />

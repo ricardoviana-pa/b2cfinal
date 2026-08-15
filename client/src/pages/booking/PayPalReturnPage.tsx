@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearch, useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
 import { loadStripe } from "@stripe/stripe-js";
 import { trpc } from "@/lib/trpc";
-import { pushEcommerce } from "@/lib/datalayer";
+import { pushPurchaseOnce } from "@/lib/datalayer";
 import { stashThankYou } from "@/lib/booking-api";
 import PaymentProcessing from "@/components/booking/PaymentProcessing";
 
@@ -16,14 +17,23 @@ function getPlatformStripe(publishableKey: string) {
   return platformStripePromise;
 }
 
+/** Translatable status: key + interpolation params + explicit failure flag (no string sniffing). */
+interface ReturnStatus {
+  key: string;
+  params?: Record<string, unknown>;
+  failed?: boolean;
+}
+
 export default function PayPalReturnPage() {
+  const { t } = useTranslation();
   const search = useSearch();
   const [, navigate] = useLocation();
-  const [status, setStatus] = useState("Verifying your payment…");
+  const [status, setStatus] = useState<ReturnStatus>({ key: "paymentReturn.verifying" });
   const processed = useRef(false);
 
   const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
   const confirmBooking = trpc.booking.confirmPayPalBooking.useMutation();
+  const updateIntent = trpc.checkout.updateIntent.useMutation();
 
   useEffect(() => {
     if (processed.current || !stripeConfig?.publishableKey) return;
@@ -33,13 +43,13 @@ export default function PayPalReturnPage() {
     const paymentIntentId = params.get("payment_intent");
 
     if (!clientSecret || !paymentIntentId) {
-      setStatus("Error: Missing payment information. Please contact support.");
+      setStatus({ key: "paymentReturn.missingInfo", failed: true });
       return;
     }
 
     const bookingDataRaw = sessionStorage.getItem("paypal_booking_data");
     if (!bookingDataRaw) {
-      setStatus(`Error: Booking data was lost. Please contact support with reference: ${paymentIntentId}`);
+      setStatus({ key: "paymentReturn.dataLost", params: { ref: paymentIntentId }, failed: true });
       return;
     }
 
@@ -47,7 +57,7 @@ export default function PayPalReturnPage() {
     try {
       bookingData = JSON.parse(bookingDataRaw);
     } catch {
-      setStatus("Error: Corrupted booking data. Please contact support.");
+      setStatus({ key: "paymentReturn.dataCorrupted", failed: true });
       return;
     }
 
@@ -55,19 +65,19 @@ export default function PayPalReturnPage() {
 
     getPlatformStripe(stripeConfig.publishableKey).then(async (stripe) => {
       if (!stripe) {
-        setStatus("Error: Payment processor unavailable.");
+        setStatus({ key: "paymentReturn.processorUnavailable", failed: true });
         return;
       }
 
       const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
 
       if (!paymentIntent) {
-        setStatus("Error: Could not verify payment status.");
+        setStatus({ key: "paymentReturn.verifyFailed", failed: true });
         return;
       }
 
       if (paymentIntent.status === "succeeded") {
-        setStatus("Payment confirmed! Creating your reservation…");
+        setStatus({ key: "paymentReturn.confirmedCreating" });
         try {
           const result = await confirmBooking.mutateAsync({
             paymentIntentId,
@@ -93,43 +103,61 @@ export default function PayPalReturnPage() {
             totalCents:
               bookingData.totalAmount != null ? Math.round(Number(bookingData.totalAmount) * 100) : null,
             currency: (bookingData.currency || "EUR").toUpperCase(),
+            couponCode: bookingData.couponCode || undefined,
           });
 
           sessionStorage.removeItem("paypal_booking_data");
 
-          pushEcommerce({
+          // Checkout 2.0: mark the intent paid (fire-and-forget — never blocks the funnel)
+          if (bookingData.intentId) {
+            updateIntent
+              .mutateAsync({
+                intentId: bookingData.intentId,
+                patch: {
+                  status: "paid",
+                  reservationId: result.reservationId || undefined,
+                  confirmationCode: result.confirmationCode || undefined,
+                },
+              })
+              .catch(() => {/* non-blocking */});
+          }
+
+          // Deduped by transaction_id — the thank-you page also reports this
+          // purchase, but only the first push wins (pushPurchaseOnce).
+          pushPurchaseOnce(result.confirmationCode, {
             event: "purchase",
             ecommerce: {
               transaction_id: result.confirmationCode,
               value: bookingData.totalAmount,
               currency: (bookingData.currency || "EUR").toUpperCase(),
+              ...(bookingData.couponCode ? { coupon: bookingData.couponCode } : {}),
               items: [{
                 item_id: `PROP-${bookingData.listingId}`,
                 item_name: bookingData.propertyName || "Portugal Active Home",
                 item_category: "villa",
                 price: bookingData.totalAmount,
                 quantity: 1,
-              }],
+                checkin_date: bookingData.checkIn,
+                checkout_date: bookingData.checkOut,
+                guests_adults: bookingData.numberOfAdults || undefined,
+              },
+              // Bloco 6: serviços comprados (extras, receção, Flex) — o
+              // purchase leva o carrinho completo em todos os métodos
+              ...(Array.isArray(bookingData.purchaseItems) ? bookingData.purchaseItems : [])],
             },
           });
 
           navigate(`/booking/thank-you/${result.reservationId}?method=paypal`);
         } catch (err: any) {
-          setStatus(
-            `Payment received but reservation failed. Our team has been notified. Reference: ${paymentIntentId}`
-          );
+          setStatus({ key: "paymentReturn.reservationFailed", params: { ref: paymentIntentId }, failed: true });
         }
       } else if (paymentIntent.status === "processing") {
-        setStatus("Payment is still processing. Please wait a moment and refresh.");
+        setStatus({ key: "paymentReturn.stillProcessing" });
       } else {
-        setStatus("Payment was not completed. Please try again or use a different payment method.");
+        setStatus({ key: "paymentReturn.notCompleted", failed: true });
       }
     });
   }, [stripeConfig?.publishableKey, search]);
 
-  // Terminal-failure states (not the transient "still processing" wait) show
-  // the error variant; everything else keeps the spinner + progress bar.
-  const failed = /^Error|not completed|reservation failed|processor unavailable|Could not verify/i.test(status);
-
-  return <PaymentProcessing status={status} failed={failed} />;
+  return <PaymentProcessing status={t(status.key, status.params as any) as string} failed={!!status.failed} />;
 }

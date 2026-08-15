@@ -1,4 +1,4 @@
-import { eq, desc, asc, and, like, sql } from "drizzle-orm";
+import { eq, desc, asc, and, like, sql, inArray, isNotNull, gt, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   InsertUser, users,
@@ -18,6 +18,7 @@ import {
   referrals, InsertReferral,
   customerTrips, InsertCustomerTrip,
   propertyReferrals, InsertPropertyReferral,
+  bookingIntents, InsertBookingIntent, BookingIntent,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -758,4 +759,137 @@ export async function uploadFile(fileBuffer: Buffer, fileName: string, contentTy
   const randomSuffix = Math.random().toString(36).substring(2, 8);
   const key = `uploads/${fileName}-${randomSuffix}`;
   return storagePut(key, fileBuffer, contentType);
+}
+
+/* ================================================================
+   BOOKING INTENTS — Checkout 2.0 (Fase 1)
+   All helpers fail SOFT (return null) when the DB is unavailable so
+   the client can fall back to the legacy in-widget flow.
+   ================================================================ */
+export async function createBookingIntent(data: InsertBookingIntent): Promise<string | null> {
+  const db = await getDb();
+  if (!db) { console.warn("[Database] Cannot create booking intent: database not available"); return null; }
+  try {
+    await db.insert(bookingIntents).values(data);
+    return data.id;
+  } catch (error) {
+    console.error("[Database] createBookingIntent failed:", error);
+    return null;
+  }
+}
+
+export async function getBookingIntent(id: string): Promise<BookingIntent | null> {
+  const db = await getDb();
+  if (!db) return null;
+  try {
+    const rows = await db.select().from(bookingIntents).where(eq(bookingIntents.id, id)).limit(1);
+    return rows[0] ?? null;
+  } catch (error) {
+    console.error("[Database] getBookingIntent failed:", error);
+    return null;
+  }
+}
+
+export async function updateBookingIntent(
+  id: string,
+  data: Partial<InsertBookingIntent>,
+): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    await db.update(bookingIntents).set(data).where(eq(bookingIntents.id, id));
+    return true;
+  } catch (error) {
+    console.error("[Database] updateBookingIntent failed:", error);
+    return false;
+  }
+}
+
+/* ================================================================
+   CHECKOUT RECOVERY — Fase 4 (spec §12/§16)
+   ================================================================ */
+
+/**
+ * Abandoned intents eligible for a recovery email: guest left an email,
+ * never paid, the resume link still works (expiresAt in the future) and
+ * fewer than 2 recovery emails were sent. Sweep-friendly: capped, oldest
+ * first, only intents past the 1h mark.
+ */
+export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent[]> {
+  const db = await getDb();
+  if (!db) return [];
+  try {
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    return await db
+      .select()
+      .from(bookingIntents)
+      .where(
+        and(
+          isNotNull(bookingIntents.email),
+          inArray(bookingIntents.status, ["draft", "contact_captured", "payment_pending"]),
+          gt(bookingIntents.expiresAt, new Date()),
+          lt(bookingIntents.recoveryStage, 2),
+          lt(bookingIntents.createdAt, oneHourAgo),
+          // Bloco 2: quem carregou em "Não quero receber estes lembretes"
+          // sai da automação para sempre
+          eq(bookingIntents.recoveryOptout, false),
+        ),
+      )
+      .orderBy(asc(bookingIntents.createdAt))
+      .limit(limit);
+  } catch (error) {
+    console.error("[Database] listRecoveryCandidates failed:", error);
+    return [];
+  }
+}
+
+/**
+ * Bloco 2: marca o opt-out dos lembretes de recuperação. Idempotente — marcar
+ * duas vezes é um no-op. Devolve false só quando a DB está indisponível ou o
+ * intent não existe.
+ */
+export async function markRecoveryOptout(id: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    const res: any = await db
+      .update(bookingIntents)
+      .set({ recoveryOptout: true })
+      .where(eq(bookingIntents.id, id));
+    const affected = Array.isArray(res) ? res[0]?.affectedRows : res?.affectedRows;
+    if ((affected ?? 0) > 0) return true;
+    // affectedRows 0 pode ser "já estava true" (MySQL não conta updates sem
+    // alteração) — confirma que o intent existe antes de devolver false
+    const row = await db.select({ id: bookingIntents.id }).from(bookingIntents).where(eq(bookingIntents.id, id)).limit(1);
+    return row.length > 0;
+  } catch (error) {
+    console.error("[Database] markRecoveryOptout failed:", error);
+    return false;
+  }
+}
+
+/**
+ * Atomically claim a recovery stage before sending: the UPDATE only wins if
+ * the row is still at `fromStage`, so a concurrent sweep (or second server
+ * instance) can never double-send. Claim-then-send: a failed send loses one
+ * email, never repeats one.
+ */
+export async function claimRecoveryStage(
+  id: string,
+  fromStage: number,
+  toStage: number,
+): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    const res: any = await db
+      .update(bookingIntents)
+      .set({ recoveryStage: toStage })
+      .where(and(eq(bookingIntents.id, id), eq(bookingIntents.recoveryStage, fromStage)));
+    const affected = Array.isArray(res) ? res[0]?.affectedRows : res?.affectedRows;
+    return (affected ?? 0) > 0;
+  } catch (error) {
+    console.error("[Database] claimRecoveryStage failed:", error);
+    return false;
+  }
 }

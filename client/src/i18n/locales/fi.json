@@ -129,7 +129,7 @@
     "estTotal": "arvio yhteensä",
     "indicativeCatalogue": "Indikatiivinen hinnastosta. Vahvista lopullinen hinta varauksessa.",
     "indicativeUnavailable": "Indikatiivinen (hinnasto). Live-hinta ei saatavilla — vahvista varauksessa.",
-    "cleaningFee": "Loppusiivous",
+    "cleaningFee": "Palvelumaksu",
     "serviceFee": "Palvelumaksu",
     "touristTax": "Matkailuvero",
     "vat": "ALV",
@@ -220,7 +220,9 @@
     "minStayNotice_one": "Vähimmäisoleskelu näille päiville on {{count}} yö",
     "minStayNotice_other": "Vähimmäisoleskelu näille päiville on {{count}} yötä",
     "select": "Valitse",
-    "cancellationPerPolicy": "Peruutus majoituksen ehtojen mukaan"
+    "cancellationPerPolicy": "Peruutus majoituksen ehtojen mukaan",
+    "decreaseGuests": "Vähennä vieraita",
+    "increaseGuests": "Lisää vieraita"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Hinta pyynnöstä",
@@ -272,7 +274,49 @@
     "requestWithoutPayment": "Tai pyydä ilman maksua",
     "belowMinNightsWarning_one": "Valitse vähintään {{count}} yö jatkaaksesi",
     "belowMinNightsWarning_other": "Valitse vähintään {{count}} yötä jatkaaksesi",
-    "pricingUnavailableMessage": "Emme voineet vahvistaa hintaa näille päiville. Ota yhteyttä Concierge-palveluun."
+    "pricingUnavailableMessage": "Emme voineet vahvistaa hintaa näille päiville. Ota yhteyttä Concierge-palveluun.",
+    "recommended": "Suositeltu",
+    "nonRefundableWarning": "Ei hyvitystä peruutuksen tai muutoksen yhteydessä",
+    "save": "Säästä",
+    "quoteExpired": "Tarjous on vanhentunut. Yritä uudelleen.",
+    "quoteRefreshFailed": "Hintaa ei voitu päivittää. Ota yhteyttä conciergeemme.",
+    "termsAcceptLabel": "Hyväksyn",
+    "termsLink": "käyttöehdot",
+    "termsAnd": "ja",
+    "invalidEmail": "Anna kelvollinen sähköpostiosoite",
+    "invalidPhone": "Anna kelvollinen puhelinnumero",
+    "bookingSummary": "Varauksen yhteenveto",
+    "proceedToPayment": "Jatka maksamaan",
+    "priceSummary": "Hinnan yhteenveto",
+    "bookedBy": "Varaaja",
+    "servicesRequested": "Pyydetyt palvelut",
+    "servicesConfirmNote": "Conciergemme ottaa yhteyttä 2 tunnin kuluessa vahvistaakseen tiedot ja hinnat.",
+    "chatConcierge": "Keskustele conciergesi kanssa",
+    "conciergeReachOut": "Oma conciergesi ottaa yhteyttä 24 tunnin kuluessa auttaakseen majoituksesi suunnittelussa.",
+    "confirmationEmailSent": "Vahvistussähköposti lähetetty osoitteeseen",
+    "contactConcierge": "Ota yhteyttä conciergeen",
+    "selectDate": "Valitse",
+    "loadingCalendar": "Ladataan saatavuutta...",
+    "fromPrice": "alkaen",
+    "showAllServices": "Näytä kaikki palvelut",
+    "servicesNote": "Conciergemme vahvistaa palvelut erikseen varauksen jälkeen. Ei veloitusta nyt.",
+    "checkInToday": "Sisäänkirjautuminen on tänään",
+    "checkInTomorrow": "Sisäänkirjautuminen on huomenna",
+    "checkInSoon": "Sisäänkirjautuminen on 2 päivän päästä",
+    "advanceNoticeNote": "Jotkin talot vaativat ennakkovarausajan. Välitön vahvistus ei ehkä ole mahdollinen.",
+    "nightsLabel": "yötä",
+    "servicesSelected_one": "{{count}} palvelu pyydetty — vahvistetaan varauksen jälkeen",
+    "servicesSelected_other": "{{count}} palvelua pyydetty — vahvistetaan varauksen jälkeen",
+    "phonePh": "Puhelinnumero *",
+    "ratePlanPolicyAria": "avaa peruutusehdot uuteen välilehteen",
+    "waSuccessMessage": "Hei! Vahvistin juuri varaukseni kohteeseen {{property}}.\nVahvistus: {{code}}\nPäivät: {{checkIn}} → {{checkOut}}\nVieraat: {{guests}}\nOdotan innolla!",
+    "waPricingHelp": "Hei, haluaisin varata kohteen {{property}}.\nPäivät: {{checkIn}} → {{checkOut}}\nYöt: {{nights}}\nVieraat: {{guests}}\nVoisitteko auttaa vahvistamaan saatavuuden ja hinnan?",
+    "clearDates": "Tyhjennä",
+    "availableLabel": "Vapaa",
+    "unavailableLabel": "Varattu",
+    "confirmDates": "Vahvista",
+    "tariffInCheckout": "Kaksi hintaa saatavilla. Valitse omasi seuraavassa vaiheessa.",
+    "reserve": "VARAA"
   },
   "common": {
     "loading": "Ladataan…",
@@ -415,7 +459,7 @@
     "nights_other": "{{count}} yötä",
     "viewDetails": "Näytä hintatiedot",
     "accommodation": "Majoitus",
-    "cleaning": "Loppusiivous",
+    "cleaning": "Talon valmistelupalvelu",
     "serviceFee": "Palvelumaksu",
     "touristTax": "Matkailuvero",
     "vat": "ALV",
@@ -585,7 +629,10 @@
     "checkInInstructions": "Sisäänkirjausohjeet",
     "checkInDefault": "Tiimimme jakaa kaikki ohjeet sinulle sähköpostitse.",
     "addToCalendar": "Lisää kalenteriin",
-    "whatsappConcierge": "WhatsApp concierge"
+    "whatsappConcierge": "WhatsApp concierge",
+    "pageTitle": "Varaus vahvistettu | Kiitos",
+    "pageDescription": "Portugal Active -varauksesi on vahvistettu. Tarkista sähköpostisi ja valmistaudu majoitukseen.",
+    "whatsappPrefill": "Hei, tarvitsen apua varaukseni kanssa"
   },
   "payment": {
     "failed": "Maksu epäonnistui. Yritä uudelleen.",
@@ -608,10 +655,18 @@
       "requiredFields": "Täytä kaikki pakolliset kentät.",
       "cardNotReady": "Korttielementti ei ole valmis. Päivitä sivu ja yritä uudelleen.",
       "cardValidationFailed": "Kortin vahvistus epäonnistui. Tarkista kortin tiedot.",
-      "couldNotCreatePaymentMethod": "Maksutapaa ei voitu luoda. Yritä uudelleen."
+      "couldNotCreatePaymentMethod": "Maksutapaa ei voitu luoda. Yritä uudelleen.",
+      "contactSupport": "Jos maksu veloitettiin, ota yhteyttä osoitteeseen reservations@portugalactive.com tai WhatsAppilla +351 927 161 771. Älä yritä maksaa uudelleen."
     },
-    "payButton": "Maksa {{currency}} {{amount}}",
-    "cancelButton": "Peruuta"
+    "payButton": "Maksa {{amount}}",
+    "cancelButton": "Peruuta",
+    "methodCard": "Kortti",
+    "preparingSecure": "Valmistellaan turvallista maksua…",
+    "payWithKlarna": "Maksa {{amount}} Klarnalla",
+    "payWithPaypal": "Maksa {{amount}} PayPalilla",
+    "preparingKlarna": "Valmistellaan Klarna-maksua…",
+    "preparingPaypal": "Valmistellaan PayPal-maksua…",
+    "redirecting": "Uudelleenohjataan…"
   },
   "contact": {
     "heroAlt": "Ota yhteyttä Portugal Activeen",
@@ -1145,7 +1200,16 @@
     "strictTitle": "Tiukka Peruutus",
     "strictBody": "50 %:n hyvitys, jos peruutus tehdään vähintään 60 päivää ennen sisäänkirjautumista. Ei hyvitystä peruutuksille, jotka tehdään alle 60 päivää ennen sisäänkirjautumisesta. Ei hyvityskelpoinen sisäänkirjautumisen jälkeen.",
     "nonRefundableTitle": "Ei Hyvityskelpoinen",
-    "nonRefundableBody": "Tämä hinta tarjotaan alennettuun hintaan vastineena ei-palautusmaksukäytännöstä. Varauksen jälkeen hyvitystä ei myönnetä peruutuspäivämäärästä riippumatta. Suosittelemme vahvasti matkavakuutuksen ostamista tätä hintaa valittaessa."
+    "nonRefundableBody": "Tämä hinta tarjotaan alennettuun hintaan vastineena ei-palautusmaksukäytännöstä. Varauksen jälkeen hyvitystä ei myönnetä peruutuspäivämäärästä riippumatta. Suosittelemme vahvasti matkavakuutuksen ostamista tätä hintaa valittaessa.",
+    "shortFree": "Maksuton peruutus {{date}} asti",
+    "shortFreeNoDate_one": "Maksuton peruutus {{count}} päivä ennen sisäänkirjautumista",
+    "shortFreeNoDate_other": "Maksuton peruutus {{count}} päivää ennen sisäänkirjautumista",
+    "shortHalf": "50 %:n hyvitys {{date}} asti: sen jälkeen ei hyvitystä",
+    "shortHalfNoDate_one": "50 %:n hyvitys {{count}} päivä ennen sisäänkirjautumista: sen jälkeen ei hyvitystä",
+    "shortHalfNoDate_other": "50 %:n hyvitys {{count}} päivää ennen sisäänkirjautumista: sen jälkeen ei hyvitystä",
+    "shortNonRefundable": "Hinta ei ole hyvitettävissä: peruutuksesta ei makseta hyvitystä",
+    "shortWindowPassed": "Näille päiville varaus ei ole hyvitettävissä peruutuksen yhteydessä",
+    "shortGeneric": "Peruutusehdot ovat voimassa: katso peruutuskäytäntömme"
   },
   "whatsapp": {
     "title": "Ota yhteyttä WhatsAppissa",
@@ -1220,7 +1284,7 @@
     "bookedBy": "Varaaja",
     "priceSummary": "Hintayhteenveto",
     "nights": "{{count}} yötä",
-    "cleaning": "Loppusiivous",
+    "cleaning": "Talon valmistelupalvelu",
     "totalPaid": "Maksettu yhteensä",
     "paidPaypal": "Maksettu kokonaan PayPalilla",
     "paidKlarna": "Maksetaan Klarnalla",
@@ -1230,7 +1294,14 @@
     "trustSecure": "Turvallinen varaus",
     "trustRate": "Paras hinta taattu",
     "trustCancel": "Joustava peruutus",
-    "trustConcierge": "Concierge sisältyy"
+    "trustConcierge": "Concierge sisältyy",
+    "pageTitle": "Varaus vahvistettu | Kiitos",
+    "pageDescription": "Portugal Active -varauksesi on vahvistettu. Tarkista sähköpostisi ja valmistaudu majoitukseen.",
+    "mailSubject": "Varaus {{code}} — Tietopyyntö",
+    "mailBody": "Hei,\n\nminulla on kysymys varauksestani {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
+    "trustFees": "Ei varausmaksuja",
+    "paidCard": "Maksettu kokonaan kortilla",
+    "cardSub": "Turvallinen korttimaksu"
   },
   "bedType": {
     "KingBed": "King-sänky",
@@ -1251,5 +1322,333 @@
     "bunkBed": "Kerrossänky",
     "airMattress": "Ilmapatja",
     "bed": "Sänky"
+  },
+  "paymentReturn": {
+    "verifying": "Vahvistetaan maksuasi…",
+    "missingInfo": "Maksutietoja ei löytynyt. Ota yhteyttä tukeen.",
+    "dataLost": "Varaustiedot katosivat uudelleenohjauksen aikana. Ota yhteyttä tukeen viitteellä {{ref}}.",
+    "dataCorrupted": "Varaustietoja ei voitu lukea. Ota yhteyttä tukeen.",
+    "processorUnavailable": "Maksupalvelu ei ole käytettävissä. Ota yhteyttä tukeen.",
+    "verifyFailed": "Maksun tilaa ei voitu vahvistaa. Ota yhteyttä tukeen.",
+    "confirmedCreating": "Maksu vahvistettu! Luodaan varaustasi…",
+    "reservationFailed": "Maksusi vastaanotettiin, mutta varausta ei voitu luoda automaattisesti. Tiimimme on saanut ilmoituksen ja vahvistaa varauksesi pian. Viite: {{ref}}",
+    "stillProcessing": "Maksuasi käsitellään vielä. Odota hetki ja päivitä tämä sivu.",
+    "notCompleted": "Maksua ei suoritettu loppuun. Yritä uudelleen tai valitse toinen maksutapa.",
+    "processingTitle": "Varaustasi käsitellään",
+    "failedTitle": "Maksua ei suoritettu",
+    "secureNote": "Turvallinen maksu — älä sulje tätä ikkunaa"
+  },
+  "trust": {
+    "secureBooking": "Turvallinen varaus",
+    "bestRate": "Paras hinta taattu",
+    "noBookingFees": "Ei varausmaksuja",
+    "conciergeIncluded": "Concierge sisältyy"
+  },
+  "bookingStatus": {
+    "confirmed": "Vahvistettu",
+    "reserved": "Varattu",
+    "pending": "Odottaa vahvistusta",
+    "canceled": "Peruutettu",
+    "declined": "Hylätty",
+    "expired": "Vanhentunut",
+    "inquiry": "Tiedustelu",
+    "processing": "Käsittelyssä"
+  },
+  "checkout": {
+    "pageTitle": "Kassa",
+    "stepStay": "Majoituksesi",
+    "stepPay": "Maksu",
+    "stepsAria": "Kassavaiheet",
+    "autosaved": "Tallennetaan automaattisesti",
+    "closeAria": "Takaisin taloon",
+    "loading": "Valmistellaan kassaa…",
+    "notFoundTitle": "Kassaa ei löytynyt",
+    "notFoundBody": "Tämä linkki on vanhentunut tai virheellinen. Päivämääräsi eivät ole kadonneet, aloita uudelleen talon sivulta.",
+    "quoteExpiredBanner": "Tämä hinta on vanhentunut. Päivitä nähdäksesi päivien nykyisen hinnan, tietosi säilyvät.",
+    "refreshPrice": "Päivitä hinta",
+    "datesUnavailable": "Emme voineet vahvistaa hintaa näille päiville, ne eivät ehkä ole enää saatavilla. Yritä uudelleen, valitse uudet päivät alta tai ota yhteyttä conciergeemme.",
+    "stayTitle": "Majoituksesi",
+    "staySubtitle": "Vahvista päivät ja valitse hintasi.",
+    "edit": "Muokkaa",
+    "doneEditing": "Valmis",
+    "emailLabel": "Sähköpostisi",
+    "emailPh": "nimi@email.com",
+    "emailSupport": "Pidämme hintasi voimassa 24 tuntia ja lähetämme tarjouksen. Päivät varmistuvat vasta maksun jälkeen. Ei roskapostia.",
+    "backToStay": "Takaisin majoitukseen",
+    "payTitle": "Maksu",
+    "paySubtitle": "Tietosi ja sitten turvallinen maksu.",
+    "nifPh": "Veronumero tai ALV-tunnus, valinnainen, laskuasi varten",
+    "directTitle": "Varaa suoraan Portugal Activelta",
+    "refreshBeforePay": "Päivitä yllä oleva hinta ennen maksamista.",
+    "secureNote": "Salattu, turvallinen maksu",
+    "viewDetails": "Näytä tiedot",
+    "priceGuaranteed": "Hinta taattu {{date}} klo {{time}} asti",
+    "alreadyPaidTitle": "Tämä varaus on jo vahvistettu",
+    "alreadyPaidBody": "Tämän majoituksen maksu on suoritettu. Tarkista sähköpostisi tai katso varauksesi alta.",
+    "viewBooking": "Näytä varaukseni",
+    "stepCustomize": "Mukauta",
+    "customizeTitle": "Mukauta majoitustasi",
+    "customizeSubtitle": "Lisää palveluita ja elämyksiä, tai jatka ilman lisäpalveluita. Mitään ei ole esivalittu.",
+    "backToCustomize": "Takaisin mukauttamiseen",
+    "continueWithExtras_one": "Jatka, {{count}} lisäpalvelu lisätty",
+    "continueWithExtras_other": "Jatka, {{count}} lisäpalvelua lisätty",
+    "continueWithoutExtras": "Jatka ilman lisäpalveluita",
+    "mostChosen": "Suosituin",
+    "confirm24h": "Vahvistus 24 tunnissa",
+    "onRequest": "Pyynnöstä, ei veloitusta nyt",
+    "onRequestShort": "pyynnöstä",
+    "add": "Lisää",
+    "added": "Lisätty",
+    "request": "Pyydä",
+    "perDay": "per päivä",
+    "perPerson": "per henkilö",
+    "perTrip": "per matka",
+    "perChange": "per vaihto",
+    "perPersonSession": "per henkilö · kerta",
+    "minPeople_one": "väh. {{count}} henkilö",
+    "minPeople_other": "väh. {{count}} henkilöä",
+    "daysLabel": "Päivät",
+    "tripsLabel": "Matkat",
+    "qtyLabel": "Määrä",
+    "peopleLabel": "Henkilöt",
+    "sessionsLabel": "Kerrat",
+    "extrasChargeNote": "Kiinteähintaiset palvelut veloitetaan tänään yhdellä maksulla. Conciergen vahvistamat palvelut veloitetaan tänään ja hyvitetään automaattisesti 24 tunnin kuluessa, jos niitä ei voida taata. Tarjouspyynnöistä ei veloiteta nyt mitään.",
+    "extras": {
+      "transfer-porto": {
+        "name": "Lentokenttäkuljetus Porto",
+        "desc": "Yksityisauto, per matka, enintään 4 vierasta."
+      },
+      "transfer-porto-van": {
+        "name": "Lentokenttäkuljetus Porto, tila-auto",
+        "desc": "Yksityinen tila-auto, per matka, enintään 8 vierasta."
+      },
+      "daily-cleaning": {
+        "name": "Päivittäinen siivous",
+        "desc": "Kylpyhuoneiden ja keittiön siistiminen, vuoteet sijattuina, yleiset tilat lakaistuina. Liinavaatteet vaihdetaan 4 yön välein."
+      },
+      "linen-change": {
+        "name": "Liinavaatteiden ja pyyhkeiden vaihto",
+        "desc": "Täydellinen vuodevaatteiden ja pyyhkeiden vaihto."
+      },
+      "private-chef": {
+        "name": "Yksityiskokki illalliselle",
+        "desc": "Kokki valmistaa aterian kotonasi, menu sovitaan conciergen kanssa. Alueen hyvän ravintolan hinta, talon yksityisyydellä."
+      },
+      "hamper-essentials": {
+        "name": "Tervetuliaiskori, perus",
+        "desc": "Perusasiat saapuessa: aamiainen, vesi, hedelmät."
+      },
+      "hamper-gourmet": {
+        "name": "Tervetuliaiskori, alueen gourmet",
+        "desc": "Valikoima alueen viinejä ja herkkuja. Viikon ruokaostokset, tuntijan valitsemina."
+      },
+      "grocery-list": {
+        "name": "Jääkaappi täytettynä saapuessa",
+        "desc": "Lähetä listasi, jääkaappi on täytetty ennen saapumistasi."
+      },
+      "massage": {
+        "name": "Hieronta talossa",
+        "desc": "60 minuutin hoito talossa, per henkilö."
+      },
+      "babysitter": {
+        "name": "Lastenhoitaja",
+        "desc": "Luotettava lastenhoito talossa, tunneittain."
+      },
+      "private-yoga": {
+        "name": "Yksityinen joogatunti",
+        "desc": "Tunti talossa yksityisen ohjaajan kanssa."
+      },
+      "personal-trainer": {
+        "name": "Personal trainer",
+        "desc": "Harjoitus talossa tai ulkona."
+      },
+      "exp-sup": {
+        "name": "Stand up paddle",
+        "desc": "Alueen tyynillä vesillä, välineet mukana."
+      },
+      "exp-hikedive": {
+        "name": "Vaellus, sukellus ja pöytä",
+        "desc": "Päivä polun, veden ja pöydän välillä."
+      },
+      "exp-ebike": {
+        "name": "Sähköpyöräretki",
+        "desc": "Maaseutu sähköpyörällä, oppaan kanssa."
+      },
+      "exp-horseback": {
+        "name": "Ratsastus",
+        "desc": "Polkuja hevosella alueen halki."
+      },
+      "exp-canyoning": {
+        "name": "Koskenlasku",
+        "desc": "Laskeutumisia jokia ja vesiputouksia pitkin oppaan kanssa."
+      },
+      "exp-biketour": {
+        "name": "Kaupunki ja vuoristopyöräretki",
+        "desc": "Kaksi pyörää, kaupungista kukkuloille."
+      },
+      "exp-buggy": {
+        "name": "Can Am buggy-elämys",
+        "desc": "Maastossa alueen reittejä pitkin."
+      },
+      "travel-crib": {
+        "name": "Matkasänky",
+        "desc": "Koottu ennen saapumista. Kerro määrä, jotta talo on valmis."
+      },
+      "baby-chair": {
+        "name": "Syöttötuoli",
+        "desc": "Pöydässä saapuessa. Kerro määrä, jotta talo on valmis."
+      },
+      "pet-fee": {
+        "name": "Lemmikki mukaan",
+        "desc": "Tämä talo toivottaa lemmikit tervetulleiksi. 50 € ensimmäisestä, 100 € toisesta. Enintään kaksi."
+      },
+      "pet-kit": {
+        "name": "Lemmikkisetti, peti ja kupit",
+        "desc": "Mukava peti ja kupit odottavat kumppaniasi."
+      },
+      "pet-food": {
+        "name": "Lemmikin ruoka",
+        "desc": "Kerro merkki ja ruokavalio, hankimme kaiken ennen saapumistasi."
+      },
+      "breakfast-box": {
+        "name": "Breakfast box",
+        "desc": "Tuore aamiainen toimitettuna valitsemasi aamuina. Hotellin mukavuus, kotona."
+      },
+      "transfer-lisbon": {
+        "name": "Lentokenttäkuljetus Lissabon",
+        "desc": "Yksityisauto, per matka, enintään 4 vierasta."
+      },
+      "transfer-lisbon-van": {
+        "name": "Lentokenttäkuljetus Lissabon, tila-auto",
+        "desc": "Yksityinen tila-auto, per matka, enintään 8 vierasta."
+      },
+      "deep-cleaning": {
+        "name": "Perusteellinen siivous",
+        "desc": "Täydellinen siivous ylhäältä alas: kylpyhuoneet ja keittiö perusteellisesti, kaikki liinavaatteet ja pyyhkeet vaihdettuina, kaikki pinnat ja lattiat."
+      },
+      "grocery-setup": {
+        "name": "Ostokset tehtynä ja toimitettuna",
+        "desc": "Lähetä meille listasi. Teemme ostokset ja järjestämme kaiken valmiiksi ennen saapumistasi. Kaupan lasku veloitetaan erikseen, omakustannehintaan."
+      }
+    },
+    "emailTitle": "Minne lähetämme varauksesi?",
+    "perStay": "per majoitus",
+    "flex": {
+      "title": "Flex, taattu uudelleenvaraus",
+      "tagline": "Siirrä varaustasi milloin tahansa. Maksettu summa ei koskaan mene hukkaan.",
+      "perBooking": "kertamaksu, per varaus",
+      "benefit1": "Siirrä varausta {{days}} päivään asti ennen sisäänkirjautumista, maksutta",
+      "benefit2": "Maksettu summa pysyy suojattuna, se ei koskaan mene hukkaan",
+      "benefit3": "Hyvitys voimassa {{months}} kuukautta, missä tahansa portfolion talossa",
+      "copyNonRefundable": "Valitsit parhaan hinnan. Flexin kanssa summa ei koskaan mene hukkaan: siirrä varausta {{days}} päivään asti ennen sisäänkirjautumista.",
+      "copyFlexible": "Hintasi sallii maksuttoman peruutuksen {{date}} asti. Sen jälkeen Flex takaa, että voit siirtää varausta {{days}} päivään asti ennen sisäänkirjautumista menettämättä summaa.",
+      "howItWorks": "Näin se toimii",
+      "add": "Lisää Flex",
+      "added": "Lisätty",
+      "rule1": "Siirrä varausta maksutta {{days}} päivään asti ennen sisäänkirjautumista, niin monta kertaa kuin tarvitset, yksi aktiivinen varaus kerrallaan.",
+      "rule2": "Suojattuna on maksettu summa, ei päivät eikä talo. Uusiin päiviin sovelletaan voimassa olevia hintoja.",
+      "rule3": "Kun siirrät varausta, maksettu summa muuttuu hyvitykseksi, joka on voimassa {{months}} kuukautta ja käytettävissä missä tahansa portfolion talossa.",
+      "rule4": "Jos uusi majoitus on kalliimpi, maksat vain erotuksen. Jos halvempi, loppusumma säilyy hyvityksenä.",
+      "rule5": "Lisäpalvelut siirtyvät mukana aina kun palvelu sen sallii; muuten niidenkin summa muuttuu hyvitykseksi.",
+      "rule6": "Flex on ostettavissa vain kassalla, eikä sitä hyvitetä.",
+      "honesty": "Jos peruutat hintasi maksuttoman peruutusikkunan sisällä, palautamme rahasi käytännön mukaisesti. Flex ei koskaan korvaa tätä oikeutta, se lisää suojaa sen yli.",
+      "percentNote": "10 % öiden kokonaishinnasta, kertamaksu"
+    },
+    "curatedFor": "Valittu kohteelle {{property}}",
+    "todayTotal": "Yhteensä",
+    "conciergeRequests": "Concierge-pyynnöt",
+    "conciergeRequestsNote": "Conciergesi hinnoittelee erikseen. Ei veloitusta nyt.",
+    "included": {
+      "title": "Sisältyy majoitukseesi",
+      "badge": "Sisältyy",
+      "concierge": "Oma concierge WhatsAppissa",
+      "linen": "Hotellin liinavaatteet ja pyyhkeet",
+      "welcome": "Welcoming pack",
+      "bestRate": "Paras hinta taattu"
+    },
+    "chapter": {
+      "arrival": {
+        "title": "Saapuminen",
+        "line": "Lentokoneen ovelta talon ovelle."
+      },
+      "home": {
+        "title": "Talo",
+        "line": "Hotellipalvelua, jokaisena haluamanasi päivänä."
+      },
+      "table": {
+        "title": "Pöytä",
+        "line": "Alue kokkaa sinulle.",
+        "line_minho": "Minho kokkaa sinulle."
+      },
+      "wellness": {
+        "title": "Hyvinvointi",
+        "line": "Aitoa lepoa."
+      },
+      "experiences": {
+        "title": "Elämykset",
+        "line": "Alue, niiden kanssa jotka sen tuntevat."
+      }
+    },
+    "reception": {
+      "prompt": "Miten haluat saapua? Valitse vaihtoehto jatkaaksesi.",
+      "required": "Valitse miten haluat saapua jatkaaksesi.",
+      "arrivalWindow": "Saapuminen:",
+      "beforeLate": "Ennen klo {{hour}}",
+      "afterLate": "Klo {{hour}} jälkeen",
+      "self": {
+        "name": "Self check-in",
+        "desc": "Itsenäinen sisäänpääsy koodilla, ohjeet lähetetään edellisenä päivänä, WhatsApp-tuki milloin tahansa."
+      },
+      "hosted": {
+        "name": "Henkilökohtainen vastaanotto",
+        "desc": "Isäntä ottaa sinut vastaan, esittelee talon ja laittaa kaiken valmiiksi."
+      },
+      "lateNote": "Klo {{hour}} jälkeen: {{price}}."
+    },
+    "seeAll": "Näytä kaikki palvelut",
+    "seeAllExperiences": "Näytä kaikki elämykset",
+    "chapterLabel": "Luku {{num}}",
+    "skipCustomize": "Ohita mukautus",
+    "seeMore": "Näytä lisää ({{count}})",
+    "remove": "Poista",
+    "conciergeQuote": "Conciergen hinnoittelema",
+    "fromPrice": "alk. {{price}}",
+    "requested": "Pyydetty",
+    "coupon": {
+      "have": "Onko sinulla tarjouskoodi?",
+      "apply": "Käytä",
+      "ph": "KOODI",
+      "invalid": "Koodia ei tunnistettu. Tarkista ja yritä uudelleen.",
+      "applied": "Koodi {{code}} käytössä",
+      "field": "Kampanjakoodi"
+    },
+    "prev": "Edellinen",
+    "next": "Seuraava",
+    "firstIncluded": "Ensimmäinen sisältyy, lisä {{price}}",
+    "nextChapter": "Seuraava: {{chapter}}",
+    "continueToPayment": "Jatka maksuun",
+    "scarcityNote": "Saatavuuden mukaan huippupäivinä. Varaaminen nyt takaa sen.",
+    "tailoredTitle": "Majoituksesi, räätälöitynä",
+    "flexLastCall": "Yksi klikkaus suojaa varauksen: Flex, taattu uudelleenvaraus.",
+    "flexAddShort": "Lisää",
+    "proof": {
+      "transfer-porto": "Oman tiimimme kuljettaja, ei koskaan alihankittu",
+      "hamper-gourmet": "Conciergemme valitsemat paikalliset tuottajat",
+      "breakfast-box": "Private hotel -konsepti, joka aamu"
+    },
+    "perPersonDay": "per henkilö · päivä",
+    "allDays": "Joka päivä",
+    "airport": "Lentokenttä",
+    "confirm24hNote": "Jos emme voi taata sitä, rivi hyvitetään automaattisesti.",
+    "noChargeNow": "ei veloitusta nyt",
+    "perPersonHour": "per lapsi · tunti",
+    "hoursLabel": "Tunnit",
+    "saveIssue": "Yhdistetään uudelleen, muutokset odottavat",
+    "stayDetails": {
+      "title": "Majoituksen tiedot"
+    },
+    "arrivalAirport": "Saapumislentokenttä",
+    "perCleaning": "per siivous",
+    "perPetStay": "per lemmikki · majoitus"
   }
 }

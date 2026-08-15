@@ -129,7 +129,7 @@
     "estTotal": "geschat totaal",
     "indicativeCatalogue": "Indicatief uit catalogus. Bevestig het totaal bij boeking.",
     "indicativeUnavailable": "Indicatief (catalogus). Live prijs niet beschikbaar — bevestig bij boeking.",
-    "cleaningFee": "Eindschoonmaak",
+    "cleaningFee": "Servicekosten",
     "serviceFee": "Servicekosten",
     "touristTax": "Toeristenbelasting",
     "vat": "BTW",
@@ -220,7 +220,9 @@
     "minStayNotice_one": "Het minimumverblijf voor deze data is {{count}} nacht",
     "minStayNotice_other": "Het minimumverblijf voor deze data is {{count}} nachten",
     "select": "Selecteren",
-    "cancellationPerPolicy": "Annulering volgens het beleid van de accommodatie"
+    "cancellationPerPolicy": "Annulering volgens het beleid van de accommodatie",
+    "decreaseGuests": "Minder gasten",
+    "increaseGuests": "Meer gasten"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Prijs op aanvraag",
@@ -272,7 +274,49 @@
     "requestWithoutPayment": "Of aanvragen zonder betaling",
     "belowMinNightsWarning_one": "Selecteer minimaal {{count}} nacht om door te gaan",
     "belowMinNightsWarning_other": "Selecteer minimaal {{count}} nachten om door te gaan",
-    "pricingUnavailableMessage": "We konden de prijs voor deze data niet bevestigen. Neem contact op met een Concierge."
+    "pricingUnavailableMessage": "We konden de prijs voor deze data niet bevestigen. Neem contact op met een Concierge.",
+    "recommended": "Aanbevolen",
+    "nonRefundableWarning": "Geen terugbetaling bij annulering of wijziging",
+    "save": "Bespaar",
+    "quoteExpired": "De offerte is verlopen. Probeer het opnieuw.",
+    "quoteRefreshFailed": "De prijs kon niet worden bijgewerkt. Neem contact op met onze concierge.",
+    "termsAcceptLabel": "Ik accepteer de",
+    "termsLink": "Algemene voorwaarden",
+    "termsAnd": "en het",
+    "invalidEmail": "Voer een geldig e-mailadres in",
+    "invalidPhone": "Voer een geldig telefoonnummer in",
+    "bookingSummary": "Boekingsoverzicht",
+    "proceedToPayment": "Doorgaan naar betaling",
+    "priceSummary": "Prijsoverzicht",
+    "bookedBy": "Geboekt door",
+    "servicesRequested": "Aangevraagde services",
+    "servicesConfirmNote": "Onze concierge neemt binnen 2 uur contact op om details en prijzen te bevestigen.",
+    "chatConcierge": "Chat met uw concierge",
+    "conciergeReachOut": "Uw persoonlijke concierge neemt binnen 24 uur contact op om uw verblijf te plannen.",
+    "confirmationEmailSent": "Bevestigingsmail verzonden naar",
+    "contactConcierge": "Contact opnemen met concierge",
+    "selectDate": "Selecteer",
+    "loadingCalendar": "Beschikbaarheid laden...",
+    "fromPrice": "vanaf",
+    "showAllServices": "Alle services tonen",
+    "servicesNote": "Services worden na de boeking apart bevestigd door onze concierge. Nu geen kosten.",
+    "checkInToday": "Check-in is vandaag",
+    "checkInTomorrow": "Check-in is morgen",
+    "checkInSoon": "Check-in is over 2 dagen",
+    "advanceNoticeNote": "Sommige huizen vereisen een aankondigingstermijn. Directe bevestiging is mogelijk niet beschikbaar.",
+    "nightsLabel": "nachten",
+    "servicesSelected_one": "{{count}} service aangevraagd — bevestigd na de boeking",
+    "servicesSelected_other": "{{count}} services aangevraagd — bevestigd na de boeking",
+    "phonePh": "Telefoonnummer *",
+    "ratePlanPolicyAria": "opent het annuleringsbeleid in een nieuw tabblad",
+    "waSuccessMessage": "Hallo! Ik heb zojuist mijn boeking bij {{property}} bevestigd.\nBevestiging: {{code}}\nData: {{checkIn}} → {{checkOut}}\nGasten: {{guests}}\nIk kijk ernaar uit!",
+    "waPricingHelp": "Hallo, ik wil graag {{property}} boeken.\nData: {{checkIn}} → {{checkOut}}\nNachten: {{nights}}\nGasten: {{guests}}\nKunnen jullie helpen met beschikbaarheid en prijs?",
+    "clearDates": "Wissen",
+    "availableLabel": "Beschikbaar",
+    "unavailableLabel": "Niet beschikbaar",
+    "confirmDates": "Bevestigen",
+    "tariffInCheckout": "Twee tarieven beschikbaar. Kies het uwe in de volgende stap.",
+    "reserve": "RESERVEREN"
   },
   "common": {
     "loading": "Laden…",
@@ -415,7 +459,7 @@
     "nights_other": "{{count}} nachten",
     "viewDetails": "Prijsdetails bekijken",
     "accommodation": "Accommodatie",
-    "cleaning": "Eindschoonmaak",
+    "cleaning": "Voorbereiding van de woning",
     "serviceFee": "Servicekosten",
     "touristTax": "Toeristenbelasting",
     "vat": "BTW",
@@ -585,7 +629,10 @@
     "checkInInstructions": "Incheckinstructies",
     "checkInDefault": "Ons team deelt alle instructies per e-mail met u.",
     "addToCalendar": "Toevoegen aan agenda",
-    "whatsappConcierge": "WhatsApp concierge"
+    "whatsappConcierge": "WhatsApp concierge",
+    "pageTitle": "Boeking bevestigd | Bedankt",
+    "pageDescription": "Uw Portugal Active-boeking is bevestigd. Controleer uw e-mail en bereid uw verblijf voor.",
+    "whatsappPrefill": "Hallo, ik heb hulp nodig met mijn boeking"
   },
   "payment": {
     "failed": "Betaling mislukt. Probeer het opnieuw.",
@@ -608,10 +655,18 @@
       "requiredFields": "Vul alle verplichte velden in.",
       "cardNotReady": "Kaartelement is niet gereed. Vernieuw de pagina en probeer het opnieuw.",
       "cardValidationFailed": "Kaartvalidatie is mislukt. Controleer uw kaartgegevens.",
-      "couldNotCreatePaymentMethod": "Betaalmethode kon niet worden gemaakt. Probeer het opnieuw."
+      "couldNotCreatePaymentMethod": "Betaalmethode kon niet worden gemaakt. Probeer het opnieuw.",
+      "contactSupport": "Als het bedrag is afgeschreven, neem dan contact op via reservations@portugalactive.com of WhatsApp +351 927 161 771. Probeer niet opnieuw te betalen."
     },
-    "payButton": "Betaal {{currency}} {{amount}}",
-    "cancelButton": "Annuleren"
+    "payButton": "{{amount}} betalen",
+    "cancelButton": "Annuleren",
+    "methodCard": "Kaart",
+    "preparingSecure": "Veilige betaling wordt voorbereid…",
+    "payWithKlarna": "{{amount}} betalen met Klarna",
+    "payWithPaypal": "{{amount}} betalen met PayPal",
+    "preparingKlarna": "Klarna-betaling wordt voorbereid…",
+    "preparingPaypal": "PayPal-betaling wordt voorbereid…",
+    "redirecting": "Doorsturen…"
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",
@@ -1145,7 +1200,16 @@
     "strictTitle": "Strikt Annuleringsbeleid",
     "strictBody": "50% terugbetaling bij annulering minimaal 60 dagen voor inchecken. Geen terugbetaling bij annuleringen minder dan 60 dagen voor inchecken. Niet restitueerbaar na inchecken.",
     "nonRefundableTitle": "Niet Restitueerbaar",
-    "nonRefundableBody": "Dit tarief wordt aangeboden tegen een gereduceerde prijs in ruil voor een niet-restitutiebeleid. Eenmaal geboekt, wordt er geen terugbetaling gedaan ongeacht de annuleringsdatum. Wij raden ten zeerste aan een reisverzekering te kopen bij het kiezen van dit tarief."
+    "nonRefundableBody": "Dit tarief wordt aangeboden tegen een gereduceerde prijs in ruil voor een niet-restitutiebeleid. Eenmaal geboekt, wordt er geen terugbetaling gedaan ongeacht de annuleringsdatum. Wij raden ten zeerste aan een reisverzekering te kopen bij het kiezen van dit tarief.",
+    "shortFree": "Gratis annuleren tot {{date}}",
+    "shortFreeNoDate_one": "Gratis annuleren tot {{count}} dag vóór check-in",
+    "shortFreeNoDate_other": "Gratis annuleren tot {{count}} dagen vóór check-in",
+    "shortHalf": "50% terugbetaling tot {{date}}: daarna niet restitueerbaar",
+    "shortHalfNoDate_one": "50% terugbetaling tot {{count}} dag vóór check-in: daarna niet restitueerbaar",
+    "shortHalfNoDate_other": "50% terugbetaling tot {{count}} dagen vóór check-in: daarna niet restitueerbaar",
+    "shortNonRefundable": "Niet-restitueerbaar tarief: geen terugbetaling bij annulering",
+    "shortWindowPassed": "Voor deze data is de boeking bij annulering niet restitueerbaar",
+    "shortGeneric": "Er gelden annuleringsvoorwaarden: zie ons annuleringsbeleid"
   },
   "whatsapp": {
     "title": "Contact via WhatsApp",
@@ -1220,7 +1284,7 @@
     "bookedBy": "Geboekt door",
     "priceSummary": "Prijsoverzicht",
     "nights": "{{count}} nachten",
-    "cleaning": "Eindschoonmaak",
+    "cleaning": "Voorbereiding van de woning",
     "totalPaid": "Totaal betaald",
     "paidPaypal": "Volledig betaald met PayPal",
     "paidKlarna": "Betalen met Klarna",
@@ -1230,7 +1294,14 @@
     "trustSecure": "Veilig boeken",
     "trustRate": "Beste prijs gegarandeerd",
     "trustCancel": "Flexibel annuleren",
-    "trustConcierge": "Conciërge inbegrepen"
+    "trustConcierge": "Conciërge inbegrepen",
+    "pageTitle": "Boeking bevestigd | Bedankt",
+    "pageDescription": "Uw Portugal Active-boeking is bevestigd. Controleer uw e-mail en bereid uw verblijf voor.",
+    "mailSubject": "Reservering {{code}} — Informatieverzoek",
+    "mailBody": "Hallo,\n\nik heb een vraag over mijn reservering {{code}} ({{property}}, {{checkIn}} – {{checkOut}}).\n\n",
+    "trustFees": "Geen boekingskosten",
+    "paidCard": "Volledig betaald met kaart",
+    "cardSub": "Veilige kaartbetaling"
   },
   "bedType": {
     "KingBed": "Kingsize bed",
@@ -1251,5 +1322,333 @@
     "bunkBed": "Stapelbed",
     "airMattress": "Luchtbed",
     "bed": "Bed"
+  },
+  "paymentReturn": {
+    "verifying": "Uw betaling wordt gecontroleerd…",
+    "missingInfo": "Betalingsgegevens niet gevonden. Neem contact op met support.",
+    "dataLost": "Uw boekingsgegevens zijn verloren gegaan tijdens het doorsturen. Neem contact op met support met referentie {{ref}}.",
+    "dataCorrupted": "Uw boekingsgegevens konden niet worden gelezen. Neem contact op met support.",
+    "processorUnavailable": "De betalingsprovider is niet beschikbaar. Neem contact op met support.",
+    "verifyFailed": "De betalingsstatus kon niet worden gecontroleerd. Neem contact op met support.",
+    "confirmedCreating": "Betaling bevestigd! Uw reservering wordt aangemaakt…",
+    "reservationFailed": "Uw betaling is ontvangen, maar de reservering kon niet automatisch worden aangemaakt. Ons team is op de hoogte en bevestigt uw boeking spoedig. Referentie: {{ref}}",
+    "stillProcessing": "Uw betaling wordt nog verwerkt. Wacht even en vernieuw deze pagina.",
+    "notCompleted": "De betaling is niet voltooid. Probeer het opnieuw of kies een andere betaalmethode.",
+    "processingTitle": "Uw boeking wordt verwerkt",
+    "failedTitle": "Betaling niet voltooid",
+    "secureNote": "Veilige betaling — sluit dit venster niet"
+  },
+  "trust": {
+    "secureBooking": "Veilig boeken",
+    "bestRate": "Beste prijs gegarandeerd",
+    "noBookingFees": "Geen boekingskosten",
+    "conciergeIncluded": "Concierge inbegrepen"
+  },
+  "bookingStatus": {
+    "confirmed": "Bevestigd",
+    "reserved": "Gereserveerd",
+    "pending": "In afwachting van bevestiging",
+    "canceled": "Geannuleerd",
+    "declined": "Geweigerd",
+    "expired": "Verlopen",
+    "inquiry": "Aanvraag",
+    "processing": "In behandeling"
+  },
+  "checkout": {
+    "pageTitle": "Afrekenen",
+    "stepStay": "Uw verblijf",
+    "stepPay": "Betaling",
+    "stepsAria": "Stappen bij het afrekenen",
+    "autosaved": "Automatisch opgeslagen",
+    "closeAria": "Terug naar de woning",
+    "loading": "Uw checkout wordt voorbereid…",
+    "notFoundTitle": "Checkout niet gevonden",
+    "notFoundBody": "Deze link is verlopen of ongeldig. Uw data zijn niet verloren, begin opnieuw vanaf de pagina van de woning.",
+    "quoteExpiredBanner": "Deze prijs is verlopen. Vernieuw om de actuele prijs voor uw data te zien, uw gegevens blijven bewaard.",
+    "refreshPrice": "Prijs vernieuwen",
+    "datesUnavailable": "We konden geen prijs bevestigen voor deze data, mogelijk zijn ze niet meer beschikbaar. Probeer opnieuw, kies hieronder nieuwe data of neem contact op met onze concierge.",
+    "stayTitle": "Uw verblijf",
+    "staySubtitle": "Bevestig uw data en kies uw tarief.",
+    "edit": "Bewerken",
+    "doneEditing": "Klaar",
+    "emailLabel": "Uw e-mailadres",
+    "emailPh": "naam@email.com",
+    "emailSupport": "We houden uw prijs 24 uur vast en mailen de offerte. Data zijn pas na betaling gereserveerd. Geen spam.",
+    "backToStay": "Terug naar het verblijf",
+    "payTitle": "Betaling",
+    "paySubtitle": "Uw gegevens, daarna een veilige betaling.",
+    "nifPh": "Fiscaal nummer of btw-nummer, optioneel, voor uw factuur",
+    "directTitle": "Direct boeken bij Portugal Active",
+    "refreshBeforePay": "Vernieuw de prijs hierboven voordat u betaalt.",
+    "secureNote": "Versleutelde, veilige betaling",
+    "viewDetails": "Details bekijken",
+    "priceGuaranteed": "Prijs gegarandeerd tot {{date}}, {{time}}",
+    "alreadyPaidTitle": "Deze boeking is al bevestigd",
+    "alreadyPaidBody": "De betaling voor dit verblijf is voltooid. Controleer uw e-mail of bekijk uw boeking hieronder.",
+    "viewBooking": "Mijn boeking bekijken",
+    "stepCustomize": "Personaliseren",
+    "customizeTitle": "Personaliseer uw verblijf",
+    "customizeSubtitle": "Voeg services en ervaringen toe, of ga verder zonder extra's. Niets is vooraf geselecteerd.",
+    "backToCustomize": "Terug naar personalisatie",
+    "continueWithExtras_one": "Doorgaan, {{count}} extra toegevoegd",
+    "continueWithExtras_other": "Doorgaan, {{count}} extra's toegevoegd",
+    "continueWithoutExtras": "Doorgaan zonder extra's",
+    "mostChosen": "Meest gekozen",
+    "confirm24h": "Bevestiging binnen 24 uur",
+    "onRequest": "Op aanvraag, nu geen kosten",
+    "onRequestShort": "op aanvraag",
+    "add": "Toevoegen",
+    "added": "Toegevoegd",
+    "request": "Aanvragen",
+    "perDay": "per dag",
+    "perPerson": "per persoon",
+    "perTrip": "per rit",
+    "perChange": "per wissel",
+    "perPersonSession": "per persoon · sessie",
+    "minPeople_one": "min. {{count}} persoon",
+    "minPeople_other": "min. {{count}} personen",
+    "daysLabel": "Dagen",
+    "tripsLabel": "Ritten",
+    "qtyLabel": "Aantal",
+    "peopleLabel": "Personen",
+    "sessionsLabel": "Sessies",
+    "extrasChargeNote": "Items met een vaste prijs worden vandaag in één betaling afgerekend. Services met bevestiging door de concierge worden vandaag afgerekend en automatisch binnen 24 uur terugbetaald als ze niet gegarandeerd kunnen worden. Aanvragen op offerte worden nu niet in rekening gebracht.",
+    "extras": {
+      "transfer-porto": {
+        "name": "Luchthaventransfer Porto",
+        "desc": "Privéauto, per rit, tot 4 gasten."
+      },
+      "transfer-porto-van": {
+        "name": "Luchthaventransfer Porto, van",
+        "desc": "Privévan, per rit, tot 8 gasten."
+      },
+      "daily-cleaning": {
+        "name": "Dagelijkse schoonmaak",
+        "desc": "Opfrissen van badkamers en keuken, bedden opgemaakt, gemeenschappelijke ruimtes geveegd. Linnen elke 4 nachten verschoond."
+      },
+      "linen-change": {
+        "name": "Linnen en handdoekenwissel",
+        "desc": "Complete wissel van beddengoed en handdoeken."
+      },
+      "private-chef": {
+        "name": "Privéchef bij het diner",
+        "desc": "Een chef kookt bij u thuis, menu afgestemd met de concierge. De prijs van een goed restaurant in de regio, met de privacy van het huis."
+      },
+      "hamper-essentials": {
+        "name": "Welkomstmand, essentials",
+        "desc": "De basis bij aankomst: ontbijt, water, fruit."
+      },
+      "hamper-gourmet": {
+        "name": "Welkomstmand, regionale gourmet",
+        "desc": "Selectie van regionale wijnen en delicatessen. Een week boodschappen, gekozen door een kenner."
+      },
+      "grocery-list": {
+        "name": "Koelkast gevuld bij aankomst",
+        "desc": "Stuur uw lijst, de koelkast is gevuld voor aankomst."
+      },
+      "massage": {
+        "name": "Massage aan huis",
+        "desc": "Sessie van 60 minuten in huis, per persoon."
+      },
+      "babysitter": {
+        "name": "Oppas",
+        "desc": "Betrouwbare kinderopvang in het huis, per uur."
+      },
+      "private-yoga": {
+        "name": "Privé yogasessie",
+        "desc": "Een sessie in huis met een privé-instructeur."
+      },
+      "personal-trainer": {
+        "name": "Personal trainer",
+        "desc": "Een trainingssessie in huis of buiten."
+      },
+      "exp-sup": {
+        "name": "Stand up paddle",
+        "desc": "Op de kalme wateren van de regio, uitrusting inbegrepen."
+      },
+      "exp-hikedive": {
+        "name": "Wandelen, duiken en tafelen",
+        "desc": "Een dag tussen het pad, het water en de tafel."
+      },
+      "exp-ebike": {
+        "name": "Elektrische fietstocht",
+        "desc": "Het platteland op een elektrische fiets, met gids."
+      },
+      "exp-horseback": {
+        "name": "Paardrijden",
+        "desc": "Ruiterpaden door de regio."
+      },
+      "exp-canyoning": {
+        "name": "Canyoning",
+        "desc": "Afdalingen door rivieren en watervallen met gids."
+      },
+      "exp-biketour": {
+        "name": "Stad en berg fietstocht",
+        "desc": "Twee wielen, van de stad naar de heuvels."
+      },
+      "exp-buggy": {
+        "name": "Can Am buggy ervaring",
+        "desc": "Offroad over de paden van de regio."
+      },
+      "travel-crib": {
+        "name": "Campingbedje",
+        "desc": "Opgezet voor aankomst. Zeg ons hoeveel zodat het huis klaar is."
+      },
+      "baby-chair": {
+        "name": "Kinderstoel",
+        "desc": "Aan tafel bij aankomst. Zeg ons hoeveel zodat het huis klaar is."
+      },
+      "pet-fee": {
+        "name": "Huisdier meenemen",
+        "desc": "Dit huis verwelkomt huisdieren. 50 € voor het eerste, 100 € voor het tweede. Maximaal twee."
+      },
+      "pet-kit": {
+        "name": "Huisdierkit, mand en bakjes",
+        "desc": "Een comfortabele mand en bakjes wachten op uw metgezel."
+      },
+      "pet-food": {
+        "name": "Dierenvoer",
+        "desc": "Zeg ons het merk en dieet, wij zorgen dat alles klaarstaat."
+      },
+      "breakfast-box": {
+        "name": "Breakfast box",
+        "desc": "Vers ontbijt bezorgd op de ochtenden die u kiest. Hotelcomfort, thuis."
+      },
+      "transfer-lisbon": {
+        "name": "Luchthaventransfer Lissabon",
+        "desc": "Privéauto, per rit, tot 4 gasten."
+      },
+      "transfer-lisbon-van": {
+        "name": "Luchthaventransfer Lissabon, van",
+        "desc": "Privévan, per rit, tot 8 gasten."
+      },
+      "deep-cleaning": {
+        "name": "Dieptereiniging",
+        "desc": "Volledige schoonmaak van boven tot onder: badkamers en keuken grondig, al het linnengoed en alle handdoeken verschoond, elk oppervlak en elke vloer."
+      },
+      "grocery-setup": {
+        "name": "Boodschappen gedaan en bezorgd",
+        "desc": "Stuur ons uw lijst. Wij doen de boodschappen en zetten alles klaar vóór uw aankomst. De supermarktrekening wordt apart en tegen kostprijs in rekening gebracht."
+      }
+    },
+    "emailTitle": "Waar sturen we uw boeking naartoe?",
+    "perStay": "per verblijf",
+    "flex": {
+      "title": "Flex, gegarandeerd omboeken",
+      "tagline": "Boek om wanneer u wilt. Het betaalde bedrag gaat nooit verloren.",
+      "perBooking": "eenmalig, per boeking",
+      "benefit1": "Boek om tot {{days}} dagen vóór check-in, kosteloos",
+      "benefit2": "Het betaalde bedrag blijft beschermd, het gaat nooit verloren",
+      "benefit3": "Tegoed {{months}} maanden geldig, bij elk huis in het portfolio",
+      "copyNonRefundable": "U koos de beste prijs. Met Flex gaat het bedrag nooit verloren: boek om tot {{days}} dagen vóór check-in.",
+      "copyFlexible": "Uw tarief staat gratis annuleren toe tot {{date}}. Daarna garandeert Flex dat u tot {{days}} dagen vóór check-in kunt omboeken zonder het bedrag te verliezen.",
+      "howItWorks": "Hoe het werkt",
+      "add": "Flex toevoegen",
+      "added": "Toegevoegd",
+      "rule1": "Boek kosteloos om tot {{days}} dagen vóór check-in, zo vaak als nodig, met één actieve boeking tegelijk.",
+      "rule2": "Beschermd is het betaalde bedrag, niet de data of het huis. Voor nieuwe data gelden de actuele prijzen.",
+      "rule3": "Bij omboeken wordt het betaalde bedrag tegoed, {{months}} maanden geldig, bruikbaar bij elk huis in het portfolio.",
+      "rule4": "Is het nieuwe verblijf duurder, dan betaalt u alleen het verschil. Goedkoper: het saldo blijft als tegoed staan.",
+      "rule5": "Extra's verhuizen mee wanneer de service het toelaat; anders wordt hun bedrag ook tegoed.",
+      "rule6": "Flex is alleen bij het afrekenen verkrijgbaar en niet restitueerbaar.",
+      "honesty": "Annuleert u binnen het gratis annuleringsvenster van uw tarief, dan betalen we uw geld terug volgens het beleid. Flex vervangt dat recht nooit, het voegt bescherming toe daarbuiten.",
+      "percentNote": "10% van het totaal van de nachten, eenmalig"
+    },
+    "curatedFor": "Geselecteerd voor {{property}}",
+    "todayTotal": "Totaal",
+    "conciergeRequests": "Concierge-verzoeken",
+    "conciergeRequestsNote": "Individueel geoffreerd door uw concierge. Nu geen kosten.",
+    "included": {
+      "title": "Inbegrepen in uw verblijf",
+      "badge": "Inbegrepen",
+      "concierge": "Een persoonlijke concierge op WhatsApp",
+      "linen": "Hotelbeddengoed en handdoeken",
+      "welcome": "Welcoming pack",
+      "bestRate": "Beste prijs gegarandeerd"
+    },
+    "chapter": {
+      "arrival": {
+        "title": "De aankomst",
+        "line": "Van de vliegtuigdeur tot de deur van het huis."
+      },
+      "home": {
+        "title": "Het huis",
+        "line": "Hotelservice, elke dag die u wenst."
+      },
+      "table": {
+        "title": "De tafel",
+        "line": "De regio kookt voor u.",
+        "line_minho": "De Minho kookt voor u."
+      },
+      "wellness": {
+        "title": "Welzijn",
+        "line": "Echte rust."
+      },
+      "experiences": {
+        "title": "Ervaringen",
+        "line": "De regio, met wie haar kent."
+      }
+    },
+    "reception": {
+      "prompt": "Hoe wilt u aankomen? Kies een optie om door te gaan.",
+      "required": "Kies hoe u wilt aankomen om door te gaan.",
+      "arrivalWindow": "Aankomst:",
+      "beforeLate": "Voor {{hour}}u",
+      "afterLate": "Na {{hour}}u",
+      "self": {
+        "name": "Self check-in",
+        "desc": "Zelfstandige toegang met code, instructies de dag ervoor verzonden, WhatsApp-ondersteuning op elk moment."
+      },
+      "hosted": {
+        "name": "Persoonlijke ontvangst",
+        "desc": "Een gastheer verwelkomt u, geeft een rondleiding en zet alles klaar."
+      },
+      "lateNote": "Na {{hour}}u: {{price}}."
+    },
+    "seeAll": "Alle services bekijken",
+    "seeAllExperiences": "Alle ervaringen bekijken",
+    "chapterLabel": "Hoofdstuk {{num}}",
+    "skipCustomize": "Personalisatie overslaan",
+    "seeMore": "Meer bekijken ({{count}})",
+    "remove": "Verwijderen",
+    "conciergeQuote": "Offerte door uw concierge",
+    "fromPrice": "vanaf {{price}}",
+    "requested": "Aangevraagd",
+    "coupon": {
+      "have": "Heeft u een promocode?",
+      "apply": "Toepassen",
+      "ph": "PROMOCODE",
+      "invalid": "Code niet herkend. Controleer en probeer opnieuw.",
+      "applied": "Code {{code}} toegepast",
+      "field": "Promocode"
+    },
+    "prev": "Vorige",
+    "next": "Volgende",
+    "firstIncluded": "Eerste inbegrepen, extra voor {{price}}",
+    "nextChapter": "Volgende: {{chapter}}",
+    "continueToPayment": "Doorgaan naar betaling",
+    "scarcityNote": "Onder voorbehoud van beschikbaarheid op piekdata. Nu boeken stelt het veilig.",
+    "tailoredTitle": "Uw verblijf, op maat",
+    "flexLastCall": "Eén klik om deze boeking te beschermen: Flex, gegarandeerd omboeken.",
+    "flexAddShort": "Toevoegen",
+    "proof": {
+      "transfer-porto": "Chauffeur uit ons eigen team, nooit uitbesteed",
+      "hamper-gourmet": "Lokale producenten gekozen door onze concierge",
+      "breakfast-box": "Het private hotel concept, elke ochtend"
+    },
+    "perPersonDay": "per persoon · dag",
+    "allDays": "Elke dag",
+    "airport": "Luchthaven",
+    "confirm24hNote": "Als we het niet kunnen garanderen, wordt de regel automatisch terugbetaald.",
+    "noChargeNow": "nu geen kosten",
+    "perPersonHour": "per kind · uur",
+    "hoursLabel": "Uren",
+    "saveIssue": "Opnieuw verbinden, wijzigingen in behandeling",
+    "stayDetails": {
+      "title": "Verblijfsdetails"
+    },
+    "arrivalAirport": "Aankomstluchthaven",
+    "perCleaning": "per schoonmaak",
+    "perPetStay": "per huisdier · verblijf"
   }
 }

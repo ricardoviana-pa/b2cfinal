@@ -12,8 +12,10 @@ import { registerOAuthRoutes } from "./oauth";
 import { registerDevAuthRoutes } from "./devAuth";
 import { registerGoogleAuthRoutes } from "./googleAuth";
 import { registerBookingRoutes, registerGuestyWebhookRoute } from "../routes/booking";
+import { registerRecoveryOptoutRoute } from "../routes/checkout-recovery-optout";
 import { registerStripePayPalWebhookRoute } from "../routes/stripe-paypal-webhook";
 import { registerStripeKlarnaWebhookRoute } from "../routes/stripe-klarna-webhook";
+import { registerStripeCardWebhookRoute } from "../routes/stripe-card-webhook";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -102,16 +104,26 @@ async function startServer() {
   app.use("/api/reservations", apiLimiter);
   app.use("/api/trpc/leads.create", leadLimiter);
   app.use("/api/trpc/booking", apiLimiter);
+  app.use("/api/trpc/checkout", apiLimiter); // checkout_v2 intents + lead capture
 
   // Guesty webhook needs raw body for signature validation
   registerGuestyWebhookRoute(app);
   registerStripePayPalWebhookRoute(app); // must be before express.json() — needs raw body
-  registerStripeKlarnaWebhookRoute(app); // must be before express.json() — needs raw body
+  registerStripeKlarnaWebhookRoute(app);
+  registerStripeCardWebhookRoute(app); // must be before express.json() — needs raw body
+  // Apple Pay: ficheiro de verificação de domínio da Apple (exigido pelo
+  // Stripe payment_method_domains; sem ele o botão nunca aparece em Safari)
+  app.get("/.well-known/apple-developer-merchantid-domain-association", (_req, res) => {
+    res.type("text/plain");
+    res.sendFile(path.resolve(process.cwd(), "server", "config", "apple-developer-merchantid-domain-association"));
+  });
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // REST booking endpoints (frontend booking flow)
   registerBookingRoutes(app);
+  // Bloco 2: opt-out dos lembretes de recuperação (link no rodapé dos emails)
+  registerRecoveryOptoutRoute(app);
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
   registerDevAuthRoutes(app);
@@ -415,8 +427,112 @@ ${allUrls.join("\n")}
     console.warn("[Migration] property_referrals:", migErr.message);
   }
 
+  // Checkout 2.0 (Fase 1): booking_intents — server-side checkout state.
+  // Same idempotent boot-migration pattern as property_referrals above.
+  try {
+    const { getDb } = await import("../db");
+    const db = await getDb();
+    if (db) {
+      await (db as any).execute(`
+        CREATE TABLE IF NOT EXISTS \`booking_intents\` (
+          \`id\` varchar(36) NOT NULL,
+          \`listingId\` varchar(64) NOT NULL,
+          \`propertyName\` varchar(255),
+          \`propertySlug\` varchar(255),
+          \`destination\` varchar(255),
+          \`guestyQuoteId\` varchar(64),
+          \`checkIn\` varchar(10) NOT NULL,
+          \`checkOut\` varchar(10) NOT NULL,
+          \`guests\` int NOT NULL,
+          \`ratePlanId\` varchar(64),
+          \`ratePlanType\` enum('flexible','non_refundable','other'),
+          \`email\` varchar(320),
+          \`guestFirstName\` varchar(100),
+          \`guestLastName\` varchar(100),
+          \`guestPhone\` varchar(50),
+          \`nif\` varchar(20),
+          \`quote\` json,
+          \`extras\` json,
+          \`reception\` json,
+          \`flex\` boolean NOT NULL DEFAULT false,
+          \`recovery_stage\` int NOT NULL DEFAULT 0,
+          \`status\` enum('draft','contact_captured','payment_pending','paid','expired') NOT NULL DEFAULT 'draft',
+          \`locale\` varchar(5),
+          \`reservationId\` varchar(64),
+          \`confirmationCode\` varchar(64),
+          \`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          \`expiresAt\` timestamp NULL,
+          PRIMARY KEY(\`id\`),
+          INDEX \`idx_booking_intents_status\` (\`status\`),
+          INDEX \`idx_booking_intents_email\` (\`email\`)
+        )
+      `);
+      // Fase 2 added the `reception` column — add it to tables created before
+      // that (CREATE TABLE IF NOT EXISTS above is a no-op on existing tables).
+      // A duplicate-column error just means it's already there.
+      try {
+        await (db as any).execute("ALTER TABLE `booking_intents` ADD COLUMN `reception` json");
+        console.info("[Migration] booking_intents.reception column added");
+      } catch (alterErr: any) {
+        if (!/duplicate column|exists/i.test(alterErr?.message || "")) {
+          console.warn("[Migration] booking_intents.reception:", alterErr.message);
+        }
+      }
+      // Fase 4: recovery_stage tracks the abandonment emails already sent
+      // (0 = none, 1 = 1h, 2 = 20h) — same add-column pattern as reception.
+      try {
+        await (db as any).execute("ALTER TABLE `booking_intents` ADD COLUMN `recovery_stage` int NOT NULL DEFAULT 0");
+        console.info("[Migration] booking_intents.recovery_stage column added");
+      } catch (alterErr: any) {
+        if (!/duplicate column|exists/i.test(alterErr?.message || "")) {
+          console.warn("[Migration] booking_intents.recovery_stage:", alterErr.message);
+        }
+      }
+      // Bloco 2: opt-out dos lembretes de recuperação (link no rodapé dos
+      // emails) — mesmo padrão idempotente de add-column.
+      try {
+        await (db as any).execute("ALTER TABLE `booking_intents` ADD COLUMN `recovery_optout` boolean NOT NULL DEFAULT false");
+        console.info("[Migration] booking_intents.recovery_optout column added");
+      } catch (alterErr: any) {
+        // drizzle wraps driver errors ("Failed query: …" with the MySQL error
+        // in .cause) — check both, and never abort the remaining ALTERs.
+        if (!/duplicate column|exists/i.test(`${alterErr?.message || ""} ${alterErr?.cause?.message || ""}`)) {
+          console.warn("[Migration] booking_intents.recovery_optout:", alterErr.message);
+        }
+      }
+      try {
+        await (db as any).execute("ALTER TABLE `booking_intents` ADD COLUMN `payment_intent_id` varchar(64)");
+        console.info("[Migration] booking_intents.payment_intent_id column added");
+      } catch (alterErr: any) {
+        if (!/duplicate column|exists/i.test(`${alterErr?.message || ""} ${alterErr?.cause?.message || ""}`)) {
+          console.warn("[Migration] booking_intents.payment_intent_id:", alterErr.message);
+        }
+      }
+      console.info("[Migration] booking_intents table OK");
+    }
+  } catch (migErr: any) {
+    console.warn("[Migration] booking_intents:", migErr.message);
+  }
+
   server.listen(port, () => {
     console.info(`Server running on http://localhost:${port}/`);
+
+    // Apple Pay: garante o domínio registado na conta Stripe da plataforma
+    // (idempotente; dev regista dev., produção regista o domínio live)
+    import("../services/apple-pay-domain")
+      .then((m) => m.ensureApplePayDomain())
+      .catch((e) => console.warn("[ApplePay] boot:", e?.message));
+
+    // Checkout 2.0 (Fase 4): abandonment recovery emails (1h + 20h).
+    // Fail-soft — the sweep no-ops when the DB is unavailable.
+    try {
+      import("../services/checkout-recovery")
+        .then(({ startCheckoutRecoveryScheduler }) => startCheckoutRecoveryScheduler())
+        .catch((e) => console.warn("[Recovery] Scheduler not started:", e?.message ?? e));
+    } catch (e: any) {
+      console.warn("[Recovery] Scheduler not started:", e?.message ?? e);
+    }
 
     // Guesty sync: pull listings (photos, texts, pricing).
     // DISABLED on startup to prevent OAuth rate-limit exhaustion during deploys.
