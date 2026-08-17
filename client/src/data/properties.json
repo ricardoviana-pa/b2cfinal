@@ -1247,6 +1247,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Charming and spacious house with a gorgeous and huge garden. The pool and the tennis court were very good as well. \nVery quiet area but at walking distance to a big supermarket and to a snack bar.",
+        "guestDisplayName": "Sonia Isabel De Castro",
+        "guestName": "Sonia Isabel De Castro",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-16T22:13:51.384Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Magnifique domaine. Le jardin est exceptionnel, la piscine est immense, et le tennis a été refait récemment. Nous avons passé une superbe semaine à 2 familles. Le village autour n'a pas d'intérêt, mais on l'oublie vite une fois dans le domaine. La cuisine pourrait être mieux équipée et refaite. Il n'y a bizarrement pas de machine à laver...mais c'est bien fait au supermarché à 1mn.",
         "guestDisplayName": "Michael",
         "guestName": "Michael",
@@ -1456,8 +1491,8 @@
         ]
       }
     ],
-    "averageRating": 4.67,
-    "reviewCount": 6
+    "averageRating": 4.71,
+    "reviewCount": 7
   },
   {
     "id": "guesty-6a50d66857c8010015595ad0",
@@ -18369,6 +18404,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Séjour super ! L’appartement est très propre et joli.\n\nCependant, quelques points sont à préciser dans la description : il faut monter 3 étages sans ascenseur, ce qui n’était pas indiqué \n\nEnfin, il est indiqué qu’il y a la climatisation dans la description, mais nous pensons qu’il s’agit d’une erreur de la part de l’hôte, car nous n’en avons pas constaté.\n\nSinon, l’hôte est très réactif et très sympathique. Je recommande cet appartement, mais plutôt sans enfants en bas âge.",
+        "guestDisplayName": "Damien",
+        "guestName": "Damien",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-15T19:49:48.008Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Really clean, great location and value for money! Will come back!",
         "guestDisplayName": "Sally",
         "guestName": "Sally",
@@ -18404,7 +18474,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-69c415701b964f00157188ad",
