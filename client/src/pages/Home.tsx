@@ -137,7 +137,12 @@ export default function Home() {
   const { data: propsData, isLoading, isError } = trpc.properties.listForSite.useQuery();
   const properties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
 
-  const cities = useMemo(() => getUniqueLocalities(properties), [properties]);
+  // Destination options come from a tiny dedicated query that is SSR-prefetched,
+  // so the picker is usable on first paint instead of waiting for the full
+  // property list. Falls back to deriving them locally if that query is cold.
+  const { data: localityOptions } = trpc.properties.localities.useQuery();
+  const derivedCities = useMemo(() => getUniqueLocalities(properties), [properties]);
+  const cities = localityOptions?.length ? localityOptions : derivedCities;
 
   const [searchDest, setSearchDest] = useState('');
   const [searchCheckin, setSearchCheckin] = useState('');

@@ -1416,6 +1416,18 @@ export function serveStatic(app: Express) {
     if (m) {
       return { propertyBySlug: { slug: m[1], data: await getPropertyBySlugCached(m[1]) } };
     }
+    // Pages carrying the search widget: seed the destination options (~15
+    // entries) so the picker is populated in the SSR HTML. Without this it
+    // rendered empty until the ~1.3 MB property list arrived — on mobile that
+    // meant tapping "Destination" opened a blank list.
+    if (strippedPath === "/" || strippedPath === "/homes") {
+      try {
+        const { getSiteLocalities } = await import("../services/properties-store");
+        return { localities: await getSiteLocalities() };
+      } catch {
+        return undefined;
+      }
+    }
     return undefined;
   }
 

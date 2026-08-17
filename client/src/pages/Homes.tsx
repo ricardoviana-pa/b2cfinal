@@ -39,7 +39,11 @@ export default function Homes() {
 
   const { data: propsData, isLoading, isError, refetch } = trpc.properties.listForSite.useQuery();
   const allProperties = (propsData ?? []) as Property[];
-  const cities = useMemo(() => getUniqueLocalities(allProperties), [allProperties]);
+  // SSR-prefetched tiny query (see Home.tsx) so the destination picker is
+  // populated immediately; falls back to deriving from the full list.
+  const { data: localityOptions } = trpc.properties.localities.useQuery();
+  const derivedCities = useMemo(() => getUniqueLocalities(allProperties), [allProperties]);
+  const cities = localityOptions?.length ? localityOptions : derivedCities;
   // "From €X" per card (lowest real bookable nightly), when no dates are picked.
   const fromListingIds = useMemo(
     () => allProperties.filter(p => p.guestyId).map(p => p.guestyId!),
