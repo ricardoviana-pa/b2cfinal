@@ -101,7 +101,7 @@ export default function LanguageSwitcher({
               window.location.assign(newUrl);
               setOpen(false);
             }}
-            className={`flex items-center justify-between w-full px-4 py-2.5 text-left transition-colors cursor-pointer ${
+            className={`flex items-center justify-between w-full px-4 py-2.5 min-h-[44px] text-left transition-colors cursor-pointer ${
               active === lang.code
                 ? "bg-[#FAFAF7]"
                 : "hover:bg-[#FAFAF7]"
