@@ -1436,6 +1436,33 @@ export function serveStatic(app: Express) {
     return JSON.stringify(s).replace(/</g, "\\u003c");
   }
 
+  /** Routes whose HTML must never be shared between visitors or held at the
+   *  edge — anything behind auth or tied to a single booking/payment. */
+  const NEVER_CACHE_PREFIXES = ["/account", "/login", "/admin", "/owners-portal", "/checkout", "/booking"];
+
+  /**
+   * Cache-Control for the HTML document.
+   *
+   * The HTML is identical for every visitor of a given URL (no Set-Cookie, and
+   * per-user state is fetched client-side), so public pages can be held by the
+   * CDN — that's what turns a ~0.3-0.9 s origin round trip into an edge hit and
+   * takes the SSR render off the origin entirely.
+   *
+   * `max-age=0` keeps BROWSERS revalidating, so a visitor never runs stale HTML
+   * that points at asset hashes a deploy has already replaced; only the shared
+   * CDN copy is reused (`s-maxage`). That window is deliberately short for the
+   * same reason — after a deploy, stale HTML referencing deleted /assets/*
+   * hashes would break the page, so we trade a little cache depth for safety.
+   */
+  function setHtmlCacheHeaders(res: any, strippedPath: string, status: number) {
+    const isPrivate = NEVER_CACHE_PREFIXES.some(pre => strippedPath.startsWith(pre));
+    if (isPrivate || status !== 200) {
+      res.setHeader("Cache-Control", "private, no-store");
+      return;
+    }
+    res.setHeader("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=120");
+  }
+
   /** Fill <div id="root"> with real SSR markup when SSR is enabled; otherwise
    *  inject the lightweight crawlable #seo-content block. An SSR failure falls
    *  back to the seo-body so a render error can never break the page. */
@@ -1541,11 +1568,13 @@ export function serveStatic(app: Express) {
         status = 404;
         html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
       }
+      setHtmlCacheHeaders(res, p, status);
       return res.status(status).set("Content-Type", "text/html").send(html);
     }
 
     // If static route was already handled, no dynamic lookup needed
     if (localized) {
+      setHtmlCacheHeaders(res, p, status);
       return res.status(status).set("Content-Type", "text/html").send(html);
     }
 
@@ -1713,6 +1742,7 @@ export function serveStatic(app: Express) {
       html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
     }
 
+    setHtmlCacheHeaders(res, p, status);
     res.status(status).set("Content-Type", "text/html").send(html);
   });
 }
