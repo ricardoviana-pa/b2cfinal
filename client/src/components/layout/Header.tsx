@@ -342,7 +342,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
               {/* Mobile: Reserve button */}
               <Link
                 href="/homes"
-                className={`md:hidden inline-flex items-center px-4 py-2 text-[10px] font-medium uppercase transition-all duration-300 ${
+                className={`md:hidden inline-flex items-center px-4 py-2 min-h-[44px] text-[11px] font-medium uppercase transition-all duration-300 ${
                   isTransparent
                     ? 'border border-white/50 text-white hover:bg-white hover:text-[#1A1A18]'
                     : 'border border-[#1A1A18] text-[#1A1A18] hover:bg-[#1A1A18] hover:text-white'

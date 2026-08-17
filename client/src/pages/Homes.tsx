@@ -42,8 +42,30 @@ export default function Homes() {
   // SSR-prefetched tiny query (see Home.tsx) so the destination picker is
   // populated immediately; falls back to deriving from the full list.
   const { data: localityOptions } = trpc.properties.localities.useQuery();
-  const derivedCities = useMemo(() => getUniqueLocalities(allProperties), [allProperties]);
-  const cities = localityOptions?.length ? localityOptions : derivedCities;
+  const derivedCities = (localityOptions?.length
+    ? localityOptions
+    : getUniqueLocalities(allProperties)) as Array<{ label: string; value: string; group?: string }>;
+  const cities = derivedCities;
+
+  // Same region grouping as the homepage picker (see Home.tsx).
+  const cityOptions = useMemo(() => {
+    const groups: Array<[string, typeof cities]> = [];
+    for (const c of cities) {
+      const g = c.group || '';
+      const last = groups[groups.length - 1];
+      if (last && last[0] === g) last[1].push(c);
+      else groups.push([g, [c]]);
+    }
+    return groups.map(([g, items], gi) =>
+      g ? (
+        <optgroup key={`g-${g}-${gi}`} label={g}>
+          {items.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+        </optgroup>
+      ) : (
+        items.map(c => <option key={c.value} value={c.value}>{c.label}</option>)
+      ),
+    );
+  }, [cities]);
   // "From €X" per card (lowest real bookable nightly), when no dates are picked.
   const fromListingIds = useMemo(
     () => allProperties.filter(p => p.guestyId).map(p => p.guestyId!),
@@ -498,9 +520,7 @@ export default function Homes() {
                   style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                 >
                   <option value="">{t('home.searchDestination')}</option>
-                  {cities.map(city => (
-                    <option key={city.value} value={city.value}>{city.label}</option>
-                  ))}
+                  {cityOptions}
                 </select>
                 <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#726D63] pointer-events-none" />
               </div>
@@ -589,9 +609,7 @@ export default function Homes() {
                   style={{ fontFamily: 'var(--font-body)' }}
                 >
                   <option value="">{t('home.searchDestination')}</option>
-                  {cities.map(city => (
-                    <option key={city.value} value={city.value}>{city.label}</option>
-                  ))}
+                  {cityOptions}
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#726D63] pointer-events-none" />
               </div>

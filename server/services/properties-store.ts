@@ -147,16 +147,51 @@ function slugifyLocality(name: string): string {
  * and the dropdown is usable on first paint, instead of waiting for the ~1.3 MB
  * full property list to load (which left the picker empty on mobile).
  */
-export async function getSiteLocalities(): Promise<Array<{ label: string; value: string }>> {
+export async function getSiteLocalities(): Promise<
+  Array<{ label: string; value: string; group?: string }>
+> {
   const properties = await getPropertiesForSite();
-  const map = new Map<string, string>();
+
+  // destination slug → display name + order, so the picker can group the raw
+  // municipalities under the regions guests actually recognise.
+  const destName = new Map<string, string>();
+  const destOrder = new Map<string, number>();
+  try {
+    const raw = await readFile(
+      join(process.cwd(), "client", "src", "data", "destinations.json"),
+      "utf-8",
+    );
+    const arr = JSON.parse(raw);
+    if (Array.isArray(arr)) {
+      arr.forEach((d: any, i: number) => {
+        if (d?.slug && d?.name) {
+          destName.set(d.slug, d.name);
+          destOrder.set(d.slug, typeof d.sortOrder === "number" ? d.sortOrder : i);
+        }
+      });
+    }
+  } catch {
+    /* no destinations file — fall back to a flat, ungrouped list */
+  }
+
+  const map = new Map<string, { label: string; dest?: string }>();
   for (const p of properties) {
     if (p?.isActive && p?.locality) {
       const slug = slugifyLocality(p.locality);
-      if (!map.has(slug)) map.set(slug, p.locality);
+      if (!map.has(slug)) map.set(slug, { label: p.locality, dest: p.destination });
     }
   }
+
   return Array.from(map.entries())
-    .sort((a, b) => a[1].localeCompare(b[1], "pt"))
-    .map(([value, label]) => ({ label, value }));
+    .sort((a, b) => {
+      const oa = destOrder.get(a[1].dest ?? "") ?? 999;
+      const ob = destOrder.get(b[1].dest ?? "") ?? 999;
+      if (oa !== ob) return oa - ob;
+      return a[1].label.localeCompare(b[1].label, "pt");
+    })
+    .map(([value, { label, dest }]) => ({
+      label,
+      value,
+      ...(dest && destName.has(dest) ? { group: destName.get(dest) } : {}),
+    }));
 }
