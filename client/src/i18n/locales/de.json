@@ -222,7 +222,10 @@
     "select": "Auswählen",
     "cancellationPerPolicy": "Stornierung gemäß den Bedingungen der Unterkunft",
     "decreaseGuests": "Weniger Gäste",
-    "increaseGuests": "Mehr Gäste"
+    "increaseGuests": "Mehr Gäste",
+    "arrivalDaysNotice": "Anreise nur {{days}} · mindestens {{count}} Nächte",
+    "minStayMonthNotice": "Mindestaufenthalt von {{count}} Nächten in diesem Monat",
+    "arrivalDaysOnlyNotice": "Anreise nur {{days}}"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Preis auf Anfrage",

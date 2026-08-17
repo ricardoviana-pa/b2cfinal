@@ -222,7 +222,10 @@
     "minStayNotice_one": "Minimum stay for these dates is {{count}} night",
     "minStayNotice_other": "Minimum stay for these dates is {{count}} nights",
     "decreaseGuests": "Decrease guests",
-    "increaseGuests": "Increase guests"
+    "increaseGuests": "Increase guests",
+    "arrivalDaysNotice": "Check-in on {{days}} only · minimum {{count}} nights",
+    "minStayMonthNotice": "Minimum stay of {{count}} nights this month",
+    "arrivalDaysOnlyNotice": "Check-in on {{days}} only"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Price on request",

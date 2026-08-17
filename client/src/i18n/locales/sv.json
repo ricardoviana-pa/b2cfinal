@@ -222,7 +222,10 @@
     "select": "Välj",
     "cancellationPerPolicy": "Avbokning enligt boendets villkor",
     "decreaseGuests": "Färre gäster",
-    "increaseGuests": "Fler gäster"
+    "increaseGuests": "Fler gäster",
+    "arrivalDaysNotice": "Incheckning endast {{days}} · minst {{count}} nätter",
+    "minStayMonthNotice": "Minsta vistelse {{count}} nätter denna månad",
+    "arrivalDaysOnlyNotice": "Incheckning endast {{days}}"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Pris på förfrågan",

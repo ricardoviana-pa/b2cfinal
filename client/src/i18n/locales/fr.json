@@ -222,7 +222,10 @@
     "select": "Sélectionner",
     "cancellationPerPolicy": "Annulation soumise à la politique du logement",
     "decreaseGuests": "Diminuer le nombre de voyageurs",
-    "increaseGuests": "Augmenter le nombre de voyageurs"
+    "increaseGuests": "Augmenter le nombre de voyageurs",
+    "arrivalDaysNotice": "Arrivée uniquement {{days}} · minimum {{count}} nuits",
+    "minStayMonthNotice": "Séjour minimum de {{count}} nuits ce mois-ci",
+    "arrivalDaysOnlyNotice": "Arrivée uniquement {{days}}"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Prix sur demande",

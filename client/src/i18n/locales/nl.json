@@ -222,7 +222,10 @@
     "select": "Selecteren",
     "cancellationPerPolicy": "Annulering volgens het beleid van de accommodatie",
     "decreaseGuests": "Minder gasten",
-    "increaseGuests": "Meer gasten"
+    "increaseGuests": "Meer gasten",
+    "arrivalDaysNotice": "Inchecken alleen op {{days}} · minimaal {{count}} nachten",
+    "minStayMonthNotice": "Minimaal verblijf van {{count}} nachten deze maand",
+    "arrivalDaysOnlyNotice": "Inchecken alleen op {{days}}"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Prijs op aanvraag",

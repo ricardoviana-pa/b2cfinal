@@ -222,7 +222,10 @@
     "select": "Valitse",
     "cancellationPerPolicy": "Peruutus majoituksen ehtojen mukaan",
     "decreaseGuests": "Vähennä vieraita",
-    "increaseGuests": "Lisää vieraita"
+    "increaseGuests": "Lisää vieraita",
+    "arrivalDaysNotice": "Saapuminen vain {{days}} · vähintään {{count}} yötä",
+    "minStayMonthNotice": "Vähimmäisoleskelu {{count}} yötä tässä kuussa",
+    "arrivalDaysOnlyNotice": "Saapuminen vain {{days}}"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Hinta pyynnöstä",

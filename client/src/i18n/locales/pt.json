@@ -222,7 +222,10 @@
     "minStayNotice_one": "A estadia mínima para estas datas é de {{count}} noite",
     "minStayNotice_other": "A estadia mínima para estas datas é de {{count}} noites",
     "decreaseGuests": "Diminuir hóspedes",
-    "increaseGuests": "Aumentar hóspedes"
+    "increaseGuests": "Aumentar hóspedes",
+    "arrivalDaysNotice": "Check-in apenas {{days}} · mínimo {{count}} noites",
+    "minStayMonthNotice": "Estadia mínima de {{count}} noites neste mês",
+    "arrivalDaysOnlyNotice": "Check-in apenas {{days}}"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Preço sob consulta",
