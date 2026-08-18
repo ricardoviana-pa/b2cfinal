@@ -5718,6 +5718,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Maison très bien située, plages surveillées, boulangerie, restaurants à proximité.\nQuartier très calme, parking toujours disponible. Possibilités de laisser ses vélos dans un local privé et fermé. \nLes photos sont conformes à la maison. Idéal pour les vacances en famille ou entre amis.",
+        "guestDisplayName": "Nuno",
+        "guestName": "Nuno",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-15T11:19:20.923Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Beautiful location and great for large families or sharing with friends",
         "guestDisplayName": "Jessica",
         "guestName": "Jessica",
@@ -5893,7 +5928,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 5
+    "reviewCount": 6
   },
   {
     "id": "guesty-696532f3753fb0001424a570",
@@ -6103,6 +6138,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Wonderful hosts and very professional. The house was gorgeous and the location was excellent. Only a few minutes from the city or the beach. We loved it and had a wonderful time and will come back again.",
+        "guestDisplayName": "Mary",
+        "guestName": "Mary",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-15T18:42:39.580Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Muy limpio todo, zona muy tranquila. Hay que coger el coche para ir a la playa o a Viana, pero están cerca. El restaurante de enfrente estupendo, comida rica y barata y muy amables. Mi familia y yo estuvimos muy a gusto.",
         "guestDisplayName": "Marta",
         "guestName": "Marta",
@@ -6243,7 +6313,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 4
+    "reviewCount": 5
   },
   {
     "id": "guesty-6965335df1c3a8001597c8e4",
@@ -9067,6 +9137,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Appartement et hôte très bien.",
+        "guestDisplayName": "Gregory",
+        "guestName": "Gregory",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-17T17:34:16.987Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "O apartamento é uma graça, estava super limpo e é muito bem localizado. Tive um probleminha com as chaves na chegada, mas o anfitrião me atendeu no mesmo instante e ajudou prontamente. Na rua do Airbnb tem uma tasca incrível! Procurem o Rui e serão bem atendidos, de certeza. O único porém do apartamento é um poço de barulho que entra da rua, já que as janelas não são duplas. Mas não foi nada que atrapalhou uma noite de sono. Até porque, a cama de casal é incrível. Voltarei, com certeza!",
         "guestDisplayName": "Vivianne",
         "guestName": "Vivianne",
@@ -9346,8 +9451,8 @@
         ]
       }
     ],
-    "averageRating": 4.88,
-    "reviewCount": 8
+    "averageRating": 4.89,
+    "reviewCount": 9
   },
   {
     "id": "guesty-69c415ceab80a8001247452c",
@@ -21457,17 +21562,17 @@
     "bedrooms": 2,
     "bathrooms": 2.5,
     "maxGuests": 4,
-    "priceFrom": 105,
-    "pricePerNight": 105,
-    "cleaningFee": 70,
+    "priceFrom": 130,
+    "pricePerNight": 130,
+    "cleaningFee": 90,
     "minNights": 2,
     "currency": "EUR",
     "images": [
+      "https://assets.guesty.com/image/upload/v1786980533/production/6957de4388cba42d9e7a905e/fdhxesgt2uqbnb8nwyww.jpg",
       "https://assets.guesty.com/image/upload/v1786980518/production/6957de4388cba42d9e7a905e/oyu6cp8atfmu0jxjtfui.jpg",
       "https://assets.guesty.com/image/upload/v1786980533/production/6957de4388cba42d9e7a905e/fwvl8wbzzz9ggkzdycy3.jpg",
       "https://assets.guesty.com/image/upload/v1786980524/production/6957de4388cba42d9e7a905e/kr6y6ymx89dg1i918e0l.jpg",
       "https://assets.guesty.com/image/upload/v1786980534/production/6957de4388cba42d9e7a905e/sa27qntmnsp0oaqfkzix.jpg",
-      "https://assets.guesty.com/image/upload/v1786980533/production/6957de4388cba42d9e7a905e/fdhxesgt2uqbnb8nwyww.jpg",
       "https://assets.guesty.com/image/upload/v1786980532/production/6957de4388cba42d9e7a905e/se0ahei1zwxd08usyllv.jpg",
       "https://assets.guesty.com/image/upload/v1786980593/production/6957de4388cba42d9e7a905e/liwad0kgjm48bwh62z6w.jpg",
       "https://assets.guesty.com/image/upload/v1786980532/production/6957de4388cba42d9e7a905e/rkonmujzw5b0oqd3cack.jpg",
@@ -22661,6 +22766,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Beautiful house, with great amenities; we had a great time at the house with our family. The team is great and communicates in a very active way.",
+        "guestDisplayName": "Olivier",
+        "guestName": "Olivier",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-17T07:06:50.962Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "We had a wonderful stay, plenty of space for 4 of us. \nThe house is stunning and we had 5 days of pure relaxation.",
         "guestDisplayName": "Gail",
         "guestName": "Gail",
@@ -22905,8 +23045,8 @@
         ]
       }
     ],
-    "averageRating": 4.86,
-    "reviewCount": 7
+    "averageRating": 4.88,
+    "reviewCount": 8
   },
   {
     "id": "guesty-69653381bf04fe00137437cd",
