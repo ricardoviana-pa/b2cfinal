@@ -468,7 +468,7 @@ export async function sendContactInquiryNotification(data: ContactInquiryData): 
 </table>
 </td></tr>`);
 
-  await sendEmail(CONTACT_NOTIFICATION_EMAIL, emailSubject, html, data.email);
+  await sendEmail(BOOKING_NOTIFICATION_EMAIL, emailSubject, html, data.email);
 }
 
 /* ================================================================
@@ -1172,6 +1172,12 @@ export async function sendCheckoutOpsManifest(d: {
    the guest is still deciding. Reply-To is the guest, so a reply goes straight
    to them.
    ================================================================ */
+/** Availability requests are booking traffic, not general enquiries — the
+ *  booking inbox is the one the team works from. Override in Render with
+ *  BOOKING_NOTIFICATION_EMAIL if that changes. */
+const BOOKING_NOTIFICATION_EMAIL =
+  process.env.BOOKING_NOTIFICATION_EMAIL || "booking@portugalactive.com";
+
 export interface AvailabilityRequestData {
   name?: string;
   email: string;
