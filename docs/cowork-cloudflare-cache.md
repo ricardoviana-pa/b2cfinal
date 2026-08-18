@@ -32,10 +32,10 @@ hoje todas as páginas saem como `cf-cache-status: DYNAMIC`.
 
 Caching → Cache Rules → Create rule
 - Nome: `Cache public HTML`
-- Expressão personalizada:
+- Expressão personalizada (usa `contains`, **não** `starts_with` — os caminhos têm prefixo de idioma, `/en/admin`):
 
 ```
-(http.request.method eq "GET" and not starts_with(http.request.uri.path, "/api/") and not starts_with(http.request.uri.path, "/admin") and not starts_with(http.request.uri.path, "/owners-portal") and not http.request.uri.path contains "/account" and not http.request.uri.path contains "/login" and not http.request.uri.path contains "/checkout" and not http.request.uri.path contains "/booking")
+(http.request.method eq "GET" and not http.request.uri.path contains "/api/" and not http.request.uri.path contains "/admin" and not http.request.uri.path contains "/owners-portal" and not http.request.uri.path contains "/account" and not http.request.uri.path contains "/login" and not http.request.uri.path contains "/checkout" and not http.request.uri.path contains "/booking/")
 ```
 
 - Then:

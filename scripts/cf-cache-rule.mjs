@@ -36,13 +36,19 @@ const RULE_DESCRIPTION = "Cache public HTML (managed by scripts/cf-cache-rule.mj
  *  /api/ is excluded so tRPC keeps its own caching semantics. */
 const RULE_EXPRESSION = [
   '(http.request.method eq "GET"',
-  'and not starts_with(http.request.uri.path, "/api/")',
-  'and not starts_with(http.request.uri.path, "/admin")',
-  'and not starts_with(http.request.uri.path, "/owners-portal")',
+  // `contains`, not `starts_with`: every public path carries a locale prefix
+  // (/en/admin, /pt/owners-portal), so a starts_with exclusion never matched
+  // and these routes were only kept out of cache by the origin's own no-store.
+  'and not http.request.uri.path contains "/api/"',
+  'and not http.request.uri.path contains "/admin"',
+  'and not http.request.uri.path contains "/owners-portal"',
   'and not http.request.uri.path contains "/account"',
   'and not http.request.uri.path contains "/login"',
   'and not http.request.uri.path contains "/checkout"',
-  'and not http.request.uri.path contains "/booking")',
+  // Trailing slash on purpose: every real booking route has a child segment
+  // (/booking/confirmation/…), while /blog/booking-traveller-review-awards-2020
+  // is a public article that should stay cacheable.
+  'and not http.request.uri.path contains "/booking/")',
 ].join(" ");
 
 const RULE = {
