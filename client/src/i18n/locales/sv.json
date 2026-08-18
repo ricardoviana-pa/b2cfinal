@@ -115,7 +115,11 @@
     "bookingBarDestination": "Destination",
     "searchHomes": "Sök hem",
     "heroAlt": "Portugal Active hemkollektion",
-    "batchError": "Realtidspriser är tillfälligt otillgängliga. Se varje boendes sida för slutpris."
+    "batchError": "Realtidspriser är tillfälligt otillgängliga. Se varje boendes sida för slutpris.",
+    "hintTooLong": "Sökningen omfattar {{count}} nätter. Så långa vistelser ordnas av vår concierge.",
+    "hintArrival": "Under denna säsong börjar vistelser {{days}} och varar minst {{count}} nätter.",
+    "hintMinStay": "Dessa datum kräver minst {{count}} nätter.",
+    "hintTryDates": "Prova {{from}} → {{to}}"
   },
   "property": {
     "bedrooms": "Sovrum",
@@ -175,7 +179,8 @@
     "bed": "säng",
     "nightPrice": "/ natt",
     "prevPhoto": "Föregående bild",
-    "nextPhoto": "Nästa bild"
+    "nextPhoto": "Nästa bild",
+    "sleepsUpTo": "Plats för upp till {{count}} gäster"
   },
   "booking": {
     "summary": "Bokningsöversikt",

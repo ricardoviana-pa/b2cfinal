@@ -115,7 +115,11 @@
     "bookingBarDestination": "Kohde",
     "searchHomes": "Etsi koteja",
     "heroAlt": "Portugal Active -kotikokoelma",
-    "batchError": "Reaaliaikainen hinnoittelu ei ole tilapäisesti saatavilla. Katso lopullinen hinta kunkin kohteen sivulta."
+    "batchError": "Reaaliaikainen hinnoittelu ei ole tilapäisesti saatavilla. Katso lopullinen hinta kunkin kohteen sivulta.",
+    "hintTooLong": "Haku kattaa {{count}} yötä. Näin pitkät oleskelut järjestää concierge-palvelumme.",
+    "hintArrival": "Tänä sesonkina oleskelut alkavat {{days}} ja kestävät vähintään {{count}} yötä.",
+    "hintMinStay": "Nämä päivät vaativat vähintään {{count}} yön oleskelun.",
+    "hintTryDates": "Kokeile {{from}} → {{to}}"
   },
   "property": {
     "bedrooms": "Makuuhuoneet",
@@ -175,7 +179,8 @@
     "bed": "vuode",
     "nightPrice": "/ yö",
     "prevPhoto": "Edellinen kuva",
-    "nextPhoto": "Seuraava kuva"
+    "nextPhoto": "Seuraava kuva",
+    "sleepsUpTo": "Majoittaa enintään {{count}} vierasta"
   },
   "booking": {
     "summary": "Varauksen yhteenveto",

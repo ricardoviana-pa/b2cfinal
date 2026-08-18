@@ -115,7 +115,11 @@
     "bookingBarDestination": "Destino",
     "searchHomes": "Pesquisar alojamentos",
     "heroAlt": "Coleção de alojamentos Portugal Active",
-    "batchError": "O preço em tempo real está temporariamente indisponível. Consulte a página de cada propriedade para o preço final."
+    "batchError": "O preço em tempo real está temporariamente indisponível. Consulte a página de cada propriedade para o preço final.",
+    "hintTooLong": "Essa pesquisa cobre {{count}} noites. Estadias tão longas são tratadas pelo nosso concierge.",
+    "hintArrival": "Nesta época as estadias começam {{days}} e têm no mínimo {{count}} noites.",
+    "hintMinStay": "Estas datas exigem uma estadia mínima de {{count}} noites.",
+    "hintTryDates": "Experimente {{from}} → {{to}}"
   },
   "property": {
     "bedrooms": "Quartos",
@@ -175,7 +179,8 @@
     "fiveStar": "5 Estrelas",
     "serviceLabel": "Serviço",
     "bed": "cama",
-    "nightPrice": "/ noite"
+    "nightPrice": "/ noite",
+    "sleepsUpTo": "Aloja até {{count}} hóspedes"
   },
   "booking": {
     "summary": "Resumo da Reserva",

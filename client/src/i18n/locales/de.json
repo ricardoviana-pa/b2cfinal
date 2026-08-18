@@ -115,7 +115,11 @@
     "bookingBarDestination": "Reiseziel",
     "searchHomes": "Häuser suchen",
     "heroAlt": "Portugal Active Hauskollektion",
-    "batchError": "Live-Preise sind vorübergehend nicht verfügbar. Den Endpreis finden Sie auf der jeweiligen Objektseite."
+    "batchError": "Live-Preise sind vorübergehend nicht verfügbar. Den Endpreis finden Sie auf der jeweiligen Objektseite.",
+    "hintTooLong": "Diese Suche umfasst {{count}} Nächte. So lange Aufenthalte organisiert unser Concierge.",
+    "hintArrival": "In dieser Saison beginnen Aufenthalte {{days}} und dauern mindestens {{count}} Nächte.",
+    "hintMinStay": "Diese Daten erfordern mindestens {{count}} Nächte.",
+    "hintTryDates": "Versuchen Sie {{from}} → {{to}}"
   },
   "property": {
     "bedrooms": "Schlafzimmer",
@@ -175,7 +179,8 @@
     "bed": "Bett",
     "nightPrice": "/ Nacht",
     "prevPhoto": "Vorheriges Foto",
-    "nextPhoto": "Nächstes Foto"
+    "nextPhoto": "Nächstes Foto",
+    "sleepsUpTo": "Platz für bis zu {{count}} Gäste"
   },
   "booking": {
     "summary": "Buchungsübersicht",

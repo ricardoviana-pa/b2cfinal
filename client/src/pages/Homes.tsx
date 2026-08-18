@@ -32,7 +32,7 @@ interface LiveQuote {
 }
 
 export default function Homes() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   usePageMeta({ title: 'Luxury Holiday Homes in Portugal | Private Villas & Premium Rentals', description: 'Handpicked luxury holiday homes across Portugal. Each property managed to five-star hotel standards. Porto, Lisbon, Algarve, Douro and Minho.', image: IMAGES.heroHomes, url: '/homes' });
   const [, navigate] = useLocation();
   const router = useRouter();
@@ -147,6 +147,12 @@ export default function Homes() {
   const [showAll, setShowAll] = useState(false);
   const utils = trpc.useUtils();
   const effectiveGuests = searchGuestsCount > 0 ? searchGuestsCount : bookingGuests;
+  // Why an empty dated search came back empty (season rules, party size, length)
+  // — so we can answer with the rule and the nearest dates instead of a dead end.
+  const { data: searchHint } = trpc.booking.searchHint.useQuery(
+    { checkIn: searchCheckin, checkOut: searchCheckout, guests: effectiveGuests },
+    { enabled: !!searchCheckin && !!searchCheckout, staleTime: 60 * 60 * 1000 },
+  );
   const checkInRef = useRef<HTMLInputElement>(null);
   const checkOutRef = useRef<HTMLInputElement>(null);
 
@@ -880,9 +886,57 @@ export default function Homes() {
               <p className="text-[15px] font-display text-[#1A1A18] mb-2">
                 {t('homes.noneAvailable', 'No homes available for these dates')}
               </p>
-              <p className="text-[13px] text-[#726D63] mb-4">
-                {t('homes.noneAvailableHint', 'Try adjusting your dates or speak with our concierge')}
-              </p>
+              {/* Say WHY, and offer the nearest dates that satisfy the rule —
+                  "no availability" alone sent a real enquiry to a competitor. */}
+              {searchHint?.reason === 'tooLong' ? (
+                <p className="text-[13px] text-[#726D63] mb-4">
+                  {t('homes.hintTooLong', {
+                    count: searchHint.nights,
+                    defaultValue: 'That search covers {{count}} nights. Stays this long are arranged by our concierge.',
+                  })}
+                </p>
+              ) : searchHint?.reason === 'arrivalRestricted' ? (
+                <p className="text-[13px] text-[#726D63] mb-4">
+                  {t('homes.hintArrival', {
+                    days: (searchHint.arrivalWeekdays ?? [])
+                      .map(w => new Intl.DateTimeFormat(i18n.language, { weekday: 'long', timeZone: 'UTC' })
+                        .format(new Date(Date.UTC(2024, 0, 7 + w))))
+                      .join(', '),
+                    count: searchHint.minNights ?? 0,
+                    defaultValue: 'In this season stays start on {{days}} and run at least {{count}} nights.',
+                  })}
+                </p>
+              ) : searchHint?.reason === 'minStay' ? (
+                <p className="text-[13px] text-[#726D63] mb-4">
+                  {t('homes.hintMinStay', {
+                    count: searchHint.minNights ?? 0,
+                    defaultValue: 'These dates need a minimum stay of {{count}} nights.',
+                  })}
+                </p>
+              ) : (
+                <p className="text-[13px] text-[#726D63] mb-4">
+                  {t('homes.noneAvailableHint', 'Try adjusting your dates or speak with our concierge')}
+                </p>
+              )}
+
+              {searchHint?.suggestion && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const p = new URLSearchParams(searchString);
+                    p.set('checkin', searchHint.suggestion!.checkIn);
+                    p.set('checkout', searchHint.suggestion!.checkOut);
+                    navigate(`/homes?${p.toString()}`);
+                  }}
+                  className="btn-primary inline-flex items-center gap-2 mb-3 min-h-[44px]"
+                >
+                  {t('homes.hintTryDates', {
+                    from: searchHint.suggestion.checkIn,
+                    to: searchHint.suggestion.checkOut,
+                    defaultValue: 'Try {{from}} → {{to}}',
+                  })}
+                </button>
+              )}
               <a
                 href={`https://wa.me/351927161771?text=${encodeURIComponent(`Hi, I'm looking for a property from ${searchCheckin} to ${searchCheckout} for ${effectiveGuests} guests but nothing seems available. Can you help?`)}`}
                 target="_blank"

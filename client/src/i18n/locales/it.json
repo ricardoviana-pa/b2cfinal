@@ -115,7 +115,11 @@
     "bookingBarDestination": "Destinazione",
     "searchHomes": "Cerca case",
     "heroAlt": "Collezione Portugal Active",
-    "batchError": "I prezzi in tempo reale sono temporaneamente non disponibili. Consulta la pagina di ogni proprietà per il prezzo finale."
+    "batchError": "I prezzi in tempo reale sono temporaneamente non disponibili. Consulta la pagina di ogni proprietà per il prezzo finale.",
+    "hintTooLong": "La ricerca copre {{count}} notti. I soggiorni così lunghi sono gestiti dal nostro concierge.",
+    "hintArrival": "In questa stagione i soggiorni iniziano {{days}} e durano almeno {{count}} notti.",
+    "hintMinStay": "Queste date richiedono un soggiorno minimo di {{count}} notti.",
+    "hintTryDates": "Prova {{from}} → {{to}}"
   },
   "property": {
     "bedrooms": "Camere",
@@ -175,7 +179,8 @@
     "bed": "letto",
     "nightPrice": "/ notte",
     "prevPhoto": "Foto precedente",
-    "nextPhoto": "Foto successiva"
+    "nextPhoto": "Foto successiva",
+    "sleepsUpTo": "Ospita fino a {{count}} persone"
   },
   "booking": {
     "summary": "Riepilogo prenotazione",

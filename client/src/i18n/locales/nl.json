@@ -115,7 +115,11 @@
     "bookingBarDestination": "Bestemming",
     "searchHomes": "Huizen zoeken",
     "heroAlt": "Portugal Active woningencollectie",
-    "batchError": "Live-prijzen zijn tijdelijk niet beschikbaar. Zie de pagina van elke accommodatie voor de definitieve prijs."
+    "batchError": "Live-prijzen zijn tijdelijk niet beschikbaar. Zie de pagina van elke accommodatie voor de definitieve prijs.",
+    "hintTooLong": "Deze zoekopdracht beslaat {{count}} nachten. Zulke lange verblijven regelt onze concierge.",
+    "hintArrival": "In dit seizoen starten verblijven op {{days}} en duren minstens {{count}} nachten.",
+    "hintMinStay": "Deze data vereisen minimaal {{count}} nachten.",
+    "hintTryDates": "Probeer {{from}} → {{to}}"
   },
   "property": {
     "bedrooms": "Slaapkamers",
@@ -175,7 +179,8 @@
     "bed": "bed",
     "nightPrice": "/ nacht",
     "prevPhoto": "Vorige foto",
-    "nextPhoto": "Volgende foto"
+    "nextPhoto": "Volgende foto",
+    "sleepsUpTo": "Biedt plaats aan {{count}} gasten"
   },
   "booking": {
     "summary": "Boekingsoverzicht",
