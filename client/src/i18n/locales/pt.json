@@ -330,7 +330,9 @@
     "unavailableLabel": "Indisponível",
     "confirmDates": "Confirmar",
     "tariffInCheckout": "Duas tarifas disponíveis. Escolhe a sua no próximo passo.",
-    "reserve": "RESERVAR"
+    "reserve": "RESERVAR",
+    "arrivalsRule": "Estadias começam {{days}} · mínimo {{count}} noites",
+    "nextArrivals": "Próximas datas disponíveis"
   },
   "common": {
     "loading": "A carregar…",

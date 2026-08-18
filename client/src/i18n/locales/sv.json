@@ -330,7 +330,9 @@
     "unavailableLabel": "Ej tillgänglig",
     "confirmDates": "Bekräfta",
     "tariffInCheckout": "Två priser tillgängliga. Välj ditt i nästa steg.",
-    "reserve": "RESERVERA"
+    "reserve": "RESERVERA",
+    "arrivalsRule": "Vistelser börjar {{days}} · minst {{count}} nätter",
+    "nextArrivals": "Nästa lediga datum"
   },
   "common": {
     "loading": "Laddar…",

@@ -330,7 +330,9 @@
     "unavailableLabel": "Unavailable",
     "confirmDates": "Confirm",
     "tariffInCheckout": "Two rates available. Choose yours in the next step.",
-    "reserve": "RESERVE"
+    "reserve": "RESERVE",
+    "arrivalsRule": "Stays start on {{days}} · minimum {{count}} nights",
+    "nextArrivals": "Next available dates"
   },
   "common": {
     "loading": "Loading…",

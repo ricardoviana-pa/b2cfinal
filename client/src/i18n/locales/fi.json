@@ -330,7 +330,9 @@
     "unavailableLabel": "Varattu",
     "confirmDates": "Vahvista",
     "tariffInCheckout": "Kaksi hintaa saatavilla. Valitse omasi seuraavassa vaiheessa.",
-    "reserve": "VARAA"
+    "reserve": "VARAA",
+    "arrivalsRule": "Oleskelut alkavat {{days}} · vähintään {{count}} yötä",
+    "nextArrivals": "Seuraavat vapaat päivät"
   },
   "common": {
     "loading": "Ladataan…",

@@ -330,7 +330,9 @@
     "unavailableLabel": "Nicht verfügbar",
     "confirmDates": "Bestätigen",
     "tariffInCheckout": "Zwei Tarife verfügbar. Wählen Sie Ihren im nächsten Schritt.",
-    "reserve": "RESERVIEREN"
+    "reserve": "RESERVIEREN",
+    "arrivalsRule": "Aufenthalte beginnen {{days}} · mindestens {{count}} Nächte",
+    "nextArrivals": "Nächste verfügbare Daten"
   },
   "common": {
     "loading": "Wird geladen…",

@@ -671,6 +671,46 @@ export default function BookingWidget({
     return `\n\n⚠️ AÇÃO NECESSÁRIA — SERVIÇOS PEDIDOS PELO HÓSPEDE:\n${lines.join("\n")}\n\nContactar hóspede nas primeiras 2h após reserva para confirmar detalhes, datas e orçamento final de cada serviço.`;
   }, [selectedUpsells]);
 
+  /**
+   * The next few dates a stay can actually START, plus the rule behind them.
+   *
+   * In high season Guesty closes most days to arrival and raises the minimum
+   * stay (Jul/Aug: Saturdays, 7 nights). Guests only discovered that by
+   * clicking blocked day after blocked day and concluding we were full — the
+   * enquiry that surfaced this reached us by phone. Stating the openings up
+   * front turns the restriction into an invitation.
+   */
+  const nextArrivals = useMemo(() => {
+    if (!calendarDays.length || checkIn) return null;
+    const byDate = new Map(calendarDays.map(d => [d.date, d]));
+    const out: Array<{ date: string; nights: number }> = [];
+    let restricted = false;
+    for (const d of calendarDays) {
+      if (out.length >= 4) break;
+      if (d.status !== "available") continue;
+      if (d.cta) { restricted = true; continue; }
+      const need = Math.max(1, d.minNights ?? 1);
+      let ok = true;
+      for (let n = 0; n < need; n++) {
+        const nd = new Date(d.date + "T00:00:00Z");
+        nd.setUTCDate(nd.getUTCDate() + n);
+        const day = byDate.get(nd.toISOString().slice(0, 10));
+        if (!day || day.status !== "available") { ok = false; break; }
+      }
+      if (ok) out.push({ date: d.date, nights: need });
+    }
+    if (!out.length) return null;
+    // State a rule only when it holds for EVERY date offered. A list that spans
+    // a season change mixes 7-night August Saturdays with 2-night September
+    // days; quoting the longest would overstate the restriction and talk
+    // guests out of a stay they could book.
+    const nightsSet = Array.from(new Set(out.map(o => o.nights)));
+    const uniformNights = nightsSet.length === 1 ? nightsSet[0] : null;
+    const weekdays = Array.from(new Set(out.map(o => new Date(o.date + "T00:00:00Z").getUTCDay())));
+    const showRule = !!uniformNights && ((restricted && weekdays.length <= 2) || uniformNights >= 3);
+    return { list: out, minNights: uniformNights ?? 0, showRule, weekdays };
+  }, [calendarDays, checkIn]);
+
   const displayRate = effectiveQuote?.nightlyRate || pricePerNight || 0;
 
   // ── SUCCESS ──
@@ -878,6 +918,49 @@ export default function BookingWidget({
             </div>
           </div>
         </div>
+
+        {/* Openings, stated before the guest starts guessing. Only while no
+            check-in is chosen — once they're picking, the calendar leads. */}
+        {nextArrivals && !showCalendar && (
+          <div className="px-1 pt-3">
+            <p className="text-[11px] text-black/50 mb-2">
+              {nextArrivals.showRule
+                ? t("bookingWidget.arrivalsRule", {
+                    days: Array.from(new Set(nextArrivals.list.map(a =>
+                      new Intl.DateTimeFormat(i18n.language, { weekday: "long", timeZone: "UTC" })
+                        .format(new Date(a.date + "T00:00:00Z"))))).join(", "),
+                    count: nextArrivals.minNights,
+                    defaultValue: "Stays start on {{days}} · minimum {{count}} nights",
+                  })
+                : t("bookingWidget.nextArrivals", "Next available dates")}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {nextArrivals.list.map(a => {
+                const co = new Date(a.date + "T00:00:00Z");
+                co.setUTCDate(co.getUTCDate() + a.nights);
+                const coStr = co.toISOString().slice(0, 10);
+                return (
+                  <button
+                    key={a.date}
+                    type="button"
+                    onClick={() => {
+                      setCheckIn(a.date);
+                      setCheckOut(coStr);
+                      setQuote(null);
+                      setError("");
+                      setBeQuoteError("");
+                      setStep("dates");
+                    }}
+                    className="min-h-[40px] px-3 border border-black/15 bg-white text-[12px] text-black hover:border-black transition-colors"
+                  >
+                    {new Intl.DateTimeFormat(i18n.language, { day: "numeric", month: "short", timeZone: "UTC" })
+                      .format(new Date(a.date + "T00:00:00Z"))}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Availability Calendar — always custom, never native date inputs */}
         {showCalendar && (
