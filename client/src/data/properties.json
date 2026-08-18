@@ -4308,6 +4308,41 @@
     "areaSquareFeet": 10764,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Very spacious house with good infrastructure to have fun with family and friends. The house is very charming and feels like a small castle. Good location as well. Unfortunately the very  smelly rooms and bathrooms makes staying inside a challenge, besides some electrical failures that made some of the nights inside toughter than it should. Lovely place anyway.",
+        "guestDisplayName": "Raphael",
+        "guestName": "Raphael",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-17T14:54:47.081Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Pues fuimos un grupo de 9 adultos y tres niños y la verdad que lo pasamos verdaderamente bien. Diría que mejor los mayores que los pequeños! La empresa muy atenta a los pequeños eventos que pasaron, alguna bajada de luz y poquísimo más, que nos lo solucionaron rapidísimamente. Pena que dos noches se queden extremadamente cortos para lo guay que está la casa. Ojalá volvamos!! por ganas no va a ser. Por poner un pero, un pero muy pequeño, es q en la sala del billar olía a humedad, como a cerrado, ",
         "guestDisplayName": "Angel",
@@ -4378,8 +4413,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 2
+    "averageRating": 4.67,
+    "reviewCount": 3
   },
   {
     "id": "guesty-6a3549e5edd13800142415e0",
@@ -9018,7 +9053,7 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b7bf04fe00137440f8/0d465862-4d40-45-5UN8B",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b7bf04fe00137440f8/8c2050aa-9d7f-43-Bql5I",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b7bf04fe00137440f8/071cd5bd-e16c-4e-gxRgP",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b7bf04fe00137440f8/6155df92-8f7a-40-_PalQ",
+      "https://assets.guesty.com/image/upload/v1787070409/production/6957de4388cba42d9e7a905e/jw8de0zwuon2czlnak51.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b7bf04fe00137440f8/2c49b8ba-d196-44-WSy0n",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b7bf04fe00137440f8/2a2837b7-d019-4d-qhVA6",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b7bf04fe00137440f8/5d177d8f-d35c-49-SotPs",
@@ -24856,6 +24891,41 @@
     "areaSquareFeet": 1076.391042,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Very nice apartment, great location, would stay again. Was very expensive because of the Festival.",
+        "guestDisplayName": "Richard",
+        "guestName": "Richard",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-18T10:00:11.440Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "Grosszügige wohnung, 3 schlafzimmer\nRuhig, gut eingerichtet\nEtwas muffelig, tropfte aus türrahmen, geschirrspühler deckel defekt (mit berletzungsrisiko)",
         "guestDisplayName": "Marc",
@@ -25206,8 +25276,8 @@
         ]
       }
     ],
-    "averageRating": 4.9,
-    "reviewCount": 10
+    "averageRating": 4.91,
+    "reviewCount": 11
   },
   {
     "id": "guesty-69c418871eabf900141bed48",
@@ -25699,6 +25769,41 @@
     "reviews": [
       {
         "rating": 4,
+        "text": "Logement très propre et très facile d'accès et bien agencé, juste dommage pour la petite terrasse. Difficile de manger dehors à 4 .",
+        "guestDisplayName": "Christine",
+        "guestName": "Christine",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-18T16:24:22.855Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
         "text": "First of all, thanks for hosting our family! The house is nice, but we expected it to be in better shape. \n\nFrom the very first moment, we had issues with the internet connection. The team was nice, but it took me several international calls and almost 3 days to get it fixed, and then it was very weak, not even reaching the master bedroom. \n\nI understand it wouldn´t be easy to manage; anyway, I would appreciate a bit of flexibility, not about arrival or departure timing, but to get the access de",
         "guestDisplayName": "Fran",
         "guestName": "Fran",
@@ -26153,8 +26258,8 @@
         ]
       }
     ],
-    "averageRating": 4.77,
-    "reviewCount": 13
+    "averageRating": 4.71,
+    "reviewCount": 14
   },
   {
     "id": "guesty-6965331fec80690013738c68",
