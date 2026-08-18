@@ -33,10 +33,11 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
   const { t, i18n } = useTranslation();
   const [showAll, setShowAll] = useState(false);
 
-  // Brand-positive reviews with real text, most recent first. The sync only
-  // ever writes 4★+ and already applies the per-channel bar (a 10-point
-  // channel must score 9+ to be stored at all), so anything reaching this
-  // component qualifies — we just guard text quality here.
+  // 5★ only, with real text, most recent first. 4★ reviews are still SYNCED —
+  // they keep `averageRating` honest (it reads ~4.9, never a fabricated 5.0) —
+  // but they aren't shown: their text regularly carries criticism ("furniture
+  // very old and uncomfortable", "tennis court disappointing"), and detecting
+  // that automatically across 9 languages proved unreliable.
   const topReviews = useMemo(
     () =>
       (reviews ?? [])
@@ -45,7 +46,7 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
           // Real text only: a placeholder like "." or "…" is effectively a
           // note-only review — drop it (needs at least 3 actual letters).
           const letters = text.replace(/[^\p{L}]/gu, '').length;
-          return Math.round(r.rating) >= 4 && letters >= 3 && !CHANNEL_RE.test(text);
+          return Math.round(r.rating) === 5 && letters >= 3 && !CHANNEL_RE.test(text);
         })
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
     [reviews],
