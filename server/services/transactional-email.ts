@@ -1161,3 +1161,64 @@ export async function sendCheckoutOpsManifest(d: {
   }
 }
 
+
+/* ================================================================
+   AVAILABILITY REQUEST (internal — to info@portugalactive.com)
+
+   Fires when a guest searched dates the site could not serve and left their
+   email. These are the enquiries we used to lose silently: the dates are
+   usually blocked by a season rule (Saturday-only arrivals, 7-night minimum),
+   not by the house being full — so most are winnable if someone replies while
+   the guest is still deciding. Reply-To is the guest, so a reply goes straight
+   to them.
+   ================================================================ */
+export interface AvailabilityRequestData {
+  name?: string;
+  email: string;
+  checkIn: string;
+  checkOut: string;
+  guests: string;
+  nights: string;
+}
+
+export async function sendAvailabilityRequestNotification(
+  data: AvailabilityRequestData,
+): Promise<void> {
+  const who = data.name?.trim() || data.email;
+  const emailSubject = `Availability request: ${data.checkIn} → ${data.checkOut} · ${data.guests} guests`;
+
+  const row = (label: string, value: string) => `
+      <tr>
+        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:13px;color:#726D63;width:90px;">${label}</td>
+        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;font-weight:600;">${value}</td>
+      </tr>`;
+
+  const html = wrapTemplate(`
+<tr><td style="padding:0 0 24px 0;">
+  <h1 style="font-family:Georgia,serif;font-size:22px;color:#1A1A18;margin:0;font-weight:400;">Guest couldn't find these dates</h1>
+  <p style="font-family:Arial,sans-serif;font-size:13px;color:#726D63;margin:6px 0 0 0;">The site showed no availability, so they asked us to check. Reply to this email to answer them directly.</p>
+</td></tr>
+
+<tr><td style="padding:0 0 20px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAFAF7;border:1px solid #E8E4DC;">
+  <tr><td style="padding:20px;">
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">
+      ${row("Dates", `${data.checkIn} → ${data.checkOut}`)}
+      ${row("Nights", data.nights)}
+      ${row("Guests", data.guests)}
+      ${row("Guest", who)}
+      ${row("Email", `<a href="mailto:${data.email}" style="color:#806A48;text-decoration:none;">${data.email}</a>`)}
+    </table>
+  </td></tr>
+</table>
+</td></tr>
+
+<tr><td style="padding:0 0 8px 0;">
+  <p style="font-family:Arial,sans-serif;font-size:13px;color:#726D63;margin:0;">
+    Often the dates are blocked by a season rule (arrival day or minimum stay) rather than by a booking — worth checking the nearest valid window before replying.
+  </p>
+</td></tr>
+`);
+
+  await sendEmail(CONTACT_NOTIFICATION_EMAIL, emailSubject, html, data.email);
+}
