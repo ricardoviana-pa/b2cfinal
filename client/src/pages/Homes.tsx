@@ -728,7 +728,10 @@ export default function Homes() {
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as SortOption)}
-                className="text-[13px] text-[#6B6860] bg-transparent border border-[#E8E4DC] px-3 py-2 font-sans"
+                /* min-w keeps the longest option ("Recommended") from being
+                   clipped on narrow screens; shrink-0 stops the status line
+                   from squeezing it. */
+                className="text-[13px] text-[#6B6860] bg-transparent border border-[#E8E4DC] px-3 py-2 font-sans min-w-[150px] shrink-0"
               >
                 {SORT_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
               </select>
