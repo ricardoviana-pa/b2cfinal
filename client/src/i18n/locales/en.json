@@ -119,7 +119,13 @@
     "hintTooLong": "That search covers {{count}} nights. Here are the stays available in that period:",
     "hintArrival": "In this season stays start on {{days}} and run at least {{count}} nights.",
     "hintMinStay": "These dates need a minimum stay of {{count}} nights.",
-    "hintTryDates": "Try {{from}} → {{to}}"
+    "hintTryDates": "Try {{from}} → {{to}}",
+    "leadPrompt": "Want us to check these exact dates for you?",
+    "leadName": "Name",
+    "leadEmail": "Email",
+    "leadSend": "Send",
+    "leadThanks": "Thank you — we'll come back to you with options for these dates.",
+    "leadError": "Could not send — please try WhatsApp below."
   },
   "property": {
     "bedrooms": "Bedrooms",

@@ -119,7 +119,13 @@
     "hintTooLong": "Haku kattaa {{count}} yötä. Nämä oleskelut ovat saatavilla kyseisenä aikana:",
     "hintArrival": "Tänä sesonkina oleskelut alkavat {{days}} ja kestävät vähintään {{count}} yötä.",
     "hintMinStay": "Nämä päivät vaativat vähintään {{count}} yön oleskelun.",
-    "hintTryDates": "Kokeile {{from}} → {{to}}"
+    "hintTryDates": "Kokeile {{from}} → {{to}}",
+    "leadPrompt": "Haluatteko, että tarkistamme nämä päivät puolestanne?",
+    "leadName": "Nimi",
+    "leadEmail": "Sähköposti",
+    "leadSend": "Lähetä",
+    "leadThanks": "Kiitos — palaamme asiaan vaihtoehdoilla näille päiville.",
+    "leadError": "Lähetys epäonnistui — kokeile WhatsAppia alla."
   },
   "property": {
     "bedrooms": "Makuuhuoneet",

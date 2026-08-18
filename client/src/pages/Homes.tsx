@@ -154,6 +154,38 @@ export default function Homes() {
   const fmtHintDate = (iso: string) =>
     new Intl.DateTimeFormat(i18n.language, { day: 'numeric', month: 'short', timeZone: 'UTC' })
       .format(new Date(iso + 'T00:00:00Z'));
+  // Dead-end capture: a guest whose dates we genuinely can't serve used to
+  // leave with no trace. WhatsApp alone filters out anyone not on WhatsApp or
+  // on desktop, so offer a two-field form as well — the enquiry is the lead.
+  const createLead = trpc.leads.create.useMutation();
+  const [leadEmail, setLeadEmail] = useState('');
+  const [leadName, setLeadName] = useState('');
+  const [leadSent, setLeadSent] = useState(false);
+  const [leadError, setLeadError] = useState('');
+  const submitLead = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!leadEmail) return;
+    setLeadError('');
+    try {
+      await createLead.mutateAsync({
+        email: leadEmail,
+        name: leadName || undefined,
+        source: 'search-no-availability',
+        message: `Looking for ${searchCheckin} → ${searchCheckout}, ${effectiveGuests} guests. Nothing matched on the site.`,
+        metadata: {
+          checkin: searchCheckin,
+          checkout: searchCheckout,
+          guests: String(effectiveGuests),
+          nights: String(searchNights),
+        },
+      });
+      setLeadSent(true);
+      pushDL({ event: 'generate_lead', lead_source: 'search-no-availability', lead_type: 'availability_request' });
+    } catch {
+      setLeadError(t('homes.leadError', 'Could not send — please try WhatsApp below.'));
+    }
+  };
+
   const { data: searchHint } = trpc.booking.searchHint.useQuery(
     { checkIn: searchCheckin, checkOut: searchCheckout, guests: effectiveGuests },
     { enabled: !!searchCheckin && !!searchCheckout, staleTime: 60 * 60 * 1000 },
@@ -821,6 +853,47 @@ export default function Homes() {
                   </div>
                 );
               })()}
+              {/* Even when no dates work, the enquiry is worth having. */}
+              {leadSent ? (
+                <p className="text-[13px] text-[#1A1A18] mb-4 max-w-md mx-auto">
+                  {t('homes.leadThanks', "Thank you — we'll come back to you with options for these dates.")}
+                </p>
+              ) : (
+                <form onSubmit={submitLead} className="max-w-md mx-auto mb-4" noValidate>
+                  <p className="text-[12px] text-[#726D63] mb-2">
+                    {t('homes.leadPrompt', 'Want us to check these exact dates for you?')}
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      type="text"
+                      value={leadName}
+                      onChange={e => setLeadName(e.target.value)}
+                      placeholder={t('homes.leadName', 'Name')}
+                      autoComplete="name"
+                      className="h-[44px] px-3 border border-[#E8E4DC] bg-white text-[14px] sm:w-1/3 focus:outline-none focus:border-[#8B7355]"
+                    />
+                    <input
+                      type="email"
+                      required
+                      value={leadEmail}
+                      onChange={e => { setLeadEmail(e.target.value); setLeadError(''); }}
+                      placeholder={t('homes.leadEmail', 'Email')}
+                      autoComplete="email"
+                      inputMode="email"
+                      className="h-[44px] px-3 border border-[#E8E4DC] bg-white text-[14px] flex-1 focus:outline-none focus:border-[#8B7355]"
+                    />
+                    <button
+                      type="submit"
+                      disabled={createLead.isPending}
+                      className="btn-primary h-[44px] px-5 whitespace-nowrap disabled:opacity-50"
+                    >
+                      {createLead.isPending ? '…' : t('homes.leadSend', 'Send')}
+                    </button>
+                  </div>
+                  {leadError && <p className="text-[11px] text-red-600 mt-1.5" role="alert">{leadError}</p>}
+                </form>
+              )}
+
               <a
                 href={`https://wa.me/351927161771?text=${encodeURIComponent(`Hi, I'm looking for a property from ${searchCheckin} to ${searchCheckout} for ${effectiveGuests} guests but nothing seems available. Can you help?`)}`}
                 target="_blank"

@@ -119,7 +119,13 @@
     "hintTooLong": "Deze zoekopdracht beslaat {{count}} nachten. Dit zijn de beschikbare verblijven in die periode:",
     "hintArrival": "In dit seizoen starten verblijven op {{days}} en duren minstens {{count}} nachten.",
     "hintMinStay": "Deze data vereisen minimaal {{count}} nachten.",
-    "hintTryDates": "Probeer {{from}} → {{to}}"
+    "hintTryDates": "Probeer {{from}} → {{to}}",
+    "leadPrompt": "Zullen wij deze data voor u nakijken?",
+    "leadName": "Naam",
+    "leadEmail": "E-mail",
+    "leadSend": "Versturen",
+    "leadThanks": "Dank u — we komen bij u terug met opties voor deze data.",
+    "leadError": "Verzenden mislukt — probeer WhatsApp hieronder."
   },
   "property": {
     "bedrooms": "Slaapkamers",

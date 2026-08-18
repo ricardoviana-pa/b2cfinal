@@ -119,7 +119,13 @@
     "hintTooLong": "Essa pesquisa cobre {{count}} noites. Estas são as estadias disponíveis nesse período:",
     "hintArrival": "Nesta época as estadias começam {{days}} e têm no mínimo {{count}} noites.",
     "hintMinStay": "Estas datas exigem uma estadia mínima de {{count}} noites.",
-    "hintTryDates": "Experimente {{from}} → {{to}}"
+    "hintTryDates": "Experimente {{from}} → {{to}}",
+    "leadPrompt": "Quer que verifiquemos estas datas por si?",
+    "leadName": "Nome",
+    "leadEmail": "Email",
+    "leadSend": "Enviar",
+    "leadThanks": "Obrigado — voltamos ao seu contacto com opções para estas datas.",
+    "leadError": "Não foi possível enviar — tente o WhatsApp abaixo."
   },
   "property": {
     "bedrooms": "Quartos",

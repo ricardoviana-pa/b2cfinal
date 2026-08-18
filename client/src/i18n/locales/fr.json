@@ -119,7 +119,13 @@
     "hintTooLong": "Cette recherche couvre {{count}} nuits. Voici les séjours disponibles sur cette période :",
     "hintArrival": "En cette saison, les séjours commencent {{days}} et durent au moins {{count}} nuits.",
     "hintMinStay": "Ces dates exigent un séjour minimum de {{count}} nuits.",
-    "hintTryDates": "Essayez {{from}} → {{to}}"
+    "hintTryDates": "Essayez {{from}} → {{to}}",
+    "leadPrompt": "Voulez-vous que nous vérifiions ces dates pour vous ?",
+    "leadName": "Nom",
+    "leadEmail": "E-mail",
+    "leadSend": "Envoyer",
+    "leadThanks": "Merci — nous reviendrons vers vous avec des options pour ces dates.",
+    "leadError": "Envoi impossible — essayez WhatsApp ci-dessous."
   },
   "property": {
     "bedrooms": "Chambres",
