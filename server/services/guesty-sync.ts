@@ -203,6 +203,34 @@ function slugify(title: string, id: string): string {
  *
  * Reads the runtime sync file first (freshest) then the committed fallback.
  */
+/**
+ * Reviews already published, keyed by guestyId — the safety net for a partial
+ * reviews fetch (see fetchAllReviews). Reads the same candidates as
+ * loadExistingSlugMap: runtime sync file first, committed fallback second.
+ */
+async function loadExistingReviews(): Promise<Map<string, any[]>> {
+  const map = new Map<string, any[]>();
+  const candidates = [
+    join(process.cwd(), "data", "properties-synced.json"),
+    join(process.cwd(), "client", "src", "data", "properties.json"),
+  ];
+  for (const path of candidates) {
+    try {
+      const data = JSON.parse(await readFile(path, "utf-8"));
+      if (!Array.isArray(data)) continue;
+      for (const p of data) {
+        if (p?.guestyId && Array.isArray(p.reviews) && p.reviews.length && !map.has(p.guestyId)) {
+          map.set(p.guestyId, p.reviews);
+        }
+      }
+      if (map.size) break;
+    } catch {
+      // missing/unreadable — try the next candidate
+    }
+  }
+  return map;
+}
+
 async function loadExistingSlugMap(): Promise<Map<string, string>> {
   const map = new Map<string, string>();
   const candidates = [
@@ -227,28 +255,45 @@ async function loadExistingSlugMap(): Promise<Map<string, string>> {
   return map;
 }
 
-/** Fetch all reviews from Guesty, paginated */
-async function fetchAllReviews(): Promise<any[]> {
+/**
+ * Fetch all reviews from Guesty, paginated.
+ *
+ * Returns `partial: true` when a page could not be retrieved. That matters:
+ * the caller writes the review set for EVERY listing, so silently keeping a
+ * truncated list would delete the reviews of every listing that lives in the
+ * pages we never reached. On a partial fetch the caller keeps what's already
+ * published instead.
+ */
+async function fetchAllReviews(): Promise<{ reviews: any[]; partial: boolean }> {
   const results: any[] = [];
   let skip = 0;
   const limit = 100;
+  let partial = false;
 
-  while (true) {
-    try {
-      const resp = await guestyClient.getReviews({ limit, skip });
-      // Guesty reviews API returns { data: [...], limit, skip }
-      const items = resp.data || resp.results || [];
-      if (!Array.isArray(items) || items.length === 0) break;
-      results.push(...items);
-      if (items.length < limit) break;
-      skip += limit;
-    } catch (err: any) {
-      console.warn(`[Guesty Sync] Reviews fetch error at skip=${skip}: ${err.message}`);
-      break;
+  pages: while (true) {
+    let items: any[] | null = null;
+    // A transient blip shouldn't cost us the rest of the catalogue's reviews.
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const resp = await guestyClient.getReviews({ limit, skip });
+        items = resp.data || resp.results || [];
+        break;
+      } catch (err: any) {
+        console.warn(`[Guesty Sync] Reviews fetch error at skip=${skip} (attempt ${attempt}/3): ${err.message}`);
+        if (attempt === 3) {
+          partial = true;
+          break pages;
+        }
+        await sleep(1000 * attempt);
+      }
     }
+    if (!Array.isArray(items) || items.length === 0) break;
+    results.push(...items);
+    if (items.length < limit) break;
+    skip += limit;
   }
-  console.log(`[Guesty Sync] Fetched ${results.length} reviews`);
-  return results;
+  console.log(`[Guesty Sync] Fetched ${results.length} reviews${partial ? " (PARTIAL — pagination failed)" : ""}`);
+  return { reviews: results, partial };
 }
 
 /** First name only — warmer for the premium tier, and avoids exposing full
@@ -298,10 +343,15 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
   // site data: the reviews are published unattributed on purpose, so the page
   // promotes Portugal Active rather than the OTA the guest booked through.
   const channelCounts = new Map<string, number>();
+  // Where reviews go. Guesty returns BOTH directions of every stay and every
+  // rating, so a big raw number shrinks a lot before publication — this makes
+  // the funnel visible instead of leaving "we have 1000+ on Airbnb" a mystery.
+  const drop = { total: 0, noListing: 0, hostToGuest: 0, private: 0, belowBar: 0, noText: 0, kept: 0 };
 
   for (const review of reviews) {
+    drop.total++;
     const listingId = review.listingId;
-    if (!listingId) continue;
+    if (!listingId) { drop.noListing++; continue; }
 
     const raw = review.rawReview || review;
 
@@ -318,7 +368,7 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
     // carries reviewer_role ("guest" | "host"), not a top-level `type`. If
     // reviewer_role is present and not "guest", drop it; if absent, keep.
     const reviewerRole = String(raw.reviewer_role ?? review.type ?? "").toLowerCase();
-    if (reviewerRole && reviewerRole !== "guest" && reviewerRole !== "guest-to-host") continue;
+    if (reviewerRole && reviewerRole !== "guest" && reviewerRole !== "guest-to-host") { drop.hostToGuest++; continue; }
 
     // Exclude hidden / private / unsubmitted reviews (real fields: `hidden`,
     // `submitted`), plus the earlier defensive flags.
@@ -327,7 +377,7 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
       review.private === true || review.isPrivate === true ||
       raw.private === true || raw.is_private === true ||
       String(review.status ?? "").toLowerCase() === "private";
-    if (isPrivate) continue;
+    if (isPrivate) { drop.private++; continue; }
 
     // Ratings arrive on two scales: Airbnb-style 1-5, and Booking.com-style
     // 1-10. Work out WHICH before normalising, because the quality bar differs:
@@ -346,7 +396,7 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
     // MIN_TEN_POINT is the commercial bar for 10-point channels (Booking "9+").
     const MIN_TEN_POINT = 9;
     const MIN_FIVE_POINT = 4;
-    if (isTenPointScale ? rawRating < MIN_TEN_POINT : rawRating < MIN_FIVE_POINT) continue;
+    if (isTenPointScale ? rawRating < MIN_TEN_POINT : rawRating < MIN_FIVE_POINT) { drop.belowBar++; continue; }
     if (channelRaw) channelCounts.set(channelRaw, (channelCounts.get(channelRaw) ?? 0) + 1);
 
     let rating = isTenPointScale ? rawRating / 2 : rawRating;
@@ -354,7 +404,8 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
 
     const text = (raw.public_review || raw.publicReview || raw.comments || "").trim();
 
-    if (!text) continue;
+    if (!text) { drop.noText++; continue; }
+    drop.kept++;
 
     // Build category ratings from flat fields (Guesty v1 format)
     const categories: Array<{ name: string; score: number }> = [];
@@ -383,6 +434,13 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
     if (!byListing.has(listingId)) byListing.set(listingId, []);
     byListing.get(listingId)!.push(mapped);
   }
+
+  console.info(
+    `[Guesty Sync] Review funnel — fetched ${drop.total}: ` +
+    `${drop.hostToGuest} host-to-guest, ${drop.private} private/hidden, ` +
+    `${drop.belowBar} below the rating bar, ${drop.noText} without text, ` +
+    `${drop.noListing} unlinked → ${drop.kept} published`,
+  );
 
   if (channelCounts.size) {
     const summary = Array.from(channelCounts.entries())
@@ -748,13 +806,15 @@ export async function runSync(): Promise<string> {
   descMetrics.carriageReturns = 0;
 
   console.log("[Guesty Sync] Fetching listings and reviews...");
-  const [listings, allReviews] = await Promise.all([
+  const [listings, reviewsResult] = await Promise.all([
     fetchAllListings(),
     fetchAllReviews().catch((err) => {
       console.warn(`[Guesty Sync] Reviews fetch failed (non-blocking): ${err.message}`);
-      return [] as any[];
+      return { reviews: [] as any[], partial: true };
     }),
   ]);
+  const allReviews = reviewsResult.reviews;
+  const reviewsArePartial = reviewsResult.partial;
   console.log(`[Guesty Sync] Got ${listings.length} listings, ${allReviews.length} reviews`);
 
   // Diagnostic: log the exact field names on the first fetched review so we can
@@ -782,11 +842,21 @@ export async function runSync(): Promise<string> {
     console.log(`[Guesty Sync] Added ${uniquePortfolio.length} portfolio listings (total: ${listings.length})`);
   }
 
-  const reviewsByListing = buildReviewsByListing(allReviews);
+  // A partial fetch must not be published: we write the review set for every
+  // listing, so a truncated list would erase the reviews of every listing in
+  // the pages we never reached. Fall back to what's already live instead.
+  const reviewsByListing = reviewsArePartial
+    ? await loadExistingReviews()
+    : buildReviewsByListing(allReviews);
+  if (reviewsArePartial) {
+    console.warn(
+      `[Guesty Sync] Reviews fetch was PARTIAL — keeping the ${reviewsByListing.size} listings' published reviews untouched.`,
+    );
+  }
   // Enrich each review with the guest's first name (+ photo) from the guest
   // record. Non-blocking: any failure leaves "Verified guest" cards intact.
   try {
-    await resolveGuestNames(reviewsByListing);
+    if (!reviewsArePartial) await resolveGuestNames(reviewsByListing);
   } catch (err: any) {
     console.warn(`[Guesty Sync] Guest-name resolution failed (non-blocking): ${err?.message ?? err}`);
   }
