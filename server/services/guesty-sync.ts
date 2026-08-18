@@ -294,6 +294,10 @@ function reviewerLocation(review: any, raw: any): string | null {
 function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
   const byListing = new Map<string, any[]>();
   let loggedSample = false;
+  // Diagnostic only — which channels cleared the bar. Never written to the
+  // site data: the reviews are published unattributed on purpose, so the page
+  // promotes Portugal Active rather than the OTA the guest booked through.
+  const channelCounts = new Map<string, number>();
 
   for (const review of reviews) {
     const listingId = review.listingId;
@@ -325,15 +329,32 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
       String(review.status ?? "").toLowerCase() === "private";
     if (isPrivate) continue;
 
-    // overall_rating is a 1-5 Airbnb-style score here; the >5 guard only kicks
-    // in for channels that hand back a 10-point scale.
-    let rating = Number(raw.overall_rating ?? raw.overallRating ?? raw.rating ?? review.rating ?? 0);
-    if (rating > 5) rating = rating / 2;
+    // Ratings arrive on two scales: Airbnb-style 1-5, and Booking.com-style
+    // 1-10. Work out WHICH before normalising, because the quality bar differs:
+    // 4/5 is a strong review, but 8/10 is merely fine — the brand bar for a
+    // 10-point channel is 9. Detect by channel when the payload names one
+    // (a bad 4/10 would otherwise be indistinguishable from a good 4/5), and
+    // fall back to the value itself.
+    const channelRaw = String(
+      raw.channel ?? raw.channelName ?? raw.source ?? raw.platform ??
+      review.channel ?? review.channelName ?? review.source ?? review.platform ?? "",
+    ).toLowerCase();
+    const rawRating = Number(raw.overall_rating ?? raw.overallRating ?? raw.rating ?? review.rating ?? 0);
+    const isTenPointChannel = /booking|expedia|agoda|hotels?\.com|vrbo|homeaway/.test(channelRaw);
+    const isTenPointScale = isTenPointChannel || rawRating > 5;
+
+    // MIN_TEN_POINT is the commercial bar for 10-point channels (Booking "9+").
+    const MIN_TEN_POINT = 9;
+    const MIN_FIVE_POINT = 4;
+    if (isTenPointScale ? rawRating < MIN_TEN_POINT : rawRating < MIN_FIVE_POINT) continue;
+    if (channelRaw) channelCounts.set(channelRaw, (channelCounts.get(channelRaw) ?? 0) + 1);
+
+    let rating = isTenPointScale ? rawRating / 2 : rawRating;
     rating = Math.round(rating * 10) / 10;
 
     const text = (raw.public_review || raw.publicReview || raw.comments || "").trim();
 
-    if (rating < 4 || !text) continue;
+    if (!text) continue;
 
     // Build category ratings from flat fields (Guesty v1 format)
     const categories: Array<{ name: string; score: number }> = [];
@@ -361,6 +382,14 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
 
     if (!byListing.has(listingId)) byListing.set(listingId, []);
     byListing.get(listingId)!.push(mapped);
+  }
+
+  if (channelCounts.size) {
+    const summary = Array.from(channelCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([c, n]) => `${c}=${n}`)
+      .join(", ");
+    console.info(`[Guesty Sync] Reviews kept by channel: ${summary}`);
   }
 
   // Sort each listing's reviews newest first

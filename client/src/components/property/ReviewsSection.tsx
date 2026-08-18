@@ -33,8 +33,10 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
   const { t, i18n } = useTranslation();
   const [showAll, setShowAll] = useState(false);
 
-  // Only genuine top-rated reviews with text, most recent first. Booking's
-  // 0–10 scale is normalised to 1–5 upstream, so a 10 arrives here as a 5.
+  // Brand-positive reviews with real text, most recent first. The sync only
+  // ever writes 4★+ and already applies the per-channel bar (a 10-point
+  // channel must score 9+ to be stored at all), so anything reaching this
+  // component qualifies — we just guard text quality here.
   const topReviews = useMemo(
     () =>
       (reviews ?? [])
@@ -43,14 +45,13 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
           // Real text only: a placeholder like "." or "…" is effectively a
           // note-only review — drop it (needs at least 3 actual letters).
           const letters = text.replace(/[^\p{L}]/gu, '').length;
-          return Math.round(r.rating) === 5 && letters >= 3 && !CHANNEL_RE.test(text);
+          return Math.round(r.rating) >= 4 && letters >= 3 && !CHANNEL_RE.test(text);
         })
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
     [reviews],
   );
 
-  // No qualifying 5★-with-text reviews → hide the section entirely (no sad
-  // empty state).
+  // Nothing qualifying → hide the section entirely (no sad empty state).
   if (topReviews.length === 0) return null;
 
   const INITIAL = 6;
