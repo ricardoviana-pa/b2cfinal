@@ -17,13 +17,24 @@ const MAX_NIGHTS = 30;
 const CACHE_TTL_MS = 60 * 60 * 1000;
 const cache = new Map<string, { days: any[]; at: number }>();
 
+export interface DateWindow {
+  checkIn: string;
+  checkOut: string;
+}
+
 export interface SearchHint {
   reason: "tooLong" | "arrivalRestricted" | "minStay" | null;
   nights: number;
   minNights?: number;
   /** 0 = Sunday … 6 = Saturday */
   arrivalWeekdays?: number[];
-  suggestion?: { checkIn: string; checkOut: string };
+  /** The single nearest fix (kept for the simple cases). */
+  suggestion?: DateWindow;
+  /** Bookable windows INSIDE the requested range — the answer when someone
+   *  uses the date fields to express "sometime this summer" rather than an
+   *  exact stay. Empty when the range is short enough that `suggestion` says
+   *  it all. */
+  options?: DateWindow[];
 }
 
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
@@ -51,7 +62,6 @@ export async function getSearchHint(
         86400000,
     ),
   );
-  if (nights > MAX_NIGHTS) return { reason: "tooLong", nights };
   if (nights <= 0) return { reason: null, nights };
 
   // Representative listing: the roomiest one that fits the party, so the rules
@@ -63,9 +73,12 @@ export async function getSearchHint(
   const listingId = candidates[0]?.guestyId;
   if (!listingId) return { reason: null, nights };
 
+  // Cover the whole requested range for long searches (that IS the search),
+  // capped so one wide query can't turn into a giant calendar pull.
+  const horizon = Math.min(Math.max(nights + 14, 60), 200);
   let days: any[];
   try {
-    days = await calendarFor(listingId, addDays(checkIn, -1), addDays(checkIn, 60));
+    days = await calendarFor(listingId, addDays(checkIn, -1), addDays(checkIn, horizon));
   } catch {
     return { reason: null, nights };
   }
@@ -103,6 +116,42 @@ export async function getSearchHint(
     return undefined;
   };
 
+  /** Every bookable window whose check-in falls inside [from, to]. */
+  const windowsWithin = (from: string, to: string, max: number): DateWindow[] => {
+    const out: DateWindow[] = [];
+    for (let i = 0; i < 200 && out.length < max; i++) {
+      const ci = addDays(from, i);
+      if (ci > to) break;
+      const info = byDate.get(ci);
+      if (!info || info.status !== "available" || info.cta) continue;
+      const need = Math.max(1, Number(info.minNights ?? 1));
+      let ok = true;
+      for (let n = 0; n < need; n++) {
+        const day = byDate.get(addDays(ci, n));
+        if (!day || day.status !== "available") { ok = false; break; }
+      }
+      if (ok) {
+        out.push({ checkIn: ci, checkOut: addDays(ci, need) });
+        i += need - 1; // don't offer overlapping weeks — they read as noise
+      }
+    }
+    return out;
+  };
+
+  // A range this long isn't a stay, it's "sometime this summer". Answer with
+  // the actual bookable weeks inside it instead of refusing the search.
+  if (nights > MAX_NIGHTS) {
+    const options = windowsWithin(checkIn, checkOut, 6);
+    return {
+      reason: "tooLong",
+      nights,
+      minNights,
+      arrivalWeekdays,
+      options,
+      suggestion: options[0],
+    };
+  }
+
   if (start.cta) {
     return {
       reason: "arrivalRestricted",
@@ -110,6 +159,7 @@ export async function getSearchHint(
       minNights,
       arrivalWeekdays,
       suggestion: nextValidArrival(checkIn),
+      options: windowsWithin(checkIn, addDays(checkIn, 45), 4),
     };
   }
   if (nights < minNights) {

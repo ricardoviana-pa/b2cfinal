@@ -116,7 +116,7 @@
     "searchHomes": "Rechercher",
     "heroAlt": "Collection Portugal Active",
     "batchError": "La tarification en temps réel est temporairement indisponible. Consultez la page de chaque propriété pour le tarif final.",
-    "hintTooLong": "Cette recherche couvre {{count}} nuits. Les séjours aussi longs sont organisés par notre concierge.",
+    "hintTooLong": "Cette recherche couvre {{count}} nuits. Voici les séjours disponibles sur cette période :",
     "hintArrival": "En cette saison, les séjours commencent {{days}} et durent au moins {{count}} nuits.",
     "hintMinStay": "Ces dates exigent un séjour minimum de {{count}} nuits.",
     "hintTryDates": "Essayez {{from}} → {{to}}"

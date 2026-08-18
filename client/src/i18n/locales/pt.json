@@ -116,7 +116,7 @@
     "searchHomes": "Pesquisar alojamentos",
     "heroAlt": "Coleção de alojamentos Portugal Active",
     "batchError": "O preço em tempo real está temporariamente indisponível. Consulte a página de cada propriedade para o preço final.",
-    "hintTooLong": "Essa pesquisa cobre {{count}} noites. Estadias tão longas são tratadas pelo nosso concierge.",
+    "hintTooLong": "Essa pesquisa cobre {{count}} noites. Estas são as estadias disponíveis nesse período:",
     "hintArrival": "Nesta época as estadias começam {{days}} e têm no mínimo {{count}} noites.",
     "hintMinStay": "Estas datas exigem uma estadia mínima de {{count}} noites.",
     "hintTryDates": "Experimente {{from}} → {{to}}"

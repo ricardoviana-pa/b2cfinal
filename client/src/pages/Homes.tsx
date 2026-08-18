@@ -750,7 +750,7 @@ export default function Homes() {
                 <p className="text-[13px] text-[#726D63] mb-4">
                   {t('homes.hintTooLong', {
                     count: searchHint.nights,
-                    defaultValue: 'That search covers {{count}} nights. Stays this long are arranged by our concierge.',
+                    defaultValue: 'That search covers {{count}} nights. Here are the stays available in that period:',
                   })}
                 </p>
               ) : searchHint?.reason === 'arrivalRestricted' ? (
@@ -777,24 +777,50 @@ export default function Homes() {
                 </p>
               )}
 
-              {searchHint?.suggestion && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    const p = new URLSearchParams(searchString);
-                    p.set('checkin', searchHint.suggestion!.checkIn);
-                    p.set('checkout', searchHint.suggestion!.checkOut);
-                    navigate(`/homes?${p.toString()}`);
-                  }}
-                  className="btn-primary inline-flex items-center gap-2 mb-3 min-h-[44px]"
-                >
-                  {t('homes.hintTryDates', {
-                    from: fmtHintDate(searchHint.suggestion.checkIn),
-                    to: fmtHintDate(searchHint.suggestion.checkOut),
-                    defaultValue: 'Try {{from}} → {{to}}',
-                  })}
-                </button>
-              )}
+              {(() => {
+                const opts = searchHint?.options?.length
+                  ? searchHint.options
+                  : searchHint?.suggestion
+                    ? [searchHint.suggestion]
+                    : [];
+                if (!opts.length) return null;
+                const goTo = (w: { checkIn: string; checkOut: string }) => {
+                  const p = new URLSearchParams(searchString);
+                  p.set('checkin', w.checkIn);
+                  p.set('checkout', w.checkOut);
+                  navigate(`/homes?${p.toString()}`);
+                };
+                const label = (w: { checkIn: string; checkOut: string }) =>
+                  `${fmtHintDate(w.checkIn)} → ${fmtHintDate(w.checkOut)}`;
+                return (
+                  <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
+                    {/* First option is the primary action; the rest are equal
+                        alternatives, so a guest who meant "sometime that month"
+                        picks a week instead of re-typing dates. */}
+                    <button
+                      type="button"
+                      onClick={() => goTo(opts[0])}
+                      className="btn-primary inline-flex items-center gap-2 min-h-[44px]"
+                    >
+                      {t('homes.hintTryDates', {
+                        from: fmtHintDate(opts[0].checkIn),
+                        to: fmtHintDate(opts[0].checkOut),
+                        defaultValue: 'Try {{from}} → {{to}}',
+                      })}
+                    </button>
+                    {opts.slice(1).map(w => (
+                      <button
+                        key={w.checkIn}
+                        type="button"
+                        onClick={() => goTo(w)}
+                        className="min-h-[44px] px-4 border border-[#E8E4DC] bg-white text-[13px] text-[#1A1A18] hover:border-[#8B7355] transition-colors"
+                      >
+                        {label(w)}
+                      </button>
+                    ))}
+                  </div>
+                );
+              })()}
               <a
                 href={`https://wa.me/351927161771?text=${encodeURIComponent(`Hi, I'm looking for a property from ${searchCheckin} to ${searchCheckout} for ${effectiveGuests} guests but nothing seems available. Can you help?`)}`}
                 target="_blank"

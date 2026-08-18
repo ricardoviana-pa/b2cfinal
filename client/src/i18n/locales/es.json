@@ -116,7 +116,7 @@
     "searchHomes": "Buscar casas",
     "heroAlt": "Colección Portugal Active",
     "batchError": "Los precios en tiempo real no están disponibles temporalmente. Consulte la página de cada propiedad para ver el precio final.",
-    "hintTooLong": "Esa búsqueda abarca {{count}} noches. Las estancias tan largas las gestiona nuestro conserje.",
+    "hintTooLong": "Esa búsqueda abarca {{count}} noches. Estas son las estancias disponibles en ese periodo:",
     "hintArrival": "En esta temporada las estancias empiezan {{days}} y duran al menos {{count}} noches.",
     "hintMinStay": "Estas fechas requieren una estancia mínima de {{count}} noches.",
     "hintTryDates": "Prueba {{from}} → {{to}}"

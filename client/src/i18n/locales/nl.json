@@ -116,7 +116,7 @@
     "searchHomes": "Huizen zoeken",
     "heroAlt": "Portugal Active woningencollectie",
     "batchError": "Live-prijzen zijn tijdelijk niet beschikbaar. Zie de pagina van elke accommodatie voor de definitieve prijs.",
-    "hintTooLong": "Deze zoekopdracht beslaat {{count}} nachten. Zulke lange verblijven regelt onze concierge.",
+    "hintTooLong": "Deze zoekopdracht beslaat {{count}} nachten. Dit zijn de beschikbare verblijven in die periode:",
     "hintArrival": "In dit seizoen starten verblijven op {{days}} en duren minstens {{count}} nachten.",
     "hintMinStay": "Deze data vereisen minimaal {{count}} nachten.",
     "hintTryDates": "Probeer {{from}} → {{to}}"

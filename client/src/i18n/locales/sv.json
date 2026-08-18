@@ -116,7 +116,7 @@
     "searchHomes": "Sök hem",
     "heroAlt": "Portugal Active hemkollektion",
     "batchError": "Realtidspriser är tillfälligt otillgängliga. Se varje boendes sida för slutpris.",
-    "hintTooLong": "Sökningen omfattar {{count}} nätter. Så långa vistelser ordnas av vår concierge.",
+    "hintTooLong": "Sökningen omfattar {{count}} nätter. Dessa vistelser är tillgängliga under perioden:",
     "hintArrival": "Under denna säsong börjar vistelser {{days}} och varar minst {{count}} nätter.",
     "hintMinStay": "Dessa datum kräver minst {{count}} nätter.",
     "hintTryDates": "Prova {{from}} → {{to}}"

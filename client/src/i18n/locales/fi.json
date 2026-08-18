@@ -116,7 +116,7 @@
     "searchHomes": "Etsi koteja",
     "heroAlt": "Portugal Active -kotikokoelma",
     "batchError": "Reaaliaikainen hinnoittelu ei ole tilapäisesti saatavilla. Katso lopullinen hinta kunkin kohteen sivulta.",
-    "hintTooLong": "Haku kattaa {{count}} yötä. Näin pitkät oleskelut järjestää concierge-palvelumme.",
+    "hintTooLong": "Haku kattaa {{count}} yötä. Nämä oleskelut ovat saatavilla kyseisenä aikana:",
     "hintArrival": "Tänä sesonkina oleskelut alkavat {{days}} ja kestävät vähintään {{count}} yötä.",
     "hintMinStay": "Nämä päivät vaativat vähintään {{count}} yön oleskelun.",
     "hintTryDates": "Kokeile {{from}} → {{to}}"

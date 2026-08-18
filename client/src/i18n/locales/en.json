@@ -116,7 +116,7 @@
     "searchHomes": "Search homes",
     "heroAlt": "Portugal Active homes collection",
     "batchError": "Live pricing is temporarily unavailable. See each property page for final pricing.",
-    "hintTooLong": "That search covers {{count}} nights. Stays this long are arranged by our concierge.",
+    "hintTooLong": "That search covers {{count}} nights. Here are the stays available in that period:",
     "hintArrival": "In this season stays start on {{days}} and run at least {{count}} nights.",
     "hintMinStay": "These dates need a minimum stay of {{count}} nights.",
     "hintTryDates": "Try {{from}} → {{to}}"

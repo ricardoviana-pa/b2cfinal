@@ -116,7 +116,7 @@
     "searchHomes": "Häuser suchen",
     "heroAlt": "Portugal Active Hauskollektion",
     "batchError": "Live-Preise sind vorübergehend nicht verfügbar. Den Endpreis finden Sie auf der jeweiligen Objektseite.",
-    "hintTooLong": "Diese Suche umfasst {{count}} Nächte. So lange Aufenthalte organisiert unser Concierge.",
+    "hintTooLong": "Diese Suche umfasst {{count}} Nächte. Diese Aufenthalte sind in dem Zeitraum verfügbar:",
     "hintArrival": "In dieser Saison beginnen Aufenthalte {{days}} und dauern mindestens {{count}} Nächte.",
     "hintMinStay": "Diese Daten erfordern mindestens {{count}} Nächte.",
     "hintTryDates": "Versuchen Sie {{from}} → {{to}}"
