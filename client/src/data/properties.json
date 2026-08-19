@@ -2670,6 +2670,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "El apartamento esta nuevo parecía que lo entrenamos, con las consiguientes fallos de las cosas nuevas, el sitio es muy tranquilo y esta cerca de viana y de la playa",
+        "guestDisplayName": "Carlos",
+        "guestName": "Carlos",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-19T16:27:10.468Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "The apartment was unbelievably beautiful, it looked like something out of a magazine. Our host was beyond helpful and super responsive. The apartment was a 30-minute walk to Viana do Castelo or 30 minute walk to the beach. It was really nicely located in Darque.",
         "guestDisplayName": "Laura",
         "guestName": "Laura",
@@ -2740,7 +2775,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   },
   {
     "id": "guesty-69653354109993001383ef5f",
@@ -23851,7 +23886,6 @@
     },
     "amenities": {
       "property": [
-        "Air conditioning",
         "Baking sheet",
         "Beach",
         "Beach Front",
@@ -23882,7 +23916,6 @@
         "Garden or backyard",
         "Hair dryer",
         "Hangers",
-        "Heating",
         "High touch surfaces disinfected",
         "Hot water",
         "Internet",
@@ -26516,9 +26549,45 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 2152.782,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 4,
+        "text": "La valoración es de Vila Áurea en Vilanova de Anha. Muy Buena casa con buenas calidades de construcción y marca de electrodomésticos. Algo descuidada de limpieza,la piscina no estaba limpia (algas) , y algunas pequeñas deficiencias: la nevera no cerraba bien, una mesa de exterior rota, la tostadora no funcionaba, el horno tampoco. Nos cobraron una exageración por el cargador eléctrico del coche!! 0,8€ / KW",
+        "guestDisplayName": "Rafael",
+        "guestName": "Rafael",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-19T10:29:46.929Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      }
+    ],
+    "averageRating": 4,
+    "reviewCount": 1
   },
   {
     "id": "guesty-696533af4fe6a100145fecb6",
