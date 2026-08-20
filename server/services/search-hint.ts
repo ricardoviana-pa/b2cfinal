@@ -1,19 +1,30 @@
 /**
- * WHY a search came back empty — and which dates would work.
+ * WHY a dated search came back empty — and the dates that would work.
  *
- * A guest searching 1 Jul → 31 Aug 2027 for 13 people saw "no homes available"
- * and left; the houses were in fact free, but high season runs Saturday to
- * Saturday with a 7-night minimum, and the request was a 61-night stay starting
- * on a Thursday. "No availability" was true but useless. This turns that dead
- * end into the rule plus the nearest dates that satisfy it.
- *
- * Deliberately cheap: it reads ONE representative listing's calendar (the
- * season rules are set per season, not per house) and caches per listing+month.
+ * Two real cases taught this module its shape:
+ *  1. A guest searched Thu 1 Jul → 8 Jul 2027; high season only opens arrivals
+ *     on Saturdays, so everything showed unavailable though the houses were free.
+ *  2. A guest wanted 61 CONTINUOUS nights (1 Jul → 31 Aug 2027). Houses were
+ *     100% free for the whole span — a Sat-start 61-night stay quotes live at
+ *     €119k — but the arrival day (Thursday) blocked every quote. An earlier
+ *     version of this file capped "reasonable" stays at 30 nights and answered
+ *     with weekly windows, silently telling a six-figure booking it wasn't
+ *     possible. Never assume the stay length is the problem: FIRST try to keep
+ *     the guest's full duration by shifting the arrival; only offer smaller
+ *     windows when no house can take the whole stay.
  */
 import { guestyBEClient } from "../lib/guesty";
 import { getPropertiesForSite } from "./properties-store";
 
-const MAX_NIGHTS = 30;
+/** Beyond this we don't try to validate a continuous stay against calendars
+ *  (horizon limits); the answer becomes "here are the windows + concierge". */
+const VALIDATE_CAP_NIGHTS = 120;
+/** How far past the requested check-in we'll shift an arrival to preserve the
+ *  guest's full duration. */
+const ARRIVAL_SCAN_DAYS = 21;
+/** How many party-fitting listings we check for full-length availability. */
+const MAX_CANDIDATE_LISTINGS = 5;
+
 const CACHE_TTL_MS = 60 * 60 * 1000;
 const cache = new Map<string, { days: any[]; at: number }>();
 
@@ -28,12 +39,12 @@ export interface SearchHint {
   minNights?: number;
   /** 0 = Sunday … 6 = Saturday */
   arrivalWeekdays?: number[];
-  /** The single nearest fix (kept for the simple cases). */
+  /** The single nearest fix. For a shifted arrival it PRESERVES the guest's
+   *  full requested duration. */
   suggestion?: DateWindow;
-  /** Bookable windows INSIDE the requested range — the answer when someone
-   *  uses the date fields to express "sometime this summer" rather than an
-   *  exact stay. Empty when the range is short enough that `suggestion` says
-   *  it all. */
+  /** Bookable windows INSIDE the requested range — only sent when the full
+   *  duration is genuinely not available anywhere, i.e. the search reads as
+   *  "sometime in this period" rather than one continuous stay. */
   options?: DateWindow[];
 }
 
@@ -64,111 +75,125 @@ export async function getSearchHint(
   );
   if (nights <= 0) return { reason: null, nights };
 
-  // Representative listing: the roomiest one that fits the party, so the rules
-  // we read are the ones this guest would actually be quoted.
+  // Listings that fit the party, roomiest first — the rules we read are the
+  // ones this guest would actually be quoted.
   const props = await getPropertiesForSite();
   const candidates = props
     .filter((p: any) => p?.guestyId && (!guests || (p.maxGuests ?? 0) >= guests))
     .sort((a: any, b: any) => (b.maxGuests ?? 0) - (a.maxGuests ?? 0));
-  const listingId = candidates[0]?.guestyId;
-  if (!listingId) return { reason: null, nights };
+  if (!candidates.length) return { reason: null, nights };
 
-  // Cover the whole requested range for long searches (that IS the search),
-  // capped so one wide query can't turn into a giant calendar pull.
-  const horizon = Math.min(Math.max(nights + 14, 60), 200);
-  let days: any[];
+  const horizon = Math.min(nights + ARRIVAL_SCAN_DAYS + 14, 240);
+  const from = addDays(checkIn, -1);
+  const to = addDays(checkIn, horizon);
+
+  const loadMap = async (listingId: string) => {
+    const days = await calendarFor(listingId, from, to);
+    return { days, byDate: new Map<string, any>(days.map((d: any) => [d.date, d])) };
+  };
+
+  const canStay = (byDate: Map<string, any>, ci: string, n: number) => {
+    for (let i = 0; i < n; i++) {
+      const day = byDate.get(addDays(ci, i));
+      if (!day || day.status !== "available") return false;
+    }
+    return true;
+  };
+
+  /** Earliest arrival in [fromDate, fromDate+scan] that is open to arrival and
+   *  has the FULL duration continuously available on this listing. */
+  const fullLengthArrival = (byDate: Map<string, any>, fromDate: string): string | null => {
+    for (let i = 0; i <= ARRIVAL_SCAN_DAYS; i++) {
+      const ci = addDays(fromDate, i);
+      const info = byDate.get(ci);
+      if (!info || info.status !== "available" || info.cta) continue;
+      if (canStay(byDate, ci, nights)) return ci;
+    }
+    return null;
+  };
+
+  // Primary calendar (roomiest fit) supplies the season-rule messaging.
+  let primary: { days: any[]; byDate: Map<string, any> };
   try {
-    days = await calendarFor(listingId, addDays(checkIn, -1), addDays(checkIn, horizon));
+    primary = await loadMap(candidates[0].guestyId);
   } catch {
     return { reason: null, nights };
   }
-  const byDate = new Map<string, any>(days.map((d: any) => [d.date, d]));
-  const start = byDate.get(checkIn);
+  const start = primary.byDate.get(checkIn);
   if (!start) return { reason: null, nights };
 
   const minNights = Math.max(1, Number(start.minNights ?? 1));
-  // Only the check-in's own month: the fetched window spills into neighbouring
-  // months whose season rules differ (late June is open every day), and mixing
-  // them in would advertise arrival days that this stay cannot actually use.
   const checkInMonth = checkIn.slice(0, 7);
   const arrivalWeekdays = Array.from(
     new Set(
-      days
+      primary.days
         .filter((d: any) => d.date.slice(0, 7) === checkInMonth && d.status === "available" && !d.cta)
         .map((d: any) => new Date(d.date + "T00:00:00Z").getUTCDay()),
     ),
   ).sort();
 
-  /** First date on/after `from` that opens to arrival and has minNights free. */
-  const nextValidArrival = (from: string): { checkIn: string; checkOut: string } | undefined => {
-    for (let i = 0; i < 60; i++) {
-      const ci = addDays(from, i);
-      const info = byDate.get(ci);
-      if (!info || info.status !== "available" || info.cta) continue;
-      const need = Math.max(1, Number(info.minNights ?? 1));
-      let ok = true;
-      for (let n = 0; n < need; n++) {
-        const day = byDate.get(addDays(ci, n));
-        if (!day || day.status !== "available") { ok = false; break; }
-      }
-      if (ok) return { checkIn: ci, checkOut: addDays(ci, need) };
+  const searchIsFine = !start.cta && nights >= minNights && canStay(primary.byDate, checkIn, nights);
+  if (searchIsFine) {
+    // The PLP's own quotes decide availability per house; nothing to explain.
+    if (nights < minNights) {
+      return { reason: "minStay", nights, minNights, suggestion: { checkIn, checkOut: addDays(checkIn, minNights) } };
     }
-    return undefined;
-  };
+    return { reason: null, nights };
+  }
 
-  /** Every bookable window whose check-in falls inside [from, to]. */
-  const windowsWithin = (from: string, to: string, max: number): DateWindow[] => {
-    const out: DateWindow[] = [];
-    for (let i = 0; i < 200 && out.length < max; i++) {
-      const ci = addDays(from, i);
-      if (ci > to) break;
-      const info = byDate.get(ci);
-      if (!info || info.status !== "available" || info.cta) continue;
-      const need = Math.max(1, Number(info.minNights ?? 1));
-      let ok = true;
-      for (let n = 0; n < need; n++) {
-        const day = byDate.get(addDays(ci, n));
-        if (!day || day.status !== "available") { ok = false; break; }
-      }
-      if (ok) {
-        out.push({ checkIn: ci, checkOut: addDays(ci, need) });
-        i += need - 1; // don't offer overlapping weeks — they read as noise
+  if (!start.cta && nights < minNights) {
+    return { reason: "minStay", nights, minNights, suggestion: { checkIn, checkOut: addDays(checkIn, minNights) } };
+  }
+
+  // Something blocks this exact request. Before ANY smaller-window talk, try to
+  // keep the guest's full duration by shifting the arrival — across up to
+  // MAX_CANDIDATE_LISTINGS party-fitting houses (availability varies per house).
+  if (nights <= VALIDATE_CAP_NIGHTS) {
+    let bestArrival: string | null = fullLengthArrival(primary.byDate, checkIn);
+    if (!bestArrival) {
+      for (const cand of candidates.slice(1, MAX_CANDIDATE_LISTINGS)) {
+        try {
+          const { byDate } = await loadMap(cand.guestyId);
+          const ci = fullLengthArrival(byDate, checkIn);
+          if (ci && (!bestArrival || ci < bestArrival)) bestArrival = ci;
+          if (bestArrival && bestArrival <= addDays(checkIn, 2)) break;
+        } catch {
+          /* one listing's calendar failing shouldn't kill the hint */
+        }
       }
     }
-    return out;
+    if (bestArrival) {
+      return {
+        reason: "arrivalRestricted",
+        nights,
+        minNights,
+        arrivalWeekdays,
+        // Duration preserved — this is the whole point.
+        suggestion: { checkIn: bestArrival, checkOut: addDays(bestArrival, nights) },
+      };
+    }
+  }
+
+  // No house can take the full stay → treat the range as a period and offer
+  // the bookable windows inside it.
+  const windows: DateWindow[] = [];
+  for (let i = 0; i < 200 && windows.length < 6; i++) {
+    const ci = addDays(checkIn, i);
+    if (ci > checkOut) break;
+    const info = primary.byDate.get(ci);
+    if (!info || info.status !== "available" || info.cta) continue;
+    const need = Math.max(1, Number(info.minNights ?? 1));
+    if (canStay(primary.byDate, ci, need)) {
+      windows.push({ checkIn: ci, checkOut: addDays(ci, need) });
+      i += need - 1;
+    }
+  }
+  return {
+    reason: "tooLong",
+    nights,
+    minNights,
+    arrivalWeekdays,
+    options: windows,
+    suggestion: windows[0],
   };
-
-  // A range this long isn't a stay, it's "sometime this summer". Answer with
-  // the actual bookable weeks inside it instead of refusing the search.
-  if (nights > MAX_NIGHTS) {
-    const options = windowsWithin(checkIn, checkOut, 6);
-    return {
-      reason: "tooLong",
-      nights,
-      minNights,
-      arrivalWeekdays,
-      options,
-      suggestion: options[0],
-    };
-  }
-
-  if (start.cta) {
-    return {
-      reason: "arrivalRestricted",
-      nights,
-      minNights,
-      arrivalWeekdays,
-      suggestion: nextValidArrival(checkIn),
-      options: windowsWithin(checkIn, addDays(checkIn, 45), 4),
-    };
-  }
-  if (nights < minNights) {
-    return {
-      reason: "minStay",
-      nights,
-      minNights,
-      suggestion: { checkIn, checkOut: addDays(checkIn, minNights) },
-    };
-  }
-  return { reason: null, nights };
 }
