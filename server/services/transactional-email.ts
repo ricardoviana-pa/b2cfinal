@@ -54,8 +54,8 @@ function wrapTemplate(content: string, _preheader?: string, pt = false): string 
 
 <!-- Brand band: imagem full-width com o logo real do site (fundo cozido de
      borda a borda — sem caixa possivel em dark mode) -->
-<tr><td style="padding:0;">
-  <img src="${BRAND_BAND_URL}" alt="Portugal Active" width="600" style="display:block;width:100%;max-width:600px;height:auto;" />
+<tr><td align="center" style="padding:0;">
+  <img src="${BRAND_BAND_URL}" alt="Portugal Active" width="600" style="display:block;margin:0 auto;width:100%;max-width:600px;height:auto;" />
 </td></tr>
 <tr><td style="height:26px;background:#FFFFFF;border-left:1px solid #E8E4DC;border-right:1px solid #E8E4DC;"></td></tr>
 
@@ -659,8 +659,8 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 
 <!-- Top bar: brand-dark band with the white logo (the logoColor asset is
      imagem full-width com o logo real: fundo cozido borda a borda -->
-<tr><td style="padding:0;">
-  <img src="${BRAND_BAND_URL}" alt="Portugal Active" width="600" style="display:block;width:100%;max-width:600px;height:auto;" />
+<tr><td align="center" style="padding:0;">
+  <img src="${BRAND_BAND_URL}" alt="Portugal Active" width="600" style="display:block;margin:0 auto;width:100%;max-width:600px;height:auto;" />
 </td></tr>
 
 <tr><td align="center" style="padding:36px 20px 44px 20px;">
@@ -945,8 +945,8 @@ export async function sendCheckoutGuestConfirmation(d: {
 
 <!-- Top bar: brand-dark band with the white logo (the logoColor asset is
      imagem full-width com o logo real: fundo cozido borda a borda -->
-<tr><td style="padding:0;">
-  <img src="${BRAND_BAND_URL}" alt="Portugal Active" width="600" style="display:block;width:100%;max-width:600px;height:auto;" />
+<tr><td align="center" style="padding:0;">
+  <img src="${BRAND_BAND_URL}" alt="Portugal Active" width="600" style="display:block;margin:0 auto;width:100%;max-width:600px;height:auto;" />
 </td></tr>
 
 <tr><td align="center" style="padding:36px 20px 44px 20px;">
