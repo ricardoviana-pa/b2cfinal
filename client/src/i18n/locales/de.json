@@ -1699,5 +1699,10 @@
     "aMin": "Der Mindestaufenthalt beträgt die meiste Zeit des Jahres {{count}} Nächte. Im Juli und August laufen Aufenthalte von Samstag bis Samstag mit mindestens 7 Nächten — der Kalender zeigt die verfügbaren Anreisetage.",
     "qDirect": "Warum direkt bei Portugal Active buchen?",
     "aDirect": "Direkt buchen heißt: bester Online-Preis ohne OTA-Servicegebühren, ein eigener WhatsApp-Concierge und ein lokales Team, das das Haus von A bis Z betreibt."
+  },
+  "collections": {
+    "eyebrow": "Kuratierte Kollektion",
+    "count": "{{count}} Häuser in dieser Kollektion",
+    "more": "Weitere Kollektionen"
   }
 }

@@ -18,6 +18,7 @@ const CookieBanner = lazy(() => import("./components/layout/CookieBanner"));
 const Homes = lazy(() => import("./pages/Homes"));
 const PropertyDetail = lazy(() => import("./pages/PropertyDetail"));
 const Destinations = lazy(() => import("./pages/Destinations"));
+const Collection = lazy(() => import("@/pages/Collection"));
 const DestinationDetail = lazy(() => import("./pages/DestinationDetail"));
 const Services = lazy(() => import("./pages/Services"));
 const Experiences = lazy(() => import("./pages/Adventures"));
@@ -156,6 +157,7 @@ function Router() {
         <Route path="/homes" component={Homes} />
         <Route path="/homes/:slug" component={PropertyDetail} />
         <Route path="/destinations" component={Destinations} />
+        <Route path="/collections/:slug" component={Collection} />
         <Route path="/destinations/:slug" component={DestinationDetail} />
         <Route path="/concierge" component={Services} />
         <Route path="/services" component={Services} />

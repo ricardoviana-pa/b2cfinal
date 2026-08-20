@@ -1699,5 +1699,10 @@
     "aMin": "Le séjour minimum est de {{count}} nuits la majeure partie de l’année. En juillet et août, les séjours vont du samedi au samedi avec un minimum de 7 nuits — le calendrier affiche les dates d’arrivée disponibles.",
     "qDirect": "Pourquoi réserver directement avec Portugal Active ?",
     "aDirect": "Réserver en direct garantit le meilleur tarif en ligne sans frais de service OTA, un concierge WhatsApp dédié et une équipe locale qui gère la maison de bout en bout."
+  },
+  "collections": {
+    "eyebrow": "Collection organisée",
+    "count": "{{count}} maisons dans cette collection",
+    "more": "Plus de collections"
   }
 }

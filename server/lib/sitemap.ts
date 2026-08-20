@@ -34,6 +34,13 @@ function buildEntries(): SitemapEntry[] {
     { path: "/homes", priority: 0.9, changefreq: "daily" },
     { path: "/experiences", priority: 0.9, changefreq: "daily" },
     { path: "/destinations", priority: 0.8, changefreq: "weekly" },
+    // Programmatic collections — static slugs from collections.json
+    { path: "/collections/villas-with-private-pool", priority: 0.7, changefreq: "weekly" },
+    { path: "/collections/sea-view-villas", priority: 0.7, changefreq: "weekly" },
+    { path: "/collections/large-group-villas", priority: 0.7, changefreq: "weekly" },
+    { path: "/collections/pet-friendly-villas", priority: 0.7, changefreq: "weekly" },
+    { path: "/collections/villas-with-jacuzzi", priority: 0.7, changefreq: "weekly" },
+    { path: "/collections/beach-villas", priority: 0.7, changefreq: "weekly" },
     { path: "/about", priority: 0.6, changefreq: "monthly" },
     { path: "/contact", priority: 0.6, changefreq: "monthly" },
     { path: "/events", priority: 0.7, changefreq: "monthly" },

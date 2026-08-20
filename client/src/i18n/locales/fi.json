@@ -1699,5 +1699,10 @@
     "aMin": "Vähimmäisoleskelu on {{count}} yötä suurimman osan vuodesta. Heinä- ja elokuussa oleskelut ovat lauantaista lauantaihin, vähintään 7 yötä — kalenteri näyttää saatavilla olevat saapumispäivät.",
     "qDirect": "Miksi varata suoraan Portugal Activelta?",
     "aDirect": "Suora varaus takaa parhaan verkkohinnan ilman OTA-palvelumaksuja, oman WhatsApp-conciergen ja paikallisen tiimin, joka hoitaa talon alusta loppuun."
+  },
+  "collections": {
+    "eyebrow": "Kuratoitu kokoelma",
+    "count": "{{count}} taloa tässä kokoelmassa",
+    "more": "Lisää kokoelmia"
   }
 }

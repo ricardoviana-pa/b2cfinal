@@ -1699,5 +1699,10 @@
     "aMin": "The minimum stay is {{count}} nights for most of the year. In July and August stays run Saturday to Saturday with a 7-night minimum — the calendar shows the available arrival dates.",
     "qDirect": "Why book directly with Portugal Active?",
     "aDirect": "Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end."
+  },
+  "collections": {
+    "eyebrow": "Curated collection",
+    "count": "{{count}} homes in this collection",
+    "more": "More collections"
   }
 }

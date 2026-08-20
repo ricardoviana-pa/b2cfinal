@@ -1699,5 +1699,10 @@
     "aMin": "Minsta vistelse är {{count}} nätter större delen av året. I juli och augusti löper vistelser lördag till lördag med minst 7 nätter — kalendern visar tillgängliga ankomstdatum.",
     "qDirect": "Varför boka direkt hos Portugal Active?",
     "aDirect": "Direktbokning ger bästa pris online utan OTA-avgifter, en egen WhatsApp-concierge och ett lokalt team som driver huset från början till slut."
+  },
+  "collections": {
+    "eyebrow": "Kurerad kollektion",
+    "count": "{{count}} hus i denna kollektion",
+    "more": "Fler kollektioner"
   }
 }

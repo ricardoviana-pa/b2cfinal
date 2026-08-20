@@ -1,69 +1,87 @@
 [
   {
-    "id": "c1",
-    "slug": "signature-collection",
-    "name": "Signature Collection",
-    "description": "Our finest properties. Exceptional architecture, premium locations, and the highest level of service.",
-    "filterTags": [
-      "signature"
-    ],
-    "image": "",
-    "isActive": true
+    "slug": "villas-with-private-pool",
+    "filter": { "type": "amenity", "pattern": "pool" },
+    "excludeApartments": true,
+    "en": {
+      "title": "Villas with Private Pool in Portugal",
+      "metaDescription": "Handpicked private-pool villas across northern Portugal, each operated like a private hotel — concierge, housekeeping and best rate booked direct.",
+      "intro": "Every villa here has its own pool — no schedules, no strangers' towels. Each one is operated end to end by our local team, with concierge and housekeeping included."
+    },
+    "pt": {
+      "title": "Villas com Piscina Privada em Portugal",
+      "metaDescription": "Villas com piscina privada no norte de Portugal, operadas como hotéis privados — concierge, limpeza e melhor preço na reserva direta.",
+      "intro": "Todas as casas desta coleção têm piscina própria — sem horários nem toalhas alheias. Cada uma é operada de ponta a ponta pela nossa equipa local, com concierge e limpeza incluídos."
+    }
   },
   {
-    "id": "c2",
-    "slug": "family-friendly",
-    "name": "Family Friendly",
-    "description": "Spacious properties with pools, gardens, and family-oriented amenities. Child-safe and parent-approved.",
-    "filterTags": [
-      "families"
-    ],
-    "image": "",
-    "isActive": true
+    "slug": "sea-view-villas",
+    "filter": { "type": "amenity", "pattern": "sea view|ocean view|beach view|beach front" },
+    "en": {
+      "title": "Sea-View Villas in Northern Portugal",
+      "metaDescription": "Villas and homes with real Atlantic views on the Minho coast — private hotels with concierge, booked direct at the best rate.",
+      "intro": "The Atlantic is the main amenity in this collection: villas where the sea fills the windows, on the wild green coast north of Porto."
+    },
+    "pt": {
+      "title": "Villas com Vista Mar no Norte de Portugal",
+      "metaDescription": "Casas com vista real para o Atlântico na costa do Minho — hotéis privados com concierge, reserva direta ao melhor preço.",
+      "intro": "Nesta coleção o Atlântico é a amenidade principal: casas onde o mar enche as janelas, na costa verde e selvagem a norte do Porto."
+    }
   },
   {
-    "id": "c3",
-    "slug": "couples-retreats",
-    "name": "Couples Retreats",
-    "description": "Intimate properties perfect for romantic getaways. Privacy, beauty, and thoughtful touches.",
-    "filterTags": [
-      "couples"
-    ],
-    "image": "",
-    "isActive": true
+    "slug": "large-group-villas",
+    "filter": { "type": "minGuests", "min": 12 },
+    "en": {
+      "title": "Large Villas for 12+ Guests in Portugal",
+      "metaDescription": "Estates and villas sleeping 12 to 28 guests — family reunions, retreats and celebrations, fully operated by a local team.",
+      "intro": "Whole estates for family reunions, retreats and celebrations: every home here sleeps at least twelve, several past twenty — with one booking, one team, zero logistics."
+    },
+    "pt": {
+      "title": "Casas Grandes para 12+ Pessoas em Portugal",
+      "metaDescription": "Quintas e villas para 12 a 28 hóspedes — reuniões de família, retiros e celebrações, operadas por uma equipa local.",
+      "intro": "Propriedades inteiras para reuniões de família, retiros e celebrações: todas as casas acolhem pelo menos doze pessoas, várias passam das vinte — uma reserva, uma equipa, zero logística."
+    }
   },
   {
-    "id": "c4",
-    "slug": "group-celebrations",
-    "name": "Group Celebrations",
-    "description": "Large properties for milestone birthdays, reunions, and celebrations. Space for everyone.",
-    "filterTags": [
-      "groups"
-    ],
-    "image": "",
-    "isActive": true
+    "slug": "pet-friendly-villas",
+    "filter": { "type": "amenity", "pattern": "pets allowed|pet friendly" },
+    "en": {
+      "title": "Pet-Friendly Villas in Portugal",
+      "metaDescription": "Luxury villas that genuinely welcome your dog — gardens, space and Atlantic walks, operated as private hotels.",
+      "intro": "Houses that actually mean it when they say pets are welcome — walled gardens, room to run, and beaches or trails at the door."
+    },
+    "pt": {
+      "title": "Villas Pet-Friendly em Portugal",
+      "metaDescription": "Villas de luxo que recebem o seu cão a sério — jardins, espaço e passeios atlânticos, operadas como hotéis privados.",
+      "intro": "Casas que dizem 'aceitamos animais' a sério — jardins murados, espaço para correr, e praias ou trilhos à porta."
+    }
   },
   {
-    "id": "c5",
-    "slug": "beachfront",
-    "name": "Beachfront",
-    "description": "Steps from the sand. Properties with direct beach access or ocean views.",
-    "filterTags": [
-      "beach",
-      "sea-view"
-    ],
-    "image": "",
-    "isActive": true
+    "slug": "villas-with-jacuzzi",
+    "filter": { "type": "amenity", "pattern": "jacuzzi|hot tub" },
+    "en": {
+      "title": "Villas with Jacuzzi & Hot Tub in Portugal",
+      "metaDescription": "Private homes with jacuzzi or hot tub in northern Portugal — evenings under the sky, operated as private hotels.",
+      "intro": "For the evenings: villas with a jacuzzi or hot tub of their own, from hilltop estates above the Atlantic to river-valley retreats."
+    },
+    "pt": {
+      "title": "Villas com Jacuzzi em Portugal",
+      "metaDescription": "Casas privadas com jacuzzi no norte de Portugal — fins de tarde debaixo do céu, operadas como hotéis privados.",
+      "intro": "Para os fins de tarde: casas com jacuzzi próprio, de quintas no alto sobre o Atlântico a refúgios no vale do rio."
+    }
   },
   {
-    "id": "c6",
-    "slug": "wine-country",
-    "name": "Wine Country",
-    "description": "Properties in or near vineyard regions. Perfect for wine lovers and harvest experiences.",
-    "filterTags": [
-      "vineyard"
-    ],
-    "image": "",
-    "isActive": true
+    "slug": "beach-villas",
+    "filter": { "type": "amenity", "pattern": "beach" },
+    "en": {
+      "title": "Beach Villas & Homes in Northern Portugal",
+      "metaDescription": "Villas minutes from the wild Atlantic beaches of the Minho coast — surf, dunes and space, with concierge included.",
+      "intro": "The Minho coast keeps the Atlantic honest: wild beaches, real surf, pine dunes. These homes put you minutes from the sand."
+    },
+    "pt": {
+      "title": "Casas de Praia no Norte de Portugal",
+      "metaDescription": "Villas a minutos das praias selvagens da costa do Minho — surf, dunas e espaço, com concierge incluído.",
+      "intro": "A costa do Minho mantém o Atlântico honesto: praias selvagens, surf a sério, dunas de pinhal. Estas casas põem-no a minutos da areia."
+    }
   }
 ]

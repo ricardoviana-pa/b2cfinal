@@ -1699,5 +1699,10 @@
     "aMin": "La estancia mínima es de {{count}} noches la mayor parte del año. En julio y agosto las estancias van de sábado a sábado con un mínimo de 7 noches — el calendario muestra las fechas de llegada disponibles.",
     "qDirect": "¿Por qué reservar directamente con Portugal Active?",
     "aDirect": "Reservar directo garantiza el mejor precio online sin tasas de servicio de las OTA, un conserje dedicado por WhatsApp y un equipo local que gestiona la casa de principio a fin."
+  },
+  "collections": {
+    "eyebrow": "Colección curada",
+    "count": "{{count}} casas en esta colección",
+    "more": "Más colecciones"
   }
 }

@@ -1308,7 +1308,7 @@ export function serveStatic(app: Express) {
     "/legal/privacy", "/legal/terms", "/legal/cookies", "/admin", "/404",
     "/destinations", "/experiences", "/concierge",
   ]);
-  const KNOWN_PREFIXES = ["/homes/", "/destinations/", "/blog/", "/services/", "/admin/", "/booking/", "/experiences/", "/activities/", "/checkout/"];
+  const KNOWN_PREFIXES = ["/homes/", "/collections/", "/destinations/", "/blog/", "/services/", "/admin/", "/booking/", "/experiences/", "/activities/", "/checkout/"];
 
   /** Strip locale prefix from path: /pt/homes → /homes */
   function stripLocale(pathname: string): string {
@@ -1363,7 +1363,7 @@ export function serveStatic(app: Express) {
 
   // Dynamic content prefixes: if a slug under these paths doesn't match
   // any record in the data source, we return 404 (not 200 = soft 404).
-  const DYNAMIC_CONTENT_PREFIXES = ["/homes/", "/blog/", "/services/", "/experiences/", "/activities/"];
+  const DYNAMIC_CONTENT_PREFIXES = ["/homes/", "/collections/", "/blog/", "/services/", "/experiences/", "/activities/"];
 
   // ── SSR (gated by SSR_ENABLED) ───────────────────────────────────────────
   type SsrRender = (
@@ -1638,6 +1638,25 @@ export function serveStatic(app: Express) {
             };
           }
         }
+      }
+
+      // /collections/:slug — static definitions in collections.json (en/pt).
+      const collMatch = p.match(/^\/collections\/([^/]+)$/);
+      if (collMatch) {
+        try {
+          const raw = fs.readFileSync(path.resolve(process.cwd(), "client", "src", "data", "collections.json"), "utf-8");
+          const defs = JSON.parse(raw) as Array<any>;
+          const def = defs.find((c) => c.slug === collMatch[1]);
+          if (def) {
+            const copy = lang === "pt" ? def.pt : def.en;
+            dynamicMeta = {
+              title: `${copy.title} | Portugal Active`,
+              description: copy.metaDescription,
+              url: `${BOT_BASE_URL}/${lang}/collections/${def.slug}`,
+              bodyHtml: buildStaticSeoBody(lang, copy.title, `${copy.intro}`),
+            };
+          }
+        } catch { /* fall through to 404 handling */ }
       }
 
       // /destinations/:slug — from destinations.json + i18n overrides, falling

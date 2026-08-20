@@ -1699,5 +1699,10 @@
     "aMin": "Het minimale verblijf is {{count}} nachten gedurende het grootste deel van het jaar. In juli en augustus lopen verblijven van zaterdag tot zaterdag met minimaal 7 nachten — de kalender toont de beschikbare aankomstdata.",
     "qDirect": "Waarom direct bij Portugal Active boeken?",
     "aDirect": "Direct boeken betekent de beste prijs online zonder OTA-servicekosten, een eigen WhatsApp-concierge en een lokaal team dat het huis van a tot z beheert."
+  },
+  "collections": {
+    "eyebrow": "Samengestelde collectie",
+    "count": "{{count}} huizen in deze collectie",
+    "more": "Meer collecties"
   }
 }
