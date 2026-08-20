@@ -32,14 +32,40 @@ interface LiveQuote {
 }
 
 export default function Homes() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   usePageMeta({ title: 'Luxury Holiday Homes in Portugal | Private Villas & Premium Rentals', description: 'Handpicked luxury holiday homes across Portugal. Each property managed to five-star hotel standards. Porto, Lisbon, Algarve, Douro and Minho.', image: IMAGES.heroHomes, url: '/homes' });
   const [, navigate] = useLocation();
   const router = useRouter();
 
   const { data: propsData, isLoading, isError, refetch } = trpc.properties.listForSite.useQuery();
   const allProperties = (propsData ?? []) as Property[];
-  const cities = useMemo(() => getUniqueLocalities(allProperties), [allProperties]);
+  // SSR-prefetched tiny query (see Home.tsx) so the destination picker is
+  // populated immediately; falls back to deriving from the full list.
+  const { data: localityOptions } = trpc.properties.localities.useQuery();
+  const derivedCities = (localityOptions?.length
+    ? localityOptions
+    : getUniqueLocalities(allProperties)) as Array<{ label: string; value: string; group?: string }>;
+  const cities = derivedCities;
+
+  // Same region grouping as the homepage picker (see Home.tsx).
+  const cityOptions = useMemo(() => {
+    const groups: Array<[string, typeof cities]> = [];
+    for (const c of cities) {
+      const g = c.group || '';
+      const last = groups[groups.length - 1];
+      if (last && last[0] === g) last[1].push(c);
+      else groups.push([g, [c]]);
+    }
+    return groups.map(([g, items], gi) =>
+      g ? (
+        <optgroup key={`g-${g}-${gi}`} label={g}>
+          {items.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+        </optgroup>
+      ) : (
+        items.map(c => <option key={c.value} value={c.value}>{c.label}</option>)
+      ),
+    );
+  }, [cities]);
   // "From €X" per card (lowest real bookable nightly), when no dates are picked.
   const fromListingIds = useMemo(
     () => allProperties.filter(p => p.guestyId).map(p => p.guestyId!),
@@ -121,6 +147,50 @@ export default function Homes() {
   const [showAll, setShowAll] = useState(false);
   const utils = trpc.useUtils();
   const effectiveGuests = searchGuestsCount > 0 ? searchGuestsCount : bookingGuests;
+  // Why an empty dated search came back empty (season rules, party size, length)
+  // — so we can answer with the rule and the nearest dates instead of a dead end.
+  /** "2027-07-03" → "3 Jul" in the active language. Raw ISO in a call to
+   *  action reads like a system error, not an invitation. */
+  const fmtHintDate = (iso: string) =>
+    new Intl.DateTimeFormat(i18n.language, { day: 'numeric', month: 'short', timeZone: 'UTC' })
+      .format(new Date(iso + 'T00:00:00Z'));
+  // Dead-end capture: a guest whose dates we genuinely can't serve used to
+  // leave with no trace. WhatsApp alone filters out anyone not on WhatsApp or
+  // on desktop, so offer a two-field form as well — the enquiry is the lead.
+  const createLead = trpc.leads.create.useMutation();
+  const [leadEmail, setLeadEmail] = useState('');
+  const [leadName, setLeadName] = useState('');
+  const [leadSent, setLeadSent] = useState(false);
+  const [leadError, setLeadError] = useState('');
+  const submitLead = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!leadEmail) return;
+    setLeadError('');
+    try {
+      await createLead.mutateAsync({
+        email: leadEmail,
+        name: leadName || undefined,
+        source: 'search-no-availability',
+        message: `Looking for ${searchCheckin} → ${searchCheckout}, ${effectiveGuests} guests. Nothing matched on the site.`,
+        metadata: {
+          checkin: searchCheckin,
+          checkout: searchCheckout,
+          guests: String(effectiveGuests),
+          nights: String(searchNights),
+          locale: i18n.language,
+        },
+      });
+      setLeadSent(true);
+      pushDL({ event: 'generate_lead', lead_source: 'search-no-availability', lead_type: 'availability_request' });
+    } catch {
+      setLeadError(t('homes.leadError', 'Could not send — please try WhatsApp below.'));
+    }
+  };
+
+  const { data: searchHint } = trpc.booking.searchHint.useQuery(
+    { checkIn: searchCheckin, checkOut: searchCheckout, guests: effectiveGuests },
+    { enabled: !!searchCheckin && !!searchCheckout, staleTime: 60 * 60 * 1000 },
+  );
   const checkInRef = useRef<HTMLInputElement>(null);
   const checkOutRef = useRef<HTMLInputElement>(null);
 
@@ -494,9 +564,7 @@ export default function Homes() {
                   style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
                 >
                   <option value="">{t('home.searchDestination')}</option>
-                  {cities.map(city => (
-                    <option key={city.value} value={city.value}>{city.label}</option>
-                  ))}
+                  {cityOptions}
                 </select>
                 <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#726D63] pointer-events-none" />
               </div>
@@ -585,9 +653,7 @@ export default function Homes() {
                   style={{ fontFamily: 'var(--font-body)' }}
                 >
                   <option value="">{t('home.searchDestination')}</option>
-                  {cities.map(city => (
-                    <option key={city.value} value={city.value}>{city.label}</option>
-                  ))}
+                  {cityOptions}
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#726D63] pointer-events-none" />
               </div>
@@ -695,12 +761,151 @@ export default function Homes() {
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as SortOption)}
-                className="text-[13px] text-[#6B6860] bg-transparent border border-[#E8E4DC] px-3 py-2 font-sans"
+                /* min-w keeps the longest option ("Recommended") from being
+                   clipped on narrow screens; shrink-0 stops the status line
+                   from squeezing it. */
+                className="text-[13px] text-[#6B6860] bg-transparent border border-[#E8E4DC] px-3 py-2 font-sans min-w-[150px] shrink-0"
               >
                 {SORT_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
               </select>
             </div>
           </div>
+
+          {/* All unavailable — nudge user */}
+          {hasDates && !quotesLoading && availableProperties.length === 0 && unavailableProperties.length > 0 && (
+            <div className="text-center py-8 mb-8 bg-[#F5F1EB] rounded-lg">
+              <p className="text-[15px] font-display text-[#1A1A18] mb-2">
+                {t('homes.noneAvailable', 'No homes available for these dates')}
+              </p>
+              {/* Say WHY, and offer the nearest dates that satisfy the rule —
+                  "no availability" alone sent a real enquiry to a competitor. */}
+              {searchHint?.reason === 'tooLong' ? (
+                <p className="text-[13px] text-[#726D63] mb-4">
+                  {t('homes.hintTooLong', {
+                    count: searchHint.nights,
+                    defaultValue: 'That search covers {{count}} nights. Here are the stays available in that period:',
+                  })}
+                </p>
+              ) : searchHint?.reason === 'arrivalRestricted' ? (
+                <p className="text-[13px] text-[#726D63] mb-4">
+                  {t('homes.hintArrival', {
+                    days: (searchHint.arrivalWeekdays ?? [])
+                      .map(w => new Intl.DateTimeFormat(i18n.language, { weekday: 'long', timeZone: 'UTC' })
+                        .format(new Date(Date.UTC(2024, 0, 7 + w))))
+                      .join(', '),
+                    count: searchHint.minNights ?? 0,
+                    defaultValue: 'In this season stays start on {{days}} and run at least {{count}} nights.',
+                  })}
+                </p>
+              ) : searchHint?.reason === 'minStay' ? (
+                <p className="text-[13px] text-[#726D63] mb-4">
+                  {t('homes.hintMinStay', {
+                    count: searchHint.minNights ?? 0,
+                    defaultValue: 'These dates need a minimum stay of {{count}} nights.',
+                  })}
+                </p>
+              ) : (
+                <p className="text-[13px] text-[#726D63] mb-4">
+                  {t('homes.noneAvailableHint', 'Try adjusting your dates or speak with our concierge')}
+                </p>
+              )}
+
+              {(() => {
+                const opts = searchHint?.options?.length
+                  ? searchHint.options
+                  : searchHint?.suggestion
+                    ? [searchHint.suggestion]
+                    : [];
+                if (!opts.length) return null;
+                const goTo = (w: { checkIn: string; checkOut: string }) => {
+                  const p = new URLSearchParams(searchString);
+                  p.set('checkin', w.checkIn);
+                  p.set('checkout', w.checkOut);
+                  navigate(`/homes?${p.toString()}`);
+                };
+                const label = (w: { checkIn: string; checkOut: string }) =>
+                  `${fmtHintDate(w.checkIn)} → ${fmtHintDate(w.checkOut)}`;
+                return (
+                  <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
+                    {/* First option is the primary action; the rest are equal
+                        alternatives, so a guest who meant "sometime that month"
+                        picks a week instead of re-typing dates. */}
+                    <button
+                      type="button"
+                      onClick={() => goTo(opts[0])}
+                      className="btn-primary inline-flex items-center gap-2 min-h-[44px]"
+                    >
+                      {t('homes.hintTryDates', {
+                        from: fmtHintDate(opts[0].checkIn),
+                        to: fmtHintDate(opts[0].checkOut),
+                        defaultValue: 'Try {{from}} → {{to}}',
+                      })}
+                    </button>
+                    {opts.slice(1).map(w => (
+                      <button
+                        key={w.checkIn}
+                        type="button"
+                        onClick={() => goTo(w)}
+                        className="min-h-[44px] px-4 border border-[#E8E4DC] bg-white text-[13px] text-[#1A1A18] hover:border-[#8B7355] transition-colors"
+                      >
+                        {label(w)}
+                      </button>
+                    ))}
+                  </div>
+                );
+              })()}
+              {/* Even when no dates work, the enquiry is worth having. */}
+              {leadSent ? (
+                <p className="text-[13px] text-[#1A1A18] mb-4 max-w-md mx-auto">
+                  {t('homes.leadThanks', "Thank you — we'll come back to you with options for these dates.")}
+                </p>
+              ) : (
+                <form onSubmit={submitLead} className="max-w-md mx-auto mb-4" noValidate>
+                  <p className="text-[12px] text-[#726D63] mb-2">
+                    {t('homes.leadPrompt', 'Want us to check these exact dates for you?')}
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      type="text"
+                      value={leadName}
+                      onChange={e => setLeadName(e.target.value)}
+                      placeholder={t('homes.leadName', 'Name')}
+                      autoComplete="name"
+                      className="h-[44px] px-3 border border-[#E8E4DC] bg-white text-[14px] sm:w-1/3 focus:outline-none focus:border-[#8B7355]"
+                    />
+                    <input
+                      type="email"
+                      required
+                      value={leadEmail}
+                      onChange={e => { setLeadEmail(e.target.value); setLeadError(''); }}
+                      placeholder={t('homes.leadEmail', 'Email')}
+                      autoComplete="email"
+                      inputMode="email"
+                      className="h-[44px] px-3 border border-[#E8E4DC] bg-white text-[14px] flex-1 focus:outline-none focus:border-[#8B7355]"
+                    />
+                    <button
+                      type="submit"
+                      disabled={createLead.isPending}
+                      className="btn-primary h-[44px] px-5 whitespace-nowrap disabled:opacity-50"
+                    >
+                      {createLead.isPending ? '…' : t('homes.leadSend', 'Send')}
+                    </button>
+                  </div>
+                  {leadError && <p className="text-[11px] text-red-600 mt-1.5" role="alert">{leadError}</p>}
+                </form>
+              )}
+
+              <a
+                href={`https://wa.me/351927161771?text=${encodeURIComponent(`Hi, I'm looking for a property from ${searchCheckin} to ${searchCheckout} for ${effectiveGuests} guests but nothing seems available. Can you help?`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-ghost inline-flex items-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+                {t('homes.talkConcierge', 'Talk to concierge')}
+              </a>
+            </div>
+          )}
 
           {/* Batch error banner */}
           {batchFailed && hasDates && (
@@ -852,26 +1057,6 @@ export default function Homes() {
             </div>
           )}
 
-          {/* All unavailable — nudge user */}
-          {hasDates && !quotesLoading && availableProperties.length === 0 && unavailableProperties.length > 0 && (
-            <div className="text-center py-8 mb-8 bg-[#F5F1EB] rounded-lg">
-              <p className="text-[15px] font-display text-[#1A1A18] mb-2">
-                {t('homes.noneAvailable', 'No homes available for these dates')}
-              </p>
-              <p className="text-[13px] text-[#726D63] mb-4">
-                {t('homes.noneAvailableHint', 'Try adjusting your dates or speak with our concierge')}
-              </p>
-              <a
-                href={`https://wa.me/351927161771?text=${encodeURIComponent(`Hi, I'm looking for a property from ${searchCheckin} to ${searchCheckout} for ${effectiveGuests} guests but nothing seems available. Can you help?`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-ghost inline-flex items-center gap-2"
-              >
-                <MessageCircle className="w-4 h-4" />
-                {t('homes.talkConcierge', 'Talk to concierge')}
-              </a>
-            </div>
-          )}
         </div>
       </section>
 

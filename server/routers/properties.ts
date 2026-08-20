@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../_core/trpc";
 import * as db from "../db";
-import { getPropertiesForSite } from "../services/properties-store";
+import { getPropertiesForSite, getSiteLocalities } from "../services/properties-store";
 
 const propertyInput = z.object({
   name: z.string().min(1),
@@ -40,6 +40,14 @@ export const propertiesRouter = router({
     // 4-hour Cloudflare edge cache — aligns with twice-daily Guesty cron sync
     ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=14400, stale-while-revalidate=3600");
     return getPropertiesForSite();
+  }),
+
+  /** Destination options for the search dropdowns — ~15 entries (<1 KB), so it
+   *  can be SSR-prefetched and the picker works on first paint instead of
+   *  waiting for the full ~1.3 MB property list. */
+  localities: publicProcedure.query(async ({ ctx }) => {
+    ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=14400, stale-while-revalidate=3600");
+    return getSiteLocalities();
   }),
 
   getBySlugForSite: publicProcedure

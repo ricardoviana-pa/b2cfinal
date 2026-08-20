@@ -115,7 +115,17 @@
     "bookingBarDestination": "Kohde",
     "searchHomes": "Etsi koteja",
     "heroAlt": "Portugal Active -kotikokoelma",
-    "batchError": "Reaaliaikainen hinnoittelu ei ole tilapäisesti saatavilla. Katso lopullinen hinta kunkin kohteen sivulta."
+    "batchError": "Reaaliaikainen hinnoittelu ei ole tilapäisesti saatavilla. Katso lopullinen hinta kunkin kohteen sivulta.",
+    "hintTooLong": "Haku kattaa {{count}} yötä. Nämä oleskelut ovat saatavilla kyseisenä aikana:",
+    "hintArrival": "Tänä sesonkina oleskelut alkavat {{days}} ja kestävät vähintään {{count}} yötä.",
+    "hintMinStay": "Nämä päivät vaativat vähintään {{count}} yön oleskelun.",
+    "hintTryDates": "Kokeile {{from}} → {{to}}",
+    "leadPrompt": "Haluatteko, että tarkistamme nämä päivät puolestanne?",
+    "leadName": "Nimi",
+    "leadEmail": "Sähköposti",
+    "leadSend": "Lähetä",
+    "leadThanks": "Kiitos — palaamme asiaan vaihtoehdoilla näille päiville.",
+    "leadError": "Lähetys epäonnistui — kokeile WhatsAppia alla."
   },
   "property": {
     "bedrooms": "Makuuhuoneet",
@@ -175,7 +185,9 @@
     "bed": "vuode",
     "nightPrice": "/ yö",
     "prevPhoto": "Edellinen kuva",
-    "nextPhoto": "Seuraava kuva"
+    "nextPhoto": "Seuraava kuva",
+    "sleepsUpTo": "Majoittaa enintään {{count}} vierasta",
+    "checkUnitAvailability": "Katso yksiköiden saatavuus"
   },
   "booking": {
     "summary": "Varauksen yhteenveto",
@@ -222,7 +234,10 @@
     "select": "Valitse",
     "cancellationPerPolicy": "Peruutus majoituksen ehtojen mukaan",
     "decreaseGuests": "Vähennä vieraita",
-    "increaseGuests": "Lisää vieraita"
+    "increaseGuests": "Lisää vieraita",
+    "arrivalDaysNotice": "Saapuminen vain {{days}} · vähintään {{count}} yötä",
+    "minStayMonthNotice": "Vähimmäisoleskelu {{count}} yötä tässä kuussa",
+    "arrivalDaysOnlyNotice": "Saapuminen vain {{days}}"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Hinta pyynnöstä",
@@ -316,7 +331,10 @@
     "unavailableLabel": "Varattu",
     "confirmDates": "Vahvista",
     "tariffInCheckout": "Kaksi hintaa saatavilla. Valitse omasi seuraavassa vaiheessa.",
-    "reserve": "VARAA"
+    "reserve": "VARAA",
+    "arrivalsRule": "Oleskelut alkavat {{days}} · vähintään {{count}} yötä",
+    "nextArrivals": "Seuraavat vapaat päivät",
+    "directNote": "Suora hinta — ei palvelumaksuja, paras hinta verkossa"
   },
   "common": {
     "loading": "Ladataan…",
@@ -897,7 +915,9 @@
     "q9": "Mikä on paras hinta -takuu?",
     "a9": "Verkkosivustomme tarjoaa aina alimman saatavilla olevan hinnan. Suoravaraus tarkoittaa alhaisempaa hintaa kuin millään kolmannen osapuolen alustalla, etuoikeutettua concierge-tukea, nopeampaa vastausta ja ensimmäistä pääsyä omiin palveluihimme.",
     "cantFind": "Etkö löydä etsimääsi?",
-    "contactTeam": "OTA YHTEYTTÄ TIIMIIMME"
+    "contactTeam": "OTA YHTEYTTÄ TIIMIIMME",
+    "q10": "Voinko saapua minä tahansa viikonpäivänä?",
+    "a10": "Suurimman osan vuodesta kyllä — saapumiset ovat avoinna minä tahansa päivänä, ja vähimmäisoleskelu on talosta riippuen 2–4 yötä. Heinä- ja elokuussa oleskelut ovat lauantaista lauantaihin, vähintään 7 yötä. Jokaisen talon varauskalenteri korostaa saatavilla olevat saapumispäivät, ja pidempiä tai tavallisesta poikkeavia oleskeluja concierge-palvelumme suunnittelee mielellään kanssanne."
   },
   "adventures": {
     "heroAlt": "Elämyksiä Portugalissa",
@@ -1144,7 +1164,8 @@
     "ourGuests": "VIERAAMME",
     "whatTheyRemember": "Mitä he muistavat eniten.",
     "proofStrip": "4.8/5 yli 2 000 vierasarvostelua",
-    "verifiedGuest": "Vahvistettu vieras"
+    "verifiedGuest": "Vahvistettu vieras",
+    "verifiedNote": "Kaikki arvostelut ovat toteutuneista oleskeluista, kerätty varauskanaviemme kautta."
   },
   "amenity": {
     "outdoorPool": "Ulkotilat ja uima-allas",
@@ -1342,7 +1363,11 @@
     "secureBooking": "Turvallinen varaus",
     "bestRate": "Paras hinta taattu",
     "noBookingFees": "Ei varausmaksuja",
-    "conciergeIncluded": "Concierge sisältyy"
+    "conciergeIncluded": "Concierge sisältyy",
+    "directHeadline": "Miksi varata suoraan",
+    "bestRateTeeth": "Paras hinta verkossa — jos löydätte nämä päivät halvemmalla Airbnb:stä tai Booking.comista, vastaamme hintaan",
+    "noServiceFees": "Ei palvelumaksuja — OTA:t lisäävät 12–18 % kassalla; täällä hinta on hinta",
+    "conciergeWhatsapp": "WhatsApp-concierge ennen oleskelua, sen aikana ja sen jälkeen"
   },
   "bookingStatus": {
     "confirmed": "Vahvistettu",
@@ -1650,5 +1675,10 @@
     "arrivalAirport": "Saapumislentokenttä",
     "perCleaning": "per siivous",
     "perPetStay": "per lemmikki · majoitus"
+  },
+  "host": {
+    "hostedBy": "Isäntinänne Ricardo & Portugal Active -tiimi",
+    "basedIn": "Paikallinen tiimi Viana do Castelossa",
+    "meetUs": "Tutustu meihin"
   }
 }

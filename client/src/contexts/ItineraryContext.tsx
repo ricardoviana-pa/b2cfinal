@@ -6,7 +6,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import type { Product, ItineraryItem, ItineraryFieldValue } from '@/lib/types';
-import { pushEcommerce, ADDON_PREFIX } from '@/lib/datalayer';
+import { pushEcommerce, pushDL, ADDON_PREFIX } from '@/lib/datalayer';
 
 interface ItineraryContextType {
   items: ItineraryItem[];
@@ -178,6 +178,7 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
 
   const sendToWhatsApp = useCallback((guestName: string, guestEmail: string, property: string, generalNotes: string) => {
     const msg = buildMessage(items, guestName, guestEmail, property, generalNotes);
+    pushDL({ event: 'whatsapp_click', source: 'itinerary' });
     window.open(`https://wa.me/351927161771?text=${encodeURIComponent(msg)}`, '_blank');
     clearItinerary();
   }, [items, clearItinerary]);

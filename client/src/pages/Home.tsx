@@ -137,7 +137,48 @@ export default function Home() {
   const { data: propsData, isLoading, isError } = trpc.properties.listForSite.useQuery();
   const properties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
 
-  const cities = useMemo(() => getUniqueLocalities(properties), [properties]);
+  // Destination options come from a tiny dedicated query that is SSR-prefetched,
+  // so the picker is usable on first paint instead of waiting for the full
+  // property list. Falls back to deriving them locally if that query is cold.
+  const { data: localityOptions } = trpc.properties.localities.useQuery();
+  const derivedCities = useMemo(() => getUniqueLocalities(properties), [properties]);
+  const cities = (localityOptions?.length ? localityOptions : derivedCities) as Array<{
+    label: string; value: string; group?: string;
+  }>;
+
+  // Render the destination options grouped by region (Minho Coast, Porto and
+  // Douro, …). A flat alphabetical list of 15 municipalities means little to an
+  // international guest — "Carreço" or "Trofa" only make sense under a region.
+  // The server returns them pre-sorted by destination, so consecutive grouping
+  // is enough; entries without a group (offline fallback) render flat.
+  const cityOptions = useMemo(() => {
+    const groups: Array<[string, typeof cities]> = [];
+    for (const c of cities) {
+      const g = c.group || '';
+      const last = groups[groups.length - 1];
+      if (last && last[0] === g) last[1].push(c);
+      else groups.push([g, [c]]);
+    }
+    return groups.map(([g, items], gi) =>
+      g ? (
+        <optgroup key={`g-${g}-${gi}`} label={g}>
+          {items.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+        </optgroup>
+      ) : (
+        items.map(c => <option key={c.value} value={c.value}>{c.label}</option>)
+      ),
+    );
+  }, [cities]);
+
+  // True once the hero is scrolled past — gates the mobile WhatsApp float so it
+  // can't overlap the hero search card.
+  const [pastHero, setPastHero] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setPastHero(window.scrollY > window.innerHeight * 0.6);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const [searchDest, setSearchDest] = useState('');
   const [searchCheckin, setSearchCheckin] = useState('');
@@ -337,7 +378,12 @@ export default function Home() {
     <div className="min-h-screen bg-[#FAFAF7] min-w-0 w-full">
       <StructuredData id="home-faq" data={homeFaq} />
       <Header variant="transparent" />
-      <WhatsAppFloat />
+      {/* On mobile the floating button sits exactly over the hero search card's
+          Check-out field, so hold it back until the hero is scrolled past.
+          Desktop is unaffected (the card is a centred pill, no collision). */}
+      <div className={pastHero ? undefined : 'hidden lg:block'}>
+        <WhatsAppFloat />
+      </div>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 1: HERO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden z-20">
@@ -430,13 +476,11 @@ export default function Home() {
                 value={searchDest}
                 onChange={e => setSearchDest(e.target.value)}
                 aria-label={t('home.searchDestination')}
-                className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white pl-9 pr-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer appearance-none"
+                className="w-full h-[44px] rounded-lg border border-[#E8E4DC] bg-white pl-9 pr-3 text-[14px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer appearance-none"
                 style={{ fontFamily: 'var(--font-body)' }}
               >
                 <option value="">{t('home.searchDestination')}</option>
-                {cities.map(city => (
-                  <option key={city.value} value={city.value}>{city.label}</option>
-                ))}
+                {cityOptions}
               </select>
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#726D63] pointer-events-none" />
             </div>
@@ -447,7 +491,7 @@ export default function Home() {
                 drive the picker. Robust on iOS + Android + desktop. */}
             <div className="grid grid-cols-2 gap-2">
               <div className="relative">
-                <div className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 flex items-center text-[13px]" style={{ fontFamily: 'var(--font-body)' }}>
+                <div className="w-full h-[44px] rounded-lg border border-[#E8E4DC] bg-white px-3 flex items-center text-[14px]" style={{ fontFamily: 'var(--font-body)' }}>
                   <span className={searchCheckin ? 'text-[#1A1A18]' : 'text-[#6B6860]'}>
                     {searchCheckin ? fmtSearchDate(searchCheckin) : t('home.searchCheckin', 'Check-in')}
                   </span>
@@ -462,7 +506,7 @@ export default function Home() {
                 />
               </div>
               <div className="relative">
-                <div className="w-full h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 flex items-center text-[13px]" style={{ fontFamily: 'var(--font-body)' }}>
+                <div className="w-full h-[44px] rounded-lg border border-[#E8E4DC] bg-white px-3 flex items-center text-[14px]" style={{ fontFamily: 'var(--font-body)' }}>
                   <span className={searchCheckout ? 'text-[#1A1A18]' : 'text-[#6B6860]'}>
                     {searchCheckout ? fmtSearchDate(searchCheckout) : t('home.searchCheckout', 'Check-out')}
                   </span>
@@ -480,22 +524,22 @@ export default function Home() {
             </div>
             {/* Guests + Search */}
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 flex-1 h-[40px] rounded-lg border border-[#E8E4DC] bg-white px-3 min-w-0">
+              <div className="flex items-center gap-1.5 flex-1 h-[44px] rounded-lg border border-[#E8E4DC] bg-white px-3 min-w-0">
                 <button
                   type="button"
                   onClick={() => setSearchGuests(g => Math.max(1, g - 1))}
                   disabled={searchGuests <= 1}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] disabled:opacity-30 shrink-0"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] disabled:opacity-30 shrink-0"
                   aria-label={t('home.decreaseGuests', 'Decrease guests')}
                 >
                   <Minus className="w-3 h-3" />
                 </button>
-                <span className="text-[13px] text-[#1A1A18] tabular-nums flex-1 text-center whitespace-nowrap">{searchGuests} {t('home.searchGuests')}</span>
+                <span className="text-[14px] text-[#1A1A18] tabular-nums flex-1 text-center whitespace-nowrap">{searchGuests} {t('home.searchGuests')}</span>
                 <button
                   type="button"
                   onClick={() => setSearchGuests(g => Math.min(30, g + 1))}
                   disabled={searchGuests >= 30}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] disabled:opacity-30 shrink-0"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] disabled:opacity-30 shrink-0"
                   aria-label={t('home.increaseGuests', 'Increase guests')}
                 >
                   <Plus className="w-3 h-3" />
@@ -527,7 +571,7 @@ export default function Home() {
                     search_source: 'hero_mobile',
                   });
                 }}
-                className="shrink-0 h-[40px] px-5 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
+                className="shrink-0 h-[44px] px-5 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
                 style={{ letterSpacing: '1.5px' }}
               >
                 {t('home.searchButton')}
@@ -554,9 +598,7 @@ export default function Home() {
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
               >
                 <option value="">{t('home.searchDestination')}</option>
-                {cities.map(city => (
-                  <option key={city.value} value={city.value}>{city.label}</option>
-                ))}
+                {cityOptions}
               </select>
               <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#726D63] pointer-events-none" />
             </div>

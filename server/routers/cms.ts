@@ -2,7 +2,7 @@ import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../_core/trpc";
 import * as db from "../db";
 import { sendContactConfirmation, sendContactNotification, sendNewsletterWelcome } from "../services/email";
-import { sendContactInquiryNotification } from "../services/transactional-email";
+import { sendContactInquiryNotification, sendAvailabilityRequestNotification, sendAvailabilityRequestConfirmation } from "../services/transactional-email";
 
 /* ================================================================
    DESTINATIONS
@@ -263,6 +263,27 @@ export const leadsRouter = router({
         sendContactConfirmation(input.email, input.name).catch(e => console.error("[Email] Contact confirmation failed:", e));
         sendContactNotification({ name: input.name, email: input.email, phone: input.phone, subject, message: messageBody }).catch(e => console.error("[Email] Team notification failed:", e));
         sendContactInquiryNotification({ name: input.name, email: input.email, phone: input.phone, subject, message: messageBody }).catch(e => console.error("[Email] Contact inquiry notification failed:", e));
+      } else if (input.source === 'search-no-availability') {
+        // A stored lead nobody sees is still a lost lead — page the team while
+        // the guest is still choosing.
+        sendAvailabilityRequestNotification({
+          name: input.name,
+          email: input.email,
+          checkIn: input.metadata?.checkin ?? '—',
+          checkOut: input.metadata?.checkout ?? '—',
+          guests: input.metadata?.guests ?? '—',
+          nights: input.metadata?.nights ?? '—',
+        }).catch(e => console.error("[Email] Availability request notification failed:", e));
+        // Instant acknowledgment to the guest — silence after handing over an
+        // email reads as "nobody's home" and sends them back to the OTA tab.
+        sendAvailabilityRequestConfirmation({
+          email: input.email,
+          name: input.name,
+          checkIn: input.metadata?.checkin ?? '—',
+          checkOut: input.metadata?.checkout ?? '—',
+          guests: input.metadata?.guests ?? '—',
+          locale: input.metadata?.locale,
+        }).catch(e => console.error("[Email] Availability request confirmation failed:", e));
       } else if (input.source.startsWith('newsletter')) {
         sendNewsletterWelcome(input.email).catch(e => console.error("[Email] Newsletter welcome failed:", e));
       }

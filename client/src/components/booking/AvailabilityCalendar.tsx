@@ -420,6 +420,48 @@ export default function AvailabilityCalendar({
   const secondMonth = viewMonth === 11 ? 0 : viewMonth + 1;
   const secondYear = viewMonth === 11 ? viewYear + 1 : viewYear;
 
+  /**
+   * Booking rules for the month being viewed, stated UP FRONT.
+   *
+   * In high season Guesty closes most days to arrival (`cta`) and raises the
+   * minimum stay — e.g. July/August: 7 nights, Saturdays only. The grid honours
+   * that, but silently: a guest sees a wall of unselectable days and concludes
+   * the property is unavailable (this is exactly what happened with the Aug-2027
+   * pre-approvals). So when arrivals are restricted to a few weekdays, say so
+   * before they start clicking.
+   */
+  const monthRule = useMemo(() => {
+    if (phase !== "check-in") return null;
+    const arrivals: { weekday: number; minNights: number }[] = [];
+    let anyClosed = false;
+    dayMap.forEach((info, dateStr) => {
+      const d = new Date(dateStr + "T00:00:00Z");
+      if (d.getUTCFullYear() !== viewYear || d.getUTCMonth() !== viewMonth) return;
+      if (info.status !== "available" || startOfDay(dateStr) < todayMs) return;
+      if (info.cta) { anyClosed = true; return; }
+      arrivals.push({ weekday: d.getUTCDay(), minNights: info.minNights ?? 1 });
+    });
+    if (!arrivals.length) return null;
+
+    const weekdays = Array.from(new Set(arrivals.map(a => a.weekday))).sort();
+    // Only state a minimum when EVERY arrival day in the month shares it.
+    // Quoting the longest (e.g. September has a handful of 4-night days among
+    // 2-night ones) would overstate the restriction and talk guests out of a
+    // stay they could actually book.
+    const nightsSet = Array.from(new Set(arrivals.map(a => a.minNights)));
+    const uniformMinNights = nightsSet.length === 1 ? nightsSet[0] : null;
+    // Worth calling out when arrivals are genuinely restricted, or the whole
+    // month carries a minimum longer than a casual booker would assume.
+    const restrictedArrivals = anyClosed && weekdays.length > 0 && weekdays.length <= 3;
+    if (!restrictedArrivals && !(uniformMinNights && uniformMinNights >= 3)) return null;
+    const minNights = uniformMinNights ?? 0;
+
+    const fmtDay = new Intl.DateTimeFormat(locale, { weekday: "long", timeZone: "UTC" });
+    // 2024-01-07 is a Sunday, so +weekday lands on the right day name.
+    const dayNames = weekdays.map(w => fmtDay.format(new Date(Date.UTC(2024, 0, 7 + w))));
+    return { restrictedArrivals, minNights, dayNames };
+  }, [phase, dayMap, viewYear, viewMonth, todayMs, locale]);
+
   const calendarNode = (
     <div className="bg-white">
       {/* Selection phase indicator — pills are clickable to choose which date to edit */}
@@ -463,6 +505,31 @@ export default function AvailabilityCalendar({
           </button>
         )}
       </div>
+
+      {/* Season rules for the month in view — stated before the guest starts
+          clicking, so blocked arrival days read as a rule, not as "sold out". */}
+      {monthRule && (
+        <div className="mx-4 mb-1 flex items-start gap-2 px-3 py-2 bg-[#F5F1EB] border border-[#E8E4DC]">
+          <span className="text-[#806A48] text-sm shrink-0 leading-none mt-0.5">i</span>
+          <p className="text-[11px] text-[#1A1A18] font-medium leading-snug">
+            {monthRule.restrictedArrivals
+              ? monthRule.minNights > 1
+                ? t("booking.arrivalDaysNotice", {
+                    days: monthRule.dayNames.join(", "),
+                    count: monthRule.minNights,
+                    defaultValue: "Check-in on {{days}} only · minimum {{count}} nights",
+                  })
+                : t("booking.arrivalDaysOnlyNotice", {
+                    days: monthRule.dayNames.join(", "),
+                    defaultValue: "Check-in on {{days}} only",
+                  })
+              : t("booking.minStayMonthNotice", {
+                  count: monthRule.minNights,
+                  defaultValue: "Minimum stay of {{count}} nights this month",
+                })}
+          </p>
+        </div>
+      )}
 
       {/* Minimum-stay notice — shown immediately while choosing check-out */}
       {phase === "check-out" && requiredMinNights > 1 && (

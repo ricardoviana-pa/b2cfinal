@@ -82,6 +82,10 @@ export default function FAQ() {
       q: t('faq.q9'),
       a: t('faq.a9'),
     },
+    {
+      q: t('faq.q10'),
+      a: t('faq.a10'),
+    },
   ], [t]);
 
   const faqGraph = useMemo(

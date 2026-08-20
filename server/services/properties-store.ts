@@ -128,3 +128,70 @@ function filterPublicProperties(properties: any[]): any[] {
     return true;
   });
 }
+
+/** Mirror of the client's slugifyLocality (client/src/lib/utils.ts) so the
+ *  option values produced here match what the PLP's `location` filter expects. */
+function slugifyLocality(name: string): string {
+  return name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+/**
+ * The destination options for the search dropdowns — derived from the SAME
+ * public property list the site renders, so it can never offer a place with no
+ * results. Tiny payload (~15 entries) so it can be prefetched into the SSR HTML
+ * and the dropdown is usable on first paint, instead of waiting for the ~1.3 MB
+ * full property list to load (which left the picker empty on mobile).
+ */
+export async function getSiteLocalities(): Promise<
+  Array<{ label: string; value: string; group?: string }>
+> {
+  const properties = await getPropertiesForSite();
+
+  // destination slug → display name + order, so the picker can group the raw
+  // municipalities under the regions guests actually recognise.
+  const destName = new Map<string, string>();
+  const destOrder = new Map<string, number>();
+  try {
+    const raw = await readFile(
+      join(process.cwd(), "client", "src", "data", "destinations.json"),
+      "utf-8",
+    );
+    const arr = JSON.parse(raw);
+    if (Array.isArray(arr)) {
+      arr.forEach((d: any, i: number) => {
+        if (d?.slug && d?.name) {
+          destName.set(d.slug, d.name);
+          destOrder.set(d.slug, typeof d.sortOrder === "number" ? d.sortOrder : i);
+        }
+      });
+    }
+  } catch {
+    /* no destinations file — fall back to a flat, ungrouped list */
+  }
+
+  const map = new Map<string, { label: string; dest?: string }>();
+  for (const p of properties) {
+    if (p?.isActive && p?.locality) {
+      const slug = slugifyLocality(p.locality);
+      if (!map.has(slug)) map.set(slug, { label: p.locality, dest: p.destination });
+    }
+  }
+
+  return Array.from(map.entries())
+    .sort((a, b) => {
+      const oa = destOrder.get(a[1].dest ?? "") ?? 999;
+      const ob = destOrder.get(b[1].dest ?? "") ?? 999;
+      if (oa !== ob) return oa - ob;
+      return a[1].label.localeCompare(b[1].label, "pt");
+    })
+    .map(([value, { label, dest }]) => ({
+      label,
+      value,
+      ...(dest && destName.has(dest) ? { group: destName.get(dest) } : {}),
+    }));
+}

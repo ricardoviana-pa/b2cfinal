@@ -44,6 +44,8 @@ export interface RenderPrefetch {
   listForSite?: unknown;
   /** Result of trpc.properties.getBySlugForSite for a single property page. */
   propertyBySlug?: { slug: string; data: unknown };
+  /** Result of trpc.properties.localities — tiny, seeds the search dropdowns. */
+  localities?: unknown;
 }
 
 export interface RenderOptions {
@@ -103,6 +105,12 @@ export async function render(url: string, opts?: RenderOptions): Promise<RenderR
     queryClient.setQueryData(
       getQueryKey(trpc.properties.getBySlugForSite, { slug: pf.propertyBySlug.slug }, 'query'),
       pf.propertyBySlug.data,
+    );
+  }
+  if (pf?.localities !== undefined) {
+    queryClient.setQueryData(
+      getQueryKey(trpc.properties.localities, undefined, 'query'),
+      pf.localities,
     );
   }
 

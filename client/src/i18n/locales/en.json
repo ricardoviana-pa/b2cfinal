@@ -1,6 +1,6 @@
 {
   "nav": {
-    "properties": "Properties",
+    "properties": "Homes",
     "destinations": "Destinations",
     "events": "Events",
     "journal": "Journal",
@@ -21,7 +21,7 @@
     "sendEmail": "Send us an email",
     "whatsapp": "WhatsApp",
     "chatConcierge": "Chat with our concierge",
-    "allProperties": "All Properties",
+    "allProperties": "All Homes",
     "browseCollection": "Browse our full collection",
     "byDestination": "By Destination",
     "conciergeSubtitle": "Services, chef, spa, adventures",
@@ -115,7 +115,17 @@
     "bookingBarDestination": "Destination",
     "searchHomes": "Search homes",
     "heroAlt": "Portugal Active homes collection",
-    "batchError": "Live pricing is temporarily unavailable. See each property page for final pricing."
+    "batchError": "Live pricing is temporarily unavailable. See each home's page for final pricing.",
+    "hintTooLong": "That search covers {{count}} nights. Here are the stays available in that period:",
+    "hintArrival": "In this season stays start on {{days}} and run at least {{count}} nights.",
+    "hintMinStay": "These dates need a minimum stay of {{count}} nights.",
+    "hintTryDates": "Try {{from}} → {{to}}",
+    "leadPrompt": "Want us to check these exact dates for you?",
+    "leadName": "Name",
+    "leadEmail": "Email",
+    "leadSend": "Send",
+    "leadThanks": "Thank you — we'll come back to you with options for these dates.",
+    "leadError": "Could not send — please try WhatsApp below."
   },
   "property": {
     "bedrooms": "Bedrooms",
@@ -161,11 +171,11 @@
     "unitsInPropertyTitle_one": "{{count}} unit in this property",
     "unitsInPropertyTitle_other": "{{count}} units in this property",
     "unitsHint": "Each unit can be reserved independently",
-    "wholeProperty": "Whole property",
+    "wholeProperty": "Entire home",
     "viewUnit": "View unit",
     "prevPhoto": "Previous photo",
     "nextPhoto": "Next photo",
-    "saveAria": "Save property",
+    "saveAria": "Save home",
     "removeSaveAria": "Remove from saved",
     "imageAlt": "{{name}} — {{current}} of {{total}}",
     "checkingPriceAria": "Checking live price",
@@ -175,7 +185,9 @@
     "fiveStar": "5-Star",
     "serviceLabel": "Service",
     "bed": "bed",
-    "nightPrice": "/ night"
+    "nightPrice": "/ night",
+    "sleepsUpTo": "Sleeps up to {{count}} guests",
+    "checkUnitAvailability": "See unit availability"
   },
   "booking": {
     "summary": "Booking Summary",
@@ -207,7 +219,7 @@
     "selectDates": "Select dates",
     "nights_one": "{{count}} night",
     "nights_other": "{{count}} nights",
-    "backToProperty": "Back to property",
+    "backToProperty": "Back to the home",
     "summaryPageTitle": "Stay summary",
     "summaryPageSubtitle": "Choose dates, confirm rate and validate the full price before continuing.",
     "guestsLabel": "Guests",
@@ -222,7 +234,10 @@
     "minStayNotice_one": "Minimum stay for these dates is {{count}} night",
     "minStayNotice_other": "Minimum stay for these dates is {{count}} nights",
     "decreaseGuests": "Decrease guests",
-    "increaseGuests": "Increase guests"
+    "increaseGuests": "Increase guests",
+    "arrivalDaysNotice": "Check-in on {{days}} only · minimum {{count}} nights",
+    "minStayMonthNotice": "Minimum stay of {{count}} nights this month",
+    "arrivalDaysOnlyNotice": "Check-in on {{days}} only"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Price on request",
@@ -237,7 +252,7 @@
     "requestBody": "Our team will confirm your reservation within 24 hours.",
     "makeAnother": "Make another booking",
     "rateBusy": "Booking service is temporarily busy. Please wait a moment and try again.",
-    "propertyLabel": "Property",
+    "propertyLabel": "Home",
     "checkInLabel": "Check-in",
     "checkOutLabel": "Check-out",
     "changeDates": "Change dates",
@@ -303,7 +318,7 @@
     "checkInToday": "Check-in is today",
     "checkInTomorrow": "Check-in is tomorrow",
     "checkInSoon": "Check-in is in 2 days",
-    "advanceNoticeNote": "Some properties require advance notice. Instant confirmation may not be available.",
+    "advanceNoticeNote": "Some homes require advance notice. Instant confirmation may not be available.",
     "nightsLabel": "nights",
     "servicesSelected_one": "{{count}} service requested — confirmed after booking",
     "servicesSelected_other": "{{count}} services requested — confirmed after booking",
@@ -316,7 +331,10 @@
     "unavailableLabel": "Unavailable",
     "confirmDates": "Confirm",
     "tariffInCheckout": "Two rates available. Choose yours in the next step.",
-    "reserve": "RESERVE"
+    "reserve": "RESERVE",
+    "arrivalsRule": "Stays start on {{days}} · minimum {{count}} nights",
+    "nextArrivals": "Next available dates",
+    "directNote": "Direct price — no service fees, best rate online"
   },
   "common": {
     "loading": "Loading…",
@@ -335,10 +353,10 @@
     "invalidPhone": "Please enter a valid phone number",
     "generic": "Something went wrong. Please try again.",
     "contactWhatsapp": "Contact us on WhatsApp",
-    "minStay": "These dates do not meet the minimum stay for this property.",
+    "minStay": "These dates do not meet the minimum stay for this home.",
     "advanceNotice": "These dates cannot be booked online because the advance notice rule is not met.",
     "advanceNoticeWithDays": "Bookings require at least {{days}} days advance notice.",
-    "requestOnly": "This property is only available by request for the selected dates.",
+    "requestOnly": "This home is only available by request for the selected dates.",
     "datesNotAvailable": "These dates are not available. Please select different dates.",
     "pricingUnavailable": "Pricing not available for these dates.",
     "quoteTimeout": "Quote request timed out. Please try again.",
@@ -400,7 +418,7 @@
     "conciergeServices": "Concierge services"
   },
   "propertyDetail": {
-    "notFound": "Property not found",
+    "notFound": "Home not found",
     "notFoundBody": "This home may have been removed or the link may be incorrect.",
     "browseHomes": "Browse our homes",
     "noImage": "No image",
@@ -409,7 +427,7 @@
     "breadcrumbHomes": "Homes",
     "bedroomsTitle": "Bedrooms & Sleeping Arrangements",
     "aboutTitle": "About this home",
-    "welcomeFallback": "Welcome to {{name}}. A beautiful property in {{locality}}, {{destination}}.",
+    "welcomeFallback": "Welcome to {{name}}. A beautiful home in {{locality}}, {{destination}}.",
     "amenitiesTitle": "Amenities and features",
     "amenitiesContact": "Contact our concierge for full amenity details.",
     "includedTitle": "What's included in every stay",
@@ -540,7 +558,7 @@
     "conceptTitle": "Not a hotel. Not a rental. Something better.",
     "conceptBody": "Every home in our collection is operated like a private hotel. A dedicated local team handles everything, from the welcome hamper on arrival to a private chef cooking with ingredients from this morning's market. No reception desks. No shared lobbies. Just your home, your pace, your rules.",
     "conceptPoint1": "The privacy of a home",
-    "conceptPoint1Body": "No shared spaces, no schedules. The entire property is exclusively yours.",
+    "conceptPoint1Body": "No shared spaces, no schedules. The entire home is exclusively yours.",
     "conceptPoint2": "The service of a five star hotel",
     "conceptPoint2Body": "Private chef, in villa spa, concierge, housekeeping, transfers. Every service delivered by our trained, in house professionals.",
     "conceptPoint3": "A concierge who knows everything",
@@ -724,14 +742,14 @@
     "faqTitle": "Frequently asked questions",
     "faq1q": "How quickly do you respond?",
     "faq1a": "Within 2 hours, 24/7. For urgent matters during your stay, our local team can be at your door within 30 minutes.",
-    "faq2q": "Can I visit the property before booking?",
+    "faq2q": "Can I visit the home before booking?",
     "faq2a": "Yes. We offer virtual walkthroughs on request, and in person visits can be arranged depending on availability.",
     "faq3q": "Do you offer long term stays?",
     "faq3a": "Yes. Extended stay rates available for bookings of 28 nights or more. Contact our concierge for a tailored proposal.",
     "faq4q": "What payment methods do you accept?",
     "faq4a": "Bank transfer, Visa, Mastercard, American Express, and Apple Pay.",
     "faq5q": "Is there a minimum stay?",
-    "faq5a": "Typically 3 nights, varying by property and season. Our concierge will confirm for your selected dates.",
+    "faq5a": "Typically 3 nights, varying by home and season. Our concierge will confirm for your selected dates.",
     "faq6q": "Do you work with travel agents?",
     "faq6a": "Yes. We have a trade programme with dedicated support and competitive commissions. Contact us for details."
   },
@@ -744,7 +762,7 @@
     "storyTitle": "We started by showing people Portugal. Then we changed how they stay in it.",
     "storyP1": "Portugal Active began in 2017 as an adventure tourism company in Viana do Castelo, founded by Ricardo Viana — a sports scientist who left academia to build something on the coast he grew up on. Bike tours, horseback riding, canyoning, surf guiding. Then a single property changed everything. We took on one lodge and ran it the way we ran our adventures: with obsessive preparation, personal attention, and a team present from the first moment to the last. Guests noticed.",
     "storyP2": "We looked at how holiday homes were rented across Portugal and saw the same pattern everywhere: beautiful properties, handed over with a set of keys and a phone number. No team on the ground. No one behind the experience after check-in. So we redesigned it from the ground up — a full-time housekeeping team, maintenance crews, a concierge who lives in the region, a 147-point preparation checklist before every arrival. Not a rental with extras. An entirely new model: the private hotel.",
-    "storyP3": "From one property to {{count}}, each managed end to end by our people. Forbes, The Times, and The Guardian have written about what we are building. We are still based in Viana do Castelo. Still independent. Still growing at over 100% per year. And still driven by the same conviction: the way people experience a holiday home is broken, and we are the ones fixing it.",
+    "storyP3": "From one home to {{count}}, each managed end to end by our people. Forbes, The Times, and The Guardian have written about what we are building. We are still based in Viana do Castelo. Still independent. Still growing at over 100% per year. And still driven by the same conviction: the way people experience a holiday home is broken, and we are the ones fixing it.",
     "founderCaption": "Ricardo Viana, Founder. Viana do Castelo.",
     "pressOverline": "As featured in",
     "modelOverline": "THE MODEL",
@@ -783,7 +801,7 @@
     "value3Title": "The best service is the kind you never notice.",
     "value3Body": "When everything works, when the pool is clean, the wifi connects, the coffee machine is loaded, and the garden is immaculate, it feels effortless. That effortlessness is the product of preparation, checklists, training, and a team that has anticipated what you need before you think to ask.",
     "value4Title": "We would rather lose a booking than disappoint a guest.",
-    "value4Body": "If a property is not right for your trip, we will tell you. If the weather in the Minho is not what you expect in January, we will tell you that too. Honest guidance before the booking is worth more than a five-star review after it.",
+    "value4Body": "If a home is not right for your trip, we will tell you. If the weather in the Minho is not what you expect in January, we will tell you that too. Honest guidance before the booking is worth more than a five-star review after it.",
     "teamTitle": "The people behind every stay.",
     "teamBody": "Our team is not in a call centre. They live in the regions where our homes are located. They know the best restaurants because they eat there. They know the hidden beaches because they swim there. When you message your concierge, you are talking to someone who drove past your property this morning.",
     "ownersTitle": "Own a property in Portugal?",
@@ -823,7 +841,7 @@
     "ctaTitle": "Not sure what you need?",
     "ctaBody": "Tell us about your trip and our concierge will design the perfect combination. Reply guaranteed within 2 hours.",
     "ctaButton": "TALK TO OUR CONCIERGE",
-    "guestsOnlyBanner": "Concierge services are available only to guests staying at one of our properties.",
+    "guestsOnlyBanner": "Concierge services are available only to guests staying in one of our homes.",
     "guestsOnlyQuestion": "Looking for activities open to everyone?",
     "browseExperiences": "Browse experiences",
     "exclusiveToGuests": "Exclusive to our guests",
@@ -858,11 +876,11 @@
     "enquire": "ENQUIRE",
     "venueOverline": "YOUR PRIVATE VENUE",
     "venueTitle": "Not a hotel ballroom. Your own home in Portugal.",
-    "venueBody": "Every event takes place in a private property selected specifically for your group, your occasion and your guest count. No shared spaces, no compromise.",
-    "venueBullet1": "15+ inspected properties across Minho, Porto, Lisbon, Alentejo and Algarve",
+    "venueBody": "Every event takes place in a private home selected specifically for your group, your occasion and your guest count. No shared spaces, no compromise.",
+    "venueBullet1": "15+ inspected homes across Minho, Porto, Lisbon, Alentejo and Algarve",
     "venueBullet2": "In-house private chef, housekeeping and dedicated event coordinator",
     "venueBullet3": "Full production: lighting, sound, florals, photography, transport",
-    "venueBullet4": "Guest accommodation on site or at nearby partner properties",
+    "venueBullet4": "Guest accommodation on site or at nearby partner homes",
     "venueLabel": "private venues",
     "venueRegions": "Across 5 regions of Portugal",
     "processOverline": "HOW WE WORK",
@@ -870,7 +888,7 @@
     "step1Title": "Discovery",
     "step1Desc": "We learn about your vision, dates, guest count and budget. No templates, every event is built from scratch.",
     "step2Title": "Venue match",
-    "step2Desc": "We propose 2-3 private properties that fit your occasion. Virtual tours or an in-person visit, your choice.",
+    "step2Desc": "We propose 2-3 private homes that fit your occasion. Virtual tours or an in-person visit, your choice.",
     "step3Title": "Design",
     "step3Desc": "Our coordinator builds your event plan: menu, activities, florals, music, logistics, accommodation, transport.",
     "step4Title": "Execution",
@@ -923,7 +941,9 @@
     "q9": "What is the best rate guarantee?",
     "a9": "Our website always offers the lowest available rate. Booking direct means lower price than any third party platform, priority concierge support, faster response, and first access to in house services.",
     "cantFind": "Can't find what you're looking for?",
-    "contactTeam": "CONTACT OUR TEAM"
+    "contactTeam": "CONTACT OUR TEAM",
+    "q10": "Can I check in on any day of the week?",
+    "a10": "For most of the year, yes — arrivals are open on any day, with minimum stays of 2–4 nights depending on the home. In July and August, stays run Saturday to Saturday with a 7-night minimum. The booking calendar on each home highlights the available arrival dates, and for longer or non-standard stays our concierge will gladly build the plan with you."
   },
   "adventures": {
     "heroAlt": "Experiences in Portugal",
@@ -1114,7 +1134,8 @@
     "verifiedGuest": "Verified guest",
     "ourGuests": "OUR GUESTS",
     "whatTheyRemember": "What they remember most.",
-    "proofStrip": "4.8/5 across 2,000+ guest reviews"
+    "proofStrip": "4.8/5 across 2,000+ guest reviews",
+    "verifiedNote": "All reviews are from completed stays, collected through our booking channels."
   },
   "experience": {
     "from": "From",
@@ -1342,7 +1363,11 @@
     "secureBooking": "Secure booking",
     "bestRate": "Best rate guaranteed",
     "noBookingFees": "No booking fees",
-    "conciergeIncluded": "Concierge included"
+    "conciergeIncluded": "Concierge included",
+    "directHeadline": "Why book direct",
+    "bestRateTeeth": "Best rate online — find these dates cheaper on Airbnb or Booking.com and we match the price",
+    "noServiceFees": "No service fees — OTAs add 12–18% at checkout; here the price is the price",
+    "conciergeWhatsapp": "WhatsApp concierge before, during and after your stay"
   },
   "bookingStatus": {
     "confirmed": "Confirmed",
@@ -1650,5 +1675,10 @@
     "arrivalAirport": "Arrival airport",
     "perCleaning": "per cleaning",
     "perPetStay": "per pet · stay"
+  },
+  "host": {
+    "hostedBy": "Hosted by Ricardo & the Portugal Active team",
+    "basedIn": "Local team in Viana do Castelo",
+    "meetUs": "Meet us"
   }
 }

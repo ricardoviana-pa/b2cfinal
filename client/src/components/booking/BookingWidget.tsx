@@ -671,6 +671,46 @@ export default function BookingWidget({
     return `\n\n⚠️ AÇÃO NECESSÁRIA — SERVIÇOS PEDIDOS PELO HÓSPEDE:\n${lines.join("\n")}\n\nContactar hóspede nas primeiras 2h após reserva para confirmar detalhes, datas e orçamento final de cada serviço.`;
   }, [selectedUpsells]);
 
+  /**
+   * The next few dates a stay can actually START, plus the rule behind them.
+   *
+   * In high season Guesty closes most days to arrival and raises the minimum
+   * stay (Jul/Aug: Saturdays, 7 nights). Guests only discovered that by
+   * clicking blocked day after blocked day and concluding we were full — the
+   * enquiry that surfaced this reached us by phone. Stating the openings up
+   * front turns the restriction into an invitation.
+   */
+  const nextArrivals = useMemo(() => {
+    if (!calendarDays.length || checkIn) return null;
+    const byDate = new Map(calendarDays.map(d => [d.date, d]));
+    const out: Array<{ date: string; nights: number }> = [];
+    let restricted = false;
+    for (const d of calendarDays) {
+      if (out.length >= 4) break;
+      if (d.status !== "available") continue;
+      if (d.cta) { restricted = true; continue; }
+      const need = Math.max(1, d.minNights ?? 1);
+      let ok = true;
+      for (let n = 0; n < need; n++) {
+        const nd = new Date(d.date + "T00:00:00Z");
+        nd.setUTCDate(nd.getUTCDate() + n);
+        const day = byDate.get(nd.toISOString().slice(0, 10));
+        if (!day || day.status !== "available") { ok = false; break; }
+      }
+      if (ok) out.push({ date: d.date, nights: need });
+    }
+    if (!out.length) return null;
+    // State a rule only when it holds for EVERY date offered. A list that spans
+    // a season change mixes 7-night August Saturdays with 2-night September
+    // days; quoting the longest would overstate the restriction and talk
+    // guests out of a stay they could book.
+    const nightsSet = Array.from(new Set(out.map(o => o.nights)));
+    const uniformNights = nightsSet.length === 1 ? nightsSet[0] : null;
+    const weekdays = Array.from(new Set(out.map(o => new Date(o.date + "T00:00:00Z").getUTCDay())));
+    const showRule = !!uniformNights && ((restricted && weekdays.length <= 2) || uniformNights >= 3);
+    return { list: out, minNights: uniformNights ?? 0, showRule, weekdays };
+  }, [calendarDays, checkIn]);
+
   const displayRate = effectiveQuote?.nightlyRate || pricePerNight || 0;
 
   // ── SUCCESS ──
@@ -791,7 +831,7 @@ export default function BookingWidget({
             href={waConfirmLink}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => pushDL({ event: "whatsapp_click", source: "booking_success", property_id: guestyId })}
+            data-track-source="booking_success"
             className="w-full flex items-center justify-center gap-2 min-h-[48px] bg-black text-white text-[12px] font-medium tracking-[0.12em] uppercase px-6 py-3.5 hover:bg-black/85 transition-colors"
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.612.638l4.725-1.217A11.947 11.947 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.24 0-4.318-.722-6.004-1.948l-.42-.312-2.833.73.756-2.753-.343-.453A9.963 9.963 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
@@ -840,6 +880,10 @@ export default function BookingWidget({
               </span>
               <span className="text-[14px] text-[#726D63]">{t("property.perNight")}</span>
             </div>
+            {/* One quiet line answering the tab they still have open. */}
+            <p className="text-[11.5px] text-[#806A48] mt-1" style={{ fontWeight: 400 }}>
+              {t("bookingWidget.directNote", "Direct price — no service fees, best rate online")}
+            </p>
             {effectiveMinNights > 1 && (
               <p className="text-xs text-black/40 mt-1.5 flex items-center gap-1.5">
                 <Calendar className="w-3 h-3" />
@@ -878,6 +922,49 @@ export default function BookingWidget({
             </div>
           </div>
         </div>
+
+        {/* Openings, stated before the guest starts guessing. Only while no
+            check-in is chosen — once they're picking, the calendar leads. */}
+        {nextArrivals && !showCalendar && (
+          <div className="px-1 pt-3">
+            <p className="text-[11px] text-black/50 mb-2">
+              {nextArrivals.showRule
+                ? t("bookingWidget.arrivalsRule", {
+                    days: Array.from(new Set(nextArrivals.list.map(a =>
+                      new Intl.DateTimeFormat(i18n.language, { weekday: "long", timeZone: "UTC" })
+                        .format(new Date(a.date + "T00:00:00Z"))))).join(", "),
+                    count: nextArrivals.minNights,
+                    defaultValue: "Stays start on {{days}} · minimum {{count}} nights",
+                  })
+                : t("bookingWidget.nextArrivals", "Next available dates")}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {nextArrivals.list.map(a => {
+                const co = new Date(a.date + "T00:00:00Z");
+                co.setUTCDate(co.getUTCDate() + a.nights);
+                const coStr = co.toISOString().slice(0, 10);
+                return (
+                  <button
+                    key={a.date}
+                    type="button"
+                    onClick={() => {
+                      setCheckIn(a.date);
+                      setCheckOut(coStr);
+                      setQuote(null);
+                      setError("");
+                      setBeQuoteError("");
+                      setStep("dates");
+                    }}
+                    className="min-h-[40px] px-3 border border-black/15 bg-white text-[12px] text-black hover:border-black transition-colors"
+                  >
+                    {new Intl.DateTimeFormat(i18n.language, { day: "numeric", month: "short", timeZone: "UTC" })
+                      .format(new Date(a.date + "T00:00:00Z"))}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Availability Calendar — always custom, never native date inputs */}
         {showCalendar && (
@@ -1036,7 +1123,7 @@ export default function BookingWidget({
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => pushDL({ event: "whatsapp_click", source: "pricing_unavailable", property_id: guestyId })}
+              data-track-source="pricing_unavailable"
               className="w-full min-h-[52px] bg-black text-white text-[12px] font-medium tracking-[0.12em] uppercase px-8 py-4 hover:bg-black/85 transition-colors flex items-center justify-center gap-2"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.612.638l4.725-1.217A11.947 11.947 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.24 0-4.318-.722-6.004-1.948l-.42-.312-2.833.73.756-2.753-.343-.453A9.963 9.963 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
@@ -1485,7 +1572,7 @@ export default function BookingWidget({
             href={conciergeUrl}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => pushDL({ event: "whatsapp_click", source: "booking_widget", property_id: guestyId })}
+            data-track-source="booking_widget"
             className="flex items-center justify-center gap-1.5 text-[12px] text-[#8B7355] hover:text-black transition-colors pt-3 mt-1 border-t border-black/[0.06]"
           >
             {t("property.needHelpConcierge", "Need help? Talk to the concierge")}

@@ -156,3 +156,34 @@ export function buildPropertyItem(property: {
     ...(options.index !== undefined && { index: options.index }),
   };
 }
+
+/**
+ * Site-wide WhatsApp / phone click tracking via event delegation.
+ *
+ * WhatsApp is this business's main conversion channel, yet only 3 of 19
+ * wa.me anchors pushed an event — Google/Meta optimized on a starved signal
+ * (a big part of why paid ads "didn't work"). One capture-phase listener
+ * covers every current AND future link, so nobody has to remember to
+ * instrument the next one. Granular labels come from an optional
+ * data-track-source attribute on the anchor (or an ancestor); pages without
+ * one report their pathname, which is plenty for conversion counting.
+ */
+export function installContactClickTracking(): void {
+  document.addEventListener(
+    'click',
+    (e) => {
+      const el = (e.target as Element | null)?.closest?.('a[href]');
+      if (!el) return;
+      const href = el.getAttribute('href') || '';
+      const source =
+        (el.closest('[data-track-source]') as HTMLElement | null)?.dataset.trackSource ||
+        window.location.pathname;
+      if (href.includes('wa.me/')) {
+        pushDL({ event: 'whatsapp_click', source });
+      } else if (href.startsWith('tel:')) {
+        pushDL({ event: 'phone_click', source });
+      }
+    },
+    true,
+  );
+}

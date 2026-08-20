@@ -292,6 +292,12 @@ export default function PropertyCard({
                       </span>
                     );
                   }
+                  // With dates chosen, "select dates" reads as a bug. The whole
+                  // house isn't quotable for this search, but units may be —
+                  // point into the PDP where the units section answers it.
+                  if (nights > 0) {
+                    return <span className="text-[#726D63] text-[0.8125rem]">{t('property.checkUnitAvailability', 'See unit availability')}</span>;
+                  }
                   return <span className="text-[#726D63] text-[0.8125rem]">{t('property.selectDatesForPrice')}</span>;
                 }
                 if (nights > 0) {

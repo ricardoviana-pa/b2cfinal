@@ -9,6 +9,7 @@ import {
   applyCouponToBEQuote,
 } from "../services/guesty-booking";
 import { guestyBEClient, type BEListingWithPrice } from "../lib/guesty";
+import { getSearchHint, type SearchHint } from "../services/search-hint";
 import { getLowestNightly, getLowestNightlyBatch } from "../services/lowest-nightly";
 import * as db from "../db";
 import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
@@ -179,6 +180,25 @@ export const bookingRouter = router({
     .query(async ({ input, ctx }) => {
       ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=3600");
       return getLowestNightlyBatch(input.listingIds);
+    }),
+
+  /** Why a dated search found nothing, and the nearest dates that work.
+   *  Cheap + cached: reads one representative listing's calendar. */
+  searchHint: publicProcedure
+    .input(
+      z.object({
+        checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        guests: z.number().int().min(1).max(40).default(2),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=3600, stale-while-revalidate=3600");
+      try {
+        return await getSearchHint(input.checkIn, input.checkOut, input.guests);
+      } catch {
+        return { reason: null, nights: 0 } satisfies SearchHint;
+      }
     }),
 
   checkAvailability: publicProcedure

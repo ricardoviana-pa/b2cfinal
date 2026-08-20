@@ -395,7 +395,8 @@ export async function sendPostStay(data: PostStayData): Promise<void> {
 }
 
 /* ================================================================
-   CONTACT FORM INQUIRY (internal — to info@portugalactive.com)
+   CONTACT FORM INQUIRY (internal — to the booking inbox; per the team,
+   EVERYTHING guest-facing lands on booking@, one inbox to watch)
    Reply-To is set to the visitor's email so replies go directly to them.
    ================================================================ */
 interface ContactInquiryData {
@@ -406,7 +407,6 @@ interface ContactInquiryData {
   message: string;
 }
 
-const CONTACT_NOTIFICATION_EMAIL = process.env.CONTACT_NOTIFICATION_EMAIL || "info@portugalactive.com";
 
 const SUBJECT_LABELS: Record<string, string> = {
   "plan-my-stay": "Plan My Stay",
@@ -468,7 +468,7 @@ export async function sendContactInquiryNotification(data: ContactInquiryData): 
 </table>
 </td></tr>`);
 
-  await sendEmail(CONTACT_NOTIFICATION_EMAIL, emailSubject, html, data.email);
+  await sendEmail(BOOKING_NOTIFICATION_EMAIL, emailSubject, html, data.email);
 }
 
 /* ================================================================
@@ -1171,3 +1171,110 @@ export async function sendCheckoutOpsManifest(d: {
   }
 }
 
+
+/* ================================================================
+   AVAILABILITY REQUEST (internal — to info@portugalactive.com)
+
+   Fires when a guest searched dates the site could not serve and left their
+   email. These are the enquiries we used to lose silently: the dates are
+   usually blocked by a season rule (Saturday-only arrivals, 7-night minimum),
+   not by the house being full — so most are winnable if someone replies while
+   the guest is still deciding. Reply-To is the guest, so a reply goes straight
+   to them.
+   ================================================================ */
+/** Availability requests are booking traffic, not general enquiries — the
+ *  booking inbox is the one the team works from. Override in Render with
+ *  BOOKING_NOTIFICATION_EMAIL if that changes. */
+const BOOKING_NOTIFICATION_EMAIL =
+  process.env.BOOKING_NOTIFICATION_EMAIL || "booking@portugalactive.com";
+
+export interface AvailabilityRequestData {
+  name?: string;
+  email: string;
+  checkIn: string;
+  checkOut: string;
+  guests: string;
+  nights: string;
+}
+
+export async function sendAvailabilityRequestNotification(
+  data: AvailabilityRequestData,
+): Promise<void> {
+  const who = data.name?.trim() || data.email;
+  const emailSubject = `Availability request: ${data.checkIn} → ${data.checkOut} · ${data.guests} guests`;
+
+  const row = (label: string, value: string) => `
+      <tr>
+        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:13px;color:#726D63;width:90px;">${label}</td>
+        <td style="padding:5px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;font-weight:600;">${value}</td>
+      </tr>`;
+
+  const html = wrapTemplate(`
+<tr><td style="padding:0 0 24px 0;">
+  <h1 style="font-family:Georgia,serif;font-size:22px;color:#1A1A18;margin:0;font-weight:400;">Guest couldn't find these dates</h1>
+  <p style="font-family:Arial,sans-serif;font-size:13px;color:#726D63;margin:6px 0 0 0;">The site showed no availability, so they asked us to check. Reply to this email to answer them directly.</p>
+</td></tr>
+
+<tr><td style="padding:0 0 20px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAFAF7;border:1px solid #E8E4DC;">
+  <tr><td style="padding:20px;">
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">
+      ${row("Dates", `${data.checkIn} → ${data.checkOut}`)}
+      ${row("Nights", data.nights)}
+      ${row("Guests", data.guests)}
+      ${row("Guest", who)}
+      ${row("Email", `<a href="mailto:${data.email}" style="color:#806A48;text-decoration:none;">${data.email}</a>`)}
+    </table>
+  </td></tr>
+</table>
+</td></tr>
+
+<tr><td style="padding:0 0 8px 0;">
+  <p style="font-family:Arial,sans-serif;font-size:13px;color:#726D63;margin:0;">
+    Often the dates are blocked by a season rule (arrival day or minimum stay) rather than by a booking — worth checking the nearest valid window before replying.
+  </p>
+</td></tr>
+`);
+
+  await sendEmail(BOOKING_NOTIFICATION_EMAIL, emailSubject, html, data.email);
+}
+
+/* ================================================================
+   AVAILABILITY REQUEST — GUEST AUTO-CONFIRMATION
+
+   The guest just told us the site couldn't serve their dates and handed us
+   their email. Silence at that moment reads as "nobody's home" — exactly the
+   doubt that sends them back to the OTA tab. This lands immediately, from
+   booking@ (replies flow straight back into the booking inbox), in the
+   guest's language when we know it (pt), English otherwise.
+   ================================================================ */
+export async function sendAvailabilityRequestConfirmation(data: {
+  email: string;
+  name?: string;
+  checkIn: string;
+  checkOut: string;
+  guests: string;
+  locale?: string;
+}): Promise<void> {
+  const isPt = (data.locale || "").toLowerCase().startsWith("pt");
+  const first = data.name?.trim().split(/\s+/)[0];
+
+  const subject = isPt
+    ? `Recebemos o seu pedido — ${data.checkIn} → ${data.checkOut}`
+    : `We received your request — ${data.checkIn} → ${data.checkOut}`;
+
+  const greeting = first ? (isPt ? `Olá ${first},` : `Hello ${first},`) : (isPt ? "Olá," : "Hello,");
+
+  const body = isPt
+    ? `<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">${greeting}</p>
+<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">Recebemos o seu pedido para <strong>${data.checkIn} → ${data.checkOut}</strong> (${data.guests} hóspedes). A nossa equipa local está a verificar as opções — normalmente respondemos no próprio dia.</p>
+<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">Se preferir falar já connosco, responda a este email ou fale com o nosso concierge no WhatsApp: <a href="https://wa.me/351927161771" style="color:#806A48;">+351 927 161 771</a>.</p>
+<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0;">Portugal Active</p>`
+    : `<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">${greeting}</p>
+<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">We received your request for <strong>${data.checkIn} → ${data.checkOut}</strong> (${data.guests} guests). Our local team is checking the options — we usually come back to you the same day.</p>
+<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">If you'd rather talk now, just reply to this email or reach our concierge on WhatsApp: <a href="https://wa.me/351927161771" style="color:#806A48;">+351 927 161 771</a>.</p>
+<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0;">Portugal Active</p>`;
+
+  const html = wrapTemplate(`<tr><td style="padding:0 0 8px 0;">${body}</td></tr>`, undefined, isPt);
+  await sendEmail(data.email, subject, html, BOOKING_NOTIFICATION_EMAIL);
+}

@@ -143,7 +143,7 @@ export default function Footer() {
 
           {/* Column 2: Destinations */}
           <div>
-            <h4 className="text-[10px] font-semibold text-white/60 uppercase mb-5" style={{ letterSpacing: '0.12em' }}>
+            <h4 className="text-[11px] font-semibold text-white/60 uppercase mb-5" style={{ letterSpacing: '0.12em' }}>
               {t('footer.destinationsTitle')}
             </h4>
             <ul className="flex flex-col gap-3">
@@ -157,7 +157,7 @@ export default function Footer() {
 
           {/* Column 3: Services */}
           <div>
-            <h4 className="text-[10px] font-semibold text-white/60 uppercase mb-5" style={{ letterSpacing: '0.12em' }}>
+            <h4 className="text-[11px] font-semibold text-white/60 uppercase mb-5" style={{ letterSpacing: '0.12em' }}>
               {t('footer.servicesTitle')}
             </h4>
             <ul className="flex flex-col gap-3">
@@ -181,7 +181,7 @@ export default function Footer() {
 
           {/* Column 4: Company */}
           <div>
-            <h4 className="text-[10px] font-semibold text-white/60 uppercase mb-5" style={{ letterSpacing: '0.12em' }}>
+            <h4 className="text-[11px] font-semibold text-white/60 uppercase mb-5" style={{ letterSpacing: '0.12em' }}>
               {t('footer.companyTitle')}
             </h4>
             <ul className="flex flex-col gap-3">

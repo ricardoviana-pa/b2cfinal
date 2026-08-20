@@ -33,8 +33,11 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
   const { t, i18n } = useTranslation();
   const [showAll, setShowAll] = useState(false);
 
-  // Only genuine top-rated reviews with text, most recent first. Booking's
-  // 0–10 scale is normalised to 1–5 upstream, so a 10 arrives here as a 5.
+  // 5★ only, with real text, most recent first. 4★ reviews are still SYNCED —
+  // they keep `averageRating` honest (it reads ~4.9, never a fabricated 5.0) —
+  // but they aren't shown: their text regularly carries criticism ("furniture
+  // very old and uncomfortable", "tennis court disappointing"), and detecting
+  // that automatically across 9 languages proved unreliable.
   const topReviews = useMemo(
     () =>
       (reviews ?? [])
@@ -49,8 +52,7 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
     [reviews],
   );
 
-  // No qualifying 5★-with-text reviews → hide the section entirely (no sad
-  // empty state).
+  // Nothing qualifying → hide the section entirely (no sad empty state).
   if (topReviews.length === 0) return null;
 
   const INITIAL = 6;
@@ -83,6 +85,12 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
           </div>
         )}
       </div>
+
+      {/* Anonymous 5★ cards can read as fabricated; one line explains the
+          provenance without naming (or promoting) the OTAs they came through. */}
+      <p className="text-[12px] text-[#726D63] -mt-4 mb-6" style={{ fontWeight: 300 }}>
+        {t('reviews.verifiedNote', 'All reviews are from completed stays, collected through our booking channels.')}
+      </p>
 
       {/* Reviews grid */}
       <div className="grid gap-4 md:grid-cols-2">

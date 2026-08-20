@@ -115,7 +115,17 @@
     "bookingBarDestination": "Destino",
     "searchHomes": "Pesquisar alojamentos",
     "heroAlt": "Coleção de alojamentos Portugal Active",
-    "batchError": "O preço em tempo real está temporariamente indisponível. Consulte a página de cada propriedade para o preço final."
+    "batchError": "O preço em tempo real está temporariamente indisponível. Consulte a página de cada propriedade para o preço final.",
+    "hintTooLong": "Essa pesquisa cobre {{count}} noites. Estas são as estadias disponíveis nesse período:",
+    "hintArrival": "Nesta época as estadias começam {{days}} e têm no mínimo {{count}} noites.",
+    "hintMinStay": "Estas datas exigem uma estadia mínima de {{count}} noites.",
+    "hintTryDates": "Experimente {{from}} → {{to}}",
+    "leadPrompt": "Quer que verifiquemos estas datas por si?",
+    "leadName": "Nome",
+    "leadEmail": "Email",
+    "leadSend": "Enviar",
+    "leadThanks": "Obrigado — voltamos ao seu contacto com opções para estas datas.",
+    "leadError": "Não foi possível enviar — tente o WhatsApp abaixo."
   },
   "property": {
     "bedrooms": "Quartos",
@@ -175,7 +185,9 @@
     "fiveStar": "5 Estrelas",
     "serviceLabel": "Serviço",
     "bed": "cama",
-    "nightPrice": "/ noite"
+    "nightPrice": "/ noite",
+    "sleepsUpTo": "Aloja até {{count}} hóspedes",
+    "checkUnitAvailability": "Ver disponibilidade das unidades"
   },
   "booking": {
     "summary": "Resumo da Reserva",
@@ -222,7 +234,10 @@
     "minStayNotice_one": "A estadia mínima para estas datas é de {{count}} noite",
     "minStayNotice_other": "A estadia mínima para estas datas é de {{count}} noites",
     "decreaseGuests": "Diminuir hóspedes",
-    "increaseGuests": "Aumentar hóspedes"
+    "increaseGuests": "Aumentar hóspedes",
+    "arrivalDaysNotice": "Check-in apenas {{days}} · mínimo {{count}} noites",
+    "minStayMonthNotice": "Estadia mínima de {{count}} noites neste mês",
+    "arrivalDaysOnlyNotice": "Check-in apenas {{days}}"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Preço sob consulta",
@@ -316,7 +331,10 @@
     "unavailableLabel": "Indisponível",
     "confirmDates": "Confirmar",
     "tariffInCheckout": "Duas tarifas disponíveis. Escolhe a sua no próximo passo.",
-    "reserve": "RESERVAR"
+    "reserve": "RESERVAR",
+    "arrivalsRule": "Estadias começam {{days}} · mínimo {{count}} noites",
+    "nextArrivals": "Próximas datas disponíveis",
+    "directNote": "Preço direto — sem taxas de serviço, melhor preço online"
   },
   "common": {
     "loading": "A carregar…",
@@ -897,7 +915,9 @@
     "q9": "O que é a garantia do melhor preço?",
     "a9": "O nosso website oferece sempre a tarifa mais baixa disponível. Reservar diretamente significa preço inferior a qualquer plataforma de terceiros, suporte prioritário do concierge, resposta mais rápida e acesso prioritário aos serviços internos.",
     "cantFind": "Não encontra o que procura?",
-    "contactTeam": "CONTACTE A NOSSA EQUIPA"
+    "contactTeam": "CONTACTE A NOSSA EQUIPA",
+    "q10": "Posso fazer check-in em qualquer dia da semana?",
+    "a10": "Na maior parte do ano, sim — as chegadas estão abertas em qualquer dia, com estadias mínimas de 2–4 noites conforme a casa. Em julho e agosto, as estadias são de sábado a sábado com mínimo de 7 noites. O calendário de reserva de cada casa destaca as datas de chegada disponíveis e, para estadias mais longas ou fora do padrão, o nosso concierge terá todo o gosto em montar o plano consigo."
   },
   "adventures": {
     "heroAlt": "Experiências em Portugal",
@@ -1144,7 +1164,8 @@
     "verifiedGuest": "Hóspede verificado",
     "ourGuests": "OS NOSSOS HÓSPEDES",
     "whatTheyRemember": "O que mais recordam.",
-    "proofStrip": "4.8/5 em mais de 2.000 avaliações de hóspedes"
+    "proofStrip": "4.8/5 em mais de 2.000 avaliações de hóspedes",
+    "verifiedNote": "Todas as reviews são de estadias concluídas, recolhidas pelos nossos canais de reserva."
   },
   "amenity": {
     "outdoorPool": "Exterior e Piscina",
@@ -1342,7 +1363,11 @@
     "secureBooking": "Reserva segura",
     "bestRate": "Melhor preço garantido",
     "noBookingFees": "Sem taxas de reserva",
-    "conciergeIncluded": "Concierge incluído"
+    "conciergeIncluded": "Concierge incluído",
+    "directHeadline": "Porquê reservar direto",
+    "bestRateTeeth": "Melhor preço online — encontre estas datas mais baratas no Airbnb ou Booking.com e igualamos o preço",
+    "noServiceFees": "Sem taxas de serviço — as OTAs somam 12–18% no checkout; aqui o preço é o preço",
+    "conciergeWhatsapp": "Concierge por WhatsApp antes, durante e depois da estadia"
   },
   "bookingStatus": {
     "confirmed": "Confirmada",
@@ -1650,5 +1675,10 @@
     "arrivalAirport": "Aeroporto de chegada",
     "perCleaning": "por limpeza",
     "perPetStay": "por animal · estadia"
+  },
+  "host": {
+    "hostedBy": "Anfitriões: Ricardo & a equipa Portugal Active",
+    "basedIn": "Equipa local em Viana do Castelo",
+    "meetUs": "Conheça-nos"
   }
 }

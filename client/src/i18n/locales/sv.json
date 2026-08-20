@@ -115,7 +115,17 @@
     "bookingBarDestination": "Destination",
     "searchHomes": "Sök hem",
     "heroAlt": "Portugal Active hemkollektion",
-    "batchError": "Realtidspriser är tillfälligt otillgängliga. Se varje boendes sida för slutpris."
+    "batchError": "Realtidspriser är tillfälligt otillgängliga. Se varje boendes sida för slutpris.",
+    "hintTooLong": "Sökningen omfattar {{count}} nätter. Dessa vistelser är tillgängliga under perioden:",
+    "hintArrival": "Under denna säsong börjar vistelser {{days}} och varar minst {{count}} nätter.",
+    "hintMinStay": "Dessa datum kräver minst {{count}} nätter.",
+    "hintTryDates": "Prova {{from}} → {{to}}",
+    "leadPrompt": "Vill du att vi kollar dessa datum åt dig?",
+    "leadName": "Namn",
+    "leadEmail": "E-post",
+    "leadSend": "Skicka",
+    "leadThanks": "Tack — vi återkommer med alternativ för dessa datum.",
+    "leadError": "Kunde inte skicka — prova WhatsApp nedan."
   },
   "property": {
     "bedrooms": "Sovrum",
@@ -175,7 +185,9 @@
     "bed": "säng",
     "nightPrice": "/ natt",
     "prevPhoto": "Föregående bild",
-    "nextPhoto": "Nästa bild"
+    "nextPhoto": "Nästa bild",
+    "sleepsUpTo": "Plats för upp till {{count}} gäster",
+    "checkUnitAvailability": "Se enheternas tillgänglighet"
   },
   "booking": {
     "summary": "Bokningsöversikt",
@@ -222,7 +234,10 @@
     "select": "Välj",
     "cancellationPerPolicy": "Avbokning enligt boendets villkor",
     "decreaseGuests": "Färre gäster",
-    "increaseGuests": "Fler gäster"
+    "increaseGuests": "Fler gäster",
+    "arrivalDaysNotice": "Incheckning endast {{days}} · minst {{count}} nätter",
+    "minStayMonthNotice": "Minsta vistelse {{count}} nätter denna månad",
+    "arrivalDaysOnlyNotice": "Incheckning endast {{days}}"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Pris på förfrågan",
@@ -316,7 +331,10 @@
     "unavailableLabel": "Ej tillgänglig",
     "confirmDates": "Bekräfta",
     "tariffInCheckout": "Två priser tillgängliga. Välj ditt i nästa steg.",
-    "reserve": "RESERVERA"
+    "reserve": "RESERVERA",
+    "arrivalsRule": "Vistelser börjar {{days}} · minst {{count}} nätter",
+    "nextArrivals": "Nästa lediga datum",
+    "directNote": "Direktpris — inga serviceavgifter, bästa pris online"
   },
   "common": {
     "loading": "Laddar…",
@@ -897,7 +915,9 @@
     "q9": "Vad är bästa pris-garantin?",
     "a9": "Vår webbplats erbjuder alltid det lägsta tillgängliga priset. Direktbokning innebär lägre pris än på tredjepartsplattformar, prioriterad concierge-support, snabbare svar och första tillgång till interna tjänster.",
     "cantFind": "Hittar du inte det du söker?",
-    "contactTeam": "KONTAKTA VÅRT TEAM"
+    "contactTeam": "KONTAKTA VÅRT TEAM",
+    "q10": "Kan jag checka in vilken dag som helst i veckan?",
+    "a10": "Större delen av året, ja — ankomster är öppna alla dagar, med minsta vistelse på 2–4 nätter beroende på hus. I juli och augusti löper vistelser från lördag till lördag med minst 7 nätter. Bokningskalendern för varje hus markerar tillgängliga ankomstdatum, och för längre eller ovanliga vistelser bygger vår concierge gärna planen tillsammans med er."
   },
   "adventures": {
     "heroAlt": "Upplevelser i Portugal",
@@ -1144,7 +1164,8 @@
     "ourGuests": "VÅRA GÄSTER",
     "whatTheyRemember": "Vad de minns mest.",
     "proofStrip": "4.8/5 bland över 2 000 gästomdömen",
-    "verifiedGuest": "Verifierad gäst"
+    "verifiedGuest": "Verifierad gäst",
+    "verifiedNote": "Alla omdömen kommer från genomförda vistelser, insamlade via våra bokningskanaler."
   },
   "amenity": {
     "outdoorPool": "Utomhus & Pool",
@@ -1342,7 +1363,11 @@
     "secureBooking": "Säker bokning",
     "bestRate": "Bästa pris garanterat",
     "noBookingFees": "Inga bokningsavgifter",
-    "conciergeIncluded": "Concierge ingår"
+    "conciergeIncluded": "Concierge ingår",
+    "directHeadline": "Varför boka direkt",
+    "bestRateTeeth": "Bästa pris online — hittar ni dessa datum billigare på Airbnb eller Booking.com matchar vi priset",
+    "noServiceFees": "Inga serviceavgifter — OTA:er lägger på 12–18 % i kassan; här är priset priset",
+    "conciergeWhatsapp": "WhatsApp-concierge före, under och efter er vistelse"
   },
   "bookingStatus": {
     "confirmed": "Bekräftad",
@@ -1650,5 +1675,10 @@
     "arrivalAirport": "Ankomstflygplats",
     "perCleaning": "per städning",
     "perPetStay": "per husdjur · vistelse"
+  },
+  "host": {
+    "hostedBy": "Värdar: Ricardo & Portugal Active-teamet",
+    "basedIn": "Lokalt team i Viana do Castelo",
+    "meetUs": "Lär känna oss"
   }
 }

@@ -64,6 +64,9 @@ export default function PropertyUnitsSection({
 
   // Live quotes per unit (batch tRPC — single call covering every unit at once).
   const [quotes, setQuotes] = useState<Record<string, UnitQuote | null>>({});
+  /** True when the searched party is larger than this unit can take. */
+  const tooSmallFor = (unit: { maxGuests?: number }) =>
+    !!guests && !!unit.maxGuests && guests > unit.maxGuests;
   const [quotesLoading, setQuotesLoading] = useState(false);
   const utils = trpc.useUtils();
 
@@ -176,6 +179,17 @@ export default function PropertyUnitsSection({
                         <div className="h-3 bg-[#F5F1EB] rounded-md animate-pulse w-3/4" />
                         <div className="h-2.5 bg-[#F5F1EB] rounded-md animate-pulse w-1/2" />
                       </div>
+                    ) : tooSmallFor(unit) ? (
+                      /* The party doesn't fit. Guesty answers a too-large party
+                         with a failed quote, which used to surface as "price on
+                         request" / "unavailable" — reading as sold out when the
+                         real answer is simply that this unit is smaller. Say so. */
+                      <p className="text-[12px] text-[#806A48]">
+                        {t('property.sleepsUpTo', {
+                          count: unit.maxGuests,
+                          defaultValue: 'Sleeps up to {{count}} guests',
+                        })}
+                      </p>
                     ) : q && q.available === false ? (
                       <p className="text-[12px] text-[#DC2626]">
                         {t('property.unavailableForDates', 'Unavailable for these dates')}

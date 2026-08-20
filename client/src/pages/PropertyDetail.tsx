@@ -976,21 +976,49 @@ export default function PropertyDetail() {
       )}
 
 
-      {/* Trust strip */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-3 mt-6 pt-5 border-t border-[#E8E4DC]">
-        {([
-          { icon: Lock, label: t('trust.secureBooking', 'Secure booking') },
-          { icon: ShieldCheck, label: t('trust.bestRate', 'Best rate guaranteed') },
-          // "Flexible cancellation" was contradictory on non-refundable-only homes —
-          // the no-fees claim is unconditionally true (F1 honesty rule)
-          { icon: Clock, label: t('trust.noBookingFees', 'No booking fees') },
-          { icon: Headphones, label: t('trust.conciergeIncluded', 'Concierge included') },
-        ] as const).map((item, i) => (
-          <div key={i} className="flex items-center gap-2">
-            <item.icon size={14} className="text-[#726D63] shrink-0" />
-            <span className="text-[12px] text-[#726D63] leading-tight" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{item.label}</span>
-          </div>
-        ))}
+      {/* Why book direct — the guest arrived from an OTA with that tab still
+          open. Four generic badges ("best rate guaranteed") carried no weight;
+          a claim only converts sceptics when it names its mechanism. Every line
+          here is unconditionally true (F1 honesty rule). */}
+      <div className="mt-6 pt-5 border-t border-[#E8E4DC]">
+        <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#806A48] mb-3">
+          {t('trust.directHeadline', 'Why book direct')}
+        </p>
+        <div className="flex flex-col gap-2.5">
+          {([
+            { icon: ShieldCheck, label: t('trust.bestRateTeeth', 'Best rate online — find these dates cheaper on Airbnb or Booking.com and we match the price') },
+            { icon: Clock, label: t('trust.noServiceFees', 'No service fees — OTAs add 12–18% at checkout; here the price is the price') },
+            { icon: Headphones, label: t('trust.conciergeWhatsapp', 'WhatsApp concierge before, during and after your stay') },
+            { icon: Lock, label: t('trust.secureBooking', 'Secure booking') },
+          ] as const).map((item, i) => (
+            <div key={i} className="flex items-start gap-2">
+              <item.icon size={14} className="text-[#806A48] shrink-0 mt-0.5" />
+              <span className="text-[12px] text-[#1A1A18] leading-snug" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* A human at the decision point — the About page has the founder with a
+          face and a story, but the page where money changes hands had nobody. */}
+      <div className="mt-5 pt-5 border-t border-[#E8E4DC] flex items-center gap-3">
+        <img
+          src="/team/ricardo-viana.webp"
+          alt="Ricardo Viana, Portugal Active"
+          className="w-11 h-11 rounded-full object-cover shrink-0"
+          loading="lazy"
+        />
+        <div className="min-w-0">
+          <p className="text-[12.5px] text-[#1A1A18] font-medium leading-tight">
+            {t('host.hostedBy', 'Hosted by Ricardo & the Portugal Active team')}
+          </p>
+          <p className="text-[11.5px] text-[#726D63] leading-tight mt-0.5">
+            {t('host.basedIn', 'Local team in Viana do Castelo')} ·{' '}
+            <Link href="/about" className="text-[#806A48] hover:underline">
+              {t('host.meetUs', 'Meet us')}
+            </Link>
+          </p>
+        </div>
       </div>
     </>
   );
@@ -1511,7 +1539,7 @@ export default function PropertyDetail() {
             <DrawerContent className="lg:hidden bg-white max-h-[92vh]">
               <DrawerHeader className="flex-row items-center justify-between gap-3 border-b border-[#E8E4DC] px-5 py-4 text-left">
                 <DrawerTitle className="font-display text-[16px] font-light text-[#1A1A18] truncate">
-                  {property.name}
+                  {displayName}
                 </DrawerTitle>
                 <DrawerClose className="shrink-0 text-[#726D63] hover:text-[#1A1A18] transition-colors">
                   <X size={20} />

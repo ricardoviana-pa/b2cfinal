@@ -2,7 +2,7 @@
   {
     "id": "guesty-69653365bf04fe0013743511",
     "slug": "s-o-juli-o-retreat-pool-jacuzzi-garden-escape-743511",
-    "name": "4 Sao Juliao Retreat | Pool, Jacuzzi and Garden Escape",
+    "name": "4 Sao Juliao Retreat I Pool, Jacuzzi and Garden Escape Villa",
     "tagline": "Discover the exclusivity of São Julião Retreat, an elegant retreat in Ponte de Lima.\r\nWith three bedrooms in the main house and a fully furnished anne…",
     "tier": "select",
     "destination": "minho",
@@ -319,11 +319,11 @@
     "bookingUrl": "",
     "guestyId": "69653365bf04fe0013743511",
     "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in 4 Sao Juliao Retreat | Pool, Jacuzzi and Garden Escape",
+    "whatsappMessage": "Hi, I am interested in 4 Sao Juliao Retreat I Pool, Jacuzzi and Garden Escape Villa",
     "sortOrder": 0,
     "isActive": true,
     "isPortfolio": false,
-    "seoTitle": "4 Sao Juliao Retreat | Pool, Jacuzzi and Garden Escape — Portugal Active",
+    "seoTitle": "4 Sao Juliao Retreat I Pool, Jacuzzi and Garden Escape Villa — Portugal Active",
     "seoDescription": "Discover the exclusivity of São Julião Retreat, an elegant retreat in Ponte de Lima.\r\nWith three bedrooms in the main house and a fully furnished annex, this es",
     "address": {
       "full": "",
@@ -385,7 +385,7 @@
     "propertyType": "Villa",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 49515,
+    "areaSquareFeet": 10763.91042,
     "reviews": [
       {
         "rating": 5,
@@ -996,7 +996,7 @@
   {
     "id": "guesty-696533722def930014e914e2",
     "slug": "abreu-retreat-palace-luxury-elegance-leisure-e914e2",
-    "name": "Abreu Retreat Palace I Luxury Elegance and Leisure",
+    "name": "Abreu Retreat Palace I Luxury Elegance and Leisure Villa",
     "tagline": "Welcome to Quinta Refúgio Abreu, a retreat that combines charm and modernity in the Minho region. Located in Delães, Famalicão, this quinta stands out…",
     "tier": "select",
     "destination": "minho",
@@ -1177,11 +1177,11 @@
     "bookingUrl": "",
     "guestyId": "696533722def930014e914e2",
     "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Abreu Retreat Palace I Luxury Elegance and Leisure",
+    "whatsappMessage": "Hi, I am interested in Abreu Retreat Palace I Luxury Elegance and Leisure Villa",
     "sortOrder": 0,
     "isActive": true,
     "isPortfolio": false,
-    "seoTitle": "Abreu Retreat Palace I Luxury Elegance and Leisure — Portugal Active",
+    "seoTitle": "Abreu Retreat Palace I Luxury Elegance and Leisure Villa — Portugal Active",
     "seoDescription": "Welcome to Quinta Refúgio Abreu, a retreat that combines charm and modernity in the Minho region. Located in Delães, Famalicão, this quinta stands out with its ",
     "address": {
       "full": "",
@@ -1243,8 +1243,43 @@
     "propertyType": "Villa",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 6287,
+    "areaSquareFeet": 6286.12368528,
     "reviews": [
+      {
+        "rating": 5,
+        "text": "Charming and spacious house with a gorgeous and huge garden. The pool and the tennis court were very good as well. \nVery quiet area but at walking distance to a big supermarket and to a snack bar.",
+        "guestDisplayName": "Sonia Isabel De Castro",
+        "guestName": "Sonia Isabel De Castro",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-16T22:13:51.384Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
       {
         "rating": 5,
         "text": "Magnifique domaine. Le jardin est exceptionnel, la piscine est immense, et le tennis a été refait récemment. Nous avons passé une superbe semaine à 2 familles. Le village autour n'a pas d'intérêt, mais on l'oublie vite une fois dans le domaine. La cuisine pourrait être mieux équipée et refaite. Il n'y a bizarrement pas de machine à laver...mais c'est bien fait au supermarché à 1mn.",
@@ -1456,8 +1491,8 @@
         ]
       }
     ],
-    "averageRating": 4.67,
-    "reviewCount": 6
+    "averageRating": 4.71,
+    "reviewCount": 7
   },
   {
     "id": "guesty-6a50d66857c8010015595ad0",
@@ -2635,6 +2670,76 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "El apartamento esta nuevo parecía que lo entrenamos, con las consiguientes fallos de las cosas nuevas, el sitio es muy tranquilo y esta cerca de viana y de la playa",
+        "guestDisplayName": "Carlos",
+        "guestName": "Carlos",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-19T16:27:10.468Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "The apartment was unbelievably beautiful, it looked like something out of a magazine. Our host was beyond helpful and super responsive. The apartment was a 30-minute walk to Viana do Castelo or 30 minute walk to the beach. It was really nicely located in Darque.",
+        "guestDisplayName": "Laura",
+        "guestName": "Laura",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-14T23:52:59.763Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Me senti muito bem na casa. Lugar super tranquilo e confortável. Todos muito atenciosos e prestativos em atender com prontidão.",
         "guestDisplayName": "Vanessa Mendonça",
         "guestName": "Vanessa Mendonça",
@@ -2670,7 +2775,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 3
   },
   {
     "id": "guesty-69653354109993001383ef5f",
@@ -4238,6 +4343,41 @@
     "areaSquareFeet": 10764,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Very spacious house with good infrastructure to have fun with family and friends. The house is very charming and feels like a small castle. Good location as well. Unfortunately the very  smelly rooms and bathrooms makes staying inside a challenge, besides some electrical failures that made some of the nights inside toughter than it should. Lovely place anyway.",
+        "guestDisplayName": "Raphael",
+        "guestName": "Raphael",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-17T14:54:47.081Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Pues fuimos un grupo de 9 adultos y tres niños y la verdad que lo pasamos verdaderamente bien. Diría que mejor los mayores que los pequeños! La empresa muy atenta a los pequeños eventos que pasaron, alguna bajada de luz y poquísimo más, que nos lo solucionaron rapidísimamente. Pena que dos noches se queden extremadamente cortos para lo guay que está la casa. Ojalá volvamos!! por ganas no va a ser. Por poner un pero, un pero muy pequeño, es q en la sala del billar olía a humedad, como a cerrado, ",
         "guestDisplayName": "Angel",
@@ -4308,8 +4448,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 2
+    "averageRating": 4.67,
+    "reviewCount": 3
   },
   {
     "id": "guesty-6a3549e5edd13800142415e0",
@@ -5648,6 +5788,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Maison très bien située, plages surveillées, boulangerie, restaurants à proximité.\nQuartier très calme, parking toujours disponible. Possibilités de laisser ses vélos dans un local privé et fermé. \nLes photos sont conformes à la maison. Idéal pour les vacances en famille ou entre amis.",
+        "guestDisplayName": "Nuno",
+        "guestName": "Nuno",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-15T11:19:20.923Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Beautiful location and great for large families or sharing with friends",
         "guestDisplayName": "Jessica",
         "guestName": "Jessica",
@@ -5823,7 +5998,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 5
+    "reviewCount": 6
   },
   {
     "id": "guesty-696532f3753fb0001424a570",
@@ -6033,6 +6208,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Wonderful hosts and very professional. The house was gorgeous and the location was excellent. Only a few minutes from the city or the beach. We loved it and had a wonderful time and will come back again.",
+        "guestDisplayName": "Mary",
+        "guestName": "Mary",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-15T18:42:39.580Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Muy limpio todo, zona muy tranquila. Hay que coger el coche para ir a la playa o a Viana, pero están cerca. El restaurante de enfrente estupendo, comida rica y barata y muy amables. Mi familia y yo estuvimos muy a gusto.",
         "guestDisplayName": "Marta",
         "guestName": "Marta",
@@ -6173,7 +6383,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 4
+    "reviewCount": 5
   },
   {
     "id": "guesty-6965335df1c3a8001597c8e4",
@@ -8406,7 +8616,7 @@
   {
     "id": "guesty-6965330729bb8c00141e8cd6",
     "slug": "habito-s-lodge-by-portugalactive-5min-beach-town-1e8cd6",
-    "name": "Habitos Lodge by Portugal Active I Beach and Town",
+    "name": "Habitos Lodge by Portugal Active I Beach and Town Villa",
     "tagline": "Enjoy an unforgettable stay at this villa in Cafhé, Viana do Castelo, where the countryside meets the sea.\nWith a private swimming pool, garden, and s…",
     "tier": "select",
     "destination": "minho",
@@ -8569,11 +8779,11 @@
     "bookingUrl": "",
     "guestyId": "6965330729bb8c00141e8cd6",
     "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Habitos Lodge by Portugal Active I Beach and Town",
+    "whatsappMessage": "Hi, I am interested in Habitos Lodge by Portugal Active I Beach and Town Villa",
     "sortOrder": 0,
     "isActive": true,
     "isPortfolio": false,
-    "seoTitle": "Habitos Lodge by Portugal Active I Beach and Town — Portugal Active",
+    "seoTitle": "Habitos Lodge by Portugal Active I Beach and Town Villa — Portugal Active",
     "seoDescription": "Enjoy an unforgettable stay at this villa in Cafhé, Viana do Castelo, where the countryside meets the sea.\nWith a private swimming pool, garden, and stunning vi",
     "address": {
       "full": "",
@@ -8626,7 +8836,7 @@
     "propertyType": "Villa",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 12917,
+    "areaSquareFeet": 10763.91042,
     "reviews": [
       {
         "rating": 5,
@@ -8878,7 +9088,7 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b7bf04fe00137440f8/0d465862-4d40-45-5UN8B",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b7bf04fe00137440f8/8c2050aa-9d7f-43-Bql5I",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b7bf04fe00137440f8/071cd5bd-e16c-4e-gxRgP",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b7bf04fe00137440f8/6155df92-8f7a-40-_PalQ",
+      "https://assets.guesty.com/image/upload/v1787070409/production/6957de4388cba42d9e7a905e/jw8de0zwuon2czlnak51.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b7bf04fe00137440f8/2c49b8ba-d196-44-WSy0n",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b7bf04fe00137440f8/2a2837b7-d019-4d-qhVA6",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b7bf04fe00137440f8/5d177d8f-d35c-49-SotPs",
@@ -8995,6 +9205,41 @@
     "checkOutTime": "11:00",
     "areaSquareFeet": 463,
     "reviews": [
+      {
+        "rating": 5,
+        "text": "Appartement et hôte très bien.",
+        "guestDisplayName": "Gregory",
+        "guestName": "Gregory",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-17T17:34:16.987Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
       {
         "rating": 5,
         "text": "O apartamento é uma graça, estava super limpo e é muito bem localizado. Tive um probleminha com as chaves na chegada, mas o anfitrião me atendeu no mesmo instante e ajudou prontamente. Na rua do Airbnb tem uma tasca incrível! Procurem o Rui e serão bem atendidos, de certeza. O único porém do apartamento é um poço de barulho que entra da rua, já que as janelas não são duplas. Mas não foi nada que atrapalhou uma noite de sono. Até porque, a cama de casal é incrível. Voltarei, com certeza!",
@@ -9276,8 +9521,8 @@
         ]
       }
     ],
-    "averageRating": 4.88,
-    "reviewCount": 8
+    "averageRating": 4.89,
+    "reviewCount": 9
   },
   {
     "id": "guesty-69c415ceab80a8001247452c",
@@ -10741,6 +10986,41 @@
     "areaSquareFeet": 1614.586563,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Alojamiento muy limpio y bien ubicado, todo muy nuevo, el acceso la primera vez no es muy cómodo.",
+        "guestDisplayName": "Marta",
+        "guestName": "Marta",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-20T09:39:40.717Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "Wir hatten einen schönen Aufenthalt. Besonders gefallen hat uns:\n- Schöner Blick aufs Meer mit tollen Sonnenuntergängen von der Terrasse aus \n- Zwischenreinigung nach 1 Woche\n- gute Ausstattung \n- gemütliches Wohnzimmer \n- sehr sauber\n\nToll wären noch ein paar Haken in den Zimmern.",
         "guestDisplayName": "Martin Und Stefanie",
@@ -10986,8 +11266,8 @@
         ]
       }
     ],
-    "averageRating": 4.71,
-    "reviewCount": 7
+    "averageRating": 4.75,
+    "reviewCount": 8
   },
   {
     "id": "guesty-696533714b583900135cef22",
@@ -14027,7 +14307,7 @@
   {
     "id": "guesty-6965330b6d209c001510dd49",
     "slug": "portugal-active-atlantic-lodge-sea-view-premium-10dd49",
-    "name": "Portugal Active Atlantic Lodge I Sea View Premium",
+    "name": "Portugal Active Atlantic Lodge I Sea View Premium Villa",
     "tagline": "Discover the beauty and tranquility of Portugal Active Atlantic Lodge, in Afife. Designed by a renowned architecture firm, this vacation home offers r…",
     "tier": "select",
     "destination": "minho",
@@ -14183,11 +14463,11 @@
     "bookingUrl": "",
     "guestyId": "6965330b6d209c001510dd49",
     "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Portugal Active Atlantic Lodge I Sea View Premium",
+    "whatsappMessage": "Hi, I am interested in Portugal Active Atlantic Lodge I Sea View Premium Villa",
     "sortOrder": 0,
     "isActive": true,
     "isPortfolio": false,
-    "seoTitle": "Portugal Active Atlantic Lodge I Sea View Premium — Portugal Active",
+    "seoTitle": "Portugal Active Atlantic Lodge I Sea View Premium Villa — Portugal Active",
     "seoDescription": "Discover the beauty and tranquility of Portugal Active Atlantic Lodge, in Afife. Designed by a renowned architecture firm, this vacation home offers relaxed int",
     "address": {
       "full": "",
@@ -14258,7 +14538,7 @@
     "propertyType": "Villa",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 3445,
+    "areaSquareFeet": 3444.4513344,
     "reviews": [
       {
         "rating": 5,
@@ -15567,6 +15847,7 @@
         "Carbon monoxide detector",
         "Cleaning Disinfection",
         "Cleaning products",
+        "Clothing storage",
         "Coffee",
         "Coffee maker",
         "Cookware",
@@ -15617,7 +15898,6 @@
         "Toaster",
         "Towels provided",
         "Washer",
-        "Washer in common space",
         "Water Parks",
         "Water Sports",
         "Window guards",
@@ -16163,7 +16443,7 @@
   {
     "id": "guesty-69653335bf04fe0013742743",
     "slug": "portugal-active-nature-hill-duo-10-min-beach-742743",
-    "name": "Portugal Active Nature Hill Duo",
+    "name": "Portugal Active Nature Hill Duo Villa",
     "tagline": "Escape to a stunning oasis of tranquility, where three isolated and fully equipped properties blend harmoniously with the natural environment",
     "tier": "select",
     "destination": "minho",
@@ -16383,11 +16663,11 @@
     "bookingUrl": "",
     "guestyId": "69653335bf04fe0013742743",
     "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Portugal Active Nature Hill Duo",
+    "whatsappMessage": "Hi, I am interested in Portugal Active Nature Hill Duo Villa",
     "sortOrder": 0,
     "isActive": true,
     "isPortfolio": false,
-    "seoTitle": "Portugal Active Nature Hill Duo — Portugal Active",
+    "seoTitle": "Portugal Active Nature Hill Duo Villa — Portugal Active",
     "seoDescription": "Escape to a stunning oasis of tranquility, where three isolated and fully equipped properties blend harmoniously with the natural environment",
     "address": {
       "full": "",
@@ -16476,7 +16756,7 @@
     "propertyType": "Villa",
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
-    "areaSquareFeet": 3553,
+    "areaSquareFeet": 3552.0904386,
     "reviews": [
       {
         "rating": 5,
@@ -18162,9 +18442,45 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 1808.3369472,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Tolle Lage, schöne Unterkunft und auch die Kommunikation hat reibungslos funktioniert. Vielen Dank für die schöne Zeit.",
+        "guestDisplayName": "Bettina",
+        "guestName": "Bettina",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-19T10:26:13.376Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-69ca869e5b0a0500158b7d5a",
@@ -18334,6 +18650,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Séjour super ! L’appartement est très propre et joli.\n\nCependant, quelques points sont à préciser dans la description : il faut monter 3 étages sans ascenseur, ce qui n’était pas indiqué \n\nEnfin, il est indiqué qu’il y a la climatisation dans la description, mais nous pensons qu’il s’agit d’une erreur de la part de l’hôte, car nous n’en avons pas constaté.\n\nSinon, l’hôte est très réactif et très sympathique. Je recommande cet appartement, mais plutôt sans enfants en bas âge.",
+        "guestDisplayName": "Damien",
+        "guestName": "Damien",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-15T19:49:48.008Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Really clean, great location and value for money! Will come back!",
         "guestDisplayName": "Sally",
         "guestName": "Sally",
@@ -18369,7 +18720,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 2
   },
   {
     "id": "guesty-69c415701b964f00157188ad",
@@ -20140,6 +20491,41 @@
     "areaSquareFeet": 1076,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Great place in great location! Lovely balcony good communication etc. \n\nKitchen a bit average, no tea towns etc. showers had no shower head holder!",
+        "guestDisplayName": "Maxwell",
+        "guestName": "Maxwell",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-17T14:04:27.166Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "We had a very nice stay at this apartment. It was very spacious, nicely decorated, and extremely well equipped, with plenty of plates, cups, and everything else we needed. The terrace was a great bonus, and the apartment is conveniently located close to the beach. Overall, a very comfortable and enjoyable place to stay — highly recommended!",
         "guestDisplayName": "Lukas",
@@ -20315,8 +20701,8 @@
         ]
       }
     ],
-    "averageRating": 4.8,
-    "reviewCount": 5
+    "averageRating": 4.67,
+    "reviewCount": 6
   },
   {
     "id": "guesty-696533752def930014e9167c",
@@ -21305,6 +21691,185 @@
     ],
     "averageRating": 5,
     "reviewCount": 2
+  },
+  {
+    "id": "guesty-6a7afc0488f86b001316efa9",
+    "slug": "sky-pool-luxury-by-portugal-active-16efa9",
+    "name": "Sky Pool Luxury by Portugal Active",
+    "tagline": "Sky Pool Luxury by Portugal Active is a refined retreat in Barreiro, where contemporary comfort meets riverside serenity. This distinctive apartment f…",
+    "tier": "select",
+    "destination": "lisbon",
+    "locality": "Barreiro",
+    "bedrooms": 2,
+    "bathrooms": 2.5,
+    "maxGuests": 4,
+    "priceFrom": 130,
+    "pricePerNight": 130,
+    "cleaningFee": 90,
+    "minNights": 2,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1786980533/production/6957de4388cba42d9e7a905e/fdhxesgt2uqbnb8nwyww.jpg",
+      "https://assets.guesty.com/image/upload/v1786980518/production/6957de4388cba42d9e7a905e/oyu6cp8atfmu0jxjtfui.jpg",
+      "https://assets.guesty.com/image/upload/v1786980533/production/6957de4388cba42d9e7a905e/fwvl8wbzzz9ggkzdycy3.jpg",
+      "https://assets.guesty.com/image/upload/v1786980524/production/6957de4388cba42d9e7a905e/kr6y6ymx89dg1i918e0l.jpg",
+      "https://assets.guesty.com/image/upload/v1786980534/production/6957de4388cba42d9e7a905e/sa27qntmnsp0oaqfkzix.jpg",
+      "https://assets.guesty.com/image/upload/v1786980532/production/6957de4388cba42d9e7a905e/se0ahei1zwxd08usyllv.jpg",
+      "https://assets.guesty.com/image/upload/v1786980593/production/6957de4388cba42d9e7a905e/liwad0kgjm48bwh62z6w.jpg",
+      "https://assets.guesty.com/image/upload/v1786980532/production/6957de4388cba42d9e7a905e/rkonmujzw5b0oqd3cack.jpg",
+      "https://assets.guesty.com/image/upload/v1786980522/production/6957de4388cba42d9e7a905e/udamqjp0oqkwyjig4nzx.jpg",
+      "https://assets.guesty.com/image/upload/v1786980513/production/6957de4388cba42d9e7a905e/akx4wcql5mrdylb2v5dy.jpg",
+      "https://assets.guesty.com/image/upload/v1786980518/production/6957de4388cba42d9e7a905e/sgd3vspf5yjri8ruybej.jpg",
+      "https://assets.guesty.com/image/upload/v1786980530/production/6957de4388cba42d9e7a905e/tjqdnm53lkijrhnf1iob.jpg",
+      "https://assets.guesty.com/image/upload/v1786980517/production/6957de4388cba42d9e7a905e/wy4hlkjtvidjviyh71is.jpg",
+      "https://assets.guesty.com/image/upload/v1786980518/production/6957de4388cba42d9e7a905e/ix0pmdevjpuoqo5xtuqb.jpg",
+      "https://assets.guesty.com/image/upload/v1786980567/production/6957de4388cba42d9e7a905e/q9sb3cqhzixdbe62p3qu.jpg",
+      "https://assets.guesty.com/image/upload/v1786980568/production/6957de4388cba42d9e7a905e/iqxgxptiuuhyuomnujfu.jpg",
+      "https://assets.guesty.com/image/upload/v1786980574/production/6957de4388cba42d9e7a905e/gzkihrw1bgzlb6y1hkxt.jpg",
+      "https://assets.guesty.com/image/upload/v1786980565/production/6957de4388cba42d9e7a905e/lfwijpvinzgi8hddrmxh.jpg",
+      "https://assets.guesty.com/image/upload/v1786980568/production/6957de4388cba42d9e7a905e/odxyusqmmiss0omdqzi8.jpg",
+      "https://assets.guesty.com/image/upload/v1786980575/production/6957de4388cba42d9e7a905e/uykwt5xxf9npqhrwiivx.jpg",
+      "https://assets.guesty.com/image/upload/v1786980571/production/6957de4388cba42d9e7a905e/hmc6a2vlucfjflzaytsg.jpg",
+      "https://assets.guesty.com/image/upload/v1786980573/production/6957de4388cba42d9e7a905e/mzypx5jked26hakmexuf.jpg",
+      "https://assets.guesty.com/image/upload/v1786980578/production/6957de4388cba42d9e7a905e/bbriqqwsilpjymvlincy.jpg",
+      "https://assets.guesty.com/image/upload/v1786980578/production/6957de4388cba42d9e7a905e/wodawnslmdmerjxd3h7e.jpg",
+      "https://assets.guesty.com/image/upload/v1786980578/production/6957de4388cba42d9e7a905e/wxuydv5zknimx3rjzdwx.jpg",
+      "https://assets.guesty.com/image/upload/v1786980580/production/6957de4388cba42d9e7a905e/ecgysojpi2ghxwda4ows.jpg",
+      "https://assets.guesty.com/image/upload/v1786980581/production/6957de4388cba42d9e7a905e/nflejqznjfb1wlakdmpp.jpg",
+      "https://assets.guesty.com/image/upload/v1786980718/production/6957de4388cba42d9e7a905e/nlz86knvcevxltkxyy6q.jpg",
+      "https://assets.guesty.com/image/upload/v1786980582/production/6957de4388cba42d9e7a905e/qvoj9e31kw8qkkrcoawg.jpg",
+      "https://assets.guesty.com/image/upload/v1786980587/production/6957de4388cba42d9e7a905e/tjlynpvoyjosxfjvuztb.jpg",
+      "https://assets.guesty.com/image/upload/v1786980718/production/6957de4388cba42d9e7a905e/frci4laab3z3efdozys0.jpg",
+      "https://assets.guesty.com/image/upload/v1786980585/production/6957de4388cba42d9e7a905e/t0orhtowo3vdrsmlwien.jpg",
+      "https://assets.guesty.com/image/upload/v1786980587/production/6957de4388cba42d9e7a905e/akvl4okhnbcvbelzwbpk.jpg",
+      "https://assets.guesty.com/image/upload/v1786980587/production/6957de4388cba42d9e7a905e/njtaeo50w0aefdvelqpr.jpg",
+      "https://assets.guesty.com/image/upload/v1786980593/production/6957de4388cba42d9e7a905e/llg5kvradkx0ew9cetbl.jpg",
+      "https://assets.guesty.com/image/upload/v1786980584/production/6957de4388cba42d9e7a905e/kzbpt8llzch3jkmjiy5b.jpg",
+      "https://assets.guesty.com/image/upload/v1786980537/production/6957de4388cba42d9e7a905e/axstjttwp7fisndx1e08.jpg",
+      "https://assets.guesty.com/image/upload/v1786980553/production/6957de4388cba42d9e7a905e/lkldnkpf9rpvpsdud76g.jpg",
+      "https://assets.guesty.com/image/upload/v1786980543/production/6957de4388cba42d9e7a905e/flqxyx0yt59dutfwuxpv.jpg",
+      "https://assets.guesty.com/image/upload/v1786980556/production/6957de4388cba42d9e7a905e/nyjut70mh1mmzbdaaojs.jpg",
+      "https://assets.guesty.com/image/upload/v1786980546/production/6957de4388cba42d9e7a905e/orceo7rcmwua0rjimi5v.jpg",
+      "https://assets.guesty.com/image/upload/v1786980541/production/6957de4388cba42d9e7a905e/mrgr1ymg95ajcjpttbnc.jpg",
+      "https://assets.guesty.com/image/upload/v1786980552/production/6957de4388cba42d9e7a905e/hinfvrf7onruvh9qek3y.jpg",
+      "https://assets.guesty.com/image/upload/v1786980546/production/6957de4388cba42d9e7a905e/bdn0ms8imhznlke9hkrg.jpg",
+      "https://assets.guesty.com/image/upload/v1786980565/production/6957de4388cba42d9e7a905e/t7jun5s1qvyoyvu49v4m.jpg",
+      "https://assets.guesty.com/image/upload/v1786980552/production/6957de4388cba42d9e7a905e/gt1uifwixixraixjdhtz.jpg",
+      "https://assets.guesty.com/image/upload/v1786980553/production/6957de4388cba42d9e7a905e/sptuijzc21ij428eempp.jpg",
+      "https://assets.guesty.com/image/upload/v1786980560/production/6957de4388cba42d9e7a905e/ma7ghnn2wdoludhlzzai.jpg",
+      "https://assets.guesty.com/image/upload/v1786980558/production/6957de4388cba42d9e7a905e/f4flret9spv9rmjgwmrv.jpg",
+      "https://assets.guesty.com/image/upload/v1786980558/production/6957de4388cba42d9e7a905e/f37qe2beobqoempgy5ag.jpg"
+    ],
+    "description": "Sky Pool Luxury by Portugal Active is a refined retreat in Barreiro, where contemporary comfort meets riverside serenity. This distinctive apartment features two bright bedrooms, sophisticated living areas, and access to a shared pool. With a fully equipped kitchen and a privileged location, it ensures an exclusive and memorable stay in the Setúbal region.\n\nSky Pool Luxury by Portugal Active offers an unparalleled experience of refinement and comfort in Barreiro. The open‑plan living and dining area stands out for its natural brightness and contemporary furnishings, creating the perfect setting for moments of relaxation. The kitchen invites memorable culinary experiences. Both bedrooms, each featuring a queen‑size bed, were designed as serene sanctuaries to ensure absolute rest. The property also includes two full bathrooms and an additional half bath, all finished with elegant details. The highlight is the shared pool area, offering a tranquil atmosphere with privileged views over the Tagus River, making outdoor moments even more special. The interior design prioritizes functionality without compromising sophistication, with spacious and well‑organized areas crafted to meet the expectations of the most discerning travelers.\n\nLocated in the heart of Barreiro, Sky Pool Luxury by Portugal Active offers a privileged retreat where riverside tranquility meets urban convenience. Set within the Nooba development — one of the city’s most modern and well‑regarded areas — the apartment benefits from a contemporary and effortlessly elegant environment.\nJust a few minutes’ walk away, you’ll find a variety of sophisticated restaurants and charming outdoor cafés that invite you to enjoy local cuisine with views over the Tagus River. The proximity to the ferry terminal provides quick and elegant access to Lisbon, making Sky Pool Luxury by Portugal Active the ideal starting point for exploring the capital or enjoying the serenity of the southern riverside.\nThe neighborhood is defined by a welcoming and authentic atmosphere, with essential services, convenience stores, and leisure spaces all within a short distance, ensuring that every detail of your stay is fully taken care of.\n\nGuests enjoy exclusive access to the entire interior of the apartment, ensuring complete privacy and comfort throughout their stay. The outdoor areas and the remaining shared spaces of the building are communal and used by other residents of the Nooba development.\nPortugal Active’s concierge service is available 24 hours a day, 7 days a week, ready to assist with anything you may need — from organizing local excursions to arranging private chef services. Please request any service at least 72 hours in advance.\n\nYour arrival in Barreiro is made effortless thanks to the convenience of free parking near the property, ensuring complete peace of mind for guests traveling by car. For those who value urban mobility, the strategic location of Sky Pool Luxury by Portugal Active provides quick access to the ferry terminal, just a few minutes away. From there, you can enjoy a serene and elegant crossing over the Tagus River, reaching the heart of Lisbon in approximately 20 minutes.\nHumberto Delgado Airport is located about 30 minutes away by car and is easily accessible via private transport, public transit, or taxi, ensuring a smooth and comfortable transition between your journey and the apartment. The proximity to major highways, such as the A2 and IC21, allows for practical travel both to Lisbon and across the southern riverside.\nThe surrounding area also offers an excellent network of essential services, including supermarkets, pharmacies, and cafés within walking distance, ensuring that every moment of your stay unfolds with total convenience.\n\nExclusive Portugal Active Concierge Services\n\nEnhance your stay with our exclusive services:\n✔️ Luxury transfers: A private chauffeur from the airport directly to your apartment.\n✔️ Personalized experiences: From a Private Chef to a Personal Trainer, every detail is tailored to your preferences.\n✔️ Daily cleaning and babysitting: Services designed for a worry‑free stay.\n✔️ Local support team: A Portugal Active team member will always be within reach throughout your stay.\n\nAdventure Experiences  \n✔️ Horseback riding: Explore scenic trails and beaches on a unique coastal experience in Minho.\n✔️ Guided hikes, lagoon swims, and traditional lunches: Discover breathtaking landscapes, dive into a secret lagoon, and enjoy authentic tapas.\n✔️ E‑Bike Wild Tour: Uncover the hidden corners of Viana do Castelo on an e‑bike, at your own pace.\n✔️ Surf and water sports: Kitesurfing, stand‑up paddle, windsurfing, and bodyboarding at Cabedelo Beach.",
+    "descriptionSections": {
+      "summary": "Sky Pool Luxury by Portugal Active is a refined retreat in Barreiro, where contemporary comfort meets riverside serenity. This distinctive apartment features two bright bedrooms, sophisticated living areas, and access to a shared pool. With a fully equipped kitchen and a privileged location, it ensures an exclusive and memorable stay in the Setúbal region.",
+      "space": "Sky Pool Luxury by Portugal Active offers an unparalleled experience of refinement and comfort in Barreiro. The open‑plan living and dining area stands out for its natural brightness and contemporary furnishings, creating the perfect setting for moments of relaxation. The kitchen invites memorable culinary experiences. Both bedrooms, each featuring a queen‑size bed, were designed as serene sanctuaries to ensure absolute rest. The property also includes two full bathrooms and an additional half bath, all finished with elegant details. The highlight is the shared pool area, offering a tranquil atmosphere with privileged views over the Tagus River, making outdoor moments even more special. The interior design prioritizes functionality without compromising sophistication, with spacious and well‑organized areas crafted to meet the expectations of the most discerning travelers.",
+      "access": "Guests enjoy exclusive access to the entire interior of the apartment, ensuring complete privacy and comfort throughout their stay. The outdoor areas and the remaining shared spaces of the building are communal and used by other residents of the Nooba development.\nPortugal Active’s concierge service is available 24 hours a day, 7 days a week, ready to assist with anything you may need — from organizing local excursions to arranging private chef services. Please request any service at least 72 hours in advance.",
+      "neighborhood": "Located in the heart of Barreiro, Sky Pool Luxury by Portugal Active offers a privileged retreat where riverside tranquility meets urban convenience. Set within the Nooba development — one of the city’s most modern and well‑regarded areas — the apartment benefits from a contemporary and effortlessly elegant environment.\nJust a few minutes’ walk away, you’ll find a variety of sophisticated restaurants and charming outdoor cafés that invite you to enjoy local cuisine with views over the Tagus River. The proximity to the ferry terminal provides quick and elegant access to Lisbon, making Sky Pool Luxury by Portugal Active the ideal starting point for exploring the capital or enjoying the serenity of the southern riverside.\nThe neighborhood is defined by a welcoming and authentic atmosphere, with essential services, convenience stores, and leisure spaces all within a short distance, ensuring that every detail of your stay is fully taken care of.",
+      "gettingAround": "Your arrival in Barreiro is made effortless thanks to the convenience of free parking near the property, ensuring complete peace of mind for guests traveling by car. For those who value urban mobility, the strategic location of Sky Pool Luxury by Portugal Active provides quick access to the ferry terminal, just a few minutes away. From there, you can enjoy a serene and elegant crossing over the Tagus River, reaching the heart of Lisbon in approximately 20 minutes.\nHumberto Delgado Airport is located about 30 minutes away by car and is easily accessible via private transport, public transit, or taxi, ensuring a smooth and comfortable transition between your journey and the apartment. The proximity to major highways, such as the A2 and IC21, allows for practical travel both to Lisbon and across the southern riverside.\nThe surrounding area also offers an excellent network of essential services, including supermarkets, pharmacies, and cafés within walking distance, ensuring that every moment of your stay unfolds with total convenience.",
+      "notes": "",
+      "interaction": "The Portugal Active team is committed to ensuring that your stay is both memorable and enjoyable. We are always available to support, guide, and assist you throughout your visit. From the moment you arrive, we are here to make you feel at home.\nWe offer an exceptional range of experiences to elevate your holiday, including adventure tours, private chefs, massages, babysitting services, and much more. Whatever your needs may be, we are here to help you create unforgettable memories. If you have any questions, feel free to reach out to us at any time."
+    },
+    "amenities": {
+      "property": [
+        "Air conditioning",
+        "Baking sheet",
+        "Bed linens",
+        "Cable TV",
+        "City View",
+        "Clothing storage",
+        "Coffee",
+        "Coffee maker",
+        "Communal pool",
+        "Cookware",
+        "Dining table",
+        "Dishes and silverware",
+        "Dishwasher",
+        "Elevator",
+        "Essentials",
+        "Fire extinguisher",
+        "First aid kit",
+        "Garage",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "Hot water",
+        "Internet",
+        "Iron",
+        "Kettle",
+        "Kitchen",
+        "Long term stays allowed",
+        "Microwave",
+        "Outdoor seating (furniture)",
+        "Oven",
+        "Patio or balcony",
+        "Refrigerator",
+        "Shampoo",
+        "Shower gel",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Washer",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "6a7afc0488f86b001316efa9",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Sky Pool Luxury by Portugal Active",
+    "sortOrder": 0,
+    "isActive": true,
+    "isPortfolio": false,
+    "seoTitle": "Sky Pool Luxury by Portugal Active — Portugal Active",
+    "seoDescription": "Sky Pool Luxury by Portugal Active is a refined retreat in Barreiro, where contemporary comfort meets riverside serenity. This distinctive apartment features tw",
+    "address": {
+      "full": "",
+      "street": "Rua Bombeiros Voluntários do Barreiro 31",
+      "city": "Barreiro",
+      "state": "Setúbal",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 38.6503855,
+      "lng": -9.0655197
+    },
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 10625,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0
   },
   {
     "id": "guesty-696533aaf142270014026d70",
@@ -22342,6 +22907,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Beautiful house, with great amenities; we had a great time at the house with our family. The team is great and communicates in a very active way.",
+        "guestDisplayName": "Olivier",
+        "guestName": "Olivier",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-17T07:06:50.962Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "We had a wonderful stay, plenty of space for 4 of us. \nThe house is stunning and we had 5 days of pure relaxation.",
         "guestDisplayName": "Gail",
         "guestName": "Gail",
@@ -22586,8 +23186,8 @@
         ]
       }
     ],
-    "averageRating": 4.86,
-    "reviewCount": 7
+    "averageRating": 4.88,
+    "reviewCount": 8
   },
   {
     "id": "guesty-69653381bf04fe00137437cd",
@@ -23357,7 +23957,6 @@
     },
     "amenities": {
       "property": [
-        "Air conditioning",
         "Baking sheet",
         "Beach",
         "Beach Front",
@@ -23388,7 +23987,6 @@
         "Garden or backyard",
         "Hair dryer",
         "Hangers",
-        "Heating",
         "High touch surfaces disinfected",
         "Hot water",
         "Internet",
@@ -24398,6 +24996,76 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Very nice apartment, great location, would stay again. Was very expensive because of the Festival.",
+        "guestDisplayName": "Richard",
+        "guestName": "Richard",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-18T10:00:11.440Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 4,
+        "text": "Grosszügige wohnung, 3 schlafzimmer\nRuhig, gut eingerichtet\nEtwas muffelig, tropfte aus türrahmen, geschirrspühler deckel defekt (mit berletzungsrisiko)",
+        "guestDisplayName": "Marc",
+        "guestName": "Marc",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-03T16:10:17.541Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Très bien situé pour profiter de la plage.",
         "guestDisplayName": "Sarah",
         "guestName": "Sarah",
@@ -24712,8 +25380,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 9
+    "averageRating": 4.91,
+    "reviewCount": 11
   },
   {
     "id": "guesty-69c418871eabf900141bed48",
@@ -25205,6 +25873,41 @@
     "reviews": [
       {
         "rating": 4,
+        "text": "Logement très propre et très facile d'accès et bien agencé, juste dommage pour la petite terrasse. Difficile de manger dehors à 4 .",
+        "guestDisplayName": "Christine",
+        "guestName": "Christine",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-18T16:24:22.855Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 4,
         "text": "First of all, thanks for hosting our family! The house is nice, but we expected it to be in better shape. \n\nFrom the very first moment, we had issues with the internet connection. The team was nice, but it took me several international calls and almost 3 days to get it fixed, and then it was very weak, not even reaching the master bedroom. \n\nI understand it wouldn´t be easy to manage; anyway, I would appreciate a bit of flexibility, not about arrival or departure timing, but to get the access de",
         "guestDisplayName": "Fran",
         "guestName": "Fran",
@@ -25659,8 +26362,8 @@
         ]
       }
     ],
-    "averageRating": 4.77,
-    "reviewCount": 13
+    "averageRating": 4.71,
+    "reviewCount": 14
   },
   {
     "id": "guesty-6965331fec80690013738c68",
@@ -25917,9 +26620,45 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 2152.782,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 4,
+        "text": "La valoración es de Vila Áurea en Vilanova de Anha. Muy Buena casa con buenas calidades de construcción y marca de electrodomésticos. Algo descuidada de limpieza,la piscina no estaba limpia (algas) , y algunas pequeñas deficiencias: la nevera no cerraba bien, una mesa de exterior rota, la tostadora no funcionaba, el horno tampoco. Nos cobraron una exageración por el cargador eléctrico del coche!! 0,8€ / KW",
+        "guestDisplayName": "Rafael",
+        "guestName": "Rafael",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-19T10:29:46.929Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      }
+    ],
+    "averageRating": 4,
+    "reviewCount": 1
   },
   {
     "id": "guesty-696533af4fe6a100145fecb6",

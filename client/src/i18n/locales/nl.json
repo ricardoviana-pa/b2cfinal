@@ -115,7 +115,17 @@
     "bookingBarDestination": "Bestemming",
     "searchHomes": "Huizen zoeken",
     "heroAlt": "Portugal Active woningencollectie",
-    "batchError": "Live-prijzen zijn tijdelijk niet beschikbaar. Zie de pagina van elke accommodatie voor de definitieve prijs."
+    "batchError": "Live-prijzen zijn tijdelijk niet beschikbaar. Zie de pagina van elke accommodatie voor de definitieve prijs.",
+    "hintTooLong": "Deze zoekopdracht beslaat {{count}} nachten. Dit zijn de beschikbare verblijven in die periode:",
+    "hintArrival": "In dit seizoen starten verblijven op {{days}} en duren minstens {{count}} nachten.",
+    "hintMinStay": "Deze data vereisen minimaal {{count}} nachten.",
+    "hintTryDates": "Probeer {{from}} → {{to}}",
+    "leadPrompt": "Zullen wij deze data voor u nakijken?",
+    "leadName": "Naam",
+    "leadEmail": "E-mail",
+    "leadSend": "Versturen",
+    "leadThanks": "Dank u — we komen bij u terug met opties voor deze data.",
+    "leadError": "Verzenden mislukt — probeer WhatsApp hieronder."
   },
   "property": {
     "bedrooms": "Slaapkamers",
@@ -175,7 +185,9 @@
     "bed": "bed",
     "nightPrice": "/ nacht",
     "prevPhoto": "Vorige foto",
-    "nextPhoto": "Volgende foto"
+    "nextPhoto": "Volgende foto",
+    "sleepsUpTo": "Biedt plaats aan {{count}} gasten",
+    "checkUnitAvailability": "Bekijk beschikbaarheid per unit"
   },
   "booking": {
     "summary": "Boekingsoverzicht",
@@ -222,7 +234,10 @@
     "select": "Selecteren",
     "cancellationPerPolicy": "Annulering volgens het beleid van de accommodatie",
     "decreaseGuests": "Minder gasten",
-    "increaseGuests": "Meer gasten"
+    "increaseGuests": "Meer gasten",
+    "arrivalDaysNotice": "Inchecken alleen op {{days}} · minimaal {{count}} nachten",
+    "minStayMonthNotice": "Minimaal verblijf van {{count}} nachten deze maand",
+    "arrivalDaysOnlyNotice": "Inchecken alleen op {{days}}"
   },
   "bookingWidget": {
     "priceOnRequestTitle": "Prijs op aanvraag",
@@ -316,7 +331,10 @@
     "unavailableLabel": "Niet beschikbaar",
     "confirmDates": "Bevestigen",
     "tariffInCheckout": "Twee tarieven beschikbaar. Kies het uwe in de volgende stap.",
-    "reserve": "RESERVEREN"
+    "reserve": "RESERVEREN",
+    "arrivalsRule": "Verblijven starten op {{days}} · minimaal {{count}} nachten",
+    "nextArrivals": "Eerstvolgende beschikbare data",
+    "directNote": "Directe prijs — geen servicekosten, beste prijs online"
   },
   "common": {
     "loading": "Laden…",
@@ -897,7 +915,9 @@
     "q9": "Wat is de beste prijs garantie?",
     "a9": "Onze website biedt altijd het laagste beschikbare tarief. Direct boeken betekent een lagere prijs dan elk extern platform, prioriteitsondersteuning van de concierge, snellere reactie en eerste toegang tot huisservices.",
     "cantFind": "Kunt u niet vinden wat u zoekt?",
-    "contactTeam": "NEEM CONTACT OP MET ONS TEAM"
+    "contactTeam": "NEEM CONTACT OP MET ONS TEAM",
+    "q10": "Kan ik op elke dag van de week inchecken?",
+    "a10": "Het grootste deel van het jaar wel — aankomsten zijn elke dag mogelijk, met minimale verblijven van 2–4 nachten afhankelijk van het huis. In juli en augustus lopen verblijven van zaterdag tot zaterdag met een minimum van 7 nachten. De boekingskalender van elk huis markeert de beschikbare aankomstdata, en voor langere of afwijkende verblijven stelt onze concierge graag samen met u het plan op."
   },
   "adventures": {
     "heroAlt": "Ervaringen in Portugal",
@@ -1144,7 +1164,8 @@
     "ourGuests": "ONZE GASTEN",
     "whatTheyRemember": "Wat ze zich het meest herinneren.",
     "proofStrip": "4.8/5 bij meer dan 2.000 gastbeoordelingen",
-    "verifiedGuest": "Geverifieerde gast"
+    "verifiedGuest": "Geverifieerde gast",
+    "verifiedNote": "Alle reviews komen van voltooide verblijven, verzameld via onze boekingskanalen."
   },
   "amenity": {
     "outdoorPool": "Buiten & Zwembad",
@@ -1342,7 +1363,11 @@
     "secureBooking": "Veilig boeken",
     "bestRate": "Beste prijs gegarandeerd",
     "noBookingFees": "Geen boekingskosten",
-    "conciergeIncluded": "Concierge inbegrepen"
+    "conciergeIncluded": "Concierge inbegrepen",
+    "directHeadline": "Waarom direct boeken",
+    "bestRateTeeth": "Beste prijs online — vindt u deze data goedkoper op Airbnb of Booking.com, dan passen wij de prijs aan",
+    "noServiceFees": "Geen servicekosten — OTA’s rekenen 12–18% extra bij het afrekenen; hier is de prijs de prijs",
+    "conciergeWhatsapp": "WhatsApp-concierge vóór, tijdens en na uw verblijf"
   },
   "bookingStatus": {
     "confirmed": "Bevestigd",
@@ -1650,5 +1675,10 @@
     "arrivalAirport": "Aankomstluchthaven",
     "perCleaning": "per schoonmaak",
     "perPetStay": "per huisdier · verblijf"
+  },
+  "host": {
+    "hostedBy": "Uw hosts: Ricardo & het Portugal Active-team",
+    "basedIn": "Lokaal team in Viana do Castelo",
+    "meetUs": "Maak kennis met ons"
   }
 }
