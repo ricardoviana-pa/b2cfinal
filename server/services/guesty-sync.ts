@@ -241,6 +241,25 @@ async function loadExistingReviews(): Promise<Map<string, any[]>> {
  * mentioning AL / RNAL / licen / regist. The first sync after deploy logs the
  * customFields shape once so we learn whether Guesty carries them at all.
  */
+/**
+ * Hand-approved brand copy that must survive every sync.
+ *
+ * Guesty descriptions are OTA-style and partly generic AI filler ("your
+ * gateway to a coastal paradise") — the wrong voice for the money page.
+ * client/src/data/descriptions.overrides.json maps guestyId → { description,
+ * tagline }; when an entry exists it replaces the Guesty text on every sync,
+ * so improving the copy is a one-file edit that sticks.
+ */
+let _copyOverrides: Record<string, { description?: string; tagline?: string }> | null = null;
+async function copyOverrides(): Promise<NonNullable<typeof _copyOverrides>> {
+  if (_copyOverrides) return _copyOverrides;
+  try {
+    const raw = await readFile(join(process.cwd(), "client", "src", "data", "descriptions.overrides.json"), "utf-8");
+    _copyOverrides = JSON.parse(raw);
+  } catch { _copyOverrides = {}; }
+  return _copyOverrides!;
+}
+
 let _manualLicenses: Record<string, string> | null = null;
 async function manualLicenses(): Promise<Record<string, string>> {
   if (_manualLicenses) return _manualLicenses;
@@ -674,16 +693,18 @@ function mapListingToProperty(
   reviews: any[] = [],
   existingSlugMap?: Map<string, string>,
   manualLicenseMap?: Record<string, string>,
+  copyMap?: Record<string, { description?: string; tagline?: string }>,
 ) {
   const id = listing._id || listing.listingId || "";
   const manualLicense = manualLicenseMap?.[id] ?? null;
+  const copyOverride = copyMap?.[id];
   const title = listing.title || "Untitled";
   // Pin slugs: reuse the existing slug for this guestyId if we have one,
   // so a Guesty title change never breaks the indexed URL.
   const slug = existingSlugMap?.get(id) || slugify(title, id);
   const desc = listing.publicDescription || listing.publicDescriptions;
   const fullDesc = buildDescription(desc, listing.description);
-  const tagline = buildTagline(desc, listing.description);
+  const tagline = copyOverride?.tagline || buildTagline(desc, listing.description);
   const summary = desc?.summary || desc?.space || desc?.neighborhood || "";
   const pictures = listing.pictures || [];
   const images = pictures
@@ -742,8 +763,11 @@ function mapListingToProperty(
     minNights: Number(minNights) || 1,
     currency,
     images,
-    description: fullDesc || summary || `Welcome to ${title}.`,
-    descriptionSections: buildDescriptionSections(desc),
+    description: copyOverride?.description || fullDesc || summary || `Welcome to ${title}.`,
+    // An approved copy override replaces the WHOLE description; sections stay
+    // null so the PDP renders the override instead of preferring Guesty's
+    // structured blocks over it.
+    descriptionSections: copyOverride?.description ? null : buildDescriptionSections(desc),
     amenities,
     stayIncludes: [],
     style: "",
@@ -918,11 +942,12 @@ export async function runSync(): Promise<string> {
   }
   const existingSlugMap = await loadExistingSlugMap();
   const licenseMap = await manualLicenses();
+  const copyMap = await copyOverrides();
   console.log(`[Guesty Sync] Loaded ${existingSlugMap.size} pinned slugs from existing data`);
   const properties = listings.map((listing) => {
     const rawId = listing._id || listing.listingId || "";
     const listingReviews = reviewsByListing.get(rawId) || [];
-    return mapListingToProperty(listing, listingReviews, existingSlugMap, licenseMap);
+    return mapListingToProperty(listing, listingReviews, existingSlugMap, licenseMap, copyMap);
   });
 
   // Content-quality report — tracks the editorial cleanup of older listings.
