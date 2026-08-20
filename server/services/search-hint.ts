@@ -197,3 +197,48 @@ export async function getSearchHint(
     suggestion: windows[0],
   };
 }
+
+
+/**
+ * Are these EXACT dates bookable right now, and in which homes?
+ *
+ * Powers the "your dates just opened" alert: a guest asked for dates the site
+ * couldn't serve, left an email, and a cancellation later frees the span. We
+ * check the same party-fitting candidates the search would quote, requiring an
+ * open arrival day and the full span available — no shifting here, the whole
+ * point is "the dates YOU asked for".
+ */
+export async function datesAreBookable(
+  checkIn: string,
+  checkOut: string,
+  guests: number,
+): Promise<{ available: boolean; homes: Array<{ name: string; slug: string }> }> {
+  const nights = Math.round(
+    (new Date(checkOut + "T00:00:00Z").getTime() - new Date(checkIn + "T00:00:00Z").getTime()) / 86400000,
+  );
+  if (nights <= 0 || nights > VALIDATE_CAP_NIGHTS) return { available: false, homes: [] };
+
+  const props = await getPropertiesForSite();
+  const candidates = props
+    .filter((p: any) => p?.guestyId && (!guests || (p.maxGuests ?? 0) >= guests))
+    .sort((a: any, b: any) => (b.maxGuests ?? 0) - (a.maxGuests ?? 0))
+    .slice(0, MAX_CANDIDATE_LISTINGS);
+
+  const homes: Array<{ name: string; slug: string }> = [];
+  for (const cand of candidates) {
+    try {
+      const days = await calendarFor(cand.guestyId, addDays(checkIn, -1), addDays(checkIn, nights + 2));
+      const byDate = new Map<string, any>(days.map((d: any) => [d.date, d]));
+      const start = byDate.get(checkIn);
+      if (!start || start.status !== "available" || start.cta) continue;
+      let ok = true;
+      for (let i = 0; i < nights; i++) {
+        const day = byDate.get(addDays(checkIn, i));
+        if (!day || day.status !== "available") { ok = false; break; }
+      }
+      if (ok) homes.push({ name: cand.name, slug: cand.slug });
+      if (homes.length >= 3) break;
+    } catch { /* one calendar failing must not kill the sweep */ }
+  }
+  return { available: homes.length > 0, homes };
+}

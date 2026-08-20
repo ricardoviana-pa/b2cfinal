@@ -1278,3 +1278,49 @@ export async function sendAvailabilityRequestConfirmation(data: {
   const html = wrapTemplate(`<tr><td style="padding:0 0 8px 0;">${body}</td></tr>`, undefined, isPt);
   await sendEmail(data.email, subject, html, BOOKING_NOTIFICATION_EMAIL);
 }
+
+/* ================================================================
+   DATES-OPENED ALERT (guest-facing)
+
+   Fired by the cron in dates-opened-alert.ts when a cancellation frees the
+   exact dates a guest once asked about. No OTA sends this on our behalf; it
+   is the highest-intent email this system can produce — the guest already
+   told us the dates, the party size, and their email.
+   ================================================================ */
+export async function sendDatesOpenedEmail(data: {
+  email: string;
+  name?: string;
+  checkIn: string;
+  checkOut: string;
+  guests: string;
+  locale?: string;
+  homes: Array<{ name: string; slug: string }>;
+}): Promise<void> {
+  const isPt = (data.locale || "").toLowerCase().startsWith("pt");
+  const lang = isPt ? "pt" : "en";
+  const first = data.name?.trim().split(/\s+/)[0];
+  const link = `https://www.portugalactive.com/${lang}/homes?checkin=${data.checkIn}&checkout=${data.checkOut}&guests=${encodeURIComponent(data.guests)}`;
+  const homeNames = data.homes.map(h => h.name).join(" · ");
+
+  const subject = isPt
+    ? `Boas notícias — as suas datas abriram (${data.checkIn} → ${data.checkOut})`
+    : `Good news — your dates just opened (${data.checkIn} → ${data.checkOut})`;
+
+  const greeting = first ? (isPt ? `Olá ${first},` : `Hello ${first},`) : (isPt ? "Olá," : "Hello,");
+  const P = (t: string) => `<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">${t}</p>`;
+
+  const body = isPt
+    ? P(greeting) +
+      P(`Quando nos contactou, não tínhamos disponibilidade para <strong>${data.checkIn} → ${data.checkOut}</strong> (${data.guests} hóspedes). Acabou de abrir — nomeadamente em: <strong>${homeNames}</strong>.`) +
+      P(`<a href="${link}" style="display:inline-block;background:#1A1A18;color:#FFFFFF;text-decoration:none;padding:12px 22px;font-size:13px;letter-spacing:0.08em;">VER DISPONIBILIDADE</a>`) +
+      P(`As datas boas voltam a desaparecer depressa — se preferir, responda a este email ou fale connosco no WhatsApp: <a href="https://wa.me/351927161771" style="color:#806A48;">+351 927 161 771</a>.`) +
+      P(`Portugal Active`)
+    : P(greeting) +
+      P(`When you reached out, we had no availability for <strong>${data.checkIn} → ${data.checkOut}</strong> (${data.guests} guests). It just opened — specifically at: <strong>${homeNames}</strong>.`) +
+      P(`<a href="${link}" style="display:inline-block;background:#1A1A18;color:#FFFFFF;text-decoration:none;padding:12px 22px;font-size:13px;letter-spacing:0.08em;">SEE AVAILABILITY</a>`) +
+      P(`Good dates tend to disappear again quickly — reply to this email or reach us on WhatsApp: <a href="https://wa.me/351927161771" style="color:#806A48;">+351 927 161 771</a>.`) +
+      P(`Portugal Active`);
+
+  const html = wrapTemplate(`<tr><td style="padding:0 0 8px 0;">${body}</td></tr>`, undefined, isPt);
+  await sendEmail(data.email, subject, html, BOOKING_NOTIFICATION_EMAIL);
+}

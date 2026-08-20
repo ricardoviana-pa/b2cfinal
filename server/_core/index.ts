@@ -21,6 +21,7 @@ import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { isGuestyConfigured, warmUpOAuthTokens } from "../lib/guesty";
 import { runSync } from "../services/guesty-sync";
+import { runDatesOpenedAlerts } from "../services/dates-opened-alert";
 import { applyCleaningFeeFix } from "../services/cleaning-fee-sync";
 import cron from "node-cron";
 import { legacyRedirects } from "../lib/redirects.js";
@@ -572,6 +573,16 @@ ${allUrls.join("\n")}
           });
       }, { timezone: "Europe/Lisbon" });
       console.info("[Cron] Guesty sync scheduled — 07:00 and 19:00 Europe/Lisbon (no startup sync)");
+
+      // "Your dates opened" alerts — 40 min after each sync, so the calendars
+      // the sweep reads reflect the fresh availability. One email per lead ever
+      // (stamped in metadata); see services/dates-opened-alert.ts.
+      cron.schedule("40 7,19 * * *", () => {
+        runDatesOpenedAlerts()
+          .then((r) => console.info(`[Cron] Dates-opened sweep → ${r}`))
+          .catch((e) => console.warn(`[Cron] Dates-opened sweep failed: ${e?.message ?? e}`));
+      }, { timezone: "Europe/Lisbon" });
+      console.info("[Cron] Dates-opened alerts scheduled — 07:40 and 19:40 Europe/Lisbon");
 
       // Cleaning-fee drift sync — forces every rate plan's cleaning fee to
       // match its listing's cleaningFee field. Runs 15 min after each Guesty
