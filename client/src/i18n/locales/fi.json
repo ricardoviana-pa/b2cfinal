@@ -186,7 +186,8 @@
     "nightPrice": "/ yö",
     "prevPhoto": "Edellinen kuva",
     "nextPhoto": "Seuraava kuva",
-    "sleepsUpTo": "Majoittaa enintään {{count}} vierasta"
+    "sleepsUpTo": "Majoittaa enintään {{count}} vierasta",
+    "checkUnitAvailability": "Katso yksiköiden saatavuus"
   },
   "booking": {
     "summary": "Varauksen yhteenveto",

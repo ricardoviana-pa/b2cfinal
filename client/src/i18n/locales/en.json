@@ -186,7 +186,8 @@
     "serviceLabel": "Service",
     "bed": "bed",
     "nightPrice": "/ night",
-    "sleepsUpTo": "Sleeps up to {{count}} guests"
+    "sleepsUpTo": "Sleeps up to {{count}} guests",
+    "checkUnitAvailability": "See unit availability"
   },
   "booking": {
     "summary": "Booking Summary",

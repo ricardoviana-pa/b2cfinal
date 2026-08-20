@@ -186,7 +186,8 @@
     "nightPrice": "/ natt",
     "prevPhoto": "Föregående bild",
     "nextPhoto": "Nästa bild",
-    "sleepsUpTo": "Plats för upp till {{count}} gäster"
+    "sleepsUpTo": "Plats för upp till {{count}} gäster",
+    "checkUnitAvailability": "Se enheternas tillgänglighet"
   },
   "booking": {
     "summary": "Bokningsöversikt",

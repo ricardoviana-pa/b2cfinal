@@ -186,7 +186,8 @@
     "nightPrice": "/ nuit",
     "prevPhoto": "Photo précédente",
     "nextPhoto": "Photo suivante",
-    "sleepsUpTo": "Jusqu'à {{count}} personnes"
+    "sleepsUpTo": "Jusqu'à {{count}} personnes",
+    "checkUnitAvailability": "Voir la disponibilité des unités"
   },
   "booking": {
     "summary": "Récapitulatif",

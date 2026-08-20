@@ -186,7 +186,8 @@
     "nightPrice": "/ nacht",
     "prevPhoto": "Vorige foto",
     "nextPhoto": "Volgende foto",
-    "sleepsUpTo": "Biedt plaats aan {{count}} gasten"
+    "sleepsUpTo": "Biedt plaats aan {{count}} gasten",
+    "checkUnitAvailability": "Bekijk beschikbaarheid per unit"
   },
   "booking": {
     "summary": "Boekingsoverzicht",

@@ -186,7 +186,8 @@
     "serviceLabel": "Serviço",
     "bed": "cama",
     "nightPrice": "/ noite",
-    "sleepsUpTo": "Aloja até {{count}} hóspedes"
+    "sleepsUpTo": "Aloja até {{count}} hóspedes",
+    "checkUnitAvailability": "Ver disponibilidade das unidades"
   },
   "booking": {
     "summary": "Resumo da Reserva",

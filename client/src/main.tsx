@@ -9,6 +9,20 @@ import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
 
+// We deploy many times a day and the edge caches HTML for only ~60s, but a tab
+// left open keeps running its old bundle indefinitely — and its next lazy-route
+// import points at /assets/<hash> files the new build has replaced. Vite emits
+// vite:preloadError in exactly that case; reloading picks up the fresh app.
+// The sessionStorage flag stops a reload loop if the failure is anything else
+// (e.g. offline): one automatic attempt per session, then let it fail visibly.
+window.addEventListener("vite:preloadError", (event) => {
+  const last = Number(sessionStorage.getItem("chunk-reload-at") || 0);
+  if (Date.now() - last < 60_000) return; // at most one auto-reload per minute
+  sessionStorage.setItem("chunk-reload-at", String(Date.now()));
+  event.preventDefault();
+  window.location.reload();
+});
+
 // Sensible caching defaults. Without these, staleTime=0 makes every query
 // refetch on mount AND on window-focus — so the 149 KB property list
 // (listForSite, used on Home, Homes, PDP, destinations, 404) was re-fetched on
