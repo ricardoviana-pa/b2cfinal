@@ -371,13 +371,17 @@ export function registerBookingRoutes(app: Express): void {
         : q.raw?.rates?.ratePlan
           ? [q.raw.rates.ratePlan]
           : [];
-      const ratePlanOptions = rawPlans.map((plan: any) => {
-        const money = plan?.money || {};
+      const ratePlanOptions = rawPlans.map((entry: any) => {
+        // Guesty nests each option as { ratePlan: {...}, money: { money: {...} } };
+        // fall back to the flat shape for older payloads.
+        const plan = entry?.ratePlan || entry || {};
+        const moneyWrapper = entry?.money || plan?.money || {};
+        const money = moneyWrapper?.money || moneyWrapper;
         return {
           ratePlanId: plan?._id || plan?.id || "",
           name: plan?.name || "Tarifa",
           type: classifyRatePlan(plan?.name || "", plan?.cancellationPolicy),
-          cancellationPolicy: plan?.cancellationPolicy || [],
+          cancellationPolicy: plan?.cancellationPolicy || plan?.cancellationPolicies || [],
           cancellationFee: plan?.cancellationFee || null,
           total: Math.round(Number(money.totalPrice ?? money.total ?? money.totalAmount ?? money.hostPayout ?? 0) * 100),
           baseRent: Math.round(Number(money.fareAccommodation ?? money.accommodationFare ?? 0) * 100),
