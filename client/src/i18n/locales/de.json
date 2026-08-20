@@ -1680,5 +1680,23 @@
     "hostedBy": "Ihre Gastgeber: Ricardo & das Portugal-Active-Team",
     "basedIn": "Lokales Team in Viana do Castelo",
     "meetUs": "Lernen Sie uns kennen"
+  },
+  "location": {
+    "title": "Lage",
+    "approxNote": "Ungefähre Lage — die genaue Adresse erhalten Sie nach der Buchung"
+  },
+  "pdpFaq": {
+    "title": "Gut zu wissen",
+    "qGuests": "Wie viele Gäste kann {{name}} beherbergen?",
+    "aGuests": "{{name}} beherbergt bis zu {{guests}} Gäste in {{bedrooms}} Schlafzimmern mit {{bathrooms}} Bädern.",
+    "qTimes": "Wann sind Check-in und Check-out?",
+    "aTimes": "Check-in ab {{checkIn}}, Check-out bis {{checkOut}}. Flexible Zeiten lassen sich oft mit unserem Concierge vereinbaren.",
+    "qPool": "Hat {{name}} einen Pool?",
+    "aPoolHeated": "Ja — {{name}} verfügt über einen beheizten Pool zur privaten Nutzung.",
+    "aPool": "Ja — {{name}} verfügt über einen privaten Pool exklusiv für Gäste.",
+    "qMin": "Wie lang ist der Mindestaufenthalt?",
+    "aMin": "Der Mindestaufenthalt beträgt die meiste Zeit des Jahres {{count}} Nächte. Im Juli und August laufen Aufenthalte von Samstag bis Samstag mit mindestens 7 Nächten — der Kalender zeigt die verfügbaren Anreisetage.",
+    "qDirect": "Warum direkt bei Portugal Active buchen?",
+    "aDirect": "Direkt buchen heißt: bester Online-Preis ohne OTA-Servicegebühren, ein eigener WhatsApp-Concierge und ein lokales Team, das das Haus von A bis Z betreibt."
   }
 }

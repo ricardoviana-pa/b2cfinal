@@ -1680,5 +1680,23 @@
     "hostedBy": "Anfitriões: Ricardo & a equipa Portugal Active",
     "basedIn": "Equipa local em Viana do Castelo",
     "meetUs": "Conheça-nos"
+  },
+  "location": {
+    "title": "Localização",
+    "approxNote": "Zona aproximada — a morada exata é partilhada após a reserva"
+  },
+  "pdpFaq": {
+    "title": "Bom saber",
+    "qGuests": "Quantos hóspedes acolhe {{name}}?",
+    "aGuests": "{{name}} acolhe até {{guests}} hóspedes em {{bedrooms}} quartos com {{bathrooms}} casas de banho.",
+    "qTimes": "A que horas são o check-in e o check-out?",
+    "aTimes": "Check-in a partir das {{checkIn}} e check-out até às {{checkOut}}. Horários flexíveis podem muitas vezes ser combinados com o nosso concierge.",
+    "qPool": "{{name}} tem piscina?",
+    "aPoolHeated": "Sim — {{name}} tem piscina aquecida de uso privado dos hóspedes.",
+    "aPool": "Sim — {{name}} tem piscina privada exclusiva dos hóspedes.",
+    "qMin": "Qual é a estadia mínima?",
+    "aMin": "A estadia mínima é de {{count}} noites na maior parte do ano. Em julho e agosto as estadias são de sábado a sábado com mínimo de 7 noites — o calendário mostra as datas de chegada disponíveis.",
+    "qDirect": "Porquê reservar diretamente com a Portugal Active?",
+    "aDirect": "Reservar direto garante o melhor preço online sem taxas de serviço das OTAs, um concierge dedicado por WhatsApp e uma equipa local que opera a casa de ponta a ponta."
   }
 }

@@ -1680,5 +1680,23 @@
     "hostedBy": "Uw hosts: Ricardo & het Portugal Active-team",
     "basedIn": "Lokaal team in Viana do Castelo",
     "meetUs": "Maak kennis met ons"
+  },
+  "location": {
+    "title": "Locatie",
+    "approxNote": "Globale ligging — het exacte adres delen we na de boeking"
+  },
+  "pdpFaq": {
+    "title": "Goed om te weten",
+    "qGuests": "Hoeveel gasten kan {{name}} ontvangen?",
+    "aGuests": "{{name}} biedt plaats aan {{guests}} gasten in {{bedrooms}} slaapkamers met {{bathrooms}} badkamers.",
+    "qTimes": "Hoe laat zijn check-in en check-out?",
+    "aTimes": "Inchecken vanaf {{checkIn}}, uitchecken vóór {{checkOut}}. Flexibele tijden zijn vaak te regelen met onze concierge.",
+    "qPool": "Heeft {{name}} een zwembad?",
+    "aPoolHeated": "Ja — {{name}} heeft een verwarmd zwembad voor privégebruik.",
+    "aPool": "Ja — {{name}} heeft een privézwembad exclusief voor gasten.",
+    "qMin": "Wat is het minimale verblijf?",
+    "aMin": "Het minimale verblijf is {{count}} nachten gedurende het grootste deel van het jaar. In juli en augustus lopen verblijven van zaterdag tot zaterdag met minimaal 7 nachten — de kalender toont de beschikbare aankomstdata.",
+    "qDirect": "Waarom direct bij Portugal Active boeken?",
+    "aDirect": "Direct boeken betekent de beste prijs online zonder OTA-servicekosten, een eigen WhatsApp-concierge en een lokaal team dat het huis van a tot z beheert."
   }
 }

@@ -13,7 +13,7 @@ import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck,
   Sparkles, Gem, Clock, UtensilsCrossed, Headphones, Plus, X, AlertTriangle,
   Wifi, Tv, Coffee, Car, Waves, Wind, Shirt, Flame, TreePine, Mountain,
-  Sun, Monitor, Utensils, Sofa, ArrowRight, Lock, ShieldCheck, Bed, type LucideIcon
+  Sun, Monitor, Utensils, Sofa, ArrowRight, Lock, ShieldCheck, Bed, ChevronDown, type LucideIcon
 } from 'lucide-react';
 const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 import productsData from '@/data/products.json';
@@ -593,6 +593,56 @@ export default function PropertyDetail() {
   // VacationRental is Google's dedicated subtype for short-term rentals; it
   // surfaces richer fields (numberOfBedrooms, occupancy, amenityFeature as
   // LocationFeatureSpecification) that AI Overviews quote directly.
+  /** Practical Q&A from the home's own data — rendered visibly in "Good to
+   *  know" and mirrored into FAQPage JSON-LD (Google requires the answers to
+   *  exist on the page). */
+  const pdpFaq = useMemo(() => {
+    if (!property) return [] as Array<{ q: string; a: string }>;
+    const out: Array<{ q: string; a: string }> = [];
+    const name = displayName || property.name;
+    if (property.maxGuests) {
+      out.push({
+        q: t('pdpFaq.qGuests', 'How many guests can {{name}} sleep?', { name }),
+        a: t('pdpFaq.aGuests', '{{name}} sleeps up to {{guests}} guests across {{bedrooms}} bedrooms with {{bathrooms}} bathrooms.', {
+          name, guests: property.maxGuests, bedrooms: property.bedrooms, bathrooms: property.bathrooms,
+        }),
+      });
+    }
+    if (property.checkInTime || property.checkOutTime) {
+      out.push({
+        q: t('pdpFaq.qTimes', 'What time are check-in and check-out?'),
+        a: t('pdpFaq.aTimes', 'Check-in from {{checkIn}} and check-out by {{checkOut}}. Flexible times can often be arranged with our concierge.', {
+          checkIn: property.checkInTime || '16:00', checkOut: property.checkOutTime || '11:00',
+        }),
+      });
+    }
+    const flatAmenities = Object.values((property.amenities || {}) as Record<string, string[]>)
+      .flatMap(v => (Array.isArray(v) ? v : []));
+    const pool = flatAmenities.find(a => /pool/i.test(a));
+    if (pool) {
+      out.push({
+        q: t('pdpFaq.qPool', 'Does {{name}} have a pool?', { name }),
+        a: /heated/i.test(pool)
+          ? t('pdpFaq.aPoolHeated', 'Yes — {{name}} has a heated pool for private use of guests.', { name })
+          : t('pdpFaq.aPool', 'Yes — {{name}} has a private pool exclusively for guests.', { name }),
+      });
+    }
+    if ((property as any).minNights) {
+      out.push({
+        q: t('pdpFaq.qMin', 'What is the minimum stay?'),
+        a: t('pdpFaq.aMin', 'The minimum stay is {{count}} nights for most of the year. In July and August stays run Saturday to Saturday with a 7-night minimum — the calendar shows the available arrival dates.', {
+          count: (property as any).minNights,
+        }),
+      });
+    }
+    out.push({
+      q: t('pdpFaq.qDirect', 'Why book directly with Portugal Active?'),
+      a: t('pdpFaq.aDirect', 'Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end.'),
+    });
+    return out;
+  }, [property, displayName, t]);
+
+
   const propertyGraph = useMemo(() => {
     if (!property) return null;
     const dest = destinations.find(d => d.slug === property.destination);
@@ -614,10 +664,12 @@ export default function PropertyDetail() {
         amenities: amenityNames,
         checkinTime: (property as any).checkInTime ?? null,
         checkoutTime: (property as any).checkOutTime ?? null,
-        // Guesty doesn't currently expose these — leave null until wired.
+        // Guesty doesn't currently expose this — leave null until wired.
         petsAllowed: (property as any).petsAllowed ?? null,
-        latitude: (property as any).latitude ?? null,
-        longitude: (property as any).longitude ?? null,
+        // Coordinates live under address.lat/lng in the sync output; the old
+        // top-level fields never existed, so GeoCoordinates was always null.
+        latitude: (property as any).address?.lat ?? null,
+        longitude: (property as any).address?.lng ?? null,
         aggregateRating:
           (property as any).averageRating && (property as any).reviewCount
             ? {
@@ -632,8 +684,20 @@ export default function PropertyDetail() {
         { name: 'Homes', item: '/homes' },
         { name: property.name },
       ]),
+      // Same Q&A the visible "Good to know" section renders.
+      ...(pdpFaq.length
+        ? [{
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: pdpFaq.map(f => ({
+              '@type': 'Question',
+              name: f.q,
+              acceptedAnswer: { '@type': 'Answer', text: f.a },
+            })),
+          }]
+        : []),
     ];
-  }, [property]);
+  }, [property, pdpFaq]);
 
   const whatsIncluded = useMemo(
     () => [
@@ -1335,6 +1399,51 @@ export default function PropertyDetail() {
                   </div>
                 </section>
               )}
+
+              {/* Location — the OTA listing of this same home shows a map; a
+                  guest comparing tabs shouldn't find ours blank. Approximate
+                  pin (3 decimals ≈ 100 m) — exact address after booking. */}
+              {(property as any).address?.lat && (property as any).address?.lng && (
+                <section className="py-6 lg:py-8 border-t border-[#E8E4DC]">
+                  <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-1">
+                    {t('location.title', 'Location')}
+                  </h2>
+                  <p className="text-[13px] text-[#726D63] mb-4">
+                    {property.locality}
+                    {destName ? `, ${destName}` : ''} · {t('location.approxNote', 'Approximate area — the exact address is shared after booking')}
+                  </p>
+                  <div className="relative overflow-hidden rounded-sm border border-[#E8E4DC]" style={{ aspectRatio: '16/7' }}>
+                    <iframe
+                      title={`${displayName} — ${t('location.title', 'Location')}`}
+                      src={`https://www.google.com/maps?q=${Number((property as any).address.lat).toFixed(3)},${Number((property as any).address.lng).toFixed(3)}&z=12&output=embed`}
+                      className="absolute inset-0 w-full h-full"
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  </div>
+                </section>
+              )}
+
+              {/* Good to know — the practical questions a guest actually asks
+                  before paying four figures, answered from the home's own data.
+                  Mirrors into FAQPage JSON-LD (see propertyGraph) so the same
+                  answers are citable by Google and AI answer engines. */}
+              <section className="py-6 lg:py-8 border-t border-[#E8E4DC]">
+                <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-4">
+                  {t('pdpFaq.title', 'Good to know')}
+                </h2>
+                <div className="flex flex-col divide-y divide-[#E8E4DC] border-y border-[#E8E4DC]">
+                  {pdpFaq.map((f, i) => (
+                    <details key={i} className="group py-3">
+                      <summary className="flex items-center justify-between cursor-pointer list-none text-[14px] text-[#1A1A18] font-medium min-h-[32px]">
+                        {f.q}
+                        <ChevronDown className="w-4 h-4 text-[#726D63] transition-transform group-open:rotate-180 shrink-0 ml-3" />
+                      </summary>
+                      <p className="text-[13.5px] text-[#726D63] leading-relaxed pt-2 pr-8" style={{ fontWeight: 300 }}>{f.a}</p>
+                    </details>
+                  ))}
+                </div>
+              </section>
 
               {/* In-house promise — establishes the hotel-chain model: every
                   service and experience below is delivered by Portugal Active's
