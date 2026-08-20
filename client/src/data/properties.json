@@ -10986,6 +10986,41 @@
     "areaSquareFeet": 1614.586563,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Alojamiento muy limpio y bien ubicado, todo muy nuevo, el acceso la primera vez no es muy cómodo.",
+        "guestDisplayName": "Marta",
+        "guestName": "Marta",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-20T09:39:40.717Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "Wir hatten einen schönen Aufenthalt. Besonders gefallen hat uns:\n- Schöner Blick aufs Meer mit tollen Sonnenuntergängen von der Terrasse aus \n- Zwischenreinigung nach 1 Woche\n- gute Ausstattung \n- gemütliches Wohnzimmer \n- sehr sauber\n\nToll wären noch ein paar Haken in den Zimmern.",
         "guestDisplayName": "Martin Und Stefanie",
@@ -11231,8 +11266,8 @@
         ]
       }
     ],
-    "averageRating": 4.71,
-    "reviewCount": 7
+    "averageRating": 4.75,
+    "reviewCount": 8
   },
   {
     "id": "guesty-696533714b583900135cef22",
@@ -18407,9 +18442,45 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 1808.3369472,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Tolle Lage, schöne Unterkunft und auch die Kommunikation hat reibungslos funktioniert. Vielen Dank für die schöne Zeit.",
+        "guestDisplayName": "Bettina",
+        "guestName": "Bettina",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-19T10:26:13.376Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-69ca869e5b0a0500158b7d5a",
