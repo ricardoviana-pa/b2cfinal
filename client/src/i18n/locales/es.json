@@ -1,6 +1,6 @@
 {
   "nav": {
-    "properties": "Propiedades",
+    "properties": "Casas",
     "destinations": "Destinos",
     "events": "Eventos",
     "journal": "Journal",
@@ -21,7 +21,7 @@
     "sendEmail": "Envíenos un correo",
     "whatsapp": "WhatsApp",
     "chatConcierge": "Chatee con nuestro concierge",
-    "allProperties": "Todas las propiedades",
+    "allProperties": "Todas las casas",
     "browseCollection": "Ver toda la colección",
     "byDestination": "Por destino",
     "conciergeSubtitle": "Servicios, chef, spa, experiencias",

@@ -1,6 +1,6 @@
 {
   "nav": {
-    "properties": "Accommodaties",
+    "properties": "Huizen",
     "destinations": "Bestemmingen",
     "events": "Evenementen",
     "journal": "Journal",
@@ -21,7 +21,7 @@
     "sendEmail": "Stuur een e-mail",
     "whatsapp": "WhatsApp",
     "chatConcierge": "Chat met onze concierge",
-    "allProperties": "Alle accommodaties",
+    "allProperties": "Alle huizen",
     "browseCollection": "Bekijk de volledige collectie",
     "byDestination": "Per bestemming",
     "conciergeSubtitle": "Services, chef, spa, avonturen",

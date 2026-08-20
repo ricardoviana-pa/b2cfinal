@@ -1,6 +1,6 @@
 {
   "nav": {
-    "properties": "Kohteet",
+    "properties": "Kodit",
     "destinations": "Kohteet",
     "events": "Tapahtumat",
     "journal": "Journal",
@@ -21,7 +21,7 @@
     "sendEmail": "Lähetä sähköpostia",
     "whatsapp": "WhatsApp",
     "chatConcierge": "Chattaa concierge-palvelun kanssa",
-    "allProperties": "Kaikki kohteet",
+    "allProperties": "Kaikki kodit",
     "browseCollection": "Selaa koko valikoima",
     "byDestination": "Alueittain",
     "conciergeSubtitle": "Palvelut, kokki, spa, elämykset",

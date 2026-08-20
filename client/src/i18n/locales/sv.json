@@ -1,6 +1,6 @@
 {
   "nav": {
-    "properties": "Bostäder",
+    "properties": "Hus",
     "destinations": "Destinationer",
     "events": "Evenemang",
     "journal": "Journal",
@@ -21,7 +21,7 @@
     "sendEmail": "Skicka e-post",
     "whatsapp": "WhatsApp",
     "chatConcierge": "Chatta med vår concierge",
-    "allProperties": "Alla bostäder",
+    "allProperties": "Alla hus",
     "browseCollection": "Bläddra hela kollektionen",
     "byDestination": "Efter destination",
     "conciergeSubtitle": "Tjänster, kock, spa, äventyr",
