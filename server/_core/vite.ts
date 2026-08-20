@@ -743,7 +743,34 @@ function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
     ],
   };
 
-  return { '@context': 'https://schema.org', '@graph': [vacationRental, breadcrumb] };
+  // Mirror the client's "Good to know" FAQ so crawlers that don't execute JS
+  // (most AI crawlers) see the same FAQPage the hydrated page emits. en+pt
+  // templates, en fallback elsewhere — same pattern as collections meta.
+  const pt = lang === 'pt';
+  const faq: Array<{ q: string; a: string }> = [];
+  if (prop.maxGuests != null) {
+    faq.push(pt
+      ? { q: `Quantos hóspedes pode receber ${name}?`, a: `${name} recebe até ${prop.maxGuests} hóspedes em ${prop.bedrooms} quartos com ${prop.bathrooms} casas de banho.` }
+      : { q: `How many guests can ${name} sleep?`, a: `${name} sleeps up to ${prop.maxGuests} guests across ${prop.bedrooms} bedrooms with ${prop.bathrooms} bathrooms.` });
+  }
+  if (prop.minNights) {
+    faq.push(pt
+      ? { q: 'Qual é a estadia mínima?', a: `A estadia mínima é de ${prop.minNights} noites na maior parte do ano. Em julho e agosto as estadias são de sábado a sábado com mínimo de 7 noites — o calendário mostra as datas de chegada disponíveis.` }
+      : { q: 'What is the minimum stay?', a: `The minimum stay is ${prop.minNights} nights for most of the year. In July and August stays run Saturday to Saturday with a 7-night minimum — the calendar shows the available arrival dates.` });
+  }
+  faq.push(pt
+    ? { q: 'Porquê reservar diretamente com a Portugal Active?', a: 'Reservar direto garante o melhor preço online sem taxas de serviço de OTAs, concierge dedicado por WhatsApp e uma equipa local que gere a casa de ponta a ponta.' }
+    : { q: 'Why book directly with Portugal Active?', a: 'Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end.' });
+  const faqPage = {
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  };
+
+  return { '@context': 'https://schema.org', '@graph': [vacationRental, breadcrumb, faqPage] };
 }
 
 /** Safely convert any date-ish value to a YYYY-MM-DD string, or null. */
