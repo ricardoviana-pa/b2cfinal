@@ -702,6 +702,7 @@ function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
         '@type': 'LocationFeatureSpecification', name: a, value: true,
       })),
     }),
+    ...(typeof prop.petsAllowed === 'boolean' && { petsAllowed: prop.petsAllowed }),
     address: {
       '@type': 'PostalAddress',
       ...(prop.locality && { addressLocality: prop.locality }),

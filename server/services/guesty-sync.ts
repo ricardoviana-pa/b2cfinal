@@ -722,6 +722,11 @@ function mapListingToProperty(
   const terms = listing.terms || {};
   const minNights = terms.minNights ?? terms.minNight ?? 1;
   const amenities = mapGuestyAmenities(listing);
+  // Guesty encodes pet policy as the "Pets allowed" amenity; surface it as a
+  // real field so JSON-LD and the PDP can use it without string-matching.
+  const petsAllowed = Object.values(amenities as Record<string, string[]>)
+    .flat()
+    .some((a) => /\bpets?\s+allowed\b/i.test(String(a)));
 
   // Extract full address data from Guesty
   const addressData = {
@@ -769,6 +774,7 @@ function mapListingToProperty(
     // structured blocks over it.
     descriptionSections: copyOverride?.description ? null : buildDescriptionSections(desc),
     amenities,
+    petsAllowed,
     stayIncludes: [],
     style: "",
     tags: [],
