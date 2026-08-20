@@ -468,7 +468,7 @@ export async function sendContactInquiryNotification(data: ContactInquiryData): 
 </table>
 </td></tr>`);
 
-  await sendEmail(BOOKING_NOTIFICATION_EMAIL, emailSubject, html, data.email);
+  await sendEmail(CONTACT_NOTIFICATION_EMAIL, emailSubject, html, data.email);
 }
 
 /* ================================================================
@@ -1226,5 +1226,5 @@ export async function sendAvailabilityRequestNotification(
 </td></tr>
 `);
 
-  await sendEmail(CONTACT_NOTIFICATION_EMAIL, emailSubject, html, data.email);
+  await sendEmail(BOOKING_NOTIFICATION_EMAIL, emailSubject, html, data.email);
 }
