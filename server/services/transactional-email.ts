@@ -52,9 +52,10 @@ function wrapTemplate(content: string, _preheader?: string, pt = false): string 
 <tr><td align="center" style="padding:40px 20px;">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
-<!-- Brand band: dark ground with the white site logo -->
-<tr><td style="background:#FDFBF7;text-align:center;padding:24px 20px 18px;border-radius:10px 10px 0 0;">
-  <div style="font-family:Georgia,'Times New Roman',serif;font-size:18px;letter-spacing:.24em;color:#1A1A18;">PORTUGAL&nbsp;ACTIVE</div>
+<!-- Brand band: imagem full-width com o logo real do site (fundo cozido de
+     borda a borda — sem caixa possivel em dark mode) -->
+<tr><td style="padding:0;">
+  <img src="${BRAND_BAND_URL}" alt="Portugal Active" width="600" style="display:block;width:100%;max-width:600px;height:auto;" />
 </td></tr>
 <tr><td style="height:26px;background:#FFFFFF;border-left:1px solid #E8E4DC;border-right:1px solid #E8E4DC;"></td></tr>
 
@@ -521,6 +522,7 @@ const PA = {
 /** Same asset the site header uses (client/src/lib/images.ts logoColor) */
 /** Badge da marca (logo com fundo cozido) — imutável em dark mode dos clientes
  *  de email; a versão transparente ficava invisível/encaixotada no Gmail dark. */
+const BRAND_BAND_URL = "https://www.portugalactive.com/email/brand-band.png";
 const LOGO_URL =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo_0b76cb12.webp";
 
@@ -656,9 +658,9 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PA.warm};">
 
 <!-- Top bar: brand-dark band with the white logo (the logoColor asset is
-     white-on-transparent, so it needs the dark background to show) -->
-<tr><td style="background:#FDFBF7;padding:22px 20px 18px;text-align:center;">
-  <div style="font-family:Georgia,'Times New Roman',serif;font-size:18px;letter-spacing:.24em;color:#1A1A18;">PORTUGAL&nbsp;ACTIVE</div>
+     imagem full-width com o logo real: fundo cozido borda a borda -->
+<tr><td style="padding:0;">
+  <img src="${BRAND_BAND_URL}" alt="Portugal Active" width="600" style="display:block;width:100%;max-width:600px;height:auto;" />
 </td></tr>
 
 <tr><td align="center" style="padding:36px 20px 44px 20px;">
@@ -942,9 +944,9 @@ export async function sendCheckoutGuestConfirmation(d: {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PA.warm};">
 
 <!-- Top bar: brand-dark band with the white logo (the logoColor asset is
-     white-on-transparent, so it needs the dark background to show) -->
-<tr><td style="background:#FDFBF7;padding:22px 20px 18px;text-align:center;">
-  <div style="font-family:Georgia,'Times New Roman',serif;font-size:18px;letter-spacing:.24em;color:#1A1A18;">PORTUGAL&nbsp;ACTIVE</div>
+     imagem full-width com o logo real: fundo cozido borda a borda -->
+<tr><td style="padding:0;">
+  <img src="${BRAND_BAND_URL}" alt="Portugal Active" width="600" style="display:block;width:100%;max-width:600px;height:auto;" />
 </td></tr>
 
 <tr><td align="center" style="padding:36px 20px 44px 20px;">
