@@ -66,8 +66,21 @@ function mapGuestyError(err: unknown, res: Response): void {
   });
 }
 
-function classifyRatePlan(name: string, cancellationPolicy?: string[]): "flexible" | "non_refundable" | "other" {
-  const hay = `${name} ${(cancellationPolicy || []).join(" ")}`.toLowerCase();
+/** cancellationPolicy arrives as string[], a single string, or an object
+ *  depending on the payload generation — never assume array. */
+function policyToStrings(policy: unknown): string[] {
+  if (Array.isArray(policy)) return policy.map((p) => (typeof p === "string" ? p : JSON.stringify(p)));
+  if (typeof policy === "string") return [policy];
+  if (policy && typeof policy === "object") {
+    return Object.values(policy as Record<string, unknown>)
+      .filter((v) => typeof v === "string" || typeof v === "number")
+      .map(String);
+  }
+  return [];
+}
+
+function classifyRatePlan(name: string, cancellationPolicy?: unknown): "flexible" | "non_refundable" | "other" {
+  const hay = `${name} ${policyToStrings(cancellationPolicy).join(" ")}`.toLowerCase();
   if (hay.includes("non-refundable") || hay.includes("nao reembols") || hay.includes("não reembols")) {
     return "non_refundable";
   }
@@ -372,22 +385,26 @@ export function registerBookingRoutes(app: Express): void {
           ? [q.raw.rates.ratePlan]
           : [];
       const ratePlanOptions = rawPlans.map((entry: any) => {
-        // Guesty nests each option as { ratePlan: {...}, money: { money: {...} } };
-        // fall back to the flat shape for older payloads.
-        const plan = entry?.ratePlan || entry || {};
-        const moneyWrapper = entry?.money || plan?.money || {};
-        const money = moneyWrapper?.money || moneyWrapper;
-        return {
-          ratePlanId: plan?._id || plan?.id || "",
-          name: plan?.name || "Tarifa",
-          type: classifyRatePlan(plan?.name || "", plan?.cancellationPolicy),
-          cancellationPolicy: plan?.cancellationPolicy || plan?.cancellationPolicies || [],
-          cancellationFee: plan?.cancellationFee || null,
-          total: Math.round(Number(money.totalPrice ?? money.total ?? money.totalAmount ?? money.hostPayout ?? 0) * 100),
-          baseRent: Math.round(Number(money.fareAccommodation ?? money.accommodationFare ?? 0) * 100),
-          cleaningFee: Math.round(Number(money.fareCleaning ?? money.cleaningFee ?? 0) * 100),
-        };
-      });
+        try {
+          // Guesty nests each option as { ratePlan: {...}, money: { money: {...} } };
+          // fall back to the flat shape for older payloads.
+          const plan = entry?.ratePlan || entry || {};
+          const moneyWrapper = entry?.money || plan?.money || {};
+          const money = moneyWrapper?.money || moneyWrapper || {};
+          return {
+            ratePlanId: plan?._id || plan?.id || "",
+            name: plan?.name || "Tarifa",
+            type: classifyRatePlan(plan?.name || "", plan?.cancellationPolicy),
+            cancellationPolicy: policyToStrings(plan?.cancellationPolicy ?? plan?.cancellationPolicies),
+            cancellationFee: plan?.cancellationFee ?? null,
+            total: Math.round(Number(money.totalPrice ?? money.total ?? money.totalAmount ?? money.hostPayout ?? 0) * 100),
+            baseRent: Math.round(Number(money.fareAccommodation ?? money.accommodationFare ?? 0) * 100),
+            cleaningFee: Math.round(Number(money.fareCleaning ?? money.cleaningFee ?? 0) * 100),
+          };
+        } catch {
+          return null;
+        }
+      }).filter(Boolean);
       res.json({
         quoteId: q.raw?._id || null,
         nights: q.nights,
