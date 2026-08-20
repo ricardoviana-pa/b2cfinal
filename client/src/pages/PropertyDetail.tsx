@@ -1539,7 +1539,7 @@ export default function PropertyDetail() {
             <DrawerContent className="lg:hidden bg-white max-h-[92vh]">
               <DrawerHeader className="flex-row items-center justify-between gap-3 border-b border-[#E8E4DC] px-5 py-4 text-left">
                 <DrawerTitle className="font-display text-[16px] font-light text-[#1A1A18] truncate">
-                  {property.name}
+                  {displayName}
                 </DrawerTitle>
                 <DrawerClose className="shrink-0 text-[#726D63] hover:text-[#1A1A18] transition-colors">
                   <X size={20} />
