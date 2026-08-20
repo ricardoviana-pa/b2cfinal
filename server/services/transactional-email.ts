@@ -54,7 +54,7 @@ function wrapTemplate(content: string, _preheader?: string, pt = false): string 
 
 <!-- Brand band: dark ground with the white site logo -->
 <tr><td style="background:#FDFBF7;text-align:center;padding:24px 20px 18px;border-radius:10px 10px 0 0;">
-  <img src="${LOGO_URL}" alt="Portugal Active" height="32" style="height:32px;display:inline-block;border-radius:6px;" />
+  <div style="font-family:Georgia,'Times New Roman',serif;font-size:18px;letter-spacing:.24em;color:#1A1A18;">PORTUGAL&nbsp;ACTIVE</div>
 </td></tr>
 <tr><td style="height:26px;background:#FFFFFF;border-left:1px solid #E8E4DC;border-right:1px solid #E8E4DC;"></td></tr>
 
@@ -529,7 +529,7 @@ function brandFooter(pt: boolean): string {
   return `
 <tr><td style="padding:30px 20px 36px;text-align:center;">
   <div style="height:1px;background:#C9A96A;opacity:.5;max-width:120px;margin:0 auto 22px;"></div>
-  <img src="${LOGO_URL}" alt="Portugal Active" height="26" style="height:26px;width:auto;display:inline-block;border-radius:5px;" />
+  <div style="font-family:Georgia,'Times New Roman',serif;font-size:14px;letter-spacing:.22em;color:#726D63;">PORTUGAL&nbsp;ACTIVE</div>
   <p style="font-family:Arial,sans-serif;font-size:12px;color:#726D63;margin:14px 0 0;">
     <a href="tel:+351258358434" style="color:#726D63;text-decoration:none;">+351 258 358 434</a>
     &nbsp;·&nbsp;<a href="mailto:booking@portugalactive.com" style="color:#8B7355;text-decoration:none;">booking@portugalactive.com</a>
@@ -658,7 +658,7 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 <!-- Top bar: brand-dark band with the white logo (the logoColor asset is
      white-on-transparent, so it needs the dark background to show) -->
 <tr><td style="background:#FDFBF7;padding:22px 20px 18px;text-align:center;">
-  <img src="${LOGO_URL}" alt="Portugal Active" height="34" style="height:34px;width:auto;display:inline-block;border-radius:6px;" />
+  <div style="font-family:Georgia,'Times New Roman',serif;font-size:18px;letter-spacing:.24em;color:#1A1A18;">PORTUGAL&nbsp;ACTIVE</div>
 </td></tr>
 
 <tr><td align="center" style="padding:36px 20px 44px 20px;">
@@ -944,7 +944,7 @@ export async function sendCheckoutGuestConfirmation(d: {
 <!-- Top bar: brand-dark band with the white logo (the logoColor asset is
      white-on-transparent, so it needs the dark background to show) -->
 <tr><td style="background:#FDFBF7;padding:22px 20px 18px;text-align:center;">
-  <img src="${LOGO_URL}" alt="Portugal Active" height="34" style="height:34px;width:auto;display:inline-block;border-radius:6px;" />
+  <div style="font-family:Georgia,'Times New Roman',serif;font-size:18px;letter-spacing:.24em;color:#1A1A18;">PORTUGAL&nbsp;ACTIVE</div>
 </td></tr>
 
 <tr><td align="center" style="padding:36px 20px 44px 20px;">
@@ -1125,6 +1125,14 @@ export async function sendCheckoutOpsManifest(d: {
     row("Datas", `${d.checkIn || "?"} ate ${d.checkOut || "?"} · ${d.guests ?? "?"} hospedes`);
     row("Hospede", `${d.guestName || "?"} · ${d.email || "?"} · ${d.guestPhone || "?"}`);
     row("Reserva", `${d.confirmationCode || "pendente"} (Guesty ${d.reservationId || "?"})`);
+    // Valor da venda sempre visivel (pedido do Ricardo, 20 ago): total pago e,
+    // quando ha servicos, o split estadia/servicos do calculo canonico.
+    if (d.canonical) {
+      const tot = d.canonical.totalCents / 100;
+      const servicos = (d.canonical.lines.reduce((s, l) => s + l.cents, 0) + d.canonical.receptionCents + d.canonical.flexCents) / 100;
+      const estadia = tot - servicos;
+      row("Total pago", `<strong>${tot.toFixed(2)} EUR</strong>${servicos > 0 ? ` (estadia ${estadia.toFixed(2)} + servicos ${servicos.toFixed(2)})` : ""}`);
+    }
     const fmtLine = (e: Record<string, unknown>) =>
       `<p style="font:13px Arial;color:#1A1A18;margin:2px 0;">• ${nice(e.sku)} ${qty(e)} · ${e.amount != null ? amountOf(e) + " EUR" : "sob orcamento"}</p>`;
     // Sempre com a marca: moldura com logo (wrapTemplate) + foto da casa —
@@ -1138,9 +1146,11 @@ export async function sendCheckoutOpsManifest(d: {
       actionHtml +
       photoHtml +
       `<table>${rows.join("")}</table>` +
-      (extras.length ? `<p style="font:600 13px Arial;margin:14px 0 4px;color:#1A1A18;">Detalhe dos servicos</p>` + extras.map(fmtLine).join("") : "") +
+      (extras.length
+        ? `<p style="font:600 13px Arial;margin:14px 0 4px;color:#1A1A18;">Detalhe dos servicos</p>` + extras.map(fmtLine).join("")
+        : `<p style="font:13px Arial;color:#6B6860;margin:14px 0 4px;">Sem servicos extra — so a estadia${d.reception?.type === "hosted" ? " e rececao presencial" : ", self check-in"}.</p>`) +
       (d.reservationId ? `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:18px 0 0;"><tr><td style="background:#1A1A18;border-radius:8px;">
-        <a href="https://app.guesty.com/reservations/${d.reservationId}" style="display:inline-block;padding:12px 22px;font:600 12px Arial;letter-spacing:.1em;color:#ffffff;text-decoration:none;">ABRIR NO GUESTY →</a>
+        <a href="https://app.guesty.com/reservations/${d.reservationId}/summary" style="display:inline-block;padding:12px 22px;font:600 12px Arial;letter-spacing:.1em;color:#ffffff;text-decoration:none;">ABRIR NO GUESTY →</a>
       </td></tr></table>` : "") +
       `<p style="font:10.5px Arial;color:#9E9A90;margin-top:16px;">Intent ${d.intentId} · gerado pelo checkout 2.0</p>`,
       undefined,
