@@ -177,6 +177,7 @@ export default function Homes() {
           checkout: searchCheckout,
           guests: String(effectiveGuests),
           nights: String(searchNights),
+          locale: i18n.language,
         },
       });
       setLeadSent(true);

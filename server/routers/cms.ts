@@ -2,7 +2,7 @@ import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../_core/trpc";
 import * as db from "../db";
 import { sendContactConfirmation, sendContactNotification, sendNewsletterWelcome } from "../services/email";
-import { sendContactInquiryNotification, sendAvailabilityRequestNotification } from "../services/transactional-email";
+import { sendContactInquiryNotification, sendAvailabilityRequestNotification, sendAvailabilityRequestConfirmation } from "../services/transactional-email";
 
 /* ================================================================
    DESTINATIONS
@@ -274,6 +274,16 @@ export const leadsRouter = router({
           guests: input.metadata?.guests ?? '—',
           nights: input.metadata?.nights ?? '—',
         }).catch(e => console.error("[Email] Availability request notification failed:", e));
+        // Instant acknowledgment to the guest — silence after handing over an
+        // email reads as "nobody's home" and sends them back to the OTA tab.
+        sendAvailabilityRequestConfirmation({
+          email: input.email,
+          name: input.name,
+          checkIn: input.metadata?.checkin ?? '—',
+          checkOut: input.metadata?.checkout ?? '—',
+          guests: input.metadata?.guests ?? '—',
+          locale: input.metadata?.locale,
+        }).catch(e => console.error("[Email] Availability request confirmation failed:", e));
       } else if (input.source.startsWith('newsletter')) {
         sendNewsletterWelcome(input.email).catch(e => console.error("[Email] Newsletter welcome failed:", e));
       }

@@ -395,7 +395,8 @@ export async function sendPostStay(data: PostStayData): Promise<void> {
 }
 
 /* ================================================================
-   CONTACT FORM INQUIRY (internal — to info@portugalactive.com)
+   CONTACT FORM INQUIRY (internal — to the booking inbox; per the team,
+   EVERYTHING guest-facing lands on booking@, one inbox to watch)
    Reply-To is set to the visitor's email so replies go directly to them.
    ================================================================ */
 interface ContactInquiryData {
@@ -406,7 +407,6 @@ interface ContactInquiryData {
   message: string;
 }
 
-const CONTACT_NOTIFICATION_EMAIL = process.env.CONTACT_NOTIFICATION_EMAIL || "info@portugalactive.com";
 
 const SUBJECT_LABELS: Record<string, string> = {
   "plan-my-stay": "Plan My Stay",
@@ -468,7 +468,7 @@ export async function sendContactInquiryNotification(data: ContactInquiryData): 
 </table>
 </td></tr>`);
 
-  await sendEmail(CONTACT_NOTIFICATION_EMAIL, emailSubject, html, data.email);
+  await sendEmail(BOOKING_NOTIFICATION_EMAIL, emailSubject, html, data.email);
 }
 
 /* ================================================================
@@ -1227,4 +1227,44 @@ export async function sendAvailabilityRequestNotification(
 `);
 
   await sendEmail(BOOKING_NOTIFICATION_EMAIL, emailSubject, html, data.email);
+}
+
+/* ================================================================
+   AVAILABILITY REQUEST — GUEST AUTO-CONFIRMATION
+
+   The guest just told us the site couldn't serve their dates and handed us
+   their email. Silence at that moment reads as "nobody's home" — exactly the
+   doubt that sends them back to the OTA tab. This lands immediately, from
+   booking@ (replies flow straight back into the booking inbox), in the
+   guest's language when we know it (pt), English otherwise.
+   ================================================================ */
+export async function sendAvailabilityRequestConfirmation(data: {
+  email: string;
+  name?: string;
+  checkIn: string;
+  checkOut: string;
+  guests: string;
+  locale?: string;
+}): Promise<void> {
+  const isPt = (data.locale || "").toLowerCase().startsWith("pt");
+  const first = data.name?.trim().split(/\s+/)[0];
+
+  const subject = isPt
+    ? `Recebemos o seu pedido — ${data.checkIn} → ${data.checkOut}`
+    : `We received your request — ${data.checkIn} → ${data.checkOut}`;
+
+  const greeting = first ? (isPt ? `Olá ${first},` : `Hello ${first},`) : (isPt ? "Olá," : "Hello,");
+
+  const body = isPt
+    ? `<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">${greeting}</p>
+<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">Recebemos o seu pedido para <strong>${data.checkIn} → ${data.checkOut}</strong> (${data.guests} hóspedes). A nossa equipa local está a verificar as opções — normalmente respondemos no próprio dia.</p>
+<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">Se preferir falar já connosco, responda a este email ou fale com o nosso concierge no WhatsApp: <a href="https://wa.me/351927161771" style="color:#806A48;">+351 927 161 771</a>.</p>
+<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0;">Portugal Active</p>`
+    : `<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">${greeting}</p>
+<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">We received your request for <strong>${data.checkIn} → ${data.checkOut}</strong> (${data.guests} guests). Our local team is checking the options — we usually come back to you the same day.</p>
+<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0 0 14px 0;">If you'd rather talk now, just reply to this email or reach our concierge on WhatsApp: <a href="https://wa.me/351927161771" style="color:#806A48;">+351 927 161 771</a>.</p>
+<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.7;margin:0;">Portugal Active</p>`;
+
+  const html = wrapTemplate(`<tr><td style="padding:0 0 8px 0;">${body}</td></tr>`, undefined, isPt);
+  await sendEmail(data.email, subject, html, BOOKING_NOTIFICATION_EMAIL);
 }
