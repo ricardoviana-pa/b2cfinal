@@ -8,6 +8,7 @@ import superjson from "superjson";
 import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
+import { installContactClickTracking } from "@/lib/datalayer";
 
 // We deploy many times a day and the edge caches HTML for only ~60s, but a tab
 // left open keeps running its old bundle indefinitely — and its next lazy-route
@@ -15,6 +16,8 @@ import "./index.css";
 // vite:preloadError in exactly that case; reloading picks up the fresh app.
 // The sessionStorage flag stops a reload loop if the failure is anything else
 // (e.g. offline): one automatic attempt per session, then let it fail visibly.
+installContactClickTracking();
+
 window.addEventListener("vite:preloadError", (event) => {
   const last = Number(sessionStorage.getItem("chunk-reload-at") || 0);
   if (Date.now() - last < 60_000) return; // at most one auto-reload per minute

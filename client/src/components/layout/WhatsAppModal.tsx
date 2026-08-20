@@ -42,7 +42,7 @@ export default function WhatsAppModal({ isOpen, onClose, whatsappUrl }: WhatsApp
             {t('whatsapp.cancel')}
           </button>
           <a
-            href={whatsappUrl}
+            href={whatsappUrl} data-track-source="floating_button"
             target="_blank"
             rel="noopener noreferrer"
             onClick={onClose}
