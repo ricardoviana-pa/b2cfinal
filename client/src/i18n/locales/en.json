@@ -940,7 +940,9 @@
     "q9": "What is the best rate guarantee?",
     "a9": "Our website always offers the lowest available rate. Booking direct means lower price than any third party platform, priority concierge support, faster response, and first access to in house services.",
     "cantFind": "Can't find what you're looking for?",
-    "contactTeam": "CONTACT OUR TEAM"
+    "contactTeam": "CONTACT OUR TEAM",
+    "q10": "Can I check in on any day of the week?",
+    "a10": "For most of the year, yes — arrivals are open on any day, with minimum stays of 2–4 nights depending on the home. In July and August, stays run Saturday to Saturday with a 7-night minimum. The booking calendar on each home highlights the available arrival dates, and for longer or non-standard stays our concierge will gladly build the plan with you."
   },
   "adventures": {
     "heroAlt": "Experiences in Portugal",

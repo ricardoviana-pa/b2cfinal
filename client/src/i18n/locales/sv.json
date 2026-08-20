@@ -914,7 +914,9 @@
     "q9": "Vad är bästa pris-garantin?",
     "a9": "Vår webbplats erbjuder alltid det lägsta tillgängliga priset. Direktbokning innebär lägre pris än på tredjepartsplattformar, prioriterad concierge-support, snabbare svar och första tillgång till interna tjänster.",
     "cantFind": "Hittar du inte det du söker?",
-    "contactTeam": "KONTAKTA VÅRT TEAM"
+    "contactTeam": "KONTAKTA VÅRT TEAM",
+    "q10": "Kan jag checka in vilken dag som helst i veckan?",
+    "a10": "Större delen av året, ja — ankomster är öppna alla dagar, med minsta vistelse på 2–4 nätter beroende på hus. I juli och augusti löper vistelser från lördag till lördag med minst 7 nätter. Bokningskalendern för varje hus markerar tillgängliga ankomstdatum, och för längre eller ovanliga vistelser bygger vår concierge gärna planen tillsammans med er."
   },
   "adventures": {
     "heroAlt": "Upplevelser i Portugal",

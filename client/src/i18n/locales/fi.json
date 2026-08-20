@@ -914,7 +914,9 @@
     "q9": "Mikä on paras hinta -takuu?",
     "a9": "Verkkosivustomme tarjoaa aina alimman saatavilla olevan hinnan. Suoravaraus tarkoittaa alhaisempaa hintaa kuin millään kolmannen osapuolen alustalla, etuoikeutettua concierge-tukea, nopeampaa vastausta ja ensimmäistä pääsyä omiin palveluihimme.",
     "cantFind": "Etkö löydä etsimääsi?",
-    "contactTeam": "OTA YHTEYTTÄ TIIMIIMME"
+    "contactTeam": "OTA YHTEYTTÄ TIIMIIMME",
+    "q10": "Voinko saapua minä tahansa viikonpäivänä?",
+    "a10": "Suurimman osan vuodesta kyllä — saapumiset ovat avoinna minä tahansa päivänä, ja vähimmäisoleskelu on talosta riippuen 2–4 yötä. Heinä- ja elokuussa oleskelut ovat lauantaista lauantaihin, vähintään 7 yötä. Jokaisen talon varauskalenteri korostaa saatavilla olevat saapumispäivät, ja pidempiä tai tavallisesta poikkeavia oleskeluja concierge-palvelumme suunnittelee mielellään kanssanne."
   },
   "adventures": {
     "heroAlt": "Elämyksiä Portugalissa",
