@@ -1683,7 +1683,8 @@
   },
   "location": {
     "title": "Locatie",
-    "approxNote": "Globale ligging — het exacte adres delen we na de boeking"
+    "approxNote": "Globale ligging — het exacte adres delen we na de boeking",
+    "alLicense": "AL-registratie {{number}}"
   },
   "pdpFaq": {
     "title": "Goed om te weten",

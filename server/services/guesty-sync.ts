@@ -231,6 +231,59 @@ async function loadExistingReviews(): Promise<Map<string, any[]>> {
   return map;
 }
 
+/**
+ * Alojamento Local registration number for a listing.
+ *
+ * Legally required on Portuguese short-let advertising AND a cheap legitimacy
+ * cue for a foreign guest about to wire four figures. Two sources, manual
+ * wins: data/licenses.json ({ "<guestyId>": "12345/AL" }) for numbers the team
+ * curates by hand, else a best-effort scan of Guesty customFields for keys
+ * mentioning AL / RNAL / licen / regist. The first sync after deploy logs the
+ * customFields shape once so we learn whether Guesty carries them at all.
+ */
+let _manualLicenses: Record<string, string> | null = null;
+async function manualLicenses(): Promise<Record<string, string>> {
+  if (_manualLicenses) return _manualLicenses;
+  try {
+    const raw = await readFile(join(process.cwd(), "data", "licenses.json"), "utf-8");
+    _manualLicenses = JSON.parse(raw);
+  } catch {
+    try {
+      const raw = await readFile(join(process.cwd(), "client", "src", "data", "licenses.json"), "utf-8");
+      _manualLicenses = JSON.parse(raw);
+    } catch { _manualLicenses = {}; }
+  }
+  return _manualLicenses!;
+}
+
+let _loggedCustomFields = false;
+function extractLicense(listing: any): string | null {
+  const cf = listing.customFields;
+  if (!_loggedCustomFields && cf) {
+    _loggedCustomFields = true;
+    try {
+      console.info("[Guesty Sync] customFields sample:", JSON.stringify(cf).slice(0, 400));
+    } catch { /* diagnostics only */ }
+  }
+  const entries: Array<[string, unknown]> = [];
+  if (Array.isArray(cf)) {
+    for (const f of cf) {
+      if (f && typeof f === "object") {
+        const key = String((f as any).fieldId?.name ?? (f as any).name ?? (f as any).key ?? "");
+        entries.push([key, (f as any).value]);
+      }
+    }
+  } else if (cf && typeof cf === "object") {
+    entries.push(...Object.entries(cf));
+  }
+  for (const [key, value] of entries) {
+    if (/\b(al|rnal)\b|licen|regist/i.test(key) && value != null && String(value).trim()) {
+      return String(value).trim().slice(0, 40);
+    }
+  }
+  return null;
+}
+
 async function loadExistingSlugMap(): Promise<Map<string, string>> {
   const map = new Map<string, string>();
   const candidates = [
@@ -620,8 +673,10 @@ function mapListingToProperty(
   listing: any,
   reviews: any[] = [],
   existingSlugMap?: Map<string, string>,
+  manualLicenseMap?: Record<string, string>,
 ) {
   const id = listing._id || listing.listingId || "";
+  const manualLicense = manualLicenseMap?.[id] ?? null;
   const title = listing.title || "Untitled";
   // Pin slugs: reuse the existing slug for this guestyId if we have one,
   // so a Guesty title change never breaks the indexed URL.
@@ -704,6 +759,7 @@ function mapListingToProperty(
     seoTitle: `${title} — Portugal Active`,
     seoDescription: summary.slice(0, 160) || `${title} in Portugal.`,
     address: addressData,
+    licenseNumber: manualLicense ?? extractLicense(listing) ?? null,
     rooms,
     propertyType: listing.propertyType || "Villa",
     checkInTime: listing.defaultCheckInTime || "16:00",
@@ -861,11 +917,12 @@ export async function runSync(): Promise<string> {
     console.warn(`[Guesty Sync] Guest-name resolution failed (non-blocking): ${err?.message ?? err}`);
   }
   const existingSlugMap = await loadExistingSlugMap();
+  const licenseMap = await manualLicenses();
   console.log(`[Guesty Sync] Loaded ${existingSlugMap.size} pinned slugs from existing data`);
   const properties = listings.map((listing) => {
     const rawId = listing._id || listing.listingId || "";
     const listingReviews = reviewsByListing.get(rawId) || [];
-    return mapListingToProperty(listing, listingReviews, existingSlugMap);
+    return mapListingToProperty(listing, listingReviews, existingSlugMap, licenseMap);
   });
 
   // Content-quality report — tracks the editorial cleanup of older listings.

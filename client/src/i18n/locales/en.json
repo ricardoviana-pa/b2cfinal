@@ -1683,7 +1683,8 @@
   },
   "location": {
     "title": "Location",
-    "approxNote": "Approximate area — the exact address is shared after booking"
+    "approxNote": "Approximate area — the exact address is shared after booking",
+    "alLicense": "AL registration {{number}}"
   },
   "pdpFaq": {
     "title": "Good to know",

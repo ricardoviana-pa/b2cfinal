@@ -1411,6 +1411,9 @@ export default function PropertyDetail() {
                   <p className="text-[13px] text-[#726D63] mb-4">
                     {property.locality}
                     {destName ? `, ${destName}` : ''} · {t('location.approxNote', 'Approximate area — the exact address is shared after booking')}
+                    {(property as any).licenseNumber && (
+                      <> · {t('location.alLicense', 'AL registration {{number}}', { number: (property as any).licenseNumber })}</>
+                    )}
                   </p>
                   <div className="relative overflow-hidden rounded-sm border border-[#E8E4DC]" style={{ aspectRatio: '16/7' }}>
                     <iframe

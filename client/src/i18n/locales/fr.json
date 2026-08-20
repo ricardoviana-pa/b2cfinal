@@ -1683,7 +1683,8 @@
   },
   "location": {
     "title": "Localisation",
-    "approxNote": "Zone approximative — l’adresse exacte est communiquée après la réservation"
+    "approxNote": "Zone approximative — l’adresse exacte est communiquée après la réservation",
+    "alLicense": "Enregistrement AL {{number}}"
   },
   "pdpFaq": {
     "title": "Bon à savoir",
