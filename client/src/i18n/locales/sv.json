@@ -333,7 +333,8 @@
     "tariffInCheckout": "Två priser tillgängliga. Välj ditt i nästa steg.",
     "reserve": "RESERVERA",
     "arrivalsRule": "Vistelser börjar {{days}} · minst {{count}} nätter",
-    "nextArrivals": "Nästa lediga datum"
+    "nextArrivals": "Nästa lediga datum",
+    "directNote": "Direktpris — inga serviceavgifter, bästa pris online"
   },
   "common": {
     "loading": "Laddar…",
@@ -1163,7 +1164,8 @@
     "ourGuests": "VÅRA GÄSTER",
     "whatTheyRemember": "Vad de minns mest.",
     "proofStrip": "4.8/5 bland över 2 000 gästomdömen",
-    "verifiedGuest": "Verifierad gäst"
+    "verifiedGuest": "Verifierad gäst",
+    "verifiedNote": "Alla omdömen kommer från genomförda vistelser, insamlade via våra bokningskanaler."
   },
   "amenity": {
     "outdoorPool": "Utomhus & Pool",
@@ -1361,7 +1363,11 @@
     "secureBooking": "Säker bokning",
     "bestRate": "Bästa pris garanterat",
     "noBookingFees": "Inga bokningsavgifter",
-    "conciergeIncluded": "Concierge ingår"
+    "conciergeIncluded": "Concierge ingår",
+    "directHeadline": "Varför boka direkt",
+    "bestRateTeeth": "Bästa pris online — hittar ni dessa datum billigare på Airbnb eller Booking.com matchar vi priset",
+    "noServiceFees": "Inga serviceavgifter — OTA:er lägger på 12–18 % i kassan; här är priset priset",
+    "conciergeWhatsapp": "WhatsApp-concierge före, under och efter er vistelse"
   },
   "bookingStatus": {
     "confirmed": "Bekräftad",
@@ -1669,5 +1675,10 @@
     "arrivalAirport": "Ankomstflygplats",
     "perCleaning": "per städning",
     "perPetStay": "per husdjur · vistelse"
+  },
+  "host": {
+    "hostedBy": "Värdar: Ricardo & Portugal Active-teamet",
+    "basedIn": "Lokalt team i Viana do Castelo",
+    "meetUs": "Lär känna oss"
   }
 }

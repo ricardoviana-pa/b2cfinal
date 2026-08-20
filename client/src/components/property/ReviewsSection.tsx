@@ -86,6 +86,12 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
         )}
       </div>
 
+      {/* Anonymous 5★ cards can read as fabricated; one line explains the
+          provenance without naming (or promoting) the OTAs they came through. */}
+      <p className="text-[12px] text-[#726D63] -mt-4 mb-6" style={{ fontWeight: 300 }}>
+        {t('reviews.verifiedNote', 'All reviews are from completed stays, collected through our booking channels.')}
+      </p>
+
       {/* Reviews grid */}
       <div className="grid gap-4 md:grid-cols-2">
         {displayed.map((review, idx) => {

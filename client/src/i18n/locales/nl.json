@@ -333,7 +333,8 @@
     "tariffInCheckout": "Twee tarieven beschikbaar. Kies het uwe in de volgende stap.",
     "reserve": "RESERVEREN",
     "arrivalsRule": "Verblijven starten op {{days}} · minimaal {{count}} nachten",
-    "nextArrivals": "Eerstvolgende beschikbare data"
+    "nextArrivals": "Eerstvolgende beschikbare data",
+    "directNote": "Directe prijs — geen servicekosten, beste prijs online"
   },
   "common": {
     "loading": "Laden…",
@@ -1163,7 +1164,8 @@
     "ourGuests": "ONZE GASTEN",
     "whatTheyRemember": "Wat ze zich het meest herinneren.",
     "proofStrip": "4.8/5 bij meer dan 2.000 gastbeoordelingen",
-    "verifiedGuest": "Geverifieerde gast"
+    "verifiedGuest": "Geverifieerde gast",
+    "verifiedNote": "Alle reviews komen van voltooide verblijven, verzameld via onze boekingskanalen."
   },
   "amenity": {
     "outdoorPool": "Buiten & Zwembad",
@@ -1361,7 +1363,11 @@
     "secureBooking": "Veilig boeken",
     "bestRate": "Beste prijs gegarandeerd",
     "noBookingFees": "Geen boekingskosten",
-    "conciergeIncluded": "Concierge inbegrepen"
+    "conciergeIncluded": "Concierge inbegrepen",
+    "directHeadline": "Waarom direct boeken",
+    "bestRateTeeth": "Beste prijs online — vindt u deze data goedkoper op Airbnb of Booking.com, dan passen wij de prijs aan",
+    "noServiceFees": "Geen servicekosten — OTA’s rekenen 12–18% extra bij het afrekenen; hier is de prijs de prijs",
+    "conciergeWhatsapp": "WhatsApp-concierge vóór, tijdens en na uw verblijf"
   },
   "bookingStatus": {
     "confirmed": "Bevestigd",
@@ -1669,5 +1675,10 @@
     "arrivalAirport": "Aankomstluchthaven",
     "perCleaning": "per schoonmaak",
     "perPetStay": "per huisdier · verblijf"
+  },
+  "host": {
+    "hostedBy": "Uw hosts: Ricardo & het Portugal Active-team",
+    "basedIn": "Lokaal team in Viana do Castelo",
+    "meetUs": "Maak kennis met ons"
   }
 }

@@ -333,7 +333,8 @@
     "tariffInCheckout": "Duas tarifas disponíveis. Escolhe a sua no próximo passo.",
     "reserve": "RESERVAR",
     "arrivalsRule": "Estadias começam {{days}} · mínimo {{count}} noites",
-    "nextArrivals": "Próximas datas disponíveis"
+    "nextArrivals": "Próximas datas disponíveis",
+    "directNote": "Preço direto — sem taxas de serviço, melhor preço online"
   },
   "common": {
     "loading": "A carregar…",
@@ -1163,7 +1164,8 @@
     "verifiedGuest": "Hóspede verificado",
     "ourGuests": "OS NOSSOS HÓSPEDES",
     "whatTheyRemember": "O que mais recordam.",
-    "proofStrip": "4.8/5 em mais de 2.000 avaliações de hóspedes"
+    "proofStrip": "4.8/5 em mais de 2.000 avaliações de hóspedes",
+    "verifiedNote": "Todas as reviews são de estadias concluídas, recolhidas pelos nossos canais de reserva."
   },
   "amenity": {
     "outdoorPool": "Exterior e Piscina",
@@ -1361,7 +1363,11 @@
     "secureBooking": "Reserva segura",
     "bestRate": "Melhor preço garantido",
     "noBookingFees": "Sem taxas de reserva",
-    "conciergeIncluded": "Concierge incluído"
+    "conciergeIncluded": "Concierge incluído",
+    "directHeadline": "Porquê reservar direto",
+    "bestRateTeeth": "Melhor preço online — encontre estas datas mais baratas no Airbnb ou Booking.com e igualamos o preço",
+    "noServiceFees": "Sem taxas de serviço — as OTAs somam 12–18% no checkout; aqui o preço é o preço",
+    "conciergeWhatsapp": "Concierge por WhatsApp antes, durante e depois da estadia"
   },
   "bookingStatus": {
     "confirmed": "Confirmada",
@@ -1669,5 +1675,10 @@
     "arrivalAirport": "Aeroporto de chegada",
     "perCleaning": "por limpeza",
     "perPetStay": "por animal · estadia"
+  },
+  "host": {
+    "hostedBy": "Anfitriões: Ricardo & a equipa Portugal Active",
+    "basedIn": "Equipa local em Viana do Castelo",
+    "meetUs": "Conheça-nos"
   }
 }

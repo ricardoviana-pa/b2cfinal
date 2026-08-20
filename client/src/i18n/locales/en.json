@@ -333,7 +333,8 @@
     "tariffInCheckout": "Two rates available. Choose yours in the next step.",
     "reserve": "RESERVE",
     "arrivalsRule": "Stays start on {{days}} · minimum {{count}} nights",
-    "nextArrivals": "Next available dates"
+    "nextArrivals": "Next available dates",
+    "directNote": "Direct price — no service fees, best rate online"
   },
   "common": {
     "loading": "Loading…",
@@ -1133,7 +1134,8 @@
     "verifiedGuest": "Verified guest",
     "ourGuests": "OUR GUESTS",
     "whatTheyRemember": "What they remember most.",
-    "proofStrip": "4.8/5 across 2,000+ guest reviews"
+    "proofStrip": "4.8/5 across 2,000+ guest reviews",
+    "verifiedNote": "All reviews are from completed stays, collected through our booking channels."
   },
   "experience": {
     "from": "From",
@@ -1361,7 +1363,11 @@
     "secureBooking": "Secure booking",
     "bestRate": "Best rate guaranteed",
     "noBookingFees": "No booking fees",
-    "conciergeIncluded": "Concierge included"
+    "conciergeIncluded": "Concierge included",
+    "directHeadline": "Why book direct",
+    "bestRateTeeth": "Best rate online — find these dates cheaper on Airbnb or Booking.com and we match the price",
+    "noServiceFees": "No service fees — OTAs add 12–18% at checkout; here the price is the price",
+    "conciergeWhatsapp": "WhatsApp concierge before, during and after your stay"
   },
   "bookingStatus": {
     "confirmed": "Confirmed",
@@ -1669,5 +1675,10 @@
     "arrivalAirport": "Arrival airport",
     "perCleaning": "per cleaning",
     "perPetStay": "per pet · stay"
+  },
+  "host": {
+    "hostedBy": "Hosted by Ricardo & the Portugal Active team",
+    "basedIn": "Local team in Viana do Castelo",
+    "meetUs": "Meet us"
   }
 }

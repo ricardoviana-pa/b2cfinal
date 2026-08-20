@@ -333,7 +333,8 @@
     "tariffInCheckout": "Kaksi hintaa saatavilla. Valitse omasi seuraavassa vaiheessa.",
     "reserve": "VARAA",
     "arrivalsRule": "Oleskelut alkavat {{days}} · vähintään {{count}} yötä",
-    "nextArrivals": "Seuraavat vapaat päivät"
+    "nextArrivals": "Seuraavat vapaat päivät",
+    "directNote": "Suora hinta — ei palvelumaksuja, paras hinta verkossa"
   },
   "common": {
     "loading": "Ladataan…",
@@ -1163,7 +1164,8 @@
     "ourGuests": "VIERAAMME",
     "whatTheyRemember": "Mitä he muistavat eniten.",
     "proofStrip": "4.8/5 yli 2 000 vierasarvostelua",
-    "verifiedGuest": "Vahvistettu vieras"
+    "verifiedGuest": "Vahvistettu vieras",
+    "verifiedNote": "Kaikki arvostelut ovat toteutuneista oleskeluista, kerätty varauskanaviemme kautta."
   },
   "amenity": {
     "outdoorPool": "Ulkotilat ja uima-allas",
@@ -1361,7 +1363,11 @@
     "secureBooking": "Turvallinen varaus",
     "bestRate": "Paras hinta taattu",
     "noBookingFees": "Ei varausmaksuja",
-    "conciergeIncluded": "Concierge sisältyy"
+    "conciergeIncluded": "Concierge sisältyy",
+    "directHeadline": "Miksi varata suoraan",
+    "bestRateTeeth": "Paras hinta verkossa — jos löydätte nämä päivät halvemmalla Airbnb:stä tai Booking.comista, vastaamme hintaan",
+    "noServiceFees": "Ei palvelumaksuja — OTA:t lisäävät 12–18 % kassalla; täällä hinta on hinta",
+    "conciergeWhatsapp": "WhatsApp-concierge ennen oleskelua, sen aikana ja sen jälkeen"
   },
   "bookingStatus": {
     "confirmed": "Vahvistettu",
@@ -1669,5 +1675,10 @@
     "arrivalAirport": "Saapumislentokenttä",
     "perCleaning": "per siivous",
     "perPetStay": "per lemmikki · majoitus"
+  },
+  "host": {
+    "hostedBy": "Isäntinänne Ricardo & Portugal Active -tiimi",
+    "basedIn": "Paikallinen tiimi Viana do Castelossa",
+    "meetUs": "Tutustu meihin"
   }
 }
