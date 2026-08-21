@@ -1322,8 +1322,9 @@ export default function CheckoutPage() {
                 )}
               </div>
 
-              {/* Rate plan choice */}
-              {(quote?.ratePlanOptions?.length ?? 0) > 1 && (
+              {/* Rate plan choice — só depois do email (comportamento original:
+                  primeiro o contacto, depois a escolha de tarifa) */}
+              {isValidEmail(email) && (quote?.ratePlanOptions?.length ?? 0) > 1 && (
                 <div className="space-y-2">
                   <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-pa-gold">{t("bookingWidget.ratePlan", "Rate plan")}</p>
                   {(() => { const maxTotal = Math.max(...quote!.ratePlanOptions!.map(o => o.total)); return quote!.ratePlanOptions!.map((opt) => {
