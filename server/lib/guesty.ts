@@ -620,7 +620,10 @@ function quoteMoneyToCents(quote: any, checkIn: string, checkOut: string): Money
     [cleaningItem?.amount, nestedMoney.fareCleaning, nestedMoney.cleaningFee, nestedMoney.cleaning],
     0
   );
-  const serviceFee = firstPositiveNumber([nestedMoney.totalFees, nestedMoney.serviceFee], 0);
+  // Direct bookings carry no guest service fee; Guesty's totalFees bucket is
+  // just the cleaning fee restated, so falling back to it double-labels
+  // cleaning as a "service fee" the brand promises not to charge.
+  const serviceFee = firstPositiveNumber([nestedMoney.serviceFee], 0);
   const subtotal = firstPositiveNumber(
     [nestedMoney.subTotalPrice, nestedMoney.subtotalPrice, nestedMoney.subtotal, baseRent + cleaningFee + serviceFee],
     baseRent + cleaningFee + serviceFee
@@ -630,11 +633,21 @@ function quoteMoneyToCents(quote: any, checkIn: string, checkOut: string): Money
     subtotal + touristTaxCents / 100 + vatCents / 100
   );
 
-  const baseRentCents = toCents(baseRent);
+  let baseRentCents = toCents(baseRent);
   const cleaningFeeCents = toCents(cleaningFee);
   const serviceFeeCents = toCents(serviceFee);
   const totalBeforeTaxCents = toCents(subtotal);
   const totalAfterTaxCents = toCents(total);
+
+  // Guesty mixes fields across rate plans (e.g. accommodation fare from the
+  // refundable plan next to the non-refundable total), so the parts can
+  // disagree with the all-in total the guest actually pays. The total is
+  // authoritative — when the parts drift by more than rounding, rebuild the
+  // accommodation line from it so every displayed breakdown sums correctly.
+  const partsSum = baseRentCents + cleaningFeeCents + serviceFeeCents + touristTaxCents + vatCents;
+  if (totalAfterTaxCents > 0 && Math.abs(partsSum - totalAfterTaxCents) > 200) {
+    baseRentCents = Math.max(0, totalAfterTaxCents - cleaningFeeCents - serviceFeeCents - touristTaxCents - vatCents);
+  }
 
   const safeBase = nights > 0 ? baseRentCents : 0;
   return {
