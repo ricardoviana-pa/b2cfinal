@@ -145,15 +145,17 @@ export const CHECKOUT_EXTRAS: CheckoutExtra[] = [
   { sku: "personal-trainer", chapter: "wellness", pricingModel: "per_person_per_unit", fulfillment: "needs_confirmation", unitPrice: 55, baseRank: 42 },
 
   // ── Capítulo 05 · Experiências ── única zona fotográfica (2.1 §3.4): fotos
-  // do domínio próprio; preços "desde" reais de services.json. hike-dive e
-  // bike-tour não têm asset aprovado → sem photo → não entram nos 3 cards.
+  // do domínio próprio ou do CDN do Bókun (as mesmas das páginas do site);
+  // preços "desde" reais de services.json. Todas com foto desde 21 ago.
   { sku: "exp-sup", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 45, photo: "/experiences/sup-river.webp", baseRank: 50 },
   { sku: "exp-canyoning", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 65, photo: "/experiences/canyoning/01.webp", baseRank: 51 },
   { sku: "exp-ebike", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 55, photo: "/experiences/ebike-tours/cover.webp", baseRank: 52 },
   { sku: "exp-horseback", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 75, photo: "/experiences/horseback-riding/cover.webp", baseRank: 53 },
-  { sku: "exp-buggy", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 120, baseRank: 54 },
-  { sku: "exp-hikedive", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 95, baseRank: 55 },
-  { sku: "exp-biketour", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 45, baseRank: 56 },
+  // Fotos do buggy e do hike & dive: as mesmas que as páginas do site usam
+  // (CDN do Bókun — permitido pela política 2.1 §4). Bike-tour removido do
+  // catálogo a pedido do Ricardo (21 ago).
+  { sku: "exp-buggy", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 120, photo: "https://imgcdn.bokun.tools/fe21e5fd-756c-4ca1-8a66-a0c9eac19620.jpg?w=660&h=660", baseRank: 54 },
+  { sku: "exp-hikedive", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 95, photo: "https://imgcdn.bokun.tools/0989ed3e-d323-472f-814c-b9adc94e34d1.jpg?w=660&h=660", baseRank: 55 },
 ];
 
 /**
@@ -177,7 +179,7 @@ export interface CurationContext {
 const COASTAL = new Set(["minho", "porto", "lisbon", "algarve", "viana-do-castelo", "caminha", "esposende"]);
 /** Experiências de água vs terra, para a regra costeira/interior. */
 const WATER_EXP = new Set(["exp-sup", "exp-hikedive", "exp-canyoning"]);
-const LAND_EXP = new Set(["exp-ebike", "exp-horseback", "exp-biketour", "exp-buggy"]);
+const LAND_EXP = new Set(["exp-ebike", "exp-horseback", "exp-buggy"]);
 
 export interface CuratedExtra extends CheckoutExtra {
   /** ranking final após regras (menor = mais acima) */
