@@ -1692,11 +1692,8 @@
     "aGuests": "{{name}} accueille jusqu’à {{guests}} personnes dans {{bedrooms}} chambres avec {{bathrooms}} salles de bain.",
     "qTimes": "À quelle heure sont l’arrivée et le départ ?",
     "aTimes": "Arrivée à partir de {{checkIn}} et départ avant {{checkOut}}. Des horaires flexibles peuvent souvent être organisés avec notre concierge.",
-    "qPool": "{{name}} dispose-t-il d’une piscine ?",
-    "aPoolHeated": "Oui — {{name}} dispose d’une piscine chauffée à usage privé des hôtes.",
-    "aPool": "Oui — {{name}} dispose d’une piscine privée réservée aux hôtes.",
     "qMin": "Quel est le séjour minimum ?",
-    "aMin": "Le séjour minimum est de {{count}} nuits la majeure partie de l’année. En juillet et août, les séjours vont du samedi au samedi avec un minimum de 7 nuits — le calendrier affiche les dates d’arrivée disponibles.",
+    "aMin": "Le séjour minimum varie selon la saison — le calendrier indique la durée exacte pour vos dates. En juillet et août, les séjours vont du samedi au samedi avec un minimum de 7 nuits.",
     "qDirect": "Pourquoi réserver directement avec Portugal Active ?",
     "aDirect": "Réserver en direct garantit le meilleur tarif en ligne sans frais de service OTA, un concierge WhatsApp dédié et une équipe locale qui gère la maison de bout en bout."
   },

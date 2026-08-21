@@ -1185,20 +1185,17 @@ export default function BookingWidget({
               </div>
             </div>
 
-            {/* ── Rate Plan Options ── */}
-            {checkoutV2Active && quote?.ratePlanOptions && quote.ratePlanOptions.length > 1 && (
-              <p className="text-[11.5px] text-black/45 flex items-center gap-1.5">
-                <Check className="w-3 h-3 shrink-0" />
-                {t("bookingWidget.tariffInCheckout", "Two rates available. Choose yours in the next step.")}
-              </p>
-            )}
-            {!checkoutV2Active && quote?.ratePlanOptions && quote.ratePlanOptions.length > 1 && (() => {
+            {/* ── Rate Plan Options — always visible when there is a real
+                 choice; selection updates the totals and flows into the
+                 checkout intent (selectedRatePlanId ?? default). ── */}
+            {quote?.ratePlanOptions && quote.ratePlanOptions.length > 1 && (() => {
               const maxTotal = Math.max(...quote.ratePlanOptions!.map(o => o.total));
               return (
                 <div className="space-y-2">
                   <p className="text-[11px] font-semibold tracking-[0.06em] uppercase text-black/30">{t("bookingWidget.ratePlan")}</p>
                   {quote.ratePlanOptions!.map(opt => {
-                    const isSelected = selectedRatePlanId === opt.ratePlanId;
+                    // No explicit pick yet → highlight the quote's default plan
+                    const isSelected = (selectedRatePlanId ?? quote.ratePlanId) === opt.ratePlanId;
                     const savings = maxTotal - opt.total;
                     // Plans are collapsed to exactly one refundable + one non-refundable
                     // (pickTwoRatePlans), so the label comes from the bucket — never the

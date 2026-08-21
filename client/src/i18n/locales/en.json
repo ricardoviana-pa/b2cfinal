@@ -1692,11 +1692,8 @@
     "aGuests": "{{name}} sleeps up to {{guests}} guests across {{bedrooms}} bedrooms with {{bathrooms}} bathrooms.",
     "qTimes": "What time are check-in and check-out?",
     "aTimes": "Check-in from {{checkIn}} and check-out by {{checkOut}}. Flexible times can often be arranged with our concierge.",
-    "qPool": "Does {{name}} have a pool?",
-    "aPoolHeated": "Yes — {{name}} has a heated pool for private use of guests.",
-    "aPool": "Yes — {{name}} has a private pool exclusively for guests.",
     "qMin": "What is the minimum stay?",
-    "aMin": "The minimum stay is {{count}} nights for most of the year. In July and August stays run Saturday to Saturday with a 7-night minimum — the calendar shows the available arrival dates.",
+    "aMin": "The minimum stay varies by season — the calendar shows the exact requirement for your dates. In July and August stays run Saturday to Saturday with a 7-night minimum.",
     "qDirect": "Why book directly with Portugal Active?",
     "aDirect": "Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end."
   },

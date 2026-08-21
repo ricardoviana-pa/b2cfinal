@@ -1692,11 +1692,8 @@
     "aGuests": "{{name}} aloja hasta {{guests}} huéspedes en {{bedrooms}} dormitorios con {{bathrooms}} baños.",
     "qTimes": "¿A qué hora son el check-in y el check-out?",
     "aTimes": "Check-in desde las {{checkIn}} y check-out hasta las {{checkOut}}. A menudo pueden acordarse horarios flexibles con nuestro conserje.",
-    "qPool": "¿Tiene piscina {{name}}?",
-    "aPoolHeated": "Sí — {{name}} cuenta con piscina climatizada de uso privado.",
-    "aPool": "Sí — {{name}} cuenta con piscina privada exclusiva para huéspedes.",
     "qMin": "¿Cuál es la estancia mínima?",
-    "aMin": "La estancia mínima es de {{count}} noches la mayor parte del año. En julio y agosto las estancias van de sábado a sábado con un mínimo de 7 noches — el calendario muestra las fechas de llegada disponibles.",
+    "aMin": "La estancia mínima varía según la temporada — el calendario muestra el requisito exacto para tus fechas. En julio y agosto las estancias van de sábado a sábado con un mínimo de 7 noches.",
     "qDirect": "¿Por qué reservar directamente con Portugal Active?",
     "aDirect": "Reservar directo garantiza el mejor precio online sin tasas de servicio de las OTA, un conserje dedicado por WhatsApp y un equipo local que gestiona la casa de principio a fin."
   },

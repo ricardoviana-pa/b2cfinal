@@ -1692,11 +1692,8 @@
     "aGuests": "{{name}} rymmer upp till {{guests}} gäster i {{bedrooms}} sovrum med {{bathrooms}} badrum.",
     "qTimes": "Vilka tider gäller för in- och utcheckning?",
     "aTimes": "Incheckning från {{checkIn}} och utcheckning senast {{checkOut}}. Flexibla tider kan ofta ordnas med vår concierge.",
-    "qPool": "Har {{name}} pool?",
-    "aPoolHeated": "Ja — {{name}} har en uppvärmd pool för gästernas privata bruk.",
-    "aPool": "Ja — {{name}} har en privat pool exklusivt för gästerna.",
     "qMin": "Vad är minsta vistelse?",
-    "aMin": "Minsta vistelse är {{count}} nätter större delen av året. I juli och augusti löper vistelser lördag till lördag med minst 7 nätter — kalendern visar tillgängliga ankomstdatum.",
+    "aMin": "Minsta vistelse varierar med säsongen — kalendern visar det exakta kravet för dina datum. I juli och augusti löper vistelser från lördag till lördag med minst 7 nätter.",
     "qDirect": "Varför boka direkt hos Portugal Active?",
     "aDirect": "Direktbokning ger bästa pris online utan OTA-avgifter, en egen WhatsApp-concierge och ett lokalt team som driver huset från början till slut."
   },

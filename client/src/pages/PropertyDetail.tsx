@@ -616,25 +616,13 @@ export default function PropertyDetail() {
         }),
       });
     }
-    const flatAmenities = Object.values((property.amenities || {}) as Record<string, string[]>)
-      .flatMap(v => (Array.isArray(v) ? v : []));
-    const pool = flatAmenities.find(a => /pool/i.test(a));
-    if (pool) {
-      out.push({
-        q: t('pdpFaq.qPool', 'Does {{name}} have a pool?', { name }),
-        a: /heated/i.test(pool)
-          ? t('pdpFaq.aPoolHeated', 'Yes — {{name}} has a heated pool for private use of guests.', { name })
-          : t('pdpFaq.aPool', 'Yes — {{name}} has a private pool exclusively for guests.', { name }),
-      });
-    }
-    if ((property as any).minNights) {
-      out.push({
-        q: t('pdpFaq.qMin', 'What is the minimum stay?'),
-        a: t('pdpFaq.aMin', 'The minimum stay is {{count}} nights for most of the year. In July and August stays run Saturday to Saturday with a 7-night minimum — the calendar shows the available arrival dates.', {
-          count: (property as any).minNights,
-        }),
-      });
-    }
+    // No pool question (redundant with the amenities list) and no hardcoded
+    // minimum-night count — the synced terms value drifts from the calendar,
+    // which is the only source that is right for every season.
+    out.push({
+      q: t('pdpFaq.qMin', 'What is the minimum stay?'),
+      a: t('pdpFaq.aMin', 'The minimum stay varies by season — the calendar shows the exact requirement for your dates. In July and August stays run Saturday to Saturday with a 7-night minimum.'),
+    });
     out.push({
       q: t('pdpFaq.qDirect', 'Why book directly with Portugal Active?'),
       a: t('pdpFaq.aDirect', 'Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end.'),
@@ -1400,33 +1388,6 @@ export default function PropertyDetail() {
                 </section>
               )}
 
-              {/* Location — the OTA listing of this same home shows a map; a
-                  guest comparing tabs shouldn't find ours blank. Approximate
-                  pin (3 decimals ≈ 100 m) — exact address after booking. */}
-              {(property as any).address?.lat && (property as any).address?.lng && (
-                <section className="py-6 lg:py-8 border-t border-[#E8E4DC]">
-                  <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-1">
-                    {t('location.title', 'Location')}
-                  </h2>
-                  <p className="text-[13px] text-[#726D63] mb-4">
-                    {property.locality}
-                    {destName ? `, ${destName}` : ''} · {t('location.approxNote', 'Approximate area — the exact address is shared after booking')}
-                    {(property as any).licenseNumber && (
-                      <> · {t('location.alLicense', 'AL registration {{number}}', { number: (property as any).licenseNumber })}</>
-                    )}
-                  </p>
-                  <div className="relative overflow-hidden rounded-sm border border-[#E8E4DC]" style={{ aspectRatio: '16/7' }}>
-                    <iframe
-                      title={`${displayName} — ${t('location.title', 'Location')}`}
-                      src={`https://www.google.com/maps?q=${Number((property as any).address.lat).toFixed(3)},${Number((property as any).address.lng).toFixed(3)}&z=12&output=embed`}
-                      className="absolute inset-0 w-full h-full"
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                    />
-                  </div>
-                </section>
-              )}
-
               {/* Good to know — the practical questions a guest actually asks
                   before paying four figures, answered from the home's own data.
                   Mirrors into FAQPage JSON-LD (see propertyGraph) so the same
@@ -1567,10 +1528,17 @@ export default function PropertyDetail() {
                 </section>
               )}
 
-              {/* 6. Location map */}
+              {/* 6. Location map — approximate pin (3 decimals ≈ 100 m, z=12):
+                  the exact address is only shared after booking. */}
               <section>
                 <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-2">{t('propertyDetail.locationTitle', 'Location')}</h2>
-                <p className="text-[13px] font-medium text-[#8B7355] mb-4">{property.locality}</p>
+                <p className="text-[13px] text-[#726D63] mb-4">
+                  <span className="font-medium text-[#8B7355]">{property.locality}</span>
+                  {' · '}{t('location.approxNote', 'Approximate area — the exact address is shared after booking')}
+                  {(property as any).licenseNumber && (
+                    <> · {t('location.alLicense', 'AL registration {{number}}', { number: (property as any).licenseNumber })}</>
+                  )}
+                </p>
                 <div className="rounded-xl overflow-hidden border border-[#E8E4DC]">
                   <iframe
                     title={`${property.name} — ${property.locality}`}
@@ -1579,7 +1547,7 @@ export default function PropertyDetail() {
                     referrerPolicy="no-referrer-when-downgrade"
                     src={
                       property.address?.lat && property.address?.lng
-                        ? `https://maps.google.com/maps?q=${property.address.lat},${property.address.lng}&z=15&output=embed`
+                        ? `https://maps.google.com/maps?q=${Number(property.address.lat).toFixed(3)},${Number(property.address.lng).toFixed(3)}&z=12&output=embed`
                         : `https://maps.google.com/maps?q=${encodeURIComponent(`${property.locality}, Portugal`)}&z=13&output=embed`
                     }
                     allowFullScreen
