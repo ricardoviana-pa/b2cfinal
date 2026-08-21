@@ -187,7 +187,8 @@
     "prevPhoto": "Edellinen kuva",
     "nextPhoto": "Seuraava kuva",
     "sleepsUpTo": "Majoittaa enintään {{count}} vierasta",
-    "checkUnitAvailability": "Katso yksiköiden saatavuus"
+    "checkUnitAvailability": "Katso yksiköiden saatavuus",
+    "petFriendly": "Lemmikit sallittu"
   },
   "booking": {
     "summary": "Varauksen yhteenveto",
@@ -1695,7 +1696,9 @@
     "qMin": "Mikä on vähimmäisoleskelu?",
     "aMin": "Vähimmäisyöpymisaika vaihtelee sesongin mukaan — kalenteri näyttää tarkan vaatimuksen valitsemillesi päiville. Heinä- ja elokuussa majoitukset ovat lauantaista lauantaihin, vähintään 7 yötä.",
     "qDirect": "Miksi varata suoraan Portugal Activelta?",
-    "aDirect": "Suora varaus takaa parhaan verkkohinnan ilman OTA-palvelumaksuja, oman WhatsApp-conciergen ja paikallisen tiimin, joka hoitaa talon alusta loppuun."
+    "aDirect": "Suora varaus takaa parhaan verkkohinnan ilman OTA-palvelumaksuja, oman WhatsApp-conciergen ja paikallisen tiimin, joka hoitaa talon alusta loppuun.",
+    "qPets": "Voinko tuoda lemmikkini?",
+    "aPets": "Kyllä — {{name}} toivottaa lemmikit tervetulleiksi. Kerro siitä varatessasi; pieni lisämaksu voi olla mahdollinen."
   },
   "collections": {
     "eyebrow": "Kuratoitu kokoelma",

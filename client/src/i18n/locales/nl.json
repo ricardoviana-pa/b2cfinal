@@ -187,7 +187,8 @@
     "prevPhoto": "Vorige foto",
     "nextPhoto": "Volgende foto",
     "sleepsUpTo": "Biedt plaats aan {{count}} gasten",
-    "checkUnitAvailability": "Bekijk beschikbaarheid per unit"
+    "checkUnitAvailability": "Bekijk beschikbaarheid per unit",
+    "petFriendly": "Huisdieren welkom"
   },
   "booking": {
     "summary": "Boekingsoverzicht",
@@ -1695,7 +1696,9 @@
     "qMin": "Wat is het minimale verblijf?",
     "aMin": "Het minimumverblijf varieert per seizoen — de kalender toont de exacte vereiste voor jouw data. In juli en augustus lopen verblijven van zaterdag tot zaterdag met een minimum van 7 nachten.",
     "qDirect": "Waarom direct bij Portugal Active boeken?",
-    "aDirect": "Direct boeken betekent de beste prijs online zonder OTA-servicekosten, een eigen WhatsApp-concierge en een lokaal team dat het huis van a tot z beheert."
+    "aDirect": "Direct boeken betekent de beste prijs online zonder OTA-servicekosten, een eigen WhatsApp-concierge en een lokaal team dat het huis van a tot z beheert.",
+    "qPets": "Mag ik mijn huisdier meenemen?",
+    "aPets": "Ja — {{name}} verwelkomt huisdieren. Laat het ons weten bij het boeken; er kan een kleine toeslag gelden."
   },
   "collections": {
     "eyebrow": "Samengestelde collectie",

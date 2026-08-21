@@ -754,6 +754,11 @@ function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
       ? { q: `Quantos hóspedes pode receber ${name}?`, a: `${name} recebe até ${prop.maxGuests} hóspedes em ${prop.bedrooms} quartos com ${prop.bathrooms} casas de banho.` }
       : { q: `How many guests can ${name} sleep?`, a: `${name} sleeps up to ${prop.maxGuests} guests across ${prop.bedrooms} bedrooms with ${prop.bathrooms} bathrooms.` });
   }
+  if (prop.petsAllowed === true) {
+    faq.push(pt
+      ? { q: 'Posso levar o meu animal de estimação?', a: `Sim — ${name} aceita animais de estimação. Avisa-nos ao reservar; pode aplicar-se uma pequena taxa adicional.` }
+      : { q: 'Can I bring my pet?', a: `Yes — ${name} welcomes pets. Let us know when you book; a small additional fee may apply.` });
+  }
   // No hardcoded night count — the synced terms value drifts from the
   // calendar, which is the only per-season source of truth.
   faq.push(pt

@@ -187,7 +187,8 @@
     "prevPhoto": "Föregående bild",
     "nextPhoto": "Nästa bild",
     "sleepsUpTo": "Plats för upp till {{count}} gäster",
-    "checkUnitAvailability": "Se enheternas tillgänglighet"
+    "checkUnitAvailability": "Se enheternas tillgänglighet",
+    "petFriendly": "Husdjur välkomna"
   },
   "booking": {
     "summary": "Bokningsöversikt",
@@ -1695,7 +1696,9 @@
     "qMin": "Vad är minsta vistelse?",
     "aMin": "Minsta vistelse varierar med säsongen — kalendern visar det exakta kravet för dina datum. I juli och augusti löper vistelser från lördag till lördag med minst 7 nätter.",
     "qDirect": "Varför boka direkt hos Portugal Active?",
-    "aDirect": "Direktbokning ger bästa pris online utan OTA-avgifter, en egen WhatsApp-concierge och ett lokalt team som driver huset från början till slut."
+    "aDirect": "Direktbokning ger bästa pris online utan OTA-avgifter, en egen WhatsApp-concierge och ett lokalt team som driver huset från början till slut.",
+    "qPets": "Kan jag ta med mitt husdjur?",
+    "aPets": "Ja — {{name}} välkomnar husdjur. Meddela oss vid bokningen; en mindre avgift kan tillkomma."
   },
   "collections": {
     "eyebrow": "Kurerad kollektion",

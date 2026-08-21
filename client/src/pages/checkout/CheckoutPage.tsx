@@ -155,17 +155,36 @@ function useCountUp(value: number, duration = 400): number {
 }
 
 /** Máximo 2 tarifas visíveis: a flexível e a não reembolsável mais baratas. */
+const POLICY_REFUND_WINDOW_DAYS: Record<string, number> = {
+  flexible: 1,
+  moderate: 14,
+  firm: 30,
+  strict: 60,
+};
+
+/** A pricier refundable plan is only offered while its refund window is still
+ *  open — inside the window both plans refund nothing (see BookingWidget). */
+function flexStillRefundable(o: { cancellationPolicy?: string[] }, checkIn?: string): boolean {
+  const code = (o.cancellationPolicy?.[0] || "").toLowerCase();
+  const days = POLICY_REFUND_WINDOW_DAYS[code];
+  if (!days || !checkIn) return true;
+  const deadline = new Date(`${checkIn}T12:00:00`);
+  deadline.setDate(deadline.getDate() - days);
+  return deadline.getTime() > Date.now();
+}
+
 function collapseRatePlans<T extends { name: string; total: number; cancellationPolicy?: string[] }>(
   options?: T[],
+  checkIn?: string,
 ): T[] | undefined {
-  if (!options || options.length <= 2) return options;
+  if (!options || !options.length) return options;
   const cheapest = (arr: T[]) => [...arr].sort((a, b) => a.total - b.total)[0];
   const nonRef = options.filter((o) => isNonRefundableOption(o));
-  const flex = options.filter((o) => !isNonRefundableOption(o));
+  const flex = options.filter((o) => !isNonRefundableOption(o) && flexStillRefundable(o, checkIn));
   const out: T[] = [];
   if (flex.length) out.push(cheapest(flex));
   if (nonRef.length) out.push(cheapest(nonRef));
-  return out.length ? out : options.slice(0, 2);
+  return out.length ? out : [cheapest(options)];
 }
 
 function isNonRefundableOption(o: { name: string; cancellationPolicy?: string[] }): boolean {
@@ -424,7 +443,7 @@ export default function CheckoutPage() {
           // Colapsa a 2 tarifas (1 flexível + 1 não reembolsável, as mais
           // baratas de cada balde) — o Guesty pode devolver variantes
           // duplicadas e o requote mostrava-as todas (bug 12 jul)
-          ratePlanOptions: collapseRatePlans((d as any).ratePlanOptions),
+          ratePlanOptions: collapseRatePlans((d as any).ratePlanOptions, ci),
         };
         // Re-resolve the plan selection: ids can change between quotes
         const stillThere = fresh.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
@@ -459,7 +478,7 @@ export default function CheckoutPage() {
                 taxesAndFees: r.pricing.taxesAndFees ?? 0,
                 total: r.total,
                 couponCode: r.coupons?.[0]?.code || undefined,
-                ratePlanOptions: collapseRatePlans(r.ratePlanOptions as any),
+                ratePlanOptions: collapseRatePlans(r.ratePlanOptions as any, checkIn),
               };
               setQuote(withCoupon);
               syncIntent({ quote: withCoupon });
@@ -561,7 +580,7 @@ export default function CheckoutPage() {
           // o quoteId mantém-se: preservar o relógio de expiração original
           quoteCreatedAt: quote?.quoteCreatedAt ?? Date.now(),
           couponCode: r.coupons?.[0]?.code || undefined,
-          ratePlanOptions: collapseRatePlans(r.ratePlanOptions as any),
+          ratePlanOptions: collapseRatePlans(r.ratePlanOptions as any, checkIn),
         };
         const stillThere = fresh.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
         setQuote(fresh);

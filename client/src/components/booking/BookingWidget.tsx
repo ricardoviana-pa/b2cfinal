@@ -146,11 +146,35 @@ function isNonRefundablePlan(o: RatePlanOption): boolean {
  *  a representative of each — cheapest non-refundable, and the best refundable
  *  (one explicitly named flexible/refundable, else cheapest) — ordered
  *  refundable first. Returns ≤2 items. */
-function pickTwoRatePlans(options?: RatePlanOption[]): RatePlanOption[] {
+/** Days before check-in until which the policy still refunds something. */
+const POLICY_REFUND_WINDOW_DAYS: Record<string, number> = {
+  flexible: 1,
+  moderate: 14,
+  firm: 30,
+  strict: 60,
+};
+
+/** A refundable plan is only worth paying more for while its refund window is
+ *  still open. Inside the window (e.g. strict = 60 days before check-in) both
+ *  plans are effectively non-refundable — offering a pricier "flexible" card
+ *  then is charging for nothing. Unknown policy codes are kept (benefit of
+ *  the doubt). */
+function flexStillRefundable(o: RatePlanOption, checkIn?: string): boolean {
+  const code = (o.cancellationPolicy?.[0] || '').toLowerCase();
+  const days = POLICY_REFUND_WINDOW_DAYS[code];
+  if (!days || !checkIn) return true;
+  const deadline = new Date(`${checkIn}T12:00:00`);
+  deadline.setDate(deadline.getDate() - days);
+  return deadline.getTime() > Date.now();
+}
+
+function pickTwoRatePlans(options?: RatePlanOption[], checkIn?: string): RatePlanOption[] {
   if (!options || options.length === 0) return [];
   const cheapest = (arr: RatePlanOption[]) => arr.slice().sort((a, b) => a.total - b.total)[0];
   const nonRefs = options.filter(isNonRefundablePlan);
-  const refunds = options.filter((o) => !isNonRefundablePlan(o));
+  const refunds = options.filter(
+    (o) => !isNonRefundablePlan(o) && flexStillRefundable(o, checkIn)
+  );
 
   const out: RatePlanOption[] = [];
   if (refunds.length) {
@@ -158,6 +182,8 @@ function pickTwoRatePlans(options?: RatePlanOption[]): RatePlanOption[] {
     out.push(named || cheapest(refunds));
   }
   if (nonRefs.length) out.push(cheapest(nonRefs));
+  // Every option expired-refundable and none non-refundable → keep cheapest.
+  if (!out.length) out.push(cheapest(options));
   return out;
 }
 
@@ -479,7 +505,7 @@ export default function BookingWidget({
         quoteCreatedAt: beQuoteId ? Date.now() : undefined,
         ratePlanId: (d as any).ratePlanId,
         // Collapse Guesty's messy plan list to exactly two: Flexible + Non-Refundable.
-        ratePlanOptions: pickTwoRatePlans((d as any).ratePlanOptions),
+        ratePlanOptions: pickTwoRatePlans((d as any).ratePlanOptions, checkIn),
       };
 
       setQuote(quoteData);

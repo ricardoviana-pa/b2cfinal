@@ -187,7 +187,8 @@
     "prevPhoto": "Photo précédente",
     "nextPhoto": "Photo suivante",
     "sleepsUpTo": "Jusqu'à {{count}} personnes",
-    "checkUnitAvailability": "Voir la disponibilité des unités"
+    "checkUnitAvailability": "Voir la disponibilité des unités",
+    "petFriendly": "Animaux acceptés"
   },
   "booking": {
     "summary": "Récapitulatif",
@@ -1695,7 +1696,9 @@
     "qMin": "Quel est le séjour minimum ?",
     "aMin": "Le séjour minimum varie selon la saison — le calendrier indique la durée exacte pour vos dates. En juillet et août, les séjours vont du samedi au samedi avec un minimum de 7 nuits.",
     "qDirect": "Pourquoi réserver directement avec Portugal Active ?",
-    "aDirect": "Réserver en direct garantit le meilleur tarif en ligne sans frais de service OTA, un concierge WhatsApp dédié et une équipe locale qui gère la maison de bout en bout."
+    "aDirect": "Réserver en direct garantit le meilleur tarif en ligne sans frais de service OTA, un concierge WhatsApp dédié et une équipe locale qui gère la maison de bout en bout.",
+    "qPets": "Puis-je venir avec mon animal ?",
+    "aPets": "Oui — {{name}} accepte les animaux. Prévenez-nous lors de la réservation ; un petit supplément peut s’appliquer."
   },
   "collections": {
     "eyebrow": "Collection organisée",

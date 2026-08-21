@@ -13,8 +13,8 @@ import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck,
   Sparkles, Gem, Clock, UtensilsCrossed, Headphones, Plus, X, AlertTriangle,
   Wifi, Tv, Coffee, Car, Waves, Wind, Shirt, Flame, TreePine, Mountain,
-  Sun, Monitor, Utensils, Sofa, ArrowRight, Lock, ShieldCheck, Bed, ChevronDown, type LucideIcon
-} from 'lucide-react';
+  Sun, Monitor, Utensils, Sofa, ArrowRight, Lock, ShieldCheck, Bed, ChevronDown, type LucideIcon, PawPrint,
+} from 'lucide-react';;
 const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 import productsData from '@/data/products.json';
 import destinationsData from '@/data/destinations.json';
@@ -616,6 +616,12 @@ export default function PropertyDetail() {
         }),
       });
     }
+    if ((property as any).petsAllowed) {
+      out.push({
+        q: t('pdpFaq.qPets', 'Can I bring my pet?'),
+        a: t('pdpFaq.aPets', 'Yes — {{name}} welcomes pets. Let us know when you book; a small additional fee may apply.', { name }),
+      });
+    }
     // No pool question (redundant with the amenities list) and no hardcoded
     // minimum-night count — the synced terms value drifts from the calendar,
     // which is the only source that is right for every season.
@@ -1207,6 +1213,7 @@ export default function PropertyDetail() {
               { icon: Bath, value: `${property.bathrooms} ${t('property.bathrooms')}` },
               ...(property.areaSquareFeet && property.areaSquareFeet > 0 ? [{ icon: MapPin, value: `${Math.round(property.areaSquareFeet * 0.0929)} m²` }] : []),
               ...((property.checkInTime || property.checkOutTime) ? [{ icon: Clock, value: `${property.checkInTime || '16:00'} / ${property.checkOutTime || '11:00'}` }] : []),
+              ...((property as any).petsAllowed ? [{ icon: PawPrint, value: t('property.petFriendly', 'Pet-friendly') }] : []),
             ].map((stat, i) => (
               <span key={i} className="inline-flex items-center gap-2 px-4 py-2 bg-[#F5F1EB] rounded-full text-[13px] text-[#6B6860]" style={{ fontWeight: 400 }}>
                 <stat.icon size={14} className="text-[#8B7355]" />

@@ -7,7 +7,7 @@
 import { useState, useCallback, useRef, useMemo } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Flame, Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Flame, Star, PawPrint } from 'lucide-react';
 import { formatEur, sanitizePropertyName } from '@/lib/format';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
@@ -169,6 +169,12 @@ export default function PropertyCard({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
+        {(property as any).petsAllowed && (
+          <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-[11px] font-medium text-[#6B6860] shadow-sm">
+            <PawPrint className="w-3 h-3 text-[#8B7355]" />
+            {t('property.petFriendly', 'Pet-friendly')}
+          </span>
+        )}
         <img
           src={optimizeGuestyImage(rawImages[currentImage], 1080)}
           srcSet={guestySrcSet(rawImages[currentImage], [400, 640, 768, 1080])}

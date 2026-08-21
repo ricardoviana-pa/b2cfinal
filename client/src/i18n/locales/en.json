@@ -187,7 +187,8 @@
     "bed": "bed",
     "nightPrice": "/ night",
     "sleepsUpTo": "Sleeps up to {{count}} guests",
-    "checkUnitAvailability": "See unit availability"
+    "checkUnitAvailability": "See unit availability",
+    "petFriendly": "Pet-friendly"
   },
   "booking": {
     "summary": "Booking Summary",
@@ -1695,7 +1696,9 @@
     "qMin": "What is the minimum stay?",
     "aMin": "The minimum stay varies by season — the calendar shows the exact requirement for your dates. In July and August stays run Saturday to Saturday with a 7-night minimum.",
     "qDirect": "Why book directly with Portugal Active?",
-    "aDirect": "Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end."
+    "aDirect": "Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end.",
+    "qPets": "Can I bring my pet?",
+    "aPets": "Yes — {{name}} welcomes pets. Let us know when you book; a small additional fee may apply."
   },
   "collections": {
     "eyebrow": "Curated collection",

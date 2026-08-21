@@ -187,7 +187,8 @@
     "bed": "cama",
     "nightPrice": "/ noite",
     "sleepsUpTo": "Aloja até {{count}} hóspedes",
-    "checkUnitAvailability": "Ver disponibilidade das unidades"
+    "checkUnitAvailability": "Ver disponibilidade das unidades",
+    "petFriendly": "Aceita animais"
   },
   "booking": {
     "summary": "Resumo da Reserva",
@@ -1695,7 +1696,9 @@
     "qMin": "Qual é a estadia mínima?",
     "aMin": "A estadia mínima varia com a época — o calendário mostra o requisito exato para as tuas datas. Em julho e agosto as estadias são de sábado a sábado com mínimo de 7 noites.",
     "qDirect": "Porquê reservar diretamente com a Portugal Active?",
-    "aDirect": "Reservar direto garante o melhor preço online sem taxas de serviço das OTAs, um concierge dedicado por WhatsApp e uma equipa local que opera a casa de ponta a ponta."
+    "aDirect": "Reservar direto garante o melhor preço online sem taxas de serviço das OTAs, um concierge dedicado por WhatsApp e uma equipa local que opera a casa de ponta a ponta.",
+    "qPets": "Posso levar o meu animal de estimação?",
+    "aPets": "Sim — {{name}} aceita animais de estimação. Avisa-nos ao reservar; pode aplicar-se uma pequena taxa adicional."
   },
   "collections": {
     "eyebrow": "Coleção curada",

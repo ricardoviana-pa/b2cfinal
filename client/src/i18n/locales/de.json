@@ -187,7 +187,8 @@
     "prevPhoto": "Vorheriges Foto",
     "nextPhoto": "Nächstes Foto",
     "sleepsUpTo": "Platz für bis zu {{count}} Gäste",
-    "checkUnitAvailability": "Verfügbarkeit der Einheiten ansehen"
+    "checkUnitAvailability": "Verfügbarkeit der Einheiten ansehen",
+    "petFriendly": "Haustiere willkommen"
   },
   "booking": {
     "summary": "Buchungsübersicht",
@@ -1695,7 +1696,9 @@
     "qMin": "Wie lang ist der Mindestaufenthalt?",
     "aMin": "Der Mindestaufenthalt variiert je nach Saison — der Kalender zeigt die genaue Anforderung für Ihre Daten. Im Juli und August laufen Aufenthalte von Samstag bis Samstag mit mindestens 7 Nächten.",
     "qDirect": "Warum direkt bei Portugal Active buchen?",
-    "aDirect": "Direkt buchen heißt: bester Online-Preis ohne OTA-Servicegebühren, ein eigener WhatsApp-Concierge und ein lokales Team, das das Haus von A bis Z betreibt."
+    "aDirect": "Direkt buchen heißt: bester Online-Preis ohne OTA-Servicegebühren, ein eigener WhatsApp-Concierge und ein lokales Team, das das Haus von A bis Z betreibt.",
+    "qPets": "Kann ich mein Haustier mitbringen?",
+    "aPets": "Ja — {{name}} heißt Haustiere willkommen. Sagen Sie uns bei der Buchung Bescheid; eine kleine Zusatzgebühr kann anfallen."
   },
   "collections": {
     "eyebrow": "Kuratierte Kollektion",
