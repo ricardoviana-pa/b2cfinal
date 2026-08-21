@@ -81,10 +81,12 @@ function policyToStrings(policy: unknown): string[] {
 
 function classifyRatePlan(name: string, cancellationPolicy?: unknown): "flexible" | "non_refundable" | "other" {
   const hay = `${name} ${policyToStrings(cancellationPolicy).join(" ")}`.toLowerCase();
-  if (hay.includes("non-refundable") || hay.includes("nao reembols") || hay.includes("não reembols")) {
+  // Live plan names: "Não-Reembolsável", "Reembolsável Star Low 26/27", … —
+  // match the negative with any separator before probing the positive terms.
+  if (/n[aã]o[\s-]*reembols|non[\s-]*refund/.test(hay)) {
     return "non_refundable";
   }
-  if (hay.includes("flex") || hay.includes("free cancellation") || hay.includes("cancel")) {
+  if (/flex|free cancellation|cancel|reembols|refund/.test(hay)) {
     return "flexible";
   }
   return "other";
