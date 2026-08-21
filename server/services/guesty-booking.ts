@@ -236,9 +236,9 @@ function parseBEQuote(quote: any, listingId: string, checkIn: string, checkOut: 
   // read as a bait-and-switch on a site whose promise is "best rate online".
   // The refundable option stays one tap away in the rate-plan step.
   const planIdx = rawOptions
-    .map((o, i) => i)
+    .map((_o: unknown, i: number) => i)
     .sort(
-      (a, b) =>
+      (a: number, b: number) =>
         (rawOptions[a].total - rawOptions[b].total) ||
         (planFriendliness(ratePlans[b]) - planFriendliness(ratePlans[a]))
     )[0];
