@@ -27,6 +27,10 @@ export async function createReservationViaOpenApi(input: CreateReservationInput)
   confirmationCode: string;
   status: string;
 }> {
+  // Nota 21 ago: reservar a partir da quote BE não é possível — o instant da
+  // BE API exige ccToken (cartão tokenizado no Guesty, que o 2b não tem) e o
+  // reservations-v3 não aceita quotes do Booking Engine. O preço do site é
+  // reposto via invoice item de service fee (addReservationServiceFee).
   const data = await guestyClient.request<any>("POST", "/v1/reservations-v3", {
     body: {
       listingId: input.listingId,
@@ -119,6 +123,43 @@ async function fetchReservationBalanceDue(reservationId: string): Promise<number
     }
   }
   return null;
+}
+
+/** Balance due (major units) de uma reserva, com retries para a janela de
+ *  eventual consistency pós-criação. Exportado para o settle medir o delta
+ *  entre o cobrado no site e o re-preço do Guesty. */
+export async function getReservationBalanceDue(reservationId: string): Promise<number | null> {
+  return fetchReservationBalanceDue(reservationId);
+}
+
+/**
+ * Repõe o preço do site na reserva: lança o delta (total cobrado − re-preço do
+ * Guesty) como invoice item de fee adicional. A categoria (por omissão
+ * SERVICE) tem o tratamento configurado no Guesty para NÃO entrar no split de
+ * owners — tal como a cleaning fee — e o Hostkit fatura o total certo.
+ * Fail-soft: em erro, o comportamento anterior (registo capado) mantém-se.
+ */
+export async function addReservationServiceFee(
+  reservationId: string,
+  amount: number,
+  title = "Service fee",
+): Promise<boolean> {
+  try {
+    await guestyClient.request<any>("POST", `/v1/invoice-items/reservation/${reservationId}`, {
+      body: {
+        title,
+        amount,
+        normalType: "AFE",
+        secondIdentifier: process.env.GUESTY_SERVICE_FEE_CATEGORY || "SERVICE",
+        description: "Taxa de servico do checkout do site (portugalactive.com)",
+      },
+    });
+    console.info(`[Guesty] invoice item "${title}" ${amount} adicionado a ${reservationId} — total do site reposto`);
+    return true;
+  } catch (err: any) {
+    console.warn(`[Guesty] invoice item falhou para ${reservationId} (${amount}): ${err?.message}`);
+    return false;
+  }
 }
 
 /** Confirmation code of an existing reservation (used to resume a settle that

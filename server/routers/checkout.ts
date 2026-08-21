@@ -387,9 +387,12 @@ export const checkoutRouter = router({
    * (região, noites, hóspedes, mês) — devolve os extras já ordenados, mais a
    * receção (escolha obrigatória) e o bloco "Incluído na sua estadia".
    */
-  /** 2b: cria o PI de plataforma com o total canonico (nunca valores do cliente) */
+  /** 2b: cria o PI de plataforma com o total canonico (nunca valores do cliente).
+   *  wallet=true (fila express): PI automatic_payment_methods — a sessao ECE e
+   *  automatic. Sem wallet (card form): PI types:[card] — a sessao e types.
+   *  Formatos trocados sao recusados pelo Stripe no confirm (vistos 16 e 21 ago). */
   createCardCharge: publicProcedure
-    .input(z.object({ intentId: z.string().uuid() }))
+    .input(z.object({ intentId: z.string().uuid(), wallet: z.boolean().optional() }))
     .mutation(async ({ input }) => {
       const m = await getBookingIntent(input.intentId);
       if (!m) throw new TRPCError({ code: "NOT_FOUND" });
@@ -413,13 +416,16 @@ export const checkoutRouter = router({
             return { clientSecret: null, paymentIntentId: prev.id, totalCents: b.totalCents, alreadyPaid: true };
           }
           if (["requires_payment_method", "requires_confirmation", "requires_action", "processing"].includes(prev.status)) {
-            // PIs criados antes do fix dos wallets (payment_method_types em vez
-            // de automatic_payment_methods) não confirmam via fila express —
-            // cancela e cria um novo no formato certo (nada foi cobrado ainda).
-            if (!prev.automatic_payment_methods?.enabled && prev.status === "requires_payment_method") {
+            // O formato do PI tem de casar com a sessão Elements que o vai
+            // confirmar (wallet→automatic, card→types). Um retry pode trocar de
+            // método: se o formato não corresponde e nada foi cobrado, cancela
+            // e cria novo; caso contrário retoma o mesmo PI.
+            const wantAuto = !!input.wallet;
+            const isAuto = !!prev.automatic_payment_methods?.enabled;
+            if (isAuto !== wantAuto && prev.status === "requires_payment_method") {
               const { cancelPaymentIntent } = await import("../services/stripe-klarna");
               await cancelPaymentIntent(prev.id).catch(() => {});
-              console.info(`[Card2b] PI ${prev.id} em formato antigo cancelado — a criar novo (intent ${input.intentId})`);
+              console.info(`[Card2b] PI ${prev.id} (${isAuto ? "automatic" : "types"}) cancelado — pedido ${wantAuto ? "automatic" : "types"} (intent ${input.intentId})`);
             } else {
               return { clientSecret: prev.client_secret!, paymentIntentId: prev.id, totalCents: b.totalCents, alreadyPaid: false };
             }
@@ -430,6 +436,7 @@ export const checkoutRouter = router({
       const pi = await createCardPaymentIntent({
         amount: b.totalCents,
         currency: "eur",
+        wallet: !!input.wallet,
         metadata: (() => {
           const metadata: Record<string, string> = {
             flow: "card_v2",
