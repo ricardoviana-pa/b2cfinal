@@ -11,6 +11,8 @@ import { IMAGES } from '@/lib/images';
 import { Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, MessageCircle, Map as MapIcon } from 'lucide-react';
 
 const HomesMap = lazy(() => import('@/components/property/HomesMap'));
+import heatedPoolData from '@/data/heatedPool.json';
+const HEATED_POOL_SLUGS = new Set<string>((heatedPoolData as any).slugs || []);
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
 import { filterProperties, sortProperties, getUniqueLocalities } from '@/lib/utils';
@@ -254,7 +256,11 @@ export default function Homes() {
       if (typeFilter !== 'all' && (p.propertyType || '') !== typeFilter) return false;
       if (poolOnly && !amenityList(p).some((a) => /pool/i.test(a))) return false;
       // "Heated pool" lives in names/taglines, not the amenity list.
-      if (heatedPoolOnly && !/heated/i.test(`${p.name} ${(p as any).tagline || ''} ${amenityList(p).join(' ')}`)) return false;
+      if (
+        heatedPoolOnly &&
+        !HEATED_POOL_SLUGS.has(p.slug) &&
+        !/heated/i.test(`${p.name} ${(p as any).tagline || ''} ${amenityList(p).join(' ')}`)
+      ) return false;
       if (petFriendlyOnly && !(p as any).petsAllowed) return false;
       if (budgetFilter !== 'all') {
         const nightly = fromPrices?.[p.guestyId ?? ''] ?? p.priceFrom ?? 0;
@@ -760,31 +766,42 @@ export default function Homes() {
       <section className="pt-6 pb-12 md:pt-8 md:pb-16 lg:pb-20" aria-live="polite" aria-atomic="true">
         <div className="container">
           {/* Status line */}
-          {/* ── Filters — type · budget · pool · heated pool · pet-friendly · map ── */}
-          <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1 -mx-1 px-1" data-testid="plp-filters">
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              className="text-[13px] text-[#6B6860] bg-transparent border border-[#E8E4DC] px-3 py-2 font-sans shrink-0"
-              aria-label={t('homes.filters.type', 'Home type')}
-            >
-              <option value="all">{t('homes.filters.anyType', 'All types')}</option>
-              <option value="House">{t('homes.filters.house', 'House')}</option>
-              <option value="Villa">{t('homes.filters.villa', 'Villa')}</option>
-              <option value="Apartment">{t('homes.filters.apartment', 'Apartment')}</option>
-            </select>
-            <select
-              value={budgetFilter}
-              onChange={(e) => setBudgetFilter(e.target.value)}
-              className="text-[13px] text-[#6B6860] bg-transparent border border-[#E8E4DC] px-3 py-2 font-sans shrink-0"
-              aria-label={t('homes.filters.budget', 'Budget')}
-            >
-              <option value="all">{t('homes.filters.anyBudget', 'Any budget')}</option>
-              <option value="b1">{t('homes.filters.b1', 'Up to €300 / night')}</option>
-              <option value="b2">{t('homes.filters.b2', '€300 – €500 / night')}</option>
-              <option value="b3">{t('homes.filters.b3', '€500 – €800 / night')}</option>
-              <option value="b4">{t('homes.filters.b4', '€800+ / night')}</option>
-            </select>
+          {/* ── Filters — type · budget · pool · heated pool · pet-friendly · map ──
+              One row of equal-height pills; selects are restyled to match the
+              chips (appearance-none + own chevron) and go dark when active,
+              so the whole row reads as one system. Scrolls sideways on mobile. */}
+          <div className="flex items-center gap-2 mb-5 overflow-x-auto scrollbar-none -mx-4 px-4 md:mx-0 md:px-0" data-testid="plp-filters">
+            {([
+              [typeFilter, setTypeFilter, t('homes.filters.anyType', 'All types'), [
+                ['House', t('homes.filters.house', 'House')],
+                ['Villa', t('homes.filters.villa', 'Villa')],
+                ['Apartment', t('homes.filters.apartment', 'Apartment')],
+              ]],
+              [budgetFilter, setBudgetFilter, t('homes.filters.anyBudget', 'Any budget'), [
+                ['b1', t('homes.filters.b1', 'Up to €300 / night')],
+                ['b2', t('homes.filters.b2', '€300 – €500 / night')],
+                ['b3', t('homes.filters.b3', '€500 – €800 / night')],
+                ['b4', t('homes.filters.b4', '€800+ / night')],
+              ]],
+            ] as Array<[string, (v: string) => void, string, Array<[string, string]>]>).map(([value, set, anyLabel, options], i) => (
+              <span key={i} className="relative shrink-0">
+                <select
+                  value={value}
+                  onChange={(e) => set(e.target.value)}
+                  aria-label={anyLabel}
+                  className={`appearance-none h-9 rounded-full border pl-4 pr-8 text-[13px] font-sans cursor-pointer transition-colors ${
+                    value !== 'all'
+                      ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
+                      : 'bg-white text-[#6B6860] border-[#E8E4DC] hover:border-[#8B7355]'
+                  }`}
+                >
+                  <option value="all">{anyLabel}</option>
+                  {options.map(([v, label]) => <option key={v} value={v}>{label}</option>)}
+                </select>
+                <ChevronDown className={`w-3.5 h-3.5 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none ${value !== 'all' ? 'text-white' : 'text-[#8B7355]'}`} />
+              </span>
+            ))}
+            <span aria-hidden className="h-5 w-px bg-[#E8E4DC] shrink-0 mx-0.5 hidden md:block" />
             {([
               [poolOnly, setPoolOnly, t('homes.filters.pool', 'Pool')],
               [heatedPoolOnly, setHeatedPoolOnly, t('homes.filters.heatedPool', 'Heated pool')],
@@ -795,10 +812,10 @@ export default function Homes() {
                 type="button"
                 onClick={() => set(!active)}
                 aria-pressed={active}
-                className={`text-[13px] px-3.5 py-2 border rounded-full whitespace-nowrap shrink-0 transition-colors ${
+                className={`h-9 px-4 rounded-full border text-[13px] whitespace-nowrap shrink-0 transition-colors ${
                   active
                     ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
-                    : 'text-[#6B6860] border-[#E8E4DC] hover:border-[#8B7355]'
+                    : 'bg-white text-[#6B6860] border-[#E8E4DC] hover:border-[#8B7355]'
                 }`}
               >
                 {label}
@@ -808,10 +825,10 @@ export default function Homes() {
               type="button"
               onClick={() => setShowMap((v) => !v)}
               aria-pressed={showMap}
-              className={`ml-auto inline-flex items-center gap-1.5 text-[13px] px-3.5 py-2 border rounded-full whitespace-nowrap shrink-0 transition-colors ${
+              className={`ml-auto inline-flex items-center gap-1.5 h-9 px-4 rounded-full border text-[13px] whitespace-nowrap shrink-0 transition-colors ${
                 showMap
                   ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
-                  : 'text-[#6B6860] border-[#E8E4DC] hover:border-[#8B7355]'
+                  : 'bg-white text-[#6B6860] border-[#E8E4DC] hover:border-[#8B7355]'
               }`}
             >
               <MapIcon className="w-3.5 h-3.5" />

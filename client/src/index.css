@@ -878,3 +878,7 @@
   min-width: unset;
   min-height: unset;
 }
+
+/* Hide scrollbars on horizontally-scrolling pill rows (PLP filters) */
+.scrollbar-none { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
