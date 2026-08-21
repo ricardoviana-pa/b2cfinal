@@ -1341,9 +1341,65 @@ export default function CheckoutPage() {
                 )}
               </div>
 
-              {/* Rate plan choice — só depois do email (comportamento original:
-                  primeiro o contacto, depois a escolha de tarifa) */}
-              {isValidEmail(email) && (quote?.ratePlanOptions?.length ?? 0) > 1 && (
+              {/* Price breakdown — mobile only: on desktop the lateral summary
+                  already shows it and the duplication reads noisy (spec v1.2 §4) */}
+              {effective && (
+                <div className="lg:hidden bg-white border border-pa-sand rounded-lg p-5">{summaryLines}</div>
+              )}
+
+              {/* Email capture */}
+              <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
+                <h2 className="font-display text-[19px] text-pa-dark leading-snug">
+                  {t("checkout.emailTitle", "Where should we send your booking?")}
+                </h2>
+                <label htmlFor="checkout-email" className="block text-[12px] font-medium text-pa-earth">
+                  {t("checkout.emailLabel", "Your email")}
+                </label>
+                <input
+                  id="checkout-email"
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onBlur={() => setEmailTouched(true)}
+                  placeholder={t("checkout.emailPh", "name@email.com")}
+                  className="w-full h-[48px] border border-pa-sand bg-white px-3 rounded-md text-[15px] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
+                />
+                {emailTouched && email.length > 0 && !isValidEmail(email) && (
+                  <p className="text-[11px] text-red-500">{t("bookingWidget.invalidEmail", "Please enter a valid email address")}</p>
+                )}
+                <p className="text-[11.5px] text-pa-stone-aa leading-relaxed">
+                  {t("checkout.emailSupport", "We hold your reservation for 24 hours and email you the quote. No spam.")}
+                </p>
+                <button
+                  type="button"
+                  onClick={submitEmail}
+                  disabled={!isValidEmail(email) || quoteStale || datesUnavailable}
+                  className="btn-primary w-full disabled:opacity-40"
+                >
+                  {t("booking.continue", "Continue")}
+                </button>
+              </div>
+            </>
+          )}
+
+          {/* ── PASSO 2: PERSONALIZAR (Fase 2) ── */}
+          {step === "customize" && (
+            <>
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setStep("stay")}
+                  className="text-[12px] text-pa-stone-aa hover:text-pa-dark transition-colors"
+                >
+                  ← {t("checkout.backToStay", "Back to your stay")}
+                </button>
+              </div>
+              {/* Rate plan choice — first thing in the Personalizar step.
+                  Guests who resume a saved checkout land here directly, so the
+                  choice must live in this step or they never see it. Hidden
+                  when only one plan applies (e.g. refund window closed). */}
+              {(quote?.ratePlanOptions?.length ?? 0) > 1 && (
                 <div className="space-y-2">
                   <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-pa-gold">{t("bookingWidget.ratePlan", "Rate plan")}</p>
                   {(() => { const maxTotal = Math.max(...quote!.ratePlanOptions!.map(o => o.total)); return quote!.ratePlanOptions!.map((opt) => {
@@ -1409,60 +1465,6 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              {/* Price breakdown — mobile only: on desktop the lateral summary
-                  already shows it and the duplication reads noisy (spec v1.2 §4) */}
-              {effective && (
-                <div className="lg:hidden bg-white border border-pa-sand rounded-lg p-5">{summaryLines}</div>
-              )}
-
-              {/* Email capture */}
-              <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
-                <h2 className="font-display text-[19px] text-pa-dark leading-snug">
-                  {t("checkout.emailTitle", "Where should we send your booking?")}
-                </h2>
-                <label htmlFor="checkout-email" className="block text-[12px] font-medium text-pa-earth">
-                  {t("checkout.emailLabel", "Your email")}
-                </label>
-                <input
-                  id="checkout-email"
-                  type="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onBlur={() => setEmailTouched(true)}
-                  placeholder={t("checkout.emailPh", "name@email.com")}
-                  className="w-full h-[48px] border border-pa-sand bg-white px-3 rounded-md text-[15px] text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
-                />
-                {emailTouched && email.length > 0 && !isValidEmail(email) && (
-                  <p className="text-[11px] text-red-500">{t("bookingWidget.invalidEmail", "Please enter a valid email address")}</p>
-                )}
-                <p className="text-[11.5px] text-pa-stone-aa leading-relaxed">
-                  {t("checkout.emailSupport", "We hold your reservation for 24 hours and email you the quote. No spam.")}
-                </p>
-                <button
-                  type="button"
-                  onClick={submitEmail}
-                  disabled={!isValidEmail(email) || quoteStale || datesUnavailable}
-                  className="btn-primary w-full disabled:opacity-40"
-                >
-                  {t("booking.continue", "Continue")}
-                </button>
-              </div>
-            </>
-          )}
-
-          {/* ── PASSO 2: PERSONALIZAR (Fase 2) ── */}
-          {step === "customize" && (
-            <>
-              <div>
-                <button
-                  type="button"
-                  onClick={() => setStep("stay")}
-                  className="text-[12px] text-pa-stone-aa hover:text-pa-dark transition-colors"
-                >
-                  ← {t("checkout.backToStay", "Back to your stay")}
-                </button>
-              </div>
               {extrasQuery.isLoading ? (
                 <div className="flex items-center justify-center py-10 gap-2 text-[12px] text-pa-stone-aa">
                   <Loader2 className="w-4 h-4 animate-spin" /> {t("checkout.loading", "Preparing your checkout…")}
