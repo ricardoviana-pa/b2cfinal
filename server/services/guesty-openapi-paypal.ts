@@ -20,15 +20,6 @@ export interface CreateReservationInput {
    * the reservation matches what the guest actually booked.
    */
   ratePlanId?: string;
-  /**
-   * Quote do Booking Engine que o site cotou E COBROU (inclui o service fee).
-   * Reservar a partir dela faz o Guesty registar o preço EXATO pago pelo
-   * hóspede — o service fee entra com o tratamento já configurado no Guesty
-   * (fora do split de owners) e o Hostkit fatura o valor certo. Sem ela, o
-   * Guesty re-preça só pela tarifa e fatura-se a menos (achado 21 ago,
-   * reserva GY-q5rd7VG6: cobrado 2069,20, Guesty 1902,20).
-   */
-  quoteId?: string;
 }
 
 export async function createReservationViaOpenApi(input: CreateReservationInput): Promise<{
@@ -36,39 +27,10 @@ export async function createReservationViaOpenApi(input: CreateReservationInput)
   confirmationCode: string;
   status: string;
 }> {
-  // Caminho preferido: reservar a partir da quote cotada/cobrada. Se a quote
-  // já não for aceite (expirada — settle tardio via webhook/retry), cai no
-  // caminho por listing+datas+ratePlan (preço re-calculado, capado no payment).
-  if (input.quoteId && input.ratePlanId) {
-    try {
-      const viaQuote = await guestyClient.request<any>("POST", "/v1/reservations-v3", {
-        body: {
-          quoteId: input.quoteId,
-          ratePlanId: input.ratePlanId,
-          status: "confirmed",
-          source: "website-direct",
-          guest: {
-            firstName: input.guestFirstName,
-            lastName: input.guestLastName,
-            email: input.guestEmail,
-            ...(input.guestPhone && { phones: [input.guestPhone] }),
-          },
-        },
-      });
-      const rid = viaQuote?.reservationId ?? viaQuote?._id;
-      if (rid) {
-        console.info(`[Guesty] reserva criada a partir da quote ${input.quoteId} — preço do site preservado`);
-        return {
-          reservationId: String(rid),
-          confirmationCode: String(viaQuote?.confirmationCode ?? ""),
-          status: String(viaQuote?.status ?? "confirmed"),
-        };
-      }
-      console.warn("[Guesty] criação por quote sem reservationId na resposta — a cair para listing+datas");
-    } catch (err: any) {
-      console.warn(`[Guesty] criação por quote falhou (${err?.message}) — a cair para listing+datas`);
-    }
-  }
+  // Nota 21 ago: reservar a partir da quote BE não é possível — o instant da
+  // BE API exige ccToken (cartão tokenizado no Guesty, que o 2b não tem) e o
+  // reservations-v3 não aceita quotes do Booking Engine. O preço do site é
+  // reposto via invoice item de service fee (addReservationServiceFee).
   const data = await guestyClient.request<any>("POST", "/v1/reservations-v3", {
     body: {
       listingId: input.listingId,
@@ -161,6 +123,43 @@ async function fetchReservationBalanceDue(reservationId: string): Promise<number
     }
   }
   return null;
+}
+
+/** Balance due (major units) de uma reserva, com retries para a janela de
+ *  eventual consistency pós-criação. Exportado para o settle medir o delta
+ *  entre o cobrado no site e o re-preço do Guesty. */
+export async function getReservationBalanceDue(reservationId: string): Promise<number | null> {
+  return fetchReservationBalanceDue(reservationId);
+}
+
+/**
+ * Repõe o preço do site na reserva: lança o delta (total cobrado − re-preço do
+ * Guesty) como invoice item de fee adicional. A categoria (por omissão
+ * SERVICE) tem o tratamento configurado no Guesty para NÃO entrar no split de
+ * owners — tal como a cleaning fee — e o Hostkit fatura o total certo.
+ * Fail-soft: em erro, o comportamento anterior (registo capado) mantém-se.
+ */
+export async function addReservationServiceFee(
+  reservationId: string,
+  amount: number,
+  title = "Service fee",
+): Promise<boolean> {
+  try {
+    await guestyClient.request<any>("POST", `/v1/invoice-items/reservation/${reservationId}`, {
+      body: {
+        title,
+        amount,
+        normalType: "AFE",
+        secondIdentifier: process.env.GUESTY_SERVICE_FEE_CATEGORY || "SERVICE",
+        description: "Taxa de servico do checkout do site (portugalactive.com)",
+      },
+    });
+    console.info(`[Guesty] invoice item "${title}" ${amount} adicionado a ${reservationId} — total do site reposto`);
+    return true;
+  } catch (err: any) {
+    console.warn(`[Guesty] invoice item falhou para ${reservationId} (${amount}): ${err?.message}`);
+    return false;
+  }
 }
 
 /** Confirmation code of an existing reservation (used to resume a settle that

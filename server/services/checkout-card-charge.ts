@@ -19,6 +19,8 @@ import {
   recordExternalPayment,
   appendReservationNote,
   fetchReservationConfirmationCode,
+  getReservationBalanceDue,
+  addReservationServiceFee,
 } from "./guesty-openapi-paypal";
 
 export function breakdownFromIntent(m: any) {
@@ -79,9 +81,6 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
       numberOfChildren: 0,
       numberOfInfants: 0,
       ...(q.ratePlanId ? { ratePlanId: q.ratePlanId } : {}),
-      // Quote do BE cotada e cobrada — o Guesty regista o preço exato do site
-      // (service fee incluído, com o tratamento de split/Hostkit configurado)
-      ...((m as any).guestyQuoteId ? { quoteId: (m as any).guestyQuoteId } : {}),
     } as any);
     reservationId = res.reservationId;
     confirmationCode = res.confirmationCode;
@@ -100,6 +99,21 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
     confirmationCode = (await fetchReservationConfirmationCode(reservationId)) ?? "";
   }
 
+  // O Guesty tem de receber o TOTAL da estadia do site (Ricardo, 21 ago): o
+  // re-preço da tarifa fica aquém (sem o service fee do Booking Engine); o
+  // delta entra como invoice item AFE — categoria fora do split de owners,
+  // como a cleaning fee — e so depois se regista o pagamento por inteiro.
+  if (pi.metadata.feeAdjusted !== "1") {
+    const balance = await getReservationBalanceDue(reservationId);
+    const stayEur = Math.round(b.stayCents) / 100;
+    if (balance !== null && balance > 0 && stayEur - balance > 0.5) {
+      const delta = Math.round((stayEur - balance) * 100) / 100;
+      const ok = await addReservationServiceFee(reservationId, delta);
+      if (ok) await updatePaymentIntentMetadata(paymentIntentId, { feeAdjusted: "1" }).catch(() => {});
+    } else if (balance !== null) {
+      await updatePaymentIntentMetadata(paymentIntentId, { feeAdjusted: "1" }).catch(() => {});
+    }
+  }
   // SÓ a estadia entra no Guesty (EUR) — extras ficam na plataforma. Idempotente:
   // com balanceDue=0 (já registado) devolve sem fazer nada.
   await recordExternalPayment(reservationId, b.stayCents / 100, "EUR", paymentIntentId);
