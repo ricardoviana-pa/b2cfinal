@@ -199,8 +199,10 @@ function ExpressWalletInner({
         processingRef.current = false;
         return;
       }
-      // PI lazy com o total canónico do servidor — nunca o valor do cliente
-      const { clientSecret, paymentIntentId, alreadyPaid } = (await createCardCharge.mutateAsync({ intentId })) as any;
+      // PI lazy com o total canónico do servidor — nunca o valor do cliente.
+      // wallet:true → PI automatic (a sessão do ECE é automatic; um PI types
+      // seria recusado no confirm — visto no 1.º toque real de GPay).
+      const { clientSecret, paymentIntentId, alreadyPaid } = (await createCardCharge.mutateAsync({ intentId, wallet: true })) as any;
       if (alreadyPaid) {
         // pagamento já capturado numa tentativa anterior — só falta a reserva
         const fin = await finalizeCardCharge.mutateAsync({ intentId, paymentIntentId });
@@ -534,12 +536,10 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
       currency: (props.currency || "eur").toLowerCase(),
       paymentMethodCreation: "manual" as const,
       locale: i18n.language as any,
-      // v2 (intentId): sem paymentMethodTypes — o PI da plataforma usa
-      // automatic_payment_methods e o Stripe recusa confirmar uma sessão
-      // Elements types-based contra ele (espelho do fix dos wallets de 16 ago;
-      // latente até 21 ago porque os pagamentos reais foram por wallet).
-      // Legacy (sem intentId) mantém types — os PIs antigos são types-based.
-      ...(paymentMethod !== "paypal" && paymentMethod !== "klarna" && !props.intentId
+      // Card form em sessão types (layout só-cartão, sem o seletor interno do
+      // Stripe); o servidor cria o PI no formato que casa com a sessão: types
+      // para o card form, automatic para o ECE (input wallet no createCardCharge).
+      ...(paymentMethod !== "paypal" && paymentMethod !== "klarna"
         ? { paymentMethodTypes: STRIPE_METHOD_TYPES[paymentMethod] }
         : {}),
       appearance: {

@@ -55,17 +55,20 @@ export async function createKlarnaPaymentIntent(
 }
 
 /** Fase 2b: PI de cartão na conta da PLATAFORMA (cobrança única estadia+extras).
- *  automatic_payment_methods (sem redirects) em vez de payment_method_types:
- *  a fila express (Apple/Google Pay) recolhe pelo Element em modo automático
- *  e o Stripe recusa confirmar contra um PI restringido por types — apanhado
- *  no primeiro toque real de Google Pay em produção. O form de cartão usa o
- *  mesmo PI sem alteração; o cliente já limita os wallets visíveis. */
-export async function createCardPaymentIntent(params: CreateKlarnaPaymentIntentParams): Promise<Stripe.PaymentIntent> {
+ *  O formato tem de casar com a sessão Elements que o confirma: a fila express
+ *  (Apple/Google Pay) usa sessão automatic → PI automatic (sem redirects); o
+ *  form de cartão usa sessão types → PI types:[card]. Formatos trocados são
+ *  recusados pelo Stripe no confirm (apanhados em produção a 16 e 21 ago). */
+export async function createCardPaymentIntent(
+  params: CreateKlarnaPaymentIntentParams & { wallet?: boolean },
+): Promise<Stripe.PaymentIntent> {
   const stripe = getStripe();
   return stripe.paymentIntents.create({
     amount: params.amount,
     currency: params.currency,
-    automatic_payment_methods: { enabled: true, allow_redirects: "never" },
+    ...(params.wallet
+      ? { automatic_payment_methods: { enabled: true, allow_redirects: "never" as const } }
+      : { payment_method_types: ["card"] }),
     ...(params.metadata ? { metadata: params.metadata } : {}),
   });
 }
