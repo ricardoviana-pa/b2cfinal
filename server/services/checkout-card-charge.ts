@@ -79,6 +79,9 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
       numberOfChildren: 0,
       numberOfInfants: 0,
       ...(q.ratePlanId ? { ratePlanId: q.ratePlanId } : {}),
+      // Quote do BE cotada e cobrada — o Guesty regista o preço exato do site
+      // (service fee incluído, com o tratamento de split/Hostkit configurado)
+      ...((m as any).guestyQuoteId ? { quoteId: (m as any).guestyQuoteId } : {}),
     } as any);
     reservationId = res.reservationId;
     confirmationCode = res.confirmationCode;

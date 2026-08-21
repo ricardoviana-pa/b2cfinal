@@ -20,6 +20,15 @@ export interface CreateReservationInput {
    * the reservation matches what the guest actually booked.
    */
   ratePlanId?: string;
+  /**
+   * Quote do Booking Engine que o site cotou E COBROU (inclui o service fee).
+   * Reservar a partir dela faz o Guesty registar o preço EXATO pago pelo
+   * hóspede — o service fee entra com o tratamento já configurado no Guesty
+   * (fora do split de owners) e o Hostkit fatura o valor certo. Sem ela, o
+   * Guesty re-preça só pela tarifa e fatura-se a menos (achado 21 ago,
+   * reserva GY-q5rd7VG6: cobrado 2069,20, Guesty 1902,20).
+   */
+  quoteId?: string;
 }
 
 export async function createReservationViaOpenApi(input: CreateReservationInput): Promise<{
@@ -27,6 +36,39 @@ export async function createReservationViaOpenApi(input: CreateReservationInput)
   confirmationCode: string;
   status: string;
 }> {
+  // Caminho preferido: reservar a partir da quote cotada/cobrada. Se a quote
+  // já não for aceite (expirada — settle tardio via webhook/retry), cai no
+  // caminho por listing+datas+ratePlan (preço re-calculado, capado no payment).
+  if (input.quoteId && input.ratePlanId) {
+    try {
+      const viaQuote = await guestyClient.request<any>("POST", "/v1/reservations-v3", {
+        body: {
+          quoteId: input.quoteId,
+          ratePlanId: input.ratePlanId,
+          status: "confirmed",
+          source: "website-direct",
+          guest: {
+            firstName: input.guestFirstName,
+            lastName: input.guestLastName,
+            email: input.guestEmail,
+            ...(input.guestPhone && { phones: [input.guestPhone] }),
+          },
+        },
+      });
+      const rid = viaQuote?.reservationId ?? viaQuote?._id;
+      if (rid) {
+        console.info(`[Guesty] reserva criada a partir da quote ${input.quoteId} — preço do site preservado`);
+        return {
+          reservationId: String(rid),
+          confirmationCode: String(viaQuote?.confirmationCode ?? ""),
+          status: String(viaQuote?.status ?? "confirmed"),
+        };
+      }
+      console.warn("[Guesty] criação por quote sem reservationId na resposta — a cair para listing+datas");
+    } catch (err: any) {
+      console.warn(`[Guesty] criação por quote falhou (${err?.message}) — a cair para listing+datas`);
+    }
+  }
   const data = await guestyClient.request<any>("POST", "/v1/reservations-v3", {
     body: {
       listingId: input.listingId,
