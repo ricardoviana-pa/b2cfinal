@@ -154,8 +154,8 @@ export const CHECKOUT_EXTRAS: CheckoutExtra[] = [
   // Fotos do buggy e do hike & dive: as mesmas que as páginas do site usam
   // (CDN do Bókun — permitido pela política 2.1 §4). Bike-tour removido do
   // catálogo a pedido do Ricardo (21 ago).
-  { sku: "exp-buggy", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 120, photo: "https://imgcdn.bokun.tools/fe21e5fd-756c-4ca1-8a66-a0c9eac19620.jpg?w=660&h=660", baseRank: 54 },
-  { sku: "exp-hikedive", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 95, photo: "https://imgcdn.bokun.tools/0989ed3e-d323-472f-814c-b9adc94e34d1.jpg?w=660&h=660", baseRank: 55 },
+  { sku: "exp-buggy", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 120, photo: "https://imgcdn.bokun.tools/fe21e5fd-756c-4ca1-8a66-a0c9eac19620.jpg?w=660&h=880&mode=crop", baseRank: 54 },
+  { sku: "exp-hikedive", chapter: "experiences", pricingModel: "on_request", fulfillment: "on_request", priceFrom: 95, photo: "https://imgcdn.bokun.tools/0989ed3e-d323-472f-814c-b9adc94e34d1.jpg?w=660&h=880&mode=crop", baseRank: 55 },
 ];
 
 /**
