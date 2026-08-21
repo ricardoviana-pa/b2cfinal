@@ -135,8 +135,8 @@ function isNonRefundablePlan(o: RatePlanOption): boolean {
   return (
     (n.includes('non') && n.includes('refund')) ||
     (n.includes('não') && n.includes('reembols')) ||
-    code === 'super_strict' ||
-    code === 'strict'
+    // Only super_strict is non-refundable — strict still refunds 50%.
+    code === 'super_strict'
   );
 }
 
