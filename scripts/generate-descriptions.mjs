@@ -59,14 +59,14 @@ ${(home.description || "").slice(0, 2200)}`;
     headers: { "x-api-key": KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
     body: JSON.stringify({
       model: "claude-sonnet-5",
-      max_tokens: 900,
+      max_tokens: 2200,
       system: STYLE,
       messages: [{ role: "user", content: src }],
     }),
   });
   if (!res.ok) throw new Error(`API ${res.status}: ${(await res.text()).slice(0, 200)}`);
   const data = await res.json();
-  const text = data.content?.[0]?.text ?? "";
+  const text = (data.content || []).filter((c) => c.type === "text").map((c) => c.text).join("");
   const json = text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1);
   return JSON.parse(json);
 }
@@ -79,7 +79,9 @@ const queue = PROPS.filter(h =>
 console.log(`${queue.length} homes to draft (existing overrides untouched: ${Object.keys(overrides).length})`);
 for (const home of queue) {
   try {
-    const copy = await draft(home);
+    let copy;
+    try { copy = await draft(home); }
+    catch { copy = await draft(home); } // one retry — truncation/parse hiccups
     if (!copy.description || !copy.tagline) throw new Error("incomplete JSON");
     overrides[home.guestyId] = copy;
     writeFileSync(OUT_PATH, JSON.stringify(overrides, null, 2) + "\n");

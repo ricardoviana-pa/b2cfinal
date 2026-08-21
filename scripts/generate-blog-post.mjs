@@ -58,10 +58,32 @@ const res = await fetch("https://api.anthropic.com/v1/messages", {
 });
 if (!res.ok) { console.error(`API ${res.status}: ${(await res.text()).slice(0, 300)}`); process.exit(1); }
 const data = await res.json();
-const text = data.content?.[0]?.text ?? "";
-const post = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1));
+const text = (data.content || []).filter((c) => c.type === "text").map((c) => c.text).join("");
+// Escape raw control characters the model sometimes leaves inside string
+// literals (valid outside strings, fatal inside them).
+function repairJson(str) {
+  let out = "", inStr = false, esc = false;
+  for (const ch of str) {
+    if (inStr) {
+      if (esc) { out += ch; esc = false; continue; }
+      if (ch === "\\") { out += ch; esc = true; continue; }
+      if (ch === '"') { inStr = false; out += ch; continue; }
+      if (ch === "\n") { out += "\\n"; continue; }
+      if (ch === "\t") { out += "\\t"; continue; }
+      if (ch < " ") continue;
+      out += ch; continue;
+    }
+    if (ch === '"') inStr = true;
+    out += ch;
+  }
+  return out;
+}
+const rawJson = text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1);
+let post;
+try { post = JSON.parse(rawJson); } catch { post = JSON.parse(repairJson(rawJson)); }
 
-const blog = JSON.parse(readFileSync("client/src/data/blog.json", "utf8"));
+const blogFile = JSON.parse(readFileSync("client/src/data/blog.json", "utf8"));
+const blog = Array.isArray(blogFile) ? blogFile : blogFile.articles;
 if (blog.some(a => a.slug === post.slug)) { console.error(`Slug exists: ${post.slug}`); process.exit(1); }
 const maxId = Math.max(...blog.map(a => Number(a.id) || 0));
 blog.unshift({
@@ -83,6 +105,7 @@ blog.unshift({
   seoTitle: post.seoTitle,
   seoDescription: post.seoDescription,
 });
-writeFileSync("client/src/data/blog.json", JSON.stringify(blog, null, 2) + "\n");
+const out = Array.isArray(blogFile) ? blog : { ...blogFile, articles: blog };
+writeFileSync("client/src/data/blog.json", JSON.stringify(out, null, 2) + "\n");
 console.log(`✓ "${post.title}" → /blog/${post.slug}`);
 console.log("Next: node scripts/refresh-translations.mjs --type=blog  → review diff → commit.");

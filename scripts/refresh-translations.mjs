@@ -41,7 +41,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const TARGET_LANGS = ['pt', 'fr', 'es', 'it', 'de', 'nl', 'sv'];
+const TARGET_LANGS = ['pt', 'fr', 'es', 'it', 'de', 'nl', 'fi', 'sv'];
 const PROD = 'https://www.portugalactive.com';
 
 const TYPES = {
