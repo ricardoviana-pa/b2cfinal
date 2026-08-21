@@ -95,7 +95,6 @@ No site o hóspede vê um seletor único "Aeroporto de chegada" (Porto/Lisboa) c
 | `exp-horseback` | Passeio a cavalo | 75 € | trilhos da região |
 | `exp-buggy` | Experiência de buggy Can Am | 120 € | fora de estrada |
 | `exp-hikedive` | Caminhada, mergulho e mesa | 95 € | trilho + água + mesa, dia completo |
-| `exp-biketour` | Passeio de bicicleta, cidade e montanha | 45 € | duas rodas, cidade às colinas |
 
 ## Flex (remarcação garantida — NUNCA se chama "seguro")
 
