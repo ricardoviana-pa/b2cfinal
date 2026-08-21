@@ -125,7 +125,23 @@
     "leadEmail": "E-post",
     "leadSend": "Skicka",
     "leadThanks": "Tack — vi återkommer med alternativ för dessa datum.",
-    "leadError": "Kunde inte skicka — prova WhatsApp nedan."
+    "leadError": "Kunde inte skicka — prova WhatsApp nedan.",
+    "filters": {
+      "type": "Typ av hus",
+      "anyType": "Alla typer",
+      "house": "Hus",
+      "villa": "Villa",
+      "apartment": "Lägenhet",
+      "budget": "Budget",
+      "anyBudget": "Alla budgetar",
+      "b1": "Upp till €300 / natt",
+      "b2": "€300 – €500 / natt",
+      "b3": "€500 – €800 / natt",
+      "b4": "€800+ / natt",
+      "pool": "Pool",
+      "heatedPool": "Uppvärmd pool",
+      "map": "Karta"
+    }
   },
   "property": {
     "bedrooms": "Sovrum",

@@ -125,7 +125,23 @@
     "leadEmail": "E-Mail",
     "leadSend": "Senden",
     "leadThanks": "Vielen Dank — wir melden uns mit Optionen für diese Daten.",
-    "leadError": "Senden fehlgeschlagen — bitte WhatsApp unten nutzen."
+    "leadError": "Senden fehlgeschlagen — bitte WhatsApp unten nutzen.",
+    "filters": {
+      "type": "Haustyp",
+      "anyType": "Alle Typen",
+      "house": "Haus",
+      "villa": "Villa",
+      "apartment": "Apartment",
+      "budget": "Budget",
+      "anyBudget": "Jedes Budget",
+      "b1": "Bis €300 / Nacht",
+      "b2": "€300 – €500 / Nacht",
+      "b3": "€500 – €800 / Nacht",
+      "b4": "€800+ / Nacht",
+      "pool": "Pool",
+      "heatedPool": "Beheizter Pool",
+      "map": "Karte"
+    }
   },
   "property": {
     "bedrooms": "Schlafzimmer",

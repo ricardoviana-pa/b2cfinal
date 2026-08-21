@@ -125,7 +125,23 @@
     "leadEmail": "Sähköposti",
     "leadSend": "Lähetä",
     "leadThanks": "Kiitos — palaamme asiaan vaihtoehdoilla näille päiville.",
-    "leadError": "Lähetys epäonnistui — kokeile WhatsAppia alla."
+    "leadError": "Lähetys epäonnistui — kokeile WhatsAppia alla.",
+    "filters": {
+      "type": "Kodin tyyppi",
+      "anyType": "Kaikki tyypit",
+      "house": "Talo",
+      "villa": "Huvila",
+      "apartment": "Huoneisto",
+      "budget": "Budjetti",
+      "anyBudget": "Kaikki budjetit",
+      "b1": "Enintään €300 / yö",
+      "b2": "€300 – €500 / yö",
+      "b3": "€500 – €800 / yö",
+      "b4": "€800+ / yö",
+      "pool": "Uima-allas",
+      "heatedPool": "Lämmitetty uima-allas",
+      "map": "Kartta"
+    }
   },
   "property": {
     "bedrooms": "Makuuhuoneet",

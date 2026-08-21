@@ -125,7 +125,23 @@
     "leadEmail": "E-mail",
     "leadSend": "Versturen",
     "leadThanks": "Dank u — we komen bij u terug met opties voor deze data.",
-    "leadError": "Verzenden mislukt — probeer WhatsApp hieronder."
+    "leadError": "Verzenden mislukt — probeer WhatsApp hieronder.",
+    "filters": {
+      "type": "Type woning",
+      "anyType": "Alle types",
+      "house": "Huis",
+      "villa": "Villa",
+      "apartment": "Appartement",
+      "budget": "Budget",
+      "anyBudget": "Elk budget",
+      "b1": "Tot €300 / nacht",
+      "b2": "€300 – €500 / nacht",
+      "b3": "€500 – €800 / nacht",
+      "b4": "€800+ / nacht",
+      "pool": "Zwembad",
+      "heatedPool": "Verwarmd zwembad",
+      "map": "Kaart"
+    }
   },
   "property": {
     "bedrooms": "Slaapkamers",

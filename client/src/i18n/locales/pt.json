@@ -125,7 +125,23 @@
     "leadEmail": "Email",
     "leadSend": "Enviar",
     "leadThanks": "Obrigado — voltamos ao seu contacto com opções para estas datas.",
-    "leadError": "Não foi possível enviar — tente o WhatsApp abaixo."
+    "leadError": "Não foi possível enviar — tente o WhatsApp abaixo.",
+    "filters": {
+      "type": "Tipo de casa",
+      "anyType": "Todos os tipos",
+      "house": "Casa",
+      "villa": "Villa",
+      "apartment": "Apartamento",
+      "budget": "Orçamento",
+      "anyBudget": "Qualquer orçamento",
+      "b1": "Até €300 / noite",
+      "b2": "€300 – €500 / noite",
+      "b3": "€500 – €800 / noite",
+      "b4": "€800+ / noite",
+      "pool": "Piscina",
+      "heatedPool": "Piscina aquecida",
+      "map": "Mapa"
+    }
   },
   "property": {
     "bedrooms": "Quartos",

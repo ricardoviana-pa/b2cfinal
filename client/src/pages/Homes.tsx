@@ -3,12 +3,14 @@
    Property catalogue with filters, tiers, and modal
    ========================================================================== */
 
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { useSearch, useLocation, useRouter } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { IMAGES } from '@/lib/images';
-import { Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, MessageCircle } from 'lucide-react';
+import { Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, MessageCircle, Map as MapIcon } from 'lucide-react';
+
+const HomesMap = lazy(() => import('@/components/property/HomesMap'));
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
 import { filterProperties, sortProperties, getUniqueLocalities } from '@/lib/utils';
@@ -39,6 +41,14 @@ export default function Homes() {
 
   const { data: propsData, isLoading, isError, refetch } = trpc.properties.listForSite.useQuery();
   const allProperties = (propsData ?? []) as Property[];
+
+  // ── PLP filters (type · budget · pool · heated pool · pet-friendly) + map ──
+  const [typeFilter, setTypeFilter] = useState<string>('all');
+  const [budgetFilter, setBudgetFilter] = useState<string>('all');
+  const [poolOnly, setPoolOnly] = useState(false);
+  const [heatedPoolOnly, setHeatedPoolOnly] = useState(false);
+  const [petFriendlyOnly, setPetFriendlyOnly] = useState(false);
+  const [showMap, setShowMap] = useState(false);
   // SSR-prefetched tiny query (see Home.tsx) so the destination picker is
   // populated immediately; falls back to deriving from the full list.
   const { data: localityOptions } = trpc.properties.localities.useQuery();
@@ -238,8 +248,26 @@ export default function Homes() {
     // inside the parent's PDP, not as standalone PLP cards. The parent listing
     // stays in the list and renders with "X units" treatment.
     const withoutChildUnits = withGuestCapacity.filter((p) => !isChildUnit(p.guestyId));
-    return sortProperties(withoutChildUnits, sort);
-  }, [allProperties, destination, location, sort, searchGuestsCount]);
+    const amenityList = (p: Property): string[] =>
+      Object.values((p.amenities || {}) as Record<string, string[]>).flat().filter((a) => typeof a === 'string');
+    const facetted = withoutChildUnits.filter((p) => {
+      if (typeFilter !== 'all' && (p.propertyType || '') !== typeFilter) return false;
+      if (poolOnly && !amenityList(p).some((a) => /pool/i.test(a))) return false;
+      // "Heated pool" lives in names/taglines, not the amenity list.
+      if (heatedPoolOnly && !/heated/i.test(`${p.name} ${(p as any).tagline || ''} ${amenityList(p).join(' ')}`)) return false;
+      if (petFriendlyOnly && !(p as any).petsAllowed) return false;
+      if (budgetFilter !== 'all') {
+        const nightly = fromPrices?.[p.guestyId ?? ''] ?? p.priceFrom ?? 0;
+        if (nightly <= 0) return false;
+        if (budgetFilter === 'b1' && nightly > 300) return false;
+        if (budgetFilter === 'b2' && (nightly <= 300 || nightly > 500)) return false;
+        if (budgetFilter === 'b3' && (nightly <= 500 || nightly > 800)) return false;
+        if (budgetFilter === 'b4' && nightly <= 800) return false;
+      }
+      return true;
+    });
+    return sortProperties(facetted, sort);
+  }, [allProperties, destination, location, sort, searchGuestsCount, typeFilter, budgetFilter, poolOnly, heatedPoolOnly, petFriendlyOnly, fromPrices]);
 
   // GA4: view_item_list — fires only for cards that enter the viewport
   useEffect(() => {
@@ -732,6 +760,75 @@ export default function Homes() {
       <section className="pt-6 pb-12 md:pt-8 md:pb-16 lg:pb-20" aria-live="polite" aria-atomic="true">
         <div className="container">
           {/* Status line */}
+          {/* ── Filters — type · budget · pool · heated pool · pet-friendly · map ── */}
+          <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1 -mx-1 px-1" data-testid="plp-filters">
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="text-[13px] text-[#6B6860] bg-transparent border border-[#E8E4DC] px-3 py-2 font-sans shrink-0"
+              aria-label={t('homes.filters.type', 'Home type')}
+            >
+              <option value="all">{t('homes.filters.anyType', 'All types')}</option>
+              <option value="House">{t('homes.filters.house', 'House')}</option>
+              <option value="Villa">{t('homes.filters.villa', 'Villa')}</option>
+              <option value="Apartment">{t('homes.filters.apartment', 'Apartment')}</option>
+            </select>
+            <select
+              value={budgetFilter}
+              onChange={(e) => setBudgetFilter(e.target.value)}
+              className="text-[13px] text-[#6B6860] bg-transparent border border-[#E8E4DC] px-3 py-2 font-sans shrink-0"
+              aria-label={t('homes.filters.budget', 'Budget')}
+            >
+              <option value="all">{t('homes.filters.anyBudget', 'Any budget')}</option>
+              <option value="b1">{t('homes.filters.b1', 'Up to €300 / night')}</option>
+              <option value="b2">{t('homes.filters.b2', '€300 – €500 / night')}</option>
+              <option value="b3">{t('homes.filters.b3', '€500 – €800 / night')}</option>
+              <option value="b4">{t('homes.filters.b4', '€800+ / night')}</option>
+            </select>
+            {([
+              [poolOnly, setPoolOnly, t('homes.filters.pool', 'Pool')],
+              [heatedPoolOnly, setHeatedPoolOnly, t('homes.filters.heatedPool', 'Heated pool')],
+              [petFriendlyOnly, setPetFriendlyOnly, t('property.petFriendly', 'Pet-friendly')],
+            ] as Array<[boolean, (v: boolean) => void, string]>).map(([active, set, label]) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => set(!active)}
+                aria-pressed={active}
+                className={`text-[13px] px-3.5 py-2 border rounded-full whitespace-nowrap shrink-0 transition-colors ${
+                  active
+                    ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
+                    : 'text-[#6B6860] border-[#E8E4DC] hover:border-[#8B7355]'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={() => setShowMap((v) => !v)}
+              aria-pressed={showMap}
+              className={`ml-auto inline-flex items-center gap-1.5 text-[13px] px-3.5 py-2 border rounded-full whitespace-nowrap shrink-0 transition-colors ${
+                showMap
+                  ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
+                  : 'text-[#6B6860] border-[#E8E4DC] hover:border-[#8B7355]'
+              }`}
+            >
+              <MapIcon className="w-3.5 h-3.5" />
+              {t('homes.filters.map', 'Map')}
+            </button>
+          </div>
+
+          {showMap && (
+            <Suspense fallback={<div className="h-[340px] lg:h-[420px] rounded-xl bg-[#F5F1EB] animate-pulse mb-8" />}>
+              <HomesMap
+                properties={(hasDates && !quotesLoading ? availableProperties : filtered) as any}
+                fromPrices={fromPrices as any}
+                lang={i18n.language}
+              />
+            </Suspense>
+          )}
+
           <div className="flex items-center justify-between mb-4">
             <p className="text-[13px] text-[#78756F]">
               {hasDates && !quotesLoading ? (

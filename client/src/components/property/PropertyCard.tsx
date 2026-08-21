@@ -169,12 +169,6 @@ export default function PropertyCard({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {(property as any).petsAllowed && (
-          <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-[11px] font-medium text-[#6B6860] shadow-sm">
-            <PawPrint className="w-3 h-3 text-[#8B7355]" />
-            {t('property.petFriendly', 'Pet-friendly')}
-          </span>
-        )}
         <img
           src={optimizeGuestyImage(rawImages[currentImage], 1080)}
           srcSet={guestySrcSet(rawImages[currentImage], [400, 640, 768, 1080])}
@@ -259,6 +253,9 @@ export default function PropertyCard({
             {displayName}
           </h3>
           <div className="flex items-center gap-2.5 text-[0.8125rem] text-[#6B6860] shrink-0 pt-1">
+            {(property as any).petsAllowed && (
+              <PawPrint className="w-3.5 h-3.5 text-[#8B7355]" aria-label={t('property.petFriendly', 'Pet-friendly')} />
+            )}
             <span className="flex items-center gap-1">
               <Users className="w-3.5 h-3.5" /> {property.maxGuests}
             </span>
