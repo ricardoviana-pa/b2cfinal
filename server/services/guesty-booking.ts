@@ -250,7 +250,7 @@ function parseBEQuote(quote: any, listingId: string, checkIn: string, checkOut: 
   // radio rows and confuse customers. Collapse on (name, total): keep the
   // first occurrence, drop the rest.
   const seenKeys = new Set<string>();
-  const options = rawOptions.filter((o) => {
+  const deduped = rawOptions.filter((o) => {
     const key = `${(o.name || "").trim().toLowerCase()}|${Math.round(o.total * 100)}`;
     if (seenKeys.has(key)) {
       console.info(`[BE Quote] dropped duplicate rate plan: name="${o.name}" total=${o.total} (id=${o.ratePlanId})`);
@@ -259,6 +259,25 @@ function parseBEQuote(quote: any, listingId: string, checkIn: string, checkOut: 
     seenKeys.add(key);
     return true;
   });
+  // The guest choice is binary — refundable or not. Guesty configures several
+  // refundable tiers (Star/Premium/Standard) that differ only internally;
+  // exposing them all reads as a bug. Collapse to the cheapest of each side
+  // here so EVERY consumer (widget, checkout, future callers) gets at most 2.
+  // Only super_strict means non-refundable — strict still refunds 50%.
+  const isNonRefOption = (o: { name: string; cancellationPolicy?: string[] }): boolean => {
+    const n = (o.name || "").toLowerCase();
+    const code = (o.cancellationPolicy?.[0] || "").toLowerCase();
+    return /n[aã]o[\s-]*reembols|non[\s-]*refund/.test(n) || code === "super_strict";
+  };
+  const cheapestOf = (arr: typeof deduped) => [...arr].sort((a, b) => a.total - b.total)[0];
+  const nonRefSide = deduped.filter(isNonRefOption);
+  const flexSide = deduped.filter((o) => !isNonRefOption(o));
+  const options =
+    nonRefSide.length && flexSide.length
+      ? [cheapestOf(nonRefSide), cheapestOf(flexSide)]
+      : deduped.length > 2
+        ? [cheapestOf(deduped)]
+        : deduped;
   const selected = mapPlan(plan);
   const money = plan.ratePlan?.money || plan.money || {};
 

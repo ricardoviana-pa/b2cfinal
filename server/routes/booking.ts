@@ -83,7 +83,7 @@ function classifyRatePlan(name: string, cancellationPolicy?: unknown): "flexible
   const hay = `${name} ${policyToStrings(cancellationPolicy).join(" ")}`.toLowerCase();
   // Live plan names: "Não-Reembolsável", "Reembolsável Star Low 26/27", … —
   // match the negative with any separator before probing the positive terms.
-  if (/n[aã]o[\s-]*reembols|non[\s-]*refund/.test(hay)) {
+  if (/n[aã]o[\s-]*reembols|non[\s-]*refund|super_strict/.test(hay)) {
     return "non_refundable";
   }
   if (/flex|free cancellation|cancel|reembols|refund/.test(hay)) {
@@ -407,6 +407,17 @@ export function registerBookingRoutes(app: Express): void {
           return null;
         }
       }).filter(Boolean);
+      // Same binary collapse as parseBEQuote: cheapest non-refundable +
+      // cheapest refundable — internal Guesty tiers never reach the guest.
+      const cheapestOpt = (arr: any[]) => [...arr].sort((a, b) => a.total - b.total)[0];
+      const nonRefOpts = ratePlanOptions.filter((o: any) => o.type === "non_refundable");
+      const flexOpts = ratePlanOptions.filter((o: any) => o.type !== "non_refundable");
+      const collapsedOptions =
+        nonRefOpts.length && flexOpts.length
+          ? [cheapestOpt(nonRefOpts), cheapestOpt(flexOpts)]
+          : ratePlanOptions.length > 2
+            ? [cheapestOpt(ratePlanOptions)]
+            : ratePlanOptions;
       res.json({
         quoteId: q.raw?._id || null,
         nights: q.nights,
@@ -419,7 +430,7 @@ export function registerBookingRoutes(app: Express): void {
         totalAfterTax: p.totalAfterTaxCents,
         currency: p.currency,
         ratePlanId: q.ratePlanId,
-        ratePlanOptions,
+        ratePlanOptions: collapsedOptions,
         money: q.raw?.rates?.ratePlan?.money || q.raw?.money || null,
       });
     } catch (err) {
