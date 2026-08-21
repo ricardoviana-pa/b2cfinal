@@ -177,8 +177,6 @@ function parseBEQuote(quote: any, listingId: string, checkIn: string, checkOut: 
     if (policy === "moderate") score += 3;
     return score;
   };
-  const plan = [...ratePlans].sort((a, b) => planFriendliness(b) - planFriendliness(a))[0];
-
   const nights = Math.ceil(
     (new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000
   );
@@ -232,6 +230,19 @@ function parseBEQuote(quote: any, listingId: string, checkIn: string, checkOut: 
   };
 
   const rawOptions = ratePlans.map(mapPlan);
+  // Default to the CHEAPEST plan (friendliness only breaks ties). The PLP and
+  // the Guesty BE both lead with the minimum total; a friendlier-but-pricier
+  // default made the price RISE from card to widget — mid-funnel price hikes
+  // read as a bait-and-switch on a site whose promise is "best rate online".
+  // The refundable option stays one tap away in the rate-plan step.
+  const planIdx = rawOptions
+    .map((o, i) => i)
+    .sort(
+      (a, b) =>
+        (rawOptions[a].total - rawOptions[b].total) ||
+        (planFriendliness(ratePlans[b]) - planFriendliness(ratePlans[a]))
+    )[0];
+  const plan = ratePlans[planIdx];
   // Defensive dedupe: Guesty BE sometimes returns multiple rate plans that
   // share a display name AND an identical total (a "Flexible" plan
   // duplicated in the Guesty dashboard, two non-refundable variants that
