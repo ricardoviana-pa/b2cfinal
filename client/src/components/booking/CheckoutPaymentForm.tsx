@@ -534,7 +534,12 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
       currency: (props.currency || "eur").toLowerCase(),
       paymentMethodCreation: "manual" as const,
       locale: i18n.language as any,
-      ...(paymentMethod !== "paypal" && paymentMethod !== "klarna"
+      // v2 (intentId): sem paymentMethodTypes — o PI da plataforma usa
+      // automatic_payment_methods e o Stripe recusa confirmar uma sessão
+      // Elements types-based contra ele (espelho do fix dos wallets de 16 ago;
+      // latente até 21 ago porque os pagamentos reais foram por wallet).
+      // Legacy (sem intentId) mantém types — os PIs antigos são types-based.
+      ...(paymentMethod !== "paypal" && paymentMethod !== "klarna" && !props.intentId
         ? { paymentMethodTypes: STRIPE_METHOD_TYPES[paymentMethod] }
         : {}),
       appearance: {
