@@ -37,7 +37,10 @@ export async function createReservationViaOpenApi(input: CreateReservationInput)
       checkInDateLocalized: input.checkIn,
       checkOutDateLocalized: input.checkOut,
       status: "confirmed",
-      source: "website-direct",
+      // Nome distinto do source da era BE-api (que também aparecia como
+      // "website-direct" no Guesty): o CS pediu nomes diferentes para
+      // distinguir as reservas do checkout 2.0 nos filtros/relatórios.
+      source: "website-checkout",
       guest: {
         firstName: input.guestFirstName,
         lastName: input.guestLastName,

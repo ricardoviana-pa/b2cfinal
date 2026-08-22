@@ -66,15 +66,18 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
       console.error(`[Card2b] AMOUNT MISMATCH intent=${intentId} pi=${pi.amount}c expected=${b.totalCents}c — reserva NÃO criada`);
       throw new Error("charged amount does not match server pricing");
     }
-    const name = String((m as any).guestName ?? "").trim();
-    const [firstName, ...rest] = name.split(/\s+/);
+    // O intent guarda o nome em guestFirstName/guestLastName (não existe
+    // "guestName" em booking_intents — ler esse campo mandava "Guest -" para
+    // o Guesty em todas as reservas 2b).
+    const firstName = String((m as any).guestFirstName ?? "").trim();
+    const lastName = String((m as any).guestLastName ?? "").trim();
     const q = ((m as any).quote ?? {}) as any;
     const res = await createReservationViaOpenApi({
       listingId: (m as any).listingId,
       checkIn: (m as any).checkIn,
       checkOut: (m as any).checkOut,
       guestFirstName: firstName || "Guest",
-      guestLastName: rest.join(" ") || "-",
+      guestLastName: lastName || "-",
       guestEmail: (m as any).email,
       guestPhone: (m as any).guestPhone ?? undefined,
       numberOfAdults: Number((m as any).guests ?? 2),
