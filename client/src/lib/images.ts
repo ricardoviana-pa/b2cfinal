@@ -7,7 +7,7 @@ export const IMAGES = {
   // Hero images
   // Homepage cover — Carcavelos Manor House: the 18th-century estate with its
   // lap pool and mature grounds.
-  heroMain: '/hero/home-carcavelos-manor.webp',
+  heroMain: '/hero/home-cliff-villa.webp',
   heroHomes: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp',
 
   // Destination images
