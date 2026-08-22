@@ -409,7 +409,13 @@ export function registerBookingRoutes(app: Express): void {
       }).filter(Boolean);
       // Same binary collapse as parseBEQuote: cheapest non-refundable +
       // cheapest refundable — internal Guesty tiers never reach the guest.
-      const cheapestOpt = (arr: any[]) => [...arr].sort((a, b) => a.total - b.total)[0];
+      // Same generosity tie-break as parseBEQuote: at equal totals the plan
+      // with the friendliest cancellation policy wins.
+      const OPT_GENEROSITY: Record<string, number> = { flexible: 4, moderate: 3, firm: 2, strict: 1 };
+      const optGenerosity = (o: any): number =>
+        OPT_GENEROSITY[String(o.cancellationPolicy?.[0] || "").toLowerCase()] ?? 0;
+      const cheapestOpt = (arr: any[]) =>
+        [...arr].sort((a, b) => (a.total - b.total) || (optGenerosity(b) - optGenerosity(a)))[0];
       const nonRefOpts = ratePlanOptions.filter((o: any) => o.type === "non_refundable");
       const flexOpts = ratePlanOptions.filter((o: any) => o.type !== "non_refundable");
       const collapsedOptions =

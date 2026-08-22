@@ -269,7 +269,15 @@ function parseBEQuote(quote: any, listingId: string, checkIn: string, checkOut: 
     const code = (o.cancellationPolicy?.[0] || "").toLowerCase();
     return /n[aã]o[\s-]*reembols|non[\s-]*refund/.test(n) || code === "super_strict";
   };
-  const cheapestOf = (arr: typeof deduped) => [...arr].sort((a, b) => a.total - b.total)[0];
+  // At equal price the guest-friendliest policy must win: Guesty ties three
+  // refundable tiers at the same total, but "moderate" refunds 100% until
+  // 14 days out while "strict" only ever refunds 50% — same money, strictly
+  // better terms.
+  const POLICY_GENEROSITY: Record<string, number> = { flexible: 4, moderate: 3, firm: 2, strict: 1 };
+  const generosity = (o: { cancellationPolicy?: string[] }): number =>
+    POLICY_GENEROSITY[(o.cancellationPolicy?.[0] || "").toLowerCase()] ?? 0;
+  const cheapestOf = (arr: typeof deduped) =>
+    [...arr].sort((a, b) => (a.total - b.total) || (generosity(b) - generosity(a)))[0];
   const nonRefSide = deduped.filter(isNonRefOption);
   const flexSide = deduped.filter((o) => !isNonRefOption(o));
   const options =
