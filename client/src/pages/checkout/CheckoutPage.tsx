@@ -1375,9 +1375,12 @@ export default function CheckoutPage() {
                 <p className="text-[11.5px] text-pa-stone-aa leading-relaxed">
                   {t("checkout.emailSupport", "We hold your reservation for 24 hours and email you the quote. No spam.")}
                 </p>
-                {/* Opt-in deliberadamente sóbrio: sem "ofertas"/"newsletter",
-                    que leem como spam e travam a entrada no funil logo no
-                    passo 1. Mesmo tom cinza do texto de apoio acima. */}
+                {/* Opt-in sóbrio: sem "ofertas"/"newsletter", que leem como
+                    spam e travam a entrada no funil logo no passo 1. Lidera
+                    pela reserva, mas TEM de nomear o contacto futuro — é isso
+                    que o torna consentimento válido para marketing (RGPD:
+                    informado e específico). Sem essa parte a caixa só descreve
+                    o email transacional e não autoriza campanhas. */}
                 <label className="flex items-start gap-2.5 cursor-pointer">
                   <input
                     type="checkbox"
