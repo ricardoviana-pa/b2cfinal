@@ -6995,6 +6995,41 @@
     "areaSquareFeet": 1077,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Beau logement, belle vue sur le Douro, accès à la plage du Douro 5 minutes à pied, proche de Porto et de ses nombreuses activités.",
+        "guestDisplayName": "Franck",
+        "guestName": "Franck",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-23T10:49:10.414Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Logement correspondant à la description",
         "guestDisplayName": "Maël",
@@ -7100,8 +7135,8 @@
         ]
       }
     ],
-    "averageRating": 4.67,
-    "reviewCount": 3
+    "averageRating": 4.5,
+    "reviewCount": 4
   },
   {
     "id": "guesty-69dfa9cead7c9c0014cb71c9",
@@ -10924,6 +10959,41 @@
     "areaSquareFeet": 1614.586563,
     "reviews": [
       {
+        "rating": 4,
+        "text": "The house is situated in a stunning location overlooking the Atlantic with a terrace that looks straight out to sea. In the evenings, you will be treated to displays of glowworms and the odd shooting star whizzing by overhead. The house itself is very comfortable and in pristine condition. I would recommend it to anyone in love with either Viana do Castelo or Caminha as a convenient base. Or, to those who enjoy hiking along the coast down stretches of the Caminho or enjoy the clean and laidback ",
+        "guestDisplayName": "Eliot",
+        "guestName": "Eliot",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-21T15:04:39.888Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Alojamiento muy limpio y bien ubicado, todo muy nuevo, el acceso la primera vez no es muy cómodo.",
         "guestDisplayName": "Marta",
@@ -11204,8 +11274,8 @@
         ]
       }
     ],
-    "averageRating": 4.75,
-    "reviewCount": 8
+    "averageRating": 4.67,
+    "reviewCount": 9
   },
   {
     "id": "guesty-696533714b583900135cef22",
@@ -14116,6 +14186,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Our family had a great time here. The flat is spacious and the environment is mainly quiet. Very easy to go to the beach, with a few shops and a good restaurant nearby. Also we appreciated to go to Viana do Castelo by the ferry boat, an easy and affordable way to visit the city. As a conclusion, we liked this place very much!",
+        "guestDisplayName": "Jessica",
+        "guestName": "Jessica",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-21T15:09:00.857Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "👍🏼",
         "guestDisplayName": "Roelof",
         "guestName": "Roelof",
@@ -14186,7 +14291,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3
   },
   {
     "id": "guesty-6965330b6d209c001510dd49",
@@ -26923,6 +27028,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Le logement est très bien placé !! Proche des plages, avec possibilité de prendre le bateau pour se rendre dans la ville. Appartement impeccable ! Bien équipé ! Nous gardons l'adresse pour une prochaine fois !!",
+        "guestDisplayName": "Ludivine",
+        "guestName": "Ludivine",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-23T13:25:13.374Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Todo perfecto",
         "guestDisplayName": "Noelia",
         "guestName": "Noelia",
@@ -27237,8 +27377,8 @@
         ]
       }
     ],
-    "averageRating": 4.78,
-    "reviewCount": 9
+    "averageRating": 4.8,
+    "reviewCount": 10
   },
   {
     "id": "guesty-696533466d209c001510ecfe",
