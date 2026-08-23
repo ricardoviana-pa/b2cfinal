@@ -411,12 +411,23 @@ export async function deleteLead(id: number) {
 
 export async function getLeadStats() {
   const db = await getDb();
-  if (!db) return { total: 0, newsletter: 0, contact: 0, newLeads: 0 };
+  if (!db) return { total: 0, newsletter: 0, contact: 0, checkout: 0, availability: 0, newLeads: 0 };
   const [total] = await db.select({ count: sql<number>`count(*)` }).from(leads);
   const [newsletter] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(like(leads.source, "newsletter%"));
   const [contact] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(like(leads.source, "contact%"));
+  // Emails captured mid-funnel: checkout step 1, and "tell me when it opens"
+  // requests from a search with no availability. Both were invisible here.
+  const [checkout] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(like(leads.source, "checkout%"));
+  const [availability] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(like(leads.source, "search-no-availability%"));
   const [newLeads] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(eq(leads.status, "new"));
-  return { total: total.count, newsletter: newsletter.count, contact: contact.count, newLeads: newLeads.count };
+  return {
+    total: total.count,
+    newsletter: newsletter.count,
+    contact: contact.count,
+    checkout: checkout.count,
+    availability: availability.count,
+    newLeads: newLeads.count,
+  };
 }
 
 /* ================================================================

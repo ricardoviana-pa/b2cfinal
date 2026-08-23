@@ -162,7 +162,7 @@ export default function AdminLeads() {
   return (
     <div className="space-y-6">
       {/* Stats bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         <div className="rounded-lg border p-4">
           <p className="text-xs text-muted-foreground">Total leads</p>
           <p className="text-2xl font-semibold">{statsQ.data?.total ?? 0}</p>
@@ -183,6 +183,14 @@ export default function AdminLeads() {
           <p className="text-xs text-muted-foreground">Contact form</p>
           <p className="text-2xl font-semibold">{statsQ.data?.contact ?? 0}</p>
         </div>
+        <div className="rounded-lg border p-4">
+          <p className="text-xs text-muted-foreground">Checkout started</p>
+          <p className="text-2xl font-semibold">{(statsQ.data as any)?.checkout ?? 0}</p>
+        </div>
+        <div className="rounded-lg border p-4">
+          <p className="text-xs text-muted-foreground">Availability requests</p>
+          <p className="text-2xl font-semibold">{(statsQ.data as any)?.availability ?? 0}</p>
+        </div>
       </div>
 
       {/* Filters + export */}
@@ -193,13 +201,16 @@ export default function AdminLeads() {
               <SelectValue placeholder="Source" />
             </SelectTrigger>
             <SelectContent>
+              {/* Values are prefix-matched against lead.source server-side, so
+                  each option must be a real prefix — "booking"/"other" matched
+                  nothing and hid every checkout and availability lead. */}
               <SelectItem value="all">All sources</SelectItem>
               <SelectItem value="newsletter">Newsletter</SelectItem>
               <SelectItem value="checkout">Checkout (no consent)</SelectItem>
               <SelectItem value="contact">Contact form</SelectItem>
+              <SelectItem value="checkout">Checkout (started)</SelectItem>
+              <SelectItem value="search-no-availability">Availability request</SelectItem>
               <SelectItem value="owners">Owners</SelectItem>
-              <SelectItem value="booking">Booking</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
             </SelectContent>
           </Select>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
