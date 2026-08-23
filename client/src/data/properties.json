@@ -1978,6 +1978,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "The house and surrounding area are beautiful and so peaceful. The house itself is lovely, comfortable, and a great place to relax. The pool was amazing and so refreshing during the hot Alentejo days.  \n\nWe really loved our stay and would definitely come back.",
+        "guestDisplayName": "Kendall",
+        "guestName": "Kendall",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-22T13:41:37.474Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 2
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Excellent séjour passé avec une autre famille amis dans le Monte de Sossego a Ferreira do Alentejo. \nQuelle belle maison ,simple , joliment décorée au calme avec toutes les installations nécessaires. \nPropreté de la maison au top , l équipe de nettoyage était encore sur place a notre arrivée, et ils ont tout fait pour nous mettre a l aise . \nChambres spacieuses, lit fraîchement faits , propreté irréprochable. \nCuisine super équipée,avec également dans une pièce a part un lave linge et un sèche l",
         "guestDisplayName": "Dalia",
         "guestName": "Dalia",
@@ -2118,7 +2153,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 4
+    "reviewCount": 5
   },
   {
     "id": "guesty-69e7350685a8b000124854c5",
