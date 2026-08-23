@@ -383,6 +383,20 @@ export async function createLead(data: InsertLead) {
   return { id: result[0].insertId };
 }
 
+/**
+ * Move os leads de checkout deste email para o segmento da newsletter.
+ * Corre quando o hóspede aceita o opt-in depois de o lead já ter sido criado
+ * (voltou ao passo 1). Só toca em linhas ainda sem consentimento.
+ */
+export async function promoteCheckoutLeadToNewsletter(email: string) {
+  const db = await getDb();
+  if (!db) return;
+  await db
+    .update(leads)
+    .set({ source: "newsletter-checkout" })
+    .where(and(eq(leads.email, email), eq(leads.source, "checkout")));
+}
+
 export async function updateLead(id: number, data: Partial<InsertLead>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");

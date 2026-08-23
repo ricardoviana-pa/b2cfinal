@@ -228,6 +228,10 @@ export default function CheckoutPage() {
   const [selectedRatePlanId, setSelectedRatePlanId] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [emailTouched, setEmailTouched] = useState(false);
+  // Consentimento de marketing — por omissão desligado (RGPD: opt-in tem de
+  // ser um acto afirmativo). Sem ele o email só serve a recuperação
+  // transacional do checkout; com ele o lead entra no segmento da newsletter.
+  const [newsletterOptIn, setNewsletterOptIn] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
@@ -496,7 +500,7 @@ export default function CheckoutPage() {
     if (!intent || !isValidEmail(email)) return;
     if (!isDemo) {
       captureLead
-        .mutateAsync({ intentId: intent.id, email, locale: lang })
+        .mutateAsync({ intentId: intent.id, email, locale: lang, consent: newsletterOptIn })
         .catch(() => {/* fail-soft: the step advance below never blocks on persistence */});
     }
     utils.checkout.getIntent.setData({ intentId: intent.id }, (prev) =>
@@ -508,7 +512,7 @@ export default function CheckoutPage() {
     }
     setStep("customize");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [intent, email, lang, captureLead, utils, isDemo]);
+  }, [intent, email, lang, captureLead, utils, isDemo, newsletterOptIn]);
 
   /**
    * Aplica/remove o código promocional na quote BE existente (o quoteId
@@ -1420,6 +1424,20 @@ export default function CheckoutPage() {
                 <p className="text-[11.5px] text-pa-stone-aa leading-relaxed">
                   {t("checkout.emailSupport", "We hold your reservation for 24 hours and email you the quote. No spam.")}
                 </p>
+                <label className="flex items-start gap-2.5 cursor-pointer pt-1">
+                  <input
+                    type="checkbox"
+                    checked={newsletterOptIn}
+                    onChange={(e) => setNewsletterOptIn(e.target.checked)}
+                    className="mt-[2px] h-[15px] w-[15px] shrink-0 accent-pa-dark cursor-pointer"
+                  />
+                  <span className="text-[11.5px] text-pa-earth leading-relaxed">
+                    {t(
+                      "checkout.newsletterOptIn",
+                      "Send me occasional inspiration and offers from Portugal Active.",
+                    )}
+                  </span>
+                </label>
                 <button
                   type="button"
                   onClick={submitEmail}

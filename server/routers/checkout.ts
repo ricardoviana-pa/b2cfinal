@@ -27,6 +27,7 @@ import {
   getBookingIntent,
   updateBookingIntent,
   createLead,
+  promoteCheckoutLeadToNewsletter,
 } from "../db";
 import { getPropertiesForSite } from "../services/properties-store";
 import { resolveCleaningRates } from "../config/cleaning-rates";
@@ -536,11 +537,17 @@ export const checkoutRouter = router({
         ...(intent.status === "draft" ? { status: "contact_captured" as const } : {}),
       });
 
-      if (!alreadyCaptured) {
-        try {
+      try {
+        if (!alreadyCaptured) {
           await createLead({
             email: input.email,
-            source: "checkout",
+            // O consentimento decide o SEGMENTO, não só um campo solto: o
+            // backoffice filtra leads por prefixo do source, portanto quem
+            // aceita entra em "newsletter-" (mailing list, remarketing) e
+            // quem não aceita fica em "checkout" — email usável apenas na
+            // recuperação transacional do próprio carrinho, nunca em
+            // campanhas (RGPD: sem opt-in não há base para marketing).
+            source: input.consent ? "newsletter-checkout" : "checkout",
             metadata: {
               intentId: input.intentId,
               listingId: intent.listingId,
@@ -550,10 +557,14 @@ export const checkoutRouter = router({
               locale: input.locale ?? "",
             },
           });
-        } catch (error) {
-          // Lead persistence must never block the funnel
-          console.error("[Checkout] createLead failed:", error);
+        } else if (input.consent) {
+          // Voltou atrás e aceitou depois de o lead já existir: promove o
+          // registo em vez de criar um duplicado.
+          await promoteCheckoutLeadToNewsletter(input.email);
         }
+      } catch (error) {
+        // Lead persistence must never block the funnel
+        console.error("[Checkout] createLead failed:", error);
       }
       return { ok: true };
     }),
