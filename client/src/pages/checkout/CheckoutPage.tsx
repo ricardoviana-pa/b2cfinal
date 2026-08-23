@@ -1424,18 +1424,18 @@ export default function CheckoutPage() {
                 <p className="text-[11.5px] text-pa-stone-aa leading-relaxed">
                   {t("checkout.emailSupport", "We hold your reservation for 24 hours and email you the quote. No spam.")}
                 </p>
-                <label className="flex items-start gap-2.5 cursor-pointer pt-1">
+                {/* Opt-in deliberadamente sóbrio: sem "ofertas"/"newsletter",
+                    que leem como spam e travam a entrada no funil logo no
+                    passo 1. Mesmo tom cinza do texto de apoio acima. */}
+                <label className="flex items-start gap-2.5 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={newsletterOptIn}
                     onChange={(e) => setNewsletterOptIn(e.target.checked)}
-                    className="mt-[2px] h-[15px] w-[15px] shrink-0 accent-pa-dark cursor-pointer"
+                    className="mt-[1px] h-[14px] w-[14px] shrink-0 accent-pa-dark cursor-pointer"
                   />
-                  <span className="text-[11.5px] text-pa-earth leading-relaxed">
-                    {t(
-                      "checkout.newsletterOptIn",
-                      "Send me occasional inspiration and offers from Portugal Active.",
-                    )}
+                  <span className="text-[11.5px] text-pa-stone-aa leading-relaxed">
+                    {t("checkout.newsletterOptIn", "Keep me updated by email.")}
                   </span>
                 </label>
                 <button
