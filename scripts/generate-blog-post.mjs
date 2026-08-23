@@ -87,7 +87,7 @@ const blog = Array.isArray(blogFile) ? blogFile : blogFile.articles;
 if (blog.some(a => a.slug === post.slug)) { console.error(`Slug exists: ${post.slug}`); process.exit(1); }
 const maxId = Math.max(...blog.map(a => Number(a.id) || 0));
 blog.unshift({
-  id: maxId + 1,
+  id: String(maxId + 1),
   slug: post.slug,
   title: post.title,
   excerpt: post.excerpt,
@@ -95,7 +95,8 @@ blog.unshift({
   category: args.category || "destinations",
   destinationTag: homes[0]?.destination || null,
   tags: post.tags || [],
-  author: "Portugal Active",
+  // Shape must match existing articles — BlogArticle reads author.name/.role.
+  author: { id: "ba1", name: "Portugal Active Team", photo: "", bio: "The team behind Portugal Active.", role: "Editorial Team" },
   publishDate: args.date || new Date().toISOString().slice(0, 10),
   readTime: post.readTime || 5,
   status: "published",

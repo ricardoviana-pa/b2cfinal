@@ -17,7 +17,7 @@
   ],
   "articles": [
     {
-      "id": 2,
+      "id": "2",
       "slug": "minho-september-october-harvest-empty-beaches",
       "title": "Minho in September and October: Harvest, Empty Beaches and the Case for Autumn",
       "excerpt": "As the grape harvest sweeps through the Lima and Vez valleys and the coast empties of summer crowds, autumn becomes the Minho's best-kept secret for a private villa stay.",
@@ -32,7 +32,13 @@
         "villa holidays",
         "Portugal autumn"
       ],
-      "author": "Portugal Active",
+      "author": {
+        "id": "ba1",
+        "name": "Portugal Active Team",
+        "photo": "",
+        "bio": "The team behind Portugal Active.",
+        "role": "Editorial Team"
+      },
       "publishDate": "2026-08-24",
       "readTime": 6,
       "status": "published",
@@ -43,7 +49,7 @@
       "seoDescription": "Why September and October are the best months for a private villa in the Minho: vinho verde harvest, quiet beaches, and warm Atlantic light."
     },
     {
-      "id": 1,
+      "id": "1",
       "slug": "peneda-geres-national-park-autumn-2026-guide",
       "title": "Peneda-Gerês in Autumn: Where to Stay for Walking, Waterfalls and Wine",
       "excerpt": "Portugal's only national park is at its best from October to November — cooler trails, full waterfalls and a wine harvest just down the valley. Here's how to base yourself well.",
@@ -58,7 +64,13 @@
         "autumn travel",
         "Portugal luxury villas"
       ],
-      "author": "Portugal Active",
+      "author": {
+        "id": "ba1",
+        "name": "Portugal Active Team",
+        "photo": "",
+        "bio": "The team behind Portugal Active.",
+        "role": "Editorial Team"
+      },
       "publishDate": "2026-08-21",
       "readTime": 6,
       "status": "published",
