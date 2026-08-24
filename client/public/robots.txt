@@ -17,14 +17,18 @@ Disallow: /booking/
 Disallow: /*/booking/
 Disallow: /*.php$
 Disallow: /search?
-# Legacy paths that redirect — save crawl budget
-Disallow: /properties/
-Disallow: /rooms/
-Disallow: /lodges/
-Disallow: /journal/
-Disallow: /category/
-Disallow: /tag/
-Disallow: /author/
+# NOTE: the old Webflow/WordPress paths (/properties/, /rooms/, /lodges/,
+# /journal/, /category/, /tag/, /author/) were listed here to save crawl
+# budget. That was the wrong trade. All of them return 301 to a real page —
+# verified 2026-08-24 — but a blocked path is never fetched, so the redirect
+# is never seen and the authority those URLs still hold never reaches the
+# pages that replaced them. They stayed stuck in the index instead, which is
+# why they kept showing up in search. Crawl budget is cheap; the link equity
+# on a decade of old URLs is not. Leave them crawlable.
+#
+# /wp-admin/ and /wp-login.php stay blocked: they also 301, but to the
+# homepage, so there is no equity to recover — and they are attack-surface
+# noise, not content.
 Disallow: /wp-admin/
 Disallow: /wp-login.php
 
