@@ -310,9 +310,15 @@ const PATTERN_REDIRECTS: PatternRule[] = [
   // /new/* (preview path during migration) → strip /new/ prefix
   {
     pattern: /^\/new\/(.+)$/,
-    resolve: (m, originalPath) => {
-      // Recursively try the path without /new/ prefix
-      return resolvePath(`/${m[1]}`) ?? "/en";
+    resolve: (m) => {
+      const inner = `/${m[1]}`;
+      const resolved = resolvePath(inner);
+      if (resolved) return resolved;
+      // resolvePath returns null for paths that are already live routes, so a
+      // null here means the page exists — send the visitor to it. Returning
+      // "/en" instead dropped anyone on /new/about at the homepage, losing the
+      // page they asked for.
+      return inner === "/" ? "/en" : `/en${inner}`;
     },
   },
 
