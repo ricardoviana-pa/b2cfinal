@@ -998,13 +998,13 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1786010084/production/6957de4388cba42d9e7a905e/pormprfeaq8of4pc8xaw.jpg",
+      "https://assets.guesty.com/image/upload/v1786009964/production/6957de4388cba42d9e7a905e/owllto5zqdxmxxqnjmfj.jpg",
       "https://assets.guesty.com/image/upload/v1786010157/production/6957de4388cba42d9e7a905e/xtabl4eyucasb3wmiuxm.jpg",
       "https://assets.guesty.com/image/upload/v1786010160/production/6957de4388cba42d9e7a905e/k6loggqpxkjdev9hc9mt.jpg",
       "https://assets.guesty.com/image/upload/v1786010167/production/6957de4388cba42d9e7a905e/cx2aiis9dksvrttjmnen.jpg",
       "https://assets.guesty.com/image/upload/v1786010169/production/6957de4388cba42d9e7a905e/mcmrnqjzaecxlr83q5wl.jpg",
       "https://assets.guesty.com/image/upload/v1786010176/production/6957de4388cba42d9e7a905e/hn1ibofj8udwcflh9kwb.jpg",
-      "https://assets.guesty.com/image/upload/v1786009964/production/6957de4388cba42d9e7a905e/owllto5zqdxmxxqnjmfj.jpg",
+      "https://assets.guesty.com/image/upload/v1786010084/production/6957de4388cba42d9e7a905e/pormprfeaq8of4pc8xaw.jpg",
       "https://assets.guesty.com/image/upload/v1786010169/production/6957de4388cba42d9e7a905e/tdch0biux9gfdyqldokg.jpg",
       "https://assets.guesty.com/image/upload/v1786010034/production/6957de4388cba42d9e7a905e/ltmzevkyk3lvpcakzh6d.jpg",
       "https://assets.guesty.com/image/upload/v1786010032/production/6957de4388cba42d9e7a905e/tkskcrsesctwmewxejqi.jpg",
@@ -23993,9 +23993,45 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 2369,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Awesome location and great apartment. It was very clean and cozy. There are three bedrooms downstairs and one is without windows. Each has bathroom which gives you privacy and comfort. The complex the apartment is located in has a shared game and activities space but lack the equipment to play games. The views and beaches around are fantastic- highly recommend.",
+        "guestDisplayName": "Bartosz",
+        "guestName": "Bartosz",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-23T20:19:29.308Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 3
+          },
+          {
+            "name": "checkin",
+            "score": 2
+          },
+          {
+            "name": "communication",
+            "score": 2
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1
   },
   {
     "id": "guesty-696f6aad74604800452a40b8",
