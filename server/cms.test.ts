@@ -67,6 +67,20 @@ function createAnonContext(): TrpcContext {
   };
 }
 
+/**
+ * The tests below marked `itDb` exercise real CRUD against the database.
+ * Vitest does not load .env, so a plain `vitest run` has no DATABASE_URL and
+ * every one of them failed with "Database not available" — six permanent reds
+ * that taught everyone to scroll past this file. They are skipped without a
+ * database and run with one:
+ *
+ *     DATABASE_URL=... npx vitest run server/cms.test.ts
+ *
+ * Everything else here — the auth guards — needs no database: those calls are
+ * rejected before they ever reach one, so they keep running either way.
+ */
+const itDb = process.env.DATABASE_URL ? it : it.skip;
+
 describe("CMS Admin Endpoints", () => {
   const adminCaller = appRouter.createCaller(createAdminContext());
   const userCaller = appRouter.createCaller(createUserContext());
@@ -90,7 +104,7 @@ describe("CMS Admin Endpoints", () => {
       ).rejects.toThrow();
     });
 
-    it("admin can create, list, and delete a service", async () => {
+    itDb("admin can create, list, and delete a service", async () => {
       const created = await adminCaller.services.create({
         name: "Test Chef Service",
         slug: "test-chef-service",
@@ -130,7 +144,7 @@ describe("CMS Admin Endpoints", () => {
       ).rejects.toThrow();
     });
 
-    it("admin can create and delete a review", async () => {
+    itDb("admin can create and delete a review", async () => {
       const created = await adminCaller.reviews.create({
         guestName: "Test Guest",
         guestLocation: "London, UK",
@@ -153,7 +167,7 @@ describe("CMS Admin Endpoints", () => {
       expect(Array.isArray(result)).toBe(true);
     });
 
-    it("admin can create and delete a faq", async () => {
+    itDb("admin can create and delete a faq", async () => {
       const created = await adminCaller.faqs.create({
         question: "Test question?",
         answer: "Test answer.",
@@ -169,7 +183,7 @@ describe("CMS Admin Endpoints", () => {
      LEADS — Public create, admin list + stats
      ================================================================ */
   describe("leads", () => {
-    it("public can create a lead (newsletter signup)", async () => {
+    itDb("public can create a lead (newsletter signup)", async () => {
       const created = await anonCaller.leads.create({
         email: `test-${Date.now()}@example.com`,
         source: "newsletter",
@@ -200,7 +214,7 @@ describe("CMS Admin Endpoints", () => {
      SETTINGS — Admin only
      ================================================================ */
   describe("settings", () => {
-    it("admin can upsert and list settings", async () => {
+    itDb("admin can upsert and list settings", async () => {
       await adminCaller.settings.upsert({
         key: "test_setting",
         value: "test_value",
@@ -220,7 +234,7 @@ describe("CMS Admin Endpoints", () => {
       });
     });
 
-    it("public can get a specific setting", async () => {
+    itDb("public can get a specific setting", async () => {
       // First set it as admin
       await adminCaller.settings.upsert({
         key: "public_test",

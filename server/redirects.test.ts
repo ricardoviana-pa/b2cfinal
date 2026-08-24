@@ -7,52 +7,52 @@ describe("legacyRedirects.resolvePath", () => {
   describe("properties → homes", () => {
     it("maps known Webflow property slug to new home slug", () => {
       expect(resolvePath("/properties/eben-lodge")).toBe(
-        "/homes/portugal-active-eben-lodge-heated-pool-10ecfe"
+        "/en/homes/portugal-active-eben-lodge-heated-pool-10ecfe"
       );
     });
 
     it("maps with trailing slash", () => {
       expect(resolvePath("/properties/sunset-beach-lodge/")).toBe(
-        "/homes/portugal-active-sunset-beach-lodge-heated-pool-5ceb91"
+        "/en/homes/portugal-active-sunset-beach-lodge-heated-pool-5ceb91"
       );
     });
 
     it("maps old WordPress /rooms/ pattern to new home", () => {
       expect(resolvePath("/rooms/atlantic-lodge")).toBe(
-        "/homes/portugal-active-atlantic-lodge-sea-view-premium-10dd49"
+        "/en/homes/portugal-active-atlantic-lodge-sea-view-premium-10dd49"
       );
     });
 
     it("falls back to /homes for unknown property slug", () => {
-      expect(resolvePath("/properties/some-old-removed-villa")).toBe("/homes");
+      expect(resolvePath("/properties/some-old-removed-villa")).toBe("/en/homes");
     });
 
     it("redirects /properties index to /homes", () => {
-      expect(resolvePath("/properties")).toBe("/homes");
-      expect(resolvePath("/properties/")).toBe("/homes");
+      expect(resolvePath("/properties")).toBe("/en/homes");
+      expect(resolvePath("/properties/")).toBe("/en/homes");
     });
   });
 
   describe("adventure / event → experiences", () => {
     it("maps canyoning adventure", () => {
-      expect(resolvePath("/adventure/canyoning")).toBe("/experiences/canyoning");
+      expect(resolvePath("/adventure/canyoning")).toBe("/en/experiences/canyoning");
     });
 
-    it("renames sailing-experience to sailing", () => {
+    it("renames sailing-experience to the yacht experience that replaced it", () => {
       expect(resolvePath("/adventure/sailing-experience")).toBe(
-        "/experiences/sailing"
+        "/en/experiences/yacht"
       );
     });
 
     it("collapses fat-bike + e-bike-wild + city-mountain-bike to ebike-tours", () => {
       expect(resolvePath("/adventure/fat-bike-wild-tour")).toBe(
-        "/experiences/ebike-tours"
+        "/en/experiences/ebike-tours"
       );
-      expect(resolvePath("/event/e-bike-tour")).toBe("/experiences/ebike-tours");
+      expect(resolvePath("/event/e-bike-tour")).toBe("/en/experiences/ebike-tours");
     });
 
     it("/adventures (plural) goes to /experiences index", () => {
-      expect(resolvePath("/adventures")).toBe("/experiences");
+      expect(resolvePath("/adventures")).toBe("/en/experiences");
     });
   });
 
@@ -126,25 +126,25 @@ describe("legacyRedirects.resolvePath", () => {
     });
 
     it("/locations index goes to /destinations", () => {
-      expect(resolvePath("/locations")).toBe("/destinations");
-      expect(resolvePath("/locations/portugal")).toBe("/destinations");
+      expect(resolvePath("/locations")).toBe("/en/destinations");
+      expect(resolvePath("/locations/portugal")).toBe("/en/destinations");
     });
   });
 
   describe("static page renames", () => {
     it.each([
-      ["/about-us", "/about"],
-      ["/about-us.html", "/about"],
-      ["/contact-us", "/contact"],
-      ["/contact.html", "/contact"],
-      ["/why-portugal-active/", "/about"],
-      ["/founder-ricardo-viana/", "/about"],
-      ["/lodges/", "/homes"],
-      ["/our-rooms/", "/homes"],
-      ["/destination/", "/destinations"],
-      ["/news/", "/blog"],
-      ["/cookies-policy/", "/legal/cookies"],
-      ["/terms-conditions/", "/legal/terms"],
+      ["/about-us", "/en/about"],
+      ["/about-us.html", "/en/about"],
+      ["/contact-us", "/en/contact"],
+      ["/contact.html", "/en/contact"],
+      ["/why-portugal-active/", "/en/about"],
+      ["/founder-ricardo-viana/", "/en/about"],
+      ["/lodges/", "/en/homes"],
+      ["/our-rooms/", "/en/homes"],
+      ["/destination/", "/en/destinations"],
+      ["/news/", "/en/blog"],
+      ["/cookies-policy/", "/en/legal/cookies"],
+      ["/terms-conditions/", "/en/legal/terms"],
     ])("redirects %s → %s", (from, to) => {
       expect(resolvePath(from)).toBe(to);
     });
@@ -152,41 +152,41 @@ describe("legacyRedirects.resolvePath", () => {
 
   describe("WordPress noise", () => {
     it("category/tag/author archives → /blog", () => {
-      expect(resolvePath("/category/awards/")).toBe("/blog");
-      expect(resolvePath("/tag/luxury-villas/")).toBe("/blog");
-      expect(resolvePath("/author/ricardo/")).toBe("/blog");
+      expect(resolvePath("/category/awards/")).toBe("/en/blog");
+      expect(resolvePath("/tag/luxury-villas/")).toBe("/en/blog");
+      expect(resolvePath("/author/ricardo/")).toBe("/en/blog");
     });
 
     it("date archives → /blog", () => {
-      expect(resolvePath("/2023/02/07/")).toBe("/blog");
-      expect(resolvePath("/2024/07/05/")).toBe("/blog");
+      expect(resolvePath("/2023/02/07/")).toBe("/en/blog");
+      expect(resolvePath("/2024/07/05/")).toBe("/en/blog");
     });
 
     it("hotel-cart variants → /homes", () => {
-      expect(resolvePath("/hotel-cart/")).toBe("/homes");
-      expect(resolvePath("/hotel-checkout/")).toBe("/homes");
+      expect(resolvePath("/hotel-cart/")).toBe("/en/homes");
+      expect(resolvePath("/hotel-checkout/")).toBe("/en/homes");
     });
 
     it("wp-login → /", () => {
-      expect(resolvePath("/wp-login.php")).toBe("/");
+      expect(resolvePath("/wp-login.php")).toBe("/en");
     });
 
     it("Joomla index.php → /", () => {
-      expect(resolvePath("/index.php?page=aboutus")).toBe("/");
-      expect(resolvePath("/index.html")).toBe("/");
+      expect(resolvePath("/index.php?page=aboutus")).toBe("/en");
+      expect(resolvePath("/index.html")).toBe("/en");
     });
 
     it("legacy *.html catch-all → /", () => {
-      expect(resolvePath("/cycling.html")).toBe("/");
-      expect(resolvePath("/walking-non-guided.html")).toBe("/");
+      expect(resolvePath("/cycling.html")).toBe("/en");
+      expect(resolvePath("/walking-non-guided.html")).toBe("/en");
     });
   });
 
   describe("/new/* preview prefix", () => {
     it("strips /new/ and re-resolves", () => {
-      expect(resolvePath("/new/about")).toBe("/about");
+      expect(resolvePath("/new/about")).toBe("/en/about");
       expect(resolvePath("/new/rooms/eben-lodge/")).toBe(
-        "/homes/portugal-active-eben-lodge-heated-pool-10ecfe"
+        "/en/homes/portugal-active-eben-lodge-heated-pool-10ecfe"
       );
     });
   });
@@ -209,22 +209,22 @@ describe("legacyRedirects.resolvePath", () => {
 
   describe("single-segment slug fallback", () => {
     it("/old-blog-slug-without-prefix/ → /blog (likely WP post)", () => {
-      expect(resolvePath("/best-things-to-do-in-viana-do-castelo")).toBe("/blog");
-      expect(resolvePath("/founder-ricardo-viana/")).toBe("/about"); // STATIC wins
+      expect(resolvePath("/best-things-to-do-in-viana-do-castelo")).toBe("/en/blog");
+      expect(resolvePath("/founder-ricardo-viana/")).toBe("/en/about"); // STATIC wins
     });
   });
 });
 
 describe("regressions from old ad-hoc routes (now consolidated)", () => {
   it.each([
-    ["/journal", "/blog"],
-    ["/journal/", "/blog"],
-    ["/account/login", "/login"],
-    ["/index", "/"],
-    ["/new", "/"],
-    ["/new/", "/"],
-    ["/event/horse", "/experiences/horseback-riding"],
-    ["/event/horse/", "/experiences/horseback-riding"],
+    ["/journal", "/en/blog"],
+    ["/journal/", "/en/blog"],
+    ["/account/login", "/en/login"],
+    ["/index", "/en"],
+    ["/new", "/en"],
+    ["/new/", "/en"],
+    ["/event/horse", "/en/experiences/horseback-riding"],
+    ["/event/horse/", "/en/experiences/horseback-riding"],
   ])("preserves redirect for %s → %s", (from, to) => {
     expect(__testing.resolvePath(from)).toBe(to);
   });
@@ -256,25 +256,25 @@ describe("locale-only paths pass through", () => {
 describe("GSC 404 report gaps (May 2026 audit)", () => {
   it("known blog slugs at /journal/<slug> redirect to /blog/<slug>", () => {
     expect(__testing.resolvePath("/journal/complete-guide-north-portugal"))
-      .toBe("/blog/complete-guide-north-portugal");
+      .toBe("/en/blog/complete-guide-north-portugal");
     expect(__testing.resolvePath("/journal/porto-douro-valley-guide"))
-      .toBe("/blog/porto-douro-valley-guide");
+      .toBe("/en/blog/porto-douro-valley-guide");
   });
 
   it("unknown /journal/<slug> falls back to /blog", () => {
-    expect(__testing.resolvePath("/journal/minho-vs-algarve")).toBe("/blog");
-    expect(__testing.resolvePath("/journal/viana-do-castelo-guide")).toBe("/blog");
-    expect(__testing.resolvePath("/journal/algarve-beyond-resorts")).toBe("/blog");
+    expect(__testing.resolvePath("/journal/minho-vs-algarve")).toBe("/en/blog");
+    expect(__testing.resolvePath("/journal/viana-do-castelo-guide")).toBe("/en/blog");
+    expect(__testing.resolvePath("/journal/algarve-beyond-resorts")).toBe("/en/blog");
   });
 
   it("WP feed/author paths under /new/ go home or about", () => {
-    expect(__testing.resolvePath("/new/comments/feed/")).toBe("/");
-    expect(__testing.resolvePath("/new/author/ricardo/")).toBe("/about");
-    expect(__testing.resolvePath("/new/author/portugalactive/")).toBe("/about");
+    expect(__testing.resolvePath("/new/comments/feed/")).toBe("/en");
+    expect(__testing.resolvePath("/new/author/ricardo/")).toBe("/en/about");
+    expect(__testing.resolvePath("/new/author/portugalactive/")).toBe("/en/about");
   });
 
-  it("/event/sailing- (typo with trailing hyphen) still resolves to sailing", () => {
-    expect(__testing.resolvePath("/event/sailing-")).toBe("/experiences/sailing");
-    expect(__testing.resolvePath("/event/sailing-/")).toBe("/experiences/sailing");
+  it("/event/sailing- (typo with trailing hyphen) still resolves to the yacht experience", () => {
+    expect(__testing.resolvePath("/event/sailing-")).toBe("/en/experiences/yacht");
+    expect(__testing.resolvePath("/event/sailing-/")).toBe("/en/experiences/yacht");
   });
 });
