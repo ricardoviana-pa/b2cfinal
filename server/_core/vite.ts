@@ -6,6 +6,7 @@ import path from "path";
 import { pathToFileURL } from "node:url";
 import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
+import { isNonIndexableHost } from "../lib/hosts.js";
 
 /** Server-side rendering kill-switch. SSR is ON by default (phases 0-3 shipped,
  *  tested, hydration verified clean); set the Render env var SSR_ENABLED=false to
@@ -1637,6 +1638,15 @@ export function serveStatic(app: Express) {
     // og:locale, and <html lang>. This is the critical SEO fix: every
     // /{lang}/{path} response tells Google it's a distinct indexable version.
     html = injectLocaleTags(html, { lang, pagePath: p });
+
+    // Non-production hosts (dev, previews) must not be indexed. The
+    // X-Robots-Tag header already says so; this stops the markup saying the
+    // opposite. Same helper as the middleware, so the two cannot drift.
+    // Must happen HERE, with the checkout rewrite: several branches below
+    // return early on cache hits.
+    if (isNonIndexableHost(req.headers.host)) {
+      html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
+    }
 
     // Checkout pages are transactional capability URLs — never indexable.
     // Must happen HERE: several branches below return early (cache hits).

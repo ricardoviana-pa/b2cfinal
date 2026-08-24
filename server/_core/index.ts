@@ -25,6 +25,7 @@ import { runDatesOpenedAlerts } from "../services/dates-opened-alert";
 import { applyCleaningFeeFix } from "../services/cleaning-fee-sync";
 import cron from "node-cron";
 import { legacyRedirects } from "../lib/redirects.js";
+import { isNonIndexableHost } from "../lib/hosts.js";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -151,9 +152,7 @@ async function startServer() {
   // than the meta tag so it also covers non-HTML responses, and it is driven by
   // the request Host so no per-environment config can drift out of sync.
   app.use((req, res, next) => {
-    const host = String(req.headers.host || "").toLowerCase();
-    const isProdHost = host === "www.portugalactive.com" || host === "portugalactive.com";
-    if (!isProdHost && !host.startsWith("localhost") && !host.startsWith("127.0.0.1")) {
+    if (isNonIndexableHost(req.headers.host)) {
       res.setHeader("X-Robots-Tag", "noindex, nofollow");
     }
     next();
