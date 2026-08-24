@@ -1104,7 +1104,11 @@
     "ctaBody": "Jokainen artikkeli on inspiroitunut oikeista paikoista, oikeista kokemuksista ja oikeista vieraista. Tutustu kokoelmaamme ja aloita oleskelusi suunnittelu.",
     "ctaExplore": "Tutustu koteihimme",
     "ctaConcierge": "Keskustele concierge-palvelumme kanssa",
-    "relatedStories": "Aiheeseen liittyvät tarinat"
+    "relatedStories": "Aiheeseen liittyvät tarinat",
+    "relatedHomes": "Majoitu lähistöllä",
+    "relatedHomesSub": "Kotimme tällä alueella.",
+    "bedroomCount_one": "{{count}} makuuhuone",
+    "bedroomCount_other": "{{count}} makuuhuonetta"
   },
   "experienceDetail": {
     "notFound": "Elämystä ei löytynyt",

@@ -1015,6 +1015,58 @@ function buildBlogSeoBody(post: any, lang: string): string {
   return `<article>${breadcrumb}<h1>${escText(title)}</h1>${img}${excerpt}${body}</article>`;
 }
 
+/** Anchor-only index of property links, for the routes whose grid is built
+ *  client-side.
+ *
+ *  The listing grid reads trpc.properties.listForSite, and that query is
+ *  deliberately NOT SSR-prefetched: the full list dehydrates to ~1.3 MB, far
+ *  too heavy to embed (see buildPrefetch). The unintended side effect was that
+ *  /homes and the destination hubs shipped zero <a href="/{lang}/homes/{slug}">
+ *  in the raw HTML — the sitemap listed every property, but no page linked to
+ *  one, so a crawler that does not run JS had no internal path to a PDP.
+ *
+ *  This emits the anchors alone (~7 KB for the whole portfolio): the links
+ *  Google needs, without the payload we rejected. Same #seo-content lifecycle
+ *  as the CSR fallback — removed during parse, before React mounts — so it is
+ *  invisible to users and cannot desync hydration. */
+const _linkIndexCache = new Map<string, { html: string; at: number }>();
+const LINK_INDEX_TTL_MS = 10 * 60 * 1000;
+
+async function buildPropertyLinkIndex(strippedPath: string, lang: string): Promise<string> {
+  let destination: string | null = null;
+  if (strippedPath !== "/homes") {
+    const m = strippedPath.match(/^\/destinations\/([^/]+)$/);
+    if (!m) return "";
+    destination = m[1].toLowerCase();
+  }
+
+  const key = `${lang}:${strippedPath}`;
+  const hit = _linkIndexCache.get(key);
+  if (hit && Date.now() - hit.at < LINK_INDEX_TTL_MS) return hit.html;
+
+  try {
+    const { getPropertiesForSite } = await import("../services/properties-store");
+    const all = await getPropertiesForSite();
+    const list = all.filter(
+      (pr: any) =>
+        pr?.slug &&
+        (destination === null || String(pr.destination ?? "").toLowerCase() === destination),
+    );
+    if (!list.length) return "";
+    const items = list
+      .map(
+        (pr: any) =>
+          `<li><a href="/${lang}/homes/${pr.slug}">${escText(String(pr.name ?? pr.slug))}</a></li>`,
+      )
+      .join("");
+    const html = `<nav aria-label="Homes"><ul>${items}</ul></nav>`;
+    _linkIndexCache.set(key, { html, at: Date.now() });
+    return html;
+  } catch {
+    return "";
+  }
+}
+
 /** Inject a crawlable body block after #root, plus an inline script that
  *  removes it during HTML parse — before the React module executes — so JS
  *  users never see it (no flash, no duplicate content). */
@@ -1449,6 +1501,25 @@ export function serveStatic(app: Express) {
     if (m) {
       return { propertyBySlug: { slug: m[1], data: await getPropertyBySlugCached(m[1]) } };
     }
+    // Blog articles: seed the handful of homes shown under the article, so
+    // those links are in the served HTML. This is the whole point of the
+    // block — an article that only links to homes after hydration passes no
+    // authority to the property pages and helps no crawler.
+    const blogMatch = strippedPath.match(/^\/blog\/([^/]+)$/);
+    if (blogMatch) {
+      try {
+        const post = await getBlogArticleBySlugCached(blogMatch[1], "en");
+        if (post) {
+          const input = { destinationTag: post.destinationTag ?? null, limit: 4 };
+          const { getRelatedHomes } = await import("../services/related-homes");
+          return { relatedHomes: { input, data: await getRelatedHomes(input.destinationTag, input.limit) } };
+        }
+      } catch {
+        return undefined;
+      }
+      return undefined;
+    }
+
     // Pages carrying the search widget: seed the destination options (~15
     // entries) so the picker is populated in the SSR HTML. Without this it
     // rendered empty until the ~1.3 MB property list arrived — on mobile that
@@ -1522,9 +1593,16 @@ export function serveStatic(app: Express) {
             _ssrRenderCache.set(reqPath, entry);
           }
           const rqScript = `<script>window.__RQ_STATE__=${scriptString(entry.dehydratedState)}</script>`;
+          // The SSR markup for listing routes has no property cards (their
+          // query is not prefetched), so append the anchor-only link index.
+          const linkIndex = await buildPropertyLinkIndex(strippedPath, extractLang(reqPath));
+          const linkBlock = linkIndex
+            ? `\n    <div id="seo-content">${linkIndex}</div>` +
+              `<script>(function(){var e=document.getElementById('seo-content');if(e&&e.parentNode)e.parentNode.removeChild(e);})();</script>`
+            : "";
           return html.replace(
             '<div id="root"></div>',
-            `<div id="root">${entry.appHtml}</div>\n    ${rqScript}`,
+            `<div id="root">${entry.appHtml}</div>\n    ${rqScript}${linkBlock}`,
           );
         } catch (err) {
           console.error(`[SSR] render failed for ${reqPath}, falling back to CSR:`, (err as Error).message);

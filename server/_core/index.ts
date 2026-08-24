@@ -142,6 +142,23 @@ async function startServer() {
   // Replaces ~30 ad-hoc app.get(...) calls with a centralised, table-driven middleware.
   // Source: Wayback Machine inventory + properties.json slug mapping.
   // See server/lib/redirects.ts for full coverage and tests.
+  // Keep non-production hosts out of the index.
+  //
+  // dev.portugalactive.com serves the same pages as www with the same
+  // "index, follow" meta, which makes it a second crawlable copy of the whole
+  // catalogue competing with the real site. The canonical points at www, which
+  // limits the damage but does not stop the crawling. A header is used rather
+  // than the meta tag so it also covers non-HTML responses, and it is driven by
+  // the request Host so no per-environment config can drift out of sync.
+  app.use((req, res, next) => {
+    const host = String(req.headers.host || "").toLowerCase();
+    const isProdHost = host === "www.portugalactive.com" || host === "portugalactive.com";
+    if (!isProdHost && !host.startsWith("localhost") && !host.startsWith("127.0.0.1")) {
+      res.setHeader("X-Robots-Tag", "noindex, nofollow");
+    }
+    next();
+  });
+
   app.use(legacyRedirects);
 
   // Dynamic sitemap.xml with multi-language support
@@ -156,6 +173,16 @@ async function startServer() {
       const serviceItems = await listServices({ activeOnly: true });
       const base = "https://www.portugalactive.com";
       const now = new Date().toISOString().split("T")[0];
+
+      // Pages whose content only moves when we deploy (static routes, and the
+      // curated JSON collections that ship inside the bundle) are dated by the
+      // build itself. Using today's date instead would claim a change that did
+      // not happen, and a <lastmod> that is always "today" is one a crawler
+      // learns to ignore.
+      let deployDate = now;
+      try {
+        deployDate = fs.statSync(process.argv[1]).mtime.toISOString().split("T")[0];
+      } catch { /* fall back to today */ }
 
       const staticPages = [
         { loc: "/", priority: "1.0", changefreq: "daily" },
@@ -201,7 +228,7 @@ async function startServer() {
       // Static pages × all languages
       for (const lang of SITEMAP_LANGS) {
         for (const p of staticPages) {
-          allUrls.push(url(p.loc, lang, now, p.changefreq, p.priority));
+          allUrls.push(url(p.loc, lang, deployDate, p.changefreq, p.priority));
         }
       }
 
@@ -209,26 +236,71 @@ async function startServer() {
       const dynamicPages: { path: string; lastmod: string; changefreq: string; priority: string }[] = [];
 
       for (const p of properties.filter((p: any) => p.slug)) {
-        dynamicPages.push({ path: `/homes/${(p as any).slug}`, lastmod: now, changefreq: "weekly", priority: "0.9" });
+        // lastModified is stamped by the Guesty sync from a fingerprint of the
+        // page-defining fields, so an untouched home keeps its old date and a
+        // real change stands out. Homes synced before that shipped have no
+        // stamp yet and fall back to the deploy date.
+        const lastmod = (p as any).lastModified || deployDate;
+        dynamicPages.push({ path: `/homes/${(p as any).slug}`, lastmod, changefreq: "weekly", priority: "0.9" });
       }
 
-      for (const p of blogPosts.filter((p: any) => p.slug)) {
+      // Blog: articles live in client/src/data/blog.json, NOT the blogPosts
+      // table (see getBlogArticleBySlugCached in _core/vite.ts). Querying only
+      // the DB silently emitted zero /blog/* URLs while 39 published articles
+      // were live and returning 200 — orphaned from the sitemap. Union both so
+      // the file-based articles are covered and any future DB post still is.
+      const blogSlugs = new Set<string>();
+      try {
+        const blogPath = path.join(process.cwd(), "client", "src", "data", "blog.json");
+        const blogFile = JSON.parse(fs.readFileSync(blogPath, "utf-8"));
+        for (const a of (blogFile.articles || [])) {
+          if (!a?.slug || a.status !== "published") continue;
+          blogSlugs.add(a.slug);
+          const lastmod = a.publishDate ? new Date(a.publishDate).toISOString().split("T")[0] : now;
+          dynamicPages.push({ path: `/blog/${a.slug}`, lastmod, changefreq: "monthly", priority: "0.8" });
+        }
+      } catch (e) {
+        console.warn("[Sitemap] could not load blog.json", e);
+      }
+
+      for (const p of blogPosts.filter((p: any) => p.slug && !blogSlugs.has((p as any).slug))) {
         const mod = (p as any).updatedAt || (p as any).publishedAt || (p as any).createdAt;
         const lastmod = mod ? new Date(mod).toISOString().split("T")[0] : now;
         dynamicPages.push({ path: `/blog/${(p as any).slug}`, lastmod, changefreq: "monthly", priority: "0.8" });
       }
 
-      for (const s of serviceItems.filter((s: any) => s.slug)) {
-        dynamicPages.push({ path: `/services/${(s as any).slug}`, lastmod: now, changefreq: "monthly", priority: "0.8" });
+      // Services: same split as the blog — the live pages are driven by
+      // client/src/data/services.json while listServices() reads an empty
+      // table, so every /services/* URL was missing from the sitemap despite
+      // returning 200. Union both, file first.
+      const serviceSlugs = new Set<string>();
+      try {
+        const svcPath = path.join(process.cwd(), "client", "src", "data", "services.json");
+        const svcFile = JSON.parse(fs.readFileSync(svcPath, "utf-8"));
+        for (const sv of (svcFile.services || svcFile || [])) {
+          if (!sv?.slug) continue;
+          serviceSlugs.add(sv.slug);
+          dynamicPages.push({ path: `/services/${sv.slug}`, lastmod: deployDate, changefreq: "monthly", priority: "0.8" });
+        }
+      } catch (e) {
+        console.warn("[Sitemap] could not load services.json", e);
+      }
+
+      for (const s of serviceItems.filter((s: any) => s.slug && !serviceSlugs.has((s as any).slug))) {
+        dynamicPages.push({ path: `/services/${(s as any).slug}`, lastmod: deployDate, changefreq: "monthly", priority: "0.8" });
       }
 
       // Experience detail pages (from static JSON — these are curated activity PDPs)
       try {
-        const expPath = path.resolve(import.meta.dirname || __dirname, "..", "..", "client", "src", "data", "experienceDetails.json");
+        // process.cwd(), not __dirname: the server is bundled to dist/index.js,
+        // where "../.." resolved to the parent of the project root and this
+        // read failed with ENOENT on every request — the catch below turned
+        // that into a warning, so the sitemap shipped with no experience URLs.
+        const expPath = path.join(process.cwd(), "client", "src", "data", "experienceDetails.json");
         const expData = JSON.parse(fs.readFileSync(expPath, "utf-8"));
         for (const exp of (expData.experiences || [])) {
           if (exp.slug) {
-            dynamicPages.push({ path: `/experiences/${exp.slug}`, lastmod: now, changefreq: "monthly", priority: "0.8" });
+            dynamicPages.push({ path: `/experiences/${exp.slug}`, lastmod: deployDate, changefreq: "monthly", priority: "0.8" });
           }
         }
       } catch (e) {
@@ -259,7 +331,9 @@ ${allUrls.join("\n")}
   // ── IndexNow: notify Bing/Yandex when content changes ──────────────
   // POST /api/indexnow { urls: ["/homes/new-villa-slug"] }
   // Protected by admin key. Call after property sync or blog publish.
-  const INDEXNOW_KEY = process.env.INDEXNOW_KEY || 'portugalactive2024indexnow';
+  // Key + submission live in services/indexnow.ts so the Guesty sync and this
+  // route cannot drift apart on the key or the endpoint contract.
+  const { INDEXNOW_KEY, submitUrls } = await import("../services/indexnow");
 
   // Serve the key verification file
   app.get(`/${INDEXNOW_KEY}.txt`, (_req, res) => {
@@ -274,25 +348,9 @@ ${allUrls.join("\n")}
     const { urls } = req.body as { urls?: string[] };
     if (!urls || !urls.length) return res.status(400).json({ error: 'urls[] required' });
 
-    const base = 'https://www.portugalactive.com';
-    const fullUrls = urls.map(u => u.startsWith('http') ? u : `${base}${u}`);
-
-    try {
-      const resp = await fetch('https://api.indexnow.org/indexnow', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          host: 'www.portugalactive.com',
-          key: INDEXNOW_KEY,
-          keyLocation: `${base}/${INDEXNOW_KEY}.txt`,
-          urlList: fullUrls,
-        }),
-      });
-      res.json({ status: resp.status, submitted: fullUrls.length });
-    } catch (err) {
-      console.error('[IndexNow] ping failed:', err);
-      res.status(502).json({ error: 'IndexNow ping failed' });
-    }
+    const result = await submitUrls(urls);
+    if (!result.ok) return res.status(502).json({ error: result.error ?? `IndexNow returned ${result.status}` });
+    res.json({ status: result.status, submitted: result.submitted });
   });
 
   // Admin email trigger endpoints
