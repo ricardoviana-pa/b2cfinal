@@ -1,4 +1,4 @@
-import { eq, desc, asc, and, like, sql, inArray, isNotNull, gt, lt } from "drizzle-orm";
+import { eq, desc, asc, and, or, like, sql, inArray, isNotNull, gt, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   InsertUser, users,
@@ -417,7 +417,13 @@ export async function getLeadStats() {
   const [contact] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(like(leads.source, "contact%"));
   // Emails captured mid-funnel: checkout step 1, and "tell me when it opens"
   // requests from a search with no availability. Both were invisible here.
-  const [checkout] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(like(leads.source, "checkout%"));
+  // Conta as DUAS origens do checkout: quem nao deu opt-in fica "checkout" e
+  // quem deu nasce "newsletter-checkout" — sem o OR o tile subcontava o funil
+  // a partir do momento em que o opt-in entrou em producao (24 ago 2026).
+  const [checkout] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(leads)
+    .where(or(like(leads.source, "checkout%"), like(leads.source, "newsletter-checkout%")));
   const [availability] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(like(leads.source, "search-no-availability%"));
   const [newLeads] = await db.select({ count: sql<number>`count(*)` }).from(leads).where(eq(leads.status, "new"));
   return {

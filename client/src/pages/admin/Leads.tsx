@@ -206,9 +206,10 @@ export default function AdminLeads() {
                   nothing and hid every checkout and availability lead. */}
               <SelectItem value="all">All sources</SelectItem>
               <SelectItem value="newsletter">Newsletter</SelectItem>
-              <SelectItem value="checkout">Checkout (no consent)</SelectItem>
               <SelectItem value="contact">Contact form</SelectItem>
-              <SelectItem value="checkout">Checkout (started)</SelectItem>
+              {/* "checkout" so apanha quem NAO deu opt-in: com consentimento o
+                  lead nasce "newsletter-checkout" e cai no filtro Newsletter. */}
+              <SelectItem value="checkout">Checkout (no opt-in)</SelectItem>
               <SelectItem value="search-no-availability">Availability request</SelectItem>
               <SelectItem value="owners">Owners</SelectItem>
             </SelectContent>
