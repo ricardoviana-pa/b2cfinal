@@ -1104,7 +1104,11 @@
     "ctaBody": "Elk artikel is geïnspireerd door echte plaatsen, echte ervaringen en echte gasten. Bekijk onze collectie en begin met het plannen van uw verblijf.",
     "ctaExplore": "Ontdek onze woningen",
     "ctaConcierge": "Praat met onze concierge",
-    "relatedStories": "Gerelateerde verhalen"
+    "relatedStories": "Gerelateerde verhalen",
+    "relatedHomes": "Verblijf in de buurt",
+    "relatedHomesSub": "Huizen die wij in deze streek beheren.",
+    "bedroomCount_one": "{{count}} slaapkamer",
+    "bedroomCount_other": "{{count}} slaapkamers"
   },
   "experienceDetail": {
     "notFound": "Ervaring niet gevonden",

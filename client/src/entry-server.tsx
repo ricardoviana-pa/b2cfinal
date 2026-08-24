@@ -46,6 +46,9 @@ export interface RenderPrefetch {
   propertyBySlug?: { slug: string; data: unknown };
   /** Result of trpc.properties.localities — tiny, seeds the search dropdowns. */
   localities?: unknown;
+  /** Result of trpc.properties.relatedHomes for a blog article — a few slim
+   *  records, so the article's outbound home links are in the served HTML. */
+  relatedHomes?: { input: { destinationTag: string | null; limit: number }; data: unknown };
 }
 
 export interface RenderOptions {
@@ -111,6 +114,12 @@ export async function render(url: string, opts?: RenderOptions): Promise<RenderR
     queryClient.setQueryData(
       getQueryKey(trpc.properties.localities, undefined, 'query'),
       pf.localities,
+    );
+  }
+  if (pf?.relatedHomes) {
+    queryClient.setQueryData(
+      getQueryKey(trpc.properties.relatedHomes, pf.relatedHomes.input, 'query'),
+      pf.relatedHomes.data,
     );
   }
 

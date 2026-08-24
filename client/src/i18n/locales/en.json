@@ -1332,7 +1332,11 @@
     "ctaBody": "Every article is inspired by real places, real experiences, and real guests. Explore our collection and start planning your stay.",
     "ctaExplore": "Explore our homes",
     "ctaConcierge": "Talk to our concierge",
-    "relatedStories": "Related Stories"
+    "relatedStories": "Related Stories",
+    "relatedHomes": "Stay nearby",
+    "relatedHomesSub": "Homes we manage in this part of the country.",
+    "bedroomCount_one": "{{count}} bedroom",
+    "bedroomCount_other": "{{count}} bedrooms"
   },
   "cancellationPolicy": {
     "overline": "LEGAL",

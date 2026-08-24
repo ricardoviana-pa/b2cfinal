@@ -1104,7 +1104,11 @@
     "ctaBody": "Ogni articolo è ispirato da luoghi reali, esperienze reali e ospiti reali. Esplora la nostra collezione e inizia a pianificare il tuo soggiorno.",
     "ctaExplore": "Scopri le nostre case",
     "ctaConcierge": "Parla con il nostro concierge",
-    "relatedStories": "Storie correlate"
+    "relatedStories": "Storie correlate",
+    "relatedHomes": "Soggiorna nelle vicinanze",
+    "relatedHomesSub": "Case che gestiamo in questa zona del paese.",
+    "bedroomCount_one": "{{count}} camera",
+    "bedroomCount_other": "{{count}} camere"
   },
   "experienceDetail": {
     "notFound": "Esperienza non trovata",

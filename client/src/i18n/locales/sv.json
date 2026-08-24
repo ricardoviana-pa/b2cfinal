@@ -1104,7 +1104,11 @@
     "ctaBody": "Varje artikel är inspirerad av riktiga platser, riktiga upplevelser och riktiga gäster. Utforska vår kollektion och börja planera din vistelse.",
     "ctaExplore": "Utforska våra hem",
     "ctaConcierge": "Prata med vår concierge",
-    "relatedStories": "Relaterade berättelser"
+    "relatedStories": "Relaterade berättelser",
+    "relatedHomes": "Bo i närheten",
+    "relatedHomesSub": "Boenden vi sköter i den här delen av landet.",
+    "bedroomCount_one": "{{count}} sovrum",
+    "bedroomCount_other": "{{count}} sovrum"
   },
   "experienceDetail": {
     "notFound": "Upplevelse hittades inte",

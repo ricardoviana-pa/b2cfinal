@@ -15,6 +15,7 @@ import AnswerCapsule from '@/components/seo/AnswerCapsule';
 import type { BlogArticle as BlogArticleType } from '@/lib/types';
 import blogData from '@/data/blog.json';
 import { loadBlogOverrides, mergeBlogOverride } from '@/lib/localizeBlog';
+import { trpc } from '@/lib/trpc';
 
 const articles = (blogData as any).articles as BlogArticleType[];
 
@@ -33,9 +34,18 @@ function renderInline(text: string) {
     } else if (match[2] && match[3]) {
       const href = match[3];
       const isExternal = href.startsWith('http');
+      const linkClass = 'text-pa-gold-aa underline underline-offset-2 hover:text-[#1A1A18] transition-colors';
+      // Internal links go through wouter's <Link>, which applies the locale
+      // base. Authored as "/homes/x", a raw <a> would hit the bare path and
+      // bounce through a 301 to "/{lang}/homes/x" — 27 such links across the
+      // articles, each spending a redirect and, off English, dropping the
+      // reader into whichever locale the redirect guessed.
       parts.push(
-        <a key={key++} href={href} className="text-[#8B7355] underline underline-offset-2 hover:text-[#1A1A18] transition-colors"
-          {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{match[2]}</a>
+        isExternal ? (
+          <a key={key++} href={href} className={linkClass} target="_blank" rel="noopener noreferrer">{match[2]}</a>
+        ) : (
+          <Link key={key++} href={href} className={linkClass}>{match[2]}</Link>
+        )
       );
     }
     lastIndex = match.index + match[0].length;
@@ -141,6 +151,16 @@ export default function BlogArticle() {
       readTimeMinutes: article.readTime ?? null,
     });
   }, [article]);
+
+  // Homes to send the reader to. Keyed off rawArticle, not the merged one:
+  // destinationTag is language-independent and the locale overrides load
+  // asynchronously, so using the merged article would change the query key
+  // mid-flight and refetch data the server already embedded.
+  const { data: relatedHomesData } = trpc.properties.relatedHomes.useQuery(
+    { destinationTag: (rawArticle as any)?.destinationTag ?? null, limit: 4 },
+    { enabled: Boolean(rawArticle) },
+  );
+  const relatedHomes = relatedHomesData ?? [];
 
   if (!article) {
     return (
@@ -318,6 +338,49 @@ export default function BlogArticle() {
           </div>
         </div>
       </section>
+
+      {/* Related Homes — the article's link into the portfolio. Prefetched on
+          the server (see buildPrefetch) so these anchors are in the served
+          HTML rather than appearing only after hydration. */}
+      {relatedHomes.length > 0 && (
+        <section className="section-padding bg-[#FAFAF7]">
+          <div className="container">
+            <h2 className="text-[#1A1A18] mb-2">{t('blogArticle.relatedHomes')}</h2>
+            <p className="text-pa-stone-aa mb-8">{t('blogArticle.relatedHomesSub')}</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {relatedHomes.map(home => (
+                <Link key={home.slug} href={`/homes/${home.slug}`} className="group block">
+                  <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] mb-3">
+                    {home.image && (
+                      <img
+                        src={cdnResize(home.image, 640)}
+                        srcSet={cdnSrcSet(home.image, [320, 480, 640])}
+                        sizes="(min-width: 768px) 22vw, 45vw"
+                        alt={`${home.name} – Portugal Active`}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        loading="lazy"
+                        width={640}
+                        height={480}
+                        decoding="async"
+                      />
+                    )}
+                  </div>
+                  <h3 className="text-base font-display text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors line-clamp-2">
+                    {home.name}
+                  </h3>
+                  {(home.locality || home.bedrooms) && (
+                    <p className="text-sm text-pa-stone-aa mt-1">
+                      {[home.locality, home.bedrooms ? t('blogArticle.bedroomCount', { count: home.bedrooms }) : null]
+                        .filter(Boolean)
+                        .join(' · ')}
+                    </p>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Related Articles */}
       {relatedArticles.length > 0 && (
