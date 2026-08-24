@@ -28,6 +28,7 @@ import {
   updateBookingIntent,
   createLead,
   promoteCheckoutLeadToNewsletter,
+  demoteCheckoutLeadFromNewsletter,
 } from "../db";
 import { getPropertiesForSite } from "../services/properties-store";
 import { resolveCleaningRates } from "../config/cleaning-rates";
@@ -561,6 +562,11 @@ export const checkoutRouter = router({
           // Voltou atrás e aceitou depois de o lead já existir: promove o
           // registo em vez de criar um duplicado.
           await promoteCheckoutLeadToNewsletter(input.email);
+        } else {
+          // ...e desmarcar retira. Sem este ramo o consentimento era
+          // write-once: quem aceitava, voltava atrás e desmarcava ficava na
+          // mailing list na mesma. Vence sempre o último estado da caixa.
+          await demoteCheckoutLeadFromNewsletter(input.email);
         }
       } catch (error) {
         // Lead persistence must never block the funnel

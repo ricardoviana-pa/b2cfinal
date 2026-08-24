@@ -393,8 +393,25 @@ export async function promoteCheckoutLeadToNewsletter(email: string) {
   if (!db) return;
   await db
     .update(leads)
-    .set({ source: "newsletter-checkout" })
+    .set({ source: "newsletter-checkout", metadata: { consent: "true" } })
     .where(and(eq(leads.email, email), eq(leads.source, "checkout")));
+}
+
+/**
+ * O inverso: retira do segmento da newsletter quem desmarcou o opt-in antes
+ * de avançar. Sem isto o consentimento era write-once — desmarcar a caixa não
+ * fazia nada e a pessoa ficava na mailing list contra a sua última vontade,
+ * que é precisamente o que o RGPD trata como consentimento não retirável.
+ * Só toca em leads nascidos do checkout: quem subscreveu no rodapé do site
+ * ("newsletter-footer") nunca é afetado por uma reserva.
+ */
+export async function demoteCheckoutLeadFromNewsletter(email: string) {
+  const db = await getDb();
+  if (!db) return;
+  await db
+    .update(leads)
+    .set({ source: "checkout", metadata: { consent: "false" } })
+    .where(and(eq(leads.email, email), eq(leads.source, "newsletter-checkout")));
 }
 
 export async function updateLead(id: number, data: Partial<InsertLead>) {
