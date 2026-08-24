@@ -7,6 +7,7 @@
 import "dotenv/config";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { createHash } from "node:crypto";
 import { guestyClient, isGuestyConfigured } from "../lib/guesty";
 
 // GitHub persistence config (set via env vars on Render)
@@ -325,6 +326,112 @@ async function loadExistingSlugMap(): Promise<Map<string, string>> {
     }
   }
   return map;
+}
+
+/**
+ * Fields that decide whether a property's PAGE changed.
+ *
+ * Deliberately excludes the volatile ones — pricing, reviews, sortOrder — even
+ * though some of them are visible. Guesty's dynamic pricing moves most nights
+ * and reviews arrive continuously; folding those in would restamp every home
+ * every day, which is exactly the "lastmod means nothing" signal we are trying
+ * to stop sending. What is left is the substance of the page: identity, copy,
+ * capacity, location, photos.
+ */
+const FINGERPRINT_FIELDS = [
+  "slug", "name", "tagline", "seoTitle", "seoDescription",
+  "description", "descriptionSections",
+  "amenities", "stayIncludes", "style", "tags", "occasions",
+  "bedrooms", "bathrooms", "maxGuests", "rooms", "areaSquareFeet", "propertyType",
+  "destination", "locality", "address",
+  "images", "licenseNumber", "checkInTime", "checkOutTime",
+  "petsAllowed", "tier", "isPortfolio",
+] as const;
+
+/** Stable hash of the page-defining fields. Key order is fixed by the list
+ *  above, so an unrelated reordering in the source object cannot fake a
+ *  change. */
+function contentFingerprint(property: any): string {
+  const subset: Record<string, unknown> = {};
+  for (const key of FINGERPRINT_FIELDS) subset[key] = property?.[key] ?? null;
+  return createHash("sha1").update(JSON.stringify(subset)).digest("hex");
+}
+
+/**
+ * Previous property records, by Guesty id, plus the date that data was written.
+ *
+ * The date matters for the first run after this feature ships: the stored
+ * records have no lastModified yet, and stamping them all with today would
+ * announce "every home changed at once" — the same false signal we are
+ * removing. Falling back to the file's own mtime keeps the claim honest.
+ */
+async function loadExistingProperties(): Promise<{ byId: Map<string, any>; fallbackDate: string }> {
+  const { stat } = await import("node:fs/promises");
+  const byId = new Map<string, any>();
+  let fallbackDate = new Date().toISOString().split("T")[0];
+  const candidates = [
+    join(process.cwd(), "data", "properties-synced.json"),
+    join(process.cwd(), "client", "src", "data", "properties.json"),
+  ];
+  for (const path of candidates) {
+    try {
+      const raw = await readFile(path, "utf-8");
+      const data = JSON.parse(raw);
+      if (!Array.isArray(data)) continue;
+      if (byId.size === 0) {
+        try {
+          fallbackDate = (await stat(path)).mtime.toISOString().split("T")[0];
+        } catch { /* keep today */ }
+      }
+      for (const prop of data) {
+        if (prop?.guestyId && !byId.has(prop.guestyId)) byId.set(prop.guestyId, prop);
+      }
+    } catch {
+      // Missing or unreadable — try the next candidate.
+    }
+  }
+  return { byId, fallbackDate };
+}
+
+/**
+ * Stamp each property with the date its page content last actually changed.
+ *
+ * This is what makes <lastmod> in the sitemap worth anything: an unchanged home
+ * keeps its old date, so when one DOES change the date stands out and gives a
+ * crawler a reason to come back. Emitting today's date for everything on every
+ * request — which is what the sitemap did before — teaches the crawler to
+ * ignore the field entirely.
+ */
+function stampLastModified(
+  properties: any[],
+  previous: Map<string, any>,
+  fallbackDate: string,
+): { changed: number; total: number } {
+  const today = new Date().toISOString().split("T")[0];
+  let changed = 0;
+
+  for (const prop of properties) {
+    const hash = contentFingerprint(prop);
+    const before = prop?.guestyId ? previous.get(prop.guestyId) : undefined;
+
+    if (!before) {
+      // Genuinely new to us — today is the truth.
+      prop.lastModified = today;
+    } else if (before.contentHash && before.contentHash === hash) {
+      // Unchanged: carry the existing date forward untouched.
+      prop.lastModified = before.lastModified || fallbackDate;
+    } else if (!before.contentHash) {
+      // First run with fingerprints — we cannot tell whether it changed, so
+      // claim no more than the data file's own age.
+      prop.lastModified = before.lastModified || fallbackDate;
+    } else {
+      prop.lastModified = today;
+      changed++;
+    }
+    prop.contentHash = hash;
+  }
+
+  return { changed, total: properties.length };
 }
 
 /**
@@ -947,6 +1054,7 @@ export async function runSync(): Promise<string> {
     console.warn(`[Guesty Sync] Guest-name resolution failed (non-blocking): ${err?.message ?? err}`);
   }
   const existingSlugMap = await loadExistingSlugMap();
+  const existingProps = await loadExistingProperties();
   const licenseMap = await manualLicenses();
   const copyMap = await copyOverrides();
   console.log(`[Guesty Sync] Loaded ${existingSlugMap.size} pinned slugs from existing data`);
@@ -963,6 +1071,13 @@ export async function runSync(): Promise<string> {
       `carriage returns normalised: ${descMetrics.carriageReturns}`,
   );
 
+  // Date-stamp each home with when its page content actually changed, so the
+  // sitemap's <lastmod> carries information instead of today's date on repeat.
+  const stamp = stampLastModified(properties, existingProps.byId, existingProps.fallbackDate);
+  console.log(
+    `[Guesty Sync] Content changed on ${stamp.changed} of ${stamp.total} homes — lastmod updated for those only.`,
+  );
+
   const jsonContent = JSON.stringify(properties, null, 2);
 
   // 1. Write to local runtime file (fast reads during this server's lifetime)
@@ -976,5 +1091,62 @@ export async function runSync(): Promise<string> {
   //    This ensures data survives Render redeploys (ephemeral filesystem)
   await commitToGitHub(jsonContent);
 
+  // 3. Tell the IndexNow engines what actually changed.
+  //    Direct bookings arrive from guests who saw a home on an OTA and then
+  //    search it by name, so a new or renamed home must become findable fast.
+  //    A rename is the dangerous case: the old URL holds the ranking history
+  //    and the new one starts from nothing, so we submit BOTH — the old one so
+  //    crawlers re-fetch it and follow the 301 that carries the signals over.
+  await pingIndexNowForChanges(properties, existingSlugMap);
+
   return outPath;
 }
+
+/**
+ * Diff the freshly-synced properties against the slugs that were live before
+ * this run and submit only what changed.
+ *
+ * Non-blocking by contract: the sync's job is to publish data, and a search
+ * engine ping must never be able to fail that.
+ */
+async function pingIndexNowForChanges(
+  properties: any[],
+  previousSlugs: Map<string, string>,
+): Promise<void> {
+  try {
+    // An empty map means we have no previous state to compare against (first
+    // run, or both data files missing). Everything would look "new", so stay
+    // quiet rather than submit the whole portfolio as a change.
+    if (previousSlugs.size === 0) {
+      console.info("[IndexNow] No previous slug data — skipping submission.");
+      return;
+    }
+
+    const { filterPublicProperties } = await import("./properties-store");
+    const { submitUrls, diffPropertyUrls } = await import("./indexnow");
+
+    const { added, renamed, urls } = diffPropertyUrls(filterPublicProperties(properties), previousSlugs);
+
+    if (!urls.length) {
+      console.info("[IndexNow] No new or renamed homes this run — nothing to submit.");
+      return;
+    }
+
+    console.info(
+      `[IndexNow] ${added.length} new, ${renamed.length} renamed — submitting ${urls.length} URLs.`,
+    );
+    for (const { from, to } of renamed) console.info(`[IndexNow]   renamed: ${from} → ${to}`);
+
+    const result = await submitUrls(urls);
+    console.info(
+      result.ok
+        ? `[IndexNow] Submitted ${result.submitted} URLs (HTTP ${result.status}).`
+        : `[IndexNow] Submission failed: ${result.error ?? `HTTP ${result.status}`}`,
+    );
+  } catch (err: any) {
+    console.warn(`[IndexNow] Skipped (non-blocking): ${err?.message ?? err}`);
+  }
+}
+
+/** Pure helpers exposed for tests — see server/services/lastmod.test.ts. */
+export const __testing = { contentFingerprint, stampLastModified };

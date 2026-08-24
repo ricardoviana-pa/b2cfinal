@@ -106,7 +106,7 @@ function isExcluded(p: any): boolean {
 }
 
 /** Filter out test listings, properties below minimum price threshold, and manual exclusions */
-function filterPublicProperties(properties: any[]): any[] {
+export function filterPublicProperties(properties: any[]): any[] {
   return properties.filter(p => {
     // Manual exclusion list (slug-based, survives Guesty re-syncs)
     if (isExcluded(p)) {
