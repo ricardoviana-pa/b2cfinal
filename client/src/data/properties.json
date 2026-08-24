@@ -733,7 +733,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 10
+    "reviewCount": 10,
+    "lastModified": "2026-08-24",
+    "contentHash": "4ae1473dbd7170a1eff030e50f5676e23d3a942c"
   },
   {
     "id": "guesty-6a7079007df813008d013634",
@@ -979,7 +981,9 @@
     "areaSquareFeet": 3876,
     "reviews": [],
     "averageRating": null,
-    "reviewCount": 0
+    "reviewCount": 0,
+    "lastModified": "2026-08-24",
+    "contentHash": "933d00e054502a39806ede01a691b74586902e74"
   },
   {
     "id": "guesty-696533722def930014e914e2",
@@ -1474,7 +1478,9 @@
       }
     ],
     "averageRating": 4.71,
-    "reviewCount": 7
+    "reviewCount": 7,
+    "lastModified": "2026-08-24",
+    "contentHash": "310b00bd5885ee70cec142fb14da0ae37652a232"
   },
   {
     "id": "guesty-6a50d66857c8010015595ad0",
@@ -1762,7 +1768,9 @@
       }
     ],
     "averageRating": 4.5,
-    "reviewCount": 2
+    "reviewCount": 2,
+    "lastModified": "2026-08-24",
+    "contentHash": "e81ae60f9db20c460852ccf5cb4be14e4d1ff577"
   },
   {
     "id": "guesty-69c567ad7f6873000e9a3c37",
@@ -2153,7 +2161,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 5
+    "reviewCount": 5,
+    "lastModified": "2026-08-24",
+    "contentHash": "06b6ab818a833babbd585184ab30c652d481a007"
   },
   {
     "id": "guesty-69e7350685a8b000124854c5",
@@ -2488,7 +2498,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 3
+    "reviewCount": 3,
+    "lastModified": "2026-08-24",
+    "contentHash": "51826d7dc3264d25bd193540648c758fdc1635cc"
   },
   {
     "id": "guesty-6a0359b4e343150013abc14d",
@@ -2768,7 +2780,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 3
+    "reviewCount": 3,
+    "lastModified": "2026-08-24",
+    "contentHash": "a20456dd0673f77bafb56b2989472aa1ddf981ca"
   },
   {
     "id": "guesty-69653354109993001383ef5f",
@@ -3353,7 +3367,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 8
+    "reviewCount": 8,
+    "lastModified": "2026-08-24",
+    "contentHash": "41b9f119fbc1f00e107fff60c178fdeb8001262f"
   },
   {
     "id": "guesty-6965338a753fb0001424acf6",
@@ -3895,7 +3911,9 @@
       }
     ],
     "averageRating": 4.7,
-    "reviewCount": 10
+    "reviewCount": 10,
+    "lastModified": "2026-08-24",
+    "contentHash": "a692bbc9569078be5eabab35bacde938198a4842"
   },
   {
     "id": "guesty-6965339404b96f00147f571a",
@@ -4060,7 +4078,9 @@
     "areaSquareFeet": 216,
     "reviews": [],
     "averageRating": null,
-    "reviewCount": 0
+    "reviewCount": 0,
+    "lastModified": "2026-08-24",
+    "contentHash": "7af3bde9697d9e819db36a91d58d0ce8732dc805"
   },
   {
     "id": "guesty-6965338ed1c09900156e8502",
@@ -4453,12 +4473,14 @@
       }
     ],
     "averageRating": 4.75,
-    "reviewCount": 4
+    "reviewCount": 4,
+    "lastModified": "2026-08-24",
+    "contentHash": "0914bbc44750e7135589acfe98a7153a47653e7d"
   },
   {
     "id": "guesty-6a3549e5edd13800142415e0",
     "slug": "canopy-house-by-portgual-active-i-heated-pool-2415e0",
-    "name": "Canopy House by Portugal Active I Heated Pool",
+    "name": "Canopy House I Heated Pool by Portugal Active",
     "tagline": "Six bedrooms, a heated pool and a garden made for long family days in Trofa",
     "tier": "select",
     "destination": "porto",
@@ -4638,12 +4660,12 @@
     "bookingUrl": "",
     "guestyId": "6a3549e5edd13800142415e0",
     "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Canopy House by Portugal Active I Heated Pool",
+    "whatsappMessage": "Hi, I am interested in Canopy House I Heated Pool by Portugal Active",
     "sortOrder": 0,
     "isActive": true,
     "isPortfolio": false,
-    "seoTitle": "Canopy House by Portugal Active I Heated Pool — Portugal Active",
-    "seoDescription": "Discover Canopy House with Heated Pool, an elegant villa located in Trofa, perfect for large families and groups seeking comfort, privacy, and a prime location ",
+    "seoTitle": "Canopy House I Heated Pool by Portugal Active — Portugal Active",
+    "seoDescription": "Discover Canopy House I Heated Pool by Portugal Active, an elegant villa in Trofa, perfect for families and groups who value comfort, privacy, and quality time ",
     "address": {
       "full": "",
       "street": "Rua Rainha Santa Isabel 101",
@@ -4725,7 +4747,9 @@
     "areaSquareFeet": 1507,
     "reviews": [],
     "averageRating": null,
-    "reviewCount": 0
+    "reviewCount": 0,
+    "lastModified": "2026-08-24",
+    "contentHash": "d5545b37675e9e14a36f01edce41e1d5fcf65bf2"
   },
   {
     "id": "guesty-6a2ad70638d6620013badaef",
@@ -5064,7 +5088,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 1,
+    "lastModified": "2026-08-24",
+    "contentHash": "cd8979f1909f8e73c11bafa1fbe26bca7db5f29f"
   },
   {
     "id": "guesty-6965338554dbb5001568a505",
@@ -5550,7 +5576,9 @@
       }
     ],
     "averageRating": 4.88,
-    "reviewCount": 8
+    "reviewCount": 8,
+    "lastModified": "2026-08-24",
+    "contentHash": "f58380858ca2b1c7c5599a98a3b2561d4d9034b6"
   },
   {
     "id": "guesty-696533d2ec19770014fd1b52",
@@ -5978,7 +6006,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 6
+    "reviewCount": 6,
+    "lastModified": "2026-08-24",
+    "contentHash": "a2df9b720904139b3aff764be253a2a3bf32b66a"
   },
   {
     "id": "guesty-696532f3753fb0001424a570",
@@ -6357,7 +6387,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 5
+    "reviewCount": 5,
+    "lastModified": "2026-08-24",
+    "contentHash": "564c54676b887a9b590a01f719cdcded7e278eef"
   },
   {
     "id": "guesty-6965335df1c3a8001597c8e4",
@@ -6774,7 +6806,9 @@
       }
     ],
     "averageRating": 4.83,
-    "reviewCount": 6
+    "reviewCount": 6,
+    "lastModified": "2026-08-24",
+    "contentHash": "ac3aa3b1e06f7560e06b5c65cbd2154ec675adf2"
   },
   {
     "id": "guesty-6a341163c50f210012f12b80",
@@ -7136,7 +7170,9 @@
       }
     ],
     "averageRating": 4.5,
-    "reviewCount": 4
+    "reviewCount": 4,
+    "lastModified": "2026-08-24",
+    "contentHash": "1eafd723197a7bf23c6e83c8806c4d398559c860"
   },
   {
     "id": "guesty-69dfa9cead7c9c0014cb71c9",
@@ -7513,7 +7549,9 @@
       }
     ],
     "averageRating": 4.8,
-    "reviewCount": 5
+    "reviewCount": 5,
+    "lastModified": "2026-08-24",
+    "contentHash": "e773d9dc1bf0e7ff82e3654dc32f59ee0e6f34af"
   },
   {
     "id": "guesty-6a3ba1fce19cb0001dc57ea6",
@@ -7718,7 +7756,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 1,
+    "lastModified": "2026-08-24",
+    "contentHash": "5357f23c813c1520c80720d51e93ad93fcf6508d"
   },
   {
     "id": "guesty-69653394ecf7490014ed2ed9",
@@ -7813,7 +7853,6 @@
         "High touch surfaces disinfected",
         "Horseback Riding",
         "Hot water",
-        "Iron",
         "Kettle",
         "Laptop friendly workspace",
         "Long term stays allowed",
@@ -7917,7 +7956,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 1,
+    "lastModified": "2026-08-24",
+    "contentHash": "310a68dfe5f4ba97a044d63bea750ac85c28d969"
   },
   {
     "id": "guesty-6965339dbf04fe0013743e2d",
@@ -8111,7 +8152,6 @@
         "Horseback Riding",
         "Hot water",
         "Indoor fireplace",
-        "Iron",
         "Kettle",
         "Kitchen",
         "Laptop friendly workspace",
@@ -8406,7 +8446,9 @@
       }
     ],
     "averageRating": 4.67,
-    "reviewCount": 3
+    "reviewCount": 3,
+    "lastModified": "2026-08-24",
+    "contentHash": "61a888e2e42fce743b74a159f4f3a56b4130b0ba"
   },
   {
     "id": "guesty-696533a0ecf7490014ed31d5",
@@ -8498,7 +8540,6 @@
         "Horseback Riding",
         "Hot water",
         "Indoor fireplace",
-        "Iron",
         "Kettle",
         "Kitchen",
         "Laptop friendly workspace",
@@ -8614,12 +8655,14 @@
       }
     ],
     "averageRating": 4,
-    "reviewCount": 1
+    "reviewCount": 1,
+    "lastModified": "2026-08-24",
+    "contentHash": "ddaec80369737d64d74be2f795b4a6b5b6f6fc04"
   },
   {
     "id": "guesty-6965330729bb8c00141e8cd6",
     "slug": "habito-s-lodge-by-portugalactive-5min-beach-town-1e8cd6",
-    "name": "Habitos Lodge by Portugal Active I Beach and Town Villa",
+    "name": "Habitos Lodge by Portugal Active I Beach & Town Villa with Heated Pool",
     "tagline": "Where countryside meets sea in Viana — private pool, garden, and beach mornings five minutes from town.",
     "tier": "select",
     "destination": "minho",
@@ -8775,11 +8818,11 @@
     "bookingUrl": "",
     "guestyId": "6965330729bb8c00141e8cd6",
     "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Habitos Lodge by Portugal Active I Beach and Town Villa",
+    "whatsappMessage": "Hi, I am interested in Habitos Lodge by Portugal Active I Beach & Town Villa with Heated Pool",
     "sortOrder": 0,
     "isActive": true,
     "isPortfolio": false,
-    "seoTitle": "Habitos Lodge by Portugal Active I Beach and Town Villa — Portugal Active",
+    "seoTitle": "Habitos Lodge by Portugal Active I Beach & Town Villa with Heated Pool — Portugal Active",
     "seoDescription": "Enjoy an unforgettable stay at this villa in Cafhé, Viana do Castelo, where the countryside meets the sea.\nWith a private swimming pool, garden, and stunning vi",
     "address": {
       "full": "",
@@ -9047,7 +9090,9 @@
       }
     ],
     "averageRating": 4.83,
-    "reviewCount": 6
+    "reviewCount": 6,
+    "lastModified": "2026-08-24",
+    "contentHash": "d8a3a93ccfca40d21483950834e07fd8db63c63b"
   },
   {
     "id": "guesty-696533b7bf04fe00137440f8",
@@ -9513,7 +9558,9 @@
       }
     ],
     "averageRating": 4.89,
-    "reviewCount": 9
+    "reviewCount": 9,
+    "lastModified": "2026-08-24",
+    "contentHash": "d5aeca43bf294dde4be51f707dcb0bd7d04a7ad0"
   },
   {
     "id": "guesty-69c415ceab80a8001247452c",
@@ -9886,7 +9933,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 1,
+    "lastModified": "2026-08-24",
+    "contentHash": "2f29fffb9545c0e858028d583587f725172e2a5b"
   },
   {
     "id": "guesty-69653388753fb0001424abad",
@@ -10727,7 +10776,9 @@
       }
     ],
     "averageRating": 4.61,
-    "reviewCount": 18
+    "reviewCount": 18,
+    "lastModified": "2026-08-24",
+    "contentHash": "1e5c6e6309a2aca1a09c238e55b68b50f1dbfa67"
   },
   {
     "id": "guesty-69653390ecf7490014ed2d6c",
@@ -11275,7 +11326,9 @@
       }
     ],
     "averageRating": 4.67,
-    "reviewCount": 9
+    "reviewCount": 9,
+    "lastModified": "2026-08-24",
+    "contentHash": "096c0c76dbc2e383ba5399d174f02cb106829cac"
   },
   {
     "id": "guesty-696533714b583900135cef22",
@@ -11740,7 +11793,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 4
+    "reviewCount": 4,
+    "lastModified": "2026-08-24",
+    "contentHash": "e98b73dd0fc0dd3aad9e35b51e959939fee487ec"
   },
   {
     "id": "guesty-696533616cff760015e28802",
@@ -11984,7 +12039,9 @@
     "areaSquareFeet": 862,
     "reviews": [],
     "averageRating": null,
-    "reviewCount": 0
+    "reviewCount": 0,
+    "lastModified": "2026-08-24",
+    "contentHash": "272ba7346a3bffe86525e425caaa7876dae8d7e1"
   },
   {
     "id": "guesty-6965335cbf04fe00137431cb",
@@ -12490,7 +12547,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 4
+    "reviewCount": 4,
+    "lastModified": "2026-08-24",
+    "contentHash": "1733080b41578048f60d70cd6726f57a2c2e89da"
   },
   {
     "id": "guesty-69e7552df2f71100122bbb35",
@@ -12739,7 +12798,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 2,
+    "lastModified": "2026-08-24",
+    "contentHash": "b47379ce968062aff367349d1dab8396829d67e2"
   },
   {
     "id": "guesty-696533d34b583900135cfd96",
@@ -13044,7 +13105,9 @@
       }
     ],
     "averageRating": 4,
-    "reviewCount": 1
+    "reviewCount": 1,
+    "lastModified": "2026-08-24",
+    "contentHash": "d1821339573421395e5ce83212cee115c3742e38"
   },
   {
     "id": "guesty-6970af61638a8a0015eaa850",
@@ -13368,7 +13431,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 2,
+    "lastModified": "2026-08-24",
+    "contentHash": "12547f05b23cffacc36548425ec5a46b4780d467"
   },
   {
     "id": "guesty-6965334abf04fe0013742da8",
@@ -13698,7 +13763,9 @@
       }
     ],
     "averageRating": 4.67,
-    "reviewCount": 3
+    "reviewCount": 3,
+    "lastModified": "2026-08-24",
+    "contentHash": "ce105e96ef7b4d1c389fea5b493d7a428bb5abaa"
   },
   {
     "id": "guesty-696533794fe6a100145fe4bf",
@@ -14002,7 +14069,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 3
+    "reviewCount": 3,
+    "lastModified": "2026-08-24",
+    "contentHash": "7cc05e43fe2f84ece382ea85b3224ca1c5193f1b"
   },
   {
     "id": "guesty-696532fa6d209c001510d5ee",
@@ -14291,7 +14360,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 3
+    "reviewCount": 3,
+    "lastModified": "2026-08-24",
+    "contentHash": "9b3f2233e3f06c15563361ec093571153e944625"
   },
   {
     "id": "guesty-6965330b6d209c001510dd49",
@@ -14910,7 +14981,9 @@
       }
     ],
     "averageRating": 4.91,
-    "reviewCount": 11
+    "reviewCount": 11,
+    "lastModified": "2026-08-24",
+    "contentHash": "923c643e6149abe77d3203eab5ec92ebfbd5f109"
   },
   {
     "id": "guesty-6965333104b96f00147f5428",
@@ -15285,7 +15358,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 4
+    "reviewCount": 4,
+    "lastModified": "2026-08-24",
+    "contentHash": "9fb7a14d1286b97496cfe8b44a536bc85b35f735"
   },
   {
     "id": "guesty-696532eee44e1a0015bb2460",
@@ -15754,7 +15829,9 @@
       }
     ],
     "averageRating": 4.88,
-    "reviewCount": 8
+    "reviewCount": 8,
+    "lastModified": "2026-08-24",
+    "contentHash": "92ba5755499f1222f294e0ce61735c1d34f5e2df"
   },
   {
     "id": "guesty-696533266dec35001492fdbb",
@@ -16028,7 +16105,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 3
+    "reviewCount": 3,
+    "lastModified": "2026-08-24",
+    "contentHash": "97ae65ac7d502fbc4b550b0942f1c8a565e67bca"
   },
   {
     "id": "guesty-6965332327950e001416f0b2",
@@ -16397,7 +16476,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 2,
+    "lastModified": "2026-08-24",
+    "contentHash": "e1d03194f3b769c2d16c49ba0e616720226655fa"
   },
   {
     "id": "guesty-69653335bf04fe0013742743",
@@ -16923,7 +17004,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 6
+    "reviewCount": 6,
+    "lastModified": "2026-08-24",
+    "contentHash": "8c24b7505c957b92e1c887898f748a916e3461a3"
   },
   {
     "id": "guesty-696533494b9b64001401b62e",
@@ -17285,7 +17368,9 @@
       }
     ],
     "averageRating": 4.33,
-    "reviewCount": 3
+    "reviewCount": 3,
+    "lastModified": "2026-08-24",
+    "contentHash": "00149935213e194edf8388d30d7abce3bdf03edc"
   },
   {
     "id": "guesty-696533284b583900135ceb91",
@@ -18032,7 +18117,9 @@
       }
     ],
     "averageRating": 4.71,
-    "reviewCount": 14
+    "reviewCount": 14,
+    "lastModified": "2026-08-24",
+    "contentHash": "138da22a7019a0ac797e44afacd790137ac505b0"
   },
   {
     "id": "guesty-69c415701b964f00157188bd",
@@ -18205,7 +18292,9 @@
     "areaSquareFeet": 168,
     "reviews": [],
     "averageRating": null,
-    "reviewCount": 0
+    "reviewCount": 0,
+    "lastModified": "2026-08-24",
+    "contentHash": "bfe9ed33b3fed3d44a8a118e7b0b25f74d36a6c6"
   },
   {
     "id": "guesty-69c415701b964f00157188b5",
@@ -18409,7 +18498,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 1,
+    "lastModified": "2026-08-24",
+    "contentHash": "a9ca7ea617a9d354ac8f18048fb672aea8ce5c0a"
   },
   {
     "id": "guesty-69ca869e5b0a0500158b7d5a",
@@ -18643,7 +18734,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 2,
+    "lastModified": "2026-08-24",
+    "contentHash": "f03f7ee3c48457f369ebfe45db4138343da2e651"
   },
   {
     "id": "guesty-69c415701b964f00157188ad",
@@ -18895,7 +18988,9 @@
     "areaSquareFeet": 3132.2979264,
     "reviews": [],
     "averageRating": null,
-    "reviewCount": 0
+    "reviewCount": 0,
+    "lastModified": "2026-08-24",
+    "contentHash": "28e2aabefe4bd8b4cd1bd46e8f51c689e55f7b0b"
   },
   {
     "id": "guesty-696533b2e44e1a0015bb2b42",
@@ -19084,6 +19179,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Logement fidèle aux attentes et agréable, à part la température du lieu qui était très élevée à l'arrivée mais qui s'est adoucie assez vite.",
+        "guestDisplayName": "Saïd",
+        "guestName": "Saïd",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-24T16:13:07.282Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Agréable séjour, très propre",
         "guestDisplayName": "Gaetan",
         "guestName": "Gaetan",
@@ -19258,8 +19388,10 @@
         ]
       }
     ],
-    "averageRating": 4.8,
-    "reviewCount": 5
+    "averageRating": 4.83,
+    "reviewCount": 6,
+    "lastModified": "2026-08-24",
+    "contentHash": "054cd16de99e38259fa0e8c5bc52093a3924f4a9"
   },
   {
     "id": "guesty-69653398bf04fe0013743b98",
@@ -19361,7 +19493,6 @@
         "High touch surfaces disinfected",
         "Horseback Riding",
         "Hot water",
-        "Iron",
         "Kettle",
         "Kitchen",
         "Laptop friendly workspace",
@@ -19486,7 +19617,9 @@
       }
     ],
     "averageRating": 4,
-    "reviewCount": 1
+    "reviewCount": 1,
+    "lastModified": "2026-08-24",
+    "contentHash": "659f12b26f5ee431a9b3c5398497f8e66e55fd23"
   },
   {
     "id": "guesty-6a3a63f9e19cb0001db6a05e",
@@ -19729,7 +19862,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 2,
+    "lastModified": "2026-08-24",
+    "contentHash": "92bbc00060f52ffbab699330154818e0d2f80a2c"
   },
   {
     "id": "guesty-696533814b9b64001401c7b8",
@@ -20175,7 +20310,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 6
+    "reviewCount": 6,
+    "lastModified": "2026-08-24",
+    "contentHash": "a61098f910224101b74ac980cb14c65b57633965"
   },
   {
     "id": "guesty-696533762def930014e917bf",
@@ -20624,7 +20761,9 @@
       }
     ],
     "averageRating": 4.67,
-    "reviewCount": 6
+    "reviewCount": 6,
+    "lastModified": "2026-08-24",
+    "contentHash": "814b15678967276decf812546dbf2ff0a7c9d537"
   },
   {
     "id": "guesty-696533752def930014e9167c",
@@ -20906,7 +21045,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 2,
+    "lastModified": "2026-08-24",
+    "contentHash": "921325090b2140cd6c1995690721991bef7dcb74"
   },
   {
     "id": "guesty-6965339bbf04fe0013743cd8",
@@ -21112,7 +21253,6 @@
         "Horseback Riding",
         "Hot water",
         "Indoor fireplace",
-        "Iron",
         "Kettle",
         "Kitchen",
         "Laptop friendly workspace",
@@ -21345,7 +21485,9 @@
       }
     ],
     "averageRating": 4.33,
-    "reviewCount": 3
+    "reviewCount": 3,
+    "lastModified": "2026-08-24",
+    "contentHash": "904b422c13097c5c2e436a9ebacc1ee3ae6286b6"
   },
   {
     "id": "guesty-696533cf4b583900135cfb02",
@@ -21524,6 +21666,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Un apartamento muy bien distribuido, lo mejor la limpieza.",
+        "guestDisplayName": "Rafael",
+        "guestName": "Rafael",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-22T13:43:50.367Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Très satisfaits de ces quelques jours passés à Esposende ! L'appartement était très propre et bien situé (plage à 400m). \nL'équipe de Portugal Active était très disponible. Merci.",
         "guestDisplayName": "Clémence",
         "guestName": "Clémence",
@@ -21594,7 +21771,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2
+    "reviewCount": 3,
+    "lastModified": "2026-08-24",
+    "contentHash": "6d43d48963c3e2c32010d86dc0d47c549bdd3133"
   },
   {
     "id": "guesty-6a7afc0488f86b001316efa9",
@@ -21767,7 +21946,9 @@
     "areaSquareFeet": 10625,
     "reviews": [],
     "averageRating": null,
-    "reviewCount": 0
+    "reviewCount": 0,
+    "lastModified": "2026-08-24",
+    "contentHash": "d7e38ceaa9b85f286e303ed8ce0cefff8f545e99"
   },
   {
     "id": "guesty-696533aaf142270014026d70",
@@ -22123,7 +22304,9 @@
       }
     ],
     "averageRating": 4.5,
-    "reviewCount": 2
+    "reviewCount": 2,
+    "lastModified": "2026-08-24",
+    "contentHash": "f3e538d75703a1f1099fe177f720b8623b6b3c2a"
   },
   {
     "id": "guesty-6965332c6d209c001510e1c1",
@@ -22474,7 +22657,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 3
+    "reviewCount": 3,
+    "lastModified": "2026-08-24",
+    "contentHash": "c6aec0edff72a77276cd757472c1fa09fa3ecfd2"
   },
   {
     "id": "guesty-696533abf142270014026fa9",
@@ -23102,7 +23287,9 @@
       }
     ],
     "averageRating": 4.89,
-    "reviewCount": 9
+    "reviewCount": 9,
+    "lastModified": "2026-08-24",
+    "contentHash": "160b6ed08f8dad74157dff810de4a5f56a00c05d"
   },
   {
     "id": "guesty-69653381bf04fe00137437cd",
@@ -23521,7 +23708,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 5
+    "reviewCount": 5,
+    "lastModified": "2026-08-24",
+    "contentHash": "8c4c291deb56f12a1593953cdc9fc05a42151718"
   },
   {
     "id": "guesty-6a4297f706510a0014f79dd1",
@@ -23772,7 +23961,9 @@
     "areaSquareFeet": 2584,
     "reviews": [],
     "averageRating": null,
-    "reviewCount": 0
+    "reviewCount": 0,
+    "lastModified": "2026-08-24",
+    "contentHash": "78cd9bc834e2e4e52d880452a75e443dd8711673"
   },
   {
     "id": "guesty-6a312c59a705e1001327708c",
@@ -24031,7 +24222,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 1,
+    "lastModified": "2026-08-24",
+    "contentHash": "3ae592816cb371c5e5da6d8d79ff344a646f04cb"
   },
   {
     "id": "guesty-696f6aad74604800452a40b8",
@@ -24103,7 +24296,9 @@
     "areaSquareFeet": null,
     "reviews": [],
     "averageRating": null,
-    "reviewCount": 0
+    "reviewCount": 0,
+    "lastModified": "2026-08-24",
+    "contentHash": "d8aa10b23c5092b2ae828324bf30039c4597b1b3"
   },
   {
     "id": "guesty-696533d64b583900135d00cc",
@@ -24379,7 +24574,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1
+    "reviewCount": 1,
+    "lastModified": "2026-08-24",
+    "contentHash": "ed4d2d291c90dc1882971327f6be711922fadb3f"
   },
   {
     "id": "guesty-696533d8753fb0001424b10d",
@@ -24708,7 +24905,9 @@
       }
     ],
     "averageRating": 4.75,
-    "reviewCount": 4
+    "reviewCount": 4,
+    "lastModified": "2026-08-24",
+    "contentHash": "66793e6d0866155f940cc0cd9399aa4f27466f17"
   },
   {
     "id": "guesty-696533616cff760015e28965",
@@ -25298,7 +25497,9 @@
       }
     ],
     "averageRating": 4.91,
-    "reviewCount": 11
+    "reviewCount": 11,
+    "lastModified": "2026-08-24",
+    "contentHash": "3826d05afd932b840938fab2c9630f33aeb21df2"
   },
   {
     "id": "guesty-69c418871eabf900141bed48",
@@ -25552,7 +25753,9 @@
       }
     ],
     "averageRating": 4.5,
-    "reviewCount": 2
+    "reviewCount": 2,
+    "lastModified": "2026-08-24",
+    "contentHash": "3f073a51d8628cc50b0725e0d41efee6423793fb"
   },
   {
     "id": "guesty-6965337d2def930014e919c6",
@@ -26268,7 +26471,9 @@
       }
     ],
     "averageRating": 4.71,
-    "reviewCount": 14
+    "reviewCount": 14,
+    "lastModified": "2026-08-24",
+    "contentHash": "5a5dce50429226934a5fd84abbb736e335fc692a"
   },
   {
     "id": "guesty-6965331fec80690013738c68",
@@ -26557,7 +26762,9 @@
       }
     ],
     "averageRating": 4,
-    "reviewCount": 1
+    "reviewCount": 1,
+    "lastModified": "2026-08-24",
+    "contentHash": "e62b67dc1f43170b9e657acdbd9783ce107601f4"
   },
   {
     "id": "guesty-696533af4fe6a100145fecb6",
@@ -26748,6 +26955,41 @@
     "areaSquareFeet": 753.4737294,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Gut, einfach, schön, perfekt für den camino costal",
+        "guestDisplayName": "Dario",
+        "guestName": "Dario",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-22T12:38:47.682Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 2
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Nice place!",
         "guestDisplayName": "Kira",
@@ -26853,8 +27095,10 @@
         ]
       }
     ],
-    "averageRating": 4.67,
-    "reviewCount": 3
+    "averageRating": 4.5,
+    "reviewCount": 4,
+    "lastModified": "2026-08-24",
+    "contentHash": "24d480cb79f44651008b8d5083a86f091a8f55ce"
   },
   {
     "id": "guesty-696533794b583900135cf0fc",
@@ -27414,7 +27658,9 @@
       }
     ],
     "averageRating": 4.8,
-    "reviewCount": 10
+    "reviewCount": 10,
+    "lastModified": "2026-08-24",
+    "contentHash": "d55e468539ba0a1ed039c6e968d14ffdaca0b1d7"
   },
   {
     "id": "guesty-696533466d209c001510ecfe",
@@ -27797,6 +28043,8 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 4
+    "reviewCount": 4,
+    "lastModified": "2026-08-24",
+    "contentHash": "2ec7c6bce1d26d174b96ec695b68f4cbae2f4b1e"
   }
 ]
