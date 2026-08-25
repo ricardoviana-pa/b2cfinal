@@ -666,10 +666,79 @@ const DESTINATION_NAME: Record<string, string> = {
  *  is consistent with what the SPA would emit after hydration. This is what
  *  makes property rich results / AI-citation eligible on Google's first pass,
  *  since the SPA body is otherwise empty until JS executes. */
+/** Guesty's bed enum → the human wording Google's BedDetails expects. */
+const BED_TYPE_LABEL: Record<string, string> = {
+  KING_BED: 'King Bed',
+  QUEEN_BED: 'Queen Bed',
+  DOUBLE_BED: 'Double Bed',
+  SINGLE_BED: 'Single Bed',
+  SOFA_BED: 'Sofa Bed',
+  BUNK_BED: 'Bunk Bed',
+};
+
+/** schema.org accommodation subtype for a Guesty propertyType. Anything we do
+ *  not recognise stays absent rather than guessing — a wrong type is worse
+ *  than none. */
+const ACCOMMODATION_TYPE: Record<string, string> = {
+  Villa: 'https://schema.org/House',
+  House: 'https://schema.org/House',
+  Townhouse: 'https://schema.org/House',
+  Apartment: 'https://schema.org/Apartment',
+};
+
+/**
+ * The Accommodation that the rental contains — Google's `containsPlace`.
+ *
+ * Search Console reported this missing on every indexed home, alongside
+ * `identifier`, which is what makes a VacationRental ineligible for the rich
+ * result (the card with photos, price and rating) and leaves it as a plain
+ * blue link. The data was already synced from Guesty — bedrooms with their
+ * bed configuration, bathroom counts, floor area — it simply was never
+ * emitted.
+ */
+function buildContainsPlace(prop: any): Record<string, unknown> | undefined {
+  const rooms: any[] = Array.isArray(prop.rooms) ? prop.rooms : [];
+
+  const beds = rooms
+    .flatMap((room: any) => (Array.isArray(room?.beds) ? room.beds : []))
+    .map((bed: any) => {
+      const label = BED_TYPE_LABEL[String(bed?.type ?? '')];
+      const qty = Number(bed?.quantity);
+      if (!label || !Number.isFinite(qty) || qty <= 0) return null;
+      return { '@type': 'BedDetails', numberOfBeds: qty, typeOfBed: label };
+    })
+    .filter(Boolean);
+
+  const accommodation: Record<string, unknown> = { '@type': 'Accommodation' };
+
+  const additionalType = ACCOMMODATION_TYPE[String(prop.propertyType ?? '')];
+  if (additionalType) accommodation.additionalType = additionalType;
+  if (prop.bedrooms != null) accommodation.numberOfBedrooms = prop.bedrooms;
+  if (prop.bathrooms != null) accommodation.numberOfBathroomsTotal = prop.bathrooms;
+  if (rooms.length) accommodation.numberOfRooms = rooms.length;
+  if (beds.length) accommodation.bed = beds;
+  if (prop.maxGuests != null) {
+    accommodation.occupancy = { '@type': 'QuantitativeValue', value: prop.maxGuests, unitCode: 'C62' };
+  }
+  // Guesty stores square FEET despite the villas being metric; FTK is the
+  // UN/CEFACT code for square foot, so declare what we actually have rather
+  // than converting and introducing rounding we cannot verify.
+  const area = Number(prop.areaSquareFeet);
+  if (Number.isFinite(area) && area > 0) {
+    accommodation.floorSize = { '@type': 'QuantitativeValue', value: area, unitCode: 'FTK' };
+  }
+
+  // A bare {"@type":"Accommodation"} tells Google nothing — omit it instead.
+  return Object.keys(accommodation).length > 1 ? accommodation : undefined;
+}
+
 function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
   const url = `${BOT_BASE_URL}/${lang}/homes/${prop.slug}`;
   const name = prop.name || prop.title || 'Property';
-  const images = Array.isArray(prop.images) ? prop.images.slice(0, 6) : [];
+  // Google wants at least 8 images on a VacationRental; the old cap of 6 sat
+  // just under it. The homes carry 70+, so 12 clears the bar with room spare
+  // without bloating the embedded JSON.
+  const images = Array.isArray(prop.images) ? prop.images.slice(0, 12) : [];
 
   // Amenities arrive either as a flat array or a grouped dict { property: [...] }.
   let amenities: string[] = [];
@@ -734,6 +803,20 @@ function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
       },
     }),
     brand: { '@type': 'Organization', name: 'Portugal Active', url: BOT_BASE_URL },
+    // Stable id for the listing across our site and the channels it is synced
+    // to. Google requires it on VacationRental; the Guesty id is the one value
+    // that survives a slug rename, which is exactly what it is for.
+    ...(prop.guestyId && {
+      identifier: {
+        '@type': 'PropertyValue',
+        propertyID: 'PortugalActiveListingId',
+        value: String(prop.guestyId),
+      },
+    }),
+    ...(ACCOMMODATION_TYPE[String(prop.propertyType ?? '')] && {
+      additionalType: ACCOMMODATION_TYPE[String(prop.propertyType ?? '')],
+    }),
+    ...(buildContainsPlace(prop) && { containsPlace: buildContainsPlace(prop) }),
   };
 
   const breadcrumb = {
