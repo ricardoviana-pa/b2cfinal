@@ -18,6 +18,8 @@
  * CLOUDFLARE_API_TOKEN and CLOUDFLARE_ZONE_ID set as environment variables.
  */
 
+import "dotenv/config";
+
 const API = "https://api.cloudflare.com/client/v4";
 const TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 const ZONE_NAME = process.env.CLOUDFLARE_ZONE_NAME || "portugalactive.com";

@@ -25,6 +25,8 @@
  *   Zone → Zone → Read        (to resolve the zone id by name)
  */
 
+import "dotenv/config";
+
 const API = "https://api.cloudflare.com/client/v4";
 const TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 const ZONE_NAME = process.env.CLOUDFLARE_ZONE_NAME || "portugalactive.com";
