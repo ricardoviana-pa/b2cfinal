@@ -1116,12 +1116,24 @@ function buildBlogSeoBody(post: any, lang: string): string {
 const _linkIndexCache = new Map<string, { html: string; at: number }>();
 const LINK_INDEX_TTL_MS = 10 * 60 * 1000;
 
+/** "Viana do Castelo" → "viana-do-castelo", accents folded, so a destination
+ *  slug can be compared against a property's locality. */
+function slugifyPlace(value: unknown): string {
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 async function buildPropertyLinkIndex(strippedPath: string, lang: string): Promise<string> {
-  let destination: string | null = null;
+  let place: string | null = null;
   if (strippedPath !== "/homes") {
     const m = strippedPath.match(/^\/destinations\/([^/]+)$/);
     if (!m) return "";
-    destination = m[1].toLowerCase();
+    place = m[1].toLowerCase();
   }
 
   const key = `${lang}:${strippedPath}`;
@@ -1131,11 +1143,17 @@ async function buildPropertyLinkIndex(strippedPath: string, lang: string): Promi
   try {
     const { getPropertiesForSite } = await import("../services/properties-store");
     const all = await getPropertiesForSite();
-    const list = all.filter(
-      (pr: any) =>
-        pr?.slug &&
-        (destination === null || String(pr.destination ?? "").toLowerCase() === destination),
-    );
+    // Match the destination slug against BOTH fields. Properties are tagged by
+    // commercial region ("minho"), while the destination pages include
+    // city-level spokes ("viana-do-castelo", "caminha", "esposende"). Matching
+    // only `destination` left those city pages linking to nothing — and
+    // /destinations/viana-do-castelo, which has 43 homes in it, is the
+    // highest-impression page on the site.
+    const list = all.filter((pr: any) => {
+      if (!pr?.slug) return false;
+      if (place === null) return true;
+      return slugifyPlace(pr.destination) === place || slugifyPlace(pr.locality) === place;
+    });
     if (!list.length) return "";
     const items = list
       .map(
