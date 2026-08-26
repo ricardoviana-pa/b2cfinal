@@ -8914,6 +8914,41 @@
     "areaSquareFeet": 10763.91042,
     "reviews": [
       {
+        "rating": 4,
+        "text": "We had a great week at this property which its wonderful pool and garden and spacious living rooms. We can fully recommend this property for families. However, we also recommend Portugal Active to look more carefully into the some of the property items, which are clearly showing signs of wear and tear.",
+        "guestDisplayName": "Marcus",
+        "guestName": "Marcus",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-26T08:39:04.096Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Super séjour ! La maison est vraiment top et conforme à 100 % à la description. La clim marche super bien et un grand merci pour la piscine qui a été nettoyée dès le deuxième matin. L'emplacement est génial, à seulement 3 minutes de la plage, et Chafé est vraiment un super joli village. Le propriétaire est super sympa et l'équipe de Portugal Active est au top du service : super réactifs et communication impeccable du début à la fin. On recommande sans hésiter !",
         "guestDisplayName": "Benjamin",
@@ -9124,8 +9159,8 @@
         ]
       }
     ],
-    "averageRating": 4.83,
-    "reviewCount": 6,
+    "averageRating": 4.71,
+    "reviewCount": 7,
     "lastModified": "2026-08-24",
     "contentHash": "d8a3a93ccfca40d21483950834e07fd8db63c63b"
   },
