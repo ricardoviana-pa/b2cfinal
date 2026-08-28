@@ -8,7 +8,10 @@ export const IMAGES = {
   // Homepage cover — Carcavelos Manor House: the 18th-century estate with its
   // lap pool and mature grounds.
   heroMain: '/hero/home-cliff-villa.webp',
-  heroHomes: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-homes-NBdFZGmwXL2AoxvceMgjMy.webp',
+  // Auto-hospedada: o CDN da plataforma original (d2xsxph8kpxj0f.cloudfront.net)
+  // comecou a devolver 403/503 em 24 ago 2026 e nao volta — qualquer imagem
+  // que la ficasse desaparece assim que a cache de edge expira.
+  heroHomes: '/hero/home-pool-twilight.webp',
 
   // Destination images
   destinationMinho: '/destinations/minho-coast.webp',

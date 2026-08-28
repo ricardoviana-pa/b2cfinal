@@ -624,7 +624,7 @@ function injectMeta(html: string, meta: {
 }): string {
   const title = escText(meta.title);
   const description = escAttr(meta.description);
-  const image = escAttr(meta.image ?? 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/hero-main-96HXfBCK752avi2daWhgmd.webp');
+  const image = escAttr(meta.image ?? 'https://www.portugalactive.com/hero/home-cliff-villa.webp');
   const url = escAttr(meta.url);
   const type = escAttr(meta.type ?? 'website');
 

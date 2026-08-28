@@ -519,12 +519,10 @@ const PA = {
   warm: "#F5F1EB",
   gold: "#8B7355",
 } as const;
-/** Same asset the site header uses (client/src/lib/images.ts logoColor) */
 /** Badge da marca (logo com fundo cozido) — imutável em dark mode dos clientes
- *  de email; a versão transparente ficava invisível/encaixotada no Gmail dark. */
+ *  de email; a versão transparente ficava invisível/encaixotada no Gmail dark.
+ *  Auto-hospedada: o CDN da plataforma original morreu a 24 ago 2026. */
 const BRAND_BAND_URL = "https://www.portugalactive.com/email/brand-band.png";
-const LOGO_URL =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo_0b76cb12.webp";
 
 /** Rodapé de marca partilhado: hairline dourada, badge, contactos, tagline */
 function brandFooter(pt: boolean): string {

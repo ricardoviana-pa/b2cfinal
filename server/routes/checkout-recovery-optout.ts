@@ -18,8 +18,9 @@ const PA = {
   warm: "#F5F1EB",
   sand: "#E8E4DC",
 } as const;
-const LOGO_URL =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp";
+// Mesma banda dos emails (auto-hospedada): esta pagina e o destino do link no
+// rodape do email, e o CDN da plataforma original morreu a 24 ago 2026.
+const LOGO_URL = "https://www.portugalactive.com/email/brand-band.png";
 const SERIF = "'Cormorant Garamond',Georgia,'Times New Roman',serif";
 const SANS = "'DM Sans',Arial,Helvetica,sans-serif";
 
@@ -32,8 +33,8 @@ function page(lang: string, title: string, message: string): string {
 <title>${title} · Portugal Active</title>
 </head>
 <body style="margin:0;padding:0;background:${PA.warm};font-family:${SANS};">
-  <div style="background:${PA.dark};padding:18px 20px;text-align:center;">
-    <img src="${LOGO_URL}" alt="Portugal Active" height="30" style="height:30px;width:auto;display:inline-block;" />
+  <div style="text-align:center;">
+    <img src="${LOGO_URL}" alt="Portugal Active" width="600" style="display:block;margin:0 auto;width:100%;max-width:600px;height:auto;" />
   </div>
   <div style="max-width:520px;margin:0 auto;padding:64px 24px;text-align:center;">
     <h1 style="font-family:${SERIF};font-size:28px;font-weight:400;line-height:1.25;color:${PA.dark};margin:0 0 14px;">${title}</h1>
