@@ -37,16 +37,16 @@ export const IMAGES = {
   contactHero: '/experiences/pa-contact-villa-twilight.webp',
 
   // Logo
-  logoWhite: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp',
-  logoColor: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo_0b76cb12.webp',
+  logoWhite: '/brand/pa-logo-white.webp',
+  logoColor: '/brand/pa-logo-dark.webp',
 
   // Press logos
-  pressForbes: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/press-forbes_1246ca14.png',
-  pressTheTimes: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/press-the-times_f05a8eca.png',
-  pressTheGuardian: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/press-the-guardian_90792c94.png',
-  pressTimeOut: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/press-time-out-v2_5105e066.png',
-  pressMensHealth: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/press-mens-health_0d8488bb.png',
-  pressArquitectura: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/press-arquitectura-diseno_8d8e8eb4.png',
+  pressForbes: '/press/forbes.webp',
+  pressTheTimes: '/press/the-times.webp',
+  pressTheGuardian: '/press/the-guardian.webp',
+  pressTimeOut: '/press/time-out.webp',
+  pressMensHealth: '/press/mens-health.webp',
+  pressArquitectura: '/press/arquitectura.webp',
 } as const;
 
 /**

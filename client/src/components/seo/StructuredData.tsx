@@ -92,7 +92,7 @@ const PUBLISHER = {
   url: BASE_URL,
   logo: {
     '@type': 'ImageObject' as const,
-    url: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/portugal-active-logo-white_cbdf5c3f.webp',
+    url: 'https://www.portugalactive.com/brand/pa-logo-white.webp',
     width: 600,
     height: 60,
   },
