@@ -5169,16 +5169,13 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/865e7e1a-d7f1-4a-xS8pc",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/e0875cfe-8fac-4f-cHeRE",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/89da421c-1a0d-42-AkPoK",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/fa8a9fe0-1478-40-iLMeD",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/a240dc43-d39f-49-gNFvm",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/8390c938-f354-47-WJMe0",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/fd3208c9-2c0b-4f-ykC1K",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/bc5f3f14-7b8f-40-s2jMQ",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/fee9e8cf-0046-4c-hpNce",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/51e85f8d-7b6e-4f-4Ddwr",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/8a04abdc-2dec-46-Q3mDY",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/f502f6e8-acbf-4e-1nH1a",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/2445d80f-7e7f-49-3SjBj",
+      "https://assets.guesty.com/image/upload/v1787824757/production/6957de4388cba42d9e7a905e/bmahr4urank4apuodxby.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/528f3d46-be94-42-n1DxJ",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/2e6ff91d-0365-46-ZNhBQ",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338554dbb5001568a505/ea8b1a96-152c-44-FQ1_L",
@@ -5612,8 +5609,8 @@
     ],
     "averageRating": 4.89,
     "reviewCount": 9,
-    "lastModified": "2026-08-24",
-    "contentHash": "f58380858ca2b1c7c5599a98a3b2561d4d9034b6"
+    "lastModified": "2026-08-27",
+    "contentHash": "5c020bc88dde389b6bf56907ddd658a73173aa1c"
   },
   {
     "id": "guesty-696533d2ec19770014fd1b52",
@@ -8914,6 +8911,41 @@
     "areaSquareFeet": 10763.91042,
     "reviews": [
       {
+        "rating": 4,
+        "text": "We had a great week at this property which its wonderful pool and garden and spacious living rooms. We can fully recommend this property for families. However, we also recommend Portugal Active to look more carefully into the some of the property items, which are clearly showing signs of wear and tear.",
+        "guestDisplayName": "Marcus",
+        "guestName": "Marcus",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-26T08:39:04.096Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Super séjour ! La maison est vraiment top et conforme à 100 % à la description. La clim marche super bien et un grand merci pour la piscine qui a été nettoyée dès le deuxième matin. L'emplacement est génial, à seulement 3 minutes de la plage, et Chafé est vraiment un super joli village. Le propriétaire est super sympa et l'équipe de Portugal Active est au top du service : super réactifs et communication impeccable du début à la fin. On recommande sans hésiter !",
         "guestDisplayName": "Benjamin",
@@ -9124,8 +9156,8 @@
         ]
       }
     ],
-    "averageRating": 4.83,
-    "reviewCount": 6,
+    "averageRating": 4.71,
+    "reviewCount": 7,
     "lastModified": "2026-08-24",
     "contentHash": "d8a3a93ccfca40d21483950834e07fd8db63c63b"
   },
@@ -9276,6 +9308,41 @@
     "checkOutTime": "11:00",
     "areaSquareFeet": 463,
     "reviews": [
+      {
+        "rating": 5,
+        "text": "Great place and location 👌🏽👌🏽",
+        "guestDisplayName": "Andrew",
+        "guestName": "Andrew",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-25T08:42:38.346Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
       {
         "rating": 5,
         "text": "Appartement et hôte très bien.",
@@ -9592,8 +9659,8 @@
         ]
       }
     ],
-    "averageRating": 4.89,
-    "reviewCount": 9,
+    "averageRating": 4.9,
+    "reviewCount": 10,
     "lastModified": "2026-08-24",
     "contentHash": "d5aeca43bf294dde4be51f707dcb0bd7d04a7ad0"
   },
@@ -10179,6 +10246,41 @@
     "checkOutTime": "11:00",
     "areaSquareFeet": 538.195521,
     "reviews": [
+      {
+        "rating": 5,
+        "text": "Nice place to relax. Easy to get Ubers from as well",
+        "guestDisplayName": "Nicholas David",
+        "guestName": "Nicholas David",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-25T07:32:12.559Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 3
+          }
+        ]
+      },
       {
         "rating": 4,
         "text": "Clean and tidy. Hot tub was a nice extra and the outside area was lovely. Third bed is a pull out single under the one upstairs so take note of this as we didn’t think it was quite clear that’s what it was on booking and the upstairs area is pretty small. Noise travels, you can clearly hear people walking about in the apartment above. Wasn’t too much of an issue for us as we only heard them coming and going a few times. Otherwise great location lots of brunch spots nearby and walkable everywhere",
@@ -10810,8 +10912,8 @@
         ]
       }
     ],
-    "averageRating": 4.61,
-    "reviewCount": 18,
+    "averageRating": 4.63,
+    "reviewCount": 19,
     "lastModified": "2026-08-24",
     "contentHash": "1e5c6e6309a2aca1a09c238e55b68b50f1dbfa67"
   },
@@ -11044,6 +11146,41 @@
     "checkOutTime": "11:00",
     "areaSquareFeet": 1614.586563,
     "reviews": [
+      {
+        "rating": 5,
+        "text": "Dalla casa di sentiva l'oceano. Stupendo",
+        "guestDisplayName": "Marina",
+        "guestName": "Marina",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-27T05:45:44.999Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
       {
         "rating": 4,
         "text": "The house is situated in a stunning location overlooking the Atlantic with a terrace that looks straight out to sea. In the evenings, you will be treated to displays of glowworms and the odd shooting star whizzing by overhead. The house itself is very comfortable and in pristine condition. I would recommend it to anyone in love with either Viana do Castelo or Caminha as a convenient base. Or, to those who enjoy hiking along the coast down stretches of the Caminho or enjoy the clean and laidback ",
@@ -11360,8 +11497,8 @@
         ]
       }
     ],
-    "averageRating": 4.67,
-    "reviewCount": 9,
+    "averageRating": 4.7,
+    "reviewCount": 10,
     "lastModified": "2026-08-24",
     "contentHash": "096c0c76dbc2e383ba5399d174f02cb106829cac"
   },
@@ -12763,6 +12900,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "If you're in Viana do Castello for surfing, wing foiling, or just the beach, this location is perfectly convenient. Walk to the beach and local restaurants.\nI liked how the apartment is split onto two levels: living and sleeping. Unfortunately, the WiFi didn't extend down to the sleeping level. I'm sure the hosts will fix this.",
+        "guestDisplayName": "Michael",
+        "guestName": "Michael",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-26T18:30:11.246Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Zeer mooi appartement, heel mooi ingericht. Het appartement was heel proper. Tussentijds werd er gepoetst en de lakens ververst. Op wandelafstand van het strand.\nEen echte aanrader!",
         "guestDisplayName": "Annelies",
         "guestName": "Annelies",
@@ -12833,7 +13005,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2,
+    "reviewCount": 3,
     "lastModified": "2026-08-24",
     "contentHash": "b47379ce968062aff367349d1dab8396829d67e2"
   },
@@ -13999,6 +14171,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Nous avons passé un très bon séjour. Le logement est agréable et très propre.",
+        "guestDisplayName": "Virginie",
+        "guestName": "Virginie",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-18T14:49:46.876Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 3
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Todo genial. Limpio, bien equipado, fácil gestión.",
         "guestDisplayName": "Valeria",
         "guestName": "Valeria",
@@ -14104,7 +14311,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 3,
+    "reviewCount": 4,
     "lastModified": "2026-08-24",
     "contentHash": "7cc05e43fe2f84ece382ea85b3224ca1c5193f1b"
   },
@@ -16828,6 +17035,41 @@
     "areaSquareFeet": 3552.0904386,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Nos ha gustado la casa, solo teníamos una llave y un mando para el coche. Faltan detalles para colgar las toallas en los baños.",
+        "guestDisplayName": "Juan",
+        "guestName": "Juan",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-23T12:48:46.715Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 3
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 3
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Fantastic place, Very clean facilities in very good condition, a fantastic house to spend a few days with friends and family",
         "guestDisplayName": "Martina",
@@ -17038,8 +17280,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 6,
+    "averageRating": 4.86,
+    "reviewCount": 7,
     "lastModified": "2026-08-24",
     "contentHash": "8c24b7505c957b92e1c887898f748a916e3461a3"
   },
@@ -18173,10 +18415,10 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
+      "https://assets.guesty.com/image/upload/v1777972284/production/6957de4388cba42d9e7a905e/dkpcddwqi0auokcmgwml.jpg",
       "https://assets.guesty.com/image/upload/v1778076252/production/6957de4388cba42d9e7a905e/qffohravqwhoydbt8ya4.jpg",
       "https://assets.guesty.com/image/upload/v1777972285/production/6957de4388cba42d9e7a905e/qbgxxa9mrlckphppmzea.jpg",
       "https://assets.guesty.com/image/upload/v1777998680/production/6957de4388cba42d9e7a905e/ipms8r1vgdhidpwe7ymm.jpg",
-      "https://assets.guesty.com/image/upload/v1777972284/production/6957de4388cba42d9e7a905e/dkpcddwqi0auokcmgwml.jpg",
       "https://assets.guesty.com/image/upload/v1778076252/production/6957de4388cba42d9e7a905e/rrn5yfaquss7dvo830bc.jpg",
       "https://assets.guesty.com/image/upload/v1778076252/production/6957de4388cba42d9e7a905e/pft0bce3jtcnfwx3tqmj.jpg",
       "https://assets.guesty.com/image/upload/v1777972281/production/6957de4388cba42d9e7a905e/pa9ibq6ehuwtya3pft5x.jpg",
@@ -18364,8 +18606,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 1,
-    "lastModified": "2026-08-24",
-    "contentHash": "bfe9ed33b3fed3d44a8a118e7b0b25f74d36a6c6"
+    "lastModified": "2026-08-27",
+    "contentHash": "02b185d8e6e8f1e4a203444e90b155cdd0395df5"
   },
   {
     "id": "guesty-69c415701b964f00157188b5",
@@ -18384,8 +18626,8 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1777992797/production/6957de4388cba42d9e7a905e/ee89l3aiwnbw4v4phsal.jpg",
       "https://assets.guesty.com/image/upload/v1777992799/production/6957de4388cba42d9e7a905e/maetynyqqee5essizlxx.jpg",
+      "https://assets.guesty.com/image/upload/v1777992797/production/6957de4388cba42d9e7a905e/ee89l3aiwnbw4v4phsal.jpg",
       "https://assets.guesty.com/image/upload/v1778075217/production/6957de4388cba42d9e7a905e/dvtijljgw6uzvjr0z8kq.jpg",
       "https://assets.guesty.com/image/upload/v1777992797/production/6957de4388cba42d9e7a905e/lzkfkvbnurkdenng2k7v.jpg",
       "https://assets.guesty.com/image/upload/v1778075213/production/6957de4388cba42d9e7a905e/prnssfnxu5ore9pyngtf.jpg",
@@ -18605,8 +18847,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 2,
-    "lastModified": "2026-08-24",
-    "contentHash": "a9ca7ea617a9d354ac8f18048fb672aea8ce5c0a"
+    "lastModified": "2026-08-27",
+    "contentHash": "d5eeed39387b66ad2ac92e21c15a6ccb9b9cfec6"
   },
   {
     "id": "guesty-69ca869e5b0a0500158b7d5a",
@@ -18861,14 +19103,14 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
+      "https://assets.guesty.com/image/upload/v1777972278/production/6957de4388cba42d9e7a905e/ssakpyrepceprunrdvf8.jpg",
       "https://assets.guesty.com/image/upload/v1777972301/production/6957de4388cba42d9e7a905e/dtfxxowxt2up6jzm03ot.jpg",
       "https://assets.guesty.com/image/upload/v1777972299/production/6957de4388cba42d9e7a905e/jbcdrad4wkbfhngabwmr.jpg",
       "https://assets.guesty.com/image/upload/v1777972290/production/6957de4388cba42d9e7a905e/futnpf5dvemzioaqjh9e.jpg",
-      "https://assets.guesty.com/image/upload/v1777972278/production/6957de4388cba42d9e7a905e/ssakpyrepceprunrdvf8.jpg",
       "https://assets.guesty.com/image/upload/v1777972306/production/6957de4388cba42d9e7a905e/xdl9bk3zxxajzkg5n33s.jpg",
+      "https://assets.guesty.com/image/upload/v1777972278/production/6957de4388cba42d9e7a905e/uvneqcp6fobjvs5hynmy.jpg",
       "https://assets.guesty.com/image/upload/v1777972281/production/6957de4388cba42d9e7a905e/pa9ibq6ehuwtya3pft5x.jpg",
       "https://assets.guesty.com/image/upload/v1777972277/production/6957de4388cba42d9e7a905e/nkszumxuflzur3lcdsyx.jpg",
-      "https://assets.guesty.com/image/upload/v1777972278/production/6957de4388cba42d9e7a905e/uvneqcp6fobjvs5hynmy.jpg",
       "https://assets.guesty.com/image/upload/v1777972300/production/6957de4388cba42d9e7a905e/fwmnx6gwip6cjyilmdhk.jpg",
       "https://assets.guesty.com/image/upload/v1777972299/production/6957de4388cba42d9e7a905e/gxcb2jcv2qnxuhwfpnzg.jpg",
       "https://assets.guesty.com/image/upload/v1784295554/production/6957de4388cba42d9e7a905e/rdvptwisdmawpzuqgxet.jpg",
@@ -19095,8 +19337,8 @@
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0,
-    "lastModified": "2026-08-24",
-    "contentHash": "28e2aabefe4bd8b4cd1bd46e8f51c689e55f7b0b"
+    "lastModified": "2026-08-25",
+    "contentHash": "7c4bc38641578b4bf0ae5158a17cab3dc67cc689"
   },
   {
     "id": "guesty-696533b2e44e1a0015bb2b42",
@@ -19126,7 +19368,6 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b2e44e1a0015bb2b42/75f9f21a-eb82-49-pVOp-",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b2e44e1a0015bb2b42/9c494937-8216-40-b94Fn",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b2e44e1a0015bb2b42/7c1a727c-323d-45-Hlhw0",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b2e44e1a0015bb2b42/d3fe3952-accf-4e-Hoc4D",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b2e44e1a0015bb2b42/88416f0c-2953-45-a3S8k",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b2e44e1a0015bb2b42/bff72a28-4afe-40-XSQsQ",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533b2e44e1a0015bb2b42/30c05c7f-349a-40-2YiJh",
@@ -19496,8 +19737,8 @@
     ],
     "averageRating": 4.83,
     "reviewCount": 6,
-    "lastModified": "2026-08-24",
-    "contentHash": "054cd16de99e38259fa0e8c5bc52093a3924f4a9"
+    "lastModified": "2026-08-27",
+    "contentHash": "4e33a80049eb48c731adb7f4b9416c097a66ee2f"
   },
   {
     "id": "guesty-69653398bf04fe0013743b98",
@@ -25624,8 +25865,8 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1777972307/production/6957de4388cba42d9e7a905e/rfi6ul6ky4ptp27lglzg.jpg",
       "https://assets.guesty.com/image/upload/v1777972308/production/6957de4388cba42d9e7a905e/fdfuvc9ocfgsqobwfbbl.jpg",
+      "https://assets.guesty.com/image/upload/v1777972307/production/6957de4388cba42d9e7a905e/rfi6ul6ky4ptp27lglzg.jpg",
       "https://assets.guesty.com/image/upload/v1777972310/production/6957de4388cba42d9e7a905e/p6ad2xw3gukugejpghms.jpg",
       "https://assets.guesty.com/image/upload/v1777972286/production/6957de4388cba42d9e7a905e/w5rjegxvozsep8mzpbr0.jpg",
       "https://assets.guesty.com/image/upload/v1778075412/production/6957de4388cba42d9e7a905e/lv7dkke3yyeivgmb929c.jpg",
@@ -25860,8 +26101,8 @@
     ],
     "averageRating": 4.5,
     "reviewCount": 2,
-    "lastModified": "2026-08-24",
-    "contentHash": "3f073a51d8628cc50b0725e0d41efee6423793fb"
+    "lastModified": "2026-08-27",
+    "contentHash": "4cf912c16a79e12e4e5c31a33f252b3b62efb5ff"
   },
   {
     "id": "guesty-6965337d2def930014e919c6",
