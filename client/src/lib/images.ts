@@ -15,8 +15,8 @@ export const IMAGES = {
 
   // Destination images
   destinationMinho: '/destinations/minho-coast.webp',
-  destinationPorto: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/destination-porto-cjrXcH98hgUxZe4zNQBukn.webp',
-  destinationAlgarve: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663406256832/TrgtKZm5wvwi7gPLiBhuvN/destination-algarve-3kQynd6tpdsGxReK7b8dAs.webp',
+  destinationPorto: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1600&q=80',
+  destinationAlgarve: 'https://images.unsplash.com/photo-1621971913709-377f53807c6a?w=1600&q=80',
 
   // Experience images — real Portugal Active photography
   expGastronomy: '/experiences/pa-chef-cooking.webp',
