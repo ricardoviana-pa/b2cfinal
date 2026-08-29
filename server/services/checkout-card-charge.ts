@@ -21,6 +21,9 @@ import {
   fetchReservationConfirmationCode,
   getReservationBalanceDue,
   addReservationServiceFee,
+  fetchPaymentProviderId,
+  fetchReservationGuestId,
+  attachGuestPaymentMethod,
 } from "./guesty-openapi-paypal";
 
 export function breakdownFromIntent(m: any) {
@@ -130,6 +133,19 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
       await updatePaymentIntentMetadata(paymentIntentId, { splitNoteAdded: "1" }).catch(() => {});
     }
   }
+  // Cartao na carteira do Guesty. Sem isto o Guesty fica sem forma de cobrar
+  // caucao, danos, noites extra ou saldos — capacidade que o fluxo antigo
+  // (BE instant com ccToken) tinha e o checkout 2.0 perdeu. Idempotente pelo
+  // carimbo cardOnFile; fail-soft, nunca trava a reserva.
+  if (pi.metadata.cardOnFile !== "1") {
+    await attachCardToGuesty({
+      reservationId,
+      listingId: (m as any).listingId,
+      paymentIntent: pi,
+    })
+      .then((ok) => (ok ? updatePaymentIntentMetadata(paymentIntentId, { cardOnFile: "1" }) : null))
+      .catch((e: any) => console.error("[Card2b] cartao em carteira falhou:", e?.message));
+  }
   await updatePaymentIntentMetadata(paymentIntentId, {
     guestyReservationId: reservationId,
     guestyConfirmationCode: confirmationCode,
@@ -139,6 +155,51 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
     confirmationCode,
   } as any);
   return { reservationId, confirmationCode };
+}
+
+
+/**
+ * Poe o cartao usado no checkout na carteira do Guesty da reserva.
+ *
+ * Funciona porque a conta Stripe que o Guesty tem ligada ao alojamento e a
+ * MESMA onde o checkout 2.0 cobra (verificado a 28 ago 2026: provider-by-listing
+ * devolve acct_1KxXZlGsqyDlHBJE, a nossa). Nao ha clonagem entre contas: o
+ * payment method do proprio PaymentIntent serve tal e qual.
+ *
+ * Devolve false (sem lancar) em qualquer passo em falta — o cartao em carteira
+ * e uma capacidade extra, nunca uma condicao para a reserva existir.
+ */
+export async function attachCardToGuesty(input: {
+  reservationId: string;
+  listingId?: string | null;
+  paymentIntent: { payment_method?: unknown };
+}): Promise<boolean> {
+  const pm = input.paymentIntent?.payment_method;
+  const paymentMethodId = typeof pm === "string" ? pm : (pm as any)?.id;
+  if (!paymentMethodId || !String(paymentMethodId).startsWith("pm_")) {
+    console.warn(`[Card2b] ${input.reservationId}: PI sem payment_method utilizavel — sem cartao em carteira`);
+    return false;
+  }
+  if (!input.listingId) {
+    console.warn(`[Card2b] ${input.reservationId}: intent sem listingId — sem cartao em carteira`);
+    return false;
+  }
+  const [providerId, guestId] = await Promise.all([
+    fetchPaymentProviderId(input.listingId),
+    fetchReservationGuestId(input.reservationId),
+  ]);
+  if (!providerId || !guestId) {
+    console.warn(
+      `[Card2b] ${input.reservationId}: falta providerId(${providerId}) ou guestId(${guestId}) — sem cartao em carteira`,
+    );
+    return false;
+  }
+  return attachGuestPaymentMethod({
+    guestId,
+    paymentMethodId: String(paymentMethodId),
+    paymentProviderId: providerId,
+    reservationId: input.reservationId,
+  });
 }
 
 /* ════════════════════════════════════════════════════════════════

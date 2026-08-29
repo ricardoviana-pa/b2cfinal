@@ -66,6 +66,11 @@ export async function createCardPaymentIntent(
   return stripe.paymentIntents.create({
     amount: params.amount,
     currency: params.currency,
+    // Guarda o cartao com mandato para cobrancas futuras fora de sessao. E o
+    // que devolve ao Guesty a carteira que o fluxo antigo (BE instant/ccToken)
+    // tinha: caucao, danos, noites extra e saldos. Sem isto o metodo existe
+    // mas nao ha mandato, e a cobranca off-session cai em SCA.
+    setup_future_usage: "off_session",
     ...(params.wallet
       ? { automatic_payment_methods: { enabled: true, allow_redirects: "never" as const } }
       : { payment_method_types: ["card"] }),

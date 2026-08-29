@@ -180,6 +180,80 @@ export async function fetchReservationConfirmationCode(reservationId: string): P
   }
 }
 
+/** Id interno do processador de pagamentos que o Guesty tem ligado a este
+ *  alojamento. E obrigatorio para registar um cartao, e NAO e o acct_ do
+ *  Stripe — e um id do Guesty. Fail-soft: sem ele nao ha cartao em carteira,
+ *  mas a reserva segue. */
+export async function fetchPaymentProviderId(listingId: string): Promise<string | null> {
+  try {
+    const data = await guestyClient.request<any>("GET", "/v1/payment-providers/provider-by-listing", {
+      query: { listingId },
+    });
+    const id = data?._id;
+    return typeof id === "string" && id ? id : null;
+  } catch (err: any) {
+    console.warn(`[Guesty] Sem paymentProviderId para listing ${listingId}: ${err?.message || err}`);
+    return null;
+  }
+}
+
+/** Id do hospede criado com a reserva. Preciso para lhe pendurar o cartao. */
+export async function fetchReservationGuestId(reservationId: string): Promise<string | null> {
+  try {
+    const data = await guestyClient.request<any>("GET", `/v1/reservations/${reservationId}`, {
+      query: { fields: "guestId guest" },
+    });
+    const id = data?.guestId ?? data?.guest?._id ?? data?.guest?.id;
+    return typeof id === "string" && id ? id : null;
+  } catch (err: any) {
+    console.warn(`[Guesty] Sem guestId para ${reservationId}: ${err?.message || err}`);
+    return null;
+  }
+}
+
+/**
+ * Poe o cartao do hospede na carteira do Guesty.
+ *
+ * O fluxo antigo (BE instant) mandava um ccToken e o Guesty ficava dono do
+ * cartao — podia cobrar caucao, danos, noites extra e qualquer saldo. O
+ * checkout 2.0 cobra no nosso Stripe e so REGISTAVA o valor, pelo que o Guesty
+ * ficou sem cartao nenhum e sem forma de cobrar (visto a 28 ago 2026 na
+ * GY-ATyEq5WB: "Pending payment collection", metodo de pagamento vazio).
+ *
+ * Isto repoe a capacidade. Funciona porque a conta Stripe que o Guesty tem
+ * ligada ao alojamento e a MESMA onde ja cobramos, logo o payment method que
+ * ja temos serve tal e qual — nao ha contas separadas nem clonagem.
+ *
+ * skipSetupIntent: o cartao foi confirmado no browser com setup_future_usage,
+ * o mandato ja existe; sem esta flag o Guesty tentaria correr um SetupIntent
+ * seu por cima de um metodo ja usado.
+ */
+export async function attachGuestPaymentMethod(input: {
+  guestId: string;
+  paymentMethodId: string;
+  paymentProviderId: string;
+  reservationId: string;
+}): Promise<boolean> {
+  try {
+    await guestyClient.request<any>("POST", `/v1/guests/${input.guestId}/payment-methods`, {
+      body: {
+        stripeCardToken: input.paymentMethodId,
+        paymentProviderId: input.paymentProviderId,
+        reservationId: input.reservationId,
+        reuse: true,
+        skipSetupIntent: true,
+      },
+    });
+    console.info(`[Guesty] Cartao ${input.paymentMethodId} em carteira na reserva ${input.reservationId}`);
+    return true;
+  } catch (err: any) {
+    console.error(
+      `[Guesty] Falhou pôr cartao em carteira (reserva ${input.reservationId}, pm ${input.paymentMethodId}): ${err?.message || err}`,
+    );
+    return false;
+  }
+}
+
 export async function recordExternalPayment(
   reservationId: string,
   amount: number,

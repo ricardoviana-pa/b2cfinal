@@ -15,7 +15,9 @@
     "sync:guesty": "tsx scripts/sync-guesty.ts",
     "cleaning:audit": "tsx scripts/cleaning-fees.ts audit",
     "cleaning:sync": "tsx scripts/cleaning-fees.ts apply",
-    "multiunit:audit": "tsx scripts/multiunit-investigate.ts"
+    "multiunit:audit": "tsx scripts/multiunit-investigate.ts",
+    "checkout2:backfill": "tsx scripts/checkout2-backfill.ts",
+    "checkout2:backfill:apply": "tsx scripts/checkout2-backfill.ts --apply"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",
