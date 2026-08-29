@@ -12614,6 +12614,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Wonderful location for a family reunion. We had a great time in the self-contained compound. Kids had pool and toys to entertain themselves for hours and adults also enjoyed quality time in mixing areas on the grounds. Overall a great find in a special town.",
+        "guestDisplayName": "Francis",
+        "guestName": "Francis",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-29T16:08:46.202Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "A casa estava perfeitamente equipada para o nosso grupo que era bastante grande. Os espaços exteriores eram muito agradáveis, mas seriam ainda melhores se tivessem mais relva e árvores. O único reparo são mesmo os colchões, que por serem de molas eram muito desconfortáveis para dormir tantas noites.",
         "guestDisplayName": "André",
         "guestName": "André",
@@ -12754,7 +12789,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 4,
+    "reviewCount": 5,
     "lastModified": "2026-08-24",
     "contentHash": "1733080b41578048f60d70cd6726f57a2c2e89da"
   },
@@ -27108,6 +27143,41 @@
     "areaSquareFeet": 2152.782,
     "reviews": [
       {
+        "rating": 5,
+        "text": "Ha sido fantástico",
+        "guestDisplayName": "Eladio Jesús",
+        "guestName": "Eladio Jesús",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-28T13:41:23.951Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
         "rating": 4,
         "text": "La valoración es de Vila Áurea en Vilanova de Anha. Muy Buena casa con buenas calidades de construcción y marca de electrodomésticos. Algo descuidada de limpieza,la piscina no estaba limpia (algas) , y algunas pequeñas deficiencias: la nevera no cerraba bien, una mesa de exterior rota, la tostadora no funcionaba, el horno tampoco. Nos cobraron una exageración por el cargador eléctrico del coche!! 0,8€ / KW",
         "guestDisplayName": "Rafael",
@@ -27143,8 +27213,8 @@
         ]
       }
     ],
-    "averageRating": 4,
-    "reviewCount": 1,
+    "averageRating": 4.5,
+    "reviewCount": 2,
     "lastModified": "2026-08-24",
     "contentHash": "e62b67dc1f43170b9e657acdbd9783ce107601f4"
   },
