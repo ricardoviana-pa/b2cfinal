@@ -233,7 +233,7 @@ export async function attachGuestPaymentMethod(input: {
   paymentMethodId: string;
   paymentProviderId: string;
   reservationId: string;
-}): Promise<boolean> {
+}): Promise<{ ok: boolean; error?: string }> {
   try {
     await guestyClient.request<any>("POST", `/v1/guests/${input.guestId}/payment-methods`, {
       body: {
@@ -245,12 +245,14 @@ export async function attachGuestPaymentMethod(input: {
       },
     });
     console.info(`[Guesty] Cartao ${input.paymentMethodId} em carteira na reserva ${input.reservationId}`);
-    return true;
+    return { ok: true };
   } catch (err: any) {
+    const detail = typeof err?.details === "string" ? err.details : JSON.stringify(err?.details ?? "");
+    const msg = `${err?.status ?? ""} ${err?.message ?? ""} ${detail}`.trim().slice(0, 90);
     console.error(
-      `[Guesty] Falhou pôr cartao em carteira (reserva ${input.reservationId}, pm ${input.paymentMethodId}): ${err?.message || err}`,
+      `[Guesty] Falhou pôr cartao em carteira (reserva ${input.reservationId}, pm ${input.paymentMethodId}): ${msg}`,
     );
-    return false;
+    return { ok: false, error: msg };
   }
 }
 

@@ -138,13 +138,18 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
   // (BE instant com ccToken) tinha e o checkout 2.0 perdeu. Idempotente pelo
   // carimbo cardOnFile; fail-soft, nunca trava a reserva.
   if (pi.metadata.cardOnFile !== "1") {
-    await attachCardToGuesty({
+    // O motivo da falha vai para a metadata do PI: sem acesso aos logs do
+    // Render, e a unica forma de o ops (e eu) ver PORQUE e que um cartao nao
+    // entrou em carteira — visivel no dashboard do Stripe, ao lado da reserva.
+    const r = await attachCardToGuesty({
       reservationId,
       listingId: (m as any).listingId,
       paymentIntent: pi,
-    })
-      .then((ok) => (ok ? updatePaymentIntentMetadata(paymentIntentId, { cardOnFile: "1" }) : null))
-      .catch((e: any) => console.error("[Card2b] cartao em carteira falhou:", e?.message));
+    }).catch((e: any) => ({ ok: false, reason: `excecao:${String(e?.message).slice(0, 60)}` }));
+    await updatePaymentIntentMetadata(
+      paymentIntentId,
+      r.ok ? { cardOnFile: "1" } : { cardOnFileError: r.reason.slice(0, 100) },
+    ).catch(() => {});
   }
   await updatePaymentIntentMetadata(paymentIntentId, {
     guestyReservationId: reservationId,
@@ -173,33 +178,28 @@ export async function attachCardToGuesty(input: {
   reservationId: string;
   listingId?: string | null;
   paymentIntent: { payment_method?: unknown };
-}): Promise<boolean> {
+}): Promise<{ ok: boolean; reason: string }> {
   const pm = input.paymentIntent?.payment_method;
   const paymentMethodId = typeof pm === "string" ? pm : (pm as any)?.id;
   if (!paymentMethodId || !String(paymentMethodId).startsWith("pm_")) {
-    console.warn(`[Card2b] ${input.reservationId}: PI sem payment_method utilizavel — sem cartao em carteira`);
-    return false;
+    return { ok: false, reason: `sem-pm(${String(paymentMethodId).slice(0, 20)})` };
   }
-  if (!input.listingId) {
-    console.warn(`[Card2b] ${input.reservationId}: intent sem listingId — sem cartao em carteira`);
-    return false;
-  }
+  if (!input.listingId) return { ok: false, reason: "sem-listingId" };
+
   const [providerId, guestId] = await Promise.all([
     fetchPaymentProviderId(input.listingId),
     fetchReservationGuestId(input.reservationId),
   ]);
-  if (!providerId || !guestId) {
-    console.warn(
-      `[Card2b] ${input.reservationId}: falta providerId(${providerId}) ou guestId(${guestId}) — sem cartao em carteira`,
-    );
-    return false;
-  }
-  return attachGuestPaymentMethod({
+  if (!providerId) return { ok: false, reason: "sem-providerId" };
+  if (!guestId) return { ok: false, reason: "sem-guestId" };
+
+  const res = await attachGuestPaymentMethod({
     guestId,
     paymentMethodId: String(paymentMethodId),
     paymentProviderId: providerId,
     reservationId: input.reservationId,
   });
+  return res.ok ? { ok: true, reason: "ok" } : { ok: false, reason: `guesty:${res.error}` };
 }
 
 /* ════════════════════════════════════════════════════════════════

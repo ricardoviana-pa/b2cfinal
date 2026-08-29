@@ -93,14 +93,17 @@ async function main() {
         fetchReservationGuestId(r.reservationId),
       ]);
       if (providerId && guestId) {
-        r.cardDone = await attachGuestPaymentMethod({
+        const att = await attachGuestPaymentMethod({
           guestId,
           paymentMethodId: r.paymentMethodId,
           paymentProviderId: providerId,
           reservationId: r.reservationId,
         });
-        if (r.cardDone) {
+        r.cardDone = att.ok;
+        if (att.ok) {
           await stripe.paymentIntents.update(r.pi, { metadata: { cardOnFile: "1" } });
+        } else {
+          console.log(`    ${r.code}: ${att.error}`);
         }
       } else {
         r.cardDone = false;
