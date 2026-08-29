@@ -536,6 +536,12 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
       currency: (props.currency || "eur").toLowerCase(),
       paymentMethodCreation: "manual" as const,
       locale: i18n.language as any,
+      // Tem de espelhar o setup_future_usage do PaymentIntent (o servidor cria
+      // com off_session para o cartao ficar em carteira no Guesty). Se os dois
+      // divergirem o Stripe recusa o confirm: "The provided setup_future_usage
+      // (off_session) does not match the expected setup_future_usage (null)"
+      // — apanhado no teste em dev, 28 ago 2026.
+      setupFutureUsage: "off_session" as const,
       // Card form em sessão types (layout só-cartão, sem o seletor interno do
       // Stripe); o servidor cria o PI no formato que casa com a sessão: types
       // para o card form, automatic para o ECE (input wallet no createCardCharge).
