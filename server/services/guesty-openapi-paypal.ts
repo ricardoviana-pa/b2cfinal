@@ -200,10 +200,11 @@ export async function fetchPaymentProviderId(listingId: string): Promise<string 
 /** Id do hospede criado com a reserva. Preciso para lhe pendurar o cartao. */
 export async function fetchReservationGuestId(reservationId: string): Promise<string | null> {
   try {
-    const data = await guestyClient.request<any>("GET", `/v1/reservations/${reservationId}`, {
-      query: { fields: "guestId guest" },
-    });
-    const id = data?.guestId ?? data?.guest?._id ?? data?.guest?.id;
+    // Sem filtro de campos: pedir "fields" ao Guesty e uma fonte conhecida de
+    // respostas vazias quando o nome do campo nao bate certo, e aqui um
+    // guestId em falta significa nao haver cartao em carteira.
+    const data = await guestyClient.request<any>("GET", `/v1/reservations/${reservationId}`);
+    const id = data?.guestId ?? data?.guest?._id ?? data?.guest?.id ?? data?.guest;
     return typeof id === "string" && id ? id : null;
   } catch (err: any) {
     console.warn(`[Guesty] Sem guestId para ${reservationId}: ${err?.message || err}`);
