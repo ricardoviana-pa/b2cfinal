@@ -7823,6 +7823,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Alojamiento muy recomendable. En pleno centro. La única pega el aparcamiento, complicado en días de festejos",
+        "guestDisplayName": "David",
+        "guestName": "David",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-21T08:45:05.951Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Apartamento impecável e super bem localizado !",
         "guestDisplayName": "Hanques",
         "guestName": "Hanques",
@@ -7858,7 +7893,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1,
+    "reviewCount": 2,
     "lastModified": "2026-08-24",
     "contentHash": "5357f23c813c1520c80720d51e93ad93fcf6508d"
   },
@@ -13672,6 +13707,41 @@
     "areaSquareFeet": 10096.54797396,
     "reviews": [
       {
+        "rating": 4,
+        "text": "Localização perfeita. Tudo impecável.",
+        "guestDisplayName": "Susana",
+        "guestName": "Susana",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-29T15:57:22.885Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 3
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 3
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 4
+          }
+        ]
+      },
+      {
         "rating": 5,
         "text": "Wir hatten einen wunderbaren Aufenthalt. Das Haus ist sehr schön, bestens ausgestattet und es hat uns an nichts gefehlt. Besonders genossen haben wir die Nähe zum Meer und den Pool. Ein weiteres Highlight war die Dachterrasse mit ihrem tollen Ausblick – der perfekte Ort, um den Tag ausklingen zu lassen. Wir würden jederzeit wiederkommen und können die Unterkunft uneingeschränkt weiterempfehlen.",
         "guestDisplayName": "Tobias",
@@ -13742,8 +13812,8 @@
         ]
       }
     ],
-    "averageRating": 5,
-    "reviewCount": 2,
+    "averageRating": 4.67,
+    "reviewCount": 3,
     "lastModified": "2026-08-24",
     "contentHash": "12547f05b23cffacc36548425ec5a46b4780d467"
   },
@@ -27179,6 +27249,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Passamos três dias incríveis nesta casa, em uma família de 6 adultos e 4 crianças, e foi simplesmente perfeito! ❤️\n\nA casa é linda, muito bem equipada, confortável e completa, exatamente como nas fotos. As crianças puderam brincar e se divertir muito, enquanto os adultos também aproveitaram cada momento com muito conforto e tranquilidade.\n\nFoi um daqueles lugares que tornam a viagem ainda mais especial. A casa tem tudo o que uma família precisa para passar dias agradáveis, aproveitar juntos e cr",
+        "guestDisplayName": "Arliane",
+        "guestName": "Arliane",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-30T10:40:10.394Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Ha sido fantástico",
         "guestDisplayName": "Eladio Jesús",
         "guestName": "Eladio Jesús",
@@ -27248,8 +27353,8 @@
         ]
       }
     ],
-    "averageRating": 4.5,
-    "reviewCount": 2,
+    "averageRating": 4.67,
+    "reviewCount": 3,
     "lastModified": "2026-08-24",
     "contentHash": "e62b67dc1f43170b9e657acdbd9783ce107601f4"
   },
