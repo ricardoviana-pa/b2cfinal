@@ -4,7 +4,10 @@
     "slug": "minho",
     "region": "minho",
     "name": "Minho Coast",
-    "geo": { "latitude": 41.7, "longitude": -8.6 },
+    "geo": {
+      "latitude": 41.7,
+      "longitude": -8.6
+    },
     "tagline": "Where the Atlantic meets ancient forests and vineyards.",
     "description": "Where the Atlantic meets ancient forests and vineyards.",
     "heroSubtitle": "Portugal's greenest region, where Atlantic surf meets Vinho Verde valleys.",
@@ -26,12 +29,33 @@
     "bestTimeToVisit": "June to September for beach and outdoor adventures. May and October for hiking, wine harvest, and fewer crowds. Mild and green year round.",
     "whatToExpect": "Lush green landscapes, wild Atlantic beaches, traditional granite villages, and some of the best seafood in Portugal. A pace of life the south lost decades ago.",
     "insiderRecommendations": [
-      { "name": "Tasca do Celso", "category": "Restaurant", "description": "Ponte de Lima. No menu. The owner brings what is fresh. Book the terrace." },
-      { "name": "Praia do Afife", "category": "Beach", "description": "Between Viana and Caminha. Wild, uncrowded, with a beach bar that grills sardines to order." },
-      { "name": "Quinta de Soalheiro", "category": "Wine", "description": "The best Alvarinho producer in Monção. Private tastings with the family who started it all." },
-      { "name": "Trilho dos Moinhos", "category": "Hike", "description": "Watermill trail in Peneda Gerês. 8km through ancient oak forest with natural swimming pools." }
+      {
+        "name": "Tasca do Celso",
+        "category": "Restaurant",
+        "description": "Ponte de Lima. No menu. The owner brings what is fresh. Book the terrace."
+      },
+      {
+        "name": "Praia do Afife",
+        "category": "Beach",
+        "description": "Between Viana and Caminha. Wild, uncrowded, with a beach bar that grills sardines to order."
+      },
+      {
+        "name": "Quinta de Soalheiro",
+        "category": "Wine",
+        "description": "The best Alvarinho producer in Monção. Private tastings with the family who started it all."
+      },
+      {
+        "name": "Trilho dos Moinhos",
+        "category": "Hike",
+        "description": "Watermill trail in Peneda Gerês. 8km through ancient oak forest with natural swimming pools."
+      }
     ],
-    "relatedSlugs": ["viana-do-castelo", "caminha", "esposende", "porto"],
+    "relatedSlugs": [
+      "viana-do-castelo",
+      "caminha",
+      "esposende",
+      "porto"
+    ],
     "status": "active",
     "whyOverline": "WHY MINHO"
   },
@@ -40,7 +64,10 @@
     "slug": "viana-do-castelo",
     "region": "minho",
     "name": "Viana do Castelo",
-    "geo": { "latitude": 41.6918, "longitude": -8.8344 },
+    "geo": {
+      "latitude": 41.6918,
+      "longitude": -8.8344
+    },
     "tagline": "Northern Portugal's Atlantic capital, where the Lima meets the ocean.",
     "description": "A complete guide to Viana do Castelo, the third most welcoming city in the world.",
     "heroSubtitle": "Northern Portugal's Atlantic capital, where the Lima meets the ocean",
@@ -67,8 +94,8 @@
     ],
     "propertyCount": 12,
     "comingSoon": false,
-    "seoTitle": "Viana do Castelo: Northern Portugal's Atlantic Capital | Portugal Active",
-    "seoDescription": "A complete guide to Viana do Castelo, the third most welcoming city in the world. Atlantic beaches, Vinho Verde valleys, and our curated villas in the Minho.",
+    "seoTitle": "Viana do Castelo: Beaches, Food and Where to Stay | Portugal Active",
+    "seoDescription": "Atlantic beaches, seafood and Vinho Verde in the world's third most welcoming city. What to see in Viana do Castelo, when to go, and where to stay.",
     "howToGetHere": "Porto airport (OPO) 45–50 min by A28 (toll-free through Viana since Jan 2025). CP intercity from Porto Campanhã 1h15–1h25. Vigo airport 1h from the Spanish side. Lisbon is 4h by motorway.",
     "bestTimeToVisit": "Late May to June and September. Warm, drier weather (20–25°C), vineyards either at their greenest or at full vindima, and crowds that are manageable rather than absent.",
     "whatToExpect": "A working Atlantic city, more Atlantic than Mediterranean — fishing boats at dawn, basilica at sunset, Vinho Verde at every table.",
@@ -79,36 +106,96 @@
       {
         "heading": "The historic centre",
         "items": [
-          { "name": "Praça da República", "category": "Square", "description": "The city's beating heart — a Renaissance square that has held the same function for over five hundred years. The chafariz at its centre dates to 1554; the loggia of the Casa das Varandas opposite was built in 1589 for the Misericórdia brotherhood." },
-          { "name": "Igreja da Misericórdia", "category": "Architecture", "description": "A loggia of arched windows above a cloister of azulejos. Step inside for the painted ceiling alone." },
-          { "name": "Sé Catedral", "category": "Architecture", "description": "Romanesque-Gothic cathedral with two crenellated towers. A working parish, not a museum." },
-          { "name": "Museu do Traje", "category": "Culture", "description": "The Minho's textile traditions in costume form — gold-filigree embroidery and ceremonial dress that still appear at the Romaria." }
+          {
+            "name": "Praça da República",
+            "category": "Square",
+            "description": "The city's beating heart — a Renaissance square that has held the same function for over five hundred years. The chafariz at its centre dates to 1554; the loggia of the Casa das Varandas opposite was built in 1589 for the Misericórdia brotherhood."
+          },
+          {
+            "name": "Igreja da Misericórdia",
+            "category": "Architecture",
+            "description": "A loggia of arched windows above a cloister of azulejos. Step inside for the painted ceiling alone."
+          },
+          {
+            "name": "Sé Catedral",
+            "category": "Architecture",
+            "description": "Romanesque-Gothic cathedral with two crenellated towers. A working parish, not a museum."
+          },
+          {
+            "name": "Museu do Traje",
+            "category": "Culture",
+            "description": "The Minho's textile traditions in costume form — gold-filigree embroidery and ceremonial dress that still appear at the Romaria."
+          }
         ]
       },
       {
         "heading": "The hilltop",
         "items": [
-          { "name": "Santuário de Santa Luzia", "category": "Pilgrimage", "description": "Neo-Byzantine basilica designed by Miguel Ventura Terra and built between 1904 and 1943. The view from the cupola was named by National Geographic in 1927 as rivalled in the world only by those of Rio de Janeiro and Funchal." },
-          { "name": "Citânia de Santa Luzia", "category": "Archaeology", "description": "Iron Age Celtic-Iberian hill fort behind the basilica. Stone foundations, panoramic views, almost no other visitors." },
-          { "name": "Elevador de Santa Luzia", "category": "Transport", "description": "Portugal's longest funicular — 650m of track, inaugurated in 1923. Six and a half minutes to the top." }
+          {
+            "name": "Santuário de Santa Luzia",
+            "category": "Pilgrimage",
+            "description": "Neo-Byzantine basilica designed by Miguel Ventura Terra and built between 1904 and 1943. The view from the cupola was named by National Geographic in 1927 as rivalled in the world only by those of Rio de Janeiro and Funchal."
+          },
+          {
+            "name": "Citânia de Santa Luzia",
+            "category": "Archaeology",
+            "description": "Iron Age Celtic-Iberian hill fort behind the basilica. Stone foundations, panoramic views, almost no other visitors."
+          },
+          {
+            "name": "Elevador de Santa Luzia",
+            "category": "Transport",
+            "description": "Portugal's longest funicular — 650m of track, inaugurated in 1923. Six and a half minutes to the top."
+          }
         ]
       },
       {
         "heading": "The waterfront",
         "items": [
-          { "name": "Navio Gil Eannes", "category": "Heritage", "description": "The 1955 hospital ship built in the local shipyards to support the cod fleet on the Newfoundland and Greenland banks. Now a museum moored on the Lima riverfront." },
-          { "name": "Ponte Eiffel", "category": "Architecture", "description": "Drawn in Gustave Eiffel's Paris office and inaugurated on 30 June 1878. The first two-level iron bridge over the Lima, still in daily use carrying both road and rail." },
-          { "name": "Praia Norte", "category": "Beach", "description": "City beach at the river mouth — Blue Flag-rated, with two saltwater tidal pools (one shallow enough for children)." },
-          { "name": "Praia do Cabedelo", "category": "Beach", "description": "Across the river — one of Portugal's leading windsurf and kitesurf beaches. A five-minute river ferry runs through the day." },
-          { "name": "Centro Cultural", "category": "Architecture", "description": "Eduardo Souto de Moura's contribution to the waterfront ensemble that also includes work by Fernando Távora and Álvaro Siza." }
+          {
+            "name": "Navio Gil Eannes",
+            "category": "Heritage",
+            "description": "The 1955 hospital ship built in the local shipyards to support the cod fleet on the Newfoundland and Greenland banks. Now a museum moored on the Lima riverfront."
+          },
+          {
+            "name": "Ponte Eiffel",
+            "category": "Architecture",
+            "description": "Drawn in Gustave Eiffel's Paris office and inaugurated on 30 June 1878. The first two-level iron bridge over the Lima, still in daily use carrying both road and rail."
+          },
+          {
+            "name": "Praia Norte",
+            "category": "Beach",
+            "description": "City beach at the river mouth — Blue Flag-rated, with two saltwater tidal pools (one shallow enough for children)."
+          },
+          {
+            "name": "Praia do Cabedelo",
+            "category": "Beach",
+            "description": "Across the river — one of Portugal's leading windsurf and kitesurf beaches. A five-minute river ferry runs through the day."
+          },
+          {
+            "name": "Centro Cultural",
+            "category": "Architecture",
+            "description": "Eduardo Souto de Moura's contribution to the waterfront ensemble that also includes work by Fernando Távora and Álvaro Siza."
+          }
         ]
       },
       {
         "heading": "Outside the city",
         "items": [
-          { "name": "Vinho Verde valley", "category": "Wine", "description": "The Lima River valley behind Viana is one of the original sub-regions of the Vinho Verde appellation — the Loureiro grape's place of origin. Manor estates around Ponte de Lima open for tastings." },
-          { "name": "Caminha day trip", "category": "Excursion", "description": "Twenty-one kilometres north on the N13 coast road — a smaller riverside town on the Minho estuary, with a walled medieval-Renaissance core and a fountain by the same stoneworker as Viana's." },
-          { "name": "Peneda-Gerês National Park", "category": "Nature", "description": "Portugal's only national park, an hour east by car. Granite villages, mountain trails, and the long-haired Garrano horses that have lived in these mountains since the Roman period." }
+          {
+            "name": "Vinho Verde valley",
+            "category": "Wine",
+            "description": "The Lima River valley behind Viana is one of the original sub-regions of the Vinho Verde appellation — the Loureiro grape's place of origin. Manor estates around Ponte de Lima open for tastings."
+          },
+          {
+            "name": "Caminha day trip",
+            "category": "Excursion",
+            "description": "Twenty-one kilometres north on the N13 coast road — a smaller riverside town on the Minho estuary, with a walled medieval-Renaissance core and a fountain by the same stoneworker as Viana's."
+          },
+          {
+            "name": "Peneda-Gerês National Park",
+            "category": "Nature",
+            "description": "Portugal's only national park, an hour east by car. Granite villages, mountain trails, and the long-haired Garrano horses that have lived in these mountains since the Roman period."
+          }
         ]
       }
     ],
@@ -128,59 +215,210 @@
     },
     "eatDrinkIntro": "Viana does not have the Michelin density of Porto or Lisbon, but it has what those cities have largely lost: working-day restaurants run by the same families for three or four generations, fish that arrived that morning, and a generation of younger chefs returning to take regional cooking somewhere new. Two restaurants in the city hold Michelin Bib Gourmand status. The Pousada de Santa Luzia, on the hilltop, has the view. Below the bridge, on the river, the wholesalers sell to the restaurants in the morning and feed visitors in the evening.",
     "restaurants": [
-      { "name": "Tasquinha da Linda", "category": "Seafood", "description": "Owned by fish wholesalers. The freshest seafood in town. Reservation essential." },
-      { "name": "Camelo", "category": "Regional", "description": "Bib Gourmand-recognised. Modern Portuguese cooking that leans on Minho-grown ingredients and Vinho Verde from the valley behind the city." },
-      { "name": "Os 3 Potes", "category": "Tavern", "description": "Sixteenth-century tavern serving regional classics — arroz de polvo, bacalhau à Viana, leitão à Bairrada." },
-      { "name": "A Laranjeira", "category": "Family", "description": "Family-run, no menu. Whatever came in on the boat that morning, cooked the way the owner's grandmother taught her." },
-      { "name": "Pousada de Santa Luzia", "category": "View", "description": "Hilltop dining at the basilica, with the same panorama National Geographic put in the same league as Rio de Janeiro. Reservations essential at sunset." },
-      { "name": "Zé Natário", "category": "Pastry", "description": "Classic granite-counter pastelaria — cod fritters, bola de Berlim, milk-fed cinnamon coffees taken standing." }
+      {
+        "name": "Tasquinha da Linda",
+        "category": "Seafood",
+        "description": "Owned by fish wholesalers. The freshest seafood in town. Reservation essential."
+      },
+      {
+        "name": "Camelo",
+        "category": "Regional",
+        "description": "Bib Gourmand-recognised. Modern Portuguese cooking that leans on Minho-grown ingredients and Vinho Verde from the valley behind the city."
+      },
+      {
+        "name": "Os 3 Potes",
+        "category": "Tavern",
+        "description": "Sixteenth-century tavern serving regional classics — arroz de polvo, bacalhau à Viana, leitão à Bairrada."
+      },
+      {
+        "name": "A Laranjeira",
+        "category": "Family",
+        "description": "Family-run, no menu. Whatever came in on the boat that morning, cooked the way the owner's grandmother taught her."
+      },
+      {
+        "name": "Pousada de Santa Luzia",
+        "category": "View",
+        "description": "Hilltop dining at the basilica, with the same panorama National Geographic put in the same league as Rio de Janeiro. Reservations essential at sunset."
+      },
+      {
+        "name": "Zé Natário",
+        "category": "Pastry",
+        "description": "Classic granite-counter pastelaria — cod fritters, bola de Berlim, milk-fed cinnamon coffees taken standing."
+      }
     ],
     "specialties": [
-      { "name": "Bacalhau à moda de Viana", "category": "Dish", "description": "Salted cod baked with peppers, onions, potatoes and broa — the city's signature plate, on most menus year-round." },
-      { "name": "Arroz de polvo", "category": "Dish", "description": "Slow-cooked octopus rice; the Alto Minho version is wetter than the south's." },
-      { "name": "Lampreia do Lima", "category": "Seasonal", "description": "River lamprey, in season from January through April. A dish that polarises — those who love it return for it." },
-      { "name": "Vinho Verde Loureiro", "category": "Wine", "description": "The Lima valley is the Loureiro grape's place of origin. Crisp, low-alcohol, citric — drunk young and cold." }
+      {
+        "name": "Bacalhau à moda de Viana",
+        "category": "Dish",
+        "description": "Salted cod baked with peppers, onions, potatoes and broa — the city's signature plate, on most menus year-round."
+      },
+      {
+        "name": "Arroz de polvo",
+        "category": "Dish",
+        "description": "Slow-cooked octopus rice; the Alto Minho version is wetter than the south's."
+      },
+      {
+        "name": "Lampreia do Lima",
+        "category": "Seasonal",
+        "description": "River lamprey, in season from January through April. A dish that polarises — those who love it return for it."
+      },
+      {
+        "name": "Vinho Verde Loureiro",
+        "category": "Wine",
+        "description": "The Lima valley is the Loureiro grape's place of origin. Crisp, low-alcohol, citric — drunk young and cold."
+      }
     ],
     "experiencesIntro": "What follows is a selection of experiences that the concierge organizes, alone or in combination, for guests staying in Portugal Active homes. Each can be arranged with twenty-four hours' notice, most with less. None requires a car: the concierge handles transfers, reservations, and (where relevant) the introductions to growers, winemakers, and instructors who do not generally accept walk-ins.",
     "experiences": [
-      { "name": "Vinho Verde tasting in the Lima valley", "description": "A morning at a working quinta in the Loureiro grape's place of origin — typically four to six wines tasted with the producer, paired with regional cheese and bread. Twenty to thirty minutes from the city by car.", "duration": "Half day", "season": "Year-round; harvest visits September–October" },
-      { "name": "Atlantic surf or windsurf at Cabedelo", "description": "Private or small-group lessons at one of Portugal's leading windsurf and kitesurf beaches. Wetsuits and equipment included. Suitable for beginners through advanced; conditions best from late spring through early autumn.", "duration": "2–3 hours", "season": "April through October" },
-      { "name": "Kayaking the Lima estuary", "description": "From the marina upriver toward the wooded banks above the Eiffel bridge, with a stop at a small beach for swimming when conditions allow. Guided by a local instructor.", "duration": "Half day", "season": "May through September" },
-      { "name": "Day trip to Caminha and the Spanish border", "description": "Twenty-one kilometres north to a smaller riverside town on the Minho estuary, with a walled medieval-Renaissance core, a fountain from the same stoneworker as Viana's, and a view across to Galicia. Combined easily with a lunch stop on the way back.", "duration": "Half day to full day", "season": "Year-round" },
-      { "name": "Peneda-Gerês National Park", "description": "Portugal's only national park, an hour by car inland: granite villages, mountain trails, and the long-haired Garrano horses that have lived in these mountains since the Roman period. Best done as a guided private day.", "duration": "Full day", "season": "Year-round; trails best April–October" },
-      { "name": "Funicular ride to Santa Luzia at golden hour", "description": "The classical evening: the six-and-a-half-minute climb to the sanctuary, the panorama of the river meeting the ocean, dinner at the Pousada restaurant with the same view. Reservations are essential.", "duration": "Evening", "season": "Year-round" }
+      {
+        "name": "Vinho Verde tasting in the Lima valley",
+        "description": "A morning at a working quinta in the Loureiro grape's place of origin — typically four to six wines tasted with the producer, paired with regional cheese and bread. Twenty to thirty minutes from the city by car.",
+        "duration": "Half day",
+        "season": "Year-round; harvest visits September–October"
+      },
+      {
+        "name": "Atlantic surf or windsurf at Cabedelo",
+        "description": "Private or small-group lessons at one of Portugal's leading windsurf and kitesurf beaches. Wetsuits and equipment included. Suitable for beginners through advanced; conditions best from late spring through early autumn.",
+        "duration": "2–3 hours",
+        "season": "April through October"
+      },
+      {
+        "name": "Kayaking the Lima estuary",
+        "description": "From the marina upriver toward the wooded banks above the Eiffel bridge, with a stop at a small beach for swimming when conditions allow. Guided by a local instructor.",
+        "duration": "Half day",
+        "season": "May through September"
+      },
+      {
+        "name": "Day trip to Caminha and the Spanish border",
+        "description": "Twenty-one kilometres north to a smaller riverside town on the Minho estuary, with a walled medieval-Renaissance core, a fountain from the same stoneworker as Viana's, and a view across to Galicia. Combined easily with a lunch stop on the way back.",
+        "duration": "Half day to full day",
+        "season": "Year-round"
+      },
+      {
+        "name": "Peneda-Gerês National Park",
+        "description": "Portugal's only national park, an hour by car inland: granite villages, mountain trails, and the long-haired Garrano horses that have lived in these mountains since the Roman period. Best done as a guided private day.",
+        "duration": "Full day",
+        "season": "Year-round; trails best April–October"
+      },
+      {
+        "name": "Funicular ride to Santa Luzia at golden hour",
+        "description": "The classical evening: the six-and-a-half-minute climb to the sanctuary, the panorama of the river meeting the ocean, dinner at the Pousada restaurant with the same view. Reservations are essential.",
+        "duration": "Evening",
+        "season": "Year-round"
+      }
     ],
     "eventsIntro": "Two events dominate Viana's calendar, both in August, both worth planning either toward or around. Several smaller events through the year offer reasons to visit out of season — the spring blues festival on the Praça, the autumn vindima, the Christmas illuminations in the historic centre. Accommodation in Viana follows the festival calendar more sharply than elsewhere in the Norte.",
     "events": [
-      { "name": "Romaria de Nossa Senhora d'Agonia", "dates": "15–23 August 2026", "description": "The city's flagship festival, held annually since 1772. Boat processions, gold-filigree costume parades, fireworks over the Lima. Accommodation books out months in advance." },
-      { "name": "Neopop Electronic Music Festival", "dates": "6–8 August 2026", "description": "International electronic music on the waterfront. The first week of August is the tightest accommodation window of the year together with the Romaria." },
-      { "name": "Wine & Blues Festival", "dates": "Last weekend of May", "description": "Vinho Verde producers and blues acts on the Praça da República. The unofficial start of the spring travel season." },
-      { "name": "Vindima do Vinho Verde", "dates": "September into early October", "description": "Grape harvest across the Lima valley. Many quintas open their doors for working-harvest visits." },
-      { "name": "Christmas illuminations", "dates": "Early December through early January", "description": "Thirty-six illuminated locations in the historic centre, with an artisan market under the Eiffel bridge." },
-      { "name": "Carnaval", "dates": "February (movable)", "description": "Smaller and more traditional than Torres Vedras or Madeira, but characteristically Minho — masked figures, regional brass bands, sardines on the grill." }
+      {
+        "name": "Romaria de Nossa Senhora d'Agonia",
+        "dates": "15–23 August 2026",
+        "description": "The city's flagship festival, held annually since 1772. Boat processions, gold-filigree costume parades, fireworks over the Lima. Accommodation books out months in advance."
+      },
+      {
+        "name": "Neopop Electronic Music Festival",
+        "dates": "6–8 August 2026",
+        "description": "International electronic music on the waterfront. The first week of August is the tightest accommodation window of the year together with the Romaria."
+      },
+      {
+        "name": "Wine & Blues Festival",
+        "dates": "Last weekend of May",
+        "description": "Vinho Verde producers and blues acts on the Praça da República. The unofficial start of the spring travel season."
+      },
+      {
+        "name": "Vindima do Vinho Verde",
+        "dates": "September into early October",
+        "description": "Grape harvest across the Lima valley. Many quintas open their doors for working-harvest visits."
+      },
+      {
+        "name": "Christmas illuminations",
+        "dates": "Early December through early January",
+        "description": "Thirty-six illuminated locations in the historic centre, with an artisan market under the Eiffel bridge."
+      },
+      {
+        "name": "Carnaval",
+        "dates": "February (movable)",
+        "description": "Smaller and more traditional than Torres Vedras or Madeira, but characteristically Minho — masked figures, regional brass bands, sardines on the grill."
+      }
     ],
     "pressIntro": "The city has been written about consistently but not heavily — which is part of its appeal. The selection below is drawn from English-language travel coverage of the past decade and from the Booking.com global ranking that placed Viana, in 2024, as the third most welcoming city in the world.",
     "pressQuotes": [
-      { "source": "Booking.com Traveller Review Awards", "year": 2024, "quote": "Third most welcoming city in the world." },
-      { "source": "The Guardian", "year": 2018, "quote": "The beaches of Viana do Castelo are some of the most beautiful in the country." },
-      { "source": "The Guardian", "year": 2022, "quote": "A working Portuguese city the tourist trail forgot." },
-      { "source": "Lonely Planet", "year": 2025, "quote": "The Minho's Atlantic capital quietly turning into one of Portugal's most rewarding small cities." },
-      { "source": "Time Out", "year": 2025, "quote": "Viana do Castelo is having its quiet moment — go before that changes." }
+      {
+        "source": "Booking.com Traveller Review Awards",
+        "year": 2024,
+        "quote": "Third most welcoming city in the world."
+      },
+      {
+        "source": "The Guardian",
+        "year": 2018,
+        "quote": "The beaches of Viana do Castelo are some of the most beautiful in the country."
+      },
+      {
+        "source": "The Guardian",
+        "year": 2022,
+        "quote": "A working Portuguese city the tourist trail forgot."
+      },
+      {
+        "source": "Lonely Planet",
+        "year": 2025,
+        "quote": "The Minho's Atlantic capital quietly turning into one of Portugal's most rewarding small cities."
+      },
+      {
+        "source": "Time Out",
+        "year": 2025,
+        "quote": "Viana do Castelo is having its quiet moment — go before that changes."
+      }
     ],
     "faqs": [
-      { "question": "How many days do I need in Viana do Castelo?", "answer": "Two to three days suit most first-time visitors: one for the historic centre and the Santa Luzia hilltop, one for the beaches and waterfront, and a third for day trips into the Lima valley or to Ponte de Lima. As a base for the wider Alto Minho — including Peneda-Gerês and the Vinho Verde quintas — four to five days is the comfortable length." },
-      { "question": "What is the best time to visit Viana do Castelo?", "answer": "Late May or September. The Atlantic is at its warmest, the city is full but not crowded, and the restaurant calendar runs at full strength. Mid-August coincides with the Romaria d'Agonia — book a year ahead if you want to be here for it." },
-      { "question": "Is Viana do Castelo worth visiting from Porto?", "answer": "Yes — and it is a different experience. Porto is a busy compact city; Viana is a working coastal town with empty beaches, granite squares and a slower rhythm. The train takes 75 minutes, so day-trips are easy, but two nights does the city justice." },
-      { "question": "What is Viana do Castelo famous for?", "answer": "Three things. The Basílica de Santa Luzia on the hill above the city. The Romaria de Nossa Senhora d'Agonia, one of Portugal's most important religious festivals. And the cod-fishing fleet — the Gil Eannes hospital ship moored on the Lima river is a working museum to that history." },
-      { "question": "How do I get from Porto to Viana do Castelo?", "answer": "Comboios de Portugal runs an intercity train from Porto Campanhã to Viana in 75 minutes for €8.90 one way. By car, the A28 motorway takes one hour. The scenic alternative — the N13 coast road — adds 30 minutes." },
-      { "question": "Where are the best beaches in Viana do Castelo?", "answer": "Praia Norte for families (calm, breezy, lifeguarded). Cabedelo across the river for surfers and walkers (five kilometres of empty sand). Praia do Afife, twenty minutes north, for the wildest stretch." },
-      { "question": "What language is spoken in Viana do Castelo?", "answer": "Portuguese. English is widely spoken in restaurants, hotels and shops in the historic centre. Spanish is understood by most adults; French by older generations." },
-      { "question": "Is Viana do Castelo safe for families?", "answer": "Yes — among the safest small cities in Europe. Praia Norte is lifeguarded in summer. The historic centre is walkable, well-lit and pedestrianised. Healthcare is excellent (Hospital de Santa Luzia is five minutes from any of our properties)." },
-      { "question": "What is the typical food in Viana do Castelo?", "answer": "Bacalhau à moda de Viana (salted cod, baked with peppers and onions). Arroz de polvo (octopus rice). Lampreia in season (river lamprey, January–April). Sardines on the grill all summer. Vinho Verde — always cold, always young." },
-      { "question": "How far is Viana do Castelo from the airport?", "answer": "Porto airport (OPO) is 70 kilometres south — one hour by car on the A28 motorway. We arrange private transfers from OPO to any of our Viana properties." },
-      { "question": "What are the best villas to rent in Viana do Castelo?", "answer": "We operate twelve properties in and around Viana — from restored stone farmhouses in the Lima valley to contemporary villas above the Cabedelo dunes. All include daily housekeeping, local concierge and private chef on call. See our Viana collection above." }
+      {
+        "question": "How many days do I need in Viana do Castelo?",
+        "answer": "Two to three days suit most first-time visitors: one for the historic centre and the Santa Luzia hilltop, one for the beaches and waterfront, and a third for day trips into the Lima valley or to Ponte de Lima. As a base for the wider Alto Minho — including Peneda-Gerês and the Vinho Verde quintas — four to five days is the comfortable length."
+      },
+      {
+        "question": "What is the best time to visit Viana do Castelo?",
+        "answer": "Late May or September. The Atlantic is at its warmest, the city is full but not crowded, and the restaurant calendar runs at full strength. Mid-August coincides with the Romaria d'Agonia — book a year ahead if you want to be here for it."
+      },
+      {
+        "question": "Is Viana do Castelo worth visiting from Porto?",
+        "answer": "Yes — and it is a different experience. Porto is a busy compact city; Viana is a working coastal town with empty beaches, granite squares and a slower rhythm. The train takes 75 minutes, so day-trips are easy, but two nights does the city justice."
+      },
+      {
+        "question": "What is Viana do Castelo famous for?",
+        "answer": "Three things. The Basílica de Santa Luzia on the hill above the city. The Romaria de Nossa Senhora d'Agonia, one of Portugal's most important religious festivals. And the cod-fishing fleet — the Gil Eannes hospital ship moored on the Lima river is a working museum to that history."
+      },
+      {
+        "question": "How do I get from Porto to Viana do Castelo?",
+        "answer": "Comboios de Portugal runs an intercity train from Porto Campanhã to Viana in 75 minutes for €8.90 one way. By car, the A28 motorway takes one hour. The scenic alternative — the N13 coast road — adds 30 minutes."
+      },
+      {
+        "question": "Where are the best beaches in Viana do Castelo?",
+        "answer": "Praia Norte for families (calm, breezy, lifeguarded). Cabedelo across the river for surfers and walkers (five kilometres of empty sand). Praia do Afife, twenty minutes north, for the wildest stretch."
+      },
+      {
+        "question": "What language is spoken in Viana do Castelo?",
+        "answer": "Portuguese. English is widely spoken in restaurants, hotels and shops in the historic centre. Spanish is understood by most adults; French by older generations."
+      },
+      {
+        "question": "Is Viana do Castelo safe for families?",
+        "answer": "Yes — among the safest small cities in Europe. Praia Norte is lifeguarded in summer. The historic centre is walkable, well-lit and pedestrianised. Healthcare is excellent (Hospital de Santa Luzia is five minutes from any of our properties)."
+      },
+      {
+        "question": "What is the typical food in Viana do Castelo?",
+        "answer": "Bacalhau à moda de Viana (salted cod, baked with peppers and onions). Arroz de polvo (octopus rice). Lampreia in season (river lamprey, January–April). Sardines on the grill all summer. Vinho Verde — always cold, always young."
+      },
+      {
+        "question": "How far is Viana do Castelo from the airport?",
+        "answer": "Porto airport (OPO) is 70 kilometres south — one hour by car on the A28 motorway. We arrange private transfers from OPO to any of our Viana properties."
+      },
+      {
+        "question": "What are the best villas to rent in Viana do Castelo?",
+        "answer": "We operate twelve properties in and around Viana — from restored stone farmhouses in the Lima valley to contemporary villas above the Cabedelo dunes. All include daily housekeeping, local concierge and private chef on call. See our Viana collection above."
+      }
     ],
-    "relatedDestinations": ["caminha", "minho", "douro"],
+    "relatedDestinations": [
+      "caminha",
+      "minho",
+      "douro"
+    ],
     "ownersCTA": {
       "headline": "Own a home in Viana do Castelo?",
       "body": "Portugal Active manages premium properties across the Alto Minho: full-service management, marketing, concierge, and maintenance, operated to hotel standards. Our owners earn, on average, thirty percent more than self-managed properties in the region.",
@@ -194,7 +432,10 @@
     "slug": "caminha",
     "region": "minho",
     "name": "Caminha",
-    "geo": { "latitude": 41.8775, "longitude": -8.838 },
+    "geo": {
+      "latitude": 41.8775,
+      "longitude": -8.838
+    },
     "tagline": "Fortified border town facing Galicia across the Minho estuary.",
     "description": "[TBD: deep research output] Border town at the mouth of the Minho river, the northernmost point of Portugal's Atlantic coast.",
     "heroSubtitle": "Where Portugal meets Galicia across an estuary of empty beaches.",
@@ -215,7 +456,11 @@
     "howToGetHere": "Porto airport (OPO) 1h15 by A28. Vigo (Spain) 45 min. Viana do Castelo 25 min south.",
     "bestTimeToVisit": "[TBD]",
     "whatToExpect": "[TBD]",
-    "relatedSlugs": ["minho", "viana-do-castelo", "esposende"],
+    "relatedSlugs": [
+      "minho",
+      "viana-do-castelo",
+      "esposende"
+    ],
     "status": "active"
   },
   {
@@ -223,7 +468,10 @@
     "slug": "esposende",
     "region": "minho",
     "name": "Esposende",
-    "geo": { "latitude": 41.5363, "longitude": -8.7894 },
+    "geo": {
+      "latitude": 41.5363,
+      "longitude": -8.7894
+    },
     "tagline": "Where the Cávado river meets the Atlantic, between the dunes and the pines.",
     "description": "[TBD: deep research output] Coastal town south of Viana, anchor of the Litoral Norte natural park.",
     "heroSubtitle": "Portugal's quietest Atlantic dunes, a 40-minute drive north of Porto.",
@@ -244,7 +492,11 @@
     "howToGetHere": "Porto airport (OPO) 40 min by A28. Viana do Castelo 25 min north. Braga 25 min east.",
     "bestTimeToVisit": "[TBD]",
     "whatToExpect": "[TBD]",
-    "relatedSlugs": ["minho", "viana-do-castelo", "caminha"],
+    "relatedSlugs": [
+      "minho",
+      "viana-do-castelo",
+      "caminha"
+    ],
     "status": "active"
   },
   {
@@ -252,7 +504,10 @@
     "slug": "porto",
     "region": "porto",
     "name": "Porto and Douro",
-    "geo": { "latitude": 41.1579, "longitude": -8.6291 },
+    "geo": {
+      "latitude": 41.1579,
+      "longitude": -8.6291
+    },
     "tagline": "The city, the river, the wine.",
     "description": "The city, the river, the wine.",
     "heroSubtitle": "The city that gave Portugal its name, and the river that built it.",
@@ -274,12 +529,32 @@
     "bestTimeToVisit": "May to October for warm weather. September for wine harvest in the Douro. Year round for the city.",
     "whatToExpect": "Compact, walkable city with world class food, port wine culture, and creative energy. The Douro Valley is 90 minutes east by car.",
     "insiderRecommendations": [
-      { "name": "The Yeatman", "category": "Restaurant", "description": "Two Michelin stars overlooking the Douro. The tasting menu with wine pairing is extraordinary." },
-      { "name": "Livraria Lello", "category": "Culture", "description": "Go at opening time to avoid crowds. The staircase alone is worth the visit." },
-      { "name": "Quinta do Vallado", "category": "Wine", "description": "One of the oldest estates in the Douro. Stay overnight and wake up to terraced vineyards." },
-      { "name": "Foz do Douro", "category": "Walk", "description": "Sunset walk along the ocean promenade. End at Praia do Carneiro for a drink at Tavi." }
+      {
+        "name": "The Yeatman",
+        "category": "Restaurant",
+        "description": "Two Michelin stars overlooking the Douro. The tasting menu with wine pairing is extraordinary."
+      },
+      {
+        "name": "Livraria Lello",
+        "category": "Culture",
+        "description": "Go at opening time to avoid crowds. The staircase alone is worth the visit."
+      },
+      {
+        "name": "Quinta do Vallado",
+        "category": "Wine",
+        "description": "One of the oldest estates in the Douro. Stay overnight and wake up to terraced vineyards."
+      },
+      {
+        "name": "Foz do Douro",
+        "category": "Walk",
+        "description": "Sunset walk along the ocean promenade. End at Praia do Carneiro for a drink at Tavi."
+      }
     ],
-    "relatedSlugs": ["douro", "minho", "viana-do-castelo"],
+    "relatedSlugs": [
+      "douro",
+      "minho",
+      "viana-do-castelo"
+    ],
     "status": "active",
     "whyOverline": "WHY PORTO and DOURO"
   },
@@ -288,7 +563,10 @@
     "slug": "douro",
     "region": "porto",
     "name": "Douro Valley",
-    "geo": { "latitude": 41.16, "longitude": -7.55 },
+    "geo": {
+      "latitude": 41.16,
+      "longitude": -7.55
+    },
     "tagline": "UNESCO World Heritage vineyards on terraced hillsides above the river.",
     "description": "[TBD] The world's oldest demarcated wine region, where port and Portugal's most exciting table wines are made.",
     "heroSubtitle": "Europe's most photographed wine landscape — and the most rewarding to actually stay in.",
@@ -310,7 +588,11 @@
     "howToGetHere": "Porto airport (OPO) 1h30 to Pinhão. Linha do Douro train from Porto São Bento, 2h15.",
     "bestTimeToVisit": "[TBD] September for vindima; April-June for green vineyards.",
     "whatToExpect": "[TBD]",
-    "relatedSlugs": ["porto", "minho", "alentejo"],
+    "relatedSlugs": [
+      "porto",
+      "minho",
+      "alentejo"
+    ],
     "status": "active"
   },
   {
@@ -318,7 +600,10 @@
     "slug": "lisbon",
     "region": "lisbon",
     "name": "Lisbon",
-    "geo": { "latitude": 38.7223, "longitude": -9.1393 },
+    "geo": {
+      "latitude": 38.7223,
+      "longitude": -9.1393
+    },
     "tagline": "Golden light, coastal charm, and timeless elegance.",
     "description": "Golden light, coastal charm, and timeless elegance.",
     "coverImage": "https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=1600&q=80",
@@ -339,12 +624,31 @@
     "bestTimeToVisit": "April to June and September to October for perfect weather. July-August is peak season with higher prices.",
     "whatToExpect": "Golden light, pastel-coloured buildings, world-class pastéis de nata, and a coastline that stretches from surf breaks to glamorous beach clubs.",
     "insiderRecommendations": [
-      { "name": "Belcanto", "category": "Restaurant", "description": "José Avillez's two-Michelin-star flagship. Modern Portuguese cuisine at its absolute best." },
-      { "name": "Praia da Ursa", "category": "Beach", "description": "Hidden beach near Sintra. A steep 20-minute hike down, but you'll have dramatic rock formations almost to yourself." },
-      { "name": "Feira da Ladra", "category": "Market", "description": "Tuesday and Saturday flea market in Alfama. Arrive early for the best vintage finds." },
-      { "name": "Palácio da Pena", "category": "Culture", "description": "Sintra's colourful hilltop palace. Go at 9am opening to beat the crowds." }
+      {
+        "name": "Belcanto",
+        "category": "Restaurant",
+        "description": "José Avillez's two-Michelin-star flagship. Modern Portuguese cuisine at its absolute best."
+      },
+      {
+        "name": "Praia da Ursa",
+        "category": "Beach",
+        "description": "Hidden beach near Sintra. A steep 20-minute hike down, but you'll have dramatic rock formations almost to yourself."
+      },
+      {
+        "name": "Feira da Ladra",
+        "category": "Market",
+        "description": "Tuesday and Saturday flea market in Alfama. Arrive early for the best vintage finds."
+      },
+      {
+        "name": "Palácio da Pena",
+        "category": "Culture",
+        "description": "Sintra's colourful hilltop palace. Go at 9am opening to beat the crowds."
+      }
     ],
-    "relatedSlugs": ["alentejo", "porto"],
+    "relatedSlugs": [
+      "alentejo",
+      "porto"
+    ],
     "status": "active"
   },
   {
@@ -352,7 +656,10 @@
     "slug": "alentejo",
     "region": "alentejo",
     "name": "Alentejo",
-    "geo": { "latitude": 38.5, "longitude": -7.9 },
+    "geo": {
+      "latitude": 38.5,
+      "longitude": -7.9
+    },
     "tagline": "Rolling plains, cork oaks, and the slowest pace in Europe.",
     "description": "Rolling plains, cork oaks, and the slowest pace in Europe.",
     "coverImage": "https://images.unsplash.com/photo-1725144690018-2df87296f72e?w=1600&q=80",
@@ -373,12 +680,31 @@
     "bestTimeToVisit": "April to June for wildflowers and mild weather. September-October for wine harvest. The coast is beautiful year-round.",
     "whatToExpect": "Vast open landscapes, profound silence, dark skies full of stars, and a culinary tradition rooted in simplicity and quality ingredients.",
     "insiderRecommendations": [
-      { "name": "Herdade do Esporão", "category": "Wine", "description": "One of the Alentejo's finest estates. Book the extended tasting with lunch at their restaurant." },
-      { "name": "Praia do Malhão", "category": "Beach", "description": "Wild beach on the Vicentine Coast. No facilities, no crowds — just dramatic cliffs and Atlantic waves." },
-      { "name": "Monsaraz", "category": "Village", "description": "Hilltop medieval village overlooking the Alqueva reservoir. Stay for sunset — the light is extraordinary." },
-      { "name": "Rota Vicentina", "category": "Hike", "description": "The Fishermen's Trail section from Porto Covo to Vila Nova de Milfontes. 4 days of coastal walking perfection." }
+      {
+        "name": "Herdade do Esporão",
+        "category": "Wine",
+        "description": "One of the Alentejo's finest estates. Book the extended tasting with lunch at their restaurant."
+      },
+      {
+        "name": "Praia do Malhão",
+        "category": "Beach",
+        "description": "Wild beach on the Vicentine Coast. No facilities, no crowds — just dramatic cliffs and Atlantic waves."
+      },
+      {
+        "name": "Monsaraz",
+        "category": "Village",
+        "description": "Hilltop medieval village overlooking the Alqueva reservoir. Stay for sunset — the light is extraordinary."
+      },
+      {
+        "name": "Rota Vicentina",
+        "category": "Hike",
+        "description": "The Fishermen's Trail section from Porto Covo to Vila Nova de Milfontes. 4 days of coastal walking perfection."
+      }
     ],
-    "relatedSlugs": ["lisbon", "algarve"],
+    "relatedSlugs": [
+      "lisbon",
+      "algarve"
+    ],
     "status": "active"
   },
   {
@@ -386,7 +712,10 @@
     "slug": "algarve",
     "region": "algarve",
     "name": "Algarve",
-    "geo": { "latitude": 37.0194, "longitude": -7.9304 },
+    "geo": {
+      "latitude": 37.0194,
+      "longitude": -7.9304
+    },
     "tagline": "Golden cliffs, private pools, and 300 days of sun.",
     "description": "Clifftop villas, private pools, and 300 days of sun.",
     "coverImage": "https://images.unsplash.com/photo-1621971913709-377f53807c6a?w=1600&q=80",
@@ -407,11 +736,26 @@
     "bestTimeToVisit": "Year round. Peak June to September. Spring and autumn ideal for hiking, cycling, quieter beaches. Winter mild, 15 to 18 degrees.",
     "whatToExpect": "300+ days of sunshine, dramatic cliff coastline, world class golf, and a quieter interior that most visitors never explore.",
     "insiderRecommendations": [
-      { "name": "Silves Castle", "category": "Culture", "description": "One of the best preserved Moorish castles in Portugal. Visit in the morning, explore the town, eat grilled fish by the river." },
-      { "name": "The West Coast", "category": "Nature", "description": "From Sagres to Aljezur. Wild, windswept, and the opposite of everything people expect from the Algarve." },
-      { "name": "Monchique Hills", "category": "Hike", "description": "Hot springs, cork forests, and hilltop villages. A completely different Algarve 30 minutes from the coast." }
+      {
+        "name": "Silves Castle",
+        "category": "Culture",
+        "description": "One of the best preserved Moorish castles in Portugal. Visit in the morning, explore the town, eat grilled fish by the river."
+      },
+      {
+        "name": "The West Coast",
+        "category": "Nature",
+        "description": "From Sagres to Aljezur. Wild, windswept, and the opposite of everything people expect from the Algarve."
+      },
+      {
+        "name": "Monchique Hills",
+        "category": "Hike",
+        "description": "Hot springs, cork forests, and hilltop villages. A completely different Algarve 30 minutes from the coast."
+      }
     ],
-    "relatedSlugs": ["alentejo", "lisbon"],
+    "relatedSlugs": [
+      "alentejo",
+      "lisbon"
+    ],
     "status": "active",
     "whyOverline": "WHY THE ALGARVE"
   },

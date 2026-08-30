@@ -210,7 +210,7 @@ async function getBlogArticleBySlugCached(slug: string, lang: string): Promise<a
  *  in the active language for meta. */
 let _destinations: { expiresAt: number; data: Map<string, any> } | null = null;
 let _destOverrides: { expiresAt: number; data: Record<string, any> } | null = null;
-async function getDestinationBySlugCached(slug: string, lang: string): Promise<{ name: string; desc: string } | null> {
+async function getDestinationBySlugCached(slug: string, lang: string): Promise<{ name: string; desc: string; seoTitle?: string } | null> {
   try {
     if (!_destinations || Date.now() > _destinations.expiresAt) {
       const p = path.join(process.cwd(), "client", "src", "data", "destinations.json");
@@ -232,8 +232,10 @@ async function getDestinationBySlugCached(slug: string, lang: string): Promise<{
     const code = (lang || "en").split("-")[0];
     const ov = code === "en" ? null : _destOverrides.data[slug]?.[code];
     const name = ov?.name || base.name || slug;
+    // Curated per-destination title, per locale, falling back to English.
+    const seoTitle = (ov?.seoTitle || base.seoTitle || "").trim();
     const desc = (ov?.seoDescription || ov?.description || base.seoDescription || base.description || base.tagline || "").replace(/\s+/g, " ").trim().slice(0, 155);
-    return desc ? { name, desc } : null;
+    return desc ? { name, desc, seoTitle: seoTitle || undefined } : null;
   } catch (err) {
     console.error("[Meta] Failed to load destination data for meta injection:", err);
     return null;
@@ -1892,7 +1894,19 @@ export function serveStatic(app: Express) {
           const name = resolved?.name || DESTINATION_NAME[slug];
           const desc = resolved?.desc || DESTINATION_DESCRIPTION[slug]?.[lang] || DESTINATION_DESCRIPTION[slug]?.en;
           if (name && desc) {
-            dynamicMeta = { title: titleFn(name), description: desc, url: `${BOT_BASE_URL}/${lang}/destinations/${slug}` };
+            // The curated seoTitle in destinations.json (and its per-locale
+            // overrides) wins over the generic template. Every destination has
+            // one, in all nine languages, and every one of them was being
+            // discarded — "/destinations/viana-do-castelo" went out as
+            // "Luxury Villas and Experiences" against 22,092 impressions of
+            // people searching the town's name, and converted at 0.8%.
+            // The template stays as the fallback for a destination added
+            // without a title of its own.
+            dynamicMeta = {
+              title: resolved?.seoTitle || titleFn(name),
+              description: desc,
+              url: `${BOT_BASE_URL}/${lang}/destinations/${slug}`,
+            };
           }
         }
       }
