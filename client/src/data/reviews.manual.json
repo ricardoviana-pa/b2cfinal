@@ -1,0 +1,2621 @@
+{
+  "_README": [
+    "Curated reviews that Guesty does not hold — typically the Airbnb back-catalogue",
+    "from before a listing was connected/reconnected. Merged into every sync, never",
+    "overwritten by it. Key = guestyId (stable) or slug (readable).",
+    "Shape: { rating: 5, text: \"...\", guestName: \"Anna\", guestLocation: \"Paris, France\", date: \"2024-08-14\" }",
+    "Rules: rating must be 4 or 5; text is required; only 5-star reviews are shown on the PDP,",
+    "4-star ones still count toward the average. Never paste text that names the channel."
+  ],
+  "7-suites-pool-geres-gateway-portugal-active-013634": [],
+  "buganv-lias-house-7f571a": [
+    {
+      "rating": 5,
+      "text": "O espaço é agradável, com envolvente calma. O acesso à piscina é limitado para pessoas com menoa mobilidade e deveria ter indicações visto que o check in é feito sem acompanhamento presencial e a mesma fica no topo da quinta. Tudo o resto está de acordo com o descrito, recomendo para dias calmos.",
+      "guestName": "Claire",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Muito agradável sem dúvida, uma estadia para voltar a repetir no futuro sem dúvidas",
+      "guestName": "Sérgio",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Great stay, lovely surroundings, fantastic swimming pool",
+      "guestName": "Iago",
+      "date": "2025-07-15"
+    }
+  ],
+  "canopy-house-by-portgual-active-i-heated-pool-2415e0": [],
+  "lima-river-s-silvestre-house-e28802": [
+    {
+      "rating": 5,
+      "text": "Super schöne Unterkunft! Wir haben uns sehr wohl gefühlt!",
+      "guestName": "Benjamin",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Olá boa tarde, Tive uma estadia excelente. Foram super simpáticos e consegui fazer uma surpresa a minha namorada em tempo record. Estava tudo limpo, cheiroso e muito confortável. Obrigado e até breve António",
+      "guestName": "Antonio",
+      "date": "2025-03-15"
+    }
+  ],
+  "riverside-watermill-house-private-beach-access-7188ad": [],
+  "sky-pool-luxury-by-portugal-active-16efa9": [],
+  "sunrise-escape-with-pool-by-portugal-active-f79dd1": [],
+  "garden-house-at-fountain-retreat-i-pool-sports-ed31d5": [],
+  "luxury-and-nature-retreat-w-pool-jacuzzi-bbq-5cfd96": [
+    {
+      "rating": 5,
+      "text": "Perfecta para viajar un grupo grande de amigos o familia.",
+      "guestName": "Juan",
+      "date": "2025-12-15"
+    }
+  ],
+  "roses-house-at-fountain-retreat-i-pool-sports-743b98": [],
+  "carcavelos-house-by-portugal-active-badaef": [
+    {
+      "rating": 5,
+      "text": "Carcavelos is a fabulous villa, a special place to stay on a family holiday. Portugal Active came to our rescue after our original air bnb booking cancelled with 5 days notice! We were v lucky this was available due to being a new listing. The villa was really clean, bedding was soft, and there were many inviting spaces for our party to be together in. Portugal active were v responsive and their instructions were clear. Would highly recommend the villa. And Portugal Active were great hosts.",
+      "guestName": "Kristina",
+      "date": "2026-08-16"
+    }
+  ],
+  "filigree-plaza-by-portugal-active-c57ea6": [],
+  "fountain-cottage-at-fountain-retreat-i-pool-sports-ed2ed9": [],
+  "historic-riverfront-watermill-private-beach-access-47452c": [
+    {
+      "rating": 5,
+      "text": "La casa está genial para pasar unos días con un grupo grande. Muy recomendable",
+      "guestName": "María",
+      "date": "2026-07-15"
+    }
+  ],
+  "river-beach-loft-bob-dylan-at-the-watermill-7188bd": [
+    {
+      "rating": 5,
+      "text": "Ha estado bien",
+      "guestName": "Mario",
+      "date": "2026-08-23"
+    }
+  ],
+  "sunset-cliffs-with-ocean-view-by-portugal-active-27708c": [],
+  "the-luxury-manor-by-portugal-active-5d00cc": [
+    {
+      "rating": 5,
+      "text": "The location fit our needs for this trip. Portugal Active was very helpful with quick responses and thorough instructions.",
+      "guestName": "",
+      "date": "2026-02-15"
+    }
+  ],
+  "agra-country-house-with-pool-by-portugal-active-595ad0": [
+    {
+      "rating": 5,
+      "text": "Todo de 10! La casa fantástica! La piscina, increíble! Todo súper limpio y ordenado. Con todas las comodidades posibles. La zona es genial, ya que en un radio de 1 hora, puedes visitar muchísimos lugares maravillosos. Nos encanta Portugal y esta zona en especial. Recomiendo esta casa, es incluso más bonita que en las fotos.",
+      "guestName": "Luis",
+      "date": "2026-08-02"
+    }
+  ],
+  "skyline-retreat-with-pool-by-portugal-active-026d70": [
+    {
+      "rating": 5,
+      "text": "We had a wonderful time at this beautiful place. Unfortunately we didn't have enough time to use the outside amenities. The views from the balconies are spectacular! The kitchen is very well organized and equipped wirh everything you need to make thr meals.",
+      "guestName": "Mawlika",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Amei este sítio! Simplesmente incrível irei voltar 100% !",
+      "guestName": "Marta",
+      "date": "2025-11-15"
+    },
+    {
+      "rating": 5,
+      "text": "Anfitrião de excelência, super disponível, sem dúvida uma das melhores estadias que já tive.",
+      "guestName": "Tiago",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Dat was echt goed",
+      "guestName": "Hossein",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Super spacy house with 5 bedrooms and even more bathrooms/toilets. High standard. Easy walk to the city center in 25 minutes. Calm area with bakery and supermarket next door. Parking behind gate or on the street available. Air conditioning in almost every room and two nice outside areas for relaxing and dining. Portugal Active was very helpful during check in and quickly solved some minor missing things as we were the first guest in this house. Viana do Castello is a very nice and calm city with plenty of restaurants and cafes. We felt very safe whereever we went. The beach just across the bridges is big and beautiful. Easy drive to both Braga, Porto og even to Spain.",
+      "guestName": "Lars",
+      "date": "2025-08-15"
+    }
+  ],
+  "u2-loft-at-the-riverside-watermill-1bed48": [
+    {
+      "rating": 5,
+      "text": "Nous avons adoré notre séjour ! Le logement était vraiment top, très agréable et idéalement situé. La localisation est géniale et le Rio juste à côté est magnifique, on a vraiment adoré pouvoir en profiter. 🥰 L’hôte est également super : très réactif, toujours rapide à répondre et plein de bons conseils pour découvrir les alentours. Nous avons passé un excellent séjour et nous reviendrons avec grand plaisir. Je recommande à 100 % ! ✨",
+      "guestName": "Nawel",
+      "date": "2026-08-09"
+    }
+  ],
+  "villa-aura-sauna-gym-5min-beach-city-738c68": [
+    {
+      "rating": 5,
+      "text": "Passamos três dias incríveis nesta casa, em uma família de 6 adultos e 4 crianças, e foi simplesmente perfeito! ❤️ A casa é linda, muito bem equipada, confortável e completa, exatamente como nas fotos. As crianças puderam brincar e se divertir muito, enquanto os adultos também aproveitaram cada momento com muito conforto e tranquilidade. Foi um daqueles lugares que tornam a viagem ainda mais especial. A casa tem tudo o que uma família precisa para passar dias agradáveis, aproveitar juntos e criar boas memórias. Recomendamos muito! Sem dúvida, voltaríamos a ficar aqui. 🥰🏡✨",
+      "guestName": "Arliane",
+      "date": "2026-08-30"
+    },
+    {
+      "rating": 5,
+      "text": "Ha sido fantástico",
+      "guestName": "Eladio",
+      "date": "2026-08-27"
+    },
+    {
+      "rating": 5,
+      "text": "We were 6 colleagues who wanted to do a vacation and had the perfect time! The house is perfect for working and enjoying the pool or jacuzzi after work. The bedrooms and bathrooms were very clean and the kitchen had everything we needed. We would always come back. Special thanks to Ricardo who answered very quick and was a good guide during our stay. All in all highly recommended! :)",
+      "guestName": "Tamara",
+      "date": "2024-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Excedeu as expectativas.",
+      "guestName": "Miguel",
+      "date": "2024-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa bem preparada e com muito boas condições",
+      "guestName": "Gabriel",
+      "date": "2024-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Very good accommodation, great internet, comfortable place to work.  Very good location, close to places where you can go for a walk.  Helpful facility staff.  We recommend",
+      "guestName": "Barbara",
+      "date": "2024-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa maravilhosa, local bem localizado, casa extremamente limpa e organizada , jardim com piscina incrível e imponente, uma pena que é inverno não podemos aproveitar. Mas recomento muito e com certeza irei voltar.",
+      "guestName": "Elisangela",
+      "date": "2023-12-15"
+    },
+    {
+      "rating": 5,
+      "text": "Estuvimos muy a gusto en la casa. Era muy amplia, muy luminosa, tenía un gran jardín y tanto nosotros como los perros la disfrutamos mucho. Las fotos son fiel reflejo de la realidad. La cocina estaba muy bien equipada. Cada una de las ocho camas de la casa estaban vestidas y preparadas con toallas y albornoces de muy buena calidad. En el exterior había jacuzzi y barbacoa y disfrutamos, los días que el tiempo nos lo permitió, de la gran piscina. También utilizamos mucho el pinpón y tenia dardos, red de bádminton… La zona está en una carretera bastante poblada que lleva a Viana do Castelo, pero lo mejor que tiene es el paseo por las playas que está a 10 minutos en coche. Una maravilla! Playas larguísimas, salvajes y casi vacías para nosotros. Hemos disfrutado mucho y Ricardo y su equipo estuvieron pendientes de nosotros en todo momento.",
+      "guestName": "Paz",
+      "date": "2023-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "El alojamiento fabuloso. Fue una estancia muy agradable. Teníamos todo lo que necesitábamos. El anfitrión detallista y atento durante la estancia. Una casa de 10.",
+      "guestName": "Paco",
+      "date": "2023-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Wonderful location near Viana with a pool, easy access to restaurants and spacious floor plan. Perfect for a family or group",
+      "guestName": "Chapel",
+      "date": "2023-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Amazing villa, top rate! One of the best place we’ve ever visit. Amazing team, helpful and friendly. Highly recommended. Thank you a lot, Ricardo and Team’",
+      "guestName": "Anastasiya",
+      "date": "2023-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Logement très propre, et très bon accueil d’Andre qui est aussi serviable et réactif si besoin.",
+      "guestName": "Karim",
+      "date": "2023-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "A casa está completamente preparada para um alojamento tranquilo e perfeito. Um espaço excelente para uma família alargada ou um grupo de amigos. Tudo perfeito. A casa estava muito limpa, a cozinha completamente equipada e com todos os utensílios limpos e em ótimo estado. O Ricardo e o André foram muito simpáticos e compreensivos. Como não tinham hóspedes a entrar logo de seguida foram flexíveis na nossa hora de saída o que foi ótimo pois estávamos com crianças pequenas.",
+      "guestName": "Maria",
+      "date": "2023-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Vivienda muy funcional y cómoda, diseño muy estudiado con espacios muy agradables y espaciosos. Siendo una vivienda al lado de la carretera, la sensación es la de estar en un lugar muy tranquilo y que transmite mucha paz. El jardín y la piscina se encuentra a la misma escala de la vivienda, muy bien pensado y acogedor. Sorprendente!!! Si pudiera volver, volvería!",
+      "guestName": "Iria",
+      "date": "2023-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Le séjour chez Ricardo c’est très bien passé, il a été au petit soin et très flexible ! Le seul bémol : il n’y a pas de wifi dans les chambre ! Mais sinon tout est parfait !",
+      "guestName": "Pauline",
+      "date": "2023-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "Everything was perfect and the host was always available for us. The house is very well equipped with large divisions. The garden is quiet and very sunny, the pool is really nice as well.",
+      "guestName": "Mario",
+      "date": "2022-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Maison agréable et très propre . Hôte très disponible accueillant et discret .",
+      "guestName": "Géraldine",
+      "date": "2022-08-15"
+    }
+  ],
+  "portugal-active-oliveira-s-farm-01b62e": [
+    {
+      "rating": 5,
+      "text": "O espaço da casa é lindíssimo. A piscina fez as delícias de pequenos e graúdos (esteve muito calor durante a nossa estadia). Recomendo a instalação de um corrimão nas escadas da piscina para facilitar o acesso à pessoas com mobilidade mais reduzida. A casa está muito bem decorada e com muito espaço de arrumação. Está muito bem equipada com todos os utensílios. A 5 minutos de carro temos 2 hipermercados (Intermarche e Lidl) e o retail park do Lima. Viana do fica a 10 minutos. Recomendo vivamente a casa para quem pretende umas férias em família rodeado de sossego.",
+      "guestName": "Tiago",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "The kitchen and living room of this house are very spacious, and each bedroom has its own bathroom, making it perfect for family or friends to gather for a holiday. The swimming pool is 15 meters long, which is impressively large, and the kids absolutely loved it. In addition, the location is excellent — just 5 minutes to Lidl and a little over 10 minutes to reach the center of Viana do Castelo and the shopping mall. Overall, we had a wonderful holiday here.",
+      "guestName": "Daniela",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Perfect stay to relax and wind down for a few days with Family!",
+      "guestName": "Joao",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Excelente casa e host muito prestável Recomendo a 100%",
+      "guestName": "Felipe",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "The place is enormous and beautiful, calm location but still close to groceries and Viana, big recommendation for large groups!",
+      "guestName": "Eloy",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Excelente casa para uns dias de descanso e diversão com amigos ☺️ espaço interior e exterior amplo e super cuidado. Quartos e camas confortáveis. Excelente zona da piscina e o trampolim fez muito sucesso. Queremos voltar! A comunicação foi super rápida e sempre obtivemos resposta aos nossos pedidos :)",
+      "guestName": "Alda",
+      "date": "2025-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Great for a week or weekend with friends and/or family!",
+      "guestName": "Enzo",
+      "date": "2024-11-15"
+    }
+  ],
+  "senhorial-house-with-jacuzzi-at-fountain-retreat-743cd8": [
+    {
+      "rating": 5,
+      "text": "What a beautiful place!!!! The outdoor swimming pool was a dream…even though it was winter, we took a swim watching the sunset. The house is spacious and perfectly mantained. It was decorated for Xmas and made us feel right at home. I will come back anytime of the year!! Fantastic place and wonderful stay",
+      "guestName": "Susana",
+      "date": "2025-12-15"
+    },
+    {
+      "rating": 5,
+      "text": "Una casa muy amplia en un recinto excepcional. Tenía buena calefacción, todo muy limpio y ordenado. Una atención cuidada, todo muy bien. Sin duda, nos gustaría repetir. Si hubiera que destacar alguna mejora, lo único que han dejado solamente unas llaves de acceso y mando para la verja, para una casa en la que nos alojamos 14 personas. Si se llegaba de forma escalonada era algo difícil de gestionar.",
+      "guestName": "Abraham",
+      "date": "2025-12-15"
+    },
+    {
+      "rating": 5,
+      "text": "Uma casa que faz querer regressar, foi uma experiência incrível, mesmo com dia de chuva! Muito bom e aconselho vivamente",
+      "guestName": "Sara",
+      "date": "2025-11-15"
+    },
+    {
+      "rating": 5,
+      "text": "The home is perfect for groups or families. There’s something to do for everyone, there’s a billiards table, card games table and fuzzball table in the basement. The dining area is huge. There’s a pool, table tennis court, mini golf and hot tub outside. The instructions from the host is easy to follow. The response time is fast. The location is quiet, relaxing and it makes you feel at home. There’s a bathroom for every bedroom. The house and location is amazing.",
+      "guestName": "",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Lovely family house with amazing views. We have thoroughly enjoyed the beautiful pool area,  tenniscourt.and outside bbq. A car is a must but less than 10 min drive from supermarket and approx 20 minutes from Viana de Castello, a nice old town with good restaurants, shops etc. Our teens really enjoyed the gameroom (Pooltafel etc.).  The surroundings are beautiful and the house is not far from Penada-Geres.",
+      "guestName": "Caroline",
+      "date": "2025-07-15"
+    }
+  ],
+  "moledo-front-beach-w-sunset-views-and-pool-eaa850": [
+    {
+      "rating": 5,
+      "text": "Wir hatten einen wunderbaren Aufenthalt. Das Haus ist sehr schön, bestens ausgestattet und es hat uns an nichts gefehlt. Besonders genossen haben wir die Nähe zum Meer und den Pool. Ein weiteres Highlight war die Dachterrasse mit ihrem tollen Ausblick – der perfekte Ort, um den Tag ausklingen zu lassen. Wir würden jederzeit wiederkommen und können die Unterkunft uneingeschränkt weiterempfehlen.",
+      "guestName": "Tobias",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Excelente localização.",
+      "guestName": "João",
+      "date": "2026-06-15"
+    }
+  ],
+  "portugal-active-cabedelo-beach-lodge-heated-pool-16f0b2": [
+    {
+      "rating": 5,
+      "text": "The house is located in a really nice area - just a few minutes to the beach. Well equipped kitchen",
+      "guestName": "Miriam",
+      "date": "2026-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "Tudo como anunciado, comunicação rápida e eficiente e casa muito bem organizada para grupos com crianças. Destaco a extraordinária flexibilidade em permitir ajustar os horários á necessidade do grupo. Recomendo e a repetir.",
+      "guestName": "José",
+      "date": "2026-01-15"
+    },
+    {
+      "rating": 5,
+      "text": "We had a great stay at the villa. The pool was perfectly warm, the kids were happy, and so were the adults. We had a lot of fun playing ping pong. The kitchen is well-equipped and easy to use. The host was responsive and helpful throughout our stay. We really appreciated everything and definitely recommend this place.",
+      "guestName": "Aleksei",
+      "date": "2025-11-15"
+    },
+    {
+      "rating": 5,
+      "text": "A fantastic location close to the beach, and a short Uber ride to the many attractions of Viana do Castelo. The facilities are great for groups and families, and are clean and modern.",
+      "guestName": "Derick",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Great house!  Lots of room for a large group. Well supplied. Very comfortable. Huge smart tv downstairs for mirroring info for our meetings. Business space upstairs for those who needed to get work down or have zoom calls.",
+      "guestName": "Kent",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "We had a great stay in Cabedelo!  We found it very easy to get around without the need for cars as there are lots of Ubers available for relatively cheap! We enjoyed going into Viana, and making use of the beach nearby but our favorite activity was the Private Yacht tour booked through Diogo at Portugal Active! The House was large enough for our group of 14 and good for both couples and individuals as has double/twin rooms available. The bedrooms are all a great size, which was good for us a group of adults. A couple things to note were the lack of locks on bathrooms and that showers tended to get a bit clogged during use. We would definitely stay again and recommend to all!",
+      "guestName": "Louis",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Excelente alojamiento. Muy amplio y cómodo. Muy buenas y rápidas respuestas por parte de Portugal Active. Pasamos unos días muy buenos. Por poner alguna mejora, que no nos esperábamos, faltaría poner llaves en los baños, ya que no disponían de los mismos.",
+      "guestName": "Carlos",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Had a great time at their property! We were with a large group of people where half wanted to be away from everything, and half wanted a town to explorer, and this placed served us perfectly. Lovely location with a beach close by, but there was also a town just a short drive away which was ideal. Had such a blast in the pool as well. Highly recommend it.",
+      "guestName": "James",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "La casa es muy bonita,  dispone de una piscina en la que disfrutar con intimidad y un pequeño gimnasio, en general tiene todas las comodidades. Está en una zona residencial muy tranquila y cerca de la playa. Necesitas coger el coche para visitar la ciudad  y salir de restaurantes.",
+      "guestName": "Félix",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Hôte très réactif quand je l ai sollicité pour quelques réajustements dans le logement",
+      "guestName": "Manuella",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Fuimos un grupo de amigos con niños y estuvimos encantados. Las habitaciones son muy amplias con camas enormes y muy confortables, tienen varios tipos de almohadas. Las salas de estar geniales! Amplias, con decoración cuidada, … la cocina muy equipada, no nos faltó de nada y la nevera maravillosa! Nos encantó estar cocinando mientras escuchábamos música… La atención por parte de Portugal active de 10. Muy contentos!!",
+      "guestName": "Iriana",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Portugal Active a toujours été présent pour répondre efficacement à nos interrogations. La réactivité et la gentillesse de l'équipe Portugal Active nous à assurer un séjour très agréable.",
+      "guestName": "Patrice",
+      "date": "2025-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "buena atención y respuesta rápida. la ubicación buena y la casa cómoda y amplia",
+      "guestName": "Rubén",
+      "date": "2025-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "Foi um ótima escolha para passar meu aniversário, a casa é maravilhosa!",
+      "guestName": "Alexandre",
+      "date": "2025-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "A casa é incrível! Talvez seja ainda melhor do que nas fotografias. O anfitrião merece nota 10 em todos os aspectos. A casa é muito limpa e bem organizada, não faltou nada. Sem dúvida uma experiência a se repetir!",
+      "guestName": "Ailton",
+      "date": "2025-01-15"
+    },
+    {
+      "rating": 5,
+      "text": "The house really exceeds expectations. It's mid century but maintained really well. The pool is lovely and there are multiple outdoor terraces to eat and socialise. We had a wonderful week with friends. We hardly went out in the evenings as the house /pool /bbq was so good. But there is a lovely restaurant within walking distance. Ricardo and the team were so helpful and really went the extra mile to make our stay memorable.",
+      "guestName": "Alison",
+      "date": "2024-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Me and my family traveled all the way from the California to Spain and Portugal for about 3 weeks. We spent a few days in big cities but the week at this home was the highlight of the trip. We had so much fun and the weather was hot enough to enjoy all amenities.  All of our family easily fit in this location! it's bigger than expected! The host was so responsive and got what we needed almost immediately! It was great dealing with them. We celebrated a BFFs birthday and even when he communicated with us that we were being too loud some nights, he was super polite.",
+      "guestName": "Los",
+      "date": "2024-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Nous avons passé un excellent séjour dans cette merveilleuse maison ! Ricardo a été super joignable, hyper réactif sur nos demandes et pour répondre à nos questions. Un grand merci encore à lui pour nous avoir facilité au maximum nos vacances ! La maison est impeccable, très propre, la literie très confortable. Nous étions réunis pour un séjour en famille avec 7 adultes 4 enfants et un bébé, et la configuration de la maison était parfaite et spacieuse pour nous tous ! Un petit bémol sur la cuisine, qui est grande mais assez mal agencée. Mais c'est finalement du détail :-) Nous garderons un excellent souvenir de notre passage chez Ricardo !",
+      "guestName": "Aline",
+      "date": "2024-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "La casa es estupenda. Todo muy limpio y ordenado, habitaciones muy amplias y cómodas, y a 5 minutos andando de la playa. Disfrutamos de la piscina, la barbacoa y la mesa de ping-pong. Los anfitriones han sido muy amable, pendientes de cualquier necesidad que pudiera surgir y atentos al detalle. Además nos enviaron una lista con supermercados y restaurantes, que siempre es una ayuda. La única pega es no haber podido estar más días! Esperamos volver.",
+      "guestName": "Pablo",
+      "date": "2023-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Für uns war es eine traumhafte Unterkunft. Besonders schön, nahe am Strand und mit einem tollen Pool",
+      "guestName": "Mareike",
+      "date": "2023-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "um dos melhores espaços onde tive o privilégio de estar. uma casa confortável, limpa, numa zona calma. foi uma experiência realmente fantástica. obrigado",
+      "guestName": "Nelson",
+      "date": "2023-04-15"
+    }
+  ],
+  "river-beach-suite-joe-cocker-at-the-watermill-7188b5": [],
+  "river-view-by-portugal-active-8b7d5a": [
+    {
+      "rating": 5,
+      "text": "Séjour super ! L’appartement est très propre et joli. Cependant, quelques points sont à préciser dans la description : il faut monter 3 étages sans ascenseur, ce qui n’était pas indiqué Enfin, il est indiqué qu’il y a la climatisation dans la description, mais nous pensons qu’il s’agit d’une erreur de la part de l’hôte, car nous n’en avons pas constaté. Sinon, l’hôte est très réactif et très sympathique. Je recommande cet appartement, mais plutôt sans enfants en bas âge.",
+      "guestName": "Damien",
+      "date": "2026-08-16"
+    },
+    {
+      "rating": 5,
+      "text": "Really clean, great location and value for money! Will come back!",
+      "guestName": "Sally",
+      "date": "2026-06-15"
+    }
+  ],
+  "saltwind-studio-by-portugal-active-b6a05e": [
+    {
+      "rating": 5,
+      "text": "Excelente estadia",
+      "guestName": "Saul",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "très bon séjour!! l appart est vraiment bien très calme,  rien a dire!!! top",
+      "guestName": "Guillaume",
+      "date": "2026-07-15"
+    }
+  ],
+  "seaside-urban-retreat-5min-to-esposende-beach-e9167c": [
+    {
+      "rating": 5,
+      "text": "A casa está muito acolhedora e tem tudo o que é preciso. Localização muito boa também. Correu tudo bem",
+      "guestName": "Denise",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Excelente apartamento! Cozinha muito bem equipada",
+      "guestName": "Guilherme",
+      "date": "2026-01-15"
+    },
+    {
+      "rating": 5,
+      "text": "The apartment is just as pictured, lovely and spacious. The place was lovely and clean and easy to access. A short walk and you are down by the beach and another 15 mins you are in central Esponsende. We enjoyed our stay and can imagine it would be even more exciting in thr summer.",
+      "guestName": "Rebecca",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "We had a great stay here. The property was as described, spacious, clean & modern. Is is very well equipped with everything you would need.  It is in a residential part of town but really quiet & peaceful inside the apartment. It is an easy walk to the beach & a great boardwalk to get into town with many restaurants along the way. We will definitely stay here again if we return to the area. Tip, there is an amazing Italian restaurant to the right when you get to the beach front, probably 600m from the apartment. Thank you guys at Portugal Active.",
+      "guestName": "Brian",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Je recommande fortement ce logement! À proximité de la plage et l’hôte est très réactif. Un service à la clientèle au top! Je reviendrais!",
+      "guestName": "No",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Beautiful and clean. Everything you need. We spent a couple days at the beach. You could walk if you want it’s 5-10 minutes away from the beach. We drove and checked out a few restaurants in the area which were also amazing.",
+      "guestName": "",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Excelente estadia, tudo em boas condições... Boa comunicação. A repetir....",
+      "guestName": "Rita",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "O apartamento estava em excelentes condições. O check-in foi fácil e as instruções claras. A zona é muito calma e perfeita para fazer caminhadas ao pé da praia.",
+      "guestName": "Catarina",
+      "date": "2025-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "We enjoyed our stay, the kitchen is equipped for cooking. Thank you for accommodating us on a last minute booking. The beach was very close and 5 walking minutes away.",
+      "guestName": "",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Very nice place - spacious, clean and bright. We enjoyed the comfort of two bathrooms and welcome bottle of wine which was perfect surprise as our grandma celebrated that day her birthday. The bed lines and towels were soft and mattraces hard enough for a proper rest. The big grocery shop is near. The balcony was on the west side so we enjoyed an evening sun. We struggled a bit with the location as google maps showed us the next building. In the instructions were useful details to localize it right and to get in. This is just a small detail that can be easily improved. I also appreciated that we received all information about our stay also summarized in the message and I didn't have to find it in the airb'n'b app. I can imagine to stay here again and longer.",
+      "guestName": "Anežka",
+      "date": "2025-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Muy atenta la empresa.el apartamento estupendo y limpio. Sobra donde aparcar La única pega es que no hay lavadora pero hay una lavandería debajo del edificio.",
+      "guestName": "María",
+      "date": "2025-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Excelente apartamento. Muito cuidado e super clean . Certamente voltarei!",
+      "guestName": "Filipa",
+      "date": "2025-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "Ficámos apenas uma noite nesta propriedade incrível — e superou todas as expectativas. Desde o momento da chegada, ficámos impressionados com a atenção ao detalhe, a decoração acolhedora e de bom gosto, e a atmosfera tranquila que faz com que nos sintamos imediatamente em casa. A localização é excelente, muito próxima da praia, o que torna a experiência ainda mais especial e conveniente. A casa está equipada com tudo o que é necessário para uma estadia confortável e sem preocupações. Cada pormenor foi pensado com cuidado, e nota-se um carinho especial em cada espaço. Apesar de termos ficado pouco tempo, foi o suficiente para nos deixar encantados e com vontade de regressar. Se procura um lugar confortável, bem cuidado e com um toque especial, esta é uma escolha certeira. Recomendamos vivamente. Uma noite soube a pouco — voltaremos sem dúvida!",
+      "guestName": "Maria",
+      "date": "2025-03-15"
+    }
+  ],
+  "fountain-retreat-i-pool-sports-escape-743e2d": [],
+  "montaria-lodge-by-portugal-active-742da8": [
+    {
+      "rating": 5,
+      "text": "Espaço calmo, com boas áreas. Perfeito para estadias com amigos e família. Sempre que foi preciso o host respondeu a tudo com rapidez e simpatia.",
+      "guestName": "João",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa espetacular para umas mini férias com amigos",
+      "guestName": "Rui",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "We were there with a group of friends and everything was perfect and as described. Good communication and reservation flexibility.",
+      "guestName": "Carla",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Simplesmente excelente.",
+      "guestName": "Edney",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa excelente e muito bonita, com todas as comodidades. Muito espaçosa. O exterior com a piscina era muito bonito. Recomendo",
+      "guestName": "Sara",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Espaço pacato numa zona bonita e calma. Bom para uns dias de relaxamento",
+      "guestName": "Diogo",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "this place is wonderful.",
+      "guestName": "Maria",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa ideal para uns dias calmos e relaxantes. A piscina é excelente e o espaço exterior muito agradável. A casa em geral podia estar mais decorada para ficar mais aconchegante.",
+      "guestName": "Luis",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Óptima localização, piscina excepcional. Camas extremadamente confortáveis. bom espaço para convívio com crianças pequenas. recomendo",
+      "guestName": "Nuno",
+      "date": "2025-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Estadia impecável para uma família grande! Foi um fim de semana muito agradável graças às condições que a casa tinha. Tudo muito bem organizado, e tal e qual o que as fotos mostravam",
+      "guestName": "Madalena",
+      "date": "2025-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "It was perfect for our group! Will come back.",
+      "guestName": "",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Nous avons apprécié notre séjour à 10 dans cette grande maison",
+      "guestName": "Anne-Marie",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "La estancia fue genial. La casa coincidía totalmente con la descripción. En la llegada nos dejaron unos productos gastronómicos para recibirnos, todo un detalle. Además pudimos hacer el check in una hora antes y el check out una hora más tarde.",
+      "guestName": "",
+      "date": "2025-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "estadia muito agradável e serviço muito bom",
+      "guestName": "Ana",
+      "date": "2024-12-15"
+    },
+    {
+      "rating": 5,
+      "text": "Magnifique villa, très spacieuse. N’hésitez pas, je recommanderai celle-ci  sans hésitation. (En montagne et un petit peu éloignée du centre ville) à 25 min de Viana do Castelo, mais cela vaut amplement le détour! Hôte très à l’écoule et réactif.",
+      "guestName": "Julien",
+      "date": "2024-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Espaço exterior sem dúvida maravilhoso,  casa muito acolhedora , host Ricardo bastante atencioso , e bastante acolhedor . 5 estrelas tudo .",
+      "guestName": "Paulo",
+      "date": "2024-06-15"
+    }
+  ],
+  "ocean-view-cabedelo-beach-duplex-10d5ee": [],
+  "douro-garden-by-portugal-active-f12b80": [],
+  "white-charm-by-the-sea-5fecb6": [],
+  "ocean-bliss-beach-bbq-apartment-5fe4bf": [
+    {
+      "rating": 5,
+      "text": "Nous avons passé un très bon séjour. Le logement est agréable et très propre.",
+      "guestName": "Virginie",
+      "date": "2026-08-16"
+    },
+    {
+      "rating": 5,
+      "text": "Todo genial. Limpio, bien equipado, fácil gestión.",
+      "guestName": "Valeria",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "We thoroughly enjoyed our stay and wished we had booked for longer than 2 nights. Amazing host, amazing location!",
+      "guestName": "",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Wonderful experience. We definitely recommend this place. Close to the water and restaurants, peaceful surroundings, excellent amenities, everyone you need and more. Pam",
+      "guestName": "",
+      "date": "2026-02-15"
+    },
+    {
+      "rating": 5,
+      "text": "A estadia foi excelente. O alojamento é muito limpo, organizado e extremamente agradável. A localização é fácil de encontrar e tem estacionamento mesmo em frente, o que facilitou bastante. Tudo estava impecável à chegada. A comunicação com os anfitriões foi sempre clara e eficiente, estiveram sempre disponíveis para ajudar. Recomendo sem hesitação. Noelani Kailua-Kona, Havai",
+      "guestName": "Bruna",
+      "date": "2025-12-15"
+    },
+    {
+      "rating": 5,
+      "text": "muito boa estadia",
+      "guestName": "Fabio",
+      "date": "2025-12-15"
+    },
+    {
+      "rating": 5,
+      "text": "Apartamento aconchegante com vista deslumbrante. Adoramos!",
+      "guestName": "Yann",
+      "date": "2025-11-15"
+    },
+    {
+      "rating": 5,
+      "text": "Excelente anfitrião, imóvel próximo da praia, nesta época do ano é bem tranquilo e calma a região! Imóvel conforme a descrição, extremamente limpo e cuidado! Recomendo!",
+      "guestName": "Marcelo",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "We hebben genoten van ons verblijf. De woning was echt compleet. Heerlijke bbq op het terras. Prima airco. Parkeren op straat voor de deur, gratis. Heerlijke rustige stranden vlakbij. We kunnen dit adres iedereen aanraden.",
+      "guestName": "Joseph",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Tivemos uma otima experiência! O espaço estava meticulosamente limpo e  corresponde com todas as caracteristas listadas. É de facil acesso, pertissimo da praia e a uns minutos (carro)  da cidade. Zona calma e tranquila. Super recomendado!",
+      "guestName": "Maria",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "A nice peaceful place to spend a few days a couple of minutes from the beach. Nice break between the city areas of lisbon and Porto if you’re touring Portugal.",
+      "guestName": "George",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "superbe appartement,  lumineux,  chaleureux, avec tous les équipements nécessaires. absolument ravie de notre séjour. accès a la plage très rapide a pied et une vue splendide",
+      "guestName": "Angélique",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Exatamente como o anunciado! Nos sentimos em casa a todo momento, e na única dúvida que tivemos, falamos por telefone e rapidamente tivemos orientação. O apartamento tem uma vista incrível, privacidade e praticamente tudo que se precisa para ter uma ótima estadia. Recomendamos!",
+      "guestName": "Julianno",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Nice town with kind people, good views and calm beaches. The apartment was amazing, so clean and everything exactly like the photos, we even got a bottle of water,  wine and orange juice as a gift!",
+      "guestName": "Falu",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Très bel appartement dans belle résidence. Cadre magnifique et très jolie plage à 5 mn à pied",
+      "guestName": "Emilie",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Dos cosas son las únicas pegas que voy a poner, una es el sofá que para nosotros era demasiado pequeño, entiendo el tamaño de la habitación y por eso quizás no podía haberse adaptado a uno más grande pero se hubiera agradecido. Y la otra pega es que efectivamente no había ascensor y para subir las maletas se ha hecho un poco pesado. Pero nada más, la estancia es tal cual lo describen en la foto. Todo nuevo, y muy agradable. Hemos disfrutado muchísimo.",
+      "guestName": "Pablo",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Mooi appartement met alles wat je nodig hebt. Schoon en ruim. Vlakbij het strand en het mooie plaatsje Viana do Castelo.",
+      "guestName": "Michiel",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Alles gut. Wunderschöne Terrasse. Sauber. Hell.",
+      "guestName": "Erik",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Séjour fantastique dans un merveilleux appartement. À quelques pas d‘une sublime plage et d‘une magnifique nature, nous avons pu profiter pleinement de vacances paisibles. La terrasse avec grill et vue sur l’océan nous a permis de passer d’agréables moments et de nous concocter de délicieux repas. Notre hôte a été impeccable et très réactif, nous l’en remercions. Nous y retournerions sans hésiter!",
+      "guestName": "",
+      "date": "2025-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Apartamentouoto agradável e bem localizado.",
+      "guestName": "José",
+      "date": "2025-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "really amazing place",
+      "guestName": "Jandre",
+      "date": "2025-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "L’appartement est administré par « Portugal Active » qui est bien à l’écoute de leurs « invités » et répond très rapidement si vous avez un problème… majeur ou mineur! Ils sont très réactifs et compréhensifs!",
+      "guestName": "",
+      "date": "2025-05-15"
+    }
+  ],
+  "portugal-active-atlantic-lodge-sea-view-premium-10dd49": [
+    {
+      "rating": 5,
+      "text": "Trés bon séjour familial, quartier calme et authentique. Maison accueillante oû on se sent vite chez soit. Juste quelques désagréments  sur une partie du mobilier.d extérieur qui est aussi  en nombre insuffisant. La piscine à permis aux enfants et aux adultes de passer de bons moments ensemble.",
+      "guestName": "Annick",
+      "date": "2026-08-09"
+    },
+    {
+      "rating": 5,
+      "text": "Excelente alojamiento",
+      "guestName": "Lore",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Very happy with the property and facilities. Communication with Portugal Active was great. Quick responses",
+      "guestName": "Celia",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "What can I say .. apart from what a fabulous 4 days we have had in the villa . It’s in a residential area but we loved that . It’s close to the beach and the host was so helpful and super quick communication that we cannot fault our family getaway as everyone loved it . Thank you so much would definitely recommend if you want something away from the hustle and bustle of tourists",
+      "guestName": "Cathy",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "We had a lovely family stay. Arrival was a little stressful as we were given the wrong access code, but after phoning the host it was sorted within about 15 minutes. Once inside, we were greeted with wine, biscuits, juice and coffee, which was such a thoughtful touch after travelling. The house itself is great — comfortable bedrooms, a fully equipped kitchen and everything we needed for a relaxed stay. The area is peaceful with beautiful Camino walking trails and long, sandy, almost‑empty beaches. Porto is also close enough for an easy day trip. The only small inconvenience was having just one key for the whole group, but overall we had a fantastic stay and would happily return.",
+      "guestName": "Francine",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa espetacular!",
+      "guestName": "Benedita",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Muito agradável a estadia, voltaremos a repetir.",
+      "guestName": "Carla",
+      "date": "2026-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "Uma ótima casa para umas mini férias de inverno. Quente e confortável",
+      "guestName": "Joana",
+      "date": "2026-02-15"
+    },
+    {
+      "rating": 5,
+      "text": "o espaço correspondeu às expectativas mas as janelas da sala necessitam de reparação",
+      "guestName": "Vicente",
+      "date": "2026-01-15"
+    },
+    {
+      "rating": 5,
+      "text": "Pasamos muy buen fin de semana en esta casa.",
+      "guestName": "Laura",
+      "date": "2026-01-15"
+    },
+    {
+      "rating": 5,
+      "text": "Passamos um ótimo fim de semana em família. A casa é muito espaçosa. Os anfitriões foram responsivos e flexíveis, ajudando prontamente sempre que necessário. A zona é muito agradável e calma. A sala foi um ótimo ponto de encontro para toda a família. O espaço exterior muito cuidado e agradável para animais de estimação e crianças. Recomendamos muito!",
+      "guestName": "Carolina",
+      "date": "2025-12-15"
+    },
+    {
+      "rating": 5,
+      "text": "la casa está muy bien , bastante equipada y solo echamos de menos una fregona que conseguimos encontrar",
+      "guestName": "Juan",
+      "date": "2025-11-15"
+    },
+    {
+      "rating": 5,
+      "text": "Correu tudo muito bem",
+      "guestName": "Rita",
+      "date": "2025-11-15"
+    },
+    {
+      "rating": 5,
+      "text": "Estancia súper agradable para grupos grandes! La casa es estupenda y la zona muy bonita! El anfitrión muy atento y con respuesta a cualquier duda muy rápido.",
+      "guestName": "Laura",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa bonita e moderna. Anfitrião disponível e flexível. Correu tudo muito bem",
+      "guestName": "José",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Lovely villa, great location , fantastic views, clean inside and had everything you needed.",
+      "guestName": "Alice",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa bonita, bem equipada e limpa. Nós fomos no inverno e não deu para usufruir do espaço exterior,  no entanto pareceu-me muito agradável. O único problema que encontramos foi o Wi-Fi não funcionar bem. Também não me parece que faça sentido cobrar 5e por dia para colocar berço. Ainda por cima sendo um berço básico de viagem. Podemos também deixar a sugestão de colocar mais iluminação na cozinha mas é só um pormenor. Tudo o resto correu muito bem.",
+      "guestName": "Ana",
+      "date": "2025-02-15"
+    },
+    {
+      "rating": 5,
+      "text": "Wir haben uns in dem Haus sehr wohl gefühlt und würden jederzeit wieder bei Portugal Active buchen. Wir haben auch über Portugal Active einen privaten Ausritt gebucht, der jeden cent wert war. Besonders hervorzuheben wäre, dass wir ganz herzlich von Ricardo empfangen und herumgeführt wurden und er immer für Fragen erreichbar war. Im Außenbereich gibt es ein extra Bad mit Klo und Dusche, damit man nicht nass durchs Haus laufen muss. Nach einer Woche hat ein Reinigungsteam nicht nur Bettwäsche und Handtücher getauscht, sondern eine komplette Zwischenreinigung vorgenommen und auch der Poolpfleger hat tolle Arbeit geleistet. Insgesamt haben wir uns zu 10 Personen in dem Haus sehr wohl gefühlt und würden es wieder empfehlen.",
+      "guestName": "Pascale",
+      "date": "2024-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "A casa é excelente. A localização é fantástica. Estivemos hospedados no inverno e por isso não tivemos a oportunidade de usar a piscina, mas a casa é super confortável mesmo em tempos mais frios. Os passeios à beira-mar são logo ali! Foi um final de semana muito bem passado. Recomendamos vivamente.",
+      "guestName": "Carlos",
+      "date": "2021-12-15"
+    },
+    {
+      "rating": 5,
+      "text": "We loved our stay here in Afife. The house is super spacious and has everything you need. It’s located close to many kite and surf spots along the coast and has plenty of space to store and clean all your gear even with 12 ppl. Parking situation is very convenient and the beds and bathrooms are very clean and nice. Internet is stable and there’s plenty of space if you have to work remote. Ricardo was always available for our many requests and helped us with everything we asked for. One of the highlights was the private chef for one evening that cooked for us in the Villa. Amazing food and wine! We would love to come back again!",
+      "guestName": "Konstantin",
+      "date": "2021-08-15"
+    }
+  ],
+  "s-o-juli-o-retreat-pool-jacuzzi-garden-escape-743511": [
+    {
+      "rating": 5,
+      "text": "Spacious with huge garden surroundings. 3 big bedrooms a large kitchen, places to sit outside, a great pool, bbq and jacuzzi 😀",
+      "guestName": "Joerg",
+      "date": "2026-08-16"
+    },
+    {
+      "rating": 5,
+      "text": "Alles problemlos geklappt, gute Kommunikation.",
+      "guestName": "Tim",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Vidunderligt sted! Vi havde den dejligste uge med vores børn. Stort og rent og rummeligt hus med ren og velholdt pool. Haven med frugter var fantastisk. Kommunikationen var meget god, og vi havde god hjælp og kontakt med udlejer. Vi vil meget gerne tilbage.",
+      "guestName": "Line",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Estadia perfeita, casa muito bem  equipada! O local é lindo e de fácil acesso. 💖",
+      "guestName": "Flavine",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Die Unterkunft von Portugal Active ist eine sehr schöne Möglichkeit abzuschalten und Sonne und Natur zu genießen. Wir haben uns nie gelangweilt, auch wenn es abends gewittert hat. Man konnte innen sowie außen in großen Gruppen sitzen. Wir würden uns freuen, wenn wir nochmal kommen könnten und möglicherweise auch weitere Unterkünfte von Portugal active verteilt im Land kennenlernen.",
+      "guestName": "Fatih",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "3 dias muito bem passados neste alojamento. Casa fantástica, muito bem cuidada, com imenso terreno circundante para as crianças correrem e brincarem. Anfitrião bastante flexível e simpático. Pena o tempo ter sido chuvoso o que não deu tanto para aproveitar a piscina e o jacuzzi. A casa está muito bem apetrechada de louça, atoalhados, jogos, para passar o tempo com qualidade. Sem dúvida queremos voltar e recomendo.",
+      "guestName": "Luís",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "La estancia fue muy buena: alojamiento limpio, cómodo y bien ubicado. Como pequeño detalle, el jacuzzi no funcionaba durante nuestra visita, pero en general todo fue muy satisfactorio.",
+      "guestName": "Julian",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Amazing place, very responsive.",
+      "guestName": "Miguel",
+      "date": "2026-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "Lovely place, very comfortable. The views were good and the house was very warm. Fully equipped kitchen, and comfortable beds and rooms. Would recommend!",
+      "guestName": "Francisco",
+      "date": "2026-01-15"
+    },
+    {
+      "rating": 5,
+      "text": "We had an amazing stay.",
+      "guestName": "Tam",
+      "date": "2026-01-15"
+    },
+    {
+      "rating": 5,
+      "text": "Tivemos problemas com o jacuzzi que não ficou pronto a usar nos 2 dias que estivemos em casa, de resto estava tudo ótimo, a casa é linda e o terreno é enorme com uma pequena cidade ao lado com tudo o que é preciso.",
+      "guestName": "Diogo",
+      "date": "2025-12-15"
+    },
+    {
+      "rating": 5,
+      "text": "el terreno precioso la casa super cálida con todo los utensilios las habitaciones grandes y super cómodas eso sí cuando llegamos allí el jacuzzi estaba el agua congelada lo pusimos a funcionar y 37 horas después estaba acta más o menos para bañarte asique no lo disfrutamos nada pork solo fuimos 2 noches .lo k tendrían k hacer es encenderlo ellos con tiempo para cuando lleguen los inquilinos poder disfrutarlo porque a nosotros ya no nos dió tiempo después del resto un 10",
+      "guestName": "Patricia",
+      "date": "2025-12-15"
+    },
+    {
+      "rating": 5,
+      "text": "Nada a apontar, correu tudo super bem!",
+      "guestName": "Margarida",
+      "date": "2025-11-15"
+    },
+    {
+      "rating": 5,
+      "text": "Everything was great",
+      "guestName": "Mario",
+      "date": "2025-11-15"
+    },
+    {
+      "rating": 5,
+      "text": "We had small things to deal with - the toaster and broken and the hot water had stopped, but the team was very responsive and aimed to fix all of our issues very quickly. Beautiful home and would stay again!",
+      "guestName": "Los",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Our stay in Mato was absolutely wonderful. This home was private and peaceful, with lots to do on the property. It was so nice to sit outside and picnic near the pool. We used the outdoor barbeque easily. The kitchen was fully stocked with everything we might need. The pool was clean and the home was beautifully set up. The highlight of our trip was the private chef, who made an excellent dinner catered to our diet. I would highly recommend staying here.",
+      "guestName": "",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Place was absolutely incredible. Views were amazing it’s so secluded and beautiful. There even was a wildfire near me and they kept in contact and made sure I was good. Would stay here again 10000%. It’s far enough away from everyone but close enough to some cool little restaurants and cafes nearby. Only thing was no AC but if you opened the windows at night it didn’t get too hot.",
+      "guestName": "Los",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Amazing place, and good communication with the staff. One small detail, the cleaning staff entered the house on the day of checkout early in the morning, few hours before planned checkout time. It would be great to be informed in case such thing happens. Otherwise everything was perfect, thank you!",
+      "guestName": "Thibault",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "A estadia foi simplesmente perfeita! O espaço é enorme, uma verdadeira chácara, cercada pela natureza e com uma paz que faz a gente realmente desligar do mundo. A casa é confortável, bem equipada, e tudo estava impecavelmente limpo e preparado com muito carinho. Recomendo também as atividades organizadas pelo anfitrião — fizemos um passeio a cavalo na praia que foi simplesmente espetacular, uma experiência inesquecível! Ficou a vontade de voltar no verão para aproveitar a piscina como se deve. Recomendo demais!",
+      "guestName": "Maria",
+      "date": "2025-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "A Perfect Stay in a Private and Tranquil Retreat I stayed at Quinta São Julião and it was an incredible experience. The house is extremely comfortable, spacious, and surrounded by nature, offering a unique sense of tranquility and privacy. The absolute silence and the forest around make the atmosphere even more special. The check-in was done in person and very well explained, making our arrival smooth and hassle-free. The Portugal Active team was always available and provided excellent service. One of the highlights of our stay was the private chef experience, who prepared an exceptional dinner for us. The pool offers a stunning view, and even in winter, we could see how amazing it would be to stay here in spring or summer. The outdoor space is well-maintained, and the house is fully equipped with everything needed for a comfortable and worry-free stay. Definitely a place to return to, this time for a longer stay.",
+      "guestName": "Pedro",
+      "date": "2025-02-15"
+    }
+  ],
+  "portugal-active-nature-hill-duo-10-min-beach-742743": [
+    {
+      "rating": 5,
+      "text": "Fantastic place, Very clean facilities in very good condition, a fantastic house to spend a few days with friends and family",
+      "guestName": "Martina",
+      "date": "2026-08-16"
+    },
+    {
+      "rating": 5,
+      "text": "Espectacular la casa. Todo nuevo, limpio y con todas las comodidades para pasar unos días increíbles con amigos. El exterior con la piscina es un sueño. Repetiremos",
+      "guestName": "Nuria",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Excelentes instalaciones, ubicación, limpieza y comodidad.  ¡sin duda volvemos! Los recomiendo. Gracias al anfitrión por recibirnos.",
+      "guestName": "Angelica",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "One of the best places I have ever stayed, facilities were excellent and when we arrived everything so spotlessly clean we could have believe we were the first guests to stay! Staff on hand to help with any issues and a beautiful villa, well situated but necessary to have a car for sure - a beautiful scenic view and happily housed myself and 10 relatives for the week. Small feedback; the check in process and keys/fobs alongside where to use them could have been more instructed to make for a smoother check in although once established the system is very easy to use. The BBQ was a little disappointing for a 10 bedroom house - as an avid outdoor cook and a house of this size it certainly could have been substantially larger. Overall - a fantastic house and would use the host again in a heartbeat!",
+      "guestName": "Arran",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Todo perfecto.",
+      "guestName": "Olga",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Todo perfecto 👌",
+      "guestName": "María",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Segunda vez que vamos y todo genial!!",
+      "guestName": "Diego",
+      "date": "2025-11-15"
+    },
+    {
+      "rating": 5,
+      "text": "A beautiful spacious villa that accommodates really well for a big group. Portugal Active were brilliant hosts who were very responsive throughout our stay and made our stay with them a great experience from start to finish. Will definitely consider them and the villa if we travel to Portugal again!",
+      "guestName": "Ramanan",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "buen alojamiento para vacaciones",
+      "guestName": "Ivan",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Muito boa experiência. Recomendo 100%",
+      "guestName": "Maria",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "прекрасное тихое место в небольшой деревне в далеке от шума. До супер маркетинга 10-15 минут на машине. Бассейн с очень чистой водой. Нам позволили поздний выезд, чтотнам очень помогло. На территории без проблем может припарковаться 6 автомобилей.",
+      "guestName": "Roman",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Uma óptima escolha ,a casa maravilhosa ,a vista fantástica ,mega recomendada",
+      "guestName": "Maite",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Wir waren mit 16 Personen in der Unterkunft und es war sensationell. Die Lage ist abgelegen und ruhig. Wir waren stets in Kontakt mit der Agentur und die Kommunikation war super. Das selbstständige ein- und auschecken hat optimal funktioniert. Danke für diesen tollen Aufenthalt!",
+      "guestName": "Maximilian",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Espaço agradavel, com todas as comodidades.",
+      "guestName": "Eduardo",
+      "date": "2025-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Estivemos alojados este fim de semana num grupo grande e só temos elogios a fazer. A casa corresponde exatamente às fotos: espaçosa, bem equipada e com todas as condições para receber confortavelmente um grupo deste tamanho. Tivemos uma estadia muito agradável, com tudo o que precisávamos à disposição. Desde os espaços comuns amplos, ideais para convívio, até à organização dos quartos, tudo foi pensado ao pormenor. As crianças também se divertiram imenso. Recomendamos vivamente a quem procure um espaço acolhedor para grupos grandes. Sem dúvida, uma experiência a repetir!",
+      "guestName": "Ines",
+      "date": "2025-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Bonjour, Nous avons passé un séjour inoubliable ! Le logement était d’une propreté exceptionnelle et bien équipé avec tout ce dont nous avions besoin, il y avait rien à redire. Nous avons apprécié vos réponses rapides Vos attentions nous ont permis de nous sentir comme chez nous. Nous serions ravis de séjourner à nouveau ici Si vous êtes de passage à Porto nous vous recommandons fortement le logement. Encore Merci pour tout !",
+      "guestName": "Emma",
+      "date": "2025-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "The villa was incredible, very well equipped, lovely and spacious. The rooms were well maintained and beds were comfortable. The amount of showers and toilets was an absolute bonus for a large group of guests. The kitchens and appliances were incredibly clean.  The pool area was great and very spacious and had fantastic views and surroundings. Portugal active were fantastic at communicating and always so timely. They offered recommendations and assisted with booking trips. For example, they booked for us, the My way yacht - sunset yacht cruise and transfers, which was absolutely the highlight of the trip! The taxi/transfer services recommended by Portugal active were amazing, so friendly and helpful. Thank you so much for a great experience. Would highly recommend Portugal active and the space!!",
+      "guestName": "Kellsey",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "The villa was absolutely gorgeous and in a pristine condition. It was extremely clean and today. It was in a peaceful location. Easy to get Ubers to get around.",
+      "guestName": "Victoria",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "I don’t like public reviews, but praise isn’t something you hide. This was an amazing property. It was magical from beginning to the end. Absolutely loved it.",
+      "guestName": "Chukwukaelo",
+      "date": "2025-04-15"
+    }
+  ],
+  "portugal-active-beach-flat-bb2460": [
+    {
+      "rating": 5,
+      "text": "La casa estupenda, sin escaleras (planta baja), con una terraza con sillas y mesas para disfrutar desayunos o cenas, la casa bien equipada con aire acondicionado, bonita, moderna, talvez algunos mantenimientos de cosas mal atornilladas o detalles así. Tienen lavaplatos y lavadora con jabón disponible, así como en el baño, todo limpio, agradable muy bien comunicado. Plaza de garaje a aire libre privada a 30 metros de la casa. Nos encantó. La zona tranquila para familias, un par de restaurantes cerca, uno muy agradable, además de los bares de la playa, la playa justo a la espalda de los apartamentos, al otro lado el paseo fluvial,... no hay discotecas ni jaleo, solo familias yendo a la playa. A 100 metros un ferri te cruza a Viana si no quieres ir en coche, aunque es fácil de llegar en coche, rápido y fácil de aparcar. Nos encantó.",
+      "guestName": "Anselmo",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Nice place to spend a good time, near to the beach and few minutes of the center of the city by car. We enjoyed!",
+      "guestName": "Mário",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "对于需要去海滩风筝冲浪和冲浪的玩家来说，位置非常方便。也有小庭院可以用！装修可能时间稍长了，但整体还算比较方便！房东基本上响应积极！",
+      "guestName": "Fujun",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Great location, cosy space 👍",
+      "guestName": "Ian",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "espaço muito agradável e convidativo à permanência",
+      "guestName": "Carla",
+      "date": "2026-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "Buena ubicación cerca de la playa",
+      "guestName": "Javier",
+      "date": "2026-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "Il n’y a rien le logement était plus que propre terres bien situé et nous avons passé un agréable séjour",
+      "guestName": "Mike",
+      "date": "2026-01-15"
+    },
+    {
+      "rating": 5,
+      "text": "Alles wunderbar. Habe es nicht sofort gefunden aber es war dann nicht so schwer. Sonst alles wunderbar. Batterien der Fernbedienung von der Klima waren leer. Hab ich getauscht. Preis Leistung war super.",
+      "guestName": "Alois",
+      "date": "2025-11-15"
+    },
+    {
+      "rating": 5,
+      "text": "Sehr schönes Appartement in dem wir als Familie zu viert gut Platz hatten. Es war sehr sauber und viele Kleinigkeiten wie Salz, Servietten, Kaffeetabs, Waschmittel, usw sind sehr hilfreich und nicht selbstverständlich. Wir vergaßen nach der Abreise einen Pullover und wurden 20 Minuten später informiert und bekamen auch das Angebot einer Postsendung. Das Appartement ist  ruhig gelegen und fußläufig 5 Minuten vom Strand entfernt. Wir waren sehr zufrieden,  jedoch ist dieses Appartement Anfang August auch recht teuer.",
+      "guestName": "Barbara",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Todo perfecto",
+      "guestName": "Erica",
+      "date": "2025-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "All was good! Great communication. Pretty nice apartments",
+      "guestName": "Максим",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Proximité de la plage avec accès facile Embarcadère pour Viana do castello centre à 150m. Excellente boulangerie et petite boutique à 500m. Endroit calme, parking. De nombreux chemins côté plage et belle promenade à faire le long de la rivière. Hôte très à l'écoute et réactif à nos demandes.",
+      "guestName": "Joëlle",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Recomendo. Próximo à praia de cabedelo, com uma excelente acomodação",
+      "guestName": "Bruno",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Aqui está um bom apartamento confortável e bem localizado.",
+      "guestName": "Ezequiel",
+      "date": "2025-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "We had such a lovely stay and felt right at home with a bottle of wine and sparkling water waiting for us upon arrival. The outside area was very comfortable and the washingline was helpful for all the laundry that we had to do with a months travelling through Portugal 😃. Walking distance to the beach with two little kids was a big bonus.",
+      "guestName": "",
+      "date": "2025-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "O apartamento é incrível, super cozy. O terraço faz imensa diferença :) Recomendo",
+      "guestName": "Beatriz",
+      "date": "2025-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "I had an amazing stay in Ricardo’s flat. It’s 2m walk from the most beautiful beach, and surrounded by nature. The flat is equiped with everything you need for a small or longer stay like mine. Lovely to start the day having breakfast in the terrace hearing the birds after a long walk in the beach and to take a glass of wine at night watching the stars. Oh and it has a súper surround sound system to enjoy home cinema or just some nice music. The neighborhood is súper chill and at night super silent for a perfect rest. 1m walking from the river and 5m from the ferry that takes us to Viana. And some really nice restaurants nearby. Highly recommend Aquarius. Thank you for everything Ricardo, for sure I will come back!",
+      "guestName": "Gisela",
+      "date": "2021-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Óptima estadia, com excelente localização perto da praia. Espaço exterior agradável. Casa com todas as comodidades. Boa comunicação com o anfitrião quando precisamos. Recomendo!",
+      "guestName": "Michael",
+      "date": "2021-08-15"
+    }
+  ],
+  "blue-tile-hideaway-by-portugal-active-24acf6": [
+    {
+      "rating": 5,
+      "text": "Thoroughly enjoyed our stay. It was perfect for our group of 6 young men. Location couldn’t have been any better. The apartment was incredibly clean and the air conditioning units kept the apartment at a great temperature. Would 100% recommend Portugal Active",
+      "guestName": "Fergus",
+      "date": "2026-08-25"
+    },
+    {
+      "rating": 5,
+      "text": "Läget på detta boende var fantastiskt! Speciellt om man gillar att strosa i butiker. Även en massor av fik i närheten. Boendet var rent och hemtrevligt!",
+      "guestName": "Sonja",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Cannot beat this location! Right in the center, you can walk everywhere. So much to see and do around. The place has comfortable bedding and is pretty quiet considering the central location. A little bit of construction but the windows mask the noise very well. Could use more seating on the living area being that up to 6 people can stay but only 3 can comfortably fit on the couch, the round chairs are cute but aren't very cozy and one was broken but wasn't a big deal, we made due just fine. Lots of storage to put away clothes and other belongings. Nice little balcony, it's on the interior so not a great view but was still enjoyable. Seriously if you are looking for a quiet, comfortable place in the heart of downtown Porto, this is it!",
+      "guestName": "",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Very convenient location in a walkable city. Tram station is very close and there are a lot of food options to choose from.",
+      "guestName": "",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "La ubicación es genial, llegas caminando a cualquier punto, tiene muchas opciones de comida y comercios. El metro esta a unos pasos. Las camas, habitaciones y baños muy bien. Muy recomdable.",
+      "guestName": "Santiago",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Rien à dire, service très réactif ! Logement propre et correspondait aux photos et description.",
+      "guestName": "Anne-Cécile",
+      "date": "2026-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "Ubicación muy céntrica. Atención del equipo Portugal Active inmediata. Limpieza perfecta.",
+      "guestName": "Sandra",
+      "date": "2026-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "Muito obrigado TOP!",
+      "guestName": "Andre",
+      "date": "2026-01-15"
+    },
+    {
+      "rating": 5,
+      "text": "Todo perfecto",
+      "guestName": "Dimas",
+      "date": "2025-12-15"
+    },
+    {
+      "rating": 5,
+      "text": "die Unterkunft war wirklich sehr schön und sehr zentral gelegen:)",
+      "guestName": "Laura",
+      "date": "2025-11-15"
+    },
+    {
+      "rating": 5,
+      "text": "We could not have asked for a nicer place to stay in Porto. The flat itself is immaculate and well-equipped; the company respond really quickly to any queries. And the location is incredible - so many great sights in walking distance. We had a fantastic stay here and would highly recommend it to anyone travelling to Porto!",
+      "guestName": "Miranda",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Great place, excellent location in the heart of Porto. Ideal for 4 people (2 couples).  Spacious and clean.",
+      "guestName": "Teresa",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "За исключением того, что нет лифта, а также не разрешили оставить вещи на час и ответили про это за 15 минут до времени выселения, что стало шоком для нас (при этом можно было заселится раньше), всё было идеально. Лучшее в городе месторасположение относительно всего. Было в наличии всё, что может понадобится и даже больше. Очень уютно. Вернулись бы снова",
+      "guestName": "",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Sehr schöne, neu renovierte / eingerichtete und geräumige, ruhige Wohnung. Ideale Lage. Sehr zu empfehlen.",
+      "guestName": "Stephan",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Appartement propre et cosy, très bien agencé et aménagé. On y trouve tout ce dont on pourrait avoir besoin et on se sent très vite chez soit .",
+      "guestName": "Anissa",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "L’appartement est vraiment central et bien situé. Très bel endroit avec de l’espace et bien décoré ! Deux grandes chambres et deux salles de bains qui sont très pratiques lorsqu’on loge à plusieurs. Tout était parfait !",
+      "guestName": "Marie",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Great location, beds where very comfortable, would definitely recommend, Just be careful of the wicker living room chairs they can slip of there stand. Many thanks",
+      "guestName": "Matthew",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Nice apartment in a great location. Hifhly recommended. Very good service and communication",
+      "guestName": "James",
+      "date": "2025-06-15"
+    }
+  ],
+  "habito-s-lodge-by-portugalactive-5min-beach-town-1e8cd6": [
+    {
+      "rating": 5,
+      "text": "Super séjour ! La maison est vraiment top et conforme à 100 % à la description. La clim marche super bien et un grand merci pour la piscine qui a été nettoyée dès le deuxième matin. L'emplacement est génial, à seulement 3 minutes de la plage, et Chafé est vraiment un super joli village. Le propriétaire est super sympa et l'équipe de Portugal Active est au top du service : super réactifs et communication impeccable du début à la fin. On recommande sans hésiter !",
+      "guestName": "Benjamin",
+      "date": "2026-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Nothing to complain about. Everything went smoothly! This is the perfect stay for å trip to Portugal",
+      "guestName": "Daniel",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "La piscine n était pas mise en marche , vu le beau temps et les réservations qui ne poursuivent pour ce week end de Pâques ,la mise en marche de cette dernière serait un caractère fort de la part de l équipe .Le service qui se dit Luxe doit être à la hauteur et garder cette anticipation à l esprit .Pour le reste la villa représente beaucoup d atouts dans un environnement calme et verdoyant. Merci à vous",
+      "guestName": "Veronique",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "We rented this house for New Year with a large group — 6 adults and children — and overall we were very happy with the stay. The house is genuinely spacious, so everyone had enough room and privacy. The layout works very well for groups: there is a comfortable common area to spend time together, and at the same time enough separate bedrooms to rest properly. The kitchen is well equipped and easy to use — we cooked a lot and had everything we needed. The outdoor area and the grill are a great bonus, especially for the evenings. The house was warm, clean, and everything worked as it should: hot water, heating, electricity, and internet — no unpleasant surprises, which is important during holiday stays. The location is calm and quiet, perfect for a relaxed family holiday. The host was responsive, helpful, and easy to communicate with. Overall, it’s a great place for families and larger groups, especially for holidays. We would definitely recommend it and would be happy to stay again.",
+      "guestName": "Mikita",
+      "date": "2026-01-15"
+    },
+    {
+      "rating": 5,
+      "text": "Todo perfecto, la casa con todas las comodidades, es aún más bonita que en fotos.",
+      "guestName": "Lorena",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Very good location!",
+      "guestName": "Leo",
+      "date": "2025-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Amazing villa. We had a fantastic weekend))",
+      "guestName": "Dmitry",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Espaço agradável e bom para descansar",
+      "guestName": "Fabio",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Très belle villa à deux pas de l’océan et à 1 h de Porto",
+      "guestName": "Alex",
+      "date": "2024-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Nuestra estancia ha sido excelente. Jardín muy grande, piscina privada muy buena y tumbonas muy cómodas. Parking privado en el interior de la parcela. Zona muy tranquila. Conexión con playas muy buenas a 10 minutos en coche. Admiten mascotas, playas aptas para perros muy cerca también. Las camas son muy cómodas y tienes todo lo que puedes necesitar, utensilios de cocina, mantas extra, toallas, lavadora… Ya estamos pensando en volver a alojarnos en esta u otra de sus casas para el año que viene. Sin duda lo recomendaría.",
+      "guestName": "Naiara",
+      "date": "2023-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Place is great.  Nice private pool with adjacent pool room…great place to relax and hang out.  Well decorated and various kitchen utensils were good.  If you are cooking, you’ll need some spices, etc.  I think there was just olive oil and salt.  But overall, was all good.",
+      "guestName": "El",
+      "date": "2023-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "magnifico chalet para ir en parejas.",
+      "guestName": "Lisardo",
+      "date": "2023-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Nos dejaron llegar antes de la hora para hacer el check in. Atendieron todas nuestras peticiones contestando con mucha rapidez. La casa es estupenda muy grande y amplia con un jardín y piscina muy cuidados. Tiene un salón comedor acristalado super agradable. La cocina es fantástica con todos los utensilios necesarios y electrodomésticos modernos. La ropa de cama y toallas perfectas limpias y nuevas. Pedimos mas toallas para la piscina y nos las trajeron de inmediato. Un trato super amable y eficiente tanto por parte de André como de Ricardo Un placer alojarse en esta casa. La recomendamos cien por cien",
+      "guestName": "Macarena",
+      "date": "2023-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Very beautiful house with all necessary amenities. The communication with Active Portugal was very smooth and they were always very reactive.",
+      "guestName": "",
+      "date": "2022-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "What a great house! We ( people) had more than enough space. there is a private parking and private pool which was our favourit place to hang out. Also the communication was great. If you need anything or need advice, just text them and get an answer in no time. would totally recommend this place",
+      "guestName": "",
+      "date": "2022-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Great house and location. Really close to the motorway so it is very quick to travel from Porto to the house and the roads are nice. The house is fantastic with a great garden and pool. We stayed in the pool all the time as the water is somewhat mild. I will return!",
+      "guestName": "Cristiana",
+      "date": "2021-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Estancia estupenda! La casa fenomenal, muy amplia, decorada con detalle y con una increíble piscina Muy acogedora, bien ubicada muy cerca de Viana. Ricardo siempre pendiente, muy amable y cercano. Un gran anfitrión!! Repetiremos sin dudarlo, una gran experiencia.",
+      "guestName": "Sonia",
+      "date": "2021-07-15"
+    }
+  ],
+  "beach-farm-pool-and-jacuzzi-with-sea-view-83ef5f": [
+    {
+      "rating": 5,
+      "text": "Otroligt, stort fint hus med fantastiskt läge. Vi kommer gärna tillbaka!",
+      "guestName": "Joanna",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Nous avons passé un moment incroyable. La villa est magnifique, très propre et parfaitement équipée. La piscine est superbe, surtout au coucher du soleil, avec une vue magnifique. L’endroit est calme, idéal pour se détendre entre amis ou en famille. Tout était conforme aux photos, voire mieux. Je recommande sans hésiter et j’y retournerais avec plaisir !",
+      "guestName": "",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Quite simply the best stay in Portugal if you want to unwind with family and friends. Beautiful surroundings, incredible views, amazing pool and outdoor spaces. Very relaxing and easygoing.",
+      "guestName": "Cidade",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "La casa es muy bonita, confortable y cuidada. (Puede mejorar algún mantenimiento , aunque es difícil, por ej olor a humedad en alguna zona) En líneas generales muy satisfactoria nuestra estancia . Éramos ocho adultos y seis niños de 1 a 12 años, que disfrutaron mucho de las instalaciones",
+      "guestName": "Maria",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "beautiful villa it was so much bigger than It looked in the photos! so much space and beautiful views we stayed with family friends and had BBQs and did walking at it was perfect.  supermarket 20 minute walk away.",
+      "guestName": "Kate",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Cuando un grupo de 10 amigos, todos quedamos encantados y impresionados de toda la casa, habitaciones,cocina, baños,salas, entorno de la enorme finca, piscina. una auténtica maravilla",
+      "guestName": "Rodrigo",
+      "date": "2026-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa preciosa, cuidada, estancias grandes y cómodas. Teníamos todo lo necesario, hacía calor y te sentías como en casa. Nos pareció un poco pronto la hora de salida ya que al ser un grupo grande es más difícil dejar todo recogido temprano.  Por lo demás un 10, repetiremos en verano para poder aprovechar la piscina.",
+      "guestName": "Ana",
+      "date": "2026-02-15"
+    },
+    {
+      "rating": 5,
+      "text": "A casa é fantástica e extremamente bem equipada. A localização é excelente, com uma vista verdadeiramente deslumbrante. Os quartos são muito confortáveis e revelam um grande cuidado com os detalhes  todos dispõem de várias almofadas, bons lençóis e roupões. As áreas comuns são amplas, bem decoradas e ideais para desfrutar de ótimos momentos de lazer. O espaço exterior é igualmente muito agradável, tornando a estadia ainda mais especial. Ligeiramente afastada da cidade mas com todos os serviços necessários a uma curta distância de carro (Farmácia, Supermercados, Bomba de gasolina, entre outros). Avaliação 5*",
+      "guestName": "Tiago",
+      "date": "2026-01-15"
+    },
+    {
+      "rating": 5,
+      "text": "Magnífica elección, la quinta es maravillosa y estuvimos como en casa. Los anfitriones nos dieron todo tipo de facilidades. Volveríamos seguro",
+      "guestName": "Ana",
+      "date": "2025-12-15"
+    },
+    {
+      "rating": 5,
+      "text": "La casa se corresponde con las especificaciones, amplia e ideal para un plan diferente pasando unos días con amigos o familiares.",
+      "guestName": "Rosa",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Hemos disfrutado mucho de nuestra estancia en la casa, es una casa muy grande y bien distribuida . La situacion del inmueble es  estupenda,. La pisicina es muy bonita,  el jardin espectacilar y bastante bien cuidado. Tambien destacaria la amabilidad del personal, muy atentos en todo momento. Es posible que repitamos, la exoeriencia ha sido en general muy positiva",
+      "guestName": "Virginia",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Twee dagen op deze rustgevende toplocatie waren de perfecte afsluiter na een actieve vakantie. Fantastische, mooi verzorgde villa met prachtig zwembad en zalig zicht op zee. We hadden graag nog wat langer gebleven!",
+      "guestName": "Ilse",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Una casa para volver sin dudarlo. Excepcional todo",
+      "guestName": "Martin",
+      "date": "2025-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Zona tranquila para descansar y muy cerca de Viana do Castelo. Casa muy amplia y cómoda. Habitaciones espaciosas y camas confortables. Nos reunimos la familia y tanto mayores como pequeños estuvimos muy a gusto.",
+      "guestName": "Gloria",
+      "date": "2024-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Somos uma Família de irmãos e estivemos pela primeira vez nesta casa do Carreço e posso dizer que é maravilhosa, a menina Filipa que nos recebeu foi muito esclarecedora e simpática e mesmo com quem falei da empresa Active,foram sempre activos na preocupação para com os hóspedes...iremos voltar com toda á certeza.. Não posso deixar de referir  a piscina que as crianças adoraram... Até breve...",
+      "guestName": "Anabela",
+      "date": "2024-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Fantástico! Sol, mar, monte y una piscina estupenda...",
+      "guestName": "Ivan",
+      "date": "2024-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Sitio increíble, los hosts Filipa y Ricardo fueron muy amables, enseñándonos la casa al detalle y respondiéndonos en las pequeñas dudas que tuvimos durante la estancia. La zona de la casa es espectacular, se puede disfrutar del atardecer. La piscina es perfecta. La ubicación, Afife, es una de las mejores de Portugal para disfrutar de las mejores playas. La casa es bastante grande y tiene todos los servicios que se necesitan para pasar un finde de relax con colegas o en pareja y familia. Muy recomenble.",
+      "guestName": "Oscar",
+      "date": "2024-08-15"
+    }
+  ],
+  "portugal-active-sunset-beach-lodge-heated-pool-5ceb91": [
+    {
+      "rating": 5,
+      "text": "Estancia magnífica en Carreço, amplia luminosa limpia y con todas las comodidades q anunciaban. Volveremos a este paraíso",
+      "guestName": "Carmen",
+      "date": "2026-08-16"
+    },
+    {
+      "rating": 5,
+      "text": "Eu e minha família que inclui 5 adultos, uma adolescente e um bebê de 3 semanas passamos um fim de semana ótimo nessa casa.",
+      "guestName": "Luciana",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Un precio muy adecuado a la calidad del alojamiento, si ya las fotos parecía increíble en persona es inimaginable, una villa totalmente de lujo con piscina privada, instalaciones muy amplias y bonitas. El anfitrión se comunicaba muy rápidamente conmigo para cualquier adversidad y la casa estaba ordenada y limpia. No es mi primera vez viajando con Portugal Active y sin duda no será la última",
+      "guestName": "Guillermo",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Villa incroyable ! Nous avons passé un agréable moment",
+      "guestName": "Quentin",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Prachtige ervaring! Het huis was precies zoals op de foto’s. Hier en daar waren er enkele lichte gebruikssporen, maar verder was alles helemaal in orde. De service was ontzettend vriendelijk en er werd altijd goed contact gehouden. Als er iets was, werd het meteen opgepakt en geregeld. We hebben via hen ook een massage geboekt en een privéchef geregeld, wat echt een mooie extra was. De kinderen hebben er enorm van genoten en vonden het ook een geweldige belevenis. Wij zouden zeker nog eens terugkomen!",
+      "guestName": "Hope",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "La casa es muy espaciosa y muy comoda , deberían revisar algunas puertas que dan al exterior de los ventanales ya que la mayoría estaban estropeadas., por lo demás todo genial",
+      "guestName": "José",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "The house was in lovely condition and Samuel was extremely helpful and attentive. Highly recommend!",
+      "guestName": "Charlotte",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "… Jan Köniz, Suíça",
+      "guestName": "Nuno",
+      "date": "2026-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa aconchegante e muito confortável, muito bem equipada",
+      "guestName": "Pedro",
+      "date": "2025-12-15"
+    },
+    {
+      "rating": 5,
+      "text": "Excelente casa. Vista incrível",
+      "guestName": "Eva",
+      "date": "2025-12-15"
+    },
+    {
+      "rating": 5,
+      "text": "Excelente lugar para passar um tempo com amigos",
+      "guestName": "Douglas",
+      "date": "2025-11-15"
+    },
+    {
+      "rating": 5,
+      "text": "We had an amazing time at this villa would definitely recommend and would also recommend getting the private chef the food and service was 10/10!!",
+      "guestName": "Sandra",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Wir hatten eine tolle Zeit in der Villa von Ricardo. Er war immer erreichbar und half uns bei Fragen oder Problemen. Die Villa ist gut erreichbar, der Meerblick ist sehr schön! Alles war sehr sauber und es war alles vorhanden, was man benötigt für einen tollen Aufenthalt.",
+      "guestName": "Lucas",
+      "date": "2024-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "We totally enjoyed staying at this place.   The house was clean and cozy. Just what we needed for the New Year celebration. The living room has a large area with a huge TV screen for entertainment. The kitchen is large enough to contain 5-6 people. I would highly recommend this place for a large family or friend's events. Special thanks for the host's assistance, Andre! He was available anytime we needed, checked in on how we were doing and he is just an awesome person overall. The ideal time spent.",
+      "guestName": "Igor",
+      "date": "2024-01-15"
+    },
+    {
+      "rating": 5,
+      "text": "Great place to stay, especially with a big family.  Plenty of space and the pool and jacuzzi are the stars.  The area was great, the the recommendations on where to go and what to do were very helpful.  We were there during a festival and we were given the best times to visit and when to avoid the crowds.  An exceptional place to stay and highly recommended.",
+      "guestName": "Espanha",
+      "date": "2023-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "O lugar é especial e foi muito fácil relaxar, para além de que todo o processo de reserva, check-in e check-out foi tranquilo e imediato. Um agradecimento pela flexibilidade relativamente ao número de hóspedes e a prontidão nas respostas e na procura de soluções imediatas para pequenos imprevistos/pormenores.  Obrigada. Voltaremos!",
+      "guestName": "Mariana",
+      "date": "2023-06-15"
+    }
+  ],
+  "divine-waves-duplex-by-portugal-active-97c8e4": [
+    {
+      "rating": 5,
+      "text": "Alojamiento que responde a la descripción publicada. Muy confortable y con todo lo que necesitabamos. El único inconveniente fué que el baño situado en la planta baja desprendía un olor desagradable en algunos momentos, imaginamos que por problemas de tuberías o saneamiento. Quitando ese detalle, todo muy bien.",
+      "guestName": "Lupe",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "The apartment was very spacious and light. The kitchen and everywhere was thoughtfully equipped and generous with some condiments and welcome pack, very  much appreciated. The location is excellent for beach access and the ferry to Viana do Castelo. The communication with the hosts was always prompt and reassuring.",
+      "guestName": "Anne",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Queria agradecer pela hospitalidade e pela facilidade de mudar o check-out para um horário que fosse mais favorável para nós. Foi uma experiência muito incrível e sentimos-nos muito bem acolhidos. Com certeza iremos voltar um dia, alojamento 5 estrelas com tudo impecável e com todos os utensílios que necessitam!",
+      "guestName": "Nayara",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Tudo otimo Maria Lima District, Peru",
+      "guestName": "Mafalda",
+      "date": "2026-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "El Departamento grande, con todas las comodidades mostradas en las fotos. Todo sumamente limpio y ordenado. Incluso nos dejaron de obsequio de bienvenida agua y una botella de Vino. La ubicación es perfecta! Muy cerca a la playa. Comunicación inmediata y muy amigable. Súper recomendable",
+      "guestName": "Lima",
+      "date": "2025-11-15"
+    },
+    {
+      "rating": 5,
+      "text": "Sehr schöne und saubere Unterkunft. Wir wurden mit Aperogebäck und einer Flasche Wein empfangen. Sehr gute und unkomplizierte Kommunikation.",
+      "guestName": "",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Goede lokatie voor uitstapjes te ondernemen. Veerdienstje in de buurt om naar de stad over te steken. Terug is een ander opgave of lopend of taxi! Jammer dat winkeltje niet altijd open is. Goede lokatie (met een huur auto)voor een fijne rustige vakantie",
+      "guestName": "Richard",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Todo perfecto,tanto ubicación como el apartamento todo limpio y confortable y muy importante el parking en el edificio para no preocuparte donde dejar el coche. volveré a repetir seguramente.",
+      "guestName": "Cristina",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Un alojamiento ideal para familias , todo lo necesario para pasar unos días agradables . El alojamiento tiene aparcamiento incluido, playa cerca , restaurante debajo , el pueblo a 5 minutos en coche . Volveríamos sin duda",
+      "guestName": "Juan",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Appartement agréable à 4, sur 2 étages pour plus de confort. L’équipe est à l’écoute et réactifs aux demandes. Lieu à 5 minutes de la plage, au top pour la baignade du matin et du soir. Par contre, le canapé lit n’est pas recommandé pour un long séjour mais suffisant pour un 5ème visiteur sur 1 nuit.",
+      "guestName": "Luis",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Apartamento muy agradable muy cerca de la playa!",
+      "guestName": "Elena",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "O apartamento é excelente, com muito capricho. O local é muito bonito; restaurante só pé do edifício e praia muito próxima. O anfitrião e sua equipe são atenciosos aos hóspedes. Ótima opção numa cidade charmosa.",
+      "guestName": "Vitor",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "The location was very good being close walk to beach.  The restaurants nearby had good service, food and prices.  Nice bar on the beach where we got a beer to take and watch the sunset.  The balcony was nice area to relax and did not have the typical problem with birds hanging out.  I suggest trying a small cafeteria about a 15 minute walk to your right as you leave unit: Praça de Sabore’s.  They have a good salad with roasted vegetables and avacado toast with egg.  The small dessert bon bons were a treat.  Beautiful area to visit and spend time on the beach.",
+      "guestName": "",
+      "date": "2025-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Super séjour dans l'appartement qui était parfait. Le seul problème rencontré était à notre arrivée en pleine nuit, le verrou de l'immeuble était fermé, impossible d'accéder au logement avant le lendemain matin. Mais ce problème n'était pas du fait de Portugal Active, qui ont fait un geste pour nous dédommager du dérangement.",
+      "guestName": "Olivier",
+      "date": "2025-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Fiz uma reserva de última hora por motivos de trabalho e não podia ter corrido melhor. Desde o primeiro contacto, a equipa foi extremamente prestável e atenciosa, ajudaram em tudo para que a minha chegada fosse simples e a estadia confortável. A casa superou as minhas expectativas: é espaçosa, bem decorada, com um ambiente moderno e acolhedor ao mesmo tempo. Estava tudo impecavelmente limpo, com atenção aos detalhes que fazem a diferença. A cozinha está muito bem equipada, foi apenas uma noite mas consegui fazer uma jantar simples. A localização também é fantástica — mesmo junto à praia do Cabedelo, num sítio calmo! Acordei e tive uma vista incrível! Viajo muito em trabalho, mas senti-me em casa. Recomendo a 100%.",
+      "guestName": "Antonio",
+      "date": "2025-03-15"
+    }
+  ],
+  "lima-river-houses-by-portugal-active-7431cb": [
+    {
+      "rating": 5,
+      "text": "Wonderful location for a family reunion. We had a great time in the self-contained compound. Kids had pool and toys to entertain themselves for hours and adults also enjoyed quality time in mixing areas on the grounds. Overall a great find in a special town.",
+      "guestName": "",
+      "date": "2026-08-24"
+    },
+    {
+      "rating": 5,
+      "text": "A casa estava perfeitamente equipada para o nosso grupo que era bastante grande. Os espaços exteriores eram muito agradáveis, mas seriam ainda melhores se tivessem mais relva e árvores. O único reparo são mesmo os colchões, que por serem de molas eram muito desconfortáveis para dormir tantas noites. Francis Seattle, Washington",
+      "guestName": "André",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa increíble! Muy bonita y muy cómoda! Portugal Active respondía al momento cualquier duda que teníamos,  muy contentos con la casa! Saludos",
+      "guestName": "Samuel",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa incrível para convívio de amigos",
+      "guestName": "Diogo",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Fuimos un grupo de 16 amigos y nos encantó! Las habitaciones son grandes y con baño propio, todo muy limpio. La cocina tiene todo lo necesario. Hay varias zonas para juntarse. La zona exterior con la piscina está muy bien cuidada. Hay aparcamiento para varios coches en la finca. Repetiríamos!",
+      "guestName": "Inés",
+      "date": "2026-02-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa a fost exact pe așteptările noastre. Ne-am simțit minunat! Am fost un grup de 12 persoane și am petrecut minunat! Ne-am simțit ca acasă și totuși în vacanță scurtă. Aș dori să revenim în viitor.",
+      "guestName": "Iulia",
+      "date": "2025-11-15"
+    },
+    {
+      "rating": 5,
+      "text": "Sim, correu tudo muito bem. Gostamos do espaço exterior da casa e dos quartos.",
+      "guestName": "Rui",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Espaço muito bonito e agradável. Espaço exterior incrível para grupos grandes com crianças. Um salão ótimo para jantares, excelentes condições.",
+      "guestName": "Joao",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Propriedade fantástica. Bonita, grande, ampla, espaço ideal para convívio com família e amigos. O serviço de Chef personalizado foi excelente, qualidade e value for money 👍 Recomendação alta",
+      "guestName": "Miguel",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Merci pour l’accueil ! Nous avons profitez du début à la fin,  nous recommandons aussi vivement les services du chef cuisinier ! Superbe séjour et communication claire et réactive !",
+      "guestName": "Matthieu",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Maravilloso lugar para pasar un fin de semana tranquilo con un grupo de amigos y niños. Todas las comodidades para descansar en la piscina, jugar con los niños y hacer barbacoa en grupo. Instalaciones nuevas y limpias, habitaciones amplias y bonitas, buena zona de aparcamiento y privacidad total. Supermercados y restaurantes a pocos minutos en coche. Anfitrión atento y rápido en las respuestas. Sin duda repetiremos.",
+      "guestName": "Miguel",
+      "date": "2025-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Merci pour l’accueil!",
+      "guestName": "Carole",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "una casa estupenda, amplia, limpia. las habitaciones muy grandes, varias zonas comunes, con tv, barbacoa... la cocina con todo lo necesario. una casa recomendable 100%.",
+      "guestName": "Marcos",
+      "date": "2025-02-15"
+    }
+  ],
+  "slow-living-countryside-house-by-portugal-active-10e1c1": [
+    {
+      "rating": 5,
+      "text": "It is an amazing house located in the beautiful area. It had everything we needed. It might be the cleanest house we have ever stayed in - absolutely 10 out of 10!",
+      "guestName": "Kamil",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Estadia incrível, a casa tem um espaço muito bom, principalmente a zona da churrasqueira/mesa exterior que são ótimas para jantares de Verão e ficam muito perto da cozinha para todo o apoio necessário, zona da piscina muito porreira também, gostamos muito da casa e tem um espaço mais que confortável para 8 pessoas. Aconselho vivamente!",
+      "guestName": "Diogo",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Toda a casa estava muito bem equipada!",
+      "guestName": "Ana",
+      "date": "2026-01-15"
+    },
+    {
+      "rating": 5,
+      "text": "Ótima casa, super completa. Adoramos!",
+      "guestName": "Letícia",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Adoramos a estadia. É uma casa muito completa e muito bem equipada. Voltaríamos a repetir. Fica no meio da natureza, num lugar muito sossegado, ideal para quem quer relaxar e descansar.",
+      "guestName": "Maria",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa limpa e bonita situada num local calmo para desfrutar. Recomendado!",
+      "guestName": "Marco",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "A beautiful place to stay",
+      "guestName": "Chris",
+      "date": "2025-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "La atención fue espectacular,  la limpieza y el espacio genial con todas las comodidades.",
+      "guestName": "Felipe",
+      "date": "2025-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Fue una estancia muy agradable, la casa completamente equipada y limpia. Repetiríamos sin dudar!",
+      "guestName": "Ivana",
+      "date": "2025-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa situada numa localização muito tranquila perfeita para descansar. A casa estava muito bem equipada e sem pontos negativos a apontar!",
+      "guestName": "Flávio",
+      "date": "2025-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "Maison agréable et très équipée dans un cadre paisible Nous avons passé un agréable séjour",
+      "guestName": "Annabel",
+      "date": "2024-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Local sossegado, otimo para descansar.. Casa muito bem equipada..",
+      "guestName": "Joao",
+      "date": "2023-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Hemos pasado unos días estupendos. La casa es perfecta, todo muy ordenado y limpio. Además responde fielmente a las fotos que se muestran en la publicidad. Es amplia y comoda. Hemos tenido un pequeño problema con la cisterna que se solucionó de inmediato, así como la petición de un secador de pelo que el dueño nos hizo llegar muy rápido. Además la cortesía de encontrarnos con cápsulas de café  que nos vino muy bien para el cafecito de la mañana, entre otras cosas. Todo perfecto. Haremos todo lo posible por volver.  Ha  sido una bonita experiencia. Gracias",
+      "guestName": "Vicente",
+      "date": "2023-08-15"
+    }
+  ],
+  "calejo-house-pool-sports-grill-retreat-6e8502": [
+    {
+      "rating": 5,
+      "text": "Adoramos a estadia, fomos em grupo de amigos e ficamos maravilhados com a moradia e tambem com as suas comodidades. A agua da piscina estava uma maravilha. O unico ponto menos positivo foi o fato de dehtro da casa ter sempre muitos mosquitos, mesmo nos deixando as janelas fechadas e luzes apagadas. Mas sem duvida que tudo o resto sobressaiu positivamente a esse detalhe. Obrigada",
+      "guestName": "Marcia",
+      "date": "2026-08-23"
+    },
+    {
+      "rating": 5,
+      "text": "Pues fuimos un grupo de 9 adultos y tres niños y la verdad que lo pasamos verdaderamente bien. Diría que mejor los mayores que los pequeños! La empresa muy atenta a los pequeños eventos que pasaron, alguna bajada de luz y poquísimo más, que nos lo solucionaron rapidísimamente. Pena que dos noches se queden extremadamente cortos para lo guay que está la casa. Ojalá volvamos!! por ganas no va a ser. Por poner un pero, un pero muy pequeño, es q en la sala del billar olía a humedad, como a cerrado, pero con abrir y airear un par de horas fué \"habitable\" jjj. Recomendadisima. gracias!!!! (y coincidió con las fiestas del pueblo, q solo hizo mejorar la experiencia)",
+      "guestName": "Angel",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "La casa era perfecta para un fin de semana en grupo. Fuimos 3 parejas con niños. Volveremos!",
+      "guestName": "Carolina",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Um sitio bastante acolhedor para passar belos momentos em família, os anfitriões são bastante acessíveis durante o dia . tem um espaço incrível bastante atividades que nao da sequer vontade de voltar a casa. Obrigado pela estadia bastante contente pela experiencia e espero voltar a conseguir passar novamente bons momentos como este.",
+      "guestName": "Ana",
+      "date": "2025-11-15"
+    },
+    {
+      "rating": 5,
+      "text": "Gostamos muito da casa e do espaço envolvente! Um local ideal para grupos que gostem de dinâmicas e actividades - desde piscina, ao bilhar, a matraquilhos, ao campo de ténis/basquetebol e balizas para futebol -, bem como da calmaria dos espaços verdes. Recomendamos muito!",
+      "guestName": "Luísa",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Ett härligt boende för en storfamilj, kompisgäng eller arbetskamrater som uppskattar sportaktiviteter på plats. Basket, tennis, bordtennis mm Skön pool med liten trampolin. Vi njöt av vackert & välutrustat kök & veranda med naturskön utsikt. Bra rum och sängar! Kräver bil för att ta sig till närliggande städer men bra vägar att köra på. Skulle gärna återvända! Tack för oss!",
+      "guestName": "Tobias",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "piscine très profonde , grande maison tout était bien billard etc",
+      "guestName": "Flo",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Wonderful place. Conveniently located to explore the area and the house has everything you could possibly need. Portugal Active was super responsive and very helpful.",
+      "guestName": "",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "unas vacaciones excelentes..lastima no haber tenido más tiempo",
+      "guestName": "José",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "La maison correspond exactement à la description de l’annonce. Nous avons passé 5 jours inoubliables dans la maison qui est très spacieuse et pleins d’équipements mis à notre disposition ( piscine, terrain de tennis, table de ping pong, babyfoot et billard ). La maison est très bien situé près des commodités. Les hôtes sont très réactifs et toujours à disposition. Je ne peux que conseiller cette maison et c’est une expérience à renouveler si je reviens dans cette région.",
+      "guestName": "",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "El paraíso en la tierra, una casa con todas las comodidades ofertadas, un trato exquisito y unos vecinos que incluso nos trajeron productos de sus huertas. Han sido 7 días inolvidables, hay un supermercado muy cerquita y dos o tres restaurantes, incluso si quieres te puedes desplazar a Viana en Uber por unos 15€. Y que decir de las instalaciones de la casa, cancha de tenis, baloncesto, billar, piscina … todo lo necesario para disfrutar en familia. Sin duda volveríamos a esta a casa si volviéramos a la zona norte de Portugal.",
+      "guestName": "Vicente",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Excelente espaço para descanso e convívio. A casa é espaçosa, confortável e muito bem equipada. As zonas envolventes são bastante espaçosas, o lugar é tranquilo, privado, sem deixar de ser próximo de locais de interesse como Viana, Ponte de Lima ou Moledo. Sentimo-nos muito bem e o anfitrião sempre muito responsivo. Obrigado!",
+      "guestName": "Bernardo",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Beautiful property beautiful area would definitely go back",
+      "guestName": "Constantino",
+      "date": "2025-06-15"
+    }
+  ],
+  "salty-escape-by-portugal-active-01c7b8": [
+    {
+      "rating": 5,
+      "text": "El alojamiento está decorado muy actual y hace que te sientas en casa nada más entrar.Està muy bien equipado y las camas son super cómodas.Ubicado frente el mar,es un lujo hospedarse aqui",
+      "guestName": "Andrea",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Vivienda en una ubicación frente al mar impresionante. Estaba todo nuevo, las camas y toallas perfectas. Sitio recomendable, siempre que tengas coche.",
+      "guestName": "Laura",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Sitio maravilloso rodeado de naturaleza con unas vistas de escándalo y un montón de paseos increíbles alrededor. Volveremos seguro. Mil gracias!",
+      "guestName": "Elena",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "We liked everything. The apartment was comfortable, had everything we needed, and the view from the window was wonderful.",
+      "guestName": "",
+      "date": "2026-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "What a beautiful view! With the raging ocean right outside our window, we could enjoy the view even when the weather didn’t let us go outside. This little apartment is very clean and appears very recently remodeled. It sleeps 6, but it’s not a ton of square footage if your group needs more room to spread out. It was great for our family of 2 adults and 4 kids. We had what we needed to cook all our meals, although some plastic utensils would help preserve the skillet. Beautiful opportunities for walking or biking up or down the coast right out the front door. The host responded very quickly when we had an issue. Not a big hot water tank, but we made it work. We heard some noise from the neighbors and their dog, but it wasn’t bad. We had planned on staying in town in Viana do Castelo but are glad we were able to enjoy this incredible view instead!",
+      "guestName": "",
+      "date": "2026-02-15"
+    },
+    {
+      "rating": 5,
+      "text": "Fomos surpreendidos pela forma que fomos recebidos. Casa super limpa e um espaço muito acolhedor. Recomendamos muito.",
+      "guestName": "Marina",
+      "date": "2026-01-15"
+    },
+    {
+      "rating": 5,
+      "text": "Sherry schöne Unterkunft am Meer mit tollen Sonnenuntergänge. Der Jakobsweg entlang der Küste ist direkt vor der Haustür. Wir waren sehr begeistert und würde wiederkommen",
+      "guestName": "Volker",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "El alojamiento se encuentra frente al mar, en un lugar idílico. He disfrutado cada amanecer y cada puesta de sol. La casa impecable, moderna y cómoda. Había de todo lo que se necesita para pasar unos días: lavadora, lavavajillas, todo tipo de extras en la cocina como servilletas, sal, vinagre etc. Las camas son comodísimas. El entorno es muy tranquilo y,  en coche, cerca de supermercados y de restaurantes. Por poner una pega hay dos baños pero una sola ducha. Para seis personas, como se anuncia, es muy escasa. En mi caso éramos menos y no hubo problema. Estoy deseando volver para poder disfrutar de esas maravillosas vistas al mar.",
+      "guestName": "Cristina",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "Las vistas al mar compensa que esté un poco alejada de Viana (aunque así nos evitábamos el atasco de entrada por las tardes al volver de las playas ). Apartamento impecable, todo muy nuevo, muebles de calidad, camas y ropa de cama excelente. Patio trasero con barbacoa que nos dio mucho juego. Dos baños aunque sólo uno con ducha. Zona muy tranquila y unos atardeceres de escándalo.",
+      "guestName": "Marco",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Alles einwandfrei gelaufen",
+      "guestName": "Sam",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Qpartamento impecable... recien reformado y justo delante del mar. Puestas de sol muy bonitas! esta un poco alejado de comercios etc... pero estar delante del mar es una maravilla. Los anfitriones muy atentos nos ayudaron con todo lo que necesitamos!",
+      "guestName": "Eduardo",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Nos encantó el alojamiento y su ubicación, tiene unas vistas impresionantes al mar. Tiene muchos extras como aceite, sal, pastillas de lavavajillas, plancha, lavadora...para que no tengas que preocuparte por nada más que disfrutar.",
+      "guestName": "Olaia",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "L’emplacement face à la mer est agréable Le logement est propre et bien aménagé. À noter : une chambre n’a pas de fenêtre.",
+      "guestName": "Celine",
+      "date": "2025-07-15"
+    }
+  ],
+  "lighthouse-view-by-portugal-active-ed2d6c": [
+    {
+      "rating": 5,
+      "text": "Dalla casa di sentiva l'oceano. Stupendo",
+      "guestName": "Marina",
+      "date": "2026-08-25"
+    },
+    {
+      "rating": 5,
+      "text": "Alojamiento muy limpio y bien ubicado, todo muy nuevo, el acceso la primera vez no es muy cómodo.",
+      "guestName": "Marta",
+      "date": "2026-08-09"
+    },
+    {
+      "rating": 5,
+      "text": "Logement pratique pour visiter la région et accéder à la plage.",
+      "guestName": "Alex",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Sítio fantástico, casa muito bem equipada e confortável, bom gosto, embora sem luxo.",
+      "guestName": "Pedro",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Alojamiento increíble y súper bonito. Nos ha encantado disfrutar de unos días en esta casa con unas vistas impresionantes y un entorno fantástico. Muchas gracias por todo !!",
+      "guestName": "Carmen",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Wat een fantastische plek! Super mooi en modern huis met een fantastisch uitzicht! De service is erg goed van het team van Portugal Active. Erg vriendelijk, reageren snel. Omdat we er 2 weken verbleven werd halverwege onze vakantie het huisje schoongemaakt. Super service! Ik beveel deze locatie en organisatie van harte aan!",
+      "guestName": "Niek",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Todo sobre lo publicitado",
+      "guestName": "Miguel",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Petite villa, 3 chambres, deux salles de bains, cuisine petite mais très bien équipée, grand salon, terrasse, et vue océan dans un quartier très calme. Accueil et suivi au top depuis la réservation jusqu'au départ, lits faits, tout à disposition. Séjour très agréable. Une valeur sûre.",
+      "guestName": "La",
+      "date": "2025-11-15"
+    },
+    {
+      "rating": 5,
+      "text": "Top Lage, aber zum Meer/Strand ist es ein Stück. Ist aber fussläufig ohne Probleme zu machen. Im Ort gibt es keine Restaurants oder Supermarkt, daher macht ein Auto Sinn.",
+      "guestName": "Mathias",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Tolle Wohnung, viel Platz, sehr sauber und ruhig, Terrasse  und Garten, somit den ganzen Tag Sonne. Meeresrauschen beim Einschlafen und Aufwachen. Hochwertig eingerichtet, gute Matratzen. Ein wenig mehr Infos bzgl Müllentsorgung, Wifi und Umgebung wären hilfreich.  Absolute Empfehlung!",
+      "guestName": "Anna",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "El alojamiento es tal y como se muestra en las fotos. Todo estaba muy nuevo, decorado con mucho gusto y muy limpio. La cocina, aunque es un poco pequeña, tiene de todo para poder cocinar lo que se quiera, y con una gran disposición de vajilla, cubiertos y electrodomésticos. Se agradece el detalle de bienvenida de las cápsulas para el café, el vino y el snack! Tiene barbacoa. El tener una terraza delantera y un patio trasero da mucho juego a la hora de comer en el exterior. El jardín también está muy cuidado. La situación de la casa para poder pasear por diferentes playas sin utilizar el coche es perfecta. La zona es muy tranquila. Por poner una pega faltaría un armario o balda para poner la ropa en dos de las habitaciones, aunque en la tercera hay un armario fabuloso. La ropa de cama y las toallas estupendas. Hemos disfrutado de una semana maravillosa en familia!!",
+      "guestName": "Susana",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Nous avons passé un super séjour.Tout était impeccable comme sur la description de l’annonce.nous recommandons fortement cette location !",
+      "guestName": "Emilie",
+      "date": "2025-07-15"
+    }
+  ],
+  "invictus-escape-jacuzzi-charm-in-the-city-24abad": [
+    {
+      "rating": 5,
+      "text": "Nice place to relax. Easy to get Ubers from as well",
+      "guestName": "Nicholas",
+      "date": "2026-08-23"
+    },
+    {
+      "rating": 5,
+      "text": "Good location, nice terrace and jacuzzi. Very convenient to relax after your visit!",
+      "guestName": "Alberto",
+      "date": "2026-08-09"
+    },
+    {
+      "rating": 5,
+      "text": "The apartment was easy to find, well equipped and beautifully decorated and furnished. It was immaculately clean too. The outdoor space was fabulous, and the hot tub is a great addition. However, the weather was so hot when we visited we didn't use the hot tub! The apartment is a little bit out of the way from the hustle and bustle which has pros and cons. It's very peaceful, feels safe, and the neighbourhood has everything you need. There are nice bars and restaurants a little walk away, and the busiest areas with the shops and bars are about a 15-20 minute walk away towards the river. Overall this is a perfect, spacious apartment in Porto and equipped us with everything we needed.",
+      "guestName": "Kim",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "We really enjoyed our stay in Porto. The property was very clean and everything was walkable. Easy to find and self check in was great as our flight was delayed. Would recommend staying here in Porto",
+      "guestName": "Becky",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "This was a really great location, plenty of amenities with a lively patio area! great value for money - would recommend",
+      "guestName": "Erin",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Melhor alojamento local no centro do Porto, calmo, cumpre tudo o que promete! Voltaremos sem dúvida !",
+      "guestName": "Rafaela",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Logement parfait. Tout y est : accessoires de cuisine, condiments, eau fraîche préparée d'avance au frigo, jaccuzi opérationnel, shampooing et gel douche, etc. Tout est bien agencé, pratique, joli et calme ! Emplacement parfait, parking dans la rue (soit en stationnement en créneau, soit dans un parking sous-terrain), à produire centre ville (15min à pieds) et de très bons restaurants (directement dans la rue ou dans les rues voisines). Personnel très réactif à toute heure de la semaine et du weekend en cas de problème. Pour les activités proposées, le tour en vélo est excellent (peut être juste revoir le confort des selles qui peut faire toute la difficulté sur un parcours de 2h dans des rues pavées) et le massage à domicile permet une déconnexion totale.",
+      "guestName": "Laura",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Our stay in this apartment was excellent! The apartment was nice and cozy. Also, the jacuzzi is a great addition to the house, perfect after a long day of walking the hills of beautiful Porto!",
+      "guestName": "Jersey",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "A lovely little apartment, central to the city centre but still quiet enough to suit a family stay. Nice little living space with a full kitchen, seating and table and a spacious outside area with hot tub. Clean facilities with a good number of accessories e.g washing machine, coffee machine, toaster, microwave and oven as well as free wi-fi and tv set up. The location is really nice as it wasn't far to walk into the busy areas of the city, there are a couple of supermarkets, a bakery and restaurants all in instant walking distance. We were also able to get takeaway food delivered with ease. We didn't find any instructions for the hot tub but it seemed pretty easy to work out how to set it all up and you felt secluded when in it despite there being buildings near by. We had some slight noise from the apartments above but nothing too upsetting as our young children slept through it. Overall, a lovely little place for families or couples alike when visiting the city.",
+      "guestName": "Kieran",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "What a lovely location! Very calm and in the middle of everything! The team was very helpful and responsive! Highly appreciated! The jacuzzi is a great addition to the already awesome place! Thanks for everything! We will be back !",
+      "guestName": "Grand",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "The apartment was in a quiet area of Porto, but the hustle and bustle was only a five minute walk away. Fab little apartment, clean and well equipped. Good powerful shower, however the water didn’t drain very fast. Small, well equipped kitchen, could have done with a draining board for washing up. Comfortable beds. One of the upstairs bed was quite squeaky though so every time my daughter rolled over in bed the whole house heard it. Could also hear the apartment above us as they walked around and moved furniture. Overall a great place to stay whilst visiting Porto! Would recommend!",
+      "guestName": "Sally",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Nous avons passé un excellent séjour dans ce logement plein de charme et d’authenticité, en plein cœur de Porto. L’emplacement est idéal : à deux pas des commerces, des restaurants et des bars, ce qui permet de profiter pleinement de la ville tout en ayant tout à portée de main. L’appartement est très agréable et correspond parfaitement à l’esprit de Porto, avec beaucoup de caractère. Mention spéciale pour le jacuzzi, un vrai plus après une journée de visites, avec des instructions claires et faciles à suivre à distance. La communication avec les hôtes a été simple, rapide et chaleureuse, ce qui a rendu le séjour encore plus fluide. Nous recommandons vivement ce logement pour découvrir Porto dans les meilleures conditions !",
+      "guestName": "Louison",
+      "date": "2025-09-15"
+    }
+  ],
+  "portugal-active-bandeira-retreat-7f5428": [
+    {
+      "rating": 5,
+      "text": "Good place for families",
+      "guestName": "Martí",
+      "date": "2026-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "El alojamiento es precioso, tranquilo, está impecable. Perfecto para grupos familiares. Tuvimos un pequeño problema con el funcionamiento de la caldera pero lo solucionaron de forma rápida. La atención de los hosts ha sido sobresaliente. Recomiendo al 100%",
+      "guestName": "Álex",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa muito catita, espaçosa e bem localizada. Mal chegamos estava a casa limpíssima e com um bom cheiro. Anfitrião respondia muito rápido as mensagens e era esclarecedor. Apenas aponto uma coisa que é o facto de que a internet por vezes não funcionava",
+      "guestName": "Joaquim",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Logement spacieux avec accès aux commerces à proximité, le centre se trouve à 15min à pieds. Très bon séjour en famille.",
+      "guestName": "Audrey",
+      "date": "2025-12-15"
+    },
+    {
+      "rating": 5,
+      "text": "The house is very nice! There is plenty of space for everyone, and it is not cold inside. There is a beautiful small courtyard with grapevines. The hot water pressure in the bathroom is good. The beds are large. The kitchen was well-equipped, which made cooking convenient. Thoughtfully, there were enough capsules for the dishwasher and washing machine. The only downside is that the house is next to the road, which made it a little noisy to sleep. Otherwise, the house is wonderful.",
+      "guestName": "Aleksandra",
+      "date": "2025-09-15"
+    },
+    {
+      "rating": 5,
+      "text": "A casa é maior e mais espaçosa, parece que as fotos são mais modestas. O anfitrião é excelente e responde rápido. Localização da casa é fantástica, farmácia, mercado, cafés e parque infantil a poucos passos de distância. Paragem de autocarro bem na porta. A única coisa que eu acrescentaria/mudaria, e que comuniquei ao anfitrião, o frigorífico da cozinha é antigo e pequeno, não gela direito se tem muita coisa, e falta também um frigorífico e utensílios de cozinha na parte de baixo da casa para não subir as escadas a cada pouco.",
+      "guestName": "Camilla",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa excelente, com ótima localização.",
+      "guestName": "Filipa",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Estupenda, todo perfecto",
+      "guestName": "Alejandro",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "It should be noted that while parking is free, it’s in neighbourhood streets. Sometimes it takes several rounds to find a spot!",
+      "guestName": "",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Apartamento comodo para grupos grandes",
+      "guestName": "Tania",
+      "date": "2025-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa em perfeitas condições conforme o anúncio. Anfitrião muito prestável e simpático. Nada a apontar.",
+      "guestName": "Francisco",
+      "date": "2023-11-15"
+    }
+  ],
+  "lima-river-s-salvador-house-5cef22": [
+    {
+      "rating": 5,
+      "text": "Sitio tranquilo, amplio y muy acogedor",
+      "guestName": "Denis",
+      "date": "2026-08-02"
+    },
+    {
+      "rating": 5,
+      "text": "La Villa esta muy bien montada. Perfecta para grupos grandes En General la impieza y ordenado de todo lo hacia sentir a uno como en casa. Tiene un area de esparcimiento muy agradable para jugar o ver tv. Para familia con ni.os peque;os el parque es muy atractivo. Disfrutamos mucho de la estadia",
+      "guestName": "",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Alojamento fantástico e pensado ao detalhe. Equipa de apoio muito prestável e resolveu todas as questões colocadas! Serviço 5 ⭐️ Manuel Florida, Estados Unidos",
+      "guestName": "Joana",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Um excelente fim de semana em família.",
+      "guestName": "Maria",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "très beau logement, conforme à la description. fonctionnel quand on est à 12 personnes.",
+      "guestName": "Celine",
+      "date": "2025-10-15"
+    },
+    {
+      "rating": 5,
+      "text": "Tanto la casa como las zonas comunes son perfectas para un viaje en grupo, no faltaba ni un detalle. El único pero que pondríamos es que se escucha demasiado los coches en un par de habitaciones, ya que dan directamente hacia la carretera. Pero en general fue una estancia genial.",
+      "guestName": "Andrea",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa grande, equipada con todo y muy cómoda gracias también al número de baños que tiene. Ideal para grupos de amigos con los que disfrutar las zonas comunes. Muy recomendable! Nosotros tuvimos la suerte de estar solos casi todos los días y usar la piscina y jardín de manera privada, pero es compartida con otra pequeña casa de la misma agencia.",
+      "guestName": "Carlos",
+      "date": "2025-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Tudo conforme publicitado, casa com todas as condições para passar dias agradáveis. O único ponto negativo é o  isolamento sonoro (ouve-se tudo o que se passa na estrada, o que faz com que se acorde constantemente com o barulho dos carros)",
+      "guestName": "Rute",
+      "date": "2025-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "La casa nos encantó !! 😍 Respondía fielmente a la descripción y fotografías. Los espacios muy amplios y bien cuidados, con unas zonas comunes con todo tipo de detalles, muy funcional y cómoda para una estancia por la zona. Fuimos un grupo de 3 familias con 4 niñas adolescentes y todo fue maravilloso. Muy bien equipada, limpia y con unas camas estupendas. Sin duda muy recomendable y seguro q repetiremos..",
+      "guestName": "Lucia",
+      "date": "2025-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "espaço realmente extraordinário, melhor que o previsto. muito cuidado nas comodidades oferecidas e pormenores pouco usuais como a qualidade das toalhas de banho e roupōes. Cozinha impecável e muito bem equipada. quartos de dimensão superior à normal com excelentes quartos de banho. espaço exterior repleto de pormenores deliciosos, que as curtas estadias não permitem usufruir. foi realmente extraordinário obrigado",
+      "guestName": "José",
+      "date": "2025-02-15"
+    }
+  ],
+  "abreu-retreat-palace-luxury-elegance-leisure-e914e2": [
+    {
+      "rating": 5,
+      "text": "Magnifique domaine. Le jardin est exceptionnel, la piscine est immense, et le tennis a été refait récemment. Nous avons passé une superbe semaine à 2 familles. Le village autour n'a pas d'intérêt, mais on l'oublie vite une fois dans le domaine. La cuisine pourrait être mieux équipée et refaite. Il n'y a bizarrement pas de machine à laver...mais c'est bien fait au supermarché à 1mn.",
+      "guestName": "Michael",
+      "date": "2026-08-16"
+    },
+    {
+      "rating": 5,
+      "text": "Charming and spacious house with a gorgeous and huge garden. The pool and the tennis court were very good as well. Very quiet area but at walking distance to a big supermarket and to a snack bar.",
+      "guestName": "Sonia",
+      "date": "2026-08-09"
+    },
+    {
+      "rating": 5,
+      "text": "The property is gorgeous, even more beautiful than the pictures. Really great for a family of 10 people. Well maintained and very high end. The location appears remote on a map but in fact there are amenities all around, Uber is available, and Guimares is close and has lots of entertainment. We didn't mind the location as a trade-off for the size of the property. Host was very responsive, but check in procedure was very annoying, requiring me to obtain selfies with IDs from 10 guests prior to giving me check in information. The house is fairly well equipped and well maintained. Take note that there is no washer. Host offers all kinds of added services, likely daily housekeeping and private chef, but forewarning they are priced very expensive.",
+      "guestName": "Ramsey",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "We had an amazing stay as a group of 8 adults. The house and grounds were much bigger than even the pictures looked, and it was a perfect place for a large group to stay. Bedrooms were spacious, clean, with blackout shutters for a good nights sleep. The tennis court was great, and they had recently replaced the equipment which a previous review had mentioned was damaged. The location is very private, with a supermarket 2 minutes away. The host was responsive when we contacted them for help/for recommendations. The only comment is there is no washing machine in the house, despite its size, but there are washing machines at the supermarket at the end of the road. We would definitely recommend!",
+      "guestName": "Zoe",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "The spacious and charming estate and house. Huge mature trees, large pool, accommodating living space. It was a pleasure.",
+      "guestName": "",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Great experience, mind-blowing place. The garden & pool make an amazing breath-taking combo, with giant trees and a lot of privacy, and the tennis court is a plus.",
+      "guestName": "Jaime",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Un gran sitio para desconectar , disfrutar de una gran casa con encanto y un jardín y piscina de película.",
+      "guestName": "",
+      "date": "2025-08-15"
+    },
+    {
+      "rating": 5,
+      "text": "Estuvimos muy a gusto. La casa es cómoda y muy grande. Destacar que todo estaba extremadamente limpio. La zona de jardín y piscina es muy agradable. Ideal para viaje en grupo de amigos o en familia.",
+      "guestName": "Xaquín",
+      "date": "2025-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "An unforgettable family getaway at Quinta Refúgio Abreu! This place is a true luxury retreat — elegant, spacious, and surrounded by nature. We stayed as a family and couldn’t have asked for more. From the moment we arrived, the Portugal Active team took care of everything with incredible attention to detail. We had a private kitchen and cleaning team throughout our stay, and the service was outstanding — from breakfast to dinner, every meal was fresh, delicious, and beautifully presented. The kids loved the pool and the games room, while we enjoyed the peaceful garden, the tennis court, and relaxing in the outdoor lounge. We also booked some of the activities Portugal Active offers — horseback riding and a local food experience — and both were absolutely amazing. This is not just a holiday house, it’s an experience. Highly recommended for families looking for something special and stress-free!",
+      "guestName": "Pedro",
+      "date": "2025-03-15"
+    }
+  ],
+  "heritage-loft-in-the-cradle-of-portugal-7440f8": [
+    {
+      "rating": 5,
+      "text": "Great place and location 👌🏽👌🏽",
+      "guestName": "Andrew",
+      "date": "2026-08-23"
+    },
+    {
+      "rating": 5,
+      "text": "Appartement et hôte très bien.",
+      "guestName": "Gregory",
+      "date": "2026-08-16"
+    },
+    {
+      "rating": 5,
+      "text": "The place was great! Great location and comfortable space",
+      "guestName": "Jennessa",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Excellent apartment with nice decoration, located in the historic center with a view for a nice square. Not so easy to find the door due a be in a narrow alley with no number, but once inside was worthy",
+      "guestName": "Miguel",
+      "date": "2026-05-15"
+    },
+    {
+      "rating": 5,
+      "text": "Perfekt leilighet om du vil bo i sentrum av guimaraes. Helt lik beskrivelsen. Ikke nødvendig med kollektivtransport da det meste ligger ved gåavstand fra leiligheten. Anbefaler👍🏾",
+      "guestName": "Damaris",
+      "date": "2026-04-15"
+    },
+    {
+      "rating": 5,
+      "text": "Um pequeno apartamento, mas com todas as condições",
+      "guestName": "Alexandra",
+      "date": "2026-03-15"
+    },
+    {
+      "rating": 5,
+      "text": "Espaço limpo e acolhedor, muito bem localizado. Correspondeu às expectativas",
+      "guestName": "Rafael",
+      "date": "2026-02-15"
+    },
+    {
+      "rating": 5,
+      "text": "A lovely place to stay in the beautiful and historic centre of Guimaräes. The apartment has a well designed and equipped interior. The host responded very quickly to a glitch with the door lock when we arrived.",
+      "guestName": "Chris",
+      "date": "2025-12-15"
+    }
+  ],
+  "alentejo-rural-farmhouse-with-pool-and-total-privacy-9a3c37": [
+    {
+      "rating": 5,
+      "text": "Adoramos ficar no Monte, sem dúvida que deu para desconectar e descontrair, o espaço está preparado e equipado com tudo o que precisamos para uns dias.",
+      "guestName": "Vera",
+      "date": "2026-08-28"
+    },
+    {
+      "rating": 5,
+      "text": "The house and surrounding area are beautiful and so peaceful. The house itself is lovely, comfortable, and a great place to relax. The pool was amazing and so refreshing during the hot Alentejo days. We really loved our stay and would definitely come back.",
+      "guestName": "Kendall",
+      "date": "2026-08-23"
+    },
+    {
+      "rating": 5,
+      "text": "Excellent séjour passé avec une autre famille amis dans le Monte de Sossego a Ferreira do Alentejo. Quelle belle maison ,simple , joliment décorée au calme avec toutes les installations nécessaires. Propreté de la maison au top , l équipe de nettoyage était encore sur place a notre arrivée, et ils ont tout fait pour nous mettre a l aise . Chambres spacieuses, lit fraîchement faits , propreté irréprochable. Cuisine super équipée,avec également dans une pièce a part un lave linge et un sèche linge . Piscine non chauffée mais avec les températures de ce mois ci pas nécessaire. Coin barbecue au top avec lave vaisselle intégrée. En bref , magnifique séjour dans cette magnifique maison, ou on s est sentis comme chez nous au calme . Restaurants à +/-15 min de la maison. Idem pour les supermarchés. Portugal active, entreprise au top qui reagit rapidement aux messages/ appels. Merci pour tout 😃",
+      "guestName": "Dalia",
+      "date": "2026-08-16"
+    },
+    {
+      "rating": 5,
+      "text": "We hebben heerlijk genoten van de rust. Het is een heerlijke optrek en een fijn zwembad met zout. Verwarmde zwembad was echt heerlijk. Groot terrein waar je gewoon lekker van geniet. Schaduw voor de auto om te parkeren was echt perfect. Heerlijk was het om hier te verblijven.",
+      "guestName": "Stefanus",
+      "date": "2026-08-09"
+    },
+    {
+      "rating": 5,
+      "text": "Where to start. I’ve just got home from the most magical holiday in this beautiful villa. We visited Portugal as our friends were getting married. We bought our family and made a week of it. The property was incredible! We all had bedrooms with en-suite’s. The rooms were beautiful. The place was spotless, and we had everything we could possibly need. The kitchen is so well equipped. We also loved the second  living room. We hired a car which is essentially due to the location of the property. This is also important for doing any food shopping and also taking your rubbish to the village (this was super easy to do). We all loved the privacy of the property. We woke late, had coffee on the terrace and then made our way down to the pool later in the day. Dinner back on the terrace and then inside to watch the World Cup in the evening. We had two small issues during our stay, these were fixed promptly with lots of communication from the host. All in all it was a beautiful stay, thank you!",
+      "guestName": "Grace",
+      "date": "2026-07-15"
+    },
+    {
+      "rating": 5,
+      "text": "Lugar fantástico",
+      "guestName": "Cristina",
+      "date": "2026-07-15"
+    }
+  ],
+  "the-nature-princess-by-portugal-active-24b10d": [
+    {
+      "rating": 5,
+      "text": "una casa espectacular, todo muy limpió y la descripción al detalle, en un sitio muy tranquilo y privacidad absoluta.",
+      "guestName": "Arturo",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Una propiedad fantástica con todos los lujos para pasar unos días en familia o pareja con piscina de uso privado , terreno , jacuzzi , sauna o Gimanasio entre las comodidades que ofrece . Menaje de cocina completo y distribución perfecta para alojarse",
+      "guestName": "Maria",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "This place was absolutely stunning, we felt lucky we found it available. The place had style and felt luxurious, and we immediately felt pampered. The hosts were very kind and accommodating. The sauna (and fireplace) were by far our favorite parts of the stay. It heated up quickly and the entire place felt very clean (including the jacuzzi). The private backyard was gorgeous with the beautiful lemon tree right outside the master bedroom. The kitchen was wonderful for cooking and the bedrooms/bathrooms were huge! Also the beds were comfy. We would LOVE to stay here again.",
+      "guestName": "Malia",
+      "date": "2026-01-15"
+    },
+    {
+      "rating": 5,
+      "text": "A casa era simplesmente fantástica com tudo o que necessitamos para ter uns dias relaxantes, o jacuzi era óptimo e a envolvência também!",
+      "guestName": "Rute",
+      "date": "2025-12-15"
+    },
+    {
+      "rating": 5,
+      "text": "It's just an amazing house, comfortable and private, we totally recommend it. We will come back for sure",
+      "guestName": "Leonardo",
+      "date": "2025-12-15"
+    }
+  ],
+  "dunes-beach-house-with-ocean-views-cb71c9": [
+    {
+      "rating": 5,
+      "text": "La maison correspondant aux descriptifs, propre, lumineuse, bien agencée…… L’hôte est très agréable et réactif. Nous y avons passé des vacances en famille géniale. Je reviendrai sans hésité. Je recommande à 100%.",
+      "guestName": "Fatima",
+      "date": "2026-08-16"
+    },
+    {
+      "rating": 5,
+      "text": "Super verblijf gehad. Heerlijk uitgerust en optimaal gebruik gemaakt van het privé zwembad. Alles was super schoon en zoals omschreven in de advertentie. Zeker aan te raden.",
+      "guestName": "Nathalie",
+      "date": "2026-08-02"
+    },
+    {
+      "rating": 5,
+      "text": "Lovely villa, felt like it was quite new, probably was. Had everything we needed and very close to some nice beaches, local cafes/restaurants, little supermarket that serves fresh fish. Nice convenience and certainly good enough. We hired bikes at the sport hotel to get into town and have activities to do, but can also use Bolt or local taxis. Big supermarkets are probably 10-15mins drive. Charging for early or late check out is not something I have ever witnessed but there is a grace of 1 hour for free or risk it until the cleaners come!",
+      "guestName": "Matt",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Väldigt trevlig villa som hade allt vi önskade. Fina rum och stor öppen planlösning. Grillområdet var ett extra + som förgyllde vistelsen.",
+      "guestName": "Albin",
+      "date": "2026-05-15"
+    }
+  ],
+  "alvarinho-villa-5-suites-heated-pool-4854c5": [
+    {
+      "rating": 5,
+      "text": "Adorámos ficar hospedados nesta casa. A decoração é incrível, a casa muito confortável e espaçosa e o espaço exterior (onde se encontra a piscina) é a melhor parte! Pretendo voltar em breve.",
+      "guestName": "Marta",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Adoramos a acomodação, tem todas as condições para receber famílias, muito bem equipada desde a cozinha, casas de banho, quartos luxuosos, zona super calma, previlegio de ter contato com a natureza. O Lidl  é algum comércio como cafés, bancos, farmácias e transportes públicos ficam a 6 minutos de carro. As fotos não fazem tanto jus a tamanha beleza, voltaremos de certeza caso nós seja permitido. Super recomendo para famílias inteiras.",
+      "guestName": "Tania",
+      "date": "2026-06-15"
+    },
+    {
+      "rating": 5,
+      "text": "Casa otima para passar uma estadia com um grupo de amigos ou familia. Quartos muito confortáveis e espaço exterior excelente.",
+      "guestName": "Carla",
+      "date": "2026-05-15"
+    }
+  ],
+  "lumina-duplex-by-portugal-active-2bbb35": [
+    {
+      "rating": 5,
+      "text": "If you're in Viana do Castello for surfing, wing foiling, or just the beach, this location is perfectly convenient. Walk to the beach and local restaurants. I liked how the apartment is split onto two levels: living and sleeping. Unfortunately, the WiFi didn't extend down to the sleeping level. I'm sure the hosts will fix this.",
+      "guestName": "",
+      "date": "2026-08-24"
+    },
+    {
+      "rating": 5,
+      "text": "Zeer mooi appartement, heel mooi ingericht. Het appartement was heel proper. Tussentijds werd er gepoetst en de lakens ververst. Op wandelafstand van het strand. Een echte aanrader!",
+      "guestName": "Annelies",
+      "date": "2026-05-15"
+    }
+  ]
+}

@@ -261,6 +261,86 @@ async function copyOverrides(): Promise<NonNullable<typeof _copyOverrides>> {
   return _copyOverrides!;
 }
 
+/**
+ * Hand-curated reviews that Guesty does not hold, keyed by guestyId.
+ *
+ * Guesty only ingests a channel's reviews while the listing is CONNECTED to
+ * that channel. Every home that was unlisted, relisted, or migrated between
+ * accounts therefore lost its review history at the Guesty boundary — Villa
+ * Aura shows 2 in Guesty against 15+ on Airbnb, and no re-sync will ever
+ * recover them, because they were never delivered in the first place.
+ *
+ * client/src/data/reviews.manual.json maps guestyId → an array of reviews in
+ * the same shape buildReviewsByListing produces. They are MERGED with (never
+ * replaced by) whatever Guesty returns, so a later Guesty sync can only ever
+ * add to the set. Content is copied from the host's own channel dashboards —
+ * these are real stays, so they count toward averageRating/reviewCount. Note
+ * that with the 5★-only bar the published average is 5.00 by construction: it
+ * is the true average OF WHAT THE SITE CARRIES, not of every stay ever had.
+ */
+let _manualReviews: Record<string, any[]> | null = null;
+async function manualReviews(): Promise<Record<string, any[]>> {
+  if (_manualReviews) return _manualReviews;
+  try {
+    const raw = await readFile(join(process.cwd(), "client", "src", "data", "reviews.manual.json"), "utf-8");
+    const parsed = JSON.parse(raw);
+    // Tolerate the "_README" key (and any other doc key) and non-array values.
+    _manualReviews = Object.fromEntries(
+      Object.entries(parsed as Record<string, unknown>).filter(
+        ([k, v]) => !k.startsWith("_") && Array.isArray(v),
+      ),
+    ) as Record<string, any[]>;
+  } catch { _manualReviews = {}; }
+  return _manualReviews!;
+}
+
+/** Normalised key for spotting the same review arriving from two sources.
+ *  Folds accents so a hand-typed copy still matches Guesty's original. */
+export function reviewKey(r: any): string {
+  return String(r?.text ?? "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "")
+    .slice(0, 80);
+}
+
+/**
+ * Merge curated reviews into the Guesty set for one listing.
+ *
+ * Guesty wins on duplicates (it carries the real submitted_at and the resolved
+ * guest record), so re-syncing never demotes a review to its hand-typed copy.
+ */
+export function mergeManualReviews(guestyReviews: any[], manual: any[] | undefined): any[] {
+  if (!manual?.length) return guestyReviews;
+  const seen = new Set(guestyReviews.map(reviewKey).filter(Boolean));
+  const extra: any[] = [];
+  for (const m of manual) {
+    const text = String(m?.text ?? "").trim();
+    const rating = Number(m?.rating ?? 0);
+    // Same bar as the Guesty funnel: real text, and 5★ exactly.
+    if (!text || rating !== 5) continue;
+    const key = reviewKey(m);
+    if (key && seen.has(key)) continue;
+    if (key) seen.add(key);
+    const firstName = String(m.guestName ?? m.guestDisplayName ?? "").trim().split(/\s+/)[0] || null;
+    extra.push({
+      rating: Math.round(rating * 10) / 10,
+      text: text.slice(0, 500),
+      guestDisplayName: firstName,
+      guestName: firstName ?? "",
+      guestPhoto: m.guestPhoto ?? null,
+      guestLocation: m.guestLocation ?? null,
+      date: m.date ?? "",
+      categories: Array.isArray(m.categories) ? m.categories : [],
+    });
+  }
+  if (!extra.length) return guestyReviews;
+  return [...guestyReviews, ...extra].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  );
+}
+
 let _manualLicenses: Record<string, string> | null = null;
 async function manualLicenses(): Promise<Record<string, string>> {
   if (_manualLicenses) return _manualLicenses;
@@ -559,11 +639,10 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
     if (isPrivate) { drop.private++; continue; }
 
     // Ratings arrive on two scales: Airbnb-style 1-5, and Booking.com-style
-    // 1-10. Work out WHICH before normalising, because the quality bar differs:
-    // 4/5 is a strong review, but 8/10 is merely fine — the brand bar for a
-    // 10-point channel is 9. Detect by channel when the payload names one
-    // (a bad 4/10 would otherwise be indistinguishable from a good 4/5), and
-    // fall back to the value itself.
+    // 1-10. Work out WHICH before normalising, because the bar differs by
+    // scale. Detect by channel when the payload names one (a 5/10 would
+    // otherwise be indistinguishable from a perfect 5/5), and fall back to
+    // the value itself.
     const channelRaw = String(
       raw.channel ?? raw.channelName ?? raw.source ?? raw.platform ??
       review.channel ?? review.channelName ?? review.source ?? review.platform ?? "",
@@ -572,9 +651,12 @@ function buildReviewsByListing(reviews: any[]): Map<string, any[]> {
     const isTenPointChannel = /booking|expedia|agoda|hotels?\.com|vrbo|homeaway/.test(channelRaw);
     const isTenPointScale = isTenPointChannel || rawRating > 5;
 
-    // MIN_TEN_POINT is the commercial bar for 10-point channels (Booking "9+").
-    const MIN_TEN_POINT = 9;
-    const MIN_FIVE_POINT = 4;
+    // 5★ only, by product decision (2026-08-30): the site publishes perfect
+    // stays and nothing else, so a 4★ is not merely hidden from the cards — it
+    // never enters the data, and therefore never moves averageRating or
+    // reviewCount. On 10-point channels the equivalent of 5/5 is 10/10.
+    const MIN_TEN_POINT = 10;
+    const MIN_FIVE_POINT = 5;
     if (isTenPointScale ? rawRating < MIN_TEN_POINT : rawRating < MIN_FIVE_POINT) { drop.belowBar++; continue; }
     if (channelRaw) channelCounts.set(channelRaw, (channelCounts.get(channelRaw) ?? 0) + 1);
 
@@ -902,10 +984,13 @@ function mapListingToProperty(
     checkInTime: listing.defaultCheckInTime || "16:00",
     checkOutTime: listing.defaultCheckOutTime || "11:00",
     areaSquareFeet: listing.areaSquareFeet || null,
-    // Ship up to 20 review cards, but averageRating/reviewCount reflect the
-    // FULL filtered subset (4★+5★, guest-to-host, public) — never the sliced
-    // 20 and never the listing's global average. 2-decimal precision (4.87).
-    reviews: reviews.slice(0, 20),
+    // Ship up to 40 review cards; averageRating/reviewCount reflect the FULL
+    // filtered subset (5★, guest-to-host, public) — never the sliced set and
+    // never the listing's global average.
+    // 20 was chosen when no home came close to it; with the curated Airbnb
+    // back-catalogue merged in, the well-reviewed homes now do, and the PDP
+    // only renders 6 until the guest asks for more anyway.
+    reviews: reviews.slice(0, 40),
     averageRating: reviews.length > 0
       ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) * 100) / 100
       : null,
@@ -1057,12 +1142,25 @@ export async function runSync(): Promise<string> {
   const existingProps = await loadExistingProperties();
   const licenseMap = await manualLicenses();
   const copyMap = await copyOverrides();
+  const manualReviewMap = await manualReviews();
   console.log(`[Guesty Sync] Loaded ${existingSlugMap.size} pinned slugs from existing data`);
+  let manualAdded = 0;
   const properties = listings.map((listing) => {
     const rawId = listing._id || listing.listingId || "";
-    const listingReviews = reviewsByListing.get(rawId) || [];
+    const fromGuesty = reviewsByListing.get(rawId) || [];
+    // Keyed by guestyId or by slug — the slug is what a human recognises when
+    // hand-editing the file, the id is what never changes.
+    const curated = manualReviewMap[rawId] ?? manualReviewMap[existingSlugMap.get(rawId) ?? ""];
+    const listingReviews = mergeManualReviews(fromGuesty, curated);
+    manualAdded += listingReviews.length - fromGuesty.length;
     return mapListingToProperty(listing, listingReviews, existingSlugMap, licenseMap, copyMap);
   });
+  if (Object.keys(manualReviewMap).length) {
+    console.log(
+      `[Guesty Sync] Curated reviews — ${manualAdded} merged in from reviews.manual.json ` +
+        `across ${Object.keys(manualReviewMap).length} listings.`,
+    );
+  }
 
   // Content-quality report — tracks the editorial cleanup of older listings.
   console.log(

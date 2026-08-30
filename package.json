@@ -17,7 +17,10 @@
     "cleaning:sync": "tsx scripts/cleaning-fees.ts apply",
     "multiunit:audit": "tsx scripts/multiunit-investigate.ts",
     "checkout2:backfill": "tsx scripts/checkout2-backfill.ts",
-    "checkout2:backfill:apply": "tsx scripts/checkout2-backfill.ts --apply"
+    "checkout2:backfill:apply": "tsx scripts/checkout2-backfill.ts --apply",
+    "reviews:audit": "tsx scripts/apply-manual-reviews.ts",
+    "reviews:apply": "tsx scripts/apply-manual-reviews.ts --apply",
+    "reviews:import": "tsx scripts/import-airbnb-reviews.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",
