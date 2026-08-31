@@ -864,8 +864,8 @@
     "minNights": 3,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1786113138/production/6957de4388cba42d9e7a905e/mnnjl3tw3pxedj0oypuw.jpg",
       "https://assets.guesty.com/image/upload/v1786113141/production/6957de4388cba42d9e7a905e/ouex169rzhvtj9yohf5n.jpg",
+      "https://assets.guesty.com/image/upload/v1786113138/production/6957de4388cba42d9e7a905e/mnnjl3tw3pxedj0oypuw.jpg",
       "https://assets.guesty.com/image/upload/v1786113141/production/6957de4388cba42d9e7a905e/hr9aqulshuql3ek403co.jpg",
       "https://assets.guesty.com/image/upload/v1786113156/production/6957de4388cba42d9e7a905e/fqmjzimfp2pxdub6m51h.jpg",
       "https://assets.guesty.com/image/upload/v1786113158/production/6957de4388cba42d9e7a905e/vzdols4exctrmguj0w3q.jpg",
@@ -1092,8 +1092,8 @@
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0,
-    "lastModified": "2026-08-24",
-    "contentHash": "933d00e054502a39806ede01a691b74586902e74"
+    "lastModified": "2026-08-31",
+    "contentHash": "de19f59478ee52d130ebd0706a9f623ae80e6b6d"
   },
   {
     "id": "guesty-696533722def930014e914e2",
@@ -10390,7 +10390,6 @@
         "Extra pillows and blankets",
         "Fire extinguisher",
         "First aid kit",
-        "Free parking on street",
         "Freezer",
         "Garden or backyard",
         "Hair dryer",
@@ -10919,8 +10918,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 13,
-    "lastModified": "2026-08-24",
-    "contentHash": "1e5c6e6309a2aca1a09c238e55b68b50f1dbfa67"
+    "lastModified": "2026-08-31",
+    "contentHash": "1cd154ed1b59b87cc67c36e0e14d084d830cd468"
   },
   {
     "id": "guesty-69653390ecf7490014ed2d6c",
@@ -19276,13 +19275,13 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1777972284/production/6957de4388cba42d9e7a905e/dkpcddwqi0auokcmgwml.jpg",
+      "https://assets.guesty.com/image/upload/v1777972281/production/6957de4388cba42d9e7a905e/pa9ibq6ehuwtya3pft5x.jpg",
       "https://assets.guesty.com/image/upload/v1778076252/production/6957de4388cba42d9e7a905e/qffohravqwhoydbt8ya4.jpg",
+      "https://assets.guesty.com/image/upload/v1777972284/production/6957de4388cba42d9e7a905e/dkpcddwqi0auokcmgwml.jpg",
       "https://assets.guesty.com/image/upload/v1777972285/production/6957de4388cba42d9e7a905e/qbgxxa9mrlckphppmzea.jpg",
       "https://assets.guesty.com/image/upload/v1777998680/production/6957de4388cba42d9e7a905e/ipms8r1vgdhidpwe7ymm.jpg",
       "https://assets.guesty.com/image/upload/v1778076252/production/6957de4388cba42d9e7a905e/rrn5yfaquss7dvo830bc.jpg",
       "https://assets.guesty.com/image/upload/v1778076252/production/6957de4388cba42d9e7a905e/pft0bce3jtcnfwx3tqmj.jpg",
-      "https://assets.guesty.com/image/upload/v1777972281/production/6957de4388cba42d9e7a905e/pa9ibq6ehuwtya3pft5x.jpg",
       "https://assets.guesty.com/image/upload/v1777972287/production/6957de4388cba42d9e7a905e/m3hyzq7mtflzvdpi188k.jpg",
       "https://assets.guesty.com/image/upload/v1778076252/production/6957de4388cba42d9e7a905e/jgarf5dzpj1o5tlatun7.jpg",
       "https://assets.guesty.com/image/upload/v1777998680/production/6957de4388cba42d9e7a905e/f8o7gzfump0nap61etaw.jpg",
@@ -19467,8 +19466,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 1,
-    "lastModified": "2026-08-27",
-    "contentHash": "02b185d8e6e8f1e4a203444e90b155cdd0395df5"
+    "lastModified": "2026-08-31",
+    "contentHash": "43b2c6ce8a24653943c303e1e3505790f59c4047"
   },
   {
     "id": "guesty-69c415701b964f00157188b5",
@@ -26765,11 +26764,12 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1777972308/production/6957de4388cba42d9e7a905e/fdfuvc9ocfgsqobwfbbl.jpg",
+      "https://assets.guesty.com/image/upload/v1777972281/production/6957de4388cba42d9e7a905e/w4aw8bpkrtffcjapcu3c.jpg",
       "https://assets.guesty.com/image/upload/v1777972307/production/6957de4388cba42d9e7a905e/rfi6ul6ky4ptp27lglzg.jpg",
       "https://assets.guesty.com/image/upload/v1777972310/production/6957de4388cba42d9e7a905e/p6ad2xw3gukugejpghms.jpg",
-      "https://assets.guesty.com/image/upload/v1777972286/production/6957de4388cba42d9e7a905e/w5rjegxvozsep8mzpbr0.jpg",
+      "https://assets.guesty.com/image/upload/v1777972308/production/6957de4388cba42d9e7a905e/fdfuvc9ocfgsqobwfbbl.jpg",
       "https://assets.guesty.com/image/upload/v1778075412/production/6957de4388cba42d9e7a905e/lv7dkke3yyeivgmb929c.jpg",
+      "https://assets.guesty.com/image/upload/v1777972286/production/6957de4388cba42d9e7a905e/w5rjegxvozsep8mzpbr0.jpg",
       "https://assets.guesty.com/image/upload/v1777972281/production/6957de4388cba42d9e7a905e/pa9ibq6ehuwtya3pft5x.jpg",
       "https://assets.guesty.com/image/upload/v1777972284/production/6957de4388cba42d9e7a905e/dkpcddwqi0auokcmgwml.jpg",
       "https://assets.guesty.com/image/upload/v1784288776/production/6957de4388cba42d9e7a905e/tp4pgcp0ibnrw28wsmzk.jpg",
@@ -26785,7 +26785,6 @@
       "https://assets.guesty.com/image/upload/v1778075412/production/6957de4388cba42d9e7a905e/uxardclfnaqf7inu7qgv.jpg",
       "https://assets.guesty.com/image/upload/v1777972312/production/6957de4388cba42d9e7a905e/v0bghelyyiwb9d08mz2n.jpg",
       "https://assets.guesty.com/image/upload/v1777972284/production/6957de4388cba42d9e7a905e/wfe9ox8ranly9pmqz4zy.jpg",
-      "https://assets.guesty.com/image/upload/v1777972281/production/6957de4388cba42d9e7a905e/w4aw8bpkrtffcjapcu3c.jpg",
       "https://assets.guesty.com/image/upload/v1778064168/production/6957de4388cba42d9e7a905e/lksnk2g7tfi0i8fplsyg.jpg",
       "https://assets.guesty.com/image/upload/v1778064165/production/6957de4388cba42d9e7a905e/nnmfeoaxeijcr4nrlmcl.jpg",
       "https://assets.guesty.com/image/upload/v1778064167/production/6957de4388cba42d9e7a905e/kmx0r3xpqn3n9z53porm.jpg",
@@ -26966,8 +26965,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 1,
-    "lastModified": "2026-08-27",
-    "contentHash": "4cf912c16a79e12e4e5c31a33f252b3b62efb5ff"
+    "lastModified": "2026-08-31",
+    "contentHash": "e17d75e3a4e60f0763f968ff0e64d810e845d9e7"
   },
   {
     "id": "guesty-6965337d2def930014e919c6",
