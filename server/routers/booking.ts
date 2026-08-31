@@ -168,9 +168,28 @@ export const bookingRouter = router({
    * the next 90 days (never the Guesty basePrice placeholder). Cached 8h.
    */
   lowestNightly: publicProcedure
-    .input(z.object({ listingId: z.string().min(1), basePrice: z.number().optional() }))
+    .input(z.object({
+      listingId: z.string().min(1),
+      basePrice: z.number().optional(),
+      /** Tripwix property uid — set instead of a Guesty listingId on partner
+       *  inventory, which is priced off their calendar rather than Guesty. */
+      tripwixUid: z.string().optional(),
+    }))
     .query(async ({ input, ctx }) => {
       ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=28800, stale-while-revalidate=3600");
+
+      if (input.tripwixUid) {
+        const { getTripwixLowestNightly } = await import("../services/tripwix");
+        const from = await getTripwixLowestNightly(input.tripwixUid);
+        // Fall back to the rate imported with the property, so a throttled or
+        // failed calendar call shows a slightly stale price rather than none.
+        return {
+          from: from ?? input.basePrice ?? null,
+          source: from !== null ? ("calendar" as const) : ("fallback" as const),
+          currency: "EUR",
+        };
+      }
+
       return getLowestNightly(input.listingId, input.basePrice);
     }),
 

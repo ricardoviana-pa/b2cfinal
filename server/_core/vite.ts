@@ -1757,6 +1757,21 @@ export function serveStatic(app: Express) {
       html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
     }
 
+    // Tripwix partner homes still carry the supplier's own published copy,
+    // which is byte-identical to their canonical pages on tripwix.com. Being
+    // judged a duplicate once is far harder to undo than being judged well the
+    // first time, so these stay out of the index until the descriptions are
+    // rewritten. They are already absent from sitemap.xml (it reads only
+    // properties.json); this covers discovery via internal links.
+    //
+    // Their slugs all end in the supplier reference, e.g. `-pt0023`. Remove
+    // this block (and PARTNER_HOMES_NOINDEX in PropertyDetail.tsx) once the
+    // rewrite ships, then submit the URLs in Search Console.
+    if (/^\/homes\/.+-pt\d{4}$/.test(p)) {
+      res.setHeader("X-Robots-Tag", "noindex, nofollow");
+      html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
+    }
+
     // ── ALWAYS inject per-route meta for static routes (instant lookup, no DB).
     // This ensures OG tags are correct even when a CDN caches the response,
     // or when social crawlers bypass bot detection.

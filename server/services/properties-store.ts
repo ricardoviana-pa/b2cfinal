@@ -11,6 +11,38 @@ import { join } from "node:path";
 const SYNC_PATH = join(process.cwd(), "data", "properties-synced.json");
 const FALLBACK_PATH = join(process.cwd(), "client", "src", "data", "properties.json");
 
+/**
+ * Third-party inventory from the Tripwix partnership (see
+ * scripts/tripwix-import.mjs). These are not our listings: Tripwix has to
+ * approve every stay by email before we can confirm to a guest, so each one
+ * carries `bookingMode: "request"` and must never reach the instant-book path.
+ *
+ * On wherever the data file is present. Set TRIPWIX_INVENTORY=0 to switch the
+ * whole partnership off without a deploy — the kill switch if anything about
+ * this inventory needs to come down in a hurry.
+ *
+ * The file lives under client/src/data (not data/, which is gitignored) so it
+ * ships with the build; Render's disk is ephemeral.
+ */
+const TRIPWIX_PATH = join(process.cwd(), "client", "src", "data", "tripwix-properties.json");
+
+async function getTripwixProperties(): Promise<any[]> {
+  if (process.env.TRIPWIX_INVENTORY === "0") {
+    console.info("[Properties] Tripwix partner inventory disabled via TRIPWIX_INVENTORY=0.");
+    return [];
+  }
+  if (!existsSync(TRIPWIX_PATH)) return [];
+  try {
+    const data = JSON.parse(await readFile(TRIPWIX_PATH, "utf-8"));
+    if (!Array.isArray(data) || data.length === 0) return [];
+    console.info(`[Properties] Loaded ${data.length} Tripwix partner properties.`);
+    return data;
+  } catch (err) {
+    console.error("[Properties] Failed to read Tripwix inventory:", err);
+    return [];
+  }
+}
+
 /** Basic sanity check: does this dataset have real images (not just stock Unsplash)? */
 function hasRealData(properties: any[]): boolean {
   if (!Array.isArray(properties) || properties.length === 0) return false;
@@ -25,6 +57,8 @@ function hasRealData(properties: any[]): boolean {
 }
 
 export async function getPropertiesForSite(): Promise<any[]> {
+  const partner = await getTripwixProperties();
+
   // 1. Prefer runtime sync file (freshest data from current server session)
   if (existsSync(SYNC_PATH)) {
     try {
@@ -32,7 +66,7 @@ export async function getPropertiesForSite(): Promise<any[]> {
       const data = JSON.parse(raw);
       if (Array.isArray(data) && data.length > 0) {
         console.info(`[Properties] Loaded ${data.length} properties from runtime sync.`);
-        return filterPublicProperties(data);
+        return filterPublicProperties([...data, ...partner]);
       }
     } catch {
       // fall through to fallback
@@ -48,10 +82,15 @@ export async function getPropertiesForSite(): Promise<any[]> {
       console.info(
         `[Properties] Loaded ${data.length} properties from static fallback (real data: ${real}).`,
       );
-      return filterPublicProperties(data);
+      return filterPublicProperties([...data, ...partner]);
     }
   } catch {
     // fall through
+  }
+
+  if (partner.length > 0) {
+    console.warn("[Properties] Only partner inventory available.");
+    return filterPublicProperties(partner);
   }
 
   console.warn("[Properties] No property data available.");

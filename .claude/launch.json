@@ -24,7 +24,20 @@
     {
       "name": "prod",
       "runtimeExecutable": "sh",
-      "runtimeArgs": ["-c", "JWT_SECRET=local-test-secret npm run start"],
+      "runtimeArgs": [
+        "-c",
+        "JWT_SECRET=local-test-secret npm run start"
+      ],
+      "port": 3000,
+      "autoPort": true
+    },
+    {
+      "name": "tripwix",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "set -a; . \"/Users/ricardoviana/Documents/Claude/Projects/B2C WEBSITE/.env.local\"; set +a; JWT_SECRET=local-qa-throwaway-secret-not-used-in-prod npm run start"
+      ],
       "port": 3000,
       "autoPort": true
     }
