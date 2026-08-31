@@ -16457,16 +16457,6 @@
       },
       {
         "rating": 5,
-        "text": "对于需要去海滩风筝冲浪和冲浪的玩家来说，位置非常方便。也有小庭院可以用！装修可能时间稍长了，但整体还算比较方便！房东基本上响应积极！",
-        "guestDisplayName": "Fujun",
-        "guestName": "Fujun",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-05-15",
-        "categories": []
-      },
-      {
-        "rating": 5,
         "text": "Great location, cosy space 👍",
         "guestDisplayName": "Ian",
         "guestName": "Ian",
@@ -16717,7 +16707,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 20,
+    "reviewCount": 19,
     "lastModified": "2026-08-24",
     "contentHash": "92ba5755499f1222f294e0ce61735c1d34f5e2df"
   },
