@@ -36,6 +36,9 @@ const RAW_PATH = join(DATA_DIR, "tripwix-raw.json");
 // ephemeral and `data/` is gitignored, so anything left there is absent in
 // production. This mirrors how the Guesty sync ships its data.
 const OUT_PATH = join(process.cwd(), "client", "src", "data", "tripwix-properties.json");
+// Copy we wrote ourselves, merged over whatever the API returns. Kept separate
+// so re-syncing prices and availability never overwrites authored text.
+const COPY_PATH = join(process.cwd(), "content", "tripwix-copy.json");
 
 /**
  * The partner tier is 100 requests/hour. A full pull is 1 list + 35 details +
@@ -292,7 +295,36 @@ async function main() {
     console.info(`Raw pull cached to ${RAW_PATH}`);
   }
 
-  const mapped = raw.map(({ detail, rates }) => mapProperty(detail, rates));
+  let copy = {};
+  if (existsSync(COPY_PATH)) {
+    copy = JSON.parse(await readFile(COPY_PATH, "utf-8"));
+  }
+
+  const mapped = raw.map(({ detail, rates }) => {
+    const base = mapProperty(detail, rates);
+    const authored = copy[base.supplierReference];
+    if (!authored) return base;
+
+    // Authored text wins over the supplier's. `imageAlts` is positional and
+    // only as long as we have written it, so pad from whatever the API gave.
+    const merged = { ...base, ...authored, hasAuthoredCopy: true };
+
+    // Where we override the name — a couple of theirs carry back-office notes
+    // like "- PDF now LIVE" — the slug has to follow, or the URL keeps
+    // publishing the noise we just removed from the page.
+    if (authored.name) {
+      merged.slug = `${slugify(authored.name)}-${base.supplierReference.toLowerCase()}`;
+    }
+    if (authored.imageAlts) {
+      merged.imageAlts = base.images.map(
+        (_, i) => authored.imageAlts[i] ?? base.imageAlts[i] ?? "",
+      );
+    }
+    return merged;
+  });
+
+  const authoredCount = mapped.filter((p) => p.hasAuthoredCopy).length;
+  console.info(`Authored copy applied to ${authoredCount}/${mapped.length} properties.`);
   mapped.sort((a, b) => a.priceFrom - b.priceFrom);
 
   await writeFile(OUT_PATH, JSON.stringify(mapped, null, 2));
