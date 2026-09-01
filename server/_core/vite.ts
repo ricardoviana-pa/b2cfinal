@@ -1573,7 +1573,31 @@ export function serveStatic(app: Express) {
   // skip the render entirely. 5-min TTL keeps content fresh after a Guesty sync.
   const SSR_RENDER_TTL_MS = 5 * 60 * 1000;
   const SSR_RENDER_CACHE_MAX = 400;
-  const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: string; at: number }>();
+  /**
+ * Partner (Tripwix) home slugs, read from the same file the site renders. Used
+ * to keep those pages out of the index while they are being validated; matching
+ * on the data rather than on a URL shape means a slug change cannot silently
+ * turn indexing back on.
+ */
+let _partnerSlugs: Set<string> | null = null;
+function isPartnerHome(pathname: string): boolean {
+  if (_partnerSlugs === null) {
+    _partnerSlugs = new Set();
+    try {
+      const raw = fs.readFileSync(
+        path.join(process.cwd(), "client", "src", "data", "tripwix-properties.json"),
+        "utf-8",
+      );
+      for (const p of JSON.parse(raw)) if (p?.slug) _partnerSlugs.add(p.slug);
+    } catch {
+      /* no partner inventory present — nothing to suppress */
+    }
+  }
+  const m = pathname.match(/^\/homes\/([^/?#]+)\/?$/);
+  return !!m && _partnerSlugs.has(m[1]);
+}
+
+const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: string; at: number }>();
   async function getSsrRender(): Promise<SsrRender | null> {
     if (_ssrRender) return _ssrRender;
     if (_ssrUnavailable) return null;
@@ -1764,10 +1788,13 @@ export function serveStatic(app: Express) {
     // rewritten. They are already absent from sitemap.xml (it reads only
     // properties.json); this covers discovery via internal links.
     //
-    // Their slugs all end in the supplier reference, e.g. `-pt0023`. Remove
-    // this block (and PARTNER_HOMES_NOINDEX in PropertyDetail.tsx) once the
-    // rewrite ships, then submit the URLs in Search Console.
-    if (/^\/homes\/.+-pt\d{4}$/.test(p)) {
+    // Matched against the actual partner slug list rather than a URL pattern:
+    // the slugs used to end in the supplier reference, and when that was
+    // dropped a pattern check would have silently stopped matching and quietly
+    // let these pages into the index. Remove this block (and
+    // PARTNER_HOMES_NOINDEX in PropertyDetail.tsx) once the copy is validated,
+    // then submit the URLs in Search Console.
+    if (isPartnerHome(p)) {
       res.setHeader("X-Robots-Tag", "noindex, nofollow");
       html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
     }

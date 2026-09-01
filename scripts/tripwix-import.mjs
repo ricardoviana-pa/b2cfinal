@@ -185,7 +185,10 @@ function mapProperty(detail, rates) {
 
   return {
     id: `tripwix-${detail.reference}`,
-    slug: `${slugify(detail.title)}-${detail.reference.toLowerCase()}`,
+    // No supplier reference in the slug: it leaked their internal id into our
+    // URLs, and guests were quoting "casa-de-caiz-pt0277" back at us in email.
+    // Their titles are unique across the portfolio, and checked against ours.
+    slug: slugify(detail.title),
     name: detail.title,
     tagline: detail.tagline ?? "",
     // Matches the rest of the portfolio. Deliberately NOT "signature": that
@@ -329,7 +332,7 @@ async function main() {
     // like "- PDF now LIVE" — the slug has to follow, or the URL keeps
     // publishing the noise we just removed from the page.
     if (authored.name) {
-      merged.slug = `${slugify(authored.name)}-${base.supplierReference.toLowerCase()}`;
+      merged.slug = slugify(authored.name);
     }
     if (authored.imageAlts) {
       merged.imageAlts = base.images.map(

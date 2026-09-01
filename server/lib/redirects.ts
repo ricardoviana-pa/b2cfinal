@@ -224,6 +224,14 @@ interface PatternRule {
 
 // === PATTERN RULES ========================================================
 const PATTERN_REDIRECTS: PatternRule[] = [
+  // Partner (Tripwix) homes briefly shipped with the supplier's reference in
+  // the slug — /homes/casa-de-caiz-pt0277. Guests were quoting that id back at
+  // us in email, so it was dropped. Anyone holding an old link still lands.
+  {
+    pattern: /^\/homes\/(.+)-pt\d{4}\/?$/i,
+    resolve: (m) => `/en/homes/${m[1]}`,
+  },
+
   // /properties/<slug> and /rooms/<slug> → /homes/<new-slug>
   {
     pattern: /^\/(properties|rooms)\/([^/?#]+)\/?$/i,
