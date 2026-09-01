@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BadgeCheck, Loader2 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
@@ -48,7 +48,18 @@ export function PartnerBookingPanel({
   const { t, i18n } = useTranslation();
   const [checkIn, setCheckIn] = useState(initialCheckIn ?? '');
   const [checkOut, setCheckOut] = useState(initialCheckOut ?? '');
-  const [guests, setGuests] = useState(initialGuests ?? 2);
+  const [guests, setGuests] = useState(initialGuests || 2);
+
+  // The dates arrive from the URL when a guest clicks through from a dated
+  // search, but they are not there on the first render — useState would keep
+  // the empty value it was given and silently drop them, which is the whole
+  // reason someone searched by date in the first place. Seed once they show up,
+  // without stamping over anything the guest has since typed.
+  useEffect(() => {
+    if (initialCheckIn) setCheckIn((v) => v || initialCheckIn);
+    if (initialCheckOut) setCheckOut((v) => v || initialCheckOut);
+    if (initialGuests) setGuests((v) => (v === 2 ? initialGuests : v));
+  }, [initialCheckIn, initialCheckOut, initialGuests]);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
