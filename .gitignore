@@ -115,3 +115,6 @@ temp/
 
 # Manus debug files
 .manus/
+
+# Tripwix originals — kept locally as the source for social posts, never shipped
+exports/tripwix-photos/

@@ -39,6 +39,9 @@ const OUT_PATH = join(process.cwd(), "client", "src", "data", "tripwix-propertie
 // Copy we wrote ourselves, merged over whatever the API returns. Kept separate
 // so re-syncing prices and availability never overwrites authored text.
 const COPY_PATH = join(process.cwd(), "content", "tripwix-copy.json");
+// Local WebP paths produced by scripts/tripwix-images.py. When a property has
+// been through that, we serve our own copies instead of hotlinking theirs.
+const IMAGES_PATH = join(process.cwd(), "content", "tripwix-images.json");
 
 /**
  * The partner tier is 100 requests/hour. A full pull is 1 list + 35 details +
@@ -300,8 +303,21 @@ async function main() {
     copy = JSON.parse(await readFile(COPY_PATH, "utf-8"));
   }
 
+  let localImages = {};
+  if (existsSync(IMAGES_PATH)) {
+    localImages = JSON.parse(await readFile(IMAGES_PATH, "utf-8"));
+  }
+
   const mapped = raw.map(({ detail, rates }) => {
     const base = mapProperty(detail, rates);
+    // Prefer our own WebP copies. Falling back per-property rather than
+    // per-image keeps a half-finished conversion from mixing hosts on one page.
+    const local = localImages[base.supplierReference];
+    if (local && local.length === base.images.length) {
+      base.images = local;
+      base.imagesSelfHosted = true;
+    }
+
     const authored = copy[base.supplierReference];
     if (!authored) return base;
 
@@ -325,6 +341,8 @@ async function main() {
 
   const authoredCount = mapped.filter((p) => p.hasAuthoredCopy).length;
   console.info(`Authored copy applied to ${authoredCount}/${mapped.length} properties.`);
+  const localCount = mapped.filter((p) => p.imagesSelfHosted).length;
+  console.info(`Self-hosted images on ${localCount}/${mapped.length} properties.`);
   mapped.sort((a, b) => a.priceFrom - b.priceFrom);
 
   await writeFile(OUT_PATH, JSON.stringify(mapped, null, 2));
