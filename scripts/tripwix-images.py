@@ -84,15 +84,27 @@ def convert(src: Path, dest: Path, width: int) -> bool:
         return False
 
 
+def folder_name(name: str, ref: str) -> str:
+    """
+    Originals are browsed by a person picking shots for social, so the folder
+    carries the house name rather than the supplier reference. Only path
+    separators are stripped — accents and spaces are fine and stay readable.
+    """
+    clean = (name or ref).replace("/", "-").replace(":", "-").strip()
+    return clean or ref
+
+
 def handle(job):
-    ref, idx, url = job
+    ref, name, idx, url = job
     ext = os.path.splitext(url.split("?")[0])[1] or ".jpg"
-    original = ORIGINALS / ref / f"{idx:02d}{ext}"
+    original = ORIGINALS / folder_name(name, ref) / f"{idx:02d}{ext}"
     original.parent.mkdir(parents=True, exist_ok=True)
 
     if not fetch(url, original):
         return None
 
+    # The published copies stay keyed by reference — the site data points at
+    # these paths, and a rename would break every image on every partner page.
     out = PUBLIC / ref / f"{idx:02d}.webp"
     width = HERO_WIDTH if idx == 0 else GALLERY_WIDTH
     if not convert(original, out, width):
@@ -112,7 +124,7 @@ def main() -> None:
     jobs = []
     for p in props:
         for i, url in enumerate(p.get("images", [])):
-            jobs.append((p["supplierReference"], i, url))
+            jobs.append((p["supplierReference"], p.get("name", ""), i, url))
 
     print(f"{len(props)} properties, {len(jobs)} photos")
     ORIGINALS.mkdir(parents=True, exist_ok=True)
