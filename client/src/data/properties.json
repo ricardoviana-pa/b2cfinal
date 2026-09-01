@@ -1112,12 +1112,13 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1786009964/production/6957de4388cba42d9e7a905e/owllto5zqdxmxxqnjmfj.jpg",
+      "https://assets.guesty.com/image/upload/v1786010106/production/6957de4388cba42d9e7a905e/lrv0fga1zciv8eqdgfce.jpg",
       "https://assets.guesty.com/image/upload/v1786010157/production/6957de4388cba42d9e7a905e/xtabl4eyucasb3wmiuxm.jpg",
       "https://assets.guesty.com/image/upload/v1786010160/production/6957de4388cba42d9e7a905e/k6loggqpxkjdev9hc9mt.jpg",
       "https://assets.guesty.com/image/upload/v1786010167/production/6957de4388cba42d9e7a905e/cx2aiis9dksvrttjmnen.jpg",
       "https://assets.guesty.com/image/upload/v1786010169/production/6957de4388cba42d9e7a905e/mcmrnqjzaecxlr83q5wl.jpg",
       "https://assets.guesty.com/image/upload/v1786010176/production/6957de4388cba42d9e7a905e/hn1ibofj8udwcflh9kwb.jpg",
+      "https://assets.guesty.com/image/upload/v1786009964/production/6957de4388cba42d9e7a905e/owllto5zqdxmxxqnjmfj.jpg",
       "https://assets.guesty.com/image/upload/v1786010084/production/6957de4388cba42d9e7a905e/pormprfeaq8of4pc8xaw.jpg",
       "https://assets.guesty.com/image/upload/v1786010169/production/6957de4388cba42d9e7a905e/tdch0biux9gfdyqldokg.jpg",
       "https://assets.guesty.com/image/upload/v1786010034/production/6957de4388cba42d9e7a905e/ltmzevkyk3lvpcakzh6d.jpg",
@@ -1186,7 +1187,6 @@
       "https://assets.guesty.com/image/upload/v1786010105/production/6957de4388cba42d9e7a905e/enlxa2lergrfmwudeayk.jpg",
       "https://assets.guesty.com/image/upload/v1786010099/production/6957de4388cba42d9e7a905e/rkpaorszyscentjzhilw.jpg",
       "https://assets.guesty.com/image/upload/v1786010108/production/6957de4388cba42d9e7a905e/opmwqhrumiwchdiduvob.jpg",
-      "https://assets.guesty.com/image/upload/v1786010106/production/6957de4388cba42d9e7a905e/lrv0fga1zciv8eqdgfce.jpg",
       "https://assets.guesty.com/image/upload/v1786010145/production/6957de4388cba42d9e7a905e/lagrj5naop8mbz3chljf.jpg",
       "https://assets.guesty.com/image/upload/v1786010109/production/6957de4388cba42d9e7a905e/o6tgnmxre2kkvuzed4kk.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533722def930014e914e2/3282dfb1-77a9-47-PH6WS",
@@ -1559,8 +1559,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 9,
-    "lastModified": "2026-08-24",
-    "contentHash": "310b00bd5885ee70cec142fb14da0ae37652a232"
+    "lastModified": "2026-09-01",
+    "contentHash": "34ae8d72fcca909d1cd3342ddc96d830ff255ffa"
   },
   {
     "id": "guesty-6a50d66857c8010015595ad0",
