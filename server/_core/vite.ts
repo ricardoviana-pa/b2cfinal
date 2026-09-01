@@ -1858,9 +1858,12 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
       if (homesMatch) {
         let prop = await getPropertyBySlugCached(homesMatch[1]);
         // Descriptions come from Guesty in English; apply the per-locale
-        // overrides (guestyId-keyed) so bots get the localised meta + body too.
-        if (prop && lang !== 'en' && prop.guestyId) {
-          const ov = loadI18nOverrides("properties", lang)[prop.guestyId];
+        // overrides so bots get the localised meta + body too. Guesty homes are
+        // keyed by guestyId; partner (Tripwix) homes have none and are keyed by
+        // slug — the same fallback the client's mergePropertyOverrides uses.
+        if (prop && lang !== 'en') {
+          const ovs = loadI18nOverrides("properties", lang);
+          const ov = (prop.guestyId && ovs[prop.guestyId]) || ovs[prop.slug];
           if (ov) prop = { ...prop, ...ov };
         }
         if (prop) {
