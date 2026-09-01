@@ -49,6 +49,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'wouter';
 import { StructuredData, type JsonLd } from './StructuredData';
+import { toSchemaDateTime } from '@/lib/schemaDate';
 
 export interface AnswerCapsuleCitation {
   label: string;
@@ -118,6 +119,9 @@ export default function AnswerCapsule({
 
   const qaSchema = useMemo<JsonLd | null>(() => {
     if (!emitSchema) return null;
+    // schema.org wants a DateTime with a zone here, not the bare date the
+    // visible "Updated {month}" label is built from.
+    const reviewed = toSchemaDateTime(lastUpdated);
     return {
       '@context': 'https://schema.org',
       '@type': 'QAPage',
@@ -128,12 +132,12 @@ export default function AnswerCapsule({
         // The question carried only dateCreated, so Search Console reported
         // "Campo datePublished em falta (em mainEntity)" on every page that
         // emits this schema. dateCreated stays — the two are not synonyms.
-        ...(lastUpdated && { dateCreated: lastUpdated, datePublished: lastUpdated }),
+        ...(reviewed && { dateCreated: reviewed, datePublished: reviewed }),
         answerCount: 1,
         acceptedAnswer: {
           '@type': 'Answer',
           text: answer,
-          ...(lastUpdated && { datePublished: lastUpdated }),
+          ...(reviewed && { datePublished: reviewed }),
           author: {
             '@type': 'Organization',
             '@id': 'https://www.portugalactive.com/#organization',
