@@ -34,6 +34,18 @@ type Cached = { value: number | null; at: number };
 
 const cache = new Map<string, Cached>();
 
+/**
+ * Last price we actually read from their calendar, kept beyond the cache TTL.
+ *
+ * The imported catalogue rate is the cheapest night of the whole year and is
+ * wrong for almost every date — the same role the Guesty basePrice plays for
+ * our own homes, which the pricing code there refuses to show for exactly this
+ * reason. So when a live read fails we fall back to the last real price we saw,
+ * and if we have never seen one we show nothing rather than a number the guest
+ * cannot book.
+ */
+const lastGood = new Map<string, number>();
+
 /** In-flight de-duplication, so a burst of PLP cards makes one request each. */
 const inFlight = new Map<string, Promise<number | null>>();
 
@@ -103,6 +115,9 @@ export async function getTripwixLowestNightly(uid: string): Promise<number | nul
         .filter((n) => Number.isFinite(n) && n > 0);
       if (prices.length) value = Math.round(Math.min(...prices));
     }
+
+    if (value !== null) lastGood.set(uid, value);
+    else value = lastGood.get(uid) ?? null;
 
     cache.set(uid, { value, at: Date.now() });
     inFlight.delete(uid);

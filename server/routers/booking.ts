@@ -180,12 +180,13 @@ export const bookingRouter = router({
 
       if (input.tripwixUid) {
         const { getTripwixLowestNightly } = await import("../services/tripwix");
+        // No catalogue fallback: the imported rate is the cheapest night of the
+        // year and is not bookable on most dates. Same rule as our own homes —
+        // a real price or none at all.
         const from = await getTripwixLowestNightly(input.tripwixUid);
-        // Fall back to the rate imported with the property, so a throttled or
-        // failed calendar call shows a slightly stale price rather than none.
         return {
-          from: from ?? input.basePrice ?? null,
-          source: from !== null ? ("calendar" as const) : ("fallback" as const),
+          from,
+          source: from !== null ? ("calendar" as const) : ("none" as const),
           currency: "EUR",
         };
       }
