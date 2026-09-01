@@ -33,12 +33,25 @@ const EVENTS_GRAPH = [
     description: 'Host private events in luxury Portuguese villas with full event planning and concierge services',
     areaServed: { '@type': 'AdministrativeArea', name: 'Portugal' },
     acceptsReservations: true,
-    events: EVENT_TYPES_SCHEMA.map((e) => ({
-      '@type': 'Event',
-      name: e.type,
-      description: e.description,
-      location: { '@type': 'Place', name: 'Portugal', address: { '@type': 'PostalAddress', addressCountry: 'PT' } },
-    })),
+    // These six are the KINDS of event we host, not events with dates — there
+    // is no Saturday on which "Weddings" takes place. Declaring them as Event
+    // is what Search Console reports as 'Campo "startDate" em falta', once per
+    // entry, and the honest fix is not to invent dates: it is to describe them
+    // as what they are, which is a catalogue of services someone can book.
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Private event services',
+      itemListElement: EVENT_TYPES_SCHEMA.map((e) => ({
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: e.type,
+          description: e.description,
+          areaServed: { '@type': 'Country', name: 'Portugal' },
+          provider: { '@id': 'https://www.portugalactive.com/#organization' },
+        },
+      })),
+    },
   },
   buildBreadcrumbSchema([
     { name: 'Home', item: '/' },

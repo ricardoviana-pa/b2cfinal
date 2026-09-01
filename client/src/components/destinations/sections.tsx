@@ -23,6 +23,7 @@ import type { Destination, Property, Product } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
 import PropertyCard from '@/components/property/PropertyCard';
+import { parseEventDates } from '@/lib/eventDates';
 
 /* ── 1. HERO EDITORIAL ────────────────────────────────────────────────── */
 
@@ -983,6 +984,14 @@ export function buildDestinationGraph(
   // Google reads top-level Event schema for the events knowledge panel.
   if (d.events && d.events.length > 0) {
     for (const ev of d.events) {
+      // `dates` is written for readers — "15–23 August 2026", but also
+      // "Last weekend of May" and "February (movable)". Schema.org startDate
+      // takes ISO 8601, so the prose was going out as an invalid date. Emit the
+      // Event only when a real date can be read out of it; the others stay on
+      // the page for the reader and simply carry no schema, which is better
+      // than schema Google has to reject.
+      const when = parseEventDates(ev.dates);
+      if (!when) continue;
       graph.push({
         '@context': 'https://schema.org',
         '@type': 'Event',
@@ -996,7 +1005,8 @@ export function buildDestinationGraph(
             geo: { '@type': 'GeoCoordinates', latitude: d.geo.latitude, longitude: d.geo.longitude },
           }),
         },
-        startDate: ev.dates,
+        startDate: when.startDate,
+        ...(when.endDate && { endDate: when.endDate }),
       });
     }
   }
