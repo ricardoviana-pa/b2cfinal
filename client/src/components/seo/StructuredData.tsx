@@ -81,8 +81,10 @@ function localeUrl(path: string): string {
   return `${BASE_URL}/${lang}${path}`;
 }
 
+// Google's merchant-listing validator rejects an Organization here —
+// "Tipo de objeto inválido para o campo brand". Product.brand takes a Brand.
 const BRAND = {
-  '@type': 'Organization' as const,
+  '@type': 'Brand' as const,
   name: 'Portugal Active',
   url: BASE_URL,
 };

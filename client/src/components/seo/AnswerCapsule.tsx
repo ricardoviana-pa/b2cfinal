@@ -124,7 +124,11 @@ export default function AnswerCapsule({
       mainEntity: {
         '@type': 'Question',
         name: question,
-        ...(lastUpdated && { dateCreated: lastUpdated }),
+        // Google wants datePublished on BOTH the question and the answer.
+        // The question carried only dateCreated, so Search Console reported
+        // "Campo datePublished em falta (em mainEntity)" on every page that
+        // emits this schema. dateCreated stays — the two are not synonyms.
+        ...(lastUpdated && { dateCreated: lastUpdated, datePublished: lastUpdated }),
         answerCount: 1,
         acceptedAnswer: {
           '@type': 'Answer',

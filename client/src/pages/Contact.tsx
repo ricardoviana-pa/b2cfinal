@@ -485,6 +485,7 @@ export default function Contact() {
             <AnswerCapsule
               question="How do I contact Portugal Active?"
               answer="Portugal Active's concierge team is available by phone (+351 258 358 434), WhatsApp, or email (info@portugalactive.com). Response time is typically under two hours. You can also schedule a video call to plan your stay. The team assists with property selection, experience booking, airport transfers, private chefs, and any special requests. Book direct for the best rate and complimentary concierge planning."
+              lastUpdated="2026-05-02"
               emitSchema
               schemaId="qa-contact"
             />

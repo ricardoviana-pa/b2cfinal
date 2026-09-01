@@ -804,7 +804,9 @@ function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
         worstRating: 1,
       },
     }),
-    brand: { '@type': 'Organization', name: 'Portugal Active', url: BOT_BASE_URL },
+    // Brand, not Organization: the merchant-listing validator rejects the
+    // latter with "invalid object type for field brand".
+    brand: { '@type': 'Brand', name: 'Portugal Active', url: BOT_BASE_URL },
     // Stable id for the listing across our site and the channels it is synced
     // to. Google requires it on VacationRental; the Guesty id is the one value
     // that survives a slug rename, which is exactly what it is for.
@@ -897,7 +899,9 @@ function buildExperienceGraph(exp: any, lang: string, pagePath: string): Record<
     ...(images.length > 0 && { image: images }),
     url,
     touristType: ['Adventure', 'Nature', 'Sport'],
-    brand: { '@type': 'Organization', name: 'Portugal Active', url: BOT_BASE_URL },
+    // Brand, not Organization: the merchant-listing validator rejects the
+    // latter with "invalid object type for field brand".
+    brand: { '@type': 'Brand', name: 'Portugal Active', url: BOT_BASE_URL },
     provider: { '@type': 'Organization', name: 'Portugal Active', url: BOT_BASE_URL },
     ...(priceFrom > 0 && {
       offers: {
