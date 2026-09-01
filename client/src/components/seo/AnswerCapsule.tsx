@@ -122,12 +122,36 @@ export default function AnswerCapsule({
     // schema.org wants a DateTime with a zone here, not the bare date the
     // visible "Updated {month}" label is built from.
     const reviewed = toSchemaDateTime(lastUpdated);
+
+    // We wrote both the question and the answer, so the same organisation is
+    // the author of each. A Person would be wrong — these are team-written.
+    const writtenBy = {
+      '@type': 'Organization',
+      '@id': 'https://www.portugalactive.com/#organization',
+      name: 'Portugal Active',
+    };
+
+    // Where the answer lives. The capsule carries schemaId as its DOM id, so
+    // the link lands on the answer itself rather than the top of the page.
+    // Client-only: this memo also runs during SSR, where there is no location
+    // — the schema is injected from an effect, so the browser value is the one
+    // that ships.
+    const answerUrl =
+      typeof window !== 'undefined' && schemaId
+        ? `${window.location.origin}${window.location.pathname}#${schemaId}`
+        : null;
+
     return {
       '@context': 'https://schema.org',
       '@type': 'QAPage',
       mainEntity: {
         '@type': 'Question',
         name: question,
+        // Question.name is the headline, Question.text the full question. Our
+        // capsules ask one self-contained question, so the two are the same
+        // string — and Google asks for both.
+        text: question,
+        author: writtenBy,
         // Google wants datePublished on BOTH the question and the answer.
         // The question carried only dateCreated, so Search Console reported
         // "Campo datePublished em falta (em mainEntity)" on every page that
@@ -137,21 +161,23 @@ export default function AnswerCapsule({
         acceptedAnswer: {
           '@type': 'Answer',
           text: answer,
+          ...(answerUrl && { url: answerUrl }),
+          // Nobody can vote on these — there is no voting. Zero is the true
+          // count, and the honest way to fill a field Google asks for on a
+          // format built for forums.
+          upvoteCount: 0,
           ...(reviewed && { datePublished: reviewed }),
-          author: {
-            '@type': 'Organization',
-            '@id': 'https://www.portugalactive.com/#organization',
-            name: 'Portugal Active',
-          },
+          author: writtenBy,
         },
       },
     };
-  }, [emitSchema, question, answer, lastUpdated]);
+  }, [emitSchema, question, answer, lastUpdated, schemaId]);
 
   return (
     <>
       {qaSchema && schemaId && <StructuredData id={schemaId} data={qaSchema} />}
       <aside
+        {...(schemaId && { id: schemaId })}
         role="doc-abstract"
         aria-label="Quick answer"
         className={
