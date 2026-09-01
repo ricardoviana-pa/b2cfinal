@@ -5041,9 +5041,45 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 1507,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Es una casa espectacular y muy bien preparada hasta el último detalle. Repetiría alojamiento sin duda!",
+        "guestDisplayName": "Tomas",
+        "guestName": "Tomas",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-01T12:32:27.827Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1,
     "lastModified": "2026-08-24",
     "contentHash": "d5545b37675e9e14a36f01edce41e1d5fcf65bf2"
   },
@@ -7682,6 +7718,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Super belle villa, totalement équipé, je recommande fortement nous avons adoré séjourner là-bas !",
+        "guestDisplayName": "Tony",
+        "guestName": "Tony",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-01T07:34:58.244Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "La maison correspondant aux descriptifs, propre, lumineuse, bien agencée……\nL’hôte est très agréable et réactif.\nNous y avons passé des vacances en famille géniale.\nJe reviendrai sans hésité.\nJe recommande à 100%.",
         "guestDisplayName": "Fatima",
         "guestName": "Fatima",
@@ -7822,251 +7893,9 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 4,
+    "reviewCount": 5,
     "lastModified": "2026-08-24",
     "contentHash": "e773d9dc1bf0e7ff82e3654dc32f59ee0e6f34af"
-  },
-  {
-    "id": "guesty-6a3ba1fce19cb0001dc57ea6",
-    "slug": "filigree-plaza-by-portugal-active-c57ea6",
-    "name": "Filigree Plaza by Portugal Active",
-    "tagline": "A one-bedroom apartment beside the Cathedral, in the heart of Viana do Castelo",
-    "tier": "select",
-    "destination": "minho",
-    "locality": "Viana do Castelo",
-    "bedrooms": 1,
-    "bathrooms": 1,
-    "maxGuests": 4,
-    "priceFrom": 150,
-    "pricePerNight": 150,
-    "cleaningFee": 98,
-    "minNights": 3,
-    "currency": "EUR",
-    "images": [
-      "https://assets.guesty.com/image/upload/v1782894202/production/6957de4388cba42d9e7a905e/ihtu5ymajnyh7agqnreq.jpg",
-      "https://assets.guesty.com/image/upload/v1782894204/production/6957de4388cba42d9e7a905e/zd1ayzwu7wznvaecsktn.jpg",
-      "https://assets.guesty.com/image/upload/v1782894178/production/6957de4388cba42d9e7a905e/yyztawmvwdpzsrokj8wt.jpg",
-      "https://assets.guesty.com/image/upload/v1782894181/production/6957de4388cba42d9e7a905e/c5gpyo8em1hrzgo88vac.jpg",
-      "https://assets.guesty.com/image/upload/v1782894185/production/6957de4388cba42d9e7a905e/m4bwdusmsmytkfawd64x.jpg",
-      "https://assets.guesty.com/image/upload/v1782894196/production/6957de4388cba42d9e7a905e/azbthn9aiwh1gkhqfeps.jpg",
-      "https://assets.guesty.com/image/upload/v1782894198/production/6957de4388cba42d9e7a905e/j6ffd8a4a3jpqkkdwgwh.jpg",
-      "https://assets.guesty.com/image/upload/v1782894198/production/6957de4388cba42d9e7a905e/pu6dkbqw62taasrngq5j.jpg",
-      "https://assets.guesty.com/image/upload/v1782894199/production/6957de4388cba42d9e7a905e/qyvew7pfsz4ztot2aczi.jpg",
-      "https://assets.guesty.com/image/upload/v1782894200/production/6957de4388cba42d9e7a905e/yi3eujedq26pa9skrx8k.jpg",
-      "https://assets.guesty.com/image/upload/v1782894202/production/6957de4388cba42d9e7a905e/voledp6wefsxclw5oihf.jpg",
-      "https://assets.guesty.com/image/upload/v1782296559/production/6957de4388cba42d9e7a905e/dcbarrs0hi5vclbqvzfi.jpg",
-      "https://assets.guesty.com/image/upload/v1782894182/production/6957de4388cba42d9e7a905e/hfv4p31l0drlubltauz2.jpg",
-      "https://assets.guesty.com/image/upload/v1782296562/production/6957de4388cba42d9e7a905e/d2iufm3jsi1lt8s6riki.jpg",
-      "https://assets.guesty.com/image/upload/v1782894174/production/6957de4388cba42d9e7a905e/tx9vlz8yu7vii8phkabm.jpg",
-      "https://assets.guesty.com/image/upload/v1782894195/production/6957de4388cba42d9e7a905e/wenni8gov2cwwo1pups2.jpg",
-      "https://assets.guesty.com/image/upload/v1782894196/production/6957de4388cba42d9e7a905e/n3o2kqbxj0yjuhghvpop.jpg",
-      "https://assets.guesty.com/image/upload/v1782894206/production/6957de4388cba42d9e7a905e/kykbp8escjrzwdipi1dn.jpg",
-      "https://assets.guesty.com/image/upload/v1782894206/production/6957de4388cba42d9e7a905e/qjh0qhxgu9y9onadpg1f.jpg",
-      "https://assets.guesty.com/image/upload/v1782894183/production/6957de4388cba42d9e7a905e/tydossvkgy0zl7smzxgu.jpg",
-      "https://assets.guesty.com/image/upload/v1782894181/production/6957de4388cba42d9e7a905e/v95xek2aakwpunvz39uk.jpg",
-      "https://assets.guesty.com/image/upload/v1782894190/production/6957de4388cba42d9e7a905e/nsoowmqr2nma75fdlzna.jpg",
-      "https://assets.guesty.com/image/upload/v1782894190/production/6957de4388cba42d9e7a905e/o8ivrfejnlbwvusoe8g4.jpg",
-      "https://assets.guesty.com/image/upload/v1782894191/production/6957de4388cba42d9e7a905e/cxh0o8srxrndhgjlhbv5.jpg",
-      "https://assets.guesty.com/image/upload/v1782894191/production/6957de4388cba42d9e7a905e/b9owxqhonca735ki9xdn.jpg",
-      "https://assets.guesty.com/image/upload/v1782894180/production/6957de4388cba42d9e7a905e/p6dbjmtngw8hnbgdx0lr.jpg",
-      "https://assets.guesty.com/image/upload/v1782894173/production/6957de4388cba42d9e7a905e/uy3yboj0ilygyjlnbf1l.jpg",
-      "https://assets.guesty.com/image/upload/v1782293636/production/6957de4388cba42d9e7a905e/yoqdu9b1dmieubywhrts.jpg",
-      "https://assets.guesty.com/image/upload/v1782296559/production/6957de4388cba42d9e7a905e/qln2jcalg68rtbclhcsv.jpg",
-      "https://assets.guesty.com/image/upload/v1782894187/production/6957de4388cba42d9e7a905e/wwqdzvaffykd0a8rmlaj.jpg",
-      "https://assets.guesty.com/image/upload/v1782894187/production/6957de4388cba42d9e7a905e/lxwhljffn96qm5hshksj.jpg",
-      "https://assets.guesty.com/image/upload/v1782293638/production/6957de4388cba42d9e7a905e/thp789xqj0idaixmhxpd.jpg",
-      "https://assets.guesty.com/image/upload/v1782894189/production/6957de4388cba42d9e7a905e/mxotpwlsqhiszsbjn39g.jpg",
-      "https://assets.guesty.com/image/upload/v1782293646/production/6957de4388cba42d9e7a905e/jvea9b3gotvuucsr54bh.jpg",
-      "https://assets.guesty.com/image/upload/v1782293647/production/6957de4388cba42d9e7a905e/ydlii3f9rny1oeacjsmb.jpg",
-      "https://assets.guesty.com/image/upload/v1782293647/production/6957de4388cba42d9e7a905e/znjrye6t4wifbotohp4n.jpg",
-      "https://assets.guesty.com/image/upload/v1782293647/production/6957de4388cba42d9e7a905e/eebt234dtqef54iykvbf.jpg"
-    ],
-    "description": "Filigree Plaza sits next to the Cathedral in Viana do Castelo's historic centre, a one-bedroom apartment with a queen bed and a living room sofa bed for two, sleeping up to four. The kitchen is fully equipped for proper cooking, with a dining table for shared meals, and the living area holds cable TV and city views from the balcony or patio.\n\nPraça da República and the banks of the Lima River are a short walk from the door, both good for evening walks. The apartment is in a lively, central part of town, with shops and museums nearby; note that August's Romaria de Nossa Senhora d'Agonia brings festivities and higher noise levels to the area.\n\nMornings suit coffee at the dining table before heading out to the old streets around the Cathedral. Afternoons can be spent exploring downtown or the riverbank, with the kitchen ready for cooking dinner with produce picked up locally, and evenings settling into the living room with the television on.\n\nSuited to couples or small families wanting a central base in Viana do Castelo, with Portugal Active's concierge on hand to arrange horseback riding or a private chef.",
-    "descriptionSections": null,
-    "amenities": {
-      "property": [
-        "Baking sheet",
-        "Bed linens",
-        "Cable TV",
-        "City View",
-        "Cleaning Disinfection",
-        "Cleaning products",
-        "Clothing storage",
-        "Coffee",
-        "Coffee maker",
-        "Cookware",
-        "Crib",
-        "Dining table",
-        "Dishes and silverware",
-        "Downtown",
-        "Enhanced cleaning practices",
-        "Essentials",
-        "Extra pillows and blankets",
-        "Family/kid friendly",
-        "Fire extinguisher",
-        "First aid kit",
-        "Hair dryer",
-        "Hangers",
-        "Heating",
-        "High chair",
-        "High touch surfaces disinfected",
-        "Hot water",
-        "Internet",
-        "Iron",
-        "Kettle",
-        "Kitchen",
-        "Laptop friendly workspace",
-        "Long term stays allowed",
-        "Microwave",
-        "Museums",
-        "Oven",
-        "Paid parking off premises",
-        "Patio or balcony",
-        "Portable fans",
-        "Refrigerator",
-        "Shampoo",
-        "Shopping",
-        "Shower gel",
-        "Stove",
-        "Suitable for children (2-12 years)",
-        "Suitable for infants (under 2 years)",
-        "TV",
-        "Toaster",
-        "Towels provided",
-        "Town",
-        "Washer",
-        "Wine glasses",
-        "Wireless Internet"
-      ],
-      "bedrooms": [],
-      "kitchen": [],
-      "services": []
-    },
-    "petsAllowed": false,
-    "stayIncludes": [],
-    "style": "",
-    "tags": [],
-    "occasions": [],
-    "bookingUrl": "",
-    "guestyId": "6a3ba1fce19cb0001dc57ea6",
-    "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Filigree Plaza by Portugal Active",
-    "sortOrder": 0,
-    "isActive": true,
-    "isPortfolio": false,
-    "seoTitle": "Filigree Plaza by Portugal Active — Portugal Active",
-    "seoDescription": "Immerse yourself in the timeless charm of Viana do Castelo at this luxury retreat, Filigree Plaza by Portugal Active.\nNestled in the heart of the historic cente",
-    "address": {
-      "full": "",
-      "street": "Largo do Instituto Histórico do Minho 6",
-      "city": "Viana do Castelo",
-      "state": "Viana do Castelo",
-      "zipcode": "",
-      "country": "Portugal",
-      "lat": 41.6931498,
-      "lng": -8.8272244
-    },
-    "licenseNumber": null,
-    "rooms": [
-      {
-        "name": "Bedroom 1",
-        "beds": [
-          {
-            "type": "DOUBLE_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 2",
-        "beds": [
-          {
-            "type": "SOFA_BED",
-            "quantity": 1
-          }
-        ]
-      }
-    ],
-    "propertyType": "Apartment",
-    "checkInTime": "16:00",
-    "checkOutTime": "11:00",
-    "areaSquareFeet": 270,
-    "reviews": [
-      {
-        "rating": 5,
-        "text": "Alojamiento muy recomendable. En pleno centro. La única pega el aparcamiento, complicado en días de festejos",
-        "guestDisplayName": "David",
-        "guestName": "David",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-08-21T08:45:05.951Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "Apartamento impecável e super bem localizado !",
-        "guestDisplayName": "Hanques",
-        "guestName": "Hanques",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-08-11T11:29:13.790Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      }
-    ],
-    "averageRating": 5,
-    "reviewCount": 2,
-    "lastModified": "2026-08-24",
-    "contentHash": "5357f23c813c1520c80720d51e93ad93fcf6508d"
   },
   {
     "id": "guesty-69653394ecf7490014ed2ed9",
@@ -13435,6 +13264,248 @@
     "reviewCount": 1,
     "lastModified": "2026-08-24",
     "contentHash": "d1821339573421395e5ce83212cee115c3742e38"
+  },
+  {
+    "id": "guesty-6a3ba1fce19cb0001dc57ea6",
+    "slug": "filigree-plaza-by-portugal-active-c57ea6",
+    "name": "Main Square River & Beach Retreat by Portugal Active",
+    "tagline": "A one-bedroom apartment beside the Cathedral, in the heart of Viana do Castelo",
+    "tier": "select",
+    "destination": "minho",
+    "locality": "Viana do Castelo",
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "maxGuests": 4,
+    "priceFrom": 150,
+    "pricePerNight": 150,
+    "cleaningFee": 98,
+    "minNights": 3,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1782894202/production/6957de4388cba42d9e7a905e/ihtu5ymajnyh7agqnreq.jpg",
+      "https://assets.guesty.com/image/upload/v1782894204/production/6957de4388cba42d9e7a905e/zd1ayzwu7wznvaecsktn.jpg",
+      "https://assets.guesty.com/image/upload/v1782894178/production/6957de4388cba42d9e7a905e/yyztawmvwdpzsrokj8wt.jpg",
+      "https://assets.guesty.com/image/upload/v1782894181/production/6957de4388cba42d9e7a905e/c5gpyo8em1hrzgo88vac.jpg",
+      "https://assets.guesty.com/image/upload/v1782894185/production/6957de4388cba42d9e7a905e/m4bwdusmsmytkfawd64x.jpg",
+      "https://assets.guesty.com/image/upload/v1782894196/production/6957de4388cba42d9e7a905e/azbthn9aiwh1gkhqfeps.jpg",
+      "https://assets.guesty.com/image/upload/v1782894198/production/6957de4388cba42d9e7a905e/j6ffd8a4a3jpqkkdwgwh.jpg",
+      "https://assets.guesty.com/image/upload/v1782894198/production/6957de4388cba42d9e7a905e/pu6dkbqw62taasrngq5j.jpg",
+      "https://assets.guesty.com/image/upload/v1782894199/production/6957de4388cba42d9e7a905e/qyvew7pfsz4ztot2aczi.jpg",
+      "https://assets.guesty.com/image/upload/v1782894200/production/6957de4388cba42d9e7a905e/yi3eujedq26pa9skrx8k.jpg",
+      "https://assets.guesty.com/image/upload/v1782894202/production/6957de4388cba42d9e7a905e/voledp6wefsxclw5oihf.jpg",
+      "https://assets.guesty.com/image/upload/v1782296559/production/6957de4388cba42d9e7a905e/dcbarrs0hi5vclbqvzfi.jpg",
+      "https://assets.guesty.com/image/upload/v1782894182/production/6957de4388cba42d9e7a905e/hfv4p31l0drlubltauz2.jpg",
+      "https://assets.guesty.com/image/upload/v1782296562/production/6957de4388cba42d9e7a905e/d2iufm3jsi1lt8s6riki.jpg",
+      "https://assets.guesty.com/image/upload/v1782894174/production/6957de4388cba42d9e7a905e/tx9vlz8yu7vii8phkabm.jpg",
+      "https://assets.guesty.com/image/upload/v1782894195/production/6957de4388cba42d9e7a905e/wenni8gov2cwwo1pups2.jpg",
+      "https://assets.guesty.com/image/upload/v1782894196/production/6957de4388cba42d9e7a905e/n3o2kqbxj0yjuhghvpop.jpg",
+      "https://assets.guesty.com/image/upload/v1782894206/production/6957de4388cba42d9e7a905e/kykbp8escjrzwdipi1dn.jpg",
+      "https://assets.guesty.com/image/upload/v1782894206/production/6957de4388cba42d9e7a905e/qjh0qhxgu9y9onadpg1f.jpg",
+      "https://assets.guesty.com/image/upload/v1782894183/production/6957de4388cba42d9e7a905e/tydossvkgy0zl7smzxgu.jpg",
+      "https://assets.guesty.com/image/upload/v1782894181/production/6957de4388cba42d9e7a905e/v95xek2aakwpunvz39uk.jpg",
+      "https://assets.guesty.com/image/upload/v1782894190/production/6957de4388cba42d9e7a905e/nsoowmqr2nma75fdlzna.jpg",
+      "https://assets.guesty.com/image/upload/v1782894190/production/6957de4388cba42d9e7a905e/o8ivrfejnlbwvusoe8g4.jpg",
+      "https://assets.guesty.com/image/upload/v1782894191/production/6957de4388cba42d9e7a905e/cxh0o8srxrndhgjlhbv5.jpg",
+      "https://assets.guesty.com/image/upload/v1782894191/production/6957de4388cba42d9e7a905e/b9owxqhonca735ki9xdn.jpg",
+      "https://assets.guesty.com/image/upload/v1782894180/production/6957de4388cba42d9e7a905e/p6dbjmtngw8hnbgdx0lr.jpg",
+      "https://assets.guesty.com/image/upload/v1782894173/production/6957de4388cba42d9e7a905e/uy3yboj0ilygyjlnbf1l.jpg",
+      "https://assets.guesty.com/image/upload/v1782293636/production/6957de4388cba42d9e7a905e/yoqdu9b1dmieubywhrts.jpg",
+      "https://assets.guesty.com/image/upload/v1782296559/production/6957de4388cba42d9e7a905e/qln2jcalg68rtbclhcsv.jpg",
+      "https://assets.guesty.com/image/upload/v1782894187/production/6957de4388cba42d9e7a905e/wwqdzvaffykd0a8rmlaj.jpg",
+      "https://assets.guesty.com/image/upload/v1782894187/production/6957de4388cba42d9e7a905e/lxwhljffn96qm5hshksj.jpg",
+      "https://assets.guesty.com/image/upload/v1782293638/production/6957de4388cba42d9e7a905e/thp789xqj0idaixmhxpd.jpg",
+      "https://assets.guesty.com/image/upload/v1782894189/production/6957de4388cba42d9e7a905e/mxotpwlsqhiszsbjn39g.jpg",
+      "https://assets.guesty.com/image/upload/v1782293646/production/6957de4388cba42d9e7a905e/jvea9b3gotvuucsr54bh.jpg",
+      "https://assets.guesty.com/image/upload/v1782293647/production/6957de4388cba42d9e7a905e/ydlii3f9rny1oeacjsmb.jpg",
+      "https://assets.guesty.com/image/upload/v1782293647/production/6957de4388cba42d9e7a905e/znjrye6t4wifbotohp4n.jpg",
+      "https://assets.guesty.com/image/upload/v1782293647/production/6957de4388cba42d9e7a905e/eebt234dtqef54iykvbf.jpg"
+    ],
+    "description": "Filigree Plaza sits next to the Cathedral in Viana do Castelo's historic centre, a one-bedroom apartment with a queen bed and a living room sofa bed for two, sleeping up to four. The kitchen is fully equipped for proper cooking, with a dining table for shared meals, and the living area holds cable TV and city views from the balcony or patio.\n\nPraça da República and the banks of the Lima River are a short walk from the door, both good for evening walks. The apartment is in a lively, central part of town, with shops and museums nearby; note that August's Romaria de Nossa Senhora d'Agonia brings festivities and higher noise levels to the area.\n\nMornings suit coffee at the dining table before heading out to the old streets around the Cathedral. Afternoons can be spent exploring downtown or the riverbank, with the kitchen ready for cooking dinner with produce picked up locally, and evenings settling into the living room with the television on.\n\nSuited to couples or small families wanting a central base in Viana do Castelo, with Portugal Active's concierge on hand to arrange horseback riding or a private chef.",
+    "descriptionSections": null,
+    "amenities": {
+      "property": [
+        "Baking sheet",
+        "Bed linens",
+        "Cable TV",
+        "City View",
+        "Cleaning Disinfection",
+        "Cleaning products",
+        "Clothing storage",
+        "Coffee",
+        "Coffee maker",
+        "Cookware",
+        "Crib",
+        "Dining table",
+        "Dishes and silverware",
+        "Downtown",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Extra pillows and blankets",
+        "Family/kid friendly",
+        "Fire extinguisher",
+        "First aid kit",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High chair",
+        "High touch surfaces disinfected",
+        "Hot water",
+        "Internet",
+        "Iron",
+        "Kettle",
+        "Kitchen",
+        "Laptop friendly workspace",
+        "Long term stays allowed",
+        "Microwave",
+        "Museums",
+        "Oven",
+        "Paid parking off premises",
+        "Patio or balcony",
+        "Portable fans",
+        "Refrigerator",
+        "Shampoo",
+        "Shopping",
+        "Shower gel",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Town",
+        "Washer",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "petsAllowed": false,
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "6a3ba1fce19cb0001dc57ea6",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Main Square River & Beach Retreat by Portugal Active",
+    "sortOrder": 0,
+    "isActive": true,
+    "isPortfolio": false,
+    "seoTitle": "Main Square River & Beach Retreat by Portugal Active — Portugal Active",
+    "seoDescription": "Immerse yourself in the timeless charm of Viana do Castelo at this luxury retreat, Filigree Plaza by Portugal Active.\nNestled in the heart of the historic cente",
+    "address": {
+      "full": "",
+      "street": "Largo do Instituto Histórico do Minho 6",
+      "city": "Viana do Castelo",
+      "state": "Viana do Castelo",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 41.6931498,
+      "lng": -8.8272244
+    },
+    "licenseNumber": null,
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "Apartment",
+    "checkInTime": "16:00",
+    "checkOutTime": "11:00",
+    "areaSquareFeet": 270,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Alojamiento muy recomendable. En pleno centro. La única pega el aparcamiento, complicado en días de festejos",
+        "guestDisplayName": "David",
+        "guestName": "David",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-21T08:45:05.951Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Apartamento impecável e super bem localizado !",
+        "guestDisplayName": "Hanques",
+        "guestName": "Hanques",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-11T11:29:13.790Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 2,
+    "lastModified": "2026-09-01",
+    "contentHash": "3bbc3dc10d098a6b0c385ae02ab7f34fff2f8b16"
   },
   {
     "id": "guesty-6970af61638a8a0015eaa850",
@@ -19430,6 +19501,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Lugar idílico al lado del río con playa fluvial.",
+        "guestDisplayName": "Felipe",
+        "guestName": "Felipe",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-01T16:49:49.200Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Ha estado bien",
         "guestDisplayName": "Mario",
         "guestName": "Mario",
@@ -19465,7 +19571,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1,
+    "reviewCount": 2,
     "lastModified": "2026-08-31",
     "contentHash": "43b2c6ce8a24653943c303e1e3505790f59c4047"
   },
@@ -27192,6 +27298,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Nuestra estancia fue muy agradable. La casa estaba limpia, muy bien equipada, muy luminosa. Hicimos muchas excursiones desde Viana Castelo, y para ello la ubicación de la casa de Sidonia, la que tiene muy fácil acceso a todas las carreteras.",
+        "guestDisplayName": "Cari",
+        "guestName": "Cari",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-30T18:16:05.300Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Un alojamiento impresionante, cuidado, con unas prestaciones y unos servicios que superaban cualquier expectativa. La empresa responde rápido y siempre soluciona cualquier inconveniente, duda o incidencia posible. Un éxito",
         "guestDisplayName": "Marta",
         "guestName": "Marta",
@@ -27542,7 +27683,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 10,
+    "reviewCount": 11,
     "lastModified": "2026-08-24",
     "contentHash": "5a5dce50429226934a5fd84abbb736e335fc692a"
   },
@@ -27556,7 +27697,7 @@
     "locality": "Viana do Castelo",
     "bedrooms": 5,
     "bathrooms": 3.5,
-    "maxGuests": 12,
+    "maxGuests": 13,
     "priceFrom": 459,
     "pricePerNight": 459,
     "cleaningFee": 345,
@@ -28019,8 +28160,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 17,
-    "lastModified": "2026-08-24",
-    "contentHash": "e62b67dc1f43170b9e657acdbd9783ce107601f4"
+    "lastModified": "2026-09-01",
+    "contentHash": "4f24f5915b214bff973a2cbeeddf0b479aee5f9d"
   },
   {
     "id": "guesty-696533af4fe6a100145fecb6",
