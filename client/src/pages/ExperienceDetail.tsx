@@ -221,7 +221,11 @@ export default function ExperienceDetail() {
       image: exp.gallery && exp.gallery.length ? exp.gallery : [exp.image],
       url,
       touristType: ['Adventure', 'Nature', 'Sport'],
-      brand: { '@id': 'https://www.portugalactive.com/#organization' },
+      // brand resolved to the Organization node through that @id, and the
+      // merchant-listing validator rejects an Organization here — it wants a
+      // Brand. provider is the opposite: an Organization is exactly right, so
+      // it keeps the reference.
+      brand: { '@type': 'Brand', name: 'Portugal Active', url: 'https://www.portugalactive.com' },
       provider: { '@id': 'https://www.portugalactive.com/#organization' },
       // Only emit an Offer with a real price — a price:0 offer is invalid
       // structured data (e.g. the yacht defers pricing to the live Bókun widget).
