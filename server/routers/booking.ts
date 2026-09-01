@@ -193,6 +193,25 @@ export const bookingRouter = router({
       return getLowestNightly(input.listingId, input.basePrice);
     }),
 
+  /**
+   * Total for a specific stay in a partner home. These have no Guesty listing
+   * and cannot be quoted through the normal path, but the supplier's calendar
+   * carries a price per day, so the exact figure is known — which is what a
+   * guest wants once they have picked dates, rather than a "from" price that
+   * is the cheapest night of the whole year.
+   */
+  partnerQuote: publicProcedure
+    .input(z.object({
+      tripwixUid: z.string().min(1),
+      checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    }))
+    .query(async ({ input, ctx }) => {
+      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=900, stale-while-revalidate=3600");
+      const { getPartnerQuote } = await import("../services/tripwix");
+      return getPartnerQuote(input.tripwixUid, input.checkIn, input.checkOut);
+    }),
+
   /** "From €X" for a page of PLP cards — cached/DB-backed, warms in background. */
   lowestNightlyBatch: publicProcedure
     .input(z.object({ listingIds: z.array(z.string().min(1)).max(120) }))

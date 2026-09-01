@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { loadPropertyOverrides, mergePropertyOverrides } from '@/lib/localizeProperty';
 import { localizeProduct } from '@/lib/localizeContent';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { PartnerBookingPanel } from '@/components/booking/PartnerBookingPanel';
 import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck,
   Sparkles, Gem, Clock, UtensilsCrossed, Headphones, Plus, X, AlertTriangle,
@@ -1037,6 +1038,19 @@ export default function PropertyDetail() {
             initialGuests={initialGuests}
           />
         </Suspense>
+      ) : tripwixUid ? (
+        <PartnerBookingPanel
+          tripwixUid={tripwixUid}
+          propertyName={property.name}
+          propertySlug={property.slug}
+          fromPrice={lowestNightly?.from ?? (property as any).priceFrom}
+          maxGuests={property.maxGuests || 20}
+          minNights={(property as any).minNights}
+          initialCheckIn={initialCheckin}
+          initialCheckOut={initialCheckout}
+          initialGuests={initialGuests}
+          whatsappUrl={whatsappUrl}
+        />
       ) : (
         <div className="bg-[#FAFAF7] border border-[#E8E4DC] p-6">
           {/* Partner homes cannot be booked instantly — the supplier confirms
@@ -1671,7 +1685,10 @@ export default function PropertyDetail() {
                 <BadgeCheck size={12} className="text-[#8B7355]" /> {t('property.conciergeShort')}
               </p>
             </div>
-            {property.guestyId ? (
+            {/* Partner homes open the same drawer: the request form lives on
+                the property now, and sending the guest to the generic contact
+                page threw away the dates they had just picked. */}
+            {property.guestyId || tripwixUid ? (
               <button
                 type="button"
                 onClick={() => setBookingOpen(true)}

@@ -137,3 +137,73 @@ export async function getTripwixLowestNightlyBatch(
 
   return out;
 }
+
+
+/** VAT on accommodation in mainland Portugal, per the supplier's own terms. */
+export const PARTNER_VAT_RATE = 0.06;
+
+export type PartnerQuote = {
+  available: boolean;
+  nights: number;
+  /** Nightly rates for the stay, in order, so the UI can show a breakdown. */
+  perNight: Array<{ date: string; price: number; status: string }>;
+  subtotal: number;
+  vat: number;
+  total: number;
+  /** Dates inside the range that cannot be booked, if any. */
+  unavailable: string[];
+  currency: "EUR";
+};
+
+/**
+ * Price a specific stay off the supplier's calendar.
+ *
+ * Their rates are net and already include our commission; VAT is the only
+ * thing added, and there is no separate cleaning or preparation fee — a
+ * question guests do ask, because "from EUR X" is the cheapest night of the
+ * whole year and rarely the night they want.
+ *
+ * The checkout date is excluded: it is not a night that gets charged.
+ */
+export async function getPartnerQuote(
+  uid: string,
+  checkIn: string,
+  checkOut: string,
+): Promise<PartnerQuote | null> {
+  const key = process.env.TRIPWIX_API_KEY;
+  if (!key || !uid || !checkIn || !checkOut || checkOut <= checkIn) return null;
+
+  const url = `${BASE}/properties/${uid}/calendar/?start_date=${checkIn}&end_date=${checkOut}`;
+  let days: CalendarDay[];
+  try {
+    const res = await fetch(url, { headers: { "X-Partner-API-Key": key } });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!Array.isArray(data)) return null;
+    days = data;
+  } catch {
+    return null;
+  }
+
+  const nights = days.filter((d) => d.date < checkOut);
+  if (!nights.length) return null;
+
+  const unavailable = nights.filter((d) => d.status !== "available").map((d) => d.date);
+  const subtotal = nights.reduce((sum, d) => sum + (Number(d.price) || 0), 0);
+  const vat = subtotal * PARTNER_VAT_RATE;
+
+  return {
+    available: unavailable.length === 0,
+    nights: nights.length,
+    perNight: nights.map((d) => ({
+      date: d.date,
+      price: Number(d.price) || 0,
+      status: d.status,
+    })),
+    subtotal: Math.round(subtotal * 100) / 100,
+    vat: Math.round(vat * 100) / 100,
+    total: Math.round((subtotal + vat) * 100) / 100,
+    unavailable,
+    currency: "EUR",
+  };
+}
