@@ -6125,6 +6125,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "A great, large house for anyone looking to enjoy the local beaches with their family and friends. Thanks for a lovely stay.",
+        "guestDisplayName": "Lauren",
+        "guestName": "Lauren",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-03T09:07:06.350Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Maison très bien située, plages surveillées, boulangerie, restaurants à proximité.\nQuartier très calme, parking toujours disponible. Possibilités de laisser ses vélos dans un local privé et fermé. \nLes photos sont conformes à la maison. Idéal pour les vacances en famille ou entre amis.",
         "guestDisplayName": "Nuno",
         "guestName": "Nuno",
@@ -6335,7 +6370,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 6,
+    "reviewCount": 7,
     "lastModified": "2026-08-24",
     "contentHash": "a2df9b720904139b3aff764be253a2a3bf32b66a"
   },
@@ -23276,9 +23311,45 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 10625,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "What a beautiful home this was! Very modern and well decorated. Was also super clean and new and smelled amazing. The place was perfectly located with stores nearby. Looks exactly like the photos and was worth the price.\nThank you Portugal Active!",
+        "guestDisplayName": "Jersy",
+        "guestName": "Jersy",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-08-30T14:41:28.135Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1,
     "lastModified": "2026-08-24",
     "contentHash": "d7e38ceaa9b85f286e303ed8ce0cefff8f545e99"
   },
@@ -25361,9 +25432,45 @@
     "checkInTime": "16:00",
     "checkOutTime": "11:00",
     "areaSquareFeet": 2584,
-    "reviews": [],
-    "averageRating": null,
-    "reviewCount": 0,
+    "reviews": [
+      {
+        "rating": 5,
+        "text": "Passámos um fim de semana fantástico em Carreço para um team building e a experiência não podia ter sido melhor.\n\nA casa é espetacular, muito confortável, espaçosa e extremamente bem equipada, com todas as comodidades de que precisámos durante a estadia. A piscina é excelente e as vistas são simplesmente incríveis, tornando o espaço perfeito tanto para relaxar como para aproveitar bons momentos em grupo.\n\nÉramos um grupo de 8 pessoas e todos adorámos a estadia. A casa correspondeu totalmente às ",
+        "guestDisplayName": "Miguel",
+        "guestName": "Miguel",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-03T12:24:18.797Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      }
+    ],
+    "averageRating": 5,
+    "reviewCount": 1,
     "lastModified": "2026-08-24",
     "contentHash": "78cd9bc834e2e4e52d880452a75e443dd8711673"
   },
