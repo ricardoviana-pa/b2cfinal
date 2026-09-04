@@ -337,7 +337,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     nightsLabel: "nights", guestsLabel: "guests", taxesLabel: "Taxes & fees",
     hostedArrival: "Hosted arrival", hostedArrivalLate: "Hosted arrival after 9pm",
     included: "Included",
-    confirm24h: "confirmed within 24 hours",
+    confirm24h: "confirmed within 2 hours",
     refund24hNote: "If we cannot secure a service marked for 24-hour confirmation, that line is refunded automatically.",
     groceriesNote: "Groceries: the supermarket bill is presented separately, at cost.",
     flexLine: "Flex, guaranteed rebooking",

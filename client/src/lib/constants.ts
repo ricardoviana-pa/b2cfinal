@@ -3,8 +3,8 @@
    Update these when the portfolio changes.
    ========================================================================== */
 
-/** Approximate number of properties in the portfolio, used in copy / SEO. */
-export const PROPERTY_COUNT = '60+';
+/** Home count label ("90+"), derived from the data — see shared/brandFacts.ts. */
+export { HOME_COUNT_LABEL as PROPERTY_COUNT } from '@shared/brandFacts';
 
 /** WhatsApp number for all CTAs (international format, no +). */
 export const WHATSAPP_NUMBER = '351927161771';

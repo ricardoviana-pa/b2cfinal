@@ -212,7 +212,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
           <p className="mt-[22px] hidden border-t border-white/10 pt-[22px] text-[13px] leading-relaxed text-white/60 lg:block lg:max-w-[240px]">
             {t("paymentThankYou.reassurance", {
               defaultValue:
-                "A confirmation email is on its way. Your concierge will be in touch within 24 hours to help plan your stay.",
+                "A confirmation email is on its way. Your concierge will be in touch within 2 hours to help plan your stay.",
             })}
           </p>
         </div>
@@ -352,7 +352,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
               <p className="mt-3 text-center text-[11.5px] leading-relaxed text-pa-earth">
                 {t("paymentThankYou.ctaNote", {
                   defaultValue:
-                    "Your dedicated concierge will reach out within 24 hours to help plan your stay.",
+                    "Your dedicated concierge will reach out within 2 hours to help plan your stay.",
                 })}
               </p>
             </div>

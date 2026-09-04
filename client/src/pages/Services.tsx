@@ -4,6 +4,7 @@
    ========================================================================== */
 
 import { useMemo } from 'react';
+import { HOME_COUNT_LABEL, CHECKLIST_POINTS } from '@shared/brandFacts';
 import { Link } from 'wouter';
 import { MessageCircle, ArrowRight, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -285,7 +286,7 @@ export default function Concierge() {
             <div className="aspect-video w-full rounded-sm overflow-hidden bg-black">
               <iframe
                 src="https://www.youtube.com/embed/OUgTpL2E15U?rel=0&modestbranding=1"
-                title="PA Cleaning — 147-point property preparation"
+                title={`PA Cleaning — ${CHECKLIST_POINTS}-point property preparation`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="w-full h-full"
@@ -297,10 +298,10 @@ export default function Concierge() {
               <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-4">{t('services.standardsOverline', 'OUR STANDARDS')}</p>
               <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.standardsTitle', 'Hotel-grade housekeeping, every stay')}</h2>
               <p className="body-lg mb-6">
-                {t('services.standardsBody', 'Before every guest arrives, our in-house team runs a 147-point preparation checklist. Linens pressed, amenities restocked, every surface inspected. No third-party crews, no shortcuts.')}
+                {t('services.standardsBody', { points: CHECKLIST_POINTS, defaultValue: 'Before every guest arrives, our in-house team runs a {{points}}-point preparation checklist. Linens pressed, amenities restocked, every surface inspected. No third-party crews, no shortcuts.' })}
               </p>
               <p className="body-md text-[#726D63]">
-                {t('services.standardsNote', 'This is the standard across all 60+ properties. Every time.')}
+                {t('services.standardsNote', { homes: HOME_COUNT_LABEL, defaultValue: 'This is the standard across all {{homes}} properties. Every time.' })}
               </p>
             </div>
           </div>

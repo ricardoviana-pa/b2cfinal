@@ -4,6 +4,7 @@
    ========================================================================== */
 
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
+import { HOME_COUNT_LABEL } from '@shared/brandFacts';
 import { useSearch, useLocation, useRouter } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -96,7 +97,7 @@ export default function Homes() {
         '@context': 'https://schema.org',
         '@type': 'ItemList',
         name: 'Private Villas in Portugal',
-        description: 'Browse 60+ handpicked private villas across Portugal, each managed like a luxury hotel.',
+        description: `Browse ${HOME_COUNT_LABEL} private hotels across Portugal, each home operated like a hotel by our own team.`,
         url: 'https://www.portugalactive.com/homes',
         numberOfItems: allProperties.length,
         itemListElement: allProperties.slice(0, 30).map((p, i) => ({
@@ -572,7 +573,7 @@ export default function Homes() {
         <div className="relative z-10 container flex flex-col justify-end h-full min-h-[inherit] pt-28 md:pt-32 pb-10 md:pb-14">
           <h1 className="headline-xl text-white mb-3 max-w-2xl">{t('homes.title')}</h1>
           <p className="body-lg max-w-xl pb-1" style={{ color: 'rgba(255,255,255,0.75)' }}>
-            {t('homes.subtitle')}
+            {t('homes.subtitle', { homes: HOME_COUNT_LABEL })}
           </p>
         </div>
       </section>
@@ -1179,7 +1180,7 @@ export default function Homes() {
         <div className="container max-w-3xl mx-auto">
           <AnswerCapsule
             question="What properties does Portugal Active offer?"
-            answer="Portugal Active operates a curated collection of 60+ private hotels across Portugal, spanning the Minho Coast, Porto, Douro Valley, Lisbon, Alentejo, and the Algarve. Each property is managed to five-star standards with dedicated concierge, daily housekeeping, and access to private chef, spa, and curated local experiences. Unlike standard rentals, every stay is fully operated by an in-house team. Book direct for the best rate guaranteed."
+            answer={`Portugal Active operates a curated collection of ${HOME_COUNT_LABEL} private hotels across Portugal, spanning Minho, Porto, the Douro Valley, Lisbon, Alentejo and the Algarve. Each property is managed to five-star standards with dedicated concierge, daily housekeeping, and access to private chef, spa, and curated local experiences. Unlike standard rentals, every stay is fully operated by an in-house team. Book direct for the best rate guaranteed.`}
             lastUpdated="2026-04-17"
             author="Portugal Active concierge team"
             cite={[

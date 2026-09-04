@@ -142,7 +142,7 @@ export async function sendBookingConfirmation(data: BookingConfirmationData): Pr
 
 <tr><td style="padding:0 0 20px 0;">
   <p style="font-family:Arial,sans-serif;font-size:14px;color:#6B6860;line-height:1.6;margin:0;">
-    Your dedicated concierge will reach out within 24 hours to help you plan your stay, arrange services, and answer any questions.
+    Your dedicated concierge will reach out within 2 hours to help you plan your stay, arrange services, and answer any questions.
   </p>
 </td></tr>
 

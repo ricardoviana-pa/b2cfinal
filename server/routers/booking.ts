@@ -325,7 +325,7 @@ export const bookingRouter = router({
    * - Guesty internally creates reservation quotes per rate plan and returns the minimum
    * - Only AVAILABLE listings for the given dates are returned (unavailable = not in response)
    * - Prices guaranteed for 24h after the internal quote creation
-   * - SINGLE API call vs 50+ individual quote calls — eliminates rate limit risk entirely
+   * - SINGLE API call vs dozens of individual quote calls — eliminates rate limit risk entirely
    * - Max 50 results per request (sufficient for our portfolio)
    * - Rate limits: 5/sec, 275/min, 16500/hr — one call is well within limits
    */

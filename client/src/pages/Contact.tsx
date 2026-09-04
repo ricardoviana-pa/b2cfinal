@@ -97,7 +97,7 @@ const CONTACT_CHANNELS = [
 
 export default function Contact() {
   const { t } = useTranslation();
-  usePageMeta({ title: 'Contact Portugal Active — Book a Lodge or Adventure', description: 'Ready to book your perfect stay or adventure in Portugal? Get in touch — we reply within 24 hours and help you plan the perfect trip to Minho.', url: '/contact' });
+  usePageMeta({ title: 'Contact Portugal Active — Book a Lodge or Adventure', description: 'Ready to book your perfect stay or adventure in Portugal? Get in touch — we reply within 2 hours and help you plan your stay anywhere in Portugal.', url: '/contact' });
 
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);

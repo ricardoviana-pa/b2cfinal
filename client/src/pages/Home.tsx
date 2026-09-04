@@ -22,6 +22,7 @@
    ========================================================================== */
 
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
+import { HOME_COUNT_LABEL, CHECKLIST_POINTS } from '@shared/brandFacts';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { StructuredData, buildFaqPageSchema } from '@/components/seo/StructuredData';
@@ -118,7 +119,7 @@ export default function Home() {
   const homeFaq = useMemo(() => buildFaqPageSchema([
     {
       question: 'What makes Portugal Active different from Airbnb or Booking.com?',
-      answer: "Portugal Active operates each property like a private hotel — with a 147-point preparation checklist, dedicated concierge, optional private chef, and a local team minutes away. We don't just list homes; we manage them to hotel standards.",
+      answer: `Portugal Active operates each property like a private hotel — with a ${CHECKLIST_POINTS}-point preparation checklist, dedicated concierge, optional private chef, and a local team minutes away. We don't just list homes; we manage them to hotel standards.`,
     },
     {
       question: 'Which regions in Portugal does Portugal Active cover?',
@@ -434,7 +435,7 @@ export default function Home() {
             {/* Proof strip — above CTAs so it never collides with booking bar */}
             <div className="hidden lg:flex hero-proof-strip flex-wrap items-center gap-x-5 gap-y-1 mb-4">
               <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
-                {t('home.proofHotels', '60+ private hotels')}
+                {t('home.proofHotels', { homes: HOME_COUNT_LABEL, defaultValue: '{{homes}} private hotels' })}
               </span>
               <span className="text-white/25">·</span>
               <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>

@@ -1,21 +1,22 @@
-# Portugal Active — Luxury Private Villas & Experiences in Portugal
+# Portugal Active — Private Hotels in Portugal
 
-> Portugal Active operates 50+ private villas across Portugal as luxury private hotels — with dedicated concierge, private chef, and curated adventure experiences. Book direct for best rates.
+> Portugal Active operates 90+ private hotels across Portugal: private homes run by one in-house team to hotel standards — dedicated concierge, private chef, housekeeping and curated experiences. The privacy of a home, the service of a hotel. Book direct for the best rate.
 
-## Services
-- Luxury villa rentals across Minho Coast, Porto & Douro, Lisbon, Alentejo, and Algarve
-- Adventure experiences: horseback riding, canyoning, surfing, sailing, e-bike tours, stand-up paddle, hiking
-- Private chef and in-villa dining
-- Concierge planning and bespoke itineraries
+## What we do
+- Private hotels (whole private homes with hotel service) in Minho, Porto, Douro, Lisbon, Alentejo, Algarve
+- Dedicated WhatsApp concierge before, during and after every stay (response within 2 hours)
+- Private chef and in-home dining
+- Curated experiences: horseback riding, canyoning, surfing, sailing, e-bike tours, stand-up paddle, hiking
 - Private events: weddings, corporate retreats, celebrations
+- Best rate guarantee: same home, dates and conditions cheaper on Airbnb or Booking.com → we match it (https://www.portugalactive.com/en/best-rate-guarantee)
 
-## Key Facts
+## Key facts
 - Founded 2017 in Viana do Castelo, Portugal
-- 50+ operated private homes
-- Each home managed with hotel-standard service (47-point checklist)
-- Available in 5 regions: Minho, Porto, Lisbon, Alentejo, Algarve
-- Direct booking — no middleman markup
-- Multilingual team: English, Portuguese, Spanish, French, German
+- 90+ private hotels operated end to end by our own team
+- Every home prepared with our 147-item checklist before each arrival
+- Regions: Minho, Porto, Douro, Lisbon, Alentejo, Algarve
+- Website in 9 languages: English, Portuguese, Spanish, French, Italian, German, Dutch, Swedish, Finnish
+- Direct booking, no service fees
 
 ## Contact
 - Website: https://www.portugalactive.com
@@ -23,12 +24,21 @@
 - Phone: +351 258 358 434
 - WhatsApp: +351 927 161 771
 
-## Experience Prices (per person)
-- Horseback Riding: from €75
-- Canyoning: from €65
-- Hike, Dive & Dine: from €95
-- Stand-Up Paddle: from €45
-- Can-Am Buggy: from €120/buggy
-- Sailing: from €85
-- E-Bike Tours: from €55
-- Surf Lessons: from €60
+## Experience prices (per person)
+- Viana do Castelo Horseback Riding Tour: from €75 per person
+- Serra d'Arga Hike, Dive & Dine Like a Local in a Secret Spot: from €95 per person
+- Canyoning Adventure in Peneda-Gerês National Park: from €65 per person
+- SUP Sun Experience: from €45 per person
+- Can-Am Scenic Driving Tour: from €120 per buggy
+- Private Yacht Experience: Private charter
+- E-Bike Wild Tour: from €55 per person
+- Surf Lessons: from €60 per person
+
+## Pages
+- Homes: https://www.portugalactive.com/en/homes
+- Destinations: https://www.portugalactive.com/en/destinations
+- Experiences: https://www.portugalactive.com/en/experiences
+- Services: https://www.portugalactive.com/en/services
+- Journal: https://www.portugalactive.com/en/blog
+- About: https://www.portugalactive.com/en/about
+- Sitemap: https://www.portugalactive.com/sitemap.xml

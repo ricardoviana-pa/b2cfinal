@@ -865,7 +865,7 @@ export default function BookingWidget({
           </a>
 
           <p className="text-[11px] text-black/30 text-center leading-relaxed">
-            {t("bookingWidget.conciergeReachOut", { defaultValue: "Your dedicated concierge will reach out within 24 hours to help plan your stay." })}
+            {t("bookingWidget.conciergeReachOut", { defaultValue: "Your dedicated concierge will reach out within 2 hours to help plan your stay." })}
           </p>
         </div>
       </div>

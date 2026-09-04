@@ -4,6 +4,7 @@
    ========================================================================== */
 
 import { useState, useMemo, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
+import { CHECKLIST_POINTS } from '@shared/brandFacts';
 import { useParams, Link, useSearch } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { loadPropertyOverrides, mergePropertyOverrides } from '@/lib/localizeProperty';
@@ -714,7 +715,7 @@ export default function PropertyDetail() {
 
   const whatsIncluded = useMemo(
     () => [
-      { icon: Sparkles, text: t('propertyDetail.included1') },
+      { icon: Sparkles, text: t('propertyDetail.included1', { points: CHECKLIST_POINTS }) },
       { icon: BedDouble, text: t('propertyDetail.included2') },
       { icon: Bath, text: t('propertyDetail.included3') },
       { icon: UtensilsCrossed, text: t('propertyDetail.included4') },
@@ -1324,7 +1325,7 @@ export default function PropertyDetail() {
                   separates us from a marketplace listing.
 
                   Hidden on partner homes: this list describes what OUR team
-                  puts in OUR properties (147-point prep, welcome kit, local
+                  puts in OUR properties (the preparation checklist, welcome kit, local
                   team minutes away). We do not prepare these homes and the
                   supplier exposes no equivalent data, so every line would be
                   an invention. */}

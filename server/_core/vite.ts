@@ -1,4 +1,5 @@
 import express, { type Express } from "express";
+import { HOME_COUNT_LABEL } from "@shared/brandFacts";
 import fs from "fs";
 import { type Server } from "http";
 import { nanoid } from "nanoid";
@@ -353,41 +354,41 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
     en: { title: 'Luxury Private Villas in Portugal | Portugal Active',
           description: '5-star hotel experience in private holiday homes. Professionally managed villas in Algarve, Lisbon, Alentejo, Minho. Full-service concierge, private chefs, curated adventures. Book direct.' },
     pt: { title: 'Casas Privadas de Luxo em Portugal | Portugal Active',
-          description: '60+ casas privadas em todo Portugal, geridas como hotéis de luxo. Chef privado, concierge, piscina. Reserve direto para o melhor preço.' },
+          description: '{{homes}} casas privadas em todo Portugal, geridas como hotéis de luxo. Chef privado, concierge, piscina. Reserve direto para o melhor preço.' },
     es: { title: 'Villas Privadas de Lujo en Portugal | Portugal Active',
-          description: 'Más de 60 villas privadas en todo Portugal, gestionadas como hoteles de lujo. Chef privado, conserjería, piscina. Reserva directa al mejor precio.' },
+          description: '{{homes}} villas privadas en todo Portugal, gestionadas como hoteles de lujo. Chef privado, conserjería, piscina. Reserva directa al mejor precio.' },
     fr: { title: 'Villas de Luxe Privées au Portugal | Portugal Active',
-          description: '60+ villas privées à travers le Portugal, gérées comme des hôtels de luxe. Chef privé, conciergerie, piscine. Réservation directe au meilleur tarif.' },
+          description: '{{homes}} villas privées à travers le Portugal, gérées comme des hôtels de luxe. Chef privé, conciergerie, piscine. Réservation directe au meilleur tarif.' },
     de: { title: 'Private Luxusvillen in Portugal | Portugal Active',
-          description: 'Über 60 private Villen in ganz Portugal, geführt wie Luxushotels. Privatkoch, Concierge, Pool. Direkt buchen zum besten Preis.' },
+          description: '{{homes}} private Villen in ganz Portugal, geführt wie Luxushotels. Privatkoch, Concierge, Pool. Direkt buchen zum besten Preis.' },
     it: { title: 'Ville di Lusso Private in Portogallo | Portugal Active',
-          description: 'Oltre 60 ville private in tutto il Portogallo, gestite come hotel di lusso. Chef privato, concierge, piscina. Prenota diretto al miglior prezzo.' },
+          description: '{{homes}} ville private in tutto il Portogallo, gestite come hotel di lusso. Chef privato, concierge, piscina. Prenota diretto al miglior prezzo.' },
     nl: { title: 'Luxe Privévilla\'s in Portugal | Portugal Active',
-          description: '60+ privévilla\'s in heel Portugal, beheerd als luxe hotels. Privékok, conciërge, zwembad. Direct boeken voor de beste prijs.' },
+          description: '{{homes}} privévilla\'s in heel Portugal, beheerd als luxe hotels. Privékok, conciërge, zwembad. Direct boeken voor de beste prijs.' },
     fi: { title: 'Luksushuvilat Portugalissa | Portugal Active',
-          description: 'Yli 60 yksityistä huvilaa eri puolilla Portugalia, hoidettuna kuin luksushotelleja. Yksityiskokki, concierge, uima-allas. Varaa suoraan parhaaseen hintaan.' },
+          description: '{{homes}} yksityistä huvilaa eri puolilla Portugalia, hoidettuna kuin luksushotelleja. Yksityiskokki, concierge, uima-allas. Varaa suoraan parhaaseen hintaan.' },
     sv: { title: 'Privata Lyxvillor i Portugal | Portugal Active',
-          description: 'Över 60 privata villor runt om i Portugal, skötta som lyxhotell. Privat kock, concierge, pool. Boka direkt för bästa pris.' },
+          description: '{{homes}} privata villor runt om i Portugal, skötta som lyxhotell. Privat kock, concierge, pool. Boka direkt för bästa pris.' },
   },
   '/homes': {
     en: { title: 'Luxury Holiday Properties in Portugal — Private Villas & Homes | Portugal Active',
-          description: 'Browse our curated collection of 60+ luxury holiday properties across Portugal. Each home offers hotel-grade amenities, private pools, and dedicated concierge service. Book direct for the best rate.' },
+          description: 'Browse our curated collection of {{homes}} luxury holiday properties across Portugal. Each home offers hotel-grade amenities, private pools, and dedicated concierge service. Book direct for the best rate.' },
     pt: { title: 'Casas Privadas em Portugal | Casas de Férias de Luxo | Portugal Active',
-          description: 'Descubra mais de 60 casas privadas selecionadas em todo Portugal. Piscina, concierge e limpeza incluídos. Filtre por região e reserve direto.' },
+          description: 'Descubra {{homes}} casas privadas selecionadas em todo Portugal. Piscina, concierge e limpeza incluídos. Filtre por região e reserve direto.' },
     es: { title: 'Villas Privadas en Portugal | Casas de Vacaciones de Lujo | Portugal Active',
-          description: 'Descubre más de 60 villas privadas seleccionadas en todo Portugal. Piscina, conserjería y limpieza incluidos. Filtra por región y reserva directo.' },
+          description: 'Descubre {{homes}} villas privadas seleccionadas en todo Portugal. Piscina, conserjería y limpieza incluidos. Filtra por región y reserva directo.' },
     fr: { title: 'Villas Privées au Portugal | Maisons de Vacances de Luxe | Portugal Active',
-          description: 'Plus de 60 villas privées sélectionnées à travers le Portugal. Piscine, conciergerie et ménage inclus. Filtrez par région et réservez en direct.' },
+          description: '{{homes}} villas privées sélectionnées à travers le Portugal. Piscine, conciergerie et ménage inclus. Filtrez par région et réservez en direct.' },
     de: { title: 'Private Villen in Portugal | Luxus-Ferienhäuser | Portugal Active',
-          description: 'Entdecken Sie über 60 ausgewählte private Villen in ganz Portugal. Pool, Concierge und Reinigung inklusive. Nach Region filtern und direkt buchen.' },
+          description: 'Entdecken Sie {{homes}} ausgewählte private Villen in ganz Portugal. Pool, Concierge und Reinigung inklusive. Nach Region filtern und direkt buchen.' },
     it: { title: 'Ville Private in Portogallo | Case Vacanza di Lusso | Portugal Active',
-          description: 'Oltre 60 ville private selezionate in tutto il Portogallo. Piscina, concierge e pulizie incluse. Filtra per regione e prenota diretto.' },
+          description: '{{homes}} ville private selezionate in tutto il Portogallo. Piscina, concierge e pulizie incluse. Filtra per regione e prenota diretto.' },
     nl: { title: 'Privévilla\'s in Portugal | Luxe Vakantiehuizen | Portugal Active',
-          description: 'Meer dan 60 geselecteerde privévilla\'s in heel Portugal. Zwembad, conciërge en schoonmaak inbegrepen. Filter op regio en boek direct.' },
+          description: '{{homes}} geselecteerde privévilla\'s in heel Portugal. Zwembad, conciërge en schoonmaak inbegrepen. Filter op regio en boek direct.' },
     fi: { title: 'Yksityiset Huvilat Portugalissa | Luksuslomatalot | Portugal Active',
-          description: 'Selaa yli 60 käsin valittua yksityistä huvilaa ympäri Portugalia. Allas, concierge ja siivous sisältyy. Suodata alueen mukaan ja varaa suoraan.' },
+          description: 'Selaa {{homes}} käsin valittua yksityistä huvilaa ympäri Portugalia. Allas, concierge ja siivous sisältyy. Suodata alueen mukaan ja varaa suoraan.' },
     sv: { title: 'Privata Villor i Portugal | Lyxiga Semesterhus | Portugal Active',
-          description: 'Utforska 60+ handplockade privata villor i Portugal. Pool, concierge och städning ingår. Filtrera efter region och boka direkt.' },
+          description: 'Utforska {{homes}} handplockade privata villor i Portugal. Pool, concierge och städning ingår. Filtrera efter region och boka direkt.' },
   },
   '/destinations': {
     en: { title: 'Destinations in Portugal | Minho, Porto, Algarve & More | Portugal Active',
@@ -491,23 +492,23 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
   },
   '/about': {
     en: { title: 'About Portugal Active | Luxury Villa Management in Portugal',
-          description: 'We manage 60+ private homes across Portugal end-to-end — bookings, concierge, housekeeping. A different kind of villa company.' },
+          description: 'We manage {{homes}} private homes across Portugal end-to-end — bookings, concierge, housekeeping. A different kind of villa company.' },
     pt: { title: 'Sobre a Portugal Active | Gestão de Casas de Luxo em Portugal',
-          description: 'Gerimos mais de 60 casas privadas em todo Portugal de ponta a ponta — reservas, concierge, limpeza. Uma empresa de casas diferente.' },
+          description: 'Gerimos {{homes}} casas privadas em todo Portugal de ponta a ponta — reservas, concierge, limpeza. Uma empresa de casas diferente.' },
     es: { title: 'Sobre Portugal Active | Gestión de Villas de Lujo en Portugal',
-          description: 'Gestionamos más de 60 casas privadas en todo Portugal de principio a fin — reservas, conserjería, limpieza. Una empresa de villas diferente.' },
+          description: 'Gestionamos {{homes}} casas privadas en todo Portugal de principio a fin — reservas, conserjería, limpieza. Una empresa de villas diferente.' },
     fr: { title: 'À propos de Portugal Active | Gestion de Villas de Luxe au Portugal',
-          description: 'Nous gérons plus de 60 maisons privées à travers le Portugal de A à Z — réservations, conciergerie, ménage. Un autre type de société de villas.' },
+          description: 'Nous gérons {{homes}} maisons privées à travers le Portugal de A à Z — réservations, conciergerie, ménage. Un autre type de société de villas.' },
     de: { title: 'Über Portugal Active | Luxusvilla-Management in Portugal',
-          description: 'Wir verwalten über 60 private Häuser in ganz Portugal vollumfänglich — Buchungen, Concierge, Reinigung. Eine andere Art von Villenunternehmen.' },
+          description: 'Wir verwalten {{homes}} private Häuser in ganz Portugal vollumfänglich — Buchungen, Concierge, Reinigung. Eine andere Art von Villenunternehmen.' },
     it: { title: 'Chi siamo | Portugal Active | Gestione di Ville di Lusso in Portogallo',
-          description: 'Gestiamo oltre 60 case private in tutto il Portogallo dall\'inizio alla fine — prenotazioni, concierge, pulizie. Un\'azienda di ville diversa.' },
+          description: 'Gestiamo {{homes}} case private in tutto il Portogallo dall\'inizio alla fine — prenotazioni, concierge, pulizie. Un\'azienda di ville diversa.' },
     nl: { title: 'Over Portugal Active | Luxe Villabeheer in Portugal',
-          description: 'Wij beheren meer dan 60 privéwoningen in heel Portugal van A tot Z — boekingen, conciërge, schoonmaak. Een ander soort villa-bedrijf.' },
+          description: 'Wij beheren {{homes}} privéwoningen in heel Portugal van A tot Z — boekingen, conciërge, schoonmaak. Een ander soort villa-bedrijf.' },
     fi: { title: 'Tietoa Portugal Activesta | Luksushuviloiden hallinta Portugalissa',
-          description: 'Hoidamme yli 60 yksityistä kotia ympäri Portugalia kokonaisvaltaisesti — varaukset, concierge, siivous. Erilainen huvilayhtiö.' },
+          description: 'Hoidamme {{homes}} yksityistä kotia ympäri Portugalia kokonaisvaltaisesti — varaukset, concierge, siivous. Erilainen huvilayhtiö.' },
     sv: { title: 'Om Portugal Active | Lyxvilla-förvaltning i Portugal',
-          description: 'Vi förvaltar 60+ privata hem över hela Portugal från A till Ö — bokningar, concierge, städning. Ett annorlunda villaföretag.' },
+          description: 'Vi förvaltar {{homes}} privata hem över hela Portugal från A till Ö — bokningar, concierge, städning. Ett annorlunda villaföretag.' },
   },
   '/contact': {
     en: { title: 'Contact Portugal Active | Plan Your Stay in Portugal',
@@ -609,7 +610,7 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
   },
   '/best-rate-guarantee': {
     en: { title: 'Best Rate Guarantee | Portugal Active',
-          description: 'Find the same home, dates and conditions cheaper on Airbnb or Booking.com within 24 hours of booking and Portugal Active matches the price. The terms, in plain words.' },
+          description: 'Find the same home, dates and conditions cheaper on Airbnb or Booking.com no later than 24 hours after booking and Portugal Active matches the price. The terms, in plain words.' },
     pt: { title: 'Garantia de Melhor Preço | Portugal Active',
           description: 'Encontre a mesma casa, datas e condições mais baratas no Airbnb ou na Booking.com até 24 horas após a reserva e a Portugal Active iguala o preço. As condições, em palavras simples.' },
     es: { title: 'Garantía de Mejor Precio | Portugal Active',
@@ -634,10 +635,17 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
 };
 
 /** Look up localized meta for a static path with graceful fallback to English. */
+/** Brand numbers inside PAGE_META are tokens ({{homes}}) filled from shared/brandFacts. */
+function fillBrandTokens(m: MetaEntry): MetaEntry {
+  const fill = (t: string) => t.replace(/\{\{homes\}\}/g, HOME_COUNT_LABEL);
+  return { title: fill(m.title), description: fill(m.description) };
+}
+
 function getPageMeta(path: string, lang: string): MetaEntry | null {
   const entry = PAGE_META[path];
   if (!entry) return null;
-  return entry[lang] ?? entry.en ?? null;
+  const m = entry[lang] ?? entry.en ?? null;
+  return m ? fillBrandTokens(m) : null;
 }
 
 function injectMeta(html: string, meta: {

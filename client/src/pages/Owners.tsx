@@ -4,6 +4,7 @@
    ========================================================================== */
 
 import { useState, useMemo, useCallback } from 'react';
+import { HOME_COUNT_LABEL } from '@shared/brandFacts';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { ArrowRight, Check, ExternalLink, Loader2 } from 'lucide-react';
@@ -150,7 +151,7 @@ export default function Owners() {
         <div className="container max-w-3xl mx-auto">
           <AnswerCapsule
             question="Why list your property with Portugal Active?"
-            answer="Portugal Active manages 60+ private hotels across Portugal, delivering five-star hospitality to every guest while maximising owner returns. Services include professional photography, dynamic pricing, multi-channel distribution, 24/7 guest concierge, daily housekeeping, and preventive maintenance. Owners retain full use of their property and receive transparent monthly reporting. Average occupancy uplift is 40% in the first year. Request a free property assessment to see your projected revenue."
+            answer={`Portugal Active manages ${HOME_COUNT_LABEL} private hotels across Portugal, delivering five-star hospitality to every guest while maximising owner returns. Services include professional photography, dynamic pricing, multi-channel distribution, 24/7 guest concierge, daily housekeeping, and preventive maintenance. Owners retain full use of their property and receive transparent monthly reporting. Average occupancy uplift is 40% in the first year. Request a free property assessment to see your projected revenue.`}
             lastUpdated="2026-05-02"
             emitSchema
             schemaId="qa-owners"
@@ -163,7 +164,7 @@ export default function Owners() {
         <div className="container">
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 lg:mx-0 lg:px-0 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible">
             {[
-              { stat: '60+', label: t('owners.statHomes') },
+              { stat: HOME_COUNT_LABEL, label: t('owners.statHomes') },
               { stat: '4.8/5', label: t('owners.statRating') },
               { stat: '40%', label: t('owners.statRepeat') },
               { stat: '30+', label: t('owners.statTeam') },

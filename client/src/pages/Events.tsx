@@ -5,6 +5,7 @@
    ========================================================================== */
 
 import { useMemo } from 'react';
+import { HOME_COUNT_LABEL } from '@shared/brandFacts';
 import { ArrowRight, Check, Users, MapPin, Star } from 'lucide-react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
@@ -175,7 +176,7 @@ export default function Events() {
         <div className="container max-w-3xl mx-auto">
           <AnswerCapsule
             question="Can I host a private event at a Portugal Active property?"
-            answer="Yes. Portugal Active hosts corporate retreats, weddings, brand activations, milestone celebrations, and wellness retreats across its portfolio of 60+ private hotels in Portugal. Each event is managed end-to-end by the in-house team, including catering, decoration, activities, and logistics. Properties range from coastal villas to countryside estates, accommodating groups of 10 to 100+ guests."
+            answer={`Yes. Portugal Active hosts corporate retreats, weddings, brand activations, milestone celebrations, and wellness retreats across its portfolio of ${HOME_COUNT_LABEL} private hotels in Portugal. Each event is managed end-to-end by the in-house team, including catering, decoration, activities, and logistics. Properties range from coastal villas to countryside estates, accommodating groups of 10 to 100+ guests.`}
             lastUpdated="2026-04-17"
             author="Portugal Active events team"
             emitSchema

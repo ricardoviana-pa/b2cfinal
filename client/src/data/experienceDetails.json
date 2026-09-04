@@ -155,7 +155,7 @@
         "pickupAvailable": true,
         "pickupNote": "Optional villa pickup available — coordinated by our concierge team for an additional fee. Contact us for pricing."
       },
-      "cancellationPolicy": "Free cancellation up to 24 hours before the experience for a full refund. Cancellations within 24 hours are non-refundable. In case of severe weather, we reschedule or offer a full refund.",
+      "cancellationPolicy": "Free cancellation up to 24 hours before the experience for a full refund. Cancellations less than 24 hours before the start are non-refundable. In case of severe weather, we reschedule or offer a full refund.",
       "languages": [
         "Portuguese",
         "English",
@@ -577,7 +577,7 @@
         "pickupAvailable": true,
         "pickupNote": "Optional villa pickup available — coordinated by our concierge team for an additional fee. Contact us for pricing."
       },
-      "cancellationPolicy": "Free cancellation up to 24 hours before the experience for a full refund. Cancellations within 24 hours are non-refundable. In case of severe weather, we reschedule or refund.",
+      "cancellationPolicy": "Free cancellation up to 24 hours before the experience for a full refund. Cancellations less than 24 hours before the start are non-refundable. In case of severe weather, we reschedule or refund.",
       "languages": [
         "Portuguese",
         "English",
@@ -921,7 +921,7 @@
         "pickupAvailable": true,
         "pickupNote": "Optional villa pickup available — coordinated by our concierge team for an additional fee. Contact us for pricing."
       },
-      "cancellationPolicy": "Free cancellation up to 24 hours before the experience for a full refund. Cancellations within 24 hours are non-refundable. In case of severe weather or unsafe water levels, we reschedule or offer a full refund.",
+      "cancellationPolicy": "Free cancellation up to 24 hours before the experience for a full refund. Cancellations less than 24 hours before the start are non-refundable. In case of severe weather or unsafe water levels, we reschedule or offer a full refund.",
       "languages": [
         "Portuguese",
         "English",
