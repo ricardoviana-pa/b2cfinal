@@ -17,7 +17,12 @@ import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/Structur
 import type { BlogArticle, BlogCategory } from '@/lib/types';
 import blogData from '@/data/blog.json';
 
-const articles = (blogData as any).articles as BlogArticle[];
+// Newest first. The SSR index used to open on the Video tab (nine posts from
+// 2019-2023) and never sorted, so crawlers and first paint missed the thirty
+// editorial articles, including the newest ones (auditoria set/2026, N3).
+const articles = ((blogData as any).articles as BlogArticle[])
+  .slice()
+  .sort((a, b) => (b.publishDate || "").localeCompare(a.publishDate || ""));
 
 const FALLBACK_IMAGES: Record<string, string> = {
   destinations: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&q=80&auto=format&fit=crop',
@@ -34,9 +39,8 @@ function getArticleImage(article: BlogArticle): string {
 export default function Blog() {
   const { t, i18n } = useTranslation();
   usePageMeta({ title: 'Portugal Travel Journal | Guides, Tips & Inspiration', description: 'Insider guides to Portugal — best beaches, hidden restaurants, wine regions, and travel tips from our local concierge team.', url: '/blog' });
-  // Journal opens on the Video tab by default — the video content is what we
-  // most want to surface. Users can still switch to All / other categories.
-  const [activeCategory, setActiveCategory] = useState<BlogCategory | 'all'>('video');
+  // Journal opens on All, newest first; the video tab is one tap away.
+  const [activeCategory, setActiveCategory] = useState<BlogCategory | "all">("all");
 
   // Overlay per-locale article translations (slug-keyed), active language only.
   const [blogOverrides, setBlogOverrides] = useState<Record<string, any>>({});
@@ -101,7 +105,9 @@ export default function Blog() {
     return published.filter(a => a.category === activeCategory);
   }, [activeCategory, locArticles]);
 
-  const featured = locArticles.find(a => a.isFeatured && a.status === 'published');
+  // The featured slot is the newest article — the index must read as a
+  // journal, with the latest piece on top.
+  const featured = locArticles.find(a => a.status === "published");
   const rest = filtered.filter(a => a.id !== featured?.id);
 
   return (
@@ -181,7 +187,7 @@ export default function Blog() {
                     </span>
                     <span className="flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5" />
-                      {t('blog.minRead', { minutes: featured.readTime })}
+                      {featured.readTime} {t("blog.minRead")}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-[12px] font-medium tracking-[0.06em] text-[#8B7355] group-hover:gap-3 transition-all">
@@ -233,7 +239,8 @@ export default function Blog() {
                   <div className="flex items-center gap-3 text-[11px] text-[#726D63]">
                     <span>{new Date(article.publishDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                     <span>·</span>
-                    <span>{t('blog.minRead', { minutes: article.readTime })}</span>
+                    <span>{article.readTime} {t("blog.minRead")}</span>
+                    {article.author?.name && (<><span>·</span><span>{article.author.name}</span></>)}
                   </div>
                 </Link>
               ))}
