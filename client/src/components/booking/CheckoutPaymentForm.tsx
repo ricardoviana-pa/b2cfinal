@@ -469,7 +469,11 @@ function PaymentFormInner({
             // (Cartao + Google Pay) que duplicam o nosso seletor externo (bug 12 jul).
             // Apple/Google Pay entram pelo padrao certo (Express Checkout Element
             // separado, acima do seletor) na Fase 2b.
-            wallets: { googlePay: "never", applePay: "never" },
+            // Legacy (sem intentId): Apple Pay volta a aparecer aqui, como aba do
+            // PaymentElement, porque o legacy não tem o Express Checkout Element
+            // (auditoria set/2026, D4). No v2 fica "never" para não duplicar o
+            // botão do bloco 3. Google Pay continua fora nos dois (bug 12 jul).
+            wallets: { googlePay: "never", applePay: intentId ? "never" : "auto" },
             fields: { billingDetails: { address: { country: "never", postalCode: "never" } } },
           }}
         />
