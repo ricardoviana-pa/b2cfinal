@@ -807,6 +807,10 @@ function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
       })),
     }),
     ...(typeof prop.petsAllowed === 'boolean' && { petsAllowed: prop.petsAllowed }),
+    // AL (Alojamento Local) registration, when the data carries it (N4).
+    ...(prop.licenseNumber && {
+      identifier: { '@type': 'PropertyValue', propertyID: 'AL', name: 'Registo de Alojamento Local', value: String(prop.licenseNumber) },
+    }),
     address: {
       '@type': 'PostalAddress',
       ...(prop.locality && { addressLocality: prop.locality }),
@@ -1196,7 +1200,7 @@ async function buildPropertyLinkIndex(strippedPath: string, lang: string): Promi
     const items = list
       .map(
         (pr: any) =>
-          `<li><a href="/${lang}/homes/${pr.slug}">${escText(String(pr.name ?? pr.slug))}</a></li>`,
+          `<li><a href="/${lang}/homes/${pr.slug}">${escText(getDisplayName(pr) || String(pr.slug))}</a></li>`,
       )
       .join("");
     const html = `<nav aria-label="Homes"><ul>${items}</ul></nav>`;
@@ -1323,6 +1327,11 @@ const DESTINATION_DESCRIPTION: Record<string, Record<string, string>> = {
  *  where it's a proper noun (Minho, Alentejo, Algarve); translates "Coast",
  *  "Porto & Douro", "Lisbon". */
 const DEST_LABEL: Record<string, Record<string, string>> = {
+  douro: {
+    en: 'the Douro Valley', pt: 'Douro', es: 'el Duero', fr: 'la vallée du Douro',
+    de: 'Douro-Tal', it: 'Valle del Douro', nl: 'Douro-vallei', fi: 'Douron laakso',
+    sv: 'Dourodalen',
+  },
   minho: {
     en: 'Minho Coast', pt: 'Costa do Minho', es: 'Costa del Miño', fr: 'Côte du Minho',
     de: 'Minho-Küste', it: 'Costa del Minho', nl: 'Minho-kust', fi: 'Minhon rannikko',
