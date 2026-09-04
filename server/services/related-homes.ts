@@ -13,6 +13,7 @@
  */
 
 import { curatedPosition } from "../../client/src/config/propertyOrder";
+import { getDisplayName } from "@shared/displayName";
 
 /**
  * Articles are tagged by editorial region ("minho-coast"), properties by
@@ -48,7 +49,7 @@ export interface RelatedHome {
 function toSlim(p: any): RelatedHome {
   return {
     slug: p.slug,
-    name: p.name ?? p.slug,
+    name: getDisplayName(p) || p.slug,
     destination: p.destination ?? null,
     locality: p.locality ?? null,
     bedrooms: typeof p.bedrooms === "number" ? p.bedrooms : null,

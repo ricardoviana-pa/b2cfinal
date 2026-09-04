@@ -3,6 +3,7 @@
    ========================================================================== */
 
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import { getDisplayName } from '@shared/displayName';
 import { useParams, Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -356,7 +357,7 @@ export default function BlogArticle() {
                         src={cdnResize(home.image, 640)}
                         srcSet={cdnSrcSet(home.image, [320, 480, 640])}
                         sizes="(min-width: 768px) 22vw, 45vw"
-                        alt={`${home.name} – Portugal Active`}
+                        alt={`${getDisplayName(home)} – Portugal Active`}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         loading="lazy"
                         width={640}
@@ -366,7 +367,7 @@ export default function BlogArticle() {
                     )}
                   </div>
                   <h3 className="text-base font-display text-[#1A1A18] group-hover:text-pa-gold-aa transition-colors line-clamp-2">
-                    {home.name}
+                    {getDisplayName(home)}
                   </h3>
                   {(home.locality || home.bedrooms) && (
                     <p className="text-sm text-pa-stone-aa mt-1">

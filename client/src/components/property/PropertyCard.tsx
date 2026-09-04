@@ -8,7 +8,7 @@ import { useState, useCallback, useRef, useMemo } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Flame, Star, PawPrint } from 'lucide-react';
-import { formatEur, sanitizePropertyName } from '@/lib/format';
+import { formatEur, getDisplayName } from '@/lib/format';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
 import destinationsData from '@/data/destinations.json';
@@ -68,7 +68,7 @@ export default function PropertyCard({
   // parent's PDP, which renders its own Units section.
   const group = getGroupByParentGuestyId(property.guestyId);
   const isGroup = !!group;
-  const displayName = group?.name ?? sanitizePropertyName(property.name);
+  const displayName = group?.name ?? getDisplayName(property);
   const [currentImage, setCurrentImage] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);

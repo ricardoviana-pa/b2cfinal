@@ -1,5 +1,6 @@
 import express, { type Express } from "express";
 import { HOME_COUNT_LABEL } from "@shared/brandFacts";
+import { getDisplayName } from "@shared/displayName";
 import fs from "fs";
 import { type Server } from "http";
 import { nanoid } from "nanoid";
@@ -767,7 +768,7 @@ function buildContainsPlace(prop: any): Record<string, unknown> | undefined {
 
 function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
   const url = `${BOT_BASE_URL}/${lang}/homes/${prop.slug}`;
-  const name = prop.name || prop.title || 'Property';
+  const name = getDisplayName(prop) || 'Property';
   // Google wants at least 8 images on a VacationRental; the old cap of 6 sat
   // just under it. The homes carry 70+, so 12 clears the bar with room spare
   // without bloating the embedded JSON.
@@ -1084,7 +1085,7 @@ function renderParagraphs(text: string, maxTotal = 3500): string {
 
 function buildPropertySeoBody(prop: any, lang: string): string {
   const L = SEO_LABELS[lang] ?? SEO_LABELS.en;
-  const name = prop.name || prop.title || 'Property';
+  const name = getDisplayName(prop) || 'Property';
   const hero = Array.isArray(prop.images) && prop.images[0] ? String(prop.images[0]) : '';
   let amenities: string[] = [];
   if (Array.isArray(prop.amenities)) {
@@ -1898,15 +1899,17 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
           if (ov) prop = { ...prop, ...ov };
         }
         if (prop) {
-          const useCustomEn = lang === 'en' && (prop.seoTitle || prop.seoDescription);
+          // The curated display name goes into title, og and the body — never
+          // the raw Guesty seoTitle ("<OTA title> — Portugal Active"), which
+          // produced the double brand (auditoria set/2026, N9).
+          const displayName = getDisplayName(prop);
+          const useCustomEn = lang === 'en' && !!prop.seoDescription;
           const titleFn = PROPERTY_TITLE[lang] ?? PROPERTY_TITLE.en;
           const descFn = PROPERTY_DESCRIPTION[lang] ?? PROPERTY_DESCRIPTION.en;
-          const title = useCustomEn && prop.seoTitle
-            ? prop.seoTitle
-            : titleFn({ name: prop.name || prop.title, bedrooms: prop.bedrooms, destination: prop.destination });
-          const rawDesc = useCustomEn && prop.seoDescription
+          const title = titleFn({ name: displayName, bedrooms: prop.bedrooms, destination: prop.destination });
+          const rawDesc = useCustomEn
             ? prop.seoDescription
-            : descFn({ tagline: prop.tagline, bedrooms: prop.bedrooms, maxGuests: prop.maxGuests, destination: prop.destination, name: prop.name || prop.title });
+            : descFn({ tagline: prop.tagline, bedrooms: prop.bedrooms, maxGuests: prop.maxGuests, destination: prop.destination, name: displayName });
           dynamicMeta = {
             title,
             description: rawDesc.replace(/\s+/g, ' ').trim().slice(0, 155),

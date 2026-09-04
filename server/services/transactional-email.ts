@@ -4,6 +4,7 @@
  */
 
 import { Resend } from "resend";
+import { sanitizePropertyName } from "@shared/displayName";
 import {
   emailLang,
   skuNameFor,
@@ -94,7 +95,8 @@ interface BookingConfirmationData {
   confirmationCode: string;
 }
 
-export async function sendBookingConfirmation(data: BookingConfirmationData): Promise<void> {
+export async function sendBookingConfirmation(input: BookingConfirmationData): Promise<void> {
+  const data = { ...input, propertyName: sanitizePropertyName(input.propertyName) };
   const subject = `Your stay at ${data.propertyName} is confirmed`;
   const waLink = `https://wa.me/351927161771?text=${encodeURIComponent(`Hi, I just booked ${data.propertyName} (${data.confirmationCode}). Looking forward to my stay!`)}`;
 
@@ -318,7 +320,8 @@ interface PreArrivalData {
   conciergePhone?: string;
 }
 
-export async function sendPreArrival(data: PreArrivalData): Promise<void> {
+export async function sendPreArrival(input: PreArrivalData): Promise<void> {
+  const data = { ...input, propertyName: sanitizePropertyName(input.propertyName) };
   const subject = `Your stay at ${data.propertyName} begins in 3 days`;
   const phone = data.conciergePhone || "+351 258 358 434";
 
@@ -361,7 +364,8 @@ interface PostStayData {
   reviewLink?: string;
 }
 
-export async function sendPostStay(data: PostStayData): Promise<void> {
+export async function sendPostStay(input: PostStayData): Promise<void> {
+  const data = { ...input, propertyName: sanitizePropertyName(input.propertyName) };
   const subject = `How was your stay at ${data.propertyName}?`;
   const reviewUrl = data.reviewLink || "https://g.page/r/portugalactive/review";
   const homesUrl = "https://www.portugalactive.com/homes";

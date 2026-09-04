@@ -11,6 +11,7 @@
  * record carries guest PII), so it is a UUID — never enumerable.
  */
 import { randomUUID } from "crypto";
+import { sanitizePropertyName } from "@shared/displayName";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { publicProcedure, router } from "../_core/trpc";
@@ -123,18 +124,6 @@ async function listingAllowsPets(listingId?: string): Promise<boolean> {
   }
 }
 
-/** Espelho de client/src/lib/format.ts sanitizePropertyName — o email mostra o
- *  nome limpo que o checkout mostra, não o título de marketing das OTAs. */
-function sanitizePropertyName(raw: string): string {
-  if (!raw) return raw;
-  let name = raw.trim();
-  name = name.replace(/^Portugal Active\s+/i, "");
-  name = name.replace(/\s+by\s+portugal\s*active\b.*$/i, "");
-  name = name.split("|")[0];
-  name = name.split(/\s+[-–—]\s+/)[0];
-  name = name.replace(/\s+(w\/|with)\s+.*$/i, "");
-  return name.replace(/\s{2,}/g, " ").trim();
-}
 
 /** Espelho de client/src/lib/images.ts optimizeGuestyImage, com crop 3:2 para
  *  o hero do email (600px de largura no cartão). */

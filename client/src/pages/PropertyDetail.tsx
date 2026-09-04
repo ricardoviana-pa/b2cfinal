@@ -33,7 +33,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from '@
 import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 import { trpc } from '@/lib/trpc';
 import { pushEcommerce } from '@/lib/datalayer';
-import { sanitizePropertyName, intlLocale } from '@/lib/format';
+import { getDisplayName, intlLocale } from '@/lib/format';
 import {
   StructuredData,
   buildVacationRentalSchema,
@@ -565,7 +565,7 @@ export default function PropertyDetail() {
     [property?.guestyId],
   );
   const displayName = useMemo(
-    () => propertyGroup?.name ?? (property ? sanitizePropertyName(property.name) : ''),
+    () => propertyGroup?.name ?? (property ? getDisplayName(property) : ''),
     [propertyGroup, property],
   );
 

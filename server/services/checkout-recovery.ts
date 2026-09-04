@@ -16,6 +16,7 @@
  * that did not create the intent (CheckoutPage.tsx).
  */
 import { createHmac, timingSafeEqual } from "crypto";
+import { sanitizePropertyName } from "@shared/displayName";
 import { listRecoveryCandidates, claimRecoveryStage } from "../db";
 import { sendCheckoutRecovery } from "./transactional-email";
 import { getPropertiesForSite } from "./properties-store";
@@ -78,18 +79,6 @@ function resumeUrl(intent: BookingIntent, stage: 1 | 2): string {
   return `${publicBaseUrl()}/${locale}/checkout/${intent.id}?${utm}`;
 }
 
-/** Mirror of client/src/lib/format.ts sanitizePropertyName — the email shows
- *  the same clean name the checkout shows, not the OTA marketing title. */
-function sanitizePropertyName(raw: string): string {
-  if (!raw) return raw;
-  let name = raw.trim();
-  name = name.replace(/^Portugal Active\s+/i, "");
-  name = name.replace(/\s+by\s+portugal\s*active\b.*$/i, "");
-  name = name.split("|")[0];
-  name = name.split(/\s+[-–—]\s+/)[0];
-  name = name.replace(/\s+(w\/|with)\s+.*$/i, "");
-  return name.replace(/\s{2,}/g, " ").trim();
-}
 
 /** Mirror of client/src/lib/images.ts optimizeGuestyImage, with a 4:3 crop so
  *  the email card matches the checkout's aspect-[4/3] hero. */
