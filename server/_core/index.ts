@@ -207,6 +207,7 @@ async function startServer() {
         { loc: "/owners", priority: "0.7", changefreq: "monthly" },
         { loc: "/faq", priority: "0.7", changefreq: "monthly" },
         { loc: "/careers", priority: "0.7", changefreq: "monthly" },
+        { loc: "/best-rate-guarantee", priority: "0.5", changefreq: "yearly" },
         { loc: "/legal/privacy", priority: "0.3", changefreq: "yearly" },
         { loc: "/legal/terms", priority: "0.3", changefreq: "yearly" },
         { loc: "/legal/cookies", priority: "0.3", changefreq: "yearly" },

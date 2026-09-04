@@ -1113,6 +1113,9 @@ export default function PropertyDetail() {
             </div>
           ))}
         </div>
+        <Link href="/best-rate-guarantee" className="inline-block mt-3 text-[11.5px] text-[#806A48] underline underline-offset-2 hover:text-[#1A1A18]">
+          {t('trust.guaranteeTerms', 'How the guarantee works')}
+        </Link>
       </div>
 
       {/* A human at the decision point — the About page has the founder with a

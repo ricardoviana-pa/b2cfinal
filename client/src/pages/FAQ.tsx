@@ -13,7 +13,7 @@ import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildBreadcrumbSchema, buildFaqPageSchema } from '@/components/seo/StructuredData';
 
-function FAQItem({ item, id }: { item: { q: string; a: string }; id?: string }) {
+function FAQItem({ item, id }: { item: { q: string; a: string; link?: { href: string; label: string } }; id?: string }) {
   const [open, setOpen] = useState(false);
   return (
     <div id={id} className="border-b border-[#E8E4DC] scroll-mt-24">
@@ -35,7 +35,12 @@ function FAQItem({ item, id }: { item: { q: string; a: string }; id?: string }) 
         className="overflow-hidden transition-all duration-300"
         style={{ maxHeight: open ? '400px' : '0', opacity: open ? 1 : 0 }}
       >
-        <p className="body-md pb-5 pr-10">{item.a}</p>
+        <p className={`body-md pr-10 ${item.link ? 'pb-2' : 'pb-5'}`}>{item.a}</p>
+        {item.link && (
+          <Link href={item.link.href} className="inline-block pb-5 text-[13px] text-[#806A48] underline underline-offset-2 hover:text-[#1A1A18]">
+            {item.link.label}
+          </Link>
+        )}
       </div>
     </div>
   );
@@ -81,6 +86,7 @@ export default function FAQ() {
     {
       q: t('faq.q9'),
       a: t('faq.a9'),
+      link: { href: '/best-rate-guarantee', label: t('trust.guaranteeTerms', 'How the guarantee works') },
     },
     {
       q: t('faq.q10'),

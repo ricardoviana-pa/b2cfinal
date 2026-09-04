@@ -1388,7 +1388,8 @@
     "directHeadline": "Varför boka direkt",
     "bestRateTeeth": "Bästa pris online — hittar ni dessa datum billigare på Airbnb eller Booking.com matchar vi priset",
     "noServiceFees": "Inga serviceavgifter — OTA:er lägger på 12–18 % i kassan; här är priset priset",
-    "conciergeWhatsapp": "WhatsApp-concierge före, under och efter er vistelse"
+    "conciergeWhatsapp": "WhatsApp-concierge före, under och efter er vistelse",
+    "guaranteeTerms": "Så fungerar garantin"
   },
   "bookingStatus": {
     "confirmed": "Bekräftad",
@@ -1725,5 +1726,27 @@
     "eyebrow": "Kurerad kollektion",
     "count": "{{count}} hus i denna kollektion",
     "more": "Fler kollektioner"
+  },
+  "bestRateGuarantee": {
+    "overline": "Bästa-pris-garanti",
+    "title": "Det bästa priset finns alltid här.",
+    "intro": "Varje hem prissätts av vårt eget team, och priset på den här sidan är det lägsta vi publicerar någonstans. Hittar du samma hem, samma datum och samma villkor billigare på Airbnb eller Booking.com matchar vi priset.",
+    "howTitle": "Så fungerar det",
+    "step1": "Boka direkt på portugalactive.com.",
+    "step2": "Hitta ett lägre offentligt pris på Airbnb eller Booking.com för samma hem, samma datum, samma antal gäster och samma avbokningsvillkor.",
+    "step3": "Skicka länken till oss inom 24 timmar från bokningsbekräftelsen, via WhatsApp eller e-post, tillsammans med din bokningskod.",
+    "step4": "Vi matchar priset på din bokning. Din concierge, välkomstkorgen och allt annat som ingår förblir precis som de var.",
+    "termsTitle": "Villkoren, med enkla ord",
+    "term1": "Samma hem, samma in- och utcheckningsdatum.",
+    "term2": "Samma antal gäster och samma avbokningspolicy.",
+    "term3": "Det lägre priset måste vara offentligt och bokningsbart för alla vid tidpunkten för anspråket: medlems- eller lojalitetsrabatter, kuponger, tillgodohavanden, priser endast i appen och uppenbara prisfel räknas inte.",
+    "term4": "Anspråket måste nå oss inom 24 timmar från bokningsbekräftelsen och före incheckning.",
+    "term5": "Vi jämför totalpriset för vistelsen, inklusive skatter och städning, i euro.",
+    "term6": "Matchningen tillämpas som ett avdrag på din direktbokning. Den betalas inte ut kontant och kan inte kombineras med andra erbjudanden.",
+    "contactTitle": "Hittat ett lägre pris?",
+    "contactBody": "Skicka länken och din bokningskod till vår concierge på WhatsApp eller till booking@portugalactive.com. Vi svarar inom 2 timmar under kontorstid.",
+    "cta": "Skriv till conciergen",
+    "metaTitle": "Bästa-pris-garanti",
+    "metaDescription": "Hittar du samma hem, datum och villkor billigare på Airbnb eller Booking.com inom 24 timmar från bokningen matchar Portugal Active priset. Villkoren, med enkla ord."
   }
 }

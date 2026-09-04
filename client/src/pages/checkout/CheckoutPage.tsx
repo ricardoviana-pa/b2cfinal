@@ -1149,6 +1149,33 @@ export default function CheckoutPage() {
     </div>
   );
 
+  // Reserva direta — os mesmos três argumentos do PDP ("Why book direct"),
+  // fixos na coluna de resumo nos três passos: quem chegou de uma OTA ainda
+  // tem essa aba aberta na hora de pagar (auditoria set/2026, N5). As chaves
+  // trust.* são as do PDP; nada de copy duplicado.
+  const directBlock = (
+    <div className="bg-white border border-pa-sand rounded-lg p-5">
+      <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-3">
+        {t("trust.directHeadline", "Why book direct")}
+      </p>
+      <ul className="space-y-2.5">
+        {([
+          { icon: ShieldCheck, label: t("trust.bestRateTeeth", "Best rate online — find these dates cheaper on Airbnb or Booking.com and we match the price") },
+          { icon: BadgeCheck, label: t("trust.noServiceFees", "No service fees — OTAs add 12–18% at checkout; here the price is the price") },
+          { icon: Headphones, label: t("trust.conciergeWhatsapp", "WhatsApp concierge before, during and after your stay") },
+        ] as const).map((item, i) => (
+          <li key={i} className="flex items-start gap-2">
+            <item.icon className="w-3.5 h-3.5 text-pa-gold-aa shrink-0 mt-0.5" />
+            <span className="text-[12px] text-pa-dark leading-snug">{item.label}</span>
+          </li>
+        ))}
+      </ul>
+      <Link href="/best-rate-guarantee" className="inline-block mt-3 text-[11.5px] text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark">
+        {t("trust.guaranteeTerms", "How the guarantee works")}
+      </Link>
+    </div>
+  );
+
   return (
     <div className="checkout-page min-h-screen bg-white pb-28 lg:pb-12">
       {/* Discreet motion (spec §9): 200ms step transitions, rows sliding toward the summary */}
@@ -1736,8 +1763,11 @@ export default function CheckoutPage() {
           )}
         </section>
 
+        {/* Reserva direta (mobile): no fim de cada passo, sempre visível */}
+        <div className="lg:hidden mt-8">{directBlock}</div>
+
         {/* ══════════ SUMMARY COLUMN (desktop) ══════════ */}
-        <aside className="hidden lg:block sticky top-[84px]">{summaryCard}</aside>
+        <aside className="hidden lg:block sticky top-[84px] space-y-4">{summaryCard}{directBlock}</aside>
       </main>
 
       {/* Keeps in-flow content (desktop Continue CTA) scrollable clear of the

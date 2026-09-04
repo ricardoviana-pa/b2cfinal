@@ -735,21 +735,26 @@ export default function Home() {
                   icon: <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />,
                   title: t('home.uspRate'),
                   sub: t('home.uspRateSub'),
+                  href: '/best-rate-guarantee',
                 },
-              ].map((item, i) => (
-                <div
-                  key={i}
-                  className={`flex min-w-0 flex-col items-center text-center px-1.5 py-4 sm:px-2 sm:py-5 md:py-7 md:px-5${
-                    i < 3 ? ' border-r border-[#E8E4DC]' : ''
-                  }`}
-                >
+              ].map((item: { icon: React.ReactNode; title: string; sub: string; href?: string }, i) => {
+                const cls = `flex min-w-0 flex-col items-center text-center px-1.5 py-4 sm:px-2 sm:py-5 md:py-7 md:px-5${
+                  i < 3 ? ' border-r border-[#E8E4DC]' : ''
+                }`;
+                const inner = (
+                <>
                   <div className="mb-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#E8E4DC] bg-[#FAFAF7] text-[#8B7355] sm:mb-3 sm:h-9 sm:w-9">
                     {item.icon}
                   </div>
                   <p className="text-[9px] font-medium uppercase leading-tight tracking-[0.08em] text-[#1A1A18] sm:text-[10px] sm:tracking-[0.1em] md:text-[11px] md:tracking-[0.12em]">{item.title}</p>
                   <p className="mt-1 max-w-none text-[9px] leading-tight text-[#726D63] sm:text-[10px] sm:leading-snug md:text-[12px] md:leading-[1.55]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{item.sub}</p>
-                </div>
-              ))}
+                </>
+                );
+                // The rate badge is a claim with terms — it links to them.
+                return item.href
+                  ? <Link key={i} href={item.href} className={cls} title={t('trust.guaranteeTerms', 'How the guarantee works')}>{inner}</Link>
+                  : <div key={i} className={cls}>{inner}</div>;
+              })}
           </div>
         </div>
       </section>

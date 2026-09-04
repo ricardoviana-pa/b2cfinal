@@ -604,6 +604,26 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
     en: { title: 'Terms & Conditions | Portugal Active',
           description: 'Terms and conditions for booking holiday properties and experiences with Portugal Active.' },
   },
+  '/best-rate-guarantee': {
+    en: { title: 'Best Rate Guarantee | Portugal Active',
+          description: 'Find the same home, dates and conditions cheaper on Airbnb or Booking.com within 24 hours of booking and Portugal Active matches the price. The terms, in plain words.' },
+    pt: { title: 'Garantia de Melhor Preço | Portugal Active',
+          description: 'Encontre a mesma casa, datas e condições mais baratas no Airbnb ou na Booking.com até 24 horas após a reserva e a Portugal Active iguala o preço. As condições, em palavras simples.' },
+    es: { title: 'Garantía de Mejor Precio | Portugal Active',
+          description: 'Encuentre la misma casa, fechas y condiciones más baratas en Airbnb o Booking.com en las 24 horas siguientes a la reserva y Portugal Active iguala el precio. Las condiciones, en palabras sencillas.' },
+    fr: { title: 'Garantie du Meilleur Tarif | Portugal Active',
+          description: 'Trouvez la même maison, les mêmes dates et conditions moins cher sur Airbnb ou Booking.com dans les 24 heures suivant la réservation et Portugal Active s\'aligne. Les conditions, en termes simples.' },
+    it: { title: 'Garanzia del Miglior Prezzo | Portugal Active',
+          description: 'Trovi la stessa casa, date e condizioni a meno su Airbnb o Booking.com entro 24 ore dalla prenotazione e Portugal Active pareggia il prezzo. Le condizioni, in parole semplici.' },
+    de: { title: 'Bestpreisgarantie | Portugal Active',
+          description: 'Finden Sie dasselbe Haus, dieselben Daten und Bedingungen innerhalb von 24 Stunden nach der Buchung günstiger auf Airbnb oder Booking.com, gleicht Portugal Active den Preis an. Die Bedingungen, einfach erklärt.' },
+    nl: { title: 'Beste-prijsgarantie | Portugal Active',
+          description: 'Vindt u hetzelfde huis, dezelfde data en voorwaarden binnen 24 uur na uw boeking goedkoper op Airbnb of Booking.com, dan past Portugal Active de prijs aan. De voorwaarden, in gewone taal.' },
+    sv: { title: 'Bästa-pris-garanti | Portugal Active',
+          description: 'Hittar du samma hem, datum och villkor billigare på Airbnb eller Booking.com inom 24 timmar från bokningen matchar Portugal Active priset. Villkoren, med enkla ord.' },
+    fi: { title: 'Parhaan hinnan takuu | Portugal Active',
+          description: 'Löydä sama koti, päivämäärät ja ehdot halvemmalla Airbnb:stä tai Booking.comista 24 tunnin kuluessa varauksesta, niin Portugal Active vastaa hintaan. Ehdot selkokielellä.' },
+  },
   '/legal/cookies': {
     en: { title: 'Cookie Policy | Portugal Active',
           description: 'How Portugal Active uses cookies to improve your browsing experience.' },
@@ -1499,7 +1519,7 @@ export function serveStatic(app: Express) {
     "/", "/homes", "/about", "/contact", "/services", "/adventures",
     "/events", "/blog", "/faq", "/careers", "/owners", "/login", "/account",
     "/legal/privacy", "/legal/terms", "/legal/cookies", "/admin", "/404",
-    "/destinations", "/experiences", "/concierge",
+    "/destinations", "/experiences", "/concierge", "/best-rate-guarantee",
   ]);
   const KNOWN_PREFIXES = ["/homes/", "/collections/", "/destinations/", "/blog/", "/services/", "/admin/", "/booking/", "/experiences/", "/activities/", "/checkout/"];
 

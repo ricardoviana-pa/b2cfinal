@@ -1388,7 +1388,8 @@
     "directHeadline": "Waarom direct boeken",
     "bestRateTeeth": "Beste prijs online — vindt u deze data goedkoper op Airbnb of Booking.com, dan passen wij de prijs aan",
     "noServiceFees": "Geen servicekosten — OTA’s rekenen 12–18% extra bij het afrekenen; hier is de prijs de prijs",
-    "conciergeWhatsapp": "WhatsApp-concierge vóór, tijdens en na uw verblijf"
+    "conciergeWhatsapp": "WhatsApp-concierge vóór, tijdens en na uw verblijf",
+    "guaranteeTerms": "Zo werkt de garantie"
   },
   "bookingStatus": {
     "confirmed": "Bevestigd",
@@ -1725,5 +1726,27 @@
     "eyebrow": "Samengestelde collectie",
     "count": "{{count}} huizen in deze collectie",
     "more": "Meer collecties"
+  },
+  "bestRateGuarantee": {
+    "overline": "Beste-prijsgarantie",
+    "title": "De beste prijs vindt u altijd hier.",
+    "intro": "Elk huis wordt geprijsd door ons eigen team, en de prijs op deze site is de laagste die we ergens publiceren. Vindt u hetzelfde huis, dezelfde data en dezelfde voorwaarden goedkoper op Airbnb of Booking.com, dan passen we de prijs aan.",
+    "howTitle": "Zo werkt het",
+    "step1": "Boek rechtstreeks op portugalactive.com.",
+    "step2": "Vind op Airbnb of Booking.com een lagere publieke prijs voor hetzelfde huis, dezelfde data, hetzelfde aantal gasten en dezelfde annuleringsvoorwaarden.",
+    "step3": "Stuur ons de link binnen 24 uur na uw boekingsbevestiging, via WhatsApp of e-mail, met uw boekingscode.",
+    "step4": "Wij passen de prijs van uw boeking aan. Uw concierge, het welkomstpakket en al het andere dat is inbegrepen blijven precies zoals ze waren.",
+    "termsTitle": "De voorwaarden, in gewone taal",
+    "term1": "Hetzelfde huis, dezelfde aankomst- en vertrekdata.",
+    "term2": "Hetzelfde aantal gasten en hetzelfde annuleringsbeleid.",
+    "term3": "De lagere prijs moet op het moment van de aanvraag publiek en voor iedereen boekbaar zijn: leden- of loyaliteitskortingen, coupons, tegoeden, app-only tarieven en duidelijke prijsfouten tellen niet mee.",
+    "term4": "De aanvraag moet ons binnen 24 uur na de boekingsbevestiging en vóór het inchecken bereiken.",
+    "term5": "We vergelijken de totaalprijs van het verblijf, inclusief belastingen en schoonmaak, in euro.",
+    "term6": "De aanpassing wordt toegepast als korting op uw directe boeking. Ze wordt niet contant uitbetaald en is niet te combineren met andere acties.",
+    "contactTitle": "Een lagere prijs gevonden?",
+    "contactBody": "Stuur de link en uw boekingscode naar onze concierge via WhatsApp of naar booking@portugalactive.com. We antwoorden binnen 2 uur tijdens kantooruren.",
+    "cta": "Stuur de concierge een bericht",
+    "metaTitle": "Beste-prijsgarantie",
+    "metaDescription": "Vindt u hetzelfde huis, dezelfde data en voorwaarden binnen 24 uur na uw boeking goedkoper op Airbnb of Booking.com, dan past Portugal Active de prijs aan. De voorwaarden, in gewone taal."
   }
 }

@@ -1389,7 +1389,8 @@
     "directHeadline": "Why book direct",
     "bestRateTeeth": "Best rate online — find these dates cheaper on Airbnb or Booking.com and we match the price",
     "noServiceFees": "No service fees — OTAs add 12–18% at checkout; here the price is the price",
-    "conciergeWhatsapp": "WhatsApp concierge before, during and after your stay"
+    "conciergeWhatsapp": "WhatsApp concierge before, during and after your stay",
+    "guaranteeTerms": "How the guarantee works"
   },
   "bookingStatus": {
     "confirmed": "Confirmed",
@@ -1727,5 +1728,27 @@
     "eyebrow": "Curated collection",
     "count": "{{count}} homes in this collection",
     "more": "More collections"
+  },
+  "bestRateGuarantee": {
+    "overline": "Best rate guarantee",
+    "title": "The best rate is always here.",
+    "intro": "Every home is priced by our own team, and the price on this site is the lowest we publish anywhere. Find the same home, the same dates and the same conditions cheaper on Airbnb or Booking.com and we match it.",
+    "howTitle": "How it works",
+    "step1": "Book direct on portugalactive.com.",
+    "step2": "Find a lower public rate on Airbnb or Booking.com for the same home, the same dates, the same number of guests and the same cancellation conditions.",
+    "step3": "Send us the link within 24 hours of your booking confirmation, by WhatsApp or email, with your booking code.",
+    "step4": "We match the price on your booking. Your concierge, welcome pack and everything else included stay exactly as they were.",
+    "termsTitle": "The terms, in plain words",
+    "term1": "Same home, same check-in and check-out dates.",
+    "term2": "Same number of guests and the same cancellation policy.",
+    "term3": "The lower rate must be public and bookable by anyone at the time of the claim: member or loyalty discounts, coupons, credits, mobile-only rates and obvious pricing errors do not count.",
+    "term4": "The claim must reach us within 24 hours of the booking confirmation and before check-in.",
+    "term5": "We compare the total price for the stay, taxes and cleaning included, in euros.",
+    "term6": "The match is applied as a reduction on your direct booking. It is not paid in cash and cannot be combined with other promotions.",
+    "contactTitle": "Found a lower price?",
+    "contactBody": "Send the link and your booking code to our concierge on WhatsApp or to booking@portugalactive.com. We answer within 2 hours during office hours.",
+    "cta": "Message the concierge",
+    "metaTitle": "Best Rate Guarantee",
+    "metaDescription": "Find the same home, dates and conditions cheaper on Airbnb or Booking.com within 24 hours of booking and Portugal Active matches the price. The terms, in plain words."
   }
 }

@@ -1388,7 +1388,8 @@
     "directHeadline": "Miksi varata suoraan",
     "bestRateTeeth": "Paras hinta verkossa — jos löydätte nämä päivät halvemmalla Airbnb:stä tai Booking.comista, vastaamme hintaan",
     "noServiceFees": "Ei palvelumaksuja — OTA:t lisäävät 12–18 % kassalla; täällä hinta on hinta",
-    "conciergeWhatsapp": "WhatsApp-concierge ennen oleskelua, sen aikana ja sen jälkeen"
+    "conciergeWhatsapp": "WhatsApp-concierge ennen oleskelua, sen aikana ja sen jälkeen",
+    "guaranteeTerms": "Näin takuu toimii"
   },
   "bookingStatus": {
     "confirmed": "Vahvistettu",
@@ -1725,5 +1726,27 @@
     "eyebrow": "Kuratoitu kokoelma",
     "count": "{{count}} taloa tässä kokoelmassa",
     "more": "Lisää kokoelmia"
+  },
+  "bestRateGuarantee": {
+    "overline": "Parhaan hinnan takuu",
+    "title": "Paras hinta on aina täällä.",
+    "intro": "Jokaisen kodin hinnoittelee oma tiimimme, ja tämän sivuston hinta on alin, jonka julkaisemme missään. Jos löydät saman kodin, samat päivämäärät ja samat ehdot halvemmalla Airbnb:stä tai Booking.comista, vastaamme hintaan.",
+    "howTitle": "Näin se toimii",
+    "step1": "Varaa suoraan osoitteessa portugalactive.com.",
+    "step2": "Löydä Airbnb:stä tai Booking.comista alempi julkinen hinta samalle kodille, samoille päivämäärille, samalle vierasmäärälle ja samoille peruutusehdoille.",
+    "step3": "Lähetä linkki meille 24 tunnin kuluessa varausvahvistuksesta WhatsAppilla tai sähköpostilla varauskoodisi kanssa.",
+    "step4": "Vastaamme hintaan varauksessasi. Concierge, tervetuliaiskori ja kaikki muu sisältyvä pysyvät täsmälleen ennallaan.",
+    "termsTitle": "Ehdot selkokielellä",
+    "term1": "Sama koti, samat saapumis- ja lähtöpäivät.",
+    "term2": "Sama vierasmäärä ja sama peruutuskäytäntö.",
+    "term3": "Alemman hinnan on oltava julkinen ja kenen tahansa varattavissa pyynnön hetkellä: jäsen- tai kanta-asiakasalennukset, kupongit, hyvitykset, vain sovelluksessa saatavat hinnat ja ilmeiset hintavirheet eivät kelpaa.",
+    "term4": "Pyynnön on saavuttava meille 24 tunnin kuluessa varausvahvistuksesta ja ennen sisäänkirjautumista.",
+    "term5": "Vertaamme oleskelun kokonaishintaa veroineen ja siivouksineen, euroissa.",
+    "term6": "Hinnan vastaaminen toteutetaan alennuksena suoraan varaukseesi. Sitä ei makseta käteisenä eikä sitä voi yhdistää muihin tarjouksiin.",
+    "contactTitle": "Löysitkö alemman hinnan?",
+    "contactBody": "Lähetä linkki ja varauskoodisi conciergellemme WhatsAppilla tai osoitteeseen booking@portugalactive.com. Vastaamme 2 tunnin kuluessa toimistoaikana.",
+    "cta": "Viesti conciergelle",
+    "metaTitle": "Parhaan hinnan takuu",
+    "metaDescription": "Löydä sama koti, päivämäärät ja ehdot halvemmalla Airbnb:stä tai Booking.comista 24 tunnin kuluessa varauksesta, niin Portugal Active vastaa hintaan. Ehdot selkokielellä."
   }
 }

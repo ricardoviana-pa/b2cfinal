@@ -1388,7 +1388,8 @@
     "directHeadline": "Perché prenotare direttamente",
     "bestRateTeeth": "Miglior prezzo online — se trovate queste date a meno su Airbnb o Booking.com, pareggiamo il prezzo",
     "noServiceFees": "Niente costi di servizio — le OTA aggiungono il 12–18% al checkout; qui il prezzo è il prezzo",
-    "conciergeWhatsapp": "Concierge su WhatsApp prima, durante e dopo il soggiorno"
+    "conciergeWhatsapp": "Concierge su WhatsApp prima, durante e dopo il soggiorno",
+    "guaranteeTerms": "Come funziona la garanzia"
   },
   "bookingStatus": {
     "confirmed": "Confermata",
@@ -1725,5 +1726,27 @@
     "eyebrow": "Collezione curata",
     "count": "{{count}} case in questa collezione",
     "more": "Altre collezioni"
+  },
+  "bestRateGuarantee": {
+    "overline": "Garanzia del miglior prezzo",
+    "title": "Il miglior prezzo è sempre qui.",
+    "intro": "Ogni casa è prezzata dal nostro team, e il prezzo su questo sito è il più basso che pubblichiamo ovunque. Se trova la stessa casa, le stesse date e le stesse condizioni a meno su Airbnb o Booking.com, lo pareggiamo.",
+    "howTitle": "Come funziona",
+    "step1": "Prenoti direttamente su portugalactive.com.",
+    "step2": "Trovi una tariffa pubblica più bassa su Airbnb o Booking.com per la stessa casa, le stesse date, lo stesso numero di ospiti e le stesse condizioni di cancellazione.",
+    "step3": "Ci invii il link entro 24 ore dalla conferma della prenotazione, via WhatsApp o email, con il codice di prenotazione.",
+    "step4": "Pareggiamo il prezzo sulla sua prenotazione. Il concierge, il cesto di benvenuto e tutto il resto incluso restano esattamente come prima.",
+    "termsTitle": "Le condizioni, in parole semplici",
+    "term1": "La stessa casa, le stesse date di arrivo e partenza.",
+    "term2": "Lo stesso numero di ospiti e la stessa politica di cancellazione.",
+    "term3": "La tariffa più bassa deve essere pubblica e prenotabile da chiunque al momento della richiesta: sconti soci o fedeltà, coupon, crediti, tariffe solo app ed errori evidenti di prezzo non contano.",
+    "term4": "La richiesta deve arrivarci entro 24 ore dalla conferma della prenotazione e prima del check-in.",
+    "term5": "Confrontiamo il prezzo totale del soggiorno, tasse e pulizie incluse, in euro.",
+    "term6": "Il pareggio viene applicato come riduzione sulla prenotazione diretta. Non viene pagato in contanti e non è cumulabile con altre promozioni.",
+    "contactTitle": "Ha trovato un prezzo più basso?",
+    "contactBody": "Invii il link e il codice di prenotazione al nostro concierge su WhatsApp o a booking@portugalactive.com. Rispondiamo entro 2 ore in orario d'ufficio.",
+    "cta": "Scrivere al concierge",
+    "metaTitle": "Garanzia del Miglior Prezzo",
+    "metaDescription": "Trovi la stessa casa, date e condizioni a meno su Airbnb o Booking.com entro 24 ore dalla prenotazione e Portugal Active pareggia il prezzo. Le condizioni, in parole semplici."
   }
 }

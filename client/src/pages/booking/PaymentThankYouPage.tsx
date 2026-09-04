@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams, useSearch } from "wouter";
+import { useParams, useSearch, Link } from "wouter";
 import { useTranslation } from "react-i18next";
 import { Lock, ShieldCheck, BadgeCheck, Headphones, Clock, CheckCircle2 } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
@@ -366,7 +366,9 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
           {t("paymentThankYou.trustSecure", { defaultValue: "Secure booking" })}
         </TrustItem>
         <TrustItem icon={<ShieldCheck className="h-[15px] w-[15px] text-pa-gold md:h-[18px] md:w-[18px]" strokeWidth={1.8} />}>
-          {t("paymentThankYou.trustRate", { defaultValue: "Best rate guaranteed" })}
+          <Link href="/best-rate-guarantee" className="underline-offset-2 hover:underline">
+            {t("paymentThankYou.trustRate", { defaultValue: "Best rate guaranteed" })}
+          </Link>
         </TrustItem>
         <TrustItem icon={<BadgeCheck className="h-[15px] w-[15px] text-pa-gold md:h-[18px] md:w-[18px]" strokeWidth={1.8} />}>
           {t("paymentThankYou.trustFees", { defaultValue: "No booking fees" })}
