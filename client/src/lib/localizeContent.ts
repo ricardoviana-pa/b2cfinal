@@ -1,85 +1,134 @@
 /* ==========================================================================
-   CONTENT LOCALISATION — data-file content (experiences, services, …) is
-   authored in English. This merges per-locale overrides (keyed by slug →
-   lang → field) over the English base, so any field that has a translation
-   is shown in the active language and anything untranslated falls back to
-   English.
+   CONTENT LOCALISATION — destinations and experience details are authored in
+   English; per-locale overrides live in ONE FILE PER LANGUAGE:
 
-   Merge rules (deepMerge):
-   - plain objects (e.g. meetingPoint) merge key-by-key, so a partial
-     override keeps untranslated keys like lat/lng/googleMapsUrl;
-   - arrays of objects (itinerary, faq) merge element-by-element by index,
-     so structural fields like stepNumber survive while text is overridden;
-   - arrays of strings and primitives are replaced by the override.
+     client/src/data/destinations.i18n/<lang>.json       { slug: fields }
+     client/src/data/experienceDetails.i18n/<lang>.json  { slug: fields }
+
+   Only the ACTIVE language's file is fetched (dynamic import → its own
+   chunk). The two catalogues used to be single files with all eight
+   languages, statically imported here — 890 KB of JSON that every visitor,
+   English included, downloaded inside the main bundle (auditoria set/2026,
+   P2). Products and services (small) stay in localizeProduct.ts.
+
+   SSR and hydration: the server preloads the language's files before
+   rendering, and main.tsx preloads them before hydrating, so the first
+   client render matches the server markup. Client-side navigations that
+   arrive without a preload fall back to a one-off effect (English first,
+   then the translation) — never a hydration mismatch, because that path is
+   client-rendered.
    ========================================================================== */
-import experiencesI18n from '@/data/experienceDetails.i18n.json';
-import servicesI18n from '@/data/services.i18n.json';
-import productsI18n from '@/data/products.i18n.json';
-import destinationsI18n from '@/data/destinations.i18n.json';
+import { useEffect, useState } from 'react';
+import { deepMerge, baseLang } from './deepMerge';
+
+export { deepMerge } from './deepMerge';
+export { localizeItem, localizeProduct, localizeService } from './localizeProduct';
 
 type Dict = Record<string, any>;
+export type ContentKind = 'destinations' | 'experiences';
 
-export function deepMerge(base: any, ov: any): any {
-  if (Array.isArray(ov)) {
-    if (Array.isArray(base)) {
-      return ov.map((v, i) =>
-        v && typeof v === 'object' && base[i] && typeof base[i] === 'object'
-          ? deepMerge(base[i], v)
-          : v,
-      );
-    }
-    return ov;
-  }
-  if (ov && typeof ov === 'object') {
-    if (base && typeof base === 'object' && !Array.isArray(base)) {
-      const out: Dict = { ...base };
-      for (const k of Object.keys(ov)) out[k] = deepMerge(base[k], ov[k]);
-      return out;
-    }
-    return ov;
-  }
-  return ov;
-}
+const LANGS = ['pt', 'fr', 'es', 'it', 'de', 'nl', 'sv', 'fi'] as const;
 
-/** Normalise i18next language ("pt-PT", "en-GB") to the base code ("pt"). */
-function baseLang(lang: string | undefined): string {
-  return (lang || 'en').toLowerCase().split('-')[0];
-}
+/** Per-language loaders — Vite code-splits each JSON into its own chunk. */
+const LOADERS: Record<ContentKind, Record<string, () => Promise<{ default: Dict }>>> = {
+  destinations: {
+    pt: () => import('@/data/destinations.i18n/pt.json'),
+    fr: () => import('@/data/destinations.i18n/fr.json'),
+    es: () => import('@/data/destinations.i18n/es.json'),
+    it: () => import('@/data/destinations.i18n/it.json'),
+    de: () => import('@/data/destinations.i18n/de.json'),
+    nl: () => import('@/data/destinations.i18n/nl.json'),
+    sv: () => import('@/data/destinations.i18n/sv.json'),
+    fi: () => import('@/data/destinations.i18n/fi.json'),
+  },
+  experiences: {
+    pt: () => import('@/data/experienceDetails.i18n/pt.json'),
+    fr: () => import('@/data/experienceDetails.i18n/fr.json'),
+    es: () => import('@/data/experienceDetails.i18n/es.json'),
+    it: () => import('@/data/experienceDetails.i18n/it.json'),
+    de: () => import('@/data/experienceDetails.i18n/de.json'),
+    nl: () => import('@/data/experienceDetails.i18n/nl.json'),
+    sv: () => import('@/data/experienceDetails.i18n/sv.json'),
+    fi: () => import('@/data/experienceDetails.i18n/fi.json'),
+  },
+};
 
-/** Merge locale overrides over a base content item (deep). */
-export function localizeItem<T extends Dict>(
-  base: T,
-  overridesBySlugLang: Dict,
-  slug: string | undefined,
-  lang: string | undefined,
-): T {
+const EMPTY: Dict = Object.freeze({});
+const cache: Record<ContentKind, Record<string, Dict>> = { destinations: {}, experiences: {} };
+const pending: Record<ContentKind, Record<string, Promise<Dict>>> = { destinations: {}, experiences: {} };
+
+/** Load one catalogue for one language (cached; {} for English/unknown). */
+export async function loadContentOverrides(kind: ContentKind, lang: string | undefined): Promise<Dict> {
   const code = baseLang(lang);
-  if (code === 'en' || !slug) return base;
-  const o = overridesBySlugLang?.[slug]?.[code];
-  if (!o || typeof o !== 'object') return base;
-  return deepMerge(base, o) as T;
+  if (code === 'en' || !LOADERS[kind][code]) return EMPTY;
+  if (cache[kind][code]) return cache[kind][code];
+  if (!pending[kind][code]) {
+    pending[kind][code] = LOADERS[kind][code]()
+      .then((m) => (cache[kind][code] = m.default || EMPTY))
+      .catch(() => (cache[kind][code] = EMPTY));
+  }
+  return pending[kind][code];
 }
 
-/** Localise a single experience object for the active language. */
-export function localizeExperience<T extends Dict>(exp: T | null | undefined, lang: string | undefined): T | null | undefined {
-  if (!exp) return exp;
-  return localizeItem(exp, experiencesI18n as Dict, exp.slug, lang);
+/** Synchronous read of what is already loaded ({} until then). */
+export function getContentOverrides(kind: ContentKind, lang: string | undefined): Dict {
+  return cache[kind][baseLang(lang)] || EMPTY;
 }
 
-/** Localise a single service object (services.json) for the active language. */
-export function localizeService<T extends Dict>(svc: T | null | undefined, lang: string | undefined): T | null | undefined {
-  if (!svc) return svc;
-  return localizeItem(svc, servicesI18n as Dict, svc.slug, lang);
+/** Which catalogues a route needs, so the preload never fetches more than the page uses. */
+export function contentKindsForPath(pathWithoutLocale: string): ContentKind[] {
+  const p = pathWithoutLocale || '/';
+  const kinds: ContentKind[] = [];
+  if (p === '/' || p.startsWith('/destinations')) kinds.push('destinations');
+  if (p.startsWith('/experiences') || p.startsWith('/activities')) kinds.push('experiences');
+  return kinds;
 }
 
-/** Localise a single product/card object (products.json) for the active language. */
-export function localizeProduct<T extends Dict>(prod: T | null | undefined, lang: string | undefined): T | null | undefined {
-  if (!prod) return prod;
-  return localizeItem(prod, productsI18n as Dict, prod.slug, lang);
+/**
+ * Preload the catalogues a path needs, for `lang`. Called by the server before
+ * rendering and by main.tsx before hydrating; no-op for English.
+ */
+export async function preloadContentOverrides(lang: string | undefined, pathWithoutLocale: string): Promise<void> {
+  const code = baseLang(lang);
+  if (code === 'en' || !(LANGS as readonly string[]).includes(code)) return;
+  await Promise.all(contentKindsForPath(pathWithoutLocale).map((k) => loadContentOverrides(k, code)));
 }
 
-/** Localise a single destination object (destinations.json) for the active language. */
-export function localizeDestination<T extends Dict>(dest: T | null | undefined, lang: string | undefined): T | null | undefined {
-  if (!dest) return dest;
-  return localizeItem(dest, destinationsI18n as Dict, dest.slug, lang);
+/**
+ * Hook: the overrides for `kind` in `lang`. Returns the cached catalogue
+ * synchronously when preloaded (SSR / hydration path); otherwise loads it
+ * once and re-renders — the client-navigation path.
+ */
+export function useContentOverrides(kind: ContentKind, lang: string | undefined): Dict {
+  const code = baseLang(lang);
+  const ready = cache[kind][code];
+  const [, force] = useState(0);
+  useEffect(() => {
+    if (ready || code === 'en') return;
+    let alive = true;
+    loadContentOverrides(kind, code).then(() => { if (alive) force((n) => n + 1); });
+    return () => { alive = false; };
+  }, [kind, code, ready]);
+  return ready || EMPTY;
+}
+
+export const useDestinationOverrides = (lang: string | undefined) => useContentOverrides('destinations', lang);
+export const useExperienceOverrides = (lang: string | undefined) => useContentOverrides('experiences', lang);
+
+/** Merge already-loaded overrides ({ slug: fields }) over an item, EN fallback. */
+function mergeBySlug<T extends Dict>(item: T | null | undefined, overrides: Dict): T | null | undefined {
+  if (!item) return item;
+  const o = item.slug && overrides ? overrides[item.slug] : null;
+  if (!o || typeof o !== 'object') return item;
+  return deepMerge(item, o) as T;
+}
+
+/** Localise a destination with the catalogue from useDestinationOverrides(). */
+export function localizeDestination<T extends Dict>(dest: T | null | undefined, overrides: Dict): T | null | undefined {
+  return mergeBySlug(dest, overrides);
+}
+
+/** Localise an experience with the catalogue from useExperienceOverrides(). */
+export function localizeExperience<T extends Dict>(exp: T | null | undefined, overrides: Dict): T | null | undefined {
+  return mergeBySlug(exp, overrides);
 }

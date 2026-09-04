@@ -1,0 +1,971 @@
+{
+  "horseback-riding": {
+    "name": "Passeggiata a Cavallo a Viana do Castelo — Spiaggia, Montagna e Campi di Fiori",
+    "tagline": "Una passeggiata a cavallo tra campi di fiori, sentieri di montagna e spiagge paradisiache — pensata per tutti i livelli, dal principiante al cavaliere esperto.",
+    "badges": [
+      "Più richiesto",
+      "Piccolo gruppo"
+    ],
+    "price": "Da 75 € a persona",
+    "duration": "2h 30m",
+    "difficultyLevel": "Da facile a moderato",
+    "availability": "Tutto l'anno, in base alle condizioni meteorologiche",
+    "aboutParagraphs": [
+      "È la passeggiata di cui parlerai ancora tra un anno. Partendo da un ranch tradizionale in piena attività nei dintorni di Viana do Castelo, verrai abbinato a un cavallo adatto al tuo livello — dal principiante assoluto al cavaliere sicuro di sé — da uno dei nostri istruttori certificati.",
+      "Il percorso ti porta attraverso i campi di fiori e le pinete che ricoprono i pendii sopra la Valle del Lima, con vedute panoramiche che si estendono dalla Serra d'Arga all'Atlantico. Il tratto finale costeggia la costa: una passeggiata sulla spiaggia al tramonto, il suono degli zoccoli sulla sabbia bagnata, l'aria salmastra tra i capelli.",
+      "Ogni dettaglio è curato da noi. Ti veniamo a prendere nella tua villa Portugal Active, forniamo tutta l'attrezzatura di sicurezza e manteniamo i gruppi piccoli — mai più di 8 cavalieri — così che l'istruttore possa dedicare attenzione individuale a ogni ospite. Acqua, un ricordo fotografico e uno spuntino al ranch al termine della passeggiata sono inclusi.",
+      "Questa esperienza è disponibile tutto l'anno, in base alle condizioni meteorologiche. La primavera (da aprile a giugno) è il periodo più spettacolare, quando i campi sono in piena fioritura e la luce è straordinaria. Durante la stagione balneare, ci sono restrizioni legali all'equitazione sulla sabbia della spiaggia — il percorso viene adattato di conseguenza, con sentieri costieri altrettanto incantevoli."
+    ],
+    "highlights": [
+      "Cavalca tra i paesaggi mozzafiato di Viana do Castelo — campi di fiori, pinete, spiagge atlantiche",
+      "Accompagnamento costante da parte di Diana, Claudia o di uno dei nostri istruttori di equitazione certificati",
+      "Tutti i livelli sono benvenuti: dal principiante assoluto al cavaliere esperto",
+      "Concludi con una cavalcata costiera lungo la sponda atlantica",
+      "Piccoli gruppi di massimo 8 cavalieri per un'attenzione personalizzata",
+      "I cavalli sono selezionati e abbinati a ciascun ospite dall'istruttore",
+      "Ricordo fotografico e spuntino al ranch al termine della passeggiata"
+    ],
+    "included": [
+      "Istruzione professionale di equitazione da parte di un esperto certificato",
+      "Tutta l'attrezzatura di sicurezza e regolazione del casco",
+      "Assicurazione per tutti i partecipanti",
+      "Acqua durante la passeggiata",
+      "Ricordo fotografico"
+    ],
+    "notIncluded": [
+      "Prelievo/transfer in villa (opzionale — coordinato dal nostro team concierge con supplemento)",
+      "Cibo e pasti (possono essere organizzati a parte)",
+      "Mance (a tua discrezione)"
+    ],
+    "notSuitableFor": [
+      "Bambini sotto i 10 anni",
+      "Ospiti oltre i 100 kg",
+      "Ospiti in gravidanza"
+    ],
+    "whatToBring": [
+      "Pantaloni lunghi (jeans o pantaloni da equitazione)",
+      "Calzature chiuse — stivali da equitazione ideali, ma non obbligatori",
+      "Crema solare e occhiali da sole",
+      "Una giacca leggera o abbigliamento a strati per i cambi di tempo"
+    ],
+    "notAllowed": [
+      "Sandali o infradito",
+      "Pantaloncini",
+      "Sciarpe svolazzanti o borse aperte"
+    ],
+    "cancellationPolicy": "Cancellazione gratuita fino a 24 ore prima dell'esperienza, con rimborso totale. Le cancellazioni entro le 24 ore non sono rimborsabili. In caso di maltempo, riprogrammiamo o offriamo il rimborso totale.",
+    "guideRole": "Istruttrici di Equitazione Certificate",
+    "guideDescription": "Diana e Claudia sono istruttrici di equitazione certificate con oltre 15 anni di esperienza combinata. Sono cresciute cavalcando nella campagna del Minho e conoscono ogni sentiero, ogni cavallo e ogni fiore per nome. Il loro dono è abbinare cavalieri e cavalli — leggono il linguaggio del corpo, adattano il ritmo e fanno sentire i principianti a proprio agio. Il ranch ospita anche Laura, diversi cavalli Frisoni e Lusitani splendidamente curati, cani e gatti affettuosi e persino un mini pony.",
+    "languages": [
+      "Portoghese",
+      "Inglese",
+      "Francese",
+      "Spagnolo"
+    ],
+    "itinerary": [
+      {
+        "time": "09:30",
+        "title": "Prelievo in villa",
+        "description": "Il tuo autista privato ti viene a prendere nella tua villa Portugal Active su un veicolo con aria condizionata. Rilassati e goditi il tragitto panoramico fino a Viana do Castelo."
+      },
+      {
+        "time": "10:15",
+        "title": "Arrivo al ranch e briefing di sicurezza",
+        "description": "Incontra il tuo istruttore certificato — Diana, Claudia o un membro del nostro team — al ranch in attività. Regolazione dell'attrezzatura, briefing di sicurezza e un breve orientamento nel maneggio per ambientarti con il tuo cavallo."
+      },
+      {
+        "time": "10:45",
+        "title": "Sentieri di montagna tra i campi di fiori",
+        "description": "Parti tra le pinete e i prati fioriti che ricoprono i pendii sopra Viana. Vedute panoramiche sulla Valle del Lima e sulla Serra d'Arga. Il ritmo è adattato al livello del gruppo."
+      },
+      {
+        "time": "11:30",
+        "title": "Cavalcata sulla spiaggia lungo l'Atlantico",
+        "description": "Scendi fino alla costa e cavalca lungo la spiaggia atlantica. Senti la brezza marina, ascolta le onde e vivi la magia di cavalcare sulla sabbia bagnata in riva all'acqua."
+      },
+      {
+        "time": "12:15",
+        "title": "Ritorno al ranch e spuntino",
+        "description": "Di ritorno al ranch, saluta il tuo cavallo e goditi uno spuntino. Il tuo autista sarà pronto per il transfer di ritorno alla villa."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Ho bisogno di esperienza pregressa di equitazione?",
+        "a": "Per niente. I nostri istruttori adattano ogni passeggiata al livello del gruppo. I principianti assoluti vengono abbinati a cavalli calmi e ben addestrati e ricevono un orientamento nel maneggio prima della passeggiata."
+      },
+      {
+        "q": "Cosa succede se piove?",
+        "a": "La pioggia leggera non impedisce l'esperienza. In caso di pioggia forte o temporale, ti contattiamo il giorno prima per riprogrammare o offrire il rimborso totale."
+      },
+      {
+        "q": "I miei bambini possono partecipare?",
+        "a": "I bambini dai 10 anni in su possono cavalcare in autonomia. I bambini più piccoli possono cavalcare con una guida sullo stesso cavallo, previo accordo."
+      },
+      {
+        "q": "Il transfer dalla villa è incluso?",
+        "a": "Il prelievo in villa è opzionale e può essere organizzato dal nostro team concierge con supplemento — contattaci per i prezzi. Il prelievo a Porto, Braga o in altre località può essere coordinato su richiesta."
+      },
+      {
+        "q": "Posso cavalcare sulla spiaggia vera e propria?",
+        "a": "Durante la stagione balneare (all'incirca da giugno a settembre), ci sono restrizioni legali all'equitazione sulla sabbia della spiaggia. Il percorso viene adattato su sentieri costieri altrettanto incantevoli. Fuori stagione, la cavalcata sulla spiaggia è l'esperienza completa."
+      },
+      {
+        "q": "Qual è il limite di peso?",
+        "a": "Per il benessere dei cavalli, il peso massimo è di 100 kg per cavaliere."
+      },
+      {
+        "q": "È una passeggiata privata o condivisa?",
+        "a": "È una passeggiata privata — partecipa solo il tuo gruppo. Massimo 8 cavalieri."
+      },
+      {
+        "q": "Perché dovrei prenotare direttamente con Portugal Active?",
+        "a": "Prenotare direttamente significa nessun intermediario e nessuna commissione. Ottieni il miglior prezzo, una linea diretta WhatsApp con il nostro team e la flessibilità di cambiare le date con un solo messaggio."
+      }
+    ],
+    "meetingPoint": {
+      "instructions": "Ti veniamo a prendere direttamente nella tua villa Portugal Active. Se preferisci guidare, cerca un cancello grigio con un cartello informativo. Il cartello VianoEquestre è sul muro di blocchi — la stalla è nascosta dalla strada, in fondo a un piccolo sentiero.",
+      "pickupNote": "Prelievo opzionale in villa — coordinato dal nostro team concierge con supplemento. Contattaci per i prezzi."
+    }
+  },
+  "canyoning": {
+    "name": "Avventura di Canyoning nel Parco Nazionale di Peneda-Gerês",
+    "tagline": "Discendi gole fluviali nascoste, tuffati in piscine naturali e fai rappel lungo le cascate nell'unico parco nazionale del Portogallo.",
+    "badges": [
+      "Piccolo gruppo",
+      "Tutta l'attrezzatura inclusa"
+    ],
+    "price": "Da 65 € a persona",
+    "duration": "3–4 ore",
+    "difficultyLevel": "Moderato — richiede una forma fisica di base",
+    "availability": "Da aprile a ottobre (in base al livello dell'acqua)",
+    "aboutParagraphs": [
+      "È il segreto di adrenalina più ben custodito del Minho. Nelle profondità del Parco Nazionale di Peneda-Gerês, il fiume Varziela ha scavato una gola di granito che pochi turisti arrivano a vedere — un mondo di piscine cristalline, scivoli naturali e cadute verticali incorniciate da antiche foreste di querce.",
+      "Sotto la supervisione di guide certificate dalla Commissione Internazionale di Canyoning (CIC), nuoterai attraverso strette gole, scivolerai lungo canali di granito levigato, ti tufferai in piscine turchesi e farai rappel accanto alle cascate. Ogni elemento è opzionale — la tua guida legge il gruppo e adatta il percorso così che i principianti si sentano sfidati ma al sicuro, e i più esperti abbiano la loro dose di adrenalina.",
+      "Tutta l'attrezzatura tecnica è fornita: muta in neoprene ad alte prestazioni, imbracatura, casco, scarpe da canyoning e sacche stagne. I gruppi sono piccoli — mai più di 12 — per garantire sicurezza ed esperienza personalizzata. Alla fine, non c'è niente come l'euforia post-canyon: esausto, euforico e già a pianificare il ritorno.",
+      "La stagione va da aprile a ottobre. Il livello e la temperatura dell'acqua variano — la primavera porta portate maggiori e cascate più drammatiche, mentre l'estate offre acqua più calda e un ritmo più rilassato."
+    ],
+    "highlights": [
+      "Esplora una gola di granito nascosta nel Parco Nazionale di Peneda-Gerês",
+      "Nuota, scivola, tuffati e fai rappel tra piscine naturali cristalline",
+      "Guide professionali certificate CIC, con tutta l'attrezzatura di sicurezza inclusa",
+      "Piccoli gruppi di massimo 12 per un'attenzione personalizzata",
+      "Tutti i salti, gli scivoli e i rappel sono opzionali — adattati al tuo livello di comfort",
+      "Transfer gratuito dalla tua villa Portugal Active",
+      "Sacche stagne per proteggere i tuoi effetti personali",
+      "Foto della tua avventura incluse"
+    ],
+    "included": [
+      "Guida di canyoning professionale certificata CIC",
+      "Muta in neoprene ad alte prestazioni (modelli maschili e femminili)",
+      "Scarpe da canyoning, casco, imbracatura e doppia longe",
+      "Bidone stagno e sacche da canyoning",
+      "Assicurazione per tutti i partecipanti",
+      "Foto della tua avventura"
+    ],
+    "notIncluded": [
+      "Prelievo/transfer in villa (opzionale — coordinato dal nostro team concierge con supplemento)",
+      "Cibo e bevande (porta snack e acqua)",
+      "Costume da bagno (da indossare sotto il neoprene)",
+      "Mance (a tua discrezione)"
+    ],
+    "notSuitableFor": [
+      "Bambini sotto i 14 anni",
+      "Ospiti con mobilità ridotta o gravi problemi di schiena/ginocchia",
+      "Ospiti in gravidanza",
+      "Persone che non sanno nuotare (è richiesta una capacità di nuoto di base)"
+    ],
+    "whatToBring": [
+      "Costume da bagno (indossato sotto il neoprene)",
+      "Asciugamano e abiti asciutti per la fine",
+      "Acqua e uno snack leggero",
+      "Crema solare",
+      "Spirito d'avventura"
+    ],
+    "notAllowed": [
+      "Gioielli o orologi (rischio di perdita)",
+      "Infradito come calzatura principale",
+      "Droni all'interno del parco nazionale"
+    ],
+    "cancellationPolicy": "Cancellazione gratuita fino a 24 ore prima dell'esperienza, con rimborso totale. Le cancellazioni entro le 24 ore non sono rimborsabili. In caso di maltempo o livelli d'acqua non sicuri, riprogrammiamo o offriamo il rimborso totale.",
+    "guideRole": "Guida di Canyoning Certificata CIC",
+    "guideDescription": "Jorge è una guida di canyoning certificata dalla Commissione Internazionale di Canyoning ed esplora le gole del Gerês da oltre un decennio. Conosce ogni piscina, ogni salto e ogni passaggio nascosto nel granito. La sua specialità è leggere i gruppi — adattare il percorso e il ritmo così che i principianti si sentano al sicuro e i più avventurosi vengano sfidati. Fuori dall'acqua, Jorge è anche guida di montagna e un appassionato difensore della tutela del Parco Nazionale di Peneda-Gerês.",
+    "languages": [
+      "Portoghese",
+      "Inglese",
+      "Spagnolo"
+    ],
+    "itinerary": [
+      {
+        "time": "09:00",
+        "title": "Prelievo in villa e viaggio verso il Gerês",
+        "description": "Il tuo autista privato ti viene a prendere nella tua villa Portugal Active. Il viaggio panoramico attraverso la campagna del Minho fino al Parco Nazionale di Peneda-Gerês dura circa 45 minuti."
+      },
+      {
+        "time": "09:45",
+        "title": "Regolazione dell'attrezzatura e briefing di sicurezza",
+        "description": "Incontra la tua guida certificata CIC alla base della gola. Indossa muta in neoprene, imbracatura, casco e scarpe da canyoning. Briefing di sicurezza completo, con tecniche di nuoto, salto, scivolata e rappel."
+      },
+      {
+        "time": "10:15",
+        "title": "Ingresso nella gola — nuoto e scivoli",
+        "description": "Entra nel fiume Varziela e inizia la discesa. Il primo tratto presenta scivoli di granito dolci e piscine all'altezza della vita — il riscaldamento perfetto. La guida dimostra ogni tecnica prima che tu la provi."
+      },
+      {
+        "time": "11:00",
+        "title": "Salti, rappel e la cascata principale",
+        "description": "La gola si fa più profonda. I salti naturali variano tra i 2 e gli 8 metri — tutti opzionali. Il momento clou: un rappel accanto a una cascata fino a una profonda piscina turchese. Pura adrenalina, totale sicurezza."
+      },
+      {
+        "time": "12:30",
+        "title": "Uscita dalla gola e ritorno",
+        "description": "Esci dalla gola con quell'inconfondibile euforia post-avventura. Indossa abiti asciutti, rivedi le foto e goditi il viaggio di ritorno alla villa."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Ho bisogno di esperienza pregressa di canyoning?",
+        "a": "Per niente. Le nostre guide insegnano ogni tecnica sul posto. Tutti i salti, gli scivoli e i rappel sono opzionali — sei tu a decidere il tuo livello di comfort."
+      },
+      {
+        "q": "I miei bambini possono partecipare?",
+        "a": "L'età minima è 14 anni. I bambini più piccoli possono godersi le nostre esperienze di SUP o di passeggiata a cavallo."
+      },
+      {
+        "q": "E se non nuoto molto bene?",
+        "a": "È richiesta una capacità di nuoto di base. La muta in neoprene dà molta galleggiabilità e la tua guida è sempre nelle vicinanze. Se non ti senti sicuro in acque aperte, ti consigliamo un'altra esperienza."
+      },
+      {
+        "q": "Cosa succede se piove?",
+        "a": "La pioggia leggera non impedisce l'esperienza — ti bagnerai comunque. La pioggia forte o livelli d'acqua non sicuri possono obbligare a riprogrammare. Monitoriamo le condizioni quotidianamente e ti contattiamo il giorno prima in caso di cambiamenti."
+      },
+      {
+        "q": "Perché dovrei prenotare direttamente con Portugal Active?",
+        "a": "Ottieni un prezzo più basso che su qualsiasi OTA, comunicazione diretta con la tua guida via WhatsApp e riprogrammazione flessibile. Siamo l'operatore — nessun intermediario."
+      }
+    ],
+    "meetingPoint": {
+      "instructions": "Ti veniamo a prendere direttamente nella tua villa Portugal Active. Se preferisci guidare, il punto d'incontro esatto viene confermato 24 ore prima via WhatsApp, con coordinate GPS.",
+      "pickupNote": "Prelievo opzionale in villa — coordinato dal nostro team concierge con supplemento. Contattaci per i prezzi."
+    }
+  },
+  "ebike-tours": {
+    "name": "Tour Selvaggio in E-Bike — Sentieri di Città, Montagna e Costa",
+    "tagline": "Scopri la bellezza mozzafiato di Viana do Castelo su un'e-bike — strade storiche, santuario di Santa Luzia, vedute atlantiche e sentieri nascosti.",
+    "badges": [
+      "Piccolo gruppo",
+      "Tutti i livelli"
+    ],
+    "price": "Da 55 € a persona",
+    "duration": "3 ore",
+    "difficultyLevel": "Da facile a moderato (l'e-bike aiuta nelle salite)",
+    "availability": "Tutto l'anno, in base alle condizioni meteorologiche",
+    "aboutParagraphs": [
+      "Viana do Castelo è una delle città più belle del Portogallo, e il modo migliore per conoscerla è su due ruote. Questo tour in e-bike ti porta dal centro storico fino alla cima del Monte di Santa Luzia, lungo la costa atlantica e attraverso sentieri che la maggior parte dei visitatori non scopre mai.",
+      "Il motore elettrico si occupa delle salite così puoi concentrarti sui panorami. In cima a Santa Luzia, la vista si estende dal fiume Lima all'Atlantico — con il Santuario del Sacro Cuore di Gesù a coronare la collina, visibile a chilometri di distanza. La tua guida condivide storie sulla storia marittima della città, sulla sua architettura art déco e sulle tradizioni della pesca che ancora oggi definiscono la vita locale.",
+      "Il percorso combina strade lastricate, sentieri costieri e tracciati forestali fuoristrada — l'e-bike sa gestire ogni cosa. Sono previste soste per foto, acqua e snack locali. I gruppi sono limitati a un massimo di 10 ciclisti, per sicurezza e per mantenere un ritmo rilassato e personale.",
+      "C'è l'opzione fat bike per chi vuole prendere più sul serio i tratti fuoristrada. Entrambi i tipi di bicicletta sono di qualità premium, con sospensione integrale e motori potenti."
+    ],
+    "highlights": [
+      "Pedala fino alla cima del Monte di Santa Luzia per vedute panoramiche a 360 gradi",
+      "Esplora il centro storico, la costa atlantica e sentieri forestali nascosti",
+      "E-bike premium con motori potenti — le salite diventano facili",
+      "Piccoli gruppi di massimo 10 ciclisti, con una guida locale professionale",
+      "Opzione fat bike disponibile per gli appassionati del fuoristrada",
+      "Snack e acqua inclusi",
+      "Transfer gratuito dalla tua villa Portugal Active",
+      "Adatto a tutti i livelli di forma fisica — il motore fa il lavoro pesante"
+    ],
+    "included": [
+      "E-bike premium (o fat bike su richiesta) con casco",
+      "Guida locale professionale",
+      "Snack e acqua",
+      "Assicurazione per tutti i partecipanti"
+    ],
+    "notIncluded": [
+      "Prelievo/transfer in villa (opzionale — coordinato dal nostro team concierge con supplemento)",
+      "Pasti (possono essere organizzati dopo il tour)",
+      "Mance (a tua discrezione)"
+    ],
+    "notSuitableFor": [
+      "Bambini sotto i 12 anni",
+      "Ospiti che non sanno andare in bicicletta"
+    ],
+    "whatToBring": [
+      "Abbigliamento sportivo comodo",
+      "Calzature chiuse (scarpe da ginnastica o da ciclismo)",
+      "Crema solare e occhiali da sole",
+      "Giacca leggera o abbigliamento a strati",
+      "Macchina fotografica"
+    ],
+    "notAllowed": [
+      "Sandali o calzature aperte",
+      "Guidare sotto l'effetto dell'alcol"
+    ],
+    "cancellationPolicy": "Cancellazione gratuita fino a 24 ore prima dell'esperienza, con rimborso totale. Le cancellazioni per motivi meteorologici vengono riprogrammate o rimborsate per intero.",
+    "guideRole": "Guide di Ciclismo Professionali",
+    "guideDescription": "Le nostre guide di e-bike sono ciclisti locali che conoscono ogni sentiero, scorciatoia e punto panoramico di Viana do Castelo. Definiscono un ritmo adatto a tutti — il motore dell'e-bike si occupa dello sforzo e la guida si occupa delle storie. Aspettati di imparare sulla storia marittima della città, sulle sue tradizioni di pesca e sui migliori posti dove mangiare dopo la pedalata.",
+    "languages": [
+      "Portoghese",
+      "Inglese",
+      "Spagnolo",
+      "Francese"
+    ],
+    "itinerary": [
+      {
+        "time": "09:30",
+        "title": "Prelievo in villa e regolazione della bicicletta",
+        "description": "Il tuo autista ti viene a prendere nella tua villa Portugal Active. Al punto di partenza, la guida ti regola un'e-bike premium (o fat bike) e il casco, e ti dà un breve orientamento sui comandi."
+      },
+      {
+        "time": "10:00",
+        "title": "Centro storico e lungofiume",
+        "description": "Pedala tra le strade lastricate del centro storico di Viana do Castelo — passando davanti agli edifici art déco, alla chiesa medievale e lungo il lungofiume del Lima."
+      },
+      {
+        "time": "10:30",
+        "title": "Salita al Santuario di Santa Luzia",
+        "description": "Il motore dell'e-bike rende facile la salita al Monte di Santa Luzia. In cima, il Santuario del Sacro Cuore di Gesù e un panorama a 360 gradi sulla città, il fiume e l'oceano. Sosta per le foto."
+      },
+      {
+        "time": "11:15",
+        "title": "Sentieri costieri e Praia do Cabedelo",
+        "description": "Scendi lungo sentieri forestali e tracciati costieri fino alla Praia do Cabedelo. Senti l'aria salmastra mentre pedali lungo l'Atlantico. Pausa per snack e acqua sulla spiaggia."
+      },
+      {
+        "time": "12:30",
+        "title": "Ritorno e transfer",
+        "description": "Completa il circuito tornando al punto di partenza. Riconsegna la bicicletta e l'autista ti riporta alla villa — oppure resta in città per pranzo (la guida consiglia i posti migliori)."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Devo essere in forma?",
+        "a": "No. Il motore dell'e-bike aiuta in tutte le salite. Se sai andare in bicicletta, puoi fare questo tour. Il ritmo è definito dal gruppo — la tua guida si adatta."
+      },
+      {
+        "q": "Qual è la differenza tra l'e-bike e la fat bike?",
+        "a": "L'e-bike è ideale per terreni misti (strade + sentieri leggeri). La fat bike ha pneumatici più larghi per la sabbia e i tratti più impegnativi. Entrambe hanno il motore elettrico. Indica la tua preferenza al momento della prenotazione."
+      },
+      {
+        "q": "I bambini possono partecipare?",
+        "a": "I bambini dai 12 anni in su che sanno andare in bicicletta in autonomia sono benvenuti. Abbiamo biciclette di varie misure."
+      },
+      {
+        "q": "Cosa succede se piove?",
+        "a": "La pioggia leggera non impedisce il tour. In caso di pioggia forte, riprogrammiamo o offriamo il rimborso totale. Sarai contattato il giorno prima."
+      },
+      {
+        "q": "Perché dovrei prenotare direttamente con Portugal Active?",
+        "a": "Prezzo migliore rispetto alle piattaforme di prenotazione, programmazione flessibile, e la tua guida può consigliare ristoranti e attività per il resto della giornata."
+      }
+    ],
+    "meetingPoint": {
+      "instructions": "Ti veniamo a prendere direttamente nella tua villa Portugal Active. Se preferisci guidare, incontraci al Vira Maria, Vira Manel, vicino alla stazione ferroviaria.",
+      "pickupNote": "Prelievo opzionale in villa — coordinato dal nostro team concierge con supplemento. Contattaci per i prezzi."
+    }
+  },
+  "surf-lessons": {
+    "name": "Lezioni di Surf — Onde Atlantiche sulla Costa del Minho",
+    "tagline": "Impara a surfare sulle migliori onde atlantiche del Portogallo con istruttori certificati — lezioni private o in piccoli gruppi sulle spiagge della costa del Minho.",
+    "badges": [
+      "Tutti i livelli",
+      "Attrezzatura inclusa"
+    ],
+    "price": "Da 60 € a persona",
+    "duration": "2–3 ore",
+    "difficultyLevel": "Tutti i livelli — dal principiante all'avanzato",
+    "availability": "Tutto l'anno (condizioni migliori da aprile a ottobre)",
+    "aboutParagraphs": [
+      "La costa del Minho è uno dei segreti di surf più ben custoditi del Portogallo. Mentre le folle si dirigono a sud, le spiagge intorno a Viana do Castelo offrono onde atlantiche costanti, lunghe onde di sabbia e acqua abbastanza calda da richiedere una muta (non una muta stagna). La Praia do Cabedelo, in particolare, è uno spot di livello mondiale protetto dal frangiflutti del fiume Lima — che crea condizioni perfette per imparare.",
+      "Le nostre lezioni di surf sono tenute da istruttori certificati che si adattano al tuo livello. I principianti assoluti iniziano sulla sabbia, con tecnica e sicurezza, per poi passare in acqua con un accompagnamento paziente e pratico. I surfisti intermedi e avanzati vengono portati al miglior picco per le condizioni del giorno — l'istruttore conosce ogni banco di sabbia, ogni cambio di marea e ogni segreto locale.",
+      "Tutta l'attrezzatura è fornita: tavole premium (softboard per principianti, tavole rigide per avanzati), mute in neoprene e licra. I gruppi sono piccoli — massimo 6 per istruttore — così da avere un'attenzione reale e progressi reali.",
+      "Dopo la lezione, la Praia do Cabedelo è uno dei più bei litorali del Minho. Resta, asciugati e guarda le onde. Il tuo istruttore può indicarti il miglior bar di spiaggia per un drink post-surf."
+    ],
+    "highlights": [
+      "Istruttori di surf certificati che si adattano a ogni livello",
+      "Tavole premium e mute in neoprene incluse",
+      "Piccoli gruppi di massimo 6 per istruttore",
+      "Praia do Cabedelo — picco di livello mondiale con condizioni accessibili ai principianti",
+      "Briefing in spiaggia su tecnica e sicurezza in mare prima di entrare in acqua",
+      "Tutte le età sono benvenute (dai 6 anni in su)",
+      "Transfer gratuito dalla tua villa Portugal Active",
+      "Disponibile tutto l'anno — la costa del Minho ha onde costanti"
+    ],
+    "included": [
+      "Istruttore di surf certificato (privato o in piccolo gruppo)",
+      "Tavola premium (softboard o tavola rigida in base al livello)",
+      "Muta in neoprene e licra",
+      "Assicurazione per tutti i partecipanti",
+      "Briefing di sicurezza in spiaggia"
+    ],
+    "notIncluded": [
+      "Prelievo/transfer in villa (opzionale — coordinato dal nostro team concierge con supplemento)",
+      "Asciugamano (porta il tuo)",
+      "Cibo e bevande (bar di spiaggia nelle vicinanze)",
+      "Mance (a tua discrezione)"
+    ],
+    "notSuitableFor": [
+      "Bambini sotto i 6 anni",
+      "Persone che non sanno nuotare"
+    ],
+    "whatToBring": [
+      "Costume da bagno (indossato sotto il neoprene)",
+      "Asciugamano",
+      "Crema solare (preferibilmente reef-safe)",
+      "Acqua e uno snack",
+      "Atteggiamento positivo e voglia di bagnarsi"
+    ],
+    "notAllowed": [
+      "Surfare fuori dalla zona designata senza l'approvazione dell'istruttore",
+      "Vetro in spiaggia"
+    ],
+    "cancellationPolicy": "Cancellazione gratuita fino a 24 ore prima dell'esperienza, con rimborso totale. Le cancellazioni dovute alle condizioni (mare pericoloso) vengono riprogrammate o rimborsate.",
+    "guideRole": "Istruttori di Surf Certificati",
+    "guideDescription": "I nostri istruttori di surf sono professionisti certificati della costa del Minho cresciuti su queste onde. Conoscono ogni spiaggia, ogni marea e ogni condizione. Che sia la prima volta su una tavola o che tu voglia migliorare la tua tecnica sull'onda formata, adattano la lezione al tuo livello e ai tuoi obiettivi. Pazienti, incoraggianti e appassionati nel condividere l'oceano.",
+    "languages": [
+      "Portoghese",
+      "Inglese",
+      "Spagnolo",
+      "Francese"
+    ],
+    "itinerary": [
+      {
+        "time": "09:30",
+        "title": "Prelievo in villa e viaggio fino alla Praia do Cabedelo",
+        "description": "Il tuo autista ti viene a prendere nella tua villa Portugal Active. Breve viaggio fino alla Praia do Cabedelo — una delle migliori spiagge da surf della costa del Minho."
+      },
+      {
+        "time": "10:00",
+        "title": "Regolazione dell'attrezzatura e briefing in spiaggia",
+        "description": "Incontra il tuo istruttore certificato in spiaggia. Regolazione della muta in neoprene, scelta della tavola in base al tuo livello e un briefing completo su tecnica di pagaiata, pop-up e sicurezza in mare."
+      },
+      {
+        "time": "10:30",
+        "title": "In acqua — prendere le prime onde",
+        "description": "Entra nell'Atlantico e inizia a prendere la schiuma. L'istruttore è in acqua con te, a posizionarti, a cronometrare le onde e ad allenare ogni tentativo. La maggior parte dei principianti si alza in piedi nella prima ora."
+      },
+      {
+        "time": "11:30",
+        "title": "Progressi e pratica",
+        "description": "Approfondisci la tua tecnica. I principianti passano a schiuma più grande; i surfisti intermedi prendono onde formate. L'istruttore dà feedback individuale e consigli per tutta la lezione."
+      },
+      {
+        "time": "12:30",
+        "title": "Relax e ritorno",
+        "description": "Lavati, cambiati e goditi l'euforia post-surf in spiaggia. Il tuo autista ti riporta alla villa — oppure resta in spiaggia a esplorare i bar e i ristoranti vicini."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Non ho mai surfato. Posso comunque partecipare?",
+        "a": "Senza dubbio. La maggior parte dei nostri ospiti surfa per la prima volta. La lezione inizia in spiaggia con la tecnica e poi l'istruttore è in acqua con te a ogni passo."
+      },
+      {
+        "q": "Da che età possono iniziare i bambini?",
+        "a": "I bambini dai 6 anni in su possono partecipare. Abbiamo tavole più piccole e istruttori esperti con i giovani surfisti."
+      },
+      {
+        "q": "E se non ci sono onde?",
+        "a": "La costa del Minho ha onde atlantiche costanti. I giorni senza onde sono molto rari tra aprile e ottobre. Se le condizioni sono davvero inadeguate, riprogrammiamo o offriamo il rimborso totale."
+      },
+      {
+        "q": "Posso prenotare una lezione privata?",
+        "a": "Sì. Le lezioni private (1 istruttore, 1-2 allievi) sono disponibili e consigliate per i progressi più rapidi. Contattaci via WhatsApp per i prezzi."
+      },
+      {
+        "q": "Perché dovrei prenotare direttamente con Portugal Active?",
+        "a": "Prezzo migliore, programmazione flessibile e il tuo istruttore può essere scelto in base ai tuoi obiettivi."
+      }
+    ],
+    "meetingPoint": {
+      "instructions": "Ti veniamo a prendere direttamente nella tua villa Portugal Active. Se preferisci guidare, parcheggia nell'area di sosta della Praia do Cabedelo e incontra il tuo istruttore presso la capanna della scuola di surf.",
+      "pickupNote": "Prelievo opzionale in villa — coordinato dal nostro team concierge con supplemento. Contattaci per i prezzi."
+    }
+  },
+  "hike-dive-dine": {
+    "name": "Serra d'Arga: Escursione, Tuffo e Cena come un Locale in un Angolo Segreto",
+    "tagline": "Scopri i segreti più ben custoditi del Minho. Cammina fino a una cascata nascosta, nuota in lagune cristalline e concludi con cucina tradizionale portoghese in un ristorante di montagna segreto.",
+    "badges": [
+      "Sigillo d'Eccellenza",
+      "100% consigliato",
+      "Pasto incluso"
+    ],
+    "price": "Da 95 € a persona",
+    "duration": "4h 30m",
+    "difficultyLevel": "Moderato",
+    "availability": "Tutto l'anno (date invernali su prenotazione)",
+    "aboutParagraphs": [
+      "Questa è la nostra esperienza di punta nel Minho — quella che gli ospiti valutano di più e riprenotano al viaggio successivo. Combina le tre cose che rendono il Nord del Portogallo indimenticabile: natura selvaggia, cibo straordinario e una conoscenza locale che non trovi in nessuna guida.",
+      "La tua guida — nata e cresciuta nel Minho — ti porta tra foreste di querce e castagni nella Serra d'Arga fino a una cascata nascosta e a una laguna naturale che solo i locali conoscono. L'escursione è moderata (circa 40 minuti per tratta, sentiero ben segnalato) e la ricompensa è un tuffo in acqua di montagna cristallina, circondato solo dalla foresta e dal canto degli uccelli.",
+      "L'esperienza culmina in un ristorante di montagna tradizionale senza sito web, senza Instagram e senza insegne sulla strada. La tavola è apparecchiata con broa di mais, chouriço arrostito, formaggio di montagna, miele locale e vino regionale. È il tipo di pasto che ti fa capire perché il Minho è il segreto gastronomico più ben custodito del Portogallo.",
+      "È tutto incluso: snack durante l'escursione, il pasto tradizionale completo con abbinamento di vini e un ricordo in polaroid. I gruppi sono piccoli — mai più di 10 ospiti — così l'esperienza è personale e senza fretta."
+    ],
+    "highlights": [
+      "Scopri una cascata nascosta e una laguna segreta — un vero gioiello di Viana do Castelo",
+      "Nuota in piscine naturali cristalline nella Serra d'Arga",
+      "Stuzzichini tradizionali portoghesi in un ristorante di montagna senza sito web — solo cibo incredibile",
+      "Trascorri una giornata immerso nella natura del Minho con una guida locale esperta",
+      "Ricordo in polaroid del tuo gruppo alla cascata",
+      "100% consigliato dai viaggiatori — Sigillo d'Eccellenza",
+      "Un tour privato significa un'esperienza personalizzata"
+    ],
+    "included": [
+      "Guida locale esperta",
+      "Cena — pasto tradizionale portoghese completo",
+      "Bevande alcoliche (abbinamento con vino o birra locale)",
+      "Snack durante l'escursione",
+      "Assicurazione per tutti i partecipanti",
+      "Fotografia ricordo in polaroid"
+    ],
+    "notIncluded": [
+      "Prelievo/transfer in villa (opzionale — coordinato dal nostro team concierge con supplemento)",
+      "Bevande aggiuntive oltre all'abbinamento incluso",
+      "Mance (a tua discrezione)"
+    ],
+    "notSuitableFor": [
+      "Viaggiatrici in gravidanza",
+      "Ospiti con mobilità ridotta",
+      "Bambini sotto gli 8 anni"
+    ],
+    "whatToBring": [
+      "Asciugamano",
+      "Abbigliamento comodo e a strati",
+      "Scarpe da ginnastica o da trail con buona aderenza",
+      "Crema solare",
+      "Costume da bagno"
+    ],
+    "notAllowed": [
+      "Contenitori di vetro",
+      "Plastica monouso"
+    ],
+    "cancellationPolicy": "Cancellazione gratuita fino a 24 ore prima dell'esperienza, con rimborso totale. Le cancellazioni entro le 24 ore non sono rimborsabili. In caso di maltempo, riprogrammiamo o rimborsiamo.",
+    "guideRole": "Guida Locale e Naturalistica del Minho",
+    "guideDescription": "Jorge è nato nel villaggio ai piedi della Serra d'Arga ed esplora queste montagne da quando ha imparato a camminare. La sua conoscenza e la sua passione per la regione rendono ogni uscita indimenticabile. È simpatico, accessibile e crea un'atmosfera accogliente dall'inizio alla fine. Gli ospiti lo citano costantemente per nome come il momento clou dell'esperienza. Parla portoghese, inglese e spagnolo, porta con sé una macchina polaroid e ha un dono nel trovare il punto di balneazione perfetto a seconda della stagione e del livello dell'acqua.",
+    "languages": [
+      "Portoghese",
+      "Inglese",
+      "Spagnolo"
+    ],
+    "itinerary": [
+      {
+        "time": "16:00",
+        "title": "Prelievo e transfer",
+        "description": "La tua guida ti viene a prendere nella tua villa Portugal Active o al punto d'incontro in Praça da República, a Viana do Castelo. Caffè e una breve presentazione nel furgone in viaggio verso la Serra d'Arga."
+      },
+      {
+        "time": "16:30",
+        "title": "Transfer panoramico fino alla Serra d'Arga",
+        "description": "Un viaggio di 30 minuti tra le montagne. La guida condivide storie sulla regione e si ferma per foto nei punti panoramici sulla Valle del Lima."
+      },
+      {
+        "time": "17:00",
+        "title": "Escursione fino alla cascata nascosta",
+        "description": "Un'escursione moderata attraverso un'antica foresta di querce e castagni. Il sentiero segue un ruscello lungo il pendio, attraversando piccoli ponti di pietra, finché senti la cascata prima di vederla."
+      },
+      {
+        "time": "17:45",
+        "title": "Tuffo nella laguna segreta",
+        "description": "Arriva alla cascata e alla piscina naturale. L'acqua è cristallina e rinfrescante. Nuota, galleggia o tuffati dalle rocce. È il momento per la polaroid."
+      },
+      {
+        "time": "18:45",
+        "title": "Cena tradizionale nel ristorante di montagna segreto",
+        "description": "Una camminata fino a un ristorante senza sito web, senza Instagram e senza insegna sulla strada. La tavola è apparecchiata: broa di mais, chouriço arrostito, formaggio di montagna, miele locale, presunto e abbinamento con vino regionale. Il proprietario è amico della famiglia della guida."
+      },
+      {
+        "time": "20:30",
+        "title": "Ritorno alla tua villa",
+        "description": "Sazio, felice e con una polaroid in mano. Il viaggio di ritorno, rilassato, dura circa 30 minuti. La guida ti lascia davanti alla porta della villa."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Ci sono opzioni vegetariane o vegane al ristorante?",
+        "a": "Sì. Sono disponibili opzioni vegetariane, vegane e pescetariane. Comunicaci le tue esigenze alimentari al momento della prenotazione."
+      },
+      {
+        "q": "Quanto è impegnativa l'escursione?",
+        "a": "Moderata. Il terreno varia tra fitte foreste e ruscelli cristallini, con alcuni tratti rocciosi. Buone scarpe da ginnastica con aderenza sono essenziali. La maggior parte dei viaggiatori riesce a partecipare."
+      },
+      {
+        "q": "E se non voglio nuotare?",
+        "a": "Nessun problema. Il tuffo è opzionale. Molti ospiti restano vicino alla laguna, si godono la vista della cascata e scattano foto."
+      },
+      {
+        "q": "Questa esperienza è privata o condivisa?",
+        "a": "È un tour privato — partecipa solo il tuo gruppo. Massimo 10 viaggiatori."
+      },
+      {
+        "q": "A che ora inizia?",
+        "a": "L'esperienza inizia normalmente alle 16:00. Possiamo adattare gli orari al tuo programma — contattaci."
+      },
+      {
+        "q": "I bambini possono partecipare?",
+        "a": "I bambini dagli 8 anni in su che si sentono a proprio agio con un'escursione moderata sono benvenuti. Il sentiero ha alcuni tratti rocciosi."
+      },
+      {
+        "q": "Quanto cibo è incluso?",
+        "a": "Un pasto tradizionale completo: broa di mais, chouriço arrostito, formaggio di montagna, presunto, miele locale e abbinamento con vino o birra regionale. Nessuno esce con la fame."
+      },
+      {
+        "q": "Perché dovrei prenotare direttamente con Portugal Active?",
+        "a": "Prenotare direttamente significa il miglior prezzo, senza intermediari. La stessa esperienza, la stessa guida, lo stesso ristorante — e una linea diretta WhatsApp con il nostro team per qualsiasi modifica o domanda."
+      }
+    ],
+    "meetingPoint": {
+      "instructions": "Ti veniamo a prendere direttamente nella tua villa Portugal Active. In alternativa, incontraci in Praça da República, a Viana do Castelo — il punto d'incontro abituale è accanto agli Antichi Paços do Concelho. Sii pronto 10 minuti prima dell'orario di prelievo concordato.",
+      "pickupNote": "Prelievo opzionale in villa — coordinato dal nostro team concierge con supplemento. Contattaci per i prezzi."
+    }
+  },
+  "stand-up-paddle": {
+    "name": "SUP Sun Experience — Discesa del Fiume Lima da Ponte de Lima",
+    "tagline": "Pagaia lungo l'intero fiume Lima all'alba o al tramonto — dal borgo medievale di Ponte de Lima fino all'Atlantico alla Praia do Cabedelo.",
+    "badges": [
+      "Piccolo gruppo",
+      "Rinfreschi inclusi"
+    ],
+    "price": "Da 45 € a persona",
+    "duration": "3 ore",
+    "difficultyLevel": "Facile — adatto a tutti i livelli",
+    "availability": "Tutto l'anno, in base alle condizioni meteorologiche",
+    "aboutParagraphs": [
+      "Questa è l'esperienza che gli ospiti descrivono con una sola parola: magica. Partendo dal borgo medievale di Ponte de Lima — uno dei più antichi del Portogallo — pagaierai lungo l'intero corso del fiume Lima mentre la luce passa dall'oro al rame e al rosa. La corrente fa la maggior parte del lavoro; tu fornisci la presenza.",
+      "Il percorso segue il fiume verso la foce, tra campi agricoli, sotto antichi ponti di pietra, passando accanto a aironi e martin pescatori, fino al punto in cui il Lima incontra l'Atlantico alla Praia do Cabedelo. A metà strada, la tua guida fa una pausa caffè sulla riva — un'occasione per nuotare, fare stretching e assorbire il silenzio.",
+      "Non è necessaria esperienza pregressa di SUP. La tua guida inizia con un breve briefing sulla riva e, in pochi minuti, sarai in piedi, a pagaiare e a sorridere. I gruppi sono limitati a un massimo di 8 così che il fiume rimanga tranquillo e l'esperienza personale.",
+      "Le sessioni al tramonto sono le più richieste — la luce sul Lima è straordinaria. Le sessioni all'alba offrono un'energia completamente diversa: foschia sull'acqua, il borgo ancora addormentato e la sensazione di avere l'intero fiume tutto per sé."
+    ],
+    "highlights": [
+      "Pagaia lungo l'intero fiume Lima, da Ponte de Lima alla Praia do Cabedelo",
+      "Sessioni spettacolari all'alba o al tramonto — la luce sul fiume è straordinaria",
+      "Tutta l'attrezzatura fornita, inclusi paddleboard premium",
+      "Pausa caffè sulla riva del fiume a metà percorso",
+      "Nessuna esperienza necessaria — principianti benvenuti con accompagnamento in acqua",
+      "Piccoli gruppi di massimo 8 per un'esperienza tranquilla e personale",
+      "Transfer gratuito dalla tua villa Portugal Active",
+      "Il percorso passa sotto ponti di pietra medievali con vedute di montagna"
+    ],
+    "included": [
+      "Guida di SUP professionale",
+      "Stand-up paddleboard e pagaia premium",
+      "Attrezzatura di sicurezza (giubbotto salvagente, leash)",
+      "Pausa caffè con snack e bevande",
+      "Sacca stagna per oggetti personali",
+      "Assicurazione per tutti i partecipanti"
+    ],
+    "notIncluded": [
+      "Prelievo/transfer in villa (opzionale — coordinato dal nostro team concierge con supplemento)",
+      "Pasti (possono essere organizzati a parte)",
+      "Mance (a tua discrezione)"
+    ],
+    "notSuitableFor": [
+      "Bambini sotto i 10 anni",
+      "Ospiti con gravi problemi di equilibrio"
+    ],
+    "whatToBring": [
+      "Costume da bagno e uno strato leggero per l'acqua",
+      "Crema solare e occhiali da sole (con cordino)",
+      "Asciugamano e abiti asciutti per la fine",
+      "Scarpe da acqua o sandali che possano bagnarsi",
+      "Macchina o custodia impermeabile per il cellulare"
+    ],
+    "notAllowed": [
+      "Bottiglie di vetro in acqua",
+      "Casse Bluetooth (tuteliamo la tranquillità del fiume)"
+    ],
+    "cancellationPolicy": "Cancellazione gratuita fino a 24 ore prima dell'esperienza, con rimborso totale. Le cancellazioni per motivi meteorologici vengono riprogrammate o rimborsate per intero.",
+    "guideRole": "Guida di SUP ed Esperto del Fiume",
+    "guideDescription": "Ricardo pagaia sul Lima da prima che il SUP fosse di moda. Conosce ogni ansa, ogni banco di sabbia e ogni punto dove i martin pescatori fanno il nido. Il suo stile di insegnamento è rilassato e incoraggiante — i principianti si alzano in piedi in pochi minuti e i più esperti vengono portati in canali nascosti fuori dal fiume principale. Ricardo è anche bagnino certificato e soccorritore in ambiente naturale.",
+    "languages": [
+      "Portoghese",
+      "Inglese",
+      "Spagnolo"
+    ],
+    "itinerary": [
+      {
+        "time": "Flessibile",
+        "title": "Prelievo in villa e viaggio fino a Ponte de Lima",
+        "description": "Il tuo autista ti viene a prendere nella tua villa Portugal Active e ti porta nella zona ribeirinha storica di Ponte de Lima — uno dei borghi più antichi del Portogallo."
+      },
+      {
+        "time": "+15 min",
+        "title": "Attrezzatura e briefing di SUP",
+        "description": "Incontra la tua guida sulla riva del fiume. Breve briefing su tecnica di pagaiata, equilibrio e sicurezza sul fiume. In pochi minuti sarai in piedi a pagaiare con sicurezza."
+      },
+      {
+        "time": "+30 min",
+        "title": "Discesa lungo la Valle del Lima",
+        "description": "La corrente dolce ti porta tra campi agricoli e foreste. Passa sotto antichi ponti di pietra con vedute sulla Serra d'Arga. Aironi, martin pescatori e cormorani sono compagni frequenti."
+      },
+      {
+        "time": "+90 min",
+        "title": "Pausa caffè sulla riva",
+        "description": "La tua guida fa una sosta su una riva tranquilla. Nuota se vuoi, sgranchisci le gambe e goditi caffè, succo e snack leggeri mentre la luce cambia sull'acqua."
+      },
+      {
+        "time": "+150 min",
+        "title": "Tratto finale fino alla Praia do Cabedelo",
+        "description": "Pagaia l'ultimo tratto mentre il fiume si allarga e incontra l'Atlantico. Arriva alla Praia do Cabedelo — uno dei più bei litorali del Minho. Il tuo autista attende per il transfer di ritorno."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Ho bisogno di esperienza pregressa di SUP?",
+        "a": "Per niente. La nostra guida ti istruisce sulla riva e sarai in piedi in pochi minuti. La corrente del fiume è dolce — questo è pagaiare in acqua piatta, non in acque bianche."
+      },
+      {
+        "q": "A che ora sono le sessioni al tramonto?",
+        "a": "L'orario varia in base alla stagione. In estate, partiamo normalmente verso le 18:00. La tua guida conferma l'orario esatto 24 ore prima, in base all'ora del tramonto."
+      },
+      {
+        "q": "I bambini possono partecipare?",
+        "a": "I bambini dai 10 anni in su possono pagaiare la propria tavola. I bambini più piccoli possono condividere una tavola con un adulto, previo accordo."
+      },
+      {
+        "q": "E se cado in acqua?",
+        "a": "Indosserai un giubbotto salvagente e il fiume è calmo. Cadere in acqua fa parte del divertimento — l'acqua è pulita e rinfrescante. La tua guida è sempre nelle vicinanze."
+      },
+      {
+        "q": "Perché dovrei prenotare direttamente con Portugal Active?",
+        "a": "Prezzo più basso che su qualsiasi piattaforma di prenotazione, comunicazione diretta con la tua guida via WhatsApp e riprogrammazione flessibile."
+      }
+    ],
+    "meetingPoint": {
+      "instructions": "Ti veniamo a prendere direttamente nella tua villa Portugal Active. Se preferisci guidare, incontraci al Vira Maria, Vira Manel, vicino alla stazione ferroviaria di Viana do Castelo.",
+      "pickupNote": "Prelievo opzionale in villa — coordinato dal nostro team concierge con supplemento. Contattaci per i prezzi."
+    }
+  },
+  "can-am-buggy": {
+    "name": "Tour di Guida Panoramica Can-Am — Serra da Nó, Nord del Portogallo",
+    "tagline": "Fuoristrada lungo sentieri di montagna, strade forestali e punti panoramici sopra Ponte de Lima e Viana do Castelo su un buggy Can-Am.",
+    "badges": [
+      "Adrenalina",
+      "Vedute panoramiche"
+    ],
+    "price": "Da 120 € a buggy",
+    "duration": "3 ore",
+    "difficultyLevel": "Moderato — guida fuoristrada",
+    "availability": "Tutto l'anno, in base alle condizioni meteorologiche",
+    "aboutParagraphs": [
+      "Dalla cima della Serra da Nó, l'intero Minho si estende ai tuoi piedi — le valli dei fiumi Lima e Minho, la costa atlantica, le verdi montagne che si prolungano fino alla Galizia. Ora immagina di percorrere tutto questo su un buggy Can-Am, fuoristrada, con una guida professionale ad aprire la strada.",
+      "Questo non è un giro da parco a tema. Il terreno è reale: sentieri di montagna, strade forestali, guadi di fiume e tratti rocciosi che mettono alla prova la tua guida. I buggy sono potenti, sicuri ed equipaggiati con roll bar di protezione, imbracature e tutti gli elementi di sicurezza necessari. La tua guida definisce il ritmo — impegnativo per l'adrenalina, controllato per la sicurezza.",
+      "Il percorso passa accanto a monumenti naturali, villaggi tradizionali di pietra e punti panoramici che nessun autobus turistico raggiunge. Lungo il cammino, la guida condivide storie sul paesaggio, sulla storia locale e sui megaliti di granito sparsi per la montagna. È un'escursione emozionante e completa per tutte le età che amano la natura, la guida e la sfida.",
+      "L'esperienza è addebitata per buggy (2 persone per veicolo). Una persona guida, l'altra accompagna — e potete fare cambio a metà strada. È necessaria una patente di guida valida per il conducente."
+    ],
+    "highlights": [
+      "Guida un buggy Can-Am tra le montagne della Serra da Nó",
+      "Vedute panoramiche su Ponte de Lima, Viana do Castelo e l'Atlantico",
+      "Percorso fuoristrada tra foreste, sentieri di montagna e guadi di fiume",
+      "Una guida professionale conduce la carovana e definisce un ritmo sicuro ma emozionante",
+      "Passa accanto a monumenti naturali e villaggi tradizionali di pietra",
+      "Attrezzatura di sicurezza completa: roll bar, imbracatura, caschi, occhiali protettivi",
+      "Addebitato per buggy — perfetto per coppie o amici",
+      "Transfer gratuito dalla tua villa Portugal Active"
+    ],
+    "included": [
+      "Buggy Can-Am per 2 persone (conducente + passeggero)",
+      "Guida di guida professionale che conduce la carovana",
+      "Attrezzatura di sicurezza completa (casco, occhiali protettivi, imbracatura)",
+      "Assicurazione per tutti i partecipanti",
+      "Briefing di sicurezza e istruzione di tecnica di guida"
+    ],
+    "notIncluded": [
+      "Prelievo/transfer in villa (opzionale — coordinato dal nostro team concierge con supplemento)",
+      "Cibo e bevande (porta acqua)",
+      "Mance (a tua discrezione)"
+    ],
+    "notSuitableFor": [
+      "Conducenti sotto i 18 anni (passeggeri benvenuti dai 10 anni)",
+      "Ospiti senza patente di guida valida (solo il conducente)",
+      "Ospiti in gravidanza"
+    ],
+    "whatToBring": [
+      "Patente di guida valida (per il conducente)",
+      "Abbigliamento comodo che possa impolverarsi",
+      "Calzature chiuse (niente sandali)",
+      "Crema solare e occhiali da sole",
+      "Acqua",
+      "Macchina fotografica (assicurata con un cordino)"
+    ],
+    "notAllowed": [
+      "Guidare senza patente di guida valida",
+      "Ignorare le istruzioni della guida (fine immediata dell'attività)",
+      "Togliere la cintura di sicurezza o gli occhiali protettivi durante il percorso"
+    ],
+    "cancellationPolicy": "Cancellazione gratuita fino a 24 ore prima dell'esperienza, con rimborso totale. Le cancellazioni per motivi meteorologici vengono riprogrammate o rimborsate per intero.",
+    "guideRole": "Guide di Guida Professionali",
+    "guideDescription": "Le nostre esperienze Can-Am sono gestite in collaborazione con il PLV Center Park, l'operatore di tour fuoristrada più esperto della regione della Serra da Nó. Le loro guide conoscono ogni sentiero, ogni punto panoramico e ogni guado di fiume sulla montagna. Definiscono un ritmo che emoziona senza compromettere la sicurezza — e condividono le storie dietro i monumenti di granito e i villaggi di pietra lungo il cammino.",
+    "languages": [
+      "Portoghese",
+      "Inglese",
+      "Spagnolo"
+    ],
+    "itinerary": [
+      {
+        "time": "09:30",
+        "title": "Prelievo in villa e viaggio fino alla Serra da Nó",
+        "description": "Il tuo autista privato ti viene a prendere nella tua villa Portugal Active e ti porta al punto di partenza sulla Serra da Nó, sopra Ponte de Lima."
+      },
+      {
+        "time": "10:15",
+        "title": "Briefing di sicurezza e orientamento del veicolo",
+        "description": "Incontra la tua guida di guida. Briefing completo sui comandi del Can-Am, regolazione dell'attrezzatura di sicurezza (casco, imbracatura, occhiali) e tecniche di guida per diversi tipi di terreno."
+      },
+      {
+        "time": "10:30",
+        "title": "Sentieri di montagna e strade forestali",
+        "description": "La carovana parte tra pinete e sentieri di montagna. Il terreno alterna strade dolci e tratti rocciosi tecnici. La tua guida definisce il ritmo — impegnativo ma sicuro."
+      },
+      {
+        "time": "11:30",
+        "title": "Punti panoramici e monumenti naturali",
+        "description": "Sosta nei punti panoramici più alti della Serra da Nó, con vedute a 360 gradi su Ponte de Lima, Viana do Castelo e la costa atlantica. Passa accanto a megaliti di granito e villaggi tradizionali di pietra."
+      },
+      {
+        "time": "12:30",
+        "title": "Discesa finale e ritorno",
+        "description": "Il tratto finale scende attraverso una foresta di eucalipti fino al punto di partenza. Opzione di cambio conducente a metà strada. Il transfer per la tua villa attende."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Mi serve la patente di guida?",
+        "a": "Sì, il conducente deve avere una patente di guida valida (la patente per auto è sufficiente). I passeggeri non hanno bisogno della patente. Potete scambiarvi conducente e passeggero a metà percorso."
+      },
+      {
+        "q": "Il prezzo è a persona o a buggy?",
+        "a": "A buggy. Ogni Can-Am porta 2 persone — un conducente, un passeggero. Ideale per coppie o amici."
+      },
+      {
+        "q": "Quanto è impegnativa la guida?",
+        "a": "Moderata. Il Can-Am è potente ma stabile, con trasmissione automatica. La tua guida dimostra ogni tratto e definisce il ritmo. Non è necessaria esperienza pregressa di fuoristrada."
+      },
+      {
+        "q": "I bambini possono partecipare?",
+        "a": "I bambini dai 10 anni in su possono partecipare come passeggeri. Devono essere abbastanza alti perché l'imbracatura sia ben aderente."
+      },
+      {
+        "q": "Perché dovrei prenotare direttamente con Portugal Active?",
+        "a": "Prezzo migliore che su qualsiasi piattaforma di prenotazione, programmazione flessibile e comunicazione diretta via WhatsApp per qualsiasi domanda."
+      }
+    ],
+    "meetingPoint": {
+      "instructions": "Ti veniamo a prendere direttamente nella tua villa Portugal Active. Il punto d'incontro esatto sulla Serra da Nó viene confermato 24 ore prima via WhatsApp.",
+      "pickupNote": "Prelievo opzionale in villa — coordinato dal nostro team concierge con supplemento. Contattaci per i prezzi."
+    }
+  },
+  "sailing": {
+    "name": "Esperienza di Vela Privata — Costa di Viana do Castelo",
+    "tagline": "Una barca a vela privata lungo la foce del fiume Lima e la costa atlantica di Viana do Castelo — con bevande, stuzzichini e SUP opzionale a bordo.",
+    "badges": [
+      "Esperienza privata",
+      "Bevande incluse"
+    ],
+    "price": "Da 85 € a persona",
+    "duration": "2–4 ore",
+    "difficultyLevel": "Facile — nessuna esperienza necessaria",
+    "availability": "Da aprile a ottobre, in base alle condizioni meteorologiche",
+    "aboutParagraphs": [
+      "Dalla foce del fiume Lima alla costa atlantica selvaggia, questa esperienza di vela privata è uno dei modi più eleganti per conoscere Viana do Castelo. La barca a vela di 39 piedi è tutta tua — niente estranei, niente orari, solo il tuo gruppo, l'equipaggio e l'oceano.",
+      "Mentre navighi oltre il frangiflutti, la costa del Minho si dispiega: la Praia do Cabedelo, l'antico quartiere dei pescatori, il Santuario di Santa Luzia in cima alla collina e l'Atlantico aperto che si estende fino all'orizzonte. La barca è equipaggiata con paddleboard, attrezzatura per snorkeling e una cucina completa — fermati per nuotare, fare SUP o semplicemente sdraiarti sul ponte con un drink.",
+      "Una bevanda di benvenuto e stuzzichini sono inclusi. Per occasioni speciali, è possibile organizzare un'esperienza gastronomica completa a bordo, con anticipo — pensa a formaggi locali, salumi, pesce fresco e vini portoghesi.",
+      "L'opzione di 2 ore è perfetta per una crociera al tramonto. L'esperienza di 4 ore aggiunge tempo per soste balneari, SUP e un'esplorazione costiera più lunga. Prenota con almeno una settimana di anticipo — la barca è molto richiesta e la disponibilità è limitata."
+    ],
+    "highlights": [
+      "Barca a vela privata di 39 piedi — esclusiva per il tuo gruppo (fino a 10 ospiti)",
+      "Naviga lungo la foce del fiume Lima e la costa atlantica di Viana do Castelo",
+      "Bevanda di benvenuto e stuzzichini inclusi",
+      "Paddleboard di SUP, attrezzatura per snorkeling e scaletta da bagno a bordo",
+      "Esperienza gastronomica opzionale con formaggi locali, pesce e vino",
+      "Guarda il tramonto dall'acqua — il punto panoramico più spettacolare di Viana",
+      "Equipaggio professionale con conoscenza locale",
+      "Opzioni di 2 o 4 ore disponibili"
+    ],
+    "included": [
+      "Charter di barca a vela privata con equipaggio professionale",
+      "Bevanda di benvenuto e stuzzichini",
+      "Paddleboard di SUP e attrezzatura per snorkeling a bordo",
+      "Bibite e acqua",
+      "Assicurazione dell'equipaggio",
+      "WiFi a bordo"
+    ],
+    "notIncluded": [
+      "Cena a bordo (disponibile su richiesta con anticipo)",
+      "Transfer per il porto turistico (può essere organizzato)",
+      "Mance (a tua discrezione)"
+    ],
+    "notSuitableFor": [
+      "Ospiti soggetti a grave mal di mare"
+    ],
+    "whatToBring": [
+      "Costume da bagno e asciugamano",
+      "Crema solare e occhiali da sole",
+      "Giacca leggera per il vento sul ponte",
+      "Macchina fotografica"
+    ],
+    "notAllowed": [
+      "Scarpe con suola rigida sul ponte (solo suola morbida o a piedi nudi)",
+      "Fumare a bordo"
+    ],
+    "cancellationPolicy": "Cancellazione gratuita fino a 48 ore prima dell'esperienza. Le cancellazioni entro le 48 ore non sono rimborsabili. Le cancellazioni per motivi meteorologici vengono riprogrammate o rimborsate.",
+    "guideRole": "Equipaggio di Vela Professionale",
+    "guideDescription": "Le nostre esperienze di vela sono gestite in collaborazione con Amazing Experiences, un operatore marittimo boutique con sede nel porto turistico di Viana do Castelo. Il capitano e l'equipaggio conoscono ogni insenatura, ogni corrente e ogni punto di avvistamento dei delfini lungo la costa del Minho. Si occupano della navigazione così che tu possa concentrarti interamente sull'esperienza — bevande, stuzzichini, bagni o semplicemente guardare la costa che scorre.",
+    "languages": [
+      "Portoghese",
+      "Inglese"
+    ],
+    "itinerary": [
+      {
+        "time": "Flessibile",
+        "title": "Arrivo al Porto Turistico di Viana do Castelo",
+        "description": "Incontra l'equipaggio al Cerqueira's in Rio, accanto alla Ponte Eiffel. L'ingresso del porto turistico si apre per te — cammina fino all'ultimo molo, accanto alla passerella pedonale, dove la barca a vela è ormeggiata."
+      },
+      {
+        "time": "+15 min",
+        "title": "Bevanda di benvenuto e partenza",
+        "description": "Imbarcati sulla barca a vela di 39 piedi. Bevanda di benvenuto in mano, l'equipaggio molla gli ormeggi e naviga lungo il fiume Lima verso la foce."
+      },
+      {
+        "time": "+45 min",
+        "title": "Navigazione lungo la costa atlantica",
+        "description": "Supera il frangiflutti e naviga lungo la costa del Minho. La Praia do Cabedelo, l'antico quartiere dei pescatori e il Santuario di Santa Luzia lassù in alto. Vento nelle vele, solo l'oceano davanti."
+      },
+      {
+        "time": "+90 min",
+        "title": "Bagni, SUP e relax",
+        "description": "Ancora in un luogo riparato. Nuota, prova i paddleboard di SUP a bordo, fai snorkeling o semplicemente rilassati sul ponte con stuzzichini e bevande. L'equipaggio pensa a tutto."
+      },
+      {
+        "time": "+180 min",
+        "title": "Ritorno al porto turistico al tramonto",
+        "description": "Naviga indietro mentre il sole tramonta sull'Atlantico e le luci della città di Viana do Castelo iniziano a brillare. Un finale indimenticabile per una giornata indimenticabile."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Mi serve esperienza di vela?",
+        "a": "Per niente. L'equipaggio professionale pensa a tutto. Sei un ospite, non un marinaio. Basta rilassarsi e godersela."
+      },
+      {
+        "q": "Qual è la differenza tra l'esperienza di 2 e di 4 ore?",
+        "a": "L'opzione di 2 ore è una crociera al tramonto lungo la costa, con bevande e stuzzichini. L'esperienza di 4 ore aggiunge una sosta balneare e SUP, un'esplorazione costiera più lunga e più tempo in acqua."
+      },
+      {
+        "q": "Posso organizzare la cena a bordo?",
+        "a": "Sì. Con almeno 48 ore di anticipo, è possibile preparare un'esperienza gastronomica completa: formaggi locali, salumi, pesce fresco e vini portoghesi."
+      },
+      {
+        "q": "Quante persone porta la barca?",
+        "a": "Fino a 10 ospiti. È un charter privato — solo il tuo gruppo a bordo."
+      },
+      {
+        "q": "Perché dovrei prenotare direttamente con Portugal Active?",
+        "a": "Prezzo più basso, programmazione flessibile, comunicazione diretta con l'equipaggio, e possiamo combinare la vela con altre esperienze (SUP, cena in un ristorante locale) per una giornata completa."
+      }
+    ],
+    "meetingPoint": {
+      "instructions": "L'ingresso del porto turistico è accanto alla Ponte Eiffel. Comunica il tuo arrivo per aprire la sbarra e poi cammina fino all'ultimo molo, accanto alla passerella pedonale.",
+      "pickupNote": "Il transfer per il porto turistico può essere organizzato su richiesta. Il porto turistico è a 5 minuti a piedi dalla stazione ferroviaria di Viana do Castelo."
+    }
+  }
+}

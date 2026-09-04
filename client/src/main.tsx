@@ -1,4 +1,5 @@
-import "./i18n/index";
+import i18n from "./i18n/index";
+import { preloadContentOverrides } from "@/lib/localizeContent";
 import { trpc } from "@/lib/trpc";
 import { UNAUTHED_ERR_MSG } from '@shared/const';
 import { QueryClient, QueryClientProvider, hydrate } from "@tanstack/react-query";
@@ -114,6 +115,14 @@ const trpcClient = trpc.createClient({
     }),
   ],
 });
+
+// Destination / experience translations for this route, loaded before the
+// first render so hydration matches the server markup (localizeContent.ts).
+{
+  const segs = window.location.pathname.split("/").filter(Boolean);
+  const pathNoLocale = "/" + (segs[0] === i18n.language ? segs.slice(1) : segs).join("/");
+  await preloadContentOverrides(i18n.language, pathNoLocale);
+}
 
 const rootEl = document.getElementById("root")!;
 const tree = (

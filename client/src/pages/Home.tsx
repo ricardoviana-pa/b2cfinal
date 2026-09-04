@@ -34,7 +34,7 @@ import PropertyCard from '@/components/property/PropertyCard';
 import { IMAGES } from '@/lib/images';
 const ReviewsSection = lazy(() => import('@/components/ReviewsSection'));
 import destinationsData from '@/data/destinations.json';
-import { localizeDestination } from '@/lib/localizeContent';
+import { localizeDestination, useDestinationOverrides } from '@/lib/localizeContent';
 import { trpc } from '@/lib/trpc';
 import type { Destination, Property } from '@/lib/types';
 import { getUniqueLocalities } from '@/lib/utils';
@@ -264,6 +264,7 @@ export default function Home() {
   // do NOT pollute the homepage tiles until their editorial copy and
   // photography are production-ready. Brazil is excluded entirely until
   // we're ready to reveal the expansion publicly.
+  const destOverrides = useDestinationOverrides(i18n.language);
   const activeDestinations = destinations
     .filter(
       d =>
@@ -272,7 +273,7 @@ export default function Home() {
     )
     // Destination cards are authored in English; overlay the active locale so
     // the homepage tiles read in the user's language.
-    .map(d => localizeDestination(d, i18n.language) as Destination);
+    .map(d => localizeDestination(d, destOverrides) as Destination);
 
   // Fetch live quotes for featured cards when dates are entered
   useEffect(() => {

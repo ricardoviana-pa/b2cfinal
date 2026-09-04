@@ -38,7 +38,7 @@ import ExperienceGuideProfile from '@/components/experience/ExperienceGuideProfi
 import ExperienceRelatedExperiences from '@/components/experience/ExperienceRelatedExperiences';
 
 import experienceDetailsData from '@/data/experienceDetails.json';
-import { localizeExperience } from '@/lib/localizeContent';
+import { localizeExperience, useExperienceOverrides } from '@/lib/localizeContent';
 import servicesData from '@/data/services.json';
 import productsData from '@/data/products.json';
 import destinationsData from '@/data/destinations.json';
@@ -191,9 +191,10 @@ export default function ExperienceDetail() {
   const [, actParams] = useRoute('/activities/:slug');
   const slug = params?.slug || actParams?.slug || '';
 
+  const expOverrides = useExperienceOverrides(i18n.language);
   const exp = useMemo(
-    () => (slug ? localizeExperience(findExperience(slug), i18n.language) : null),
-    [slug, i18n.language],
+    () => (slug ? localizeExperience(findExperience(slug), expOverrides) : null),
+    [slug, expOverrides],
   );
 
   usePageMeta({

@@ -1,0 +1,971 @@
+{
+  "horseback-riding": {
+    "name": "Paardrijtocht in Viana do Castelo — Strand, Bergen en Bloemenvelden",
+    "tagline": "Een paardrijtocht door bloemenvelden, bergpaden en paradijselijke stranden — bedacht voor alle niveaus, van de beginner tot de ervaren ruiter.",
+    "badges": [
+      "Meest gevraagd",
+      "Kleine groep"
+    ],
+    "price": "Vanaf € 75 per persoon",
+    "duration": "2u 30m",
+    "difficultyLevel": "Eenvoudig tot gemiddeld",
+    "availability": "Het hele jaar door, afhankelijk van de weersomstandigheden",
+    "aboutParagraphs": [
+      "Het is de tocht waar u over een jaar nog over zult napraten. Vanaf een traditionele, volop in bedrijf zijnde manege in de omgeving van Viana do Castelo wordt u door een van onze gecertificeerde instructeurs gekoppeld aan een paard dat bij uw niveau past — van de absolute beginner tot de zelfverzekerde ruiter.",
+      "De route voert u door de bloemenvelden en dennenbossen die de hellingen boven het Limadal bedekken, met panoramische uitzichten die zich uitstrekken van de Serra d'Arga tot de Atlantische Oceaan. Het laatste stuk volgt de kust: een rit over het strand bij zonsondergang, het geluid van hoeven op het natte zand, de zilte lucht in uw haar.",
+      "Elk detail wordt door ons verzorgd. Wij halen u op bij uw Portugal Active-villa, leveren alle veiligheidsuitrusting en houden de groepen klein — nooit meer dan 8 ruiters — zodat de instructeur iedere gast persoonlijke aandacht kan geven. Water, een fotoherinnering en een hapje op de manege na afloop van de tocht zijn inbegrepen.",
+      "Deze ervaring is het hele jaar door beschikbaar, afhankelijk van de weersomstandigheden. De lente (april tot juni) is het meest spectaculaire seizoen, wanneer de velden in volle bloei staan en het licht buitengewoon is. Tijdens het badseizoen gelden er wettelijke beperkingen op het paardrijden op het strandzand — de route wordt daarop aangepast, met al even adembenemende kustpaden."
+    ],
+    "highlights": [
+      "Rijd door de adembenemende landschappen van Viana do Castelo — bloemenvelden, dennenbossen, Atlantische stranden",
+      "Voortdurende begeleiding door Diana, Claudia of een van onze gecertificeerde paardrij-instructeurs",
+      "Alle niveaus zijn welkom: van de absolute beginner tot de ervaren ruiter",
+      "Sluit af met een rit langs de kust aan de Atlantische oever",
+      "Kleine groepen van maximaal 8 ruiters voor persoonlijke aandacht",
+      "De paarden worden geselecteerd en door de instructeur aan iedere gast gekoppeld",
+      "Fotoherinnering en een hapje op de manege na afloop van de tocht"
+    ],
+    "included": [
+      "Professionele rij-instructie door een gecertificeerde ruiter",
+      "Alle veiligheidsuitrusting en aanpassing van de helm",
+      "Verzekering voor alle deelnemers",
+      "Water tijdens de tocht",
+      "Fotoherinnering"
+    ],
+    "notIncluded": [
+      "Ophaalservice/transfer bij de villa (optioneel — gecoördineerd door ons conciërgeteam tegen een meerprijs)",
+      "Eten en maaltijden (kunnen apart worden geregeld)",
+      "Fooien (naar eigen inzicht)"
+    ],
+    "notSuitableFor": [
+      "Kinderen jonger dan 10 jaar",
+      "Gasten zwaarder dan 100 kg",
+      "Zwangere gasten"
+    ],
+    "whatToBring": [
+      "Een lange broek (jeans of rijbroek)",
+      "Gesloten schoeisel — rijlaarzen ideaal, maar niet verplicht",
+      "Zonnebrandcrème en een zonnebril",
+      "Een lichte jas of kleding in laagjes voor weersveranderingen"
+    ],
+    "notAllowed": [
+      "Sandalen of slippers",
+      "Korte broeken",
+      "Losse sjaals of open tassen"
+    ],
+    "cancellationPolicy": "Gratis annuleren tot 24 uur voor de ervaring, met volledige terugbetaling. Annuleringen binnen 24 uur worden niet terugbetaald. Bij ongunstig weer plannen wij opnieuw in of bieden wij een volledige terugbetaling.",
+    "guideRole": "Gecertificeerde paardrij-instructeurs",
+    "guideDescription": "Diana en Claudia zijn gecertificeerde paardrij-instructeurs met samen meer dan 15 jaar ervaring. Zij groeiden op te paard op het platteland van de Minho en kennen elk pad, elk paard en elke bloem bij naam. Hun gave is het koppelen van ruiters en paarden — zij lezen lichaamstaal, passen het tempo aan en laten beginners zich vanzelfsprekend voelen. Op de manege wonen ook Laura, verschillende prachtig verzorgde Friese en Lusitano-paarden, lieve honden en katten en zelfs een minipony.",
+    "languages": [
+      "Portugees",
+      "Engels",
+      "Frans",
+      "Spaans"
+    ],
+    "itinerary": [
+      {
+        "time": "09:30",
+        "title": "Ophalen bij de villa",
+        "description": "Uw privéchauffeur haalt u op bij uw Portugal Active-villa in een voertuig met airconditioning. Ontspan en geniet van de panoramische rit naar Viana do Castelo."
+      },
+      {
+        "time": "10:15",
+        "title": "Aankomst op de manege en veiligheidsbriefing",
+        "description": "Maak kennis met uw gecertificeerde instructeur — Diana, Claudia of iemand van ons team — op de werkende manege. Aanpassen van de uitrusting, veiligheidsbriefing en een korte introductie in de rijbak om vertrouwd te raken met uw paard."
+      },
+      {
+        "time": "10:45",
+        "title": "Bergpaden door de bloemenvelden",
+        "description": "Vertrek door de dennenbossen en bloemenweiden die de hellingen boven Viana bedekken. Panoramische uitzichten over het Limadal en de Serra d'Arga. Het tempo wordt afgestemd op het niveau van de groep."
+      },
+      {
+        "time": "11:30",
+        "title": "Rit over het strand langs de Atlantische Oceaan",
+        "description": "Daal af naar de kust en rijd langs het Atlantische strand. Voel de zeebries, hoor de golven en beleef de magie van het rijden op het natte zand langs de waterlijn."
+      },
+      {
+        "time": "12:15",
+        "title": "Terug naar de manege en een hapje",
+        "description": "Terug op de manege neemt u afscheid van uw paard en geniet u van een hapje. Uw chauffeur staat klaar voor de transfer terug naar de villa."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Heb ik eerdere rijervaring nodig?",
+        "a": "Helemaal niet. Onze instructeurs stemmen elke tocht af op het niveau van de groep. Absolute beginners worden gekoppeld aan rustige, goed getrainde paarden en krijgen voor de tocht een introductie in de rijbak."
+      },
+      {
+        "q": "Wat gebeurt er als het regent?",
+        "a": "Lichte regen vormt geen belemmering voor de ervaring. Bij zware regen of onweer nemen wij de dag ervoor contact op om opnieuw in te plannen of een volledige terugbetaling aan te bieden."
+      },
+      {
+        "q": "Mogen mijn kinderen meedoen?",
+        "a": "Kinderen vanaf 10 jaar mogen zelfstandig rijden. Jongere kinderen kunnen na overleg vooraf met een gids op hetzelfde paard rijden."
+      },
+      {
+        "q": "Is de transfer vanaf de villa inbegrepen?",
+        "a": "Het ophalen bij de villa is optioneel en kan door ons conciërgeteam tegen een meerprijs worden geregeld — neem contact met ons op voor prijzen. Ophalen in Porto, Braga of op andere locaties kan eveneens op aanvraag worden gecoördineerd."
+      },
+      {
+        "q": "Mag ik op het strand zelf rijden?",
+        "a": "Tijdens het badseizoen (ongeveer van juni tot september) gelden er wettelijke beperkingen op het paardrijden op het strandzand. De route wordt aangepast naar al even adembenemende kustpaden. Buiten het badseizoen is de rit over het strand de volledige ervaring."
+      },
+      {
+        "q": "Wat is de gewichtslimiet?",
+        "a": "Voor het welzijn van de paarden is het maximumgewicht 100 kg per ruiter."
+      },
+      {
+        "q": "Is dit een privé- of een gedeelde tocht?",
+        "a": "Het is een privétocht — alleen uw eigen groep neemt deel. Maximaal 8 ruiters."
+      },
+      {
+        "q": "Waarom zou ik rechtstreeks bij Portugal Active boeken?",
+        "a": "Rechtstreeks boeken betekent geen tussenpersonen en geen commissies. U krijgt de beste prijs, een directe WhatsApp-lijn met ons team en de flexibiliteit om data met één bericht te wijzigen."
+      }
+    ],
+    "meetingPoint": {
+      "instructions": "Wij halen u rechtstreeks op bij uw Portugal Active-villa. Rijdt u liever zelf, let dan op een grijs hek met een informatiebord. Het bordje VianoEquestre staat op de blokkenmuur — de stal ligt verscholen vanaf de weg, aan het eind van een klein pad.",
+      "pickupNote": "Optioneel ophalen bij de villa — gecoördineerd door ons conciërgeteam tegen een meerprijs. Neem contact met ons op voor prijzen."
+    }
+  },
+  "canyoning": {
+    "name": "Canyoning-avontuur in het Nationaal Park Peneda-Gerês",
+    "tagline": "Daal af door verborgen rivierkloven, spring in natuurlijke poelen en abseil langs watervallen in het enige nationale park van Portugal.",
+    "badges": [
+      "Kleine groep",
+      "Alle uitrusting inbegrepen"
+    ],
+    "price": "Vanaf € 65 per persoon",
+    "duration": "3–4 uur",
+    "difficultyLevel": "Gemiddeld — vereist een basisconditie",
+    "availability": "April tot oktober (afhankelijk van het waterpeil)",
+    "aboutParagraphs": [
+      "Het is het best bewaarde adrenalinegeheim van de Minho. Diep in het Nationaal Park Peneda-Gerês heeft de rivier de Varziela een granieten kloof uitgesleten die maar weinig toeristen ooit te zien krijgen — een wereld van kristalheldere poelen, natuurlijke glijbanen en verticale watervallen, omlijst door eeuwenoude eikenbossen.",
+      "Onder begeleiding van gidsen gecertificeerd door de Internationale Canyoning Commissie (CIC) zwemt u door smalle engtes, glijdt u over gepolijste granieten goten, springt u in turquoise poelen en abseilt u langs watervallen. Elk onderdeel is optioneel — uw gids leest de groep en past de route aan zodat beginners zich uitgedaagd maar veilig voelen, en ervaren deelnemers hun portie adrenaline krijgen.",
+      "Alle technische uitrusting wordt geleverd: een hoogwaardig neopreenpak, klimgordel, helm, canyoningschoenen en waterdichte zakken. De groepen zijn klein — nooit meer dan 12 — om de veiligheid en een persoonlijke ervaring te garanderen. Aan het eind gaat er niets boven de naglans na de canyon: uitgeput, euforisch en al van plan om terug te komen.",
+      "Het seizoen loopt van april tot oktober. Het waterpeil en de watertemperatuur variëren — de lente brengt hogere debieten en dramatischer watervallen, terwijl de zomer warmer water en een ontspannener tempo biedt."
+    ],
+    "highlights": [
+      "Verken een verborgen granieten kloof in het Nationaal Park Peneda-Gerês",
+      "Zwem, glijd, spring en abseil langs kristalheldere natuurlijke poelen",
+      "Professionele, CIC-gecertificeerde gidsen, met alle veiligheidsuitrusting inbegrepen",
+      "Kleine groepen van maximaal 12 voor persoonlijke aandacht",
+      "Alle sprongen, glijbanen en afdalingen zijn optioneel — afgestemd op uw comfortniveau",
+      "Gratis transfer vanaf uw Portugal Active-villa",
+      "Waterdichte zakken om uw spullen te beschermen",
+      "Foto's van uw avontuur inbegrepen"
+    ],
+    "included": [
+      "Professionele, CIC-gecertificeerde canyoninggids",
+      "Hoogwaardig neopreenpak (heren- en damesmodellen)",
+      "Canyoningschoenen, helm, klimgordel en dubbele lus",
+      "Waterdicht vat en canyoningzakken",
+      "Verzekering voor alle deelnemers",
+      "Foto's van uw avontuur"
+    ],
+    "notIncluded": [
+      "Ophaalservice/transfer bij de villa (optioneel — gecoördineerd door ons conciërgeteam tegen een meerprijs)",
+      "Eten en drinken (breng snacks en water mee)",
+      "Zwemkleding (te dragen onder het neopreenpak)",
+      "Fooien (naar eigen inzicht)"
+    ],
+    "notSuitableFor": [
+      "Kinderen jonger dan 14 jaar",
+      "Gasten met beperkte mobiliteit of ernstige rug-/knieklachten",
+      "Zwangere gasten",
+      "Mensen die niet kunnen zwemmen (een basiszwemvaardigheid is vereist)"
+    ],
+    "whatToBring": [
+      "Zwemkleding (te dragen onder het neopreenpak)",
+      "Handdoek en droge kleding voor na afloop",
+      "Water en een lichte snack",
+      "Zonnebrandcrème",
+      "Avontuurlijke instelling"
+    ],
+    "notAllowed": [
+      "Sieraden of horloges (risico op verlies)",
+      "Slippers als hoofdschoeisel",
+      "Drones binnen het nationale park"
+    ],
+    "cancellationPolicy": "Gratis annuleren tot 24 uur voor de ervaring, met volledige terugbetaling. Annuleringen binnen 24 uur worden niet terugbetaald. Bij ongunstig weer of onveilige waterpeilen plannen wij opnieuw in of bieden wij een volledige terugbetaling.",
+    "guideRole": "CIC-gecertificeerde canyoninggids",
+    "guideDescription": "Jorge is een door de Internationale Canyoning Commissie gecertificeerde canyoninggids en verkent de kloven van de Gerês al meer dan tien jaar. Hij kent elke poel, elke sprong en elke verborgen doorgang in het graniet. Zijn specialiteit is het lezen van groepen — het aanpassen van de route en het tempo zodat beginners zich veilig voelen en de avontuurlijkere deelnemers worden uitgedaagd. Buiten het water is Jorge ook berggids en een hartstochtelijk pleitbezorger van het behoud van het Nationaal Park Peneda-Gerês.",
+    "languages": [
+      "Portugees",
+      "Engels",
+      "Spaans"
+    ],
+    "itinerary": [
+      {
+        "time": "09:00",
+        "title": "Ophalen bij de villa en reis naar de Gerês",
+        "description": "Uw privéchauffeur haalt u op bij uw Portugal Active-villa. De panoramische rit door het platteland van de Minho naar het Nationaal Park Peneda-Gerês duurt ongeveer 45 minuten."
+      },
+      {
+        "time": "09:45",
+        "title": "Aanpassen van de uitrusting en veiligheidsbriefing",
+        "description": "Ontmoet uw CIC-gecertificeerde gids aan de voet van de kloof. Trek het neopreenpak, de klimgordel, de helm en de canyoningschoenen aan. Volledige veiligheidsbriefing, met technieken voor zwemmen, springen, glijden en abseilen."
+      },
+      {
+        "time": "10:15",
+        "title": "De kloof in — zwemmen en glijbanen",
+        "description": "Stap de rivier de Varziela in en begin de afdaling. Het eerste deel heeft zachte granieten glijbanen en poelen tot heuphoogte — de perfecte opwarming. De gids demonstreert elke techniek voordat u die uitprobeert."
+      },
+      {
+        "time": "11:00",
+        "title": "Sprongen, afdalingen en de grote waterval",
+        "description": "De kloof wordt dieper. De natuurlijke sprongen variëren tussen 2 en 8 meter — allemaal optioneel. Het hoogtepunt: een afdaling langs een waterval naar een diepe turquoise poel. Pure adrenaline, volledige veiligheid."
+      },
+      {
+        "time": "12:30",
+        "title": "Uit de kloof en terug",
+        "description": "Verlaat de kloof met die onmiskenbare naglans na het avontuur. Trek droge kleding aan, bekijk de foto's en geniet van de terugreis naar de villa."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Heb ik eerdere canyoningervaring nodig?",
+        "a": "Helemaal niet. Onze gidsen leren u elke techniek ter plaatse aan. Alle sprongen, glijbanen en afdalingen zijn optioneel — u bepaalt uw comfortniveau."
+      },
+      {
+        "q": "Mogen mijn kinderen meedoen?",
+        "a": "De minimumleeftijd is 14 jaar. Jongere kinderen kunnen genieten van onze SUP- of paardrij-ervaringen."
+      },
+      {
+        "q": "En als ik niet zo goed kan zwemmen?",
+        "a": "Een basiszwemvaardigheid is vereist. Het neopreenpak zorgt voor veel drijfvermogen en uw gids is altijd in de buurt. Als u zich niet zeker voelt in open water, raden wij een andere ervaring aan."
+      },
+      {
+        "q": "Wat gebeurt er als het regent?",
+        "a": "Lichte regen vormt geen belemmering voor de ervaring — u wordt toch nat. Zware regen of onveilige waterpeilen kunnen het noodzakelijk maken om opnieuw in te plannen. Wij volgen de omstandigheden dagelijks en nemen de dag ervoor contact met u op als er iets verandert."
+      },
+      {
+        "q": "Waarom zou ik rechtstreeks bij Portugal Active boeken?",
+        "a": "U krijgt een lagere prijs dan bij welke OTA dan ook, directe communicatie met uw gids via WhatsApp en flexibel opnieuw inplannen. Wij zijn de organisator — er zijn geen tussenpersonen."
+      }
+    ],
+    "meetingPoint": {
+      "instructions": "Wij halen u rechtstreeks op bij uw Portugal Active-villa. Rijdt u liever zelf, dan wordt het exacte ontmoetingspunt 24 uur van tevoren via WhatsApp bevestigd, met gps-coördinaten.",
+      "pickupNote": "Optioneel ophalen bij de villa — gecoördineerd door ons conciërgeteam tegen een meerprijs. Neem contact met ons op voor prijzen."
+    }
+  },
+  "ebike-tours": {
+    "name": "Wilde E-Bike-Tocht — Stads-, Berg- en Kustpaden",
+    "tagline": "Ontdek de adembenemende schoonheid van Viana do Castelo op een e-bike — historische straten, het heiligdom van Santa Luzia, Atlantische uitzichten en verborgen paden.",
+    "badges": [
+      "Kleine groep",
+      "Alle niveaus"
+    ],
+    "price": "Vanaf € 55 per persoon",
+    "duration": "3 uur",
+    "difficultyLevel": "Eenvoudig tot gemiddeld (de e-bike helpt bij de beklimmingen)",
+    "availability": "Het hele jaar door, afhankelijk van de weersomstandigheden",
+    "aboutParagraphs": [
+      "Viana do Castelo is een van de mooiste steden van Portugal, en de beste manier om haar te leren kennen is op twee wielen. Deze e-biketocht voert u van het historische centrum naar de top van de Monte de Santa Luzia, langs de Atlantische kust en over paden die de meeste bezoekers nooit ontdekken.",
+      "De elektrische motor neemt de beklimmingen voor zijn rekening, zodat u zich op de uitzichten kunt concentreren. Op de top van Santa Luzia strekt het panorama zich uit van de rivier de Lima tot de Atlantische Oceaan — met het Heiligdom van het Heilig Hart van Jezus dat de heuvel bekroont, van kilometers afstand zichtbaar. Uw gids deelt verhalen over de maritieme geschiedenis van de stad, haar art-deco-architectuur en de visserijtradities die het lokale leven tot op de dag van vandaag bepalen.",
+      "De route combineert geplaveide straten, kustpaden en offroad-bospaden — de e-bike kan het allemaal aan. Er staan stops gepland voor foto's, water en lokale snacks. De groepen zijn beperkt tot maximaal 10 fietsers, voor de veiligheid en om een ontspannen, persoonlijk tempo te behouden.",
+      "Er is een fatbike-optie voor wie de offroad-stukken serieuzer wil aanpakken. Beide soorten fietsen zijn van premiumkwaliteit, met volledige vering en krachtige motoren."
+    ],
+    "highlights": [
+      "Fiets naar de top van de Monte de Santa Luzia voor panoramische uitzichten van 360 graden",
+      "Verken het historische centrum, de Atlantische kust en verborgen bospaden",
+      "Premium e-bikes met krachtige motoren — de beklimmingen worden eenvoudig",
+      "Kleine groepen van maximaal 10 fietsers, met een professionele lokale gids",
+      "Fatbike-optie beschikbaar voor de offroad-liefhebbers",
+      "Snacks en water inbegrepen",
+      "Gratis transfer vanaf uw Portugal Active-villa",
+      "Geschikt voor alle fitnessniveaus — de motor doet het zware werk"
+    ],
+    "included": [
+      "Premium e-bike (of fatbike op aanvraag) met helm",
+      "Professionele lokale gids",
+      "Snacks en water",
+      "Verzekering voor alle deelnemers"
+    ],
+    "notIncluded": [
+      "Ophaalservice/transfer bij de villa (optioneel — gecoördineerd door ons conciërgeteam tegen een meerprijs)",
+      "Maaltijden (kunnen na de tocht worden geregeld)",
+      "Fooien (naar eigen inzicht)"
+    ],
+    "notSuitableFor": [
+      "Kinderen jonger dan 12 jaar",
+      "Gasten die niet kunnen fietsen"
+    ],
+    "whatToBring": [
+      "Comfortabele sportkleding",
+      "Gesloten schoeisel (sneakers of fietsschoenen)",
+      "Zonnebrandcrème en een zonnebril",
+      "Een lichte jas of kleding in laagjes",
+      "Een fototoestel"
+    ],
+    "notAllowed": [
+      "Sandalen of open schoeisel",
+      "Fietsen onder invloed van alcohol"
+    ],
+    "cancellationPolicy": "Gratis annuleren tot 24 uur voor de ervaring, met volledige terugbetaling. Annuleringen om weersredenen worden opnieuw ingepland of volledig terugbetaald.",
+    "guideRole": "Professionele fietsgidsen",
+    "guideDescription": "Onze e-bikegidsen zijn lokale fietsers die elk pad, elke binnenweg en elk uitkijkpunt van Viana do Castelo kennen. Zij bepalen een tempo dat iedereen aankan — de motor van de e-bike neemt de inspanning voor zijn rekening en de gids zorgt voor de verhalen. Reken erop dat u leert over de maritieme geschiedenis van de stad, haar visserijtradities en de beste plekken om na de tocht te eten.",
+    "languages": [
+      "Portugees",
+      "Engels",
+      "Spaans",
+      "Frans"
+    ],
+    "itinerary": [
+      {
+        "time": "09:30",
+        "title": "Ophalen bij de villa en afstellen van de fiets",
+        "description": "Uw chauffeur haalt u op bij uw Portugal Active-villa. Op het vertrekpunt stelt de gids een premium e-bike (of fatbike) en helm op u af en geeft hij een korte uitleg over de bediening."
+      },
+      {
+        "time": "10:00",
+        "title": "Historisch centrum en boulevard",
+        "description": "Fiets door de geplaveide straten van het historische centrum van Viana do Castelo — langs de art-deco-gebouwen, de middeleeuwse kerk en langs de boulevard van de Lima."
+      },
+      {
+        "time": "10:30",
+        "title": "Beklimming naar het Heiligdom van Santa Luzia",
+        "description": "De motor van de e-bike maakt de beklimming naar de Monte de Santa Luzia eenvoudig. Op de top het Heiligdom van het Heilig Hart van Jezus en een panorama van 360 graden over de stad, de rivier en de oceaan. Stop voor foto's."
+      },
+      {
+        "time": "11:15",
+        "title": "Kustpaden en Praia do Cabedelo",
+        "description": "Daal af via bospaden en kustpaden naar de Praia do Cabedelo. Voel de zilte lucht terwijl u langs de Atlantische Oceaan fietst. Pauze voor een snack en water op het strand."
+      },
+      {
+        "time": "12:30",
+        "title": "Terugkeer en transfer",
+        "description": "Voltooi het rondje terug naar het vertrekpunt. Lever de fiets in en de chauffeur brengt u terug naar de villa — of blijf in de stad om te lunchen (de gids beveelt de beste plekken aan)."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Moet ik in goede conditie zijn?",
+        "a": "Nee. De motor van de e-bike helpt bij elke beklimming. Als u kunt fietsen, kunt u deze tocht maken. Het tempo wordt door de groep bepaald — uw gids past zich aan."
+      },
+      {
+        "q": "Wat is het verschil tussen de e-bike en de fatbike?",
+        "a": "De e-bike is ideaal voor gemengd terrein (wegen + lichte paden). De fatbike heeft bredere banden voor zand en zwaardere stukken. Beide hebben een elektrische motor. Geef uw voorkeur door bij het boeken."
+      },
+      {
+        "q": "Mogen kinderen meedoen?",
+        "a": "Kinderen vanaf 12 jaar die zelfstandig kunnen fietsen zijn welkom. Wij hebben fietsen in verschillende maten."
+      },
+      {
+        "q": "Wat gebeurt er als het regent?",
+        "a": "Lichte regen vormt geen belemmering voor de tocht. Bij zware regen plannen wij opnieuw in of bieden wij een volledige terugbetaling. U wordt de dag ervoor gecontacteerd."
+      },
+      {
+        "q": "Waarom zou ik rechtstreeks bij Portugal Active boeken?",
+        "a": "Een betere prijs dan op de boekingsplatforms, flexibele planning, en uw gids kan restaurants en activiteiten aanbevelen voor de rest van de dag."
+      }
+    ],
+    "meetingPoint": {
+      "instructions": "Wij halen u rechtstreeks op bij uw Portugal Active-villa. Rijdt u liever zelf, ontmoet ons dan bij Vira Maria, Vira Manel, naast het treinstation.",
+      "pickupNote": "Optioneel ophalen bij de villa — gecoördineerd door ons conciërgeteam tegen een meerprijs. Neem contact met ons op voor prijzen."
+    }
+  },
+  "surf-lessons": {
+    "name": "Surflessen — Atlantische Golven aan de Minho-kust",
+    "tagline": "Leer surfen op de beste Atlantische golven van Portugal met gecertificeerde instructeurs — privélessen of in kleine groepen op de stranden van de Minho-kust.",
+    "badges": [
+      "Alle niveaus",
+      "Uitrusting inbegrepen"
+    ],
+    "price": "Vanaf € 60 per persoon",
+    "duration": "2–3 uur",
+    "difficultyLevel": "Alle niveaus — van beginner tot gevorderd",
+    "availability": "Het hele jaar door (beste omstandigheden van april tot oktober)",
+    "aboutParagraphs": [
+      "De Minho-kust is een van de best bewaarde surfgeheimen van Portugal. Terwijl de massa naar het zuiden trekt, bieden de stranden rond Viana do Castelo consistente Atlantische deining, lange zandgolven en water dat warm genoeg is voor een neopreenpak (geen droogpak). De Praia do Cabedelo in het bijzonder is een wereldklasse-spot, beschermd door de strekdam van de rivier de Lima — wat perfecte omstandigheden creëert om te leren.",
+      "Onze surflessen worden gegeven door gecertificeerde instructeurs die zich aan uw niveau aanpassen. Absolute beginners starten op het zand, met techniek en veiligheid, en gaan dan met geduldige, praktische begeleiding het water in. Gevorderde en ervaren surfers worden naar de beste piek voor de condities van de dag gebracht — de instructeur kent elke zandbank, elke getijdenwisseling en elk lokaal geheim.",
+      "Alle uitrusting wordt geleverd: premium boards (softboards voor beginners, harde boards voor gevorderden), neopreenpakken en lycra's. De groepen zijn klein — maximaal 6 per instructeur — zodat u echte aandacht en echte vooruitgang krijgt.",
+      "Na de les is de Praia do Cabedelo een van de mooiste zandstranden van de Minho. Blijf, droog op en kijk naar de golven. Uw instructeur kan u de beste strandbar aanwijzen voor een drankje na het surfen."
+    ],
+    "highlights": [
+      "Gecertificeerde surfinstructeurs die zich aan elk niveau aanpassen",
+      "Premium boards en neopreenpakken inbegrepen",
+      "Kleine groepen van maximaal 6 per instructeur",
+      "Praia do Cabedelo — een wereldklasse-piek met voor beginners toegankelijke condities",
+      "Briefing op het strand over techniek en veiligheid in zee voordat u het water in gaat",
+      "Alle leeftijden zijn welkom (vanaf 6 jaar)",
+      "Gratis transfer vanaf uw Portugal Active-villa",
+      "Het hele jaar door beschikbaar — de Minho-kust heeft consistente deining"
+    ],
+    "included": [
+      "Gecertificeerde surfinstructeur (privé of in kleine groep)",
+      "Premium board (softboard of hard board naargelang het niveau)",
+      "Neopreenpak en lycra",
+      "Verzekering voor alle deelnemers",
+      "Veiligheidsbriefing op het strand"
+    ],
+    "notIncluded": [
+      "Ophaalservice/transfer bij de villa (optioneel — gecoördineerd door ons conciërgeteam tegen een meerprijs)",
+      "Handdoek (breng uw eigen mee)",
+      "Eten en drinken (strandbars in de buurt)",
+      "Fooien (naar eigen inzicht)"
+    ],
+    "notSuitableFor": [
+      "Kinderen jonger dan 6 jaar",
+      "Mensen die niet kunnen zwemmen"
+    ],
+    "whatToBring": [
+      "Zwemkleding (te dragen onder het neopreenpak)",
+      "Handdoek",
+      "Zonnebrandcrème (bij voorkeur reef-safe)",
+      "Water en een snack",
+      "Een positieve instelling en de bereidheid om nat te worden"
+    ],
+    "notAllowed": [
+      "Surfen buiten de aangewezen zone zonder toestemming van de instructeur",
+      "Glas op het strand"
+    ],
+    "cancellationPolicy": "Gratis annuleren tot 24 uur voor de ervaring, met volledige terugbetaling. Annuleringen die afhangen van de omstandigheden (gevaarlijke zee) worden opnieuw ingepland of terugbetaald.",
+    "guideRole": "Gecertificeerde surfinstructeurs",
+    "guideDescription": "Onze surfinstructeurs zijn gecertificeerde professionals van de Minho-kust die opgroeiden in deze golven. Zij kennen elk strand, elk getij en elke conditie. Of u nu voor het eerst op een board staat of uw techniek op de gevormde golf wilt verbeteren, zij stemmen de les af op uw niveau en doelen. Geduldig, bemoedigend en gepassioneerd om de oceaan te delen.",
+    "languages": [
+      "Portugees",
+      "Engels",
+      "Spaans",
+      "Frans"
+    ],
+    "itinerary": [
+      {
+        "time": "09:30",
+        "title": "Ophalen bij de villa en reis naar de Praia do Cabedelo",
+        "description": "Uw chauffeur haalt u op bij uw Portugal Active-villa. Korte rit naar de Praia do Cabedelo — een van de beste surfstranden van de Minho-kust."
+      },
+      {
+        "time": "10:00",
+        "title": "Aanpassen van de uitrusting en briefing op het strand",
+        "description": "Ontmoet uw gecertificeerde instructeur op het strand. Aanpassen van het neopreenpak, keuze van het board naargelang uw niveau en een volledige briefing over peddeltechniek, pop-up en veiligheid in zee."
+      },
+      {
+        "time": "10:30",
+        "title": "Het water in — uw eerste golven pakken",
+        "description": "Stap de Atlantische Oceaan in en begin het schuim te pakken. De instructeur is met u in het water, plaatst u, klokt de golven en coacht elke poging. De meeste beginners staan binnen het eerste uur rechtop."
+      },
+      {
+        "time": "11:30",
+        "title": "Vooruitgang en oefening",
+        "description": "Verdiep uw techniek. Beginners gaan over op groter schuim; gevorderde surfers pakken gevormde golven. De instructeur geeft individuele feedback en tips gedurende de hele les."
+      },
+      {
+        "time": "12:30",
+        "title": "Ontspannen en terug",
+        "description": "Spoel af, verkleed u en geniet van de naglans na het surfen op het strand. Uw chauffeur brengt u terug naar de villa — of blijf op het strand om de nabijgelegen bars en restaurants te verkennen."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Ik heb nog nooit gesurft. Kan ik toch meedoen?",
+        "a": "Absoluut. De meeste van onze gasten surfen voor het eerst. De les begint op het strand met techniek en daarna is de instructeur bij elke stap met u in het water."
+      },
+      {
+        "q": "Vanaf welke leeftijd kunnen kinderen beginnen?",
+        "a": "Kinderen vanaf 6 jaar kunnen meedoen. Wij hebben kleinere boards en instructeurs met ervaring met jonge surfers."
+      },
+      {
+        "q": "En als er geen golven zijn?",
+        "a": "De Minho-kust heeft consistente Atlantische deining. Dagen zonder golven zijn tussen april en oktober zeer zeldzaam. Als de omstandigheden echt ongeschikt zijn, plannen wij opnieuw in of bieden wij een volledige terugbetaling."
+      },
+      {
+        "q": "Kan ik een privéles boeken?",
+        "a": "Ja. Privélessen (1 instructeur, 1-2 leerlingen) zijn beschikbaar en worden aanbevolen voor de snelste vooruitgang. Neem contact met ons op via WhatsApp voor prijzen."
+      },
+      {
+        "q": "Waarom zou ik rechtstreeks bij Portugal Active boeken?",
+        "a": "Een betere prijs, flexibele planning en uw instructeur kan worden gekozen op basis van uw doelen."
+      }
+    ],
+    "meetingPoint": {
+      "instructions": "Wij halen u rechtstreeks op bij uw Portugal Active-villa. Rijdt u liever zelf, parkeer dan op het parkeerterrein van de Praia do Cabedelo en vind uw instructeur bij de hut van de surfschool.",
+      "pickupNote": "Optioneel ophalen bij de villa — gecoördineerd door ons conciërgeteam tegen een meerprijs. Neem contact met ons op voor prijzen."
+    }
+  },
+  "hike-dive-dine": {
+    "name": "Serra d'Arga: Wandelen, Duiken en Dineren als een Local in een Geheime Uithoek",
+    "tagline": "Ontdek de best bewaarde geheimen van de Minho. Wandel naar een verborgen waterval, zwem in kristalheldere poelen en sluit af met traditionele Portugese keuken in een geheim bergrestaurant.",
+    "badges": [
+      "Keurmerk van Uitmuntendheid",
+      "100% aanbevolen",
+      "Inclusief maaltijd"
+    ],
+    "price": "Vanaf € 95 per persoon",
+    "duration": "4u 30m",
+    "difficultyLevel": "Gemiddeld",
+    "availability": "Het hele jaar door (winterdata op afspraak)",
+    "aboutParagraphs": [
+      "Dit is onze kenmerkende ervaring in de Minho — degene die gasten het hoogst beoordelen en bij hun volgende reis opnieuw boeken. Zij combineert de drie dingen die Noord-Portugal onvergetelijk maken: wilde natuur, buitengewone gerechten en lokale kennis die u in geen enkele reisgids vindt.",
+      "Uw gids — geboren en getogen in de Minho — voert u door eiken- en kastanjebossen in de Serra d'Arga naar een verborgen waterval en een natuurlijke poel die alleen de locals kennen. De wandeling is gemiddeld (ongeveer 40 minuten in elke richting, een goed gemarkeerd pad) en de beloning is een duik in kristalhelder bergwater, alleen omringd door bos en vogelzang.",
+      "De ervaring culmineert in een traditioneel bergrestaurant zonder website, zonder Instagram en zonder borden langs de weg. De tafel is gedekt met maïsbrood (broa), geroosterde chouriço, bergkaas, lokale honing en regionale wijn. Het is het soort maaltijd dat u doet begrijpen waarom de Minho het best bewaarde gastronomische geheim van Portugal is.",
+      "Alles is inbegrepen: snacks tijdens de wandeling, de volledige traditionele maaltijd met wijnpairing en een polaroid als herinnering. De groepen zijn klein — nooit meer dan 10 gasten — zodat de ervaring persoonlijk en ongehaast is."
+    ],
+    "highlights": [
+      "Ontdek een verborgen waterval en een geheime poel — een waar juweel van Viana do Castelo",
+      "Zwem in kristalheldere natuurlijke poelen in de Serra d'Arga",
+      "Traditionele Portugese hapjes in een bergrestaurant zonder website — alleen geweldig eten",
+      "Breng een dag ondergedompeld in de natuur van de Minho door met een lokale expertgids",
+      "Polaroid als herinnering aan uw groep bij de waterval",
+      "100% aanbevolen door reizigers — Keurmerk van Uitmuntendheid",
+      "Een privétour betekent een gepersonaliseerde ervaring"
+    ],
+    "included": [
+      "Lokale expertgids",
+      "Diner — volledige traditionele Portugese maaltijd",
+      "Alcoholische dranken (pairing met lokale wijn of bier)",
+      "Snacks tijdens de wandeling",
+      "Verzekering voor alle deelnemers",
+      "Polaroidfoto als herinnering"
+    ],
+    "notIncluded": [
+      "Ophaalservice/transfer bij de villa (optioneel — gecoördineerd door ons conciërgeteam tegen een meerprijs)",
+      "Extra dranken naast de inbegrepen pairing",
+      "Fooien (naar eigen inzicht)"
+    ],
+    "notSuitableFor": [
+      "Zwangere reizigers",
+      "Gasten met beperkte mobiliteit",
+      "Kinderen jonger dan 8 jaar"
+    ],
+    "whatToBring": [
+      "Handdoek",
+      "Comfortabele kleding in laagjes",
+      "Sport- of trailschoenen met goede grip",
+      "Zonnebrandcrème",
+      "Zwemkleding"
+    ],
+    "notAllowed": [
+      "Glazen recipiënten",
+      "Wegwerpplastic"
+    ],
+    "cancellationPolicy": "Gratis annuleren tot 24 uur voor de ervaring, met volledige terugbetaling. Annuleringen binnen 24 uur worden niet terugbetaald. Bij ongunstig weer plannen wij opnieuw in of betalen wij terug.",
+    "guideRole": "Lokale natuurgids van de Minho",
+    "guideDescription": "Jorge werd geboren in het dorp aan de voet van de Serra d'Arga en verkent deze bergen al sinds hij leerde lopen. Zijn kennis en zijn passie voor de regio maken elke uitstap onvergetelijk. Hij is vriendelijk, toegankelijk en creëert van begin tot eind een prettige sfeer. Gasten noemen hem voortdurend bij naam als het hoogtepunt van de ervaring. Hij spreekt Portugees, Engels en Spaans, brengt een polaroidcamera mee en heeft een gave om de perfecte zwemplek te vinden naargelang het seizoen en het waterpeil.",
+    "languages": [
+      "Portugees",
+      "Engels",
+      "Spaans"
+    ],
+    "itinerary": [
+      {
+        "time": "16:00",
+        "title": "Ophalen en transfer",
+        "description": "Uw gids haalt u op bij uw Portugal Active-villa of op het ontmoetingspunt op de Praça da República in Viana do Castelo. Koffie en een korte voorstelling in het busje op weg naar de Serra d'Arga."
+      },
+      {
+        "time": "16:30",
+        "title": "Panoramische transfer naar de Serra d'Arga",
+        "description": "Een rit van 30 minuten door de bergen. De gids deelt verhalen over de regio en stopt voor foto's bij uitkijkpunten over het Limadal."
+      },
+      {
+        "time": "17:00",
+        "title": "Wandeling naar de verborgen waterval",
+        "description": "Een gemiddelde wandeling door eeuwenoud eiken- en kastanjebos. Het pad volgt een beek over de helling, over kleine stenen bruggetjes, tot u de waterval hoort voordat u hem ziet."
+      },
+      {
+        "time": "17:45",
+        "title": "Duik in de geheime poel",
+        "description": "Kom aan bij de waterval en de natuurlijke poel. Het water is kristalhelder en verfrissend. Zwem, drijf of spring van de rotsen. Dit is het moment voor de polaroid."
+      },
+      {
+        "time": "18:45",
+        "title": "Traditioneel diner in het geheime bergrestaurant",
+        "description": "Een wandeling naar een restaurant zonder website, zonder Instagram en zonder bord langs de weg. De tafel is gedekt: maïsbrood (broa), geroosterde chouriço, bergkaas, lokale honing, presunto en pairing met regionale wijn. De eigenaar is een vriend van de familie van de gids."
+      },
+      {
+        "time": "20:30",
+        "title": "Terug naar uw villa",
+        "description": "Voldaan, gelukkig en met een polaroid in de hand. De ontspannen terugreis duurt ongeveer 30 minuten. De gids zet u af aan de deur van de villa."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Zijn er vegetarische of veganistische opties in het restaurant?",
+        "a": "Ja. Vegetarische, veganistische en pescotarische opties zijn beschikbaar. Laat ons bij het boeken uw dieetwensen weten."
+      },
+      {
+        "q": "Hoe moeilijk is de wandeling?",
+        "a": "Gemiddeld. Het terrein varieert van dichte bossen tot kristalheldere beken, met enkele rotsachtige stukken. Goede sportschoenen met grip zijn essentieel. De meeste reizigers kunnen meedoen."
+      },
+      {
+        "q": "En als ik niet wil zwemmen?",
+        "a": "Geen probleem. De duik is optioneel. Veel gasten blijven bij de poel, genieten van het uitzicht op de waterval en maken foto's."
+      },
+      {
+        "q": "Is deze ervaring privé of gedeeld?",
+        "a": "Het is een privétour — alleen uw eigen groep neemt deel. Maximaal 10 reizigers."
+      },
+      {
+        "q": "Hoe laat begint het?",
+        "a": "De ervaring begint normaal gesproken om 16:00. Wij kunnen de tijden aanpassen aan uw programma — neem contact met ons op."
+      },
+      {
+        "q": "Mogen kinderen meedoen?",
+        "a": "Kinderen vanaf 8 jaar die zich comfortabel voelen bij een gemiddelde wandeling zijn welkom. Het pad heeft enkele rotsachtige stukken."
+      },
+      {
+        "q": "Hoeveel eten is inbegrepen?",
+        "a": "Een volledige traditionele maaltijd: maïsbrood (broa), geroosterde chouriço, bergkaas, presunto, lokale honing en pairing met regionale wijn of bier. Niemand gaat met honger naar huis."
+      },
+      {
+        "q": "Waarom zou ik rechtstreeks bij Portugal Active boeken?",
+        "a": "Rechtstreeks boeken betekent de beste prijs, zonder tussenpersonen. Dezelfde ervaring, dezelfde gids, hetzelfde restaurant — en een directe WhatsApp-lijn met ons team voor elke wijziging of vraag."
+      }
+    ],
+    "meetingPoint": {
+      "instructions": "Wij halen u rechtstreeks op bij uw Portugal Active-villa. U kunt ons ook ontmoeten op de Praça da República in Viana do Castelo — het gebruikelijke ontmoetingspunt is naast het oude stadhuis (Antigos Paços do Concelho). Wees 10 minuten voor het geplande ophaaltijdstip klaar.",
+      "pickupNote": "Optioneel ophalen bij de villa — gecoördineerd door ons conciërgeteam tegen een meerprijs. Neem contact met ons op voor prijzen."
+    }
+  },
+  "stand-up-paddle": {
+    "name": "SUP Sun Experience — Afdaling van de Rivier de Lima vanaf Ponte de Lima",
+    "tagline": "Peddel langs de hele rivier de Lima bij zonsopgang of zonsondergang — van het middeleeuwse stadje Ponte de Lima tot de Atlantische Oceaan bij de Praia do Cabedelo.",
+    "badges": [
+      "Kleine groep",
+      "Inclusief versnaperingen"
+    ],
+    "price": "Vanaf € 45 per persoon",
+    "duration": "3 uur",
+    "difficultyLevel": "Eenvoudig — geschikt voor alle niveaus",
+    "availability": "Het hele jaar door, afhankelijk van de weersomstandigheden",
+    "aboutParagraphs": [
+      "Dit is de ervaring die gasten met één woord omschrijven: magisch. Vanaf het middeleeuwse stadje Ponte de Lima — een van de oudste van Portugal — peddelt u langs de hele loop van de rivier de Lima terwijl het licht verandert van goud naar koper en roze. De stroming doet het grootste deel van het werk; u zorgt voor de aanwezigheid.",
+      "De route volgt de rivier richting de monding, tussen landbouwvelden, onder eeuwenoude stenen bruggen, langs reigers en ijsvogels, tot het punt waar de Lima de Atlantische Oceaan ontmoet bij de Praia do Cabedelo. Halverwege last uw gids een koffiepauze in aan de oever — een gelegenheid om te zwemmen, te rekken en de stilte in u op te nemen.",
+      "Eerdere SUP-ervaring is niet nodig. Uw gids begint met een korte briefing aan de oever en binnen enkele minuten staat u rechtop, peddelend en lachend. De groepen zijn beperkt tot maximaal 8, zodat de rivier rustig blijft en de ervaring persoonlijk.",
+      "De sessies bij zonsondergang zijn het meest gevraagd — het licht over de Lima is buitengewoon. De sessies bij zonsopgang bieden een totaal andere energie: nevel over het water, het stadje nog in slaap en het gevoel dat u de hele rivier voor uzelf hebt."
+    ],
+    "highlights": [
+      "Peddel langs de hele rivier de Lima, van Ponte de Lima tot de Praia do Cabedelo",
+      "Spectaculaire sessies bij zonsopgang of zonsondergang — het licht over de rivier is buitengewoon",
+      "Alle uitrusting geleverd, inclusief premium paddleboards",
+      "Koffiepauze aan de oever van de rivier halverwege de route",
+      "Geen ervaring nodig — beginners zijn welkom, met begeleiding op het water",
+      "Kleine groepen van maximaal 8 voor een rustige, persoonlijke ervaring",
+      "Gratis transfer vanaf uw Portugal Active-villa",
+      "De route gaat onder middeleeuwse stenen bruggen door met uitzicht op de bergen"
+    ],
+    "included": [
+      "Professionele SUP-gids",
+      "Premium stand-up paddleboard en peddel",
+      "Veiligheidsuitrusting (reddingsvest, leash)",
+      "Koffiepauze met snacks en drankjes",
+      "Waterdichte zak voor persoonlijke spullen",
+      "Verzekering voor alle deelnemers"
+    ],
+    "notIncluded": [
+      "Ophaalservice/transfer bij de villa (optioneel — gecoördineerd door ons conciërgeteam tegen een meerprijs)",
+      "Maaltijden (kunnen apart worden geregeld)",
+      "Fooien (naar eigen inzicht)"
+    ],
+    "notSuitableFor": [
+      "Kinderen jonger dan 10 jaar",
+      "Gasten met ernstige evenwichtsproblemen"
+    ],
+    "whatToBring": [
+      "Zwemkleding en een lichte laag voor op het water",
+      "Zonnebrandcrème en een zonnebril (met bandje)",
+      "Handdoek en droge kleding voor na afloop",
+      "Waterschoenen of sandalen die nat mogen worden",
+      "Een waterdichte camera of hoes voor uw telefoon"
+    ],
+    "notAllowed": [
+      "Glazen flessen op het water",
+      "Bluetooth-speakers (wij beschermen de rust van de rivier)"
+    ],
+    "cancellationPolicy": "Gratis annuleren tot 24 uur voor de ervaring, met volledige terugbetaling. Annuleringen om weersredenen worden opnieuw ingepland of volledig terugbetaald.",
+    "guideRole": "SUP-gids en rivierexpert",
+    "guideDescription": "Ricardo peddelt al op de Lima sinds voor SUP in de mode was. Hij kent elke bocht, elke zandbank en elke plek waar de ijsvogels nestelen. Zijn lesstijl is ontspannen en bemoedigend — beginners staan binnen enkele minuten rechtop en ervaren peddelaars worden naar verborgen kanalen buiten de hoofdrivier gebracht. Ricardo is ook gecertificeerd reddingszwemmer en hulpverlener in de natuur.",
+    "languages": [
+      "Portugees",
+      "Engels",
+      "Spaans"
+    ],
+    "itinerary": [
+      {
+        "time": "Flexibel",
+        "title": "Ophalen bij de villa en reis naar Ponte de Lima",
+        "description": "Uw chauffeur haalt u op bij uw Portugal Active-villa en brengt u naar de historische oeverzone van Ponte de Lima — een van de oudste stadjes van Portugal."
+      },
+      {
+        "time": "+15 min",
+        "title": "Uitrusting en SUP-briefing",
+        "description": "Ontmoet uw gids aan de oever van de rivier. Korte briefing over peddeltechniek, evenwicht en veiligheid op de rivier. Binnen enkele minuten staat u rechtop en peddelt u met vertrouwen."
+      },
+      {
+        "time": "+30 min",
+        "title": "Afdaling door het Limadal",
+        "description": "De zachte stroming voert u langs landbouwvelden en bos. Ga onder eeuwenoude stenen bruggen door met uitzicht op de Serra d'Arga. Reigers, ijsvogels en aalscholvers zijn frequent gezelschap."
+      },
+      {
+        "time": "+90 min",
+        "title": "Koffiepauze aan de oever",
+        "description": "Uw gids stopt aan een rustige oever. Zwem als u wilt, strek uw benen en geniet van koffie, sap en lichte snacks terwijl het licht over het water verandert."
+      },
+      {
+        "time": "+150 min",
+        "title": "Laatste stuk naar de Praia do Cabedelo",
+        "description": "Peddel het laatste stuk terwijl de rivier breder wordt en de Atlantische Oceaan ontmoet. Kom aan bij de Praia do Cabedelo — een van de mooiste zandstranden van de Minho. Uw chauffeur wacht voor de transfer terug."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Heb ik eerdere SUP-ervaring nodig?",
+        "a": "Helemaal niet. Onze gids leert het u aan de oever en binnen enkele minuten staat u rechtop. De stroming van de rivier is zacht — dit is peddelen op vlak water, niet op wild water."
+      },
+      {
+        "q": "Hoe laat zijn de sessies bij zonsondergang?",
+        "a": "De tijd varieert per seizoen. In de zomer vertrekken wij meestal rond 18:00. Uw gids bevestigt het exacte tijdstip 24 uur van tevoren, afhankelijk van het tijdstip van de zonsondergang."
+      },
+      {
+        "q": "Mogen kinderen meedoen?",
+        "a": "Kinderen vanaf 10 jaar kunnen hun eigen board peddelen. Jongere kinderen kunnen na overleg een board delen met een volwassene."
+      },
+      {
+        "q": "En als ik in het water val?",
+        "a": "U draagt een reddingsvest en de rivier is kalm. In het water vallen hoort bij het plezier — het water is schoon en verfrissend. Uw gids is altijd in de buurt."
+      },
+      {
+        "q": "Waarom zou ik rechtstreeks bij Portugal Active boeken?",
+        "a": "Een lagere prijs dan op welk boekingsplatform dan ook, directe communicatie met uw gids via WhatsApp en flexibel opnieuw inplannen."
+      }
+    ],
+    "meetingPoint": {
+      "instructions": "Wij halen u rechtstreeks op bij uw Portugal Active-villa. Rijdt u liever zelf, ontmoet ons dan bij Vira Maria, Vira Manel, naast het treinstation in Viana do Castelo.",
+      "pickupNote": "Optioneel ophalen bij de villa — gecoördineerd door ons conciërgeteam tegen een meerprijs. Neem contact met ons op voor prijzen."
+    }
+  },
+  "can-am-buggy": {
+    "name": "Panoramische Can-Am-Rijtocht — Serra da Nó, Noord-Portugal",
+    "tagline": "Offroad over bergpaden, bospaden en panoramische uitkijkpunten boven Ponte de Lima en Viana do Castelo in een Can-Am-buggy.",
+    "badges": [
+      "Adrenaline",
+      "Panoramische uitzichten"
+    ],
+    "price": "Vanaf € 120 per buggy",
+    "duration": "3 uur",
+    "difficultyLevel": "Gemiddeld — offroad rijden",
+    "availability": "Het hele jaar door, afhankelijk van de weersomstandigheden",
+    "aboutParagraphs": [
+      "Vanaf de top van de Serra da Nó strekt de hele Minho zich aan uw voeten uit — de dalen van de rivieren de Lima en de Minho, de Atlantische kust, de groene bergen die zich doortrekken tot Galicië. Stel u nu voor dat u dit allemaal doorkruist in een Can-Am-buggy, offroad, met een professionele gids die de weg wijst.",
+      "Dit is geen ritje in een pretpark. Het terrein is echt: bergpaden, bospaden, rivieroversteken en rotsachtige stukken die uw rijvaardigheid op de proef stellen. De buggy's zijn krachtig, veilig en uitgerust met een beschermingskooi, harnassen en alle benodigde veiligheidselementen. Uw gids bepaalt het tempo — uitdagend voor de adrenaline, beheerst voor de veiligheid.",
+      "De route gaat langs natuurmonumenten, traditionele stenen dorpjes en uitkijkpunten die geen enkele toeristenbus bereikt. Onderweg deelt de gids verhalen over het landschap, de lokale geschiedenis en de granieten megalieten verspreid over de berg. Het is een spannende, complete tocht voor alle leeftijden die houden van natuur, rijden en uitdaging.",
+      "De ervaring wordt per buggy in rekening gebracht (2 personen per voertuig). De ene persoon rijdt, de andere gaat mee — en halverwege kunt u wisselen. Een geldig rijbewijs is vereist voor de bestuurder."
+    ],
+    "highlights": [
+      "Rijd een Can-Am-buggy door de bergen van de Serra da Nó",
+      "Panoramische uitzichten over Ponte de Lima, Viana do Castelo en de Atlantische Oceaan",
+      "Offroad-route door bos, bergpaden en rivieroversteken",
+      "Een professionele gids leidt de colonne en bepaalt een veilig maar spannend tempo",
+      "Ga langs natuurmonumenten en traditionele stenen dorpjes",
+      "Volledige veiligheidsuitrusting: kooi, harnas, helmen, veiligheidsbril",
+      "Per buggy in rekening gebracht — perfect voor koppels of vrienden",
+      "Gratis transfer vanaf uw Portugal Active-villa"
+    ],
+    "included": [
+      "Can-Am-buggy voor 2 personen (bestuurder + passagier)",
+      "Professionele rijgids die de colonne leidt",
+      "Volledige veiligheidsuitrusting (helm, veiligheidsbril, harnas)",
+      "Verzekering voor alle deelnemers",
+      "Veiligheidsbriefing en instructie in rijtechniek"
+    ],
+    "notIncluded": [
+      "Ophaalservice/transfer bij de villa (optioneel — gecoördineerd door ons conciërgeteam tegen een meerprijs)",
+      "Eten en drinken (breng water mee)",
+      "Fooien (naar eigen inzicht)"
+    ],
+    "notSuitableFor": [
+      "Bestuurders jonger dan 18 jaar (passagiers welkom vanaf 10 jaar)",
+      "Gasten zonder geldig rijbewijs (alleen de bestuurder)",
+      "Zwangere gasten"
+    ],
+    "whatToBring": [
+      "Een geldig rijbewijs (voor de bestuurder)",
+      "Comfortabele kleding die stof mag opvangen",
+      "Gesloten schoeisel (geen sandalen)",
+      "Zonnebrandcrème en een zonnebril",
+      "Water",
+      "Een fototoestel (vastgemaakt met een bandje)"
+    ],
+    "notAllowed": [
+      "Rijden zonder geldig rijbewijs",
+      "De instructies van de gids negeren (onmiddellijk einde van de activiteit)",
+      "De veiligheidsgordel of de veiligheidsbril afdoen tijdens de rit"
+    ],
+    "cancellationPolicy": "Gratis annuleren tot 24 uur voor de ervaring, met volledige terugbetaling. Annuleringen om weersredenen worden opnieuw ingepland of volledig terugbetaald.",
+    "guideRole": "Professionele rijgidsen",
+    "guideDescription": "Onze Can-Am-ervaringen worden geëxploiteerd in samenwerking met PLV Center Park, de meest ervaren offroad-touroperator van de regio Serra da Nó. Hun gidsen kennen elk pad, elk uitkijkpunt en elke rivieroversteek in de bergen. Zij bepalen een tempo dat spanning brengt zonder de veiligheid in gevaar te brengen — en delen de verhalen achter de granieten monumenten en de stenen dorpjes onderweg.",
+    "languages": [
+      "Portugees",
+      "Engels",
+      "Spaans"
+    ],
+    "itinerary": [
+      {
+        "time": "09:30",
+        "title": "Ophalen bij de villa en reis naar de Serra da Nó",
+        "description": "Uw privéchauffeur haalt u op bij uw Portugal Active-villa en brengt u naar het vertrekpunt op de Serra da Nó, boven Ponte de Lima."
+      },
+      {
+        "time": "10:15",
+        "title": "Veiligheidsbriefing en voertuiguitleg",
+        "description": "Ontmoet uw rijgids. Volledige briefing over de bediening van de Can-Am, aanpassing van de veiligheidsuitrusting (helm, harnas, bril) en rijtechnieken voor verschillende soorten terrein."
+      },
+      {
+        "time": "10:30",
+        "title": "Bergpaden en bospaden",
+        "description": "De colonne vertrekt door dennenbos en bergpaden. Het terrein wisselt tussen zachte paden en technische rotsachtige stukken. Uw gids bepaalt het tempo — uitdagend maar veilig."
+      },
+      {
+        "time": "11:30",
+        "title": "Panoramische uitkijkpunten en natuurmonumenten",
+        "description": "Stop bij de hoogste uitkijkpunten van de Serra da Nó, met uitzichten van 360 graden over Ponte de Lima, Viana do Castelo en de Atlantische kust. Ga langs granieten megalieten en traditionele stenen dorpjes."
+      },
+      {
+        "time": "12:30",
+        "title": "Laatste afdaling en terug",
+        "description": "Het laatste stuk daalt af door eucalyptusbos naar het vertrekpunt. Optie om halverwege van bestuurder te wisselen. De transfer naar uw villa wacht."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Heb ik een rijbewijs nodig?",
+        "a": "Ja, de bestuurder moet een geldig rijbewijs hebben (een rijbewijs B is voldoende). Passagiers hebben geen rijbewijs nodig. U kunt halverwege de route van bestuurder en passagier wisselen."
+      },
+      {
+        "q": "Is de prijs per persoon of per buggy?",
+        "a": "Per buggy. Elke Can-Am vervoert 2 personen — een bestuurder en een passagier. Ideaal voor koppels of vrienden."
+      },
+      {
+        "q": "Hoe moeilijk is het rijden?",
+        "a": "Gemiddeld. De Can-Am is krachtig maar stabiel, met automatische transmissie. Uw gids demonstreert elk stuk en bepaalt het tempo. Eerdere offroad-ervaring is niet nodig."
+      },
+      {
+        "q": "Mogen kinderen mee?",
+        "a": "Kinderen vanaf 10 jaar mogen als passagier mee. Zij moeten lang genoeg zijn om het harnas goed te laten aansluiten."
+      },
+      {
+        "q": "Waarom zou ik rechtstreeks bij Portugal Active boeken?",
+        "a": "Een betere prijs dan op welk boekingsplatform dan ook, flexibele planning en directe communicatie via WhatsApp voor elke vraag."
+      }
+    ],
+    "meetingPoint": {
+      "instructions": "Wij halen u rechtstreeks op bij uw Portugal Active-villa. Het exacte ontmoetingspunt op de Serra da Nó wordt 24 uur van tevoren via WhatsApp bevestigd.",
+      "pickupNote": "Optioneel ophalen bij de villa — gecoördineerd door ons conciërgeteam tegen een meerprijs. Neem contact met ons op voor prijzen."
+    }
+  },
+  "sailing": {
+    "name": "Privé-zeilervaring — Kust van Viana do Castelo",
+    "tagline": "Een privézeilboot langs de monding van de rivier de Lima en de Atlantische kust van Viana do Castelo — met drankjes, hapjes en optioneel SUP aan boord.",
+    "badges": [
+      "Privé-ervaring",
+      "Drankjes inbegrepen"
+    ],
+    "price": "Vanaf € 85 per persoon",
+    "duration": "2–4 uur",
+    "difficultyLevel": "Eenvoudig — geen ervaring nodig",
+    "availability": "April tot oktober, afhankelijk van de weersomstandigheden",
+    "aboutParagraphs": [
+      "Van de monding van de rivier de Lima tot de wilde Atlantische kust is deze privézeilervaring een van de elegantste manieren om Viana do Castelo te leren kennen. De zeilboot van 39 voet is helemaal van u — geen vreemden, geen tijdschema's, alleen uw eigen groep, de bemanning en de oceaan.",
+      "Terwijl u voorbij de strekdam vaart, ontvouwt de Minho-kust zich: de Praia do Cabedelo, de oude vissersbuurt, het Heiligdom van Santa Luzia hoog op de heuvel en de open Atlantische Oceaan die zich uitstrekt tot de horizon. De boot is uitgerust met paddleboards, snorkeluitrusting en een volledige kombuis — stop om te zwemmen, te SUP'en of gewoon op het dek te liggen met een drankje.",
+      "Een welkomstdrankje en hapjes zijn inbegrepen. Voor speciale gelegenheden kan vooraf een complete gastronomische ervaring aan boord worden geregeld — denk aan lokale kazen, vleeswaren, verse zeevruchten en Portugese wijnen.",
+      "De optie van 2 uur is perfect voor een cruise bij zonsondergang. De ervaring van 4 uur voegt tijd toe voor zwemstops, SUP en een langere kustverkenning. Boek minstens een week van tevoren — de boot is zeer gewild en de beschikbaarheid is beperkt."
+    ],
+    "highlights": [
+      "Privézeilboot van 39 voet — exclusief voor uw groep (tot 10 gasten)",
+      "Vaar langs de monding van de rivier de Lima en de Atlantische kust van Viana do Castelo",
+      "Welkomstdrankje en hapjes inbegrepen",
+      "SUP-paddleboards, snorkeluitrusting en zwemladder aan boord",
+      "Optionele gastronomische ervaring met lokale kazen, zeevruchten en wijn",
+      "Bekijk de zonsondergang vanaf het water — het meest spectaculaire uitkijkpunt van Viana",
+      "Professionele bemanning met lokale kennis",
+      "Opties van 2 of 4 uur beschikbaar"
+    ],
+    "included": [
+      "Privézeilbootcharter met professionele bemanning",
+      "Welkomstdrankje en hapjes",
+      "SUP-paddleboards en snorkeluitrusting aan boord",
+      "Frisdranken en water",
+      "Bemanningsverzekering",
+      "WiFi aan boord"
+    ],
+    "notIncluded": [
+      "Diner aan boord (beschikbaar op aanvraag, vooraf te regelen)",
+      "Transfer naar de jachthaven (kan worden geregeld)",
+      "Fooien (naar eigen inzicht)"
+    ],
+    "notSuitableFor": [
+      "Gasten die gevoelig zijn voor ernstige zeeziekte"
+    ],
+    "whatToBring": [
+      "Zwemkleding en een handdoek",
+      "Zonnebrandcrème en een zonnebril",
+      "Een lichte jas voor de wind op het dek",
+      "Een fototoestel"
+    ],
+    "notAllowed": [
+      "Schoenen met harde zolen op het dek (alleen zachte zolen of blootsvoets)",
+      "Roken aan boord"
+    ],
+    "cancellationPolicy": "Gratis annuleren tot 48 uur voor de ervaring. Annuleringen binnen 48 uur worden niet terugbetaald. Annuleringen om weersredenen worden opnieuw ingepland of terugbetaald.",
+    "guideRole": "Professionele zeilbemanning",
+    "guideDescription": "Onze zeilervaringen worden geëxploiteerd in samenwerking met Amazing Experiences, een boetiek-maritieme operator gevestigd in de jachthaven van Viana do Castelo. De kapitein en de bemanning kennen elke inham, elke stroming en elke plek met dolfijnen langs de Minho-kust. Zij verzorgen de navigatie zodat u zich volledig op de ervaring kunt concentreren — drankjes, hapjes, zwembeurten of gewoon de kust voorbij zien glijden.",
+    "languages": [
+      "Portugees",
+      "Engels"
+    ],
+    "itinerary": [
+      {
+        "time": "Flexibel",
+        "title": "Aankomst in de jachthaven van Viana do Castelo",
+        "description": "Ontmoet de bemanning bij Cerqueira's in Rio, naast de Ponte Eiffel. De ingang van de jachthaven gaat voor u open — loop tot aan de laatste steiger, naast de voetgangersbrug, waar de zeilboot is afgemeerd."
+      },
+      {
+        "time": "+15 min",
+        "title": "Welkomstdrankje en vertrek",
+        "description": "Ga aan boord van de zeilboot van 39 voet. Met een welkomstdrankje in de hand gooit de bemanning los en vaart over de rivier de Lima richting de monding."
+      },
+      {
+        "time": "+45 min",
+        "title": "Varen langs de Atlantische kust",
+        "description": "Vaar voorbij de strekdam en langs de Minho-kust. De Praia do Cabedelo, de oude vissersbuurt en het Heiligdom van Santa Luzia hoog daarboven. Wind in de zeilen, alleen de oceaan vooruit."
+      },
+      {
+        "time": "+90 min",
+        "title": "Zwemmen, SUP en ontspannen",
+        "description": "Anker op een beschutte plek. Zwem, probeer de SUP-paddleboards aan boord, ga snorkelen of ontspan gewoon op het dek met hapjes en drankjes. De bemanning regelt alles."
+      },
+      {
+        "time": "+180 min",
+        "title": "Terug naar de jachthaven bij zonsondergang",
+        "description": "Vaar terug terwijl de zon ondergaat over de Atlantische Oceaan en de lichten van de stad Viana do Castelo beginnen te schitteren. Een onvergetelijk einde van een onvergetelijke dag."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Heb ik zeilervaring nodig?",
+        "a": "Helemaal niet. De professionele bemanning regelt alles. U bent een gast, geen zeiler. Ontspan gewoon en geniet."
+      },
+      {
+        "q": "Wat is het verschil tussen de ervaring van 2 en van 4 uur?",
+        "a": "De optie van 2 uur is een cruise bij zonsondergang langs de kust, met drankjes en hapjes. De ervaring van 4 uur voegt een zwemstop en SUP toe, een langere kustverkenning en meer tijd op het water."
+      },
+      {
+        "q": "Kan ik diner aan boord regelen?",
+        "a": "Ja. Met minstens 48 uur van tevoren kan een complete gastronomische ervaring worden voorbereid: lokale kazen, vleeswaren, verse zeevruchten en Portugese wijnen."
+      },
+      {
+        "q": "Hoeveel personen kan de boot meenemen?",
+        "a": "Tot 10 gasten. Het is een privécharter — alleen uw eigen groep aan boord."
+      },
+      {
+        "q": "Waarom zou ik rechtstreeks bij Portugal Active boeken?",
+        "a": "Een lagere prijs, flexibele planning, directe communicatie met de bemanning, en wij kunnen het zeilen combineren met andere ervaringen (SUP, diner in een lokaal restaurant) voor een complete dag."
+      }
+    ],
+    "meetingPoint": {
+      "instructions": "De ingang van de jachthaven ligt naast de Ponte Eiffel. Meld uw aankomst om de slagboom te openen en loop daarna tot aan de laatste steiger, naast de voetgangersbrug.",
+      "pickupNote": "De transfer naar de jachthaven kan op aanvraag worden geregeld. De jachthaven ligt op 5 minuten lopen van het treinstation van Viana do Castelo."
+    }
+  }
+}

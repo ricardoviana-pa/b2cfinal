@@ -5,7 +5,7 @@
    ACTIVE language's file is fetched (dynamic import → its own chunk), with
    English fallback for anything untranslated.
    ========================================================================== */
-import { deepMerge } from './localizeContent';
+import { deepMerge } from './deepMerge';
 
 type Dict = Record<string, any>;
 

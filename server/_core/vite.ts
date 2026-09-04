@@ -206,10 +206,10 @@ async function getBlogArticleBySlugCached(slug: string, lang: string): Promise<a
 }
 
 /** Destinations live in client/src/data/destinations.json; overrides in
- *  destinations.i18n.json ({ slug: { lang: fields } }). Returns { name, desc }
+ *  destinations.i18n/<lang>.json ({ slug: fields }). Returns { name, desc }
  *  in the active language for meta. */
 let _destinations: { expiresAt: number; data: Map<string, any> } | null = null;
-let _destOverrides: { expiresAt: number; data: Record<string, any> } | null = null;
+const _destOverrides = new Map<string, { expiresAt: number; data: Record<string, any> }>();
 async function getDestinationBySlugCached(slug: string, lang: string): Promise<{ name: string; desc: string; seoTitle?: string } | null> {
   try {
     if (!_destinations || Date.now() > _destinations.expiresAt) {
@@ -221,16 +221,19 @@ async function getDestinationBySlugCached(slug: string, lang: string): Promise<{
     }
     const base = _destinations.data.get(slug);
     if (!base) return null;
-    if (!_destOverrides || Date.now() > _destOverrides.expiresAt) {
+    const code = (lang || "en").split("-")[0];
+    // One file per language ({ slug: fields }) — same layout the client loads.
+    let ovByLang = _destOverrides.get(code);
+    if (code !== "en" && (!ovByLang || Date.now() > ovByLang.expiresAt)) {
       let data: Record<string, any> = {};
       try {
-        const p = path.join(process.cwd(), "client", "src", "data", "destinations.i18n.json");
+        const p = path.join(process.cwd(), "client", "src", "data", "destinations.i18n", `${code}.json`);
         data = JSON.parse(fs.readFileSync(p, "utf-8"));
       } catch { data = {}; }
-      _destOverrides = { expiresAt: Date.now() + DYNAMIC_META_TTL_MS, data };
+      ovByLang = { expiresAt: Date.now() + DYNAMIC_META_TTL_MS, data };
+      _destOverrides.set(code, ovByLang);
     }
-    const code = (lang || "en").split("-")[0];
-    const ov = code === "en" ? null : _destOverrides.data[slug]?.[code];
+    const ov = code === "en" ? null : ovByLang?.data[slug];
     const name = ov?.name || base.name || slug;
     // Curated per-destination title, per locale, falling back to English.
     const seoTitle = (ov?.seoTitle || base.seoTitle || "").trim();

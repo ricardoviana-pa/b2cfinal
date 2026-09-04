@@ -6,7 +6,7 @@ import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import { pushDL, pushEcommerce, pushPurchaseOnce, ADDON_PREFIX } from "@/lib/datalayer";
 import { cancellationPolicyText } from "@/lib/cancellation";
-import { localizeProduct } from "@/lib/localizeContent";
+import { localizeProduct } from "@/lib/localizeProduct";
 import { Calendar, User, Shield, Loader2, Check, ShoppingBag, Minus, Plus, UtensilsCrossed, Sparkles, Dumbbell, ShoppingCart, Baby, Car, SprayCanIcon, ChevronDown } from "lucide-react";
 import AvailabilityCalendar from "./AvailabilityCalendar";
 import type { AvailabilityDay } from "./AvailabilityCalendar";

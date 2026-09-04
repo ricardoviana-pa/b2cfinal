@@ -5,7 +5,7 @@
    language's file is fetched (dynamic import → its own code-split chunk), so a
    property page ships ~one language (~450–590 KB) instead of all seven (~4 MB).
    ========================================================================== */
-import { deepMerge } from './localizeContent';
+import { deepMerge } from './deepMerge';
 
 type Dict = Record<string, any>;
 

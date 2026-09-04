@@ -9,7 +9,7 @@ import { useRoute, Link } from 'wouter';
 import { Check, Clock, MapPin, ArrowLeft, MessageCircle } from 'lucide-react';
 import servicesData from '@/data/services.json';
 import productsData from '@/data/products.json';
-import { localizeService, localizeProduct } from '@/lib/localizeContent';
+import { localizeService, localizeProduct } from '@/lib/localizeProduct';
 import { formatEurEditorial } from '@/lib/format';
 import destinationsData from '@/data/destinations.json';
 import type { Destination } from '@/lib/types';

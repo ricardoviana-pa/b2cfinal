@@ -13,7 +13,7 @@ import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import destinationsData from '@/data/destinations.json';
-import { localizeDestination } from '@/lib/localizeContent';
+import { localizeDestination, useDestinationOverrides } from '@/lib/localizeContent';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -70,7 +70,8 @@ export default function Destinations() {
     url: '/destinations',
   });
 
-  const localized = destinations.map(d => localizeDestination(d, i18n.language)!);
+  const destOverrides = useDestinationOverrides(i18n.language);
+  const localized = destinations.map(d => localizeDestination(d, destOverrides)!);
   const active = localized.filter(d => !d.comingSoon);
   // Brazil is excluded from the "Coming soon" strip too — we're not ready
   // to reveal the expansion publicly. The entry still exists in

@@ -9,7 +9,7 @@ import { MessageCircle, ArrowRight, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import productsData from '@/data/products.json';
-import { localizeProduct } from '@/lib/localizeContent';
+import { localizeProduct } from '@/lib/localizeProduct';
 import type { Product } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
 import Header from '@/components/layout/Header';

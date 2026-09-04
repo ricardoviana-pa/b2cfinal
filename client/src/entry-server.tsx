@@ -21,6 +21,7 @@ import { getQueryKey } from '@trpc/react-query';
 import { httpBatchLink } from '@trpc/client';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { createInstance } from 'i18next';
+import { preloadContentOverrides } from '@/lib/localizeContent';
 import type { ResourceKey } from "i18next";
 import superjson from 'superjson';
 import { trpc } from '@/lib/trpc';
@@ -90,7 +91,15 @@ async function createI18nForRequest(lng: string) {
  * settled, so the returned HTML is complete.
  */
 export async function render(url: string, opts?: RenderOptions): Promise<RenderResult> {
-  const i18n = await createI18nForRequest(localeFromUrl(url));
+  const lng = localeFromUrl(url);
+  const i18n = await createI18nForRequest(lng);
+  // Destination / experience translations the route needs, before rendering
+  // (per-language chunks; see localizeContent.ts).
+  {
+    const segs = url.split('?')[0].split('/').filter(Boolean);
+    const pathNoLocale = '/' + (segs[0] === lng ? segs.slice(1) : segs).join('/');
+    await preloadContentOverrides(lng, pathNoLocale);
+  }
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });

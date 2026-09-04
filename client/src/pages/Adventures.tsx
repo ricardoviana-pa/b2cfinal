@@ -13,7 +13,7 @@ import experienceDetailsData from '@/data/experienceDetails.json';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
 import type { Product, DestinationSlug } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
-import { localizeProduct } from '@/lib/localizeContent';
+import { localizeProduct } from '@/lib/localizeProduct';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';

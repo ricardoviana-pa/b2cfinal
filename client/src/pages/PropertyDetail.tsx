@@ -7,7 +7,7 @@ import { useState, useMemo, useCallback, useRef, useEffect, lazy, Suspense } fro
 import { useParams, Link, useSearch } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { loadPropertyOverrides, mergePropertyOverrides } from '@/lib/localizeProperty';
-import { localizeProduct } from '@/lib/localizeContent';
+import { localizeProduct } from '@/lib/localizeProduct';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { PartnerBookingPanel } from '@/components/booking/PartnerBookingPanel';
 import {
