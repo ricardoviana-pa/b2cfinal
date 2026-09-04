@@ -21,6 +21,7 @@ import { getQueryKey } from '@trpc/react-query';
 import { httpBatchLink } from '@trpc/client';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { createInstance } from 'i18next';
+import type { ResourceKey } from "i18next";
 import superjson from 'superjson';
 import { trpc } from '@/lib/trpc';
 import App from './App';
@@ -36,7 +37,7 @@ import nl from './i18n/locales/nl.json';
 import sv from './i18n/locales/sv.json';
 
 const SUPPORTED = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'] as const;
-const RESOURCES: Record<string, unknown> = { en, pt, fr, es, it, fi, de, nl, sv };
+const RESOURCES: Record<string, ResourceKey> = { en, pt, fr, es, it, fi, de, nl, sv };
 
 /** Property data the server has already loaded, to seed the query cache. */
 export interface RenderPrefetch {

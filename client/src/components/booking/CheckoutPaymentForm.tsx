@@ -330,6 +330,7 @@ function PaymentFormInner({
     if (intentId) {
       try {
         const { clientSecret, paymentIntentId } = await createCardCharge.mutateAsync({ intentId });
+        if (!clientSecret) throw new Error("createCardCharge returned no clientSecret");
         const { error: confirmErr, paymentIntent } = await stripe.confirmPayment({
           elements,
           clientSecret,

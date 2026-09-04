@@ -427,12 +427,12 @@ ${allUrls.join("\n")}
         'amazonbot', 'applebot-extended', 'diffbot',
       ];
       for (const ua of aiCrawlers) {
-        if (!prerender.crawlerUserAgents.includes(ua)) {
-          prerender.crawlerUserAgents.push(ua);
+        if (!(prerender as any).crawlerUserAgents.includes(ua)) {
+          (prerender as any).crawlerUserAgents.push(ua);
         }
       }
       app.use(prerender);
-      console.info(`[prerender] Active — ${prerender.crawlerUserAgents.length} crawler UAs (incl. AI bots)`);
+      console.info(`[prerender] Active — ${(prerender as any).crawlerUserAgents.length} crawler UAs (incl. AI bots)`);
     } catch {
       console.warn('[prerender] prerender-node not installed, skipping bot pre-rendering');
     }

@@ -230,6 +230,7 @@ function parseBEQuote(quote: any, listingId: string, checkIn: string, checkOut: 
   };
 
   const rawOptions = ratePlans.map(mapPlan);
+  type RawOption = ReturnType<typeof mapPlan>;
   // Default to the CHEAPEST plan (friendliness only breaks ties). The PLP and
   // the Guesty BE both lead with the minimum total; a friendlier-but-pricier
   // default made the price RISE from card to widget — mid-funnel price hikes
@@ -250,7 +251,7 @@ function parseBEQuote(quote: any, listingId: string, checkIn: string, checkOut: 
   // radio rows and confuse customers. Collapse on (name, total): keep the
   // first occurrence, drop the rest.
   const seenKeys = new Set<string>();
-  const deduped = rawOptions.filter((o) => {
+  const deduped = rawOptions.filter((o: RawOption) => {
     const key = `${(o.name || "").trim().toLowerCase()}|${Math.round(o.total * 100)}`;
     if (seenKeys.has(key)) {
       console.info(`[BE Quote] dropped duplicate rate plan: name="${o.name}" total=${o.total} (id=${o.ratePlanId})`);
@@ -279,7 +280,7 @@ function parseBEQuote(quote: any, listingId: string, checkIn: string, checkOut: 
   const cheapestOf = (arr: typeof deduped) =>
     [...arr].sort((a, b) => (a.total - b.total) || (generosity(b) - generosity(a)))[0];
   const nonRefSide = deduped.filter(isNonRefOption);
-  const flexSide = deduped.filter((o) => !isNonRefOption(o));
+  const flexSide = deduped.filter((o: RawOption) => !isNonRefOption(o));
   const options =
     nonRefSide.length && flexSide.length
       ? [cheapestOf(nonRefSide), cheapestOf(flexSide)]
