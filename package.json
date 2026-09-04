@@ -5,8 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development tsx watch server/_core/index.ts",
-    "brand:facts": "node scripts/brand-facts.mjs",
-    "prebuild": "node scripts/brand-facts.mjs",
+    "brand:facts": "tsx scripts/brand-facts.ts",
+    "prebuild": "tsx scripts/brand-facts.ts",
     "build": "NODE_ENV=production vite build && npm run build:ssr && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "build:ssr": "NODE_ENV=production vite build --ssr src/entry-server.tsx --outDir ../dist/server",
     "start": "NODE_ENV=production node dist/index.js",

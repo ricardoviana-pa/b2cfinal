@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Brand facts — one source for the numbers the site quotes about itself.
  *
@@ -13,8 +12,9 @@
  *                                        (client, server, emails, schema)
  *   client/public/llms.txt             → regenerated from the same facts
  *
- * Runs before every build (`npm run build` → prebuild) and can be run by hand:
- *   node scripts/brand-facts.mjs
+ * Runs before every build (`npm run build` → prebuild, via tsx so it can
+ * import the TypeScript store) and can be run by hand:
+ *   npm run brand:facts
  *
  * The count is rounded DOWN to the ten with a "+" suffix ("90+"): a claim that
  * is always true, never one the site has to walk back after a delisting.
@@ -22,10 +22,9 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { getPropertiesForSite } from "../server/services/properties-store";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(__dirname, "..");
+const ROOT = process.cwd();
 
 const FACTS = {
   CHECKLIST_POINTS: 147,
@@ -35,46 +34,32 @@ const FACTS = {
   REGIONS: ["Minho", "Porto", "Douro", "Lisbon", "Alentejo", "Algarve"],
 };
 
-function homeCountLabel(n) {
+function homeCountLabel(n: number): string {
   const floored = Math.floor(n / 10) * 10;
   return floored > 0 ? `${floored}+` : String(n);
 }
 
 /** Public homes exactly as the site lists them (own + partner, filtered). */
 async function countPublicHomes() {
-  try {
-    // Node ≥ 22.18 strips types natively; the store only reads JSON files.
-    const store = await import(path.join(ROOT, "server", "services", "properties-store.ts"));
-    const all = await store.getPropertiesForSite();
-    const own = all.filter((p) => p.source !== "tripwix").length;
-    const partner = all.length - own;
-    return { total: all.length, own, partner, source: "properties-store" };
-  } catch (err) {
-    // Fallback: same files, minimal filter (no exclusion lists) — flagged so
-    // nobody mistakes it for the real thing.
-    console.warn(`[brand-facts] properties-store import failed (${err?.message}); using the raw files.`);
-    const read = (f) => {
-      try { return JSON.parse(fs.readFileSync(path.join(ROOT, "client", "src", "data", f), "utf8")); } catch { return []; }
-    };
-    const own = read("properties.json").filter((p) => p.isActive !== false && !/test/i.test(p.title || p.name || "")).length;
-    const partner = process.env.TRIPWIX_INVENTORY === "0" ? 0 : read("tripwix-properties.json").length;
-    return { total: own + partner, own, partner, source: "raw-files" };
-  }
+  const all = await getPropertiesForSite();
+  const own = all.filter((p: any) => p.source !== "tripwix").length;
+  const partner = all.length - own;
+  return { total: all.length, own, partner, source: "properties-store" };
 }
 
-function experiencePrices() {
+function experiencePrices(): string[] {
   try {
     const raw = JSON.parse(fs.readFileSync(path.join(ROOT, "client", "src", "data", "experienceDetails.json"), "utf8"));
     const list = Array.isArray(raw) ? raw : raw.experiences || Object.values(raw)[0];
     return list
-      .filter((e) => e && e.name && e.price)
-      .map((e) => `- ${String(e.name).split(/ — | – |: /)[0]}: ${String(e.price).replace(/^from /i, "from ")}`);
+      .filter((e: any) => e && e.name && e.price)
+      .map((e: any) => `- ${String(e.name).split(/ — | – |: /)[0]}: ${String(e.price).replace(/^from /i, "from ")}`);
   } catch {
     return [];
   }
 }
 
-function llmsTxt(facts) {
+function llmsTxt(facts: typeof FACTS & { HOME_COUNT: number; HOME_COUNT_LABEL: string }): string {
   const regions = facts.REGIONS.join(", ");
   return `# Portugal Active — Private Hotels in Portugal
 
@@ -143,7 +128,7 @@ async function main() {
   console.log(`[brand-facts] ${generated.homeCount} public homes (${generated.ownHomeCount} own + ${generated.partnerHomeCount} partner, ${generated.source}) → "${generated.homeCountLabel}"${unchanged ? " (unchanged)" : ""}`);
 }
 
-main().catch((err) => {
+main().catch((err: any) => {
   console.error("[brand-facts] failed:", err);
   process.exit(1);
 });

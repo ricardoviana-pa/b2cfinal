@@ -7,7 +7,7 @@
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { withPartnerDefaults } from "./tripwix";
+import { withPartnerDefaults, normalizePartnerAmenities } from "./tripwix";
 
 const SYNC_PATH = join(process.cwd(), "data", "properties-synced.json");
 const FALLBACK_PATH = join(process.cwd(), "client", "src", "data", "properties.json");
@@ -57,6 +57,24 @@ function hasRealData(properties: any[]): boolean {
   return withRealImages.length > 0;
 }
 
+/** Every amenity string our own homes publish — the vocabulary partner homes must fit. */
+function siteAmenityVocabulary(own: any[]): Set<string> {
+  const vocab = new Set<string>();
+  for (const p of own) {
+    const a = p?.amenities;
+    const list = Array.isArray(a) ? a : Object.values(a || {}).flat();
+    for (const s of list) if (typeof s === "string" && s.trim()) vocab.add(s.trim());
+  }
+  return vocab;
+}
+
+/** Partner homes get amenities in our vocabulary; nothing raw from the feed reaches a page. */
+function normalizePartner(partner: any[], own: any[]): any[] {
+  if (partner.length === 0) return partner;
+  const vocab = siteAmenityVocabulary(own);
+  return partner.map((p) => ({ ...p, amenities: normalizePartnerAmenities(p.amenities, vocab) }));
+}
+
 export async function getPropertiesForSite(): Promise<any[]> {
   const partner = await getTripwixProperties();
 
@@ -67,7 +85,7 @@ export async function getPropertiesForSite(): Promise<any[]> {
       const data = JSON.parse(raw);
       if (Array.isArray(data) && data.length > 0) {
         console.info(`[Properties] Loaded ${data.length} properties from runtime sync.`);
-        return filterPublicProperties([...data, ...partner]);
+        return filterPublicProperties([...data, ...normalizePartner(partner, data)]);
       }
     } catch {
       // fall through to fallback
@@ -83,7 +101,7 @@ export async function getPropertiesForSite(): Promise<any[]> {
       console.info(
         `[Properties] Loaded ${data.length} properties from static fallback (real data: ${real}).`,
       );
-      return filterPublicProperties([...data, ...partner]);
+      return filterPublicProperties([...data, ...normalizePartner(partner, data)]);
     }
   } catch {
     // fall through
@@ -106,6 +124,7 @@ export async function getPropertiesForSite(): Promise<any[]> {
  */
 const EXCLUDED_SLUG_PATTERNS: string[] = [
   "villa-luzia", // Removed per CEO request (2026-05-06)
+  "test-guesty-test", // Guesty's own test listing — never public (auditoria set/2026, N10)
 ];
 
 /**
