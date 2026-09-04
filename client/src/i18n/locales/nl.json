@@ -1443,7 +1443,7 @@
     "continueWithExtras_other": "Doorgaan, {{count}} extra's toegevoegd",
     "continueWithoutExtras": "Doorgaan zonder extra's",
     "mostChosen": "Meest gekozen",
-    "confirm24h": "Bevestiging binnen 24 uur",
+    "confirm24h": "Bevestigd binnen 2 uur",
     "onRequest": "Op aanvraag, nu geen kosten",
     "onRequestShort": "op aanvraag",
     "add": "Toevoegen",
@@ -1612,7 +1612,7 @@
       "badge": "Inbegrepen",
       "concierge": "Een persoonlijke concierge op WhatsApp",
       "linen": "Hotelbeddengoed en handdoeken",
-      "welcome": "Welcoming pack",
+      "welcome": "Welkomstpakket",
       "bestRate": "Beste prijs gegarandeerd"
     },
     "chapter": {

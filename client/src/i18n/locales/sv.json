@@ -1443,7 +1443,7 @@
     "continueWithExtras_other": "Fortsätt, {{count}} tillval tillagda",
     "continueWithoutExtras": "Fortsätt utan tillval",
     "mostChosen": "Mest vald",
-    "confirm24h": "Bekräftas inom 24h",
+    "confirm24h": "Bekräftat inom 2 timmar",
     "onRequest": "På förfrågan, ingen debitering nu",
     "onRequestShort": "på förfrågan",
     "add": "Lägg till",
@@ -1612,7 +1612,7 @@
       "badge": "Ingår",
       "concierge": "En personlig concierge på WhatsApp",
       "linen": "Hotellsänglinne och handdukar",
-      "welcome": "Welcoming pack",
+      "welcome": "Välkomstpaket",
       "bestRate": "Bästa pris garanterat"
     },
     "chapter": {

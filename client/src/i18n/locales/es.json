@@ -1443,7 +1443,7 @@
     "continueWithExtras_other": "Continuar, {{count}} extras añadidos",
     "continueWithoutExtras": "Continuar sin extras",
     "mostChosen": "Más elegido",
-    "confirm24h": "Confirmación en 24 horas",
+    "confirm24h": "Confirmado en 2 horas",
     "onRequest": "Bajo petición, sin cargo ahora",
     "onRequestShort": "bajo petición",
     "add": "Añadir",
@@ -1612,7 +1612,7 @@
       "badge": "Incluido",
       "concierge": "Un concierge dedicado por WhatsApp",
       "linen": "Ropa de cama y toallas de hotel",
-      "welcome": "Welcoming pack",
+      "welcome": "Pack de bienvenida",
       "bestRate": "Mejor precio garantizado"
     },
     "chapter": {

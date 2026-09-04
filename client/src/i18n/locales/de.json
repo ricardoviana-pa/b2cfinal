@@ -1443,7 +1443,7 @@
     "continueWithExtras_other": "Weiter, {{count}} Extras hinzugefügt",
     "continueWithoutExtras": "Ohne Extras fortfahren",
     "mostChosen": "Am beliebtesten",
-    "confirm24h": "Bestätigung innerhalb von 24h",
+    "confirm24h": "Bestätigt innerhalb von 2 Stunden",
     "onRequest": "Auf Anfrage, jetzt keine Zahlung",
     "onRequestShort": "auf Anfrage",
     "add": "Hinzufügen",
@@ -1612,7 +1612,7 @@
       "badge": "Inklusive",
       "concierge": "Ein persönlicher Concierge auf WhatsApp",
       "linen": "Hotelbettwäsche und Handtücher",
-      "welcome": "Welcoming pack",
+      "welcome": "Willkommenspaket",
       "bestRate": "Bestpreisgarantie"
     },
     "chapter": {

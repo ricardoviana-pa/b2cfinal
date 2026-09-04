@@ -1443,7 +1443,7 @@
     "continueWithExtras_other": "Continuer, {{count}} extras ajoutés",
     "continueWithoutExtras": "Continuer sans extras",
     "mostChosen": "Le plus choisi",
-    "confirm24h": "Confirmé sous 24h",
+    "confirm24h": "Confirmé sous 2 heures",
     "onRequest": "Sur demande, aucun débit maintenant",
     "onRequestShort": "sur demande",
     "add": "Ajouter",

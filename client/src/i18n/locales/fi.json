@@ -1443,7 +1443,7 @@
     "continueWithExtras_other": "Jatka, {{count}} lisäpalvelua lisätty",
     "continueWithoutExtras": "Jatka ilman lisäpalveluita",
     "mostChosen": "Suosituin",
-    "confirm24h": "Vahvistus 24 tunnissa",
+    "confirm24h": "Vahvistetaan 2 tunnin kuluessa",
     "onRequest": "Pyynnöstä, ei veloitusta nyt",
     "onRequestShort": "pyynnöstä",
     "add": "Lisää",
@@ -1612,7 +1612,7 @@
       "badge": "Sisältyy",
       "concierge": "Oma concierge WhatsAppissa",
       "linen": "Hotellin liinavaatteet ja pyyhkeet",
-      "welcome": "Welcoming pack",
+      "welcome": "Tervetuliaispaketti",
       "bestRate": "Paras hinta taattu"
     },
     "chapter": {
