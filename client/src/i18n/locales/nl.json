@@ -485,7 +485,8 @@
     "requestService": "Aanvragen",
     "inHouseOverline": "Eén team, één standaard",
     "inHouseTitle": "Alles hier is van ons — chefs, chauffeurs, therapeuten, gidsen.",
-    "inHouseBody": "Geen marktplaats van vreemden. Elke service en ervaring wordt verzorgd door ons eigen interne team en vertrouwde lokale partners met wie we dagelijks samenwerken — geboekt, gecoördineerd en onder verantwoordelijkheid van één conciërge. Zoals een tophotel werkt, maar in een privéwoning."
+    "inHouseBody": "Geen marktplaats van vreemden. Elke service en ervaring wordt verzorgd door ons eigen interne team en vertrouwde lokale partners met wie we dagelijks samenwerken — geboekt, gecoördineerd en onder verantwoordelijkheid van één conciërge. Zoals een tophotel werkt, maar in een privéwoning.",
+    "servicesSubtitleRequest": "Geregeld door uw concierge. Ons team bevestigt de beschikbaarheid binnen 2 uur."
   },
   "priceBreakdown": {
     "title": "Prijsoverzicht",
@@ -1702,7 +1703,9 @@
   "host": {
     "hostedBy": "Uw hosts: Ricardo & het Portugal Active-team",
     "basedIn": "Lokaal team in Viana do Castelo",
-    "meetUs": "Maak kennis met ons"
+    "meetUs": "Maak kennis met ons",
+    "hostedByName": "Uw gastheren: {{name}} & het Portugal Active-team",
+    "basedInCity": "Lokaal team in {{city}}"
   },
   "location": {
     "title": "Locatie",

@@ -485,7 +485,8 @@
     "requestService": "Pyydä",
     "inHouseOverline": "Yksi tiimi, yksi standardi",
     "inHouseTitle": "Täällä kaikki on omaamme — kokit, kuljettajat, terapeutit, oppaat.",
-    "inHouseBody": "Emme ole tuntemattomien markkinapaikka. Jokaisesta palvelusta ja elämyksestä vastaa oma sisäinen tiimimme ja luotetut paikalliset kumppanit, joiden kanssa työskentelemme päivittäin — varattuna, koordinoituna ja yhden conciergen vastuulla. Kuten huippuhotellissa, mutta yksityiskodissa."
+    "inHouseBody": "Emme ole tuntemattomien markkinapaikka. Jokaisesta palvelusta ja elämyksestä vastaa oma sisäinen tiimimme ja luotetut paikalliset kumppanit, joiden kanssa työskentelemme päivittäin — varattuna, koordinoituna ja yhden conciergen vastuulla. Kuten huippuhotellissa, mutta yksityiskodissa.",
+    "servicesSubtitleRequest": "Conciergesi järjestää. Tiimimme vahvistaa saatavuuden 2 tunnin kuluessa."
   },
   "priceBreakdown": {
     "title": "Hintayhteenveto",
@@ -1702,7 +1703,9 @@
   "host": {
     "hostedBy": "Isäntinänne Ricardo & Portugal Active -tiimi",
     "basedIn": "Paikallinen tiimi Viana do Castelossa",
-    "meetUs": "Tutustu meihin"
+    "meetUs": "Tutustu meihin",
+    "hostedByName": "Isäntinä {{name}} & Portugal Active -tiimi",
+    "basedInCity": "Paikallinen tiimi: {{city}}"
   },
   "location": {
     "title": "Sijainti",

@@ -485,7 +485,8 @@
     "cleaningFeeRule": "Limpeza final: €{{fee}}",
     "breadcrumbHome": "Início",
     "breadcrumbHomes": "Alojamentos",
-    "bedroomsTitle": "Quartos e distribuição de camas"
+    "bedroomsTitle": "Quartos e distribuição de camas",
+    "servicesSubtitleRequest": "Organizado pelo seu concierge. A nossa equipa confirma a disponibilidade em 2 horas."
   },
   "priceBreakdown": {
     "title": "Resumo de preço",
@@ -1702,7 +1703,9 @@
   "host": {
     "hostedBy": "Anfitriões: Ricardo & a equipa Portugal Active",
     "basedIn": "Equipa local em Viana do Castelo",
-    "meetUs": "Conheça-nos"
+    "meetUs": "Conheça-nos",
+    "hostedByName": "Anfitriões: {{name}} & a equipa Portugal Active",
+    "basedInCity": "Equipa local em {{city}}"
   },
   "location": {
     "title": "Localização",

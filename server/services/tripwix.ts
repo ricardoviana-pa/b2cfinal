@@ -222,3 +222,21 @@ export async function getPartnerQuote(
     currency: "EUR",
   };
 }
+
+/**
+ * Defaults the partner feed does not carry. Partner homes are presented as
+ * Portugal Active inventory (auditoria set/2026, N7), so they get the same
+ * arrival window the rest of the portfolio publishes; the concierge adjusts
+ * per stay when the supplier says otherwise.
+ */
+export const PARTNER_DEFAULT_CHECK_IN = "16:00";
+export const PARTNER_DEFAULT_CHECK_OUT = "11:00";
+
+/** Fill the fields a partner listing leaves empty so the PDP reads like our own. */
+export function withPartnerDefaults<T extends Record<string, any>>(p: T): T {
+  return {
+    ...p,
+    checkInTime: p.checkInTime || PARTNER_DEFAULT_CHECK_IN,
+    checkOutTime: p.checkOutTime || PARTNER_DEFAULT_CHECK_OUT,
+  };
+}

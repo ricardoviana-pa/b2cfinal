@@ -486,7 +486,8 @@
     "minNights_one": "{{count}}-night minimum stay",
     "minNights_other": "{{count}}-night minimum stay",
     "cleaningFeeRule": "Final cleaning: €{{fee}}",
-    "servicesSubtitlePartner": "Arranged by your concierge. Availability confirmed per request."
+    "servicesSubtitlePartner": "Arranged by your concierge. Availability confirmed per request.",
+    "servicesSubtitleRequest": "Arranged by your concierge. Our team confirms availability within 2 hours."
   },
   "priceBreakdown": {
     "title": "Price summary",
@@ -1703,7 +1704,9 @@
   "host": {
     "hostedBy": "Hosted by Ricardo & the Portugal Active team",
     "basedIn": "Local team in Viana do Castelo",
-    "meetUs": "Meet us"
+    "meetUs": "Meet us",
+    "hostedByName": "Hosted by {{name}} & the Portugal Active team",
+    "basedInCity": "Local team in {{city}}"
   },
   "location": {
     "title": "Location",
@@ -1721,8 +1724,7 @@
     "qDirect": "Why book directly with Portugal Active?",
     "aDirect": "Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end.",
     "qPets": "Can I bring my pet?",
-    "aPets": "Yes — {{name}} welcomes pets. Let us know when you book; a small additional fee may apply.",
-    "aDirectPartner": "Booking direct means no OTA service fees, and a dedicated WhatsApp concierge who handles your booking from first enquiry to check-out."
+    "aPets": "Yes — {{name}} welcomes pets. Let us know when you book; a small additional fee may apply."
   },
   "collections": {
     "eyebrow": "Curated collection",

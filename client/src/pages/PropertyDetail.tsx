@@ -5,6 +5,7 @@
 
 import { useState, useMemo, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
 import { CHECKLIST_POINTS } from '@shared/brandFacts';
+import { getConcierge } from '@shared/concierges';
 import { useParams, Link, useSearch } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { loadPropertyOverrides, mergePropertyOverrides } from '@/lib/localizeProperty';
@@ -594,6 +595,7 @@ export default function PropertyDetail() {
   // Console — that becomes their one clean first impression.
   const PARTNER_HOMES_NOINDEX = true;
   const partnerNoindex = PARTNER_HOMES_NOINDEX && (property as any)?.source === 'tripwix';
+  const host = getConcierge((property as any)?.destination, (property as any)?.locality);
 
   usePageMeta({
     title: pdpTitle,
@@ -644,14 +646,9 @@ export default function PropertyDetail() {
       q: t('pdpFaq.qMin', 'What is the minimum stay?'),
       a: t('pdpFaq.aMin', 'The minimum stay varies by season — the calendar shows the exact requirement for your dates. In July and August stays run Saturday to Saturday with a 7-night minimum.'),
     });
-    // On partner homes we neither price nor operate the property, so the
-    // "best rate online" and "local team operates the home" halves of the
-    // usual answer would both be untrue. The no-OTA-fees argument holds.
     out.push({
       q: t('pdpFaq.qDirect', 'Why book directly with Portugal Active?'),
-      a: (property as any)?.source === 'tripwix'
-        ? t('pdpFaq.aDirectPartner', 'Booking direct means no OTA service fees, and a dedicated WhatsApp concierge who handles your booking from first enquiry to check-out.')
-        : t('pdpFaq.aDirect', 'Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end.'),
+      a: t('pdpFaq.aDirect', 'Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end.'),
     });
     return out;
   }, [property, displayName, t]);
@@ -1097,13 +1094,7 @@ export default function PropertyDetail() {
         </p>
         <div className="flex flex-col gap-2.5">
           {([
-            // The price-match guarantee only holds on homes we price ourselves.
-            // Partner inventory is sold at the supplier's own retail rate, so we
-            // cannot promise to beat their OTA listings — the no-service-fees
-            // line below stays, because that one is true either way.
-            ...(property.source === 'tripwix'
-              ? []
-              : [{ icon: ShieldCheck, label: t('trust.bestRateTeeth', 'Best rate online — find these dates cheaper on Airbnb or Booking.com and we match the price') }]),
+            { icon: ShieldCheck, label: t('trust.bestRateTeeth', 'Best rate online — find these dates cheaper on Airbnb or Booking.com and we match the price') },
             { icon: Clock, label: t('trust.noServiceFees', 'No service fees — OTAs add 12–18% at checkout; here the price is the price') },
             { icon: Headphones, label: t('trust.conciergeWhatsapp', 'WhatsApp concierge before, during and after your stay') },
             { icon: Lock, label: t('trust.secureBooking', 'Secure booking') },
@@ -1120,31 +1111,28 @@ export default function PropertyDetail() {
       </div>
 
       {/* A human at the decision point — the About page has the founder with a
-          face and a story, but the page where money changes hands had nobody. */}
-      {/* The host card names a Minho-based team. On partner homes in the
-          Douro, Algarve or Comporta there is no local Portugal Active team —
-          having one is precisely what this partnership stands in for. */}
-      {(property as any).source !== 'tripwix' && (
+          face and a story, but the page where money changes hands had nobody.
+          The host is the concierge of the home's region (shared/concierges.ts),
+          on every home. */}
       <div className="mt-5 pt-5 border-t border-[#E8E4DC] flex items-center gap-3">
         <img
-          src="/team/ricardo-viana.webp"
-          alt="Ricardo Viana, Portugal Active"
+          src={host.photo}
+          alt={`${host.fullName}, Portugal Active`}
           className="w-11 h-11 rounded-full object-cover shrink-0"
           loading="lazy"
         />
         <div className="min-w-0">
           <p className="text-[12.5px] text-[#1A1A18] font-medium leading-tight">
-            {t('host.hostedBy', 'Hosted by Ricardo & the Portugal Active team')}
+            {t('host.hostedByName', { name: host.name, defaultValue: 'Hosted by {{name}} & the Portugal Active team' })}
           </p>
           <p className="text-[11.5px] text-[#726D63] leading-tight mt-0.5">
-            {t('host.basedIn', 'Local team in Viana do Castelo')} ·{' '}
+            {t('host.basedInCity', { city: host.basedIn, defaultValue: 'Local team in {{city}}' })} ·{' '}
             <Link href="/about" className="text-[#806A48] hover:underline">
               {t('host.meetUs', 'Meet us')}
             </Link>
           </p>
         </div>
       </div>
-      )}
     </>
   );
 
@@ -1322,14 +1310,8 @@ export default function PropertyDetail() {
               />
 
               {/* 2. What's included in every stay — the hotel-grade promise that
-                  separates us from a marketplace listing.
-
-                  Hidden on partner homes: this list describes what OUR team
-                  puts in OUR properties (the preparation checklist, welcome kit, local
-                  team minutes away). We do not prepare these homes and the
-                  supplier exposes no equivalent data, so every line would be
-                  an invention. */}
-              {(property as any).source !== 'tripwix' && (
+                  separates us from a marketplace listing. Every home, one
+                  standard. */}
               <section className="p-6 lg:p-8 bg-[#F5F1EB] rounded-2xl">
                 <div className="flex items-center gap-3 mb-5">
                   <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18]">{t('propertyDetail.includedTitle')}</h2>
@@ -1344,7 +1326,6 @@ export default function PropertyDetail() {
                   ))}
                 </div>
               </section>
-              )}
 
               {/* 3. Amenities — highlights row + clean per-category list (the
                   previous design rendered every item as a beige pill; it read as
@@ -1498,30 +1479,23 @@ export default function PropertyDetail() {
                   rather than a heavy filled banner — the brand "moment" between
                   the practical info above and the services below.
 
-                  Hidden on partner inventory (Tripwix): those homes are owned
-                  and managed by third parties, so the claim would not be true
-                  of the stay the guest is looking at. */}
-              {property.source !== 'tripwix' && (
+                  One team, one standard — on every home. */}
               <section className="py-6 lg:py-10 text-center">
                 <span className="mx-auto block h-px w-10 bg-[#C9A876]/70 mb-7" />
                 <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#8B7355] mb-4">{t('propertyDetail.inHouseOverline', 'One team, one standard')}</p>
                 <h2 className="font-display text-[clamp(1.35rem,2.6vw,1.85rem)] font-light leading-[1.3] text-[#1A1A18] mb-5 max-w-[34rem] mx-auto">{t('propertyDetail.inHouseTitle', 'Everything here is ours — chefs, drivers, therapists, guides.')}</h2>
                 <p className="text-[14px] text-[#6B6860] leading-relaxed max-w-[40rem] mx-auto" style={{ fontWeight: 300 }}>{t('propertyDetail.inHouseBody', 'Not a marketplace of strangers. Every service and experience is run by our own in-house team and trusted local partners we work with daily — booked, coordinated, and accountable through one concierge. The way a great hotel operates, in a private home.')}</p>
               </section>
-              )}
 
               {/* 4. Services — in-house, delivered by our own team. Image-first
                   cards; whole card opens the request modal. */}
               <section>
                 <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-2">{t('propertyDetail.servicesTitle')}</h2>
-                {/* "Delivered by our in house team" is true in the regions we
-                    staff. On partner homes in the Douro, Algarve or Comporta we
-                    have no team on the ground, and the supplier runs concierge
-                    through its own regional ambassador — so we do not claim
-                    delivery we have not confirmed we can make. */}
+                {/* Homes booked on request say how fast the team confirms —
+                    hotel tone, one promise (2 hours) site-wide. */}
                 <p className="body-md text-[#726D63] mb-6">
-                  {(property as any).source === 'tripwix'
-                    ? t('propertyDetail.servicesSubtitlePartner', 'Arranged by your concierge. Availability confirmed per request.')
+                  {(property as any).bookingMode === 'request'
+                    ? t('propertyDetail.servicesSubtitleRequest')
                     : t('propertyDetail.servicesSubtitle')}
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">

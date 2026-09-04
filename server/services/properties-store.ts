@@ -7,6 +7,7 @@
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+import { withPartnerDefaults } from "./tripwix";
 
 const SYNC_PATH = join(process.cwd(), "data", "properties-synced.json");
 const FALLBACK_PATH = join(process.cwd(), "client", "src", "data", "properties.json");
@@ -36,7 +37,7 @@ async function getTripwixProperties(): Promise<any[]> {
     const data = JSON.parse(await readFile(TRIPWIX_PATH, "utf-8"));
     if (!Array.isArray(data) || data.length === 0) return [];
     console.info(`[Properties] Loaded ${data.length} Tripwix partner properties.`);
-    return data;
+    return data.map(withPartnerDefaults);
   } catch (err) {
     console.error("[Properties] Failed to read Tripwix inventory:", err);
     return [];

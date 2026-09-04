@@ -485,7 +485,8 @@
     "requestService": "Begär",
     "inHouseOverline": "Ett team, en standard",
     "inHouseTitle": "Allt här är vårt — kockar, chaufförer, terapeuter, guider.",
-    "inHouseBody": "Ingen marknadsplats med främlingar. Varje tjänst och upplevelse sköts av vårt eget interna team och betrodda lokala partner som vi arbetar med dagligen — bokade, samordnade och med en enda concierge som ansvarig. Som ett förstklassigt hotell fungerar, fast i ett privat hem."
+    "inHouseBody": "Ingen marknadsplats med främlingar. Varje tjänst och upplevelse sköts av vårt eget interna team och betrodda lokala partner som vi arbetar med dagligen — bokade, samordnade och med en enda concierge som ansvarig. Som ett förstklassigt hotell fungerar, fast i ett privat hem.",
+    "servicesSubtitleRequest": "Ordnas av din concierge. Vårt team bekräftar tillgängligheten inom 2 timmar."
   },
   "priceBreakdown": {
     "title": "Prissammanfattning",
@@ -1702,7 +1703,9 @@
   "host": {
     "hostedBy": "Värdar: Ricardo & Portugal Active-teamet",
     "basedIn": "Lokalt team i Viana do Castelo",
-    "meetUs": "Lär känna oss"
+    "meetUs": "Lär känna oss",
+    "hostedByName": "Dina värdar: {{name}} & Portugal Active-teamet",
+    "basedInCity": "Lokalt team i {{city}}"
   },
   "location": {
     "title": "Läge",

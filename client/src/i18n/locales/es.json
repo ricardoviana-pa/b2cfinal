@@ -485,7 +485,8 @@
     "requestService": "Solicitar",
     "inHouseOverline": "Un equipo, un estándar",
     "inHouseTitle": "Aquí todo es nuestro — chefs, choferes, terapeutas, guías.",
-    "inHouseBody": "No somos un mercado de desconocidos. Cada servicio y experiencia lo gestiona nuestro propio equipo interno y socios locales de confianza con los que trabajamos a diario — reservados, coordinados y bajo la responsabilidad de un único conserje. Como funciona un gran hotel, en una casa privada."
+    "inHouseBody": "No somos un mercado de desconocidos. Cada servicio y experiencia lo gestiona nuestro propio equipo interno y socios locales de confianza con los que trabajamos a diario — reservados, coordinados y bajo la responsabilidad de un único conserje. Como funciona un gran hotel, en una casa privada.",
+    "servicesSubtitleRequest": "Organizado por su concierge. Nuestro equipo confirma la disponibilidad en 2 horas."
   },
   "priceBreakdown": {
     "title": "Resumen de precios",
@@ -1702,7 +1703,9 @@
   "host": {
     "hostedBy": "Anfitriones: Ricardo y el equipo de Portugal Active",
     "basedIn": "Equipo local en Viana do Castelo",
-    "meetUs": "Conózcanos"
+    "meetUs": "Conózcanos",
+    "hostedByName": "Anfitriones: {{name}} y el equipo Portugal Active",
+    "basedInCity": "Equipo local en {{city}}"
   },
   "location": {
     "title": "Ubicación",
