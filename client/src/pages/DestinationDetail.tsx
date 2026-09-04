@@ -36,10 +36,12 @@ const allProducts = productsData as unknown as Product[];
 export default function DestinationDetail() {
   const { t, i18n } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
-  const { data: propsData } = trpc.properties.listForSite.useQuery();
-  const allProperties = ((propsData ?? []).filter(
-    (p: any) => p.isActive !== false,
-  )) as Property[];
+  // Homes for this page come from the server (own + partner, by region),
+  // SSR-prefetched — the count and the cards are in the served HTML.
+  const { data: destHomes } = trpc.properties.forDestination.useQuery(
+    { slug: slug ?? '' },
+    { enabled: !!slug, staleTime: 5 * 60 * 1000 },
+  );
 
   const destOverrides = useDestinationOverrides(i18n.language);
   const dest = localizeDestination(destinations.find(d => d.slug === slug), destOverrides);
@@ -49,14 +51,13 @@ export default function DestinationDetail() {
     description: dest?.seoDescription ?? (dest ? `Discover ${dest.name}. Private villas with pool, concierge, and curated experiences.`.slice(0, 155) : undefined),
     image: dest?.coverImage,
     url: dest ? `/destinations/${dest.slug}` : undefined,
+    // Drafts (copy still "[TBD]") and coming-soon entries stay out of the index.
+    noindex: !!dest && (dest.status !== 'active' || !!dest.comingSoon),
   });
 
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
 
-  const destProperties = useMemo(() => {
-    if (!dest) return [];
-    return allProperties.filter(p => p.destination === dest.region);
-  }, [dest, allProperties]);
+  const destProperties = useMemo<Property[]>(() => (dest ? ((destHomes ?? []) as Property[]) : []), [dest, destHomes]);
 
   const adventures = useMemo<Product[]>(() => {
     if (!dest) return [];

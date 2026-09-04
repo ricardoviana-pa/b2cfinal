@@ -160,6 +160,18 @@ async function startServer() {
 
   app.use(legacyRedirects);
 
+  /** Destination slugs that are published (status active, not coming soon). */
+  function publishedDestinationSlugs(): string[] {
+    try {
+      const raw = JSON.parse(fs.readFileSync(path.join(process.cwd(), "client", "src", "data", "destinations.json"), "utf-8"));
+      return (Array.isArray(raw) ? raw : [])
+        .filter((d: any) => d?.slug && d.status === "active" && !d.comingSoon)
+        .map((d: any) => d.slug as string);
+    } catch {
+      return ["minho", "porto", "lisbon", "alentejo", "algarve"];
+    }
+  }
+
   // Dynamic sitemap.xml with multi-language support
   const SITEMAP_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
 
@@ -187,11 +199,9 @@ async function startServer() {
         { loc: "/", priority: "1.0", changefreq: "daily" },
         { loc: "/homes", priority: "0.9", changefreq: "daily" },
         { loc: "/destinations", priority: "0.9", changefreq: "monthly" },
-        { loc: "/destinations/minho", priority: "0.9", changefreq: "monthly" },
-        { loc: "/destinations/porto", priority: "0.9", changefreq: "monthly" },
-        { loc: "/destinations/lisbon", priority: "0.9", changefreq: "monthly" },
-        { loc: "/destinations/alentejo", priority: "0.9", changefreq: "monthly" },
-        { loc: "/destinations/algarve", priority: "0.9", changefreq: "monthly" },
+        // Every published destination, from the data — drafts ("[TBD]" copy)
+        // and coming-soon entries stay out (auditoria set/2026, I2/N19).
+        ...publishedDestinationSlugs().map((slug) => ({ loc: `/destinations/${slug}`, priority: "0.9", changefreq: "monthly" })),
         { loc: "/collections/villas-with-private-pool", priority: "0.8", changefreq: "weekly" },
         { loc: "/collections/sea-view-villas", priority: "0.8", changefreq: "weekly" },
         { loc: "/collections/large-group-villas", priority: "0.8", changefreq: "weekly" },

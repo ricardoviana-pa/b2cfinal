@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../_core/trpc";
 import * as db from "../db";
-import { getPropertiesForSite, getSiteLocalities } from "../services/properties-store";
+import { getPropertiesForSite, getSiteLocalities, getPropertiesForDestination } from "../services/properties-store";
 
 const propertyInput = z.object({
   name: z.string().min(1),
@@ -49,6 +49,15 @@ export const propertiesRouter = router({
     ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=14400, stale-while-revalidate=3600");
     return getSiteLocalities();
   }),
+
+  /** Homes a destination page lists (slim cards). Small enough to be
+   *  SSR-prefetched, so the count and the cards are in the served HTML. */
+  forDestination: publicProcedure
+    .input(z.object({ slug: z.string().min(1).max(80) }))
+    .query(async ({ ctx, input }) => {
+      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=14400, stale-while-revalidate=3600");
+      return getPropertiesForDestination(input.slug);
+    }),
 
   /** Homes to show under a blog article. A few slim records (~2 KB), so unlike
    *  listForSite this CAN be SSR-prefetched — which is the point: the links

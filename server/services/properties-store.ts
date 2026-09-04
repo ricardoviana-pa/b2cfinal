@@ -5,7 +5,7 @@
  */
 
 import { readFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { withPartnerDefaults, normalizePartnerAmenities } from "./tripwix";
 
@@ -253,4 +253,60 @@ export async function getSiteLocalities(): Promise<
       value,
       ...(dest && destName.has(dest) ? { group: destName.get(dest) } : {}),
     }));
+}
+
+/* ── Destination pages ──────────────────────────────────────────────────── */
+
+const DESTINATIONS_PATH = join(process.cwd(), "client", "src", "data", "destinations.json");
+
+function readDestinations(): Array<{ slug: string; region: string; status?: string; comingSoon?: boolean }> {
+  try {
+    const raw = JSON.parse(readFileSync(DESTINATIONS_PATH, "utf-8"));
+    return Array.isArray(raw) ? raw : [];
+  } catch {
+    return [];
+  }
+}
+
+/** Fields a destination page needs for its cards and count — a fraction of the record. */
+const CARD_FIELDS = [
+  "id", "guestyId", "slug", "name", "title", "tagline", "tier", "destination", "locality",
+  "bedrooms", "bathrooms", "maxGuests", "priceFrom", "pricePerNight", "currency", "petsAllowed",
+  "tags", "isActive", "source", "bookingMode", "sortOrder", "averageRating", "reviewCount",
+  "propertyType", "minNights", "groupId", "unitOf", "style",
+] as const;
+
+function toCard(p: any): any {
+  const out: any = {};
+  for (const k of CARD_FIELDS) if (p[k] !== undefined) out[k] = p[k];
+  out.images = Array.isArray(p.images) ? p.images.slice(0, 4) : [];
+  return out;
+}
+
+/**
+ * The homes a destination page lists, derived from the same public list the
+ * site renders — own homes and partner inventory alike (auditoria set/2026,
+ * I2: the pages said "0 private hotels" because the count only existed
+ * client-side, and destinations.json carried a stale propertyCount).
+ *
+ * A region hub (slug === region: minho, porto, algarve…) lists every home
+ * whose destination belongs to that region, spokes included (douro → porto).
+ * A spoke with homes of its own (douro) lists those; a spoke without any
+ * (viana-do-castelo, caminha) falls back to its region.
+ *
+ * Slim records (~1.5 KB each) so the list can be SSR-prefetched and the
+ * cards and the count are in the served HTML.
+ */
+export async function getPropertiesForDestination(slug: string): Promise<any[]> {
+  const dests = readDestinations();
+  const d = dests.find((x) => x.slug === slug);
+  if (!d) return [];
+  const regionOf = (dest: string) => dests.find((x) => x.slug === dest)?.region ?? dest;
+  const all = (await getPropertiesForSite()).filter((p) => p.isActive !== false);
+  const own = all.filter((p) => p.destination === slug);
+  const isHub = d.slug === d.region;
+  const list = isHub
+    ? all.filter((p) => regionOf(p.destination) === d.region)
+    : own.length > 0 ? own : all.filter((p) => p.destination === d.region);
+  return list.map(toCard);
 }

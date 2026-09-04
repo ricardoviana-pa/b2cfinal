@@ -1615,6 +1615,23 @@ export function serveStatic(app: Express) {
  * on the data rather than on a URL shape means a slug change cannot silently
  * turn indexing back on.
  */
+/** Destination slugs whose page must not be indexed: status !== "active" or comingSoon. */
+let _draftDestinations: Set<string> | null = null;
+function isDraftDestination(pathname: string): boolean {
+  const m = pathname.match(/^\/destinations\/([^/?#]+)\/?$/);
+  if (!m) return false;
+  if (_draftDestinations === null) {
+    _draftDestinations = new Set();
+    try {
+      const raw = JSON.parse(fs.readFileSync(path.join(process.cwd(), "client", "src", "data", "destinations.json"), "utf-8"));
+      for (const d of Array.isArray(raw) ? raw : []) {
+        if (d?.slug && (d.status !== "active" || d.comingSoon)) _draftDestinations.add(d.slug);
+      }
+    } catch { /* no data — nothing is a draft */ }
+  }
+  return _draftDestinations.has(m[1]);
+}
+
 let _partnerSlugs: Set<string> | null = null;
 function isPartnerHome(pathname: string): boolean {
   if (_partnerSlugs === null) {
@@ -1682,6 +1699,19 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
         return undefined;
       }
       return undefined;
+    }
+
+    // Destination pages: seed the homes the page lists (slim cards), so the
+    // count and the cards are in the served HTML (auditoria set/2026, I2).
+    const destMatch = strippedPath.match(/^\/destinations\/([^/]+)$/);
+    if (destMatch) {
+      try {
+        const { getPropertiesForDestination } = await import("../services/properties-store");
+        const input = { slug: destMatch[1] };
+        return { destinationHomes: { input, data: await getPropertiesForDestination(input.slug) } };
+      } catch {
+        return undefined;
+      }
     }
 
     // Pages carrying the search widget: seed the destination options (~15
@@ -1831,6 +1861,13 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
     // PARTNER_HOMES_NOINDEX in PropertyDetail.tsx) once the copy is validated,
     // then submit the URLs in Search Console.
     if (isPartnerHome(p)) {
+      res.setHeader("X-Robots-Tag", "noindex, nofollow");
+      html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
+    }
+
+    // Draft destinations (copy still "[TBD]") and coming-soon entries are
+    // reachable but never indexed — the sitemap skips them too (I2/N11).
+    if (isDraftDestination(p)) {
       res.setHeader("X-Robots-Tag", "noindex, nofollow");
       html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
     }

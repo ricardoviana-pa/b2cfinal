@@ -119,7 +119,6 @@ export interface Destination {
   gallery: string[];
   whyDescription: string;     // Section 2: editorial "why this place"
   highlights: string[];       // 3-5 bullets: what makes this region special
-  propertyCount: number;
   comingSoon: boolean;
   /** Hero pull-quote — editorial quote rendered with the hero. */
   pullQuote?: { text: string; source: string; year?: number };

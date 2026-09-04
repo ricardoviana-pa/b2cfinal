@@ -16,7 +16,6 @@ const DESTINATIONS = [
   { label: 'Lisbon', value: 'lisbon' },
   { label: 'Alentejo', value: 'alentejo' },
   { label: 'Algarve', value: 'algarve' },
-  { label: 'Brazil', value: 'brazil', disabled: true },
 ];
 
 interface SearchBarProps {
@@ -59,8 +58,8 @@ export function SearchBarFields({ mode }: SearchBarProps) {
         style={{ minHeight: 'auto', minWidth: isHero ? '140px' : '120px', fontFamily: 'var(--font-body)' }}
       >
         {DESTINATIONS.map(d => (
-          <option key={d.value} value={d.value} disabled={d.disabled} className="text-[#1A1A18]">
-            {d.label}{d.disabled ? ' (Coming soon)' : ''}
+          <option key={d.value} value={d.value} className="text-[#1A1A18]">
+            {d.label}
           </option>
         ))}
       </select>

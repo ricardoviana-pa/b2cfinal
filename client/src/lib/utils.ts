@@ -24,11 +24,10 @@ const DEST_DISPLAY: Record<string, string> = {
   lisbon: 'Lisbon',
   alentejo: 'Alentejo',
   algarve: 'Algarve',
-  brazil: 'Brazil',
 };
 
 /** Destination display order */
-const DEST_ORDER = ['minho', 'porto', 'lisbon', 'alentejo', 'algarve', 'brazil'];
+const DEST_ORDER = ['minho', 'porto', 'lisbon', 'alentejo', 'algarve'];
 
 export interface LocalityGroup {
   destination: string;

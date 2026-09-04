@@ -51,6 +51,8 @@ export interface RenderPrefetch {
   /** Result of trpc.properties.relatedHomes for a blog article — a few slim
    *  records, so the article's outbound home links are in the served HTML. */
   relatedHomes?: { input: { destinationTag: string | null; limit: number }; data: unknown };
+  /** Result of trpc.properties.forDestination for a destination page. */
+  destinationHomes?: { input: { slug: string }; data: unknown };
 }
 
 export interface RenderOptions {
@@ -130,6 +132,12 @@ export async function render(url: string, opts?: RenderOptions): Promise<RenderR
     queryClient.setQueryData(
       getQueryKey(trpc.properties.relatedHomes, pf.relatedHomes.input, 'query'),
       pf.relatedHomes.data,
+    );
+  }
+  if (pf?.destinationHomes) {
+    queryClient.setQueryData(
+      getQueryKey(trpc.properties.forDestination, pf.destinationHomes.input, 'query'),
+      pf.destinationHomes.data,
     );
   }
 
