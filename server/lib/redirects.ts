@@ -350,7 +350,7 @@ const PATTERN_REDIRECTS: PatternRule[] = [
         "homes", "blog", "about", "contact", "services", "experiences",
         "adventures", "destinations", "events", "owners", "careers",
         "concierge", "faq", "login", "account", "admin", "legal",
-        "owners-portal", "404", "booking", "activities",
+        "owners-portal", "404", "booking", "activities", "best-rate-guarantee",
       ]);
       // Don't catch locale-only paths (LocaleRouter handles those)
       const supportedLocales = new Set([
