@@ -677,6 +677,7 @@ export default function PropertyDetail() {
         checkoutTime: (property as any).checkOutTime ?? null,
         // Guesty doesn't currently expose this — leave null until wired.
         petsAllowed: (property as any).petsAllowed ?? null,
+        licenseNumber: (property as any).licenseNumber ?? null,
         // Coordinates live under address.lat/lng in the sync output; the old
         // top-level fields never existed, so GeoCoordinates was always null.
         latitude: (property as any).address?.lat ?? null,

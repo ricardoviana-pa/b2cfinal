@@ -115,6 +115,8 @@ export interface BuildVacationRentalInput {
   region?: string | null;
   amenities?: string[];
   petsAllowed?: boolean | null;
+  /** AL (Alojamento Local) registration number, shown on the PDP and in the schema. */
+  licenseNumber?: string | null;
   smokingAllowed?: boolean | null;
   checkinTime?: string | null;
   checkoutTime?: string | null;
@@ -155,6 +157,9 @@ export function buildVacationRentalSchema(i: BuildVacationRentalInput): JsonLd {
       })),
     }),
     ...(i.petsAllowed != null && { petsAllowed: i.petsAllowed }),
+    ...(i.licenseNumber && {
+      identifier: { '@type': 'PropertyValue', propertyID: 'AL', name: 'Registo de Alojamento Local', value: String(i.licenseNumber) },
+    }),
     ...(i.smokingAllowed != null && { smokingAllowed: i.smokingAllowed }),
     ...(i.checkinTime && { checkinTime: i.checkinTime }),
     ...(i.checkoutTime && { checkoutTime: i.checkoutTime }),
