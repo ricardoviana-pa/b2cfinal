@@ -129,7 +129,7 @@ export const RECOVERY_I18N: Record<EmailLang, RecoveryStrings> = {
     preheader2: "Depois desta hora o valor é recalculado. As datas seguem abertas a outros hóspedes.",
     whatsappLine: "Prefere WhatsApp? Fale com o seu concierge.",
     whatsappMsg: (h) => `Olá! Estava a reservar ${h} e tenho uma questão.`,
-    footerTagline: "Villas privadas de luxo em Portugal, geridas com serviço de hotel.",
+    footerTagline: "Hotéis privados em Portugal. A privacidade de uma casa, o serviço de um hotel.",
     optout: "Não quero receber estes lembretes",
   },
   en: {
@@ -149,7 +149,7 @@ export const RECOVERY_I18N: Record<EmailLang, RecoveryStrings> = {
     preheader2: "After this window the price is recalculated. The dates remain open to other guests.",
     whatsappLine: "Prefer WhatsApp? Talk to your concierge.",
     whatsappMsg: (h) => `Hello! I was booking ${h} and have a question.`,
-    footerTagline: "Luxury private villas across Portugal, managed with hotel-grade service.",
+    footerTagline: "Private hotels in Portugal. The privacy of a home, the service of a hotel.",
     optout: "I don't want to receive these reminders",
   },
   fr: {
@@ -169,7 +169,7 @@ export const RECOVERY_I18N: Record<EmailLang, RecoveryStrings> = {
     preheader2: "Passé ce délai, le prix est recalculé. Les dates restent ouvertes aux autres voyageurs.",
     whatsappLine: "Vous préférez WhatsApp ? Parlez à votre concierge.",
     whatsappMsg: (h) => `Bonjour ! Je réservais ${h} et j'ai une question.`,
-    footerTagline: "Villas privées de luxe au Portugal, gérées avec un service hôtelier.",
+    footerTagline: "Hôtels privés au Portugal. L'intimité d'une maison, le service d'un hôtel.",
     optout: "Je ne souhaite plus recevoir ces rappels",
   },
   es: {
@@ -189,7 +189,7 @@ export const RECOVERY_I18N: Record<EmailLang, RecoveryStrings> = {
     preheader2: "Pasado este plazo, el precio se recalcula. Las fechas siguen abiertas a otros huéspedes.",
     whatsappLine: "¿Prefiere WhatsApp? Hable con su concierge.",
     whatsappMsg: (h) => `¡Hola! Estaba reservando ${h} y tengo una pregunta.`,
-    footerTagline: "Villas privadas de lujo en Portugal, gestionadas con servicio de hotel.",
+    footerTagline: "Hoteles privados en Portugal. La privacidad de una casa, el servicio de un hotel.",
     optout: "No quiero recibir estos recordatorios",
   },
   it: {
@@ -209,7 +209,7 @@ export const RECOVERY_I18N: Record<EmailLang, RecoveryStrings> = {
     preheader2: "Oltre questo termine il prezzo viene ricalcolato. Le date restano aperte ad altri ospiti.",
     whatsappLine: "Preferisce WhatsApp? Parli con il suo concierge.",
     whatsappMsg: (h) => `Buongiorno! Stavo prenotando ${h} e ho una domanda.`,
-    footerTagline: "Ville private di lusso in Portogallo, gestite con servizio alberghiero.",
+    footerTagline: "Hotel privati in Portogallo. La privacy di una casa, il servizio di un hotel.",
     optout: "Non voglio ricevere questi promemoria",
   },
   de: {
@@ -229,7 +229,7 @@ export const RECOVERY_I18N: Record<EmailLang, RecoveryStrings> = {
     preheader2: "Nach Ablauf wird der Preis neu berechnet. Die Daten bleiben für andere Gäste offen.",
     whatsappLine: "Lieber WhatsApp? Sprechen Sie mit Ihrem Concierge.",
     whatsappMsg: (h) => `Hallo! Ich war dabei, ${h} zu buchen, und habe eine Frage.`,
-    footerTagline: "Private Luxusvillen in Portugal, geführt mit Hotelservice.",
+    footerTagline: "Private Hotels in Portugal. Die Privatsphäre eines Hauses, der Service eines Hotels.",
     optout: "Ich möchte diese Erinnerungen nicht mehr erhalten",
   },
   nl: {
@@ -249,7 +249,7 @@ export const RECOVERY_I18N: Record<EmailLang, RecoveryStrings> = {
     preheader2: "Daarna wordt de prijs opnieuw berekend. De data blijven open voor andere gasten.",
     whatsappLine: "Liever WhatsApp? Praat met uw concierge.",
     whatsappMsg: (h) => `Hallo! Ik was ${h} aan het boeken en heb een vraag.`,
-    footerTagline: "Luxe privévilla's in Portugal, beheerd met hotelservice.",
+    footerTagline: "Privéhotels in Portugal. De privacy van een huis, de service van een hotel.",
     optout: "Ik wil deze herinneringen niet meer ontvangen",
   },
   sv: {
@@ -269,7 +269,7 @@ export const RECOVERY_I18N: Record<EmailLang, RecoveryStrings> = {
     preheader2: "Därefter räknas priset om. Datumen är fortsatt öppna för andra gäster.",
     whatsappLine: "Föredrar du WhatsApp? Prata med din concierge.",
     whatsappMsg: (h) => `Hej! Jag höll på att boka ${h} och har en fråga.`,
-    footerTagline: "Privata lyxvillor i Portugal, skötta med hotellservice.",
+    footerTagline: "Privata hotell i Portugal. Ett hems avskildhet, ett hotells service.",
     optout: "Jag vill inte få de här påminnelserna",
   },
   fi: {
@@ -289,7 +289,7 @@ export const RECOVERY_I18N: Record<EmailLang, RecoveryStrings> = {
     preheader2: "Tämän jälkeen hinta lasketaan uudelleen. Päivät pysyvät avoinna muille vieraille.",
     whatsappLine: "Käytätkö mieluummin WhatsAppia? Keskustele conciergesi kanssa.",
     whatsappMsg: (h) => `Hei! Olin varaamassa kohdetta ${h} ja minulla on kysymys.`,
-    footerTagline: "Yksityisiä luksushuviloita Portugalissa, hotellitason palvelulla.",
+    footerTagline: "Yksityishotelleja Portugalissa. Kodin yksityisyys, hotellin palvelu.",
     optout: "En halua näitä muistutuksia",
   },
 };
@@ -322,7 +322,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "Reservou diretamente com a Portugal Active, com o melhor preço garantido.",
     regards: "Com os melhores cumprimentos,",
     yourConcierge: "a sua concierge",
-    footerTagline: "Villas privadas de luxo em Portugal, geridas com serviço de hotel.",
+    footerTagline: "Hotéis privados em Portugal. A privacidade de uma casa, o serviço de um hotel.",
     preheader: "A casa já está a ser preparada. O seu concierge acompanha tudo a partir de agora.",
   },
   en: {
@@ -352,7 +352,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "You booked directly with Portugal Active, with our best price guaranteed.",
     regards: "Warm regards,",
     yourConcierge: "your concierge",
-    footerTagline: "Luxury private villas across Portugal, managed with hotel-grade service.",
+    footerTagline: "Private hotels in Portugal. The privacy of a home, the service of a hotel.",
     preheader: "The house is already being prepared. Your concierge takes it from here.",
   },
   fr: {
@@ -382,7 +382,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "Vous avez réservé directement auprès de Portugal Active, au meilleur prix garanti.",
     regards: "Bien cordialement,",
     yourConcierge: "votre concierge",
-    footerTagline: "Villas privées de luxe au Portugal, gérées avec un service hôtelier.",
+    footerTagline: "Hôtels privés au Portugal. L'intimité d'une maison, le service d'un hôtel.",
     preheader: "La maison est déjà en préparation. Votre concierge s'occupe de tout à partir de maintenant.",
   },
   es: {
@@ -412,7 +412,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "Ha reservado directamente con Portugal Active, con el mejor precio garantizado.",
     regards: "Un cordial saludo,",
     yourConcierge: "su concierge",
-    footerTagline: "Villas privadas de lujo en Portugal, gestionadas con servicio de hotel.",
+    footerTagline: "Hoteles privados en Portugal. La privacidad de una casa, el servicio de un hotel.",
     preheader: "La casa ya se está preparando. Su concierge se encarga de todo a partir de ahora.",
   },
   it: {
@@ -442,7 +442,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "Ha prenotato direttamente con Portugal Active, con il miglior prezzo garantito.",
     regards: "Cordiali saluti,",
     yourConcierge: "la sua concierge",
-    footerTagline: "Ville private di lusso in Portogallo, gestite con servizio alberghiero.",
+    footerTagline: "Hotel privati in Portogallo. La privacy di una casa, il servizio di un hotel.",
     preheader: "La casa è già in preparazione. Il suo concierge si occupa di tutto da questo momento.",
   },
   de: {
@@ -472,7 +472,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "Sie haben direkt bei Portugal Active gebucht, mit garantiert bestem Preis.",
     regards: "Herzliche Grüße,",
     yourConcierge: "Ihre Concierge",
-    footerTagline: "Private Luxusvillen in Portugal, geführt mit Hotelservice.",
+    footerTagline: "Private Hotels in Portugal. Die Privatsphäre eines Hauses, der Service eines Hotels.",
     preheader: "Das Haus wird bereits vorbereitet. Ihr Concierge kümmert sich ab jetzt um alles.",
   },
   nl: {
@@ -502,7 +502,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "U boekte rechtstreeks bij Portugal Active, met de beste prijs gegarandeerd.",
     regards: "Met vriendelijke groet,",
     yourConcierge: "uw concierge",
-    footerTagline: "Luxe privévilla's in Portugal, beheerd met hotelservice.",
+    footerTagline: "Privéhotels in Portugal. De privacy van een huis, de service van een hotel.",
     preheader: "Het huis wordt al voorbereid. Uw concierge regelt vanaf nu alles.",
   },
   sv: {
@@ -532,7 +532,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "Du bokade direkt hos Portugal Active, med bästa pris garanterat.",
     regards: "Varma hälsningar,",
     yourConcierge: "din concierge",
-    footerTagline: "Privata lyxvillor i Portugal, skötta med hotellservice.",
+    footerTagline: "Privata hotell i Portugal. Ett hems avskildhet, ett hotells service.",
     preheader: "Huset förbereds redan. Din concierge tar hand om allt från och med nu.",
   },
   fi: {
@@ -562,7 +562,7 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     bestPriceLine: "Varasit suoraan Portugal Activelta, paras hinta taattuna.",
     regards: "Lämpimin terveisin,",
     yourConcierge: "conciergesi",
-    footerTagline: "Yksityisiä luksushuviloita Portugalissa, hotellitason palvelulla.",
+    footerTagline: "Yksityishotelleja Portugalissa. Kodin yksityisyys, hotellin palvelu.",
     preheader: "Taloa valmistellaan jo. Conciergesi hoitaa kaiken tästä eteenpäin.",
   },
 };

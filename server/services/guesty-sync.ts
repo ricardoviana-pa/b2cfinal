@@ -102,7 +102,7 @@ function buildDescription(desc: any, legacyDescription?: string): string {
 const descMetrics = { notesUpsellFiltered: 0, spaceDeduped: 0, gettingAroundGarbage: 0, carriageReturns: 0 };
 
 /** Markers of the commercial upsell block ("Exclusive Concierge Services /
- *  Adventure Experiences") that was copy-pasted into "Other things to note"
+ *  … Experiences") that was copy-pasted into "Other things to note"
  *  on older listings. That content belongs in the site's own Services /
  *  Experiences sections, not the property description. */
 const NOTES_UPSELL_MARKERS = [
