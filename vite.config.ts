@@ -162,8 +162,11 @@ export default defineConfig(({ command, isSsrBuild }) => ({
     // bundle) and, kept only in the client build, it desyncs client vs SSR
     // markup → hydration mismatch. So: dev server only.
     ...(command === "serve" ? [jsxLocPlugin()] : []),
-    // Manus preview tooling — client builds only, never the SSR bundle.
-    ...(isSsrBuild ? [] : [vitePluginManusRuntime(), vitePluginManusDebugCollector()]),
+    // Manus preview tooling — dev server only. It used to ship in the
+    // production client bundle (runtime + debug collector in useAuth-*.js and
+    // a manus-runtime-user-info tag in index.html) while being excluded from
+    // the SSR build only (auditoria set/2026, P1).
+    ...(command === "serve" && !isSsrBuild ? [vitePluginManusRuntime(), vitePluginManusDebugCollector()] : []),
   ],
   resolve: {
     alias: {

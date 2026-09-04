@@ -49,11 +49,10 @@ export function useAuth(options?: UseAuthOptions) {
     }
   }, [logoutMutation, utils]);
 
+  // The Manus preview runtime used to read the signed-in user from
+  // localStorage here; it no longer ships in production builds and the user
+  // object has no business persisting in localStorage anyway (P1).
   const state = useMemo(() => {
-    localStorage.setItem(
-      "manus-runtime-user-info",
-      JSON.stringify(meQuery.data)
-    );
     return {
       user: meQuery.data ?? null,
       loading: meQuery.isLoading || logoutMutation.isPending,
