@@ -506,40 +506,42 @@ export default function AvailabilityCalendar({
         )}
       </div>
 
-      {/* Season rules for the month in view — stated before the guest starts
-          clicking, so blocked arrival days read as a rule, not as "sold out". */}
-      {monthRule && (
-        <div className="mx-4 mb-1 flex items-start gap-2 px-3 py-2 bg-[#F5F1EB] border border-[#E8E4DC]">
-          <span className="text-[#806A48] text-sm shrink-0 leading-none mt-0.5">i</span>
-          <p className="text-[11px] text-[#1A1A18] font-medium leading-snug">
-            {monthRule.restrictedArrivals
-              ? monthRule.minNights > 1
-                ? t("booking.arrivalDaysNotice", {
-                    days: monthRule.dayNames.join(", "),
+      {/* Notice slot — fixed height, always rendered, so a notice that appears
+          after the first click (minimum stay for the chosen check-in) never
+          pushes the grid under the pointer and the next click lands on another
+          day (auditoria set/2026, F2). One notice at a time: the rule for the
+          chosen check-in wins over the month's general rule. */}
+      <div className="mx-4 mb-1 min-h-[46px] flex items-stretch">
+        {phase === "check-out" && requiredMinNights > 1 ? (
+          <div className="flex-1 flex items-start gap-2 px-3 py-2 bg-amber-50/80 border border-amber-200/60">
+            <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
+            <p className="text-[11px] text-amber-800 font-medium leading-snug">
+              {t("booking.minStayNotice", { count: requiredMinNights })}
+            </p>
+          </div>
+        ) : monthRule ? (
+          <div className="flex-1 flex items-start gap-2 px-3 py-2 bg-[#F5F1EB] border border-[#E8E4DC]">
+            <span className="text-[#806A48] text-sm shrink-0 leading-none mt-0.5">i</span>
+            <p className="text-[11px] text-[#1A1A18] font-medium leading-snug">
+              {monthRule.restrictedArrivals
+                ? monthRule.minNights > 1
+                  ? t("booking.arrivalDaysNotice", {
+                      days: monthRule.dayNames.join(", "),
+                      count: monthRule.minNights,
+                      defaultValue: "Check-in on {{days}} only · minimum {{count}} nights",
+                    })
+                  : t("booking.arrivalDaysOnlyNotice", {
+                      days: monthRule.dayNames.join(", "),
+                      defaultValue: "Check-in on {{days}} only",
+                    })
+                : t("booking.minStayMonthNotice", {
                     count: monthRule.minNights,
-                    defaultValue: "Check-in on {{days}} only · minimum {{count}} nights",
-                  })
-                : t("booking.arrivalDaysOnlyNotice", {
-                    days: monthRule.dayNames.join(", "),
-                    defaultValue: "Check-in on {{days}} only",
-                  })
-              : t("booking.minStayMonthNotice", {
-                  count: monthRule.minNights,
-                  defaultValue: "Minimum stay of {{count}} nights this month",
-                })}
-          </p>
-        </div>
-      )}
-
-      {/* Minimum-stay notice — shown immediately while choosing check-out */}
-      {phase === "check-out" && requiredMinNights > 1 && (
-        <div className="mx-4 mb-1 flex items-start gap-2 px-3 py-2 bg-amber-50/80 border border-amber-200/60">
-          <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
-          <p className="text-[11px] text-amber-800 font-medium leading-snug">
-            {t("booking.minStayNotice", { count: requiredMinNights })}
-          </p>
-        </div>
-      )}
+                    defaultValue: "Minimum stay of {{count}} nights this month",
+                  })}
+            </p>
+          </div>
+        ) : null}
+      </div>
 
       {/* Calendar grid */}
       <div className={`px-3 pb-3 pt-1 ${isMobile || singleMonth ? "" : "flex gap-6"}`}>
