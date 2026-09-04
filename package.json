@@ -21,7 +21,9 @@
     "checkout2:backfill:apply": "tsx scripts/checkout2-backfill.ts --apply",
     "reviews:audit": "tsx scripts/apply-manual-reviews.ts",
     "reviews:apply": "tsx scripts/apply-manual-reviews.ts --apply",
-    "reviews:import": "tsx scripts/import-airbnb-reviews.ts"
+    "reviews:import": "tsx scripts/import-airbnb-reviews.ts",
+    "smoke:deploy": "node scripts/smoke-deploy.mjs",
+    "cdn:purge": "node scripts/cf-purge.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",

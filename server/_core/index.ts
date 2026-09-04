@@ -594,6 +594,12 @@ ${allUrls.join("\n")}
       .then((m) => m.ensureCardWebhookEndpoint())
       .catch((e) => console.warn("[CardWebhook] boot:", e?.message));
 
+    // Deploy novo → purga a CDN passados 90 s (auditoria set/2026, N2). Só em
+    // produção e só com CLOUDFLARE_API_TOKEN; ver services/cdn-purge.ts.
+    import("../services/cdn-purge")
+      .then((m) => m.scheduleBootPurge())
+      .catch((e) => console.warn("[CDN] boot:", e?.message));
+
     // Checkout 2.0 (Fase 4): abandonment recovery emails (1h + 20h).
     // Fail-soft — the sweep no-ops when the DB is unavailable.
     try {
