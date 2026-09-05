@@ -697,7 +697,9 @@ function injectMeta(html: string, meta: {
     .replace(/(<title>)[^<]*(<\/title>)/, (_m, open, close) => `${open}${title}${close}`)
     // Marker for the client: the document already carries localized meta, so
     // usePageMeta must not overwrite it with English on hydration (N20/G5).
-    .replace(/(<meta name="description" content=")[^"]*(")\s*\/?>/, (_m, open, close) => `${open}${description}${close} />\n    <meta name="pa-ssr-meta" content="1" />`)
+    .replace(/(<meta name="description" content=")[^"]*(")\s*\/?>/, (_m, open, close) => `${open}${description}${close} />`)
+    .replace(/<meta name="pa-ssr-meta" content="1" \/>\s*/g, '')
+    .replace(/(<meta name="description" content="[^"]*" \/>)/, '$1\n    <meta name="pa-ssr-meta" content="1" />')
     .replace(/(<link rel="canonical" href=")[^"]*(")/,                 (_m, open, close) => `${open}${url}${close}`)
     .replace(/(<meta property="og:title" content=")[^"]*(")/,         (_m, open, close) => `${open}${title}${close}`)
     .replace(/(<meta property="og:description" content=")[^"]*(")/,   (_m, open, close) => `${open}${description}${close}`)

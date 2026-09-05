@@ -62,9 +62,9 @@ export function usePageMeta(opts?: PageMetaOpts) {
     // set/2026, N20/G5). Client-side navigations still run in full.
     if (!firstRunDone) {
       firstRunDone = true;
-      const marker = document.querySelector('meta[name="pa-ssr-meta"]');
-      if (marker) {
-        marker.remove();
+      const markers = document.querySelectorAll('meta[name="pa-ssr-meta"]');
+      if (markers.length) {
+        markers.forEach((m) => m.remove());
         return;
       }
     }
