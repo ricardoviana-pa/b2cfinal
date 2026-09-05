@@ -116,9 +116,14 @@ Capturas por ecrã em local (build de `main`) e tentativa de reserva em produç�
 | Faixa de estatísticas da home com "70" ao lado de "90+" no hero; hero da lista de casas com "90+" por cima de "78 homes available" | resolvido — faixa lê `HOME_COUNT_LABEL`; subtítulo da lista sem número nas 9 línguas | `fa933a1` |
 | Faixa de 4 USPs a 4 colunas em mobile (ilegível); rótulo "Our homes" fora do estilo eyebrow | resolvido — 2 colunas em mobile; `.eyebrow` | `4bd79d2` |
 
+Evoluções feitas a seguir à revisão (pedido do CEO, 5 set):
+
+| Ponto | O que mudou | Commit |
+|---|---|---|
+| "Skip personalization" não saltava sem escolher a chegada | Saltar assume o self check-in (incluído) e vai para pagamento; a escolha fica no resumo e pode ser mudada com "voltar" | `ceaa4d8` |
+| Dois CONTINUE no mesmo ecrã em mobile (cartão + barra fixa) | Os CTAs dentro do cartão dos passos 1 e 2 passam a ser só desktop | `ceaa4d8` |
+| Subtítulo do preço no PDP repetia o bloco "Why book direct" | Removido nas 9 línguas | `58dcb2e` |
+| Numerais 01/02/03 de "How it works" quase invisíveis | Opacidade 0,12 → 0,30 | `036fbb4` |
+
 Fica por decidir (não alterei):
-- **Checkout, passo 2:** "Skip personalization" não salta — obriga a escolher a chegada (self check-in vs. recepção) antes de avançar. É comportamento do checkout v2 anterior à auditoria; se o "skip" deve assumir self check-in, é uma decisão de produto.
-- **Checkout mobile, passo 1:** dois botões CONTINUE visíveis ao mesmo tempo (dentro do cartão e na barra fixa). Anterior à auditoria.
-- **PDP:** o subtítulo do preço ("Direct price — no service fees, best rate online") repete duas linhas do bloco "Why book direct" logo abaixo. Ambos anteriores à auditoria (commit `8d24d88`); sugiro tirar o subtítulo.
-- **PDP Tripwix:** o bloco "Why book direct" omite "best rate" e "no service fees" nas casas parceiras (regra de honestidade F1, comentário no código: a tarifa é do fornecedor). Não é menção ao parceiro, mas é a única diferença visível entre PDPs próprios e Tripwix.
-- **Home, "How it works":** os numerais 01/02/03 quase invisíveis (bege sobre bege). Anterior à auditoria; escolha de design.
+- **PDP Tripwix:** o bloco "Why book direct" omite "best rate" e "no service fees" nas casas parceiras (regra de honestidade F1, comentário no código: a tarifa é do fornecedor). Não é menção ao parceiro, mas é a única diferença visível entre PDPs próprios e Tripwix. Mantive por ser uma questão de verdade na promessa, não de estilo.
