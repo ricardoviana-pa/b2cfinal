@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "NODE_ENV=development tsx watch server/_core/index.ts",
     "brand:facts": "tsx scripts/brand-facts.ts",
-    "prebuild": "tsx scripts/brand-facts.ts",
+    "prebuild": "tsx scripts/brand-facts.ts && node scripts/sync-i18n.mjs",
     "build": "NODE_ENV=production vite build && npm run build:ssr && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "build:ssr": "NODE_ENV=production vite build --ssr src/entry-server.tsx --outDir ../dist/server",
     "start": "NODE_ENV=production node dist/index.js",
@@ -27,7 +27,8 @@
     "smoke:deploy": "node scripts/smoke-deploy.mjs",
     "cdn:purge": "node scripts/cf-purge.mjs",
     "lint": "eslint client/src --ext .ts,.tsx",
-    "codemod:tokens": "node scripts/codemod-tokens.mjs"
+    "codemod:tokens": "node scripts/codemod-tokens.mjs",
+    "i18n:check": "node scripts/sync-i18n.mjs && node scripts/i18n-missing.mjs --all"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",
