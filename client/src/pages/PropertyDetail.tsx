@@ -585,16 +585,11 @@ export default function PropertyDetail() {
     const tag = property.tagline || '';
     return `${beds} luxury villa in ${loc}. ${tag} Book direct with Portugal Active.`.replace(/\s+/g, ' ').trim().slice(0, 155);
   }, [property]);
-  // Partner homes currently carry the supplier's own published copy, which is
-  // byte-identical to their canonical pages. Letting Google form a first
-  // impression of these URLs as duplicates is expensive to undo — far harder
-  // than being judged well once, on original text. They stay out of the index
-  // until the descriptions are rewritten; they are already absent from
-  // sitemap.xml, which only reads properties.json.
-  //
-  // FLIP THIS to false once the rewrite ships, then submit the URLs in Search
-  // Console — that becomes their one clean first impression.
-  const PARTNER_HOMES_NOINDEX = true;
+  // Partner homes were kept out of the index while they carried the
+  // supplier's copy. The rewrite shipped on 31 Aug 2026 (35 original
+  // descriptions in nine languages), so they index like every other home
+  // (auditoria set/2026, N19). Submit the URLs in Search Console once live.
+  const PARTNER_HOMES_NOINDEX = false;
   const partnerNoindex = PARTNER_HOMES_NOINDEX && (property as any)?.source === 'tripwix';
   const host = getConcierge((property as any)?.destination, (property as any)?.locality);
 

@@ -1618,46 +1618,22 @@ export function serveStatic(app: Express) {
   // skip the render entirely. 5-min TTL keeps content fresh after a Guesty sync.
   const SSR_RENDER_TTL_MS = 5 * 60 * 1000;
   const SSR_RENDER_CACHE_MAX = 400;
-  /**
- * Partner (Tripwix) home slugs, read from the same file the site renders. Used
- * to keep those pages out of the index while they are being validated; matching
- * on the data rather than on a URL shape means a slug change cannot silently
- * turn indexing back on.
- */
-/** Destination slugs whose page must not be indexed: status !== "active" or comingSoon. */
-let _draftDestinations: Set<string> | null = null;
-function isDraftDestination(pathname: string): boolean {
-  const m = pathname.match(/^\/destinations\/([^/?#]+)\/?$/);
-  if (!m) return false;
-  if (_draftDestinations === null) {
-    _draftDestinations = new Set();
-    try {
-      const raw = JSON.parse(fs.readFileSync(path.join(process.cwd(), "client", "src", "data", "destinations.json"), "utf-8"));
-      for (const d of Array.isArray(raw) ? raw : []) {
-        if (d?.slug && (d.status !== "active" || d.comingSoon)) _draftDestinations.add(d.slug);
-      }
-    } catch { /* no data — nothing is a draft */ }
-  }
-  return _draftDestinations.has(m[1]);
-}
-
-let _partnerSlugs: Set<string> | null = null;
-function isPartnerHome(pathname: string): boolean {
-  if (_partnerSlugs === null) {
-    _partnerSlugs = new Set();
-    try {
-      const raw = fs.readFileSync(
-        path.join(process.cwd(), "client", "src", "data", "tripwix-properties.json"),
-        "utf-8",
-      );
-      for (const p of JSON.parse(raw)) if (p?.slug) _partnerSlugs.add(p.slug);
-    } catch {
-      /* no partner inventory present — nothing to suppress */
+  /** Destination slugs whose page must not be indexed: status !== "active" or comingSoon. */
+  let _draftDestinations: Set<string> | null = null;
+  function isDraftDestination(pathname: string): boolean {
+    const m = pathname.match(/^\/destinations\/([^/?#]+)\/?$/);
+    if (!m) return false;
+    if (_draftDestinations === null) {
+      _draftDestinations = new Set();
+      try {
+        const raw = JSON.parse(fs.readFileSync(path.join(process.cwd(), "client", "src", "data", "destinations.json"), "utf-8"));
+        for (const d of Array.isArray(raw) ? raw : []) {
+          if (d?.slug && (d.status !== "active" || d.comingSoon)) _draftDestinations.add(d.slug);
+        }
+      } catch { /* no data — nothing is a draft */ }
     }
+    return _draftDestinations.has(m[1]);
   }
-  const m = pathname.match(/^\/homes\/([^/?#]+)\/?$/);
-  return !!m && _partnerSlugs.has(m[1]);
-}
 
 const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: string; at: number }>();
   async function getSsrRender(): Promise<SsrRender | null> {
@@ -1869,10 +1845,6 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
     // let these pages into the index. Remove this block (and
     // PARTNER_HOMES_NOINDEX in PropertyDetail.tsx) once the copy is validated,
     // then submit the URLs in Search Console.
-    if (isPartnerHome(p)) {
-      res.setHeader("X-Robots-Tag", "noindex, nofollow");
-      html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
-    }
 
     // Draft destinations (copy still "[TBD]") and coming-soon entries are
     // reachable but never indexed — the sitemap skips them too (I2/N11).
