@@ -1759,5 +1759,30 @@
     "flexible": "Flexibel",
     "hour": "timme",
     "hours": "timmar"
+  },
+  "partnerBooking": {
+    "sentTitle": "Förfrågan mottagen",
+    "requestDetails": "Uppgifter om förfrågan",
+    "sentBody": "Vår concierge bekräftar datumen med huset och återkommer via e-post med sluttotalen. Inget debiteras i detta skede.",
+    "soFarLabel": "hittills",
+    "perNight": "per natt",
+    "pickDates": "Välj dina datum för exakt totalsumma",
+    "minNights": "Detta hus kräver minst {{min}} nätter.",
+    "quoteError": "Vi kunde inte prissätta dessa datum just nu. Skicka förfrågan så bekräftar vår concierge totalen.",
+    "total": "Totalt",
+    "totalSoFar": "Totalt hittills",
+    "vatIncluded": "Moms ingår.",
+    "depositNote": "Huset håller en återbetalningsbar deposition på {{amount}}.",
+    "feesPending": "Detta hus kan lägga till städavgift och en återbetalningsbar deposition. Vår concierge bekräftar sluttotalen innan något debiteras.",
+    "someUnavailable": "Några av dessa nätter är upptagna. Skicka förfrågan så föreslår vi närmaste datum.",
+    "guestInfo": "Dina uppgifter",
+    "name": "Fullständigt namn *",
+    "email": "E-post *",
+    "phone": "Telefon",
+    "message": "Något vi bör veta?",
+    "submitError": "Vi kunde inte skicka din förfrågan. Försök igen eller skriv till vår concierge.",
+    "sending": "Skickar…",
+    "submit": "Efterfråga dessa datum",
+    "noCharge": "Ingen betalning nu — vår concierge bekräftar först tillgänglighet och sluttotal."
   }
 }

@@ -1759,5 +1759,30 @@
     "flexible": "Flexible",
     "hour": "heure",
     "hours": "heures"
+  },
+  "partnerBooking": {
+    "sentTitle": "Demande reçue",
+    "requestDetails": "Détails de la demande",
+    "sentBody": "Notre concierge confirme ces dates auprès de la maison et vous répondra par e-mail avec le total final. Rien n’est débité à ce stade.",
+    "soFarLabel": "à ce stade",
+    "perNight": "par nuit",
+    "pickDates": "Choisissez vos dates pour le total exact",
+    "minNights": "Cette maison exige un minimum de {{min}} nuits.",
+    "quoteError": "Nous n’avons pas pu chiffrer ces dates. Envoyez la demande, le concierge confirmera le total.",
+    "total": "Total",
+    "totalSoFar": "Total à ce stade",
+    "vatIncluded": "TVA incluse.",
+    "depositNote": "La maison retient une caution remboursable de {{amount}}.",
+    "feesPending": "Cette maison peut ajouter des frais de ménage et une caution remboursable. Le concierge confirme le total final avant tout débit.",
+    "someUnavailable": "Certaines de ces nuits sont prises. Envoyez la demande et nous proposerons les dates les plus proches.",
+    "guestInfo": "Vos coordonnées",
+    "name": "Nom complet *",
+    "email": "E-mail *",
+    "phone": "Téléphone",
+    "message": "Quelque chose à nous signaler ?",
+    "submitError": "Nous n’avons pas pu envoyer votre demande. Réessayez ou écrivez au concierge.",
+    "sending": "Envoi…",
+    "submit": "Demander ces dates",
+    "noCharge": "Aucun paiement maintenant — le concierge confirme d’abord la disponibilité et le total final."
   }
 }

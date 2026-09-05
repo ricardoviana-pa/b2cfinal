@@ -1,24 +1,33 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Minus, Plus, ShieldCheck } from 'lucide-react';
+import { Calendar, Check, Loader2, Minus, Plus, User } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
+import { pushDL } from '@/lib/datalayer';
+import { formatEur, formatBookingDate } from '@/lib/format';
+import AvailabilityCalendar from './AvailabilityCalendar';
+import PhoneInput from './PhoneInput';
 
 /**
  * Booking panel for partner (Tripwix) homes.
  *
- * Visually this is the BookingWidget — same white card, same 32px price header,
- * same guest stepper, same black CTA — because a guest browsing the portfolio
- * should not be able to tell that some homes are sourced differently. What
- * changes is the behaviour underneath.
+ * Visually this IS the BookingWidget — same card, same 32px total, same date
+ * box over the same AvailabilityCalendar, same guest stepper, same black CTA.
+ * A guest moving through the portfolio should not be able to tell that some
+ * homes are sourced differently, so anything that repeats is shared or copied
+ * verbatim rather than re-invented.
  *
- * These homes cannot be booked instantly: the supplier confirms every stay
- * before we can, so this is deliberately a request and never takes payment. It
- * also does not send the guest away to make it. The earlier version pushed them
- * to the generic contact form, which threw away the dates they had just picked.
+ * What genuinely differs is the transaction, and that is stated instead of
+ * disguised: the supplier confirms every stay before we can, so this takes no
+ * payment and promises no confirmation.
  *
- * Nothing here reaches the supplier. The enquiry becomes a lead on our side and
- * the guest's details stay with us — we ask the supplier to hold dates, not to
- * meet our customer.
+ * Honesty about the total is the other difference, and it is the one that bit
+ * us. The supplier quotes cleaning and a refundable deposit per booking and
+ * exposes neither through their API; until those are filled in per house the
+ * panel says the total is still to be confirmed. It previously claimed the
+ * opposite — "no separate preparation or cleaning fee" — and a guest arrived
+ * at the concierge with a screenshot of it against a quote EUR 1,194 higher.
+ *
+ * Nothing here reaches the supplier: the enquiry becomes a lead on our side.
  */
 export function PartnerBookingPanel({
   tripwixUid,
@@ -49,6 +58,7 @@ export function PartnerBookingPanel({
   const [checkIn, setCheckIn] = useState(initialCheckIn ?? '');
   const [checkOut, setCheckOut] = useState(initialCheckOut ?? '');
   const [guests, setGuests] = useState(initialGuests || 2);
+  const [showCalendar, setShowCalendar] = useState(false);
 
   // The dates arrive from the URL when a guest clicks through from a dated
   // search, but they are not there on the first render — useState would keep
@@ -66,52 +76,87 @@ export function PartnerBookingPanel({
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [sent, setSent] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const datesValid = !!checkIn && !!checkOut && checkOut > checkIn;
 
-  const { data: quote, isFetching } = trpc.booking.partnerQuote.useQuery(
+  // Same 12-month horizon the widget asks Guesty for.
+  const calendarRange = useMemo(() => {
+    const start = new Date();
+    const end = new Date(start.getTime() + 365 * 86400000);
+    return { startDate: start.toISOString().slice(0, 10), endDate: end.toISOString().slice(0, 10) };
+  }, []);
+
+  const { data: calendarDays, isLoading: calendarLoading } = trpc.booking.partnerCalendar.useQuery(
+    { tripwixUid, ...calendarRange },
+    { enabled: !!tripwixUid, staleTime: 15 * 60 * 1000 },
+  );
+
+  const { data: quote, isFetching, isError } = trpc.booking.partnerQuote.useQuery(
     { tripwixUid, checkIn, checkOut },
-    { enabled: datesValid, staleTime: 15 * 60 * 1000 },
+    { enabled: datesValid, staleTime: 15 * 60 * 1000, retry: 1 },
   );
 
   const createLead = trpc.leads.create.useMutation();
 
-  const money = useMemo(
-    () =>
-      new Intl.NumberFormat(lang, {
-        style: 'currency',
-        currency: 'EUR',
-        maximumFractionDigits: 0,
-      }),
-    [lang],
-  );
-
-  const fmtDate = (d: string) =>
-    d ? new Intl.DateTimeFormat(lang, { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(`${d}T00:00:00Z`)) : '';
-
-  const nightlyRate = quote && quote.nights ? quote.subtotal / quote.nights : null;
+  // Every figure below is already VAT-inclusive: the service adds the 6% before
+  // anything leaves it, so a partner night and one of our own compare like for
+  // like instead of one being quoted net.
+  const nightlyRate = quote && quote.nights ? quote.accommodation / quote.nights : null;
   const shortStay = quote && minNights ? quote.nights < minNights : false;
+
+  useEffect(() => {
+    if (!quote) return;
+    pushDL({
+      event: quote.available ? 'quote' : 'quote_unavailable',
+      property_id: propertySlug,
+      checkin_date: checkIn,
+      checkout_date: checkOut,
+      guests_adults: guests,
+      value: quote.total,
+      currency: 'EUR',
+    });
+  }, [quote, propertySlug, checkIn, checkOut, guests]);
+
+  const clearDates = () => {
+    setSubmitError('');
+  };
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim() || !email.trim()) return;
-    await createLead.mutateAsync({
-      name: name.trim(),
-      email: email.trim(),
-      phone: phone.trim() || undefined,
-      source: 'partner-home-request',
-      message: message.trim() || undefined,
-      metadata: {
-        property: propertySlug,
-        propertyName,
-        checkin: checkIn || '—',
-        checkout: checkOut || '—',
-        guests: String(guests),
-        nights: quote ? String(quote.nights) : '—',
-        total: quote ? String(quote.total) : '—',
-      },
-    });
-    setSent(true);
+    setSubmitError('');
+    try {
+      await createLead.mutateAsync({
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim() || undefined,
+        source: 'partner-home-request',
+        message: message.trim() || undefined,
+        metadata: {
+          property: propertySlug,
+          propertyName,
+          checkin: checkIn || '—',
+          checkout: checkOut || '—',
+          guests: String(guests),
+          nights: quote ? String(quote.nights) : '—',
+          total: quote ? String(quote.total) : '—',
+        },
+      });
+      pushDL({
+        event: 'generate_lead',
+        property_id: propertySlug,
+        value: quote?.total ?? 0,
+        currency: 'EUR',
+      });
+      setSent(true);
+    } catch {
+      // Before this the rejection was swallowed: the guest clicked and nothing
+      // happened at all.
+      setSubmitError(
+        t('partnerBooking.submitError', 'We could not send your request. Please try again, or message the concierge.'),
+      );
+    }
   }
 
   if (sent) {
@@ -119,29 +164,40 @@ export function PartnerBookingPanel({
       <div className="booking-widget bg-white border border-black/10 overflow-hidden shadow-sm">
         <div className="bg-black px-6 py-5 text-center">
           <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-3">
-            <ShieldCheck className="w-5 h-5 text-white" />
+            <Check className="w-6 h-6 text-white" />
           </div>
-          <p className="text-white text-[15px] font-light">
+          <p className="text-white text-[18px]" style={{ fontFamily: 'var(--font-display)' }}>
             {t('partnerBooking.sentTitle', 'Request received')}
           </p>
         </div>
-        <div className="px-5 pt-5 pb-6 space-y-3">
-          <p className="text-[13px] text-black/60 leading-relaxed">
+        <div className="p-6 space-y-4">
+          <p className="text-sm text-black/60 leading-relaxed">
             {t(
               'partnerBooking.sentBody',
-              'Our concierge is confirming these dates and will come back to you by email. Nothing is charged at this stage.',
+              'Our concierge is confirming these dates with the property and will come back to you by email with the final total. Nothing is charged at this stage.',
             )}
           </p>
-          <div className="bg-black/[0.02] border border-black/5 p-3 space-y-1">
+          <div className="bg-black/[0.02] p-4 space-y-1">
+            <p className="text-[10px] text-black/30 uppercase tracking-wider mb-1">
+              {t('partnerBooking.requestDetails', 'Request details')}
+            </p>
             <p className="text-[12px] text-black">{propertyName}</p>
             <p className="text-[11px] text-black/40">
-              {fmtDate(checkIn)} → {fmtDate(checkOut)}
+              {formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)}
               {quote ? ` · ${quote.nights} ${t('bookingWidget.nightsLabel', 'nights')}` : ''} · {guests}{' '}
               {t('booking.guestsLabel', 'guests')}
             </p>
           </div>
-          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="block w-full text-center text-[12px] text-black/30 hover:text-black transition py-1">
-            {t('property.needHelpConcierge', 'Need help? Talk to concierge')}
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full min-h-[52px] bg-black text-white text-xs font-medium tracking-[0.12em] uppercase px-8 flex items-center justify-center gap-2 hover:bg-black/85 transition-colors"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.174.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0 0 20.465 3.488" />
+            </svg>
+            {t('property.talkConciergeMobile', 'TALK TO CONCIERGE')}
           </a>
         </div>
       </div>
@@ -150,8 +206,7 @@ export function PartnerBookingPanel({
 
   return (
     <div className="booking-widget bg-white border border-black/10 overflow-hidden shadow-sm">
-      {/* Price header — mirrors the instant-book widget: the total once dates
-          are picked, the "from" rate until then. */}
+      {/* Price header — the widget's three states, same type ramp. */}
       <div className="px-6 pt-6 pb-4">
         {isFetching && datesValid ? (
           <div className="space-y-2 animate-pulse w-full">
@@ -162,37 +217,37 @@ export function PartnerBookingPanel({
           <>
             <div className="flex items-baseline gap-2">
               <span className="text-[32px] font-light tracking-tight text-black tabular-nums">
-                {money.format(quote.total)}
-              </span>
-              <span className="text-sm text-black/40 font-normal">{t('property.totalLabel')}</span>
-            </div>
-            <p className="text-sm text-black/50 mt-1 tracking-wide">
-              {t('partnerBooking.nightsRate', '{{count}} nights · {{rate}} per night', {
-                count: quote.nights,
-                rate: nightlyRate ? money.format(nightlyRate) : '',
-              })}
-            </p>
-          </>
-        ) : fromPrice ? (
-          <>
-            <div className="flex items-baseline gap-2">
-              <span className="text-[32px] font-light tracking-tight text-black tabular-nums">
-                {money.format(fromPrice)}
+                {formatEur(quote.total, lang)}
               </span>
               <span className="text-sm text-black/40 font-normal">
-                {t('partnerBooking.perNight', 'per night')}
+                {quote.feesKnown
+                  ? t('property.totalLabel')
+                  : t('partnerBooking.soFarLabel', 'so far')}
               </span>
             </div>
             <p className="text-sm text-black/50 mt-1 tracking-wide">
-              {t('partnerBooking.pickDates', 'Pick your dates for the exact total')}
+              {t('bookingWidget.nightsLine', {
+                count: quote.nights,
+                rate: nightlyRate ? formatEur(nightlyRate, lang) : '',
+              })}
             </p>
           </>
         ) : (
           <>
-            <p className="text-[22px] font-light tracking-tight text-black">
-              {t('property.priceOnRequest')}
-            </p>
-            <p className="text-sm text-black/50 mt-1 tracking-wide">
+            <span
+              className="text-[28px] text-[#1A1A18]"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
+              {fromPrice
+                ? t('property.fromPerNight', { price: Math.round(fromPrice).toLocaleString('en-US') })
+                : t('property.priceOnRequest')}
+            </span>
+            {fromPrice ? (
+              <span className="text-[14px] text-[#726D63] ml-1">
+                {t('partnerBooking.perNight', 'per night')}
+              </span>
+            ) : null}
+            <p className="text-[11.5px] text-[#806A48] mt-1" style={{ fontWeight: 400 }}>
               {t('partnerBooking.pickDates', 'Pick your dates for the exact total')}
             </p>
           </>
@@ -200,35 +255,87 @@ export function PartnerBookingPanel({
       </div>
 
       <form onSubmit={submit}>
-        {/* Dates + guests */}
-        <div className="px-5">
-          <div className="grid grid-cols-2 border border-black/15">
-            <label className="block px-4 py-3 border-r border-black/15">
-              <span className="block text-[10px] font-medium tracking-[0.15em] uppercase text-black/35 mb-1">
-                {t('partnerBooking.checkIn', 'Check-in')}
-              </span>
-              <input
-                type="date"
-                value={checkIn}
-                onChange={(e) => setCheckIn(e.target.value)}
-                className="w-full bg-transparent text-[14px] text-black outline-none"
-              />
-            </label>
-            <label className="block px-4 py-3">
-              <span className="block text-[10px] font-medium tracking-[0.15em] uppercase text-black/35 mb-1">
-                {t('partnerBooking.checkOut', 'Check-out')}
-              </span>
-              <input
-                type="date"
-                value={checkOut}
-                min={checkIn || undefined}
-                onChange={(e) => setCheckOut(e.target.value)}
-                className="w-full bg-transparent text-[14px] text-black outline-none"
-              />
-            </label>
+        {/* Dates — the portfolio's own calendar, not a native picker. */}
+        <div className="mx-5">
+          <div
+            role="button"
+            tabIndex={0}
+            aria-expanded={showCalendar}
+            onClick={() => setShowCalendar((v) => !v)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setShowCalendar((v) => !v);
+              }
+            }}
+            className={`border overflow-hidden cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black ${
+              showCalendar ? 'border-black rounded-t-lg' : 'border-black/15 hover:border-black/30 rounded-lg'
+            }`}
+          >
+            <div className="grid grid-cols-2 divide-x divide-black/10">
+              <div className="px-4 py-3.5 transition-colors hover:bg-black/[0.02]">
+                <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-black/35 mb-1">
+                  {t('bookingWidget.checkInLabel')}
+                </p>
+                <p className={`text-[15px] font-normal ${checkIn ? 'text-black' : 'text-black/30'}`}>
+                  {checkIn ? formatBookingDate(checkIn, lang) : t('bookingWidget.selectDate', 'Select')}
+                </p>
+              </div>
+              <div className="px-4 py-3.5 transition-colors hover:bg-black/[0.02]">
+                <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-black/35 mb-1">
+                  {t('bookingWidget.checkOutLabel')}
+                </p>
+                <p className={`text-[15px] font-normal ${checkOut ? 'text-black' : 'text-black/30'}`}>
+                  {checkOut ? formatBookingDate(checkOut, lang) : t('bookingWidget.selectDate', 'Select')}
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="border border-black/15 border-t-0 px-4 py-3">
+          {showCalendar && (
+            <div className="border border-black border-t-0 rounded-b-lg overflow-hidden shadow-[0_8px_24px_rgba(26,26,24,0.08)] bg-white">
+              {calendarLoading ? (
+                <div className="flex items-center justify-center py-10">
+                  <Loader2 className="w-4 h-4 animate-spin text-black/30" />
+                  <span className="ml-2 text-xs text-black/40">
+                    {t('bookingWidget.loadingCalendar', 'Loading availability...')}
+                  </span>
+                </div>
+              ) : (
+                <AvailabilityCalendar
+                  singleMonth
+                  days={calendarDays ?? []}
+                  checkIn={checkIn}
+                  checkOut={checkOut}
+                  minNights={minNights}
+                  onSelectRange={({ checkIn: ci, checkOut: co }) => {
+                    setCheckIn(ci);
+                    setCheckOut(co);
+                    clearDates();
+                    if (ci && co) setShowCalendar(false);
+                  }}
+                />
+              )}
+            </div>
+          )}
+
+          {minNights && minNights > 1 && (
+            <p className="text-[11px] text-black/50 mt-2 flex items-center gap-1">
+              <Calendar className="w-3 h-3" />
+              {t('bookingWidget.minNightMinimum', { count: minNights })}
+            </p>
+          )}
+
+          {shortStay && (
+            <div className="flex items-start gap-2.5 p-3 mt-2 bg-amber-50/80 border border-amber-200/60">
+              <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
+              <p className="text-xs text-amber-800 font-medium leading-snug">
+                {t('partnerBooking.minNights', 'This home has a {{min}}-night minimum.', { min: minNights })}
+              </p>
+            </div>
+          )}
+
+          <div className="border border-black/15 mt-3 px-4 py-3">
             <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-black/35 mb-2">
               {t('booking.guestsLabel')}
             </p>
@@ -242,7 +349,11 @@ export function PartnerBookingPanel({
               >
                 <Minus className="w-3 h-3" />
               </button>
-              <span className="min-w-[3ch] text-center text-[15px] text-black tabular-nums" aria-live="polite">
+              <span
+                className="min-w-[3ch] text-center text-[15px] text-black tabular-nums font-normal"
+                aria-live="polite"
+                aria-atomic="true"
+              >
                 {guests}
               </span>
               <button
@@ -259,94 +370,144 @@ export function PartnerBookingPanel({
         </div>
 
         <div className="px-5 pt-5 pb-6 space-y-3">
-          {quote && (
-            <div className="bg-black/[0.02] border border-black/5 p-3 space-y-1.5 text-[12.5px]">
-              <div className="flex justify-between text-black/60">
-                <span>
-                  {nightlyRate ? money.format(nightlyRate) : ''} × {quote.nights}
-                </span>
-                <span className="tabular-nums">{money.format(quote.subtotal)}</span>
-              </div>
-              <div className="flex justify-between text-black/60">
-                <span>{t('partnerBooking.vat', 'VAT (6%)')}</span>
-                <span className="tabular-nums">{money.format(quote.vat)}</span>
-              </div>
-              <div className="border-t border-black/10 pt-1.5 flex justify-between text-black font-medium">
-                <span>{t('partnerBooking.total', 'Total')}</span>
-                <span className="tabular-nums">{money.format(quote.total)}</span>
-              </div>
-              <p className="text-[11px] text-black/40 pt-1">
-                {t('partnerBooking.noPrepFee', 'No separate preparation or cleaning fee — this is the full price of the stay.')}
+          {isError && datesValid && (
+            <div className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
+              <span className="text-red-500 mt-0.5 shrink-0 font-medium text-xs">!</span>
+              <p className="text-red-600 leading-snug text-xs">
+                {t('partnerBooking.quoteError', 'We could not price these dates just now. Send the request and the concierge will confirm the total.')}
               </p>
             </div>
           )}
 
-          {quote && !quote.available && (
-            <div className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60 text-[12px] text-black/70">
-              {t('partnerBooking.someUnavailable', 'Some of these nights are taken. Send the request and we will propose the nearest dates.')}
+          {quote && (
+            <div className="bg-black/[0.02] border border-black/10 overflow-hidden">
+              <div className="p-5 space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-black/50">
+                    {nightlyRate ? formatEur(nightlyRate, lang) : ''} × {quote.nights}
+                  </span>
+                  <span className="text-sm text-black tabular-nums">
+                    {formatEur(quote.accommodation, lang)}
+                  </span>
+                </div>
+
+                {quote.cleaningFee > 0 && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-black/50">{t('property.cleaningFee', 'Home preparation')}</span>
+                    <span className="text-sm text-black tabular-nums">{formatEur(quote.cleaningFee, lang)}</span>
+                  </div>
+                )}
+
+                <div className="border-t border-black/10 pt-3 flex justify-between items-baseline">
+                  <span className="text-[15px] font-medium text-black">
+                    {quote.feesKnown
+                      ? t('partnerBooking.total', 'Total')
+                      : t('partnerBooking.totalSoFar', 'Total so far')}
+                  </span>
+                  <span className="text-[24px] font-light tabular-nums tracking-tight text-black">
+                    {formatEur(quote.total, lang)}
+                  </span>
+                </div>
+
+                <p className="text-[11px] text-black/35 leading-snug">
+                  {t('partnerBooking.vatIncluded', 'VAT included.')}{' '}
+                  {quote.feesKnown
+                    ? quote.securityDeposit > 0
+                      ? t('partnerBooking.depositNote', 'A refundable security deposit of {{amount}} is held by the property.', {
+                          amount: formatEur(quote.securityDeposit, lang),
+                        })
+                      : ''
+                    : t(
+                        'partnerBooking.feesPending',
+                        'This property may add a cleaning fee and a refundable deposit. The concierge confirms the final total before anything is charged.',
+                      )}
+                </p>
+              </div>
             </div>
           )}
 
-          {shortStay && (
-            <div className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60 text-[12px] text-black/70">
-              {t('partnerBooking.minNights', 'This home has a {{min}}-night minimum.', { min: minNights })}
+          {quote && !quote.available && (
+            <div className="flex items-start gap-2.5 p-3 bg-amber-50/80 border border-amber-200/60">
+              <span className="text-amber-600 text-sm shrink-0 leading-none mt-0.5">!</span>
+              <p className="text-xs text-amber-800 font-medium leading-snug">
+                {t('partnerBooking.someUnavailable', 'Some of these nights are taken. Send the request and we will propose the nearest dates.')}
+              </p>
             </div>
           )}
+
+          <div className="flex items-center gap-2 pt-1">
+            <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center shrink-0">
+              <User className="w-2.5 h-2.5 text-white" />
+            </div>
+            <p className="text-sm text-black font-medium">
+              {t('partnerBooking.guestInfo', 'Your details')}
+            </p>
+          </div>
 
           <div className="space-y-2">
             <input
               type="text"
               required
-              placeholder={t('partnerBooking.name', 'Your name')}
+              placeholder={t('partnerBooking.name', 'Full name *')}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full min-h-[44px] border border-black/15 bg-white px-3 text-[13px] text-black outline-none focus:border-black transition-colors"
+              className="w-full h-[48px] border border-black/15 bg-white px-3 py-2 text-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
             />
             <input
               type="email"
               required
-              placeholder={t('partnerBooking.email', 'Email')}
+              placeholder={t('partnerBooking.email', 'Email *')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full min-h-[44px] border border-black/15 bg-white px-3 text-[13px] text-black outline-none focus:border-black transition-colors"
+              className="w-full h-[48px] border border-black/15 bg-white px-3 py-2 text-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
             />
-            <input
-              type="tel"
-              placeholder={t('partnerBooking.phone', 'Phone (optional)')}
+            <PhoneInput
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full min-h-[44px] border border-black/15 bg-white px-3 text-[13px] text-black outline-none focus:border-black transition-colors"
+              onChange={setPhone}
+              placeholder={t('partnerBooking.phone', 'Phone number')}
             />
             <textarea
               rows={2}
               placeholder={t('partnerBooking.message', 'Anything we should know?')}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="w-full border border-black/15 bg-white px-3 py-2 text-[13px] text-black outline-none focus:border-black transition-colors"
+              className="w-full border border-black/15 bg-white px-3 py-2 text-sm text-black placeholder:text-black/30 focus:ring-1 focus:ring-black focus:border-black outline-none transition-colors"
             />
           </div>
+
+          {submitError && (
+            <div className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
+              <span className="text-red-500 mt-0.5 shrink-0 font-medium text-xs">!</span>
+              <p className="text-red-600 leading-snug text-xs">{submitError}</p>
+            </div>
+          )}
 
           <button
             type="submit"
             disabled={createLead.isPending}
-            className="w-full min-h-[52px] bg-black text-white text-[12px] font-medium tracking-[0.12em] uppercase px-8 py-4 hover:bg-black/85 transition-colors disabled:opacity-40"
+            className="w-full min-h-[52px] px-8 text-xs font-medium tracking-[0.15em] uppercase bg-black text-white hover:bg-black/85 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            {createLead.isPending
-              ? t('partnerBooking.sending', 'Sending…')
-              : t('partnerBooking.submit', 'Request these dates')}
+            {createLead.isPending ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                {t('partnerBooking.sending', 'Sending…')}
+              </span>
+            ) : (
+              t('partnerBooking.submit', 'Request these dates')
+            )}
           </button>
 
-          <p className="text-[11px] text-black/40 text-center leading-relaxed">
-            {t('partnerBooking.noCharge', 'No payment now — our concierge confirms availability first.')}
+          <p className="text-[11px] text-black/30 text-center leading-relaxed">
+            {t('partnerBooking.noCharge', 'No payment now — our concierge confirms availability and the final total first.')}
           </p>
 
           <a
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full text-center text-[12px] text-black/30 hover:text-black transition py-1"
+            className="flex items-center justify-center gap-1.5 text-[12px] text-[#8B7355] hover:text-black transition-colors pt-3 mt-1 border-t border-black/[0.06]"
           >
-            {t('property.askAboutHome')}
+            {t('property.needHelpConcierge', 'Need help? Talk to concierge')}
           </a>
         </div>
       </form>

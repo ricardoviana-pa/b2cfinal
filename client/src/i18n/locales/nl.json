@@ -1759,5 +1759,30 @@
     "flexible": "Flexibel",
     "hour": "uur",
     "hours": "uur"
+  },
+  "partnerBooking": {
+    "sentTitle": "Aanvraag ontvangen",
+    "requestDetails": "Details van de aanvraag",
+    "sentBody": "Onze concierge bevestigt deze data met het huis en komt per e-mail bij u terug met het eindtotaal. In deze fase wordt niets in rekening gebracht.",
+    "soFarLabel": "tot nu toe",
+    "perNight": "per nacht",
+    "pickDates": "Kies uw data voor het exacte totaal",
+    "minNights": "Dit huis vraagt minimaal {{min}} nachten.",
+    "quoteError": "We konden deze data nu niet berekenen. Stuur de aanvraag; de concierge bevestigt het totaal.",
+    "total": "Totaal",
+    "totalSoFar": "Totaal tot nu toe",
+    "vatIncluded": "Inclusief btw.",
+    "depositNote": "Het huis houdt een terugbetaalbare borg van {{amount}} in.",
+    "feesPending": "Dit huis kan schoonmaakkosten en een terugbetaalbare borg toevoegen. De concierge bevestigt het eindtotaal voordat er iets wordt afgeschreven.",
+    "someUnavailable": "Enkele van deze nachten zijn bezet. Stuur de aanvraag en wij stellen de dichtstbijzijnde data voor.",
+    "guestInfo": "Uw gegevens",
+    "name": "Volledige naam *",
+    "email": "E-mail *",
+    "phone": "Telefoon",
+    "message": "Iets wat we moeten weten?",
+    "submitError": "We konden uw aanvraag niet versturen. Probeer opnieuw of schrijf de concierge.",
+    "sending": "Versturen…",
+    "submit": "Deze data aanvragen",
+    "noCharge": "Nu geen betaling — de concierge bevestigt eerst beschikbaarheid en het eindtotaal."
   }
 }

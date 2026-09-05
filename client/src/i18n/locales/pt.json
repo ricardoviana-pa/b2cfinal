@@ -1759,5 +1759,30 @@
     "flexible": "Flexível",
     "hour": "hora",
     "hours": "horas"
+  },
+  "partnerBooking": {
+    "sentTitle": "Pedido recebido",
+    "requestDetails": "Detalhes do pedido",
+    "sentBody": "O nosso concierge está a confirmar estas datas com a casa e volta a contactá-lo por email com o total final. Nada é cobrado nesta fase.",
+    "soFarLabel": "até agora",
+    "perNight": "por noite",
+    "pickDates": "Escolha as datas para saber o total exacto",
+    "minNights": "Esta casa exige um mínimo de {{min}} noites.",
+    "quoteError": "Não foi possível calcular o preço para estas datas. Envie o pedido e o concierge confirma o total.",
+    "total": "Total",
+    "totalSoFar": "Total até agora",
+    "vatIncluded": "IVA incluído.",
+    "depositNote": "A casa retém uma caução reembolsável de {{amount}}.",
+    "feesPending": "Esta casa pode acrescentar taxa de limpeza e uma caução reembolsável. O concierge confirma o total final antes de qualquer cobrança.",
+    "someUnavailable": "Algumas destas noites já estão ocupadas. Envie o pedido e propomos as datas mais próximas.",
+    "guestInfo": "Os seus dados",
+    "name": "Nome completo *",
+    "email": "Email *",
+    "phone": "Telefone",
+    "message": "Algo que devamos saber?",
+    "submitError": "Não conseguimos enviar o seu pedido. Tente novamente ou fale com o concierge.",
+    "sending": "A enviar…",
+    "submit": "Pedir estas datas",
+    "noCharge": "Sem pagamento agora — o concierge confirma primeiro a disponibilidade e o total final."
   }
 }

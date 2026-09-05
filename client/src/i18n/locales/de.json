@@ -1759,5 +1759,30 @@
     "flexible": "Flexibel",
     "hour": "Stunde",
     "hours": "Stunden"
+  },
+  "partnerBooking": {
+    "sentTitle": "Anfrage erhalten",
+    "requestDetails": "Details der Anfrage",
+    "sentBody": "Unser Concierge bestätigt diese Daten mit dem Haus und meldet sich per E-Mail mit dem Endbetrag. In dieser Phase wird nichts berechnet.",
+    "soFarLabel": "bisher",
+    "perNight": "pro Nacht",
+    "pickDates": "Wählen Sie Ihre Daten für den genauen Gesamtpreis",
+    "minNights": "Dieses Haus verlangt mindestens {{min}} Nächte.",
+    "quoteError": "Wir konnten diese Daten gerade nicht berechnen. Senden Sie die Anfrage — der Concierge bestätigt den Gesamtbetrag.",
+    "total": "Gesamt",
+    "totalSoFar": "Bisheriger Gesamtbetrag",
+    "vatIncluded": "Inkl. MwSt.",
+    "depositNote": "Das Haus behält eine erstattbare Kaution von {{amount}} ein.",
+    "feesPending": "Dieses Haus kann eine Endreinigung und eine erstattbare Kaution hinzufügen. Der Concierge bestätigt den Endbetrag, bevor etwas berechnet wird.",
+    "someUnavailable": "Einige dieser Nächte sind belegt. Senden Sie die Anfrage — wir schlagen die nächstmöglichen Daten vor.",
+    "guestInfo": "Ihre Angaben",
+    "name": "Vollständiger Name *",
+    "email": "E-Mail *",
+    "phone": "Telefon",
+    "message": "Sollten wir etwas wissen?",
+    "submitError": "Ihre Anfrage konnte nicht gesendet werden. Bitte erneut versuchen oder dem Concierge schreiben.",
+    "sending": "Wird gesendet…",
+    "submit": "Diese Daten anfragen",
+    "noCharge": "Keine Zahlung jetzt — der Concierge bestätigt zuerst Verfügbarkeit und Endbetrag."
   }
 }

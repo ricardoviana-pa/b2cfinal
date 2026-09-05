@@ -1760,5 +1760,30 @@
     "flexible": "Flexible",
     "hour": "hour",
     "hours": "hours"
+  },
+  "partnerBooking": {
+    "sentTitle": "Request received",
+    "requestDetails": "Request details",
+    "sentBody": "Our concierge is confirming these dates with the property and will come back to you by email with the final total. Nothing is charged at this stage.",
+    "soFarLabel": "so far",
+    "perNight": "per night",
+    "pickDates": "Pick your dates for the exact total",
+    "minNights": "This home has a {{min}}-night minimum.",
+    "quoteError": "We could not price these dates just now. Send the request and the concierge will confirm the total.",
+    "total": "Total",
+    "totalSoFar": "Total so far",
+    "vatIncluded": "VAT included.",
+    "depositNote": "A refundable security deposit of {{amount}} is held by the property.",
+    "feesPending": "This property may add a cleaning fee and a refundable deposit. The concierge confirms the final total before anything is charged.",
+    "someUnavailable": "Some of these nights are taken. Send the request and we will propose the nearest dates.",
+    "guestInfo": "Your details",
+    "name": "Full name *",
+    "email": "Email *",
+    "phone": "Phone number",
+    "message": "Anything we should know?",
+    "submitError": "We could not send your request. Please try again, or message the concierge.",
+    "sending": "Sending…",
+    "submit": "Request these dates",
+    "noCharge": "No payment now — our concierge confirms availability and the final total first."
   }
 }

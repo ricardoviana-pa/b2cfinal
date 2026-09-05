@@ -1759,5 +1759,30 @@
     "flexible": "Joustava",
     "hour": "tunti",
     "hours": "tuntia"
+  },
+  "partnerBooking": {
+    "sentTitle": "Pyyntö vastaanotettu",
+    "requestDetails": "Pyynnön tiedot",
+    "sentBody": "Concierge vahvistaa päivät talon kanssa ja palaa asiaan sähköpostitse lopullisen summan kanssa. Tässä vaiheessa ei veloiteta mitään.",
+    "soFarLabel": "toistaiseksi",
+    "perNight": "per yö",
+    "pickDates": "Valitse päivät nähdäksesi tarkan kokonaissumman",
+    "minNights": "Tämä talo edellyttää vähintään {{min}} yötä.",
+    "quoteError": "Emme saaneet hintaa näille päiville juuri nyt. Lähetä pyyntö, niin concierge vahvistaa summan.",
+    "total": "Yhteensä",
+    "totalSoFar": "Yhteensä toistaiseksi",
+    "vatIncluded": "Sisältää ALV:n.",
+    "depositNote": "Talo pidättää palautettavan {{amount}} vakuuden.",
+    "feesPending": "Tämä talo voi lisätä loppusiivousmaksun ja palautettavan vakuuden. Concierge vahvistaa lopullisen summan ennen veloitusta.",
+    "someUnavailable": "Osa näistä öistä on varattu. Lähetä pyyntö, niin ehdotamme lähimpiä päiviä.",
+    "guestInfo": "Yhteystietosi",
+    "name": "Koko nimi *",
+    "email": "Sähköposti *",
+    "phone": "Puhelin",
+    "message": "Onko jotain mitä meidän pitäisi tietää?",
+    "submitError": "Pyyntöäsi ei voitu lähettää. Yritä uudelleen tai kirjoita conciergelle.",
+    "sending": "Lähetetään…",
+    "submit": "Pyydä näitä päiviä",
+    "noCharge": "Ei maksua nyt — concierge vahvistaa ensin saatavuuden ja lopullisen summan."
   }
 }

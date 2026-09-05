@@ -210,7 +210,41 @@ export const bookingRouter = router({
     .query(async ({ input, ctx }) => {
       ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=900, stale-while-revalidate=3600");
       const { getPartnerQuote } = await import("../services/tripwix");
-      return getPartnerQuote(input.tripwixUid, input.checkIn, input.checkOut);
+
+      // Cleaning and deposit are not in the supplier's API — whatever we have
+      // been told per house lives on the property record. Absent means absent:
+      // getPartnerQuote then flags the total as not yet final rather than
+      // presenting accommodation as the whole bill.
+      const { getPropertiesForSite } = await import("../services/properties-store");
+      const all = await getPropertiesForSite();
+      const prop = (all as any[]).find((p) => p?.supplierUid === input.tripwixUid);
+
+      // 0 on the record means "the supplier never told us", not "there is no
+      // fee" — the importer writes 0 for every house precisely because their
+      // API carries no fee field at all. Only a positive number counts as
+      // knowledge; anything else leaves the total flagged as not yet final.
+      const positive = (v: unknown) => (typeof v === "number" && v > 0 ? v : undefined);
+
+      return getPartnerQuote(input.tripwixUid, input.checkIn, input.checkOut, {
+        cleaningFee: positive(prop?.cleaningFee),
+        securityDeposit: positive(prop?.securityDeposit),
+      });
+    }),
+
+  /**
+   * Day-by-day availability for a partner home, so its panel can show the same
+   * calendar as the rest of the portfolio instead of native date inputs.
+   */
+  partnerCalendar: publicProcedure
+    .input(z.object({
+      tripwixUid: z.string().min(1),
+      startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    }))
+    .query(async ({ input, ctx }) => {
+      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=900, stale-while-revalidate=3600");
+      const { getPartnerCalendar } = await import("../services/tripwix");
+      return (await getPartnerCalendar(input.tripwixUid, input.startDate, input.endDate)) ?? [];
     }),
 
   /** "From €X" for a page of PLP cards — cached/DB-backed, warms in background. */

@@ -145,9 +145,14 @@ function groupAmenities(amenities) {
   return grouped;
 }
 
+/** The 6% the supplier tells us to add to their net rates. */
+const PARTNER_VAT_RATE = 0.06;
+
 /**
- * `website_sales_value` is a nightly rate per season period. We surface the
- * cheapest as the "from" price, matching how the rest of the site reads.
+ * `website_sales_value` is a nightly rate per season period, NET of the 6% VAT
+ * the supplier tells us to add. We surface the cheapest, VAT in — this figure
+ * feeds the map pins, the budget filter, the sort and the JSON-LD offer price,
+ * and none of those may carry a number lower than a guest could ever pay.
  */
 function priceFromRates(rates) {
   const values = (rates ?? [])
@@ -156,7 +161,7 @@ function priceFromRates(rates) {
   if (!values.length) return { priceFrom: 0, pricePerNight: 0 };
   // Round the display price; their rates carry cents that read oddly as a
   // "from" figure.
-  const low = Math.round(Math.min(...values));
+  const low = Math.round(Math.min(...values) * (1 + PARTNER_VAT_RATE));
   return { priceFrom: low, pricePerNight: low };
 }
 
@@ -204,8 +209,16 @@ function mapProperty(detail, rates) {
     maxGuests: Number(detail.max_guests) || 0,
     priceFrom,
     pricePerNight,
-    // Tripwix does not expose a cleaning fee; their rates are all-in.
+    // The supplier's API exposes NO fee fields at all — no cleaning, no
+    // deposit, nothing (verified across all 35 payloads). That is not the same
+    // as there being none: their own quote for Casa de Caiz in Sep 2026 added
+    // EUR 350 cleaning and an EUR 844 refundable deposit on top of the nightly
+    // rates this feed returns. Whatever we are told per house is filled in by
+    // hand in content/tripwix-copy.json, whose keys win the merge below; 0 here
+    // means "we have not been told", and the panel says the total is not final
+    // rather than claiming there is nothing more to pay.
     cleaningFee: 0,
+    securityDeposit: 0,
     minNights: minNights(rates),
     currency: "EUR",
 

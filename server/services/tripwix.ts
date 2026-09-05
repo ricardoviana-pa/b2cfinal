@@ -113,7 +113,8 @@ export async function getTripwixLowestNightly(uid: string): Promise<number | nul
         .filter((d) => d.status === "available")
         .map((d) => Number(d.price))
         .filter((n) => Number.isFinite(n) && n > 0);
-      if (prices.length) value = Math.round(Math.min(...prices));
+      // VAT in, at the same point every other guest-facing figure gets it.
+      if (prices.length) value = Math.round(partnerGuestPrice(Math.min(...prices)));
     }
 
     if (value !== null) lastGood.set(uid, value);
@@ -157,14 +158,35 @@ export async function getTripwixLowestNightlyBatch(
 /** VAT on accommodation in mainland Portugal, per the supplier's own terms. */
 export const PARTNER_VAT_RATE = 0.06;
 
+/**
+ * Their calendar returns NET rates — the price before the 6% VAT the supplier
+ * tells us to add. Nothing net may reach a guest: our own homes quote a single
+ * all-in figure, and Portuguese price-indication rules expect a consumer to see
+ * the price they will actually pay. Everything guest-facing goes through here,
+ * so a partner home and one of ours can be compared on the same basis.
+ */
+export function partnerGuestPrice(net: number): number {
+  return Math.round(net * (1 + PARTNER_VAT_RATE) * 100) / 100;
+}
+
 export type PartnerQuote = {
   available: boolean;
   nights: number;
-  /** Nightly rates for the stay, in order, so the UI can show a breakdown. */
+  /** Nightly rates for the stay, in order, VAT included, so the UI can break it down. */
   perNight: Array<{ date: string; price: number; status: string }>;
-  subtotal: number;
-  vat: number;
+  /** Accommodation for the whole stay, VAT included. */
+  accommodation: number;
+  /** Cleaning, when we know it for this house. */
+  cleaningFee: number;
+  /** Everything the guest pays us. */
   total: number;
+  /** Refundable, held by the supplier — shown but never added to the total. */
+  securityDeposit: number;
+  /**
+   * False when we hold no fee data for this house, i.e. the supplier may still
+   * add cleaning and a deposit on top. The UI must not call `total` final.
+   */
+  feesKnown: boolean;
   /** Dates inside the range that cannot be booked, if any. */
   unavailable: string[];
   currency: "EUR";
@@ -173,10 +195,16 @@ export type PartnerQuote = {
 /**
  * Price a specific stay off the supplier's calendar.
  *
- * Their rates are net and already include our commission; VAT is the only
- * thing added, and there is no separate cleaning or preparation fee — a
- * question guests do ask, because "from EUR X" is the cheapest night of the
- * whole year and rarely the night they want.
+ * Their rates are net and already include our commission; the 6% VAT is added
+ * here so every figure that leaves this module is what a guest would pay.
+ *
+ * What this CANNOT tell you is the rest of the bill. The supplier quotes a
+ * cleaning fee and a refundable security deposit per booking (Casa de Caiz,
+ * Sep 2026: EUR 350 cleaning + EUR 844 deposit on a EUR 1,789 stay) and their
+ * API exposes neither — no field for either exists anywhere in the payload.
+ * Whatever we know per house is passed in by the caller; when we know nothing,
+ * `feesKnown` is false and the UI must say the total is still to be confirmed
+ * rather than presenting the accommodation figure as the full price.
  *
  * The checkout date is excluded: it is not a night that gets charged.
  */
@@ -184,6 +212,7 @@ export async function getPartnerQuote(
   uid: string,
   checkIn: string,
   checkOut: string,
+  fees?: { cleaningFee?: number; securityDeposit?: number },
 ): Promise<PartnerQuote | null> {
   const key = process.env.TRIPWIX_API_KEY;
   if (!key || !uid || !checkIn || !checkOut || checkOut <= checkIn) return null;
@@ -204,23 +233,57 @@ export async function getPartnerQuote(
   if (!nights.length) return null;
 
   const unavailable = nights.filter((d) => d.status !== "available").map((d) => d.date);
-  const subtotal = nights.reduce((sum, d) => sum + (Number(d.price) || 0), 0);
-  const vat = subtotal * PARTNER_VAT_RATE;
+  const net = nights.reduce((sum, d) => sum + (Number(d.price) || 0), 0);
+  const accommodation = partnerGuestPrice(net);
+  const cleaningFee = Math.round((fees?.cleaningFee ?? 0) * 100) / 100;
+  const securityDeposit = Math.round((fees?.securityDeposit ?? 0) * 100) / 100;
 
   return {
     available: unavailable.length === 0,
     nights: nights.length,
     perNight: nights.map((d) => ({
       date: d.date,
-      price: Number(d.price) || 0,
+      price: partnerGuestPrice(Number(d.price) || 0),
       status: d.status,
     })),
-    subtotal: Math.round(subtotal * 100) / 100,
-    vat: Math.round(vat * 100) / 100,
-    total: Math.round((subtotal + vat) * 100) / 100,
+    accommodation,
+    cleaningFee,
+    securityDeposit,
+    total: Math.round((accommodation + cleaningFee) * 100) / 100,
+    feesKnown: (fees?.cleaningFee ?? 0) > 0,
     unavailable,
     currency: "EUR",
   };
+}
+
+/**
+ * The supplier's day-by-day availability, in the shape AvailabilityCalendar
+ * already speaks, so partner homes get the same calendar as the rest of the
+ * portfolio instead of two native date inputs.
+ */
+export async function getPartnerCalendar(
+  uid: string,
+  startDate: string,
+  endDate: string,
+): Promise<Array<{ date: string; status: string; price?: number }> | null> {
+  const key = process.env.TRIPWIX_API_KEY;
+  if (!key || !uid) return null;
+
+  const url = `${BASE}/properties/${uid}/calendar/?start_date=${startDate}&end_date=${endDate}`;
+  try {
+    const res = await fetch(url, { headers: { "X-Partner-API-Key": key } });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!Array.isArray(data)) return null;
+    return (data as CalendarDay[]).map((d) => ({
+      date: d.date,
+      // The calendar only ever sells "available"; everything else is closed.
+      status: d.status === "available" ? "available" : "unavailable",
+      price: d.price != null ? partnerGuestPrice(Number(d.price) || 0) : undefined,
+    }));
+  } catch {
+    return null;
+  }
 }
 
 /**
