@@ -1400,7 +1400,7 @@ export default function CheckoutPage() {
                   <p className="caption text-inherit text-red-500">{t("bookingWidget.invalidEmail", "Please enter a valid email address")}</p>
                 )}
                 <p className="caption text-pa-stone-aa leading-relaxed">
-                  {t("checkout.emailSupport", "We hold your reservation for 24 hours and email you the quote. No spam.")}
+                  {t("checkout.emailSupport", "We hold your reservation for 24 hours and email you the quote.")}
                 </p>
                 {/* Opt-in sóbrio: sem "ofertas"/"newsletter", que leem como
                     spam e travam a entrada no funil logo no passo 1. Lidera
