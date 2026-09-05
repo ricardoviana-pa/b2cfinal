@@ -380,18 +380,6 @@
 
   /* ââ DECORATIVE ELEMENTS ââ */
 
-  .divider-accent {
-    width: 48px;
-    height: 2px;
-    background-color: #C4A87C;
-  }
-
-  .pa-divider {
-    height: 1px;
-    background-color: #E8E4DC;
-    width: 100%;
-  }
-
   /* ââ PLACEHOLDER IMAGE ââ */
 
   .placeholder-image {
@@ -416,10 +404,6 @@
   }
 
   /* Aspect ratios */
-  .aspect-hero { aspect-ratio: 16 / 9; }
-  .aspect-card { aspect-ratio: 4 / 3; }
-  .aspect-thumb { aspect-ratio: 1 / 1; }
-  .aspect-portrait { aspect-ratio: 3 / 4; }
 
   /* ââ BUTTONS ââ */
 
@@ -560,32 +544,6 @@
   }
 
   /* Gold â accent button, UPPERCASE, pill shape */
-  .btn-gold {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    font-family: var(--font-body);
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 0.875rem 2rem;
-    min-height: 48px;
-    border-radius: 9999px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    white-space: nowrap;
-    text-decoration: none;
-    line-height: 1;
-    background-color: #8B7355;
-    color: #FAFAF7;
-    border: 1px solid #8B7355;
-  }
-  .btn-gold:hover {
-    background-color: #7A6548;
-    border-color: #7A6548;
-  }
 
   /* ââ PROPERTY STICKY CARD ââ */
   .property-sticky-card {
@@ -611,67 +569,9 @@
 
   /* ââ CARDS ââ */
 
-  .pa-card {
-    background: #FFFFFF;
-    border: 1px solid #E8E4DC;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .pa-card:hover {
-    border-color: #726D63;
-    box-shadow: 0 8px 32px rgba(26, 26, 24, 0.08);
-    transform: translateY(-2px);
-  }
-
   /* ââ TIER BADGES ââ */
 
-  .badge-signature {
-    background-color: #1A1A18;
-    color: #C4A87C;
-    font-family: var(--font-body);
-    font-size: 0.625rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 0.375rem 0.75rem;
-    line-height: 1;
-  }
-
-  .badge-select {
-    background-color: #8B7355;
-    color: #FAFAF7;
-    font-family: var(--font-body);
-    font-size: 0.625rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 0.375rem 0.75rem;
-    line-height: 1;
-  }
-
-  .badge-new {
-    background-color: #FAFAF7;
-    color: #1A1A18;
-    border: 1px solid #E8E4DC;
-    font-family: var(--font-body);
-    font-size: 0.625rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 0.375rem 0.75rem;
-    line-height: 1;
-  }
-
   /* ââ PROOF STRIP ââ */
-
-  .proof-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-family: var(--font-body);
-    font-size: 0.8125rem;
-    color: #6B6860;
-    font-weight: 400;
-  }
 
   /* ââ SCROLLBAR ââ */
 
@@ -699,15 +599,9 @@
     font-family: var(--font-display);
   }
 
-  .font-body {
-    font-family: var(--font-body);
-  }
-
   .text-pa-dark { color: #1A1A18; }
   .text-pa-earth { color: #6B6860; }
-  .text-pa-stone { color: #726D63; }
   .text-pa-gold { color: #8B7355; }
-  .text-pa-gold-light { color: #C4A87C; }
 
   .bg-pa-cream { background-color: #FAFAF7; }
   .bg-pa-warm { background-color: #F5F1EB; }
@@ -716,7 +610,6 @@
   .bg-pa-gold { background-color: #8B7355; }
 
   .border-pa-sand { border-color: #E8E4DC; }
-  .border-pa-stone { border-color: #726D63; }
 
   /* Hide scrollbar but keep scrollable */
   .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -747,8 +640,6 @@
 
   /* Landscape: cap hero sections so user doesn't scroll endlessly */
   @media (orientation: landscape) and (max-height: 500px) {
-    .aspect-hero { aspect-ratio: auto; max-height: 50vh; }
-    .hero-landscape-cap { max-height: 100vh; min-height: auto !important; }
   }
 
   /* Hide hero proof strip on short viewports to avoid booking-bar overlap */
@@ -794,9 +685,6 @@
     from { opacity: 0; }
     to { opacity: 1; }
   }
-  .page-enter {
-    animation: pageEnter 300ms ease-out both;
-  }
 
   /* Line clamp */
   .line-clamp-2 {
@@ -814,9 +702,6 @@
 
   /* Safe area padding for mobile */
   .pb-safe {
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-  .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
