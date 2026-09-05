@@ -338,7 +338,7 @@ function Lightbox({ images, rawImages, initialIndex, propertyName, destName, onC
       {/* Top bar: counter + close */}
       <div className="flex items-center justify-between px-4 py-3 shrink-0">
         <div />
-        <span className="text-white/70 text-[13px]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+        <span className="text-white/70 body-sm font-body font-light" >
           {idx + 1} / {total}
         </span>
         <button
@@ -467,14 +467,14 @@ function DescriptionSection({ description, sections, propertyName, locality, des
     };
     return (
       <section>
-        <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-5">{t('propertyDetail.aboutTitle')}</h2>
+        <h2 className="font-display headline-sm font-light text-pa-dark mb-5">{t('propertyDetail.aboutTitle')}</h2>
         <div className="space-y-7">
           {visibleBlocks.map((b) => (
             <div key={b.key} className={b.label ? '' : 'body-lg'}>
               {b.label && (
-                <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#726D63] mb-2.5">{labelFor(b)}</h3>
+                <h3 className="overline font-semibold tracking-[0.12em] uppercase text-pa-stone mb-2.5">{labelFor(b)}</h3>
               )}
-              <div className={b.label ? 'space-y-3 text-[14px] text-[#6B6860] leading-relaxed' : 'space-y-4'} style={b.label ? { fontWeight: 300 } : undefined}>
+              <div className={b.label ? 'space-y-3 body-sm text-pa-earth leading-relaxed' : 'space-y-4'} style={b.label ? { fontWeight: 300 } : undefined}>
                 {b.paragraphs.map((para, i) => <p key={i}>{para}</p>)}
               </div>
             </div>
@@ -482,7 +482,7 @@ function DescriptionSection({ description, sections, propertyName, locality, des
           {hasMore && (
             <button
               onClick={() => setExpanded((v) => !v)}
-              className="text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4"
+              className="body-sm font-medium text-pa-gold hover:text-pa-dark transition-colors underline underline-offset-4"
             >
               {expanded ? t('common.readLess', 'Read less') : t('common.readMore', 'Read more')}
             </button>
@@ -500,7 +500,7 @@ function DescriptionSection({ description, sections, propertyName, locality, des
 
   return (
     <section>
-      <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-5">{t('propertyDetail.aboutTitle')}</h2>
+      <h2 className="font-display headline-sm font-light text-pa-dark mb-5">{t('propertyDetail.aboutTitle')}</h2>
       <div className="body-lg space-y-4 relative">
         {visible.length > 0 ? (
           <>
@@ -509,10 +509,10 @@ function DescriptionSection({ description, sections, propertyName, locality, des
             ))}
             {needsTruncation && !expanded && (
               <div className="relative pt-2">
-                <div className="absolute -top-12 left-0 right-0 h-12 bg-gradient-to-t from-[#FAFAF7] to-transparent pointer-events-none" />
+                <div className="absolute -top-12 left-0 right-0 h-12 bg-gradient-to-t from-pa-cream to-transparent pointer-events-none" />
                 <button
                   onClick={() => setExpanded(true)}
-                  className="text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4"
+                  className="body-sm font-medium text-pa-gold hover:text-pa-dark transition-colors underline underline-offset-4"
                 >
                   {t('common.readMore', 'Read more')}
                 </button>
@@ -521,7 +521,7 @@ function DescriptionSection({ description, sections, propertyName, locality, des
             {expanded && needsTruncation && (
               <button
                 onClick={() => setExpanded(false)}
-                className="text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4"
+                className="body-sm font-medium text-pa-gold hover:text-pa-dark transition-colors underline underline-offset-4"
               >
                 {t('common.readLess', 'Read less')}
               </button>
@@ -944,7 +944,7 @@ export default function PropertyDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FAFAF7]">
+      <div className="min-h-screen bg-pa-cream">
         <Header />
         {/* Hero image skeleton */}
         <div className="skeleton-shimmer w-full" style={{ aspectRatio: '16/7' }} />
@@ -968,7 +968,7 @@ export default function PropertyDetail() {
             </div>
             {/* Sidebar skeleton */}
             <div className="space-y-4">
-              <div className="border border-[#E8E4DC] p-6 space-y-4">
+              <div className="border border-pa-sand p-6 space-y-4">
                 <div className="skeleton-shimmer h-8 w-40 rounded" />
                 <div className="skeleton-shimmer h-3 w-32 rounded" />
                 <div className="skeleton-shimmer h-12 w-full rounded-full" />
@@ -983,11 +983,11 @@ export default function PropertyDetail() {
 
   if (error || !property) {
     return (
-      <div className="min-h-screen bg-[#FAFAF7]">
+      <div className="min-h-screen bg-pa-cream">
         <Header />
         <div className="container max-w-lg py-24 text-center">
-          <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#F5F1EB]">
-            <AlertTriangle className="w-6 h-6 text-[#726D63]" />
+          <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-pa-warm">
+            <AlertTriangle className="w-6 h-6 text-pa-stone" />
           </div>
           <h1 className="headline-md mb-3">{t('propertyDetail.errorTitle', 'Something went wrong')}</h1>
           <p className="body-lg mb-8">{t('propertyDetail.errorBody', 'We couldn\'t load this property. Please try again.')}</p>
@@ -1017,7 +1017,7 @@ export default function PropertyDetail() {
   const bookingPanel = (
     <>
       {property.guestyId ? (
-        <Suspense fallback={<div className="h-[300px] bg-[#F5F1EB] animate-pulse border border-[#E8E4DC]" />}>
+        <Suspense fallback={<div className="h-[300px] bg-pa-warm animate-pulse border border-pa-sand" />}>
           <BookingWidget
             guestyId={property.guestyId}
             propertyName={property.name}
@@ -1047,24 +1047,24 @@ export default function PropertyDetail() {
           whatsappUrl={whatsappUrl}
         />
       ) : (
-        <div className="bg-[#FAFAF7] border border-[#E8E4DC] p-6">
+        <div className="bg-pa-cream border border-pa-sand p-6">
           {/* Partner homes cannot be booked instantly — the supplier confirms
               each stay before we can — but we do know the real nightly rate, so
               show it rather than hiding behind "price on request". */}
           {lowestNightly?.from ? (
-            <p className="font-display text-[20px] font-light text-[#1A1A18] mb-2">
+            <p className="font-display text-[20px] font-light text-pa-dark mb-2">
               {t('property.fromPerNight', {
                 price: Math.round(lowestNightly.from).toLocaleString('en-US'),
               })}
             </p>
           ) : (
-            <p className="font-display text-[20px] font-light text-[#1A1A18] mb-2">
+            <p className="font-display text-[20px] font-light text-pa-dark mb-2">
               {t('property.priceOnRequest')}
             </p>
           )}
           <div className="flex items-center gap-1.5 mb-4">
-            <BadgeCheck size={14} className="text-[#8B7355]" />
-            <span className="text-[11px] tracking-[0.02em] text-[#726D63] font-medium">{t('property.directConcierge')}</span>
+            <BadgeCheck size={14} className="text-pa-gold" />
+            <span className="caption tracking-[0.02em] text-pa-stone font-medium">{t('property.directConcierge')}</span>
           </div>
           <div className="space-y-3">
             <Link
@@ -1085,24 +1085,34 @@ export default function PropertyDetail() {
           open. Four generic badges ("best rate guaranteed") carried no weight;
           a claim only converts sceptics when it names its mechanism. Every line
           here is unconditionally true (F1 honesty rule). */}
-      <div className="mt-6 pt-5 border-t border-[#E8E4DC]">
-        <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#806A48] mb-3">
+      <div className="mt-6 pt-5 border-t border-pa-sand">
+        <p className="overline font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-3">
           {t('trust.directHeadline', 'Why book direct')}
         </p>
         <div className="flex flex-col gap-2.5">
           {([
-            { icon: ShieldCheck, label: t('trust.bestRateTeeth', 'Best rate online — find these dates cheaper on Airbnb or Booking.com and we match the price') },
-            { icon: Clock, label: t('trust.noServiceFees', 'No service fees — OTAs add 12–18% at checkout; here the price is the price') },
+            // Two of these only hold on homes we price and operate ourselves.
+            // On partner inventory we resell a supplier's rate and the supplier
+            // adds cleaning and a deposit we do not control, so "the price is
+            // the price" and a price-match promise are both undefendable — a
+            // guest already arrived at the concierge holding a screenshot of
+            // the first one against a quote EUR 1,194 higher.
+            ...(tripwixUid
+              ? []
+              : [
+                  { icon: ShieldCheck, label: t('trust.bestRateTeeth', 'Best rate online — find these dates cheaper on Airbnb or Booking.com and we match the price') },
+                  { icon: Clock, label: t('trust.noServiceFees', 'No service fees — OTAs add 12–18% at checkout; here the price is the price') },
+                ]),
             { icon: Headphones, label: t('trust.conciergeWhatsapp', 'WhatsApp concierge before, during and after your stay') },
             { icon: Lock, label: t('trust.secureBooking', 'Secure booking') },
           ] as const).map((item, i) => (
             <div key={i} className="flex items-start gap-2">
-              <item.icon size={14} className="text-[#806A48] shrink-0 mt-0.5" />
-              <span className="text-[12px] text-[#1A1A18] leading-snug" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{item.label}</span>
+              <item.icon size={14} className="text-pa-gold-aa shrink-0 mt-0.5" />
+              <span className="caption text-pa-dark leading-snug font-body font-light" >{item.label}</span>
             </div>
           ))}
         </div>
-        <Link href="/best-rate-guarantee" className="inline-block mt-3 text-[11.5px] text-[#806A48] underline underline-offset-2 hover:text-[#1A1A18]">
+        <Link href="/best-rate-guarantee" className="inline-block mt-3 caption text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark">
           {t('trust.guaranteeTerms', 'How the guarantee works')}
         </Link>
       </div>
@@ -1111,7 +1121,7 @@ export default function PropertyDetail() {
           face and a story, but the page where money changes hands had nobody.
           The host is the concierge of the home's region (shared/concierges.ts),
           on every home. */}
-      <div className="mt-5 pt-5 border-t border-[#E8E4DC] flex items-center gap-3">
+      <div className="mt-5 pt-5 border-t border-pa-sand flex items-center gap-3">
         <img
           src={host.photo}
           alt={`${host.fullName}, Portugal Active`}
@@ -1119,12 +1129,12 @@ export default function PropertyDetail() {
           loading="lazy"
         />
         <div className="min-w-0">
-          <p className="text-[12.5px] text-[#1A1A18] font-medium leading-tight">
+          <p className="body-sm text-pa-dark font-medium leading-tight">
             {t('host.hostedByName', { name: host.name, defaultValue: 'Hosted by {{name}} & the Portugal Active team' })}
           </p>
-          <p className="text-[11.5px] text-[#726D63] leading-tight mt-0.5">
+          <p className="caption text-pa-stone leading-tight mt-0.5">
             {t('host.basedInCity', { city: host.basedIn, defaultValue: 'Local team in {{city}}' })} ·{' '}
-            <Link href="/about" className="text-[#806A48] hover:underline">
+            <Link href="/about" className="text-pa-gold-aa hover:underline">
               {t('host.meetUs', 'Meet us')}
             </Link>
           </p>
@@ -1136,30 +1146,30 @@ export default function PropertyDetail() {
   return (
     <>
       {propertyGraph && <StructuredData id={`property-${property.slug}`} data={propertyGraph} />}
-      <div className="min-h-screen bg-[#FAFAF7]">
+      <div className="min-h-screen bg-pa-cream">
         <Header />
 
         {/* Breadcrumbs */}
         <nav aria-label="Breadcrumb" className="container pt-20 pb-3">
-          <ol className="flex items-center gap-0.5 text-[12px] text-[#726D63]" style={{ fontWeight: 300 }}>
-            <li><Link href="/" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">{t('propertyDetail.breadcrumbHome', 'Home')}</Link></li>
-            <li className="text-[#E8E4DC]">/</li>
-            <li><Link href="/homes" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">{t('propertyDetail.breadcrumbHomes', 'Homes')}</Link></li>
+          <ol className="flex items-center gap-0.5 caption text-pa-stone font-light" >
+            <li><Link href="/" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-pa-dark transition-colors">{t('propertyDetail.breadcrumbHome', 'Home')}</Link></li>
+            <li className="text-pa-sand">/</li>
+            <li><Link href="/homes" className="inline-flex items-center min-h-[44px] px-1.5 hover:text-pa-dark transition-colors">{t('propertyDetail.breadcrumbHomes', 'Homes')}</Link></li>
             {destObj && (
               <>
-                <li className="text-[#E8E4DC]">/</li>
-                <li><Link href={`/destinations/${destObj.slug}`} className="inline-flex items-center min-h-[44px] px-1.5 hover:text-[#1A1A18] transition-colors">{destObj.name}</Link></li>
+                <li className="text-pa-sand">/</li>
+                <li><Link href={`/destinations/${destObj.slug}`} className="inline-flex items-center min-h-[44px] px-1.5 hover:text-pa-dark transition-colors">{destObj.name}</Link></li>
               </>
             )}
-            <li className="text-[#E8E4DC]">/</li>
-            <li className="text-[#6B6860] truncate max-w-[220px] inline-flex items-center min-h-[44px] px-1.5">{displayName}</li>
+            <li className="text-pa-sand">/</li>
+            <li className="text-pa-earth truncate max-w-[220px] inline-flex items-center min-h-[44px] px-1.5">{displayName}</li>
           </ol>
         </nav>
 
         {/* Hero gallery — mobile carousel + desktop grid */}
         {/* Mobile: swipeable carousel */}
         <div
-          className="lg:hidden group relative w-full overflow-hidden bg-[#F5F1EB] aspect-[4/3] cursor-pointer select-none"
+          className="lg:hidden group relative w-full overflow-hidden bg-pa-warm aspect-[4/3] cursor-pointer select-none"
           onTouchStart={handleGalleryTouchStart}
           onTouchMove={handleGalleryTouchMove}
           onTouchEnd={handleGalleryTouchEnd}
@@ -1175,22 +1185,22 @@ export default function PropertyDetail() {
             }}
           >
             {(images.length ? images : ['']).map((img: string, idx: number) => (
-              <div key={idx} className="relative shrink-0 h-full bg-[#E8E4DC] img-fallback" style={{ width: `${100 / totalImages}%` }}>
+              <div key={idx} className="relative shrink-0 h-full bg-pa-sand img-fallback" style={{ width: `${100 / totalImages}%` }}>
                 {img ? (
                   <img src={img} srcSet={guestySrcSet(sourceImages[idx], [640, 828, 1080, 1440])} sizes="100vw" alt={`${property.name} – luxury villa in ${destName}, Portugal – image ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" width={1200} height={900} loading={idx === 0 ? 'eager' : 'lazy'} decoding="async" {...(idx === 0 ? { fetchPriority: 'high' as const } : {})} draggable={false} onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }} />
                 ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-[#726D63] text-sm">{t('propertyDetail.noImage')}</div>
+                  <div className="absolute inset-0 flex items-center justify-center text-pa-stone body-sm">{t('propertyDetail.noImage')}</div>
                 )}
               </div>
             ))}
           </div>
           <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
-            <span className="text-white/80 text-[12px] bg-black/30 backdrop-blur-sm px-2.5 py-1 rounded-sm pointer-events-auto" style={{ fontFamily: 'var(--font-body)' }}>
+            <span className="text-white/80 caption bg-black/30 backdrop-blur-sm px-2.5 py-1 rounded-sm pointer-events-auto font-body" >
               {currentImage + 1} / {totalImages}
             </span>
             <button
               onClick={e => { e.stopPropagation(); setLightboxImage(currentImage); setLightboxOpen(true); }}
-              className="pointer-events-auto rounded-full bg-white/90 backdrop-blur-sm text-[#1A1A18] px-5 py-2.5 min-h-[44px] hover:bg-white transition-colors text-[11px] font-medium tracking-[0.12em] uppercase"
+              className="pointer-events-auto rounded-full bg-white/90 backdrop-blur-sm text-pa-dark px-5 py-2.5 min-h-[44px] hover:bg-white transition-colors overline font-medium tracking-[0.12em] uppercase"
             >
               {t('propertyDetail.viewAll')}
             </button>
@@ -1202,7 +1212,7 @@ export default function PropertyDetail() {
           <div className="grid grid-cols-4 grid-rows-2 gap-2 rounded-xl overflow-hidden" style={{ height: '480px' }}>
             {/* Main large image — left half */}
             <div
-              className="col-span-2 row-span-2 relative cursor-pointer group bg-[#E8E4DC]"
+              className="col-span-2 row-span-2 relative cursor-pointer group bg-pa-sand"
               onClick={() => { setLightboxImage(0); setLightboxOpen(true); }}
             >
               {images[0] && (
@@ -1213,19 +1223,19 @@ export default function PropertyDetail() {
             {[1, 2, 3, 4].map(idx => (
               <div
                 key={idx}
-                className="relative cursor-pointer group bg-[#E8E4DC]"
+                className="relative cursor-pointer group bg-pa-sand"
                 onClick={() => { if (images[idx]) { setLightboxImage(idx); setLightboxOpen(true); } }}
               >
                 {images[idx] ? (
                   <img src={images[idx]} srcSet={guestySrcSet(sourceImages[idx], [400, 640, 828])} sizes="(min-width: 1024px) 25vw, 0px" alt={`${property.name} – image ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" decoding="async" draggable={false} />
                 ) : (
-                  <div className="absolute inset-0 bg-[#F5F1EB]" />
+                  <div className="absolute inset-0 bg-pa-warm" />
                 )}
                 {/* "View all" button on last image */}
                 {idx === 4 && totalImages > 5 && (
                   <button
                     onClick={e => { e.stopPropagation(); setLightboxImage(0); setLightboxOpen(true); }}
-                    className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm text-[#1A1A18] px-4 py-2 text-[11px] font-medium tracking-[0.08em] uppercase rounded-full hover:bg-white transition-colors z-10"
+                    className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm text-pa-dark px-4 py-2 overline font-medium tracking-[0.08em] uppercase rounded-full hover:bg-white transition-colors z-10"
                   >
                     {t('propertyDetail.viewAll')} ({totalImages})
                   </button>
@@ -1238,27 +1248,27 @@ export default function PropertyDetail() {
         {/* Title, location, key stats — below hero */}
         <div className="container pt-8 lg:pt-10 pb-4">
           <div className="flex items-center gap-3 mb-3">
-            <p className="text-[11px] font-medium tracking-[0.12em] text-[#8B7355] uppercase">{destName}</p>
-            <span className="h-px flex-1 max-w-[60px] bg-[#E8E4DC]" />
+            <p className="overline font-medium tracking-[0.12em] text-pa-gold uppercase">{destName}</p>
+            <span className="h-px flex-1 max-w-[60px] bg-pa-sand" />
             {property.tier === 'signature' && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-medium tracking-[0.04em] uppercase text-[#1A1A18] bg-[#F5F1EB] px-2.5 py-1 rounded-full">
-                <Flame size={11} className="text-[#8B7355]" /> {t('urgency.highDemand', 'High demand')}
+              <span className="inline-flex items-center gap-1 overline font-medium tracking-[0.04em] uppercase text-pa-dark bg-pa-warm px-2.5 py-1 rounded-full">
+                <Flame size={11} className="text-pa-gold" /> {t('urgency.highDemand', 'High demand')}
               </span>
             )}
           </div>
-          <h1 className="font-display text-[clamp(1.75rem,4vw,3rem)] font-light leading-[1.08] text-[#1A1A18] mb-3">
+          <h1 className="font-display headline-lg font-light leading-[1.08] text-pa-dark mb-3">
             {displayName}
           </h1>
           {property.tagline && (
-            <p className="text-[15px] text-[#6B6860] italic mb-4 max-w-2xl leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{property.tagline}</p>
+            <p className="body-sm text-pa-earth italic mb-4 max-w-2xl leading-relaxed font-body font-light" >{property.tagline}</p>
           )}
-          <div className="flex items-center gap-2 text-[#6B6860] mb-8">
-            <MapPin size={14} className="text-[#726D63]" />
-            <span className="text-[13px]" style={{ fontWeight: 300 }}>{property.locality}, Portugal</span>
+          <div className="flex items-center gap-2 text-pa-earth mb-8">
+            <MapPin size={14} className="text-pa-stone" />
+            <span className="body-sm text-inherit font-light" >{property.locality}, Portugal</span>
           </div>
 
           {/* Key stats — pill badges */}
-          <div className="flex flex-wrap items-center gap-3 pb-6 border-b border-[#E8E4DC]">
+          <div className="flex flex-wrap items-center gap-3 pb-6 border-b border-pa-sand">
             {[
               { icon: Users, value: `${property.maxGuests} ${t('property.guests')}` },
               { icon: BedDouble, value: `${property.bedrooms} ${t('property.bedrooms')}` },
@@ -1267,8 +1277,8 @@ export default function PropertyDetail() {
               ...((property.checkInTime || property.checkOutTime) ? [{ icon: Clock, value: `${property.checkInTime || '16:00'} / ${property.checkOutTime || '11:00'}` }] : []),
               ...((property as any).petsAllowed ? [{ icon: PawPrint, value: t('property.petFriendly', 'Pet-friendly') }] : []),
             ].map((stat, i) => (
-              <span key={i} className="inline-flex items-center gap-2 px-4 py-2 bg-[#F5F1EB] rounded-full text-[13px] text-[#6B6860]" style={{ fontWeight: 400 }}>
-                <stat.icon size={14} className="text-[#8B7355]" />
+              <span key={i} className="inline-flex items-center gap-2 px-4 py-2 bg-pa-warm rounded-full body-sm text-pa-earth font-normal" >
+                <stat.icon size={14} className="text-pa-gold" />
                 {stat.value}
               </span>
             ))}
@@ -1309,16 +1319,16 @@ export default function PropertyDetail() {
               {/* 2. What's included in every stay — the hotel-grade promise that
                   separates us from a marketplace listing. Every home, one
                   standard. */}
-              <section className="p-6 lg:p-8 bg-[#F5F1EB] rounded-2xl">
+              <section className="p-6 lg:p-8 bg-pa-warm rounded-2xl">
                 <div className="flex items-center gap-3 mb-5">
-                  <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18]">{t('propertyDetail.includedTitle')}</h2>
-                  <span className="h-px flex-1 bg-[#E8E4DC]" />
+                  <h2 className="font-display headline-sm font-light text-pa-dark">{t('propertyDetail.includedTitle')}</h2>
+                  <span className="h-px flex-1 bg-pa-sand" />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
                   {whatsIncluded.map((item, i) => (
                     <div key={i} className="flex items-center gap-3">
-                      <item.icon size={16} className="text-[#8B7355] shrink-0" />
-                      <span className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontWeight: 300 }}>{item.text}</span>
+                      <item.icon size={16} className="text-pa-gold shrink-0" />
+                      <span className="body-sm text-pa-earth leading-relaxed font-light" >{item.text}</span>
                     </div>
                   ))}
                 </div>
@@ -1331,7 +1341,7 @@ export default function PropertyDetail() {
                   with bigger icons, then drops a calm 2-column list per
                   category so guests can scan without fatigue). */}
               <section>
-                <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-6">{t('propertyDetail.amenitiesTitle')}</h2>
+                <h2 className="font-display headline-sm font-light text-pa-dark mb-6">{t('propertyDetail.amenitiesTitle')}</h2>
                 {amenityGroups.length > 0 ? (
                   <>
                     {/* Featured highlights — uniform white tiles, larger icons,
@@ -1341,10 +1351,10 @@ export default function PropertyDetail() {
                         {featuredAmenities.map((amenity, idx) => (
                           <div
                             key={idx}
-                            className="flex flex-col items-center justify-center text-center bg-white border border-[#E8E4DC] rounded-2xl px-3 min-h-[108px] shadow-[0_1px_2px_rgba(26,26,24,0.04)] hover:-translate-y-0.5 hover:border-[#8B7355]/40 hover:shadow-[0_8px_20px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
+                            className="flex flex-col items-center justify-center text-center bg-white border border-pa-sand rounded-2xl px-3 min-h-[108px] shadow-[0_1px_2px_rgba(26,26,24,0.04)] hover:-translate-y-0.5 hover:border-pa-gold/40 hover:shadow-[0_8px_20px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
                           >
-                            <amenity.icon size={26} strokeWidth={1.5} className="text-[#8B7355] mb-2.5" />
-                            <span className="text-[12px] text-[#1A1A18] font-medium leading-tight">{amenity.label}</span>
+                            <amenity.icon size={26} strokeWidth={1.5} className="text-pa-gold mb-2.5" />
+                            <span className="caption text-pa-dark font-medium leading-tight">{amenity.label}</span>
                           </div>
                         ))}
                       </div>
@@ -1358,12 +1368,12 @@ export default function PropertyDetail() {
                       {primaryAmenityGroups.map((group) => (
                         <div key={group.category} className="break-inside-avoid mb-6">
                           <div className="flex items-center gap-2 mb-2.5">
-                            <group.icon size={13} className="text-[#8B7355] shrink-0" />
-                            <h3 className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#726D63]">{t(group.label)}</h3>
+                            <group.icon size={13} className="text-pa-gold shrink-0" />
+                            <h3 className="overline font-semibold tracking-[0.14em] uppercase text-pa-stone">{t(group.label)}</h3>
                           </div>
                           <ul className="space-y-1.5">
                             {group.items.map((item, idx) => (
-                              <li key={idx} className="text-[13px] text-[#6B6860] leading-snug" style={{ fontWeight: 300 }}>{item}</li>
+                              <li key={idx} className="body-sm text-pa-earth leading-snug font-light" >{item}</li>
                             ))}
                           </ul>
                         </div>
@@ -1374,16 +1384,16 @@ export default function PropertyDetail() {
                     {utilityAmenityGroups.length > 0 && (
                       <>
                         {showAllAmenities && (
-                          <div className="columns-1 sm:columns-2 lg:columns-3 gap-x-10 pt-7 mt-1 border-t border-[#E8E4DC]">
+                          <div className="columns-1 sm:columns-2 lg:columns-3 gap-x-10 pt-7 mt-1 border-t border-pa-sand">
                             {utilityAmenityGroups.map((group) => (
                               <div key={group.category} className="break-inside-avoid mb-6">
                                 <div className="flex items-center gap-2 mb-2.5">
-                                  <group.icon size={13} className="text-[#8B7355] shrink-0" />
-                                  <h3 className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#726D63]">{t(group.label)}</h3>
+                                  <group.icon size={13} className="text-pa-gold shrink-0" />
+                                  <h3 className="overline font-semibold tracking-[0.14em] uppercase text-pa-stone">{t(group.label)}</h3>
                                 </div>
                                 <ul className="space-y-1.5">
                                   {group.items.map((item, idx) => (
-                                    <li key={idx} className="text-[13px] text-[#6B6860] leading-snug" style={{ fontWeight: 300 }}>{item}</li>
+                                    <li key={idx} className="body-sm text-pa-earth leading-snug font-light" >{item}</li>
                                   ))}
                                 </ul>
                               </div>
@@ -1393,7 +1403,7 @@ export default function PropertyDetail() {
                         <button
                           type="button"
                           onClick={() => setShowAllAmenities((v) => !v)}
-                          className="inline-flex items-center gap-1.5 mt-6 text-[12px] font-medium tracking-[0.04em] uppercase text-[#8B7355] hover:text-[#1A1A18] transition-colors"
+                          className="inline-flex items-center gap-1.5 mt-6 caption font-medium tracking-[0.04em] uppercase text-pa-gold hover:text-pa-dark transition-colors"
                         >
                           {showAllAmenities
                             ? t('propertyDetail.showLessAmenities', 'Show fewer')
@@ -1404,7 +1414,7 @@ export default function PropertyDetail() {
                     )}
                   </>
                 ) : (
-                  <p className="body-md text-[#726D63]">{t('propertyDetail.amenitiesContact')}</p>
+                  <p className="body-md text-pa-stone">{t('propertyDetail.amenitiesContact')}</p>
                 )}
               </section>
 
@@ -1416,23 +1426,23 @@ export default function PropertyDetail() {
               {property.rooms && property.rooms.length > 0 && (
                 <section>
                   <div className="flex items-baseline justify-between gap-4 mb-6">
-                    <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18]">{t('propertyDetail.bedroomsTitle', 'Bedrooms & Sleeping Arrangements')}</h2>
-                    <p className="text-[12px] text-[#726D63] hidden sm:block shrink-0">
+                    <h2 className="font-display headline-sm font-light text-pa-dark">{t('propertyDetail.bedroomsTitle', 'Bedrooms & Sleeping Arrangements')}</h2>
+                    <p className="caption text-pa-stone hidden sm:block shrink-0">
                       {t('propertyDetail.sleepsSummary', { beds: property.bedrooms, guests: property.maxGuests, defaultValue: '{{beds}} bedrooms · sleeps {{guests}}' })}
                     </p>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-7">
                     {property.rooms.map((room: any, roomIdx: number) => (
-                      <div key={roomIdx} className="pt-4 border-t border-[#E8E4DC]">
-                        <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#726D63] mb-3">{localizeRoomName(room.name, t)}</h3>
+                      <div key={roomIdx} className="pt-4 border-t border-pa-sand">
+                        <h3 className="overline font-semibold tracking-[0.12em] uppercase text-pa-stone mb-3">{localizeRoomName(room.name, t)}</h3>
                         {room.beds && room.beds.length > 0 ? (
                           <div className="space-y-2.5">
                             {room.beds.map((bed: any, bedIdx: number) => {
                               const { label, icon: BedIcon } = getBedTypeDisplay(bed.type, t);
                               return (
                                 <div key={bedIdx} className="flex items-center gap-2.5">
-                                  <BedIcon size={18} strokeWidth={1.5} className="text-[#8B7355] shrink-0" />
-                                  <span className="text-[13px] text-[#1A1A18]" style={{ fontWeight: 300 }}>
+                                  <BedIcon size={18} strokeWidth={1.5} className="text-pa-gold shrink-0" />
+                                  <span className="body-sm text-pa-dark font-light" >
                                     {bed.quantity > 1 ? `${bed.quantity} × ${t('bedType.' + label.replace(/\s/g, ''), label)}` : t('bedType.' + label.replace(/\s/g, ''), label)}
                                   </span>
                                 </div>
@@ -1440,7 +1450,7 @@ export default function PropertyDetail() {
                             })}
                           </div>
                         ) : (
-                          <span className="text-[12px] text-[#726D63]">{t('bedConfig.notAvailable')}</span>
+                          <span className="caption text-pa-stone">{t('bedConfig.notAvailable')}</span>
                         )}
                       </div>
                     ))}
@@ -1452,18 +1462,18 @@ export default function PropertyDetail() {
                   before paying four figures, answered from the home's own data.
                   Mirrors into FAQPage JSON-LD (see propertyGraph) so the same
                   answers are citable by Google and AI answer engines. */}
-              <section className="py-6 lg:py-8 border-t border-[#E8E4DC]">
-                <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-4">
+              <section className="py-6 lg:py-8 border-t border-pa-sand">
+                <h2 className="font-display headline-sm font-light text-pa-dark mb-4">
                   {t('pdpFaq.title', 'Good to know')}
                 </h2>
-                <div className="flex flex-col divide-y divide-[#E8E4DC] border-y border-[#E8E4DC]">
+                <div className="flex flex-col divide-y divide-pa-sand border-y border-pa-sand">
                   {pdpFaq.map((f, i) => (
                     <details key={i} className="group py-3">
-                      <summary className="flex items-center justify-between cursor-pointer list-none text-[14px] text-[#1A1A18] font-medium min-h-[32px]">
+                      <summary className="flex items-center justify-between cursor-pointer list-none body-sm text-pa-dark font-medium min-h-[32px]">
                         {f.q}
-                        <ChevronDown className="w-4 h-4 text-[#726D63] transition-transform group-open:rotate-180 shrink-0 ml-3" />
+                        <ChevronDown className="w-4 h-4 text-pa-stone transition-transform group-open:rotate-180 shrink-0 ml-3" />
                       </summary>
-                      <p className="text-[13.5px] text-[#726D63] leading-relaxed pt-2 pr-8" style={{ fontWeight: 300 }}>{f.a}</p>
+                      <p className="body-sm text-pa-stone leading-relaxed pt-2 pr-8 font-light" >{f.a}</p>
                     </details>
                   ))}
                 </div>
@@ -1479,18 +1489,18 @@ export default function PropertyDetail() {
                   One team, one standard — on every home. */}
               <section className="py-6 lg:py-10 text-center">
                 <span className="mx-auto block h-px w-10 bg-[#C9A876]/70 mb-7" />
-                <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#8B7355] mb-4">{t('propertyDetail.inHouseOverline', 'One team, one standard')}</p>
-                <h2 className="font-display text-[clamp(1.35rem,2.6vw,1.85rem)] font-light leading-[1.3] text-[#1A1A18] mb-5 max-w-[34rem] mx-auto">{t('propertyDetail.inHouseTitle', 'Everything here is ours — chefs, drivers, therapists, guides.')}</h2>
-                <p className="text-[14px] text-[#6B6860] leading-relaxed max-w-[40rem] mx-auto" style={{ fontWeight: 300 }}>{t('propertyDetail.inHouseBody', 'Not a marketplace of strangers. Every service and experience is run by our own in-house team and trusted local partners we work with daily — booked, coordinated, and accountable through one concierge. The way a great hotel operates, in a private home.')}</p>
+                <p className="overline font-semibold tracking-[0.2em] uppercase text-pa-gold mb-4">{t('propertyDetail.inHouseOverline', 'One team, one standard')}</p>
+                <h2 className="font-display headline-md font-light leading-[1.3] text-pa-dark mb-5 max-w-[34rem] mx-auto">{t('propertyDetail.inHouseTitle', 'Everything here is ours — chefs, drivers, therapists, guides.')}</h2>
+                <p className="body-sm text-pa-earth leading-relaxed max-w-[40rem] mx-auto font-light" >{t('propertyDetail.inHouseBody', 'Not a marketplace of strangers. Every service and experience is run by our own in-house team and trusted local partners we work with daily — booked, coordinated, and accountable through one concierge. The way a great hotel operates, in a private home.')}</p>
               </section>
 
               {/* 4. Services — in-house, delivered by our own team. Image-first
                   cards; whole card opens the request modal. */}
               <section>
-                <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-2">{t('propertyDetail.servicesTitle')}</h2>
+                <h2 className="font-display headline-sm font-light text-pa-dark mb-2">{t('propertyDetail.servicesTitle')}</h2>
                 {/* Homes booked on request say how fast the team confirms —
                     hotel tone, one promise (2 hours) site-wide. */}
-                <p className="body-md text-[#726D63] mb-6">
+                <p className="body-md text-pa-stone mb-6">
                   {(property as any).bookingMode === 'request'
                     ? t('propertyDetail.servicesSubtitleRequest')
                     : t('propertyDetail.servicesSubtitle')}
@@ -1501,9 +1511,9 @@ export default function PropertyDetail() {
                       key={service.slug}
                       type="button"
                       onClick={() => setModalProduct(service)}
-                      className="group block text-left bg-white border border-[#E8E4DC] rounded-xl overflow-hidden hover:border-[#8B7355]/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
+                      className="group block text-left bg-white border border-pa-sand rounded-xl overflow-hidden hover:border-pa-gold/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
                     >
-                      <div className="relative aspect-[4/3] bg-[#F5F1EB] overflow-hidden">
+                      <div className="relative aspect-[4/3] bg-pa-warm overflow-hidden">
                         {service.image ? (
                           <img
                             src={service.image}
@@ -1514,15 +1524,15 @@ export default function PropertyDetail() {
                         ) : null}
                       </div>
                       <div className="p-5">
-                        <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-2">{t('propertyDetail.serviceOverline', 'Concierge service')}</p>
-                        <h3 className="font-display text-[16px] text-[#1A1A18] mb-1.5 group-hover:text-[#8B7355] transition-colors">{service.name}</h3>
-                        <p className="text-[12.5px] text-[#6B6860] leading-relaxed mb-4 line-clamp-2" style={{ fontWeight: 300 }}>{service.tagline}</p>
-                        <div className="flex items-baseline justify-between pt-3 border-t border-[#E8E4DC]">
-                          <p className="text-[13px] font-medium text-[#1A1A18]">
+                        <p className="overline font-medium tracking-[0.12em] uppercase text-pa-gold mb-2">{t('propertyDetail.serviceOverline', 'Concierge service')}</p>
+                        <h3 className="font-display body-lg text-pa-dark mb-1.5 group-hover:text-pa-gold transition-colors">{service.name}</h3>
+                        <p className="body-sm text-pa-earth leading-relaxed mb-4 line-clamp-2 font-light" >{service.tagline}</p>
+                        <div className="flex items-baseline justify-between pt-3 border-t border-pa-sand">
+                          <p className="body-sm font-medium text-pa-dark">
                             {service.priceFrom ? t('propertyDetail.fromPrice', { price: Math.round(service.priceFrom).toLocaleString(intlLocale(i18n.language)) }) : t('bookingWidget.included')}
-                            <span className="text-[10px] text-[#726D63] font-normal ml-1">{service.priceSuffix}</span>
+                            <span className="caption text-pa-stone font-normal ml-1">{service.priceSuffix}</span>
                           </p>
-                          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium tracking-[0.06em] uppercase text-[#8B7355] group-hover:text-[#1A1A18] transition-colors">
+                          <span className="inline-flex items-center gap-1.5 overline font-medium tracking-[0.06em] uppercase text-pa-gold group-hover:text-pa-dark transition-colors">
                             {t('propertyDetail.requestService', 'Request')} <ArrowRight className="w-3 h-3" />
                           </span>
                         </div>
@@ -1537,8 +1547,8 @@ export default function PropertyDetail() {
                   "View all experiences" link. */}
               {adventures.length > 0 && (
                 <section>
-                  <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-2">{t('propertyDetail.adventuresTitle')}</h2>
-                  <p className="body-md text-[#726D63] mb-6">{t('propertyDetail.adventuresSubtitle', { destination: destName })}</p>
+                  <h2 className="font-display headline-sm font-light text-pa-dark mb-2">{t('propertyDetail.adventuresTitle')}</h2>
+                  <p className="body-md text-pa-stone mb-6">{t('propertyDetail.adventuresSubtitle', { destination: destName })}</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                     {adventures.slice(0, 6).map(adventure => {
                       const meta: string[] = [];
@@ -1548,9 +1558,9 @@ export default function PropertyDetail() {
                         <Link
                           key={adventure.slug}
                           href={`/experiences/${adventure.slug}`}
-                          className="group block bg-white border border-[#E8E4DC] rounded-xl overflow-hidden hover:border-[#8B7355]/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
+                          className="group block bg-white border border-pa-sand rounded-xl overflow-hidden hover:border-pa-gold/50 hover:shadow-[0_8px_24px_-12px_rgba(26,26,24,0.18)] transition-all duration-300"
                         >
-                          <div className="relative aspect-[4/3] bg-[#F5F1EB] overflow-hidden">
+                          <div className="relative aspect-[4/3] bg-pa-warm overflow-hidden">
                             {adventure.image ? (
                               <img
                                 src={adventure.image}
@@ -1562,7 +1572,7 @@ export default function PropertyDetail() {
                             {meta.length > 0 && (
                               <div className="absolute bottom-3 left-3 right-3 flex flex-wrap gap-1.5">
                                 {meta.slice(0, 2).map((m, i) => (
-                                  <span key={i} className="text-[10px] tracking-[0.06em] uppercase font-medium px-2 py-1 bg-black/60 text-white backdrop-blur-sm rounded-full">
+                                  <span key={i} className="overline tracking-[0.06em] uppercase font-medium px-2 py-1 bg-black/60 text-white backdrop-blur-sm rounded-full">
                                     {m}
                                   </span>
                                 ))}
@@ -1570,15 +1580,15 @@ export default function PropertyDetail() {
                             )}
                           </div>
                           <div className="p-5">
-                            <p className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-2">{t('propertyDetail.adventureOverline', 'Curated experience')}</p>
-                            <h3 className="font-display text-[16px] text-[#1A1A18] mb-1.5 group-hover:text-[#8B7355] transition-colors">{adventure.name}</h3>
-                            <p className="text-[12.5px] text-[#6B6860] leading-relaxed mb-4 line-clamp-2" style={{ fontWeight: 300 }}>{adventure.tagline}</p>
-                            <div className="flex items-baseline justify-between pt-3 border-t border-[#E8E4DC]">
-                              <p className="text-[13px] font-medium text-[#1A1A18]">
+                            <p className="overline font-medium tracking-[0.12em] uppercase text-pa-gold mb-2">{t('propertyDetail.adventureOverline', 'Curated experience')}</p>
+                            <h3 className="font-display body-lg text-pa-dark mb-1.5 group-hover:text-pa-gold transition-colors">{adventure.name}</h3>
+                            <p className="body-sm text-pa-earth leading-relaxed mb-4 line-clamp-2 font-light" >{adventure.tagline}</p>
+                            <div className="flex items-baseline justify-between pt-3 border-t border-pa-sand">
+                              <p className="body-sm font-medium text-pa-dark">
                                 {adventure.priceFrom ? t('propertyDetail.fromPrice', { price: Math.round(adventure.priceFrom).toLocaleString(intlLocale(i18n.language)) }) : t('propertyDetail.custom')}
-                                <span className="text-[10px] text-[#726D63] font-normal ml-1">{adventure.priceSuffix}</span>
+                                <span className="caption text-pa-stone font-normal ml-1">{adventure.priceSuffix}</span>
                               </p>
-                              <span className="inline-flex items-center gap-1.5 text-[11px] font-medium tracking-[0.06em] uppercase text-[#8B7355] group-hover:text-[#1A1A18] transition-colors">
+                              <span className="inline-flex items-center gap-1.5 overline font-medium tracking-[0.06em] uppercase text-pa-gold group-hover:text-pa-dark transition-colors">
                                 {t('propertyDetail.viewDetails', 'View')} <ArrowRight className="w-3 h-3" />
                               </span>
                             </div>
@@ -1589,7 +1599,7 @@ export default function PropertyDetail() {
                   </div>
                   <Link
                     href="/experiences"
-                    className="inline-flex items-center gap-2 mt-6 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors"
+                    className="inline-flex items-center gap-2 mt-6 body-sm font-medium text-pa-gold hover:text-pa-dark transition-colors"
                   >
                     {t('propertyDetail.viewAllExperiences', 'View all experiences')} <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
@@ -1599,15 +1609,15 @@ export default function PropertyDetail() {
               {/* 6. Location map — approximate pin (3 decimals ≈ 100 m, z=12):
                   the exact address is only shared after booking. */}
               <section>
-                <h2 className="font-display text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[#1A1A18] mb-2">{t('propertyDetail.locationTitle', 'Location')}</h2>
-                <p className="text-[13px] text-[#726D63] mb-4">
-                  <span className="font-medium text-[#8B7355]">{property.locality}</span>
+                <h2 className="font-display headline-sm font-light text-pa-dark mb-2">{t('propertyDetail.locationTitle', 'Location')}</h2>
+                <p className="body-sm text-pa-stone mb-4">
+                  <span className="font-medium text-pa-gold">{property.locality}</span>
                   {' · '}{t('location.approxNote', 'Approximate area — the exact address is shared after booking')}
                   {(property as any).licenseNumber && (
                     <> · {t('location.alLicense', 'AL registration {{number}}', { number: (property as any).licenseNumber })}</>
                   )}
                 </p>
-                <div className="rounded-xl overflow-hidden border border-[#E8E4DC]">
+                <div className="rounded-xl overflow-hidden border border-pa-sand">
                   <iframe
                     title={`${property.name} — ${property.locality}`}
                     className="w-full h-[300px] lg:h-[360px] border-0"
@@ -1648,16 +1658,16 @@ export default function PropertyDetail() {
 
         {/* Mobile: sticky booking bar at bottom */}
         <div
-          className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#E8E4DC] px-4 pt-3 z-40"
+          className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-pa-sand px-4 pt-3 z-40"
           style={{ paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))' }}
         >
           <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] text-[#1A1A18] font-medium">
+              <p className="body-sm text-pa-dark font-medium">
                 {t('property.selectDatesForPrice')}
               </p>
-              <p className="text-[11px] text-[#726D63] flex items-center gap-1 mt-0.5">
-                <BadgeCheck size={12} className="text-[#8B7355]" /> {t('property.conciergeShort')}
+              <p className="caption text-pa-stone flex items-center gap-1 mt-0.5">
+                <BadgeCheck size={12} className="text-pa-gold" /> {t('property.conciergeShort')}
               </p>
             </div>
             {/* Partner homes open the same drawer: the request form lives on
@@ -1685,14 +1695,14 @@ export default function PropertyDetail() {
         {/* Mobile: booking bottom-sheet — opened from the fixed bar. Keeps the
             full availability flow (calendar, guests, live quote) one tap away
             without an inline form blocking the content. Mobile only. */}
-        {property.guestyId && (
+        {(property.guestyId || tripwixUid) && (
           <Drawer open={bookingOpen} onOpenChange={setBookingOpen}>
             <DrawerContent className="lg:hidden bg-white max-h-[92vh]">
-              <DrawerHeader className="flex-row items-center justify-between gap-3 border-b border-[#E8E4DC] px-5 py-4 text-left">
-                <DrawerTitle className="font-display text-[16px] font-light text-[#1A1A18] truncate">
+              <DrawerHeader className="flex-row items-center justify-between gap-3 border-b border-pa-sand px-5 py-4 text-left">
+                <DrawerTitle className="font-display body-lg font-light text-pa-dark truncate">
                   {displayName}
                 </DrawerTitle>
-                <DrawerClose className="shrink-0 text-[#726D63] hover:text-[#1A1A18] transition-colors">
+                <DrawerClose className="shrink-0 text-pa-stone hover:text-pa-dark transition-colors">
                   <X size={20} />
                 </DrawerClose>
               </DrawerHeader>
@@ -1705,15 +1715,15 @@ export default function PropertyDetail() {
 
         {/* Related properties from same region */}
         {relatedProperties.length > 0 && (
-          <section className="section-padding bg-white border-t border-[#E8E4DC]">
+          <section className="section-padding bg-white border-t border-pa-sand">
             <div className="container">
               <div className="flex items-end justify-between mb-8">
                 <div>
-                  <p className="text-[11px] font-medium tracking-[0.08em] text-[#8B7355] mb-2 uppercase">{t('propertyDetail.moreIn', { destination: destName, defaultValue: `More in ${destName}` })}</p>
-                  <h2 className="headline-lg text-[#1A1A18]">{t('propertyDetail.relatedHomes', 'Related homes')}</h2>
+                  <p className="overline font-medium tracking-[0.08em] text-pa-gold mb-2 uppercase">{t('propertyDetail.moreIn', { destination: destName, defaultValue: `More in ${destName}` })}</p>
+                  <h2 className="headline-lg text-pa-dark">{t('propertyDetail.relatedHomes', 'Related homes')}</h2>
                 </div>
                 {destObj && (
-                  <Link href={`/destinations/${destObj.slug}`} className="hidden md:flex items-center gap-2 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors">
+                  <Link href={`/destinations/${destObj.slug}`} className="hidden md:flex items-center gap-2 body-sm font-medium text-pa-gold hover:text-pa-dark transition-colors">
                     {t('propertyDetail.allDestHomes', { destination: destName, defaultValue: `All ${destName} homes` })} <ArrowRight className="w-4 h-4" />
                   </Link>
                 )}

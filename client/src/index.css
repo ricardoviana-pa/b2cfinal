@@ -55,6 +55,7 @@
   --color-pa-sand: #E8E4DC;
   --color-pa-stone: #726D63;
   --color-pa-stone-aa: #78756F; /* WCAG AA compliant on #FAFAF7 (4.5:1) */
+  --color-pa-gold-aa: #806A48; /* gold for text on light backgrounds (AA) */
   --color-pa-earth: #6B6860;
   --color-pa-dark: #1A1A18;
   --color-pa-gold: #8B7355;
@@ -334,6 +335,15 @@
     font-weight: 300;
     line-height: 1.6;
     color: #6B6860;
+  }
+
+  /* Caption — metadata, helper text (12px) */
+  .caption {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 300;
+    line-height: 1.5;
+    color: #78756F;
   }
 
   /* Button text â UPPERCASE label style */

@@ -125,7 +125,7 @@ function Stepper({
       >
         <Minus className="w-3 h-3" />
       </button>
-      <span className="min-w-[2ch] text-center text-[13px] text-pa-dark tabular-nums">{value}</span>
+      <span className="min-w-[2ch] text-center body-sm text-pa-dark tabular-nums">{value}</span>
       <button
         type="button"
         onClick={() => onChange(Math.min(max, value + 1))}
@@ -180,13 +180,14 @@ function ChapterHeader({ num, chapter, destination }: { num: string; chapter: Ex
     : t(`checkout.chapter.${chapter}.line`);
   return (
     <div className="mb-8">
-      <p className="text-[12px] font-medium tracking-[0.14em] uppercase text-pa-gold mb-2.5">
+      <p className="caption font-medium tracking-[0.14em] uppercase text-pa-gold mb-2.5">
         {t("checkout.chapterLabel", { num })}
       </p>
       <h2 className="font-display font-normal text-[32px] lg:text-[48px] leading-[1.05] text-pa-dark">
         {t(`checkout.chapter.${chapter}.title`)}
       </h2>
-      <p className="text-[16px] lg:text-[17px] text-pa-earth mt-2.5">{line}</p>
+      {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
+      <p className="body-lg lg:text-[17px] text-pa-earth mt-2.5">{line}</p>
     </div>
   );
 }
@@ -219,7 +220,7 @@ function ReceptionChoiceCards({
       )}
     >
       <div className="flex items-center justify-between gap-3">
-        <span className="flex items-center gap-2 text-[15px] font-medium text-pa-dark">
+        <span className="flex items-center gap-2 body-sm font-medium text-pa-dark">
           {selected && (
             <span className="w-[18px] h-[18px] rounded-full bg-pa-dark flex items-center justify-center shrink-0">
               <Check className="w-3 h-3 text-white" />
@@ -229,24 +230,24 @@ function ReceptionChoiceCards({
         </span>
         {value}
       </div>
-      <p className="text-[13px] text-pa-earth leading-snug mt-2">{desc}</p>
+      <p className="body-sm text-pa-earth leading-snug mt-2">{desc}</p>
     </button>
   );
 
   return (
     <div id="reception-choice" className="space-y-2.5 scroll-mt-[150px]">
       {nudge && !choice ? (
-        <p className="text-[13px] text-pa-dark bg-pa-warm border border-pa-gold rounded-md px-3 py-2.5">
+        <p className="body-sm text-pa-dark bg-pa-warm border border-pa-gold rounded-md px-3 py-2.5">
           {t("checkout.reception.required")}
         </p>
       ) : (
-        <p className="text-[13px] text-pa-earth">{t("checkout.reception.prompt")}</p>
+        <p className="body-sm text-pa-earth">{t("checkout.reception.prompt")}</p>
       )}
       <div role="radiogroup" className={cn("grid sm:grid-cols-2 gap-3 rounded-lg transition-shadow", nudge && !choice && "ring-2 ring-pa-gold ring-offset-2")}>
         <Card
           selected={choice?.type === "self"}
           name={t("checkout.reception.self.name")}
-          value={<span className="text-[11px] font-medium tracking-[0.1em] uppercase text-pa-gold shrink-0">{t("checkout.included.badge")}</span>}
+          value={<span className="overline font-medium tracking-[0.1em] uppercase text-pa-gold shrink-0">{t("checkout.included.badge")}</span>}
           desc={t("checkout.reception.self.desc")}
           onClick={() => onChoose({ type: "self" })}
         />
@@ -254,7 +255,7 @@ function ReceptionChoiceCards({
           selected={choice?.type === "hosted"}
           name={t("checkout.reception.hosted.name")}
           value={
-            <span className="text-[15px] text-pa-dark tabular-nums shrink-0">
+            <span className="body-sm text-pa-dark tabular-nums shrink-0">
               {formatEur(choice?.type === "hosted" && choice?.late ? config.hostedLatePrice : config.hostedPrice, lang)}
             </span>
           }
@@ -265,14 +266,14 @@ function ReceptionChoiceCards({
 
       {choice?.type === "hosted" && (
         <div className="flex items-center gap-2 pt-0.5">
-          <span className="text-[11px] text-pa-stone-aa">{t("checkout.reception.arrivalWindow")}</span>
+          <span className="caption text-pa-stone-aa">{t("checkout.reception.arrivalWindow")}</span>
           {[false, true].map((late) => (
             <button
               key={String(late)}
               type="button"
               onClick={() => onChoose({ type: "hosted", late })}
               className={cn(
-                "text-[11.5px] px-3 py-1 rounded-full border transition-colors",
+                "caption text-inherit px-3 py-1 rounded-full border transition-colors",
                 (choice?.late ?? false) === late
                   ? "border-pa-dark bg-pa-dark text-white"
                   : "border-pa-sand text-pa-earth hover:border-pa-dark",
@@ -375,11 +376,11 @@ function OptionRow({
     <div className={cn("px-5 py-4 transition-colors", selected && "bg-pa-warm")}>
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="flex items-center gap-1.5 text-[15px] font-medium text-pa-dark">
+          <p className="flex items-center gap-1.5 body-sm font-medium text-pa-dark">
             {selected && <Check className="w-3.5 h-3.5 text-pa-gold shrink-0" strokeWidth={2.5} />}
             {t(`checkout.extras.${item.sku}.name`)}
           </p>
-          <p className={cn("text-[13px] leading-snug mt-0.5", selected && !onRequest ? "text-pa-dark" : "text-pa-earth")}>
+          <p className={cn("body-sm text-inherit leading-snug mt-0.5", selected && !onRequest ? "text-pa-dark" : "text-pa-earth")}>
             {selected && !onRequest && item.pricingModel !== "per_stay"
               ? selectionSummary(item, sel!, amount, lang, t)
               : t(`checkout.extras.${item.sku}.desc`)}
@@ -389,21 +390,21 @@ function OptionRow({
                confiança sussurra, não grita) */
             const proof = t(`checkout.proof.${item.sku}`, { defaultValue: "" });
             return proof && !selected ? (
-              <p className="text-[11px] text-pa-stone-aa mt-0.5">{proof}</p>
+              <p className="caption text-pa-stone-aa mt-0.5">{proof}</p>
             ) : null;
           })()}
           {item.fulfillment === "needs_confirmation" && !selected && (
-            <p className="inline-flex items-center gap-1 text-[10.5px] text-pa-stone-aa mt-1">
+            <p className="inline-flex items-center gap-1 caption text-pa-stone-aa mt-1">
               <Clock3 className="w-2.5 h-2.5" /> {t("checkout.confirm24h", "Confirmed within 24h")}
             </p>
           )}
           {!selected && item.pricingModel === "per_person_per_day" && item.unitPrice != null && (
-            <p className="text-[11px] text-pa-stone-aa mt-1 tabular-nums">
+            <p className="caption text-pa-stone-aa mt-1 tabular-nums">
               {`${Math.min(guests, 30)} ${String(t("checkout.peopleLabel", "People")).toLowerCase()} × ${Math.max(1, nights)} ${String(t("checkout.daysLabel", "Days")).toLowerCase()} = ${formatEur(item.unitPrice * Math.min(guests, 30) * Math.max(1, nights), lang)}`}
             </p>
           )}
           {item.fulfillment === "needs_confirmation" && !selected && (
-            <p className="text-[10.5px] text-pa-stone-aa mt-0.5">
+            <p className="caption text-pa-stone-aa mt-0.5">
               {t("checkout.confirm24hNote", "If we cannot secure it, the line is refunded automatically.")}
             </p>
           )}
@@ -411,26 +412,26 @@ function OptionRow({
 
         <div className="shrink-0 text-right">
           {onRequest ? (
-            <p className="text-[12px] text-pa-stone-aa max-w-[130px]">{t("checkout.conciergeQuote", "Quoted by your concierge")}</p>
+            <p className="caption text-pa-stone-aa max-w-[130px]">{t("checkout.conciergeQuote", "Quoted by your concierge")}</p>
           ) : item.pricingModel === "included_selectable" ? (
             <>
-              <p className="text-[11px] font-medium tracking-[0.1em] uppercase text-pa-gold">{t("checkout.included.badge")}</p>
-              <p className="text-[10.5px] text-pa-stone-aa">{t("checkout.firstIncluded", { price: formatEur(item.unitPrice!, lang) })}</p>
+              <p className="overline font-medium tracking-[0.1em] uppercase text-pa-gold">{t("checkout.included.badge")}</p>
+              <p className="caption text-pa-stone-aa">{t("checkout.firstIncluded", { price: formatEur(item.unitPrice!, lang) })}</p>
             </>
           ) : (
-            <p className="text-[14px] text-pa-dark tabular-nums">
+            <p className="body-sm text-pa-dark tabular-nums">
               {formatEur(item.unitPrice!, lang)}{" "}
-              <span className="text-[12px] text-pa-stone-aa">/ {unitSuffix()}</span>
+              <span className="caption text-pa-stone-aa">/ {unitSuffix()}</span>
             </p>
           )}
           {item.minPeople ? (
-            <p className="text-[11px] text-pa-stone-aa">{t("checkout.minPeople", { count: item.minPeople })}</p>
+            <p className="caption text-pa-stone-aa">{t("checkout.minPeople", { count: item.minPeople })}</p>
           ) : null}
           {!selected && (
             <button
               type="button"
               onClick={() => onToggle(item)}
-              className="mt-1.5 min-h-[44px] sm:min-h-[32px] px-4 rounded-full border border-pa-sand bg-white text-[11px] font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors"
+              className="mt-1.5 min-h-[44px] sm:min-h-[32px] px-4 rounded-full border border-pa-sand bg-white overline font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors"
             >
               {onRequest ? t("checkout.request", "Request") : t("checkout.add", "Add")}
             </button>
@@ -443,30 +444,30 @@ function OptionRow({
         <div className="flex items-center justify-between gap-4 mt-3 flex-wrap">
           <div className="flex items-center gap-4 flex-wrap">
             {item.pricingModel === "per_day" && (
-              <div className="flex items-center gap-2"><span className="text-[11px] text-pa-stone-aa">{t("checkout.daysLabel", "Days")}</span>
+              <div className="flex items-center gap-2"><span className="caption text-pa-stone-aa">{t("checkout.daysLabel", "Days")}</span>
                 <Stepper value={sel!.days ?? 1} min={1} max={Math.max(1, nights)} onChange={(v) => onAdjust(item.sku, { days: v })} ariaLabel={t("checkout.daysLabel", "Days")} /></div>
             )}
             {item.pricingModel === "included_selectable" && (
-              <div className="flex items-center gap-2"><span className="text-[11px] text-pa-stone-aa">{t("checkout.qtyLabel", "Quantity")}</span>
+              <div className="flex items-center gap-2"><span className="caption text-pa-stone-aa">{t("checkout.qtyLabel", "Quantity")}</span>
                 <Stepper value={sel!.qty ?? 1} min={item.minQty ?? 1} max={item.maxQty ?? 3} onChange={(v) => onAdjust(item.sku, { qty: v })} ariaLabel={t("checkout.qtyLabel", "Quantity")} /></div>
             )}
             {item.pricingModel === "per_unit" && (
-              <div className="flex items-center gap-2"><span className="text-[11px] text-pa-stone-aa">{item.sku.startsWith("transfer") ? t("checkout.tripsLabel", "Trips") : t("checkout.qtyLabel", "Quantity")}</span>
+              <div className="flex items-center gap-2"><span className="caption text-pa-stone-aa">{item.sku.startsWith("transfer") ? t("checkout.tripsLabel", "Trips") : t("checkout.qtyLabel", "Quantity")}</span>
                 <Stepper value={sel!.qty ?? 1} min={item.minQty ?? 1} max={item.maxQty ?? 10} onChange={(v) => onAdjust(item.sku, { qty: v })} ariaLabel={t("checkout.qtyLabel", "Quantity")} /></div>
             )}
             {(item.pricingModel === "per_person" || item.pricingModel === "per_person_per_unit" || item.pricingModel === "per_person_per_day") && (
-              <div className="flex items-center gap-2"><span className="text-[11px] text-pa-stone-aa">{t("checkout.peopleLabel", "People")}</span>
+              <div className="flex items-center gap-2"><span className="caption text-pa-stone-aa">{t("checkout.peopleLabel", "People")}</span>
                 <Stepper value={sel!.people ?? item.minPeople ?? Math.min(guests, 30)} min={item.minPeople ?? 1} max={30} onChange={(v) => onAdjust(item.sku, { people: v })} ariaLabel={t("checkout.peopleLabel", "People")} /></div>
             )}
             {item.pricingModel === "per_person_per_day" && (
               <>
-                <div className="flex items-center gap-2"><span className="text-[11px] text-pa-stone-aa">{t("checkout.daysLabel", "Days")}</span>
+                <div className="flex items-center gap-2"><span className="caption text-pa-stone-aa">{t("checkout.daysLabel", "Days")}</span>
                   <Stepper value={sel!.days ?? 1} min={1} max={Math.max(1, nights)} onChange={(v) => onAdjust(item.sku, { days: v })} ariaLabel={t("checkout.daysLabel", "Days")} /></div>
                 <button
                   type="button"
                   onClick={() => onAdjust(item.sku, { days: Math.max(1, nights) })}
                   className={cn(
-                    "text-[11px] px-3 py-1.5 rounded-full border transition-colors",
+                    "caption text-inherit px-3 py-1.5 rounded-full border transition-colors",
                     (sel!.days ?? 1) === Math.max(1, nights)
                       ? "border-pa-dark bg-pa-dark text-white"
                       : "border-pa-sand text-pa-earth hover:border-pa-dark",
@@ -477,7 +478,7 @@ function OptionRow({
               </>
             )}
             {item.pricingModel === "per_person_per_unit" && (
-              <div className="flex items-center gap-2"><span className="text-[11px] text-pa-stone-aa">{item.unitKey === "hour" ? t("checkout.hoursLabel", "Hours") : t("checkout.sessionsLabel", "Sessions")}</span>
+              <div className="flex items-center gap-2"><span className="caption text-pa-stone-aa">{item.unitKey === "hour" ? t("checkout.hoursLabel", "Hours") : t("checkout.sessionsLabel", "Sessions")}</span>
                 <Stepper value={sel!.sessions ?? 1} min={1} max={10} onChange={(v) => onAdjust(item.sku, { sessions: v })} ariaLabel={t("checkout.sessionsLabel", "Sessions")} /></div>
             )}
           </div>
@@ -485,7 +486,7 @@ function OptionRow({
             {(() => {
               const f = priceFormula(item, sel!, lang, t);
               return f ? (
-                <span className="text-[12px] text-pa-earth tabular-nums whitespace-nowrap">
+                <span className="caption text-pa-earth tabular-nums whitespace-nowrap">
                   {f}{amount != null && amount > 0 ? ` = ${formatEur(amount, lang)}` : ""}
                 </span>
               ) : null;
@@ -493,7 +494,7 @@ function OptionRow({
             <button
               type="button"
               onClick={() => onToggle(item)}
-              className="text-[11px] text-pa-stone-aa hover:text-pa-dark underline underline-offset-2 transition-colors"
+              className="caption text-pa-stone-aa hover:text-pa-dark underline underline-offset-2 transition-colors"
             >
               {t("checkout.remove", "Remove")}
             </button>
@@ -506,7 +507,7 @@ function OptionRow({
           <button
             type="button"
             onClick={() => onToggle(item)}
-            className="text-[11px] text-pa-stone-aa hover:text-pa-dark underline underline-offset-2 transition-colors"
+            className="caption text-pa-stone-aa hover:text-pa-dark underline underline-offset-2 transition-colors"
           >
             {t("checkout.remove", "Remove")}
           </button>
@@ -648,7 +649,7 @@ export default function CustomizeStep({
                 type="button"
                 onClick={() => jumpTo(c)}
                 className={cn(
-                  "shrink-0 text-[12px] tracking-[0.02em] transition-colors pb-0.5 border-b",
+                  "shrink-0 caption text-inherit tracking-[0.02em] transition-colors pb-0.5 border-b",
                   activeChapter === c
                     ? "text-pa-dark border-pa-gold font-medium"
                     : "text-pa-stone-aa border-transparent hover:text-pa-dark",
@@ -661,7 +662,7 @@ export default function CustomizeStep({
           <button
             type="button"
             onClick={onSkip}
-            className="shrink-0 text-[12px] text-pa-stone-aa hover:text-pa-dark underline underline-offset-2 transition-colors py-3"
+            className="shrink-0 caption text-pa-stone-aa hover:text-pa-dark underline underline-offset-2 transition-colors py-3"
           >
             {t("checkout.skipCustomize", "Skip personalization")}
           </button>
@@ -753,7 +754,7 @@ export default function CustomizeStep({
               return (
                 <div className="bg-white border border-pa-sand rounded-lg divide-y divide-pa-sand overflow-hidden mb-3">
                   <div className="px-5 py-3 flex items-center justify-between gap-2">
-                    <span className="text-[12px] text-pa-earth">{t("checkout.arrivalAirport", "Arrival airport")}</span>
+                    <span className="caption text-pa-earth">{t("checkout.arrivalAirport", "Arrival airport")}</span>
                     <div className="flex items-center gap-1.5">
                       {(["porto", "lisbon"] as const).map((ap) => (
                         <button
@@ -761,7 +762,7 @@ export default function CustomizeStep({
                           type="button"
                           onClick={() => switchAll(ap)}
                           className={cn(
-                            "text-[11.5px] px-3 py-1 rounded-full border transition-colors",
+                            "caption text-inherit px-3 py-1 rounded-full border transition-colors",
                             shownAp === ap
                               ? "border-pa-dark bg-pa-dark text-white"
                               : "border-pa-sand text-pa-earth hover:border-pa-dark",
@@ -810,7 +811,7 @@ export default function CustomizeStep({
             )}
             {detailRows.length > 0 && (
               <div className="mt-3">
-                <p className="text-[12px] font-medium tracking-[0.08em] uppercase text-pa-stone-aa mb-2">
+                <p className="caption font-medium tracking-[0.08em] uppercase text-pa-stone-aa mb-2">
                   {t("checkout.stayDetails.title", "Stay details")}
                 </p>
                 <div className="bg-white border border-pa-sand rounded-lg divide-y divide-pa-sand overflow-hidden">
@@ -834,7 +835,7 @@ export default function CustomizeStep({
               <button
                 type="button"
                 onClick={() => setExpanded((prev) => ({ ...prev, [chapter]: true }))}
-                className="mt-1 inline-flex items-center gap-1 min-h-[44px] text-[12px] text-pa-gold hover:text-pa-dark underline underline-offset-2 transition-colors"
+                className="mt-1 inline-flex items-center gap-1 min-h-[44px] caption text-pa-gold hover:text-pa-dark underline underline-offset-2 transition-colors"
               >
                 {t("checkout.seeMore", { count: hiddenCount })} <ChevronDown className="w-3 h-3" />
               </button>
@@ -892,11 +893,11 @@ export default function CustomizeStep({
                           )}
                         </div>
                         <div className="p-4 flex flex-col flex-1">
-                          <p className="text-[14px] font-medium text-pa-dark leading-snug">
+                          <p className="body-sm font-medium text-pa-dark leading-snug">
                             {t(`checkout.extras.${item.sku}.name`)}
                           </p>
                           <div className="mt-2 mt-auto space-y-2">
-                            <p className="text-[12px] text-pa-earth leading-snug">
+                            <p className="caption text-pa-earth leading-snug">
                               {item.priceFrom != null
                                 ? t("checkout.fromPrice", { price: formatEur(item.priceFrom, lang) })
                                 : t("checkout.onRequestShort", "on request")}
@@ -906,7 +907,7 @@ export default function CustomizeStep({
                               type="button"
                               onClick={() => onToggle(item)}
                               className={cn(
-                                "w-full min-h-[44px] sm:min-h-[36px] rounded-full border text-[10.5px] font-medium tracking-[0.08em] uppercase transition-colors",
+                                "w-full min-h-[44px] sm:min-h-[36px] rounded-full border overline text-inherit font-medium tracking-[0.08em] uppercase transition-colors",
                                 selected
                                   ? "bg-pa-dark border-pa-dark text-white"
                                   : "border-pa-sand text-pa-earth hover:border-pa-dark hover:text-pa-dark",
@@ -926,7 +927,7 @@ export default function CustomizeStep({
         );
       })}
 
-      <p className="text-[11.5px] text-pa-stone-aa leading-relaxed mt-10">
+      <p className="caption text-pa-stone-aa leading-relaxed mt-10">
         {t("checkout.extrasChargeNote")}
       </p>
     </div>

@@ -108,25 +108,25 @@ export default function FlexBlock({
           <p className="font-display text-[22px] text-pa-dark leading-snug">
             {t("checkout.flex.title", "Flex — guaranteed rebooking")}
           </p>
-          <p className="text-[12.5px] text-pa-earth mt-0.5">
+          <p className="body-sm text-pa-earth mt-0.5">
             {t("checkout.flex.tagline", "Rebook whenever you need. The amount you paid is never lost.")}
           </p>
         </div>
         <div className="text-right shrink-0 hidden sm:block max-w-[150px]">
-          <p className="text-[15px] text-pa-dark font-medium tabular-nums">{formatEur(config.price, lang)}</p>
-          <p className="text-[10px] text-pa-stone-aa leading-snug">{t("checkout.flex.percentNote", "10% of the nightly total, one-time")}</p>
+          <p className="body-sm text-pa-dark font-medium tabular-nums">{formatEur(config.price, lang)}</p>
+          <p className="caption text-pa-stone-aa leading-snug">{t("checkout.flex.percentNote", "10% of the nightly total, one-time")}</p>
         </div>
       </div>
 
       {/* Mobile: preço numa linha própria — à direita do título fazia cascata */}
-      <p className="sm:hidden mt-2 text-[13px] text-pa-dark tabular-nums">
+      <p className="sm:hidden mt-2 body-sm text-pa-dark tabular-nums">
         <span className="font-medium">{formatEur(config.price, lang)}</span>
-        <span className="text-pa-stone-aa text-[11px]"> · {t("checkout.flex.percentNote", "10% of the nightly total, one-time")}</span>
+        <span className="text-pa-stone-aa caption"> · {t("checkout.flex.percentNote", "10% of the nightly total, one-time")}</span>
       </p>
 
       <div className="mt-4 space-y-2">
         {benefits.map(({ icon: Icon, text }, i) => (
-          <div key={i} className="flex items-center gap-2 text-[12.5px] text-pa-earth">
+          <div key={i} className="flex items-center gap-2 body-sm text-pa-earth">
             <Icon className="w-3.5 h-3.5 text-pa-gold shrink-0" strokeWidth={1.8} />
             {text}
           </div>
@@ -134,7 +134,7 @@ export default function FlexBlock({
       </div>
 
       {/* Contextual coherence line — changes with the selected rate plan */}
-      <p className="mt-3 text-[12px] leading-relaxed text-pa-dark bg-pa-warm border border-pa-sand rounded-md px-3 py-2.5">
+      <p className="mt-3 caption leading-relaxed text-pa-dark bg-pa-warm border border-pa-sand rounded-md px-3 py-2.5">
         {contextualCopy}
       </p>
 
@@ -142,7 +142,7 @@ export default function FlexBlock({
         <button
           type="button"
           onClick={() => setRulesOpen(true)}
-          className="inline-flex items-center gap-0.5 text-[12px] text-pa-gold hover:text-pa-dark transition-colors underline underline-offset-2"
+          className="inline-flex items-center gap-0.5 caption text-pa-gold hover:text-pa-dark transition-colors underline underline-offset-2"
         >
           {t("checkout.flex.howItWorks", "How it works")}
           <ChevronRight className="w-3 h-3" />
@@ -158,7 +158,7 @@ export default function FlexBlock({
           }}
           aria-pressed={selected}
           className={cn(
-            "min-h-[40px] px-5 rounded-full border text-[11px] font-medium tracking-[0.08em] uppercase transition-colors",
+            "min-h-[40px] px-5 rounded-full border overline text-inherit font-medium tracking-[0.08em] uppercase transition-colors",
             selected
               ? "bg-pa-gold border-pa-gold text-white"
               : "border-pa-gold text-pa-gold hover:bg-pa-gold hover:text-white",
@@ -182,14 +182,14 @@ export default function FlexBlock({
               <p className="font-display text-[20px] text-pa-dark">
                 {t("checkout.flex.title", "Flex — guaranteed rebooking")}
               </p>
-              <p className="text-[12.5px] text-pa-earth mt-1">
+              <p className="body-sm text-pa-earth mt-1">
                 {formatEur(config.price, lang)} · {t("checkout.flex.perBooking", "one-time, per booking")}
               </p>
             </div>
             <ol className="space-y-2.5">
               {rules.map((rule, i) => (
-                <li key={i} className="flex gap-2.5 text-[12.5px] leading-relaxed text-pa-earth">
-                  <span className="shrink-0 w-4 h-4 rounded-full bg-pa-warm text-pa-gold text-[10px] flex items-center justify-center mt-0.5">
+                <li key={i} className="flex gap-2.5 body-sm leading-relaxed text-pa-earth">
+                  <span className="shrink-0 w-4 h-4 rounded-full bg-pa-warm text-pa-gold caption flex items-center justify-center mt-0.5">
                     {i + 1}
                   </span>
                   {rule}
@@ -198,7 +198,7 @@ export default function FlexBlock({
             </ol>
             {/* Honesty rule: cash refund inside the free-cancellation window is a
                 right — Flex never replaces it (spec §6) */}
-            <p className="text-[12px] leading-relaxed text-pa-dark bg-pa-warm border border-pa-sand rounded-md px-3 py-2.5">
+            <p className="caption leading-relaxed text-pa-dark bg-pa-warm border border-pa-sand rounded-md px-3 py-2.5">
               {t("checkout.flex.honesty")}
             </p>
           </div>

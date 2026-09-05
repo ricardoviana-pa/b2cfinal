@@ -380,7 +380,7 @@ export default function Home() {
   );
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7] min-w-0 w-full">
+    <div className="min-h-screen bg-pa-cream min-w-0 w-full">
       <StructuredData id="home-faq" data={homeFaq} />
       <Header variant="transparent" />
       {/* On mobile the floating button sits exactly over the hero search card's
@@ -412,40 +412,36 @@ export default function Home() {
         <div className="relative container z-10">
           <div className="max-w-2xl">
             <p
-              className="text-[15px] font-medium text-white/70 mb-5"
-              style={{ fontFamily: 'var(--font-body)', letterSpacing: '0.08em' }}
+              className="body-sm font-medium text-white/70 mb-5 font-body"
+              style={{letterSpacing: '0.08em'}}
             >
               {t('home.heroOverline')}
             </p>
             <h1
-              className="text-white mb-6 leading-[1.08]"
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontWeight: 400,
-                letterSpacing: '-0.02em',
-                fontSize: 'clamp(2.75rem, 6vw, 5.25rem)',
-              }}
+              className="text-white mb-6 leading-[1.08] font-display font-normal"
+              style={{letterSpacing: '-0.02em',
+                fontSize: 'clamp(2.75rem, 6vw, 5.25rem)'}}
             >
               {t('home.heroTitle')}
             </h1>
             <p
-              className="text-[18px] md:text-[20px] text-white/80 mb-6 lg:mb-4 leading-relaxed max-w-xl"
-              style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+              className="body-lg md:text-[20px] text-white/80 mb-6 lg:mb-4 leading-relaxed max-w-xl font-body font-light"
+              
             >
               {t('home.heroBody')}
             </p>
 
             {/* Proof strip — above CTAs so it never collides with booking bar */}
             <div className="hidden lg:flex hero-proof-strip flex-wrap items-center gap-x-5 gap-y-1 mb-4">
-              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+              <span className="body-sm text-white/60 font-medium font-body" >
                 {t('home.proofHotels', { homes: HOME_COUNT_LABEL, defaultValue: '{{homes}} private hotels' })}
               </span>
               <span className="text-white/25">·</span>
-              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+              <span className="body-sm text-white/60 font-medium font-body" >
                 {t('home.proofRating', '4.8★ guest rating')}
               </span>
               <span className="text-white/25">·</span>
-              <span className="text-[13px] text-white/60 font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+              <span className="body-sm text-white/60 font-medium font-body" >
                 {t('home.proofManaged', 'Hotel-managed stays')}
               </span>
             </div>
@@ -453,7 +449,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/homes"
-                className="inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full bg-white text-[#1A1A18] text-[13px] font-semibold hover:bg-[#F5F1EB] transition-colors"
+                className="inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full bg-white text-pa-dark body-sm font-semibold hover:bg-pa-warm transition-colors"
                 style={{ letterSpacing: '1.5px' }}
               >
                 {t('home.heroCta')} <ArrowRight className="w-4 h-4" />
@@ -462,7 +458,7 @@ export default function Home() {
                 href="https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden sm:inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full border border-white/50 text-white text-[13px] font-semibold hover:bg-white/10 transition-colors"
+                className="hidden sm:inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full border border-white/50 text-white body-sm font-semibold hover:bg-white/10 transition-colors"
                 style={{ letterSpacing: '1.5px' }}
               >
                 {t('home.heroCtaConcierge')} <ArrowRight className="w-4 h-4" />
@@ -476,18 +472,18 @@ export default function Home() {
           <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg p-3 space-y-2">
             {/* Destination */}
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#726D63] pointer-events-none" />
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pa-stone pointer-events-none" />
               <select
                 value={searchDest}
                 onChange={e => setSearchDest(e.target.value)}
                 aria-label={t('home.searchDestination')}
-                className="w-full h-[44px] rounded-lg border border-[#E8E4DC] bg-white pl-9 pr-3 text-[14px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer appearance-none"
-                style={{ fontFamily: 'var(--font-body)' }}
+                className="w-full h-[44px] rounded-lg border border-pa-sand bg-white pl-9 pr-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer appearance-none"
+                
               >
                 <option value="">{t('home.searchDestination')}</option>
                 {cityOptions}
               </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#726D63] pointer-events-none" />
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-pa-stone pointer-events-none" />
             </div>
             {/* Dates — <input type=date> ignores `placeholder`, and on iOS its
                 native render layer paints over any overlaid HTML label. So the
@@ -496,8 +492,8 @@ export default function Home() {
                 drive the picker. Robust on iOS + Android + desktop. */}
             <div className="grid grid-cols-2 gap-2">
               <div className="relative">
-                <div className="w-full h-[44px] rounded-lg border border-[#E8E4DC] bg-white px-3 flex items-center text-[14px]" style={{ fontFamily: 'var(--font-body)' }}>
-                  <span className={searchCheckin ? 'text-[#1A1A18]' : 'text-[#6B6860]'}>
+                <div className="w-full h-[44px] rounded-lg border border-pa-sand bg-white px-3 flex items-center body-sm text-inherit font-body" >
+                  <span className={searchCheckin ? 'text-pa-dark' : 'text-pa-earth'}>
                     {searchCheckin ? fmtSearchDate(searchCheckin) : t('home.searchCheckin', 'Check-in')}
                   </span>
                 </div>
@@ -511,8 +507,8 @@ export default function Home() {
                 />
               </div>
               <div className="relative">
-                <div className="w-full h-[44px] rounded-lg border border-[#E8E4DC] bg-white px-3 flex items-center text-[14px]" style={{ fontFamily: 'var(--font-body)' }}>
-                  <span className={searchCheckout ? 'text-[#1A1A18]' : 'text-[#6B6860]'}>
+                <div className="w-full h-[44px] rounded-lg border border-pa-sand bg-white px-3 flex items-center body-sm text-inherit font-body" >
+                  <span className={searchCheckout ? 'text-pa-dark' : 'text-pa-earth'}>
                     {searchCheckout ? fmtSearchDate(searchCheckout) : t('home.searchCheckout', 'Check-out')}
                   </span>
                 </div>
@@ -529,22 +525,22 @@ export default function Home() {
             </div>
             {/* Guests + Search */}
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 flex-1 h-[44px] rounded-lg border border-[#E8E4DC] bg-white px-3 min-w-0">
+              <div className="flex items-center gap-1.5 flex-1 h-[44px] rounded-lg border border-pa-sand bg-white px-3 min-w-0">
                 <button
                   type="button"
                   onClick={() => setSearchGuests(g => Math.max(1, g - 1))}
                   disabled={searchGuests <= 1}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] disabled:opacity-30 shrink-0"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-pa-sand text-pa-stone disabled:opacity-30 shrink-0"
                   aria-label={t('home.decreaseGuests', 'Decrease guests')}
                 >
                   <Minus className="w-3 h-3" />
                 </button>
-                <span className="text-[14px] text-[#1A1A18] tabular-nums flex-1 text-center whitespace-nowrap">{searchGuests} {t('home.searchGuests')}</span>
+                <span className="body-sm text-pa-dark tabular-nums flex-1 text-center whitespace-nowrap">{searchGuests} {t('home.searchGuests')}</span>
                 <button
                   type="button"
                   onClick={() => setSearchGuests(g => Math.min(30, g + 1))}
                   disabled={searchGuests >= 30}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] disabled:opacity-30 shrink-0"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-pa-sand text-pa-stone disabled:opacity-30 shrink-0"
                   aria-label={t('home.increaseGuests', 'Increase guests')}
                 >
                   <Plus className="w-3 h-3" />
@@ -576,7 +572,7 @@ export default function Home() {
                     search_source: 'hero_mobile',
                   });
                 }}
-                className="shrink-0 h-[44px] px-5 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
+                className="shrink-0 h-[44px] px-5 rounded-full bg-pa-dark text-white caption font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
                 style={{ letterSpacing: '1.5px' }}
               >
                 {t('home.searchButton')}
@@ -599,17 +595,17 @@ export default function Home() {
                 value={searchDest}
                 onChange={e => setSearchDest(e.target.value)}
                 aria-label={t('home.searchDestination')}
-                className="w-full h-full pl-6 pr-3 bg-transparent text-[#1A1A18] text-[14px] focus:outline-none cursor-pointer appearance-none"
-                style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
+                className="w-full h-full pl-6 pr-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer appearance-none"
+                
               >
                 <option value="">{t('home.searchDestination')}</option>
                 {cityOptions}
               </select>
-              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#726D63] pointer-events-none" />
+              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-pa-stone pointer-events-none" />
             </div>
 
             {/* Divider */}
-            <div className="w-px h-6 bg-[#E8E4DC]" />
+            <div className="w-px h-6 bg-pa-sand" />
 
             {/* Check-in */}
             <div className="relative flex-1 h-full cursor-pointer">
@@ -619,18 +615,18 @@ export default function Home() {
                 min={today}
                 onChange={e => handleCheckinChange(e.target.value, false)}
                 aria-label={t('home.searchCheckin', 'Check-in')}
-                className={`w-full h-full px-4 bg-transparent text-[14px] focus:outline-none cursor-pointer ${searchCheckin ? 'text-[#1A1A18]' : 'text-transparent'}`}
-                style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
+                className={`w-full h-full px-4 bg-transparent body-sm text-inherit focus:outline-none cursor-pointer ${searchCheckin ? 'text-pa-dark' : 'text-transparent'}`}
+                
               />
               {!searchCheckin && (
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[14px] text-[#726D63] pointer-events-none" style={{ fontFamily: 'var(--font-body)' }}>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 body-sm text-pa-stone pointer-events-none font-body" >
                   {t('home.searchCheckin', 'Check-in')}
                 </span>
               )}
             </div>
 
             {/* Arrow */}
-            <ArrowRight className="w-3.5 h-3.5 text-[#726D63] flex-shrink-0" />
+            <ArrowRight className="w-3.5 h-3.5 text-pa-stone flex-shrink-0" />
 
             {/* Check-out */}
             <div className="relative flex-1 h-full cursor-pointer">
@@ -641,39 +637,39 @@ export default function Home() {
                 min={searchCheckin || today}
                 onChange={e => setSearchCheckout(e.target.value)}
                 aria-label={t('home.searchCheckout', 'Check-out')}
-                className={`w-full h-full px-4 bg-transparent text-[14px] focus:outline-none cursor-pointer ${searchCheckout ? 'text-[#1A1A18]' : 'text-transparent'}`}
-                style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
+                className={`w-full h-full px-4 bg-transparent body-sm text-inherit focus:outline-none cursor-pointer ${searchCheckout ? 'text-pa-dark' : 'text-transparent'}`}
+                
               />
               {!searchCheckout && (
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[14px] text-[#726D63] pointer-events-none" style={{ fontFamily: 'var(--font-body)' }}>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 body-sm text-pa-stone pointer-events-none font-body" >
                   {t('home.searchCheckout', 'Check-out')}
                 </span>
               )}
             </div>
 
             {/* Divider */}
-            <div className="w-px h-6 bg-[#E8E4DC]" />
+            <div className="w-px h-6 bg-pa-sand" />
 
             {/* Guests */}
             <div className="flex items-center h-full px-4 gap-2.5">
-              <Users className="w-3.5 h-3.5 text-[#726D63] flex-shrink-0" />
+              <Users className="w-3.5 h-3.5 text-pa-stone flex-shrink-0" />
               <button
                 type="button"
                 onClick={() => setSearchGuests(g => Math.max(1, g - 1))}
                 disabled={searchGuests <= 1}
-                className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                className="flex h-6 w-6 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold disabled:opacity-30"
                 aria-label={t('home.decreaseGuests', 'Decrease guests')}
               >
                 <Minus className="w-2.5 h-2.5" />
               </button>
-              <span className="text-[14px] text-[#1A1A18] tabular-nums whitespace-nowrap" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
-                {searchGuests} <span className="text-[#726D63] lowercase">{t('home.searchGuests')}</span>
+              <span className="body-sm text-pa-dark tabular-nums whitespace-nowrap font-body font-normal" >
+                {searchGuests} <span className="text-pa-stone lowercase">{t('home.searchGuests')}</span>
               </span>
               <button
                 type="button"
                 onClick={() => setSearchGuests(g => Math.min(30, g + 1))}
                 disabled={searchGuests >= 30}
-                className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                className="flex h-6 w-6 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold disabled:opacity-30"
                 aria-label={t('home.increaseGuests', 'Increase guests')}
               >
                 <Plus className="w-2.5 h-2.5" />
@@ -707,7 +703,7 @@ export default function Home() {
                   search_source: 'hero_desktop',
                 });
               }}
-              className="flex-shrink-0 h-[50px] mr-1.5 px-8 rounded-full bg-[#1A1A18] text-white text-[13px] font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
+              className="flex-shrink-0 h-[50px] mr-1.5 px-8 rounded-full bg-pa-dark text-white body-sm font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
               style={{ letterSpacing: '1.5px' }}
             >
               {t('home.searchButton')}
@@ -718,7 +714,7 @@ export default function Home() {
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 2: USP BAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <section ref={s2Ref} className="fade-in relative z-10 mb-2 md:mb-0 w-full min-w-0">
-        <div className="w-full bg-[#FAFAF7] border-y border-[#E8E4DC] shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
+        <div className="w-full bg-pa-cream border-y border-pa-sand shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
           <div className="container grid grid-cols-4 gap-0">
               {[
                 {
@@ -748,11 +744,13 @@ export default function Home() {
                 }`;
                 const inner = (
                 <>
-                  <div className="mb-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#E8E4DC] bg-[#FAFAF7] text-[#8B7355] sm:mb-3 sm:h-9 sm:w-9">
+                  <div className="mb-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-pa-sand bg-pa-cream text-pa-gold sm:mb-3 sm:h-9 sm:w-9">
                     {item.icon}
                   </div>
-                  <p className="text-[9px] font-medium uppercase leading-tight tracking-[0.08em] text-[#1A1A18] sm:text-[10px] sm:tracking-[0.1em] md:text-[11px] md:tracking-[0.12em]">{item.title}</p>
-                  <p className="mt-1 max-w-none text-[9px] leading-tight text-[#726D63] sm:text-[10px] sm:leading-snug md:text-[12px] md:leading-[1.55]" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{item.sub}</p>
+                  {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
+                  <p className="overline font-medium uppercase leading-tight tracking-[0.08em] text-pa-dark sm:text-[10px] sm:tracking-[0.1em] md:text-[11px] md:tracking-[0.12em]">{item.title}</p>
+                  {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
+                  <p className="mt-1 max-w-none caption leading-tight text-pa-stone sm:text-[10px] sm:leading-snug md:text-[12px] md:leading-[1.55] font-body font-light" >{item.sub}</p>
                 </>
                 );
                 // The rate badge is a claim with terms — it links to them.
@@ -767,10 +765,10 @@ export default function Home() {
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 3: OUR HOMES Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <section ref={s3Ref} className="fade-in cv-auto section-padding bg-white">
         <div className="container">
-          <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.homesOverline')}</p>
+          <p className="caption font-medium text-pa-gold mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.homesOverline')}</p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
             <div>
-              <h2 className="headline-lg text-[#1A1A18] mb-3">{t('home.homesTitle')}</h2>
+              <h2 className="headline-lg text-pa-dark mb-3">{t('home.homesTitle')}</h2>
               <p className="body-md max-w-2xl">
                 {t('home.homesBody')}
               </p>
@@ -809,7 +807,7 @@ export default function Home() {
           <div className="mt-10 text-center">
             <Link
               href="/homes"
-              className="inline-flex items-center gap-2 text-[11px] font-semibold text-[#1A1A18] hover:text-[#8B7355] transition-colors"
+              className="inline-flex items-center gap-2 caption font-semibold text-pa-dark hover:text-pa-gold transition-colors"
               style={{ letterSpacing: '1.5px' }}
             >
               {t('home.exploreAllHomes')} <ArrowRight className="w-4 h-4" />
@@ -824,7 +822,7 @@ export default function Home() {
       {/* Quiet credibility band — warm surface with hairlines (same treatment
           as the About stats band) instead of the old near-black slab, which
           broke the page's light rhythm mid-scroll. */}
-      <section ref={s4Ref} className="fade-in cv-auto bg-[#F5F1EB] border-y border-[#E8E4DC]">
+      <section ref={s4Ref} className="fade-in cv-auto bg-pa-warm border-y border-pa-sand">
         <div className="container py-12 lg:py-16">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 divide-x divide-[#E1DACE]">
             {[
@@ -835,12 +833,12 @@ export default function Home() {
             ].map((stat, i) => (
               <div key={i} className="text-center px-2">
                 <p
-                  className="text-[#1A1A18]"
-                  style={{ fontFamily: 'var(--font-display)', fontWeight: 300, fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1 }}
+                  className="text-pa-dark font-display font-light"
+                  style={{fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1}}
                 >
                   {stat.value}
                 </p>
-                <p className="mt-2 text-[11px] tracking-[0.18em] uppercase text-[#8B7355]" style={{ fontFamily: 'var(--font-body)' }}>
+                <p className="mt-2 overline tracking-[0.18em] uppercase text-pa-gold font-body" >
                   {stat.label}
                 </p>
               </div>
@@ -852,8 +850,8 @@ export default function Home() {
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 5: HOW IT WORKS Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <section ref={s5Ref} className="fade-in cv-auto section-padding bg-white">
         <div className="container">
-          <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.howItWorksOverline')}</p>
-          <h2 className="headline-lg text-[#1A1A18] mb-10 max-w-lg">{t('home.howItWorksTitle')}</h2>
+          <p className="caption font-medium text-pa-gold mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.howItWorksOverline')}</p>
+          <h2 className="headline-lg text-pa-dark mb-10 max-w-lg">{t('home.howItWorksTitle')}</h2>
 
           <div className="flex gap-6 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-3 md:gap-8 lg:gap-12 md:overflow-visible">
             {[
@@ -875,13 +873,13 @@ export default function Home() {
             ].map((step, i) => (
               <div key={i} className="relative flex-shrink-0 w-[260px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
                 <p
-                  className="font-display text-[4rem] leading-none mb-4"
-                  style={{ color: 'rgba(139,115,85,0.12)', fontWeight: 400 }}
+                  className="font-display text-[4rem] leading-none mb-4 font-normal"
+                  style={{color: 'rgba(139,115,85,0.12)'}}
                 >
                   {step.num}
                 </p>
-                <h3 className="text-[1.1rem] font-display text-[#1A1A18] mb-3">{step.title}</h3>
-                <p className="text-[15px] text-[#6B6860] leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{step.body}</p>
+                <h3 className="text-[1.1rem] font-display text-pa-dark mb-3">{step.title}</h3>
+                <p className="body-sm text-pa-earth leading-relaxed font-body font-light" >{step.body}</p>
               </div>
             ))}
           </div>
@@ -911,8 +909,8 @@ export default function Home() {
           {/* Right: text (40%) */}
           <div className="lg:col-span-2 flex items-center px-8 py-14 lg:px-14 lg:py-16 bg-white">
             <div className="max-w-md">
-              <p className="text-[12px] font-medium text-[#8B7355] mb-4" style={{ letterSpacing: '0.08em' }}>{t('home.conceptOverline')}</p>
-              <h2 className="headline-lg text-[#1A1A18] mb-5">{t('home.conceptTitle')}</h2>
+              <p className="caption font-medium text-pa-gold mb-4" style={{ letterSpacing: '0.08em' }}>{t('home.conceptOverline')}</p>
+              <h2 className="headline-lg text-pa-dark mb-5">{t('home.conceptTitle')}</h2>
               <p className="body-md mb-8">
                 {t('home.conceptBody')}
               </p>
@@ -936,12 +934,12 @@ export default function Home() {
                   },
                 ].map((pillar, i) => (
                   <div key={i} className="flex gap-4">
-                    <div className="flex-shrink-0 w-9 h-9 rounded-full bg-[#F5F1EB] flex items-center justify-center text-[#8B7355]">
+                    <div className="flex-shrink-0 w-9 h-9 rounded-full bg-pa-warm flex items-center justify-center text-pa-gold">
                       {pillar.icon}
                     </div>
                     <div>
-                      <p className="text-[14px] font-semibold text-[#1A1A18] mb-1">{pillar.title}</p>
-                      <p className="text-[13px] text-[#6B6860] leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{pillar.body}</p>
+                      <p className="body-sm font-semibold text-pa-dark mb-1">{pillar.title}</p>
+                      <p className="body-sm text-pa-earth leading-relaxed font-body font-light" >{pillar.body}</p>
                     </div>
                   </div>
                 ))}
@@ -953,12 +951,12 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 7: DESTINATIONS Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s7Ref} className="fade-in cv-auto section-padding bg-[#FAFAF7]">
+      <section ref={s7Ref} className="fade-in cv-auto section-padding bg-pa-cream">
         <div className="container">
-          <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.destOverline')}</p>
+          <p className="caption font-medium text-pa-gold mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.destOverline')}</p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
             <div>
-              <h2 className="headline-lg text-[#1A1A18] mb-3">{t('home.destTitle')}</h2>
+              <h2 className="headline-lg text-pa-dark mb-3">{t('home.destTitle')}</h2>
               <p className="body-md max-w-2xl">
                 {t('home.destBody')}
               </p>
@@ -969,7 +967,7 @@ export default function Home() {
             {activeDestinations.map(dest => {
               return (
                 <Link key={dest.id} href={`/destinations/${dest.slug}`} className="group block flex-shrink-0 w-[240px] sm:w-[260px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
-                  <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '3/4' }}>
+                  <div className="relative overflow-hidden bg-pa-sand" style={{ aspectRatio: '3/4' }}>
                     {dest.coverImage ? (
                       <img
                         src={dest.coverImage}
@@ -984,7 +982,7 @@ export default function Home() {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                     {dest.comingSoon && (
-                      <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 text-[10px] font-medium tracking-[0.06em] uppercase text-[#6B6860]">
+                      <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 overline font-medium tracking-[0.06em] uppercase text-pa-earth">
                         {t('home.destComingSoon', 'Coming soon')}
                       </span>
                     )}
@@ -992,7 +990,7 @@ export default function Home() {
                       <h3 className="text-white text-[1.25rem] font-display">{dest.name}</h3>
                     </div>
                   </div>
-                  <p className="text-[13px] text-[#6B6860] mt-3 leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
+                  <p className="body-sm text-pa-earth mt-3 leading-relaxed font-body font-light" >
                     {dest.description}
                   </p>
                 </Link>
@@ -1003,10 +1001,10 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 8: EXPERIENCES Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s8Ref} className="fade-in cv-auto section-padding bg-[#F5F1EB]">
+      <section ref={s8Ref} className="fade-in cv-auto section-padding bg-pa-warm">
         <div className="container">
-          <p className="text-[12px] font-medium text-[#8B7355] mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.expOverline')}</p>
-          <h2 className="headline-lg text-[#1A1A18] mb-10">{t('home.expTitle')}</h2>
+          <p className="caption font-medium text-pa-gold mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.expOverline')}</p>
+          <h2 className="headline-lg text-pa-dark mb-10">{t('home.expTitle')}</h2>
 
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible">
             {[
@@ -1038,7 +1036,7 @@ export default function Home() {
               },
             ].map((exp, i) => (
               <Link key={i} href={exp.href} className="group block flex-shrink-0 w-[220px] sm:w-auto" style={{ scrollSnapAlign: 'start' }}>
-                <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '3/4' }}>
+                <div className="relative overflow-hidden bg-pa-sand" style={{ aspectRatio: '3/4' }}>
                   {(exp as any).video ? (
                     <LazyVideo
                       src={(exp as any).video}
@@ -1058,7 +1056,7 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <h3 className="text-white text-[1rem] font-display mb-1">{exp.title}</h3>
-                    <p className="text-white/70 text-[12px] leading-relaxed" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{exp.body}</p>
+                    <p className="text-white/70 caption leading-relaxed font-body font-light" >{exp.body}</p>
                   </div>
                 </div>
               </Link>
@@ -1068,19 +1066,19 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 9: SOCIAL PROOF Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <Suspense fallback={<div className="py-16 md:py-24 lg:py-32 bg-[#FAFAF7]" />}>
+      <Suspense fallback={<div className="py-16 md:py-24 lg:py-32 bg-pa-cream" />}>
         <ReviewsSection ref={s9Ref} />
       </Suspense>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 10: OWNERS CTA Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s10Ref} className="fade-in cv-auto bg-[#1A1A18]">
+      <section ref={s10Ref} className="fade-in cv-auto bg-pa-dark">
         <div className="container py-16 lg:py-20">
           <div className="max-w-2xl mx-auto text-center">
-            <p className="text-[12px] font-medium text-[#C4A87C] mb-4" style={{ letterSpacing: '0.08em' }}>{t('home.ownersOverline')}</p>
+            <p className="caption font-medium text-pa-gold-light mb-4" style={{ letterSpacing: '0.08em' }}>{t('home.ownersOverline')}</p>
             <h2 className="headline-lg text-white mb-5">{t('home.ownersTitle')}</h2>
             <p
-              className="text-[16px] text-white/55 mb-8 leading-relaxed"
-              style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
+              className="body-lg text-white/55 mb-8 leading-relaxed font-body font-light"
+              
             >
               {t('home.ownersBody')}
             </p>
@@ -1088,12 +1086,12 @@ export default function Home() {
               href="https://management.portugalactive.com"
               target="_blank"
               rel="noopener noreferrer nofollow"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-white/30 text-white text-[11px] font-semibold hover:bg-white/10 transition-colors"
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-white/30 text-white caption font-semibold hover:bg-white/10 transition-colors"
               style={{ letterSpacing: '1.5px' }}
             >
               {t('home.ownersCta')} <ArrowRight className="w-4 h-4" />
             </a>
-            <p className="text-[12px] text-white/35 mt-3" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>{t('home.ownersNote')}</p>
+            <p className="caption text-white/35 mt-3 font-body font-light" >{t('home.ownersNote')}</p>
           </div>
         </div>
       </section>
@@ -1102,8 +1100,8 @@ export default function Home() {
       <section className="cv-auto bg-white">
         <div className="container py-12 lg:py-16">
           <p
-            className="text-center text-[11px] font-medium text-[#726D63] mb-8 lg:mb-10"
-            style={{ letterSpacing: '0.14em', fontFamily: 'var(--font-body)' }}
+            className="text-center caption font-medium text-pa-stone mb-8 lg:mb-10 font-body"
+            style={{letterSpacing: '0.14em'}}
           >
             {t('home.pressOverline')}
           </p>

@@ -521,7 +521,7 @@ export default function Homes() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FAFAF7]">
+      <div className="min-h-screen bg-pa-cream">
         <Header />
         <div className="container py-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
@@ -544,14 +544,14 @@ export default function Homes() {
 
   if (isError) {
     return (
-      <div className="min-h-screen bg-[#FAFAF7]">
+      <div className="min-h-screen bg-pa-cream">
         <Header />
         <section className="section-padding">
           <div className="container max-w-lg text-center">
-            <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#F5F1EB]">
-              <AlertTriangle className="w-6 h-6 text-[#726D63]" />
+            <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-pa-warm">
+              <AlertTriangle className="w-6 h-6 text-pa-stone" />
             </div>
-            <h2 className="headline-md text-[#1A1A18] mb-3">{t('homes.loadErrorTitle', 'Something went wrong')}</h2>
+            <h2 className="headline-md text-pa-dark mb-3">{t('homes.loadErrorTitle', 'Something went wrong')}</h2>
             <p className="body-md mb-8">{t('homes.loadErrorBody', 'We couldn\'t load the properties. Please try again.')}</p>
             <button onClick={() => refetch()} className="btn-primary">{t('homes.retry', 'RETRY')}</button>
           </div>
@@ -562,7 +562,7 @@ export default function Homes() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7]">
+    <div className="min-h-screen bg-pa-cream">
       {homesGraph && <StructuredData id="homes-graph" data={homesGraph} />}
       <Header />
 
@@ -579,12 +579,12 @@ export default function Homes() {
       </section>
 
       {/* Sticky: homepage-style search + filters in one dense band */}
-      <div className="sticky top-16 md:top-20 z-30 bg-[#FAFAF7]/95 backdrop-blur-md border-b border-[#E8E4DC]">
+      <div className="sticky top-16 md:top-20 z-30 bg-pa-cream/95 backdrop-blur-md border-b border-pa-sand">
         <div className="container py-2.5 md:py-3">
           {/* Desktop — pill (same as homepage) */}
           <div className="hidden lg:flex justify-center mb-2.5 md:mb-3">
             <div
-              className="flex items-center w-full max-w-[780px] rounded-full bg-white shadow-[0_6px_32px_rgba(0,0,0,0.08)] overflow-hidden border border-[#E8E4DC]/60"
+              className="flex items-center w-full max-w-[780px] rounded-full bg-white shadow-[0_6px_32px_rgba(0,0,0,0.08)] overflow-hidden border border-pa-sand/60"
               style={{ height: '56px' }}
             >
               <div className="flex-1 relative h-full min-w-0">
@@ -595,15 +595,15 @@ export default function Homes() {
                     setBookingLocation(v);
                     setLocation(v || 'all');
                   }}
-                  className="w-full h-full pl-6 pr-8 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer appearance-none truncate"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
+                  className="w-full h-full pl-6 pr-8 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer appearance-none truncate"
+                  
                 >
                   <option value="">{t('home.searchDestination')}</option>
                   {cityOptions}
                 </select>
-                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#726D63] pointer-events-none" />
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-pa-stone pointer-events-none" />
               </div>
-              <div className="w-px h-6 bg-[#E8E4DC] shrink-0" />
+              <div className="w-px h-6 bg-pa-sand shrink-0" />
               <div
                 className="flex-1 min-w-0 h-full cursor-pointer"
                 onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); (inp as HTMLInputElement | null)?.showPicker?.(); }}
@@ -618,11 +618,11 @@ export default function Homes() {
                     if (bookingCheckout && bookingCheckout <= e.target.value) setBookingCheckout('');
                     setTimeout(() => checkOutRef.current?.showPicker?.(), 50);
                   }}
-                  className="w-full h-full px-3 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
+                  className="w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer"
+                  
                 />
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-[#726D63] flex-shrink-0" aria-hidden />
+              <ArrowRight className="w-3.5 h-3.5 text-pa-stone flex-shrink-0" aria-hidden />
               <div
                 className="flex-1 min-w-0 h-full cursor-pointer"
                 onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); (inp as HTMLInputElement | null)?.showPicker?.(); }}
@@ -633,30 +633,30 @@ export default function Homes() {
                   min={minCheckOut}
                   value={bookingCheckout}
                   onChange={e => setBookingCheckout(e.target.value)}
-                  className="w-full h-full px-3 bg-transparent text-[#1A1A18] text-[13px] focus:outline-none cursor-pointer"
-                  style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}
+                  className="w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer"
+                  
                 />
               </div>
-              <div className="w-px h-6 bg-[#E8E4DC] shrink-0" />
+              <div className="w-px h-6 bg-pa-sand shrink-0" />
               <div className="flex items-center h-full px-3 gap-2 shrink-0">
-                <Users className="w-3.5 h-3.5 text-[#726D63] flex-shrink-0" aria-hidden />
+                <Users className="w-3.5 h-3.5 text-pa-stone flex-shrink-0" aria-hidden />
                 <button
                   type="button"
                   onClick={() => setBookingGuests(g => Math.max(1, g - 1))}
                   disabled={bookingGuests <= 1}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                  className="flex h-6 w-6 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold disabled:opacity-30"
                   aria-label={t('home.decreaseGuests', 'Decrease guests')}
                 >
                   <Minus className="w-2.5 h-2.5" />
                 </button>
-                <span className="text-[13px] text-[#1A1A18] tabular-nums whitespace-nowrap" style={{ fontFamily: 'var(--font-body)', fontWeight: 400 }}>
-                  {bookingGuests} <span className="text-[#726D63] lowercase">{t('home.searchGuests')}</span>
+                <span className="body-sm text-pa-dark tabular-nums whitespace-nowrap font-body font-normal" >
+                  {bookingGuests} <span className="text-pa-stone lowercase">{t('home.searchGuests')}</span>
                 </span>
                 <button
                   type="button"
                   onClick={() => setBookingGuests(g => Math.min(30, g + 1))}
                   disabled={bookingGuests >= 30}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] transition-colors hover:border-[#8B7355] hover:text-[#8B7355] disabled:opacity-30"
+                  className="flex h-6 w-6 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold disabled:opacity-30"
                   aria-label={t('home.increaseGuests', 'Increase guests')}
                 >
                   <Plus className="w-2.5 h-2.5" />
@@ -665,7 +665,7 @@ export default function Homes() {
               <button
                 type="button"
                 onClick={applyBookingSearch}
-                className="flex-shrink-0 h-[44px] mr-1.5 px-6 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
+                className="flex-shrink-0 h-[44px] mr-1.5 px-6 rounded-full bg-pa-dark text-white caption font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
                 style={{ letterSpacing: '1.5px' }}
               >
                 {t('home.searchButton')}
@@ -675,7 +675,7 @@ export default function Homes() {
 
           {/* Mobile — card stack (homepage style), then filter row */}
           <div className="lg:hidden mb-3">
-            <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[#E8E4DC]/80 p-4 space-y-3">
+            <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-pa-sand/80 p-4 space-y-3">
               <div className="relative">
                 <select
                   value={bookingLocation}
@@ -684,13 +684,13 @@ export default function Homes() {
                     setBookingLocation(v);
                     setLocation(v || 'all');
                   }}
-                  className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white pl-3 pr-9 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer appearance-none"
-                  style={{ fontFamily: 'var(--font-body)' }}
+                  className="w-full h-[48px] rounded-lg border border-pa-sand bg-white pl-3 pr-9 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer appearance-none"
+                  
                 >
                   <option value="">{t('home.searchDestination')}</option>
                   {cityOptions}
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#726D63] pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pa-stone pointer-events-none" />
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div
@@ -706,8 +706,8 @@ export default function Homes() {
                       if (bookingCheckout && bookingCheckout <= e.target.value) setBookingCheckout('');
                       setTimeout(() => checkOutRef.current?.showPicker?.(), 50);
                     }}
-                    className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
-                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="w-full h-[48px] rounded-lg border border-pa-sand bg-white px-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer"
+                    
                   />
                 </div>
                 <div
@@ -720,29 +720,29 @@ export default function Homes() {
                     min={minCheckOut}
                     value={bookingCheckout}
                     onChange={e => setBookingCheckout(e.target.value)}
-                    className="w-full h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3 text-[13px] text-[#1A1A18] focus:ring-2 focus:ring-[#8B7355] focus:outline-none cursor-pointer"
-                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="w-full h-[48px] rounded-lg border border-pa-sand bg-white px-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer"
+                    
                   />
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 flex-1 h-[48px] rounded-lg border border-[#E8E4DC] bg-white px-3">
-                  <Users className="w-4 h-4 text-[#726D63] shrink-0" aria-hidden />
+                <div className="flex items-center gap-2 flex-1 h-[48px] rounded-lg border border-pa-sand bg-white px-3">
+                  <Users className="w-4 h-4 text-pa-stone shrink-0" aria-hidden />
                   <button
                     type="button"
                     onClick={() => setBookingGuests(g => Math.max(1, g - 1))}
                     disabled={bookingGuests <= 1}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] disabled:opacity-30"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-pa-sand text-pa-stone disabled:opacity-30"
                     aria-label={t('home.decreaseGuests', 'Decrease guests')}
                   >
                     <Minus className="w-3 h-3" />
                   </button>
-                  <span className="text-[13px] text-[#1A1A18] tabular-nums flex-1 text-center">{bookingGuests} {t('home.searchGuests')}</span>
+                  <span className="body-sm text-pa-dark tabular-nums flex-1 text-center">{bookingGuests} {t('home.searchGuests')}</span>
                   <button
                     type="button"
                     onClick={() => setBookingGuests(g => Math.min(30, g + 1))}
                     disabled={bookingGuests >= 30}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E8E4DC] text-[#726D63] disabled:opacity-30"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-pa-sand text-pa-stone disabled:opacity-30"
                     aria-label={t('home.increaseGuests', 'Increase guests')}
                   >
                     <Plus className="w-3 h-3" />
@@ -751,7 +751,7 @@ export default function Homes() {
                 <button
                   type="button"
                   onClick={applyBookingSearch}
-                  className="shrink-0 h-[48px] px-5 rounded-full bg-[#1A1A18] text-white text-[11px] font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
+                  className="shrink-0 h-[48px] px-5 rounded-full bg-pa-dark text-white caption font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
                   style={{ letterSpacing: '1.5px' }}
                 >
                   {t('home.searchButton')}
@@ -790,19 +790,19 @@ export default function Homes() {
                   value={value}
                   onChange={(e) => set(e.target.value)}
                   aria-label={anyLabel}
-                  className={`appearance-none h-9 rounded-full border pl-4 pr-8 text-[13px] font-sans cursor-pointer transition-colors ${
+                  className={`appearance-none h-9 rounded-full border pl-4 pr-8 body-sm text-inherit font-sans cursor-pointer transition-colors ${
                     value !== 'all'
-                      ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
-                      : 'bg-white text-[#6B6860] border-[#E8E4DC] hover:border-[#8B7355]'
+                      ? 'bg-pa-dark text-white border-pa-dark'
+                      : 'bg-white text-pa-earth border-pa-sand hover:border-pa-gold'
                   }`}
                 >
                   <option value="all">{anyLabel}</option>
                   {options.map(([v, label]) => <option key={v} value={v}>{label}</option>)}
                 </select>
-                <ChevronDown className={`w-3.5 h-3.5 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none ${value !== 'all' ? 'text-white' : 'text-[#8B7355]'}`} />
+                <ChevronDown className={`w-3.5 h-3.5 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none ${value !== 'all' ? 'text-white' : 'text-pa-gold'}`} />
               </span>
             ))}
-            <span aria-hidden className="h-5 w-px bg-[#E8E4DC] shrink-0 mx-0.5 hidden md:block" />
+            <span aria-hidden className="h-5 w-px bg-pa-sand shrink-0 mx-0.5 hidden md:block" />
             {([
               [poolOnly, setPoolOnly, t('homes.filters.pool', 'Pool')],
               [heatedPoolOnly, setHeatedPoolOnly, t('homes.filters.heatedPool', 'Heated pool')],
@@ -813,10 +813,10 @@ export default function Homes() {
                 type="button"
                 onClick={() => set(!active)}
                 aria-pressed={active}
-                className={`h-9 px-4 rounded-full border text-[13px] whitespace-nowrap shrink-0 transition-colors ${
+                className={`h-9 px-4 rounded-full border body-sm text-inherit whitespace-nowrap shrink-0 transition-colors ${
                   active
-                    ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
-                    : 'bg-white text-[#6B6860] border-[#E8E4DC] hover:border-[#8B7355]'
+                    ? 'bg-pa-dark text-white border-pa-dark'
+                    : 'bg-white text-pa-earth border-pa-sand hover:border-pa-gold'
                 }`}
               >
                 {label}
@@ -826,10 +826,10 @@ export default function Homes() {
               type="button"
               onClick={() => setShowMap((v) => !v)}
               aria-pressed={showMap}
-              className={`ml-auto inline-flex items-center gap-1.5 h-9 px-4 rounded-full border text-[13px] whitespace-nowrap shrink-0 transition-colors ${
+              className={`ml-auto inline-flex items-center gap-1.5 h-9 px-4 rounded-full border body-sm text-inherit whitespace-nowrap shrink-0 transition-colors ${
                 showMap
-                  ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
-                  : 'bg-white text-[#6B6860] border-[#E8E4DC] hover:border-[#8B7355]'
+                  ? 'bg-pa-dark text-white border-pa-dark'
+                  : 'bg-white text-pa-earth border-pa-sand hover:border-pa-gold'
               }`}
             >
               <MapIcon className="w-3.5 h-3.5" />
@@ -838,7 +838,7 @@ export default function Homes() {
           </div>
 
           {showMap && (
-            <Suspense fallback={<div className="h-[340px] lg:h-[420px] rounded-xl bg-[#F5F1EB] animate-pulse mb-8" />}>
+            <Suspense fallback={<div className="h-[340px] lg:h-[420px] rounded-xl bg-pa-warm animate-pulse mb-8" />}>
               <HomesMap
                 properties={(hasDates && !quotesLoading ? availableProperties : filtered) as any}
                 fromPrices={fromPrices as any}
@@ -848,10 +848,10 @@ export default function Homes() {
           )}
 
           <div className="flex items-center justify-between mb-4">
-            <p className="text-[13px] text-[#78756F]">
+            <p className="body-sm text-pa-stone-aa">
               {hasDates && !quotesLoading ? (
                 <>
-                  <span className="font-medium text-[#1A1A18]">{availableProperties.length}</span> {t('homes.availableForDates', 'homes available')}
+                  <span className="font-medium text-pa-dark">{availableProperties.length}</span> {t('homes.availableForDates', 'homes available')}
                   {unavailableProperties.length > 0 && (
                     <span> · {unavailableProperties.length} {t('homes.unavailableCount', 'unavailable')}</span>
                   )}
@@ -869,8 +869,8 @@ export default function Homes() {
             <div className="flex items-center gap-3">
               {quotesLoading && hasDates && (
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full border-2 border-[#8B7355] border-t-transparent animate-spin" />
-                  <span className="text-[12px] text-[#8B7355] font-medium">{t('homes.checkingAvailability', 'Checking live availability...')}</span>
+                  <div className="w-3 h-3 rounded-full border-2 border-pa-gold border-t-transparent animate-spin" />
+                  <span className="caption text-pa-gold font-medium">{t('homes.checkingAvailability', 'Checking live availability...')}</span>
                 </div>
               )}
               <select
@@ -879,7 +879,7 @@ export default function Homes() {
                 /* min-w keeps the longest option ("Recommended") from being
                    clipped on narrow screens; shrink-0 stops the status line
                    from squeezing it. */
-                className="text-[13px] text-[#6B6860] bg-transparent border border-[#E8E4DC] px-3 py-2 font-sans min-w-[150px] shrink-0"
+                className="body-sm text-pa-earth bg-transparent border border-pa-sand px-3 py-2 font-sans min-w-[150px] shrink-0"
               >
                 {SORT_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
               </select>
@@ -888,21 +888,21 @@ export default function Homes() {
 
           {/* All unavailable — nudge user */}
           {hasDates && !quotesLoading && availableProperties.length === 0 && unavailableProperties.length > 0 && (
-            <div className="text-center py-8 mb-8 bg-[#F5F1EB] rounded-lg">
-              <p className="text-[15px] font-display text-[#1A1A18] mb-2">
+            <div className="text-center py-8 mb-8 bg-pa-warm rounded-lg">
+              <p className="body-sm font-display text-pa-dark mb-2">
                 {t('homes.noneAvailable', 'No homes available for these dates')}
               </p>
               {/* Say WHY, and offer the nearest dates that satisfy the rule —
                   "no availability" alone sent a real enquiry to a competitor. */}
               {searchHint?.reason === 'tooLong' ? (
-                <p className="text-[13px] text-[#726D63] mb-4">
+                <p className="body-sm text-pa-stone mb-4">
                   {t('homes.hintTooLong', {
                     count: searchHint.nights,
                     defaultValue: 'That search covers {{count}} nights. Here are the stays available in that period:',
                   })}
                 </p>
               ) : searchHint?.reason === 'arrivalRestricted' ? (
-                <p className="text-[13px] text-[#726D63] mb-4">
+                <p className="body-sm text-pa-stone mb-4">
                   {t('homes.hintArrival', {
                     days: (searchHint.arrivalWeekdays ?? [])
                       .map(w => new Intl.DateTimeFormat(i18n.language, { weekday: 'long', timeZone: 'UTC' })
@@ -913,14 +913,14 @@ export default function Homes() {
                   })}
                 </p>
               ) : searchHint?.reason === 'minStay' ? (
-                <p className="text-[13px] text-[#726D63] mb-4">
+                <p className="body-sm text-pa-stone mb-4">
                   {t('homes.hintMinStay', {
                     count: searchHint.minNights ?? 0,
                     defaultValue: 'These dates need a minimum stay of {{count}} nights.',
                   })}
                 </p>
               ) : (
-                <p className="text-[13px] text-[#726D63] mb-4">
+                <p className="body-sm text-pa-stone mb-4">
                   {t('homes.noneAvailableHint', 'Try adjusting your dates or speak with our concierge')}
                 </p>
               )}
@@ -961,7 +961,7 @@ export default function Homes() {
                         key={w.checkIn}
                         type="button"
                         onClick={() => goTo(w)}
-                        className="min-h-[44px] px-4 border border-[#E8E4DC] bg-white text-[13px] text-[#1A1A18] hover:border-[#8B7355] transition-colors"
+                        className="min-h-[44px] px-4 border border-pa-sand bg-white body-sm text-pa-dark hover:border-pa-gold transition-colors"
                       >
                         {label(w)}
                       </button>
@@ -971,12 +971,12 @@ export default function Homes() {
               })()}
               {/* Even when no dates work, the enquiry is worth having. */}
               {leadSent ? (
-                <p className="text-[13px] text-[#1A1A18] mb-4 max-w-md mx-auto">
+                <p className="body-sm text-pa-dark mb-4 max-w-md mx-auto">
                   {t('homes.leadThanks', "Thank you — we'll come back to you with options for these dates.")}
                 </p>
               ) : (
                 <form onSubmit={submitLead} className="max-w-md mx-auto mb-4" noValidate>
-                  <p className="text-[12px] text-[#726D63] mb-2">
+                  <p className="caption text-pa-stone mb-2">
                     {t('homes.leadPrompt', 'Want us to check these exact dates for you?')}
                   </p>
                   <div className="flex flex-col sm:flex-row gap-2">
@@ -986,7 +986,7 @@ export default function Homes() {
                       onChange={e => setLeadName(e.target.value)}
                       placeholder={t('homes.leadName', 'Name')}
                       autoComplete="name"
-                      className="h-[44px] px-3 border border-[#E8E4DC] bg-white text-[14px] sm:w-1/3 focus:outline-none focus:border-[#8B7355]"
+                      className="h-[44px] px-3 border border-pa-sand bg-white body-sm text-inherit sm:w-1/3 focus:outline-none focus:border-pa-gold"
                     />
                     <input
                       type="email"
@@ -996,7 +996,7 @@ export default function Homes() {
                       placeholder={t('homes.leadEmail', 'Email')}
                       autoComplete="email"
                       inputMode="email"
-                      className="h-[44px] px-3 border border-[#E8E4DC] bg-white text-[14px] flex-1 focus:outline-none focus:border-[#8B7355]"
+                      className="h-[44px] px-3 border border-pa-sand bg-white body-sm text-inherit flex-1 focus:outline-none focus:border-pa-gold"
                     />
                     <button
                       type="submit"
@@ -1006,7 +1006,7 @@ export default function Homes() {
                       {createLead.isPending ? '…' : t('homes.leadSend', 'Send')}
                     </button>
                   </div>
-                  {leadError && <p className="text-[11px] text-red-600 mt-1.5" role="alert">{leadError}</p>}
+                  {leadError && <p className="caption text-inherit text-red-600 mt-1.5" role="alert">{leadError}</p>}
                 </form>
               )}
 
@@ -1026,7 +1026,7 @@ export default function Homes() {
           {batchFailed && hasDates && (
             <div className="flex items-center gap-3 bg-[#FEF3C7] border border-[#F59E0B]/30 rounded-lg px-4 py-3 mb-6">
               <AlertTriangle className="w-4 h-4 text-[#D97706] shrink-0" />
-              <p className="text-[13px] text-[#92400E]">
+              <p className="body-sm text-[#92400E]">
                 {t('homes.batchError', 'Live pricing is temporarily unavailable. See each property page for final pricing.')}
               </p>
             </div>
@@ -1038,7 +1038,7 @@ export default function Homes() {
               {hasDates && !quotesLoading && unavailableProperties.length > 0 && (
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-2 h-2 rounded-full bg-[#22C55E]" />
-                  <h2 className="text-[13px] font-semibold tracking-[0.06em] uppercase text-[#1A1A18]">
+                  <h2 className="body-sm font-semibold tracking-[0.06em] uppercase text-pa-dark">
                     {t('homes.availableSection', 'Available for your dates')}
                   </h2>
                 </div>
@@ -1087,7 +1087,7 @@ export default function Homes() {
                 <div className="flex justify-center mt-8">
                   <button
                     onClick={() => setShowAll(true)}
-                    className="px-6 py-3 border border-[#E8E4DC] rounded-full text-sm font-medium text-[#1A1A18] hover:bg-[#F5F1EB] transition-colors"
+                    className="px-6 py-3 border border-pa-sand rounded-full body-sm font-medium text-pa-dark hover:bg-pa-warm transition-colors"
                   >
                     {t('homes.showAll', 'Show all properties')} ({availableProperties.length})
                   </button>
@@ -1099,14 +1099,14 @@ export default function Homes() {
           {/* SECTION 2: Unavailable properties (portfolio visibility — "try other dates") */}
           {hasDates && !quotesLoading && unavailableProperties.length > 0 && (
             <div className="mt-12 md:mt-16">
-              <div className="border-t border-[#E8E4DC] pt-8 mb-6">
+              <div className="border-t border-pa-sand pt-8 mb-6">
                 <div className="flex items-center gap-2 mb-1">
-                  <div className="w-2 h-2 rounded-full bg-[#726D63]" />
-                  <h2 className="text-[13px] font-semibold tracking-[0.06em] uppercase text-[#726D63]">
+                  <div className="w-2 h-2 rounded-full bg-pa-stone" />
+                  <h2 className="body-sm font-semibold tracking-[0.06em] uppercase text-pa-stone">
                     {t('homes.unavailableSection', 'Unavailable for selected dates')}
                   </h2>
                 </div>
-                <p className="text-[12px] text-[#726D63] ml-4">
+                <p className="caption text-pa-stone ml-4">
                   {t('homes.unavailableHint', 'These homes may be available for different dates. Contact our concierge for alternatives.')}
                 </p>
               </div>
@@ -1152,10 +1152,10 @@ export default function Homes() {
           {/* No results */}
           {filtered.length === 0 && (
             <div className="text-center py-16 md:py-24 max-w-md mx-auto">
-              <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#F5F1EB]">
-                <Search className="w-5 h-5 text-[#726D63]" />
+              <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-pa-warm">
+                <Search className="w-5 h-5 text-pa-stone" />
               </div>
-              <h3 className="headline-sm text-[#1A1A18] mb-2">{t('homes.noMatch', 'No homes match your criteria')}</h3>
+              <h3 className="headline-sm text-pa-dark mb-2">{t('homes.noMatch', 'No homes match your criteria')}</h3>
               <p className="body-md mb-8">{t('homes.noMatchHint', 'Try adjusting your filters or contact our team for help.')}</p>
               <div className="flex items-center justify-center gap-4 flex-wrap">
                 <button onClick={clearFilters} className="btn-primary">{t('filters.clearAll')}</button>
@@ -1176,7 +1176,7 @@ export default function Homes() {
       </section>
 
       {/* Answer capsule — citable collection summary for AI engines (bottom, not blocking listings) */}
-      <section className="pt-8 pb-4 bg-[#FAFAF7]">
+      <section className="pt-8 pb-4 bg-pa-cream">
         <div className="container max-w-3xl mx-auto">
           <AnswerCapsule
             question="What properties does Portugal Active offer?"
