@@ -25,11 +25,12 @@ const articles = ((blogData as any).articles as BlogArticle[])
   .sort((a, b) => (b.publishDate || "").localeCompare(a.publishDate || ""));
 
 const FALLBACK_IMAGES: Record<string, string> = {
-  destinations: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&q=80&auto=format&fit=crop',
-  lifestyle: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80&auto=format&fit=crop',
-  'portugal-active': 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80&auto=format&fit=crop',
-  video: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&q=80&auto=format&fit=crop',
-  people: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80&auto=format&fit=crop',
+  destinations: "/destinations/minho-coast.webp",
+  guides: "/hero/home-villa.webp",
+  lifestyle: "/experiences/exp-wellness.webp",
+  "portugal-active": "/hero/about-team-suite.webp",
+  video: "/videos/can-am-poster.webp",
+  people: "/experiences/team-curation.webp",
 };
 
 function getArticleImage(article: BlogArticle): string {

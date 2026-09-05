@@ -224,8 +224,8 @@ export default function BlogArticle() {
       <section className="pb-12">
         <div className="container max-w-4xl mx-auto">
           <img
-            src={cdnResize((article as any).coverImage || (article as any).featuredImage || 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1200&q=80&auto=format&fit=crop', 1280)}
-            srcSet={cdnSrcSet((article as any).coverImage || (article as any).featuredImage || 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1200&q=80&auto=format&fit=crop', [640, 960, 1280])}
+            src={cdnResize((article as any).coverImage || (article as any).featuredImage || '/images/destinations/minho-coast.webp', 1280)}
+            srcSet={cdnSrcSet((article as any).coverImage || (article as any).featuredImage || '/images/destinations/minho-coast.webp', [640, 960, 1280])}
             sizes="(min-width: 896px) 896px, 100vw"
             alt={`${article.title} – Portugal Active journal`}
             className="w-full aspect-[16/9] object-cover"
@@ -397,8 +397,8 @@ export default function BlogArticle() {
                 <Link key={a.id} href={`/blog/${a.slug}`} className="group block">
                   <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] mb-4">
                     <img
-                      src={cdnResize((a as any).coverImage || (a as any).featuredImage || 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&q=80&auto=format&fit=crop', 768)}
-                      srcSet={cdnSrcSet((a as any).coverImage || (a as any).featuredImage || 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&q=80&auto=format&fit=crop', [400, 640, 768])}
+                      src={cdnResize((a as any).coverImage || (a as any).featuredImage || '/images/destinations/minho-coast.webp', 768)}
+                      srcSet={cdnSrcSet((a as any).coverImage || (a as any).featuredImage || '/images/destinations/minho-coast.webp', [400, 640, 768])}
                       sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw"
                       alt={`${a.title} – Portugal Active journal`}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"

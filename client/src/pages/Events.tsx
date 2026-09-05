@@ -373,7 +373,7 @@ export default function Events() {
           ================================================================ */}
       <section className="relative overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=80&auto=format&fit=crop"
+          src="/events/events-venue-showcase.webp"
           alt="Elegant outdoor dining setup"
           className="absolute inset-0 w-full h-full object-cover"
           width={1600}
