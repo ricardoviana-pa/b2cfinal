@@ -916,13 +916,13 @@ function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
   }
   if (prop.petsAllowed === true) {
     faq.push(pt
-      ? { q: 'Posso levar o meu animal de estimação?', a: `Sim — ${name} aceita animais de estimação. Avisa-nos ao reservar; pode aplicar-se uma pequena taxa adicional.` }
+      ? { q: 'Posso levar o meu animal de estimação?', a: `Sim — ${name} aceita animais de estimação. Avise-nos ao reservar; pode aplicar-se uma pequena taxa adicional.` }
       : { q: 'Can I bring my pet?', a: `Yes — ${name} welcomes pets. Let us know when you book; a small additional fee may apply.` });
   }
   // No hardcoded night count — the synced terms value drifts from the
   // calendar, which is the only per-season source of truth.
   faq.push(pt
-    ? { q: 'Qual é a estadia mínima?', a: 'A estadia mínima varia com a época — o calendário mostra o requisito exato para as tuas datas. Em julho e agosto as estadias são de sábado a sábado com mínimo de 7 noites.' }
+    ? { q: 'Qual é a estadia mínima?', a: 'A estadia mínima varia com a época — o calendário mostra o requisito exato para as suas datas. Em julho e agosto as estadias são de sábado a sábado com mínimo de 7 noites.' }
     : { q: 'What is the minimum stay?', a: 'The minimum stay varies by season — the calendar shows the exact requirement for your dates. In July and August stays run Saturday to Saturday with a 7-night minimum.' });
   faq.push(pt
     ? { q: 'Porquê reservar diretamente com a Portugal Active?', a: 'Reservar direto garante o melhor preço online sem taxas de serviço de OTAs, concierge dedicado por WhatsApp e uma equipa local que gere a casa de ponta a ponta.' }
