@@ -24,6 +24,7 @@ import {
   fetchPaymentProviderId,
   fetchReservationGuestId,
   attachGuestPaymentMethod,
+  fetchReservationPaymentState,
 } from "./guesty-openapi-paypal";
 
 export function breakdownFromIntent(m: any) {
@@ -138,18 +139,34 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
   // (BE instant com ccToken) tinha e o checkout 2.0 perdeu. Idempotente pelo
   // carimbo cardOnFile; fail-soft, nunca trava a reserva.
   if (pi.metadata.cardOnFile !== "1") {
-    // O motivo da falha vai para a metadata do PI: sem acesso aos logs do
-    // Render, e a unica forma de o ops (e eu) ver PORQUE e que um cartao nao
-    // entrou em carteira — visivel no dashboard do Stripe, ao lado da reserva.
-    const r = await attachCardToGuesty({
-      reservationId,
-      listingId: (m as any).listingId,
-      paymentIntent: pi,
-    }).catch((e: any) => ({ ok: false, reason: `excecao:${String(e?.message).slice(0, 60)}` }));
-    await updatePaymentIntentMetadata(
-      paymentIntentId,
-      r.ok ? { cardOnFile: "1" } : { cardOnFileError: r.reason.slice(0, 100) },
-    ).catch(() => {});
+    // GY-WRBPgyUu, 2 set 2026: o cartao entrou na carteira 60 segundos depois
+    // do recordExternalPayment, e a politica de Auto-Payment da listagem — a
+    // do fluxo antigo, nunca desligada — viu um cartao numa reserva cujo saldo
+    // o Guesty ainda nao tinha actualizado e cobrou os 727,10 EUR outra vez,
+    // off-session, sem 3DS. O hospede pagou 1.454,20 EUR por uma estadia de
+    // 727,10 EUR. O cartao so entra na carteira quando o proprio Guesty diz que
+    // a estadia esta liquidada; se nunca o disser, fica de fora e o motivo vai
+    // para a metadata do PI, como qualquer outra falha deste passo.
+    const settled = await waitForStaySettled(reservationId);
+    if (!settled) {
+      console.error(
+        `[Card2b] cartao NAO anexado reserva=${reservationId}: Guesty nao confirmou saldo zero — evitar cobranca off-session pela Auto-Payment (ver GY-WRBPgyUu)`,
+      );
+      await updatePaymentIntentMetadata(paymentIntentId, { cardOnFileError: "balance-not-settled" }).catch(() => {});
+    } else {
+      // O motivo da falha vai para a metadata do PI: sem acesso aos logs do
+      // Render, e a unica forma de o ops (e eu) ver PORQUE e que um cartao nao
+      // entrou em carteira — visivel no dashboard do Stripe, ao lado da reserva.
+      const r = await attachCardToGuesty({
+        reservationId,
+        listingId: (m as any).listingId,
+        paymentIntent: pi,
+      }).catch((e: any) => ({ ok: false, reason: `excecao:${String(e?.message).slice(0, 60)}` }));
+      await updatePaymentIntentMetadata(
+        paymentIntentId,
+        r.ok ? { cardOnFile: "1" } : { cardOnFileError: r.reason.slice(0, 100) },
+      ).catch(() => {});
+    }
   }
   await updatePaymentIntentMetadata(paymentIntentId, {
     guestyReservationId: reservationId,
@@ -174,6 +191,21 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
  * Devolve false (sem lancar) em qualquer passo em falta — o cartao em carteira
  * e uma capacidade extra, nunca uma condicao para a reserva existir.
  */
+/**
+ * Espera que o Guesty reflicta o pagamento registado — balanceDue a zero —
+ * antes de se pôr um cartão ao alcance da Auto-Payment. A leitura é a mesma que
+ * o pos-reserva usa; a consistência do lado deles é eventual, dai as tentativas.
+ * Ler nada (null) conta como NAO liquidado: na duvida o cartao fica de fora.
+ */
+async function waitForStaySettled(reservationId: string): Promise<boolean> {
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const state = await fetchReservationPaymentState(reservationId);
+    if (state && typeof state.balanceDue === "number" && state.balanceDue <= 0.01) return true;
+    await new Promise((r) => setTimeout(r, 2500));
+  }
+  return false;
+}
+
 export async function attachCardToGuesty(input: {
   reservationId: string;
   listingId?: string | null;
