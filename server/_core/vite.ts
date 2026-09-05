@@ -649,6 +649,41 @@ function getPageMeta(path: string, lang: string): MetaEntry | null {
   return m ? fillBrandTokens(m) : null;
 }
 
+/** Undo HTML entities a data source may already carry ("Guides &amp; Tips"),
+ *  so the escaping below never doubles them (auditoria set/2026, N18). */
+function decodeEntities(s: string): string {
+  return String(s ?? '')
+    .replace(/&amp;/g, '&').replace(/&#39;|&#x27;|&apos;/g, "'").replace(/&quot;/g, '"')
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ');
+}
+
+/** Cut at a word boundary, never mid-word ("Vieir"), with an ellipsis. */
+function truncateWords(s: string, max: number): string {
+  const clean = String(s ?? '').replace(/\s+/g, ' ').trim();
+  if (clean.length <= max) return clean;
+  const cut = clean.slice(0, max - 1);
+  const at = cut.lastIndexOf(' ');
+  return (at > max * 0.6 ? cut.slice(0, at) : cut).replace(/[\s,;:–—-]+$/, '') + '…';
+}
+
+const DEFAULT_OG_IMAGE = 'https://www.portugalactive.com/hero/home-cliff-villa.webp';
+
+/** One place for what goes into <title>, description and Open Graph: absolute
+ *  image URL (partner homes had "/homes/tripwix/…"), secure_url equal to the
+ *  real image, description cut by word at 155, entities decoded before
+ *  escaping. */
+function buildOg(meta: { title: string; description: string; image?: string; url: string; type?: string }) {
+  const rawImage = meta.image && meta.image.trim() ? meta.image.trim() : DEFAULT_OG_IMAGE;
+  const absImage = /^https?:\/\//i.test(rawImage) ? rawImage : `${BOT_BASE_URL}${rawImage.startsWith('/') ? '' : '/'}${rawImage}`;
+  return {
+    title: escText(decodeEntities(meta.title)),
+    description: escAttr(truncateWords(decodeEntities(meta.description), 155)),
+    image: escAttr(absImage),
+    url: escAttr(meta.url),
+    type: escAttr(meta.type ?? 'website'),
+  };
+}
+
 function injectMeta(html: string, meta: {
   title: string;
   description: string;
@@ -656,19 +691,18 @@ function injectMeta(html: string, meta: {
   url: string;
   type?: string;
 }): string {
-  const title = escText(meta.title);
-  const description = escAttr(meta.description);
-  const image = escAttr(meta.image ?? 'https://www.portugalactive.com/hero/home-cliff-villa.webp');
-  const url = escAttr(meta.url);
-  const type = escAttr(meta.type ?? 'website');
+  const { title, description, image, url, type } = buildOg(meta);
 
   return html
     .replace(/(<title>)[^<]*(<\/title>)/, (_m, open, close) => `${open}${title}${close}`)
-    .replace(/(<meta name="description" content=")[^"]*(")/,          (_m, open, close) => `${open}${description}${close}`)
+    // Marker for the client: the document already carries localized meta, so
+    // usePageMeta must not overwrite it with English on hydration (N20/G5).
+    .replace(/(<meta name="description" content=")[^"]*(")\s*\/?>/, (_m, open, close) => `${open}${description}${close} />\n    <meta name="pa-ssr-meta" content="1" />`)
     .replace(/(<link rel="canonical" href=")[^"]*(")/,                 (_m, open, close) => `${open}${url}${close}`)
     .replace(/(<meta property="og:title" content=")[^"]*(")/,         (_m, open, close) => `${open}${title}${close}`)
     .replace(/(<meta property="og:description" content=")[^"]*(")/,   (_m, open, close) => `${open}${description}${close}`)
     .replace(/(<meta property="og:image" content=")[^"]*(")/,         (_m, open, close) => `${open}${image}${close}`)
+    .replace(/(<meta property="og:image:secure_url" content=")[^"]*(")/, (_m, open, close) => `${open}${image}${close}`)
     .replace(/(<meta property="og:url" content=")[^"]*(")/,           (_m, open, close) => `${open}${url}${close}`)
     .replace(/(<meta property="og:type" content=")[^"]*(")/,          (_m, open, close) => `${open}${type}${close}`)
     .replace(/(<meta name="twitter:title" content=")[^"]*(")/,        (_m, open, close) => `${open}${title}${close}`)
