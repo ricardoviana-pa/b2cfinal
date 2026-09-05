@@ -172,7 +172,7 @@ export default function PropertyCard({
         <img
           src={optimizeGuestyImage(rawImages[currentImage], 1080)}
           srcSet={guestySrcSet(rawImages[currentImage], [400, 640, 768, 1080])}
-          alt={t('property.imageAlt', { name: property.name, current: currentImage + 1, total })}
+          alt={t('property.imageAlt', { name: displayName, current: currentImage + 1, total })}
           className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03] ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
           loading="lazy"
           decoding="async"
