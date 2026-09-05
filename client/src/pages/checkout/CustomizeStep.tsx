@@ -375,11 +375,6 @@ function OptionRow({
     <div className={cn("px-5 py-4 transition-colors", selected && "bg-pa-warm")}>
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          {item.popular && (
-            <p className="text-[9px] font-medium tracking-[0.12em] uppercase text-pa-gold mb-1">
-              {t("checkout.mostChosen", "Most chosen")}
-            </p>
-          )}
           <p className="flex items-center gap-1.5 text-[15px] font-medium text-pa-dark">
             {selected && <Check className="w-3.5 h-3.5 text-pa-gold shrink-0" strokeWidth={2.5} />}
             {t(`checkout.extras.${item.sku}.name`)}
@@ -410,11 +405,6 @@ function OptionRow({
           {item.fulfillment === "needs_confirmation" && !selected && (
             <p className="text-[10.5px] text-pa-stone-aa mt-0.5">
               {t("checkout.confirm24hNote", "If we cannot secure it, the line is refunded automatically.")}
-            </p>
-          )}
-          {item.scarcity && !selected && (
-            <p className="text-[10.5px] text-pa-earth mt-1">
-              {t("checkout.scarcityNote", "Subject to availability at peak dates. Booking now secures it.")}
             </p>
           )}
         </div>

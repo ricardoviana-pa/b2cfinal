@@ -486,7 +486,8 @@
     "inHouseOverline": "Eén team, één standaard",
     "inHouseTitle": "Alles hier is van ons — chefs, chauffeurs, therapeuten, gidsen.",
     "inHouseBody": "Geen marktplaats van vreemden. Elke service en ervaring wordt verzorgd door ons eigen interne team en vertrouwde lokale partners met wie we dagelijks samenwerken — geboekt, gecoördineerd en onder verantwoordelijkheid van één conciërge. Zoals een tophotel werkt, maar in een privéwoning.",
-    "servicesSubtitleRequest": "Geregeld door uw concierge. Ons team bevestigt de beschikbaarheid binnen 2 uur."
+    "servicesSubtitleRequest": "Geregeld door uw concierge. Ons team bevestigt de beschikbaarheid binnen 2 uur.",
+    "bedroomN": "Slaapkamer {{n}}"
   },
   "priceBreakdown": {
     "title": "Prijsoverzicht",
@@ -1421,7 +1422,7 @@
     "doneEditing": "Klaar",
     "emailLabel": "Uw e-mailadres",
     "emailPh": "naam@email.com",
-    "emailSupport": "We houden uw prijs 24 uur vast en mailen de offerte. Data zijn pas na betaling gereserveerd. Geen spam.",
+    "emailSupport": "We houden uw prijs 24 uur vast en mailen de offerte. Data zijn pas na betaling gereserveerd.",
     "newsletterOptIn": "Ik ga akkoord met het toesturen van mijn boeking en toekomstig contact.",
     "backToStay": "Terug naar het verblijf",
     "payTitle": "Betaling",
@@ -1751,5 +1752,12 @@
     "cta": "Stuur de concierge een bericht",
     "metaTitle": "Beste-prijsgarantie",
     "metaDescription": "Vindt u hetzelfde huis, dezelfde data en voorwaarden binnen 24 uur na uw boeking goedkoper op Airbnb of Booking.com, dan past Portugal Active de prijs aan. De voorwaarden, in gewone taal."
+  },
+  "duration": {
+    "halfDay": "Halve dag",
+    "fullDay": "Hele dag",
+    "flexible": "Flexibel",
+    "hour": "uur",
+    "hours": "uur"
   }
 }

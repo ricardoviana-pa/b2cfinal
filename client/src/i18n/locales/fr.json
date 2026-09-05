@@ -486,7 +486,8 @@
     "inHouseOverline": "Une équipe, une exigence",
     "inHouseTitle": "Ici, tout est à nous — chefs, chauffeurs, thérapeutes, guides.",
     "inHouseBody": "Pas une place de marché d’inconnus. Chaque service et expérience est assuré par notre propre équipe interne et des partenaires locaux de confiance avec qui nous travaillons au quotidien — réservés, coordonnés et pris en charge par un seul concierge. Comme un grand hôtel, mais dans une maison privée.",
-    "servicesSubtitleRequest": "Organisé par votre concierge. Notre équipe confirme la disponibilité sous 2 heures."
+    "servicesSubtitleRequest": "Organisé par votre concierge. Notre équipe confirme la disponibilité sous 2 heures.",
+    "bedroomN": "Chambre {{n}}"
   },
   "priceBreakdown": {
     "title": "Récapitulatif du prix",
@@ -1421,7 +1422,7 @@
     "doneEditing": "Terminé",
     "emailLabel": "Votre email",
     "emailPh": "nom@email.com",
-    "emailSupport": "Nous gardons votre prix 24 heures et vous envoyons le devis. Les dates ne sont réservées qu'après paiement. Sans spam.",
+    "emailSupport": "Nous gardons votre prix 24 heures et vous envoyons le devis. Les dates ne sont réservées qu'après paiement.",
     "newsletterOptIn": "J'autorise l'envoi de ma réservation et un contact ultérieur.",
     "backToStay": "Retour au séjour",
     "payTitle": "Paiement",
@@ -1751,5 +1752,12 @@
     "cta": "Écrire au concierge",
     "metaTitle": "Garantie du Meilleur Tarif",
     "metaDescription": "Trouvez la même maison, les mêmes dates et conditions moins cher sur Airbnb ou Booking.com dans les 24 heures suivant la réservation et Portugal Active s'aligne. Les conditions, en termes simples."
+  },
+  "duration": {
+    "halfDay": "Demi-journée",
+    "fullDay": "Journée complète",
+    "flexible": "Flexible",
+    "hour": "heure",
+    "hours": "heures"
   }
 }

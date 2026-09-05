@@ -486,7 +486,8 @@
     "breadcrumbHome": "Início",
     "breadcrumbHomes": "Casas",
     "bedroomsTitle": "Quartos e distribuição de camas",
-    "servicesSubtitleRequest": "Organizado pelo seu concierge. A nossa equipa confirma a disponibilidade em 2 horas."
+    "servicesSubtitleRequest": "Organizado pelo seu concierge. A nossa equipa confirma a disponibilidade em 2 horas.",
+    "bedroomN": "Quarto {{n}}"
   },
   "priceBreakdown": {
     "title": "Resumo de preço",
@@ -1421,7 +1422,7 @@
     "doneEditing": "Concluir",
     "emailLabel": "O seu email",
     "emailPh": "nome@email.com",
-    "emailSupport": "Guardamos o seu preço por 24 horas e enviamos o orçamento. As datas só ficam reservadas após o pagamento. Sem spam.",
+    "emailSupport": "Guardamos o seu preço por 24 horas e enviamos o orçamento. As datas só ficam reservadas após o pagamento.",
     "newsletterOptIn": "Autorizo o envio da minha reserva e contacto futuro.",
     "backToStay": "Voltar à estadia",
     "payTitle": "Pagamento",
@@ -1751,5 +1752,12 @@
     "cta": "Falar com o concierge",
     "metaTitle": "Garantia de Melhor Preço",
     "metaDescription": "Encontre a mesma casa, datas e condições mais baratas no Airbnb ou na Booking.com até 24 horas após a reserva e a Portugal Active iguala o preço. As condições, em palavras simples."
+  },
+  "duration": {
+    "halfDay": "Meio dia",
+    "fullDay": "Dia inteiro",
+    "flexible": "Flexível",
+    "hour": "hora",
+    "hours": "horas"
   }
 }

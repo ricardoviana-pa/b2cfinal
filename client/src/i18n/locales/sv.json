@@ -486,7 +486,8 @@
     "inHouseOverline": "Ett team, en standard",
     "inHouseTitle": "Allt här är vårt — kockar, chaufförer, terapeuter, guider.",
     "inHouseBody": "Ingen marknadsplats med främlingar. Varje tjänst och upplevelse sköts av vårt eget interna team och betrodda lokala partner som vi arbetar med dagligen — bokade, samordnade och med en enda concierge som ansvarig. Som ett förstklassigt hotell fungerar, fast i ett privat hem.",
-    "servicesSubtitleRequest": "Ordnas av din concierge. Vårt team bekräftar tillgängligheten inom 2 timmar."
+    "servicesSubtitleRequest": "Ordnas av din concierge. Vårt team bekräftar tillgängligheten inom 2 timmar.",
+    "bedroomN": "Sovrum {{n}}"
   },
   "priceBreakdown": {
     "title": "Prissammanfattning",
@@ -1751,5 +1752,12 @@
     "cta": "Skriv till conciergen",
     "metaTitle": "Bästa-pris-garanti",
     "metaDescription": "Hittar du samma hem, datum och villkor billigare på Airbnb eller Booking.com inom 24 timmar från bokningen matchar Portugal Active priset. Villkoren, med enkla ord."
+  },
+  "duration": {
+    "halfDay": "Halvdag",
+    "fullDay": "Heldag",
+    "flexible": "Flexibel",
+    "hour": "timme",
+    "hours": "timmar"
   }
 }

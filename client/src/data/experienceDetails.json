@@ -2,7 +2,7 @@
   "experiences": [
     {
       "slug": "horseback-riding",
-      "name": "Viana do Castelo Horseback Riding Tour — Beach, Mountain & Flower Fields",
+      "name": "Horseback Riding in Viana do Castelo",
       "category": "activity",
       "experienceCategory": "adventure",
       "tagline": "A horseback ride through flower fields, mountain trails and paradise beaches — crafted for any level, from first-timer to seasoned rider.",
@@ -425,7 +425,7 @@
     },
     {
       "slug": "hike-dive-dine",
-      "name": "Serra d'Arga Hike, Dive & Dine Like a Local in a Secret Spot",
+      "name": "Hike, Dive & Dine in Serra d'Arga",
       "category": "activity",
       "experienceCategory": "gastronomy & adventure",
       "tagline": "Discover the Minho's best-kept secrets. Hike to a hidden waterfall, swim in crystal-clear lagoons, and end with traditional Portuguese cuisine at a secret mountain restaurant.",
@@ -784,7 +784,7 @@
     },
     {
       "slug": "canyoning",
-      "name": "Canyoning Adventure in Peneda-Gerês National Park",
+      "name": "Canyoning in Peneda-Gerês",
       "category": "activity",
       "experienceCategory": "adventure",
       "tagline": "Descend hidden river canyons, jump into natural pools, and rappel down waterfalls in Portugal's only national park.",
@@ -1024,7 +1024,7 @@
     },
     {
       "slug": "stand-up-paddle",
-      "name": "SUP Sun Experience — Lima River Descent from Ponte de Lima",
+      "name": "SUP Descent of the Lima River",
       "category": "activity",
       "experienceCategory": "adventure",
       "tagline": "Paddle the full length of the Lima River at sunrise or sunset — from the medieval town of Ponte de Lima to the Atlantic at Cabedelo Beach.",
@@ -1271,7 +1271,7 @@
     },
     {
       "slug": "can-am-buggy",
-      "name": "Can-Am Scenic Driving Tour — Serra da Nó, Northern Portugal",
+      "name": "Can-Am Tour in Serra da Nó",
       "category": "activity",
       "experienceCategory": "adventure",
       "tagline": "Off-road through mountain trails, forest tracks, and panoramic viewpoints above Ponte de Lima and Viana do Castelo in a Can-Am buggy.",
@@ -1508,7 +1508,7 @@
     },
     {
       "slug": "yacht",
-      "name": "Private Yacht Experience — Viana do Castelo",
+      "name": "Private Yacht in Viana do Castelo",
       "category": "activity",
       "experienceCategory": "adventure",
       "tagline": "Sunset, sea and the Lima River aboard a private yacht — river cruising, paddleboarding, swimming and dolphin watching off the Viana do Castelo coast.",
@@ -1585,7 +1585,7 @@
     },
     {
       "slug": "ebike-tours",
-      "name": "E-Bike Wild Tour — City, Mountain & Coastal Trails",
+      "name": "E-Bike Wild Tour",
       "category": "activity",
       "experienceCategory": "adventure",
       "tagline": "Discover the breathtaking beauty of Viana do Castelo on an e-bike — historic streets, Santa Luzia sanctuary, Atlantic views, and hidden trails.",
@@ -1836,7 +1836,7 @@
     },
     {
       "slug": "surf-lessons",
-      "name": "Surf Lessons — Atlantic Waves on the Minho Coast",
+      "name": "Surf Lessons on the Minho Coast",
       "category": "activity",
       "experienceCategory": "adventure",
       "tagline": "Learn to surf on Portugal's best Atlantic waves with certified instructors — private or small-group lessons on the beaches of the Minho coast.",

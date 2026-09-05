@@ -19,18 +19,15 @@ import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildFaqPageSchema } from '@/components/seo/StructuredData';
 import { pushEcommerce } from '@/lib/datalayer';
+import { localizeDuration } from '@/lib/duration';
 
 const allProducts = productsData as unknown as Product[];
 const adventures = allProducts.filter(p => p.type === 'adventure' && p.isActive).sort((a, b) => a.sortOrder - b.sortOrder);
 
 // Build per-slug lookups from experienceDetails.json in a single pass
-const experienceRatings: Record<string, { value: number; count: number }> = {};
 const experienceData: Record<string, { experienceCategory: string; priceOta: number }> = {};
 ((experienceDetailsData as any).experiences || []).forEach((exp: any) => {
   if (!exp.slug) return;
-  if (exp.aggregateRating) {
-    experienceRatings[exp.slug] = { value: exp.aggregateRating.value, count: exp.aggregateRating.count };
-  }
   experienceData[exp.slug] = {
     experienceCategory: exp.experienceCategory || '',
     priceOta: exp.priceOta || 0,
@@ -220,7 +217,6 @@ export default function Adventures() {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filtered.map((adventure, index) => {
-              const rating = experienceRatings[adventure.slug];
               return (
                 <div
                   key={adventure.id}
@@ -275,11 +271,6 @@ export default function Adventures() {
                           {adventure.destinations.join(' · ')}
                         </span>
                       )}
-                      {(adventure as any).videoUrl && (
-                        <span className="absolute top-4 right-4 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm text-white text-[10px] tracking-[0.08em] uppercase font-medium px-2.5 py-1.5">
-                          <Play className="w-3 h-3 fill-current" /> {t('adventures.videoLabel')}
-                        </span>
-                      )}
                       <div className="absolute bottom-0 left-0 right-0 p-5">
                         <h3 className="font-display text-[1.5rem] text-white leading-tight mb-1">
                           {adventure.name}
@@ -288,7 +279,7 @@ export default function Adventures() {
                       </div>
                     </div>
 
-                    {/* Card metadata row — price, duration, rating, free cancellation */}
+                    {/* Card metadata row — price and duration only. Ratings, "free cancellation" and the video badge were OTA vocabulary (auditoria set/2026, N13). */}
                     <div className="mt-4 space-y-2">
                       <div className="flex items-center justify-between">
                         {(adventure.priceFrom ?? 0) > 0 && (
@@ -296,24 +287,14 @@ export default function Adventures() {
                             {t('common.from')} {formatEurEditorial(adventure.priceFrom ?? 0)} <span className="text-[12px] text-[#726D63] font-light">{adventure.priceSuffix}</span>
                           </p>
                         )}
-                        {rating && (
-                          <span className="text-[12px] text-[#8B7355] italic" style={{ fontWeight: 400 }}>
-                            {rating.value.toFixed(1)}/5
-                            <span className="text-[#726D63] not-italic ml-1" style={{ fontWeight: 300 }}>({rating.count})</span>
-                          </span>
-                        )}
                       </div>
                       <div className="flex items-center gap-4 flex-wrap">
                         {adventure.duration && (
                           <span className="inline-flex items-center gap-1 text-[11px] text-[#6B6860]" style={{ fontWeight: 300 }}>
                             <Clock className="w-3 h-3 text-[#726D63]" />
-                            {adventure.duration}
+                            {localizeDuration(adventure.duration, t)}
                           </span>
                         )}
-                        <span className="inline-flex items-center gap-1 text-[11px] text-[#6B8E4E]" style={{ fontWeight: 300 }}>
-                          <Check className="w-3 h-3" />
-                          {t('adventures.freeCancellation')}
-                        </span>
                       </div>
                     </div>
                   </Link>

@@ -1,6 +1,6 @@
 {
   "horseback-riding": {
-    "name": "Ratsastusretki Viana do Castelossa — ranta, vuoristo ja kukkakedot",
+    "name": "Ratsastusretki Viana do Castelossa",
     "tagline": "Ratsastusretki kukkaketojen, vuoristopolkujen ja paratiisirantojen halki — suunniteltu kaikille tasoille, aloittelijasta kokeneeseen ratsastajaan.",
     "badges": [
       "Kysytyin",
@@ -129,7 +129,7 @@
     }
   },
   "canyoning": {
-    "name": "Canyoning-seikkailu Peneda-Gerêsin kansallispuistossa",
+    "name": "Canyoning Peneda-Gerêsissä",
     "tagline": "Laskeudu kätkettyihin jokirotkoihin, hyppää luonnonaltaisiin ja köysilaskeudu vesiputouksia Portugalin ainoassa kansallispuistossa.",
     "badges": [
       "Pieni ryhmä",
@@ -250,7 +250,7 @@
     }
   },
   "ebike-tours": {
-    "name": "Villi sähköpyöräkierros — kaupunki-, vuoristo- ja rannikkopolut",
+    "name": "E-Bike Wild Tour",
     "tagline": "Tutustu Viana do Castelon henkeäsalpaavaan kauneuteen sähköpyörällä — historialliset kadut, Santa Lúzian pyhäkkö, Atlantin näköalat ja kätketyt polut.",
     "badges": [
       "Pieni ryhmä",
@@ -366,7 +366,7 @@
     }
   },
   "surf-lessons": {
-    "name": "Surffaustunnit — Atlantin aaltoja Minhon rannikolla",
+    "name": "Surffitunnit Minhon rannikolla",
     "tagline": "Opi surffaamaan Portugalin parhailla Atlantin aalloilla sertifioitujen ohjaajien kanssa — yksityis- tai pienryhmätunteja Minhon rannikon rannoilla.",
     "badges": [
       "Kaikki tasot",
@@ -484,7 +484,7 @@
     }
   },
   "hike-dive-dine": {
-    "name": "Serra d'Arga: vaella, ui ja syö kuin paikallinen salaisessa keitaassa",
+    "name": "Vaellus, Uinti ja Lounas Serra d'Argassa",
     "tagline": "Löydä Minhon parhaiten varjellut salaisuudet. Vaella kätketylle vesiputoukselle, ui kristallinkirkkaissa lammissa ja päätä perinteiseen portugalilaiseen keittiöön salaisessa vuoristoravintolassa.",
     "badges": [
       "Erinomaisuuden merkki",
@@ -619,7 +619,7 @@
     }
   },
   "stand-up-paddle": {
-    "name": "SUP Sun Experience — Lima-joen lasku Ponte de Limasta",
+    "name": "SUP-lasku Lima-jokea pitkin",
     "tagline": "Melo koko Lima-joen pituuden auringonnousussa tai -laskussa — keskiaikaisesta Ponte de Liman kylästä Atlantille Praia do Cabedelolle.",
     "badges": [
       "Pieni ryhmä",
@@ -736,7 +736,7 @@
     }
   },
   "can-am-buggy": {
-    "name": "Can-Am-maisema-ajokierros — Serra da Nó, Pohjois-Portugali",
+    "name": "Can-Am-retki Serra da Nóssa",
     "tagline": "Maastoajoa vuoristopolkuja, metsäteitä ja panoraamanäköalapaikkoja pitkin Ponte de Liman ja Viana do Castelon yläpuolella Can-Am-buggyssa.",
     "badges": [
       "Adrenaliini",

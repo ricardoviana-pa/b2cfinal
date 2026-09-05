@@ -1,6 +1,6 @@
 {
   "horseback-riding": {
-    "name": "Paardrijtocht in Viana do Castelo — Strand, Bergen en Bloemenvelden",
+    "name": "Paardrijden in Viana do Castelo",
     "tagline": "Een paardrijtocht door bloemenvelden, bergpaden en paradijselijke stranden — bedacht voor alle niveaus, van de beginner tot de ervaren ruiter.",
     "badges": [
       "Meest gevraagd",
@@ -129,7 +129,7 @@
     }
   },
   "canyoning": {
-    "name": "Canyoning-avontuur in het Nationaal Park Peneda-Gerês",
+    "name": "Canyoning in Peneda-Gerês",
     "tagline": "Daal af door verborgen rivierkloven, spring in natuurlijke poelen en abseil langs watervallen in het enige nationale park van Portugal.",
     "badges": [
       "Kleine groep",
@@ -250,7 +250,7 @@
     }
   },
   "ebike-tours": {
-    "name": "Wilde E-Bike-Tocht — Stads-, Berg- en Kustpaden",
+    "name": "E-Bike Wild Tour",
     "tagline": "Ontdek de adembenemende schoonheid van Viana do Castelo op een e-bike — historische straten, het heiligdom van Santa Luzia, Atlantische uitzichten en verborgen paden.",
     "badges": [
       "Kleine groep",
@@ -366,7 +366,7 @@
     }
   },
   "surf-lessons": {
-    "name": "Surflessen — Atlantische Golven aan de Minho-kust",
+    "name": "Surflessen aan de Minho-kust",
     "tagline": "Leer surfen op de beste Atlantische golven van Portugal met gecertificeerde instructeurs — privélessen of in kleine groepen op de stranden van de Minho-kust.",
     "badges": [
       "Alle niveaus",
@@ -484,7 +484,7 @@
     }
   },
   "hike-dive-dine": {
-    "name": "Serra d'Arga: Wandelen, Duiken en Dineren als een Local in een Geheime Uithoek",
+    "name": "Wandelen, Zwemmen en Lunchen in de Serra d'Arga",
     "tagline": "Ontdek de best bewaarde geheimen van de Minho. Wandel naar een verborgen waterval, zwem in kristalheldere poelen en sluit af met traditionele Portugese keuken in een geheim bergrestaurant.",
     "badges": [
       "Keurmerk van Uitmuntendheid",
@@ -619,7 +619,7 @@
     }
   },
   "stand-up-paddle": {
-    "name": "SUP Sun Experience — Afdaling van de Rivier de Lima vanaf Ponte de Lima",
+    "name": "SUP-afdaling van de Lima",
     "tagline": "Peddel langs de hele rivier de Lima bij zonsopgang of zonsondergang — van het middeleeuwse stadje Ponte de Lima tot de Atlantische Oceaan bij de Praia do Cabedelo.",
     "badges": [
       "Kleine groep",
@@ -736,7 +736,7 @@
     }
   },
   "can-am-buggy": {
-    "name": "Panoramische Can-Am-Rijtocht — Serra da Nó, Noord-Portugal",
+    "name": "Can-Am-tour in de Serra da Nó",
     "tagline": "Offroad over bergpaden, bospaden en panoramische uitkijkpunten boven Ponte de Lima en Viana do Castelo in een Can-Am-buggy.",
     "badges": [
       "Adrenaline",

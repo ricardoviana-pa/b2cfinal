@@ -1,6 +1,6 @@
 {
   "horseback-riding": {
-    "name": "Passeio a Cavalo em Viana do Castelo — Praia, Montanha e Campos de Flores",
+    "name": "Passeio a Cavalo em Viana do Castelo",
     "tagline": "Um passeio a cavalo por campos de flores, trilhos de montanha e praias paradisíacas — pensado para todos os níveis, do principiante ao cavaleiro experiente.",
     "badges": [
       "Mais procurado",
@@ -129,7 +129,7 @@
     }
   },
   "canyoning": {
-    "name": "Aventura de Canyoning no Parque Nacional da Peneda-Gerês",
+    "name": "Canyoning no Gerês",
     "tagline": "Desça desfiladeiros de rio escondidos, salte para piscinas naturais e faça rappel por cascatas no único parque nacional de Portugal.",
     "badges": [
       "Grupo pequeno",
@@ -250,7 +250,7 @@
     }
   },
   "ebike-tours": {
-    "name": "Tour Selvagem de E-Bike — Trilhos de Cidade, Montanha e Costa",
+    "name": "E-Bike Wild Tour",
     "tagline": "Descubra a beleza deslumbrante de Viana do Castelo numa e-bike — ruas históricas, santuário de Santa Luzia, vistas atlânticas e trilhos escondidos.",
     "badges": [
       "Grupo pequeno",
@@ -366,7 +366,7 @@
     }
   },
   "surf-lessons": {
-    "name": "Aulas de Surf — Ondas Atlânticas na Costa do Minho",
+    "name": "Aulas de Surf na Costa do Minho",
     "tagline": "Aprenda a surfar nas melhores ondas atlânticas de Portugal com instrutores certificados — aulas privadas ou em grupo pequeno nas praias da costa do Minho.",
     "badges": [
       "Todos os níveis",
@@ -484,7 +484,7 @@
     }
   },
   "hike-dive-dine": {
-    "name": "Serra d'Arga: Caminhada, Mergulho e Jantar como um Local num Recanto Secreto",
+    "name": "Caminhada, Mergulho e Almoço na Serra d'Arga",
     "tagline": "Descubra os segredos mais bem guardados do Minho. Caminhe até uma cascata escondida, nade em lagoas cristalinas e termine com cozinha tradicional portuguesa num restaurante de montanha secreto.",
     "badges": [
       "Selo de Excelência",
@@ -619,7 +619,7 @@
     }
   },
   "stand-up-paddle": {
-    "name": "SUP Sun Experience — Descida do Rio Lima a partir de Ponte de Lima",
+    "name": "Descida do Lima em SUP",
     "tagline": "Reme ao longo de todo o rio Lima ao nascer ou pôr do sol — da vila medieval de Ponte de Lima até ao Atlântico na Praia do Cabedelo.",
     "badges": [
       "Grupo pequeno",
@@ -736,7 +736,7 @@
     }
   },
   "can-am-buggy": {
-    "name": "Tour de Condução Panorâmica Can-Am — Serra da Nó, Norte de Portugal",
+    "name": "Tour de Can-Am na Serra da Nó",
     "tagline": "Todo-o-terreno por trilhos de montanha, caminhos florestais e miradouros panorâmicos acima de Ponte de Lima e Viana do Castelo num buggy Can-Am.",
     "badges": [
       "Adrenalina",

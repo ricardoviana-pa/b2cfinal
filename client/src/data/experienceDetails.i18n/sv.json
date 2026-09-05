@@ -1,6 +1,6 @@
 {
   "horseback-riding": {
-    "name": "Ridtur i Viana do Castelo — Strand, berg och blomsterängar",
+    "name": "Ridtur i Viana do Castelo",
     "tagline": "En ridtur genom blomsterängar, bergsleder och paradisiska stränder — utformad för alla nivåer, från nybörjare till erfaren ryttare.",
     "badges": [
       "Mest efterfrågad",
@@ -129,7 +129,7 @@
     }
   },
   "canyoning": {
-    "name": "Canyoningäventyr i nationalparken Peneda-Gerês",
+    "name": "Canyoning i Peneda-Gerês",
     "tagline": "Ta dig nedför dolda flodraviner, hoppa i naturliga pooler och fira ner längs vattenfall i Portugals enda nationalpark.",
     "badges": [
       "Liten grupp",
@@ -250,7 +250,7 @@
     }
   },
   "ebike-tours": {
-    "name": "Vild e-biketur — Stads-, bergs- och kustleder",
+    "name": "E-Bike Wild Tour",
     "tagline": "Upptäck Viana do Castelos hänförande skönhet på en e-bike — historiska gator, helgedomen Santa Luzia, atlantvyer och dolda leder.",
     "badges": [
       "Liten grupp",
@@ -366,7 +366,7 @@
     }
   },
   "surf-lessons": {
-    "name": "Surflektioner — Atlantvågor på Minhokusten",
+    "name": "Surflektioner på Minhokusten",
     "tagline": "Lär dig surfa på Portugals bästa atlantvågor med certifierade instruktörer — privata lektioner eller i liten grupp på Minhokustens stränder.",
     "badges": [
       "Alla nivåer",
@@ -484,7 +484,7 @@
     }
   },
   "hike-dive-dine": {
-    "name": "Serra d'Arga: Vandra, bada och ät som en lokalbo i ett hemligt hörn",
+    "name": "Vandring, Bad och Lunch i Serra d'Arga",
     "tagline": "Upptäck Minhos bäst bevarade hemligheter. Vandra till ett dolt vattenfall, bada i kristallklara laguner och avsluta med traditionell portugisisk mat på en hemlig bergsrestaurang.",
     "badges": [
       "Utmärkelse för excellens",
@@ -619,7 +619,7 @@
     }
   },
   "stand-up-paddle": {
-    "name": "SUP Sun Experience — Nedför floden Lima från Ponte de Lima",
+    "name": "SUP-tur nedför Lima",
     "tagline": "Paddla längs hela floden Lima vid soluppgång eller solnedgång — från den medeltida byn Ponte de Lima till Atlanten vid Praia do Cabedelo.",
     "badges": [
       "Liten grupp",
@@ -736,7 +736,7 @@
     }
   },
   "can-am-buggy": {
-    "name": "Naturskön Can-Am-körtur — Serra da Nó, norra Portugal",
+    "name": "Can-Am-tur i Serra da Nó",
     "tagline": "Offroad längs bergsleder, skogsvägar och panoramautsiktspunkter ovanför Ponte de Lima och Viana do Castelo i en Can-Am-buggy.",
     "badges": [
       "Adrenalin",

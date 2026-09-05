@@ -487,7 +487,8 @@
     "minNights_other": "{{count}}-night minimum stay",
     "cleaningFeeRule": "Final cleaning: €{{fee}}",
     "servicesSubtitlePartner": "Arranged by your concierge. Availability confirmed per request.",
-    "servicesSubtitleRequest": "Arranged by your concierge. Our team confirms availability within 2 hours."
+    "servicesSubtitleRequest": "Arranged by your concierge. Our team confirms availability within 2 hours.",
+    "bedroomN": "Bedroom {{n}}"
   },
   "priceBreakdown": {
     "title": "Price summary",
@@ -1422,7 +1423,7 @@
     "doneEditing": "Done",
     "emailLabel": "Your email",
     "emailPh": "name@email.com",
-    "emailSupport": "We hold your price for 24 hours and email you the quote. Dates are only secured after payment. No spam.",
+    "emailSupport": "We hold your price for 24 hours and email you the quote. Dates are only secured after payment.",
     "newsletterOptIn": "Send me my booking and keep me updated.",
     "backToStay": "Back to your stay",
     "payTitle": "Payment",
@@ -1752,5 +1753,12 @@
     "cta": "Message the concierge",
     "metaTitle": "Best Rate Guarantee",
     "metaDescription": "Find the same home, dates and conditions cheaper on Airbnb or Booking.com no later than 24 hours after booking and Portugal Active matches the price. The terms, in plain words."
+  },
+  "duration": {
+    "halfDay": "Half day",
+    "fullDay": "Full day",
+    "flexible": "Flexible",
+    "hour": "hour",
+    "hours": "hours"
   }
 }

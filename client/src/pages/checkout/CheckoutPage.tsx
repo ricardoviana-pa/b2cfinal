@@ -1627,27 +1627,6 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              {/* D1: última chamada do Flex — linha discreta, um clique, SÓ o Flex
-                  (guardrail: nunca uma bandeja de extras aqui) */}
-              {!flexSelected && flexConfig && effective && effective.total >= flexConfig.minTotal && (
-                <div className="bg-pa-warm border border-pa-gold/50 rounded-lg px-5 py-3.5 flex items-center justify-between gap-3">
-                  <p className="text-[12.5px] text-pa-dark leading-snug">
-                    {t("checkout.flexLastCall", "One click to protect this booking: Flex, guaranteed rebooking.")}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFlexSelected(true);
-                      syncIntent({ flex: true });
-                      if (!isDemo) pushDL({ event: "flex_added", property_id: intent.listingId, value: flexUnit, source: "step3" });
-                    }}
-                    className="shrink-0 min-h-[38px] px-4 rounded-full border border-pa-gold text-[11px] font-medium tracking-[0.08em] uppercase text-pa-gold hover:bg-pa-gold hover:text-white transition-colors"
-                  >
-                    {t("checkout.flexAddShort", "Add")} · {formatEur(flexUnit, lang)}
-                  </button>
-                </div>
-              )}
-
               {/* Guest details */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
                 <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-pa-gold">

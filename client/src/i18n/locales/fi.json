@@ -486,7 +486,8 @@
     "inHouseOverline": "Yksi tiimi, yksi standardi",
     "inHouseTitle": "Täällä kaikki on omaamme — kokit, kuljettajat, terapeutit, oppaat.",
     "inHouseBody": "Emme ole tuntemattomien markkinapaikka. Jokaisesta palvelusta ja elämyksestä vastaa oma sisäinen tiimimme ja luotetut paikalliset kumppanit, joiden kanssa työskentelemme päivittäin — varattuna, koordinoituna ja yhden conciergen vastuulla. Kuten huippuhotellissa, mutta yksityiskodissa.",
-    "servicesSubtitleRequest": "Conciergesi järjestää. Tiimimme vahvistaa saatavuuden 2 tunnin kuluessa."
+    "servicesSubtitleRequest": "Conciergesi järjestää. Tiimimme vahvistaa saatavuuden 2 tunnin kuluessa.",
+    "bedroomN": "Makuuhuone {{n}}"
   },
   "priceBreakdown": {
     "title": "Hintayhteenveto",
@@ -1751,5 +1752,12 @@
     "cta": "Viesti conciergelle",
     "metaTitle": "Parhaan hinnan takuu",
     "metaDescription": "Löydä sama koti, päivämäärät ja ehdot halvemmalla Airbnb:stä tai Booking.comista 24 tunnin kuluessa varauksesta, niin Portugal Active vastaa hintaan. Ehdot selkokielellä."
+  },
+  "duration": {
+    "halfDay": "Puoli päivää",
+    "fullDay": "Koko päivä",
+    "flexible": "Joustava",
+    "hour": "tunti",
+    "hours": "tuntia"
   }
 }
