@@ -6,7 +6,7 @@
       "category": "service",
       "tagline": "Restaurant-quality dining in the comfort of your home.",
       "description": "Enjoy a personalised culinary experience in the comfort of your holiday home made by our talented chef. Whether you want to celebrate a special date, come together with family and friends, organise a corporate event or just sit back, relax and enjoy your home, this is the best way to do it.\n\nCooked with fresh and locally-sourced ingredients, each dish is always prepared with the goal to be delicious and healthy. You only need to choose the menu or a personalised meal, plus the date and time and we will take care of everything else.",
-      "image": "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1200&q=80",
+      "image": "/experiences/private-chef-dinner.webp",
       "details": [
         "Full course meal",
         "Customized menu",
@@ -47,7 +47,7 @@
       "category": "service",
       "tagline": "Professional spa treatments in the privacy of your villa.",
       "description": "Transform your villa into a private wellness retreat. Our network of certified therapists brings the full spa experience directly to your home — on your schedule, in your space, with complete privacy.\n\nChoose from Swedish, deep tissue, hot stone, aromatherapy, or sports massage. All equipment and premium oils are provided. Sessions can be arranged poolside, on your terrace, or in any room you prefer.",
-      "image": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=1200&q=80",
+      "image": "/experiences/exp-wellness.webp",
       "details": [
         "Certified therapists",
         "Multiple techniques",
@@ -78,7 +78,7 @@
       "category": "service",
       "tagline": "Morning serenity on your private terrace.",
       "description": "Start your day with a private yoga session led by a certified instructor on your terrace, garden, or by the pool. All levels welcome — from complete beginners to advanced practitioners.\n\nOur instructors adapt each session to your group's needs and preferences. Equipment is provided, including mats, blocks, and straps. Sessions can focus on Hatha, Vinyasa, Yin, or restorative yoga.",
-      "image": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&q=80",
+      "image": "/experiences/yoga-forest.webp",
       "details": [
         "Certified instructors",
         "All levels welcome",
@@ -104,7 +104,7 @@
       "category": "service",
       "tagline": "Stay active on holiday with expert guidance.",
       "description": "Maintain your fitness routine — or start a new one — with a certified personal trainer who comes to your property. Sessions are tailored to your fitness level, goals, and available space.\n\nWhether it is strength training by the pool, a HIIT session in the garden, or a gentle mobility workout on the terrace, our trainers bring all the equipment needed for an effective session.",
-      "image": "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1200&q=80",
+      "image": "/experiences/canyoning/02.webp",
       "details": [
         "Certified trainers",
         "Tailored sessions",
@@ -155,7 +155,7 @@
       "category": "service",
       "tagline": "Your dedicated driver for every journey.",
       "description": "A dedicated driver at your disposal for day trips, wine tours, city explorations, or restaurant transfers. Relax and enjoy the scenery while your chauffeur handles the logistics.\n\nOur chauffeurs are local experts who can recommend the best routes, hidden restaurants, and scenic stops along the way. Available for half-day or full-day bookings.",
-      "image": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=1200&q=80",
+      "image": "/experiences/pa-mobility-maybach.webp",
       "details": [
         "Local expert drivers",
         "Premium vehicles",
@@ -175,7 +175,7 @@
       "category": "service",
       "tagline": "Your fridge stocked before you arrive.",
       "description": "Arrive to a fully stocked kitchen with local produce, artisan bread, regional cheese, fresh fruit, and your favourite wines. We take care of the shopping so you can start enjoying your holiday from the very first moment.\n\nChoose from our curated welcome packages or send us your personal shopping list. We source everything from local markets and trusted suppliers.",
-      "image": "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=1200&q=80",
+      "image": "/experiences/private-chef-table.webp",
       "details": [
         "Local produce",
         "Artisan products",
@@ -195,7 +195,7 @@
       "category": "service",
       "tagline": "Trusted childcare so you can enjoy your evening.",
       "description": "Certified childcare professionals available for evenings out, day excursions, or whenever you need a few hours to yourselves. All our babysitters are vetted, experienced, and speak English.\n\nWhether you want a romantic dinner out, a spa session, or simply some quiet time, our babysitters ensure your children are safe, entertained, and happy.",
-      "image": "https://images.unsplash.com/photo-1476703993599-0035a21b17a9?w=1200&q=80",
+      "image": "/experiences/pa-property-firepit.webp",
       "details": [
         "Certified professionals",
         "English speaking",
@@ -217,7 +217,7 @@
       "category": "activity",
       "tagline": "Explore beaches and forests on horseback.",
       "description": "Discover Portugal's stunning landscapes from a completely different perspective — on horseback. Our experienced guides lead you through beaches, forests, vineyards, and ancient trails on well-trained horses suitable for all experience levels.\n\nRides range from gentle beach walks for beginners to full-day adventures through the countryside for experienced riders. All safety equipment is provided.",
-      "image": "https://images.unsplash.com/photo-1520333789090-1afc82db536a?w=1200&q=80",
+      "image": "/experiences/horseback-riding/cover.webp",
       "details": [
         "All experience levels",
         "Beach and forest trails",
@@ -300,7 +300,7 @@
       "category": "activity",
       "tagline": "Glide across calm waters with stunning views.",
       "description": "Stand up paddle on the calm waters of the Lima River, along the Atlantic coastline, or in hidden coves. A peaceful way to explore Portugal's waterways while getting a full-body workout.\n\nOur instructors provide all equipment and teach proper technique for beginners. Experienced paddlers can join guided tours to explore coastline caves and hidden beaches.",
-      "image": "https://images.unsplash.com/photo-1530549387789-4c1017266635?w=1200&q=80",
+      "image": "/experiences/sup-river.webp",
       "details": [
         "All equipment provided",
         "Beginner friendly",
@@ -320,7 +320,7 @@
       "category": "activity",
       "tagline": "Pedal through history and nature.",
       "description": "Explore Porto's historic streets, the Douro Valley's terraced vineyards, or the Minho's mountain trails on a guided bike tour. Our local guides share stories, history, and hidden gems along every route.\n\nRoutes are available for all fitness levels, from gentle city tours to challenging mountain rides. Premium bikes and all safety equipment are provided.",
-      "image": "https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=1200&q=80",
+      "image": "/experiences/ebike-tours/cover.webp",
       "details": [
         "Premium bikes",
         "Local guides",
@@ -340,7 +340,7 @@
       "category": "activity",
       "tagline": "A full-day adventure combining nature and gastronomy.",
       "description": "Our signature experience combines a coastal hike along dramatic cliff paths, a refreshing swim in hidden coves, and a traditional seafood lunch at a local restaurant known only to locals.\n\nThis full-day adventure is led by expert local guides who know every trail, every hidden beach, and every restaurant worth visiting. A truly immersive way to experience Portugal.",
-      "image": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200&q=80",
+      "image": "/experiences/canyoning/03.webp",
       "details": [
         "Full-day experience",
         "Coastal hiking",
@@ -366,7 +366,7 @@
       "category": "activity",
       "tagline": "Off-road thrills through Portugal's wild landscapes.",
       "description": "Experience the thrill of driving a Can-Am off-road vehicle through Portugal's most dramatic landscapes. From mountain trails to forest paths, this adventure combines adrenaline with stunning scenery.\n\nOur experienced guides lead you through carefully selected routes that showcase the best of Portugal's wild interior. All safety briefings and equipment are included.",
-      "image": "https://images.unsplash.com/photo-1609429019995-8c40f49535a5?w=1200&q=80",
+      "image": "/experiences/exp-adventure.webp",
       "details": [
         "Can-Am vehicles",
         "Off-road trails",
