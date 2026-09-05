@@ -1020,7 +1020,7 @@ export default function PropertyDetail() {
         <Suspense fallback={<div className="h-[300px] bg-pa-warm animate-pulse border border-pa-sand" />}>
           <BookingWidget
             guestyId={property.guestyId}
-            propertyName={property.name}
+            propertyName={displayName}
             propertySlug={property.slug}
             pricePerNight={lowestNightly?.from ?? (property as any).pricePerNight ?? property.priceFrom ?? 0}
             maxGuests={property.maxGuests || 10}
@@ -1036,7 +1036,7 @@ export default function PropertyDetail() {
       ) : tripwixUid ? (
         <PartnerBookingPanel
           tripwixUid={tripwixUid}
-          propertyName={property.name}
+          propertyName={displayName}
           propertySlug={property.slug}
           fromPrice={lowestNightly?.from ?? (property as any).priceFrom}
           maxGuests={property.maxGuests || 20}
@@ -1310,7 +1310,7 @@ export default function PropertyDetail() {
               <DescriptionSection
                 description={property.description}
                 sections={(property as any).descriptionSections}
-                propertyName={property.name}
+                propertyName={displayName}
                 locality={property.locality}
                 destName={destName}
                 t={t}
@@ -1635,7 +1635,7 @@ export default function PropertyDetail() {
 
               {/* 10. Guest Reviews (from Guesty sync) */}
               <ReviewsSection
-                propertyName={property.name}
+                propertyName={displayName}
                 propertySlug={property.slug}
                 reviews={(property as any).reviews}
                 averageRating={(property as any).averageRating}
@@ -1775,7 +1775,7 @@ export default function PropertyDetail() {
           images={lightboxImages}
           rawImages={sourceImages}
           initialIndex={lightboxImage}
-          propertyName={property.name}
+          propertyName={displayName}
           destName={destName}
           onClose={() => setLightboxOpen(false)}
           t={t}
