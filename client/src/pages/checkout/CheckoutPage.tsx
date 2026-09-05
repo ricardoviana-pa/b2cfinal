@@ -1170,7 +1170,7 @@ export default function CheckoutPage() {
           </li>
         ))}
       </ul>
-      <Link href="/best-rate-guarantee" className="inline-block mt-3 caption text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark">
+      <Link href="/best-rate-guarantee" className="inline-flex items-center mt-1 caption text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark">
         {t("trust.guaranteeTerms", "How the guarantee works")}
       </Link>
     </div>

@@ -17,7 +17,7 @@ import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck,
   Sparkles, Gem, Clock, UtensilsCrossed, Headphones, Plus, X, AlertTriangle,
   Wifi, Tv, Coffee, Car, Waves, Wind, Shirt, Flame, TreePine, Mountain,
-  Sun, Monitor, Utensils, Sofa, ArrowRight, Lock, ShieldCheck, Bed, ChevronDown, type LucideIcon, PawPrint,
+  Sun, Monitor, Utensils, Sofa, ArrowRight, ShieldCheck, Bed, ChevronDown, type LucideIcon, PawPrint,
 } from 'lucide-react';;
 const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 import productsData from '@/data/products.json';
@@ -1104,7 +1104,6 @@ export default function PropertyDetail() {
                   { icon: Clock, label: t('trust.noServiceFees', 'No service fees — OTAs add 12–18% at checkout; here the price is the price') },
                 ]),
             { icon: Headphones, label: t('trust.conciergeWhatsapp', 'WhatsApp concierge before, during and after your stay') },
-            { icon: Lock, label: t('trust.secureBooking', 'Secure booking') },
           ] as const).map((item, i) => (
             <div key={i} className="flex items-start gap-2">
               <item.icon size={14} className="text-pa-gold-aa shrink-0 mt-0.5" />
@@ -1112,7 +1111,7 @@ export default function PropertyDetail() {
             </div>
           ))}
         </div>
-        <Link href="/best-rate-guarantee" className="inline-block mt-3 caption text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark">
+        <Link href="/best-rate-guarantee" className="inline-flex items-center mt-1 caption text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark">
           {t('trust.guaranteeTerms', 'How the guarantee works')}
         </Link>
       </div>
