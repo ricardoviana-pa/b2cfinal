@@ -1,45 +1,311 @@
 {
   "minho": {
-    "name": "Minho Coast",
-    "tagline": "Waar de Atlantische Oceaan eeuwenoude bossen en wijngaarden ontmoet.",
-    "description": "Waar de Atlantische Oceaan eeuwenoude bossen en wijngaarden ontmoet.",
-    "heroSubtitle": "De groenste regio van Portugal, waar Atlantische surf de dalen van de Vinho Verde ontmoet.",
+    "name": "Minho",
+    "tagline": "Waar Portugal begint: Atlantische surf, granieten dorpen en de valleien van de Vinho Verde.",
+    "description": "Een complete gids voor de Minho, de groenste regio van Portugal, tussen de Atlantische Oceaan en de bergen van Peneda-Gerês.",
+    "heroSubtitle": "De groenste regio van Portugal, tussen de Atlantische Oceaan en de bergen van Peneda-Gerês",
+    "pullQuote": {
+      "text": "De stranden van Viana do Castelo behoren tot de mooiste van het land.",
+      "source": "The Guardian",
+      "year": 2018
+    },
+    "primaryAccolade": {
+      "text": "Bakermat van de Vinho Verde, de enige groene-wijnregio ter wereld",
+      "source": "Comissão de Viticultura da Região dos Vinhos Verdes",
+      "note": "Afgebakende regio sinds 1908, van de rivier de Minho tot de Douro"
+    },
     "whyOverline": "WAAROM DE MINHO",
-    "whyDescription": "Waar Portugal begint en waar de meeste bezoekers nooit komen. Eeuwenoude bossen die wilde Atlantische stranden ontmoeten. Vinho Verde-wijngaarden die elke helling bedekken. Granieten dorpjes met romaanse kerken en familietasca's die gerechten serveren die al generaties onveranderd zijn.\n\nDe Minho is de groenste en meest authentieke regio van Portugal. De zeevruchten zijn een uur oud. De wijn is gemaakt door iemand die u kunt bezoeken. De stranden zijn leeg op een dinsdag in juli. Dit is niet onontdekt. Het is gewoon zonder toerisme. En dat is nu precies het punt.",
-    "howToGetHere": "Vlieg naar de luchthaven van Porto (OPO), 45 minuten naar het noorden met de auto. De luchthaven van Vigo (VGO), in Spanje, ligt 1 uur naar het zuiden. Wij regelen luchthaventransfers voor alle gasten.",
-    "bestTimeToVisit": "Van juni tot september voor strand en buitenavonturen. Mei en oktober voor wandelingen, de wijnoogst en minder mensen. Mild en groen het hele jaar door.",
-    "whatToExpect": "Groene landschappen, wilde Atlantische stranden, traditionele granieten dorpjes en enkele van de beste zeevruchten van Portugal. Een levensritme dat het zuiden tientallen jaren geleden verloor.",
-    "seoTitle": "Minho — Privéwoningen in Noord-Portugal",
-    "seoDescription": "Ontdek de Minho: eeuwenoude bossen, wilde stranden, Vinho Verde-wijngaarden. Privéwoningen beheerd op hotelniveau.",
+    "whyDescription": "De meeste bezoekers van Portugal komen nooit zo ver naar het noorden. Ze blijven in Porto, een uur zuidelijker, of vliegen rechtstreeks naar de Algarve. De Minho is wat ze missen: een strook land tussen de rivier de Minho, de grens met Spanje, en de Douro, waar de Atlantische Oceaan granieten bergen ontmoet en alles daartussen groen is. Het regent hier meer dan waar ook in Portugal, en dat is precies het punt: de wijngaarden klimmen tegen elke helling op, de rivieren stromen het hele jaar, de bossen van Peneda-Gerês vormen het enige nationale park van het land, en de stranden, lang, koud en leeg, zijn van surfers en vissers in plaats van ligstoelen. Hier werd Portugal ook geboren: Guimarães was de eerste hoofdstad, Braga het oudste aartsbisdom, en de dorpen in de valleien van de Lima en de Cávado hebben een manier van leven bewaard die het zuiden decennia geleden kwijtraakte. Portugal Active begon hier, in Viana do Castelo, en hier staan nog altijd de meeste van onze huizen: herenhuizen in de Lima-vallei, strandlodges aan de kust van Esposende tot Caminha en bergrefuges aan de rand van het park. Alles ligt tussen twintig en zestig minuten van de luchthaven van Porto, en niets voelt zo.",
     "highlights": [
-      "Wilde Atlantische kust met verlaten stranden",
-      "Vinho Verde-regio — de enige groene-wijnregio ter wereld",
-      "Nationaal Park Peneda-Gerês — ongerepte natuur",
-      "Middeleeuwse stadjes en romaanse architectuur",
-      "Enkele van de beste zeevruchten van Portugal"
+      "Vinho Verde — de enige groene-wijnregio ter wereld, met quintas die proeverijen aanbieden in de valleien van de Lima en de Cávado",
+      "Nationaal park Peneda-Gerês — granieten toppen, wilde paarden, watervallen en warmwaterbronnen, negentig minuten van de kust",
+      "Atlantische stranden van Esposende tot Moledo — lang, schoon en leeg, met surf, kitesurf en duinen",
+      "Viana do Castelo, Ponte de Lima en Guimarães — drie van de mooiste historische steden van Portugal",
+      "De beste zeevruchten en de beste feesten van het land — de Agonia in augustus, de wijnoogst in september"
     ],
-    "insiderRecommendations": [
+    "seoTitle": "Minho: Stranden, Vinho Verde, Gerês en Waar te Verblijven | Portugal Active",
+    "seoDescription": "De groenste regio van Portugal: Atlantische stranden, Vinho Verde-quintas, de bergen van Peneda-Gerês en historische steden. Wanneer gaan, hoe komen en onze huizen.",
+    "howToGetHere": "Luchthaven Porto (OPO), 45 tot 70 minuten met de auto, afhankelijk van de vallei. Luchthaven Vigo (VGO) in Spanje ligt op een uur van de kust. Rechtstreekse treinen van Porto naar Viana do Castelo in ongeveer 75 minuten. Wij regelen luchthaventransfers voor elk verblijf.",
+    "bestTimeToVisit": "Eind mei tot juni en september tot begin oktober: warm, overwegend droog, wijngaarden op hun groenst of midden in de oogst, en stranden zonder drukte. Juli en augustus voor de zee en de feesten. De winter is zacht, groen en nat — de beste tarieven van het jaar.",
+    "whatToExpect": "Een levendige, landelijke Atlantische regio, geen resort. Vissersboten bij dageraad, granieten dorpen, wijnranken op pergola's boven elke weg, bergen op een uur van het strand en enkele van de beste zeevruchten van Portugal. Weer dat per uur verandert en een levensritme dat dat niet doet.",
+    "whereToStayIntro": "Portugal Active werd opgericht in Viana do Castelo en de Minho is nog altijd waar de meeste van onze huizen staan — zo'n vijftig, van strandlodges met verwarmd zwembad in Cabedelo en Carreço tot gerestaureerde herenhuizen in de Lima-vallei rond Ponte de Lima, watermolens aan de rivier in Caminha en stenen refuges aan de rand van Peneda-Gerês. Elk huis wordt gerund door het team dat hier woont.",
+    "journalSectionTitle": "Uit het journaal — verhalen uit de Minho",
+    "thingsToDoIntro": "De Minho beloont wie een uitvalsbasis en een auto heeft. Vanuit elk van onze huizen liggen de kust, de valleien en de bergen elk op minder dan een uur, en de meeste gasten besteden aan elk een dag. Wat volgt is wat ons concierge-team aanraadt aan een eerste bezoeker met vier of vijf dagen.",
+    "thingsToDo": [
+      {
+        "heading": "De kust",
+        "items": [
+          {
+            "name": "Praia do Cabedelo",
+            "category": "Strand",
+            "description": "Het stadsstrand van Viana do Castelo, aan de overkant van de rivier: drie kilometer zand achter duinen en dennen, elk jaar een Blauwe Vlag en de meest constante omstandigheden van Portugal voor surf, windsurf en kitesurf. Tien minuten van het historische centrum met de auto of de veerboot."
+          },
+          {
+            "name": "Moledo en Âncora",
+            "category": "Strand",
+            "description": "Vijfentwintig minuten ten noorden van Viana. Moledo is het chicste strand van de Minho, beschut door het fort van Ínsua op zijn eiland; Vila Praia de Âncora, ernaast, heeft een vissershaven en een rivierstrand voor kinderen. Lissabon brengt hier al een eeuw de zomer door."
+          },
+          {
+            "name": "Esposende en Ofir",
+            "category": "Strand",
+            "description": "Dertig minuten zuidwaarts. Het natuurpark Litoral Norte: duinen, dennenbos, de monding van de Cávado en de windmolens van Apúlia. Rustiger dan Viana, beter voor lange wandelingen en fietsen over de vlonderpaden."
+          },
+          {
+            "name": "Monte de Santa Luzia",
+            "category": "Uitzichtpunt",
+            "description": "De basiliek boven Viana do Castelo en, volgens National Geographic, een van de mooiste panorama's ter wereld. Neem de kabeltrein vanaf het station of rijd omhoog; het uitzicht reikt van de monding van de Lima tot de heuvels van Galicië."
+          }
+        ]
+      },
+      {
+        "heading": "De valleien",
+        "items": [
+          {
+            "name": "Ponte de Lima",
+            "category": "Stad",
+            "description": "De oudste stad van Portugal, met stadsrechten uit 1125, aan een bocht van de Lima met haar middeleeuwse brug, platanenlaan en de grootste tweewekelijkse markt van het land. Dertig minuten van Viana. Het hart van het Loureiro-land en de plek van verschillende van onze herenhuizen."
+          },
+          {
+            "name": "Vinho Verde-quintas",
+            "category": "Wijn",
+            "description": "De producenten van de regio — Quinta do Ameal, Aphros, Quinta de Soalheiro hogerop in Melgaço en tientallen familiebedrijven — ontvangen op afspraak voor proeverijen. Loureiro en Alvarinho zijn de druiven om te kennen; de oogst loopt van half september tot in oktober."
+          },
+          {
+            "name": "Braga en Bom Jesus do Monte",
+            "category": "Cultuur",
+            "description": "Vijftig minuten van de kust. De oudste stad van Portugal en zijn religieuze hoofdstad, met een barok trappenheiligdom op de UNESCO-werelderfgoedlijst en een van de mooiste gezichten van het land bij schemering."
+          },
+          {
+            "name": "Guimarães",
+            "category": "Cultuur",
+            "description": "Een uur. De bakermat van Portugal, met een door UNESCO beschermd middeleeuws centrum en het kasteel waar de eerste koning werd geboren. Combineer het met Braga op één dag."
+          }
+        ]
+      },
+      {
+        "heading": "De bergen",
+        "items": [
+          {
+            "name": "Nationaal park Peneda-Gerês",
+            "category": "Natuur",
+            "description": "Het enige nationale park van Portugal, negentig minuten van Viana. Granieten toppen, eikenbos, wilde Garrano-paarden, de watervallen van Arado en Tahiti, Romeinse mijlpalen langs de oude Geira-weg en het kuuroord Gerês. 's Ochtends wandelen, 's middags zwemmen in een rivierpoel."
+          },
+          {
+            "name": "Soajo en Lindoso",
+            "category": "Dorp",
+            "description": "Twee bergdorpen aan de westrand van het park, beroemd om hun groepen granieten espigueiros — graanschuren op palen, sommige vierhonderd jaar oud. Lindoso heeft ook een kasteel en de grootste verzameling espigueiros van Portugal, zeventig bij elkaar."
+          },
+          {
+            "name": "Serra d'Arga",
+            "category": "Natuur",
+            "description": "Het woeste gebergte tussen Viana en Caminha: een plateau van graniet, heide en rivierpoelen, met een klooster in het hart en uitzicht op de Atlantische Oceaan. Onze ervaring Wandelen, Zwemmen en Lunchen vindt hier plaats — een ochtendwandeling, een duik in een natuurlijke poel en lunch in een dorpsrestaurant."
+          }
+        ]
+      }
+    ],
+    "seasons": {
+      "spring": "Maart tot en met mei. De maxima klimmen van zo'n zestien naar tweeëntwintig graden en de regen neemt af zonder ooit helemaal te stoppen. De oceaan is nog koud, veertien tot vijftien graden, en kan beter aan de surfers worden gelaten. Wat de lente biedt, is de Minho op zijn spectaculairst: wijngaarden in het eerste blad, camelia's in elke tuin, de watervallen van Gerês op volle kracht en tarieven ver onder de zomer. Pasen is de uitzondering — de processies van Braga vullen de hotels van de regio.",
+      "summer": "Juni tot en met augustus. Warm en overwegend droog, met maxima van vijfentwintig tot negenentwintig graden en een kust die 's middags wordt gekoeld door de nortada, de noordenwind. De zee blijft fris, zeventien tot negentien graden, zwembaar voor de moedigen en ideaal voor surf en kitesurf. De rivierstranden van de Lima en de poelen van Gerês zijn het lokale antwoord op de hitte. In augustus vinden de grootste feesten van de regio plaats — de Agonia in Viana, in de derde week — en het is de enige maand die maanden vooruit geboekt moet worden.",
+      "autumn": "September tot en met november. September is de beste maand van het jaar: nog zomers warm, de zee op haar warmst, de drukte verdwenen en de vindima — de druivenoogst — die de valleien vult van half september tot in oktober. De wijngaarden kleuren van groen naar koper. Eind oktober keert de regen terug; november is nat, zacht en stil, met kastanjefeesten en de eerste Alvarinho van de nieuwe oogst.",
+      "winter": "December tot en met februari. Zacht naar Noord-Europese maatstaven, met maxima rond veertien tot vijftien graden, maar de natste maanden van het jaar — de reden dat alles zo groen is. De oceaan is koud en de branding serieus. De kerstverlichting van Viana, haardvuren in de herenhuizen, een verwarmd zwembad onder een grijze lucht en de laagste tarieven van het jaar. In de hoogten van Gerês valt af en toe sneeuw.",
+      "bestForFirstTime": "Eind mei tot juni, of september. Beide bieden warm, overwegend droog weer van twintig tot zesentwintig graden, de wijngaarden op hun groenst of midden in de oogst, lege stranden en gemakkelijk een tafel in het restaurant. Juni is beter voor de zee en lange dagen; september voor de sfeer — de oogst, de warme zee, het tragere tempo voordat de regen terugkeert."
+    },
+    "transport": {
+      "byAir": "De luchthaven Francisco Sá Carneiro van Porto is de toegangspoort tot de hele regio: vijfenveertig minuten naar Viana do Castelo, vijftig naar Ponte de Lima, vijfendertig naar Esposende en ongeveer anderhalf uur naar de dorpen van Gerês, alles via de snelweg. De luchthaven van Vigo in het Spaanse Galicië ligt op een uur van Caminha en Viana en is het overwegen waard voor reizigers die via Madrid overstappen. Lissabon is drieënhalf tot vier uur via de snelweg.",
+      "byTrain": "Comboios de Portugal rijdt op de Linha do Minho van Porto-Campanhã naar Viana do Castelo in ongeveer vijfenzeventig minuten en verder naar Caminha en Valença; Braga en Guimarães hebben rechtstreekse stadstreinen vanuit Porto in ongeveer een uur. Er loopt geen spoorlijn naar de Lima-vallei of de bergen — daarvoor een auto of onze transfers.",
+      "byCar": "De A28 loopt langs de kust van Porto naar Viana en Caminha en is tolvrij op het traject bij Viana; de A3 loopt landinwaarts naar Braga, Ponte de Lima en de Spaanse grens bij Valença. Rijden is hier gemakkelijk, de afstanden zijn kort en een auto is de enige praktische manier om kust, vallei en bergen in één verblijf te combineren. Auto's met buitenlands kenteken registreren zich best vooraf voor de elektronische tol.",
+      "fromSpain": "Vanuit Galicië steekt de A3 de grens over bij Valença-Tui: een uur van Vigo naar Viana, minder dan twee vanuit Santiago de Compostela. De meeste van onze Spaanse gasten komen met de auto; de rivier de Minho is de grens, en de steden aan beide oevers — Valença en Tui, Monção en Salvaterra — zijn op zich een dagje uit.",
+      "gettingAround": "Buiten de steden is een auto onmisbaar. Viana, Ponte de Lima, Braga en Guimarães zijn compact en te voet te verkennen. Het fietspad Ecovia do Lima volgt de rivier zeventig kilometer van Viana de vallei in — de beste manier om een quinta te bereiken zonder te rijden. Onze concierge regelt transfers, chauffeurs en fietsen voor elk huis."
+    },
+    "eatDrinkIntro": "De Minho eet beter dan waar ook in Portugal en weet dat. Dit is het land van caldo verde, van rojões en sarrabulho, van lamprei aan het eind van de winter en sardines in juni, van in de oven gebakken bacalhau met broa en van de verste Atlantische zeevruchten, geserveerd in tasquinhas van vissersfamilies. De wijn is Vinho Verde — licht, droog, licht parelend en in zijn Alvarinho- en Loureiro-vormen een van de beste witte wijnen van Europa. Hieronder de adressen waar ons team gasten naartoe stuurt.",
+    "restaurants": [
+      {
+        "name": "Tasquinha da Linda",
+        "category": "Zeevruchten",
+        "description": "Viana do Castelo. Van visgroothandelaren; de verste zeevruchten van de kust, aan de haven. Reserveren is noodzakelijk."
+      },
       {
         "name": "Tasca do Celso",
-        "category": "Restaurant",
-        "description": "Ponte de Lima. Geen menu. De eigenaar brengt wat vers is. Reserveer het terras."
+        "category": "Minho-klassiekers",
+        "description": "Ponte de Lima. Geen kaart — de eigenaar brengt wat die dag vers is. Reserveer het terras boven de rivier."
       },
       {
-        "name": "Praia do Afife",
-        "category": "Strand",
-        "description": "Tussen Viana en Caminha. Wild, zonder drukte, met een strandbar die ter plekke sardines grilt."
+        "name": "Camelo",
+        "category": "Minho-klassiekers",
+        "description": "Ponte de Lima. Al meer dan zestig jaar een instituut in de Minho: rojões, sarrabulho en, in het seizoen, lamprei. De zondagslunch is een lokaal ritueel."
       },
       {
-        "name": "Quinta de Soalheiro",
-        "category": "Wijn",
-        "description": "De beste Alvarinho-producent in Monção. Privéproeverijen met de familie die het allemaal begon."
+        "name": "O Marinheiro",
+        "category": "Zeevruchten",
+        "description": "Vila Praia de Âncora. Gegrilde vis op enkele meters van de haven waar hij vandaan komt. Eenvoudig, luidruchtig en precies goed."
       },
       {
-        "name": "Trilho dos Moinhos",
-        "category": "Wandeling",
-        "description": "Het molenpad in de Peneda-Gerês. 8 km door eeuwenoud eikenbos met natuurlijke poelen."
+        "name": "Solar do Bacalhau",
+        "category": "Traditioneel",
+        "description": "Braga. Bacalhau in twintig bereidingen in een granieten eetzaal in de oude stad."
+      },
+      {
+        "name": "Mercado Municipal de Viana",
+        "category": "Markt",
+        "description": "Doordeweekse ochtenden. De vishal is een van de beste van het land; koop in voor het huis en laat onze chef koken."
       }
-    ]
+    ],
+    "specialties": [
+      {
+        "name": "Bacalhau à moda de Viana",
+        "category": "Gerecht",
+        "description": "In de oven gebakken bacalhau met paprika, ui, aardappel en broa-maïsbrood — het kenmerkende gerecht van de kust."
+      },
+      {
+        "name": "Rojões en sarrabulho",
+        "category": "Gerecht",
+        "description": "Gemarineerd varkensvlees met in varkensbloed gekookte rijst; de winterse zondagslunch van de Lima-vallei."
+      },
+      {
+        "name": "Vinho Verde",
+        "category": "Wijn",
+        "description": "Licht, droog en licht parelend. Alvarinho uit Monção en Melgaço en Loureiro uit de Lima-vallei zijn de twee om te zoeken."
+      },
+      {
+        "name": "Lamprei",
+        "category": "Seizoensgebonden",
+        "description": "Rivierlamprei, gekookt in eigen bloed met rijst, van januari tot april — een delicatesse die de Minho heel serieus neemt."
+      }
+    ],
+    "experiencesIntro": "De Minho is waar Portugal Active begon als avonturenbedrijf, en de meeste van onze eigen ervaringen vinden nog altijd hier plaats, met onze eigen gidsen en partners met wie we elke week werken.",
+    "experiences": [
+      {
+        "name": "Paardrijden in Viana do Castelo",
+        "description": "Strand, berg en bloemenvelden in één ochtend, vanuit een manege op tien minuten van de stad.",
+        "duration": "2u 30m",
+        "season": "Het hele jaar"
+      },
+      {
+        "name": "Canyoning in Peneda-Gerês",
+        "description": "Abseilen langs watervallen, natuurlijke glijbanen en poelen in het nationale park, met onze eigen gidsen. Vanaf twaalf jaar.",
+        "duration": "3–4 uur",
+        "season": "April–oktober"
+      },
+      {
+        "name": "SUP-afdaling van de Lima",
+        "description": "Rustig peddelen stroomafwaarts vanaf Ponte de Lima tussen wijngaarden en Romeinse bruggen.",
+        "duration": "3 uur",
+        "season": "Mei–oktober"
+      },
+      {
+        "name": "Wandelen, Zwemmen en Lunchen in de Serra d'Arga",
+        "description": "Een ochtendwandeling over het gebergte, een duik in een granieten rivierpoel en lunch in een dorpsrestaurant.",
+        "duration": "4u 30m",
+        "season": "Mei–oktober"
+      },
+      {
+        "name": "Vinho Verde-proeverij in de Lima-vallei",
+        "description": "Een ochtend op een werkende quinta met de producent — vier tot zes wijnen, kaas en brood uit de streek.",
+        "duration": "Halve dag",
+        "season": "Het hele jaar; oogstbezoeken september–oktober"
+      },
+      {
+        "name": "Surflessen aan de Minho-kust",
+        "description": "De constante beach break van Cabedelo, met een school die hier al twintig jaar lesgeeft.",
+        "duration": "2–3 uur",
+        "season": "April–november"
+      }
+    ],
+    "eventsIntro": "De kalender van de Minho is de feestelijkste van Portugal. De twee data die tellen voor de planning vallen allebei in augustus, in Viana do Castelo; de wijnoogst in september is de rustigere beloning.",
+    "events": [
+      {
+        "name": "Romaria de Nossa Senhora d'Agonia",
+        "dates": "Derde week van augustus, Viana do Castelo",
+        "description": "De beroemdste romaria van Portugal, sinds 1772: optochten in klederdracht met filigraangoud, bloementapijten, bootprocessies en vuurwerk boven de Lima. Huizen aan de kust zijn maanden vooruit volgeboekt."
+      },
+      {
+        "name": "Neopop",
+        "dates": "Eerste week van augustus, Viana do Castelo",
+        "description": "Een van de meest gerespecteerde festivals voor elektronische muziek in Europa, in het oude fort aan zee."
+      },
+      {
+        "name": "Feiras Novas",
+        "dates": "September, Ponte de Lima",
+        "description": "De grote kermis van de Lima-vallei, sinds 1826: markten, folkloregroepen, een reusachtige zondagsprocessie en de mooiste gigantones van het noorden."
+      },
+      {
+        "name": "Vindima",
+        "dates": "Half september tot oktober",
+        "description": "De Vinho Verde-oogst. Quintas nemen bezoekers mee de wijngaarden en de kelders in; de valleien ruiken een maand lang naar most."
+      },
+      {
+        "name": "Goede Week in Braga",
+        "dates": "Goede Week",
+        "description": "De belangrijkste paasprocessies van Portugal, in de religieuze hoofdstad van het land."
+      },
+      {
+        "name": "Festa de São João",
+        "dates": "23–24 juni, Braga en de kust",
+        "description": "Midzomernacht: vreugdevuren, gegrilde sardines, plastic hamers en vuurwerk in elke stad."
+      }
+    ],
+    "pressIntro": "Over de Minho wordt minder geschreven dan over Porto of de Algarve, en dat is een groot deel van zijn charme. De selectie hieronder is wat de internationale pers over de regio en haar steden heeft gezegd.",
+    "pressQuotes": [
+      {
+        "source": "The Guardian",
+        "year": 2018,
+        "quote": "De stranden van Viana do Castelo behoren tot de mooiste van het land."
+      },
+      {
+        "source": "Booking.com Traveller Review Awards",
+        "year": 2024,
+        "quote": "Viana do Castelo — de op twee na gastvrijste stad ter wereld."
+      },
+      {
+        "source": "Forbes",
+        "year": 2023,
+        "quote": "De Minho is een paradijs voor avontuurlijke reizigers, verborgen in het volle zicht in het noorden van Portugal."
+      },
+      {
+        "source": "UNESCO",
+        "year": 2001,
+        "quote": "Guimarães — een uitzonderlijk goed bewaard voorbeeld van de ontwikkeling van een middeleeuwse nederzetting tot een moderne stad."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Hoeveel dagen heb ik nodig in de Minho?",
+        "answer": "Vier tot vijf dagen is de comfortabele duur: een dag aan de kust, een dag in de Lima-vallei met een quinta-bezoek, een dag voor Braga en Guimarães en een dag in Peneda-Gerês. Met een week kunt u het rustiger aan doen en de bergdorpen en het Alvarinho-land rond Monção en Melgaço toevoegen."
+      },
+      {
+        "question": "Is de Minho geschikt voor een strandvakantie?",
+        "answer": "Voor lange, lege Atlantische stranden en surfen wel. Voor warm water en gegarandeerde zon niet — de zee is in de zomer zeventien tot negentien graden en aan de kust waait 's middags een frisse wind. De meeste van onze huizen hebben een verwarmd zwembad; zo doet de Minho strandvakanties."
+      },
+      {
+        "question": "Heb ik een auto nodig?",
+        "answer": "Ja, tenzij u in Viana do Castelo zelf verblijft en tevreden bent met treinen en onze transfers. De aantrekkingskracht van de regio zit in de combinatie van kust, vallei en bergen, elk op minder dan een uur, en alleen een auto maakt dat gemakkelijk."
+      },
+      {
+        "question": "Hoe ver is de Minho van Porto?",
+        "answer": "Vijfenveertig tot zeventig minuten via de snelweg vanaf de luchthaven van Porto, afhankelijk van het huis. Viana do Castelo ligt op vijfenzeventig minuten van Porto met de rechtstreekse trein."
+      },
+      {
+        "question": "Wanneer is de Vinho Verde-oogst?",
+        "answer": "Van half september tot in oktober, afhankelijk van het jaar en de druif. Loureiro in de Lima-vallei wordt eerst geplukt; Alvarinho in Monção en Melgaço iets later."
+      },
+      {
+        "question": "Is Peneda-Gerês een dagtrip vanaf de kust?",
+        "answer": "Ja — negentig minuten per rit. Voor canyoning, de watervallen en de dorpen Soajo en Lindoso vertrekt u vroeg. Als de bergen het doel van de reis zijn, liggen verschillende van onze huizen aan de rand van het park."
+      },
+      {
+        "question": "Hoe is het weer?",
+        "answer": "Atlantisch: het hele jaar zacht, warm en overwegend droog van juni tot september, nat en groen van november tot maart. Neem ook in de zomer een extra laag mee."
+      },
+      {
+        "question": "Is de Minho geschikt voor gezinnen?",
+        "answer": "Heel geschikt. Rivierstranden met warm, kalm water, boerderijdieren op de quintas, rustige fietspaden langs de Lima en huizen met tuin en zwembad. Onze concierge regelt oppas en gezinsvriendelijke ervaringen."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Bezit u een huis in de Minho?",
+      "body": "Portugal Active beheert hoogwaardige woningen in de hele Alto Minho: volledig beheer, marketing, concierge en onderhoud op hotelniveau, door het team dat het bedrijf hier oprichtte.",
+      "cta": "Spreek met ons team"
+    }
   },
   "viana-do-castelo": {
     "name": "Viana do Castelo",
@@ -536,40 +802,336 @@
   },
   "algarve": {
     "name": "Algarve",
-    "tagline": "Gouden kliffen, privézwembaden en 300 dagen zon.",
-    "description": "Villa's op de kliffen, privézwembaden en 300 dagen zon.",
-    "heroSubtitle": "Gouden kliffen, privézwembaden en 300 dagen zon.",
+    "tagline": "Gouden kliffen, warme zee en driehonderd dagen zon — en de Algarve voorbij de resorts.",
+    "description": "Een complete gids voor de Algarve — de kusten, de seizoenen en waar te verblijven voorbij de resorts.",
+    "heroSubtitle": "De zuidkust van Portugal, van het wilde westen tot de lagunes van het oosten",
+    "pullQuote": {
+      "text": "Praia da Falésia — het mooiste strand ter wereld.",
+      "source": "Tripadvisor Travellers' Choice",
+      "year": 2024
+    },
+    "primaryAccolade": {
+      "text": "Beste strandbestemming van Europa",
+      "source": "World Travel Awards",
+      "note": "Het afgelopen decennium herhaaldelijk aan de Algarve toegekend"
+    },
     "whyOverline": "WAAROM DE ALGARVE",
-    "whyDescription": "De meeste mensen kennen de Algarve van de resorts, golfbanen en toeristische stranden. Wij kennen haar om wat daar voorbij ligt: de wilde westkust waar surfers lege golven pakken, de bergen van Monchique waar kurkeiken schaduw geven aan verborgen paden, de vissersdorpjes waar de vis twee keer per dag binnenkomt en de restaurants zes tafels hebben.\n\nDe Algarve waar wij actief zijn, is degene die nieuwsgierigheid beloont. Zon het hele jaar door, een dramatische kust en een landschap dat van oost naar west volledig verandert. Onze huizen en het conciërgeteam richten zich op de Algarve die de meeste bezoekers volledig negeren.\n\nOnze Algarve-collectie groeit. Neem contact op met onze concierge voor de meest recente beschikbaarheid.",
-    "howToGetHere": "Vlieg naar de luchthaven van Faro (FAO), op 30 tot 90 minuten van onze eigendommen naargelang de locatie. Wij regelen alle luchthaventransfers.",
-    "bestTimeToVisit": "Het hele jaar door. Piek van juni tot september. Lente en herfst ideaal voor wandelingen, fietsen en rustigere stranden. Milde winter, 15 tot 18 graden.",
-    "whatToExpect": "Meer dan 300 dagen zon, een dramatische kliffenkust, golf van wereldklasse en een rustiger binnenland dat de meeste bezoekers nooit verkennen.",
-    "seoTitle": "Algarve — Privéwoningen in Zuid-Portugal",
-    "seoDescription": "Ontdek de Algarve: villa's op de kliffen, privézwembaden, 300 dagen zon. Privéwoningen beheerd op hotelniveau.",
+    "whyDescription": "Iedereen kent de Algarve van de resorts, het golf en de zomerstranden, en terecht: dit is de zonnigste kust van Europa, met een warme zee van juni tot oktober en een winter die aanvoelt als een Engelse lente. Wat de meeste bezoekers nooit zien, is de rest. De westkust rond Sagres en Aljezur, waar de kliffen uitkijken op de open oceaan en surfers lege stranden voor zichzelf hebben. De Ria Formosa in het oosten, een lagune van eilanden, zoutpannen en vissersdorpen, een van de mooiste natuurparken van Portugal. De heuvels van de Serra de Monchique en de Barrocal, met kurkeiken, sinaasappelgaarden, witgekalkte dorpen en restaurants die nog nooit een toeristenmenu hebben gezien. En de villa's: achter de muren van Quinta do Lago en Vale do Lobo, op de kliffen van de centrale kust en op het platteland van het westen staan privéhuizen die van de Algarve iets heel anders maken dan een resortvakantie — een huis met verwarmd zwembad, een chef in de keuken en een concierge die weet welke baai om vier uur 's middags leeg is. Onze huizen in de Algarve zijn precies die huizen.",
     "highlights": [
-      "Meer dan 300 dagen zon per jaar",
-      "Dramatische kalkstenen kliffen en verborgen stranden in baaien",
-      "Golfbanen van wereldklasse",
-      "Verse zeevruchten en de cataplana-traditie",
-      "Levendig nachtleven in Lagos en Albufeira"
+      "Driehonderd dagen zon per jaar en de warmste zee van Portugal van juni tot oktober",
+      "Kalksteenkliffen, zeegrotten en baaistranden van Lagos tot Albufeira — Benagil, Marinha, Falésia",
+      "De wilde westkust — Sagres, Aljezur en de Costa Vicentina, voor surf en leeg zand",
+      "Het natuurpark Ria Formosa — eilanden, lagunes en de vissersstadjes Olhão en Tavira",
+      "Golf in Quinta do Lago, Vale do Lobo en Vilamoura, op enkele minuten van verschillende van onze huizen"
     ],
-    "insiderRecommendations": [
+    "seoTitle": "Algarve: Stranden, Villa's, Golf en Wanneer Gaan | Portugal Active",
+    "seoDescription": "De zonnigste kust van Europa: klifstranden, het wilde westen, de Ria Formosa en privévilla's met zwembad. Wanneer gaan, hoe komen en waar verblijven.",
+    "howToGetHere": "Luchthaven Faro (FAO) ligt 20 tot 60 minuten via de snelweg van onze huizen — 20 naar Quinta do Lago, 40 naar Albufeira, 60 naar Lagos en het westen. Lissabon is tweeënhalf uur via de A2. Wij regelen luchthaventransfers voor elk verblijf.",
+    "bestTimeToVisit": "Mei tot juni en september tot oktober: tweeëntwintig tot achtentwintig graden, een warme zee, en stranden en restaurants zonder de augustusdrukte. Juli en augustus voor gegarandeerde hitte. De winter is de zachtste van het Europese vasteland — vijftien tot achttien graden, golf, wandelen en amandelbloesem in februari.",
+    "whatToExpect": "Zon, allereerst: de droogste, zonnigste hoek van Portugal. Een kust die elke vijftig kilometer verandert — gouden kliffen en grotten in het midden, open oceaan en surf in het westen, lagunes en barrière-eilanden in het oosten. Resorts waar u ze verwacht en, een paar minuten landinwaarts of langs de kust, een rustigere Algarve van dorpen, boomgaarden en vissershavens.",
+    "whereToStayIntro": "Portugal Active runt een kleine collectie huizen in de Algarve: villa's binnen Quinta do Lago en aan de centrale kust tussen Albufeira en Vilamoura, huizen in het oosten rond Tavira en landgoederen in het westen bij Lagos. Elk wordt gerund op hetzelfde niveau als onze huizen in het noorden — een verwarmd zwembad, een gevulde keuken, een privéchef op aanvraag en een concierge die in de regio woont.",
+    "journalSectionTitle": "Uit het journaal — verhalen uit de Algarve",
+    "thingsToDoIntro": "De Algarve is honderdvijftig kilometer breed en heeft drie verschillende kusten, dus de eerste beslissing is waar u zich vestigt. Wat volgt is de lijst van onze concierge voor een eerste bezoek, van west naar oost, met rijtijden vanaf de centrale kust.",
+    "thingsToDo": [
       {
-        "name": "Castelo de Silves",
-        "category": "Cultuur",
-        "description": "Een van de best bewaarde Moorse kastelen van Portugal. Bezoek 's ochtends, verken het stadje, eet gegrilde vis aan de rivier."
+        "heading": "Het westen — Sagres en de Costa Vicentina",
+        "items": [
+          {
+            "name": "Cabo de São Vicente",
+            "category": "Uitzichtpunt",
+            "description": "De zuidwestpunt van Europa: een vuurtoren op een klif zestig meter boven de oceaan, ooit beschouwd als het einde van de wereld. Kom voor de zonsondergang. Een uur en een kwartier van Albufeira."
+          },
+          {
+            "name": "Sagres en het fort",
+            "category": "Cultuur",
+            "description": "De winderige landtong waar de zeevaartschool van Hendrik de Zeevaarder gestaan zou hebben. Surfstranden aan beide kanten: Beliche en Tonel naar de oceaan, Martinhal naar de baai."
+          },
+          {
+            "name": "Praia da Bordeira en Amado",
+            "category": "Strand",
+            "description": "Twee immense Atlantische stranden aan de Costa Vicentina, achter duinen en kliffen, met een surfschool op Amado en bijna niemand op Bordeira. Negentig minuten van de centrale kust."
+          },
+          {
+            "name": "Lagos en Ponta da Piedade",
+            "category": "Stad",
+            "description": "De fraaie havenstad van het westen, met een ommuurd oud centrum, een werkende jachthaven en, net ten zuiden, de gouden rotsbogen en grotten van Ponta da Piedade — het mooist vanuit een kajak om negen uur 's ochtends."
+          }
+        ]
       },
       {
-        "name": "De Westkust",
-        "category": "Natuur",
-        "description": "Van Sagres tot Aljezur. Wild, door de wind geteisterd en het tegenovergestelde van alles wat men van de Algarve verwacht."
+        "heading": "Het midden — kliffen en grotten",
+        "items": [
+          {
+            "name": "Grot van Benagil en Praia da Marinha",
+            "category": "Strand",
+            "description": "De meest gefotografeerde kust van de Algarve: een zeegrot zo groot als een kathedraal, bereikbaar per boot of paddleboard, en ernaast Marinha, steevast bij de beste stranden van Europa. Ga vroeg — van juni tot september zijn de grotten om tien uur al druk. Twintig minuten van Albufeira."
+          },
+          {
+            "name": "Pad van de Zeven Hangende Valleien",
+            "category": "Wandeling",
+            "description": "Zes kilometer klifpad tussen Praia da Marinha en Praia de Vale Centeanes, langs dolines, bogen en lege baaien. Twee tot drie uur; neem water mee."
+          },
+          {
+            "name": "Praia da Falésia",
+            "category": "Strand",
+            "description": "Zes kilometer zand onder okerkleurige kliffen tussen Vilamoura en Albufeira — volgens Tripadvisor in 2024 het mooiste strand ter wereld, en aan beide uiteinden zelfs in augustus rustig. Vijftien minuten van onze huizen in Vilamoura en Quinta do Lago."
+          },
+          {
+            "name": "Silves",
+            "category": "Cultuur",
+            "description": "De Moorse hoofdstad van de Algarve, met het best bewaarde kasteel van het zuiden, een gotische kathedraal en een oude stad aan de rivier. Bezoek 's ochtends, lunch in de stad, dan de sinaasappelgaarden van de Barrocal."
+          }
+        ]
       },
       {
-        "name": "Bergen van Monchique",
-        "category": "Wandeling",
-        "description": "Thermen, kurkeikenbossen en dorpjes hoog gelegen. Een volledig andere Algarve op 30 minuten van de kust."
+        "heading": "Het oosten — Ria Formosa en Tavira",
+        "items": [
+          {
+            "name": "Natuurpark Ria Formosa",
+            "category": "Natuur",
+            "description": "Zestig kilometer lagune, kwelder en barrière-eilanden tussen Faro en Cacela Velha: flamingo's, kameleons, oesterbanken en stranden die alleen per boot bereikbaar zijn. Neem de veerboot van Olhão naar Culatra of Armona."
+          },
+          {
+            "name": "Tavira",
+            "category": "Stad",
+            "description": "De mooiste stad van de Algarve: een Romeinse brug, zevenendertig kerken, een kasteeltuin en het strand van Ilha de Tavira op een korte veerboottocht. Veertig minuten van Faro."
+          },
+          {
+            "name": "Markt van Olhão",
+            "category": "Markt",
+            "description": "De beste vismarkt van het zuiden, in twee rode bakstenen hallen aan het water. Zaterdagochtend. Koop in voor het huis en laat de rest aan onze chef over."
+          },
+          {
+            "name": "Cacela Velha",
+            "category": "Dorp",
+            "description": "Een handvol witte huizen, een kerk en een fort boven de lagune, met een oesterbar en een strand waar u bij eb naartoe waadt. De Algarve zoals hij was."
+          }
+        ]
+      },
+      {
+        "heading": "Het binnenland — heuvels en dorpen",
+        "items": [
+          {
+            "name": "Serra de Monchique",
+            "category": "Natuur",
+            "description": "De berg van de Algarve: eucalyptus- en kastanjebos, het kuurdorp Caldas de Monchique en Fóia, het hoogste punt van het zuiden, met uitzicht op beide kusten. Vijfenveertig minuten van Lagos of Portimão."
+          },
+          {
+            "name": "Alte en Salir",
+            "category": "Dorp",
+            "description": "Twee witgekalkte dorpen in de Barrocal, met bronnen, amandel- en johannesbroodgaarden en een zondagslunchcultuur die niets met de kust te maken heeft."
+          },
+          {
+            "name": "Markt van Loulé",
+            "category": "Markt",
+            "description": "Zaterdagochtend in de neo-Moorse markthal en de straten eromheen: fruit, kaas, vleeswaren, keramiek. Twintig minuten van Quinta do Lago."
+          }
+        ]
       }
-    ]
+    ],
+    "seasons": {
+      "spring": "Maart tot en met mei. De maxima klimmen van achttien naar vierentwintig graden, regen is na maart zeldzaam en het platteland is op zijn best — de amandelbloesem eindigt in februari, de sinaasappelbloesem in april, wilde bloemen op de klifpaden tot in mei. De zee is nog koel, zestien tot achttien graden. Pasen is druk; mei is een van de beste maanden van het jaar, warm, droog en rustig.",
+      "summer": "Juni tot en met augustus. Heet en droog — achtentwintig tot tweeëndertig graden, dagen van onafgebroken zon en een zee die tegen augustus opwarmt tot tweeëntwintig of drieëntwintig graden. De centrale kust loopt vol vanaf half juli; het westen blijft winderiger en leger, het oosten nog rustiger. Dit is de Algarve van lange zwembaddagen, avondbarbecues en een chef in de keuken. Boek maanden vooruit voor juli en augustus.",
+      "autumn": "September tot en met november. September en oktober zijn de maanden van de kenner: de zee op haar warmst, tweeëntwintig tot zesentwintig graden in de lucht, de drukte verdwenen en overal een vrije tafel. November brengt de eerste regen en zachter licht, met maxima nog rond de twintig graden. Het beste golfweer van het jaar.",
+      "winter": "December tot en met februari. De zachtste winter van het Europese vasteland: vijftien tot achttien graden, meer zon dan het grootste deel van Noord-Europa in juni ziet, en zo nu en dan een Atlantisch front. Geen strandweer, maar wandel-, fiets-, golf- en verwarmd-zwembadweer. Amandelbloesem bedekt de Barrocal vanaf eind januari. De tarieven zijn op hun laagst.",
+      "bestForFirstTime": "Eind mei tot juni, of september tot begin oktober. Beide bieden tweeëntwintig tot achtentwintig graden, een zwembare zee en de kust zonder augustusdrukte. Juni heeft langere dagen en koeler water; september de warmste zee van het jaar en het zachtste licht."
+    },
+    "transport": {
+      "byAir": "Luchthaven Faro is de toegangspoort en ligt midden aan de kust: twintig minuten naar Quinta do Lago en Vale do Lobo, dertig naar Vilamoura, veertig naar Albufeira, veertig naar Tavira, zestig naar Lagos en vijfenzeventig naar Sagres, alles via de A22. Er zijn het hele jaar rechtstreekse vluchten vanuit de meeste Europese steden. Luchthaven Lissabon is een alternatief voor het westen — tweeënhalf uur via de A2 naar Lagos.",
+      "byTrain": "Comboios de Portugal rijdt Alfa Pendular- en Intercidades-treinen van Lissabon naar Faro in ongeveer drie uur, en een regionale lijn langs de kust van Lagos naar Vila Real de Santo António. De trein is prettig voor een dagje tussen de stadjes, maar niet om een villa te bereiken — de stations liggen landinwaarts, de huizen niet.",
+      "byCar": "De snelweg A22 loopt over de hele lengte van de regio en heeft elektronische tol; de oude N125 loopt parallel en langzamer, door elk dorp. Vanuit Lissabon steekt de A2 in tweeënhalf uur de Alentejo over naar de Algarve. Huurauto's zijn goedkoop in Faro; auto's met buitenlands kenteken registreren zich best vooraf voor de tol.",
+      "fromSpain": "Sevilla ligt op twee uur van Tavira en tweeënhalf van Faro over de Guadiana-brug — de Algarve ligt dichter bij Andalusië dan bij Lissabon, en veel van onze Spaanse gasten komen met de auto.",
+      "gettingAround": "Een auto is onmisbaar: de Algarve is breed, de beste stranden liggen aan het eind van kleine wegen en de dorpen in het binnenland hebben geen bussen die de naam waard zijn. Binnen Quinta do Lago en Vale do Lobo volstaan fietsen en golfkarretjes voor het dagelijkse. Onze concierge regelt transfers, chauffeurs en boten voor elk huis."
+    },
+    "eatDrinkIntro": "De keuken van de Algarve is die van de zee: sardines en horsmakreel van de grill, cataplana — een schelpvormige koperen pan met vis, zeevruchten en varkensvlees —, scheermessen uit de Ria Formosa, oesters uit Cacela en, landinwaarts, geroosterd geitenlam, piri-piri-kip uit Guia en de amandel- en vijgenzoetigheden van de Moren. Hieronder de adressen waar ons team gasten naartoe stuurt, van tasquinhas aan de haven tot de Michelin-tafels van de regio.",
+    "restaurants": [
+      {
+        "name": "Rei das Praias",
+        "category": "Zeevruchten",
+        "description": "Praia dos Caneiros, Ferragudo. Een strandrestaurant dat al veertig jaar dezelfde gegrilde vis serveert, in een baai tussen twee kapen. Reserveer voor de lunch."
+      },
+      {
+        "name": "Bon Bon",
+        "category": "Fine dining",
+        "description": "Carvoeiro. Twee Michelinsterren in een witgekalkt huis op een paar minuten van de kliffen; de serieuste tafel van de regio."
+      },
+      {
+        "name": "O Camilo",
+        "category": "Zeevruchten",
+        "description": "Lagos. Boven Praia do Camilo, met de rotsen van Ponta da Piedade eronder en de verste vis van het westen."
+      },
+      {
+        "name": "Chá com Água Salgada",
+        "category": "Zeevruchten",
+        "description": "Olhão. Naast de vismarkt, aan de ria; wat die ochtend van de boten kwam, eenvoudig bereid."
+      },
+      {
+        "name": "Ramires",
+        "category": "Traditioneel",
+        "description": "Guia. Sinds 1964 de thuisbasis van de piri-piri-kip, en nog altijd dé plek om hem te eten — luidruchtig, snel en perfect."
+      },
+      {
+        "name": "A Ver Tavira",
+        "category": "Moderne Algarve",
+        "description": "Tavira. Streekproducten op een terras boven de daken van de oude stad, op loopafstand van de Romeinse brug."
+      }
+    ],
+    "specialties": [
+      {
+        "name": "Cataplana de marisco",
+        "category": "Gerecht",
+        "description": "Vis, kokkels, garnalen en vaak varkensvlees, gekookt en geserveerd in de scharnierende koperen cataplana. Het nationale gerecht van de Algarve."
+      },
+      {
+        "name": "Sardinhas assadas",
+        "category": "Gerecht",
+        "description": "Gegrilde sardines op brood, van juni tot september, wanneer ze vet zijn. Portimão is de sardinehoofdstad."
+      },
+      {
+        "name": "Oesters uit de Ria Formosa",
+        "category": "Zeevruchten",
+        "description": "Oesters uit de lagune, gegeten op de kade van Cacela Velha of Olhão met een glas witte Algarve-wijn."
+      },
+      {
+        "name": "Amandel- en vijgenzoetigheden",
+        "category": "Zoet",
+        "description": "Amandel- en vijgengebak in Moorse vormen, in elke pastelaria te koop; dom rodrigo is degene om te proberen."
+      }
+    ],
+    "experiencesIntro": "In de Algarve worden onze ervaringen door de concierge georganiseerd met lokale partners met wie we elke week werken — boten, gidsen, chefs en golfbanen — en geleverd op hetzelfde niveau als die van ons eigen team in het noorden.",
+    "experiences": [
+      {
+        "name": "Benagil en de grotten per boot of kajak",
+        "description": "Een privéboot of een begeleide kajak vanuit Benagil of Carvoeiro de zeegrotten in, voordat de drukte komt.",
+        "duration": "2–3 uur",
+        "season": "Het hele jaar; kalmste zee mei–oktober"
+      },
+      {
+        "name": "Privéchef in de villa",
+        "description": "Een marktvers diner gekookt in uw keuken — cataplana, gegrilde vis, Algarvse zoetigheden — door een chef die de concierge voor u boekt.",
+        "duration": "Avond",
+        "season": "Het hele jaar"
+      },
+      {
+        "name": "Golf in Quinta do Lago en Vilamoura",
+        "description": "Starttijden, transfers en clubverhuur op de kampioensbanen van de Algarve, op enkele minuten van onze huizen.",
+        "duration": "Halve dag",
+        "season": "Het hele jaar; best oktober–mei"
+      },
+      {
+        "name": "Ria Formosa per boot",
+        "description": "Een privésloep vanuit Olhão of Faro door de lagune naar de barrière-eilanden, met lunch op Culatra.",
+        "duration": "Halve dag",
+        "season": "Het hele jaar"
+      },
+      {
+        "name": "Surflessen aan de Costa Vicentina",
+        "description": "Lessen voor beginners en gevorderden op Amado of Arrifana met een school die al decennia aan de westkust lesgeeft.",
+        "duration": "2–3 uur",
+        "season": "Het hele jaar"
+      },
+      {
+        "name": "Wijnproeverij in de heuvels van de Algarve",
+        "description": "Quinta dos Vales en de nieuwe golf Algarve-wijnhuizen rond Lagoa en Silves, met de wijnmaker.",
+        "duration": "Halve dag",
+        "season": "Het hele jaar"
+      }
+    ],
+    "eventsIntro": "Het jaar van de Algarve loopt van de lentebloesem via de zomerfestivals naar een lang, zacht laagseizoen. De data hieronder zijn het belangrijkst voor de planning; augustus moet hoe dan ook maanden vooruit geboekt worden.",
+    "events": [
+      {
+        "name": "Festival Med",
+        "dates": "Eind juni, Loulé",
+        "description": "Wereldmuziek in de straten en op de pleinen van de oude stad — drie nachten, tientallen podia, het beste festival van de regio."
+      },
+      {
+        "name": "Festival do Marisco",
+        "dates": "Half augustus, Olhão",
+        "description": "Een week zeevruchten aan het water, het grootste feest van de ria."
+      },
+      {
+        "name": "Sardinefestival",
+        "dates": "Augustus, Portimão",
+        "description": "Tonnen gegrilde sardines aan de rivieroever, met elke avond concerten."
+      },
+      {
+        "name": "Middeleeuwse Dagen",
+        "dates": "Augustus, Silves en Castro Marim",
+        "description": "De twee kasteelstadjes zetten de klok terug: markten, steekspelen, muziek en veel geroosterd vlees."
+      },
+      {
+        "name": "Amandelbloesem",
+        "dates": "Eind januari tot februari, de Barrocal",
+        "description": "De heuvels tussen Loulé en Tavira kleuren drie weken wit — het stille, mooie wintergeheim van de Algarve."
+      },
+      {
+        "name": "Carnaval in Loulé",
+        "dates": "Februari",
+        "description": "De oudste carnavalsoptocht van Portugal, in de straten van Loulé."
+      }
+    ],
+    "pressIntro": "De Algarve is een van de meest beschreven kusten van Europa. De citaten hieronder zijn die welke de regio beschrijven die wij kennen.",
+    "pressQuotes": [
+      {
+        "source": "Tripadvisor Travellers' Choice",
+        "year": 2024,
+        "quote": "Praia da Falésia — het mooiste strand ter wereld."
+      },
+      {
+        "source": "World Travel Awards",
+        "year": 2023,
+        "quote": "Beste strandbestemming van Europa."
+      },
+      {
+        "source": "The Guardian",
+        "year": 2022,
+        "quote": "De Costa Vicentina is de wilde, ongerepte kant van de Algarve die de meeste bezoekers nooit zien."
+      },
+      {
+        "source": "Condé Nast Traveller",
+        "year": 2023,
+        "quote": "Tavira is de mooiste stad van de Algarve."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "In welk deel van de Algarve kan ik het beste verblijven?",
+        "answer": "De centrale kust, van Albufeira tot Quinta do Lago, als u stranden, golf, restaurants en nachtleven binnen twintig minuten wilt en de luchthaven van Faro dichtbij. Het westen, rond Lagos en Sagres, voor wilde stranden, surf en ruimte. Het oosten, rond Tavira en Olhão, voor de lagune, rustigere stadjes en de beste zeevruchten. Onze huizen dekken alle drie."
+      },
+      {
+        "question": "Wanneer is de zee warm genoeg om te zwemmen?",
+        "answer": "Van juni tot oktober. Aan de zuidkust bereikt de zee in augustus en september tweeëntwintig tot drieëntwintig graden; de westkust is twee tot drie graden kouder en ruwer. De meeste van onze huizen hebben een verwarmd zwembad voor de tussenseizoenen."
+      },
+      {
+        "question": "Hoe ver is de luchthaven van Faro van de villa's?",
+        "answer": "Twintig minuten naar Quinta do Lago en Vale do Lobo, dertig naar Vilamoura, veertig naar Albufeira of Tavira, zestig naar Lagos en vijfenzeventig naar Sagres, alles via de snelweg. Onze concierge regelt de transfer."
+      },
+      {
+        "question": "Is de Algarve de moeite waard in de winter?",
+        "answer": "Ja, als het strand niet het doel is. Vijftien tot achttien graden, meer zon dan Noord-Europa in juni, lege paden, amandelbloesem in februari, golf en lange lunches. De tarieven zijn op hun laagst en de huizen hebben verwarmde zwembaden en open haarden."
+      },
+      {
+        "question": "Heb ik een auto nodig?",
+        "answer": "Ja. De regio is breed, de beste stranden liggen aan het eind van kleine wegen en de dorpen in het binnenland hebben nauwelijks openbaar vervoer. Binnen Quinta do Lago en Vale do Lobo volstaan fietsen en golfkarretjes voor het dagelijkse."
+      },
+      {
+        "question": "Hoe kom ik bij de grot van Benagil?",
+        "answer": "Per boot vanuit Benagil of Carvoeiro, of per kajak of paddleboard met een gids — er is geen toegang over land. Ga in de zomer vóór tien uur, of kom in mei of oktober, wanneer de zee kalm en de grot rustig is. Onze concierge boekt de boot."
+      },
+      {
+        "question": "Is de Algarve geschikt voor gezinnen?",
+        "answer": "De beste regio van Portugal daarvoor: warme, ondiepe stranden in het oosten, waterparken bij Albufeira, boottochten, dolfijnen spotten en villa's met zwembad en tuin. Onze concierge regelt oppas, kinderbedjes en gezinsvriendelijke ervaringen."
+      },
+      {
+        "question": "Hoe verhoudt de Algarve zich tot de Minho?",
+        "answer": "De Algarve is zon, warme zee en kliffen; de Minho is groene valleien, koude Atlantische surf en bergen. De Algarve is de veiligste keuze voor een strandvakantie; de Minho voor eten, wijn, natuur en een Portugal dat weinig bezoekers zien. Veel van onze gasten doen beide."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Bezit u een huis in de Algarve?",
+      "body": "Portugal Active runt hoogwaardige villa's in de hele Algarve — van Quinta do Lago tot de westkust — met volledig beheer, marketing, concierge en onderhoud op hotelniveau.",
+      "cta": "Spreek met ons team"
+    }
   },
   "brazil": {
     "name": "Brazilië",

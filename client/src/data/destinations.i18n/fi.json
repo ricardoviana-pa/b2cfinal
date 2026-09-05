@@ -1,45 +1,311 @@
 {
   "minho": {
-    "name": "Minhon rannikko",
-    "tagline": "Missä Atlantti kohtaa ikivanhat metsät ja viinitarhat.",
-    "description": "Missä Atlantti kohtaa ikivanhat metsät ja viinitarhat.",
-    "heroSubtitle": "Portugalin vihrein alue, jossa Atlantin surffi kohtaa Vinho Verden laaksot.",
+    "name": "Minho",
+    "tagline": "Missä Portugali alkaa: Atlantin surffia, graniittikyliä ja Vinho Verden laaksoja.",
+    "description": "Kattava opas Minhoon, Portugalin vihreimpään alueeseen Atlantin ja Peneda-Gerêsin vuorten välissä.",
+    "heroSubtitle": "Portugalin vihrein alue, Atlantin ja Peneda-Gerêsin vuorten välissä",
+    "pullQuote": {
+      "text": "Viana do Castelon rannat kuuluvat maan kauneimpiin.",
+      "source": "The Guardian",
+      "year": 2018
+    },
+    "primaryAccolade": {
+      "text": "Vinho Verden koti, maailman ainoa vihreän viinin alue",
+      "source": "Comissão de Viticultura da Região dos Vinhos Verdes",
+      "note": "Rajattu viinialue vuodesta 1908, Minhojoelta Dourolle"
+    },
     "whyOverline": "MIKSI MINHO",
-    "whyDescription": "Missä Portugali alkaa ja minne useimmat kävijät eivät koskaan pääse. Ikivanhat metsät kohtaavat villit Atlantin rannat. Vinho Verde -viinitarhat peittävät jokaisen rinteen. Graniittikyliä romaanisin kirkoin ja perheravintoloin, jotka tarjoilevat ruokia muuttumattomina sukupolvien ajan.\n\nMinho on Portugalin vihrein ja aidoin alue. Äyriäiset ovat tunnin vanhoja. Viinin on tehnyt joku, jonka luona voit käydä. Rannat ovat tyhjiä heinäkuun tiistaina. Tätä ei ole vielä löydetty. Se on yksinkertaisesti vailla turismia. Ja juuri se on pointti.",
-    "howToGetHere": "Lennä Porton lentokentälle (OPO), 45 minuuttia pohjoiseen autolla. Vigon lentokenttä (VGO) Espanjassa on tunnin etelään. Järjestämme lentokenttäkuljetukset kaikille vieraille.",
-    "bestTimeToVisit": "Kesäkuusta syyskuuhun rantaa ja ulkoseikkailuja varten. Toukokuu ja lokakuu vaelluksiin, sadonkorjuuseen ja vähempään väkijoukkoon. Leuto ja vihreä ympäri vuoden.",
-    "whatToExpect": "Reheviä maisemia, villejä Atlantin rantoja, perinteisiä graniittikyliä ja osaa Portugalin parhaista äyriäisistä. Elämänrytmi, jonka etelä menetti vuosikymmeniä sitten.",
-    "seoTitle": "Minho — yksityiskoteja Pohjois-Portugalissa",
-    "seoDescription": "Löydä Minho: ikivanhat metsät, villit rannat, Vinho Verde -viinitarhat. Hotellitasolla hoidetut yksityiskodit.",
+    "whyDescription": "Useimmat Portugalin kävijät eivät koskaan tule näin pohjoiseen. He pysähtyvät Portoon, tunnin matkan päähän etelään, tai lentävät suoraan Algarveen. Minho on se, mikä heiltä jää näkemättä: kaistale maata Espanjan rajana toimivan Minhojoen ja Douron välissä, missä Atlantti kohtaa graniittivuoret ja kaikki siltä väliltä on vihreää. Täällä sataa enemmän kuin missään muualla Portugalissa, ja juuri siitä on kyse — viiniköynnökset kiipeävät jokaiselle rinteelle, joet virtaavat ympäri vuoden, Peneda-Gerêsin metsät ovat maan ainoa kansallispuisto, ja rannat, pitkät, kylmät ja tyhjät, kuuluvat surffaajille ja kalastajille eivätkä aurinkotuoleille. Täällä myös Portugali syntyi: Guimarães oli ensimmäinen pääkaupunki, Braga vanhin arkkihiippakunta, ja Liman ja Cávadon laaksojen kylät ovat säilyttäneet elämäntavan, jonka etelä menetti vuosikymmeniä sitten. Portugal Active sai alkunsa täältä, Viana do Castelosta, ja täällä on yhä suurin osa kodeistamme: kartanoita Limanlaaksossa, rantalodgeja Esposenden ja Caminhan välisellä rannikolla ja vuoristomajoja puiston laidalla. Kaikki on kahdenkymmenen–kuudenkymmenen minuutin päässä Porton lentokentältä, eikä mikään tunnu siltä.",
     "highlights": [
-      "Villi Atlantin rannikko autioin rannoin",
-      "Vinho Verde -alue — maailman ainoa vihreän viinin alue",
-      "Peneda-Gerêsin kansallispuisto — koskematonta luontoa",
-      "Keskiaikaisia kyliä ja romaanista arkkitehtuuria",
-      "Osa Portugalin parhaista äyriäisistä"
+      "Vinho Verde — maailman ainoa vihreän viinin alue, jonka quintat ottavat vastaan maistelijoita Liman ja Cávadon laaksoissa",
+      "Peneda-Gerêsin kansallispuisto — graniittihuippuja, villihevosia, vesiputouksia ja kuumia lähteitä yhdeksänkymmenen minuutin päässä rannikolta",
+      "Atlantin rannat Esposendesta Moledoon — pitkiä, puhtaita ja tyhjiä, surffia, leijalautailua ja dyynejä",
+      "Viana do Castelo, Ponte de Lima ja Guimarães — kolme Portugalin kauneimmista historiallisista kaupungeista",
+      "Maan parhaat äyriäiset ja parhaat juhlat — Agonia elokuussa, sadonkorjuu syyskuussa"
     ],
-    "insiderRecommendations": [
+    "seoTitle": "Minho: Rannat, Vinho Verde, Gerês ja Majoitus | Portugal Active",
+    "seoDescription": "Portugalin vihrein alue: Atlantin rantoja, Vinho Verde -quintoja, Peneda-Gerêsin vuoret ja historiallisia kaupunkeja. Milloin matkustaa, miten saapua ja kotimme.",
+    "howToGetHere": "Porton lentokenttä (OPO), 45–70 minuuttia autolla laaksosta riippuen. Vigon lentokenttä (VGO) Espanjassa on tunnin päässä rannikolta. Suorat junat Portosta Viana do Casteloon noin 75 minuutissa. Järjestämme lentokenttäkuljetukset jokaiselle oleskelulle.",
+    "bestTimeToVisit": "Toukokuun lopusta kesäkuuhun ja syyskuusta lokakuun alkuun: lämmintä, enimmäkseen kuivaa, viinitarhat vihreimmillään tai keskellä sadonkorjuuta, ja rannat ilman tungosta. Heinä- ja elokuu merta ja juhlia varten. Talvi on leuto, vihreä ja sateinen — vuoden parhaat hinnat.",
+    "whatToExpect": "Elävä, maaseutumainen Atlantin alue, ei lomakohde. Kalastusveneitä aamunkoitteessa, graniittikyliä, pergoloihin kasvatettuja viiniköynnöksiä jokaisen tien yllä, vuoria tunnin päässä rannasta ja Portugalin parhaita äyriäisiä. Sää, joka vaihtuu tunneittain, ja elämänrytmi, joka ei vaihdu.",
+    "whereToStayIntro": "Portugal Active perustettiin Viana do Castelossa, ja Minho on yhä siellä, missä suurin osa kodeistamme on — noin viisikymmentä, Cabedelon ja Carreçon lämmitetyillä altailla varustetuista rantalodgeista Limanlaakson kunnostettuihin kartanoihin Ponte de Liman ympäristössä, Caminhan jokivarren vesimyllyihin ja Peneda-Gerêsin laidan kivimajoihin. Jokaista hoitaa täällä asuva tiimi.",
+    "journalSectionTitle": "Päiväkirjasta — tarinoita Minhosta",
+    "thingsToDoIntro": "Minho palkitsee sen, jolla on tukikohta ja auto. Jokaisesta kodistamme rannikko, laaksot ja vuoret ovat kukin alle tunnin päässä, ja useimmat vieraat omistavat päivän kullekin. Seuraavassa on se, mitä concierge-tiimimme suosittelee ensikertalaiselle, jolla on neljä tai viisi päivää.",
+    "thingsToDo": [
+      {
+        "heading": "Rannikko",
+        "items": [
+          {
+            "name": "Praia do Cabedelo",
+            "category": "Ranta",
+            "description": "Viana do Castelon kaupunkiranta joen toisella puolella: kolme kilometriä hiekkaa dyynien ja mäntyjen takana, Sininen lippu joka vuosi ja Portugalin tasaisimmat olosuhteet surffiin, purjelautailuun ja leijalautailuun. Kymmenen minuuttia historiallisesta keskustasta autolla tai lautalla."
+          },
+          {
+            "name": "Moledo ja Âncora",
+            "category": "Ranta",
+            "description": "Kaksikymmentäviisi minuuttia Vianasta pohjoiseen. Moledo on Minhon muodikkain ranta, jota suojaa saarellaan seisova Ínsuan linnoitus; viereisessä Vila Praia de Âncorassa on kalasatama ja jokiranta lapsille. Lissabon on viettänyt kesiään täällä sata vuotta."
+          },
+          {
+            "name": "Esposende ja Ofir",
+            "category": "Ranta",
+            "description": "Kolmekymmentä minuuttia etelään. Litoral Norten luonnonpuisto: dyynejä, mäntymetsää, Cávadon suisto ja Apúlian tuulimyllyt. Rauhallisempi kuin Viana, parempi pitkille kävelyille ja pyöräilylle pitkospuilla."
+          },
+          {
+            "name": "Monte de Santa Luzia",
+            "category": "Näköalapaikka",
+            "description": "Basilika Viana do Castelon yläpuolella ja National Geographicin mukaan yksi maailman hienoimmista panoraamoista. Nouse köysiradalla asemalta tai aja ylös; näkymä ulottuu Liman suistosta Galician kukkuloille."
+          }
+        ]
+      },
+      {
+        "heading": "Laaksot",
+        "items": [
+          {
+            "name": "Ponte de Lima",
+            "category": "Kaupunki",
+            "description": "Portugalin vanhin kaupunki, kaupunkioikeudet vuodelta 1125, Limajoen mutkassa keskiaikaisine siltoineen, plataanikujineen ja maan suurimpine kahden viikon välein pidettävine markkinoineen. Kolmekymmentä minuuttia Vianasta. Loureiro-maan sydän ja useiden kartanoidemme sijainti."
+          },
+          {
+            "name": "Vinho Verde -quintat",
+            "category": "Viini",
+            "description": "Alueen tuottajat — Quinta do Ameal, Aphros, Quinta de Soalheiro ylempänä Melgaçossa ja kymmenet perhetilat — ottavat vastaan maisteluihin sopimuksesta. Loureiro ja Alvarinho ovat rypäleet, jotka kannattaa tuntea; sadonkorjuu kestää syyskuun puolivälistä lokakuuhun."
+          },
+          {
+            "name": "Braga ja Bom Jesus do Monte",
+            "category": "Kulttuuri",
+            "description": "Viisikymmentä minuuttia rannikolta. Portugalin vanhin kaupunki ja uskonnollinen pääkaupunki, jonka barokkiportaikkopyhäkkö on Unescon maailmanperintökohde ja yksi maan hienoimmista näkymistä iltahämärässä."
+          },
+          {
+            "name": "Guimarães",
+            "category": "Kulttuuri",
+            "description": "Tunti. Portugalin kehto, jonka keskiaikainen keskusta on Unescon listalla ja jonka linnassa ensimmäinen kuningas syntyi. Yhdistä Bragaan samana päivänä."
+          }
+        ]
+      },
+      {
+        "heading": "Vuoret",
+        "items": [
+          {
+            "name": "Peneda-Gerêsin kansallispuisto",
+            "category": "Luonto",
+            "description": "Portugalin ainoa kansallispuisto, yhdeksänkymmentä minuuttia Vianasta. Graniittihuippuja, tammimetsää, villejä garrano-hevosia, Aradon ja Tahitin vesiputoukset, roomalaisia virstanpylväitä vanhalla Geira-tiellä ja Gerêsin kylpyläkylä. Vaella aamulla, ui joen altaassa iltapäivällä."
+          },
+          {
+            "name": "Soajo ja Lindoso",
+            "category": "Kylä",
+            "description": "Kaksi vuoristokylää puiston länsilaidalla, kuuluisia graniittisista espigueiro-ryhmistään — pylväiden varaan nostetuista vilja-aitoista, joista jotkin ovat neljäsataa vuotta vanhoja. Lindosossa on myös linna ja Portugalin suurin espigueiro-kokonaisuus, seitsemänkymmentä yhdessä."
+          },
+          {
+            "name": "Serra d'Arga",
+            "category": "Luonto",
+            "description": "Villi vuoristo Vianan ja Caminhan välissä: graniitin, kanervan ja jokialtaiden ylänkö, jonka sydämessä on luostari ja josta avautuu näkymä Atlantille. Vaellus, Uinti ja Lounas -elämyksemme tapahtuu täällä — aamuvaellus, uinti luonnonaltaassa ja lounas kyläravintolassa."
+          }
+        ]
+      }
+    ],
+    "seasons": {
+      "spring": "Maaliskuusta toukokuuhun. Ylimmät lämpötilat nousevat noin kuudestatoista kahteenkymmeneenkahteen asteeseen, ja sade hellittää lakkaamatta koskaan kokonaan. Atlantti on yhä kylmä, neljätoista–viisitoista astetta, ja sopii parhaiten surffaajille. Kevät tarjoaa Minhon upeimmillaan: viinitarhat ensilehdessään, kameliat jokaisessa puutarhassa, Gerêsin vesiputoukset täydessä voimassaan ja hinnat reilusti kesää alempana. Pääsiäinen on poikkeus — Bragan kulkueet täyttävät alueen hotellit.",
+      "summer": "Kesäkuusta elokuuhun. Lämmintä ja enimmäkseen kuivaa, ylimmät lämpötilat kahdestakymmenestäviidestä kahteenkymmeneenyhdeksään astetta, ja iltapäivisin pohjoistuuli nortada viilentää rannikkoa. Meri pysyy viileänä, seitsemäntoista–yhdeksäntoista astetta, sopivana karaistuneille ja ihanteellisena surffiin ja leijalautailuun. Liman jokirannat ja Gerêsin altaat ovat paikallinen vastaus helteeseen. Elokuussa ovat alueen suurimmat juhlat — Agonia Vianassa kolmannella viikolla — ja se on ainoa kuukausi, joka on varattava kuukausia etukäteen.",
+      "autumn": "Syyskuusta marraskuuhun. Syyskuu on vuoden paras kuukausi: yhä kesäisen lämmin, meri lämpimimmillään, väkijoukot poissa ja vindima — rypäleiden sadonkorjuu — täyttää laaksot kuun puolivälistä lokakuuhun. Viinitarhat vaihtuvat vihreästä kupariseen. Lokakuun lopulla sade palaa; marraskuu on kostea, leuto ja hiljainen, kastanjajuhlineen ja uuden vuosikerran ensimmäisine Alvarinhoineen.",
+      "winter": "Joulukuusta helmikuuhun. Leuto pohjoiseurooppalaisittain, ylimmät lämpötilat noin neljätoista–viisitoista astetta, mutta vuoden sateisimmat kuukaudet — syy siihen, miksi kaikki on niin vihreää. Atlantti on kylmä ja aallokko vakava. Vianan jouluvalot, takkatulet kartanoissa, lämmitetty allas harmaan taivaan alla ja vuoden alimmat hinnat. Gerêsin ylängöillä sataa toisinaan lunta.",
+      "bestForFirstTime": "Toukokuun lopusta kesäkuuhun tai syyskuussa. Molemmat tarjoavat lämmintä, enimmäkseen kuivaa säätä, kaksikymmentä–kaksikymmentäkuusi astetta, viinitarhat vihreimmillään tai keskellä sadonkorjuuta, tyhjiä rantoja ja helposti pöydän ravintolasta. Kesäkuu on parempi merelle ja pitkille päiville; syyskuu tunnelmalle — sadonkorjuu, lämmin meri, hitaampi rytmi ennen sateiden paluuta."
+    },
+    "transport": {
+      "byAir": "Porton Francisco Sá Carneiron lentokenttä on koko alueen portti: neljäkymmentäviisi minuuttia Viana do Casteloon, viisikymmentä Ponte de Limaan, kolmekymmentäviisi Esposendeen ja noin puolitoista tuntia Gerêsin kyliin, kaikki moottoritietä. Vigon lentokenttä Espanjan Galiciassa on tunnin päässä Caminhasta ja Vianasta ja kannattaa harkita Madridin kautta lentäville. Lissabon on kolme ja puoli–neljä tuntia moottoritietä.",
+      "byTrain": "Comboios de Portugal liikennöi Linha do Minhoa Porto Campanhãsta Viana do Casteloon noin seitsemässäkymmenessäviidessä minuutissa ja edelleen Caminhaan ja Valençaan; Bragaan ja Guimarãesiin on suorat lähijunat Portosta noin tunnissa. Limanlaaksoon tai vuorille ei ole rautatietä — sinne autolla tai kuljetuksillamme.",
+      "byCar": "A28 kulkee rannikkoa Portosta Vianaan ja Caminhaan ja on maksuton Vianan osuudella; A3 kulkee sisämaassa Bragaan, Ponte de Limaan ja Espanjan rajalle Valençaan. Ajaminen on täällä helppoa, matkat lyhyitä, ja auto on ainoa käytännöllinen tapa yhdistää rannikko, laakso ja vuoret yhteen oleskeluun. Ulkomaisilla rekisterikilvillä varustettujen autojen kannattaa rekisteröityä sähköiseen tiemaksuun ennen saapumista.",
+      "fromSpain": "Galiciasta A3 ylittää rajan Valença–Tuissa: tunti Vigosta Vianaan, alle kaksi Santiago de Compostelasta. Useimmat espanjalaiset vieraamme tulevat autolla; Minhojoki on raja, ja molempien rantojen kaupungit — Valença ja Tui, Monção ja Salvaterra — ovat jo itsessään päiväretken arvoisia.",
+      "gettingAround": "Kaupunkien ulkopuolella auto on välttämätön. Viana, Ponte de Lima, Braga ja Guimarães ovat tiiviitä ja käveltäviä. Ecovia do Lima -pyöräilyreitti seuraa jokea seitsemänkymmentä kilometriä Vianasta laaksoon — paras tapa päästä quintalle ajamatta. Conciergemme järjestää kuljetukset, kuljettajat ja pyörät jokaiseen kotiin."
+    },
+    "eatDrinkIntro": "Minho syö paremmin kuin mikään muu paikka Portugalissa ja tietää sen. Tämä on caldo verden, rojõesin ja sarrabulhon, talven lopun nahkiaisen ja kesäkuun sardiinien, broa-leivän kanssa uunissa paistetun bacalhaun ja tuoreimpien Atlantin äyriäisten maa, joita tarjoillaan kalastajaperheiden omistamissa tasquinhoissa. Viini on Vinho Verde — kevyt, kuiva, hieman helmeilevä ja Alvarinho- ja Loureiro-muodoissaan Euroopan parhaita valkoviinejä. Alla paikat, joihin tiimimme lähettää vieraat.",
+    "restaurants": [
+      {
+        "name": "Tasquinha da Linda",
+        "category": "Äyriäiset",
+        "description": "Viana do Castelo. Kalatukkureiden omistama; rannikon tuoreimmat äyriäiset satamassa. Varaus välttämätön."
+      },
       {
         "name": "Tasca do Celso",
-        "category": "Ravintola",
-        "description": "Ponte de Lima. Ei menua. Omistaja tuo sen, mikä on tuoretta. Varaa terassi."
+        "category": "Minhon klassikot",
+        "description": "Ponte de Lima. Ei ruokalistaa — omistaja tuo sen, mikä on tuoretta sinä päivänä. Varaa terassi joen yläpuolelta."
       },
       {
-        "name": "Praia do Afife",
-        "category": "Ranta",
-        "description": "Vianan ja Caminhan välissä. Villi, väkijoukoton, rantabaarilla, joka grillaa sardiineja paikan päällä."
+        "name": "Camelo",
+        "category": "Minhon klassikot",
+        "description": "Ponte de Lima. Minhon instituutio yli kuudenkymmenen vuoden ajan: rojões, sarrabulho ja sesongissa nahkiainen. Sunnuntailounas on paikallinen rituaali."
       },
       {
-        "name": "Quinta de Soalheiro",
-        "category": "Viini",
-        "description": "Paras Alvarinhon tuottaja Monçãossa. Yksityisiä maisteluja perheen kanssa, joka aloitti kaiken."
+        "name": "O Marinheiro",
+        "category": "Äyriäiset",
+        "description": "Vila Praia de Âncora. Grillattua kalaa muutaman metrin päässä satamasta, josta se tuli. Yksinkertaista, äänekästä ja juuri oikein."
       },
       {
-        "name": "Trilho dos Moinhos",
-        "category": "Vaellus",
-        "description": "Myllyjen polku Peneda-Gerêsissä. 8 km ikivanhan tammimetsän halki luonnonaltaineen."
+        "name": "Solar do Bacalhau",
+        "category": "Perinteinen",
+        "description": "Braga. Bacalhauta kahdellakymmenellä tavalla graniittisessa ruokasalissa vanhassakaupungissa."
+      },
+      {
+        "name": "Mercado Municipal de Viana",
+        "category": "Tori",
+        "description": "Arkiaamuisin. Kalahalli on maan parhaita; osta kotiin ja anna kokkimme valmistaa."
       }
-    ]
+    ],
+    "specialties": [
+      {
+        "name": "Bacalhau à moda de Viana",
+        "category": "Ruokalaji",
+        "description": "Uunissa paistettu bacalhau paprikan, sipulin, perunan ja broa-maissileivän kanssa — rannikon tunnusruoka."
+      },
+      {
+        "name": "Rojões ja sarrabulho",
+        "category": "Ruokalaji",
+        "description": "Marinoitua porsasta ja sian veressä keitettyä riisiä; Limanlaakson talvinen sunnuntailounas."
+      },
+      {
+        "name": "Vinho Verde",
+        "category": "Viini",
+        "description": "Kevyt, kuiva ja hieman helmeilevä. Monçãon ja Melgaçon Alvarinho sekä Limanlaakson Loureiro ovat ne kaksi, joita kannattaa etsiä."
+      },
+      {
+        "name": "Nahkiainen",
+        "category": "Sesonki",
+        "description": "Jokinahkiainen, kypsennettynä omassa veressään riisin kanssa, tammikuusta huhtikuuhun — herkku, jonka Minho ottaa hyvin vakavasti."
+      }
+    ],
+    "experiencesIntro": "Minho on paikka, jossa Portugal Active sai alkunsa seikkailuyrityksenä, ja suurin osa omista elämyksistämme tapahtuu yhä täällä, omien oppaidemme ja viikoittain kanssamme työskentelevien kumppaneiden kanssa.",
+    "experiences": [
+      {
+        "name": "Ratsastusretki Viana do Castelossa",
+        "description": "Ranta, vuori ja kukkakedot yhden aamupäivän aikana, tallilta kymmenen minuutin päässä kaupungista.",
+        "duration": "2 t 30 min",
+        "season": "Ympäri vuoden"
+      },
+      {
+        "name": "Canyoning Peneda-Gerêsissä",
+        "description": "Laskeutumista vesiputouksia pitkin, luonnonliukumäkiä ja altaita kansallispuistossa omien oppaidemme kanssa. Kahdestatoista ikävuodesta.",
+        "duration": "3–4 tuntia",
+        "season": "Huhtikuu–lokakuu"
+      },
+      {
+        "name": "SUP-lasku Lima-jokea pitkin",
+        "description": "Rauhallinen melonta myötävirtaan Ponte de Limasta viinitarhojen ja roomalaisten siltojen välissä.",
+        "duration": "3 tuntia",
+        "season": "Toukokuu–lokakuu"
+      },
+      {
+        "name": "Vaellus, Uinti ja Lounas Serra d'Argassa",
+        "description": "Aamuvaellus vuoristossa, uinti graniittisessa jokialtaassa ja lounas kyläravintolassa.",
+        "duration": "4 t 30 min",
+        "season": "Toukokuu–lokakuu"
+      },
+      {
+        "name": "Vinho Verde -maistelu Limanlaaksossa",
+        "description": "Aamupäivä toimivalla quintalla tuottajan kanssa — neljä–kuusi viiniä, alueen juustoa ja leipää.",
+        "duration": "Puoli päivää",
+        "season": "Ympäri vuoden; sadonkorjuuvierailut syys–lokakuussa"
+      },
+      {
+        "name": "Surffitunnit Minhon rannikolla",
+        "description": "Cabedelon tasainen beach break ja koulu, joka on opettanut täällä kaksikymmentä vuotta.",
+        "duration": "2–3 tuntia",
+        "season": "Huhtikuu–marraskuu"
+      }
+    ],
+    "eventsIntro": "Minhon kalenteri on Portugalin juhlavin. Kaksi suunnittelun kannalta tärkeää päivämäärää ovat molemmat elokuussa Viana do Castelossa; syyskuun sadonkorjuu on hiljaisempi palkinto.",
+    "events": [
+      {
+        "name": "Romaria de Nossa Senhora d'Agonia",
+        "dates": "Elokuun kolmas viikko, Viana do Castelo",
+        "description": "Portugalin kuuluisin romaria vuodesta 1772: filigraanikullalla koristeltujen kansallispukujen kulkueet, kukkamatot, venekulkueet ja ilotulitus Liman yllä. Rannikon kodit varataan loppuun kuukausia etukäteen."
+      },
+      {
+        "name": "Neopop",
+        "dates": "Elokuun ensimmäinen viikko, Viana do Castelo",
+        "description": "Yksi Euroopan arvostetuimmista elektronisen musiikin festivaaleista, vanhassa linnoituksessa meren äärellä."
+      },
+      {
+        "name": "Feiras Novas",
+        "dates": "Syyskuu, Ponte de Lima",
+        "description": "Limanlaakson suuret markkinat vuodesta 1826: toreja, kansantanssiryhmiä, jättimäinen sunnuntaikulkue ja pohjoisen parhaat gigantonet."
+      },
+      {
+        "name": "Vindima",
+        "dates": "Syyskuun puolivälistä lokakuuhun",
+        "description": "Vinho Verden sadonkorjuu. Quintat vievät vieraat viinitarhoihin ja viinitiloille; laaksot tuoksuvat rypälemehulta kuukauden ajan."
+      },
+      {
+        "name": "Pääsiäisviikko Bragassa",
+        "dates": "Pääsiäisviikko",
+        "description": "Portugalin tärkeimmät pääsiäiskulkueet maan uskonnollisessa pääkaupungissa."
+      },
+      {
+        "name": "Festa de São João",
+        "dates": "23.–24. kesäkuuta, Braga ja rannikko",
+        "description": "Juhannusyö: kokkoja, grillattuja sardiineja, muovivasaroita ja ilotulituksia jokaisessa kaupungissa."
+      }
+    ],
+    "pressIntro": "Minhosta kirjoitetaan vähemmän kuin Portosta tai Algarvesta, mikä on suuri osa sen viehätystä. Alla oleva valikoima kertoo, mitä kansainvälinen lehdistö on sanonut alueesta ja sen kaupungeista.",
+    "pressQuotes": [
+      {
+        "source": "The Guardian",
+        "year": 2018,
+        "quote": "Viana do Castelon rannat kuuluvat maan kauneimpiin."
+      },
+      {
+        "source": "Booking.com Traveller Review Awards",
+        "year": 2024,
+        "quote": "Viana do Castelo — maailman kolmanneksi vieraanvaraisin kaupunki."
+      },
+      {
+        "source": "Forbes",
+        "year": 2023,
+        "quote": "Minho on seikkailumatkailun paratiisi, joka piileskelee kaikkien nähtävillä Pohjois-Portugalissa."
+      },
+      {
+        "source": "UNESCO",
+        "year": 2001,
+        "quote": "Guimarães — poikkeuksellisen hyvin säilynyt esimerkki keskiaikaisen asutuksen kehittymisestä nykyaikaiseksi kaupungiksi."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Kuinka monta päivää Minhossa tarvitsee?",
+        "answer": "Neljä–viisi päivää on mukava pituus: päivä rannikolla, päivä Limanlaaksossa quintavierailun kera, päivä Bragalle ja Guimarãesille ja päivä Peneda-Gerêsissä. Viikko antaa mahdollisuuden hidastaa ja lisätä vuoristokylät sekä Alvarinho-maan Monçãon ja Melgaçon ympärillä."
+      },
+      {
+        "question": "Sopiiko Minho rantalomaan?",
+        "answer": "Pitkiin, tyhjiin Atlantin rantoihin ja surffiin kyllä. Lämpimään veteen ja taattuun aurinkoon ei — meri on kesällä seitsemäntoista–yhdeksäntoista astetta ja rannikolla puhaltaa viileä iltapäivätuuli. Useimmissa kodeissamme on lämmitetty allas; näin Minho viettää rantalomaa."
+      },
+      {
+        "question": "Tarvitsenko auton?",
+        "answer": "Kyllä, ellet majoitu itse Viana do Castelossa ja tyydy juniin ja kuljetuksiimme. Alueen vetovoima on rannikon, laakson ja vuorten yhdistelmässä, kukin alle tunnin päässä, ja vain auto tekee siitä helppoa."
+      },
+      {
+        "question": "Kuinka kaukana Minho on Portosta?",
+        "answer": "Neljästäkymmenestäviidestä seitsemäänkymmeneen minuuttia moottoritietä Porton lentokentältä kodista riippuen. Viana do Castelo on seitsemänkymmentäviisi minuuttia Portosta suoralla junalla."
+      },
+      {
+        "question": "Milloin on Vinho Verden sadonkorjuu?",
+        "answer": "Syyskuun puolivälistä lokakuuhun vuodesta ja rypäleestä riippuen. Limanlaakson Loureiro korjataan ensin; Monçãon ja Melgaçon Alvarinho hieman myöhemmin."
+      },
+      {
+        "question": "Onko Peneda-Gerês päiväretki rannikolta?",
+        "answer": "Kyllä — yhdeksänkymmentä minuuttia suuntaansa. Canyoningia, vesiputouksia sekä Soajon ja Lindoson kyliä varten lähde aikaisin. Jos vuoret ovat matkan tarkoitus, useat kodeistamme ovat puiston laidalla."
+      },
+      {
+        "question": "Millainen sää on?",
+        "answer": "Atlanttinen: leuto ympäri vuoden, lämmin ja enimmäkseen kuiva kesäkuusta syyskuuhun, sateinen ja vihreä marraskuusta maaliskuuhun. Pakkaa yksi kerros lisää myös kesällä."
+      },
+      {
+        "question": "Sopiiko Minho perheille?",
+        "answer": "Erittäin hyvin. Jokirantoja, joissa on lämmintä, tyyntä vettä, eläimiä quintoilla, loivia pyöräteitä Liman varrella ja koteja, joissa on puutarha ja allas. Conciergemme järjestää lastenhoitajat ja perheystävälliset elämykset."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Omistatko kodin Minhossa?",
+      "body": "Portugal Active hallinnoi laadukkaita kiinteistöjä koko Alto Minhon alueella: täysi hallinnointi, markkinointi, concierge ja kunnossapito hotellitasolla, tiimin toimesta, joka perusti yrityksen täällä.",
+      "cta": "Keskustele tiimimme kanssa"
+    }
   },
   "viana-do-castelo": {
     "name": "Viana do Castelo",
@@ -536,40 +802,336 @@
   },
   "algarve": {
     "name": "Algarve",
-    "tagline": "Kultaisia kallioita, yksityisiä uima-altaita ja 300 aurinkoista päivää.",
-    "description": "Kallioiden huipulla seisovia huviloita, yksityisiä uima-altaita ja 300 aurinkoista päivää.",
-    "heroSubtitle": "Kultaisia kallioita, yksityisiä uima-altaita ja 300 aurinkoista päivää.",
+    "tagline": "Kultaisia kallioita, lämmin meri ja kolmesataa aurinkoista päivää — ja Algarve lomakeskusten tuolla puolen.",
+    "description": "Kattava opas Algarveen — sen rannikot, vuodenajat ja majoitus lomakeskusten tuolla puolen.",
+    "heroSubtitle": "Portugalin etelärannikko villistä lännestä idän laguuneihin",
+    "pullQuote": {
+      "text": "Praia da Falésia — maailman paras ranta.",
+      "source": "Tripadvisor Travellers' Choice",
+      "year": 2024
+    },
+    "primaryAccolade": {
+      "text": "Euroopan johtava rantakohde",
+      "source": "World Travel Awards",
+      "note": "Myönnetty Algarvelle toistuvasti viimeisen vuosikymmenen aikana"
+    },
     "whyOverline": "MIKSI ALGARVE",
-    "whyDescription": "Useimmat tuntevat Algarven sen lomakeskuksista, golfkentistä ja turistirannoista. Me tunnemme sen siitä, mikä on niiden takana: villi länsirannikko, jossa surffaajat pyydystävät tyhjiä aaltoja, Monchiquen vuoret, joissa korkkitammet varjostavat kätkettyjä polkuja, kalastajakylät, joissa kala saapuu kahdesti päivässä ja ravintoloissa on kuusi pöytää.\n\nAlgarve, jossa toimimme, on se, joka palkitsee uteliaisuuden. Aurinkoa ympäri vuoden, dramaattinen rannikko ja maisema, joka muuttuu täysin idästä länteen. Kotimme ja concierge-tiimimme keskittyvät siihen Algarveen, jonka useimmat kävijät jättävät täysin huomiotta.\n\nAlgarve-kokoelmamme kasvaa. Ota yhteyttä concierge-tiimiimme viimeisimmästä saatavuudesta.",
-    "howToGetHere": "Lennä Faron lentokentälle (FAO), 30–90 minuuttia kohteistamme sijainnin mukaan. Järjestämme kaikki lentokenttäkuljetukset.",
-    "bestTimeToVisit": "Ympäri vuoden. Huippukausi kesäkuusta syyskuuhun. Kevät ja syksy ihanteellisia vaelluksiin, pyöräilyyn ja rauhallisempiin rantoihin. Leuto talvi, 15–18 astetta.",
-    "whatToExpect": "Yli 300 aurinkoista päivää, dramaattinen kalliorannikko, maailmanluokan golf ja rauhallisempi sisämaa, jota useimmat kävijät eivät koskaan tutki.",
-    "seoTitle": "Algarve — yksityiskoteja Etelä-Portugalissa",
-    "seoDescription": "Löydä Algarve: kallioiden huipulla seisovia huviloita, yksityisiä uima-altaita, 300 aurinkoista päivää. Hotellitasolla hoidetut yksityiskodit.",
+    "whyDescription": "Kaikki tuntevat Algarven sen lomakeskuksista, golfista ja kesärannoista, ja syystä: tämä on Euroopan aurinkoisin rannikko, jonka meri on lämmin kesäkuusta lokakuuhun ja talvi tuntuu englantilaiselta keväältä. Sitä, mitä useimmat kävijät eivät koskaan näe, on kaikki muu. Länsirannikko Sagresin ja Aljezurin ympärillä, missä kalliot kohtaavat avoimen Atlantin ja surffaajilla on tyhjät rannat vain itselleen. Ria Formosa idässä, saarten, suola-altaiden ja kalastajakylien laguuni, joka on yksi Portugalin hienoimmista luonnonpuistoista. Serra de Monchiquen ja Barrocalin kukkulat korkkitammineen, appelsiinilehtoineen, valkoisiksi kalkittuine kylineen ja ravintoloineen, jotka eivät ole koskaan nähneet turistimenua. Ja huvilat: Quinta do Lagon ja Vale do Lobon muurien takana, keskirannikon kallioilla ja lännen maaseudulla on yksityiskoteja, jotka tekevät Algarvesta jotakin aivan muuta kuin lomakeskusloman — talon, jossa on lämmitetty allas, kokki keittiössä ja concierge, joka tietää, mikä poukama on tyhjä kello neljältä iltapäivällä. Algarven kotimme ovat juuri niitä taloja.",
     "highlights": [
-      "Yli 300 aurinkoista päivää vuodessa",
-      "Dramaattisia kalkkikivikallioita ja kätkettyjä poukamarantoja",
-      "Maailmanluokan golfkenttiä",
-      "Tuoretta äyriäistä ja cataplana-perinne",
-      "Vilkasta yöelämää Lagosissa ja Albufeirassa"
+      "Kolmesataa aurinkoista päivää vuodessa ja Portugalin lämpimin meri kesäkuusta lokakuuhun",
+      "Kalkkikivikallioita, meriluolia ja poukamarantoja Lagosista Albufeiraan — Benagil, Marinha, Falésia",
+      "Villi länsirannikko — Sagres, Aljezur ja Costa Vicentina surffiin ja tyhjään hiekkaan",
+      "Ria Formosan luonnonpuisto — saaria, laguuneja ja kalastajakaupungit Olhão ja Tavira",
+      "Golfia Quinta do Lagossa, Vale do Lobossa ja Vilamourassa, minuuttien päässä useista kodeistamme"
     ],
-    "insiderRecommendations": [
+    "seoTitle": "Algarve: Rannat, Huvilat, Golf ja Milloin Matkustaa | Portugal Active",
+    "seoDescription": "Euroopan aurinkoisin rannikko: kalliorantoja, villi länsi, Ria Formosa ja yksityishuviloita altaineen. Milloin matkustaa, miten saapua ja missä majoittua.",
+    "howToGetHere": "Faron lentokenttä (FAO) on 20–60 moottoritieminuutin päässä kodeistamme — 20 Quinta do Lagoon, 40 Albufeiraan, 60 Lagosiin ja länteen. Lissabon on kaksi ja puoli tuntia A2:ta pitkin. Järjestämme lentokenttäkuljetukset jokaiselle oleskelulle.",
+    "bestTimeToVisit": "Toukokuusta kesäkuuhun ja syyskuusta lokakuuhun: kaksikymmentäkaksi–kaksikymmentäkahdeksan astetta, lämmin meri sekä rannat ja ravintolat ilman elokuun tungosta. Heinä- ja elokuu taattuun lämpöön. Talvi on Manner-Euroopan leudoin — viisitoista–kahdeksantoista astetta, golfia, vaellusta ja mantelinkukkia helmikuussa.",
+    "whatToExpect": "Ensinnäkin aurinkoa: Portugalin kuivin ja aurinkoisin kolkka. Rannikko, joka muuttuu viidenkymmenen kilometrin välein — kultaisia kallioita ja luolia keskellä, avoin Atlantti ja surffia lännessä, laguuneja ja särkkäsaaria idässä. Lomakeskuksia siellä, missä niitä odottaa, ja muutaman minuutin päässä sisämaassa tai rannikolla hiljaisempi Algarve kylineen, hedelmätarhoineen ja kalasatamineen.",
+    "whereToStayIntro": "Portugal Active hoitaa pientä kokoelmaa koteja eri puolilla Algarvea: huviloita Quinta do Lagon sisällä ja keskirannikolla Albufeiran ja Vilamouran välissä, taloja idässä Taviran ympärillä ja tiloja lännessä Lagosin lähellä. Jokaista hoidetaan samalla tasolla kuin pohjoisen kotejamme — lämmitetty allas, täytetty keittiö, yksityiskokki pyynnöstä ja alueella asuva concierge.",
+    "journalSectionTitle": "Päiväkirjasta — tarinoita Algarvesta",
+    "thingsToDoIntro": "Algarve on sataviisikymmentä kilometriä leveä ja sillä on kolme erilaista rannikkoa, joten ensimmäinen päätös on, minne majoittua. Seuraavassa on conciergemme lista ensivierailulle, järjestettynä lännestä itään, ajoaikoineen keskirannikolta.",
+    "thingsToDo": [
       {
-        "name": "Silvesin linna",
-        "category": "Kulttuuri",
-        "description": "Yksi Portugalin parhaiten säilyneistä maurilaislinnoista. Vieraile aamulla, tutki kaupunkia, syö grillattua kalaa joen rannassa."
+        "heading": "Länsi — Sagres ja Costa Vicentina",
+        "items": [
+          {
+            "name": "Cabo de São Vicente",
+            "category": "Näköalapaikka",
+            "description": "Euroopan lounaiskärki: majakka kalliolla kuusikymmentä metriä Atlantin yläpuolella, aikoinaan maailman ääreksi luultu. Tule auringonlaskun aikaan. Tunti ja vartti Albufeirasta."
+          },
+          {
+            "name": "Sagres ja linnoitus",
+            "category": "Kulttuuri",
+            "description": "Tuulinen niemi, jolla Henrik Purjehtijan merenkulkukoulun sanotaan sijainneen. Surffirantoja molemmin puolin: Beliche ja Tonel valtamerelle, Martinhal lahdelle päin."
+          },
+          {
+            "name": "Praia da Bordeira ja Amado",
+            "category": "Ranta",
+            "description": "Kaksi valtavaa Atlantin rantaa Costa Vicentinalla, dyynien ja kallioiden takana, surffikoulu Amadolla ja tuskin ketään Bordeiralla. Yhdeksänkymmentä minuuttia keskirannikolta."
+          },
+          {
+            "name": "Lagos ja Ponta da Piedade",
+            "category": "Kaupunki",
+            "description": "Lännen kaunis satamakaupunki, jossa on muurien ympäröimä vanhakaupunki, toimiva venesatama ja heti etelässä Ponta da Piedaden kultaiset kalliokaaret ja luolat — parhaimmillaan kajakista kello yhdeksältä aamulla."
+          }
+        ]
       },
       {
-        "name": "Länsirannikko",
-        "category": "Luonto",
-        "description": "Sagresista Aljezuriin. Villi, tuulen pieksemä ja vastakohta kaikelle, mitä Algarvelta odottaa."
+        "heading": "Keskiosa — kalliot ja luolat",
+        "items": [
+          {
+            "name": "Benagilin luola ja Praia da Marinha",
+            "category": "Ranta",
+            "description": "Algarven kuvatuin rannikko: katedraalin kokoinen meriluola, jonne pääsee veneellä tai SUP-laudalla, ja sen vieressä Marinha, joka luokitellaan säännöllisesti Euroopan parhaiden rantojen joukkoon. Mene aikaisin — kesäkuusta syyskuuhun luolat ovat täynnä kymmeneltä. Kaksikymmentä minuuttia Albufeirasta."
+          },
+          {
+            "name": "Seitsemän riippuvan laakson polku",
+            "category": "Vaellus",
+            "description": "Kuusi kilometriä kalliopolkua Praia da Marinhan ja Praia de Vale Centeanesin välillä, ohi hiidenkirnujen, kaarien ja tyhjien poukamien. Kaksi–kolme tuntia; ota vettä mukaan."
+          },
+          {
+            "name": "Praia da Falésia",
+            "category": "Ranta",
+            "description": "Kuusi kilometriä hiekkaa okrankeltaisten kallioiden alla Vilamouran ja Albufeiran välissä — Tripadvisorin mukaan maailman paras ranta vuonna 2024, ja rauhallinen molemmista päistään jopa elokuussa. Viisitoista minuuttia Vilamouran ja Quinta do Lagon kodeistamme."
+          },
+          {
+            "name": "Silves",
+            "category": "Kulttuuri",
+            "description": "Algarven maurilainen pääkaupunki, jossa on etelän parhaiten säilynyt linna, goottilainen katedraali ja jokivarren vanhakaupunki. Vieraile aamulla, lounasta kaupungissa, sitten Barrocalin appelsiinilehtoihin."
+          }
+        ]
       },
       {
-        "name": "Monchiquen vuoret",
-        "category": "Vaellus",
-        "description": "Kylpylöitä, korkkitammimetsiä ja kyliä korkealla. Täysin erilainen Algarve 30 minuutin päässä rannikolta."
+        "heading": "Itä — Ria Formosa ja Tavira",
+        "items": [
+          {
+            "name": "Ria Formosan luonnonpuisto",
+            "category": "Luonto",
+            "description": "Kuusikymmentä kilometriä laguunia, suolamarskia ja särkkäsaaria Faron ja Cacela Velhan välillä: flamingoja, kameleontteja, osteripenkkejä ja rantoja, joille pääsee vain veneellä. Ota lautta Olhãosta Culatraan tai Armonaan."
+          },
+          {
+            "name": "Tavira",
+            "category": "Kaupunki",
+            "description": "Algarven kaunein kaupunki: roomalainen silta, kolmekymmentäseitsemän kirkkoa, linnanpuutarha ja Ilha de Taviran ranta lyhyen lauttamatkan päässä. Neljäkymmentä minuuttia Farosta."
+          },
+          {
+            "name": "Olhãon tori",
+            "category": "Tori",
+            "description": "Etelän paras kalatori kahdessa punatiilihallissa rantakadulla. Lauantaiaamuisin. Osta kotiin ja anna kokkimme hoitaa loput."
+          },
+          {
+            "name": "Cacela Velha",
+            "category": "Kylä",
+            "description": "Kourallinen valkoisia taloja, kirkko ja linnoitus laguunin yläpuolella, osteribaari ja ranta, jolle kahlataan laskuveden aikaan. Algarve sellaisena kuin se oli."
+          }
+        ]
+      },
+      {
+        "heading": "Sisämaa — kukkulat ja kylät",
+        "items": [
+          {
+            "name": "Serra de Monchique",
+            "category": "Luonto",
+            "description": "Algarven vuori: eukalyptus- ja kastanjametsää, Caldas de Monchiquen kylpyläkylä ja Fóia, etelän korkein kohta, josta näkyy molemmille rannikoille. Neljäkymmentäviisi minuuttia Lagosista tai Portimãosta."
+          },
+          {
+            "name": "Alte ja Salir",
+            "category": "Kylä",
+            "description": "Kaksi valkoiseksi kalkittua kylää Barrocalissa, lähteineen, manteli- ja johanneksenleipäpuulehtoineen ja sunnuntailounaskulttuurineen, jolla ei ole mitään tekemistä rannikon kanssa."
+          },
+          {
+            "name": "Loulén tori",
+            "category": "Tori",
+            "description": "Lauantaiaamuisin uusmaurilaisessa torihallissa ja sitä ympäröivillä kaduilla: hedelmiä, juustoa, leikkeleitä, keramiikkaa. Kaksikymmentä minuuttia Quinta do Lagosta."
+          }
+        ]
       }
-    ]
+    ],
+    "seasons": {
+      "spring": "Maaliskuusta toukokuuhun. Ylimmät lämpötilat nousevat kahdeksastatoista kahteenkymmeneenneljään asteeseen, sade on harvinaista maaliskuun jälkeen ja maaseutu on parhaimmillaan — mantelinkukinta päättyy helmikuussa, appelsiininkukinta huhtikuussa, luonnonkukat peittävät kalliopolut toukokuuhun asti. Meri on yhä viileä, kuusitoista–kahdeksantoista astetta. Pääsiäinen on vilkas; toukokuu on vuoden parhaita kuukausia, lämmin, kuiva ja hiljainen.",
+      "summer": "Kesäkuusta elokuuhun. Kuumaa ja kuivaa — kaksikymmentäkahdeksan–kolmekymmentäkaksi astetta, päiviä katkeamatonta aurinkoa ja meri, joka lämpenee kahteenkymmeneenkahteen–kahteenkymmeneenkolmeen asteeseen elokuuhun mennessä. Keskirannikko täyttyy heinäkuun puolivälistä; länsi pysyy tuulisempana ja tyhjempänä, itä vielä hiljaisempana. Tämä on pitkien allaspäivien, iltagrillausten ja keittiössä olevan kokin Algarve. Varaa kuukausia etukäteen heinä- ja elokuulle.",
+      "autumn": "Syyskuusta marraskuuhun. Syys- ja lokakuu ovat asiantuntijoiden kuukausia: meri lämpimimmillään, ilma kaksikymmentäkaksi–kaksikymmentäkuusi astetta, väkijoukot poissa ja vapaa pöytä jokaisessa ravintolassa. Marraskuu tuo ensimmäiset sateet ja pehmeämmän valon, ylimmät lämpötilat yhä noin kaksikymmentä astetta. Vuoden paras golfsää.",
+      "winter": "Joulukuusta helmikuuhun. Manner-Euroopan leudoin talvi: viisitoista–kahdeksantoista astetta, enemmän aurinkoa kuin suurin osa Pohjois-Eurooppaa näkee kesäkuussa, ja silloin tällöin Atlantin rintama. Ei rantasäätä, mutta vaellus-, pyöräily-, golf- ja lämmitetyn altaan säätä. Mantelinkukat peittävät Barrocalin tammikuun lopusta. Hinnat ovat alimmillaan.",
+      "bestForFirstTime": "Toukokuun lopusta kesäkuuhun tai syyskuusta lokakuun alkuun. Molemmat tarjoavat kaksikymmentäkaksi–kaksikymmentäkahdeksan astetta, uimakelpoisen meren ja rannikon ilman elokuun tungosta. Kesäkuussa päivät ovat pidempiä ja vesi viileämpää; syyskuussa meri on vuoden lämpimin ja valo pehmein."
+    },
+    "transport": {
+      "byAir": "Faron lentokenttä on portti alueelle ja sijaitsee keskellä rannikkoa: kaksikymmentä minuuttia Quinta do Lagoon ja Vale do Loboon, kolmekymmentä Vilamouraan, neljäkymmentä Albufeiraan, neljäkymmentä Taviraan, kuusikymmentä Lagosiin ja seitsemänkymmentäviisi Sagresiin, kaikki A22-moottoritietä. Sinne on suoria lentoja useimmista Euroopan kaupungeista ympäri vuoden. Lissabonin lentokenttä on vaihtoehto lännelle — kaksi ja puoli tuntia A2:ta Lagosiin.",
+      "byTrain": "Comboios de Portugal liikennöi Alfa Pendular- ja Intercidades-junia Lissabonista Faroon noin kolmessa tunnissa sekä paikallisrataa rannikkoa pitkin Lagosista Vila Real de Santo Antónioon. Juna on mukava päiväretkeen kaupunkien välillä, mutta ei huvilalle pääsyyn — asemat ovat sisämaassa, kodit eivät.",
+      "byCar": "A22-moottoritie kulkee koko alueen läpi sähköisin tiemaksuin; vanha N125 kulkee rinnalla hitaammin, jokaisen kaupungin läpi. Lissabonista A2 ylittää Alentejon Algarveen kahdessa ja puolessa tunnissa. Vuokra-autot ovat Farossa edullisia; ulkomaisilla rekisterikilvillä varustettujen autojen kannattaa rekisteröityä tiemaksuihin ennen saapumista.",
+      "fromSpain": "Sevilla on kahden tunnin päässä Tavirasta ja kahden ja puolen Farosta Guadianan sillan kautta — Algarve on lähempänä Andalusiaa kuin Lissabonia, ja monet espanjalaiset vieraamme tulevat autolla.",
+      "gettingAround": "Auto on välttämätön: Algarve on leveä, parhaat rannat ovat pikkuteiden päässä eikä sisämaan kylissä ole busseja, jotka ansaitsisivat nimensä. Quinta do Lagon ja Vale do Lobon sisällä polkupyörät ja golfautot riittävät arkeen. Conciergemme järjestää kuljetukset, kuljettajat ja veneet jokaiseen kotiin."
+    },
+    "eatDrinkIntro": "Algarven keittiö on meren keittiö: sardiineja ja piikkimakrillia grillissä, cataplana — simpukanmuotoinen kuparipata kalaa, äyriäisiä ja porsasta —, veitsisimpukoita Ria Formosasta, ostereita Cacelasta ja sisämaassa paahdettua kiliä, Guian piri-piri-kanaa sekä maureilta perittyjä manteli- ja viikunamakeisia. Alla paikat, joihin tiimimme lähettää vieraat, sataman tasquinhoista alueen Michelin-pöytiin.",
+    "restaurants": [
+      {
+        "name": "Rei das Praias",
+        "category": "Äyriäiset",
+        "description": "Praia dos Caneiros, Ferragudo. Rantaravintola, joka on tarjoillut samaa grillattua kalaa neljäkymmentä vuotta kahden niemen välisessä poukamassa. Varaa lounaalle."
+      },
+      {
+        "name": "Bon Bon",
+        "category": "Fine dining",
+        "description": "Carvoeiro. Kaksi Michelin-tähteä valkoiseksi kalkitussa talossa muutaman minuutin päässä kallioilta; alueen vakavin pöytä."
+      },
+      {
+        "name": "O Camilo",
+        "category": "Äyriäiset",
+        "description": "Lagos. Praia do Camilon yläpuolella, Ponta da Piedaden kalliot alapuolella ja lännen tuorein kala."
+      },
+      {
+        "name": "Chá com Água Salgada",
+        "category": "Äyriäiset",
+        "description": "Olhão. Kalatorin vieressä, rian rannalla; se, mikä nousi veneistä sinä aamuna, yksinkertaisesti valmistettuna."
+      },
+      {
+        "name": "Ramires",
+        "category": "Perinteinen",
+        "description": "Guia. Piri-piri-kanan koti vuodesta 1964, ja yhä se paikka, jossa sitä syödään — äänekäs, nopea ja täydellinen."
+      },
+      {
+        "name": "A Ver Tavira",
+        "category": "Moderni Algarve",
+        "description": "Tavira. Alueen raaka-aineita terassilla vanhankaupungin kattojen yläpuolella, lyhyen kävelymatkan päässä roomalaiselta sillalta."
+      }
+    ],
+    "specialties": [
+      {
+        "name": "Cataplana de marisco",
+        "category": "Ruokalaji",
+        "description": "Kalaa, simpukoita, katkarapuja ja usein porsasta, kypsennettynä ja tarjoiltuna saranoidussa kupari-cataplanassa. Algarven kansallisruoka."
+      },
+      {
+        "name": "Sardinhas assadas",
+        "category": "Ruokalaji",
+        "description": "Grillattuja sardiineja leivän päällä kesäkuusta syyskuuhun, kun ne ovat rasvaisia. Portimão on sardiinien pääkaupunki."
+      },
+      {
+        "name": "Ria Formosan osterit",
+        "category": "Äyriäiset",
+        "description": "Laguunin ostereita, jotka syödään Cacela Velhan tai Olhãon laiturilla lasillisen Algarven valkoviiniä kanssa."
+      },
+      {
+        "name": "Manteli- ja viikunamakeiset",
+        "category": "Makea",
+        "description": "Maurilaisen muotoisia manteli- ja viikunamakeisia jokaisessa pastelariassa; dom rodrigo on se, jota kannattaa maistaa."
+      }
+    ],
+    "experiencesIntro": "Algarvessa elämyksemme järjestää concierge paikallisten kumppaneiden kanssa, joiden kanssa työskentelemme joka viikko — veneitä, oppaita, kokkeja ja golfkenttiä — ja ne toteutetaan samalla tasolla kuin oman tiimimme elämykset pohjoisessa.",
+    "experiences": [
+      {
+        "name": "Benagil ja luolat veneellä tai kajakilla",
+        "description": "Yksityinen vene tai opastettu kajakki Benagilista tai Carvoeirosta meriluoliin ennen väkijoukkojen saapumista.",
+        "duration": "2–3 tuntia",
+        "season": "Ympäri vuoden; tyynin meri touko–lokakuussa"
+      },
+      {
+        "name": "Yksityiskokki huvilassa",
+        "description": "Torilta tuore illallinen keittiössäsi — cataplana, grillattu kala, Algarven makeiset — kokin valmistamana, jonka concierge varaa sinulle.",
+        "duration": "Ilta",
+        "season": "Ympäri vuoden"
+      },
+      {
+        "name": "Golfia Quinta do Lagossa ja Vilamourassa",
+        "description": "Lähtöajat, kuljetukset ja mailojen vuokraus Algarven mestaruuskentillä, minuuttien päässä kodeistamme.",
+        "duration": "Puoli päivää",
+        "season": "Ympäri vuoden; parasta loka–toukokuussa"
+      },
+      {
+        "name": "Ria Formosa veneellä",
+        "description": "Yksityinen vene Olhãosta tai Farosta laguunin halki särkkäsaarille, lounas Culatralla.",
+        "duration": "Puoli päivää",
+        "season": "Ympäri vuoden"
+      },
+      {
+        "name": "Surffitunnit Costa Vicentinalla",
+        "description": "Tunteja aloittelijoille ja jatkajille Amadolla tai Arrifanassa koulussa, joka on opettanut länsirannikolla vuosikymmeniä.",
+        "duration": "2–3 tuntia",
+        "season": "Ympäri vuoden"
+      },
+      {
+        "name": "Viininmaistelu Algarven kukkuloilla",
+        "description": "Quinta dos Vales ja Algarven tilojen uusi aalto Lagoan ja Silvesin ympärillä, viininvalmistajan seurassa.",
+        "duration": "Puoli päivää",
+        "season": "Ympäri vuoden"
+      }
+    ],
+    "eventsIntro": "Algarven vuosi kulkee kevään kukinnasta kesän festivaaleihin ja pitkään, leutoon hiljaiseen kauteen. Alla olevat päivämäärät ovat suunnittelun kannalta tärkeimmät; elokuu on joka tapauksessa varattava kuukausia etukäteen.",
+    "events": [
+      {
+        "name": "Festival Med",
+        "dates": "Kesäkuun loppu, Loulé",
+        "description": "Maailmanmusiikkia vanhankaupungin kaduilla ja aukioilla — kolme yötä, kymmeniä lavoja, alueen paras festivaali."
+      },
+      {
+        "name": "Festival do Marisco",
+        "dates": "Elokuun puoliväli, Olhão",
+        "description": "Viikko äyriäisiä rantakadulla, rian suurin juhla."
+      },
+      {
+        "name": "Sardiinifestivaali",
+        "dates": "Elokuu, Portimão",
+        "description": "Tonneittain grillattuja sardiineja joenrannalla, konsertteja joka ilta."
+      },
+      {
+        "name": "Keskiaikapäivät",
+        "dates": "Elokuu, Silves ja Castro Marim",
+        "description": "Kaksi linnakaupunkia kääntävät kellonsa taaksepäin: toreja, turnajaisia, musiikkia ja paljon paistettua lihaa."
+      },
+      {
+        "name": "Mantelinkukinta",
+        "dates": "Tammikuun lopusta helmikuuhun, Barrocal",
+        "description": "Loulén ja Taviran väliset kukkulat muuttuvat valkoisiksi kolmeksi viikoksi — Algarven hiljainen, kaunis talvisalaisuus."
+      },
+      {
+        "name": "Loulén karnevaali",
+        "dates": "Helmikuu",
+        "description": "Portugalin vanhin karnevaalikulkue Loulén kaduilla."
+      }
+    ],
+    "pressIntro": "Algarve on yksi Euroopan kirjoitetuimmista rannikoista. Alla olevat lainaukset ovat niitä, jotka kuvaavat tuntemaamme aluetta.",
+    "pressQuotes": [
+      {
+        "source": "Tripadvisor Travellers' Choice",
+        "year": 2024,
+        "quote": "Praia da Falésia — maailman paras ranta."
+      },
+      {
+        "source": "World Travel Awards",
+        "year": 2023,
+        "quote": "Euroopan johtava rantakohde."
+      },
+      {
+        "source": "The Guardian",
+        "year": 2022,
+        "quote": "Costa Vicentina on Algarven villi, koskematon puoli, jota useimmat kävijät eivät koskaan näe."
+      },
+      {
+        "source": "Condé Nast Traveller",
+        "year": 2023,
+        "quote": "Tavira on Algarven kaunein kaupunki."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Missä osassa Algarvea kannattaa majoittua?",
+        "answer": "Keskirannikolla Albufeirasta Quinta do Lagoon, jos haluat rannat, golfin, ravintolat ja yöelämän kahdenkymmenen minuutin päähän ja Faron lentokentän lähelle. Lännessä Lagosin ja Sagresin ympärillä villejä rantoja, surffia ja tilaa varten. Idässä Taviran ja Olhãon ympärillä laguunia, hiljaisempia kaupunkeja ja parhaita äyriäisiä varten. Kotimme kattavat kaikki kolme."
+      },
+      {
+        "question": "Milloin meri on tarpeeksi lämmin uimiseen?",
+        "answer": "Kesäkuusta lokakuuhun. Meri saavuttaa etelärannikolla kaksikymmentäkaksi–kaksikymmentäkolme astetta elo- ja syyskuussa; länsirannikko on kaksi tai kolme astetta kylmempi ja karumpi. Useimmissa kodeissamme on lämmitetty allas välikausia varten."
+      },
+      {
+        "question": "Kuinka kaukana Faron lentokenttä on huviloista?",
+        "answer": "Kaksikymmentä minuuttia Quinta do Lagoon ja Vale do Loboon, kolmekymmentä Vilamouraan, neljäkymmentä Albufeiraan tai Taviraan, kuusikymmentä Lagosiin ja seitsemänkymmentäviisi Sagresiin, kaikki moottoritietä. Conciergemme järjestää kuljetuksen."
+      },
+      {
+        "question": "Kannattaako Algarveen matkustaa talvella?",
+        "answer": "Kyllä, jos tarkoitus ei ole ranta. Viisitoista–kahdeksantoista astetta, enemmän aurinkoa kuin Pohjois-Euroopassa kesäkuussa, tyhjiä polkuja, mantelinkukkia helmikuussa, golfia ja pitkiä lounaita. Hinnat ovat alimmillaan ja kodeissa on lämmitetyt altaat ja takat."
+      },
+      {
+        "question": "Tarvitsenko auton?",
+        "answer": "Kyllä. Alue on leveä, parhaat rannat ovat pikkuteiden päässä eikä sisämaan kylissä ole juuri julkista liikennettä. Quinta do Lagon ja Vale do Lobon sisällä polkupyörät ja golfautot riittävät arkeen."
+      },
+      {
+        "question": "Miten pääsen Benagilin luolaan?",
+        "answer": "Veneellä Benagilista tai Carvoeirosta tai kajakilla tai SUP-laudalla oppaan kanssa — sinne ei ole maareittiä. Mene kesällä ennen kymmentä tai tule touko- tai lokakuussa, kun meri on tyyni ja luola hiljainen. Conciergemme varaa veneen."
+      },
+      {
+        "question": "Sopiiko Algarve perheille?",
+        "answer": "Portugalin paras: lämpimiä, matalia rantoja idässä, vesipuistoja Albufeiran lähellä, veneretkiä, delfiinien tarkkailua ja huviloita, joissa on allas ja puutarha. Conciergemme järjestää lastenhoitajat, pinnasängyt ja perheystävälliset elämykset."
+      },
+      {
+        "question": "Miten Algarve vertautuu Minhoon?",
+        "answer": "Algarve on aurinkoa, lämmintä merta ja kallioita; Minho on vihreitä laaksoja, kylmää Atlantin surffia ja vuoria. Algarve on varmempi valinta rantalomalle; Minho ruoalle, viinille, luonnolle ja Portugalille, jota harva kävijä näkee. Monet vieraistamme tekevät molemmat."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Omistatko kodin Algarvessa?",
+      "body": "Portugal Active hoitaa laadukkaita huviloita koko Algarvessa — Quinta do Lagosta länsirannikolle — täydellä hallinnoinnilla, markkinoinnilla, conciergella ja kunnossapidolla hotellitasolla.",
+      "cta": "Keskustele tiimimme kanssa"
+    }
   },
   "brazil": {
     "name": "Brasilia",

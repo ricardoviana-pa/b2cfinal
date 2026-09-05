@@ -1,45 +1,311 @@
 {
   "minho": {
-    "name": "Minho Coast",
-    "tagline": "Där Atlanten möter urgamla skogar och vingårdar.",
-    "description": "Där Atlanten möter urgamla skogar och vingårdar.",
-    "heroSubtitle": "Portugals grönaste region, där atlantsurfen möter Vinho Verdes dalar.",
+    "name": "Minho",
+    "tagline": "Där Portugal börjar: atlantsurf, granitbyar och Vinho Verdes dalar.",
+    "description": "En komplett guide till Minho, Portugals grönaste region, mellan Atlanten och bergen i Peneda-Gerês.",
+    "heroSubtitle": "Portugals grönaste region, mellan Atlanten och bergen i Peneda-Gerês",
+    "pullQuote": {
+      "text": "Stränderna i Viana do Castelo hör till de vackraste i landet.",
+      "source": "The Guardian",
+      "year": 2018
+    },
+    "primaryAccolade": {
+      "text": "Hem för Vinho Verde, världens enda region för grönt vin",
+      "source": "Comissão de Viticultura da Região dos Vinhos Verdes",
+      "note": "Avgränsad vinregion sedan 1908, från floden Minho till Douro"
+    },
     "whyOverline": "VARFÖR MINHO",
-    "whyDescription": "Där Portugal börjar och dit de flesta besökare aldrig når. Urgamla skogar som möter vilda atlantstränder. Vinho Verde-vingårdar som täcker varje sluttning. Granitbyar med romanska kyrkor och familjekrogar som serverar rätter oförändrade i generationer.\n\nMinho är Portugals grönaste och mest autentiska region. Skaldjuren är en timme gamla. Vinet gjordes av någon du kan besöka. Stränderna är tomma en tisdag i juli. Det här är inte oupptäckt. Det är helt enkelt oturistat. Och det är just det som är poängen.",
-    "howToGetHere": "Flyg till Porto flygplats (OPO), 45 minuter norrut med bil. Vigo flygplats (VGO) i Spanien ligger 1 timme söderut. Vi ordnar flygplatstransfers för alla gäster.",
-    "bestTimeToVisit": "Juni till september för strand och uteäventyr. Maj och oktober för vandringar, skörd och mindre folk. Milt och grönt året runt.",
-    "whatToExpect": "Grönskande landskap, vilda atlantstränder, traditionella granitbyar och några av Portugals bästa skaldjur. Ett livstempo som södern förlorade för årtionden sedan.",
-    "seoTitle": "Minho — Privata hem i norra Portugal",
-    "seoDescription": "Upptäck Minho: urgamla skogar, vilda stränder, Vinho Verde-vingårdar. Privata hem skötta på hotellnivå.",
+    "whyDescription": "De flesta som besöker Portugal kommer aldrig så här långt norrut. De stannar i Porto, en timme söderut, eller flyger direkt till Algarve. Minho är det de missar: en landremsa mellan floden Minho, som är gränsen mot Spanien, och Douro, där Atlanten möter granitberg och allt däremellan är grönt. Här regnar det mer än någon annanstans i Portugal, och det är precis poängen — vinrankorna klättrar uppför varje sluttning, floderna rinner året om, skogarna i Peneda-Gerês är landets enda nationalpark, och stränderna, långa, kalla och tomma, tillhör surfare och fiskare snarare än solstolar. Här föddes också Portugal: Guimarães var den första huvudstaden, Braga det äldsta ärkestiftet, och byarna i Lima- och Cávadodalarna har bevarat ett sätt att leva som södern förlorade för decennier sedan. Portugal Active började här, i Viana do Castelo, och det är fortfarande här de flesta av våra hem finns: herrgårdar i Limadalen, strandlodger längs kusten från Esposende till Caminha och bergsrefuger i utkanten av parken. Allt ligger tjugo till sextio minuter från Portos flygplats, och inget känns så.",
     "highlights": [
-      "Vild atlantkust med öde stränder",
-      "Vinho Verde-regionen — världens enda region för grönt vin",
-      "Nationalparken Peneda-Gerês — orörd natur",
-      "Medeltida städer och romansk arkitektur",
-      "Några av Portugals bästa skaldjur"
+      "Vinho Verde — världens enda region för grönt vin, med quintas som tar emot för provningar i Lima- och Cávadodalarna",
+      "Nationalparken Peneda-Gerês — granittoppar, vildhästar, vattenfall och varma källor, nittio minuter från kusten",
+      "Atlantstränder från Esposende till Moledo — långa, rena och tomma, med surf, kitesurf och sanddyner",
+      "Viana do Castelo, Ponte de Lima och Guimarães — tre av Portugals vackraste historiska städer",
+      "Landets bästa skaldjur och bästa fester — Agonia i augusti, vinskörden i september"
     ],
-    "insiderRecommendations": [
+    "seoTitle": "Minho: Stränder, Vinho Verde, Gerês och Var Man Bor | Portugal Active",
+    "seoDescription": "Portugals grönaste region: atlantstränder, Vinho Verde-quintas, bergen i Peneda-Gerês och historiska städer. När man ska åka, hur man tar sig dit och våra hem.",
+    "howToGetHere": "Portos flygplats (OPO), 45–70 minuter med bil beroende på dal. Vigos flygplats (VGO) i Spanien ligger en timme från kusten. Direkttåg från Porto till Viana do Castelo på cirka 75 minuter. Vi ordnar flygplatstransfer för varje vistelse.",
+    "bestTimeToVisit": "Slutet av maj till juni och september till början av oktober: varmt, mestadels torrt, vingårdarna som grönast eller mitt i skörden, och stränder utan trängsel. Juli och augusti för havet och festerna. Vintern är mild, grön och regnig — årets bästa priser.",
+    "whatToExpect": "En levande, lantlig atlantregion snarare än en resort. Fiskebåtar i gryningen, granitbyar, vinrankor på pergolor över varje väg, berg en timme från stranden och några av Portugals bästa skaldjur. Ett väder som växlar varje timme och ett tempo i livet som inte gör det.",
+    "whereToStayIntro": "Portugal Active grundades i Viana do Castelo och Minho är fortfarande där de flesta av våra hem finns — ett femtiotal, från strandlodger med uppvärmd pool i Cabedelo och Carreço till restaurerade herrgårdar i Limadalen kring Ponte de Lima, vattenkvarnar vid floden i Caminha och stenrefuger i utkanten av Peneda-Gerês. Vart och ett drivs av teamet som bor här.",
+    "journalSectionTitle": "Från journalen — berättelser från Minho",
+    "thingsToDoIntro": "Minho belönar den som har en bas och en bil. Från vart och ett av våra hem ligger kusten, dalarna och bergen inom en timme, och de flesta gäster ägnar en dag åt var och en. Det som följer är vad vårt conciergeteam rekommenderar en förstagångsbesökare med fyra eller fem dagar.",
+    "thingsToDo": [
+      {
+        "heading": "Kusten",
+        "items": [
+          {
+            "name": "Praia do Cabedelo",
+            "category": "Strand",
+            "description": "Viana do Castelos stadsstrand, på andra sidan floden från centrum: tre kilometer sand bakom dyner och tallar, Blå flagg varje år och Portugals jämnaste förhållanden för surf, vindsurf och kitesurf. Tio minuter från den historiska stadskärnan med bil eller färja."
+          },
+          {
+            "name": "Moledo och Âncora",
+            "category": "Strand",
+            "description": "Tjugofem minuter norr om Viana. Moledo är Minhos mest fashionabla strand, skyddad av fortet Ínsua på sin ö; Vila Praia de Âncora, granne, har en fiskehamn och en flodstrand för barn. Lissabon har tillbringat somrarna här i ett sekel."
+          },
+          {
+            "name": "Esposende och Ofir",
+            "category": "Strand",
+            "description": "Trettio minuter söderut. Naturparken Litoral Norte: dyner, tallskog, Cávados mynning och väderkvarnarna i Apúlia. Lugnare än Viana, bättre för långa promenader och cykling på spångarna."
+          },
+          {
+            "name": "Monte de Santa Luzia",
+            "category": "Utsiktsplats",
+            "description": "Basilikan ovanför Viana do Castelo och, enligt National Geographic, ett av världens vackraste panoraman. Ta bergbanan från stationen eller kör upp; utsikten sträcker sig från Limas mynning till Galiciens kullar."
+          }
+        ]
+      },
+      {
+        "heading": "Dalarna",
+        "items": [
+          {
+            "name": "Ponte de Lima",
+            "category": "Stad",
+            "description": "Portugals äldsta stad, med stadsprivilegier från 1125, vid en krök av floden Lima med sin medeltida bro, platanallé och landets största marknad varannan vecka. Trettio minuter från Viana. Hjärtat i Loureirolandet och platsen för flera av våra herrgårdar."
+          },
+          {
+            "name": "Vinho Verde-quintas",
+            "category": "Vin",
+            "description": "Regionens producenter — Quinta do Ameal, Aphros, Quinta de Soalheiro längre upp i Melgaço och dussintals familjegårdar — tar emot för provningar efter överenskommelse. Loureiro och Alvarinho är druvorna att känna till; skörden pågår från mitten av september in i oktober."
+          },
+          {
+            "name": "Braga och Bom Jesus do Monte",
+            "category": "Kultur",
+            "description": "Femtio minuter från kusten. Portugals äldsta stad och religiösa huvudstad, med en barock trapphelgedom på Unescos världsarvslista och en av landets vackraste vyer i skymningen."
+          },
+          {
+            "name": "Guimarães",
+            "category": "Kultur",
+            "description": "En timme. Portugals vagga, med ett medeltida centrum listat av Unesco och slottet där den förste kungen föddes. Kombinera med Braga på en och samma dag."
+          }
+        ]
+      },
+      {
+        "heading": "Bergen",
+        "items": [
+          {
+            "name": "Nationalparken Peneda-Gerês",
+            "category": "Natur",
+            "description": "Portugals enda nationalpark, nittio minuter från Viana. Granittoppar, ekskog, vilda garranohästar, vattenfallen Arado och Tahiti, romerska milstolpar längs den gamla Geira-vägen och kurorten Gerês. Vandra på förmiddagen, bada i en flodpool på eftermiddagen."
+          },
+          {
+            "name": "Soajo och Lindoso",
+            "category": "By",
+            "description": "Två bergsbyar i parkens västra utkant, berömda för sina samlingar av granit-espigueiros — sädesmagasin på pelare, några fyrahundra år gamla. Lindoso har också ett slott och Portugals största samling espigueiros, sjuttio stycken tillsammans."
+          },
+          {
+            "name": "Serra d'Arga",
+            "category": "Natur",
+            "description": "Den vilda bergskedjan mellan Viana och Caminha: en högplatå av granit, ljung och flodpooler, med ett kloster i hjärtat och utsikt över Atlanten. Vår upplevelse Vandring, Bad och Lunch äger rum här — en morgonvandring, ett dopp i en naturlig pool och lunch på en byrestaurang."
+          }
+        ]
+      }
+    ],
+    "seasons": {
+      "spring": "Mars till maj. Maxtemperaturerna stiger från omkring sexton till tjugotvå grader och regnet avtar utan att någonsin riktigt upphöra. Atlanten är fortfarande kall, fjorton till femton grader, och överlåts bäst åt surfarna. Det våren erbjuder är Minho som mest spektakulärt: vingårdar i första bladen, kamelior i varje trädgård, vattenfallen i Gerês i full kraft och priser långt under sommarens. Påsken är undantaget — processionerna i Braga fyller regionens hotell.",
+      "summer": "Juni till augusti. Varmt och mestadels torrt, med maxtemperaturer på tjugofem till tjugonio grader och en kust som svalkas på eftermiddagarna av nortadan, nordanvinden. Havet håller sig svalt, sjutton till nitton grader, badbart för de härdade och idealiskt för surf och kitesurf. Limas flodstränder och Gerês pooler är det lokala svaret på värmen. Augusti rymmer regionens största fester — Agonia i Viana under tredje veckan — och är den enda månad som måste bokas månader i förväg.",
+      "autumn": "September till november. September är årets bästa månad: fortfarande sommarvarm, havet som varmast, folkmassorna borta och vindiman — druvskörden — som fyller dalarna från mitten av månaden in i oktober. Vingårdarna skiftar från grönt till koppar. I slutet av oktober återvänder regnet; november är regnig, mild och stilla, med kastanjefester och den första Alvarinhon från den nya årgången.",
+      "winter": "December till februari. Milt med nordeuropeiska mått, med maxtemperaturer kring fjorton till femton grader, men årets regnigaste månader — anledningen till att allt är så grönt. Atlanten är kall och surfen allvarlig. Vianas julbelysning, brasor i herrgårdarna, en uppvärmd pool under grå himmel och årets lägsta priser. Gerês ser ibland snö på höjderna.",
+      "bestForFirstTime": "Slutet av maj till juni, eller september. Båda ger varmt, mestadels torrt väder på tjugo till tjugosex grader, vingårdarna som grönast eller mitt i skörden, tomma stränder och lätt att få bord. Juni är bäst för havet och de långa dagarna; september för stämningen — skörden, det varma havet, det långsammare tempot innan regnet återvänder."
+    },
+    "transport": {
+      "byAir": "Portos flygplats Francisco Sá Carneiro är porten till hela regionen: fyrtiofem minuter till Viana do Castelo, femtio till Ponte de Lima, trettiofem till Esposende och ungefär en och en halv timme till byarna i Gerês, allt via motorväg. Vigos flygplats i spanska Galicien ligger en timme från Caminha och Viana och är värd att överväga för resenärer som byter i Madrid. Lissabon är tre och en halv till fyra timmar via motorväg.",
+      "byTrain": "Comboios de Portugal kör Linha do Minho från Porto Campanhã till Viana do Castelo på cirka sjuttiofem minuter och vidare till Caminha och Valença; Braga och Guimarães har direkta pendeltåg från Porto på ungefär en timme. Det finns ingen järnväg in i Limadalen eller bergen — dit tar man bil eller våra transferer.",
+      "byCar": "Motorvägen A28 går längs kusten från Porto till Viana och Caminha och är avgiftsfri på sträckan genom Viana; A3 går inåt landet mot Braga, Ponte de Lima och den spanska gränsen vid Valença. Att köra här är enkelt, avstånden korta, och bil är det enda praktiska sättet att kombinera kust, dal och berg under en vistelse. Bilar med utländska skyltar bör registrera sig för de elektroniska vägtullarna före ankomst.",
+      "fromSpain": "Från Galicien korsar A3 gränsen vid Valença–Tui: en timme från Vigo till Viana, under två från Santiago de Compostela. De flesta av våra spanska gäster kör; floden Minho är gränsen, och städerna på båda stränderna — Valença och Tui, Monção och Salvaterra — är värda en dagsutflykt i sig.",
+      "gettingAround": "Utanför städerna är bil nödvändig. Viana, Ponte de Lima, Braga och Guimarães är kompakta och utforskas till fots. Cykelleden Ecovia do Lima följer floden i sjuttio kilometer från Viana in i dalen — det bästa sättet att nå en quinta utan att köra. Vår concierge ordnar transferer, chaufförer och cyklar för varje hem."
+    },
+    "eatDrinkIntro": "Minho äter bättre än någon annanstans i Portugal och vet om det. Det här är landet för caldo verde, för rojões och sarrabulho, för nejonöga i slutet av vintern och sardiner i juni, för ugnsbakad bacalhau med broa och för de färskaste atlantskaldjuren, serverade på tasquinhas som ägs av fiskarfamiljerna. Vinet är Vinho Verde — lätt, torrt, lätt pärlande och i sina Alvarinho- och Loureiroformer bland Europas bästa vita viner. Nedan de ställen vårt team skickar gästerna till.",
+    "restaurants": [
+      {
+        "name": "Tasquinha da Linda",
+        "category": "Skaldjur",
+        "description": "Viana do Castelo. Ägs av fiskgrossister; kustens färskaste skaldjur, vid hamnen. Bokning nödvändig."
+      },
       {
         "name": "Tasca do Celso",
-        "category": "Restaurang",
-        "description": "Ponte de Lima. Ingen meny. Ägaren tar med det som är färskt. Boka uteserveringen."
+        "category": "Minhoklassiker",
+        "description": "Ponte de Lima. Ingen meny — ägaren kommer med det som är färskt den dagen. Boka terrassen över floden."
       },
       {
-        "name": "Praia do Afife",
-        "category": "Strand",
-        "description": "Mellan Viana och Caminha. Vild, utan folkmassor, med en strandbar som grillar sardiner på plats."
+        "name": "Camelo",
+        "category": "Minhoklassiker",
+        "description": "Ponte de Lima. En institution i Minho i över sextio år: rojões, sarrabulho och, i säsong, nejonöga. Söndagslunchen är en lokal ritual."
       },
       {
-        "name": "Quinta de Soalheiro",
-        "category": "Vin",
-        "description": "Den bästa Alvarinho-producenten i Monção. Privata provningar med familjen som startade alltihop."
+        "name": "O Marinheiro",
+        "category": "Skaldjur",
+        "description": "Vila Praia de Âncora. Grillad fisk några meter från hamnen den kom ifrån. Enkelt, högljutt och precis rätt."
       },
       {
-        "name": "Trilho dos Moinhos",
-        "category": "Vandring",
-        "description": "Kvarnleden i Peneda-Gerês. 8 km genom urgammal ekskog med naturliga pooler."
+        "name": "Solar do Bacalhau",
+        "category": "Traditionellt",
+        "description": "Braga. Bacalhau i tjugo tillagningar i en matsal av granit i gamla stan."
+      },
+      {
+        "name": "Mercado Municipal de Viana",
+        "category": "Marknad",
+        "description": "Vardagsförmiddagar. Fiskhallen är en av landets bästa; handla till huset och låt vår kock laga maten."
       }
-    ]
+    ],
+    "specialties": [
+      {
+        "name": "Bacalhau à moda de Viana",
+        "category": "Rätt",
+        "description": "Ugnsbakad bacalhau med paprika, lök, potatis och majsbrödet broa — kustens signaturrätt."
+      },
+      {
+        "name": "Rojões och sarrabulho",
+        "category": "Rätt",
+        "description": "Marinerat fläsk med ris kokt i grisblod; Limadalens söndagslunch på vintern."
+      },
+      {
+        "name": "Vinho Verde",
+        "category": "Vin",
+        "description": "Lätt, torrt och lätt pärlande. Alvarinho från Monção och Melgaço och Loureiro från Limadalen är de två att leta efter."
+      },
+      {
+        "name": "Lampreia",
+        "category": "Säsong",
+        "description": "Flodnejonöga, tillagat i sitt eget blod med ris, från januari till april — en delikatess som Minho tar på största allvar."
+      }
+    ],
+    "experiencesIntro": "Minho är där Portugal Active började som äventyrsföretag, och de flesta av våra egna upplevelser äger fortfarande rum här, med våra egna guider och partner som vi arbetar med varje vecka.",
+    "experiences": [
+      {
+        "name": "Ridtur i Viana do Castelo",
+        "description": "Strand, berg och blomsterfält under en enda förmiddag, från ett stall tio minuter från staden.",
+        "duration": "2 tim 30 min",
+        "season": "Året runt"
+      },
+      {
+        "name": "Canyoning i Peneda-Gerês",
+        "description": "Firning vid vattenfall, naturliga rutschkanor och pooler i nationalparken, med våra egna guider. Från tolv år.",
+        "duration": "3–4 timmar",
+        "season": "April–oktober"
+      },
+      {
+        "name": "SUP-tur nedför Lima",
+        "description": "En lugn paddling nedströms från Ponte de Lima mellan vingårdar och romerska broar.",
+        "duration": "3 timmar",
+        "season": "Maj–oktober"
+      },
+      {
+        "name": "Vandring, Bad och Lunch i Serra d'Arga",
+        "description": "En morgonvandring i bergen, ett dopp i en granitpool och lunch på en byrestaurang.",
+        "duration": "4 tim 30 min",
+        "season": "Maj–oktober"
+      },
+      {
+        "name": "Vinho Verde-provning i Limadalen",
+        "description": "En förmiddag på en aktiv quinta tillsammans med producenten — fyra till sex viner, regional ost och bröd.",
+        "duration": "Halvdag",
+        "season": "Året runt; skördebesök september–oktober"
+      },
+      {
+        "name": "Surflektioner på Minhokusten",
+        "description": "Cabedelos jämna beach break, med en skola som undervisat här i tjugo år.",
+        "duration": "2–3 timmar",
+        "season": "April–november"
+      }
+    ],
+    "eventsIntro": "Minhos kalender är Portugals mest festliga. De två datum som spelar roll för planeringen infaller båda i augusti, i Viana do Castelo; skörden i september är den lugnare belöningen.",
+    "events": [
+      {
+        "name": "Romaria de Nossa Senhora d'Agonia",
+        "dates": "Tredje veckan i augusti, Viana do Castelo",
+        "description": "Portugals mest berömda romaria, sedan 1772: parader i folkdräkt med filigranguld, blomstermattor, båtprocessioner och fyrverkerier över Lima. Hemmen vid kusten bokas upp månader i förväg."
+      },
+      {
+        "name": "Neopop",
+        "dates": "Första veckan i augusti, Viana do Castelo",
+        "description": "En av Europas mest respekterade festivaler för elektronisk musik, i det gamla fortet vid havet."
+      },
+      {
+        "name": "Feiras Novas",
+        "dates": "September, Ponte de Lima",
+        "description": "Limadalens stora marknad, sedan 1826: marknader, folkdansgrupper, en gigantisk söndagsprocession och nordens bästa gigantones."
+      },
+      {
+        "name": "Vindima",
+        "dates": "Mitten av september till oktober",
+        "description": "Vinho Verde-skörden. Quintas tar med besökare ut i vingårdarna och in i vinerierna; dalarna doftar must i en månad."
+      },
+      {
+        "name": "Stilla veckan i Braga",
+        "dates": "Stilla veckan",
+        "description": "Portugals viktigaste påskprocessioner, i landets religiösa huvudstad."
+      },
+      {
+        "name": "Festa de São João",
+        "dates": "23–24 juni, Braga och kusten",
+        "description": "Midsommarnatten: brasor, grillade sardiner, plasthammare och fyrverkerier i varje stad."
+      }
+    ],
+    "pressIntro": "Det skrivs mindre om Minho än om Porto eller Algarve, vilket är en stor del av charmen. Urvalet nedan är vad den internationella pressen har sagt om regionen och dess städer.",
+    "pressQuotes": [
+      {
+        "source": "The Guardian",
+        "year": 2018,
+        "quote": "Stränderna i Viana do Castelo hör till de vackraste i landet."
+      },
+      {
+        "source": "Booking.com Traveller Review Awards",
+        "year": 2024,
+        "quote": "Viana do Castelo — världens tredje mest gästvänliga stad."
+      },
+      {
+        "source": "Forbes",
+        "year": 2023,
+        "quote": "Minho är ett äventyrsparadis som gömmer sig mitt framför ögonen på oss i norra Portugal."
+      },
+      {
+        "source": "UNESCO",
+        "year": 2001,
+        "quote": "Guimarães — ett exceptionellt välbevarat exempel på hur en medeltida bosättning utvecklats till en modern stad."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Hur många dagar behöver jag i Minho?",
+        "answer": "Fyra till fem dagar är en bekväm längd: en dag vid kusten, en dag i Limadalen med ett quintabesök, en dag för Braga och Guimarães och en dag i Peneda-Gerês. En vecka låter dig sakta ner och lägga till bergsbyarna och Alvarinholandet kring Monção och Melgaço."
+      },
+      {
+        "question": "Passar Minho för en strandsemester?",
+        "answer": "För långa, tomma atlantstränder och surf, ja. För varmt vatten och garanterad sol, nej — havet håller sjutton till nitton grader på sommaren och kusten har en svalkande eftermiddagsvind. De flesta av våra hem har uppvärmd pool, vilket är så Minho gör strandsemester."
+      },
+      {
+        "question": "Behöver jag bil?",
+        "answer": "Ja, om du inte bor i själva Viana do Castelo och nöjer dig med tåg och våra transferer. Regionens dragningskraft är kombinationen av kust, dal och berg, var och en inom en timme, och bara bil gör det enkelt."
+      },
+      {
+        "question": "Hur långt är Minho från Porto?",
+        "answer": "Fyrtiofem till sjuttio minuter via motorväg från Portos flygplats, beroende på hem. Viana do Castelo ligger sjuttiofem minuter från Porto med direkttåg."
+      },
+      {
+        "question": "När är Vinho Verde-skörden?",
+        "answer": "Från mitten av september in i oktober, beroende på år och druva. Loureiro i Limadalen plockas först; Alvarinho i Monção och Melgaço lite senare."
+      },
+      {
+        "question": "Är Peneda-Gerês en dagsutflykt från kusten?",
+        "answer": "Ja — nittio minuter enkel väg. För canyoning, vattenfallen och byarna Soajo och Lindoso, ge dig av tidigt. Om bergen är resans syfte ligger flera av våra hem i parkens utkant."
+      },
+      {
+        "question": "Hur är vädret?",
+        "answer": "Atlantiskt: milt året om, varmt och mestadels torrt från juni till september, regnigt och grönt från november till mars. Packa ett extra lager även på sommaren."
+      },
+      {
+        "question": "Passar Minho för barnfamiljer?",
+        "answer": "Mycket. Flodstränder med varmt, lugnt vatten, djur på quintorna, mjuka cykelleder längs Lima och hem med trädgård och pool. Vår concierge ordnar barnvakter och familjevänliga upplevelser."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Äger du ett hem i Minho?",
+      "body": "Portugal Active förvaltar premiumfastigheter i hela Alto Minho: fullständig förvaltning, marknadsföring, concierge och underhåll på hotellnivå, av teamet som grundade företaget här.",
+      "cta": "Prata med vårt team"
+    }
   },
   "viana-do-castelo": {
     "name": "Viana do Castelo",
@@ -536,40 +802,336 @@
   },
   "algarve": {
     "name": "Algarve",
-    "tagline": "Gyllene klippor, privata pooler och 300 soldagar.",
-    "description": "Villor på klipptopparna, privata pooler och 300 soldagar.",
-    "heroSubtitle": "Gyllene klippor, privata pooler och 300 soldagar.",
+    "tagline": "Gyllene klippor, varmt hav och trehundra soldagar — och Algarve bortom resorterna.",
+    "description": "En komplett guide till Algarve — dess kuster, årstider och var man bor bortom resorterna.",
+    "heroSubtitle": "Portugals sydkust, från det vilda väst till lagunerna i öst",
+    "pullQuote": {
+      "text": "Praia da Falésia — världens bästa strand.",
+      "source": "Tripadvisor Travellers' Choice",
+      "year": 2024
+    },
+    "primaryAccolade": {
+      "text": "Europas ledande stranddestination",
+      "source": "World Travel Awards",
+      "note": "Tilldelat Algarve upprepade gånger under det senaste decenniet"
+    },
     "whyOverline": "VARFÖR ALGARVE",
-    "whyDescription": "De flesta känner Algarve genom resorterna, golfbanorna och turiststränderna. Vi känner det för det som ligger bortom: den vilda västkusten där surfare fångar tomma vågor, Monchiquebergen där korkekar skuggar dolda leder, fiskebyarna där fisken kommer in två gånger om dagen och restaurangerna har sex bord.\n\nAlgarve där vi verkar är det som belönar nyfikenhet. Sol året runt, dramatisk kust och ett landskap som förändras helt från öst till väst. Våra hem och vårt conciergeteam fokuserar på det Algarve som de flesta besökare helt förbiser.\n\nVår Algarve-samling växer. Kontakta vår concierge för den senaste tillgängligheten.",
-    "howToGetHere": "Flyg till Faro flygplats (FAO), 30 till 90 minuter från våra fastigheter beroende på läge. Vi ordnar alla flygplatstransfers.",
-    "bestTimeToVisit": "Året runt. Topp från juni till september. Vår och höst idealiska för vandringar, cykling och lugnare stränder. Mild vinter, 15 till 18 grader.",
-    "whatToExpect": "Mer än 300 soldagar, dramatisk klippkust, golf i världsklass och ett lugnare inland som de flesta besökare aldrig utforskar.",
-    "seoTitle": "Algarve — Privata hem i södra Portugal",
-    "seoDescription": "Upptäck Algarve: villor på klipptopparna, privata pooler, 300 soldagar. Privata hem skötta på hotellnivå.",
+    "whyDescription": "Alla känner Algarve för resorterna, golfen och sommarstränderna, och med rätta: det här är Europas soligaste kust, med ett varmt hav från juni till oktober och en vinter som känns som en engelsk vår. Det de flesta besökare aldrig ser är resten. Västkusten kring Sagres och Aljezur, där klipporna vetter mot öppna Atlanten och surfarna har tomma stränder för sig själva. Ria Formosa i öst, en lagun av öar, saltdammar och fiskebyar som är en av Portugals finaste naturparker. Kullarna i Serra de Monchique och Barrocal, med korkekar, apelsinlundar, vitkalkade byar och restauranger som aldrig sett en turistmeny. Och villorna: bakom murarna i Quinta do Lago och Vale do Lobo, på klipporna längs mellankusten och på landsbygden i väst finns privata hem som gör Algarve till något helt annat än en resortsemester — ett hus med uppvärmd pool, en kock i köket och en concierge som vet vilken vik som är tom klockan fyra på eftermiddagen. Våra hem i Algarve är exakt de husen.",
     "highlights": [
-      "Mer än 300 soldagar per år",
-      "Dramatiska kalkstensklippor och dolda stränder i vikar",
-      "Golfbanor i världsklass",
-      "Färska skaldjur och cataplana-traditionen",
-      "Pulserande nattliv i Lagos och Albufeira"
+      "Trehundra soldagar om året och Portugals varmaste hav från juni till oktober",
+      "Kalkstensklippor, havsgrottor och vikstränder från Lagos till Albufeira — Benagil, Marinha, Falésia",
+      "Den vilda västkusten — Sagres, Aljezur och Costa Vicentina, för surf och tom sand",
+      "Naturparken Ria Formosa — öar, laguner och fiskestäderna Olhão och Tavira",
+      "Golf i Quinta do Lago, Vale do Lobo och Vilamoura, minuter från flera av våra hem"
     ],
-    "insiderRecommendations": [
+    "seoTitle": "Algarve: Stränder, Villor, Golf och När Man Ska Åka | Portugal Active",
+    "seoDescription": "Europas soligaste kust: klippstränder, det vilda väst, Ria Formosa och privata villor med pool. När man ska åka, hur man tar sig dit och var man bor.",
+    "howToGetHere": "Faros flygplats (FAO) ligger 20–60 motorvägsminuter från våra hem — 20 till Quinta do Lago, 40 till Albufeira, 60 till Lagos och väst. Lissabon är två och en halv timme via A2. Vi ordnar flygplatstransfer för varje vistelse.",
+    "bestTimeToVisit": "Maj till juni och september till oktober: tjugotvå till tjugoåtta grader, ett varmt hav och stränder och restauranger utan augustiträngseln. Juli och augusti för garanterad värme. Vintern är den mildaste på det europeiska fastlandet — femton till arton grader, golf, vandring och mandelblom i februari.",
+    "whatToExpect": "Sol, först och främst: Portugals torraste och soligaste hörn. En kust som förändras var femtionde kilometer — gyllene klippor och grottor i mitten, öppen Atlant och surf i väst, laguner och barriäröar i öst. Resorter där man förväntar sig dem och, några minuter inåt land eller längs kusten, ett lugnare Algarve av byar, fruktodlingar och fiskehamnar.",
+    "whereToStayIntro": "Portugal Active driver en liten samling hem i Algarve: villor inne i Quinta do Lago och längs mellankusten mellan Albufeira och Vilamoura, hus i öst kring Tavira och gods i väst nära Lagos. Vart och ett drivs med samma standard som våra hem i norr — uppvärmd pool, välfyllt kök, privatkock på begäran och en concierge som bor i regionen.",
+    "journalSectionTitle": "Från journalen — berättelser från Algarve",
+    "thingsToDoIntro": "Algarve är hundrafemtio kilometer brett och har tre skilda kuster, så det första beslutet är var man ska bo. Det som följer är vår concierges lista för ett första besök, ordnad från väst till öst, med körtider från mellankusten.",
+    "thingsToDo": [
       {
-        "name": "Castelo de Silves",
-        "category": "Kultur",
-        "description": "Ett av Portugals bäst bevarade moriska slott. Besök på morgonen, utforska staden, ät grillad fisk vid floden."
+        "heading": "Väst — Sagres och Costa Vicentina",
+        "items": [
+          {
+            "name": "Cabo de São Vicente",
+            "category": "Utsiktsplats",
+            "description": "Europas sydvästligaste spets: en fyr på en klippa sextio meter över Atlanten, en gång ansedd som världens ände. Kom till solnedgången. En timme och en kvart från Albufeira."
+          },
+          {
+            "name": "Sagres och fästningen",
+            "category": "Kultur",
+            "description": "Den vindpinade udden där Henrik Sjöfararens navigationsskola sägs ha legat. Surfstränder på båda sidor: Beliche och Tonel mot havet, Martinhal mot bukten."
+          },
+          {
+            "name": "Praia da Bordeira och Amado",
+            "category": "Strand",
+            "description": "Två väldiga atlantstränder på Costa Vicentina, bakom dyner och klippor, med en surfskola på Amado och nästan ingen på Bordeira. Nittio minuter från mellankusten."
+          },
+          {
+            "name": "Lagos och Ponta da Piedade",
+            "category": "Stad",
+            "description": "Västs vackra hamnstad, med en muromgärdad gamla stad, en aktiv marina och, strax söderut, Ponta da Piedades gyllene klippbågar och grottor — bäst från kajak klockan nio på morgonen."
+          }
+        ]
       },
       {
-        "name": "Västkusten",
-        "category": "Natur",
-        "description": "Från Sagres till Aljezur. Vild, vindpinad och motsatsen till allt man förväntar sig av Algarve."
+        "heading": "Mitten — klippor och grottor",
+        "items": [
+          {
+            "name": "Benagilgrottan och Praia da Marinha",
+            "category": "Strand",
+            "description": "Algarves mest fotograferade kust: en havsgrotta stor som en katedral, som nås med båt eller paddelbräda, och intill den Marinha, ständigt rankad bland Europas bästa stränder. Åk tidigt — från juni till september är grottorna fulla vid tio. Tjugo minuter från Albufeira."
+          },
+          {
+            "name": "Leden De sju hängande dalarna",
+            "category": "Vandring",
+            "description": "Sex kilometer klippstig mellan Praia da Marinha och Praia de Vale Centeanes, förbi slukhål, bågar och tomma vikar. Två till tre timmar; ta med vatten."
+          },
+          {
+            "name": "Praia da Falésia",
+            "category": "Strand",
+            "description": "Sex kilometer sand under ockrafärgade klippor mellan Vilamoura och Albufeira — Tripadvisors bästa strand i världen 2024, och lugn i båda ändar även i augusti. Femton minuter från våra hem i Vilamoura och Quinta do Lago."
+          },
+          {
+            "name": "Silves",
+            "category": "Kultur",
+            "description": "Algarves moriska huvudstad, med söderns bäst bevarade slott, en gotisk katedral och en gamla stad vid floden. Besök på förmiddagen, luncha i staden, sedan Barrocals apelsinlundar."
+          }
+        ]
       },
       {
-        "name": "Monchiquebergen",
-        "category": "Vandring",
-        "description": "Termalkällor, korkeksskogar och byar högt uppe. Ett helt annat Algarve 30 minuter från kusten."
+        "heading": "Öst — Ria Formosa och Tavira",
+        "items": [
+          {
+            "name": "Naturparken Ria Formosa",
+            "category": "Natur",
+            "description": "Sextio kilometer lagun, saltmarsk och barriäröar mellan Faro och Cacela Velha: flamingor, kameleonter, ostronbankar och stränder som bara nås med båt. Ta färjan från Olhão till Culatra eller Armona."
+          },
+          {
+            "name": "Tavira",
+            "category": "Stad",
+            "description": "Algarves vackraste stad: en romersk bro, trettiosju kyrkor, en slottsträdgård och stranden på Ilha de Tavira en kort färjetur bort. Fyrtio minuter från Faro."
+          },
+          {
+            "name": "Marknaden i Olhão",
+            "category": "Marknad",
+            "description": "Söderns bästa fiskmarknad, i två hallar av rött tegel vid vattnet. Lördagsförmiddagar. Handla till huset och låt vår kock göra resten."
+          },
+          {
+            "name": "Cacela Velha",
+            "category": "By",
+            "description": "En handfull vita hus, en kyrka och ett fort över lagunen, med en ostronbar och en strand som man vadar till vid lågvatten. Algarve som det en gång var."
+          }
+        ]
+      },
+      {
+        "heading": "Inlandet — kullar och byar",
+        "items": [
+          {
+            "name": "Serra de Monchique",
+            "category": "Natur",
+            "description": "Algarves berg: eukalyptus- och kastanjeskog, kurorten Caldas de Monchique och Fóia, söderns högsta punkt, med utsikt över båda kusterna. Fyrtiofem minuter från Lagos eller Portimão."
+          },
+          {
+            "name": "Alte och Salir",
+            "category": "By",
+            "description": "Två vitkalkade byar i Barrocal, med källor, mandel- och johannesbrödlundar och en söndagslunchkultur som inte har något med kusten att göra."
+          },
+          {
+            "name": "Marknaden i Loulé",
+            "category": "Marknad",
+            "description": "Lördagsförmiddagar i den nymoriska saluhallen och gatorna runtomkring: frukt, ost, charkuterier, keramik. Tjugo minuter från Quinta do Lago."
+          }
+        ]
       }
-    ]
+    ],
+    "seasons": {
+      "spring": "Mars till maj. Maxtemperaturerna stiger från arton till tjugofyra grader, regn är sällsynt efter mars och landsbygden är som vackrast — mandelblomningen avslutas i februari, apelsinblomningen i april, vildblommor längs klippstigarna fram till maj. Havet är fortfarande svalt, sexton till arton grader. Påsken är livlig; maj är en av årets bästa månader, varm, torr och lugn.",
+      "summer": "Juni till augusti. Hett och torrt — tjugoåtta till trettiotvå grader, dagar av obruten sol och ett hav som värms till tjugotvå eller tjugotre grader i augusti. Mellankusten fylls från mitten av juli; väst förblir blåsigare och tommare, öst ännu lugnare. Det här är Algarve med långa pooldagar, kvällsgrillning och en kock i köket. Boka månader i förväg för juli och augusti.",
+      "autumn": "September till november. September och oktober är kännarnas månader: havet som varmast, tjugotvå till tjugosex grader i luften, folkmassorna borta och lediga bord överallt. November ger de första regnen och ett mjukare ljus, med maxtemperaturer fortfarande kring tjugo grader. Årets bästa golfväder.",
+      "winter": "December till februari. Den mildaste vintern på det europeiska fastlandet: femton till arton grader, mer sol än större delen av Nordeuropa ser i juni, och en och annan atlantfront. Inget strandväder, men väder för vandring, cykling, golf och uppvärmd pool. Mandelblom täcker Barrocal från slutet av januari. Priserna är som lägst.",
+      "bestForFirstTime": "Slutet av maj till juni, eller september till början av oktober. Båda ger tjugotvå till tjugoåtta grader, ett badbart hav och kusten utan sin augustiträngsel. Juni har längre dagar och svalare vatten; september årets varmaste hav och det mjukaste ljuset."
+    },
+    "transport": {
+      "byAir": "Faros flygplats är porten in och ligger mitt på kusten: tjugo minuter till Quinta do Lago och Vale do Lobo, trettio till Vilamoura, fyrtio till Albufeira, fyrtio till Tavira, sextio till Lagos och sjuttiofem till Sagres, allt via motorvägen A22. Den har direktflyg från de flesta europeiska städer året runt. Lissabons flygplats är ett alternativ för väst — två och en halv timme via A2 till Lagos.",
+      "byTrain": "Comboios de Portugal kör Alfa Pendular- och Intercidades-tåg från Lissabon till Faro på cirka tre timmar, samt en regional linje längs kusten från Lagos till Vila Real de Santo António. Tåget är trevligt för en dagsutflykt mellan städerna men inte för att nå en villa — stationerna ligger inåt land, hemmen gör det inte.",
+      "byCar": "Motorvägen A22 löper genom hela regionen med elektroniska vägtullar; den gamla N125 går parallellt och långsammare, genom varje stad. Från Lissabon korsar A2 Alentejo till Algarve på två och en halv timme. Hyrbilar är billiga i Faro; bilar med utländska skyltar bör registrera sig för vägtullarna före ankomst.",
+      "fromSpain": "Sevilla ligger två timmar från Tavira och två och en halv från Faro över Guadianabron — Algarve ligger närmare Andalusien än Lissabon, och många av våra spanska gäster kör.",
+      "gettingAround": "Bil är nödvändig: Algarve är brett, de bästa stränderna ligger i änden av småvägar och byarna inåt land har inga bussar värda namnet. Inne i Quinta do Lago och Vale do Lobo räcker cyklar och golfbilar för vardagen. Vår concierge ordnar transferer, chaufförer och båtar för varje hem."
+    },
+    "eatDrinkIntro": "Algarves matlagning är havets: sardiner och taggmakrill på grillen, cataplana — en snäckformad kopparkittel med fisk, skaldjur och fläsk —, knivmusslor från Ria Formosa, ostron från Cacela och, inåt land, ugnsstekt killing, piri-piri-kyckling från Guia och morernas mandel- och fikonsötsaker. Nedan de ställen vårt team skickar gästerna till, från hamnens tasquinhas till regionens Michelinbord.",
+    "restaurants": [
+      {
+        "name": "Rei das Praias",
+        "category": "Skaldjur",
+        "description": "Praia dos Caneiros, Ferragudo. En strandrestaurang som serverat samma grillade fisk i fyrtio år, i en vik mellan två uddar. Boka till lunch."
+      },
+      {
+        "name": "Bon Bon",
+        "category": "Finkrog",
+        "description": "Carvoeiro. Två Michelinstjärnor i ett vitkalkat hus några minuter från klipporna; regionens mest seriösa bord."
+      },
+      {
+        "name": "O Camilo",
+        "category": "Skaldjur",
+        "description": "Lagos. Ovanför Praia do Camilo, med Ponta da Piedades klippor nedanför och västs färskaste fisk."
+      },
+      {
+        "name": "Chá com Água Salgada",
+        "category": "Skaldjur",
+        "description": "Olhão. Bredvid fiskmarknaden, vid rian; det som kom av båtarna samma morgon, enkelt tillagat."
+      },
+      {
+        "name": "Ramires",
+        "category": "Traditionellt",
+        "description": "Guia. Piri-piri-kycklingens hem sedan 1964, och fortfarande stället att äta den på — högljutt, snabbt och perfekt."
+      },
+      {
+        "name": "A Ver Tavira",
+        "category": "Modernt Algarve",
+        "description": "Tavira. Regionala råvaror på en terrass ovanför gamla stans tak, en kort promenad från den romerska bron."
+      }
+    ],
+    "specialties": [
+      {
+        "name": "Cataplana de marisco",
+        "category": "Rätt",
+        "description": "Fisk, musslor, räkor och ofta fläsk, tillagat och serverat i den gångjärnsförsedda koppar-cataplanan. Algarves nationalrätt."
+      },
+      {
+        "name": "Sardinhas assadas",
+        "category": "Rätt",
+        "description": "Grillade sardiner på bröd, från juni till september, när de är feta. Portimão är sardinernas huvudstad."
+      },
+      {
+        "name": "Ostron från Ria Formosa",
+        "category": "Skaldjur",
+        "description": "Ostron från lagunen, ätna på kajen i Cacela Velha eller Olhão med ett glas vitt Algarvevin."
+      },
+      {
+        "name": "Mandel- och fikonsötsaker",
+        "category": "Sött",
+        "description": "Mandel- och fikonkonfekt i moriska former, som säljs i varje pastelaria; dom rodrigo är den man ska prova."
+      }
+    ],
+    "experiencesIntro": "I Algarve organiseras våra upplevelser av conciergen tillsammans med lokala partner som vi arbetar med varje vecka — båtar, guider, kockar och golfbanor — och levereras med samma standard som vårt eget teams i norr.",
+    "experiences": [
+      {
+        "name": "Benagil och grottorna med båt eller kajak",
+        "description": "En privat båt eller en guidad kajak från Benagil eller Carvoeiro in i havsgrottorna innan folkmassorna kommer.",
+        "duration": "2–3 timmar",
+        "season": "Året runt; lugnast hav maj–oktober"
+      },
+      {
+        "name": "Privatkock i villan",
+        "description": "En marknadsfärsk middag lagad i ert kök — cataplana, grillad fisk, Algarves sötsaker — av en kock som conciergen bokar åt er.",
+        "duration": "Kväll",
+        "season": "Året runt"
+      },
+      {
+        "name": "Golf i Quinta do Lago och Vilamoura",
+        "description": "Starttider, transferer och klubbhyra på Algarves mästerskapsbanor, minuter från våra hem.",
+        "duration": "Halvdag",
+        "season": "Året runt; bäst oktober–maj"
+      },
+      {
+        "name": "Ria Formosa med båt",
+        "description": "En privat båt från Olhão eller Faro genom lagunen till barriäröarna, med lunch på Culatra.",
+        "duration": "Halvdag",
+        "season": "Året runt"
+      },
+      {
+        "name": "Surflektioner på Costa Vicentina",
+        "description": "Lektioner för nybörjare och fortsättare på Amado eller Arrifana med en skola som undervisat på västkusten i årtionden.",
+        "duration": "2–3 timmar",
+        "season": "Året runt"
+      },
+      {
+        "name": "Vinprovning i Algarves kullar",
+        "description": "Quinta dos Vales och den nya vågen av Algarvegods kring Lagoa och Silves, tillsammans med vinmakaren.",
+        "duration": "Halvdag",
+        "season": "Året runt"
+      }
+    ],
+    "eventsIntro": "Algarves år går från vårens blomning via sommarens festivaler till en lång, mild lågsäsong. Datumen nedan spelar störst roll för planeringen; augusti måste bokas månader i förväg oavsett.",
+    "events": [
+      {
+        "name": "Festival Med",
+        "dates": "Slutet av juni, Loulé",
+        "description": "Världsmusik på gamla stans gator och torg — tre nätter, dussintals scener, regionens bästa festival."
+      },
+      {
+        "name": "Festival do Marisco",
+        "dates": "Mitten av augusti, Olhão",
+        "description": "En vecka av skaldjur vid vattnet, rians största fest."
+      },
+      {
+        "name": "Sardinfestivalen",
+        "dates": "Augusti, Portimão",
+        "description": "Grillade sardiner i ton vid flodkanten, med konserter varje kväll."
+      },
+      {
+        "name": "Medeltidsdagarna",
+        "dates": "Augusti, Silves och Castro Marim",
+        "description": "De två slottsstäderna vrider tillbaka klockan: marknader, tornerspel, musik och mycket stekt kött."
+      },
+      {
+        "name": "Mandelblom",
+        "dates": "Slutet av januari till februari, Barrocal",
+        "description": "Kullarna mellan Loulé och Tavira blir vita i tre veckor — Algarves stilla, vackra vinterhemlighet."
+      },
+      {
+        "name": "Karnevalen i Loulé",
+        "dates": "Februari",
+        "description": "Portugals äldsta karnevalsparad, på Loulés gator."
+      }
+    ],
+    "pressIntro": "Algarve är en av Europas mest omskrivna kuster. Citaten nedan är de som beskriver den region vi känner.",
+    "pressQuotes": [
+      {
+        "source": "Tripadvisor Travellers' Choice",
+        "year": 2024,
+        "quote": "Praia da Falésia — världens bästa strand."
+      },
+      {
+        "source": "World Travel Awards",
+        "year": 2023,
+        "quote": "Europas ledande stranddestination."
+      },
+      {
+        "source": "The Guardian",
+        "year": 2022,
+        "quote": "Costa Vicentina är den vilda, orörda sidan av Algarve som de flesta besökare aldrig ser."
+      },
+      {
+        "source": "Condé Nast Traveller",
+        "year": 2023,
+        "quote": "Tavira är Algarves vackraste stad."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "I vilken del av Algarve ska jag bo?",
+        "answer": "Mellankusten, från Albufeira till Quinta do Lago, om du vill ha stränder, golf, restauranger och nattliv inom tjugo minuter och Faros flygplats nära. Väst, kring Lagos och Sagres, för vilda stränder, surf och utrymme. Öst, kring Tavira och Olhão, för lagunen, lugnare städer och de bästa skaldjuren. Våra hem täcker alla tre."
+      },
+      {
+        "question": "När är havet varmt nog att bada i?",
+        "answer": "Från juni till oktober. Havet når tjugotvå till tjugotre grader i augusti och september på sydkusten; västkusten är två eller tre grader kallare och grövre. De flesta av våra hem har uppvärmd pool för mellansäsongerna."
+      },
+      {
+        "question": "Hur långt är Faros flygplats från villorna?",
+        "answer": "Tjugo minuter till Quinta do Lago och Vale do Lobo, trettio till Vilamoura, fyrtio till Albufeira eller Tavira, sextio till Lagos och sjuttiofem till Sagres, allt via motorväg. Vår concierge ordnar transfern."
+      },
+      {
+        "question": "Är Algarve värt ett besök på vintern?",
+        "answer": "Ja, om stranden inte är poängen. Femton till arton grader, mer sol än Nordeuropa i juni, tomma stigar, mandelblom i februari, golf och långa luncher. Priserna är som lägst och hemmen har uppvärmd pool och öppen spis."
+      },
+      {
+        "question": "Behöver jag bil?",
+        "answer": "Ja. Regionen är bred, de bästa stränderna ligger i änden av småvägar och byarna inåt land har nästan ingen kollektivtrafik. Inne i Quinta do Lago och Vale do Lobo räcker cyklar och golfbilar för vardagen."
+      },
+      {
+        "question": "Hur tar jag mig till Benagilgrottan?",
+        "answer": "Med båt från Benagil eller Carvoeiro, eller med kajak eller paddelbräda med guide — den har ingen landväg. Åk före tio på sommaren, eller kom i maj eller oktober när havet är lugnt och grottan stilla. Vår concierge bokar båten."
+      },
+      {
+        "question": "Passar Algarve för barnfamiljer?",
+        "answer": "Bäst i Portugal: varma, grunda stränder i öst, vattenparker nära Albufeira, båtturer, delfinsafari och villor med pool och trädgård. Vår concierge ordnar barnvakter, spjälsängar och familjevänliga upplevelser."
+      },
+      {
+        "question": "Hur skiljer sig Algarve från Minho?",
+        "answer": "Algarve är sol, varmt hav och klippor; Minho är gröna dalar, kall atlantsurf och berg. Algarve är det säkrare valet för en strandsemester; Minho för mat, vin, natur och ett Portugal som få besökare ser. Många av våra gäster gör båda."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Äger du ett hem i Algarve?",
+      "body": "Portugal Active driver premiumvillor i hela Algarve — från Quinta do Lago till västkusten — med fullständig förvaltning, marknadsföring, concierge och underhåll på hotellnivå.",
+      "cta": "Prata med vårt team"
+    }
   },
   "brazil": {
     "name": "Brasil",

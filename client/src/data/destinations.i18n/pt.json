@@ -1,45 +1,311 @@
 {
   "minho": {
-    "name": "Minho Coast",
-    "tagline": "Onde o Atlântico encontra florestas antigas e vinhas.",
-    "description": "Onde o Atlântico encontra florestas antigas e vinhas.",
-    "heroSubtitle": "A região mais verde de Portugal, onde o surf atlântico encontra os vales do Vinho Verde.",
+    "name": "Minho",
+    "tagline": "Onde Portugal começa: surf atlântico, aldeias de granito e os vales do Vinho Verde.",
+    "description": "Um guia completo do Minho — a região mais verde de Portugal, entre o Atlântico e as serras da Peneda-Gerês.",
+    "heroSubtitle": "A região mais verde de Portugal, entre o Atlântico e as serras da Peneda-Gerês",
+    "pullQuote": {
+      "text": "As praias de Viana do Castelo estão entre as mais bonitas do país.",
+      "source": "The Guardian",
+      "year": 2018
+    },
+    "primaryAccolade": {
+      "text": "Terra do Vinho Verde, a única região de vinho verde do mundo",
+      "source": "Comissão de Viticultura da Região dos Vinhos Verdes",
+      "note": "Região demarcada desde 1908, do rio Minho ao Douro"
+    },
     "whyOverline": "PORQUÊ O MINHO",
-    "whyDescription": "Onde Portugal começa e onde a maioria dos visitantes nunca chega. Florestas antigas a encontrar praias atlânticas selvagens. Vinhas de Vinho Verde a cobrir cada encosta. Aldeias de granito com igrejas românicas e tascas de família a servir pratos inalterados há gerações.\n\nO Minho é a região mais verde e mais autêntica de Portugal. O marisco tem uma hora. O vinho foi feito por alguém que pode visitar. As praias estão vazias numa terça-feira de julho. Isto não é por descobrir. É simplesmente sem turismo. E é exatamente esse o ponto.",
-    "howToGetHere": "Voe para o Aeroporto do Porto (OPO), a 45 minutos para norte de carro. O Aeroporto de Vigo (VGO), em Espanha, fica a 1 hora para sul. Organizamos transfers de aeroporto para todos os hóspedes.",
-    "bestTimeToVisit": "De junho a setembro para praia e aventuras ao ar livre. Maio e outubro para caminhadas, vindima e menos gente. Ameno e verde todo o ano.",
-    "whatToExpect": "Paisagens verdejantes, praias atlânticas selvagens, aldeias tradicionais de granito e algum do melhor marisco de Portugal. Um ritmo de vida que o sul perdeu há décadas.",
-    "seoTitle": "Minho — Casas Privadas no Norte de Portugal",
-    "seoDescription": "Descubra o Minho: florestas antigas, praias selvagens, vinhas de Vinho Verde. Casas privadas geridas ao nível de hotel.",
+    "whyDescription": "A maioria de quem visita Portugal nunca chega tão a norte. Fica pelo Porto, uma hora a sul, ou voa diretamente para o Algarve. O Minho é o que perdem: uma faixa de país entre o rio Minho, que é a fronteira com Espanha, e o Douro, onde o Atlântico encontra montanhas de granito e tudo o que está pelo meio é verde. Chove aqui mais do que em qualquer outro lugar de Portugal, e é precisamente essa a questão — as vinhas sobem todas as encostas, os rios correm o ano inteiro, as florestas da Peneda-Gerês são o único parque nacional do país, e as praias, longas, frias e vazias, pertencem a surfistas e pescadores e não a espreguiçadeiras. Foi também aqui que Portugal nasceu: Guimarães foi a primeira capital, Braga a arquidiocese mais antiga, e as aldeias dos vales do Lima e do Cávado guardaram um modo de vida que o sul perdeu há décadas. A Portugal Active começou aqui, em Viana do Castelo, e é aqui que continua a ter a maior parte das suas casas: solares no vale do Lima, lodges de praia na costa de Esposende a Caminha e refúgios de montanha na orla do parque. Tudo fica entre vinte e sessenta minutos do aeroporto do Porto, e nada parece estar tão perto.",
     "highlights": [
-      "Costa atlântica selvagem com praias desertas",
-      "Região do Vinho Verde — a única região de vinho verde do mundo",
-      "Parque Nacional da Peneda-Gerês — natureza intacta",
-      "Vilas medievais e arquitetura românica",
-      "Algum do melhor marisco de Portugal"
+      "Vinho Verde — a única região de vinho verde do mundo, com quintas abertas a provas nos vales do Lima e do Cávado",
+      "Parque Nacional da Peneda-Gerês — cumes de granito, garranos selvagens, cascatas e termas, a noventa minutos da costa",
+      "Praias atlânticas de Esposende a Moledo — longas, limpas e vazias, com surf, kitesurf e dunas",
+      "Viana do Castelo, Ponte de Lima e Guimarães — três das vilas e cidades históricas mais bonitas de Portugal",
+      "O melhor marisco e as melhores festas do país — a Agonia em agosto, a vindima em setembro"
     ],
-    "insiderRecommendations": [
+    "seoTitle": "Minho: Praias, Vinho Verde, Gerês e Onde Ficar | Portugal Active",
+    "seoDescription": "A região mais verde de Portugal: praias atlânticas, quintas de Vinho Verde, as serras da Peneda-Gerês e vilas históricas. Quando ir, como chegar e as nossas casas.",
+    "howToGetHere": "Aeroporto do Porto (OPO), a 45 a 70 minutos de carro consoante o vale. O aeroporto de Vigo (VGO), em Espanha, fica a uma hora da costa. Comboios diretos do Porto a Viana do Castelo em cerca de 75 minutos. Organizamos transfers do aeroporto para todas as estadias.",
+    "bestTimeToVisit": "Do final de maio a junho e de setembro a início de outubro: calor, pouca chuva, vinhas no seu verde mais intenso ou em plena vindima, e praias sem multidões. Julho e agosto para o mar e as festas. O inverno é ameno, verde e chuvoso — as melhores tarifas do ano.",
+    "whatToExpect": "Uma região atlântica, rural e viva, e não um resort. Barcos de pesca ao amanhecer, aldeias de granito, videiras em ramada sobre todas as estradas, montanhas a uma hora da praia e do melhor marisco de Portugal. Um tempo que muda de hora a hora e um ritmo de vida que não muda.",
+    "whereToStayIntro": "A Portugal Active foi fundada em Viana do Castelo e o Minho continua a ser onde está a maior parte das nossas casas — cerca de cinquenta, de lodges de praia com piscina aquecida no Cabedelo e em Carreço a solares recuperados no vale do Lima, à volta de Ponte de Lima, moinhos à beira-rio em Caminha e refúgios de pedra na orla da Peneda-Gerês. Todas operadas pela equipa que vive aqui.",
+    "journalSectionTitle": "Do diário — histórias do Minho",
+    "thingsToDoIntro": "O Minho recompensa quem tem uma base e um carro. A partir de qualquer das nossas casas, a costa, os vales e as montanhas ficam cada um a menos de uma hora, e a maioria dos hóspedes dedica um dia a cada. O que se segue é o que a nossa equipa de concierge recomenda a quem vem pela primeira vez, com quatro ou cinco dias.",
+    "thingsToDo": [
+      {
+        "heading": "A costa",
+        "items": [
+          {
+            "name": "Praia do Cabedelo",
+            "category": "Praia",
+            "description": "A praia da cidade de Viana do Castelo, do outro lado do rio: três quilómetros de areal com dunas e pinhal, Bandeira Azul todos os anos e as condições mais constantes de Portugal para surf, windsurf e kitesurf. A dez minutos do centro histórico de carro ou de ferry."
+          },
+          {
+            "name": "Moledo e Âncora",
+            "category": "Praia",
+            "description": "Vinte e cinco minutos a norte de Viana. Moledo é a praia mais elegante do Minho, abrigada pelo forte da Ínsua na sua ilha; Vila Praia de Âncora, ao lado, tem porto de pesca e praia fluvial para crianças. Lisboa veraneia aqui há um século."
+          },
+          {
+            "name": "Esposende e Ofir",
+            "category": "Praia",
+            "description": "Trinta minutos a sul. O parque natural do Litoral Norte: dunas, pinhal, o estuário do Cávado e os moinhos da Apúlia. Mais sossegado do que Viana, melhor para caminhadas longas e para pedalar nos passadiços."
+          },
+          {
+            "name": "Monte de Santa Luzia",
+            "category": "Miradouro",
+            "description": "A basílica sobre Viana do Castelo e, segundo a National Geographic, um dos panoramas mais belos do mundo. Suba de elevador a partir da estação ou de carro; a vista vai do estuário do Lima às serras da Galiza."
+          }
+        ]
+      },
+      {
+        "heading": "Os vales",
+        "items": [
+          {
+            "name": "Ponte de Lima",
+            "category": "Vila",
+            "description": "A vila mais antiga de Portugal, com foral de 1125, numa curva do rio Lima com a sua ponte medieval, a avenida de plátanos e a maior feira quinzenal do país. A trinta minutos de Viana. O coração da terra do Loureiro e onde ficam vários dos nossos solares."
+          },
+          {
+            "name": "Quintas de Vinho Verde",
+            "category": "Vinho",
+            "description": "Os produtores da região — Quinta do Ameal, Aphros, Quinta de Soalheiro mais acima em Melgaço e dezenas de quintas familiares — recebem provas com marcação. Loureiro e Alvarinho são as castas a conhecer; a vindima vai de meados de setembro a outubro."
+          },
+          {
+            "name": "Braga e Bom Jesus do Monte",
+            "category": "Cultura",
+            "description": "Cinquenta minutos da costa. A cidade mais antiga de Portugal e a sua capital religiosa, com um santuário de escadório barroco classificado pela UNESCO e uma das vistas mais bonitas do país ao entardecer."
+          },
+          {
+            "name": "Guimarães",
+            "category": "Cultura",
+            "description": "Uma hora. O berço de Portugal, com um centro medieval classificado pela UNESCO e o castelo onde nasceu o primeiro rei. Combina-se com Braga num só dia."
+          }
+        ]
+      },
+      {
+        "heading": "As montanhas",
+        "items": [
+          {
+            "name": "Parque Nacional da Peneda-Gerês",
+            "category": "Natureza",
+            "description": "O único parque nacional de Portugal, a noventa minutos de Viana. Cumes de granito, carvalhais, garranos selvagens, as cascatas do Arado e do Tahiti, marcos miliários romanos na velha Geira e a vila termal do Gerês. Caminhe de manhã, mergulhe numa poça do rio à tarde."
+          },
+          {
+            "name": "Soajo e Lindoso",
+            "category": "Aldeia",
+            "description": "Duas aldeias de montanha na orla ocidental do parque, famosas pelos seus conjuntos de espigueiros de granito — celeiros elevados sobre pilares, alguns com quatrocentos anos. Lindoso tem ainda um castelo e o maior conjunto de espigueiros de Portugal, setenta juntos."
+          },
+          {
+            "name": "Serra d'Arga",
+            "category": "Natureza",
+            "description": "A serra brava entre Viana e Caminha: um planalto de granito, urze e poças de rio, com um mosteiro no coração e vistas sobre o Atlântico. A nossa experiência Caminhada, Mergulho e Almoço é aqui — uma caminhada matinal, um mergulho numa piscina natural e almoço num restaurante de aldeia."
+          }
+        ]
+      }
+    ],
+    "seasons": {
+      "spring": "De março a maio. As máximas sobem de cerca de dezasseis para vinte e dois graus e a chuva abranda sem nunca parar de todo. O Atlântico ainda está frio, catorze a quinze graus, e é melhor deixá-lo aos surfistas. O que a primavera oferece é o Minho no seu mais espetacular: vinhas em folha nova, camélias em todos os jardins, cascatas do Gerês em força e tarifas bem abaixo do verão. A Páscoa é a exceção — as procissões de Braga enchem os hotéis da região.",
+      "summer": "De junho a agosto. Calor e pouca chuva, com máximas de vinte e cinco a vinte e nove graus e a costa refrescada pela nortada à tarde. O mar mantém-se fresco, dezassete a dezanove graus, para os corajosos e ideal para surf e kitesurf. As praias fluviais do Lima e as poças do Gerês são a resposta local ao calor. Agosto tem as maiores festas da região — a Agonia em Viana, na terceira semana — e é o único mês a reservar com meses de antecedência.",
+      "autumn": "De setembro a novembro. Setembro é o melhor mês do ano: ainda quente como o verão, o mar na temperatura mais alta, as multidões desaparecidas e a vindima a encher os vales de meados do mês até outubro. As vinhas passam do verde ao cobre. No final de outubro volta a chuva; novembro é húmido, ameno e sossegado, com magustos e o primeiro Alvarinho da nova colheita.",
+      "winter": "De dezembro a fevereiro. Ameno para os padrões do norte da Europa, com máximas à volta de catorze a quinze graus, mas os meses mais chuvosos do ano — a razão de tudo ser tão verde. O Atlântico está frio e o surf é a sério. As luzes de Natal de Viana, lareiras nos solares, uma piscina aquecida sob céu cinzento e as tarifas mais baixas do ano. No Gerês, as terras altas veem neve de vez em quando.",
+      "bestForFirstTime": "Do final de maio a junho, ou setembro. Ambos dão tempo quente e maioritariamente seco, de vinte a vinte e seis graus, vinhas no seu verde mais intenso ou em plena vindima, praias vazias e mesa fácil nos restaurantes. Junho é melhor para o mar e os dias longos; setembro para a atmosfera — a vindima, o mar quente, o ritmo mais lento antes de a chuva voltar."
+    },
+    "transport": {
+      "byAir": "O aeroporto Francisco Sá Carneiro, no Porto, é a porta de entrada de toda a região: quarenta e cinco minutos até Viana do Castelo, cinquenta até Ponte de Lima, trinta e cinco até Esposende e cerca de hora e meia até às aldeias do Gerês, sempre por autoestrada. O aeroporto de Vigo, na Galiza, fica a uma hora de Caminha e de Viana e merece atenção para quem faz ligação por Madrid. Lisboa fica a três horas e meia a quatro por autoestrada.",
+      "byTrain": "A CP faz a Linha do Minho do Porto-Campanhã a Viana do Castelo em cerca de setenta e cinco minutos e segue para Caminha e Valença; Braga e Guimarães têm comboios urbanos diretos do Porto em cerca de uma hora. Não há caminho-de-ferro para o vale do Lima nem para a montanha — para esses, carro ou os nossos transfers.",
+      "byCar": "A A28 sobe a costa do Porto a Viana e Caminha e é gratuita no troço de Viana; a A3 segue pelo interior para Braga, Ponte de Lima e a fronteira em Valença. Conduzir aqui é fácil, as distâncias são curtas e o carro é a única forma prática de combinar costa, vale e montanha numa estadia. Os carros com matrícula estrangeira devem registar-se nas portagens eletrónicas antes de chegar.",
+      "fromSpain": "Da Galiza, a A3 atravessa em Valença-Tui: uma hora de Vigo a Viana, menos de duas de Santiago de Compostela. A maioria dos nossos hóspedes espanhóis vem de carro; o rio Minho é a fronteira, e as vilas das duas margens — Valença e Tui, Monção e Salvaterra — valem por si um dia.",
+      "gettingAround": "Fora das vilas, o carro é indispensável. Viana, Ponte de Lima, Braga e Guimarães são compactas e percorrem-se a pé. A Ecovia do Lima acompanha o rio durante setenta quilómetros de Viana até ao vale — a melhor forma de chegar a uma quinta sem conduzir. O nosso concierge organiza transfers, motoristas e bicicletas para todas as casas."
+    },
+    "eatDrinkIntro": "O Minho come melhor do que qualquer outro lugar de Portugal e sabe-o. É a terra do caldo verde, dos rojões e do sarrabulho, da lampreia no fim do inverno e das sardinhas em junho, do bacalhau assado com broa e do marisco atlântico mais fresco, servido em tasquinhas que pertencem às famílias dos pescadores. O vinho é o Verde — leve, seco, ligeiramente frisante e, nas versões Alvarinho e Loureiro, entre os melhores brancos da Europa. Abaixo, os lugares para onde a nossa equipa envia os hóspedes.",
+    "restaurants": [
+      {
+        "name": "Tasquinha da Linda",
+        "category": "Marisco",
+        "description": "Viana do Castelo. Dos grossistas de peixe; o marisco mais fresco da costa, à beira do porto. Reserva indispensável."
+      },
       {
         "name": "Tasca do Celso",
-        "category": "Restaurante",
-        "description": "Ponte de Lima. Sem menu. O dono traz o que está fresco. Reserve a esplanada."
+        "category": "Clássicos do Minho",
+        "description": "Ponte de Lima. Sem ementa — o dono traz o que está fresco nesse dia. Reserve a esplanada sobre o rio."
       },
       {
-        "name": "Praia do Afife",
-        "category": "Praia",
-        "description": "Entre Viana e Caminha. Selvagem, sem multidões, com um bar de praia que grelha sardinhas na hora."
+        "name": "Camelo",
+        "category": "Clássicos do Minho",
+        "description": "Ponte de Lima. Uma instituição do Minho há mais de sessenta anos: rojões, sarrabulho e, na época, lampreia. O almoço de domingo é um ritual local."
       },
       {
-        "name": "Quinta de Soalheiro",
-        "category": "Vinho",
-        "description": "O melhor produtor de Alvarinho em Monção. Provas privadas com a família que começou tudo."
+        "name": "O Marinheiro",
+        "category": "Marisco",
+        "description": "Vila Praia de Âncora. Peixe grelhado a metros do porto de onde veio. Simples, barulhento e exatamente certo."
       },
       {
-        "name": "Trilho dos Moinhos",
-        "category": "Caminhada",
-        "description": "Trilho dos moinhos na Peneda-Gerês. 8 km por floresta antiga de carvalho com piscinas naturais."
+        "name": "Solar do Bacalhau",
+        "category": "Tradicional",
+        "description": "Braga. Bacalhau em vinte preparações numa sala de granito no centro antigo."
+      },
+      {
+        "name": "Mercado Municipal de Viana",
+        "category": "Mercado",
+        "description": "Manhãs de dias úteis. A praça do peixe é das melhores do país; compre para casa e deixe o nosso chef cozinhar."
       }
-    ]
+    ],
+    "specialties": [
+      {
+        "name": "Bacalhau à moda de Viana",
+        "category": "Prato",
+        "description": "Bacalhau assado com pimentos, cebola, batata e broa — o prato de assinatura da costa."
+      },
+      {
+        "name": "Rojões e sarrabulho",
+        "category": "Prato",
+        "description": "Carne de porco marinada com arroz cozido no sangue; o almoço de domingo de inverno do vale do Lima."
+      },
+      {
+        "name": "Vinho Verde",
+        "category": "Vinho",
+        "description": "Leve, seco e ligeiramente frisante. O Alvarinho de Monção e Melgaço e o Loureiro do vale do Lima são os dois a procurar."
+      },
+      {
+        "name": "Lampreia",
+        "category": "Sazonal",
+        "description": "Lampreia do rio, cozinhada no próprio sangue com arroz, de janeiro a abril — uma iguaria que o Minho leva muito a sério."
+      }
+    ],
+    "experiencesIntro": "O Minho é onde a Portugal Active começou como empresa de aventura, e a maior parte das nossas experiências continua a acontecer aqui, com os nossos guias e parceiros com quem trabalhamos todas as semanas.",
+    "experiences": [
+      {
+        "name": "Passeio a cavalo em Viana do Castelo",
+        "description": "Praia, montanha e campos de flores numa só manhã, a partir de uma coudelaria a dez minutos da cidade.",
+        "duration": "2h 30m",
+        "season": "Todo o ano"
+      },
+      {
+        "name": "Canyoning na Peneda-Gerês",
+        "description": "Rappel em cascatas, escorregas naturais e poças no parque nacional, com os nossos guias. A partir dos doze anos.",
+        "duration": "3–4 horas",
+        "season": "Abril–outubro"
+      },
+      {
+        "name": "Descida do Lima em SUP",
+        "description": "Uma remada tranquila rio abaixo a partir de Ponte de Lima, entre vinhas e pontes romanas.",
+        "duration": "3 horas",
+        "season": "Maio–outubro"
+      },
+      {
+        "name": "Caminhada, Mergulho e Almoço na Serra d'Arga",
+        "description": "Uma caminhada matinal na serra, um mergulho numa poça de granito e almoço num restaurante de aldeia.",
+        "duration": "4h 30m",
+        "season": "Maio–outubro"
+      },
+      {
+        "name": "Prova de Vinho Verde no vale do Lima",
+        "description": "Uma manhã numa quinta em atividade com o produtor — quatro a seis vinhos, queijo e pão da região.",
+        "duration": "Meio dia",
+        "season": "Todo o ano; visitas de vindima em setembro–outubro"
+      },
+      {
+        "name": "Aulas de surf na costa do Minho",
+        "description": "O beach break constante do Cabedelo, com uma escola que ensina aqui há vinte anos.",
+        "duration": "2–3 horas",
+        "season": "Abril–novembro"
+      }
+    ],
+    "eventsIntro": "O calendário do Minho é o mais festivo de Portugal. As duas datas que importam para planear são ambas em agosto, em Viana do Castelo; a vindima em setembro é a recompensa mais tranquila.",
+    "events": [
+      {
+        "name": "Romaria de Nossa Senhora d'Agonia",
+        "dates": "Terceira semana de agosto, Viana do Castelo",
+        "description": "A romaria mais famosa de Portugal, desde 1772: desfiles de trajes com ouro de filigrana, tapetes de flores, procissão ao mar e fogo-de-artifício sobre o Lima. As casas da costa esgotam com meses de antecedência."
+      },
+      {
+        "name": "Neopop",
+        "dates": "Primeira semana de agosto, Viana do Castelo",
+        "description": "Um dos festivais de música eletrónica mais respeitados da Europa, no antigo forte à beira-mar."
+      },
+      {
+        "name": "Feiras Novas",
+        "dates": "Setembro, Ponte de Lima",
+        "description": "A grande feira do vale do Lima, desde 1826: mercados, ranchos, uma procissão gigante ao domingo e os melhores gigantones do norte."
+      },
+      {
+        "name": "Vindima",
+        "dates": "Meados de setembro a outubro",
+        "description": "A vindima do Vinho Verde. As quintas levam os visitantes às vinhas e às adegas; os vales cheiram a mosto durante um mês."
+      },
+      {
+        "name": "Semana Santa em Braga",
+        "dates": "Semana Santa",
+        "description": "As procissões de Páscoa mais importantes de Portugal, na capital religiosa do país."
+      },
+      {
+        "name": "Festa de São João",
+        "dates": "23–24 de junho, Braga e a costa",
+        "description": "A noite do solstício: fogueiras, sardinha assada, martelos de plástico e fogo-de-artifício em todas as vilas."
+      }
+    ],
+    "pressIntro": "Escreve-se menos sobre o Minho do que sobre o Porto ou o Algarve, e isso faz parte do seu encanto. A seleção abaixo é o que a imprensa internacional disse sobre a região e as suas vilas.",
+    "pressQuotes": [
+      {
+        "source": "The Guardian",
+        "year": 2018,
+        "quote": "As praias de Viana do Castelo estão entre as mais bonitas do país."
+      },
+      {
+        "source": "Booking.com Traveller Review Awards",
+        "year": 2024,
+        "quote": "Viana do Castelo — terceira cidade mais acolhedora do mundo."
+      },
+      {
+        "source": "Forbes",
+        "year": 2023,
+        "quote": "O Minho é um paraíso de turismo de aventura escondido à vista de todos, no norte de Portugal."
+      },
+      {
+        "source": "UNESCO",
+        "year": 2001,
+        "quote": "Guimarães — um exemplo excecionalmente bem preservado da evolução de um povoado medieval numa cidade moderna."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Quantos dias preciso no Minho?",
+        "answer": "Quatro a cinco dias é a duração confortável: um dia na costa, um dia no vale do Lima com visita a uma quinta, um dia para Braga e Guimarães e um dia na Peneda-Gerês. Uma semana permite abrandar e juntar as aldeias de montanha e a terra do Alvarinho em Monção e Melgaço."
+      },
+      {
+        "question": "O Minho serve para férias de praia?",
+        "answer": "Para praias atlânticas longas e vazias e para surf, sim. Para água quente e sol garantido, não — o mar está entre dezassete e dezanove graus no verão e a costa tem uma nortada fresca à tarde. A maioria das nossas casas tem piscina aquecida, que é como o Minho faz férias de praia."
+      },
+      {
+        "question": "Preciso de carro?",
+        "answer": "Sim, a não ser que fique em Viana do Castelo e se contente com comboios e os nossos transfers. O encanto da região está na combinação de costa, vale e montanha, cada um a menos de uma hora, e só o carro torna isso fácil."
+      },
+      {
+        "question": "A que distância fica o Minho do Porto?",
+        "answer": "Quarenta e cinco a setenta minutos por autoestrada desde o aeroporto do Porto, conforme a casa. Viana do Castelo fica a setenta e cinco minutos do Porto de comboio direto."
+      },
+      {
+        "question": "Quando é a vindima do Vinho Verde?",
+        "answer": "De meados de setembro a outubro, conforme o ano e a casta. O Loureiro do vale do Lima apanha-se primeiro; o Alvarinho de Monção e Melgaço um pouco depois."
+      },
+      {
+        "question": "A Peneda-Gerês faz-se num dia a partir da costa?",
+        "answer": "Sim — noventa minutos para cada lado. Para canyoning, as cascatas e as aldeias de Soajo e Lindoso, saia cedo. Se a montanha for o objetivo da viagem, várias das nossas casas ficam na orla do parque."
+      },
+      {
+        "question": "Como é o tempo?",
+        "answer": "Atlântico: ameno todo o ano, quente e maioritariamente seco de junho a setembro, húmido e verde de novembro a março. Leve um casaco mesmo no verão."
+      },
+      {
+        "question": "O Minho é bom para famílias?",
+        "answer": "Muito. Praias fluviais de água quente e calma, animais nas quintas, ciclovias suaves ao longo do Lima e casas com jardim e piscina. O nosso concierge organiza babysitters e experiências para famílias."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Tem uma casa no Minho?",
+      "body": "A Portugal Active gere propriedades premium em todo o Alto Minho: gestão completa, marketing, concierge e manutenção, operados com padrões de hotel pela equipa que fundou a empresa aqui.",
+      "cta": "Fale com a nossa equipa"
+    }
   },
   "viana-do-castelo": {
     "name": "Viana do Castelo",
@@ -536,40 +802,336 @@
   },
   "algarve": {
     "name": "Algarve",
-    "tagline": "Falésias douradas, piscinas privadas e 300 dias de sol.",
-    "description": "Villas no topo das falésias, piscinas privadas e 300 dias de sol.",
-    "heroSubtitle": "Falésias douradas, piscinas privadas e 300 dias de sol.",
+    "tagline": "Falésias douradas, mar quente e trezentos dias de sol — e o Algarve para lá dos resorts.",
+    "description": "Um guia completo do Algarve — as suas costas, as suas estações e onde ficar para lá dos resorts.",
+    "heroSubtitle": "A costa sul de Portugal, do oeste selvagem às lagunas do sotavento",
+    "pullQuote": {
+      "text": "Praia da Falésia — a melhor praia do mundo.",
+      "source": "Tripadvisor Travellers' Choice",
+      "year": 2024
+    },
+    "primaryAccolade": {
+      "text": "Melhor Destino de Praia da Europa",
+      "source": "World Travel Awards",
+      "note": "Atribuído repetidamente ao Algarve na última década"
+    },
     "whyOverline": "PORQUÊ O ALGARVE",
-    "whyDescription": "A maioria das pessoas conhece o Algarve pelos resorts, campos de golfe e praias turísticas. Nós conhecemo-lo pelo que está para lá disso: a costa oeste selvagem onde os surfistas apanham ondas vazias, as serras de Monchique onde os sobreiros dão sombra a trilhos escondidos, as aldeias de pescadores onde o peixe chega duas vezes por dia e os restaurantes têm seis mesas.\n\nO Algarve onde operamos é o que recompensa a curiosidade. Sol todo o ano, costa dramática e uma paisagem que muda por completo de leste a oeste. As nossas casas e a equipa de concierge focam-se no Algarve que a maioria dos visitantes ignora por completo.\n\nA nossa coleção do Algarve está a crescer. Contacte o nosso concierge para a disponibilidade mais recente.",
-    "howToGetHere": "Voe para o Aeroporto de Faro (FAO), a 30 a 90 minutos das nossas propriedades consoante a localização. Organizamos todos os transfers de aeroporto.",
-    "bestTimeToVisit": "Todo o ano. Pico de junho a setembro. Primavera e outono ideais para caminhadas, ciclismo e praias mais tranquilas. Inverno ameno, 15 a 18 graus.",
-    "whatToExpect": "Mais de 300 dias de sol, costa de falésias dramáticas, golfe de classe mundial e um interior mais tranquilo que a maioria dos visitantes nunca explora.",
-    "seoTitle": "Algarve — Casas Privadas no Sul de Portugal",
-    "seoDescription": "Descubra o Algarve: villas no topo das falésias, piscinas privadas, 300 dias de sol. Casas privadas geridas ao nível de hotel.",
+    "whyDescription": "Toda a gente conhece o Algarve pelos resorts, pelo golfe e pelas praias de verão, e com razão: é a costa mais soalheira da Europa, com mar quente de junho a outubro e um inverno que parece uma primavera inglesa. O que a maioria dos visitantes nunca vê é o resto. A costa ocidental à volta de Sagres e Aljezur, onde as falésias enfrentam o Atlântico aberto e os surfistas têm praias vazias só para si. A Ria Formosa, a leste, uma laguna de ilhas, salinas e aldeias de pescadores que é um dos parques naturais mais belos de Portugal. As serras de Monchique e o Barrocal, com sobreiros, laranjais, aldeias caiadas e restaurantes que nunca viram uma ementa turística. E as villas: por trás dos muros da Quinta do Lago e do Vale do Lobo, nas falésias da costa central e no campo do barlavento, há casas privadas que transformam o Algarve em algo muito diferente de umas férias de resort — uma casa com piscina aquecida, um chef na cozinha e um concierge que sabe qual é a enseada vazia às quatro da tarde. As nossas casas no Algarve são exatamente essas casas.",
     "highlights": [
-      "Mais de 300 dias de sol por ano",
-      "Falésias de calcário dramáticas e praias escondidas em enseadas",
-      "Campos de golfe de classe mundial",
-      "Marisco fresco e a tradição da cataplana",
-      "Vida noturna vibrante em Lagos e Albufeira"
+      "Trezentos dias de sol por ano e o mar mais quente de Portugal de junho a outubro",
+      "Falésias calcárias, grutas e praias de enseada de Lagos a Albufeira — Benagil, Marinha, Falésia",
+      "A costa oeste selvagem — Sagres, Aljezur e a Costa Vicentina, para surf e areais vazios",
+      "O parque natural da Ria Formosa — ilhas, lagunas e as vilas piscatórias de Olhão e Tavira",
+      "Golfe na Quinta do Lago, no Vale do Lobo e em Vilamoura, a minutos de várias das nossas casas"
     ],
-    "insiderRecommendations": [
+    "seoTitle": "Algarve: Praias, Villas, Golfe e Quando Ir | Portugal Active",
+    "seoDescription": "A costa mais soalheira da Europa: praias de falésia, o oeste selvagem, a Ria Formosa e villas privadas com piscina. Quando ir, como chegar e onde ficar.",
+    "howToGetHere": "O aeroporto de Faro (FAO) fica a 20 a 60 minutos por autoestrada das nossas casas — 20 até à Quinta do Lago, 40 até Albufeira, 60 até Lagos e ao barlavento. Lisboa fica a duas horas e meia pela A2. Organizamos transfers do aeroporto para todas as estadias.",
+    "bestTimeToVisit": "De maio a junho e de setembro a outubro: vinte e dois a vinte e oito graus, mar quente e praias e restaurantes sem as multidões de agosto. Julho e agosto para calor garantido. O inverno é o mais ameno da Europa continental — quinze a dezoito graus, golfe, caminhadas e amendoeiras em flor em fevereiro.",
+    "whatToExpect": "Sol, antes de mais: o canto mais seco e soalheiro de Portugal. Uma costa que muda a cada cinquenta quilómetros — falésias douradas e grutas no centro, Atlântico aberto e surf a oeste, lagunas e ilhas-barreira a leste. Resorts onde se esperam e, a poucos minutos para o interior ou ao longo da costa, um Algarve mais sossegado de aldeias, pomares e portos de pesca.",
+    "whereToStayIntro": "A Portugal Active opera uma pequena coleção de casas no Algarve: villas dentro da Quinta do Lago e na costa central entre Albufeira e Vilamoura, casas no sotavento à volta de Tavira e herdades no barlavento perto de Lagos. Cada uma é operada com o mesmo padrão das nossas casas no norte — piscina aquecida, cozinha abastecida, chef privado a pedido e um concierge que vive na região.",
+    "journalSectionTitle": "Do diário — histórias do Algarve",
+    "thingsToDoIntro": "O Algarve tem cento e cinquenta quilómetros de largura e três costas distintas, por isso a primeira decisão é onde ficar. O que se segue é a lista do nosso concierge para uma primeira visita, organizada de oeste para leste, com tempos de condução a partir da costa central.",
+    "thingsToDo": [
       {
-        "name": "Castelo de Silves",
-        "category": "Cultura",
-        "description": "Um dos castelos mouros mais bem preservados de Portugal. Visite de manhã, explore a vila, coma peixe grelhado junto ao rio."
+        "heading": "O oeste — Sagres e a Costa Vicentina",
+        "items": [
+          {
+            "name": "Cabo de São Vicente",
+            "category": "Miradouro",
+            "description": "A ponta sudoeste da Europa: um farol numa falésia sessenta metros acima do Atlântico, outrora tido como o fim do mundo. Venha ao pôr-do-sol. Uma hora e quinze minutos de Albufeira."
+          },
+          {
+            "name": "Sagres e a fortaleza",
+            "category": "Cultura",
+            "description": "O promontório ventoso onde se diz ter ficado a escola de navegação do Infante D. Henrique. Praias de surf dos dois lados: Beliche e Tonel viradas ao oceano, Martinhal virada à baía."
+          },
+          {
+            "name": "Praia da Bordeira e do Amado",
+            "category": "Praia",
+            "description": "Duas praias atlânticas imensas na Costa Vicentina, com dunas e falésias, uma escola de surf no Amado e quase ninguém na Bordeira. Noventa minutos da costa central."
+          },
+          {
+            "name": "Lagos e a Ponta da Piedade",
+            "category": "Vila",
+            "description": "A bela cidade portuária do barlavento, com um centro antigo amuralhado, uma marina em atividade e, logo a sul, os arcos dourados e as grutas da Ponta da Piedade — melhor vistos de caiaque às nove da manhã."
+          }
+        ]
       },
       {
-        "name": "A Costa Oeste",
-        "category": "Natureza",
-        "description": "De Sagres a Aljezur. Selvagem, fustigada pelo vento e o oposto de tudo o que se espera do Algarve."
+        "heading": "O centro — falésias e grutas",
+        "items": [
+          {
+            "name": "Gruta de Benagil e Praia da Marinha",
+            "category": "Praia",
+            "description": "A costa mais fotografada do Algarve: uma gruta marinha do tamanho de uma catedral, a que se chega de barco ou paddle, e, ao lado, a Marinha, regularmente entre as melhores praias da Europa. Vá cedo — de junho a setembro as grutas estão cheias às dez. Vinte minutos de Albufeira."
+          },
+          {
+            "name": "Percurso dos Sete Vales Suspensos",
+            "category": "Caminhada",
+            "description": "Seis quilómetros de trilho sobre a falésia entre a Praia da Marinha e a Praia de Vale Centeanes, por algares, arcos e enseadas vazias. Duas a três horas; leve água."
+          },
+          {
+            "name": "Praia da Falésia",
+            "category": "Praia",
+            "description": "Seis quilómetros de areal sob falésias ocre entre Vilamoura e Albufeira — a melhor praia do mundo para o Tripadvisor em 2024, e sossegada nas pontas mesmo em agosto. Quinze minutos das nossas casas em Vilamoura e na Quinta do Lago."
+          },
+          {
+            "name": "Silves",
+            "category": "Cultura",
+            "description": "A capital moura do Algarve, com o castelo mais bem preservado do sul, uma sé gótica e um centro antigo à beira-rio. Visite de manhã, almoce na vila e siga para os laranjais do Barrocal."
+          }
+        ]
       },
       {
-        "name": "Serras de Monchique",
-        "category": "Caminhada",
-        "description": "Termas, florestas de sobreiros e aldeias no alto. Um Algarve completamente diferente a 30 minutos da costa."
+        "heading": "O leste — Ria Formosa e Tavira",
+        "items": [
+          {
+            "name": "Parque natural da Ria Formosa",
+            "category": "Natureza",
+            "description": "Sessenta quilómetros de laguna, sapal e ilhas-barreira entre Faro e Cacela Velha: flamingos, camaleões, viveiros de ostras e praias a que só se chega de barco. Apanhe o ferry de Olhão para a Culatra ou a Armona."
+          },
+          {
+            "name": "Tavira",
+            "category": "Vila",
+            "description": "A vila mais bonita do Algarve: uma ponte romana, trinta e sete igrejas, um jardim no castelo e a praia da Ilha de Tavira a um curto ferry. Quarenta minutos de Faro."
+          },
+          {
+            "name": "Mercado de Olhão",
+            "category": "Mercado",
+            "description": "O melhor mercado de peixe do sul, em dois mercados de tijolo vermelho à beira-ria. Sábados de manhã. Compre para casa e deixe o resto ao nosso chef."
+          },
+          {
+            "name": "Cacela Velha",
+            "category": "Aldeia",
+            "description": "Um punhado de casas brancas, uma igreja e um forte sobre a laguna, com um bar de ostras e uma praia a que se chega a pé na maré vazia. O Algarve como era."
+          }
+        ]
+      },
+      {
+        "heading": "O interior — serra e aldeias",
+        "items": [
+          {
+            "name": "Serra de Monchique",
+            "category": "Natureza",
+            "description": "A montanha do Algarve: eucaliptal e castanheiros, a vila termal das Caldas de Monchique e a Fóia, o ponto mais alto do sul, com vista para as duas costas. Quarenta e cinco minutos de Lagos ou Portimão."
+          },
+          {
+            "name": "Alte e Salir",
+            "category": "Aldeia",
+            "description": "Duas aldeias caiadas do Barrocal, com fontes, amendoais e alfarrobeiras e uma cultura de almoço de domingo que nada tem a ver com a costa."
+          },
+          {
+            "name": "Mercado de Loulé",
+            "category": "Mercado",
+            "description": "Sábados de manhã no mercado neo-mourisco e nas ruas em redor: fruta, queijo, enchidos, cerâmica. Vinte minutos da Quinta do Lago."
+          }
+        ]
       }
-    ]
+    ],
+    "seasons": {
+      "spring": "De março a maio. As máximas sobem de dezoito para vinte e quatro graus, a chuva é rara depois de março e o campo está no seu melhor — as amendoeiras terminam em fevereiro, as laranjeiras florescem em abril, as flores silvestres cobrem os trilhos da falésia até maio. O mar ainda está fresco, dezasseis a dezoito graus. A Páscoa é movimentada; maio é um dos melhores meses do ano, quente, seco e tranquilo.",
+      "summer": "De junho a agosto. Quente e seco — vinte e oito a trinta e dois graus, dias de sol sem interrupção e um mar que aquece até vinte e dois ou vinte e três graus em agosto. A costa central enche a partir de meados de julho; o oeste mantém-se mais ventoso e vazio, o leste ainda mais sossegado. É o Algarve dos longos dias de piscina, dos churrascos ao fim da tarde e de um chef na cozinha. Reserve com meses de antecedência para julho e agosto.",
+      "autumn": "De setembro a novembro. Setembro e outubro são os meses dos conhecedores: o mar na temperatura mais alta, vinte e dois a vinte e seis graus no ar, as multidões desaparecidas e mesa livre em todos os restaurantes. Novembro traz as primeiras chuvas e uma luz mais suave, com máximas ainda à volta de vinte graus. O melhor tempo de golfe do ano.",
+      "winter": "De dezembro a fevereiro. O inverno mais ameno da Europa continental: quinze a dezoito graus, mais sol do que a maioria do norte da Europa vê em junho e, de vez em quando, uma frente atlântica. Não é tempo de praia, mas é tempo de caminhadas, bicicleta, golfe e piscina aquecida. As amendoeiras cobrem o Barrocal de flor a partir do fim de janeiro. As tarifas estão no mínimo.",
+      "bestForFirstTime": "Do final de maio a junho, ou de setembro a início de outubro. Ambos dão vinte e dois a vinte e oito graus, mar para nadar e a costa sem as multidões de agosto. Junho tem dias mais longos e água mais fresca; setembro tem o mar mais quente do ano e a luz mais suave."
+    },
+    "transport": {
+      "byAir": "O aeroporto de Faro é a porta de entrada e fica a meio da costa: vinte minutos até à Quinta do Lago e ao Vale do Lobo, trinta até Vilamoura, quarenta até Albufeira, quarenta até Tavira, sessenta até Lagos e setenta e cinco até Sagres, sempre pela A22. Tem voos diretos da maioria das cidades europeias todo o ano. O aeroporto de Lisboa é uma alternativa para o barlavento — duas horas e meia pela A2 até Lagos.",
+      "byTrain": "A CP faz Alfa Pendular e Intercidades de Lisboa a Faro em cerca de três horas, e uma linha regional ao longo da costa de Lagos a Vila Real de Santo António. O comboio é agradável para um dia entre vilas, mas não para chegar a uma villa — as estações ficam no interior e as casas não.",
+      "byCar": "A A22 percorre a região de ponta a ponta, com portagens eletrónicas; a velha N125 corre em paralelo, mais lenta, por todas as vilas. De Lisboa, a A2 atravessa o Alentejo até ao Algarve em duas horas e meia. Alugar carro em Faro é barato; os carros com matrícula estrangeira devem registar-se nas portagens antes de chegar.",
+      "fromSpain": "Sevilha fica a duas horas de Tavira e a duas e meia de Faro pela ponte do Guadiana — o Algarve está mais perto da Andaluzia do que de Lisboa, e muitos dos nossos hóspedes espanhóis vêm de carro.",
+      "gettingAround": "O carro é indispensável: o Algarve é largo, as melhores praias ficam ao fim de estradas pequenas e as aldeias do interior não têm autocarros que valham o nome. Dentro da Quinta do Lago e do Vale do Lobo, bicicletas e buggies de golfe resolvem o dia-a-dia. O nosso concierge organiza transfers, motoristas e barcos para todas as casas."
+    },
+    "eatDrinkIntro": "A cozinha do Algarve é a do mar: sardinhas e carapaus na brasa, cataplana — uma panela de cobre em forma de concha com peixe, marisco e carne de porco —, lingueirão da Ria Formosa, ostras de Cacela e, no interior, cabrito assado, frango piri-piri da Guia e os doces de amêndoa e figo herdados dos mouros. Abaixo, os lugares para onde a nossa equipa envia os hóspedes, das tasquinhas do porto às mesas Michelin da região.",
+    "restaurants": [
+      {
+        "name": "Rei das Praias",
+        "category": "Marisco",
+        "description": "Praia dos Caneiros, Ferragudo. Um restaurante de praia que serve o mesmo peixe grelhado há quarenta anos, numa enseada entre dois promontórios. Reserve para o almoço."
+      },
+      {
+        "name": "Bon Bon",
+        "category": "Alta cozinha",
+        "description": "Carvoeiro. Duas estrelas Michelin numa casa caiada a minutos das falésias; a mesa mais séria da região."
+      },
+      {
+        "name": "O Camilo",
+        "category": "Marisco",
+        "description": "Lagos. Sobre a Praia do Camilo, com as rochas da Ponta da Piedade em baixo e o peixe mais fresco do barlavento."
+      },
+      {
+        "name": "Chá com Água Salgada",
+        "category": "Marisco",
+        "description": "Olhão. Ao lado do mercado do peixe, sobre a ria; o que saiu dos barcos nessa manhã, cozinhado com simplicidade."
+      },
+      {
+        "name": "Ramires",
+        "category": "Tradicional",
+        "description": "Guia. A casa do frango piri-piri desde 1964, e ainda o lugar para o comer — barulhento, rápido e perfeito."
+      },
+      {
+        "name": "A Ver Tavira",
+        "category": "Algarve moderno",
+        "description": "Tavira. Produtos da região numa esplanada sobre os telhados do centro antigo, a curta distância da ponte romana."
+      }
+    ],
+    "specialties": [
+      {
+        "name": "Cataplana de marisco",
+        "category": "Prato",
+        "description": "Peixe, amêijoas, gambas e muitas vezes carne de porco, cozinhados e servidos na cataplana de cobre articulada. O prato nacional do Algarve."
+      },
+      {
+        "name": "Sardinhas assadas",
+        "category": "Prato",
+        "description": "Sardinha na brasa sobre pão, de junho a setembro, quando está gorda. Portimão é a capital da sardinha."
+      },
+      {
+        "name": "Ostras da Ria Formosa",
+        "category": "Marisco",
+        "description": "Ostras da laguna, comidas no cais de Cacela Velha ou de Olhão com um copo de branco algarvio."
+      },
+      {
+        "name": "Doces de amêndoa e figo",
+        "category": "Doce",
+        "description": "Doces de amêndoa e figo em formas mouriscas, vendidos em todas as pastelarias; o dom rodrigo é o que deve provar."
+      }
+    ],
+    "experiencesIntro": "No Algarve, as nossas experiências são organizadas pelo concierge com parceiros locais com quem trabalhamos todas as semanas — barcos, guias, chefs e campos de golfe — e entregues com o mesmo padrão da nossa equipa no norte.",
+    "experiences": [
+      {
+        "name": "Benagil e as grutas de barco ou caiaque",
+        "description": "Um barco privado ou um caiaque guiado a partir de Benagil ou Carvoeiro para dentro das grutas marinhas, antes de chegarem as multidões.",
+        "duration": "2–3 horas",
+        "season": "Todo o ano; mar mais calmo de maio a outubro"
+      },
+      {
+        "name": "Chef privado na villa",
+        "description": "Um jantar com produtos do mercado cozinhado na sua cozinha — cataplana, peixe grelhado, doces algarvios — por um chef que o concierge reserva para si.",
+        "duration": "Noite",
+        "season": "Todo o ano"
+      },
+      {
+        "name": "Golfe na Quinta do Lago e em Vilamoura",
+        "description": "Tee times, transfers e aluguer de tacos nos campos de campeonato do Algarve, a minutos das nossas casas.",
+        "duration": "Meio dia",
+        "season": "Todo o ano; melhor de outubro a maio"
+      },
+      {
+        "name": "Ria Formosa de barco",
+        "description": "Uma lancha privada de Olhão ou Faro pela laguna até às ilhas-barreira, com almoço na Culatra.",
+        "duration": "Meio dia",
+        "season": "Todo o ano"
+      },
+      {
+        "name": "Aulas de surf na Costa Vicentina",
+        "description": "Aulas para iniciados e intermédios no Amado ou na Arrifana, com uma escola que ensina a costa oeste há décadas.",
+        "duration": "2–3 horas",
+        "season": "Todo o ano"
+      },
+      {
+        "name": "Prova de vinhos nas serras do Algarve",
+        "description": "A Quinta dos Vales e a nova vaga de produtores algarvios à volta de Lagoa e Silves, com o enólogo.",
+        "duration": "Meio dia",
+        "season": "Todo o ano"
+      }
+    ],
+    "eventsIntro": "O ano do Algarve vai da floração da primavera às festas de verão e a uma longa época baixa amena. As datas abaixo são as que mais contam para planear; agosto exige reserva com meses de antecedência, independentemente de tudo.",
+    "events": [
+      {
+        "name": "Festival Med",
+        "dates": "Final de junho, Loulé",
+        "description": "Músicas do mundo nas ruas e praças do centro antigo — três noites, dezenas de palcos, o melhor festival da região."
+      },
+      {
+        "name": "Festival do Marisco",
+        "dates": "Meados de agosto, Olhão",
+        "description": "Uma semana de marisco à beira-ria, a maior festa da laguna."
+      },
+      {
+        "name": "Festival da Sardinha",
+        "dates": "Agosto, Portimão",
+        "description": "Sardinha assada às toneladas na zona ribeirinha, com concertos todas as noites."
+      },
+      {
+        "name": "Dias Medievais",
+        "dates": "Agosto, Silves e Castro Marim",
+        "description": "As duas vilas do castelo recuam no tempo: mercados, justas, música e muita carne assada."
+      },
+      {
+        "name": "Amendoeiras em flor",
+        "dates": "Final de janeiro a fevereiro, Barrocal",
+        "description": "As serras entre Loulé e Tavira ficam brancas durante três semanas — o segredo de inverno, discreto e belo, do Algarve."
+      },
+      {
+        "name": "Carnaval de Loulé",
+        "dates": "Fevereiro",
+        "description": "O desfile de Carnaval mais antigo de Portugal, nas ruas de Loulé."
+      }
+    ],
+    "pressIntro": "O Algarve é uma das costas sobre as quais mais se escreve na Europa. As citações abaixo são as que descrevem a região que conhecemos.",
+    "pressQuotes": [
+      {
+        "source": "Tripadvisor Travellers' Choice",
+        "year": 2024,
+        "quote": "Praia da Falésia — a melhor praia do mundo."
+      },
+      {
+        "source": "World Travel Awards",
+        "year": 2023,
+        "quote": "Melhor Destino de Praia da Europa."
+      },
+      {
+        "source": "The Guardian",
+        "year": 2022,
+        "quote": "A Costa Vicentina é o lado selvagem e intocado do Algarve que a maioria dos visitantes nunca vê."
+      },
+      {
+        "source": "Condé Nast Traveller",
+        "year": 2023,
+        "quote": "Tavira é a vila mais bonita do Algarve."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Em que zona do Algarve devo ficar?",
+        "answer": "Na costa central, de Albufeira à Quinta do Lago, se quer praias, golfe, restaurantes e vida noturna a vinte minutos e o aeroporto de Faro perto. No barlavento, à volta de Lagos e Sagres, para praias selvagens, surf e espaço. No sotavento, à volta de Tavira e Olhão, para a laguna, vilas mais sossegadas e o melhor marisco. As nossas casas cobrem as três zonas."
+      },
+      {
+        "question": "Quando é que o mar está bom para nadar?",
+        "answer": "De junho a outubro. O mar chega aos vinte e dois a vinte e três graus em agosto e setembro na costa sul; a costa oeste está dois ou três graus mais fria e mais agitada. A maioria das nossas casas tem piscina aquecida para as épocas intermédias."
+      },
+      {
+        "question": "A que distância fica o aeroporto de Faro das villas?",
+        "answer": "Vinte minutos até à Quinta do Lago e ao Vale do Lobo, trinta até Vilamoura, quarenta até Albufeira ou Tavira, sessenta até Lagos e setenta e cinco até Sagres, sempre por autoestrada. O nosso concierge organiza o transfer."
+      },
+      {
+        "question": "Vale a pena visitar o Algarve no inverno?",
+        "answer": "Sim, se o objetivo não for a praia. Quinze a dezoito graus, mais sol do que o norte da Europa em junho, trilhos vazios, amendoeiras em flor em fevereiro, golfe e almoços longos. As tarifas estão no mínimo e as casas têm piscina aquecida e lareira."
+      },
+      {
+        "question": "Preciso de carro?",
+        "answer": "Sim. A região é larga, as melhores praias ficam ao fim de estradas pequenas e as aldeias do interior quase não têm transportes públicos. Dentro da Quinta do Lago e do Vale do Lobo, bicicletas e buggies resolvem o dia-a-dia."
+      },
+      {
+        "question": "Como chego à gruta de Benagil?",
+        "answer": "De barco a partir de Benagil ou Carvoeiro, ou de caiaque ou paddle com guia — não tem acesso por terra. Vá antes das dez no verão, ou venha em maio ou outubro, quando o mar está calmo e a gruta sossegada. O nosso concierge reserva o barco."
+      },
+      {
+        "question": "O Algarve é bom para famílias?",
+        "answer": "O melhor de Portugal: praias de água quente e pouco funda a leste, parques aquáticos perto de Albufeira, passeios de barco, observação de golfinhos e villas com piscina e jardim. O nosso concierge organiza babysitters, berços e experiências para famílias."
+      },
+      {
+        "question": "Como se compara o Algarve com o Minho?",
+        "answer": "O Algarve é sol, mar quente e falésias; o Minho é vales verdes, surf atlântico frio e montanhas. O Algarve é a aposta mais segura para férias de praia; o Minho para comida, vinho, natureza e um Portugal que poucos visitantes veem. Muitos dos nossos hóspedes fazem os dois."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Tem uma casa no Algarve?",
+      "body": "A Portugal Active opera villas premium em todo o Algarve — da Quinta do Lago à costa oeste — com gestão completa, marketing, concierge e manutenção com padrões de hotel.",
+      "cta": "Fale com a nossa equipa"
+    }
   },
   "brazil": {
     "name": "Brasil",

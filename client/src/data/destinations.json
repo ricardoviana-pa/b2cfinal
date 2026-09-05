@@ -3,60 +3,332 @@
     "id": "d1",
     "slug": "minho",
     "region": "minho",
-    "name": "Minho Coast",
     "geo": {
       "latitude": 41.7,
       "longitude": -8.6
     },
-    "tagline": "Where the Atlantic meets ancient forests and vineyards.",
-    "description": "Where the Atlantic meets ancient forests and vineyards.",
-    "heroSubtitle": "Portugal's greenest region, where Atlantic surf meets Vinho Verde valleys.",
     "coverImage": "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533284b583900135ceb91/d5710825-2cbb-43-l4ehJ",
     "gallery": [],
-    "whyDescription": "Where Portugal begins and where most visitors never reach. Ancient forests meeting wild Atlantic beaches. Vinho Verde vineyards covering every hillside. Granite villages with Romanesque churches and family tascas serving dishes unchanged for generations.\n\nThe Minho is Portugal's greenest, most authentic region. The seafood is an hour old. The wine was made by someone you can visit. The beaches are empty on a Tuesday in July. This is not undiscovered. It is simply un touristed. And that is exactly the point.",
-    "highlights": [
-      "Wild Atlantic coastline with deserted beaches",
-      "Vinho Verde wine country — the world's only green wine region",
-      "Peneda-Gerês National Park — pristine wilderness",
-      "Medieval towns and Romanesque architecture",
-      "Some of the best seafood in Portugal"
-    ],
     "comingSoon": false,
-    "seoTitle": "Minho — Private Homes in Northern Portugal",
-    "seoDescription": "Discover the Minho: ancient forests, wild beaches, Vinho Verde vineyards. Private homes operated to hotel standards.",
-    "howToGetHere": "Fly into Porto Airport (OPO), 45 minutes north by car. Vigo Airport (VGO) in Spain is 1 hour south. We arrange airport transfers for all guests.",
-    "bestTimeToVisit": "June to September for beach and outdoor adventures. May and October for hiking, wine harvest, and fewer crowds. Mild and green year round.",
-    "whatToExpect": "Lush green landscapes, wild Atlantic beaches, traditional granite villages, and some of the best seafood in Portugal. A pace of life the south lost decades ago.",
-    "insiderRecommendations": [
-      {
-        "name": "Tasca do Celso",
-        "category": "Restaurant",
-        "description": "Ponte de Lima. No menu. The owner brings what is fresh. Book the terrace."
-      },
-      {
-        "name": "Praia do Afife",
-        "category": "Beach",
-        "description": "Between Viana and Caminha. Wild, uncrowded, with a beach bar that grills sardines to order."
-      },
-      {
-        "name": "Quinta de Soalheiro",
-        "category": "Wine",
-        "description": "The best Alvarinho producer in Monção. Private tastings with the family who started it all."
-      },
-      {
-        "name": "Trilho dos Moinhos",
-        "category": "Hike",
-        "description": "Watermill trail in Peneda Gerês. 8km through ancient oak forest with natural swimming pools."
-      }
-    ],
+    "status": "active",
     "relatedSlugs": [
       "viana-do-castelo",
       "caminha",
       "esposende",
       "porto"
     ],
-    "status": "active",
-    "whyOverline": "WHY MINHO"
+    "name": "Minho",
+    "tagline": "Where Portugal begins: Atlantic surf, granite villages and the valleys of Vinho Verde.",
+    "description": "A complete guide to the Minho — Portugal's greenest region, between the Atlantic and the Peneda-Gerês mountains.",
+    "heroSubtitle": "Portugal's greenest region, between the Atlantic and the Peneda-Gerês mountains",
+    "pullQuote": {
+      "text": "The beaches of Viana do Castelo are some of the most beautiful in the country.",
+      "source": "The Guardian",
+      "year": 2018
+    },
+    "primaryAccolade": {
+      "text": "Home of Vinho Verde, the world's only green wine region",
+      "source": "Comissão de Viticultura da Região dos Vinhos Verdes",
+      "note": "A demarcated region since 1908, from the Minho river to the Douro"
+    },
+    "whyOverline": "WHY THE MINHO",
+    "whyDescription": "Most visitors to Portugal never come this far north. They stop at Porto, an hour south, or fly straight to the Algarve. The Minho is what they miss: a strip of country between the Minho river, which is the border with Spain, and the Douro, where the Atlantic meets granite mountains and everything in between is green. It rains here more than anywhere else in Portugal, and that is precisely the point — the vineyards climb every hillside, the rivers run all year, the forests of Peneda-Gerês are the country's only national park, and the beaches, long and cold and empty, belong to surfers and fishermen rather than sun loungers. This is also where Portugal was born: Guimarães was the first capital, Braga the oldest archdiocese, and the villages of the Lima and Cávado valleys have kept a way of life that the south lost decades ago. Portugal Active started here, in Viana do Castelo, and it is still where most of our homes are: manor houses in the Lima valley, beach lodges on the coast from Esposende to Caminha, and mountain retreats on the edge of the park. Everything is between twenty and sixty minutes from Porto airport, and nothing feels like it.",
+    "highlights": [
+      "Vinho Verde — the world's only green wine region, with quintas open for tastings in the Lima and Cávado valleys",
+      "Peneda-Gerês National Park — granite peaks, wild horses, waterfalls and thermal springs, ninety minutes from the coast",
+      "Atlantic beaches from Esposende to Moledo — long, clean and empty, with surf, kitesurf and dunes",
+      "Viana do Castelo, Ponte de Lima and Guimarães — three of the most handsome historic towns in Portugal",
+      "The best seafood and the best festivals in the country — Agonia in August, harvest in September"
+    ],
+    "seoTitle": "Minho: Beaches, Vinho Verde, Gerês and Where to Stay | Portugal Active",
+    "seoDescription": "Portugal's greenest region: Atlantic beaches, Vinho Verde quintas, the Peneda-Gerês mountains and historic towns. When to go, how to get there and our homes.",
+    "howToGetHere": "Porto airport (OPO), 45 to 70 minutes by car depending on the valley. Vigo airport (VGO) in Spain is one hour from the coast. Direct trains from Porto to Viana do Castelo in about 75 minutes. We arrange airport transfers for every stay.",
+    "bestTimeToVisit": "Late May to June and September to early October: warm and mostly dry, vineyards at their greenest or in full harvest, and beaches without crowds. July and August for the ocean and the festivals. Winter is mild, green and wet — the best rates of the year.",
+    "whatToExpect": "A working, rural Atlantic region rather than a resort. Fishing boats at dawn, granite villages, vines trained on pergolas over every road, mountains an hour from the beach, and some of the best seafood in Portugal. Weather that changes by the hour and a pace of life that does not.",
+    "whereToStayIntro": "Portugal Active was founded in Viana do Castelo and the Minho is still where most of our homes are — around fifty of them, from beach lodges with heated pools at Cabedelo and Carreço to restored manor houses in the Lima valley around Ponte de Lima, riverfront watermills at Caminha, and stone retreats on the edge of Peneda-Gerês. Every one is operated by the team that lives here.",
+    "journalSectionTitle": "From the journal — stories from the Minho",
+    "thingsToDoIntro": "The Minho rewards a base and a car. From any of our homes, the coast, the valleys and the mountains are each within an hour, so most guests spend a day on each. What follows is what our concierge team recommends to a first-time visitor with four or five days.",
+    "thingsToDo": [
+      {
+        "heading": "The coast",
+        "items": [
+          {
+            "name": "Praia do Cabedelo",
+            "category": "Beach",
+            "description": "Viana do Castelo's town beach, across the river from the centre: three kilometres of sand backed by dunes and pines, a Blue Flag every year, and Portugal's most consistent conditions for surf, windsurf and kitesurf. Ten minutes from the historic centre by car or ferry."
+          },
+          {
+            "name": "Moledo and Âncora",
+            "category": "Beach",
+            "description": "Twenty-five minutes north of Viana. Moledo is the Minho's most fashionable beach, sheltered by the Ínsua fort on its island; Vila Praia de Âncora, next door, has a fishing harbour and a river beach for children. The Lisbon set has summered here for a century."
+          },
+          {
+            "name": "Esposende and Ofir",
+            "category": "Beach",
+            "description": "Thirty minutes south. The Litoral Norte natural park: dunes, pine forest, the Cávado estuary and the Apúlia windmills. Quieter than Viana, better for long walks and cycling on the boardwalks."
+          },
+          {
+            "name": "Monte de Santa Luzia",
+            "category": "Viewpoint",
+            "description": "The basilica above Viana do Castelo and, according to National Geographic, one of the finest panoramas in the world. Take the funicular from the station or drive up; the view runs from the Lima estuary to the Galician hills."
+          }
+        ]
+      },
+      {
+        "heading": "The valleys",
+        "items": [
+          {
+            "name": "Ponte de Lima",
+            "category": "Town",
+            "description": "Portugal's oldest town, chartered in 1125, on a bend of the Lima river with its medieval bridge, plane-tree avenue and the country's largest fortnightly market. Thirty minutes from Viana. The heart of Vinho Verde's Loureiro country and where several of our manor houses are."
+          },
+          {
+            "name": "Vinho Verde quintas",
+            "category": "Wine",
+            "description": "The region's producers — Quinta do Ameal, Aphros, Quinta de Soalheiro further up at Melgaço, and dozens of family estates — open for tastings by appointment. Loureiro and Alvarinho are the grapes to know; the harvest runs from mid-September into October."
+          },
+          {
+            "name": "Braga and Bom Jesus do Monte",
+            "category": "Culture",
+            "description": "Fifty minutes from the coast. Portugal's oldest city and religious capital, with a baroque staircase sanctuary that is a UNESCO World Heritage Site and one of the country's finest sights at dusk."
+          },
+          {
+            "name": "Guimarães",
+            "category": "Culture",
+            "description": "One hour. The birthplace of Portugal, with a medieval centre listed by UNESCO and the castle where the first king was born. Combine it with Braga in a single day."
+          }
+        ]
+      },
+      {
+        "heading": "The mountains",
+        "items": [
+          {
+            "name": "Peneda-Gerês National Park",
+            "category": "Nature",
+            "description": "Portugal's only national park, ninety minutes from Viana. Granite peaks, oak forest, wild Garrano horses, the Arado and Tahiti waterfalls, Roman milestones on the old Geira road and the thermal spa town of Gerês. Hike in the morning, swim in a river pool in the afternoon."
+          },
+          {
+            "name": "Soajo and Lindoso",
+            "category": "Village",
+            "description": "Two mountain villages on the park's western edge, famous for their clusters of granite espigueiros — raised grain stores on stilts, some four hundred years old. Lindoso also has a castle and Portugal's largest group of espigueiros, seventy of them together."
+          },
+          {
+            "name": "Serra d'Arga",
+            "category": "Nature",
+            "description": "The wild sierra between Viana and Caminha: a plateau of granite, heather and river pools, with a monastery at its heart and views over the Atlantic. Our Hike, Dive and Dine experience is here — a morning walk, a swim in a natural pool and lunch in a village restaurant."
+          }
+        ]
+      }
+    ],
+    "seasons": {
+      "spring": "March through May. Highs climb from around sixteen to twenty-two degrees and the rain eases but never quite stops. The Atlantic is still cold, fourteen to fifteen degrees, and best left to surfers. What spring offers is the Minho at its most spectacular: vineyards in early leaf, camellias in every garden, waterfalls in Gerês at full strength, and rates well below summer. Easter is the exception — the processions in Braga fill the region's hotels.",
+      "summer": "June through August. Warm and mostly dry, with highs of twenty-five to twenty-nine degrees and the coast cooled by the northerly nortada wind in the afternoons. The ocean stays cool, seventeen to nineteen degrees, swimmable for the hardy and ideal for surf and kitesurf. The river beaches of the Lima and the pools of Gerês are the local answer to the heat. August holds the region's largest festivals — Agonia in Viana in the third week — and is the one month to book months ahead.",
+      "autumn": "September through November. September is the best month of the year: still summer-warm, the sea at its warmest, the crowds gone and the vindima — the grape harvest — filling the valleys from mid-month into October. Vineyards turn from green to copper. By late October the rain returns; November is wet, mild and quiet, with chestnut fairs and the first Alvarinho of the new vintage.",
+      "winter": "December through February. Mild by northern European standards, with highs around fourteen to fifteen degrees, but the wettest months of the year — the reason everything is so green. The Atlantic is cold and the surf serious. Viana's Christmas lights, wood fires in the manor houses, a heated pool under grey skies and the lowest rates of the year. Gerês occasionally sees snow on the high ground.",
+      "bestForFirstTime": "Late May to June, or September. Both give warm, mostly dry weather of twenty to twenty-six degrees, the vineyards at their greenest or at full harvest, empty beaches and easy restaurant tables. June is better for the ocean and long days; September is better for atmosphere — the harvest, the warm sea, the slower pace before the rain returns."
+    },
+    "transport": {
+      "byAir": "Porto's Francisco Sá Carneiro airport is the arrival point for the whole region: forty-five minutes to Viana do Castelo, fifty to Ponte de Lima, thirty-five to Esposende and roughly an hour and a half to the Gerês villages, all by motorway. Vigo airport in Spanish Galicia is one hour from Caminha and Viana and worth considering for travellers connecting through Madrid. Lisbon is three and a half to four hours by motorway.",
+      "byTrain": "Comboios de Portugal runs the Linha do Minho from Porto Campanhã to Viana do Castelo in about seventy-five minutes and on to Caminha and Valença; Braga and Guimarães have direct urban trains from Porto in around an hour. There is no railway into the Lima valley or the mountains — for those, a car or our transfers.",
+      "byCar": "The A28 motorway runs up the coast from Porto to Viana and Caminha and is toll-free through the Viana section; the A3 runs inland to Braga, Ponte de Lima and the Spanish border at Valença. Driving here is easy, distances short, and a car is the only practical way to combine coast, valley and mountains in one stay. Foreign-plated cars should register for the electronic tolls before arrival.",
+      "fromSpain": "From Galicia, the A3 crosses at Valença-Tui: one hour from Vigo to Viana, under two from Santiago de Compostela. Most of our Spanish guests drive; the Minho river is the border, and the towns on both banks — Valença and Tui, Monção and Salvaterra — are a day out in themselves.",
+      "gettingAround": "A car is essential outside the towns. Viana, Ponte de Lima, Braga and Guimarães are all compact and walkable once you arrive. The Ecovia do Lima cycle path follows the river for seventy kilometres from Viana into the valley — the best way to reach a quinta without driving. Our concierge arranges transfers, drivers and bicycles for every home."
+    },
+    "eatDrinkIntro": "The Minho eats better than anywhere in Portugal and knows it. This is the country of caldo verde, of rojões and sarrabulho, of lampreia in late winter and sardines in June, of bacalhau baked with broa and of the freshest Atlantic seafood served in tasquinhas owned by the fishermen's families. Wine is Vinho Verde — light, dry, slightly sparkling and, in its Alvarinho and Loureiro forms, among the best white wines in Europe. Below, the places our team sends guests.",
+    "restaurants": [
+      {
+        "name": "Tasquinha da Linda",
+        "category": "Seafood",
+        "description": "Viana do Castelo. Owned by fish wholesalers; the freshest seafood on the coast, on the harbour. Reservation essential."
+      },
+      {
+        "name": "Tasca do Celso",
+        "category": "Minho classics",
+        "description": "Ponte de Lima. No menu — the owner brings what is fresh that day. Book the terrace over the river."
+      },
+      {
+        "name": "Camelo",
+        "category": "Minho classics",
+        "description": "Ponte de Lima. A Minho institution for over sixty years: rojões, sarrabulho and, in season, lamprey. Sunday lunch is a local ritual."
+      },
+      {
+        "name": "O Marinheiro",
+        "category": "Seafood",
+        "description": "Vila Praia de Âncora. Grilled fish metres from the harbour it came from. Simple, loud and exactly right."
+      },
+      {
+        "name": "Solar do Bacalhau",
+        "category": "Traditional",
+        "description": "Braga. Salted cod in twenty preparations in a granite dining room in the old town."
+      },
+      {
+        "name": "Mercado Municipal de Viana",
+        "category": "Market",
+        "description": "Weekday mornings. The fish hall is one of the best in the country; buy for the house and let our chef cook it."
+      }
+    ],
+    "specialties": [
+      {
+        "name": "Bacalhau à moda de Viana",
+        "category": "Dish",
+        "description": "Salted cod baked with peppers, onions, potatoes and broa cornbread — the coast's signature plate."
+      },
+      {
+        "name": "Rojões and sarrabulho",
+        "category": "Dish",
+        "description": "Marinated pork with a rice cooked in pig's blood; the winter Sunday lunch of the Lima valley."
+      },
+      {
+        "name": "Vinho Verde",
+        "category": "Wine",
+        "description": "Light, dry and faintly sparkling. Alvarinho from Monção and Melgaço and Loureiro from the Lima valley are the two to seek out."
+      },
+      {
+        "name": "Lampreia",
+        "category": "Seasonal",
+        "description": "River lamprey, cooked in its own blood with rice, from January to April — a delicacy the Minho takes very seriously."
+      }
+    ],
+    "experiencesIntro": "The Minho is where Portugal Active began as an adventure company, and most of our own experiences still happen here, run by our own guides and partners we work with every week.",
+    "experiences": [
+      {
+        "name": "Horseback riding in Viana do Castelo",
+        "description": "Beach, mountain and flower fields in a single morning from a stable ten minutes from the city.",
+        "duration": "2h 30m",
+        "season": "Year-round"
+      },
+      {
+        "name": "Canyoning in Peneda-Gerês",
+        "description": "Abseiling waterfalls, natural slides and pools in the national park, with our own guides. From age twelve.",
+        "duration": "3–4 hours",
+        "season": "April–October"
+      },
+      {
+        "name": "SUP descent of the Lima river",
+        "description": "A gentle paddle downstream from Ponte de Lima between vineyards and Roman bridges.",
+        "duration": "3 hours",
+        "season": "May–October"
+      },
+      {
+        "name": "Hike, Dive and Dine in Serra d'Arga",
+        "description": "A morning walk on the sierra, a swim in a granite river pool and lunch in a village restaurant.",
+        "duration": "4h 30m",
+        "season": "May–October"
+      },
+      {
+        "name": "Vinho Verde tasting in the Lima valley",
+        "description": "A morning at a working quinta with the producer — four to six wines, regional cheese and bread.",
+        "duration": "Half day",
+        "season": "Year-round; harvest visits September–October"
+      },
+      {
+        "name": "Surf lessons on the Minho coast",
+        "description": "Cabedelo's consistent beach break, with a school that has taught here for twenty years.",
+        "duration": "2–3 hours",
+        "season": "April–November"
+      }
+    ],
+    "eventsIntro": "The Minho's calendar is the most festive in Portugal. The two dates that matter for planning are both in August, in Viana do Castelo; the harvest in September is the quieter reward.",
+    "events": [
+      {
+        "name": "Romaria de Nossa Senhora d'Agonia",
+        "dates": "Third week of August, Viana do Castelo",
+        "description": "Portugal's most famous romaria, held since 1772: gold-filigree costume parades, flower carpets, boat processions and fireworks over the Lima. Homes on the coast book out months ahead."
+      },
+      {
+        "name": "Neopop",
+        "dates": "First week of August, Viana do Castelo",
+        "description": "One of Europe's most respected electronic music festivals, on the old fortress by the sea."
+      },
+      {
+        "name": "Feiras Novas",
+        "dates": "September, Ponte de Lima",
+        "description": "The Lima valley's great fair, held since 1826: markets, folk groups, a giant Sunday procession and the best gigantones in the north."
+      },
+      {
+        "name": "Vindima",
+        "dates": "Mid-September to October",
+        "description": "The Vinho Verde harvest. Quintas take visitors into the vines and the wineries; the valleys smell of must for a month."
+      },
+      {
+        "name": "Semana Santa in Braga",
+        "dates": "Holy Week",
+        "description": "The most important Easter processions in Portugal, in the country's religious capital."
+      },
+      {
+        "name": "Festa de São João",
+        "dates": "23–24 June, Braga and the coast",
+        "description": "Midsummer night: bonfires, grilled sardines, plastic hammers and fireworks in every town."
+      }
+    ],
+    "pressIntro": "The Minho is written about less than Porto or the Algarve, which is much of its appeal. The selection below is what the international press has said about the region and its towns.",
+    "pressQuotes": [
+      {
+        "source": "The Guardian",
+        "year": 2018,
+        "quote": "The beaches of Viana do Castelo are some of the most beautiful in the country."
+      },
+      {
+        "source": "Booking.com Traveller Review Awards",
+        "year": 2024,
+        "quote": "Viana do Castelo — third most welcoming city in the world."
+      },
+      {
+        "source": "Forbes",
+        "year": 2023,
+        "quote": "The Minho is an adventure-travel paradise hiding in plain sight in the north of Portugal."
+      },
+      {
+        "source": "UNESCO",
+        "year": 2001,
+        "quote": "Guimarães — an exceptionally well-preserved example of the evolution of a medieval settlement into a modern town."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "How many days do I need in the Minho?",
+        "answer": "Four to five days is the comfortable length: a day on the coast, a day in the Lima valley with a quinta visit, a day for Braga and Guimarães, and a day in Peneda-Gerês. A week lets you slow down and add the mountain villages and the Alvarinho country around Monção and Melgaço."
+      },
+      {
+        "question": "Is the Minho good for a beach holiday?",
+        "answer": "For long, empty, Atlantic beaches and surf, yes. For warm water and guaranteed sun, no — the ocean is seventeen to nineteen degrees in summer and the coast has a cooling afternoon wind. Most of our homes have heated pools, which is how the Minho does beach holidays."
+      },
+      {
+        "question": "Do I need a car?",
+        "answer": "Yes, unless you are staying in Viana do Castelo itself and happy to use trains and our transfers. The region's appeal is the combination of coast, valley and mountains, each within an hour, and only a car makes that easy."
+      },
+      {
+        "question": "How far is the Minho from Porto?",
+        "answer": "Forty-five to seventy minutes by motorway from Porto airport, depending on the home. Viana do Castelo is seventy-five minutes from Porto by direct train."
+      },
+      {
+        "question": "When is the Vinho Verde harvest?",
+        "answer": "From mid-September into October, depending on the year and the grape. Loureiro in the Lima valley is picked first; Alvarinho in Monção and Melgaço a little later."
+      },
+      {
+        "question": "Is Peneda-Gerês a day trip from the coast?",
+        "answer": "Yes — ninety minutes each way. For canyoning, the waterfalls and the villages of Soajo and Lindoso, leave early. If the mountains are the point of the trip, several of our homes are on the park's edge."
+      },
+      {
+        "question": "What is the weather like?",
+        "answer": "Atlantic: mild all year, warm and mostly dry from June to September, wet and green from November to March. Pack a layer even in summer."
+      },
+      {
+        "question": "Is the Minho suitable for families?",
+        "answer": "Very. River beaches with warm, calm water, farm animals at the quintas, gentle bike paths along the Lima, and homes with gardens and pools. Our concierge organises babysitters and family-friendly experiences."
+      }
+    ],
+    "relatedDestinations": [
+      "viana-do-castelo",
+      "porto",
+      "douro"
+    ],
+    "ownersCTA": {
+      "headline": "Own a home in the Minho?",
+      "body": "Portugal Active manages premium properties across the Alto Minho: full-service management, marketing, concierge and maintenance, operated to hotel standards by the team that founded the company here.",
+      "cta": "Speak to our team",
+      "url": "https://management.portugalactive.com/?utm_source=destinations&utm_medium=cta&utm_campaign=minho"
+    }
   },
   {
     "id": "d-viana",
@@ -703,52 +975,354 @@
     "id": "d5",
     "slug": "algarve",
     "region": "algarve",
-    "name": "Algarve",
     "geo": {
       "latitude": 37.0194,
       "longitude": -7.9304
     },
-    "tagline": "Golden cliffs, private pools, and 300 days of sun.",
-    "description": "Clifftop villas, private pools, and 300 days of sun.",
     "coverImage": "/homes/tripwix/PT0253/00.webp",
     "gallery": [],
-    "whyDescription": "Most people know the Algarve for its resorts, golf courses, and tourist beaches. We know it for what lies beyond: the wild western coast where surfers ride empty breaks, the Monchique hills where cork oaks shade hidden trails, the fishing villages where the catch arrives twice a day and the restaurants have six tables.\n\nThe Algarve we operate in is the one that rewards curiosity. Year round sunshine, dramatic coastline, and a landscape that changes completely from east to west. Our homes and concierge team focus on the Algarve that most visitors miss entirely.\n\nOur Algarve collection is growing. Contact our concierge for the latest availability.",
-    "highlights": [
-      "300+ days of sunshine per year",
-      "Dramatic limestone cliffs and hidden cove beaches",
-      "World-class golf courses",
-      "Fresh seafood and cataplana tradition",
-      "Vibrant nightlife in Lagos and Albufeira"
-    ],
     "comingSoon": false,
-    "seoTitle": "Algarve — Private Homes in Southern Portugal",
-    "seoDescription": "Discover the Algarve: clifftop villas, private pools, 300 days of sun. Private homes operated to hotel standards.",
-    "howToGetHere": "Fly into Faro Airport (FAO), 30 to 90 minutes from our properties depending on location. We arrange all airport transfers.",
-    "bestTimeToVisit": "Year round. Peak June to September. Spring and autumn ideal for hiking, cycling, quieter beaches. Winter mild, 15 to 18 degrees.",
-    "whatToExpect": "300+ days of sunshine, dramatic cliff coastline, world class golf, and a quieter interior that most visitors never explore.",
-    "insiderRecommendations": [
-      {
-        "name": "Silves Castle",
-        "category": "Culture",
-        "description": "One of the best preserved Moorish castles in Portugal. Visit in the morning, explore the town, eat grilled fish by the river."
-      },
-      {
-        "name": "The West Coast",
-        "category": "Nature",
-        "description": "From Sagres to Aljezur. Wild, windswept, and the opposite of everything people expect from the Algarve."
-      },
-      {
-        "name": "Monchique Hills",
-        "category": "Hike",
-        "description": "Hot springs, cork forests, and hilltop villages. A completely different Algarve 30 minutes from the coast."
-      }
-    ],
+    "status": "active",
     "relatedSlugs": [
       "alentejo",
       "lisbon"
     ],
-    "status": "active",
-    "whyOverline": "WHY THE ALGARVE"
+    "name": "Algarve",
+    "tagline": "Golden cliffs, warm sea and three hundred days of sun — and the Algarve beyond the resorts.",
+    "description": "A complete guide to the Algarve — its coasts, its seasons and where to stay beyond the resorts.",
+    "heroSubtitle": "Portugal's southern coast, from the wild west to the lagoons of the east",
+    "pullQuote": {
+      "text": "Praia da Falésia — the best beach in the world.",
+      "source": "Tripadvisor Travellers' Choice",
+      "year": 2024
+    },
+    "primaryAccolade": {
+      "text": "Europe's Leading Beach Destination",
+      "source": "World Travel Awards",
+      "note": "Awarded repeatedly to the Algarve over the last decade"
+    },
+    "whyOverline": "WHY THE ALGARVE",
+    "whyDescription": "Everyone knows the Algarve for its resorts, its golf and its summer beaches, and for good reason: this is the sunniest coast in Europe, with a warm sea from June to October and a winter that feels like an English spring. What most visitors never see is the rest of it. The western coast around Sagres and Aljezur, where the cliffs face the open Atlantic and surfers have empty beaches to themselves. The Ria Formosa in the east, a lagoon of islands, salt pans and fishing villages that is one of the finest natural parks in Portugal. The hills of the Serra de Monchique and the Barrocal, with cork oaks, orange groves, whitewashed villages and restaurants that have never seen a tourist menu. And the villas: behind the walls of Quinta do Lago and Vale do Lobo, on the cliffs of the central coast and in the countryside of the west, there are private homes that turn the Algarve into something very different from a resort holiday — a house with a heated pool, a chef in the kitchen and a concierge who knows which cove is empty at four in the afternoon. Our Algarve homes are exactly those houses.",
+    "highlights": [
+      "Three hundred days of sun a year and the warmest sea in Portugal from June to October",
+      "Limestone cliffs, sea caves and cove beaches from Lagos to Albufeira — Benagil, Marinha, Falésia",
+      "The wild west coast — Sagres, Aljezur and the Costa Vicentina, for surf and empty sand",
+      "The Ria Formosa natural park — islands, lagoons and the fishing towns of Olhão and Tavira",
+      "Golf at Quinta do Lago, Vale do Lobo and Vilamoura, minutes from several of our homes"
+    ],
+    "seoTitle": "Algarve: Beaches, Villas, Golf and When to Go | Portugal Active",
+    "seoDescription": "The sunniest coast in Europe: cliff beaches, the wild west, the Ria Formosa and private villas with pools. When to go, how to get there and where to stay.",
+    "howToGetHere": "Faro airport (FAO) is 20 to 60 minutes by motorway from our homes — 20 to Quinta do Lago, 40 to Albufeira, 60 to Lagos and the west. Lisbon is two and a half hours by the A2. We arrange airport transfers for every stay.",
+    "bestTimeToVisit": "May to June and September to October: twenty-two to twenty-eight degrees, a warm sea, and beaches and restaurants without the August crowds. July and August for guaranteed heat. Winter is the mildest in mainland Europe — fifteen to eighteen degrees, golf, hiking and almond blossom in February.",
+    "whatToExpect": "Sun, first of all: the driest, sunniest corner of Portugal. A coast that changes every fifty kilometres — golden cliffs and caves in the centre, open Atlantic and surf in the west, lagoons and sandbar islands in the east. Resorts where you expect them and, a few minutes inland or along the coast, a quieter Algarve of villages, orchards and fishing harbours.",
+    "whereToStayIntro": "Portugal Active operates a small collection of homes across the Algarve: villas inside Quinta do Lago and on the central coast between Albufeira and Vilamoura, houses in the east around Tavira, and estates in the west near Lagos. Each is operated to the same standard as our homes in the north — a heated pool, a stocked kitchen, a private chef on request and a concierge who lives in the region.",
+    "journalSectionTitle": "From the journal — stories from the Algarve",
+    "thingsToDoIntro": "The Algarve is a hundred and fifty kilometres wide and has three distinct coasts, so the first decision is where to base yourself. What follows is our concierge's list for a first visit, organised west to east, with driving times from the central coast.",
+    "thingsToDo": [
+      {
+        "heading": "The west — Sagres and the Costa Vicentina",
+        "items": [
+          {
+            "name": "Cabo de São Vicente",
+            "category": "Viewpoint",
+            "description": "The south-western tip of Europe: a lighthouse on a cliff sixty metres above the Atlantic, once believed to be the end of the world. Come for the sunset. One hour and fifteen minutes from Albufeira."
+          },
+          {
+            "name": "Sagres and the fortress",
+            "category": "Culture",
+            "description": "The windswept promontory where Henry the Navigator's school of navigation is said to have stood. Surf beaches on both sides: Beliche and Tonel facing the ocean, Martinhal facing the bay."
+          },
+          {
+            "name": "Praia da Bordeira and Amado",
+            "category": "Beach",
+            "description": "Two vast Atlantic beaches on the Costa Vicentina, backed by dunes and cliffs, with a surf school on Amado and almost nobody on Bordeira. Ninety minutes from the central coast."
+          },
+          {
+            "name": "Lagos and Ponta da Piedade",
+            "category": "Town",
+            "description": "The west's handsome harbour town, with a walled old centre, a working marina and, just south, the golden rock arches and grottoes of Ponta da Piedade — best seen from a kayak at nine in the morning."
+          }
+        ]
+      },
+      {
+        "heading": "The centre — cliffs and caves",
+        "items": [
+          {
+            "name": "Benagil cave and Praia da Marinha",
+            "category": "Beach",
+            "description": "The Algarve's most photographed coast: a cathedral-sized sea cave reached by boat or paddleboard, and, next door, Marinha, regularly ranked among Europe's best beaches. Go early — from June to September the caves are busy by ten. Twenty minutes from Albufeira."
+          },
+          {
+            "name": "Seven Hanging Valleys trail",
+            "category": "Walk",
+            "description": "Six kilometres of clifftop path between Praia da Marinha and Praia de Vale Centeanes, past sinkholes, arches and empty coves. Two to three hours; carry water."
+          },
+          {
+            "name": "Praia da Falésia",
+            "category": "Beach",
+            "description": "Six kilometres of sand beneath ochre cliffs between Vilamoura and Albufeira — Tripadvisor's best beach in the world in 2024, and quiet at either end even in August. Fifteen minutes from our Vilamoura and Quinta do Lago homes."
+          },
+          {
+            "name": "Silves",
+            "category": "Culture",
+            "description": "The Moorish capital of the Algarve, with the best-preserved castle in the south, a Gothic cathedral and a riverside old town. Visit in the morning, lunch in town, then the orange groves of the Barrocal."
+          }
+        ]
+      },
+      {
+        "heading": "The east — Ria Formosa and Tavira",
+        "items": [
+          {
+            "name": "Ria Formosa natural park",
+            "category": "Nature",
+            "description": "Sixty kilometres of lagoon, salt marsh and barrier islands between Faro and Cacela Velha: flamingos, chameleons, oyster beds and beaches reached only by boat. Take the ferry from Olhão to Culatra or Armona."
+          },
+          {
+            "name": "Tavira",
+            "category": "Town",
+            "description": "The most beautiful town in the Algarve: a Roman bridge, thirty-seven churches, a castle garden and the Ilha de Tavira beach a short ferry away. Forty minutes from Faro."
+          },
+          {
+            "name": "Olhão market",
+            "category": "Market",
+            "description": "The best fish market in the south, in two red-brick halls on the waterfront. Saturday mornings. Buy for the house and let our chef do the rest."
+          },
+          {
+            "name": "Cacela Velha",
+            "category": "Village",
+            "description": "A handful of white houses, a church and a fort above the lagoon, with an oyster bar and a beach you wade to at low tide. The Algarve as it was."
+          }
+        ]
+      },
+      {
+        "heading": "Inland — hills and villages",
+        "items": [
+          {
+            "name": "Serra de Monchique",
+            "category": "Nature",
+            "description": "The Algarve's mountain: eucalyptus and chestnut forest, the spa village of Caldas de Monchique and Fóia, the highest point in the south, with views to both coasts. Forty-five minutes from Lagos or Portimão."
+          },
+          {
+            "name": "Alte and Salir",
+            "category": "Village",
+            "description": "Two whitewashed villages in the Barrocal, with springs, almond and carob groves and a Sunday lunch culture that has nothing to do with the coast."
+          },
+          {
+            "name": "Loulé market",
+            "category": "Market",
+            "description": "Saturday mornings in the neo-Moorish market hall and the streets around it: fruit, cheese, cured meats, ceramics. Twenty minutes from Quinta do Lago."
+          }
+        ]
+      }
+    ],
+    "seasons": {
+      "spring": "March through May. Highs climb from eighteen to twenty-four degrees, rain is rare after March and the countryside is at its best — almond blossom finishes in February, orange blossom in April, wildflowers on the clifftop trails through May. The sea is still cool at sixteen to eighteen degrees. Easter is busy; May is one of the best months of the year, warm, dry and quiet.",
+      "summer": "June through August. Hot and dry — twenty-eight to thirty-two degrees, days of unbroken sun and a sea that warms to twenty-two or twenty-three degrees by August. The central coast fills from mid-July; the west stays breezier and emptier, the east quieter still. This is the Algarve of long pool days, evening barbecues and a chef in the kitchen. Book months ahead for July and August.",
+      "autumn": "September through November. September and October are the connoisseur's months: the sea at its warmest, twenty-two to twenty-six degrees in the air, the crowds gone and every restaurant table free. November brings the first rain and softer light, with highs still around twenty degrees. The best golf weather of the year.",
+      "winter": "December through February. The mildest winter in mainland Europe: fifteen to eighteen degrees, more sun than most of northern Europe sees in June, and the occasional Atlantic front. Not beach weather, but walking, cycling, golf and heated-pool weather. Almond blossom covers the Barrocal from late January. Rates are at their lowest.",
+      "bestForFirstTime": "Late May to June, or September to early October. Both give twenty-two to twenty-eight degrees, a swimmable sea and the coast without its August crowds. June has longer days and cooler water; September has the warmest sea of the year and the softest light."
+    },
+    "transport": {
+      "byAir": "Faro airport is the gateway and sits in the middle of the coast: twenty minutes to Quinta do Lago and Vale do Lobo, thirty to Vilamoura, forty to Albufeira, forty to Tavira, sixty to Lagos and seventy-five to Sagres, all by the A22 motorway. It has direct flights from most European cities year-round. Lisbon airport is an alternative for the west — two and a half hours by the A2 to Lagos.",
+      "byTrain": "Comboios de Portugal runs Alfa Pendular and Intercidades trains from Lisbon to Faro in about three hours, and a regional line along the coast from Lagos to Vila Real de Santo António. The train is pleasant for a day trip between towns but not for reaching a villa — the stations are inland and the homes are not.",
+      "byCar": "The A22 motorway runs the length of the region and is electronically tolled; the old N125 runs parallel and slower, through every town. From Lisbon, the A2 crosses the Alentejo to the Algarve in two and a half hours. Hire cars are cheap at Faro; foreign-plated cars should register for the tolls before arrival.",
+      "fromSpain": "Seville is two hours from Tavira and two and a half from Faro across the Guadiana bridge — the Algarve is closer to Andalusia than to Lisbon, and many of our Spanish guests drive.",
+      "gettingAround": "A car is essential: the Algarve is wide, the best beaches are at the end of small roads, and the villages inland have no buses worth the name. Within Quinta do Lago and Vale do Lobo, bicycles and golf buggies do the job. Our concierge arranges transfers, drivers and boats for every home."
+    },
+    "eatDrinkIntro": "The Algarve's cooking is the sea's: sardines and horse mackerel on the grill, cataplana — a clam-shaped copper pot of fish, shellfish and pork — razor clams from the Ria Formosa, oysters from Cacela, and, inland, roast kid, piri-piri chicken from Guia and the almond and fig sweets of the Moors. Below, the places our team sends guests, from harbour tasquinhas to the region's Michelin tables.",
+    "restaurants": [
+      {
+        "name": "Rei das Praias",
+        "category": "Seafood",
+        "description": "Praia dos Caneiros, Ferragudo. A beach restaurant that has served the same grilled fish for forty years, on a cove between two headlands. Reserve for lunch."
+      },
+      {
+        "name": "Bon Bon",
+        "category": "Fine dining",
+        "description": "Carvoeiro. Two Michelin stars in a whitewashed house a few minutes from the cliffs; the region's most serious table."
+      },
+      {
+        "name": "O Camilo",
+        "category": "Seafood",
+        "description": "Lagos. Above Praia do Camilo, with the rocks of Ponta da Piedade below and the freshest fish in the west."
+      },
+      {
+        "name": "Chá com Água Salgada",
+        "category": "Seafood",
+        "description": "Olhão. Beside the fish market, on the ria; whatever came off the boats that morning, cooked simply."
+      },
+      {
+        "name": "Ramires",
+        "category": "Traditional",
+        "description": "Guia. The home of piri-piri chicken since 1964, and still the place to eat it — loud, fast and perfect."
+      },
+      {
+        "name": "A Ver Tavira",
+        "category": "Modern Algarve",
+        "description": "Tavira. Regional produce on a terrace above the roofs of the old town, a short walk from the Roman bridge."
+      }
+    ],
+    "specialties": [
+      {
+        "name": "Cataplana de marisco",
+        "category": "Dish",
+        "description": "Fish, clams, prawns and often pork, cooked and served in the hinged copper cataplana. The Algarve's national dish."
+      },
+      {
+        "name": "Sardinhas assadas",
+        "category": "Dish",
+        "description": "Grilled sardines on bread, from June to September, when they are fat. Portimão is the sardine capital."
+      },
+      {
+        "name": "Ostras da Ria Formosa",
+        "category": "Seafood",
+        "description": "Oysters from the lagoon, eaten on the quay at Cacela Velha or Olhão with a glass of Algarve white."
+      },
+      {
+        "name": "Doces de amêndoa e figo",
+        "category": "Sweet",
+        "description": "Almond and fig sweets in Moorish shapes, sold in every pastelaria; dom rodrigo is the one to try."
+      }
+    ],
+    "experiencesIntro": "In the Algarve our experiences are organised by the concierge with local partners we work with every week — boats, guides, chefs and golf courses — and delivered to the same standard as our own team's in the north.",
+    "experiences": [
+      {
+        "name": "Benagil and the caves by boat or kayak",
+        "description": "A private boat or a guided kayak from Benagil or Carvoeiro into the sea caves before the crowds arrive.",
+        "duration": "2–3 hours",
+        "season": "Year-round; calmest May–October"
+      },
+      {
+        "name": "Private chef in the villa",
+        "description": "A market-fresh dinner cooked in your kitchen — cataplana, grilled fish, Algarve sweets — by a chef the concierge books for you.",
+        "duration": "Evening",
+        "season": "Year-round"
+      },
+      {
+        "name": "Golf at Quinta do Lago and Vilamoura",
+        "description": "Tee times, transfers and club hire on the Algarve's championship courses, minutes from our homes.",
+        "duration": "Half day",
+        "season": "Year-round; best October–May"
+      },
+      {
+        "name": "Ria Formosa by boat",
+        "description": "A private launch from Olhão or Faro through the lagoon to the barrier islands, with lunch on Culatra.",
+        "duration": "Half day",
+        "season": "Year-round"
+      },
+      {
+        "name": "Surf lessons on the Costa Vicentina",
+        "description": "Beginner and improver lessons on Amado or Arrifana with a school that has taught the west coast for decades.",
+        "duration": "2–3 hours",
+        "season": "Year-round"
+      },
+      {
+        "name": "Wine tasting in the Algarve hills",
+        "description": "Quinta dos Vales and the new wave of Algarve estates around Lagoa and Silves, with the winemaker.",
+        "duration": "Half day",
+        "season": "Year-round"
+      }
+    ],
+    "eventsIntro": "The Algarve's year runs from spring blossom to summer festivals to a long, mild off-season. The dates below matter most for planning; August needs booking months ahead regardless.",
+    "events": [
+      {
+        "name": "Festival Med",
+        "dates": "Late June, Loulé",
+        "description": "World music in the old town's streets and squares — three nights, dozens of stages, the region's best festival."
+      },
+      {
+        "name": "Festival do Marisco",
+        "dates": "Mid-August, Olhão",
+        "description": "A week of seafood on the waterfront, the ria's biggest party."
+      },
+      {
+        "name": "Feira de Portimão / Sardine Festival",
+        "dates": "August, Portimão",
+        "description": "Grilled sardines by the ton on the riverfront, with concerts every night."
+      },
+      {
+        "name": "Medieval Days",
+        "dates": "August, Silves and Castro Marim",
+        "description": "The two castle towns turn back their clocks: markets, jousting, music and a lot of roast meat."
+      },
+      {
+        "name": "Almond blossom",
+        "dates": "Late January to February, the Barrocal",
+        "description": "The hills between Loulé and Tavira turn white for three weeks — the Algarve's quiet, beautiful winter secret."
+      },
+      {
+        "name": "Carnival in Loulé",
+        "dates": "February",
+        "description": "The oldest carnival parade in Portugal, on the streets of Loulé."
+      }
+    ],
+    "pressIntro": "The Algarve is one of the most written-about coasts in Europe. The quotes below are the ones that describe the region we know.",
+    "pressQuotes": [
+      {
+        "source": "Tripadvisor Travellers' Choice",
+        "year": 2024,
+        "quote": "Praia da Falésia — the best beach in the world."
+      },
+      {
+        "source": "World Travel Awards",
+        "year": 2023,
+        "quote": "Europe's Leading Beach Destination."
+      },
+      {
+        "source": "The Guardian",
+        "year": 2022,
+        "quote": "The Costa Vicentina is the wild, unspoilt side of the Algarve most visitors never see."
+      },
+      {
+        "source": "Condé Nast Traveller",
+        "year": 2023,
+        "quote": "Tavira is the Algarve's most beautiful town."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Which part of the Algarve should I stay in?",
+        "answer": "The central coast, from Albufeira to Quinta do Lago, if you want beaches, golf, restaurants and nightlife within twenty minutes and Faro airport close. The west, around Lagos and Sagres, for wild beaches, surf and space. The east, around Tavira and Olhão, for the lagoon, quieter towns and the best seafood. Our homes cover all three."
+      },
+      {
+        "question": "When is the sea warm enough to swim?",
+        "answer": "From June to October. The sea reaches twenty-two to twenty-three degrees in August and September on the south coast; the west coast is two or three degrees colder and rougher. Most of our homes have heated pools for the shoulder months."
+      },
+      {
+        "question": "How far is Faro airport from the villas?",
+        "answer": "Twenty minutes to Quinta do Lago and Vale do Lobo, thirty to Vilamoura, forty to Albufeira or Tavira, sixty to Lagos and seventy-five to Sagres, all by motorway. Our concierge arranges the transfer."
+      },
+      {
+        "question": "Is the Algarve worth visiting in winter?",
+        "answer": "Yes, if the point is not the beach. Fifteen to eighteen degrees, more sun than northern Europe in June, empty trails, almond blossom in February, golf and long lunches. Rates are at their lowest and the homes have heated pools and fireplaces."
+      },
+      {
+        "question": "Do I need a car?",
+        "answer": "Yes. The region is wide, the best beaches are at the end of small roads and the villages inland have almost no public transport. Inside Quinta do Lago and Vale do Lobo, bicycles and buggies work for the day-to-day."
+      },
+      {
+        "question": "How do I get to Benagil cave?",
+        "answer": "By boat from Benagil or Carvoeiro, or by kayak or paddleboard with a guide — it has no land access. Go before ten in summer, or come in May or October when the sea is calm and the cave is quiet. Our concierge books the boat."
+      },
+      {
+        "question": "Is the Algarve good for families?",
+        "answer": "The best in Portugal: warm shallow beaches in the east, water parks near Albufeira, boat trips, dolphin watching, and villas with pools and gardens. Our concierge organises babysitters, cots and family-friendly experiences."
+      },
+      {
+        "question": "How does the Algarve compare with the Minho?",
+        "answer": "The Algarve is sun, warm sea and cliffs; the Minho is green valleys, cold Atlantic surf and mountains. The Algarve is the safer bet for a beach holiday; the Minho for food, wine, nature and a Portugal few visitors see. Many of our guests do both."
+      }
+    ],
+    "relatedDestinations": [
+      "alentejo",
+      "lisbon"
+    ],
+    "ownersCTA": {
+      "headline": "Own a home in the Algarve?",
+      "body": "Portugal Active operates premium villas across the Algarve — from Quinta do Lago to the west coast — with full-service management, marketing, concierge and maintenance to hotel standards.",
+      "cta": "Speak to our team",
+      "url": "https://management.portugalactive.com/?utm_source=destinations&utm_medium=cta&utm_campaign=algarve"
+    }
   },
   {
     "id": "d6",
