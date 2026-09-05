@@ -100,7 +100,7 @@
   },
   "homes": {
     "title": "Nuestras casas.",
-    "subtitle": "{{homes}} casas privadas con estándar de hotel. Cada una seleccionada, preparada y gestionada por nuestro equipo.",
+    "subtitle": "Casas privadas con estándar de hotel. Cada una seleccionada, preparada y gestionada por nuestro equipo.",
     "available_one": "{{count}} casa disponible",
     "available_other": "{{count}} casas disponibles",
     "guestsPlus": "{{count}}+ huéspedes",

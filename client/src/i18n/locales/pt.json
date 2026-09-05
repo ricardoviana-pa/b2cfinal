@@ -100,7 +100,7 @@
   },
   "homes": {
     "title": "Os nossos alojamentos.",
-    "subtitle": "{{homes}} casas privadas operadas com padrões de hotel. Cada uma selecionada, preparada e gerida pela nossa equipa interna.",
+    "subtitle": "Casas privadas operadas com padrões de hotel. Cada uma selecionada, preparada e gerida pela nossa equipa interna.",
     "available_one": "{{count}} alojamento disponível",
     "available_other": "{{count}} alojamentos disponíveis",
     "guestsPlus": "{{count}}+ hóspedes",

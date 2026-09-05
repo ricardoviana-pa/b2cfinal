@@ -826,7 +826,7 @@ export default function Home() {
         <div className="container py-12 lg:py-16">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 divide-x divide-[#E1DACE]">
             {[
-              { value: '70', label: t('home.statHomes') },
+              { value: HOME_COUNT_LABEL, label: t('home.statHomes') },
               { value: '4.8/5', label: t('home.statRating') },
               { value: '40%', label: t('home.statRepeat') },
               { value: '2017', label: t('home.statFounded') },

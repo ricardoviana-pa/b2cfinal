@@ -100,7 +100,7 @@
   },
   "homes": {
     "title": "Our homes.",
-    "subtitle": "{{homes}} private homes operated to hotel standards. Each one curated, prepared, and managed by our in-house team.",
+    "subtitle": "Private homes operated to hotel standards. Each one curated, prepared, and managed by our in-house team.",
     "available_one": "{{count}} home available",
     "available_other": "{{count}} homes available",
     "guestsPlus": "{{count}}+ guests",

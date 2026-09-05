@@ -100,7 +100,7 @@
   },
   "homes": {
     "title": "Le nostre case.",
-    "subtitle": "{{homes}} case private gestite con standard alberghieri. Ogni casa curata, preparata e gestita dal nostro team interno.",
+    "subtitle": "Case private gestite con standard alberghieri. Ogni casa curata, preparata e gestita dal nostro team interno.",
     "available_one": "{{count}} casa disponibile",
     "available_other": "{{count}} case disponibili",
     "guestsPlus": "{{count}}+ ospiti",
