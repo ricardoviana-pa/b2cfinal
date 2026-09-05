@@ -724,9 +724,10 @@ export default function CheckoutPage() {
   /** Customize → Pay: reception is mandatory (§5.2); persist everything.
    *  Without the reception choice the CTA stays clickable but nudges the
    *  guest to the missing decision instead of silently doing nothing. */
-  const continueToPay = useCallback(() => {
+  const continueToPay = useCallback((override?: ReceptionChoice) => {
     if (!intent) return;
-    if (!receptionChoice) {
+    const choice = override ?? receptionChoice;
+    if (!choice) {
       setReceptionNudge(true);
       document.getElementById("reception-choice")?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
@@ -734,7 +735,7 @@ export default function CheckoutPage() {
     syncIntent({
       status: "payment_pending",
       flex: flexSelected,
-      reception: receptionChoice,
+      reception: choice,
       extras: selectedExtras.map(({ item, sel, amount }) => ({
         sku: item.sku,
         qty: sel.qty,
@@ -749,9 +750,14 @@ export default function CheckoutPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [intent, receptionChoice, selectedExtras, flexSelected, syncIntent]);
 
-  /** "Saltar personalização" (2.1 §1.2): segue para pagamento se a receção já
-   *  foi escolhida; caso contrário `continueToPay` nudge a decisão em falta. */
-  const skipCustomize = continueToPay;
+  /** "Saltar personalização": saltar tem de saltar. Sem escolha de receção,
+   *  assume o self check-in (incluído, sem custo) e segue para pagamento; a
+   *  escolha fica visível no resumo e pode ser mudada com "voltar". */
+  const skipCustomize = useCallback(() => {
+    const choice: ReceptionChoice = receptionChoice ?? { type: "self" };
+    if (!receptionChoice) setReceptionChoice(choice);
+    continueToPay(choice);
+  }, [receptionChoice, continueToPay]);
 
   /** Ops manifest (PT, staff-facing) appended to the Guesty reservation notes —
    *  same pattern the legacy widget uses, so operations see the requests. */
@@ -1423,7 +1429,7 @@ export default function CheckoutPage() {
                   type="button"
                   onClick={submitEmail}
                   disabled={!isValidEmail(email) || quoteStale || datesUnavailable}
-                  className="btn-primary w-full disabled:opacity-40"
+                  className="hidden lg:inline-flex btn-primary w-full disabled:opacity-40"
                 >
                   {t("booking.continue", "Continue")}
                 </button>
@@ -1569,9 +1575,9 @@ export default function CheckoutPage() {
               )}
               <button
                 type="button"
-                onClick={continueToPay}
+                onClick={() => continueToPay()}
                 aria-disabled={!receptionChoice}
-                className={cn("btn-primary w-full", !receptionChoice && "opacity-40")}
+                className={cn("hidden lg:inline-flex btn-primary w-full", !receptionChoice && "opacity-40")}
               >
                 {selectedExtras.length > 0
                   ? t("checkout.continueWithExtras", { count: selectedExtras.length })
@@ -1809,7 +1815,7 @@ export default function CheckoutPage() {
           {step === "customize" && (
             <button
               type="button"
-              onClick={continueToPay}
+              onClick={() => continueToPay()}
               aria-disabled={!receptionChoice}
               className={cn("btn-primary flex-1 max-w-[220px]", !receptionChoice && "opacity-40")}
             >
