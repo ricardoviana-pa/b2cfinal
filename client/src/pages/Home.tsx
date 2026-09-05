@@ -715,7 +715,7 @@ export default function Home() {
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 2: USP BAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <section ref={s2Ref} className="fade-in relative z-10 mb-2 md:mb-0 w-full min-w-0">
         <div className="w-full bg-pa-cream border-y border-pa-sand shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
-          <div className="container grid grid-cols-4 gap-0">
+          <div className="container grid grid-cols-2 md:grid-cols-4 gap-0">
               {[
                 {
                   icon: <Key className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />,
@@ -765,7 +765,7 @@ export default function Home() {
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 3: OUR HOMES Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <section ref={s3Ref} className="fade-in cv-auto section-padding bg-white">
         <div className="container">
-          <p className="caption font-medium text-pa-gold mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.homesOverline')}</p>
+          <p className="eyebrow mb-3">{t('home.homesOverline')}</p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
             <div>
               <h2 className="headline-lg text-pa-dark mb-3">{t('home.homesTitle')}</h2>
