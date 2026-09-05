@@ -874,7 +874,7 @@ export default function Home() {
               <div key={i} className="relative flex-shrink-0 w-[260px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
                 <p
                   className="font-display text-[4rem] leading-none mb-4 font-normal"
-                  style={{color: 'rgba(139,115,85,0.12)'}}
+                  style={{color: 'rgba(139,115,85,0.3)'}}
                 >
                   {step.num}
                 </p>
