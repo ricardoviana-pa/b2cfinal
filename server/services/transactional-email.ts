@@ -4,6 +4,7 @@
  */
 
 import { Resend } from "resend";
+import { getEmailSigner } from "@shared/concierges";
 import { sanitizePropertyName } from "@shared/displayName";
 import {
   emailLang,
@@ -12,6 +13,7 @@ import {
   RECOVERY_I18N,
   CONFIRMATION_I18N,
   type EmailLang,
+  LEGACY_I18N,
 } from "./email-i18n";
 
 const resendKey = process.env.RESEND_API_KEY;
@@ -93,65 +95,51 @@ interface BookingConfirmationData {
   guests: number;
   totalPrice?: number;
   confirmationCode: string;
+  /** Guest language (site locale); falls back to English. */
+  locale?: string | null;
 }
 
 export async function sendBookingConfirmation(input: BookingConfirmationData): Promise<void> {
+  const lang = emailLang(input.locale);
+  const T = LEGACY_I18N[lang];
   const data = { ...input, propertyName: sanitizePropertyName(input.propertyName) };
-  const subject = `Your stay at ${data.propertyName} is confirmed`;
-  const waLink = `https://wa.me/351927161771?text=${encodeURIComponent(`Hi, I just booked ${data.propertyName} (${data.confirmationCode}). Looking forward to my stay!`)}`;
+  const firstName = (data.guestName || "").trim().split(" ")[0];
+  const subject = T.confirmSubject(data.propertyName);
+  const waLink = `https://wa.me/351927161771?text=${encodeURIComponent(T.whatsappMsg(data.propertyName, data.confirmationCode))}`;
+  const row = (label: string, value: string, strong = false) => `<tr>
+        <td style="padding:6px 0;font-family:${SANS};font-size:13px;color:${PA.stoneAA};">${label}</td>
+        <td style="padding:6px 0;font-family:${strong ? SERIF : SANS};font-size:${strong ? "16px" : "14px"};color:${PA.dark};text-align:right;">${value}</td>
+      </tr>`;
 
   const html = wrapTemplate(`
 <tr><td style="padding:0 0 24px 0;">
-  <h1 style="font-family:Georgia,serif;font-size:26px;color:#1A1A18;margin:0;font-weight:400;">Your stay is confirmed.</h1>
+  <h1 style="font-family:${SERIF};font-size:28px;color:${PA.dark};margin:0;font-weight:400;">${T.confirmHeadline}</h1>
 </td></tr>
 <tr><td style="padding:0 0 20px 0;">
-  <p style="font-family:Arial,sans-serif;font-size:15px;color:#6B6860;line-height:1.6;margin:0;">
-    Dear ${data.guestName.split(" ")[0]}, thank you for choosing Portugal Active. We are preparing everything for your arrival.
-  </p>
+  <p style="font-family:${SANS};font-size:15px;color:${PA.earth};line-height:1.6;margin:0;">${T.confirmIntro(firstName)}</p>
 </td></tr>
-
-<!-- Booking details -->
 <tr><td style="padding:0 0 24px 0;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAFAF7;border:1px solid #E8E4DC;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PA.warm};border:1px solid ${PA.sand};">
   <tr><td style="padding:20px;">
-    <p style="font-family:Georgia,serif;font-size:18px;color:#1A1A18;margin:0 0 16px 0;">${data.propertyName}</p>
-    ${data.destination ? `<p style="font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;margin:0 0 12px 0;">${data.destination}</p>` : ""}
+    <p style="font-family:${SERIF};font-size:20px;color:${PA.dark};margin:0 0 4px 0;">${data.propertyName}</p>
+    ${data.destination ? `<p style="font-family:${SANS};font-size:12px;color:${PA.stoneAA};margin:0 0 14px 0;letter-spacing:.08em;text-transform:uppercase;">${data.destination}</p>` : ""}
     <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">
-      <tr>
-        <td style="padding:6px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;">Check-in</td>
-        <td style="padding:6px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;">${data.checkIn}</td>
-      </tr>
-      <tr>
-        <td style="padding:6px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;">Check-out</td>
-        <td style="padding:6px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;">${data.checkOut}</td>
-      </tr>
-      <tr>
-        <td style="padding:6px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;">Guests</td>
-        <td style="padding:6px 0;font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;text-align:right;">${data.guests}</td>
-      </tr>
-      ${data.totalPrice ? `<tr>
-        <td style="padding:6px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;">Total</td>
-        <td style="padding:6px 0;font-family:Georgia,serif;font-size:16px;color:#1A1A18;text-align:right;">&euro;${data.totalPrice.toLocaleString()}</td>
-      </tr>` : ""}
-      <tr>
-        <td style="padding:6px 0;font-family:Arial,sans-serif;font-size:13px;color:#9E9A90;">Confirmation</td>
-        <td style="padding:6px 0;font-family:Arial,sans-serif;font-size:14px;color:#8B7355;text-align:right;font-weight:600;">${data.confirmationCode}</td>
-      </tr>
+      ${row(T.checkInLabel, formatStayDate(data.checkIn, lang))}
+      ${row(T.checkOutLabel, formatStayDate(data.checkOut, lang))}
+      ${row(T.guestsLabel, String(data.guests))}
+      ${data.totalPrice ? row(T.totalLabel, `&euro;${Math.round(data.totalPrice).toLocaleString(INTL_TAG[lang])}`, true) : ""}
+      ${row(T.codeLabel, `<span style="color:${PA.gold};font-weight:600;">${data.confirmationCode}</span>`)}
     </table>
   </td></tr>
 </table>
 </td></tr>
-
 <tr><td style="padding:0 0 20px 0;">
-  <p style="font-family:Arial,sans-serif;font-size:14px;color:#6B6860;line-height:1.6;margin:0;">
-    Your dedicated concierge will reach out within 2 hours to help you plan your stay, arrange services, and answer any questions.
-  </p>
+  <p style="font-family:${SANS};font-size:14px;color:${PA.earth};line-height:1.6;margin:0;">${T.conciergeLine}</p>
 </td></tr>
-
-<!-- WhatsApp CTA -->
 <tr><td style="padding:0 0 10px 0;text-align:center;">
-  <a href="${waLink}" target="_blank" style="display:inline-block;background:#1A1A18;color:#ffffff;font-family:Arial,sans-serif;font-size:13px;font-weight:600;text-decoration:none;padding:12px 24px;letter-spacing:0.04em;">CHAT WITH YOUR CONCIERGE</a>
-</td></tr>`);
+  <a href="${waLink}" target="_blank" style="display:inline-block;background:${PA.dark};color:#ffffff;font-family:${SANS};font-size:13px;font-weight:600;text-decoration:none;padding:14px 32px;letter-spacing:.06em;">${T.whatsappCta}</a>
+</td></tr>
+<tr><td style="padding:8px 0 0 0;">${conciergeSignature(lang, data.destination)}</td></tr>`, undefined, lang === "pt");
 
   await sendEmail(data.guestEmail, subject, html);
 }
@@ -318,38 +306,39 @@ interface PreArrivalData {
   checkIn: string;
   propertyAddress?: string;
   conciergePhone?: string;
+  destination?: string | null;
+  locality?: string | null;
+  locale?: string | null;
 }
 
 export async function sendPreArrival(input: PreArrivalData): Promise<void> {
+  const lang = emailLang(input.locale);
+  const T = LEGACY_I18N[lang];
   const data = { ...input, propertyName: sanitizePropertyName(input.propertyName) };
-  const subject = `Your stay at ${data.propertyName} begins in 3 days`;
+  const firstName = (data.guestName || "").trim().split(" ")[0];
+  const subject = T.arrivalSubject(data.propertyName);
   const phone = data.conciergePhone || "+351 258 358 434";
 
   const html = wrapTemplate(`
 <tr><td style="padding:0 0 24px 0;">
-  <h1 style="font-family:Georgia,serif;font-size:26px;color:#1A1A18;margin:0;font-weight:400;">Your home is being prepared.</h1>
+  <h1 style="font-family:${SERIF};font-size:28px;color:${PA.dark};margin:0;font-weight:400;">${T.arrivalHeadline}</h1>
 </td></tr>
 <tr><td style="padding:0 0 20px 0;">
-  <p style="font-family:Arial,sans-serif;font-size:15px;color:#6B6860;line-height:1.6;margin:0;">
-    Dear ${data.guestName.split(" ")[0]}, your stay at ${data.propertyName} begins on ${data.checkIn}. Our team is preparing everything for your arrival.
-  </p>
+  <p style="font-family:${SANS};font-size:15px;color:${PA.earth};line-height:1.6;margin:0;">${T.arrivalIntro(firstName, data.propertyName, formatStayDate(data.checkIn, lang))}</p>
 </td></tr>
-
 <tr><td style="padding:0 0 24px 0;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAFAF7;border:1px solid #E8E4DC;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PA.warm};border:1px solid ${PA.sand};">
   <tr><td style="padding:20px;">
-    ${data.propertyAddress ? `<p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;margin:0 0 8px 0;"><strong>Address:</strong> ${data.propertyAddress}</p>` : ""}
-    <p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;margin:0 0 8px 0;"><strong>Check-in:</strong> ${data.checkIn}</p>
-    <p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;margin:0;"><strong>Concierge:</strong> ${phone}</p>
+    ${data.propertyAddress ? `<p style="font-family:${SANS};font-size:14px;color:${PA.dark};margin:0 0 8px 0;"><strong>${T.addressLabel}:</strong> ${data.propertyAddress}</p>` : ""}
+    <p style="font-family:${SANS};font-size:14px;color:${PA.dark};margin:0 0 8px 0;"><strong>${T.checkInLabel}:</strong> ${formatStayDate(data.checkIn, lang)}</p>
+    <p style="font-family:${SANS};font-size:14px;color:${PA.dark};margin:0;"><strong>${T.conciergeLabel}:</strong> <a href="tel:${phone.replace(/\s+/g, "")}" style="color:${PA.gold};text-decoration:none;">${phone}</a></p>
   </td></tr>
 </table>
 </td></tr>
-
 <tr><td style="padding:0 0 10px 0;">
-  <p style="font-family:Arial,sans-serif;font-size:14px;color:#6B6860;line-height:1.6;margin:0;">
-    If you need anything before your arrival — grocery delivery, airport transfer, restaurant reservations — just reply to this email or call your concierge directly.
-  </p>
-</td></tr>`);
+  <p style="font-family:${SANS};font-size:14px;color:${PA.earth};line-height:1.6;margin:0;">${T.arrivalHelp}</p>
+</td></tr>
+<tr><td style="padding:8px 0 0 0;">${conciergeSignature(lang, data.destination, data.locality)}</td></tr>`, undefined, lang === "pt");
 
   await sendEmail(data.guestEmail, subject, html);
 }
@@ -362,39 +351,37 @@ interface PostStayData {
   guestEmail: string;
   propertyName: string;
   reviewLink?: string;
+  destination?: string | null;
+  locality?: string | null;
+  locale?: string | null;
 }
 
 export async function sendPostStay(input: PostStayData): Promise<void> {
+  const lang = emailLang(input.locale);
+  const T = LEGACY_I18N[lang];
   const data = { ...input, propertyName: sanitizePropertyName(input.propertyName) };
-  const subject = `How was your stay at ${data.propertyName}?`;
+  const firstName = (data.guestName || "").trim().split(" ")[0];
+  const subject = T.postSubject(data.propertyName);
   const reviewUrl = data.reviewLink || "https://g.page/r/portugalactive/review";
-  const homesUrl = "https://www.portugalactive.com/homes";
+  const homesUrl = `https://www.portugalactive.com/${lang}/homes`;
 
   const html = wrapTemplate(`
 <tr><td style="padding:0 0 24px 0;">
-  <h1 style="font-family:Georgia,serif;font-size:26px;color:#1A1A18;margin:0;font-weight:400;">Thank you for staying with us.</h1>
+  <h1 style="font-family:${SERIF};font-size:28px;color:${PA.dark};margin:0;font-weight:400;">${T.postHeadline}</h1>
 </td></tr>
 <tr><td style="padding:0 0 20px 0;">
-  <p style="font-family:Arial,sans-serif;font-size:15px;color:#6B6860;line-height:1.6;margin:0;">
-    Dear ${data.guestName.split(" ")[0]}, we hope you had a wonderful time at ${data.propertyName}. It was a pleasure hosting you.
-  </p>
+  <p style="font-family:${SANS};font-size:15px;color:${PA.earth};line-height:1.6;margin:0;">${T.postIntro(firstName, data.propertyName)}</p>
 </td></tr>
-
 <tr><td style="padding:0 0 20px 0;">
-  <p style="font-family:Arial,sans-serif;font-size:14px;color:#6B6860;line-height:1.6;margin:0;">
-    Your feedback means the world to us — and to future guests considering a stay with Portugal Active.
-  </p>
+  <p style="font-family:${SANS};font-size:14px;color:${PA.earth};line-height:1.6;margin:0;">${T.postFeedback}</p>
 </td></tr>
-
-<!-- Review CTA -->
 <tr><td style="padding:0 0 16px 0;text-align:center;">
-  <a href="${reviewUrl}" target="_blank" style="display:inline-block;background:#1A1A18;color:#ffffff;font-family:Arial,sans-serif;font-size:13px;font-weight:600;text-decoration:none;padding:12px 24px;letter-spacing:0.04em;">LEAVE A REVIEW</a>
+  <a href="${reviewUrl}" target="_blank" style="display:inline-block;background:${PA.dark};color:#ffffff;font-family:${SANS};font-size:13px;font-weight:600;text-decoration:none;padding:14px 32px;letter-spacing:.06em;">${T.reviewCta}</a>
 </td></tr>
-
-<!-- Explore CTA -->
 <tr><td style="padding:0 0 10px 0;text-align:center;">
-  <a href="${homesUrl}" target="_blank" style="display:inline-block;background:transparent;color:#8B7355;font-family:Arial,sans-serif;font-size:13px;font-weight:600;text-decoration:none;padding:12px 24px;letter-spacing:0.04em;border:1px solid #8B7355;">EXPLORE MORE HOMES</a>
-</td></tr>`);
+  <a href="${homesUrl}" target="_blank" style="display:inline-block;color:${PA.gold};font-family:${SANS};font-size:13px;text-decoration:underline;text-underline-offset:3px;">${T.exploreCta}</a>
+</td></tr>
+<tr><td style="padding:8px 0 0 0;">${conciergeSignature(lang, data.destination, data.locality)}</td></tr>`, undefined, lang === "pt");
 
   await sendEmail(data.guestEmail, subject, html);
 }
@@ -542,6 +529,23 @@ function brandFooter(pt: boolean): string {
   <p style="font-family:Georgia,serif;font-style:italic;font-size:12.5px;color:#9E9A90;margin:10px 0 0;">${pt ? "A privacidade de uma casa. O serviço de um hotel." : "The privacy of a home. The service of a hotel."}</p>
 </td></tr>`;
 }
+/** Signature block: the region's concierge when confirmed (name + photo),
+ *  otherwise Sara — never an anonymous "your concierge · Portugal Active"
+ *  (auditoria set/2026, N8). */
+function conciergeSignature(lang: EmailLang, destination?: string | null, locality?: string | null): string {
+  const C = CONFIRMATION_I18N[lang];
+  const signer = getEmailSigner(destination, locality);
+  const photo = signer.photo
+    ? `<img src="https://www.portugalactive.com${signer.photo}" alt="${signer.fullName}" width="44" height="44" style="display:block;border-radius:22px;width:44px;height:44px;object-fit:cover;margin:0 0 8px 0;" />`
+    : "";
+  return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:22px 0 0 0;"><tr><td style="border-left:2px solid ${PA.gold};padding:2px 0 2px 14px;">
+    ${photo}
+    <p style="font-family:${SANS};font-size:12.5px;color:${PA.stoneAA};margin:0 0 5px 0;">${C.regards}</p>
+    <p style="font-family:${SERIF};font-size:21px;color:${PA.dark};margin:0;letter-spacing:.2px;">${signer.name}</p>
+    <p style="font-family:${SANS};font-size:10.5px;color:${PA.gold};letter-spacing:.16em;text-transform:uppercase;margin:5px 0 0 0;">${C.yourConcierge}</p>
+  </td></tr></table>`;
+}
+
 /** Site display font with the email-safe serif fallback */
 const SERIF = "'Cormorant Garamond',Georgia,'Times New Roman',serif";
 const SANS = "'DM Sans',Arial,Helvetica,sans-serif";
@@ -713,11 +717,7 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
 
 <tr><td style="padding:0 0 8px 0;">
   <p style="font-family:${SANS};font-size:13.5px;color:${PA.earth};line-height:1.6;margin:0;">${closing}</p>
-  <table role="presentation" cellpadding="0" cellspacing="0" style="margin:22px 0 0 0;"><tr><td style="border-left:2px solid ${PA.gold};padding:2px 0 2px 14px;">
-    <p style="font-family:${SANS};font-size:12.5px;color:${PA.stoneAA};margin:0 0 5px 0;">${CONFIRMATION_I18N[lang].regards}</p>
-    <p style="font-family:${SERIF};font-size:21px;color:${PA.dark};margin:0;letter-spacing:.2px;">Sara</p>
-    <p style="font-family:${SANS};font-size:10.5px;color:${PA.gold};letter-spacing:.16em;text-transform:uppercase;margin:5px 0 0 0;">${CONFIRMATION_I18N[lang].yourConcierge} · Portugal Active</p>
-  </td></tr></table>
+  ${conciergeSignature(lang, data.destination)}
 </td></tr>
 
 <!-- Footer -->
@@ -1029,11 +1029,7 @@ ${ctaBlock}
 </td></tr>
 
 <tr><td style="padding:0 0 8px 0;">
-  <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0;"><tr><td style="border-left:2px solid ${PA.gold};padding:2px 0 2px 14px;">
-    <p style="font-family:${SANS};font-size:12.5px;color:${PA.stoneAA};margin:0 0 5px 0;">${C.regards}</p>
-    <p style="font-family:${SERIF};font-size:21px;color:${PA.dark};margin:0;letter-spacing:.2px;">Sara</p>
-    <p style="font-family:${SANS};font-size:10.5px;color:${PA.gold};letter-spacing:.16em;text-transform:uppercase;margin:5px 0 0 0;">${C.yourConcierge} · Portugal Active</p>
-  </td></tr></table>
+  ${conciergeSignature(lang, d.destination)}
 </td></tr>
 
 <!-- Footer -->

@@ -566,3 +566,207 @@ export const CONFIRMATION_I18N: Record<EmailLang, ConfirmationStrings> = {
     preheader: "Taloa valmistellaan jo. Conciergesi hoitaa kaiken tästä eteenpäin.",
   },
 };
+
+/* ── Legacy transactional emails (confirmation, pre-arrival, post-stay) ──
+   They were English-only, with the raw Guesty title and a "LEAVE A REVIEW"
+   button in capitals (auditoria set/2026). Same tone as the checkout v2
+   emails, nine languages, sentence case. ───────────────────────────────── */
+export interface LegacyStrings {
+  confirmSubject: (house: string) => string;
+  confirmHeadline: string;
+  confirmIntro: (name: string) => string;
+  checkInLabel: string;
+  checkOutLabel: string;
+  guestsLabel: string;
+  totalLabel: string;
+  codeLabel: string;
+  conciergeLine: string;
+  whatsappCta: string;
+  whatsappMsg: (house: string, code: string) => string;
+  arrivalSubject: (house: string) => string;
+  arrivalHeadline: string;
+  arrivalIntro: (name: string, house: string, date: string) => string;
+  addressLabel: string;
+  conciergeLabel: string;
+  arrivalHelp: string;
+  postSubject: (house: string) => string;
+  postHeadline: string;
+  postIntro: (name: string, house: string) => string;
+  postFeedback: string;
+  reviewCta: string;
+  exploreCta: string;
+}
+
+export const LEGACY_I18N: Record<EmailLang, LegacyStrings> = {
+  en: {
+    confirmSubject: (h) => `Your stay at ${h} is confirmed`,
+    confirmHeadline: "Your stay is confirmed.",
+    confirmIntro: (n) => `${n ? `Dear ${n}, thank` : "Thank"} you for choosing Portugal Active. We are already preparing everything for your arrival.`,
+    checkInLabel: "Check-in", checkOutLabel: "Check-out", guestsLabel: "Guests", totalLabel: "Total", codeLabel: "Confirmation",
+    conciergeLine: "Your concierge will be in touch within 2 hours to help plan your stay, arrange services and answer any question.",
+    whatsappCta: "Message your concierge",
+    whatsappMsg: (h, c) => `Hi, I just booked ${h} (${c}). Looking forward to my stay!`,
+    arrivalSubject: (h) => `Your stay at ${h} begins in 3 days`,
+    arrivalHeadline: "Your home is being prepared.",
+    arrivalIntro: (n, h, d) => `${n ? `Dear ${n}, your` : "Your"} stay at ${h} begins on ${d}. Our team is preparing everything for your arrival.`,
+    addressLabel: "Address", conciergeLabel: "Concierge",
+    arrivalHelp: "If you need anything before you arrive — groceries, an airport transfer, a restaurant table — reply to this email or message your concierge.",
+    postSubject: (h) => `How was your stay at ${h}?`,
+    postHeadline: "Thank you for staying with us.",
+    postIntro: (n, h) => `${n ? `Dear ${n}, we` : "We"} hope you had a wonderful time at ${h}. It was a pleasure to host you.`,
+    postFeedback: "Your feedback matters to us, and to the guests who will come after you.",
+    reviewCta: "Leave a review", exploreCta: "Discover our other homes",
+  },
+  pt: {
+    confirmSubject: (h) => `A sua estadia em ${h} está confirmada`,
+    confirmHeadline: "A sua estadia está confirmada.",
+    confirmIntro: (n) => `${n ? `${n}, obrigado` : "Obrigado"} por escolher a Portugal Active. Já estamos a preparar tudo para a sua chegada.`,
+    checkInLabel: "Check-in", checkOutLabel: "Check-out", guestsLabel: "Hóspedes", totalLabel: "Total", codeLabel: "Confirmação",
+    conciergeLine: "O seu concierge entra em contacto em 2 horas para ajudar a planear a estadia, organizar serviços e responder a qualquer questão.",
+    whatsappCta: "Falar com o concierge",
+    whatsappMsg: (h, c) => `Olá, acabei de reservar ${h} (${c}). Ansioso pela estadia!`,
+    arrivalSubject: (h) => `A sua estadia em ${h} começa daqui a 3 dias`,
+    arrivalHeadline: "A sua casa está a ser preparada.",
+    arrivalIntro: (n, h, d) => `${n ? `${n}, a` : "A"} sua estadia em ${h} começa a ${d}. A nossa equipa está a preparar tudo para a sua chegada.`,
+    addressLabel: "Morada", conciergeLabel: "Concierge",
+    arrivalHelp: "Se precisar de alguma coisa antes de chegar — compras, transfer do aeroporto, mesa num restaurante — responda a este email ou fale com o seu concierge.",
+    postSubject: (h) => `Como correu a sua estadia em ${h}?`,
+    postHeadline: "Obrigado por ficar connosco.",
+    postIntro: (n, h) => `${n ? `${n}, esperamos` : "Esperamos"} que tenha passado momentos maravilhosos em ${h}. Foi um prazer recebê-lo.`,
+    postFeedback: "A sua opinião conta para nós, e para os hóspedes que vierem a seguir.",
+    reviewCta: "Deixar uma avaliação", exploreCta: "Descobrir as nossas outras casas",
+  },
+  es: {
+    confirmSubject: (h) => `Su estancia en ${h} está confirmada`,
+    confirmHeadline: "Su estancia está confirmada.",
+    confirmIntro: (n) => `${n ? `${n}, gracias` : "Gracias"} por elegir Portugal Active. Ya estamos preparando todo para su llegada.`,
+    checkInLabel: "Check-in", checkOutLabel: "Check-out", guestsLabel: "Huéspedes", totalLabel: "Total", codeLabel: "Confirmación",
+    conciergeLine: "Su concierge se pondrá en contacto en 2 horas para ayudarle a planificar la estancia, organizar servicios y responder a cualquier pregunta.",
+    whatsappCta: "Escribir al concierge",
+    whatsappMsg: (h, c) => `Hola, acabo de reservar ${h} (${c}). ¡Con ganas de la estancia!`,
+    arrivalSubject: (h) => `Su estancia en ${h} empieza en 3 días`,
+    arrivalHeadline: "Su casa se está preparando.",
+    arrivalIntro: (n, h, d) => `${n ? `${n}, su` : "Su"} estancia en ${h} empieza el ${d}. Nuestro equipo está preparando todo para su llegada.`,
+    addressLabel: "Dirección", conciergeLabel: "Concierge",
+    arrivalHelp: "Si necesita algo antes de llegar — la compra, un traslado desde el aeropuerto, una mesa en un restaurante — responda a este correo o escriba a su concierge.",
+    postSubject: (h) => `¿Qué tal su estancia en ${h}?`,
+    postHeadline: "Gracias por alojarse con nosotros.",
+    postIntro: (n, h) => `${n ? `${n}, esperamos` : "Esperamos"} que haya disfrutado de ${h}. Ha sido un placer recibirle.`,
+    postFeedback: "Su opinión nos importa, a nosotros y a los huéspedes que vendrán después.",
+    reviewCta: "Dejar una reseña", exploreCta: "Descubrir nuestras otras casas",
+  },
+  fr: {
+    confirmSubject: (h) => `Votre séjour à ${h} est confirmé`,
+    confirmHeadline: "Votre séjour est confirmé.",
+    confirmIntro: (n) => `${n ? `${n}, merci` : "Merci"} d'avoir choisi Portugal Active. Nous préparons déjà tout pour votre arrivée.`,
+    checkInLabel: "Arrivée", checkOutLabel: "Départ", guestsLabel: "Voyageurs", totalLabel: "Total", codeLabel: "Confirmation",
+    conciergeLine: "Votre concierge vous contactera sous 2 heures pour vous aider à préparer votre séjour, organiser les services et répondre à vos questions.",
+    whatsappCta: "Écrire au concierge",
+    whatsappMsg: (h, c) => `Bonjour, je viens de réserver ${h} (${c}). Hâte d'y être !`,
+    arrivalSubject: (h) => `Votre séjour à ${h} commence dans 3 jours`,
+    arrivalHeadline: "Votre maison se prépare.",
+    arrivalIntro: (n, h, d) => `${n ? `${n}, votre` : "Votre"} séjour à ${h} commence le ${d}. Notre équipe prépare tout pour votre arrivée.`,
+    addressLabel: "Adresse", conciergeLabel: "Concierge",
+    arrivalHelp: "S'il vous faut quoi que ce soit avant d'arriver — courses, transfert depuis l'aéroport, table au restaurant — répondez à cet e-mail ou écrivez à votre concierge.",
+    postSubject: (h) => `Comment s'est passé votre séjour à ${h} ?`,
+    postHeadline: "Merci d'avoir séjourné chez nous.",
+    postIntro: (n, h) => `${n ? `${n}, nous` : "Nous"} espérons que vous avez passé de merveilleux moments à ${h}. Ce fut un plaisir de vous accueillir.`,
+    postFeedback: "Votre avis compte pour nous, et pour les voyageurs qui viendront après vous.",
+    reviewCta: "Laisser un avis", exploreCta: "Découvrir nos autres maisons",
+  },
+  it: {
+    confirmSubject: (h) => `Il suo soggiorno a ${h} è confermato`,
+    confirmHeadline: "Il suo soggiorno è confermato.",
+    confirmIntro: (n) => `${n ? `${n}, grazie` : "Grazie"} per aver scelto Portugal Active. Stiamo già preparando tutto per il suo arrivo.`,
+    checkInLabel: "Check-in", checkOutLabel: "Check-out", guestsLabel: "Ospiti", totalLabel: "Totale", codeLabel: "Conferma",
+    conciergeLine: "Il suo concierge la contatterà entro 2 ore per aiutarla a organizzare il soggiorno, prenotare i servizi e rispondere a ogni domanda.",
+    whatsappCta: "Scrivere al concierge",
+    whatsappMsg: (h, c) => `Salve, ho appena prenotato ${h} (${c}). Non vedo l'ora!`,
+    arrivalSubject: (h) => `Il suo soggiorno a ${h} inizia tra 3 giorni`,
+    arrivalHeadline: "La sua casa si sta preparando.",
+    arrivalIntro: (n, h, d) => `${n ? `${n}, il` : "Il"} suo soggiorno a ${h} inizia il ${d}. Il nostro team sta preparando tutto per il suo arrivo.`,
+    addressLabel: "Indirizzo", conciergeLabel: "Concierge",
+    arrivalHelp: "Se le serve qualcosa prima di arrivare — la spesa, un transfer dall'aeroporto, un tavolo al ristorante — risponda a questa email o scriva al suo concierge.",
+    postSubject: (h) => `Com'è andato il suo soggiorno a ${h}?`,
+    postHeadline: "Grazie per aver soggiornato con noi.",
+    postIntro: (n, h) => `${n ? `${n}, speriamo` : "Speriamo"} che abbia trascorso momenti meravigliosi a ${h}. È stato un piacere averla ospite.`,
+    postFeedback: "La sua opinione conta per noi, e per gli ospiti che verranno dopo di lei.",
+    reviewCta: "Lasciare una recensione", exploreCta: "Scoprire le nostre altre case",
+  },
+  de: {
+    confirmSubject: (h) => `Ihr Aufenthalt in ${h} ist bestätigt`,
+    confirmHeadline: "Ihr Aufenthalt ist bestätigt.",
+    confirmIntro: (n) => `${n ? `${n}, vielen` : "Vielen"} Dank, dass Sie sich für Portugal Active entschieden haben. Wir bereiten bereits alles für Ihre Ankunft vor.`,
+    checkInLabel: "Check-in", checkOutLabel: "Check-out", guestsLabel: "Gäste", totalLabel: "Gesamt", codeLabel: "Bestätigung",
+    conciergeLine: "Ihr Concierge meldet sich innerhalb von 2 Stunden, um Ihren Aufenthalt zu planen, Leistungen zu organisieren und Ihre Fragen zu beantworten.",
+    whatsappCta: "Concierge anschreiben",
+    whatsappMsg: (h, c) => `Hallo, ich habe gerade ${h} gebucht (${c}). Ich freue mich auf den Aufenthalt!`,
+    arrivalSubject: (h) => `Ihr Aufenthalt in ${h} beginnt in 3 Tagen`,
+    arrivalHeadline: "Ihr Haus wird vorbereitet.",
+    arrivalIntro: (n, h, d) => `${n ? `${n}, Ihr` : "Ihr"} Aufenthalt in ${h} beginnt am ${d}. Unser Team bereitet alles für Ihre Ankunft vor.`,
+    addressLabel: "Adresse", conciergeLabel: "Concierge",
+    arrivalHelp: "Wenn Sie vor der Anreise etwas brauchen — Einkäufe, einen Flughafentransfer, einen Tisch im Restaurant — antworten Sie auf diese E-Mail oder schreiben Sie Ihrem Concierge.",
+    postSubject: (h) => `Wie war Ihr Aufenthalt in ${h}?`,
+    postHeadline: "Danke, dass Sie bei uns waren.",
+    postIntro: (n, h) => `${n ? `${n}, wir` : "Wir"} hoffen, Sie hatten eine wunderbare Zeit in ${h}. Es war uns eine Freude, Sie zu Gast zu haben.`,
+    postFeedback: "Ihre Meinung ist uns wichtig — und den Gästen, die nach Ihnen kommen.",
+    reviewCta: "Bewertung schreiben", exploreCta: "Unsere anderen Häuser entdecken",
+  },
+  nl: {
+    confirmSubject: (h) => `Uw verblijf in ${h} is bevestigd`,
+    confirmHeadline: "Uw verblijf is bevestigd.",
+    confirmIntro: (n) => `${n ? `${n}, bedankt` : "Bedankt"} dat u voor Portugal Active heeft gekozen. We bereiden alles al voor op uw aankomst.`,
+    checkInLabel: "Check-in", checkOutLabel: "Check-out", guestsLabel: "Gasten", totalLabel: "Totaal", codeLabel: "Bevestiging",
+    conciergeLine: "Uw concierge neemt binnen 2 uur contact op om uw verblijf te plannen, diensten te regelen en al uw vragen te beantwoorden.",
+    whatsappCta: "Stuur uw concierge een bericht",
+    whatsappMsg: (h, c) => `Hallo, ik heb zojuist ${h} geboekt (${c}). Ik kijk uit naar het verblijf!`,
+    arrivalSubject: (h) => `Uw verblijf in ${h} begint over 3 dagen`,
+    arrivalHeadline: "Uw huis wordt klaargemaakt.",
+    arrivalIntro: (n, h, d) => `${n ? `${n}, uw` : "Uw"} verblijf in ${h} begint op ${d}. Ons team maakt alles klaar voor uw aankomst.`,
+    addressLabel: "Adres", conciergeLabel: "Concierge",
+    arrivalHelp: "Heeft u vóór aankomst iets nodig — boodschappen, een luchthaventransfer, een tafel in een restaurant — beantwoord dan deze e-mail of stuur uw concierge een bericht.",
+    postSubject: (h) => `Hoe was uw verblijf in ${h}?`,
+    postHeadline: "Bedankt dat u bij ons verbleef.",
+    postIntro: (n, h) => `${n ? `${n}, we` : "We"} hopen dat u een prachtige tijd had in ${h}. Het was een genoegen u te ontvangen.`,
+    postFeedback: "Uw mening telt voor ons, en voor de gasten die na u komen.",
+    reviewCta: "Een beoordeling achterlaten", exploreCta: "Onze andere huizen ontdekken",
+  },
+  sv: {
+    confirmSubject: (h) => `Din vistelse på ${h} är bekräftad`,
+    confirmHeadline: "Din vistelse är bekräftad.",
+    confirmIntro: (n) => `${n ? `${n}, tack` : "Tack"} för att du valde Portugal Active. Vi förbereder redan allt inför din ankomst.`,
+    checkInLabel: "Incheckning", checkOutLabel: "Utcheckning", guestsLabel: "Gäster", totalLabel: "Totalt", codeLabel: "Bekräftelse",
+    conciergeLine: "Din concierge hör av sig inom 2 timmar för att hjälpa dig planera vistelsen, ordna tjänster och svara på alla frågor.",
+    whatsappCta: "Skriv till din concierge",
+    whatsappMsg: (h, c) => `Hej, jag har precis bokat ${h} (${c}). Ser fram emot vistelsen!`,
+    arrivalSubject: (h) => `Din vistelse på ${h} börjar om 3 dagar`,
+    arrivalHeadline: "Ditt hem förbereds.",
+    arrivalIntro: (n, h, d) => `${n ? `${n}, din` : "Din"} vistelse på ${h} börjar den ${d}. Vårt team förbereder allt inför din ankomst.`,
+    addressLabel: "Adress", conciergeLabel: "Concierge",
+    arrivalHelp: "Behöver du något innan du anländer — matvaror, flygplatstransfer, ett restaurangbord — svara på det här mejlet eller skriv till din concierge.",
+    postSubject: (h) => `Hur var din vistelse på ${h}?`,
+    postHeadline: "Tack för att du bodde hos oss.",
+    postIntro: (n, h) => `${n ? `${n}, vi` : "Vi"} hoppas att du hade en underbar tid på ${h}. Det var ett nöje att ha dig som gäst.`,
+    postFeedback: "Din åsikt betyder mycket för oss, och för gästerna som kommer efter dig.",
+    reviewCta: "Lämna ett omdöme", exploreCta: "Upptäck våra andra hem",
+  },
+  fi: {
+    confirmSubject: (h) => `Oleskelusi kohteessa ${h} on vahvistettu`,
+    confirmHeadline: "Oleskelusi on vahvistettu.",
+    confirmIntro: (n) => `${n ? `${n}, kiitos` : "Kiitos"}, että valitsit Portugal Activen. Valmistelemme jo kaiken saapumistasi varten.`,
+    checkInLabel: "Sisäänkirjautuminen", checkOutLabel: "Uloskirjautuminen", guestsLabel: "Vieraat", totalLabel: "Yhteensä", codeLabel: "Vahvistus",
+    conciergeLine: "Conciergesi ottaa yhteyttä 2 tunnin kuluessa auttaakseen oleskelun suunnittelussa, palveluiden järjestämisessä ja kysymyksissä.",
+    whatsappCta: "Viesti conciergelle",
+    whatsappMsg: (h, c) => `Hei, varasin juuri kohteen ${h} (${c}). Odotan innolla!`,
+    arrivalSubject: (h) => `Oleskelusi kohteessa ${h} alkaa 3 päivän kuluttua`,
+    arrivalHeadline: "Kotiasi valmistellaan.",
+    arrivalIntro: (n, h, d) => `${n ? `${n}, oleskelusi` : "Oleskelusi"} kohteessa ${h} alkaa ${d}. Tiimimme valmistelee kaiken saapumistasi varten.`,
+    addressLabel: "Osoite", conciergeLabel: "Concierge",
+    arrivalHelp: "Jos tarvitset jotain ennen saapumista — ostoksia, lentokenttäkuljetuksen, ravintolapöydän — vastaa tähän sähköpostiin tai lähetä viesti conciergellesi.",
+    postSubject: (h) => `Millainen oleskelusi kohteessa ${h} oli?`,
+    postHeadline: "Kiitos, että majoituit meillä.",
+    postIntro: (n, h) => `${n ? `${n}, toivomme` : "Toivomme"}, että vietit ihania hetkiä kohteessa ${h}. Oli ilo saada sinut vieraaksemme.`,
+    postFeedback: "Mielipiteesi on meille tärkeä, ja niille vieraille, jotka tulevat sinun jälkeesi.",
+    reviewCta: "Jätä arvostelu", exploreCta: "Tutustu muihin koteihimme",
+  },
+};
