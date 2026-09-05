@@ -198,7 +198,7 @@ export default function BlogArticle() {
           <Link href="/blog" className="inline-flex items-center gap-2 text-[0.8125rem] text-[#726D63] hover:text-[#1A1A18] transition-colors mb-8">
             <ArrowLeft className="w-4 h-4" /> {t('blogArticle.backToJournal')}
           </Link>
-          <p className="overline mb-4">{article.category.replace('-', ' ')}</p>
+          <p className="eyebrow mb-4">{article.category.replace('-', ' ')}</p>
           <h1 className="text-[#1A1A18] mb-6">{article.title}</h1>
           <div className="flex flex-wrap items-center gap-4 text-sm text-[#726D63]">
             <span className="flex items-center gap-1.5">
@@ -326,7 +326,7 @@ export default function BlogArticle() {
       {/* Contextual CTA */}
       <section className="py-12 lg:py-16" style={{ backgroundColor: '#1A1A18' }}>
         <div className="container max-w-2xl mx-auto text-center">
-          <p className="overline mb-3" style={{ color: '#C4A87C' }}>{t('blogArticle.ctaSubtitle')}</p>
+          <p className="eyebrow mb-3" style={{ color: '#C4A87C' }}>{t('blogArticle.ctaSubtitle')}</p>
           <h3 className="headline-md mb-4" style={{ color: '#FAFAF7' }}>
             {t('blogArticle.ctaTitle')}
           </h3>
@@ -408,7 +408,7 @@ export default function BlogArticle() {
                       decoding="async"
                     />
                   </div>
-                  <p className="overline mb-2">{a.category.replace('-', ' ')}</p>
+                  <p className="eyebrow mb-2">{a.category.replace('-', ' ')}</p>
                   <h3 className="text-lg font-display text-[#1A1A18] group-hover:text-[#8B7355] transition-colors line-clamp-2">
                     {a.title}
                   </h3>

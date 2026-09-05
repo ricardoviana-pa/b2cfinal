@@ -16,7 +16,7 @@ export default function Privacy() {
       <div className="pt-[72px]" />
       <section className="section-padding">
         <div className="container max-w-[800px] mx-auto">
-          <p className="overline mb-4">{t('privacy.overline')}</p>
+          <p className="eyebrow mb-4">{t('privacy.overline')}</p>
           <h1 className="headline-lg text-[#1A1A18] mb-8">{t('privacy.title')}</h1>
           <div>
             <p className="body-lg mb-6" style={{ textTransform: 'none' }}>{t('privacy.lastUpdated')}</p>

@@ -6,7 +6,7 @@
  * values, ~1 000 `text-[NNpx]` sizes, ~490 inline `style={{}}` and ~200
  * inline fontFamily. The tokens already exist (index.css @theme: --color-pa-*,
  * --font-display/--font-body; the .headline-* / .body-* / .caption /
- * .overline scale). This rewrites the mechanical cases and leaves anything
+ * .eyebrow scale). This rewrites the mechanical cases and leaves anything
  * ambiguous alone.
  *
  * Usage:
@@ -31,8 +31,8 @@
  *        14px, text-sm            → body-sm
  *        13 / 13.5 / 12.5px       → body-sm
  *        12px, text-xs            → caption
- *        11 / 11.5px              → overline when `uppercase` is present, else caption
- *        10 / 9px                 → overline when `uppercase`, else caption
+ *        11 / 11.5px              → eyebrow when `uppercase` is present, else caption
+ *        10 / 9px                 → eyebrow when `uppercase`, else caption
  *      text-[clamp(...)] → headline-sm/md/lg/xl by the clamp's maximum.
  *   Weight, leading and tracking utilities on the element keep winning
  *   (utilities beat component classes), so the layout does not move.
@@ -86,7 +86,7 @@ function scaleFor(token, hasUpper) {
   if (n >= 14 && n <= 15) return "body-sm";
   if (n >= 12.5 && n < 14) return "body-sm";
   if (n === 12) return "caption";
-  if (n >= 9 && n < 12) return hasUpper ? "overline" : "caption";
+  if (n >= 9 && n < 12) return hasUpper ? "eyebrow" : "caption";
   if (n > 15 && n <= 18) return "body-lg";
   if (n === 15 || n === 15.5) return "body-md";
   return null;

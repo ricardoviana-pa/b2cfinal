@@ -27,7 +27,7 @@ export default function NotFound() {
       <section className="py-20 md:py-28 lg:py-32">
         <div className="container max-w-[1100px]">
           <div className="text-center mb-16 md:mb-20">
-            <p className="overline mb-5" style={{ color: '#C4A87C' }}>{t('notFound.overline')}</p>
+            <p className="eyebrow mb-5" style={{ color: '#C4A87C' }}>{t('notFound.overline')}</p>
             <h1
               className="font-display font-light text-[#1A1A18] mb-4"
               style={{ fontSize: 'clamp(1.75rem, 4vw, 3rem)', lineHeight: 1.15 }}
@@ -44,7 +44,7 @@ export default function NotFound() {
 
           {suggestions.length > 0 && (
             <div>
-              <p className="overline text-center mb-8">{t('notFound.suggestions')}</p>
+              <p className="eyebrow text-center mb-8">{t('notFound.suggestions')}</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                 {suggestions.map(property => (
                   <PropertyCard key={property.id} property={property} />

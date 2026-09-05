@@ -185,7 +185,7 @@ export default function AnswerCapsule({
           'relative border-l-2 border-[#8B7355] bg-[#F5F1EB]/60 pl-5 pr-4 py-5 md:pl-6 md:pr-5 md:py-6 rounded-r-sm'
         }
       >
-        <p className="overline mb-2" style={{ color: '#8B7355' }}>
+        <p className="eyebrow mb-2" style={{ color: '#8B7355' }}>
           Quick answer
         </p>
         <p

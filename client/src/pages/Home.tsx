@@ -748,7 +748,7 @@ export default function Home() {
                     {item.icon}
                   </div>
                   {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
-                  <p className="overline font-medium uppercase leading-tight tracking-[0.08em] text-pa-dark sm:text-[10px] sm:tracking-[0.1em] md:text-[11px] md:tracking-[0.12em]">{item.title}</p>
+                  <p className="eyebrow font-medium uppercase leading-tight tracking-[0.08em] text-pa-dark sm:text-[10px] sm:tracking-[0.1em] md:text-[11px] md:tracking-[0.12em]">{item.title}</p>
                   {/* eslint-disable-next-line no-restricted-syntax -- responsive size; the type scale takes no breakpoint variants */}
                   <p className="mt-1 max-w-none caption leading-tight text-pa-stone sm:text-[10px] sm:leading-snug md:text-[12px] md:leading-[1.55] font-body font-light" >{item.sub}</p>
                 </>
@@ -838,7 +838,7 @@ export default function Home() {
                 >
                   {stat.value}
                 </p>
-                <p className="mt-2 overline tracking-[0.18em] uppercase text-pa-gold font-body" >
+                <p className="mt-2 eyebrow tracking-[0.18em] uppercase text-pa-gold font-body" >
                   {stat.label}
                 </p>
               </div>
@@ -982,7 +982,7 @@ export default function Home() {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                     {dest.comingSoon && (
-                      <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 overline font-medium tracking-[0.06em] uppercase text-pa-earth">
+                      <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 eyebrow font-medium tracking-[0.06em] uppercase text-pa-earth">
                         {t('home.destComingSoon', 'Coming soon')}
                       </span>
                     )}

@@ -472,7 +472,7 @@ function DescriptionSection({ description, sections, propertyName, locality, des
           {visibleBlocks.map((b) => (
             <div key={b.key} className={b.label ? '' : 'body-lg'}>
               {b.label && (
-                <h3 className="overline font-semibold tracking-[0.12em] uppercase text-pa-stone mb-2.5">{labelFor(b)}</h3>
+                <h3 className="eyebrow font-semibold tracking-[0.12em] uppercase text-pa-stone mb-2.5">{labelFor(b)}</h3>
               )}
               <div className={b.label ? 'space-y-3 body-sm text-pa-earth leading-relaxed' : 'space-y-4'} style={b.label ? { fontWeight: 300 } : undefined}>
                 {b.paragraphs.map((para, i) => <p key={i}>{para}</p>)}
@@ -1086,7 +1086,7 @@ export default function PropertyDetail() {
           a claim only converts sceptics when it names its mechanism. Every line
           here is unconditionally true (F1 honesty rule). */}
       <div className="mt-6 pt-5 border-t border-pa-sand">
-        <p className="overline font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-3">
+        <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-3">
           {t('trust.directHeadline', 'Why book direct')}
         </p>
         <div className="flex flex-col gap-2.5">
@@ -1200,7 +1200,7 @@ export default function PropertyDetail() {
             </span>
             <button
               onClick={e => { e.stopPropagation(); setLightboxImage(currentImage); setLightboxOpen(true); }}
-              className="pointer-events-auto rounded-full bg-white/90 backdrop-blur-sm text-pa-dark px-5 py-2.5 min-h-[44px] hover:bg-white transition-colors overline font-medium tracking-[0.12em] uppercase"
+              className="pointer-events-auto rounded-full bg-white/90 backdrop-blur-sm text-pa-dark px-5 py-2.5 min-h-[44px] hover:bg-white transition-colors eyebrow font-medium tracking-[0.12em] uppercase"
             >
               {t('propertyDetail.viewAll')}
             </button>
@@ -1235,7 +1235,7 @@ export default function PropertyDetail() {
                 {idx === 4 && totalImages > 5 && (
                   <button
                     onClick={e => { e.stopPropagation(); setLightboxImage(0); setLightboxOpen(true); }}
-                    className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm text-pa-dark px-4 py-2 overline font-medium tracking-[0.08em] uppercase rounded-full hover:bg-white transition-colors z-10"
+                    className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm text-pa-dark px-4 py-2 eyebrow font-medium tracking-[0.08em] uppercase rounded-full hover:bg-white transition-colors z-10"
                   >
                     {t('propertyDetail.viewAll')} ({totalImages})
                   </button>
@@ -1248,10 +1248,10 @@ export default function PropertyDetail() {
         {/* Title, location, key stats — below hero */}
         <div className="container pt-8 lg:pt-10 pb-4">
           <div className="flex items-center gap-3 mb-3">
-            <p className="overline font-medium tracking-[0.12em] text-pa-gold uppercase">{destName}</p>
+            <p className="eyebrow font-medium tracking-[0.12em] text-pa-gold uppercase">{destName}</p>
             <span className="h-px flex-1 max-w-[60px] bg-pa-sand" />
             {property.tier === 'signature' && (
-              <span className="inline-flex items-center gap-1 overline font-medium tracking-[0.04em] uppercase text-pa-dark bg-pa-warm px-2.5 py-1 rounded-full">
+              <span className="inline-flex items-center gap-1 eyebrow font-medium tracking-[0.04em] uppercase text-pa-dark bg-pa-warm px-2.5 py-1 rounded-full">
                 <Flame size={11} className="text-pa-gold" /> {t('urgency.highDemand', 'High demand')}
               </span>
             )}
@@ -1369,7 +1369,7 @@ export default function PropertyDetail() {
                         <div key={group.category} className="break-inside-avoid mb-6">
                           <div className="flex items-center gap-2 mb-2.5">
                             <group.icon size={13} className="text-pa-gold shrink-0" />
-                            <h3 className="overline font-semibold tracking-[0.14em] uppercase text-pa-stone">{t(group.label)}</h3>
+                            <h3 className="eyebrow font-semibold tracking-[0.14em] uppercase text-pa-stone">{t(group.label)}</h3>
                           </div>
                           <ul className="space-y-1.5">
                             {group.items.map((item, idx) => (
@@ -1389,7 +1389,7 @@ export default function PropertyDetail() {
                               <div key={group.category} className="break-inside-avoid mb-6">
                                 <div className="flex items-center gap-2 mb-2.5">
                                   <group.icon size={13} className="text-pa-gold shrink-0" />
-                                  <h3 className="overline font-semibold tracking-[0.14em] uppercase text-pa-stone">{t(group.label)}</h3>
+                                  <h3 className="eyebrow font-semibold tracking-[0.14em] uppercase text-pa-stone">{t(group.label)}</h3>
                                 </div>
                                 <ul className="space-y-1.5">
                                   {group.items.map((item, idx) => (
@@ -1434,7 +1434,7 @@ export default function PropertyDetail() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-7">
                     {property.rooms.map((room: any, roomIdx: number) => (
                       <div key={roomIdx} className="pt-4 border-t border-pa-sand">
-                        <h3 className="overline font-semibold tracking-[0.12em] uppercase text-pa-stone mb-3">{localizeRoomName(room.name, t)}</h3>
+                        <h3 className="eyebrow font-semibold tracking-[0.12em] uppercase text-pa-stone mb-3">{localizeRoomName(room.name, t)}</h3>
                         {room.beds && room.beds.length > 0 ? (
                           <div className="space-y-2.5">
                             {room.beds.map((bed: any, bedIdx: number) => {
@@ -1489,7 +1489,7 @@ export default function PropertyDetail() {
                   One team, one standard — on every home. */}
               <section className="py-6 lg:py-10 text-center">
                 <span className="mx-auto block h-px w-10 bg-[#C9A876]/70 mb-7" />
-                <p className="overline font-semibold tracking-[0.2em] uppercase text-pa-gold mb-4">{t('propertyDetail.inHouseOverline', 'One team, one standard')}</p>
+                <p className="eyebrow font-semibold tracking-[0.2em] uppercase text-pa-gold mb-4">{t('propertyDetail.inHouseOverline', 'One team, one standard')}</p>
                 <h2 className="font-display headline-md font-light leading-[1.3] text-pa-dark mb-5 max-w-[34rem] mx-auto">{t('propertyDetail.inHouseTitle', 'Everything here is ours — chefs, drivers, therapists, guides.')}</h2>
                 <p className="body-sm text-pa-earth leading-relaxed max-w-[40rem] mx-auto font-light" >{t('propertyDetail.inHouseBody', 'Not a marketplace of strangers. Every service and experience is run by our own in-house team and trusted local partners we work with daily — booked, coordinated, and accountable through one concierge. The way a great hotel operates, in a private home.')}</p>
               </section>
@@ -1524,7 +1524,7 @@ export default function PropertyDetail() {
                         ) : null}
                       </div>
                       <div className="p-5">
-                        <p className="overline font-medium tracking-[0.12em] uppercase text-pa-gold mb-2">{t('propertyDetail.serviceOverline', 'Concierge service')}</p>
+                        <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold mb-2">{t('propertyDetail.serviceOverline', 'Concierge service')}</p>
                         <h3 className="font-display body-lg text-pa-dark mb-1.5 group-hover:text-pa-gold transition-colors">{service.name}</h3>
                         <p className="body-sm text-pa-earth leading-relaxed mb-4 line-clamp-2 font-light" >{service.tagline}</p>
                         <div className="flex items-baseline justify-between pt-3 border-t border-pa-sand">
@@ -1532,7 +1532,7 @@ export default function PropertyDetail() {
                             {service.priceFrom ? t('propertyDetail.fromPrice', { price: Math.round(service.priceFrom).toLocaleString(intlLocale(i18n.language)) }) : t('bookingWidget.included')}
                             <span className="caption text-pa-stone font-normal ml-1">{service.priceSuffix}</span>
                           </p>
-                          <span className="inline-flex items-center gap-1.5 overline font-medium tracking-[0.06em] uppercase text-pa-gold group-hover:text-pa-dark transition-colors">
+                          <span className="inline-flex items-center gap-1.5 eyebrow font-medium tracking-[0.06em] uppercase text-pa-gold group-hover:text-pa-dark transition-colors">
                             {t('propertyDetail.requestService', 'Request')} <ArrowRight className="w-3 h-3" />
                           </span>
                         </div>
@@ -1572,7 +1572,7 @@ export default function PropertyDetail() {
                             {meta.length > 0 && (
                               <div className="absolute bottom-3 left-3 right-3 flex flex-wrap gap-1.5">
                                 {meta.slice(0, 2).map((m, i) => (
-                                  <span key={i} className="overline tracking-[0.06em] uppercase font-medium px-2 py-1 bg-black/60 text-white backdrop-blur-sm rounded-full">
+                                  <span key={i} className="eyebrow tracking-[0.06em] uppercase font-medium px-2 py-1 bg-black/60 text-white backdrop-blur-sm rounded-full">
                                     {m}
                                   </span>
                                 ))}
@@ -1580,7 +1580,7 @@ export default function PropertyDetail() {
                             )}
                           </div>
                           <div className="p-5">
-                            <p className="overline font-medium tracking-[0.12em] uppercase text-pa-gold mb-2">{t('propertyDetail.adventureOverline', 'Curated experience')}</p>
+                            <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold mb-2">{t('propertyDetail.adventureOverline', 'Curated experience')}</p>
                             <h3 className="font-display body-lg text-pa-dark mb-1.5 group-hover:text-pa-gold transition-colors">{adventure.name}</h3>
                             <p className="body-sm text-pa-earth leading-relaxed mb-4 line-clamp-2 font-light" >{adventure.tagline}</p>
                             <div className="flex items-baseline justify-between pt-3 border-t border-pa-sand">
@@ -1588,7 +1588,7 @@ export default function PropertyDetail() {
                                 {adventure.priceFrom ? t('propertyDetail.fromPrice', { price: Math.round(adventure.priceFrom).toLocaleString(intlLocale(i18n.language)) }) : t('propertyDetail.custom')}
                                 <span className="caption text-pa-stone font-normal ml-1">{adventure.priceSuffix}</span>
                               </p>
-                              <span className="inline-flex items-center gap-1.5 overline font-medium tracking-[0.06em] uppercase text-pa-gold group-hover:text-pa-dark transition-colors">
+                              <span className="inline-flex items-center gap-1.5 eyebrow font-medium tracking-[0.06em] uppercase text-pa-gold group-hover:text-pa-dark transition-colors">
                                 {t('propertyDetail.viewDetails', 'View')} <ArrowRight className="w-3 h-3" />
                               </span>
                             </div>
@@ -1719,7 +1719,7 @@ export default function PropertyDetail() {
             <div className="container">
               <div className="flex items-end justify-between mb-8">
                 <div>
-                  <p className="overline font-medium tracking-[0.08em] text-pa-gold mb-2 uppercase">{t('propertyDetail.moreIn', { destination: destName, defaultValue: `More in ${destName}` })}</p>
+                  <p className="eyebrow font-medium tracking-[0.08em] text-pa-gold mb-2 uppercase">{t('propertyDetail.moreIn', { destination: destName, defaultValue: `More in ${destName}` })}</p>
                   <h2 className="headline-lg text-pa-dark">{t('propertyDetail.relatedHomes', 'Related homes')}</h2>
                 </div>
                 {destObj && (

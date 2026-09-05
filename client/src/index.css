@@ -357,7 +357,7 @@
   }
 
   /* Overline â uppercase label */
-  .overline {
+  .eyebrow {
     font-family: var(--font-body);
     font-size: 0.6875rem;
     font-weight: 500;

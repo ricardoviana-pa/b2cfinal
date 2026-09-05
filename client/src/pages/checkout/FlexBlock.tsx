@@ -158,7 +158,7 @@ export default function FlexBlock({
           }}
           aria-pressed={selected}
           className={cn(
-            "min-h-[40px] px-5 rounded-full border overline text-inherit font-medium tracking-[0.08em] uppercase transition-colors",
+            "min-h-[40px] px-5 rounded-full border eyebrow text-inherit font-medium tracking-[0.08em] uppercase transition-colors",
             selected
               ? "bg-pa-gold border-pa-gold text-white"
               : "border-pa-gold text-pa-gold hover:bg-pa-gold hover:text-white",

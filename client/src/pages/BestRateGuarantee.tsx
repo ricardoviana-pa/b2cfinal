@@ -30,7 +30,7 @@ export default function BestRateGuarantee() {
       <div className="pt-[72px]" />
       <section className="section-padding">
         <div className="container max-w-[800px] mx-auto">
-          <p className="overline mb-4">{t('bestRateGuarantee.overline')}</p>
+          <p className="eyebrow mb-4">{t('bestRateGuarantee.overline')}</p>
           <h1 className="headline-lg text-[#1A1A18] mb-6">{t('bestRateGuarantee.title')}</h1>
           <p className="body-lg mb-10" style={{ textTransform: 'none' }}>{t('bestRateGuarantee.intro')}</p>
 

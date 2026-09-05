@@ -3,7 +3,7 @@
  * (docs/checkout_fase2_1_polish.md, substitui a grelha de cards fotográficos).
  *
  * Referência Apple: capítulos que funcionam como atos (título serif grande,
- * overline numerada, uma linha editorial), opções como LINHAS TIPOGRÁFICAS
+ * eyebrow numerada, uma linha editorial), opções como LINHAS TIPOGRÁFICAS
  * dentro de um cartão por grupo com hairlines, e quase nenhuma imagem.
  *
  * Política de imagem (2.1 §4): máximo 5 fotos no passo inteiro — a casa vive
@@ -170,7 +170,7 @@ function ChapterReveal({ children, className, id }: { children: React.ReactNode;
   );
 }
 
-/** Cabeçalho de capítulo (2.1 §2): overline numerada + serif grande + linha. */
+/** Cabeçalho de capítulo (2.1 §2): eyebrow numerada + serif grande + linha. */
 function ChapterHeader({ num, chapter, destination }: { num: string; chapter: ExtraChapter; destination?: string }) {
   const { t } = useTranslation();
   // Linha editorial regional quando existe (ex: table.line_minho) — uma casa no
@@ -247,7 +247,7 @@ function ReceptionChoiceCards({
         <Card
           selected={choice?.type === "self"}
           name={t("checkout.reception.self.name")}
-          value={<span className="overline font-medium tracking-[0.1em] uppercase text-pa-gold shrink-0">{t("checkout.included.badge")}</span>}
+          value={<span className="eyebrow font-medium tracking-[0.1em] uppercase text-pa-gold shrink-0">{t("checkout.included.badge")}</span>}
           desc={t("checkout.reception.self.desc")}
           onClick={() => onChoose({ type: "self" })}
         />
@@ -415,7 +415,7 @@ function OptionRow({
             <p className="caption text-pa-stone-aa max-w-[130px]">{t("checkout.conciergeQuote", "Quoted by your concierge")}</p>
           ) : item.pricingModel === "included_selectable" ? (
             <>
-              <p className="overline font-medium tracking-[0.1em] uppercase text-pa-gold">{t("checkout.included.badge")}</p>
+              <p className="eyebrow font-medium tracking-[0.1em] uppercase text-pa-gold">{t("checkout.included.badge")}</p>
               <p className="caption text-pa-stone-aa">{t("checkout.firstIncluded", { price: formatEur(item.unitPrice!, lang) })}</p>
             </>
           ) : (
@@ -431,7 +431,7 @@ function OptionRow({
             <button
               type="button"
               onClick={() => onToggle(item)}
-              className="mt-1.5 min-h-[44px] sm:min-h-[32px] px-4 rounded-full border border-pa-sand bg-white overline font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors"
+              className="mt-1.5 min-h-[44px] sm:min-h-[32px] px-4 rounded-full border border-pa-sand bg-white eyebrow font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors"
             >
               {onRequest ? t("checkout.request", "Request") : t("checkout.add", "Add")}
             </button>
@@ -907,7 +907,7 @@ export default function CustomizeStep({
                               type="button"
                               onClick={() => onToggle(item)}
                               className={cn(
-                                "w-full min-h-[44px] sm:min-h-[36px] rounded-full border overline text-inherit font-medium tracking-[0.08em] uppercase transition-colors",
+                                "w-full min-h-[44px] sm:min-h-[36px] rounded-full border eyebrow text-inherit font-medium tracking-[0.08em] uppercase transition-colors",
                                 selected
                                   ? "bg-pa-dark border-pa-dark text-white"
                                   : "border-pa-sand text-pa-earth hover:border-pa-dark hover:text-pa-dark",

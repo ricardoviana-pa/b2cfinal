@@ -1012,7 +1012,7 @@ export default function CheckoutPage() {
               })()}
             </span>
           </span>
-          <span className={cn("tabular-nums shrink-0", amount === 0 ? "text-pa-gold overline uppercase tracking-[0.08em]" : "text-pa-dark")}>
+          <span className={cn("tabular-nums shrink-0", amount === 0 ? "text-pa-gold eyebrow uppercase tracking-[0.08em]" : "text-pa-dark")}>
             {amount === 0 ? t("checkout.included.badge") : formatEur(amount!, lang)}
           </span>
         </div>
@@ -1074,7 +1074,7 @@ export default function CheckoutPage() {
               type="button"
               onClick={() => applyCoupon(couponInput.trim())}
               disabled={couponBusy || !couponInput.trim() || (!isDemo && !quoteId)}
-              className="shrink-0 h-[38px] px-4 rounded-md border border-pa-sand overline font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors disabled:opacity-40"
+              className="shrink-0 h-[38px] px-4 rounded-md border border-pa-sand eyebrow font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors disabled:opacity-40"
             >
               {couponBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : t("checkout.coupon.apply", "Apply")}
             </button>
@@ -1090,7 +1090,7 @@ export default function CheckoutPage() {
   // "Pedidos ao concierge" — itens sob orçamento, sem valores somados (§7/§8)
   const conciergeRequests = requestExtras.length > 0 && (
     <div className="border-t border-pa-sand pt-3 space-y-1.5">
-      <p className="overline tracking-[0.12em] uppercase text-pa-stone-aa">
+      <p className="eyebrow tracking-[0.12em] uppercase text-pa-stone-aa">
         {t("checkout.conciergeRequests", "Concierge requests")}
       </p>
       {requestExtras.map(({ item }) => (
@@ -1123,7 +1123,7 @@ export default function CheckoutPage() {
       <div className="p-5 space-y-4">
         <div>
           <p className="font-display body-lg text-pa-dark leading-snug">{displayName}</p>
-          {intent.destination && <p className="overline tracking-[0.08em] uppercase text-pa-stone-aa mt-1">{intent.destination}</p>}
+          {intent.destination && <p className="eyebrow tracking-[0.08em] uppercase text-pa-stone-aa mt-1">{intent.destination}</p>}
         </div>
         <div className="body-sm text-pa-earth">
           {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)} · {guests} {t("booking.guestsLabel", "guests")}
@@ -1155,7 +1155,7 @@ export default function CheckoutPage() {
   // trust.* são as do PDP; nada de copy duplicado.
   const directBlock = (
     <div className="bg-white border border-pa-sand rounded-lg p-5">
-      <p className="overline font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-3">
+      <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold-aa mb-3">
         {t("trust.directHeadline", "Why book direct")}
       </p>
       <ul className="space-y-2.5">
@@ -1229,7 +1229,7 @@ export default function CheckoutPage() {
                   </span>
                   <span
                     className={cn(
-                      "overline text-inherit tracking-[0.06em] uppercase",
+                      "eyebrow text-inherit tracking-[0.06em] uppercase",
                       i === stepIndex ? "inline text-pa-dark font-medium" : "hidden sm:inline text-pa-stone-aa",
                     )}
                   >
@@ -1301,15 +1301,15 @@ export default function CheckoutPage() {
                 <div className="flex items-center justify-between">
                   <div className="grid grid-cols-3 gap-4 flex-1">
                     <div>
-                      <p className="overline tracking-[0.12em] uppercase text-pa-stone-aa mb-1">{t("bookingWidget.checkInLabel")}</p>
+                      <p className="eyebrow tracking-[0.12em] uppercase text-pa-stone-aa mb-1">{t("bookingWidget.checkInLabel")}</p>
                       <p className="body-sm text-pa-dark">{formatBookingDate(checkIn, lang, true)}</p>
                     </div>
                     <div>
-                      <p className="overline tracking-[0.12em] uppercase text-pa-stone-aa mb-1">{t("bookingWidget.checkOutLabel")}</p>
+                      <p className="eyebrow tracking-[0.12em] uppercase text-pa-stone-aa mb-1">{t("bookingWidget.checkOutLabel")}</p>
                       <p className="body-sm text-pa-dark">{formatBookingDate(checkOut, lang, true)}</p>
                     </div>
                     <div>
-                      <p className="overline tracking-[0.12em] uppercase text-pa-stone-aa mb-1">{t("booking.guestsLabel")}</p>
+                      <p className="eyebrow tracking-[0.12em] uppercase text-pa-stone-aa mb-1">{t("booking.guestsLabel")}</p>
                       <p className="body-sm text-pa-dark">{guests}</p>
                     </div>
                   </div>
@@ -1344,7 +1344,7 @@ export default function CheckoutPage() {
                       />
                     )}
                     <div className="flex items-center gap-4">
-                      <p className="overline tracking-[0.12em] uppercase text-pa-stone-aa">{t("booking.guestsLabel")}</p>
+                      <p className="eyebrow tracking-[0.12em] uppercase text-pa-stone-aa">{t("booking.guestsLabel")}</p>
                       <div className="flex items-center gap-3">
                         <button
                           type="button"
@@ -1449,7 +1449,7 @@ export default function CheckoutPage() {
                   when only one plan applies (e.g. refund window closed). */}
               {(quote?.ratePlanOptions?.length ?? 0) > 1 && (
                 <div className="space-y-2">
-                  <p className="overline font-medium tracking-[0.12em] uppercase text-pa-gold">{t("bookingWidget.ratePlan", "Rate plan")}</p>
+                  <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold">{t("bookingWidget.ratePlan", "Rate plan")}</p>
                   {(() => { const maxTotal = Math.max(...quote!.ratePlanOptions!.map(o => o.total)); return quote!.ratePlanOptions!.map((opt) => {
                     const isSelected = selectedRatePlanId === opt.ratePlanId;
                     const nonRef = isNonRefundableOption(opt);
@@ -1486,7 +1486,7 @@ export default function CheckoutPage() {
                           <div className="flex items-center gap-2 flex-wrap">
                             <p className="body-sm text-pa-dark font-medium">{label}</p>
                             {!nonRef && (
-                              <span className="overline font-medium tracking-wider uppercase px-1.5 py-0.5 bg-pa-warm text-pa-gold border border-pa-sand rounded-sm">
+                              <span className="eyebrow font-medium tracking-wider uppercase px-1.5 py-0.5 bg-pa-warm text-pa-gold border border-pa-sand rounded-sm">
                                 {t("bookingWidget.recommended", "Recommended")}
                               </span>
                             )}
@@ -1629,7 +1629,7 @@ export default function CheckoutPage() {
 
               {/* Guest details */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
-                <p className="overline font-medium tracking-[0.12em] uppercase text-pa-gold">
+                <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold">
                   {t("bookingWidget.guestInformation", "Guest information")}
                 </p>
                 <div className="grid grid-cols-2 gap-2">

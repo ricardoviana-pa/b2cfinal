@@ -227,7 +227,7 @@ function EnhanceYourStay({
 
   return (
     <div className="space-y-2">
-      <p className="overline font-semibold tracking-[0.06em] uppercase text-black/30 flex items-center gap-1.5">
+      <p className="eyebrow font-semibold tracking-[0.06em] uppercase text-black/30 flex items-center gap-1.5">
         <ShoppingBag className="w-3 h-3" /> {t("bookingWidget.enhanceStay", "Enhance your stay")}
       </p>
 
@@ -778,15 +778,15 @@ export default function BookingWidget({
             {destination && <p className="caption text-black/40">{destination}</p>}
             <div className="grid grid-cols-3 gap-3 pt-1">
               <div>
-                <p className="overline text-black/30 uppercase tracking-wider">{t("bookingWidget.checkInLabel")}</p>
+                <p className="eyebrow text-black/30 uppercase tracking-wider">{t("bookingWidget.checkInLabel")}</p>
                 <p className="body-sm text-black mt-0.5">{formatBookingDate(checkIn, lang, true)}</p>
               </div>
               <div>
-                <p className="overline text-black/30 uppercase tracking-wider">{t("bookingWidget.checkOutLabel")}</p>
+                <p className="eyebrow text-black/30 uppercase tracking-wider">{t("bookingWidget.checkOutLabel")}</p>
                 <p className="body-sm text-black mt-0.5">{formatBookingDate(checkOut, lang, true)}</p>
               </div>
               <div>
-                <p className="overline text-black/30 uppercase tracking-wider">{t("booking.guestsLabel", "Guests")}</p>
+                <p className="eyebrow text-black/30 uppercase tracking-wider">{t("booking.guestsLabel", "Guests")}</p>
                 <p className="body-sm text-black mt-0.5">{guests}</p>
               </div>
             </div>
@@ -795,7 +795,7 @@ export default function BookingWidget({
           {/* Price breakdown */}
           {successQuote && successQuote.total > 0 && (
             <div className="bg-black/[0.02] p-4 space-y-2">
-              <p className="overline text-black/30 uppercase tracking-wider">{t("bookingWidget.priceSummary", { defaultValue: "Price summary" })}</p>
+              <p className="eyebrow text-black/30 uppercase tracking-wider">{t("bookingWidget.priceSummary", { defaultValue: "Price summary" })}</p>
               <div className="space-y-1.5">
                 <div className="flex justify-between body-sm text-inherit">
                   <span className="text-black/50">{formatEur(successQuote.nightlyRate, lang)} x {successQuote.nights} {t("bookingWidget.nightsLabel", "nights")}</span>
@@ -829,7 +829,7 @@ export default function BookingWidget({
 
           {/* Guest info */}
           <div className="bg-black/[0.02] p-4 space-y-1">
-            <p className="overline text-black/30 uppercase tracking-wider">{t("bookingWidget.bookedBy", { defaultValue: "Booked by" })}</p>
+            <p className="eyebrow text-black/30 uppercase tracking-wider">{t("bookingWidget.bookedBy", { defaultValue: "Booked by" })}</p>
             <p className="body-sm text-black">{guestFirstName} {guestLastName}</p>
             <p className="caption text-black/50">{guestEmail}{guestPhone ? ` · ${guestPhone}` : ""}</p>
           </div>
@@ -837,7 +837,7 @@ export default function BookingWidget({
           {/* Upsells */}
           {selectedUpsells.size > 0 && (
             <div className="bg-black/[0.02] p-4 space-y-2">
-              <p className="overline text-black/30 uppercase tracking-wider">{t("bookingWidget.servicesRequested", { defaultValue: "Services requested" })}</p>
+              <p className="eyebrow text-black/30 uppercase tracking-wider">{t("bookingWidget.servicesRequested", { defaultValue: "Services requested" })}</p>
               <div className="space-y-1">
                 {Array.from(selectedUpsells).map(id => {
                   const item = upsellItems.find((u: any) => u.id === id);
@@ -933,7 +933,7 @@ export default function BookingWidget({
             <div className={`px-4 py-3.5 transition-colors ${
               showCalendar && checkIn && !checkOut ? "bg-black/[0.03]" : "hover:bg-black/[0.02]"
             }`}>
-              <p className="overline font-medium tracking-[0.15em] uppercase text-black/35 mb-1">{t("bookingWidget.checkInLabel")}</p>
+              <p className="eyebrow font-medium tracking-[0.15em] uppercase text-black/35 mb-1">{t("bookingWidget.checkInLabel")}</p>
               <p className={`body-sm text-inherit font-normal ${checkIn ? "text-black" : "text-black/30"}`}>
                 {checkIn ? formatBookingDate(checkIn, lang) : t("bookingWidget.selectDate", "Select")}
               </p>
@@ -941,7 +941,7 @@ export default function BookingWidget({
             <div className={`px-4 py-3.5 transition-colors ${
               showCalendar && checkIn && !checkOut ? "hover:bg-black/[0.02]" : showCalendar && !checkIn ? "hover:bg-black/[0.02]" : "hover:bg-black/[0.02]"
             }`}>
-              <p className="overline font-medium tracking-[0.15em] uppercase text-black/35 mb-1">{t("bookingWidget.checkOutLabel")}</p>
+              <p className="eyebrow font-medium tracking-[0.15em] uppercase text-black/35 mb-1">{t("bookingWidget.checkOutLabel")}</p>
               <p className={`body-sm text-inherit font-normal ${checkOut ? "text-black" : "text-black/30"}`}>
                 {checkOut ? formatBookingDate(checkOut, lang) : t("bookingWidget.selectDate", "Select")}
               </p>
@@ -1040,7 +1040,7 @@ export default function BookingWidget({
 
         {/* Guests selector */}
         <div className="border border-black/15 mt-3 px-4 py-3">
-          <p className="overline font-medium tracking-[0.15em] uppercase text-black/35 mb-2">{t("booking.guestsLabel")}</p>
+          <p className="eyebrow font-medium tracking-[0.15em] uppercase text-black/35 mb-2">{t("booking.guestsLabel")}</p>
           <div className="flex items-center gap-4">
             <button
               type="button"
@@ -1218,7 +1218,7 @@ export default function BookingWidget({
               const maxTotal = Math.max(...quote.ratePlanOptions!.map(o => o.total));
               return (
                 <div className="space-y-2">
-                  <p className="overline font-semibold tracking-[0.06em] uppercase text-black/30">{t("bookingWidget.ratePlan")}</p>
+                  <p className="eyebrow font-semibold tracking-[0.06em] uppercase text-black/30">{t("bookingWidget.ratePlan")}</p>
                   {quote.ratePlanOptions!.map(opt => {
                     // No explicit pick yet → highlight the quote's default plan
                     const isSelected = (selectedRatePlanId ?? quote.ratePlanId) === opt.ratePlanId;
@@ -1275,7 +1275,7 @@ export default function BookingWidget({
                               <p className="body-sm text-black font-medium">{planLabel}</p>
                             )}
                             {!isNonRefundable && (
-                              <span className="overline font-semibold tracking-wider uppercase px-1.5 py-0.5 bg-pa-warm text-pa-gold border border-pa-sand">{t("bookingWidget.recommended", { defaultValue: "Recommended" })}</span>
+                              <span className="eyebrow font-semibold tracking-wider uppercase px-1.5 py-0.5 bg-pa-warm text-pa-gold border border-pa-sand">{t("bookingWidget.recommended", { defaultValue: "Recommended" })}</span>
                             )}
                           </div>
                           {(isNonRefundable || policyLine) && (
@@ -1527,7 +1527,7 @@ export default function BookingWidget({
               <>
                 {/* Booking summary confirmation before payment */}
                 <div className="bg-black/[0.02] border border-black/10 p-4 space-y-1.5">
-                  <p className="overline font-semibold tracking-[0.06em] uppercase text-black/30">{t("bookingWidget.bookingSummary", { defaultValue: "Booking summary" })}</p>
+                  <p className="eyebrow font-semibold tracking-[0.06em] uppercase text-black/30">{t("bookingWidget.bookingSummary", { defaultValue: "Booking summary" })}</p>
                   <p className="body-sm text-black">{propertyName}</p>
                   <p className="caption text-black/50">
                     {formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)} · {effectiveQuote?.nights || nights} {t("bookingWidget.nightsLabel", "nights")} · {guests} {t("booking.guestsLabel", "guests")}
