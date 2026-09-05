@@ -120,7 +120,6 @@ function cdnVariant(url?: string | null): ((w: number) => string) | null {
   if (url.includes('assets.guesty.com/image/upload/') && !/\/image\/upload\/[a-z]{1,3}_/.test(url))
     return (w) => url.replace('/image/upload/', `/image/upload/w_${w},q_auto,f_auto/`);
   if (url.includes('imgcdn.bokun.tools')) { const b = url.split('?')[0]; return (w) => `${b}?w=${w}`; }
-  if (url.includes('images.unsplash.com')) { const b = url.split('?')[0]; return (w) => `${b}?w=${w}&q=80&auto=format&fit=crop`; }
   if (url.includes('images.pexels.com')) { const b = url.split('?')[0]; return (w) => `${b}?auto=compress&cs=tinysrgb&w=${w}`; }
   return null;
 }
