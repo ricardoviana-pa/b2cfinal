@@ -669,7 +669,7 @@ function truncateWords(s: string, max: number): string {
 const DEFAULT_OG_IMAGE = 'https://www.portugalactive.com/hero/home-cliff-villa.webp';
 
 /** One place for what goes into <title>, description and Open Graph: absolute
- *  image URL (partner homes had "/homes/tripwix/…"), secure_url equal to the
+ *  image URL (partner homes had a relative "/homes/photos/…"), secure_url equal to the
  *  real image, description cut by word at 155, entities decoded before
  *  escaping. */
 function buildOg(meta: { title: string; description: string; image?: string; url: string; type?: string }) {

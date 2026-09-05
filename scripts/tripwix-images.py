@@ -109,7 +109,7 @@ def handle(job):
     width = HERO_WIDTH if idx == 0 else GALLERY_WIDTH
     if not convert(original, out, width):
         return None
-    return (ref, idx, f"/homes/tripwix/{ref}/{idx:02d}.webp")
+    return (ref, idx, f"/homes/photos/{ref}/{idx:02d}.webp")
 
 
 def main() -> None:
