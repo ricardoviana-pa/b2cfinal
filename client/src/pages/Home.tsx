@@ -145,6 +145,7 @@ export default function Home() {
   const derivedCities = useMemo(() => getUniqueLocalities(properties), [properties]);
   const cities = (localityOptions?.length ? localityOptions : derivedCities) as Array<{
     label: string; value: string; group?: string;
+      groupSlug?: string;
   }>;
 
   // Render the destination options grouped by region (Minho Coast, Porto and
@@ -155,21 +156,23 @@ export default function Home() {
   const cityOptions = useMemo(() => {
     const groups: Array<[string, typeof cities]> = [];
     for (const c of cities) {
-      const g = c.group || '';
+      const g = c.groupSlug || c.group || '';
       const last = groups[groups.length - 1];
       if (last && last[0] === g) last[1].push(c);
       else groups.push([g, [c]]);
     }
+    // Region labels in the page language (destinations.<slug>), never the
+    // server's English display name (auditoria set/2026, T3).
     return groups.map(([g, items], gi) =>
       g ? (
-        <optgroup key={`g-${g}-${gi}`} label={g}>
+        <optgroup key={`g-${g}-${gi}`} label={t(`destinations.${g}`, { defaultValue: items[0]?.group || g })}>
           {items.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
         </optgroup>
       ) : (
         items.map(c => <option key={c.value} value={c.value}>{c.label}</option>)
       ),
     );
-  }, [cities]);
+  }, [cities, t]);
 
   // True once the hero is scrolled past — gates the mobile WhatsApp float so it
   // can't overlap the hero search card.

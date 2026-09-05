@@ -18,6 +18,7 @@
 
 import { Link } from 'wouter';
 import { useTranslation, Trans } from 'react-i18next';
+import { localizeDuration } from '@/lib/duration';
 import { ArrowRight, Plane, Train, Car, Globe, Plus, Calendar, Award, Bike } from 'lucide-react';
 import type { Destination, Property, Product } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
@@ -583,7 +584,7 @@ export function EatDrinkExperience({
                   </p>
                   {(e.duration || e.season) && (
                     <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-[#8B7355] tracking-[0.02em]">
-                      {e.duration && <span>{e.duration}</span>}
+                      {e.duration && <span>{localizeDuration(e.duration, t)}</span>}
                       {e.season && <span>· {e.season}</span>}
                     </div>
                   )}

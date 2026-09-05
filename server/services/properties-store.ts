@@ -207,7 +207,7 @@ function slugifyLocality(name: string): string {
  * full property list to load (which left the picker empty on mobile).
  */
 export async function getSiteLocalities(): Promise<
-  Array<{ label: string; value: string; group?: string }>
+  Array<{ label: string; value: string; group?: string; groupSlug?: string }>
 > {
   const properties = await getPropertiesForSite();
 
@@ -251,7 +251,9 @@ export async function getSiteLocalities(): Promise<
     .map(([value, { label, dest }]) => ({
       label,
       value,
-      ...(dest && destName.has(dest) ? { group: destName.get(dest) } : {}),
+      // group = English display name (legacy), groupSlug = key for the client's
+      // i18n label (destinations.<slug>) so the picker reads in the page language.
+      ...(dest && destName.has(dest) ? { group: destName.get(dest), groupSlug: dest } : {}),
     }));
 }
 

@@ -8,6 +8,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { localizeDuration } from '@/lib/duration';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 
 interface ExperienceData {
@@ -193,7 +194,7 @@ export default function ExperienceRelatedExperiences({
                       <div className="flex items-baseline justify-between">
                         {item.duration && (
                           <p className="text-[11px] text-[#726D63]" style={{ fontWeight: 300 }}>
-                            {item.duration}
+                            {localizeDuration(item.duration, t)}
                           </p>
                         )}
                         {item.price && (

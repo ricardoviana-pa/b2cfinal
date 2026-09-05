@@ -6,6 +6,7 @@
 import { useState, useMemo, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
 import { CHECKLIST_POINTS } from '@shared/brandFacts';
 import { getConcierge } from '@shared/concierges';
+import { localizeDuration, localizeRoomName } from '@/lib/duration';
 import { useParams, Link, useSearch } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { loadPropertyOverrides, mergePropertyOverrides } from '@/lib/localizeProperty';
@@ -1428,7 +1429,7 @@ export default function PropertyDetail() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-7">
                     {property.rooms.map((room: any, roomIdx: number) => (
                       <div key={roomIdx} className="pt-4 border-t border-[#E8E4DC]">
-                        <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#726D63] mb-3">{room.name}</h3>
+                        <h3 className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#726D63] mb-3">{localizeRoomName(room.name, t)}</h3>
                         {room.beds && room.beds.length > 0 ? (
                           <div className="space-y-2.5">
                             {room.beds.map((bed: any, bedIdx: number) => {
@@ -1546,7 +1547,7 @@ export default function PropertyDetail() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                     {adventures.slice(0, 6).map(adventure => {
                       const meta: string[] = [];
-                      if ((adventure as any).duration) meta.push(String((adventure as any).duration));
+                      if ((adventure as any).duration) meta.push(localizeDuration(String((adventure as any).duration), t));
                       if ((adventure as any).difficulty) meta.push(String((adventure as any).difficulty));
                       return (
                         <Link
