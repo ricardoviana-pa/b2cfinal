@@ -308,9 +308,13 @@ export default function BlogArticle() {
       <section className="border-t border-[#E8E4DC] py-12">
         <div className="container max-w-3xl mx-auto">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-[#F5F1EB] flex items-center justify-center">
-              <span className="text-[#8B7355] font-display text-lg">{article.author.name.charAt(0)}</span>
-            </div>
+            {article.author.photo ? (
+              <img src={article.author.photo} alt={article.author.name} className="w-12 h-12 rounded-full object-cover" loading="lazy" width={48} height={48} />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-[#F5F1EB] flex items-center justify-center">
+                <span className="text-[#8B7355] font-display text-lg">{article.author.name.charAt(0)}</span>
+              </div>
+            )}
             <div>
               <p className="text-sm font-medium text-[#1A1A18]">{article.author.name}</p>
               <p className="text-xs text-[#726D63]">{article.author.role}</p>

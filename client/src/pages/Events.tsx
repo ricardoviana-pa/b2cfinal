@@ -6,7 +6,7 @@
 
 import { useMemo } from 'react';
 import { HOME_COUNT_LABEL } from '@shared/brandFacts';
-import { ArrowRight, Check, Users, MapPin, Star } from 'lucide-react';
+import { ArrowRight, Check, Users, MapPin } from 'lucide-react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -366,19 +366,7 @@ export default function Events() {
         </div>
       </section>
 
-      {/* ================================================================
-          TESTIMONIAL — Social proof
-          ================================================================ */}
-      <section className="section-padding bg-[#FAFAF7]">
-        <div className="container max-w-3xl mx-auto text-center">
-          <Star className="w-5 h-5 text-[#8B7355] mx-auto mb-6" />
-          <blockquote className="font-display text-[1.4rem] md:text-[1.7rem] text-[#1A1A18] leading-relaxed mb-6 italic">
-            {t('events.testimonialQuote')}
-          </blockquote>
-          <p className="text-[13px] text-[#6B6860]">{t('events.testimonialAuthor')}</p>
-          <p className="text-[11px] text-[#726D63] mt-1">{t('events.testimonialRole')}</p>
-        </div>
-      </section>
+      {/* Testimonial removed (auditoria set/2026, N8): "Sarah M., London tech company" was a placeholder. Restore the section with a named client and company once Ricardo provides one. */}
 
       {/* ================================================================
           FINAL CTA

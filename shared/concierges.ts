@@ -25,6 +25,18 @@ export interface Concierge {
   photo: string;
   /** City the local team works from ("Local team in {{city}}"). */
   basedIn: string;
+  /** false until Ricardo confirms the person for the region — emails then keep signing as Sara. */
+  confirmed?: boolean;
+}
+
+/** Who signs guest emails while a region has no confirmed concierge (the CS
+ *  voice the checkout v2 emails already used). */
+export const EMAIL_SIGNER_FALLBACK = { name: "Sara", fullName: "Sara", role: "", photo: "" } as const;
+
+/** Signature for guest emails: the region's concierge when confirmed, else Sara. */
+export function getEmailSigner(destination?: string | null, locality?: string | null): { name: string; fullName: string; photo: string } {
+  const c = getConcierge(destination, locality);
+  return c.confirmed ? { name: c.name, fullName: c.fullName, photo: c.photo } : { ...EMAIL_SIGNER_FALLBACK };
 }
 
 const FOUNDER = {
