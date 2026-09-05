@@ -102,3 +102,23 @@ da ronda; evidência registada), **aberto** (com motivo e quem decide).
 9. **N19** — submeter no Search Console as 35 URLs Tripwix (ou pedir reindexação do sitemap).
 10. **Emails legacy** — passar `locale`, `destination` e `locality` nos chamadores de `sendBookingConfirmation`/`sendPreArrival`/`sendPostStay` (hoje saem em inglês com assinatura por defeito); depende de saber onde cada fluxo tem a língua do hóspede.
 11. **Tripwix** — o outro trabalho em curso nesta branch (painel de parceiro, IVA, importação) é de outra sessão e não foi tocado; se o script de importação voltar a escrever em `/homes/tripwix/`, actualizar para `/homes/photos/`.
+
+## Revisão visual do funil (5 set 2026, desktop 1440 e mobile 390)
+
+Capturas por ecrã em local (build de `main`) e tentativa de reserva em produção até ao passo de pagamento (São Julião Retreat, 16→20 set, sem pagar).
+
+| Achado | Estado | Commit |
+|---|---|---|
+| Linha por cima de todos os rótulos em maiúsculas (passos do checkout, check-in/out, "Why book direct", eyebrows das secções). Causa: a classe `.overline` colidia com a utility `overline` do Tailwind (`text-decoration-line: overline`), que ganha por estar na camada utilities. Já existia nos ~120 usos anteriores; o codemod do n16 levou-a ao funil. | resolvido — classe renomeada para `.eyebrow` (62 usos + codemod) | `9118ca4` |
+| Nome cru do Guesty no widget de reserva, na mensagem de WhatsApp e no checkout ("Sao Juliao Retreat" sem acentos) | resolvido — o PDP passa o nome curado ao widget, ao painel de pedido e à lightbox | `5f887a6` |
+| Nome cru nos `alt` das fotos (cards e galeria do PDP) | resolvido | `a8cfcb3` |
+| "Secure booking" repetido no PDP (widget e bloco "porquê reservar direto"); link "How the guarantee works" com vazio por baixo em mobile (zona de toque de 44 px) | resolvido | `187c51e` |
+| Faixa de estatísticas da home com "70" ao lado de "90+" no hero; hero da lista de casas com "90+" por cima de "78 homes available" | resolvido — faixa lê `HOME_COUNT_LABEL`; subtítulo da lista sem número nas 9 línguas | `fa933a1` |
+| Faixa de 4 USPs a 4 colunas em mobile (ilegível); rótulo "Our homes" fora do estilo eyebrow | resolvido — 2 colunas em mobile; `.eyebrow` | `4bd79d2` |
+
+Fica por decidir (não alterei):
+- **Checkout, passo 2:** "Skip personalization" não salta — obriga a escolher a chegada (self check-in vs. recepção) antes de avançar. É comportamento do checkout v2 anterior à auditoria; se o "skip" deve assumir self check-in, é uma decisão de produto.
+- **Checkout mobile, passo 1:** dois botões CONTINUE visíveis ao mesmo tempo (dentro do cartão e na barra fixa). Anterior à auditoria.
+- **PDP:** o subtítulo do preço ("Direct price — no service fees, best rate online") repete duas linhas do bloco "Why book direct" logo abaixo. Ambos anteriores à auditoria (commit `8d24d88`); sugiro tirar o subtítulo.
+- **PDP Tripwix:** o bloco "Why book direct" omite "best rate" e "no service fees" nas casas parceiras (regra de honestidade F1, comentário no código: a tarifa é do fornecedor). Não é menção ao parceiro, mas é a única diferença visível entre PDPs próprios e Tripwix.
+- **Home, "How it works":** os numerais 01/02/03 quase invisíveis (bege sobre bege). Anterior à auditoria; escolha de design.
