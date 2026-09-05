@@ -906,10 +906,6 @@ export default function BookingWidget({
               </span>
               <span className="body-sm text-pa-stone">{t("property.perNight")}</span>
             </div>
-            {/* One quiet line answering the tab they still have open. */}
-            <p className="caption text-pa-gold-aa mt-1 font-normal" >
-              {t("bookingWidget.directNote", "Direct price — no service fees, best rate online")}
-            </p>
             {effectiveMinNights > 1 && (
               <p className="caption text-black/40 mt-1.5 flex items-center gap-1.5">
                 <Calendar className="w-3 h-3" />

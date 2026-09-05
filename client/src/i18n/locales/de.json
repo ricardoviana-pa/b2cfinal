@@ -367,8 +367,7 @@
     "tariffInCheckout": "Zwei Tarife verfügbar. Wählen Sie Ihren im nächsten Schritt.",
     "reserve": "RESERVIEREN",
     "arrivalsRule": "Aufenthalte beginnen {{days}} · mindestens {{count}} Nächte",
-    "nextArrivals": "Nächste verfügbare Daten",
-    "directNote": "Direktpreis — ohne Servicegebühren, bester Online-Preis"
+    "nextArrivals": "Nächste verfügbare Daten"
   },
   "common": {
     "loading": "Wird geladen…",

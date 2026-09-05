@@ -367,8 +367,7 @@
     "tariffInCheckout": "Kaksi hintaa saatavilla. Valitse omasi seuraavassa vaiheessa.",
     "reserve": "VARAA",
     "arrivalsRule": "Oleskelut alkavat {{days}} · vähintään {{count}} yötä",
-    "nextArrivals": "Seuraavat vapaat päivät",
-    "directNote": "Suora hinta — ei palvelumaksuja, paras hinta verkossa"
+    "nextArrivals": "Seuraavat vapaat päivät"
   },
   "common": {
     "loading": "Ladataan…",

@@ -367,8 +367,7 @@
     "tariffInCheckout": "Two rates available. Choose yours in the next step.",
     "reserve": "RESERVE",
     "arrivalsRule": "Stays start on {{days}} · minimum {{count}} nights",
-    "nextArrivals": "Next available dates",
-    "directNote": "Direct price — no service fees, best rate online"
+    "nextArrivals": "Next available dates"
   },
   "common": {
     "loading": "Loading…",

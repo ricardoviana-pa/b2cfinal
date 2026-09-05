@@ -367,8 +367,7 @@
     "tariffInCheckout": "Due tariffe disponibili. Scegli la tua nel prossimo passaggio.",
     "reserve": "PRENOTA",
     "arrivalsRule": "I soggiorni iniziano {{days}} · minimo {{count}} notti",
-    "nextArrivals": "Prossime date disponibili",
-    "directNote": "Prezzo diretto — senza costi di servizio, miglior prezzo online"
+    "nextArrivals": "Prossime date disponibili"
   },
   "common": {
     "loading": "Caricamento…",
