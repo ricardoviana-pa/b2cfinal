@@ -49,8 +49,25 @@ interface PageMetaOpts {
   noindex?: boolean;
 }
 
+/** True until the first usePageMeta run after hydration has decided whether
+ *  the server already injected this document's meta. */
+let firstRunDone = false;
+
 export function usePageMeta(opts?: PageMetaOpts) {
   useEffect(() => {
+    // The server injects localized <title>, description, OG and hreflang for
+    // every known route and marks the document. On the first run after
+    // hydration we keep what the server wrote — the strings below are English
+    // and used to overwrite the Portuguese title on /pt/homes (auditoria
+    // set/2026, N20/G5). Client-side navigations still run in full.
+    if (!firstRunDone) {
+      firstRunDone = true;
+      const marker = document.querySelector('meta[name="pa-ssr-meta"]');
+      if (marker) {
+        marker.remove();
+        return;
+      }
+    }
     const lang = i18n.language || 'en';
     const title = opts?.title ? `${opts.title} | Portugal Active` : BASE_TITLE;
     const description = opts?.description || BASE_DESC;
