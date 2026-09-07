@@ -9,14 +9,16 @@ Allow: /
 Disallow: /admin/
 Disallow: /*/admin/
 Disallow: /api/
-Disallow: /account
-Disallow: /*/account
-Disallow: /login
-Disallow: /*/login
 Disallow: /booking/
 Disallow: /*/booking/
-Disallow: /*.php$
 Disallow: /search?
+# NOTE: /login, /account and /*.php were disallowed here, and that is exactly
+# how they became "Indexada, mas bloqueada pelo ficheiro robots.txt" — Google
+# had them in the index, could not fetch them, and so never saw that their
+# markup said "index, follow". Blocking cannot remove a page from the index;
+# only a noindex it is allowed to read can. Those routes now serve noindex
+# themselves (AUTH_NOINDEX_PREFIXES in server/_core/vite.ts) and /index.php
+# 301s, so Google is let in to see it. Same reasoning as the legacy paths.
 # NOTE: the old Webflow/WordPress paths (/properties/, /rooms/, /lodges/,
 # /journal/, /category/, /tag/, /author/) were listed here to save crawl
 # budget. That was the wrong trade. All of them return 301 to a real page —

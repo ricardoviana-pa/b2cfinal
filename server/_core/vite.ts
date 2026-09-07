@@ -1759,6 +1759,11 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
    *  edge — anything behind auth or tied to a single booking/payment. */
   const NEVER_CACHE_PREFIXES = ["/account", "/login", "/admin", "/owners-portal", "/checkout", "/booking"];
 
+  /** Auth-gated routes that must say noindex in their own markup. A subset of
+   *  the list above: /checkout has its own block, and /booking carries real
+   *  confirmation pages that are handled separately. */
+  const AUTH_NOINDEX_PREFIXES = ["/login", "/account", "/owners-portal", "/admin"];
+
   /**
    * Cache-Control for the HTML document.
    *
@@ -1865,6 +1870,23 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
     // Checkout pages are transactional capability URLs — never indexable.
     // Must happen HERE: several branches below return early (cache hits).
     if (p.startsWith("/checkout/")) {
+      html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
+    }
+
+    // Auth pages: a sign-in form has nothing to offer a search result.
+    //
+    // These used to be kept out by robots.txt alone, and that is precisely how
+    // they ended up as "Indexada, mas bloqueada pelo ficheiro robots.txt":
+    // Disallow stops Google FETCHING a page, it does not remove one already in
+    // the index — and because it never fetched them, it never saw that the
+    // markup said "index, follow". The pages sat in results with no snippet
+    // and no way out. Same trap as the legacy /properties/ paths.
+    //
+    // So they say noindex themselves, and robots.txt lets Google in to read it.
+    // Once they have dropped out of the index the Disallow could come back,
+    // but there is no reason to: an auth page costs nothing to crawl.
+    if (AUTH_NOINDEX_PREFIXES.some(pre => p === pre || p.startsWith(pre + "/"))) {
+      res.setHeader("X-Robots-Tag", "noindex, nofollow");
       html = html.replace(/<meta name="robots" content="[^"]*"/, '<meta name="robots" content="noindex, nofollow"');
     }
 
