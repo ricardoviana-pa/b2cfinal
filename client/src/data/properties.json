@@ -7055,13 +7055,13 @@
     "seoDescription": "Elegant duplex just 300m from Cabedelo Beach. With 2 bedrooms, private balcony, equipped kitchen, AC, WiFi and garage, it is the perfect retreat for up to 5 gue",
     "address": {
       "full": "",
-      "street": "Avenida do Cabedelo 1359",
+      "street": "Avenida do Cabedelo 1773",
       "city": "Viana do Castelo",
       "state": "Viana do Castelo",
       "zipcode": "",
       "country": "Portugal",
-      "lat": 41.6816858,
-      "lng": -8.8256611
+      "lat": 41.682828,
+      "lng": -8.829928
     },
     "licenseNumber": null,
     "rooms": [
@@ -7396,8 +7396,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 17,
-    "lastModified": "2026-08-24",
-    "contentHash": "ac3aa3b1e06f7560e06b5c65cbd2154ec675adf2"
+    "lastModified": "2026-09-09",
+    "contentHash": "be8724d590fede431cced862b7b77085f7dc4b73"
   },
   {
     "id": "guesty-6a341163c50f210012f12b80",
@@ -15112,13 +15112,13 @@
     "seoDescription": "This property is 3 minutes walk from the beach. Ocean view Cabedelo Beach Duplex enjoys a location in Viana do Castelo, just a 14-minute walk from Rodanho Beach",
     "address": {
       "full": "",
-      "street": "Avenida do Cabedelo 1359",
+      "street": "Avenida do Cabedelo 1773",
       "city": "Viana do Castelo",
       "state": "Viana do Castelo",
       "zipcode": "",
       "country": "Portugal",
-      "lat": 41.6816858,
-      "lng": -8.8256611
+      "lat": 41.682751,
+      "lng": -8.82997
     },
     "licenseNumber": null,
     "rooms": [
@@ -15254,8 +15254,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 3,
-    "lastModified": "2026-08-24",
-    "contentHash": "9b3f2233e3f06c15563361ec093571153e944625"
+    "lastModified": "2026-09-09",
+    "contentHash": "3b1fcc7616790d441a0a6a7efa28d919019bf812"
   },
   {
     "id": "guesty-6965330b6d209c001510dd49",
@@ -26734,13 +26734,13 @@
     "seoDescription": "Welcome to Tide Terrace Duplex, your bright coastal retreat located just 300 metres from Cabedelo Beach. \nManaged by Portugal Active, this property offers a bou",
     "address": {
       "full": "",
-      "street": "Avenida do Cabedelo 1359",
+      "street": "Avenida do Cabedelo 1773",
       "city": "Viana do Castelo",
       "state": "Viana do Castelo",
       "zipcode": "",
       "country": "Portugal",
-      "lat": 41.6816858,
-      "lng": -8.8256611
+      "lat": 41.682831,
+      "lng": -8.829928
     },
     "licenseNumber": null,
     "rooms": [
@@ -27130,8 +27130,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 10,
-    "lastModified": "2026-08-24",
-    "contentHash": "3826d05afd932b840938fab2c9630f33aeb21df2"
+    "lastModified": "2026-09-09",
+    "contentHash": "9731be6e5e70b9a29c2ea2577ca659677d9cfb4e"
   },
   {
     "id": "guesty-69c418871eabf900141bed48",
