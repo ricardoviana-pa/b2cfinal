@@ -518,7 +518,10 @@
     "viewAllExperiences": "Vedi tutte le esperienze",
     "relatedHomes": "Case correlate",
     "moreIn": "Altro in {{destination}}",
-    "allDestHomes": "Tutte le case in {{destination}}"
+    "allDestHomes": "Tutte le case in {{destination}}",
+    "ownershipTitle": "Più di un soggiorno.",
+    "ownershipBody": "Questa casa fa anche parte della nostra collezione immobiliare. Valuti la possibilità di acquistarla con il team che la conosce.",
+    "ownershipAction": "Scopra questa casa in vendita"
   },
   "priceBreakdown": {
     "title": "Riepilogo prezzo",

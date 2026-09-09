@@ -518,7 +518,10 @@
     "viewAllExperiences": "Ver todas las experiencias",
     "relatedHomes": "Casas relacionadas",
     "moreIn": "Más en {{destination}}",
-    "allDestHomes": "Todas las casas en {{destination}}"
+    "allDestHomes": "Todas las casas en {{destination}}",
+    "ownershipTitle": "Más que una estancia.",
+    "ownershipBody": "Esta casa también forma parte de nuestra colección inmobiliaria. Explore la posibilidad de comprarla con el equipo que la conoce.",
+    "ownershipAction": "Descubra esta casa en venta"
   },
   "priceBreakdown": {
     "title": "Resumen de precios",

@@ -518,7 +518,10 @@
     "viewAllExperiences": "Alle Erlebnisse ansehen",
     "relatedHomes": "Ähnliche Häuser",
     "moreIn": "Mehr in {{destination}}",
-    "allDestHomes": "Alle Häuser in {{destination}}"
+    "allDestHomes": "Alle Häuser in {{destination}}",
+    "ownershipTitle": "Mehr als ein Aufenthalt.",
+    "ownershipBody": "Dieses Haus gehört auch zu unserem Immobilienportfolio. Entdecken Sie die Möglichkeit, es mit dem Team zu kaufen, das es kennt.",
+    "ownershipAction": "Dieses Haus zum Kauf entdecken"
   },
   "priceBreakdown": {
     "title": "Preisübersicht",

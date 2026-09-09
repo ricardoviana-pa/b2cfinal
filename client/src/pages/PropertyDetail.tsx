@@ -9,6 +9,7 @@ import { getConcierge } from '@shared/concierges';
 import { localizeDuration, localizeRoomName } from '@/lib/duration';
 import { useParams, Link, useSearch } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { realEstateListing } from '@/data/realEstate';
 import { loadPropertyOverrides, mergePropertyOverrides } from '@/lib/localizeProperty';
 import { localizeProduct } from '@/lib/localizeProduct';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -1314,6 +1315,16 @@ export default function PropertyDetail() {
                 destName={destName}
                 t={t}
               />
+
+              {realEstateListing(property.slug, i18n.language) && (
+                <section className="border-y border-pa-sand py-6 lg:py-7">
+                  <h2 className="font-display headline-sm font-light text-pa-dark mb-3">{t('propertyDetail.ownershipTitle')}</h2>
+                  <p className="body-sm text-pa-earth leading-relaxed max-w-2xl mb-4">{t('propertyDetail.ownershipBody')}</p>
+                  <a href={realEstateListing(property.slug, i18n.language)} className="inline-flex items-center gap-3 min-h-11 text-[14px] font-medium text-pa-dark border-b border-pa-dark hover:text-pa-earth transition-colors">
+                    {t('propertyDetail.ownershipAction')} <ArrowRight size={16} aria-hidden="true" />
+                  </a>
+                </section>
+              )}
 
               {/* 2. What's included in every stay — the hotel-grade promise that
                   separates us from a marketplace listing. Every home, one

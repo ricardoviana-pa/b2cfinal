@@ -518,7 +518,10 @@
     "viewAllExperiences": "Alle ervaringen bekijken",
     "relatedHomes": "Vergelijkbare huizen",
     "moreIn": "Meer in {{destination}}",
-    "allDestHomes": "Alle huizen in {{destination}}"
+    "allDestHomes": "Alle huizen in {{destination}}",
+    "ownershipTitle": "Meer dan een verblijf.",
+    "ownershipBody": "Deze woning maakt ook deel uit van onze vastgoedcollectie. Ontdek de mogelijkheid om haar te kopen met het team dat haar kent.",
+    "ownershipAction": "Bekijk deze woning te koop"
   },
   "priceBreakdown": {
     "title": "Prijsoverzicht",

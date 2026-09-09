@@ -518,7 +518,10 @@
     "viewAllExperiences": "Visa alla upplevelser",
     "relatedHomes": "Liknande hem",
     "moreIn": "Mer i {{destination}}",
-    "allDestHomes": "Alla hem i {{destination}}"
+    "allDestHomes": "Alla hem i {{destination}}",
+    "ownershipTitle": "Mer än en vistelse.",
+    "ownershipBody": "Det här huset ingår också i vårt fastighetsutbud. Utforska möjligheten att köpa det med teamet som känner det.",
+    "ownershipAction": "Upptäck det här huset till salu"
   },
   "priceBreakdown": {
     "title": "Prissammanfattning",

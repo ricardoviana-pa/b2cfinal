@@ -518,7 +518,10 @@
     "viewAllExperiences": "View all experiences",
     "relatedHomes": "Related homes",
     "moreIn": "More in {{destination}}",
-    "allDestHomes": "All {{destination}} homes"
+    "allDestHomes": "All {{destination}} homes",
+    "ownershipTitle": "More than a stay.",
+    "ownershipBody": "This home is also in our real estate collection. Explore ownership with the team that knows it.",
+    "ownershipAction": "Explore this home for sale"
   },
   "priceBreakdown": {
     "title": "Price summary",

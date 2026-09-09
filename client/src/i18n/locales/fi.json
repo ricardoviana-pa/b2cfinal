@@ -518,7 +518,10 @@
     "viewAllExperiences": "Katso kaikki elämykset",
     "relatedHomes": "Samankaltaisia koteja",
     "moreIn": "Lisää: {{destination}}",
-    "allDestHomes": "Kaikki kodit: {{destination}}"
+    "allDestHomes": "Kaikki kodit: {{destination}}",
+    "ownershipTitle": "Enemmän kuin loma.",
+    "ownershipBody": "Tämä talo kuuluu myös myytävien kiinteistöjemme valikoimaan. Tutustu ostomahdollisuuteen talon tuntevan tiimin kanssa.",
+    "ownershipAction": "Tutustu tähän myytävään taloon"
   },
   "priceBreakdown": {
     "title": "Hintayhteenveto",
