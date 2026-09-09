@@ -343,3 +343,44 @@ export async function appendReservationNote(reservationId: string, note: string)
     return false;
   }
 }
+
+/**
+ * Retrato financeiro da reserva do lado do Guesty, para auditoria.
+ *
+ * O que o proprietário recebe NÃO sai do que entrou em caixa: sai do valor que
+ * a reserva tem no Guesty — em primeiro lugar da `fareAccommodation`. Como as
+ * reservas do checkout 2.0 nasceram sem ratePlanId, essa fare foi calculada no
+ * plano por omissão da listagem e não no plano que o hóspede comprou. Logo o
+ * payout ao proprietário assentou num número que nunca foi o preço da venda —
+ * para cima ou para baixo, conforme o plano.
+ *
+ * `hostPayout` é o número do Guesty quando a listagem tem a configuração de
+ * ownership preenchida; quando não tem, vem a null e a fare é o indicador.
+ */
+export async function fetchReservationMoney(reservationId: string): Promise<{
+  fareAccommodation: number | null;
+  fareCleaning: number | null;
+  hostPayout: number | null;
+  totalPaid: number | null;
+  balanceDue: number | null;
+  currency: string | null;
+} | null> {
+  try {
+    const data = await guestyClient.request<any>("GET", `/v1/reservations/${reservationId}`, {
+      query: { fields: "money status" },
+    });
+    const m = data?.money ?? {};
+    const num = (v: any) => (typeof v === "number" && Number.isFinite(v) ? v : null);
+    return {
+      fareAccommodation: num(m.fareAccommodation),
+      fareCleaning: num(m.fareCleaning),
+      hostPayout: num(m.hostPayout),
+      totalPaid: num(m.totalPaid),
+      balanceDue: num(m.balanceDue),
+      currency: typeof m.currency === "string" ? m.currency : null,
+    };
+  } catch (err: any) {
+    console.warn(`[Guesty] Sem money para ${reservationId}: ${err?.message || err}`);
+    return null;
+  }
+}
