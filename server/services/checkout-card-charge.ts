@@ -43,6 +43,35 @@ export function breakdownFromIntent(m: any) {
   });
 }
 
+/**
+ * Plano tarifário que o hóspede escolheu e pagou.
+ *
+ * Vive na COLUNA `ratePlanId` do intent — é lá que o create o grava e lá que o
+ * syncIntent o actualiza quando o hóspede troca de plano. NUNCA esteve dentro
+ * do snapshot `quote`: o quoteSnapshotSchema não declara esse campo e o Zod
+ * remove chaves desconhecidas, por isso o antigo `quote.ratePlanId` era sempre
+ * undefined e TODAS as reservas do checkout 2.0 nasceram sem plano.
+ *
+ * Sem ele o Guesty preça no plano por omissão da listagem. O PriceLabs continua
+ * a mandar na tarifa por noite — o que diverge é o plano — e daí sai um total
+ * diferente do cobrado (o saldo aberto) e, pior, uma política de cancelamento
+ * diferente da que o hóspede comprou.
+ */
+export function resolveRatePlanId(intent: any, quote: any): string {
+  const direct = String(intent?.ratePlanId ?? "").trim() || String(quote?.ratePlanId ?? "").trim();
+  if (direct) return direct;
+  // Rede para intents antigos com a coluna vazia: o plano cujo total bate certo
+  // com o total cotado é, por definição, o que o hóspede viu e pagou.
+  const opts = quote?.ratePlanOptions;
+  if (!Array.isArray(opts)) return "";
+  const total = Number(quote?.total);
+  if (!Number.isFinite(total)) return "";
+  const match = opts.find(
+    (o: any) => Number.isFinite(Number(o?.total)) && Math.abs(Number(o.total) - total) < 0.02,
+  );
+  return String(match?.ratePlanId ?? "").trim();
+}
+
 /** Cria a reserva Guesty (só estadia) para um PI card_v2 pago. Idempotente. */
 export async function settleCardCharge(intentId: string, paymentIntentId: string): Promise<{
   reservationId: string;
@@ -76,6 +105,13 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
     const firstName = String((m as any).guestFirstName ?? "").trim();
     const lastName = String((m as any).guestLastName ?? "").trim();
     const q = ((m as any).quote ?? {}) as any;
+    const ratePlanId = resolveRatePlanId(m, q);
+    if (!ratePlanId) {
+      console.error(
+        `[Card2b] intent=${intentId} sem ratePlanId — o Guesty vai precar no plano por omissao ` +
+          `e a reserva fica com preco e politica de cancelamento diferentes do que foi vendido`,
+      );
+    }
     const res = await createReservationViaOpenApi({
       listingId: (m as any).listingId,
       checkIn: (m as any).checkIn,
@@ -87,7 +123,7 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
       numberOfAdults: Number((m as any).guests ?? 2),
       numberOfChildren: 0,
       numberOfInfants: 0,
-      ...(q.ratePlanId ? { ratePlanId: q.ratePlanId } : {}),
+      ...(ratePlanId ? { ratePlanId } : {}),
     } as any);
     reservationId = res.reservationId;
     confirmationCode = res.confirmationCode;
