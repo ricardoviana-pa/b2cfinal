@@ -70,6 +70,8 @@ type Row = {
   guestyCleaning: number | null;
   guestyBalanceDue: number | null;
   guestyTotalPaid: number | null;
+  /** Payout que o Guesty calcula quando a listagem tem ownership configurado. */
+  guestyHostPayout: number | null;
   cardAlready: boolean;
   cardDone?: boolean;
   motivo?: string;
@@ -125,6 +127,7 @@ async function main() {
         guestyCleaning: null,
         guestyBalanceDue: null,
         guestyTotalPaid: null,
+        guestyHostPayout: null,
         cardAlready: md.cardOnFile === "1",
       });
     }
@@ -160,6 +163,7 @@ async function main() {
       r.guestyCleaning = money.fareCleaning;
       r.guestyBalanceDue = money.balanceDue;
       r.guestyTotalPaid = money.totalPaid;
+      r.guestyHostPayout = money.hostPayout;
     }
 
     const bloqueio = porqueNaoDaParaPor(r);
@@ -224,7 +228,8 @@ async function main() {
     );
     for (const r of aMais) {
       console.log(
-        `  ${r.code.padEnd(14)} vendido ${eur(r.soldAccommodation, 9)} | Guesty ${eur(r.guestyAccommodation, 9)} | a mais ${eur(fareGap(r), 8)} | ${r.reservationId}`,
+        `  ${r.code.padEnd(14)} vendido ${eur(r.soldAccommodation, 9)} | Guesty ${eur(r.guestyAccommodation, 9)} | a mais ${eur(fareGap(r), 8)}` +
+          `${r.guestyHostPayout != null ? ` | payout calculado ${eur(r.guestyHostPayout, 9)}` : ""} | ${r.reservationId}`,
       );
     }
   }
