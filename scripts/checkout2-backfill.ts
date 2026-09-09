@@ -81,6 +81,21 @@ type Row = {
   motivo?: string;
 };
 
+/**
+ * Dias entre a marcação e o check-in.
+ *
+ * Abaixo de 14 o site só oferece o não-reembolsável. Como o Guesty preça a
+ * reserva no plano POR OMISSÃO da listagem — o flexível, o mais caro — toda a
+ * reserva de última hora entra no Guesty acima do que foi vendido. É por aí
+ * que a empresa paga ao proprietário sobre receita que nunca recebeu, e é o
+ * padrão a confirmar nesta coluna.
+ */
+function antecedencia(r: Row): number | null {
+  if (!r.checkIn || !r.created) return null;
+  const d = Math.round((new Date(r.checkIn).getTime() - new Date(r.created).getTime()) / 86400000);
+  return Number.isFinite(d) ? d : null;
+}
+
 /** Desvio na fare de alojamento: positivo = o Guesty tem MAIS do que vendemos. */
 function fareGap(r: Row): number | null {
   if (r.guestyAccommodation == null || r.soldAccommodation == null) return null;
@@ -207,7 +222,7 @@ async function main() {
   console.log("=".repeat(100));
   console.log("VALOR DA RESERVA: o que vendemos  vs  o que o Guesty registou (base do payout)");
   console.log("=".repeat(100));
-  console.log("CHECK-OUT   CODIGO          ALOJ.VENDIDO  ALOJ.GUESTY      DESVIO  CASA");
+  console.log("CHECK-OUT   CODIGO          ALOJ.VENDIDO  ALOJ.GUESTY      DESVIO  ANTEC  CASA");
   console.log("-".repeat(100));
   const aMais: Row[] = [];
   const aMenos: Row[] = [];
@@ -219,7 +234,7 @@ async function main() {
     else if (gap < -0.5) aMenos.push(r);
     const marca = gap == null ? "" : gap > 0.5 ? "  <<< PAGAMOS A MAIS" : gap < -0.5 ? "  <<< proprietario a menos" : "";
     console.log(
-      `${(r.checkOut || r.created).padEnd(10)}  ${r.code.padEnd(14)} ${eur(r.soldAccommodation, 12)} ${eur(r.guestyAccommodation, 12)} ${eur(gap, 11)}  ${(r.propertyName || "?").slice(0, 28).padEnd(28)}${marca}`,
+      `${(r.checkOut || r.created).padEnd(10)}  ${r.code.padEnd(14)} ${eur(r.soldAccommodation, 12)} ${eur(r.guestyAccommodation, 12)} ${eur(gap, 11)}  ${(() => { const a = antecedencia(r); return a == null ? "  ?  " : (a < 14 ? `${String(a).padStart(3)}d!` : `${String(a).padStart(3)}d `); })().padEnd(5)}  ${(r.propertyName || "?").slice(0, 26).padEnd(26)}${marca}`,
     );
   }
 
@@ -231,6 +246,12 @@ async function main() {
   console.log(`Guesty ABAIXO do vendido (dono recebeu a menos) ..... ${aMenos.length}   ${Math.abs(somaMenos).toFixed(2)} EUR`);
   console.log(`Sem dados para comparar ............................. ${semDados.length}`);
   if (aMais.length) {
+    const ultimaHora = aMais.filter((r) => (antecedencia(r) ?? 99) < 14).length;
+    console.log(
+      `\nDestas ${aMais.length}, ${ultimaHora} foram marcadas a menos de 14 dias do check-in (coluna ANTEC com "!").\n` +
+        `Nessas o site so oferece o nao-reembolsavel, e o Guesty precou-as no plano por\n` +
+        `omissao — o flexivel. E a assinatura deste defeito.`,
+    );
     console.log(
       `\nEXPOSICAO: ${somaMais.toFixed(2)} EUR de receita que o Guesty atribuiu a estas reservas e que\n` +
         `nunca entrou em caixa. O payout ao proprietario assenta nesse numero, nao no cobrado.\n` +
