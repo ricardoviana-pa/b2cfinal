@@ -19,7 +19,7 @@
 - Direct booking, no service fees
 
 ## Contact
-- Website: https://www.portugalactive.com
+- [Website](https://www.portugalactive.com)
 - Email: info@portugalactive.com
 - Phone: +351 258 358 434
 - WhatsApp: +351 927 161 771
@@ -35,21 +35,21 @@
 - Surf Lessons on the Minho Coast: from €60 per person
 
 ## Pages
-- Homes: https://www.portugalactive.com/en/homes
-- Destinations: https://www.portugalactive.com/en/destinations
-- Experiences: https://www.portugalactive.com/en/experiences
-- Services: https://www.portugalactive.com/en/services
-- Journal: https://www.portugalactive.com/en/blog
-- About: https://www.portugalactive.com/en/about
-- Sitemap: https://www.portugalactive.com/sitemap.xml
+- [Homes](https://www.portugalactive.com/en/homes)
+- [Destinations](https://www.portugalactive.com/en/destinations)
+- [Experiences](https://www.portugalactive.com/en/experiences)
+- [Services](https://www.portugalactive.com/en/services)
+- [Journal](https://www.portugalactive.com/en/blog)
+- [About](https://www.portugalactive.com/en/about)
+- [Sitemap](https://www.portugalactive.com/sitemap.xml)
 
 ## Buying, selling and owning a home
-- Portugal Active Real Estate: https://www.portugalactive.com/realestate/
-- Homes for sale: https://www.portugalactive.com/realestate/collection/
-- Buying a home in Portugal: https://www.portugalactive.com/realestate/buying/
-- Selling a home in Portugal: https://www.portugalactive.com/realestate/selling/
-- Property investment: https://www.portugalactive.com/realestate/investing/
-- Broker partnerships and referrals: https://www.portugalactive.com/realestate/referrals/
+- [Portugal Active Real Estate](https://www.portugalactive.com/realestate/)
+- [Homes for sale](https://www.portugalactive.com/realestate/collection/)
+- [Buying a home in Portugal](https://www.portugalactive.com/realestate/buying/)
+- [Selling a home in Portugal](https://www.portugalactive.com/realestate/selling/)
+- [Property investment](https://www.portugalactive.com/realestate/investing/)
+- [Broker partnerships and referrals](https://www.portugalactive.com/realestate/referrals/)
 - Real estate contact: realestate@portugalactive.com · +351 910 917 941
-- Real estate language editions: English, Portuguese, French and Spanish. Complete text: https://www.portugalactive.com/realestate/llms.txt
-- Property management for owners: https://www.portugalactive.com/management/en/
+- [Real estate content index](https://www.portugalactive.com/realestate/llms.txt): English, Portuguese, French and Spanish.
+- [Property management for owners](https://www.portugalactive.com/management/en/)
