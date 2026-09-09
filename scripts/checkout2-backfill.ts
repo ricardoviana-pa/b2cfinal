@@ -60,6 +60,10 @@ type Row = {
   listingId?: string;
   paymentMethodId?: string;
   intentId?: string;
+  /** Casa e datas — a remediação é por proprietário e por período de nota. */
+  propertyName: string;
+  checkIn: string;
+  checkOut: string;
   /** Plano que o hóspede escolheu; vazio = a reserva nasceu sem plano. */
   ratePlanId: string;
   /** Estadia vendida, do snapshot da cotação: alojamento + limpeza. */
@@ -120,6 +124,9 @@ async function main() {
         listingId: md.listingId,
         paymentMethodId: typeof pm === "string" ? pm : (pm as any)?.id,
         intentId: md.intentId,
+        propertyName: "",
+        checkIn: "",
+        checkOut: "",
         ratePlanId: "",
         soldAccommodation: null,
         soldCleaning: null,
@@ -151,6 +158,9 @@ async function main() {
       const intent: any = await getBookingIntent(r.intentId);
       if (intent) {
         r.ratePlanId = String(intent.ratePlanId ?? "").trim();
+        r.propertyName = String(intent.propertyName ?? "").trim() || String(intent.listingId ?? "");
+        r.checkIn = String(intent.checkIn ?? "");
+        r.checkOut = String(intent.checkOut ?? "");
         const q = intent.quote ?? {};
         r.soldAccommodation = typeof q.totalNights === "number" ? q.totalNights : null;
         r.soldCleaning = typeof q.cleaningFee === "number" ? q.cleaningFee : null;
@@ -197,7 +207,7 @@ async function main() {
   console.log("=".repeat(100));
   console.log("VALOR DA RESERVA: o que vendemos  vs  o que o Guesty registou (base do payout)");
   console.log("=".repeat(100));
-  console.log("DATA        CODIGO          ALOJ.VENDIDO  ALOJ.GUESTY      DESVIO  PLANO");
+  console.log("CHECK-OUT   CODIGO          ALOJ.VENDIDO  ALOJ.GUESTY      DESVIO  CASA");
   console.log("-".repeat(100));
   const aMais: Row[] = [];
   const aMenos: Row[] = [];
@@ -209,7 +219,7 @@ async function main() {
     else if (gap < -0.5) aMenos.push(r);
     const marca = gap == null ? "" : gap > 0.5 ? "  <<< PAGAMOS A MAIS" : gap < -0.5 ? "  <<< proprietario a menos" : "";
     console.log(
-      `${r.created}  ${r.code.padEnd(14)} ${eur(r.soldAccommodation, 12)} ${eur(r.guestyAccommodation, 12)} ${eur(gap, 11)}  ${(r.ratePlanId || "SEM PLANO").slice(0, 12).padEnd(12)}${marca}`,
+      `${(r.checkOut || r.created).padEnd(10)}  ${r.code.padEnd(14)} ${eur(r.soldAccommodation, 12)} ${eur(r.guestyAccommodation, 12)} ${eur(gap, 11)}  ${(r.propertyName || "?").slice(0, 28).padEnd(28)}${marca}`,
     );
   }
 
@@ -232,6 +242,76 @@ async function main() {
           `${r.guestyHostPayout != null ? ` | payout calculado ${eur(r.guestyHostPayout, 9)}` : ""} | ${r.reservationId}`,
       );
     }
+  }
+
+  // ── 1b. Agrupado por casa — as notas de liquidação são por proprietário ───
+  // A correção não se faz reserva a reserva: faz-se com o dono de cada casa,
+  // sobre a nota do período em que a estadia caiu. Por isso o que interessa
+  // aqui é o líquido por casa e o check-out de cada reserva.
+  const comDesvio = alvo.filter((r) => {
+    const g = fareGap(r);
+    return g != null && Math.abs(g) > 0.5;
+  });
+  if (comDesvio.length) {
+    const porCasa = new Map<string, Row[]>();
+    for (const r of comDesvio) {
+      const k = r.propertyName || r.listingId || "?";
+      porCasa.set(k, [...(porCasa.get(k) ?? []), r]);
+    }
+    console.log("\n" + "=".repeat(100));
+    console.log("POR CASA — e assim que se corrige com o proprietario (nota a nota)");
+    console.log("=".repeat(100));
+    console.log("CASA                             RES.   PAGAMOS A MAIS   DONO A MENOS       LIQUIDO");
+    console.log("-".repeat(100));
+    const ordenado = [...porCasa.entries()].sort((a, b) => {
+      const liq = (rs: Row[]) => rs.reduce((s, r) => s + (fareGap(r) ?? 0), 0);
+      return liq(b[1]) - liq(a[1]);
+    });
+    for (const [casa, rs] of ordenado) {
+      const mais = rs.reduce((s, r) => s + Math.max(0, fareGap(r) ?? 0), 0);
+      const menos = rs.reduce((s, r) => s + Math.min(0, fareGap(r) ?? 0), 0);
+      console.log(
+        `${casa.slice(0, 30).padEnd(32)} ${String(rs.length).padStart(4)}   ${eur(mais, 12)}   ${eur(Math.abs(menos), 12)}   ${eur(mais + menos, 12)}`,
+      );
+      for (const r of rs.sort((a, b) => a.checkOut.localeCompare(b.checkOut))) {
+        console.log(
+          `    check-out ${r.checkOut || "?"}  ${r.code.padEnd(14)} desvio ${eur(fareGap(r), 9)}` +
+            `${r.guestyHostPayout != null ? ` | payout ${eur(r.guestyHostPayout, 9)}` : ""}`,
+        );
+      }
+    }
+    console.log("-".repeat(100));
+    console.log(`LIQUIDO GLOBAL: ${(somaMais + somaMenos).toFixed(2)} EUR`);
+    console.log("Positivo = a empresa pagou a proprietarios sobre receita que nunca recebeu.");
+    console.log("Negativo = proprietarios receberam a menos do que a venda dava.");
+    console.log("Agrupa-se pelo check-out porque e por ai que a estadia cai na nota do periodo.");
+
+    // O que ja saiu em nota nao se desfaz — corrige-se com o dono. O que ainda
+    // nao chegou ao check-out nunca entrou em nota nenhuma: essas ainda vao a
+    // tempo de ser arranjadas no Guesty antes de sair dinheiro, e sao as
+    // primeiras a mexer.
+    const hoje = new Date().toISOString().slice(0, 10);
+    const aTempo = comDesvio.filter((r) => r.checkOut && r.checkOut >= hoje);
+    const jaFoi = comDesvio.filter((r) => !r.checkOut || r.checkOut < hoje);
+    const soma = (rs: Row[]) => rs.reduce((s, r) => s + (fareGap(r) ?? 0), 0);
+    console.log("\n" + "=".repeat(100));
+    console.log("O QUE AINDA VAI A TEMPO  vs  O QUE JA SAIU");
+    console.log("=".repeat(100));
+    console.log(
+      `Estadias por terminar (check-out >= ${hoje}) ....... ${aTempo.length}   liquido ${soma(aTempo).toFixed(2)} EUR`,
+    );
+    console.log("  Ainda nao entraram em nota nenhuma. Corrigir o valor destas no Guesty");
+    console.log("  ANTES da proxima liquidacao evita o erro por inteiro — e o que fazer primeiro.");
+    for (const r of aTempo.sort((a, b) => a.checkOut.localeCompare(b.checkOut))) {
+      console.log(
+        `    ${r.checkOut}  ${r.code.padEnd(14)} ${(r.propertyName || "?").slice(0, 28).padEnd(28)} desvio ${eur(fareGap(r), 9)}`,
+      );
+    }
+    console.log(
+      `\nEstadias ja terminadas ............................ ${jaFoi.length}   liquido ${soma(jaFoi).toFixed(2)} EUR`,
+    );
+    console.log("  Estas ja podem ter entrado em notas emitidas. Nao se desfazem sozinhas:");
+    console.log("  acertam-se com cada proprietario, na nota do periodo seguinte.");
   }
 
   // ── 2. Saldos que o hóspede aparenta dever, e não deve ────────────────────
