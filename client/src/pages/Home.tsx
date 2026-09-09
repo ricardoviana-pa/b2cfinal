@@ -24,6 +24,7 @@
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { HOME_COUNT_LABEL, CHECKLIST_POINTS } from '@shared/brandFacts';
 import { useTranslation } from 'react-i18next';
+import { managementUrl } from '@/lib/siteLinks';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { StructuredData, buildFaqPageSchema } from '@/components/seo/StructuredData';
 import { Link } from 'wouter';
@@ -1083,9 +1084,7 @@ export default function Home() {
               {t('home.ownersBody')}
             </p>
             <a
-              href="https://management.portugalactive.com"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
+              href={managementUrl(i18n.resolvedLanguage || i18n.language)}
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-white/30 text-white caption font-semibold hover:bg-white/10 transition-colors"
               style={{ letterSpacing: '1.5px' }}
             >

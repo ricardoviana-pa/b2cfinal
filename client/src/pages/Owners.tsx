@@ -6,6 +6,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { HOME_COUNT_LABEL } from '@shared/brandFacts';
 import { useTranslation } from 'react-i18next';
+import { managementUrl } from '@/lib/siteLinks';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { ArrowRight, Check, ExternalLink, Loader2 } from 'lucide-react';
 import Header from '@/components/layout/Header';
@@ -17,7 +18,7 @@ import { trpc } from '@/lib/trpc';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Owners() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   usePageMeta({ title: 'Property Management Portugal | Portugal Active for Owners', description: 'Maximise your rental income. Full-service villa management — marketing, bookings, housekeeping, maintenance, guest concierge.', url: '/owners' });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -231,9 +232,7 @@ export default function Owners() {
               <p className="text-[14px] text-[#6B6860] font-light">{t('owners.portalBody')}</p>
             </div>
             <a
-              href="https://management.portugalactive.com"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
+              href={managementUrl(i18n.resolvedLanguage || i18n.language)}
               className="inline-flex items-center gap-2 rounded-full border border-[#1A1A18] text-[#1A1A18] text-[12px] tracking-[0.08em] font-medium px-7 py-4 hover:bg-[#1A1A18] hover:text-white transition-colors shrink-0"
             >
               {t('owners.portalCta')} <ExternalLink className="w-4 h-4" />

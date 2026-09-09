@@ -48,7 +48,7 @@ const Account = lazy(() => import("./pages/Account"));
 /* /owners-portal redirects to external management portal */
 function OwnersRedirect() {
   if (typeof window !== 'undefined') {
-    window.location.href = 'https://management.portugalactive.com';
+    window.location.href = 'https://www.portugalactive.com/management/en/';
   }
   return null;
 }

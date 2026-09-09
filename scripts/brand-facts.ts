@@ -109,6 +109,7 @@ ${experiencePrices().join("\n")}
 - Real estate contact: realestate@portugalactive.com · +351 910 917 941
 - [Real estate content index](https://www.portugalactive.com/realestate/llms.txt): English, Portuguese, French and Spanish.
 - [Property management for owners](https://www.portugalactive.com/management/en/)
+- [Management content index](https://www.portugalactive.com/management/llms.txt): Portuguese, English, French, German, Dutch, Spanish, Italian, Hebrew, Arabic and Chinese.
 `;
 }
 
