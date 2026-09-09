@@ -452,7 +452,8 @@
     "nlHeadline": "Restez inspiré.",
     "nlSub": "Séjours sélectionnés, offres saisonnières et récits de voyage au Portugal — livrés mensuellement.",
     "nlError": "Une erreur est survenue. Veuillez réessayer.",
-    "conciergeServices": "Services de conciergerie"
+    "conciergeServices": "Services de conciergerie",
+    "realEstate": "Acheter ou vendre une maison"
   },
   "propertyDetail": {
     "notFound": "Propriété introuvable",

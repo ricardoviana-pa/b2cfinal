@@ -452,7 +452,8 @@
     "nlHeadline": "Låt dig inspireras.",
     "nlSub": "Utvalda vistelser, säsongserbjudanden och reseberättelser från Portugal — levereras månadsvis.",
     "nlError": "Något gick fel. Försök igen.",
-    "conciergeServices": "Conciergetjänster"
+    "conciergeServices": "Conciergetjänster",
+    "realEstate": "Köpa eller sälja bostad"
   },
   "propertyDetail": {
     "notFound": "Bostad hittades inte",

@@ -13,7 +13,10 @@ import { trpc } from '@/lib/trpc';
 import { pushDL } from '@/lib/datalayer';
 
 export default function Footer() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const language = (i18n.resolvedLanguage || i18n.language || "en").split("-")[0];
+  const realEstateLanguage = ["pt", "fr", "es"].includes(language) ? language + "/" : "";
+  const managementLanguage = language === "pt" ? "" : (["en", "fr", "es", "de", "it", "nl"].includes(language) ? language : "en") + "/";
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
@@ -165,6 +168,7 @@ export default function Footer() {
               {footerLinks(t('footer.experiences'), '/experiences')}
               {footerLinks(t('footer.conciergeServices'), '/concierge')}
               {footerLinks(t('footer.events'), '/events')}
+              <li><a href={`https://www.portugalactive.com/realestate/${realEstateLanguage}`} className="text-[13px] text-white/50 hover:text-white transition-colors duration-200" style={{ fontWeight: 300 }}>{t('footer.realEstate')}</a></li>
               <li>
                 <a
                   href="https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
@@ -190,7 +194,7 @@ export default function Footer() {
               {footerLinks(t('footer.journal'), '/blog')}
               {footerLinks(t('footer.contact'), '/contact')}
               <li>
-                <a href="https://management.portugalactive.com" target="_blank" rel="noopener noreferrer nofollow" className="text-[13px] text-white/40 hover:text-white transition-colors" style={{ fontWeight: 300 }}>
+                <a href={`https://www.portugalactive.com/management/${managementLanguage}`} className="text-[13px] text-white/40 hover:text-white transition-colors" style={{ fontWeight: 300 }}>
                   {t('footer.forOwners', 'For property owners')} →
                 </a>
               </li>

@@ -452,7 +452,8 @@
     "nlHeadline": "Stay inspired.",
     "nlSub": "Curated stays, seasonal offers, and Portugal travel stories — delivered monthly.",
     "nlError": "Something went wrong. Please try again.",
-    "conciergeServices": "Concierge services"
+    "conciergeServices": "Concierge services",
+    "realEstate": "Buy or sell a home"
   },
   "propertyDetail": {
     "notFound": "Home not found",

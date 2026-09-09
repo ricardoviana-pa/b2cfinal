@@ -68,3 +68,6 @@ Disallow: /booking/confirmation/
 Disallow: /*/booking/confirmation/
 
 Sitemap: https://www.portugalactive.com/sitemap.xml
+
+Sitemap: https://www.portugalactive.com/realestate/sitemap-index.xml
+Sitemap: https://www.portugalactive.com/management/sitemap.xml

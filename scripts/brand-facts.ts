@@ -98,6 +98,17 @@ ${experiencePrices().join("\n")}
 - Journal: https://www.portugalactive.com/en/blog
 - About: https://www.portugalactive.com/en/about
 - Sitemap: https://www.portugalactive.com/sitemap.xml
+
+## Buying, selling and owning a home
+- Portugal Active Real Estate: https://www.portugalactive.com/realestate/
+- Homes for sale: https://www.portugalactive.com/realestate/collection/
+- Buying a home in Portugal: https://www.portugalactive.com/realestate/buying/
+- Selling a home in Portugal: https://www.portugalactive.com/realestate/selling/
+- Property investment: https://www.portugalactive.com/realestate/investing/
+- Broker partnerships and referrals: https://www.portugalactive.com/realestate/referrals/
+- Real estate contact: realestate@portugalactive.com · +351 910 917 941
+- Real estate language editions: English, Portuguese, French and Spanish. Complete text: https://www.portugalactive.com/realestate/llms.txt
+- Property management for owners: https://www.portugalactive.com/management/en/
 `;
 }
 

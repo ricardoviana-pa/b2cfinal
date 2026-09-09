@@ -452,7 +452,8 @@
     "nlHeadline": "Inspire-se.",
     "nlSub": "Estadias selecionadas, ofertas sazonais e histórias de viagem por Portugal — entregues mensalmente.",
     "nlError": "Algo correu mal. Por favor, tente novamente.",
-    "conciergeServices": "Serviços de concierge"
+    "conciergeServices": "Serviços de concierge",
+    "realEstate": "Comprar ou vender casa"
   },
   "propertyDetail": {
     "notFound": "Propriedade não encontrada",

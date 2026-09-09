@@ -452,7 +452,8 @@
     "nlHeadline": "Inspiroidu.",
     "nlSub": "Valikoituja majoituksia, kausitarjouksia ja matkakertomuksia Portugalista — toimitetaan kuukausittain.",
     "nlError": "Jokin meni pieleen. Yritä uudelleen.",
-    "conciergeServices": "Concierge-palvelut"
+    "conciergeServices": "Concierge-palvelut",
+    "realEstate": "Osta tai myy asunto"
   },
   "propertyDetail": {
     "notFound": "Kohdetta ei löytynyt",

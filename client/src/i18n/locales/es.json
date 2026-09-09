@@ -452,7 +452,8 @@
     "nlHeadline": "Inspírate.",
     "nlSub": "Estancias seleccionadas, ofertas de temporada e historias de viaje por Portugal — entregadas mensualmente.",
     "nlError": "Algo salió mal. Por favor, inténtalo de nuevo.",
-    "conciergeServices": "Servicios de conserjería"
+    "conciergeServices": "Servicios de conserjería",
+    "realEstate": "Comprar o vender una casa"
   },
   "propertyDetail": {
     "notFound": "Propiedad no encontrada",
