@@ -25609,6 +25609,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Hemos estado muy bien en este alojamiento 6 adultos y 3 niños  sin dudarlo repetiríamos",
+        "guestDisplayName": "Laura",
+        "guestName": "Laura",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-08T11:12:05.014Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 4
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Passámos um fim de semana fantástico em Carreço para um team building e a experiência não podia ter sido melhor.\n\nA casa é espetacular, muito confortável, espaçosa e extremamente bem equipada, com todas as comodidades de que precisámos durante a estadia. A piscina é excelente e as vistas são simplesmente incríveis, tornando o espaço perfeito tanto para relaxar como para aproveitar bons momentos em grupo.\n\nÉramos um grupo de 8 pessoas e todos adorámos a estadia. A casa correspondeu totalmente às ",
         "guestDisplayName": "Miguel",
         "guestName": "Miguel",
@@ -25644,7 +25679,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1,
+    "reviewCount": 2,
     "lastModified": "2026-08-24",
     "contentHash": "78cd9bc834e2e4e52d880452a75e443dd8711673"
   },
