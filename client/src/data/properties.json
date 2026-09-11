@@ -383,6 +383,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Férias incríveis numa casa incrível com tudo à disposição. \nPaisagem incrível, no meio da natureza. \nAs instruções foram claras. \nMuito bem organizado.",
+        "guestDisplayName": "Cláudia",
+        "guestName": "Cláudia",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-09T14:20:20.874Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 4
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Spacious with huge garden surroundings. 3 big bedrooms a large kitchen, places to sit outside, a great pool, bbq and jacuzzi 😀",
         "guestDisplayName": "Joerg",
         "guestName": "Joerg",
@@ -843,7 +878,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 21,
+    "reviewCount": 22,
     "lastModified": "2026-08-24",
     "contentHash": "4ae1473dbd7170a1eff030e50f5676e23d3a942c"
   },
