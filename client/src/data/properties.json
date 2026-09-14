@@ -2723,288 +2723,6 @@
     "contentHash": "51826d7dc3264d25bd193540648c758fdc1635cc"
   },
   {
-    "id": "guesty-6a0359b4e343150013abc14d",
-    "slug": "atlas-hideway-by-portugal-active-abc14d",
-    "name": "Atlas Hideway by Portugal Active",
-    "tagline": "A freshly renovated apartment in Darque, calm base for the Minho region",
-    "tier": "select",
-    "destination": "minho",
-    "locality": "Darque",
-    "bedrooms": 2,
-    "bathrooms": 1.5,
-    "maxGuests": 4,
-    "priceFrom": 105,
-    "pricePerNight": 105,
-    "cleaningFee": 147,
-    "minNights": 1,
-    "currency": "EUR",
-    "images": [
-      "https://assets.guesty.com/image/upload/v1779113997/production/6957de4388cba42d9e7a905e/o5oeikwtccbbrxrfvluw.jpg",
-      "https://assets.guesty.com/image/upload/v1779113997/production/6957de4388cba42d9e7a905e/e6sg8snq4egjoi5k6hdn.jpg",
-      "https://assets.guesty.com/image/upload/v1779114090/production/6957de4388cba42d9e7a905e/i1sl4w6akw2vt06fe4du.jpg",
-      "https://assets.guesty.com/image/upload/v1779114124/production/6957de4388cba42d9e7a905e/odvcwusylswyxmhaw908.jpg",
-      "https://assets.guesty.com/image/upload/v1778756709/production/6957de4388cba42d9e7a905e/xljpyc7bn6otj1yjrepf.jpg",
-      "https://assets.guesty.com/image/upload/v1779114236/production/6957de4388cba42d9e7a905e/anpkxyhqnm2itdezkx8w.jpg",
-      "https://assets.guesty.com/image/upload/v1779114282/production/6957de4388cba42d9e7a905e/mz5eho27umpb9zxtmwap.jpg",
-      "https://assets.guesty.com/image/upload/v1779114283/production/6957de4388cba42d9e7a905e/t6jzi2qj5etcxso0zlqs.jpg",
-      "https://assets.guesty.com/image/upload/v1779114368/production/6957de4388cba42d9e7a905e/obbmhkl68hjqtgdjc9wv.jpg",
-      "https://assets.guesty.com/image/upload/v1779114611/production/6957de4388cba42d9e7a905e/fyqffkhje8az1rwmobhe.jpg",
-      "https://assets.guesty.com/image/upload/v1778756704/production/6957de4388cba42d9e7a905e/cer62bn3z63nufjyustv.jpg",
-      "https://assets.guesty.com/image/upload/v1779114999/production/6957de4388cba42d9e7a905e/il8uoob9z48pbn1kwqwo.jpg",
-      "https://assets.guesty.com/image/upload/v1779115149/production/6957de4388cba42d9e7a905e/nwtebwraoafhiazwk6it.jpg",
-      "https://assets.guesty.com/image/upload/v1779115147/production/6957de4388cba42d9e7a905e/mfrgxv9s2dk2dnheilqb.jpg",
-      "https://assets.guesty.com/image/upload/v1778756700/production/6957de4388cba42d9e7a905e/mykjpj5t8jep28kyhs05.jpg",
-      "https://assets.guesty.com/image/upload/v1779115140/production/6957de4388cba42d9e7a905e/sglnb8uxb6c1mnffo7ml.jpg",
-      "https://assets.guesty.com/image/upload/v1779115145/production/6957de4388cba42d9e7a905e/r9oq72zbrp1nacxvwt0l.jpg",
-      "https://assets.guesty.com/image/upload/v1778756701/production/6957de4388cba42d9e7a905e/r6brqnnxnedqudz7yiah.jpg",
-      "https://assets.guesty.com/image/upload/v1779115408/production/6957de4388cba42d9e7a905e/efakyhwdcht5utepeddp.jpg",
-      "https://assets.guesty.com/image/upload/v1778756696/production/6957de4388cba42d9e7a905e/dgxgsycelwms58nnkwlt.jpg",
-      "https://assets.guesty.com/image/upload/v1779115408/production/6957de4388cba42d9e7a905e/ubtiky0f5qddo0lvmyrw.jpg",
-      "https://assets.guesty.com/image/upload/v1778756697/production/6957de4388cba42d9e7a905e/mskkrx8kbof2eatlpouc.jpg",
-      "https://assets.guesty.com/image/upload/v1779115522/production/6957de4388cba42d9e7a905e/no1rmrljx6llugbj9xct.jpg",
-      "https://assets.guesty.com/image/upload/v1779115523/production/6957de4388cba42d9e7a905e/ifjfltro6pccgsm8dge7.jpg",
-      "https://assets.guesty.com/image/upload/v1779115579/production/6957de4388cba42d9e7a905e/dn9zkebwzwipn5ydciuz.jpg",
-      "https://assets.guesty.com/image/upload/v1779115579/production/6957de4388cba42d9e7a905e/v9nmqpvd2dtoxvdftafk.jpg",
-      "https://assets.guesty.com/image/upload/v1779115698/production/6957de4388cba42d9e7a905e/ewtz0vshn0zjgmiuzsvx.jpg",
-      "https://assets.guesty.com/image/upload/v1779115698/production/6957de4388cba42d9e7a905e/mircvgzxfpxc6hy6upua.jpg",
-      "https://assets.guesty.com/image/upload/v1779115700/production/6957de4388cba42d9e7a905e/ngjr6ymsyevhcgq4x8oe.jpg",
-      "https://assets.guesty.com/image/upload/v1779115700/production/6957de4388cba42d9e7a905e/wetxar8ledxvk3pmxpy5.jpg",
-      "https://assets.guesty.com/image/upload/v1779115700/production/6957de4388cba42d9e7a905e/xketm2jnmfbsabu0ghhp.jpg",
-      "https://assets.guesty.com/image/upload/v1779115701/production/6957de4388cba42d9e7a905e/yg7chne3tekevgxcvtfo.jpg",
-      "https://assets.guesty.com/image/upload/v1779115702/production/6957de4388cba42d9e7a905e/ow6iza45fbinodoeufom.jpg",
-      "https://assets.guesty.com/image/upload/v1778756703/production/6957de4388cba42d9e7a905e/cposy0ey2bvmxaiy3ilv.jpg",
-      "https://assets.guesty.com/image/upload/v1778756704/production/6957de4388cba42d9e7a905e/rotf2npkrjmikdcz9jnb.jpg",
-      "https://assets.guesty.com/image/upload/v1778756705/production/6957de4388cba42d9e7a905e/lvk6cdgx89qmzf56s0lw.jpg",
-      "https://assets.guesty.com/image/upload/v1778756704/production/6957de4388cba42d9e7a905e/khsgnzzgms3nytachvxq.jpg"
-    ],
-    "description": "Atlas Hideway is a fully renovated apartment for up to four guests, its open-plan living area done in soft contemporary tones. The kitchen comes equipped with oven, stovetop, dishwasher and coffee machine, and a round dining table sits just off the sofa and smart TV. The master bedroom has a queen bed with hotel-quality linens; the second, a white wooden bunk bed, works well for children. Two bathrooms, both new, include a glass walk-in shower with rainfall head.\n\nThe apartment sits in a quiet, residential pocket of Darque, in the Minho region, with cafés, restaurants, grocery stores and pharmacies within a few minutes' walk. The historic centre and waterfront are a short distance away, and from here the wider region opens up on foot, by bike or by car — Atlantic beaches, green hills and stone villages all reachable.\n\nMornings suit a slow coffee at the dining table before the neighbourhood cafés fill up. Afternoons can go toward the waterfront or a wander through the old centre; evenings return to the sofa, air conditioning on, TV up, dinner cooked in a kitchen that lacks nothing.\n\nIt suits families or small groups after a quiet, well-equipped base near Viana do Castelo, with the Portugal Active team on hand throughout the stay.",
-    "descriptionSections": null,
-    "amenities": {
-      "property": [
-        "Air conditioning",
-        "Babysitter recommendations",
-        "Baking sheet",
-        "Bed linens",
-        "Cable TV",
-        "Cleaning Disinfection",
-        "Cleaning products",
-        "Clothing storage",
-        "Coffee",
-        "Coffee maker",
-        "Cookware",
-        "Crib",
-        "Dining table",
-        "Dishes and silverware",
-        "Dishwasher",
-        "Dryer",
-        "Enhanced cleaning practices",
-        "Essentials",
-        "Extra pillows and blankets",
-        "Family/kid friendly",
-        "Fire extinguisher",
-        "First aid kit",
-        "Free parking on street",
-        "Freezer",
-        "Hair dryer",
-        "Hangers",
-        "Heating",
-        "High chair",
-        "High touch surfaces disinfected",
-        "Horseback Riding",
-        "Hot water",
-        "Internet",
-        "Iron",
-        "Kettle",
-        "Kitchen",
-        "Laptop friendly workspace",
-        "Long term stays allowed",
-        "Microwave",
-        "Museums",
-        "Oven",
-        "Pets allowed",
-        "Private entrance",
-        "Refrigerator",
-        "Shampoo",
-        "Shopping",
-        "Shower gel",
-        "Stove",
-        "Suitable for children (2-12 years)",
-        "Suitable for infants (under 2 years)",
-        "TV",
-        "Toaster",
-        "Towels provided",
-        "Town",
-        "Washer",
-        "Water Sports",
-        "Wine glasses",
-        "Wireless Internet"
-      ],
-      "bedrooms": [],
-      "kitchen": [],
-      "services": []
-    },
-    "petsAllowed": true,
-    "stayIncludes": [],
-    "style": "",
-    "tags": [],
-    "occasions": [],
-    "bookingUrl": "",
-    "guestyId": "6a0359b4e343150013abc14d",
-    "guestyUrl": "",
-    "whatsappMessage": "Hi, I am interested in Atlas Hideway by Portugal Active",
-    "sortOrder": 0,
-    "isActive": true,
-    "isPortfolio": false,
-    "seoTitle": "Atlas Hideway by Portugal Active — Portugal Active",
-    "seoDescription": "Welcome to Atlas Hideway by Portugal Active, a fully renovated contemporary apartment for up to 4 guests. With 2 bedrooms, 2 bathrooms and a bright open‑plan li",
-    "address": {
-      "full": "",
-      "street": "Rua das Rosas 17",
-      "city": "Darque",
-      "state": "Viana do Castelo",
-      "zipcode": "",
-      "country": "Portugal",
-      "lat": 41.6863114,
-      "lng": -8.8124586
-    },
-    "licenseNumber": null,
-    "rooms": [
-      {
-        "name": "Bedroom 1",
-        "beds": [
-          {
-            "type": "QUEEN_BED",
-            "quantity": 1
-          }
-        ]
-      },
-      {
-        "name": "Bedroom 2",
-        "beds": [
-          {
-            "type": "BUNK_BED",
-            "quantity": 1
-          }
-        ]
-      }
-    ],
-    "propertyType": "Apartment",
-    "checkInTime": "16:00",
-    "checkOutTime": "11:00",
-    "areaSquareFeet": 968.751936,
-    "reviews": [
-      {
-        "rating": 5,
-        "text": "El apartamento esta nuevo parecía que lo entrenamos, con las consiguientes fallos de las cosas nuevas, el sitio es muy tranquilo y esta cerca de viana y de la playa",
-        "guestDisplayName": "Carlos",
-        "guestName": "Carlos",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-08-19T16:27:10.468Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 5
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "The apartment was unbelievably beautiful, it looked like something out of a magazine. Our host was beyond helpful and super responsive. The apartment was a 30-minute walk to Viana do Castelo or 30 minute walk to the beach. It was really nicely located in Darque.",
-        "guestDisplayName": "Laura",
-        "guestName": "Laura",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-08-14T23:52:59.763Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 4
-          },
-          {
-            "name": "value",
-            "score": 5
-          }
-        ]
-      },
-      {
-        "rating": 5,
-        "text": "Me senti muito bem na casa. Lugar super tranquilo e confortável. Todos muito atenciosos e prestativos em atender com prontidão.",
-        "guestDisplayName": "Vanessa Mendonça",
-        "guestName": "Vanessa Mendonça",
-        "guestPhoto": null,
-        "guestLocation": null,
-        "date": "2026-07-21T00:15:11.447Z",
-        "categories": [
-          {
-            "name": "cleanliness",
-            "score": 5
-          },
-          {
-            "name": "accuracy",
-            "score": 5
-          },
-          {
-            "name": "checkin",
-            "score": 5
-          },
-          {
-            "name": "communication",
-            "score": 5
-          },
-          {
-            "name": "location",
-            "score": 4
-          },
-          {
-            "name": "value",
-            "score": 3
-          }
-        ]
-      }
-    ],
-    "averageRating": 5,
-    "reviewCount": 3,
-    "lastModified": "2026-08-24",
-    "contentHash": "a20456dd0673f77bafb56b2989472aa1ddf981ca"
-  },
-  {
     "id": "guesty-69653354109993001383ef5f",
     "slug": "beach-farm-pool-and-jacuzzi-with-sea-view-83ef5f",
     "name": "Beach Farm - Pool and Jacuzzi with Sea View",
@@ -7087,7 +6805,7 @@
     "isActive": true,
     "isPortfolio": false,
     "seoTitle": "Divine Waves Duplex by Portugal Active — Portugal Active",
-    "seoDescription": "Elegant duplex just 300m from Cabedelo Beach. With 2 bedrooms, private balcony, equipped kitchen, AC, WiFi and garage, it is the perfect retreat for up to 5 gue",
+    "seoDescription": "Elegant duplex just 300m from Cabedelo Beach. With 2 bedrooms, private balcony, equipped kitchen, WiFi and garage, it is the perfect retreat for up to 5 guests ",
     "address": {
       "full": "",
       "street": "Avenida do Cabedelo 1773",
@@ -7431,8 +7149,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 17,
-    "lastModified": "2026-09-09",
-    "contentHash": "be8724d590fede431cced862b7b77085f7dc4b73"
+    "lastModified": "2026-09-14",
+    "contentHash": "1f1204b6114e8eb28f5909a2c258e74ea2dc3724"
   },
   {
     "id": "guesty-6a341163c50f210012f12b80",
@@ -17908,11 +17626,11 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/935bf2da-ea9b-4b-lPFjJ",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/39691570-8d12-40-1tvIK",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/00eefa72-e491-42-N4oGs",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/8294bc69-5d9a-40-xRmhK",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/b2d22427-753a-45-IIMS9",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/eb2998e2-8e4d-4c-Rgw_A",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/47822c5b-987c-4c-7RyXt",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/d94e86ff-2582-4c-H2AfM",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/8294bc69-5d9a-40-xRmhK",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/b2d22427-753a-45-IIMS9",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/7a737e92-da86-4e-UhCX4",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/98c4888b-403c-46-9WHz4",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/4d16a7d0-89d1-45-cKDc8",
@@ -17996,7 +17714,6 @@
         "High touch surfaces disinfected",
         "Horseback Riding",
         "Hot water",
-        "Indoor fireplace",
         "Iron",
         "Kettle",
         "Kitchen",
@@ -18482,8 +18199,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 19,
-    "lastModified": "2026-08-24",
-    "contentHash": "8c24b7505c957b92e1c887898f748a916e3461a3"
+    "lastModified": "2026-09-14",
+    "contentHash": "ead9a68421e73988b76b966ae01e0e02cc8e5d3d"
   },
   {
     "id": "guesty-696533494b9b64001401b62e",
