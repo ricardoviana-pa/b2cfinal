@@ -1,7 +1,7 @@
 {
   "securityDeposit": {
     "title": "Deposition",
-    "notice": "En deposition kan krävas för din vistelse. Kontakta vår concierge för mer information."
+    "notice": "En deposition kan krävas för din vistelse. I så fall informerar vår concierge dig om alla detaljer före ankomst."
   },
   "nav": {
     "properties": "Hus",
@@ -1864,6 +1864,8 @@
     "total": "Totalt",
     "totalSoFar": "Totalt hittills",
     "vatIncluded": "Moms ingår.",
+    "accommodationLabel": "Boende",
+    "feesPendingShort": "Övriga avgifter bekräftas senare.",
     "depositNote": "Huset håller en återbetalningsbar deposition på {{amount}}.",
     "feesPending": "Detta hus kan lägga till städavgift och en återbetalningsbar deposition. Vår concierge bekräftar sluttotalen innan något debiteras.",
     "someUnavailable": "Några av dessa nätter är upptagna. Skicka förfrågan så föreslår vi närmaste datum.",
@@ -1988,7 +1990,7 @@
   "searchUx": {
     "bedrooms": "Sovrum",
     "clearFilters": "Rensa filter ({{count}})",
-    "datedPrices": "Med datum: vistelsens totalpriser. Nattbudgeten inkluderar obligatoriska avgifter.",
+    "datedPrices": "Priser för vistelsen. Avgifter som ännu inte bekräftats är markerade.",
     "fromPrices": "Frånpriser per natt. Välj datum för totalpris och tillgänglighet.",
     "confirmed": "bekräftat tillgängliga",
     "toConfirm": "{{count}} att bekräfta",

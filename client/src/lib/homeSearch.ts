@@ -6,6 +6,7 @@ export interface SearchQuote {
   nightlyRate: number;
   available?: boolean;
   source?: string;
+  feesKnown?: boolean;
 }
 
 export function hasConfirmedQuote(quote?: SearchQuote | null): boolean {
@@ -25,9 +26,10 @@ export function searchPrice(property: Property, quotes: Record<string, SearchQuo
   if (nights > 0) {
     const quote = quotes[property.slug];
     // Compare the same whole-stay total displayed on the card, including fees.
+    if (quote?.source === 'partner_calendar' && !quote.feesKnown) return null;
     return quote && quote.available !== false && quote.total > 0 ? quote.total : null;
   }
-  const price = fromPrices?.[property.guestyId ?? ''];
+  const price = fromPrices?.[property.guestyId ?? property.supplierUid ?? ''];
   return typeof price === 'number' && price > 0 ? price : null;
 }
 

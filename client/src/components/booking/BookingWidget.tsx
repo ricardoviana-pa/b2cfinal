@@ -23,6 +23,7 @@ export interface BookingSelection {
   checkOut: string;
   guests: number;
   total: number | null;
+  isPartial?: boolean;
   loading: boolean;
 }
 

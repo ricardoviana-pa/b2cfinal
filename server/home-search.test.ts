@@ -32,6 +32,17 @@ describe('home discovery price comparisons', () => {
     expect(hasConfirmedQuote({ ...quotes.a, available: undefined })).toBe(false);
     expect(hasConfirmedQuote(null)).toBe(false);
   });
+  it('uses supplier IDs for undated partner prices and never substitutes the import', () => {
+    const partner = { ...home('partner', 1000), guestyId: null, supplierUid: 'supplier-one', source: 'tripwix' } as Property;
+    expect(searchPrice(partner, {}, { 'supplier-one': 1299 }, 0)).toBe(1299);
+    expect(searchPrice(partner, {}, {}, 0)).toBeNull();
+  });
+  it('keeps accommodation-only partner quotes out of final-total comparisons', () => {
+    const q = { total: 5198.24, nightlyRate: 1299.56, source: 'partner_calendar', available: true, feesKnown: false };
+    expect(searchPrice(a, { a: q }, undefined, 4)).toBeNull();
+    expect(searchPrice(a, { a: { ...q, feesKnown: true } }, undefined, 4)).toBe(5198.24);
+    expect(hasConfirmedQuote(q)).toBe(false);
+  });
 });
 
 describe('home search filters', () => {

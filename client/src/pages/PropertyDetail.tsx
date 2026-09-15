@@ -37,7 +37,7 @@ import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 import { trpc } from '@/lib/trpc';
 import { pushEcommerce } from '@/lib/datalayer';
 import type { BookingSelection } from '@/components/booking/BookingWidget';
-import { formatEur, formatBookingDate, getDisplayName, intlLocale } from '@/lib/format';
+import { formatEur, formatCurrency, formatBookingDate, getDisplayName, intlLocale } from '@/lib/format';
 import {
   StructuredData,
   buildVacationRentalSchema,
@@ -721,7 +721,7 @@ export default function PropertyDetail() {
   }, []);
   useEffect(() => { setBookingSelection(null); setBookingOpen(false); }, [slug]);
   const onBookingSelection = useCallback((next: BookingSelection) => setBookingSelection(prev =>
-    prev && prev.checkIn === next.checkIn && prev.checkOut === next.checkOut && prev.guests === next.guests && prev.total === next.total && prev.loading === next.loading ? prev : next
+    prev && prev.checkIn === next.checkIn && prev.checkOut === next.checkOut && prev.guests === next.guests && prev.total === next.total && prev.loading === next.loading && prev.isPartial === next.isPartial ? prev : next
   ), []);
   const [showAllAmenities, setShowAllAmenities] = useState(false);
   const touchStartX = useRef(0);
@@ -1030,12 +1030,13 @@ export default function PropertyDetail() {
           tripwixUid={tripwixUid}
           propertyName={displayName}
           propertySlug={property.slug}
-          fromPrice={lowestNightly?.from ?? (property as any).priceFrom}
+          fromPrice={lowestNightly?.from}
           maxGuests={property.maxGuests || 20}
           minNights={(property as any).minNights}
-          initialCheckIn={initialCheckin}
-          initialCheckOut={initialCheckout}
-          initialGuests={initialGuests}
+          initialCheckIn={bookingSelection?.checkIn ?? initialCheckin}
+          initialCheckOut={bookingSelection?.checkOut ?? initialCheckout}
+          initialGuests={bookingSelection?.guests ?? initialGuests}
+          onSelectionChange={onBookingSelection}
           whatsappUrl={whatsappUrl}
         />
       ) : (
@@ -1691,10 +1692,10 @@ export default function PropertyDetail() {
           <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0">
               <p className="body-sm text-pa-dark font-medium">
-                {bookingSelection?.total ? formatEur(bookingSelection.total, i18n.language) : (bookingSelection?.checkIn || initialCheckin) && (bookingSelection?.checkOut || initialCheckout) ? t('conversion.datesSelected') : t('property.selectDatesForPrice')}
+                {bookingSelection?.total ? (property.source === 'tripwix' ? formatCurrency(bookingSelection.total, { locale: intlLocale(i18n.language) }) : formatEur(bookingSelection.total, i18n.language)) : (bookingSelection?.checkIn || initialCheckin) && (bookingSelection?.checkOut || initialCheckout) ? t('conversion.datesSelected') : t('property.selectDatesForPrice')}
               </p>
               <p className="caption text-pa-stone flex items-center gap-1 mt-0.5">
-                {bookingSelection?.total ? t('conversion.stayTotal') : (bookingSelection?.checkIn || initialCheckin) ? formatBookingDate(bookingSelection?.checkIn || initialCheckin, i18n.language) : t('property.conciergeShort')}
+                {bookingSelection?.total ? (bookingSelection.isPartial ? t('partnerBooking.totalSoFar') : t('conversion.stayTotal')) : (bookingSelection?.checkIn || initialCheckin) ? formatBookingDate(bookingSelection?.checkIn || initialCheckin, i18n.language) : t('property.conciergeShort')}
               </p>
             </div>
             {/* Partner homes open the same drawer: the request form lives on

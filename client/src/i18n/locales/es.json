@@ -1,7 +1,7 @@
 {
   "securityDeposit": {
     "title": "Fianza",
-    "notice": "Es posible que se solicite una fianza para su estancia. Contacte con nuestro concierge para más información."
+    "notice": "Es posible que se requiera una fianza para su estancia. Si corresponde, nuestro concierge le informará de todos los detalles antes de su llegada."
   },
   "nav": {
     "properties": "Casas",
@@ -1864,6 +1864,8 @@
     "total": "Total",
     "totalSoFar": "Total hasta ahora",
     "vatIncluded": "IVA incluido.",
+    "accommodationLabel": "Alojamiento",
+    "feesPendingShort": "Otros cargos por confirmar.",
     "depositNote": "La casa retiene una fianza reembolsable de {{amount}}.",
     "feesPending": "Esta casa puede añadir una tasa de limpieza y una fianza reembolsable. El concierge confirma el total final antes de cobrar nada.",
     "someUnavailable": "Algunas de estas noches están ocupadas. Envíe la solicitud y le propondremos las fechas más cercanas.",
@@ -1988,7 +1990,7 @@
   "searchUx": {
     "bedrooms": "Dormitorios",
     "clearFilters": "Borrar filtros ({{count}})",
-    "datedPrices": "Con fechas: precio total de la estancia. El presupuesto por noche incluye cargos obligatorios.",
+    "datedPrices": "Precios para la estancia. Los cargos pendientes de confirmar están indicados.",
     "fromPrices": "Precios desde, por noche. Elija fechas para el total y la disponibilidad.",
     "confirmed": "con disponibilidad confirmada",
     "toConfirm": "{{count}} por confirmar",

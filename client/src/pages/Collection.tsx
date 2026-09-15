@@ -5,6 +5,7 @@
    ItemList JSON-LD, and cross-links between collections. The acquisition
    channel this site can grow without buying a single click.
    ========================================================================== */
+import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import { matchesCollection } from '@/lib/collectionFilters';
 import { getDisplayName } from '@/lib/format';
 import { useMemo } from 'react';
@@ -51,6 +52,8 @@ export default function Collection() {
     { listingIds: fromIds },
     { enabled: fromIds.length > 0, staleTime: 5 * 60 * 1000 },
   );
+
+  const partner = usePartnerPrices(homes);
 
   usePageMeta({
     title: copy ? `${copy.title} | Portugal Active` : 'Collection | Portugal Active',
@@ -119,7 +122,7 @@ export default function Collection() {
               listId={`collection_${slug}`}
               listName={copy.title}
               itemIndex={idx}
-              fromPrice={fromPrices?.[property.guestyId ?? '']}
+              fromPrice={property.supplierUid ? partner.prices[property.supplierUid] : fromPrices?.[property.guestyId ?? '']}
             />
           ))}
         </div>

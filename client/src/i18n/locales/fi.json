@@ -1,7 +1,7 @@
 {
   "securityDeposit": {
     "title": "Vakuusmaksu",
-    "notice": "Majoituksesta voidaan periä vakuusmaksu. Ota yhteyttä concierge-palveluumme saadaksesi lisätietoja."
+    "notice": "Majoituksesta voidaan vaatia vakuus. Tarvittaessa conciergemme kertoo kaikki yksityiskohdat ennen saapumistasi."
   },
   "nav": {
     "properties": "Kodit",
@@ -1864,6 +1864,8 @@
     "total": "Yhteensä",
     "totalSoFar": "Yhteensä toistaiseksi",
     "vatIncluded": "Sisältää ALV:n.",
+    "accommodationLabel": "Majoitus",
+    "feesPendingShort": "Muut maksut vahvistetaan erikseen.",
     "depositNote": "Talo pidättää palautettavan {{amount}} vakuuden.",
     "feesPending": "Tämä talo voi lisätä loppusiivousmaksun ja palautettavan vakuuden. Concierge vahvistaa lopullisen summan ennen veloitusta.",
     "someUnavailable": "Osa näistä öistä on varattu. Lähetä pyyntö, niin ehdotamme lähimpiä päiviä.",
@@ -1988,7 +1990,7 @@
   "searchUx": {
     "bedrooms": "Makuuhuoneet",
     "clearFilters": "Tyhjennä suodattimet ({{count}})",
-    "datedPrices": "Päivämäärillä: majoituksen kokonaishinnat. Yöbudjetti sisältää pakolliset maksut.",
+    "datedPrices": "Majoituksen hinnat. Vielä vahvistettavat maksut on merkitty.",
     "fromPrices": "Alkaen-hinnat yöltä. Valitse päivämäärät kokonaishinnalle ja saatavuudelle.",
     "confirmed": "vahvistetusti saatavilla",
     "toConfirm": "{{count}} vahvistettavaa",
