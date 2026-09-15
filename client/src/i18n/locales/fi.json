@@ -2049,5 +2049,38 @@
     "searchJournal": "Etsi päiväkirjasta",
     "readyTitle": "Seuraava majoituksesi alkaa tästä.",
     "readyBody": "Valitse kohde, vertaile taloja ja tarkista hinnat haluamillesi päiville."
+  },
+  "destinationGrowth": {
+    "eyebrow": "Löydä oma Portugalisi",
+    "intro": "Aloita kohteesta. Valitse loma-asunto, tutustu paikallisoppaaseen ja suunnittele itsellesi sopiva loma.",
+    "explore": "Tutustu kohteeseen {{name}}",
+    "cityTitle": "Viana do Castelo läheltä",
+    "cityIntro": "Oppaamme Atlantin rannikolle, Liman laaksoon ja kaupunkiin, jossa olemme kotonamme.",
+    "guide": "Tutustu oppaaseen",
+    "journalTitle": "Suunnittele lomasi kohteessa {{name}}",
+    "journalIntro": "Hyödyllistä luettavaa majoituksen, matkustusajan ja tekemisen valintaan.",
+    "chapters": "Tutustu tähän kohteeseen",
+    "homes": "Loma-asunnot",
+    "experiences": "Elämykset",
+    "seasons": "Milloin matkustaa",
+    "corporateTitle": "Kokoa tiimisi Portugaliin",
+    "corporateIntro": "Suunnitteletko tiimimatkaa tai ryhmäaktiviteetteja? Tutustu yksityisiin tiloihin ja elämyksiin. Tiimimme sovittaa paikan ja ohjelman ryhmällesi.",
+    "corporateCta": "Suunnittele yritystapahtuma",
+    "metaTitle": "Kohteet ja Loma-asunnot Portugalissa | Portugal Active",
+    "metaDescription": "Vertaa Minhoa, Portoa ja Douroa, Lissabonia, Alentejoa ja Algarvea. Lue paikallisoppaita, löydä loma-asuntoja ja valitse sopiva aika Portugalin-matkalle.",
+    "eventsNote": "Vuosittaisia tapahtumia ja ideoita eri vuodenajoille. Päivämäärät ja ohjelmat vaihtelevat; vahvistetut tiedot löytyvät järjestäjien linkeistä."
+  },
+  "corporate": {
+    "title": "Yritysmatkat ja tiimitapahtumat Portugalissa",
+    "intro": "Kokoa tiimi yhteisen pöydän ääreen, työskentelemään ja ulkoilemaan. Suunnittele loma yksityisessä talossa tai tiimitapahtuma Portugal Activen kanssa.",
+    "planTitle": "Tiimillesi sopiva ohjelma",
+    "brief": "Kerro päivämäärät, osallistujamäärä, budjetti ja tapaamisen tavoite.",
+    "venue": "Tarkistamme sopivat talot, majoituskapasiteetin, kokoustilat ja tapahtumien ehdot.",
+    "programme": "Suunnittele ohjelma, jossa yhdistyvät työ, yhteiset ateriat ja aktiviteetit. Tarjous vahvistaa saatavuuden, palvelut ja kokonaishinnan.",
+    "faq1q": "Voimmeko yhdistää majoituksen ja tiimiaktiviteetit?",
+    "faq1a": "Kyllä, voit pyytää molemmat samaan tarjoukseen. Talo, huonejako, aktiviteetit ja logistiikka valitaan ryhmälle ja ajankohdalle sopiviksi.",
+    "faq2q": "Entä jos sää muuttuu?",
+    "faq2a": "Suunnittele ulkoaktiviteeteille vaihtoehto sisätiloissa. Ohjelma ja mahdolliset säästä johtuvat muutokset sovitaan tarjouksessa.",
+    "prefill": "Yritystapahtumakysely\nPäivämäärät tai toivottu kuukausi:\nOsallistujat ja yöpyjät:\nBudjetti:\nPäätavoite:"
   }
 }

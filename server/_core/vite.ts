@@ -1,3 +1,7 @@
+import { buildDestinationGraph } from '../../shared/destinationSchema';
+import { corporateSchema } from '../../shared/corporateSchema';
+import { deepMerge } from '../../client/src/lib/deepMerge';
+import { vacationRentalSchema } from '../../shared/vacationRentalSchema';
 import express, { type Express } from "express";
 import { HOME_COUNT_LABEL } from "@shared/brandFacts";
 import { getDisplayName } from "@shared/displayName";
@@ -227,7 +231,7 @@ async function getBlogArticleBySlugCached(slug: string, lang: string): Promise<a
  *  in the active language for meta. */
 let _destinations: { expiresAt: number; data: Map<string, any> } | null = null;
 const _destOverrides = new Map<string, { expiresAt: number; data: Record<string, any> }>();
-async function getDestinationBySlugCached(slug: string, lang: string): Promise<{ name: string; desc: string; seoTitle?: string } | null> {
+async function getDestinationBySlugCached(slug: string, lang: string): Promise<any | null> {
   try {
     if (!_destinations || Date.now() > _destinations.expiresAt) {
       const p = path.join(process.cwd(), "client", "src", "data", "destinations.json");
@@ -255,7 +259,7 @@ async function getDestinationBySlugCached(slug: string, lang: string): Promise<{
     // Curated per-destination title, per locale, falling back to English.
     const seoTitle = (ov?.seoTitle || base.seoTitle || "").trim();
     const desc = (ov?.seoDescription || ov?.description || base.seoDescription || base.description || base.tagline || "").replace(/\s+/g, " ").trim().slice(0, 155);
-    return desc ? { name, desc, seoTitle: seoTitle || undefined } : null;
+    return desc ? { ...deepMerge(base, ov || {}), name, desc, seoTitle: seoTitle || undefined } : null;
   } catch (err) {
     console.error("[Meta] Failed to load destination data for meta injection:", err);
     return null;
@@ -407,24 +411,15 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
           description: 'Utforska {{homes}} privata hotell i Minho, Porto, Douro, Lissabon, Alentejo och Algarve. Filtrera efter resmål, gäster och bekvämligheter. Boka direkt för bästa pris.' },
   },
   '/destinations': {
-    en: { title: 'Destinations in Portugal | Minho, Porto, Algarve & More | Portugal Active',
-          description: 'Explore our luxury villa destinations across Portugal — Minho Coast, Porto & Douro, Algarve, Lisbon, Alentejo. Find your perfect region.' },
-    pt: { title: 'Destinos em Portugal | Minho, Porto, Algarve e mais | Portugal Active',
-          description: 'Explore os nossos destinos de casas de luxo em Portugal — Costa do Minho, Porto e Douro, Algarve, Lisboa, Alentejo. Encontre a sua região perfeita.' },
-    es: { title: 'Destinos en Portugal | Miño, Oporto, Algarve y más | Portugal Active',
-          description: 'Explora nuestros destinos de villas de lujo en Portugal — Costa de Miño, Oporto y Duero, Algarve, Lisboa, Alentejo. Encuentra tu región perfecta.' },
-    fr: { title: 'Destinations au Portugal | Minho, Porto, Algarve et plus | Portugal Active',
-          description: 'Découvrez nos destinations de villas de luxe au Portugal — Côte du Minho, Porto et Douro, Algarve, Lisbonne, Alentejo. Trouvez votre région idéale.' },
-    de: { title: 'Reiseziele in Portugal | Minho, Porto, Algarve & mehr | Portugal Active',
-          description: 'Entdecken Sie unsere Luxusvilla-Reiseziele in ganz Portugal — Minho-Küste, Porto & Douro, Algarve, Lissabon, Alentejo. Finden Sie Ihre perfekte Region.' },
-    it: { title: 'Destinazioni in Portogallo | Minho, Porto, Algarve e oltre | Portugal Active',
-          description: 'Esplora le nostre destinazioni di ville di lusso in tutto il Portogallo — Costa del Minho, Porto e Douro, Algarve, Lisbona, Alentejo.' },
-    nl: { title: 'Bestemmingen in Portugal | Minho, Porto, Algarve & meer | Portugal Active',
-          description: 'Ontdek onze luxe villabestemmingen in heel Portugal — Minho-kust, Porto & Douro, Algarve, Lissabon, Alentejo. Vind jouw perfecte regio.' },
-    fi: { title: 'Kohteet Portugalissa | Minho, Porto, Algarve ja muut | Portugal Active',
-          description: 'Tutustu luksushuvilakohteisiimme Portugalissa — Minhon rannikko, Porto ja Douro, Algarve, Lissabon, Alentejo. Löydä täydellinen alueesi.' },
-    sv: { title: 'Destinationer i Portugal | Minho, Porto, Algarve & mer | Portugal Active',
-          description: 'Utforska våra lyxvillor i Portugal — Minhokusten, Porto & Douro, Algarve, Lissabon, Alentejo. Hitta din perfekta region.' },
+    en: { title: "Portugal Destinations & Villa Holidays | Portugal Active", description: "Compare Minho, Porto and Douro, Lisbon, Alentejo and the Algarve. Explore local guides, discover villas and choose the right time for your Portugal stay." },
+    pt: { title: "Destinos em Portugal e Casas de Férias | Portugal Active", description: "Compare Minho, Porto e Douro, Lisboa, Alentejo e Algarve. Explore guias locais, descubra casas e escolha a melhor altura para a sua estadia em Portugal." },
+    es: { title: "Destinos en Portugal y Casas de Vacaciones | Portugal Active", description: "Compara Minho, Oporto y Duero, Lisboa, Alentejo y Algarve. Consulta guías locales, descubre casas y elige cuándo viajar a Portugal." },
+    fr: { title: "Destinations au Portugal et Villas de Vacances | Portugal Active", description: "Comparez Minho, Porto et Douro, Lisbonne, Alentejo et Algarve. Consultez nos guides locaux, découvrez des villas et choisissez quand partir au Portugal." },
+    de: { title: "Reiseziele und Ferienhäuser in Portugal | Portugal Active", description: "Vergleichen Sie Minho, Porto und Douro, Lissabon, Alentejo und Algarve. Entdecken Sie lokale Reiseführer, Ferienhäuser und passende Reisezeiten für Portugal." },
+    it: { title: "Destinazioni e Case Vacanza in Portogallo | Portugal Active", description: "Confronta Minho, Porto e Douro, Lisbona, Alentejo e Algarve. Esplora guide locali, scopri case e scegli quando visitare il Portogallo." },
+    nl: { title: "Bestemmingen en Vakantiehuizen in Portugal | Portugal Active", description: "Vergelijk Minho, Porto en Douro, Lissabon, Alentejo en Algarve. Lees lokale gidsen, ontdek vakantiehuizen en kies de juiste reisperiode voor Portugal." },
+    fi: { title: "Kohteet ja Loma-asunnot Portugalissa | Portugal Active", description: "Vertaa Minhoa, Portoa ja Douroa, Lissabonia, Alentejoa ja Algarvea. Lue paikallisoppaita, löydä loma-asuntoja ja valitse sopiva aika Portugalin-matkalle." },
+    sv: { title: "Resmål och Semesterhus i Portugal | Portugal Active", description: "Jämför Minho, Porto och Douro, Lissabon, Alentejo och Algarve. Läs lokala guider, upptäck semesterhus och välj när du vill resa till Portugal." },
   },
   '/services': {
     en: { title: 'Luxury Concierge Services | Private Chef, Spa, Transfers | Portugal Active',
@@ -485,6 +480,17 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
           description: 'Opastetut seikkailuaktiviteetit ympäri Portugalia — ratsastus, canyoning, surffaus, vaellus, viinikierrokset ja muuta. Varaa suoraan Minhossa, Portossa tai Algarvessa.' },
     sv: { title: 'Äventyr i Portugal | Ridning, Canyoning & Surf | Portugal Active',
           description: 'Guidade äventyrsaktiviteter runt om i Portugal — ridning, canyoning, surf, vandring, vintouring med mera. Boka direkt i Minho, Porto eller Algarve.' },
+  },
+  '/corporate-retreats': {
+    en: { title: "Corporate retreats and team building in Portugal | Portugal Active", description: "Bring the team together around a shared table, a working session and time outdoors. Plan a private villa stay or a team event with Portugal Active." },
+    pt: { title: "Eventos de empresa e team building em Portugal | Portugal Active", description: "Junte a equipa à volta de uma mesa, de uma sessão de trabalho e de tempo ao ar livre. Planeie uma estadia numa casa privada ou um evento de equipa com a Portugal Active." },
+    es: { title: "Eventos de empresa y team building en Portugal | Portugal Active", description: "Reúne al equipo alrededor de una mesa, una sesión de trabajo y tiempo al aire libre. Planea una estancia en una casa privada o un evento con Portugal Active." },
+    fr: { title: "Séminaires et team building au Portugal | Portugal Active", description: "Réunissez votre équipe autour d’une table, d’une séance de travail et d’activités en plein air. Organisez un séjour en maison privée ou un événement avec Portugal Active." },
+    de: { title: "Firmenreisen und Teambuilding in Portugal | Portugal Active", description: "Bringen Sie Ihr Team an einem Tisch, bei einer Arbeitssitzung und draußen zusammen. Planen Sie einen Aufenthalt im privaten Ferienhaus oder ein Teamevent mit Portugal Active." },
+    it: { title: "Eventi aziendali e team building in Portogallo | Portugal Active", description: "Riunisci il team intorno a un tavolo, una sessione di lavoro e attività all’aperto. Organizza un soggiorno in una casa privata o un evento con Portugal Active." },
+    nl: { title: "Bedrijfsreizen en teambuilding in Portugal | Portugal Active", description: "Breng je team samen aan tafel, tijdens een werksessie en in de buitenlucht. Plan een verblijf in een privéhuis of een teamevenement met Portugal Active." },
+    fi: { title: "Yritysmatkat ja tiimitapahtumat Portugalissa | Portugal Active", description: "Kokoa tiimi yhteisen pöydän ääreen, työskentelemään ja ulkoilemaan. Suunnittele loma yksityisessä talossa tai tiimitapahtuma Portugal Activen kanssa." },
+    sv: { title: "Företagsresor och teambuilding i Portugal | Portugal Active", description: "Samla teamet runt ett bord, under ett arbetspass och utomhus. Planera en vistelse i ett privat hus eller ett teamevenemang med Portugal Active." },
   },
   '/events': {
     en: { title: 'Private Events Portugal | Weddings, Retreats, Celebrations | Portugal Active',
@@ -784,169 +790,23 @@ const DESTINATION_NAME: Record<string, string> = {
   'algarve': 'Algarve',
 };
 
-/** Build the VacationRental + BreadcrumbList @graph for a property page.
- *  Mirrors the client buildVacationRentalSchema so the server-rendered schema
- *  is consistent with what the SPA would emit after hydration. This is what
- *  makes property rich results / AI-citation eligible on Google's first pass,
- *  since the SPA body is otherwise empty until JS executes. */
-/** Guesty's bed enum → the human wording Google's BedDetails expects. */
-const BED_TYPE_LABEL: Record<string, string> = {
-  KING_BED: 'King Bed',
-  QUEEN_BED: 'Queen Bed',
-  DOUBLE_BED: 'Double Bed',
-  SINGLE_BED: 'Single Bed',
-  SOFA_BED: 'Sofa Bed',
-  BUNK_BED: 'Bunk Bed',
-};
-
-/** schema.org accommodation subtype for a Guesty propertyType. Anything we do
- *  not recognise stays absent rather than guessing — a wrong type is worse
- *  than none. */
-const ACCOMMODATION_TYPE: Record<string, string> = {
-  Villa: 'https://schema.org/House',
-  House: 'https://schema.org/House',
-  Townhouse: 'https://schema.org/House',
-  Apartment: 'https://schema.org/Apartment',
-};
-
-/**
- * The Accommodation that the rental contains — Google's `containsPlace`.
- *
- * Search Console reported this missing on every indexed home, alongside
- * `identifier`, which is what makes a VacationRental ineligible for the rich
- * result (the card with photos, price and rating) and leaves it as a plain
- * blue link. The data was already synced from Guesty — bedrooms with their
- * bed configuration, bathroom counts, floor area — it simply was never
- * emitted.
- */
-function buildContainsPlace(prop: any): Record<string, unknown> | undefined {
-  const rooms: any[] = Array.isArray(prop.rooms) ? prop.rooms : [];
-
-  const beds = rooms
-    .flatMap((room: any) => (Array.isArray(room?.beds) ? room.beds : []))
-    .map((bed: any) => {
-      const label = BED_TYPE_LABEL[String(bed?.type ?? '')];
-      const qty = Number(bed?.quantity);
-      if (!label || !Number.isFinite(qty) || qty <= 0) return null;
-      return { '@type': 'BedDetails', numberOfBeds: qty, typeOfBed: label };
-    })
-    .filter(Boolean);
-
-  const accommodation: Record<string, unknown> = { '@type': 'Accommodation' };
-
-  const additionalType = ACCOMMODATION_TYPE[String(prop.propertyType ?? '')];
-  if (additionalType) accommodation.additionalType = additionalType;
-  if (prop.bedrooms != null) accommodation.numberOfBedrooms = prop.bedrooms;
-  if (prop.bathrooms != null) accommodation.numberOfBathroomsTotal = prop.bathrooms;
-  if (rooms.length) accommodation.numberOfRooms = rooms.length;
-  if (beds.length) accommodation.bed = beds;
-  if (prop.maxGuests != null) {
-    accommodation.occupancy = { '@type': 'QuantitativeValue', value: prop.maxGuests, unitCode: 'C62' };
-  }
-  // Guesty stores square FEET despite the villas being metric; FTK is the
-  // UN/CEFACT code for square foot, so declare what we actually have rather
-  // than converting and introducing rounding we cannot verify.
-  const area = Number(prop.areaSquareFeet);
-  if (Number.isFinite(area) && area > 0) {
-    accommodation.floorSize = { '@type': 'QuantitativeValue', value: area, unitCode: 'FTK' };
-  }
-
-  // A bare {"@type":"Accommodation"} tells Google nothing — omit it instead.
-  return Object.keys(accommodation).length > 1 ? accommodation : undefined;
-}
-
+/** Shared with the hydrated PDP so client navigation cannot discard required fields. */
 function buildPropertyGraph(prop: any, lang: string): Record<string, unknown> {
-  const url = `${BOT_BASE_URL}/${lang}/homes/${prop.slug}`;
   const name = getDisplayName(prop) || 'Property';
-  // Google wants at least 8 images on a VacationRental; the old cap of 6 sat
-  // just under it. The homes carry 70+, so 12 clears the bar with room spare
-  // without bloating the embedded JSON.
-  const images = Array.isArray(prop.images) ? prop.images.slice(0, 12) : [];
-
-  // Amenities arrive either as a flat array or a grouped dict { property: [...] }.
-  let amenities: string[] = [];
-  if (Array.isArray(prop.amenities)) {
-    amenities = prop.amenities.filter((a: any) => typeof a === 'string');
-  } else if (prop.amenities && typeof prop.amenities === 'object') {
-    amenities = Object.values(prop.amenities)
-      .flat()
-      .filter((a: any) => typeof a === 'string') as string[];
-  }
-
-  const lat = typeof prop.address?.lat === 'number' ? prop.address.lat : prop.latitude;
-  const lng = typeof prop.address?.lng === 'number' ? prop.address.lng : prop.longitude;
-  const region = prop.address?.state || DESTINATION_NAME[prop.destination] || undefined;
-  const priceFrom = Number(prop.priceFrom ?? prop.pricePerNight ?? 0);
-
-  const vacationRental: Record<string, unknown> = {
-    '@type': 'VacationRental',
-    '@id': url,
-    name,
-    url,
-    ...(prop.description && { description: String(prop.description).replace(/\s+/g, ' ').trim().slice(0, 500) }),
-    ...(images.length > 0 && { image: images }),
-    ...(prop.bedrooms != null && { numberOfBedrooms: prop.bedrooms }),
-    ...(prop.bathrooms != null && { numberOfBathroomsTotal: prop.bathrooms }),
-    ...(prop.maxGuests != null && {
-      occupancy: { '@type': 'QuantitativeValue', maxValue: prop.maxGuests, unitCode: 'C62' },
-    }),
-    ...(amenities.length > 0 && {
-      amenityFeature: amenities.slice(0, 30).map((a) => ({
-        '@type': 'LocationFeatureSpecification', name: a, value: true,
-      })),
-    }),
-    ...(typeof prop.petsAllowed === 'boolean' && { petsAllowed: prop.petsAllowed }),
-    // AL (Alojamento Local) registration, when the data carries it (N4).
-    ...(prop.licenseNumber && {
-      identifier: { '@type': 'PropertyValue', propertyID: 'AL', name: 'Registo de Alojamento Local', value: String(prop.licenseNumber) },
-    }),
-    address: {
-      '@type': 'PostalAddress',
-      ...(prop.locality && { addressLocality: prop.locality }),
-      ...(region && { addressRegion: region }),
-      addressCountry: 'PT',
-    },
-    ...(typeof lat === 'number' && typeof lng === 'number' && {
-      geo: { '@type': 'GeoCoordinates', latitude: lat, longitude: lng },
-    }),
-    ...(priceFrom > 0 && {
-      priceRange: `From €${priceFrom} per night`,
-      offers: {
-        '@type': 'Offer',
-        priceCurrency: 'EUR',
-        price: priceFrom,
-        availability: 'https://schema.org/InStock',
-        url,
-        priceValidUntil: new Date(Date.now() + 365 * 86400000).toISOString().split('T')[0],
-      },
-    }),
-    ...(prop.averageRating && prop.reviewCount > 0 && {
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: prop.averageRating,
-        reviewCount: prop.reviewCount,
-        bestRating: 5,
-        worstRating: 1,
-      },
-    }),
-    // Brand, not Organization: the merchant-listing validator rejects the
-    // latter with "invalid object type for field brand".
-    brand: { '@type': 'Brand', name: 'Portugal Active', url: BOT_BASE_URL },
-    // Stable id for the listing across our site and the channels it is synced
-    // to. Google requires it on VacationRental; the Guesty id is the one value
-    // that survives a slug rename, which is exactly what it is for.
-    ...(prop.guestyId && {
-      identifier: {
-        '@type': 'PropertyValue',
-        propertyID: 'PortugalActiveListingId',
-        value: String(prop.guestyId),
-      },
-    }),
-    ...(ACCOMMODATION_TYPE[String(prop.propertyType ?? '')] && {
-      additionalType: ACCOMMODATION_TYPE[String(prop.propertyType ?? '')],
-    }),
-    ...(buildContainsPlace(prop) && { containsPlace: buildContainsPlace(prop) }),
-  };
+  const amenities = (Array.isArray(prop.amenities) ? prop.amenities : Object.values(prop.amenities || {}).flat())
+    .filter((a: unknown): a is string => typeof a === 'string');
+  const vacationRental = vacationRentalSchema({
+    ...prop, name, amenities,
+    description: prop.tagline || prop.description,
+    region: prop.address?.state || DESTINATION_NAME[prop.destination],
+    latitude: prop.address?.lat ?? prop.latitude,
+    longitude: prop.address?.lng ?? prop.longitude,
+    checkinTime: prop.checkInTime,
+    checkoutTime: prop.checkOutTime,
+    aggregateRating: prop.averageRating && prop.reviewCount ? {
+      ratingValue: Number(prop.averageRating), reviewCount: Number(prop.reviewCount),
+    } : null,
+  }, lang);
 
   const breadcrumb = {
     '@type': 'BreadcrumbList',
@@ -1629,7 +1489,7 @@ export function serveStatic(app: Express) {
 
   const KNOWN_ROUTES = new Set([
     "/", "/homes", "/about", "/contact", "/services", "/adventures",
-    "/events", "/blog", "/faq", "/careers", "/owners", "/login", "/account",
+    "/events", "/corporate-retreats", "/blog", "/faq", "/careers", "/owners", "/login", "/account",
     "/legal/privacy", "/legal/terms", "/legal/cookies", "/legal/cancellation-policy", "/admin", "/404",
     "/destinations", "/experiences", "/concierge", "/best-rate-guarantee",
   ]);
@@ -1967,6 +1827,10 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
     // or when social crawlers bypass bot detection.
     const localized = getPageMeta(p, lang);
     if (localized) {
+      if (p === '/corporate-retreats') {
+        const copy = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'client/src/i18n/locales', `${lang}.json`), 'utf8')).corporate;
+        html = injectSchemaGraph(html, 'sd-corporate', { '@context': 'https://schema.org', '@graph': corporateSchema(copy, lang) });
+      }
       html = injectMeta(html, {
         title: localized.title,
         description: localized.description,
@@ -2103,6 +1967,8 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
           const name = resolved?.name || DESTINATION_NAME[slug];
           const desc = resolved?.desc || DESTINATION_DESCRIPTION[slug]?.[lang] || DESTINATION_DESCRIPTION[slug]?.en;
           if (name && desc) {
+            const { getPropertiesForDestination } = await import('../services/properties-store');
+            const homes = await getPropertiesForDestination(slug);
             // The curated seoTitle in destinations.json (and its per-locale
             // overrides) wins over the generic template. Every destination has
             // one, in all nine languages, and every one of them was being
@@ -2114,6 +1980,11 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
             dynamicMeta = {
               title: resolved?.seoTitle || titleFn(name),
               description: desc,
+              image: resolved?.coverImage,
+              ...(resolved && {
+                schemaDomId: `sd-destination-${slug}`,
+                schemaGraph: { '@context': 'https://schema.org', '@graph': buildDestinationGraph(resolved, homes, BOT_BASE_URL, lang) },
+              }),
               url: `${BOT_BASE_URL}/${lang}/destinations/${slug}`,
             };
           }
@@ -2216,6 +2087,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
    without booting the Express server (which needs Drizzle + env vars). This
    mirrors the `__testing` pattern in `server/lib/redirects.ts`. */
 export const __testing = {
+  buildPropertyGraph,
   getServiceBySlugCached,
   getPageMeta,
   buildStaticSeoBody,

@@ -642,6 +642,12 @@ export default function PropertyDetail() {
 
     return [
       buildVacationRentalSchema({
+        id: property.id,
+        guestyId: property.guestyId,
+        supplierUid: property.supplierUid,
+        propertyType: (property as any).propertyType,
+        rooms: (property as any).rooms,
+        areaSquareFeet: (property as any).areaSquareFeet,
         name: property.name,
         slug: property.slug,
         description: property.tagline || property.description?.slice(0, 500),

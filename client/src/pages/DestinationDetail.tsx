@@ -20,7 +20,9 @@ import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 import destinationsData from '@/data/destinations.json';
-import { localizeDestination, useDestinationOverrides } from '@/lib/localizeContent';
+import { localizeDestination, useDestinationOverrides, useContentOverrides, localizeProduct } from '@/lib/localizeContent';
+import journalIndex from '@/data/journal-index/en.json';
+import destinationJournal from '@/data/destination-journal.json';
 import productsData from '@/data/products.json';
 import { trpc } from '@/lib/trpc';
 import { StructuredData } from '@/components/seo/StructuredData';
@@ -40,6 +42,7 @@ export default function DestinationDetail() {
     { enabled: !!slug, staleTime: 5 * 60 * 1000 },
   );
 
+  const journalOverrides = useContentOverrides('journal', i18n.language);
   const destOverrides = useDestinationOverrides(i18n.language);
   const dest = localizeDestination(destinations.find(d => d.slug === slug), destOverrides);
 
@@ -60,8 +63,8 @@ export default function DestinationDetail() {
     if (!dest) return [];
     return allProducts.filter(
       p => p.type === 'adventure' && p.isActive && p.destinations.includes(dest.region),
-    );
-  }, [dest]);
+    ).map(p => localizeProduct(p, i18n.language)!);
+  }, [dest, i18n.language]);
 
   const related = useMemo<Destination[]>(() => {
     if (!dest) return [];
@@ -76,13 +79,13 @@ export default function DestinationDetail() {
           .map(d => d.slug);
     const ordered = slugs
       .map(s => localizeDestination(destinations.find(d => d.slug === s), destOverrides))
-      .filter((d): d is Destination => !!d && !d.comingSoon);
+      .filter((d): d is Destination => !!d && !d.comingSoon && d.status === 'active');
     return ordered.slice(0, 3);
   }, [dest, destOverrides]);
 
-  const graph = useMemo(() => (dest ? buildDestinationGraph(dest, destProperties) : null), [
+  const graph = useMemo(() => (dest ? buildDestinationGraph(dest, destProperties, 'https://www.portugalactive.com', i18n.language.split('-')[0]) : null), [
     dest,
-    destProperties,
+    destProperties, i18n.language,
   ]);
 
   if (!dest) {
@@ -100,10 +103,9 @@ export default function DestinationDetail() {
     );
   }
 
-  // Blog tagging by destination is not yet wired up site-side. Once the
-  // blog gets a `destinations: DestinationSlug[]` field, populate this from
-  // the blog data source. Until then, section 4 (TheJournal) self-suppresses.
-  const articles: never[] = [];
+  const index = { ...journalIndex, ...journalOverrides } as Record<string, {slug: string; title: string; excerpt?: string; coverImage?: string}>;
+  const articles = ((destinationJournal as Record<string, string[]>)[dest.slug] || [])
+    .map(slug => index[slug]).filter(Boolean);
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">

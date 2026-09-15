@@ -2049,5 +2049,38 @@
     "searchJournal": "Pesquisar no diário",
     "readyTitle": "A próxima estadia começa aqui.",
     "readyBody": "Escolha o destino, compare as casas e consulte o preço para as suas datas."
+  },
+  "destinationGrowth": {
+    "eyebrow": "Encontre o seu Portugal",
+    "intro": "Comece pelo destino. Escolha a casa, explore o guia local e desenhe uma estadia à sua medida.",
+    "explore": "Explorar {{name}}",
+    "cityTitle": "Viana do Castelo, mais de perto",
+    "cityIntro": "O nosso guia da costa atlântica, do vale do Lima e da cidade onde estamos em casa.",
+    "guide": "Explorar o guia",
+    "journalTitle": "Prepare a sua estadia em {{name}}",
+    "journalIntro": "Leituras úteis para escolher onde ficar, quando viajar e o que fazer.",
+    "chapters": "Explore este destino",
+    "homes": "Casas",
+    "experiences": "Experiências",
+    "seasons": "Quando ir",
+    "corporateTitle": "Junte a sua equipa em Portugal",
+    "corporateIntro": "A planear um encontro de equipa ou team building? Explore espaços privados e atividades. A nossa equipa ajuda a adequar o local e o programa ao seu grupo.",
+    "corporateCta": "Planear um evento de empresa",
+    "metaTitle": "Destinos em Portugal e Casas de Férias | Portugal Active",
+    "metaDescription": "Compare Minho, Porto e Douro, Lisboa, Alentejo e Algarve. Explore guias locais, descubra casas e escolha a melhor altura para a sua estadia em Portugal.",
+    "eventsNote": "Eventos anuais e sugestões sazonais. As datas e os programas variam por edição; consulte as ligações dos organizadores para os detalhes confirmados."
+  },
+  "corporate": {
+    "title": "Eventos de empresa e team building em Portugal",
+    "intro": "Junte a equipa à volta de uma mesa, de uma sessão de trabalho e de tempo ao ar livre. Planeie uma estadia numa casa privada ou um evento de equipa com a Portugal Active.",
+    "planTitle": "Um programa à medida da sua equipa",
+    "brief": "Indique as datas, o número de participantes, o orçamento e o objetivo deste encontro.",
+    "venue": "Verificamos as casas adequadas, a capacidade de alojamento, o espaço de reunião e as condições para eventos.",
+    "programme": "Desenhe a agenda com tempo de trabalho, refeições em conjunto e atividades. A proposta confirma a disponibilidade, os serviços e o preço total.",
+    "faq1q": "Podemos combinar alojamento e team building?",
+    "faq1a": "Sim, pode pedir ambos na mesma proposta. A casa, a distribuição dos quartos, as atividades e a logística são selecionadas para o grupo e as datas.",
+    "faq2q": "E se o tempo mudar?",
+    "faq2a": "Peça uma alternativa interior ao planear atividades ao ar livre. O programa e eventuais alterações por motivos meteorológicos são acordados na proposta.",
+    "prefill": "Pedido de evento de empresa\nDatas ou mês preferido:\nParticipantes e pessoas a alojar:\nIntervalo de orçamento:\nObjetivo principal:"
   }
 }

@@ -212,6 +212,7 @@ async function startServer() {
         { loc: "/services", priority: "0.8", changefreq: "monthly" },
         { loc: "/adventures", priority: "0.8", changefreq: "monthly" },
         { loc: "/events", priority: "0.8", changefreq: "monthly" },
+        { loc: "/corporate-retreats", priority: "0.8", changefreq: "monthly" },
         { loc: "/blog", priority: "0.8", changefreq: "weekly" },
         { loc: "/about", priority: "0.7", changefreq: "monthly" },
         { loc: "/contact", priority: "0.7", changefreq: "monthly" },

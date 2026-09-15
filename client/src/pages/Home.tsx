@@ -118,7 +118,11 @@ export default function Home() {
   // so we no longer emit LodgingBusiness here to avoid duplicating the
   // brand entity on the homepage.
   const { data: propsData, isLoading, isError } = trpc.properties.catalogForSite.useQuery(undefined, { staleTime: 5 * 60 * 1000 });
-  const properties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
+  // Keep the featured list stable: the quote effect updates state, so a new
+  // filtered array on every render would continuously restart that effect.
+  const properties = useMemo(() =>
+    ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[],
+  [propsData]);
 
   // Destination options come from a tiny dedicated query that is SSR-prefetched,
   // so the picker is usable on first paint instead of waiting for the full
@@ -264,7 +268,7 @@ export default function Home() {
   // Fetch live quotes for featured cards when dates are entered
   useEffect(() => {
     if (!hasDates || featured.length === 0) {
-      setHomeQuotes({});
+      setHomeQuotes(current => Object.keys(current).length ? {} : current);
       setHomeQuotesLoading(false);
       return;
     }
@@ -770,6 +774,7 @@ export default function Home() {
             {featured.map((property, index) => (
               <div key={property.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
                 <PropertyCard
+                  imageSizes="(max-width: 639px) 280px, (max-width: 767px) 320px, (max-width: 1023px) 45vw, 30vw"
                   property={property}
                   checkin={searchCheckin || undefined}
                   checkout={searchCheckout || undefined}

@@ -2049,5 +2049,38 @@
     "searchJournal": "Search the journal",
     "readyTitle": "Your next stay starts here.",
     "readyBody": "Choose a destination, compare homes and check prices for your dates."
+  },
+  "destinationGrowth": {
+    "eyebrow": "Find your Portugal",
+    "intro": "Start with the place. Choose your home, explore the local guide and build a stay around what you love.",
+    "explore": "Explore {{name}}",
+    "cityTitle": "A closer look at Viana do Castelo",
+    "cityIntro": "Our local guide to the Atlantic coast, the Lima valley and the city we call home.",
+    "guide": "Explore the guide",
+    "journalTitle": "Plan your stay in {{name}}",
+    "journalIntro": "Useful reading to choose where to stay, when to travel and what to do.",
+    "chapters": "Explore this destination",
+    "homes": "Homes",
+    "experiences": "Experiences",
+    "seasons": "When to go",
+    "corporateTitle": "Bring your team together in Portugal",
+    "corporateIntro": "Planning an offsite or team building? Explore private settings and activities, then ask our team to match the venue and programme to your group.",
+    "corporateCta": "Plan a team event",
+    "metaTitle": "Portugal Destinations & Villa Holidays | Portugal Active",
+    "metaDescription": "Compare Minho, Porto and Douro, Lisbon, Alentejo and the Algarve. Explore local guides, discover villas and choose the right time for your Portugal stay.",
+    "eventsNote": "Annual events and seasonal ideas. Dates and programmes vary by edition; follow the organiser links for confirmed details."
+  },
+  "corporate": {
+    "title": "Corporate retreats and team building in Portugal",
+    "intro": "Bring the team together around a shared table, a working session and time outdoors. Plan a private villa stay or a team event with Portugal Active.",
+    "planTitle": "A programme built around your team",
+    "brief": "Tell us your dates, group size, budget and what the team needs from this time together.",
+    "venue": "We check suitable homes, overnight capacity, meeting space and the venue’s event conditions.",
+    "programme": "Shape the agenda with meeting time, shared meals and activities. The proposal confirms availability, services and the total price.",
+    "faq1q": "Can we combine accommodation and team building?",
+    "faq1a": "Yes, you can request both in one proposal. The home, room arrangements, activities and logistics are selected for your group and dates.",
+    "faq2q": "What happens if the weather changes?",
+    "faq2a": "Ask for an indoor alternative when planning outdoor activities. The programme and any weather-related changes are agreed in your proposal.",
+    "prefill": "Corporate event enquiry\nDates or preferred month:\nNumber of participants and overnight guests:\nBudget range:\nMain objective:"
   }
 }
