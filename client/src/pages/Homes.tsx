@@ -869,8 +869,12 @@ export default function Homes() {
           {showMap && (
             <Suspense fallback={<div className="h-[340px] lg:h-[420px] rounded-xl bg-pa-warm animate-pulse mb-8" />}>
               <HomesMap
-                properties={(hasDates && !quotesLoading ? availableProperties : filtered) as any}
-                fromPrices={fromPrices as any}
+                properties={hasDates && !quotesLoading ? availableProperties : filtered}
+                fromPrices={fromPrices}
+                quotes={quotes}
+                checkin={searchCheckin}
+                checkout={searchCheckout}
+                guests={searchGuestsCount || undefined}
                 lang={i18n.language}
               />
             </Suspense>
