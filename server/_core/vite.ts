@@ -373,23 +373,23 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
   },
   '/homes': {
     en: { title: 'Our Private Hotels in Portugal | Portugal Active',
-          description: 'Browse {{homes}} private hotels across Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Private pool, concierge and housekeeping in every home. Book direct for the best rate.' },
+          description: 'Browse {{homes}} private hotels across Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Filter by destination, guests and amenities. Book direct for the best rate.' },
     pt: { title: 'Os Nossos Hotéis Privados em Portugal | Portugal Active',
-          description: 'Descubra {{homes}} hotéis privados no Minho, Porto, Douro, Lisboa, Alentejo e Algarve. Piscina privada, concierge e limpeza em todas as casas. Reserve direto ao melhor preço.' },
+          description: 'Descubra {{homes}} hotéis privados no Minho, Porto, Douro, Lisboa, Alentejo e Algarve. Filtre por destino, hóspedes e comodidades. Reserve direto ao melhor preço.' },
     es: { title: 'Nuestros Hoteles Privados en Portugal | Portugal Active',
-          description: 'Descubra {{homes}} hoteles privados en Minho, Oporto, Duero, Lisboa, Alentejo y Algarve. Piscina privada, concierge y limpieza en todas las casas. Reserve directo al mejor precio.' },
+          description: 'Descubra {{homes}} hoteles privados en Minho, Oporto, Duero, Lisboa, Alentejo y Algarve. Filtre por destino, huéspedes y servicios. Reserve directo al mejor precio.' },
     fr: { title: 'Nos Hôtels Privés au Portugal | Portugal Active',
-          description: 'Découvrez {{homes}} hôtels privés dans le Minho, à Porto, dans le Douro, à Lisbonne, en Alentejo et en Algarve. Piscine privée, conciergerie et ménage dans chaque maison. Réservez en direct au meilleur tarif.' },
+          description: 'Découvrez {{homes}} hôtels privés dans le Minho, à Porto, dans le Douro, à Lisbonne, en Alentejo et en Algarve. Filtrez par destination, voyageurs et équipements. Réservez en direct au meilleur tarif.' },
     de: { title: 'Unsere Privaten Hotels in Portugal | Portugal Active',
-          description: 'Entdecken Sie {{homes}} private Hotels in Minho, Porto, Douro, Lissabon, Alentejo und an der Algarve. Privater Pool, Concierge und Reinigung in jedem Haus. Direkt buchen zum besten Preis.' },
+          description: 'Entdecken Sie {{homes}} private Hotels in Minho, Porto, Douro, Lissabon, Alentejo und an der Algarve. Filtern Sie nach Reiseziel, Gästen und Ausstattung. Direkt buchen zum besten Preis.' },
     it: { title: 'I Nostri Hotel Privati in Portogallo | Portugal Active',
-          description: 'Scopri {{homes}} hotel privati tra Minho, Porto, Douro, Lisbona, Alentejo e Algarve. Piscina privata, concierge e pulizie in ogni casa. Prenota diretto al miglior prezzo.' },
+          description: 'Scopri {{homes}} hotel privati tra Minho, Porto, Douro, Lisbona, Alentejo e Algarve. Filtra per destinazione, ospiti e servizi. Prenota diretto al miglior prezzo.' },
     nl: { title: 'Onze Privéhotels in Portugal | Portugal Active',
-          description: 'Ontdek {{homes}} privéhotels in Minho, Porto, Douro, Lissabon, Alentejo en de Algarve. Privézwembad, conciërge en schoonmaak in elk huis. Boek direct voor de beste prijs.' },
+          description: 'Ontdek {{homes}} privéhotels in Minho, Porto, Douro, Lissabon, Alentejo en de Algarve. Filter op bestemming, gasten en voorzieningen. Boek direct voor de beste prijs.' },
     fi: { title: 'Yksityishotellimme Portugalissa | Portugal Active',
-          description: 'Selaa {{homes}} yksityishotellia Minhossa, Portossa, Dourossa, Lissabonissa, Alentejossa ja Algarvessa. Yksityinen uima-allas, concierge ja siivous jokaisessa kodissa. Varaa suoraan parhaaseen hintaan.' },
+          description: 'Selaa {{homes}} yksityishotellia Minhossa, Portossa, Dourossa, Lissabonissa, Alentejossa ja Algarvessa. Suodata kohteen, vieraiden ja mukavuuksien mukaan. Varaa suoraan parhaaseen hintaan.' },
     sv: { title: 'Våra Privata Hotell i Portugal | Portugal Active',
-          description: 'Utforska {{homes}} privata hotell i Minho, Porto, Douro, Lissabon, Alentejo och Algarve. Privat pool, concierge och städning i varje hem. Boka direkt för bästa pris.' },
+          description: 'Utforska {{homes}} privata hotell i Minho, Porto, Douro, Lissabon, Alentejo och Algarve. Filtrera efter resmål, gäster och bekvämligheter. Boka direkt för bästa pris.' },
   },
   '/destinations': {
     en: { title: 'Destinations in Portugal | Minho, Porto, Algarve & More | Portugal Active',
@@ -1443,39 +1443,39 @@ const PROPERTY_TITLE: Record<string, (p: { name: string; bedrooms?: number | nul
 const PROPERTY_DESCRIPTION: Record<string, (p: { tagline?: string | null; bedrooms?: number | null; maxGuests?: number | null; destination: string; name: string }) => string> = {
   en: ({ tagline, bedrooms, maxGuests, destination, name }) => {
     const base = tagline || `${bedrooms ? `${bedrooms}-bedroom ` : ''}luxury villa in ${destLabel(destination, 'en')}${maxGuests ? ` for up to ${maxGuests} guests` : ''}.`;
-    return `${base} Private chef, concierge, housekeeping included. Book ${name} direct with Portugal Active.`;
+    return `${name}. ${base} Book direct with Portugal Active.`;
   },
   pt: ({ tagline, bedrooms, maxGuests, destination, name }) => {
     const base = tagline || `Casa de luxo ${bedrooms ? `T${bedrooms} ` : ''}em ${destLabel(destination, 'pt')}${maxGuests ? ` para até ${maxGuests} hóspedes` : ''}.`;
-    return `${base} Chef privado, concierge e limpeza incluídos. Reserve ${name} direto com a Portugal Active.`;
+    return `${name}. ${base} Reserve diretamente com a Portugal Active.`;
   },
   es: ({ tagline, bedrooms, maxGuests, destination, name }) => {
     const base = tagline || `Villa de lujo ${bedrooms ? `de ${bedrooms} dormitorios ` : ''}en ${destLabel(destination, 'es')}${maxGuests ? ` para hasta ${maxGuests} huéspedes` : ''}.`;
-    return `${base} Chef privado, conserjería y limpieza incluidos. Reserva ${name} directo con Portugal Active.`;
+    return `${name}. ${base} Reserve directamente con Portugal Active.`;
   },
   fr: ({ tagline, bedrooms, maxGuests, destination, name }) => {
     const base = tagline || `Villa de luxe ${bedrooms ? `${bedrooms} chambres ` : ''}à ${destLabel(destination, 'fr')}${maxGuests ? ` jusqu'à ${maxGuests} personnes` : ''}.`;
-    return `${base} Chef privé, conciergerie et ménage inclus. Réservez ${name} en direct avec Portugal Active.`;
+    return `${name}. ${base} Réservez en direct avec Portugal Active.`;
   },
   de: ({ tagline, bedrooms, maxGuests, destination, name }) => {
     const base = tagline || `Luxusvilla ${bedrooms ? `mit ${bedrooms} Schlafzimmern ` : ''}in ${destLabel(destination, 'de')}${maxGuests ? ` für bis zu ${maxGuests} Gäste` : ''}.`;
-    return `${base} Privatkoch, Concierge und Reinigung inklusive. Buchen Sie ${name} direkt bei Portugal Active.`;
+    return `${name}. ${base} Buchen Sie direkt bei Portugal Active.`;
   },
   it: ({ tagline, bedrooms, maxGuests, destination, name }) => {
     const base = tagline || `Villa di lusso ${bedrooms ? `con ${bedrooms} camere ` : ''}in ${destLabel(destination, 'it')}${maxGuests ? ` fino a ${maxGuests} ospiti` : ''}.`;
-    return `${base} Chef privato, concierge e pulizie inclusi. Prenota ${name} diretto con Portugal Active.`;
+    return `${name}. ${base} Prenota direttamente con Portugal Active.`;
   },
   nl: ({ tagline, bedrooms, maxGuests, destination, name }) => {
     const base = tagline || `Luxevilla ${bedrooms ? `met ${bedrooms} slaapkamers ` : ''}in ${destLabel(destination, 'nl')}${maxGuests ? ` tot ${maxGuests} gasten` : ''}.`;
-    return `${base} Privékok, conciërge en schoonmaak inbegrepen. Boek ${name} direct bij Portugal Active.`;
+    return `${name}. ${base} Boek direct bij Portugal Active.`;
   },
   fi: ({ tagline, bedrooms, maxGuests, destination, name }) => {
     const base = tagline || `Luksushuvila ${bedrooms ? `${bedrooms} makuuhuoneella ` : ''}kohteessa ${destLabel(destination, 'fi')}${maxGuests ? `, jopa ${maxGuests} hengelle` : ''}.`;
-    return `${base} Yksityiskokki, concierge ja siivous sisältyy. Varaa ${name} suoraan Portugal Activesta.`;
+    return `${name}. ${base} Varaa suoraan Portugal Activesta.`;
   },
   sv: ({ tagline, bedrooms, maxGuests, destination, name }) => {
     const base = tagline || `Lyxvilla ${bedrooms ? `med ${bedrooms} sovrum ` : ''}i ${destLabel(destination, 'sv')}${maxGuests ? ` för upp till ${maxGuests} gäster` : ''}.`;
-    return `${base} Privat kock, concierge och städning ingår. Boka ${name} direkt med Portugal Active.`;
+    return `${name}. ${base} Boka direkt med Portugal Active.`;
   },
 };
 
@@ -1979,13 +1979,12 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
           // the raw Guesty seoTitle ("<OTA title> — Portugal Active"), which
           // produced the double brand (auditoria set/2026, N9).
           const displayName = getDisplayName(prop);
-          const useCustomEn = lang === 'en' && !!prop.seoDescription;
           const titleFn = PROPERTY_TITLE[lang] ?? PROPERTY_TITLE.en;
           const descFn = PROPERTY_DESCRIPTION[lang] ?? PROPERTY_DESCRIPTION.en;
           const title = titleFn({ name: displayName, bedrooms: prop.bedrooms, destination: prop.destination });
-          const rawDesc = useCustomEn
-            ? prop.seoDescription
-            : descFn({ tagline: prop.tagline, bedrooms: prop.bedrooms, maxGuests: prop.maxGuests, destination: prop.destination, name: displayName });
+          // Use the same curated name and facts as the visible PDP. Imported
+          // Guesty SEO snippets can still contain retired names and inclusions.
+          const rawDesc = descFn({ tagline: prop.tagline, bedrooms: prop.bedrooms, maxGuests: prop.maxGuests, destination: prop.destination, name: displayName });
           dynamicMeta = {
             title,
             description: rawDesc.replace(/\s+/g, ' ').trim().slice(0, 155),
@@ -2173,6 +2172,7 @@ export const __testing = {
   injectSeoBody,
   injectMeta,
   injectSchemaGraph,
+  PROPERTY_DESCRIPTION,
   DESTINATION_DESCRIPTION,
   DESTINATION_TITLE,
   destLabel,

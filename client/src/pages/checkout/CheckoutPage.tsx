@@ -402,7 +402,11 @@ export default function CheckoutPage() {
     ? optimizeGuestyImage(property.images[0], 800)
     : undefined;
   const displayName = sanitizePropertyName(intent?.propertyName || property?.name || "");
-  const backHref = intent?.propertySlug ? `/homes/${intent.propertySlug}` : "/homes";
+  const backParams = new URLSearchParams();
+  if (checkIn) backParams.set('checkin', checkIn);
+  if (checkOut) backParams.set('checkout', checkOut);
+  if (guests) backParams.set('guests', String(guests));
+  const backHref = intent?.propertySlug ? `/homes/${intent.propertySlug}?${backParams}` : "/homes";
 
   // ── Calendar days for inline date editing ──
   const calendarQuery = trpc.booking.getCalendar.useQuery(

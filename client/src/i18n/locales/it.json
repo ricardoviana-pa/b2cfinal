@@ -457,7 +457,8 @@
     "nlSub": "Soggiorni selezionati, offerte stagionali e storie di viaggio dal Portogallo — consegnati mensilmente.",
     "nlError": "Qualcosa è andato storto. Per favore riprova.",
     "conciergeServices": "Servizi di concierge",
-    "realEstate": "Comprare o vendere casa"
+    "realEstate": "Comprare o vendere casa",
+    "offices": "Uffici"
   },
   "propertyDetail": {
     "notFound": "Proprietà non trovata",
@@ -1811,7 +1812,7 @@
     "qTimes": "A che ora sono il check-in e il check-out?",
     "aTimes": "Check-in dalle {{checkIn}} e check-out entro le {{checkOut}}. Orari flessibili possono spesso essere concordati con il nostro concierge.",
     "qMin": "Qual è il soggiorno minimo?",
-    "aMin": "Il soggiorno minimo varia in base alla stagione — il calendario mostra il requisito esatto per le tue date. A luglio e agosto i soggiorni vanno da sabato a sabato con un minimo di 7 notti.",
+    "aMin": "Il soggiorno minimo e i giorni di arrivo dipendono dalla casa e dalla stagione. Scegli le date per verificare le condizioni o contatta il nostro concierge.",
     "qDirect": "Perché prenotare direttamente con Portugal Active?",
     "aDirect": "Prenotare direttamente garantisce il miglior prezzo online senza costi di servizio OTA, un concierge WhatsApp dedicato e un team locale che gestisce la casa dall’inizio alla fine.",
     "qPets": "Posso portare il mio animale?",
@@ -1983,5 +1984,19 @@
     "accountInfo": "Dettagli dell'account",
     "loginMethod": "Metodo di accesso",
     "referCode": "Codice di presentazione"
+  },
+  "searchUx": {
+    "bedrooms": "Camere",
+    "clearFilters": "Cancella filtri ({{count}})",
+    "datedPrices": "Con date: prezzo totale del soggiorno. Il budget a notte include le spese obbligatorie.",
+    "fromPrices": "Prezzi a partire da, per notte. Scegli le date per totale e disponibilità.",
+    "confirmed": "con disponibilità confermata",
+    "toConfirm": "{{count}} da confermare",
+    "results": "{{count}} case",
+    "sort": "Ordina le case"
+  },
+  "pdpUx": {
+    "navigation": "Esplora questa casa",
+    "bedrooms": "Camere"
   }
 }

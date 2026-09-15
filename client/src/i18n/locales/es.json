@@ -457,7 +457,8 @@
     "nlSub": "Estancias seleccionadas, ofertas de temporada e historias de viaje por Portugal — entregadas mensualmente.",
     "nlError": "Algo salió mal. Por favor, inténtalo de nuevo.",
     "conciergeServices": "Servicios de conserjería",
-    "realEstate": "Comprar o vender una casa"
+    "realEstate": "Comprar o vender una casa",
+    "offices": "Oficinas"
   },
   "propertyDetail": {
     "notFound": "Propiedad no encontrada",
@@ -1811,7 +1812,7 @@
     "qTimes": "¿A qué hora son el check-in y el check-out?",
     "aTimes": "Check-in desde las {{checkIn}} y check-out hasta las {{checkOut}}. A menudo pueden acordarse horarios flexibles con nuestro conserje.",
     "qMin": "¿Cuál es la estancia mínima?",
-    "aMin": "La estancia mínima varía según la temporada — el calendario muestra el requisito exacto para tus fechas. En julio y agosto las estancias van de sábado a sábado con un mínimo de 7 noches.",
+    "aMin": "La estancia mínima y los días de llegada dependen de la casa y la temporada. Elija fechas para consultar los requisitos o contacte con nuestro concierge.",
     "qDirect": "¿Por qué reservar directamente con Portugal Active?",
     "aDirect": "Reservar directo garantiza el mejor precio online sin tasas de servicio de las OTA, un conserje dedicado por WhatsApp y un equipo local que gestiona la casa de principio a fin.",
     "qPets": "¿Puedo llevar a mi mascota?",
@@ -1983,5 +1984,19 @@
     "accountInfo": "Datos de la cuenta",
     "loginMethod": "Método de acceso",
     "referCode": "Código de recomendación"
+  },
+  "searchUx": {
+    "bedrooms": "Dormitorios",
+    "clearFilters": "Borrar filtros ({{count}})",
+    "datedPrices": "Con fechas: precio total de la estancia. El presupuesto por noche incluye cargos obligatorios.",
+    "fromPrices": "Precios desde, por noche. Elija fechas para el total y la disponibilidad.",
+    "confirmed": "con disponibilidad confirmada",
+    "toConfirm": "{{count}} por confirmar",
+    "results": "{{count}} casas",
+    "sort": "Ordenar casas"
+  },
+  "pdpUx": {
+    "navigation": "Explore esta casa",
+    "bedrooms": "Dormitorios"
   }
 }

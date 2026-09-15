@@ -457,7 +457,8 @@
     "nlSub": "Geselecteerde verblijven, seizoensaanbiedingen en reisverhalen uit Portugal — maandelijks bezorgd.",
     "nlError": "Er is iets misgegaan. Probeer het opnieuw.",
     "conciergeServices": "Conciërgediensten",
-    "realEstate": "Een huis kopen of verkopen"
+    "realEstate": "Een huis kopen of verkopen",
+    "offices": "Kantoren"
   },
   "propertyDetail": {
     "notFound": "Accommodatie niet gevonden",
@@ -1811,7 +1812,7 @@
     "qTimes": "Hoe laat zijn check-in en check-out?",
     "aTimes": "Inchecken vanaf {{checkIn}}, uitchecken vóór {{checkOut}}. Flexibele tijden zijn vaak te regelen met onze concierge.",
     "qMin": "Wat is het minimale verblijf?",
-    "aMin": "Het minimumverblijf varieert per seizoen — de kalender toont de exacte vereiste voor jouw data. In juli en augustus lopen verblijven van zaterdag tot zaterdag met een minimum van 7 nachten.",
+    "aMin": "Het minimumverblijf en de aankomstdagen hangen af van de woning en het seizoen. Kies datums om de voorwaarden te bekijken of vraag onze conciërge.",
     "qDirect": "Waarom direct bij Portugal Active boeken?",
     "aDirect": "Direct boeken betekent de beste prijs online zonder OTA-servicekosten, een eigen WhatsApp-concierge en een lokaal team dat het huis van a tot z beheert.",
     "qPets": "Mag ik mijn huisdier meenemen?",
@@ -1983,5 +1984,19 @@
     "accountInfo": "Accountgegevens",
     "loginMethod": "Inlogmethode",
     "referCode": "Aanbevelingscode"
+  },
+  "searchUx": {
+    "bedrooms": "Slaapkamers",
+    "clearFilters": "Filters wissen ({{count}})",
+    "datedPrices": "Met datums: totale verblijfprijzen. Het nachtbudget bevat verplichte kosten.",
+    "fromPrices": "Vanafprijzen per nacht. Kies datums voor totaalprijs en beschikbaarheid.",
+    "confirmed": "bevestigd beschikbaar",
+    "toConfirm": "{{count}} te bevestigen",
+    "results": "{{count}} woningen",
+    "sort": "Woningen sorteren"
+  },
+  "pdpUx": {
+    "navigation": "Ontdek deze woning",
+    "bedrooms": "Slaapkamers"
   }
 }

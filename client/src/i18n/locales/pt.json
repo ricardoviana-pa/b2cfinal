@@ -457,7 +457,8 @@
     "nlSub": "Estadias selecionadas, ofertas sazonais e histórias de viagem por Portugal — entregues mensalmente.",
     "nlError": "Algo correu mal. Por favor, tente novamente.",
     "conciergeServices": "Serviços de concierge",
-    "realEstate": "Comprar ou vender casa"
+    "realEstate": "Comprar ou vender casa",
+    "offices": "Escritórios"
   },
   "propertyDetail": {
     "notFound": "Propriedade não encontrada",
@@ -1811,7 +1812,7 @@
     "qTimes": "A que horas são o check-in e o check-out?",
     "aTimes": "Check-in a partir das {{checkIn}} e check-out até às {{checkOut}}. Horários flexíveis podem muitas vezes ser combinados com o nosso concierge.",
     "qMin": "Qual é a estadia mínima?",
-    "aMin": "A estadia mínima varia com a época — o calendário mostra o requisito exato para as suas datas. Em julho e agosto as estadias são de sábado a sábado com mínimo de 7 noites.",
+    "aMin": "A estadia mínima e os dias de chegada dependem da casa e da época. Escolha as datas para consultar os requisitos ou contacte o nosso concierge.",
     "qDirect": "Porquê reservar diretamente com a Portugal Active?",
     "aDirect": "Reservar direto garante o melhor preço online sem taxas de serviço das OTAs, um concierge dedicado por WhatsApp e uma equipa local que opera a casa de ponta a ponta.",
     "qPets": "Posso levar o meu animal de estimação?",
@@ -1983,5 +1984,19 @@
     "accountInfo": "Dados da conta",
     "loginMethod": "Método de acesso",
     "referCode": "Código de recomendação"
+  },
+  "searchUx": {
+    "bedrooms": "Quartos",
+    "clearFilters": "Limpar filtros ({{count}})",
+    "datedPrices": "Com datas: preço total da estadia. O orçamento por noite inclui taxas obrigatórias.",
+    "fromPrices": "Preços desde, por noite. Escolha datas para ver o total e a disponibilidade.",
+    "confirmed": "com disponibilidade confirmada",
+    "toConfirm": "{{count}} por confirmar",
+    "results": "{{count}} casas",
+    "sort": "Ordenar casas"
+  },
+  "pdpUx": {
+    "navigation": "Explore esta casa",
+    "bedrooms": "Quartos"
   }
 }

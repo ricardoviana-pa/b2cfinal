@@ -457,7 +457,8 @@
     "nlSub": "Valikoituja majoituksia, kausitarjouksia ja matkakertomuksia Portugalista — toimitetaan kuukausittain.",
     "nlError": "Jokin meni pieleen. Yritä uudelleen.",
     "conciergeServices": "Concierge-palvelut",
-    "realEstate": "Osta tai myy asunto"
+    "realEstate": "Osta tai myy asunto",
+    "offices": "Toimistot"
   },
   "propertyDetail": {
     "notFound": "Kohdetta ei löytynyt",
@@ -1811,7 +1812,7 @@
     "qTimes": "Mihin aikaan ovat check-in ja check-out?",
     "aTimes": "Sisäänkirjautuminen klo {{checkIn}} alkaen ja uloskirjautuminen klo {{checkOut}} mennessä. Joustavista ajoista voi usein sopia conciergemme kanssa.",
     "qMin": "Mikä on vähimmäisoleskelu?",
-    "aMin": "Vähimmäisyöpymisaika vaihtelee sesongin mukaan — kalenteri näyttää tarkan vaatimuksen valitsemillesi päiville. Heinä- ja elokuussa majoitukset ovat lauantaista lauantaihin, vähintään 7 yötä.",
+    "aMin": "Vähimmäisoleskelu ja saapumispäivät riippuvat kohteesta ja kaudesta. Valitse päivämäärät tarkistaaksesi ehdot tai kysy conciergeltamme.",
     "qDirect": "Miksi varata suoraan Portugal Activelta?",
     "aDirect": "Suora varaus takaa parhaan verkkohinnan ilman OTA-palvelumaksuja, oman WhatsApp-conciergen ja paikallisen tiimin, joka hoitaa talon alusta loppuun.",
     "qPets": "Voinko tuoda lemmikkini?",
@@ -1983,5 +1984,19 @@
     "accountInfo": "Tilin tiedot",
     "loginMethod": "Kirjautumistapa",
     "referCode": "Suosittelukoodi"
+  },
+  "searchUx": {
+    "bedrooms": "Makuuhuoneet",
+    "clearFilters": "Tyhjennä suodattimet ({{count}})",
+    "datedPrices": "Päivämäärillä: majoituksen kokonaishinnat. Yöbudjetti sisältää pakolliset maksut.",
+    "fromPrices": "Alkaen-hinnat yöltä. Valitse päivämäärät kokonaishinnalle ja saatavuudelle.",
+    "confirmed": "vahvistetusti saatavilla",
+    "toConfirm": "{{count}} vahvistettavaa",
+    "results": "{{count}} kohdetta",
+    "sort": "Lajittele kohteet"
+  },
+  "pdpUx": {
+    "navigation": "Tutustu kohteeseen",
+    "bedrooms": "Makuuhuoneet"
   }
 }

@@ -615,14 +615,6 @@ export default function PropertyDetail() {
     if (!property) return [] as Array<{ q: string; a: string }>;
     const out: Array<{ q: string; a: string }> = [];
     const name = displayName || property.name;
-    if (property.maxGuests) {
-      out.push({
-        q: t('pdpFaq.qGuests', 'How many guests can {{name}} sleep?', { name }),
-        a: t('pdpFaq.aGuests', '{{name}} sleeps up to {{guests}} guests across {{bedrooms}} bedrooms with {{bathrooms}} bathrooms.', {
-          name, guests: property.maxGuests, bedrooms: property.bedrooms, bathrooms: property.bathrooms,
-        }),
-      });
-    }
     if (property.checkInTime || property.checkOutTime) {
       out.push({
         q: t('pdpFaq.qTimes', 'What time are check-in and check-out?'),
@@ -642,11 +634,7 @@ export default function PropertyDetail() {
     // which is the only source that is right for every season.
     out.push({
       q: t('pdpFaq.qMin', 'What is the minimum stay?'),
-      a: t('pdpFaq.aMin', 'The minimum stay varies by season — the calendar shows the exact requirement for your dates. In July and August stays run Saturday to Saturday with a 7-night minimum.'),
-    });
-    out.push({
-      q: t('pdpFaq.qDirect', 'Why book directly with Portugal Active?'),
-      a: t('pdpFaq.aDirect', 'Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end.'),
+      a: t('pdpFaq.aMin', 'Minimum stays and arrival days depend on the home and season. Select your dates to check the requirements, or ask our concierge.'),
     });
     return out;
   }, [property, displayName, t]);
@@ -1018,7 +1006,6 @@ export default function PropertyDetail() {
   // bottom-sheet drawer so the two stay in sync (single source of truth).
   const bookingPanel = (
     <>
-      <SecurityDepositNotice />
       {property.guestyId ? (
         <Suspense fallback={<div className="h-[300px] bg-pa-warm animate-pulse border border-pa-sand" />}>
           <BookingWidget
@@ -1083,6 +1070,8 @@ export default function PropertyDetail() {
         </div>
       )}
 
+
+      <SecurityDepositNotice />
 
       {/* Why book direct — the guest arrived from an OTA with that tab still
           open. Four generic badges ("best rate guaranteed") carried no weight;
@@ -1211,7 +1200,7 @@ export default function PropertyDetail() {
 
         {/* Desktop: Bento gallery grid (1 large + 4 small) */}
         <div className="hidden lg:block container pt-4">
-          <div className="grid grid-cols-4 grid-rows-2 gap-2 rounded-xl overflow-hidden" style={{ height: '480px' }}>
+          <div className="grid grid-cols-4 grid-rows-2 gap-2 rounded-xl overflow-hidden" style={{ height: '360px' }}>
             {/* Main large image — left half */}
             <div
               className="col-span-2 row-span-2 relative cursor-pointer group bg-pa-sand"
@@ -1248,13 +1237,13 @@ export default function PropertyDetail() {
         </div>
 
         {/* Title, location, key stats — below hero */}
-        <div className="container pt-8 lg:pt-10 pb-4">
+        <div className="container pt-6 lg:pt-8 pb-4">
           <div className="flex items-center gap-3 mb-3">
             <p className="eyebrow font-medium tracking-[0.12em] text-pa-gold uppercase">{destName}</p>
             <span className="h-px flex-1 max-w-[60px] bg-pa-sand" />
             {property.tier === 'signature' && (
               <span className="inline-flex items-center gap-1 eyebrow font-medium tracking-[0.04em] uppercase text-pa-dark bg-pa-warm px-2.5 py-1 rounded-full">
-                <Flame size={11} className="text-pa-gold" /> {t('urgency.highDemand', 'High demand')}
+                {t('filters.signature', 'Signature')}
               </span>
             )}
           </div>
@@ -1264,7 +1253,7 @@ export default function PropertyDetail() {
           {property.tagline && (
             <p className="body-sm text-pa-earth italic mb-4 max-w-2xl leading-relaxed font-body font-light" >{property.tagline}</p>
           )}
-          <div className="flex items-center gap-2 text-pa-earth mb-8">
+          <div className="flex items-center gap-2 text-pa-earth mb-5">
             <MapPin size={14} className="text-pa-stone" />
             <span className="body-sm text-inherit font-light" >{property.locality}, Portugal</span>
           </div>
@@ -1286,6 +1275,18 @@ export default function PropertyDetail() {
             ))}
           </div>
         </div>
+
+        <nav aria-label={t('pdpUx.navigation')} className="container flex flex-wrap gap-2 pb-6">
+          {[
+            ['property-about', t('propertyDetail.aboutTitle')],
+            ['property-amenities', t('propertyDetail.amenitiesTitle')],
+            ...(property.rooms?.length ? [['property-bedrooms', t('pdpUx.bedrooms')]] : []),
+            ['property-location', t('propertyDetail.locationTitle')],
+            ['property-good-to-know', t('pdpFaq.title')],
+          ].map(([id, label]) => (
+            <a key={id} href={`#${id}`} className="inline-flex items-center min-h-11 rounded-full border border-pa-sand px-4 body-sm text-pa-earth hover:border-pa-gold hover:text-pa-dark">{label}</a>
+          ))}
+        </nav>
 
         {/* Two-column layout: main content (left 2/3) + sticky booking (right 1/3) */}
         <div className={property.guestyId ? "container pb-8 lg:pb-16" : "container pb-24 lg:pb-16"}>
@@ -1309,7 +1310,8 @@ export default function PropertyDetail() {
 
               {/* 1. About this home — lead with the narrative. A luxury PDP
                   should open with the story, not a clinical bed inventory. */}
-              <DescriptionSection
+              <div id="property-about" style={{ scrollMarginTop: 112 }}>
+                <DescriptionSection
                 description={property.description}
                 sections={(property as any).descriptionSections}
                 propertyName={displayName}
@@ -1317,6 +1319,7 @@ export default function PropertyDetail() {
                 destName={destName}
                 t={t}
               />
+              </div>
 
               {realEstateListing(property.slug, i18n.language) && (
                 <section className="border-y border-pa-sand py-6 lg:py-7">
@@ -1352,7 +1355,7 @@ export default function PropertyDetail() {
                   special. The new layout surfaces 6 hero amenities at the top
                   with bigger icons, then drops a calm 2-column list per
                   category so guests can scan without fatigue). */}
-              <section>
+              <section id="property-amenities" style={{ scrollMarginTop: '7rem' }}>
                 <h2 className="font-display headline-sm font-light text-pa-dark mb-6">{t('propertyDetail.amenitiesTitle')}</h2>
                 {amenityGroups.length > 0 ? (
                   <>
@@ -1436,7 +1439,7 @@ export default function PropertyDetail() {
                   stat line, then borderless cards with a hairline top rule and the
                   bed config as quiet typography. */}
               {property.rooms && property.rooms.length > 0 && (
-                <section>
+                <section id="property-bedrooms" style={{ scrollMarginTop: '7rem' }}>
                   <div className="flex items-baseline justify-between gap-4 mb-6">
                     <h2 className="font-display headline-sm font-light text-pa-dark">{t('propertyDetail.bedroomsTitle', 'Bedrooms & Sleeping Arrangements')}</h2>
                     <p className="caption text-pa-stone hidden sm:block shrink-0">
@@ -1474,7 +1477,7 @@ export default function PropertyDetail() {
                   before paying four figures, answered from the home's own data.
                   Mirrors into FAQPage JSON-LD (see propertyGraph) so the same
                   answers are citable by Google and AI answer engines. */}
-              <section className="py-6 lg:py-8 border-t border-pa-sand">
+              <section id="property-good-to-know" style={{ scrollMarginTop: 112 }} className="py-6 lg:py-8 border-t border-pa-sand">
                 <h2 className="font-display headline-sm font-light text-pa-dark mb-4">
                   {t('pdpFaq.title', 'Good to know')}
                 </h2>
@@ -1486,11 +1489,48 @@ export default function PropertyDetail() {
                         {f.q}
                         <ChevronDown className="w-4 h-4 text-pa-stone transition-transform group-open:rotate-180 shrink-0 ml-3" />
                       </summary>
-                      <p className="body-sm text-pa-stone leading-relaxed pt-2 pr-8 font-light" >{f.a}</p>
+                      <p className="body-sm text-pa-earth leading-relaxed pt-2 pr-8 font-light" >{f.a}</p>
                     </details>
                   ))}
                 </div>
               </section>
+
+              {/* 6. Location map — approximate pin (3 decimals ≈ 100 m, z=12):
+                  the exact address is only shared after booking. */}
+              <section id="property-location" style={{ scrollMarginTop: '7rem' }}>
+                <h2 className="font-display headline-sm font-light text-pa-dark mb-2">{t('propertyDetail.locationTitle', 'Location')}</h2>
+                <p className="body-sm text-pa-stone mb-4">
+                  <span className="font-medium text-pa-gold">{property.locality}</span>
+                  {' · '}{t('location.approxNote', 'Approximate area — the exact address is shared after booking')}
+                  {(property as any).licenseNumber && (
+                    <> · {t('location.alLicense', 'AL registration {{number}}', { number: (property as any).licenseNumber })}</>
+                  )}
+                </p>
+                <div className="rounded-xl overflow-hidden border border-pa-sand">
+                  <iframe
+                    title={`${property.name} — ${property.locality}`}
+                    className="w-full h-[300px] lg:h-[360px] border-0"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    src={
+                      property.address?.lat && property.address?.lng
+                        ? `https://maps.google.com/maps?q=${Number(property.address.lat).toFixed(3)},${Number(property.address.lng).toFixed(3)}&z=12&output=embed`
+                        : `https://maps.google.com/maps?q=${encodeURIComponent(`${property.locality}, Portugal`)}&z=13&output=embed`
+                    }
+                    allowFullScreen
+                  />
+                </div>
+              </section>
+
+              {/* 10. Guest Reviews (from Guesty sync) */}
+              <ReviewsSection
+                propertyName={displayName}
+                propertySlug={property.slug}
+                reviews={(property as any).reviews}
+                averageRating={(property as any).averageRating}
+                reviewCount={(property as any).reviewCount}
+              />
+
 
               {/* In-house promise — establishes the hotel-chain model: every
                   service and experience below is delivered by Portugal Active's
@@ -1619,41 +1659,6 @@ export default function PropertyDetail() {
                 </section>
               )}
 
-              {/* 6. Location map — approximate pin (3 decimals ≈ 100 m, z=12):
-                  the exact address is only shared after booking. */}
-              <section>
-                <h2 className="font-display headline-sm font-light text-pa-dark mb-2">{t('propertyDetail.locationTitle', 'Location')}</h2>
-                <p className="body-sm text-pa-stone mb-4">
-                  <span className="font-medium text-pa-gold">{property.locality}</span>
-                  {' · '}{t('location.approxNote', 'Approximate area — the exact address is shared after booking')}
-                  {(property as any).licenseNumber && (
-                    <> · {t('location.alLicense', 'AL registration {{number}}', { number: (property as any).licenseNumber })}</>
-                  )}
-                </p>
-                <div className="rounded-xl overflow-hidden border border-pa-sand">
-                  <iframe
-                    title={`${property.name} — ${property.locality}`}
-                    className="w-full h-[300px] lg:h-[360px] border-0"
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    src={
-                      property.address?.lat && property.address?.lng
-                        ? `https://maps.google.com/maps?q=${Number(property.address.lat).toFixed(3)},${Number(property.address.lng).toFixed(3)}&z=12&output=embed`
-                        : `https://maps.google.com/maps?q=${encodeURIComponent(`${property.locality}, Portugal`)}&z=13&output=embed`
-                    }
-                    allowFullScreen
-                  />
-                </div>
-              </section>
-
-              {/* 10. Guest Reviews (from Guesty sync) */}
-              <ReviewsSection
-                propertyName={displayName}
-                propertySlug={property.slug}
-                reviews={(property as any).reviews}
-                averageRating={(property as any).averageRating}
-                reviewCount={(property as any).reviewCount}
-              />
 
             </div>
 

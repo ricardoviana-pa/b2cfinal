@@ -457,7 +457,8 @@
     "nlSub": "Séjours sélectionnés, offres saisonnières et récits de voyage au Portugal — livrés mensuellement.",
     "nlError": "Une erreur est survenue. Veuillez réessayer.",
     "conciergeServices": "Services de conciergerie",
-    "realEstate": "Acheter ou vendre une maison"
+    "realEstate": "Acheter ou vendre une maison",
+    "offices": "Bureaux"
   },
   "propertyDetail": {
     "notFound": "Propriété introuvable",
@@ -1811,7 +1812,7 @@
     "qTimes": "À quelle heure sont l’arrivée et le départ ?",
     "aTimes": "Arrivée à partir de {{checkIn}} et départ avant {{checkOut}}. Des horaires flexibles peuvent souvent être organisés avec notre concierge.",
     "qMin": "Quel est le séjour minimum ?",
-    "aMin": "Le séjour minimum varie selon la saison — le calendrier indique la durée exacte pour vos dates. En juillet et août, les séjours vont du samedi au samedi avec un minimum de 7 nuits.",
+    "aMin": "La durée minimale et les jours d’arrivée dépendent du logement et de la saison. Choisissez vos dates pour vérifier les conditions ou contactez notre concierge.",
     "qDirect": "Pourquoi réserver directement avec Portugal Active ?",
     "aDirect": "Réserver en direct garantit le meilleur tarif en ligne sans frais de service OTA, un concierge WhatsApp dédié et une équipe locale qui gère la maison de bout en bout.",
     "qPets": "Puis-je venir avec mon animal ?",
@@ -1983,5 +1984,19 @@
     "accountInfo": "Détails du compte",
     "loginMethod": "Méthode de connexion",
     "referCode": "Code de parrainage"
+  },
+  "searchUx": {
+    "bedrooms": "Chambres",
+    "clearFilters": "Effacer les filtres ({{count}})",
+    "datedPrices": "Avec dates : prix total du séjour. Le budget par nuit inclut les frais obligatoires.",
+    "fromPrices": "Prix à partir de, par nuit. Choisissez les dates pour le total et la disponibilité.",
+    "confirmed": "disponibilités confirmées",
+    "toConfirm": "{{count}} à confirmer",
+    "results": "{{count}} logements",
+    "sort": "Trier les logements"
+  },
+  "pdpUx": {
+    "navigation": "Découvrez ce logement",
+    "bedrooms": "Chambres"
   }
 }

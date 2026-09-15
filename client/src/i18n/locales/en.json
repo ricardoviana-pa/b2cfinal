@@ -457,7 +457,8 @@
     "nlSub": "Curated stays, seasonal offers, and Portugal travel stories — delivered monthly.",
     "nlError": "Something went wrong. Please try again.",
     "conciergeServices": "Concierge services",
-    "realEstate": "Buy or sell a home"
+    "realEstate": "Buy or sell a home",
+    "offices": "Offices"
   },
   "propertyDetail": {
     "notFound": "Home not found",
@@ -1811,7 +1812,7 @@
     "qTimes": "What time are check-in and check-out?",
     "aTimes": "Check-in from {{checkIn}} and check-out by {{checkOut}}. Flexible times can often be arranged with our concierge.",
     "qMin": "What is the minimum stay?",
-    "aMin": "The minimum stay varies by season — the calendar shows the exact requirement for your dates. In July and August stays run Saturday to Saturday with a 7-night minimum.",
+    "aMin": "Minimum stays and arrival days depend on the home and season. Select your dates to check the requirements, or ask our concierge.",
     "qDirect": "Why book directly with Portugal Active?",
     "aDirect": "Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end-to-end.",
     "qPets": "Can I bring my pet?",
@@ -1983,5 +1984,19 @@
     "accountInfo": "Account details",
     "loginMethod": "Login method",
     "referCode": "Referral code"
+  },
+  "searchUx": {
+    "bedrooms": "Bedrooms",
+    "clearFilters": "Clear filters ({{count}})",
+    "datedPrices": "Dated prices are stay totals. The nightly budget includes mandatory fees.",
+    "fromPrices": "From-prices are per night. Choose dates for total prices and availability.",
+    "confirmed": "confirmed available",
+    "toConfirm": "{{count}} to confirm",
+    "results": "{{count}} homes",
+    "sort": "Sort homes"
+  },
+  "pdpUx": {
+    "navigation": "Explore this home",
+    "bedrooms": "Bedrooms"
   }
 }

@@ -5,7 +5,7 @@
 
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { HOME_COUNT_LABEL } from '@shared/brandFacts';
-import { useSearch, useLocation, useRouter } from 'wouter';
+import { useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { IMAGES } from '@/lib/images';
@@ -16,9 +16,9 @@ import heatedPoolData from '@/data/heatedPool.json';
 const HEATED_POOL_SLUGS = new Set<string>((heatedPoolData as any).slugs || []);
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
-import { filterProperties, sortProperties, getUniqueLocalities } from '@/lib/utils';
+import { filterProperties, getUniqueLocalities } from '@/lib/utils';
 import { isChildUnit, getGroupByParentGuestyId } from '@/config/propertyGroups';
-import { curatedPosition } from '@/config/propertyOrder';
+import { hasConfirmedQuote, hasSwimmingPool, hasHeatedPool, parseHomeFilters, searchPrice, sortSearchResults } from '@/lib/homeSearch';
 import { pushDL, pushEcommerce } from '@/lib/datalayer';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -40,17 +40,32 @@ export default function Homes() {
   const { t, i18n } = useTranslation();
   usePageMeta({ title: 'Luxury Holiday Homes in Portugal | Private Villas & Premium Rentals', description: 'Handpicked luxury holiday homes across Portugal. Each property managed to five-star hotel standards. Porto, Lisbon, Algarve, Douro and Minho.', image: IMAGES.heroHomes, url: '/homes' });
   const [, navigate] = useLocation();
-  const router = useRouter();
+  const searchString = useSearch();
+  const searchParams = useMemo(() => new URLSearchParams(searchString), [searchString]);
+  const facets = parseHomeFilters(searchParams);
+  const updateFilter = (key: string, value: string) => {
+    const params = new URLSearchParams(searchString);
+    if (!value || value === 'all' || (key === 'sort' && value === 'recommended')) params.delete(key);
+    else params.set(key, value);
+    navigate(`/homes${params.size ? `?${params}` : ''}`, { replace: true });
+  };
 
   const { data: propsData, isLoading, isError, refetch } = trpc.properties.listForSite.useQuery();
   const allProperties = (propsData ?? []) as Property[];
 
   // ── PLP filters (type · budget · pool · heated pool · pet-friendly) + map ──
-  const [typeFilter, setTypeFilter] = useState<string>('all');
-  const [budgetFilter, setBudgetFilter] = useState<string>('all');
-  const [poolOnly, setPoolOnly] = useState(false);
-  const [heatedPoolOnly, setHeatedPoolOnly] = useState(false);
-  const [petFriendlyOnly, setPetFriendlyOnly] = useState(false);
+  const typeFilter = facets.type;
+  const budgetFilter = facets.budget;
+  const bedroomFilter = facets.bedrooms;
+  const poolOnly = facets.pool;
+  const heatedPoolOnly = facets.heatedPool;
+  const petFriendlyOnly = facets.pets;
+  const setTypeFilter = (v: string) => updateFilter('type', v);
+  const setBudgetFilter = (v: string) => updateFilter('budget', v);
+  const setBedroomFilter = (v: string) => updateFilter('bedrooms', v);
+  const setPoolOnly = (v: boolean) => updateFilter('pool', v ? '1' : '');
+  const setHeatedPoolOnly = (v: boolean) => updateFilter('heatedPool', v ? '1' : '');
+  const setPetFriendlyOnly = (v: boolean) => updateFilter('pets', v ? '1' : '');
   const [showMap, setShowMap] = useState(false);
   // SSR-prefetched tiny query (see Home.tsx) so the destination picker is
   // populated immediately; falls back to deriving from the full list.
@@ -124,8 +139,6 @@ export default function Homes() {
     ],
     [t]
   );
-  const searchString = useSearch();
-  const searchParams = useMemo(() => new URLSearchParams(searchString), [searchString]);
   const searchCheckin = searchParams.get('checkin') || '';
   const searchCheckout = searchParams.get('checkout') || '';
   const searchGuests = searchParams.get('guests') || '';
@@ -142,14 +155,14 @@ export default function Homes() {
   }, [searchGuests]);
 
   const toFilterDestination = (value: string): FilterDestination => {
-    if (value === 'minho' || value === 'porto' || value === 'algarve') return value;
+    if (value === 'minho' || value === 'porto' || value === 'lisbon' || value === 'alentejo' || value === 'algarve') return value;
     return 'all';
   };
 
-  const [destination, setDestination] = useState<FilterDestination>(() => toFilterDestination(searchDestinationFromUrl));
-  const [location, setLocation] = useState(() => searchLocationFromUrl || 'all');
-  // Default to price-desc (premium positioning) — always show most expensive first
-  const [sort, setSort] = useState<SortOption>(() => (searchParams.get('sort') as SortOption) || 'recommended');
+  const destination = toFilterDestination(searchDestinationFromUrl);
+  const location = searchLocationFromUrl || 'all';
+  const sort = facets.sort;
+  const setSort = (v: SortOption) => updateFilter('sort', v);
   const [bookingDestination, setBookingDestination] = useState(searchDestinationFromUrl);
   const [bookingLocation, setBookingLocation] = useState(searchLocationFromUrl);
   const [bookingCheckin, setBookingCheckin] = useState(searchCheckin);
@@ -221,28 +234,10 @@ export default function Homes() {
     setBookingCheckin(searchCheckin);
     setBookingCheckout(searchCheckout);
     setBookingGuests(searchGuests ? Math.max(1, Number(searchGuests) || 2) : 2);
-    setDestination(toFilterDestination(searchDestinationFromUrl));
-    setLocation(searchLocationFromUrl || 'all');
   }, [searchDestinationFromUrl, searchLocationFromUrl, searchCheckin, searchCheckout, searchGuests]);
 
-  useEffect(() => {
-    const params = new URLSearchParams(searchString);
-    const set = (k: string, v: string | undefined, fallback: string) => {
-      if (v && v !== fallback) params.set(k, v);
-      else params.delete(k);
-    };
-    set('destination', destination, 'all');
-    set('location', location, 'all');
-    set('sort', sort, 'price-desc');
-    const qs = params.toString();
-    const newUrl = `${router.base}/homes${qs ? `?${qs}` : ''}`;
-    if (newUrl !== window.location.pathname + window.location.search) {
-      window.history.replaceState(null, '', newUrl);
-    }
-  }, [destination, location, sort, searchString]);
-
   const filtered = useMemo(() => {
-    const f = filterProperties(allProperties, 'all', destination, undefined, undefined, undefined, 'all', location);
+    const f = filterProperties(allProperties, 'all', destination, bedroomFilter === 'all' ? undefined : bedroomFilter, undefined, undefined, 'all', location);
     const withGuestCapacity =
       searchGuestsCount > 0
         ? f.filter((property) => (property.maxGuests ?? 0) >= searchGuestsCount)
@@ -255,17 +250,18 @@ export default function Homes() {
       Object.values((p.amenities || {}) as Record<string, string[]>).flat().filter((a) => typeof a === 'string');
     const facetted = withoutChildUnits.filter((p) => {
       if (typeFilter !== 'all' && (p.propertyType || '') !== typeFilter) return false;
-      if (poolOnly && !amenityList(p).some((a) => /pool/i.test(a))) return false;
+      if (poolOnly && !HEATED_POOL_SLUGS.has(p.slug) && !hasSwimmingPool(amenityList(p))) return false;
       // "Heated pool" lives in names/taglines, not the amenity list.
       if (
         heatedPoolOnly &&
         !HEATED_POOL_SLUGS.has(p.slug) &&
-        !/heated/i.test(`${p.name} ${(p as any).tagline || ''} ${amenityList(p).join(' ')}`)
+        !hasHeatedPool(`${p.name} ${(p as any).tagline || ''} ${amenityList(p).join(' ')}`)
       ) return false;
       if (petFriendlyOnly && !(p as any).petsAllowed) return false;
       if (budgetFilter !== 'all') {
-        const nightly = fromPrices?.[p.guestyId ?? ''] ?? p.priceFrom ?? 0;
-        if (nightly <= 0) return false;
+        const price = searchPrice(p, quotes, fromPrices, searchNights);
+        if (price === null) return false;
+        const nightly = searchNights > 0 ? price / searchNights : price;
         if (budgetFilter === 'b1' && nightly > 300) return false;
         if (budgetFilter === 'b2' && (nightly <= 300 || nightly > 500)) return false;
         if (budgetFilter === 'b3' && (nightly <= 500 || nightly > 800)) return false;
@@ -273,8 +269,8 @@ export default function Homes() {
       }
       return true;
     });
-    return sortProperties(facetted, sort);
-  }, [allProperties, destination, location, sort, searchGuestsCount, typeFilter, budgetFilter, poolOnly, heatedPoolOnly, petFriendlyOnly, fromPrices]);
+    return sortSearchResults(facetted, sort, quotes, fromPrices, searchNights);
+  }, [allProperties, destination, location, sort, searchGuestsCount, typeFilter, budgetFilter, poolOnly, heatedPoolOnly, petFriendlyOnly, bedroomFilter, fromPrices, quotes, searchNights]);
 
   // GA4: view_item_list — fires only for cards that enter the viewport
   useEffect(() => {
@@ -356,41 +352,19 @@ export default function Homes() {
         available.push(p);
       }
     }
-    // Within the available bucket, honour the user's sort choice. The
-    // "recommended" sort puts curated picks at the top regardless of price;
-    // other sorts fall back to the live-total-descending positioning that
-    // already shipped (premium-first).
-    if (sort === 'recommended') {
-      available.sort((a, b) => {
-        const pa = curatedPosition(a.guestyId);
-        const pb = curatedPosition(b.guestyId);
-        if (pa !== pb) return pa - pb;
-        return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
-      });
-      unavailable.sort((a, b) => {
-        const pa = curatedPosition(a.guestyId);
-        const pb = curatedPosition(b.guestyId);
-        if (pa !== pb) return pa - pb;
-        return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
-      });
-    } else {
-      available.sort((a, b) => {
-        const qa = quotes[a.slug];
-        const qb = quotes[b.slug];
-        const ta = qa?.total ?? (a.priceFrom * searchNights);
-        const tb = qb?.total ?? (b.priceFrom * searchNights);
-        return tb - ta;
-      });
-      unavailable.sort((a, b) => b.priceFrom - a.priceFrom);
-    }
     return { availableProperties: available, unavailableProperties: unavailable };
   }, [filtered, quotes, hasDates, searchNights, sort]);
 
   const clearFilters = () => {
-    setDestination('all');
-    setLocation('all');
+    const params = new URLSearchParams(searchString);
+    for (const key of ['destination', 'location', 'type', 'budget', 'bedrooms', 'pool', 'heatedPool', 'pets', 'sort']) params.delete(key);
     setBookingLocation('');
+    setBookingDestination('');
+    navigate(`/homes${params.size ? `?${params}` : ''}`, { replace: true });
   };
+  const activeFilterCount = [typeFilter !== 'all', budgetFilter !== 'all', bedroomFilter !== 'all', poolOnly, heatedPoolOnly, petFriendlyOnly, destination !== 'all', location !== 'all'].filter(Boolean).length;
+  const confirmedCount = availableProperties.filter(p => hasConfirmedQuote(quotes[p.slug])).length;
+  const unconfirmedCount = availableProperties.length - confirmedCount;
 
   // PLP pricing: fetch LIVE Guesty quotes via batch endpoint when dates are set.
   // Provides real availability + pricing for every property in the catalogue.
@@ -510,20 +484,23 @@ export default function Homes() {
       search_children: 0,
       search_source: 'listing_page',
     });
-    // Auto-switch to price-desc when dates are set (premium positioning)
-    if (bookingCheckin && bookingCheckout) {
-      setSort('price-desc');
-      params.set('sort', 'price-desc');
-    }
     const qs = params.toString();
     navigate(`/homes${qs ? `?${qs}` : ''}`);
   };
+
+  const catalogueIntro = (
+      <section className="container pt-24 md:pt-28 pb-6 md:pb-8">
+        <h1 className="headline-lg text-pa-dark mb-3">{t('homes.title')}</h1>
+        <p className="body-md max-w-2xl text-pa-earth">{t('homes.subtitle', { homes: HOME_COUNT_LABEL })}</p>
+      </section>
+  );
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-pa-cream">
         <Header />
-        <div className="container py-10">
+        {catalogueIntro}
+        <div className="container py-6" aria-busy="true">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i}>
@@ -566,17 +543,7 @@ export default function Homes() {
       {homesGraph && <StructuredData id="homes-graph" data={homesGraph} />}
       <Header />
 
-      {/* Hero — editorial only; search lives in sticky toolbar below (less empty white, clearer PLP hierarchy) */}
-      <section className="relative min-h-[300px] md:min-h-[340px] h-[38vh] max-h-[520px] overflow-hidden">
-        <img src={IMAGES.heroHomes} alt="Collection of luxury private villas across Portugal" className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/20" />
-        <div className="relative z-10 container flex flex-col justify-end h-full min-h-[inherit] pt-28 md:pt-32 pb-10 md:pb-14">
-          <h1 className="headline-xl text-white mb-3 max-w-2xl">{t('homes.title')}</h1>
-          <p className="body-lg max-w-xl pb-1" style={{ color: 'rgba(255,255,255,0.75)' }}>
-            {t('homes.subtitle', { homes: HOME_COUNT_LABEL })}
-          </p>
-        </div>
-      </section>
+      {catalogueIntro}
 
       {/* Sticky: homepage-style search + filters in one dense band */}
       <div className="sticky top-16 md:top-20 z-30 bg-pa-cream/95 backdrop-blur-md border-b border-pa-sand">
@@ -589,11 +556,12 @@ export default function Homes() {
             >
               <div className="flex-1 relative h-full min-w-0">
                 <select
+                  aria-label={t('home.searchDestination')}
                   value={bookingLocation}
                   onChange={e => {
                     const v = e.target.value;
                     setBookingLocation(v);
-                    setLocation(v || 'all');
+
                   }}
                   className="w-full h-full pl-6 pr-8 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer appearance-none truncate"
                   
@@ -612,6 +580,7 @@ export default function Homes() {
                   ref={checkInRef}
                   type="date"
                   min={today}
+                  aria-label={t('home.searchCheckin')}
                   value={bookingCheckin}
                   onChange={e => {
                     setBookingCheckin(e.target.value);
@@ -631,6 +600,7 @@ export default function Homes() {
                   ref={checkOutRef}
                   type="date"
                   min={minCheckOut}
+                  aria-label={t('home.searchCheckout')}
                   value={bookingCheckout}
                   onChange={e => setBookingCheckout(e.target.value)}
                   className="w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer"
@@ -678,11 +648,12 @@ export default function Homes() {
             <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-pa-sand/80 p-4 space-y-3">
               <div className="relative">
                 <select
+                  aria-label={t('home.searchDestination')}
                   value={bookingLocation}
                   onChange={e => {
                     const v = e.target.value;
                     setBookingLocation(v);
-                    setLocation(v || 'all');
+
                   }}
                   className="w-full h-[48px] rounded-lg border border-pa-sand bg-white pl-3 pr-9 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer appearance-none"
                   
@@ -700,7 +671,8 @@ export default function Homes() {
                   <input
                     type="date"
                     min={today}
-                    value={bookingCheckin}
+                    aria-label={t('home.searchCheckin')}
+                  value={bookingCheckin}
                     onChange={e => {
                       setBookingCheckin(e.target.value);
                       if (bookingCheckout && bookingCheckout <= e.target.value) setBookingCheckout('');
@@ -718,7 +690,8 @@ export default function Homes() {
                     ref={checkOutRef}
                     type="date"
                     min={minCheckOut}
-                    value={bookingCheckout}
+                    aria-label={t('home.searchCheckout')}
+                  value={bookingCheckout}
                     onChange={e => setBookingCheckout(e.target.value)}
                     className="w-full h-[48px] rounded-lg border border-pa-sand bg-white px-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer"
                     
@@ -771,12 +744,15 @@ export default function Homes() {
               One row of equal-height pills; selects are restyled to match the
               chips (appearance-none + own chevron) and go dark when active,
               so the whole row reads as one system. Scrolls sideways on mobile. */}
-          <div className="flex items-center gap-2 mb-5 overflow-x-auto scrollbar-none -mx-4 px-4 md:mx-0 md:px-0" data-testid="plp-filters">
+          <div className="flex items-center gap-2 mb-5 flex-wrap" data-testid="plp-filters">
             {([
               [typeFilter, setTypeFilter, t('homes.filters.anyType', 'All types'), [
                 ['House', t('homes.filters.house', 'House')],
                 ['Villa', t('homes.filters.villa', 'Villa')],
                 ['Apartment', t('homes.filters.apartment', 'Apartment')],
+              ]],
+              [bedroomFilter, setBedroomFilter, t('searchUx.bedrooms'), [
+                ['1-2', '1–2'], ['3-4', '3–4'], ['5-6', '5–6'], ['7+', '7+'],
               ]],
               [budgetFilter, setBudgetFilter, t('homes.filters.anyBudget', 'Any budget'), [
                 ['b1', t('homes.filters.b1', 'Up to €300 / night')],
@@ -790,7 +766,7 @@ export default function Homes() {
                   value={value}
                   onChange={(e) => set(e.target.value)}
                   aria-label={anyLabel}
-                  className={`appearance-none h-9 rounded-full border pl-4 pr-8 body-sm text-inherit font-sans cursor-pointer transition-colors ${
+                  className={`appearance-none h-11 rounded-full border pl-4 pr-8 body-sm text-inherit font-sans cursor-pointer transition-colors ${
                     value !== 'all'
                       ? 'bg-pa-dark text-white border-pa-dark'
                       : 'bg-white text-pa-earth border-pa-sand hover:border-pa-gold'
@@ -813,7 +789,7 @@ export default function Homes() {
                 type="button"
                 onClick={() => set(!active)}
                 aria-pressed={active}
-                className={`h-9 px-4 rounded-full border body-sm text-inherit whitespace-nowrap shrink-0 transition-colors ${
+                className={`h-11 px-4 rounded-full border body-sm text-inherit whitespace-nowrap shrink-0 transition-colors ${
                   active
                     ? 'bg-pa-dark text-white border-pa-dark'
                     : 'bg-white text-pa-earth border-pa-sand hover:border-pa-gold'
@@ -826,7 +802,7 @@ export default function Homes() {
               type="button"
               onClick={() => setShowMap((v) => !v)}
               aria-pressed={showMap}
-              className={`ml-auto inline-flex items-center gap-1.5 h-9 px-4 rounded-full border body-sm text-inherit whitespace-nowrap shrink-0 transition-colors ${
+              className={`ml-auto inline-flex items-center gap-1.5 h-11 px-4 rounded-full border body-sm text-inherit whitespace-nowrap shrink-0 transition-colors ${
                 showMap
                   ? 'bg-pa-dark text-white border-pa-dark'
                   : 'bg-white text-pa-earth border-pa-sand hover:border-pa-gold'
@@ -836,6 +812,13 @@ export default function Homes() {
               {t('homes.filters.map', 'Map')}
             </button>
           </div>
+
+          {activeFilterCount > 0 && (
+            <button type="button" onClick={clearFilters} className="mb-4 min-h-11 body-sm text-pa-earth underline underline-offset-4 hover:text-pa-dark">
+              {t('searchUx.clearFilters', { count: activeFilterCount })}
+            </button>
+          )}
+          <p className="body-sm text-pa-earth mb-4">{t(hasDates ? 'searchUx.datedPrices' : 'searchUx.fromPrices')}</p>
 
           {showMap && (
             <Suspense fallback={<div className="h-[340px] lg:h-[420px] rounded-xl bg-pa-warm animate-pulse mb-8" />}>
@@ -847,17 +830,18 @@ export default function Homes() {
             </Suspense>
           )}
 
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
             <p className="body-sm text-pa-stone-aa">
               {hasDates && !quotesLoading ? (
                 <>
-                  <span className="font-medium text-pa-dark">{availableProperties.length}</span> {t('homes.availableForDates', 'homes available')}
+                  <span className="font-medium text-pa-dark">{confirmedCount}</span> {t('searchUx.confirmed')}
+                  {unconfirmedCount > 0 && <span> · {t('searchUx.toConfirm', { count: unconfirmedCount })}</span>}
                   {unavailableProperties.length > 0 && (
                     <span> · {unavailableProperties.length} {t('homes.unavailableCount', 'unavailable')}</span>
                   )}
                 </>
               ) : (
-                t('homes.available', { count: filtered.length })
+                t('searchUx.results', { count: filtered.length })
               )}
               {searchGuestsCount > 0 && (
                 <span> · {t('homes.guestsPlus', { count: searchGuestsCount })}</span>
@@ -874,6 +858,7 @@ export default function Homes() {
                 </div>
               )}
               <select
+                aria-label={t('searchUx.sort')}
                 value={sort}
                 onChange={(e) => setSort(e.target.value as SortOption)}
                 /* min-w keeps the longest option ("Recommended") from being
@@ -1035,14 +1020,6 @@ export default function Homes() {
           {/* SECTION 1: Available properties (with confirmed or estimated pricing) */}
           {availableProperties.length > 0 && (
             <>
-              {hasDates && !quotesLoading && unavailableProperties.length > 0 && (
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-2 h-2 rounded-full bg-[#22C55E]" />
-                  <h2 className="body-sm font-semibold tracking-[0.06em] uppercase text-pa-dark">
-                    {t('homes.availableSection', 'Available for your dates')}
-                  </h2>
-                </div>
-              )}
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 md:gap-x-6 md:gap-y-10">
                 {(showAll ? availableProperties : availableProperties.slice(0, 12)).map((property, index) => (
                   <div
