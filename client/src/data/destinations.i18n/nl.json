@@ -125,24 +125,14 @@
         "description": "Viana do Castelo. Van visgroothandelaren; de verste zeevruchten van de kust, aan de haven. Reserveren is noodzakelijk."
       },
       {
-        "name": "Tasca do Celso",
-        "category": "Minho-klassiekers",
-        "description": "Ponte de Lima. Geen kaart — de eigenaar brengt wat die dag vers is. Reserveer het terras boven de rivier."
-      },
-      {
         "name": "Camelo",
         "category": "Minho-klassiekers",
-        "description": "Ponte de Lima. Al meer dan zestig jaar een instituut in de Minho: rojões, sarrabulho en, in het seizoen, lamprei. De zondagslunch is een lokaal ritueel."
+        "description": "Santa Marta de Portuzelo, Viana do Castelo. Regionale Portugese keuken aan Rua de Santa Marta 119."
       },
       {
         "name": "O Marinheiro",
         "category": "Zeevruchten",
         "description": "Vila Praia de Âncora. Gegrilde vis op enkele meters van de haven waar hij vandaan komt. Eenvoudig, luidruchtig en precies goed."
-      },
-      {
-        "name": "Solar do Bacalhau",
-        "category": "Traditioneel",
-        "description": "Braga. Bacalhau in twintig bereidingen in een granieten eetzaal in de oude stad."
       },
       {
         "name": "Mercado Municipal de Viana",
@@ -215,13 +205,15 @@
     "events": [
       {
         "name": "Romaria de Nossa Senhora d'Agonia",
-        "dates": "Derde week van augustus, Viana do Castelo",
-        "description": "De beroemdste romaria van Portugal, sinds 1772: optochten in klederdracht met filigraangoud, bloementapijten, bootprocessies en vuurwerk boven de Lima. Huizen aan de kust zijn maanden vooruit volgeboekt."
+        "dates": "15–22 augustus 2027",
+        "description": "De beroemdste romaria van Portugal, sinds 1772: optochten in klederdracht met filigraangoud, bloementapijten, bootprocessies en vuurwerk boven de Lima. Huizen aan de kust zijn maanden vooruit volgeboekt.",
+        "url": "https://festasdagonia.com/"
       },
       {
         "name": "Neopop",
-        "dates": "Eerste week van augustus, Viana do Castelo",
-        "description": "Een van de meest gerespecteerde festivals voor elektronische muziek in Europa, in het oude fort aan zee."
+        "dates": "Augustus · volgende data nog niet bekend",
+        "description": "Een van de meest gerespecteerde festivals voor elektronische muziek in Europa, in het oude fort aan zee.",
+        "url": "https://neopopfestival.com/"
       },
       {
         "name": "Feiras Novas",
@@ -274,7 +266,7 @@
       },
       {
         "question": "Is de Minho geschikt voor een strandvakantie?",
-        "answer": "Voor lange, lege Atlantische stranden en surfen wel. Voor warm water en gegarandeerde zon niet — de zee is in de zomer zeventien tot negentien graden en aan de kust waait 's middags een frisse wind. De meeste van onze huizen hebben een verwarmd zwembad; zo doet de Minho strandvakanties."
+        "answer": "Ja, voor Atlantische stranden en surfen. De zee en de watertemperatuur verschillen per seizoen. Gebruik het zoekfilter voor een verwarmd zwembad en controleer de voorwaarden van het huis en eventuele extra kosten."
       },
       {
         "question": "Heb ik een auto nodig?",
@@ -460,7 +452,7 @@
       {
         "name": "Camelo",
         "category": "Regionaal",
-        "description": "Onderscheiden met Bib Gourmand. Moderne Portugese keuken die steunt op Minho-ingrediënten en op de Vinho Verde van het dal achter de stad."
+        "description": "Santa Marta de Portuzelo, Viana do Castelo. Regionale Portugese keuken aan Rua de Santa Marta 119."
       },
       {
         "name": "Os 3 Potes",
@@ -548,13 +540,15 @@
     "events": [
       {
         "name": "Romaria de Nossa Senhora d'Agonia",
-        "dates": "15–23 augustus 2026",
-        "description": "Het kenmerkende festival van de stad, jaarlijks gehouden sinds 1772. Bootprocessies, optochten met kostuums in gouden filigraan en vuurwerk boven de Lima. De accommodatie is maanden van tevoren volgeboekt."
+        "dates": "15–22 augustus 2027",
+        "description": "Het kenmerkende festival van de stad, jaarlijks gehouden sinds 1772. Bootprocessies, optochten met kostuums in gouden filigraan en vuurwerk boven de Lima. De accommodatie is maanden van tevoren volgeboekt.",
+        "url": "https://festasdagonia.com/"
       },
       {
         "name": "Neopop Electronic Music Festival",
-        "dates": "6–8 augustus 2026",
-        "description": "Internationale elektronische muziek aan de oeverzone. De eerste week van augustus is het meest gevraagde accommodatievenster van het jaar, samen met de Romaria."
+        "dates": "Augustus · volgende data nog niet bekend",
+        "description": "Internationale elektronische muziek aan de oeverzone. De eerste week van augustus is het meest gevraagde accommodatievenster van het jaar, samen met de Romaria.",
+        "url": "https://neopopfestival.com/"
       },
       {
         "name": "Wine & Blues Festival",

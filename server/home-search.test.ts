@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { Property } from '../client/src/lib/types';
-import { hasConfirmedQuote, hasSwimmingPool, hasHeatedPool, parseHomeFilters, searchPrice, sortSearchResults } from '../client/src/lib/homeSearch';
+import { hasConfirmedQuote, hasSwimmingPool, hasHeatedPool, parseHomeFilters, parseDestinationSelection, searchPrice, sortSearchResults } from '../client/src/lib/homeSearch';
 const home = (slug: string, priceFrom = 100, tier = 'essential') => ({ slug, guestyId: slug, priceFrom, tier } as Property);
 const ids = (homes: Property[]) => homes.map(p => p.slug);
 
@@ -32,9 +32,26 @@ describe('home discovery price comparisons', () => {
     expect(hasConfirmedQuote({ ...quotes.a, available: undefined })).toBe(false);
     expect(hasConfirmedQuote(null)).toBe(false);
   });
+  it('uses supplier IDs for undated partner prices and never substitutes the import', () => {
+    const partner = { ...home('partner', 1000), guestyId: null, supplierUid: 'supplier-one', source: 'tripwix' } as Property;
+    expect(searchPrice(partner, {}, { 'supplier-one': 1299 }, 0)).toBe(1299);
+    expect(searchPrice(partner, {}, {}, 0)).toBeNull();
+  });
+  it('keeps accommodation-only partner quotes out of final-total comparisons', () => {
+    const q = { total: 5198.24, nightlyRate: 1299.56, source: 'partner_calendar', available: true, feesKnown: false };
+    expect(searchPrice(a, { a: q }, undefined, 4)).toBeNull();
+    expect(searchPrice(a, { a: { ...q, feesKnown: true } }, undefined, 4)).toBe(5198.24);
+    expect(hasConfirmedQuote(q)).toBe(false);
+  });
 });
 
 describe('home search filters', () => {
+  it('keeps region choices distinct from cities and clears the previous region', () => {
+    expect(parseDestinationSelection('region:algarve')).toEqual({ destination: 'algarve', location: '' });
+    expect(parseDestinationSelection('Porto')).toEqual({ destination: '', location: 'Porto' });
+    expect(parseDestinationSelection('')).toEqual({ destination: '', location: '' });
+    expect(parseDestinationSelection('region:invalid')).toEqual({ destination: '', location: '' });
+  });
   it('round-trips every filter through a shareable URL', () => {
     const q = new URLSearchParams('bedrooms=7%2B&pool=1&heatedPool=1&pets=1&type=Villa&budget=b2&sort=price-asc');
     expect(parseHomeFilters(q)).toEqual({ type:'Villa', budget:'b2', bedrooms:'7+', pool:true, heatedPool:true, pets:true, sort:'price-asc' });

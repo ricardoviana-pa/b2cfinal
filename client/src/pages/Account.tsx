@@ -8,12 +8,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import productsData from '@/data/products.json';
-import {
-  MapPin, Gift, Users, User, LogOut, ChevronRight, Star, Copy, Check, Send,
-  Calendar, Home as HomeIcon, Award, ArrowUpRight, Building2, Euro,
-  Phone, Mail, MapPinned, BedDouble, FileText, Sparkles, Clock, CheckCircle2,
-  XCircle, MessageSquare, ChevronDown
-} from 'lucide-react';
+import { MapPin, Gift, Users, User, LogOut, ChevronRight, Star, Copy, Check, Send, Calendar, Home as HomeIcon, Award, ArrowUpRight, Building2, Phone, Mail, MapPinned, BedDouble, FileText, Sparkles, Clock, CheckCircle2, XCircle } from 'lucide-react';
 
 type Tab = 'dashboard' | 'trips' | 'points' | 'refer-friend' | 'refer-property' | 'profile';
 
@@ -178,7 +173,7 @@ export default function Account() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-[13px] whitespace-nowrap transition-all duration-200 ${
+                    className={`pa-action flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-[13px] whitespace-nowrap transition-all duration-200 ${
                       activeTab === tab.id
                         ? 'bg-[#1A1A18] text-white shadow-sm'
                         : 'text-[#6B6860] hover:bg-[#F5F1EB]/80'
@@ -274,7 +269,7 @@ export default function Account() {
                         </div>
                         <button
                           onClick={copyReferralCode}
-                          className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#E8E4DC] bg-white text-[12px] font-medium tracking-[0.08em] text-[#1A1A18] hover:border-[#8B7355] transition-colors w-full justify-center"
+                          className="pa-action flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#E8E4DC] bg-white text-[12px] font-medium tracking-[0.08em] text-[#1A1A18] hover:border-[#8B7355] transition-colors w-full justify-center"
                         >
                           {copiedCode ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
                           {copiedCode ? t('account.copied', 'Copied!') : profile.referralCode}
@@ -297,7 +292,7 @@ export default function Account() {
                       </div>
                       <button
                         onClick={() => setActiveTab('refer-property')}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#1A1A18] text-white text-[12px] font-medium tracking-[0.08em] hover:bg-[#333330] transition-colors w-full justify-center"
+                        className="pa-action flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#1A1A18] text-white text-[12px] font-medium tracking-[0.08em] hover:bg-[#333330] transition-colors w-full justify-center"
                       >
                         <Building2 size={13} /> {t('account.referPropertyCTA', 'Refer a property')}
                       </button>
@@ -383,7 +378,7 @@ export default function Account() {
                       <button
                         onClick={handleSendReferral}
                         disabled={!referralEmail || sendReferral.isPending}
-                        className="h-[50px] px-6 rounded-lg bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase hover:bg-[#333330] transition-all duration-200 disabled:opacity-40 flex items-center gap-2"
+                        className="pa-action h-[50px] px-6 rounded-lg bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase hover:bg-[#333330] transition-all duration-200 disabled:opacity-40 flex items-center gap-2"
                       >
                         <Send size={13} /> {t('account.referSend', 'Send')}
                       </button>
@@ -514,7 +509,7 @@ function PropertyReferralTab({ t, propRefs, submitPropertyReferral }: {
           {!showForm && !submitted && (
             <button
               onClick={() => setShowForm(true)}
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg bg-[#C4A87C] text-[#1A1A18] text-[12px] font-medium tracking-[0.1em] uppercase hover:bg-[#D4B88C] transition-all duration-200"
+              className="pa-action inline-flex items-center gap-2 px-8 py-3.5 rounded-lg bg-[#C4A87C] text-[#1A1A18] text-[12px] font-medium tracking-[0.1em] uppercase hover:bg-[#D4B88C] transition-all duration-200"
             >
               <Building2 size={14} /> {t('account.propRefCTA', 'Refer a property now')}
             </button>
@@ -629,7 +624,7 @@ function PropertyReferralTab({ t, propRefs, submitPropertyReferral }: {
               <button
                 onClick={handleSubmit}
                 disabled={!formData.ownerName || submitPropertyReferral.isPending}
-                className="h-[48px] px-8 rounded-lg bg-[#1A1A18] text-[#FAFAF7] text-[12px] font-medium tracking-[0.1em] uppercase hover:bg-[#333330] transition-all duration-200 disabled:opacity-40 flex items-center gap-2"
+                className="pa-action h-[48px] px-8 rounded-lg bg-[#1A1A18] text-[#FAFAF7] text-[12px] font-medium tracking-[0.1em] uppercase hover:bg-[#333330] transition-all duration-200 disabled:opacity-40 flex items-center gap-2"
               >
                 {submitPropertyReferral.isPending ? (
                   <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -640,7 +635,7 @@ function PropertyReferralTab({ t, propRefs, submitPropertyReferral }: {
               </button>
               <button
                 onClick={() => setShowForm(false)}
-                className="h-[48px] px-6 rounded-lg border border-[#E8E4DC] text-[12px] font-medium tracking-[0.1em] uppercase text-[#6B6860] hover:bg-[#F5F1EB] transition-all duration-200"
+                className="pa-action h-[48px] px-6 rounded-lg border border-[#E8E4DC] text-[12px] font-medium tracking-[0.1em] uppercase text-[#6B6860] hover:bg-[#F5F1EB] transition-all duration-200"
               >
                 {t('account.cancel', 'Cancel')}
               </button>
@@ -887,7 +882,7 @@ function ReturningGuestTab({ profile }: { profile: any }) {
                   key={a.id}
                   type="button"
                   onClick={() => toggleActivity(a.name)}
-                  className={`px-3 py-2 text-[12px] font-medium border transition-all ${
+                  className={`pa-action px-3 py-2 text-[12px] font-medium border transition-all ${
                     favouriteActivities.includes(a.name)
                       ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
                       : 'bg-transparent text-[#6B6860] border-[#E8E4DC] hover:border-[#1A1A18]'
@@ -1048,7 +1043,7 @@ function ProfileTab({ profile, t, updateProfile }: { profile: any; t: any; updat
           <button
             onClick={handleSave}
             disabled={updateProfile.isPending}
-            className="h-[48px] px-8 rounded-lg bg-[#1A1A18] text-[#FAFAF7] text-[12px] font-medium tracking-[0.1em] uppercase hover:bg-[#333330] transition-all duration-200 disabled:opacity-40 flex items-center gap-2"
+            className="pa-action h-[48px] px-8 rounded-lg bg-[#1A1A18] text-[#FAFAF7] text-[12px] font-medium tracking-[0.1em] uppercase hover:bg-[#333330] transition-all duration-200 disabled:opacity-40 flex items-center gap-2"
           >
             {updateProfile.isPending ? (
               <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

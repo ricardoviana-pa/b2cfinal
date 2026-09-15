@@ -1,5 +1,5 @@
 /* ==========================================================================
-   DESTINATION PAGE — 11-section composer
+   DESTINATION PAGE — inventory first, optional travel guide
    ========================================================================
 
    The parent template defined by the destinations strategy doc (May 2026).
@@ -10,6 +10,7 @@
    for scaffolded spokes (only the basics rendered).
    ========================================================================== */
 
+import { useTranslation } from 'react-i18next';
 import type { Destination, Property, Product } from '@/lib/types';
 import {
   HeroEditorial,
@@ -54,25 +55,52 @@ export function DestinationPage({
   related,
   onAddToItinerary,
 }: DestinationPageProps) {
+  const { t } = useTranslation();
   return (
     <>
-      {/* 1 */} <HeroEditorial destination={destination} />
-      {/* 2 */} <WhyThisPlace destination={destination} />
-      {/* 3 */} <WhereToStay destination={destination} properties={properties} />
-      {/* 4 */} <TheJournal destination={destination} articles={articles} />
-      {/* 5 */} <WhatToSeeAndDo destination={destination} />
-      {/* 6 */} <WhenToVisit destination={destination} />
-      {/* 7 */} <HowToGetHere destination={destination} />
-      {/* 8 */}
+      <HeroEditorial destination={destination} />
+      <nav aria-label={t('destinationGrowth.chapters')} className="border-b border-pa-sand bg-white">
+        <div className="container flex gap-6 overflow-x-auto whitespace-nowrap py-2 text-sm">
+          <a className="inline-flex min-h-11 items-center" href="#destination-homes">{t('destinationGrowth.homes')}</a>
+          <a className="inline-flex min-h-11 items-center" href="#destination-seasons">{t('destinationGrowth.seasons')}</a>
+          <a className="inline-flex min-h-11 items-center" href="#destination-guide">{t('destinationGrowth.guide')}</a>
+          {adventures.length > 0 && <a className="inline-flex min-h-11 items-center" href="#destination-experiences">{t('destinationGrowth.experiences')}</a>}
+        </div>
+      </nav>
+      <WhereToStay destination={destination} properties={properties} />
+      <WhyThisPlace destination={destination} />
+      <div id="destination-seasons" className="scroll-mt-24">
+        <WhenToVisit destination={destination} />
+      </div>
+      <div id="destination-guide" className="container py-8 scroll-mt-24">
+        <h2 className="headline-lg mb-6">{t('siteUx.travelGuide')}</h2>
+        <details className="site-faq border-y border-pa-sand">
+          <summary>{t('destinationDetail.guide.seeAndDoTitle')}</summary>
+          <WhatToSeeAndDo destination={destination} />
+        </details>
+        <details className="site-faq border-b border-pa-sand">
+          <summary>{t('destinationDetail.guide.getHereTitleNamed', { name: destination.name })}</summary>
+          <HowToGetHere destination={destination} />
+        </details>
+        {!!destination.events?.length && <details className="site-faq border-b border-pa-sand">
+          <summary>{t('destinationDetail.guide.eventsTitle')}</summary>
+          <EventsAndPlanning destination={destination} compact />
+        </details>}
+        {!!destination.pressQuotes?.length && <details className="site-faq border-b border-pa-sand">
+          <summary>{t('destinationDetail.guide.pressTitle')}</summary>
+          <PressAccolades destination={destination} compact />
+        </details>}
+      </div>
+      <div id="destination-experiences" className="scroll-mt-24">
       <EatDrinkExperience
         destination={destination}
         adventures={adventures}
         onAddToItinerary={onAddToItinerary}
       />
-      {/* 9 */} <EventsAndPlanning destination={destination} />
-      {/* 10 */} <PressAccolades destination={destination} />
-      {/* 11 */} <FAQSection destination={destination} />
-      {/* 12 */} <RelatedDestinationsAndOwnersCTA destination={destination} related={related} />
+      </div>
+      <TheJournal destination={destination} articles={articles} />
+      <FAQSection destination={destination} />
+      <RelatedDestinationsAndOwnersCTA destination={destination} related={related} />
     </>
   );
 }

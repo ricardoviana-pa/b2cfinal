@@ -898,7 +898,7 @@ export default function CheckoutPage() {
 
   const steps: Array<{ key: Step; label: string }> = [
     { key: "stay", label: t("checkout.stepStay", "Your stay") },
-    { key: "customize", label: t("checkout.stepCustomize", "Personalize") },
+    { key: "customize", label: t("conversion.optionalStep") },
     { key: "pay", label: t("checkout.stepPay", "Payment") },
   ];
   const stepIndex = steps.findIndex((s) => s.key === step);
@@ -1084,7 +1084,7 @@ export default function CheckoutPage() {
               type="button"
               onClick={() => applyCoupon(couponInput.trim())}
               disabled={couponBusy || !couponInput.trim() || (!isDemo && !quoteId)}
-              className="shrink-0 h-[38px] px-4 rounded-md border border-pa-sand eyebrow font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors disabled:opacity-40"
+              className="pa-action shrink-0 h-[38px] px-4 rounded-md border border-pa-sand eyebrow font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors disabled:opacity-40"
             >
               {couponBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : t("checkout.coupon.apply", "Apply")}
             </button>
@@ -1139,6 +1139,7 @@ export default function CheckoutPage() {
           {formatBookingDate(checkIn, lang, true)} → {formatBookingDate(checkOut, lang, true)} · {guests} {t("booking.guestsLabel", "guests")}
         </div>
         {summaryLines}
+        <p className="caption text-pa-earth leading-relaxed">{t('securityDeposit.notice')}</p>
         {couponRow}
         {conciergeRequests}
         {(() => {
@@ -1184,6 +1185,74 @@ export default function CheckoutPage() {
         {t("trust.guaranteeTerms", "How the guarantee works")}
       </Link>
     </div>
+  );
+
+  const rateChoice = (
+(quote?.ratePlanOptions?.length ?? 0) > 1 && (
+                <div className="space-y-2">
+                  <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold">{t("bookingWidget.ratePlan", "Rate plan")}</p>
+                  {(() => { const maxTotal = Math.max(...quote!.ratePlanOptions!.map(o => o.total)); return quote!.ratePlanOptions!.map((opt) => {
+                    const isSelected = selectedRatePlanId === opt.ratePlanId;
+                    const nonRef = isNonRefundableOption(opt);
+                    const label = nonRef ? t("booking.nonRefundable") : t("booking.flexibleRate");
+                    const savings = maxTotal - opt.total;
+                    const policyLine = opt.cancellationPolicy?.[0]
+                      ? cancellationPolicyText(opt.cancellationPolicy[0], checkIn, t, lang)
+                      : null;
+                    return (
+                      <label
+                        key={opt.ratePlanId}
+                        className={cn(
+                          "flex items-center gap-3 p-4 bg-white border rounded-lg cursor-pointer transition-all",
+                          isSelected ? "border-pa-dark ring-1 ring-pa-dark" : "border-pa-sand hover:border-pa-gold",
+                        )}
+                      >
+                        <input
+                          type="radio"
+                          name="checkoutRatePlan"
+                          checked={isSelected}
+                          onChange={() => {
+                            setSelectedRatePlanId(opt.ratePlanId);
+                            syncIntent({ ratePlanId: opt.ratePlanId });
+                            pushDL({
+                              event: "rate_plan_selected",
+                              rate_plan: nonRef ? "non_refundable" : "flexible",
+                              value: opt.total,
+                              property_id: intent.listingId,
+                            });
+                          }}
+                          className="accent-black w-4 h-4 shrink-0"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="body-sm text-pa-dark font-medium">{label}</p>
+                            {!nonRef && (
+                              <span className="eyebrow font-medium tracking-wider uppercase px-1.5 py-0.5 bg-pa-warm text-pa-gold border border-pa-sand rounded-sm">
+                                {t("bookingWidget.recommended", "Recommended")}
+                              </span>
+                            )}
+                          </div>
+                          <p className="caption mt-0.5 text-pa-earth">
+                            {nonRef
+                              ? t("bookingWidget.nonRefundableWarning", "No refund if you cancel or modify")
+                              : policyLine}
+                          </p>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <span className="body-sm text-pa-dark font-medium tabular-nums">
+                            {formatEur(opt.total, lang)}
+                          </span>
+                          {savings > 0 && (
+                            <p className="caption text-pa-gold font-medium mt-0.5">
+                              {t("bookingWidget.save", "Save")} {formatEur(savings, lang)}
+                            </p>
+                          )}
+                        </div>
+                      </label>
+                    );
+                  }); })()}
+                </div>
+              )
   );
 
   return (
@@ -1267,6 +1336,7 @@ export default function CheckoutPage() {
       <main className="max-w-[1100px] mx-auto px-4 pt-8 lg:grid lg:grid-cols-[minmax(0,640px)_380px] lg:gap-12 lg:items-start">
         {/* ══════════ CONTENT COLUMN ══════════ */}
         <section key={step} className="space-y-6 checkout-step-in">
+          {isDemo && <p role="status" className="rounded-lg border border-pa-gold bg-pa-warm p-3 body-sm text-pa-dark">{t('conversion.demoNotice')}</p>}
           {/* Stale quote / unavailable banners */}
           {quoteStale && !datesUnavailable && (
             <div className="flex items-start justify-between gap-4 p-4 bg-pa-warm border border-pa-sand rounded-lg">
@@ -1388,6 +1458,9 @@ export default function CheckoutPage() {
                 <div className="lg:hidden bg-white border border-pa-sand rounded-lg p-5">{summaryLines}</div>
               )}
 
+              {rateChoice}
+              <p className="caption text-pa-earth">{t("conversion.totalNote")}</p>
+
               {/* Email capture */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-3">
                 <h2 className="font-display text-[19px] text-pa-dark leading-snug">
@@ -1400,6 +1473,7 @@ export default function CheckoutPage() {
                   id="checkout-email"
                   type="email"
                   autoComplete="email"
+                  aria-label={t("bookingWidget.emailPh")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onBlur={() => setEmailTouched(true)}
@@ -1453,75 +1527,10 @@ export default function CheckoutPage() {
                   ← {t("checkout.backToStay", "Back to your stay")}
                 </button>
               </div>
-              {/* Rate plan choice — first thing in the Personalizar step.
-                  Guests who resume a saved checkout land here directly, so the
-                  choice must live in this step or they never see it. Hidden
-                  when only one plan applies (e.g. refund window closed). */}
-              {(quote?.ratePlanOptions?.length ?? 0) > 1 && (
-                <div className="space-y-2">
-                  <p className="eyebrow font-medium tracking-[0.12em] uppercase text-pa-gold">{t("bookingWidget.ratePlan", "Rate plan")}</p>
-                  {(() => { const maxTotal = Math.max(...quote!.ratePlanOptions!.map(o => o.total)); return quote!.ratePlanOptions!.map((opt) => {
-                    const isSelected = selectedRatePlanId === opt.ratePlanId;
-                    const nonRef = isNonRefundableOption(opt);
-                    const label = nonRef ? t("booking.nonRefundable") : t("booking.flexibleRate");
-                    const savings = maxTotal - opt.total;
-                    const policyLine = opt.cancellationPolicy?.[0]
-                      ? cancellationPolicyText(opt.cancellationPolicy[0], checkIn, t, lang)
-                      : null;
-                    return (
-                      <label
-                        key={opt.ratePlanId}
-                        className={cn(
-                          "flex items-center gap-3 p-4 bg-white border rounded-lg cursor-pointer transition-all",
-                          isSelected ? "border-pa-dark ring-1 ring-pa-dark" : "border-pa-sand hover:border-pa-gold",
-                        )}
-                      >
-                        <input
-                          type="radio"
-                          name="checkoutRatePlan"
-                          checked={isSelected}
-                          onChange={() => {
-                            setSelectedRatePlanId(opt.ratePlanId);
-                            syncIntent({ ratePlanId: opt.ratePlanId });
-                            pushDL({
-                              event: "rate_plan_selected",
-                              rate_plan: nonRef ? "non_refundable" : "flexible",
-                              value: opt.total,
-                              property_id: intent.listingId,
-                            });
-                          }}
-                          className="accent-black w-4 h-4 shrink-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <p className="body-sm text-pa-dark font-medium">{label}</p>
-                            {!nonRef && (
-                              <span className="eyebrow font-medium tracking-wider uppercase px-1.5 py-0.5 bg-pa-warm text-pa-gold border border-pa-sand rounded-sm">
-                                {t("bookingWidget.recommended", "Recommended")}
-                              </span>
-                            )}
-                          </div>
-                          <p className="caption mt-0.5 text-pa-earth">
-                            {nonRef
-                              ? t("bookingWidget.nonRefundableWarning", "No refund if you cancel or modify")
-                              : policyLine}
-                          </p>
-                        </div>
-                        <div className="text-right shrink-0">
-                          <span className="body-sm text-pa-dark font-medium tabular-nums">
-                            {formatEur(opt.total, lang)}
-                          </span>
-                          {savings > 0 && (
-                            <p className="caption text-pa-gold font-medium mt-0.5">
-                              {t("bookingWidget.save", "Save")} {formatEur(savings, lang)}
-                            </p>
-                          )}
-                        </div>
-                      </label>
-                    );
-                  }); })()}
-                </div>
-              )}
+              <details className="rounded-lg border border-pa-sand p-4">
+                <summary className="cursor-pointer body-sm text-pa-dark font-medium">{t('conversion.reviewRate')}</summary>
+                <div className="pt-4">{rateChoice}</div>
+              </details>
 
               {extrasQuery.isLoading ? (
                 <div className="flex items-center justify-center py-10 gap-2 caption text-pa-stone-aa">
@@ -1549,6 +1558,8 @@ export default function CheckoutPage() {
               )}
               {/* Flex closes the Personalizar step (spec §5/§6) — protection, not a service */}
               {flexConfig && effective && (
+                <details className="rounded-lg border border-pa-sand p-4" open={flexSelected || undefined}>
+                  <summary className="cursor-pointer body-sm text-pa-dark">{t('checkout.flex.title')} · {formatEur(flexUnit, lang)}</summary>
                 <FlexBlock
                   config={{ ...flexConfig, price: flexUnit }}
                   selected={flexSelected}
@@ -1563,25 +1574,12 @@ export default function CheckoutPage() {
                     syncIntent({ flex: next });
                   }}
                 />
-              )}
-              {/* Reception is a mandatory choice (§5.2) — block continue until made */}
-              {!receptionChoice && (
-                <p
-                  className={cn(
-                    "text-center",
-                    receptionNudge
-                      ? "body-sm text-pa-dark bg-pa-warm border border-pa-gold rounded-md px-3 py-2.5"
-                      : "caption text-pa-earth",
-                  )}
-                >
-                  {t("checkout.reception.required")}
-                </p>
+                </details>
               )}
               <button
                 type="button"
-                onClick={() => continueToPay()}
-                aria-disabled={!receptionChoice}
-                className={cn("hidden lg:inline-flex btn-primary w-full", !receptionChoice && "opacity-40")}
+                onClick={skipCustomize}
+                className="hidden lg:inline-flex btn-primary w-full"
               >
                 {selectedExtras.length > 0
                   ? t("checkout.continueWithExtras", { count: selectedExtras.length })
@@ -1646,6 +1644,7 @@ export default function CheckoutPage() {
                   <input
                     type="text"
                     autoComplete="given-name"
+                    aria-label={t("bookingWidget.firstNamePh")}
                     placeholder={t("bookingWidget.firstNamePh")}
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
@@ -1654,6 +1653,7 @@ export default function CheckoutPage() {
                   <input
                     type="text"
                     autoComplete="family-name"
+                    aria-label={t("bookingWidget.lastNamePh")}
                     placeholder={t("bookingWidget.lastNamePh")}
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
@@ -1663,6 +1663,7 @@ export default function CheckoutPage() {
                 <input
                   type="email"
                   autoComplete="email"
+                  aria-label={t("bookingWidget.emailPh")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full h-[48px] border border-pa-sand bg-white px-3 rounded-md body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
@@ -1680,6 +1681,7 @@ export default function CheckoutPage() {
                   type="text"
                   inputMode="numeric"
                   maxLength={20}
+                  aria-label={t("checkout.nifPh")}
                   value={nif}
                   onChange={(e) => setNif(e.target.value)}
                   placeholder={t("checkout.nifPh", "NIF — optional, for a Portuguese invoice")}
@@ -1694,15 +1696,15 @@ export default function CheckoutPage() {
                   />
                   <span className="caption text-pa-earth leading-snug">
                     {t("bookingWidget.termsAcceptLabel", "I accept the")}{" "}
-                    <a href="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-pa-dark underline hover:text-pa-gold">{t("bookingWidget.termsLink", "Terms & Conditions")}</a>
+                    <a href={`/${lang}/legal/terms`} target="_blank" rel="noopener noreferrer" className="text-pa-dark underline hover:text-pa-gold">{t("bookingWidget.termsLink", "Terms & Conditions")}</a>
                     {" "}{t("bookingWidget.termsAnd", "and the")}{" "}
-                    <a href="/legal/cancellation-policy" target="_blank" rel="noopener noreferrer" className="text-pa-dark underline hover:text-pa-gold">{t("bookingWidget.cancellationPolicyLink")}</a>
+                    <a href={`/${lang}/legal/cancellation-policy`} target="_blank" rel="noopener noreferrer" className="text-pa-dark underline hover:text-pa-gold">{t("bookingWidget.cancellationPolicyLink")}</a>
                   </span>
                 </label>
               </div>
 
               {/* Direct-booking assurance (audit finding D1) */}
-              
+
 
               {/* Payment */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-4">
@@ -1819,9 +1821,8 @@ export default function CheckoutPage() {
           {step === "customize" && (
             <button
               type="button"
-              onClick={() => continueToPay()}
-              aria-disabled={!receptionChoice}
-              className={cn("btn-primary flex-1 max-w-[220px]", !receptionChoice && "opacity-40")}
+              onClick={skipCustomize}
+              className="btn-primary flex-1 max-w-[220px]"
             >
               {t("booking.continue", "Continue")}
             </button>

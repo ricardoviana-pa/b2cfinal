@@ -16,15 +16,19 @@
    the dual funnel (guest CTA + owners CTA) per strategy doc §7.
    ========================================================================== */
 
+import { destinationHomesHref } from '@shared/destinationNavigation';
+import { useMemo } from 'react';
+import { trpc } from '@/lib/trpc';
+import { usePartnerPrices } from '@/hooks/usePartnerPrices';
+import BookingCTA from '@/components/property/BookingCTA';
 import { Link } from 'wouter';
 import { useTranslation, Trans } from 'react-i18next';
 import { localizeDuration } from '@/lib/duration';
-import { ArrowRight, Plane, Train, Car, Globe, Plus, Calendar, Award, Bike } from 'lucide-react';
+import { ArrowRight, Plane, Train, Car, Globe, Plus, Calendar, Bike } from 'lucide-react';
 import type { Destination, Property, Product } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
 import PropertyCard from '@/components/property/PropertyCard';
-import { parseEventDates } from '@/lib/eventDates';
 
 /* ── 1. HERO EDITORIAL ────────────────────────────────────────────────── */
 
@@ -34,66 +38,17 @@ interface HeroEditorialProps {
 
 export function HeroEditorial({ destination: d }: HeroEditorialProps) {
   const { t } = useTranslation();
-  // `primaryAccolade` takes the hero overlay when present (it's the
-  // ranked award — most-prominent trust signal). The `pullQuote` then
-  // surfaces as a secondary inline blockquote so neither competes.
-  return (
-    <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
-      {d.coverImage ? (
-        <img
-          src={cdnResize(d.coverImage, 1600)}
-          srcSet={cdnSrcSet(d.coverImage, [768, 1280, 1920])}
-          sizes="100vw"
-          alt={`${d.name}, Portugal — luxury villa destination`}
-          className="absolute inset-0 w-full h-full object-cover"
-          width={1600}
-          height={900}
-          fetchPriority="high"
-          decoding="async"
-        />
-      ) : (
-        <div className="absolute inset-0 placeholder-image" />
-      )}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-      <div className="relative container pb-12 lg:pb-16 z-10">
-        <Link
-          href="/destinations"
-          className="text-[13px] text-white/60 hover:text-white/80 transition-colors mb-3 inline-block"
-        >
-          ← {t('destinationsPage.backToDestinations')}
-        </Link>
-        <h1 className="headline-xl text-white mb-3">{d.name}</h1>
-        {d.heroSubtitle && (
-          <p className="body-lg max-w-xl" style={{ color: 'rgba(255,255,255,0.8)' }}>
-            {d.heroSubtitle}
-          </p>
-        )}
-        {!d.heroSubtitle && d.tagline && (
-          <p className="body-lg max-w-lg" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            {d.tagline}
-          </p>
-        )}
-        {d.primaryAccolade && (
-          <div className="mt-6 inline-flex items-start gap-3 bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-3 max-w-xl">
-            <Award className="w-4 h-4 text-white/80 mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="text-[13px] font-medium text-white leading-snug">
-                {d.primaryAccolade.text}
-              </p>
-              <p className="text-[11px] text-white/60 tracking-[0.04em] mt-1">
-                {d.primaryAccolade.source}
-              </p>
-              {d.primaryAccolade.note && (
-                <p className="text-[11px] text-white/50 italic mt-0.5">
-                  {d.primaryAccolade.note}
-                </p>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-    </section>
-  );
+  return <section className="page-hero">
+    {d.coverImage ? <img src={cdnResize(d.coverImage, 1600)} srcSet={cdnSrcSet(d.coverImage, [768,1280,1920])} sizes="100vw" alt={d.name} className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" /> : <div className="absolute inset-0 placeholder-image" />}
+    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
+    <div className="relative container z-10">
+      <Link href="/destinations" className="inline-flex min-h-11 items-center text-sm text-white/80 mb-2">← {t('destinationsPage.backToDestinations')}</Link>
+      <h1 className="headline-xl text-white mb-4">{d.name}</h1>
+      {(d.heroSubtitle || d.tagline) && <p className="body-lg max-w-xl !text-white/90">{d.heroSubtitle || d.tagline}</p>}
+      <a href="#destination-homes" className="btn-white mt-6">{t('destinationDetail.homesIn', { name: d.name })} <ArrowRight className="w-4 h-4" /></a>
+      {d.primaryAccolade && <p className="text-xs text-white/80 mt-5 max-w-xl">{d.primaryAccolade.text} · {d.primaryAccolade.source}</p>}
+    </div>
+  </section>;
 }
 
 /* ── 2. WHY THIS PLACE ────────────────────────────────────────────────── */
@@ -143,10 +98,14 @@ interface WhereToStayProps {
 
 export function WhereToStay({ destination: d, properties }: WhereToStayProps) {
   const { t } = useTranslation();
+  const visibleHomes = useMemo(() => properties.slice(0, 6), [properties]);
+  const listingIds = useMemo(() => visibleHomes.filter(p => p.guestyId).map(p => p.guestyId!), [visibleHomes]);
+  const { data: fromPrices } = trpc.booking.lowestNightlyBatch.useQuery({ listingIds }, { enabled: listingIds.length > 0, staleTime: 5 * 60_000 });
+  const partner = usePartnerPrices(visibleHomes);
   if (properties.length === 0) {
     if (d.comingSoon) return null;
     return (
-      <section className="section-padding bg-white">
+      <section id="destination-homes" className="section-padding bg-white scroll-mt-24">
         <div className="container max-w-xl text-center">
           <h2 className="headline-lg text-[#1A1A18] mb-4">
             {t('destinationDetail.newHomesComingSoon', { name: d.name })}
@@ -159,31 +118,24 @@ export function WhereToStay({ destination: d, properties }: WhereToStayProps) {
     );
   }
   return (
-    <section className="section-padding bg-white">
+    <section id="destination-homes" className="section-padding bg-white scroll-mt-24">
       <div className="container">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
           <div className="max-w-2xl">
             <h2 className="headline-lg text-[#1A1A18]">
               {t('destinationDetail.homesIn', { name: d.name })}
             </h2>
-            {d.whereToStayIntro && (
-              <p
-                className="body-lg text-[#3A3A35] mt-4 leading-relaxed"
-                style={{ fontWeight: 300 }}
-              >
-                {d.whereToStayIntro}
-              </p>
-            )}
+            <p className="body-md mt-3">{t('conversion.homesIntro')}</p>
           </div>
-          <a
-            href={`/homes?destination=${d.region}`}
-            className="hidden md:flex items-center gap-2 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors flex-shrink-0"
+          <Link
+            href={destinationHomesHref(d)}
+            className="btn-ghost shrink-0 self-start"
           >
             {t('destinationDetail.viewAllHomes')} <ArrowRight className="w-4 h-4" />
-          </a>
+          </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {properties.map(p => <PropertyCard key={p.id} property={p} />)}
+          {visibleHomes.map(p => <PropertyCard key={p.id} property={p} fromPrice={p.supplierUid ? partner.prices[p.supplierUid] : fromPrices?.[p.guestyId ?? '']} />)}
         </div>
       </div>
     </section>
@@ -206,17 +158,18 @@ interface TheJournalProps {
 }
 
 export function TheJournal({ destination: d, articles }: TheJournalProps) {
+  const { t } = useTranslation();
   if (articles.length === 0) return null;
-  const heading = d.journalSectionTitle ?? `From the journal — stories from ${d.name}`;
+  const heading = t('destinationGrowth.journalTitle', { name: d.name });
   return (
     <section className="section-padding bg-[#FAFAF7]">
       <div className="container">
         <h2 className="headline-lg text-[#1A1A18] mb-3">{heading}</h2>
         <p className="body-lg text-[#6B6860] mb-8">
-          Editorial dispatches from our concierge team and the writers we publish.
+          {t('destinationGrowth.journalIntro')}
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {articles.slice(0, 6).map(a => (
+          {articles.slice(0, 3).map(a => (
             <Link key={a.slug} href={`/blog/${a.slug}`} className="group block">
               <div
                 className="relative overflow-hidden bg-[#E8E4DC] mb-3"
@@ -224,7 +177,9 @@ export function TheJournal({ destination: d, articles }: TheJournalProps) {
               >
                 {a.coverImage ? (
                   <img
-                    src={a.coverImage}
+                    src={cdnResize(a.coverImage, 768)}
+                    srcSet={cdnSrcSet(a.coverImage, [400, 640, 768])}
+                    sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw"
                     alt={a.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                     loading="lazy"
@@ -615,7 +570,7 @@ export function EatDrinkExperience({
                     {adv.image ? (
                       <img
                         src={adv.image}
-                        alt={`${adv.name} — outdoor experience in ${d.name}, Portugal`}
+                        alt={`${adv.name} — ${d.name}, Portugal`}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                         loading="lazy"
                         width={800}
@@ -640,7 +595,7 @@ export function EatDrinkExperience({
                   <div className="flex items-center justify-between">
                     {(adv.priceFrom ?? 0) > 0 && (
                       <p className="text-[13px] text-[#8B7355]">
-                        from {formatEurEditorial(adv.priceFrom ?? 0)}
+                        {t('common.from')} {formatEurEditorial(adv.priceFrom ?? 0)}
                       </p>
                     )}
                     {onAddToItinerary && (
@@ -665,13 +620,14 @@ export function EatDrinkExperience({
 
 /* ── 9. EVENTS WORTH PLANNING AROUND (added in Cowork editorial pass) ── */
 
-export function EventsAndPlanning({ destination: d }: { destination: Destination }) {
+export function EventsAndPlanning({ destination: d, compact = false }: { destination: Destination; compact?: boolean }) {
   const { t } = useTranslation();
   if (!d.events || d.events.length === 0) return null;
   return (
-    <section className="section-padding bg-[#FAFAF7]">
-      <div className="container max-w-5xl mx-auto">
-        <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.eventsTitle')}</h2>
+    <section className={compact ? 'pb-8' : 'section-padding bg-[#FAFAF7]'}>
+      <div className={compact ? '' : 'container max-w-5xl mx-auto'}>
+        {!compact && <h2 className="headline-lg text-[#1A1A18] mb-3">{t('destinationDetail.guide.eventsTitle')}</h2>}
+        <p className="text-sm text-pa-charcoal/70 mb-5">{t('destinationGrowth.eventsNote')}</p>
         {d.eventsIntro && (
           <p
             className="body-lg text-[#3A3A35] mb-10 max-w-3xl leading-relaxed"
@@ -717,11 +673,11 @@ export function EventsAndPlanning({ destination: d }: { destination: Destination
 
 /* ── 10. PRESS & ACCOLADES ────────────────────────────────────────────── */
 
-export function PressAccolades({ destination: d }: { destination: Destination }) {
+export function PressAccolades({ destination: d, compact = false }: { destination: Destination; compact?: boolean }) {
   const { t } = useTranslation();
   if (!d.pressQuotes || d.pressQuotes.length === 0) return null;
   return (
-    <section className="py-16 bg-[#1A1A18] text-white">
+    <section className={`${compact ? 'py-8 mb-6 rounded-xl' : 'py-16'} bg-[#1A1A18] text-white`}>
       <div className="container max-w-5xl mx-auto">
         <h2 className="text-[11px] font-medium tracking-[0.14em] uppercase text-white/60 mb-3 text-center">
           {t('destinationDetail.guide.pressTitle')}
@@ -790,7 +746,7 @@ export function FAQSection({ destination: d }: { destination: Destination }) {
   );
 }
 
-/* ── 12. RELATED DESTINATIONS + OWNERS CTA (DUAL FUNNEL) ──────────────── */
+/* ── 12. RELATED DESTINATIONS + BOOKING CTA ──────────────── */
 
 interface RelatedDestinationsAndOwnersCTAProps {
   destination: Destination;
@@ -802,17 +758,6 @@ export function RelatedDestinationsAndOwnersCTA({
   related,
 }: RelatedDestinationsAndOwnersCTAProps) {
   const { t } = useTranslation();
-  const owners = d.ownersCTA ?? {
-    headline: t('destinationDetail.guide.ownersHeadline', { name: d.name }),
-    body: t('destinationDetail.guide.ownersBody'),
-    cta: t('destinationDetail.guide.ownersCta'),
-  };
-  // Per-destination override takes priority; default builds a UTM-tagged
-  // link so booking-vs-owner attribution stays clean in Pipedrive.
-  const ownersUrl =
-    owners.url ??
-    `https://www.portugalactive.com/management/?utm_source=destinations&utm_medium=banner&utm_campaign=${encodeURIComponent(d.slug)}`;
-
   return (
     <>
       {related.length > 0 && (
@@ -824,8 +769,8 @@ export function RelatedDestinationsAndOwnersCTA({
                 <Link
                   key={r.slug}
                   href={`/destinations/${r.slug}`}
-                  className="group block relative overflow-hidden"
-                  style={{ aspectRatio: '4/5' }}
+                  className="group block relative overflow-hidden rounded-xl"
+                  style={{ aspectRatio: '4/3' }}
                 >
                   {r.coverImage ? (
                     <img
@@ -855,167 +800,9 @@ export function RelatedDestinationsAndOwnersCTA({
         </section>
       )}
 
-      <section className="py-16 bg-[#0B4541] text-white">
-        <div className="container max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-            <div>
-              <p className="text-[11px] font-medium tracking-[0.14em] uppercase text-white/60 mb-3">
-                For travellers
-              </p>
-              <h3
-                className="text-[22px] font-medium text-white mb-3"
-                style={{ fontFamily: 'var(--font-display)', lineHeight: 1.25 }}
-              >
-                Plan your stay in {d.name}
-              </h3>
-              <p className="text-[14px] text-white/80 mb-5 leading-relaxed" style={{ fontWeight: 300 }}>
-                See every home we operate in {d.name} — with concierge, daily housekeeping,
-                and private chef on call.
-              </p>
-              <Link
-                href={`/homes?destination=${d.region}`}
-                className="inline-flex items-center gap-2 text-[13px] font-medium text-white border-b border-white/40 pb-1 hover:border-white transition-colors"
-              >
-                See all villas <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            <div className="md:border-l md:border-white/15 md:pl-10">
-              <p className="text-[11px] font-medium tracking-[0.14em] uppercase text-white/60 mb-3">
-                For owners
-              </p>
-              <h3
-                className="text-[22px] font-medium text-white mb-3"
-                style={{ fontFamily: 'var(--font-display)', lineHeight: 1.25 }}
-              >
-                {owners.headline}
-              </h3>
-              <p className="text-[14px] text-white/80 mb-5 leading-relaxed" style={{ fontWeight: 300 }}>
-                {owners.body}
-              </p>
-              <a
-                href={ownersUrl}
-                target="_blank"
-                rel="noopener"
-                className="inline-flex items-center gap-2 text-[13px] font-medium text-white border-b border-white/40 pb-1 hover:border-white transition-colors"
-              >
-                {owners.cta} <ArrowRight className="w-4 h-4" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      <BookingCTA href={destinationHomesHref(d)} />
     </>
   );
 }
 
-/* ── Schema graph builder ─────────────────────────────────────────────── */
-
-/** Build the @graph for a destination page: TouristDestination + Article +
- *  FAQPage (when faqs present) + BreadcrumbList + Event nodes when events
- *  are populated. Returned as a flat array so it can be passed directly
- *  to <StructuredData data={...} /> which wraps it in a single @context
- *  root. */
-export function buildDestinationGraph(
-  d: Destination,
-  properties: Property[],
-  baseUrl = 'https://www.portugalactive.com',
-): Record<string, unknown>[] {
-  const url = `${baseUrl}/destinations/${d.slug}`;
-
-  const containsPlace = properties.map(p => ({
-    '@type': 'VacationRental',
-    name: p.name,
-    url: `${baseUrl}/homes/${p.slug}`,
-  }));
-
-  const graph: Record<string, unknown>[] = [
-    {
-      '@context': 'https://schema.org',
-      '@type': 'TouristDestination',
-      name: d.name,
-      description: d.heroSubtitle ?? d.description ?? d.tagline,
-      url,
-      image: d.coverImage || undefined,
-      ...(d.geo && {
-        geo: { '@type': 'GeoCoordinates', latitude: d.geo.latitude, longitude: d.geo.longitude },
-      }),
-      touristType: ['families', 'couples', 'groups'],
-      ...(containsPlace.length > 0 && { containsPlace }),
-    },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'Article',
-      headline: d.seoTitle || d.name,
-      author: { '@type': 'Organization', name: 'Portugal Active' },
-      publisher: {
-        '@type': 'Organization',
-        name: 'Portugal Active',
-        logo: { '@type': 'ImageObject', url: `${baseUrl}/logo.svg` },
-      },
-      datePublished: '2026-05-23',
-      dateModified: new Date().toISOString().split('T')[0],
-      image: d.coverImage || undefined,
-      mainEntityOfPage: { '@type': 'WebPage', '@id': url },
-    },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: `${baseUrl}/` },
-        { '@type': 'ListItem', position: 2, name: 'Destinations', item: `${baseUrl}/destinations` },
-        { '@type': 'ListItem', position: 3, name: d.name },
-      ],
-    },
-  ];
-
-  if (d.faqs && d.faqs.length > 0) {
-    graph.push({
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: d.faqs.map(f => ({
-        '@type': 'Question',
-        name: f.question,
-        acceptedAnswer: { '@type': 'Answer', text: f.answer },
-      })),
-    });
-  }
-
-  // Event nodes — surfaced separately rather than under @graph[0] because
-  // Google reads top-level Event schema for the events knowledge panel.
-  if (d.events && d.events.length > 0) {
-    for (const ev of d.events) {
-      // `dates` is written for readers — "15–23 August 2026", but also
-      // "Last weekend of May" and "February (movable)". Schema.org startDate
-      // takes ISO 8601, so the prose was going out as an invalid date. Emit the
-      // Event only when a real date can be read out of it; the others stay on
-      // the page for the reader and simply carry no schema, which is better
-      // than schema Google has to reject.
-      const when = parseEventDates(ev.dates);
-      if (!when) continue;
-      graph.push({
-        '@context': 'https://schema.org',
-        '@type': 'Event',
-        name: ev.name,
-        description: ev.description,
-        ...(ev.url && { url: ev.url }),
-        location: {
-          '@type': 'Place',
-          name: d.name,
-          ...(d.geo && {
-            geo: { '@type': 'GeoCoordinates', latitude: d.geo.latitude, longitude: d.geo.longitude },
-          }),
-        },
-        startDate: when.startDate,
-        ...(when.endDate && { endDate: when.endDate }),
-      });
-    }
-  }
-
-  return graph;
-}
-
-// Silence unused-import warnings when Trans is bundled but unused per call
-// site. Trans is exported by react-i18next and may be used by future
-// editorial additions to the legacy "services" section.
-export const __ssrSilence = { Trans };
+export { buildDestinationGraph } from '@shared/destinationSchema';

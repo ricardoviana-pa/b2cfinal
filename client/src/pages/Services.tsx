@@ -4,7 +4,7 @@
    ========================================================================== */
 
 import { useMemo } from 'react';
-import { HOME_COUNT_LABEL, CHECKLIST_POINTS } from '@shared/brandFacts';
+import { serviceRouteSlug } from '@shared/serviceRoutes';
 import { Link } from 'wouter';
 import { MessageCircle, ArrowRight, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -17,7 +17,6 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
-import AnswerCapsule from '@/components/seo/AnswerCapsule';
 
 const allProducts = productsData as unknown as Product[];
 const services = allProducts.filter(p => p.type === 'service' && p.isActive);
@@ -35,8 +34,8 @@ function ServiceCard({ product }: { product: Product | undefined }) {
   const { t } = useTranslation();
   if (!product) return null;
   return (
-    <div className="group block">
-      <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '4/5' }}>
+    <Link href={`/services/${serviceRouteSlug(product.slug)}`} className="group block">
+      <div className="relative overflow-hidden rounded-xl bg-[#E8E4DC]" style={{ aspectRatio: '4/3' }}>
         {product.image ? (
           <img src={product.image} alt={`${product.name} – concierge service at luxury villa in Portugal`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" loading="lazy" />
         ) : (
@@ -44,7 +43,7 @@ function ServiceCard({ product }: { product: Product | undefined }) {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-5">
-          <h4 className="font-display text-[1.25rem] text-white mb-1 leading-tight">{product.name}</h4>
+          <h3 className="font-display text-[1.25rem] text-white mb-1 leading-tight">{product.name}</h3>
           {product.tagline && (
             <p className="text-[12px] text-white/80 font-light line-clamp-2">{product.tagline}</p>
           )}
@@ -56,7 +55,8 @@ function ServiceCard({ product }: { product: Product | undefined }) {
           <span className="text-[#726D63]"> {product.priceSuffix}</span>
         </p>
       )}
-    </div>
+    <span className="inline-flex items-center gap-2 mt-3 min-h-11 body-sm font-medium text-pa-dark">{t('siteUx.viewService')} <ArrowRight className="w-4 h-4" /></span>
+    </Link>
   );
 }
 
@@ -66,7 +66,7 @@ function SingleServiceFeature({ product, overline, title, body }: { product: Pro
   if (!product) return null;
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-      <div className="relative overflow-hidden bg-[#E8E4DC]" style={{ aspectRatio: '4/5' }}>
+      <div className="relative overflow-hidden rounded-xl bg-[#E8E4DC]" style={{ aspectRatio: '4/3' }}>
         {product.image && (
           <img src={product.image} alt={`${product.name} – concierge service at luxury villa in Portugal`} className="w-full h-full object-cover" loading="lazy" />
         )}
@@ -77,7 +77,6 @@ function SingleServiceFeature({ product, overline, title, body }: { product: Pro
         <p className="body-lg mb-8">{body}</p>
         <div className="border-t border-[#E8E4DC] pt-6">
           <h3 className="font-display text-[1.5rem] text-[#1A1A18] mb-2">{product.name}</h3>
-          {product.tagline && <p className="body-md mb-4">{product.tagline}</p>}
           {product.priceFrom && (
             <p className="text-[13px] text-[#1A1A18] mb-6">
               <span className="font-medium">{t('common.from')} {formatEurEditorial(product.priceFrom)}</span>
@@ -85,6 +84,7 @@ function SingleServiceFeature({ product, overline, title, body }: { product: Pro
             </p>
           )}
         </div>
+      <Link href={`/services/${serviceRouteSlug(product.slug)}`} className="btn-ghost">{t('siteUx.viewService')} <ArrowRight className="w-4 h-4" /></Link>
       </div>
     </div>
   );
@@ -124,7 +124,7 @@ export default function Concierge() {
             '@type': 'Service',
             name: service.name,
             description: service.tagline || service.name,
-            url: `https://www.portugalactive.com/services/${service.slug}`,
+            url: `https://www.portugalactive.com/services/${serviceRouteSlug(service.slug)}`,
             ...(service.image && { image: service.image }),
             areaServed: { '@type': 'Country', name: 'Portugal' },
             provider: { '@id': 'https://www.portugalactive.com/#organization' },
@@ -154,7 +154,7 @@ export default function Concierge() {
       <Header />
 
       {/* Hero */}
-      <section className="relative h-[62vh] min-h-[460px] flex items-end overflow-hidden">
+      <section className="page-hero">
         <img
           src="/experiences/pa-property-firepit.webp"
           alt="Portugal Active property terrace with fire pit at sunset"
@@ -170,22 +170,14 @@ export default function Concierge() {
           </p>
           <h1 className="headline-xl text-white mb-4">{t('services.heroTitle')}</h1>
           <p className="body-lg max-w-xl text-white/95">
-            {t('services.heroBody')}
+            {t('conversion.extrasNote')}
           </p>
+          <div className="flex flex-wrap gap-3 mt-6">
+            <a href="#gastronomy" className="btn-white">{t('siteUx.exploreServices')}</a>
+            <Link href="/homes" className="btn-ghost-light">{t('siteUx.findStay')}</Link>
+          </div>
         </div>
       </section>
-
-      {/* Guests-only banner */}
-      <div className="bg-[#F5F1EB] border-b border-[#E8E4DC]">
-        <div className="container py-4 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-[13px] text-[#6B6860]">
-            <span className="font-medium text-[#1A1A18]">{t('services.guestsOnlyBanner')}</span> {t('services.guestsOnlyQuestion')}
-          </p>
-          <Link href="/experiences" className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#8B7355] hover:text-[#1A1A18] transition-colors inline-flex items-center gap-1">
-            {t('services.browseExperiences')} <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-      </div>
 
       {/* Section Nav */}
       <div className="sticky top-16 md:top-20 z-30 bg-[#FAFAF7]/95 backdrop-blur-md border-b border-[#E8E4DC]">
@@ -217,7 +209,7 @@ export default function Concierge() {
               product={gastronomyProducts[0]}
               overline={t('services.gastronomyOverline')}
               title={t('services.gastronomyTitle')}
-              body={t('services.gastronomyBody')}
+              body={gastronomyProducts[0].description || gastronomyProducts[0].tagline || ''}
             />
           ) : (
             <>
@@ -242,7 +234,6 @@ export default function Concierge() {
           <div className="max-w-3xl mb-12">
             <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.12em] uppercase">{t('services.wellnessOverline')}</p>
             <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.wellnessTitle')}</h2>
-            <p className="body-lg">{t('services.wellnessBody')}</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {wellnessProducts.map(p => (
@@ -260,7 +251,7 @@ export default function Concierge() {
               product={mobilityProducts[0]}
               overline={t('services.mobilityOverline')}
               title={t('services.mobilityTitle')}
-              body={t('services.mobilityBody')}
+              body={mobilityProducts[0].description || mobilityProducts[0].tagline || ''}
             />
           ) : (
             <>
@@ -276,35 +267,6 @@ export default function Concierge() {
               </div>
             </>
           )}
-        </div>
-      </section>
-
-      {/* Our Standards — PA Cleaning video proof */}
-      <section className="section-padding bg-white border-b border-[#E8E4DC]">
-        <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-            <div className="aspect-video w-full rounded-sm overflow-hidden bg-black">
-              <iframe
-                src="https://www.youtube.com/embed/OUgTpL2E15U?rel=0&modestbranding=1"
-                title={`PA Cleaning — ${CHECKLIST_POINTS}-point property preparation`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-                loading="lazy"
-                referrerPolicy="origin"
-              />
-            </div>
-            <div>
-              <p className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#8B7355] mb-4">{t('services.standardsOverline', 'OUR STANDARDS')}</p>
-              <h2 className="headline-lg text-[#1A1A18] mb-6">{t('services.standardsTitle', 'Hotel-grade housekeeping, every stay')}</h2>
-              <p className="body-lg mb-6">
-                {t('services.standardsBody', { points: CHECKLIST_POINTS, defaultValue: 'Before every guest arrives, our in-house team runs a {{points}}-point preparation checklist. Linens pressed, amenities restocked, every surface inspected. No third-party crews, no shortcuts.' })}
-              </p>
-              <p className="body-md text-[#726D63]">
-                {t('services.standardsNote', { homes: HOME_COUNT_LABEL, defaultValue: 'This is the standard across all {{homes}} properties. Every time.' })}
-              </p>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -329,36 +291,21 @@ export default function Concierge() {
         <div className="container max-w-2xl mx-auto text-center">
           <h2 className="headline-lg text-white mb-4">{t('services.ctaTitle')}</h2>
           <p className="body-lg mb-8" style={{ color: 'rgba(255,255,255,0.65)' }}>
-            {t('services.ctaBody')}
+            {t('conversion.extrasNote')}
           </p>
           <a
             href={`${WHATSAPP_BASE}${waConciergeMsgEncoded}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-[#8B7355] text-white text-[12px] tracking-[0.08em] font-medium px-8 py-4 hover:bg-[#7A6548] transition-colors"
+            className="btn-white"
           >
             <MessageCircle className="w-4 h-4" /> {t('services.ctaButton')} <ArrowRight className="w-4 h-4" />
           </a>
         </div>
       </section>
 
-      {/* Answer capsule — citable concierge summary for AI engines (bottom, not blocking listings) */}
-      <section className="pt-10 pb-4 bg-[#FAFAF7]">
-        <div className="container max-w-3xl mx-auto">
-          <AnswerCapsule
-            question="What concierge services does Portugal Active offer?"
-            answer="Portugal Active provides hotel-grade concierge services exclusively to guests staying at its private hotels. Services include private chef dining, in-villa spa and wellness treatments, airport transfers, car rental, and curated local experiences. Every service is delivered by the in-house team or vetted local partners. These services are not available on third-party booking platforms."
-            lastUpdated="2026-04-17"
-            author="Portugal Active concierge team"
-            emitSchema
-            schemaId="qa-services"
-            cite={[
-              { label: 'Browse properties', href: '/homes' },
-              { label: 'Contact concierge', href: '/contact' },
-            ]}
-          />
-        </div>
-      </section>
+
+
 
       <Footer />
       <WhatsAppFloat />

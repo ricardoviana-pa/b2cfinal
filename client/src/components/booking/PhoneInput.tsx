@@ -2,6 +2,7 @@ import { PhoneInput as RIPPhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 
 interface PhoneInputProps {
+  id?: string;
   value: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
@@ -9,7 +10,7 @@ interface PhoneInputProps {
   className?: string;
 }
 
-export default function PhoneInput({ value, onChange, onBlur, placeholder = "Phone number *", className }: PhoneInputProps) {
+export default function PhoneInput({ id, value, onChange, onBlur, placeholder = "Phone number *", className }: PhoneInputProps) {
   return (
     <div className={className}>
       <RIPPhoneInput
@@ -19,7 +20,7 @@ export default function PhoneInput({ value, onChange, onBlur, placeholder = "Pho
         disableCountryGuess
         forceDialCode
         placeholder={placeholder}
-        inputProps={{ autoComplete: 'tel', inputMode: 'tel', onBlur }}
+        inputProps={{ id, autoComplete: 'tel', inputMode: 'tel', 'aria-label': placeholder, onBlur }}
         inputClassName="!w-full !h-full !bg-white !border-0 !border-r-0 !rounded-none !rounded-r-md !text-[16px] !text-[#1A1A18] !px-3 focus:!outline-none focus:!ring-0 !font-[inherit]"
         countrySelectorStyleProps={{
           buttonClassName: "!bg-white !border-0 !rounded-none !rounded-l-md !px-3 !h-full hover:!bg-[#F5F1EB] !transition-colors",

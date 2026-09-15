@@ -12,7 +12,6 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { IMAGES } from '@/lib/images';
-import { trpc } from '@/lib/trpc';
 import LanguageSwitcher from './LanguageSwitcher';
 
 interface HeaderProps {
@@ -54,6 +53,8 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
   const [propertiesOpen, setPropertiesOpen] = useState(false);
   const [location] = useLocation();
   const phoneRef = useRef<HTMLDivElement>(null);
+  const propertiesRef = useRef<HTMLDivElement>(null);
+  const propertiesToggleRef = useRef<HTMLButtonElement>(null);
   const menuPanelRef = useRef<HTMLDivElement>(null);
   const menuToggleRef = useRef<HTMLButtonElement>(null);
   const propertiesTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -86,6 +87,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
   // Escape key closes mobile menu & focus trap
   useEffect(() => {
     if (!menuOpen) return;
+    menuPanelRef.current?.querySelector<HTMLElement>('a[href], button')?.focus();
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -117,6 +119,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (phoneRef.current && !phoneRef.current.contains(e.target as Node)) setPhoneOpen(false);
+      if (propertiesRef.current && !propertiesRef.current.contains(e.target as Node)) setPropertiesOpen(false);
     };
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
@@ -129,13 +132,6 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
 
   return (
     <>
-      {/* Skip to main content — first focusable element */}
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded-md focus:bg-[#1A1A18] focus:text-white focus:text-sm focus:outline-none"
-      >
-        {t('header.skipToContent')}
-      </a>
       <header
         role="banner"
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -152,7 +148,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
               <button
                 ref={menuToggleRef}
                 onClick={() => setMenuOpen(v => !v)}
-                className={`flex items-center justify-center w-11 h-11 ${textColor} transition-colors`}
+                className={`flex lg:hidden items-center justify-center w-11 h-11 ${textColor} transition-colors`}
                 aria-label={menuOpen ? t('header.closeMenu') : t('header.openMenu')}
                 aria-expanded={menuOpen}
                 aria-controls="mobile-menu-panel"
@@ -178,9 +174,12 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                 item.hasDropdown ? (
                   <div
                     key={item.href}
-                    className="relative flex items-center"
+                    ref={propertiesRef}
+                    className="relative flex items-center gap-1"
                     onMouseEnter={openProperties}
                     onMouseLeave={closeProperties}
+                    onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setPropertiesOpen(false); }}
+                    onKeyDown={e => { if (e.key === 'Escape') { setPropertiesOpen(false); propertiesToggleRef.current?.focus(); } }}
                   >
                     {(() => {
                       const isActiveDropdown = location.startsWith('/homes') || location.startsWith('/concierge') || location.startsWith('/services');
@@ -195,7 +194,6 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                           style={{ letterSpacing: '0.02em', minHeight: 'auto', minWidth: 'auto' }}
                         >
                           {item.label}
-                          <ChevronDown className={`w-3 h-3 shrink-0 transition-transform duration-200 ${propertiesOpen ? 'rotate-180' : ''}`} />
                           {isActiveDropdown && (
                             <span
                               className={`absolute left-0 right-0 bottom-0 h-px ${
@@ -206,11 +204,23 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
                         </Link>
                       );
                     })()}
+                    <button
+                      ref={propertiesToggleRef}
+                      type="button"
+                      className={`inline-flex items-center justify-center min-h-11 min-w-6 ${textColor}`}
+                      aria-label={`${item.label}: ${t('header.openMenu')}`}
+                      aria-expanded={propertiesOpen}
+                      aria-controls="properties-navigation"
+                      onClick={() => { clearTimeout(propertiesTimeout.current); setPropertiesOpen(v => !v); }}
+                    >
+                      <ChevronDown className={`w-3 h-3 transition-transform ${propertiesOpen ? 'rotate-180' : ''}`} />
+                    </button>
 
                     {/* Minimalist Properties dropdown */}
                     <div
+                      id="properties-navigation"
                       className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 transition-all duration-200 origin-top ${
-                        propertiesOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
+                        propertiesOpen ? 'visible opacity-100 scale-100 pointer-events-auto' : 'invisible opacity-0 scale-95 pointer-events-none'
                       }`}
                     >
                       <div className={`${dropdownBg} w-[220px] py-2`}>
@@ -276,7 +286,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
 
                 <div
                   className={`absolute top-full right-0 mt-2 ${dropdownBg} py-2 w-[260px] transition-all duration-200 origin-top-right ${
-                    phoneOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
+                    phoneOpen ? 'visible opacity-100 scale-100 pointer-events-auto' : 'invisible opacity-0 scale-95 pointer-events-none'
                   }`}
                 >
                   <a
@@ -329,7 +339,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
               {/* Desktop: Reserve button */}
               <Link
                 href="/homes"
-                className={`hidden md:inline-flex items-center px-6 py-2.5 text-[11px] font-medium uppercase transition-all duration-300 ${
+                className={`pa-action hidden md:inline-flex items-center px-6 py-2.5 text-[11px] font-medium uppercase transition-all duration-300 ${
                   isTransparent
                     ? 'border border-white/50 text-white hover:bg-white hover:text-[#1A1A18]'
                     : 'border border-[#1A1A18] text-[#1A1A18] hover:bg-[#1A1A18] hover:text-white'
@@ -342,7 +352,7 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
               {/* Mobile: Reserve button */}
               <Link
                 href="/homes"
-                className={`md:hidden inline-flex items-center px-4 py-2 min-h-[44px] text-[11px] font-medium uppercase transition-all duration-300 ${
+                className={`pa-action md:hidden inline-flex items-center px-4 py-2 min-h-[44px] text-[11px] font-medium uppercase transition-all duration-300 ${
                   isTransparent
                     ? 'border border-white/50 text-white hover:bg-white hover:text-[#1A1A18]'
                     : 'border border-[#1A1A18] text-[#1A1A18] hover:bg-[#1A1A18] hover:text-white'
@@ -370,9 +380,10 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
         ref={menuPanelRef}
         id="mobile-menu-panel"
         role="dialog"
+        inert={!menuOpen}
         aria-modal="true"
         aria-label={t('header.menuLabel')}
-        className={`fixed top-0 left-0 bottom-0 z-[55] w-[85vw] sm:w-[380px] lg:w-[420px] bg-white shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed top-0 left-0 bottom-0 z-[55] w-[85vw] sm:w-[380px] lg:w-[420px] bg-white shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${menuOpen ? 'visible translate-x-0' : 'invisible -translate-x-full'}`}
       >
         <div className="h-full flex flex-col overflow-y-auto">
 

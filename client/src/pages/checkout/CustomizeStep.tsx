@@ -273,7 +273,7 @@ function ReceptionChoiceCards({
               type="button"
               onClick={() => onChoose({ type: "hosted", late })}
               className={cn(
-                "caption text-inherit px-3 py-1 rounded-full border transition-colors",
+                "pa-action caption text-inherit px-3 py-1 rounded-full border transition-colors",
                 (choice?.late ?? false) === late
                   ? "border-pa-dark bg-pa-dark text-white"
                   : "border-pa-sand text-pa-earth hover:border-pa-dark",
@@ -431,7 +431,7 @@ function OptionRow({
             <button
               type="button"
               onClick={() => onToggle(item)}
-              className="mt-1.5 min-h-[44px] sm:min-h-[32px] px-4 rounded-full border border-pa-sand bg-white eyebrow font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors"
+              className="pa-action mt-1.5 min-h-[44px] sm:min-h-[32px] px-4 rounded-full border border-pa-sand bg-white eyebrow font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors"
             >
               {onRequest ? t("checkout.request", "Request") : t("checkout.add", "Add")}
             </button>
@@ -467,7 +467,7 @@ function OptionRow({
                   type="button"
                   onClick={() => onAdjust(item.sku, { days: Math.max(1, nights) })}
                   className={cn(
-                    "caption text-inherit px-3 py-1.5 rounded-full border transition-colors",
+                    "pa-action caption text-inherit px-3 py-1.5 rounded-full border transition-colors",
                     (sel!.days ?? 1) === Math.max(1, nights)
                       ? "border-pa-dark bg-pa-dark text-white"
                       : "border-pa-sand text-pa-earth hover:border-pa-dark",
@@ -568,9 +568,17 @@ export default function CustomizeStep({
   receptionNudge?: boolean;
 }) {
   const { t } = useTranslation();
+  const [showFullCatalog, setShowFullCatalog] = useState(false);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [airportBySku, setAirportBySku] = useState<Record<string, string>>({});
   const [activeChapter, setActiveChapter] = useState<ExtraChapter>("arrival");
+
+  const suggestions = catalog.filter(item => !item.parentSku && !(item as any).petsOnly && item.pricingModel !== 'included_selectable' && !item.sku.startsWith('transfer'))
+    .sort((a, b) => {
+      const order = ['private-chef', 'breakfast-box', 'grocery-setup'];
+      const rank = (sku: string) => order.includes(sku) ? order.indexOf(sku) : order.length;
+      return rank(a.sku) - rank(b.sku);
+    }).slice(0, 3);
 
   // Scrollspy por posição de scroll (fixes 12 jul §2): o ativo é o ÚLTIMO
   // capítulo cujo título já passou o offset dos dois headers fixos — um e um
@@ -638,6 +646,22 @@ export default function CustomizeStep({
         .checkout-page { overflow-anchor: none; }
       `}</style>
 
+      <div className="rounded-xl bg-pa-warm border border-pa-sand p-5 space-y-4">
+        <h1 className="headline-md text-pa-dark">{t('conversion.extrasTitle')}</h1>
+        <p className="body-sm text-pa-earth">{t('conversion.extrasIntro')}</p>
+        <button type="button" onClick={onSkip} className="btn-primary w-full">{t('conversion.continuePay')}</button>
+        {!receptionChoice && <p className="caption text-pa-earth">{t('conversion.skipNote')}</p>}
+      </div>
+      {!showFullCatalog && <div className="space-y-6 mt-6">
+        {reception && <ReceptionChoiceCards config={reception} choice={receptionChoice} lang={lang} onChoose={onChooseReception} nudge={receptionNudge} />}
+        <div className="rounded-xl border border-pa-sand divide-y divide-pa-sand overflow-hidden">
+          {suggestions.map(item => <OptionRow key={item.sku} item={item} sel={selection[item.sku]} lang={lang} guests={guests} nights={nights} onToggle={onToggle} onAdjust={onAdjust} />)}
+        </div>
+      </div>}
+      <button type="button" onClick={() => setShowFullCatalog(v => !v)} aria-expanded={showFullCatalog} className="min-h-11 my-4 body-sm text-pa-dark underline underline-offset-4">
+        {showFullCatalog ? t('reviews.showFewer') : t('conversion.seeAllExtras')}
+      </button>
+      {showFullCatalog && <>
       {/* Abertura direta na nav + Capítulo 01 (12 jul, estilo Apple): o cabeçalho
           verboso repetia o stepper e adiava a venda. */}
       <nav className="sticky top-[61px] z-30 -mx-1 px-1 bg-white/95 backdrop-blur-sm border-b border-pa-sand">
@@ -699,7 +723,7 @@ export default function CustomizeStep({
         const hiddenCount = 0;
 
         return (
-          <ChapterReveal key={chapter} id={`chapter-${chapter}`} className={cn("scroll-mt-[130px]", idx === 0 ? "mt-10" : "mt-24 lg:mt-28")}>
+          <ChapterReveal key={chapter} id={`chapter-${chapter}`} className={cn("scroll-mt-[130px]", idx === 0 ? "mt-6" : "mt-12 lg:mt-16")}>
             <ChapterHeader num={String(idx + 1).padStart(2, "0")} chapter={chapter} destination={destination} />
 
             {/* Decisão primeiro (receção, cap 01) */}
@@ -762,7 +786,7 @@ export default function CustomizeStep({
                           type="button"
                           onClick={() => switchAll(ap)}
                           className={cn(
-                            "caption text-inherit px-3 py-1 rounded-full border transition-colors",
+                            "pa-action caption text-inherit px-3 py-1 rounded-full border transition-colors",
                             shownAp === ap
                               ? "border-pa-dark bg-pa-dark text-white"
                               : "border-pa-sand text-pa-earth hover:border-pa-dark",
@@ -907,7 +931,7 @@ export default function CustomizeStep({
                               type="button"
                               onClick={() => onToggle(item)}
                               className={cn(
-                                "w-full min-h-[44px] sm:min-h-[36px] rounded-full border eyebrow text-inherit font-medium tracking-[0.08em] uppercase transition-colors",
+                                "pa-action w-full min-h-[44px] sm:min-h-[36px] rounded-full border eyebrow text-inherit font-medium tracking-[0.08em] uppercase transition-colors",
                                 selected
                                   ? "bg-pa-dark border-pa-dark text-white"
                                   : "border-pa-sand text-pa-earth hover:border-pa-dark hover:text-pa-dark",
@@ -930,6 +954,7 @@ export default function CustomizeStep({
       <p className="caption text-pa-stone-aa leading-relaxed mt-10">
         {t("checkout.extrasChargeNote")}
       </p>
+      </>}
     </div>
   );
 }

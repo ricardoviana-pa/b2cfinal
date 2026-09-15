@@ -245,7 +245,7 @@ export default function ItineraryDrawer() {
             <button
               onClick={handleEmail}
               disabled={!canSend}
-              className="w-full border border-[#1A1A18] text-[#1A1A18] text-[11px] tracking-[0.15em] font-medium py-3.5 hover:bg-[#1A1A18] hover:text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="pa-action w-full border border-[#1A1A18] text-[#1A1A18] text-[11px] tracking-[0.15em] font-medium py-3.5 hover:bg-[#1A1A18] hover:text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <Mail className="w-4 h-4" />
               SEND VIA EMAIL

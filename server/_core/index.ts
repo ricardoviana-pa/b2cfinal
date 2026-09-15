@@ -7,6 +7,7 @@ import { createServer } from "http";
 import net from "net";
 import fs from "fs";
 import path from "path";
+import { serviceRouteSlug } from '@shared/serviceRoutes';
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerDevAuthRoutes } from "./devAuth";
@@ -211,6 +212,7 @@ async function startServer() {
         { loc: "/services", priority: "0.8", changefreq: "monthly" },
         { loc: "/adventures", priority: "0.8", changefreq: "monthly" },
         { loc: "/events", priority: "0.8", changefreq: "monthly" },
+        { loc: "/corporate-retreats", priority: "0.8", changefreq: "monthly" },
         { loc: "/blog", priority: "0.8", changefreq: "weekly" },
         { loc: "/about", priority: "0.7", changefreq: "monthly" },
         { loc: "/contact", priority: "0.7", changefreq: "monthly" },
@@ -221,6 +223,7 @@ async function startServer() {
         { loc: "/legal/privacy", priority: "0.3", changefreq: "yearly" },
         { loc: "/legal/terms", priority: "0.3", changefreq: "yearly" },
         { loc: "/legal/cookies", priority: "0.3", changefreq: "yearly" },
+        { loc: "/legal/cancellation-policy", priority: "0.3", changefreq: "yearly" },
       ];
 
       /** Generate a <url> entry with hreflang alternates for all languages */
@@ -291,6 +294,14 @@ async function startServer() {
           if (!sv?.slug) continue;
           serviceSlugs.add(sv.slug);
           dynamicPages.push({ path: `/services/${sv.slug}`, lastmod: deployDate, changefreq: "monthly", priority: "0.8" });
+        }
+        const publishedProducts = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'client', 'src', 'data', 'products.json'), 'utf-8'));
+        for (const product of publishedProducts) {
+          if (product.type !== 'service' || !product.isActive || !product.slug) continue;
+          const slug = serviceRouteSlug(product.slug);
+          if (serviceSlugs.has(slug)) continue;
+          serviceSlugs.add(slug);
+          dynamicPages.push({ path: `/services/${slug}`, lastmod: deployDate, changefreq: 'monthly', priority: '0.8' });
         }
       } catch (e) {
         console.warn("[Sitemap] could not load services.json", e);

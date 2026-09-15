@@ -22,19 +22,19 @@
    ========================================================================== */
 
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
-import { HOME_COUNT_LABEL, CHECKLIST_POINTS } from '@shared/brandFacts';
+import { HOME_COUNT_LABEL } from '@shared/brandFacts';
 import { useTranslation } from 'react-i18next';
-import { managementUrl } from '@/lib/siteLinks';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { StructuredData, buildFaqPageSchema } from '@/components/seo/StructuredData';
 import { Link } from 'wouter';
 import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Minus, Plus, Home as HomeIcon, Star, Headphones } from 'lucide-react';
+import BookingCTA from '@/components/property/BookingCTA';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import PropertyCard from '@/components/property/PropertyCard';
 import { IMAGES } from '@/lib/images';
-const ReviewsSection = lazy(() => import('@/components/ReviewsSection'));
+import StayCollections from '@/components/property/StayCollections';
+const ReviewsSection = lazy(() => import('@/components/property/GuestFeedback'));
 import destinationsData from '@/data/destinations.json';
 import { localizeDestination, useDestinationOverrides } from '@/lib/localizeContent';
 import { trpc } from '@/lib/trpc';
@@ -117,27 +117,12 @@ export default function Home() {
   // FAQPage schema only — the Organization schema is global (index.html),
   // so we no longer emit LodgingBusiness here to avoid duplicating the
   // brand entity on the homepage.
-  const homeFaq = useMemo(() => buildFaqPageSchema([
-    {
-      question: 'What makes Portugal Active different from Airbnb or Booking.com?',
-      answer: `Portugal Active operates each property like a private hotel — with a ${CHECKLIST_POINTS}-point preparation checklist, dedicated concierge, optional private chef, and a local team minutes away. We don't just list homes; we manage them to hotel standards.`,
-    },
-    {
-      question: 'Which regions in Portugal does Portugal Active cover?',
-      answer: 'We operate luxury villas across five regions: Minho Coast (Viana do Castelo area), Porto & Douro Valley, Lisbon & Sintra, Alentejo, and the Algarve. Each region offers a different character, from Atlantic beaches to wine country.',
-    },
-    {
-      question: 'Can I book adventure activities alongside my villa stay?',
-      answer: 'Yes. We offer curated experiences including horseback riding, canyoning, surfing, sailing, e-bike tours, and more. Our concierge team builds bespoke itineraries combining your villa, activities, and private dining. Optional villa transfers can be arranged for an additional fee.',
-    },
-    {
-      question: 'Is it cheaper to book direct with Portugal Active?',
-      answer: 'Always. Booking direct means no middleman markup — you get the best rate guaranteed, plus complimentary concierge service and priority for special requests like early check-in or celebrations.',
-    },
-  ]), []);
-
-  const { data: propsData, isLoading, isError } = trpc.properties.listForSite.useQuery();
-  const properties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
+  const { data: propsData, isLoading, isError } = trpc.properties.catalogForSite.useQuery(undefined, { staleTime: 5 * 60 * 1000 });
+  // Keep the featured list stable: the quote effect updates state, so a new
+  // filtered array on every render would continuously restart that effect.
+  const properties = useMemo(() =>
+    ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[],
+  [propsData]);
 
   // Destination options come from a tiny dedicated query that is SSR-prefetched,
   // so the picker is usable on first paint instead of waiting for the full
@@ -283,7 +268,7 @@ export default function Home() {
   // Fetch live quotes for featured cards when dates are entered
   useEffect(() => {
     if (!hasDates || featured.length === 0) {
-      setHomeQuotes({});
+      setHomeQuotes(current => Object.keys(current).length ? {} : current);
       setHomeQuotesLoading(false);
       return;
     }
@@ -382,7 +367,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-pa-cream min-w-0 w-full">
-      <StructuredData id="home-faq" data={homeFaq} />
       <Header variant="transparent" />
       {/* On mobile the floating button sits exactly over the hero search card's
           Check-out field, so hold it back until the hero is scrolled past.
@@ -392,7 +376,7 @@ export default function Home() {
       </div>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 1: HERO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden z-20">
+      <section className="relative min-h-[820px] lg:min-h-[720px] lg:h-[92svh] flex items-center overflow-hidden z-20">
         {/* Background */}
         <div className="absolute inset-0">
           <img
@@ -427,9 +411,9 @@ export default function Home() {
             </h1>
             <p
               className="body-lg md:text-[20px] text-white/80 mb-6 lg:mb-4 leading-relaxed max-w-xl font-body font-light"
-              
+
             >
-              {t('home.heroBody')}
+              {t('conversion.homeIntro')}
             </p>
 
             {/* Proof strip — above CTAs so it never collides with booking bar */}
@@ -439,7 +423,7 @@ export default function Home() {
               </span>
               <span className="text-white/25">·</span>
               <span className="body-sm text-white/60 font-medium font-body" >
-                {t('home.proofRating', '4.8★ guest rating')}
+                {t('conversion.directSupport')}
               </span>
               <span className="text-white/25">·</span>
               <span className="body-sm text-white/60 font-medium font-body" >
@@ -450,7 +434,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/homes"
-                className="inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full bg-white text-pa-dark body-sm font-semibold hover:bg-pa-warm transition-colors"
+                className="pa-action inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full bg-white text-pa-dark body-sm font-semibold hover:bg-pa-warm transition-colors"
                 style={{ letterSpacing: '1.5px' }}
               >
                 {t('home.heroCta')} <ArrowRight className="w-4 h-4" />
@@ -459,7 +443,7 @@ export default function Home() {
                 href="https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden sm:inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full border border-white/50 text-white body-sm font-semibold hover:bg-white/10 transition-colors"
+                className="pa-action hidden sm:inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full border border-white/50 text-white body-sm font-semibold hover:bg-white/10 transition-colors"
                 style={{ letterSpacing: '1.5px' }}
               >
                 {t('home.heroCtaConcierge')} <ArrowRight className="w-4 h-4" />
@@ -479,7 +463,7 @@ export default function Home() {
                 onChange={e => setSearchDest(e.target.value)}
                 aria-label={t('home.searchDestination')}
                 className="w-full h-[44px] rounded-lg border border-pa-sand bg-white pl-9 pr-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer appearance-none"
-                
+
               >
                 <option value="">{t('home.searchDestination')}</option>
                 {cityOptions}
@@ -573,7 +557,7 @@ export default function Home() {
                     search_source: 'hero_mobile',
                   });
                 }}
-                className="shrink-0 h-[44px] px-5 rounded-full bg-pa-dark text-white caption font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
+                className="pa-action shrink-0 h-[44px] px-5 rounded-full bg-pa-dark text-white caption font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
                 style={{ letterSpacing: '1.5px' }}
               >
                 {t('home.searchButton')}
@@ -597,7 +581,7 @@ export default function Home() {
                 onChange={e => setSearchDest(e.target.value)}
                 aria-label={t('home.searchDestination')}
                 className="w-full h-full pl-6 pr-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer appearance-none"
-                
+
               >
                 <option value="">{t('home.searchDestination')}</option>
                 {cityOptions}
@@ -617,7 +601,7 @@ export default function Home() {
                 onChange={e => handleCheckinChange(e.target.value, false)}
                 aria-label={t('home.searchCheckin', 'Check-in')}
                 className={`w-full h-full px-4 bg-transparent body-sm text-inherit focus:outline-none cursor-pointer ${searchCheckin ? 'text-pa-dark' : 'text-transparent'}`}
-                
+
               />
               {!searchCheckin && (
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 body-sm text-pa-stone pointer-events-none font-body" >
@@ -639,7 +623,7 @@ export default function Home() {
                 onChange={e => setSearchCheckout(e.target.value)}
                 aria-label={t('home.searchCheckout', 'Check-out')}
                 className={`w-full h-full px-4 bg-transparent body-sm text-inherit focus:outline-none cursor-pointer ${searchCheckout ? 'text-pa-dark' : 'text-transparent'}`}
-                
+
               />
               {!searchCheckout && (
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 body-sm text-pa-stone pointer-events-none font-body" >
@@ -704,7 +688,7 @@ export default function Home() {
                   search_source: 'hero_desktop',
                 });
               }}
-              className="flex-shrink-0 h-[50px] mr-1.5 px-8 rounded-full bg-pa-dark text-white body-sm font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
+              className="pa-action flex-shrink-0 h-[50px] mr-1.5 px-8 rounded-full bg-pa-dark text-white body-sm font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
               style={{ letterSpacing: '1.5px' }}
             >
               {t('home.searchButton')}
@@ -764,6 +748,7 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 3: OUR HOMES Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
+      <StayCollections />
       <section ref={s3Ref} className="fade-in cv-auto section-padding bg-white">
         <div className="container">
           <p className="eyebrow mb-3">{t('home.homesOverline')}</p>
@@ -771,7 +756,7 @@ export default function Home() {
             <div>
               <h2 className="headline-lg text-pa-dark mb-3">{t('home.homesTitle')}</h2>
               <p className="body-md max-w-2xl">
-                {t('home.homesBody')}
+                {t('conversion.homesIntro')}
               </p>
             </div>
           </div>
@@ -789,6 +774,7 @@ export default function Home() {
             {featured.map((property, index) => (
               <div key={property.id} className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
                 <PropertyCard
+                  imageSizes="(max-width: 639px) 280px, (max-width: 767px) 320px, (max-width: 1023px) 45vw, 30vw"
                   property={property}
                   checkin={searchCheckin || undefined}
                   checkout={searchCheckout || undefined}
@@ -828,14 +814,14 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 divide-x divide-[#E1DACE]">
             {[
               { value: HOME_COUNT_LABEL, label: t('home.statHomes') },
-              { value: '4.8/5', label: t('home.statRating') },
-              { value: '40%', label: t('home.statRepeat') },
+              { value: 'Viana · Lisboa', label: t('footer.offices') },
+              { value: '9', label: t('conversion.languages') },
               { value: '2017', label: t('home.statFounded') },
             ].map((stat, i) => (
               <div key={i} className="text-center px-2">
                 <p
                   className="text-pa-dark font-display font-light"
-                  style={{fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1}}
+                  style={{fontSize: 'clamp(24px, 3vw, 36px)', lineHeight: 1}}
                 >
                   {stat.value}
                 </p>
@@ -849,7 +835,7 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 5: HOW IT WORKS Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s5Ref} className="fade-in cv-auto section-padding bg-white">
+      <section ref={s5Ref} className="fade-in cv-auto py-12 bg-white">
         <div className="container">
           <p className="caption font-medium text-pa-gold mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.howItWorksOverline')}</p>
           <h2 className="headline-lg text-pa-dark mb-10 max-w-lg">{t('home.howItWorksTitle')}</h2>
@@ -1072,28 +1058,7 @@ export default function Home() {
       </Suspense>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 10: OWNERS CTA Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s10Ref} className="fade-in cv-auto bg-pa-dark">
-        <div className="container py-16 lg:py-20">
-          <div className="max-w-2xl mx-auto text-center">
-            <p className="caption font-medium text-pa-gold-light mb-4" style={{ letterSpacing: '0.08em' }}>{t('home.ownersOverline')}</p>
-            <h2 className="headline-lg text-white mb-5">{t('home.ownersTitle')}</h2>
-            <p
-              className="body-lg text-white/55 mb-8 leading-relaxed font-body font-light"
-              
-            >
-              {t('home.ownersBody')}
-            </p>
-            <a
-              href={managementUrl(i18n.resolvedLanguage || i18n.language)}
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-white/30 text-white caption font-semibold hover:bg-white/10 transition-colors"
-              style={{ letterSpacing: '1.5px' }}
-            >
-              {t('home.ownersCta')} <ArrowRight className="w-4 h-4" />
-            </a>
-            <p className="caption text-white/35 mt-3 font-body font-light" >{t('home.ownersNote')}</p>
-          </div>
-        </div>
-      </section>
+      <BookingCTA />
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ PRESS BAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <section className="cv-auto bg-white">

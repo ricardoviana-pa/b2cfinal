@@ -1,11 +1,21 @@
 import type { Property, SortOption } from './types';
 import { sortProperties } from './utils';
 
+/** Region choices are distinct from city names; clearing resets both. */
+export function parseDestinationSelection(value: string): { destination: string; location: string } {
+  if (value.startsWith('region:')) {
+    const destination = value.slice(7);
+    return { destination: ['minho', 'porto', 'lisbon', 'alentejo', 'algarve'].includes(destination) ? destination : '', location: '' };
+  }
+  return { destination: '', location: value };
+}
+
 export interface SearchQuote {
   total: number;
   nightlyRate: number;
   available?: boolean;
   source?: string;
+  feesKnown?: boolean;
 }
 
 export function hasConfirmedQuote(quote?: SearchQuote | null): boolean {
@@ -25,9 +35,10 @@ export function searchPrice(property: Property, quotes: Record<string, SearchQuo
   if (nights > 0) {
     const quote = quotes[property.slug];
     // Compare the same whole-stay total displayed on the card, including fees.
+    if (quote?.source === 'partner_calendar' && !quote.feesKnown) return null;
     return quote && quote.available !== false && quote.total > 0 ? quote.total : null;
   }
-  const price = fromPrices?.[property.guestyId ?? ''];
+  const price = fromPrices?.[property.guestyId ?? property.supplierUid ?? ''];
   return typeof price === 'number' && price > 0 ? price : null;
 }
 

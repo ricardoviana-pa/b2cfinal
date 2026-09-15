@@ -181,6 +181,8 @@ export interface Destination {
 export type PropertyTier = 'signature' | 'select' | 'new';
 
 export interface Property {
+  source?: string;
+  supplierUid?: string;
   id: string;
   slug: string;
   name: string;

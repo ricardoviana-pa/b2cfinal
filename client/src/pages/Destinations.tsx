@@ -1,211 +1,100 @@
-/* ==========================================================================
-   DESTINATIONS HUB — 2026-05 redesign
-   ========================================================================
-
-   Hub-and-spoke entry point per the destinations strategy doc (May 2026).
-   Destinations are grouped visually by region (Minho, Porto & Douro,
-   Lisbon, Alentejo, Algarve) — the URLs themselves stay flat
-   (/destinations/[slug]) per the doc's SEO scheme. Coming-soon destinations
-   sit in their own block at the bottom with a darker veil.
-   ========================================================================== */
-
 import { Link } from 'wouter';
+import { ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import destinationsData from '@/data/destinations.json';
 import { localizeDestination, useDestinationOverrides } from '@/lib/localizeContent';
+import PortugalMap from '@/components/destinations/PortugalMap';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
-import { IMAGES, cdnResize, cdnSrcSet } from '@/lib/images';
-import type { Destination, DestinationRegion } from '@/lib/types';
+import { cdnResize, cdnSrcSet } from '@/lib/images';
+import type { Destination } from '@/lib/types';
 
 const destinations = destinationsData as unknown as Destination[];
-
-const REGION_LABEL: Record<DestinationRegion, string> = {
-  minho: 'Minho',
-  porto: 'Porto & Douro',
-  lisbon: 'Lisbon',
-  alentejo: 'Alentejo',
-  algarve: 'Algarve',
-  brazil: 'Brazil',
-};
-
-const REGION_ORDER: DestinationRegion[] = ['minho', 'porto', 'lisbon', 'alentejo', 'algarve'];
-
-function DestinationCard({ dest }: { dest: Destination }) {
-  return (
-    <Link
-      href={`/destinations/${dest.slug}`}
-      className="group relative overflow-hidden block"
-      style={{ aspectRatio: '3/4' }}
-    >
-      {dest.coverImage ? (
-        <img
-          src={cdnResize(dest.coverImage, 1080)}
-          srcSet={cdnSrcSet(dest.coverImage, [400, 768, 1080])}
-          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-          alt={dest.name}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-          loading="lazy"
-        />
-      ) : (
-        <div className="absolute inset-0 placeholder-image" />
-      )}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8">
-        <h3 className="headline-md text-white mb-1">{dest.name}</h3>
-        <p className="text-[14px] text-white/70" style={{ fontWeight: 300 }}>{dest.tagline}</p>
-      </div>
-    </Link>
-  );
-}
 
 export default function Destinations() {
   const { t, i18n } = useTranslation();
   usePageMeta({
-    title: 'Destinations in Portugal | Minho, Porto, Algarve & More',
-    description: 'Explore our luxury villa destinations across Portugal — Minho Coast, Porto & Douro, Algarve, Lisbon, Alentejo. Find your perfect region.',
-    url: '/destinations',
+    title: t('destinationGrowth.metaTitle'), description: t('destinationGrowth.metaDescription'), url: '/destinations',
   });
-
-  const destOverrides = useDestinationOverrides(i18n.language);
-  const localized = destinations.map(d => localizeDestination(d, destOverrides)!);
-  const active = localized.filter(d => !d.comingSoon && d.status === 'active');
-  // Brazil is excluded from the "Coming soon" strip too — we're not ready
-  // to reveal the expansion publicly. The entry still exists in
-  // destinations.json so /destinations/brazil keeps working for direct
-  // links; once we launch, flip its `status` to 'active' and
-  // `comingSoon` to false in destinations.json — no code change needed.
-  const comingSoon = localized.filter(d => d.comingSoon && d.slug !== 'brazil');
-
-  // Hub policy (HOT FIX 2026-05-25): the public destinations hub shows ONLY
-  // region-hub entries (slug === region slug). City-level spokes
-  // (viana-do-castelo, caminha, esposende, douro) still have live pages and
-  // appear in sitemap/SSR/related-destinations cross-links, but they are
-  // intentionally hidden from the hub grid until their editorial content
-  // and photography are production-ready. Promote a spoke by adding
-  // `publicHub: true` to its destinations.json entry once it is ready.
-  const hubItems = active.filter(d => d.slug === d.region || (d as any).publicHub === true);
-
-  const byRegion = REGION_ORDER.map(region => {
-    const items = hubItems
-      .filter(d => d.region === region)
-      .sort((a, b) => {
-        if (a.slug === region) return -1;
-        if (b.slug === region) return 1;
-        return a.name.localeCompare(b.name);
-      });
-    return { region, items };
-  }).filter(g => g.items.length > 0);
+  const overrides = useDestinationOverrides(i18n.language);
+  const active = destinations.filter(d => d.status === 'active' && !d.comingSoon)
+    .map(d => localizeDestination(d, overrides)!);
+  const regions = active.filter(d => d.slug === d.region);
+  const viana = active.find(d => d.slug === 'viana-do-castelo');
+  const base = `https://www.portugalactive.com/${i18n.language.split('-')[0]}`;
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7]">
-      <StructuredData
-        id="destinations-breadcrumb"
-        data={buildBreadcrumbSchema([
-          { name: 'Home', item: '/' },
-          { name: 'Destinations' },
-        ])}
-      />
-      <Header />
-
-      {/* Hero */}
-      <section className="relative h-[62vh] min-h-[460px] flex items-end overflow-hidden">
-        <img
-          src={IMAGES.destinationMinho}
-          alt="Portugal destinations"
-          className="absolute inset-0 w-full h-full object-cover"
-          width={1600}
-          height={900}
-          fetchPriority="high"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10" />
-        <div className="relative container pb-12 lg:pb-16 z-10">
-          <h1 className="headline-xl text-white mb-3">{t('destinationsPage.title')}</h1>
-          <p className="body-lg max-w-lg" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            {t('destinationsPage.subtitle')}
-          </p>
-        </div>
-      </section>
-
-      {/* Destination grid — flat (one card per region hub). Region grouping
-          re-engages automatically once we promote city-level spokes via
-          `publicHub: true` on individual destinations.json entries. */}
-      <section className="section-padding">
-        <div className="container">
-          <h2 className="sr-only">{t('destinationsPage.titleFull')}</h2>
-
-          {byRegion.length === 1 || byRegion.every(g => g.items.length <= 1) ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {byRegion.flatMap(g => g.items).map(d => (
-                <DestinationCard key={d.slug} dest={d} />
-              ))}
+    <div className="min-h-screen bg-pa-paper">
+      <StructuredData id="destinations-breadcrumb" data={[
+        buildBreadcrumbSchema([{ name: t('nav.home'), item: '/' }, { name: t('nav.destinations') }]),
+        { '@type': 'CollectionPage', '@id': `${base}/destinations`, url: `${base}/destinations`,
+          name: t('destinationGrowth.metaTitle'), description: t('destinationGrowth.metaDescription'),
+          mainEntity: { '@type': 'ItemList', itemListElement: active.map((d, index) => ({
+            '@type': 'ListItem', position: index + 1, name: d.name, url: `${base}/destinations/${d.slug}`,
+          })) },
+        },
+      ]} />
+      <Header variant="solid" />
+      <div>
+        <section className="page-intro !pb-10">
+          <div className="container grid lg:grid-cols-[1fr_1fr] gap-6 lg:gap-16 items-center">
+            <div>
+              <p className="text-xs text-pa-brown tracking-widest uppercase mb-4">{t('destinationGrowth.eyebrow')}</p>
+              <h1 className="headline-xl">{t('destinationsPage.titleFull')}</h1>
+              <p className="body-lg max-w-xl mt-6">{t('destinationGrowth.intro')}</p>
             </div>
-          ) : (
-            byRegion.map(group => (
-              <div key={group.region} className="mb-16 last:mb-0">
-                <div className="flex items-baseline justify-between mb-6 border-b border-[#E8E4DC] pb-3">
-                  <h3 className="text-[12px] font-medium tracking-[0.14em] uppercase text-[#8B7355]">
-                    {REGION_LABEL[group.region]}
-                  </h3>
-                  <span className="text-[12px] text-[#726D63]" style={{ fontWeight: 300 }}>
-                    {group.items.length} destination{group.items.length !== 1 ? 's' : ''}
-                  </span>
+            <PortugalMap destinations={regions} />
+          </div>
+        </section>
+        <section className="container pb-16" aria-label={t('destinationsPage.title')}>
+          <div className="grid md:grid-cols-6 gap-x-6 gap-y-10">
+            {regions.map((d, index) => (
+              <Link key={d.slug} href={`/destinations/${d.slug}`}
+                className={`group block ${index < 2 ? 'md:col-span-3' : 'md:col-span-2'}`}>
+                <div className="aspect-[3/2] md:aspect-[16/10] overflow-hidden rounded-xl bg-pa-sand mb-5">
+                  <img src={cdnResize(d.coverImage, 1080)} srcSet={cdnSrcSet(d.coverImage, [400, 640, 1080])}
+                    sizes={index < 2 ? '(min-width: 768px) 45vw, 90vw' : '(min-width: 768px) 30vw, 90vw'}
+                    alt={d.name} width={1080} height={720} loading={index < 2 ? 'eager' : 'lazy'}
+                    fetchPriority={index === 0 ? 'high' : 'auto'}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {group.items.map(d => <DestinationCard key={d.slug} dest={d} />)}
+                <div className="flex justify-between items-center gap-3">
+                  <h2 className="headline-md">{d.name}</h2>
+                  <ArrowRight className="w-5 h-5 shrink-0 text-pa-brown" aria-hidden="true" />
                 </div>
-              </div>
-            ))
-          )}
-
-          {/* Coming soon — Brazil et al. */}
-          {comingSoon.length > 0 && (
-            <div className="mt-16 border-t border-[#E8E4DC] pt-10">
-              <h3 className="text-[12px] font-medium tracking-[0.14em] uppercase text-[#726D63] mb-6">
-                {t('common.comingSoon')}
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {comingSoon.map(dest => (
-                  <div
-                    key={dest.slug}
-                    className="relative overflow-hidden"
-                    style={{ aspectRatio: '3/4' }}
-                  >
-                    {dest.coverImage ? (
-                      <img
-                        src={cdnResize(dest.coverImage, 768)}
-                        srcSet={cdnSrcSet(dest.coverImage, [400, 640, 768])}
-                        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
-                        alt={dest.name}
-                        className="absolute inset-0 w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 placeholder-image" />
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
-                    <div className="absolute top-5 left-5">
-                      <span className="text-[10px] font-medium tracking-[0.14em] uppercase text-white/90">
-                        {t('common.comingSoon')}
-                      </span>
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8">
-                      <h3 className="headline-md text-white mb-1">{dest.name}</h3>
-                      <p className="text-[14px] text-white/80" style={{ fontWeight: 300 }}>
-                        {dest.tagline}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                <p className="body-md mt-2 max-w-lg">{d.tagline}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+        {viana && <section className="bg-white border-y border-pa-sand">
+          <div className="container grid md:grid-cols-2 gap-8 lg:gap-16 py-12 lg:py-16 items-center">
+            <div className="aspect-[4/3] overflow-hidden rounded-xl">
+              <img src={cdnResize(viana.coverImage, 1080)} srcSet={cdnSrcSet(viana.coverImage, [400, 640, 1080])}
+                sizes="(min-width: 768px) 45vw, 90vw" alt={viana.name} width={1080} height={810}
+                loading="lazy" className="w-full h-full object-cover" />
             </div>
-          )}
-        </div>
-      </section>
-
+            <div className="max-w-lg">
+              <p className="text-xs text-pa-brown uppercase tracking-widest mb-4">{t('destinationGrowth.guide')}</p>
+              <h2 className="headline-lg mb-5">{t('destinationGrowth.cityTitle')}</h2>
+              <p className="body-lg mb-7">{t('destinationGrowth.cityIntro')}</p>
+              <Link href="/destinations/viana-do-castelo" className="btn-primary">{t('destinationGrowth.explore', {name: viana.name})}<ArrowRight className="w-4 h-4" /></Link>
+            </div>
+          </div>
+        </section>}
+        <section className="container py-14 lg:py-20">
+          <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-center max-w-5xl mx-auto">
+            <div>
+              <h2 className="headline-lg mb-4">{t('destinationGrowth.corporateTitle')}</h2>
+              <p className="body-md max-w-2xl">{t('destinationGrowth.corporateIntro')}</p>
+            </div>
+            <Link href="/corporate-retreats" className="btn-primary self-start lg:self-center">{t('destinationGrowth.corporateCta')}<ArrowRight className="w-4 h-4" /></Link>
+          </div>
+        </section>
+      </div>
       <Footer />
       <WhatsAppFloat />
     </div>

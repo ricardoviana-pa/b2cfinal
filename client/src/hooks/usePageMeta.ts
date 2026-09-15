@@ -69,7 +69,7 @@ export function usePageMeta(opts?: PageMetaOpts) {
       }
     }
     const lang = i18n.language || 'en';
-    const title = opts?.title ? `${opts.title} | Portugal Active` : BASE_TITLE;
+    const title = opts?.title ? `${opts.title.replace(/(?:\s*\|\s*Portugal Active)+$/i, '')} | Portugal Active` : BASE_TITLE;
     const description = opts?.description || BASE_DESC;
     // Ensure og:image is always an absolute URL (crawlers can't resolve relative paths)
     const rawImage = opts?.image || BASE_IMAGE;

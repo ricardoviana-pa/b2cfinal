@@ -22,6 +22,7 @@
 
 import { useEffect } from 'react';
 import i18n from '@/i18n';
+import { vacationRentalSchema, type VacationRentalInput } from '@shared/vacationRentalSchema';
 
 export type JsonLd = Record<string, unknown>;
 
@@ -102,117 +103,10 @@ const PUBLISHER = {
 
 /* ── VacationRental (per-property) ──────────────────────────────────────── */
 
-export interface BuildVacationRentalInput {
-  name: string;
-  slug: string;
-  description?: string | null;
-  images?: string[] | null;
-  bedrooms?: number | null;
-  bathrooms?: number | null;
-  maxGuests?: number | null;
-  priceFrom?: number | null;
-  locality?: string | null;
-  region?: string | null;
-  amenities?: string[];
-  petsAllowed?: boolean | null;
-  /** AL (Alojamento Local) registration number, shown on the PDP and in the schema. */
-  licenseNumber?: string | null;
-  smokingAllowed?: boolean | null;
-  checkinTime?: string | null;
-  checkoutTime?: string | null;
-  latitude?: number | null;
-  longitude?: number | null;
-  aggregateRating?: { ratingValue: number; reviewCount: number } | null;
-  reviews?: Array<{ rating: number; text: string; guestName: string; date: string }> | null;
-}
+export type BuildVacationRentalInput = VacationRentalInput;
 
-/** VacationRental is a Google-recognized subtype of LodgingBusiness tailored
- *  for short-term rentals. Emits the fields that drive rich results and AI
- *  Overviews citations (numberOfBedrooms, occupancy, amenityFeature, offers). */
-export function buildVacationRentalSchema(i: BuildVacationRentalInput): JsonLd {
-  const url = localeUrl(`/homes/${i.slug}`);
-
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'VacationRental',
-    '@id': url,
-    name: i.name,
-    ...(i.description && { description: i.description.slice(0, 500) }),
-    url,
-    ...(i.images && i.images.length > 0 && { image: i.images.slice(0, 6) }),
-    ...(i.bedrooms != null && { numberOfBedrooms: i.bedrooms }),
-    ...(i.bathrooms != null && { numberOfBathroomsTotal: i.bathrooms }),
-    ...(i.maxGuests != null && {
-      occupancy: {
-        '@type': 'QuantitativeValue',
-        maxValue: i.maxGuests,
-        unitCode: 'C62', // UN/CEFACT "one" — a count of people
-      },
-    }),
-    ...(i.amenities && i.amenities.length > 0 && {
-      amenityFeature: i.amenities.map((a) => ({
-        '@type': 'LocationFeatureSpecification',
-        name: a,
-        value: true,
-      })),
-    }),
-    ...(i.petsAllowed != null && { petsAllowed: i.petsAllowed }),
-    ...(i.licenseNumber && {
-      identifier: { '@type': 'PropertyValue', propertyID: 'AL', name: 'Registo de Alojamento Local', value: String(i.licenseNumber) },
-    }),
-    ...(i.smokingAllowed != null && { smokingAllowed: i.smokingAllowed }),
-    ...(i.checkinTime && { checkinTime: i.checkinTime }),
-    ...(i.checkoutTime && { checkoutTime: i.checkoutTime }),
-    address: {
-      '@type': 'PostalAddress',
-      ...(i.locality && { addressLocality: i.locality }),
-      ...(i.region && { addressRegion: i.region }),
-      addressCountry: 'PT',
-    },
-    ...(i.latitude != null && i.longitude != null && {
-      geo: {
-        '@type': 'GeoCoordinates',
-        latitude: i.latitude,
-        longitude: i.longitude,
-      },
-    }),
-    ...(i.priceFrom != null && i.priceFrom > 0 && {
-      priceRange: `From €${i.priceFrom} per night`,
-      offers: {
-        '@type': 'Offer',
-        priceCurrency: 'EUR',
-        price: i.priceFrom,
-        availability: 'https://schema.org/InStock',
-        url,
-        // Valid for ~12 months from now — avoids Google "stale price" warnings
-        priceValidUntil: new Date(Date.now() + 365 * 86400000).toISOString().split('T')[0],
-      },
-    }),
-    ...(i.aggregateRating && {
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: i.aggregateRating.ratingValue,
-        reviewCount: i.aggregateRating.reviewCount,
-        bestRating: 5,
-        worstRating: 1,
-      },
-    }),
-    ...(i.reviews && i.reviews.length > 0 && {
-      review: i.reviews.slice(0, 5).map((r) => ({
-        '@type': 'Review',
-        reviewRating: {
-          '@type': 'Rating',
-          ratingValue: r.rating,
-          bestRating: 5,
-          worstRating: 1,
-        },
-        author: { '@type': 'Person', name: r.guestName },
-        reviewBody: r.text.slice(0, 500),
-        ...(r.date && { datePublished: r.date.split('T')[0] }),
-      })),
-    }),
-    brand: BRAND,
-  };
+export function buildVacationRentalSchema(input: BuildVacationRentalInput): JsonLd {
+  return vacationRentalSchema(input, (i18n.language || 'en').split('-')[0]);
 }
 
 /* ── Article (blog posts) ────────────────────────────────────────────── */

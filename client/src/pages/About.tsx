@@ -19,7 +19,6 @@ import {
   buildBreadcrumbSchema,
   buildPersonSchema,
 } from '@/components/seo/StructuredData';
-import AnswerCapsule from '@/components/seo/AnswerCapsule';
 
 /* ── Team data ─────────────────────────────────────────────────────────── */
 const TEAM = [
@@ -190,7 +189,7 @@ export default function About() {
       {/* ═══════════════════════════════════════════════════════════════════
           SECTION 1: HERO
           ═══════════════════════════════════════════════════════════════════ */}
-      <section className="relative h-[62vh] min-h-[460px] flex items-center overflow-hidden">
+      <section className="page-hero">
         <picture className="absolute inset-0 w-full h-full">
           {/* Portrait crop on phones keeps both team members in frame */}
           <source media="(max-width: 767px)" srcSet={IMAGES.aboutHeroMobile} />
@@ -208,8 +207,8 @@ export default function About() {
             {t('about.heroOverline')}
           </p>
           <h1
-            className="text-white leading-[1.15] mb-5 max-w-[600px]"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 300, fontSize: 'clamp(32px, 5vw, 48px)' }}
+            className="headline-xl text-white mb-5 max-w-[600px]"
+
           >
             {t('about.heroTitle')}
           </h1>
@@ -511,23 +510,7 @@ export default function About() {
           stays in the DOM with role=doc-abstract + cites) but moved down here
           and rendered small, so it reads as a quiet footnote rather than a
           headline beat right under the hero. */}
-      <section className="bg-[#FDFBF7] pt-4 pb-16 lg:pb-20">
-        <div className="container max-w-2xl">
-          <div className="scale-[0.92] origin-top opacity-90">
-            <AnswerCapsule
-              question="Who runs Portugal Active and what do they do?"
-              answer={`Portugal Active was founded in 2017 by Ricardo Viana in Viana do Castelo, Minho. The company operates ${HOME_COUNT} private hotels across Portugal, each managed to five-star standards with a dedicated concierge, private chefs, housekeeping, and curated local experiences. Every property is run by an in-house team, not through third-party intermediaries. Guests book direct for the best rate and a fully managed stay.`}
-              lastUpdated="2026-04-17"
-              author="Ricardo Viana, CEO"
-              cite={[
-                { label: 'Founder on LinkedIn', href: 'https://www.linkedin.com/in/ricardo-viana-portugalactive/' },
-                { label: 'Concierge services', href: '/concierge' },
-                { label: 'Contact the team', href: '/contact' },
-              ]}
-            />
-          </div>
-        </div>
-      </section>
+
 
       {/* ═══════════════════════════════════════════════════════════════════
           SECTION 5: FINAL CTA
@@ -550,14 +533,14 @@ export default function About() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/homes"
-              className="inline-flex items-center justify-center gap-2 bg-white text-[#1A1A18] text-[12px] font-medium px-8 py-4 hover:bg-[#F5F1EB] transition-colors"
+              className="btn-white"
               style={{ letterSpacing: '1.5px' }}
             >
               {t('about.ctaExplore')} <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center gap-2 border border-white/40 text-white text-[12px] font-medium px-8 py-4 hover:border-white hover:bg-white/10 transition-colors"
+              className="btn-ghost-light"
               style={{ letterSpacing: '1.5px' }}
             >
               {t('about.ctaContact')} <ArrowRight className="w-4 h-4" />

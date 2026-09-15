@@ -107,7 +107,7 @@ export function SearchBarFields({ mode }: SearchBarProps) {
       {/* Search button */}
       <button
         onClick={handleSearch}
-        className={`${isHero ? 'h-12 px-6' : 'h-11 px-5'} bg-[#1A1A18] text-white text-[12px] font-medium tracking-[0.02em] hover:bg-[#333330] transition-colors flex items-center gap-2`}
+        className={`pa-action ${isHero ? 'h-12 px-6' : 'h-11 px-5'} bg-[#1A1A18] text-white text-[12px] font-medium tracking-[0.02em] hover:bg-[#333330] transition-colors flex items-center gap-2`}
         style={{ minHeight: 'auto', minWidth: 'auto' }}
       >
         <Search className="w-4 h-4" />

@@ -124,7 +124,7 @@ export default function Owners() {
       <Header />
 
       {/* Hero */}
-      <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
+      <section className="page-hero">
         <img
           src="/hero/home-carcavelos-manor.webp"
           alt="Portugal Active property management"
@@ -140,7 +140,7 @@ export default function Owners() {
           </p>
           <a
             href="#contact-form"
-            className="inline-flex items-center gap-2 rounded-full bg-white text-[#1A1A18] text-[12px] tracking-[0.08em] font-medium px-7 py-4 hover:bg-[#F5F1EB] transition-colors"
+            className="pa-action inline-flex items-center gap-2 rounded-full bg-white text-[#1A1A18] text-[12px] tracking-[0.08em] font-medium px-7 py-4 hover:bg-[#F5F1EB] transition-colors"
           >
             {t('owners.requestAssessment')} <ArrowRight className="w-4 h-4" />
           </a>
@@ -233,7 +233,7 @@ export default function Owners() {
             </div>
             <a
               href={managementUrl(i18n.resolvedLanguage || i18n.language)}
-              className="inline-flex items-center gap-2 rounded-full border border-[#1A1A18] text-[#1A1A18] text-[12px] tracking-[0.08em] font-medium px-7 py-4 hover:bg-[#1A1A18] hover:text-white transition-colors shrink-0"
+              className="pa-action inline-flex items-center gap-2 rounded-full border border-[#1A1A18] text-[#1A1A18] text-[12px] tracking-[0.08em] font-medium px-7 py-4 hover:bg-[#1A1A18] hover:text-white transition-colors shrink-0"
             >
               {t('owners.portalCta')} <ExternalLink className="w-4 h-4" />
             </a>
@@ -356,7 +356,7 @@ export default function Owners() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="rounded-full bg-[#8B7355] text-white text-[12px] tracking-[0.08em] font-medium px-8 py-4 hover:bg-[#7A6548] transition-colors self-start inline-flex items-center gap-2 disabled:opacity-50 min-h-[52px]"
+                className="pa-action rounded-full bg-[#8B7355] text-white text-[12px] tracking-[0.08em] font-medium px-8 py-4 hover:bg-[#7A6548] transition-colors self-start inline-flex items-center gap-2 disabled:opacity-50 min-h-[52px]"
               >
                 {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                 {submitting ? t('owners.formSending', 'Sending...') : t('owners.formSubmit')}

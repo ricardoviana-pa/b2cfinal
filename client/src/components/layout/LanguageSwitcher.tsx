@@ -57,13 +57,14 @@ export default function LanguageSwitcher({
   const activeLabel = LANGUAGES.find((l) => l.code === active)?.label ?? "EN";
 
   return (
-    <div ref={ref} className={`relative ${className}`}>
+    <div ref={ref} className={`relative ${className}`} onKeyDown={e => { if (e.key === "Escape") { setOpen(false); ref.current?.querySelector<HTMLButtonElement>("button")?.focus(); } }} onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false); }}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         className={`flex items-center gap-1.5 justify-center h-9 px-2 transition-all duration-200 cursor-pointer ${iconColor}`}
         style={{ minHeight: "auto", minWidth: "auto" }}
         aria-label={`${t("common.language")}: ${activeLabel}`}
+        aria-expanded={open}
       >
         <Globe className="w-[17px] h-[17px]" />
         <span className="text-[11px] font-medium tracking-wide">
@@ -74,8 +75,8 @@ export default function LanguageSwitcher({
       <div
         className={`absolute top-full right-0 mt-2 bg-white border border-[#E8E4DC]/60 shadow-lg py-2 w-[200px] transition-all duration-200 origin-top-right z-[60] ${
           open
-            ? "opacity-100 scale-100 pointer-events-auto"
-            : "opacity-0 scale-95 pointer-events-none"
+            ? "visible opacity-100 scale-100 pointer-events-auto"
+            : "invisible opacity-0 scale-95 pointer-events-none"
         }`}
       >
         {LANGUAGES.map((lang) => (

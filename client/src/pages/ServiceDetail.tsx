@@ -1,9 +1,9 @@
 /* ==========================================================================
-   SERVICE DETAIL — V1.8 Single CTA
-   One clear action: WhatsApp. No form, no itinerary complexity.
+   SERVICE DETAIL — same published catalogue as the concierge listing.
    ========================================================================== */
 
 import { useTranslation } from 'react-i18next';
+import { serviceProductSlug, serviceRouteSlug } from '@shared/serviceRoutes';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useRoute, Link } from 'wouter';
 import { Check, Clock, MapPin, ArrowLeft, MessageCircle } from 'lucide-react';
@@ -11,13 +11,11 @@ import servicesData from '@/data/services.json';
 import productsData from '@/data/products.json';
 import { localizeService, localizeProduct } from '@/lib/localizeProduct';
 import { formatEurEditorial } from '@/lib/format';
-import destinationsData from '@/data/destinations.json';
-import type { Destination } from '@/lib/types';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 
-const destinations = (destinationsData as unknown as Destination[]).filter(d => d.status === 'active' && !d.comingSoon);
+const publishedServices = (productsData as any[]).filter(p => p.type === 'service' && p.isActive);
 
 export default function ServiceDetail() {
   const { t, i18n } = useTranslation();
@@ -29,14 +27,11 @@ export default function ServiceDetail() {
   const allItems = [...servicesData.services, ...servicesData.activities];
   let item: any = localizeService(allItems.find(s => s.slug === slug), i18n.language);
 
-  // Concierge fallback: /concierge (Services.tsx) lists services from
-  // products.json under its own slugs (in-villa-spa, personal-training,
-  // grocery-delivery, daily-housekeeping) that don't exist in services.json.
-  // Resolve those from products.json so every "learn more" link opens with the
-  // same name the card showed, instead of a "Not found". Detail-only fields
-  // (itemised inclusions, duration, availability) simply don't render.
-  if (!item && slug) {
-    const prod = (productsData as any[]).find(p => p.type === 'service' && p.slug === slug && p.isActive);
+  // Published products are authoritative for names, prices and descriptions.
+  // Legacy service bundles have different prices AND inclusions, so do not
+  // combine those inclusions with a published product's starting price.
+  if (slug) {
+    const prod = publishedServices.find(p => p.slug === serviceProductSlug(slug));
     if (prod) {
       const lp = localizeProduct(prod, i18n.language) as any;
       item = {
@@ -49,7 +44,7 @@ export default function ServiceDetail() {
         price: lp.priceFrom
           ? `${t('common.from')} ${formatEurEditorial(lp.priceFrom)}${lp.priceSuffix ? ' ' + lp.priceSuffix : ''}`
           : undefined,
-        slug: lp.slug,
+        slug: serviceRouteSlug(lp.slug),
       };
     }
   }
@@ -66,14 +61,16 @@ export default function ServiceDetail() {
       <div className="min-h-screen flex items-center justify-center bg-[#FAFAF7]">
         <div className="text-center">
           <h1 className="headline-lg mb-4 text-[#1A1A18]">{t('serviceDetail.notFound', 'Not found')}</h1>
-          <Link href="/experiences" className="btn-ghost">{t('serviceDetail.backToExperiences')}</Link>
+          <Link href={params ? '/concierge' : '/experiences'} className="btn-ghost">{params ? t('serviceDetail.allServices') : t('serviceDetail.backToExperiences')}</Link>
         </div>
       </div>
     );
   }
 
   const isService = item.category === 'service';
-  const otherItems = allItems.filter(s => s.slug !== slug).slice(0, 4).map(s => localizeService(s, i18n.language)!);
+  const otherItems = isService
+    ? publishedServices.filter(s => s.slug !== serviceProductSlug(slug || '')).slice(0, 4).map(s => ({ ...localizeProduct(s, i18n.language), slug: serviceRouteSlug(s.slug), category: 'service' }))
+    : allItems.filter(s => s.slug !== slug).slice(0, 4).map(s => localizeService(s, i18n.language)!);
   const whatsappMsg = encodeURIComponent(`Hi, I'm interested in ${item.name}. Can you tell me more?`);
 
   return (
@@ -81,7 +78,7 @@ export default function ServiceDetail() {
       <Header />
 
       {/* Hero */}
-      <section className="relative h-[55vh] min-h-[380px] flex items-end overflow-hidden">
+      <section className="page-hero">
         <img src={item.image} alt={`${item.name} – Portugal Active`} className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" loading="eager" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/15" />
         <div className="relative container pb-12 lg:pb-16 z-10">
@@ -115,15 +112,7 @@ export default function ServiceDetail() {
                 {(item.description || '').split('\n\n').map((para: string, i: number) => (
                   <p key={i} className="body-lg mb-4">{para}</p>
                 ))}
-                <p className="body-lg mb-4">
-                  {t('serviceDetail.availableAcross', 'Available across all our destinations including')}{' '}
-                  {destinations.slice(0, 3).map((d, i) => (
-                    <span key={d.slug}>
-                      {i > 0 && (i === Math.min(destinations.length, 3) - 1 ? ` ${t('common.and', 'and')} ` : ', ')}
-                      <Link href={`/destinations/${d.slug}`} className="text-[#8B7355] hover:text-[#1A1A18] transition-colors underline underline-offset-4 decoration-[#E8E4DC]">{d.name}</Link>
-                    </span>
-                  ))}.
-                </p>
+                <p className="body-lg mb-4">{t('conversion.extrasNote')}</p>
               </div>
 
               {item.details && item.details.length > 0 && (
@@ -168,10 +157,10 @@ export default function ServiceDetail() {
               )}
             </div>
 
-            {/* Sidebar — single WhatsApp CTA */}
+            {/* Request with the service context already selected. */}
             <div className="lg:col-span-2">
               <div className="sticky top-28 space-y-6">
-                <div className="border border-[#E8E4DC] p-8 text-center">
+                <div className="rounded-xl border border-[#E8E4DC] p-6 lg:p-8 text-center bg-white">
                   <h3 className="headline-sm mb-2 text-[#1A1A18]">
                     {isService
                       ? t('serviceDetail.bookService', 'Book this service')
@@ -182,12 +171,13 @@ export default function ServiceDetail() {
                     href={`https://wa.me/351927161771?text=${whatsappMsg}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-3 w-full bg-[#1A1A18] text-white text-[13px] tracking-[0.08em] font-semibold py-5 hover:bg-[#333330] transition-colors"
+                    className="pa-action flex items-center justify-center gap-3 w-full bg-[#1A1A18] text-white text-[13px] tracking-[0.08em] font-semibold py-5 hover:bg-[#333330] transition-colors"
                     style={{ minHeight: '56px' }}
                   >
                     <MessageCircle className="w-5 h-5" />
                     {t('serviceDetail.chatOnWhatsApp', 'Chat on WhatsApp')}
                   </a>
+                  <Link href={`/contact?subject=services-enquiry&service=${encodeURIComponent(serviceProductSlug(item.slug))}`} className="btn-ghost w-full mt-3">{t('contact.sendMessage')}</Link>
                   <p className="text-[11px] text-[#726D63] mt-4">{t('serviceDetail.whatsappNote', 'Available every day, 9 am – 9 pm (Lisbon time)')}</p>
                 </div>
               </div>
@@ -224,7 +214,7 @@ export default function ServiceDetail() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {otherItems.map((other) => (
               <Link key={other.slug} href={`/${other.category === 'service' ? 'services' : 'experiences'}/${other.slug}`} className="group">
-                <div className="relative overflow-hidden mb-4" style={{ aspectRatio: '3/4' }}>
+                <div className="relative overflow-hidden rounded-xl mb-4" style={{ aspectRatio: '4/3' }}>
                   <img src={other.image} alt={`${other.name} – Portugal Active`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 </div>

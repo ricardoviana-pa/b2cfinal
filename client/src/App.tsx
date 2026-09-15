@@ -22,6 +22,7 @@ const Collection = lazy(() => import("@/pages/Collection"));
 const DestinationDetail = lazy(() => import("./pages/DestinationDetail"));
 const Services = lazy(() => import("./pages/Services"));
 const Experiences = lazy(() => import("./pages/Adventures"));
+const CorporateRetreats = lazy(() => import("./pages/CorporateRetreats"));
 const Events = lazy(() => import("./pages/Events"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
@@ -168,6 +169,7 @@ function Router() {
         <Route path="/activities/:slug" component={ExperienceDetail} />
         <Route path="/adventures" component={Experiences} />
         <Route path="/events" component={Events} />
+        <Route path="/corporate-retreats" component={CorporateRetreats} />
         <Route path="/about" component={About} />
         <Route path="/contact" component={Contact} />
         <Route path="/blog" component={Blog} />
@@ -266,6 +268,7 @@ function OfflineBanner() {
 }
 
 function App({ ssrLocation }: { ssrLocation?: string }) {
+  const { t } = useTranslation();
   // Fire AI referrer detection once on mount
   useEffect(() => { detectAiReferrer(); }, []);
 
@@ -281,7 +284,7 @@ function App({ ssrLocation }: { ssrLocation?: string }) {
                 href="#main-content"
                 className="absolute top-0 left-0 z-[9998] px-4 py-2 bg-[#8B7355] text-white text-sm font-medium rounded-b-md transform -translate-y-full focus:translate-y-0 transition-transform"
               >
-                Skip to main content
+                {t('header.skipToContent')}
               </a>
               <OfflineBanner />
               <BackToTop />

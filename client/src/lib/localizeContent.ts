@@ -25,7 +25,7 @@ export { deepMerge } from './deepMerge';
 export { localizeItem, localizeProduct, localizeService } from './localizeProduct';
 
 type Dict = Record<string, any>;
-export type ContentKind = 'destinations' | 'experiences';
+export type ContentKind = 'destinations' | 'experiences' | 'journal';
 
 const LANGS = ['pt', 'fr', 'es', 'it', 'de', 'nl', 'sv', 'fi'] as const;
 
@@ -41,6 +41,16 @@ const LOADERS: Record<ContentKind, Record<string, () => Promise<{ default: Dict 
     sv: () => import('@/data/destinations.i18n/sv.json'),
     fi: () => import('@/data/destinations.i18n/fi.json'),
   },
+  journal: {
+    pt: () => import('@/data/journal-index/pt.json'),
+    fr: () => import('@/data/journal-index/fr.json'),
+    es: () => import('@/data/journal-index/es.json'),
+    it: () => import('@/data/journal-index/it.json'),
+    de: () => import('@/data/journal-index/de.json'),
+    nl: () => import('@/data/journal-index/nl.json'),
+    sv: () => import('@/data/journal-index/sv.json'),
+    fi: () => import('@/data/journal-index/fi.json'),
+  },
   experiences: {
     pt: () => import('@/data/experienceDetails.i18n/pt.json'),
     fr: () => import('@/data/experienceDetails.i18n/fr.json'),
@@ -54,8 +64,8 @@ const LOADERS: Record<ContentKind, Record<string, () => Promise<{ default: Dict 
 };
 
 const EMPTY: Dict = Object.freeze({});
-const cache: Record<ContentKind, Record<string, Dict>> = { destinations: {}, experiences: {} };
-const pending: Record<ContentKind, Record<string, Promise<Dict>>> = { destinations: {}, experiences: {} };
+const cache: Record<ContentKind, Record<string, Dict>> = { destinations: {}, experiences: {}, journal: {} };
+const pending: Record<ContentKind, Record<string, Promise<Dict>>> = { destinations: {}, experiences: {}, journal: {} };
 
 /** Load one catalogue for one language (cached; {} for English/unknown). */
 export async function loadContentOverrides(kind: ContentKind, lang: string | undefined): Promise<Dict> {
@@ -80,6 +90,7 @@ export function contentKindsForPath(pathWithoutLocale: string): ContentKind[] {
   const p = pathWithoutLocale || '/';
   const kinds: ContentKind[] = [];
   if (p === '/' || p.startsWith('/destinations')) kinds.push('destinations');
+  if (p.startsWith('/destinations/')) kinds.push('journal');
   if (p.startsWith('/experiences') || p.startsWith('/activities')) kinds.push('experiences');
   return kinds;
 }

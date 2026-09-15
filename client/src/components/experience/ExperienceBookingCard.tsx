@@ -188,7 +188,7 @@ export default function ExperienceBookingCard({
             href={waHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-2 bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase py-4 hover:bg-black transition-colors mb-3"
+            className="pa-action w-full flex items-center justify-center gap-2 bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase py-4 hover:bg-black transition-colors mb-3"
             style={{ minHeight: '52px' }}
             onClick={() => {
               if (!experienceSlug) return;

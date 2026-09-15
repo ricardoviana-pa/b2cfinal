@@ -572,7 +572,7 @@ export default function AvailabilityCalendar({
       <button
         type="button"
         onClick={() => setMobileOpen(true)}
-        className="w-full bg-black text-white text-xs font-medium tracking-widest uppercase px-8 py-3.5 min-h-[48px]"
+        className="pa-action w-full bg-black text-white text-xs font-medium tracking-widest uppercase px-8 py-3.5 min-h-[48px]"
       >
         {t("booking.selectDates")}
       </button>
@@ -602,7 +602,7 @@ export default function AvailabilityCalendar({
                 <button
                   type="button"
                   onClick={() => setMobileOpen(false)}
-                  className="w-full bg-black text-white text-xs font-medium tracking-widest uppercase py-4"
+                  className="pa-action w-full bg-black text-white text-xs font-medium tracking-widest uppercase py-4"
                 >
                   {t("bookingWidget.confirmDates")}
                 </button>

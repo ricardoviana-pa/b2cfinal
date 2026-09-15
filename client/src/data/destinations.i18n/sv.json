@@ -125,24 +125,14 @@
         "description": "Viana do Castelo. Ägs av fiskgrossister; kustens färskaste skaldjur, vid hamnen. Bokning nödvändig."
       },
       {
-        "name": "Tasca do Celso",
-        "category": "Minhoklassiker",
-        "description": "Ponte de Lima. Ingen meny — ägaren kommer med det som är färskt den dagen. Boka terrassen över floden."
-      },
-      {
         "name": "Camelo",
         "category": "Minhoklassiker",
-        "description": "Ponte de Lima. En institution i Minho i över sextio år: rojões, sarrabulho och, i säsong, nejonöga. Söndagslunchen är en lokal ritual."
+        "description": "Santa Marta de Portuzelo, Viana do Castelo. Regional portugisisk mat på Rua de Santa Marta 119."
       },
       {
         "name": "O Marinheiro",
         "category": "Skaldjur",
         "description": "Vila Praia de Âncora. Grillad fisk några meter från hamnen den kom ifrån. Enkelt, högljutt och precis rätt."
-      },
-      {
-        "name": "Solar do Bacalhau",
-        "category": "Traditionellt",
-        "description": "Braga. Bacalhau i tjugo tillagningar i en matsal av granit i gamla stan."
       },
       {
         "name": "Mercado Municipal de Viana",
@@ -215,13 +205,15 @@
     "events": [
       {
         "name": "Romaria de Nossa Senhora d'Agonia",
-        "dates": "Tredje veckan i augusti, Viana do Castelo",
-        "description": "Portugals mest berömda romaria, sedan 1772: parader i folkdräkt med filigranguld, blomstermattor, båtprocessioner och fyrverkerier över Lima. Hemmen vid kusten bokas upp månader i förväg."
+        "dates": "15–22 augusti 2027",
+        "description": "Portugals mest berömda romaria, sedan 1772: parader i folkdräkt med filigranguld, blomstermattor, båtprocessioner och fyrverkerier över Lima. Hemmen vid kusten bokas upp månader i förväg.",
+        "url": "https://festasdagonia.com/"
       },
       {
         "name": "Neopop",
-        "dates": "Första veckan i augusti, Viana do Castelo",
-        "description": "En av Europas mest respekterade festivaler för elektronisk musik, i det gamla fortet vid havet."
+        "dates": "Augusti · nästa datum meddelas senare",
+        "description": "En av Europas mest respekterade festivaler för elektronisk musik, i det gamla fortet vid havet.",
+        "url": "https://neopopfestival.com/"
       },
       {
         "name": "Feiras Novas",
@@ -274,7 +266,7 @@
       },
       {
         "question": "Passar Minho för en strandsemester?",
-        "answer": "För långa, tomma atlantstränder och surf, ja. För varmt vatten och garanterad sol, nej — havet håller sjutton till nitton grader på sommaren och kusten har en svalkande eftermiddagsvind. De flesta av våra hem har uppvärmd pool, vilket är så Minho gör strandsemester."
+        "answer": "Ja, för Atlantstränder och surfing. Havsförhållanden och vattentemperatur varierar med säsongen. Använd sökfiltret för uppvärmd pool och kontrollera husets villkor och eventuella extra kostnader."
       },
       {
         "question": "Behöver jag bil?",
@@ -460,7 +452,7 @@
       {
         "name": "Camelo",
         "category": "Regionalt",
-        "description": "Utmärkt med Bib Gourmand. Modernt portugisiskt kök som vilar på minhotiska råvaror och dalens Vinho Verde bakom staden."
+        "description": "Santa Marta de Portuzelo, Viana do Castelo. Regional portugisisk mat på Rua de Santa Marta 119."
       },
       {
         "name": "Os 3 Potes",
@@ -548,13 +540,15 @@
     "events": [
       {
         "name": "Romaria de Nossa Senhora d'Agonia",
-        "dates": "15–23 augusti 2026",
-        "description": "Stadens emblematiska festival, hållet årligen sedan 1772. Båtprocessioner, dräktparader i guldfiligran och fyrverkerier över Lima. Boendet är fullbokat månader i förväg."
+        "dates": "15–22 augusti 2027",
+        "description": "Stadens emblematiska festival, hållet årligen sedan 1772. Båtprocessioner, dräktparader i guldfiligran och fyrverkerier över Lima. Boendet är fullbokat månader i förväg.",
+        "url": "https://festasdagonia.com/"
       },
       {
         "name": "Neopop Electronic Music Festival",
-        "dates": "6–8 augusti 2026",
-        "description": "Internationell elektronisk musik vid flodfronten. Första veckan i augusti är årets mest eftertraktade boendefönster, jämte Romarian."
+        "dates": "Augusti · nästa datum meddelas senare",
+        "description": "Internationell elektronisk musik vid flodfronten. Första veckan i augusti är årets mest eftertraktade boendefönster, jämte Romarian.",
+        "url": "https://neopopfestival.com/"
       },
       {
         "name": "Wine & Blues Festival",
