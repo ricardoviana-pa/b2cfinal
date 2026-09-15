@@ -18,6 +18,10 @@ describe('public catalogue cards', () => {
   it('handles missing images and invalid coordinates', () => {
     expect(toCatalogCard({ slug: 'partner', address: { lat: null, lng: 2 } })).toEqual({ slug: 'partner', images: [], amenities: {} });
   });
+  it('retains the published partner UID needed for supplier prices', () => {
+    expect(toCatalogCard({ slug: 'partner', source: 'tripwix', supplierUid: 'public-property-id' }))
+      .toMatchObject({ source: 'tripwix', supplierUid: 'public-property-id' });
+  });
 });
 
 

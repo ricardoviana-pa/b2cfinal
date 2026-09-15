@@ -14,6 +14,16 @@ import { getLowestNightly, getLowestNightlyBatch } from "../services/lowest-nigh
 import * as db from "../db";
 import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
 
+async function partnerProperty(uid: string) {
+  const { getPropertiesForSite } = await import('../services/properties-store');
+  return (await getPropertiesForSite()).find((p: any) => p.source === 'tripwix' && p.isActive !== false && p.supplierUid === uid) as any;
+}
+function partnerFees(p: any, guests?: number) {
+  const positive = (v: unknown) => typeof v === 'number' && Number.isFinite(v) && v > 0 ? v : undefined;
+  return { cleaningFee: positive(p?.cleaningFee), securityDeposit: positive(p?.securityDeposit),
+    minNights: positive(p?.minNights), maxGuests: positive(p?.maxGuests), guests };
+}
+
 /**
  * Checkout 2.0 (Bloco 1): total canónico do servidor para Klarna/PayPal.
  * O amount do cliente é só uma pista — valida-se contra computeChargeBreakdown
@@ -183,7 +193,8 @@ export const bookingRouter = router({
         // No catalogue fallback: the imported rate is the cheapest night of the
         // year and is not bookable on most dates. Same rule as our own homes —
         // a real price or none at all.
-        const from = await getTripwixLowestNightly(input.tripwixUid);
+        const prop = await partnerProperty(input.tripwixUid);
+        const from = prop ? await getTripwixLowestNightly(input.tripwixUid, prop.minNights) : null;
         return {
           from,
           source: from !== null ? ("calendar" as const) : ("none" as const),
@@ -203,32 +214,18 @@ export const bookingRouter = router({
    */
   partnerQuote: publicProcedure
     .input(z.object({
-      tripwixUid: z.string().min(1),
+      tripwixUid: z.string().uuid(),
+      guests: z.number().int().min(1).max(100).optional(),
       checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
       checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     }))
     .query(async ({ input, ctx }) => {
-      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=900, stale-while-revalidate=3600");
+      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=900, stale-while-revalidate=60");
       const { getPartnerQuote } = await import("../services/tripwix");
 
-      // Cleaning and deposit are not in the supplier's API — whatever we have
-      // been told per house lives on the property record. Absent means absent:
-      // getPartnerQuote then flags the total as not yet final rather than
-      // presenting accommodation as the whole bill.
-      const { getPropertiesForSite } = await import("../services/properties-store");
-      const all = await getPropertiesForSite();
-      const prop = (all as any[]).find((p) => p?.supplierUid === input.tripwixUid);
-
-      // 0 on the record means "the supplier never told us", not "there is no
-      // fee" — the importer writes 0 for every house precisely because their
-      // API carries no fee field at all. Only a positive number counts as
-      // knowledge; anything else leaves the total flagged as not yet final.
-      const positive = (v: unknown) => (typeof v === "number" && v > 0 ? v : undefined);
-
-      return getPartnerQuote(input.tripwixUid, input.checkIn, input.checkOut, {
-        cleaningFee: positive(prop?.cleaningFee),
-        securityDeposit: positive(prop?.securityDeposit),
-      });
+      const prop = await partnerProperty(input.tripwixUid);
+      if (!prop) return null;
+      return getPartnerQuote(input.tripwixUid, input.checkIn, input.checkOut, partnerFees(prop, input.guests));
     }),
 
   /**
@@ -237,14 +234,42 @@ export const bookingRouter = router({
    */
   partnerCalendar: publicProcedure
     .input(z.object({
-      tripwixUid: z.string().min(1),
+      tripwixUid: z.string().uuid(),
       startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
       endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     }))
     .query(async ({ input, ctx }) => {
-      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=900, stale-while-revalidate=3600");
+      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=900, stale-while-revalidate=60");
       const { getPartnerCalendar } = await import("../services/tripwix");
+      if (!await partnerProperty(input.tripwixUid)) return [];
       return (await getPartnerCalendar(input.tripwixUid, input.startDate, input.endDate)) ?? [];
+    }),
+
+  /** Public catalogue pricing; published partner IDs only, bounded concurrency. */
+  partnerPrices: publicProcedure
+    .input(z.object({
+      uids: z.array(z.string().uuid()).max(35),
+      checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+      checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+      guests: z.number().int().min(1).max(100).optional(),
+    }).refine(v => !!v.checkIn === !!v.checkOut, 'Both dates are required'))
+    .query(async ({ input, ctx }) => {
+      ctx.res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=300');
+      const { getPartnerQuote, getTripwixLowestNightly } = await import('../services/tripwix');
+      const { getPropertiesForSite } = await import('../services/properties-store');
+      const wanted = new Set(input.uids);
+      const properties = (await getPropertiesForSite()).filter((p: any) => p.source === 'tripwix' && p.isActive !== false && wanted.has(p.supplierUid)) as any[];
+      const result: Record<string, { from: number | null; quote: Awaited<ReturnType<typeof getPartnerQuote>> }> = {};
+      let next = 0;
+      await Promise.all(Array.from({ length: Math.min(4, properties.length) }, async () => {
+        while (next < properties.length) {
+          const p = properties[next++];
+          result[p.supplierUid] = input.checkIn && input.checkOut
+            ? { from: null, quote: await getPartnerQuote(p.supplierUid, input.checkIn, input.checkOut, partnerFees(p, input.guests)) }
+            : { from: await getTripwixLowestNightly(p.supplierUid, p.minNights), quote: null };
+        }
+      }));
+      return result;
     }),
 
   /** "From €X" for a page of PLP cards — cached/DB-backed, warms in background. */

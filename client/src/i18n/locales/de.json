@@ -1,7 +1,7 @@
 {
   "securityDeposit": {
     "title": "Kaution",
-    "notice": "Für Ihren Aufenthalt kann eine Kaution erforderlich sein. Bitte kontaktieren Sie unseren Concierge für weitere Informationen."
+    "notice": "Für Ihren Aufenthalt kann eine Kaution erforderlich sein. Falls dies zutrifft, informiert Sie unser Concierge vor Ihrer Ankunft über alle Einzelheiten."
   },
   "nav": {
     "properties": "Häuser",
@@ -1864,6 +1864,8 @@
     "total": "Gesamt",
     "totalSoFar": "Bisheriger Gesamtbetrag",
     "vatIncluded": "Inkl. MwSt.",
+    "accommodationLabel": "Unterkunft",
+    "feesPendingShort": "Weitere Gebühren werden bestätigt.",
     "depositNote": "Das Haus behält eine erstattbare Kaution von {{amount}} ein.",
     "feesPending": "Dieses Haus kann eine Endreinigung und eine erstattbare Kaution hinzufügen. Der Concierge bestätigt den Endbetrag, bevor etwas berechnet wird.",
     "someUnavailable": "Einige dieser Nächte sind belegt. Senden Sie die Anfrage — wir schlagen die nächstmöglichen Daten vor.",
@@ -1988,7 +1990,7 @@
   "searchUx": {
     "bedrooms": "Schlafzimmer",
     "clearFilters": "Filter löschen ({{count}})",
-    "datedPrices": "Mit Reisedaten: Gesamtpreise. Das Budget pro Nacht enthält Pflichtgebühren.",
+    "datedPrices": "Preise für Ihren Aufenthalt. Noch zu bestätigende Gebühren sind gekennzeichnet.",
     "fromPrices": "Ab-Preise pro Nacht. Wählen Sie Daten für Gesamtpreis und Verfügbarkeit.",
     "confirmed": "bestätigt verfügbar",
     "toConfirm": "{{count}} zu bestätigen",

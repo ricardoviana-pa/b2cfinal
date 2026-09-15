@@ -1,7 +1,7 @@
 {
   "securityDeposit": {
     "title": "Borg",
-    "notice": "Voor uw verblijf kan een borg worden gevraagd. Neem contact op met onze conciërge voor meer informatie."
+    "notice": "Voor uw verblijf kan een borg vereist zijn. Indien van toepassing informeert onze concierge u vóór aankomst over alle details."
   },
   "nav": {
     "properties": "Huizen",
@@ -1864,6 +1864,8 @@
     "total": "Totaal",
     "totalSoFar": "Totaal tot nu toe",
     "vatIncluded": "Inclusief btw.",
+    "accommodationLabel": "Accommodatie",
+    "feesPendingShort": "Overige kosten nog te bevestigen.",
     "depositNote": "Het huis houdt een terugbetaalbare borg van {{amount}} in.",
     "feesPending": "Dit huis kan schoonmaakkosten en een terugbetaalbare borg toevoegen. De concierge bevestigt het eindtotaal voordat er iets wordt afgeschreven.",
     "someUnavailable": "Enkele van deze nachten zijn bezet. Stuur de aanvraag en wij stellen de dichtstbijzijnde data voor.",
@@ -1988,7 +1990,7 @@
   "searchUx": {
     "bedrooms": "Slaapkamers",
     "clearFilters": "Filters wissen ({{count}})",
-    "datedPrices": "Met datums: totale verblijfprijzen. Het nachtbudget bevat verplichte kosten.",
+    "datedPrices": "Prijzen voor uw verblijf. Kosten die nog bevestigd moeten worden, staan vermeld.",
     "fromPrices": "Vanafprijzen per nacht. Kies datums voor totaalprijs en beschikbaarheid.",
     "confirmed": "bevestigd beschikbaar",
     "toConfirm": "{{count}} te bevestigen",

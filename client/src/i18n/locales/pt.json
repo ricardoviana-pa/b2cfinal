@@ -1,7 +1,7 @@
 {
   "securityDeposit": {
     "title": "Caução",
-    "notice": "Poderá ser exigida uma caução para a sua estadia. Contacte o nosso concierge para mais informações."
+    "notice": "Poderá ser exigida uma caução para a sua estadia. Se aplicável, o nosso concierge informará de todos os detalhes antes da chegada."
   },
   "nav": {
     "properties": "Casas",
@@ -1864,6 +1864,8 @@
     "total": "Total",
     "totalSoFar": "Total até agora",
     "vatIncluded": "IVA incluído.",
+    "accommodationLabel": "Alojamento",
+    "feesPendingShort": "Outros encargos a confirmar.",
     "depositNote": "A casa retém uma caução reembolsável de {{amount}}.",
     "feesPending": "Esta casa pode acrescentar taxa de limpeza e uma caução reembolsável. O concierge confirma o total final antes de qualquer cobrança.",
     "someUnavailable": "Algumas destas noites já estão ocupadas. Envie o pedido e propomos as datas mais próximas.",
@@ -1988,7 +1990,7 @@
   "searchUx": {
     "bedrooms": "Quartos",
     "clearFilters": "Limpar filtros ({{count}})",
-    "datedPrices": "Com datas: preço total da estadia. O orçamento por noite inclui taxas obrigatórias.",
+    "datedPrices": "Preços para a estadia. Os encargos ainda por confirmar estão assinalados.",
     "fromPrices": "Preços desde, por noite. Escolha datas para ver o total e a disponibilidade.",
     "confirmed": "com disponibilidade confirmada",
     "toConfirm": "{{count}} por confirmar",

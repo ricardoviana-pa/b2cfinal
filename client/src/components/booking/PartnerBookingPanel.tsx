@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Calendar, Check, Loader2, Minus, Plus, User } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { pushDL } from '@/lib/datalayer';
-import { formatEur, formatBookingDate } from '@/lib/format';
+import type { BookingSelection } from './BookingWidget';
+import { formatCurrency, intlLocale, formatBookingDate } from '@/lib/format';
 import AvailabilityCalendar from './AvailabilityCalendar';
 import PhoneInput from './PhoneInput';
 
@@ -40,6 +41,7 @@ export function PartnerBookingPanel({
   initialCheckOut,
   initialGuests,
   whatsappUrl,
+  onSelectionChange,
 }: {
   tripwixUid: string;
   propertyName: string;
@@ -51,9 +53,11 @@ export function PartnerBookingPanel({
   initialCheckOut?: string;
   initialGuests?: number;
   whatsappUrl: string;
+  onSelectionChange?: (value: BookingSelection) => void;
 }) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language || 'en';
+  const formatEur = (amount: number, locale: string) => formatCurrency(amount, { locale: intlLocale(locale) });
 
   const [checkIn, setCheckIn] = useState(initialCheckIn ?? '');
   const [checkOut, setCheckOut] = useState(initialCheckOut ?? '');
@@ -89,13 +93,18 @@ export function PartnerBookingPanel({
 
   const { data: calendarDays, isLoading: calendarLoading } = trpc.booking.partnerCalendar.useQuery(
     { tripwixUid, ...calendarRange },
-    { enabled: !!tripwixUid, staleTime: 15 * 60 * 1000 },
+    { enabled: !!tripwixUid && showCalendar, staleTime: 15 * 60 * 1000, retry: false, refetchOnWindowFocus: false },
   );
 
   const { data: quote, isFetching, isError } = trpc.booking.partnerQuote.useQuery(
-    { tripwixUid, checkIn, checkOut },
-    { enabled: datesValid, staleTime: 15 * 60 * 1000, retry: 1 },
+    { tripwixUid, checkIn, checkOut, guests },
+    { enabled: datesValid, staleTime: 15 * 60 * 1000, retry: false, refetchOnWindowFocus: false },
   );
+
+  useEffect(() => {
+    onSelectionChange?.({ checkIn, checkOut, guests, loading: isFetching,
+      total: quote?.available && !isFetching ? quote.total : null, isPartial: !!quote && !quote.feesKnown });
+  }, [checkIn, checkOut, guests, isFetching, quote?.available, quote?.total, quote?.feesKnown, onSelectionChange]);
 
   const createLead = trpc.leads.create.useMutation();
 
@@ -239,7 +248,7 @@ export function PartnerBookingPanel({
               style={{ fontFamily: 'var(--font-display)' }}
             >
               {fromPrice
-                ? t('property.fromPerNight', { price: Math.round(fromPrice).toLocaleString('en-US') })
+                ? t('property.fromPerNight', { price: Math.round(fromPrice).toLocaleString(intlLocale(lang)) })
                 : t('property.priceOnRequest')}
             </span>
             {fromPrice ? (
@@ -249,6 +258,7 @@ export function PartnerBookingPanel({
             ) : null}
             <p className="text-[11.5px] text-[#806A48] mt-1" style={{ fontWeight: 400 }}>
               {t('partnerBooking.pickDates', 'Pick your dates for the exact total')}
+              {fromPrice ? ` · ${t('partnerBooking.vatIncluded')}` : ''}
             </p>
           </>
         )}
@@ -370,7 +380,7 @@ export function PartnerBookingPanel({
         </div>
 
         <div className="px-5 pt-5 pb-6 space-y-3">
-          {isError && datesValid && (
+          {(isError || (!isFetching && quote === null)) && datesValid && (
             <div className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
               <span className="text-red-500 mt-0.5 shrink-0 font-medium text-xs">!</span>
               <p className="text-red-600 leading-snug text-xs">

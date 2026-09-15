@@ -8,7 +8,7 @@ import { useState, useCallback, useRef, useMemo } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Gem, Star, PawPrint } from 'lucide-react';
-import { formatEur, getDisplayName } from '@/lib/format';
+import { formatEur, formatCurrency, intlLocale, getDisplayName } from '@/lib/format';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
 import destinationsData from '@/data/destinations.json';
@@ -35,6 +35,7 @@ interface PropertyCardProps {
     source?: string;
     fallbackMessage?: string;
     available?: boolean;
+    feesKnown?: boolean;
   } | null;
   quoteLoading?: boolean;
   /** Batch tRPC failed â show catalogue estimate instead of infinite loading */
@@ -62,6 +63,13 @@ export default function PropertyCard({
   fromPrice,
 }: PropertyCardProps) {
   const { t, i18n } = useTranslation();
+  const isPartner = property.source === 'tripwix';
+  const hasPartnerPrice = isPartner && (nights > 0
+    ? !!liveQuote && liveQuote.available !== false && liveQuote.total > 0
+    : typeof fromPrice === 'number' && fromPrice > 0);
+  const formatTotal = (amount: number) => isPartner
+    ? formatCurrency(amount, { locale: intlLocale(i18n.language) })
+    : formatEur(amount, i18n.language);
   // Multi-unit treatment: when this listing is the parent of a curated group,
   // the card swaps name → group name, hides specs/price, and shows a
   // "X units available" line. The PDP route is unchanged — clicking opens the
@@ -283,7 +291,7 @@ export default function PropertyCard({
                   if (nights > 0 && liveQuote && liveQuote.available !== false && liveQuote.total > 0) {
                     return (
                       <span className="text-[0.8125rem] text-[#1A1A18] font-medium">
-                        {formatEur(liveQuote.total, i18n.language)} {t('property.totalLabel')}
+                        {formatTotal(liveQuote.total)} {liveQuote.source === 'partner_calendar' && !liveQuote.feesKnown ? t('partnerBooking.accommodationLabel') : t('property.totalLabel')}
                       </span>
                     );
                   }
@@ -330,7 +338,7 @@ export default function PropertyCard({
                   if (liveQuote && liveQuote.total > 0) {
                     return (
                       <span className="text-[0.8125rem] text-[#1A1A18] font-medium">
-                        {formatEur(liveQuote.total, i18n.language)} {t('property.totalLabel')}
+                        {formatTotal(liveQuote.total)} {liveQuote.source === 'partner_calendar' && !liveQuote.feesKnown ? t('partnerBooking.accommodationLabel') : t('property.totalLabel')}
                       </span>
                     );
                   }
@@ -346,6 +354,12 @@ export default function PropertyCard({
                 }
                 return <span className="text-[#726D63] text-[0.8125rem]">{t('property.selectDatesForPrice')}</span>;
               })()}
+              {hasPartnerPrice && (
+                <p className="text-[0.6875rem] text-[#726D63] mt-1 leading-relaxed">
+                  {t('partnerBooking.vatIncluded')}{' '}
+                  {(nights === 0 || !liveQuote?.feesKnown) && t('partnerBooking.feesPendingShort')}
+                </p>
+              )}
             </div>
 
             {/* RIGHT — context: units (groups) or nights (single stays) */}
@@ -356,7 +370,7 @@ export default function PropertyCard({
                 </p>
               ) : nights > 0 && liveQuote && liveQuote.available !== false && liveQuote.total > 0 ? (
                 <p className="text-[0.75rem] text-[#726D63] leading-tight">
-                  {liveQuote.source === 'live' || liveQuote.source === 'cached'
+                  {liveQuote.source === 'live' || liveQuote.source === 'cached' || liveQuote.source === 'partner_calendar'
                     ? t('booking.nights', { count: liveQuote.nights })
                     : t('property.estimateForNights', { count: liveQuote.nights, defaultValue: 'est. for {{count}} nights' })}
                 </p>

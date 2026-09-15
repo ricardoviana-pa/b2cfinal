@@ -1,7 +1,7 @@
 {
   "securityDeposit": {
     "title": "Security deposit",
-    "notice": "A security deposit may be required for your stay. Please contact our concierge for details."
+    "notice": "A security deposit may be required for your stay. If applicable, our concierge will provide all the details before your arrival."
   },
   "nav": {
     "properties": "Homes",
@@ -1864,6 +1864,8 @@
     "total": "Total",
     "totalSoFar": "Total so far",
     "vatIncluded": "VAT included.",
+    "accommodationLabel": "Accommodation",
+    "feesPendingShort": "Other charges to be confirmed.",
     "depositNote": "A refundable security deposit of {{amount}} is held by the property.",
     "feesPending": "This property may add a cleaning fee and a refundable deposit. The concierge confirms the final total before anything is charged.",
     "someUnavailable": "Some of these nights are taken. Send the request and we will propose the nearest dates.",
@@ -1988,7 +1990,7 @@
   "searchUx": {
     "bedrooms": "Bedrooms",
     "clearFilters": "Clear filters ({{count}})",
-    "datedPrices": "Dated prices are stay totals. The nightly budget includes mandatory fees.",
+    "datedPrices": "Prices for your stay. Any charges still to be confirmed are marked.",
     "fromPrices": "From-prices are per night. Choose dates for total prices and availability.",
     "confirmed": "confirmed available",
     "toConfirm": "{{count}} to confirm",

@@ -1,7 +1,7 @@
 {
   "securityDeposit": {
     "title": "Deposito cauzionale",
-    "notice": "Potrebbe essere richiesto un deposito cauzionale per il soggiorno. Contatti il nostro concierge per maggiori informazioni."
+    "notice": "Per il soggiorno potrebbe essere richiesta una cauzione. Se prevista, il nostro concierge le comunicherà tutti i dettagli prima dell’arrivo."
   },
   "nav": {
     "properties": "Case",
@@ -1864,6 +1864,8 @@
     "total": "Totale",
     "totalSoFar": "Totale finora",
     "vatIncluded": "IVA inclusa.",
+    "accommodationLabel": "Alloggio",
+    "feesPendingShort": "Altri costi da confermare.",
     "depositNote": "La casa trattiene una cauzione rimborsabile di {{amount}}.",
     "feesPending": "Questa casa può aggiungere una tariffa di pulizia e una cauzione rimborsabile. Il concierge conferma il totale finale prima di qualsiasi addebito.",
     "someUnavailable": "Alcune di queste notti sono occupate. Invii la richiesta e le proporremo le date più vicine.",
@@ -1988,7 +1990,7 @@
   "searchUx": {
     "bedrooms": "Camere",
     "clearFilters": "Cancella filtri ({{count}})",
-    "datedPrices": "Con date: prezzo totale del soggiorno. Il budget a notte include le spese obbligatorie.",
+    "datedPrices": "Prezzi per il soggiorno. I costi ancora da confermare sono indicati.",
     "fromPrices": "Prezzi a partire da, per notte. Scegli le date per totale e disponibilità.",
     "confirmed": "con disponibilità confermata",
     "toConfirm": "{{count}} da confermare",

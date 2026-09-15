@@ -28,6 +28,7 @@ import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import StayCollections from '@/components/property/StayCollections';
 
 interface LiveQuote {
@@ -38,6 +39,7 @@ interface LiveQuote {
   source?: string;
   fallbackMessage?: string;
   available?: boolean;
+  feesKnown?: boolean;
 }
 
 export default function Homes() {
@@ -105,7 +107,7 @@ export default function Homes() {
     () => allProperties.filter(p => p.guestyId).map(p => p.guestyId!),
     [allProperties],
   );
-  const { data: fromPrices } = trpc.booking.lowestNightlyBatch.useQuery(
+  const { data: guestyFromPrices } = trpc.booking.lowestNightlyBatch.useQuery(
     { listingIds: fromListingIds },
     { enabled: fromListingIds.length > 0, staleTime: 5 * 60 * 1000 },
   );
@@ -174,7 +176,7 @@ export default function Homes() {
   const [bookingCheckin, setBookingCheckin] = useState(searchCheckin);
   const [bookingCheckout, setBookingCheckout] = useState(searchCheckout);
   const [bookingGuests, setBookingGuests] = useState(searchGuests ? Number(searchGuests) : 2);
-  const [quotes, setQuotes] = useState<Record<string, LiveQuote | null>>({});
+  const [guestyQuotes, setQuotes] = useState<Record<string, LiveQuote | null>>({});
   const [quotesLoading, setQuotesLoading] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const utils = trpc.useUtils();
@@ -242,7 +244,7 @@ export default function Homes() {
     setBookingGuests(searchGuests ? Math.max(1, Number(searchGuests) || 2) : 2);
   }, [searchDestinationFromUrl, searchLocationFromUrl, searchCheckin, searchCheckout, searchGuests]);
 
-  const filtered = useMemo(() => {
+  const candidateProperties = useMemo(() => {
     const f = filterProperties(allProperties, 'all', destination, bedroomFilter === 'all' ? undefined : bedroomFilter, undefined, undefined, 'all', location);
     const withGuestCapacity =
       searchGuestsCount > 0
@@ -265,6 +267,16 @@ export default function Homes() {
         !hasHeatedPool(`${p.name} ${(p as any).tagline || ''} ${amenityList(p).join(' ')}`)
       ) return false;
       if (petFriendlyOnly && !(p as any).petsAllowed) return false;
+      return true;
+    });
+    return facetted;
+  }, [allProperties, destination, location, searchGuestsCount, typeFilter, poolOnly, heatedPoolOnly, petFriendlyOnly, bedroomFilter, collection]);
+
+  const partner = usePartnerPrices(candidateProperties, { checkIn: searchCheckin, checkOut: searchCheckout, guests: effectiveGuests || 2 });
+  const fromPrices = useMemo(() => ({ ...guestyFromPrices, ...partner.prices }), [guestyFromPrices, partner.prices]);
+  const quotes: Record<string, LiveQuote | null> = useMemo(() => ({ ...guestyQuotes, ...partner.quotes }), [guestyQuotes, partner.quotes]);
+  const filtered = useMemo(() => {
+    const facetted = candidateProperties.filter(p => {
       if (budgetFilter !== 'all') {
         const price = searchPrice(p, quotes, fromPrices, searchNights);
         if (price === null) return false;
@@ -277,7 +289,7 @@ export default function Homes() {
       return true;
     });
     return sortSearchResults(facetted, sort, quotes, fromPrices, searchNights);
-  }, [allProperties, destination, location, sort, searchGuestsCount, typeFilter, budgetFilter, poolOnly, heatedPoolOnly, petFriendlyOnly, bedroomFilter, fromPrices, quotes, searchNights, collection]);
+  }, [candidateProperties, budgetFilter, sort, quotes, fromPrices, searchNights]);
 
   // GA4: view_item_list — fires only for cards that enter the viewport
   useEffect(() => {
@@ -443,6 +455,7 @@ export default function Homes() {
         // Fallback: use catalogue base prices so cards aren't empty
         const computed: Record<string, LiveQuote | null> = {};
         for (const property of allProperties) {
+          if (property.source === 'tripwix') continue;
           const nightlyRate = property.pricePerNight ?? property.priceFrom ?? 0;
           const cleaningFee = property.cleaningFee ?? 0;
           if (nightlyRate > 0) {
@@ -1083,9 +1096,9 @@ export default function Homes() {
                       checkout={searchCheckout}
                       guests={searchGuestsCount || undefined}
                       liveQuote={quotes[property.slug] || undefined}
-                      quoteLoading={quotesLoading}
+                      quoteLoading={property.source === 'tripwix' ? partner.isFetching : quotesLoading}
                       batchFailed={batchFailed}
-                      fromPrice={fromPrices?.[property.guestyId ?? '']}
+                      fromPrice={fromPrices?.[property.guestyId ?? property.supplierUid ?? '']}
                       listId="search_results"
                       listName="Search Results"
                       itemIndex={index + 1}

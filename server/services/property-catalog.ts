@@ -1,6 +1,6 @@
 /** Public card payload. Full descriptions, room photos and review bodies stay on the PDP. */
 const CATALOG_FIELDS = [
-  'id', 'guestyId', 'slug', 'name', 'title', 'tagline', 'tier', 'destination', 'locality',
+  'id', 'guestyId', 'supplierUid', 'slug', 'name', 'title', 'tagline', 'tier', 'destination', 'locality',
   'bedrooms', 'bathrooms', 'maxGuests', 'priceFrom', 'pricePerNight', 'cleaningFee', 'currency', 'petsAllowed',
   'tags', 'occasions', 'isActive', 'isPortfolio', 'isFeatured', 'source', 'bookingMode',
   'sortOrder', 'averageRating', 'reviewCount', 'propertyType', 'minNights', 'groupId', 'unitOf', 'style',
