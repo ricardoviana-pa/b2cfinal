@@ -5,7 +5,10 @@ import { getDisplayName } from './displayName';
  * markup belongs on the home page, not on incomplete listing stubs. */
 export function buildDestinationGraph(d: Destination, properties: Property[], baseUrl = 'https://www.portugalactive.com', lang = 'en'): Record<string, unknown>[] {
   const url = `${baseUrl}/${lang}/destinations/${d.slug}`;
-  const image = d.coverImage?.startsWith('/') ? `${baseUrl}${d.coverImage}` : d.coverImage;
+  // Destination schema should represent the place, never a random rental
+  // listing that happens to be used as an editorial fallback.
+  const imageSource = d.regionImage || d.coverImage;
+  const image = imageSource?.startsWith('/') ? `${baseUrl}${imageSource}` : imageSource;
   const placeId = `${url}#destination`;
   return [
     {

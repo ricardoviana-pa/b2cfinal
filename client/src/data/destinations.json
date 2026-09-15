@@ -8,6 +8,7 @@
       "longitude": -8.6
     },
     "coverImage": "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533284b583900135ceb91/d5710825-2cbb-43-l4ehJ",
+    "regionImage": "/destinations/minho-coast.webp",
     "gallery": [],
     "comingSoon": false,
     "status": "active",
@@ -335,6 +336,7 @@
     "description": "A complete guide to Viana do Castelo, the third most welcoming city in the world.",
     "heroSubtitle": "Northern Portugal's Atlantic capital, where the Lima meets the ocean",
     "coverImage": "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965330b6d209c001510dd49/43c0ede3-0bca-48-6y2Ze",
+    "regionImage": "https://images.unsplash.com/photo-1659699385400-64c3f7f8bca8?w=1600&q=85",
     "gallery": [],
     "pullQuote": {
       "text": "The beaches of Viana do Castelo are some of the most beautiful in the country.",
@@ -774,6 +776,7 @@
     "description": "The city, the river, the wine.",
     "heroSubtitle": "The city that gave Portugal its name, and the river that built it.",
     "coverImage": "https://assets.guesty.com/image/upload/v1778167853/production/6957de4388cba42d9e7a905e/issgcrisqtcjdmxy28no.jpg",
+    "regionImage": "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1600&q=85",
     "gallery": [],
     "whyDescription": "The city that gave Portugal its name. Port wine cellars lining the riverbank. Michelin starred restaurants in converted warehouses. A creative energy that makes Lisbon feel mainstream. Porto is compact, walkable, and endlessly rewarding for those who take the time to explore beyond the postcard views.\n\nBeyond the city, the Douro Valley unfolds in terraced vineyards classified as a UNESCO World Heritage landscape. This is where port wine comes from, but it is also where Portugal's most exciting table wines are being made. Visit a quinta, taste with the winemaker, and understand why this region is considered one of Europe's most beautiful.",
     "highlights": [
@@ -867,6 +870,7 @@
     "tagline": "Golden light, coastal charm, and timeless elegance.",
     "description": "Golden light, coastal charm, and timeless elegance.",
     "coverImage": "https://assets.guesty.com/image/upload/v1784644170/production/6957de4388cba42d9e7a905e/hhlkmogpcjnicvh6gu4m.jpg",
+    "regionImage": "https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=1600&q=85",
     "gallery": [],
     "whyDescription": "Europe's sunniest capital, where cobblestone hills meet the Atlantic. Lisbon is a city of contrasts — ancient trams climbing through Alfama's narrow streets while Michelin-starred chefs reinvent Portuguese cuisine in converted palaces. The coastline stretches from the surf breaks of Ericeira to the glamour of Cascais, with Sintra's fairy-tale palaces just 30 minutes away.",
     "highlights": [
@@ -922,6 +926,7 @@
     "tagline": "Rolling plains, cork oaks, and the slowest pace in Europe.",
     "description": "Rolling plains, cork oaks, and the slowest pace in Europe.",
     "coverImage": "https://assets.guesty.com/image/upload/v1774956497/production/6957de4388cba42d9e7a905e/fnbhffhcpcuafkfkotb9.jpg",
+    "regionImage": "https://images.unsplash.com/photo-1725144690018-2df87296f72e?w=1600&q=85",
     "gallery": [],
     "whyDescription": "Portugal's vast interior, where time moves differently. The Alentejo is a land of golden wheat fields, ancient cork oak forests, and whitewashed villages that haven't changed in centuries. The coastline — the Rota Vicentina — is one of Europe's last truly wild stretches of shore, with dramatic cliffs and empty beaches.",
     "highlights": [
@@ -974,6 +979,7 @@
       "longitude": -7.9304
     },
     "coverImage": "/homes/photos/PT0253/00.webp",
+    "regionImage": "https://images.unsplash.com/photo-1500534623283-312aade485b7?w=1600&q=85",
     "gallery": [],
     "comingSoon": false,
     "status": "active",
