@@ -457,7 +457,8 @@
     "nlSub": "Ausgewählte Aufenthalte, saisonale Angebote und Reisegeschichten aus Portugal — monatlich geliefert.",
     "nlError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
     "conciergeServices": "Concierge-Dienste",
-    "realEstate": "Ein Haus kaufen oder verkaufen"
+    "realEstate": "Ein Haus kaufen oder verkaufen",
+    "offices": "Büros"
   },
   "propertyDetail": {
     "notFound": "Unterkunft nicht gefunden",
@@ -1811,7 +1812,7 @@
     "qTimes": "Wann sind Check-in und Check-out?",
     "aTimes": "Check-in ab {{checkIn}}, Check-out bis {{checkOut}}. Flexible Zeiten lassen sich oft mit unserem Concierge vereinbaren.",
     "qMin": "Wie lang ist der Mindestaufenthalt?",
-    "aMin": "Der Mindestaufenthalt variiert je nach Saison — der Kalender zeigt die genaue Anforderung für Ihre Daten. Im Juli und August laufen Aufenthalte von Samstag bis Samstag mit mindestens 7 Nächten.",
+    "aMin": "Mindestaufenthalt und Anreisetage hängen vom Haus und der Saison ab. Wählen Sie Ihre Daten, um die Bedingungen zu prüfen, oder fragen Sie unseren Concierge.",
     "qDirect": "Warum direkt bei Portugal Active buchen?",
     "aDirect": "Direkt buchen heißt: bester Online-Preis ohne OTA-Servicegebühren, ein eigener WhatsApp-Concierge und ein lokales Team, das das Haus von A bis Z betreibt.",
     "qPets": "Kann ich mein Haustier mitbringen?",
@@ -1983,5 +1984,19 @@
     "accountInfo": "Kontodetails",
     "loginMethod": "Anmeldemethode",
     "referCode": "Empfehlungscode"
+  },
+  "searchUx": {
+    "bedrooms": "Schlafzimmer",
+    "clearFilters": "Filter löschen ({{count}})",
+    "datedPrices": "Mit Reisedaten: Gesamtpreise. Das Budget pro Nacht enthält Pflichtgebühren.",
+    "fromPrices": "Ab-Preise pro Nacht. Wählen Sie Daten für Gesamtpreis und Verfügbarkeit.",
+    "confirmed": "bestätigt verfügbar",
+    "toConfirm": "{{count}} zu bestätigen",
+    "results": "{{count}} Häuser",
+    "sort": "Häuser sortieren"
+  },
+  "pdpUx": {
+    "navigation": "Dieses Haus entdecken",
+    "bedrooms": "Schlafzimmer"
   }
 }

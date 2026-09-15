@@ -457,7 +457,8 @@
     "nlSub": "Utvalda vistelser, säsongserbjudanden och reseberättelser från Portugal — levereras månadsvis.",
     "nlError": "Något gick fel. Försök igen.",
     "conciergeServices": "Conciergetjänster",
-    "realEstate": "Köpa eller sälja bostad"
+    "realEstate": "Köpa eller sälja bostad",
+    "offices": "Kontor"
   },
   "propertyDetail": {
     "notFound": "Bostad hittades inte",
@@ -1811,7 +1812,7 @@
     "qTimes": "Vilka tider gäller för in- och utcheckning?",
     "aTimes": "Incheckning från {{checkIn}} och utcheckning senast {{checkOut}}. Flexibla tider kan ofta ordnas med vår concierge.",
     "qMin": "Vad är minsta vistelse?",
-    "aMin": "Minsta vistelse varierar med säsongen — kalendern visar det exakta kravet för dina datum. I juli och augusti löper vistelser från lördag till lördag med minst 7 nätter.",
+    "aMin": "Minsta vistelse och ankomstdagar beror på huset och säsongen. Välj datum för att se villkoren eller fråga vår concierge.",
     "qDirect": "Varför boka direkt hos Portugal Active?",
     "aDirect": "Direktbokning ger bästa pris online utan OTA-avgifter, en egen WhatsApp-concierge och ett lokalt team som driver huset från början till slut.",
     "qPets": "Kan jag ta med mitt husdjur?",
@@ -1983,5 +1984,19 @@
     "accountInfo": "Kontouppgifter",
     "loginMethod": "Inloggningsmetod",
     "referCode": "Rekommendationskod"
+  },
+  "searchUx": {
+    "bedrooms": "Sovrum",
+    "clearFilters": "Rensa filter ({{count}})",
+    "datedPrices": "Med datum: vistelsens totalpriser. Nattbudgeten inkluderar obligatoriska avgifter.",
+    "fromPrices": "Frånpriser per natt. Välj datum för totalpris och tillgänglighet.",
+    "confirmed": "bekräftat tillgängliga",
+    "toConfirm": "{{count}} att bekräfta",
+    "results": "{{count}} boenden",
+    "sort": "Sortera boenden"
+  },
+  "pdpUx": {
+    "navigation": "Utforska boendet",
+    "bedrooms": "Sovrum"
   }
 }
