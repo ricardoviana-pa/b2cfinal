@@ -1,4 +1,8 @@
 {
+  "securityDeposit": {
+    "title": "Dépôt de garantie",
+    "notice": "Un dépôt de garantie peut être exigé pour votre séjour. Veuillez contacter notre concierge pour plus d’informations."
+  },
   "nav": {
     "properties": "Maisons",
     "destinations": "Destinations",

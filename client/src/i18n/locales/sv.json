@@ -1,4 +1,8 @@
 {
+  "securityDeposit": {
+    "title": "Deposition",
+    "notice": "En deposition kan krävas för din vistelse. Kontakta vår concierge för mer information."
+  },
   "nav": {
     "properties": "Hus",
     "destinations": "Destinationer",

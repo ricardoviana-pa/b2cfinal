@@ -1,4 +1,8 @@
 {
+  "securityDeposit": {
+    "title": "Security deposit",
+    "notice": "A security deposit may be required for your stay. Please contact our concierge for details."
+  },
   "nav": {
     "properties": "Homes",
     "destinations": "Destinations",

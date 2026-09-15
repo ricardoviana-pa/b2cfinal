@@ -1,4 +1,8 @@
 {
+  "securityDeposit": {
+    "title": "Borg",
+    "notice": "Voor uw verblijf kan een borg worden gevraagd. Neem contact op met onze conciërge voor meer informatie."
+  },
   "nav": {
     "properties": "Huizen",
     "destinations": "Bestemmingen",

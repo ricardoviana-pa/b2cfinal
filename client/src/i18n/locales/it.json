@@ -1,4 +1,8 @@
 {
+  "securityDeposit": {
+    "title": "Deposito cauzionale",
+    "notice": "Potrebbe essere richiesto un deposito cauzionale per il soggiorno. Contatti il nostro concierge per maggiori informazioni."
+  },
   "nav": {
     "properties": "Case",
     "destinations": "Destinazioni",
