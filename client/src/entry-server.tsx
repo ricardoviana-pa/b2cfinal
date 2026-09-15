@@ -44,6 +44,8 @@ const RESOURCES: Record<string, ResourceKey> = { en, pt, fr, es, it, fi, de, nl,
 export interface RenderPrefetch {
   /** Result of trpc.properties.listForSite (the full site property list). */
   listForSite?: unknown;
+  catalogForSite?: unknown;
+  guestFeedback?: unknown;
   /** Result of trpc.properties.getBySlugForSite for a single property page. */
   propertyBySlug?: { slug: string; data: unknown };
   /** Result of trpc.properties.localities — tiny, seeds the search dropdowns. */
@@ -110,6 +112,12 @@ export async function render(url: string, opts?: RenderOptions): Promise<RenderR
   // render real content. getQueryKey produces the exact key the client hooks
   // use, so the dehydrated state hydrates cleanly with no key mismatch.
   const pf = opts?.prefetch;
+  if (pf?.guestFeedback !== undefined) {
+    queryClient.setQueryData(getQueryKey(trpc.properties.guestFeedback, undefined, 'query'), pf.guestFeedback);
+  }
+  if (pf?.catalogForSite !== undefined) {
+    queryClient.setQueryData(getQueryKey(trpc.properties.catalogForSite, undefined, 'query'), pf.catalogForSite);
+  }
   if (pf?.listForSite !== undefined) {
     queryClient.setQueryData(
       getQueryKey(trpc.properties.listForSite, undefined, 'query'),

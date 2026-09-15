@@ -1741,10 +1741,12 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
     // entries) so the picker is populated in the SSR HTML. Without this it
     // rendered empty until the ~1.3 MB property list arrived — on mobile that
     // meant tapping "Destination" opened a blank list.
-    if (strippedPath === "/" || strippedPath === "/homes") {
+    if (strippedPath === "/" || strippedPath === "/homes" || strippedPath.startsWith("/collections/")) {
       try {
-        const { getSiteLocalities } = await import("../services/properties-store");
-        return { localities: await getSiteLocalities() };
+        const { getSiteLocalities, getPropertiesForSite } = await import("../services/properties-store");
+        const { toCatalogCard, recentGuestFeedback } = await import("../services/property-catalog");
+        const [localities, properties] = await Promise.all([getSiteLocalities(), getPropertiesForSite()]);
+        return { localities, catalogForSite: properties.map(toCatalogCard), ...(strippedPath === "/" ? { guestFeedback: recentGuestFeedback(properties) } : {}) };
       } catch {
         return undefined;
       }
@@ -1815,16 +1817,10 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
             _ssrRenderCache.set(reqPath, entry);
           }
           const rqScript = `<script>window.__RQ_STATE__=${scriptString(entry.dehydratedState)}</script>`;
-          // The SSR markup for listing routes has no property cards (their
-          // query is not prefetched), so append the anchor-only link index.
-          const linkIndex = await buildPropertyLinkIndex(strippedPath, extractLang(reqPath));
-          const linkBlock = linkIndex
-            ? `\n    <div id="seo-content">${linkIndex}</div>` +
-              `<script>(function(){var e=document.getElementById('seo-content');if(e&&e.parentNode)e.parentNode.removeChild(e);})();</script>`
-            : "";
+          // Catalogue routes include real cards in SSR; no duplicate hidden link index.
           return html.replace(
             '<div id="root"></div>',
-            `<div id="root">${entry.appHtml}</div>\n    ${rqScript}${linkBlock}`,
+            `<div id="root">${entry.appHtml}</div>\n    ${rqScript}`,
           );
         } catch (err) {
           console.error(`[SSR] render failed for ${reqPath}, falling back to CSR:`, (err as Error).message);
@@ -2032,7 +2028,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
           const defs = JSON.parse(raw) as Array<any>;
           const def = defs.find((c) => c.slug === collMatch[1]);
           if (def) {
-            const copy = lang === "pt" ? def.pt : def.en;
+            const copy = def[lang] ?? def.en;
             dynamicMeta = {
               title: `${copy.title} | Portugal Active`,
               description: copy.metaDescription,

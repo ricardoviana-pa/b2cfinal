@@ -1,64 +1,219 @@
 [
   {
     "slug": "villas-with-private-pool",
-    "filter": { "type": "amenity", "pattern": "pool" },
+    "filter": {
+      "type": "amenity",
+      "pattern": "pool"
+    },
     "excludeApartments": true,
     "en": {
-      "title": "Villas with Private Pool in Portugal",
-      "metaDescription": "Handpicked private-pool villas across northern Portugal, each operated like a private hotel — concierge, housekeeping and best rate booked direct.",
-      "intro": "Every villa here has its own pool — no schedules, no strangers' towels. Each one is operated end to end by our local team, with concierge and housekeeping included."
+      "title": "Villas with Pools in Portugal",
+      "intro": "Homes with a swimming pool listed in their amenities. Check the individual home for pool privacy, heating, opening dates and any additional costs.",
+      "metaDescription": "Villas with Pools in Portugal. Homes with a swimming pool listed in their amenities. Check the individual home for pool privacy, heating, opening dates and any additional costs."
     },
     "pt": {
-      "title": "Villas com Piscina Privada em Portugal",
-      "metaDescription": "Villas com piscina privada no norte de Portugal, operadas como hotéis privados — concierge, limpeza e melhor preço na reserva direta.",
-      "intro": "Todas as casas desta coleção têm piscina própria — sem horários nem toalhas alheias. Cada uma é operada de ponta a ponta pela nossa equipa local, com concierge e limpeza incluídos."
+      "title": "Villas com Piscina em Portugal",
+      "intro": "Casas com piscina indicada nas comodidades. Consulte cada casa para confirmar privacidade, aquecimento, época de funcionamento e eventuais custos adicionais.",
+      "metaDescription": "Villas com Piscina em Portugal. Casas com piscina indicada nas comodidades. Consulte cada casa para confirmar privacidade, aquecimento, época de funcionamento e eventuais custos adicionais."
+    },
+    "es": {
+      "title": "Estancias con piscina · Portugal",
+      "intro": "Compare ubicación, espacio y comodidades. Encuentre la casa ideal para su próxima estancia. Chef, traslados y limpieza adicional son opcionales. Precios y disponibilidad dependen de la casa y las fechas.",
+      "metaDescription": "Estancias con piscina · Portugal. Compare ubicación, espacio y comodidades. Encuentre la casa ideal para su próxima estancia."
+    },
+    "fr": {
+      "title": "Séjours avec piscine · Portugal",
+      "intro": "Comparez les lieux, les espaces et les équipements. Trouvez la maison qui vous convient. Chef, transferts et ménage supplémentaire sont en option. Prix et disponibilité varient selon la maison et les dates.",
+      "metaDescription": "Séjours avec piscine · Portugal. Comparez les lieux, les espaces et les équipements. Trouvez la maison qui vous convient."
+    },
+    "de": {
+      "title": "Häuser mit Pool · Portugal",
+      "intro": "Vergleichen Sie Lage, Platz und Ausstattung. Finden Sie das passende Haus für Ihren nächsten Aufenthalt. Koch, Transfers und zusätzliche Reinigung sind optional. Preise und Verfügbarkeit hängen vom Haus und den Daten ab.",
+      "metaDescription": "Häuser mit Pool · Portugal. Vergleichen Sie Lage, Platz und Ausstattung. Finden Sie das passende Haus für Ihren nächsten Aufenthalt."
+    },
+    "it": {
+      "title": "Soggiorni con piscina · Portugal",
+      "intro": "Confronti posizione, spazi e dotazioni. Trovi la casa giusta per il prossimo soggiorno. Chef, trasferimenti e pulizie aggiuntive sono facoltativi. Prezzi e disponibilità dipendono dalla casa e dalle date.",
+      "metaDescription": "Soggiorni con piscina · Portugal. Confronti posizione, spazi e dotazioni. Trovi la casa giusta per il prossimo soggiorno."
+    },
+    "nl": {
+      "title": "Verblijven met zwembad · Portugal",
+      "intro": "Vergelijk locatie, ruimte en voorzieningen. Vind het juiste huis voor uw volgende verblijf. Kok, transfers en extra schoonmaak zijn optioneel. Prijzen en beschikbaarheid hangen af van het huis en de datums.",
+      "metaDescription": "Verblijven met zwembad · Portugal. Vergelijk locatie, ruimte en voorzieningen. Vind het juiste huis voor uw volgende verblijf."
+    },
+    "fi": {
+      "title": "Talot uima-altaalla · Portugal",
+      "intro": "Vertaa sijaintia, tiloja ja varustelua. Löydä sopiva talo seuraavalle lomallesi. Kokki, kuljetukset ja lisäsiivous ovat valinnaisia. Hinnat ja saatavuus riippuvat talosta ja päivistä.",
+      "metaDescription": "Talot uima-altaalla · Portugal. Vertaa sijaintia, tiloja ja varustelua. Löydä sopiva talo seuraavalle lomallesi."
+    },
+    "sv": {
+      "title": "Boenden med pool · Portugal",
+      "intro": "Jämför läge, utrymme och bekvämligheter. Hitta rätt hus för din nästa vistelse. Kock, transfer och extra städning är valfria. Priser och tillgänglighet beror på hus och datum.",
+      "metaDescription": "Boenden med pool · Portugal. Jämför läge, utrymme och bekvämligheter. Hitta rätt hus för din nästa vistelse."
     }
   },
   {
     "slug": "sea-view-villas",
-    "filter": { "type": "amenity", "pattern": "sea view|ocean view|beach view|beach front" },
+    "filter": {
+      "type": "amenity",
+      "pattern": "sea view|ocean view|beach view|beach front"
+    },
     "en": {
-      "title": "Sea-View Villas in Northern Portugal",
-      "metaDescription": "Villas and homes with real Atlantic views on the Minho coast — private hotels with concierge, booked direct at the best rate.",
-      "intro": "The Atlantic is the main amenity in this collection: villas where the sea fills the windows, on the wild green coast north of Porto."
+      "title": "Homes with Sea Views in Portugal",
+      "intro": "Homes with sea or ocean views listed in their amenities. Check each property for beach access, location and the views from individual rooms.",
+      "metaDescription": "Homes with Sea Views in Portugal. Homes with sea or ocean views listed in their amenities. Check each property for beach access, location and the views from individual rooms."
     },
     "pt": {
-      "title": "Villas com Vista Mar no Norte de Portugal",
-      "metaDescription": "Casas com vista real para o Atlântico na costa do Minho — hotéis privados com concierge, reserva direta ao melhor preço.",
-      "intro": "Nesta coleção o Atlântico é a amenidade principal: casas onde o mar enche as janelas, na costa verde e selvagem a norte do Porto."
+      "title": "Casas com Vista Mar em Portugal",
+      "intro": "Casas com vista mar indicada nas comodidades. Consulte cada propriedade para confirmar acesso à praia, localização e vistas de cada divisão.",
+      "metaDescription": "Casas com Vista Mar em Portugal. Casas com vista mar indicada nas comodidades. Consulte cada propriedade para confirmar acesso à praia, localização e vistas de cada divisão."
+    },
+    "es": {
+      "title": "Junto al mar · Portugal",
+      "intro": "Compare ubicación, espacio y comodidades. Encuentre la casa ideal para su próxima estancia. Chef, traslados y limpieza adicional son opcionales. Precios y disponibilidad dependen de la casa y las fechas.",
+      "metaDescription": "Junto al mar · Portugal. Compare ubicación, espacio y comodidades. Encuentre la casa ideal para su próxima estancia."
+    },
+    "fr": {
+      "title": "Au bord de la mer · Portugal",
+      "intro": "Comparez les lieux, les espaces et les équipements. Trouvez la maison qui vous convient. Chef, transferts et ménage supplémentaire sont en option. Prix et disponibilité varient selon la maison et les dates.",
+      "metaDescription": "Au bord de la mer · Portugal. Comparez les lieux, les espaces et les équipements. Trouvez la maison qui vous convient."
+    },
+    "de": {
+      "title": "Am Meer · Portugal",
+      "intro": "Vergleichen Sie Lage, Platz und Ausstattung. Finden Sie das passende Haus für Ihren nächsten Aufenthalt. Koch, Transfers und zusätzliche Reinigung sind optional. Preise und Verfügbarkeit hängen vom Haus und den Daten ab.",
+      "metaDescription": "Am Meer · Portugal. Vergleichen Sie Lage, Platz und Ausstattung. Finden Sie das passende Haus für Ihren nächsten Aufenthalt."
+    },
+    "it": {
+      "title": "Vicino al mare · Portugal",
+      "intro": "Confronti posizione, spazi e dotazioni. Trovi la casa giusta per il prossimo soggiorno. Chef, trasferimenti e pulizie aggiuntive sono facoltativi. Prezzi e disponibilità dipendono dalla casa e dalle date.",
+      "metaDescription": "Vicino al mare · Portugal. Confronti posizione, spazi e dotazioni. Trovi la casa giusta per il prossimo soggiorno."
+    },
+    "nl": {
+      "title": "Aan zee · Portugal",
+      "intro": "Vergelijk locatie, ruimte en voorzieningen. Vind het juiste huis voor uw volgende verblijf. Kok, transfers en extra schoonmaak zijn optioneel. Prijzen en beschikbaarheid hangen af van het huis en de datums.",
+      "metaDescription": "Aan zee · Portugal. Vergelijk locatie, ruimte en voorzieningen. Vind het juiste huis voor uw volgende verblijf."
+    },
+    "fi": {
+      "title": "Meren äärellä · Portugal",
+      "intro": "Vertaa sijaintia, tiloja ja varustelua. Löydä sopiva talo seuraavalle lomallesi. Kokki, kuljetukset ja lisäsiivous ovat valinnaisia. Hinnat ja saatavuus riippuvat talosta ja päivistä.",
+      "metaDescription": "Meren äärellä · Portugal. Vertaa sijaintia, tiloja ja varustelua. Löydä sopiva talo seuraavalle lomallesi."
+    },
+    "sv": {
+      "title": "Vid havet · Portugal",
+      "intro": "Jämför läge, utrymme och bekvämligheter. Hitta rätt hus för din nästa vistelse. Kock, transfer och extra städning är valfria. Priser och tillgänglighet beror på hus och datum.",
+      "metaDescription": "Vid havet · Portugal. Jämför läge, utrymme och bekvämligheter. Hitta rätt hus för din nästa vistelse."
     }
   },
   {
     "slug": "large-group-villas",
-    "filter": { "type": "minGuests", "min": 12 },
+    "filter": {
+      "type": "minGuests",
+      "min": 12
+    },
     "en": {
-      "title": "Large Villas for 12+ Guests in Portugal",
-      "metaDescription": "Estates and villas sleeping 12 to 28 guests — family reunions, retreats and celebrations, fully operated by a local team.",
-      "intro": "Whole estates for family reunions, retreats and celebrations: every home here sleeps at least twelve, several past twenty — with one booking, one team, zero logistics."
+      "title": "Homes for 12+ Guests in Portugal",
+      "intro": "Homes with capacity for at least twelve guests. Compare bedrooms and sleeping arrangements before choosing. Events and additional visitors require separate confirmation.",
+      "metaDescription": "Homes for 12+ Guests in Portugal. Homes with capacity for at least twelve guests. Compare bedrooms and sleeping arrangements before choosing. Events and additional visitors require separate confirmation."
     },
     "pt": {
-      "title": "Casas Grandes para 12+ Pessoas em Portugal",
-      "metaDescription": "Quintas e villas para 12 a 28 hóspedes — reuniões de família, retiros e celebrações, operadas por uma equipa local.",
-      "intro": "Propriedades inteiras para reuniões de família, retiros e celebrações: todas as casas acolhem pelo menos doze pessoas, várias passam das vinte — uma reserva, uma equipa, zero logística."
+      "title": "Casas para 12+ Hóspedes em Portugal",
+      "intro": "Casas com capacidade para pelo menos doze hóspedes. Compare quartos e camas antes de escolher. Eventos e visitantes adicionais precisam de confirmação separada.",
+      "metaDescription": "Casas para 12+ Hóspedes em Portugal. Casas com capacidade para pelo menos doze hóspedes. Compare quartos e camas antes de escolher. Eventos e visitantes adicionais precisam de confirmação separada."
+    },
+    "es": {
+      "title": "Juntos, 12+ huéspedes · Portugal",
+      "intro": "Compare ubicación, espacio y comodidades. Encuentre la casa ideal para su próxima estancia. Chef, traslados y limpieza adicional son opcionales. Precios y disponibilidad dependen de la casa y las fechas.",
+      "metaDescription": "Juntos, 12+ huéspedes · Portugal. Compare ubicación, espacio y comodidades. Encuentre la casa ideal para su próxima estancia."
+    },
+    "fr": {
+      "title": "Ensemble, 12+ voyageurs · Portugal",
+      "intro": "Comparez les lieux, les espaces et les équipements. Trouvez la maison qui vous convient. Chef, transferts et ménage supplémentaire sont en option. Prix et disponibilité varient selon la maison et les dates.",
+      "metaDescription": "Ensemble, 12+ voyageurs · Portugal. Comparez les lieux, les espaces et les équipements. Trouvez la maison qui vous convient."
+    },
+    "de": {
+      "title": "Zusammen, 12+ Gäste · Portugal",
+      "intro": "Vergleichen Sie Lage, Platz und Ausstattung. Finden Sie das passende Haus für Ihren nächsten Aufenthalt. Koch, Transfers und zusätzliche Reinigung sind optional. Preise und Verfügbarkeit hängen vom Haus und den Daten ab.",
+      "metaDescription": "Zusammen, 12+ Gäste · Portugal. Vergleichen Sie Lage, Platz und Ausstattung. Finden Sie das passende Haus für Ihren nächsten Aufenthalt."
+    },
+    "it": {
+      "title": "Insieme, 12+ ospiti · Portugal",
+      "intro": "Confronti posizione, spazi e dotazioni. Trovi la casa giusta per il prossimo soggiorno. Chef, trasferimenti e pulizie aggiuntive sono facoltativi. Prezzi e disponibilità dipendono dalla casa e dalle date.",
+      "metaDescription": "Insieme, 12+ ospiti · Portugal. Confronti posizione, spazi e dotazioni. Trovi la casa giusta per il prossimo soggiorno."
+    },
+    "nl": {
+      "title": "Samen, 12+ gasten · Portugal",
+      "intro": "Vergelijk locatie, ruimte en voorzieningen. Vind het juiste huis voor uw volgende verblijf. Kok, transfers en extra schoonmaak zijn optioneel. Prijzen en beschikbaarheid hangen af van het huis en de datums.",
+      "metaDescription": "Samen, 12+ gasten · Portugal. Vergelijk locatie, ruimte en voorzieningen. Vind het juiste huis voor uw volgende verblijf."
+    },
+    "fi": {
+      "title": "Yhdessä, yli 12 vierasta · Portugal",
+      "intro": "Vertaa sijaintia, tiloja ja varustelua. Löydä sopiva talo seuraavalle lomallesi. Kokki, kuljetukset ja lisäsiivous ovat valinnaisia. Hinnat ja saatavuus riippuvat talosta ja päivistä.",
+      "metaDescription": "Yhdessä, yli 12 vierasta · Portugal. Vertaa sijaintia, tiloja ja varustelua. Löydä sopiva talo seuraavalle lomallesi."
+    },
+    "sv": {
+      "title": "Tillsammans, 12+ gäster · Portugal",
+      "intro": "Jämför läge, utrymme och bekvämligheter. Hitta rätt hus för din nästa vistelse. Kock, transfer och extra städning är valfria. Priser och tillgänglighet beror på hus och datum.",
+      "metaDescription": "Tillsammans, 12+ gäster · Portugal. Jämför läge, utrymme och bekvämligheter. Hitta rätt hus för din nästa vistelse."
     }
   },
   {
     "slug": "pet-friendly-villas",
-    "filter": { "type": "amenity", "pattern": "pets allowed|pet friendly" },
+    "filter": {
+      "type": "amenity",
+      "pattern": "pets allowed|pet friendly"
+    },
     "en": {
-      "title": "Pet-Friendly Villas in Portugal",
-      "metaDescription": "Luxury villas that genuinely welcome your dog — gardens, space and Atlantic walks, operated as private hotels.",
-      "intro": "Houses that actually mean it when they say pets are welcome — walled gardens, room to run, and beaches or trails at the door."
+      "title": "Pet-Friendly Homes in Portugal",
+      "intro": "Homes whose published policy allows pets. Tell our concierge about your pet before booking to confirm any limits and additional charges.",
+      "metaDescription": "Pet-Friendly Homes in Portugal. Homes whose published policy allows pets. Tell our concierge about your pet before booking to confirm any limits and additional charges."
     },
     "pt": {
-      "title": "Villas Pet-Friendly em Portugal",
-      "metaDescription": "Villas de luxo que recebem o seu cão a sério — jardins, espaço e passeios atlânticos, operadas como hotéis privados.",
-      "intro": "Casas que dizem 'aceitamos animais' a sério — jardins murados, espaço para correr, e praias ou trilhos à porta."
+      "title": "Casas que Aceitam Animais em Portugal",
+      "intro": "Casas cuja política publicada permite animais. Indique ao concierge o seu animal antes de reservar para confirmar limites e eventuais custos adicionais.",
+      "metaDescription": "Casas que Aceitam Animais em Portugal. Casas cuja política publicada permite animais. Indique ao concierge o seu animal antes de reservar para confirmar limites e eventuais custos adicionais."
+    },
+    "es": {
+      "title": "Traiga a su perro · Portugal",
+      "intro": "Compare ubicación, espacio y comodidades. Encuentre la casa ideal para su próxima estancia. Chef, traslados y limpieza adicional son opcionales. Precios y disponibilidad dependen de la casa y las fechas.",
+      "metaDescription": "Traiga a su perro · Portugal. Compare ubicación, espacio y comodidades. Encuentre la casa ideal para su próxima estancia."
+    },
+    "fr": {
+      "title": "Avec votre chien · Portugal",
+      "intro": "Comparez les lieux, les espaces et les équipements. Trouvez la maison qui vous convient. Chef, transferts et ménage supplémentaire sont en option. Prix et disponibilité varient selon la maison et les dates.",
+      "metaDescription": "Avec votre chien · Portugal. Comparez les lieux, les espaces et les équipements. Trouvez la maison qui vous convient."
+    },
+    "de": {
+      "title": "Mit Ihrem Hund · Portugal",
+      "intro": "Vergleichen Sie Lage, Platz und Ausstattung. Finden Sie das passende Haus für Ihren nächsten Aufenthalt. Koch, Transfers und zusätzliche Reinigung sind optional. Preise und Verfügbarkeit hängen vom Haus und den Daten ab.",
+      "metaDescription": "Mit Ihrem Hund · Portugal. Vergleichen Sie Lage, Platz und Ausstattung. Finden Sie das passende Haus für Ihren nächsten Aufenthalt."
+    },
+    "it": {
+      "title": "Con il suo cane · Portugal",
+      "intro": "Confronti posizione, spazi e dotazioni. Trovi la casa giusta per il prossimo soggiorno. Chef, trasferimenti e pulizie aggiuntive sono facoltativi. Prezzi e disponibilità dipendono dalla casa e dalle date.",
+      "metaDescription": "Con il suo cane · Portugal. Confronti posizione, spazi e dotazioni. Trovi la casa giusta per il prossimo soggiorno."
+    },
+    "nl": {
+      "title": "Met uw hond · Portugal",
+      "intro": "Vergelijk locatie, ruimte en voorzieningen. Vind het juiste huis voor uw volgende verblijf. Kok, transfers en extra schoonmaak zijn optioneel. Prijzen en beschikbaarheid hangen af van het huis en de datums.",
+      "metaDescription": "Met uw hond · Portugal. Vergelijk locatie, ruimte en voorzieningen. Vind het juiste huis voor uw volgende verblijf."
+    },
+    "fi": {
+      "title": "Koiran kanssa · Portugal",
+      "intro": "Vertaa sijaintia, tiloja ja varustelua. Löydä sopiva talo seuraavalle lomallesi. Kokki, kuljetukset ja lisäsiivous ovat valinnaisia. Hinnat ja saatavuus riippuvat talosta ja päivistä.",
+      "metaDescription": "Koiran kanssa · Portugal. Vertaa sijaintia, tiloja ja varustelua. Löydä sopiva talo seuraavalle lomallesi."
+    },
+    "sv": {
+      "title": "Med din hund · Portugal",
+      "intro": "Jämför läge, utrymme och bekvämligheter. Hitta rätt hus för din nästa vistelse. Kock, transfer och extra städning är valfria. Priser och tillgänglighet beror på hus och datum.",
+      "metaDescription": "Med din hund · Portugal. Jämför läge, utrymme och bekvämligheter. Hitta rätt hus för din nästa vistelse."
     }
   },
   {
     "slug": "villas-with-jacuzzi",
-    "filter": { "type": "amenity", "pattern": "jacuzzi|hot tub" },
+    "filter": {
+      "type": "amenity",
+      "pattern": "jacuzzi|hot tub"
+    },
     "en": {
       "title": "Villas with Jacuzzi & Hot Tub in Portugal",
       "metaDescription": "Private homes with jacuzzi or hot tub in northern Portugal — evenings under the sky, operated as private hotels.",
@@ -72,7 +227,10 @@
   },
   {
     "slug": "beach-villas",
-    "filter": { "type": "amenity", "pattern": "beach" },
+    "filter": {
+      "type": "amenity",
+      "pattern": "beach"
+    },
     "en": {
       "title": "Beach Villas & Homes in Northern Portugal",
       "metaDescription": "Villas minutes from the wild Atlantic beaches of the Minho coast — surf, dunes and space, with concierge included.",

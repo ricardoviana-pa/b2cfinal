@@ -4,14 +4,17 @@
    ========================================================================== */
 
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
+import { getDisplayName } from '@/lib/format';
 import { HOME_COUNT_LABEL } from '@shared/brandFacts';
-import { useSearch, useLocation } from 'wouter';
+import { Link, useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { IMAGES } from '@/lib/images';
-import { Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, MessageCircle, Map as MapIcon } from 'lucide-react';
+import { SlidersHorizontal, Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, MessageCircle, Map as MapIcon } from 'lucide-react';
 
 const HomesMap = lazy(() => import('@/components/property/HomesMap'));
+import collectionsData from '@/data/collections.json';
+import { matchesCollection } from '@/lib/collectionFilters';
 import heatedPoolData from '@/data/heatedPool.json';
 const HEATED_POOL_SLUGS = new Set<string>((heatedPoolData as any).slugs || []);
 import { trpc } from '@/lib/trpc';
@@ -24,7 +27,8 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
-import AnswerCapsule from '@/components/seo/AnswerCapsule';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import StayCollections from '@/components/property/StayCollections';
 
 interface LiveQuote {
   total: number;
@@ -43,6 +47,7 @@ export default function Homes() {
   const searchString = useSearch();
   const searchParams = useMemo(() => new URLSearchParams(searchString), [searchString]);
   const facets = parseHomeFilters(searchParams);
+  const collection = collectionsData.find(c => c.slug === searchParams.get('collection'));
   const updateFilter = (key: string, value: string) => {
     const params = new URLSearchParams(searchString);
     if (!value || value === 'all' || (key === 'sort' && value === 'recommended')) params.delete(key);
@@ -50,7 +55,7 @@ export default function Homes() {
     navigate(`/homes${params.size ? `?${params}` : ''}`, { replace: true });
   };
 
-  const { data: propsData, isLoading, isError, refetch } = trpc.properties.listForSite.useQuery();
+  const { data: propsData, isLoading, isError, refetch } = trpc.properties.catalogForSite.useQuery(undefined, { staleTime: 5 * 60 * 1000 });
   const allProperties = (propsData ?? []) as Property[];
 
   // ── PLP filters (type · budget · pool · heated pool · pet-friendly) + map ──
@@ -67,33 +72,34 @@ export default function Homes() {
   const setHeatedPoolOnly = (v: boolean) => updateFilter('heatedPool', v ? '1' : '');
   const setPetFriendlyOnly = (v: boolean) => updateFilter('pets', v ? '1' : '');
   const [showMap, setShowMap] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   // SSR-prefetched tiny query (see Home.tsx) so the destination picker is
   // populated immediately; falls back to deriving from the full list.
   const { data: localityOptions } = trpc.properties.localities.useQuery();
   const derivedCities = (localityOptions?.length
     ? localityOptions
-    : getUniqueLocalities(allProperties)) as Array<{ label: string; value: string; group?: string }>;
+    : getUniqueLocalities(allProperties)) as Array<{ label: string; value: string; group?: string; groupSlug?: string }>;
   const cities = derivedCities;
 
   // Same region grouping as the homepage picker (see Home.tsx).
   const cityOptions = useMemo(() => {
     const groups: Array<[string, typeof cities]> = [];
     for (const c of cities) {
-      const g = c.group || '';
+      const g = c.groupSlug || c.group || '';
       const last = groups[groups.length - 1];
       if (last && last[0] === g) last[1].push(c);
       else groups.push([g, [c]]);
     }
     return groups.map(([g, items], gi) =>
       g ? (
-        <optgroup key={`g-${g}-${gi}`} label={g}>
+        <optgroup key={`g-${g}-${gi}`} label={t(`destinations.${g}`, { defaultValue: items[0]?.group || g })}>
           {items.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
         </optgroup>
       ) : (
         items.map(c => <option key={c.value} value={c.value}>{c.label}</option>)
       ),
     );
-  }, [cities]);
+  }, [cities, t]);
   // "From €X" per card (lowest real bookable nightly), when no dates are picked.
   const fromListingIds = useMemo(
     () => allProperties.filter(p => p.guestyId).map(p => p.guestyId!),
@@ -111,15 +117,15 @@ export default function Homes() {
       {
         '@context': 'https://schema.org',
         '@type': 'ItemList',
-        name: 'Private Villas in Portugal',
-        description: `Browse ${HOME_COUNT_LABEL} private hotels across Portugal, each home operated like a hotel by our own team.`,
-        url: 'https://www.portugalactive.com/homes',
+        name: t('nav.homes'),
+        description: t('conversion.homesIntro'),
+        url: `https://www.portugalactive.com/${i18n.language.split('-')[0]}/homes`,
         numberOfItems: allProperties.length,
         itemListElement: allProperties.slice(0, 30).map((p, i) => ({
           '@type': 'ListItem',
           position: i + 1,
-          name: p.name,
-          url: `https://www.portugalactive.com/homes/${p.slug}`,
+          name: getDisplayName(p),
+          url: `https://www.portugalactive.com/${i18n.language.split('-')[0]}/homes/${p.slug}`,
           ...(p.images?.[0] && { image: p.images[0] }),
         })),
       },
@@ -128,7 +134,7 @@ export default function Homes() {
         { name: 'Homes' },
       ]),
     ];
-  }, [allProperties]);
+  }, [allProperties, t, i18n.language]);
 
   const SORT_OPTIONS = useMemo(
     (): { label: string; value: SortOption }[] => [
@@ -249,6 +255,7 @@ export default function Homes() {
     const amenityList = (p: Property): string[] =>
       Object.values((p.amenities || {}) as Record<string, string[]>).flat().filter((a) => typeof a === 'string');
     const facetted = withoutChildUnits.filter((p) => {
+      if (collection && !matchesCollection(p, collection)) return false;
       if (typeFilter !== 'all' && (p.propertyType || '') !== typeFilter) return false;
       if (poolOnly && !HEATED_POOL_SLUGS.has(p.slug) && !hasSwimmingPool(amenityList(p))) return false;
       // "Heated pool" lives in names/taglines, not the amenity list.
@@ -270,7 +277,7 @@ export default function Homes() {
       return true;
     });
     return sortSearchResults(facetted, sort, quotes, fromPrices, searchNights);
-  }, [allProperties, destination, location, sort, searchGuestsCount, typeFilter, budgetFilter, poolOnly, heatedPoolOnly, petFriendlyOnly, bedroomFilter, fromPrices, quotes, searchNights]);
+  }, [allProperties, destination, location, sort, searchGuestsCount, typeFilter, budgetFilter, poolOnly, heatedPoolOnly, petFriendlyOnly, bedroomFilter, fromPrices, quotes, searchNights, collection]);
 
   // GA4: view_item_list — fires only for cards that enter the viewport
   useEffect(() => {
@@ -357,12 +364,12 @@ export default function Homes() {
 
   const clearFilters = () => {
     const params = new URLSearchParams(searchString);
-    for (const key of ['destination', 'location', 'type', 'budget', 'bedrooms', 'pool', 'heatedPool', 'pets', 'sort']) params.delete(key);
+    for (const key of ['collection', 'destination', 'location', 'type', 'budget', 'bedrooms', 'pool', 'heatedPool', 'pets', 'sort']) params.delete(key);
     setBookingLocation('');
     setBookingDestination('');
     navigate(`/homes${params.size ? `?${params}` : ''}`, { replace: true });
   };
-  const activeFilterCount = [typeFilter !== 'all', budgetFilter !== 'all', bedroomFilter !== 'all', poolOnly, heatedPoolOnly, petFriendlyOnly, destination !== 'all', location !== 'all'].filter(Boolean).length;
+  const activeFilterCount = [!!collection, typeFilter !== 'all', budgetFilter !== 'all', bedroomFilter !== 'all', poolOnly, heatedPoolOnly, petFriendlyOnly, destination !== 'all', location !== 'all'].filter(Boolean).length;
   const confirmedCount = availableProperties.filter(p => hasConfirmedQuote(quotes[p.slug])).length;
   const unconfirmedCount = availableProperties.length - confirmedCount;
 
@@ -488,10 +495,81 @@ export default function Homes() {
     navigate(`/homes${qs ? `?${qs}` : ''}`);
   };
 
+  const filterControls = (
+<div className="flex items-center gap-2 mb-5 flex-wrap" data-testid="plp-filters">
+            {([
+              [typeFilter, setTypeFilter, t('homes.filters.anyType', 'All types'), [
+                ['House', t('homes.filters.house', 'House')],
+                ['Villa', t('homes.filters.villa', 'Villa')],
+                ['Apartment', t('homes.filters.apartment', 'Apartment')],
+              ]],
+              [bedroomFilter, setBedroomFilter, t('searchUx.bedrooms'), [
+                ['1-2', '1–2'], ['3-4', '3–4'], ['5-6', '5–6'], ['7+', '7+'],
+              ]],
+              [budgetFilter, setBudgetFilter, t('homes.filters.anyBudget', 'Any budget'), [
+                ['b1', t('homes.filters.b1', 'Up to €300 / night')],
+                ['b2', t('homes.filters.b2', '€300 – €500 / night')],
+                ['b3', t('homes.filters.b3', '€500 – €800 / night')],
+                ['b4', t('homes.filters.b4', '€800+ / night')],
+              ]],
+            ] as Array<[string, (v: string) => void, string, Array<[string, string]>]>).map(([value, set, anyLabel, options], i) => (
+              <span key={i} className="relative shrink-0">
+                <select
+                  value={value}
+                  onChange={(e) => set(e.target.value)}
+                  aria-label={anyLabel}
+                  className={`appearance-none h-11 rounded-full border pl-4 pr-8 body-sm text-inherit font-sans cursor-pointer transition-colors ${
+                    value !== 'all'
+                      ? 'bg-pa-dark text-white border-pa-dark'
+                      : 'bg-white text-pa-earth border-pa-sand hover:border-pa-gold'
+                  }`}
+                >
+                  <option value="all">{anyLabel}</option>
+                  {options.map(([v, label]) => <option key={v} value={v}>{label}</option>)}
+                </select>
+                <ChevronDown className={`w-3.5 h-3.5 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none ${value !== 'all' ? 'text-white' : 'text-pa-gold'}`} />
+              </span>
+            ))}
+            <span aria-hidden className="h-5 w-px bg-pa-sand shrink-0 mx-0.5 hidden md:block" />
+            {([
+              [poolOnly, setPoolOnly, t('homes.filters.pool', 'Pool')],
+              [heatedPoolOnly, setHeatedPoolOnly, t('homes.filters.heatedPool', 'Heated pool')],
+              [petFriendlyOnly, setPetFriendlyOnly, t('property.petFriendly', 'Pet-friendly')],
+            ] as Array<[boolean, (v: boolean) => void, string]>).map(([active, set, label]) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => set(!active)}
+                aria-pressed={active}
+                className={`h-11 px-4 rounded-full border body-sm text-inherit whitespace-nowrap shrink-0 transition-colors ${
+                  active
+                    ? 'bg-pa-dark text-white border-pa-dark'
+                    : 'bg-white text-pa-earth border-pa-sand hover:border-pa-gold'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={() => setShowMap((v) => !v)}
+              aria-pressed={showMap}
+              className={`ml-auto inline-flex items-center gap-1.5 h-11 px-4 rounded-full border body-sm text-inherit whitespace-nowrap shrink-0 transition-colors ${
+                showMap
+                  ? 'bg-pa-dark text-white border-pa-dark'
+                  : 'bg-white text-pa-earth border-pa-sand hover:border-pa-gold'
+              }`}
+            >
+              <MapIcon className="w-3.5 h-3.5" />
+              {t('homes.filters.map', 'Map')}
+            </button>
+          </div>
+  );
+
   const catalogueIntro = (
       <section className="container pt-24 md:pt-28 pb-6 md:pb-8">
-        <h1 className="headline-lg text-pa-dark mb-3">{t('homes.title')}</h1>
-        <p className="body-md max-w-2xl text-pa-earth">{t('homes.subtitle', { homes: HOME_COUNT_LABEL })}</p>
+        <h1 className="headline-lg text-pa-dark mb-3">{collection ? ((collection as any)[i18n.language]?.title ?? collection.en.title) : t('homes.title')}</h1>
+        <p className="body-md max-w-2xl text-pa-earth">{t('conversion.homesIntro')}</p>
       </section>
   );
 
@@ -533,7 +611,8 @@ export default function Homes() {
             <button onClick={() => refetch()} className="btn-primary">{t('homes.retry', 'RETRY')}</button>
           </div>
         </section>
-        <Footer />
+        <StayCollections />
+      <Footer />
       </div>
     );
   }
@@ -546,7 +625,7 @@ export default function Homes() {
       {catalogueIntro}
 
       {/* Sticky: homepage-style search + filters in one dense band */}
-      <div className="sticky top-16 md:top-20 z-30 bg-pa-cream/95 backdrop-blur-md border-b border-pa-sand">
+      <div className="lg:sticky top-16 md:top-20 z-30 bg-pa-cream/95 backdrop-blur-md border-b border-pa-sand">
         <div className="container py-2.5 md:py-3">
           {/* Desktop — pill (same as homepage) */}
           <div className="hidden lg:flex justify-center mb-2.5 md:mb-3">
@@ -737,81 +816,35 @@ export default function Homes() {
       </div>
 
       {/* Results */}
-      <section className="pt-6 pb-12 md:pt-8 md:pb-16 lg:pb-20" aria-live="polite" aria-atomic="true">
+      <section className="pt-6 pb-12 md:pt-8 md:pb-16 lg:pb-20" >
         <div className="container">
           {/* Status line */}
           {/* ── Filters — type · budget · pool · heated pool · pet-friendly · map ──
               One row of equal-height pills; selects are restyled to match the
               chips (appearance-none + own chevron) and go dark when active,
               so the whole row reads as one system. Scrolls sideways on mobile. */}
-          <div className="flex items-center gap-2 mb-5 flex-wrap" data-testid="plp-filters">
-            {([
-              [typeFilter, setTypeFilter, t('homes.filters.anyType', 'All types'), [
-                ['House', t('homes.filters.house', 'House')],
-                ['Villa', t('homes.filters.villa', 'Villa')],
-                ['Apartment', t('homes.filters.apartment', 'Apartment')],
-              ]],
-              [bedroomFilter, setBedroomFilter, t('searchUx.bedrooms'), [
-                ['1-2', '1–2'], ['3-4', '3–4'], ['5-6', '5–6'], ['7+', '7+'],
-              ]],
-              [budgetFilter, setBudgetFilter, t('homes.filters.anyBudget', 'Any budget'), [
-                ['b1', t('homes.filters.b1', 'Up to €300 / night')],
-                ['b2', t('homes.filters.b2', '€300 – €500 / night')],
-                ['b3', t('homes.filters.b3', '€500 – €800 / night')],
-                ['b4', t('homes.filters.b4', '€800+ / night')],
-              ]],
-            ] as Array<[string, (v: string) => void, string, Array<[string, string]>]>).map(([value, set, anyLabel, options], i) => (
-              <span key={i} className="relative shrink-0">
-                <select
-                  value={value}
-                  onChange={(e) => set(e.target.value)}
-                  aria-label={anyLabel}
-                  className={`appearance-none h-11 rounded-full border pl-4 pr-8 body-sm text-inherit font-sans cursor-pointer transition-colors ${
-                    value !== 'all'
-                      ? 'bg-pa-dark text-white border-pa-dark'
-                      : 'bg-white text-pa-earth border-pa-sand hover:border-pa-gold'
-                  }`}
-                >
-                  <option value="all">{anyLabel}</option>
-                  {options.map(([v, label]) => <option key={v} value={v}>{label}</option>)}
-                </select>
-                <ChevronDown className={`w-3.5 h-3.5 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none ${value !== 'all' ? 'text-white' : 'text-pa-gold'}`} />
-              </span>
-            ))}
-            <span aria-hidden className="h-5 w-px bg-pa-sand shrink-0 mx-0.5 hidden md:block" />
-            {([
-              [poolOnly, setPoolOnly, t('homes.filters.pool', 'Pool')],
-              [heatedPoolOnly, setHeatedPoolOnly, t('homes.filters.heatedPool', 'Heated pool')],
-              [petFriendlyOnly, setPetFriendlyOnly, t('property.petFriendly', 'Pet-friendly')],
-            ] as Array<[boolean, (v: boolean) => void, string]>).map(([active, set, label]) => (
-              <button
-                key={label}
-                type="button"
-                onClick={() => set(!active)}
-                aria-pressed={active}
-                className={`h-11 px-4 rounded-full border body-sm text-inherit whitespace-nowrap shrink-0 transition-colors ${
-                  active
-                    ? 'bg-pa-dark text-white border-pa-dark'
-                    : 'bg-white text-pa-earth border-pa-sand hover:border-pa-gold'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-            <button
-              type="button"
-              onClick={() => setShowMap((v) => !v)}
-              aria-pressed={showMap}
-              className={`ml-auto inline-flex items-center gap-1.5 h-11 px-4 rounded-full border body-sm text-inherit whitespace-nowrap shrink-0 transition-colors ${
-                showMap
-                  ? 'bg-pa-dark text-white border-pa-dark'
-                  : 'bg-white text-pa-earth border-pa-sand hover:border-pa-gold'
-              }`}
-            >
-              <MapIcon className="w-3.5 h-3.5" />
-              {t('homes.filters.map', 'Map')}
+          <div className="hidden md:block">{filterControls}</div>
+          <div className="md:hidden flex items-center gap-3 mb-4">
+            <button type="button" onClick={() => setFiltersOpen(true)} className="inline-flex items-center gap-2 min-h-11 rounded-full border border-pa-dark px-4 body-sm text-pa-dark">
+              <SlidersHorizontal size={16} /> {t('conversion.filters')}{activeFilterCount > 0 && ` (${activeFilterCount})`}
+            </button>
+            <button type="button" onClick={() => setShowMap(v => !v)} aria-pressed={showMap} className="inline-flex items-center gap-2 min-h-11 rounded-full border border-pa-sand px-4 body-sm text-pa-earth">
+              <MapIcon size={16} /> {t('homes.filters.map')}
             </button>
           </div>
+          <Dialog open={filtersOpen} onOpenChange={setFiltersOpen}>
+            <DialogContent className="max-w-lg max-h-[85dvh] overflow-y-auto bg-pa-cream rounded-2xl">
+              <DialogHeader>
+                <DialogTitle className="font-display text-2xl">{t('conversion.filters')}</DialogTitle>
+                <DialogDescription>{t('conversion.filterIntro')}</DialogDescription>
+              </DialogHeader>
+              {filterControls}
+              <div className="flex items-center justify-between gap-4 border-t border-pa-sand pt-4">
+                <button type="button" onClick={clearFilters} className="min-h-11 body-sm underline">{t('searchUx.clearFilters', { count: activeFilterCount })}</button>
+                <button type="button" onClick={() => setFiltersOpen(false)} className="btn-primary">{t('conversion.seeHomes', { count: filtered.length })}</button>
+              </div>
+            </DialogContent>
+          </Dialog>
 
           {activeFilterCount > 0 && (
             <button type="button" onClick={clearFilters} className="mb-4 min-h-11 body-sm text-pa-earth underline underline-offset-4 hover:text-pa-dark">
@@ -831,7 +864,7 @@ export default function Homes() {
           )}
 
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-            <p className="body-sm text-pa-stone-aa">
+            <p className="body-sm text-pa-stone-aa" role="status">
               {hasDates && !quotesLoading ? (
                 <>
                   <span className="font-medium text-pa-dark">{confirmedCount}</span> {t('searchUx.confirmed')}
@@ -1152,23 +1185,15 @@ export default function Homes() {
         </div>
       </section>
 
-      {/* Answer capsule — citable collection summary for AI engines (bottom, not blocking listings) */}
-      <section className="pt-8 pb-4 bg-pa-cream">
-        <div className="container max-w-3xl mx-auto">
-          <AnswerCapsule
-            question="What properties does Portugal Active offer?"
-            answer={`Portugal Active operates a curated collection of ${HOME_COUNT_LABEL} private hotels across Portugal, spanning Minho, Porto, the Douro Valley, Lisbon, Alentejo and the Algarve. Each property is managed to five-star standards with dedicated concierge, daily housekeeping, and access to private chef, spa, and curated local experiences. Unlike standard rentals, every stay is fully operated by an in-house team. Book direct for the best rate guaranteed.`}
-            lastUpdated="2026-04-17"
-            author="Portugal Active concierge team"
-            cite={[
-              { label: 'About Portugal Active', href: '/about' },
-              { label: 'Concierge services', href: '/concierge' },
-              { label: 'Contact us', href: '/contact' },
-            ]}
-          />
+      <section className="py-10 bg-pa-cream">
+        <div className="container max-w-3xl text-center">
+          <h2 className="headline-sm text-pa-dark mb-3">{t('conversion.helpTitle')}</h2>
+          <p className="body-md text-pa-earth mb-5">{t('conversion.helpBody')}</p>
+          <Link href="/contact" className="btn-ghost">{t('homes.talkConcierge')}</Link>
         </div>
       </section>
 
+      <StayCollections />
       <Footer />
     </div>
   );

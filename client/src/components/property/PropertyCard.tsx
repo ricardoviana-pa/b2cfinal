@@ -7,7 +7,7 @@
 import { useState, useCallback, useRef, useMemo } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Flame, Star, PawPrint } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Gem, Star, PawPrint } from 'lucide-react';
 import { formatEur, getDisplayName } from '@/lib/format';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
@@ -61,7 +61,7 @@ export default function PropertyCard({
   hidePrice = false,
   fromPrice,
 }: PropertyCardProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   // Multi-unit treatment: when this listing is the parent of a curated group,
   // the card swaps name → group name, hides specs/price, and shows a
   // "X units available" line. The PDP route is unchanged — clicking opens the
@@ -147,7 +147,7 @@ export default function PropertyCard({
   // deliberate editorial signal we control end-to-end.
   const urgencyBadge = useMemo(() => {
     if (property.tier === 'signature') {
-      return { label: t('urgency.highDemand', 'High demand'), icon: Flame, color: 'bg-[#1A1A18]/80' };
+      return { label: t('filters.signature', 'Signature'), icon: Gem, color: 'bg-[#1A1A18]/80' };
     }
     if (property.tier === 'new') {
       return { label: t('urgency.justAdded', 'Just added'), icon: null, color: 'bg-[#8B7355]/90' };
@@ -163,7 +163,7 @@ export default function PropertyCard({
       <article className="group cursor-pointer block">
       {/* Image Carousel â 4:3 aspect */}
       <div
-        className="relative overflow-hidden bg-[#E8E4DC] img-fallback"
+        className="relative overflow-hidden rounded-xl bg-[#E8E4DC] img-fallback"
         style={{ aspectRatio: '4/3' }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -173,7 +173,7 @@ export default function PropertyCard({
           src={optimizeGuestyImage(rawImages[currentImage], 1080)}
           srcSet={guestySrcSet(rawImages[currentImage], [400, 640, 768, 1080])}
           alt={t('property.imageAlt', { name: displayName, current: currentImage + 1, total })}
-          className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03] ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03]`}
           loading="lazy"
           decoding="async"
           fetchPriority="low"
@@ -283,14 +283,14 @@ export default function PropertyCard({
                   if (nights > 0 && liveQuote && liveQuote.available !== false && liveQuote.total > 0) {
                     return (
                       <span className="text-[0.8125rem] text-[#1A1A18] font-medium">
-                        {formatEur(liveQuote.total)} {t('property.totalLabel')}
+                        {formatEur(liveQuote.total, i18n.language)} {t('property.totalLabel')}
                       </span>
                     );
                   }
                   if (typeof fromPrice === 'number' && fromPrice > 0) {
                     return (
                       <span className="text-[0.8125rem]">
-                        <span className="text-[#1A1A18] font-medium">{t('common.from')} {formatEur(fromPrice)}</span>
+                        <span className="text-[#1A1A18] font-medium">{t('common.from')} {formatEur(fromPrice, i18n.language)}</span>
                         <span className="text-[#726D63]"> {t('property.perNight')}</span>
                       </span>
                     );
@@ -330,7 +330,7 @@ export default function PropertyCard({
                   if (liveQuote && liveQuote.total > 0) {
                     return (
                       <span className="text-[0.8125rem] text-[#1A1A18] font-medium">
-                        {formatEur(liveQuote.total)} {t('property.totalLabel')}
+                        {formatEur(liveQuote.total, i18n.language)} {t('property.totalLabel')}
                       </span>
                     );
                   }
@@ -339,7 +339,7 @@ export default function PropertyCard({
                 if (typeof fromPrice === 'number' && fromPrice > 0) {
                   return (
                     <span className="text-[0.8125rem]">
-                      <span className="text-[#1A1A18] font-medium">{t('common.from')} {formatEur(fromPrice)}</span>
+                      <span className="text-[#1A1A18] font-medium">{t('common.from')} {formatEur(fromPrice, i18n.language)}</span>
                       <span className="text-[#726D63]"> {t('property.perNight')}</span>
                     </span>
                   );
