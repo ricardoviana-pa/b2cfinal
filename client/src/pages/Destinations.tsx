@@ -55,7 +55,7 @@ export default function Destinations() {
               <Link key={d.slug} href={`/destinations/${d.slug}`}
                 className={`group block ${index < 2 ? 'md:col-span-3' : 'md:col-span-2'}`}>
                 <div className="aspect-[3/2] md:aspect-[16/10] overflow-hidden rounded-xl bg-pa-sand mb-5">
-                  <img src={cdnResize(d.coverImage, 1080)} srcSet={cdnSrcSet(d.coverImage, [400, 640, 1080])}
+                  <img src={cdnResize(d.regionImage || d.coverImage, 1080)} srcSet={cdnSrcSet(d.regionImage || d.coverImage, [400, 640, 1080])}
                     sizes={index < 2 ? '(min-width: 768px) 45vw, 90vw' : '(min-width: 768px) 30vw, 90vw'}
                     alt={d.name} width={1080} height={720} loading={index < 2 ? 'eager' : 'lazy'}
                     fetchPriority={index === 0 ? 'high' : 'auto'}
@@ -73,7 +73,7 @@ export default function Destinations() {
         {viana && <section className="bg-white border-y border-pa-sand">
           <div className="container grid md:grid-cols-2 gap-8 lg:gap-16 py-12 lg:py-16 items-center">
             <div className="aspect-[4/3] overflow-hidden rounded-xl">
-              <img src={cdnResize(viana.coverImage, 1080)} srcSet={cdnSrcSet(viana.coverImage, [400, 640, 1080])}
+              <img src={cdnResize(viana.regionImage || viana.coverImage, 1080)} srcSet={cdnSrcSet(viana.regionImage || viana.coverImage, [400, 640, 1080])}
                 sizes="(min-width: 768px) 45vw, 90vw" alt={viana.name} width={1080} height={810}
                 loading="lazy" className="w-full h-full object-cover" />
             </div>

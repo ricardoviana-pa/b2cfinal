@@ -23,11 +23,13 @@ import destinationsData from '@/data/destinations.json';
 import { localizeDestination, useDestinationOverrides, useContentOverrides, localizeProduct } from '@/lib/localizeContent';
 import journalIndex from '@/data/journal-index/en.json';
 import destinationJournal from '@/data/destination-journal.json';
+import destinationJournalImages from '@/data/destination-journal-images.json';
 import productsData from '@/data/products.json';
 import { trpc } from '@/lib/trpc';
 import { StructuredData } from '@/components/seo/StructuredData';
 import { DestinationPage, buildDestinationGraph } from '@/components/destinations';
 import type { Destination, Property, Product } from '@/lib/types';
+import { uniqueByImage } from '@/lib/destinationImagery';
 
 const destinations = destinationsData as unknown as Destination[];
 const allProducts = productsData as unknown as Product[];
@@ -49,7 +51,7 @@ export default function DestinationDetail() {
   usePageMeta({
     title: dest?.seoTitle ?? (dest ? `${dest.name} Portugal | Luxury Villas and Experiences` : undefined),
     description: dest?.seoDescription ?? (dest ? `Discover ${dest.name}. Private villas with pool, concierge, and curated experiences.`.slice(0, 155) : undefined),
-    image: dest?.coverImage,
+    image: dest?.regionImage || dest?.coverImage,
     url: dest ? `/destinations/${dest.slug}` : undefined,
     // Drafts (copy still "[TBD]") and coming-soon entries stay out of the index.
     noindex: !!dest && (dest.status !== 'active' || !!dest.comingSoon),
@@ -104,8 +106,18 @@ export default function DestinationDetail() {
   }
 
   const index = { ...journalIndex, ...journalOverrides } as Record<string, {slug: string; title: string; excerpt?: string; coverImage?: string}>;
-  const articles = ((destinationJournal as Record<string, string[]>)[dest.slug] || [])
-    .map(slug => index[slug]).filter(Boolean);
+  const articles = uniqueByImage(
+    ((destinationJournal as Record<string, string[]>)[dest.slug] || [])
+      .map(slug => {
+        const article = index[slug];
+        if (!article) return null;
+        const curatedImage = (destinationJournalImages as Record<string, string>)[slug];
+        return curatedImage ? { ...article, coverImage: curatedImage } : article;
+      })
+      .filter((article): article is NonNullable<typeof article> => !!article),
+    [dest.regionImage, dest.coverImage],
+    3,
+  );
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">

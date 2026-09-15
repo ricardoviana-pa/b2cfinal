@@ -116,6 +116,8 @@ export interface Destination {
   tagline: string;
   description: string;        // Short editorial description for cards
   coverImage: string;
+  /** Editorial image of the place itself (kept separate from a property cover). */
+  regionImage?: string;
   gallery: string[];
   whyDescription: string;     // Section 2: editorial "why this place"
   highlights: string[];       // 3-5 bullets: what makes this region special

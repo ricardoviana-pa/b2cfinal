@@ -38,8 +38,9 @@ interface HeroEditorialProps {
 
 export function HeroEditorial({ destination: d }: HeroEditorialProps) {
   const { t } = useTranslation();
+  const heroImage = d.regionImage || d.coverImage;
   return <section className="page-hero">
-    {d.coverImage ? <img src={cdnResize(d.coverImage, 1600)} srcSet={cdnSrcSet(d.coverImage, [768,1280,1920])} sizes="100vw" alt={d.name} className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" /> : <div className="absolute inset-0 placeholder-image" />}
+    {heroImage ? <img src={cdnResize(heroImage, 1600)} srcSet={cdnSrcSet(heroImage, [768,1280,1920])} sizes="100vw" alt={`${d.name}, Portugal`} className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" /> : <div className="absolute inset-0 placeholder-image" />}
     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
     <div className="relative container z-10">
       <Link href="/destinations" className="inline-flex min-h-11 items-center text-sm text-white/80 mb-2">← {t('destinationsPage.backToDestinations')}</Link>
@@ -772,9 +773,9 @@ export function RelatedDestinationsAndOwnersCTA({
                   className="group block relative overflow-hidden rounded-xl"
                   style={{ aspectRatio: '4/3' }}
                 >
-                  {r.coverImage ? (
+                  {(r.regionImage || r.coverImage) ? (
                     <img
-                      src={r.coverImage}
+                      src={r.regionImage || r.coverImage}
                       alt={r.name}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                       loading="lazy"

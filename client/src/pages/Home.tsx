@@ -952,12 +952,13 @@ export default function Home() {
 
           <div className="flex gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5 md:mx-0 md:px-0 md:grid md:grid-cols-3 lg:grid-cols-5 md:overflow-visible">
             {activeDestinations.map(dest => {
+              const destinationImage = dest.regionImage || dest.coverImage;
               return (
                 <Link key={dest.id} href={`/destinations/${dest.slug}`} className="group block flex-shrink-0 w-[240px] sm:w-[260px] md:w-auto" style={{ scrollSnapAlign: 'start' }}>
                   <div className="relative overflow-hidden bg-pa-sand" style={{ aspectRatio: '3/4' }}>
-                    {dest.coverImage ? (
+                    {destinationImage ? (
                       <img
-                        src={dest.coverImage}
+                        src={destinationImage}
                         alt={dest.name}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                         loading="lazy"
