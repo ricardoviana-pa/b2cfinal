@@ -43,7 +43,11 @@ export default function LocaleRouter({ children, ssrPath }: { children: ReactNod
   const { i18n } = useTranslation();
   // SSR passes the request path via `ssrPath`; in the browser we read
   // window.location. `window` is undefined during server render.
-  const pathname = ssrPath?.split('?')[0] ?? (typeof window !== 'undefined' ? window.location.pathname : '/');
+  // Wouter 3.7 (the deployed lockfile version) uses these props for its
+  // hydration snapshot too. Supply the browser's initial URL so it does not
+  // hydrate a dated search with an empty query before updating after mount.
+  const requestUrl = ssrPath ?? (typeof window !== 'undefined' ? window.location.pathname + window.location.search : '/');
+  const pathname = requestUrl.split('?')[0];
   const { lang, rest } = useMemo(() => extractLocale(pathname), [pathname]);
 
   // If URL has no valid locale prefix, redirect with a real navigation
@@ -69,7 +73,7 @@ export default function LocaleRouter({ children, ssrPath }: { children: ReactNod
   }, [activeLang, i18n]);
 
   return (
-    <Router base={`/${activeLang}`} ssrPath={ssrPath}>
+    <Router base={`/${activeLang}`} ssrPath={requestUrl}>
       {children}
     </Router>
   );
