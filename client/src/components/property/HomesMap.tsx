@@ -8,24 +8,23 @@
    ========================================================================== */
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'wouter';
-import { formatEur } from '@/lib/format';
-// Minimal shape — the PLP passes its own Property objects.
-interface Property {
-  guestyId?: string;
-  slug: string;
-  name: string;
-  priceFrom?: number;
-  amenities?: Record<string, string[]>;
-  propertyType?: string;
-}
+import { useTranslation } from 'react-i18next';
+import { formatEur, formatCurrency, intlLocale } from '@/lib/format';
+import type { Property } from '@/lib/types';
+import type { SearchQuote } from '@/lib/homeSearch';
 
 interface HomesMapProps {
   properties: Property[];
-  fromPrices?: Record<string, number>;
+  fromPrices?: Record<string, number | null>;
+  quotes: Record<string, SearchQuote | null>;
+  checkin?: string;
+  checkout?: string;
+  guests?: number;
   lang: string;
 }
 
-export default function HomesMap({ properties, fromPrices, lang }: HomesMapProps) {
+export default function HomesMap({ properties, fromPrices, quotes, checkin, checkout, guests, lang }: HomesMapProps) {
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const [, navigate] = useLocation();
@@ -62,15 +61,36 @@ export default function HomesMap({ properties, fromPrices, lang }: HomesMapProps
         if (typeof lat !== 'number' || typeof lng !== 'number') continue;
         const pos: [number, number] = [Number(lat.toFixed(3)), Number(lng.toFixed(3))];
         bounds.push(pos);
-        const nightly = fromPrices?.[p.guestyId ?? ''] ?? p.priceFrom ?? 0;
-        const label = nightly > 0 ? formatEur(nightly, lang) : '·';
+        const hasDates = !!checkin && !!checkout && checkout > checkin;
+        const quote = quotes[p.slug];
+        const price = hasDates
+          ? (quote?.available !== false ? quote?.total : null)
+          : fromPrices?.[p.guestyId ?? p.supplierUid ?? ''];
+        const isPartner = p.source === 'tripwix';
+        const partial = isPartner && hasDates && !quote?.feesKnown;
+        const money = price && price > 0
+          ? (isPartner && hasDates ? formatCurrency(price, { locale: intlLocale(lang) }) : formatEur(price, lang))
+          : null;
+        const label = money
+          ? hasDates ? `${money} ${t(partial ? 'partnerBooking.accommodationLabel' : 'property.totalLabel')}` : `${t('common.from')} ${money}`
+          : '·';
+        const priceNote = isPartner && money
+          ? `${t('partnerBooking.vatIncluded')} ${(!hasDates || partial) ? t('partnerBooking.feesPendingShort') : ''}`
+          : '';
+        const pin = document.createElement('span');
+        pin.className = 'pa-map-pin-label';
+        pin.textContent = label;
+        pin.title = priceNote;
         const icon = L.divIcon({
           className: 'pa-map-pin',
-          html: `<span class="pa-map-pin-label">${label}</span>`,
+          html: pin,
           iconSize: null,
         });
-        const marker = L.marker(pos, { icon, title: p.name });
-        marker.on('click', () => navigateRef.current(`/homes/${p.slug}`));
+        const marker = L.marker(pos, { icon, title: `${p.name}: ${money ? label : t('property.priceOnRequest')}. ${priceNote}` });
+        const params = new URLSearchParams();
+        if (hasDates) { params.set('checkin', checkin!); params.set('checkout', checkout!); }
+        if (guests && guests > 1) params.set('guests', String(guests));
+        marker.on('click', () => navigateRef.current(`/homes/${p.slug}${params.size ? `?${params}` : ''}`));
         layer.addLayer(marker);
       }
       if (bounds.length) {
@@ -80,7 +100,7 @@ export default function HomesMap({ properties, fromPrices, lang }: HomesMapProps
       }
     })();
     return () => { cancelled = true; };
-  }, [properties, fromPrices, lang]);
+  }, [properties, fromPrices, quotes, checkin, checkout, guests, lang, t]);
 
   useEffect(() => () => { mapRef.current?.remove(); mapRef.current = null; }, []);
 
