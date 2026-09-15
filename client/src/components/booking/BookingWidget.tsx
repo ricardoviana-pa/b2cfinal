@@ -18,6 +18,14 @@ import productsData from "@/data/products.json";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
 import { formatEur, formatBookingDate, intlLocale } from "@/lib/format";
 
+export interface BookingSelection {
+  checkIn: string;
+  checkOut: string;
+  guests: number;
+  total: number | null;
+  loading: boolean;
+}
+
 interface BookingWidgetProps {
   guestyId: string;
   propertyName: string;
@@ -34,6 +42,7 @@ interface BookingWidgetProps {
   initialGuests?: number;
   /** WhatsApp do concierge — integrado no rodapé do widget (12 jul) */
   conciergeUrl?: string;
+  onSelectionChange?: (selection: BookingSelection) => void;
 }
 
 /** checkout_v2 local override for testing on dev: ?checkoutv2=1|0.
@@ -320,6 +329,7 @@ export default function BookingWidget({
   initialCheckOut = "",
   initialGuests = 0,
   conciergeUrl,
+  onSelectionChange,
 }: BookingWidgetProps) {
   const { t, i18n: i18nActive } = useTranslation();
   const lang = i18nActive.language;
@@ -426,6 +436,10 @@ export default function BookingWidget({
       (effectiveQuote?.total ?? 0) > 0
     );
   }, [quote, effectiveQuote]);
+
+  useEffect(() => {
+    onSelectionChange?.({ checkIn, checkOut, guests, loading, total: hasLivePrice && !loading ? effectiveQuote!.total : null });
+  }, [checkIn, checkOut, guests, loading, hasLivePrice, effectiveQuote?.total, onSelectionChange]);
 
   const fetchQuote = useCallback(async () => {
     if (!checkIn || !checkOut) return;
@@ -923,6 +937,11 @@ export default function BookingWidget({
           className={`border overflow-hidden cursor-pointer transition-colors ${
             showCalendar ? "border-black rounded-t-lg" : "border-black/15 hover:border-black/30 rounded-lg"
           }`}
+          role="button"
+          tabIndex={0}
+          aria-label={`${t("bookingWidget.checkInLabel")}: ${checkIn || t("bookingWidget.selectDate")}. ${t("bookingWidget.checkOutLabel")}: ${checkOut || t("bookingWidget.selectDate")}`}
+          aria-expanded={showCalendar}
+          onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setShowCalendar(v => !v); } }}
           onClick={() => setShowCalendar((v) => !v)}
         >
           <div className="grid grid-cols-2 divide-x divide-black/10">

@@ -43,6 +43,35 @@ export function breakdownFromIntent(m: any) {
   });
 }
 
+/**
+ * Plano tarifário que o hóspede escolheu e pagou.
+ *
+ * Vive na COLUNA `ratePlanId` do intent — é lá que o create o grava e lá que o
+ * syncIntent o actualiza quando o hóspede troca de plano. NUNCA esteve dentro
+ * do snapshot `quote`: o quoteSnapshotSchema não declara esse campo e o Zod
+ * remove chaves desconhecidas, por isso o antigo `quote.ratePlanId` era sempre
+ * undefined e TODAS as reservas do checkout 2.0 nasceram sem plano.
+ *
+ * Sem ele o Guesty preça no plano por omissão da listagem. O PriceLabs continua
+ * a mandar na tarifa por noite — o que diverge é o plano — e daí sai um total
+ * diferente do cobrado (o saldo aberto) e, pior, uma política de cancelamento
+ * diferente da que o hóspede comprou.
+ */
+export function resolveRatePlanId(intent: any, quote: any): string {
+  const direct = String(intent?.ratePlanId ?? "").trim() || String(quote?.ratePlanId ?? "").trim();
+  if (direct) return direct;
+  // Rede para intents antigos com a coluna vazia: o plano cujo total bate certo
+  // com o total cotado é, por definição, o que o hóspede viu e pagou.
+  const opts = quote?.ratePlanOptions;
+  if (!Array.isArray(opts)) return "";
+  const total = Number(quote?.total);
+  if (!Number.isFinite(total)) return "";
+  const match = opts.find(
+    (o: any) => Number.isFinite(Number(o?.total)) && Math.abs(Number(o.total) - total) < 0.02,
+  );
+  return String(match?.ratePlanId ?? "").trim();
+}
+
 /** Cria a reserva Guesty (só estadia) para um PI card_v2 pago. Idempotente. */
 export async function settleCardCharge(intentId: string, paymentIntentId: string): Promise<{
   reservationId: string;
@@ -76,6 +105,13 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
     const firstName = String((m as any).guestFirstName ?? "").trim();
     const lastName = String((m as any).guestLastName ?? "").trim();
     const q = ((m as any).quote ?? {}) as any;
+    const ratePlanId = resolveRatePlanId(m, q);
+    if (!ratePlanId) {
+      console.error(
+        `[Card2b] intent=${intentId} sem ratePlanId — o Guesty vai precar no plano por omissao ` +
+          `e a reserva fica com preco e politica de cancelamento diferentes do que foi vendido`,
+      );
+    }
     const res = await createReservationViaOpenApi({
       listingId: (m as any).listingId,
       checkIn: (m as any).checkIn,
@@ -87,7 +123,7 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
       numberOfAdults: Number((m as any).guests ?? 2),
       numberOfChildren: 0,
       numberOfInfants: 0,
-      ...(q.ratePlanId ? { ratePlanId: q.ratePlanId } : {}),
+      ...(ratePlanId ? { ratePlanId } : {}),
     } as any);
     reservationId = res.reservationId;
     confirmationCode = res.confirmationCode;
@@ -110,6 +146,15 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
   // re-preço da tarifa fica aquém (sem o service fee do Booking Engine); o
   // delta entra como invoice item AFE — categoria fora do split de owners,
   // como a cleaning fee — e so depois se regista o pagamento por inteiro.
+  // A reconciliação só existia NESTE sentido. Quando o Guesty re-preça a
+  // estadia ACIMA do que o site cobrou, o `stayEur - balance` fica negativo,
+  // caía no ramo de baixo e não fazia nada — o recordExternalPayment regista
+  // o que foi cobrado (capado no balanceDue) e a diferença fica como saldo
+  // aberto para sempre. GY-ATyEq5WB: site 1.282,10, Guesty 1.565,20, sobra
+  // 283,10 que o Guesty apresenta como "Pending payment collection". O hóspede
+  // pagou o preço contratado e não deve nada — mas o CS vê dívida e o instinto
+  // é pedir-lhe o cartão. Ver o priceGap abaixo.
+  let priceGap = 0;
   if (pi.metadata.feeAdjusted !== "1") {
     const balance = await getReservationBalanceDue(reservationId);
     const stayEur = Math.round(b.stayCents) / 100;
@@ -117,6 +162,18 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
       const delta = Math.round((stayEur - balance) * 100) / 100;
       const ok = await addReservationServiceFee(reservationId, delta);
       if (ok) await updatePaymentIntentMetadata(paymentIntentId, { feeAdjusted: "1" }).catch(() => {});
+    } else if (balance !== null && balance - stayEur > 0.5) {
+      // Sentido contrário: o Guesty pede mais do que o site cobrou. NÃO se
+      // corrige o folio aqui — baixá-lo tira receita ao proprietário e isso é
+      // decisão comercial, não de código. Mas também não fica calado: o valor
+      // vai para o PI, para o log e para uma nota na própria reserva, para
+      // quem a abrir no Guesty ver que não há nada a cobrar ao hóspede.
+      priceGap = Math.round((balance - stayEur) * 100) / 100;
+      console.error(
+        `[Card2b] PRECO DIVERGENTE reserva=${reservationId}: Guesty pede ${balance} EUR, o site cobrou ${stayEur} EUR ` +
+          `(diferenca ${priceGap}) — o hospede NAO deve nada; nao lhe pedir pagamento`,
+      );
+      await updatePaymentIntentMetadata(paymentIntentId, { priceGap: priceGap.toFixed(2) }).catch(() => {});
     } else if (balance !== null) {
       await updatePaymentIntentMetadata(paymentIntentId, { feeAdjusted: "1" }).catch(() => {});
     }
@@ -128,7 +185,15 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
     const noted = await appendReservationNote(
       reservationId,
       `Checkout 2.0: pagamento unico ${(pi.amount / 100).toFixed(2)} EUR na plataforma ` +
-        `(estadia ${(b.stayCents / 100).toFixed(2)} registada aqui; servicos ${((pi.amount - b.stayCents) / 100).toFixed(2)} faturados pela Portugal Active). PI ${paymentIntentId}.`,
+        `(estadia ${(b.stayCents / 100).toFixed(2)} registada aqui; servicos ${((pi.amount - b.stayCents) / 100).toFixed(2)} faturados pela Portugal Active). PI ${paymentIntentId}.` +
+        // Quem abrir a reserva vê "Pending payment collection" e nao tem como
+        // saber que o saldo nao e divida do hospede. Fica dito aqui, ao lado.
+        (priceGap > 0
+          ? ` ATENCAO: o Guesty preca esta estadia ${priceGap.toFixed(2)} EUR acima do que o site cobrou, ` +
+            `e esse saldo aparece como "pending payment collection". NAO e divida do hospede: ele pagou ` +
+            `por inteiro o preco que lhe foi apresentado. Nao lhe pedir pagamento nem dados de cartao. ` +
+            `Diferenca a resolver internamente.`
+          : ""),
     ).catch(() => false);
     if (noted) {
       await updatePaymentIntentMetadata(paymentIntentId, { splitNoteAdded: "1" }).catch(() => {});

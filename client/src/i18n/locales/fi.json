@@ -1,4 +1,8 @@
 {
+  "securityDeposit": {
+    "title": "Vakuusmaksu",
+    "notice": "Majoituksesta voidaan periä vakuusmaksu. Ota yhteyttä concierge-palveluumme saadaksesi lisätietoja."
+  },
   "nav": {
     "properties": "Kodit",
     "destinations": "Kohteet",
@@ -452,7 +456,9 @@
     "nlHeadline": "Inspiroidu.",
     "nlSub": "Valikoituja majoituksia, kausitarjouksia ja matkakertomuksia Portugalista — toimitetaan kuukausittain.",
     "nlError": "Jokin meni pieleen. Yritä uudelleen.",
-    "conciergeServices": "Concierge-palvelut"
+    "conciergeServices": "Concierge-palvelut",
+    "realEstate": "Osta tai myy asunto",
+    "offices": "Toimistot"
   },
   "propertyDetail": {
     "notFound": "Kohdetta ei löytynyt",
@@ -517,7 +523,10 @@
     "viewAllExperiences": "Katso kaikki elämykset",
     "relatedHomes": "Samankaltaisia koteja",
     "moreIn": "Lisää: {{destination}}",
-    "allDestHomes": "Kaikki kodit: {{destination}}"
+    "allDestHomes": "Kaikki kodit: {{destination}}",
+    "ownershipTitle": "Enemmän kuin loma.",
+    "ownershipBody": "Tämä talo kuuluu myös myytävien kiinteistöjemme valikoimaan. Tutustu ostomahdollisuuteen talon tuntevan tiimin kanssa.",
+    "ownershipAction": "Tutustu tähän myytävään taloon"
   },
   "priceBreakdown": {
     "title": "Hintayhteenveto",
@@ -576,11 +585,11 @@
     "uspPrivacy": "Koko koti, vain sinulle",
     "uspPrivacySub": "Ei jaettuja tiloja. Täysi yksityisyys.",
     "uspService": "Viiden tähden palvelu, pyynnöstä",
-    "uspServiceSub": "Yksityinen kokki, spa, siivous. Kaikki omalta tiimiltä.",
+    "uspServiceSub": "Valinnaiset palvelut",
     "uspLocal": "Paikallinen tiimi paikan päällä",
-    "uspLocalSub": "Concierge-palvelusi asuu täällä. 24/7 tuki.",
+    "uspLocalSub": "Suora concierge-palvelu",
     "uspRate": "Paras hinta takuu",
-    "uspRateSub": "Varaa suoraan. Ei provisioita. Ei välikäsiä.",
+    "uspRateSub": "Valitsemiesi päivien tarjous näyttää kokonaishinnan ja eritellyt pakolliset maksut ennen maksamista.",
     "homesOverline": "Kotimme",
     "homesTitle": "Huolellisesti valikoitu kokoelma Portugalin hienoimmista yksityiskodeista.",
     "homesBody": "Jokainen koti on henkilökohtaisesti valittu, ammattimaisesti valmisteltu ja jatkuvasti hallinnoitu tiimimme toimesta. Et varaa taloa. Varaat elämyksen.",
@@ -1473,7 +1482,7 @@
     "conciergeIncluded": "Concierge sisältyy",
     "directHeadline": "Miksi varata suoraan",
     "bestRateTeeth": "Paras hinta verkossa — jos löydätte nämä päivät halvemmalla Airbnb:stä tai Booking.comista, vastaamme hintaan",
-    "noServiceFees": "Ei palvelumaksuja — OTA:t lisäävät 12–18 % kassalla; täällä hinta on hinta",
+    "noServiceFees": "Valitsemiesi päivien tarjous näyttää kokonaishinnan ja eritellyt pakolliset maksut ennen maksamista.",
     "conciergeWhatsapp": "WhatsApp-concierge ennen oleskelua, sen aikana ja sen jälkeen",
     "guaranteeTerms": "Näin takuu toimii"
   },
@@ -1723,7 +1732,7 @@
       }
     },
     "reception": {
-      "prompt": "Miten haluat saapua? Valitse vaihtoehto jatkaaksesi.",
+      "prompt": "Miten haluat saapua?",
       "required": "Valitse miten haluat saapua jatkaaksesi.",
       "arrivalWindow": "Saapuminen:",
       "beforeLate": "Ennen klo {{hour}}",
@@ -1803,7 +1812,7 @@
     "qTimes": "Mihin aikaan ovat check-in ja check-out?",
     "aTimes": "Sisäänkirjautuminen klo {{checkIn}} alkaen ja uloskirjautuminen klo {{checkOut}} mennessä. Joustavista ajoista voi usein sopia conciergemme kanssa.",
     "qMin": "Mikä on vähimmäisoleskelu?",
-    "aMin": "Vähimmäisyöpymisaika vaihtelee sesongin mukaan — kalenteri näyttää tarkan vaatimuksen valitsemillesi päiville. Heinä- ja elokuussa majoitukset ovat lauantaista lauantaihin, vähintään 7 yötä.",
+    "aMin": "Vähimmäisoleskelu ja saapumispäivät riippuvat kohteesta ja kaudesta. Valitse päivämäärät tarkistaaksesi ehdot tai kysy conciergeltamme.",
     "qDirect": "Miksi varata suoraan Portugal Activelta?",
     "aDirect": "Suora varaus takaa parhaan verkkohinnan ilman OTA-palvelumaksuja, oman WhatsApp-conciergen ja paikallisen tiimin, joka hoitaa talon alusta loppuun.",
     "qPets": "Voinko tuoda lemmikkini?",
@@ -1975,5 +1984,55 @@
     "accountInfo": "Tilin tiedot",
     "loginMethod": "Kirjautumistapa",
     "referCode": "Suosittelukoodi"
+  },
+  "searchUx": {
+    "bedrooms": "Makuuhuoneet",
+    "clearFilters": "Tyhjennä suodattimet ({{count}})",
+    "datedPrices": "Päivämäärillä: majoituksen kokonaishinnat. Yöbudjetti sisältää pakolliset maksut.",
+    "fromPrices": "Alkaen-hinnat yöltä. Valitse päivämäärät kokonaishinnalle ja saatavuudelle.",
+    "confirmed": "vahvistetusti saatavilla",
+    "toConfirm": "{{count}} vahvistettavaa",
+    "results": "{{count}} kohdetta",
+    "sort": "Lajittele kohteet"
+  },
+  "pdpUx": {
+    "navigation": "Tutustu kohteeseen",
+    "bedrooms": "Makuuhuoneet"
+  },
+  "conversion": {
+    "filters": "Suodattimet",
+    "filterIntro": "Löydä seurueellesi ja matkatoiveillesi sopiva talo.",
+    "seeHomes": "Näytä {{count}} taloa",
+    "chooseStay": "Millaisesta lomasta haaveilet?",
+    "pool": "Talot uima-altaalla",
+    "groups": "Yhdessä, yli 12 vierasta",
+    "pets": "Koiran kanssa",
+    "sea": "Meren äärellä",
+    "datesSelected": "Päivät valittu",
+    "viewBooking": "Katso majoitus",
+    "stayTotal": "Majoituksen kokonaishinta",
+    "stayClarity": "Majoituksesi selkeästi",
+    "theHome": "Talo",
+    "theHomeBody": "Tutustu alla tämän talon huoneisiin, vuoteisiin ja varusteluun.",
+    "thePrice": "Hinta",
+    "totalNote": "Valitsemiesi päivien tarjous näyttää kokonaishinnan ja eritellyt pakolliset maksut ennen maksamista.",
+    "optionalServices": "Valinnaiset palvelut",
+    "extrasNote": "Kokki, kuljetukset ja lisäsiivous ovat valinnaisia. Hinnat ja saatavuus riippuvat talosta ja päivistä.",
+    "helpTitle": "Paikallinen tiimi auttaa suunnittelussa.",
+    "helpBody": "Concierge auttaa talon valinnassa ja majoituksen yksityiskohtien järjestämisessä. Kysy tämän talon palveluista ja saatavuudesta.",
+    "readReview": "Lue koko arvostelu",
+    "reviewRate": "Tarkista hinta ja peruutusehdot",
+    "optionalStep": "Valinnaiset lisät",
+    "extrasTitle": "Sinun näköisesi majoitus.",
+    "extrasIntro": "Lisää muutama palvelu tai jatka maksuun. Voit sopia muista palveluista conciergen kanssa varauksen jälkeen.",
+    "continuePay": "Jatka maksuun",
+    "skipNote": "Jos et valitse vastaanottoa, käytetään hintaan sisältyvää itsepalvelusisäänkirjautumista. Valitut lisät säilyvät.",
+    "seeAllExtras": "Tutustu kaikkiin palveluihin ja elämyksiin",
+    "homeIntro": "Löydä oma talosi Portugalista. Valitse päivät, tarkista kokonaishinta ja anna conciergen auttaa yksityiskohdissa.",
+    "homesIntro": "Vertaa sijaintia, tiloja ja varustelua. Löydä sopiva talo seuraavalle lomallesi.",
+    "directSupport": "Suora concierge-palvelu",
+    "languages": "Sivuston kielet",
+    "recentFeedback": "Viimeaikaisia kokemuksia kokoelmamme taloista. Avaa talo lukeaksesi lisää arvosteluja.",
+    "demoNotice": "Esimerkkivaraus ja esimerkkihinnat. Varausta tai maksua ei tehdä."
   }
 }

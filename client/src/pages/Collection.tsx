@@ -5,6 +5,8 @@
    ItemList JSON-LD, and cross-links between collections. The acquisition
    channel this site can grow without buying a single click.
    ========================================================================== */
+import { matchesCollection } from '@/lib/collectionFilters';
+import { getDisplayName } from '@/lib/format';
 import { useMemo } from 'react';
 import { Link, useParams } from 'wouter';
 import { useTranslation } from 'react-i18next';
@@ -28,33 +30,20 @@ interface CollectionDef {
 }
 const COLLECTIONS = collectionsData as CollectionDef[];
 
-function matches(p: Property, def: CollectionDef): boolean {
-  if (def.excludeApartments && (p as any).propertyType === 'Apartment') return false;
-  const f = def.filter;
-  if (f.type === 'minGuests') return (p.maxGuests ?? 0) >= (f.min ?? 0);
-  if (f.type === 'amenity' && f.pattern) {
-    const re = new RegExp(f.pattern, 'i');
-    const all = Object.values((p.amenities ?? {}) as Record<string, string[]>)
-      .flatMap(v => (Array.isArray(v) ? v : []));
-    return all.some(a => re.test(a));
-  }
-  return false;
-}
-
 export default function Collection() {
   const { t, i18n } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const def = COLLECTIONS.find(c => c.slug === slug);
 
-  const { data: propsData } = trpc.properties.listForSite.useQuery();
+  const { data: propsData, isLoading } = trpc.properties.catalogForSite.useQuery(undefined, { staleTime: 5 * 60 * 1000 });
   const lang = (i18n.language || 'en').split('-')[0];
-  const copy = def ? (lang === 'pt' ? def.pt : def.en) : null;
+  const copy = def ? ((def as any)[lang] ?? def.en) : null;
 
   const homes = useMemo(() => {
     if (!def || !propsData) return [] as Property[];
     return (propsData as Property[])
       .filter(p => p.isActive !== false && !isChildUnit(p.guestyId))
-      .filter(p => matches(p, def));
+      .filter(p => matchesCollection(p, def));
   }, [propsData, def]);
 
   const fromIds = useMemo(() => homes.filter(h => h.guestyId).map(h => h.guestyId!), [homes]);
@@ -80,8 +69,8 @@ export default function Collection() {
         itemListElement: homes.slice(0, 30).map((p, i) => ({
           '@type': 'ListItem',
           position: i + 1,
-          name: p.name,
-          url: `https://www.portugalactive.com/homes/${p.slug}`,
+          name: getDisplayName(p),
+          url: `https://www.portugalactive.com/${lang}/homes/${p.slug}`,
         })),
       },
       buildBreadcrumbSchema([
@@ -90,7 +79,7 @@ export default function Collection() {
         { name: copy.title },
       ]),
     ];
-  }, [def, copy, homes]);
+  }, [def, copy, homes, lang]);
 
   if (!def || !copy) return <NotFound />;
 
@@ -118,6 +107,10 @@ export default function Collection() {
       </section>
 
       <section className="container pb-12 md:pb-16">
+        <Link href={`/homes?collection=${encodeURIComponent(def.slug)}`} className="btn-primary mb-8">{t('property.checkAvailability')}</Link>
+        {isLoading && <p className="body-sm text-pa-earth" role="status">{t('bookingWidget.loadingCalendar')}</p>}
+        {!isLoading && homes.length === 0 && <p className="body-sm text-pa-earth mb-6">{t('homes.noResults')}</p>}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {homes.map((property, idx) => (
             <PropertyCard
@@ -144,7 +137,7 @@ export default function Collection() {
               href={`/collections/${c.slug}`}
               className="min-h-[40px] inline-flex items-center px-4 border border-[#E8E4DC] bg-white text-[13px] text-[#1A1A18] hover:border-[#8B7355] transition-colors"
             >
-              {(lang === 'pt' ? c.pt : c.en).title}
+              {((c as any)[lang] ?? c.en).title}
             </Link>
           ))}
         </div>

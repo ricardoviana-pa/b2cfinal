@@ -1,4 +1,8 @@
 {
+  "securityDeposit": {
+    "title": "Dépôt de garantie",
+    "notice": "Un dépôt de garantie peut être exigé pour votre séjour. Veuillez contacter notre concierge pour plus d’informations."
+  },
   "nav": {
     "properties": "Maisons",
     "destinations": "Destinations",
@@ -452,7 +456,9 @@
     "nlHeadline": "Restez inspiré.",
     "nlSub": "Séjours sélectionnés, offres saisonnières et récits de voyage au Portugal — livrés mensuellement.",
     "nlError": "Une erreur est survenue. Veuillez réessayer.",
-    "conciergeServices": "Services de conciergerie"
+    "conciergeServices": "Services de conciergerie",
+    "realEstate": "Acheter ou vendre une maison",
+    "offices": "Bureaux"
   },
   "propertyDetail": {
     "notFound": "Propriété introuvable",
@@ -517,7 +523,10 @@
     "viewAllExperiences": "Voir toutes les expériences",
     "relatedHomes": "Maisons similaires",
     "moreIn": "Plus dans {{destination}}",
-    "allDestHomes": "Toutes les maisons — {{destination}}"
+    "allDestHomes": "Toutes les maisons — {{destination}}",
+    "ownershipTitle": "Plus qu’un séjour.",
+    "ownershipBody": "Cette maison fait également partie de notre collection immobilière. Envisagez son acquisition avec l’équipe qui la connaît.",
+    "ownershipAction": "Découvrir cette maison à vendre"
   },
   "priceBreakdown": {
     "title": "Récapitulatif du prix",
@@ -576,11 +585,11 @@
     "uspPrivacy": "Maison entière, rien que pour vous",
     "uspPrivacySub": "Pas d'espaces partagés. Intimité complète.",
     "uspService": "Service cinq étoiles, à la demande",
-    "uspServiceSub": "Chef privé, spa, ménage. Tout en interne.",
+    "uspServiceSub": "Services en option",
     "uspLocal": "Équipe locale sur le terrain",
-    "uspLocalSub": "Votre concierge habite ici. Assistance 24h/24, 7j/7.",
+    "uspLocalSub": "Contact direct avec le concierge",
     "uspRate": "Meilleur prix garanti",
-    "uspRateSub": "Réserver directement. Pas de commissions. Pas d'intermédiaires.",
+    "uspRateSub": "Le devis pour vos dates affiche le total, avec les frais obligatoires détaillés avant le paiement.",
     "homesOverline": "Nos maisons",
     "homesTitle": "Une collection sélectionnée des plus belles maisons privées du Portugal.",
     "homesBody": "Chaque maison est personnellement sélectionnée, professionnellement préparée et continuellement gérée par notre équipe. Vous ne réservez pas une maison. Vous réservez une expérience.",
@@ -1473,7 +1482,7 @@
     "conciergeIncluded": "Concierge inclus",
     "directHeadline": "Pourquoi réserver en direct",
     "bestRateTeeth": "Meilleur tarif en ligne — trouvez ces dates moins chères sur Airbnb ou Booking.com et nous alignons le prix",
-    "noServiceFees": "Aucuns frais de service — les OTA ajoutent 12–18 % au paiement ; ici le prix est le prix",
+    "noServiceFees": "Le devis pour vos dates affiche le total, avec les frais obligatoires détaillés avant le paiement.",
     "conciergeWhatsapp": "Concierge WhatsApp avant, pendant et après votre séjour",
     "guaranteeTerms": "Comment fonctionne la garantie"
   },
@@ -1723,7 +1732,7 @@
       }
     },
     "reception": {
-      "prompt": "Comment souhaitez-vous arriver ? Choisissez une option pour continuer.",
+      "prompt": "Comment souhaitez-vous arriver ?",
       "required": "Choisissez comment vous souhaitez arriver pour continuer.",
       "arrivalWindow": "Arrivée :",
       "beforeLate": "Avant {{hour}}h",
@@ -1803,7 +1812,7 @@
     "qTimes": "À quelle heure sont l’arrivée et le départ ?",
     "aTimes": "Arrivée à partir de {{checkIn}} et départ avant {{checkOut}}. Des horaires flexibles peuvent souvent être organisés avec notre concierge.",
     "qMin": "Quel est le séjour minimum ?",
-    "aMin": "Le séjour minimum varie selon la saison — le calendrier indique la durée exacte pour vos dates. En juillet et août, les séjours vont du samedi au samedi avec un minimum de 7 nuits.",
+    "aMin": "La durée minimale et les jours d’arrivée dépendent du logement et de la saison. Choisissez vos dates pour vérifier les conditions ou contactez notre concierge.",
     "qDirect": "Pourquoi réserver directement avec Portugal Active ?",
     "aDirect": "Réserver en direct garantit le meilleur tarif en ligne sans frais de service OTA, un concierge WhatsApp dédié et une équipe locale qui gère la maison de bout en bout.",
     "qPets": "Puis-je venir avec mon animal ?",
@@ -1975,5 +1984,55 @@
     "accountInfo": "Détails du compte",
     "loginMethod": "Méthode de connexion",
     "referCode": "Code de parrainage"
+  },
+  "searchUx": {
+    "bedrooms": "Chambres",
+    "clearFilters": "Effacer les filtres ({{count}})",
+    "datedPrices": "Avec dates : prix total du séjour. Le budget par nuit inclut les frais obligatoires.",
+    "fromPrices": "Prix à partir de, par nuit. Choisissez les dates pour le total et la disponibilité.",
+    "confirmed": "disponibilités confirmées",
+    "toConfirm": "{{count}} à confirmer",
+    "results": "{{count}} logements",
+    "sort": "Trier les logements"
+  },
+  "pdpUx": {
+    "navigation": "Découvrez ce logement",
+    "bedrooms": "Chambres"
+  },
+  "conversion": {
+    "filters": "Filtres",
+    "filterIntro": "Trouvez une maison adaptée à votre groupe et à vos envies.",
+    "seeHomes": "Voir {{count}} maisons",
+    "chooseStay": "Quelle escapade vous ressemble ?",
+    "pool": "Séjours avec piscine",
+    "groups": "Ensemble, 12+ voyageurs",
+    "pets": "Avec votre chien",
+    "sea": "Au bord de la mer",
+    "datesSelected": "Dates sélectionnées",
+    "viewBooking": "Voir votre séjour",
+    "stayTotal": "Total du séjour",
+    "stayClarity": "Votre séjour, en toute clarté",
+    "theHome": "La maison",
+    "theHomeBody": "Découvrez ci-dessous les chambres, les couchages et les équipements de cette maison.",
+    "thePrice": "Le prix",
+    "totalNote": "Le devis pour vos dates affiche le total, avec les frais obligatoires détaillés avant le paiement.",
+    "optionalServices": "Services en option",
+    "extrasNote": "Chef, transferts et ménage supplémentaire sont en option. Prix et disponibilité varient selon la maison et les dates.",
+    "helpTitle": "Une équipe locale pour vous accompagner.",
+    "helpBody": "Du choix de la maison aux détails du voyage, notre concierge vous aide à organiser votre séjour. Consultez les services et disponibilités de cette propriété.",
+    "readReview": "Lire l’avis complet",
+    "reviewRate": "Revoir le tarif et l’annulation",
+    "optionalStep": "Options",
+    "extrasTitle": "Un séjour à votre image.",
+    "extrasIntro": "Ajoutez quelques attentions ou passez au paiement. Vous pourrez discuter d’autres services avec notre concierge après la réservation.",
+    "continuePay": "Passer au paiement",
+    "skipNote": "Sans choix d’accueil, l’arrivée autonome incluse est retenue. Les options déjà choisies sont conservées.",
+    "seeAllExtras": "Explorer tous les services et expériences",
+    "homeIntro": "Trouvez votre maison privée au Portugal. Choisissez vos dates, consultez le total et confiez les détails à notre concierge.",
+    "homesIntro": "Comparez les lieux, les espaces et les équipements. Trouvez la maison qui vous convient.",
+    "directSupport": "Contact direct avec le concierge",
+    "languages": "Langues du site",
+    "recentFeedback": "Avis récents des voyageurs de notre collection. Ouvrez une maison pour lire davantage d’avis.",
+    "demoNotice": "Réservation de démonstration : tarifs indicatifs. Aucune réservation ni aucun paiement ne sera effectué."
   }
 }

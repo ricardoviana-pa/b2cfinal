@@ -811,7 +811,7 @@ export function RelatedDestinationsAndOwnersCTA({
   // link so booking-vs-owner attribution stays clean in Pipedrive.
   const ownersUrl =
     owners.url ??
-    `https://management.portugalactive.com/?utm_source=destinations&utm_medium=banner&utm_campaign=${encodeURIComponent(d.slug)}`;
+    `https://www.portugalactive.com/management/?utm_source=destinations&utm_medium=banner&utm_campaign=${encodeURIComponent(d.slug)}`;
 
   return (
     <>
@@ -896,7 +896,7 @@ export function RelatedDestinationsAndOwnersCTA({
               <a
                 href={ownersUrl}
                 target="_blank"
-                rel="noopener nofollow"
+                rel="noopener"
                 className="inline-flex items-center gap-2 text-[13px] font-medium text-white border-b border-white/40 pb-1 hover:border-white transition-colors"
               >
                 {owners.cta} <ArrowRight className="w-4 h-4" />

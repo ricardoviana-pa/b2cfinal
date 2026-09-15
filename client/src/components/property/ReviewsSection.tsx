@@ -33,36 +33,23 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
   const { t, i18n } = useTranslation();
   const [showAll, setShowAll] = useState(false);
 
-  // 5★ only, with real text, most recent first. 4★ reviews are still SYNCED —
-  // they keep `averageRating` honest (it reads ~4.9, never a fabricated 5.0) —
-  // but they aren't shown: their text regularly carries criticism ("furniture
-  // very old and uncomfortable", "tennis court disappointing"), and detecting
-  // that automatically across 9 languages proved unreliable.
-  const topReviews = useMemo(
-    () =>
-      (reviews ?? [])
-        .filter(r => {
-          const text = (r.text || '').trim();
-          // Real text only: a placeholder like "." or "…" is effectively a
-          // note-only review — drop it (needs at least 3 actual letters).
-          const letters = text.replace(/[^\p{L}]/gu, '').length;
-          return Math.round(r.rating) === 5 && letters >= 3 && !CHANNEL_RE.test(text);
-        })
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
-    [reviews],
-  );
+  // Show substantive guest feedback at every rating, newest first.
+  const topReviews = useMemo(() => (reviews ?? []).filter(r => {
+    const text = (r.text || '').trim();
+    return Number.isFinite(r.rating) && r.rating >= 1 && r.rating <= 5 && text.replace(/[^\p{L}]/gu, '').length >= 3 && !CHANNEL_RE.test(text);
+  }).sort((a, b) => (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0)), [reviews]);
 
   // Nothing qualifying → hide the section entirely (no sad empty state).
-  if (topReviews.length === 0) return null;
+  if (topReviews.length === 0 && !(averageRating && reviewCount)) return null;
 
-  const INITIAL = 6;
+  const INITIAL = 4;
   const displayed = showAll ? topReviews : topReviews.slice(0, INITIAL);
   // Header shows the REAL aggregate across all reviews (kept as-is — we never
   // fabricate a 5.0 average from the filtered set).
   const totalCount = reviewCount || reviews?.length || 0;
 
   return (
-    <section>
+    <section id="property-reviews" className="scroll-mt-28">
       {/* Header with aggregate rating */}
       <div className="flex items-baseline gap-3 mb-6">
         <h2 className="headline-sm text-[#1A1A18]">{t('reviews.title', 'Guest reviews')}</h2>
@@ -146,7 +133,13 @@ export default function ReviewsSection({ propertyName, reviews, averageRating, r
                 ))}
               </div>
             </div>
-            <p className="text-[13px] text-[#6B6860] leading-relaxed line-clamp-4 font-light italic">"{review.text}"</p>
+            <details className="group/review">
+              <summary className="cursor-pointer list-none">
+                <p className="text-[13px] text-pa-earth leading-relaxed line-clamp-3 group-open/review:hidden">{review.text}</p>
+                <span className="inline-block min-h-11 pt-3 caption text-pa-gold-aa underline">{t('conversion.readReview')}</span>
+              </summary>
+              <p className="text-[13px] text-pa-earth leading-relaxed">{review.text}</p>
+            </details>
           </div>
           );
         })}

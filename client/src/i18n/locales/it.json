@@ -1,4 +1,8 @@
 {
+  "securityDeposit": {
+    "title": "Deposito cauzionale",
+    "notice": "Potrebbe essere richiesto un deposito cauzionale per il soggiorno. Contatti il nostro concierge per maggiori informazioni."
+  },
   "nav": {
     "properties": "Case",
     "destinations": "Destinazioni",
@@ -452,7 +456,9 @@
     "nlHeadline": "Lasciati ispirare.",
     "nlSub": "Soggiorni selezionati, offerte stagionali e storie di viaggio dal Portogallo — consegnati mensilmente.",
     "nlError": "Qualcosa è andato storto. Per favore riprova.",
-    "conciergeServices": "Servizi di concierge"
+    "conciergeServices": "Servizi di concierge",
+    "realEstate": "Comprare o vendere casa",
+    "offices": "Uffici"
   },
   "propertyDetail": {
     "notFound": "Proprietà non trovata",
@@ -517,7 +523,10 @@
     "viewAllExperiences": "Vedi tutte le esperienze",
     "relatedHomes": "Case correlate",
     "moreIn": "Altro in {{destination}}",
-    "allDestHomes": "Tutte le case in {{destination}}"
+    "allDestHomes": "Tutte le case in {{destination}}",
+    "ownershipTitle": "Più di un soggiorno.",
+    "ownershipBody": "Questa casa fa anche parte della nostra collezione immobiliare. Valuti la possibilità di acquistarla con il team che la conosce.",
+    "ownershipAction": "Scopra questa casa in vendita"
   },
   "priceBreakdown": {
     "title": "Riepilogo prezzo",
@@ -576,11 +585,11 @@
     "uspPrivacy": "Tutta la casa, solo per voi",
     "uspPrivacySub": "Nessuno spazio condiviso. Privacy totale.",
     "uspService": "Servizio a cinque stelle, su richiesta",
-    "uspServiceSub": "Chef privato, spa, pulizie. Tutto con il nostro team interno.",
+    "uspServiceSub": "Servizi facoltativi",
     "uspLocal": "Team locale sul territorio",
-    "uspLocalSub": "Il vostro concierge vive qui. Assistenza 24/7.",
+    "uspLocalSub": "Assistenza diretta del concierge",
     "uspRate": "Miglior tariffa garantita",
-    "uspRateSub": "Prenota direttamente. Nessuna commissione. Nessun intermediario.",
+    "uspRateSub": "Il preventivo per le sue date mostra il totale, con gli oneri obbligatori dettagliati prima del pagamento.",
     "homesOverline": "Le nostre case",
     "homesTitle": "Una collezione curata delle migliori case private del Portogallo.",
     "homesBody": "Ogni casa è selezionata personalmente, preparata professionalmente e gestita costantemente dal nostro team. Non state prenotando una casa. State prenotando un'esperienza.",
@@ -1473,7 +1482,7 @@
     "conciergeIncluded": "Concierge incluso",
     "directHeadline": "Perché prenotare direttamente",
     "bestRateTeeth": "Miglior prezzo online — se trovate queste date a meno su Airbnb o Booking.com, pareggiamo il prezzo",
-    "noServiceFees": "Niente costi di servizio — le OTA aggiungono il 12–18% al checkout; qui il prezzo è il prezzo",
+    "noServiceFees": "Il preventivo per le sue date mostra il totale, con gli oneri obbligatori dettagliati prima del pagamento.",
     "conciergeWhatsapp": "Concierge su WhatsApp prima, durante e dopo il soggiorno",
     "guaranteeTerms": "Come funziona la garanzia"
   },
@@ -1723,7 +1732,7 @@
       }
     },
     "reception": {
-      "prompt": "Come preferisci arrivare? Scegli un'opzione per continuare.",
+      "prompt": "Come preferisce arrivare?",
       "required": "Scegli come preferisci arrivare per continuare.",
       "arrivalWindow": "Arrivo:",
       "beforeLate": "Prima delle {{hour}}",
@@ -1803,7 +1812,7 @@
     "qTimes": "A che ora sono il check-in e il check-out?",
     "aTimes": "Check-in dalle {{checkIn}} e check-out entro le {{checkOut}}. Orari flessibili possono spesso essere concordati con il nostro concierge.",
     "qMin": "Qual è il soggiorno minimo?",
-    "aMin": "Il soggiorno minimo varia in base alla stagione — il calendario mostra il requisito esatto per le tue date. A luglio e agosto i soggiorni vanno da sabato a sabato con un minimo di 7 notti.",
+    "aMin": "Il soggiorno minimo e i giorni di arrivo dipendono dalla casa e dalla stagione. Scegli le date per verificare le condizioni o contatta il nostro concierge.",
     "qDirect": "Perché prenotare direttamente con Portugal Active?",
     "aDirect": "Prenotare direttamente garantisce il miglior prezzo online senza costi di servizio OTA, un concierge WhatsApp dedicato e un team locale che gestisce la casa dall’inizio alla fine.",
     "qPets": "Posso portare il mio animale?",
@@ -1975,5 +1984,55 @@
     "accountInfo": "Dettagli dell'account",
     "loginMethod": "Metodo di accesso",
     "referCode": "Codice di presentazione"
+  },
+  "searchUx": {
+    "bedrooms": "Camere",
+    "clearFilters": "Cancella filtri ({{count}})",
+    "datedPrices": "Con date: prezzo totale del soggiorno. Il budget a notte include le spese obbligatorie.",
+    "fromPrices": "Prezzi a partire da, per notte. Scegli le date per totale e disponibilità.",
+    "confirmed": "con disponibilità confermata",
+    "toConfirm": "{{count}} da confermare",
+    "results": "{{count}} case",
+    "sort": "Ordina le case"
+  },
+  "pdpUx": {
+    "navigation": "Esplora questa casa",
+    "bedrooms": "Camere"
+  },
+  "conversion": {
+    "filters": "Filtri",
+    "filterIntro": "Trovi una casa adatta al suo gruppo e al suo modo di viaggiare.",
+    "seeHomes": "Vedi {{count}} case",
+    "chooseStay": "Come immagina la sua vacanza?",
+    "pool": "Soggiorni con piscina",
+    "groups": "Insieme, 12+ ospiti",
+    "pets": "Con il suo cane",
+    "sea": "Vicino al mare",
+    "datesSelected": "Date selezionate",
+    "viewBooking": "Vedi il soggiorno",
+    "stayTotal": "Totale del soggiorno",
+    "stayClarity": "Il soggiorno, con chiarezza",
+    "theHome": "La casa",
+    "theHomeBody": "Consulti qui sotto camere, letti e dotazioni di questa casa.",
+    "thePrice": "Il prezzo",
+    "totalNote": "Il preventivo per le sue date mostra il totale, con gli oneri obbligatori dettagliati prima del pagamento.",
+    "optionalServices": "Servizi facoltativi",
+    "extrasNote": "Chef, trasferimenti e pulizie aggiuntive sono facoltativi. Prezzi e disponibilità dipendono dalla casa e dalle date.",
+    "helpTitle": "Un team locale per aiutarla a pianificare.",
+    "helpBody": "Dalla scelta della casa ai dettagli del viaggio, il nostro concierge aiuta a coordinare il soggiorno. Chieda informazioni sui servizi e sulla disponibilità della proprietà.",
+    "readReview": "Leggi la recensione completa",
+    "reviewRate": "Rivedi tariffa e cancellazione",
+    "optionalStep": "Extra facoltativi",
+    "extrasTitle": "Un soggiorno su misura.",
+    "extrasIntro": "Aggiunga qualche dettaglio o proceda al pagamento. Potrà concordare altri servizi con il concierge dopo la prenotazione.",
+    "continuePay": "Procedi al pagamento",
+    "skipNote": "Senza scegliere l’accoglienza, si applica il self check-in incluso. Gli extra già scelti vengono mantenuti.",
+    "seeAllExtras": "Esplora tutti i servizi e le esperienze",
+    "homeIntro": "Trovi la sua casa privata in Portogallo. Scelga le date, consulti il totale e si affidi al concierge per i dettagli.",
+    "homesIntro": "Confronti posizione, spazi e dotazioni. Trovi la casa giusta per il prossimo soggiorno.",
+    "directSupport": "Assistenza diretta del concierge",
+    "languages": "Lingue del sito",
+    "recentFeedback": "Opinioni recenti degli ospiti della nostra collezione. Apra una casa per leggere altre recensioni.",
+    "demoNotice": "Prenotazione dimostrativa con prezzi di esempio. Non verranno effettuati prenotazioni o pagamenti."
   }
 }

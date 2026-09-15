@@ -19,7 +19,7 @@ export default function PhoneInput({ value, onChange, onBlur, placeholder = "Pho
         disableCountryGuess
         forceDialCode
         placeholder={placeholder}
-        inputProps={{ autoComplete: 'tel', inputMode: 'tel', onBlur }}
+        inputProps={{ autoComplete: 'tel', inputMode: 'tel', 'aria-label': placeholder, onBlur }}
         inputClassName="!w-full !h-full !bg-white !border-0 !border-r-0 !rounded-none !rounded-r-md !text-[16px] !text-[#1A1A18] !px-3 focus:!outline-none focus:!ring-0 !font-[inherit]"
         countrySelectorStyleProps={{
           buttonClassName: "!bg-white !border-0 !rounded-none !rounded-l-md !px-3 !h-full hover:!bg-[#F5F1EB] !transition-colors",

@@ -413,9 +413,7 @@ export function PartnerBookingPanel({
                   {t('partnerBooking.vatIncluded', 'VAT included.')}{' '}
                   {quote.feesKnown
                     ? quote.securityDeposit > 0
-                      ? t('partnerBooking.depositNote', 'A refundable security deposit of {{amount}} is held by the property.', {
-                          amount: formatEur(quote.securityDeposit, lang),
-                        })
+                      ? t('securityDeposit.notice')
                       : ''
                     : t(
                         'partnerBooking.feesPending',

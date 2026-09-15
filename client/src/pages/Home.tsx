@@ -24,6 +24,7 @@
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { HOME_COUNT_LABEL, CHECKLIST_POINTS } from '@shared/brandFacts';
 import { useTranslation } from 'react-i18next';
+import { managementUrl } from '@/lib/siteLinks';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { StructuredData, buildFaqPageSchema } from '@/components/seo/StructuredData';
 import { Link } from 'wouter';
@@ -33,7 +34,8 @@ import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import PropertyCard from '@/components/property/PropertyCard';
 import { IMAGES } from '@/lib/images';
-const ReviewsSection = lazy(() => import('@/components/ReviewsSection'));
+import StayCollections from '@/components/property/StayCollections';
+const ReviewsSection = lazy(() => import('@/components/property/GuestFeedback'));
 import destinationsData from '@/data/destinations.json';
 import { localizeDestination, useDestinationOverrides } from '@/lib/localizeContent';
 import { trpc } from '@/lib/trpc';
@@ -116,26 +118,7 @@ export default function Home() {
   // FAQPage schema only — the Organization schema is global (index.html),
   // so we no longer emit LodgingBusiness here to avoid duplicating the
   // brand entity on the homepage.
-  const homeFaq = useMemo(() => buildFaqPageSchema([
-    {
-      question: 'What makes Portugal Active different from Airbnb or Booking.com?',
-      answer: `Portugal Active operates each property like a private hotel — with a ${CHECKLIST_POINTS}-point preparation checklist, dedicated concierge, optional private chef, and a local team minutes away. We don't just list homes; we manage them to hotel standards.`,
-    },
-    {
-      question: 'Which regions in Portugal does Portugal Active cover?',
-      answer: 'We operate luxury villas across five regions: Minho Coast (Viana do Castelo area), Porto & Douro Valley, Lisbon & Sintra, Alentejo, and the Algarve. Each region offers a different character, from Atlantic beaches to wine country.',
-    },
-    {
-      question: 'Can I book adventure activities alongside my villa stay?',
-      answer: 'Yes. We offer curated experiences including horseback riding, canyoning, surfing, sailing, e-bike tours, and more. Our concierge team builds bespoke itineraries combining your villa, activities, and private dining. Optional villa transfers can be arranged for an additional fee.',
-    },
-    {
-      question: 'Is it cheaper to book direct with Portugal Active?',
-      answer: 'Always. Booking direct means no middleman markup — you get the best rate guaranteed, plus complimentary concierge service and priority for special requests like early check-in or celebrations.',
-    },
-  ]), []);
-
-  const { data: propsData, isLoading, isError } = trpc.properties.listForSite.useQuery();
+  const { data: propsData, isLoading, isError } = trpc.properties.catalogForSite.useQuery(undefined, { staleTime: 5 * 60 * 1000 });
   const properties = ((propsData ?? []).filter((p: any) => p.isActive !== false)) as Property[];
 
   // Destination options come from a tiny dedicated query that is SSR-prefetched,
@@ -381,7 +364,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-pa-cream min-w-0 w-full">
-      <StructuredData id="home-faq" data={homeFaq} />
       <Header variant="transparent" />
       {/* On mobile the floating button sits exactly over the hero search card's
           Check-out field, so hold it back until the hero is scrolled past.
@@ -391,7 +373,7 @@ export default function Home() {
       </div>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 1: HERO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden z-20">
+      <section className="relative min-h-[820px] lg:min-h-[720px] lg:h-[92svh] flex items-center overflow-hidden z-20">
         {/* Background */}
         <div className="absolute inset-0">
           <img
@@ -428,7 +410,7 @@ export default function Home() {
               className="body-lg md:text-[20px] text-white/80 mb-6 lg:mb-4 leading-relaxed max-w-xl font-body font-light"
               
             >
-              {t('home.heroBody')}
+              {t('conversion.homeIntro')}
             </p>
 
             {/* Proof strip — above CTAs so it never collides with booking bar */}
@@ -438,7 +420,7 @@ export default function Home() {
               </span>
               <span className="text-white/25">·</span>
               <span className="body-sm text-white/60 font-medium font-body" >
-                {t('home.proofRating', '4.8★ guest rating')}
+                {t('conversion.directSupport')}
               </span>
               <span className="text-white/25">·</span>
               <span className="body-sm text-white/60 font-medium font-body" >
@@ -763,6 +745,7 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 3: OUR HOMES Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
+      <StayCollections />
       <section ref={s3Ref} className="fade-in cv-auto section-padding bg-white">
         <div className="container">
           <p className="eyebrow mb-3">{t('home.homesOverline')}</p>
@@ -770,7 +753,7 @@ export default function Home() {
             <div>
               <h2 className="headline-lg text-pa-dark mb-3">{t('home.homesTitle')}</h2>
               <p className="body-md max-w-2xl">
-                {t('home.homesBody')}
+                {t('conversion.homesIntro')}
               </p>
             </div>
           </div>
@@ -827,14 +810,14 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 divide-x divide-[#E1DACE]">
             {[
               { value: HOME_COUNT_LABEL, label: t('home.statHomes') },
-              { value: '4.8/5', label: t('home.statRating') },
-              { value: '40%', label: t('home.statRepeat') },
+              { value: 'Viana · Lisboa', label: t('footer.offices') },
+              { value: '9', label: t('conversion.languages') },
               { value: '2017', label: t('home.statFounded') },
             ].map((stat, i) => (
               <div key={i} className="text-center px-2">
                 <p
                   className="text-pa-dark font-display font-light"
-                  style={{fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1}}
+                  style={{fontSize: 'clamp(24px, 3vw, 36px)', lineHeight: 1}}
                 >
                   {stat.value}
                 </p>
@@ -1083,9 +1066,7 @@ export default function Home() {
               {t('home.ownersBody')}
             </p>
             <a
-              href="https://management.portugalactive.com"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
+              href={managementUrl(i18n.resolvedLanguage || i18n.language)}
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-white/30 text-white caption font-semibold hover:bg-white/10 transition-colors"
               style={{ letterSpacing: '1.5px' }}
             >

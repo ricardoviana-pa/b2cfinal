@@ -1,4 +1,8 @@
 {
+  "securityDeposit": {
+    "title": "Borg",
+    "notice": "Voor uw verblijf kan een borg worden gevraagd. Neem contact op met onze conciërge voor meer informatie."
+  },
   "nav": {
     "properties": "Huizen",
     "destinations": "Bestemmingen",
@@ -452,7 +456,9 @@
     "nlHeadline": "Laat je inspireren.",
     "nlSub": "Geselecteerde verblijven, seizoensaanbiedingen en reisverhalen uit Portugal — maandelijks bezorgd.",
     "nlError": "Er is iets misgegaan. Probeer het opnieuw.",
-    "conciergeServices": "Conciërgediensten"
+    "conciergeServices": "Conciërgediensten",
+    "realEstate": "Een huis kopen of verkopen",
+    "offices": "Kantoren"
   },
   "propertyDetail": {
     "notFound": "Accommodatie niet gevonden",
@@ -517,7 +523,10 @@
     "viewAllExperiences": "Alle ervaringen bekijken",
     "relatedHomes": "Vergelijkbare huizen",
     "moreIn": "Meer in {{destination}}",
-    "allDestHomes": "Alle huizen in {{destination}}"
+    "allDestHomes": "Alle huizen in {{destination}}",
+    "ownershipTitle": "Meer dan een verblijf.",
+    "ownershipBody": "Deze woning maakt ook deel uit van onze vastgoedcollectie. Ontdek de mogelijkheid om haar te kopen met het team dat haar kent.",
+    "ownershipAction": "Bekijk deze woning te koop"
   },
   "priceBreakdown": {
     "title": "Prijsoverzicht",
@@ -576,11 +585,11 @@
     "uspPrivacy": "Het hele huis, alleen voor u",
     "uspPrivacySub": "Geen gedeelde ruimtes. Volledige privacy.",
     "uspService": "Vijfsterrenservice, op aanvraag",
-    "uspServiceSub": "Privéchef, spa, schoonmaak. Alles in eigen beheer.",
+    "uspServiceSub": "Optionele diensten",
     "uspLocal": "Lokaal team ter plaatse",
-    "uspLocalSub": "Uw concierge woont hier. 24/7 ondersteuning.",
+    "uspLocalSub": "Direct contact met de conciërge",
     "uspRate": "Beste prijs gegarandeerd",
-    "uspRateSub": "Boek direct. Geen commissies. Geen tussenpersonen.",
+    "uspRateSub": "De offerte voor uw datums toont het totaal, met verplichte kosten uitgesplitst vóór betaling.",
     "homesOverline": "Onze woningen",
     "homesTitle": "Een zorgvuldig samengestelde collectie van de mooiste privéhuizen in Portugal.",
     "homesBody": "Elk huis is persoonlijk geselecteerd, professioneel voorbereid en continu beheerd door ons team. U boekt geen huis. U boekt een ervaring.",
@@ -1473,7 +1482,7 @@
     "conciergeIncluded": "Concierge inbegrepen",
     "directHeadline": "Waarom direct boeken",
     "bestRateTeeth": "Beste prijs online — vindt u deze data goedkoper op Airbnb of Booking.com, dan passen wij de prijs aan",
-    "noServiceFees": "Geen servicekosten — OTA’s rekenen 12–18% extra bij het afrekenen; hier is de prijs de prijs",
+    "noServiceFees": "De offerte voor uw datums toont het totaal, met verplichte kosten uitgesplitst vóór betaling.",
     "conciergeWhatsapp": "WhatsApp-concierge vóór, tijdens en na uw verblijf",
     "guaranteeTerms": "Zo werkt de garantie"
   },
@@ -1723,7 +1732,7 @@
       }
     },
     "reception": {
-      "prompt": "Hoe wilt u aankomen? Kies een optie om door te gaan.",
+      "prompt": "Hoe wilt u aankomen?",
       "required": "Kies hoe u wilt aankomen om door te gaan.",
       "arrivalWindow": "Aankomst:",
       "beforeLate": "Voor {{hour}}u",
@@ -1803,7 +1812,7 @@
     "qTimes": "Hoe laat zijn check-in en check-out?",
     "aTimes": "Inchecken vanaf {{checkIn}}, uitchecken vóór {{checkOut}}. Flexibele tijden zijn vaak te regelen met onze concierge.",
     "qMin": "Wat is het minimale verblijf?",
-    "aMin": "Het minimumverblijf varieert per seizoen — de kalender toont de exacte vereiste voor jouw data. In juli en augustus lopen verblijven van zaterdag tot zaterdag met een minimum van 7 nachten.",
+    "aMin": "Het minimumverblijf en de aankomstdagen hangen af van de woning en het seizoen. Kies datums om de voorwaarden te bekijken of vraag onze conciërge.",
     "qDirect": "Waarom direct bij Portugal Active boeken?",
     "aDirect": "Direct boeken betekent de beste prijs online zonder OTA-servicekosten, een eigen WhatsApp-concierge en een lokaal team dat het huis van a tot z beheert.",
     "qPets": "Mag ik mijn huisdier meenemen?",
@@ -1975,5 +1984,55 @@
     "accountInfo": "Accountgegevens",
     "loginMethod": "Inlogmethode",
     "referCode": "Aanbevelingscode"
+  },
+  "searchUx": {
+    "bedrooms": "Slaapkamers",
+    "clearFilters": "Filters wissen ({{count}})",
+    "datedPrices": "Met datums: totale verblijfprijzen. Het nachtbudget bevat verplichte kosten.",
+    "fromPrices": "Vanafprijzen per nacht. Kies datums voor totaalprijs en beschikbaarheid.",
+    "confirmed": "bevestigd beschikbaar",
+    "toConfirm": "{{count}} te bevestigen",
+    "results": "{{count}} woningen",
+    "sort": "Woningen sorteren"
+  },
+  "pdpUx": {
+    "navigation": "Ontdek deze woning",
+    "bedrooms": "Slaapkamers"
+  },
+  "conversion": {
+    "filters": "Filters",
+    "filterIntro": "Vind een huis dat past bij uw gezelschap en reiswensen.",
+    "seeHomes": "Bekijk {{count}} huizen",
+    "chooseStay": "Hoe ziet uw vakantie eruit?",
+    "pool": "Verblijven met zwembad",
+    "groups": "Samen, 12+ gasten",
+    "pets": "Met uw hond",
+    "sea": "Aan zee",
+    "datesSelected": "Datums geselecteerd",
+    "viewBooking": "Bekijk uw verblijf",
+    "stayTotal": "Totaal voor uw verblijf",
+    "stayClarity": "Uw verblijf, helder uitgelegd",
+    "theHome": "Het huis",
+    "theHomeBody": "Bekijk hieronder de kamers, slaapplaatsen en voorzieningen van dit huis.",
+    "thePrice": "De prijs",
+    "totalNote": "De offerte voor uw datums toont het totaal, met verplichte kosten uitgesplitst vóór betaling.",
+    "optionalServices": "Optionele diensten",
+    "extrasNote": "Kok, transfers en extra schoonmaak zijn optioneel. Prijzen en beschikbaarheid hangen af van het huis en de datums.",
+    "helpTitle": "Een lokaal team helpt u plannen.",
+    "helpBody": "Van de keuze van het huis tot de details helpt onze conciërge uw verblijf te organiseren. Vraag naar diensten en beschikbaarheid voor dit huis.",
+    "readReview": "Volledige beoordeling lezen",
+    "reviewRate": "Tarief en annulering bekijken",
+    "optionalStep": "Optionele extra’s",
+    "extrasTitle": "Een verblijf naar uw wens.",
+    "extrasIntro": "Voeg extra’s toe of ga verder naar betaling. U kunt na het boeken andere diensten met onze conciërge bespreken.",
+    "continuePay": "Verder naar betaling",
+    "skipNote": "Zonder ontvangstkeuze geldt de inbegrepen self check-in. Eerder gekozen extra’s blijven behouden.",
+    "seeAllExtras": "Alle diensten en ervaringen bekijken",
+    "homeIntro": "Vind uw privéhuis in Portugal. Kies uw datums, bekijk het totaal en laat onze conciërge helpen met de details.",
+    "homesIntro": "Vergelijk locatie, ruimte en voorzieningen. Vind het juiste huis voor uw volgende verblijf.",
+    "directSupport": "Direct contact met de conciërge",
+    "languages": "Talen van de website",
+    "recentFeedback": "Recente ervaringen van gasten uit onze collectie. Open een huis om meer beoordelingen te lezen.",
+    "demoNotice": "Demoboeking met voorbeeldprijzen. Er wordt geen reservering of betaling gedaan."
   }
 }

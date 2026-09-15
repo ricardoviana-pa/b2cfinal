@@ -9,6 +9,7 @@ import { getConcierge } from '@shared/concierges';
 import { localizeDuration, localizeRoomName } from '@/lib/duration';
 import { useParams, Link, useSearch } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { realEstateListing } from '@/data/realEstate';
 import { loadPropertyOverrides, mergePropertyOverrides } from '@/lib/localizeProperty';
 import { localizeProduct } from '@/lib/localizeProduct';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -29,12 +30,14 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
 import PropertyUnitsSection from '@/components/property/PropertyUnitsSection';
+import SecurityDepositNotice from '@/components/property/SecurityDepositNotice';
 import ReviewsSection from '@/components/property/ReviewsSection';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from '@/components/ui/drawer';
 import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 import { trpc } from '@/lib/trpc';
 import { pushEcommerce } from '@/lib/datalayer';
-import { getDisplayName, intlLocale } from '@/lib/format';
+import type { BookingSelection } from '@/components/booking/BookingWidget';
+import { formatEur, formatBookingDate, getDisplayName, intlLocale } from '@/lib/format';
 import {
   StructuredData,
   buildVacationRentalSchema,
@@ -613,14 +616,6 @@ export default function PropertyDetail() {
     if (!property) return [] as Array<{ q: string; a: string }>;
     const out: Array<{ q: string; a: string }> = [];
     const name = displayName || property.name;
-    if (property.maxGuests) {
-      out.push({
-        q: t('pdpFaq.qGuests', 'How many guests can {{name}} sleep?', { name }),
-        a: t('pdpFaq.aGuests', '{{name}} sleeps up to {{guests}} guests across {{bedrooms}} bedrooms with {{bathrooms}} bathrooms.', {
-          name, guests: property.maxGuests, bedrooms: property.bedrooms, bathrooms: property.bathrooms,
-        }),
-      });
-    }
     if (property.checkInTime || property.checkOutTime) {
       out.push({
         q: t('pdpFaq.qTimes', 'What time are check-in and check-out?'),
@@ -640,11 +635,7 @@ export default function PropertyDetail() {
     // which is the only source that is right for every season.
     out.push({
       q: t('pdpFaq.qMin', 'What is the minimum stay?'),
-      a: t('pdpFaq.aMin', 'The minimum stay varies by season — the calendar shows the exact requirement for your dates. In July and August stays run Saturday to Saturday with a 7-night minimum.'),
-    });
-    out.push({
-      q: t('pdpFaq.qDirect', 'Why book directly with Portugal Active?'),
-      a: t('pdpFaq.aDirect', 'Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end to end.'),
+      a: t('pdpFaq.aMin', 'Minimum stays and arrival days depend on the home and season. Select your dates to check the requirements, or ask our concierge.'),
     });
     return out;
   }, [property, displayName, t]);
@@ -707,21 +698,6 @@ export default function PropertyDetail() {
     ];
   }, [property, pdpFaq]);
 
-  const whatsIncluded = useMemo(
-    () => [
-      { icon: Sparkles, text: t('propertyDetail.included1', { points: CHECKLIST_POINTS }) },
-      { icon: BedDouble, text: t('propertyDetail.included2') },
-      { icon: Bath, text: t('propertyDetail.included3') },
-      { icon: UtensilsCrossed, text: t('propertyDetail.included4') },
-      { icon: Gem, text: t('propertyDetail.included5') },
-      { icon: Clock, text: t('propertyDetail.included6') },
-      { icon: Headphones, text: t('propertyDetail.included7') },
-      { icon: MapPin, text: t('propertyDetail.included8') },
-      { icon: Award, text: t('propertyDetail.included9') },
-      { icon: BadgeCheck, text: t('propertyDetail.included10') },
-    ],
-    [t]
-  );
   const searchString = useSearch();
   const searchParams = useMemo(() => new URLSearchParams(searchString), [searchString]);
   const initialCheckin = searchParams.get('checkin') || '';
@@ -733,6 +709,20 @@ export default function PropertyDetail() {
   const [lightboxImage, setLightboxImage] = useState(0);
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
   const [bookingOpen, setBookingOpen] = useState(false);
+  const [desktopBooking, setDesktopBooking] = useState(true);
+  const [bookingSelection, setBookingSelection] = useState<BookingSelection | null>(null);
+  const [showAllServices, setShowAllServices] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 1024px)');
+    const sync = () => setDesktopBooking(media.matches);
+    sync();
+    media.addEventListener('change', sync);
+    return () => media.removeEventListener('change', sync);
+  }, []);
+  useEffect(() => { setBookingSelection(null); setBookingOpen(false); }, [slug]);
+  const onBookingSelection = useCallback((next: BookingSelection) => setBookingSelection(prev =>
+    prev && prev.checkIn === next.checkIn && prev.checkOut === next.checkOut && prev.guests === next.guests && prev.total === next.total && prev.loading === next.loading ? prev : next
+  ), []);
   const [showAllAmenities, setShowAllAmenities] = useState(false);
   const touchStartX = useRef(0);
   const touchDeltaX = useRef(0);
@@ -785,7 +775,7 @@ export default function PropertyDetail() {
   }, [property?.id]);
 
   const services = useMemo(
-    () => allProducts.filter(p => p.type === 'service' && p.isActive).map(p => localizeProduct(p, i18n.language)!),
+    () => allProducts.filter(p => p.type === 'service' && p.isActive).map(p => ({ ...localizeProduct(p, i18n.language)!, priceFrom: undefined, priceSuffix: '' })),
     [i18n.language],
   );
   const adventures = useMemo(() => {
@@ -812,7 +802,7 @@ export default function PropertyDetail() {
   }, [property]);
   const destName = destObj?.name || property?.destination || '';
 
-  const { data: allPropsData } = trpc.properties.listForSite.useQuery();
+  const { data: allPropsData } = trpc.properties.catalogForSite.useQuery(undefined, { staleTime: 5 * 60 * 1000 });
   // "From €X per night" = lowest REAL bookable nightly (next 90 days), not the
   // Guesty basePrice placeholder. Cached server-side; lazy per viewed listing.
   // Partner (Tripwix) homes have no Guesty listing; they price off the
@@ -1019,6 +1009,8 @@ export default function PropertyDetail() {
       {property.guestyId ? (
         <Suspense fallback={<div className="h-[300px] bg-pa-warm animate-pulse border border-pa-sand" />}>
           <BookingWidget
+            key={property.slug}
+            onSelectionChange={onBookingSelection}
             guestyId={property.guestyId}
             propertyName={displayName}
             propertySlug={property.slug}
@@ -1028,9 +1020,9 @@ export default function PropertyDetail() {
             cleaningFee={(property as any).cleaningFee}
             destination={property.destination}
             conciergeUrl={whatsappUrl}
-            initialCheckIn={initialCheckin}
-            initialCheckOut={initialCheckout}
-            initialGuests={initialGuests}
+            initialCheckIn={bookingSelection?.checkIn ?? initialCheckin}
+            initialCheckOut={bookingSelection?.checkOut ?? initialCheckout}
+            initialGuests={bookingSelection?.guests ?? initialGuests}
           />
         </Suspense>
       ) : tripwixUid ? (
@@ -1080,6 +1072,8 @@ export default function PropertyDetail() {
         </div>
       )}
 
+
+      <SecurityDepositNotice />
 
       {/* Why book direct — the guest arrived from an OTA with that tab still
           open. Four generic badges ("best rate guaranteed") carried no weight;
@@ -1206,16 +1200,81 @@ export default function PropertyDetail() {
           </div>
         </div>
 
+        {/* Title, location and key stats */}
+        <div className="container pt-6 lg:pt-3 pb-4">
+          <div className="flex items-center gap-3 mb-3">
+            <p className="eyebrow font-medium tracking-[0.12em] text-pa-gold uppercase">{destName}</p>
+            <span className="h-px flex-1 max-w-[60px] bg-pa-sand" />
+            {property.tier === 'signature' && (
+              <span className="inline-flex items-center gap-1 eyebrow font-medium tracking-[0.04em] uppercase text-pa-dark bg-pa-warm px-2.5 py-1 rounded-full">
+                {t('filters.signature', 'Signature')}
+              </span>
+            )}
+          </div>
+          <h1 className="font-display headline-lg font-light leading-[1.08] text-pa-dark mb-3">
+            {displayName}
+          </h1>
+          {property.tagline && (
+            <p className="body-sm text-pa-earth italic mb-4 max-w-2xl leading-relaxed font-body font-light" >{property.tagline}</p>
+          )}
+          <div className="flex items-center gap-2 text-pa-earth mb-5">
+            <MapPin size={14} className="text-pa-stone" />
+            <span className="body-sm text-inherit font-light" >{property.locality}, Portugal</span>
+          </div>
+
+          {/* Key stats — pill badges */}
+          <div className="flex flex-wrap items-center gap-3 pb-4 border-b border-pa-sand">
+            {[
+              { icon: Users, value: `${property.maxGuests} ${t('property.guests')}` },
+              { icon: BedDouble, value: `${property.bedrooms} ${t('property.bedrooms')}` },
+              { icon: Bath, value: `${property.bathrooms} ${t('property.bathrooms')}` },
+              ...(property.areaSquareFeet && property.areaSquareFeet > 0 ? [{ icon: MapPin, value: `${Math.round(property.areaSquareFeet * 0.0929)} m²` }] : []),
+              ...((property.checkInTime || property.checkOutTime) ? [{ icon: Clock, value: `${property.checkInTime || '16:00'} / ${property.checkOutTime || '11:00'}` }] : []),
+              ...((property as any).petsAllowed ? [{ icon: PawPrint, value: t('property.petFriendly', 'Pet-friendly') }] : []),
+            ].map((stat, i) => (
+              <span key={i} className="inline-flex items-center gap-2 px-4 py-2 bg-pa-warm rounded-full body-sm text-pa-earth font-normal" >
+                <stat.icon size={14} className="text-pa-gold" />
+                {stat.value}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {property.averageRating && property.reviewCount ? (
+          <div className="container pb-4">
+            <a href="#property-reviews" className="inline-flex items-center gap-2 min-h-11 body-sm text-pa-dark underline underline-offset-4">
+              <Award size={16} className="text-pa-gold-aa" /> {property.averageRating}/5 · {property.reviewCount} {t('reviews.plural')}
+            </a>
+          </div>
+        ) : null}
+
+        <nav aria-label={t('pdpUx.navigation')} className="container flex flex-wrap gap-2 pb-4">
+          {[
+            ['property-about', t('propertyDetail.aboutTitle')],
+            ['property-amenities', t('propertyDetail.amenitiesTitle')],
+            ...(property.rooms?.length ? [['property-bedrooms', t('pdpUx.bedrooms')]] : []),
+            ['property-location', t('propertyDetail.locationTitle')],
+            ['property-good-to-know', t('pdpFaq.title')],
+          ].map(([id, label]) => (
+            <a key={id} href={`#${id}`} className="inline-flex items-center min-h-11 rounded-full border border-pa-sand px-4 body-sm text-pa-earth hover:border-pa-gold hover:text-pa-dark">{label}</a>
+          ))}
+        </nav>
+
+        {/* Two-column layout: main content (left 2/3) + sticky booking (right 1/3) */}
+        <div className={property.guestyId ? "container pb-8 lg:pb-16" : "container pb-24 lg:pb-16"}>
+          <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
+            {/* Main content — left 2/3 */}
+            <div className="order-1 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12 pt-6 lg:pt-0">
         {/* Desktop: Bento gallery grid (1 large + 4 small) */}
-        <div className="hidden lg:block container pt-4">
-          <div className="grid grid-cols-4 grid-rows-2 gap-2 rounded-xl overflow-hidden" style={{ height: '480px' }}>
+        <div className="hidden lg:block">
+          <div className="grid grid-cols-4 grid-rows-2 gap-2 rounded-xl overflow-hidden" style={{ height: '360px' }}>
             {/* Main large image — left half */}
             <div
               className="col-span-2 row-span-2 relative cursor-pointer group bg-pa-sand"
               onClick={() => { setLightboxImage(0); setLightboxOpen(true); }}
             >
               {images[0] && (
-                <img src={images[0]} srcSet={guestySrcSet(sourceImages[0], [768, 1080, 1440])} sizes="(min-width: 1024px) 50vw, 100vw" alt={`${displayName} – luxury villa in ${destName}, Portugal`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" loading="eager" fetchPriority="high" draggable={false} />
+                <img src={images[0]} srcSet={guestySrcSet(sourceImages[0], [768, 1080, 1440])} sizes="(min-width: 1024px) 32vw, 100vw" alt={`${displayName} – luxury villa in ${destName}, Portugal`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" loading="eager" fetchPriority="high" draggable={false} />
               )}
             </div>
             {/* 4 smaller images — right half */}
@@ -1226,7 +1285,7 @@ export default function PropertyDetail() {
                 onClick={() => { if (images[idx]) { setLightboxImage(idx); setLightboxOpen(true); } }}
               >
                 {images[idx] ? (
-                  <img src={images[idx]} srcSet={guestySrcSet(sourceImages[idx], [400, 640, 828])} sizes="(min-width: 1024px) 25vw, 0px" alt={`${displayName} – image ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" decoding="async" draggable={false} />
+                  <img src={images[idx]} srcSet={guestySrcSet(sourceImages[idx], [400, 640, 828])} sizes="(min-width: 1024px) 16vw, 0px" alt={`${displayName} – image ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" decoding="async" draggable={false} />
                 ) : (
                   <div className="absolute inset-0 bg-pa-warm" />
                 )}
@@ -1244,51 +1303,7 @@ export default function PropertyDetail() {
           </div>
         </div>
 
-        {/* Title, location, key stats — below hero */}
-        <div className="container pt-8 lg:pt-10 pb-4">
-          <div className="flex items-center gap-3 mb-3">
-            <p className="eyebrow font-medium tracking-[0.12em] text-pa-gold uppercase">{destName}</p>
-            <span className="h-px flex-1 max-w-[60px] bg-pa-sand" />
-            {property.tier === 'signature' && (
-              <span className="inline-flex items-center gap-1 eyebrow font-medium tracking-[0.04em] uppercase text-pa-dark bg-pa-warm px-2.5 py-1 rounded-full">
-                <Flame size={11} className="text-pa-gold" /> {t('urgency.highDemand', 'High demand')}
-              </span>
-            )}
-          </div>
-          <h1 className="font-display headline-lg font-light leading-[1.08] text-pa-dark mb-3">
-            {displayName}
-          </h1>
-          {property.tagline && (
-            <p className="body-sm text-pa-earth italic mb-4 max-w-2xl leading-relaxed font-body font-light" >{property.tagline}</p>
-          )}
-          <div className="flex items-center gap-2 text-pa-earth mb-8">
-            <MapPin size={14} className="text-pa-stone" />
-            <span className="body-sm text-inherit font-light" >{property.locality}, Portugal</span>
-          </div>
 
-          {/* Key stats — pill badges */}
-          <div className="flex flex-wrap items-center gap-3 pb-6 border-b border-pa-sand">
-            {[
-              { icon: Users, value: `${property.maxGuests} ${t('property.guests')}` },
-              { icon: BedDouble, value: `${property.bedrooms} ${t('property.bedrooms')}` },
-              { icon: Bath, value: `${property.bathrooms} ${t('property.bathrooms')}` },
-              ...(property.areaSquareFeet && property.areaSquareFeet > 0 ? [{ icon: MapPin, value: `${Math.round(property.areaSquareFeet * 0.0929)} m²` }] : []),
-              ...((property.checkInTime || property.checkOutTime) ? [{ icon: Clock, value: `${property.checkInTime || '16:00'} / ${property.checkOutTime || '11:00'}` }] : []),
-              ...((property as any).petsAllowed ? [{ icon: PawPrint, value: t('property.petFriendly', 'Pet-friendly') }] : []),
-            ].map((stat, i) => (
-              <span key={i} className="inline-flex items-center gap-2 px-4 py-2 bg-pa-warm rounded-full body-sm text-pa-earth font-normal" >
-                <stat.icon size={14} className="text-pa-gold" />
-                {stat.value}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Two-column layout: main content (left 2/3) + sticky booking (right 1/3) */}
-        <div className={property.guestyId ? "container pb-8 lg:pb-16" : "container pb-24 lg:pb-16"}>
-          <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
-            {/* Main content — left 2/3 */}
-            <div className="order-1 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12 pt-6">
               {/* Multi-unit Group: Units section (booking.com-style). When this
                   listing is the parent of a curated group, list every unit
                   (parent + children) with photo, specs, and live quote, each
@@ -1306,7 +1321,8 @@ export default function PropertyDetail() {
 
               {/* 1. About this home — lead with the narrative. A luxury PDP
                   should open with the story, not a clinical bed inventory. */}
-              <DescriptionSection
+              <div id="property-about" style={{ scrollMarginTop: 112 }}>
+                <DescriptionSection
                 description={property.description}
                 sections={(property as any).descriptionSections}
                 propertyName={displayName}
@@ -1314,22 +1330,30 @@ export default function PropertyDetail() {
                 destName={destName}
                 t={t}
               />
+              </div>
 
-              {/* 2. What's included in every stay — the hotel-grade promise that
-                  separates us from a marketplace listing. Every home, one
-                  standard. */}
-              <section className="p-6 lg:p-8 bg-pa-warm rounded-2xl">
-                <div className="flex items-center gap-3 mb-5">
-                  <h2 className="font-display headline-sm font-light text-pa-dark">{t('propertyDetail.includedTitle')}</h2>
-                  <span className="h-px flex-1 bg-pa-sand" />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
-                  {whatsIncluded.map((item, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <item.icon size={16} className="text-pa-gold shrink-0" />
-                      <span className="body-sm text-pa-earth leading-relaxed font-light" >{item.text}</span>
-                    </div>
-                  ))}
+              {realEstateListing(property.slug, i18n.language) && (
+                <section className="border-y border-pa-sand py-6 lg:py-7">
+                  <h2 className="font-display headline-sm font-light text-pa-dark mb-3">{t('propertyDetail.ownershipTitle')}</h2>
+                  <p className="body-sm text-pa-earth leading-relaxed max-w-2xl mb-4">{t('propertyDetail.ownershipBody')}</p>
+                  <a href={realEstateListing(property.slug, i18n.language)} className="inline-flex items-center gap-3 min-h-11 text-[14px] font-medium text-pa-dark border-b border-pa-dark hover:text-pa-earth transition-colors">
+                    {t('propertyDetail.ownershipAction')} <ArrowRight size={16} aria-hidden="true" />
+                  </a>
+                </section>
+              )}
+
+              <section className="rounded-xl border border-pa-sand bg-pa-warm p-5 lg:p-6">
+                <p className="eyebrow text-pa-gold-aa mb-3">{t('conversion.stayClarity')}</p>
+                <div className="grid gap-5 sm:grid-cols-3">
+                  {[
+                    { Icon: BedDouble, title: t('conversion.theHome'), body: t('conversion.theHomeBody') },
+                    { Icon: ShieldCheck, title: t('conversion.thePrice'), body: t('conversion.totalNote') },
+                    { Icon: Headphones, title: t('conversion.optionalServices'), body: t('conversion.extrasNote') },
+                  ].map(({ Icon, title, body }) => <div key={title}>
+                    <Icon size={19} className="text-pa-gold-aa mb-2" />
+                    <h3 className="body-sm font-medium text-pa-dark mb-1">{title}</h3>
+                    <p className="caption text-pa-earth leading-relaxed">{body}</p>
+                  </div>)}
                 </div>
               </section>
 
@@ -1339,7 +1363,7 @@ export default function PropertyDetail() {
                   special. The new layout surfaces 6 hero amenities at the top
                   with bigger icons, then drops a calm 2-column list per
                   category so guests can scan without fatigue). */}
-              <section>
+              <section id="property-amenities" style={{ scrollMarginTop: '7rem' }}>
                 <h2 className="font-display headline-sm font-light text-pa-dark mb-6">{t('propertyDetail.amenitiesTitle')}</h2>
                 {amenityGroups.length > 0 ? (
                   <>
@@ -1423,7 +1447,7 @@ export default function PropertyDetail() {
                   stat line, then borderless cards with a hairline top rule and the
                   bed config as quiet typography. */}
               {property.rooms && property.rooms.length > 0 && (
-                <section>
+                <section id="property-bedrooms" style={{ scrollMarginTop: '7rem' }}>
                   <div className="flex items-baseline justify-between gap-4 mb-6">
                     <h2 className="font-display headline-sm font-light text-pa-dark">{t('propertyDetail.bedroomsTitle', 'Bedrooms & Sleeping Arrangements')}</h2>
                     <p className="caption text-pa-stone hidden sm:block shrink-0">
@@ -1461,10 +1485,11 @@ export default function PropertyDetail() {
                   before paying four figures, answered from the home's own data.
                   Mirrors into FAQPage JSON-LD (see propertyGraph) so the same
                   answers are citable by Google and AI answer engines. */}
-              <section className="py-6 lg:py-8 border-t border-pa-sand">
+              <section id="property-good-to-know" style={{ scrollMarginTop: 112 }} className="py-6 lg:py-8 border-t border-pa-sand">
                 <h2 className="font-display headline-sm font-light text-pa-dark mb-4">
                   {t('pdpFaq.title', 'Good to know')}
                 </h2>
+                <SecurityDepositNotice />
                 <div className="flex flex-col divide-y divide-pa-sand border-y border-pa-sand">
                   {pdpFaq.map((f, i) => (
                     <details key={i} className="group py-3">
@@ -1472,11 +1497,48 @@ export default function PropertyDetail() {
                         {f.q}
                         <ChevronDown className="w-4 h-4 text-pa-stone transition-transform group-open:rotate-180 shrink-0 ml-3" />
                       </summary>
-                      <p className="body-sm text-pa-stone leading-relaxed pt-2 pr-8 font-light" >{f.a}</p>
+                      <p className="body-sm text-pa-earth leading-relaxed pt-2 pr-8 font-light" >{f.a}</p>
                     </details>
                   ))}
                 </div>
               </section>
+
+              {/* 6. Location map — approximate pin (3 decimals ≈ 100 m, z=12):
+                  the exact address is only shared after booking. */}
+              <section id="property-location" style={{ scrollMarginTop: '7rem' }}>
+                <h2 className="font-display headline-sm font-light text-pa-dark mb-2">{t('propertyDetail.locationTitle', 'Location')}</h2>
+                <p className="body-sm text-pa-stone mb-4">
+                  <span className="font-medium text-pa-gold">{property.locality}</span>
+                  {' · '}{t('location.approxNote', 'Approximate area — the exact address is shared after booking')}
+                  {(property as any).licenseNumber && (
+                    <> · {t('location.alLicense', 'AL registration {{number}}', { number: (property as any).licenseNumber })}</>
+                  )}
+                </p>
+                <div className="rounded-xl overflow-hidden border border-pa-sand">
+                  <iframe
+                    title={`${property.name} — ${property.locality}`}
+                    className="w-full h-[300px] lg:h-[360px] border-0"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    src={
+                      property.address?.lat && property.address?.lng
+                        ? `https://maps.google.com/maps?q=${Number(property.address.lat).toFixed(3)},${Number(property.address.lng).toFixed(3)}&z=12&output=embed`
+                        : `https://maps.google.com/maps?q=${encodeURIComponent(`${property.locality}, Portugal`)}&z=13&output=embed`
+                    }
+                    allowFullScreen
+                  />
+                </div>
+              </section>
+
+              {/* 10. Guest Reviews (from Guesty sync) */}
+              <ReviewsSection
+                propertyName={displayName}
+                propertySlug={property.slug}
+                reviews={(property as any).reviews}
+                averageRating={(property as any).averageRating}
+                reviewCount={(property as any).reviewCount}
+              />
+
 
               {/* In-house promise — establishes the hotel-chain model: every
                   service and experience below is delivered by Portugal Active's
@@ -1489,8 +1551,8 @@ export default function PropertyDetail() {
               <section className="py-6 lg:py-10 text-center">
                 <span className="mx-auto block h-px w-10 bg-[#C9A876]/70 mb-7" />
                 <p className="eyebrow font-semibold tracking-[0.2em] uppercase text-pa-gold mb-4">{t('propertyDetail.inHouseOverline', 'One team, one standard')}</p>
-                <h2 className="font-display headline-md font-light leading-[1.3] text-pa-dark mb-5 max-w-[34rem] mx-auto">{t('propertyDetail.inHouseTitle', 'Everything here is ours — chefs, drivers, therapists, guides.')}</h2>
-                <p className="body-sm text-pa-earth leading-relaxed max-w-[40rem] mx-auto font-light" >{t('propertyDetail.inHouseBody', 'Not a marketplace of strangers. Every service and experience is run by our own in-house team and trusted local partners we work with daily — booked, coordinated, and accountable through one concierge. The way a great hotel operates, in a private home.')}</p>
+                <h2 className="font-display headline-md font-light leading-[1.3] text-pa-dark mb-5 max-w-[34rem] mx-auto">{t('conversion.helpTitle')}</h2>
+                <p className="body-sm text-pa-earth leading-relaxed max-w-[40rem] mx-auto font-light" >{t('conversion.helpBody')}</p>
               </section>
 
               {/* 4. Services — in-house, delivered by our own team. Image-first
@@ -1500,12 +1562,10 @@ export default function PropertyDetail() {
                 {/* Homes booked on request say how fast the team confirms —
                     hotel tone, one promise (2 hours) site-wide. */}
                 <p className="body-md text-pa-stone mb-6">
-                  {(property as any).bookingMode === 'request'
-                    ? t('propertyDetail.servicesSubtitleRequest')
-                    : t('propertyDetail.servicesSubtitle')}
+                  {t('conversion.extrasNote')}
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-                  {services.map(service => (
+                  {(showAllServices ? services : services.slice(0, 3)).map(service => (
                     <button
                       key={service.slug}
                       type="button"
@@ -1528,7 +1588,7 @@ export default function PropertyDetail() {
                         <p className="body-sm text-pa-earth leading-relaxed mb-4 line-clamp-2 font-light" >{service.tagline}</p>
                         <div className="flex items-baseline justify-between pt-3 border-t border-pa-sand">
                           <p className="body-sm font-medium text-pa-dark">
-                            {service.priceFrom ? t('propertyDetail.fromPrice', { price: Math.round(service.priceFrom).toLocaleString(intlLocale(i18n.language)) }) : t('bookingWidget.included')}
+                            {service.priceFrom ? t('propertyDetail.fromPrice', { price: Math.round(service.priceFrom).toLocaleString(intlLocale(i18n.language)) }) : t('property.priceOnRequest')}
                             <span className="caption text-pa-stone font-normal ml-1">{service.priceSuffix}</span>
                           </p>
                           <span className="inline-flex items-center gap-1.5 eyebrow font-medium tracking-[0.06em] uppercase text-pa-gold group-hover:text-pa-dark transition-colors">
@@ -1539,6 +1599,9 @@ export default function PropertyDetail() {
                     </button>
                   ))}
                 </div>
+                {services.length > 3 && <button type="button" onClick={() => setShowAllServices(v => !v)} aria-expanded={showAllServices} className="min-h-11 mt-4 body-sm underline underline-offset-4 text-pa-dark">
+                  {showAllServices ? t('reviews.showFewer') : t('bookingWidget.showAllServices')} ({services.length})
+                </button>}
               </section>
 
               {/* 5. Experiences — in-house curated, image-first. Capped to 6 on
@@ -1605,41 +1668,6 @@ export default function PropertyDetail() {
                 </section>
               )}
 
-              {/* 6. Location map — approximate pin (3 decimals ≈ 100 m, z=12):
-                  the exact address is only shared after booking. */}
-              <section>
-                <h2 className="font-display headline-sm font-light text-pa-dark mb-2">{t('propertyDetail.locationTitle', 'Location')}</h2>
-                <p className="body-sm text-pa-stone mb-4">
-                  <span className="font-medium text-pa-gold">{property.locality}</span>
-                  {' · '}{t('location.approxNote', 'Approximate area — the exact address is shared after booking')}
-                  {(property as any).licenseNumber && (
-                    <> · {t('location.alLicense', 'AL registration {{number}}', { number: (property as any).licenseNumber })}</>
-                  )}
-                </p>
-                <div className="rounded-xl overflow-hidden border border-pa-sand">
-                  <iframe
-                    title={`${property.name} — ${property.locality}`}
-                    className="w-full h-[300px] lg:h-[360px] border-0"
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    src={
-                      property.address?.lat && property.address?.lng
-                        ? `https://maps.google.com/maps?q=${Number(property.address.lat).toFixed(3)},${Number(property.address.lng).toFixed(3)}&z=12&output=embed`
-                        : `https://maps.google.com/maps?q=${encodeURIComponent(`${property.locality}, Portugal`)}&z=13&output=embed`
-                    }
-                    allowFullScreen
-                  />
-                </div>
-              </section>
-
-              {/* 10. Guest Reviews (from Guesty sync) */}
-              <ReviewsSection
-                propertyName={displayName}
-                propertySlug={property.slug}
-                reviews={(property as any).reviews}
-                averageRating={(property as any).averageRating}
-                reviewCount={(property as any).reviewCount}
-              />
 
             </div>
 
@@ -1649,7 +1677,7 @@ export default function PropertyDetail() {
                 with the home's story, uninterrupted. */}
             <aside id="property-booking" className="hidden lg:block lg:order-2 lg:col-span-1 lg:pt-0">
               <div className="property-sticky-card lg:sticky lg:top-[100px]">
-                {bookingPanel}
+                {desktopBooking && bookingPanel}
               </div>
             </aside>
           </div>
@@ -1663,10 +1691,10 @@ export default function PropertyDetail() {
           <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0">
               <p className="body-sm text-pa-dark font-medium">
-                {t('property.selectDatesForPrice')}
+                {bookingSelection?.total ? formatEur(bookingSelection.total, i18n.language) : (bookingSelection?.checkIn || initialCheckin) && (bookingSelection?.checkOut || initialCheckout) ? t('conversion.datesSelected') : t('property.selectDatesForPrice')}
               </p>
               <p className="caption text-pa-stone flex items-center gap-1 mt-0.5">
-                <BadgeCheck size={12} className="text-pa-gold" /> {t('property.conciergeShort')}
+                {bookingSelection?.total ? t('conversion.stayTotal') : (bookingSelection?.checkIn || initialCheckin) ? formatBookingDate(bookingSelection?.checkIn || initialCheckin, i18n.language) : t('property.conciergeShort')}
               </p>
             </div>
             {/* Partner homes open the same drawer: the request form lives on
@@ -1678,7 +1706,7 @@ export default function PropertyDetail() {
                 onClick={() => setBookingOpen(true)}
                 className="btn-primary shrink-0"
               >
-                {t('property.checkAvailability')}
+                {bookingSelection?.total ? t('conversion.viewBooking') : t('property.checkAvailability')}
               </button>
             ) : (
               <Link
@@ -1701,12 +1729,12 @@ export default function PropertyDetail() {
                 <DrawerTitle className="font-display body-lg font-light text-pa-dark truncate">
                   {displayName}
                 </DrawerTitle>
-                <DrawerClose className="shrink-0 text-pa-stone hover:text-pa-dark transition-colors">
+                <DrawerClose aria-label={t('filters.close')} className="min-h-11 min-w-11 flex items-center justify-center shrink-0 text-pa-stone hover:text-pa-dark transition-colors">
                   <X size={20} />
                 </DrawerClose>
               </DrawerHeader>
               <div className="flex-1 min-h-0 overflow-y-auto px-5 py-5">
-                {bookingPanel}
+                {!desktopBooking && bookingPanel}
               </div>
             </DrawerContent>
           </Drawer>

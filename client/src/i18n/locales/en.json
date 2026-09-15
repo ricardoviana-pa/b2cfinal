@@ -1,4 +1,8 @@
 {
+  "securityDeposit": {
+    "title": "Security deposit",
+    "notice": "A security deposit may be required for your stay. Please contact our concierge for details."
+  },
   "nav": {
     "properties": "Homes",
     "destinations": "Destinations",
@@ -452,7 +456,9 @@
     "nlHeadline": "Stay inspired.",
     "nlSub": "Curated stays, seasonal offers, and Portugal travel stories — delivered monthly.",
     "nlError": "Something went wrong. Please try again.",
-    "conciergeServices": "Concierge services"
+    "conciergeServices": "Concierge services",
+    "realEstate": "Buy or sell a home",
+    "offices": "Offices"
   },
   "propertyDetail": {
     "notFound": "Home not found",
@@ -517,7 +523,10 @@
     "viewAllExperiences": "View all experiences",
     "relatedHomes": "Related homes",
     "moreIn": "More in {{destination}}",
-    "allDestHomes": "All {{destination}} homes"
+    "allDestHomes": "All {{destination}} homes",
+    "ownershipTitle": "More than a stay.",
+    "ownershipBody": "This home is also in our real estate collection. Explore ownership with the team that knows it.",
+    "ownershipAction": "Explore this home for sale"
   },
   "priceBreakdown": {
     "title": "Price summary",
@@ -576,11 +585,11 @@
     "uspPrivacy": "Entire home, just for you",
     "uspPrivacySub": "No shared spaces. Complete privacy.",
     "uspService": "Five-star service, on demand",
-    "uspServiceSub": "Private chef, spa, housekeeping. All in-house.",
+    "uspServiceSub": "Optional services",
     "uspLocal": "Local team on the ground",
-    "uspLocalSub": "Your concierge lives here. 24/7 support.",
+    "uspLocalSub": "Direct concierge support",
     "uspRate": "Best rate guaranteed",
-    "uspRateSub": "Book direct. No commissions. No middlemen.",
+    "uspRateSub": "Your dated quote shows the stay total, with mandatory fees itemised before payment.",
     "homesOverline": "Our homes",
     "homesTitle": "A curated collection of Portugal's finest private homes.",
     "homesBody": "Every home is personally selected, professionally prepared, and continuously managed by our team. You are not booking a house. You are booking an experience.",
@@ -1473,7 +1482,7 @@
     "conciergeIncluded": "Concierge included",
     "directHeadline": "Why book direct",
     "bestRateTeeth": "Best rate online — find these dates cheaper on Airbnb or Booking.com and we match the price",
-    "noServiceFees": "No service fees — OTAs add 12–18% at checkout; here the price is the price",
+    "noServiceFees": "Your dated quote shows the stay total, with mandatory fees itemised before payment.",
     "conciergeWhatsapp": "WhatsApp concierge before, during and after your stay",
     "guaranteeTerms": "How the guarantee works"
   },
@@ -1723,7 +1732,7 @@
       }
     },
     "reception": {
-      "prompt": "How would you like to arrive? Choose one to continue.",
+      "prompt": "How would you like to arrive?",
       "required": "Choose how you would like to arrive to continue.",
       "arrivalWindow": "Arrival:",
       "beforeLate": "Before {{hour}}h",
@@ -1803,7 +1812,7 @@
     "qTimes": "What time are check-in and check-out?",
     "aTimes": "Check-in from {{checkIn}} and check-out by {{checkOut}}. Flexible times can often be arranged with our concierge.",
     "qMin": "What is the minimum stay?",
-    "aMin": "The minimum stay varies by season — the calendar shows the exact requirement for your dates. In July and August stays run Saturday to Saturday with a 7-night minimum.",
+    "aMin": "Minimum stays and arrival days depend on the home and season. Select your dates to check the requirements, or ask our concierge.",
     "qDirect": "Why book directly with Portugal Active?",
     "aDirect": "Booking direct gets you the best rate online with no OTA service fees, a dedicated WhatsApp concierge, and a local team that operates the home end-to-end.",
     "qPets": "Can I bring my pet?",
@@ -1975,5 +1984,55 @@
     "accountInfo": "Account details",
     "loginMethod": "Login method",
     "referCode": "Referral code"
+  },
+  "searchUx": {
+    "bedrooms": "Bedrooms",
+    "clearFilters": "Clear filters ({{count}})",
+    "datedPrices": "Dated prices are stay totals. The nightly budget includes mandatory fees.",
+    "fromPrices": "From-prices are per night. Choose dates for total prices and availability.",
+    "confirmed": "confirmed available",
+    "toConfirm": "{{count}} to confirm",
+    "results": "{{count}} homes",
+    "sort": "Sort homes"
+  },
+  "pdpUx": {
+    "navigation": "Explore this home",
+    "bedrooms": "Bedrooms"
+  },
+  "conversion": {
+    "filters": "Filters",
+    "filterIntro": "Find a home that fits your group and the way you want to stay.",
+    "seeHomes": "See {{count}} homes",
+    "chooseStay": "What does your escape look like?",
+    "pool": "Pool stays",
+    "groups": "Together, 12+ guests",
+    "pets": "Bring your dog",
+    "sea": "By the sea",
+    "datesSelected": "Dates selected",
+    "viewBooking": "View your stay",
+    "stayTotal": "Total for your stay",
+    "stayClarity": "Your stay, clearly explained",
+    "theHome": "The home",
+    "theHomeBody": "See the rooms, sleeping arrangements and amenities of this home below.",
+    "thePrice": "The price",
+    "totalNote": "Your dated quote shows the stay total, with mandatory fees itemised before payment.",
+    "optionalServices": "Optional services",
+    "extrasNote": "Chef, transfers and extra housekeeping are optional. Prices and availability depend on the home and dates.",
+    "helpTitle": "A local team to help you plan.",
+    "helpBody": "From choosing your home to arranging the details, our concierge helps coordinate your stay. Ask about services and availability for this property.",
+    "readReview": "Read full review",
+    "reviewRate": "Review your rate and cancellation terms",
+    "optionalStep": "Optional extras",
+    "extrasTitle": "Make it your stay.",
+    "extrasIntro": "Add a few finishing touches, or continue to payment. You can discuss further services with our concierge after booking.",
+    "continuePay": "Continue to payment",
+    "skipNote": "Continuing without a reception choice uses the included self check-in option. Existing extras are kept.",
+    "seeAllExtras": "Explore all services and experiences",
+    "homeIntro": "Find your private home in Portugal. Choose your dates, see the total and let our concierge help with the details.",
+    "homesIntro": "Compare places, space and amenities. Find the home that feels right for your next stay.",
+    "directSupport": "Direct concierge support",
+    "languages": "Website languages",
+    "recentFeedback": "Recent feedback from the homes in our collection. Open a home to read more guest reviews.",
+    "demoNotice": "Preview checkout — sample prices. No reservation or payment will be made."
   }
 }
