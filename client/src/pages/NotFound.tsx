@@ -12,19 +12,17 @@ export default function NotFound() {
   const { t } = useTranslation();
   usePageMeta({ title: 'Page Not Found (404)', description: 'This page does not exist. Browse our luxury villas or contact our concierge team for help.', url: '/404' });
 
-  const { data: propsData } = trpc.properties.listForSite.useQuery();
+  const { data: propsData } = trpc.properties.catalogForSite.useQuery();
   const suggestions = useMemo(() => {
     const all = ((propsData ?? []) as Property[]).filter(p => p.isActive !== false);
-    if (all.length <= 3) return all;
-    const shuffled = [...all].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 3);
+    return all.slice(0, 3);
   }, [propsData]);
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <Header />
 
-      <section className="py-20 md:py-28 lg:py-32">
+      <section className="pt-28 pb-14 md:pt-36 md:pb-20">
         <div className="container max-w-[1100px]">
           <div className="text-center mb-16 md:mb-20">
             <p className="eyebrow mb-5" style={{ color: '#C4A87C' }}>{t('notFound.overline')}</p>

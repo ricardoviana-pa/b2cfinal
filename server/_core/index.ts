@@ -221,6 +221,7 @@ async function startServer() {
         { loc: "/legal/privacy", priority: "0.3", changefreq: "yearly" },
         { loc: "/legal/terms", priority: "0.3", changefreq: "yearly" },
         { loc: "/legal/cookies", priority: "0.3", changefreq: "yearly" },
+        { loc: "/legal/cancellation-policy", priority: "0.3", changefreq: "yearly" },
       ];
 
       /** Generate a <url> entry with hreflang alternates for all languages */
@@ -291,6 +292,12 @@ async function startServer() {
           if (!sv?.slug) continue;
           serviceSlugs.add(sv.slug);
           dynamicPages.push({ path: `/services/${sv.slug}`, lastmod: deployDate, changefreq: "monthly", priority: "0.8" });
+        }
+        const publishedProducts = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'client', 'src', 'data', 'products.json'), 'utf-8'));
+        for (const product of publishedProducts) {
+          if (product.type !== 'service' || !product.isActive || !product.slug || serviceSlugs.has(product.slug)) continue;
+          serviceSlugs.add(product.slug);
+          dynamicPages.push({ path: `/services/${product.slug}`, lastmod: deployDate, changefreq: 'monthly', priority: '0.8' });
         }
       } catch (e) {
         console.warn("[Sitemap] could not load services.json", e);

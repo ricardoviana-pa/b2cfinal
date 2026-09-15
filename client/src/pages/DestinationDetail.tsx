@@ -8,9 +8,7 @@
    filters the properties / adventures / related destinations, builds the
    schema graph, and hands everything to the template.
 
-   AnswerCapsule remains above the editorial content as the AI-engine TL;DR
-   (QAPage schema). The full FAQPage schema lives inside the template, in
-   the FAQ section, only when faqs are populated for that destination.
+   The FAQPage schema is emitted with the visible destination FAQs.
    ========================================================================== */
 
 import { useState, useMemo, lazy, Suspense } from 'react';
@@ -26,7 +24,6 @@ import { localizeDestination, useDestinationOverrides } from '@/lib/localizeCont
 import productsData from '@/data/products.json';
 import { trpc } from '@/lib/trpc';
 import { StructuredData } from '@/components/seo/StructuredData';
-import AnswerCapsule from '@/components/seo/AnswerCapsule';
 import { DestinationPage, buildDestinationGraph } from '@/components/destinations';
 import type { Destination, Property, Product } from '@/lib/types';
 
@@ -113,10 +110,6 @@ export default function DestinationDetail() {
       {graph && <StructuredData id={`destination-${dest.slug}`} data={graph} />}
       <Header />
 
-      {/* AnswerCapsule sits between hero and editorial body — its role is to
-          give AI engines (ChatGPT, Perplexity, Claude, Gemini) a citable
-          TL;DR with QAPage schema. The full FAQPage schema lives in the
-          FAQ section inside <DestinationPage />. */}
       <DestinationPage
         destination={dest}
         properties={destProperties}
@@ -126,23 +119,7 @@ export default function DestinationDetail() {
         onAddToItinerary={p => setModalProduct(p)}
       />
 
-      <section className="py-10 bg-[#FAFAF7]">
-        <div className="container max-w-3xl mx-auto">
-          <AnswerCapsule
-            question={`Why stay in ${dest.name} with Portugal Active?`}
-            answer={`${dest.name} is one of Portugal Active's curated destinations, featuring ${destProperties.length} private hotel${destProperties.length !== 1 ? 's' : ''} managed to five-star standards. ${dest.tagline || dest.description || ''} Every property includes a dedicated concierge, daily housekeeping, and access to private chef and curated local experiences. Book direct for the best rate and a fully managed stay.`}
-            lastUpdated="2026-05-23"
-            author="Portugal Active concierge team"
-            emitSchema={!dest.faqs || dest.faqs.length === 0}
-            schemaId={`qa-dest-${dest.slug}`}
-            cite={[
-              { label: `${dest.name} properties`, href: `/homes?destination=${dest.region}` },
-              { label: 'All destinations', href: '/destinations' },
-              { label: 'Concierge services', href: '/concierge' },
-            ]}
-          />
-        </div>
-      </section>
+
 
       {modalProduct && (
         <Suspense fallback={null}>

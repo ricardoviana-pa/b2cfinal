@@ -1,6 +1,15 @@
 import type { Property, SortOption } from './types';
 import { sortProperties } from './utils';
 
+/** Region choices are distinct from city names; clearing resets both. */
+export function parseDestinationSelection(value: string): { destination: string; location: string } {
+  if (value.startsWith('region:')) {
+    const destination = value.slice(7);
+    return { destination: ['minho', 'porto', 'lisbon', 'alentejo', 'algarve'].includes(destination) ? destination : '', location: '' };
+  }
+  return { destination: '', location: value };
+}
+
 export interface SearchQuote {
   total: number;
   nightlyRate: number;

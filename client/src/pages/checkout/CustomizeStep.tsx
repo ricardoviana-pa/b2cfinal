@@ -273,7 +273,7 @@ function ReceptionChoiceCards({
               type="button"
               onClick={() => onChoose({ type: "hosted", late })}
               className={cn(
-                "caption text-inherit px-3 py-1 rounded-full border transition-colors",
+                "pa-action caption text-inherit px-3 py-1 rounded-full border transition-colors",
                 (choice?.late ?? false) === late
                   ? "border-pa-dark bg-pa-dark text-white"
                   : "border-pa-sand text-pa-earth hover:border-pa-dark",
@@ -431,7 +431,7 @@ function OptionRow({
             <button
               type="button"
               onClick={() => onToggle(item)}
-              className="mt-1.5 min-h-[44px] sm:min-h-[32px] px-4 rounded-full border border-pa-sand bg-white eyebrow font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors"
+              className="pa-action mt-1.5 min-h-[44px] sm:min-h-[32px] px-4 rounded-full border border-pa-sand bg-white eyebrow font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors"
             >
               {onRequest ? t("checkout.request", "Request") : t("checkout.add", "Add")}
             </button>
@@ -467,7 +467,7 @@ function OptionRow({
                   type="button"
                   onClick={() => onAdjust(item.sku, { days: Math.max(1, nights) })}
                   className={cn(
-                    "caption text-inherit px-3 py-1.5 rounded-full border transition-colors",
+                    "pa-action caption text-inherit px-3 py-1.5 rounded-full border transition-colors",
                     (sel!.days ?? 1) === Math.max(1, nights)
                       ? "border-pa-dark bg-pa-dark text-white"
                       : "border-pa-sand text-pa-earth hover:border-pa-dark",
@@ -786,7 +786,7 @@ export default function CustomizeStep({
                           type="button"
                           onClick={() => switchAll(ap)}
                           className={cn(
-                            "caption text-inherit px-3 py-1 rounded-full border transition-colors",
+                            "pa-action caption text-inherit px-3 py-1 rounded-full border transition-colors",
                             shownAp === ap
                               ? "border-pa-dark bg-pa-dark text-white"
                               : "border-pa-sand text-pa-earth hover:border-pa-dark",
@@ -931,7 +931,7 @@ export default function CustomizeStep({
                               type="button"
                               onClick={() => onToggle(item)}
                               className={cn(
-                                "w-full min-h-[44px] sm:min-h-[36px] rounded-full border eyebrow text-inherit font-medium tracking-[0.08em] uppercase transition-colors",
+                                "pa-action w-full min-h-[44px] sm:min-h-[36px] rounded-full border eyebrow text-inherit font-medium tracking-[0.08em] uppercase transition-colors",
                                 selected
                                   ? "bg-pa-dark border-pa-dark text-white"
                                   : "border-pa-sand text-pa-earth hover:border-pa-dark hover:text-pa-dark",

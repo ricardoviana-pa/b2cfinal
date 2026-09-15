@@ -22,13 +22,12 @@
    ========================================================================== */
 
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
-import { HOME_COUNT_LABEL, CHECKLIST_POINTS } from '@shared/brandFacts';
+import { HOME_COUNT_LABEL } from '@shared/brandFacts';
 import { useTranslation } from 'react-i18next';
-import { managementUrl } from '@/lib/siteLinks';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { StructuredData, buildFaqPageSchema } from '@/components/seo/StructuredData';
 import { Link } from 'wouter';
 import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Minus, Plus, Home as HomeIcon, Star, Headphones } from 'lucide-react';
+import BookingCTA from '@/components/property/BookingCTA';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -408,7 +407,7 @@ export default function Home() {
             </h1>
             <p
               className="body-lg md:text-[20px] text-white/80 mb-6 lg:mb-4 leading-relaxed max-w-xl font-body font-light"
-              
+
             >
               {t('conversion.homeIntro')}
             </p>
@@ -431,7 +430,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/homes"
-                className="inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full bg-white text-pa-dark body-sm font-semibold hover:bg-pa-warm transition-colors"
+                className="pa-action inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full bg-white text-pa-dark body-sm font-semibold hover:bg-pa-warm transition-colors"
                 style={{ letterSpacing: '1.5px' }}
               >
                 {t('home.heroCta')} <ArrowRight className="w-4 h-4" />
@@ -440,7 +439,7 @@ export default function Home() {
                 href="https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden sm:inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full border border-white/50 text-white body-sm font-semibold hover:bg-white/10 transition-colors"
+                className="pa-action hidden sm:inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full border border-white/50 text-white body-sm font-semibold hover:bg-white/10 transition-colors"
                 style={{ letterSpacing: '1.5px' }}
               >
                 {t('home.heroCtaConcierge')} <ArrowRight className="w-4 h-4" />
@@ -460,7 +459,7 @@ export default function Home() {
                 onChange={e => setSearchDest(e.target.value)}
                 aria-label={t('home.searchDestination')}
                 className="w-full h-[44px] rounded-lg border border-pa-sand bg-white pl-9 pr-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer appearance-none"
-                
+
               >
                 <option value="">{t('home.searchDestination')}</option>
                 {cityOptions}
@@ -554,7 +553,7 @@ export default function Home() {
                     search_source: 'hero_mobile',
                   });
                 }}
-                className="shrink-0 h-[44px] px-5 rounded-full bg-pa-dark text-white caption font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
+                className="pa-action shrink-0 h-[44px] px-5 rounded-full bg-pa-dark text-white caption font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
                 style={{ letterSpacing: '1.5px' }}
               >
                 {t('home.searchButton')}
@@ -578,7 +577,7 @@ export default function Home() {
                 onChange={e => setSearchDest(e.target.value)}
                 aria-label={t('home.searchDestination')}
                 className="w-full h-full pl-6 pr-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer appearance-none"
-                
+
               >
                 <option value="">{t('home.searchDestination')}</option>
                 {cityOptions}
@@ -598,7 +597,7 @@ export default function Home() {
                 onChange={e => handleCheckinChange(e.target.value, false)}
                 aria-label={t('home.searchCheckin', 'Check-in')}
                 className={`w-full h-full px-4 bg-transparent body-sm text-inherit focus:outline-none cursor-pointer ${searchCheckin ? 'text-pa-dark' : 'text-transparent'}`}
-                
+
               />
               {!searchCheckin && (
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 body-sm text-pa-stone pointer-events-none font-body" >
@@ -620,7 +619,7 @@ export default function Home() {
                 onChange={e => setSearchCheckout(e.target.value)}
                 aria-label={t('home.searchCheckout', 'Check-out')}
                 className={`w-full h-full px-4 bg-transparent body-sm text-inherit focus:outline-none cursor-pointer ${searchCheckout ? 'text-pa-dark' : 'text-transparent'}`}
-                
+
               />
               {!searchCheckout && (
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 body-sm text-pa-stone pointer-events-none font-body" >
@@ -685,7 +684,7 @@ export default function Home() {
                   search_source: 'hero_desktop',
                 });
               }}
-              className="flex-shrink-0 h-[50px] mr-1.5 px-8 rounded-full bg-pa-dark text-white body-sm font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
+              className="pa-action flex-shrink-0 h-[50px] mr-1.5 px-8 rounded-full bg-pa-dark text-white body-sm font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
               style={{ letterSpacing: '1.5px' }}
             >
               {t('home.searchButton')}
@@ -831,7 +830,7 @@ export default function Home() {
       </section>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 5: HOW IT WORKS Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s5Ref} className="fade-in cv-auto section-padding bg-white">
+      <section ref={s5Ref} className="fade-in cv-auto py-12 bg-white">
         <div className="container">
           <p className="caption font-medium text-pa-gold mb-3" style={{ letterSpacing: '0.08em' }}>{t('home.howItWorksOverline')}</p>
           <h2 className="headline-lg text-pa-dark mb-10 max-w-lg">{t('home.howItWorksTitle')}</h2>
@@ -1054,28 +1053,7 @@ export default function Home() {
       </Suspense>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 10: OWNERS CTA Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section ref={s10Ref} className="fade-in cv-auto bg-pa-dark">
-        <div className="container py-16 lg:py-20">
-          <div className="max-w-2xl mx-auto text-center">
-            <p className="caption font-medium text-pa-gold-light mb-4" style={{ letterSpacing: '0.08em' }}>{t('home.ownersOverline')}</p>
-            <h2 className="headline-lg text-white mb-5">{t('home.ownersTitle')}</h2>
-            <p
-              className="body-lg text-white/55 mb-8 leading-relaxed font-body font-light"
-              
-            >
-              {t('home.ownersBody')}
-            </p>
-            <a
-              href={managementUrl(i18n.resolvedLanguage || i18n.language)}
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-white/30 text-white caption font-semibold hover:bg-white/10 transition-colors"
-              style={{ letterSpacing: '1.5px' }}
-            >
-              {t('home.ownersCta')} <ArrowRight className="w-4 h-4" />
-            </a>
-            <p className="caption text-white/35 mt-3 font-body font-light" >{t('home.ownersNote')}</p>
-          </div>
-        </div>
-      </section>
+      <BookingCTA />
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ PRESS BAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <section className="cv-auto bg-white">

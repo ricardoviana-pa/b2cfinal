@@ -870,7 +870,7 @@
   "services": {
     "heroAlt": "Portugal Active-upplevelser",
     "heroOverline": "UPPLEVELSER",
-    "heroTitle": "Designat för dig. Levererat av oss.",
+    "heroTitle": "Concierge för din vistelse.",
     "heroBody": "Varje upplevelse arrangeras av vår concierge och levereras av utbildade Portugal Active-proffs. Ingen outsourcing. Inga mellanhänder. Ett team, en standard.",
     "navGastronomy": "Gastronomi",
     "navWellness": "Wellness",
@@ -984,27 +984,27 @@
     "title": "Allt du behöver veta.",
     "subtitle": "Tydliga svar. Inget finstilt.",
     "q1": "Hur skiljer sig Portugal Active från en traditionell semesteruthyrning?",
-    "a1": "Varje hem drivs med hotellstandard av vårt eget team. Professionell städning tillgänglig i varje fastighet, premiumlakan förberedda före ankomst, dedikerad concierge som känner ditt namn före incheckning. Ett team. En standard. En kontaktpunkt för allt.",
+    "a1": "Vi väljer ut hus i Portugal och hjälper dig under vistelsen med ett conciergeteam. Varje hussida beskriver bekvämligheter, tjänster och villkor.",
     "q2": "Vad ingår i varje vistelse?",
-    "a2": "Hotellkvalitetslakan, badrockar och poolhanddukar. Lyxiga badrumsprodukter. Fullt utrustat kök med kaffe, kryddor och basvaror. Välkomstpaket med lokala produkter. Dedikerad concierge dygnet runt. Lokalt team minuter bort. Tillgång till alla interna tjänster. Bästa pris-garanti vid direktbokning. Daglig städning, privat kock, spa och andra tjänster tillgängliga som tillägg.",
+    "a2": "Läs bekvämligheterna och offerten för ditt valda hus. Kock, transfer, extra städning och andra tillval beror på huset och datumen.",
     "q3": "Hur bokar jag ett hem?",
-    "a3": "Bläddra i vår kollektion, välj datum och boka direkt eller kontakta vår concierge via WhatsApp eller e-post. Vi svarar inom 2 timmar med tillgänglighet, en detaljerad offert och en personlig rekommendation.",
+    "a3": "Välj ett hus, ange datum och antal gäster och se offerten. Sidan visar om du kan boka online eller skicka en förfrågan för bekräftelse.",
     "q4": "Vad är avbokningspolicyn?",
-    "a4": "Full återbetalning upp till 30 dagar före incheckning. 50 % återbetalning mellan 30 och 14 dagar. Inom 14 dagar: ej återbetalningsbar. Vissa fastigheter kan ha specifika villkor. Din concierge bekräftar den exakta policyn vid bokning.",
+    "a4": "Villkoren varierar beroende på hus och valt prisalternativ. Läs avbokningsvillkoren i offerten innan du bekräftar bokningen.",
     "q5": "Kan jag lägga till tjänster efter bokning?",
     "a5": "Ja. Bygg ditt program när som helst före eller under din vistelse. Lägg till via webbplatsen eller meddela din concierge. Vi rekommenderar att boka kockar och populära upplevelser 48 timmar i förväg.",
     "q6": "In- och utcheckningstider?",
-    "a6": "Incheckning från 16:00. Utcheckning senast 11:00. Tidig incheckning och sen utcheckning kan vara tillgängligt. Fråga din concierge.",
+    "a6": "In- och utcheckningstider finns på varje hussida. Ändringar beror på tillgänglighet.",
     "q7": "Erbjuder ni flygplatstransfer?",
     "a7": "Ja. Privata transferer från Porto (OPO), Lissabon (LIS), Faro (FAO) och Vigo (VGO). Premiumfordon med lokala förare. Lägg till i ditt program med flyginformation.",
     "q8": "Passar era hem för evenemang?",
     "a8": "Flera fastigheter är idealiska för evenemang, firanden, retreat och bröllop. Besök vår Evenemang-sida eller kontakta vårt team. Vi hanterar catering, uppställning, underhållning och logistik genom vårt eget team.",
     "q9": "Vad är bästa pris-garantin?",
-    "a9": "Vår webbplats erbjuder alltid det lägsta tillgängliga priset. Direktbokning innebär lägre pris än på tredjepartsplattformar, prioriterad concierge-support, snabbare svar och första tillgång till interna tjänster.",
+    "a9": "Om du inom 24 timmar efter bokningen hittar samma hus, datum och villkor billigare på Airbnb eller Booking.com kan du begära prismatchning. Se garantivillkoren.",
     "cantFind": "Hittar du inte det du söker?",
     "contactTeam": "KONTAKTA VÅRT TEAM",
     "q10": "Kan jag checka in vilken dag som helst i veckan?",
-    "a10": "Större delen av året, ja — ankomster är öppna alla dagar, med minsta vistelse på 2–4 nätter beroende på hus. I juli och augusti löper vistelser från lördag till lördag med minst 7 nätter. Bokningskalendern för varje hus markerar tillgängliga ankomstdatum, och för längre eller ovanliga vistelser bygger vår concierge gärna planen tillsammans med er."
+    "a10": "Ankomstdagar och minsta vistelse varierar beroende på hus och säsong. Kalendern visar tillgängliga datum och gällande villkor."
   },
   "adventures": {
     "heroAlt": "Upplevelser i Portugal",
@@ -2036,5 +2036,18 @@
     "languages": "Webbplatsens språk",
     "recentFeedback": "Aktuella omdömen från husen i vår kollektion. Öppna ett hus för att läsa fler omdömen.",
     "demoNotice": "Demobokning med exempelpriser. Ingen bokning eller betalning genomförs."
+  },
+  "siteUx": {
+    "quickFacts": "I korthet",
+    "findStay": "Hitta ett boende",
+    "exploreServices": "Utforska tjänster",
+    "viewService": "Visa detaljer",
+    "optionalDetails": "Fler uppgifter (valfritt)",
+    "travelGuide": "Planera resan",
+    "searchQuestions": "Sök bland frågor",
+    "noQuestions": "Hittar du inte svaret? Vårt team hjälper gärna till.",
+    "searchJournal": "Sök i journalen",
+    "readyTitle": "Din nästa vistelse börjar här.",
+    "readyBody": "Välj resmål, jämför hus och se priser för dina datum."
   }
 }

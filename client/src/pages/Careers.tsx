@@ -16,9 +16,9 @@ export default function Careers() {
       <Header variant="solid" />
 
       {/* Hero */}
-      <section className="pt-28 pb-12 bg-[#FAFAF7]">
+      <section className="page-intro">
         <div className="container max-w-2xl">
-          <h1 className="headline-lg text-[#1A1A18] mb-4">{t('careers.title')}</h1>
+          <h1 className="headline-xl text-[#1A1A18] mb-4">{t('careers.title')}</h1>
           <p className="body-lg">
             {t('careers.body')}
           </p>
@@ -26,9 +26,9 @@ export default function Careers() {
       </section>
 
       {/* Content */}
-      <section className="pb-20 bg-[#FAFAF7]">
+      <section className="py-10 md:py-14 bg-[#FAFAF7]">
         <div className="container max-w-2xl">
-          <div className="bg-white border border-[#E8E4DC] p-8 md:p-12 text-center">
+          <div className="rounded-xl bg-white border border-[#E8E4DC] p-8 md:p-12 text-center">
             <h2 className="headline-md text-[#1A1A18] mb-4">{t('careers.lookingTitle')}</h2>
             <p className="body-lg mb-6">
               {t('careers.lookingBody')}

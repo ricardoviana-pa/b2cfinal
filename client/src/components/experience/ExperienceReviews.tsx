@@ -174,7 +174,7 @@ export default function ExperienceReviews({ reviews, aggregate }: ExperienceRevi
         <div className="text-center">
           <button
             onClick={() => setLimit(l => l + 6)}
-            className="text-[11px] tracking-[0.12em] uppercase text-[#1A1A18] border border-[#1A1A18] px-8 py-3.5 hover:bg-[#1A1A18] hover:text-white transition-colors"
+            className="pa-action text-[11px] tracking-[0.12em] uppercase text-[#1A1A18] border border-[#1A1A18] px-8 py-3.5 hover:bg-[#1A1A18] hover:text-white transition-colors"
           >
             Show more reviews
           </button>

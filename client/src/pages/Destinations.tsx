@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import destinationsData from '@/data/destinations.json';
 import { localizeDestination, useDestinationOverrides } from '@/lib/localizeContent';
+import BookingCTA from '@/components/property/BookingCTA';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -38,8 +39,8 @@ function DestinationCard({ dest }: { dest: Destination }) {
   return (
     <Link
       href={`/destinations/${dest.slug}`}
-      className="group relative overflow-hidden block"
-      style={{ aspectRatio: '3/4' }}
+      className="group relative overflow-hidden rounded-xl block"
+      style={{ aspectRatio: '4/3' }}
     >
       {dest.coverImage ? (
         <img
@@ -112,7 +113,7 @@ export default function Destinations() {
       <Header />
 
       {/* Hero */}
-      <section className="relative h-[62vh] min-h-[460px] flex items-end overflow-hidden">
+      <section className="page-hero">
         <img
           src={IMAGES.destinationMinho}
           alt="Portugal destinations"
@@ -172,7 +173,7 @@ export default function Destinations() {
                   <div
                     key={dest.slug}
                     className="relative overflow-hidden"
-                    style={{ aspectRatio: '3/4' }}
+                    style={{ aspectRatio: '4/3' }}
                   >
                     {dest.coverImage ? (
                       <img
@@ -206,6 +207,7 @@ export default function Destinations() {
         </div>
       </section>
 
+      <BookingCTA />
       <Footer />
       <WhatsAppFloat />
     </div>

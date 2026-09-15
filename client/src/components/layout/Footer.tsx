@@ -58,13 +58,15 @@ export default function Footer() {
     <footer className="bg-[#1A1A18] text-white" role="contentinfo">
 
       {/* Newsletter banner */}
-      <div className="border-b border-white/[0.06]">
-        <div className="container py-12 lg:py-16">
+      <details className="border-b border-white/[0.1]">
+        <summary className="container py-5 flex items-center justify-between gap-4 cursor-pointer list-none">
+          <span className="text-[14px] text-white/80">{t('footer.nlHeadline')}</span>
+          <span className="text-[12px] text-white/70 flex items-center gap-3">{t('footer.subscribe')} <span aria-hidden="true">+</span></span>
+        </summary>
+        <div className="container pb-6">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
             <div className="max-w-md">
-              <h3 className="font-display text-[clamp(1.25rem,2.5vw,1.75rem)] font-light text-white leading-tight mb-2">
-                {t('footer.nlHeadline')}
-              </h3>
+
               <p
                 className="text-[13px] text-white/65 leading-relaxed"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
@@ -95,7 +97,7 @@ export default function Footer() {
                     <button
                       type="submit"
                       disabled={subscribing}
-                      className="h-[48px] px-6 bg-[#C4A87C] text-[#1A1A18] text-[11px] font-semibold hover:bg-[#D4B88C] transition-colors flex-shrink-0 disabled:opacity-50"
+                      className="pa-action h-[48px] px-6 bg-[#C4A87C] text-[#1A1A18] text-[11px] font-semibold hover:bg-[#D4B88C] transition-colors flex-shrink-0 disabled:opacity-50"
                       style={{ letterSpacing: '1.5px' }}
                     >
                       {subscribing ? '...' : t('footer.subscribe')}
@@ -107,11 +109,11 @@ export default function Footer() {
             </div>
           </div>
         </div>
-      </div>
+      </details>
 
       {/* Main link grid */}
-      <div className="container py-14 lg:py-20">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10 lg:gap-8">
+      <div className="container py-10 lg:py-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-[1.3fr_1fr_1fr_1fr] gap-10 lg:gap-8">
 
           {/* Column 1: Brand */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
@@ -119,7 +121,7 @@ export default function Footer() {
               <img src={IMAGES.logoWhite} alt="Portugal Active – luxury villa management in Portugal" className="h-5 lg:h-6 w-auto object-contain mb-5" />
             </Link>
             <p
-              className="text-[13px] text-white/65 mb-8 leading-relaxed max-w-[260px]"
+              className="text-[13px] text-white/65 mb-5 leading-relaxed max-w-[260px]"
               style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
             >
               {t('footer.tagline')}
@@ -174,17 +176,7 @@ export default function Footer() {
               {footerLinks(t('footer.conciergeServices'), '/concierge')}
               {footerLinks(t('footer.events'), '/events')}
               <li><a href={`https://www.portugalactive.com/realestate/${realEstateLanguage}`} className="text-[13px] text-white/65 hover:text-white transition-colors duration-200" style={{ fontWeight: 300 }}>{t('footer.realEstate')}</a></li>
-              <li>
-                <a
-                  href="https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[13px] text-white/65 hover:text-white transition-colors duration-200"
-                  style={{ fontWeight: 300 }}
-                >
-                  {t('footer.meetConcierge')}
-                </a>
-              </li>
+
             </ul>
           </div>
 

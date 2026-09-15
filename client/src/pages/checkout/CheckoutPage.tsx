@@ -1084,7 +1084,7 @@ export default function CheckoutPage() {
               type="button"
               onClick={() => applyCoupon(couponInput.trim())}
               disabled={couponBusy || !couponInput.trim() || (!isDemo && !quoteId)}
-              className="shrink-0 h-[38px] px-4 rounded-md border border-pa-sand eyebrow font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors disabled:opacity-40"
+              className="pa-action shrink-0 h-[38px] px-4 rounded-md border border-pa-sand eyebrow font-medium tracking-[0.08em] uppercase text-pa-earth hover:border-pa-dark hover:text-pa-dark transition-colors disabled:opacity-40"
             >
               {couponBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : t("checkout.coupon.apply", "Apply")}
             </button>
@@ -1704,7 +1704,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Direct-booking assurance (audit finding D1) */}
-              
+
 
               {/* Payment */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-4">

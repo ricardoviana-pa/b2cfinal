@@ -870,7 +870,7 @@
   "services": {
     "heroAlt": "Esperienze Portugal Active",
     "heroOverline": "ESPERIENZE",
-    "heroTitle": "Progettate per voi. Fornite da noi.",
+    "heroTitle": "Concierge per il suo soggiorno.",
     "heroBody": "Ogni esperienza è organizzata dal nostro concierge e fornita da professionisti qualificati di Portugal Active. Nessun outsourcing. Nessun intermediario. Un team, uno standard.",
     "navGastronomy": "Gastronomia",
     "navWellness": "Benessere",
@@ -984,27 +984,27 @@
     "title": "Tutto quello che devi sapere.",
     "subtitle": "Risposte chiare. Nessuna clausola nascosta.",
     "q1": "In cosa si differenzia Portugal Active da un affitto vacanze tradizionale?",
-    "a1": "Ogni casa è gestita con standard alberghieri dal nostro team interno. Pulizia professionale disponibile in ogni proprietà, biancheria premium preparata prima dell'arrivo, concierge dedicato che conosce il tuo nome prima del check-in. Un team. Uno standard. Un unico contatto per tutto.",
+    "a1": "Selezioniamo case in Portogallo e accompagniamo il suo soggiorno con un team di concierge. Ogni pagina presenta dotazioni, servizi e condizioni della casa.",
     "q2": "Cosa è incluso in ogni soggiorno?",
-    "a2": "Biancheria di qualità alberghiera, accappatoi e teli piscina. Prodotti da bagno di lusso. Cucina completamente attrezzata con caffè, spezie e beni essenziali. Kit di benvenuto con prodotti locali selezionati. Concierge dedicato 24/7. Team locale a pochi minuti. Accesso a tutti i servizi interni. Miglior tariffa garantita prenotando direttamente. Pulizia giornaliera, chef privato, spa e altri servizi disponibili come extra.",
+    "a2": "Consulti le dotazioni e il preventivo della casa scelta. Chef, trasferimenti, pulizie aggiuntive e altri servizi facoltativi dipendono dalla casa e dalle date.",
     "q3": "Come prenoto una casa?",
-    "a3": "Sfoglia la nostra collezione, seleziona le date e prenota direttamente o contatta il nostro concierge via WhatsApp o e-mail. Rispondiamo entro 2 ore con disponibilità, preventivo dettagliato e una raccomandazione personalizzata.",
+    "a3": "Scelga una casa, indichi date e numero di ospiti e consulti il preventivo. La pagina indica se può prenotare online o inviare una richiesta di conferma.",
     "q4": "Qual è la politica di cancellazione?",
-    "a4": "Rimborso completo fino a 30 giorni prima del check-in. Rimborso del 50% tra 30 e 14 giorni. Entro 14 giorni: non rimborsabile. Alcune proprietà possono avere condizioni specifiche. Il concierge conferma la politica esatta al momento della prenotazione.",
+    "a4": "Le condizioni variano in base alla casa e alla tariffa scelta. Consulti la politica di cancellazione del preventivo prima di confermare la prenotazione.",
     "q5": "Posso aggiungere servizi dopo la prenotazione?",
     "a5": "Sì. Costruisci il tuo itinerario in qualsiasi momento prima o durante il soggiorno. Aggiungi tramite il sito web o scrivi al concierge. Consigliamo di prenotare chef ed esperienze popolari con almeno 48 ore di anticipo.",
     "q6": "Orari di check-in e check-out?",
-    "a6": "Check-in dalle 16:00. Check-out entro le 11:00. Check-in anticipato e check-out posticipato possono essere disponibili. Chiedi al concierge.",
+    "a6": "Gli orari di arrivo e partenza sono indicati nella pagina di ogni casa. Eventuali modifiche dipendono dalla disponibilità.",
     "q7": "Offrite transfer dall'aeroporto?",
     "a7": "Sì. Transfer privati da Porto (OPO), Lisbona (LIS), Faro (FAO) e Vigo (VGO). Veicoli premium con autisti locali. Aggiungi al tuo itinerario con i dettagli del volo.",
     "q8": "Le vostre case sono adatte per eventi?",
     "a8": "Diverse proprietà sono ideali per eventi, celebrazioni, ritiri e matrimoni. Visita la nostra pagina Eventi o contatta il nostro team. Gestiamo catering, allestimento, intrattenimento e logistica con il nostro team interno.",
     "q9": "Cos'è la garanzia della miglior tariffa?",
-    "a9": "Il nostro sito offre sempre la tariffa più bassa disponibile. Prenotare direttamente significa prezzo inferiore rispetto a qualsiasi piattaforma terza, supporto concierge prioritario, risposta più rapida e accesso prioritario ai servizi interni.",
+    "a9": "Se trova la stessa casa, date e condizioni a un prezzo inferiore su Airbnb o Booking.com entro 24 ore dalla prenotazione, può richiedere un adeguamento del prezzo. Consulti le condizioni della garanzia.",
     "cantFind": "Non trovi quello che cerchi?",
     "contactTeam": "CONTATTA IL NOSTRO TEAM",
     "q10": "Posso fare il check-in in qualsiasi giorno della settimana?",
-    "a10": "Per la maggior parte dell'anno sì — gli arrivi sono aperti ogni giorno, con soggiorni minimi di 2–4 notti a seconda della casa. A luglio e agosto i soggiorni vanno da sabato a sabato con un minimo di 7 notti. Il calendario di prenotazione di ogni casa evidenzia le date di arrivo disponibili e, per soggiorni più lunghi o fuori standard, il nostro concierge costruirà volentieri il piano con voi."
+    "a10": "I giorni di arrivo e il soggiorno minimo variano in base alla casa e alla stagione. Il calendario mostra date disponibili e condizioni applicabili."
   },
   "adventures": {
     "heroAlt": "Esperienze in Portogallo",
@@ -2036,5 +2036,18 @@
     "languages": "Lingue del sito",
     "recentFeedback": "Opinioni recenti degli ospiti della nostra collezione. Apra una casa per leggere altre recensioni.",
     "demoNotice": "Prenotazione dimostrativa con prezzi di esempio. Non verranno effettuati prenotazioni o pagamenti."
+  },
+  "siteUx": {
+    "quickFacts": "In breve",
+    "findStay": "Trova una casa",
+    "exploreServices": "Scopri i servizi",
+    "viewService": "Vedi i dettagli",
+    "optionalDetails": "Altri dettagli (facoltativi)",
+    "travelGuide": "Organizza il viaggio",
+    "searchQuestions": "Cerca nelle domande",
+    "noQuestions": "Non trova la risposta? Il nostro team può aiutarla.",
+    "searchJournal": "Cerca nel diario",
+    "readyTitle": "Il suo prossimo soggiorno inizia qui.",
+    "readyBody": "Scelga una destinazione, confronti le case e consulti i prezzi per le sue date."
   }
 }

@@ -175,7 +175,7 @@ export default function ExperienceGallery({ images, alt }: ExperienceGalleryProp
       <div className="hidden lg:flex container justify-end pt-3">
         <button
           onClick={() => openLightbox(0)}
-          className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#1A1A18] border border-[#E8E4DC] px-5 py-3 hover:border-[#1A1A18] transition-colors"
+          className="pa-action text-[11px] font-medium tracking-[0.12em] uppercase text-[#1A1A18] border border-[#E8E4DC] px-5 py-3 hover:border-[#1A1A18] transition-colors"
         >
           View all photos ({total})
         </button>

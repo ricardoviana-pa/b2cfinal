@@ -120,7 +120,7 @@ export default function ExperienceMobileBookingBar({
                 }
                 setWidgetOpen(true);
               }}
-              className="bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase px-8 py-3.5"
+              className="pa-action bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase px-8 py-3.5"
               style={{ minHeight: '48px' }}
             >
               {t('experience.bookNow', 'Book now')}
@@ -130,7 +130,7 @@ export default function ExperienceMobileBookingBar({
               href={waHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase px-8 py-3.5 flex items-center"
+              className="pa-action bg-[#1A1A18] text-white text-[11px] tracking-[0.14em] font-medium uppercase px-8 py-3.5 flex items-center"
               style={{ minHeight: '48px' }}
               onClick={() => {
                 if (!experienceSlug) return;

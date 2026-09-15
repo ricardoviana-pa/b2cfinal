@@ -870,7 +870,7 @@
   "services": {
     "heroAlt": "Expériences Portugal Active",
     "heroOverline": "EXPÉRIENCES",
-    "heroTitle": "Conçues pour vous. Réalisées par nous.",
+    "heroTitle": "Un concierge pour votre séjour.",
     "heroBody": "Chaque expérience est organisée par notre concierge et fournie par des professionnels Portugal Active formés en interne. Pas de sous-traitance. Pas d'intermédiaires. Une équipe, une norme.",
     "navGastronomy": "Gastronomie",
     "navWellness": "Bien-être",
@@ -984,27 +984,27 @@
     "title": "Tout ce que vous devez savoir.",
     "subtitle": "Des réponses claires. Pas de petits caractères.",
     "q1": "En quoi Portugal Active diffère-t-elle d'une location de vacances traditionnelle ?",
-    "a1": "Chaque maison est exploitée aux standards hôteliers par notre équipe interne. Service d'entretien professionnel disponible dans chaque propriété, linge haut de gamme préparé avant l'arrivée, concierge dédié qui connaît votre nom avant l'enregistrement. Une équipe. Un standard. Un seul interlocuteur pour tout.",
+    "a1": "Nous sélectionnons des maisons au Portugal et accompagnons votre séjour avec une équipe de conciergerie. Chaque page présente les équipements, services et conditions de la maison.",
     "q2": "Qu'est-ce qui est inclus dans chaque séjour ?",
-    "a2": "Linge de maison de qualité hôtelière, peignoirs et serviettes de piscine. Produits de salle de bain de luxe. Cuisine entièrement équipée avec café, épices et produits essentiels. Kit de bienvenue avec produits locaux sélectionnés. Concierge dédié 24h/24, 7j/7. Équipe locale à quelques minutes. Accès à tous les services internes. Meilleur tarif garanti en réservation directe. Ménage quotidien, chef privé, spa et autres services disponibles en option.",
+    "a2": "Consultez les équipements et le devis de la maison choisie. Chef, transferts, ménage supplémentaire et autres services optionnels dépendent de la propriété et des dates.",
     "q3": "Comment réserver une maison ?",
-    "a3": "Parcourez notre collection, sélectionnez les dates et réservez directement ou contactez notre concierge via WhatsApp ou e-mail. Nous répondons sous 2 heures avec la disponibilité, un devis détaillé et une recommandation personnalisée.",
+    "a3": "Choisissez une maison, indiquez vos dates et le nombre de voyageurs, puis consultez le devis. La page précise si vous pouvez réserver en ligne ou envoyer une demande de confirmation.",
     "q4": "Quelle est la politique d'annulation ?",
-    "a4": "Remboursement intégral jusqu'à 30 jours avant l'arrivée. Remboursement de 50 % entre 30 et 14 jours. Moins de 14 jours : non remboursable. Certaines propriétés peuvent avoir des conditions spécifiques. Votre concierge confirme la politique exacte lors de la réservation.",
+    "a4": "Les conditions varient selon la maison et le tarif choisi. Consultez la politique d’annulation du devis avant de confirmer la réservation.",
     "q5": "Puis-je ajouter des services après la réservation ?",
     "a5": "Oui. Composez votre itinéraire à tout moment avant ou pendant votre séjour. Ajoutez via le site ou en contactant votre concierge. Nous recommandons de réserver les chefs et les expériences populaires 48 heures à l'avance.",
     "q6": "Horaires d'arrivée et de départ ?",
-    "a6": "Arrivée à partir de 16h00. Départ avant 11h00. Arrivée anticipée et départ tardif possibles sous réserve de disponibilité. Demandez à votre concierge.",
+    "a6": "Les horaires d’arrivée et de départ figurent sur la page de chaque maison. Tout ajustement dépend des disponibilités.",
     "q7": "Proposez-vous des transferts aéroport ?",
     "a7": "Oui. Transferts privés depuis Porto (OPO), Lisbonne (LIS), Faro (FAO) et Vigo (VGO). Véhicules haut de gamme avec chauffeurs locaux. Ajoutez à votre itinéraire avec vos détails de vol.",
     "q8": "Vos maisons sont-elles adaptées aux événements ?",
     "a8": "Plusieurs propriétés sont idéales pour les événements, célébrations, retraites et mariages. Visitez notre page Événements ou contactez notre équipe. Nous gérons la restauration, l'installation, le divertissement et la logistique via notre équipe interne.",
     "q9": "Qu'est-ce que la garantie du meilleur tarif ?",
-    "a9": "Notre site web offre toujours le tarif le plus bas disponible. Réserver en direct signifie un prix inférieur à celui de toute plateforme tierce, un support concierge prioritaire, une réponse plus rapide et un accès prioritaire aux services internes.",
+    "a9": "Si vous trouvez la même maison, les mêmes dates et conditions à un prix inférieur sur Airbnb ou Booking.com dans les 24 heures suivant la réservation, vous pouvez demander un alignement du prix. Consultez les conditions de la garantie.",
     "cantFind": "Vous ne trouvez pas ce que vous cherchez ?",
     "contactTeam": "CONTACTER NOTRE ÉQUIPE",
     "q10": "Puis-je arriver n'importe quel jour de la semaine ?",
-    "a10": "La majeure partie de l'année, oui — les arrivées sont possibles tous les jours, avec des séjours minimums de 2 à 4 nuits selon la maison. En juillet et août, les séjours vont du samedi au samedi avec un minimum de 7 nuits. Le calendrier de réservation de chaque maison met en évidence les dates d'arrivée disponibles, et pour les séjours plus longs ou hors norme, notre concierge se fera un plaisir de construire le plan avec vous."
+    "a10": "Les jours d’arrivée et la durée minimale varient selon la maison et la saison. Le calendrier indique les dates disponibles et les conditions applicables."
   },
   "adventures": {
     "heroAlt": "Expériences d'aventure au Portugal",
@@ -2036,5 +2036,18 @@
     "languages": "Langues du site",
     "recentFeedback": "Avis récents des voyageurs de notre collection. Ouvrez une maison pour lire davantage d’avis.",
     "demoNotice": "Réservation de démonstration : tarifs indicatifs. Aucune réservation ni aucun paiement ne sera effectué."
+  },
+  "siteUx": {
+    "quickFacts": "En bref",
+    "findStay": "Trouver une maison",
+    "exploreServices": "Découvrir les services",
+    "viewService": "Voir les détails",
+    "optionalDetails": "Plus de détails (facultatif)",
+    "travelGuide": "Préparer votre voyage",
+    "searchQuestions": "Rechercher une question",
+    "noQuestions": "Vous cherchez encore une réponse ? Notre équipe peut vous aider.",
+    "searchJournal": "Rechercher dans le journal",
+    "readyTitle": "Votre prochain séjour commence ici.",
+    "readyBody": "Choisissez une destination, comparez les maisons et consultez les prix pour vos dates."
   }
 }

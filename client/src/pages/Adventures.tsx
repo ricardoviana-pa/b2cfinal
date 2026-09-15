@@ -7,7 +7,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { MapPin, Clock, Check, Play } from 'lucide-react';
+import { MapPin, Clock } from 'lucide-react';
 import productsData from '@/data/products.json';
 import experienceDetailsData from '@/data/experienceDetails.json';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
@@ -174,7 +174,7 @@ export default function Adventures() {
       <Header />
 
       {/* Hero */}
-      <section className="relative h-[62vh] min-h-[460px] flex items-end overflow-hidden">
+      <section className="page-hero">
         <img src="/experiences/horseback-riding/01.webp" alt="Horseback riding on the beach at sunset – adventure experiences in Portugal" className="absolute inset-0 w-full h-full object-cover" width={1600} height={1067} fetchPriority="high" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/15" />
         <div className="relative container pb-12 lg:pb-16 z-10">
@@ -182,6 +182,7 @@ export default function Adventures() {
           <p className="body-lg max-w-lg text-white/95">
             {t('adventures.subtitle')}
           </p>
+          <a href="#experiences-list" className="btn-white mt-6">{t('adventures.availableAdventures')}</a>
         </div>
       </section>
 
@@ -194,7 +195,7 @@ export default function Adventures() {
               <button
                 key={d.value}
                 onClick={() => setDestination(d.value)}
-                className={`px-4 py-2 text-[13px] font-medium whitespace-nowrap transition-all border shrink-0 ${
+                className={`pa-action px-4 py-2 text-[13px] font-medium whitespace-nowrap transition-all border shrink-0 ${
                   destination === d.value
                     ? 'bg-[#1A1A18] text-white border-[#1A1A18]'
                     : 'bg-transparent text-[#6B6860] border-[#E8E4DC] hover:border-[#1A1A18] hover:text-[#1A1A18]'
@@ -209,7 +210,7 @@ export default function Adventures() {
       </div>
 
       {/* Adventures Grid */}
-      <section className="section-padding">
+      <section id="experiences-list" className="section-padding scroll-mt-40">
         <div className="container">
           <h2 className="sr-only">{t('adventures.availableAdventures')}</h2>
           <p className="text-[13px] text-[#726D63] mb-6">

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { Property } from '../client/src/lib/types';
-import { hasConfirmedQuote, hasSwimmingPool, hasHeatedPool, parseHomeFilters, searchPrice, sortSearchResults } from '../client/src/lib/homeSearch';
+import { hasConfirmedQuote, hasSwimmingPool, hasHeatedPool, parseHomeFilters, parseDestinationSelection, searchPrice, sortSearchResults } from '../client/src/lib/homeSearch';
 const home = (slug: string, priceFrom = 100, tier = 'essential') => ({ slug, guestyId: slug, priceFrom, tier } as Property);
 const ids = (homes: Property[]) => homes.map(p => p.slug);
 
@@ -46,6 +46,12 @@ describe('home discovery price comparisons', () => {
 });
 
 describe('home search filters', () => {
+  it('keeps region choices distinct from cities and clears the previous region', () => {
+    expect(parseDestinationSelection('region:algarve')).toEqual({ destination: 'algarve', location: '' });
+    expect(parseDestinationSelection('Porto')).toEqual({ destination: '', location: 'Porto' });
+    expect(parseDestinationSelection('')).toEqual({ destination: '', location: '' });
+    expect(parseDestinationSelection('region:invalid')).toEqual({ destination: '', location: '' });
+  });
   it('round-trips every filter through a shareable URL', () => {
     const q = new URLSearchParams('bedrooms=7%2B&pool=1&heatedPool=1&pets=1&type=Villa&budget=b2&sort=price-asc');
     expect(parseHomeFilters(q)).toEqual({ type:'Villa', budget:'b2', bedrooms:'7+', pool:true, heatedPool:true, pets:true, sort:'price-asc' });

@@ -4,22 +4,15 @@
    ========================================================================== */
 
 import { useState, useMemo, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
-import { CHECKLIST_POINTS } from '@shared/brandFacts';
 import { getConcierge } from '@shared/concierges';
 import { localizeDuration, localizeRoomName } from '@/lib/duration';
 import { useParams, Link, useSearch } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { realEstateListing } from '@/data/realEstate';
 import { loadPropertyOverrides, mergePropertyOverrides } from '@/lib/localizeProperty';
 import { localizeProduct } from '@/lib/localizeProduct';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { PartnerBookingPanel } from '@/components/booking/PartnerBookingPanel';
-import {
-  ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck,
-  Sparkles, Gem, Clock, UtensilsCrossed, Headphones, Plus, X, AlertTriangle,
-  Wifi, Tv, Coffee, Car, Waves, Wind, Shirt, Flame, TreePine, Mountain,
-  Sun, Monitor, Utensils, Sofa, ArrowRight, ShieldCheck, Bed, ChevronDown, type LucideIcon, PawPrint,
-} from 'lucide-react';;
+import { ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Users, Award, BadgeCheck, Sparkles, Clock, UtensilsCrossed, Headphones, X, AlertTriangle, Wifi, Tv, Car, Waves, Wind, Shirt, Flame, TreePine, Mountain, Monitor, Utensils, Sofa, ArrowRight, ShieldCheck, Bed, ChevronDown, type LucideIcon, PawPrint } from 'lucide-react';;
 const AddToItineraryModal = lazy(() => import('@/components/itinerary/AddToItineraryModal'));
 import productsData from '@/data/products.json';
 import destinationsData from '@/data/destinations.json';
@@ -1106,9 +1099,9 @@ export default function PropertyDetail() {
             </div>
           ))}
         </div>
-        <Link href="/best-rate-guarantee" className="inline-flex items-center mt-1 caption text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark">
+        {!tripwixUid && <Link href="/best-rate-guarantee" className="inline-flex items-center mt-1 caption text-pa-gold-aa underline underline-offset-2 hover:text-pa-dark">
           {t('trust.guaranteeTerms', 'How the guarantee works')}
-        </Link>
+        </Link>}
       </div>
 
       {/* A human at the decision point — the About page has the founder with a
@@ -1194,7 +1187,7 @@ export default function PropertyDetail() {
             </span>
             <button
               onClick={e => { e.stopPropagation(); setLightboxImage(currentImage); setLightboxOpen(true); }}
-              className="pointer-events-auto rounded-full bg-white/90 backdrop-blur-sm text-pa-dark px-5 py-2.5 min-h-[44px] hover:bg-white transition-colors eyebrow font-medium tracking-[0.12em] uppercase"
+              className="pa-action pointer-events-auto rounded-full bg-white/90 backdrop-blur-sm text-pa-dark px-5 py-2.5 min-h-[44px] hover:bg-white transition-colors eyebrow font-medium tracking-[0.12em] uppercase"
             >
               {t('propertyDetail.viewAll')}
             </button>
@@ -1257,7 +1250,7 @@ export default function PropertyDetail() {
             ['property-location', t('propertyDetail.locationTitle')],
             ['property-good-to-know', t('pdpFaq.title')],
           ].map(([id, label]) => (
-            <a key={id} href={`#${id}`} className="inline-flex items-center min-h-11 rounded-full border border-pa-sand px-4 body-sm text-pa-earth hover:border-pa-gold hover:text-pa-dark">{label}</a>
+            <a key={id} href={`#${id}`} className="pa-action inline-flex items-center min-h-11 rounded-full border border-pa-sand px-4 body-sm text-pa-earth hover:border-pa-gold hover:text-pa-dark">{label}</a>
           ))}
         </nav>
 
@@ -1294,7 +1287,7 @@ export default function PropertyDetail() {
                 {idx === 4 && totalImages > 5 && (
                   <button
                     onClick={e => { e.stopPropagation(); setLightboxImage(0); setLightboxOpen(true); }}
-                    className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm text-pa-dark px-4 py-2 eyebrow font-medium tracking-[0.08em] uppercase rounded-full hover:bg-white transition-colors z-10"
+                    className="pa-action absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm text-pa-dark px-4 py-2 eyebrow font-medium tracking-[0.08em] uppercase rounded-full hover:bg-white transition-colors z-10"
                   >
                     {t('propertyDetail.viewAll')} ({totalImages})
                   </button>
@@ -1332,31 +1325,6 @@ export default function PropertyDetail() {
                 t={t}
               />
               </div>
-
-              {realEstateListing(property.slug, i18n.language) && (
-                <section className="border-y border-pa-sand py-6 lg:py-7">
-                  <h2 className="font-display headline-sm font-light text-pa-dark mb-3">{t('propertyDetail.ownershipTitle')}</h2>
-                  <p className="body-sm text-pa-earth leading-relaxed max-w-2xl mb-4">{t('propertyDetail.ownershipBody')}</p>
-                  <a href={realEstateListing(property.slug, i18n.language)} className="inline-flex items-center gap-3 min-h-11 text-[14px] font-medium text-pa-dark border-b border-pa-dark hover:text-pa-earth transition-colors">
-                    {t('propertyDetail.ownershipAction')} <ArrowRight size={16} aria-hidden="true" />
-                  </a>
-                </section>
-              )}
-
-              <section className="rounded-xl border border-pa-sand bg-pa-warm p-5 lg:p-6">
-                <p className="eyebrow text-pa-gold-aa mb-3">{t('conversion.stayClarity')}</p>
-                <div className="grid gap-5 sm:grid-cols-3">
-                  {[
-                    { Icon: BedDouble, title: t('conversion.theHome'), body: t('conversion.theHomeBody') },
-                    { Icon: ShieldCheck, title: t('conversion.thePrice'), body: t('conversion.totalNote') },
-                    { Icon: Headphones, title: t('conversion.optionalServices'), body: t('conversion.extrasNote') },
-                  ].map(({ Icon, title, body }) => <div key={title}>
-                    <Icon size={19} className="text-pa-gold-aa mb-2" />
-                    <h3 className="body-sm font-medium text-pa-dark mb-1">{title}</h3>
-                    <p className="caption text-pa-earth leading-relaxed">{body}</p>
-                  </div>)}
-                </div>
-              </section>
 
               {/* 3. Amenities — highlights row + clean per-category list (the
                   previous design rendered every item as a beige pill; it read as
