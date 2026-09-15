@@ -870,7 +870,7 @@
   "services": {
     "heroAlt": "Portugal Active Erlebnisse",
     "heroOverline": "ERLEBNISSE",
-    "heroTitle": "Für Sie gestaltet. Von uns erbracht.",
+    "heroTitle": "Concierge für Ihren Aufenthalt.",
     "heroBody": "Jedes Erlebnis wird von unserem Concierge organisiert und von geschulten Portugal Active Fachleuten erbracht. Kein Outsourcing. Keine Vermittler. Ein Team, ein Standard.",
     "navGastronomy": "Gastronomie",
     "navWellness": "Wellness",
@@ -984,27 +984,27 @@
     "title": "Alles, was Sie wissen müssen.",
     "subtitle": "Klare Antworten. Kein Kleingedrucktes.",
     "q1": "Wie unterscheidet sich Portugal Active von einer herkömmlichen Ferienvermietung?",
-    "a1": "Jedes Haus wird von unserem hauseigenen Team nach Hotelstandards betrieben. Professionelle Reinigung in jeder Unterkunft verfügbar, Premium-Bettwäsche vor der Ankunft vorbereitet, engagierter Concierge, der Ihren Namen vor dem Check-in kennt. Ein Team. Ein Standard. Ein Ansprechpartner für alles.",
+    "a1": "Wir wählen Häuser in Portugal aus und begleiten Ihren Aufenthalt mit einem Concierge-Team. Ausstattung, Services und Bedingungen finden Sie auf der jeweiligen Hausseite.",
     "q2": "Was ist in jedem Aufenthalt enthalten?",
-    "a2": "Bettwäsche, Bademäntel und Pooltücher in Hotelqualität. Luxuriöse Badezimmerausstattung. Voll ausgestattete Küche mit Kaffee, Gewürzen und Grundlagen. Willkommenspaket mit lokalen Produkten. Engagierter Concierge rund um die Uhr. Lokales Team in wenigen Minuten erreichbar. Zugang zu allen hauseigenen Services. Bestpreisgarantie bei Direktbuchung. Tägliche Reinigung, Privatkoch, Spa und weitere Services als Zusatzleistungen verfügbar.",
+    "a2": "Prüfen Sie die Ausstattung und das Angebot Ihres ausgewählten Hauses. Koch, Transfers, zusätzliche Reinigung und andere optionale Services hängen von Haus und Reisedaten ab.",
     "q3": "Wie buche ich ein Haus?",
-    "a3": "Durchstöbern Sie unsere Kollektion, wählen Sie Daten und buchen Sie direkt oder kontaktieren Sie unseren Concierge per WhatsApp oder E-Mail. Wir antworten innerhalb von 2 Stunden mit Verfügbarkeit, einem detaillierten Angebot und einer persönlichen Empfehlung.",
+    "a3": "Wählen Sie ein Haus, geben Sie Reisedaten und Gästezahl ein und prüfen Sie das Angebot. Die Seite zeigt, ob Sie online buchen oder eine Anfrage zur Bestätigung senden können.",
     "q4": "Wie lautet die Stornierungsrichtlinie?",
-    "a4": "Volle Rückerstattung bis 30 Tage vor Anreise. 50% Rückerstattung zwischen 30 und 14 Tagen. Innerhalb von 14 Tagen: nicht erstattungsfähig. Einige Unterkünfte können spezifische Bedingungen haben. Ihr Concierge bestätigt die genaue Richtlinie bei der Buchung.",
+    "a4": "Die Bedingungen hängen vom Haus und vom gewählten Tarif ab. Prüfen Sie vor der Buchungsbestätigung die Stornierungsbedingungen in Ihrem Angebot.",
     "q5": "Kann ich nach der Buchung Services hinzufügen?",
     "a5": "Ja. Stellen Sie Ihr Programm jederzeit vor oder während Ihres Aufenthalts zusammen. Fügen Sie über die Website oder per Nachricht an Ihren Concierge hinzu. Wir empfehlen, Köche und beliebte Erlebnisse 48 Stunden im Voraus zu buchen.",
     "q6": "Anreise- und Abreisezeiten?",
-    "a6": "Anreise ab 16:00 Uhr. Abreise bis 11:00 Uhr. Frühe Anreise und späte Abreise können möglich sein. Fragen Sie Ihren Concierge.",
+    "a6": "Anreise- und Abreisezeiten finden Sie auf der jeweiligen Hausseite. Änderungen sind je nach Verfügbarkeit möglich.",
     "q7": "Bieten Sie Flughafentransfers an?",
     "a7": "Ja. Private Transfers ab Porto (OPO), Lissabon (LIS), Faro (FAO) und Vigo (VGO). Premium-Fahrzeuge mit lokalen Fahrern. Fügen Sie Ihre Flugdaten zum Reiseplan hinzu.",
     "q8": "Eignen sich Ihre Häuser für Events?",
     "a8": "Mehrere Immobilien eignen sich ideal für Events, Feiern, Retreats und Hochzeiten. Besuchen Sie unsere Events-Seite oder kontaktieren Sie unser Team. Wir kümmern uns um Catering, Aufbau, Unterhaltung und Logistik mit unserem hauseigenen Team.",
     "q9": "Was ist die Bestpreisgarantie?",
-    "a9": "Unsere Website bietet immer den niedrigsten verfügbaren Preis. Direkt buchen bedeutet niedrigerer Preis als auf jeder Drittanbieter-Plattform, bevorzugter Concierge-Support, schnellere Antwort und vorrangiger Zugang zu hauseigenen Services.",
+    "a9": "Finden Sie innerhalb von 24 Stunden nach der Buchung dasselbe Haus für dieselben Reisedaten und Bedingungen günstiger auf Airbnb oder Booking.com, können Sie eine Preisanpassung anfragen. Es gelten die Garantiebedingungen.",
     "cantFind": "Können Sie nicht finden, was Sie suchen?",
     "contactTeam": "UNSER TEAM KONTAKTIEREN",
     "q10": "Kann ich an jedem Wochentag anreisen?",
-    "a10": "Den größten Teil des Jahres ja — Anreisen sind an jedem Tag möglich, mit Mindestaufenthalten von 2–4 Nächten je nach Haus. Im Juli und August laufen Aufenthalte von Samstag bis Samstag mit mindestens 7 Nächten. Der Buchungskalender jedes Hauses hebt die verfügbaren Anreisetage hervor, und für längere oder besondere Aufenthalte plant unser Concierge gern gemeinsam mit Ihnen."
+    "a10": "Anreisetage und Mindestaufenthalt variieren je nach Haus und Saison. Der Kalender zeigt verfügbare Daten und geltende Bedingungen."
   },
   "adventures": {
     "heroAlt": "Erlebnisse in Portugal",
@@ -2036,5 +2036,18 @@
     "languages": "Website-Sprachen",
     "recentFeedback": "Aktuelle Rückmeldungen zu Häusern unserer Kollektion. Öffnen Sie ein Haus für weitere Bewertungen.",
     "demoNotice": "Demo-Buchung mit Beispielpreisen. Es erfolgt keine Buchung oder Zahlung."
+  },
+  "siteUx": {
+    "quickFacts": "Auf einen Blick",
+    "findStay": "Ein Ferienhaus finden",
+    "exploreServices": "Services entdecken",
+    "viewService": "Details ansehen",
+    "optionalDetails": "Weitere Angaben (optional)",
+    "travelGuide": "Ihre Reise planen",
+    "searchQuestions": "Fragen durchsuchen",
+    "noQuestions": "Noch Fragen? Unser Team hilft Ihnen gerne.",
+    "searchJournal": "Im Journal suchen",
+    "readyTitle": "Ihr nächster Aufenthalt beginnt hier.",
+    "readyBody": "Wählen Sie ein Reiseziel, vergleichen Sie Häuser und prüfen Sie die Preise für Ihre Reisedaten."
   }
 }

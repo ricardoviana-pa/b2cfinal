@@ -870,7 +870,7 @@
   "services": {
     "heroAlt": "Portugal Active -elämykset",
     "heroOverline": "ELÄMYKSET",
-    "heroTitle": "Suunniteltu sinulle. Toimitettu meiltä.",
+    "heroTitle": "Concierge majoituksesi ajaksi.",
     "heroBody": "Jokainen elämys järjestetään concierge-palvelumme toimesta ja toteutetaan koulutettujen Portugal Active -ammattilaisten voimin. Ei ulkoistamista. Ei välikäsiä. Yksi tiimi, yksi standardi.",
     "navGastronomy": "Gastronomia",
     "navWellness": "Hyvinvointi",
@@ -984,27 +984,27 @@
     "title": "Kaikki mitä sinun tarvitsee tietää.",
     "subtitle": "Selkeät vastaukset. Ei pientä pränttiä.",
     "q1": "Miten Portugal Active eroaa perinteisestä lomavuokrauksesta?",
-    "a1": "Jokaista kotia hallinnoidaan hotellitasoisesti oman tiimimme toimesta. Ammattimainen siivous saatavilla jokaisessa kiinteistössä, premium-liinavaatteet valmiina ennen saapumista, omistettu concierge, joka tuntee nimesi ennen sisäänkirjausta. Yksi tiimi. Yksi standardi. Yksi yhteyshenkilö kaikkeen.",
+    "a1": "Valitsemme taloja Portugalista ja tuemme majoitustasi conciergetiimillä. Jokaisella talosivulla kerrotaan varustelusta, palveluista ja ehdoista.",
     "q2": "Mitä jokaiseen oleskeluun sisältyy?",
-    "a2": "Hotellitasoiset liinavaatteet, kylpytakit ja allaspyyhkeet. Luksuskylpyhuonetarvikkeet. Täysin varustettu keittiö kahvilla, mausteilla ja perustarpeilla. Tervetuliaispaketti paikallisilla tuotteilla. Omistettu concierge 24/7. Paikallinen tiimi minuuttien päässä. Pääsy kaikkiin omiin palveluihin. Paras hinta -takuu suoravarauksella. Päivittäinen siivous, yksityinen kokki, spa ja muut palvelut saatavilla lisäpalveluina.",
+    "a2": "Tutustu valitsemasi talon varusteluun ja tarjoukseen. Kokki, kuljetukset, lisäsiivous ja muut valinnaiset palvelut riippuvat talosta ja päivämääristä.",
     "q3": "Miten varaan kodin?",
-    "a3": "Selaa kokoelmaamme, valitse päivät ja varaa suoraan tai ota yhteyttä concierge-palveluumme WhatsAppilla tai sähköpostilla. Vastaamme 2 tunnin sisällä saatavuudesta, yksityiskohtaisesta tarjouksesta ja henkilökohtaisesta suosituksesta.",
+    "a3": "Valitse talo, anna päivämäärät ja vieraiden määrä ja katso tarjous. Sivu kertoo, voitko varata verkossa vai lähettää vahvistuspyynnön.",
     "q4": "Mikä on peruutuskäytäntö?",
-    "a4": "Täysi palautus 30 päivään ennen sisäänkirjausta. 50 % palautus 30 ja 14 päivän välillä. 14 päivän sisällä: ei palauteta. Joillakin kiinteistöillä voi olla erityisehtoja. Concierge-palvelusi vahvistaa tarkan käytännön varauksessa.",
+    "a4": "Ehdot vaihtelevat talon ja valitun hintavaihtoehdon mukaan. Tarkista tarjouksen peruutusehdot ennen varauksen vahvistamista.",
     "q5": "Voinko lisätä palveluita varauksen jälkeen?",
     "a5": "Kyllä. Rakenna ohjelmasi milloin tahansa ennen oleskelua tai sen aikana. Lisää verkkosivuston kautta tai viesti concierge-palvelullesi. Suosittelemme varaamaan kokit ja suositut elämykset 48 tuntia etukäteen.",
     "q6": "Sisäänkirjaus- ja uloskirjausajat?",
-    "a6": "Sisäänkirjaus klo 16:00 alkaen. Uloskirjaus klo 11:00 mennessä. Aikainen sisäänkirjaus ja myöhäinen uloskirjaus voivat olla mahdollisia. Kysy concierge-palvelultasi.",
+    "a6": "Sisään- ja uloskirjautumisajat on ilmoitettu kunkin talon sivulla. Mahdolliset muutokset riippuvat saatavuudesta.",
     "q7": "Tarjoatteko lentokenttäkuljetuksia?",
     "a7": "Kyllä. Yksityiskuljetukset Portosta (OPO), Lissabonista (LIS), Farosta (FAO) ja Vigosta (VGO). Premium-ajoneuvot paikallisilla kuljettajilla. Lisää ohjelmaasi lentotietoineen.",
     "q8": "Sopivatko kotinne tapahtumiin?",
     "a8": "Useat kiinteistöt soveltuvat erinomaisesti tapahtumiin, juhliin, retriitteihin ja häihin. Vieraile Tapahtumat-sivullamme tai ota yhteyttä tiimiimme. Hoidamme catering-palvelun, järjestelyt, viihteen ja logistiikan oman tiimimme voimin.",
     "q9": "Mikä on paras hinta -takuu?",
-    "a9": "Verkkosivustomme tarjoaa aina alimman saatavilla olevan hinnan. Suoravaraus tarkoittaa alhaisempaa hintaa kuin millään kolmannen osapuolen alustalla, etuoikeutettua concierge-tukea, nopeampaa vastausta ja ensimmäistä pääsyä omiin palveluihimme.",
+    "a9": "Jos löydät saman talon samoille päiville ja samoilla ehdoilla edullisemmin Airbnbstä tai Booking.comista 24 tunnin kuluessa varauksesta, voit pyytää hinnan sovittamista. Tutustu takuuehtoihin.",
     "cantFind": "Etkö löydä etsimääsi?",
     "contactTeam": "OTA YHTEYTTÄ TIIMIIMME",
     "q10": "Voinko saapua minä tahansa viikonpäivänä?",
-    "a10": "Suurimman osan vuodesta kyllä — saapumiset ovat avoinna minä tahansa päivänä, ja vähimmäisoleskelu on talosta riippuen 2–4 yötä. Heinä- ja elokuussa oleskelut ovat lauantaista lauantaihin, vähintään 7 yötä. Jokaisen talon varauskalenteri korostaa saatavilla olevat saapumispäivät, ja pidempiä tai tavallisesta poikkeavia oleskeluja concierge-palvelumme suunnittelee mielellään kanssanne."
+    "a10": "Saapumispäivät ja vähimmäismajoitus vaihtelevat talon ja kauden mukaan. Kalenteri näyttää vapaat päivät ja sovellettavat ehdot."
   },
   "adventures": {
     "heroAlt": "Elämyksiä Portugalissa",
@@ -2036,5 +2036,18 @@
     "languages": "Sivuston kielet",
     "recentFeedback": "Viimeaikaisia kokemuksia kokoelmamme taloista. Avaa talo lukeaksesi lisää arvosteluja.",
     "demoNotice": "Esimerkkivaraus ja esimerkkihinnat. Varausta tai maksua ei tehdä."
+  },
+  "siteUx": {
+    "quickFacts": "Lyhyesti",
+    "findStay": "Löydä majoitus",
+    "exploreServices": "Tutustu palveluihin",
+    "viewService": "Katso tiedot",
+    "optionalDetails": "Lisätiedot (valinnainen)",
+    "travelGuide": "Suunnittele matkasi",
+    "searchQuestions": "Etsi kysymyksiä",
+    "noQuestions": "Etkö löytänyt vastausta? Tiimimme auttaa mielellään.",
+    "searchJournal": "Etsi päiväkirjasta",
+    "readyTitle": "Seuraava majoituksesi alkaa tästä.",
+    "readyBody": "Valitse kohde, vertaile taloja ja tarkista hinnat haluamillesi päiville."
   }
 }

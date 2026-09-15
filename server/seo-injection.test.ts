@@ -19,6 +19,30 @@
 import { describe, it, expect } from "vitest";
 import { __testing } from "./_core/vite";
 import destinationsData from "../client/src/data/destinations.json";
+import productsData from "../client/src/data/products.json";
+
+describe('public service and policy metadata', () => {
+  it('uses the published concierge catalogue for service names and starting prices', async () => {
+    for (const product of productsData.filter(p => p.type === 'service' && p.isActive)) {
+      const meta = await __testing.getServiceBySlugCached(product.slug);
+      expect(meta.name).toBe(product.name);
+      expect(meta.priceFrom).toBe(product.priceFrom);
+    }
+  });
+
+  it('localizes the service shared by catalogue and detail pages', async () => {
+    const meta = await __testing.getServiceBySlugCached('private-chef', 'pt');
+    expect(meta.name).toBe('Chef Privado');
+  });
+
+  it('has localized cancellation metadata for every public locale', () => {
+    for (const lang of ['en', 'pt', 'es', 'fr', 'de', 'it', 'nl', 'sv', 'fi']) {
+      const meta = __testing.getPageMeta('/legal/cancellation-policy', lang);
+      expect(meta?.title).toContain('Portugal Active');
+      expect(meta?.description.length).toBeGreaterThan(20);
+    }
+  });
+});
 
 const {
   buildStaticSeoBody,

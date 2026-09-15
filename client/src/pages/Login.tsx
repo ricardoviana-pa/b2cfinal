@@ -116,7 +116,7 @@ export default function Login() {
               </p>
               <a
                 href="/owners-portal"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#1A1A18] text-white px-8 py-4 text-[14px] hover:bg-[#333] transition-all duration-200 min-h-[56px]"
+                className="pa-action inline-flex items-center justify-center gap-2 rounded-full bg-[#1A1A18] text-white px-8 py-4 text-[14px] hover:bg-[#333] transition-all duration-200 min-h-[56px]"
                 style={{ fontFamily: 'var(--font-body)', fontWeight: 500, letterSpacing: '0.02em' }}
               >
                 {t('login.openPortal', 'Open Owners Portal')}
@@ -165,7 +165,7 @@ export default function Login() {
 
                   <a
                     href="/api/auth/google"
-                    className="inline-flex items-center justify-center gap-3 w-full rounded-full border border-[#E8E4DC] bg-white px-6 py-4 text-[14px] text-[#1A1A18] hover:border-[#C4A87C] hover:shadow-md transition-all duration-200 min-h-[56px]"
+                    className="pa-action inline-flex items-center justify-center gap-3 w-full rounded-full border border-[#E8E4DC] bg-white px-6 py-4 text-[14px] text-[#1A1A18] hover:border-[#C4A87C] hover:shadow-md transition-all duration-200 min-h-[56px]"
                     style={{ fontFamily: 'var(--font-body)', fontWeight: 500 }}
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">

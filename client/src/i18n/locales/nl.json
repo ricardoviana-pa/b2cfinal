@@ -870,7 +870,7 @@
   "services": {
     "heroAlt": "Portugal Active ervaringen",
     "heroOverline": "ERVARINGEN",
-    "heroTitle": "Ontworpen voor u. Geleverd door ons.",
+    "heroTitle": "Concierge voor uw verblijf.",
     "heroBody": "Elke ervaring wordt geregeld door onze concierge en geleverd door opgeleide Portugal Active-professionals. Geen outsourcing. Geen tussenpersonen. Eén team, één standaard.",
     "navGastronomy": "Gastronomie",
     "navWellness": "Wellness",
@@ -984,27 +984,27 @@
     "title": "Alles wat u moet weten.",
     "subtitle": "Duidelijke antwoorden. Geen kleine lettertjes.",
     "q1": "Hoe verschilt Portugal Active van een traditionele vakantieverhuur?",
-    "a1": "Elk huis wordt op hotelstandaard beheerd door ons eigen team. Professionele schoonmaak beschikbaar in elk eigendom, premium linnengoed voorbereid vóór aankomst, persoonlijke concierge die uw naam kent vóór het inchecken. Eén team. Eén standaard. Eén contactpunt voor alles.",
+    "a1": "Wij selecteren huizen in Portugal en begeleiden uw verblijf met een conciergeteam. Op elke huispagina vindt u de voorzieningen, diensten en voorwaarden.",
     "q2": "Wat is inbegrepen bij elk verblijf?",
-    "a2": "Linnengoed, badjassen en zwembadhanddoeken van hotelkwaliteit. Luxe badkamerartikelen. Volledig gevulde keuken met koffie, kruiden en basisbenodigdheden. Welkomstpakket met lokale producten. Persoonlijke concierge 24/7. Lokaal team op enkele minuten afstand. Toegang tot alle huisservices. Beste prijs garantie bij directe boeking. Dagelijkse schoonmaak, privéchef, spa en andere services beschikbaar als extra.",
+    "a2": "Bekijk de voorzieningen en offerte voor uw gekozen huis. Een chef, transfers, extra schoonmaak en andere optionele diensten hangen af van het huis en de datums.",
     "q3": "Hoe boek ik een woning?",
-    "a3": "Bekijk onze collectie, selecteer data en boek direct of neem contact op met onze concierge via WhatsApp of e-mail. Wij reageren binnen 2 uur met beschikbaarheid, een gedetailleerde offerte en een persoonlijke aanbeveling.",
+    "a3": "Kies een huis, voer uw datums en het aantal gasten in en bekijk de offerte. De pagina geeft aan of u online kunt boeken of een bevestigingsverzoek kunt sturen.",
     "q4": "Wat is het annuleringsbeleid?",
-    "a4": "Volledige terugbetaling tot 30 dagen voor inchecken. 50% terugbetaling tussen 30 en 14 dagen. Binnen 14 dagen: niet restitueerbaar. Sommige accommodaties kunnen specifieke voorwaarden hebben. Uw concierge bevestigt het exacte beleid bij de boeking.",
+    "a4": "De voorwaarden verschillen per huis en gekozen tarief. Controleer het annuleringsbeleid in uw offerte voordat u de boeking bevestigt.",
     "q5": "Kan ik na het boeken services toevoegen?",
     "a5": "Ja. Stel uw planning samen op elk moment voor of tijdens uw verblijf. Voeg toe via de website of stuur een bericht aan uw concierge. Wij raden aan chefs en populaire ervaringen 48 uur van tevoren te boeken.",
     "q6": "Hoe laat is inchecken en uitchecken?",
-    "a6": "Inchecken vanaf 16:00. Uitchecken voor 11:00. Vroeg inchecken en laat uitchecken kan mogelijk zijn. Vraag uw concierge.",
+    "a6": "De in- en uitchecktijden staan op de pagina van elk huis. Aanpassingen zijn afhankelijk van beschikbaarheid.",
     "q7": "Bieden jullie luchthaventransfers aan?",
     "a7": "Ja. Privétransfers vanuit Porto (OPO), Lissabon (LIS), Faro (FAO) en Vigo (VGO). Premium voertuigen met lokale chauffeurs. Voeg toe aan uw planning met vluchtgegevens.",
     "q8": "Zijn jullie huizen geschikt voor evenementen?",
     "a8": "Diverse eigendommen zijn ideaal voor evenementen, feesten, retreats en bruiloften. Bezoek onze Evenementen-pagina of neem contact op. Wij verzorgen catering, opbouw, entertainment en logistiek met ons eigen team.",
     "q9": "Wat is de beste prijs garantie?",
-    "a9": "Onze website biedt altijd het laagste beschikbare tarief. Direct boeken betekent een lagere prijs dan elk extern platform, prioriteitsondersteuning van de concierge, snellere reactie en eerste toegang tot huisservices.",
+    "a9": "Vindt u binnen 24 uur na uw boeking hetzelfde huis, dezelfde datums en voorwaarden goedkoper op Airbnb of Booking.com, dan kunt u een prijsaanpassing aanvragen. Bekijk de garantievoorwaarden.",
     "cantFind": "Kunt u niet vinden wat u zoekt?",
     "contactTeam": "NEEM CONTACT OP MET ONS TEAM",
     "q10": "Kan ik op elke dag van de week inchecken?",
-    "a10": "Het grootste deel van het jaar wel — aankomsten zijn elke dag mogelijk, met minimale verblijven van 2–4 nachten afhankelijk van het huis. In juli en augustus lopen verblijven van zaterdag tot zaterdag met een minimum van 7 nachten. De boekingskalender van elk huis markeert de beschikbare aankomstdata, en voor langere of afwijkende verblijven stelt onze concierge graag samen met u het plan op."
+    "a10": "Aankomstdagen en minimumverblijf verschillen per huis en seizoen. De kalender toont beschikbare datums en de geldende voorwaarden."
   },
   "adventures": {
     "heroAlt": "Ervaringen in Portugal",
@@ -2036,5 +2036,18 @@
     "languages": "Talen van de website",
     "recentFeedback": "Recente ervaringen van gasten uit onze collectie. Open een huis om meer beoordelingen te lezen.",
     "demoNotice": "Demoboeking met voorbeeldprijzen. Er wordt geen reservering of betaling gedaan."
+  },
+  "siteUx": {
+    "quickFacts": "In het kort",
+    "findStay": "Vind een huis",
+    "exploreServices": "Ontdek de diensten",
+    "viewService": "Bekijk details",
+    "optionalDetails": "Meer details (optioneel)",
+    "travelGuide": "Plan uw reis",
+    "searchQuestions": "Zoek in de vragen",
+    "noQuestions": "Nog geen antwoord gevonden? Ons team helpt u graag.",
+    "searchJournal": "Zoek in het journal",
+    "readyTitle": "Uw volgende verblijf begint hier.",
+    "readyBody": "Kies een bestemming, vergelijk huizen en bekijk de prijzen voor uw datums."
   }
 }

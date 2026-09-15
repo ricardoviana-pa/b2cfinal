@@ -266,6 +266,7 @@ function OfflineBanner() {
 }
 
 function App({ ssrLocation }: { ssrLocation?: string }) {
+  const { t } = useTranslation();
   // Fire AI referrer detection once on mount
   useEffect(() => { detectAiReferrer(); }, []);
 
@@ -281,7 +282,7 @@ function App({ ssrLocation }: { ssrLocation?: string }) {
                 href="#main-content"
                 className="absolute top-0 left-0 z-[9998] px-4 py-2 bg-[#8B7355] text-white text-sm font-medium rounded-b-md transform -translate-y-full focus:translate-y-0 transition-transform"
               >
-                Skip to main content
+                {t('header.skipToContent')}
               </a>
               <OfflineBanner />
               <BackToTop />

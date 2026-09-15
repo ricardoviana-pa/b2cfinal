@@ -92,7 +92,7 @@ export default function Collection() {
     <div className="min-h-screen bg-[#FAFAF7]">
       {graph && <StructuredData id={`collection-${slug}`} data={graph} />}
       <Header />
-      <section className="container pt-28 md:pt-32 pb-6">
+      <section className="page-intro"><div className="container">
         <p className="text-[11px] font-medium tracking-[0.14em] uppercase text-[#806A48] mb-3">
           {t('collections.eyebrow', 'Curated collection')}
         </p>
@@ -107,9 +107,9 @@ export default function Collection() {
             {t('collections.count', '{{count}} homes in this collection', { count: homes.length })}
           </p>
         )}
-      </section>
+      </div></section>
 
-      <section className="container pb-12 md:pb-16">
+      <section className="container pt-8 pb-12 md:pb-16">
         <Link href={`/homes?collection=${encodeURIComponent(def.slug)}`} className="btn-primary mb-8">{t('property.checkAvailability')}</Link>
         {isLoading && <p className="body-sm text-pa-earth" role="status">{t('bookingWidget.loadingCalendar')}</p>}
         {!isLoading && homes.length === 0 && <p className="body-sm text-pa-earth mb-6">{t('homes.noResults')}</p>}
@@ -138,7 +138,7 @@ export default function Collection() {
             <Link
               key={c.slug}
               href={`/collections/${c.slug}`}
-              className="min-h-[40px] inline-flex items-center px-4 border border-[#E8E4DC] bg-white text-[13px] text-[#1A1A18] hover:border-[#8B7355] transition-colors"
+              className="pa-action min-h-[40px] inline-flex items-center px-4 border border-[#E8E4DC] bg-white text-[13px] text-[#1A1A18] hover:border-[#8B7355] transition-colors"
             >
               {((c as any)[lang] ?? c.en).title}
             </Link>

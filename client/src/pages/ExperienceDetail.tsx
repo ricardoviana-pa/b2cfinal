@@ -578,10 +578,10 @@ export default function ExperienceDetail() {
 
             {/* Itinerary */}
             {exp.itinerary && exp.itinerary.length > 0 && (
-              <section id="itinerary">
-                <h2 className="headline-md text-[#1A1A18] mb-6">{t('experienceDetail.whatToExpect')}</h2>
-                <ExperienceItinerary steps={exp.itinerary} />
-              </section>
+              <details id="itinerary" className="site-faq border-t border-pa-sand scroll-mt-28">
+                <summary>{t('experienceDetail.whatToExpect')}</summary>
+                <div className="pb-6"><ExperienceItinerary steps={exp.itinerary} /></div>
+              </details>
             )}
 
             {/* Included / Not included */}
@@ -663,7 +663,7 @@ export default function ExperienceDetail() {
                   href={exp.meetingPoint.googleMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[11px] tracking-[0.12em] uppercase text-[#1A1A18] border border-[#E8E4DC] px-5 py-3 hover:border-[#1A1A18] transition-colors"
+                  className="pa-action inline-flex items-center gap-2 text-[11px] tracking-[0.12em] uppercase text-[#1A1A18] border border-[#E8E4DC] px-5 py-3 hover:border-[#1A1A18] transition-colors"
                 >
                   {t('experienceDetail.openInGoogleMaps')}
                 </a>
@@ -796,19 +796,6 @@ export default function ExperienceDetail() {
                 experienceCategory={exp.experienceCategory}
                 priceOta={exp.priceOta}
               />
-
-              {/* OTA price comparison */}
-              {exp.priceOta && exp.priceOta > priceFrom && (
-                <div className="mt-3 p-4 bg-[#F5F1EB] border border-[#E8E4DC] text-center">
-                  <p className="text-[12px] text-[#6B6860]" style={{ fontWeight: 300 }}>
-                    {t('experienceDetail.sameExperienceOnOta')}{' '}
-                    <span className="line-through text-[#726D63]">€{exp.priceOta}</span>
-                  </p>
-                  <p className="text-[13px] text-[#8B7355] font-medium mt-1">
-                    {t('experienceDetail.youSavePerPerson', { amount: exp.priceOta - priceFrom })}
-                  </p>
-                </div>
-              )}
 
               <div className="mt-4 text-center">
                 <a

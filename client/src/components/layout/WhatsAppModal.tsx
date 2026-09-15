@@ -37,7 +37,7 @@ export default function WhatsAppModal({ isOpen, onClose, whatsappUrl }: WhatsApp
         <div className="flex gap-3 pt-2">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-3 rounded-full border border-[#E8E4DC] text-[12px] font-medium tracking-[0.06em] uppercase text-[#6B6860] hover:border-[#726D63] hover:text-[#1A1A18] transition-colors"
+            className="pa-action flex-1 px-4 py-3 rounded-full border border-[#E8E4DC] text-[12px] font-medium tracking-[0.06em] uppercase text-[#6B6860] hover:border-[#726D63] hover:text-[#1A1A18] transition-colors"
           >
             {t('whatsapp.cancel')}
           </button>
@@ -46,7 +46,7 @@ export default function WhatsAppModal({ isOpen, onClose, whatsappUrl }: WhatsApp
             target="_blank"
             rel="noopener noreferrer"
             onClick={onClose}
-            className="flex-1 px-4 py-3 rounded-full bg-[#C7A574] text-white text-[12px] font-medium tracking-[0.06em] uppercase hover:bg-[#B89560] transition-colors flex items-center justify-center gap-2"
+            className="pa-action flex-1 px-4 py-3 rounded-full bg-[#C7A574] text-white text-[12px] font-medium tracking-[0.06em] uppercase hover:bg-[#B89560] transition-colors flex items-center justify-center gap-2"
           >
             {t('whatsapp.continue')}
           </a>

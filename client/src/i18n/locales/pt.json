@@ -375,7 +375,7 @@
   },
   "common": {
     "loading": "A carregar…",
-    "from": "De",
+    "from": "Desde",
     "language": "Idioma",
     "scrollLeft": "Deslocar para a esquerda",
     "scrollRight": "Deslocar para a direita",
@@ -870,7 +870,7 @@
   "services": {
     "heroAlt": "Experiências Portugal Active",
     "heroOverline": "EXPERIÊNCIAS",
-    "heroTitle": "Desenhado para si. Prestado por nós.",
+    "heroTitle": "Concierge para a sua estadia.",
     "heroBody": "Cada experiência é organizada pelo nosso concierge e prestada por profissionais treinados Portugal Active. Sem subcontratação. Sem intermediários. Uma equipa, um padrão.",
     "navGastronomy": "Gastronomia",
     "navWellness": "Bem-estar",
@@ -984,27 +984,27 @@
     "title": "Tudo o que precisa de saber.",
     "subtitle": "Respostas claras. Sem letras pequenas.",
     "q1": "Em que é que Portugal Active difere de um aluguer de férias tradicional?",
-    "a1": "Cada alojamento é operado segundo padrões hoteleiros pela nossa equipa interna. Limpeza profissional disponível em todas as propriedades, roupa de cama premium preparada antes da chegada, concierge dedicado que sabe o seu nome antes do check-in. Uma equipa. Um padrão. Um contacto para tudo.",
+    "a1": "Selecionamos casas em Portugal e acompanhamos a sua estadia com uma equipa de concierge. As comodidades, os serviços e as condições de cada alojamento estão indicados na respetiva página.",
     "q2": "O que está incluído em cada estadia?",
-    "a2": "Roupa de cama, roupões e toalhas de piscina de qualidade hoteleira. Artigos de higiene pessoal de luxo. Cozinha totalmente equipada com café, especiarias e essenciais. Kit de boas-vindas com produtos locais selecionados. Concierge dedicado 24/7. Equipa local a minutos de distância. Acesso a todos os serviços internos. Garantia do melhor preço ao reservar diretamente. Limpeza diária, chef privado, spa e outros serviços disponíveis como complementos.",
+    "a2": "Consulte as comodidades e o orçamento da casa escolhida. Chef, transfers, limpeza adicional e outros serviços opcionais dependem da propriedade e das datas.",
     "q3": "Como reservo um alojamento?",
-    "a3": "Navegue pela nossa coleção, selecione datas e reserve diretamente ou contacte o nosso concierge via WhatsApp ou email. Respondemos em 2 horas com disponibilidade, um orçamento detalhado e uma recomendação personalizada.",
+    "a3": "Escolha uma casa, indique as datas e o número de hóspedes e consulte o orçamento. A página indica se pode reservar online ou enviar um pedido de confirmação.",
     "q4": "Qual é a política de cancelamento?",
-    "a4": "Reembolso total até 30 dias antes do check-in. 50% de reembolso entre 30 e 14 dias. Dentro de 14 dias: não reembolsável. Algumas propriedades podem ter condições específicas. O seu concierge confirma a política exata na reserva.",
+    "a4": "As condições variam conforme a casa e a tarifa escolhida. Consulte a política apresentada no orçamento antes de confirmar a reserva.",
     "q5": "Posso adicionar serviços após a reserva?",
     "a5": "Sim. Construa o seu itinerário a qualquer momento antes ou durante a sua estadia. Adicione através do website ou envie mensagem ao seu concierge. Recomendamos reservar chefs e experiências populares com 48 horas de antecedência.",
     "q6": "Horários de entrada e saída?",
-    "a6": "Entrada a partir das 16:00. Saída até às 11:00. Entrada antecipada e saída tardia podem estar disponíveis. Pergunte ao seu concierge.",
+    "a6": "Os horários de entrada e saída estão indicados na página de cada casa. Eventuais ajustes dependem da disponibilidade.",
     "q7": "Oferecem transferências de aeroporto?",
     "a7": "Sim. Transferências privadas do Porto (OPO), Lisboa (LIS), Faro (FAO) e Vigo (VGO). Veículos premium com motoristas locais. Adicione ao seu itinerário com os detalhes do voo.",
     "q8": "Os vossos alojamentos são adequados para eventos?",
     "a8": "Várias propriedades são ideais para eventos, celebrações, retiros e casamentos. Visite a nossa página de Eventos ou contacte a nossa equipa. Tratamos do catering, montagem, entretenimento e logística através da nossa equipa interna.",
     "q9": "O que é a garantia do melhor preço?",
-    "a9": "O nosso website oferece sempre a tarifa mais baixa disponível. Reservar diretamente significa preço inferior a qualquer plataforma de terceiros, suporte prioritário do concierge, resposta mais rápida e acesso prioritário aos serviços internos.",
+    "a9": "Se encontrar a mesma casa, datas e condições mais baratas no Airbnb ou Booking.com até 24 horas após a reserva, pode pedir que igualemos o preço. Consulte as condições da garantia.",
     "cantFind": "Não encontra o que procura?",
     "contactTeam": "CONTACTE A NOSSA EQUIPA",
     "q10": "Posso fazer check-in em qualquer dia da semana?",
-    "a10": "Na maior parte do ano, sim — as chegadas estão abertas em qualquer dia, com estadias mínimas de 2–4 noites conforme a casa. Em julho e agosto, as estadias são de sábado a sábado com mínimo de 7 noites. O calendário de reserva de cada casa destaca as datas de chegada disponíveis e, para estadias mais longas ou fora do padrão, o nosso concierge terá todo o gosto em montar o plano consigo."
+    "a10": "Os dias de chegada e a estadia mínima variam conforme a casa e a época. O calendário apresenta as datas disponíveis e as condições aplicáveis."
   },
   "adventures": {
     "heroAlt": "Experiências em Portugal",
@@ -2036,5 +2036,18 @@
     "languages": "Idiomas do website",
     "recentFeedback": "Opiniões recentes de hóspedes das casas da nossa coleção. Abra uma casa para ler mais avaliações.",
     "demoNotice": "Reserva de demonstração — preços de exemplo. Não será feita nenhuma reserva nem pagamento."
+  },
+  "siteUx": {
+    "quickFacts": "Resumo",
+    "findStay": "Encontrar uma casa",
+    "exploreServices": "Explorar serviços",
+    "viewService": "Ver detalhes",
+    "optionalDetails": "Mais detalhes (opcional)",
+    "travelGuide": "Planear a viagem",
+    "searchQuestions": "Pesquisar perguntas",
+    "noQuestions": "Não encontrou a resposta? A nossa equipa pode ajudar.",
+    "searchJournal": "Pesquisar no diário",
+    "readyTitle": "A próxima estadia começa aqui.",
+    "readyBody": "Escolha o destino, compare as casas e consulte o preço para as suas datas."
   }
 }

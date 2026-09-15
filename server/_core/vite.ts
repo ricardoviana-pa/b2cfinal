@@ -124,7 +124,7 @@ async function getPropertyBySlugCached(slug: string): Promise<any | null> {
  *  Services live in client/src/data/services.json (NOT in DB).
  *  Map: slug → service object. Refreshed every 10 min. */
 let _serviceSlugMap: { expiresAt: number; data: Map<string, any> } | null = null;
-async function getServiceBySlugCached(slug: string): Promise<any | null> {
+async function getServiceBySlugCached(slug: string, lang = 'en'): Promise<any | null> {
   if (!_serviceSlugMap || Date.now() > _serviceSlugMap.expiresAt) {
     try {
       const svcPath = path.join(process.cwd(), "client", "src", "data", "services.json");
@@ -136,13 +136,24 @@ async function getServiceBySlugCached(slug: string): Promise<any | null> {
       for (const svc of all) {
         if (svc.slug) map.set(svc.slug, svc);
       }
+      // Match the public concierge catalogue, including slugs that have no
+      // legacy services.json entry. Names/images must match the landing page.
+      const productPath = path.join(process.cwd(), 'client', 'src', 'data');
+      const products = JSON.parse(fs.readFileSync(path.join(productPath, 'products.json'), 'utf-8'));
+      const translations = JSON.parse(fs.readFileSync(path.join(productPath, 'products.i18n.json'), 'utf-8'));
+      for (const product of products.filter((p: any) => p.type === 'service' && p.isActive)) {
+        map.set(product.slug, product);
+        for (const [locale, override] of Object.entries(translations[product.slug] || {})) {
+          map.set(`${locale}:${product.slug}`, { ...product, ...(override as object) });
+        }
+      }
       _serviceSlugMap = { expiresAt: Date.now() + DYNAMIC_META_TTL_MS, data: map };
     } catch (err) {
       console.error("[Meta] Failed to load service data for meta injection:", err);
       return null;
     }
   }
-  return _serviceSlugMap.data.get(slug) ?? null;
+  return _serviceSlugMap.data.get(`${lang}:${slug}`) ?? _serviceSlugMap.data.get(slug) ?? null;
 }
 
 /** Cached experience data from JSON file (experienceDetails.json).
@@ -629,6 +640,44 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
     fi: { title: 'Parhaan hinnan takuu | Portugal Active',
           description: 'Löydä sama koti, päivämäärät ja ehdot halvemmalla Airbnb:stä tai Booking.comista 24 tunnin kuluessa varauksesta, niin Portugal Active vastaa hintaan. Ehdot selkokielellä.' },
   },
+  '/legal/cancellation-policy': {
+  "en": {
+    "title": "Cancellation Policies | Portugal Active",
+    "description": "We offer multiple rate plans with different cancellation terms. Please review the applicable policy before confirming your booking."
+  },
+  "pt": {
+    "title": "Políticas de Cancelamento | Portugal Active",
+    "description": "Oferecemos vários planos de tarifa com diferentes condições de cancelamento. Por favor, reveja a política aplicável antes de confirmar a sua reserva."
+  },
+  "es": {
+    "title": "Políticas de Cancelación | Portugal Active",
+    "description": "Ofrecemos varios planes tarifarios con diferentes condiciones de cancelación. Por favor, revise la política aplicable antes de confirmar su reserva."
+  },
+  "fr": {
+    "title": "Politiques d'Annulation | Portugal Active",
+    "description": "Nous proposons plusieurs formules tarifaires avec différentes conditions d'annulation. Veuillez consulter la politique applicable avant de confirmer votre "
+  },
+  "de": {
+    "title": "Stornierungsbedingungen | Portugal Active",
+    "description": "Wir bieten verschiedene Tarifpläne mit unterschiedlichen Stornierungsbedingungen an. Bitte lesen Sie die geltende Richtlinie sorgfältig, bevor Sie Ihre Buc"
+  },
+  "it": {
+    "title": "Politiche di Cancellazione | Portugal Active",
+    "description": "Offriamo diversi piani tariffari con diverse condizioni di cancellazione. Si prega di rivedere la politica applicabile prima di confermare la prenotazione."
+  },
+  "nl": {
+    "title": "Annuleringsbeleid | Portugal Active",
+    "description": "We bieden meerdere tariefplannen met verschillende annuleringsvoorwaarden. Bekijk het toepasselijke beleid aandachtig voordat u uw boeking bevestigt."
+  },
+  "sv": {
+    "title": "Avbokningspolicyer | Portugal Active",
+    "description": "Vi erbjuder flera prisplaner med olika avbokningsvillkor. Vänligen granska tillämplig policy innan du bekräftar din bokning."
+  },
+  "fi": {
+    "title": "Peruutuskäytännöt | Portugal Active",
+    "description": "Tarjoamme useita hinnoittelusuunnitelmia erilaisilla peruutusehdoilla. Tarkista sovellettava käytäntö ennen varauksen vahvistamista."
+  }
+},
   '/legal/cookies': {
     en: { title: 'Cookie Policy | Portugal Active',
           description: 'How Portugal Active uses cookies to improve your browsing experience.' },
@@ -1577,7 +1626,7 @@ export function serveStatic(app: Express) {
   const KNOWN_ROUTES = new Set([
     "/", "/homes", "/about", "/contact", "/services", "/adventures",
     "/events", "/blog", "/faq", "/careers", "/owners", "/login", "/account",
-    "/legal/privacy", "/legal/terms", "/legal/cookies", "/admin", "/404",
+    "/legal/privacy", "/legal/terms", "/legal/cookies", "/legal/cancellation-policy", "/admin", "/404",
     "/destinations", "/experiences", "/concierge", "/best-rate-guarantee",
   ]);
   const KNOWN_PREFIXES = ["/homes/", "/collections/", "/destinations/", "/blog/", "/services/", "/admin/", "/booking/", "/experiences/", "/activities/", "/checkout/"];
@@ -2071,7 +2120,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
       if (!dynamicMeta) {
         const serviceMatch = p.match(/^\/services\/([^/]+)$/);
         if (serviceMatch) {
-          let svc = await getServiceBySlugCached(serviceMatch[1]);
+          let svc = await getServiceBySlugCached(serviceMatch[1], lang);
           if (!svc) {
             try {
               const { getServiceBySlug } = await import("../db");
@@ -2163,6 +2212,8 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
    without booting the Express server (which needs Drizzle + env vars). This
    mirrors the `__testing` pattern in `server/lib/redirects.ts`. */
 export const __testing = {
+  getServiceBySlugCached,
+  getPageMeta,
   buildStaticSeoBody,
   buildPropertySeoBody,
   buildExperienceSeoBody,

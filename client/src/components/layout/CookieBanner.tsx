@@ -92,13 +92,13 @@ export default function CookieBanner() {
             <div className="flex items-center gap-3 flex-shrink-0">
               <button
                 onClick={handleEssentialOnly}
-                className="px-5 py-2.5 text-[11px] font-medium tracking-[0.1em] uppercase text-[#C9C3B8] hover:text-white border border-[#3A3A38] hover:border-[#6B6860] transition-all whitespace-nowrap"
+                className="pa-action px-5 py-2.5 text-[11px] font-medium tracking-[0.1em] uppercase text-[#C9C3B8] hover:text-white border border-[#3A3A38] hover:border-[#6B6860] transition-all whitespace-nowrap"
               >
                 {t('cookieBanner.essentialOnly')}
               </button>
               <button
                 onClick={handleAcceptAll}
-                className="px-5 py-2.5 text-[11px] font-medium tracking-[0.1em] uppercase text-[#1A1A18] bg-[#C4A87C] hover:bg-[#D4BC96] transition-all whitespace-nowrap"
+                className="pa-action px-5 py-2.5 text-[11px] font-medium tracking-[0.1em] uppercase text-[#1A1A18] bg-[#C4A87C] hover:bg-[#D4BC96] transition-all whitespace-nowrap"
               >
                 {t('cookieBanner.acceptAll')}
               </button>

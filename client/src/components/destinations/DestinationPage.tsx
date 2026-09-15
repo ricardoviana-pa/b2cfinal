@@ -1,5 +1,5 @@
 /* ==========================================================================
-   DESTINATION PAGE — 11-section composer
+   DESTINATION PAGE — inventory first, optional travel guide
    ========================================================================
 
    The parent template defined by the destinations strategy doc (May 2026).
@@ -10,6 +10,7 @@
    for scaffolded spokes (only the basics rendered).
    ========================================================================== */
 
+import { useTranslation } from 'react-i18next';
 import type { Destination, Property, Product } from '@/lib/types';
 import {
   HeroEditorial,
@@ -20,8 +21,6 @@ import {
   WhenToVisit,
   HowToGetHere,
   EatDrinkExperience,
-  EventsAndPlanning,
-  PressAccolades,
   FAQSection,
   RelatedDestinationsAndOwnersCTA,
 } from './sections';
@@ -54,25 +53,28 @@ export function DestinationPage({
   related,
   onAddToItinerary,
 }: DestinationPageProps) {
+  const { t } = useTranslation();
   return (
     <>
-      {/* 1 */} <HeroEditorial destination={destination} />
-      {/* 2 */} <WhyThisPlace destination={destination} />
-      {/* 3 */} <WhereToStay destination={destination} properties={properties} />
-      {/* 4 */} <TheJournal destination={destination} articles={articles} />
-      {/* 5 */} <WhatToSeeAndDo destination={destination} />
-      {/* 6 */} <WhenToVisit destination={destination} />
-      {/* 7 */} <HowToGetHere destination={destination} />
-      {/* 8 */}
+      <HeroEditorial destination={destination} />
+      <WhereToStay destination={destination} properties={properties} />
+      <WhyThisPlace destination={destination} />
+      <div className="container py-6">
+        <details className="site-faq border-t border-pa-sand">
+          <summary>{t('siteUx.travelGuide')}</summary>
+          <WhatToSeeAndDo destination={destination} />
+          <WhenToVisit destination={destination} />
+          <HowToGetHere destination={destination} />
+        </details>
+      </div>
       <EatDrinkExperience
         destination={destination}
         adventures={adventures}
         onAddToItinerary={onAddToItinerary}
       />
-      {/* 9 */} <EventsAndPlanning destination={destination} />
-      {/* 10 */} <PressAccolades destination={destination} />
-      {/* 11 */} <FAQSection destination={destination} />
-      {/* 12 */} <RelatedDestinationsAndOwnersCTA destination={destination} related={related} />
+      <TheJournal destination={destination} articles={articles} />
+      <FAQSection destination={destination} />
+      <RelatedDestinationsAndOwnersCTA destination={destination} related={related} />
     </>
   );
 }

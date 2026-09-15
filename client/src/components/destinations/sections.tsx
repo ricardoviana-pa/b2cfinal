@@ -16,10 +16,14 @@
    the dual funnel (guest CTA + owners CTA) per strategy doc §7.
    ========================================================================== */
 
+import { useMemo } from 'react';
+import { trpc } from '@/lib/trpc';
+import { usePartnerPrices } from '@/hooks/usePartnerPrices';
+import BookingCTA from '@/components/property/BookingCTA';
 import { Link } from 'wouter';
 import { useTranslation, Trans } from 'react-i18next';
 import { localizeDuration } from '@/lib/duration';
-import { ArrowRight, Plane, Train, Car, Globe, Plus, Calendar, Award, Bike } from 'lucide-react';
+import { ArrowRight, Plane, Train, Car, Globe, Plus, Calendar, Bike } from 'lucide-react';
 import type { Destination, Property, Product } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
@@ -34,66 +38,17 @@ interface HeroEditorialProps {
 
 export function HeroEditorial({ destination: d }: HeroEditorialProps) {
   const { t } = useTranslation();
-  // `primaryAccolade` takes the hero overlay when present (it's the
-  // ranked award — most-prominent trust signal). The `pullQuote` then
-  // surfaces as a secondary inline blockquote so neither competes.
-  return (
-    <section className="relative h-[60vh] min-h-[400px] flex items-end overflow-hidden">
-      {d.coverImage ? (
-        <img
-          src={cdnResize(d.coverImage, 1600)}
-          srcSet={cdnSrcSet(d.coverImage, [768, 1280, 1920])}
-          sizes="100vw"
-          alt={`${d.name}, Portugal — luxury villa destination`}
-          className="absolute inset-0 w-full h-full object-cover"
-          width={1600}
-          height={900}
-          fetchPriority="high"
-          decoding="async"
-        />
-      ) : (
-        <div className="absolute inset-0 placeholder-image" />
-      )}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-      <div className="relative container pb-12 lg:pb-16 z-10">
-        <Link
-          href="/destinations"
-          className="text-[13px] text-white/60 hover:text-white/80 transition-colors mb-3 inline-block"
-        >
-          ← {t('destinationsPage.backToDestinations')}
-        </Link>
-        <h1 className="headline-xl text-white mb-3">{d.name}</h1>
-        {d.heroSubtitle && (
-          <p className="body-lg max-w-xl" style={{ color: 'rgba(255,255,255,0.8)' }}>
-            {d.heroSubtitle}
-          </p>
-        )}
-        {!d.heroSubtitle && d.tagline && (
-          <p className="body-lg max-w-lg" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            {d.tagline}
-          </p>
-        )}
-        {d.primaryAccolade && (
-          <div className="mt-6 inline-flex items-start gap-3 bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-3 max-w-xl">
-            <Award className="w-4 h-4 text-white/80 mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="text-[13px] font-medium text-white leading-snug">
-                {d.primaryAccolade.text}
-              </p>
-              <p className="text-[11px] text-white/60 tracking-[0.04em] mt-1">
-                {d.primaryAccolade.source}
-              </p>
-              {d.primaryAccolade.note && (
-                <p className="text-[11px] text-white/50 italic mt-0.5">
-                  {d.primaryAccolade.note}
-                </p>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-    </section>
-  );
+  return <section className="page-hero">
+    {d.coverImage ? <img src={cdnResize(d.coverImage, 1600)} srcSet={cdnSrcSet(d.coverImage, [768,1280,1920])} sizes="100vw" alt={d.name} className="absolute inset-0 w-full h-full object-cover" width={1600} height={900} fetchPriority="high" /> : <div className="absolute inset-0 placeholder-image" />}
+    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
+    <div className="relative container z-10">
+      <Link href="/destinations" className="inline-flex min-h-11 items-center text-sm text-white/80 mb-2">← {t('destinationsPage.backToDestinations')}</Link>
+      <h1 className="headline-xl text-white mb-4">{d.name}</h1>
+      {(d.heroSubtitle || d.tagline) && <p className="body-lg max-w-xl !text-white/90">{d.heroSubtitle || d.tagline}</p>}
+      <a href="#destination-homes" className="btn-white mt-6">{t('destinationDetail.homesIn', { name: d.name })} <ArrowRight className="w-4 h-4" /></a>
+      {d.primaryAccolade && <p className="text-xs text-white/80 mt-5 max-w-xl">{d.primaryAccolade.text} · {d.primaryAccolade.source}</p>}
+    </div>
+  </section>;
 }
 
 /* ── 2. WHY THIS PLACE ────────────────────────────────────────────────── */
@@ -143,10 +98,14 @@ interface WhereToStayProps {
 
 export function WhereToStay({ destination: d, properties }: WhereToStayProps) {
   const { t } = useTranslation();
+  const visibleHomes = useMemo(() => properties.slice(0, 6), [properties]);
+  const listingIds = useMemo(() => visibleHomes.filter(p => p.guestyId).map(p => p.guestyId!), [visibleHomes]);
+  const { data: fromPrices } = trpc.booking.lowestNightlyBatch.useQuery({ listingIds }, { enabled: listingIds.length > 0, staleTime: 5 * 60_000 });
+  const partner = usePartnerPrices(visibleHomes);
   if (properties.length === 0) {
     if (d.comingSoon) return null;
     return (
-      <section className="section-padding bg-white">
+      <section id="destination-homes" className="section-padding bg-white scroll-mt-24">
         <div className="container max-w-xl text-center">
           <h2 className="headline-lg text-[#1A1A18] mb-4">
             {t('destinationDetail.newHomesComingSoon', { name: d.name })}
@@ -159,31 +118,24 @@ export function WhereToStay({ destination: d, properties }: WhereToStayProps) {
     );
   }
   return (
-    <section className="section-padding bg-white">
+    <section id="destination-homes" className="section-padding bg-white scroll-mt-24">
       <div className="container">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
           <div className="max-w-2xl">
             <h2 className="headline-lg text-[#1A1A18]">
               {t('destinationDetail.homesIn', { name: d.name })}
             </h2>
-            {d.whereToStayIntro && (
-              <p
-                className="body-lg text-[#3A3A35] mt-4 leading-relaxed"
-                style={{ fontWeight: 300 }}
-              >
-                {d.whereToStayIntro}
-              </p>
-            )}
+            <p className="body-md mt-3">{t('conversion.homesIntro')}</p>
           </div>
-          <a
+          <Link
             href={`/homes?destination=${d.region}`}
-            className="hidden md:flex items-center gap-2 text-[13px] font-medium text-[#8B7355] hover:text-[#1A1A18] transition-colors flex-shrink-0"
+            className="btn-ghost shrink-0 self-start"
           >
             {t('destinationDetail.viewAllHomes')} <ArrowRight className="w-4 h-4" />
-          </a>
+          </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {properties.map(p => <PropertyCard key={p.id} property={p} />)}
+          {visibleHomes.map(p => <PropertyCard key={p.id} property={p} fromPrice={p.supplierUid ? partner.prices[p.supplierUid] : fromPrices?.[p.guestyId ?? '']} />)}
         </div>
       </div>
     </section>
@@ -790,7 +742,7 @@ export function FAQSection({ destination: d }: { destination: Destination }) {
   );
 }
 
-/* ── 12. RELATED DESTINATIONS + OWNERS CTA (DUAL FUNNEL) ──────────────── */
+/* ── 12. RELATED DESTINATIONS + BOOKING CTA ──────────────── */
 
 interface RelatedDestinationsAndOwnersCTAProps {
   destination: Destination;
@@ -802,17 +754,6 @@ export function RelatedDestinationsAndOwnersCTA({
   related,
 }: RelatedDestinationsAndOwnersCTAProps) {
   const { t } = useTranslation();
-  const owners = d.ownersCTA ?? {
-    headline: t('destinationDetail.guide.ownersHeadline', { name: d.name }),
-    body: t('destinationDetail.guide.ownersBody'),
-    cta: t('destinationDetail.guide.ownersCta'),
-  };
-  // Per-destination override takes priority; default builds a UTM-tagged
-  // link so booking-vs-owner attribution stays clean in Pipedrive.
-  const ownersUrl =
-    owners.url ??
-    `https://www.portugalactive.com/management/?utm_source=destinations&utm_medium=banner&utm_campaign=${encodeURIComponent(d.slug)}`;
-
   return (
     <>
       {related.length > 0 && (
@@ -824,8 +765,8 @@ export function RelatedDestinationsAndOwnersCTA({
                 <Link
                   key={r.slug}
                   href={`/destinations/${r.slug}`}
-                  className="group block relative overflow-hidden"
-                  style={{ aspectRatio: '4/5' }}
+                  className="group block relative overflow-hidden rounded-xl"
+                  style={{ aspectRatio: '4/3' }}
                 >
                   {r.coverImage ? (
                     <img
@@ -855,56 +796,7 @@ export function RelatedDestinationsAndOwnersCTA({
         </section>
       )}
 
-      <section className="py-16 bg-[#0B4541] text-white">
-        <div className="container max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-            <div>
-              <p className="text-[11px] font-medium tracking-[0.14em] uppercase text-white/60 mb-3">
-                For travellers
-              </p>
-              <h3
-                className="text-[22px] font-medium text-white mb-3"
-                style={{ fontFamily: 'var(--font-display)', lineHeight: 1.25 }}
-              >
-                Plan your stay in {d.name}
-              </h3>
-              <p className="text-[14px] text-white/80 mb-5 leading-relaxed" style={{ fontWeight: 300 }}>
-                See every home we operate in {d.name} — with concierge, daily housekeeping,
-                and private chef on call.
-              </p>
-              <Link
-                href={`/homes?destination=${d.region}`}
-                className="inline-flex items-center gap-2 text-[13px] font-medium text-white border-b border-white/40 pb-1 hover:border-white transition-colors"
-              >
-                See all villas <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            <div className="md:border-l md:border-white/15 md:pl-10">
-              <p className="text-[11px] font-medium tracking-[0.14em] uppercase text-white/60 mb-3">
-                For owners
-              </p>
-              <h3
-                className="text-[22px] font-medium text-white mb-3"
-                style={{ fontFamily: 'var(--font-display)', lineHeight: 1.25 }}
-              >
-                {owners.headline}
-              </h3>
-              <p className="text-[14px] text-white/80 mb-5 leading-relaxed" style={{ fontWeight: 300 }}>
-                {owners.body}
-              </p>
-              <a
-                href={ownersUrl}
-                target="_blank"
-                rel="noopener"
-                className="inline-flex items-center gap-2 text-[13px] font-medium text-white border-b border-white/40 pb-1 hover:border-white transition-colors"
-              >
-                {owners.cta} <ArrowRight className="w-4 h-4" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      <BookingCTA href={`/homes?destination=${d.region}`} />
     </>
   );
 }

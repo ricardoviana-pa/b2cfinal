@@ -1,64 +1,20 @@
 import { useState, useMemo, useCallback, useEffect, useRef, useLayoutEffect } from 'react';
 import { pushDL } from '@/lib/datalayer';
-import { Phone, Mail, MapPin, MessageCircle, Calendar, ChevronDown, Check, ArrowRight, Send, Loader2 } from 'lucide-react';
+import { Phone, Mail, MapPin, MessageCircle, Calendar, Check, ArrowRight, Send, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { IMAGES } from '@/lib/images';
+import FAQItem from '@/components/ui/FaqItem';
+import productsData from '@/data/products.json';
+import { localizeProduct } from '@/lib/localizeProduct';
 import Header from '@/components/layout/Header';
 import PhoneInput from '@/components/booking/PhoneInput';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildBreadcrumbSchema, buildFaqPageSchema } from '@/components/seo/StructuredData';
-import AnswerCapsule from '@/components/seo/AnswerCapsule';
 import { trpc } from '@/lib/trpc';
 import { useSearch } from 'wouter';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function FAQItem({ item, isLast }: { item: { q: string; a: string }; isLast: boolean }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className={isLast ? '' : 'border-b border-[#E8E4DC]'}>
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between py-5 text-left group"
-      >
-        <span
-          className="text-[15px] pr-6 transition-colors group-hover:text-[#8B7355]"
-          style={{ fontFamily: 'var(--font-body)', fontWeight: 400, color: open ? '#8B7355' : '#1A1A18' }}
-        >
-          {item.q}
-        </span>
-        <div
-          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition-all duration-300"
-          style={{
-            borderColor: open ? '#8B7355' : '#E8E4DC',
-            backgroundColor: open ? '#8B7355' : 'transparent',
-          }}
-        >
-          <ChevronDown
-            size={13}
-            className="transition-transform duration-300"
-            style={{ color: open ? '#FAFAF7' : '#726D63', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
-          />
-        </div>
-      </button>
-      <div
-        className="grid transition-all duration-300 ease-in-out"
-        style={{ gridTemplateRows: open ? '1fr' : '0fr' }}
-      >
-        <div className="overflow-hidden">
-          <p
-            className="pb-5 text-[14px] leading-relaxed text-[#6B6860]"
-            style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
-          >
-            {item.a}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 const CONTACT_CHANNELS = [
   {
@@ -96,7 +52,7 @@ const CONTACT_CHANNELS = [
 ] as const;
 
 export default function Contact() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   usePageMeta({ title: 'Contact Portugal Active — Book a Lodge or Adventure', description: 'Ready to book your perfect stay or adventure in Portugal? Get in touch — we reply within 2 hours and help you plan your stay anywhere in Portugal.', url: '/contact' });
 
   const [submitted, setSubmitted] = useState(false);
@@ -125,6 +81,14 @@ export default function Contact() {
   useEffect(() => {
     if (prefilledFromProperty.current) return;
     const params = new URLSearchParams(searchString);
+    const requestedSubject = params.get('subject');
+    if (requestedSubject && ['plan-my-stay', 'services-enquiry', 'events', 'general'].includes(requestedSubject)) setSubject(requestedSubject);
+    const service = (productsData as any[]).find(p => p.slug === params.get('service'));
+    if (service) {
+      const localized = localizeProduct(service, i18n.language);
+      setMessage(`${t('contact.subjectServices')}: ${localized?.name || service.name}`);
+      prefilledFromProperty.current = true;
+    }
     const slug = params.get('property');
     const intent = params.get('intent');
     if (slug && intent === 'availability') {
@@ -227,41 +191,18 @@ export default function Contact() {
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
       <StructuredData id="contact-graph" data={contactGraph} />
-      <Header />
+      <Header variant="solid" />
 
-      {/* Hero with image — curated brand hero (not a raw listing photo) for a
-          polished banner; bottom scrim keeps the headline legible. */}
-      <section className="relative h-[62vh] min-h-[460px] flex items-end overflow-hidden">
-        <img
-          src={IMAGES.contactHero}
-          alt={t('contact.heroAlt', 'A Portugal Active villa glowing at twilight with an infinity pool — arrive to everything ready')}
-          className="absolute inset-0 w-full h-full object-cover object-[center_40%]"
-          width={1600}
-          height={1067}
-          fetchPriority="high"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
-        <div className="relative container max-w-[1100px] pb-12 lg:pb-16 z-10">
-          <p
-            className="text-[11px] font-medium tracking-[0.14em] uppercase text-white/50 mb-4"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
-            {t('contact.heroOverline', 'GET IN TOUCH')}
-          </p>
-          <h1 className="font-display text-[clamp(2rem,5vw,3.5rem)] font-light leading-[1.08] text-white mb-4">
-            {t('contact.heroTitle')}
-          </h1>
-          <p
-            className="text-[16px] md:text-[18px] text-white/70 max-w-lg leading-relaxed"
-            style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
-          >
-            {t('contact.heroSubtitle')}
-          </p>
+      <section className="page-intro">
+        <div className="container max-w-[1100px]">
+          <p className="eyebrow mb-3">{t('contact.heroOverline')}</p>
+          <h1 className="headline-xl text-pa-dark mb-4">{t('contact.heroTitle')}</h1>
+          <p className="body-lg">{t('contact.heroSubtitle')}</p>
         </div>
       </section>
 
       {/* Form + Contact channels */}
-      <section className="py-14 md:py-20 lg:py-24">
+      <section id="contact-form" className="py-10 md:py-14 scroll-mt-28">
         <div className="container max-w-[1100px]">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-14 lg:gap-20">
 
@@ -313,12 +254,15 @@ export default function Contact() {
                   />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
-                        {t('contact.nameLabel')} <span className="text-[#DC2626]">*</span>
+                      <label htmlFor="contact-name" className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                        {t('contact.nameLabel').replace(/\s*\*$/, '')} <span className="text-[#DC2626]">*</span>
                       </label>
                       <input
                         type="text"
                         required
+                        id="contact-name"
+                        aria-invalid={!!(touched.name && fieldErrors.name)}
+                        aria-describedby={touched.name && fieldErrors.name ? "contact-name-error" : undefined}
                         value={name}
                         onChange={e => { setName(e.target.value); if (touched.name) setFieldErrors(prev => ({ ...prev, name: validateField('name', e.target.value) })); }}
                         onBlur={() => handleBlur('name', name)}
@@ -327,15 +271,18 @@ export default function Contact() {
                         className={inputClasses('name', !!(touched.name && fieldErrors.name))}
                         style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                       />
-                      {touched.name && fieldErrors.name && <p className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.name}</p>}
+                      {touched.name && fieldErrors.name && <p id="contact-name-error" role="alert" className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.name}</p>}
                     </div>
                     <div>
-                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
-                        {t('contact.emailLabel')} <span className="text-[#DC2626]">*</span>
+                      <label htmlFor="contact-email" className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                        {t('contact.emailLabel').replace(/\s*\*$/, '')} <span className="text-[#DC2626]">*</span>
                       </label>
                       <input
                         type="email"
                         required
+                        id="contact-email"
+                        aria-invalid={!!(touched.email && fieldErrors.email)}
+                        aria-describedby={touched.email && fieldErrors.email ? "contact-email-error" : undefined}
                         value={email}
                         onChange={e => { setEmail(e.target.value); if (touched.email) setFieldErrors(prev => ({ ...prev, email: validateField('email', e.target.value) })); }}
                         onBlur={() => handleBlur('email', email)}
@@ -345,26 +292,30 @@ export default function Contact() {
                         className={inputClasses('email', !!(touched.email && fieldErrors.email))}
                         style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                       />
-                      {touched.email && fieldErrors.email && <p className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.email}</p>}
+                      {touched.email && fieldErrors.email && <p id="contact-email-error" role="alert" className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.email}</p>}
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <details className="border-y border-pa-sand py-3">
+                    <summary className="body-sm cursor-pointer text-pa-dark">{t('siteUx.optionalDetails')}</summary>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4">
                     <div>
-                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                      <label htmlFor="contact-phone" className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
                         {t('contact.phoneLabel')}
                       </label>
                       <PhoneInput
+                        id="contact-phone"
                         value={phone}
                         onChange={setPhone}
                         placeholder={t('contact.phonePlaceholder', 'Phone number')}
                       />
                     </div>
                     <div>
-                      <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                      <label htmlFor="contact-subject" className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
                         {t('contact.subjectLabel')}
                       </label>
                       <select
+                        id="contact-subject"
                         value={subject}
                         onChange={e => setSubject(e.target.value)}
                         className={`${inputClasses('subject', false)} appearance-none cursor-pointer`}
@@ -378,14 +329,18 @@ export default function Contact() {
                       </select>
                     </div>
                   </div>
+                  </details>
 
                   <div>
-                    <label className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
-                      {t('contact.messageLabel')} <span className="text-[#DC2626]">*</span>
+                    <label htmlFor="contact-message" className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
+                      {t('contact.messageLabel').replace(/\s*\*$/, '')} <span className="text-[#DC2626]">*</span>
                     </label>
                     <textarea
                       required
                       rows={5}
+                      id="contact-message"
+                      aria-invalid={!!(touched.message && fieldErrors.message)}
+                      aria-describedby={touched.message && fieldErrors.message ? "contact-message-error" : undefined}
                       value={message}
                       onChange={e => { setMessage(e.target.value); if (touched.message) setFieldErrors(prev => ({ ...prev, message: validateField('message', e.target.value) })); }}
                       onBlur={() => handleBlur('message', message)}
@@ -397,7 +352,7 @@ export default function Contact() {
                       }`}
                       style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                     />
-                    {touched.message && fieldErrors.message && <p className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.message}</p>}
+                    {touched.message && fieldErrors.message && <p id="contact-message-error" role="alert" className="text-[12px] text-[#DC2626] mt-1.5">{fieldErrors.message}</p>}
                   </div>
 
                   {error && (
@@ -410,7 +365,7 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#333330] active:bg-[#0D0D0C] transition-colors self-start md:self-end inline-flex items-center gap-2.5 min-h-[48px] disabled:opacity-50"
+                    className="pa-action rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#333330] active:bg-[#0D0D0C] transition-colors self-start md:self-end inline-flex items-center gap-2.5 min-h-[48px] disabled:opacity-50"
                   >
                     {submitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                     {submitting ? t('contact.sending', 'Sending...') : t('contact.sendMessage')}
@@ -476,23 +431,6 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* Quick Answer — citable AEO summary. Kept in the DOM (role=doc-abstract
-          + schema) but moved down by the FAQ and scaled down, so it reads as a
-          quiet footnote rather than a headline beat under the hero. */}
-      <section className="bg-[#FAFAF7] pt-2 pb-12">
-        <div className="container max-w-2xl">
-          <div className="scale-[0.92] origin-top opacity-90">
-            <AnswerCapsule
-              question="How do I contact Portugal Active?"
-              answer="Portugal Active's concierge team is available by phone (+351 258 358 434), WhatsApp, or email (info@portugalactive.com). Response time is typically under two hours. You can also schedule a video call to plan your stay. The team assists with property selection, experience booking, airport transfers, private chefs, and any special requests. Book direct for the best rate and complimentary concierge planning."
-              lastUpdated="2026-05-02"
-              emitSchema
-              schemaId="qa-contact"
-            />
-          </div>
-        </div>
-      </section>
-
       {/* FAQ */}
       <section className="border-t border-[#E8E4DC]">
         <div className="container max-w-[720px] py-16 md:py-24 lg:py-28">
@@ -509,7 +447,7 @@ export default function Contact() {
           </div>
           <div className="border-t border-[#E8E4DC]">
             {FAQ_ITEMS.map((item, idx) => (
-              <FAQItem key={idx} item={item} isLast={idx === FAQ_ITEMS.length - 1} />
+              <FAQItem key={idx} item={item} />
             ))}
           </div>
         </div>

@@ -5,7 +5,6 @@
 
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { getDisplayName } from '@/lib/format';
-import { HOME_COUNT_LABEL } from '@shared/brandFacts';
 import { Link, useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -20,7 +19,7 @@ const HEATED_POOL_SLUGS = new Set<string>((heatedPoolData as any).slugs || []);
 import { trpc } from '@/lib/trpc';
 import type { Property, FilterDestination, SortOption } from '@/lib/types';
 import { filterProperties, getUniqueLocalities } from '@/lib/utils';
-import { isChildUnit, getGroupByParentGuestyId } from '@/config/propertyGroups';
+import { isChildUnit } from '@/config/propertyGroups';
 import { hasConfirmedQuote, hasSwimmingPool, hasHeatedPool, parseHomeFilters, searchPrice, sortSearchResults } from '@/lib/homeSearch';
 import { pushDL, pushEcommerce } from '@/lib/datalayer';
 import Header from '@/components/layout/Header';
@@ -28,6 +27,7 @@ import Footer from '@/components/layout/Footer';
 import PropertyCard from '@/components/property/PropertyCard';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { parseDestinationSelection } from '@/lib/homeSearch';
 import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import StayCollections from '@/components/property/StayCollections';
 
@@ -95,6 +95,7 @@ export default function Homes() {
     return groups.map(([g, items], gi) =>
       g ? (
         <optgroup key={`g-${g}-${gi}`} label={t(`destinations.${g}`, { defaultValue: items[0]?.group || g })}>
+          <option value={`region:${g}`}>{t(`destinations.${g}`, { defaultValue: items[0]?.group || g })}</option>
           {items.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
         </optgroup>
       ) : (
@@ -531,7 +532,7 @@ export default function Homes() {
                   value={value}
                   onChange={(e) => set(e.target.value)}
                   aria-label={anyLabel}
-                  className={`appearance-none h-11 rounded-full border pl-4 pr-8 body-sm text-inherit font-sans cursor-pointer transition-colors ${
+                  className={`appearance-none h-11 rounded-lg border pl-4 pr-8 body-sm text-inherit font-sans cursor-pointer transition-colors ${
                     value !== 'all'
                       ? 'bg-pa-dark text-white border-pa-dark'
                       : 'bg-white text-pa-earth border-pa-sand hover:border-pa-gold'
@@ -554,7 +555,7 @@ export default function Homes() {
                 type="button"
                 onClick={() => set(!active)}
                 aria-pressed={active}
-                className={`h-11 px-4 rounded-full border body-sm text-inherit whitespace-nowrap shrink-0 transition-colors ${
+                className={`pa-action h-11 px-4 rounded-full border body-sm text-inherit whitespace-nowrap shrink-0 transition-colors ${
                   active
                     ? 'bg-pa-dark text-white border-pa-dark'
                     : 'bg-white text-pa-earth border-pa-sand hover:border-pa-gold'
@@ -567,7 +568,7 @@ export default function Homes() {
               type="button"
               onClick={() => setShowMap((v) => !v)}
               aria-pressed={showMap}
-              className={`ml-auto inline-flex items-center gap-1.5 h-11 px-4 rounded-full border body-sm text-inherit whitespace-nowrap shrink-0 transition-colors ${
+              className={`pa-action ml-auto inline-flex items-center gap-1.5 h-11 px-4 rounded-full border body-sm text-inherit whitespace-nowrap shrink-0 transition-colors ${
                 showMap
                   ? 'bg-pa-dark text-white border-pa-dark'
                   : 'bg-white text-pa-earth border-pa-sand hover:border-pa-gold'
@@ -643,20 +644,20 @@ export default function Homes() {
           {/* Desktop — pill (same as homepage) */}
           <div className="hidden lg:flex justify-center mb-2.5 md:mb-3">
             <div
-              className="flex items-center w-full max-w-[780px] rounded-full bg-white shadow-[0_6px_32px_rgba(0,0,0,0.08)] overflow-hidden border border-pa-sand/60"
+              className="flex items-center w-full max-w-[780px] rounded-xl bg-white shadow-[0_6px_32px_rgba(0,0,0,0.08)] overflow-hidden border border-pa-sand/60"
               style={{ height: '56px' }}
             >
               <div className="flex-1 relative h-full min-w-0">
                 <select
                   aria-label={t('home.searchDestination')}
-                  value={bookingLocation}
+                  value={bookingLocation || (bookingDestination ? `region:${bookingDestination}` : '')}
                   onChange={e => {
-                    const v = e.target.value;
-                    setBookingLocation(v);
-
+                    const next = parseDestinationSelection(e.target.value);
+                    setBookingLocation(next.location);
+                    setBookingDestination(next.destination);
                   }}
                   className="w-full h-full pl-6 pr-8 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer appearance-none truncate"
-                  
+
                 >
                   <option value="">{t('home.searchDestination')}</option>
                   {cityOptions}
@@ -680,7 +681,7 @@ export default function Homes() {
                     setTimeout(() => checkOutRef.current?.showPicker?.(), 50);
                   }}
                   className="w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer"
-                  
+
                 />
               </div>
               <ArrowRight className="w-3.5 h-3.5 text-pa-stone flex-shrink-0" aria-hidden />
@@ -696,7 +697,7 @@ export default function Homes() {
                   value={bookingCheckout}
                   onChange={e => setBookingCheckout(e.target.value)}
                   className="w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer"
-                  
+
                 />
               </div>
               <div className="w-px h-6 bg-pa-sand shrink-0" />
@@ -727,7 +728,7 @@ export default function Homes() {
               <button
                 type="button"
                 onClick={applyBookingSearch}
-                className="flex-shrink-0 h-[44px] mr-1.5 px-6 rounded-full bg-pa-dark text-white caption font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
+                className="pa-action flex-shrink-0 h-[44px] mr-1.5 px-6 rounded-full bg-pa-dark text-white caption font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
                 style={{ letterSpacing: '1.5px' }}
               >
                 {t('home.searchButton')}
@@ -741,14 +742,14 @@ export default function Homes() {
               <div className="relative">
                 <select
                   aria-label={t('home.searchDestination')}
-                  value={bookingLocation}
+                  value={bookingLocation || (bookingDestination ? `region:${bookingDestination}` : '')}
                   onChange={e => {
-                    const v = e.target.value;
-                    setBookingLocation(v);
-
+                    const next = parseDestinationSelection(e.target.value);
+                    setBookingLocation(next.location);
+                    setBookingDestination(next.destination);
                   }}
                   className="w-full h-[48px] rounded-lg border border-pa-sand bg-white pl-3 pr-9 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer appearance-none"
-                  
+
                 >
                   <option value="">{t('home.searchDestination')}</option>
                   {cityOptions}
@@ -771,7 +772,7 @@ export default function Homes() {
                       setTimeout(() => checkOutRef.current?.showPicker?.(), 50);
                     }}
                     className="w-full h-[48px] rounded-lg border border-pa-sand bg-white px-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer"
-                    
+
                   />
                 </div>
                 <div
@@ -786,7 +787,7 @@ export default function Homes() {
                   value={bookingCheckout}
                     onChange={e => setBookingCheckout(e.target.value)}
                     className="w-full h-[48px] rounded-lg border border-pa-sand bg-white px-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer"
-                    
+
                   />
                 </div>
               </div>
@@ -816,7 +817,7 @@ export default function Homes() {
                 <button
                   type="button"
                   onClick={applyBookingSearch}
-                  className="shrink-0 h-[48px] px-5 rounded-full bg-pa-dark text-white caption font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
+                  className="pa-action shrink-0 h-[48px] px-5 rounded-full bg-pa-dark text-white caption font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
                   style={{ letterSpacing: '1.5px' }}
                 >
                   {t('home.searchButton')}
@@ -838,10 +839,10 @@ export default function Homes() {
               so the whole row reads as one system. Scrolls sideways on mobile. */}
           <div className="hidden md:block">{filterControls}</div>
           <div className="md:hidden flex items-center gap-3 mb-4">
-            <button type="button" onClick={() => setFiltersOpen(true)} className="inline-flex items-center gap-2 min-h-11 rounded-full border border-pa-dark px-4 body-sm text-pa-dark">
+            <button type="button" onClick={() => setFiltersOpen(true)} className="pa-action inline-flex items-center gap-2 min-h-11 rounded-full border border-pa-dark px-4 body-sm text-pa-dark">
               <SlidersHorizontal size={16} /> {t('conversion.filters')}{activeFilterCount > 0 && ` (${activeFilterCount})`}
             </button>
-            <button type="button" onClick={() => setShowMap(v => !v)} aria-pressed={showMap} className="inline-flex items-center gap-2 min-h-11 rounded-full border border-pa-sand px-4 body-sm text-pa-earth">
+            <button type="button" onClick={() => setShowMap(v => !v)} aria-pressed={showMap} className="pa-action inline-flex items-center gap-2 min-h-11 rounded-full border border-pa-sand px-4 body-sm text-pa-earth">
               <MapIcon size={16} /> {t('homes.filters.map')}
             </button>
           </div>
@@ -996,7 +997,7 @@ export default function Homes() {
                         key={w.checkIn}
                         type="button"
                         onClick={() => goTo(w)}
-                        className="min-h-[44px] px-4 border border-pa-sand bg-white body-sm text-pa-dark hover:border-pa-gold transition-colors"
+                        className="pa-action min-h-[44px] px-4 border border-pa-sand bg-white body-sm text-pa-dark hover:border-pa-gold transition-colors"
                       >
                         {label(w)}
                       </button>
@@ -1114,7 +1115,7 @@ export default function Homes() {
                 <div className="flex justify-center mt-8">
                   <button
                     onClick={() => setShowAll(true)}
-                    className="px-6 py-3 border border-pa-sand rounded-full body-sm font-medium text-pa-dark hover:bg-pa-warm transition-colors"
+                    className="pa-action px-6 py-3 border border-pa-sand rounded-full body-sm font-medium text-pa-dark hover:bg-pa-warm transition-colors"
                   >
                     {t('homes.showAll', 'Show all properties')} ({availableProperties.length})
                   </button>

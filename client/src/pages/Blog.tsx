@@ -10,6 +10,7 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
 import { Link } from 'wouter';
 import { Clock, ArrowRight, Calendar, Play } from 'lucide-react';
+import BookingCTA from '@/components/property/BookingCTA';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -41,6 +42,7 @@ export default function Blog() {
   const { t, i18n } = useTranslation();
   usePageMeta({ title: 'Portugal Travel Journal | Guides, Tips & Inspiration', description: 'Insider guides to Portugal — best beaches, hidden restaurants, wine regions, and travel tips from our local concierge team.', url: '/blog' });
   // Journal opens on All, newest first; the video tab is one tap away.
+  const [searchText, setSearchText] = useState('');
   const [activeCategory, setActiveCategory] = useState<BlogCategory | "all">("all");
 
   // Overlay per-locale article translations (slug-keyed), active language only.
@@ -101,15 +103,12 @@ export default function Blog() {
   ], [t]);
 
   const filtered = useMemo(() => {
-    const published = locArticles.filter(a => a.status === 'published');
-    if (activeCategory === 'all') return published;
-    return published.filter(a => a.category === activeCategory);
-  }, [activeCategory, locArticles]);
-
-  // The featured slot is the newest article — the index must read as a
-  // journal, with the latest piece on top.
-  const featured = locArticles.find(a => a.status === "published");
-  const rest = filtered.filter(a => a.id !== featured?.id);
+    const normalize = (text: string) => text.toLocaleLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
+    const query = normalize(searchText.trim());
+    return locArticles.filter(a => a.status === 'published' && (activeCategory === 'all' || a.category === activeCategory) && (!query || normalize(`${a.title} ${a.excerpt || ''}`).includes(query)));
+  }, [activeCategory, locArticles, searchText]);
+  const featured = activeCategory === 'all' && !searchText.trim() ? filtered[0] : undefined;
+  const rest = featured ? filtered.slice(1) : filtered;
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
@@ -117,7 +116,7 @@ export default function Blog() {
       <Header />
 
       {/* Hero */}
-      <section className="pt-28 md:pt-36 pb-12 md:pb-16 bg-white border-b border-[#E8E4DC]">
+      <section className="page-intro">
         <div className="container">
           <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.08em]">{t('blog.overline')}</p>
           <h1 className="headline-xl text-[#1A1A18] mb-4">{t('blog.title')}</h1>
@@ -127,6 +126,9 @@ export default function Blog() {
         </div>
       </section>
 
+      <div className="container py-6">
+        <input type="search" value={searchText} onChange={e => setSearchText(e.target.value)} aria-label={t('siteUx.searchJournal')} placeholder={t('siteUx.searchJournal')} className="w-full max-w-xl min-h-12 border border-pa-sand rounded-lg bg-white px-4 text-base" />
+      </div>
       {/* Category Filter */}
       <section className="border-b border-[#E8E4DC] sticky top-16 md:top-20 bg-[#FAFAF7]/95 backdrop-blur-md z-30">
         <div className="container">
@@ -135,7 +137,7 @@ export default function Blog() {
               <button
                 key={`${cat.value}-${idx}`}
                 onClick={() => setActiveCategory(cat.value)}
-                className={`px-4 py-2 text-[13px] font-medium whitespace-nowrap transition-all ${
+                className={`pa-action px-4 py-2 text-[13px] font-medium whitespace-nowrap transition-all ${
                   activeCategory === cat.value
                     ? 'bg-[#1A1A18] text-white'
                     : 'text-[#6B6860] hover:text-[#1A1A18] hover:bg-[#F5F1EB]'
@@ -155,7 +157,7 @@ export default function Blog() {
           <div className="container">
             <Link href={`/blog/${featured.slug}`} className="group block">
               <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-                <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] relative">
+                <div className="aspect-[4/3] overflow-hidden rounded-xl bg-[#F5F1EB] relative">
                   <img
                     src={cdnResize(getArticleImage(featured), 1080)}
                     srcSet={cdnSrcSet(getArticleImage(featured), [400, 768, 1080])}
@@ -212,7 +214,7 @@ export default function Blog() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {rest.map(article => (
                 <Link key={article.id} href={`/blog/${article.slug}`} className="group block">
-                  <div className="aspect-[4/3] overflow-hidden bg-[#F5F1EB] mb-4 relative">
+                  <div className="aspect-[4/3] overflow-hidden rounded-xl bg-[#F5F1EB] mb-4 relative">
                     <img
                       src={cdnResize(getArticleImage(article), 768)}
                       srcSet={cdnSrcSet(getArticleImage(article), [400, 640, 768])}
@@ -250,6 +252,7 @@ export default function Blog() {
         </div>
       </section>
 
+      <BookingCTA />
       <Footer />
       <WhatsAppFloat />
     </div>

@@ -873,7 +873,7 @@ export default function BookingWidget({
             target="_blank"
             rel="noopener noreferrer"
             data-track-source="booking_success"
-            className="w-full flex items-center justify-center gap-2 min-h-[48px] bg-black text-white caption font-medium tracking-[0.12em] uppercase px-6 py-3.5 hover:bg-black/85 transition-colors"
+            className="pa-action w-full flex items-center justify-center gap-2 min-h-[48px] bg-black text-white caption font-medium tracking-[0.12em] uppercase px-6 py-3.5 hover:bg-black/85 transition-colors"
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.612.638l4.725-1.217A11.947 11.947 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.24 0-4.318-.722-6.004-1.948l-.42-.312-2.833.73.756-2.753-.343-.453A9.963 9.963 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
             {t("bookingWidget.chatConcierge", { defaultValue: "Chat with your concierge" })}
@@ -997,7 +997,7 @@ export default function BookingWidget({
                       setBeQuoteError("");
                       setStep("dates");
                     }}
-                    className="min-h-[40px] px-3 border border-black/15 bg-white caption text-black hover:border-black transition-colors"
+                    className="pa-action min-h-[40px] px-3 border border-black/15 bg-white caption text-black hover:border-black transition-colors"
                   >
                     {new Intl.DateTimeFormat(i18n.language, { day: "numeric", month: "short", timeZone: "UTC" })
                       .format(new Date(a.date + "T00:00:00Z"))}
@@ -1129,7 +1129,7 @@ export default function BookingWidget({
               onClick={fetchQuote}
               disabled={!checkIn || !checkOut || loading || isBelow}
               className={cn(
-                "w-full min-h-[52px] px-8 caption text-inherit font-medium tracking-[0.15em] uppercase transition-all",
+                "pa-action w-full min-h-[52px] px-8 caption text-inherit font-medium tracking-[0.15em] uppercase transition-all",
                 "bg-black text-white hover:bg-black/85",
                 "disabled:opacity-30 disabled:cursor-not-allowed",
               )}
@@ -1166,7 +1166,7 @@ export default function BookingWidget({
               target="_blank"
               rel="noopener noreferrer"
               data-track-source="pricing_unavailable"
-              className="w-full min-h-[52px] bg-black text-white caption font-medium tracking-[0.12em] uppercase px-8 py-4 hover:bg-black/85 transition-colors flex items-center justify-center gap-2"
+              className="pa-action w-full min-h-[52px] bg-black text-white caption font-medium tracking-[0.12em] uppercase px-8 py-4 hover:bg-black/85 transition-colors flex items-center justify-center gap-2"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.612.638l4.725-1.217A11.947 11.947 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.24 0-4.318-.722-6.004-1.948l-.42-.312-2.833.73.756-2.753-.343-.453A9.963 9.963 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
               {t("bookingWidget.contactConcierge", "Contact Concierge")}
@@ -1459,7 +1459,7 @@ export default function BookingWidget({
                 setStep("payment");
               }}
               disabled={createIntent.isPending}
-              className="w-full min-h-[52px] bg-black text-white caption font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors disabled:opacity-60"
+              className="pa-action w-full min-h-[52px] bg-black text-white caption font-medium tracking-[0.15em] uppercase px-8 py-4 hover:bg-black/85 transition-colors disabled:opacity-60"
             >
               {createIntent.isPending ? (
                 <span className="flex items-center justify-center gap-2">

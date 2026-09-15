@@ -5,8 +5,7 @@
    ========================================================================== */
 
 import { useMemo } from 'react';
-import { HOME_COUNT_LABEL } from '@shared/brandFacts';
-import { ArrowRight, Check, Users, MapPin } from 'lucide-react';
+import { ArrowRight, Check, Users } from 'lucide-react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -14,7 +13,6 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
-import AnswerCapsule from '@/components/seo/AnswerCapsule';
 
 const EVENT_TYPES_SCHEMA = [
   { type: 'Corporate Retreats', description: 'Host corporate retreats and team offsites in private Portuguese villas with full concierge' },
@@ -144,7 +142,7 @@ export default function Events() {
       {/* ================================================================
           HERO — Cinematic full-bleed with villa imagery
           ================================================================ */}
-      <section className="relative h-[62vh] min-h-[460px] flex items-end overflow-hidden">
+      <section className="page-hero">
         <img
           src="/events/events-hero.webp"
           alt="Long dinner table set for a private event on a stone terrace overlooking vineyards in Northern Portugal at golden hour"
@@ -154,40 +152,25 @@ export default function Events() {
           fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/5" />
-        <div className="relative container pb-14 lg:pb-20 z-10">
+        <div className="relative container pb-10 lg:pb-12 z-10">
           <p className="text-[11px] font-medium tracking-[0.14em] text-white/50 mb-4">{t('events.heroOverline')}</p>
-          <h1 className="font-display text-[2.8rem] md:text-[3.8rem] lg:text-[4.5rem] text-white leading-[1.05] mb-5 max-w-3xl">
+          <h1 className="headline-xl text-white mb-5 max-w-3xl">
             {t('events.heroTitle')}
           </h1>
           <p className="text-[15px] max-w-xl mb-8 font-light leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
             {t('events.heroBody')}
           </p>
           <Link
-            href="/contact"
-            className="inline-flex items-center gap-2 bg-white text-[#1A1A18] text-[11px] tracking-[0.14em] font-medium px-8 py-4 hover:bg-[#F5F1EB] transition-colors"
+            href="/contact?subject=events"
+            className="btn-white"
           >
             {t('events.heroCta')} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </section>
 
-      {/* Answer capsule — citable events summary for AI engines */}
-      <section className="pt-10 pb-4 bg-[#FAFAF7]">
-        <div className="container max-w-3xl mx-auto">
-          <AnswerCapsule
-            question="Can I host a private event at a Portugal Active property?"
-            answer={`Yes. Portugal Active hosts corporate retreats, weddings, brand activations, milestone celebrations, and wellness retreats across its portfolio of ${HOME_COUNT_LABEL} private hotels in Portugal. Each event is managed end-to-end by the in-house team, including catering, decoration, activities, and logistics. Properties range from coastal villas to countryside estates, accommodating groups of 10 to 100+ guests.`}
-            lastUpdated="2026-04-17"
-            author="Portugal Active events team"
-            emitSchema
-            schemaId="qa-events"
-            cite={[
-              { label: 'Browse venues', href: '/homes' },
-              { label: 'Contact events team', href: '/contact?subject=events' },
-            ]}
-          />
-        </div>
-      </section>
+
+
 
       {/* ================================================================
           TRUST BAR — Quick metrics
@@ -388,8 +371,8 @@ export default function Events() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 bg-white text-[#1A1A18] text-[11px] tracking-[0.14em] font-medium px-8 py-4 hover:bg-[#F5F1EB] transition-colors"
+                href="/contact?subject=events"
+                className="btn-white"
               >
                 {t('events.ctaButton')} <ArrowRight className="w-4 h-4" />
               </Link>
@@ -397,7 +380,7 @@ export default function Events() {
                 href="https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20discuss%20hosting%20a%20private%20event%20with%20Portugal%20Active."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 border border-white/30 text-white text-[11px] tracking-[0.14em] font-medium px-8 py-4 hover:bg-white/10 transition-colors"
+                className="btn-ghost-light"
               >
                 {t('events.ctaWhatsapp')} <ArrowRight className="w-4 h-4" />
               </a>
