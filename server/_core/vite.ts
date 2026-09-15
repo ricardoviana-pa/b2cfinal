@@ -1445,36 +1445,38 @@ const PROPERTY_DESCRIPTION: Record<string, (p: { tagline?: string | null; bedroo
     const base = tagline || `${bedrooms ? `${bedrooms}-bedroom ` : ''}luxury villa in ${destLabel(destination, 'en')}${maxGuests ? ` for up to ${maxGuests} guests` : ''}.`;
     return `${name}. ${base} Book direct with Portugal Active.`;
   },
+  // Imported taglines can remain English. On translated routes use the
+  // localised factual template instead of producing mixed-language snippets.
   pt: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = tagline || `Casa de luxo ${bedrooms ? `T${bedrooms} ` : ''}em ${destLabel(destination, 'pt')}${maxGuests ? ` para até ${maxGuests} hóspedes` : ''}.`;
+    const base = `Casa de luxo ${bedrooms ? `T${bedrooms} ` : ''}em ${destLabel(destination, 'pt')}${maxGuests ? ` para até ${maxGuests} hóspedes` : ''}.`;
     return `${name}. ${base} Reserve diretamente com a Portugal Active.`;
   },
   es: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = tagline || `Villa de lujo ${bedrooms ? `de ${bedrooms} dormitorios ` : ''}en ${destLabel(destination, 'es')}${maxGuests ? ` para hasta ${maxGuests} huéspedes` : ''}.`;
+    const base = `Villa de lujo ${bedrooms ? `de ${bedrooms} dormitorios ` : ''}en ${destLabel(destination, 'es')}${maxGuests ? ` para hasta ${maxGuests} huéspedes` : ''}.`;
     return `${name}. ${base} Reserve directamente con Portugal Active.`;
   },
   fr: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = tagline || `Villa de luxe ${bedrooms ? `${bedrooms} chambres ` : ''}à ${destLabel(destination, 'fr')}${maxGuests ? ` jusqu'à ${maxGuests} personnes` : ''}.`;
+    const base = `Villa de luxe ${bedrooms ? `${bedrooms} chambres ` : ''}à ${destLabel(destination, 'fr')}${maxGuests ? ` jusqu'à ${maxGuests} personnes` : ''}.`;
     return `${name}. ${base} Réservez en direct avec Portugal Active.`;
   },
   de: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = tagline || `Luxusvilla ${bedrooms ? `mit ${bedrooms} Schlafzimmern ` : ''}in ${destLabel(destination, 'de')}${maxGuests ? ` für bis zu ${maxGuests} Gäste` : ''}.`;
+    const base = `Luxusvilla ${bedrooms ? `mit ${bedrooms} Schlafzimmern ` : ''}in ${destLabel(destination, 'de')}${maxGuests ? ` für bis zu ${maxGuests} Gäste` : ''}.`;
     return `${name}. ${base} Buchen Sie direkt bei Portugal Active.`;
   },
   it: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = tagline || `Villa di lusso ${bedrooms ? `con ${bedrooms} camere ` : ''}in ${destLabel(destination, 'it')}${maxGuests ? ` fino a ${maxGuests} ospiti` : ''}.`;
+    const base = `Villa di lusso ${bedrooms ? `con ${bedrooms} camere ` : ''}in ${destLabel(destination, 'it')}${maxGuests ? ` fino a ${maxGuests} ospiti` : ''}.`;
     return `${name}. ${base} Prenota direttamente con Portugal Active.`;
   },
   nl: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = tagline || `Luxevilla ${bedrooms ? `met ${bedrooms} slaapkamers ` : ''}in ${destLabel(destination, 'nl')}${maxGuests ? ` tot ${maxGuests} gasten` : ''}.`;
+    const base = `Luxevilla ${bedrooms ? `met ${bedrooms} slaapkamers ` : ''}in ${destLabel(destination, 'nl')}${maxGuests ? ` tot ${maxGuests} gasten` : ''}.`;
     return `${name}. ${base} Boek direct bij Portugal Active.`;
   },
   fi: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = tagline || `Luksushuvila ${bedrooms ? `${bedrooms} makuuhuoneella ` : ''}kohteessa ${destLabel(destination, 'fi')}${maxGuests ? `, jopa ${maxGuests} hengelle` : ''}.`;
+    const base = `Luksushuvila ${bedrooms ? `${bedrooms} makuuhuoneella ` : ''}kohteessa ${destLabel(destination, 'fi')}${maxGuests ? `, jopa ${maxGuests} hengelle` : ''}.`;
     return `${name}. ${base} Varaa suoraan Portugal Activesta.`;
   },
   sv: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = tagline || `Lyxvilla ${bedrooms ? `med ${bedrooms} sovrum ` : ''}i ${destLabel(destination, 'sv')}${maxGuests ? ` för upp till ${maxGuests} gäster` : ''}.`;
+    const base = `Lyxvilla ${bedrooms ? `med ${bedrooms} sovrum ` : ''}i ${destLabel(destination, 'sv')}${maxGuests ? ` för upp till ${maxGuests} gäster` : ''}.`;
     return `${name}. ${base} Boka direkt med Portugal Active.`;
   },
 };
