@@ -1,4 +1,8 @@
 {
+  "securityDeposit": {
+    "title": "Vakuusmaksu",
+    "notice": "Majoituksesta voidaan periä vakuusmaksu. Ota yhteyttä concierge-palveluumme saadaksesi lisätietoja."
+  },
   "nav": {
     "properties": "Kodit",
     "destinations": "Kohteet",

@@ -1,4 +1,8 @@
 {
+  "securityDeposit": {
+    "title": "Caução",
+    "notice": "Poderá ser exigida uma caução para a sua estadia. Contacte o nosso concierge para mais informações."
+  },
   "nav": {
     "properties": "Casas",
     "destinations": "Destinos",

@@ -1,4 +1,8 @@
 {
+  "securityDeposit": {
+    "title": "Kaution",
+    "notice": "Für Ihren Aufenthalt kann eine Kaution erforderlich sein. Bitte kontaktieren Sie unseren Concierge für weitere Informationen."
+  },
   "nav": {
     "properties": "Häuser",
     "destinations": "Reiseziele",
