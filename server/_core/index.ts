@@ -7,6 +7,7 @@ import { createServer } from "http";
 import net from "net";
 import fs from "fs";
 import path from "path";
+import { serviceRouteSlug } from '@shared/serviceRoutes';
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerDevAuthRoutes } from "./devAuth";
@@ -295,9 +296,11 @@ async function startServer() {
         }
         const publishedProducts = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'client', 'src', 'data', 'products.json'), 'utf-8'));
         for (const product of publishedProducts) {
-          if (product.type !== 'service' || !product.isActive || !product.slug || serviceSlugs.has(product.slug)) continue;
-          serviceSlugs.add(product.slug);
-          dynamicPages.push({ path: `/services/${product.slug}`, lastmod: deployDate, changefreq: 'monthly', priority: '0.8' });
+          if (product.type !== 'service' || !product.isActive || !product.slug) continue;
+          const slug = serviceRouteSlug(product.slug);
+          if (serviceSlugs.has(slug)) continue;
+          serviceSlugs.add(slug);
+          dynamicPages.push({ path: `/services/${slug}`, lastmod: deployDate, changefreq: 'monthly', priority: '0.8' });
         }
       } catch (e) {
         console.warn("[Sitemap] could not load services.json", e);

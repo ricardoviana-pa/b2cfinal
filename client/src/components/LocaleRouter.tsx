@@ -43,7 +43,7 @@ export default function LocaleRouter({ children, ssrPath }: { children: ReactNod
   const { i18n } = useTranslation();
   // SSR passes the request path via `ssrPath`; in the browser we read
   // window.location. `window` is undefined during server render.
-  const pathname = ssrPath ?? (typeof window !== 'undefined' ? window.location.pathname : '/');
+  const pathname = ssrPath?.split('?')[0] ?? (typeof window !== 'undefined' ? window.location.pathname : '/');
   const { lang, rest } = useMemo(() => extractLocale(pathname), [pathname]);
 
   // If URL has no valid locale prefix, redirect with a real navigation

@@ -1,6 +1,7 @@
 import express, { type Express } from "express";
 import { HOME_COUNT_LABEL } from "@shared/brandFacts";
 import { getDisplayName } from "@shared/displayName";
+import { serviceRouteSlug } from '@shared/serviceRoutes';
 import fs from "fs";
 import { type Server } from "http";
 import { nanoid } from "nanoid";
@@ -142,9 +143,12 @@ async function getServiceBySlugCached(slug: string, lang = 'en'): Promise<any | 
       const products = JSON.parse(fs.readFileSync(path.join(productPath, 'products.json'), 'utf-8'));
       const translations = JSON.parse(fs.readFileSync(path.join(productPath, 'products.i18n.json'), 'utf-8'));
       for (const product of products.filter((p: any) => p.type === 'service' && p.isActive)) {
-        map.set(product.slug, product);
-        for (const [locale, override] of Object.entries(translations[product.slug] || {})) {
-          map.set(`${locale}:${product.slug}`, { ...product, ...(override as object) });
+        const canonicalSlug = serviceRouteSlug(product.slug);
+        for (const slug of new Set([product.slug, canonicalSlug])) {
+          map.set(slug, { ...product, slug: canonicalSlug });
+          for (const [locale, override] of Object.entries(translations[product.slug] || {})) {
+            map.set(`${locale}:${slug}`, { ...product, ...(override as object), slug: canonicalSlug });
+          }
         }
       }
       _serviceSlugMap = { expiresAt: Date.now() + DYNAMIC_META_TTL_MS, data: map };
@@ -1970,7 +1974,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
       });
       // Body: real SSR markup when enabled, else the lean crawlable
       // #seo-content block (H1 + description + sitewide nav).
-      html = await injectBody(html, rawPath, p, buildStaticSeoBody(lang, localized.title, localized.description));
+      html = await injectBody(html, req.originalUrl, p, buildStaticSeoBody(lang, localized.title, localized.description));
     }
 
     // ── Dynamic route meta: inject for ALL requests using in-memory cache.
@@ -1987,7 +1991,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
         if (cachedMeta.schemaDomId && cachedMeta.schemaGraph) {
           html = injectSchemaGraph(html, cachedMeta.schemaDomId, cachedMeta.schemaGraph);
         }
-        html = await injectBody(html, rawPath, p, cachedMeta.bodyHtml);
+        html = await injectBody(html, req.originalUrl, p, cachedMeta.bodyHtml);
       } else if (DYNAMIC_CONTENT_PREFIXES.some(pre => p.startsWith(pre))) {
         // Cached null on a dynamic content route → content doesn't exist → 404
         status = 404;
@@ -2187,7 +2191,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
         if (dynamicMeta.schemaDomId && dynamicMeta.schemaGraph) {
           html = injectSchemaGraph(html, dynamicMeta.schemaDomId, dynamicMeta.schemaGraph);
         }
-        html = await injectBody(html, rawPath, p, dynamicMeta.bodyHtml);
+        html = await injectBody(html, req.originalUrl, p, dynamicMeta.bodyHtml);
       } else if (DYNAMIC_CONTENT_PREFIXES.some(pre => p.startsWith(pre))) {
         // Dynamic content route with no matching record → proper 404 (not soft 404)
         status = 404;
