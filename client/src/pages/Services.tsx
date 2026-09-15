@@ -4,6 +4,7 @@
    ========================================================================== */
 
 import { useMemo } from 'react';
+import { serviceRouteSlug } from '@shared/serviceRoutes';
 import { Link } from 'wouter';
 import { MessageCircle, ArrowRight, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +34,7 @@ function ServiceCard({ product }: { product: Product | undefined }) {
   const { t } = useTranslation();
   if (!product) return null;
   return (
-    <Link href={`/services/${product.slug}`} className="group block">
+    <Link href={`/services/${serviceRouteSlug(product.slug)}`} className="group block">
       <div className="relative overflow-hidden rounded-xl bg-[#E8E4DC]" style={{ aspectRatio: '4/3' }}>
         {product.image ? (
           <img src={product.image} alt={`${product.name} – concierge service at luxury villa in Portugal`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" loading="lazy" />
@@ -83,7 +84,7 @@ function SingleServiceFeature({ product, overline, title, body }: { product: Pro
             </p>
           )}
         </div>
-      <Link href={`/services/${product.slug}`} className="btn-ghost">{t('siteUx.viewService')} <ArrowRight className="w-4 h-4" /></Link>
+      <Link href={`/services/${serviceRouteSlug(product.slug)}`} className="btn-ghost">{t('siteUx.viewService')} <ArrowRight className="w-4 h-4" /></Link>
       </div>
     </div>
   );
@@ -123,7 +124,7 @@ export default function Concierge() {
             '@type': 'Service',
             name: service.name,
             description: service.tagline || service.name,
-            url: `https://www.portugalactive.com/services/${service.slug}`,
+            url: `https://www.portugalactive.com/services/${serviceRouteSlug(service.slug)}`,
             ...(service.image && { image: service.image }),
             areaServed: { '@type': 'Country', name: 'Portugal' },
             provider: { '@id': 'https://www.portugalactive.com/#organization' },

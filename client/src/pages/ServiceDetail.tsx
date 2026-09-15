@@ -3,6 +3,7 @@
    ========================================================================== */
 
 import { useTranslation } from 'react-i18next';
+import { serviceProductSlug, serviceRouteSlug } from '@shared/serviceRoutes';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useRoute, Link } from 'wouter';
 import { Check, Clock, MapPin, ArrowLeft, MessageCircle } from 'lucide-react';
@@ -30,7 +31,7 @@ export default function ServiceDetail() {
   // Legacy service bundles have different prices AND inclusions, so do not
   // combine those inclusions with a published product's starting price.
   if (slug) {
-    const prod = publishedServices.find(p => p.slug === slug);
+    const prod = publishedServices.find(p => p.slug === serviceProductSlug(slug));
     if (prod) {
       const lp = localizeProduct(prod, i18n.language) as any;
       item = {
@@ -43,7 +44,7 @@ export default function ServiceDetail() {
         price: lp.priceFrom
           ? `${t('common.from')} ${formatEurEditorial(lp.priceFrom)}${lp.priceSuffix ? ' ' + lp.priceSuffix : ''}`
           : undefined,
-        slug: lp.slug,
+        slug: serviceRouteSlug(lp.slug),
       };
     }
   }
@@ -68,7 +69,7 @@ export default function ServiceDetail() {
 
   const isService = item.category === 'service';
   const otherItems = isService
-    ? publishedServices.filter(s => s.slug !== slug).slice(0, 4).map(s => ({ ...localizeProduct(s, i18n.language), category: 'service' }))
+    ? publishedServices.filter(s => s.slug !== serviceProductSlug(slug || '')).slice(0, 4).map(s => ({ ...localizeProduct(s, i18n.language), slug: serviceRouteSlug(s.slug), category: 'service' }))
     : allItems.filter(s => s.slug !== slug).slice(0, 4).map(s => localizeService(s, i18n.language)!);
   const whatsappMsg = encodeURIComponent(`Hi, I'm interested in ${item.name}. Can you tell me more?`);
 
@@ -176,7 +177,7 @@ export default function ServiceDetail() {
                     <MessageCircle className="w-5 h-5" />
                     {t('serviceDetail.chatOnWhatsApp', 'Chat on WhatsApp')}
                   </a>
-                  <Link href={`/contact?subject=services-enquiry&service=${encodeURIComponent(item.slug)}`} className="btn-ghost w-full mt-3">{t('contact.sendMessage')}</Link>
+                  <Link href={`/contact?subject=services-enquiry&service=${encodeURIComponent(serviceProductSlug(item.slug))}`} className="btn-ghost w-full mt-3">{t('contact.sendMessage')}</Link>
                   <p className="text-[11px] text-[#726D63] mt-4">{t('serviceDetail.whatsappNote', 'Available every day, 9 am – 9 pm (Lisbon time)')}</p>
                 </div>
               </div>

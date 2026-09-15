@@ -20,8 +20,19 @@ import { describe, it, expect } from "vitest";
 import { __testing } from "./_core/vite";
 import destinationsData from "../client/src/data/destinations.json";
 import productsData from "../client/src/data/products.json";
+import { serviceRouteSlug, serviceProductSlug } from '../shared/serviceRoutes';
 
 describe('public service and policy metadata', () => {
+  it('resolves established service URLs to the same published product and price', async () => {
+    for (const product of productsData.filter(p => p.type === 'service' && p.isActive)) {
+      const route = serviceRouteSlug(product.slug);
+      expect(serviceProductSlug(route)).toBe(product.slug);
+      const meta = await __testing.getServiceBySlugCached(route);
+      expect(meta.name).toBe(product.name);
+      expect(meta.priceFrom).toBe(product.priceFrom);
+      expect(meta.slug).toBe(route);
+    }
+  });
   it('uses the published concierge catalogue for service names and starting prices', async () => {
     for (const product of productsData.filter(p => p.type === 'service' && p.isActive)) {
       const meta = await __testing.getServiceBySlugCached(product.slug);
