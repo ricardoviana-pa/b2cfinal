@@ -22,6 +22,7 @@ const Collection = lazy(() => import("@/pages/Collection"));
 const DestinationDetail = lazy(() => import("./pages/DestinationDetail"));
 const Services = lazy(() => import("./pages/Services"));
 const Experiences = lazy(() => import("./pages/Adventures"));
+const CorporateRetreats = lazy(() => import("./pages/CorporateRetreats"));
 const Events = lazy(() => import("./pages/Events"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
@@ -168,6 +169,7 @@ function Router() {
         <Route path="/activities/:slug" component={ExperienceDetail} />
         <Route path="/adventures" component={Experiences} />
         <Route path="/events" component={Events} />
+        <Route path="/corporate-retreats" component={CorporateRetreats} />
         <Route path="/about" component={About} />
         <Route path="/contact" component={Contact} />
         <Route path="/blog" component={Blog} />

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "NODE_ENV=development tsx watch server/_core/index.ts",
     "brand:facts": "tsx scripts/brand-facts.ts",
-    "prebuild": "tsx scripts/brand-facts.ts && node scripts/sync-i18n.mjs",
+    "prebuild": "tsx scripts/brand-facts.ts && node scripts/sync-i18n.mjs && node scripts/journal-index.mjs",
     "build": "NODE_ENV=production vite build && npm run build:ssr && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "build:ssr": "NODE_ENV=production vite build --ssr src/entry-server.tsx --outDir ../dist/server",
     "start": "NODE_ENV=production node dist/index.js",

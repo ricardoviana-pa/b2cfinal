@@ -142,24 +142,14 @@
         "description": "Viana do Castelo. Owned by fish wholesalers; the freshest seafood on the coast, on the harbour. Reservation essential."
       },
       {
-        "name": "Tasca do Celso",
-        "category": "Minho classics",
-        "description": "Ponte de Lima. No menu — the owner brings what is fresh that day. Book the terrace over the river."
-      },
-      {
         "name": "Camelo",
         "category": "Minho classics",
-        "description": "Ponte de Lima. A Minho institution for over sixty years: rojões, sarrabulho and, in season, lamprey. Sunday lunch is a local ritual."
+        "description": "Santa Marta de Portuzelo, Viana do Castelo. Regional Portuguese cooking at Rua de Santa Marta, 119."
       },
       {
         "name": "O Marinheiro",
         "category": "Seafood",
         "description": "Vila Praia de Âncora. Grilled fish metres from the harbour it came from. Simple, loud and exactly right."
-      },
-      {
-        "name": "Solar do Bacalhau",
-        "category": "Traditional",
-        "description": "Braga. Salted cod in twenty preparations in a granite dining room in the old town."
       },
       {
         "name": "Mercado Municipal de Viana",
@@ -232,13 +222,15 @@
     "events": [
       {
         "name": "Romaria de Nossa Senhora d'Agonia",
-        "dates": "Third week of August, Viana do Castelo",
-        "description": "Portugal's most famous romaria, held since 1772: gold-filigree costume parades, flower carpets, boat processions and fireworks over the Lima. Homes on the coast book out months ahead."
+        "dates": "15–22 August 2027",
+        "description": "Portugal's most famous romaria, held since 1772: gold-filigree costume parades, flower carpets, boat processions and fireworks over the Lima. Homes on the coast book out months ahead.",
+        "url": "https://festasdagonia.com/"
       },
       {
         "name": "Neopop",
-        "dates": "First week of August, Viana do Castelo",
-        "description": "One of Europe's most respected electronic music festivals, on the old fortress by the sea."
+        "dates": "August · next dates to be announced",
+        "description": "One of Europe's most respected electronic music festivals, on the old fortress by the sea.",
+        "url": "https://neopopfestival.com/"
       },
       {
         "name": "Feiras Novas",
@@ -291,7 +283,7 @@
       },
       {
         "question": "Is the Minho good for a beach holiday?",
-        "answer": "For long, empty, Atlantic beaches and surf, yes. For warm water and guaranteed sun, no — the ocean is seventeen to nineteen degrees in summer and the coast has a cooling afternoon wind. Most of our homes have heated pools, which is how the Minho does beach holidays."
+        "answer": "Yes, for Atlantic beaches and surf. Sea conditions and water temperature vary with the season. For a stay with a heated pool, use the search filter and check the selected home’s heating conditions and any additional charge."
       },
       {
         "question": "Do I need a car?",
@@ -493,7 +485,7 @@
       {
         "name": "Camelo",
         "category": "Regional",
-        "description": "Bib Gourmand-recognised. Modern Portuguese cooking that leans on Minho-grown ingredients and Vinho Verde from the valley behind the city."
+        "description": "Santa Marta de Portuzelo, Viana do Castelo. Regional Portuguese cooking at Rua de Santa Marta, 119."
       },
       {
         "name": "Os 3 Potes",
@@ -581,13 +573,15 @@
     "events": [
       {
         "name": "Romaria de Nossa Senhora d'Agonia",
-        "dates": "15–23 August 2026",
-        "description": "The city's flagship festival, held annually since 1772. Boat processions, gold-filigree costume parades, fireworks over the Lima. Accommodation books out months in advance."
+        "dates": "15–22 August 2027",
+        "description": "The city's flagship festival, held annually since 1772. Boat processions, gold-filigree costume parades, fireworks over the Lima. Accommodation books out months in advance.",
+        "url": "https://festasdagonia.com/"
       },
       {
         "name": "Neopop Electronic Music Festival",
-        "dates": "6–8 August 2026",
-        "description": "International electronic music on the waterfront. The first week of August is the tightest accommodation window of the year together with the Romaria."
+        "dates": "August · next dates to be announced",
+        "description": "International electronic music on the waterfront. The first week of August is the tightest accommodation window of the year together with the Romaria.",
+        "url": "https://neopopfestival.com/"
       },
       {
         "name": "Wine & Blues Festival",

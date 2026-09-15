@@ -4,6 +4,7 @@
  * auto-updated by the sync process via GitHub API).
  */
 
+import { localitySlug } from "../../shared/destinationNavigation";
 import { readFile } from "node:fs/promises";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -272,7 +273,7 @@ function readDestinations(): Array<{ slug: string; region: string; status?: stri
 
 /** Fields a destination page needs for its cards and count — a fraction of the record. */
 const CARD_FIELDS = [
-  "id", "guestyId", "slug", "name", "title", "tagline", "tier", "destination", "locality",
+  "id", "guestyId", "supplierUid", "slug", "name", "title", "tagline", "tier", "destination", "locality",
   "bedrooms", "bathrooms", "maxGuests", "priceFrom", "pricePerNight", "currency", "petsAllowed",
   "tags", "isActive", "source", "bookingMode", "sortOrder", "averageRating", "reviewCount",
   "propertyType", "minNights", "groupId", "unitOf", "style",
@@ -307,7 +308,9 @@ export async function getPropertiesForDestination(slug: string): Promise<any[]> 
   const all = (await getPropertiesForSite()).filter((p) => p.isActive !== false);
   const own = all.filter((p) => p.destination === slug);
   const isHub = d.slug === d.region;
-  const list = isHub
+  const list = slug === 'viana-do-castelo'
+    ? all.filter(p => localitySlug(p.locality) === slug)
+    : isHub
     ? all.filter((p) => regionOf(p.destination) === d.region)
     : own.length > 0 ? own : all.filter((p) => p.destination === d.region);
   return list.map(toCard);

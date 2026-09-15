@@ -91,6 +91,11 @@ export default function Contact() {
     }
     const slug = params.get('property');
     const intent = params.get('intent');
+    if (intent === 'corporate') {
+      setSubject('events');
+      setMessage(t('corporate.prefill'));
+      prefilledFromProperty.current = true;
+    }
     if (slug && intent === 'availability') {
       prefilledFromProperty.current = true;
       setSubject('plan-my-stay');

@@ -125,24 +125,14 @@
         "description": "Viana do Castelo. De los mayoristas de pescado; el marisco más fresco de la costa, junto al puerto. Reserva imprescindible."
       },
       {
-        "name": "Tasca do Celso",
-        "category": "Clásicos del Miño",
-        "description": "Ponte de Lima. Sin carta: el dueño trae lo que está fresco ese día. Reserve la terraza sobre el río."
-      },
-      {
         "name": "Camelo",
         "category": "Clásicos del Miño",
-        "description": "Ponte de Lima. Una institución del Miño desde hace más de sesenta años: rojões, sarrabulho y, en temporada, lamprea. La comida del domingo es un ritual local."
+        "description": "Santa Marta de Portuzelo, Viana do Castelo. Cocina regional portuguesa en Rua de Santa Marta, 119."
       },
       {
         "name": "O Marinheiro",
         "category": "Marisco",
         "description": "Vila Praia de Âncora. Pescado a la brasa a metros del puerto del que salió. Sencillo, ruidoso y exactamente lo que debe ser."
-      },
-      {
-        "name": "Solar do Bacalhau",
-        "category": "Tradicional",
-        "description": "Braga. Bacalao en veinte preparaciones en un comedor de granito del casco antiguo."
       },
       {
         "name": "Mercado Municipal de Viana",
@@ -215,13 +205,15 @@
     "events": [
       {
         "name": "Romaria de Nossa Senhora d'Agonia",
-        "dates": "Tercera semana de agosto, Viana do Castelo",
-        "description": "La romería más famosa de Portugal, desde 1772: desfiles de trajes con oro de filigrana, alfombras de flores, procesión marítima y fuegos artificiales sobre el Lima. Las casas de la costa se agotan con meses de antelación."
+        "dates": "15–22 de agosto de 2027",
+        "description": "La romería más famosa de Portugal, desde 1772: desfiles de trajes con oro de filigrana, alfombras de flores, procesión marítima y fuegos artificiales sobre el Lima. Las casas de la costa se agotan con meses de antelación.",
+        "url": "https://festasdagonia.com/"
       },
       {
         "name": "Neopop",
-        "dates": "Primera semana de agosto, Viana do Castelo",
-        "description": "Uno de los festivales de música electrónica más respetados de Europa, en el antiguo fuerte junto al mar."
+        "dates": "Agosto · próximas fechas por anunciar",
+        "description": "Uno de los festivales de música electrónica más respetados de Europa, en el antiguo fuerte junto al mar.",
+        "url": "https://neopopfestival.com/"
       },
       {
         "name": "Feiras Novas",
@@ -274,7 +266,7 @@
       },
       {
         "question": "¿El Miño es bueno para unas vacaciones de playa?",
-        "answer": "Para playas atlánticas largas y vacías y para surf, sí. Para agua caliente y sol garantizado, no: el mar está entre diecisiete y diecinueve grados en verano y la costa tiene una brisa fresca por la tarde. La mayoría de nuestras casas tiene piscina climatizada, que es como el Miño entiende las vacaciones de playa."
+        "answer": "Sí, para playas atlánticas y surf. Las condiciones del mar y la temperatura varían según la época. Para una piscina climatizada, utiliza el filtro de búsqueda y consulta las condiciones de la casa y cualquier coste adicional."
       },
       {
         "question": "¿Necesito coche?",
@@ -460,7 +452,7 @@
       {
         "name": "Camelo",
         "category": "Regional",
-        "description": "Distinguido con Bib Gourmand. Cocina portuguesa moderna que se apoya en ingredientes miñotos y en el Vinho Verde del valle que hay tras la ciudad."
+        "description": "Santa Marta de Portuzelo, Viana do Castelo. Cocina regional portuguesa en Rua de Santa Marta, 119."
       },
       {
         "name": "Os 3 Potes",
@@ -548,13 +540,15 @@
     "events": [
       {
         "name": "Romaria de Nossa Senhora d'Agonia",
-        "dates": "15–23 de agosto de 2026",
-        "description": "El festival emblemático de la ciudad, celebrado anualmente desde 1772. Procesiones de barcos, desfiles de trajes en filigrana de oro y fuegos artificiales sobre el Lima. El alojamiento se agota con meses de antelación."
+        "dates": "15–22 de agosto de 2027",
+        "description": "El festival emblemático de la ciudad, celebrado anualmente desde 1772. Procesiones de barcos, desfiles de trajes en filigrana de oro y fuegos artificiales sobre el Lima. El alojamiento se agota con meses de antelación.",
+        "url": "https://festasdagonia.com/"
       },
       {
         "name": "Neopop Electronic Music Festival",
-        "dates": "6–8 de agosto de 2026",
-        "description": "Música electrónica internacional en el frente ribereño. La primera semana de agosto es la franja de alojamiento más disputada del año, a la par de la Romaria."
+        "dates": "Agosto · próximas fechas por anunciar",
+        "description": "Música electrónica internacional en el frente ribereño. La primera semana de agosto es la franja de alojamiento más disputada del año, a la par de la Romaria.",
+        "url": "https://neopopfestival.com/"
       },
       {
         "name": "Wine & Blues Festival",

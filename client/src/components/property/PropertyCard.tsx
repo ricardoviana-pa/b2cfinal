@@ -20,6 +20,7 @@ const getDestName = (slug: string) => destinations.find(d => d.slug === slug)?.n
 
 interface PropertyCardProps {
   property: Property;
+  imageSizes?: string;
   nights?: number;
   checkin?: string;
   checkout?: string;
@@ -49,6 +50,7 @@ interface PropertyCardProps {
 
 export default function PropertyCard({
   property,
+  imageSizes = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw',
   nights = 0,
   checkin,
   checkout,
@@ -185,7 +187,7 @@ export default function PropertyCard({
           loading="lazy"
           decoding="async"
           fetchPriority="low"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          sizes={imageSizes}
           width={800} height={600}
           onLoad={() => setImageLoaded(true)}
           onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }}

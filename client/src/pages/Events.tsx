@@ -200,7 +200,7 @@ export default function Events() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
             {EVENT_TYPES.map(event => (
-              <div key={event.id} className="group bg-[#FAFAF7] border border-[#E8E4DC] overflow-hidden flex flex-col">
+              <div key={event.id} id={event.id} className="scroll-mt-24 group bg-[#FAFAF7] border border-[#E8E4DC] overflow-hidden flex flex-col">
                 <div className="relative overflow-hidden" style={{ aspectRatio: '3/2' }}>
                   <img
                     src={event.image}
@@ -213,7 +213,7 @@ export default function Events() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                   <div className="absolute bottom-4 left-5 right-5">
-                    <h3 className="font-display text-[1.4rem] text-white leading-tight">{event.title}</h3>
+                    <h3 className="font-display text-[1.4rem] text-white leading-tight">{event.id === 'corporate' ? <Link href="/corporate-retreats" className="underline underline-offset-4">{event.title}</Link> : event.title}</h3>
                   </div>
                 </div>
                 <div className="p-6 flex flex-col flex-1">
@@ -221,10 +221,10 @@ export default function Events() {
                     {event.subtitle}
                   </p>
                   <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 text-[11px] text-[#726D63]">
+                    {event.id !== 'corporate' && <span className="inline-flex items-center gap-1.5 text-[11px] text-[#726D63]">
                       <Users className="w-3.5 h-3.5" />
                       {t('events.upToGuests', { count: event.guestCount })}
-                    </span>
+                    </span>}
                     <a
                       href={`https://wa.me/351927161771?text=${enquireMsg(event.title)}`}
                       target="_blank"

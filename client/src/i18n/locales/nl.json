@@ -2049,5 +2049,38 @@
     "searchJournal": "Zoek in het journal",
     "readyTitle": "Uw volgende verblijf begint hier.",
     "readyBody": "Kies een bestemming, vergelijk huizen en bekijk de prijzen voor uw datums."
+  },
+  "destinationGrowth": {
+    "eyebrow": "Vind jouw Portugal",
+    "intro": "Begin bij de bestemming. Kies je vakantiehuis, lees de lokale gids en stel een verblijf samen dat bij je past.",
+    "explore": "Ontdek {{name}}",
+    "cityTitle": "Viana do Castelo van dichtbij",
+    "cityIntro": "Onze gids voor de Atlantische kust, de Lima-vallei en de stad waar wij thuis zijn.",
+    "guide": "Ontdek de gids",
+    "journalTitle": "Plan je verblijf in {{name}}",
+    "journalIntro": "Handige verhalen om te kiezen waar je verblijft, wanneer je reist en wat je doet.",
+    "chapters": "Ontdek deze bestemming",
+    "homes": "Vakantiehuizen",
+    "experiences": "Ervaringen",
+    "seasons": "Wanneer gaan",
+    "corporateTitle": "Breng je team samen in Portugal",
+    "corporateIntro": "Plan je een teamuitje of teambuilding? Ontdek privélocaties en activiteiten. Ons team stemt de locatie en het programma af op jouw groep.",
+    "corporateCta": "Plan een bedrijfsevenement",
+    "metaTitle": "Bestemmingen en Vakantiehuizen in Portugal | Portugal Active",
+    "metaDescription": "Vergelijk Minho, Porto en Douro, Lissabon, Alentejo en Algarve. Lees lokale gidsen, ontdek vakantiehuizen en kies de juiste reisperiode voor Portugal.",
+    "eventsNote": "Jaarlijkse evenementen en seizoensideeën. Data en programma’s verschillen per editie; bekijk de links van de organisatoren voor bevestigde informatie."
+  },
+  "corporate": {
+    "title": "Bedrijfsreizen en teambuilding in Portugal",
+    "intro": "Breng je team samen aan tafel, tijdens een werksessie en in de buitenlucht. Plan een verblijf in een privéhuis of een teamevenement met Portugal Active.",
+    "planTitle": "Een programma voor jouw team",
+    "brief": "Geef je data, het aantal deelnemers, het budget en het doel van de bijeenkomst door.",
+    "venue": "We controleren geschikte huizen, overnachtingscapaciteit, vergaderruimte en de voorwaarden voor evenementen.",
+    "programme": "Stel een agenda samen met werktijd, gezamenlijke maaltijden en activiteiten. Het voorstel bevestigt beschikbaarheid, diensten en de totaalprijs.",
+    "faq1q": "Kunnen we accommodatie en teambuilding combineren?",
+    "faq1a": "Ja, je kunt beide in één voorstel aanvragen. Huis, kamerindeling, activiteiten en logistiek worden gekozen voor jouw groep en data.",
+    "faq2q": "Wat als het weer verandert?",
+    "faq2a": "Plan een binnenalternatief voor buitenactiviteiten. Het programma en eventuele wijzigingen door het weer worden in het voorstel afgesproken.",
+    "prefill": "Aanvraag bedrijfsevenement\nData of voorkeursmaand:\nDeelnemers en overnachtende gasten:\nBudgetindicatie:\nHoofddoel:"
   }
 }

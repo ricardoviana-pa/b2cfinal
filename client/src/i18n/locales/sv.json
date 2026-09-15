@@ -2049,5 +2049,38 @@
     "searchJournal": "Sök i journalen",
     "readyTitle": "Din nästa vistelse börjar här.",
     "readyBody": "Välj resmål, jämför hus och se priser för dina datum."
+  },
+  "destinationGrowth": {
+    "eyebrow": "Hitta ditt Portugal",
+    "intro": "Börja med resmålet. Välj ditt semesterhus, läs den lokala guiden och forma en vistelse som passar dig.",
+    "explore": "Upptäck {{name}}",
+    "cityTitle": "Viana do Castelo på nära håll",
+    "cityIntro": "Vår guide till Atlantkusten, Limadalen och staden där vi känner oss hemma.",
+    "guide": "Utforska guiden",
+    "journalTitle": "Planera din vistelse i {{name}}",
+    "journalIntro": "Praktisk läsning om boende, bästa restid och aktiviteter.",
+    "chapters": "Utforska resmålet",
+    "homes": "Semesterhus",
+    "experiences": "Upplevelser",
+    "seasons": "När ska man resa",
+    "corporateTitle": "Samla ditt team i Portugal",
+    "corporateIntro": "Planerar du en konferensresa eller teambuilding? Upptäck privata platser och aktiviteter. Vårt team anpassar plats och program efter din grupp.",
+    "corporateCta": "Planera ett företagsevenemang",
+    "metaTitle": "Resmål och Semesterhus i Portugal | Portugal Active",
+    "metaDescription": "Jämför Minho, Porto och Douro, Lissabon, Alentejo och Algarve. Läs lokala guider, upptäck semesterhus och välj när du vill resa till Portugal.",
+    "eventsNote": "Årliga evenemang och säsongsidéer. Datum och program varierar mellan upplagorna; se arrangörernas länkar för bekräftade detaljer."
+  },
+  "corporate": {
+    "title": "Företagsresor och teambuilding i Portugal",
+    "intro": "Samla teamet runt ett bord, under ett arbetspass och utomhus. Planera en vistelse i ett privat hus eller ett teamevenemang med Portugal Active.",
+    "planTitle": "Ett program för ditt team",
+    "brief": "Ange datum, antal deltagare, budget och syftet med träffen.",
+    "venue": "Vi kontrollerar lämpliga hus, övernattningskapacitet, mötesutrymmen och villkor för evenemang.",
+    "programme": "Skapa en agenda med arbete, gemensamma måltider och aktiviteter. Förslaget bekräftar tillgänglighet, tjänster och totalpris.",
+    "faq1q": "Kan vi kombinera boende och teambuilding?",
+    "faq1a": "Ja, du kan begära båda i ett förslag. Hus, rumsfördelning, aktiviteter och logistik väljs för gruppen och datumen.",
+    "faq2q": "Vad händer om vädret ändras?",
+    "faq2a": "Planera ett inomhusalternativ för utomhusaktiviteter. Programmet och eventuella väderändringar avtalas i förslaget.",
+    "prefill": "Förfrågan om företagsevenemang\nDatum eller önskad månad:\nDeltagare och övernattande gäster:\nBudgetintervall:\nHuvudsyfte:"
   }
 }

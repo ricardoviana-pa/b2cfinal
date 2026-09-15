@@ -125,24 +125,14 @@
         "description": "Viana do Castelo. Kalatukkureiden omistama; rannikon tuoreimmat äyriäiset satamassa. Varaus välttämätön."
       },
       {
-        "name": "Tasca do Celso",
-        "category": "Minhon klassikot",
-        "description": "Ponte de Lima. Ei ruokalistaa — omistaja tuo sen, mikä on tuoretta sinä päivänä. Varaa terassi joen yläpuolelta."
-      },
-      {
         "name": "Camelo",
         "category": "Minhon klassikot",
-        "description": "Ponte de Lima. Minhon instituutio yli kuudenkymmenen vuoden ajan: rojões, sarrabulho ja sesongissa nahkiainen. Sunnuntailounas on paikallinen rituaali."
+        "description": "Santa Marta de Portuzelo, Viana do Castelo. Portugalilaista alueellista ruokaa osoitteessa Rua de Santa Marta 119."
       },
       {
         "name": "O Marinheiro",
         "category": "Äyriäiset",
         "description": "Vila Praia de Âncora. Grillattua kalaa muutaman metrin päässä satamasta, josta se tuli. Yksinkertaista, äänekästä ja juuri oikein."
-      },
-      {
-        "name": "Solar do Bacalhau",
-        "category": "Perinteinen",
-        "description": "Braga. Bacalhauta kahdellakymmenellä tavalla graniittisessa ruokasalissa vanhassakaupungissa."
       },
       {
         "name": "Mercado Municipal de Viana",
@@ -215,13 +205,15 @@
     "events": [
       {
         "name": "Romaria de Nossa Senhora d'Agonia",
-        "dates": "Elokuun kolmas viikko, Viana do Castelo",
-        "description": "Portugalin kuuluisin romaria vuodesta 1772: filigraanikullalla koristeltujen kansallispukujen kulkueet, kukkamatot, venekulkueet ja ilotulitus Liman yllä. Rannikon kodit varataan loppuun kuukausia etukäteen."
+        "dates": "15.–22. elokuuta 2027",
+        "description": "Portugalin kuuluisin romaria vuodesta 1772: filigraanikullalla koristeltujen kansallispukujen kulkueet, kukkamatot, venekulkueet ja ilotulitus Liman yllä. Rannikon kodit varataan loppuun kuukausia etukäteen.",
+        "url": "https://festasdagonia.com/"
       },
       {
         "name": "Neopop",
-        "dates": "Elokuun ensimmäinen viikko, Viana do Castelo",
-        "description": "Yksi Euroopan arvostetuimmista elektronisen musiikin festivaaleista, vanhassa linnoituksessa meren äärellä."
+        "dates": "Elokuu · seuraavat päivämäärät ilmoitetaan myöhemmin",
+        "description": "Yksi Euroopan arvostetuimmista elektronisen musiikin festivaaleista, vanhassa linnoituksessa meren äärellä.",
+        "url": "https://neopopfestival.com/"
       },
       {
         "name": "Feiras Novas",
@@ -274,7 +266,7 @@
       },
       {
         "question": "Sopiiko Minho rantalomaan?",
-        "answer": "Pitkiin, tyhjiin Atlantin rantoihin ja surffiin kyllä. Lämpimään veteen ja taattuun aurinkoon ei — meri on kesällä seitsemäntoista–yhdeksäntoista astetta ja rannikolla puhaltaa viileä iltapäivätuuli. Useimmissa kodeissamme on lämmitetty allas; näin Minho viettää rantalomaa."
+        "answer": "Kyllä, Atlantin rantoihin ja surffaukseen. Meriolosuhteet ja veden lämpötila vaihtelevat vuodenajan mukaan. Käytä lämmitetyn uima-altaan hakusuodatinta ja tarkista talon ehdot sekä mahdolliset lisämaksut."
       },
       {
         "question": "Tarvitsenko auton?",
@@ -460,7 +452,7 @@
       {
         "name": "Camelo",
         "category": "Alueellinen",
-        "description": "Bib Gourmand -tunnustuksen saanut. Modernia portugalilaista keittiötä, joka nojaa Minhon raaka-aineisiin ja kaupungin takana olevan laakson Vinho Verdeen."
+        "description": "Santa Marta de Portuzelo, Viana do Castelo. Portugalilaista alueellista ruokaa osoitteessa Rua de Santa Marta 119."
       },
       {
         "name": "Os 3 Potes",
@@ -548,13 +540,15 @@
     "events": [
       {
         "name": "Nossa Senhora d'Agonian juhla",
-        "dates": "15.–23. elokuuta 2026",
-        "description": "Kaupungin tunnusfestivaali, vietetty vuosittain vuodesta 1772. Venekulkueita, kultafiligraanipukukulkueita ja ilotulitusta Liman yli. Majoitus loppuu kuukausia etukäteen."
+        "dates": "15.–22. elokuuta 2027",
+        "description": "Kaupungin tunnusfestivaali, vietetty vuosittain vuodesta 1772. Venekulkueita, kultafiligraanipukukulkueita ja ilotulitusta Liman yli. Majoitus loppuu kuukausia etukäteen.",
+        "url": "https://festasdagonia.com/"
       },
       {
         "name": "Neopop Electronic Music Festival",
-        "dates": "6.–8. elokuuta 2026",
-        "description": "Kansainvälistä elektronista musiikkia rantavyöhykkeellä. Elokuun ensimmäinen viikko on vuoden kysytyin majoitusikkuna, juhlan rinnalla."
+        "dates": "Elokuu · seuraavat päivämäärät ilmoitetaan myöhemmin",
+        "description": "Kansainvälistä elektronista musiikkia rantavyöhykkeellä. Elokuun ensimmäinen viikko on vuoden kysytyin majoitusikkuna, juhlan rinnalla.",
+        "url": "https://neopopfestival.com/"
       },
       {
         "name": "Wine & Blues Festival",

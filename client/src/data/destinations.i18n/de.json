@@ -125,24 +125,14 @@
         "description": "Viana do Castelo. Von Fischgroßhändlern geführt; die frischesten Meeresfrüchte der Küste, direkt am Hafen. Reservierung unerlässlich."
       },
       {
-        "name": "Tasca do Celso",
-        "category": "Minho-Klassiker",
-        "description": "Ponte de Lima. Keine Karte — der Wirt bringt, was an dem Tag frisch ist. Reservieren Sie die Terrasse über dem Fluss."
-      },
-      {
         "name": "Camelo",
         "category": "Minho-Klassiker",
-        "description": "Ponte de Lima. Seit über sechzig Jahren eine Institution: Rojões, Sarrabulho und in der Saison Neunauge. Das Sonntagsessen ist ein lokales Ritual."
+        "description": "Santa Marta de Portuzelo, Viana do Castelo. Regionale portugiesische Küche in der Rua de Santa Marta 119."
       },
       {
         "name": "O Marinheiro",
         "category": "Meeresfrüchte",
         "description": "Vila Praia de Âncora. Gegrillter Fisch wenige Meter vom Hafen, aus dem er kommt. Einfach, laut und genau richtig."
-      },
-      {
-        "name": "Solar do Bacalhau",
-        "category": "Traditionell",
-        "description": "Braga. Stockfisch in zwanzig Zubereitungen in einem Granitsaal in der Altstadt."
       },
       {
         "name": "Mercado Municipal de Viana",
@@ -215,13 +205,15 @@
     "events": [
       {
         "name": "Romaria de Nossa Senhora d'Agonia",
-        "dates": "Dritte Augustwoche, Viana do Castelo",
-        "description": "Portugals berühmteste Romaria, seit 1772: Trachtenumzüge mit Goldfiligran, Blumenteppiche, Bootsprozessionen und Feuerwerk über dem Lima. Die Häuser an der Küste sind Monate im Voraus ausgebucht."
+        "dates": "15.–22. August 2027",
+        "description": "Portugals berühmteste Romaria, seit 1772: Trachtenumzüge mit Goldfiligran, Blumenteppiche, Bootsprozessionen und Feuerwerk über dem Lima. Die Häuser an der Küste sind Monate im Voraus ausgebucht.",
+        "url": "https://festasdagonia.com/"
       },
       {
         "name": "Neopop",
-        "dates": "Erste Augustwoche, Viana do Castelo",
-        "description": "Eines der angesehensten Festivals für elektronische Musik in Europa, in der alten Festung am Meer."
+        "dates": "August · nächste Termine noch offen",
+        "description": "Eines der angesehensten Festivals für elektronische Musik in Europa, in der alten Festung am Meer.",
+        "url": "https://neopopfestival.com/"
       },
       {
         "name": "Feiras Novas",
@@ -274,7 +266,7 @@
       },
       {
         "question": "Eignet sich der Minho für einen Strandurlaub?",
-        "answer": "Für lange, leere Atlantikstrände und Surfen ja. Für warmes Wasser und Sonnengarantie nein — das Meer hat im Sommer siebzehn bis neunzehn Grad, und an der Küste weht nachmittags ein kühler Wind. Die meisten unserer Häuser haben beheizte Pools; so macht der Minho Strandurlaub."
+        "answer": "Ja, für Atlantikstrände und Surfen. Meeresbedingungen und Wassertemperaturen variieren je nach Jahreszeit. Nutzen Sie den Suchfilter für beheizte Pools und prüfen Sie die Bedingungen des Hauses sowie mögliche Zusatzkosten."
       },
       {
         "question": "Brauche ich ein Auto?",
@@ -460,7 +452,7 @@
       {
         "name": "Camelo",
         "category": "Regional",
-        "description": "Mit Bib Gourmand ausgezeichnet. Moderne portugiesische Küche, die auf Minho-Zutaten und dem Vinho Verde aus dem Tal hinter der Stadt aufbaut."
+        "description": "Santa Marta de Portuzelo, Viana do Castelo. Regionale portugiesische Küche in der Rua de Santa Marta 119."
       },
       {
         "name": "Os 3 Potes",
@@ -548,13 +540,15 @@
     "events": [
       {
         "name": "Romaria de Nossa Senhora d'Agonia",
-        "dates": "15.–23. August 2026",
-        "description": "Das emblematische Fest der Stadt, jährlich seit 1772 ausgerichtet. Bootsprozessionen, Umzüge in Goldfiligrantrachten und Feuerwerk über dem Lima. Die Unterkünfte sind Monate im Voraus ausgebucht."
+        "dates": "15.–22. August 2027",
+        "description": "Das emblematische Fest der Stadt, jährlich seit 1772 ausgerichtet. Bootsprozessionen, Umzüge in Goldfiligrantrachten und Feuerwerk über dem Lima. Die Unterkünfte sind Monate im Voraus ausgebucht.",
+        "url": "https://festasdagonia.com/"
       },
       {
         "name": "Neopop Electronic Music Festival",
-        "dates": "6.–8. August 2026",
-        "description": "Internationale elektronische Musik an der Uferfront. Die erste Augustwoche ist das begehrteste Unterkunftsfenster des Jahres, gleichauf mit der Romaria."
+        "dates": "August · nächste Termine noch offen",
+        "description": "Internationale elektronische Musik an der Uferfront. Die erste Augustwoche ist das begehrteste Unterkunftsfenster des Jahres, gleichauf mit der Romaria.",
+        "url": "https://neopopfestival.com/"
       },
       {
         "name": "Wine & Blues Festival",

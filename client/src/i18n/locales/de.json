@@ -2049,5 +2049,38 @@
     "searchJournal": "Im Journal suchen",
     "readyTitle": "Ihr nächster Aufenthalt beginnt hier.",
     "readyBody": "Wählen Sie ein Reiseziel, vergleichen Sie Häuser und prüfen Sie die Preise für Ihre Reisedaten."
+  },
+  "destinationGrowth": {
+    "eyebrow": "Finden Sie Ihr Portugal",
+    "intro": "Beginnen Sie mit dem Reiseziel. Wählen Sie Ihr Ferienhaus, lesen Sie den lokalen Reiseführer und gestalten Sie Ihren Aufenthalt.",
+    "explore": "{{name}} entdecken",
+    "cityTitle": "Viana do Castelo näher kennenlernen",
+    "cityIntro": "Unser Reiseführer zur Atlantikküste, zum Lima-Tal und zu der Stadt, in der wir zu Hause sind.",
+    "guide": "Reiseführer entdecken",
+    "journalTitle": "Planen Sie Ihren Aufenthalt in {{name}}",
+    "journalIntro": "Hilfreiche Tipps zur Unterkunft, Reisezeit und zu Aktivitäten.",
+    "chapters": "Dieses Reiseziel erkunden",
+    "homes": "Ferienhäuser",
+    "experiences": "Erlebnisse",
+    "seasons": "Reisezeit",
+    "corporateTitle": "Bringen Sie Ihr Team in Portugal zusammen",
+    "corporateIntro": "Planen Sie ein Offsite oder Teambuilding? Entdecken Sie private Orte und Aktivitäten. Unser Team stimmt Ort und Programm auf Ihre Gruppe ab.",
+    "corporateCta": "Firmenevent planen",
+    "metaTitle": "Reiseziele und Ferienhäuser in Portugal | Portugal Active",
+    "metaDescription": "Vergleichen Sie Minho, Porto und Douro, Lissabon, Alentejo und Algarve. Entdecken Sie lokale Reiseführer, Ferienhäuser und passende Reisezeiten für Portugal.",
+    "eventsNote": "Jährliche Veranstaltungen und saisonale Ideen. Termine und Programme können sich ändern; bestätigte Details finden Sie über die Links der Veranstalter."
+  },
+  "corporate": {
+    "title": "Firmenreisen und Teambuilding in Portugal",
+    "intro": "Bringen Sie Ihr Team an einem Tisch, bei einer Arbeitssitzung und draußen zusammen. Planen Sie einen Aufenthalt im privaten Ferienhaus oder ein Teamevent mit Portugal Active.",
+    "planTitle": "Ein Programm für Ihr Team",
+    "brief": "Nennen Sie uns Ihre Termine, die Teilnehmerzahl, das Budget und das Ziel des Treffens.",
+    "venue": "Wir prüfen passende Häuser, Übernachtungskapazität, Besprechungsräume und die Veranstaltungsbedingungen.",
+    "programme": "Gestalten Sie den Ablauf mit Arbeitszeit, gemeinsamen Mahlzeiten und Aktivitäten. Das Angebot bestätigt Verfügbarkeit, Leistungen und Gesamtpreis.",
+    "faq1q": "Können wir Unterkunft und Teambuilding kombinieren?",
+    "faq1a": "Ja, Sie können beides zusammen anfragen. Haus, Zimmeraufteilung, Aktivitäten und Logistik werden passend zu Gruppe und Termin ausgewählt.",
+    "faq2q": "Was passiert bei einem Wetterwechsel?",
+    "faq2a": "Planen Sie für Aktivitäten im Freien eine Alternative im Innenbereich ein. Programm und wetterbedingte Änderungen werden im Angebot vereinbart.",
+    "prefill": "Anfrage für ein Firmenevent\nTermine oder bevorzugter Monat:\nTeilnehmer und Übernachtungsgäste:\nBudgetrahmen:\nHauptziel:"
   }
 }
