@@ -40,8 +40,8 @@
 ## Credenciais (em `.env.local`, gitignored)
 
 ```
-BOKUN_ACCESS_KEY=155c551ed4e246348aa88560cb3d71d4
-BOKUN_SECRET_KEY=627834a8e9244764ab451808d21758b6
+BOKUN_ACCESS_KEY=[REDACTED — use deployment environment configuration]
+BOKUN_SECRET_KEY=[REDACTED — use deployment environment configuration]
 BOKUN_VENDOR_ID=85472
 VITE_BOKUN_CHANNEL_UUID=a283fa3e-a892-41cd-a775-036ac351a454
 ```
