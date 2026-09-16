@@ -548,7 +548,7 @@
   },
   "cookieBanner": {
     "title": "COOKIEVOORKEUREN",
-    "description": "We gebruiken cookies om uw ervaring te verbeteren en het sitegebruik te analyseren. Uw privacy is ons belangrijk. U kunt uw voorkeuren hieronder aanpassen.",
+    "description": "Noodzakelijke cookies maken browsen en boeken mogelijk. Met je toestemming gebruiken we ook cookies voor analyse en advertenties.",
     "essential": "Essentiële Cookies",
     "essentialDesc": "Vereist voor basisfunctionaliteit en beveiliging van de site. Kan niet worden uitgeschakeld.",
     "analytics": "Analytische Cookies",
@@ -558,7 +558,9 @@
     "acceptAll": "ALLES ACCEPTEREN",
     "essentialOnly": "ALLEEN ESSENTIEEL",
     "message": "Wij gebruiken cookies om uw ervaring te verbeteren. Door verder te gaan, gaat u akkoord met ons",
-    "accept": "Accepteren"
+    "accept": "Accepteren",
+    "managePreferences": "Cookie-instellingen",
+    "reloadNotice": "Als je alleen noodzakelijke cookies kiest, wordt deze pagina opnieuw geladen om optionele tracking te stoppen. Sla onvoltooide formulieren eerst op."
   },
   "home": {
     "loading": "Portugal Active laden",
@@ -1142,13 +1144,13 @@
     "essentialTitle": "Essentiële cookies",
     "essentialBody": "Deze cookies zijn noodzakelijk voor het goed functioneren van de website. Ze maken basisfuncties mogelijk zoals paginanavigatie, toegang tot beveiligde gebieden en planningsfunctionaliteit. De website kan niet goed functioneren zonder deze cookies.",
     "analyticsTitle": "Analytische cookies",
-    "analyticsBody": "Wij gebruiken analytische cookies om te begrijpen hoe bezoekers met onze website omgaan. Dit helpt ons de structuur, inhoud en gebruikerservaring van onze site te verbeteren. Alle verzamelde gegevens zijn anoniem en geaggregeerd.",
+    "analyticsBody": "Met je toestemming helpen Google Analytics en Microsoft Clarity ons het gebruik van de site te begrijpen. Deze tools kunnen online identificatoren en interacties verwerken; de gegevens zijn niet noodzakelijk anoniem.",
     "functionalTitle": "Functionele cookies",
     "functionalBody": "Deze cookies stellen de website in staat om keuzes die u maakt te onthouden (zoals uw voorkeurstaal of regio) en bieden verbeterde, gepersonaliseerde functies. Ze kunnen ook worden gebruikt om wijzigingen te onthouden die u heeft aangebracht in tekstgrootte, lettertypen en andere aanpasbare elementen.",
     "marketingTitle": "Marketingcookies",
     "marketingBody": "Wij kunnen marketingcookies gebruiken om advertenties te tonen die relevant voor u zijn. Deze cookies volgen uw surfgedrag en helpen ons u inhoud en aanbiedingen te tonen die bij uw interesses passen. Wij gebruiken deze alleen met uw uitdrukkelijke toestemming.",
     "managingTitle": "Cookies beheren",
-    "managingBody": "U kunt cookies beheren via uw browserinstellingen. De meeste browsers stellen u in staat cookies te weigeren of te accepteren, bestaande cookies te verwijderen en voorkeuren in te stellen voor bepaalde websites. Houd er rekening mee dat het uitschakelen van cookies de functionaliteit van onze website kan beïnvloeden.",
+    "managingBody": "Je kunt je keuze op elk moment wijzigen via Cookie-instellingen onderaan de pagina. Optionele meting begint pas nadat je alle cookies accepteert. Bij intrekking van toestemming wordt de huidige pagina opnieuw geladen.",
     "thirdPartyTitle": "Cookies van derden",
     "thirdPartyBody": "Sommige cookies op onze website worden ingesteld door diensten van derden die op onze pagina's verschijnen. Dit zijn onder andere analyse-aanbieders en sociale mediaplatforms. Wij hebben geen controle over deze cookies en raden aan het bijbehorende privacybeleid van derden te raadplegen.",
     "updatesTitle": "Updates van dit beleid",

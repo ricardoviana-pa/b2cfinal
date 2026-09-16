@@ -11,6 +11,7 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNod
 import { WifiOff, ArrowUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { detectAiReferrer } from "./lib/datalayer";
+import { useMeasurementConsent } from "./hooks/useMeasurementConsent";
 
 const ItineraryDrawer = lazy(() => import("./components/itinerary/ItineraryDrawer"));
 const CookieBanner = lazy(() => import("./components/layout/CookieBanner"));
@@ -269,8 +270,16 @@ function OfflineBanner() {
 
 function App({ ssrLocation }: { ssrLocation?: string }) {
   const { t } = useTranslation();
-  // Fire AI referrer detection once on mount
-  useEffect(() => { detectAiReferrer(); }, []);
+  const measurementAllowed = useMeasurementConsent();
+  const referralReported = useRef(false);
+  const landingLocation = useRef(typeof window === 'undefined' ? null : {
+    pathname: window.location.pathname, search: window.location.search,
+  });
+  useEffect(() => {
+    if (!measurementAllowed || referralReported.current) return;
+    referralReported.current = true;
+    detectAiReferrer(landingLocation.current ?? undefined);
+  }, [measurementAllowed]);
 
   return (
     <ErrorBoundary>

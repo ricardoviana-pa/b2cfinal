@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { openCookiePreferences } from '@/lib/measurementConsent';
 
 export default function Cookies() {
   const { t } = useTranslation();
@@ -50,6 +51,9 @@ export default function Cookies() {
             <p>
               {t('cookiesPage.managingBody')}
             </p>
+            <button type="button" onClick={openCookiePreferences} className="pa-action border border-[#8B7355] px-5 py-3 text-sm text-[#1A1A18] hover:bg-[#F2EDE4] transition-colors">
+              {t('cookieBanner.managePreferences')}
+            </button>
 
             <h2 className="headline-sm !text-[#1A1A18] !mt-10">{t('cookiesPage.thirdPartyTitle')}</h2>
             <p>

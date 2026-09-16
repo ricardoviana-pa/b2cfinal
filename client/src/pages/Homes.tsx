@@ -8,6 +8,7 @@ import { getDisplayName } from '@/lib/format';
 import { Link, useSearch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { useMeasurementConsent } from '@/hooks/useMeasurementConsent';
 import { IMAGES } from '@/lib/images';
 import { SlidersHorizontal, Search, ChevronDown, ArrowRight, Users, Minus, Plus, AlertTriangle, MessageCircle, Map as MapIcon } from 'lucide-react';
 
@@ -43,6 +44,7 @@ interface LiveQuote {
 }
 
 export default function Homes() {
+  const measurementAllowed = useMeasurementConsent();
   const { t, i18n } = useTranslation();
   usePageMeta({ title: 'Luxury Holiday Homes in Portugal | Private Villas & Premium Rentals', description: 'Handpicked luxury holiday homes across Portugal. Each property managed to five-star hotel standards. Porto, Lisbon, Algarve, Douro and Minho.', image: IMAGES.heroHomes, url: '/homes' });
   const [, navigate] = useLocation();
@@ -297,6 +299,8 @@ export default function Homes() {
     observerRef.current?.disconnect();
     pendingItemsRef.current.clear();
 
+    if (!measurementAllowed) return;
+
     observerRef.current = new IntersectionObserver((entries) => {
       let hasNew = false;
       for (const entry of entries) {
@@ -351,7 +355,7 @@ export default function Homes() {
       if (flushTimerRef.current) clearTimeout(flushTimerRef.current);
       pendingItemsRef.current.clear();
     };
-  }, [filtered]);
+  }, [filtered, measurementAllowed]);
 
   // When dates are set, split into available (with live pricing) and unavailable properties
   const hasDates = searchNights > 0;

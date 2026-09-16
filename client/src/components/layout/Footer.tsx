@@ -6,6 +6,7 @@
 import { useState } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { openCookiePreferences } from '@/lib/measurementConsent';
 import { IMAGES } from '@/lib/images';
 import { Instagram, Youtube, Linkedin, Facebook, Check, Phone, Mail, MessageCircle, ArrowUpRight } from 'lucide-react';
 import FooterPaymentLogos from './FooterPaymentLogos';
@@ -240,12 +241,14 @@ export default function Footer() {
             </span>
             {/* Inline links (with middot separators) so they share the copyright's
                 text baseline reliably — a nested flex row mis-aligned them. */}
-            <span className="leading-none">
+            <span className="leading-relaxed text-center">
               <Link href="/legal/privacy" className="hover:text-white/60 transition-colors">{t('footer.privacy')}</Link>
               <span className="mx-3 text-white/15" aria-hidden="true">·</span>
               <Link href="/legal/terms" className="hover:text-white/60 transition-colors">{t('footer.terms')}</Link>
               <span className="mx-3 text-white/15" aria-hidden="true">·</span>
               <Link href="/legal/cookies" className="hover:text-white/60 transition-colors">{t('footer.cookies')}</Link>
+              <span className="mx-3 text-white/15" aria-hidden="true">·</span>
+              <button type="button" onClick={openCookiePreferences} className="hover:text-white transition-colors underline underline-offset-2">{t('cookieBanner.managePreferences')}</button>
             </span>
           </div>
 

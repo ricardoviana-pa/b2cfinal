@@ -548,7 +548,7 @@
   },
   "cookieBanner": {
     "title": "PREFERENZE SUI COOKIE",
-    "description": "Utilizziamo i cookie per migliorare la tua esperienza e analizzare l'uso del sito. La tua privacy è importante per noi. Puoi personalizzare le tue preferenze di seguito.",
+    "description": "I cookie essenziali consentono di navigare e prenotare. Con il tuo consenso utilizziamo anche cookie di analisi e pubblicità.",
     "essential": "Cookie Essenziali",
     "essentialDesc": "Necessari per la funzionalità di base del sito e la sicurezza. Impossibile disabilitarli.",
     "analytics": "Cookie di Analisi",
@@ -558,7 +558,9 @@
     "acceptAll": "ACCETTA TUTTO",
     "essentialOnly": "SOLO ESSENZIALI",
     "message": "Utilizziamo i cookie per migliorare la tua esperienza. Continuando, accetti la nostra",
-    "accept": "Accetta"
+    "accept": "Accetta",
+    "managePreferences": "Gestisci cookie",
+    "reloadNotice": "Scegliendo solo i cookie essenziali, la pagina si ricarica per interrompere il monitoraggio facoltativo. Salva i moduli incompleti prima di modificare questa scelta."
   },
   "home": {
     "loading": "Caricamento Portugal Active",
@@ -1142,13 +1144,13 @@
     "essentialTitle": "Cookie essenziali",
     "essentialBody": "Questi cookie sono necessari per il corretto funzionamento del sito web. Abilitano funzionalità di base come la navigazione tra le pagine, l'accesso alle aree sicure e la funzionalità dell'itinerario. Il sito web non può funzionare correttamente senza questi cookie.",
     "analyticsTitle": "Cookie analitici",
-    "analyticsBody": "Utilizziamo cookie analitici per capire come i visitatori interagiscono con il nostro sito web. Questo ci aiuta a migliorare la struttura, il contenuto e l'esperienza utente del nostro sito. Tutti i dati raccolti sono anonimi e aggregati.",
+    "analyticsBody": "Con il tuo consenso, Google Analytics e Microsoft Clarity ci aiutano a capire come viene utilizzato il sito. Questi strumenti possono trattare identificatori online e interazioni; i dati non sono necessariamente anonimi.",
     "functionalTitle": "Cookie funzionali",
     "functionalBody": "Questi cookie consentono al sito web di ricordare le scelte effettuate (come la lingua o la regione preferita) e di offrire funzionalità avanzate e personalizzate. Possono anche essere utilizzati per ricordare le modifiche apportate alla dimensione del testo, ai caratteri e ad altri elementi personalizzabili.",
     "marketingTitle": "Cookie di marketing",
     "marketingBody": "Possiamo utilizzare cookie di marketing per fornire pubblicità pertinenti per voi. Questi cookie tracciano le vostre abitudini di navigazione e ci aiutano a mostrarvi contenuti e offerte che corrispondono ai vostri interessi. Li utilizziamo solo con il vostro consenso esplicito.",
     "managingTitle": "Gestione dei cookie",
-    "managingBody": "Potete controllare e gestire i cookie attraverso le impostazioni del vostro browser. La maggior parte dei browser consente di rifiutare o accettare i cookie, eliminare i cookie esistenti e impostare preferenze per determinati siti web. Si prega di notare che la disattivazione dei cookie potrebbe influenzare la funzionalità del nostro sito web.",
+    "managingBody": "Puoi modificare la tua scelta in qualsiasi momento tramite Gestisci cookie nel piè di pagina. La misurazione facoltativa inizia solo dopo aver accettato tutti i cookie. Revocando il consenso, la pagina corrente si ricarica.",
     "thirdPartyTitle": "Cookie di terze parti",
     "thirdPartyBody": "Alcuni cookie sul nostro sito web sono impostati da servizi di terze parti presenti sulle nostre pagine. Questi includono fornitori di analisi e piattaforme di social media. Non controlliamo questi cookie e consigliamo di consultare le rispettive informative sulla privacy di terze parti.",
     "updatesTitle": "Aggiornamenti a questa politica",
