@@ -2,8 +2,8 @@
 export const CHECKOUT_EMAIL_ORIGIN = "https://www.portugalactive.com";
 
 /**
- * DEV currently shares the booking-intent database with production. Never let
- * a preview process claim recovery stages or send real guests a test checkout.
+ * Never let a preview process claim recovery stages or send real guests a
+ * test checkout, even if production configuration is accidentally copied.
  * Both the explicit switch and production URL are required; Render branches
  * provide an additional guard against copying production configuration to DEV.
  */
