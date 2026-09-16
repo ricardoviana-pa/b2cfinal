@@ -172,11 +172,10 @@ export function TheJournal({ destination: d, articles }: TheJournalProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {articles.slice(0, 3).map(a => (
             <Link key={a.slug} href={`/blog/${a.slug}`} className="group block">
-              <div
+              {a.coverImage && <div
                 className="relative overflow-hidden bg-[#E8E4DC] mb-3"
                 style={{ aspectRatio: '4/3' }}
               >
-                {a.coverImage ? (
                   <img
                     src={cdnResize(a.coverImage, 768)}
                     srcSet={cdnSrcSet(a.coverImage, [400, 640, 768])}
@@ -187,10 +186,7 @@ export function TheJournal({ destination: d, articles }: TheJournalProps) {
                     width={800}
                     height={600}
                   />
-                ) : (
-                  <div className="w-full h-full placeholder-image" />
-                )}
-              </div>
+              </div>}
               <h3
                 className="text-[16px] font-medium text-[#1A1A18] mb-1.5 group-hover:text-[#8B7355] transition-colors"
                 style={{ fontFamily: 'var(--font-display)' }}
@@ -775,7 +771,9 @@ export function RelatedDestinationsAndOwnersCTA({
                 >
                   {(r.regionImage || r.coverImage) ? (
                     <img
-                      src={r.regionImage || r.coverImage}
+                      src={cdnResize(r.regionImage || r.coverImage, 768)}
+                      srcSet={cdnSrcSet(r.regionImage || r.coverImage, [400, 640, 768])}
+                      sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw"
                       alt={r.name}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                       loading="lazy"

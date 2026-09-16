@@ -32,7 +32,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import PropertyCard from '@/components/property/PropertyCard';
-import { IMAGES } from '@/lib/images';
+import { IMAGES, cdnResize, cdnSrcSet } from '@/lib/images';
 import StayCollections from '@/components/property/StayCollections';
 const ReviewsSection = lazy(() => import('@/components/property/GuestFeedback'));
 import destinationsData from '@/data/destinations.json';
@@ -958,7 +958,9 @@ export default function Home() {
                   <div className="relative overflow-hidden bg-pa-sand" style={{ aspectRatio: '3/4' }}>
                     {destinationImage ? (
                       <img
-                        src={destinationImage}
+                        src={cdnResize(destinationImage, 640)}
+                        srcSet={cdnSrcSet(destinationImage, [320, 480, 640])}
+                        sizes="(min-width: 1024px) 18vw, (min-width: 768px) 30vw, 260px"
                         alt={dest.name}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                         loading="lazy"

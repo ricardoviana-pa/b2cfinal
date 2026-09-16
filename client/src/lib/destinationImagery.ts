@@ -15,20 +15,17 @@ export function imageIdentity(source?: string | null): string {
   }
 }
 
-/** Return the first items with distinct photographs, optionally excluding a set. */
-export function uniqueByImage<T extends { coverImage?: string }>(
+/** Keep editorial links and order; omit only a photograph already used on the page. */
+export function withoutRepeatedImages<T extends { coverImage?: string }>(
   items: T[],
   excluded: Array<string | undefined> = [],
   limit?: number,
 ): T[] {
   const seen = new Set(excluded.map(imageIdentity).filter(Boolean));
-  const result: T[] = [];
-  for (const item of items) {
+  return items.slice(0, limit).map(item => {
     const identity = imageIdentity(item.coverImage);
-    if (identity && seen.has(identity)) continue;
+    if (identity && seen.has(identity)) return { ...item, coverImage: undefined };
     if (identity) seen.add(identity);
-    result.push(item);
-    if (limit && result.length >= limit) break;
-  }
-  return result;
+    return item;
+  });
 }
