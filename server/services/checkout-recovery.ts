@@ -22,6 +22,7 @@ import { listRecoveryCandidates, claimRecoveryStage } from "../db";
 import { sendCheckoutRecovery } from "./transactional-email";
 import { getPropertiesForSite } from "./properties-store";
 import type { BookingIntent } from "../../drizzle/schema";
+import { canRemindRecoveryStay } from './recovery-eligibility';
 
 const HOUR_MS = 60 * 60 * 1000;
 
@@ -120,6 +121,14 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
       if (!target || !intent.email) continue;
       // Belt and braces: a query já filtra, mas o opt-out nunca recebe email
       if ((intent as any).recoveryOptout) continue;
+
+      try {
+        if (!await canRemindRecoveryStay(intent)) continue;
+      } catch {
+        // Leave the stage unclaimed so a later sweep can retry verification.
+        console.warn('[Recovery] Stay verification unavailable; reminder deferred');
+        continue;
+      }
 
       // Claim before sending — losing an email beats repeating one.
       const claimed = await claimRecoveryStage(intent.id, stage, target);

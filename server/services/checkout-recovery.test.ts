@@ -1,11 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mock = vi.hoisted(() => ({
-  candidates: vi.fn(), claim: vi.fn(), send: vi.fn(), properties: vi.fn(),
+  candidates: vi.fn(), claim: vi.fn(), send: vi.fn(), properties: vi.fn(), eligible: vi.fn(),
 }));
 vi.mock("../db", () => ({ listRecoveryCandidates: mock.candidates, claimRecoveryStage: mock.claim }));
 vi.mock("./transactional-email", () => ({ sendCheckoutRecovery: mock.send }));
 vi.mock("./properties-store", () => ({ getPropertiesForSite: mock.properties }));
+vi.mock('./recovery-eligibility', () => ({ canRemindRecoveryStay: mock.eligible }));
 import { recoveryOptoutUrl, runCheckoutRecoverySweep, startCheckoutRecoveryScheduler } from "./checkout-recovery";
 
 beforeEach(() => {
@@ -17,6 +18,7 @@ beforeEach(() => {
   mock.claim.mockResolvedValue(true);
   mock.send.mockResolvedValue(undefined);
   mock.properties.mockResolvedValue([]);
+  mock.eligible.mockResolvedValue(true);
 });
 afterEach(() => { vi.unstubAllEnvs(); vi.useRealTimers(); });
 const intent = (hours: number) => ({
@@ -58,5 +60,19 @@ describe("recovery email environment regression", () => {
   it("opt-out links cannot pick up a DEV domain", () => {
     vi.stubEnv("SITE_URL", "https://dev.portugalactive.com");
     expect(new URL(recoveryOptoutUrl(intent(2).id)).origin).toBe("https://www.portugalactive.com");
+  });
+  it('does not claim or send an already booked or superseded stay', async () => {
+    mock.candidates.mockResolvedValue([intent(2)]);
+    mock.eligible.mockResolvedValue(false);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 0, checked: 1 });
+    expect(mock.claim).not.toHaveBeenCalled();
+    expect(mock.send).not.toHaveBeenCalled();
+  });
+  it('defers without claiming when Guesty cannot verify the stay', async () => {
+    mock.candidates.mockResolvedValue([intent(2)]);
+    mock.eligible.mockRejectedValue(new Error('timeout'));
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 0, checked: 1 });
+    expect(mock.claim).not.toHaveBeenCalled();
+    expect(mock.send).not.toHaveBeenCalled();
   });
 });

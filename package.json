@@ -14,6 +14,7 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "test": "vitest run",
+    "test:checkout:sandbox": "node scripts/run-checkout-sandbox.mjs",
     "db:push": "drizzle-kit generate && drizzle-kit migrate",
     "sync:guesty": "tsx scripts/sync-guesty.ts",
     "cleaning:audit": "tsx scripts/cleaning-fees.ts audit",
