@@ -11,8 +11,8 @@ Atualizado: 2026-09-16. Fonte editável: [tasks.json](tasks.json). Gerar este ma
 
 ## Estado
 
-- **37** — Por iniciar
-- **1** — Em execução
+- **36** — Por iniciar
+- **2** — Em execução
 - **2** — Código em DEV; validação por fechar
 - **1** — Rascunho; validação por fechar
 - **1** — Aguarda decisão comercial
@@ -37,7 +37,7 @@ Não se atribui percentagem a uma tarefa só por existirem alterações de códi
 | [WEB-13](#web-13) | P1 | Por iniciar | Medição comercial: criar uma referência inicial e um painel do funil por dispositivo, idioma, canal e mercado, incluindo pedidos assistidos e referências AI. |
 | [WEB-14](#web-14) | P1 | Por iniciar | Aprofundamento das PDP: começar pelas dez casas prioritárias e rever galeria, ordem das fotografias, diferenciação, perfil ideal e limitações. |
 | [WEB-15](#web-15) | P1 | Por iniciar | Factos da estadia: confirmar configuração de quartos/camas, piscina privada ou partilhada, aquecimento e custos, acessibilidade, animais, inclusões e chegada. |
-| [WEB-16](#web-16) | P1 | Por iniciar | Pesquisa: testar filtros combinados, calendário móvel, orçamento, hóspedes, mapa/lista, ordenação, voltar atrás e parâmetros partilhados. Há melhorias implementadas; falta validação abrangente. |
+| [WEB-16](#web-16) | P1 | Em execução | Pesquisa: testar filtros combinados, calendário móvel, orçamento, hóspedes, mapa/lista, ordenação, voltar atrás e parâmetros partilhados. Há melhorias implementadas; falta validação abrangente. |
 | [WEB-17](#web-17) | P1 | Por iniciar | Sem disponibilidade: rever as alternativas já existentes e completar a proposta de datas/casas semelhantes. |
 | [WEB-18](#web-18) | P1 | Por iniciar | Propostas de conversão: avaliar seleção para comparar/partilhar casas em grupo, benefícios de reserva direta e contacto contextual. |
 | [WEB-19](#web-19) | P1 | Por iniciar | Usabilidade e acessibilidade: rever foco, teclado, contraste, formulários, erros, zoom, alvos de toque e navegação; testar Safari/iPhone e Android reais. |
@@ -83,8 +83,9 @@ Próximo passo: Adicionar persistência sintética e interfaces de teste de brow
 
 Evidência:
 
-- [Bancada e limites](CHECKOUT_SANDBOX.md). 20 cenários integrados locais aprovados; 8 falhas reproduzidas antes da correção.
-- Regressão: 367 testes passaram, 6 antigos ignorados; TypeScript e builds cliente/SSR/servidor passaram.
+- [PR 73](https://github.com/ricardoviana-pa/b2cfinal/pull/73): primeira bancada isolada em DEV, 20 testes.
+- [PR 75](https://github.com/ricardoviana-pa/b2cfinal/pull/75), publicado em produção: 57 testes isolados; regressão 326 aprovados/6 ignorados; TypeScript e builds aprovados.
+- [Âmbito e limites da bancada](CHECKOUT_SANDBOX.md). Não equivale a uma compra completa com fornecedores sandbox.
 
 Etapas:
 
@@ -100,17 +101,19 @@ Estado: Parte validada localmente.
 
 Critério: Evidência de uma reserva fictícia completa, valor coerente em todas as etapas e efeitos externos apenas em sandbox.
 
-Próximo passo: Rever a origem do snapshot da cotação e as transições pagas antes de ampliar o E2E.
+Próximo passo: Completar o percurso integrado em browser com fornecedores e destinatários sandbox.
 
 Evidência:
 
-- [Bancada e limites](CHECKOUT_SANDBOX.md). 20 cenários integrados locais aprovados; 8 falhas reproduzidas antes da correção.
-- Regressão: 367 testes passaram, 6 antigos ignorados; TypeScript e builds cliente/SSR/servidor passaram.
+- [PR 73](https://github.com/ricardoviana-pa/b2cfinal/pull/73): primeira bancada isolada em DEV, 20 testes.
+- [PR 75](https://github.com/ricardoviana-pa/b2cfinal/pull/75), publicado em produção: 57 testes isolados; regressão 326 aprovados/6 ignorados; TypeScript e builds aprovados.
+- [Âmbito e limites da bancada](CHECKOUT_SANDBOX.md). Não equivale a uma compra completa com fornecedores sandbox.
+- Produção: Alvarinho Villa, 10–18/11/2026, 2 hóspedes, tarifa flexível e total de 3170 € preservados até à entrada no checkout; sem contactos ou pagamento.
 
 Etapas:
 
 - [x] Contacto → extras → pagamento simulado → reserva simulada → preparação da confirmação.
-- [ ] Autenticar a cotação e o estado pago no servidor, rever concorrência de finalização.
+- [x] Cotação e confirmação validadas no servidor; cenários de repetição e conclusão cobertos na bancada isolada.
 - [ ] Percurso completo desde a pesquisa, browser e fornecedores sandbox.
 
 ### WEB-03
@@ -121,12 +124,13 @@ Estado: Parte validada localmente.
 
 Critério: Sucessos e falhas compreensíveis; uma cobrança e uma reserva por transação; regressos corretos; métodos indisponíveis tratados com clareza.
 
-Próximo passo: Aplicar a mesma matriz de falhas a PayPal/Klarna e validar retornos sem efeitos externos.
+Próximo passo: Validar SDKs, 3DS, retornos e webhooks com contas sandbox de fornecedores.
 
 Evidência:
 
-- [Bancada e limites](CHECKOUT_SANDBOX.md). 20 cenários integrados locais aprovados; 8 falhas reproduzidas antes da correção.
-- Regressão: 367 testes passaram, 6 antigos ignorados; TypeScript e builds cliente/SSR/servidor passaram.
+- [PR 73](https://github.com/ricardoviana-pa/b2cfinal/pull/73): primeira bancada isolada em DEV, 20 testes.
+- [PR 75](https://github.com/ricardoviana-pa/b2cfinal/pull/75), publicado em produção: 57 testes isolados; regressão 326 aprovados/6 ignorados; TypeScript e builds aprovados.
+- [Âmbito e limites da bancada](CHECKOUT_SANDBOX.md). Não equivale a uma compra completa com fornecedores sandbox.
 
 Etapas:
 
@@ -141,12 +145,13 @@ Estado: Parte validada localmente.
 
 Critério: Sem duplicação nem preços silenciosamente desatualizados; recuperação clara e segura.
 
-Próximo passo: Verificar criação de reserva concorrente e alterações de carrinho durante pagamento; chaves Stripe cobrem repetições idênticas, não todos os casos distribuídos.
+Próximo passo: Completar cenários de retoma e concorrência no ambiente integrado com persistência e fornecedores sandbox.
 
 Evidência:
 
-- [Bancada e limites](CHECKOUT_SANDBOX.md). 20 cenários integrados locais aprovados; 8 falhas reproduzidas antes da correção.
-- Regressão: 367 testes passaram, 6 antigos ignorados; TypeScript e builds cliente/SSR/servidor passaram.
+- [PR 73](https://github.com/ricardoviana-pa/b2cfinal/pull/73): primeira bancada isolada em DEV, 20 testes.
+- [PR 75](https://github.com/ricardoviana-pa/b2cfinal/pull/75), publicado em produção: 57 testes isolados; regressão 326 aprovados/6 ignorados; TypeScript e builds aprovados.
+- [Âmbito e limites da bancada](CHECKOUT_SANDBOX.md). Não equivale a uma compra completa com fornecedores sandbox.
 
 Etapas:
 
@@ -205,6 +210,11 @@ Estado: Em execução.
 Critério: Revisão do diff, verificações antes/depois, plano de reversão e registo. Configuração de isolamento DEV não deve ser copiada indiscriminadamente para produção.
 
 Próximo passo: Publicar primeira PR de fiabilidade para DEV após revisão, mantendo produção inalterada nesta etapa.
+
+Evidência:
+
+- [PR 74](https://github.com/ricardoviana-pa/b2cfinal/pull/74): correções de fotos, pesquisa e preços publicadas e verificadas online.
+- [PR 75](https://github.com/ricardoviana-pa/b2cfinal/pull/75): validação do checkout publicada; entrada anónima verificada. Outras alterações DEV continuam sem promoção.
 
 ### WEB-09
 
@@ -280,11 +290,15 @@ Próximo passo: Executar os critérios descritos no inventário.
 
 **Pesquisa: testar filtros combinados, calendário móvel, orçamento, hóspedes, mapa/lista, ordenação, voltar atrás e parâmetros partilhados. Há melhorias implementadas; falta validação abrangente.**
 
-Estado: Por iniciar.
+Estado: Em execução.
 
 Critério: O cliente consegue comparar resultados e recuperar a seleção sem perder datas nem interpretar preço por confirmar como preço final.
 
 Próximo passo: Executar os critérios descritos no inventário.
+
+Evidência:
+
+- PR 74: pesquisa Home → PLP → PDP preserva datas e hóspedes; alteração de datas na PLP verificada em produção. Matriz completa de filtros e dispositivos ainda pendente.
 
 ### WEB-17
 
@@ -335,6 +349,10 @@ Estado: Código em DEV; validação por fechar.
 Critério: Rever a última versão com conteúdo comercial validado, dispositivos reais e depois publicar. About ainda exige prova das promessas; serviços/experiências dependem de preços, fornecedores e traduções corretos.
 
 Próximo passo: Executar os critérios descritos no inventário.
+
+Evidência:
+
+- PR 74 publicou a pesquisa da Home e restaurou cartões/preços. About, Concierge e Experiences da PR 72 continuam apenas em DEV.
 
 ### WEB-22
 
@@ -590,3 +608,4 @@ Próximo passo: Executar os critérios descritos no inventário.
 
 - 2026-09-16: Ricardo autorizou execução sistemática e acompanhamento de progresso. Criados 46 IDs estáveis; início pela fiabilidade da reserva.
 - 2026-09-16: Primeira etapa: 20 testes de integração sintética passam após reprodução de 8 falhas; regressão 367 passados/6 ignorados, TypeScript/build aprovados. Comparação dos 8 serviços preparada; decisão comercial pedida. Nenhuma compra/envio real.
+- 2026-09-16: Incidente de produção: PR 74 restaurou descoberta e preços; PR 75 reforçou validação no servidor. Deploys confirmados live e entrada anónima no checkout verificada. A auditoria do incidente está guardada localmente, fora do repositório público.

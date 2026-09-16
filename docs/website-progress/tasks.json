@@ -2,8 +2,8 @@
   "updated": "2026-09-16",
   "scope": "Website B2C Portugal Active",
   "baseline": {
-    "production": "e51a5c6",
-    "dev": "77b2c5a",
+    "production": "a35dd7fd37688164ca3e02748f3c30470d90a38c",
+    "dev": "2500ca675f0edbf47c9187e1071be6a2c7e4a404",
     "gtm_published_version": 25,
     "gtm_draft_changes": 39
   },
@@ -21,8 +21,9 @@
       "acceptance": "Nenhuma base, chave, sessão, reserva ou envio operacional de produção acessível ao teste; inventário e pagamentos fictícios utilizáveis de ponta a ponta.",
       "status": "parcial_validado_local",
       "evidence": [
-        "[Bancada e limites](CHECKOUT_SANDBOX.md). 20 cenários integrados locais aprovados; 8 falhas reproduzidas antes da correção.",
-        "Regressão: 367 testes passaram, 6 antigos ignorados; TypeScript e builds cliente/SSR/servidor passaram."
+        "[PR 73](https://github.com/ricardoviana-pa/b2cfinal/pull/73): primeira bancada isolada em DEV, 20 testes.",
+        "[PR 75](https://github.com/ricardoviana-pa/b2cfinal/pull/75), publicado em produção: 57 testes isolados; regressão 326 aprovados/6 ignorados; TypeScript e builds aprovados.",
+        "[Âmbito e limites da bancada](CHECKOUT_SANDBOX.md). Não equivale a uma compra completa com fornecedores sandbox."
       ],
       "blockers": [],
       "next_step": "Adicionar persistência sintética e interfaces de teste de browser; depois validar fornecedores sandbox sem acesso a produção.",
@@ -48,19 +49,21 @@
       "acceptance": "Evidência de uma reserva fictícia completa, valor coerente em todas as etapas e efeitos externos apenas em sandbox.",
       "status": "parcial_validado_local",
       "evidence": [
-        "[Bancada e limites](CHECKOUT_SANDBOX.md). 20 cenários integrados locais aprovados; 8 falhas reproduzidas antes da correção.",
-        "Regressão: 367 testes passaram, 6 antigos ignorados; TypeScript e builds cliente/SSR/servidor passaram."
+        "[PR 73](https://github.com/ricardoviana-pa/b2cfinal/pull/73): primeira bancada isolada em DEV, 20 testes.",
+        "[PR 75](https://github.com/ricardoviana-pa/b2cfinal/pull/75), publicado em produção: 57 testes isolados; regressão 326 aprovados/6 ignorados; TypeScript e builds aprovados.",
+        "[Âmbito e limites da bancada](CHECKOUT_SANDBOX.md). Não equivale a uma compra completa com fornecedores sandbox.",
+        "Produção: Alvarinho Villa, 10–18/11/2026, 2 hóspedes, tarifa flexível e total de 3170 € preservados até à entrada no checkout; sem contactos ou pagamento."
       ],
       "blockers": [],
-      "next_step": "Rever a origem do snapshot da cotação e as transições pagas antes de ampliar o E2E.",
+      "next_step": "Completar o percurso integrado em browser com fornecedores e destinatários sandbox.",
       "steps": [
         {
           "label": "Contacto → extras → pagamento simulado → reserva simulada → preparação da confirmação.",
           "done": true
         },
         {
-          "label": "Autenticar a cotação e o estado pago no servidor, rever concorrência de finalização.",
-          "done": false
+          "label": "Cotação e confirmação validadas no servidor; cenários de repetição e conclusão cobertos na bancada isolada.",
+          "done": true
         },
         {
           "label": "Percurso completo desde a pesquisa, browser e fornecedores sandbox.",
@@ -75,11 +78,12 @@
       "acceptance": "Sucessos e falhas compreensíveis; uma cobrança e uma reserva por transação; regressos corretos; métodos indisponíveis tratados com clareza.",
       "status": "parcial_validado_local",
       "evidence": [
-        "[Bancada e limites](CHECKOUT_SANDBOX.md). 20 cenários integrados locais aprovados; 8 falhas reproduzidas antes da correção.",
-        "Regressão: 367 testes passaram, 6 antigos ignorados; TypeScript e builds cliente/SSR/servidor passaram."
+        "[PR 73](https://github.com/ricardoviana-pa/b2cfinal/pull/73): primeira bancada isolada em DEV, 20 testes.",
+        "[PR 75](https://github.com/ricardoviana-pa/b2cfinal/pull/75), publicado em produção: 57 testes isolados; regressão 326 aprovados/6 ignorados; TypeScript e builds aprovados.",
+        "[Âmbito e limites da bancada](CHECKOUT_SANDBOX.md). Não equivale a uma compra completa com fornecedores sandbox."
       ],
       "blockers": [],
-      "next_step": "Aplicar a mesma matriz de falhas a PayPal/Klarna e validar retornos sem efeitos externos.",
+      "next_step": "Validar SDKs, 3DS, retornos e webhooks com contas sandbox de fornecedores.",
       "steps": [
         {
           "label": "Contrato cartão/wallets e retoma de pagamento já concluído cobertos localmente.",
@@ -98,11 +102,12 @@
       "acceptance": "Sem duplicação nem preços silenciosamente desatualizados; recuperação clara e segura.",
       "status": "parcial_validado_local",
       "evidence": [
-        "[Bancada e limites](CHECKOUT_SANDBOX.md). 20 cenários integrados locais aprovados; 8 falhas reproduzidas antes da correção.",
-        "Regressão: 367 testes passaram, 6 antigos ignorados; TypeScript e builds cliente/SSR/servidor passaram."
+        "[PR 73](https://github.com/ricardoviana-pa/b2cfinal/pull/73): primeira bancada isolada em DEV, 20 testes.",
+        "[PR 75](https://github.com/ricardoviana-pa/b2cfinal/pull/75), publicado em produção: 57 testes isolados; regressão 326 aprovados/6 ignorados; TypeScript e builds aprovados.",
+        "[Âmbito e limites da bancada](CHECKOUT_SANDBOX.md). Não equivale a uma compra completa com fornecedores sandbox."
       ],
       "blockers": [],
-      "next_step": "Verificar criação de reserva concorrente e alterações de carrinho durante pagamento; chaves Stripe cobrem repetições idênticas, não todos os casos distribuídos.",
+      "next_step": "Completar cenários de retoma e concorrência no ambiente integrado com persistência e fornecedores sandbox.",
       "steps": [
         {
           "label": "Timeout, cancelamento falhado, expiração, valor alterado, double submit e falha de persistência cobertos.",
@@ -164,7 +169,10 @@
       "task": "Lançamento pendente: preparar a promoção das melhorias DEV para produção por blocos verificáveis.",
       "acceptance": "Revisão do diff, verificações antes/depois, plano de reversão e registo. Configuração de isolamento DEV não deve ser copiada indiscriminadamente para produção.",
       "status": "em_execucao",
-      "evidence": [],
+      "evidence": [
+        "[PR 74](https://github.com/ricardoviana-pa/b2cfinal/pull/74): correções de fotos, pesquisa e preços publicadas e verificadas online.",
+        "[PR 75](https://github.com/ricardoviana-pa/b2cfinal/pull/75): validação do checkout publicada; entrada anónima verificada. Outras alterações DEV continuam sem promoção."
+      ],
       "blockers": [],
       "next_step": "Publicar primeira PR de fiabilidade para DEV após revisão, mantendo produção inalterada nesta etapa."
     },
@@ -243,8 +251,10 @@
       "priority": "P1",
       "task": "Pesquisa: testar filtros combinados, calendário móvel, orçamento, hóspedes, mapa/lista, ordenação, voltar atrás e parâmetros partilhados. Há melhorias implementadas; falta validação abrangente.",
       "acceptance": "O cliente consegue comparar resultados e recuperar a seleção sem perder datas nem interpretar preço por confirmar como preço final.",
-      "status": "por_iniciar",
-      "evidence": [],
+      "status": "em_execucao",
+      "evidence": [
+        "PR 74: pesquisa Home → PLP → PDP preserva datas e hóspedes; alteração de datas na PLP verificada em produção. Matriz completa de filtros e dispositivos ainda pendente."
+      ],
       "blockers": [],
       "next_step": "Executar os critérios descritos no inventário."
     },
@@ -294,7 +304,9 @@
       "task": "Home, About, Concierge e Experiences",
       "acceptance": "Rever a última versão com conteúdo comercial validado, dispositivos reais e depois publicar. About ainda exige prova das promessas; serviços/experiências dependem de preços, fornecedores e traduções corretos.",
       "status": "implementado_dev_validacao_pendente",
-      "evidence": [],
+      "evidence": [
+        "PR 74 publicou a pesquisa da Home e restaurou cartões/preços. About, Concierge e Experiences da PR 72 continuam apenas em DEV."
+      ],
       "blockers": [],
       "next_step": "Executar os critérios descritos no inventário."
     },
@@ -557,6 +569,10 @@
     {
       "date": "2026-09-16",
       "event": "Primeira etapa: 20 testes de integração sintética passam após reprodução de 8 falhas; regressão 367 passados/6 ignorados, TypeScript/build aprovados. Comparação dos 8 serviços preparada; decisão comercial pedida. Nenhuma compra/envio real."
+    },
+    {
+      "date": "2026-09-16",
+      "event": "Incidente de produção: PR 74 restaurou descoberta e preços; PR 75 reforçou validação no servidor. Deploys confirmados live e entrada anónima no checkout verificada. A auditoria do incidente está guardada localmente, fora do repositório público."
     }
   ]
 }
