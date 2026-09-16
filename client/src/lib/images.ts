@@ -121,6 +121,16 @@ function cdnVariant(url?: string | null): ((w: number) => string) | null {
     return (w) => url.replace('/image/upload/', `/image/upload/w_${w},q_auto,f_auto/`);
   if (url.includes('imgcdn.bokun.tools')) { const b = url.split('?')[0]; return (w) => `${b}?w=${w}`; }
   if (url.includes('images.pexels.com')) { const b = url.split('?')[0]; return (w) => `${b}?auto=compress&cs=tinysrgb&w=${w}`; }
+  // Retain crop/attribution parameters while replacing the requested width.
+  try {
+    const source = new URL(url);
+    if (source.hostname === 'images.unsplash.com') return (w) => {
+      const resized = new URL(source);
+      resized.searchParams.set('w', String(w));
+      resized.searchParams.set('auto', 'format');
+      return resized.toString();
+    };
+  } catch { /* Local images keep their authored size. */ }
   return null;
 }
 

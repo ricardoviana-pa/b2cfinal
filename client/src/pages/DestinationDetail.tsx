@@ -29,7 +29,7 @@ import { trpc } from '@/lib/trpc';
 import { StructuredData } from '@/components/seo/StructuredData';
 import { DestinationPage, buildDestinationGraph } from '@/components/destinations';
 import type { Destination, Property, Product } from '@/lib/types';
-import { uniqueByImage } from '@/lib/destinationImagery';
+import { withoutRepeatedImages } from '@/lib/destinationImagery';
 
 const destinations = destinationsData as unknown as Destination[];
 const allProducts = productsData as unknown as Product[];
@@ -106,7 +106,7 @@ export default function DestinationDetail() {
   }
 
   const index = { ...journalIndex, ...journalOverrides } as Record<string, {slug: string; title: string; excerpt?: string; coverImage?: string}>;
-  const articles = uniqueByImage(
+  const articles = withoutRepeatedImages(
     ((destinationJournal as Record<string, string[]>)[dest.slug] || [])
       .map(slug => {
         const article = index[slug];
@@ -115,7 +115,9 @@ export default function DestinationDetail() {
         return curatedImage ? { ...article, coverImage: curatedImage } : article;
       })
       .filter((article): article is NonNullable<typeof article> => !!article),
-    [dest.regionImage, dest.coverImage],
+    [dest.regionImage, dest.coverImage,
+      ...destProperties.slice(0, 6).map(p => p.images?.[0]),
+      ...adventures.map(p => p.image)],
     3,
   );
 
