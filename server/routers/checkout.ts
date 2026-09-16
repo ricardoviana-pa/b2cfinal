@@ -11,6 +11,7 @@
  * record carries guest PII), so it is a UUID — never enumerable.
  */
 import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
+import { cardChargeIdempotencyKey, withCheckoutChargeLock } from "../lib/checkout-charge-attempt";
 import { randomUUID } from "crypto";
 import { sanitizePropertyName } from "@shared/displayName";
 import { z } from "zod";
@@ -377,7 +378,7 @@ export const checkoutRouter = router({
    *  Formatos trocados sao recusados pelo Stripe no confirm (vistos 16 e 21 ago). */
   createCardCharge: publicProcedure
     .input(z.object({ intentId: z.string().uuid(), wallet: z.boolean().optional() }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input }) => withCheckoutChargeLock(input.intentId, async () => {
       const m = await getBookingIntent(input.intentId);
       if (!m) throw new TRPCError({ code: "NOT_FOUND" });
       if ((m as any).status === "paid") throw new TRPCError({ code: "PRECONDITION_FAILED", message: "already paid" });
@@ -388,36 +389,54 @@ export const checkoutRouter = router({
         ? m
         : { ...m, extras: ((m as any).extras ?? []).filter((e: any) => !PETS_ONLY_SKUS.includes(e.sku)) };
       const b = breakdownFromIntent(mSafe);
-      if (b.totalCents < 100) throw new TRPCError({ code: "PRECONDITION_FAILED", message: "empty total" });
+      if (!Number.isSafeInteger(b.totalCents) || b.totalCents < 100) {
+        throw new TRPCError({ code: "PRECONDITION_FAILED", message: "invalid total" });
+      }
       // RETRY SEGURO (finding 15 ago): se já existe um PI para este intent,
       // retoma-o — nunca criar um segundo e arriscar dupla cobrança
       const priorPi = (m as any).paymentIntentId as string | null;
       if (priorPi) {
         const { getPaymentIntent } = await import("../services/stripe-klarna");
-        const prev = await getPaymentIntent(priorPi).catch(() => null);
-        if (prev && prev.amount === b.totalCents) {
-          if (prev.status === "succeeded") {
-            return { clientSecret: null, paymentIntentId: prev.id, totalCents: b.totalCents, alreadyPaid: true };
+        // An unknown outcome is not permission to start a second payment.
+        const prev = await getPaymentIntent(priorPi);
+        if (prev.metadata?.flow !== "card_v2" || prev.metadata?.intentId !== input.intentId || prev.currency !== "eur") {
+          throw new TRPCError({ code: "PRECONDITION_FAILED", message: "payment does not belong to this checkout" });
+        }
+        if (prev.status === "succeeded") {
+          return { clientSecret: null, paymentIntentId: prev.id, totalCents: prev.amount, alreadyPaid: true };
+        }
+        if (["processing", "requires_capture"].includes(prev.status)) {
+          throw new TRPCError({ code: "PRECONDITION_FAILED", message: "payment is still processing; do not pay again" });
+        }
+      }
+      const expiresAt = m.expiresAt ? new Date(m.expiresAt).getTime() : NaN;
+      if (m.status === "expired" || !Number.isFinite(expiresAt) || expiresAt <= Date.now()) {
+        throw new TRPCError({ code: "PRECONDITION_FAILED", message: "quote expired; refresh the price before paying" });
+      }
+      if (String((m.quote as any)?.currency ?? "EUR").toUpperCase() !== "EUR") {
+        throw new TRPCError({ code: "PRECONDITION_FAILED", message: "unsupported quote currency" });
+      }
+      if (priorPi) {
+        const { getPaymentIntent, cancelPaymentIntent } = await import("../services/stripe-klarna");
+        const prev = await getPaymentIntent(priorPi);
+        // Recheck after the validity checks in case a callback completed it.
+        if (prev.status === "succeeded") {
+          return { clientSecret: null, paymentIntentId: prev.id, totalCents: prev.amount, alreadyPaid: true };
+        }
+        if (["requires_payment_method", "requires_confirmation", "requires_action"].includes(prev.status)) {
+          const sameFormat = !!prev.automatic_payment_methods?.enabled === !!input.wallet;
+          if (prev.amount === b.totalCents && sameFormat) {
+            return { clientSecret: prev.client_secret!, paymentIntentId: prev.id, totalCents: b.totalCents, alreadyPaid: false };
           }
-          if (["requires_payment_method", "requires_confirmation", "requires_action", "processing"].includes(prev.status)) {
-            // O formato do PI tem de casar com a sessão Elements que o vai
-            // confirmar (wallet→automatic, card→types). Um retry pode trocar de
-            // método: se o formato não corresponde e nada foi cobrado, cancela
-            // e cria novo; caso contrário retoma o mesmo PI.
-            const wantAuto = !!input.wallet;
-            const isAuto = !!prev.automatic_payment_methods?.enabled;
-            if (isAuto !== wantAuto && prev.status === "requires_payment_method") {
-              const { cancelPaymentIntent } = await import("../services/stripe-klarna");
-              await cancelPaymentIntent(prev.id).catch(() => {});
-              console.info(`[Card2b] PI ${prev.id} (${isAuto ? "automatic" : "types"}) cancelado — pedido ${wantAuto ? "automatic" : "types"} (intent ${input.intentId})`);
-            } else {
-              return { clientSecret: prev.client_secret!, paymentIntentId: prev.id, totalCents: b.totalCents, alreadyPaid: false };
-            }
-          }
+          // Retire the stale amount/method before exposing a replacement.
+          // A cancel failure is surfaced; it must never be swallowed.
+          await cancelPaymentIntent(prev.id);
+        } else if (prev.status !== "canceled") {
+          throw new TRPCError({ code: "PRECONDITION_FAILED", message: "payment is still processing; do not pay again" });
         }
       }
       if (b.divergent.length) console.warn(`[Card2b] client amounts diverged intent=${input.intentId}: ${b.divergent.join(",")}`);
-      const pi = await createCardPaymentIntent({
+      const paymentParams = {
         amount: b.totalCents,
         currency: "eur",
         wallet: !!input.wallet,
@@ -437,10 +456,14 @@ export const checkoutRouter = router({
           if (lines && lines.length <= 480) metadata.lines = lines;
           return metadata;
         })(),
+      };
+      const pi = await createCardPaymentIntent({ ...paymentParams,
+        idempotencyKey: cardChargeIdempotencyKey(paymentParams, priorPi || null),
       });
-      await updateBookingIntent(input.intentId, { paymentIntentId: pi.id } as any).catch(() => {});
+      const saved = await updateBookingIntent(input.intentId, { paymentIntentId: pi.id } as any);
+      if (!saved) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "payment could not be saved; retry the same checkout" });
       return { clientSecret: pi.client_secret!, paymentIntentId: pi.id, totalCents: b.totalCents, alreadyPaid: false };
-    }),
+    })),
 
   /** 2b: finaliza apos confirmPayment — cria a reserva Guesty (so estadia). */
   finalizeCardCharge: publicProcedure
