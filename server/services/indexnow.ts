@@ -1,3 +1,4 @@
+import { isPreviewDeployment } from "../lib/preview-isolation";
 /**
  * IndexNow — push changed URLs to the search engines that support the protocol.
  *
@@ -34,6 +35,7 @@ export interface IndexNowResult {
  * abort the work that produced the change.
  */
 export async function submitUrls(urls: string[]): Promise<IndexNowResult> {
+  if (isPreviewDeployment()) return { ok: false, submitted: 0, error: "IndexNow disabled in previews" };
   const full = Array.from(
     new Set(urls.map((u) => (u.startsWith("http") ? u : `${BASE_URL}${u.startsWith("/") ? "" : "/"}${u}`))),
   );

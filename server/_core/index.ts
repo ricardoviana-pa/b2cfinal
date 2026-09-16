@@ -1,4 +1,5 @@
-import "dotenv/config";
+import "./preview-bootstrap";
+import { blockPreviewWrites, isPreviewDeployment, PREVIEW_CSP } from "../lib/preview-isolation";
 import { blogLanguages } from "../../shared/blogPublication";
 import express from "express";
 import compression from "compression";
@@ -55,6 +56,7 @@ async function startServer() {
 
   app.set("trust proxy", true);
   app.use(redirectLegacyRecoveryEmail);
+  app.use(blockPreviewWrites);
 
   // Canonical domain redirects — only fires for the exact production bare domain.
   // Uses X-Forwarded-Host directly so dev/stg subdomains are never affected.
@@ -96,7 +98,7 @@ async function startServer() {
     // a dedicated effort (Report-Only monitoring first); until then `false`.
     // The other Helmet protections below (HSTS, X-Frame-Options, nosniff,
     // Referrer-Policy) stay on — they add value without breaking anything.
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: isPreviewDeployment() ? PREVIEW_CSP : false,
     crossOriginEmbedderPolicy: false,
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
   }));

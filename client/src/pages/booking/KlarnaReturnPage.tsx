@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearch, useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
-import { loadStripe } from "@stripe/stripe-js";
+import { loadStripe } from "@/lib/stripeLoader";
 import { trpc } from "@/lib/trpc";
 import { pushPurchaseOnce } from "@/lib/datalayer";
 import { stashThankYou } from "@/lib/booking-api";

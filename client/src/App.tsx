@@ -1,3 +1,4 @@
+import PreviewNotice from "./components/PreviewNotice";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
@@ -295,6 +296,7 @@ function App({ ssrLocation }: { ssrLocation?: string }) {
               >
                 {t('header.skipToContent')}
               </a>
+              <PreviewNotice />
               <OfflineBanner />
               <BackToTop />
               <Suspense fallback={null}><ItineraryDrawer /></Suspense>

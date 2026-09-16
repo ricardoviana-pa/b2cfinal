@@ -1,3 +1,4 @@
+import { isLiveSiteHostname } from "@shared/deployment";
 /** Basic consent mode: optional measurement only loads after an explicit grant. */
 export type CookieChoice = 'all' | 'essential';
 export const COOKIE_CHOICE_KEY = 'pa-cookies-consent';
@@ -42,6 +43,7 @@ function googleConsent(state: ConsentState) {
 }
 
 function updateConsent(granted: boolean) {
+  if (!isLiveSiteHostname(window.location.hostname)) return;
   const state = granted ? 'granted' : 'denied';
   window.gtag?.('consent', 'update', googleConsent(state));
   // Queue the decision before Clarity's script is injected by GTM.
@@ -54,6 +56,7 @@ function updateConsent(granted: boolean) {
 }
 
 function clearMeasurementCookies() {
+  if (!isLiveSiteHostname(window.location.hostname)) return;
   // Only known measurement cookies. Booking, login and basket storage are untouched.
   const names = document.cookie.split(';').map(part => part.split('=')[0].trim())
     .filter(name => /^(_ga($|_)|_gid$|_gat($|_)|_gcl_|_fbi$|_fbp$|_fbc$|_clck$|_clsk$)/.test(name));
@@ -68,7 +71,7 @@ function clearMeasurementCookies() {
 }
 
 function loadMeasurement() {
-  if (choice !== 'all' || gtmLoaded) return;
+  if (choice !== 'all' || gtmLoaded || !isLiveSiteHostname(window.location.hostname)) return;
   gtmLoaded = true;
   window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
   const script = document.createElement('script');
@@ -88,7 +91,7 @@ export function getCookieChoice(): CookieChoice | null {
 }
 
 export function hasMeasurementConsent(): boolean {
-  return typeof window !== 'undefined' && choice === 'all';
+  return typeof window !== 'undefined' && isLiveSiteHostname(window.location.hostname) && choice === 'all';
 }
 
 export function willReloadForEssential(): boolean {

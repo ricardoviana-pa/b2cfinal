@@ -50,6 +50,15 @@ describe('measurement consent and booking isolation', () => {
       ad_storage: 'denied', analytics_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
     }]);
   });
+  it.each(['dev.portugalactive.com', 'preview.onrender.com', 'localhost'])('never loads production tracking on %s even with consent', async hostname => {
+    const b = setup('all'); b.win.location.hostname = hostname;
+    const consent = await import('../client/src/lib/measurementConsent');
+    consent.saveCookieChoice('all');
+    await vi.runAllTimersAsync();
+    expect(consent.hasMeasurementConsent()).toBe(false);
+    expect(b.scripts).toHaveLength(0);
+    expect(b.cookieWrites).toHaveLength(0);
+  });
   it('restores an existing grant before loading GTM once', async () => {
     const b = setup('all');
     const consent = await import('../client/src/lib/measurementConsent');

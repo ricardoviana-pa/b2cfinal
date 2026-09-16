@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { loadStripe } from "@stripe/stripe-js";
+import { loadStripe } from "@/lib/stripeLoader";
 import { trpc } from "@/lib/trpc";
 import { formatEur } from "@/lib/format";
 import { pushEcommerce } from "@/lib/datalayer";
