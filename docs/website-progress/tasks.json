@@ -23,7 +23,8 @@
       "evidence": [
         "[PR 73](https://github.com/ricardoviana-pa/b2cfinal/pull/73): primeira bancada isolada em DEV, 20 testes.",
         "[PR 75](https://github.com/ricardoviana-pa/b2cfinal/pull/75), publicado em produção: 57 testes isolados; regressão 326 aprovados/6 ignorados; TypeScript e builds aprovados.",
-        "[Âmbito e limites da bancada](CHECKOUT_SANDBOX.md). Não equivale a uma compra completa com fornecedores sandbox."
+        "[Âmbito e limites da bancada](CHECKOUT_SANDBOX.md). Não equivale a uma compra completa com fornecedores sandbox.",
+        "PR 82: verificação automática de instalação limpa, integração isolada, regressão, tipos e build no GitHub; execução da PR aprovada em Linux. Sem credenciais operacionais."
       ],
       "blockers": [],
       "next_step": "Adicionar persistência sintética e interfaces de teste de browser; depois validar fornecedores sandbox sem acesso a produção.",
@@ -124,10 +125,14 @@
       "priority": "P0",
       "task": "Auditoria preventiva: restantes links de emails transacionais, pagamentos, cancelamento, confirmação e recuperação; proteger a separação entre ambientes nos lançamentos. A falha concreta de recuperação já foi corrigida.",
       "acceptance": "Links operacionais sempre no domínio correto; verificações automáticas de configuração e regressão. Confirmar também, pela operação, o desfecho do cliente afetado, ainda não documentado nesta tarefa.",
-      "status": "por_iniciar",
-      "evidence": [],
+      "status": "parcial_publicado",
+      "evidence": [
+        "PR 77: recuperação apenas para a última tentativa elegível, bloqueio de reservas já concluídas e verificação Guesty antes do lembrete; publicado em produção.",
+        "PR 78: origem canónica nos alertas internos; publicado em produção.",
+        "Desfecho do cliente afetado e tratamento dos destinatários documentados no dossier administrativo privado; sem dados pessoais neste repositório."
+      ],
       "blockers": [],
-      "next_step": "Executar os critérios descritos no inventário."
+      "next_step": "Concluir gestão das credenciais e validação integrada com fornecedores sandbox. Entrega de correções por email depende da conta de envio correta."
     },
     {
       "id": "WEB-06",
@@ -158,10 +163,25 @@
       "priority": "P0",
       "task": "Clareza de preços: resolver casos documentados de arredondamento da diária que não explicam o total, como €500 × 4 versus €2 002.",
       "acceptance": "Decomposição legível que reconcilia noites, extras, encargos e total cobrado, sem alterar valores comerciais por suposição.",
-      "status": "por_iniciar",
-      "evidence": [],
+      "status": "publicado_producao",
+      "evidence": [
+        "PR 81: cêntimos preservados nas cotações, PLP, PDP, barra móvel, checkout, recibos e modelos de email; multiplicação por uma diária arredondada removida.",
+        "Treze testes novos em nove línguas; suite 358 aprovados/6 ignorados; TypeScript e build aprovados.",
+        "Browser local com dados sintéticos: troca de tarifa e resumo móvel a 390 px; totais e parcelas reconciliados. Produção: PLP e PDP apresentaram 2.888,87 €, discriminados em 2.541,60 € e 347,27 € na cotação observada.",
+        "Smoke do build publicado aprovado. Não houve pagamento real de teste."
+      ],
       "blockers": [],
-      "next_step": "Executar os critérios descritos no inventário."
+      "next_step": "Manter a regressão; a certificação integrada de pagamentos continua em WEB-02/WEB-03.",
+      "steps": [
+        {
+          "label": "Valores exatos no percurso de cotação e nos modelos de confirmação.",
+          "done": true
+        },
+        {
+          "label": "Regressão isolada, apresentação móvel e publicação verificadas.",
+          "done": true
+        }
+      ]
     },
     {
       "id": "WEB-08",
@@ -253,7 +273,8 @@
       "acceptance": "O cliente consegue comparar resultados e recuperar a seleção sem perder datas nem interpretar preço por confirmar como preço final.",
       "status": "em_execucao",
       "evidence": [
-        "PR 74: pesquisa Home → PLP → PDP preserva datas e hóspedes; alteração de datas na PLP verificada em produção. Matriz completa de filtros e dispositivos ainda pendente."
+        "PR 74: pesquisa Home → PLP → PDP preserva datas e hóspedes; alteração de datas na PLP verificada em produção. Matriz completa de filtros e dispositivos ainda pendente.",
+        "PR 80: paginação completa das cotações Guesty; ausência em resposta incompleta não implica indisponibilidade. Mesma pesquisa em produção passou de 29 para 37 casas disponíveis; Home coerente com PLP. Sete testes isolados novos."
       ],
       "blockers": [],
       "next_step": "Executar os critérios descritos no inventário."
@@ -573,6 +594,10 @@
     {
       "date": "2026-09-16",
       "event": "Incidente de produção: PR 74 restaurou descoberta e preços; PR 75 reforçou validação no servidor. Deploys confirmados live e entrada anónima no checkout verificada. A auditoria do incidente está guardada localmente, fora do repositório público."
+    },
+    {
+      "date": "2026-09-16",
+      "event": "PR 80/81 publicadas: disponibilidade e apresentação exata dos preços verificadas. PR 82 adiciona verificação automática no GitHub. O mapa passa a gerar o estado de publicação parcial a partir de tasks.json."
     }
   ]
 }

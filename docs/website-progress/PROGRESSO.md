@@ -11,12 +11,14 @@ Atualizado: 2026-09-16. Fonte editável: [tasks.json](tasks.json). Gerar este ma
 
 ## Estado
 
-- **36** — Por iniciar
+- **34** — Por iniciar
 - **2** — Em execução
 - **2** — Código em DEV; validação por fechar
 - **1** — Rascunho; validação por fechar
 - **1** — Aguarda decisão comercial
 - **4** — Parte validada localmente
+- **1** — Parte publicada; validação por fechar
+- **1** — Publicado em produção
 
 Não se atribui percentagem a uma tarefa só por existirem alterações de código. Cada ID conserva o critério de conclusão original.
 
@@ -28,7 +30,7 @@ Não se atribui percentagem a uma tarefa só por existirem alterações de códi
 | [WEB-04](#web-04) | P0 | Parte validada localmente | Validação: disponibilidade/preço alterado, cotação expirada, duplo clique, atualização da página, ligação lenta e retoma do carrinho. |
 | [WEB-05](#web-05) | P0 | Parte publicada; validação por fechar | Auditoria preventiva: restantes links de emails transacionais, pagamentos, cancelamento, confirmação e recuperação; proteger a separação entre ambientes nos lançamentos. A falha concreta de recuperação já foi corrigida. |
 | [WEB-06](#web-06) | P0 | Aguarda decisão comercial | Divergência comercial documentada: reconciliar serviços entre catálogo e checkout. Exemplos anteriores: chef €60/€95, babysitter €35/hora/€20 e yoga €80/sessão/€60. Podem representar prestações diferentes; não foi demonstrada cobrança indevida. |
-| [WEB-07](#web-07) | P0 | Por iniciar | Clareza de preços: resolver casos documentados de arredondamento da diária que não explicam o total, como €500 × 4 versus €2 002. |
+| [WEB-07](#web-07) | P0 | Publicado em produção | Clareza de preços: resolver casos documentados de arredondamento da diária que não explicam o total, como €500 × 4 versus €2 002. |
 | [WEB-08](#web-08) | P0 | Em execução | Lançamento pendente: preparar a promoção das melhorias DEV para produção por blocos verificáveis. |
 | [WEB-09](#web-09) | P0 | Código em DEV; validação por fechar | Código pronto em DEV: rever e publicar o consentimento que controla efetivamente as ferramentas; validar apresentação móvel. |
 | [WEB-10](#web-10) | P0 | Rascunho; validação por fechar | Rascunho GTM: validar as 39 alterações guardadas antes de publicar; concluir Tag Assistant/DebugView. |
@@ -86,6 +88,7 @@ Evidência:
 - [PR 73](https://github.com/ricardoviana-pa/b2cfinal/pull/73): primeira bancada isolada em DEV, 20 testes.
 - [PR 75](https://github.com/ricardoviana-pa/b2cfinal/pull/75), publicado em produção: 57 testes isolados; regressão 326 aprovados/6 ignorados; TypeScript e builds aprovados.
 - [Âmbito e limites da bancada](CHECKOUT_SANDBOX.md). Não equivale a uma compra completa com fornecedores sandbox.
+- PR 82: verificação automática de instalação limpa, integração isolada, regressão, tipos e build no GitHub; execução da PR aprovada em Linux. Sem credenciais operacionais.
 
 Etapas:
 
@@ -164,15 +167,15 @@ Etapas:
 
 Estado: Parte publicada; validação por fechar.
 
-Critério: Links operacionais sempre no domínio correto; verificações automáticas de configuração e regressão, confirmação de entrega e percurso completo.
+Critério: Links operacionais sempre no domínio correto; verificações automáticas de configuração e regressão. Confirmar também, pela operação, o desfecho do cliente afetado, ainda não documentado nesta tarefa.
+
+Próximo passo: Concluir gestão das credenciais e validação integrada com fornecedores sandbox. Entrega de correções por email depende da conta de envio correta.
 
 Evidência:
 
-- PR 69/70: origem canónica dos links e guarda do scheduler por ambiente.
-- [PR 77](https://github.com/ricardoviana-pa/b2cfinal/pull/77), em produção: lembretes apenas para a tentativa mais recente, com verificação de reservas sobrepostas no fornecedor; falhas de verificação adiam o envio. Suite completa: 338 aprovados, 6 ignorados; TypeScript e builds aprovados.
-- Origem dos links de confirmação, recuperação e disponibilidade revista no código. Acompanhamento operacional registado no dossier local do projeto, sem dados de clientes no repositório.
-
-Próximo passo: Concluir confirmação de entrega e testes integrados com fornecedores sandbox. A revisão de código e os testes simulados não substituem essa evidência.
+- PR 77: recuperação apenas para a última tentativa elegível, bloqueio de reservas já concluídas e verificação Guesty antes do lembrete; publicado em produção.
+- PR 78: origem canónica nos alertas internos; publicado em produção.
+- Desfecho do cliente afetado e tratamento dos destinatários documentados no dossier administrativo privado; sem dados pessoais neste repositório.
 
 ### WEB-06
 
@@ -201,11 +204,23 @@ Dependências:
 
 **Clareza de preços: resolver casos documentados de arredondamento da diária que não explicam o total, como €500 × 4 versus €2 002.**
 
-Estado: Por iniciar.
+Estado: Publicado em produção.
 
 Critério: Decomposição legível que reconcilia noites, extras, encargos e total cobrado, sem alterar valores comerciais por suposição.
 
-Próximo passo: Executar os critérios descritos no inventário.
+Próximo passo: Manter a regressão; a certificação integrada de pagamentos continua em WEB-02/WEB-03.
+
+Evidência:
+
+- PR 81: cêntimos preservados nas cotações, PLP, PDP, barra móvel, checkout, recibos e modelos de email; multiplicação por uma diária arredondada removida.
+- Treze testes novos em nove línguas; suite 358 aprovados/6 ignorados; TypeScript e build aprovados.
+- Browser local com dados sintéticos: troca de tarifa e resumo móvel a 390 px; totais e parcelas reconciliados. Produção: PLP e PDP apresentaram 2.888,87 €, discriminados em 2.541,60 € e 347,27 € na cotação observada.
+- Smoke do build publicado aprovado. Não houve pagamento real de teste.
+
+Etapas:
+
+- [x] Valores exatos no percurso de cotação e nos modelos de confirmação.
+- [x] Regressão isolada, apresentação móvel e publicação verificadas.
 
 ### WEB-08
 
@@ -305,6 +320,7 @@ Próximo passo: Executar os critérios descritos no inventário.
 Evidência:
 
 - PR 74: pesquisa Home → PLP → PDP preserva datas e hóspedes; alteração de datas na PLP verificada em produção. Matriz completa de filtros e dispositivos ainda pendente.
+- PR 80: paginação completa das cotações Guesty; ausência em resposta incompleta não implica indisponibilidade. Mesma pesquisa em produção passou de 29 para 37 casas disponíveis; Home coerente com PLP. Sete testes isolados novos.
 
 ### WEB-17
 
@@ -615,3 +631,4 @@ Próximo passo: Executar os critérios descritos no inventário.
 - 2026-09-16: Ricardo autorizou execução sistemática e acompanhamento de progresso. Criados 46 IDs estáveis; início pela fiabilidade da reserva.
 - 2026-09-16: Primeira etapa: 20 testes de integração sintética passam após reprodução de 8 falhas; regressão 367 passados/6 ignorados, TypeScript/build aprovados. Comparação dos 8 serviços preparada; decisão comercial pedida. Nenhuma compra/envio real.
 - 2026-09-16: Incidente de produção: PR 74 restaurou descoberta e preços; PR 75 reforçou validação no servidor. Deploys confirmados live e entrada anónima no checkout verificada. A auditoria do incidente está guardada localmente, fora do repositório público.
+- 2026-09-16: PR 80/81 publicadas: disponibilidade e apresentação exata dos preços verificadas. PR 82 adiciona verificação automática no GitHub. O mapa passa a gerar o estado de publicação parcial a partir de tasks.json.

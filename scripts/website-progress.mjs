@@ -7,6 +7,7 @@ const labels = {
   rascunho_validacao_pendente: 'Rascunho; validação por fechar',
   aguarda_decisao_comercial: 'Aguarda decisão comercial',
   parcial_validado_local: 'Parte validada localmente',
+  parcial_publicado: 'Parte publicada; validação por fechar',
   validado_local: 'Validado localmente; não publicado',
   publicado_dev: 'Publicado em DEV', publicado_producao: 'Publicado em produção',
   concluido: 'Concluído com evidência',
