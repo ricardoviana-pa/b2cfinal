@@ -14,6 +14,7 @@ O runner não carrega ficheiros `.env`, usa uma lista explícita de variáveis e
 
 - DEV, PR 73: 20 testes da primeira etapa.
 - Produção, PR 75: 57 testes isolados; suite completa de 326 testes aprovados e 6 testes antigos ignorados. TypeScript e builds cliente, SSR e servidor aprovados.
+- Produção, PR 77: suite completa de 338 testes aprovados e 6 ignorados; verificação adicional de elegibilidade dos lembretes.
 - A suite verifica cotação, tarifa selecionada, montantes, confirmação de pagamento, repetição de pedidos e contratos de cartão/PayPal/Klarna.
 - Verificação online após PR 75: entrada anónima no checkout com as mesmas datas, hóspedes, tarifa flexível e total da página da casa. Sem contacto, cobrança ou reserva confirmada.
 

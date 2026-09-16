@@ -26,7 +26,7 @@ Não se atribui percentagem a uma tarefa só por existirem alterações de códi
 | [WEB-02](#web-02) | P0 | Parte validada localmente | Validação: percorrer pesquisa → cotação → extras → dados do hóspede → pagamento → confirmação → reserva → email. |
 | [WEB-03](#web-03) | P0 | Parte validada localmente | Validação: cartão, autenticação adicional, Apple/Google Pay quando disponíveis, PayPal e Klarna; recusa, desistência, erro e regresso ao site. |
 | [WEB-04](#web-04) | P0 | Parte validada localmente | Validação: disponibilidade/preço alterado, cotação expirada, duplo clique, atualização da página, ligação lenta e retoma do carrinho. |
-| [WEB-05](#web-05) | P0 | Por iniciar | Auditoria preventiva: restantes links de emails transacionais, pagamentos, cancelamento, confirmação e recuperação; proteger a separação entre ambientes nos lançamentos. A falha concreta de recuperação já foi corrigida. |
+| [WEB-05](#web-05) | P0 | Parte publicada; validação por fechar | Auditoria preventiva: restantes links de emails transacionais, pagamentos, cancelamento, confirmação e recuperação; proteger a separação entre ambientes nos lançamentos. A falha concreta de recuperação já foi corrigida. |
 | [WEB-06](#web-06) | P0 | Aguarda decisão comercial | Divergência comercial documentada: reconciliar serviços entre catálogo e checkout. Exemplos anteriores: chef €60/€95, babysitter €35/hora/€20 e yoga €80/sessão/€60. Podem representar prestações diferentes; não foi demonstrada cobrança indevida. |
 | [WEB-07](#web-07) | P0 | Por iniciar | Clareza de preços: resolver casos documentados de arredondamento da diária que não explicam o total, como €500 × 4 versus €2 002. |
 | [WEB-08](#web-08) | P0 | Em execução | Lançamento pendente: preparar a promoção das melhorias DEV para produção por blocos verificáveis. |
@@ -162,11 +162,17 @@ Etapas:
 
 **Auditoria preventiva: restantes links de emails transacionais, pagamentos, cancelamento, confirmação e recuperação; proteger a separação entre ambientes nos lançamentos. A falha concreta de recuperação já foi corrigida.**
 
-Estado: Por iniciar.
+Estado: Parte publicada; validação por fechar.
 
-Critério: Links operacionais sempre no domínio correto; verificações automáticas de configuração e regressão. Confirmar também, pela operação, o desfecho do cliente afetado, ainda não documentado nesta tarefa.
+Critério: Links operacionais sempre no domínio correto; verificações automáticas de configuração e regressão, confirmação de entrega e percurso completo.
 
-Próximo passo: Executar os critérios descritos no inventário.
+Evidência:
+
+- PR 69/70: origem canónica dos links e guarda do scheduler por ambiente.
+- [PR 77](https://github.com/ricardoviana-pa/b2cfinal/pull/77), em produção: lembretes apenas para a tentativa mais recente, com verificação de reservas sobrepostas no fornecedor; falhas de verificação adiam o envio. Suite completa: 338 aprovados, 6 ignorados; TypeScript e builds aprovados.
+- Origem dos links de confirmação, recuperação e disponibilidade revista no código. Acompanhamento operacional registado no dossier local do projeto, sem dados de clientes no repositório.
+
+Próximo passo: Concluir confirmação de entrega e testes integrados com fornecedores sandbox. A revisão de código e os testes simulados não substituem essa evidência.
 
 ### WEB-06
 
