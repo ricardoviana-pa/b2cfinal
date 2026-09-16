@@ -2082,5 +2082,8 @@
     "faq2q": "Entä jos sää muuttuu?",
     "faq2a": "Suunnittele ulkoaktiviteeteille vaihtoehto sisätiloissa. Ohjelma ja mahdolliset säästä johtuvat muutokset sovitaan tarjouksessa.",
     "prefill": "Yritystapahtumakysely\nPäivämäärät tai toivottu kuukausi:\nOsallistujat ja yöpyjät:\nBudjetti:\nPäätavoite:"
+  },
+  "editorial": {
+    "addDates": "Lisää päivämäärät"
   }
 }

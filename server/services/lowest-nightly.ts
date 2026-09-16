@@ -33,6 +33,7 @@ const WARM_PER_REQUEST = 10; // how many never-computed listings to warm per PLP
 const NULL_TTL_MS = 30 * 60 * 1000; // retry no-value results (rate-limited / no availability) after 30 min, not 8h
 
 type Result = { from: number | null; source: "calendar" | "fallback" | "none"; currency: string };
+const IN_FLIGHT = new Map<string, Promise<Result>>();
 const CACHE = new Map<string, { value: number | null; source: Result["source"]; at: number }>();
 
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
@@ -75,7 +76,22 @@ const isFresh = (c: { value: number | null; source: Result["source"]; at: number
   Date.now() - c.at < (c.value !== null && c.source === "calendar" ? TTL_MS : NULL_TTL_MS);
 
 /** Lowest real nightly rate bookable in the next 90 days, cached. */
-export async function getLowestNightly(listingId: string, basePriceHint?: number): Promise<Result> {
+export function getLowestNightly(listingId: string, basePriceHint?: number): Promise<Result> {
+  const pending = IN_FLIGHT.get(listingId);
+  if (pending) return pending;
+  const job = computeLowestNightly(listingId, basePriceHint).finally(() => IN_FLIGHT.delete(listingId));
+  IN_FLIGHT.set(listingId, job);
+  return job;
+}
+
+/** PDP must not wait behind a whole calendar of background quote requests. */
+export async function getDisplayedLowestNightly(listingId: string): Promise<Result> {
+  const values = await getLowestNightlyBatch([listingId]);
+  const from = values[listingId] ?? null;
+  return { from, source: from === null ? "none" : "fallback", currency: "EUR" };
+}
+
+async function computeLowestNightly(listingId: string, basePriceHint?: number): Promise<Result> {
   const cached = CACHE.get(listingId);
   if (cached && isFresh(cached)) {
     return { from: cached.value, source: cached.source, currency: "EUR" };

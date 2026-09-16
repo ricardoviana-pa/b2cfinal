@@ -69,3 +69,21 @@ export function parseHomeFilters(params: URLSearchParams) {
     sort: pick('sort', ['recommended', 'price-asc', 'price-desc', 'newest'], 'recommended') as SortOption,
   };
 }
+
+/** Calendar-day arithmetic in UTC avoids DST and month-boundary surprises. */
+export function addSearchDays(iso: string, days: number): string {
+  const date = new Date(`${iso}T12:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+export function buildHomeSearchPath({ destination, checkin, checkout, guests }: {
+  destination: string; checkin: string; checkout: string; guests: number;
+}): string {
+  const params = new URLSearchParams();
+  if (destination) params.set('location', destination);
+  if (checkin) params.set('checkin', checkin);
+  if (checkout) params.set('checkout', checkout);
+  if (guests > 1) params.set('guests', String(guests));
+  return `/homes${params.size ? `?${params}` : ''}`;
+}

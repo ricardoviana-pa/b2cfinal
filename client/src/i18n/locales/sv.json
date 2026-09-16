@@ -2082,5 +2082,8 @@
     "faq2q": "Vad händer om vädret ändras?",
     "faq2a": "Planera ett inomhusalternativ för utomhusaktiviteter. Programmet och eventuella väderändringar avtalas i förslaget.",
     "prefill": "Förfrågan om företagsevenemang\nDatum eller önskad månad:\nDeltagare och övernattande gäster:\nBudgetintervall:\nHuvudsyfte:"
+  },
+  "editorial": {
+    "addDates": "Lägg till datum"
   }
 }

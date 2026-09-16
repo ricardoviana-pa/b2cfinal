@@ -675,10 +675,10 @@ export default function Homes() {
                   min={today}
                   aria-label={t('home.searchCheckin')}
                   value={bookingCheckin}
+                  onInput={e => { setBookingCheckin(e.currentTarget.value); if (bookingCheckout && bookingCheckout <= e.currentTarget.value) setBookingCheckout(''); }}
                   onChange={e => {
                     setBookingCheckin(e.target.value);
                     if (bookingCheckout && bookingCheckout <= e.target.value) setBookingCheckout('');
-                    setTimeout(() => checkOutRef.current?.showPicker?.(), 50);
                   }}
                   className="w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer"
 
@@ -695,6 +695,7 @@ export default function Homes() {
                   min={minCheckOut}
                   aria-label={t('home.searchCheckout')}
                   value={bookingCheckout}
+                  onInput={e => setBookingCheckout(e.currentTarget.value)}
                   onChange={e => setBookingCheckout(e.target.value)}
                   className="w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer"
 
@@ -766,11 +767,11 @@ export default function Homes() {
                     min={today}
                     aria-label={t('home.searchCheckin')}
                   value={bookingCheckin}
+                  onInput={e => { setBookingCheckin(e.currentTarget.value); if (bookingCheckout && bookingCheckout <= e.currentTarget.value) setBookingCheckout(''); }}
                     onChange={e => {
                       setBookingCheckin(e.target.value);
                       if (bookingCheckout && bookingCheckout <= e.target.value) setBookingCheckout('');
-                      setTimeout(() => checkOutRef.current?.showPicker?.(), 50);
-                    }}
+                      }}
                     className="w-full h-[48px] rounded-lg border border-pa-sand bg-white px-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer"
 
                   />
@@ -785,6 +786,7 @@ export default function Homes() {
                     min={minCheckOut}
                     aria-label={t('home.searchCheckout')}
                   value={bookingCheckout}
+                  onInput={e => setBookingCheckout(e.currentTarget.value)}
                     onChange={e => setBookingCheckout(e.target.value)}
                     className="w-full h-[48px] rounded-lg border border-pa-sand bg-white px-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer"
 

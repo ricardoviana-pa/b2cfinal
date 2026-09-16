@@ -2082,5 +2082,8 @@
     "faq2q": "Was passiert bei einem Wetterwechsel?",
     "faq2a": "Planen Sie für Aktivitäten im Freien eine Alternative im Innenbereich ein. Programm und wetterbedingte Änderungen werden im Angebot vereinbart.",
     "prefill": "Anfrage für ein Firmenevent\nTermine oder bevorzugter Monat:\nTeilnehmer und Übernachtungsgäste:\nBudgetrahmen:\nHauptziel:"
+  },
+  "editorial": {
+    "addDates": "Reisedaten wählen"
   }
 }

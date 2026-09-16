@@ -10,7 +10,7 @@ import {
 } from "../services/guesty-booking";
 import { guestyBEClient, type BEListingWithPrice } from "../lib/guesty";
 import { getSearchHint, type SearchHint } from "../services/search-hint";
-import { getLowestNightly, getLowestNightlyBatch } from "../services/lowest-nightly";
+import { getDisplayedLowestNightly, getLowestNightlyBatch } from "../services/lowest-nightly";
 import * as db from "../db";
 import { sendBookingConfirmation, sendBookingFailureAlert } from "../services/transactional-email";
 
@@ -186,7 +186,7 @@ export const bookingRouter = router({
       tripwixUid: z.string().optional(),
     }))
     .query(async ({ input, ctx }) => {
-      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=28800, stale-while-revalidate=3600");
+      ctx.res.setHeader("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=300");
 
       if (input.tripwixUid) {
         const { getTripwixLowestNightly } = await import("../services/tripwix");
@@ -202,7 +202,7 @@ export const bookingRouter = router({
         };
       }
 
-      return getLowestNightly(input.listingId, input.basePrice);
+      return getDisplayedLowestNightly(input.listingId);
     }),
 
   /**
