@@ -902,6 +902,17 @@ export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent
   }
 }
 
+export async function listIntentsForRecoveryStay(intent: BookingIntent): Promise<BookingIntent[]> {
+  const db = await getDb();
+  if (!db || !intent.email) return [];
+  return db.select().from(bookingIntents).where(and(
+    sql`lower(trim(${bookingIntents.email})) = ${intent.email.trim().toLowerCase()}`,
+    eq(bookingIntents.listingId, intent.listingId),
+    eq(bookingIntents.checkIn, intent.checkIn),
+    eq(bookingIntents.checkOut, intent.checkOut),
+  ));
+}
+
 /**
  * Bloco 2: marca o opt-out dos lembretes de recuperação. Idempotente — marcar
  * duas vezes é um no-op. Devolve false só quando a DB está indisponível ou o
@@ -944,7 +955,13 @@ export async function claimRecoveryStage(
     const res: any = await db
       .update(bookingIntents)
       .set({ recoveryStage: toStage })
-      .where(and(eq(bookingIntents.id, id), eq(bookingIntents.recoveryStage, fromStage)));
+      .where(and(
+        eq(bookingIntents.id, id), eq(bookingIntents.recoveryStage, fromStage),
+        inArray(bookingIntents.status, ['draft', 'contact_captured', 'payment_pending']),
+        eq(bookingIntents.recoveryOptout, false),
+        gt(bookingIntents.expiresAt, new Date()),
+        sql`${bookingIntents.reservationId} IS NULL`,
+      ));
     const affected = Array.isArray(res) ? res[0]?.affectedRows : res?.affectedRows;
     return (affected ?? 0) > 0;
   } catch (error) {
