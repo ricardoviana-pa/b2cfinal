@@ -6,6 +6,7 @@
 import { Resend } from "resend";
 import { getEmailSigner } from "@shared/concierges";
 import { sanitizePropertyName } from "@shared/displayName";
+import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
 import {
   emailLang,
   skuNameFor,
@@ -284,7 +285,7 @@ export async function sendBookingFailureAlert(data: BookingFailureAlertData): Pr
 
 <tr><td style="padding:0 0 10px 0;">
   <p style="font-family:Arial,sans-serif;font-size:11px;color:#9E9A90;margin:0;">
-    Timestamp: ${data.timestamp} | Alert sent automatically by dev.portugalactive.com
+    Timestamp: ${data.timestamp} | Alert sent automatically by ${CHECKOUT_EMAIL_ORIGIN}
   </p>
 </td></tr>`);
 
