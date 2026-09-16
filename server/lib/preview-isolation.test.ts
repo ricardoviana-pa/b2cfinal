@@ -1,3 +1,4 @@
+import helmet from "helmet";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { assertPreviewIsolation, FORBIDDEN_PREVIEW_KEYS, isPreviewDeployment, blockPreviewWrites, PREVIEW_CSP } from "./preview-isolation";
 import { publicProcedure, router } from "../_core/trpc";
@@ -54,6 +55,7 @@ describe("preview deployment boundary", () => {
     expect(network).not.toHaveBeenCalled();
   });
   it("blocks operational browser connections and third-party payment frames", () => {
+    expect(() => helmet({ contentSecurityPolicy: PREVIEW_CSP })).not.toThrow();
     expect(PREVIEW_CSP.directives["connect-src"]).toEqual(["'self'"]);
     expect(PREVIEW_CSP.directives["frame-src"]).toEqual(["'none'"]);
     expect(PREVIEW_CSP.directives["form-action"]).toEqual(["'self'"]);

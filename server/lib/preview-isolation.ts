@@ -42,6 +42,11 @@ export const blockPreviewWrites: RequestHandler = (req, res, next) => {
 export const PREVIEW_CSP = {
   useDefaults: false,
   directives: {
+    "default-src": ["'self'"],
+    "img-src": ["'self'", "https:", "data:", "blob:"],
+    "style-src": ["'self'", "'unsafe-inline'", "https:"],
+    "font-src": ["'self'", "https:", "data:"],
+    "media-src": ["'self'", "https:", "blob:"],
     "script-src": ["'self'", "'unsafe-inline'"],
     "connect-src": ["'self'"],
     "frame-src": ["'none'"],
