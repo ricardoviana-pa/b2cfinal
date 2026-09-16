@@ -1046,38 +1046,57 @@ export const guestyBEClient = {
   },
 
   /**
-   * PLP pricing: single API call returns ALL available listings with accurate totalPrice.
+   * Search pricing across the supplier's complete result set, not the number
+   * of cards on the requesting page. Missing listings prove unavailability
+   * only when pagination is complete.
    * GET /api/listings?checkIn=...&checkOut=...&fields=totalPrice _id title accommodates prices
    *
    * Key behavior (from Guesty docs):
    * - totalPrice = base rate + cleaning + service fees + taxes + all mandatory charges
    * - Internally invokes reservation quote for each rate plan, returns minimum
    * - Only AVAILABLE listings for the given dates are returned
-   * - Max 50 results per request (no cursor pagination for totalPrice queries)
-   * - Prices guaranteed for 24h after quote creation
-   *
-   * Rate limits: 5/sec, 275/min, 16500/hr — this is a SINGLE call, well within limits.
+   * - Max 50 results per page; follow pagination.cursor.next when supplied.
    */
   async getListingsWithPricing(input: {
     checkIn: string;
     checkOut: string;
     minOccupancy?: number;
-    limit?: number;
   }): Promise<BEListingsResponse> {
     const fields = "totalPrice _id title accommodates prices address reviews picture";
-    const result = await this.request<any>("GET", "/api/listings", {
-      query: {
-        checkIn: input.checkIn,
-        checkOut: input.checkOut,
-        fields,
-        limit: input.limit ?? 50,
-        ...(input.minOccupancy ? { minOccupancy: input.minOccupancy } : {}),
-      },
-    });
-    // Normalize response shape
-    const results = Array.isArray(result?.results) ? result.results : (Array.isArray(result) ? result : []);
-    const pagination = result?.pagination ?? { total: results.length, cursor: { next: null } };
-    return { results, pagination };
+    const byId = new Map<string, BEListingWithPrice>();
+    const seenCursors = new Set<string>();
+    let cursor: string | undefined;
+    let total: number | undefined;
+    for (let page = 0; page < 10; page++) {
+      const result = await this.request<any>("GET", "/api/listings", {
+        query: {
+          checkIn: input.checkIn, checkOut: input.checkOut, fields, limit: 50,
+          ...(input.minOccupancy ? { minOccupancy: input.minOccupancy } : {}),
+          ...(cursor ? { cursor } : {}),
+        },
+      });
+      const rows = Array.isArray(result?.results) ? result.results : (Array.isArray(result) ? result : null);
+      if (!rows || rows.some((row: any) => typeof row?._id !== 'string' || !row._id)) {
+        throw new Error('Invalid Guesty pricing search response');
+      }
+      for (const row of rows) byId.set(row._id, row);
+      if (Number.isFinite(result?.pagination?.total)) total = result.pagination.total;
+      const next = result?.pagination?.cursor?.next;
+      if (typeof next === 'string' && next) {
+        if (seenCursors.has(next)) break;
+        seenCursors.add(next);
+        cursor = next;
+        continue;
+      }
+      // A full legacy page without a cursor may be truncated. Do not turn
+      // an unknown listing into a false "unavailable" card.
+      const complete = total !== undefined
+        ? byId.size >= total
+        : next === null || rows.length < 50;
+      return { results: [...byId.values()], pagination: { total: total ?? byId.size, cursor: { next: null } }, complete };
+    }
+    console.warn('[PLP] Supplier pricing pagination incomplete; absent listings remain unconfirmed');
+    return { results: [...byId.values()], pagination: { total: total ?? byId.size, cursor: { next: cursor ?? null } }, complete: false };
   },
 
   /**
@@ -1118,6 +1137,7 @@ export interface BEListingWithPrice {
 export interface BEListingsResponse {
   results: BEListingWithPrice[];
   pagination: { total: number; cursor: { next: string | null } };
+  complete: boolean;
 }
 
 export function isGuestyConfigured(): boolean {
