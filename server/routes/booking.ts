@@ -551,6 +551,7 @@ export function registerBookingRoutes(app: Express): void {
             : reservation?.money?.total !== undefined
               ? Math.round(Number(reservation.money.total || 0) * 100)
               : null,
+        accommodationCents: fareAccommodationCents,
         nightlyRateCents,
         nights,
         cleaningFeeCents,

@@ -8,7 +8,7 @@ import { useState, useCallback, useRef, useMemo } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Gem, Star, PawPrint } from 'lucide-react';
-import { formatEur, formatCurrency, intlLocale, getDisplayName } from '@/lib/format';
+import { formatEur, formatQuotedEur, getDisplayName } from '@/lib/format';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
 import destinationsData from '@/data/destinations.json';
@@ -69,9 +69,7 @@ export default function PropertyCard({
   const hasPartnerPrice = isPartner && (nights > 0
     ? !!liveQuote && liveQuote.available !== false && liveQuote.total > 0
     : typeof fromPrice === 'number' && fromPrice > 0);
-  const formatTotal = (amount: number) => isPartner
-    ? formatCurrency(amount, { locale: intlLocale(i18n.language) })
-    : formatEur(amount, i18n.language);
+  const formatTotal = (amount: number) => formatQuotedEur(amount, i18n.language);
   // Multi-unit treatment: when this listing is the parent of a curated group,
   // the card swaps name → group name, hides specs/price, and shows a
   // "X units available" line. The PDP route is unchanged — clicking opens the
