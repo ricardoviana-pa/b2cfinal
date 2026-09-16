@@ -875,11 +875,8 @@ export default function CheckoutPage() {
         couponCode: quote?.couponCode || undefined,
         purchaseItems,
       });
-      syncIntent({
-        status: "paid",
-        reservationId: reservationId || undefined,
-        confirmationCode,
-      });
+      // The server records payment and reservation confirmation after settlement.
+      void utils.checkout.getIntent.invalidate({ intentId: intent.id });
       navigate(`/booking/thank-you/${rid}?method=card`);
     },
     [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, todayTotal, quote?.couponCode, purchaseItems, syncIntent, navigate],

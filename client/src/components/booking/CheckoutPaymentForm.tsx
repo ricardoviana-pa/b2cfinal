@@ -329,7 +329,12 @@ function PaymentFormInner({
     // finalize cria a reserva Guesty só com a estadia. Legacy segue em baixo.
     if (intentId) {
       try {
-        const { clientSecret, paymentIntentId } = await createCardCharge.mutateAsync({ intentId });
+        const { clientSecret, paymentIntentId, alreadyPaid } = await createCardCharge.mutateAsync({ intentId });
+        if (alreadyPaid) {
+          const fin = await finalizeCardCharge.mutateAsync({ intentId, paymentIntentId });
+          onSuccess(fin.confirmationCode, fin.reservationId);
+          return;
+        }
         if (!clientSecret) throw new Error("createCardCharge returned no clientSecret");
         const { error: confirmErr, paymentIntent } = await stripe.confirmPayment({
           elements,
