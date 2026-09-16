@@ -36,7 +36,7 @@ import { formatEur, formatBookingDate, intlLocale, sanitizePropertyName } from "
 import { cancellationPolicyText, freeCancellationDeadline } from "@/lib/cancellation";
 import { IMAGES, optimizeGuestyImage } from "@/lib/images";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
-import { pushDL, pushEcommerce } from "@/lib/datalayer";
+import { pushDL, pushEcommerce, buildPropertyItem } from "@/lib/datalayer";
 import { stashThankYou } from "@/lib/booking-api";
 import AvailabilityCalendar, { type AvailabilityDay } from "@/components/booking/AvailabilityCalendar";
 import CustomizeStep, {
@@ -1727,6 +1727,11 @@ export default function CheckoutPage() {
                     intentId={intent.id}
                     couponCode={quote?.couponCode || undefined}
                     purchaseItems={purchaseItems}
+                    paymentItems={[buildPropertyItem({
+                      id: intent.listingId, name: intent.propertyName || displayName,
+                      destination: intent.destination || undefined,
+                      priceFrom: effective.nightlyRate,
+                    }, { nights: quote?.nights, checkinDate: checkIn, checkoutDate: checkOut, guests }), ...purchaseItems]}
                     onSuccess={handleCardSuccess}
                     onCancel={() => setStep("stay")}
                   />
