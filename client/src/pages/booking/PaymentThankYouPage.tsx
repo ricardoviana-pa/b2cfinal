@@ -71,6 +71,7 @@ export default function PaymentThankYouPage() {
   usePageMeta({
     title: t("paymentThankYou.pageTitle"),
     description: t("paymentThankYou.pageDescription"),
+    noindex: true,
   });
 
   const { id } = useParams<{ id: string }>();
@@ -116,7 +117,8 @@ export default function PaymentThankYouPage() {
   // Report purchase once per transaction — pushPurchaseOnce persists the guard
   // in localStorage, so refreshes and the earlier return-page push can't double-fire.
   useEffect(() => {
-    if (!data || purchaseFiredRef.current) return;
+    // Reopening an email receipt on another device is not a new purchase.
+    if (!data || !stash || purchaseFiredRef.current) return;
     purchaseFiredRef.current = true;
     pushPurchaseOnce(data.confirmationCode, {
       event: "purchase",
@@ -194,6 +196,9 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
   )}&body=${encodeURIComponent(body)}`;
 
   const hasBreakdown = data.accommodationCents != null && data.nights != null;
+  const totalPaidCents = data.totalPaidCents !== undefined ? data.totalPaidCents : data.totalCents;
+  const fullyPaid = totalPaidCents > 0 &&
+    (data.totalPaidCents === undefined || (data.totalCents != null && totalPaidCents >= data.totalCents));
 
   return (
     <div className="mx-auto max-w-[420px] lg:max-w-[1080px]">
@@ -302,7 +307,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                     {t("paymentThankYou.totalPaid", { defaultValue: "Total paid" })}
                   </span>
                   <span className="text-[19px] font-medium tabular-nums text-pa-dark">
-                    {formatEurCents(data.totalCents, lang)}
+                    {formatEurCents(totalPaidCents, lang, t("bookingConfirmation.toConfirm"))}
                   </span>
                 </div>
                 {data.cancellationPolicy?.length ? (
@@ -314,6 +319,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
               </div>
 
               {/* Paid row */}
+              {fullyPaid ? (
               <div className="mt-[22px] flex items-center gap-3 rounded-lg border border-pa-sand px-4 py-3.5">
                 <div className="flex w-[46px] shrink-0 items-center justify-center">
                   {method === "klarna" ? <KlarnaLogo /> : method === "card" ? <CardLogo /> : <PayPalLogo />}
@@ -335,9 +341,10 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                   </div>
                 </div>
                 <div className="whitespace-nowrap text-[14.5px] font-medium tabular-nums text-pa-dark">
-                  {formatEurCents(data.totalCents, lang)}
+                  {formatEurCents(totalPaidCents, lang)}
                 </div>
               </div>
+              ) : null}
             </div>
 
             {/* CTA — full width beneath both columns */}

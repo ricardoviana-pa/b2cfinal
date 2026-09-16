@@ -88,10 +88,13 @@ export async function cancelPaymentIntent(paymentIntentId: string): Promise<void
  * Retrieve an existing PaymentIntent by its ID.
  */
 export async function getPaymentIntent(
-  paymentIntentId: string
+  paymentIntentId: string,
+  options?: Stripe.RequestOptions,
 ): Promise<Stripe.PaymentIntent> {
   const stripe = getStripe();
-  return stripe.paymentIntents.retrieve(paymentIntentId);
+  return options
+    ? stripe.paymentIntents.retrieve(paymentIntentId, {}, options)
+    : stripe.paymentIntents.retrieve(paymentIntentId);
 }
 
 /**
