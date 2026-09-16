@@ -20,6 +20,7 @@
    ========================================================================== */
 import { useEffect, useState } from 'react';
 import { deepMerge, baseLang } from './deepMerge';
+import { loadBlogOverrides } from './localizeBlog';
 
 export { deepMerge } from './deepMerge';
 export { localizeItem, localizeProduct, localizeService } from './localizeProduct';
@@ -103,7 +104,6 @@ export async function preloadContentOverrides(lang: string | undefined, pathWith
   const code = baseLang(lang);
   if (code === 'en' || !(LANGS as readonly string[]).includes(code)) return;
   if (pathWithoutLocale === '/blog' || pathWithoutLocale.startsWith('/blog/')) {
-    const { loadBlogOverrides } = await import('./localizeBlog');
     await loadBlogOverrides(code);
   }
   await Promise.all(contentKindsForPath(pathWithoutLocale).map((k) => loadContentOverrides(k, code)));
