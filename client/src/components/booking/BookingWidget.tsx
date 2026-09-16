@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect, useMemo, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
+import { useMeasurementConsent } from "@/hooks/useMeasurementConsent";
 import { useLocation } from "wouter";
 import i18n from "@/i18n";
 import { trpc } from "@/lib/trpc";
@@ -333,6 +334,8 @@ export default function BookingWidget({
   onSelectionChange,
 }: BookingWidgetProps) {
   const { t, i18n: i18nActive } = useTranslation();
+  const measurementAllowed = useMeasurementConsent();
+  const reportedQuoteRef = useRef<string | null>(null);
   const lang = i18nActive.language;
   const [checkIn, setCheckIn] = useState(initialCheckIn);
   const [checkOut, setCheckOut] = useState(initialCheckOut);
@@ -438,6 +441,29 @@ export default function BookingWidget({
     );
   }, [quote, effectiveQuote]);
 
+  // Report the price actually on screen, including a first consent given after
+  // the quote arrived. No historical clicks or hidden/stale quotes are replayed.
+  useEffect(() => {
+    if (!measurementAllowed || loading || step !== "quote" || !hasLivePrice || !effectiveQuote?.quoteId) return;
+    const quoteKey = `${guestyId}|${checkIn}|${checkOut}|${guests}|${canPayOnSite ? 1 : 0}`;
+    if (lastQuoteKeyRef.current !== quoteKey || reportedQuoteRef.current === effectiveQuote.quoteId) return;
+    reportedQuoteRef.current = effectiveQuote.quoteId;
+    pushEcommerce({
+      event: "quote_viewed",
+      property_id: guestyId,
+      ecommerce: {
+        currency: "EUR",
+        value: effectiveQuote.total,
+        items: [{
+          item_id: `PROP-${guestyId}`, item_name: propertyName,
+          item_category: "villa", item_variant: destination || "",
+          price: effectiveQuote.nightlyRate, quantity: effectiveQuote.nights,
+          checkin_date: checkIn, checkout_date: checkOut, guests_adults: guests,
+        }],
+      },
+    });
+  }, [measurementAllowed, loading, step, hasLivePrice, effectiveQuote, guestyId, checkIn, checkOut, guests, canPayOnSite, propertyName, destination]);
+
   useEffect(() => {
     onSelectionChange?.({ checkIn, checkOut, guests, loading, total: hasLivePrice && !loading ? effectiveQuote!.total : null });
   }, [checkIn, checkOut, guests, loading, hasLivePrice, effectiveQuote?.total, onSelectionChange]);
@@ -532,30 +558,7 @@ export default function BookingWidget({
       const defaultPlan = shownPlans.find(o => o.ratePlanId === backendDefault) || shownPlans[0];
       setSelectedRatePlanId(defaultPlan ? defaultPlan.ratePlanId : null);
 
-      // GA4: quote_viewed — a live, bookable price was shown for these dates
-      if (beQuoteId && (quoteData.source === "live" || quoteData.source === "cached")) {
-        pushEcommerce({
-          event: "quote_viewed",
-          property_id: guestyId,
-          ecommerce: {
-            currency: "EUR",
-            value: effectiveTotal,
-            items: [
-              {
-                item_id: `PROP-${guestyId}`,
-                item_name: propertyName,
-                item_category: "villa",
-                item_variant: destination || "",
-                price: effectiveNightly,
-                quantity: d.nights,
-                checkin_date: checkIn,
-                checkout_date: checkOut,
-                guests_adults: guests,
-              },
-            ],
-          },
-        });
-      } else {
+      if (!beQuoteId || (quoteData.source !== "live" && quoteData.source !== "cached")) {
         // Price exists but no bookable BE quote — the UI shows the
         // "contact concierge" state, so the funnel must record it too.
         pushDL({

@@ -1,6 +1,9 @@
 # Tracking de marketing — funil do checkout 2.0
 
 Estado: implementado no código (dataLayer) a 11 jul 2026. Container GTM: **GTM-TRPCDT3**.
+Atualização de 16/09/2026: os eventos dependem agora da autorização de medição;
+ver [comportamento e validação](measurement-consent.md). Esta tabela é um contrato
+de instrumentação, não prova que todas as tags ou receções estejam configuradas.
 Todos os eventos são empurrados para o `window.dataLayer` através dos helpers de
 `client/src/lib/datalayer.ts` (`pushDL`, `pushEcommerce`, `pushPurchaseOnce`). Os eventos
 de ecommerce limpam sempre o objeto `ecommerce` anterior antes do push (padrão GA4).

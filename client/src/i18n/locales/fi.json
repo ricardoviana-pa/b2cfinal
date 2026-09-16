@@ -548,7 +548,7 @@
   },
   "cookieBanner": {
     "title": "EVÄSTEASETUKSET",
-    "description": "Käytämme evästeitä käyttäjäkokemuksesi parantamiseen ja sivuston käytön analysointiin. Yksityisyytesi on meille tärkeä. Voit mukauttaa asetuksiasi alla.",
+    "description": "Välttämättömät evästeet mahdollistavat sivuston käytön ja varaamisen. Luvallasi käytämme myös analytiikka- ja mainosevästeitä.",
     "essential": "Välttämättömät evästeet",
     "essentialDesc": "Vaaditaan sivuston perustoiminnalle ja turvallisuudelle. Niitä ei voi poistaa käytöstä.",
     "analytics": "Analytiikkaevästeet",
@@ -558,7 +558,9 @@
     "acceptAll": "HYVÄKSY KAIKKI",
     "essentialOnly": "VAIN VÄLTTÄMÄTTÖMÄT",
     "message": "Käytämme evästeitä kokemuksesi parantamiseen. Jatkamalla hyväksyt meidän",
-    "accept": "Hyväksy"
+    "accept": "Hyväksy",
+    "managePreferences": "Evästeasetukset",
+    "reloadNotice": "Jos valitset vain välttämättömät evästeet, sivu ladataan uudelleen valinnaisen seurannan lopettamiseksi. Tallenna keskeneräiset lomakkeet ennen muutosta."
   },
   "home": {
     "loading": "Ladataan Portugal Activea",
@@ -1142,13 +1144,13 @@
     "essentialTitle": "Välttämättömät evästeet",
     "essentialBody": "Nämä evästeet ovat välttämättömiä verkkosivuston asianmukaiselle toiminnalle. Ne mahdollistavat perustoiminnot kuten sivunavigoinnin, pääsyn suojatuille alueille ja ohjelmatoiminnallisuuden. Verkkosivusto ei voi toimia kunnolla ilman näitä evästeitä.",
     "analyticsTitle": "Analytiikkaevästeet",
-    "analyticsBody": "Käytämme analytiikkaevästeitä ymmärtääksemme, miten kävijät käyttävät verkkosivustoamme. Tämä auttaa meitä parantamaan sivustomme rakennetta, sisältöä ja käyttäjäkokemusta. Kaikki kerätty tieto on anonyymiä ja koostettua.",
+    "analyticsBody": "Luvallasi Google Analytics ja Microsoft Clarity auttavat meitä ymmärtämään sivuston käyttöä. Nämä työkalut voivat käsitellä verkkotunnisteita ja vuorovaikutuksia; tiedot eivät välttämättä ole anonyymejä.",
     "functionalTitle": "Toiminnalliset evästeet",
     "functionalBody": "Nämä evästeet mahdollistavat verkkosivuston muistamaan tekemäsi valinnat (kuten kieliasetuksesi tai alueesi) ja tarjoamaan parannettuja, henkilökohtaisia ominaisuuksia. Niitä voidaan myös käyttää muistamaan tekemäsi muutokset tekstikokoon, fontteihin ja muihin muokattaviin elementteihin.",
     "marketingTitle": "Markkinointievästeet",
     "marketingBody": "Saatamme käyttää markkinointievästeitä toimittaaksemme sinulle merkityksellisiä mainoksia. Nämä evästeet seuraavat selailutottumuksiasi ja auttavat meitä näyttämään sinulle sisältöä ja tarjouksia, jotka vastaavat kiinnostuksenkohteitasi. Käytämme näitä vain nimenomaisella suostumuksellasi.",
     "managingTitle": "Evästeiden hallinta",
-    "managingBody": "Voit hallita evästeitä selaimesi asetuksista. Useimmat selaimet mahdollistavat evästeiden kieltämisen tai hyväksymisen, olemassa olevien evästeiden poistamisen ja asetusten määrittämisen tietyille verkkosivustoille. Huomaa, että evästeiden poistaminen käytöstä voi vaikuttaa verkkosivustomme toiminnallisuuteen.",
+    "managingBody": "Voit muuttaa valintaasi milloin tahansa sivun alareunan Evästeasetuksista. Valinnainen mittaus alkaa vasta, kun hyväksyt kaikki evästeet. Suostumuksen peruuttaminen lataa nykyisen sivun uudelleen.",
     "thirdPartyTitle": "Kolmansien osapuolten evästeet",
     "thirdPartyBody": "Joitakin evästeitä verkkosivustollamme asettavat sivuillamme näkyvät kolmansien osapuolten palvelut. Näihin kuuluvat analytiikkapalveluntarjoajat ja sosiaalisen median alustat. Emme hallitse näitä evästeitä ja suosittelemme tutustumaan kyseisten kolmansien osapuolten tietosuojakäytäntöihin.",
     "updatesTitle": "Tämän käytännön päivitykset",

@@ -548,7 +548,7 @@
   },
   "cookieBanner": {
     "title": "COOKIE PREFERENCES",
-    "description": "We use cookies to improve your experience and analyze site usage. Your privacy is important to us. You can customize your preferences below.",
+    "description": "Essential cookies keep the site and booking working. With your permission, we also use analytics and advertising cookies.",
     "essential": "Essential Cookies",
     "essentialDesc": "Required for basic site functionality and security. Cannot be disabled.",
     "analytics": "Analytics Cookies",
@@ -558,7 +558,9 @@
     "acceptAll": "ACCEPT ALL",
     "essentialOnly": "ESSENTIAL ONLY",
     "message": "We use cookies to improve your experience. By continuing, you agree to our",
-    "accept": "Accept"
+    "accept": "Accept",
+    "managePreferences": "Cookie settings",
+    "reloadNotice": "Choosing essential cookies reloads this page to stop optional tracking. Save any unfinished form before changing this setting."
   },
   "home": {
     "loading": "Loading Portugal Active",
@@ -1388,13 +1390,13 @@
     "essentialTitle": "Essential cookies",
     "essentialBody": "These cookies are necessary for the website to function properly. They enable basic features like page navigation, access to secure areas, and itinerary functionality. The website cannot function properly without these cookies.",
     "analyticsTitle": "Analytics cookies",
-    "analyticsBody": "We use analytics cookies to understand how visitors interact with our website. This helps us improve our site's structure, content, and user experience. All data collected is anonymous and aggregated.",
+    "analyticsBody": "With your permission, Google Analytics and Microsoft Clarity help us understand how the site is used. These tools can process online identifiers and interactions; data is not necessarily anonymous.",
     "functionalTitle": "Functional cookies",
     "functionalBody": "These cookies allow the website to remember choices you make (such as your preferred language or region) and provide enhanced, personalised features. They may also be used to remember changes you have made to text size, fonts, and other customisable elements.",
     "marketingTitle": "Marketing cookies",
     "marketingBody": "We may use marketing cookies to deliver advertisements that are relevant to you. These cookies track your browsing habits and help us show you content and offers that match your interests. We only use these with your explicit consent.",
     "managingTitle": "Managing cookies",
-    "managingBody": "You can control and manage cookies through your browser settings. Most browsers allow you to refuse or accept cookies, delete existing cookies, and set preferences for certain websites. Please note that disabling cookies may affect the functionality of our website.",
+    "managingBody": "You can change your choice at any time using Cookie settings in the footer. Optional measurement starts only after you accept all cookies. Withdrawing consent reloads the current page.",
     "thirdPartyTitle": "Third-party cookies",
     "thirdPartyBody": "Some cookies on our website are set by third-party services that appear on our pages. These include analytics providers and social media platforms. We do not control these cookies and recommend reviewing the respective third-party privacy policies.",
     "updatesTitle": "Updates to this policy",

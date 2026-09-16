@@ -1,25 +1,37 @@
 /* ==========================================================================
-   COOKIE BANNER — Minimal, premium GDPR-compliant consent
+   COOKIE BANNER — Optional measurement preferences
    Compact bottom bar matching Portugal Active design language
    ========================================================================== */
 
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
-
-const COOKIE_KEY = 'pa-cookies-consent';
+import { COOKIE_CHOICE_EVENT, COOKIE_PREFERENCES_EVENT, consumeCookiePreferencesRequest, getCookieChoice, saveCookieChoice, willReloadForEssential } from '@/lib/measurementConsent';
 
 export default function CookieBanner() {
   const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
+  const [reloadNotice, setReloadNotice] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const consent = localStorage.getItem(COOKIE_KEY);
-    if (!consent) {
-      const timer = setTimeout(() => setVisible(true), 2000);
-      return () => clearTimeout(timer);
-    }
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const open = () => {
+      clearTimeout(timer);
+      consumeCookiePreferencesRequest();
+      setReloadNotice(willReloadForEssential() || getCookieChoice() === 'all');
+      setVisible(true);
+    };
+    const sync = () => { clearTimeout(timer); setVisible(!getCookieChoice()); };
+    window.addEventListener(COOKIE_PREFERENCES_EVENT, open);
+    window.addEventListener(COOKIE_CHOICE_EVENT, sync);
+    if (consumeCookiePreferencesRequest()) open();
+    else if (!getCookieChoice()) timer = setTimeout(open, 2000);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener(COOKIE_PREFERENCES_EVENT, open);
+      window.removeEventListener(COOKIE_CHOICE_EVENT, sync);
+    };
   }, []);
 
   // Publish the banner's real height as --cookie-banner-h so fixed/bottom UI
@@ -43,12 +55,12 @@ export default function CookieBanner() {
   }, [visible]);
 
   const handleAcceptAll = () => {
-    localStorage.setItem(COOKIE_KEY, 'all');
+    saveCookieChoice('all');
     setVisible(false);
   };
 
   const handleEssentialOnly = () => {
-    localStorage.setItem(COOKIE_KEY, 'essential');
+    saveCookieChoice('essential');
     setVisible(false);
   };
 
@@ -57,6 +69,8 @@ export default function CookieBanner() {
   return (
     <div
       ref={wrapperRef}
+      role="region"
+      aria-label={t('cookieBanner.title')}
       className="fixed bottom-0 left-0 right-0 z-[60]"
       style={{
         animation: 'cookieSlideUp 0.5s cubic-bezier(0.16,1,0.3,1)',
@@ -86,6 +100,7 @@ export default function CookieBanner() {
                   {t('cookieBanner.policyLink')}
                 </Link>
               </p>
+              {reloadNotice && <p className="mt-2 text-xs text-[#C9C3B8]">{t('cookieBanner.reloadNotice')}</p>}
             </div>
 
             {/* Buttons — inline */}

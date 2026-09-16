@@ -5,11 +5,7 @@
    - ecommerce object is always cleared before each ecommerce event
    ========================================================================== */
 
-declare global {
-  interface Window {
-    dataLayer: Record<string, unknown>[];
-  }
-}
+import { hasMeasurementConsent } from './measurementConsent';
 
 /** Map service slug → GA4 item_category2 and ADDON ID prefix */
 export const ADDON_PREFIX: Record<string, string> = {
@@ -25,12 +21,14 @@ export const ADDON_PREFIX: Record<string, string> = {
 
 /** Push any event to the dataLayer */
 export function pushDL(event: Record<string, unknown>): void {
+  if (!hasMeasurementConsent()) return;
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push(event);
 }
 
 /** Push an ecommerce event — automatically clears the previous ecommerce object first */
 export function pushEcommerce(event: Record<string, unknown>): void {
+  if (!hasMeasurementConsent()) return;
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ ecommerce: null });
   window.dataLayer.push(event);
@@ -47,6 +45,9 @@ export function pushPurchaseOnce(
   transactionId: string | null | undefined,
   event: Record<string, unknown>,
 ): void {
+  // A declined/unset choice must neither queue a later replay nor mark a
+  // purchase as reported. Operational booking data is independent of this guard.
+  if (!hasMeasurementConsent()) return;
   if (transactionId) {
     const key = `dl_purchase_${transactionId}`;
     try {
@@ -93,9 +94,10 @@ const AI_REFERRER_PATTERNS: [RegExp, string][] = [
   [/google\.\w+\/search.*?ai_overview/i, 'google_ai_overview'],
 ];
 
-export function detectAiReferrer(): void {
+export function detectAiReferrer(landingLocation = { pathname: window.location.pathname, search: window.location.search }): void {
+  if (!hasMeasurementConsent()) return;
   const ref = document.referrer || '';
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(landingLocation.search);
   const utmSource = (params.get('utm_source') || '').toLowerCase();
   const utmMedium = (params.get('utm_medium') || '').toLowerCase();
 
@@ -119,7 +121,7 @@ export function detectAiReferrer(): void {
       event: 'ai_referral',
       ai_source: source,
       ai_referrer: ref,
-      ai_landing_page: window.location.pathname,
+      ai_landing_page: landingLocation.pathname,
     });
   }
 }

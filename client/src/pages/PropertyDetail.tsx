@@ -4,6 +4,7 @@
    ========================================================================== */
 
 import { useState, useMemo, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
+import { useMeasurementConsent } from '@/hooks/useMeasurementConsent';
 import { getConcierge } from '@shared/concierges';
 import { localizeDuration, localizeRoomName } from '@/lib/duration';
 import { useParams, Link, useSearch } from 'wouter';
@@ -532,6 +533,7 @@ function DescriptionSection({ description, sections, propertyName, locality, des
 }
 
 export default function PropertyDetail() {
+  const measurementAllowed = useMeasurementConsent();
   const { t, i18n } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const { data: rawProperty, isLoading, error, refetch } = trpc.properties.getBySlugForSite.useQuery(
@@ -743,7 +745,7 @@ export default function PropertyDetail() {
 
   // GA4: view_item — fires once per property load
   useEffect(() => {
-    if (!property) return;
+    if (!property || !measurementAllowed) return;
     const nights = initialCheckin && initialCheckout
       ? Math.max(1, Math.ceil((new Date(initialCheckout).getTime() - new Date(initialCheckin).getTime()) / 86400000))
       : 1;
@@ -771,7 +773,7 @@ export default function PropertyDetail() {
         ],
       },
     });
-  }, [property?.id]);
+  }, [property?.id, measurementAllowed]);
 
   const services = useMemo(
     () => allProducts.filter(p => p.type === 'service' && p.isActive).map(p => ({ ...localizeProduct(p, i18n.language)!, priceFrom: undefined, priceSuffix: '' })),
@@ -830,7 +832,7 @@ export default function PropertyDetail() {
     relatedObserverRef.current?.disconnect();
     relatedPendingRef.current.clear();
 
-    if (!relatedProperties.length) return;
+    if (!measurementAllowed || !relatedProperties.length) return;
 
     relatedObserverRef.current = new IntersectionObserver((entries) => {
       let hasNew = false;
@@ -879,7 +881,7 @@ export default function PropertyDetail() {
       if (relatedFlushTimerRef.current) clearTimeout(relatedFlushTimerRef.current);
       relatedPendingRef.current.clear();
     };
-  }, [relatedProperties]);
+  }, [relatedProperties, measurementAllowed]);
 
   const amenityGroups = useMemo(() => {
     if (!property?.amenities || typeof property.amenities !== 'object') return [];

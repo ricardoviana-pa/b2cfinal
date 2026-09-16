@@ -548,7 +548,7 @@
   },
   "cookieBanner": {
     "title": "COOKIEINSTÄLLNINGAR",
-    "description": "Vi använder cookies för att förbättra din upplevelse och analysera webbplatsanvändningen. Din integritet är viktig för oss. Du kan anpassa dina inställningar nedan.",
+    "description": "Nödvändiga cookies gör det möjligt att använda webbplatsen och boka. Med ditt samtycke använder vi även cookies för analys och annonsering.",
     "essential": "Nödvändiga cookies",
     "essentialDesc": "Krävs för grundläggande webbplatsfunktionalitet och säkerhet. Kan inte inaktiveras.",
     "analytics": "Analyticscookies",
@@ -558,7 +558,9 @@
     "acceptAll": "ACCEPTERA ALLA",
     "essentialOnly": "ENDAST NÖDVÄNDIGA",
     "message": "Vi använder cookies för att förbättra din upplevelse. Genom att fortsätta godkänner du våra",
-    "accept": "Acceptera"
+    "accept": "Acceptera",
+    "managePreferences": "Cookieinställningar",
+    "reloadNotice": "Om du väljer endast nödvändiga cookies laddas sidan om för att stoppa valfri spårning. Spara eventuella ofärdiga formulär innan du ändrar inställningen."
   },
   "home": {
     "loading": "Laddar Portugal Active",
@@ -1142,13 +1144,13 @@
     "essentialTitle": "Nödvändiga cookies",
     "essentialBody": "Dessa cookies är nödvändiga för att webbplatsen ska fungera korrekt. De möjliggör grundläggande funktioner som sidnavigering, åtkomst till säkra områden och programfunktionalitet. Webbplatsen kan inte fungera korrekt utan dessa cookies.",
     "analyticsTitle": "Analyticscookies",
-    "analyticsBody": "Vi använder analyticscookies för att förstå hur besökare interagerar med vår webbplats. Detta hjälper oss att förbättra vår webbplats struktur, innehåll och användarupplevelse. All insamlad data är anonym och aggregerad.",
+    "analyticsBody": "Med ditt samtycke hjälper Google Analytics och Microsoft Clarity oss att förstå hur webbplatsen används. Verktygen kan behandla onlineidentifierare och interaktioner; uppgifterna är inte nödvändigtvis anonyma.",
     "functionalTitle": "Funktionella cookies",
     "functionalBody": "Dessa cookies gör det möjligt för webbplatsen att komma ihåg val du gör (som ditt föredragna språk eller region) och tillhandahålla förbättrade, personaliserade funktioner. De kan också användas för att komma ihåg ändringar du har gjort i textstorlek, teckensnitt och andra anpassningsbara element.",
     "marketingTitle": "Marknadsföringscookies",
     "marketingBody": "Vi kan använda marknadsföringscookies för att leverera annonser som är relevanta för dig. Dessa cookies spårar dina surfvanor och hjälper oss att visa dig innehåll och erbjudanden som matchar dina intressen. Vi använder dessa endast med ditt uttryckliga samtycke.",
     "managingTitle": "Hantera cookies",
-    "managingBody": "Du kan kontrollera och hantera cookies genom dina webbläsarinställningar. De flesta webbläsare låter dig vägra eller acceptera cookies, ta bort befintliga cookies och ställa in preferenser för vissa webbplatser. Observera att inaktivering av cookies kan påverka funktionaliteten på vår webbplats.",
+    "managingBody": "Du kan ändra ditt val när som helst via Cookieinställningar i sidfoten. Valfri mätning börjar först när du accepterar alla cookies. Om du återkallar samtycket laddas den aktuella sidan om.",
     "thirdPartyTitle": "Tredjepartscookies",
     "thirdPartyBody": "Vissa cookies på vår webbplats sätts av tredjepartstjänster som visas på våra sidor. Dessa inkluderar analysleverantörer och sociala medieplattformar. Vi kontrollerar inte dessa cookies och rekommenderar att granska respektive tredjepartens integritetspolicyer.",
     "updatesTitle": "Uppdateringar av denna policy",
