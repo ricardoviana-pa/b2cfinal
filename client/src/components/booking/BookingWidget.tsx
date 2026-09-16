@@ -5,7 +5,7 @@ import { useLocation } from "wouter";
 import i18n from "@/i18n";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
-import { pushDL, pushEcommerce, pushPurchaseOnce, ADDON_PREFIX } from "@/lib/datalayer";
+import { pushDL, pushEcommerce, pushPurchaseOnce, buildPropertyItem, ADDON_PREFIX } from "@/lib/datalayer";
 import { cancellationPolicyText } from "@/lib/cancellation";
 import { localizeProduct } from "@/lib/localizeProduct";
 import { Calendar, User, Shield, Loader2, Check, ShoppingBag, Minus, Plus, UtensilsCrossed, Sparkles, Dumbbell, ShoppingCart, Baby, Car, SprayCanIcon, ChevronDown } from "lucide-react";
@@ -1566,6 +1566,10 @@ export default function BookingWidget({
                     currency={quote.currency || currency}
                     propertyName={propertyName}
                     destination={destination}
+                    paymentItems={[buildPropertyItem({
+                      id: guestyId, name: propertyName, destination,
+                      priceFrom: effectiveQuote?.nightlyRate ?? quote.nightlyRate,
+                    }, { nights: effectiveQuote?.nights ?? quote.nights, checkinDate: checkIn, checkoutDate: checkOut, guests })]}
                     guestName={`${guestFirstName} ${guestLastName}`}
                     guestEmail={guestEmail}
                     guestPhone={guestPhone}

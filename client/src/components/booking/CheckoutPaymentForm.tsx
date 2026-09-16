@@ -147,6 +147,8 @@ interface CheckoutPaymentFormProps {
   /** Bloco 6: items GA4 dos serviços (extras, receção, Flex) — viajam com o
    *  stash Klarna/PayPal para o purchase da return page incluir tudo */
   purchaseItems?: Array<Record<string, unknown>>;
+  /** Analytics only: property and paid extras visible at payment submission. */
+  paymentItems?: Array<Record<string, unknown>>;
   onSuccess: (confirmationCode: string, reservationId?: string) => void;
   onCancel: () => void;
 }
@@ -163,11 +165,13 @@ function ExpressWalletInner({
   intentId,
   listingId,
   total,
+  paymentItems,
   onSuccess,
 }: {
   intentId: string;
   listingId: string;
   total: number;
+  paymentItems?: Array<Record<string, unknown>>;
   onSuccess: (confirmationCode: string, reservationId?: string) => void;
 }) {
   const { t } = useTranslation();
@@ -188,7 +192,7 @@ function ExpressWalletInner({
       event: "add_payment_info",
       payment_type: event.expressPaymentType || "wallet",
       property_id: listingId,
-      ecommerce: { currency: "EUR", value: total },
+      ecommerce: { currency: "EUR", value: total, items: paymentItems },
     });
 
     try {
@@ -280,6 +284,7 @@ function PaymentFormInner({
   notes,
   propertyName,
   destination,
+  paymentItems,
 }: Omit<CheckoutPaymentFormProps, "currency">) {
   const { t, i18n } = useTranslation();
   const stripe = useStripe();
@@ -307,7 +312,7 @@ function PaymentFormInner({
         event: "add_payment_info",
         payment_type: "card",
         property_id: listingId,
-        ecommerce: { currency: "EUR", value: total },
+        ecommerce: { currency: "EUR", value: total, items: paymentItems },
       });
     }
 
@@ -618,6 +623,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             intentId={props.intentId}
             listingId={props.listingId}
             total={props.total}
+            paymentItems={props.paymentItems}
             onSuccess={props.onSuccess}
           />
         </Elements>
@@ -710,6 +716,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             intentId={props.intentId}
             couponCode={props.couponCode}
             purchaseItems={props.purchaseItems}
+            paymentItems={props.paymentItems}
             stripePublishableKey={stripeConfig.publishableKey}
             onError={(msg) => setPaypalError(msg)}
           />
@@ -750,6 +757,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             intentId={props.intentId}
             couponCode={props.couponCode}
             purchaseItems={props.purchaseItems}
+            paymentItems={props.paymentItems}
             stripePublishableKey={stripeConfig.publishableKey}
             onError={(msg) => setKlarnaError(msg)}
           />

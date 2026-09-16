@@ -33,6 +33,8 @@ interface KlarnaCheckoutButtonProps {
   couponCode?: string;
   /** Bloco 6: items GA4 dos serviços (extras, receção, Flex) para o purchase da return page */
   purchaseItems?: Array<Record<string, unknown>>;
+  /** Analytics only; never sent to the payment or reservation API. */
+  paymentItems?: Array<Record<string, unknown>>;
   // Platform Stripe publishable key (NOT the per-listing connected account key)
   stripePublishableKey: string;
   onError: (msg: string) => void;
@@ -54,7 +56,7 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
       event: "add_payment_info",
       payment_type: "klarna",
       property_id: props.listingId,
-      ecommerce: { currency: "EUR", value: props.amount },
+      ecommerce: { currency: "EUR", value: props.amount, items: props.paymentItems },
     });
 
     try {
