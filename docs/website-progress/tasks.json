@@ -1,0 +1,562 @@
+{
+  "updated": "2026-09-16",
+  "scope": "Website B2C Portugal Active",
+  "baseline": {
+    "production": "e51a5c6",
+    "dev": "77b2c5a",
+    "gtm_published_version": 25,
+    "gtm_draft_changes": 39
+  },
+  "rules": [
+    "Concluído exige evidência dos critérios, não apenas commit ou número de testes.",
+    "Implementado, validado e publicado são etapas distintas.",
+    "Nunca transferir dados, sessões, credenciais ou operações de produção para DEV.",
+    "Pedidos comerciais sem decisão não bloqueiam trabalho técnico independente."
+  ],
+  "tasks": [
+    {
+      "id": "WEB-01",
+      "priority": "P0",
+      "task": "Infraestrutura de teste: criar um ambiente integrado com dados sintéticos, contas sandbox e destinatários de teste. O DEV atual só permite revisão visual.",
+      "acceptance": "Nenhuma base, chave, sessão, reserva ou envio operacional de produção acessível ao teste; inventário e pagamentos fictícios utilizáveis de ponta a ponta.",
+      "status": "parcial_validado_local",
+      "evidence": [
+        "[Bancada e limites](CHECKOUT_SANDBOX.md). 20 cenários integrados locais aprovados; 8 falhas reproduzidas antes da correção.",
+        "Regressão: 367 testes passaram, 6 antigos ignorados; TypeScript e builds cliente/SSR/servidor passaram."
+      ],
+      "blockers": [],
+      "next_step": "Adicionar persistência sintética e interfaces de teste de browser; depois validar fornecedores sandbox sem acesso a produção.",
+      "steps": [
+        {
+          "label": "Runner isolado, dados fictícios e bloqueio de rede verificável.",
+          "done": true
+        },
+        {
+          "label": "Integração local com router real e adaptadores simulados.",
+          "done": true
+        },
+        {
+          "label": "Base persistente e sandbox de fornecedores para E2E de browser.",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "WEB-02",
+      "priority": "P0",
+      "task": "Validação: percorrer pesquisa → cotação → extras → dados do hóspede → pagamento → confirmação → reserva → email.",
+      "acceptance": "Evidência de uma reserva fictícia completa, valor coerente em todas as etapas e efeitos externos apenas em sandbox.",
+      "status": "parcial_validado_local",
+      "evidence": [
+        "[Bancada e limites](CHECKOUT_SANDBOX.md). 20 cenários integrados locais aprovados; 8 falhas reproduzidas antes da correção.",
+        "Regressão: 367 testes passaram, 6 antigos ignorados; TypeScript e builds cliente/SSR/servidor passaram."
+      ],
+      "blockers": [],
+      "next_step": "Rever a origem do snapshot da cotação e as transições pagas antes de ampliar o E2E.",
+      "steps": [
+        {
+          "label": "Contacto → extras → pagamento simulado → reserva simulada → preparação da confirmação.",
+          "done": true
+        },
+        {
+          "label": "Autenticar a cotação e o estado pago no servidor, rever concorrência de finalização.",
+          "done": false
+        },
+        {
+          "label": "Percurso completo desde a pesquisa, browser e fornecedores sandbox.",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "WEB-03",
+      "priority": "P0",
+      "task": "Validação: cartão, autenticação adicional, Apple/Google Pay quando disponíveis, PayPal e Klarna; recusa, desistência, erro e regresso ao site.",
+      "acceptance": "Sucessos e falhas compreensíveis; uma cobrança e uma reserva por transação; regressos corretos; métodos indisponíveis tratados com clareza.",
+      "status": "parcial_validado_local",
+      "evidence": [
+        "[Bancada e limites](CHECKOUT_SANDBOX.md). 20 cenários integrados locais aprovados; 8 falhas reproduzidas antes da correção.",
+        "Regressão: 367 testes passaram, 6 antigos ignorados; TypeScript e builds cliente/SSR/servidor passaram."
+      ],
+      "blockers": [],
+      "next_step": "Aplicar a mesma matriz de falhas a PayPal/Klarna e validar retornos sem efeitos externos.",
+      "steps": [
+        {
+          "label": "Contrato cartão/wallets e retoma de pagamento já concluído cobertos localmente.",
+          "done": true
+        },
+        {
+          "label": "3DS, métodos reais de teste, retornos PayPal/Klarna e webhooks.",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "WEB-04",
+      "priority": "P0",
+      "task": "Validação: disponibilidade/preço alterado, cotação expirada, duplo clique, atualização da página, ligação lenta e retoma do carrinho.",
+      "acceptance": "Sem duplicação nem preços silenciosamente desatualizados; recuperação clara e segura.",
+      "status": "parcial_validado_local",
+      "evidence": [
+        "[Bancada e limites](CHECKOUT_SANDBOX.md). 20 cenários integrados locais aprovados; 8 falhas reproduzidas antes da correção.",
+        "Regressão: 367 testes passaram, 6 antigos ignorados; TypeScript e builds cliente/SSR/servidor passaram."
+      ],
+      "blockers": [],
+      "next_step": "Verificar criação de reserva concorrente e alterações de carrinho durante pagamento; chaves Stripe cobrem repetições idênticas, não todos os casos distribuídos.",
+      "steps": [
+        {
+          "label": "Timeout, cancelamento falhado, expiração, valor alterado, double submit e falha de persistência cobertos.",
+          "done": true
+        },
+        {
+          "label": "Concorrência entre instâncias/métodos e finalização webhook/browser.",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "WEB-05",
+      "priority": "P0",
+      "task": "Auditoria preventiva: restantes links de emails transacionais, pagamentos, cancelamento, confirmação e recuperação; proteger a separação entre ambientes nos lançamentos. A falha concreta de recuperação já foi corrigida.",
+      "acceptance": "Links operacionais sempre no domínio correto; verificações automáticas de configuração e regressão. Confirmar também, pela operação, o desfecho do cliente afetado, ainda não documentado nesta tarefa.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-06",
+      "priority": "P0",
+      "task": "Divergência comercial documentada: reconciliar serviços entre catálogo e checkout. Exemplos anteriores: chef €60/€95, babysitter €35/hora/€20 e yoga €80/sessão/€60. Podem representar prestações diferentes; não foi demonstrada cobrança indevida.",
+      "acceptance": "Uma matriz aprovada de produto, unidade, participantes, mínimos, região, inclusões, taxas e condições, refletida de forma coerente em todos os pontos.",
+      "status": "aguarda_decisao_comercial",
+      "evidence": [
+        "[Comparação extraída do código dos 8 serviços públicos](SERVICOS_PRECOS.md)."
+      ],
+      "blockers": [
+        "Pergunta enviada ao Ricardo nesta execução sobre tabela aprovada ou responsável pela validação comercial. Não impede restantes tarefas."
+      ],
+      "next_step": "Usar a matriz aprovada para unificar catálogo, detalhe, schema e checkout sem alterar condições por suposição.",
+      "steps": [
+        {
+          "label": "Mapear catálogo público, checkout e fonte legada.",
+          "done": true
+        },
+        {
+          "label": "Validar preços/unidades/inclusões e implementar fonte comercial única.",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "WEB-07",
+      "priority": "P0",
+      "task": "Clareza de preços: resolver casos documentados de arredondamento da diária que não explicam o total, como €500 × 4 versus €2 002.",
+      "acceptance": "Decomposição legível que reconcilia noites, extras, encargos e total cobrado, sem alterar valores comerciais por suposição.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-08",
+      "priority": "P0",
+      "task": "Lançamento pendente: preparar a promoção das melhorias DEV para produção por blocos verificáveis.",
+      "acceptance": "Revisão do diff, verificações antes/depois, plano de reversão e registo. Configuração de isolamento DEV não deve ser copiada indiscriminadamente para produção.",
+      "status": "em_execucao",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Publicar primeira PR de fiabilidade para DEV após revisão, mantendo produção inalterada nesta etapa."
+    },
+    {
+      "id": "WEB-09",
+      "priority": "P0",
+      "task": "Código pronto em DEV: rever e publicar o consentimento que controla efetivamente as ferramentas; validar apresentação móvel.",
+      "acceptance": "Aceitar, recusar, reabrir e retirar consentimento funcionam em produção sem impedir a reserva.",
+      "status": "implementado_dev_validacao_pendente",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-10",
+      "priority": "P0",
+      "task": "Rascunho GTM: validar as 39 alterações guardadas antes de publicar; concluir Tag Assistant/DebugView.",
+      "acceptance": "Receção demonstrada nos destinos de análise, não apenas eventos no código ou scripts carregados.",
+      "status": "rascunho_validacao_pendente",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-11",
+      "priority": "P0",
+      "task": "Validação de compra: conferir moeda, receita, identificação da transação, casa e extras; auditar o acionador antigo de compra baseado em `/success`.",
+      "acceptance": "Sem compras duplicadas, ausentes ou valores artificiais; conciliação com pagamentos e reservas confirmados.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-12",
+      "priority": "P0",
+      "task": "Dependências: rever Google Ads antes de mudar `Start_check_out` para `begin_checkout`; resolver ou justificar os dois alertas de qualidade/cobertura e percursos antigos.",
+      "acceptance": "Campanhas não perdem conversões por mudança de nome; domínios e etiquetas têm âmbito justificado.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-13",
+      "priority": "P1",
+      "task": "Medição comercial: criar uma referência inicial e um painel do funil por dispositivo, idioma, canal e mercado, incluindo pedidos assistidos e referências AI.",
+      "acceptance": "Saber onde se abandona, quanto se paga e quantos contactos terminam em reserva. Comparar períodos respeitando a mudança de consentimento.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-14",
+      "priority": "P1",
+      "task": "Aprofundamento das PDP: começar pelas dez casas prioritárias e rever galeria, ordem das fotografias, diferenciação, perfil ideal e limitações.",
+      "acceptance": "Página ajuda a escolher a casa concreta; conteúdo real, sem texto genérico repetido.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-15",
+      "priority": "P1",
+      "task": "Factos da estadia: confirmar configuração de quartos/camas, piscina privada ou partilhada, aquecimento e custos, acessibilidade, animais, inclusões e chegada.",
+      "acceptance": "Informações relevantes completas e coerentes com a operação, incluindo diferenças de casas parceiras.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-16",
+      "priority": "P1",
+      "task": "Pesquisa: testar filtros combinados, calendário móvel, orçamento, hóspedes, mapa/lista, ordenação, voltar atrás e parâmetros partilhados. Há melhorias implementadas; falta validação abrangente.",
+      "acceptance": "O cliente consegue comparar resultados e recuperar a seleção sem perder datas nem interpretar preço por confirmar como preço final.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-17",
+      "priority": "P1",
+      "task": "Sem disponibilidade: rever as alternativas já existentes e completar a proposta de datas/casas semelhantes.",
+      "acceptance": "Alternativas úteis com disponibilidade e preço devidamente identificados; percurso sem becos sem saída.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-18",
+      "priority": "P1",
+      "task": "Propostas de conversão: avaliar seleção para comparar/partilhar casas em grupo, benefícios de reserva direta e contacto contextual.",
+      "acceptance": "Implementar apenas propostas com utilidade e condições comerciais verificadas; medir o efeito. Não estão todas aprovadas como funcionalidades obrigatórias.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-19",
+      "priority": "P1",
+      "task": "Usabilidade e acessibilidade: rever foco, teclado, contraste, formulários, erros, zoom, alvos de toque e navegação; testar Safari/iPhone e Android reais.",
+      "acceptance": "Percursos essenciais utilizáveis, além da simulação de largura móvel no desktop. Fazer sessões curtas com utilizadores/equipa.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-20",
+      "priority": "P1",
+      "task": "Traduções e promessas: rever textos comerciais nos idiomas prioritários e afirmações como 24/7, resposta em duas horas ou gestão de todas as casas pela mesma equipa.",
+      "acceptance": "Promessas confirmadas operacionalmente e conteúdo da propriedade traduzido; nove idiomas na interface não são prova de tradução integral do catálogo.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-21",
+      "priority": "P1",
+      "task": "Home, About, Concierge e Experiences",
+      "acceptance": "Rever a última versão com conteúdo comercial validado, dispositivos reais e depois publicar. About ainda exige prova das promessas; serviços/experiências dependem de preços, fornecedores e traduções corretos.",
+      "status": "implementado_dev_validacao_pendente",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-22",
+      "priority": "P1",
+      "task": "Páginas individuais de serviços e experiências",
+      "acceptance": "Preço/unidade/inclusões, disponibilidade, requisitos, cancelamento e CTA adequados ao tipo de compra ou pedido.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-23",
+      "priority": "P1",
+      "task": "Events e Corporate Retreats",
+      "acceptance": "Converter a apresentação em ofertas executáveis, com prova, operação e resposta aos pedidos; ver secção 6.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-24",
+      "priority": "P1",
+      "task": "Contact, FAQ, Blog e artigos",
+      "acceptance": "Percurso até pedido/reserva, perguntas sem repetição, leitura móvel, pesquisa, conteúdo atualizado e ligações comerciais úteis.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-25",
+      "priority": "P1",
+      "task": "Destinations, páginas regionais e Collections",
+      "acceptance": "Conteúdo distinto por intenção, fotos autênticas, ligação a inventário relevante, sazonalidade e motivos para escolher cada região. Parte da nova fotografia ainda só está em DEV.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-26",
+      "priority": "P1",
+      "task": "Checkout, confirmação, retornos de pagamento, Login e Account",
+      "acceptance": "Revisão funcional e visual completa, estados vazios/erro, continuidade da reserva e informação após a compra.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-27",
+      "priority": "P1",
+      "task": "Owners, Careers, garantia de melhor preço, políticas e 404",
+      "acceptance": "Coerência final, formulários/links, conteúdo e condições reais. Não alterar condições contratuais apenas por conveniência de design.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-28",
+      "priority": "P1",
+      "task": "Rodapé e identidade local",
+      "acceptance": "Confirmar moradas completas, horários e mapas dos escritórios de Viana e Lisboa; apresentar de forma compacta e consistente.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-29",
+      "priority": "P1",
+      "task": "Limitação comercial: os preços de alojamento já aparecem, mas é necessário completar/validar encargos obrigatórios e a cotação final por fornecedor.",
+      "acceptance": "IVA e restantes encargos tratados uma única vez, com total e condições claros; distinguir preço de alojamento de total final quando faltam componentes.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-30",
+      "priority": "P1",
+      "task": "Lacunas datadas: na leitura de 15/09, 3 Br Cabana Villa, Villa Arroz e Villa Trevo tinham calendários vazios. Outras quatro casas não tinham estadia elegível nos 90 dias analisados. Não houve nova consulta dos calendários nesta revisão.",
+      "acceptance": "Revalidar com o fornecedor, distinguir indisponibilidade de falta de dados e resolver as lacunas que persistirem.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-31",
+      "priority": "P1",
+      "task": "Validação integrada: atualizar cotações, expiração de cache, falha do fornecedor e passagem do pedido à confirmação.",
+      "acceptance": "O cliente percebe o que está confirmado e o que exige confirmação. O cache existente não deve ser apresentado como garantia instantânea de inventário.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-32",
+      "priority": "P1",
+      "task": "Oferta por validar: selecionar casas autorizadas e preencher a ficha operacional empresarial.",
+      "acceptance": "Quartos/camas, capacidade de reunião/refeição, internet, plano de chuva, fornecedores, horários, custos, regras e datas confirmados.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-33",
+      "priority": "P1",
+      "task": "Proposta comercial: transformar os três formatos de pedido existentes em dois ou três programas concretos, com preço/margem e provas reais.",
+      "acceptance": "Oferta executável, fotografias/casos autorizados e condições claras, sem lotações inventadas.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-34",
+      "priority": "P1",
+      "task": "Percurso do pedido: testar entrega do formulário em destinatário isolado, atribuição de responsável, proposta, seguimento e resultado. A interface foi testada, mas não a entrega completa.",
+      "acceptance": "Nenhum pedido perdido; responsável e prazo de resposta reais; motivos de perda registados.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-35",
+      "priority": "P1",
+      "task": "Pricing e distribuição: ligar as análises de Revenue já preparadas às casas/meses com disponibilidade, mínimos de noites, dias de semana e margem.",
+      "acceptance": "Decisões por casa e período, comparação de preço total direto/OTA e testes controlados. Não houve alteração de preços nesta revisão.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-36",
+      "priority": "P2",
+      "task": "Proposta de aquisição: priorizar mercados, parcerias, hóspedes anteriores e campanhas para ofertas disponíveis e rentáveis.",
+      "acceptance": "Plano com responsável, verba quando aplicável e reservas/margem como resultado; não apenas visitas. Nenhuma campanha ou comunicação é enviada por este inventário.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-37",
+      "priority": "P1",
+      "task": "SEO técnico: acompanhar Search Console após as correções de dados estruturados e classificar indexação, redirecionamentos, erros, canónicas e idiomas.",
+      "acceptance": "Confirmar nova leitura/validação do Google. A fotografia anterior de 149 VacationRental inválidos não demonstra o estado depois da correção. URLs não indexadas não são automaticamente erros.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-38",
+      "priority": "P2",
+      "task": "Auditoria de cobertura: crawl das famílias públicas e arquivo, links internos, páginas órfãs, filtros e URLs antigas.",
+      "acceptance": "Preservar páginas/guias com valor e impedir duplicação desnecessária; corrigir problemas comprovados sem apagar conteúdo indiscriminadamente.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-39",
+      "priority": "P2",
+      "task": "Ahrefs/Semrush: executar análise com dados reais de procura, concorrência, dificuldade e referências externas, se disponível acesso/exportação.",
+      "acceptance": "Mapa de intenção → página → oferta → prioridade. A estratégia atual usa Search Console e pesquisa; não constitui uma auditoria paga concluída nestas plataformas.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-40",
+      "priority": "P2",
+      "task": "Autoridade e distribuição: melhorar referências/parcerias legítimas, coerência dos escritórios e verificar integração Google Vacation Rentals/Guesty.",
+      "acceptance": "Dados empresariais consistentes e canais efetivamente configurados; ter schema não prova distribuição ativa em Google Vacation Rentals.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-41",
+      "priority": "P2",
+      "task": "Pesquisa em AI: verificar acesso de crawlers, conteúdo efetivamente legível, factos/autoria/fontes e referências à marca; medir contactos e reservas originados nesses canais.",
+      "acceptance": "Evidência de acesso e conteúdo útil, com acompanhamento de resultados. Não existe certificação de estar «ao máximo para IA» nem garantia de ser citado.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-42",
+      "priority": "P2",
+      "task": "Plano editorial: completar 12 atualizações e 36 temas novos; rever/promover os dois novos artigos já em DEV.",
+      "acceptance": "Cada peça tem intenção distinta, revisão factual, fotos adequadas, ligação a oferta disponível e idiomas efetivamente publicados. Trabalhar por vagas comerciais.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-43",
+      "priority": "P2",
+      "task": "Imagens e arquivo: continuar revisão de fotografias regionais, repetições, legendas, direitos e informação sazonal de guias antigos.",
+      "acceptance": "Imagens pertinentes e distintas; sem usar fotos ilustrativas como prova de eventos realizados ou propriedades aprovadas.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-44",
+      "priority": "P1",
+      "task": "Nova referência de desempenho: medir produção móvel nas páginas Home, pesquisa, PDP, checkout e destinos, incluindo as ferramentas efetivamente carregadas.",
+      "acceptance": "Comparações repetíveis e dados de utilizadores reais. A referência de 15/09 tinha home de produção com Lighthouse 71 e LCP de laboratório 4,4 s; não é uma medição da revisão atual.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-45",
+      "priority": "P2",
+      "task": "Otimização orientada por medição: investigar JavaScript inicial, mapas/modais, imagens principais, fontes, cache, resposta do servidor e terceiros.",
+      "acceptance": "Corrigir os maiores custos medidos e voltar a testar sem perder funcionalidades. DEV bloqueia integrações, por isso não é uma comparação equivalente com produção.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    },
+    {
+      "id": "WEB-46",
+      "priority": "P2",
+      "task": "Experimentos de conversão: estabelecer hipóteses, métricas e períodos de avaliação; começar pelos pontos de abandono e casas prioritárias.",
+      "acceptance": "Distinguir alteração visual de melhoria comprovada. Medir reservas pagas e margem, não só cliques no botão.",
+      "status": "por_iniciar",
+      "evidence": [],
+      "blockers": [],
+      "next_step": "Executar os critérios descritos no inventário."
+    }
+  ],
+  "history": [
+    {
+      "date": "2026-09-16",
+      "event": "Ricardo autorizou execução sistemática e acompanhamento de progresso. Criados 46 IDs estáveis; início pela fiabilidade da reserva."
+    },
+    {
+      "date": "2026-09-16",
+      "event": "Primeira etapa: 20 testes de integração sintética passam após reprodução de 8 falhas; regressão 367 passados/6 ignorados, TypeScript/build aprovados. Comparação dos 8 serviços preparada; decisão comercial pedida. Nenhuma compra/envio real."
+    }
+  ]
+}
