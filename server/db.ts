@@ -838,6 +838,17 @@ export async function getBookingIntent(id: string): Promise<BookingIntent | null
   }
 }
 
+/** Internal receipt lookup. An ambiguous mapping must not choose a payment. */
+export async function getPaidBookingIntentByReservationId(reservationId: string): Promise<BookingIntent | null> {
+  const db = await getDb();
+  if (!db) throw new Error("Receipt database unavailable");
+  const rows = await db.select().from(bookingIntents)
+    .where(and(eq(bookingIntents.reservationId, reservationId), eq(bookingIntents.status, "paid")))
+    .limit(2);
+  if (rows.length > 1) throw new Error("Ambiguous receipt payment");
+  return rows[0] ?? null;
+}
+
 /** Claim the server-confirmed paid transition once across app instances. */
 export async function markBookingIntentPaid(id: string, reservationId: string, confirmationCode: string): Promise<boolean> {
   const db = await getDb();

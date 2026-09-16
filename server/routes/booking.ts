@@ -6,6 +6,8 @@ import { guestyClient, GuestyClientError, resetGuestyRateLimitCooldowns } from "
 import { getPropertiesForSite } from "../services/properties-store";
 import { updateTripStatusByReservationId } from "../db";
 import { sendBookingFailureAlert } from "../services/transactional-email";
+import { reservationBreakdown, reservationTotalCents } from "../lib/reservation-money";
+import { readReservationPaidCents } from "../services/reservation-receipt";
 
 const TTL_LISTING_MS = 6 * 60 * 60 * 1000;
 const TTL_CALENDAR_MS = 60 * 1000;
@@ -456,6 +458,9 @@ export function registerBookingRoutes(app: Express): void {
   });
 
   app.get("/api/reservations/:id", async (req: Request, res: Response) => {
+    res.setHeader("Cache-Control", "private, no-store");
+    res.setHeader("Referrer-Policy", "no-referrer");
+    res.setHeader("X-Robots-Tag", "noindex, nofollow");
     try {
       // Migrated to BE API: GET /api/reservations/{id}/summary
       const reservation = await guestyClient.getReservation(req.params.id);
@@ -504,14 +509,10 @@ export function registerBookingRoutes(app: Express): void {
           })
         : "";
 
-      // --- Price breakdown (additive; same money-field fallbacks as the BE quote mapping) ---
+      // Keep the guest's reservation total and money collected separate.
       const money = reservation?.money || {};
-      const toCents = (v: any): number | null =>
-        v === undefined || v === null || v === "" ? null : Math.round(Number(v) * 100);
-      const fareAccommodationCents = toCents(
-        money.fareAccommodationAdjusted ?? money.fareAccommodation ?? money.accommodationFare,
-      );
-      const cleaningFeeCents = toCents(money.fareCleaning ?? money.cleaningFee);
+      const totalPaidCents = await readReservationPaidCents(req.params.id, money);
+      const { accommodationCents, cleaningFeeCents } = reservationBreakdown(money, totalPaidCents);
       const nights =
         checkIn && checkOut
           ? Math.max(
@@ -520,7 +521,7 @@ export function registerBookingRoutes(app: Express): void {
             )
           : null;
       const nightlyRateCents =
-        fareAccommodationCents != null && nights ? Math.round(fareAccommodationCents / nights) : null;
+        accommodationCents != null && nights ? Math.round(accommodationCents / nights) : null;
 
       // --- Guest details (additive) ---
       const guestFirstName = reservation?.guest?.firstName || "";
@@ -545,13 +546,9 @@ export function registerBookingRoutes(app: Express): void {
         guestName,
         guestEmail,
         guestPhone,
-        totalCents:
-          reservation?.money?.hostPayout !== undefined
-            ? Math.round(Number(reservation.money.hostPayout || 0) * 100)
-            : reservation?.money?.total !== undefined
-              ? Math.round(Number(reservation.money.total || 0) * 100)
-              : null,
-        accommodationCents: fareAccommodationCents,
+        totalCents: reservationTotalCents(money),
+        totalPaidCents,
+        accommodationCents,
         nightlyRateCents,
         nights,
         cleaningFeeCents,
@@ -571,6 +568,9 @@ export function registerBookingRoutes(app: Express): void {
   });
 
   app.get("/api/reservations/:id/ics", async (req: Request, res: Response) => {
+    res.setHeader("Cache-Control", "private, no-store");
+    res.setHeader("Referrer-Policy", "no-referrer");
+    res.setHeader("X-Robots-Tag", "noindex, nofollow");
     try {
       // Migrated to BE API via guestyClient.getReservation() → BE API /api/reservations/{id}/summary
       const reservation = await guestyClient.getReservation(req.params.id);

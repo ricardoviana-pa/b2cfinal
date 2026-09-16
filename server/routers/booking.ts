@@ -859,6 +859,7 @@ export const bookingRouter = router({
         reservationId: reservation.reservationId,
         confirmationCode: reservation.confirmationCode,
         status: reservation.status,
+        totalPaidCents: pi.amount_received,
       };
     }),
 
@@ -1051,6 +1052,7 @@ export const bookingRouter = router({
         reservationId: reservation.reservationId,
         confirmationCode: reservation.confirmationCode,
         status: reservation.status,
+        totalPaidCents: pi.amount_received,
       };
     }),
 });

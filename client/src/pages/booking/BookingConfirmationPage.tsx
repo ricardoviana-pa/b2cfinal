@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "wouter";
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { fetchReservation } from "@/lib/booking-api";
-import { pushDL, pushPurchaseOnce } from "@/lib/datalayer";
+import { pushDL } from "@/lib/datalayer";
 import { formatEurCents, formatBookingDate } from "@/lib/format";
 import { reservationStatusLabel } from "@/lib/cancellation";
 
@@ -15,12 +15,12 @@ export default function BookingConfirmationPage() {
   usePageMeta({
     title: t('bookingConfirmation.pageTitle'),
     description: t('bookingConfirmation.pageDescription'),
+    noindex: true,
   });
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const purchaseFiredRef = useRef(false);
 
   useEffect(() => {
     let active = true;
@@ -38,34 +38,6 @@ export default function BookingConfirmationPage() {
       active = false;
     };
   }, [id]);
-
-  // Report purchase once per transaction — persistent guard, so refreshes and
-  // the other confirmation surfaces can't double-fire (F7).
-  useEffect(() => {
-    if (!data || purchaseFiredRef.current) return;
-    purchaseFiredRef.current = true;
-
-    pushPurchaseOnce(data.confirmationCode, {
-      event: 'purchase',
-      ecommerce: {
-        transaction_id: data.confirmationCode,
-        value: data.totalCents != null ? data.totalCents / 100 : undefined,
-        currency: data.currency || 'EUR',
-        items: [
-          {
-            item_id: data.listingId ? `PROP-${data.listingId}` : data.listingName,
-            item_name: data.listingName,
-            item_category: 'villa',
-            price: data.nightlyRateCents != null ? data.nightlyRateCents / 100 : undefined,
-            quantity: data.nights ?? undefined,
-            checkin_date: data.checkIn ?? undefined,
-            checkout_date: data.checkOut ?? undefined,
-            guests_adults: data.guestsCount ?? undefined,
-          },
-        ],
-      },
-    });
-  }, [data]);
 
   return (
     <div className="min-h-screen bg-pa-cream">
