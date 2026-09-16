@@ -1,7 +1,18 @@
-import { describe, it, expect } from "vitest";
-import { __testing } from "./lib/redirects.js";
+import { describe, it, expect, vi } from "vitest";
+import { __testing, legacyRedirects } from "./lib/redirects.js";
 
 const { resolvePath } = __testing;
+
+describe('corporate landing direct entry', () => {
+  it.each(['', '/en', '/pt', '/fr', '/es', '/it', '/fi', '/de', '/nl', '/sv'])('keeps %s/corporate-retreats out of the legacy blog redirect', (prefix) => {
+    const route = `${prefix}/corporate-retreats`;
+    const next = vi.fn();
+    const redirect = vi.fn();
+    legacyRedirects({ method: 'GET', path: route, url: `${route}?utm_source=campaign` } as any, { redirect } as any, next);
+    expect(redirect).not.toHaveBeenCalled();
+    expect(next).toHaveBeenCalledOnce();
+  });
+});
 
 describe("legacyRedirects.resolvePath", () => {
   describe("properties → homes", () => {

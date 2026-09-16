@@ -348,7 +348,7 @@ const PATTERN_REDIRECTS: PatternRule[] = [
       // Don't catch single-segment paths that are first-class routes in the new SPA
       const reservedSegments = new Set([
         "homes", "blog", "about", "contact", "services", "experiences",
-        "adventures", "destinations", "events", "owners", "careers",
+        "adventures", "destinations", "events", "corporate-retreats", "owners", "careers",
         "concierge", "faq", "login", "account", "admin", "legal",
         "owners-portal", "404", "booking", "activities", "best-rate-guarantee",
       ]);
