@@ -13,6 +13,7 @@ import { registerOAuthRoutes } from "./oauth";
 import { registerDevAuthRoutes } from "./devAuth";
 import { registerGoogleAuthRoutes } from "./googleAuth";
 import { registerBookingRoutes, registerGuestyWebhookRoute } from "../routes/booking";
+import { redirectLegacyRecoveryEmail } from "../routes/checkout-recovery-redirect";
 import { registerRecoveryOptoutRoute } from "../routes/checkout-recovery-optout";
 import { registerStripePayPalWebhookRoute } from "../routes/stripe-paypal-webhook";
 import { registerStripeKlarnaWebhookRoute } from "../routes/stripe-klarna-webhook";
@@ -52,6 +53,7 @@ async function startServer() {
   const server = createServer(app);
 
   app.set("trust proxy", true);
+  app.use(redirectLegacyRecoveryEmail);
 
   // Canonical domain redirects — only fires for the exact production bare domain.
   // Uses X-Forwarded-Host directly so dev/stg subdomains are never affected.

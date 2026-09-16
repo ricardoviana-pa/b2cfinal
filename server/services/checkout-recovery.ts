@@ -16,6 +16,7 @@
  * that did not create the intent (CheckoutPage.tsx).
  */
 import { createHmac, timingSafeEqual } from "crypto";
+import { CHECKOUT_EMAIL_ORIGIN, canSendCheckoutRecovery } from "../lib/checkout-email";
 import { sanitizePropertyName } from "@shared/displayName";
 import { listRecoveryCandidates, claimRecoveryStage } from "../db";
 import { sendCheckoutRecovery } from "./transactional-email";
@@ -58,25 +59,16 @@ export function verifyRecoveryOptoutToken(intentId: string, token: string): bool
 
 /** Link de opt-out para o rodapé dos emails de recuperação. */
 export function recoveryOptoutUrl(intentId: string): string {
-  return `${publicBaseUrl()}/api/checkout/recovery-optout?intent=${encodeURIComponent(intentId)}&t=${recoveryOptoutToken(intentId)}`;
+  return `${CHECKOUT_EMAIL_ORIGIN}/api/checkout/recovery-optout?intent=${encodeURIComponent(intentId)}&t=${recoveryOptoutToken(intentId)}`;
 }
 const STAGE_1_AFTER_MS = 1 * HOUR_MS;
 const STAGE_2_AFTER_MS = 20 * HOUR_MS;
 const SWEEP_INTERVAL_MS = 10 * 60 * 1000;
 
-/** Public origin for resume links. SITE_URL first (the env real deploys set);
- *  production fallback — dev sets SITE_URL, production may omit it. */
-function publicBaseUrl(): string {
-  const fromEnv =
-    process.env.SITE_URL || process.env.PUBLIC_BASE_URL || process.env.PUBLIC_URL || process.env.APP_URL;
-  const base = fromEnv || "https://www.portugalactive.com";
-  return base.replace(/\/+$/, "");
-}
-
 function resumeUrl(intent: BookingIntent, stage: 1 | 2): string {
   const locale = intent.locale || "en";
   const utm = `utm_source=email&utm_medium=recovery&utm_campaign=checkout_recovery_${stage === 1 ? "1h" : "20h"}`;
-  return `${publicBaseUrl()}/${locale}/checkout/${intent.id}?${utm}`;
+  return `${CHECKOUT_EMAIL_ORIGIN}/${locale}/checkout/${intent.id}?${utm}`;
 }
 
 
@@ -111,9 +103,8 @@ async function resolvePropertyPhoto(intent: BookingIntent): Promise<string | und
 export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checked: number }> {
   let sent = 0;
   let checked = 0;
-  // Kill switch por tick: respeita CHECKOUT_RECOVERY=false mesmo se o
-  // scheduler já tiver arrancado (belt and braces)
-  if (process.env.CHECKOUT_RECOVERY === "false") return { sent, checked };
+  // Check before reading or claiming anything in the shared database.
+  if (!canSendCheckoutRecovery()) return { sent, checked };
   try {
     const candidates = await listRecoveryCandidates();
     checked = candidates.length;
@@ -174,9 +165,9 @@ let started = false;
 
 /** 10-minute interval sweep, started once at boot. Fail-soft if the DB is down. */
 export function startCheckoutRecoveryScheduler(): void {
-  // Kill switch: CHECKOUT_RECOVERY=false desliga a automação sem redeploy
-  if (process.env.CHECKOUT_RECOVERY === "false") {
-    console.info("[Recovery] Desativado (CHECKOUT_RECOVERY=false)");
+  // Fail closed outside explicitly configured production.
+  if (!canSendCheckoutRecovery()) {
+    console.info("[Recovery] Disabled: explicit production recovery configuration required");
     return;
   }
   if (started) return;
