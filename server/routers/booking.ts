@@ -341,11 +341,9 @@ export const bookingRouter = router({
    * Key behaviors per Guesty docs:
    * - totalPrice includes base rate + cleaning + service fees + taxes + all mandatory charges
    * - Guesty internally creates reservation quotes per rate plan and returns the minimum
-   * - Only AVAILABLE listings for the given dates are returned (unavailable = not in response)
-   * - Prices guaranteed for 24h after the internal quote creation
-   * - SINGLE API call vs dozens of individual quote calls — eliminates rate limit risk entirely
-   * - Max 50 results per request (sufficient for our portfolio)
-   * - Rate limits: 5/sec, 275/min, 16500/hr — one call is well within limits
+   * - Only available listings are returned; absence is conclusive after all pages.
+   * - Search totals are estimates; the checkout verifies its selected quote.
+   * - Fetch up to 50 results per page and follow supplier cursors.
    */
   getBatchQuotes: publicProcedure
     .input(
@@ -378,12 +376,12 @@ export const bookingRouter = router({
       const results: Record<string, QuoteResult> = {};
 
       try {
-        // SINGLE API CALL — Guesty returns all available listings with totalPrice
+        // Fetch the supplier search, then map it to the requested cards.
+        // A six-card homepage must not restrict the supplier search to six.
         const response = await guestyBEClient.getListingsWithPricing({
           checkIn,
           checkOut,
           minOccupancy: guests > 1 ? guests : undefined,
-          limit: listings.length,
         });
 
         const availableIds = new Set<string>();
@@ -419,9 +417,9 @@ export const bookingRouter = router({
           };
         }
 
-        // Mark properties NOT in Guesty response as unavailable
+        // Only a complete supplier search can establish absence.
         for (const { listingId, slug } of listings) {
-          if (!availableIds.has(listingId) && !results[slug]) {
+          if (response.complete && !availableIds.has(listingId) && !results[slug]) {
             results[slug] = {
               available: false,
               listingId,
