@@ -1361,7 +1361,7 @@ export default function BookingWidget({
                   quote?.quoteId &&
                   !(quote?.quoteCreatedAt && Date.now() - quote.quoteCreatedAt > QUOTE_EXPIRY_MS)
                 ) {
-                  const base = quote;
+                  const base = effectiveQuote ?? quote;
                   createIntent
                     .mutateAsync({
                       listingId: guestyId,

@@ -1,3 +1,4 @@
+import { trustedWalletPrice, assertWalletConfirmation } from "../services/wallet-price-validation";
 import { z } from "zod";
 import { router, publicProcedure } from "../_core/trpc";
 import { checkAvailability, getQuoteWithDeadline, type QuoteResult } from "../services/guesty";
@@ -22,48 +23,6 @@ function partnerFees(p: any, guests?: number) {
   const positive = (v: unknown) => typeof v === 'number' && Number.isFinite(v) && v > 0 ? v : undefined;
   return { cleaningFee: positive(p?.cleaningFee), securityDeposit: positive(p?.securityDeposit),
     minNights: positive(p?.minNights), maxGuests: positive(p?.maxGuests), guests };
-}
-
-/**
- * Checkout 2.0 (Bloco 1): total canónico do servidor para Klarna/PayPal.
- * O amount do cliente é só uma pista — valida-se contra computeChargeBreakdown
- * (via breakdownFromIntent, com o mesmo gate de animais do createCardCharge) e
- * o PI é criado SEMPRE com a matemática do servidor. A reserva Guesty continua
- * a ser criada só com a estadia; o recordExternalPayment já tem cap ao
- * balanceDue. Sem intentId (widget legacy) nada muda.
- */
-async function canonicalIntentTotalCents(intentId: string): Promise<number> {
-  const m = await db.getBookingIntent(intentId);
-  if (!m) throw new Error("Checkout session not found — please refresh and try again.");
-  if ((m as any).status === "paid") throw new Error("This booking is already paid.");
-  const { breakdownFromIntent } = await import("../services/checkout-card-charge");
-  const { listingFacts } = await import("./checkout");
-  const { PETS_ONLY_SKUS } = await import("../config/checkout-extras");
-  const facts = await listingFacts((m as any).listingId);
-  const mSafe = facts.pets
-    ? m
-    : { ...m, extras: ((m as any).extras ?? []).filter((e: any) => !PETS_ONLY_SKUS.includes(e.sku)) };
-  const b = breakdownFromIntent(mSafe);
-  if (b.divergent.length) {
-    console.warn(`[CheckoutV2] client amounts diverged intent=${intentId}: ${b.divergent.join(",")}`);
-  }
-  return b.totalCents;
-}
-
-/** Valida o amount do cliente (cêntimos) contra o canónico, tolerância 1 EUR. */
-async function resolveV2AmountCents(
-  label: string,
-  intentId: string,
-  clientAmountCents: number,
-): Promise<number> {
-  const totalCents = await canonicalIntentTotalCents(intentId);
-  if (Math.abs(clientAmountCents - totalCents) > 100) {
-    console.error(
-      `[${label}] v2 amount mismatch intent=${intentId} client=${clientAmountCents}c server=${totalCents}c — PI NÃO criado`,
-    );
-    throw new Error("The price has changed — please refresh the page and try again.");
-  }
-  return totalCents;
 }
 
 /**
@@ -732,9 +691,8 @@ export const bookingRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const amountCents = input.intentId
-        ? await resolveV2AmountCents("PayPal", input.intentId, input.amount)
-        : input.amount;
+      const trusted = await trustedWalletPrice(input);
+      const amountCents = trusted.amount;
       const { createPayPalPaymentIntent } = await import("../services/stripe-paypal");
       const pi = await createPayPalPaymentIntent({
         amount: amountCents,
@@ -752,7 +710,7 @@ export const bookingRouter = router({
           // The webhook creates the Guesty reservation from this metadata alone;
           // without ratePlanId it lands on the listing's default rate plan, gets
           // re-priced, and the payment record is rejected ("Not paid").
-          ...(input.ratePlanId ? { ratePlanId: input.ratePlanId } : {}),
+          ratePlanId: trusted.ratePlanId,
           ...(input.intentId ? { intentId: input.intentId } : {}),
         },
       });
@@ -790,15 +748,8 @@ export const bookingRouter = router({
       const { getOrCreateReservation } = await import("../lib/paypal-idempotency");
 
       const pi = await getPaymentIntent(input.paymentIntentId);
-      if (pi.status !== "succeeded") {
-        throw new Error(`Payment not completed. Status: ${pi.status}`);
-      }
-
-      const expectedCents = Math.round(input.totalAmount * 100);
-      if (Math.abs(pi.amount - expectedCents) > 100) {
-        console.error(`[PayPal] Amount mismatch: PI=${pi.amount}c expected=${expectedCents}c`);
-        throw new Error("Amount mismatch. Please contact support.");
-      }
+      assertWalletConfirmation(pi, input, "website-paypal");
+      input.ratePlanId = pi.metadata.ratePlanId || undefined;
 
       const stripePort = {
         getMetadata: async (id: string) => (await getPaymentIntent(id)).metadata ?? {},
@@ -902,6 +853,10 @@ export const bookingRouter = router({
         console.warn(`[PayPal] Confirmation email failed (non-blocking): ${err.message}`);
       });
 
+      if (pi.metadata?.intentId) {
+        const { completeCheckoutIntent } = await import('../services/checkout-confirmation');
+        await completeCheckoutIntent(pi.metadata.intentId, reservation.reservationId, reservation.confirmationCode);
+      }
       return {
         reservationId: reservation.reservationId,
         confirmationCode: reservation.confirmationCode,
@@ -928,9 +883,8 @@ export const bookingRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const amountCents = input.intentId
-        ? await resolveV2AmountCents("Klarna", input.intentId, input.amount)
-        : input.amount;
+      const trusted = await trustedWalletPrice(input);
+      const amountCents = trusted.amount;
       const { createKlarnaPaymentIntent } = await import("../services/stripe-klarna");
       const pi = await createKlarnaPaymentIntent({
         amount: amountCents,
@@ -948,7 +902,7 @@ export const bookingRouter = router({
           // The webhook creates the Guesty reservation from this metadata alone;
           // without ratePlanId it lands on the listing's default rate plan, gets
           // re-priced, and the payment record is rejected ("Not paid").
-          ...(input.ratePlanId ? { ratePlanId: input.ratePlanId } : {}),
+          ratePlanId: trusted.ratePlanId,
           ...(input.intentId ? { intentId: input.intentId } : {}),
         },
       });
@@ -986,15 +940,8 @@ export const bookingRouter = router({
       const { getOrCreateReservation } = await import("../lib/paypal-idempotency");
 
       const pi = await getPaymentIntent(input.paymentIntentId);
-      if (pi.status !== "succeeded") {
-        throw new Error(`Payment not completed. Status: ${pi.status}`);
-      }
-
-      const expectedCents = Math.round(input.totalAmount * 100);
-      if (Math.abs(pi.amount - expectedCents) > 100) {
-        console.error(`[Klarna] Amount mismatch: PI=${pi.amount}c expected=${expectedCents}c`);
-        throw new Error("Amount mismatch. Please contact support.");
-      }
+      assertWalletConfirmation(pi, input, "website-klarna");
+      input.ratePlanId = pi.metadata.ratePlanId || undefined;
 
       const stripePort = {
         getMetadata: async (id: string) => (await getPaymentIntent(id)).metadata ?? {},
@@ -1098,6 +1045,10 @@ export const bookingRouter = router({
         console.warn(`[Klarna] Confirmation email failed (non-blocking): ${err.message}`);
       });
 
+      if (pi.metadata?.intentId) {
+        const { completeCheckoutIntent } = await import('../services/checkout-confirmation');
+        await completeCheckoutIntent(pi.metadata.intentId, reservation.reservationId, reservation.confirmationCode);
+      }
       return {
         reservationId: reservation.reservationId,
         confirmationCode: reservation.confirmationCode,

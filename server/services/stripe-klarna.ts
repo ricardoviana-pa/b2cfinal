@@ -60,7 +60,7 @@ export async function createKlarnaPaymentIntent(
  *  form de cartão usa sessão types → PI types:[card]. Formatos trocados são
  *  recusados pelo Stripe no confirm (apanhados em produção a 16 e 21 ago). */
 export async function createCardPaymentIntent(
-  params: CreateKlarnaPaymentIntentParams & { wallet?: boolean },
+  params: CreateKlarnaPaymentIntentParams & { wallet?: boolean; idempotencyKey: string },
 ): Promise<Stripe.PaymentIntent> {
   const stripe = getStripe();
   return stripe.paymentIntents.create({
@@ -75,7 +75,7 @@ export async function createCardPaymentIntent(
       ? { automatic_payment_methods: { enabled: true, allow_redirects: "never" as const } }
       : { payment_method_types: ["card"] }),
     ...(params.metadata ? { metadata: params.metadata } : {}),
-  });
+  }, { idempotencyKey: params.idempotencyKey });
 }
 
 /** Cancela um PI não-capturado (usado para reformar PIs em formato antigo). */

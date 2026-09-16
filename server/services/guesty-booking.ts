@@ -149,7 +149,7 @@ export async function createBEQuote(input: {
 
 /** Parse a Guesty BE quote payload into the shared BEQuoteResult shape.
  *  Reused by quote creation AND coupon application (both return the quote). */
-function parseBEQuote(quote: any, listingId: string, checkIn: string, checkOut: string): BEQuoteResult {
+export function parseBEQuote(quote: any, listingId: string, checkIn: string, checkOut: string): BEQuoteResult {
   const ratePlans = quote.rates?.ratePlans || [];
   if (ratePlans.length === 0) throw new Error("No rate plan available for this property");
 

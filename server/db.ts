@@ -1,4 +1,4 @@
-import { eq, desc, asc, and, or, like, sql, inArray, isNotNull, gt, lt } from "drizzle-orm";
+import { ne, eq, desc, asc, and, or, like, sql, inArray, isNotNull, gt, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   InsertUser, users,
@@ -836,6 +836,17 @@ export async function getBookingIntent(id: string): Promise<BookingIntent | null
     console.error("[Database] getBookingIntent failed:", error);
     return null;
   }
+}
+
+/** Claim the server-confirmed paid transition once across app instances. */
+export async function markBookingIntentPaid(id: string, reservationId: string, confirmationCode: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) throw new Error("Cannot record payment confirmation without database");
+  const result: any = await db.update(bookingIntents)
+    .set({ status: "paid", reservationId, confirmationCode })
+    .where(and(eq(bookingIntents.id, id), ne(bookingIntents.status, "paid")));
+  const affected = Array.isArray(result) ? result[0]?.affectedRows : result?.affectedRows;
+  return (affected ?? 0) > 0;
 }
 
 export async function updateBookingIntent(
