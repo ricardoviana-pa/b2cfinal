@@ -2084,5 +2084,20 @@
     "faq2q": "E se cambia il tempo?",
     "faq2a": "Prevedi un’alternativa al coperto per le attività all’aperto. Il programma e le eventuali modifiche meteorologiche vengono concordati nella proposta.",
     "prefill": "Richiesta evento aziendale\nDate o mese preferito:\nPartecipanti e ospiti che pernottano:\nFascia di budget:\nObiettivo principale:"
+  },
+  "editorial": {
+    "addDates": "Aggiungi date",
+    "searchExperiences": "Cerca esperienze",
+    "noExperiences": "Nessuna esperienza corrisponde ai filtri. Rimuovili per esplorare tutte le attività.",
+    "step1Title": "Scegli la tua casa",
+    "step1Body": "Inizia dalla casa e dalle date più adatte al tuo soggiorno.",
+    "step2Title": "Personalizza il soggiorno",
+    "step2Body": "Scopri chef privato, benessere o transfer. Il concierge ti aiuta a organizzare i dettagli.",
+    "step3Title": "Tutti i dettagli, prima",
+    "step3Body": "I servizi facoltativi si pagano separatamente. Disponibilità e dettagli vengono confermati per la tua casa e le tue date.",
+    "faq1Q": "Serve esperienza precedente?",
+    "faq1A": "I requisiti variano in base all’attività. Consulta la pagina dell’esperienza per difficoltà, limiti di età e cosa portare. Il nostro team può aiutarti a scegliere.",
+    "faq2Q": "Posso abbinare attività e soggiorno?",
+    "faq2A": "Sì. Scegli la casa ed esplora le attività nella stessa regione. Il concierge può aiutarti a coordinare il programma. Attività ed eventuali transfer si pagano separatamente."
   }
 }

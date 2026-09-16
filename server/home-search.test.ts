@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { Property } from '../client/src/lib/types';
-import { hasConfirmedQuote, hasSwimmingPool, hasHeatedPool, parseHomeFilters, parseDestinationSelection, searchPrice, sortSearchResults } from '../client/src/lib/homeSearch';
+import { addSearchDays, buildHomeSearchPath, hasConfirmedQuote, hasSwimmingPool, hasHeatedPool, parseHomeFilters, parseDestinationSelection, searchPrice, sortSearchResults } from '../client/src/lib/homeSearch';
 const home = (slug: string, priceFrom = 100, tier = 'essential') => ({ slug, guestyId: slug, priceFrom, tier } as Property);
 const ids = (homes: Property[]) => homes.map(p => p.slug);
 
@@ -68,5 +68,23 @@ describe('home search filters', () => {
     expect(hasHeatedPool('Heated floors and outdoor pool')).toBe(false);
     expect(hasHeatedPool('Heated swimming pool')).toBe(true);
     expect(hasHeatedPool('The pool is heated')).toBe(true);
+  });
+});
+
+
+describe('homepage search submission', () => {
+  it('preserves dates, guests and accented city names in the homes URL', () => {
+    const url = new URL(buildHomeSearchPath({ destination: 'Viana do Castelo', checkin: '2026-10-24', checkout: '2026-10-26', guests: 6 }), 'https://example.test');
+    expect(url.pathname).toBe('/homes');
+    expect(Object.fromEntries(url.searchParams)).toEqual({ location: 'Viana do Castelo', checkin: '2026-10-24', checkout: '2026-10-26', guests: '6' });
+    expect(new URL(buildHomeSearchPath({ destination: 'Caminhã', checkin: '', checkout: '', guests: 2 }), 'https://example.test').searchParams.get('location')).toBe('Caminhã');
+  });
+  it('permits flexible-date browsing without empty parameters', () => {
+    expect(buildHomeSearchPath({ destination: '', checkin: '', checkout: '', guests: 1 })).toBe('/homes');
+  });
+  it('advances correctly through DST, year end and leap day', () => {
+    expect(addSearchDays('2026-10-24', 2)).toBe('2026-10-26');
+    expect(addSearchDays('2026-12-31', 1)).toBe('2027-01-01');
+    expect(addSearchDays('2028-02-28', 1)).toBe('2028-02-29');
   });
 });

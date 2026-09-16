@@ -26,7 +26,9 @@ import { HOME_COUNT_LABEL } from '@shared/brandFacts';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { Link } from 'wouter';
-import { ChevronDown, Users, ArrowRight, Key, Gem, MapPin, Shield, Minus, Plus, Home as HomeIcon, Star, Headphones } from 'lucide-react';
+import { ArrowRight, Key, Gem, MapPin, Shield, Home as HomeIcon, Star, Headphones } from 'lucide-react';
+import HeroSearch from '@/components/marketing/HeroSearch';
+import { addSearchDays } from '@/lib/homeSearch';
 import BookingCTA from '@/components/property/BookingCTA';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -45,13 +47,6 @@ import { CURATED_PROPERTY_ORDER, curatedPosition } from '@/config/propertyOrder'
 import { isChildUnit } from '@/config/propertyGroups';
 
 const destinations = destinationsData as unknown as Destination[];
-
-/** Format an ISO date (YYYY-MM-DD) as DD/MM/YYYY for the search bar display.
- *  Pure string ops — no Date object, so no timezone drift. */
-function fmtSearchDate(iso: string): string {
-  const [y, m, d] = iso.split('-');
-  return d && m && y ? `${d}/${m}/${y}` : iso;
-}
 
 /** Lazy-loaded autoplay video. Until the card scrolls near the viewport it
  *  renders only the poster image — so a heavy below-the-fold video never
@@ -174,9 +169,6 @@ export default function Home() {
   const [searchCheckin, setSearchCheckin] = useState('');
   const [searchCheckout, setSearchCheckout] = useState('');
   const [searchGuests, setSearchGuests] = useState(2);
-  const today = new Date().toISOString().split("T")[0];
-  const checkoutDesktopRef = useRef<HTMLInputElement>(null);
-  const checkoutMobileRef = useRef<HTMLInputElement>(null);
 
   // Live quotes for featured cards when dates are entered
   const utils = trpc.useUtils();
@@ -190,17 +182,10 @@ export default function Home() {
   const [homeQuotesLoading, setHomeQuotesLoading] = useState(false);
   const batchAbortRef = useRef<AbortController | null>(null);
 
-  /** When check-in changes, auto-set checkout to +2 days and open checkout picker */
-  const handleCheckinChange = (value: string, isMobile: boolean) => {
+  const handleCheckinChange = (value: string) => {
     setSearchCheckin(value);
-    if (value) {
-      const d = new Date(value);
-      d.setDate(d.getDate() + 2);
-      const co = d.toISOString().slice(0, 10);
-      setSearchCheckout(co);
-      const ref = isMobile ? checkoutMobileRef : checkoutDesktopRef;
-      setTimeout(() => ref.current?.showPicker?.(), 50);
-    }
+    if (value && (!searchCheckout || searchCheckout <= value)) setSearchCheckout(addSearchDays(value, 2));
+    if (!value) setSearchCheckout('');
   };
 
   const s2Ref = useFadeIn();
@@ -376,7 +361,7 @@ export default function Home() {
       </div>
 
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 1: HERO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section className="relative min-h-[820px] lg:min-h-[720px] lg:h-[92svh] flex items-center overflow-hidden z-20">
+      <section className="home-hero relative overflow-hidden z-20">
         {/* Background */}
         <div className="absolute inset-0">
           <img
@@ -391,10 +376,11 @@ export default function Home() {
             loading="eager"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/10" />
         </div>
 
         {/* Hero content */}
-        <div className="relative container z-10">
+        <div className="relative container z-10 home-hero-content">
           <div className="max-w-2xl">
             <p
               className="body-sm font-medium text-white/70 mb-5 font-body"
@@ -431,269 +417,13 @@ export default function Home() {
               </span>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/homes"
-                className="pa-action inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full bg-white text-pa-dark body-sm font-semibold hover:bg-pa-warm transition-colors"
-                style={{ letterSpacing: '1.5px' }}
-              >
-                {t('home.heroCta')} <ArrowRight className="w-4 h-4" />
-              </Link>
-              <a
-                href="https://wa.me/351927161771?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20concierge"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="pa-action hidden sm:inline-flex items-center justify-center gap-2.5 px-9 py-4 rounded-full border border-white/50 text-white body-sm font-semibold hover:bg-white/10 transition-colors"
-                style={{ letterSpacing: '1.5px' }}
-              >
-                {t('home.heroCtaConcierge')} <ArrowRight className="w-4 h-4" />
-              </a>
+            <div className="flex flex-wrap gap-x-6 gap-y-2 mt-6">
+              <Link href="/homes" className="hero-text-link">{t('home.heroCta')} <ArrowRight className="w-4 h-4" /></Link>
+              <Link href="/concierge" className="hero-text-link">{t('siteUx.exploreServices')} <ArrowRight className="w-4 h-4" /></Link>
             </div>
           </div>
-        </div>
-
-        {/* Mobile search bar — compact with destination */}
-        <div className="absolute bottom-4 left-0 right-0 lg:hidden px-5 z-10">
-          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg p-3 space-y-2">
-            {/* Destination */}
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-pa-stone pointer-events-none" />
-              <select
-                value={searchDest}
-                onChange={e => setSearchDest(e.target.value)}
-                aria-label={t('home.searchDestination')}
-                className="w-full h-[44px] rounded-lg border border-pa-sand bg-white pl-9 pr-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer appearance-none"
-
-              >
-                <option value="">{t('home.searchDestination')}</option>
-                {cityOptions}
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-pa-stone pointer-events-none" />
-            </div>
-            {/* Dates — <input type=date> ignores `placeholder`, and on iOS its
-                native render layer paints over any overlaid HTML label. So the
-                visible control is a plain styled div (label, or the chosen
-                date) with a fully transparent native date input on top to
-                drive the picker. Robust on iOS + Android + desktop. */}
-            <div className="grid grid-cols-2 gap-2">
-              <div className="relative">
-                <div className="w-full h-[44px] rounded-lg border border-pa-sand bg-white px-3 flex items-center body-sm text-inherit font-body" >
-                  <span className={searchCheckin ? 'text-pa-dark' : 'text-pa-earth'}>
-                    {searchCheckin ? fmtSearchDate(searchCheckin) : t('home.searchCheckin', 'Check-in')}
-                  </span>
-                </div>
-                <input
-                  type="date"
-                  value={searchCheckin}
-                  min={today}
-                  onChange={e => handleCheckinChange(e.target.value, true)}
-                  aria-label={t('home.searchCheckin', 'Check-in')}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-              </div>
-              <div className="relative">
-                <div className="w-full h-[44px] rounded-lg border border-pa-sand bg-white px-3 flex items-center body-sm text-inherit font-body" >
-                  <span className={searchCheckout ? 'text-pa-dark' : 'text-pa-earth'}>
-                    {searchCheckout ? fmtSearchDate(searchCheckout) : t('home.searchCheckout', 'Check-out')}
-                  </span>
-                </div>
-                <input
-                  ref={checkoutMobileRef}
-                  type="date"
-                  value={searchCheckout}
-                  min={searchCheckin || today}
-                  onChange={e => setSearchCheckout(e.target.value)}
-                  aria-label={t('home.searchCheckout', 'Check-out')}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-              </div>
-            </div>
-            {/* Guests + Search */}
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 flex-1 h-[44px] rounded-lg border border-pa-sand bg-white px-3 min-w-0">
-                <button
-                  type="button"
-                  onClick={() => setSearchGuests(g => Math.max(1, g - 1))}
-                  disabled={searchGuests <= 1}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-pa-sand text-pa-stone disabled:opacity-30 shrink-0"
-                  aria-label={t('home.decreaseGuests', 'Decrease guests')}
-                >
-                  <Minus className="w-3 h-3" />
-                </button>
-                <span className="body-sm text-pa-dark tabular-nums flex-1 text-center whitespace-nowrap">{searchGuests} {t('home.searchGuests')}</span>
-                <button
-                  type="button"
-                  onClick={() => setSearchGuests(g => Math.min(30, g + 1))}
-                  disabled={searchGuests >= 30}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-pa-sand text-pa-stone disabled:opacity-30 shrink-0"
-                  aria-label={t('home.increaseGuests', 'Increase guests')}
-                >
-                  <Plus className="w-3 h-3" />
-                </button>
-              </div>
-              <Link
-                href={(() => {
-                  const p = new URLSearchParams();
-                  if (searchDest) p.set('location', searchDest);
-                  if (searchCheckin) p.set('checkin', searchCheckin);
-                  if (searchCheckout) p.set('checkout', searchCheckout);
-                  if (searchGuests > 1) p.set('guests', String(searchGuests));
-                  const qs = p.toString();
-                  return `/homes${qs ? `?${qs}` : ''}`;
-                })()}
-                onClick={() => {
-                  const nights = searchCheckin && searchCheckout
-                    ? Math.round((new Date(searchCheckout).getTime() - new Date(searchCheckin).getTime()) / 86400000)
-                    : null;
-                  pushDL({
-                    event: 'search',
-                    search_location: searchDest || 'All Destinations',
-                    search_location_type: searchDest ? 'city' : 'all',
-                    search_checkin: searchCheckin || null,
-                    search_checkout: searchCheckout || null,
-                    search_nights: nights,
-                    search_adults: searchGuests,
-                    search_children: 0,
-                    search_source: 'hero_mobile',
-                  });
-                }}
-                className="pa-action shrink-0 h-[44px] px-5 rounded-full bg-pa-dark text-white caption font-semibold hover:bg-[#333330] transition-colors flex items-center justify-center"
-                style={{ letterSpacing: '1.5px' }}
-              >
-                {t('home.searchButton')}
-              </Link>
-            </div>
-          </div>
-        </div>
-
-
-
-        {/* Desktop search bar */}
-        <div className="absolute bottom-8 inset-x-0 mx-auto hidden lg:block w-full max-w-[860px] px-6 z-20">
-          <div
-            className="flex items-center rounded-full bg-white/95 backdrop-blur-sm shadow-xl overflow-hidden ring-1 ring-black/5"
-            style={{ height: '64px' }}
-          >
-            {/* Destination */}
-            <div className="flex-1 relative h-full">
-              <select
-                value={searchDest}
-                onChange={e => setSearchDest(e.target.value)}
-                aria-label={t('home.searchDestination')}
-                className="w-full h-full pl-6 pr-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer appearance-none"
-
-              >
-                <option value="">{t('home.searchDestination')}</option>
-                {cityOptions}
-              </select>
-              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-pa-stone pointer-events-none" />
-            </div>
-
-            {/* Divider */}
-            <div className="w-px h-6 bg-pa-sand" />
-
-            {/* Check-in */}
-            <div className="relative flex-1 h-full cursor-pointer">
-              <input
-                type="date"
-                value={searchCheckin}
-                min={today}
-                onChange={e => handleCheckinChange(e.target.value, false)}
-                aria-label={t('home.searchCheckin', 'Check-in')}
-                className={`w-full h-full px-4 bg-transparent body-sm text-inherit focus:outline-none cursor-pointer ${searchCheckin ? 'text-pa-dark' : 'text-transparent'}`}
-
-              />
-              {!searchCheckin && (
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 body-sm text-pa-stone pointer-events-none font-body" >
-                  {t('home.searchCheckin', 'Check-in')}
-                </span>
-              )}
-            </div>
-
-            {/* Arrow */}
-            <ArrowRight className="w-3.5 h-3.5 text-pa-stone flex-shrink-0" />
-
-            {/* Check-out */}
-            <div className="relative flex-1 h-full cursor-pointer">
-              <input
-                ref={checkoutDesktopRef}
-                type="date"
-                value={searchCheckout}
-                min={searchCheckin || today}
-                onChange={e => setSearchCheckout(e.target.value)}
-                aria-label={t('home.searchCheckout', 'Check-out')}
-                className={`w-full h-full px-4 bg-transparent body-sm text-inherit focus:outline-none cursor-pointer ${searchCheckout ? 'text-pa-dark' : 'text-transparent'}`}
-
-              />
-              {!searchCheckout && (
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 body-sm text-pa-stone pointer-events-none font-body" >
-                  {t('home.searchCheckout', 'Check-out')}
-                </span>
-              )}
-            </div>
-
-            {/* Divider */}
-            <div className="w-px h-6 bg-pa-sand" />
-
-            {/* Guests */}
-            <div className="flex items-center h-full px-4 gap-2.5">
-              <Users className="w-3.5 h-3.5 text-pa-stone flex-shrink-0" />
-              <button
-                type="button"
-                onClick={() => setSearchGuests(g => Math.max(1, g - 1))}
-                disabled={searchGuests <= 1}
-                className="flex h-6 w-6 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold disabled:opacity-30"
-                aria-label={t('home.decreaseGuests', 'Decrease guests')}
-              >
-                <Minus className="w-2.5 h-2.5" />
-              </button>
-              <span className="body-sm text-pa-dark tabular-nums whitespace-nowrap font-body font-normal" >
-                {searchGuests} <span className="text-pa-stone lowercase">{t('home.searchGuests')}</span>
-              </span>
-              <button
-                type="button"
-                onClick={() => setSearchGuests(g => Math.min(30, g + 1))}
-                disabled={searchGuests >= 30}
-                className="flex h-6 w-6 items-center justify-center rounded-full border border-pa-sand text-pa-stone transition-colors hover:border-pa-gold hover:text-pa-gold disabled:opacity-30"
-                aria-label={t('home.increaseGuests', 'Increase guests')}
-              >
-                <Plus className="w-2.5 h-2.5" />
-              </button>
-            </div>
-
-            {/* Search button */}
-            <Link
-              href={(() => {
-                const p = new URLSearchParams();
-                if (searchDest) p.set('location', searchDest);
-                if (searchCheckin) p.set('checkin', searchCheckin);
-                if (searchCheckout) p.set('checkout', searchCheckout);
-                if (searchGuests > 1) p.set('guests', String(searchGuests));
-                const qs = p.toString();
-                return `/homes${qs ? `?${qs}` : ''}`;
-              })()}
-              onClick={() => {
-                const nights = searchCheckin && searchCheckout
-                  ? Math.round((new Date(searchCheckout).getTime() - new Date(searchCheckin).getTime()) / 86400000)
-                  : null;
-                pushDL({
-                  event: 'search',
-                  search_location: searchDest || 'All Destinations',
-                  search_location_type: searchDest ? 'city' : 'all',
-                  search_checkin: searchCheckin || null,
-                  search_checkout: searchCheckout || null,
-                  search_nights: nights,
-                  search_adults: searchGuests,
-                  search_children: 0,
-                  search_source: 'hero_desktop',
-                });
-              }}
-              className="pa-action flex-shrink-0 h-[50px] mr-1.5 px-8 rounded-full bg-pa-dark text-white body-sm font-semibold hover:bg-[#333330] transition-colors flex items-center gap-2"
-              style={{ letterSpacing: '1.5px' }}
-            >
-              {t('home.searchButton')}
-            </Link>
-          </div>
+          <HeroSearch options={cityOptions} destination={searchDest} checkin={searchCheckin} checkout={searchCheckout} guests={searchGuests}
+            onDestination={setSearchDest} onCheckin={handleCheckinChange} onCheckout={setSearchCheckout} onGuests={setSearchGuests} />
         </div>
       </section>
 

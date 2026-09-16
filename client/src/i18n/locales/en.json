@@ -2084,5 +2084,20 @@
     "faq2q": "What happens if the weather changes?",
     "faq2a": "Ask for an indoor alternative when planning outdoor activities. The programme and any weather-related changes are agreed in your proposal.",
     "prefill": "Corporate event enquiry\nDates or preferred month:\nNumber of participants and overnight guests:\nBudget range:\nMain objective:"
+  },
+  "editorial": {
+    "addDates": "Add dates",
+    "searchExperiences": "Search experiences",
+    "noExperiences": "No experiences match these filters. Clear them to explore all activities.",
+    "step1Title": "Choose your home",
+    "step1Body": "Start with the home and dates that suit your stay.",
+    "step2Title": "Make it yours",
+    "step2Body": "Explore a private chef, wellness or transfers. Your concierge helps arrange the details.",
+    "step3Title": "Know what to expect",
+    "step3Body": "Optional services are priced separately. Availability and details are confirmed for your home and dates.",
+    "faq1Q": "Do I need previous experience?",
+    "faq1A": "Requirements vary by activity. Check the experience page for difficulty, age limits and what to bring. Our team can help you choose.",
+    "faq2Q": "Can I combine activities with a villa stay?",
+    "faq2A": "Yes. Choose your home and explore activities in the same region. Our concierge can help coordinate the programme. Activities and any transfers are charged separately."
   }
 }
