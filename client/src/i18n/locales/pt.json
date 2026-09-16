@@ -2082,5 +2082,8 @@
     "faq2q": "E se o tempo mudar?",
     "faq2a": "Peça uma alternativa interior ao planear atividades ao ar livre. O programa e eventuais alterações por motivos meteorológicos são acordados na proposta.",
     "prefill": "Pedido de evento de empresa\nDatas ou mês preferido:\nParticipantes e pessoas a alojar:\nIntervalo de orçamento:\nObjetivo principal:"
+  },
+  "editorial": {
+    "addDates": "Adicionar datas"
   }
 }

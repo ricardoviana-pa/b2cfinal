@@ -815,7 +815,7 @@ export default function PropertyDetail() {
       basePrice: (property?.priceFrom as number) || undefined,
       tripwixUid,
     },
-    { enabled: !!property?.guestyId || !!tripwixUid, staleTime: 8 * 60 * 60 * 1000 },
+    { enabled: !!property?.guestyId || !!tripwixUid, staleTime: 60_000 },
   );
   const relatedProperties = useMemo(() => {
     if (!property || !allPropsData) return [];

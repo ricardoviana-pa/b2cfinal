@@ -824,3 +824,27 @@
 .page-hero > .container { padding-bottom: 3rem; }
 .booking-widget :is(input:not([type=checkbox]),select,textarea) { font-size: 16px; }
 .site-faq > section { padding-top: 2rem; padding-bottom: 2rem; }
+
+/* Responsive homepage search */
+.home-hero { padding: 148px 0 48px; min-height: min(850px, 96svh); display: flex; align-items: center; }
+.home-hero-content { display: flex; flex-direction: column; gap: 40px; }
+.hero-text-link { display: inline-flex; align-items: center; justify-content: center; gap: .65rem; min-height: 44px; color: white; font-size: .875rem; border-bottom: 1px solid #ffffff70; }
+.hero-text-link:hover { border-color: white; }
+.hero-text-link:focus-visible { outline: 2px solid white; outline-offset: 5px; }
+.hero-search { display: grid; grid-template-columns: minmax(170px, 1.3fr) repeat(2, minmax(150px, 1fr)) minmax(85px,.6fr) auto; gap: 8px; padding: 10px; width: 100%; max-width: 1100px; background: #fff; border-radius: 14px; box-shadow: 0 12px 36px #0002; color: #1A1A18; }
+.hero-search-field { position: relative; min-width: 0; display: flex; flex-direction: column; justify-content: center; min-height: 64px; padding: 8px 14px; border: 1px solid #E8E4DC; border-radius: 8px; text-align: left; }
+.hero-search-field > span:first-child { display: block; font-size: 11px; font-weight: 500; color: #6B6860; line-height: 1.4; margin-bottom: 5px; }
+.hero-search-field select { border: 0; background: transparent; width: 100%; min-width: 0; min-height: 0; padding: 0 18px 0 0; appearance: none; font-size: 15px; line-height: 1.5; cursor: pointer; }
+.hero-search-field:focus-within { outline: 2px solid #8B7355; outline-offset: 2px; }
+.hero-search-field select:focus { outline: none; }
+.hero-search-icon { position: absolute; pointer-events: none; right: 12px; bottom: 14px; width: 15px; height: 15px; color: #726D63; }
+.hero-search-date input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.hero-search-date-value { font-size: 15px; padding-right: 20px; white-space: nowrap; line-height: 1.5; }
+.hero-search-submit { height: 100%; min-height: 64px; padding: 16px 24px; white-space: nowrap; letter-spacing: .04em; }
+@media (max-width: 1023px) {
+  .home-hero { padding: 120px 0 32px; min-height: auto; }
+  .home-hero-content { gap: 28px; }
+  .hero-search { grid-template-columns: 1fr 1fr; max-width: 620px; }
+  .hero-search-destination { grid-column: 1/-1; }
+  .hero-search-submit { padding-inline: 16px; white-space: normal; }
+}

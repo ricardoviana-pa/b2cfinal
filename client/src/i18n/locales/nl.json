@@ -2082,5 +2082,8 @@
     "faq2q": "Wat als het weer verandert?",
     "faq2a": "Plan een binnenalternatief voor buitenactiviteiten. Het programma en eventuele wijzigingen door het weer worden in het voorstel afgesproken.",
     "prefill": "Aanvraag bedrijfsevenement\nData of voorkeursmaand:\nDeelnemers en overnachtende gasten:\nBudgetindicatie:\nHoofddoel:"
+  },
+  "editorial": {
+    "addDates": "Datums toevoegen"
   }
 }

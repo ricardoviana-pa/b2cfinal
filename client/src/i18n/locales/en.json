@@ -2082,5 +2082,8 @@
     "faq2q": "What happens if the weather changes?",
     "faq2a": "Ask for an indoor alternative when planning outdoor activities. The programme and any weather-related changes are agreed in your proposal.",
     "prefill": "Corporate event enquiry\nDates or preferred month:\nNumber of participants and overnight guests:\nBudget range:\nMain objective:"
+  },
+  "editorial": {
+    "addDates": "Add dates"
   }
 }

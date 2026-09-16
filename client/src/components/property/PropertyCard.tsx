@@ -81,7 +81,6 @@ export default function PropertyCard({
   const displayName = group?.name ?? getDisplayName(property);
   const [currentImage, setCurrentImage] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
   const touchStartX = useRef(0);
   const touchCurrentX = useRef(0);
 
@@ -97,15 +96,15 @@ export default function PropertyCard({
   const nextImage = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    e.currentTarget.closest('.img-fallback')?.removeAttribute('data-broken');
     setCurrentImage(p => (p + 1) % total);
-    setImageLoaded(false);
   }, [total]);
 
   const prevImage = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    e.currentTarget.closest('.img-fallback')?.removeAttribute('data-broken');
     setCurrentImage(p => (p - 1 + total) % total);
-    setImageLoaded(false);
   }, [total]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -117,12 +116,12 @@ export default function PropertyCard({
     touchCurrentX.current = e.touches[0].clientX;
     if (Math.abs(touchCurrentX.current - touchStartX.current) > 10) setIsDragging(true);
   };
-  const handleTouchEnd = () => {
+  const handleTouchEnd = (e: React.TouchEvent) => {
     const diff = touchStartX.current - touchCurrentX.current;
     if (Math.abs(diff) > 40) {
+      e.currentTarget.removeAttribute('data-broken');
       if (diff > 0) setCurrentImage(p => (p + 1) % total);
       else setCurrentImage(p => (p - 1 + total) % total);
-      setImageLoaded(false);
     }
     setTimeout(() => setIsDragging(false), 50);
   };
@@ -180,6 +179,7 @@ export default function PropertyCard({
         onTouchEnd={handleTouchEnd}
       >
         <img
+          key={rawImages[currentImage]}
           src={optimizeGuestyImage(rawImages[currentImage], 1080)}
           srcSet={guestySrcSet(rawImages[currentImage], [400, 640, 768, 1080])}
           alt={t('property.imageAlt', { name: displayName, current: currentImage + 1, total })}
@@ -189,14 +189,11 @@ export default function PropertyCard({
           fetchPriority="low"
           sizes={imageSizes}
           width={800} height={600}
-          onLoad={() => setImageLoaded(true)}
+          onLoad={e => e.currentTarget.parentElement?.removeAttribute('data-broken')}
           onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }}
         />
 
-        {/* Shimmer skeleton while image loads */}
-        {!imageLoaded && (
-          <div className="absolute inset-0 skeleton-shimmer" />
-        )}
+        {/* Keep the placeholder behind the image: cached images may finish before hydration. */}
 
         {/* Subtle bottom gradient for readability */}
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.08) 0%, transparent 40%)' }} />

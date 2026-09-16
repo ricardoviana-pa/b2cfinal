@@ -2082,5 +2082,8 @@
     "faq2q": "Et si la météo change ?",
     "faq2a": "Prévoyez une alternative en intérieur pour les activités de plein air. Le programme et les éventuels changements liés à la météo sont convenus dans la proposition.",
     "prefill": "Demande d’événement d’entreprise\nDates ou mois souhaité :\nParticipants et personnes à héberger :\nFourchette de budget :\nObjectif principal :"
+  },
+  "editorial": {
+    "addDates": "Ajouter des dates"
   }
 }
