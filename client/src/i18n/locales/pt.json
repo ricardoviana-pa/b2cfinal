@@ -2084,5 +2084,20 @@
     "faq2q": "E se o tempo mudar?",
     "faq2a": "Peça uma alternativa interior ao planear atividades ao ar livre. O programa e eventuais alterações por motivos meteorológicos são acordados na proposta.",
     "prefill": "Pedido de evento de empresa\nDatas ou mês preferido:\nParticipantes e pessoas a alojar:\nIntervalo de orçamento:\nObjetivo principal:"
+  },
+  "editorial": {
+    "addDates": "Adicionar datas",
+    "searchExperiences": "Pesquisar experiências",
+    "noExperiences": "Não há experiências com estes filtros. Limpe-os para explorar todas as atividades.",
+    "step1Title": "Escolha a sua casa",
+    "step1Body": "Comece pela casa e pelas datas certas para a sua estadia.",
+    "step2Title": "Dê-lhe o seu toque",
+    "step2Body": "Explore chef privado, bem-estar ou transfers. O concierge ajuda a organizar os detalhes.",
+    "step3Title": "Saiba com o que contar",
+    "step3Body": "Os serviços opcionais têm um custo à parte. A disponibilidade e os detalhes são confirmados para a sua casa e datas.",
+    "faq1Q": "Preciso de experiência prévia?",
+    "faq1A": "Os requisitos variam por atividade. Consulte a página da experiência para conhecer a dificuldade, os limites de idade e o que levar. A nossa equipa pode ajudar a escolher.",
+    "faq2Q": "Posso combinar atividades com uma estadia?",
+    "faq2A": "Sim. Escolha a casa e explore atividades na mesma região. O concierge pode ajudar a coordenar o programa. As atividades e eventuais transfers são cobrados à parte."
   }
 }

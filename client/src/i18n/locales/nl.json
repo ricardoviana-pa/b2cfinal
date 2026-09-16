@@ -2084,5 +2084,20 @@
     "faq2q": "Wat als het weer verandert?",
     "faq2a": "Plan een binnenalternatief voor buitenactiviteiten. Het programma en eventuele wijzigingen door het weer worden in het voorstel afgesproken.",
     "prefill": "Aanvraag bedrijfsevenement\nData of voorkeursmaand:\nDeelnemers en overnachtende gasten:\nBudgetindicatie:\nHoofddoel:"
+  },
+  "editorial": {
+    "addDates": "Datums toevoegen",
+    "searchExperiences": "Zoek ervaringen",
+    "noExperiences": "Geen ervaringen voor deze filters. Wis de filters om alle activiteiten te bekijken.",
+    "step1Title": "Kies je huis",
+    "step1Body": "Begin met het huis en de datums die bij je verblijf passen.",
+    "step2Title": "Maak het persoonlijk",
+    "step2Body": "Ontdek een privékok, wellness of transfers. Je conciërge helpt de details te regelen.",
+    "step3Title": "Weet waar je aan toe bent",
+    "step3Body": "Optionele diensten worden apart berekend. Beschikbaarheid en details worden voor jouw huis en datums bevestigd.",
+    "faq1Q": "Heb ik ervaring nodig?",
+    "faq1A": "De eisen verschillen per activiteit. Bekijk de ervaringspagina voor de moeilijkheidsgraad, leeftijdsgrenzen en wat je moet meenemen. Ons team helpt je kiezen.",
+    "faq2Q": "Kan ik activiteiten combineren met een verblijf?",
+    "faq2A": "Ja. Kies je huis en ontdek activiteiten in dezelfde regio. Onze conciërge kan het programma helpen samenstellen. Activiteiten en eventuele transfers worden apart berekend."
   }
 }

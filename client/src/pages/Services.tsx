@@ -6,13 +6,15 @@
 import { useMemo } from 'react';
 import { serviceRouteSlug } from '@shared/serviceRoutes';
 import { Link } from 'wouter';
-import { MessageCircle, ArrowRight, Lock } from 'lucide-react';
+import { MessageCircle, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import productsData from '@/data/products.json';
 import { localizeProduct } from '@/lib/localizeProduct';
 import type { Product } from '@/lib/types';
 import { formatEurEditorial } from '@/lib/format';
+import EditorialHero from '@/components/marketing/EditorialHero';
+import { cdnResize, cdnSrcSet } from '@/lib/images';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -28,34 +30,25 @@ const WELLNESS_SLUGS = ['in-villa-spa', 'private-yoga', 'personal-training'];
 const MOBILITY_SLUGS = ['airport-shuttle'];
 const ADDITIONAL_SLUGS = ['grocery-delivery', 'babysitter', 'daily-housekeeping'];
 
-const WHATSAPP_BASE = 'https://wa.me/351927161771?text=';
 
 function ServiceCard({ product }: { product: Product | undefined }) {
   const { t } = useTranslation();
   if (!product) return null;
   return (
-    <Link href={`/services/${serviceRouteSlug(product.slug)}`} className="group block">
-      <div className="relative overflow-hidden rounded-xl bg-[#E8E4DC]" style={{ aspectRatio: '4/3' }}>
-        {product.image ? (
-          <img src={product.image} alt={`${product.name} – concierge service at luxury villa in Portugal`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" loading="lazy" />
-        ) : (
-          <div className="w-full h-full" />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-5">
-          <h3 className="font-display text-[1.25rem] text-white mb-1 leading-tight">{product.name}</h3>
-          {product.tagline && (
-            <p className="text-[12px] text-white/80 font-light line-clamp-2">{product.tagline}</p>
-          )}
+    <Link href={`/services/${serviceRouteSlug(product.slug)}`} className="catalog-card group">
+      <div className="aspect-[4/3] overflow-hidden bg-pa-sand">
+        {product.image && <img src={cdnResize(product.image, 640)} srcSet={cdnSrcSet(product.image, [400, 640, 800])}
+          sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw" alt={product.name}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" width={800} height={600} decoding="async" />}
+      </div>
+      <div className="catalog-card-content">
+        <h3 className="font-display text-2xl text-pa-dark">{product.name}</h3>
+        <p className="body-md mt-2 flex-1">{product.tagline}</p>
+        <div className="catalog-card-footer">
+          <p className="text-sm">{(product.priceFrom ?? 0) > 0 && <><strong className="font-medium">{t('common.from')} {formatEurEditorial(product.priceFrom!)}</strong> <span className="text-pa-stone">{product.priceSuffix}</span></>}</p>
+          <span className="catalog-card-link">{t('siteUx.viewService')} <ArrowRight className="h-4 w-4 shrink-0" /></span>
         </div>
       </div>
-      {product.priceFrom && (
-        <p className="mt-3 text-[12px] text-[#6B6860]">
-          <span className="text-[#1A1A18] font-medium">{t('common.from')} {formatEurEditorial(product.priceFrom)}</span>
-          <span className="text-[#726D63]"> {product.priceSuffix}</span>
-        </p>
-      )}
-    <span className="inline-flex items-center gap-2 mt-3 min-h-11 body-sm font-medium text-pa-dark">{t('siteUx.viewService')} <ArrowRight className="w-4 h-4" /></span>
     </Link>
   );
 }
@@ -68,7 +61,7 @@ function SingleServiceFeature({ product, overline, title, body }: { product: Pro
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
       <div className="relative overflow-hidden rounded-xl bg-[#E8E4DC]" style={{ aspectRatio: '4/3' }}>
         {product.image && (
-          <img src={product.image} alt={`${product.name} – concierge service at luxury villa in Portugal`} className="w-full h-full object-cover" loading="lazy" />
+          <img src={product.image} alt={product.name} className="w-full h-full object-cover" loading="lazy" width={800} height={600} decoding="async" />
         )}
       </div>
       <div>
@@ -84,7 +77,7 @@ function SingleServiceFeature({ product, overline, title, body }: { product: Pro
             </p>
           )}
         </div>
-      <Link href={`/services/${serviceRouteSlug(product.slug)}`} className="btn-ghost">{t('siteUx.viewService')} <ArrowRight className="w-4 h-4" /></Link>
+      <Link href={`/services/${serviceRouteSlug(product.slug)}`} className="btn-primary">{t('siteUx.viewService')} <ArrowRight className="w-4 h-4" /></Link>
       </div>
     </div>
   );
@@ -92,7 +85,7 @@ function SingleServiceFeature({ product, overline, title, body }: { product: Pro
 
 export default function Concierge() {
   const { t, i18n } = useTranslation();
-  usePageMeta({ title: 'Concierge Services | Exclusive to Portugal Active Guests', description: 'Private chef, in-house spa, airport transfers and additional services available exclusively to guests staying at our properties.', url: '/concierge' });
+  usePageMeta({ title: t('services.heroTitle'), description: t('editorial.step2Body') + ' ' + t('editorial.step3Body'), url: '/concierge' });
 
   const loc = (p: Product | undefined) => localizeProduct(p, i18n.language) as Product;
   const gastronomyProducts = GASTRONOMY_SLUGS.map(getService).filter(Boolean).map(loc) as Product[];
@@ -146,7 +139,6 @@ export default function Concierge() {
     ];
   }, [gastronomyProducts, wellnessProducts, mobilityProducts, additionalProducts]);
 
-  const waConciergeMsgEncoded = encodeURIComponent("Hi, I'd like to talk to your concierge about planning my stay.");
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
@@ -154,30 +146,11 @@ export default function Concierge() {
       <Header />
 
       {/* Hero */}
-      <section className="page-hero">
-        <img
-          src="/experiences/pa-property-firepit.webp"
-          alt="Portugal Active property terrace with fire pit at sunset"
-          className="absolute inset-0 w-full h-full object-cover"
-          width={1600}
-          height={900}
-          fetchPriority="high"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/15" />
-        <div className="relative container pb-12 lg:pb-16 z-10">
-          <p className="inline-flex items-center gap-1.5 text-[11px] font-medium text-white/90 mb-3 tracking-[0.12em] uppercase">
-            <Lock className="w-3 h-3" /> {t('services.exclusiveToGuests')}
-          </p>
-          <h1 className="headline-xl text-white mb-4">{t('services.heroTitle')}</h1>
-          <p className="body-lg max-w-xl text-white/95">
-            {t('conversion.extrasNote')}
-          </p>
-          <div className="flex flex-wrap gap-3 mt-6">
-            <a href="#gastronomy" className="btn-white">{t('siteUx.exploreServices')}</a>
-            <Link href="/homes" className="btn-ghost-light">{t('siteUx.findStay')}</Link>
-          </div>
-        </div>
-      </section>
+      <EditorialHero image="/experiences/pa-property-firepit.webp" alt={t('services.heroAlt')}
+        eyebrow={t('services.exclusiveToGuests')} title={t('services.heroTitle')} description={t('editorial.step2Body')}>
+        <a href="#gastronomy" className="btn-white">{t('siteUx.exploreServices')} <ArrowRight className="h-4 w-4" /></a>
+        <Link href="/homes" className="hero-text-link">{t('siteUx.findStay')} <ArrowRight className="h-4 w-4" /></Link>
+      </EditorialHero>
 
       {/* Section Nav */}
       <div className="sticky top-16 md:top-20 z-30 bg-[#FAFAF7]/95 backdrop-blur-md border-b border-[#E8E4DC]">
@@ -202,14 +175,14 @@ export default function Concierge() {
       </div>
 
       {/* Gastronomy */}
-      <section id="gastronomy" className="section-padding bg-white">
+      <section id="gastronomy" className="section-padding scroll-mt-40 bg-white">
         <div className="container">
           {gastronomyProducts.length === 1 ? (
             <SingleServiceFeature
               product={gastronomyProducts[0]}
               overline={t('services.gastronomyOverline')}
               title={t('services.gastronomyTitle')}
-              body={gastronomyProducts[0].description || gastronomyProducts[0].tagline || ''}
+              body={gastronomyProducts[0].tagline || ''}
             />
           ) : (
             <>
@@ -229,7 +202,7 @@ export default function Concierge() {
       </section>
 
       {/* Wellness */}
-      <section id="wellness" className="section-padding bg-[#F5F1EB]">
+      <section id="wellness" className="section-padding scroll-mt-40 bg-[#F5F1EB]">
         <div className="container">
           <div className="max-w-3xl mb-12">
             <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.12em] uppercase">{t('services.wellnessOverline')}</p>
@@ -244,14 +217,14 @@ export default function Concierge() {
       </section>
 
       {/* Mobility */}
-      <section id="mobility" className="section-padding bg-white">
+      <section id="mobility" className="section-padding scroll-mt-40 bg-white">
         <div className="container">
           {mobilityProducts.length === 1 ? (
             <SingleServiceFeature
               product={mobilityProducts[0]}
               overline={t('services.mobilityOverline')}
               title={t('services.mobilityTitle')}
-              body={mobilityProducts[0].description || mobilityProducts[0].tagline || ''}
+              body={t('services.mobilityBody')}
             />
           ) : (
             <>
@@ -271,7 +244,7 @@ export default function Concierge() {
       </section>
 
       {/* Additional Services */}
-      <section id="additional" className="section-padding bg-[#F5F1EB]">
+      <section id="additional" className="section-padding scroll-mt-40 bg-[#F5F1EB]">
         <div className="container">
           <div className="max-w-3xl mb-12">
             <p className="text-[11px] font-medium text-[#8B7355] mb-4 tracking-[0.12em] uppercase">{t('services.additionalOverline')}</p>
@@ -286,15 +259,29 @@ export default function Concierge() {
         </div>
       </section>
 
+      <section className="editorial-proof" aria-label={t('about.valuesOverline')}>
+        <div className="container grid md:grid-cols-3">
+          {[1, 2, 3].map(step => <div className="editorial-proof-item" key={step}>
+            <span className="editorial-eyebrow text-pa-gold">0{step}</span>
+            <h2 className="font-display text-2xl mb-3">{t(`editorial.step${step}Title`)}</h2>
+            <p className="body-md">{t(`editorial.step${step}Body`)}</p>
+          </div>)}
+        </div>
+      </section>
+
+      <aside className="container py-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-t border-pa-sand">
+        <p className="body-md">{t('services.guestsOnlyQuestion')}</p>
+        <Link href="/experiences" className="btn-ghost">{t('services.browseExperiences')} <ArrowRight className="h-4 w-4" /></Link>
+      </aside>
       {/* Final CTA */}
-      <section className="section-padding bg-[#1A1A18]">
+      <section className="section-padding scroll-mt-40 bg-[#1A1A18]">
         <div className="container max-w-2xl mx-auto text-center">
           <h2 className="headline-lg text-white mb-4">{t('services.ctaTitle')}</h2>
           <p className="body-lg mb-8" style={{ color: 'rgba(255,255,255,0.65)' }}>
-            {t('conversion.extrasNote')}
+            {t('conversion.helpBody')}
           </p>
           <a
-            href={`${WHATSAPP_BASE}${waConciergeMsgEncoded}`}
+            href="https://wa.me/351927161771"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-white"

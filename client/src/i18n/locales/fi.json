@@ -2084,5 +2084,20 @@
     "faq2q": "Entä jos sää muuttuu?",
     "faq2a": "Suunnittele ulkoaktiviteeteille vaihtoehto sisätiloissa. Ohjelma ja mahdolliset säästä johtuvat muutokset sovitaan tarjouksessa.",
     "prefill": "Yritystapahtumakysely\nPäivämäärät tai toivottu kuukausi:\nOsallistujat ja yöpyjät:\nBudjetti:\nPäätavoite:"
+  },
+  "editorial": {
+    "addDates": "Lisää päivämäärät",
+    "searchExperiences": "Hae elämyksiä",
+    "noExperiences": "Näillä suodattimilla ei löytynyt elämyksiä. Tyhjennä suodattimet nähdäksesi kaikki aktiviteetit.",
+    "step1Title": "Valitse kotisi",
+    "step1Body": "Aloita valitsemalla sopiva koti ja matkapäivät.",
+    "step2Title": "Tee lomasta omasi",
+    "step2Body": "Tutustu yksityiskokkiin, hyvinvointipalveluihin ja kuljetuksiin. Concierge auttaa järjestelyissä.",
+    "step3Title": "Tiedä, mitä odottaa",
+    "step3Body": "Valinnaiset palvelut laskutetaan erikseen. Saatavuus ja yksityiskohdat vahvistetaan kotisi ja matkapäiviesi mukaan.",
+    "faq1Q": "Tarvitsenko aiempaa kokemusta?",
+    "faq1A": "Vaatimukset vaihtelevat aktiviteetin mukaan. Katso elämyksen sivulta vaikeustaso, ikärajat ja tarvittavat varusteet. Tiimimme auttaa valinnassa.",
+    "faq2Q": "Voinko yhdistää aktiviteetteja majoitukseen?",
+    "faq2A": "Kyllä. Valitse kotisi ja tutustu saman alueen aktiviteetteihin. Concierge voi auttaa ohjelman suunnittelussa. Aktiviteetit ja mahdolliset kuljetukset laskutetaan erikseen."
   }
 }

@@ -2084,5 +2084,20 @@
     "faq2q": "Vad händer om vädret ändras?",
     "faq2a": "Planera ett inomhusalternativ för utomhusaktiviteter. Programmet och eventuella väderändringar avtalas i förslaget.",
     "prefill": "Förfrågan om företagsevenemang\nDatum eller önskad månad:\nDeltagare och övernattande gäster:\nBudgetintervall:\nHuvudsyfte:"
+  },
+  "editorial": {
+    "addDates": "Lägg till datum",
+    "searchExperiences": "Sök upplevelser",
+    "noExperiences": "Inga upplevelser matchar filtren. Rensa dem för att se alla aktiviteter.",
+    "step1Title": "Välj ditt hus",
+    "step1Body": "Börja med huset och datumen som passar din vistelse.",
+    "step2Title": "Gör vistelsen personlig",
+    "step2Body": "Upptäck privat kock, wellness eller transfer. Din concierge hjälper dig med detaljerna.",
+    "step3Title": "Vet vad som väntar",
+    "step3Body": "Valfria tjänster debiteras separat. Tillgänglighet och detaljer bekräftas för ditt hus och dina datum.",
+    "faq1Q": "Behöver jag tidigare erfarenhet?",
+    "faq1A": "Kraven varierar mellan aktiviteterna. Läs upplevelsens sida för svårighetsgrad, åldersgränser och vad du ska ta med. Vårt team hjälper dig att välja.",
+    "faq2Q": "Kan jag kombinera aktiviteter med en vistelse?",
+    "faq2A": "Ja. Välj ditt hus och upptäck aktiviteter i samma region. Vår concierge kan hjälpa till att planera programmet. Aktiviteter och eventuell transfer debiteras separat."
   }
 }

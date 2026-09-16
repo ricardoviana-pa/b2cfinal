@@ -2084,5 +2084,20 @@
     "faq2q": "Was passiert bei einem Wetterwechsel?",
     "faq2a": "Planen Sie für Aktivitäten im Freien eine Alternative im Innenbereich ein. Programm und wetterbedingte Änderungen werden im Angebot vereinbart.",
     "prefill": "Anfrage für ein Firmenevent\nTermine oder bevorzugter Monat:\nTeilnehmer und Übernachtungsgäste:\nBudgetrahmen:\nHauptziel:"
+  },
+  "editorial": {
+    "addDates": "Reisedaten wählen",
+    "searchExperiences": "Erlebnisse suchen",
+    "noExperiences": "Keine Erlebnisse für diese Filter. Setzen Sie die Filter zurück, um alle Aktivitäten zu sehen.",
+    "step1Title": "Wählen Sie Ihr Haus",
+    "step1Body": "Beginnen Sie mit dem passenden Haus und Ihren Reisedaten.",
+    "step2Title": "Gestalten Sie Ihren Aufenthalt",
+    "step2Body": "Entdecken Sie Privatkoch, Wellness oder Transfers. Ihr Concierge hilft bei der Organisation.",
+    "step3Title": "Gut informiert anreisen",
+    "step3Body": "Optionale Leistungen werden separat berechnet. Verfügbarkeit und Details werden für Ihr Haus und Ihre Reisedaten bestätigt.",
+    "faq1Q": "Brauche ich Vorkenntnisse?",
+    "faq1A": "Die Voraussetzungen hängen von der Aktivität ab. Auf der Erlebnis-Seite finden Sie Schwierigkeitsgrad, Altersgrenzen und die Packliste. Unser Team hilft Ihnen bei der Auswahl.",
+    "faq2Q": "Kann ich Aktivitäten mit einem Aufenthalt verbinden?",
+    "faq2A": "Ja. Wählen Sie Ihr Haus und entdecken Sie Aktivitäten in derselben Region. Unser Concierge hilft bei der Planung. Aktivitäten und mögliche Transfers werden separat berechnet."
   }
 }

@@ -2084,5 +2084,20 @@
     "faq2q": "Et si la météo change ?",
     "faq2a": "Prévoyez une alternative en intérieur pour les activités de plein air. Le programme et les éventuels changements liés à la météo sont convenus dans la proposition.",
     "prefill": "Demande d’événement d’entreprise\nDates ou mois souhaité :\nParticipants et personnes à héberger :\nFourchette de budget :\nObjectif principal :"
+  },
+  "editorial": {
+    "addDates": "Ajouter des dates",
+    "searchExperiences": "Rechercher des expériences",
+    "noExperiences": "Aucune expérience ne correspond à ces filtres. Effacez-les pour découvrir toutes les activités.",
+    "step1Title": "Choisissez votre maison",
+    "step1Body": "Commencez par la maison et les dates qui vous conviennent.",
+    "step2Title": "Créez votre séjour",
+    "step2Body": "Découvrez un chef privé, des soins ou des transferts. Votre concierge vous aide à organiser les détails.",
+    "step3Title": "Tout savoir avant de réserver",
+    "step3Body": "Les services optionnels sont facturés séparément. La disponibilité et les détails sont confirmés selon votre maison et vos dates.",
+    "faq1Q": "Faut-il avoir de l’expérience ?",
+    "faq1A": "Les conditions varient selon l’activité. Consultez sa page pour connaître la difficulté, les limites d’âge et les affaires à prévoir. Notre équipe peut vous conseiller.",
+    "faq2Q": "Puis-je associer des activités à mon séjour ?",
+    "faq2A": "Oui. Choisissez votre maison et découvrez les activités de la région. Notre concierge peut coordonner le programme. Les activités et les éventuels transferts sont facturés séparément."
   }
 }

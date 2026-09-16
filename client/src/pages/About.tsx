@@ -3,14 +3,14 @@
    5 sections: Hero, Origin Story, Social Proof, Team, Final CTA
    ========================================================================== */
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef } from 'react';
 import { HOME_COUNT_LABEL, CHECKLIST_POINTS } from '@shared/brandFacts';
-import { createPortal } from 'react-dom';
-import { ChevronLeft, ChevronRight, ArrowRight, Play, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight, Play } from 'lucide-react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { IMAGES } from '@/lib/images';
+import EditorialHero from '@/components/marketing/EditorialHero';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
@@ -130,8 +130,8 @@ const PRESS_LOGOS = [
 export default function About() {
   const { t } = useTranslation();
   usePageMeta({
-    title: 'About Portugal Active | Private Hotels in Portugal Since 2017',
-    description: `From adventure tourism in Viana do Castelo to ${HOME_COUNT} operated homes across Portugal. How Portugal Active transforms private homes into private hotels. Featured in Forbes.`,
+    title: t('nav.about') + ' Portugal Active',
+    description: t('about.heroSubtitle', { count: HOME_COUNT }),
     url: '/about',
   });
 
@@ -160,20 +160,6 @@ export default function About() {
     scrollRef.current.scrollBy({ left: direction === 'left' ? -320 : 320, behavior: 'smooth' });
   };
 
-  // Behind-the-scenes video — opens in a clean modal so the page itself never
-  // shows YouTube chrome (play badge, channel avatar, "Watch on YouTube").
-  const [videoOpen, setVideoOpen] = useState(false);
-  useEffect(() => {
-    if (!videoOpen) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setVideoOpen(false);
-    document.addEventListener('keydown', onKey);
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.removeEventListener('keydown', onKey);
-      document.body.style.overflow = '';
-    };
-  }, [videoOpen]);
-
   const STATS = [
     { value: '2017', label: t('about.statFounded', 'Founded') },
     { value: `${HOME_COUNT}`, label: t('about.statHomes', 'Private hotels') },
@@ -189,35 +175,21 @@ export default function About() {
       {/* ═══════════════════════════════════════════════════════════════════
           SECTION 1: HERO
           ═══════════════════════════════════════════════════════════════════ */}
-      <section className="page-hero">
-        <picture className="absolute inset-0 w-full h-full">
-          {/* Portrait crop on phones keeps both team members in frame */}
-          <source media="(max-width: 767px)" srcSet={IMAGES.aboutHeroMobile} />
-          <img
-            src={IMAGES.aboutHero}
-            alt="Portugal Active housekeeping team preparing a luxury private villa"
-            className="absolute inset-0 w-full h-full object-cover"
-            width={1600} height={1067}
-            fetchPriority="high"
-          />
-        </picture>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/30 to-transparent" />
-        <div className="relative container z-10 max-w-[1200px] mx-auto">
-          <p className="text-[13px] font-medium uppercase tracking-[2px] text-white/70 mb-5" style={{ fontFamily: 'var(--font-body)' }}>
-            {t('about.heroOverline')}
-          </p>
-          <h1
-            className="headline-xl text-white mb-5 max-w-[600px]"
-
-          >
-            {t('about.heroTitle')}
-          </h1>
-          <p
-            className="text-white/85 max-w-[480px]"
-            style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: 'clamp(15px, 2vw, 17px)', lineHeight: 1.6 }}
-          >
-            {t('about.heroSubtitle', { count: HOME_COUNT })}
-          </p>
+      <EditorialHero image={IMAGES.aboutHero} mobileImage={IMAGES.aboutHeroMobile}
+        alt={t('about.heroAlt')} eyebrow={t('about.heroOverline')} title={t('about.heroTitle')}
+        description={t('about.heroSubtitle', { count: HOME_COUNT })}>
+        <Link href="/homes" className="btn-white">{t('siteUx.findStay')} <ArrowRight className="h-4 w-4" /></Link>
+        <a href="#our-story" className="hero-text-link">{t('about.storyOverline')} <ArrowRight className="h-4 w-4" /></a>
+      </EditorialHero>
+      <section className="editorial-proof" aria-label={t('about.valuesOverline')}>
+        <div className="container grid md:grid-cols-3">
+          {[['standard2Title', 'standard2Body'], ['standard4Title', 'standard4Body'], ['standard5Title', 'standard5Body']].map(([title, body], index) => (
+            <div className="editorial-proof-item" key={title}>
+              <span className="editorial-eyebrow text-pa-gold">0{index + 1}</span>
+              <h2 className="font-display text-2xl mb-3">{t(`about.${title}`, { points: CHECKLIST_POINTS })}</h2>
+              <p className="body-md">{t(`about.${body}`)}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -225,9 +197,9 @@ export default function About() {
           SECTION 2: OUR STORY (condensed)
           Two-column: text left, sticky photo right + press strip
           ═══════════════════════════════════════════════════════════════════ */}
-      <section className="py-20 lg:py-24">
+      <section id="our-story" className="section-padding scroll-mt-24">
         <div className="container max-w-[1200px] mx-auto">
-          <div className="lg:flex lg:gap-16">
+          <div className="lg:flex lg:gap-16" id="ricardo-viana">
             {/* Text column */}
             <div className="lg:w-[55%]">
               <p className="text-[12px] font-medium uppercase tracking-[2.5px] text-[#8B7355] mb-4" style={{ fontFamily: 'var(--font-body)' }}>
@@ -258,7 +230,7 @@ export default function About() {
             {/* Sticky image column */}
             <div className="hidden lg:block lg:w-[45%]">
               <div className="sticky top-[120px]">
-                <div className="overflow-hidden" style={{ aspectRatio: '3/4' }}>
+                <div className="overflow-hidden rounded-xl" style={{ aspectRatio: '3/4' }}>
                   <img
                     src="/team/ricardo-viana.webp"
                     alt="Ricardo Viana, CEO and Founder of Portugal Active"
@@ -275,7 +247,7 @@ export default function About() {
 
           {/* Mobile: Ricardo photo */}
           <div className="lg:hidden mt-8 mb-8">
-            <div className="overflow-hidden" style={{ aspectRatio: '3/4', maxWidth: '360px' }}>
+            <div className="overflow-hidden rounded-xl" style={{ aspectRatio: '4/3', maxWidth: '360px' }}>
               <img
                 src="/team/ricardo-viana.webp"
                 alt="Ricardo Viana, CEO and Founder of Portugal Active"
@@ -344,11 +316,11 @@ export default function About() {
           <div className="lg:flex lg:items-center lg:gap-16">
             {/* Video */}
             <div className="lg:w-[55%] mb-10 lg:mb-0">
-              <button
-                type="button"
-                onClick={() => setVideoOpen(true)}
+              <a
+                href={`https://www.youtube.com/watch?v=${YOUTUBE_ID}`}
+                target="_blank" rel="noopener noreferrer"
                 aria-label={t('about.behindScenesWatch', 'Watch the film')}
-                className="group relative block aspect-video w-full rounded-sm overflow-hidden bg-[#1A1A18]"
+                className="group relative block aspect-video w-full rounded-xl overflow-hidden bg-[#1A1A18]"
               >
                 <img
                   src={`https://img.youtube.com/vi/${YOUTUBE_ID}/maxresdefault.jpg`}
@@ -366,7 +338,7 @@ export default function About() {
                 <span className="absolute bottom-4 left-4 text-white text-[11px] tracking-[0.12em] uppercase font-medium">
                   {t('about.behindScenesWatch', 'Watch the film')}
                 </span>
-              </button>
+              </a>
             </div>
             {/* Copy */}
             <div className="lg:w-[45%]">
@@ -442,14 +414,14 @@ export default function About() {
             <div className="hidden md:flex gap-2 shrink-0 ml-8">
               <button
                 onClick={() => scroll('left')}
-                className="w-10 h-10 flex items-center justify-center border border-[#E8E4DC] text-[#6B6860] hover:border-[#1A1A18] hover:text-[#1A1A18] transition-colors"
+                className="pa-action w-11 h-11 flex items-center justify-center border border-[#E8E4DC] text-[#6B6860] hover:border-[#1A1A18] hover:text-[#1A1A18] transition-colors"
                 aria-label="Scroll left"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={() => scroll('right')}
-                className="w-10 h-10 flex items-center justify-center border border-[#E8E4DC] text-[#6B6860] hover:border-[#1A1A18] hover:text-[#1A1A18] transition-colors"
+                className="pa-action w-11 h-11 flex items-center justify-center border border-[#E8E4DC] text-[#6B6860] hover:border-[#1A1A18] hover:text-[#1A1A18] transition-colors"
                 aria-label="Scroll right"
               >
                 <ChevronRight className="w-5 h-5" />
@@ -470,7 +442,7 @@ export default function About() {
                 .toUpperCase();
               return (
                 <div key={member.id} className="group flex-shrink-0 w-[260px] snap-start cursor-default">
-                  <div className="relative overflow-hidden mb-4" style={{ aspectRatio: '3/4' }}>
+                  <div className="relative overflow-hidden rounded-xl mb-4" style={{ aspectRatio: '3/4' }}>
                     {member.photo ? (
                       <>
                         <img
@@ -488,16 +460,9 @@ export default function About() {
                     )}
                   </div>
                   <div className="pt-1">
-                    <h4 className="text-[15px] font-display text-[#1A1A18] mb-0.5 tracking-wide">{member.name}</h4>
+                    <h3 className="text-[15px] font-display text-[#1A1A18] mb-0.5 tracking-wide">{member.name}</h3>
                     <p className="text-[12px] text-[#8B7355] tracking-wider uppercase">{member.role}</p>
-                    {member.oneLiner && (
-                      <p
-                        className="text-[#726D63] mt-1"
-                        style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '13px', lineHeight: 1.4 }}
-                      >
-                        {member.oneLiner}
-                      </p>
-                    )}
+
                   </div>
                 </div>
               );
@@ -521,7 +486,7 @@ export default function About() {
           src={IMAGES.aboutStory}
           alt=""
           className="absolute inset-0 w-full h-full object-cover opacity-[0.08] pointer-events-none"
-          aria-hidden="true"
+          aria-hidden="true" loading="lazy"
         />
         <div className="relative container max-w-[640px] mx-auto text-center z-10">
           <h2
@@ -539,7 +504,7 @@ export default function About() {
               {t('about.ctaExplore')} <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
-              href="/contact"
+              href="/concierge"
               className="btn-ghost-light"
               style={{ letterSpacing: '1.5px' }}
             >
@@ -548,36 +513,6 @@ export default function About() {
           </div>
         </div>
       </section>
-
-      {/* Behind-the-scenes video — clean modal (no inline YouTube chrome) */}
-      {videoOpen && createPortal(
-        <div
-          className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8"
-          onClick={() => setVideoOpen(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Portugal Active — behind the scenes"
-        >
-          <button
-            type="button"
-            onClick={() => setVideoOpen(false)}
-            aria-label={t('common.close', 'Close')}
-            className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors"
-          >
-            <X size={28} />
-          </button>
-          <div className="w-full max-w-4xl aspect-video" onClick={(e) => e.stopPropagation()}>
-            <iframe
-              src={`https://www.youtube.com/embed/${YOUTUBE_ID}?autoplay=1&rel=0&modestbranding=1`}
-              title={`PA Cleaning — ${CHECKLIST_POINTS}-point property preparation`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full rounded-sm bg-black"
-            />
-          </div>
-        </div>,
-        document.body,
-      )}
 
       <Footer />
       <WhatsAppFloat />

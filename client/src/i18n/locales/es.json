@@ -2084,5 +2084,20 @@
     "faq2q": "¿Y si cambia el tiempo?",
     "faq2a": "Solicita una alternativa interior al planear actividades al aire libre. El programa y los posibles cambios por el tiempo se acuerdan en la propuesta.",
     "prefill": "Consulta de evento de empresa\nFechas o mes preferido:\nParticipantes y personas que se alojan:\nPresupuesto aproximado:\nObjetivo principal:"
+  },
+  "editorial": {
+    "addDates": "Añadir fechas",
+    "searchExperiences": "Buscar experiencias",
+    "noExperiences": "No hay experiencias con estos filtros. Bórralos para explorar todas las actividades.",
+    "step1Title": "Elige tu casa",
+    "step1Body": "Empieza por la casa y las fechas que mejor encajen con tu estancia.",
+    "step2Title": "Hazla tuya",
+    "step2Body": "Explora chef privado, bienestar o traslados. Tu concierge te ayuda a organizar los detalles.",
+    "step3Title": "Conoce los detalles",
+    "step3Body": "Los servicios opcionales se cobran por separado. La disponibilidad y los detalles se confirman para tu casa y fechas.",
+    "faq1Q": "¿Necesito experiencia previa?",
+    "faq1A": "Los requisitos varían según la actividad. Consulta su página para conocer la dificultad, los límites de edad y qué llevar. Nuestro equipo puede ayudarte a elegir.",
+    "faq2Q": "¿Puedo combinar actividades con una estancia?",
+    "faq2A": "Sí. Elige tu casa y explora actividades en la misma región. Nuestro concierge puede ayudarte a coordinar el programa. Las actividades y los traslados se cobran por separado."
   }
 }
