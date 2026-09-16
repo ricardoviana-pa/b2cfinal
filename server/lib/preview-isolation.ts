@@ -2,7 +2,8 @@ import type { RequestHandler } from "express";
 import { isLiveSiteHostname } from "@shared/deployment";
 
 export function isPreviewDeployment(env: NodeJS.ProcessEnv = process.env): boolean {
-  if (env.APP_ENV === "preview" || env.RENDER_SERVICE_ID === "srv-d7b7d7qdbo4c73b1st8g") return true;
+  if (env.APP_ENV === "preview") return true;
+  if (env.RENDER_SERVICE_ID && env.RENDER_SERVICE_ID !== "srv-d700n5fgi27c73f9bse0") return true;
   if (env.RENDER_GIT_BRANCH && env.RENDER_GIT_BRANCH !== "main") return true;
   if (env.NODE_ENV === "development") return true;
   const site = env.SITE_URL || env.PUBLIC_BASE_URL || env.PUBLIC_URL || env.APP_URL;

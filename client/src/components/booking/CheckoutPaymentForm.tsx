@@ -8,7 +8,7 @@
 
 import { useState, useMemo, useRef, type ReactElement } from "react";
 import { useTranslation } from "react-i18next";
-import { loadStripe } from "@stripe/stripe-js";
+import { loadStripe } from "@/lib/stripeLoader";
 import {
   Elements,
   PaymentElement,

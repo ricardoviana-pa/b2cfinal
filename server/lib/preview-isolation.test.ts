@@ -11,6 +11,7 @@ describe("preview deployment boundary", () => {
     expect(isPreviewDeployment(preview)).toBe(true);
     expect(isPreviewDeployment({ RENDER_GIT_BRANCH: "dev", SITE_URL: "https://www.portugalactive.com" })).toBe(true);
     expect(isPreviewDeployment({ RENDER_SERVICE_ID: "srv-d7b7d7qdbo4c73b1st8g" })).toBe(true);
+    expect(isPreviewDeployment({ RENDER_SERVICE_ID: "srv-new-preview", RENDER_GIT_BRANCH: "main", SITE_URL: "https://www.portugalactive.com" })).toBe(true);
     expect(isPreviewDeployment({ SITE_URL: "https://preview.onrender.com" })).toBe(true);
     expect(isPreviewDeployment({ SITE_URL: "invalid" })).toBe(true);
     expect(isPreviewDeployment({ RENDER_GIT_BRANCH: "main", NODE_ENV: "production", SITE_URL: "https://www.portugalactive.com" })).toBe(false);
