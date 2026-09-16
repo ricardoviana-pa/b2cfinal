@@ -11,7 +11,7 @@ This review corrects the regional selection introduced in PR #62. An HTTP 200 re
 | Alentejo region | Oak landscape; Unsplash 1725144690049 | [Joao](https://unsplash.com/photos/a-grassy-field-with-trees-in-the-distance-or_p5pyhTQI) | Source identifies Alentejo; image viewed. |
 | Gerês journal card | Mountain panorama; Unsplash 1663608025293 | [Pedro Cunha](https://unsplash.com/photos/a-landscape-with-hills-and-trees-ZHbMI9la0P4) | Source identifies Peneda-Gerês National Park; image viewed. |
 | Minho autumn journal card | Forest; Unsplash 1655769211458 | [Bruno Alves](https://unsplash.com/photos/a-foggy-forest-with-trees-fGh9GvPxGXM) | Source identifies Gerês, Terras de Bouro; image viewed. Illustrates the region, not a harvest event. |
-| Viana region | Marina and Santa Luzia hill; Pexels 33812433 | Existing PA journal asset | Visual check identifies Viana skyline. Reused from existing licensed catalogue; original photographer credit still to recover. |
+| Viana region | Marina and Santa Luzia hill; Pexels 33812433 | Existing PA journal asset | Visual check identifies Viana skyline. Reused from the existing catalogue; original licence record and photographer credit were not reverified. |
 | Viana journal card | Santa Luzia architectural detail; Unsplash 1645203886493 | [Nicolas Armoa](https://unsplash.com/photos/a-large-stone-building-with-a-clock-on-its-side-KaoiyMOzIrY) | Source identifies Santa Luzia in Viana; image viewed. |
 | Northern Portugal seasons journal card | Minho coast | Existing local `/destinations/minho-coast.webp` | Existing PA regional photograph. |
 
