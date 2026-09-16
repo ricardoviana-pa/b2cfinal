@@ -17,7 +17,7 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { trpc } from "@/lib/trpc";
-import { formatEur } from "@/lib/format";
+import { formatQuotedEur } from "@/lib/format";
 import { pushEcommerce } from "@/lib/datalayer";
 import { PayPalCheckoutButton } from "./PayPalCheckoutButton";
 import { KlarnaCheckoutButton } from "./KlarnaCheckoutButton";
@@ -497,7 +497,7 @@ function PaymentFormInner({
           disabled={!stripe || loading || !guestName.trim() || !guestEmail.trim() || !guestPhone.trim()}
           className="btn-primary w-full disabled:opacity-50"
         >
-          {loading ? t('payment.processing') : t('payment.payButton', { amount: formatEur(total, i18n.language) })}
+          {loading ? t('payment.processing') : t('payment.payButton', { amount: formatQuotedEur(total, i18n.language) })}
         </button>
         <button type="button" onClick={onCancel} className="btn-ghost">
           {t('payment.cancelButton')}

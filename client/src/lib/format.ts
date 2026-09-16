@@ -1,6 +1,7 @@
 /**
  * Shared formatting utilities.
  */
+import { formatQuotedMoney } from "@shared/booking-money";
 
 /** Site language (2-letter i18n code) → BCP47 locale for Intl formatting. */
 const BCP47: Record<string, string> = {
@@ -34,18 +35,21 @@ export const formatCurrency = (
 };
 
 /**
- * Brand rule: prices are always whole euros, everywhere (F4).
+ * Rounded indicative/from prices. Use formatQuotedEur for dated quotes and payments.
  * Pass the active i18n language for locale-correct separators; defaults to pt-PT.
  */
 export const formatEur = (amount: number, lang?: string): string =>
   formatCurrency(Math.round(amount), { locale: intlLocale(lang), decimals: 0 });
 
-/** Same as formatEur but for integer-cent amounts (reservation API / ThankYouStash). */
+export const formatQuotedEur = (amount: number, lang?: string): string =>
+  formatQuotedMoney(amount, intlLocale(lang));
+
+/** Exact integer-cent amounts (reservation API / ThankYouStash). */
 export const formatEurCents = (
   cents: number | null | undefined,
   lang?: string,
   fallback = '—',
-): string => (cents == null ? fallback : formatEur(cents / 100, lang));
+): string => (cents == null ? fallback : formatQuotedEur(cents / 100, lang));
 
 /**
  * Booking date display: zero-padded day + short month (+ year), in the SITE

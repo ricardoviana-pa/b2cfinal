@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { BedDouble, Bath, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import useEmblaCarousel from 'embla-carousel-react';
 import type { Property } from '@/lib/types';
-import { formatEur, sanitizePropertyName } from '@/lib/format';
+import { formatQuotedEur, sanitizePropertyName } from '@/lib/format';
 import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
 import { trpc } from '@/lib/trpc';
 import { cn } from '@/lib/utils';
@@ -44,7 +44,7 @@ export default function PropertyUnitsSection({
   checkout,
   guests,
 }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // Resolve the ordered list of unit Property objects from the catalogue.
   // Listings missing in allProperties (e.g. inactive) are dropped — never blank.
@@ -197,7 +197,7 @@ export default function PropertyUnitsSection({
                     ) : q && q.total > 0 && (q.source === 'live' || q.source === 'cached') ? (
                       <div className="flex items-baseline justify-between">
                         <span className="text-[14px] text-[#1A1A18] font-medium">
-                          {formatEur(q.total)}
+                          {formatQuotedEur(q.total, i18n.language)}
                         </span>
                         <span className="text-[11px] text-[#726D63]">
                           {t('booking.nights', { count: q.nights })}

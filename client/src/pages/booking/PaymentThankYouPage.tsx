@@ -193,7 +193,7 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
     subject,
   )}&body=${encodeURIComponent(body)}`;
 
-  const hasBreakdown = data.nightlyRateCents != null && data.nights != null;
+  const hasBreakdown = data.accommodationCents != null && data.nights != null;
 
   return (
     <div className="mx-auto max-w-[420px] lg:max-w-[1080px]">
@@ -277,14 +277,13 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                 {hasBreakdown ? (
                   <div className="mb-2.5 flex items-baseline justify-between text-[13.5px] text-pa-earth">
                     <span>
-                      {formatEurCents(data.nightlyRateCents, lang)} ×{" "}
                       {t("paymentThankYou.nights", {
                         count: data.nights,
                         defaultValue: "{{count}} nights",
                       })}
                     </span>
                     <span className="tabular-nums">
-                      {formatEurCents(data.nightlyRateCents * data.nights, lang)}
+                      {formatEurCents(data.accommodationCents, lang)}
                     </span>
                   </div>
                 ) : null}

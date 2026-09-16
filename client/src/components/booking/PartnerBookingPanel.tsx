@@ -4,7 +4,7 @@ import { Calendar, Check, Loader2, Minus, Plus, User } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { pushDL } from '@/lib/datalayer';
 import type { BookingSelection } from './BookingWidget';
-import { formatCurrency, intlLocale, formatBookingDate } from '@/lib/format';
+import { formatQuotedEur, intlLocale, formatBookingDate } from '@/lib/format';
 import AvailabilityCalendar from './AvailabilityCalendar';
 import PhoneInput from './PhoneInput';
 
@@ -57,7 +57,6 @@ export function PartnerBookingPanel({
 }) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language || 'en';
-  const formatEur = (amount: number, locale: string) => formatCurrency(amount, { locale: intlLocale(locale) });
 
   const [checkIn, setCheckIn] = useState(initialCheckIn ?? '');
   const [checkOut, setCheckOut] = useState(initialCheckOut ?? '');
@@ -111,7 +110,6 @@ export function PartnerBookingPanel({
   // Every figure below is already VAT-inclusive: the service adds the 6% before
   // anything leaves it, so a partner night and one of our own compare like for
   // like instead of one being quoted net.
-  const nightlyRate = quote && quote.nights ? quote.accommodation / quote.nights : null;
   const shortStay = quote && minNights ? quote.nights < minNights : false;
 
   useEffect(() => {
@@ -226,7 +224,7 @@ export function PartnerBookingPanel({
           <>
             <div className="flex items-baseline gap-2">
               <span className="text-[32px] font-light tracking-tight text-black tabular-nums">
-                {formatEur(quote.total, lang)}
+                {formatQuotedEur(quote.total, lang)}
               </span>
               <span className="text-sm text-black/40 font-normal">
                 {quote.feesKnown
@@ -235,10 +233,7 @@ export function PartnerBookingPanel({
               </span>
             </div>
             <p className="text-sm text-black/50 mt-1 tracking-wide">
-              {t('bookingWidget.nightsLine', {
-                count: quote.nights,
-                rate: nightlyRate ? formatEur(nightlyRate, lang) : '',
-              })}
+              {quote.nights} {t("bookingWidget.nightsLabel", "nights")}
             </p>
           </>
         ) : (
@@ -394,17 +389,17 @@ export function PartnerBookingPanel({
               <div className="p-5 space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-black/50">
-                    {nightlyRate ? formatEur(nightlyRate, lang) : ''} × {quote.nights}
+                    {quote.nights} {t("bookingWidget.nightsLabel", "nights")}
                   </span>
                   <span className="text-sm text-black tabular-nums">
-                    {formatEur(quote.accommodation, lang)}
+                    {formatQuotedEur(quote.accommodation, lang)}
                   </span>
                 </div>
 
                 {quote.cleaningFee > 0 && (
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-black/50">{t('property.cleaningFee', 'Home preparation')}</span>
-                    <span className="text-sm text-black tabular-nums">{formatEur(quote.cleaningFee, lang)}</span>
+                    <span className="text-sm text-black tabular-nums">{formatQuotedEur(quote.cleaningFee, lang)}</span>
                   </div>
                 )}
 
@@ -415,7 +410,7 @@ export function PartnerBookingPanel({
                       : t('partnerBooking.totalSoFar', 'Total so far')}
                   </span>
                   <span className="text-[24px] font-light tabular-nums tracking-tight text-black">
-                    {formatEur(quote.total, lang)}
+                    {formatQuotedEur(quote.total, lang)}
                   </span>
                 </div>
 
