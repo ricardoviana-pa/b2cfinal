@@ -1,3 +1,4 @@
+import { isLiveSiteHostname } from "@shared/deployment";
 /* ==========================================================================
    BOKUN CALENDAR WIDGET — inline booking calendar via BokunWidgetsLoader
    Uses the official Bókun embed method (<div class="bokunWidget">) instead
@@ -35,6 +36,7 @@ const BOKUN_CHANNEL_UUID = import.meta.env.VITE_BOKUN_CHANNEL_UUID || 'a283fa3e-
 /* ------------------------------------------------------------------ */
 let bokunLoaderPromise: Promise<void> | null = null;
 function ensureBokunLoader(): Promise<void> {
+  if (!isLiveSiteHostname(window.location.hostname)) return Promise.resolve();
   if (bokunLoaderPromise) return bokunLoaderPromise;
   bokunLoaderPromise = new Promise((resolve) => {
     if ((window as any).BokunWidgetsLoader) { resolve(); return; }
@@ -83,6 +85,7 @@ export default function BokunCalendarWidget({
   );
 
   useEffect(() => {
+    if (!isLiveSiteHostname(window.location.hostname)) return;
     const el = containerRef.current;
     if (!el || !widgetUrl) return;
 

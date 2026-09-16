@@ -1,3 +1,4 @@
+import { isPreviewDeployment } from "./preview-isolation";
 /**
  * Centralized Guesty client.
  * - Single fetch-based request layer
@@ -477,6 +478,7 @@ async function fetchOAuthToken(): Promise<string> {
 }
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
+  if (isPreviewDeployment()) throw new Error("Guesty is disabled in previews");
   if (!oauthCache) {
     oauthCache = await loadTokenCache(OPEN_TOKEN_DB_KEY, OPEN_TOKEN_CACHE_FILE);
   }
@@ -909,6 +911,7 @@ async function fetchBEOAuthToken(): Promise<string> {
 }
 
 async function getBEAuthHeaders(): Promise<Record<string, string>> {
+  if (isPreviewDeployment()) throw new Error("Guesty is disabled in previews");
   if (!beOauthCache) {
     beOauthCache = await loadTokenCache(BE_TOKEN_DB_KEY, BE_TOKEN_CACHE_FILE);
   }

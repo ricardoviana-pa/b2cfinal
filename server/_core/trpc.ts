@@ -1,3 +1,4 @@
+import { isPreviewDeployment } from "../lib/preview-isolation";
 import { NOT_ADMIN_ERR_MSG, UNAUTHED_ERR_MSG } from '@shared/const';
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
@@ -8,7 +9,13 @@ const t = initTRPC.context<TrpcContext>().create({
 });
 
 export const router = t.router;
-export const publicProcedure = t.procedure;
+const environmentBoundary = t.middleware(({ type, next }) => {
+  if (type === "mutation" && isPreviewDeployment()) {
+    throw new TRPCError({ code: "FORBIDDEN", message: "Preview is read-only. Use synthetic demo data." });
+  }
+  return next();
+});
+export const publicProcedure = t.procedure.use(environmentBoundary);
 
 const requireUser = t.middleware(async opts => {
   const { ctx, next } = opts;
@@ -25,9 +32,9 @@ const requireUser = t.middleware(async opts => {
   });
 });
 
-export const protectedProcedure = t.procedure.use(requireUser);
+export const protectedProcedure = t.procedure.use(environmentBoundary).use(requireUser);
 
-export const adminProcedure = t.procedure.use(
+export const adminProcedure = t.procedure.use(environmentBoundary).use(
   t.middleware(async opts => {
     const { ctx, next } = opts;
 

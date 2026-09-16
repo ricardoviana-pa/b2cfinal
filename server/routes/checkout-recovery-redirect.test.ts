@@ -40,6 +40,13 @@ describe("recovery links already sent by DEV", () => {
       [route + tracking.replace("utm_medium=recovery", "utm_medium=other"), "dev.portugalactive.com", "GET"],
     ]) expect((await request(url, host, method)).status).toBe(204);
   });
+  it("forwards old opt-out signatures to production after DEV secrets are separated", async () => {
+    const url = "/api/checkout/recovery-optout?intent=12345678-1234-1234-1234-123456789abc&t=" + "a".repeat(32);
+    const response = await request(url);
+    expect(response.status).toBe(302);
+    expect(response.headers.get("location")).toBe(`https://www.portugalactive.com${url}`);
+    expect((await request(url.replace("a".repeat(32), "invalid"))).status).toBe(204);
+  });
   it("ignores query-provided redirect targets", async () => {
     const response = await request(route + tracking + "&redirect=https://evil.test");
     expect(new URL(response.headers.get("location")!).origin).toBe("https://www.portugalactive.com");
