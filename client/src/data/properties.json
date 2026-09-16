@@ -3589,6 +3589,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Logement très agréable et bien équipé. La literie est très confortable, la climatisation est top pour dormir sereinement.\nLes chambres donnent sur une arrière cour donc calme, si ce n'est des travaux en ce moment dans le bâtiment voisin.\nL'emplacement est top, direct dans la rue Ste Catherine et tout le coeur de Porto peut se faire à pied.\nLogement idéale pour 2 couples car 2 salles d'eau.\nSeul bémol, le lit du canapé... qui a du être abimé et donc inutilisable",
+        "guestDisplayName": "Cecile",
+        "guestName": "Cecile",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-16T12:41:07.046Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Thoroughly enjoyed our stay. It was perfect for our group of 6 young men. Location couldn’t have been any better. The apartment was incredibly clean and the air conditioning units kept the apartment at a great temperature. Would 100% recommend Portugal Active",
         "guestDisplayName": "Fergus",
         "guestName": "Fergus",
@@ -3969,7 +4004,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 18,
+    "reviewCount": 19,
     "lastModified": "2026-08-24",
     "contentHash": "a692bbc9569078be5eabab35bacde938198a4842"
   },
@@ -4902,6 +4937,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Foi uma experiência linda e especial, conseguimos usufruir de todos os espaços da casa, tivemos dias memoráveis e sentimo-nos realmente em casa.",
+        "guestDisplayName": "Julaide Da Silva",
+        "guestName": "Julaide Da Silva",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-16T06:53:39.484Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 4
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Es una casa espectacular y muy bien preparada hasta el último detalle. Repetiría alojamiento sin duda!",
         "guestDisplayName": "Tomas",
         "guestName": "Tomas",
@@ -4937,7 +5007,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 1,
+    "reviewCount": 2,
     "lastModified": "2026-08-24",
     "contentHash": "d5545b37675e9e14a36f01edce41e1d5fcf65bf2"
   },
@@ -12932,7 +13002,6 @@
       "https://assets.guesty.com/image/upload/v1783418347/production/6957de4388cba42d9e7a905e/lerqiakyaff4zfu3xulf.jpg",
       "https://assets.guesty.com/image/upload/v1783418451/production/6957de4388cba42d9e7a905e/c8zcfpw26vwqnk1gqvdy.jpg",
       "https://assets.guesty.com/image/upload/v1783419916/production/6957de4388cba42d9e7a905e/yuxiyseqvb1zlxxpu06k.jpg",
-      "https://assets.guesty.com/image/upload/v1783423514/production/6957de4388cba42d9e7a905e/mklemghvcf9sb20bngws.jpg",
       "https://assets.guesty.com/image/upload/v1783419958/production/6957de4388cba42d9e7a905e/vksnrqbpesklxb4gj3ly.jpg",
       "https://assets.guesty.com/image/upload/v1783419691/production/6957de4388cba42d9e7a905e/blgojbzvosqlyserrwhu.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533d34b583900135cfd96/6bbaca4b-220f-45-KH2kt",
@@ -13069,7 +13138,7 @@
     "isActive": true,
     "isPortfolio": false,
     "seoTitle": "Luxury and Nature Retreat with Jacuzzi & BBQ — Portugal Active",
-    "seoDescription": "Luxury and Nature Retreat with jacuzzi & BBQ by Portugal Active combines two exclusive properties: The Luxury Manor and The Nature Princess.\nWith a jacuzzi, sau",
+    "seoDescription": "Luxury and Nature Retreat with Jacuzzi & BBQ by Portugal Active combines two exclusive properties: The Luxury Manor and The Nature Princess.\nWith a jacuzzi, sau",
     "address": {
       "full": "",
       "street": "Quinta de Parada do Vez, Arcos de Valdevez, Portugal",
@@ -13190,8 +13259,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 1,
-    "lastModified": "2026-09-15",
-    "contentHash": "029ed806cfc643c34cb4b36e3f969ac818c9b855"
+    "lastModified": "2026-09-16",
+    "contentHash": "18827cd3f3b2d239fe2fd915b52d401219317d98"
   },
   {
     "id": "guesty-6a3ba1fce19cb0001dc57ea6",
@@ -14197,6 +14266,446 @@
     "reviewCount": 16,
     "lastModified": "2026-08-24",
     "contentHash": "ce105e96ef7b4d1c389fea5b493d7a428bb5abaa"
+  },
+  {
+    "id": "guesty-6aa7db4f41acf8000fde5087",
+    "slug": "nature-hill-1-by-portugal-active-de5087",
+    "name": "Nature Hill 1 by Portugal Active",
+    "tagline": "Discover Nature Hill 1 by Portugal Active in Viana do Castelo, an elegant retreat where comfort and nature come together. With three bedrooms, includi…",
+    "tier": "select",
+    "destination": "minho",
+    "locality": "Viana do Castelo",
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "maxGuests": 6,
+    "priceFrom": 200,
+    "pricePerNight": 200,
+    "cleaningFee": 0,
+    "minNights": 1,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1789394980/production/6957de4388cba42d9e7a905e/n3ttrksasc3982aqw74a.jpg",
+      "https://assets.guesty.com/image/upload/v1789396236/production/6957de4388cba42d9e7a905e/cktqi2kgvj3cq57mwxl0.jpg",
+      "https://assets.guesty.com/image/upload/v1789396588/production/6957de4388cba42d9e7a905e/xzhpyraw0hxgwp6vst7m.jpg",
+      "https://assets.guesty.com/image/upload/v1789396235/production/6957de4388cba42d9e7a905e/rgep0nfwa0t0tpdhraa0.jpg",
+      "https://assets.guesty.com/image/upload/v1789394982/production/6957de4388cba42d9e7a905e/f2sq7dhjx2qyb7a5bjf2.jpg",
+      "https://assets.guesty.com/image/upload/v1789394981/production/6957de4388cba42d9e7a905e/btomxbtx3gamotogqoo5.jpg",
+      "https://assets.guesty.com/image/upload/v1789394976/production/6957de4388cba42d9e7a905e/bwlze0vdohm1jhiwk8ax.jpg",
+      "https://assets.guesty.com/image/upload/v1789567485/production/6957de4388cba42d9e7a905e/c4n6je1zb3rvte4pswcy.jpg",
+      "https://assets.guesty.com/image/upload/v1789394977/production/6957de4388cba42d9e7a905e/rr5drwxz17nx1pr9lwxk.jpg",
+      "https://assets.guesty.com/image/upload/v1789394979/production/6957de4388cba42d9e7a905e/qfpkzcizg91sspmlcewh.jpg",
+      "https://assets.guesty.com/image/upload/v1789394979/production/6957de4388cba42d9e7a905e/xogt0bykhlrao5qaqshv.jpg",
+      "https://assets.guesty.com/image/upload/v1789394979/production/6957de4388cba42d9e7a905e/nnrsvdmuarax9mvkuxt9.jpg",
+      "https://assets.guesty.com/image/upload/v1789394986/production/6957de4388cba42d9e7a905e/iosbaj2mesom4wpy9lkl.jpg",
+      "https://assets.guesty.com/image/upload/v1789394984/production/6957de4388cba42d9e7a905e/tg9dbwcec4f7swji0hyy.jpg",
+      "https://assets.guesty.com/image/upload/v1789394984/production/6957de4388cba42d9e7a905e/mvwz46qtv0heyed16c55.jpg",
+      "https://assets.guesty.com/image/upload/v1789394985/production/6957de4388cba42d9e7a905e/cnpntxwlgch4uaqvwnxy.jpg",
+      "https://assets.guesty.com/image/upload/v1789394985/production/6957de4388cba42d9e7a905e/kbc3vfz8mldbsh4usxj7.jpg",
+      "https://assets.guesty.com/image/upload/v1789394987/production/6957de4388cba42d9e7a905e/uqrodooeumwxdoyfuwhv.jpg",
+      "https://assets.guesty.com/image/upload/v1789394988/production/6957de4388cba42d9e7a905e/vwaxmax924cxeqd0iom2.jpg",
+      "https://assets.guesty.com/image/upload/v1789394988/production/6957de4388cba42d9e7a905e/wtl5adkks1dwhoxtq2pl.jpg",
+      "https://assets.guesty.com/image/upload/v1789394989/production/6957de4388cba42d9e7a905e/ymdnbtr1gi70i0icyxg0.jpg",
+      "https://assets.guesty.com/image/upload/v1789394988/production/6957de4388cba42d9e7a905e/jhtaeihfgdtbz3rw0i6b.jpg",
+      "https://assets.guesty.com/image/upload/v1789396235/production/6957de4388cba42d9e7a905e/ktyccuiqwl9csyxzwrf5.jpg",
+      "https://assets.guesty.com/image/upload/v1789396236/production/6957de4388cba42d9e7a905e/ry7sceg5vmcyvrlh5nsn.jpg",
+      "https://assets.guesty.com/image/upload/v1789394988/production/6957de4388cba42d9e7a905e/dcu9sv1jrewaksslhpge.jpg",
+      "https://assets.guesty.com/image/upload/v1789396235/production/6957de4388cba42d9e7a905e/lnx9gkzz7rbvbwaemyfs.jpg",
+      "https://assets.guesty.com/image/upload/v1789394991/production/6957de4388cba42d9e7a905e/fl7hgoyw7hxp6xaw2nmw.jpg",
+      "https://assets.guesty.com/image/upload/v1789396236/production/6957de4388cba42d9e7a905e/x0cektjeqi1zh7w9lnk2.jpg",
+      "https://assets.guesty.com/image/upload/v1789394991/production/6957de4388cba42d9e7a905e/kgfttzwmd1dtkaphnpqz.jpg",
+      "https://assets.guesty.com/image/upload/v1789394991/production/6957de4388cba42d9e7a905e/avrjfnboafjk9gymxryn.jpg",
+      "https://assets.guesty.com/image/upload/v1789394991/production/6957de4388cba42d9e7a905e/p24stwmmawcv2gmvl8ga.jpg",
+      "https://assets.guesty.com/image/upload/v1789394992/production/6957de4388cba42d9e7a905e/ohibmefkpsidh022y1wd.jpg",
+      "https://assets.guesty.com/image/upload/v1789394993/production/6957de4388cba42d9e7a905e/ektxl0tc59aza15lkc7p.jpg",
+      "https://assets.guesty.com/image/upload/v1789396240/production/6957de4388cba42d9e7a905e/l3oukmnvv709whydaywe.jpg",
+      "https://assets.guesty.com/image/upload/v1789396239/production/6957de4388cba42d9e7a905e/wqp3i7j2lmum2iop68mj.jpg",
+      "https://assets.guesty.com/image/upload/v1789394994/production/6957de4388cba42d9e7a905e/cqjwssi8ohksckwdxlwq.jpg",
+      "https://assets.guesty.com/image/upload/v1789396238/production/6957de4388cba42d9e7a905e/racofwikbq6avl4peimg.jpg",
+      "https://assets.guesty.com/image/upload/v1789394992/production/6957de4388cba42d9e7a905e/idxlivsrgcbhe29cxdiq.jpg",
+      "https://assets.guesty.com/image/upload/v1789394994/production/6957de4388cba42d9e7a905e/sehqvfdc2jaxvs1srwtz.jpg",
+      "https://assets.guesty.com/image/upload/v1789394994/production/6957de4388cba42d9e7a905e/yo5uq5n5shdj8oamj4nn.jpg",
+      "https://assets.guesty.com/image/upload/v1789396239/production/6957de4388cba42d9e7a905e/ryby3ev5givcwhymrmyc.jpg",
+      "https://assets.guesty.com/image/upload/v1789396239/production/6957de4388cba42d9e7a905e/lode2jzjabqctnsz9pub.jpg",
+      "https://assets.guesty.com/image/upload/v1789396240/production/6957de4388cba42d9e7a905e/la6zt7vydgv3ep5oal6e.jpg",
+      "https://assets.guesty.com/image/upload/v1789396241/production/6957de4388cba42d9e7a905e/btxhhfvfxizjmwh3bfvx.jpg",
+      "https://assets.guesty.com/image/upload/v1789396242/production/6957de4388cba42d9e7a905e/bobbu4ci56orxgxx0dxu.jpg",
+      "https://assets.guesty.com/image/upload/v1789396242/production/6957de4388cba42d9e7a905e/l9ohijjvjqqbgwcmweot.jpg",
+      "https://assets.guesty.com/image/upload/v1789396244/production/6957de4388cba42d9e7a905e/bkrjufqndltupfp3evua.jpg",
+      "https://assets.guesty.com/image/upload/v1789396244/production/6957de4388cba42d9e7a905e/bvrdro8js8wlt79dghkg.jpg",
+      "https://assets.guesty.com/image/upload/v1789396588/production/6957de4388cba42d9e7a905e/gmni3a6qtyd3awfyoxew.jpg",
+      "https://assets.guesty.com/image/upload/v1789396590/production/6957de4388cba42d9e7a905e/uowcxwmwybk5pbbxzmiq.jpg",
+      "https://assets.guesty.com/image/upload/v1789396245/production/6957de4388cba42d9e7a905e/csqki58mtwg0phy7j9ag.jpg",
+      "https://assets.guesty.com/image/upload/v1789396246/production/6957de4388cba42d9e7a905e/zocv2rqeokl2culkjibg.jpg",
+      "https://assets.guesty.com/image/upload/v1789396244/production/6957de4388cba42d9e7a905e/gf5sz6dmowinzknzfnhk.jpg",
+      "https://assets.guesty.com/image/upload/v1789396246/production/6957de4388cba42d9e7a905e/bbjqtoxgnrlvziwlk2di.jpg",
+      "https://assets.guesty.com/image/upload/v1789394982/production/6957de4388cba42d9e7a905e/novcj62mcitr6wyibhyr.jpg",
+      "https://assets.guesty.com/image/upload/v1789400590/production/6957de4388cba42d9e7a905e/gxrknev7p8wksepc9gv4.jpg",
+      "https://assets.guesty.com/image/upload/v1789400590/production/6957de4388cba42d9e7a905e/ln1g6oym4ijsahncrfzn.jpg",
+      "https://assets.guesty.com/image/upload/v1789400590/production/6957de4388cba42d9e7a905e/fvfa9bagtqsn2wbfbfyq.jpg",
+      "https://assets.guesty.com/image/upload/v1789400589/production/6957de4388cba42d9e7a905e/a5gjmvnqkyca47i1dmol.jpg"
+    ],
+    "description": "Discover Nature Hill 1 by Portugal Active in Viana do Castelo, an elegant retreat where comfort and nature come together. With three bedrooms, including a suite, a fully equipped kitchen, an outdoor pool and a garden, it is the ideal space for families seeking tranquility and privacy. Relax, take in the mountain views, and enjoy unforgettable moments surrounded by the natural beauty of the region.\n\nNature Hill 1 by Portugal Active combines elegance, comfort, and tranquility, creating the ideal setting for a family getaway. Its sophisticated and welcoming design reflects careful attention to every detail, ensuring a truly memorable stay. The property features three beautifully decorated bedrooms, including a suite, all designed to provide absolute rest and comfort.\nThe spacious living room, filled with natural light, invites moments of relaxation, while the fully equipped kitchen offers all the functionality needed to prepare family meals with ease and comfort. The two full bathrooms ensure practicality and privacy for all guests.\nOutdoors, guests have access to the shared common areas of the property, where the well‑kept garden, swimming pool, and barbecue area create a true sanctuary of serenity. These spaces encourage outdoor gatherings, always accompanied by stunning views of the mountains of Viana do Castelo.\nFor a truly comfortable stay, Nature Hill 1 by Portugal Active offers air conditioning, cable TV, high‑speed internet, and private parking, ensuring a premium and worry‑free experience.\n\nLocated in the peaceful and picturesque neighborhood of Outeiro, Nature Hill 1 by Portugal Active offers a privileged setting that blends rural serenity with convenient proximity to Viana do Castelo’s main points of interest. The area is perfect for those who enjoy direct contact with nature, with hiking trails and mountain landscapes just minutes away.\n\nDespite its relaxing atmosphere, you’ll be only a 10‑minute drive from the vibrant historic center of Viana do Castelo, where you’ll find a wide selection of traditional restaurants, local shops, and iconic landmarks. Convenience is further ensured by the nearby highway, just 2 minutes away, making it easy to explore the entire region — including the famous beaches and local water parks, all reachable with short drives.\n\nGuests have exclusive access to the entire property, including the swimming pool, garden, and all indoor facilities. Portugal Active’s concierge service is available 24 hours a day, 7 days a week, ready to assist with any request — from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\nImportant Notes:\n- During your stay, regular maintenance may take place in the garden and pool. These procedures are essential to ensure that all equipment remains clean, functional, and safe for use.\n- During the high season (May to October), the pool is maintained regularly to provide guests with an impeccable experience. In the low season (November to April), the pool may be closed — please confirm with our team.\n- You may use the Walbox to charge your electric vehicle. Please inform us in advance so we can activate the equipment. The cost is €0.25/kWh, payable at check‑out.\n\nThe property is conveniently located in the peaceful neighborhood of Outeiro, offering easy access to several transportation options. The highway is just a 2‑minute drive away, providing quick connections to other cities and regions. The center of Viana do Castelo is only 10 minutes away, offering a variety of public transport options, including buses and taxis. For guests arriving by plane, the nearest airport is Francisco Sá Carneiro Airport (OPO), located approximately 60 minutes away by car. Free parking is available on the property.\n\n--------Exclusive Concierge Services by Portugal Active--------\n\nEnhance Your Stay with Our Exclusive Services:\n\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\n\n\n--------Adventure Experiences--------\n\n✔️ Horseback Riding:\nRide through scenic trails and beaches.\n\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\n\n✔️ E-Bike Wild Tour:\nDiscover Viana do Castelo on an e-bike.\n\nBook Your Stay.\nPortugal Active, Your Private Hotel.",
+    "descriptionSections": {
+      "summary": "Discover Nature Hill 1 by Portugal Active in Viana do Castelo, an elegant retreat where comfort and nature come together. With three bedrooms, including a suite, a fully equipped kitchen, an outdoor pool and a garden, it is the ideal space for families seeking tranquility and privacy. Relax, take in the mountain views, and enjoy unforgettable moments surrounded by the natural beauty of the region.",
+      "space": "Nature Hill 1 by Portugal Active combines elegance, comfort, and tranquility, creating the ideal setting for a family getaway. Its sophisticated and welcoming design reflects careful attention to every detail, ensuring a truly memorable stay. The property features three beautifully decorated bedrooms, including a suite, all designed to provide absolute rest and comfort.\nThe spacious living room, filled with natural light, invites moments of relaxation, while the fully equipped kitchen offers all the functionality needed to prepare family meals with ease and comfort. The two full bathrooms ensure practicality and privacy for all guests.\nOutdoors, guests have access to the shared common areas of the property, where the well‑kept garden, swimming pool, and barbecue area create a true sanctuary of serenity. These spaces encourage outdoor gatherings, always accompanied by stunning views of the mountains of Viana do Castelo.\nFor a truly comfortable stay, Nature Hill 1 by Portugal Active offers air conditioning, cable TV, high‑speed internet, and private parking, ensuring a premium and worry‑free experience.",
+      "access": "Guests have exclusive access to the entire property, including the swimming pool, garden, and all indoor facilities. Portugal Active’s concierge service is available 24 hours a day, 7 days a week, ready to assist with any request — from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\nImportant Notes:\n- During your stay, regular maintenance may take place in the garden and pool. These procedures are essential to ensure that all equipment remains clean, functional, and safe for use.\n- During the high season (May to October), the pool is maintained regularly to provide guests with an impeccable experience. In the low season (November to April), the pool may be closed — please confirm with our team.\n- You may use the Walbox to charge your electric vehicle. Please inform us in advance so we can activate the equipment. The cost is €0.25/kWh, payable at check‑out.",
+      "neighborhood": "Located in the peaceful and picturesque neighborhood of Outeiro, Nature Hill 1 by Portugal Active offers a privileged setting that blends rural serenity with convenient proximity to Viana do Castelo’s main points of interest. The area is perfect for those who enjoy direct contact with nature, with hiking trails and mountain landscapes just minutes away.\n\nDespite its relaxing atmosphere, you’ll be only a 10‑minute drive from the vibrant historic center of Viana do Castelo, where you’ll find a wide selection of traditional restaurants, local shops, and iconic landmarks. Convenience is further ensured by the nearby highway, just 2 minutes away, making it easy to explore the entire region — including the famous beaches and local water parks, all reachable with short drives.",
+      "gettingAround": "The property is conveniently located in the peaceful neighborhood of Outeiro, offering easy access to several transportation options. The highway is just a 2‑minute drive away, providing quick connections to other cities and regions. The center of Viana do Castelo is only 10 minutes away, offering a variety of public transport options, including buses and taxis. For guests arriving by plane, the nearest airport is Francisco Sá Carneiro Airport (OPO), located approximately 60 minutes away by car. Free parking is available on the property.",
+      "notes": "",
+      "interaction": "The Portugal Active team is committed to ensuring your stay is memorable and enjoyable. We are always available to support, advise, and accompany you during your visit. From the moment you arrive, we are here to make you feel at home.\nWe offer an excellent range of experiences to enhance your vacation, including adventure tours, private chefs, massages, babysitting services, and much more. Whatever your needs, we are here to help you create unforgettable memories. If you have any questions, feel free to contact us."
+    },
+    "amenities": {
+      "property": [
+        "Air conditioning",
+        "BBQ grill",
+        "Babysitter recommendations",
+        "Baking sheet",
+        "Barbeque utensils",
+        "Bed linens",
+        "Cable TV",
+        "Carbon monoxide detector",
+        "Cleaning Disinfection",
+        "Cleaning products",
+        "Clothing storage",
+        "Coffee",
+        "Coffee maker",
+        "Cookware",
+        "Crib",
+        "Cycling",
+        "Dining table",
+        "Dishes and silverware",
+        "Dishwasher",
+        "EV charger",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Extra pillows and blankets",
+        "Fire extinguisher",
+        "First aid kit",
+        "Fishing",
+        "Free parking on premises",
+        "Freezer",
+        "Garden View",
+        "Garden or backyard",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High chair",
+        "High touch surfaces disinfected",
+        "Horseback Riding",
+        "Hot water",
+        "Iron",
+        "Kettle",
+        "Kitchen",
+        "Long term stays allowed",
+        "Microwave",
+        "Mountain",
+        "Mountain view",
+        "Museums",
+        "Outdoor pool",
+        "Outdoor seating (furniture)",
+        "Oven",
+        "Patio or balcony",
+        "Private entrance",
+        "Refrigerator",
+        "Rural",
+        "Shampoo",
+        "Shopping",
+        "Shower gel",
+        "Smoke detector",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Village",
+        "Washer",
+        "Water Parks",
+        "Water Sports",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "petsAllowed": false,
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "6aa7db4f41acf8000fde5087",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Nature Hill 1 by Portugal Active",
+    "sortOrder": 0,
+    "isActive": true,
+    "isPortfolio": false,
+    "seoTitle": "Nature Hill 1 by Portugal Active — Portugal Active",
+    "seoDescription": "Discover Nature Hill 1 by Portugal Active in Viana do Castelo, an elegant retreat where comfort and nature come together. With three bedrooms, including a suite",
+    "address": {
+      "full": "",
+      "street": "Estrada de Romãe 680",
+      "city": "Viana do Castelo",
+      "state": "Viana do Castelo",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 41.75541,
+      "lng": -8.7924743
+    },
+    "licenseNumber": null,
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "15:00",
+    "checkOutTime": "10:00",
+    "areaSquareFeet": 1184,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0,
+    "lastModified": "2026-09-16",
+    "contentHash": "edaf37a28777f221417eebba65381677be08c1cf"
+  },
+  {
+    "id": "guesty-6aa92951957eb000118fb1f8",
+    "slug": "nature-hill-2-by-portugal-active-8fb1f8",
+    "name": "Nature Hill 2 by Portugal Active",
+    "tagline": "Discover Nature Hill 2 by Portugal Active, a serene retreat in Viana do Castelo where rural elegance meets contemporary comfort. The villa features th…",
+    "tier": "select",
+    "destination": "minho",
+    "locality": "Viana do Castelo",
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "maxGuests": 6,
+    "priceFrom": 200,
+    "pricePerNight": 200,
+    "cleaningFee": 0,
+    "minNights": 1,
+    "currency": "EUR",
+    "images": [
+      "https://assets.guesty.com/image/upload/v1789472943/production/6957de4388cba42d9e7a905e/xymhlue1lljuvtyg7x15.jpg",
+      "https://assets.guesty.com/image/upload/v1789472924/production/6957de4388cba42d9e7a905e/zpmgthlfc594uaihfnkl.jpg",
+      "https://assets.guesty.com/image/upload/v1789472928/production/6957de4388cba42d9e7a905e/bfeugwssavdyla1c4u6z.jpg",
+      "https://assets.guesty.com/image/upload/v1789472936/production/6957de4388cba42d9e7a905e/ryaqzeq4qbnzdqetw4vl.jpg",
+      "https://assets.guesty.com/image/upload/v1789472920/production/6957de4388cba42d9e7a905e/tv70hknilf5frf6laaez.jpg",
+      "https://assets.guesty.com/image/upload/v1789472930/production/6957de4388cba42d9e7a905e/v9aeoqeu356km7ky6enj.jpg",
+      "https://assets.guesty.com/image/upload/v1789472930/production/6957de4388cba42d9e7a905e/h89hfg5lipoiivv4shzl.jpg",
+      "https://assets.guesty.com/image/upload/v1789472929/production/6957de4388cba42d9e7a905e/ix0i9itee30bjschqxrv.jpg",
+      "https://assets.guesty.com/image/upload/v1789472932/production/6957de4388cba42d9e7a905e/uwc3xitt8v3op3lvzumn.jpg",
+      "https://assets.guesty.com/image/upload/v1789472933/production/6957de4388cba42d9e7a905e/a26umqgjxt4jqcbeexri.jpg",
+      "https://assets.guesty.com/image/upload/v1789472920/production/6957de4388cba42d9e7a905e/npwxqqzt7bdsx70uh5ze.jpg",
+      "https://assets.guesty.com/image/upload/v1789472920/production/6957de4388cba42d9e7a905e/mh9i6chvzvt6ueus54yp.jpg",
+      "https://assets.guesty.com/image/upload/v1789472922/production/6957de4388cba42d9e7a905e/nxmpyckzvbq30yxv87f5.jpg",
+      "https://assets.guesty.com/image/upload/v1789472925/production/6957de4388cba42d9e7a905e/loyzt7zcj4sgcaku80ie.jpg",
+      "https://assets.guesty.com/image/upload/v1789472923/production/6957de4388cba42d9e7a905e/ls22gi3j7ijwoeepjepc.jpg",
+      "https://assets.guesty.com/image/upload/v1789472923/production/6957de4388cba42d9e7a905e/etsi0hkbb9nlrqp8ryet.jpg",
+      "https://assets.guesty.com/image/upload/v1789472924/production/6957de4388cba42d9e7a905e/axsjydjuqwixzbl62nau.jpg",
+      "https://assets.guesty.com/image/upload/v1789472927/production/6957de4388cba42d9e7a905e/jpwe0ryssqaw4jbc0rre.jpg",
+      "https://assets.guesty.com/image/upload/v1789472926/production/6957de4388cba42d9e7a905e/kbmvmhcdnnlgfafmgnb8.jpg",
+      "https://assets.guesty.com/image/upload/v1789472926/production/6957de4388cba42d9e7a905e/xzkbfiiuuafwrzg3tytz.jpg",
+      "https://assets.guesty.com/image/upload/v1789472927/production/6957de4388cba42d9e7a905e/wgm14do4v3qeig6rjgxb.jpg",
+      "https://assets.guesty.com/image/upload/v1789472934/production/6957de4388cba42d9e7a905e/ppxng3v6qopeperhmhtd.jpg",
+      "https://assets.guesty.com/image/upload/v1789472935/production/6957de4388cba42d9e7a905e/x7ptky52sxw2arsqwoxo.jpg",
+      "https://assets.guesty.com/image/upload/v1789472936/production/6957de4388cba42d9e7a905e/yzsj5xaauuwmzyfk9w1b.jpg",
+      "https://assets.guesty.com/image/upload/v1789472936/production/6957de4388cba42d9e7a905e/bckdqbpdr7zspqwvke3x.jpg",
+      "https://assets.guesty.com/image/upload/v1789472937/production/6957de4388cba42d9e7a905e/tczizjmgondw2do3cwyr.jpg",
+      "https://assets.guesty.com/image/upload/v1789472938/production/6957de4388cba42d9e7a905e/okahfp6nywpqev8t6n2h.jpg",
+      "https://assets.guesty.com/image/upload/v1789472938/production/6957de4388cba42d9e7a905e/eh3ucvd7yr0mp8awmpc9.jpg",
+      "https://assets.guesty.com/image/upload/v1789472939/production/6957de4388cba42d9e7a905e/tpx8dl65lsyhmafd6bjd.jpg",
+      "https://assets.guesty.com/image/upload/v1789472939/production/6957de4388cba42d9e7a905e/l22fooae2u8kiqcr2eva.jpg",
+      "https://assets.guesty.com/image/upload/v1789472939/production/6957de4388cba42d9e7a905e/eip0arlt2iohwlj3si1t.jpg",
+      "https://assets.guesty.com/image/upload/v1789472941/production/6957de4388cba42d9e7a905e/duwdqxszzgncen7foyw9.jpg",
+      "https://assets.guesty.com/image/upload/v1789472942/production/6957de4388cba42d9e7a905e/ldbdniffxcl0kylcmiri.jpg",
+      "https://assets.guesty.com/image/upload/v1789472942/production/6957de4388cba42d9e7a905e/h5sspofewenuzwxzt3if.jpg",
+      "https://assets.guesty.com/image/upload/v1789472942/production/6957de4388cba42d9e7a905e/cue5s5c3efn07ra6mutq.jpg",
+      "https://assets.guesty.com/image/upload/v1789472950/production/6957de4388cba42d9e7a905e/ysqkdbg3uwf8a0hqhtlg.jpg",
+      "https://assets.guesty.com/image/upload/v1789472947/production/6957de4388cba42d9e7a905e/abzvog8sok6ki8bcwosp.jpg",
+      "https://assets.guesty.com/image/upload/v1789472947/production/6957de4388cba42d9e7a905e/k34tk4tl1svshsax7h2r.jpg",
+      "https://assets.guesty.com/image/upload/v1789472949/production/6957de4388cba42d9e7a905e/q4ei9a3yg6fehlvtfwug.jpg",
+      "https://assets.guesty.com/image/upload/v1789472947/production/6957de4388cba42d9e7a905e/b8keuu0j1sryriq977wo.jpg",
+      "https://assets.guesty.com/image/upload/v1789472946/production/6957de4388cba42d9e7a905e/foevayqdtzcy5tiokitu.jpg",
+      "https://assets.guesty.com/image/upload/v1789472945/production/6957de4388cba42d9e7a905e/vxocm49nkfxr8nzt4xc8.jpg",
+      "https://assets.guesty.com/image/upload/v1789472943/production/6957de4388cba42d9e7a905e/n2uzx6e8wqmzs4gvsxia.jpg",
+      "https://assets.guesty.com/image/upload/v1789472930/production/6957de4388cba42d9e7a905e/cdytptawnfpydbz1ju94.jpg",
+      "https://assets.guesty.com/image/upload/v1789473488/production/6957de4388cba42d9e7a905e/w2eqxjyqm47cbfjab7kk.jpg",
+      "https://assets.guesty.com/image/upload/v1789473488/production/6957de4388cba42d9e7a905e/ldgovbnbjlenogfmgbaw.jpg",
+      "https://assets.guesty.com/image/upload/v1789473488/production/6957de4388cba42d9e7a905e/rkvjugpkiwqfmzwqoi3t.jpg",
+      "https://assets.guesty.com/image/upload/v1789473487/production/6957de4388cba42d9e7a905e/nzxt6qjgazyk9c7eazzh.jpg"
+    ],
+    "description": "Discover Nature Hill 2 by Portugal Active, a serene retreat in Viana do Castelo where rural elegance meets contemporary comfort. The villa features three bedrooms, including a suite, an outdoor pool and a surrounding garden. With mountain views and a welcoming barbecue area, it offers the perfect setting for unforgettable days in harmony with nature, just moments from the vibrant heart of the city.\n\nNature Hill 2 by Portugal Active is a sanctuary of sophistication, created for families seeking comfort, elegance and truly memorable moments in Viana do Castelo. The villa features three spacious bedrooms, including a suite, all equipped with high‑quality queen‑size beds to ensure absolute rest.\nThe contemporary living room offers a warm and inviting space for family time, while the fully equipped kitchen allows you to prepare meals that become part of the journey’s memories. The two full bathrooms showcase refined finishes and essential amenities, highlighting the care placed into every detail.\nOutdoors, the garden and the sparkling pool create the perfect setting for leisurely days under the Minho sun, complemented by a dedicated barbecue area.\nFor a premium and worry‑free stay, Nature Hill 2 by Portugal Active provides full air conditioning, cable TV, high‑speed internet and private parking, everything designed to offer comfort, privacy and unforgettable family moments.\n\nLocated in the peaceful and picturesque neighborhood of Outeiro, Nature Hill 1 by Portugal Active offers a privileged setting that blends rural serenity with convenient proximity to Viana do Castelo’s main points of interest. The area is perfect for those who enjoy direct contact with nature, with hiking trails and mountain landscapes just minutes away.\n\nDespite its relaxing atmosphere, you’ll be only a 10‑minute drive from the vibrant historic center of Viana do Castelo, where you’ll find a wide selection of traditional restaurants, local shops, and iconic landmarks. Convenience is further ensured by the nearby highway, just 2 minutes away, making it easy to explore the entire region — including the famous beaches and local water parks, all reachable with short drives.\n\nGuests have exclusive access to the entire property, including the swimming pool, garden, and all indoor facilities. Portugal Active’s concierge service is available 24 hours a day, 7 days a week, ready to assist with any request — from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\nImportant Notes:\n- During your stay, regular maintenance may take place in the garden and pool. These procedures are essential to ensure that all equipment remains clean, functional, and safe for use.\n- During the high season (May to October), the pool is maintained regularly to provide guests with an impeccable experience. In the low season (November to April), the pool may be closed — please confirm with our team.\n- You may use the Walbox to charge your electric vehicle. Please inform us in advance so we can activate the equipment. The cost is €0.25/kWh, payable at check‑out.\n\nThe property is conveniently located in the peaceful neighborhood of Outeiro, offering easy access to several transportation options. The highway is just a 2‑minute drive away, providing quick connections to other cities and regions. The center of Viana do Castelo is only 10 minutes away, offering a variety of public transport options, including buses and taxis. For guests arriving by plane, the nearest airport is Francisco Sá Carneiro Airport (OPO), located approximately 60 minutes away by car. Free parking is available on the property.\n\n--------Exclusive Concierge Services by Portugal Active--------\n\nEnhance Your Stay with Our Exclusive Services:\n\n✔️ ️Enjoy luxury transfers: Private Chauffeur from the airport to your villa from €30/person.\n✔️ Personalized Experience: Tailor your Experience from a Private Chef to a Personal Trainer.\n✔️ Daily Cleaning & babysitting: Take advantage of our services for a stress-free stay.\n✔️ Local Team Available: rest assured, a Portugal Active team member will be available to assist you throughout your stay.\n\n\n--------Adventure Experiences--------\n\n✔️ Horseback Riding:\nRide through scenic trails and beaches.\n\n✔️ Guided Hike, Dive & Dine Tours with Lunch:\nExplore landscapes, dive in a secret lagoon, and enjoy traditional tapas.\n\n✔️ E-Bike Wild Tour:\nDiscover Viana do Castelo on an e-bike.\n\nBook Your Stay.\nPortugal Active, Your Private Hotel.",
+    "descriptionSections": {
+      "summary": "Discover Nature Hill 2 by Portugal Active, a serene retreat in Viana do Castelo where rural elegance meets contemporary comfort. The villa features three bedrooms, including a suite, an outdoor pool and a surrounding garden. With mountain views and a welcoming barbecue area, it offers the perfect setting for unforgettable days in harmony with nature, just moments from the vibrant heart of the city.",
+      "space": "Nature Hill 2 by Portugal Active is a sanctuary of sophistication, created for families seeking comfort, elegance and truly memorable moments in Viana do Castelo. The villa features three spacious bedrooms, including a suite, all equipped with high‑quality queen‑size beds to ensure absolute rest.\nThe contemporary living room offers a warm and inviting space for family time, while the fully equipped kitchen allows you to prepare meals that become part of the journey’s memories. The two full bathrooms showcase refined finishes and essential amenities, highlighting the care placed into every detail.\nOutdoors, the garden and the sparkling pool create the perfect setting for leisurely days under the Minho sun, complemented by a dedicated barbecue area.\nFor a premium and worry‑free stay, Nature Hill 2 by Portugal Active provides full air conditioning, cable TV, high‑speed internet and private parking, everything designed to offer comfort, privacy and unforgettable family moments.",
+      "access": "Guests have exclusive access to the entire property, including the swimming pool, garden, and all indoor facilities. Portugal Active’s concierge service is available 24 hours a day, 7 days a week, ready to assist with any request — from organizing local excursions to booking private chef services. To ensure availability, please request any service at least 72 hours in advance.\n\nImportant Notes:\n- During your stay, regular maintenance may take place in the garden and pool. These procedures are essential to ensure that all equipment remains clean, functional, and safe for use.\n- During the high season (May to October), the pool is maintained regularly to provide guests with an impeccable experience. In the low season (November to April), the pool may be closed — please confirm with our team.\n- You may use the Walbox to charge your electric vehicle. Please inform us in advance so we can activate the equipment. The cost is €0.25/kWh, payable at check‑out.",
+      "neighborhood": "Located in the peaceful and picturesque neighborhood of Outeiro, Nature Hill 1 by Portugal Active offers a privileged setting that blends rural serenity with convenient proximity to Viana do Castelo’s main points of interest. The area is perfect for those who enjoy direct contact with nature, with hiking trails and mountain landscapes just minutes away.\n\nDespite its relaxing atmosphere, you’ll be only a 10‑minute drive from the vibrant historic center of Viana do Castelo, where you’ll find a wide selection of traditional restaurants, local shops, and iconic landmarks. Convenience is further ensured by the nearby highway, just 2 minutes away, making it easy to explore the entire region — including the famous beaches and local water parks, all reachable with short drives.",
+      "gettingAround": "The property is conveniently located in the peaceful neighborhood of Outeiro, offering easy access to several transportation options. The highway is just a 2‑minute drive away, providing quick connections to other cities and regions. The center of Viana do Castelo is only 10 minutes away, offering a variety of public transport options, including buses and taxis. For guests arriving by plane, the nearest airport is Francisco Sá Carneiro Airport (OPO), located approximately 60 minutes away by car. Free parking is available on the property.",
+      "notes": "",
+      "interaction": "The Portugal Active team is committed to ensuring your stay is memorable and enjoyable. We are always available to support, advise, and accompany you during your visit. From the moment you arrive, we are here to make you feel at home.\nWe offer an excellent range of experiences to enhance your vacation, including adventure tours, private chefs, massages, babysitting services, and much more. Whatever your needs, we are here to help you create unforgettable memories. If you have any questions, feel free to contact us."
+    },
+    "amenities": {
+      "property": [
+        "Air conditioning",
+        "BBQ grill",
+        "Babysitter recommendations",
+        "Baking sheet",
+        "Barbeque utensils",
+        "Bed linens",
+        "Cable TV",
+        "Carbon monoxide detector",
+        "Cleaning Disinfection",
+        "Cleaning products",
+        "Clothing storage",
+        "Coffee",
+        "Coffee maker",
+        "Cookware",
+        "Crib",
+        "Cycling",
+        "Dining table",
+        "Dishes and silverware",
+        "Dishwasher",
+        "EV charger",
+        "Enhanced cleaning practices",
+        "Essentials",
+        "Extra pillows and blankets",
+        "Fire extinguisher",
+        "First aid kit",
+        "Fishing",
+        "Freezer",
+        "Garden View",
+        "Garden or backyard",
+        "Hair dryer",
+        "Hangers",
+        "Heating",
+        "High chair",
+        "High touch surfaces disinfected",
+        "Horseback Riding",
+        "Hot water",
+        "Iron",
+        "Kettle",
+        "Kitchen",
+        "Long term stays allowed",
+        "Microwave",
+        "Mountain",
+        "Mountain view",
+        "Museums",
+        "Outdoor pool",
+        "Outdoor seating (furniture)",
+        "Oven",
+        "Patio or balcony",
+        "Private entrance",
+        "Refrigerator",
+        "Rural",
+        "Shampoo",
+        "Shopping",
+        "Shower gel",
+        "Smoke detector",
+        "Stove",
+        "Suitable for children (2-12 years)",
+        "Suitable for infants (under 2 years)",
+        "TV",
+        "Toaster",
+        "Towels provided",
+        "Village",
+        "Washer",
+        "Water Parks",
+        "Water Sports",
+        "Wine glasses",
+        "Wireless Internet"
+      ],
+      "bedrooms": [],
+      "kitchen": [],
+      "services": []
+    },
+    "petsAllowed": false,
+    "stayIncludes": [],
+    "style": "",
+    "tags": [],
+    "occasions": [],
+    "bookingUrl": "",
+    "guestyId": "6aa92951957eb000118fb1f8",
+    "guestyUrl": "",
+    "whatsappMessage": "Hi, I am interested in Nature Hill 2 by Portugal Active",
+    "sortOrder": 0,
+    "isActive": true,
+    "isPortfolio": false,
+    "seoTitle": "Nature Hill 2 by Portugal Active — Portugal Active",
+    "seoDescription": "Discover Nature Hill 2 by Portugal Active, a serene retreat in Viana do Castelo where rural elegance meets contemporary comfort. The villa features three bedroo",
+    "address": {
+      "full": "",
+      "street": "Estrada de Romãe 680",
+      "city": "Viana do Castelo",
+      "state": "Viana do Castelo",
+      "zipcode": "",
+      "country": "Portugal",
+      "lat": 41.75541,
+      "lng": -8.7924743
+    },
+    "licenseNumber": null,
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "QUEEN_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "propertyType": "House",
+    "checkInTime": "15:00",
+    "checkOutTime": "10:00",
+    "areaSquareFeet": 1184,
+    "reviews": [],
+    "averageRating": null,
+    "reviewCount": 0,
+    "lastModified": "2026-09-16",
+    "contentHash": "73d9f1c9ebce55d354da32802f310299a72ccadc"
   },
   {
     "id": "guesty-696533794fe6a100145fe4bf",
@@ -17602,8 +18111,8 @@
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/eb2998e2-8e4d-4c-Rgw_A",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/47822c5b-987c-4c-7RyXt",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/d94e86ff-2582-4c-H2AfM",
-      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/8294bc69-5d9a-40-xRmhK",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/b2d22427-753a-45-IIMS9",
+      "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/8294bc69-5d9a-40-xRmhK",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/7a737e92-da86-4e-UhCX4",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/98c4888b-403c-46-9WHz4",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653335bf04fe0013742743/4d16a7d0-89d1-45-cKDc8",
@@ -18201,8 +18710,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 19,
-    "lastModified": "2026-09-15",
-    "contentHash": "c0f3ce84648cb58b6e6da7af4e3a8ab9acf35aad"
+    "lastModified": "2026-09-16",
+    "contentHash": "c9f70bad8969b2498a6e808fb2c8a2adacba5b4a"
   },
   {
     "id": "guesty-696533494b9b64001401b62e",
