@@ -10,6 +10,7 @@
  * Security: the intent id is a capability (it goes into resume links and the
  * record carries guest PII), so it is a UUID — never enumerable.
  */
+import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
 import { randomUUID } from "crypto";
 import { sanitizePropertyName } from "@shared/displayName";
 import { z } from "zod";
@@ -152,14 +153,6 @@ async function resolveIntentPhoto(intent: {
   }
 }
 
-/** Origem pública para links de email. SITE_URL primeiro (a env real dos
- *  deploys); fallback produção — dev define SITE_URL, produção pode omitir. */
-function publicBaseUrl(): string {
-  const fromEnv =
-    process.env.SITE_URL || process.env.PUBLIC_BASE_URL || process.env.PUBLIC_URL || process.env.APP_URL;
-  return (fromEnv || "https://www.portugalactive.com").replace(/\/+$/, "");
-}
-
 /**
  * Emails + nota Guesty da transição para paid (manifesto CS + confirmação
  * premium do hóspede). Partilhado: o updateIntent chama-o no caminho normal
@@ -217,8 +210,8 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string): Promise<
             // retoma do checkout mostrava um interstício seco "verifique o seu
             // email" a quem vinha DO email (16 ago).
             viewUrl: m.reservationId
-              ? `${publicBaseUrl()}/${m.locale || "en"}/booking/thank-you/${m.reservationId}?method=card`
-              : `${publicBaseUrl()}/${m.locale || "en"}/checkout/${intentId}`,
+              ? `${CHECKOUT_EMAIL_ORIGIN}/${m.locale || "en"}/booking/thank-you/${m.reservationId}?method=card`
+              : `${CHECKOUT_EMAIL_ORIGIN}/${m.locale || "en"}/checkout/${intentId}`,
             locale: m.locale,
             intentId,
           }),
