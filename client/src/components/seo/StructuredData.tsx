@@ -119,6 +119,8 @@ export interface BuildArticleInput {
   publishDate?: string | null;
   modifiedDate?: string | null;
   authorName?: string | null;
+  authorType?: 'Person' | 'Organization';
+  language?: string;
   authorUrl?: string | null;
   articleBody?: string | null;
   readTimeMinutes?: number | null;
@@ -129,7 +131,8 @@ export interface BuildArticleInput {
  *  feeds Google Discover cards and is the type Google's Article rich result
  *  looks for. */
 export function buildArticleSchema(i: BuildArticleInput): JsonLd {
-  const url = localeUrl(`/blog/${i.slug}`);
+  const language = (i.language || i18n.language || 'en').split('-')[0];
+  const url = `${BASE_URL}/${language}/blog/${i.slug}`;
 
   return {
     '@context': 'https://schema.org',
@@ -137,13 +140,14 @@ export function buildArticleSchema(i: BuildArticleInput): JsonLd {
     '@id': url,
     headline: i.title.slice(0, 110),
     ...(i.description && { description: i.description.slice(0, 250) }),
-    ...(i.image && { image: [i.image] }),
+    ...(i.image && { image: [i.image.startsWith('/') ? `${BASE_URL}${i.image}` : i.image] }),
     ...(i.publishDate && { datePublished: i.publishDate }),
     ...(i.modifiedDate || i.publishDate ? {
       dateModified: i.modifiedDate || i.publishDate,
     } : {}),
+    inLanguage: language,
     author: {
-      '@type': 'Person',
+      '@type': i.authorType || 'Person',
       name: i.authorName || 'Portugal Active',
       ...(i.authorUrl && { url: i.authorUrl }),
     },

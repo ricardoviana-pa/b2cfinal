@@ -13,6 +13,7 @@ import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildBreadcrumbSchema, buildFaqPageSchema } from '@/components/seo/StructuredData';
 import { trpc } from '@/lib/trpc';
 import { useSearch } from 'wouter';
+import { corporatePlanning } from '@/data/corporatePlanning';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -70,6 +71,10 @@ export default function Contact() {
   const formLoadTimeRef = useRef<number | null>(null);
   const createLead = trpc.leads.create.useMutation();
   const searchString = useSearch();
+  const enquiryParams = new URLSearchParams(searchString);
+  const planning = enquiryParams.get('intent') === 'corporate' && subject === 'events' ? corporatePlanning(i18n.language) : null;
+  const selectedFormat = planning?.formats.find(format => format.id === enquiryParams.get('format'));
+  const [corporateDetails, setCorporateDetails] = useState({ dates: '', people: '', rooms: '' });
   const prefilledFromProperty = useRef(false);
 
   useLayoutEffect(() => {
@@ -93,7 +98,9 @@ export default function Contact() {
     const intent = params.get('intent');
     if (intent === 'corporate') {
       setSubject('events');
-      setMessage(t('corporate.prefill'));
+      const copy = corporatePlanning(i18n.language);
+      const format = copy?.formats.find(item => item.id === params.get('format'));
+      setMessage(copy ? `${copy.prefill}${format ? ` ${copy.selected}: ${format.title}.` : ''}` : t('corporate.prefill'));
       prefilledFromProperty.current = true;
     }
     if (slug && intent === 'availability') {
@@ -173,12 +180,12 @@ export default function Contact() {
         email,
         name,
         phone: phone || undefined,
-        message: `[${subject}] ${message}`,
+        message: `[${subject}] ${message}` + (planning ? Object.entries(corporateDetails).filter(([, value]) => value.trim()).map(([key, value]) => `\n${planning[key as keyof typeof corporateDetails]}: ${value.trim()}`).join('') : ''),
         source: 'contact-form',
-        metadata: { subject },
+        metadata: { subject, ...(planning ? { intent: 'corporate', ...(selectedFormat ? { format: selectedFormat.id } : {}), ...corporateDetails } : {}) },
       });
       setSubmitted(true);
-      pushDL({ event: 'generate_lead', lead_source: 'contact-form', lead_type: 'contact', lead_subject: subject });
+      pushDL({ event: 'generate_lead', lead_source: 'contact-form', lead_type: planning ? 'corporate' : 'contact', lead_subject: subject, ...(selectedFormat ? { corporate_format: selectedFormat.id } : {}) });
     } catch {
       setError(t('contact.errorSubmit', 'Something went wrong. Please try again or contact us directly.'));
     } finally {
@@ -201,8 +208,8 @@ export default function Contact() {
       <section className="page-intro">
         <div className="container max-w-[1100px]">
           <p className="eyebrow mb-3">{t('contact.heroOverline')}</p>
-          <h1 className="headline-xl text-pa-dark mb-4">{t('contact.heroTitle')}</h1>
-          <p className="body-lg">{t('contact.heroSubtitle')}</p>
+          <h1 className="headline-xl text-pa-dark mb-4">{planning?.formTitle || t('contact.heroTitle')}</h1>
+          <p className="body-lg">{planning?.formIntro || t('contact.heroSubtitle')}</p>
         </div>
       </section>
 
@@ -336,9 +343,19 @@ export default function Contact() {
                   </div>
                   </details>
 
+                  {planning && <fieldset className="rounded-xl border border-pa-sand bg-white p-4 sm:p-5">
+                    <legend className="px-2 text-sm font-medium text-pa-stone-aa">{planning.optional}</legend>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      {(['dates', 'people', 'rooms'] as const).map(key => <div key={key} className={key === 'rooms' ? 'sm:col-span-2' : ''}>
+                        <label htmlFor={`corporate-${key}`} className="block text-sm text-pa-dark mb-2">{planning[key]}</label>
+                        <input id={`corporate-${key}`} type={key === 'people' ? 'number' : 'text'} min={key === 'people' ? 1 : undefined} maxLength={key === 'people' ? undefined : 200} value={corporateDetails[key]} onChange={event => setCorporateDetails(current => ({ ...current, [key]: event.target.value }))} placeholder={planning[`${key}Placeholder`]} className={inputClasses(key, false)} />
+                      </div>)}
+                    </div>
+                  </fieldset>}
+
                   <div>
                     <label htmlFor="contact-message" className="text-[11px] font-medium tracking-[0.12em] uppercase text-[#726D63] mb-2 block" style={{ fontFamily: 'var(--font-body)' }}>
-                      {t('contact.messageLabel').replace(/\s*\*$/, '')} <span className="text-[#DC2626]">*</span>
+                      {planning?.message || t('contact.messageLabel').replace(/\s*\*$/, '')} <span className="text-[#DC2626]">*</span>
                     </label>
                     <textarea
                       required
@@ -370,10 +387,10 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="pa-action rounded-full bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#333330] active:bg-[#0D0D0C] transition-colors self-start md:self-end inline-flex items-center gap-2.5 min-h-[48px] disabled:opacity-50"
+                    className="pa-action bg-[#1A1A18] text-[#FAFAF7] text-[11px] font-medium tracking-[0.12em] uppercase px-8 py-3.5 hover:bg-[#333330] active:bg-[#0D0D0C] transition-colors self-start md:self-end inline-flex items-center gap-2.5 min-h-[48px] disabled:opacity-50"
                   >
                     {submitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-                    {submitting ? t('contact.sending', 'Sending...') : t('contact.sendMessage')}
+                    {submitting ? t('contact.sending', 'Sending...') : planning?.submit || t('contact.sendMessage')}
                   </button>
                 </form>
               )}

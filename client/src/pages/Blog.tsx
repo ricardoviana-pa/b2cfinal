@@ -3,9 +3,9 @@
    Hero, 6 categories, featured article, article grid
    ========================================================================== */
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { loadBlogOverrides, mergeBlogOverride } from '@/lib/localizeBlog';
+import { useBlogOverrides, mergeBlogOverride } from '@/lib/localizeBlog';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
 import { Link } from 'wouter';
@@ -17,6 +17,7 @@ import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import type { BlogArticle, BlogCategory } from '@/lib/types';
 import blogData from '@/data/blog.json';
+import { isBlogLanguagePublished } from '@shared/blogPublication';
 
 // Newest first. The SSR index used to open on the Video tab (nine posts from
 // 2019-2023) and never sorted, so crawlers and first paint missed the thirty
@@ -46,25 +47,20 @@ export default function Blog() {
   const [activeCategory, setActiveCategory] = useState<BlogCategory | "all">("all");
 
   // Overlay per-locale article translations (slug-keyed), active language only.
-  const [blogOverrides, setBlogOverrides] = useState<Record<string, any>>({});
-  useEffect(() => {
-    let alive = true;
-    loadBlogOverrides(i18n.language).then(o => { if (alive) setBlogOverrides(o); });
-    return () => { alive = false; };
-  }, [i18n.language]);
-  const locArticles = useMemo(() => articles.map(a => mergeBlogOverride(a, blogOverrides)!), [blogOverrides]);
+  const blogOverrides = useBlogOverrides(i18n.language);
+  const locArticles = useMemo(() => articles.filter(a => isBlogLanguagePublished(a, i18n.language)).map(a => mergeBlogOverride(a, blogOverrides)!), [blogOverrides, i18n.language]);
 
   const blogGraph = useMemo(() => {
-    const publishedArticles = articles.filter((a) => a.status === 'published');
+    const publishedArticles = locArticles.filter((a) => a.status === 'published');
     return [
       {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
-        '@id': 'https://www.portugalactive.com/blog',
+        '@id': `https://www.portugalactive.com/${i18n.language}/blog`,
         name: 'Portugal Travel Journal',
         description:
           'Insider guides to Portugal — best beaches, hidden restaurants, wine regions, and travel tips from our local concierge team.',
-        url: 'https://www.portugalactive.com/blog',
+        url: `https://www.portugalactive.com/${i18n.language}/blog`,
         mainEntity: {
           '@type': 'ItemList',
           itemListElement: publishedArticles.map((article, idx) => ({
@@ -72,13 +68,13 @@ export default function Blog() {
             position: idx + 1,
             item: {
               '@type': 'BlogPosting',
-              '@id': `https://www.portugalactive.com/blog/${article.slug}`,
+              '@id': `https://www.portugalactive.com/${i18n.language}/blog/${article.slug}`,
               headline: article.title,
               description: article.excerpt,
               image: getArticleImage(article),
               datePublished: article.publishDate,
               author: {
-                '@type': 'Person',
+                '@type': article.author.type || 'Person',
                 name: article.author.name,
               },
             },
@@ -90,7 +86,7 @@ export default function Blog() {
         { name: 'Journal' },
       ]),
     ];
-  }, []);
+  }, [locArticles, i18n.language]);
 
   const CATEGORIES = useMemo(() => [
     { label: t('blog.catAll'), value: 'all' as const },
@@ -164,7 +160,8 @@ export default function Blog() {
                     sizes="(min-width: 768px) 50vw, 100vw"
                     alt={`${featured.title} – Portugal Active journal`}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="lazy"
+                    loading="eager"
+                    fetchPriority="high"
                     width={800}
                     height={600}
                     decoding="async"

@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { blogLanguages } from "../../shared/blogPublication";
 import express from "express";
 import compression from "compression";
 import helmet from "helmet";
@@ -227,9 +228,9 @@ async function startServer() {
       ];
 
       /** Generate a <url> entry with hreflang alternates for all languages */
-      const url = (pagePath: string, lang: string, lastmod: string, changefreq: string, priority: string) => {
+      const url = (pagePath: string, lang: string, lastmod: string, changefreq: string, priority: string, languages = SITEMAP_LANGS) => {
         const loc = `${base}/${lang}${pagePath === '/' ? '' : pagePath}`;
-        const alternates = SITEMAP_LANGS.map(l =>
+        const alternates = languages.map(l =>
           `    <xhtml:link rel="alternate" hreflang="${l}" href="${base}/${l}${pagePath === '/' ? '' : pagePath}" />`
         ).join('\n');
         const xDefault = `    <xhtml:link rel="alternate" hreflang="x-default" href="${base}/en${pagePath === '/' ? '' : pagePath}" />`;
@@ -246,7 +247,7 @@ async function startServer() {
       }
 
       // Dynamic pages × all languages
-      const dynamicPages: { path: string; lastmod: string; changefreq: string; priority: string }[] = [];
+      const dynamicPages: { path: string; lastmod: string; changefreq: string; priority: string; languages?: string[] }[] = [];
 
       for (const p of properties.filter((p: any) => p.slug)) {
         // lastModified is stamped by the Guesty sync from a fingerprint of the
@@ -270,7 +271,7 @@ async function startServer() {
           if (!a?.slug || a.status !== "published") continue;
           blogSlugs.add(a.slug);
           const lastmod = a.publishDate ? new Date(a.publishDate).toISOString().split("T")[0] : now;
-          dynamicPages.push({ path: `/blog/${a.slug}`, lastmod, changefreq: "monthly", priority: "0.8" });
+          dynamicPages.push({ path: `/blog/${a.slug}`, lastmod, changefreq: "monthly", priority: "0.8", languages: blogLanguages(a) });
         }
       } catch (e) {
         console.warn("[Sitemap] could not load blog.json", e);
@@ -330,7 +331,8 @@ async function startServer() {
 
       for (const lang of SITEMAP_LANGS) {
         for (const dp of dynamicPages) {
-          allUrls.push(url(dp.path, lang, dp.lastmod, dp.changefreq, dp.priority));
+          if (dp.languages && !dp.languages.includes(lang)) continue;
+          allUrls.push(url(dp.path, lang, dp.lastmod, dp.changefreq, dp.priority, dp.languages));
         }
       }
 

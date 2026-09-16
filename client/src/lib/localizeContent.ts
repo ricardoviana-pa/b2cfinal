@@ -102,6 +102,10 @@ export function contentKindsForPath(pathWithoutLocale: string): ContentKind[] {
 export async function preloadContentOverrides(lang: string | undefined, pathWithoutLocale: string): Promise<void> {
   const code = baseLang(lang);
   if (code === 'en' || !(LANGS as readonly string[]).includes(code)) return;
+  if (pathWithoutLocale === '/blog' || pathWithoutLocale.startsWith('/blog/')) {
+    const { loadBlogOverrides } = await import('./localizeBlog');
+    await loadBlogOverrides(code);
+  }
   await Promise.all(contentKindsForPath(pathWithoutLocale).map((k) => loadContentOverrides(k, code)));
 }
 

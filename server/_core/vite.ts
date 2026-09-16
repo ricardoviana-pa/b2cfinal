@@ -1,4 +1,5 @@
 import { buildDestinationGraph } from '../../shared/destinationSchema';
+import { blogLanguages, blogLanguageRedirect } from '../../shared/blogPublication';
 import { corporateSchema } from '../../shared/corporateSchema';
 import { deepMerge } from '../../client/src/lib/deepMerge';
 import { vacationRentalSchema } from '../../shared/vacationRentalSchema';
@@ -219,7 +220,7 @@ async function getBlogArticleBySlugCached(slug: string, lang: string): Promise<a
     const base = _blogArticles.data.get(slug);
     if (!base) return null;
     const ov = loadI18nOverrides("blog", lang)[slug];
-    return ov ? { ...base, ...ov } : base;
+    return ov ? deepMerge(base, ov) : base;
   } catch (err) {
     console.error("[Meta] Failed to load blog data for meta injection:", err);
     return null;
@@ -316,9 +317,9 @@ const OG_LOCALE: Record<string, string> = {
 const ALL_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
 
 /** Build the full alternate-language link block for a given page path. */
-function buildHreflangBlock(pagePath: string): string {
+function buildHreflangBlock(pagePath: string, languages = ALL_LANGS): string {
   const suffix = pagePath === '/' ? '' : pagePath;
-  const langLinks = ALL_LANGS.map(l => {
+  const langLinks = languages.map(l => {
     // emit both generic ("pt") and regional ("pt-PT") — Google picks the best match
     const generic = `    <link rel="alternate" hreflang="${l}" href="${BOT_BASE_URL}/${l}${suffix}" />`;
     const regional = `    <link rel="alternate" hreflang="${HREFLANG_REGION[l]}" href="${BOT_BASE_URL}/${l}${suffix}" />`;
@@ -330,7 +331,7 @@ function buildHreflangBlock(pagePath: string): string {
 
 /** Inject per-request locale signals: <html lang>, hreflang alternates,
  *  canonical URL, og:url, og:locale. Safe to run on any HTML response. */
-function injectLocaleTags(html: string, opts: { lang: string; pagePath: string }): string {
+function injectLocaleTags(html: string, opts: { lang: string; pagePath: string; languages?: string[] }): string {
   const lang = ALL_LANGS.includes(opts.lang) ? opts.lang : 'en';
   const pagePath = opts.pagePath;
   const url = `${BOT_BASE_URL}/${lang}${pagePath === '/' ? '' : pagePath}`;
@@ -344,7 +345,7 @@ function injectLocaleTags(html: string, opts: { lang: string; pagePath: string }
   //    with the canonical 9-lang + 9-region + x-default set.
   //    Strategy: remove every existing hreflang link, then re-insert before </head>.
   html = html.replace(/\s*<link\s+rel="alternate"\s+hreflang="[^"]*"[^>]*\/?>\s*/g, '\n');
-  const block = buildHreflangBlock(pagePath);
+  const block = buildHreflangBlock(pagePath, opts.languages);
   // Insert just before the canonical link so tags stay grouped
   if (/<link rel="canonical"/.test(html)) {
     html = html.replace(/(<link rel="canonical"[^>]*>)/, `${block}\n    $1`);
@@ -947,10 +948,11 @@ function buildBlogGraph(post: any, lang: string): Record<string, unknown> {
     ...((post.excerpt || post.seoDescription) && {
       description: String(post.excerpt || post.seoDescription).slice(0, 250),
     }),
-    ...(post.coverImage && { image: [post.coverImage] }),
+    ...((post.coverImage || post.featuredImage) && { image: [new URL(post.coverImage || post.featuredImage, BOT_BASE_URL).href] }),
+    inLanguage: lang,
     ...(published && { datePublished: published }),
     ...(modified && { dateModified: modified }),
-    author: { '@type': 'Person', name: authorName },
+    author: { '@type': post.author?.type || 'Person', name: authorName },
     publisher: {
       '@type': 'Organization',
       name: 'Portugal Active',
@@ -1626,7 +1628,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
     if (blogMatch) {
       try {
         const post = await getBlogArticleBySlugCached(blogMatch[1], "en");
-        if (post) {
+        if (post && post.commercialIntent !== 'corporate') {
           const input = { destinationTag: post.destinationTag ?? null, limit: 4 };
           const { getRelatedHomes } = await import("../services/related-homes");
           return { relatedHomes: { input, data: await getRelatedHomes(input.destinationTag, input.limit) } };
@@ -1767,7 +1769,13 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
     // Always inject locale tags — hreflang alternates, canonical, og:url,
     // og:locale, and <html lang>. This is the critical SEO fix: every
     // /{lang}/{path} response tells Google it's a distinct indexable version.
-    html = injectLocaleTags(html, { lang, pagePath: p });
+    const blogSlug = p.match(/^\/blog\/([^/]+)$/)?.[1];
+    const blogPost = blogSlug ? await getBlogArticleBySlugCached(blogSlug, lang) : null;
+    if (blogPost?.status === 'published') {
+      const redirect = blogLanguageRedirect(blogPost, lang);
+      if (redirect) return res.redirect(302, redirect + (req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : ''));
+    }
+    html = injectLocaleTags(html, { lang, pagePath: p, languages: blogPost ? blogLanguages(blogPost) : undefined });
 
     // Non-production hosts (dev, previews) must not be indexed. The
     // X-Robots-Tag header already says so; this stops the markup saying the
@@ -2088,6 +2096,9 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
    mirrors the `__testing` pattern in `server/lib/redirects.ts`. */
 export const __testing = {
   buildPropertyGraph,
+  buildBlogGraph,
+  buildHreflangBlock,
+  getBlogArticleBySlugCached,
   getServiceBySlugCached,
   getPageMeta,
   buildStaticSeoBody,
