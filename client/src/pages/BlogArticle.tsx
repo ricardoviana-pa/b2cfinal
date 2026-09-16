@@ -5,6 +5,8 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { getDisplayName } from '@shared/displayName';
 import { useParams, Link } from 'wouter';
+import ArticleBody from '@/components/blog/ArticleBody';
+import { blogLanguageRedirect, isBlogLanguagePublished } from '@shared/blogPublication';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
@@ -15,45 +17,10 @@ import { StructuredData, buildArticleSchema, buildBreadcrumbSchema } from '@/com
 import AnswerCapsule from '@/components/seo/AnswerCapsule';
 import type { BlogArticle as BlogArticleType } from '@/lib/types';
 import blogData from '@/data/blog.json';
-import { loadBlogOverrides, mergeBlogOverride } from '@/lib/localizeBlog';
+import { useBlogOverrides, mergeBlogOverride } from '@/lib/localizeBlog';
 import { trpc } from '@/lib/trpc';
 
 const articles = (blogData as any).articles as BlogArticleType[];
-
-/* ── Inline markdown: bold + links ── */
-function renderInline(text: string) {
-  // Split on **bold** and [link](url) patterns
-  const parts: (string | React.ReactElement)[] = [];
-  const regex = /\*\*(.+?)\*\*|\[([^\]]+)\]\(([^)]+)\)/g;
-  let lastIndex = 0;
-  let match: RegExpExecArray | null;
-  let key = 0;
-  while ((match = regex.exec(text)) !== null) {
-    if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index));
-    if (match[1]) {
-      parts.push(<strong key={key++} className="text-[#1A1A18] font-semibold">{match[1]}</strong>);
-    } else if (match[2] && match[3]) {
-      const href = match[3];
-      const isExternal = href.startsWith('http');
-      const linkClass = 'text-pa-gold-aa underline underline-offset-2 hover:text-[#1A1A18] transition-colors';
-      // Internal links go through wouter's <Link>, which applies the locale
-      // base. Authored as "/homes/x", a raw <a> would hit the bare path and
-      // bounce through a 301 to "/{lang}/homes/x" — 27 such links across the
-      // articles, each spending a redirect and, off English, dropping the
-      // reader into whichever locale the redirect guessed.
-      parts.push(
-        isExternal ? (
-          <a key={key++} href={href} className={linkClass} target="_blank" rel="noopener noreferrer">{match[2]}</a>
-        ) : (
-          <Link key={key++} href={href} className={linkClass}>{match[2]}</Link>
-        )
-      );
-    }
-    lastIndex = match.index + match[0].length;
-  }
-  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
-  return parts;
-}
 
 /* ── Video embed: supports Vimeo (primary) and YouTube (fallback) ── */
 function VideoEmbed({ vimeoId, videoId, title }: { vimeoId?: string; videoId?: string; title: string }) {
@@ -120,17 +87,15 @@ export default function BlogArticle() {
   const { slug } = useParams<{ slug: string }>();
   // Articles are authored in English; overlay per-locale translations
   // (slug-keyed), loading only the active language's file. EN fallback.
-  const [blogOverrides, setBlogOverrides] = useState<Record<string, any>>({});
-  useEffect(() => {
-    let alive = true;
-    loadBlogOverrides(i18n.language).then(o => { if (alive) setBlogOverrides(o); });
-    return () => { alive = false; };
-  }, [i18n.language]);
-  const rawArticle = articles.find(a => a.slug === slug);
+  const blogOverrides = useBlogOverrides(i18n.language);
+  const rawArticle = articles.find(a => a.slug === slug && a.status === 'published');
   const article = useMemo(() => mergeBlogOverride(rawArticle, blogOverrides), [rawArticle, blogOverrides]);
+  const redirect = rawArticle ? blogLanguageRedirect(rawArticle, i18n.language) : null;
+  useEffect(() => { if (redirect) window.location.replace(redirect + window.location.search); }, [redirect]);
   usePageMeta({
-    title: article?.title,
-    description: article ? `${article.excerpt?.slice(0, 130) || article.title}. Read on the Portugal Active journal.`.slice(0, 155) : undefined,
+    title: article?.seoTitle || article?.title,
+    description: article?.seoDescription || article?.excerpt,
+    publishedLocales: article?.publishedLocales,
     image: article?.featuredImage,
     url: article ? `/blog/${article.slug}` : undefined,
     type: 'article',
@@ -147,11 +112,13 @@ export default function BlogArticle() {
       publishDate: article.publishDate,
       modifiedDate: article.publishDate,
       authorName: article.author.name,
+      authorType: article.author.type,
+      language: i18n.language,
       articleBody: body,
       wordCount: body ? body.split(/\s+/).filter(Boolean).length : null,
       readTimeMinutes: article.readTime ?? null,
     });
-  }, [article]);
+  }, [article, i18n.language]);
 
   // Homes to send the reader to. Keyed off rawArticle, not the merged one:
   // destinationTag is language-independent and the locale overrides load
@@ -159,9 +126,11 @@ export default function BlogArticle() {
   // mid-flight and refetch data the server already embedded.
   const { data: relatedHomesData } = trpc.properties.relatedHomes.useQuery(
     { destinationTag: (rawArticle as any)?.destinationTag ?? null, limit: 4 },
-    { enabled: Boolean(rawArticle) },
+    { enabled: Boolean(rawArticle) && !redirect && rawArticle?.commercialIntent !== 'corporate' },
   );
   const relatedHomes = relatedHomesData ?? [];
+
+  if (redirect) return null;
 
   if (!article) {
     return (
@@ -177,8 +146,8 @@ export default function BlogArticle() {
   }
 
   const relatedArticles = articles
-    .filter(a => a.id !== article.id && a.status === 'published' && a.category === article.category)
-    .slice(0, 3);
+    .filter(a => a.id !== article.id && a.status === 'published' && a.category === article.category && isBlogLanguagePublished(a, i18n.language))
+    .slice(0, 3).map(a => mergeBlogOverride(a, blogOverrides)!);
 
   return (
     <div className="min-h-screen bg-[#FAFAF7]">
@@ -231,6 +200,7 @@ export default function BlogArticle() {
             className="w-full aspect-[16/9] object-cover"
             width={1200} height={675} fetchPriority="high"
           />
+          {article.imageCaption && <p className="text-xs text-pa-stone-aa mt-3">{article.imageCaption}</p>}
         </div>
       </section>
 
@@ -249,7 +219,7 @@ export default function BlogArticle() {
               lastUpdated={article.publishDate}
               author={article.author?.name || 'Portugal Active'}
               hideQuestion
-              emitSchema
+              emitSchema={article.commercialIntent !== 'corporate'}
               schemaId={`qa-blog-${article.slug}`}
             />
           </div>
@@ -259,48 +229,7 @@ export default function BlogArticle() {
       {/* Article Content */}
       <section className="pb-16">
         <div className="container max-w-3xl mx-auto">
-          <div className="prose prose-lg max-w-none">
-            {article.content.split('\n\n').map((block, i) => {
-              const trimmed = block.trim();
-              if (!trimmed) return null;
-              if (trimmed.startsWith('### '))
-                return <h3 key={i} className="text-[#1A1A18] font-display text-xl md:text-2xl mt-10 mb-4">{renderInline(trimmed.slice(4))}</h3>;
-              if (trimmed.startsWith('## '))
-                return <h2 key={i} className="text-[#1A1A18] font-display text-2xl md:text-3xl mt-12 mb-5">{renderInline(trimmed.slice(3))}</h2>;
-              /* ── Markdown table ── */
-              if (trimmed.startsWith('|') && trimmed.includes('|---')) {
-                const rows = trimmed.split('\n').filter(r => r.trim().startsWith('|'));
-                const headerCells = rows[0].split('|').filter(c => c.trim()).map(c => c.trim());
-                const dataRows = rows.slice(2); // skip header + separator
-                return (
-                  <div key={i} className="overflow-x-auto my-8 rounded-lg border border-[#E8E4DC]">
-                    <table className="w-full text-[13px] text-left border-collapse">
-                      <thead>
-                        <tr className="bg-[#F5F1EB]">
-                          {headerCells.map((cell, ci) => (
-                            <th key={ci} className="px-4 py-3 font-medium text-[#1A1A18] border-b border-[#E8E4DC] whitespace-nowrap">{cell}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {dataRows.map((row, ri) => {
-                          const cells = row.split('|').filter(c => c.trim()).map(c => c.trim());
-                          return (
-                            <tr key={ri} className={ri % 2 === 0 ? 'bg-white' : 'bg-[#FAFAF7]'}>
-                              {cells.map((cell, ci) => (
-                                <td key={ci} className="px-4 py-2.5 text-[#6B6860] border-b border-[#E8E4DC] whitespace-nowrap">{renderInline(cell)}</td>
-                              ))}
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                );
-              }
-              return <p key={i} className="text-[#6B6860] leading-relaxed mb-6">{renderInline(trimmed)}</p>;
-            })}
-          </div>
+          <ArticleBody content={article.content} />
         </div>
       </section>
 
@@ -328,14 +257,14 @@ export default function BlogArticle() {
         <div className="container max-w-2xl mx-auto text-center">
           <p className="eyebrow mb-3" style={{ color: '#C4A87C' }}>{t('blogArticle.ctaSubtitle')}</p>
           <h3 className="headline-md mb-4" style={{ color: '#FAFAF7' }}>
-            {t('blogArticle.ctaTitle')}
+            {article.commercialIntent === 'corporate' ? t('corporate.title') : t('blogArticle.ctaTitle')}
           </h3>
           <p className="body-md mb-6" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {t('blogArticle.ctaBody')}
+            {article.commercialIntent === 'corporate' ? t('corporate.brief') : t('blogArticle.ctaBody')}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href="/homes" className="btn-white inline-flex items-center gap-2">
-              {t('blogArticle.ctaExplore')} <ArrowRight size={14} />
+            <Link href={article.commercialIntent === 'corporate' ? '/contact?subject=events&intent=corporate' : '/homes'} className="btn-white inline-flex items-center gap-2">
+              {article.commercialIntent === 'corporate' ? t('destinationGrowth.corporateCta') : t('blogArticle.ctaExplore')} <ArrowRight size={14} />
             </Link>
             <a href="https://wa.me/351927161771" target="_blank" rel="noopener noreferrer" className="btn-ghost-light inline-flex items-center gap-2">
               {t('blogArticle.ctaConcierge')}
@@ -347,7 +276,7 @@ export default function BlogArticle() {
       {/* Related Homes — the article's link into the portfolio. Prefetched on
           the server (see buildPrefetch) so these anchors are in the served
           HTML rather than appearing only after hydration. */}
-      {relatedHomes.length > 0 && (
+      {article.commercialIntent !== 'corporate' && relatedHomes.length > 0 && (
         <section className="section-padding bg-[#FAFAF7]">
           <div className="container">
             <h2 className="text-[#1A1A18] mb-2">{t('blogArticle.relatedHomes')}</h2>

@@ -6,11 +6,13 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { StructuredData, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
+import { corporatePlanning, corporateEnquiryHref } from '@/data/corporatePlanning';
 
 export default function CorporateRetreats() {
   const { t, i18n } = useTranslation();
   const title = t('corporate.title');
   const description = t('corporate.intro');
+  const planning = corporatePlanning(i18n.language);
 
   usePageMeta({ title: `${title} | Portugal Active`, description, url: '/corporate-retreats', image: '/events/event-corporate-retreats.webp' });
   const faqs = [1, 2].map(n => ({ question: t(`corporate.faq${n}q`), answer: t(`corporate.faq${n}a`) }));
@@ -32,6 +34,18 @@ export default function CorporateRetreats() {
         <img src="/events/event-corporate-retreats.webp" alt={t('events.typeCorporate')} width={800} height={533} fetchPriority="high" className="w-full aspect-[3/2] object-cover rounded-xl" />
       </div>
     </section>
+    {planning && <section className="container py-12 lg:py-16">
+      <h2 className="headline-lg max-w-3xl mb-4">{planning.title}</h2>
+      <p className="body-md max-w-2xl mb-8">{planning.intro}</p>
+      <div className="grid md:grid-cols-3 gap-5">
+        {planning.formats.map(format => <div key={format.id} className="flex flex-col rounded-xl border border-pa-sand bg-white p-6 lg:p-8">
+          <h3 className="font-display text-2xl mb-4">{format.title}</h3>
+          <p className="body-md mb-6 flex-1">{format.text}</p>
+          <Link href={corporateEnquiryHref(format.id)} className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-pa-brown">{format.cta}<ArrowRight className="w-4 h-4 shrink-0" /></Link>
+        </div>)}
+      </div>
+      <p className="text-sm text-pa-stone-aa max-w-3xl mt-5">{planning.note}</p>
+    </section>}
     <section className="container py-12 lg:py-16">
       <h2 className="headline-lg mb-9">{t('corporate.planTitle')}</h2>
       <ol className="grid md:grid-cols-3 gap-8">
@@ -46,6 +60,14 @@ export default function CorporateRetreats() {
         <Link href="/concierge" className="btn-ghost">{t('nav.concierge')} <ArrowRight className="w-4 h-4" /></Link>
       </div>
     </section>
+    {planning && <section className="container pb-12 lg:pb-16">
+      <h2 className="headline-md mb-6">{planning.guides}</h2>
+      <div className="grid md:grid-cols-2 gap-5">
+        {planning.guideLinks.map(guide => <Link key={guide.slug} href={`/blog/${guide.slug}`} className="group flex items-center justify-between gap-6 rounded-xl border border-pa-sand p-6 hover:bg-white transition-colors">
+          <span className="font-display text-xl">{guide.title}</span><ArrowRight className="w-5 h-5 shrink-0 text-pa-brown" />
+        </Link>)}
+      </div>
+    </section>}
     <section className="bg-white border-y border-pa-sand py-12">
       <div className="container max-w-4xl">
         <h2 className="headline-md mb-6">{t('contact.faqTitle')}</h2>

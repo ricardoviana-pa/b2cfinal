@@ -6,6 +6,7 @@
    English fallback for anything untranslated.
    ========================================================================== */
 import { deepMerge } from './deepMerge';
+import { useEffect, useState } from 'react';
 
 type Dict = Record<string, any>;
 
@@ -22,6 +23,20 @@ const LOADERS: Record<string, () => Promise<{ default: Dict }>> = {
 };
 
 const cache: Record<string, Dict> = {};
+const EMPTY: Dict = Object.freeze({});
+
+export function useBlogOverrides(lang: string | undefined): Dict {
+  const code = baseLang(lang);
+  const ready = cache[code];
+  const [, update] = useState(0);
+  useEffect(() => {
+    if (code === 'en' || ready) return;
+    let alive = true;
+    loadBlogOverrides(code).then(() => { if (alive) update(n => n + 1); });
+    return () => { alive = false; };
+  }, [code, ready]);
+  return ready || EMPTY;
+}
 
 function baseLang(lang: string | undefined): string {
   return (lang || 'en').toLowerCase().split('-')[0];

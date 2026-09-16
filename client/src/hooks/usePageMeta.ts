@@ -19,11 +19,11 @@ function clearHreflang() {
 }
 
 /** Inject hreflang link elements for all supported languages */
-function setHreflang(pagePath: string) {
+function setHreflang(pagePath: string, languages = SUPPORTED_LANGS) {
   clearHreflang();
   const head = document.head;
 
-  for (const lang of SUPPORTED_LANGS) {
+  for (const lang of languages) {
     const link = document.createElement('link');
     link.rel = 'alternate';
     link.hreflang = lang;
@@ -47,6 +47,7 @@ interface PageMetaOpts {
   type?: 'website' | 'article' | 'place';
   /** Transactional pages (checkout) — sets robots noindex and skips hreflang/canonical */
   noindex?: boolean;
+  publishedLocales?: string[];
 }
 
 /** True until the first usePageMeta run after hydration has decided whether
@@ -88,7 +89,8 @@ export function usePageMeta(opts?: PageMetaOpts) {
       clearHreflang();
       return () => { setMeta('meta[name="robots"]', 'content', 'index, follow'); };
     }
-    setMeta('meta[name="robots"]', 'content', 'index, follow');
+    const production = ['www.portugalactive.com', 'portugalactive.com'].includes(window.location.hostname);
+    setMeta('meta[name="robots"]', 'content', production ? 'index, follow' : 'noindex, nofollow');
     setMeta('link[rel="canonical"]', 'href', fullUrl);
 
     setMeta('meta[property="og:title"]', 'content', title);
@@ -103,8 +105,8 @@ export function usePageMeta(opts?: PageMetaOpts) {
     setMeta('meta[name="twitter:image"]', 'content', image);
 
     // Set hreflang tags for all language versions
-    setHreflang(pagePath);
+    setHreflang(pagePath, opts?.publishedLocales);
 
     return () => { clearHreflang(); };
-  }, [opts?.title, opts?.description, opts?.image, opts?.url, opts?.type, opts?.noindex]);
+  }, [opts?.title, opts?.description, opts?.image, opts?.url, opts?.type, opts?.noindex, opts?.publishedLocales]);
 }

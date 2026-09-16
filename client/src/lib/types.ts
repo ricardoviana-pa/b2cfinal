@@ -340,6 +340,7 @@ export interface TeamMember {
 export type BlogCategory = 'destinations' | 'lifestyle' | 'portugal-active' | 'video' | 'people' | 'guides';
 
 export interface BlogAuthor {
+  type?: 'Person' | 'Organization';
   id: string;
   name: string;
   photo: string;
@@ -348,6 +349,9 @@ export interface BlogAuthor {
 }
 
 export interface BlogArticle {
+  publishedLocales?: string[];
+  commercialIntent?: 'corporate';
+  imageCaption?: string;
   id: string;
   slug: string;
   title: string;
