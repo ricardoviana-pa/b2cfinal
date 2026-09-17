@@ -14278,10 +14278,10 @@
     "bedrooms": 3,
     "bathrooms": 2,
     "maxGuests": 6,
-    "priceFrom": 200,
-    "pricePerNight": 200,
-    "cleaningFee": 0,
-    "minNights": 1,
+    "priceFrom": 285,
+    "pricePerNight": 285,
+    "cleaningFee": 190,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1789394980/production/6957de4388cba42d9e7a905e/n3ttrksasc3982aqw74a.jpg",
@@ -14504,10 +14504,10 @@
     "bedrooms": 3,
     "bathrooms": 2,
     "maxGuests": 6,
-    "priceFrom": 200,
-    "pricePerNight": 200,
-    "cleaningFee": 0,
-    "minNights": 1,
+    "priceFrom": 285,
+    "pricePerNight": 285,
+    "cleaningFee": 190,
+    "minNights": 2,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1789472943/production/6957de4388cba42d9e7a905e/xymhlue1lljuvtyg7x15.jpg",
@@ -28801,8 +28801,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 18,
-    "lastModified": "2026-09-01",
-    "contentHash": "4f24f5915b214bff973a2cbeeddf0b479aee5f9d"
+    "lastModified": "2026-09-17",
+    "contentHash": "77935d35d4c2d3e0ab41e6a55b7c749da89b2d1f"
   },
   {
     "id": "guesty-696533af4fe6a100145fecb6",
