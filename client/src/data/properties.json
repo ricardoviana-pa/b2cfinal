@@ -1860,8 +1860,8 @@
     "tier": "select",
     "destination": "alentejo",
     "locality": "Ferreira do Alentejo",
-    "bedrooms": 4,
-    "bathrooms": 4,
+    "bedrooms": 5,
+    "bathrooms": 5.5,
     "maxGuests": 10,
     "priceFrom": 380,
     "pricePerNight": 380,
@@ -2277,8 +2277,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 6,
-    "lastModified": "2026-08-24",
-    "contentHash": "06b6ab818a833babbd585184ab30c652d481a007"
+    "lastModified": "2026-09-19",
+    "contentHash": "e9974dd8978667d986943b4680fccd690b17a973"
   },
   {
     "id": "guesty-69e7350685a8b000124854c5",
@@ -5401,7 +5401,7 @@
     "destination": "minho",
     "locality": "Vila Verde",
     "bedrooms": 7,
-    "bathrooms": 7.5,
+    "bathrooms": 9,
     "maxGuests": 14,
     "priceFrom": 400,
     "pricePerNight": 400,
@@ -5765,8 +5765,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 2,
-    "lastModified": "2026-08-24",
-    "contentHash": "cd8979f1909f8e73c11bafa1fbe26bca7db5f29f"
+    "lastModified": "2026-09-19",
+    "contentHash": "3d1ede6e368531d667b4a43a581aac776213b344"
   },
   {
     "id": "guesty-6965338554dbb5001568a505",
@@ -8277,8 +8277,8 @@
     "tier": "select",
     "destination": "minho",
     "locality": "Viana do Castelo",
-    "bedrooms": 1,
-    "bathrooms": 1,
+    "bedrooms": 2,
+    "bathrooms": 2.5,
     "maxGuests": 2,
     "priceFrom": 70,
     "pricePerNight": 70,
@@ -8463,8 +8463,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 1,
-    "lastModified": "2026-09-18",
-    "contentHash": "4e86238811b24c3affb7491928fdcd6426e76c73"
+    "lastModified": "2026-09-19",
+    "contentHash": "cc5bb140d5341eca6f52a96168b627528914c715"
   },
   {
     "id": "guesty-6965339dbf04fe0013743e2d",
@@ -11130,8 +11130,8 @@
     "tier": "select",
     "destination": "minho",
     "locality": "Viana do Castelo",
-    "bedrooms": 3,
-    "bathrooms": 2,
+    "bedrooms": 4,
+    "bathrooms": 3.5,
     "maxGuests": 6,
     "priceFrom": 150,
     "pricePerNight": 150,
@@ -11649,8 +11649,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 12,
-    "lastModified": "2026-08-24",
-    "contentHash": "096c0c76dbc2e383ba5399d174f02cb106829cac"
+    "lastModified": "2026-09-19",
+    "contentHash": "7b9dc2ef46af64ca4d0f80bf5c0b0129d9d65126"
   },
   {
     "id": "guesty-696533616cff760015e28802",
@@ -19369,8 +19369,8 @@
     "tier": "select",
     "destination": "minho",
     "locality": "Viana do Castelo",
-    "bedrooms": 1,
-    "bathrooms": 0,
+    "bedrooms": 3,
+    "bathrooms": 3.5,
     "maxGuests": 12,
     "priceFrom": 500,
     "pricePerNight": 500,
@@ -19493,7 +19493,62 @@
       "lng": -8.4719608
     },
     "licenseNumber": null,
-    "rooms": [],
+    "rooms": [
+      {
+        "name": "Bedroom 1",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 2",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 3",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 4",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 5",
+        "beds": [
+          {
+            "type": "DOUBLE_BED",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "name": "Bedroom 6",
+        "beds": [
+          {
+            "type": "SOFA_BED",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
     "propertyType": "House",
     "checkInTime": "15:00",
     "checkOutTime": "10:00",
@@ -19501,8 +19556,8 @@
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0,
-    "lastModified": "2026-09-18",
-    "contentHash": "efb1d64e6635b8d0273846ea5fcacd97536315ec"
+    "lastModified": "2026-09-19",
+    "contentHash": "d030e225fe591d9840f1859326178b2f7f4ff59f"
   },
   {
     "id": "guesty-69c415701b964f00157188bd",
@@ -21820,7 +21875,7 @@
     "destination": "minho",
     "locality": "Viana do Castelo",
     "bedrooms": 3,
-    "bathrooms": 2,
+    "bathrooms": 1.5,
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
@@ -22325,8 +22380,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 13,
-    "lastModified": "2026-09-18",
-    "contentHash": "c31ba15028bb54167c1aadc737ff455fbd3499b2"
+    "lastModified": "2026-09-19",
+    "contentHash": "10116447b6af6c9df4268cdbab00a514e6026c7d"
   },
   {
     "id": "guesty-696533752def930014e9167c",
@@ -25164,8 +25219,8 @@
     "tier": "select",
     "destination": "minho",
     "locality": "Viana do Castelo",
-    "bedrooms": 4,
-    "bathrooms": 3.5,
+    "bedrooms": 5,
+    "bathrooms": 5,
     "maxGuests": 8,
     "priceFrom": 280,
     "pricePerNight": 280,
@@ -25574,8 +25629,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 5,
-    "lastModified": "2026-09-18",
-    "contentHash": "20655c8f4e95bf1d15bb01bc6f3d6b9940cab82e"
+    "lastModified": "2026-09-19",
+    "contentHash": "ec9ebc06471ea18c603dbc23c328b9632fc53538"
   },
   {
     "id": "guesty-6a4297f706510a0014f79dd1",
@@ -28221,8 +28276,8 @@
     "tier": "select",
     "destination": "minho",
     "locality": "Viana do Castelo",
-    "bedrooms": 5,
-    "bathrooms": 3.5,
+    "bedrooms": 6,
+    "bathrooms": 5,
     "maxGuests": 13,
     "priceFrom": 459,
     "pricePerNight": 459,
@@ -28721,8 +28776,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 18,
-    "lastModified": "2026-09-17",
-    "contentHash": "77935d35d4c2d3e0ab41e6a55b7c749da89b2d1f"
+    "lastModified": "2026-09-19",
+    "contentHash": "fd446c0a91bfd47b0631b4bcda577f6f042956e5"
   },
   {
     "id": "guesty-6a341163c50f210012f12b80",
