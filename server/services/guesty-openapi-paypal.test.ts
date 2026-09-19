@@ -108,3 +108,49 @@ describe("createReservationViaOpenApi — reservation ID extraction", () => {
     await expect(createReservationViaOpenApi(baseInput)).rejects.toThrow();
   });
 });
+
+describe("appendReservationNote — acrescenta, nunca apaga", () => {
+  beforeEach(() => {
+    vi.mocked(guestyClient.request).mockReset();
+  });
+
+  it("junta a nota nova às que já lá estão (a do pagamento sobrevive à dos serviços)", async () => {
+    const { appendReservationNote } = await import("./guesty-openapi-paypal");
+    const pagamento = "Checkout 2.0: pagamento unico 3607.33 EUR na plataforma (estadia 3457.33 registada aqui; servicos 150.00 faturados pela Portugal Active).";
+    const servicos = "SERVICOS DO CHECKOUT:\nRececao: self check-in\nFlex: nao\n- pet-fee x2 150 EUR";
+    vi.mocked(guestyClient.request)
+      .mockResolvedValueOnce({ notes: { other: pagamento } } as any) // GET
+      .mockResolvedValueOnce({} as any); // PUT
+
+    expect(await appendReservationNote("res-1", servicos)).toBe(true);
+
+    const put = vi.mocked(guestyClient.request).mock.calls[1];
+    expect(put[0]).toBe("PUT");
+    const escrito = (put[2] as any).body.notes.other as string;
+    expect(escrito).toContain(pagamento);
+    expect(escrito).toContain("pet-fee x2 150 EUR");
+    expect(escrito.indexOf(pagamento)).toBeLessThan(escrito.indexOf("SERVICOS DO CHECKOUT"));
+  });
+
+  it("não repete uma nota que já lá está (settle e webhook podem correr os dois)", async () => {
+    const { appendReservationNote } = await import("./guesty-openapi-paypal");
+    vi.mocked(guestyClient.request).mockResolvedValueOnce({ notes: { other: "nota A\n\nnota B" } } as any);
+
+    expect(await appendReservationNote("res-1", "nota B")).toBe(true);
+    expect(vi.mocked(guestyClient.request)).toHaveBeenCalledTimes(1); // só o GET, nenhum PUT
+  });
+
+  it("numa reserva sem notas escreve só a nova", async () => {
+    const { appendReservationNote } = await import("./guesty-openapi-paypal");
+    vi.mocked(guestyClient.request).mockResolvedValueOnce({} as any).mockResolvedValueOnce({} as any);
+
+    await appendReservationNote("res-1", "primeira");
+    expect((vi.mocked(guestyClient.request).mock.calls[1][2] as any).body.notes.other).toBe("primeira");
+  });
+
+  it("se o Guesty falhar devolve false e não rebenta o settle", async () => {
+    const { appendReservationNote } = await import("./guesty-openapi-paypal");
+    vi.mocked(guestyClient.request).mockRejectedValueOnce(new Error("503"));
+    expect(await appendReservationNote("res-1", "x")).toBe(false);
+  });
+});
