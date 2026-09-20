@@ -1143,7 +1143,7 @@
     "maxGuests": 10,
     "priceFrom": 500,
     "pricePerNight": 500,
-    "cleaningFee": 347,
+    "cleaningFee": 502,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -2293,7 +2293,7 @@
     "maxGuests": 10,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 347,
+    "cleaningFee": 447,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -2735,7 +2735,7 @@
     "maxGuests": 14,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 383,
+    "cleaningFee": 459,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -3412,7 +3412,7 @@
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 186,
+    "cleaningFee": 210,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -3793,7 +3793,7 @@
     "maxGuests": 6,
     "priceFrom": 120,
     "pricePerNight": 120,
-    "cleaningFee": 127,
+    "cleaningFee": 152,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -4600,7 +4600,7 @@
     "maxGuests": 10,
     "priceFrom": 260,
     "pricePerNight": 260,
-    "cleaningFee": 348,
+    "cleaningFee": 428,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -5060,7 +5060,7 @@
     "maxGuests": 14,
     "priceFrom": 420,
     "pricePerNight": 420,
-    "cleaningFee": 361,
+    "cleaningFee": 390,
     "minNights": 3,
     "currency": "EUR",
     "images": [
@@ -5405,7 +5405,7 @@
     "maxGuests": 14,
     "priceFrom": 400,
     "pricePerNight": 400,
-    "cleaningFee": 371,
+    "cleaningFee": 550,
     "minNights": 3,
     "currency": "EUR",
     "images": [
@@ -5781,7 +5781,7 @@
     "maxGuests": 2,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 91,
+    "cleaningFee": 103,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -6266,7 +6266,7 @@
     "maxGuests": 9,
     "priceFrom": 220,
     "pricePerNight": 220,
-    "cleaningFee": 277,
+    "cleaningFee": 308,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -7112,7 +7112,7 @@
     "maxGuests": 5,
     "priceFrom": 100,
     "pricePerNight": 100,
-    "cleaningFee": 122,
+    "cleaningFee": 147,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -8479,7 +8479,7 @@
     "maxGuests": 28,
     "priceFrom": 700,
     "pricePerNight": 700,
-    "cleaningFee": 572,
+    "cleaningFee": 823,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -8934,7 +8934,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 90,
+    "cleaningFee": 108,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -9107,7 +9107,7 @@
     "maxGuests": 8,
     "priceFrom": 300,
     "pricePerNight": 300,
-    "cleaningFee": 278,
+    "cleaningFee": 311,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -11135,7 +11135,7 @@
     "maxGuests": 6,
     "priceFrom": 150,
     "pricePerNight": 150,
-    "cleaningFee": 191,
+    "cleaningFee": 218,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -11665,7 +11665,7 @@
     "maxGuests": 4,
     "priceFrom": 170,
     "pricePerNight": 170,
-    "cleaningFee": 162,
+    "cleaningFee": 185,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -11932,7 +11932,7 @@
     "maxGuests": 16,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 427,
+    "cleaningFee": 501,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -13403,7 +13403,7 @@
     "maxGuests": 12,
     "priceFrom": 400,
     "pricePerNight": 400,
-    "cleaningFee": 359,
+    "cleaningFee": 398,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -14801,7 +14801,7 @@
     "maxGuests": 4,
     "priceFrom": 90,
     "pricePerNight": 90,
-    "cleaningFee": 148,
+    "cleaningFee": 164,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -15092,7 +15092,7 @@
     "maxGuests": 12,
     "priceFrom": 300,
     "pricePerNight": 300,
-    "cleaningFee": 359,
+    "cleaningFee": 430,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -15778,7 +15778,7 @@
     "maxGuests": 8,
     "priceFrom": 110,
     "pricePerNight": 110,
-    "cleaningFee": 176,
+    "cleaningFee": 194,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -17101,7 +17101,7 @@
     "maxGuests": 14,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 384,
+    "cleaningFee": 480,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -17662,7 +17662,7 @@
     "maxGuests": 16,
     "priceFrom": 550,
     "pricePerNight": 550,
-    "cleaningFee": 416,
+    "cleaningFee": 553,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -18321,7 +18321,7 @@
     "maxGuests": 10,
     "priceFrom": 280,
     "pricePerNight": 280,
-    "cleaningFee": 346,
+    "cleaningFee": 434,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -19374,7 +19374,7 @@
     "maxGuests": 12,
     "priceFrom": 500,
     "pricePerNight": 500,
-    "cleaningFee": 0,
+    "cleaningFee": 153,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -20059,7 +20059,7 @@
     "maxGuests": 4,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 148,
+    "cleaningFee": 157,
     "minNights": 3,
     "currency": "EUR",
     "images": [
@@ -20295,7 +20295,7 @@
     "maxGuests": 12,
     "priceFrom": 350,
     "pricePerNight": 350,
-    "cleaningFee": 357,
+    "cleaningFee": 493,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -22396,7 +22396,7 @@
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 186,
+    "cleaningFee": 203,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -22790,7 +22790,7 @@
     "maxGuests": 14,
     "priceFrom": 450,
     "pricePerNight": 450,
-    "cleaningFee": 372,
+    "cleaningFee": 403,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -23742,7 +23742,7 @@
     "maxGuests": 8,
     "priceFrom": 250,
     "pricePerNight": 250,
-    "cleaningFee": 344,
+    "cleaningFee": 476,
     "minNights": 1,
     "currency": "EUR",
     "images": [
@@ -24594,7 +24594,7 @@
     "maxGuests": 7,
     "priceFrom": 280,
     "pricePerNight": 280,
-    "cleaningFee": 279,
+    "cleaningFee": 325,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -25224,7 +25224,7 @@
     "maxGuests": 8,
     "priceFrom": 280,
     "pricePerNight": 280,
-    "cleaningFee": 278,
+    "cleaningFee": 328,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -25969,7 +25969,7 @@
     "maxGuests": 10,
     "priceFrom": 510,
     "pricePerNight": 510,
-    "cleaningFee": 348,
+    "cleaningFee": 413,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -26304,7 +26304,7 @@
     "maxGuests": 19,
     "priceFrom": 500,
     "pricePerNight": 500,
-    "cleaningFee": 373,
+    "cleaningFee": 458,
     "minNights": 2,
     "currency": "EUR",
     "images": [
@@ -27668,7 +27668,7 @@
     "maxGuests": 6,
     "priceFrom": 160,
     "pricePerNight": 160,
-    "cleaningFee": 179,
+    "cleaningFee": 205,
     "minNights": 1,
     "currency": "EUR",
     "images": [
