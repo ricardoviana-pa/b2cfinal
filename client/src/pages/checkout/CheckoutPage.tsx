@@ -1,3 +1,4 @@
+import { receiptPath } from "@/lib/receipt-access";
 import { accommodationSubtotal } from "@shared/booking-money";
 /**
  * Checkout 2.0 — Fase 1 (docs/checkout_spec.md §3, §4, §16).
@@ -854,11 +855,12 @@ export default function CheckoutPage() {
 
   // ── Card payment success → unified branded thank-you page ──
   const handleCardSuccess = useCallback(
-    (confirmationCode: string, reservationId?: string) => {
+    (confirmationCode: string, reservationId?: string, receiptToken?: string) => {
       if (!intent) return;
       const rid = reservationId || confirmationCode;
       stashThankYou({
         reservationId: rid,
+        receiptToken,
         confirmationCode,
         method: "card",
         listingId: intent.listingId,
@@ -878,7 +880,7 @@ export default function CheckoutPage() {
       });
       // The server records payment and reservation confirmation after settlement.
       void utils.checkout.getIntent.invalidate({ intentId: intent.id });
-      navigate(`/booking/thank-you/${rid}?method=card`);
+      navigate(receiptPath(rid, "card", receiptToken));
     },
     [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, todayTotal, quote?.couponCode, purchaseItems, syncIntent, navigate],
   );
@@ -949,7 +951,7 @@ export default function CheckoutPage() {
             {intent.confirmationCode ? ` (${intent.confirmationCode})` : ""}
           </p>
           {intent.reservationId ? (
-            <Link href={`/booking/thank-you/${intent.reservationId}?method=card`} className="btn-primary inline-flex">
+            <Link href={receiptPath(intent.reservationId, "card", intentQuery.data?.receiptToken || undefined)} className="btn-primary inline-flex">
               {t("checkout.viewBooking", "View my booking")}
             </Link>
           ) : (

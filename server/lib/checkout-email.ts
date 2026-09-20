@@ -9,6 +9,11 @@ export const CHECKOUT_EMAIL_ORIGIN = "https://www.portugalactive.com";
  */
 export function canSendCheckoutRecovery(env: NodeJS.ProcessEnv = process.env): boolean {
   if (env.CHECKOUT_RECOVERY !== "true") return false;
+  return canSendCustomerEmail(env);
+}
+
+export function canSendCustomerEmail(env: NodeJS.ProcessEnv = process.env): boolean {
+  if (env.APP_ENV && env.APP_ENV !== "production") return false;
   if (env.RENDER_GIT_BRANCH && env.RENDER_GIT_BRANCH !== "main") return false;
   if (env.NODE_ENV && env.NODE_ENV !== "production") return false;
   const configured = env.SITE_URL || env.PUBLIC_BASE_URL || env.PUBLIC_URL || env.APP_URL;

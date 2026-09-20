@@ -12,6 +12,7 @@ import { recoveryOptoutUrl, runCheckoutRecoverySweep, startCheckoutRecoverySched
 beforeEach(() => {
   vi.clearAllMocks();
   vi.stubEnv("CHECKOUT_RECOVERY", "true");
+  vi.stubEnv("APP_ENV", "production");
   vi.stubEnv("SITE_URL", "https://www.portugalactive.com");
   vi.stubEnv("NODE_ENV", "production");
   vi.stubEnv("RENDER_GIT_BRANCH", "main");

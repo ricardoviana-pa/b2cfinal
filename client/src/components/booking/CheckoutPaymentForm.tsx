@@ -147,7 +147,7 @@ interface CheckoutPaymentFormProps {
   /** Bloco 6: items GA4 dos serviços (extras, receção, Flex) — viajam com o
    *  stash Klarna/PayPal para o purchase da return page incluir tudo */
   purchaseItems?: Array<Record<string, unknown>>;
-  onSuccess: (confirmationCode: string, reservationId?: string) => void;
+  onSuccess: (confirmationCode: string, reservationId?: string, receiptToken?: string) => void;
   onCancel: () => void;
 }
 
@@ -168,7 +168,7 @@ function ExpressWalletInner({
   intentId: string;
   listingId: string;
   total: number;
-  onSuccess: (confirmationCode: string, reservationId?: string) => void;
+  onSuccess: (confirmationCode: string, reservationId?: string, receiptToken?: string) => void;
 }) {
   const { t } = useTranslation();
   const stripe = useStripe();
@@ -206,7 +206,7 @@ function ExpressWalletInner({
       if (alreadyPaid) {
         // pagamento já capturado numa tentativa anterior — só falta a reserva
         const fin = await finalizeCardCharge.mutateAsync({ intentId, paymentIntentId });
-        onSuccess(fin.confirmationCode, fin.reservationId);
+        onSuccess(fin.confirmationCode, fin.reservationId, fin.receiptToken);
         return;
       }
       const { error: confirmErr, paymentIntent } = await stripe.confirmPayment({
@@ -224,7 +224,7 @@ function ExpressWalletInner({
         intentId,
         paymentIntentId: paymentIntent?.id ?? paymentIntentId,
       });
-      onSuccess(fin.confirmationCode, fin.reservationId);
+      onSuccess(fin.confirmationCode, fin.reservationId, fin.receiptToken);
     } catch (e: any) {
       // O pagamento pode ter sido capturado — o webhook card_v2 completa a
       // reserva; não permitir novo clique às cegas
@@ -332,7 +332,7 @@ function PaymentFormInner({
         const { clientSecret, paymentIntentId, alreadyPaid } = await createCardCharge.mutateAsync({ intentId });
         if (alreadyPaid) {
           const fin = await finalizeCardCharge.mutateAsync({ intentId, paymentIntentId });
-          onSuccess(fin.confirmationCode, fin.reservationId);
+          onSuccess(fin.confirmationCode, fin.reservationId, fin.receiptToken);
           return;
         }
         if (!clientSecret) throw new Error("createCardCharge returned no clientSecret");
@@ -357,7 +357,7 @@ function PaymentFormInner({
           intentId,
           paymentIntentId: paymentIntent?.id ?? paymentIntentId,
         });
-        onSuccess(fin.confirmationCode, fin.reservationId);
+        onSuccess(fin.confirmationCode, fin.reservationId, fin.receiptToken);
       } catch (e: any) {
         // pagamento pode ter sido capturado — o webhook completa; não re-tentar às cegas
         setError(e?.message || t("payment.errors.cardValidationFailed"));
@@ -427,7 +427,7 @@ function PaymentFormInner({
           setTimeout(() => reject(new Error("Payment provider timeout")), 45000);
         }),
       ]);
-      onSuccess(response.confirmationCode, (response as any).reservationId || undefined);
+      onSuccess(response.confirmationCode, response.reservationId || undefined, response.receiptToken);
     } catch (err: any) {
       const message = parseApiError(err?.message || t('payment.errors.defaultError'), t);
       const rawMsg = String(err?.message || "").toLowerCase();

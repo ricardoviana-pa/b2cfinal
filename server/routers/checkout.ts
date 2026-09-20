@@ -1,3 +1,4 @@
+import { reservationAccessToken, reservationReceiptPath } from "../lib/reservation-access";
 /**
  * Checkout 2.0 (Fase 1) — server-side BookingIntent + lead capture.
  *
@@ -209,7 +210,7 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string): Promise<
             // retoma do checkout mostrava um interstício seco "verifique o seu
             // email" a quem vinha DO email (16 ago).
             viewUrl: m.reservationId
-              ? `${CHECKOUT_EMAIL_ORIGIN}/${m.locale || "en"}/booking/thank-you/${m.reservationId}?method=card`
+              ? `${CHECKOUT_EMAIL_ORIGIN}/${m.locale || "en"}${reservationReceiptPath(m.reservationId)}`
               : `${CHECKOUT_EMAIL_ORIGIN}/${m.locale || "en"}/checkout/${intentId}`,
             locale: m.locale,
             intentId,
@@ -288,13 +289,14 @@ export const checkoutRouter = router({
 
   getIntent: publicProcedure
     .input(z.object({ intentId: z.string().uuid() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      ctx.res.setHeader?.("Cache-Control", "private, no-store");
       const intent = await getBookingIntent(input.intentId);
-      if (!intent) return { intent: null, expired: false };
+      if (!intent) return { intent: null, expired: false, receiptToken: null };
       const expired =
         intent.status === "expired" ||
         (intent.expiresAt != null && intent.expiresAt.getTime() < Date.now());
-      return { intent, expired };
+      return { intent, expired, receiptToken: intent.status === "paid" && intent.reservationId ? reservationAccessToken(intent.reservationId) : null };
     }),
 
   updateIntent: publicProcedure
@@ -467,7 +469,8 @@ export const checkoutRouter = router({
     .input(z.object({ intentId: z.string().uuid(), paymentIntentId: z.string().min(1) }))
     .mutation(async ({ input }) => {
       const { settleCardCharge } = await import("../services/checkout-card-charge");
-      return settleCardCharge(input.intentId, input.paymentIntentId);
+      const result = await settleCardCharge(input.intentId, input.paymentIntentId);
+      return { ...result, receiptToken: reservationAccessToken(result.reservationId) };
     }),
 
   getExtras: publicProcedure
@@ -531,7 +534,7 @@ export const checkoutRouter = router({
     )
     .mutation(async ({ input }) => {
       const intent = await getBookingIntent(input.intentId);
-      if (!intent) return { ok: false };
+      if (!intent || !["draft", "contact_captured", "payment_pending"].includes(intent.status)) return { ok: false };
 
       const alreadyCaptured = intent.status !== "draft" && intent.email === input.email;
       await updateBookingIntent(input.intentId, {

@@ -1,3 +1,5 @@
+import { readReceiptToken, storeReceiptToken } from "./receipt-access";
+
 export interface BookingListing {
   id: string;
   name: string;
@@ -48,6 +50,7 @@ export interface BookingCalendarDay {
  */
 export interface ThankYouStash {
   reservationId: string;
+  receiptToken?: string;
   confirmationCode: string;
   status?: string;
   method: "paypal" | "klarna" | "card";
@@ -72,6 +75,7 @@ export interface ThankYouStash {
 const thankYouKey = (reservationId: string) => `thankyou_${reservationId}`;
 
 export function stashThankYou(data: ThankYouStash): void {
+  storeReceiptToken(data.reservationId, data.receiptToken);
   try {
     sessionStorage.setItem(thankYouKey(data.reservationId), JSON.stringify(data));
   } catch {
@@ -98,7 +102,7 @@ async function fetchJson<T>(url: string, init?: RequestInit, timeoutMs = 10000):
   }).finally(() => clearTimeout(timeout));
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new Error(body?.message || `Request failed: ${res.status}`);
+    throw Object.assign(new Error(body?.message || `Request failed: ${res.status}`), { code: body?.code });
   }
   return res.json() as Promise<T>;
 }
@@ -181,5 +185,7 @@ export function fetchReservation(reservationId: string) {
     checkInInstructions: string;
     googleCalendarUrl: string;
     icsFileName: string;
-  }>(`/api/reservations/${reservationId}`);
+  }>(`/api/reservations/${encodeURIComponent(reservationId)}`, {
+    headers: { "X-Reservation-Access": readReceiptToken(reservationId) || "" },
+  });
 }

@@ -1,3 +1,4 @@
+import { receiptPath } from "@/lib/receipt-access";
 import { useEffect, useRef, useState } from "react";
 import { useSearch, useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
@@ -85,6 +86,7 @@ export default function KlarnaReturnPage() {
 
           stashThankYou({
             reservationId: result.reservationId,
+            receiptToken: result.receiptToken,
             confirmationCode: result.confirmationCode,
             status: result.status,
             method: "klarna",
@@ -131,7 +133,7 @@ export default function KlarnaReturnPage() {
             },
           });
 
-          navigate(`/booking/thank-you/${result.reservationId}?method=klarna`);
+          navigate(receiptPath(result.reservationId, "klarna", result.receiptToken));
         } catch (err: any) {
           setStatus({ key: "paymentReturn.reservationFailed", params: { ref: paymentIntentId }, failed: true });
         }

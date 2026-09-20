@@ -1,26 +1,30 @@
 import express from "express";
 import { createServer, type Server } from "node:http";
 import { beforeAll, afterAll, beforeEach, expect, it, vi } from "vitest";
-const fake = vi.hoisted(() => ({ reservation: vi.fn(), paid: vi.fn() }));
+const fake = vi.hoisted(() => ({ reservation: vi.fn(), paid: vi.fn(), access: vi.fn(), listing: vi.fn() }));
 vi.mock("../lib/guesty", () => ({
-  guestyClient: { getReservation: fake.reservation },
+  guestyClient: { getReservation: fake.reservation, getListing: fake.listing },
   GuestyClientError: class extends Error {}, resetGuestyRateLimitCooldowns: vi.fn(),
 }));
 vi.mock("../db", () => ({ updateTripStatusByReservationId: vi.fn() }));
 vi.mock("../services/properties-store", () => ({ getPropertiesForSite: vi.fn(async () => []) }));
 vi.mock("../services/transactional-email", () => ({ sendBookingFailureAlert: vi.fn() }));
 vi.mock("../services/reservation-receipt", () => ({ readReservationPaidCents: fake.paid }));
+vi.mock("../services/reservation-access", () => ({ readReservationForReceipt: fake.reservation, requestReservationAccess: fake.access }));
+import { reservationAccessToken } from "../lib/reservation-access";
 import { registerBookingRoutes } from "./booking";
 
 let server: Server, origin: string;
 beforeAll(async () => {
-  const app = express(); registerBookingRoutes(app); server = createServer(app);
+  const app = express(); app.set("trust proxy", 1); app.use(express.json()); registerBookingRoutes(app); server = createServer(app);
   await new Promise<void>(resolve => server.listen(0, "127.0.0.1", resolve));
   origin = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
 });
 afterAll(() => new Promise<void>(resolve => server.close(() => resolve())));
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.stubEnv("JWT_SECRET", "synthetic-receipt-route-secret-at-least-32");
+  fake.access.mockResolvedValue(undefined);
   fake.reservation.mockResolvedValue({ _id: "synthetic-receipt", confirmationCode: "TEST-ONLY",
     checkInDateLocalized: "2099-11-10", checkOutDateLocalized: "2099-11-18",
     status: "confirmed", money: { total: 2888.87, totalPaid: 2888.87, hostPayout: 2000,
@@ -29,7 +33,7 @@ beforeEach(() => {
 });
 
 it("returns exact reservation and paid amounts with non-cacheable headers", async () => {
-  const response = await fetch(`${origin}/api/reservations/synthetic-receipt`);
+  const response = await fetch(`${origin}/api/reservations/synthetic-receipt`, { headers: { "X-Reservation-Access": reservationAccessToken("synthetic-receipt") } });
   expect(response.status).toBe(200);
   expect(response.headers.get("cache-control")).toBe("private, no-store");
   expect(response.headers.get("referrer-policy")).toBe("no-referrer");
@@ -39,13 +43,56 @@ it("returns exact reservation and paid amounts with non-cacheable headers", asyn
 });
 it("does not substitute an owner payout or a folio total when collection is unknown", async () => {
   fake.paid.mockResolvedValue(null);
-  const response = await fetch(`${origin}/api/reservations/synthetic-receipt`);
+  const response = await fetch(`${origin}/api/reservations/synthetic-receipt`, { headers: { "X-Reservation-Access": reservationAccessToken("synthetic-receipt") } });
   expect(await response.json()).toMatchObject({ totalCents: 288887, totalPaidCents: null,
     accommodationCents: null, cleaningFeeCents: null });
 });
 it("also prevents caching of the calendar download", async () => {
-  const response = await fetch(`${origin}/api/reservations/synthetic-receipt/ics`);
+  const response = await fetch(`${origin}/api/reservations/synthetic-receipt/ics`, { headers: { "X-Reservation-Access": reservationAccessToken("synthetic-receipt") } });
   expect(response.status).toBe(200);
   expect(response.headers.get("cache-control")).toBe("private, no-store");
   expect(await response.text()).toContain("DTSTART;VALUE=DATE:20991110");
+});
+
+it.each(["", "/ics"])("requires reservation-scoped proof before reading %s", async suffix => {
+  for (const token of ["", "wrong", reservationAccessToken("another-booking")]) {
+    const r = await fetch(`${origin}/api/reservations/synthetic-receipt${suffix}`, { headers: { "X-Reservation-Access": token } });
+    expect(r.status).toBe(401);
+    expect(await r.json()).toMatchObject({ code: "RESERVATION_ACCESS_REQUIRED" });
+  }
+  expect(fake.reservation).not.toHaveBeenCalled();
+  expect(fake.paid).not.toHaveBeenCalled();
+});
+it("accepts a renewal request without returning a token or revealing a recipient", async () => {
+  const response = await fetch(`${origin}/api/reservations/${"a".repeat(24)}/access`, {
+    method: "POST", headers: { "Content-Type": "application/json", Origin: "https://www.portugalactive.com", "X-Forwarded-For": "192.0.2.1" },
+    body: JSON.stringify({ email: "guest@receipt.invalid", locale: "pt" }),
+  });
+  expect(response.status).toBe(202);
+  expect(await response.json()).toEqual({ ok: true });
+  await vi.waitFor(() => expect(fake.access).toHaveBeenCalledWith("a".repeat(24), "guest@receipt.invalid", "pt"));
+});
+it("rejects another site's form before any provider call", async () => {
+  const r = await fetch(`${origin}/api/reservations/${"a".repeat(24)}/access`, {
+    method: "POST", headers: { "Content-Type": "application/json", Origin: "https://other.invalid", "X-Forwarded-For": "192.0.2.2" },
+    body: JSON.stringify({ email: "guest@receipt.invalid" }),
+  });
+  expect(r.status).toBe(403); expect(fake.access).not.toHaveBeenCalled();
+});
+it("limits access-email requests per visitor", async () => {
+  const request = () => fetch(`${origin}/api/reservations/${"a".repeat(24)}/access`, {
+    method: "POST", headers: { "Content-Type": "application/json", Origin: "https://www.portugalactive.com", "X-Forwarded-For": "192.0.2.3" },
+    body: JSON.stringify({ email: "guest@receipt.invalid" }),
+  });
+  for (let i = 0; i < 6; i++) expect((await request()).status).toBe(202);
+  expect((await request()).status).toBe(429);
+});
+
+it("keeps check-in instructions out of the public property API", async () => {
+  fake.listing.mockResolvedValue({ _id: "synthetic-private-listing", title: "Synthetic listing", checkInInstructions: "SYNTHETIC PRIVATE INSTRUCTIONS" });
+  const response = await fetch(`${origin}/api/listings/synthetic-private-listing`);
+  expect(response.status).toBe(200);
+  const body = await response.json();
+  expect(body.name).toBe("Synthetic listing");
+  expect(body.checkInInstructions).toBe("");
 });

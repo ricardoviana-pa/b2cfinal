@@ -38,6 +38,7 @@ vi.mock('../services/guesty-openapi-paypal', () => ({
 }));
 
 import { checkoutRouter } from '../routers/checkout';
+import { reservationReceiptPath, hasReservationAccess } from '../lib/reservation-access';
 const caller = () => checkoutRouter.createCaller({
   req: { headers: { host: 'checkout.invalid' } }, res: {}, user: null,
 } as any);
@@ -60,6 +61,7 @@ function savedPayment(intentId: string, overrides: Record<string, unknown> = {})
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.stubEnv("JWT_SECRET", "synthetic-checkout-receipt-signature-only");
   fake.supplierQuote.mockImplementation(async () => ({ _id: 'aaaaaaaaaaaaaaaaaaaaaaaa', unitTypeId: 'synthetic-listing',
     checkInDateLocalized: '2099-11-10', checkOutDateLocalized: '2099-11-14', guestsCount: 4,
     createdAt: new Date().toISOString(), expiresAt: new Date(Date.now() + 3600000).toISOString(),
@@ -106,6 +108,7 @@ describe('synthetic checkout integration — real router and settlement, no prov
     expect(payment.totalCents).toBe(252700);
     fake.payments.get(payment.paymentIntentId).status = 'succeeded';
     const confirmation = await caller().finalizeCardCharge({ intentId: id, paymentIntentId: payment.paymentIntentId });
+    expect(hasReservationAccess(confirmation.reservationId, confirmation.receiptToken)).toBe(true);
     expect(fake.reserve).toHaveBeenCalledWith(expect.objectContaining({
       listingId: 'synthetic-listing', guestFirstName: 'Synthetic', ratePlanId: 'synthetic-flex',
     }));
@@ -114,11 +117,13 @@ describe('synthetic checkout integration — real router and settlement, no prov
     await vi.waitFor(() => expect(fake.guestEmail).toHaveBeenCalledOnce());
     expect(fake.guestEmail).toHaveBeenCalledWith(expect.objectContaining({
       email: 'guest@checkout.invalid', canonical: expect.objectContaining({ totalCents: 252700 }),
-      viewUrl: 'https://www.portugalactive.com/pt/booking/thank-you/synthetic-reservation?method=card',
+      viewUrl: 'https://www.portugalactive.com/pt' + reservationReceiptPath('synthetic-reservation'),
     }));
     expect((await caller().getIntent({ intentId: id })).intent?.status).toBe('paid');
     expect(await caller().updateIntent({ intentId: id, patch: { email: 'changed@checkout.invalid' } })).toEqual({ ok: false });
     expect(fake.guestEmail).toHaveBeenCalledOnce();
+    expect(await caller().captureLead({ intentId: id, email: 'changed@checkout.invalid' })).toEqual({ ok: false });
+    expect(fake.intents.get(id).email).toBe('guest@checkout.invalid');
   });
 
   it('reuses an existing pending card payment', async () => {
