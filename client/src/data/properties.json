@@ -23496,7 +23496,7 @@
     "maxGuests": 4,
     "priceFrom": 130,
     "pricePerNight": 130,
-    "cleaningFee": 90,
+    "cleaningFee": 112,
     "minNights": 2,
     "currency": "EUR",
     "images": [
