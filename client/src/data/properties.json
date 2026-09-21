@@ -16837,7 +16837,6 @@
         "Cookware",
         "Crib",
         "Cycling",
-        "Desk",
         "Dining table",
         "Dishes and silverware",
         "Elevator",
@@ -16859,7 +16858,6 @@
         "Iron",
         "Kettle",
         "Kitchen",
-        "Laptop friendly workspace",
         "Laundromat nearby",
         "Long term stays allowed",
         "Microwave",
@@ -17085,8 +17083,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 4,
-    "lastModified": "2026-08-24",
-    "contentHash": "97ae65ac7d502fbc4b550b0942f1c8a565e67bca"
+    "lastModified": "2026-09-21",
+    "contentHash": "7f022a106e895a593b3fc2866485fb54403a4cba"
   },
   {
     "id": "guesty-6965332327950e001416f0b2",
@@ -19378,15 +19376,17 @@
     "minNights": 1,
     "currency": "EUR",
     "images": [
+      "https://assets.guesty.com/image/upload/v1790003455/production/6957de4388cba42d9e7a905e/krxx7mjntuvqtoaqve3w.jpg",
+      "https://assets.guesty.com/image/upload/v1789642667/production/6957de4388cba42d9e7a905e/hcsi0habwh4waflzw5op.jpg",
+      "https://assets.guesty.com/image/upload/v1789642664/production/6957de4388cba42d9e7a905e/bgzwnpgk67cba83rsepz.jpg",
+      "https://assets.guesty.com/image/upload/v1790003622/production/6957de4388cba42d9e7a905e/dsnr4ooq1xpzgycis1e6.jpg",
+      "https://assets.guesty.com/image/upload/v1789642676/production/6957de4388cba42d9e7a905e/p5hdtk4sm87oqtwhnw4q.jpg",
       "https://assets.guesty.com/image/upload/v1789642664/production/6957de4388cba42d9e7a905e/f58dk5siqopb9abrxjc2.jpg",
-      "https://assets.guesty.com/image/upload/v1789642663/production/6957de4388cba42d9e7a905e/brdclhrloseee6wx4czi.jpg",
       "https://assets.guesty.com/image/upload/v1789642663/production/6957de4388cba42d9e7a905e/apae73hvlouskitdt40e.jpg",
       "https://assets.guesty.com/image/upload/v1789642663/production/6957de4388cba42d9e7a905e/h4tlftinalarquhjgcey.jpg",
+      "https://assets.guesty.com/image/upload/v1789642663/production/6957de4388cba42d9e7a905e/brdclhrloseee6wx4czi.jpg",
       "https://assets.guesty.com/image/upload/v1789642663/production/6957de4388cba42d9e7a905e/lg0yjflsqyzby3swwlwx.jpg",
-      "https://assets.guesty.com/image/upload/v1789642664/production/6957de4388cba42d9e7a905e/bgzwnpgk67cba83rsepz.jpg",
       "https://assets.guesty.com/image/upload/v1789642667/production/6957de4388cba42d9e7a905e/f18gj2z9yqtlwjldqsba.jpg",
-      "https://assets.guesty.com/image/upload/v1789642667/production/6957de4388cba42d9e7a905e/hcsi0habwh4waflzw5op.jpg",
-      "https://assets.guesty.com/image/upload/v1789642676/production/6957de4388cba42d9e7a905e/p5hdtk4sm87oqtwhnw4q.jpg",
       "https://assets.guesty.com/image/upload/v1789642666/production/6957de4388cba42d9e7a905e/m2rs3owrl5yrrk84dyji.jpg",
       "https://assets.guesty.com/image/upload/v1789642667/production/6957de4388cba42d9e7a905e/j7nm649qexexznkxtrk2.jpg",
       "https://assets.guesty.com/image/upload/v1789642675/production/6957de4388cba42d9e7a905e/jbs4lyifvyyuq9duf1qc.jpg",
@@ -19399,8 +19399,6 @@
       "https://assets.guesty.com/image/upload/v1789642671/production/6957de4388cba42d9e7a905e/pionfqn9yaksqrsrmxzu.jpg",
       "https://assets.guesty.com/image/upload/v1789642674/production/6957de4388cba42d9e7a905e/d4us74vrditkv8fwvzao.jpg",
       "https://assets.guesty.com/image/upload/v1789642675/production/6957de4388cba42d9e7a905e/edv9qhmhtfmssdsb8d0y.jpg",
-      "https://assets.guesty.com/image/upload/v1789642670/production/6957de4388cba42d9e7a905e/xlhqkpo6w1a69zvd2lic.jpg",
-      "https://assets.guesty.com/image/upload/v1789642673/production/6957de4388cba42d9e7a905e/otkkxigjrx3nrrtcgxmj.jpg",
       "https://assets.guesty.com/image/upload/v1789642672/production/6957de4388cba42d9e7a905e/uebufqjocxr2hutjduzj.jpg",
       "https://assets.guesty.com/image/upload/v1789642674/production/6957de4388cba42d9e7a905e/wcf1bxgi1zearewvxeoq.jpg",
       "https://assets.guesty.com/image/upload/v1789642796/production/6957de4388cba42d9e7a905e/eqdf8aego1vcdauaoo52.jpg",
@@ -19556,8 +19554,8 @@
     "reviews": [],
     "averageRating": null,
     "reviewCount": 0,
-    "lastModified": "2026-09-19",
-    "contentHash": "d030e225fe591d9840f1859326178b2f7f4ff59f"
+    "lastModified": "2026-09-21",
+    "contentHash": "45ec60d7ec9d55f870959f3daca14555099dae3f"
   },
   {
     "id": "guesty-69c415701b964f00157188bd",
@@ -21883,9 +21881,9 @@
     "minNights": 2,
     "currency": "EUR",
     "images": [
-      "https://assets.guesty.com/image/upload/v1789738221/production/6957de4388cba42d9e7a905e/svdxgzdqj69hjkmh4dpr.jpg",
       "https://assets.guesty.com/image/upload/v1789730312/production/6957de4388cba42d9e7a905e/nfubaqkkvj6w1crxxb1h.jpg",
       "https://assets.guesty.com/image/upload/v1789730295/production/6957de4388cba42d9e7a905e/dnub8vwlhx79i3lla3hz.jpg",
+      "https://assets.guesty.com/image/upload/v1789738221/production/6957de4388cba42d9e7a905e/svdxgzdqj69hjkmh4dpr.jpg",
       "https://assets.guesty.com/image/upload/v1789730321/production/6957de4388cba42d9e7a905e/c0td3msalfte2m48acgq.jpg",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533814b9b64001401c7b8/ad6d7038-c24a-4e-FDSjR",
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533814b9b64001401c7b8/9ee2d177-2426-49-J9hNM",
@@ -22380,8 +22378,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 13,
-    "lastModified": "2026-09-19",
-    "contentHash": "10116447b6af6c9df4268cdbab00a514e6026c7d"
+    "lastModified": "2026-09-21",
+    "contentHash": "d2ee21aee228a85229f1944f0d112d90b82e56b5"
   },
   {
     "id": "guesty-696533752def930014e9167c",
