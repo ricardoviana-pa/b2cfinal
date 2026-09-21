@@ -1,3 +1,4 @@
+import { reservationAccessToken } from "../lib/reservation-access";
 import { trustedWalletPrice, assertWalletConfirmation } from "../services/wallet-price-validation";
 import { z } from "zod";
 import { router, publicProcedure } from "../_core/trpc";
@@ -613,7 +614,7 @@ export const bookingRouter = router({
           console.warn(`[Booking] Confirmation email failed (non-blocking): ${emailErr.message}`);
         }
 
-        return result;
+        return { ...result, receiptToken: reservationAccessToken(result.reservationId) };
       } catch (error: any) {
         // ── CRITICAL: Booking failed after Stripe PM was created ──
         // The guest may have been charged. Alert the reservations team immediately.
@@ -860,6 +861,7 @@ export const bookingRouter = router({
         confirmationCode: reservation.confirmationCode,
         status: reservation.status,
         totalPaidCents: pi.amount_received,
+        receiptToken: reservationAccessToken(reservation.reservationId),
       };
     }),
 
@@ -1053,6 +1055,7 @@ export const bookingRouter = router({
         confirmationCode: reservation.confirmationCode,
         status: reservation.status,
         totalPaidCents: pi.amount_received,
+        receiptToken: reservationAccessToken(reservation.reservationId),
       };
     }),
 });

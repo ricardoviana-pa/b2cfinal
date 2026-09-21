@@ -1,5 +1,7 @@
-import type { Express, Request, Response } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import express from "express";
+import rateLimit from "express-rate-limit";
+import { z } from "zod";
 import crypto from "node:crypto";
 import { cacheManager } from "../lib/cacheManager";
 import { guestyClient, GuestyClientError, resetGuestyRateLimitCooldowns } from "../lib/guesty";
@@ -8,9 +10,22 @@ import { updateTripStatusByReservationId } from "../db";
 import { sendBookingFailureAlert } from "../services/transactional-email";
 import { reservationBreakdown, reservationTotalCents } from "../lib/reservation-money";
 import { readReservationPaidCents } from "../services/reservation-receipt";
+import { hasReservationAccess } from "../lib/reservation-access";
+import { readReservationForReceipt, requestReservationAccess } from "../services/reservation-access";
 
 const TTL_LISTING_MS = 6 * 60 * 60 * 1000;
 const TTL_CALENDAR_MS = 60 * 1000;
+
+function receiptAccess(req: Request, res: Response, next: NextFunction) {
+  res.setHeader("Cache-Control", "private, no-store");
+  res.setHeader("Referrer-Policy", "no-referrer");
+  res.setHeader("X-Robots-Tag", "noindex, nofollow");
+  if (!hasReservationAccess(req.params.id, req.header("X-Reservation-Access"))) {
+    res.status(401).json({ code: "RESERVATION_ACCESS_REQUIRED", message: "A secure confirmation link is required." });
+    return;
+  }
+  next();
+}
 
 function toIsoDate(input: string): string {
   const d = new Date(input);
@@ -308,7 +323,7 @@ export function registerBookingRoutes(app: Express): void {
         locality: listing?.address?.city || listing?.address?.region || fallbackProperty?.locality || "",
         maxGuests: listing?.accommodates || fallbackProperty?.maxGuests || 0,
         minNights: listing?.terms?.minNights ?? listing?.terms?.minNight ?? 1,
-        checkInInstructions: listing?.checkInInstructions || "",
+        checkInInstructions: "",
       });
     } catch (err) {
       mapGuestyError(err, res);
@@ -457,13 +472,30 @@ export function registerBookingRoutes(app: Express): void {
     });
   });
 
-  app.get("/api/reservations/:id", async (req: Request, res: Response) => {
+  const accessRequestLimiter = rateLimit({ windowMs: 60 * 60 * 1000, limit: 6, standardHeaders: true, legacyHeaders: false });
+  app.post("/api/reservations/:id/access", accessRequestLimiter, (req: Request, res: Response) => {
+    res.setHeader("Cache-Control", "private, no-store");
+    if (!["https://www.portugalactive.com", "https://portugalactive.com"].includes(req.header("Origin") || "")) {
+      res.status(403).json({ ok: false });
+      return;
+    }
+    const input = z.object({ email: z.string().email().max(320), locale: z.string().max(5).optional() }).safeParse(req.body);
+    // Same response for an unknown booking, different email or a delivery issue.
+    res.status(202).json({ ok: true });
+    if (!input.success) return;
+    const id = req.params.id, { email, locale } = input.data;
+    setImmediate(() => void requestReservationAccess(id, email, locale || "en").catch(() => {
+      console.warn("[ReceiptAccess] Request could not be completed");
+    }));
+  });
+
+  app.get("/api/reservations/:id", receiptAccess, async (req: Request, res: Response) => {
     res.setHeader("Cache-Control", "private, no-store");
     res.setHeader("Referrer-Policy", "no-referrer");
     res.setHeader("X-Robots-Tag", "noindex, nofollow");
     try {
       // Migrated to BE API: GET /api/reservations/{id}/summary
-      const reservation = await guestyClient.getReservation(req.params.id);
+      const reservation = await readReservationForReceipt(req.params.id);
       const listingId = reservation?.listingId || reservation?.listing?._id || reservation?.listing?._idStr || "";
       let listingName = "";
       let checkInInstructions = "";
@@ -567,13 +599,13 @@ export function registerBookingRoutes(app: Express): void {
     }
   });
 
-  app.get("/api/reservations/:id/ics", async (req: Request, res: Response) => {
+  app.get("/api/reservations/:id/ics", receiptAccess, async (req: Request, res: Response) => {
     res.setHeader("Cache-Control", "private, no-store");
     res.setHeader("Referrer-Policy", "no-referrer");
     res.setHeader("X-Robots-Tag", "noindex, nofollow");
     try {
       // Migrated to BE API via guestyClient.getReservation() → BE API /api/reservations/{id}/summary
-      const reservation = await guestyClient.getReservation(req.params.id);
+      const reservation = await readReservationForReceipt(req.params.id);
       const checkIn = toIsoDate(String(reservation?.checkInDateLocalized || reservation?.checkIn || ""));
       const checkOut = toIsoDate(String(reservation?.checkOutDateLocalized || reservation?.checkOut || ""));
       if (!checkIn || !checkOut) {

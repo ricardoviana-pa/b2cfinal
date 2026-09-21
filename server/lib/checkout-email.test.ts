@@ -20,6 +20,7 @@ describe("checkout recovery deployment boundary", () => {
     expect(canSendCheckoutRecovery({ ...production, SITE_URL: "https://dev.portugalactive.com" })).toBe(false);
     expect(canSendCheckoutRecovery({ ...production, RENDER_GIT_BRANCH: "dev" })).toBe(false);
     expect(canSendCheckoutRecovery({ ...production, NODE_ENV: "development" })).toBe(false);
+    expect(canSendCheckoutRecovery({ ...production, APP_ENV: "preview" })).toBe(false);
   });
   it.each([
     "http://www.portugalactive.com", "https://www.portugalactive.com.evil.test",

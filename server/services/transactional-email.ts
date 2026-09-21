@@ -7,7 +7,9 @@ import { formatQuotedMoney } from "@shared/booking-money";
 import { Resend } from "resend";
 import { getEmailSigner } from "@shared/concierges";
 import { sanitizePropertyName } from "@shared/displayName";
-import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
+import { CHECKOUT_EMAIL_ORIGIN, canSendCustomerEmail } from "../lib/checkout-email";
+import { receiptAccessCopy } from "@shared/receipt-access-copy";
+import { reservationReceiptPath, reservationAccessToken } from "../lib/reservation-access";
 import {
   emailLang,
   skuNameFor,
@@ -23,6 +25,22 @@ const isProduction = !!resendKey;
 const resend = resendKey ? new Resend(resendKey) : null;
 
 const FROM_EMAIL = process.env.EMAIL_FROM || "Portugal Active <booking@portugalactive.com>";
+
+/** Only sent after a visitor requests access and their booking email matches. */
+export async function sendReservationAccessLink(input: { email: string; reservationId: string; locale?: string }) {
+  if (!canSendCustomerEmail() || !resend || !reservationAccessToken(input.reservationId)) {
+    throw new Error("Reservation access email unavailable");
+  }
+  const locale = input.locale && ["pt", "en", "es", "fr", "de", "it", "nl", "fi", "sv"].includes(input.locale) ? input.locale : "en";
+  const copy = receiptAccessCopy(locale);
+  const url = `${CHECKOUT_EMAIL_ORIGIN}/${locale}${reservationReceiptPath(input.reservationId)}`;
+  const { error } = await resend.emails.send({
+    from: FROM_EMAIL, to: input.email, subject: copy.subject,
+    html: wrapTemplate(`<tr><td><h1>${copy.heading}</h1><p>${copy.body}</p><p><a href="${url}">${copy.open}</a></p></td></tr>`),
+    replyTo: "booking@portugalactive.com",
+  }, { idempotencyKey: `receipt-access-${input.reservationId}-${Math.floor(Date.now() / 600000)}` });
+  if (error) throw new Error("Reservation access email failed");
+}
 
 /* ================================================================
    CORE SEND

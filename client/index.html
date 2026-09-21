@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Consume private receipt fragments before analytics reads the page URL. -->
+    <script>(function(){try{var m=location.pathname.match(/\/booking\/(?:thank-you|confirmation)\/([\w-]+)$/),t=new URLSearchParams(location.hash.slice(1)).get('receipt');if(m&&t&&/^[\w-]{43}$/.test(t)){window.__PA_RECEIPTS=window.__PA_RECEIPTS||{};window.__PA_RECEIPTS[m[1]]=t;try{sessionStorage.setItem('receipt_access_'+m[1],t)}catch(e){}history.replaceState(history.state,'',location.pathname+location.search)}}catch(e){}})();</script>
     <!-- Google Tag Manager — deferred until after first paint for better LCP/FCP -->
     <script>window.dataLayer=window.dataLayer||[];
     function loadGTM(){if(window._gtmLoaded)return;window._gtmLoaded=true;

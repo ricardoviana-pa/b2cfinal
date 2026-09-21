@@ -1,3 +1,6 @@
+import ReservationAccessForm from "@/components/booking/ReservationAccessForm";
+import { readReceiptToken } from "@/lib/receipt-access";
+import { receiptAccessCopy } from "@shared/receipt-access-copy";
 import { useEffect, useRef, useState } from "react";
 import { useParams, useSearch, Link } from "wouter";
 import { useTranslation } from "react-i18next";
@@ -10,7 +13,7 @@ import { pushPurchaseOnce } from "@/lib/datalayer";
 import { formatEurCents, formatBookingDate } from "@/lib/format";
 import { optimizeGuestyImage } from "@/lib/images";
 import propertiesData from "@/data/properties.json";
-import { cancellationPolicyText } from "@/lib/cancellation";
+import { cancellationPolicyText, reservationStatusLabel } from "@/lib/cancellation";
 
 const CONCIERGE_EMAIL = "info@portugalactive.com";
 
@@ -80,6 +83,8 @@ export default function PaymentThankYouPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [accessRequired, setAccessRequired] = useState(false);
+  readReceiptToken(id);
   const purchaseFiredRef = useRef(false);
 
   // Prefer the payload stashed by the return page (Open-API reservations aren't
@@ -93,6 +98,10 @@ export default function PaymentThankYouPage() {
     (methodParam === "klarna" ? "klarna" : methodParam === "card" ? "card" : "paypal");
 
   useEffect(() => {
+    setAccessRequired(false);
+    setError("");
+    setLoading(true);
+    setData(null);
     if (stash) {
       setData(stash);
       setLoading(false);
@@ -104,7 +113,8 @@ export default function PaymentThankYouPage() {
         if (active) setData(response);
       })
       .catch((err: any) => {
-        if (active) setError(err?.message || t("bookingConfirmation.loadError"));
+        if (active && err?.code === "RESERVATION_ACCESS_REQUIRED") setAccessRequired(true);
+        else if (active) setError(err?.message || t("bookingConfirmation.loadError"));
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -118,7 +128,7 @@ export default function PaymentThankYouPage() {
   // in localStorage, so refreshes and the earlier return-page push can't double-fire.
   useEffect(() => {
     // Reopening an email receipt on another device is not a new purchase.
-    if (!data || !stash || purchaseFiredRef.current) return;
+    if (!data || !stash || data.reservationId !== id || purchaseFiredRef.current) return;
     purchaseFiredRef.current = true;
     pushPurchaseOnce(data.confirmationCode, {
       event: "purchase",
@@ -153,6 +163,8 @@ export default function PaymentThankYouPage() {
         <div className="container max-w-[1080px]">
           {loading ? (
             <div className="mx-auto max-w-[420px] rounded-lg bg-pa-warm border border-pa-sand h-[520px] animate-pulse" />
+          ) : accessRequired ? (
+            <ReservationAccessForm reservationId={id} />
           ) : error ? (
             <div className="mx-auto max-w-[420px] rounded-lg bg-white border border-destructive p-5 text-destructive">
               {error}
@@ -196,9 +208,11 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
   )}&body=${encodeURIComponent(body)}`;
 
   const hasBreakdown = data.accommodationCents != null && data.nights != null;
+  const closed = ["cancelled", "canceled", "declined", "expired"].includes(String(data.status || "").toLowerCase());
   const totalPaidCents = data.totalPaidCents !== undefined ? data.totalPaidCents : data.totalCents;
-  const fullyPaid = totalPaidCents > 0 &&
-    (data.totalPaidCents === undefined || (data.totalCents != null && totalPaidCents >= data.totalCents));
+  // The immediate payment handoff knows the method. A later email link may
+  // represent another channel, so do not infer its method from a URL parameter.
+  const fullyPaid = !closed && totalPaidCents > 0 && data.totalPaidCents === undefined;
 
   return (
     <div className="mx-auto max-w-[420px] lg:max-w-[1080px]">
@@ -206,20 +220,20 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
         {/* ---- Dark header / left panel ---- */}
         <div className="flex flex-col items-center justify-center bg-pa-dark px-[30px] py-[40px] text-center text-white lg:items-start lg:px-[44px] lg:py-[56px] lg:text-left">
           <div className="mb-5 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-white/10 lg:mb-[26px] lg:h-[58px] lg:w-[58px]">
-            <CheckCircle2 className="h-7 w-7 text-white" strokeWidth={2} />
+            {closed ? <Clock className="h-7 w-7 text-white" strokeWidth={2} /> : <CheckCircle2 className="h-7 w-7 text-white" strokeWidth={2} />}
           </div>
           <h1 className="headline-md mb-[9px] text-white">
-            {t("paymentThankYou.title", { defaultValue: "Booking Confirmed" })}
+            {closed ? reservationStatusLabel(data.status, t) : t("paymentThankYou.title", { defaultValue: "Booking Confirmed" })}
           </h1>
           <div className="text-[13px] tracking-[0.08em] text-white/50 tabular-nums">
             {data.confirmationCode}
           </div>
-          <p className="mt-[22px] hidden border-t border-white/10 pt-[22px] text-[13px] leading-relaxed text-white/60 lg:block lg:max-w-[240px]">
+          {!closed && <p className="mt-[22px] hidden border-t border-white/10 pt-[22px] text-[13px] leading-relaxed text-white/60 lg:block lg:max-w-[240px]">
             {t("paymentThankYou.reassurance", {
               defaultValue:
                 "A confirmation email is on its way. Your concierge will be in touch within 2 hours to help plan your stay.",
             })}
-          </p>
+          </p>}
         </div>
 
         {/* ---- Body / right panel ---- */}
@@ -229,13 +243,10 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
             <div className="min-w-0">
               {data.guestEmail ? (
                 <div className="mb-[26px] rounded-lg border border-pa-sand bg-pa-warm px-[14px] py-3 text-center text-[12.5px] leading-snug text-pa-earth">
-                  {t("paymentThankYou.emailSent", { defaultValue: "Confirmation email sent to" })}{" "}
-                  <a
-                    href={`mailto:${data.guestEmail}`}
-                    className="font-medium text-pa-gold no-underline"
-                  >
+                  {receiptAccessCopy(lang).email}:{" "}
+                  <span className="font-medium text-pa-gold">
                     {data.guestEmail}
-                  </a>
+                  </span>
                 </div>
               ) : null}
 
@@ -355,12 +366,12 @@ function ThankYouCard({ data, method }: { data: any; method: PaymentMethod }) {
                   defaultValue: "Need Help? Talk With Your Concierge",
                 })}
               </a>
-              <p className="mt-3 text-center text-[11.5px] leading-relaxed text-pa-earth">
+              {!closed && <p className="mt-3 text-center text-[11.5px] leading-relaxed text-pa-earth">
                 {t("paymentThankYou.ctaNote", {
                   defaultValue:
                     "Your dedicated concierge will reach out within 2 hours to help plan your stay.",
                 })}
-              </p>
+              </p>}
             </div>
           </div>
         </div>

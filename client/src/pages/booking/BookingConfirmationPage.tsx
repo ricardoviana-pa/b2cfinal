@@ -1,3 +1,5 @@
+import ReservationAccessForm from "@/components/booking/ReservationAccessForm";
+import { readReceiptToken } from "@/lib/receipt-access";
 import { useEffect, useState } from "react";
 import { useParams } from "wouter";
 import { useTranslation } from 'react-i18next';
@@ -21,15 +23,22 @@ export default function BookingConfirmationPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [accessRequired, setAccessRequired] = useState(false);
+  readReceiptToken(id);
 
   useEffect(() => {
+    setAccessRequired(false);
+    setError("");
+    setLoading(true);
+    setData(null);
     let active = true;
     fetchReservation(id)
       .then((response) => {
         if (active) setData(response);
       })
       .catch((err: any) => {
-        if (active) setError(err?.message || t('bookingConfirmation.loadError'));
+        if (active && err?.code === "RESERVATION_ACCESS_REQUIRED") setAccessRequired(true);
+        else if (active) setError(err?.message || t('bookingConfirmation.loadError'));
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -50,6 +59,8 @@ export default function BookingConfirmationPage() {
 
           {loading ? (
             <div className="rounded-lg bg-pa-warm border border-pa-sand h-[240px] animate-pulse" />
+          ) : accessRequired ? (
+            <ReservationAccessForm reservationId={id} />
           ) : error ? (
             <div className="rounded-lg bg-white border border-destructive p-5 text-destructive">{error}</div>
           ) : data ? (
