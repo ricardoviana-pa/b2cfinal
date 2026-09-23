@@ -6004,6 +6004,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "この素敵なアパートメントで極上の滞在を楽しみました。ユニットはとても使いやすく、デザイン性も高く、そして趣味良くデザインされていて、到着の瞬間から気に入りました。ひとり（ないしはカップル）での滞在に最適な広さで、特にベッドリネンの質が高いことにとても満足しました。また、テラスやサンルームがとても素敵で、すぐ隣の教会のビューや鐘の音、そして夕焼けを毎晩楽しみました。シャワーヘッドに問題がありましたが、比較的迅速にご対応いただき感謝しています。楽しい滞在をありがとうございました！",
+        "guestDisplayName": "Kazumi",
+        "guestName": "Kazumi",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-23T05:28:21.318Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "* Tolle, sehr stilvolle Unterkunft\n* sehr gute Ausstattung (Waschtrockner)\n* wir haben den Wintergarten geliebt\n* sehr bequemes Bett\n* super Raumaufteilung (begehbarer Kleiderschrank)\n* wirklich große Terrasse",
         "guestDisplayName": "Elke",
         "guestName": "Elke",
@@ -6284,7 +6319,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 8,
+    "reviewCount": 9,
     "lastModified": "2026-08-27",
     "contentHash": "5c020bc88dde389b6bf56907ddd658a73173aa1c"
   },
