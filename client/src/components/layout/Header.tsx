@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { IMAGES } from '@/lib/images';
 import LanguageSwitcher from './LanguageSwitcher';
+import PromoBar from './PromoBar';
 
 interface HeaderProps {
   variant?: 'transparent' | 'solid';
@@ -132,9 +133,11 @@ export default function Header({ variant = 'solid' }: HeaderProps) {
 
   return (
     <>
+      <PromoBar />
       <header
         role="banner"
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        style={{ top: 'var(--pa-promobar-h, 0px)' }}
+        className={`fixed left-0 right-0 z-50 transition-all duration-500 ${
           isTransparent
             ? 'bg-transparent'
             : 'bg-white/96 backdrop-blur-md border-b border-[#E8E4DC]/50'

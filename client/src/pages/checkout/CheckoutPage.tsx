@@ -275,6 +275,20 @@ export default function CheckoutPage() {
   const [couponError, setCouponError] = useState(false);
   const applyCouponMut = trpc.booking.applyCoupon.useMutation();
 
+  // Visitante que clicou na PromoBar (announcement bar): o código ficou em
+  // localStorage — pré-preenche e abre o campo para o Apply ser um toque.
+  useEffect(() => {
+    if (!intent || intent.quote?.couponCode) return;
+    try {
+      const saved = localStorage.getItem("pa_promo_code");
+      if (saved && !couponInput) {
+        setCouponInput(saved.toUpperCase().replace(/[^A-Z0-9_-]/g, "").slice(0, 40));
+        setCouponOpen(true);
+      }
+    } catch { /* storage indisponível */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [intent?.id]);
+
   useEffect(() => {
     if (!intent || seededRef.current) return;
     seededRef.current = true;
