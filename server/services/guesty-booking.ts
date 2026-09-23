@@ -27,6 +27,15 @@ const inFlightBEQuotes = new Map<string, Promise<BEQuoteResult>>();
 /** Cooldown after a 429 on the quotes endpoint — set from Guesty's retryAfterMs. */
 let beQuoteCooldownUntil = 0;
 
+/** Drop every cached anonymous quote with this id. A coupon changes the quote on Guesty's side, and the
+ *  cache shares one quoteId across visitors for 8 minutes: a later visitor would otherwise get a quote
+ *  that already carries someone else's code, and the payment check would refuse the mismatch. */
+export function forgetCachedBEQuote(quoteId: string): void {
+  for (const [key, entry] of beQuoteCache) {
+    if (entry.value?.quoteId === quoteId) beQuoteCache.delete(key);
+  }
+}
+
 function getBEQuoteCacheKey(input: { listingId: string; checkIn: string; checkOut: string; guests: number }): string {
   return `${input.listingId}:${input.checkIn}:${input.checkOut}:${input.guests}`;
 }
@@ -531,6 +540,7 @@ export async function applyCouponToBEQuote(input: {
     if (status === 400 || status === 422 || /coupon/i.test(details)) throw new Error("INVALID_COUPON");
     throw new Error(parseBEError(details) || "Unable to apply the promo code.");
   }
+  forgetCachedBEQuote(input.quoteId);
   // A valid code is accepted by Guesty, but the POST response does not carry the quote's rate plans
   // in the shape parseBEQuote expects: that raised "No rate plan available for this property" for every
   // real code (production, 23 Sep 2026). Always read the updated quote back with the same GET the

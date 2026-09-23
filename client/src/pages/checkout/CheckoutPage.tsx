@@ -246,6 +246,9 @@ export default function CheckoutPage() {
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState(2);
   const [quote, setQuote] = useState<QuoteSnapshot | null>(null);
+  // Latest quote for callbacks that do not list `quote` as a dependency (requote reads the live code).
+  const quoteRef = useRef<QuoteSnapshot | null>(null);
+  quoteRef.current = quote;
   const [quoteId, setQuoteId] = useState<string | null>(null);
   const [selectedRatePlanId, setSelectedRatePlanId] = useState<string | null>(null);
   const [email, setEmail] = useState("");
@@ -484,9 +487,6 @@ export default function CheckoutPage() {
           // duplicadas e o requote mostrava-as todas (bug 12 jul)
           ratePlanOptions: collapseRatePlans((d as any).ratePlanOptions, ci),
         };
-        // Re-resolve the plan selection: ids can change between quotes
-        const stillThere = fresh.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
-        const nextPlan = stillThere?.ratePlanId ?? (d as any).ratePlanId ?? fresh.ratePlanOptions?.[0]?.ratePlanId ?? null;
         // AUDIT A3: menos noites → clamp dos dias selecionados nos extras
         setExtraSel((prev) => {
           const next: typeof prev = {};
@@ -502,22 +502,31 @@ export default function CheckoutPage() {
           syncIntent({ flex: false });
         }
         // AUDIT A5: o cupão vivia na quote antiga — re-aplicar na nova; se o
-        // código já não for válido, o campo reaparece em vez de fingir desconto
-        const prevCoupon = quote?.couponCode;
+        // código já não for válido, o campo reaparece em vez de fingir desconto.
+        // The re-apply is awaited BEFORE the screen and the intent change: setting the undiscounted
+        // quote first let the two answers cross, so the page showed the full price while Guesty held
+        // the discount and the payment check refused the mismatch (production, 23 Sep 2026).
+        let next: QuoteSnapshot = fresh;
+        const prevCoupon = quoteRef.current?.couponCode;
         if (prevCoupon) {
-          void applyCouponMut
-            .mutateAsync({ quoteId: liveQuoteId, listingId: intent.listingId, checkIn: ci, checkOut: co, coupon: prevCoupon })
-            .then((r) => {
-              if (!r.ok) {
-                // M14 (auditoria set/2026): o desconto caía em silêncio — o
-                // campo reabre com o código e uma nota diz porquê.
-                setCouponDropped(prevCoupon);
-                setCouponInput(prevCoupon);
-                setCouponOpen(true);
-                return;
-              }
+          const dropCoupon = () => {
+            // M14 (auditoria set/2026): o desconto caía em silêncio — o
+            // campo reabre com o código e uma nota diz porquê.
+            setCouponDropped(prevCoupon);
+            setCouponInput(prevCoupon);
+            setCouponOpen(true);
+          };
+          try {
+            const r = await applyCouponMut.mutateAsync({
+              quoteId: liveQuoteId,
+              listingId: intent.listingId,
+              checkIn: ci,
+              checkOut: co,
+              coupon: prevCoupon,
+            });
+            if (r.ok) {
               setCouponDropped(null);
-              const withCoupon: QuoteSnapshot = {
+              next = {
                 ...fresh,
                 nightlyRate: r.pricing.nightlyRate,
                 totalNights: r.pricing.totalNights,
@@ -525,16 +534,21 @@ export default function CheckoutPage() {
                 taxesAndFees: r.pricing.taxesAndFees ?? 0,
                 total: r.total,
                 couponCode: r.coupons?.[0]?.code || undefined,
-                ratePlanOptions: collapseRatePlans(r.ratePlanOptions as any, checkIn),
+                ratePlanOptions: collapseRatePlans(r.ratePlanOptions as any, ci),
               };
-              setQuote(withCoupon);
-              syncIntent({ quote: withCoupon });
-            })
-            .catch(() => {});
+            } else {
+              dropCoupon();
+            }
+          } catch {
+            dropCoupon();
+          }
         }
-        setQuote(fresh);
+        // Re-resolve the plan selection on the quote that will be shown
+        const planStill = next.ratePlanOptions?.find((o) => o.ratePlanId === selectedRatePlanId);
+        const planNext = planStill?.ratePlanId ?? (d as any).ratePlanId ?? next.ratePlanOptions?.[0]?.ratePlanId ?? null;
+        setQuote(next);
         setQuoteId(liveQuoteId);
-        setSelectedRatePlanId(nextPlan);
+        setSelectedRatePlanId(planNext);
         setCheckIn(ci);
         setCheckOut(co);
         setGuests(g);
@@ -544,8 +558,8 @@ export default function CheckoutPage() {
           checkOut: co,
           guests: g,
           guestyQuoteId: liveQuoteId,
-          ratePlanId: nextPlan ?? undefined,
-          quote: fresh,
+          ratePlanId: planNext ?? undefined,
+          quote: next,
         });
       } catch {
         setDatesUnavailable(true);
@@ -553,7 +567,7 @@ export default function CheckoutPage() {
         setRequoting(false);
       }
     },
-    [intent, selectedRatePlanId, syncIntent, utils],
+    [intent, selectedRatePlanId, syncIntent, utils, applyCouponMut],
   );
 
   // ── Step 1 → 2: email capture ──

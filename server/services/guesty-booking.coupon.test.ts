@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const request = vi.fn();
 vi.mock("../lib/guesty", () => ({ guestyBEClient: { request: (...args: unknown[]) => request(...args) } }));
 
-import { applyCouponToBEQuote } from "./guesty-booking";
+import { applyCouponToBEQuote, createBEQuote } from "./guesty-booking";
 
 const QUOTE_ID = "aaaaaaaaaaaaaaaaaaaaaaaa";
 const input = { quoteId: QUOTE_ID, listingId: "synthetic-home", checkIn: "2099-11-13", checkOut: "2099-11-16" };
@@ -78,5 +78,21 @@ describe("applyCouponToBEQuote", () => {
     const r = await applyCouponToBEQuote({ ...input, coupons: ["PORTUGALACTIVE5"] });
     expect(r.coupons.map((c) => c.code)).toEqual(["PORTUGALACTIVE5"]);
     expect(r.coupons[0].code).toMatch(/^[A-Za-z0-9_-]{0,40}$/);
+  });
+
+  it("forgets the shared cached quote once a coupon is applied to it", async () => {
+    const stay = { listingId: "synthetic-home", checkIn: "2099-12-01", checkOut: "2099-12-04", guests: 3 };
+    request.mockResolvedValue(quote(1440.9));
+    await createBEQuote(stay);
+    await createBEQuote(stay);
+    expect(request).toHaveBeenCalledTimes(1); // the second visitor gets the cached quote
+    request.mockReset();
+    request.mockResolvedValueOnce({}).mockResolvedValueOnce(quote(1342.58, [pa2027]));
+    await applyCouponToBEQuote({ ...input, checkIn: stay.checkIn, checkOut: stay.checkOut, coupons: ["PA2027"] });
+    request.mockReset();
+    request.mockResolvedValue(quote(1440.9));
+    await createBEQuote(stay);
+    expect(request).toHaveBeenCalledTimes(1); // no longer served from the cache
+    expect(request.mock.calls[0][0]).toBe("POST");
   });
 });
