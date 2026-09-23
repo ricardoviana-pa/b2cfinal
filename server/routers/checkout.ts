@@ -506,12 +506,11 @@ export const checkoutRouter = router({
       reception: CHECKOUT_RECEPTION,
       included: CHECKOUT_INCLUDED_KEYS,
       flex: FLEX_CONFIG,
-      // C6: o campo de promo só aparece com campanha ativa (CHECKOUT_PROMO=true
-      // no Render; sempre visível no dev para testes)
-      promoEnabled:
-        process.env.CHECKOUT_PROMO === "true" ||
-        String(ctx.req.headers["x-forwarded-host"] || ctx.req.headers.host || "").toLowerCase().startsWith("dev.") ||
-        String(ctx.req.headers["x-forwarded-host"] || ctx.req.headers.host || "").toLowerCase().startsWith("localhost"),
+      // Campo de promo visível por defeito — há campanhas de marketing ativas
+      // com códigos (set 2026). Kill switch: CHECKOUT_PROMO=false no Render.
+      // (A auditoria de setembro tinha-o tornado opt-in e escondeu o campo em
+      // produção a meio de uma campanha.)
+      promoEnabled: process.env.CHECKOUT_PROMO !== "false",
       };
     }),
 

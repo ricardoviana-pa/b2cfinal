@@ -1554,10 +1554,10 @@ export default function CheckoutPage() {
                   receptionNudge={receptionNudge}
                 />
               )}
-              {/* Flex closes the Personalizar step (spec §5/§6) — protection, not a service */}
+              {/* Flex closes the Personalizar step (spec §5/§6) — protection, not a
+                  service. Rendered in full, never collapsed: hiding it behind a
+                  <details> killed the attach rate (regressão de a4c2b55). */}
               {flexConfig && effective && (
-                <details className="rounded-lg border border-pa-sand p-4" open={flexSelected || undefined}>
-                  <summary className="cursor-pointer body-sm text-pa-dark">{t('checkout.flex.title')} · {formatQuotedEur(flexUnit, lang)}</summary>
                 <FlexBlock
                   config={{ ...flexConfig, price: flexUnit }}
                   selected={flexSelected}
@@ -1572,7 +1572,6 @@ export default function CheckoutPage() {
                     syncIntent({ flex: next });
                   }}
                 />
-                </details>
               )}
               <button
                 type="button"
