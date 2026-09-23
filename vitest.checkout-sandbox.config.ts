@@ -11,6 +11,9 @@ export default defineConfig({
   test: {
     ...base.test,
     include: ['server/checkout-sandbox/**/*.test.ts'],
+    // O base exclui server/checkout-sandbox do npm test (corre por este
+    // runner); aqui o exclude tem de voltar ao normal ou exclui-se a si mesmo.
+    exclude: ['**/node_modules/**'],
     setupFiles: ['server/checkout-sandbox/setup.ts'],
   },
 });

@@ -1,7 +1,13 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { appRouter } from "./routers";
 import { COOKIE_NAME } from "../shared/const";
 import type { TrpcContext } from "./_core/context";
+
+// O CI corre o job inteiro com APP_ENV=preview (isolamento operacional), mas
+// este teste exercita uma mutation legítima — sem limpar a flag, o guard
+// read-only do tRPC recusava-a (deploy de 23 set bloqueado).
+beforeEach(() => vi.stubEnv("APP_ENV", ""));
+afterEach(() => vi.unstubAllEnvs());
 
 type CookieCall = {
   name: string;
