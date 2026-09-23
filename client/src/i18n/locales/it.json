@@ -738,7 +738,8 @@
       "cardNotReady": "L'elemento della carta non è pronto. Per favore, aggiornare e riprovare.",
       "cardValidationFailed": "La convalida della carta è fallita. Per favore, verificare i dati della sua carta.",
       "couldNotCreatePaymentMethod": "Impossibile creare il metodo di pagamento. Per favore, riprovare.",
-      "contactSupport": "Se ti è stato addebitato l'importo, contattaci a reservations@portugalactive.com o su WhatsApp al +351 927 161 771. Non tentare di pagare di nuovo."
+      "contactSupport": "Se ti è stato addebitato l'importo, contattaci a reservations@portugalactive.com o su WhatsApp al +351 927 161 771. Non tentare di pagare di nuovo.",
+      "paidAwaitingConfirmation": "Il pagamento è stato ricevuto. Stiamo confermando la prenotazione — riceverai la conferma via email entro pochi minuti. Non pagare di nuovo."
     },
     "payButton": "Paga {{amount}}",
     "cancelButton": "Annulla",

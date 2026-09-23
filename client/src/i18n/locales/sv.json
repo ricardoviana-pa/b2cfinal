@@ -738,7 +738,8 @@
       "cardNotReady": "Kortelementet är inte klart. Uppdatera sidan och försök igen.",
       "cardValidationFailed": "Kortvalidering misslyckades. Kontrollera dina kortuppgifter.",
       "couldNotCreatePaymentMethod": "Kunde inte skapa betalningsmetod. Försök igen.",
-      "contactSupport": "Om beloppet har dragits, kontakta oss på reservations@portugalactive.com eller WhatsApp +351 927 161 771. Försök inte betala igen."
+      "contactSupport": "Om beloppet har dragits, kontakta oss på reservations@portugalactive.com eller WhatsApp +351 927 161 771. Försök inte betala igen.",
+      "paidAwaitingConfirmation": "Din betalning har tagits emot. Vi bekräftar din bokning — du får bekräftelsen via e-post inom några minuter. Betala inte igen."
     },
     "payButton": "Betala {{amount}}",
     "cancelButton": "Avbryt",

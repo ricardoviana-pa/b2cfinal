@@ -738,7 +738,8 @@
       "cardNotReady": "Elemento do cartão não pronto. Por favor, atualize e tente novamente.",
       "cardValidationFailed": "Validação do cartão falhou. Por favor, verifique os dados do seu cartão.",
       "couldNotCreatePaymentMethod": "Não foi possível criar o método de pagamento. Por favor, tente novamente.",
-      "contactSupport": "Se o valor foi cobrado, contacte-nos por reservations@portugalactive.com ou WhatsApp +351 927 161 771. Não tente pagar novamente."
+      "contactSupport": "Se o valor foi cobrado, contacte-nos por reservations@portugalactive.com ou WhatsApp +351 927 161 771. Não tente pagar novamente.",
+      "paidAwaitingConfirmation": "O seu pagamento foi recebido. Estamos a confirmar a sua reserva — vai receber a confirmação por email dentro de minutos. Não pague novamente."
     },
     "payButton": "Pagar {{amount}}",
     "cancelButton": "Cancelar",

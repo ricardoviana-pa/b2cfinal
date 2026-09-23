@@ -915,6 +915,38 @@ export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent
   }
 }
 
+/**
+ * Intents de cartão com pagamento iniciado mas nunca fechados: PI criado,
+ * status ainda não paid, sem mexidas há >10 min. O sweep de settle tenta
+ * fechá-los (spec §14: retry persistente — sobrevive a restarts porque vive
+ * na base de dados, não num setTimeout). Janela de 48h: depois disso o PI
+ * já não é acionável e o caso é humano.
+ */
+export async function listUnsettledCardIntents(limit = 50): Promise<BookingIntent[]> {
+  const db = await getDb();
+  if (!db) return [];
+  try {
+    const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000);
+    const twoDaysAgo = new Date(Date.now() - 48 * 60 * 60 * 1000);
+    return await db
+      .select()
+      .from(bookingIntents)
+      .where(
+        and(
+          isNotNull(bookingIntents.paymentIntentId),
+          inArray(bookingIntents.status, ["contact_captured", "payment_pending"]),
+          lt(bookingIntents.updatedAt, tenMinAgo),
+          gt(bookingIntents.createdAt, twoDaysAgo),
+        ),
+      )
+      .orderBy(asc(bookingIntents.updatedAt))
+      .limit(limit);
+  } catch (error) {
+    console.error("[Database] listUnsettledCardIntents failed:", error);
+    return [];
+  }
+}
+
 export async function listIntentsForRecoveryStay(intent: BookingIntent): Promise<BookingIntent[]> {
   const db = await getDb();
   if (!db || !intent.email) return [];

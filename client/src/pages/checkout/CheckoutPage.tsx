@@ -218,7 +218,9 @@ export default function CheckoutPage() {
   const [saveIssue, setSaveIssue] = useState(false);
   const updateIntent = trpc.checkout.updateIntent.useMutation({
     onError: () => setSaveIssue(true),
-    onSuccess: () => setSaveIssue(false),
+    // ok:false (BD em baixo, intent pago, etc.) é uma gravação FALHADA — antes
+    // limpava o aviso e o "Saved automatically" mentia (auditoria set/2026)
+    onSuccess: (r) => setSaveIssue(!(r as { ok?: boolean } | undefined)?.ok),
   });
   const captureLead = trpc.checkout.captureLead.useMutation();
 
@@ -777,6 +779,38 @@ export default function CheckoutPage() {
     if (!receptionChoice) setReceptionChoice(choice);
     continueToPay(choice);
   }, [receptionChoice, continueToPay]);
+
+  /** H3 (auditoria set/2026): os debounces de extras (600ms) e dados do
+   *  hóspede (800ms) podem ainda não ter gravado quando o Pagar é clicado — e
+   *  o servidor cobra o que está na BD. Este flush grava o estado ATUAL de
+   *  forma síncrona antes de criar a cobrança; se a gravação falhar, o
+   *  pagamento aborta em vez de cobrar o estado antigo. */
+  const flushPendingSaves = useCallback(async () => {
+    if (!intentId || isDemo || !intent) return;
+    const patch: Record<string, unknown> = {
+      flex: flexSelected,
+      extras: selectedExtras.map(({ item, sel, amount }) => ({
+        sku: item.sku, qty: sel.qty, people: sel.people, sessions: sel.sessions, days: sel.days,
+        amount, fulfillment: item.fulfillment,
+      })),
+      ...(receptionChoice ? { reception: receptionChoice } : {}),
+      ...(firstName.trim() && lastName.trim() && isValidPhone(phone)
+        ? {
+            guestFirstName: firstName.trim(),
+            guestLastName: lastName.trim(),
+            guestPhone: phone,
+            nif: nif.trim(),
+          }
+        : {}),
+    };
+    utils.checkout.getIntent.setData({ intentId }, (prev) =>
+      prev?.intent ? { ...prev, intent: { ...prev.intent, ...patch } as typeof prev.intent } : prev,
+    );
+    const r = await updateIntent.mutateAsync({ intentId, patch: patch as any });
+    if (!(r as { ok?: boolean } | undefined)?.ok) {
+      throw new Error("checkout state could not be saved");
+    }
+  }, [intentId, isDemo, intent, flexSelected, selectedExtras, receptionChoice, firstName, lastName, phone, nif, utils, updateIntent]);
 
   /** Ops manifest (PT, staff-facing) appended to the Guesty reservation notes —
    *  same pattern the legacy widget uses, so operations see the requests. */
@@ -1721,6 +1755,7 @@ export default function CheckoutPage() {
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-4">
                 {termsAccepted && firstName.trim() && lastName.trim() && isValidEmail(email) && isValidPhone(phone) && quoteId && effective && !quoteStale ? (
                   <CheckoutPaymentForm
+                    onBeforePay={flushPendingSaves}
                     listingId={intent.listingId}
                     checkIn={checkIn}
                     checkOut={checkOut}

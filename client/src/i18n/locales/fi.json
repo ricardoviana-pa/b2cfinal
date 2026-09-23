@@ -738,7 +738,8 @@
       "cardNotReady": "Korttielementti ei ole valmis. Päivitä sivu ja yritä uudelleen.",
       "cardValidationFailed": "Kortin vahvistus epäonnistui. Tarkista kortin tiedot.",
       "couldNotCreatePaymentMethod": "Maksutapaa ei voitu luoda. Yritä uudelleen.",
-      "contactSupport": "Jos maksu veloitettiin, ota yhteyttä osoitteeseen reservations@portugalactive.com tai WhatsAppilla +351 927 161 771. Älä yritä maksaa uudelleen."
+      "contactSupport": "Jos maksu veloitettiin, ota yhteyttä osoitteeseen reservations@portugalactive.com tai WhatsAppilla +351 927 161 771. Älä yritä maksaa uudelleen.",
+      "paidAwaitingConfirmation": "Maksusi on vastaanotettu. Vahvistamme varaustasi — saat vahvistuksen sähköpostitse muutamassa minuutissa. Älä maksa uudelleen."
     },
     "payButton": "Maksa {{amount}}",
     "cancelButton": "Peruuta",

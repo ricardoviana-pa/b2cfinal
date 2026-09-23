@@ -49,6 +49,10 @@ export function registerStripeCardWebhookRoute(app: Express) {
               }
             } catch (err: any) {
               console.error(`[Card2b] webhook (diferido) falhou intent ${intentId}:`, err?.message);
+              // Dinheiro capturado (payment_intent.succeeded) e reserva por
+              // criar: alertar já; o sweep de settle continua a tentar.
+              const { alertFailedSettle } = await import("../services/checkout-card-charge");
+              void alertFailedSettle(intentId, pi.id, String(err?.message ?? err), "webhook-card");
             }
           }, 15_000);
         }

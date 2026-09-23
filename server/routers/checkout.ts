@@ -382,7 +382,7 @@ export const checkoutRouter = router({
       const mSafe = factsForCharge.pets
         ? m
         : { ...m, extras: ((m as any).extras ?? []).filter((e: any) => !PETS_ONLY_SKUS.includes(e.sku)) };
-      let b = breakdownFromIntent(mSafe);
+      let b = breakdownFromIntent(mSafe, factsForCharge.bedrooms);
       if (!Number.isSafeInteger(b.totalCents) || b.totalCents < 100) {
         throw new TRPCError({ code: "PRECONDITION_FAILED", message: "invalid total" });
       }
@@ -412,7 +412,21 @@ export const checkoutRouter = router({
       }
       const trusted = await trustedStayQuote(m as any);
       assertQuotedTotal(m.quote, trusted.quote);
-      b = breakdownFromIntent({ ...mSafe, quote: trusted.quote });
+      b = breakdownFromIntent({ ...mSafe, quote: trusted.quote }, factsForCharge.bedrooms);
+      // Recheck de disponibilidade à entrada do pagamento (spec §14): uma data
+      // entretanto ocupada tem de falhar ANTES do dinheiro sair, não depois.
+      // Fail-open: se o calendário não responder, o settle continua a ser a
+      // última linha de defesa (a reserva Guesty falha e o alerta dispara).
+      try {
+        const { checkAvailability } = await import("../services/guesty");
+        const avail = await checkAvailability((m as any).listingId, (m as any).checkIn, (m as any).checkOut);
+        if (avail && avail.available === false) {
+          throw new TRPCError({ code: "PRECONDITION_FAILED", message: "dates no longer available" });
+        }
+      } catch (availErr: any) {
+        if (availErr instanceof TRPCError) throw availErr;
+        console.warn(`[Card2b] recheck de disponibilidade falhou (fail-open): ${availErr?.message}`);
+      }
       if (priorPi) {
         const { getPaymentIntent, cancelPaymentIntent } = await import("../services/stripe-klarna");
         const prev = await getPaymentIntent(priorPi);
@@ -467,7 +481,20 @@ export const checkoutRouter = router({
     .input(z.object({ intentId: z.string().uuid(), paymentIntentId: z.string().min(1) }))
     .mutation(async ({ input }) => {
       const { settleCardCharge } = await import("../services/checkout-card-charge");
-      return settleCardCharge(input.intentId, input.paymentIntentId);
+      try {
+        return await settleCardCharge(input.intentId, input.paymentIntentId);
+      } catch (err: any) {
+        // Spec §14: "nunca dinheiro cobrado sem reserva criada" SEM ninguém
+        // saber. Um settle falhado depois de o PI ter sucedido é exatamente
+        // esse caso — alerta imediato; o sweep e o webhook continuam a tentar.
+        const msg = String(err?.message ?? err);
+        const benign = /not succeeded|does not belong|intent not found/i.test(msg);
+        if (!benign) {
+          const { alertFailedSettle } = await import("../services/checkout-card-charge");
+          void alertFailedSettle(input.intentId, input.paymentIntentId, msg, "finalize");
+        }
+        throw err;
+      }
     }),
 
   /**

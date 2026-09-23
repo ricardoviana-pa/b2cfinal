@@ -151,6 +151,10 @@ interface CheckoutPaymentFormProps {
   paymentItems?: Array<Record<string, unknown>>;
   onSuccess: (confirmationCode: string, reservationId?: string) => void;
   onCancel: () => void;
+  /** Grava já qualquer estado pendente do intent (debounces) ANTES de criar a
+   *  cobrança — o servidor cobra o que está na BD, não o que está no ecrã.
+   *  Se falhar, o pagamento aborta (auditoria set/2026, H3). */
+  onBeforePay?: () => Promise<void>;
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -167,12 +171,14 @@ function ExpressWalletInner({
   total,
   paymentItems,
   onSuccess,
+  onBeforePay,
 }: {
   intentId: string;
   listingId: string;
   total: number;
   paymentItems?: Array<Record<string, unknown>>;
   onSuccess: (confirmationCode: string, reservationId?: string) => void;
+  onBeforePay?: () => Promise<void>;
 }) {
   const { t } = useTranslation();
   const stripe = useStripe();
@@ -195,6 +201,9 @@ function ExpressWalletInner({
       ecommerce: { currency: "EUR", value: total, items: paymentItems },
     });
 
+    // Só depois do confirmPayment ter sucedido é que um erro significa
+    // "dinheiro capturado" — antes disso, re-tentar é sempre seguro.
+    let paymentCaptured = false;
     try {
       // Deferred flow: validar o elemento antes de criar o PI (regra Stripe)
       const { error: submitError } = await elements.submit();
@@ -203,12 +212,15 @@ function ExpressWalletInner({
         processingRef.current = false;
         return;
       }
+      // Estado pendente (debounces de extras/dados) gravado ANTES da cobrança
+      await onBeforePay?.();
       // PI lazy com o total canónico do servidor — nunca o valor do cliente.
       // wallet:true → PI automatic (a sessão do ECE é automatic; um PI types
       // seria recusado no confirm — visto no 1.º toque real de GPay).
       const { clientSecret, paymentIntentId, alreadyPaid } = (await createCardCharge.mutateAsync({ intentId, wallet: true })) as any;
       if (alreadyPaid) {
         // pagamento já capturado numa tentativa anterior — só falta a reserva
+        paymentCaptured = true;
         const fin = await finalizeCardCharge.mutateAsync({ intentId, paymentIntentId });
         onSuccess(fin.confirmationCode, fin.reservationId);
         return;
@@ -224,15 +236,23 @@ function ExpressWalletInner({
         processingRef.current = false;
         return;
       }
+      paymentCaptured = true;
       const fin = await finalizeCardCharge.mutateAsync({
         intentId,
         paymentIntentId: paymentIntent?.id ?? paymentIntentId,
       });
       onSuccess(fin.confirmationCode, fin.reservationId);
     } catch (e: any) {
-      // O pagamento pode ter sido capturado — o webhook card_v2 completa a
-      // reserva; não permitir novo clique às cegas
-      setError(e?.message || t("payment.errors.cardValidationFailed"));
+      if (paymentCaptured) {
+        // Dinheiro capturado, reserva pendente — o webhook/sweep completam;
+        // manter o botão bloqueado e dizer a verdade ao hóspede.
+        setError(t("payment.errors.paidAwaitingConfirmation", "Your payment was received. We are confirming your booking — you will get the confirmation by email in a few minutes. Do not pay again."));
+      } else {
+        // Nada foi cobrado: desbloquear para nova tentativa (antes ficava um
+        // botão vivo mas inerte — auditoria set/2026, H5)
+        setError(e?.message || t("payment.errors.cardValidationFailed"));
+        processingRef.current = false;
+      }
     }
   };
 
@@ -285,6 +305,7 @@ function PaymentFormInner({
   propertyName,
   destination,
   paymentItems,
+  onBeforePay,
 }: Omit<CheckoutPaymentFormProps, "currency">) {
   const { t, i18n } = useTranslation();
   const stripe = useStripe();
@@ -333,9 +354,15 @@ function PaymentFormInner({
     // PI criado lazy AGORA (total canónico do servidor); confirmPayment inline;
     // finalize cria a reserva Guesty só com a estadia. Legacy segue em baixo.
     if (intentId) {
+      // Só depois do confirmPayment ter sucedido é que um erro significa
+      // "dinheiro capturado" — antes disso, re-tentar é sempre seguro.
+      let paymentCaptured = false;
       try {
+        // Estado pendente (debounces de extras/dados) gravado ANTES da cobrança
+        await onBeforePay?.();
         const { clientSecret, paymentIntentId, alreadyPaid } = await createCardCharge.mutateAsync({ intentId });
         if (alreadyPaid) {
+          paymentCaptured = true;
           const fin = await finalizeCardCharge.mutateAsync({ intentId, paymentIntentId });
           onSuccess(fin.confirmationCode, fin.reservationId);
           return;
@@ -358,15 +385,25 @@ function PaymentFormInner({
           submittedRef.current = false;
           return;
         }
+        paymentCaptured = true;
         const fin = await finalizeCardCharge.mutateAsync({
           intentId,
           paymentIntentId: paymentIntent?.id ?? paymentIntentId,
         });
         onSuccess(fin.confirmationCode, fin.reservationId);
       } catch (e: any) {
-        // pagamento pode ter sido capturado — o webhook completa; não re-tentar às cegas
-        setError(e?.message || t("payment.errors.cardValidationFailed"));
-        setLoading(false);
+        if (paymentCaptured) {
+          // Dinheiro capturado, reserva pendente — o webhook/sweep completam;
+          // manter o botão bloqueado e dizer a verdade ao hóspede.
+          setError(t("payment.errors.paidAwaitingConfirmation", "Your payment was received. We are confirming your booking — you will get the confirmation by email in a few minutes. Do not pay again."));
+          setLoading(false);
+        } else {
+          // Nada foi cobrado: desbloquear para nova tentativa (antes ficava
+          // um botão vivo mas inerte — auditoria set/2026, H5)
+          setError(e?.message || t("payment.errors.cardValidationFailed"));
+          setLoading(false);
+          submittedRef.current = false;
+        }
       }
       return;
     }
@@ -630,6 +667,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             total={props.total}
             paymentItems={props.paymentItems}
             onSuccess={props.onSuccess}
+            onBeforePay={props.onBeforePay}
           />
         </Elements>
       )}

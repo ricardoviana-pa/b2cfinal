@@ -638,6 +638,16 @@ ${allUrls.join("\n")}
       console.warn("[Recovery] Scheduler not started:", e?.message ?? e);
     }
 
+    // Spec §14: retry persistente de pagamentos capturados sem reserva criada
+    // (o setTimeout do webhook morre num restart; este sweep vive da BD).
+    try {
+      import("../services/checkout-card-charge")
+        .then(({ startCardSettleSweep }) => startCardSettleSweep())
+        .catch((e) => console.warn("[Card2b] Settle sweep not started:", e?.message ?? e));
+    } catch (e: any) {
+      console.warn("[Card2b] Settle sweep not started:", e?.message ?? e);
+    }
+
     // Guesty sync: pull listings (photos, texts, pricing).
     // DISABLED on startup to prevent OAuth rate-limit exhaustion during deploys.
     // Static fallback JSON (auto-committed to GitHub by previous syncs) covers the gap.

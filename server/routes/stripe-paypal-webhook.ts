@@ -109,6 +109,18 @@ export function registerStripePayPalWebhookRoute(app: Express): void {
             paymentIntentId: pi.id,
             error: err.message,
           });
+          // Spec §14: dinheiro capturado sem reserva criada nunca fica só no log
+          import("../services/transactional-email")
+            .then(({ sendOpsAlert }) =>
+              sendOpsAlert("PAGO SEM RESERVA — PayPal", [
+                `Um pagamento PayPal foi capturado mas a reserva Guesty NÃO ficou criada.`,
+                `PI ${pi.id} · ${(pi.amount / 100).toFixed(2)} ${String(pi.currency).toUpperCase()}`,
+                `Metadata: ${JSON.stringify(pi.metadata ?? {}).slice(0, 400)}`,
+                `Erro: ${err?.message}`,
+                `Verificar Stripe e Guesty; criar a reserva manualmente ou reembolsar.`,
+              ]),
+            )
+            .catch(() => {});
         }
       });
     }

@@ -30,7 +30,10 @@ import {
   fetchReservationPaymentState,
 } from "./guesty-openapi-paypal";
 
-export function breakdownFromIntent(m: any) {
+/** `bedrooms` alinha o preço de limpeza COBRADO com o MOSTRADO: o getExtras
+ *  preça por quartos, e sem este dado uma casa fora da tabela caía no preço
+ *  de 3 quartos na cobrança (auditoria set/2026, H2). */
+export function breakdownFromIntent(m: any, bedrooms: number | null = null) {
   const q = (m?.quote ?? {}) as any;
   return computeChargeBreakdown({
     quoteTotal: Number(q.total ?? 0),
@@ -40,7 +43,7 @@ export function breakdownFromIntent(m: any) {
     extras: (m?.extras as any) ?? null,
     flex: !!m?.flex,
     unitPriceOverrides: (() => {
-      const r = resolveCleaningRates((m as any)?.listingId, null);
+      const r = resolveCleaningRates((m as any)?.listingId, bedrooms);
       return { "daily-cleaning": r.daily, "deep-cleaning": r.deep };
     })(),
   });
@@ -91,7 +94,9 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
   }
   const m = await getBookingIntent(intentId);
   if (!m) throw new Error("intent not found");
-  let b = breakdownFromIntent(m);
+  const { listingFacts } = await import("../routers/checkout");
+  const facts = await listingFacts((m as any).listingId);
+  let b = breakdownFromIntent(m, facts.bedrooms);
 
   // Retomável: a reserva pode já existir de uma tentativa anterior (metadata do
   // PI, ou intent — inclui recuperação manual de um settle que morreu a meio).
@@ -104,7 +109,7 @@ async function settleCardChargeUnlocked(intentId: string, paymentIntentId: strin
     if (pi.currency !== 'eur' || (m as any).paymentIntentId !== pi.id) throw new Error('Payment identity mismatch');
     const trusted = await trustedStayQuote(m as any, typeof pi.created === 'number' ? pi.created * 1000 : Date.now());
     assertQuotedTotal(m.quote, trusted.quote);
-    b = breakdownFromIntent({ ...m, quote: trusted.quote });
+    b = breakdownFromIntent({ ...m, quote: trusted.quote }, facts.bedrooms);
     // Defesa central: o valor cobrado TEM de bater com a matemática do servidor
     if (Math.abs(pi.amount - b.totalCents) > 1) {
       console.error(`[Card2b] AMOUNT MISMATCH intent=${intentId} pi=${pi.amount}c expected=${b.totalCents}c — reserva NÃO criada`);
@@ -428,4 +433,85 @@ export async function refundCheckoutLine(
     lines,
     alreadyRefundedSkus: [...alreadyRefundedSkus, sku],
   };
+}
+
+/* ================================================================
+   PAGO-SEM-RESERVA — alerta + retry persistente (spec §14)
+   "Nunca dinheiro cobrado sem reserva criada": quando um settle falha
+   depois de o PI ter sucedido, a equipa é alertada de imediato e um
+   sweep periódico (estado na BD, sobrevive a restarts) volta a tentar
+   fechar a reserva até 48h.
+   ================================================================ */
+
+const settleAlertAt = new Map<string, number>();
+const SETTLE_ALERT_THROTTLE_MS = 30 * 60 * 1000;
+
+/** Alerta ops de um settle falhado. Nunca lança; throttle 30 min por intent. */
+export async function alertFailedSettle(
+  intentId: string,
+  paymentIntentId: string,
+  reason: string,
+  source: string,
+): Promise<void> {
+  try {
+    const last = settleAlertAt.get(intentId) ?? 0;
+    if (Date.now() - last < SETTLE_ALERT_THROTTLE_MS) return;
+    settleAlertAt.set(intentId, Date.now());
+    const m: any = (await getBookingIntent(intentId)) ?? {};
+    const { sendOpsAlert } = await import("./transactional-email");
+    await sendOpsAlert(`PAGO SEM RESERVA — ${m.propertyName || m.listingId || intentId}`, [
+      `Um pagamento por cartão foi capturado mas a reserva Guesty NÃO ficou criada (via: ${source}).`,
+      `Hóspede: ${[m.guestFirstName, m.guestLastName].filter(Boolean).join(" ") || "?"} · ${m.email || "?"} · ${m.guestPhone || "?"}`,
+      `Estadia: ${m.checkIn || "?"} → ${m.checkOut || "?"} · ${m.guests ?? "?"} hóspedes · total cotado ${m.quote?.total ?? "?"} EUR`,
+      `Intent ${intentId} · PI ${paymentIntentId}`,
+      `Erro: ${reason}`,
+      `O sweep automático continua a tentar fechar a reserva. Se persistir: verificar Stripe e Guesty e criar a reserva manualmente ou reembolsar.`,
+    ]);
+  } catch (err: any) {
+    console.error(`[Card2b] alertFailedSettle falhou: ${err?.message}`);
+  }
+}
+
+let settleSweepStarted = false;
+
+/** Uma passagem: tenta fechar todos os intents com PI pendente. Nunca lança. */
+export async function runCardSettleSweep(): Promise<{ settled: number; checked: number }> {
+  let settled = 0;
+  let checked = 0;
+  try {
+    const { listUnsettledCardIntents } = await import("../db");
+    const candidates = await listUnsettledCardIntents();
+    checked = candidates.length;
+    for (const intent of candidates) {
+      const piId = (intent as any).paymentIntentId as string | null;
+      if (!piId) continue;
+      try {
+        const pi = await getPaymentIntent(piId);
+        // Só interessa o caso dinheiro-capturado; um PI abandonado a meio do
+        // 3DS não é dívida nossa e expira sozinho.
+        if (pi.status !== "succeeded") continue;
+        const r = await settleCardCharge(intent.id, piId);
+        await completeCheckoutIntent(intent.id, r.reservationId, r.confirmationCode);
+        settled++;
+        console.info(`[Card2b] sweep fechou intent ${intent.id} → ${r.confirmationCode}`);
+      } catch (err: any) {
+        console.error(`[Card2b] sweep não fechou intent ${intent.id}: ${err?.message}`);
+        void alertFailedSettle(intent.id, piId, String(err?.message ?? err), "sweep");
+      }
+    }
+  } catch (err: any) {
+    console.warn(`[Card2b] sweep falhou: ${err?.message}`);
+  }
+  return { settled, checked };
+}
+
+/** Sweep de 10 min, arrancado uma vez no boot (fail-soft com BD em baixo). */
+export function startCardSettleSweep(): void {
+  if (settleSweepStarted) return;
+  settleSweepStarted = true;
+  const timer = setInterval(() => void runCardSettleSweep(), 10 * 60 * 1000);
+  timer.unref?.();
+  const first = setTimeout(() => void runCardSettleSweep(), 45 * 1000);
+  first.unref?.();
+  console.info("[Card2b] Sweep de settle agendado (10 min): pagamentos capturados sem reserva são retomados e alertados");
 }
