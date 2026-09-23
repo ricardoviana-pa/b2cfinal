@@ -509,6 +509,14 @@ export interface BECouponInfo {
  * os rates descontados. Cupões vivem no Revenue Management do Guesty.
  * Docs: POST /api/reservations/quotes/{quoteId}/coupons
  */
+/** The quote inside a Guesty BE response, when it carries rate plans (bare or wrapped). */
+function quoteWithRatePlans(resp: any): any | null {
+  const candidates = [resp, resp?.quote, resp?.data, resp?.result, resp?.data?.quote];
+  return (
+    candidates.find((c) => Array.isArray(c?.rates?.ratePlans) && c.rates.ratePlans.length > 0) ?? null
+  );
+}
+
 export async function applyCouponToBEQuote(input: {
   quoteId: string;
   coupons: string[];
@@ -516,9 +524,9 @@ export async function applyCouponToBEQuote(input: {
   checkIn: string;
   checkOut: string;
 }): Promise<BEQuoteResult & { coupons: BECouponInfo[] }> {
-  let quote: any;
+  let posted: any;
   try {
-    quote = await guestyBEClient.request<any>(
+    posted = await guestyBEClient.request<any>(
       "POST",
       `/api/reservations/quotes/${input.quoteId}/coupons`,
       { body: { coupons: input.coupons } },
@@ -531,15 +539,31 @@ export async function applyCouponToBEQuote(input: {
     if (status === 400 || status === 422 || /coupon/i.test(details)) throw new Error("INVALID_COUPON");
     throw new Error(parseBEError(details) || "Unable to apply the promo code.");
   }
+  // A valid code is accepted by Guesty, but the POST response does not always carry the quote's rate
+  // plans in the shape parseBEQuote expects: that raised "No rate plan available for this property"
+  // for every real code (production, 23 Sep 2026). Read the updated quote back, the same GET the
+  // trusted checkout uses before charging, so the total shown is the total that will be charged.
+  let quote = quoteWithRatePlans(posted);
+  if (!quote) {
+    const keys = posted && typeof posted === "object" ? Object.keys(posted).join(",").slice(0, 200) : typeof posted;
+    console.info(`[BE Coupon] POST response without rate plans (keys=${keys}); reading quote ${input.quoteId} again`);
+    try {
+      quote = await guestyBEClient.request<any>("GET", `/api/reservations/quotes/${input.quoteId}`);
+    } catch (error: any) {
+      const status = error?.status ?? 0;
+      console.error(`[BE Coupon] quote re-read FAILED — status=${status}, quoteId=${input.quoteId}`);
+      throw new Error("Unable to apply the promo code.");
+    }
+  }
   const parsed = parseBEQuote(quote, input.listingId, input.checkIn, input.checkOut);
-  const coupons: BECouponInfo[] = Array.isArray(quote.coupons)
-    ? quote.coupons
-        .map((c: any) => ({
-          code: String(c.code ?? c.name ?? ""),
-          type: c.type ? String(c.type) : undefined,
-          adjustment: typeof c.adjustment === "number" ? c.adjustment : undefined,
-        }))
-        .filter((c: BECouponInfo) => c.code)
-    : [];
+  // The applied codes: whichever response lists them (the re-read quote may come back with an empty list).
+  const rawCoupons = [quote?.coupons, posted?.coupons].find((c) => Array.isArray(c) && c.length > 0) ?? [];
+  const coupons: BECouponInfo[] = rawCoupons
+    .map((c: any) => ({
+      code: String(c.code ?? c.name ?? ""),
+      type: c.type ? String(c.type) : undefined,
+      adjustment: typeof c.adjustment === "number" ? c.adjustment : undefined,
+    }))
+    .filter((c: BECouponInfo) => c.code);
   return { ...parsed, coupons };
 }
