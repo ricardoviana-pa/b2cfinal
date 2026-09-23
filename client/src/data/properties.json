@@ -18936,7 +18936,6 @@
         "Disabled parking spot",
         "Dishes and silverware",
         "Dishwasher",
-        "Dryer",
         "Dryer in common space",
         "Enhanced cleaning practices",
         "Essentials",
@@ -19516,8 +19515,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 19,
-    "lastModified": "2026-08-24",
-    "contentHash": "138da22a7019a0ac797e44afacd790137ac505b0"
+    "lastModified": "2026-09-23",
+    "contentHash": "c97ae0fb7fbaec5a64bf6235e0b339be06d4fd36"
   },
   {
     "id": "guesty-6aabba70fb0419001219e9a3",
@@ -22257,6 +22256,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Absolutely amazing stay at this beautiful beach house in Viana! The location was perfect, with stunning views, easy access to the beach, and everything we could have asked for to make our stay comfortable and relaxing.\n\nThe house was beautiful, spotless, spacious, and extremely well equipped. You can tell the hosts put a lot of thought into making guests feel welcome. Waking up here and enjoying the views was definitely a highlight of our trip.\n\nThe hosts were incredibly friendly, helpful, and r",
+        "guestDisplayName": "Ryan",
+        "guestName": "Ryan",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-23T15:41:00.873Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "El alojamiento está decorado muy actual y hace que te sientas en casa nada más entrar.Està muy bien equipado y las camas son super cómodas.Ubicado frente el mar,es un lujo hospedarse aqui",
         "guestDisplayName": "Andrea",
         "guestName": "Andrea",
@@ -22537,7 +22571,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 13,
+    "reviewCount": 14,
     "lastModified": "2026-09-21",
     "contentHash": "d2ee21aee228a85229f1944f0d112d90b82e56b5"
   },
@@ -29704,6 +29738,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Perfect location for some active and nice days at the beach or in the city!",
+        "guestDisplayName": "Niklas",
+        "guestName": "Niklas",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-23T07:37:26.893Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Le logement est très bien placé !! Proche des plages, avec possibilité de prendre le bateau pour se rendre dans la ville. Appartement impeccable ! Bien équipé ! Nous gardons l'adresse pour une prochaine fois !!",
         "guestDisplayName": "Ludivine",
         "guestName": "Ludivine",
@@ -29984,7 +30053,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 8,
+    "reviewCount": 9,
     "lastModified": "2026-09-18",
     "contentHash": "e9d4113fed2158e2eee4ccd434abe3b2d9a6ad2b"
   },
