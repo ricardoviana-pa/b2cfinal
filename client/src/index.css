@@ -69,6 +69,9 @@
 
 :root {
   --radius: 0.5rem;
+  /* Altura da PromoBar (announcement bar). O componente define-a quando a
+     barra está visível; o body e o header fixo compensam com ela. */
+  --pa-promobar-h: 0px;
   --background: #FAFAF7;
   --foreground: #1A1A18;
   --card: #FFFFFF;
@@ -145,6 +148,8 @@
     @apply bg-background text-foreground;
     font-family: var(--font-body);
     min-height: 100dvh;
+    /* Espaço para a PromoBar fixa (0 quando não há campanha ativa) */
+    padding-top: var(--pa-promobar-h, 0px);
     /* hidden cria um scroll container e QUEBRA position:sticky em todos os
        descendentes (header do checkout, nav de capítulos). clip corta na
        horizontal sem criar scroll container; o hidden fica como fallback

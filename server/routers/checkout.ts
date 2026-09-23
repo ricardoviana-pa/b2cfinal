@@ -473,6 +473,37 @@ export const checkoutRouter = router({
       return settleCardCharge(input.intentId, input.paymentIntentId);
     }),
 
+  /**
+   * Barra de campanha no topo do site (announcement bar, padrão ecommerce).
+   * Configurável por env no Render sem deploy:
+   *   PROMO_BANNER='{"code":"OUTONO10","until":"2026-10-31","en":"Autumn escape — code {code} for 10% off","pt":"Fuga de outono — código {code} com 10% de desconto"}'
+   * Forma curta: PROMO_BANNER='OUTONO10|10% off with code OUTONO10'
+   * Vazio, inválido ou depois de `until` → sem barra.
+   */
+  promoBanner: publicProcedure.query(() => {
+    const off = { code: null as string | null, texts: {} as Record<string, string> };
+    const raw = (process.env.PROMO_BANNER || "").trim();
+    if (!raw) return off;
+    try {
+      if (raw.startsWith("{")) {
+        const j = JSON.parse(raw) as Record<string, unknown>;
+        const code = String(j.code ?? "").trim();
+        if (!code) return off;
+        if (j.until && Date.now() > new Date(`${String(j.until)}T23:59:59`).getTime()) return off;
+        const texts: Record<string, string> = {};
+        for (const [k, v] of Object.entries(j)) {
+          if (/^[a-z]{2}$/.test(k) && typeof v === "string") texts[k] = v;
+        }
+        return { code, texts };
+      }
+      const [code, ...rest] = raw.split("|");
+      if (!code.trim()) return off;
+      return { code: code.trim(), texts: rest.length ? { en: rest.join("|").trim() } : {} };
+    } catch {
+      return off;
+    }
+  }),
+
   getExtras: publicProcedure
     .input(
       z
