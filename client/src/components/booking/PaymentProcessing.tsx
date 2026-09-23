@@ -12,10 +12,14 @@ export default function PaymentProcessing({
   status,
   failed = false,
   title,
+  action,
 }: {
   status: string;
   failed?: boolean;
   title?: string;
+  /** Saída acionável (ex.: voltar ao checkout) — um estado terminal nunca
+   *  pode ser um beco sem saída (auditoria set/2026, H9). */
+  action?: React.ReactNode;
 }) {
   const { t } = useTranslation();
   return (
@@ -39,6 +43,8 @@ export default function PaymentProcessing({
             {title || (failed ? t("paymentReturn.failedTitle") : t("paymentReturn.processingTitle"))}
           </h1>
           <p className="body-sm mx-auto max-w-[340px] text-[#6b6860]">{status}</p>
+
+          {action && <div className="mt-6">{action}</div>}
 
           {!failed && (
             <>

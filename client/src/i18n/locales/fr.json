@@ -739,7 +739,14 @@
       "cardValidationFailed": "La validation de la carte a échoué. Veuillez vérifier les détails de votre carte.",
       "couldNotCreatePaymentMethod": "Impossible de créer le mode de paiement. Veuillez réessayer.",
       "contactSupport": "Si vous avez été débité, contactez-nous à reservations@portugalactive.com ou par WhatsApp au +351 927 161 771. N'essayez pas de payer à nouveau.",
-      "paidAwaitingConfirmation": "Votre paiement a bien été reçu. Nous confirmons votre réservation — vous recevrez la confirmation par email dans quelques minutes. Ne payez pas à nouveau."
+      "paidAwaitingConfirmation": "Votre paiement a bien été reçu. Nous confirmons votre réservation — vous recevrez la confirmation par email dans quelques minutes. Ne payez pas à nouveau.",
+      "quoteExpired": "La garantie de prix pour ces dates a expiré. Actualisez le prix et réessayez.",
+      "datesGone": "Ces dates ont été réservées entre-temps. Veuillez choisir d autres dates.",
+      "stillProcessing": "Votre précédente tentative de paiement est encore en cours. Patientez un instant — ne payez pas à nouveau.",
+      "alreadyPaidShort": "Cette réservation est déjà payée. Consultez votre email pour la confirmation.",
+      "saveFailed": "Impossible d enregistrer vos dernières modifications. Vérifiez votre connexion et réessayez.",
+      "network": "Problème de connexion. Vérifiez votre internet et réessayez.",
+      "genericRetry": "Le paiement n a pas pu être finalisé. Réessayez — ou contactez-nous et nous finaliserons votre réservation personnellement."
     },
     "payButton": "Payer {{amount}}",
     "cancelButton": "Annuler",
@@ -749,7 +756,8 @@
     "payWithPaypal": "Payer {{amount}} avec PayPal",
     "preparingKlarna": "Préparation du paiement Klarna…",
     "preparingPaypal": "Préparation du paiement PayPal…",
-    "redirecting": "Redirection…"
+    "redirecting": "Redirection…",
+    "unavailableFallback": "Le paiement en ligne est temporairement indisponible. Réessayez dans quelques minutes, ou contactez notre concierge et nous finaliserons votre réservation personnellement."
   },
   "contact": {
     "heroAlt": "Contacter Portugal Active",
@@ -1477,7 +1485,12 @@
     "notCompleted": "Le paiement n'a pas abouti. Réessayez ou choisissez un autre moyen de paiement.",
     "processingTitle": "Traitement de votre réservation",
     "failedTitle": "Paiement non abouti",
-    "secureNote": "Paiement sécurisé — ne fermez pas cette fenêtre"
+    "secureNote": "Paiement sécurisé — ne fermez pas cette fenêtre",
+    "webhookFallback": "Votre paiement est confirmé. Nous finalisons votre réservation de notre côté — cela prend un instant.",
+    "webhookTimeout": "Votre paiement a été reçu (réf {{ref}}) et votre réservation est en cours de finalisation. Vous recevrez la confirmation par email sous peu — inutile de payer à nouveau.",
+    "backToCheckout": "Retour à votre réservation",
+    "backToHomes": "Voir les maisons",
+    "paidPendingTitle": "Paiement reçu"
   },
   "trust": {
     "secureBooking": "Réservation sécurisée",
@@ -1795,7 +1808,18 @@
     },
     "arrivalAirport": "Aéroport d'arrivée",
     "perCleaning": "par ménage",
-    "perPetStay": "par animal · séjour"
+    "perPetStay": "par animal · séjour",
+    "loadErrorTitle": "Impossible de charger votre réservation",
+    "loadErrorBody": "Cela ressemble à un problème de connexion, pas à un problème avec votre réservation. Vérifiez votre internet et réessayez.",
+    "confirmingPayment": "Paiement reçu — confirmation de votre réservation…",
+    "missing": {
+      "prefix": "Pour payer, il manque :",
+      "name": "vos prénom et nom",
+      "email": "un email valide",
+      "phone": "un téléphone valide",
+      "terms": "accepter les conditions",
+      "quote": "un prix confirmé (actualisez ci-dessus)"
+    }
   },
   "host": {
     "hostedBy": "Vos hôtes : Ricardo & l’équipe Portugal Active",

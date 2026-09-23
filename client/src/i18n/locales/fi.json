@@ -739,7 +739,14 @@
       "cardValidationFailed": "Kortin vahvistus epäonnistui. Tarkista kortin tiedot.",
       "couldNotCreatePaymentMethod": "Maksutapaa ei voitu luoda. Yritä uudelleen.",
       "contactSupport": "Jos maksu veloitettiin, ota yhteyttä osoitteeseen reservations@portugalactive.com tai WhatsAppilla +351 927 161 771. Älä yritä maksaa uudelleen.",
-      "paidAwaitingConfirmation": "Maksusi on vastaanotettu. Vahvistamme varaustasi — saat vahvistuksen sähköpostitse muutamassa minuutissa. Älä maksa uudelleen."
+      "paidAwaitingConfirmation": "Maksusi on vastaanotettu. Vahvistamme varaustasi — saat vahvistuksen sähköpostitse muutamassa minuutissa. Älä maksa uudelleen.",
+      "quoteExpired": "Näiden päivien hintatakuu on vanhentunut. Päivitä hinta ja yritä uudelleen.",
+      "datesGone": "Nämä päivät on varattu sillä välin. Valitse toiset päivät.",
+      "stillProcessing": "Edellinen maksuyrityksesi on vielä käsittelyssä. Odota hetki — älä maksa uudelleen.",
+      "alreadyPaidShort": "Tämä varaus on jo maksettu. Katso vahvistus sähköpostistasi.",
+      "saveFailed": "Emme voineet tallentaa viimeisimpiä muutoksiasi. Tarkista yhteytesi ja yritä uudelleen.",
+      "network": "Yhteysongelma. Tarkista internetyhteytesi ja yritä uudelleen.",
+      "genericRetry": "Maksua ei voitu suorittaa. Yritä uudelleen — tai ota yhteyttä, niin viimeistelemme varauksesi henkilökohtaisesti."
     },
     "payButton": "Maksa {{amount}}",
     "cancelButton": "Peruuta",
@@ -749,7 +756,8 @@
     "payWithPaypal": "Maksa {{amount}} PayPalilla",
     "preparingKlarna": "Valmistellaan Klarna-maksua…",
     "preparingPaypal": "Valmistellaan PayPal-maksua…",
-    "redirecting": "Uudelleenohjataan…"
+    "redirecting": "Uudelleenohjataan…",
+    "unavailableFallback": "Verkkomaksu ei ole tilapäisesti käytettävissä. Yritä uudelleen muutaman minuutin kuluttua tai ota yhteyttä conciergeemme."
   },
   "contact": {
     "heroAlt": "Ota yhteyttä Portugal Activeen",
@@ -1477,7 +1485,12 @@
     "notCompleted": "Maksua ei suoritettu loppuun. Yritä uudelleen tai valitse toinen maksutapa.",
     "processingTitle": "Varaustasi käsitellään",
     "failedTitle": "Maksua ei suoritettu",
-    "secureNote": "Turvallinen maksu — älä sulje tätä ikkunaa"
+    "secureNote": "Turvallinen maksu — älä sulje tätä ikkunaa",
+    "webhookFallback": "Maksusi on vahvistettu. Viimeistelemme varaustasi — tämä kestää hetken.",
+    "webhookTimeout": "Maksusi on vastaanotettu (viite {{ref}}) ja varaustasi viimeistellään taustalla. Saat vahvistuksen sähköpostitse pian — sinun ei tarvitse maksaa uudelleen.",
+    "backToCheckout": "Takaisin varaukseesi",
+    "backToHomes": "Selaa koteja",
+    "paidPendingTitle": "Maksu vastaanotettu"
   },
   "trust": {
     "secureBooking": "Turvallinen varaus",
@@ -1795,7 +1808,18 @@
     },
     "arrivalAirport": "Saapumislentokenttä",
     "perCleaning": "per siivous",
-    "perPetStay": "per lemmikki · majoitus"
+    "perPetStay": "per lemmikki · majoitus",
+    "loadErrorTitle": "Emme voineet ladata varaustasi",
+    "loadErrorBody": "Tämä näyttää yhteysongelmalta, ei varauksesi ongelmalta. Tarkista internetyhteytesi ja yritä uudelleen.",
+    "confirmingPayment": "Maksu vastaanotettu — vahvistetaan varaustasi…",
+    "missing": {
+      "prefix": "Maksamiseen tarvitaan vielä:",
+      "name": "etu- ja sukunimesi",
+      "email": "kelvollinen sähköposti",
+      "phone": "kelvollinen puhelinnumero",
+      "terms": "ehtojen hyväksyminen",
+      "quote": "vahvistettu hinta (päivitä yllä)"
+    }
   },
   "host": {
     "hostedBy": "Isäntinänne Ricardo & Portugal Active -tiimi",

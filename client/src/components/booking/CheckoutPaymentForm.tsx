@@ -155,7 +155,33 @@ interface CheckoutPaymentFormProps {
    *  cobrança — o servidor cobra o que está na BD, não o que está no ecrã.
    *  Se falhar, o pagamento aborta (auditoria set/2026, H3). */
   onBeforePay?: () => Promise<void>;
+  /** Servidor recusou por quote expirada — o CheckoutPage acende o banner de refresh */
+  onQuoteExpired?: () => void;
 }
+
+/** H6 (auditoria set/2026): o servidor fala inglês técnico ("PI pi_… not
+ *  succeeded", "quote expired; refresh…") e isso chegava cru ao hóspede nas
+ *  9 línguas. Mapear as mensagens conhecidas para copy traduzida; o resto cai
+ *  numa genérica com caminho de saída. */
+function humanPaymentError(e: unknown, t: any): string {
+  const msg = String((e as { message?: unknown })?.message ?? "");
+  if (/quote expired|refresh your dates|refresh the price/i.test(msg))
+    return t("payment.errors.quoteExpired", "The price hold for these dates has expired. Refresh the price and try again.");
+  if (/dates no longer available/i.test(msg))
+    return t("payment.errors.datesGone", "These dates were booked in the meantime. Please choose different dates.");
+  if (/still processing/i.test(msg))
+    return t("payment.errors.stillProcessing", "Your previous payment attempt is still processing. Please wait a moment — do not pay again.");
+  if (/already paid/i.test(msg))
+    return t("payment.errors.alreadyPaidShort", "This booking is already paid. Check your email for the confirmation.");
+  if (/could not be saved/i.test(msg))
+    return t("payment.errors.saveFailed", "We could not save your latest changes. Check your connection and try again.");
+  if (/fetch|network|failed to load/i.test(msg))
+    return t("payment.errors.network", "Connection problem. Check your internet and try again.");
+  return t("payment.errors.genericRetry", "The payment could not be completed. Please try again — or contact us and we will finish your booking personally.");
+}
+
+const isQuoteExpiredError = (e: unknown) =>
+  /quote expired|refresh your dates|refresh the price/i.test(String((e as { message?: unknown })?.message ?? ""));
 
 /* ════════════════════════════════════════════════════════════════
    Bloco 3 — Apple Pay / Google Pay via ExpressCheckoutElement.
@@ -172,6 +198,7 @@ function ExpressWalletInner({
   paymentItems,
   onSuccess,
   onBeforePay,
+  onQuoteExpired,
 }: {
   intentId: string;
   listingId: string;
@@ -179,6 +206,7 @@ function ExpressWalletInner({
   paymentItems?: Array<Record<string, unknown>>;
   onSuccess: (confirmationCode: string, reservationId?: string) => void;
   onBeforePay?: () => Promise<void>;
+  onQuoteExpired?: () => void;
 }) {
   const { t } = useTranslation();
   const stripe = useStripe();
@@ -250,7 +278,8 @@ function ExpressWalletInner({
       } else {
         // Nada foi cobrado: desbloquear para nova tentativa (antes ficava um
         // botão vivo mas inerte — auditoria set/2026, H5)
-        setError(e?.message || t("payment.errors.cardValidationFailed"));
+        if (isQuoteExpiredError(e)) onQuoteExpired?.();
+        setError(humanPaymentError(e, t));
         processingRef.current = false;
       }
     }
@@ -306,6 +335,7 @@ function PaymentFormInner({
   destination,
   paymentItems,
   onBeforePay,
+  onQuoteExpired,
 }: Omit<CheckoutPaymentFormProps, "currency">) {
   const { t, i18n } = useTranslation();
   const stripe = useStripe();
@@ -400,7 +430,8 @@ function PaymentFormInner({
         } else {
           // Nada foi cobrado: desbloquear para nova tentativa (antes ficava
           // um botão vivo mas inerte — auditoria set/2026, H5)
-          setError(e?.message || t("payment.errors.cardValidationFailed"));
+          if (isQuoteExpiredError(e)) onQuoteExpired?.();
+          setError(humanPaymentError(e, t));
           setLoading(false);
           submittedRef.current = false;
         }
@@ -648,7 +679,16 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
   }
 
   if (!stripeConfig?.publishableKey || !stripePromise) {
-    return null;
+    // M6 (auditoria set/2026): antes isto era `null` — área de pagamento em
+    // branco, sem explicação. O hóspede merece saber e ter uma saída.
+    return (
+      <div className="flex items-start gap-2 p-4 bg-[#F5F1EB] border border-[#E8E4DC] rounded-md">
+        <span className="text-[#8B7355] mt-0.5 shrink-0" aria-hidden>&#9888;</span>
+        <p className="text-sm leading-relaxed text-[#1A1A18]">
+          {t("payment.unavailableFallback", "Online payment is temporarily unavailable. Please try again in a few minutes, or contact our concierge and we will complete your booking personally.")}
+        </p>
+      </div>
+    );
   }
 
   const nameParts = props.guestName.trim().split(/\s+/);
@@ -668,6 +708,7 @@ export default function CheckoutPaymentForm(props: CheckoutPaymentFormProps) {
             paymentItems={props.paymentItems}
             onSuccess={props.onSuccess}
             onBeforePay={props.onBeforePay}
+            onQuoteExpired={props.onQuoteExpired}
           />
         </Elements>
       )}

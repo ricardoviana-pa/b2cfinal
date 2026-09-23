@@ -739,7 +739,14 @@
       "cardValidationFailed": "Kortvalidering misslyckades. Kontrollera dina kortuppgifter.",
       "couldNotCreatePaymentMethod": "Kunde inte skapa betalningsmetod. Försök igen.",
       "contactSupport": "Om beloppet har dragits, kontakta oss på reservations@portugalactive.com eller WhatsApp +351 927 161 771. Försök inte betala igen.",
-      "paidAwaitingConfirmation": "Din betalning har tagits emot. Vi bekräftar din bokning — du får bekräftelsen via e-post inom några minuter. Betala inte igen."
+      "paidAwaitingConfirmation": "Din betalning har tagits emot. Vi bekräftar din bokning — du får bekräftelsen via e-post inom några minuter. Betala inte igen.",
+      "quoteExpired": "Prisgarantin för dessa datum har gått ut. Uppdatera priset och försök igen.",
+      "datesGone": "Dessa datum har bokats under tiden. Välj andra datum.",
+      "stillProcessing": "Ditt tidigare betalningsförsök behandlas fortfarande. Vänta en stund — betala inte igen.",
+      "alreadyPaidShort": "Denna bokning är redan betald. Kolla din e-post för bekräftelsen.",
+      "saveFailed": "Vi kunde inte spara dina senaste ändringar. Kontrollera din anslutning och försök igen.",
+      "network": "Anslutningsproblem. Kontrollera ditt internet och försök igen.",
+      "genericRetry": "Betalningen kunde inte slutföras. Försök igen — eller kontakta oss så slutför vi din bokning personligen."
     },
     "payButton": "Betala {{amount}}",
     "cancelButton": "Avbryt",
@@ -749,7 +756,8 @@
     "payWithPaypal": "Betala {{amount}} med PayPal",
     "preparingKlarna": "Förbereder Klarna-betalning…",
     "preparingPaypal": "Förbereder PayPal-betalning…",
-    "redirecting": "Omdirigerar…"
+    "redirecting": "Omdirigerar…",
+    "unavailableFallback": "Onlinebetalning är tillfälligt otillgänglig. Försök igen om några minuter, eller kontakta vår concierge så slutför vi din bokning personligen."
   },
   "contact": {
     "heroAlt": "Kontakta Portugal Active",
@@ -1477,7 +1485,12 @@
     "notCompleted": "Betalningen slutfördes inte. Försök igen eller välj en annan betalningsmetod.",
     "processingTitle": "Din bokning behandlas",
     "failedTitle": "Betalningen slutfördes inte",
-    "secureNote": "Säker betalning — stäng inte det här fönstret"
+    "secureNote": "Säker betalning — stäng inte det här fönstret",
+    "webhookFallback": "Din betalning är bekräftad. Vi slutför din bokning på vår sida — det tar en stund.",
+    "webhookTimeout": "Din betalning har tagits emot (ref {{ref}}) och din bokning slutförs i bakgrunden. Du får bekräftelsen via e-post inom kort — du behöver inte betala igen.",
+    "backToCheckout": "Tillbaka till din bokning",
+    "backToHomes": "Se hem",
+    "paidPendingTitle": "Betalning mottagen"
   },
   "trust": {
     "secureBooking": "Säker bokning",
@@ -1795,7 +1808,18 @@
     },
     "arrivalAirport": "Ankomstflygplats",
     "perCleaning": "per städning",
-    "perPetStay": "per husdjur · vistelse"
+    "perPetStay": "per husdjur · vistelse",
+    "loadErrorTitle": "Vi kunde inte ladda din bokning",
+    "loadErrorBody": "Det verkar vara ett anslutningsproblem, inte ett problem med din bokning. Kontrollera ditt internet och försök igen.",
+    "confirmingPayment": "Betalning mottagen — bekräftar din bokning…",
+    "missing": {
+      "prefix": "För att betala saknas:",
+      "name": "ditt för- och efternamn",
+      "email": "en giltig e-post",
+      "phone": "ett giltigt telefonnummer",
+      "terms": "att godkänna villkoren",
+      "quote": "ett bekräftat pris (uppdatera ovan)"
+    }
   },
   "host": {
     "hostedBy": "Värdar: Ricardo & Portugal Active-teamet",

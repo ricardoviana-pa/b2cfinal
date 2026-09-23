@@ -350,6 +350,18 @@ export default function CheckoutPage() {
     }
   }, [intent, intentQuery.data?.expired]);
 
+  // H7 (auditoria set/2026): a expiração era avaliada só no load — quem ficava
+  // na página via o erro ao clicar Pagar. Um timer acende o banner de refresh
+  // no MOMENTO em que a quote morre.
+  useEffect(() => {
+    const expMs = intent?.expiresAt ? new Date(intent.expiresAt as any).getTime() : NaN;
+    if (!Number.isFinite(expMs)) return;
+    const delta = expMs - Date.now();
+    if (delta <= 0) { setQuoteStale(true); return; }
+    const tm = window.setTimeout(() => setQuoteStale(true), Math.min(delta, 2 ** 31 - 1));
+    return () => window.clearTimeout(tm);
+  }, [intent?.expiresAt]);
+
   // ── Derived pricing (selected rate plan overlays the base quote) ──
   const effective = useMemo(() => {
     if (!quote) return null;
@@ -931,6 +943,35 @@ export default function CheckoutPage() {
     [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, todayTotal, quote?.couponCode, purchaseItems, syncIntent, navigate],
   );
 
+  // M5 (auditoria set/2026): regresso de um redirect 3DS do banco. O Stripe
+  // devolve ?payment_intent&redirect_status; antes a página mostrava o
+  // formulário vazio outra vez e o hóspede não sabia se tinha pago. Agora:
+  // finalizar já (cria a reserva) e seguir para o obrigado; se o finalize
+  // falhar, o webhook/sweep completam — dizer isso em vez de silêncio.
+  const finalize3ds = trpc.checkout.finalizeCardCharge.useMutation();
+  const [redirectFinalizing, setRedirectFinalizing] = useState(false);
+  const redirect3dsHandled = useRef(false);
+  useEffect(() => {
+    if (redirect3dsHandled.current || !intent || isDemo) return;
+    const sp = new URLSearchParams(window.location.search);
+    const piParam = sp.get("payment_intent");
+    const rs = sp.get("redirect_status");
+    if (!piParam || !rs) return;
+    redirect3dsHandled.current = true;
+    // Limpar os params: um refresh não deve repetir o finalize
+    sp.delete("payment_intent"); sp.delete("payment_intent_client_secret"); sp.delete("redirect_status");
+    const qs = sp.toString();
+    window.history.replaceState(null, "", window.location.pathname + (qs ? `?${qs}` : ""));
+    if (rs !== "succeeded" && rs !== "processing") return; // falhou no banco: o form volta, sem cobrança
+    setStep("pay");
+    setRedirectFinalizing(true);
+    finalize3ds
+      .mutateAsync({ intentId: intent.id, paymentIntentId: piParam })
+      .then((fin) => handleCardSuccess(fin.confirmationCode, fin.reservationId))
+      .catch(() => setRedirectFinalizing(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [intent?.id]);
+
   // ── Price-guarantee deadline label ──
   const guaranteeLabel = useMemo(() => {
     if (!intent?.expiresAt) return null;
@@ -968,6 +1009,21 @@ export default function CheckoutPage() {
           </div>
         </div>
         <p className="sr-only">{t("checkout.loading", "Preparing your checkout…")}</p>
+      </div>
+    );
+  }
+  // M9 (auditoria set/2026): um erro de rede/servidor NÃO é um link inválido —
+  // dizê-lo afugentava hóspedes com o checkout perfeitamente válido.
+  if (intentQuery.isError && !isDemo) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center px-6">
+        <div className="max-w-[420px] text-center space-y-4">
+          <h1 className="headline-md text-pa-dark">{t("checkout.loadErrorTitle", "We couldn't load your checkout")}</h1>
+          <p className="body-sm">{t("checkout.loadErrorBody", "This looks like a connection problem, not a problem with your booking. Check your internet and try again.")}</p>
+          <button type="button" onClick={() => intentQuery.refetch()} className="btn-primary inline-flex">
+            {t("bookingWidget.tryAgain", "Try again")}
+          </button>
+        </div>
       </div>
     );
   }
@@ -1753,9 +1809,15 @@ export default function CheckoutPage() {
 
               {/* Payment */}
               <div className="bg-white border border-pa-sand rounded-lg p-5 space-y-4">
-                {termsAccepted && firstName.trim() && lastName.trim() && isValidEmail(email) && isValidPhone(phone) && quoteId && effective && !quoteStale ? (
+                {redirectFinalizing ? (
+                  <div className="flex items-center justify-center gap-3 py-8" role="status">
+                    <Loader2 className="w-5 h-5 animate-spin text-pa-gold" />
+                    <p className="body-sm text-pa-dark">{t("checkout.confirmingPayment", "Payment received — confirming your booking…")}</p>
+                  </div>
+                ) : termsAccepted && firstName.trim() && lastName.trim() && isValidEmail(email) && isValidPhone(phone) && quoteId && effective && !quoteStale ? (
                   <CheckoutPaymentForm
                     onBeforePay={flushPendingSaves}
+                    onQuoteExpired={() => setQuoteStale(true)}
                     listingId={intent.listingId}
                     checkIn={checkIn}
                     checkOut={checkOut}
@@ -1783,8 +1845,24 @@ export default function CheckoutPage() {
                   />
                 ) : (
                   <div className="space-y-3">
-                    {quoteStale && (
+                    {/* H8 (auditoria set/2026): um botão cinzento sem razão é um
+                        beco — dizer exatamente o que falta para pagar. */}
+                    {quoteStale ? (
                       <p className="caption text-pa-earth">{t("checkout.refreshBeforePay", "Refresh the price above before paying.")}</p>
+                    ) : (
+                      (() => {
+                        const missing: string[] = [];
+                        if (!firstName.trim() || !lastName.trim()) missing.push(t("checkout.missing.name", "your first and last name"));
+                        if (!isValidEmail(email)) missing.push(t("checkout.missing.email", "a valid email"));
+                        if (!isValidPhone(phone)) missing.push(t("checkout.missing.phone", "a valid phone number"));
+                        if (!termsAccepted) missing.push(t("checkout.missing.terms", "accepting the terms"));
+                        if (!quoteId || !effective) missing.push(t("checkout.missing.quote", "a confirmed price (refresh above)"));
+                        return missing.length ? (
+                          <p className="caption text-pa-earth" role="status">
+                            {t("checkout.missing.prefix", "To pay, we still need:")} {missing.join(" · ")}
+                          </p>
+                        ) : null;
+                      })()
                     )}
                     <button disabled className="btn-primary w-full opacity-40 cursor-not-allowed">
                       {t("bookingWidget.proceedToPayment", "Proceed to Payment")}

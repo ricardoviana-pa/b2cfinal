@@ -765,7 +765,14 @@
       "cardValidationFailed": "Card validation failed. Please check your card details.",
       "couldNotCreatePaymentMethod": "Could not create payment method. Please try again.",
       "contactSupport": "If you were charged, please contact us at reservations@portugalactive.com or WhatsApp +351 927 161 771. Do not attempt to pay again.",
-      "paidAwaitingConfirmation": "Your payment was received. We are confirming your booking — you will get the confirmation by email in a few minutes. Do not pay again."
+      "paidAwaitingConfirmation": "Your payment was received. We are confirming your booking — you will get the confirmation by email in a few minutes. Do not pay again.",
+      "quoteExpired": "The price hold for these dates has expired. Refresh the price and try again.",
+      "datesGone": "These dates were booked in the meantime. Please choose different dates.",
+      "stillProcessing": "Your previous payment attempt is still processing. Please wait a moment — do not pay again.",
+      "alreadyPaidShort": "This booking is already paid. Check your email for the confirmation.",
+      "saveFailed": "We could not save your latest changes. Check your connection and try again.",
+      "network": "Connection problem. Check your internet and try again.",
+      "genericRetry": "The payment could not be completed. Please try again — or contact us and we will finish your booking personally."
     },
     "payButton": "Pay {{amount}}",
     "cancelButton": "Cancel",
@@ -775,7 +782,8 @@
     "payWithPaypal": "Pay {{amount}} with PayPal",
     "preparingKlarna": "Preparing Klarna payment…",
     "preparingPaypal": "Preparing PayPal payment…",
-    "redirecting": "Redirecting…"
+    "redirecting": "Redirecting…",
+    "unavailableFallback": "Online payment is temporarily unavailable. Please try again in a few minutes, or contact our concierge and we will complete your booking personally."
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",
@@ -1477,7 +1485,12 @@
     "notCompleted": "The payment was not completed. Please try again or choose a different payment method.",
     "processingTitle": "Processing Your Booking",
     "failedTitle": "Payment Not Completed",
-    "secureNote": "Secure payment — please don't close this window"
+    "secureNote": "Secure payment — please don't close this window",
+    "webhookFallback": "Your payment is confirmed. We are finishing your booking on our side — this takes a moment.",
+    "webhookTimeout": "Your payment was received (ref {{ref}}), and your booking is being finished in the background. You will get the confirmation by email shortly — you do not need to pay again.",
+    "backToCheckout": "Back to your checkout",
+    "backToHomes": "Browse homes",
+    "paidPendingTitle": "Payment received"
   },
   "trust": {
     "secureBooking": "Secure booking",
@@ -1795,7 +1808,18 @@
     },
     "arrivalAirport": "Arrival airport",
     "perCleaning": "per cleaning",
-    "perPetStay": "per pet · stay"
+    "perPetStay": "per pet · stay",
+    "loadErrorTitle": "We couldn't load your checkout",
+    "loadErrorBody": "This looks like a connection problem, not a problem with your booking. Check your internet and try again.",
+    "confirmingPayment": "Payment received — confirming your booking…",
+    "missing": {
+      "prefix": "To pay, we still need:",
+      "name": "your first and last name",
+      "email": "a valid email",
+      "phone": "a valid phone number",
+      "terms": "accepting the terms",
+      "quote": "a confirmed price (refresh above)"
+    }
   },
   "host": {
     "hostedBy": "Hosted by Ricardo & the Portugal Active team",

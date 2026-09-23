@@ -739,7 +739,14 @@
       "cardValidationFailed": "Kaartvalidatie is mislukt. Controleer uw kaartgegevens.",
       "couldNotCreatePaymentMethod": "Betaalmethode kon niet worden gemaakt. Probeer het opnieuw.",
       "contactSupport": "Als het bedrag is afgeschreven, neem dan contact op via reservations@portugalactive.com of WhatsApp +351 927 161 771. Probeer niet opnieuw te betalen.",
-      "paidAwaitingConfirmation": "Uw betaling is ontvangen. We bevestigen uw boeking — u ontvangt de bevestiging binnen enkele minuten per e-mail. Betaal niet opnieuw."
+      "paidAwaitingConfirmation": "Uw betaling is ontvangen. We bevestigen uw boeking — u ontvangt de bevestiging binnen enkele minuten per e-mail. Betaal niet opnieuw.",
+      "quoteExpired": "De prijsgarantie voor deze data is verlopen. Vernieuw de prijs en probeer het opnieuw.",
+      "datesGone": "Deze data zijn intussen geboekt. Kies andere data.",
+      "stillProcessing": "Uw vorige betaalpoging wordt nog verwerkt. Wacht even — betaal niet opnieuw.",
+      "alreadyPaidShort": "Deze boeking is al betaald. Bekijk uw e-mail voor de bevestiging.",
+      "saveFailed": "We konden uw laatste wijzigingen niet opslaan. Controleer uw verbinding en probeer het opnieuw.",
+      "network": "Verbindingsprobleem. Controleer uw internet en probeer het opnieuw.",
+      "genericRetry": "De betaling kon niet worden voltooid. Probeer het opnieuw — of neem contact met ons op en wij ronden uw boeking persoonlijk af."
     },
     "payButton": "{{amount}} betalen",
     "cancelButton": "Annuleren",
@@ -749,7 +756,8 @@
     "payWithPaypal": "{{amount}} betalen met PayPal",
     "preparingKlarna": "Klarna-betaling wordt voorbereid…",
     "preparingPaypal": "PayPal-betaling wordt voorbereid…",
-    "redirecting": "Doorsturen…"
+    "redirecting": "Doorsturen…",
+    "unavailableFallback": "Online betalen is tijdelijk niet beschikbaar. Probeer het over enkele minuten opnieuw, of neem contact op met onze concierge."
   },
   "contact": {
     "heroAlt": "Contact Portugal Active",
@@ -1477,7 +1485,12 @@
     "notCompleted": "De betaling is niet voltooid. Probeer het opnieuw of kies een andere betaalmethode.",
     "processingTitle": "Uw boeking wordt verwerkt",
     "failedTitle": "Betaling niet voltooid",
-    "secureNote": "Veilige betaling — sluit dit venster niet"
+    "secureNote": "Veilige betaling — sluit dit venster niet",
+    "webhookFallback": "Uw betaling is bevestigd. We ronden uw boeking aan onze kant af — dit duurt even.",
+    "webhookTimeout": "Uw betaling is ontvangen (ref {{ref}}) en uw boeking wordt op de achtergrond afgerond. U ontvangt binnenkort de bevestiging per e-mail — u hoeft niet opnieuw te betalen.",
+    "backToCheckout": "Terug naar uw checkout",
+    "backToHomes": "Bekijk huizen",
+    "paidPendingTitle": "Betaling ontvangen"
   },
   "trust": {
     "secureBooking": "Veilig boeken",
@@ -1795,7 +1808,18 @@
     },
     "arrivalAirport": "Aankomstluchthaven",
     "perCleaning": "per schoonmaak",
-    "perPetStay": "per huisdier · verblijf"
+    "perPetStay": "per huisdier · verblijf",
+    "loadErrorTitle": "We konden uw checkout niet laden",
+    "loadErrorBody": "Dit lijkt een verbindingsprobleem, geen probleem met uw boeking. Controleer uw internet en probeer het opnieuw.",
+    "confirmingPayment": "Betaling ontvangen — boeking wordt bevestigd…",
+    "missing": {
+      "prefix": "Om te betalen ontbreekt nog:",
+      "name": "uw voor- en achternaam",
+      "email": "een geldig e-mailadres",
+      "phone": "een geldig telefoonnummer",
+      "terms": "de voorwaarden accepteren",
+      "quote": "een bevestigde prijs (vernieuw hierboven)"
+    }
   },
   "host": {
     "hostedBy": "Uw hosts: Ricardo & het Portugal Active-team",

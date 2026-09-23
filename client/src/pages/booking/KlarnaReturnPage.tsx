@@ -7,6 +7,8 @@ import { pushPurchaseOnce } from "@/lib/datalayer";
 import { stashThankYou } from "@/lib/booking-api";
 import PaymentProcessing from "@/components/booking/PaymentProcessing";
 
+// Platform Stripe instance (NO stripeAccount — platform key, not per-listing connected account).
+// Klarna PaymentIntents live on the platform account, so we must NOT pass stripeAccount here.
 let platformStripePromise: ReturnType<typeof loadStripe> | null = null;
 function getPlatformStripe(publishableKey: string) {
   if (!platformStripePromise) {
@@ -20,10 +22,12 @@ interface ReturnStatus {
   key: string;
   params?: Record<string, unknown>;
   failed?: boolean;
+  /** Dinheiro capturado, reserva pendente — título próprio, nunca "não concluído" */
+  paidPending?: boolean;
 }
 
 export default function KlarnaReturnPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const search = useSearch();
   const [, navigate] = useLocation();
   const [status, setStatus] = useState<ReturnStatus>({ key: "paymentReturn.verifying" });
@@ -31,6 +35,12 @@ export default function KlarnaReturnPage() {
 
   const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
   const confirmBooking = trpc.booking.confirmKlarnaBooking.useMutation();
+  const utils = trpc.useUtils();
+
+  const params = new URLSearchParams(search);
+  const intentParam = params.get("intent");
+  const lang = (i18n.language || "en").slice(0, 2);
+  const checkoutHref = intentParam ? `/${lang}/checkout/${intentParam}` : `/${lang}/homes`;
 
   useEffect(() => {
     if (processed.current || !stripeConfig?.publishableKey) return;
@@ -38,15 +48,45 @@ export default function KlarnaReturnPage() {
     const params = new URLSearchParams(search);
     const clientSecret = params.get("payment_intent_client_secret");
     const paymentIntentId = params.get("payment_intent");
+    const intentId = params.get("intent");
 
     if (!clientSecret || !paymentIntentId) {
       setStatus({ key: "paymentReturn.missingInfo", failed: true });
       return;
     }
 
+    /** H9: sem sessionStorage (Klarna abriu na app/nova tab) mas com o intent
+     *  no URL, o webhook do servidor fecha a reserva — aqui só se espera por
+     *  ela, perguntando ao intent, e segue-se para o obrigado. */
+    const pollIntentPaid = (piRef: string) => {
+      processed.current = true;
+      setStatus({ key: "paymentReturn.webhookFallback" });
+      let tries = 0;
+      const iv = window.setInterval(async () => {
+        tries++;
+        try {
+          const r = await utils.checkout.getIntent.fetch({ intentId: intentId! });
+          const it: any = r?.intent;
+          if (it?.status === "paid" && it.reservationId) {
+            window.clearInterval(iv);
+            navigate(`/booking/thank-you/${it.reservationId}?method=klarna`);
+            return;
+          }
+        } catch { /* rede — tentar de novo no próximo tick */ }
+        if (tries >= 24) {
+          window.clearInterval(iv);
+          setStatus({ key: "paymentReturn.webhookTimeout", params: { ref: piRef }, failed: true });
+        }
+      }, 5_000);
+    };
+
     const bookingDataRaw = sessionStorage.getItem("klarna_booking_data");
     if (!bookingDataRaw) {
-      setStatus({ key: "paymentReturn.dataLost", params: { ref: paymentIntentId }, failed: true });
+      if (intentId) {
+        pollIntentPaid(paymentIntentId);
+      } else {
+        setStatus({ key: "paymentReturn.dataLost", params: { ref: paymentIntentId }, failed: true });
+      }
       return;
     }
 
@@ -66,11 +106,26 @@ export default function KlarnaReturnPage() {
         return;
       }
 
-      const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
+      let { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
 
       if (!paymentIntent) {
         setStatus({ key: "paymentReturn.verifyFailed", failed: true });
         return;
+      }
+
+      // "processing" não é terminal: o Klarna liquida em segundos — sondar em
+      // vez de girar para sempre (auditoria set/2026, H9).
+      if (paymentIntent.status === "processing") {
+        setStatus({ key: "paymentReturn.stillProcessing" });
+        for (let tries = 0; tries < 24 && paymentIntent.status === "processing"; tries++) {
+          await new Promise((r) => setTimeout(r, 5_000));
+          const again = await stripe.retrievePaymentIntent(clientSecret);
+          if (again.paymentIntent) paymentIntent = again.paymentIntent;
+        }
+        if (paymentIntent.status === "processing") {
+          setStatus({ key: "paymentReturn.webhookTimeout", params: { ref: paymentIntentId }, failed: true });
+          return;
+        }
       }
 
       if (paymentIntent.status === "succeeded") {
@@ -133,15 +188,36 @@ export default function KlarnaReturnPage() {
 
           navigate(`/booking/thank-you/${result.reservationId}?method=klarna`);
         } catch (err: any) {
-          setStatus({ key: "paymentReturn.reservationFailed", params: { ref: paymentIntentId }, failed: true });
+          // Dinheiro capturado, reserva pendente: o webhook do servidor fecha.
+          // Com intent no URL, esperar por ele; sem, dizer a verdade (pago,
+          // em confirmação) em vez de "Payment Not Completed".
+          if (intentId) {
+            processed.current = false;
+            pollIntentPaid(paymentIntentId);
+          } else {
+            setStatus({ key: "paymentReturn.reservationFailed", params: { ref: paymentIntentId }, failed: true, paidPending: true });
+          }
         }
-      } else if (paymentIntent.status === "processing") {
-        setStatus({ key: "paymentReturn.stillProcessing" });
       } else {
         setStatus({ key: "paymentReturn.notCompleted", failed: true });
       }
     });
   }, [stripeConfig?.publishableKey, search]);
 
-  return <PaymentProcessing status={t(status.key, status.params as any) as string} failed={!!status.failed} />;
+  return (
+    <PaymentProcessing
+      status={t(status.key, status.params as any) as string}
+      failed={!!status.failed}
+      title={status.paidPending ? (t("paymentReturn.paidPendingTitle") as string) : undefined}
+      action={
+        status.failed ? (
+          <a href={checkoutHref} className="btn-primary inline-flex px-6">
+            {intentParam
+              ? t("paymentReturn.backToCheckout", "Back to your checkout")
+              : t("paymentReturn.backToHomes", "Browse homes")}
+          </a>
+        ) : undefined
+      }
+    />
+  );
 }

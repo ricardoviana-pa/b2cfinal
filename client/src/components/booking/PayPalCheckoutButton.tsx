@@ -65,7 +65,10 @@ export function PayPalCheckoutButton(props: PayPalCheckoutButtonProps) {
       const stripe = await loadStripe(props.stripePublishableKey);
       if (!stripe) throw new Error("Stripe failed to load");
 
-      const returnUrl = `${window.location.origin}/booking/paypal-return`;
+      // intent no URL de retorno: se o PayPal/Klarna abrir noutra tab ou na app,
+      // o sessionStorage não viaja — o intent permite à return page retomar
+      // via servidor (auditoria set/2026, H9)
+      const returnUrl = `${window.location.origin}/booking/paypal-return${props.intentId ? `?intent=${props.intentId}` : ""}`;
 
       // Persist booking data before redirect so the return page can complete the reservation
       sessionStorage.setItem(

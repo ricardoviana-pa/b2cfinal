@@ -739,7 +739,14 @@
       "cardValidationFailed": "Kartenvalidierung fehlgeschlagen. Bitte überprüfen Sie Ihre Kartendaten.",
       "couldNotCreatePaymentMethod": "Zahlungsmethode konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
       "contactSupport": "Falls der Betrag abgebucht wurde, kontaktieren Sie uns unter reservations@portugalactive.com oder per WhatsApp unter +351 927 161 771. Versuchen Sie nicht, erneut zu zahlen.",
-      "paidAwaitingConfirmation": "Ihre Zahlung ist eingegangen. Wir bestätigen Ihre Buchung — die Bestätigung erhalten Sie in wenigen Minuten per E-Mail. Bitte nicht erneut bezahlen."
+      "paidAwaitingConfirmation": "Ihre Zahlung ist eingegangen. Wir bestätigen Ihre Buchung — die Bestätigung erhalten Sie in wenigen Minuten per E-Mail. Bitte nicht erneut bezahlen.",
+      "quoteExpired": "Die Preisgarantie für diese Daten ist abgelaufen. Aktualisieren Sie den Preis und versuchen Sie es erneut.",
+      "datesGone": "Diese Daten wurden inzwischen gebucht. Bitte wählen Sie andere Daten.",
+      "stillProcessing": "Ihr vorheriger Zahlungsversuch wird noch verarbeitet. Bitte warten Sie kurz — nicht erneut bezahlen.",
+      "alreadyPaidShort": "Diese Buchung ist bereits bezahlt. Die Bestätigung finden Sie in Ihrer E-Mail.",
+      "saveFailed": "Ihre letzten Änderungen konnten nicht gespeichert werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+      "network": "Verbindungsproblem. Prüfen Sie Ihr Internet und versuchen Sie es erneut.",
+      "genericRetry": "Die Zahlung konnte nicht abgeschlossen werden. Versuchen Sie es erneut — oder kontaktieren Sie uns und wir schließen Ihre Buchung persönlich ab."
     },
     "payButton": "{{amount}} zahlen",
     "cancelButton": "Abbrechen",
@@ -749,7 +756,8 @@
     "payWithPaypal": "{{amount}} mit PayPal zahlen",
     "preparingKlarna": "Klarna-Zahlung wird vorbereitet…",
     "preparingPaypal": "PayPal-Zahlung wird vorbereitet…",
-    "redirecting": "Weiterleitung…"
+    "redirecting": "Weiterleitung…",
+    "unavailableFallback": "Die Online-Zahlung ist vorübergehend nicht verfügbar. Versuchen Sie es in einigen Minuten erneut oder kontaktieren Sie unseren Concierge."
   },
   "contact": {
     "heroAlt": "Portugal Active kontaktieren",
@@ -1477,7 +1485,12 @@
     "notCompleted": "Die Zahlung wurde nicht abgeschlossen. Versuchen Sie es erneut oder wählen Sie eine andere Zahlungsmethode.",
     "processingTitle": "Ihre Buchung wird verarbeitet",
     "failedTitle": "Zahlung nicht abgeschlossen",
-    "secureNote": "Sichere Zahlung — bitte schließen Sie dieses Fenster nicht"
+    "secureNote": "Sichere Zahlung — bitte schließen Sie dieses Fenster nicht",
+    "webhookFallback": "Ihre Zahlung ist bestätigt. Wir schließen Ihre Buchung gerade ab — das dauert einen Moment.",
+    "webhookTimeout": "Ihre Zahlung ist eingegangen (Ref {{ref}}) und Ihre Buchung wird im Hintergrund abgeschlossen. Die Bestätigung erhalten Sie in Kürze per E-Mail — bitte nicht erneut bezahlen.",
+    "backToCheckout": "Zurück zu Ihrer Buchung",
+    "backToHomes": "Häuser ansehen",
+    "paidPendingTitle": "Zahlung erhalten"
   },
   "trust": {
     "secureBooking": "Sichere Buchung",
@@ -1795,7 +1808,18 @@
     },
     "arrivalAirport": "Ankunftsflughafen",
     "perCleaning": "pro Reinigung",
-    "perPetStay": "pro Tier · Aufenthalt"
+    "perPetStay": "pro Tier · Aufenthalt",
+    "loadErrorTitle": "Ihr Checkout konnte nicht geladen werden",
+    "loadErrorBody": "Das sieht nach einem Verbindungsproblem aus, nicht nach einem Problem mit Ihrer Buchung. Prüfen Sie Ihr Internet und versuchen Sie es erneut.",
+    "confirmingPayment": "Zahlung erhalten — Buchung wird bestätigt…",
+    "missing": {
+      "prefix": "Zum Bezahlen fehlt noch:",
+      "name": "Ihr Vor- und Nachname",
+      "email": "eine gültige E-Mail",
+      "phone": "eine gültige Telefonnummer",
+      "terms": "die AGB akzeptieren",
+      "quote": "ein bestätigter Preis (oben aktualisieren)"
+    }
   },
   "host": {
     "hostedBy": "Ihre Gastgeber: Ricardo & das Portugal-Active-Team",

@@ -63,7 +63,10 @@ export function KlarnaCheckoutButton(props: KlarnaCheckoutButtonProps) {
       const stripe = await loadStripe(props.stripePublishableKey);
       if (!stripe) throw new Error("Stripe failed to load");
 
-      const returnUrl = `${window.location.origin}/booking/klarna-return`;
+      // intent no URL de retorno: se o PayPal/Klarna abrir noutra tab ou na app,
+      // o sessionStorage não viaja — o intent permite à return page retomar
+      // via servidor (auditoria set/2026, H9)
+      const returnUrl = `${window.location.origin}/booking/klarna-return${props.intentId ? `?intent=${props.intentId}` : ""}`;
 
       sessionStorage.setItem(
         "klarna_booking_data",
