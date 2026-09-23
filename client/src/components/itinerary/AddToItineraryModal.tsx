@@ -4,6 +4,7 @@
    ========================================================================== */
 
 import { useState } from 'react';
+import { openDatePicker } from '@/lib/datePicker';
 import { useTranslation } from 'react-i18next';
 import { X, Plus } from 'lucide-react';
 import { useItinerary } from '@/contexts/ItineraryContext';
@@ -211,9 +212,9 @@ export default function AddToItineraryModal({ product, isOpen, onClose }: Props)
                     value={values[field.key] as string}
                     min={new Date().toISOString().split("T")[0]}
                     onChange={(e) => handleChange(field.key, e.target.value)}
-                    onClick={e => (e.target as HTMLInputElement).showPicker?.()}
+                    onClick={e => openDatePicker(e.currentTarget)}
                     required={field.required}
-                    className="w-full px-3 py-2.5 border border-[#E8E4DC] text-[14px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] transition-colors cursor-pointer"
+                    className="pa-date-hit w-full px-3 py-2.5 border border-[#E8E4DC] text-[14px] text-[#1A1A18] focus:outline-none focus:border-[#8B7355] transition-colors cursor-pointer"
                     style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}
                   />
                 )}

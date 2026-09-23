@@ -1,3 +1,4 @@
+import { accommodationSubtotal } from "@shared/booking-money";
 import { useState, useCallback, useRef, useEffect, useMemo, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { useMeasurementConsent } from "@/hooks/useMeasurementConsent";
@@ -17,7 +18,7 @@ const CheckoutPaymentForm = lazy(() => import("./CheckoutPaymentForm"));
 import PhoneInput from "./PhoneInput";
 import productsData from "@/data/products.json";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
-import { formatEur, formatBookingDate, intlLocale } from "@/lib/format";
+import { formatEur, formatQuotedEur, formatBookingDate, intlLocale } from "@/lib/format";
 
 export interface BookingSelection {
   checkIn: string;
@@ -417,7 +418,7 @@ export default function BookingWidget({
       if (opt) return {
         ...quote,
         nightlyRate: opt.nightlyRate,
-        totalNights: opt.nightlyRate * quote.nights,
+        totalNights: accommodationSubtotal(opt.total, opt.cleaningFee, opt.taxesAndFees ?? 0),
         cleaningFee: opt.cleaningFee,
         taxesAndFees: opt.taxesAndFees ?? 0,
         total: opt.total,
@@ -816,24 +817,24 @@ export default function BookingWidget({
               <p className="eyebrow text-black/30 uppercase tracking-wider">{t("bookingWidget.priceSummary", { defaultValue: "Price summary" })}</p>
               <div className="space-y-1.5">
                 <div className="flex justify-between body-sm text-inherit">
-                  <span className="text-black/50">{formatEur(successQuote.nightlyRate, lang)} x {successQuote.nights} {t("bookingWidget.nightsLabel", "nights")}</span>
-                  <span className="text-black tabular-nums">{formatEur(successQuote.totalNights, lang)}</span>
+                  <span className="text-black/50">{successQuote.nights} {t("bookingWidget.nightsLabel", "nights")}</span>
+                  <span className="text-black tabular-nums">{formatQuotedEur(successQuote.totalNights, lang)}</span>
                 </div>
                 {successQuote.cleaningFee > 0 && (
                   <div className="flex justify-between body-sm text-inherit">
                     <span className="text-black/50">{t("property.cleaningFee")}</span>
-                    <span className="text-black tabular-nums">{formatEur(successQuote.cleaningFee, lang)}</span>
+                    <span className="text-black tabular-nums">{formatQuotedEur(successQuote.cleaningFee, lang)}</span>
                   </div>
                 )}
                 {(successQuote.taxesAndFees ?? 0) > 0 && (
                   <div className="flex justify-between body-sm text-inherit">
                     <span className="text-black/50">{t("bookingWidget.taxesAndFees", "Taxes & fees")}</span>
-                    <span className="text-black tabular-nums">{formatEur(successQuote.taxesAndFees!, lang)}</span>
+                    <span className="text-black tabular-nums">{formatQuotedEur(successQuote.taxesAndFees!, lang)}</span>
                   </div>
                 )}
                 <div className="border-t border-black/10 pt-2 flex justify-between">
                   <span className="body-sm text-black font-medium">{t("property.total")}</span>
-                  <span className="body-lg text-black font-medium tabular-nums">{formatEur(successQuote.total, lang)}</span>
+                  <span className="body-lg text-black font-medium tabular-nums">{formatQuotedEur(successQuote.total, lang)}</span>
                 </div>
               </div>
               {/* Cancellation policy */}
@@ -899,15 +900,12 @@ export default function BookingWidget({
           <>
             <div className="flex items-baseline gap-2">
               <span className="text-[32px] font-light tracking-tight text-black tabular-nums">
-                {formatEur(effectiveQuote.total, lang)}
+                {formatQuotedEur(effectiveQuote.total, lang)}
               </span>
               <span className="body-sm text-black/40 font-normal">{t("property.totalLabel")}</span>
             </div>
             <p className="body-sm text-black/50 mt-1 tracking-wide">
-              {t("bookingWidget.nightsLine", {
-                count: effectiveQuote.nights,
-                rate: formatEur(effectiveQuote.nightlyRate, lang),
-              })}
+              {effectiveQuote.nights} {t("bookingWidget.nightsLabel", "nights")}
             </p>
           </>
         ) : loading && checkIn && checkOut ? (
@@ -1198,20 +1196,20 @@ export default function BookingWidget({
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="body-sm text-black/50">
-                      {formatEur(effectiveQuote.nightlyRate, lang)} x {effectiveQuote.nights} {t("bookingWidget.nightsLabel", "nights")}
+                      {effectiveQuote.nights} {t("bookingWidget.nightsLabel", "nights")}
                     </span>
-                    <span className="body-sm text-black tabular-nums">{formatEur(effectiveQuote.totalNights, lang)}</span>
+                    <span className="body-sm text-black tabular-nums">{formatQuotedEur(effectiveQuote.totalNights, lang)}</span>
                   </div>
                   {effectiveQuote.cleaningFee > 0 && (
                     <div className="flex justify-between items-center">
                       <span className="body-sm text-black/50">{t("property.cleaningFee")}</span>
-                      <span className="body-sm text-black tabular-nums">{formatEur(effectiveQuote.cleaningFee, lang)}</span>
+                      <span className="body-sm text-black tabular-nums">{formatQuotedEur(effectiveQuote.cleaningFee, lang)}</span>
                     </div>
                   )}
                   {(effectiveQuote.taxesAndFees ?? 0) > 0 && (
                     <div className="flex justify-between items-center">
                       <span className="body-sm text-black/50">{t("bookingWidget.taxesAndFees", "Taxes & fees")}</span>
-                      <span className="body-sm text-black tabular-nums">{formatEur(effectiveQuote.taxesAndFees!, lang)}</span>
+                      <span className="body-sm text-black tabular-nums">{formatQuotedEur(effectiveQuote.taxesAndFees!, lang)}</span>
                     </div>
                   )}
                 </div>
@@ -1219,7 +1217,7 @@ export default function BookingWidget({
                 <div className="border-t border-black/10 pt-3 flex justify-between items-baseline">
                   <span className="body-sm font-medium text-black">{t("property.total")}</span>
                   <span className="text-[24px] font-light text-black tabular-nums tracking-tight">
-                    {formatEur(effectiveQuote.total, lang)}
+                    {formatQuotedEur(effectiveQuote.total, lang)}
                   </span>
                 </div>
                 {selectedUpsells.size > 0 && (
@@ -1306,10 +1304,10 @@ export default function BookingWidget({
                           )}
                         </div>
                         <div className="text-right shrink-0">
-                          <span className="body-sm text-black font-medium whitespace-nowrap tabular-nums">{formatEur(opt.total, lang)}</span>
+                          <span className="body-sm text-black font-medium whitespace-nowrap tabular-nums">{formatQuotedEur(opt.total, lang)}</span>
                           {savings > 0 && (
                             <p className="caption text-pa-gold font-medium mt-0.5">
-                              {t("bookingWidget.save", { defaultValue: "Save" })} {formatEur(savings, lang)}
+                              {t("bookingWidget.save", { defaultValue: "Save" })} {formatQuotedEur(savings, lang)}
                             </p>
                           )}
                         </div>
@@ -1364,7 +1362,7 @@ export default function BookingWidget({
                   quote?.quoteId &&
                   !(quote?.quoteCreatedAt && Date.now() - quote.quoteCreatedAt > QUOTE_EXPIRY_MS)
                 ) {
-                  const base = quote;
+                  const base = effectiveQuote ?? quote;
                   createIntent
                     .mutateAsync({
                       listingId: guestyId,
@@ -1473,7 +1471,7 @@ export default function BookingWidget({
                    "e pagar" aqui mente e o valor final depende da tarifa/extras */
                 <>{t("bookingWidget.reserve", "Reserve")}</>
               ) : (
-                <>{t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatEur(effectiveQuote.total, lang)}</>
+                <>{t("bookingWidget.reserveAndPay", "Reserve & Pay")} {formatQuotedEur(effectiveQuote.total, lang)}</>
               )}
             </button>
 
@@ -1551,7 +1549,7 @@ export default function BookingWidget({
                   <p className="caption text-black/50">
                     {formatBookingDate(checkIn, lang)} → {formatBookingDate(checkOut, lang)} · {effectiveQuote?.nights || nights} {t("bookingWidget.nightsLabel", "nights")} · {guests} {t("booking.guestsLabel", "guests")}
                   </p>
-                  <p className="body-sm text-black font-medium tabular-nums">{t("property.total")}: {formatEur(effectiveQuote?.total ?? quote.total, lang)}</p>
+                  <p className="body-sm text-black font-medium tabular-nums">{t("property.total")}: {formatQuotedEur(effectiveQuote?.total ?? quote.total, lang)}</p>
                   <p className="caption text-black/30">{guestFirstName} {guestLastName} · {guestEmail}</p>
                 </div>
                 <Suspense fallback={<div className="flex items-center justify-center py-10"><Loader2 className="w-5 h-5 animate-spin text-black/40" /></div>}>

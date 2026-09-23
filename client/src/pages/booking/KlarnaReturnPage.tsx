@@ -31,7 +31,6 @@ export default function KlarnaReturnPage() {
 
   const { data: stripeConfig } = trpc.booking.getStripeConfig.useQuery();
   const confirmBooking = trpc.booking.confirmKlarnaBooking.useMutation();
-  const updateIntent = trpc.checkout.updateIntent.useMutation();
 
   useEffect(() => {
     if (processed.current || !stripeConfig?.publishableKey) return;
@@ -82,6 +81,8 @@ export default function KlarnaReturnPage() {
             ...bookingData,
           });
 
+          const totalPaidCents = result.totalPaidCents ?? paymentIntent.amount;
+
           stashThankYou({
             reservationId: result.reservationId,
             confirmationCode: result.confirmationCode,
@@ -98,27 +99,12 @@ export default function KlarnaReturnPage() {
             guestName: `${bookingData.guestFirstName || ""} ${bookingData.guestLastName || ""}`.trim(),
             guestEmail: bookingData.guestEmail || "",
             guestPhone: bookingData.guestPhone || "",
-            totalCents:
-              bookingData.totalAmount != null ? Math.round(Number(bookingData.totalAmount) * 100) : null,
+            totalCents: totalPaidCents,
             currency: (bookingData.currency || "EUR").toUpperCase(),
             couponCode: bookingData.couponCode || undefined,
           });
 
           sessionStorage.removeItem("klarna_booking_data");
-
-          // Checkout 2.0: mark the intent paid (fire-and-forget — never blocks the funnel)
-          if (bookingData.intentId) {
-            updateIntent
-              .mutateAsync({
-                intentId: bookingData.intentId,
-                patch: {
-                  status: "paid",
-                  reservationId: result.reservationId || undefined,
-                  confirmationCode: result.confirmationCode || undefined,
-                },
-              })
-              .catch(() => {/* non-blocking */});
-          }
 
           // Deduped by transaction_id — the thank-you page also reports this
           // purchase, but only the first push wins (pushPurchaseOnce).
@@ -126,14 +112,14 @@ export default function KlarnaReturnPage() {
             event: "purchase",
             ecommerce: {
               transaction_id: result.confirmationCode,
-              value: bookingData.totalAmount,
+              value: totalPaidCents / 100,
               currency: (bookingData.currency || "EUR").toUpperCase(),
               ...(bookingData.couponCode ? { coupon: bookingData.couponCode } : {}),
               items: [{
                 item_id: `PROP-${bookingData.listingId}`,
                 item_name: bookingData.propertyName || "Portugal Active Home",
                 item_category: "villa",
-                price: bookingData.totalAmount,
+                price: totalPaidCents / 100,
                 quantity: 1,
                 checkin_date: bookingData.checkIn,
                 checkout_date: bookingData.checkOut,

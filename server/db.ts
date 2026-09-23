@@ -1,5 +1,5 @@
 import { isPreviewDeployment } from "./lib/preview-isolation";
-import { eq, desc, asc, and, or, like, sql, inArray, isNotNull, gt, lt } from "drizzle-orm";
+import { ne, eq, desc, asc, and, or, like, sql, inArray, isNotNull, gt, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   InsertUser, users,
@@ -840,6 +840,28 @@ export async function getBookingIntent(id: string): Promise<BookingIntent | null
   }
 }
 
+/** Internal receipt lookup. An ambiguous mapping must not choose a payment. */
+export async function getPaidBookingIntentByReservationId(reservationId: string): Promise<BookingIntent | null> {
+  const db = await getDb();
+  if (!db) throw new Error("Receipt database unavailable");
+  const rows = await db.select().from(bookingIntents)
+    .where(and(eq(bookingIntents.reservationId, reservationId), eq(bookingIntents.status, "paid")))
+    .limit(2);
+  if (rows.length > 1) throw new Error("Ambiguous receipt payment");
+  return rows[0] ?? null;
+}
+
+/** Claim the server-confirmed paid transition once across app instances. */
+export async function markBookingIntentPaid(id: string, reservationId: string, confirmationCode: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) throw new Error("Cannot record payment confirmation without database");
+  const result: any = await db.update(bookingIntents)
+    .set({ status: "paid", reservationId, confirmationCode })
+    .where(and(eq(bookingIntents.id, id), ne(bookingIntents.status, "paid")));
+  const affected = Array.isArray(result) ? result[0]?.affectedRows : result?.affectedRows;
+  return (affected ?? 0) > 0;
+}
+
 export async function updateBookingIntent(
   id: string,
   data: Partial<InsertBookingIntent>,
@@ -893,6 +915,17 @@ export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent
   }
 }
 
+export async function listIntentsForRecoveryStay(intent: BookingIntent): Promise<BookingIntent[]> {
+  const db = await getDb();
+  if (!db || !intent.email) return [];
+  return db.select().from(bookingIntents).where(and(
+    sql`lower(trim(${bookingIntents.email})) = ${intent.email.trim().toLowerCase()}`,
+    eq(bookingIntents.listingId, intent.listingId),
+    eq(bookingIntents.checkIn, intent.checkIn),
+    eq(bookingIntents.checkOut, intent.checkOut),
+  ));
+}
+
 /**
  * Bloco 2: marca o opt-out dos lembretes de recuperação. Idempotente — marcar
  * duas vezes é um no-op. Devolve false só quando a DB está indisponível ou o
@@ -935,7 +968,13 @@ export async function claimRecoveryStage(
     const res: any = await db
       .update(bookingIntents)
       .set({ recoveryStage: toStage })
-      .where(and(eq(bookingIntents.id, id), eq(bookingIntents.recoveryStage, fromStage)));
+      .where(and(
+        eq(bookingIntents.id, id), eq(bookingIntents.recoveryStage, fromStage),
+        inArray(bookingIntents.status, ['draft', 'contact_captured', 'payment_pending']),
+        eq(bookingIntents.recoveryOptout, false),
+        gt(bookingIntents.expiresAt, new Date()),
+        sql`${bookingIntents.reservationId} IS NULL`,
+      ));
     const affected = Array.isArray(res) ? res[0]?.affectedRows : res?.affectedRows;
     return (affected ?? 0) > 0;
   } catch (error) {

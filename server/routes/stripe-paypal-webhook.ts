@@ -98,6 +98,11 @@ export function registerStripePayPalWebhookRoute(app: Express): void {
             },
           });
 
+          if (meta.intentId) {
+            const { completeCheckoutIntent } = await import('../services/checkout-confirmation');
+            await completeCheckoutIntent(meta.intentId, reservation.reservationId, reservation.confirmationCode);
+          }
+
           console.info(`[StripePayPalWebhook] Reservation ready: ${reservation.reservationId} (${reservation.confirmationCode}) for PI ${pi.id}`);
         } catch (err: any) {
           console.error("[StripePayPalWebhook] CRITICAL: Webhook reservation failed", {

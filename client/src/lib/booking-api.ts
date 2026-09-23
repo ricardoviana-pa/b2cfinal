@@ -171,6 +171,8 @@ export function fetchReservation(reservationId: string) {
     guestEmail?: string;
     guestPhone?: string;
     totalCents: number | null;
+    totalPaidCents: number | null;
+    accommodationCents?: number | null;
     nightlyRateCents?: number | null;
     nights?: number | null;
     cleaningFeeCents?: number | null;

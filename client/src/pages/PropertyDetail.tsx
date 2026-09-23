@@ -31,7 +31,7 @@ import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 import { trpc } from '@/lib/trpc';
 import { pushEcommerce } from '@/lib/datalayer';
 import type { BookingSelection } from '@/components/booking/BookingWidget';
-import { formatEur, formatCurrency, formatBookingDate, getDisplayName, intlLocale } from '@/lib/format';
+import { formatQuotedEur, formatBookingDate, getDisplayName, intlLocale } from '@/lib/format';
 import {
   StructuredData,
   buildVacationRentalSchema,
@@ -817,7 +817,7 @@ export default function PropertyDetail() {
       basePrice: (property?.priceFrom as number) || undefined,
       tripwixUid,
     },
-    { enabled: !!property?.guestyId || !!tripwixUid, staleTime: 8 * 60 * 60 * 1000 },
+    { enabled: !!property?.guestyId || !!tripwixUid, staleTime: 60_000 },
   );
   const relatedProperties = useMemo(() => {
     if (!property || !allPropsData) return [];
@@ -1668,7 +1668,7 @@ export default function PropertyDetail() {
           <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0">
               <p className="body-sm text-pa-dark font-medium">
-                {bookingSelection?.total ? (property.source === 'tripwix' ? formatCurrency(bookingSelection.total, { locale: intlLocale(i18n.language) }) : formatEur(bookingSelection.total, i18n.language)) : (bookingSelection?.checkIn || initialCheckin) && (bookingSelection?.checkOut || initialCheckout) ? t('conversion.datesSelected') : t('property.selectDatesForPrice')}
+                {bookingSelection?.total ? formatQuotedEur(bookingSelection.total, i18n.language) : (bookingSelection?.checkIn || initialCheckin) && (bookingSelection?.checkOut || initialCheckout) ? t('conversion.datesSelected') : t('property.selectDatesForPrice')}
               </p>
               <p className="caption text-pa-stone flex items-center gap-1 mt-0.5">
                 {bookingSelection?.total ? (bookingSelection.isPartial ? t('partnerBooking.totalSoFar') : t('conversion.stayTotal')) : (bookingSelection?.checkIn || initialCheckin) ? formatBookingDate(bookingSelection?.checkIn || initialCheckin, i18n.language) : t('property.conciergeShort')}

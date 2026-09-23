@@ -1,3 +1,4 @@
+import { formatQuotedMoney } from "@shared/booking-money";
 /**
  * TRANSACTIONAL EMAIL SERVICE
  * Uses Resend when RESEND_API_KEY is set, otherwise logs to console (dev mode).
@@ -6,6 +7,7 @@
 import { Resend } from "resend";
 import { getEmailSigner } from "@shared/concierges";
 import { sanitizePropertyName } from "@shared/displayName";
+import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
 import {
   emailLang,
   skuNameFor,
@@ -127,7 +129,7 @@ export async function sendBookingConfirmation(input: BookingConfirmationData): P
       ${row(T.checkInLabel, formatStayDate(data.checkIn, lang))}
       ${row(T.checkOutLabel, formatStayDate(data.checkOut, lang))}
       ${row(T.guestsLabel, String(data.guests))}
-      ${data.totalPrice ? row(T.totalLabel, `&euro;${Math.round(data.totalPrice).toLocaleString(INTL_TAG[lang])}`, true) : ""}
+      ${data.totalPrice ? row(T.totalLabel, eur(data.totalPrice, lang), true) : ""}
       ${row(T.codeLabel, `<span style="color:${PA.gold};font-weight:600;">${data.confirmationCode}</span>`)}
     </table>
   </td></tr>
@@ -284,7 +286,7 @@ export async function sendBookingFailureAlert(data: BookingFailureAlertData): Pr
 
 <tr><td style="padding:0 0 10px 0;">
   <p style="font-family:Arial,sans-serif;font-size:11px;color:#9E9A90;margin:0;">
-    Timestamp: ${data.timestamp} | Alert sent automatically by dev.portugalactive.com
+    Timestamp: ${data.timestamp} | Alert sent automatically by ${CHECKOUT_EMAIL_ORIGIN}
   </p>
 </td></tr>`);
 
@@ -561,18 +563,9 @@ function formatStayDate(iso: string, lang: EmailLang): string {
   }
 }
 
-/** Whole-euro currency in the site's format (formatEur: rounded, 0 decimals) */
+/** The same quoted amount and cents shown at checkout. */
 function eur(amount: number, lang: EmailLang): string {
-  try {
-    return new Intl.NumberFormat(INTL_TAG[lang] ?? "en-GB", {
-      style: "currency",
-      currency: "EUR",
-      maximumFractionDigits: 0,
-      minimumFractionDigits: 0,
-    }).format(Math.round(amount));
-  } catch {
-    return `€${Math.round(amount)}`;
-  }
+  return formatQuotedMoney(amount, INTL_TAG[lang] ?? "en-GB");
 }
 
 /** "sábado, 12 de julho às 21:45" / "Saturday, 12 July at 21:45" (Lisbon time) */
@@ -629,8 +622,8 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
         <td style="padding:5px 0;font-family:${SANS};font-size:13px;color:${PA.dark};text-align:right;">${value}</td>
       </tr>`;
   let priceLines = "";
-  if (q.nightlyRate && q.nights && q.totalNights) {
-    priceLines += line(`${eur(q.nightlyRate, lang)} × ${q.nights} ${nightsLabel}`, eur(q.totalNights, lang));
+  if (q.nights && q.totalNights != null) {
+    priceLines += line(`${q.nights} ${nightsLabel}`, eur(q.totalNights, lang));
   }
   if (q.cleaningFee && q.cleaningFee > 0) priceLines += line(cleaningLabel, eur(q.cleaningFee, lang));
   if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(taxesLabel, eur(q.taxesAndFees, lang));
@@ -860,8 +853,8 @@ export async function sendCheckoutGuestConfirmation(d: {
       </tr>`;
 
     let priceLines = "";
-    if (q.nightlyRate && q.nights && q.totalNights) {
-      priceLines += line(`${eur(q.nightlyRate, lang)} × ${q.nights} ${C.nightsLabel}`, eur(q.totalNights, lang));
+    if (q.nights && q.totalNights != null) {
+      priceLines += line(`${q.nights} ${C.nightsLabel}`, eur(q.totalNights, lang));
     }
     if (q.cleaningFee && q.cleaningFee > 0) priceLines += line("Service fee", eur(q.cleaningFee, lang));
     if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(C.taxesLabel, eur(q.taxesAndFees, lang));

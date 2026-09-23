@@ -232,6 +232,12 @@ export default function Home() {
     return [...pinned, ...fillers].slice(0, 6);
   }, [properties]);
 
+  const fromListingIds = useMemo(() => featured.filter(p => p.guestyId).map(p => p.guestyId!), [featured]);
+  const { data: featuredFromPrices } = trpc.booking.lowestNightlyBatch.useQuery(
+    { listingIds: fromListingIds },
+    { enabled: fromListingIds.length > 0, staleTime: 5 * 60_000 },
+  );
+
   // Homepage geography block: show only region-hub entries
   // (slug === region) plus any spoke explicitly opted in via `publicHub:
   // true`. City spokes (viana-do-castelo, caminha, esposende, douro)
@@ -512,7 +518,7 @@ export default function Home() {
                   nights={searchNights}
                   liveQuote={homeQuotes[property.slug] || undefined}
                   quoteLoading={homeQuotesLoading}
-                  hidePrice={!hasDates}
+                  fromPrice={property.guestyId ? featuredFromPrices?.[property.guestyId] : undefined}
                   listId="featured_homes"
                   listName="Editor's Picks"
                   itemIndex={index + 1}

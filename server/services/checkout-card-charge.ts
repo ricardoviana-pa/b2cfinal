@@ -1,3 +1,6 @@
+import { withCheckoutChargeLock } from "../lib/checkout-charge-attempt";
+import { trustedStayQuote, assertQuotedTotal } from "./trusted-checkout-quote";
+import { completeCheckoutIntent } from "./checkout-confirmation";
 /**
  * Fase 2b — cobrança única de cartão na PLATAFORMA (decisão 12 jul 2026).
  * O hóspede paga estadia+extras num só PaymentIntent nosso; a reserva Guesty
@@ -73,7 +76,11 @@ export function resolveRatePlanId(intent: any, quote: any): string {
 }
 
 /** Cria a reserva Guesty (só estadia) para um PI card_v2 pago. Idempotente. */
-export async function settleCardCharge(intentId: string, paymentIntentId: string): Promise<{
+export function settleCardCharge(intentId: string, paymentIntentId: string) {
+  return withCheckoutChargeLock(intentId, () => settleCardChargeUnlocked(intentId, paymentIntentId));
+}
+
+async function settleCardChargeUnlocked(intentId: string, paymentIntentId: string): Promise<{
   reservationId: string;
   confirmationCode: string;
 }> {
@@ -84,7 +91,7 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
   }
   const m = await getBookingIntent(intentId);
   if (!m) throw new Error("intent not found");
-  const b = breakdownFromIntent(m);
+  let b = breakdownFromIntent(m);
 
   // Retomável: a reserva pode já existir de uma tentativa anterior (metadata do
   // PI, ou intent — inclui recuperação manual de um settle que morreu a meio).
@@ -94,8 +101,12 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
     pi.metadata.guestyConfirmationCode || (m as any).confirmationCode || "";
 
   if (!reservationId) {
+    if (pi.currency !== 'eur' || (m as any).paymentIntentId !== pi.id) throw new Error('Payment identity mismatch');
+    const trusted = await trustedStayQuote(m as any, typeof pi.created === 'number' ? pi.created * 1000 : Date.now());
+    assertQuotedTotal(m.quote, trusted.quote);
+    b = breakdownFromIntent({ ...m, quote: trusted.quote });
     // Defesa central: o valor cobrado TEM de bater com a matemática do servidor
-    if (Math.abs(pi.amount - b.totalCents) > 100) {
+    if (Math.abs(pi.amount - b.totalCents) > 1) {
       console.error(`[Card2b] AMOUNT MISMATCH intent=${intentId} pi=${pi.amount}c expected=${b.totalCents}c — reserva NÃO criada`);
       throw new Error("charged amount does not match server pricing");
     }
@@ -241,6 +252,7 @@ export async function settleCardCharge(intentId: string, paymentIntentId: string
     reservationId,
     confirmationCode,
   } as any);
+  await completeCheckoutIntent(intentId, reservationId, confirmationCode);
   return { reservationId, confirmationCode };
 }
 

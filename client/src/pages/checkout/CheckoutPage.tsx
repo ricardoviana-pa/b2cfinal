@@ -1,3 +1,4 @@
+import { accommodationSubtotal } from "@shared/booking-money";
 /**
  * Checkout 2.0 — Fase 1 (docs/checkout_spec.md §3, §4, §16).
  *
@@ -32,7 +33,7 @@ import {
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import { usePageMeta } from "@/hooks/usePageMeta";
-import { formatEur, formatBookingDate, intlLocale, sanitizePropertyName } from "@/lib/format";
+import { formatQuotedEur, formatBookingDate, intlLocale, sanitizePropertyName } from "@/lib/format";
 import { cancellationPolicyText, freeCancellationDeadline } from "@/lib/cancellation";
 import { IMAGES, optimizeGuestyImage } from "@/lib/images";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
@@ -145,7 +146,7 @@ function useCountUp(value: number, duration = 400): number {
     const tick = (now: number) => {
       const p = Math.min(1, (now - start) / duration);
       const eased = 1 - Math.pow(1 - p, 3);
-      setDisplay(Math.round(from + (value - from) * eased));
+      setDisplay(p === 1 ? value : Math.round((from + (value - from) * eased) * 100) / 100);
       if (p < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -355,7 +356,7 @@ export default function CheckoutPage() {
     return {
       ...quote,
       nightlyRate: opt.nightlyRate,
-      totalNights: opt.nightlyRate * quote.nights,
+      totalNights: accommodationSubtotal(opt.total, opt.cleaningFee, opt.taxesAndFees ?? 0),
       cleaningFee: opt.cleaningFee,
       taxesAndFees: opt.taxesAndFees ?? 0,
       total: opt.total,
@@ -889,11 +890,8 @@ export default function CheckoutPage() {
         couponCode: quote?.couponCode || undefined,
         purchaseItems,
       });
-      syncIntent({
-        status: "paid",
-        reservationId: reservationId || undefined,
-        confirmationCode,
-      });
+      // The server records payment and reservation confirmation after settlement.
+      void utils.checkout.getIntent.invalidate({ intentId: intent.id });
       navigate(`/booking/thank-you/${rid}?method=card`);
     },
     [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, todayTotal, quote?.couponCode, purchaseItems, syncIntent, navigate],
@@ -983,20 +981,20 @@ export default function CheckoutPage() {
     <div className="space-y-2">
       <div className="flex justify-between body-sm text-inherit">
         <span className="text-pa-earth">
-          {formatEur(effective.nightlyRate, lang)} × {effective.nights} {t("bookingWidget.nightsLabel", "nights")}
+          {effective.nights} {t("bookingWidget.nightsLabel", "nights")}
         </span>
-        <span className="text-pa-dark tabular-nums">{formatEur(effective.totalNights, lang)}</span>
+        <span className="text-pa-dark tabular-nums">{formatQuotedEur(effective.totalNights, lang)}</span>
       </div>
       {effective.cleaningFee > 0 && (
         <div className="flex justify-between body-sm text-inherit">
           <span className="text-pa-earth">{t("property.cleaningFee")}</span>
-          <span className="text-pa-dark tabular-nums">{formatEur(effective.cleaningFee, lang)}</span>
+          <span className="text-pa-dark tabular-nums">{formatQuotedEur(effective.cleaningFee, lang)}</span>
         </div>
       )}
       {effective.taxesAndFees > 0 && (
         <div className="flex justify-between body-sm text-inherit">
           <span className="text-pa-earth">{t("bookingWidget.taxesAndFees", "Taxes & fees")}</span>
-          <span className="text-pa-dark tabular-nums">{formatEur(effective.taxesAndFees, lang)}</span>
+          <span className="text-pa-dark tabular-nums">{formatQuotedEur(effective.taxesAndFees, lang)}</span>
         </div>
       )}
       {/* Receção (escolha obrigatória). Uma receção presencial só mostra valor
@@ -1008,7 +1006,7 @@ export default function CheckoutPage() {
             {receptionChoice.type === "hosted" ? t("checkout.reception.hosted.name") : t("checkout.reception.self.name")}
           </span>
           <span className={cn("tabular-nums", receptionAmt > 0 ? "text-pa-dark" : "text-pa-gold")}>
-            {receptionAmt > 0 ? formatEur(receptionAmt, lang) : t("checkout.included.badge")}
+            {receptionAmt > 0 ? formatQuotedEur(receptionAmt, lang) : t("checkout.included.badge")}
           </span>
         </div>
       )}
@@ -1037,7 +1035,7 @@ export default function CheckoutPage() {
             </span>
           </span>
           <span className={cn("tabular-nums shrink-0", amount === 0 ? "text-pa-gold eyebrow uppercase tracking-[0.08em]" : "text-pa-dark")}>
-            {amount === 0 ? t("checkout.included.badge") : formatEur(amount!, lang)}
+            {amount === 0 ? t("checkout.included.badge") : formatQuotedEur(amount!, lang)}
           </span>
         </div>
       ))}
@@ -1045,12 +1043,12 @@ export default function CheckoutPage() {
       {flexSelected && flexConfig && (
         <div className="flex justify-between body-sm text-inherit checkout-row-in">
           <span className="text-pa-gold font-medium">{t("checkout.flex.title", "Flex — guaranteed rebooking")}</span>
-          <span className="text-pa-dark tabular-nums">{formatEur(flexUnit, lang)}</span>
+          <span className="text-pa-dark tabular-nums">{formatQuotedEur(flexUnit, lang)}</span>
         </div>
       )}
       <div className="flex justify-between items-baseline border-t border-pa-sand pt-2.5">
         <span className="body-sm font-medium text-pa-dark">{t("checkout.todayTotal", "Total today")}</span>
-        <span className="text-[20px] font-light text-pa-dark tabular-nums">{formatEur(animatedTotal, lang)}</span>
+        <span className="text-[20px] font-light text-pa-dark tabular-nums">{formatQuotedEur(animatedTotal, lang)}</span>
       </div>
 
     </div>
@@ -1254,11 +1252,11 @@ export default function CheckoutPage() {
                         </div>
                         <div className="text-right shrink-0">
                           <span className="body-sm text-pa-dark font-medium tabular-nums">
-                            {formatEur(opt.total, lang)}
+                            {formatQuotedEur(opt.total, lang)}
                           </span>
                           {savings > 0 && (
                             <p className="caption text-pa-gold font-medium mt-0.5">
-                              {t("bookingWidget.save", "Save")} {formatEur(savings, lang)}
+                              {t("bookingWidget.save", "Save")} {formatQuotedEur(savings, lang)}
                             </p>
                           )}
                         </div>
@@ -1818,7 +1816,7 @@ export default function CheckoutPage() {
           >
             <div>
               <p className="body-lg font-medium text-pa-dark tabular-nums leading-tight">
-                {effective ? formatEur(animatedTotal, lang) : "—"}
+                {effective ? formatQuotedEur(animatedTotal, lang) : "—"}
               </p>
               <p className="caption text-pa-stone-aa flex items-center gap-1">
                 {t("checkout.viewDetails", "View details")}

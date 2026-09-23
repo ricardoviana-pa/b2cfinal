@@ -8,7 +8,7 @@ import { useState, useCallback, useRef, useMemo } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Users, BedDouble, Bath, Gem, Star, PawPrint } from 'lucide-react';
-import { formatEur, formatCurrency, intlLocale, getDisplayName } from '@/lib/format';
+import { formatEur, formatQuotedEur, getDisplayName } from '@/lib/format';
 import type { Property, Destination } from '@/lib/types';
 import { getPropertyImages, optimizeGuestyImage, guestySrcSet } from '@/lib/images';
 import destinationsData from '@/data/destinations.json';
@@ -69,9 +69,7 @@ export default function PropertyCard({
   const hasPartnerPrice = isPartner && (nights > 0
     ? !!liveQuote && liveQuote.available !== false && liveQuote.total > 0
     : typeof fromPrice === 'number' && fromPrice > 0);
-  const formatTotal = (amount: number) => isPartner
-    ? formatCurrency(amount, { locale: intlLocale(i18n.language) })
-    : formatEur(amount, i18n.language);
+  const formatTotal = (amount: number) => formatQuotedEur(amount, i18n.language);
   // Multi-unit treatment: when this listing is the parent of a curated group,
   // the card swaps name → group name, hides specs/price, and shows a
   // "X units available" line. The PDP route is unchanged — clicking opens the
@@ -81,7 +79,6 @@ export default function PropertyCard({
   const displayName = group?.name ?? getDisplayName(property);
   const [currentImage, setCurrentImage] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
   const touchStartX = useRef(0);
   const touchCurrentX = useRef(0);
 
@@ -97,15 +94,15 @@ export default function PropertyCard({
   const nextImage = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    e.currentTarget.closest('.img-fallback')?.removeAttribute('data-broken');
     setCurrentImage(p => (p + 1) % total);
-    setImageLoaded(false);
   }, [total]);
 
   const prevImage = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    e.currentTarget.closest('.img-fallback')?.removeAttribute('data-broken');
     setCurrentImage(p => (p - 1 + total) % total);
-    setImageLoaded(false);
   }, [total]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -117,12 +114,12 @@ export default function PropertyCard({
     touchCurrentX.current = e.touches[0].clientX;
     if (Math.abs(touchCurrentX.current - touchStartX.current) > 10) setIsDragging(true);
   };
-  const handleTouchEnd = () => {
+  const handleTouchEnd = (e: React.TouchEvent) => {
     const diff = touchStartX.current - touchCurrentX.current;
     if (Math.abs(diff) > 40) {
+      e.currentTarget.removeAttribute('data-broken');
       if (diff > 0) setCurrentImage(p => (p + 1) % total);
       else setCurrentImage(p => (p - 1 + total) % total);
-      setImageLoaded(false);
     }
     setTimeout(() => setIsDragging(false), 50);
   };
@@ -180,6 +177,7 @@ export default function PropertyCard({
         onTouchEnd={handleTouchEnd}
       >
         <img
+          key={rawImages[currentImage]}
           src={optimizeGuestyImage(rawImages[currentImage], 1080)}
           srcSet={guestySrcSet(rawImages[currentImage], [400, 640, 768, 1080])}
           alt={t('property.imageAlt', { name: displayName, current: currentImage + 1, total })}
@@ -189,14 +187,11 @@ export default function PropertyCard({
           fetchPriority="low"
           sizes={imageSizes}
           width={800} height={600}
-          onLoad={() => setImageLoaded(true)}
+          onLoad={e => e.currentTarget.parentElement?.removeAttribute('data-broken')}
           onError={e => { (e.currentTarget.parentElement as HTMLElement)?.setAttribute('data-broken', 'true'); e.currentTarget.style.display = 'none'; }}
         />
 
-        {/* Shimmer skeleton while image loads */}
-        {!imageLoaded && (
-          <div className="absolute inset-0 skeleton-shimmer" />
-        )}
+        {/* Keep the placeholder behind the image: cached images may finish before hydration. */}
 
         {/* Subtle bottom gradient for readability */}
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.08) 0%, transparent 40%)' }} />
@@ -371,11 +366,23 @@ export default function PropertyCard({
                   {t('property.unitsAvailable', { count: group!.unitGuestyIds.length, defaultValue: '{{count}} units available' })}
                 </p>
               ) : nights > 0 && liveQuote && liveQuote.available !== false && liveQuote.total > 0 ? (
-                <p className="text-[0.75rem] text-[#726D63] leading-tight">
-                  {liveQuote.source === 'live' || liveQuote.source === 'cached' || liveQuote.source === 'partner_calendar'
-                    ? t('booking.nights', { count: liveQuote.nights })
-                    : t('property.estimateForNights', { count: liveQuote.nights, defaultValue: 'est. for {{count}} nights' })}
-                </p>
+                <>
+                  {/* The nightly rate sits beside the total, not instead of it.
+                      The total stays the promise; the nightly is what guests
+                      carry over from the OTA listing they just left, and it
+                      makes the total legible — the gap between rate × nights
+                      and the total is exactly the cleaning fee. */}
+                  {liveQuote.nightlyRate > 0 && (
+                    <p className="text-[0.75rem] text-[#726D63] leading-tight">
+                      <span className="text-[#1A1A18]">{formatEur(liveQuote.nightlyRate, i18n.language)}</span> {t('property.perNight')}
+                    </p>
+                  )}
+                  <p className="text-[0.75rem] text-[#726D63] leading-tight">
+                    {liveQuote.source === 'live' || liveQuote.source === 'cached' || liveQuote.source === 'partner_calendar'
+                      ? t('booking.nights', { count: liveQuote.nights })
+                      : t('property.estimateForNights', { count: liveQuote.nights, defaultValue: 'est. for {{count}} nights' })}
+                  </p>
+                </>
               ) : null}
             </div>
           </div>

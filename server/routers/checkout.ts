@@ -10,6 +10,7 @@
  * Security: the intent id is a capability (it goes into resume links and the
  * record carries guest PII), so it is a UUID — never enumerable.
  */
+import { trustedStayQuote, assertQuotedTotal } from "../services/trusted-checkout-quote";
 import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
 import { cardChargeIdempotencyKey, withCheckoutChargeLock } from "../lib/checkout-charge-attempt";
 import { randomUUID } from "crypto";
@@ -41,9 +42,6 @@ import {
   sendCheckoutGuestConfirmation,
 } from "../services/transactional-email";
 import { appendReservationNote } from "../services/guesty-openapi-paypal";
-
-/** Intent (and its resume link) lives as long as the Guesty quote: ~23h. */
-const INTENT_TTL_MS = 23 * 60 * 60 * 1000;
 
 const quoteSnapshotSchema = z.object({
   nightlyRate: z.number(),
@@ -265,6 +263,8 @@ export const checkoutRouter = router({
       }),
     )
     .mutation(async ({ input }) => {
+      const trusted = await trustedStayQuote(input);
+      assertQuotedTotal(input.quote, trusted.quote);
       const id = randomUUID();
       const created = await createBookingIntent({
         id,
@@ -276,11 +276,11 @@ export const checkoutRouter = router({
         checkIn: input.checkIn,
         checkOut: input.checkOut,
         guests: input.guests,
-        ratePlanId: input.ratePlanId,
-        quote: input.quote,
+        ratePlanId: trusted.ratePlanId,
+        quote: trusted.quote,
         status: "draft",
         locale: input.locale,
-        expiresAt: new Date(Date.now() + INTENT_TTL_MS),
+        expiresAt: trusted.expiresAt,
       });
       // null → DB unavailable; the client falls back to the legacy flow
       return { intentId: created };
@@ -331,17 +331,15 @@ export const checkoutRouter = router({
         }),
       }),
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input }) => withCheckoutChargeLock(input.intentId, async () => {
       const current = await getBookingIntent(input.intentId);
       if (!current) return { ok: false };
       // A paid intent is immutable — a resumed capability link (or any UUID
       // holder) must never rewrite a completed booking's record.
       if (current.status === "paid") return { ok: false };
       const patch = { ...input.patch };
-      // "paid" may only be recorded together with a confirmation code
-      // (the legitimate writers — card success + return pages — always send it).
-      if (patch.status === "paid" && !patch.confirmationCode && !current.confirmationCode) {
-        delete patch.status;
+      if (patch.status === "paid" || patch.reservationId || patch.confirmationCode) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Payment confirmation is managed by the server." });
       }
       // Gate Guesty sempre ligado: extras pet nunca persistem numa casa que
       // não aceita animais (defesa contra adulteração/dados desatualizados)
@@ -354,17 +352,13 @@ export const checkoutRouter = router({
       }
       // Requote com quote nova renova a validade do link de retoma (AUDIT)
       const dbPatch: Record<string, unknown> = { ...patch };
-      if (patch.quote && patch.guestyQuoteId) {
-        dbPatch.expiresAt = new Date(Date.now() + INTENT_TTL_MS);
+      if (patch.quote || patch.guestyQuoteId || patch.ratePlanId || patch.checkIn || patch.checkOut || patch.guests) {
+        const trusted = await trustedStayQuote({ ...current, ...patch } as any);
+        Object.assign(dbPatch, { quote: trusted.quote, ratePlanId: trusted.ratePlanId, expiresAt: trusted.expiresAt });
       }
       const ok = await updateBookingIntent(input.intentId, dbPatch as any);
-      // Transicao para paid: ficha de servicos ao CS + manifesto na nota Guesty
-      // (todos os metodos, fire-and-forget)
-      if (ok && patch.status === "paid") {
-        void fireCheckoutPaidEmails({ ...current, ...patch }, input.intentId);
-      }
       return { ok };
-    }),
+    })),
 
   /**
    * Catálogo curado para o passo Personalizar (spec §5). A curadoria é
@@ -388,7 +382,7 @@ export const checkoutRouter = router({
       const mSafe = factsForCharge.pets
         ? m
         : { ...m, extras: ((m as any).extras ?? []).filter((e: any) => !PETS_ONLY_SKUS.includes(e.sku)) };
-      const b = breakdownFromIntent(mSafe);
+      let b = breakdownFromIntent(mSafe);
       if (!Number.isSafeInteger(b.totalCents) || b.totalCents < 100) {
         throw new TRPCError({ code: "PRECONDITION_FAILED", message: "invalid total" });
       }
@@ -416,6 +410,9 @@ export const checkoutRouter = router({
       if (String((m.quote as any)?.currency ?? "EUR").toUpperCase() !== "EUR") {
         throw new TRPCError({ code: "PRECONDITION_FAILED", message: "unsupported quote currency" });
       }
+      const trusted = await trustedStayQuote(m as any);
+      assertQuotedTotal(m.quote, trusted.quote);
+      b = breakdownFromIntent({ ...mSafe, quote: trusted.quote });
       if (priorPi) {
         const { getPaymentIntent, cancelPaymentIntent } = await import("../services/stripe-klarna");
         const prev = await getPaymentIntent(priorPi);

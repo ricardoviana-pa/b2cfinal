@@ -2,6 +2,7 @@ import './setup';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const fake = vi.hoisted(() => ({
+  supplierQuote: vi.fn(), markPaid: vi.fn(),
   intents: new Map<string, any>(), payments: new Map<string, any>(), keys: new Map<string, string>(),
   createIntent: vi.fn(), getIntent: vi.fn(), updateIntent: vi.fn(),
   createPayment: vi.fn(), getPayment: vi.fn(), cancelPayment: vi.fn(), metadata: vi.fn(),
@@ -9,7 +10,10 @@ const fake = vi.hoisted(() => ({
   opsEmail: vi.fn(), guestEmail: vi.fn(), lead: vi.fn(),
 }));
 
+vi.mock('../lib/guesty', () => ({ guestyBEClient: { request: fake.supplierQuote } }));
+
 vi.mock('../db', () => ({
+  markBookingIntentPaid: fake.markPaid,
   createBookingIntent: fake.createIntent, getBookingIntent: fake.getIntent,
   updateBookingIntent: fake.updateIntent, createLead: fake.lead,
   promoteCheckoutLeadToNewsletter: vi.fn(), demoteCheckoutLeadFromNewsletter: vi.fn(),
@@ -42,7 +46,7 @@ const quote = { nightlyRate: 500.5, totalNights: 2002, cleaningFee: 120,
 async function draft() {
   const result = await caller().createIntent({ listingId: 'synthetic-listing',
     propertyName: 'Synthetic test home', propertySlug: 'synthetic-home',
-    guestyQuoteId: 'synthetic-quote', ratePlanId: 'synthetic-flex',
+    guestyQuoteId: 'aaaaaaaaaaaaaaaaaaaaaaaa', ratePlanId: 'synthetic-flex',
     checkIn: '2099-11-10', checkOut: '2099-11-14', guests: 4, locale: 'pt', quote });
   return result.intentId!;
 }
@@ -55,8 +59,17 @@ function savedPayment(intentId: string, overrides: Record<string, unknown> = {})
 }
 
 beforeEach(() => {
-  vi.clearAllMocks(); fake.intents.clear(); fake.payments.clear(); fake.keys.clear();
+  vi.clearAllMocks();
+  fake.supplierQuote.mockImplementation(async () => ({ _id: 'aaaaaaaaaaaaaaaaaaaaaaaa', unitTypeId: 'synthetic-listing',
+    checkInDateLocalized: '2099-11-10', checkOutDateLocalized: '2099-11-14', guestsCount: 4,
+    createdAt: new Date().toISOString(), expiresAt: new Date(Date.now() + 3600000).toISOString(),
+    rates: { ratePlans: [{ ratePlan: { _id: 'synthetic-flex', name: 'Flexible', money: { subTotalPrice: 2147, fareCleaning: 120, currency: 'EUR' } } }] } }));
+  fake.intents.clear(); fake.payments.clear(); fake.keys.clear();
   fake.createIntent.mockImplementation(async (data) => { fake.intents.set(data.id, structuredClone(data)); return data.id; });
+  fake.markPaid.mockImplementation(async (id, reservationId, confirmationCode) => {
+    const m = fake.intents.get(id); if (!m || m.status === 'paid') return false;
+    Object.assign(m, {status:'paid', reservationId, confirmationCode}); return true;
+  });
   fake.getIntent.mockImplementation(async id => structuredClone(fake.intents.get(id) ?? null));
   fake.updateIntent.mockImplementation(async (id, patch) => {
     if (!fake.intents.has(id)) return false;
@@ -216,4 +229,75 @@ describe('synthetic checkout integration — real router and settlement, no prov
     expect(await caller().finalizeCardCharge({ intentId: id, paymentIntentId: pi.id })).toEqual(first);
     expect(fake.reserve).toHaveBeenCalledOnce();
   });
+});
+
+
+describe('server authority before payment', () => {
+  it('rejects a fabricated low stay total at creation', async () => {
+    await expect(caller().createIntent({ listingId: 'synthetic-listing', guestyQuoteId: 'aaaaaaaaaaaaaaaaaaaaaaaa',
+      checkIn:'2099-11-10', checkOut:'2099-11-14', guests:4, ratePlanId:'synthetic-flex', quote:{...quote,total:1} })).rejects.toThrow();
+    expect(fake.createIntent).not.toHaveBeenCalled(); expect(fake.createPayment).not.toHaveBeenCalled();
+  });
+  it('stores supplier amounts when a browser changes quote component fields', async () => {
+    const id = await draft();
+    await caller().updateIntent({ intentId:id, patch:{quote:{...quote,total:1,totalNights:1,cleaningFee:0}} });
+    expect(fake.intents.get(id).quote.total).toBe(2147);
+    expect(fake.intents.get(id).quote.cleaningFee).toBe(120);
+    expect((await caller().createCardCharge({intentId:id})).totalCents).toBe(214700);
+  });
+  it('refuses a new charge if supplier validation is unavailable', async () => {
+    const id = await draft(); fake.supplierQuote.mockRejectedValueOnce(new Error('supplier unavailable'));
+    await expect(caller().createCardCharge({intentId:id})).rejects.toThrow();
+    expect(fake.createPayment).not.toHaveBeenCalled();
+  });
+  it('does not let a browser manufacture paid status or reservation details', async () => {
+    const id = await draft();
+    for (const patch of [{status:'paid',confirmationCode:'fabricated'}, {reservationId:'fabricated'}]) {
+      await expect(caller().updateIntent({intentId:id,patch:patch as any})).rejects.toThrow();
+    }
+    expect(fake.intents.get(id).status).toBe('draft'); expect(fake.guestEmail).not.toHaveBeenCalled();
+  });
+});
+
+
+describe('provider callbacks and server confirmation', () => {
+  it('concurrent settlement callbacks create one reservation and one confirmation', async () => {
+    const id = await draft();
+    await caller().captureLead({ intentId: id, email: 'guest@checkout.invalid', consent: false, locale: 'pt' });
+    const payment = await caller().createCardCharge({intentId:id});
+    fake.payments.get(payment.paymentIntentId).status='succeeded';
+    const results=await Promise.all(Array.from({length:4},()=>caller().finalizeCardCharge({intentId:id,paymentIntentId:payment.paymentIntentId})));
+    expect(new Set(results.map(r=>r.reservationId)).size).toBe(1);
+    expect(fake.reserve).toHaveBeenCalledOnce();
+    await vi.waitFor(()=>expect(fake.guestEmail).toHaveBeenCalledOnce());
+  });
+  it('rejects a payment for a different stored intent attempt', async()=>{
+    const id=await draft();const payment=await caller().createCardCharge({intentId:id});
+    fake.payments.get(payment.paymentIntentId).status='succeeded';
+    fake.intents.get(id).paymentIntentId='pi_other';
+    await expect(caller().finalizeCardCharge({intentId:id,paymentIntentId:payment.paymentIntentId})).rejects.toThrow();
+    expect(fake.reserve).not.toHaveBeenCalled();
+  });
+});
+
+
+describe('supplier rate plan selection',()=>{
+ it('stores and charges the selected plan when it differs from the cheapest plan',async()=>{
+  const original=await fake.supplierQuote();
+  original.rates.ratePlans.push({ratePlan:{_id:'synthetic-nonref',name:'Non Refundable',money:{subTotalPrice:1900,fareCleaning:120,currency:'EUR'}}});
+  fake.supplierQuote.mockResolvedValue(original);
+  const id=await draft();
+  expect(fake.intents.get(id).quote.total).toBe(2147);
+  await caller().updateIntent({intentId:id,patch:{ratePlanId:'synthetic-nonref'}});
+  expect(fake.intents.get(id).quote.total).toBe(1900);
+  expect((await caller().createCardCharge({intentId:id})).totalCents).toBe(190000);
+ });
+ it('uses supplier-applied coupons without trusting a browser discount',async()=>{
+  const id=await draft();const original=await fake.supplierQuote();
+  original.rates.ratePlans[0].ratePlan.money.subTotalPrice=1900;
+  original.coupons=[{code:'SYNTHETIC10'}];fake.supplierQuote.mockResolvedValue(original);
+  await caller().updateIntent({intentId:id,patch:{quote:{...quote,total:1,couponCode:'FORGED'}}});
+  expect(fake.intents.get(id).quote).toMatchObject({total:1900,couponCode:'SYNTHETIC10'});
+  expect((await caller().createCardCharge({intentId:id})).totalCents).toBe(190000);
+ });
 });

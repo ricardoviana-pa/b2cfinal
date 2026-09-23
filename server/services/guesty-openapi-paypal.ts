@@ -334,8 +334,22 @@ export async function fetchReservationPaymentState(reservationId: string): Promi
  *  Klarna/PayPal). Nunca bloqueia o pagamento. */
 export async function appendReservationNote(reservationId: string, note: string): Promise<boolean> {
   try {
+    // PUT em notes.other SUBSTITUI o campo inteiro. Com o PUT directo, a nota
+    // "SERVICOS DO CHECKOUT" (escrita logo a seguir ao settle, e sempre, porque
+    // a receção é obrigatória) apagava a nota do pagamento — a que diz que os
+    // extras foram cobrados na plataforma e faturados pela Portugal Active, e
+    // o aviso de saldo por divergência de preço. Mais qualquer coisa que o CS
+    // tivesse escrito ali. Aura, GY-fSBjy7Nw: ficou só "pet-fee x2 150 EUR" e
+    // nada a dizer que já estava pago. Lê-se, acrescenta-se, e não se repete.
+    // Sem filtro de campos: com "fields" o Guesty devolve vazio quando o nome
+    // não bate certo, e um vazio aqui voltava a apagar tudo.
+    const current = await guestyClient.request<any>("GET", "/v1/reservations/" + reservationId);
+    const existing = String(current?.notes?.other ?? "").trim();
+    const add = note.trim();
+    if (existing.includes(add)) return true;
+    const merged = existing ? existing + "\n\n" + add : add;
     await guestyClient.request("PUT", "/v1/reservations/" + reservationId, {
-      body: { notes: { other: note.slice(0, 4000) } },
+      body: { notes: { other: merged.slice(0, 4000) } },
     });
     return true;
   } catch (err: any) {
