@@ -1780,7 +1780,8 @@
       "ph": "PROMOCODE",
       "invalid": "Code niet herkend. Controleer en probeer opnieuw.",
       "applied": "Code {{code}} toegepast",
-      "field": "Promocode"
+      "field": "Promocode",
+      "dropped": "Code {{code}} geldt niet meer voor deze data."
     },
     "prev": "Vorige",
     "next": "Volgende",
@@ -1820,7 +1821,9 @@
       "phone": "een geldig telefoonnummer",
       "terms": "de voorwaarden accepteren",
       "quote": "een bevestigde prijs (vernieuw hierboven)"
-    }
+    },
+    "emailNeededHint": "Vul hierboven uw e-mailadres in om verder te gaan.",
+    "emailInvalidHint": "Dat e-mailadres lijkt niet te kloppen. Controleer het om verder te gaan."
   },
   "host": {
     "hostedBy": "Uw hosts: Ricardo & het Portugal Active-team",

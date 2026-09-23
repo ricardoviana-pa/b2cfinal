@@ -1780,7 +1780,8 @@
       "ph": "KOODI",
       "invalid": "Koodia ei tunnistettu. Tarkista ja yritä uudelleen.",
       "applied": "Koodi {{code}} käytössä",
-      "field": "Kampanjakoodi"
+      "field": "Kampanjakoodi",
+      "dropped": "Koodi {{code}} ei enää koske näitä päiviä."
     },
     "prev": "Edellinen",
     "next": "Seuraava",
@@ -1820,7 +1821,9 @@
       "phone": "kelvollinen puhelinnumero",
       "terms": "ehtojen hyväksyminen",
       "quote": "vahvistettu hinta (päivitä yllä)"
-    }
+    },
+    "emailNeededHint": "Kirjoita sähköpostisi yllä jatkaaksesi.",
+    "emailInvalidHint": "Sähköposti ei näytä oikealta. Tarkista se jatkaaksesi."
   },
   "host": {
     "hostedBy": "Isäntinänne Ricardo & Portugal Active -tiimi",

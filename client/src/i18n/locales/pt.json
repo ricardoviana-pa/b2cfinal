@@ -358,8 +358,8 @@
     "checkInSoon": "O check-in é daqui a 2 dias",
     "advanceNoticeNote": "Algumas casas exigem antecedência mínima. A confirmação instantânea pode não estar disponível.",
     "nightsLabel": "noites",
-    "servicesSelected_one": "{{count}} serviço pedido — confirmado após a reserva",
-    "servicesSelected_other": "{{count}} serviços pedidos — confirmados após a reserva",
+    "servicesSelected_one": "{{count}} serviço pedido, confirmado após a reserva",
+    "servicesSelected_other": "{{count}} serviços pedidos, confirmados após a reserva",
     "phonePh": "Número de telefone *",
     "ratePlanPolicyAria": "abre a política de cancelamento num novo separador",
     "waSuccessMessage": "Olá! Acabei de confirmar a minha reserva em {{property}}.\nConfirmação: {{code}}\nDatas: {{checkIn}} → {{checkOut}}\nHóspedes: {{guests}}\nMal posso esperar pela estadia!",
@@ -1485,7 +1485,7 @@
     "notCompleted": "O pagamento não foi concluído. Tente novamente ou escolha outro método de pagamento.",
     "processingTitle": "A processar a sua reserva",
     "failedTitle": "Pagamento não concluído",
-    "secureNote": "Pagamento seguro — não feche esta janela",
+    "secureNote": "Pagamento seguro. Não feche esta janela.",
     "webhookFallback": "O seu pagamento está confirmado. Estamos a concluir a sua reserva do nosso lado — demora um momento.",
     "webhookTimeout": "O seu pagamento foi recebido (ref {{ref}}) e a sua reserva está a ser concluída em segundo plano. Vai receber a confirmação por email em breve — não precisa de pagar novamente.",
     "backToCheckout": "Voltar ao seu checkout",
@@ -1780,7 +1780,8 @@
       "ph": "CÓDIGO",
       "invalid": "Código não reconhecido. Confirme e tente de novo.",
       "applied": "Código {{code}} aplicado",
-      "field": "Código promocional"
+      "field": "Código promocional",
+      "dropped": "O código {{code}} já não se aplica a estas datas."
     },
     "prev": "Anterior",
     "next": "Seguinte",
@@ -1812,7 +1813,7 @@
     "perPetStay": "por animal · estadia",
     "loadErrorTitle": "Não conseguimos abrir o seu checkout",
     "loadErrorBody": "Isto parece um problema de ligação, não da sua reserva. Verifique a internet e tente novamente.",
-    "confirmingPayment": "Pagamento recebido — a confirmar a sua reserva…",
+    "confirmingPayment": "Pagamento recebido, a confirmar a sua reserva…",
     "missing": {
       "prefix": "Para pagar, falta:",
       "name": "o seu nome e apelido",
@@ -1820,7 +1821,9 @@
       "phone": "um telefone válido",
       "terms": "aceitar os termos",
       "quote": "um preço confirmado (atualize acima)"
-    }
+    },
+    "emailNeededHint": "Escreva o seu email acima para continuar.",
+    "emailInvalidHint": "Esse email não parece correto. Verifique-o para continuar."
   },
   "host": {
     "hostedBy": "Anfitriões: Ricardo & a equipa Portugal Active",
@@ -2064,7 +2067,7 @@
     "directSupport": "Apoio direto do concierge",
     "languages": "Idiomas do website",
     "recentFeedback": "Opiniões recentes de hóspedes das casas da nossa coleção. Abra uma casa para ler mais avaliações.",
-    "demoNotice": "Reserva de demonstração — preços de exemplo. Não será feita nenhuma reserva nem pagamento."
+    "demoNotice": "Reserva de demonstração com preços de exemplo. Não será feita nenhuma reserva nem pagamento."
   },
   "siteUx": {
     "quickFacts": "Resumo",

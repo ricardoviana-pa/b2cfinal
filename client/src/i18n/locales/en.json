@@ -1780,7 +1780,8 @@
       "ph": "PROMO CODE",
       "invalid": "Code not recognized. Check it and try again.",
       "applied": "Code {{code}} applied",
-      "field": "Promo code"
+      "field": "Promo code",
+      "dropped": "Code {{code}} no longer applies to these dates."
     },
     "prev": "Previous",
     "next": "Next",
@@ -1820,7 +1821,9 @@
       "phone": "a valid phone number",
       "terms": "accepting the terms",
       "quote": "a confirmed price (refresh above)"
-    }
+    },
+    "emailNeededHint": "Enter your email above to continue.",
+    "emailInvalidHint": "That email doesn't look right. Check it to continue."
   },
   "host": {
     "hostedBy": "Hosted by Ricardo & the Portugal Active team",

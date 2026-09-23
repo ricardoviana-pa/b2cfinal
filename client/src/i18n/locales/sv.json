@@ -1780,7 +1780,8 @@
       "ph": "RABATTKOD",
       "invalid": "Koden känns inte igen. Kontrollera och försök igen.",
       "applied": "Kod {{code}} tillämpad",
-      "field": "Rabattkod"
+      "field": "Rabattkod",
+      "dropped": "Koden {{code}} gäller inte längre för dessa datum."
     },
     "prev": "Föregående",
     "next": "Nästa",
@@ -1820,7 +1821,9 @@
       "phone": "ett giltigt telefonnummer",
       "terms": "att godkänna villkoren",
       "quote": "ett bekräftat pris (uppdatera ovan)"
-    }
+    },
+    "emailNeededHint": "Ange din e-post ovan för att fortsätta.",
+    "emailInvalidHint": "Den e-postadressen ser inte rätt ut. Kontrollera den för att fortsätta."
   },
   "host": {
     "hostedBy": "Värdar: Ricardo & Portugal Active-teamet",

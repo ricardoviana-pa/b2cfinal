@@ -869,6 +869,7 @@ export default function CheckoutPage() {
         amount, fulfillment: item.fulfillment,
       })),
       ...(receptionChoice ? { reception: receptionChoice } : {}),
+      ...(isValidEmail(email) ? { email } : {}),
       ...(firstName.trim() && lastName.trim() && isValidPhone(phone)
         ? {
             guestFirstName: firstName.trim(),
@@ -885,7 +886,7 @@ export default function CheckoutPage() {
     if (!(r as { ok?: boolean } | undefined)?.ok) {
       throw new Error("checkout state could not be saved");
     }
-  }, [intentId, isDemo, intent, flexSelected, selectedExtras, receptionChoice, firstName, lastName, phone, nif, utils, updateIntent]);
+  }, [intentId, isDemo, intent, flexSelected, selectedExtras, receptionChoice, email, firstName, lastName, phone, nif, utils, updateIntent]);
 
   /** Ops manifest (PT, staff-facing) appended to the Guesty reservation notes —
    *  same pattern the legacy widget uses, so operations see the requests. */
@@ -1506,7 +1507,9 @@ export default function CheckoutPage() {
             ))}
           </nav>
           <div className="flex items-center gap-3 shrink-0">
-            <span className="hidden md:inline caption text-pa-stone-aa">
+            {/* L1: em mobile o aviso de reconexão era invisível — quando há
+                problema de gravação, mostra-se em todos os tamanhos */}
+            <span className={saveIssue ? "caption text-pa-earth" : "hidden md:inline caption text-pa-stone-aa"}>
               {saveIssue ? t("checkout.saveIssue", "Reconnecting, changes pending") : t("checkout.autosaved", "Saved automatically")}
             </span>
             <Link
@@ -1545,13 +1548,24 @@ export default function CheckoutPage() {
               <p className="body-sm text-inherit text-red-700 leading-snug">
                 {t("checkout.datesUnavailable", "These dates are no longer available. Please choose new dates below or contact our concierge.")}
               </p>
-              <button
-                type="button"
-                onClick={() => { setStep("stay"); setEditingStay(true); setDatesUnavailable(false); }}
-                className="caption text-inherit font-medium text-red-700 underline underline-offset-2"
-              >
-                {t("bookingWidget.changeDates", "Change dates")}
-              </button>
+              <div className="flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => { setStep("stay"); setEditingStay(true); setDatesUnavailable(false); }}
+                  className="caption text-inherit font-medium text-red-700 underline underline-offset-2"
+                >
+                  {t("bookingWidget.changeDates", "Change dates")}
+                </button>
+                <a
+                  href={`https://wa.me/351927161771?text=${encodeURIComponent(`${displayName} · ${checkIn} → ${checkOut} · ${guests}p`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => { if (!isDemo) pushDL({ event: "whatsapp_click", source: "checkout_unavailable", property_id: intent?.listingId }); }}
+                  className="caption text-inherit font-medium text-red-700 underline underline-offset-2"
+                >
+                  {t("bookingWidget.contactConcierge", "Contact Concierge")}
+                </a>
+              </div>
             </div>
           )}
 
@@ -1698,6 +1712,14 @@ export default function CheckoutPage() {
                 >
                   {t("booking.continue", "Continue")}
                 </button>
+                {/* L2: o botão desativado sem dica era um toque morto */}
+                {!isValidEmail(email) && !quoteStale && !datesUnavailable && (
+                  <p className="caption text-pa-stone-aa" role="status">
+                    {email
+                      ? t("checkout.emailInvalidHint", "That email doesn't look right — check it to continue.")
+                      : t("checkout.emailNeededHint", "Enter your email above to continue.")}
+                  </p>
+                )}
               </div>
             </>
           )}
@@ -1850,6 +1872,7 @@ export default function CheckoutPage() {
                   type="email"
                   autoComplete="email"
                   aria-label={t("bookingWidget.emailPh")}
+                  placeholder={t("bookingWidget.emailPh")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full h-[48px] border border-pa-sand bg-white px-3 rounded-md body-sm text-pa-dark placeholder:text-pa-stone-aa focus:ring-1 focus:ring-pa-dark focus:border-pa-dark outline-none"
@@ -1926,7 +1949,7 @@ export default function CheckoutPage() {
                       priceFrom: effective.nightlyRate,
                     }, { nights: quote?.nights, checkinDate: checkIn, checkoutDate: checkOut, guests }), ...purchaseItems]}
                     onSuccess={handleCardSuccess}
-                    onCancel={() => setStep("stay")}
+                    onCancel={() => setStep("customize")}
                   />
                 ) : (
                   <div className="space-y-3">

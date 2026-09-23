@@ -1780,7 +1780,8 @@
       "ph": "CODICE",
       "invalid": "Codice non riconosciuto. Controlla e riprova.",
       "applied": "Codice {{code}} applicato",
-      "field": "Codice promo"
+      "field": "Codice promo",
+      "dropped": "Il codice {{code}} non è più valido per queste date."
     },
     "prev": "Precedente",
     "next": "Successivo",
@@ -1820,7 +1821,9 @@
       "phone": "un telefono valido",
       "terms": "accettare i termini",
       "quote": "un prezzo confermato (aggiorna sopra)"
-    }
+    },
+    "emailNeededHint": "Inserisci la tua email sopra per continuare.",
+    "emailInvalidHint": "Questa email non sembra corretta. Controllala per continuare."
   },
   "host": {
     "hostedBy": "I vostri host: Ricardo e il team Portugal Active",

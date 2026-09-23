@@ -1,4 +1,5 @@
 import { PhoneInput as RIPPhoneInput } from "react-international-phone";
+import { useTranslation } from "react-i18next";
 import "react-international-phone/style.css";
 
 interface PhoneInputProps {
@@ -10,11 +11,20 @@ interface PhoneInputProps {
   className?: string;
 }
 
+/** L9 (auditoria set/2026): o indicativo por omissão era sempre +351 — um
+ *  hóspede francês tinha de o descobrir e trocar. A língua do site é o melhor
+ *  palpite do país; PT continua o fallback (mercado inglês é misto). */
+const LANG_TO_COUNTRY: Record<string, string> = {
+  pt: "pt", es: "es", fr: "fr", de: "de", it: "it", nl: "nl", sv: "se", fi: "fi",
+};
+
 export default function PhoneInput({ id, value, onChange, onBlur, placeholder = "Phone number *", className }: PhoneInputProps) {
+  const { i18n } = useTranslation();
+  const defaultCountry = LANG_TO_COUNTRY[(i18n.language || "").slice(0, 2)] ?? "pt";
   return (
     <div className={className}>
       <RIPPhoneInput
-        defaultCountry="pt"
+        defaultCountry={defaultCountry}
         value={value}
         onChange={onChange}
         disableCountryGuess

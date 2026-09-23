@@ -363,6 +363,8 @@ export default function BookingWidget({
   /** Uma falha de quote é quase sempre transitória (rate limit/timeout do BE):
    *  um retry automático por combinação de datas antes do estado de falha. */
   const autoRetriedKeyRef = useRef<string | null>(null);
+  /** L6: guarda de duplo clique no CTA Reservar */
+  const reserveClickRef = useRef(false);
   /** Avoids unstable `fetchQuote` when `quote` updates (prevents auto-quote useEffect loops). */
   const quoteRef = useRef<QuoteData | null>(null);
 
@@ -1322,7 +1324,7 @@ export default function BookingWidget({
                           <div className="flex items-center gap-2">
                             {isNonRefundable && policyAnchor ? (
                               <a
-                                href={`/legal/cancellation-policy${policyAnchor}`}
+                                href={`/${lang}/legal/cancellation-policy${policyAnchor}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={e => e.stopPropagation()}
@@ -1339,7 +1341,7 @@ export default function BookingWidget({
                             )}
                           </div>
                           {(isNonRefundable || policyLine) && (
-                            <p className={cn("caption text-inherit mt-0.5", isNonRefundable ? "text-red-500/70" : "text-black/40")}>
+                            <p className="caption text-inherit mt-0.5 text-black/50">
                               {isNonRefundable
                                 ? t("bookingWidget.nonRefundableWarning", { defaultValue: "No refund if you cancel or modify" })
                                 : policyLine}
@@ -1376,6 +1378,11 @@ export default function BookingWidget({
             {/* ── CTA Section — confirmed live price, direct booking ── */}
             <button
               onClick={() => {
+                // L6 (auditoria set/2026): duplo clique criava dois intents e
+                // disparava begin_checkout duas vezes
+                if (reserveClickRef.current) return;
+                reserveClickRef.current = true;
+                window.setTimeout(() => { reserveClickRef.current = false; }, 4_000);
                 // GA4: begin_checkout
                 pushEcommerce({
                   event: 'begin_checkout',
@@ -1568,9 +1575,9 @@ export default function BookingWidget({
                 {t("bookingWidget.termsAcceptLabel", {
                   defaultValue: "I accept the"
                 })}{" "}
-                <a href="/legal/terms" target="_blank" className="text-black underline hover:text-black/70">{t("bookingWidget.termsLink", { defaultValue: "Terms & Conditions" })}</a>
+                <a href={`/${lang}/legal/terms`} target="_blank" className="text-black underline hover:text-black/70">{t("bookingWidget.termsLink", { defaultValue: "Terms & Conditions" })}</a>
                 {" "}{t("bookingWidget.termsAnd", { defaultValue: "and" })}{" "}
-                <a href="/legal/cancellation-policy" target="_blank" className="text-black underline hover:text-black/70">{t("bookingWidget.cancellationPolicyLink")}</a>
+                <a href={`/${lang}/legal/cancellation-policy`} target="_blank" className="text-black underline hover:text-black/70">{t("bookingWidget.cancellationPolicyLink")}</a>
               </span>
             </label>
 

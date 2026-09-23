@@ -1780,7 +1780,8 @@
       "ph": "CÓDIGO",
       "invalid": "Código no reconocido. Compruébelo e inténtelo de nuevo.",
       "applied": "Código {{code}} aplicado",
-      "field": "Código promocional"
+      "field": "Código promocional",
+      "dropped": "El código {{code}} ya no se aplica a estas fechas."
     },
     "prev": "Anterior",
     "next": "Siguiente",
@@ -1820,7 +1821,9 @@
       "phone": "un teléfono válido",
       "terms": "aceptar los términos",
       "quote": "un precio confirmado (actualice arriba)"
-    }
+    },
+    "emailNeededHint": "Introduzca su email arriba para continuar.",
+    "emailInvalidHint": "Ese email no parece correcto. Revíselo para continuar."
   },
   "host": {
     "hostedBy": "Anfitriones: Ricardo y el equipo de Portugal Active",

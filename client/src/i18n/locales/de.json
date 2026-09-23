@@ -1780,7 +1780,8 @@
       "ph": "PROMOCODE",
       "invalid": "Code nicht erkannt. Bitte prüfen und erneut versuchen.",
       "applied": "Code {{code}} angewendet",
-      "field": "Promocode"
+      "field": "Promocode",
+      "dropped": "Der Code {{code}} gilt für diese Daten nicht mehr."
     },
     "prev": "Zurück",
     "next": "Weiter",
@@ -1820,7 +1821,9 @@
       "phone": "eine gültige Telefonnummer",
       "terms": "die AGB akzeptieren",
       "quote": "ein bestätigter Preis (oben aktualisieren)"
-    }
+    },
+    "emailNeededHint": "Geben Sie oben Ihre E-Mail ein, um fortzufahren.",
+    "emailInvalidHint": "Diese E-Mail scheint nicht korrekt zu sein. Bitte prüfen."
   },
   "host": {
     "hostedBy": "Ihre Gastgeber: Ricardo & das Portugal-Active-Team",
