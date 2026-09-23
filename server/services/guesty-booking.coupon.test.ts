@@ -19,34 +19,32 @@ const quote = (subTotalPrice: number, coupons: unknown[] = []) => ({
     ],
   },
 });
+const pa2027 = { code: "PA2027", type: "percentage", adjustment: -10 };
 
 beforeEach(() => request.mockReset());
 
 describe("applyCouponToBEQuote", () => {
-  it("uses the POST response when it already carries the quote", async () => {
-    request.mockResolvedValueOnce(quote(1342.58, [{ code: "PA2027", type: "percentage", adjustment: -10 }]));
-    const r = await applyCouponToBEQuote({ ...input, coupons: ["PA2027"] });
-    expect(r.total).toBeCloseTo(1342.58, 2);
-    expect(r.coupons).toEqual([{ code: "PA2027", type: "percentage", adjustment: -10 }]);
-    expect(request).toHaveBeenCalledTimes(1);
-    expect(request.mock.calls[0][0]).toBe("POST");
-  });
-
   it("reads the quote back when the POST response has no rate plans (the production bug)", async () => {
-    request
-      .mockResolvedValueOnce({ coupons: [{ code: "REPETIR27", type: "percentage", adjustment: -10 }] })
-      .mockResolvedValueOnce(quote(1342.58));
-    const r = await applyCouponToBEQuote({ ...input, coupons: ["REPETIR27"] });
+    request.mockResolvedValueOnce({ coupons: [pa2027] }).mockResolvedValueOnce(quote(1342.58, [pa2027]));
+    const r = await applyCouponToBEQuote({ ...input, coupons: ["PA2027"] });
+    expect(request.mock.calls[0][0]).toBe("POST");
     expect(request.mock.calls[1]).toEqual(["GET", `/api/reservations/quotes/${QUOTE_ID}`]);
     expect(r.total).toBeCloseTo(1342.58, 2);
-    expect(r.coupons.map((c) => c.code)).toEqual(["REPETIR27"]);
+    expect(r.coupons).toEqual([pa2027]);
   });
 
-  it("unwraps a quote nested in the POST response", async () => {
-    request.mockResolvedValueOnce({ quote: quote(1342.58) });
+  it("always prices from the re-read quote, even when the POST response carries rate plans", async () => {
+    request.mockResolvedValueOnce(quote(9999, [pa2027])).mockResolvedValueOnce(quote(1342.58, [pa2027]));
     const r = await applyCouponToBEQuote({ ...input, coupons: ["PA2027"] });
+    expect(request).toHaveBeenCalledTimes(2);
     expect(r.total).toBeCloseTo(1342.58, 2);
-    expect(request).toHaveBeenCalledTimes(1);
+  });
+
+  it("takes the applied codes only from the re-read quote", async () => {
+    request.mockResolvedValueOnce({ coupons: [pa2027] }).mockResolvedValueOnce(quote(1440.9, []));
+    const r = await applyCouponToBEQuote({ ...input, coupons: ["PA2027"] });
+    expect(r.coupons).toEqual([]);
+    expect(r.total).toBeCloseTo(1440.9, 2);
   });
 
   it("keeps an unknown code as INVALID_COUPON, not a server error", async () => {
