@@ -39,6 +39,50 @@ function setCachedQuote(key: string, value: QuoteResult): void {
   quoteCache.set(key, { expiresAt: Date.now() + ttl, value });
 }
 
+/* ================================================================
+   FALLBACK-RATE ALERT (auditoria set/2026)
+   Quando o BE deixa de dar quotes live, o site inteiro degrada para
+   "contact a concierge" em silêncio. Janela deslizante de resultados;
+   acima do limiar dispara UM email de ops por hora. Fail-soft.
+   ================================================================ */
+const OUTCOME_WINDOW_MS = 10 * 60 * 1000;
+const ALERT_MIN_SAMPLES = 8;
+const ALERT_FALLBACK_RATIO = 0.7;
+const ALERT_THROTTLE_MS = 60 * 60 * 1000;
+const quoteOutcomes: Array<{ at: number; ok: boolean }> = [];
+let lastFallbackAlertAt = 0;
+
+function recordQuoteOutcome(ok: boolean, listingId: string): void {
+  const now = Date.now();
+  quoteOutcomes.push({ at: now, ok });
+  while (quoteOutcomes.length && quoteOutcomes[0].at < now - OUTCOME_WINDOW_MS) quoteOutcomes.shift();
+  if (quoteOutcomes.length > 500) quoteOutcomes.splice(0, quoteOutcomes.length - 500);
+
+  const total = quoteOutcomes.length;
+  const fallbacks = quoteOutcomes.filter((o) => !o.ok).length;
+  if (
+    total >= ALERT_MIN_SAMPLES &&
+    fallbacks / total >= ALERT_FALLBACK_RATIO &&
+    now - lastFallbackAlertAt > ALERT_THROTTLE_MS
+  ) {
+    lastFallbackAlertAt = now;
+    import("./transactional-email")
+      .then(({ sendOpsAlert }) =>
+        sendOpsAlert(
+          `QUOTES EM FALLBACK — ${fallbacks}/${total} nos últimos 10 min`,
+          [
+            `O Booking Engine não está a devolver quotes live: ${fallbacks} de ${total} pedidos caíram para preço estimado ou "price on request" nos últimos 10 minutos.`,
+            `Último listing afetado: ${listingId}.`,
+            `Impacto: os hóspedes veem "contact a Concierge" em vez do preço — o site não vende enquanto isto durar.`,
+            `Causas típicas: rate limit da API Guesty, credenciais BE, ou avaria do lado deles.`,
+          ],
+        ),
+      )
+      .catch(() => {/* alerta nunca pode partir o funil */});
+    console.warn(`[getQuote] ALERTA: ${fallbacks}/${total} quotes em fallback nos últimos 10 min`);
+  }
+}
+
 export interface AvailabilityResult {
   available: boolean;
   listingId: string;
@@ -121,7 +165,13 @@ export async function getQuote(
   const inflight = inFlightGetQuotes.get(cacheKey);
   if (inflight) return inflight;
 
-  const promise = _getQuoteImpl(listingId, checkIn, checkOut, guests, cacheKey).finally(() => {
+  const promise = _getQuoteImpl(listingId, checkIn, checkOut, guests, cacheKey)
+    .then((r) => {
+      // Saúde do BE: só resultados frescos contam (cache hits saem acima)
+      recordQuoteOutcome(r.source === "live", listingId);
+      return r;
+    })
+    .finally(() => {
     inFlightGetQuotes.delete(cacheKey);
   });
   inFlightGetQuotes.set(cacheKey, promise);
@@ -140,12 +190,25 @@ async function _getQuoteImpl(
   );
 
   // ── TIER 1: Booking Engine API (primary source — same API used for checkout) ──
+  // Duas tentativas: a maioria das falhas é transitória (rate limit, timeout)
+  // e sem retry cada uma degradava logo para preço estimado, que o widget
+  // mostra como "contact a concierge" — uma venda perdida (auditoria set/2026).
   if (isBEApiConfigured()) {
     try {
-      const beQuote = await Promise.race([
-        createBEQuote({ listingId, checkIn, checkOut, guests }),
-        new Promise<never>((_, reject) => setTimeout(() => reject(new Error("be_quote_timeout")), 12_000)),
-      ]);
+      let beQuote: Awaited<ReturnType<typeof createBEQuote>> | null = null;
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          beQuote = await Promise.race([
+            createBEQuote({ listingId, checkIn, checkOut, guests }),
+            new Promise<never>((_, reject) => setTimeout(() => reject(new Error("be_quote_timeout")), 12_000)),
+          ]);
+          break;
+        } catch (attemptErr: any) {
+          if (attempt === 2) throw attemptErr;
+          console.warn(`[getQuote] BE tentativa ${attempt} falhou para ${listingId} (${attemptErr?.message || attemptErr}); retry em 1.2s`);
+          await new Promise((r) => setTimeout(r, 1_200));
+        }
+      }
       if (beQuote && beQuote.total > 0) {
         const result: QuoteResult = {
           available: true,

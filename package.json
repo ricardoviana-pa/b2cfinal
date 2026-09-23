@@ -31,7 +31,8 @@
     "cdn:purge": "node scripts/cf-purge.mjs",
     "lint": "eslint client/src --ext .ts,.tsx",
     "codemod:tokens": "node scripts/codemod-tokens.mjs",
-    "i18n:check": "node scripts/sync-i18n.mjs && node scripts/i18n-missing.mjs --all"
+    "i18n:check": "node scripts/sync-i18n.mjs && node scripts/i18n-missing.mjs --all",
+    "audit:quotes": "node scripts/quote-health.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",

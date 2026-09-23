@@ -371,7 +371,8 @@
     "tariffInCheckout": "Twee tarieven beschikbaar. Kies het uwe in de volgende stap.",
     "reserve": "RESERVEREN",
     "arrivalsRule": "Verblijven starten op {{days}} · minimaal {{count}} nachten",
-    "nextArrivals": "Eerstvolgende beschikbare data"
+    "nextArrivals": "Eerstvolgende beschikbare data",
+    "tryAgain": "Opnieuw proberen"
   },
   "common": {
     "loading": "Laden…",

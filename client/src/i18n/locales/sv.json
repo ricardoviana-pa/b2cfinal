@@ -371,7 +371,8 @@
     "tariffInCheckout": "Två priser tillgängliga. Välj ditt i nästa steg.",
     "reserve": "RESERVERA",
     "arrivalsRule": "Vistelser börjar {{days}} · minst {{count}} nätter",
-    "nextArrivals": "Nästa lediga datum"
+    "nextArrivals": "Nästa lediga datum",
+    "tryAgain": "Försök igen"
   },
   "common": {
     "loading": "Laddar…",

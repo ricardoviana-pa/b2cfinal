@@ -371,7 +371,8 @@
     "tariffInCheckout": "Due tariffe disponibili. Scegli la tua nel prossimo passaggio.",
     "reserve": "PRENOTA",
     "arrivalsRule": "I soggiorni iniziano {{days}} · minimo {{count}} notti",
-    "nextArrivals": "Prossime date disponibili"
+    "nextArrivals": "Prossime date disponibili",
+    "tryAgain": "Riprova"
   },
   "common": {
     "loading": "Caricamento…",

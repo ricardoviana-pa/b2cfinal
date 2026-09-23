@@ -371,7 +371,8 @@
     "tariffInCheckout": "Kaksi hintaa saatavilla. Valitse omasi seuraavassa vaiheessa.",
     "reserve": "VARAA",
     "arrivalsRule": "Oleskelut alkavat {{days}} · vähintään {{count}} yötä",
-    "nextArrivals": "Seuraavat vapaat päivät"
+    "nextArrivals": "Seuraavat vapaat päivät",
+    "tryAgain": "Yritä uudelleen"
   },
   "common": {
     "loading": "Ladataan…",

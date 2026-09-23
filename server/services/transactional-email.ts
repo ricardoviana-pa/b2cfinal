@@ -175,6 +175,22 @@ const BOOKING_ALERT_EMAIL = process.env.BOOKING_ALERT_EMAIL || "booking@portugal
 /** Cópia de cada venda direta para a gestão (mudar/desligar via env). */
 const SALES_COPY_EMAIL = process.env.SALES_COPY_EMAIL ?? "ricardo.viana@portugalactive.com";
 
+/** Alerta operacional genérico para a equipa (saúde das quotes, filas, etc.).
+ *  Nunca lança: um alerta não pode partir o funil que está a vigiar. */
+export async function sendOpsAlert(subject: string, lines: string[]): Promise<void> {
+  try {
+    const html = wrapTemplate(`
+<tr><td style="padding:0 0 16px 0;">
+  <h1 style="font-family:Georgia,serif;font-size:22px;color:#DC2626;margin:0;font-weight:400;">${subject}</h1>
+</td></tr>
+${lines.map((l) => `<tr><td style="padding:0 0 10px 0;"><p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.6;margin:0;">${l}</p></td></tr>`).join("")}
+<tr><td style="padding:8px 0 0 0;"><p style="font-family:Arial,sans-serif;font-size:11px;color:#9E9A90;margin:0;">Alerta automático · ${new Date().toISOString()}</p></td></tr>`);
+    await sendEmail(BOOKING_ALERT_EMAIL, `[OPS] ${subject}`, html);
+  } catch (err: any) {
+    console.error(`[EMAIL] sendOpsAlert falhou: ${err?.message}`);
+  }
+}
+
 export async function sendBookingFailureAlert(data: BookingFailureAlertData): Promise<void> {
   const subject = `BOOKING FAILED — ${data.propertyName || data.listingId || "Unknown"} — ${data.guestName} — €${data.totalPrice || "?"}`;
 

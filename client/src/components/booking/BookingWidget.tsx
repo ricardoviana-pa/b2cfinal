@@ -360,6 +360,9 @@ export default function BookingWidget({
   const [phoneTouched, setPhoneTouched] = useState(false);
   const quoteRequestRef = useRef(0);
   const lastQuoteKeyRef = useRef("");
+  /** Uma falha de quote é quase sempre transitória (rate limit/timeout do BE):
+   *  um retry automático por combinação de datas antes do estado de falha. */
+  const autoRetriedKeyRef = useRef<string | null>(null);
   /** Avoids unstable `fetchQuote` when `quote` updates (prevents auto-quote useEffect loops). */
   const quoteRef = useRef<QuoteData | null>(null);
 
@@ -488,6 +491,18 @@ export default function BookingWidget({
     setLoading(true);
     setError("");
     setBeQuoteError("");
+    // Se este pedido acabar sem preço live, tenta de novo UMA vez (2s) antes
+    // de mostrar o beco "contact a concierge" — o spinner mantém-se no ar.
+    const scheduleAutoRetry = (): boolean => {
+      if (autoRetriedKeyRef.current === quoteKey) return false;
+      autoRetriedKeyRef.current = quoteKey;
+      quoteRequestRef.current++; // impede o finally deste pedido de apagar o loading
+      setTimeout(() => {
+        lastQuoteKeyRef.current = "";
+        void fetchQuoteRef.current();
+      }, 2_000);
+      return true;
+    };
     try {
       // Always use Open API for pricing (reliable, same as PLP)
       const d = await Promise.race([
@@ -505,6 +520,11 @@ export default function BookingWidget({
       const cleaning = d.pricing?.cleaningFee ?? 0;
 
       const isLivePrice = (d as any).source === "live";
+      const isBookable =
+        !!(d as any).quoteId && ((d as any).source === "live" || (d as any).source === "cached");
+      // Sem quote comprável (fallback/base/request/sem preço) → um retry
+      // automático antes de renderizar o estado de falha.
+      if (!isBookable && scheduleAutoRetry()) return;
 
       if (effectiveTotal <= 0 || effectiveNightly <= 0) {
         // No price at all — show request-only flow
@@ -575,6 +595,7 @@ export default function BookingWidget({
       setStep("quote");
     } catch (err: any) {
       if (quoteRequestRef.current !== requestId) return;
+      if (scheduleAutoRetry()) return;
       // Keep lastQuoteKeyRef set to prevent infinite retry loop for the same params.
       // Any pricing failure surfaces the standardized "contact concierge" state — never an estimate.
       pushDL({
@@ -597,6 +618,13 @@ export default function BookingWidget({
 
   const fetchQuoteRef = useRef(fetchQuote);
   fetchQuoteRef.current = fetchQuote;
+
+  /** Retry manual no estado de falha: limpa o dedupe e volta a pedir. */
+  const retryQuote = useCallback(() => {
+    lastQuoteKeyRef.current = "";
+    setError("");
+    void fetchQuoteRef.current();
+  }, []);
 
   useEffect(() => {
     if (!checkIn || !checkOut || (nights > 0 && nights < effectiveMinNights) || step !== "dates") return;
@@ -1153,6 +1181,21 @@ export default function BookingWidget({
                 {t("bookingWidget.pricingUnavailableMessage", "We couldn't confirm pricing for these dates. Please contact a Concierge.")}
               </p>
             </div>
+
+            {/* Falhas de pricing são muitas vezes transitórias: tentar de novo
+                primeiro; o concierge fica como segunda via (auditoria set/2026) */}
+            <button
+              type="button"
+              onClick={retryQuote}
+              disabled={loading}
+              className="pa-action w-full min-h-[52px] border border-black text-black caption font-medium tracking-[0.12em] uppercase px-8 py-4 hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {loading ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> {t("bookingWidget.checkingPrices")}</>
+              ) : (
+                t("bookingWidget.tryAgain", "Try again")
+              )}
+            </button>
 
             <a
               href={`https://wa.me/351927161771?text=${encodeURIComponent(

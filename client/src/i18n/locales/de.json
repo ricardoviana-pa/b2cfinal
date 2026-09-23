@@ -371,7 +371,8 @@
     "tariffInCheckout": "Zwei Tarife verfügbar. Wählen Sie Ihren im nächsten Schritt.",
     "reserve": "RESERVIEREN",
     "arrivalsRule": "Aufenthalte beginnen {{days}} · mindestens {{count}} Nächte",
-    "nextArrivals": "Nächste verfügbare Daten"
+    "nextArrivals": "Nächste verfügbare Daten",
+    "tryAgain": "Erneut versuchen"
   },
   "common": {
     "loading": "Wird geladen…",
