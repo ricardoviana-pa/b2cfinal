@@ -21,6 +21,7 @@ import type { Property, FilterDestination, SortOption } from '@/lib/types';
 import { filterProperties, getUniqueLocalities } from '@/lib/utils';
 import { isChildUnit } from '@/config/propertyGroups';
 import { hasConfirmedQuote, hasSwimmingPool, hasHeatedPool, parseHomeFilters, searchPrice, sortSearchResults } from '@/lib/homeSearch';
+import { openDatePickerWithin } from '@/lib/datePicker';
 import { pushDL, pushEcommerce } from '@/lib/datalayer';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -667,7 +668,7 @@ export default function Homes() {
               <div className="w-px h-6 bg-pa-sand shrink-0" />
               <div
                 className="flex-1 min-w-0 h-full cursor-pointer"
-                onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); (inp as HTMLInputElement | null)?.showPicker?.(); }}
+                onClick={e => openDatePickerWithin(e.currentTarget)}
               >
                 <input
                   ref={checkInRef}
@@ -680,14 +681,14 @@ export default function Homes() {
                     setBookingCheckin(e.target.value);
                     if (bookingCheckout && bookingCheckout <= e.target.value) setBookingCheckout('');
                   }}
-                  className="w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer"
+                  className="pa-date-hit w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer"
 
                 />
               </div>
               <ArrowRight className="w-3.5 h-3.5 text-pa-stone flex-shrink-0" aria-hidden />
               <div
                 className="flex-1 min-w-0 h-full cursor-pointer"
-                onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); (inp as HTMLInputElement | null)?.showPicker?.(); }}
+                onClick={e => openDatePickerWithin(e.currentTarget)}
               >
                 <input
                   ref={checkOutRef}
@@ -697,7 +698,7 @@ export default function Homes() {
                   value={bookingCheckout}
                   onInput={e => setBookingCheckout(e.currentTarget.value)}
                   onChange={e => setBookingCheckout(e.target.value)}
-                  className="w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer"
+                  className="pa-date-hit w-full h-full px-3 bg-transparent text-pa-dark body-sm focus:outline-none cursor-pointer"
 
                 />
               </div>
@@ -760,7 +761,7 @@ export default function Homes() {
               <div className="grid grid-cols-2 gap-2">
                 <div
                   className="relative"
-                  onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); (inp as HTMLInputElement | null)?.showPicker?.(); }}
+                  onClick={e => openDatePickerWithin(e.currentTarget)}
                 >
                   <input
                     type="date"
@@ -772,13 +773,13 @@ export default function Homes() {
                       setBookingCheckin(e.target.value);
                       if (bookingCheckout && bookingCheckout <= e.target.value) setBookingCheckout('');
                       }}
-                    className="w-full h-[48px] rounded-lg border border-pa-sand bg-white px-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer"
+                    className="pa-date-hit w-full h-[48px] rounded-lg border border-pa-sand bg-white px-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer"
 
                   />
                 </div>
                 <div
                   className="relative"
-                  onClick={e => { const inp = (e.currentTarget as HTMLElement).querySelector('input'); (inp as HTMLInputElement | null)?.showPicker?.(); }}
+                  onClick={e => openDatePickerWithin(e.currentTarget)}
                 >
                   <input
                     ref={checkOutRef}
@@ -788,7 +789,7 @@ export default function Homes() {
                   value={bookingCheckout}
                   onInput={e => setBookingCheckout(e.currentTarget.value)}
                     onChange={e => setBookingCheckout(e.target.value)}
-                    className="w-full h-[48px] rounded-lg border border-pa-sand bg-white px-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer"
+                    className="pa-date-hit w-full h-[48px] rounded-lg border border-pa-sand bg-white px-3 body-sm text-pa-dark focus:ring-2 focus:ring-pa-gold focus:outline-none cursor-pointer"
 
                   />
                 </div>

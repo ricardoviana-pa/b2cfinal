@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation } from 'wouter';
 import { CalendarDays, ChevronDown, Search } from 'lucide-react';
 import { pushDL } from '@/lib/datalayer';
+import { openDatePickerWithin } from '@/lib/datePicker';
 import { addSearchDays, buildHomeSearchPath } from '@/lib/homeSearch';
 
 export default function HeroSearch({ options, destination, checkin, checkout, guests, onDestination, onCheckin, onCheckout, onGuests }: {
@@ -32,10 +33,11 @@ export default function HeroSearch({ options, destination, checkin, checkout, gu
       </label>
       {(['checkin', 'checkout'] as const).map(kind => {
         const value = kind === 'checkin' ? checkin : checkout;
-        return <label className="hero-search-field hero-search-date" key={kind}>
+        return <label className="hero-search-field hero-search-date" key={kind}
+          onClick={e => openDatePickerWithin(e.currentTarget)}>
           <span>{t(kind === 'checkin' ? 'home.searchCheckin' : 'home.searchCheckout')}</span>
           <span className="hero-search-date-value" aria-hidden="true">{value ? value.split('-').reverse().join('/') : t('editorial.addDates')}</span>
-          <input name={kind} aria-label={t(kind === 'checkin' ? 'home.searchCheckin' : 'home.searchCheckout')} type="date" value={value} required={Boolean(kind === 'checkin' ? checkout : checkin)}
+          <input className="pa-date-hit" name={kind} aria-label={t(kind === 'checkin' ? 'home.searchCheckin' : 'home.searchCheckout')} type="date" value={value} required={Boolean(kind === 'checkin' ? checkout : checkin)}
             min={kind === 'checkout' && checkin ? addSearchDays(checkin, 1) : minDate}
             onInput={e => kind === 'checkin' ? onCheckin(e.currentTarget.value) : onCheckout(e.currentTarget.value)}
             onChange={e => kind === 'checkin' ? onCheckin(e.target.value) : onCheckout(e.target.value)} />

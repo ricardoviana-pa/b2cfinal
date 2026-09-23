@@ -366,11 +366,23 @@ export default function PropertyCard({
                   {t('property.unitsAvailable', { count: group!.unitGuestyIds.length, defaultValue: '{{count}} units available' })}
                 </p>
               ) : nights > 0 && liveQuote && liveQuote.available !== false && liveQuote.total > 0 ? (
-                <p className="text-[0.75rem] text-[#726D63] leading-tight">
-                  {liveQuote.source === 'live' || liveQuote.source === 'cached' || liveQuote.source === 'partner_calendar'
-                    ? t('booking.nights', { count: liveQuote.nights })
-                    : t('property.estimateForNights', { count: liveQuote.nights, defaultValue: 'est. for {{count}} nights' })}
-                </p>
+                <>
+                  {/* The nightly rate sits beside the total, not instead of it.
+                      The total stays the promise; the nightly is what guests
+                      carry over from the OTA listing they just left, and it
+                      makes the total legible — the gap between rate × nights
+                      and the total is exactly the cleaning fee. */}
+                  {liveQuote.nightlyRate > 0 && (
+                    <p className="text-[0.75rem] text-[#726D63] leading-tight">
+                      <span className="text-[#1A1A18]">{formatEur(liveQuote.nightlyRate, i18n.language)}</span> {t('property.perNight')}
+                    </p>
+                  )}
+                  <p className="text-[0.75rem] text-[#726D63] leading-tight">
+                    {liveQuote.source === 'live' || liveQuote.source === 'cached' || liveQuote.source === 'partner_calendar'
+                      ? t('booking.nights', { count: liveQuote.nights })
+                      : t('property.estimateForNights', { count: liveQuote.nights, defaultValue: 'est. for {{count}} nights' })}
+                  </p>
+                </>
               ) : null}
             </div>
           </div>
