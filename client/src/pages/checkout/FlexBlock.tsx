@@ -52,16 +52,40 @@ export default function FlexBlock({
   const { t } = useTranslation();
   const [rulesOpen, setRulesOpen] = useState(false);
   const viewedRef = useRef(false);
+  const rootRef = useRef<HTMLDivElement | null>(null);
 
-  // GA4: flex_viewed — once per mount when the block is actually shown
+  // M11 (auditoria set/2026): flex_viewed disparava no MOUNT — o bloco vive no
+  // fundo do passo e o attach rate media contra vistas que nunca aconteceram.
+  // Agora só conta quando metade do bloco entra mesmo no ecrã.
   useEffect(() => {
     if (viewedRef.current || demo || stayTotal < config.minTotal) return;
-    viewedRef.current = true;
-    pushDL({ event: "flex_viewed", property_id: listingId, value: config.price });
+    const el = rootRef.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") {
+      viewedRef.current = true;
+      pushDL({ event: "flex_viewed", property_id: listingId, value: config.price });
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (viewedRef.current) return;
+        if (entries.some((e) => e.isIntersecting)) {
+          viewedRef.current = true;
+          pushDL({ event: "flex_viewed", property_id: listingId, value: config.price });
+          io.disconnect();
+        }
+      },
+      { threshold: 0.5 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
   }, [demo, listingId, config.price, stayTotal, config.minTotal]);
 
   if (stayTotal < config.minTotal) return null;
 
+  // M10 (auditoria set/2026): planos flexíveis com política firme/estrita, ou
+  // com a janela grátis já passada, caíam no copy "escolheu o melhor preço" —
+  // que só é verdade no não-reembolsável. Copy neutro próprio para esse caso.
   const contextualCopy = nonRefundableSelected
     ? t("checkout.flex.copyNonRefundable", {
         days: config.rescheduleDaysBefore,
@@ -71,7 +95,7 @@ export default function FlexBlock({
           date: formatBookingDate(freeCancelUntil, lang, true),
           days: config.rescheduleDaysBefore,
         })
-      : t("checkout.flex.copyNonRefundable", { days: config.rescheduleDaysBefore });
+      : t("checkout.flex.copyNoWindow", { days: config.rescheduleDaysBefore });
 
   const benefits = [
     { icon: RefreshCw, text: t("checkout.flex.benefit1", { days: config.rescheduleDaysBefore }) },
@@ -90,6 +114,7 @@ export default function FlexBlock({
 
   return (
     <div
+      ref={rootRef}
       className={cn(
         "rounded-lg border bg-pa-warm p-5 transition-all",
         selected ? "border-pa-gold ring-1 ring-pa-gold" : "border-pa-gold/50",

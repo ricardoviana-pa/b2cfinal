@@ -1711,7 +1711,8 @@
       "rule5": "Extras move with your booking whenever the service allows; otherwise their value also converts to credit.",
       "rule6": "Flex can only be purchased at checkout and is non-refundable.",
       "honesty": "If you cancel within your rate's free cancellation window, we refund your money as per the policy. Flex never replaces that right, it adds protection beyond it.",
-      "percentNote": "10% of the nightly total, one-time"
+      "percentNote": "10% of the nightly total, one-time",
+      "copyNoWindow": "Plans can change. With Flex, the value you pay is never lost: rebook up to {{days}} days before check-in."
     },
     "curatedFor": "Selected for {{property}}",
     "todayTotal": "Total",

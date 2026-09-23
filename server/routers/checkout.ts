@@ -165,6 +165,28 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string): Promise<
       try { const b = breakdownFromIntent(m); return { lines: b.lines, receptionCents: b.receptionCents, flexCents: b.flexCents, totalCents: b.totalCents }; }
       catch { return null; }
     })();
+    // M13 (spec §13): CAPI server-side do Purchase — este é o ponto único por
+    // onde TODAS as transições para paid passam (cartão, wallets, PayPal,
+    // Klarna, webhook, sweep). event_id = confirmationCode deduplica com o
+    // Pixel do GTM. Fire-and-forget, nunca trava emails nem pagamentos.
+    if (m.confirmationCode) {
+      const purchaseValue = canonical
+        ? canonical.totalCents / 100
+        : Number(m.quote?.total ?? 0);
+      void import("../services/meta-capi")
+        .then(({ sendMetaPurchase }) =>
+          sendMetaPurchase({
+            eventId: String(m.confirmationCode),
+            value: purchaseValue,
+            currency: String(m.quote?.currency ?? "EUR"),
+            email: m.email,
+            phone: m.guestPhone,
+            contentName: m.propertyName,
+            sourceUrl: `https://www.portugalactive.com/${m.locale || "en"}/checkout/${intentId}`,
+          }),
+        )
+        .catch(() => {/* marketing nunca parte o funil */});
+    }
     const photoPromise = resolveIntentPhoto(m).catch(() => undefined);
     void photoPromise.then((imageUrl) => sendCheckoutOpsManifest({
       canonical,

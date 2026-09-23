@@ -216,18 +216,23 @@ function ExpressWalletInner({
   const [error, setError] = useState("");
   const [available, setAvailable] = useState(false);
   const processingRef = useRef(false);
+  const paymentInfoFiredRef = useRef(false);
 
   const handleConfirm = async (event: { expressPaymentType?: string }) => {
     if (!stripe || !elements || processingRef.current) return;
     processingRef.current = true;
     setError("");
 
+    // M11: fire-once — cada retry de wallet duplicava o add_payment_info
+    if (!paymentInfoFiredRef.current) {
+      paymentInfoFiredRef.current = true;
     pushEcommerce({
       event: "add_payment_info",
       payment_type: event.expressPaymentType || "wallet",
       property_id: listingId,
       ecommerce: { currency: "EUR", value: total, items: paymentItems },
     });
+    }
 
     // Só depois do confirmPayment ter sucedido é que um erro significa
     // "dinheiro capturado" — antes disso, re-tentar é sempre seguro.

@@ -170,11 +170,23 @@ export default function KlarnaReturnPage() {
               value: totalPaidCents / 100,
               currency: (bookingData.currency || "EUR").toUpperCase(),
               ...(bookingData.couponCode ? { coupon: bookingData.couponCode } : {}),
+              // M12 (auditoria set/2026): o item da casa ia com o TOTAL (extras
+              // incluídos) e os extras eram somados outra vez — os items davam
+              // mais do que o value. A casa leva só a parte da estadia.
               items: [{
                 item_id: `PROP-${bookingData.listingId}`,
                 item_name: bookingData.propertyName || "Portugal Active Home",
                 item_category: "villa",
-                price: totalPaidCents / 100,
+                price: Math.max(
+                  0,
+                  totalPaidCents / 100 -
+                    (Array.isArray(bookingData.purchaseItems)
+                      ? bookingData.purchaseItems.reduce(
+                          (s: number, it: any) => s + (Number(it.price) || 0) * (Number(it.quantity) || 1),
+                          0,
+                        )
+                      : 0),
+                ),
                 quantity: 1,
                 checkin_date: bookingData.checkIn,
                 checkout_date: bookingData.checkOut,

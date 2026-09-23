@@ -1711,7 +1711,8 @@
       "rule5": "Les extras suivent votre réservation quand le service le permet ; sinon leur montant se convertit aussi en avoir.",
       "rule6": "Flex s'achète uniquement au moment du paiement et n'est pas remboursable.",
       "honesty": "Si vous annulez pendant la fenêtre d'annulation gratuite de votre tarif, nous vous remboursons selon la politique. Flex ne remplace jamais ce droit, il ajoute une protection au-delà.",
-      "percentNote": "10 % du total des nuits, paiement unique"
+      "percentNote": "10 % du total des nuits, paiement unique",
+      "copyNoWindow": "Les plans peuvent changer. Avec Flex, le montant payé n est jamais perdu : reprogrammez jusqu à {{days}} jours avant le check-in."
     },
     "curatedFor": "Sélectionné pour {{property}}",
     "todayTotal": "Total",

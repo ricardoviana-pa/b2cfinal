@@ -1711,7 +1711,8 @@
       "rule5": "Extras ziehen mit um, wann immer der Service es erlaubt; andernfalls wird auch ihr Betrag zu Guthaben.",
       "rule6": "Flex ist nur beim Checkout erhältlich und nicht erstattbar.",
       "honesty": "Stornieren Sie innerhalb des kostenlosen Stornierungsfensters Ihres Tarifs, erstatten wir Ihr Geld gemäß der Richtlinie. Flex ersetzt dieses Recht nie, es ergänzt Schutz darüber hinaus.",
-      "percentNote": "10 % des Übernachtungsbetrags, einmalig"
+      "percentNote": "10 % des Übernachtungsbetrags, einmalig",
+      "copyNoWindow": "Pläne können sich ändern. Mit Flex geht der gezahlte Betrag nie verloren: Buchen Sie bis {{days}} Tage vor dem Check-in um."
     },
     "curatedFor": "Ausgewählt für {{property}}",
     "todayTotal": "Gesamt",

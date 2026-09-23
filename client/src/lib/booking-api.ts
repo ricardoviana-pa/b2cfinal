@@ -67,6 +67,9 @@ export interface ThankYouStash {
   listingId?: string;
   /** Bloco 6: items GA4 dos serviços (extras, receção, Flex) para o purchase */
   purchaseItems?: Array<Record<string, unknown>>;
+  /** M12: preço/noites do item da casa no purchase (sem isto o item ia vazio) */
+  nightlyRateCents?: number;
+  nights?: number;
 }
 
 const thankYouKey = (reservationId: string) => `thankyou_${reservationId}`;

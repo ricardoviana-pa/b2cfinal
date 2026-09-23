@@ -1711,7 +1711,8 @@
       "rule5": "Gli extra si spostano con la prenotazione quando il servizio lo consente; altrimenti il loro importo si converte anch'esso in credito.",
       "rule6": "Flex si acquista solo al momento del pagamento e non è rimborsabile.",
       "honesty": "Se cancelli entro la finestra di cancellazione gratuita della tua tariffa, ti rimborsiamo secondo la politica. Flex non sostituisce mai quel diritto, aggiunge protezione oltre di esso.",
-      "percentNote": "10% del totale delle notti, una tantum"
+      "percentNote": "10% del totale delle notti, una tantum",
+      "copyNoWindow": "I piani possono cambiare. Con Flex l importo pagato non va mai perso: riprenota fino a {{days}} giorni prima del check-in."
     },
     "curatedFor": "Selezionato per {{property}}",
     "todayTotal": "Totale",

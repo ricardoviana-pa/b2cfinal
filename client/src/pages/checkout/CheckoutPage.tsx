@@ -275,6 +275,8 @@ export default function CheckoutPage() {
   const [couponInput, setCouponInput] = useState("");
   const [couponBusy, setCouponBusy] = useState(false);
   const [couponError, setCouponError] = useState(false);
+  /** M14: código que deixou de se aplicar depois de mudar datas — nota visível */
+  const [couponDropped, setCouponDropped] = useState<string | null>(null);
   const applyCouponMut = trpc.booking.applyCoupon.useMutation();
 
   // Visitante que clicou na PromoBar (announcement bar): o código ficou em
@@ -506,7 +508,15 @@ export default function CheckoutPage() {
           void applyCouponMut
             .mutateAsync({ quoteId: liveQuoteId, listingId: intent.listingId, checkIn: ci, checkOut: co, coupon: prevCoupon })
             .then((r) => {
-              if (!r.ok) return;
+              if (!r.ok) {
+                // M14 (auditoria set/2026): o desconto caía em silêncio — o
+                // campo reabre com o código e uma nota diz porquê.
+                setCouponDropped(prevCoupon);
+                setCouponInput(prevCoupon);
+                setCouponOpen(true);
+                return;
+              }
+              setCouponDropped(null);
               const withCoupon: QuoteSnapshot = {
                 ...fresh,
                 nightlyRate: r.pricing.nightlyRate,
@@ -654,24 +664,29 @@ export default function CheckoutPage() {
 
   // ── Extras handlers (Fase 2). Stepper defaults come from the server curation
   //    (suggestedDays/suggestedQty) — the "stepper certo à partida" of §5.3. ──
+  const defaultSelectionFor = useCallback(
+    (item: CatalogExtra): ExtraSelection =>
+      item.pricingModel === "per_day"
+        ? { days: item.suggestedDays ?? Math.max(1, quote?.nights ?? 1) }
+        : item.pricingModel === "per_person"
+          ? { people: Math.max(item.minPeople ?? 1, Math.min(guests, 30)) }
+          : item.pricingModel === "per_person_per_unit"
+            ? { people: 1, sessions: 1 }
+            : item.pricingModel === "per_person_per_day"
+              ? { people: Math.min(guests, 30), days: Math.max(1, quote?.nights ?? 1) }
+              : item.pricingModel === "per_unit" || item.pricingModel === "included_selectable"
+                ? { qty: item.suggestedQty ?? item.minQty ?? 1 }
+                : {},
+    [guests, quote?.nights],
+  );
   const toggleExtra = useCallback(
     (item: CatalogExtra) => {
+      const adding = !(item.sku in extraSel);
+      const sel = adding ? defaultSelectionFor(item) : (extraSel[item.sku] ?? {});
       setExtraSel((prev) => {
         const next = { ...prev };
-        const adding = !(item.sku in next);
         if (adding) {
-          next[item.sku] =
-            item.pricingModel === "per_day"
-              ? { days: item.suggestedDays ?? Math.max(1, quote?.nights ?? 1) }
-              : item.pricingModel === "per_person"
-                ? { people: Math.max(item.minPeople ?? 1, Math.min(guests, 30)) }
-                : item.pricingModel === "per_person_per_unit"
-                  ? { people: 1, sessions: 1 }
-                  : item.pricingModel === "per_person_per_day"
-                    ? { people: Math.min(guests, 30), days: Math.max(1, quote?.nights ?? 1) }
-                  : item.pricingModel === "per_unit" || item.pricingModel === "included_selectable"
-                    ? { qty: item.suggestedQty ?? item.minQty ?? 1 }
-                    : {};
+          next[item.sku] = sel;
         } else {
           delete next[item.sku];
           // Cascata (§5.0): remover o pai remove os filhos revelados por ele
@@ -679,20 +694,44 @@ export default function CheckoutPage() {
             if (child.parentSku === item.sku) delete next[child.sku];
           }
         }
-        const amount = adding ? extraAmount(item, next[item.sku] ?? {}) : extraAmount(item, prev[item.sku] ?? {});
-        pushEcommerce({
-          event: adding ? "add_to_cart" : "remove_from_cart",
-          property_id: intent?.listingId,
-          ecommerce: {
-            currency: "EUR",
-            value: amount ?? 0,
-            items: [{ item_id: item.sku, item_name: item.sku, item_category: "extra", item_category2: item.chapter, price: item.unitPrice ?? 0, quantity: 1 }],
-          },
-        });
         return next;
       });
+      // M11 (auditoria set/2026): eventos FORA do setter (o Strict Mode
+      // duplicava o push), pedidos sob orçamento têm evento próprio
+      // (request_created, spec §13) em vez de add_to_cart com valor 0, e o
+      // item leva nome humano e quantidade real.
+      if (isDemo) return;
+      const amount = extraAmount(item, sel);
+      if (amount == null) {
+        if (adding) {
+          pushDL({
+            event: "request_created",
+            property_id: intent?.listingId,
+            item_id: item.sku,
+            item_chapter: item.chapter,
+          });
+        }
+        return;
+      }
+      const quantity = sel.qty ?? sel.sessions ?? sel.days ?? sel.people ?? 1;
+      pushEcommerce({
+        event: adding ? "add_to_cart" : "remove_from_cart",
+        property_id: intent?.listingId,
+        ecommerce: {
+          currency: "EUR",
+          value: amount ?? 0,
+          items: [{
+            item_id: item.sku,
+            item_name: t(`checkout.extras.${item.sku}.name`, item.sku),
+            item_category: "extra",
+            item_category2: item.chapter,
+            price: item.unitPrice ?? 0,
+            quantity,
+          }],
+        },
+      });
     },
-    [guests, quote?.nights, intent?.listingId, catalog],
+    [extraSel, defaultSelectionFor, intent?.listingId, catalog, isDemo, t],
   );
   const adjustExtra = useCallback((sku: string, patch: ExtraSelection) => {
     setExtraSel((prev) => ({ ...prev, [sku]: { ...prev[sku], ...patch } }));
@@ -721,6 +760,17 @@ export default function CheckoutPage() {
       : flexConfig.price
     : 0;
   const flexPrice = flexSelected && flexConfig ? flexUnit : 0;
+  // M2 (auditoria set/2026): mudar para um plano mais barato abaixo do limiar
+  // escondia o bloco do Flex mas deixava os 250 € presos no total — e o
+  // servidor cobrava-os. Abaixo do limiar, o Flex sai sozinho.
+  useEffect(() => {
+    if (!flexSelected || !flexConfig || !effective) return;
+    if (effective.total < flexConfig.minTotal) {
+      setFlexSelected(false);
+      syncIntent({ flex: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flexSelected, flexConfig?.minTotal, effective?.total]);
   // Total de hoje: tudo o que tem preço fixo num só número (§7)
   const todayTotal = (effective?.total ?? 0) + receptionAmt + extrasTotal + flexPrice;
   const animatedTotal = useCountUp(todayTotal);
@@ -788,9 +838,22 @@ export default function CheckoutPage() {
    *  escolha fica visível no resumo e pode ser mudada com "voltar". */
   const skipCustomize = useCallback(() => {
     const choice: ReceptionChoice = receptionChoice ?? { type: "self" };
-    if (!receptionChoice) setReceptionChoice(choice);
+    if (!receptionChoice) {
+      setReceptionChoice(choice);
+      // M11: o caminho por omissão (a maioria) nunca emitia reception_selected
+      // — o attach rate da receção presencial media contra um denominador errado
+      if (!isDemo) {
+        pushDL({
+          event: "reception_selected",
+          reception_type: "self",
+          reception_late: false,
+          reception_default: true,
+          property_id: intent?.listingId,
+        });
+      }
+    }
     continueToPay(choice);
-  }, [receptionChoice, continueToPay]);
+  }, [receptionChoice, continueToPay, isDemo, intent?.listingId]);
 
   /** H3 (auditoria set/2026): os debounces de extras (600ms) e dados do
    *  hóspede (800ms) podem ainda não ter gravado quando o Pagar é clicado — e
@@ -932,6 +995,10 @@ export default function CheckoutPage() {
         guestPhone: phone,
         // 2b: o cartão v2 cobra o todayTotal (estadia + serviços) num só PI
         totalCents: Math.round(todayTotal * 100),
+        // M12 (auditoria set/2026): sem isto o item da casa ia sem preço nem
+        // quantidade no purchase do cartão
+        nightlyRateCents: effective ? Math.round(effective.nightlyRate * 100) : undefined,
+        nights: quote?.nights,
         currency: "EUR",
         couponCode: quote?.couponCode || undefined,
         purchaseItems,
@@ -940,7 +1007,7 @@ export default function CheckoutPage() {
       void utils.checkout.getIntent.invalidate({ intentId: intent.id });
       navigate(`/booking/thank-you/${rid}?method=card`);
     },
-    [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, todayTotal, quote?.couponCode, purchaseItems, syncIntent, navigate],
+    [intent, displayName, checkIn, checkOut, guests, firstName, lastName, email, phone, todayTotal, effective, quote?.nights, quote?.couponCode, purchaseItems, syncIntent, navigate],
   );
 
   // M5 (auditoria set/2026): regresso de um redirect 3DS do banco. O Stripe
@@ -1131,9 +1198,22 @@ export default function CheckoutPage() {
       ))}
       {/* Flex */}
       {flexSelected && flexConfig && (
-        <div className="flex justify-between body-sm text-inherit checkout-row-in">
-          <span className="text-pa-gold font-medium">{t("checkout.flex.title", "Flex — guaranteed rebooking")}</span>
-          <span className="text-pa-dark tabular-nums">{formatQuotedEur(flexUnit, lang)}</span>
+        <div className="flex justify-between items-center gap-2 body-sm text-inherit checkout-row-in">
+          <span className="flex items-center gap-1.5 text-pa-gold font-medium min-w-0">
+            {/* M2 (auditoria set/2026): a linha do Flex não tinha remover — se o
+                bloco desaparecesse (total abaixo do limiar) os 250 € ficavam
+                presos no total sem forma de sair */}
+            <button
+              type="button"
+              onClick={() => { setFlexSelected(false); syncIntent({ flex: false }); }}
+              aria-label={`${t("checkout.remove", "Remove")}: ${t("checkout.flex.title", "Flex")}`}
+              className="shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-pa-stone-aa hover:text-pa-dark hover:bg-pa-sand transition-colors"
+            >
+              <X className="w-3 h-3" />
+            </button>
+            <span className="truncate">{t("checkout.flex.title", "Flex — guaranteed rebooking")}</span>
+          </span>
+          <span className="text-pa-dark tabular-nums shrink-0">{formatQuotedEur(flexUnit, lang)}</span>
         </div>
       )}
       <div className="flex justify-between items-baseline border-t border-pa-sand pt-2.5">
@@ -1193,6 +1273,11 @@ export default function CheckoutPage() {
           </div>
           {couponError && (
             <p className="caption text-pa-earth">{t("checkout.coupon.invalid", "Code not recognized. Check it and try again.")}</p>
+          )}
+          {couponDropped && !couponError && (
+            <p className="caption text-pa-earth" role="status">
+              {t("checkout.coupon.dropped", { code: couponDropped, defaultValue: "Code {{code}} no longer applies to these dates." })}
+            </p>
           )}
         </div>
       )}

@@ -649,11 +649,16 @@ export default function CustomizeStep({
       <div className="rounded-xl bg-pa-warm border border-pa-sand p-5 space-y-4">
         <h1 className="headline-md text-pa-dark">{t('conversion.extrasTitle')}</h1>
         <p className="body-sm text-pa-earth">{t('conversion.extrasIntro')}</p>
-        <button type="button" onClick={onSkip} className="btn-primary w-full">{t('conversion.continuePay')}</button>
-        {!receptionChoice && <p className="caption text-pa-earth">{t('conversion.skipNote')}</p>}
       </div>
       {!showFullCatalog && <div className="space-y-6 mt-6">
         {reception && <ReceptionChoiceCards config={reception} choice={receptionChoice} lang={lang} onChoose={onChooseReception} nudge={receptionNudge} />}
+        {/* M1 (auditoria set/2026): o CTA vivia ACIMA da receção — a escolha
+            obrigatória da spec §5.2 era saltada sem sequer ser vista. Abaixo
+            dela, o caminho natural passa pelos cartões primeiro. */}
+        <div className="space-y-2">
+          <button type="button" onClick={onSkip} className="btn-primary w-full">{t('conversion.continuePay')}</button>
+          {!receptionChoice && <p className="caption text-pa-earth">{t('conversion.skipNote')}</p>}
+        </div>
         <div className="rounded-xl border border-pa-sand divide-y divide-pa-sand overflow-hidden">
           {suggestions.map(item => <OptionRow key={item.sku} item={item} sel={selection[item.sku]} lang={lang} guests={guests} nights={nights} onToggle={onToggle} onAdjust={onAdjust} />)}
         </div>

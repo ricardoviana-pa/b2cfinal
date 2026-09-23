@@ -1711,7 +1711,8 @@
       "rule5": "Los extras se trasladan con su reserva cuando el servicio lo permite; si no, su importe también se convierte en crédito.",
       "rule6": "Flex solo se adquiere en el pago y no es reembolsable.",
       "honesty": "Si cancela dentro de la ventana de cancelación gratuita de su tarifa, le devolvemos el dinero según la política. Flex nunca sustituye ese derecho, añade protección más allá de él.",
-      "percentNote": "10% del total de las noches, pago único"
+      "percentNote": "10% del total de las noches, pago único",
+      "copyNoWindow": "Los planes pueden cambiar. Con Flex, el importe que paga nunca se pierde: cambie las fechas hasta {{days}} días antes del check-in."
     },
     "curatedFor": "Seleccionado para {{property}}",
     "todayTotal": "Total",

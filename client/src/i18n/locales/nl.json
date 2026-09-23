@@ -1711,7 +1711,8 @@
       "rule5": "Extra's verhuizen mee wanneer de service het toelaat; anders wordt hun bedrag ook tegoed.",
       "rule6": "Flex is alleen bij het afrekenen verkrijgbaar en niet restitueerbaar.",
       "honesty": "Annuleert u binnen het gratis annuleringsvenster van uw tarief, dan betalen we uw geld terug volgens het beleid. Flex vervangt dat recht nooit, het voegt bescherming toe daarbuiten.",
-      "percentNote": "10% van het totaal van de nachten, eenmalig"
+      "percentNote": "10% van het totaal van de nachten, eenmalig",
+      "copyNoWindow": "Plannen kunnen veranderen. Met Flex gaat het betaalde bedrag nooit verloren: boek om tot {{days}} dagen voor check-in."
     },
     "curatedFor": "Geselecteerd voor {{property}}",
     "todayTotal": "Totaal",
