@@ -100,6 +100,8 @@ interface QuoteData {
   priceOnRequest?: boolean;
   fallbackMessage?: string;
   source?: "live" | "cached" | "base" | "request";
+  /** Casa em "reserva por pedido" no Guesty nestas datas — não é falha */
+  requestOnly?: boolean;
   /** Timestamp when the BE quote was created — valid for 24h */
   quoteCreatedAt?: number;
 }
@@ -526,7 +528,7 @@ export default function BookingWidget({
         !!(d as any).quoteId && ((d as any).source === "live" || (d as any).source === "cached");
       // Sem quote comprável (fallback/base/request/sem preço) → um retry
       // automático antes de renderizar o estado de falha.
-      if (!isBookable && scheduleAutoRetry()) return;
+      if (!isBookable && !(d as any).requestOnly && scheduleAutoRetry()) return;
 
       if (effectiveTotal <= 0 || effectiveNightly <= 0) {
         // No price at all — show request-only flow
@@ -534,6 +536,7 @@ export default function BookingWidget({
           nightlyRate: 0, totalNights: 0, cleaningFee: 0, total: 0,
           nights: d.nights,
           priceOnRequest: true,
+          requestOnly: !!(d as any).requestOnly,
           source: (d as any).source || "request",
           fallbackMessage: (d as any).fallbackMessage || t("bookingWidget.priceOnRequestTitle"),
         });
@@ -1177,15 +1180,27 @@ export default function BookingWidget({
         {/* Step: PRICING UNAVAILABLE — no confirmed live price; never show an estimate */}
         {step === "quote" && !hasLivePrice && (
           <>
+            {quote?.requestOnly ? (
+              <div className="p-3 bg-pa-warm border border-pa-sand" role="status">
+                <p className="caption text-inherit text-pa-dark leading-snug font-medium">
+                  {t("bookingWidget.requestOnlyTitle", "This home is booked on request for these dates.")}
+                </p>
+                <p className="caption text-inherit text-pa-earth leading-snug mt-1">
+                  {t("bookingWidget.requestOnlyBody", "Send your request to our concierge and we will confirm availability and price personally.")}
+                </p>
+              </div>
+            ) : (
             <div className="flex items-start gap-2 p-3 bg-red-50/70 border border-red-200/50" role="alert">
               <span className="text-red-500 mt-0.5 shrink-0 font-medium caption text-inherit">!</span>
               <p className="text-red-600 leading-snug caption text-inherit font-medium">
                 {t("bookingWidget.pricingUnavailableMessage", "We couldn't confirm pricing for these dates. Please contact a Concierge.")}
               </p>
             </div>
+            )}
 
             {/* Falhas de pricing são muitas vezes transitórias: tentar de novo
                 primeiro; o concierge fica como segunda via (auditoria set/2026) */}
+            {!quote?.requestOnly && (
             <button
               type="button"
               onClick={retryQuote}
@@ -1198,6 +1213,7 @@ export default function BookingWidget({
                 t("bookingWidget.tryAgain", "Try again")
               )}
             </button>
+            )}
 
             <a
               href={`https://wa.me/351927161771?text=${encodeURIComponent(

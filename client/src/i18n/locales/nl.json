@@ -372,7 +372,9 @@
     "reserve": "RESERVEREN",
     "arrivalsRule": "Verblijven starten op {{days}} · minimaal {{count}} nachten",
     "nextArrivals": "Eerstvolgende beschikbare data",
-    "tryAgain": "Opnieuw proberen"
+    "tryAgain": "Opnieuw proberen",
+    "requestOnlyTitle": "Voor deze data wordt dit huis op aanvraag geboekt.",
+    "requestOnlyBody": "Stuur uw aanvraag naar onze concierge en wij bevestigen beschikbaarheid en prijs persoonlijk."
   },
   "common": {
     "loading": "Laden…",

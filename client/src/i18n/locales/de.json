@@ -372,7 +372,9 @@
     "reserve": "RESERVIEREN",
     "arrivalsRule": "Aufenthalte beginnen {{days}} · mindestens {{count}} Nächte",
     "nextArrivals": "Nächste verfügbare Daten",
-    "tryAgain": "Erneut versuchen"
+    "tryAgain": "Erneut versuchen",
+    "requestOnlyTitle": "Für diese Daten wird dieses Haus auf Anfrage gebucht.",
+    "requestOnlyBody": "Senden Sie Ihre Anfrage an unseren Concierge, wir bestätigen Verfügbarkeit und Preis persönlich."
   },
   "common": {
     "loading": "Wird geladen…",

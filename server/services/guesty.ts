@@ -31,6 +31,23 @@ function getCachedQuote(key: string): QuoteResult | null {
   return item.value;
 }
 
+/** Mensagem legível de um erro do Guesty. O GuestyClientError às vezes traz
+ *  um objeto em `message` e os logs mostravam "[object Object]" (Eben Lodge). */
+export function describeGuestyError(err: any): string {
+  const pick = (v: unknown): string =>
+    typeof v === "string" ? v : v == null ? "" : (() => { try { return JSON.stringify(v); } catch { return String(v); } })();
+  const msg = pick(err?.message);
+  const details = err?.details != null ? pick(err.details) : "";
+  const status = err?.status != null ? `HTTP ${err.status}` : "";
+  const out = [status, msg && msg !== "[object Object]" ? msg : "", details].filter(Boolean).join(" · ");
+  return (out || pick(err) || "unknown error").slice(0, 500);
+}
+
+/** O Guesty responde assim quando a casa está em "reserva por pedido" nas datas. */
+export function isRequestOnlyError(reason: string): boolean {
+  return /only available by request/i.test(reason);
+}
+
 function setCachedQuote(key: string, value: QuoteResult): void {
   // Never cache "price on request" (failed) results — allow immediate retry
   if (value.source === "request") return;
@@ -109,6 +126,8 @@ export interface QuoteResult {
   };
   source?: QuoteSource;
   fallbackMessage?: string;
+  /** A casa é reservada por pedido nestas datas (config do Guesty) — não é falha */
+  requestOnly?: boolean;
   /** Present when source is "live" or "cached" — the BE quote ID for payment processing. */
   quoteId?: string;
   ratePlanId?: string;
@@ -168,7 +187,7 @@ export async function getQuote(
   const promise = _getQuoteImpl(listingId, checkIn, checkOut, guests, cacheKey)
     .then((r) => {
       // Saúde do BE: só resultados frescos contam (cache hits saem acima)
-      recordQuoteOutcome(r.source === "live", listingId);
+      recordQuoteOutcome(r.source === "live" || !!r.requestOnly, listingId);
       return r;
     })
     .finally(() => {
@@ -196,16 +215,25 @@ async function _getQuoteImpl(
   if (isBEApiConfigured()) {
     try {
       let beQuote: Awaited<ReturnType<typeof createBEQuote>> | null = null;
+      // Orçamento de tempo partilhado pelas tentativas: o router corta a quote
+      // aos 20s, e um retry cego (12s + 12s) passava esse prazo — a casa caía
+      // em "price on request" precisamente quando o Guesty estava lento.
+      const budgetEnd = Date.now() + 17_000;
       for (let attempt = 1; attempt <= 2; attempt++) {
+        const timeoutMs = Math.min(12_000, budgetEnd - Date.now());
         try {
           beQuote = await Promise.race([
             createBEQuote({ listingId, checkIn, checkOut, guests }),
-            new Promise<never>((_, reject) => setTimeout(() => reject(new Error("be_quote_timeout")), 12_000)),
+            new Promise<never>((_, reject) => setTimeout(() => reject(new Error("be_quote_timeout")), timeoutMs)),
           ]);
           break;
         } catch (attemptErr: any) {
-          if (attempt === 2) throw attemptErr;
-          console.warn(`[getQuote] BE tentativa ${attempt} falhou para ${listingId} (${attemptErr?.message || attemptErr}); retry em 1.2s`);
+          const reason = describeGuestyError(attemptErr);
+          // Respostas definitivas do Guesty não melhoram com retry
+          if (isRequestOnlyError(reason) || /not available for the selected dates/i.test(reason)) throw attemptErr;
+          const remaining = budgetEnd - Date.now() - 1_200;
+          if (attempt === 2 || remaining < 5_000) throw attemptErr;
+          console.warn(`[getQuote] BE tentativa ${attempt} falhou para ${listingId} (${reason}); retry em 1.2s`);
           await new Promise((r) => setTimeout(r, 1_200));
         }
       }
@@ -235,7 +263,14 @@ async function _getQuoteImpl(
         return result;
       }
     } catch (beErr: any) {
-      console.warn(`[getQuote] BE API FAILED for ${listingId}: ${beErr?.message || beErr}`);
+      const reason = describeGuestyError(beErr);
+      console.warn(`[getQuote] BE API FAILED for ${listingId}: ${reason}`);
+      // Casa configurada no Guesty como "reserva por pedido" nestas datas:
+      // não é avaria nem ausência de preço — o widget mostra o pedido ao
+      // concierge como caminho normal, em vez de "não conseguimos confirmar".
+      if (isRequestOnlyError(reason)) {
+        return { ...buildPriceOnRequestResult(listingId, checkIn, checkOut, guests), requestOnly: true };
+      }
     }
   }
 

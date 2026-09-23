@@ -372,7 +372,9 @@
     "reserve": "RÉSERVER",
     "arrivalsRule": "Séjours du {{days}} · minimum {{count}} nuits",
     "nextArrivals": "Prochaines dates disponibles",
-    "tryAgain": "Réessayer"
+    "tryAgain": "Réessayer",
+    "requestOnlyTitle": "Pour ces dates, cette maison se réserve sur demande.",
+    "requestOnlyBody": "Envoyez votre demande à notre concierge et nous confirmerons personnellement la disponibilité et le prix."
   },
   "common": {
     "loading": "Chargement…",

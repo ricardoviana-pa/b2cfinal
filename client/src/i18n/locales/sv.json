@@ -372,7 +372,9 @@
     "reserve": "RESERVERA",
     "arrivalsRule": "Vistelser börjar {{days}} · minst {{count}} nätter",
     "nextArrivals": "Nästa lediga datum",
-    "tryAgain": "Försök igen"
+    "tryAgain": "Försök igen",
+    "requestOnlyTitle": "För dessa datum bokas detta hem på förfrågan.",
+    "requestOnlyBody": "Skicka din förfrågan till vår concierge så bekräftar vi tillgänglighet och pris personligen."
   },
   "common": {
     "loading": "Laddar…",

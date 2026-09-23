@@ -372,7 +372,9 @@
     "reserve": "VARAA",
     "arrivalsRule": "Oleskelut alkavat {{days}} · vähintään {{count}} yötä",
     "nextArrivals": "Seuraavat vapaat päivät",
-    "tryAgain": "Yritä uudelleen"
+    "tryAgain": "Yritä uudelleen",
+    "requestOnlyTitle": "Näinä päivinä tämä koti varataan pyynnöstä.",
+    "requestOnlyBody": "Lähetä pyyntösi conciergellemme, niin vahvistamme saatavuuden ja hinnan henkilökohtaisesti."
   },
   "common": {
     "loading": "Ladataan…",

@@ -372,7 +372,9 @@
     "reserve": "RESERVE",
     "arrivalsRule": "Stays start on {{days}} · minimum {{count}} nights",
     "nextArrivals": "Next available dates",
-    "tryAgain": "Try again"
+    "tryAgain": "Try again",
+    "requestOnlyTitle": "This home is booked on request for these dates.",
+    "requestOnlyBody": "Send your request to our concierge and we will confirm availability and price personally."
   },
   "common": {
     "loading": "Loading…",

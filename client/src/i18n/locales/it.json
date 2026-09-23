@@ -372,7 +372,9 @@
     "reserve": "PRENOTA",
     "arrivalsRule": "I soggiorni iniziano {{days}} · minimo {{count}} notti",
     "nextArrivals": "Prossime date disponibili",
-    "tryAgain": "Riprova"
+    "tryAgain": "Riprova",
+    "requestOnlyTitle": "Per queste date, questa casa si prenota su richiesta.",
+    "requestOnlyBody": "Invia la tua richiesta al nostro concierge e confermeremo personalmente disponibilità e prezzo."
   },
   "common": {
     "loading": "Caricamento…",
