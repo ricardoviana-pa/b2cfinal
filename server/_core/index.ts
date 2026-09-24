@@ -20,6 +20,7 @@ import { registerRecoveryOptoutRoute } from "../routes/checkout-recovery-optout"
 import { registerStripePayPalWebhookRoute } from "../routes/stripe-paypal-webhook";
 import { registerStripeKlarnaWebhookRoute } from "../routes/stripe-klarna-webhook";
 import { registerStripeCardWebhookRoute } from "../routes/stripe-card-webhook";
+import { registerVitalsRoute } from "../routes/vitals";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -134,6 +135,7 @@ async function startServer() {
   registerBookingRoutes(app);
   // Bloco 2: opt-out dos lembretes de recuperação (link no rodapé dos emails)
   registerRecoveryOptoutRoute(app);
+  registerVitalsRoute(app);
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
   registerDevAuthRoutes(app);
@@ -503,6 +505,35 @@ ${allUrls.join("\n")}
     }
   } catch (migErr: any) {
     console.warn("[Migration] property_referrals:", migErr.message);
+  }
+
+  // Field Core Web Vitals (server/routes/vitals.ts). Anonymous rows, kept 90 days.
+  try {
+    const { getDb } = await import("../db");
+    const db = await getDb();
+    if (db) {
+      await (db as any).execute(`
+        CREATE TABLE IF NOT EXISTS \`web_vitals\` (
+          \`id\` int AUTO_INCREMENT NOT NULL,
+          \`metric\` varchar(8) NOT NULL,
+          \`value\` double NOT NULL,
+          \`rating\` varchar(20) NOT NULL,
+          \`page\` varchar(80) NOT NULL,
+          \`lang\` varchar(2) NOT NULL DEFAULT '',
+          \`device\` varchar(10) NOT NULL,
+          \`conn\` varchar(8),
+          \`target\` varchar(200),
+          \`detail\` text,
+          \`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          PRIMARY KEY(\`id\`),
+          INDEX \`idx_web_vitals_metric_created\` (\`metric\`, \`createdAt\`)
+        )
+      `);
+      await (db as any).execute("DELETE FROM `web_vitals` WHERE `createdAt` < NOW() - INTERVAL 90 DAY");
+      console.info("[Migration] web_vitals table OK");
+    }
+  } catch (migErr: any) {
+    console.warn("[Migration] web_vitals:", migErr.message);
   }
 
   // Checkout 2.0 (Fase 1): booking_intents — server-side checkout state.

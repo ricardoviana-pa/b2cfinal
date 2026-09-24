@@ -10,6 +10,7 @@ import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
 import { installContactClickTracking } from "@/lib/datalayer";
+import { startVitals } from "@/lib/vitals";
 
 // We deploy many times a day and the edge caches HTML for only ~60s, but a tab
 // left open keeps running its old bundle indefinitely — and its next lazy-route
@@ -18,6 +19,9 @@ import { installContactClickTracking } from "@/lib/datalayer";
 // The sessionStorage flag stops a reload loop if the failure is anything else
 // (e.g. offline): one automatic attempt per session, then let it fail visibly.
 installContactClickTracking();
+// Field LCP/INP with attribution → /api/vitals (anonymous; see lib/vitals.ts).
+// web-vitals reads buffered entries, so its chunk can load lazily.
+startVitals();
 
 window.addEventListener("vite:preloadError", (event) => {
   const last = Number(sessionStorage.getItem("chunk-reload-at") || 0);

@@ -7,6 +7,8 @@ import {
   varchar,
   boolean,
   json,
+  double,
+  index,
 } from "drizzle-orm/mysql-core";
 
 /* ================================================================
@@ -494,3 +496,23 @@ export const bookingIntents = mysqlTable("booking_intents", {
 
 export type BookingIntent = typeof bookingIntents.$inferSelect;
 export type InsertBookingIntent = typeof bookingIntents.$inferInsert;
+
+/* ================================================================
+   WEB VITALS — anonymous field Core Web Vitals (client/src/lib/vitals.ts,
+   server/routes/vitals.ts). No ids, no cookies; pruned after 90 days.
+   ================================================================ */
+export const webVitals = mysqlTable("web_vitals", {
+  id: int("id").autoincrement().primaryKey(),
+  metric: varchar("metric", { length: 8 }).notNull(),
+  value: double("value").notNull(),
+  rating: varchar("rating", { length: 20 }).notNull(),
+  page: varchar("page", { length: 80 }).notNull(),
+  lang: varchar("lang", { length: 2 }).notNull().default(""),
+  device: varchar("device", { length: 10 }).notNull(),
+  conn: varchar("conn", { length: 8 }),
+  target: varchar("target", { length: 200 }),
+  detail: text("detail"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (t) => [index("idx_web_vitals_metric_created").on(t.metric, t.createdAt)]);
+
+export type InsertWebVital = typeof webVitals.$inferInsert;

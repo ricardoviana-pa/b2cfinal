@@ -33,7 +33,8 @@
     "codemod:tokens": "node scripts/codemod-tokens.mjs",
     "i18n:check": "node scripts/sync-i18n.mjs && node scripts/i18n-missing.mjs --all",
     "audit:quotes": "node scripts/quote-health.mjs",
-    "report:recovery": "tsx scripts/recovery-report.ts"
+    "report:recovery": "tsx scripts/recovery-report.ts",
+    "report:vitals": "tsx scripts/vitals-report.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",
@@ -110,6 +111,7 @@
     "superjson": "^1.13.3",
     "tailwind-merge": "^3.3.1",
     "vaul": "^1.1.2",
+    "web-vitals": "^5.3.0",
     "wouter": "^3.3.5",
     "zod": "^4.1.12"
   },

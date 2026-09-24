@@ -20,6 +20,7 @@ import {
   customerTrips, InsertCustomerTrip,
   propertyReferrals, InsertPropertyReferral,
   bookingIntents, InsertBookingIntent, BookingIntent,
+  webVitals, InsertWebVital,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -1058,4 +1059,11 @@ export async function claimRecoveryStage(
     console.error("[Database] claimRecoveryStage failed:", error);
     return false;
   }
+}
+
+/** Store validated field Core Web Vitals rows (server/routes/vitals.ts). */
+export async function insertWebVitals(rows: InsertWebVital[]): Promise<void> {
+  const db = await getDb();
+  if (!db || !rows.length) return;
+  await db.insert(webVitals).values(rows);
 }
