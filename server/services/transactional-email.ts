@@ -12,6 +12,7 @@ import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
 import {
   emailLang,
   skuNameFor,
+  cleaningFeeLabel,
   INTL_TAG,
   RECOVERY_I18N,
   CONFIRMATION_I18N,
@@ -76,7 +77,7 @@ ${content}
 <tr><td style="padding:30px 0 0 0;"><div style="height:1px;background:#8B7355;"></div></td></tr>
 
 <!-- Footer -->
-${brandFooter(pt)}
+${brandFooter(legacyTagline(pt))}
 
 </table>
 </td></tr>
@@ -487,7 +488,9 @@ export async function sendContactInquiryNotification(data: ContactInquiryData): 
    Two-touch abandonment sequence: a gentle reminder ~1h after the
    guest leaves, and a guaranteed-price nudge ~20h in (the Guesty
    quote dies at ~23h, so the urgency is real, per spec §2).
-   PT copy when the intent locale is pt; EN for everything else.
+   Every visible word follows the intent locale (9 languages, EN
+   fallback): copy in recovery-copy.ts and email-i18n.ts, labels of the
+   stay card as the checkout showed them, footer tagline included.
    ================================================================ */
 interface CheckoutRecoveryData {
   guestEmail: string;
@@ -546,8 +549,14 @@ const PA = {
  *  Auto-hospedada: o CDN da plataforma original morreu a 24 ago 2026. */
 const BRAND_BAND_URL = "https://www.portugalactive.com/email/brand-band.png";
 
+/** Tagline antiga, só PT ou EN, dos emails que ainda não a pedem por língua.
+ *  O email de recuperação usa RECOVERY_I18N[lang].footerTagline. */
+function legacyTagline(pt: boolean): string {
+  return pt ? "A privacidade de uma casa. O serviço de um hotel." : "The privacy of a home. The service of a hotel.";
+}
+
 /** Rodapé de marca partilhado: hairline dourada, badge, contactos, tagline */
-function brandFooter(pt: boolean): string {
+function brandFooter(tagline: string): string {
   return `
 <tr><td style="padding:30px 20px 36px;text-align:center;">
   <div style="height:1px;background:#C9A96A;opacity:.5;max-width:120px;margin:0 auto 22px;"></div>
@@ -557,7 +566,7 @@ function brandFooter(pt: boolean): string {
     &nbsp;·&nbsp;<a href="mailto:booking@portugalactive.com" style="color:#8B7355;text-decoration:none;">booking@portugalactive.com</a>
     &nbsp;·&nbsp;<a href="https://wa.me/351927161771" style="color:#8B7355;text-decoration:none;">WhatsApp</a>
   </p>
-  <p style="font-family:Georgia,serif;font-style:italic;font-size:12.5px;color:#9E9A90;margin:10px 0 0;">${pt ? "A privacidade de uma casa. O serviço de um hotel." : "The privacy of a home. The service of a hotel."}</p>
+  <p style="font-family:Georgia,serif;font-style:italic;font-size:12.5px;color:#9E9A90;margin:10px 0 0;">${tagline}</p>
 </td></tr>`;
 }
 /** Signature block: the region's concierge when confirmed (name + photo),
@@ -679,7 +688,7 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
       </tr>`;
   let priceLines = "";
   if (q.nights && q.totalNights != null) priceLines += line(`${q.nights} ${T.nightsLabel}`, eur(q.totalNights, lang));
-  if (q.cleaningFee && q.cleaningFee > 0) priceLines += line("Service fee", eur(q.cleaningFee, lang));
+  if (q.cleaningFee && q.cleaningFee > 0) priceLines += line(cleaningFeeLabel(lang), eur(q.cleaningFee, lang));
   if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(T.taxesLabel, eur(q.taxesAndFees, lang));
   if (gift) priceLines += line(F.flexIncluded, `<s style="color:${PA.stoneAA};">${eur(gift.value, lang)}</s> &nbsp;${eur(0, lang)}`, true);
   const total = q.total ?? data.total;
@@ -698,7 +707,7 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
   </td></tr>
   ${priceLines ? `<tr><td style="padding:14px 24px 0 24px;"><table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">${priceLines}</table></td></tr>` : ""}
   ${total ? `<tr><td style="padding:10px 24px 0 24px;"><table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-top:1px solid ${PA.sand};"><tr>
-    <td style="padding:12px 0 0 0;font-family:${SANS};font-size:14px;font-weight:500;color:${PA.dark};">Total</td>
+    <td style="padding:12px 0 0 0;font-family:${SANS};font-size:14px;font-weight:500;color:${PA.dark};">${LEGACY_I18N[lang].totalLabel}</td>
     <td style="padding:12px 0 0 0;font-family:${SANS};font-size:21px;color:${PA.dark};text-align:right;">${eur(total, lang)}</td>
   </tr></table></td></tr>` : ""}
   ${until ? `<tr><td style="padding:14px 24px 0 24px;"><p style="font-family:${SANS};font-size:11.5px;color:${PA.gold};line-height:1.5;margin:0;">${T.guaranteedUntil} ${until}</p></td></tr>` : ""}
@@ -770,7 +779,7 @@ ${altBlock}
   <p style="font-family:${SANS};font-size:13.5px;color:${PA.earth};line-height:1.6;margin:0;">${personal}</p>
   ${conciergeSignature(lang, data.destination)}
 </td></tr>
-${brandFooter(lang === "pt")}
+${brandFooter(T.footerTagline)}
 ${optout}
 </table>
 </td></tr>
@@ -1113,7 +1122,7 @@ ${ctaBlock}
 </td></tr>
 
 <!-- Footer -->
-${brandFooter(lang === "pt")}
+${brandFooter(legacyTagline(lang === "pt"))}
 
 </table>
 </td></tr>
