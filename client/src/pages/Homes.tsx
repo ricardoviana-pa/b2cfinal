@@ -1128,6 +1128,30 @@ export default function Homes() {
                   </button>
                 </div>
               )}
+              {/* The grid shows 12 cards until "show all"; the rest are named
+                  here as plain links, so every home has a crawlable path from
+                  the catalogue in the served HTML (only 12 of 93 did,
+                  auditoria set/2026). Gone once the full grid is open. */}
+              {!showAll && availableProperties.length > 12 && (
+                <nav aria-labelledby="more-homes-index" className="mt-10 border-t border-pa-sand pt-6">
+                  <h2 id="more-homes-index" className="caption uppercase tracking-wider text-pa-stone-aa mb-3">
+                    {t('homes.moreHomesIndex', 'More homes')}
+                  </h2>
+                  <ul className="columns-1 sm:columns-2 lg:columns-3 gap-x-8 body-sm">
+                    {availableProperties.slice(12).map((property) => (
+                      <li key={property.id} className="break-inside-avoid py-1">
+                        <Link
+                          href={`/homes/${property.slug}`}
+                          className="text-pa-dark underline-offset-4 hover:underline"
+                        >
+                          {getDisplayName(property)}
+                        </Link>
+                        {property.locality && <span className="text-pa-stone-aa"> · {property.locality}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              )}
             </>
           )}
 

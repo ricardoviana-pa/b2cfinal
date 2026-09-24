@@ -154,6 +154,7 @@
     "noneAvailableHint": "Prova att justera datumen eller prata med vår concierge",
     "availableSection": "Tillgängliga för dina datum",
     "showAll": "Visa alla hem",
+    "moreHomesIndex": "Fler hus",
     "unavailableSection": "Inte tillgängliga för valda datum",
     "unavailableHint": "Dessa hem kan vara tillgängliga andra datum. Kontakta vår concierge för alternativ."
   },
