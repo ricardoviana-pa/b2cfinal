@@ -202,7 +202,7 @@ export default function ExperienceDetail() {
       ? `${exp.name} | ${t('experienceDetail.metaTitleSuffix')}`
       : t('experienceDetail.metaNotFound'),
     description: exp
-      ? `${exp.tagline || exp.name}. ${t('experienceDetail.metaDescriptionSuffix')}`.slice(0, 155)
+      ? (exp as { seoDescription?: string }).seoDescription || `${exp.tagline || exp.name}. ${t('experienceDetail.metaDescriptionSuffix')}`.slice(0, 155)
       : undefined,
     image: exp?.image,
     url: exp ? `/experiences/${exp.slug}` : undefined,
