@@ -188,6 +188,26 @@ async function getExperienceBySlugCached(slug: string): Promise<any | null> {
   return _experienceSlugMap.data.get(slug) ?? null;
 }
 
+/** Experience details are authored in English; experienceDetails.i18n/<lang>.json
+ *  holds the per-language fields (name, tagline, seoDescription…). The meta
+ *  path read only the English file, so /pt and /es experience pages served an
+ *  English title and description (auditoria set/2026). */
+const _experienceOverrides = new Map<string, { expiresAt: number; data: Record<string, any> }>();
+function localizeExperienceForMeta(exp: any, lang: string): any {
+  if (!exp?.slug || lang === "en") return exp;
+  let cached = _experienceOverrides.get(lang);
+  if (!cached || Date.now() > cached.expiresAt) {
+    let data: Record<string, any> = {};
+    try {
+      data = JSON.parse(fs.readFileSync(path.join(process.cwd(), "client", "src", "data", "experienceDetails.i18n", `${lang}.json`), "utf-8"));
+    } catch { data = {}; }
+    cached = { expiresAt: Date.now() + DYNAMIC_META_TTL_MS, data };
+    _experienceOverrides.set(lang, cached);
+  }
+  const ov = cached.data[exp.slug];
+  return ov ? deepMerge(exp, ov) : exp;
+}
+
 /** Blog articles live in client/src/data/blog.json (NOT the DB); per-locale
  *  overrides in client/src/data/blog.i18n/<lang>.json (slug → fields). Returns
  *  the article with the active language's title/excerpt/content/seo* applied so
@@ -375,7 +395,7 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
     en: { title: 'Private Hotels in Portugal | Portugal Active',
           description: '{{homes}} private hotels across Minho, Porto, Douro, Lisbon, Alentejo and Algarve. The privacy of a home, the service of a hotel: concierge, private chef, housekeeping. Book direct.' },
     pt: { title: 'Hotéis Privados em Portugal | Portugal Active',
-          description: '{{homes}} hotéis privados no Minho, Porto, Douro, Lisboa, Alentejo e Algarve. A privacidade de uma casa, o serviço de um hotel: concierge, chef privado, limpeza. Reserve direto.' },
+          description: 'Hotéis privados no Minho, Porto, Douro, Lisboa, Alentejo e Algarve. A privacidade de uma casa, o serviço de um hotel, com concierge e chef privado.' },
     es: { title: 'Hoteles Privados en Portugal | Portugal Active',
           description: '{{homes}} hoteles privados en Minho, Oporto, Duero, Lisboa, Alentejo y Algarve. La privacidad de una casa, el servicio de un hotel: concierge, chef privado, limpieza. Reserve directo.' },
     fr: { title: 'Hôtels Privés au Portugal | Portugal Active',
@@ -484,7 +504,7 @@ const PAGE_META: Record<string, Record<string, MetaEntry>> = {
   },
   '/corporate-retreats': {
     en: { title: "Corporate retreats and team building in Portugal | Portugal Active", description: "Bring the team together around a shared table, a working session and time outdoors. Plan a private villa stay or a team event with Portugal Active." },
-    pt: { title: "Eventos de empresa e team building em Portugal | Portugal Active", description: "Junte a equipa à volta de uma mesa, de uma sessão de trabalho e de tempo ao ar livre. Planeie uma estadia numa casa privada ou um evento de equipa com a Portugal Active." },
+    pt: { title: "Eventos de empresa e team building em Portugal | Portugal Active", description: "Junte a equipa à mesa, numa sessão de trabalho e ao ar livre. Planeie uma estadia numa casa privada ou um evento de equipa com a Portugal Active." },
     es: { title: "Eventos de empresa y team building en Portugal | Portugal Active", description: "Reúne al equipo alrededor de una mesa, una sesión de trabajo y tiempo al aire libre. Planea una estancia en una casa privada o un evento con Portugal Active." },
     fr: { title: "Séminaires et team building au Portugal | Portugal Active", description: "Réunissez votre équipe autour d’une table, d’une séance de travail et d’activités en plein air. Organisez un séjour en maison privée ou un événement avec Portugal Active." },
     de: { title: "Firmenreisen und Teambuilding in Portugal | Portugal Active", description: "Bringen Sie Ihr Team an einem Tisch, bei einer Arbeitssitzung und draußen zusammen. Planen Sie einen Aufenthalt im privaten Ferienhaus oder ein Teamevent mit Portugal Active." },
@@ -2071,6 +2091,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
             } catch { /* DB not available, that's OK */ }
           }
           if (exp) {
+            exp = localizeExperienceForMeta(exp, lang);
             const titleFn = EXPERIENCE_TITLE[lang] ?? EXPERIENCE_TITLE.en;
             const descFn = EXPERIENCE_DESCRIPTION[lang] ?? EXPERIENCE_DESCRIPTION.en;
             const destination = exp.destination || (Array.isArray(exp.destinations) ? exp.destinations[0] : '');
@@ -2081,7 +2102,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
             }
             dynamicMeta = {
               title: titleFn({ name: exp.name, destination }),
-              description: truncateWords(descFn({ name: exp.name, tagline: exp.tagline, duration: exp.duration, destination }), 155),
+              description: truncateWords(exp.seoDescription || descFn({ name: exp.name, tagline: exp.tagline, duration: exp.duration, destination }), 155),
               image: expImage,
               url: `${BOT_BASE_URL}/${lang}${p}`,
               schemaDomId: `sd-experience-${exp.slug}`,
@@ -2141,6 +2162,7 @@ export const __testing = {
   DESTINATION_DESCRIPTION,
   truncateWords,
   asSentence,
+  localizeExperienceForMeta,
   DESTINATION_TITLE,
   destLabel,
 };
