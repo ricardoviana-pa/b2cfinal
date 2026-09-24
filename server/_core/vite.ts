@@ -1445,11 +1445,32 @@ const PROPERTY_DESCRIPTION: Record<string, (p: { tagline?: string | null; bedroo
   },
 };
 
+/** "on the Minho Coast", "na Costa do Minho", "en la Costa del Miño" — not
+ *  "in Minho Coast" / "em Costa do Minho" / "en Costa del Miño". */
+function enIn(label: string): string {
+  return /Coast$/.test(label) ? `on the ${label}` : `in ${label}`;
+}
+function ptIn(label: string): string {
+  return /^(Costa|Serra|Ria)\b/.test(label) ? `na ${label}` : `em ${label}`;
+}
+function esIn(label: string): string {
+  return /^(Costa|Sierra|Serra|Ría)\b/.test(label) ? `en la ${label}` : `en ${label}`;
+}
+
+/** Localised experience names usually say where they are already ("Canyoning
+ *  no Gerês", "…na Serra d'Arga"); adding the destination again produced
+ *  "…na Serra d'Arga em Costa do Minho, Portugal" (auditoria set/2026). */
+const NAME_HAS_PLACE = /\s(em|no|na|nos|nas|en|por|in|à|au|im|nel|nella)\s+(?:la\s+|el\s+|the\s+)?[A-ZÁÉÍÓÚÂÊÔ]/;
+function experienceTitle(lang: string, e: { name: string; destination?: string | null }): string {
+  if (NAME_HAS_PLACE.test(e.name)) return `${e.name} | Portugal Active`;
+  return (EXPERIENCE_TITLE[lang] ?? EXPERIENCE_TITLE.en)(e);
+}
+
 /** Experience title template. */
 const EXPERIENCE_TITLE: Record<string, (e: { name: string; destination?: string | null }) => string> = {
-  en: ({ name, destination }) => destination ? `${name} in ${destLabel(destination, 'en')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
-  pt: ({ name, destination }) => destination ? `${name} em ${destLabel(destination, 'pt')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
-  es: ({ name, destination }) => destination ? `${name} en ${destLabel(destination, 'es')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
+  en: ({ name, destination }) => destination ? `${name} ${enIn(destLabel(destination, 'en'))}, Portugal | Portugal Active` : `${name} | Portugal Active`,
+  pt: ({ name, destination }) => destination ? `${name} ${ptIn(destLabel(destination, 'pt'))}, Portugal | Portugal Active` : `${name} | Portugal Active`,
+  es: ({ name, destination }) => destination ? `${name} ${esIn(destLabel(destination, 'es'))}, Portugal | Portugal Active` : `${name} | Portugal Active`,
   fr: ({ name, destination }) => destination ? `${name} à ${destLabel(destination, 'fr')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
   de: ({ name, destination }) => destination ? `${name} in ${destLabel(destination, 'de')}, Portugal | Portugal Active` : `${name} | Portugal Active`,
   it: ({ name, destination }) => destination ? `${name} a ${destLabel(destination, 'it')}, Portogallo | Portugal Active` : `${name} | Portugal Active`,
@@ -2092,7 +2113,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
           }
           if (exp) {
             exp = localizeExperienceForMeta(exp, lang);
-            const titleFn = EXPERIENCE_TITLE[lang] ?? EXPERIENCE_TITLE.en;
+
             const descFn = EXPERIENCE_DESCRIPTION[lang] ?? EXPERIENCE_DESCRIPTION.en;
             const destination = exp.destination || (Array.isArray(exp.destinations) ? exp.destinations[0] : '');
             // Ensure image is a full URL for social sharing
@@ -2101,7 +2122,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
               expImage = `${BOT_BASE_URL}${expImage.startsWith('/') ? '' : '/'}${expImage}`;
             }
             dynamicMeta = {
-              title: titleFn({ name: exp.name, destination }),
+              title: experienceTitle(lang, { name: exp.name, destination }),
               description: truncateWords(exp.seoDescription || descFn({ name: exp.name, tagline: exp.tagline, duration: exp.duration, destination }), 155),
               image: expImage,
               url: `${BOT_BASE_URL}/${lang}${p}`,
@@ -2163,6 +2184,7 @@ export const __testing = {
   truncateWords,
   asSentence,
   localizeExperienceForMeta,
+  experienceTitle,
   DESTINATION_TITLE,
   destLabel,
 };

@@ -8,6 +8,7 @@ import { useParams, Link } from 'wouter';
 import ArticleBody from '@/components/blog/ArticleBody';
 import { blogLanguageRedirect, isBlogLanguagePublished } from '@shared/blogPublication';
 import { useTranslation } from 'react-i18next';
+import { blogAuthorName, blogAuthorRole, blogCategoryLabel } from '@/lib/blogLabels';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
 import { ArrowLeft, Clock, Calendar, Share2, ArrowRight, Play, ExternalLink } from 'lucide-react';
@@ -167,7 +168,7 @@ export default function BlogArticle() {
           <Link href="/blog" className="inline-flex items-center gap-2 text-[0.8125rem] text-[#726D63] hover:text-[#1A1A18] transition-colors mb-8">
             <ArrowLeft className="w-4 h-4" /> {t('blogArticle.backToJournal')}
           </Link>
-          <p className="eyebrow mb-4">{article.category.replace('-', ' ')}</p>
+          <p className="eyebrow mb-4">{blogCategoryLabel(article.category, t)}</p>
           <h1 className="text-[#1A1A18] mb-6">{article.title}</h1>
           <div className="flex flex-wrap items-center gap-4 text-sm text-[#726D63]">
             <span className="flex items-center gap-1.5">
@@ -238,15 +239,15 @@ export default function BlogArticle() {
         <div className="container max-w-3xl mx-auto">
           <div className="flex items-center gap-4">
             {article.author.photo ? (
-              <img src={article.author.photo} alt={article.author.name} className="w-12 h-12 rounded-full object-cover" loading="lazy" width={48} height={48} />
+              <img src={article.author.photo} alt={blogAuthorName(article.author, t)} className="w-12 h-12 rounded-full object-cover" loading="lazy" width={48} height={48} />
             ) : (
               <div className="w-12 h-12 rounded-full bg-[#F5F1EB] flex items-center justify-center">
-                <span className="text-[#8B7355] font-display text-lg">{article.author.name.charAt(0)}</span>
+                <span className="text-[#8B7355] font-display text-lg">{blogAuthorName(article.author, t).charAt(0)}</span>
               </div>
             )}
             <div>
-              <p className="text-sm font-medium text-[#1A1A18]">{article.author.name}</p>
-              <p className="text-xs text-[#726D63]">{article.author.role}</p>
+              <p className="text-sm font-medium text-[#1A1A18]">{blogAuthorName(article.author, t)}</p>
+              <p className="text-xs text-[#726D63]">{blogAuthorRole(article.author, t)}</p>
             </div>
           </div>
         </div>
@@ -337,7 +338,7 @@ export default function BlogArticle() {
                       decoding="async"
                     />
                   </div>
-                  <p className="eyebrow mb-2">{a.category.replace('-', ' ')}</p>
+                  <p className="eyebrow mb-2">{blogCategoryLabel(a.category, t)}</p>
                   <h3 className="text-lg font-display text-[#1A1A18] group-hover:text-[#8B7355] transition-colors line-clamp-2">
                     {a.title}
                   </h3>
