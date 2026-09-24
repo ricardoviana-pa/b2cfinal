@@ -154,6 +154,7 @@
     "noneAvailableHint": "Pruebe a ajustar las fechas o hable con nuestro concierge",
     "availableSection": "Disponibles en sus fechas",
     "showAll": "Mostrar todas las casas",
+    "moreHomesIndex": "Más casas",
     "unavailableSection": "No disponibles en las fechas elegidas",
     "unavailableHint": "Estas casas pueden estar disponibles en otras fechas. Hable con nuestro concierge para alternativas."
   },

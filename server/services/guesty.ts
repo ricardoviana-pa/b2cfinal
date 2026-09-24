@@ -165,12 +165,34 @@ export async function checkAvailability(
   }
 }
 
+/* Casas de portfolio (isPortfolio no Guesty): só montra, sem reserva online.
+   Não se pede preço ao Guesty por elas: falha sempre, gasta quota da API e
+   contava como falha no alarme de fallback. Lista refrescada a cada 10 min. */
+let portfolioCache: { at: number; ids: Set<string> } | null = null;
+export async function isPortfolioListing(listingId: string): Promise<boolean> {
+  if (!portfolioCache || Date.now() - portfolioCache.at > 10 * 60 * 1000) {
+    try {
+      const props = await getPropertiesForSite();
+      portfolioCache = {
+        at: Date.now(),
+        ids: new Set(props.filter((p: any) => p.isPortfolio).map((p: any) => String(p.guestyId || p.listingId || ""))),
+      };
+    } catch {
+      return portfolioCache?.ids.has(listingId) ?? false;
+    }
+  }
+  return portfolioCache.ids.has(listingId);
+}
+
 export async function getQuote(
   listingId: string,
   checkIn: string,
   checkOut: string,
   guests: number = 2
 ): Promise<QuoteResult> {
+  if (await isPortfolioListing(listingId)) {
+    return { ...buildPriceOnRequestResult(listingId, checkIn, checkOut, guests), requestOnly: true };
+  }
   const cacheKey = getQuoteCacheKey(listingId, checkIn, checkOut, guests);
 
   // ── Cache-first: return live/cached results immediately (no BE API call needed) ──

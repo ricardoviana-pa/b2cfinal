@@ -182,6 +182,11 @@ export default function Homes() {
   const [bookingGuests, setBookingGuests] = useState(searchGuests ? Number(searchGuests) : 2);
   const [guestyQuotes, setQuotes] = useState<Record<string, LiveQuote | null>>({});
   const [quotesLoading, setQuotesLoading] = useState(false);
+  // Which search (dates + party) the quotes in state answer. Until it matches
+  // the URL — on the server render, on the first client render and in the
+  // render between a date change and the fetch starting — counts would read
+  // "0 com disponibilidade confirmada" (auditoria set/2026).
+  const [quotesFor, setQuotesFor] = useState('');
   const [showAll, setShowAll] = useState(false);
   const utils = trpc.useUtils();
   const effectiveGuests = searchGuestsCount > 0 ? searchGuestsCount : bookingGuests;
@@ -360,6 +365,8 @@ export default function Homes() {
 
   // When dates are set, split into available (with live pricing) and unavailable properties
   const hasDates = searchNights > 0;
+  const quotesKey = `${searchCheckin}|${searchCheckout}|${effectiveGuests || 2}`;
+  const quotesPending = hasDates && (quotesLoading || quotesFor !== quotesKey);
   const { availableProperties, unavailableProperties } = useMemo(() => {
     if (!hasDates || Object.keys(quotes).length === 0) {
       return { availableProperties: filtered, unavailableProperties: [] as Property[] };
@@ -420,9 +427,11 @@ export default function Homes() {
       .filter(p => p.isActive && p.guestyId)
       .map(p => ({ listingId: p.guestyId!, slug: p.slug }));
 
+    const key = `${searchCheckin}|${searchCheckout}|${effectiveGuests || 2}`;
     if (listings.length === 0) {
       setQuotes({});
       setQuotesLoading(false);
+      setQuotesFor(key);
       return;
     }
 
@@ -454,6 +463,7 @@ export default function Homes() {
         }
         setQuotes(mapped);
         setQuotesLoading(false);
+        setQuotesFor(key);
       })
       .catch((err) => {
         if (controller.signal.aborted) return;
@@ -477,6 +487,7 @@ export default function Homes() {
         }
         setQuotes(computed);
         setQuotesLoading(false);
+        setQuotesFor(key);
         setBatchFailed(true);
       });
 
@@ -877,7 +888,7 @@ export default function Homes() {
           {showMap && (
             <Suspense fallback={<div className="h-[340px] lg:h-[420px] rounded-xl bg-pa-warm animate-pulse mb-8" />}>
               <HomesMap
-                properties={hasDates && !quotesLoading ? availableProperties : filtered}
+                properties={hasDates && !quotesPending ? availableProperties : filtered}
                 fromPrices={fromPrices}
                 quotes={quotes}
                 checkin={searchCheckin}
@@ -890,7 +901,7 @@ export default function Homes() {
 
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
             <p className="body-sm text-pa-stone-aa" role="status">
-              {hasDates && !quotesLoading ? (
+              {hasDates && !quotesPending ? (
                 <>
                   <span className="font-medium text-pa-dark">{confirmedCount}</span> {t('searchUx.confirmed')}
                   {unconfirmedCount > 0 && <span> · {t('searchUx.toConfirm', { count: unconfirmedCount })}</span>}
@@ -909,7 +920,7 @@ export default function Homes() {
               )}
             </p>
             <div className="flex items-center gap-3">
-              {quotesLoading && hasDates && (
+              {quotesPending && (
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full border-2 border-pa-gold border-t-transparent animate-spin" />
                   <span className="caption text-pa-gold font-medium">{t('homes.checkingAvailability', 'Checking live availability...')}</span>
@@ -930,7 +941,7 @@ export default function Homes() {
           </div>
 
           {/* All unavailable — nudge user */}
-          {hasDates && !quotesLoading && availableProperties.length === 0 && unavailableProperties.length > 0 && (
+          {hasDates && !quotesPending && availableProperties.length === 0 && unavailableProperties.length > 0 && (
             <div className="text-center py-8 mb-8 bg-pa-warm rounded-lg">
               <p className="body-sm font-display text-pa-dark mb-2">
                 {t('homes.noneAvailable', 'No homes available for these dates')}
@@ -1108,7 +1119,7 @@ export default function Homes() {
                       checkout={searchCheckout}
                       guests={searchGuestsCount || undefined}
                       liveQuote={quotes[property.slug] || undefined}
-                      quoteLoading={property.source === 'tripwix' ? partner.isFetching : quotesLoading}
+                      quoteLoading={property.source === 'tripwix' ? partner.isFetching : quotesPending}
                       batchFailed={batchFailed}
                       fromPrice={fromPrices?.[property.guestyId ?? property.supplierUid ?? '']}
                       listId="search_results"
@@ -1128,11 +1139,35 @@ export default function Homes() {
                   </button>
                 </div>
               )}
+              {/* The grid shows 12 cards until "show all"; the rest are named
+                  here as plain links, so every home has a crawlable path from
+                  the catalogue in the served HTML (only 12 of 93 did,
+                  auditoria set/2026). Gone once the full grid is open. */}
+              {!showAll && availableProperties.length > 12 && (
+                <nav aria-labelledby="more-homes-index" className="mt-10 border-t border-pa-sand pt-6">
+                  <h2 id="more-homes-index" className="caption uppercase tracking-wider text-pa-stone-aa mb-3">
+                    {t('homes.moreHomesIndex', 'More homes')}
+                  </h2>
+                  <ul className="columns-1 sm:columns-2 lg:columns-3 gap-x-8 body-sm">
+                    {availableProperties.slice(12).map((property) => (
+                      <li key={property.id} className="break-inside-avoid py-1">
+                        <Link
+                          href={`/homes/${property.slug}`}
+                          className="text-pa-dark underline-offset-4 hover:underline"
+                        >
+                          {getDisplayName(property)}
+                        </Link>
+                        {property.locality && <span className="text-pa-stone-aa"> · {property.locality}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              )}
             </>
           )}
 
           {/* SECTION 2: Unavailable properties (portfolio visibility — "try other dates") */}
-          {hasDates && !quotesLoading && unavailableProperties.length > 0 && (
+          {hasDates && !quotesPending && unavailableProperties.length > 0 && (
             <div className="mt-12 md:mt-16">
               <div className="border-t border-pa-sand pt-8 mb-6">
                 <div className="flex items-center gap-2 mb-1">

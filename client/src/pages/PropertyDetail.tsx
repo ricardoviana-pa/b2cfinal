@@ -1003,11 +1003,17 @@ export default function PropertyDetail() {
   const totalImages = Math.max(images.length, 1);
   const whatsappUrl = `https://wa.me/351927161771?text=${encodeURIComponent(property.whatsappMessage || `Hi, I am interested in ${property.name}`)}`;
 
+  // Casas de portfolio (isPortfolio, vindo do Guesty) são só montra: nunca se
+  // reservam online, por isso usam o cartão do concierge em vez do widget —
+  // o widget pedia preço ao Guesty, falhava e mostrava "não conseguimos
+  // confirmar o preço" a quem só queria conhecer a casa.
+  const bookableOnline = !!property.guestyId && !property.isPortfolio;
+
   // Booking panel — shared between the desktop sticky sidebar and the mobile
   // bottom-sheet drawer so the two stay in sync (single source of truth).
   const bookingPanel = (
     <>
-      {property.guestyId ? (
+      {bookableOnline ? (
         <Suspense fallback={<div className="h-[300px] bg-pa-warm animate-pulse border border-pa-sand" />}>
           <BookingWidget
             key={property.slug}
@@ -1263,7 +1269,7 @@ export default function PropertyDetail() {
         </nav>
 
         {/* Two-column layout: main content (left 2/3) + sticky booking (right 1/3) */}
-        <div className={property.guestyId ? "container pb-8 lg:pb-16" : "container pb-24 lg:pb-16"}>
+        <div className={bookableOnline ? "container pb-8 lg:pb-16" : "container pb-24 lg:pb-16"}>
           <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-12">
             {/* Main content — left 2/3 */}
             <div className="order-1 lg:order-1 lg:col-span-2 space-y-10 lg:space-y-12 pt-6 lg:pt-0">
@@ -1677,7 +1683,7 @@ export default function PropertyDetail() {
             {/* Partner homes open the same drawer: the request form lives on
                 the property now, and sending the guest to the generic contact
                 page threw away the dates they had just picked. */}
-            {property.guestyId || tripwixUid ? (
+            {bookableOnline || tripwixUid ? (
               <button
                 type="button"
                 onClick={() => setBookingOpen(true)}
@@ -1699,7 +1705,7 @@ export default function PropertyDetail() {
         {/* Mobile: booking bottom-sheet — opened from the fixed bar. Keeps the
             full availability flow (calendar, guests, live quote) one tap away
             without an inline form blocking the content. Mobile only. */}
-        {(property.guestyId || tripwixUid) && (
+        {(bookableOnline || tripwixUid) && (
           <Drawer open={bookingOpen} onOpenChange={setBookingOpen}>
             <DrawerContent className="lg:hidden bg-white max-h-[92vh]">
               <DrawerHeader className="flex-row items-center justify-between gap-3 border-b border-pa-sand px-5 py-4 text-left">
