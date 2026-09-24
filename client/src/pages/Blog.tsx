@@ -159,7 +159,7 @@ export default function Blog() {
                     src={cdnResize(getArticleImage(featured), 1080)}
                     srcSet={cdnSrcSet(getArticleImage(featured), [400, 768, 1080])}
                     sizes="(min-width: 768px) 50vw, 100vw"
-                    alt={`${featured.title} – Portugal Active journal`}
+                    alt={featured.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="eager"
                     fetchPriority="high"
@@ -217,7 +217,7 @@ export default function Blog() {
                       src={cdnResize(getArticleImage(article), 768)}
                       srcSet={cdnSrcSet(getArticleImage(article), [400, 640, 768])}
                       sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw"
-                      alt={`${article.title} – Portugal Active journal`}
+                      alt={article.title}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
                       width={800}
