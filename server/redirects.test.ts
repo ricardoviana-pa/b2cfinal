@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { __testing, legacyRedirects } from "./lib/redirects.js";
+import { __testing, legacyRedirects, redirectTarget } from "./lib/redirects.js";
 
 const { resolvePath } = __testing;
 
@@ -36,6 +36,26 @@ describe("legacyRedirects.resolvePath", () => {
 
     it("falls back to /homes for unknown property slug", () => {
       expect(resolvePath("/properties/some-old-removed-villa")).toBe("/en/homes");
+    });
+
+    it("maps a Guesty engine listing id to that home", () => {
+      expect(resolvePath("/properties/6965339dbf04fe0013743e2d")).toBe(
+        "/en/homes/fountain-retreat-i-pool-sports-escape-743e2d"
+      );
+      expect(redirectTarget("/pt/properties/6965339dbf04fe0013743e2d")).toBe(
+        "/pt/homes/fountain-retreat-i-pool-sports-escape-743e2d"
+      );
+    });
+
+    it("maps the older Guesty engine layout by title slug", () => {
+      expect(resolvePath("/properties/viana-do-castelo/coastal-horizon-by-portugal-active/87782")).toBe(
+        "/en/homes/coastal-horizon-by-portugal-active-fd1b52"
+      );
+    });
+
+    it("sends an unknown Guesty id and the engine search to the catalogue", () => {
+      expect(resolvePath("/properties/000000000000000000000000")).toBe("/en/homes");
+      expect(redirectTarget("/es/search")).toBe("/es/homes");
     });
 
     it("redirects /properties index to /homes", () => {
