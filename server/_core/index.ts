@@ -23,6 +23,8 @@ import { registerStripeCardWebhookRoute } from "../routes/stripe-card-webhook";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { redirectTarget } from "../lib/redirects";
+import { STATIC_SITEMAP_PAGES } from "../lib/sitemap-static";
 import { isGuestyConfigured, warmUpOAuthTokens } from "../lib/guesty";
 import { runSync } from "../services/guesty-sync";
 import { runDatesOpenedAlerts } from "../services/dates-opened-alert";
@@ -202,33 +204,10 @@ async function startServer() {
       } catch { /* fall back to today */ }
 
       const staticPages = [
-        { loc: "/", priority: "1.0", changefreq: "daily" },
-        { loc: "/homes", priority: "0.9", changefreq: "daily" },
-        { loc: "/destinations", priority: "0.9", changefreq: "monthly" },
+        ...STATIC_SITEMAP_PAGES,
         // Every published destination, from the data — drafts ("[TBD]" copy)
         // and coming-soon entries stay out (auditoria set/2026, I2/N19).
         ...publishedDestinationSlugs().map((slug) => ({ loc: `/destinations/${slug}`, priority: "0.9", changefreq: "monthly" })),
-        { loc: "/collections/villas-with-private-pool", priority: "0.8", changefreq: "weekly" },
-        { loc: "/collections/sea-view-villas", priority: "0.8", changefreq: "weekly" },
-        { loc: "/collections/large-group-villas", priority: "0.8", changefreq: "weekly" },
-        { loc: "/collections/pet-friendly-villas", priority: "0.8", changefreq: "weekly" },
-        { loc: "/collections/villas-with-jacuzzi", priority: "0.8", changefreq: "weekly" },
-        { loc: "/collections/beach-villas", priority: "0.8", changefreq: "weekly" },
-        { loc: "/services", priority: "0.8", changefreq: "monthly" },
-        { loc: "/adventures", priority: "0.8", changefreq: "monthly" },
-        { loc: "/events", priority: "0.8", changefreq: "monthly" },
-        { loc: "/corporate-retreats", priority: "0.8", changefreq: "monthly" },
-        { loc: "/blog", priority: "0.8", changefreq: "weekly" },
-        { loc: "/about", priority: "0.7", changefreq: "monthly" },
-        { loc: "/contact", priority: "0.7", changefreq: "monthly" },
-        { loc: "/owners", priority: "0.7", changefreq: "monthly" },
-        { loc: "/faq", priority: "0.7", changefreq: "monthly" },
-        { loc: "/careers", priority: "0.7", changefreq: "monthly" },
-        { loc: "/best-rate-guarantee", priority: "0.5", changefreq: "yearly" },
-        { loc: "/legal/privacy", priority: "0.3", changefreq: "yearly" },
-        { loc: "/legal/terms", priority: "0.3", changefreq: "yearly" },
-        { loc: "/legal/cookies", priority: "0.3", changefreq: "yearly" },
-        { loc: "/legal/cancellation-policy", priority: "0.3", changefreq: "yearly" },
       ];
 
       /** Generate a <url> entry with hreflang alternates for all languages */
@@ -244,8 +223,14 @@ async function startServer() {
       const allUrls: string[] = [];
 
       // Static pages × all languages
+      // A sitemap lists final URLs only: skip anything the legacy redirect
+      // table would 301 (a slug renamed in Guesty, a retired route).
+      const servedAsIs = (pagePath: string, lang: string) =>
+        !redirectTarget(`/${lang}${pagePath === '/' ? '' : pagePath}`);
+
       for (const lang of SITEMAP_LANGS) {
         for (const p of staticPages) {
+          if (!servedAsIs(p.loc, lang)) continue;
           allUrls.push(url(p.loc, lang, deployDate, p.changefreq, p.priority));
         }
       }
@@ -336,6 +321,7 @@ async function startServer() {
       for (const lang of SITEMAP_LANGS) {
         for (const dp of dynamicPages) {
           if (dp.languages && !dp.languages.includes(lang)) continue;
+          if (!servedAsIs(dp.path, lang)) continue;
           allUrls.push(url(dp.path, lang, dp.lastmod, dp.changefreq, dp.priority, dp.languages));
         }
       }
