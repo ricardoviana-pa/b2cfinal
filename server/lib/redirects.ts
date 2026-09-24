@@ -232,6 +232,18 @@ const PATTERN_REDIRECTS: PatternRule[] = [
     resolve: (m) => `/en/homes/${m[1]}`,
   },
 
+  // /homes/<short-slug> → /homes/<current-slug>. Journal articles linked
+  // homes by their short name ("/homes/cabedelo-beach-lodge"), which 404ed
+  // (auditoria set/2026). Only known short names redirect; anything else
+  // falls through to the page (or its 404) as before.
+  {
+    pattern: /^\/homes\/([^/?#]+)\/?$/i,
+    resolve: (m) => {
+      const mapped = PROPERTY_REDIRECTS[m[1]];
+      return mapped && mapped !== m[1] ? `/en/homes/${mapped}` : (null as unknown as string);
+    },
+  },
+
   // /properties/<slug> and /rooms/<slug> → /homes/<new-slug>
   {
     pattern: /^\/(properties|rooms)\/([^/?#]+)\/?$/i,
