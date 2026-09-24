@@ -654,31 +654,459 @@
   },
   "caminha": {
     "name": "Caminha",
-    "tagline": "Befestigtes Grenzstädtchen, gegenüber von Galicien, auf der anderen Seite des Minho-Mündungsgebiets.",
-    "heroSubtitle": "Wo Portugal auf Galicien trifft, jenseits eines Mündungsgebiets voller leerer Strände.",
+    "tagline": "Eine ummauerte Grenzstadt an der Mündung des Minho, mit Blick über das Ästuar nach Galicien.",
+    "description": "Ein Reiseführer für Caminha: die ummauerte Stadt an der Mündung des Minho, der Strand von Moledo, die Kiefern von Camarido und das Coura-Tal.",
+    "heroSubtitle": "Wo der Minho auf den Atlantik trifft, mit Galicien am anderen Ufer",
     "whyOverline": "WARUM CAMINHA",
-    "howToGetHere": "Flughafen Porto (OPO) in 1 Std. 15 über die A28. Vigo (Spanien) in 45 Min. Viana do Castelo in 25 Min. südlich.",
-    "seoTitle": "Caminha, Portugal: Atlantisches Grenzstädtchen | Portugal Active",
+    "whyDescription": "Caminha ist die letzte portugiesische Stadt an der Atlantikküste vor Spanien. Sie liegt am Südufer des Minho-Ästuars, wenige Kilometer bevor der Fluss den Ozean erreicht, und blickt direkt über das Wasser nach Galicien und auf den bewaldeten Kegel des Monte de Santa Tecla. Die längste Zeit ihrer Geschichte war dieser Blick eine Grenze. Heute ist er eine Bootsfahrt von zehn Minuten.\n\nDie Altstadt ist klein und wird noch immer von ihren Mauern bestimmt. Die ältesten Abschnitte stammen aus dem dreizehnten Jahrhundert, und die Torre do Relógio, der Uhrturm am Hauptplatz, war das wichtigste Tor. Davor, auf dem Platz, den die Einheimischen Terreiro nennen, steht ein Granitbrunnen, der zwischen 1551 und 1553 vom Steinmetzmeister João Lopes o Velho errichtet wurde, von dem auch der Brunnen auf der Praça da República in Viana do Castelo stammt. Am selben Platz liegen der Solar dos Pitas, ein gotisches Stadthaus, und das alte Rathaus. Ein kurzer Spaziergang durch die Rua Direita führt zur Igreja Matriz, einer Pfarrkirche aus Granit, die um 1488 begonnen und über rund sechzig Jahre gebaut wurde, mit manuelinischen Steinmetzarbeiten im Chor und einer geschnitzten Mudéjar-Holzdecke im Inneren.\n\nGleich hinter der Stadt beginnt die Küste. Die Mata Nacional do Camarido, ein auf dem Sand der Flussmündung angepflanzter Kiefernwald, reicht bis an den Ästuarstrand von Camarido, wo das galicische Ufer zum Greifen nah wirkt. Südlich davon liegt die Praia de Moledo, ein langer, offener Strand aus feinem Sand gegenüber der Insel Ínsua, auf der ein Fort aus dem siebzehnten Jahrhundert die Reste eines Franziskanerklosters umschließt. Moledo ist seit Generationen der Sommerstrand der Familien aus dem Norden Portugals. Er ist breit, sauber und oft windig, was ihn im August kühl hält und zu einem guten Strand zum Kitesurfen und für lange Spaziergänge macht.\n\nIm Hinterland öffnet sich die Stadt zu zwei Tälern. Flussaufwärts am Minho führt die Straße an Seixas und Lanhelas vorbei nach Vila Nova de Cerveira und in die Festungsstadt Valença. Im Süden und Osten fließt der Coura aus den Hügeln herab, durch ein grünes Tal mit Maisfeldern, Granitdörfern und alten Wassermühlen. In Vilar de Mouros überquert eine alte Steinbrücke den Fluss neben einem Dorf, dessen Name seit 1971 mit einer der berühmtesten Ausgaben eines portugiesischen Musikfestivals verbunden ist. Über allem erhebt sich die Serra d'Arga, ein Granitmassiv, auf dem Garrano-Pferde frei weiden.\n\nDie Überfahrt nach Spanien gehört zum Alltag. Die Autofähre, die Caminha jahrzehntelang mit A Guarda verband, wurde 2020 eingestellt, am Ende besiegt von den Sandbänken des Ästuars. Heute setzen kleine lizenzierte Wassertaxis in etwa zehn Minuten über, vor allem mit Pilgern auf der Küstenroute des Jakobswegs, die durch die Stadt führt. Mit dem Auto liegt Galicien über die Brücken bei Vila Nova de Cerveira und Valença fünfzehn bis fünfundzwanzig Minuten entfernt.\n\nDer Rhythmus folgt den Jahreszeiten. Im Spätwinter und Frühling bringt der Minho Neunauge und Alse auf die Tische der Region. Im Sommer füllt sich Moledo, die Flussstrände des Coura werden warm, und im August kommen die Musikfestivals ins Tal. Außerhalb dieser Wochen kehrt die Stadt zu ihrem eigenen Maß zurück: ein Kaffee auf dem Terreiro, ein Spaziergang unter den Kiefern, um an der Flussmündung den Wechsel der Gezeiten zu sehen, ein Abendessen, während drüben in Galicien die Lichter angehen.",
     "highlights": [
-      "Mittelalterlicher ummauerter Kern und Uhrturm (Torre do Relógio)",
-      "Praia do Moledo und der Pinienwald von Camarido",
-      "Tägliche Fähre nach Tui (Spanien) über das Minho-Mündungsgebiet",
-      "Musikfestival von Paredes de Coura, 20 Min. landeinwärts"
-    ]
+      "Ummauerte Altstadt mit der Torre do Relógio und einem Granitbrunnen von 1551",
+      "Praia de Moledo und der Kiefernwald von Camarido an der Mündung des Minho",
+      "Wassertaxis über das Ästuar nach A Guarda in Galicien",
+      "Das Coura-Tal, Vilar de Mouros und die Serra d'Arga",
+      "Neunauge und Alse aus dem Minho im Spätwinter und Frühling"
+    ],
+    "seoTitle": "Caminha: Strand von Moledo, Altstadt und Unterkünfte | Portugal Active",
+    "seoDescription": "Ummauerte Altstadt, Strand von Moledo, Kiefern von Camarido und Boote nach Galicien. Was Sie in Caminha sehen, wann Sie reisen, wo Sie wohnen.",
+    "howToGetHere": "Flughafen Porto (OPO) etwa 1 Std. über die A28. Flughafen Vigo (Spanien) etwa 50 Min. Viana do Castelo 25 Min. südlich. Regionalzüge der Linha do Minho halten in Caminha und Moledo.",
+    "bestTimeToVisit": "Juni und September. Lange Tage, ein warmer Coura zum Baden im Fluss und Moledo ohne den Andrang des August. Spätwinter und Frühling für die Neunaugen-Saison.",
+    "whatToExpect": "Eine kleine ummauerte Stadt an einem weiten Ästuar, mit Kiefernwald, Atlantikstrand und Galicien am anderen Ufer. Die meiste Zeit des Jahres ruhig, im August lebhaft.",
+    "whereToStayIntro": "Die meisten unserer Häuser in Caminha gehören zu einer dreihundert Jahre alten Wassermühle aus Granit am Coura in Vilar de Mouros, zehn Minuten landeinwärts von der Stadt. Die Mühle und die Steinhäuser um sie herum werden als einzelne Häuser vermietet, vom Loft mit einem Schlafzimmer bis zum Haus mit vier Schlafzimmern, oder gemeinsam als ein Anwesen für bis zu zwanzig Gäste, mit dem Flussstrand am Ende des Gartens. An der Küste bietet ein Strandhaus in Moledo drei Suiten und einen Pool mit Blick auf den Sonnenuntergang. Alle werden von unserem Team im Alto Minho betreut, demselben Team, das unsere Häuser in Viana do Castelo, fünfundzwanzig Minuten südlich, führt.",
+    "journalSectionTitle": "Aus dem Journal: Geschichten aus Caminha",
+    "thingsToDoIntro": "Caminha ist klein genug, um es an einem Vormittag zu Fuß zu sehen, und das Interessanteste liegt in seiner Umgebung: die Flussmündung, der Strand, das Coura-Tal und das galicische Ufer. So würden wir hier drei Tage verbringen.",
+    "thingsToDo": [
+      {
+        "heading": "Die ummauerte Stadt",
+        "items": [
+          {
+            "name": "Torre do Relógio",
+            "category": "Architektur",
+            "description": "Der Uhrturm war das Haupttor der mittelalterlichen Stadtmauer, deren älteste Abschnitte aus dem dreizehnten Jahrhundert stammen. Gehen Sie vom Platz aus hindurch in die Rua Direita, die alte Hauptstraße."
+          },
+          {
+            "name": "Chafariz do Terreiro",
+            "category": "Architektur",
+            "description": "Granitbrunnen, zwischen 1551 und 1553 von João Lopes o Velho errichtet, dem Steinmetz hinter dem Brunnen von Viana do Castelo. Seit 1910 Nationaldenkmal."
+          },
+          {
+            "name": "Igreja Matriz",
+            "category": "Architektur",
+            "description": "Pfarrkirche, um 1488 begonnen und über rund sechzig Jahre gebaut. Manuelinische Steinmetzarbeiten im Chor und eine geschnitzte Mudéjar-Decke aus Holz."
+          },
+          {
+            "name": "Praça Conselheiro Silva Torres",
+            "category": "Platz",
+            "description": "Der Platz, den die Einheimischen Terreiro nennen, mit dem Brunnen, dem gotischen Solar dos Pitas, dem alten Rathaus und Cafétischen. Der Mittelpunkt des gesellschaftlichen Lebens der Stadt."
+          }
+        ]
+      },
+      {
+        "heading": "Die Flussmündung und die Küste",
+        "items": [
+          {
+            "name": "Mata Nacional do Camarido",
+            "category": "Natur",
+            "description": "Kiefernwald, auf den Dünen zwischen Stadt und Meer angepflanzt, mit schattigen Wegen, die am Ästuarstrand von Camarido gegenüber Galicien enden."
+          },
+          {
+            "name": "Praia de Moledo",
+            "category": "Strand",
+            "description": "Ein langer Atlantikstrand aus feinem Sand gegenüber der Insel Ínsua. Breit, sauber und oft windig, was Spaziergängern, Kitesurfern und allen gefällt, die der Hitze entkommen wollen."
+          },
+          {
+            "name": "Ínsua",
+            "category": "Erbe",
+            "description": "Eine kleine Felseninsel vor Moledo, mit einem Fort aus dem siebzehnten Jahrhundert, das um ein älteres Franziskanerkloster gebaut wurde. Am besten vom Strand aus zu sehen."
+          },
+          {
+            "name": "Vila Praia de Âncora",
+            "category": "Ort",
+            "description": "Fischerhafen und Badeort zehn Minuten südlich, mit dem kleinen Fortim da Lagarteira und, etwas landeinwärts, dem jungsteinzeitlichen Dólmen da Barrosa."
+          }
+        ]
+      },
+      {
+        "heading": "Im Hinterland",
+        "items": [
+          {
+            "name": "Vilar de Mouros und der Coura",
+            "category": "Natur",
+            "description": "Granitdorf am Coura, zehn Minuten von der Stadt entfernt, mit einer alten Steinbrücke, Flussstränden und dem Festival, das seit den 1970er Jahren seinen Namen trägt."
+          },
+          {
+            "name": "Serra d'Arga",
+            "category": "Natur",
+            "description": "Granitgebirge hinter Caminha, mit frei lebenden Garrano-Pferden, kleinen Dörfern und dem Kloster São João de Arga. Am schönsten zum Wandern im Frühling und Herbst."
+          },
+          {
+            "name": "Vila Nova de Cerveira",
+            "category": "Ausflug",
+            "description": "Ort am Fluss, fünfzehn Minuten flussaufwärts, seit 1978 Heimat einer der ältesten Kunstbiennalen Portugals, mit einer Brücke hinüber nach Galicien."
+          },
+          {
+            "name": "Valença",
+            "category": "Erbe",
+            "description": "Sternförmige Festungsstadt gegenüber von Tui am Minho, fünfundzwanzig Minuten flussaufwärts. Gehen Sie über die Wälle und dann zu Fuß über die alte Eisenbrücke zur Kathedrale von Tui."
+          }
+        ]
+      },
+      {
+        "heading": "Auf der anderen Seite des Ästuars",
+        "items": [
+          {
+            "name": "A Guarda und Monte de Santa Tecla",
+            "category": "Ausflug",
+            "description": "Galicien, am anderen Ufer. Ein Wassertaxi von Caminha braucht etwa zehn Minuten. Oberhalb von A Guarda blickt die eisenzeitliche Siedlung auf dem Monte de Santa Tecla über das gesamte Ästuar zurück."
+          }
+        ]
+      }
+    ],
+    "seasons": {
+      "spring": "März bis Mai. Die Täler sind am grünsten, und der Coura führt viel Wasser. Die Höchstwerte steigen von etwa siebzehn auf einundzwanzig Grad, und Regen ist noch ein regelmäßiger Gast. Die Saison für Neunauge und Alse am Minho fällt in diese Monate, und die Wege der Serra d'Arga sind in bestem Zustand. Das Meer ist mit etwa vierzehn Grad kalt.",
+      "summer": "Juni bis August. Warm und meist trocken, mit Höchstwerten um die fünfundzwanzig Grad und einem Nordwind, der Nortada, der an den meisten Nachmittagen über die Küste weht und Moledo kühl hält. Der Ozean bleibt bei sechzehn bis achtzehn Grad; die Flussstrände des Coura sind wärmer. Der August ist der betriebsamste Monat, mit den Festivals von Paredes de Coura und Vilar de Mouros und vollen Stränden.",
+      "autumn": "September bis November. Der September ist oft der beste Monat des Jahres: warme Tage, ein ruhiger Strand und die Weinlese in den Tälern. Der Oktober bringt die ersten kräftigen Regenfälle und das bunte Laub entlang des Coura. Im November ist die Stadt wieder in ihrem Winterrhythmus.",
+      "winter": "Dezember bis Februar. Mild, aber nass, mit Höchstwerten um dreizehn bis fünfzehn Grad und regelmäßigen Atlantikstürmen. Das Ästuar zeigt sich von seiner eindrucksvollsten Seite, die Stadt von ihrer ruhigsten. Um den Jahreswechsel beginnt die Neunaugen-Saison.",
+      "bestForFirstTime": "Juni oder September. Beide Monate bieten warmes, beständiges Wetter und die ganze Bandbreite des Ortes, vom Baden im Meer und im Fluss bis zu Wanderungen in der Serra d'Arga, ohne den Andrang und die knappen Unterkünfte des August."
+    },
+    "transport": {
+      "byAir": "Der Flughafen Francisco Sá Carneiro in Porto liegt etwa fünfundneunzig Kilometer südlich, rund eine Stunde mit dem Auto über die A28. Der Flughafen Vigo in Galicien ist über die Brücken bei Valença oder Vila Nova de Cerveira etwa fünfzig Minuten entfernt und eine sinnvolle Alternative für Verbindungen über Madrid. Wir organisieren private Transfers von beiden Flughäfen.",
+      "byTrain": "Regionalzüge der Linha do Minho, die von Porto nach Valença führt, halten in Caminha, Moledo und Vila Praia de Âncora. Ab Porto Campanhã sollten Sie rund zwei Stunden einplanen, manchmal mit Umstieg in Viana do Castelo. Der Bahnhof von Caminha liegt wenige Gehminuten von der Altstadt entfernt.",
+      "byCar": "Die A28 führt von Porto entlang der Küste nach Caminha und passiert fünfundzwanzig Kilometer südlich Viana do Castelo. Die Küstenstraße N13 ist langsamer und folgt den Stränden und Fischerorten. Wer mit ausländischem Kennzeichen unterwegs ist, sollte sich vor der Ankunft bei einem elektronischen Mautdienst registrieren, da mehrere Autobahnen bei Porto elektronische Mautportale nutzen.",
+      "fromSpain": "Von Vigo oder Santiago de Compostela überqueren Sie den Minho über die Autobahnbrücke bei Tui und Valença oder über die Brücke zwischen Goián und Vila Nova de Cerveira und folgen dann der Flussstraße hinunter nach Caminha. Zu Fuß oder mit dem Fahrrad setzen Wassertaxis von A Guarda in etwa zehn Minuten über, sofern Wetter und Gezeiten es zulassen.",
+      "gettingAround": "Die Altstadt ist kompakt und am besten zu Fuß zu erkunden. Der Wald von Camarido und Moledo sind zu Fuß oder mit dem Fahrrad erreichbar, und am Minho-Ufer flussaufwärts Richtung Vila Nova de Cerveira verläuft über weite Strecken ein Rad- und Fußweg. Für das Coura-Tal, die Serra d'Arga und die Strände weiter südlich ist ein Auto eine große Erleichterung."
+    },
+    "eatDrinkIntro": "In Caminha kommt das Essen aus dem Fluss und aus dem Meer. Im Spätwinter und Frühling bringt der Minho Neunauge und Alse, zubereitet auf eine Weise, die sich seit einem Jahrhundert kaum verändert hat, und die Restaurants im ganzen Tal richten ihr Jahr nach dieser Saison aus. Der Fischerhafen von Vila Praia de Âncora, zehn Minuten südlich, liefert den gegrillten Fisch, der im Sommer die Speisekarten entlang der Küste füllt. Der Wein ist Vinho Verde, und flussaufwärts in Monção und Melgaço wird er aus Alvarinho gekeltert, der Rebsorte hinter den besten Weißweinen der Region. Unser Concierge führt eine kurze Liste mit Tischen, von Familientascas in der Altstadt bis zu Restaurants am Fluss im Coura-Tal, und reserviert sie für die Gäste.",
+    "specialties": [
+      {
+        "name": "Lampreia do Minho",
+        "category": "Saisonal",
+        "description": "Flussneunauge, etwa von Januar bis April in Saison, meist à bordalesa zubereitet, in einer kräftigen Rotweinsauce, mit Reis. Wer es mag, reist dafür an."
+      },
+      {
+        "name": "Sável",
+        "category": "Saisonal",
+        "description": "Alse, der andere Frühlingsfisch des Minho, meist frittiert und mit Açorda oder Reis serviert."
+      },
+      {
+        "name": "Alvarinho",
+        "category": "Wein",
+        "description": "Die weiße Rebsorte von Monção und Melgaço, vierzig Minuten flussaufwärts. Voller und langlebiger als die meisten Vinho Verdes und der natürliche Begleiter zum Fisch der Region."
+      },
+      {
+        "name": "Gegrillter Fisch aus Âncora",
+        "category": "Gericht",
+        "description": "Was an diesem Morgen in Vila Praia de Âncora angelandet wurde, über Holzkohle gegrillt und mit Salzkartoffeln, Gemüse und Olivenöl serviert."
+      }
+    ],
+    "experiencesIntro": "Die folgenden Erlebnisse organisiert unser Concierge für Gäste in unseren Häusern in Caminha. Die meisten lassen sich mit einem Tag Vorlauf arrangieren, und wo sonst ein Auto nötig wäre, kann der Concierge Transfers organisieren.",
+    "experiences": [
+      {
+        "name": "Kajakfahren im Minho-Ästuar",
+        "description": "Eine geführte Paddeltour von der Stadt in Richtung Flussmündung, zwischen den Kiefern von Camarido und dem galicischen Ufer, mit einem Halt auf einer Sandbank, wenn die Gezeiten es erlauben.",
+        "duration": "Halber Tag",
+        "season": "Mai bis Oktober"
+      },
+      {
+        "name": "Hinüber nach A Guarda und zum Monte de Santa Tecla",
+        "description": "Mit dem Wassertaxi über das Ästuar, dann hinauf zur eisenzeitlichen Siedlung oberhalb von A Guarda, mit Blick zurück über Caminha und die Flussmündung. Mittagessen im galicischen Fischerhafen vor der Rückfahrt.",
+        "duration": "Halber bis ganzer Tag",
+        "season": "Ganzjährig, je nach Wetter"
+      },
+      {
+        "name": "Wandern in der Serra d'Arga",
+        "description": "Ein geführter Tag im Granitgebirge hinter der Stadt, durch kleine Dörfer und Hochweiden, auf denen Garrano-Pferde grasen, mit einem Halt am Kloster São João de Arga.",
+        "duration": "Ganzer Tag",
+        "season": "März bis November"
+      },
+      {
+        "name": "Alvarinho-Verkostung in Monção und Melgaço",
+        "description": "Ein Vormittag flussaufwärts bei einem Alvarinho-Erzeuger, mit einer Verkostung der besten Weißweine der Region und anschließendem Mittagessen im Tal.",
+        "duration": "Halber Tag",
+        "season": "Ganzjährig; Besuche zur Weinlese im September"
+      },
+      {
+        "name": "Surfen oder Kitesurfen in Moledo",
+        "description": "Kurse für Anfänger und Fortgeschrittene am langen Strand von Moledo, wo der Nachmittagswind im Sommer ideal zum Kitesurfen ist. Ausrüstung inklusive.",
+        "duration": "Zwei bis drei Stunden",
+        "season": "April bis Oktober"
+      },
+      {
+        "name": "Radfahren am Minho-Ufer",
+        "description": "Eine leichte Fahrt flussaufwärts auf dem Uferweg Richtung Vila Nova de Cerveira, den ganzen Weg über mit Galicien auf der anderen Seite des Wassers. Die Fahrräder organisiert der Concierge.",
+        "duration": "Halber Tag",
+        "season": "Ganzjährig"
+      }
+    ],
+    "eventsIntro": "Den Kalender von Caminha bestimmen der Fluss und der August. Die Neunaugen-Saison füllt die Restaurants vom Winter bis in den Frühling; die Musikfestivals des Coura-Tals füllen die Region in der zweiten Augusthälfte, wenn Häuser frühzeitig gebucht werden sollten.",
+    "events": [
+      {
+        "name": "Festival Paredes de Coura",
+        "dates": "Mitte August, Termine werden jährlich bekanntgegeben",
+        "description": "Eines der bekanntesten Alternative-Musikfestivals Portugals, seit 1993 in einem natürlichen Amphitheater neben dem Flussstrand von Taboão, etwa vierzig Minuten von Caminha entfernt."
+      },
+      {
+        "name": "Festival Vilar de Mouros",
+        "dates": "Ende August, Termine werden jährlich bekanntgegeben",
+        "description": "Rockfestival am Ufer des Coura, zehn Minuten von Caminha. Die Ausgabe von 1971 machte es zu einem Meilenstein der portugiesischen Musikgeschichte."
+      },
+      {
+        "name": "Neunaugen-Saison",
+        "dates": "Januar bis April",
+        "description": "Die Restaurants in Caminha und entlang des Minho richten ihre Speisekarten nach dem Neunauge aus dem Fluss aus, später auch nach der Alse."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Wie viele Tage brauche ich in Caminha?",
+        "answer": "Zwei Tage reichen für die Stadt, den Wald von Camarido und Moledo. Mit vier oder fünf Tagen kommen das Coura-Tal, die Serra d'Arga, eine Überfahrt nach A Guarda und ein Tag flussaufwärts in Valença oder im Alvarinho-Land von Monção und Melgaço hinzu."
+      },
+      {
+        "question": "Gibt es noch eine Fähre von Caminha nach A Guarda?",
+        "answer": "Die Autofähre wurde 2020 eingestellt und verkehrt nicht. Kleine lizenzierte Wassertaxis überqueren das Ästuar nach A Guarda in etwa zehn Minuten, sofern Wetter und Gezeiten es zulassen, und werden vor allem von Pilgern auf dem Jakobsweg genutzt. Mit dem Auto liegen die nächsten Brücken bei Vila Nova de Cerveira und Valença."
+      },
+      {
+        "question": "Welcher ist der beste Strand bei Caminha?",
+        "answer": "Die Praia de Moledo, ein langer Atlantikstrand gleich südlich der Stadt, gegenüber der Insel Ínsua. Ruhigeres Wasser bietet der Ästuarstrand von Camarido mit Blick über die Flussmündung nach Galicien. Im Sommer sind die Flussstrände des Coura wärmer als der Ozean."
+      },
+      {
+        "question": "Wann ist die beste Reisezeit für Caminha?",
+        "answer": "Juni und September für Wetter und Platz. August für die Festivals und die belebtesten Strände. Spätwinter und Frühling für die Neunaugen-Saison und die Täler in ihrem schönsten Grün."
+      },
+      {
+        "question": "Wie weit ist Caminha von Porto entfernt?",
+        "answer": "Etwa fünfundneunzig Kilometer, rund eine Stunde mit dem Auto über die A28 vom Flughafen Porto. Regionalzüge ab Porto brauchen etwa zwei Stunden."
+      },
+      {
+        "question": "Ist Caminha eine gute Basis für Ausflüge nach Galicien?",
+        "answer": "Ja. A Guarda liegt auf der anderen Seite des Ästuars, Tui ist mit dem Auto etwa fünfundzwanzig Minuten entfernt, Vigo weniger als eine Stunde und Santiago de Compostela weniger als zwei Stunden."
+      },
+      {
+        "question": "Wofür ist Caminha bekannt?",
+        "answer": "Für seine ummauerte Altstadt mit dem Uhrturm, seine Lage am Minho gegenüber Spanien, den Strand von Moledo und das Neunauge aus dem Fluss. Außerdem ist es eine Etappe auf der Küstenroute des portugiesischen Jakobswegs."
+      },
+      {
+        "question": "Ist Caminha für Familien geeignet?",
+        "answer": "Ja. Die Stadt ist klein und gut zu Fuß zu erkunden, Moledo ist während der Badesaison von Rettungsschwimmern bewacht, und die Flussstrände des Coura bieten ruhigeres Wasser für kleinere Kinder. Unsere Häuser an der Wassermühle, die sich gemeinsam buchen lassen, eignen sich für Gruppen mit mehreren Generationen."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Besitzen Sie ein Haus in Caminha?",
+      "body": "Portugal Active betreut Premium-Immobilien im gesamten Alto Minho, von Caminha und dem Coura-Tal bis Viana do Castelo: Komplettverwaltung, Marketing, Concierge und Instandhaltung, betrieben nach Hotelstandards von einem Team, das in der Region zu Hause ist.",
+      "cta": "Sprechen Sie mit unserem Team",
+      "url": "https://www.portugalactive.com/management/de/?utm_source=destinations&utm_medium=cta&utm_campaign=caminha"
+    }
   },
   "esposende": {
     "name": "Esposende",
-    "tagline": "Wo der Fluss Cávado auf den Atlantik trifft, zwischen den Dünen und den Pinienwäldern.",
-    "heroSubtitle": "Die ruhigsten Atlantikdünen Portugals, 40 Autominuten von Porto entfernt.",
+    "tagline": "Wo der Cávado auf den Atlantik trifft, zwischen geschützten Dünen und Kiefernwald.",
+    "description": "Ein Reiseführer für Esposende: der Naturpark Litoral Norte, Ofir und Apúlia, das Cávado-Ästuar und die Dünen, vierzig Minuten nördlich von Porto.",
+    "heroSubtitle": "Geschützte Dünen, Kiefernwald und das Cávado-Ästuar, vierzig Minuten nördlich von Porto",
     "whyOverline": "WARUM ESPOSENDE",
-    "howToGetHere": "Flughafen Porto (OPO) in 40 Min. über die A28. Viana do Castelo in 25 Min. nördlich. Braga in 25 Min. östlich.",
-    "seoTitle": "Esposende, Portugal: Dünen des Litoral Norte | Portugal Active",
+    "whyDescription": "Esposende ist der Abschnitt der Nordküste, an dem die meisten vorbeifahren. Die A28 verläuft einige Kilometer im Landesinneren, und von der Autobahn aus deutet wenig darauf hin, was zwischen Straße und Meer liegt: sechzehn Kilometer Strand, Dünen und Kiefernwald, als Naturpark geschützt, mit einer kleinen Stadt an der Mündung des Cávado in der Mitte.\n\nDer Parque Natural do Litoral Norte umfasst die gesamte Küste der Gemeinde, von der Mündung des Neiva im Norden bis zum Südrand von Apúlia. Das Gebiet wurde 1987 erstmals unter Schutz gestellt und 2005 zum Naturpark erklärt, und der größte Teil seiner Fläche liegt im Meer, über Riffen und felsigem Grund. An Land schützt er ein empfindliches System aus Dünen, Kiefernwäldern und Salzwiesen, wie es an diesem Küstenabschnitt anderswo weitgehend verschwunden ist. Holzstege führen über die Dünen, und ein Küstenradweg verbindet die Strände.\n\nDie Stadt liegt am Nordufer des Cávado, wo sich der Fluss zu einem Ästuar weitet, geschützt von einer langen Sandnehrung. Das Forte de São João Baptista, zwischen 1699 und 1704 zum Schutz der Flussmündung erbaut, steht noch immer an der Uferfront, mit einem roten eisernen Leuchtturm an seiner Südwestecke. Eine Eisenbrücke von 1892 überquert den Fluss nach Fão, einem Dorf am Fluss, das im ganzen Norden für seine Clarinhas bekannt ist, ein kleines frittiertes Gebäck mit einer Füllung aus Kürbiskonfitüre und Ei. Hinter Fão liegt Ofir, ein Kiefernwald auf den Dünen mit einem langen Strand an seinem Ende und, vor der Küste, den dunklen Felsen, die Cavalos de Fão genannt werden.\n\nWeiter südlich liegt Apúlia, das Dorf, das dieser Küste ihr bekanntestes Handwerk gab. Über Generationen sammelten die Menschen von Apúlia den Sargaço, den vom Atlantik angeschwemmten Seetang, trockneten ihn auf dem Sand und verkauften ihn als Dünger an die Höfe im Landesinneren. Die Sargaceiros arbeiteten in der Brandung in einem weißen Wollkittel, der Branqueta, und die steinernen Windmühlen auf den Dünen über dem Strand, gebaut zum Mahlen von Getreide, sind bis heute das Wahrzeichen des Dorfes. Die Tangernte ist kein Wirtschaftszweig mehr, lebt aber in der örtlichen Folkloregruppe und in der Erinnerung des Ortes weiter.\n\nHinter der Küste steigt das Land sanft in Richtung Barcelos und Braga an. Auf einem Hügel über Vila Chã bewahrt der Castro de São Lourenço die Grundmauern einer eisenzeitlichen Siedlung, mit Blick über die gesamte Küstenlinie. Braga, mit seiner Kathedrale und dem Heiligtum Bom Jesus do Monte, ist dreißig Minuten entfernt. Viana do Castelo liegt fünfundzwanzig Minuten nördlich, Porto vierzig Minuten südlich.\n\nIm Sommer ist Esposende ein Badeort, den Rest des Jahres ein ruhiger Ort. Der Nordwind, der an den meisten Sommernachmittagen weht, hält die Strände kühl und bringt Windsurfer und Kitesurfer an die Küste. Familien kommen Jahr für Jahr wieder, aus Gründen, die sich kaum verändert haben: lange Strände mit viel Platz, Fisch vom Grill und ein Tempo, das zu ihnen passt.",
     "highlights": [
-      "Naturpark Litoral Norte — geschütztes Dünensystem",
-      "Praia de Ofir und Praia da Apúlia",
-      "Mündungsgebiet des Flusses Cávado — Paddleboarding und Kajak",
-      "Restaurierte Küstenmühlen (die Mühlen von Apúlia)"
-    ]
+      "Parque Natural do Litoral Norte: sechzehn Kilometer geschützte Dünen, Kiefernwald und Strand",
+      "Ofir und sein Kiefernwald am Südufer des Cávado",
+      "Apúlia, seine Windmühlen und die Tradition der Seetangsammler",
+      "Das Cávado-Ästuar zum Stand-up-Paddeln, Kajakfahren und Vogelbeobachten",
+      "Fünfunddreißig Minuten vom Flughafen Porto, dreißig von Braga"
+    ],
+    "seoTitle": "Esposende: Dünen, Strände und Unterkünfte | Portugal Active",
+    "seoDescription": "Geschützte Dünen, die Strände von Ofir und Apúlia und das Cávado-Ästuar nördlich von Porto. Was Sie in Esposende sehen, wann Sie reisen, wo Sie wohnen.",
+    "howToGetHere": "Flughafen Porto (OPO) etwa 35 Min. über die A28. Braga 30 Min. östlich. Viana do Castelo 25 Min. nördlich. Kein Bahnanschluss: Die nächsten Bahnhöfe sind Barcelos und Viana do Castelo.",
+    "bestTimeToVisit": "Juni und September. Warme Tage, lange Strände mit viel Platz und der Nachmittagswind, der sich zum Windsurfen und Kitesurfen eignet. Juli und August für den Hochsommer.",
+    "whatToExpect": "Ein unaufgeregter Badeort an einer Flussmündung, mitten in einem Küstennaturpark. Dünen, Kiefern und weite Strände statt Klippen und Nachtleben.",
+    "whereToStayIntro": "Unsere Häuser in Esposende sind zwei Apartments am Meer, beide für Familien und kleine Gruppen geeignet. Das eine ist ein Apartment mit drei Schlafzimmern und Balkon in Marinhas, fünfhundert Meter vom Strand und vom Naturpark entfernt. Das andere ist eine Maisonette mit Meerblick an der Avenida dos Banhos, der Strandpromenade, mit drei Schlafzimmern auf zwei Etagen. Beide liegen wenige Gehminuten von Strand und Stadt entfernt, und beide werden von unserem Team im Minho betreut. Gäste, die ein Haus mit Pool suchen, verbinden die Küste hier oft mit unseren Häusern rund um Viana do Castelo, fünfundzwanzig Minuten nördlich.",
+    "journalSectionTitle": "Aus dem Journal: Geschichten aus Esposende",
+    "thingsToDoIntro": "Esposende ist ein Ort für lange Spaziergänge und langsame Tage, nicht für Besichtigungslisten. Die Küste ist der Grund, hierherzukommen, und sie verändert sich von Nord nach Süd: Flussmündung und Stadt, Kiefernwald und Dünen, dann das alte Seetangdorf Apúlia. So würden wir sie aufteilen.",
+    "thingsToDo": [
+      {
+        "heading": "Die Stadt und das Ästuar",
+        "items": [
+          {
+            "name": "Forte de São João Baptista",
+            "category": "Erbe",
+            "description": "Zwischen 1699 und 1704 zur Verteidigung der Cávado-Mündung erbaut, mit dem roten eisernen Leuchtturm von Esposende an seiner Südwestecke."
+          },
+          {
+            "name": "Cávado-Ästuar",
+            "category": "Natur",
+            "description": "Hinter einer langen Sandnehrung weitet sich der Fluss zu einem geschützten Ästuar. Ruhiges Wasser zum Stand-up-Paddeln und Kajakfahren und Salzwiesen für Watvögel."
+          },
+          {
+            "name": "Ponte de Fão",
+            "category": "Architektur",
+            "description": "Eisenbrücke von 1892 über den Cávado, die die Esposende-Seite des Flusses mit dem Dorf Fão verbindet."
+          },
+          {
+            "name": "Fão",
+            "category": "Dorf",
+            "description": "Kleines Dorf am Südufer des Flusses, im ganzen Norden Portugals für das Gebäck Clarinhas de Fão bekannt."
+          }
+        ]
+      },
+      {
+        "heading": "Die Dünen und Strände",
+        "items": [
+          {
+            "name": "Ofir",
+            "category": "Strand",
+            "description": "Ein langer Strand am Ende eines Kiefernwalds am Südufer des Flusses, mit den vorgelagerten Felsen, die Cavalos de Fão genannt werden."
+          },
+          {
+            "name": "Dünenstege",
+            "category": "Natur",
+            "description": "Holzstege führen über die geschützten Dünen des Naturparks, sodass Sie kilometerweit hinter dem Strand gehen können, ohne die Pflanzen zu beschädigen, die den Sand halten."
+          },
+          {
+            "name": "Apúlia",
+            "category": "Dorf",
+            "description": "Badeort am Südende des Parks, mit seiner Reihe steinerner Windmühlen auf den Dünen und der Erinnerung an die Sargaceiros, die Seetangsammler."
+          },
+          {
+            "name": "Die nördlichen Strände",
+            "category": "Strand",
+            "description": "Nördlich der Stadt, in Richtung Neiva, werden die Strände wilder und ruhiger, gesäumt von Dünen und Ackerland."
+          }
+        ]
+      },
+      {
+        "heading": "Im Hinterland und in der Nähe",
+        "items": [
+          {
+            "name": "Castro de São Lourenço",
+            "category": "Archäologie",
+            "description": "Eisenzeitliche Höhensiedlung über Vila Chã, mit den Grundmauern steinerner Häuser und Blick entlang der gesamten Küste."
+          },
+          {
+            "name": "Barcelos",
+            "category": "Ausflug",
+            "description": "Zwanzig Minuten landeinwärts, Heimat des Hahns von Barcelos und eines der größten Wochenmärkte Portugals, jeden Donnerstag."
+          },
+          {
+            "name": "Braga",
+            "category": "Ausflug",
+            "description": "Dreißig Minuten östlich. Die Kathedrale, die Altstadt und das Heiligtum Bom Jesus do Monte, seit 2019 UNESCO-Welterbe, mit seiner barocken Treppenanlage und der wasserbetriebenen Standseilbahn."
+          },
+          {
+            "name": "Viana do Castelo",
+            "category": "Ausflug",
+            "description": "Fünfundzwanzig Minuten nördlich: die Basilika Santa Luzia, das historische Zentrum und weitere Atlantikstrände."
+          }
+        ]
+      }
+    ],
+    "seasons": {
+      "spring": "März bis Mai. Die Dünen blühen, und die Kiefernwälder duften nach Harz. Die Höchstwerte steigen von etwa siebzehn auf einundzwanzig Grad, Schauer sind noch häufig. Das Meer ist kalt, doch die Stege und der Küstenradweg zeigen sich von ihrer besten Seite, und die Strände sind leer.",
+      "summer": "Juni bis August. Warm und meist trocken, mit Höchstwerten um die fünfundzwanzig Grad. Die Nortada, ein stetiger Nordwind, weht an den meisten Nachmittagen, hält die Strände kühl und bringt Windsurfer und Kitesurfer. Das Wasser bleibt bei sechzehn bis achtzehn Grad. Juli und August sind die Familienmonate, am vollsten in der ersten Augusthälfte.",
+      "autumn": "September bis November. Der September ist warm und ruhig, oft der beste Monat für den Strand. Der Oktober bringt die ersten kräftigen Regenfälle und die Atlantikdünung. Im November gehört die Küste wieder den Fischern und Spaziergängern.",
+      "winter": "Dezember bis Februar. Mild, nass und windig, mit Höchstwerten um vierzehn Grad. Atlantikstürme sorgen für eindrucksvolle Spaziergänge entlang der Dünen. Viele Strandrestaurants schließen oder verkürzen ihre Öffnungszeiten, und die Stadt kehrt zu ihrem Alltag zurück.",
+      "bestForFirstTime": "Juni oder September. Warm genug für den Strand, ruhig genug, um lange Abschnitte davon für sich zu haben, und mit dem schönsten Licht für Spaziergänge durch die Dünen und am Ästuar."
+    },
+    "transport": {
+      "byAir": "Der Flughafen Francisco Sá Carneiro in Porto liegt etwa vierzig Kilometer südlich, rund fünfunddreißig Minuten mit dem Auto über die A28. Er ist der naheliegende Ankunftsort, und wir organisieren private Transfers zu unseren Häusern. Der Flughafen Vigo in Galicien liegt etwa eine Stunde und fünfzehn Minuten nördlich.",
+      "byTrain": "Esposende hat keinen Bahnhof. Die nächsten sind Barcelos, an der Linha do Minho etwa zwanzig Minuten landeinwärts, und Viana do Castelo, fünfundzwanzig Minuten nördlich; von beiden aus bringt Sie ein Taxi ans Ziel. Außerdem verkehren Busse zwischen Porto und Esposende.",
+      "byCar": "Von Porto aus erreicht man Esposende über die A28 in etwa vierzig Minuten. Die A11 verbindet die Stadt mit Barcelos und Braga. Die N13, die alte Küstenstraße, führt durch die Stadt und ist der langsamere, ursprünglichere Weg nach Viana do Castelo. Wer mit ausländischem Kennzeichen unterwegs ist, sollte sich vor der Ankunft bei einem elektronischen Mautdienst registrieren.",
+      "fromSpain": "Von Vigo überqueren Sie den Minho bei Tui und Valença und folgen den Autobahnen nach Süden über Ponte de Lima und Viana do Castelo, insgesamt etwa eine Stunde und fünfzehn Minuten. Ab Santiago de Compostela sollten Sie rund zwei Stunden einplanen.",
+      "gettingAround": "Stadt, Strand und Ästuar sind zu Fuß erreichbar, und ein Küstenradweg folgt großen Teilen des Naturparks. Für Braga, Barcelos und Viana do Castelo ist ein Auto nützlich, für den Alltag am Meer weniger."
+    },
+    "eatDrinkIntro": "In Esposende isst man, was die Küste hergibt: Atlantikfisch vom Holzkohlegrill, Meeresfrüchtereis zum Teilen und in Fão eine Gebäcktradition, die einen Umweg lohnt. Die Restaurants an der Uferfront von Apúlia und am Cávado richten sich nach Saison und Fang, und die meisten sind klein und familiengeführt. Der Wein ist Vinho Verde vom Cávado, einer der Unterregionen der Herkunftsbezeichnung. Unser Concierge führt eine kurze Liste mit Tischen entlang der Küste und reserviert sie für die Gäste.",
+    "specialties": [
+      {
+        "name": "Clarinhas de Fão",
+        "category": "Gebäck",
+        "description": "Ein Halbmond aus dünnem, frittiertem Teig, gefüllt mit Doce de Chila, einer Kürbiskonfitüre, und Eigelb, dann in Zucker gewälzt. In Fão hergestellt und in den dortigen Konditoreien verkauft."
+      },
+      {
+        "name": "Gegrillter Fisch",
+        "category": "Gericht",
+        "description": "Wolfsbarsch, Brasse und im Sommer Sardinen, über Holzkohle gegrillt und mit Salzkartoffeln, Gemüse und Olivenöl serviert."
+      },
+      {
+        "name": "Arroz de marisco",
+        "category": "Gericht",
+        "description": "Meeresfrüchtereis, locker und brühig nach Art des Nordens, im Topf an den Tisch gebracht und zum Teilen gedacht."
+      },
+      {
+        "name": "Vinho Verde vom Cávado",
+        "category": "Wein",
+        "description": "Eine der Unterregionen der Herkunftsbezeichnung Vinho Verde, bekannt für frische, zitrische Weißweine. Jung und kalt getrunken, zum Fisch."
+      }
+    ],
+    "experiencesIntro": "Die folgenden Erlebnisse organisiert unser Concierge für Gäste in unseren Häusern in Esposende. Die meisten brauchen einen Tag Vorlauf, und wo sonst ein Auto nötig wäre, kann der Concierge Transfers organisieren.",
+    "experiences": [
+      {
+        "name": "Stand-up-Paddeln oder Kajakfahren im Cávado-Ästuar",
+        "description": "Eine geführte Tour auf dem geschützten Wasser hinter der Sandnehrung, mit Fort und Leuchtturm auf der einen Seite und den Kiefern von Ofir auf der anderen.",
+        "duration": "Zwei bis drei Stunden",
+        "season": "Mai bis Oktober"
+      },
+      {
+        "name": "Windsurf- oder Kitesurfkurse",
+        "description": "Kurse für Anfänger und Fortgeschrittene an einer Küste, an der der nachmittägliche Nordwind den ganzen Sommer über zuverlässig weht. Ausrüstung inklusive.",
+        "duration": "Zwei bis drei Stunden",
+        "season": "Mai bis September"
+      },
+      {
+        "name": "Wanderung durch die Dünen des Naturparks",
+        "description": "Eine geführte Wanderung mit einem örtlichen Naturkundler über die Stege und durch die Kiefernwälder, die erklärt, wie das Dünensystem funktioniert und warum es geschützt ist.",
+        "duration": "Halber Tag",
+        "season": "Ganzjährig"
+      },
+      {
+        "name": "Braga und Bom Jesus",
+        "description": "Ein Tag in Braga: die Kathedrale, die Altstadt und die barocke Treppenanlage von Bom Jesus do Monte, hinunter mit der wasserbetriebenen Standseilbahn.",
+        "duration": "Ganzer Tag",
+        "season": "Ganzjährig"
+      },
+      {
+        "name": "Markt von Barcelos",
+        "description": "Donnerstagvormittag auf einem der größten Wochenmärkte Portugals, mit Keramik, Erzeugnissen aus der Region und den bemalten Hähnen.",
+        "duration": "Halber Tag",
+        "season": "Donnerstags, ganzjährig"
+      },
+      {
+        "name": "Vinho-Verde-Verkostung",
+        "description": "Besuch bei einem Vinho-Verde-Erzeuger im Hinterland, mit einer Verkostung der Weißweine der Region und Mittagessen zwischen den Reben.",
+        "duration": "Halber Tag",
+        "season": "Ganzjährig; Besuche zur Weinlese im September"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Wie weit ist Esposende von Porto entfernt?",
+        "answer": "Etwa vierzig Kilometer. Der Flughafen Porto ist mit dem Auto über die A28 rund fünfunddreißig Minuten entfernt, das Zentrum von Porto rund fünfundvierzig."
+      },
+      {
+        "question": "Welche sind die besten Strände in Esposende?",
+        "answer": "Am bekanntesten sind Ofir, am Ende eines Kiefernwalds am Südufer des Cávado, und Apúlia mit seinen Windmühlen. Der Stadtstrand ist vom Zentrum aus zu Fuß erreichbar, und die Strände im Norden, Richtung Neiva, sind die ruhigsten."
+      },
+      {
+        "question": "Was ist der Parque Natural do Litoral Norte?",
+        "answer": "Ein Naturpark, der die sechzehn Kilometer lange Küste von Esposende umfasst, vom Neiva bis nach Apúlia. Er schützt Dünen, Kiefernwald, Salzwiesen und ein großes Meeresgebiet. Das Gebiet wurde 1987 erstmals unter Schutz gestellt und 2005 zum Naturpark erklärt."
+      },
+      {
+        "question": "Ist Esposende für Familien geeignet?",
+        "answer": "Ja. Die Strände sind lang und nicht überlaufen, das Ästuar bietet ruhigeres Wasser, und die Stadt ist klein und leicht zu erkunden. Die Hauptstrände werden während der Badesaison von Rettungsschwimmern bewacht. Beide Apartments am Meer eignen sich für Familien."
+      },
+      {
+        "question": "Wer waren die Sargaceiros von Apúlia?",
+        "answer": "Die Seetangsammler von Apúlia, die den vom Atlantik angeschwemmten Sargaço sammelten, auf dem Sand trockneten und als Dünger an die Höfe im Landesinneren verkauften. Sie arbeiteten in einem weißen Wollkittel, der Branqueta, und eine örtliche Folkloregruppe hält die Tradition lebendig."
+      },
+      {
+        "question": "Wann ist die beste Reisezeit für Esposende?",
+        "answer": "Juni und September für warmes Wetter ohne Andrang. Juli und August für den Hochsommer, wenn die Stadt am lebhaftesten ist. Frühling und Herbst eignen sich für Wanderer und Radfahrer."
+      },
+      {
+        "question": "Ist Esposende eine gute Basis für Braga, Porto und Viana do Castelo?",
+        "answer": "Ja. Braga liegt dreißig Minuten östlich, Barcelos zwanzig, Viana do Castelo fünfundzwanzig Minuten nördlich und Porto vierzig Minuten südlich, was Esposende zu einer praktischen Basis an der Küste für den Norden Portugals macht."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Besitzen Sie ein Haus in Esposende?",
+      "body": "Portugal Active betreut Premium-Immobilien entlang der Minho-Küste, von Esposende bis Caminha: Komplettverwaltung, Marketing, Concierge und Instandhaltung, betrieben nach Hotelstandards von einem Team, das in der Region zu Hause ist.",
+      "cta": "Sprechen Sie mit unserem Team",
+      "url": "https://www.portugalactive.com/management/de/?utm_source=destinations&utm_medium=cta&utm_campaign=esposende"
+    }
   },
   "porto": {
     "name": "Porto und Douro",
@@ -701,18 +1129,278 @@
   },
   "douro": {
     "name": "Douro-Tal",
-    "tagline": "Terrassenweinberge, UNESCO-Weltkulturerbe, über dem Fluss.",
-    "heroSubtitle": "Die meistfotografierte Weinlandschaft Europas — und die lohnendste, um zu bleiben.",
+    "tagline": "Terrassierte Weinberge über dem Fluss, in einer der ältesten regulierten Weinregionen der Welt.",
+    "description": "Ein Reiseführer für das Douro-Tal: die Weinlandschaft Alto Douro (UNESCO), die Quintas, Pinhão, Régua und Lamego, die Eisenbahn und die Weinlese.",
+    "heroSubtitle": "Terrassierte Weinberge, Schiefer und ein Fluss, der eine Weinregion geformt hat",
+    "pullQuote": {
+      "text": "In der Region Alto Douro wird seit rund 2.000 Jahren von traditionellen Grundbesitzern Wein erzeugt.",
+      "source": "UNESCO-Welterbezentrum",
+      "year": 2001
+    },
+    "primaryAccolade": {
+      "text": "UNESCO-Welterbe Kulturlandschaft",
+      "source": "Weinregion Alto Douro, eingetragen 2001",
+      "note": "1756 abgegrenzt, eine der ältesten regulierten Weinregionen der Welt"
+    },
     "whyOverline": "WARUM DER DOURO",
-    "howToGetHere": "Flughafen Porto (OPO) in 1 Std. 30 von Pinhão. Zug der Linha do Douro ab Porto São Bento, 2 Std. 15.",
-    "seoTitle": "Douro-Tal, Portugal: UNESCO-Weltkulturerbe-Weinregion | Portugal Active",
+    "whyDescription": "Der Douro ist eine von Hand gebaute Weinregion. Über rund zweitausend Jahre, vor allem aber in den letzten drei Jahrhunderten, haben die Menschen des Tals Terrassen in steile Schieferhänge geschlagen, sie mit Trockenmauern gestützt und Reben gepflanzt, wo sonst kaum etwas wachsen würde. Das Ergebnis ist eine der markantesten Landschaften Europas und eine der wenigen Weinregionen, in denen die Landschaft selbst der Grund für die Reise ist.\n\nDie Region wurde 1756 abgegrenzt, als der Marquês de Pombal eine Gesellschaft zur Regulierung von Erzeugung und Handel des Portweins gründete, was sie zu einer der ältesten regulierten Weinregionen der Welt macht. 2001 nahm die UNESCO die Weinregion Alto Douro, rund vierundzwanzigtausend Hektar im Herzen des abgegrenzten Gebiets, als Kulturlandschaft in die Welterbeliste auf. Traditionell wird das Tal in drei Teile gegliedert: den Baixo Corgo um Régua, grüner und feuchter; den Cima Corgo um Pinhão, das Herz der Portweinerzeugung; und den Douro Superior, heißer und wilder, der sich nach Osten bis zur spanischen Grenze erstreckt.\n\nDie längste Zeit seiner Geschichte war der Fluss der einzige Weg hinaus. Der Portwein reiste in flachbodigen Rabelo-Booten hinunter zu den Kellereien von Vila Nova de Gaia, bis erst die Eisenbahn und dann die Straße diese Aufgabe übernahmen, und im zwanzigsten Jahrhundert verwandelte eine Kette von Staudämmen die Stromschnellen in eine Folge ruhiger Abschnitte. Heute ist der Douro von Porto bis zur spanischen Grenze schiffbar, und Flussschiffe passieren Schleusen wie die von Carrapatelo, die sie um etwa fünfunddreißig Meter anhebt. Die Bahnstrecke Linha do Douro folgt dem Wasser über weite Teile ihres Weges von Régua nach Pocinho, und in Pinhão tragen die Wände des Bahnhofs vierundzwanzig Azulejo-Tafeln von 1937, die die Weinlese, die Boote und die Landschaft zeigen.\n\nPinhão, ein kleiner Ort, an dem der Pinhão in den Douro mündet, ist das Zentrum des Cima Corgo, umgeben von einigen der bekanntesten Quintas des Portweins. Peso da Régua, flussabwärts, ist die Handelsstadt der Region und Sitz des Museu do Douro. Südlich des Flusses steigt Lamego zum barocken Heiligtum Nossa Senhora dos Remédios an, das über eine Treppe mit 686 Stufen erreicht wird. Die Aussichtspunkte gehören zum Erlebnis: Casal de Loivos über Pinhão, São Leonardo de Galafura über Régua und São Salvador do Mundo bei São João da Pesqueira.\n\nDie meisten Besucher kommen für einen Tag aus Porto und sehen das Tal von einem Boot oder einem Reisebus aus. Wer bleibt, erlebt es anders. Die Quintas öffnen ihre Türen für Verkostungen, das Licht auf den Terrassen wandelt sich von Stunde zu Stunde, und die Abende haben eine Ruhe, die Tagesbesucher nie kennenlernen. Am lebendigsten ist das Tal zur Weinlese, von Ende August bis in den Oktober, wenn an den steilsten Hängen noch von Hand gelesen und auf manchen Quintas mit den Füßen in Lagares aus Granit getreten wird.\n\nEs ist auch ein Ort der Extreme. Die Sommer im Cima Corgo gehören zu den heißesten Portugals, und die Winter sind kalt, mit Morgennebel, der das Tal füllt. Der Frühling mit den Reben im frischen Laub und der Herbst, wenn sich die Terrassen rot und golden färben, sind die Jahreszeiten, die Einheimische wählen würden.",
     "highlights": [
-      "Kulturlandschaft, UNESCO-Weltkulturerbe",
-      "Jahrhundertealte Portwein-Quintas",
-      "Flussstädtchen Pinhão und Régua",
-      "Weinlesezeit (September)",
-      "Bootskreuzfahrten und die Eisenbahnlinie Linha do Douro"
-    ]
+      "Weinregion Alto Douro, seit 2001 UNESCO-Welterbe",
+      "Portwein- und Douro-Quintas, die für Verkostungen öffnen",
+      "Pinhão, Régua und die barocke Treppe von Lamego",
+      "Die Bahnstrecke Linha do Douro und der historische Zug von Régua nach Tua",
+      "Die Weinlese, von Ende August bis in den Oktober"
+    ],
+    "seoTitle": "Douro-Tal: Quintas, Wein und Unterkünfte | Portugal Active",
+    "seoDescription": "Terrassierte Weinberge, Portwein-Quintas und Flussorte im UNESCO-Welterbe Alto Douro. Was Sie im Douro-Tal sehen, wann Sie reisen, wo Sie wohnen.",
+    "howToGetHere": "Flughafen Porto (OPO) etwa 1 Std. 20 Min. bis Régua und 1 Std. 45 Min. bis Pinhão über die A4 und A24. Zug der Linha do Douro ab Porto São Bento: rund 2 Std. bis Régua, 2 Std. 30 Min. bis Pinhão.",
+    "bestTimeToVisit": "Ende April bis Juni für grüne Weinberge und milde Wärme. Ende August bis in den Oktober für die Weinlese. Juli und August sind im Tal sehr heiß.",
+    "whatToExpect": "Eine gelebte Weinlandschaft aus Terrassen, Quintas und kleinen Orten am Fluss. Langsame Straßen, weite Ausblicke und lange Mittagessen. Heiße Sommer, kalte Winter.",
+    "whereToStayIntro": "Unsere Häuser am Douro reichen vom grüneren unteren Tal, weniger als eine Stunde von Porto entfernt, bis ins Herz des Cima Corgo rund um Pinhão. Dazu gehören Weinberghäuser in Casal de Loivos und oberhalb von Alijó, Häuser am Fluss bei Tua mit eigenem Anleger und Quintas auf Anhöhen mit eigenen Reben. Sie bieten Platz für acht bis achtzehn Gäste, und mehrere haben beheizte Pools, was in einem Tal, dessen beste Monate Frühling und Herbst sind, einen Unterschied macht. Unser Concierge organisiert Besuche auf Quintas, Bootsfahrten und Tage zur Weinlese und kann einen Privatkoch arrangieren.",
+    "journalSectionTitle": "Aus dem Journal: Geschichten vom Douro",
+    "thingsToDoIntro": "Der Douro belohnt Langsamkeit. Die Entfernungen wirken auf der Karte kurz, doch die Straßen folgen den Konturen des Tals, und die besten Tage verbinden eine Quinta, einen Aussichtspunkt und ein langes Mittagessen statt einer Checkliste. So würden wir einen ersten Aufenthalt von vier oder fünf Tagen gestalten.",
+    "thingsToDo": [
+      {
+        "heading": "Die Orte am Fluss",
+        "items": [
+          {
+            "name": "Pinhão",
+            "category": "Ort",
+            "description": "Kleiner Ort im Herzen des Cima Corgo. Der Bahnhof ist mit vierundzwanzig Azulejo-Tafeln von 1937 ausgekleidet, die die Weinlese, die Rabelo-Boote und die Landschaft des Tals zeigen."
+          },
+          {
+            "name": "Peso da Régua",
+            "category": "Ort",
+            "description": "Das Handelszentrum des Tals und der Beginn des Flussabschnitts der Bahnstrecke. Das Museu do Douro erzählt die Geschichte der Region, ihres Weins und ihrer Menschen."
+          },
+          {
+            "name": "Lamego",
+            "category": "Erbe",
+            "description": "Bischofsstadt südlich von Régua, mit einem sehenswerten Museum und dem barocken Heiligtum Nossa Senhora dos Remédios am Ende einer Treppe mit 686 Stufen."
+          },
+          {
+            "name": "Casa de Mateus",
+            "category": "Erbe",
+            "description": "Bei Vila Real, eine halbe Stunde nördlich von Régua. Ein barockes Herrenhaus aus dem achtzehnten Jahrhundert mit formalen Gärten, das Haus auf dem Etikett des Mateus Rosé."
+          }
+        ]
+      },
+      {
+        "heading": "Die Aussichtspunkte",
+        "items": [
+          {
+            "name": "Casal de Loivos",
+            "category": "Aussichtspunkt",
+            "description": "Oberhalb von Pinhão, der Blick über die Flussbiegung und die Terrassen des Cima Corgo, der auf den meisten Fotos vom Douro zu sehen ist."
+          },
+          {
+            "name": "São Leonardo de Galafura",
+            "category": "Aussichtspunkt",
+            "description": "Oberhalb von Régua, ein Aussichtspunkt, den der Schriftsteller Miguel Torga berühmt gemacht hat, mit Blick über einen langen Abschnitt des Flusses."
+          },
+          {
+            "name": "São Salvador do Mundo",
+            "category": "Aussichtspunkt",
+            "description": "Bei São João da Pesqueira, eine Anhöhe mit kleinen Kapellen über der Schlucht des Cachão da Valeira."
+          }
+        ]
+      },
+      {
+        "heading": "Der Wein und der Fluss",
+        "items": [
+          {
+            "name": "Besuche auf Quintas",
+            "category": "Wein",
+            "description": "Viele Quintas öffnen für Verkostungen, von Portweinhäusern mit jahrhundertelanger Geschichte bis zu kleinen Familienbetrieben, die rote und weiße Douro-Weine erzeugen. Reservieren Sie im Voraus, besonders zur Weinlese."
+          },
+          {
+            "name": "Die Weinlese",
+            "category": "Wein",
+            "description": "Von Ende August bis in den Oktober. Manche Quintas laden Gäste ein, morgens bei der Lese zu helfen und abends Trauben mit den Füßen in Lagares aus Granit zu treten."
+          },
+          {
+            "name": "Fahrten im Rabelo-Boot",
+            "category": "Fluss",
+            "description": "Kurze Fahrten ab Pinhão und Régua in traditionellen Rabelo-Booten, den flachbodigen Schiffen, die einst die Portweinfässer hinunter nach Gaia brachten."
+          }
+        ]
+      },
+      {
+        "heading": "Weiter entfernt",
+        "items": [
+          {
+            "name": "Linha do Douro",
+            "category": "Transport",
+            "description": "Die Bahnstrecke von Régua nach Pocinho verläuft fast auf ganzer Länge am Fluss entlang, durch Terrassen und vorbei an Quintas, die keine Straße direkt erreicht."
+          },
+          {
+            "name": "Côa-Tal",
+            "category": "Archäologie",
+            "description": "Im Douro Superior, altsteinzeitliche Felsgravuren unter freiem Himmel, seit 1998 UNESCO-Welterbe, mit dem Museu do Côa über dem Zusammenfluss mit dem Douro."
+          }
+        ]
+      }
+    ],
+    "seasons": {
+      "spring": "März bis Mai. Ende März treiben die Reben aus, und im April und Mai werden die Terrassen grün. Die Höchstwerte steigen von knapp zwanzig auf Mitte zwanzig Grad, mit gelegentlichem Regen. Ende Februar und im März blühen die Mandelbäume im Douro Superior. Eine der beiden besten Reisezeiten.",
+      "summer": "Juni bis August. Heiß und trocken. Im Juli und August übersteigen die Temperaturen im Cima Corgo regelmäßig fünfunddreißig Grad und können über vierzig liegen. Morgens und abends wird gewandert und besichtigt; die Mittagszeit gehört dem Schatten, dem Pool und dem Fluss. Der historische Zug fährt ab Juni.",
+      "autumn": "September bis November. Die Weinlese läuft von Ende August bis Anfang Oktober, je nach Jahr und Höhenlage des Weinbergs. Danach färbt sich das Laub rot, kupfern und golden, meist am schönsten Ende Oktober und Anfang November. Die Temperaturen sinken von knapp dreißig auf etwa fünfzehn Grad.",
+      "winter": "Dezember bis Februar. Kalt und ruhig, mit Frost an den höheren Hängen und Morgennebel, der das Tal füllt. Viele Quintas verkürzen ihre Öffnungszeiten, doch an sonnigen Tagen ist das Licht klar, die Kamine brennen, und das Tal gehört den Menschen, die dort leben.",
+      "bestForFirstTime": "Ende September bis Mitte Oktober oder Mai. Der Herbst bietet das Ende der Weinlese und die Weinberge im Farbwechsel; der Mai grüne Terrassen, lange Tage und eine Hitze, die noch nicht drückend ist. Beide meiden den Höhepunkt des Sommers."
+    },
+    "transport": {
+      "byAir": "Der Flughafen Francisco Sá Carneiro in Porto ist für fast alle Besucher der Ankunftsort: etwa eine Stunde und zwanzig Minuten mit dem Auto bis Régua und eine Stunde und fünfundvierzig Minuten bis Pinhão. Wir organisieren private Transfers zu unseren Häusern.",
+      "byTrain": "Die Linha do Douro führt von Porto São Bento und Campanhã in rund zwei Stunden nach Régua, in etwa zweieinhalb Stunden nach Pinhão und in etwa drei Stunden und zwanzig Minuten nach Pocinho. Zwischen Juni und Oktober verkehrt an ausgewählten Tagen ein historischer Zug zwischen Régua und Tua.",
+      "byCar": "Von Porto erreichen Sie Régua über die A4 und dann die A24 in gut einer Stunde. Von dort folgt die N222 dem Südufer des Flusses bis Pinhão, die Strecke, derentwegen die meisten Besucher kommen. Die Straßen zwischen den Quintas sind schmal und kurvenreich, und die Fahrten dauern länger, als die Karte vermuten lässt. Wer mit ausländischem Kennzeichen unterwegs ist, sollte sich vor der Ankunft bei einem elektronischen Mautdienst registrieren.",
+      "gettingAround": "Ein Auto oder ein Fahrer ist nahezu unverzichtbar. Für Verkostungstage ist ein Privatfahrer die vernünftige Wahl, und der Concierge kann einen organisieren. Boote und der Zug sind die beste Art, den Fluss selbst zu erleben, und im Frühling und Herbst eignen sich die alten Wege zwischen Dörfern und Weinbergen gut zum Wandern."
+    },
+    "eatDrinkIntro": "Die Küche des Douro ist binnenländisch und großzügig: Zicklein und Lamm aus dem Holzofen, luftgetrocknete Wurst und Schinken aus den Bergen, Olivenöl aus dem Douro Superior und Brot, das gebacken wird wie eh und je. Die Restaurants der Region reichen von Speisesälen auf Quintas mit Blick über die Reben bis zu kleinen Tascas in den Orten am Fluss, und eine Handvoll Köche hat das Tal zu einem eigenen Reiseziel gemacht. Im Mittelpunkt steht der Wein: natürlich Portwein, aber auch die roten und weißen Douro-Weine, die heute zu den angesehensten Portugals gehören. Unser Concierge reserviert die Tische, die zuerst ausgebucht sind.",
+    "restaurants": [
+      {
+        "name": "DOC",
+        "category": "Gehobene Küche",
+        "description": "Das Restaurant von Küchenchef Rui Paula am Flussufer in Folgosa, zwischen Régua und Pinhão, mit einer Terrasse über dem Wasser."
+      },
+      {
+        "name": "Bomfim 1896",
+        "category": "Quinta",
+        "description": "Auf der Quinta do Bomfim der Familie Symington in Pinhão, im Obergeschoss eines alten Weinlagers, mit einer Küche mit Holzfeuer und Blick über den Fluss."
+      },
+      {
+        "name": "Castas e Pratos",
+        "category": "Regional",
+        "description": "In Peso da Régua, nahe am Bahnhof, mit moderner Douro-Küche und einer langen Liste von Weinen aus dem Tal."
+      },
+      {
+        "name": "Quinta da Pacheca",
+        "category": "Quinta",
+        "description": "Weingut kurz vor Régua, mit einem Restaurant zwischen den Reben und Verkostungen in den Kellern."
+      }
+    ],
+    "specialties": [
+      {
+        "name": "Portwein",
+        "category": "Wein",
+        "description": "Der gespritete Wein, der das Tal berühmt gemacht hat, von jungen Rubys und weißen Portweinen bis zu gereiften Tawnys und den Vintage Ports der besten Jahrgänge. Ihn dort zu verkosten, wo er entsteht, ist eine andere Erfahrung."
+      },
+      {
+        "name": "Rot- und Weißweine Douro DOC",
+        "category": "Wein",
+        "description": "Nicht aufgespritete Weine aus denselben Weinbergen, bei den Roten aus Rebsorten wie Touriga Nacional, Touriga Franca und Tinta Roriz, bei den Weißen aus Rabigato, Viosinho und Gouveio."
+      },
+      {
+        "name": "Cabrito assado",
+        "category": "Gericht",
+        "description": "Im Holzofen gebratenes Zicklein mit Kartoffeln, das Gericht für Sonntage und Feste in der ganzen Region."
+      },
+      {
+        "name": "Bola de Lamego",
+        "category": "Gericht",
+        "description": "Ein Brot aus Lamego, um eine Füllung aus Wurst und Schinken gebacken, gegessen bei Picknicks, auf Märkten und beim Mittagessen zur Weinlese."
+      }
+    ],
+    "experiencesIntro": "Die folgenden Erlebnisse organisiert unser Concierge für Gäste in unseren Häusern am Douro. Die meisten brauchen ein oder zwei Tage Vorlauf, zur Weinlese mehr, und alle lassen sich mit einem Privatfahrer verbinden, damit nach einer Verkostung niemand selbst fahren muss.",
+    "experiences": [
+      {
+        "name": "Besuch und Verkostung auf einer Quinta mit dem Erzeuger",
+        "description": "Ein Vormittag auf einer bewirtschafteten Quinta, mit einem Gang über die Terrassen und einer Verkostung von Portwein und Douro-Weinen mit der Familie oder dem Önologen, wenn möglich gefolgt von einem Mittagessen auf dem Gut.",
+        "duration": "Halber Tag",
+        "season": "Ganzjährig"
+      },
+      {
+        "name": "Ein Tag zur Weinlese",
+        "description": "Morgens Lese auf den Terrassen und abends, auf den Quintas, die es noch so halten, Traubentreten mit den Füßen in einem Lagar aus Granit.",
+        "duration": "Ganzer Tag",
+        "season": "Ende August bis Anfang Oktober"
+      },
+      {
+        "name": "Im Rabelo-Boot auf dem Fluss",
+        "description": "Eine Stunde auf dem Douro ab Pinhão in einem traditionellen Rabelo oder eine längere private Bootsfahrt direkt vom Haus aus, wo es einen Anleger gibt.",
+        "duration": "Eine bis drei Stunden",
+        "season": "März bis November"
+      },
+      {
+        "name": "Der historische Zug von Régua nach Tua",
+        "description": "Ein Nostalgiezug mit historischen Waggons entlang des Flusses, mit Musik und einem Glas Portwein an Bord. Er fährt an ausgewählten Tagen im Sommer und Frühherbst und ist schnell ausgebucht.",
+        "duration": "Halber Tag",
+        "season": "Juni bis Oktober"
+      },
+      {
+        "name": "Die Aussichtspunkte mit Privatfahrer",
+        "description": "Casal de Loivos, São Leonardo de Galafura und São Salvador do Mundo an einem Tag, mit Mittagessen in einem Ort am Fluss.",
+        "duration": "Ganzer Tag",
+        "season": "Ganzjährig"
+      },
+      {
+        "name": "Felskunst im Côa-Tal",
+        "description": "Eine geführte Besichtigung der altsteinzeitlichen Freiluftgravuren des Côa und des Museu do Côa. Ein langer Tag in den Douro Superior, der sich lohnt.",
+        "duration": "Ganzer Tag",
+        "season": "Ganzjährig"
+      }
+    ],
+    "eventsIntro": "Das Jahr am Douro folgt der Rebe. Die wichtigsten Wochen sind die Weinlese und, in Lamego, die Wallfahrt Anfang September; die Mandelblüte und der historische Zug markieren Anfang und Ende der Reisesaison.",
+    "events": [
+      {
+        "name": "Vindima (die Weinlese)",
+        "dates": "Ende August bis Anfang Oktober",
+        "description": "Die geschäftigsten und stimmungsvollsten Wochen im Tal. Quintas und Häuser sind früh ausgebucht, und viele Weingüter bieten Erlebnisse rund um die Lese an."
+      },
+      {
+        "name": "Festas de Nossa Senhora dos Remédios",
+        "dates": "Ende August bis 8. September, Lamego",
+        "description": "Die große Wallfahrt und das Stadtfest von Lamego, die in der Prozession am 8. September gipfeln."
+      },
+      {
+        "name": "Comboio Histórico do Douro",
+        "dates": "Juni bis Oktober, an ausgewählten Tagen",
+        "description": "Historischer Zug zwischen Régua und Tua, mit Waggons aus der Zeit und Portwein an Bord."
+      },
+      {
+        "name": "Mandelblüte",
+        "dates": "Ende Februar bis März",
+        "description": "Die Mandelbäume des Douro Superior blühen weiß und rosa rund um Torre de Moncorvo und Vila Nova de Foz Côa."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Wie viele Tage brauche ich im Douro-Tal?",
+        "answer": "Drei Nächte sind das Minimum, um das Tal zu spüren, statt es nur zu sehen. Vier oder fünf erlauben zwei oder drei Besuche auf Quintas, einen Tag auf dem Fluss oder mit der Bahn und einen Tag für Lamego oder die Aussichtspunkte, ohne Eile."
+      },
+      {
+        "question": "Wann ist die beste Reisezeit für den Douro?",
+        "answer": "Mai sowie Mitte September bis Ende Oktober. Die Weinlese läuft von Ende August bis Anfang Oktober, und Ende Oktober und Anfang November bringen die Herbstfarben. Juli und August sind im Tal sehr heiß."
+      },
+      {
+        "question": "Wie komme ich von Porto ins Douro-Tal?",
+        "answer": "Mit dem Auto erreichen Sie Régua über die A4 und A24 in etwa einer Stunde und zwanzig Minuten vom Flughafen Porto. Mit dem Zug braucht die Linha do Douro ab São Bento rund zwei Stunden bis Régua und zweieinhalb bis Pinhão. Flusskreuzfahrten starten ebenfalls in Porto, dauern aber einen ganzen Tag oder länger."
+      },
+      {
+        "question": "Was ist der Unterschied zwischen Portwein und Douro-Wein?",
+        "answer": "Beide stammen aus derselben abgegrenzten Region. Portwein wird während der Gärung mit Traubenbrand aufgespritet, was die Gärung stoppt und den Wein süß und kräftig macht. Douro-DOC-Weine sind nicht aufgespritete Rot- und Weißweine, großteils aus denselben Rebsorten."
+      },
+      {
+        "question": "Brauche ich am Douro ein Auto?",
+        "answer": "Es hilft, doch für Verkostungstage ist ein Privatfahrer die bessere Wahl. Der Concierge kann einen organisieren, ebenso Bootsfahrten und Zugtickets."
+      },
+      {
+        "question": "Wo übernachtet man am besten im Douro-Tal?",
+        "answer": "Das hängt von der Reise ab. Der Cima Corgo um Pinhão und Alijó ist das Herz des Portweinlandes und die eindrucksvollste Landschaft. Das untere Tal Richtung Amarante und Baião ist grüner und näher an Porto. Unsere Häuser decken beides ab."
+      },
+      {
+        "question": "Ist das Douro-Tal für Familien geeignet?",
+        "answer": "Ja, mit einem Haus mit Pool. Die Sommer sind heiß, daher verbringt man die Tage am besten zwischen Pool und kurzen Ausflügen am Morgen oder Abend: eine Bootsfahrt, der Zug, eine Quinta mit viel Platz zum Herumstreifen."
+      },
+      {
+        "question": "Kann ich Quintas ohne Reservierung besuchen?",
+        "answer": "Einige Quintas empfangen Besucher ohne Reservierung, doch die meisten Verkostungen finden nach Vereinbarung statt, und zur Weinlese sind viele wochenlang im Voraus ausgebucht. Der Concierge reserviert die Besuche im Voraus."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Besitzen Sie ein Haus am Douro?",
+      "body": "Portugal Active betreut Premium-Immobilien im gesamten Norden Portugals: Komplettverwaltung, Marketing, Concierge und Instandhaltung, betrieben nach Hotelstandards. Wenn Sie eine Quinta oder ein Haus am Douro besitzen, sprechen wir gern mit Ihnen.",
+      "cta": "Sprechen Sie mit unserem Team",
+      "url": "https://www.portugalactive.com/management/de/?utm_source=destinations&utm_medium=cta&utm_campaign=douro"
+    }
   },
   "lisbon": {
     "name": "Lisboa",

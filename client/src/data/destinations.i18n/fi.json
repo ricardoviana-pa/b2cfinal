@@ -654,31 +654,459 @@
   },
   "caminha": {
     "name": "Caminha",
-    "tagline": "Linnoitettu rajakaupunki, vastapäätä Galiciaa, Minho-joen suiston toisella puolella.",
-    "heroSubtitle": "Missä Portugali kohtaa Galician, tyhjien rantojen suiston toisella puolella.",
+    "tagline": "Muurien ympäröimä rajakaupunki Minhon suulla, Galicia vastapäätä suiston toisella puolen.",
+    "description": "Opas Caminhaan: muurien ympäröimä kaupunki Minhon suulla, Moledon ranta, Camaridon männiköt ja Couran laakso.",
+    "heroSubtitle": "Missä Minho kohtaa Atlantin ja Galicia näkyy vastarannalla",
     "whyOverline": "MIKSI CAMINHA",
-    "howToGetHere": "Porton lentokenttä (OPO) 1 h 15 min A28:aa pitkin. Vigo (Espanja) 45 min. Viana do Castelo 25 min etelään.",
-    "seoTitle": "Caminha, Portugali: Atlantin rajakaupunki | Portugal Active",
+    "whyDescription": "Caminha on viimeinen portugalilainen kaupunki Atlantin rannikolla ennen Espanjaa. Se sijaitsee Minhon suiston etelärannalla, muutaman kilometrin ennen kuin joki laskee mereen, ja katsoo veden yli suoraan Galiciaan ja Monte de Santa Teclan metsäiseen kartioon. Suurimman osan historiastaan tämä näkymä oli raja. Nykyään se on kymmenen minuutin venematka.\n\nVanhakaupunki on pieni, ja sen muodon määräävät yhä muurit. Niiden vanhimmat osat ovat 1200-luvulta, ja pääaukion kellotorni Torre do Relógio oli muurien pääportti. Sen edessä, aukiolla, jota paikalliset kutsuvat nimellä Terreiro, seisoo graniittinen suihkulähde. Sen rakensi vuosien 1551 ja 1553 välillä kivenhakkaajamestari João Lopes o Velho, joka teki myös Viana do Castelon Praça da Repúblican suihkulähteen. Samalla aukiolla ovat goottilainen kaupunkitalo Solar dos Pitas ja vanha raatihuone. Lyhyt kävely Rua Direitaa pitkin vie Igreja Matriziin, graniittiseen seurakuntakirkkoon, jonka rakentaminen alkoi noin vuonna 1488 ja kesti noin kuusikymmentä vuotta. Kuorissa on manuelinisia kaiverruksia ja sisällä kaiverrettu puinen mudéjar-katto.\n\nRannikko alkaa heti kaupungin takana. Mata Nacional do Camarido, joen suun hiekoille istutettu mäntymetsä, ulottuu Camaridon suistorannalle asti, jossa Galician ranta tuntuu olevan käden ulottuvilla. Sen eteläpuolella on Praia de Moledo, pitkä ja avoin hienohiekkainen ranta Ínsuan saarta vastapäätä. Saarella 1600-luvun linnoitus ympäröi fransiskaaniluostarin jäänteitä. Moledo on ollut pohjoisportugalilaisten perheiden kesäranta sukupolvien ajan. Se on leveä, puhdas ja usein tuulinen, mikä pitää sen viileänä elokuussa ja tekee siitä hyvän rannan leijasurffaukseen ja pitkille kävelyille.\n\nSisämaassa kaupunki avautuu kahteen laaksoon. Minhoa ylävirtaan tie kulkee Seixasin ja Lanhelasin ohi kohti Vila Nova de Cerveiraa ja linnoituskaupunki Valençaa. Etelässä ja idässä Coura-joki virtaa kukkuloilta alas vihreän laakson halki, maissipeltojen, graniittikylien ja vanhojen vesimyllyjen ohi. Vilar de Mourosissa vanha kivisilta ylittää joen kylän kohdalla, jonka nimi on vuodesta 1971 liitetty yhteen portugalilaisen festivaalihistorian kuuluisimmista musiikkitapahtumista. Kaiken takana kohoaa Serra d'Arga, graniittinen vuorijono, jolla garrano-hevoset laiduntavat vapaina.\n\nRajan ylitys kuuluu arkeen. Autolautta, joka yhdisti Caminhan ja A Guardan vuosikymmenten ajan, lopetti liikennöinnin vuonna 2020, lopulta suiston hiekkasärkkien lannistamana. Nykyään pienet luvanvaraiset vesitaksit ylittävät suiston noin kymmenessä minuutissa. Niillä kulkevat enimmäkseen pyhiinvaeltajat, jotka seuraavat kaupungin läpi kulkevaa Santiagon pyhiinvaellusreitin rannikkoreittiä. Maanteitse Galiciaan pääsee Vila Nova de Cerveiran ja Valençan siltoja pitkin viidestätoista kahteenkymmeneenviiteen minuutissa.\n\nElämän rytmi seuraa vuodenaikoja. Myöhäistalvella ja keväällä Minho tuo paikallisiin pöytiin nahkiaisia ja pilkkusillejä. Kesällä Moledo täyttyy, Couran jokirannat lämpenevät ja laakson musiikkifestivaalit saapuvat elokuussa. Näiden viikkojen ulkopuolella kaupunki palaa omaan mittakaavaansa: kahvi Terreirolla, kävely mäntyjen alla katsomaan vuoroveden kääntymistä joen suulla, illallinen, kun valot syttyvät veden toisella puolen Galiciassa.",
     "highlights": [
-      "Keskiaikainen muurattu keskusta ja Torre do Relógio",
-      "Praia do Moledo ja Camaridon mäntymetsä",
-      "Päivittäinen lautta Tuihin (Espanja) Minho-joen suiston yli",
-      "Paredes de Couran musiikkifestivaali, 20 min sisämaahan"
-    ]
+      "Muurien ympäröimä vanhakaupunki, Torre do Relógio ja graniittinen suihkulähde vuodelta 1551",
+      "Praia de Moledo ja Camaridon mäntymetsä Minhon suulla",
+      "Vesitaksit suiston yli A Guardaan Galiciaan",
+      "Couran laakso, Vilar de Mouros ja Serra d'Arga",
+      "Minhon nahkiaiset ja pilkkusillit myöhäistalvella ja keväällä"
+    ],
+    "seoTitle": "Caminha: Moledon ranta, Vanhakaupunki ja Majoitus | Portugal Active",
+    "seoDescription": "Muurien ympäröimä vanhakaupunki, Moledon ranta, Camaridon männiköt ja veneet Galiciaan. Mitä nähdä Caminhassa, milloin matkustaa ja missä yöpyä.",
+    "howToGetHere": "Porton lentokenttä (OPO) noin 1 h A28:aa pitkin. Vigon lentokenttä (Espanja) noin 50 min. Viana do Castelo 25 min etelään. Linha do Minhon paikallisjunat pysähtyvät Caminhassa ja Moledossa.",
+    "bestTimeToVisit": "Kesäkuu ja syyskuu. Pitkät päivät, lämmin Coura jokiuintiin ja Moledo ilman elokuun väkijoukkoja. Myöhäistalvi ja kevät nahkiaiskauden vuoksi.",
+    "whatToExpect": "Pieni muurien ympäröimä kaupunki leveän suiston rannalla: mäntymetsää, Atlantin ranta ja Galicia vastarannalla. Rauhallinen suurimman osan vuotta, vilkas elokuussa.",
+    "whereToStayIntro": "Useimmat Caminhan kodeistamme sijaitsevat kolmesataa vuotta vanhassa graniittisessa vesimyllyssä Coura-joen varrella Vilar de Mourosissa, kymmenen minuutin päässä kaupungista sisämaahan. Mylly ja sen ympärillä olevat kivitalot vuokrataan erillisinä koteina, yhden makuuhuoneen loftista neljän makuuhuoneen taloon, tai yhdessä yhtenä kokonaisuutena enintään kahdellekymmenelle vieraalle, ja jokiranta on puutarhan alapäässä. Rannikolla Moledossa on rantatalo, jossa on kolme sviittiä ja auringonlaskuun avautuva uima-allas. Kaikista huolehtii Alto Minhon tiimimme, sama tiimi, joka hoitaa kotejamme Viana do Castelossa kahdenkymmenenviiden minuutin päässä etelässä.",
+    "journalSectionTitle": "Päiväkirjasta: tarinoita Caminhasta",
+    "thingsToDoIntro": "Caminha on niin pieni, että sen kiertää jalan yhdessä aamupäivässä, ja suurin osa sen kiinnostavuudesta on sitä ympäröivässä: joen suu, ranta, Couran laakso ja Galician rannikko. Näin itse viettäisimme täällä kolme päivää.",
+    "thingsToDo": [
+      {
+        "heading": "Muurien ympäröimä kaupunki",
+        "items": [
+          {
+            "name": "Torre do Relógio",
+            "category": "Arkkitehtuuri",
+            "description": "Kellotorni oli keskiaikaisten muurien pääportti, ja muurien vanhimmat osat ovat 1200-luvulta. Kulje sen läpi aukiolta Rua Direitalle, vanhalle pääkadulle."
+          },
+          {
+            "name": "Chafariz do Terreiro",
+            "category": "Arkkitehtuuri",
+            "description": "Graniittinen suihkulähde, jonka João Lopes o Velho, Viana do Castelon suihkulähteen tekijä, rakensi vuosien 1551 ja 1553 välillä. Kansallismonumentti vuodesta 1910."
+          },
+          {
+            "name": "Igreja Matriz",
+            "category": "Arkkitehtuuri",
+            "description": "Seurakuntakirkko, jonka rakentaminen alkoi noin vuonna 1488 ja kesti noin kuusikymmentä vuotta. Kuorissa manuelinisia kaiverruksia ja kaiverrettu puinen mudéjar-katto."
+          },
+          {
+            "name": "Praça Conselheiro Silva Torres",
+            "category": "Aukio",
+            "description": "Aukio, jota paikalliset kutsuvat nimellä Terreiro: suihkulähde, goottilainen Solar dos Pitas, vanha raatihuone ja kahviloiden pöydät. Kaupungin seuraelämän keskus."
+          }
+        ]
+      },
+      {
+        "heading": "Joen suu ja rannikko",
+        "items": [
+          {
+            "name": "Mata Nacional do Camarido",
+            "category": "Luonto",
+            "description": "Kaupungin ja meren väliin dyyneille istutettu mäntymetsä. Varjoisat polut päättyvät Camaridon suistorannalle Galiciaa vastapäätä."
+          },
+          {
+            "name": "Praia de Moledo",
+            "category": "Ranta",
+            "description": "Pitkä, hienohiekkainen Atlantin ranta Ínsuan saarta vastapäätä. Leveä, puhdas ja usein tuulinen, mikä sopii kävelijöille, leijasurffaajille ja kaikille, jotka pakenevat helteeltä."
+          },
+          {
+            "name": "Ínsua",
+            "category": "Perintö",
+            "description": "Pieni kallioinen saari Moledon edustalla. Saaren 1600-luvun linnoitus on rakennettu vanhemman fransiskaaniluostarin ympärille. Parhaiten nähtävissä rannalta."
+          },
+          {
+            "name": "Vila Praia de Âncora",
+            "category": "Kaupunki",
+            "description": "Kalasatama ja rantakaupunki kymmenen minuuttia etelään. Siellä on pieni Fortim da Lagarteira ja hieman sisämaassa neoliittinen Dólmen da Barrosa."
+          }
+        ]
+      },
+      {
+        "heading": "Sisämaa",
+        "items": [
+          {
+            "name": "Vilar de Mouros ja Coura",
+            "category": "Luonto",
+            "description": "Graniittikylä Coura-joen varrella, kymmenen minuutin päässä kaupungista. Vanha kivisilta, jokirantoja ja festivaali, joka on kantanut kylän nimeä 1970-luvulta asti."
+          },
+          {
+            "name": "Serra d'Arga",
+            "category": "Luonto",
+            "description": "Graniittivuori Caminhan takana: vapaina laiduntavia garrano-hevosia, pieniä kyliä ja São João de Argan luostari. Parhaiten vaellettavissa keväällä ja syksyllä."
+          },
+          {
+            "name": "Vila Nova de Cerveira",
+            "category": "Retki",
+            "description": "Jokikaupunki viidentoista minuutin päässä ylävirtaan. Siellä on järjestetty vuodesta 1978 yksi Portugalin pitkäikäisimmistä taidebiennaaleista, ja silta vie Galiciaan."
+          },
+          {
+            "name": "Valença",
+            "category": "Perintö",
+            "description": "Tähden muotoinen linnoituskaupunki Tuita vastapäätä Minhon toisella puolen, kahdenkymmenenviiden minuutin päässä ylävirtaan. Kävele vallien päällä ja ylitä sitten vanha rautasilta jalan Tuin katedraalille."
+          }
+        ]
+      },
+      {
+        "heading": "Suiston toisella puolen",
+        "items": [
+          {
+            "name": "A Guarda ja Monte de Santa Tecla",
+            "category": "Retki",
+            "description": "Galicia, vastarannalla. Vesitaksilla Caminhasta pääsee perille noin kymmenessä minuutissa. A Guardan yläpuolella Monte de Santa Teclan rautakautiselta asuinpaikalta näkee takaisin koko suiston yli."
+          }
+        ]
+      }
+    ],
+    "seasons": {
+      "spring": "Maaliskuusta toukokuuhun. Laaksot ovat vihreimmillään ja Coura virtaa täytenä. Ylimmät lämpötilat nousevat noin seitsemästätoista kahteenkymmeneenyhteen asteeseen, ja sadetta tulee yhä säännöllisesti. Minhon nahkiais- ja pilkkusillikausi kestää näiden kuukausien läpi, ja Serra d'Argan polut ovat parhaimmillaan. Meri on kylmä, noin neljätoista astetta.",
+      "summer": "Kesäkuusta elokuuhun. Lämmin ja enimmäkseen kuiva, ylimmät lämpötilat noin kahdenkymmenenviiden asteen tienoilla, ja pohjoistuuli nortada puhaltaa rannikolla useimpina iltapäivinä ja pitää Moledon viileänä. Meriveden lämpötila pysyy kuudentoista ja kahdeksantoista asteen välillä; Couran jokirannoilla vesi on lämpimämpää. Elokuu on vilkkain kuukausi: Paredes de Couran ja Vilar de Mourosin festivaalit ja täydet rannat.",
+      "autumn": "Syyskuusta marraskuuhun. Syyskuu on usein vuoden paras kuukausi: lämpimät päivät, rauhallinen ranta ja sadonkorjuu laaksoissa. Lokakuu tuo ensimmäiset rankkasateet ja ruskan Couran varrelle. Marraskuussa kaupunki on palannut talven rytmiinsä.",
+      "winter": "Joulukuusta helmikuuhun. Leuto mutta sateinen, ylimmät lämpötilat noin kolmentoista ja viidentoista asteen välillä, ja Atlantin myrskyjä tulee säännöllisesti. Suisto on vaikuttavimmillaan ja kaupunki hiljaisimmillaan. Nahkiaiskausi alkaa vuodenvaihteen tienoilla.",
+      "bestForFirstTime": "Kesäkuu tai syyskuu. Molemmat tarjoavat lämpimän ja vakaan sään ja paikan koko kirjon, rannasta ja jokiuinnista vaelluksiin Serra d'Argalla, ilman elokuun väkijoukkoja ja majoituspulaa."
+    },
+    "transport": {
+      "byAir": "Porton Francisco Sá Carneiron lentokenttä on noin yhdeksänkymmentäviisi kilometriä etelään, noin tunnin ajomatkan päässä A28:aa pitkin. Galiciassa sijaitsevalle Vigon lentokentälle on maanteitse noin viisikymmentä minuuttia Valençan tai Vila Nova de Cerveiran siltojen kautta, ja se on järkevä vaihtoehto Madridin kautta saapuville. Järjestämme yksityiset kuljetukset kummalta tahansa.",
+      "byTrain": "Linha do Minhon paikallisjunat, jotka kulkevat Portosta Valençaan, pysähtyvät Caminhassa, Moledossa ja Vila Praia de Âncorassa. Porto Campanhãsta matka kestää noin kaksi tuntia, joskus vaihdolla Viana do Castelossa. Caminhan asemalta on lyhyt kävelymatka vanhaankaupunkiin.",
+      "byCar": "A28 kulkee Portosta rannikkoa pitkin Caminhaan ja ohittaa Viana do Castelon kaksikymmentäviisi kilometriä etelämpänä. Rannikkotie N13 on hitaampi ja seuraa rantoja ja kalastajakyliä. Ulkomaisilla rekisterikilvillä varustettujen autojen kuljettajien kannattaa rekisteröityä sähköiseen tietullipalveluun ennen saapumista, sillä useilla Porton lähistön moottoriteillä on sähköiset tietulliportaalit.",
+      "fromSpain": "Vigosta tai Santiago de Compostelasta Minho ylitetään Tuin ja Valençan välistä moottoritiesiltaa tai Goiánin ja Vila Nova de Cerveiran välistä siltaa pitkin, minkä jälkeen jokivartta seuraava tie vie Caminhaan. Jalan tai pyörällä liikkuvat pääsevät A Guardasta vesitaksilla yli noin kymmenessä minuutissa, jos sää ja vuorovesi sallivat.",
+      "gettingAround": "Vanhakaupunki on tiivis ja parhaiten koettavissa jalan. Camaridon metsään ja Moledoon pääsee kävellen tai pyörällä, ja suuressa osassa Minhon rantaa ylävirtaan kohti Vila Nova de Cerveiraa kulkee pyörä- ja kävelytie. Couran laaksoon, Serra d'Argalle ja etelämpänä oleville rannoille auto helpottaa liikkumista."
+    },
+    "eatDrinkIntro": "Caminhassa syödään joesta ja merestä. Myöhäistalvella ja keväällä Minho tuo nahkiaisia ja pilkkusillejä, jotka valmistetaan tavoilla, jotka ovat tuskin muuttuneet sadassa vuodessa, ja laakson ravintolat suunnittelevat vuotensa kauden mukaan. Kymmenen minuutin päässä etelässä sijaitseva Vila Praia de Âncoran kalasatama toimittaa grillatun kalan, joka täyttää rannikon kesäiset ruokalistat. Viini on Vinho Verdeä, ja ylävirrassa Monçãossa ja Melgaçossa se tehdään Alvarinhosta, rypäleestä, josta syntyvät alueen hienoimmat valkoviinit. Conciergemme pitää lyhyttä listaa pöydistä vanhankaupungin perhetascoista Couran laakson jokivarren ravintoloihin ja varaa ne vieraille.",
+    "specialties": [
+      {
+        "name": "Lampreia do Minho",
+        "category": "Kausiruoka",
+        "description": "Nahkiainen, jonka kausi kestää suunnilleen tammikuusta huhtikuuhun. Useimmiten se valmistetaan à bordalesa, täyteläisessä punaviinikastikkeessa, ja tarjoillaan riisin kanssa. Sen ystävät matkustavat sen perässä."
+      },
+      {
+        "name": "Sável",
+        "category": "Kausiruoka",
+        "description": "Pilkkusilli, Minhon toinen kevätkala. Yleensä paistettuna, açordan tai riisin kanssa."
+      },
+      {
+        "name": "Alvarinho",
+        "category": "Viini",
+        "description": "Monçãon ja Melgaçon valkoinen rypäle, neljänkymmenen minuutin päässä ylävirtaan. Täyteläisempi ja pitkäikäisempi kuin useimmat Vinho Verdet ja luonteva pari alueen kaloille."
+      },
+      {
+        "name": "Grillattua kalaa Âncorasta",
+        "category": "Ruokalaji",
+        "description": "Mitä ikinä Vila Praia de Âncoraan tuli sinä aamuna, hiilillä grillattuna ja tarjoiltuna keitettyjen perunoiden, vihannesten ja oliiviöljyn kanssa."
+      }
+    ],
+    "experiencesIntro": "Seuraavassa on elämyksiä, joita conciergemme järjestää Caminhan kodeissamme yöpyville vieraille. Useimmat voidaan järjestää päivän varoitusajalla, ja concierge voi järjestää kuljetukset kaikkialle, missä muuten tarvittaisiin autoa.",
+    "experiences": [
+      {
+        "name": "Melontaa Minhon suistossa",
+        "description": "Opastettu melontaretki kaupungista kohti joen suuta Camaridon mäntyjen ja Galician rannan välissä, ja pysähdys hiekkasärkällä, kun vuorovesi sallii.",
+        "duration": "Puoli päivää",
+        "season": "Toukokuusta lokakuuhun"
+      },
+      {
+        "name": "Suiston yli A Guardaan ja Monte de Santa Teclalle",
+        "description": "Vesitaksilla suiston yli ja sitten ylös A Guardan yläpuolella olevalle rautakautiselle asuinpaikalle, josta näkee takaisin Caminhaan ja joen suulle. Lounas galicialaisessa kalastajasatamassa ennen paluuta.",
+        "duration": "Puolesta päivästä koko päivään",
+        "season": "Ympäri vuoden, sään salliessa"
+      },
+      {
+        "name": "Vaellus Serra d'Argalla",
+        "description": "Opastettu päivä kaupungin takana kohoavalla graniittivuorella pienten kylien ja ylänköniittyjen halki, joilla garrano-hevoset laiduntavat, ja pysähdys São João de Argan luostarissa.",
+        "duration": "Koko päivä",
+        "season": "Maaliskuusta marraskuuhun"
+      },
+      {
+        "name": "Alvarinho-maistelu Monçãossa ja Melgaçossa",
+        "description": "Aamupäivä ylävirrassa Alvarinho-tuottajan luona maistelemassa alueen hienoimpia valkoviinejä, ja sen jälkeen lounas laaksossa.",
+        "duration": "Puoli päivää",
+        "season": "Ympäri vuoden; sadonkorjuuvierailut syyskuussa"
+      },
+      {
+        "name": "Surffausta tai leijasurffausta Moledossa",
+        "description": "Tunteja aloittelijoille ja edistyneemmille Moledon pitkällä rannalla, jossa kesäiltapäivien tuuli sopii leijasurffaukseen. Välineet sisältyvät.",
+        "duration": "Kahdesta kolmeen tuntia",
+        "season": "Huhtikuusta lokakuuhun"
+      },
+      {
+        "name": "Pyöräily Minhon rantaa pitkin",
+        "description": "Helppo pyöräretki ylävirtaan jokivarren reittiä kohti Vila Nova de Cerveiraa, Galicia koko matkan veden toisella puolen. Concierge järjestää pyörät.",
+        "duration": "Puoli päivää",
+        "season": "Ympäri vuoden"
+      }
+    ],
+    "eventsIntro": "Caminhan kalenterin määräävät joki ja elokuu. Nahkiaiskausi täyttää ravintolat talvesta kevääseen; Couran laakson musiikkifestivaalit täyttävät seudun elokuun jälkipuoliskolla, jolloin kodit kannattaa varata hyvissä ajoin.",
+    "events": [
+      {
+        "name": "Paredes de Couran festivaali",
+        "dates": "Elokuun puoliväli, päivämäärät ilmoitetaan vuosittain",
+        "description": "Yksi Portugalin tunnetuimmista vaihtoehtomusiikin festivaaleista, järjestetty vuodesta 1993 luonnon amfiteatterissa Taboãon jokirannan vieressä, noin neljänkymmenen minuutin päässä Caminhasta."
+      },
+      {
+        "name": "Vilar de Mourosin festivaali",
+        "dates": "Elokuun loppu, päivämäärät ilmoitetaan vuosittain",
+        "description": "Rockfestivaali Coura-joen rannalla, kymmenen minuutin päässä Caminhasta. Vuoden 1971 festivaali teki siitä maamerkin Portugalin musiikkihistoriassa."
+      },
+      {
+        "name": "Nahkiaiskausi",
+        "dates": "Tammikuusta huhtikuuhun",
+        "description": "Caminhan ja Minhon varren ravintolat rakentavat ruokalistansa joen nahkiaisten ja myöhemmin pilkkusillien ympärille."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Kuinka monta päivää tarvitsen Caminhassa?",
+        "answer": "Kahdessa päivässä ehtii nähdä kaupungin, Camaridon metsän ja Moledon. Neljällä tai viidellä päivällä ohjelmaan mahtuvat myös Couran laakso, Serra d'Arga, retki A Guardaan ja päivä ylävirrassa Valençassa tai Monçãon ja Melgaçon Alvarinho-seudulla."
+      },
+      {
+        "question": "Kulkeeko Caminhasta A Guardaan yhä lautta?",
+        "answer": "Autolautta lopetti liikennöinnin vuonna 2020, eikä se kulje. Pienet luvanvaraiset vesitaksit ylittävät suiston A Guardaan noin kymmenessä minuutissa sään ja vuoroveden salliessa, ja niitä käyttävät lähinnä Caminon pyhiinvaeltajat. Autolla lähimmät sillat ovat Vila Nova de Cerveirassa ja Valençassa."
+      },
+      {
+        "question": "Mikä on paras ranta Caminhan lähellä?",
+        "answer": "Praia de Moledo, pitkä Atlantin ranta aivan kaupungin eteläpuolella Ínsuan saarta vastapäätä. Tyynempää vettä on Camaridon suistorannalla, josta katsotaan joen suun yli Galiciaan. Kesällä Couran jokirannoilla vesi on lämpimämpää kuin meressä."
+      },
+      {
+        "question": "Milloin Caminhaan kannattaa matkustaa?",
+        "answer": "Kesäkuussa ja syyskuussa sään ja väljyyden vuoksi. Elokuussa festivaalien ja vilkkaimpien rantojen vuoksi. Myöhäistalvella ja keväällä nahkiaiskauden ja vihreimmillään olevien laaksojen vuoksi."
+      },
+      {
+        "question": "Kuinka kaukana Caminha on Portosta?",
+        "answer": "Noin yhdeksänkymmentäviisi kilometriä, noin tunnin ajomatka Porton lentokentältä A28:aa pitkin. Paikallisjunilla matka Portosta kestää noin kaksi tuntia."
+      },
+      {
+        "question": "Sopiiko Caminha tukikohdaksi Galician-retkille?",
+        "answer": "Sopii. A Guarda on suiston toisella puolen, Tuihin on maanteitse noin kaksikymmentäviisi minuuttia, Vigoon alle tunti ja Santiago de Compostelaan alle kaksi tuntia."
+      },
+      {
+        "question": "Mistä Caminha on tunnettu?",
+        "answer": "Muurien ympäröimästä vanhastakaupungistaan ja kellotornistaan, sijainnistaan Minhon rannalla Espanjaa vastapäätä, Moledon rannasta ja joen nahkiaisista. Se on myös yksi portugalilaisen Santiagon pyhiinvaellusreitin rannikkoreitin etapeista."
+      },
+      {
+        "question": "Sopiiko Caminha lapsiperheille?",
+        "answer": "Sopii. Kaupunki on pieni ja helppo kiertää jalan, Moledossa on uimakaudella hengenpelastajat, ja Couran jokirannoilla vesi on tyynempää pienille lapsille. Vesimyllykotimme, jotka voi varata yhdessä, sopivat usean sukupolven ryhmille."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Omistatko kodin Caminhassa?",
+      "body": "Portugal Active hoitaa premium-kohteita kaikkialla Alto Minhossa, Caminhasta ja Couran laaksosta Viana do Casteloon: kokonaisvaltainen hallinta, markkinointi, concierge ja kunnossapito hotellistandardein, alueella toimivan tiimin hoitamana.",
+      "cta": "Keskustele tiimimme kanssa",
+      "url": "https://www.portugalactive.com/management/en/?utm_source=destinations&utm_medium=cta&utm_campaign=caminha"
+    }
   },
   "esposende": {
     "name": "Esposende",
-    "tagline": "Missä Cávado-joki kohtaa Atlantin, dyynien ja mäntymetsien välissä.",
-    "heroSubtitle": "Portugalin rauhallisimmat Atlantin dyynit, 40 minuutin ajomatkan päässä Portosta.",
+    "tagline": "Missä Cávado kohtaa Atlantin, suojeltujen dyynien ja mäntymetsän välissä.",
+    "description": "Opas Esposendeen: Litoral Norten luonnonpuisto, Ofir ja Apúlia, Cávadon suisto ja dyynit, neljänkymmenen minuutin päässä Portosta pohjoiseen.",
+    "heroSubtitle": "Suojellut dyynit, mäntymetsä ja Cávadon suisto neljänkymmenen minuutin päässä Portosta pohjoiseen",
     "whyOverline": "MIKSI ESPOSENDE",
-    "howToGetHere": "Porton lentokenttä (OPO) 40 min A28:aa pitkin. Viana do Castelo 25 min pohjoiseen. Braga 25 min itään.",
-    "seoTitle": "Esposende, Portugali: Litoral Norten dyynit | Portugal Active",
+    "whyDescription": "Esposende on se osa pohjoista rannikkoa, jonka ohi useimmat ajavat. A28 kulkee muutaman kilometrin päässä sisämaassa, eikä moottoritieltä juuri arvaa, mitä tien ja meren väliin jää: kuusitoista kilometriä rantaa, dyynejä ja mäntymetsää luonnonpuistoksi suojeltuna, ja keskellä pieni kaupunki Cávado-joen suulla.\n\nParque Natural do Litoral Norte kattaa kunnan koko rannikon Neiva-joen suulta pohjoisessa Apúlian eteläreunaan. Alue suojeltiin ensimmäisen kerran vuonna 1987 ja siitä tuli luonnonpuisto vuonna 2005, ja suurin osa sen pinta-alasta on merellä, riuttojen ja kallioisen merenpohjan yllä. Maalla se suojelee haurasta dyynien, mäntymetsien ja suolaniittyjen kokonaisuutta, jollainen on muualla tällä rannikolla suurelta osin kadonnut. Puiset pitkospuut kulkevat dyynien yli, ja rannikon pyörätie yhdistää rannat.\n\nKaupunki sijaitsee Cávadon pohjoisrannalla, jossa joki levenee pitkän hiekkasärkän suojaamaksi suistoksi. Joen suuta vartioimaan vuosien 1699 ja 1704 välillä rakennettu Forte de São João Baptista seisoo yhä rannassa, ja sen lounaiskulmassa on punainen rautamajakka. Vuonna 1892 rakennettu rautasilta ylittää joen Fãoon, jokivarren kylään, joka tunnetaan koko pohjoisessa clarinhoistaan: pienestä friteeratusta leivonnaisesta, jonka täytteenä on kurpitsahilloa ja kananmunaa. Fãon takana on Ofir, dyyneillä kasvava mäntymetsä, jonka päässä on pitkä ranta ja edustalla merellä tummat kalliot, joita kutsutaan nimellä Cavalos de Fão.\n\nEtelämpänä on Apúlia, kylä, joka antoi tälle rannikolle sen tunnetuimman elinkeinon. Sukupolvien ajan apúlialaiset keräsivät sargaçoa, Atlantin rantaan tuomaa merilevää, kuivasivat sen hiekalla ja myivät sen lannoitteeksi sisämaan tiloille. Sargaceirot työskentelivät tyrskyissä valkoisessa villatunikassa, jota kutsuttiin nimellä branqueta, ja rannan yläpuolella dyyneillä seisovat, viljan jauhamiseen rakennetut kiviset tuulimyllyt ovat yhä kylän maamerkki. Levänkorjuu ei ole enää elinkeino, mutta se elää kylän kansanperinneryhmässä ja paikallisten muistoissa.\n\nRannikon takana maa kohoaa loivasti kohti Barcelosta ja Bragaa. Vila Chãn yläpuolella kukkulalla Castro de São Lourenço säilyttää rautakautisen asuinpaikan perustukset, ja sieltä näkee koko rantaviivan. Braga, jossa on katedraali ja Bom Jesus do Monten pyhäkkö, on kolmenkymmenen minuutin päässä. Viana do Castelo on kahdenkymmenenviiden minuutin päässä pohjoisessa ja Porto neljänkymmenen minuutin päässä etelässä.\n\nKesällä Esposende on rantakaupunki, muun vuoden rauhallinen pikkukaupunki. Pohjoistuuli, joka puhaltaa useimpina kesäiltapäivinä, pitää rannat viileinä ja tuo rannikolle purjelautailijoita ja leijasurffaajia. Perheet palaavat vuodesta toiseen syistä, jotka eivät juuri ole muuttuneet: pitkät rannat, joilla on tilaa, kalaa grillissä ja elämänrytmi, joka sopii heille.",
     "highlights": [
-      "Parque Natural do Litoral Norte — suojeltu dyynialue",
-      "Praia de Ofir ja Praia da Apúlia",
-      "Cávado-joen suisto — melontaa ja kajakointia",
-      "Restauroidut rannikkomyllyt (Apúlian myllyt)"
-    ]
+      "Parque Natural do Litoral Norte: kuusitoista kilometriä suojeltuja dyynejä, mäntymetsää ja rantaa",
+      "Ofir ja sen mäntymetsä Cávadon etelärannalla",
+      "Apúlia, sen tuulimyllyt ja merilevänkerääjien perinne",
+      "Cávadon suisto suppailuun, melontaan ja lintujen tarkkailuun",
+      "Kolmenkymmenenviiden minuutin päässä Porton lentokentältä, kolmenkymmenen Bragasta"
+    ],
+    "seoTitle": "Esposende: Dyynit, Rannat ja Majoitus | Portugal Active",
+    "seoDescription": "Suojellut dyynit, Ofirin ja Apúlian rannat ja Cávadon suisto Porton pohjoispuolella. Mitä nähdä Esposendessa, milloin matkustaa ja missä yöpyä.",
+    "howToGetHere": "Porton lentokenttä (OPO) noin 35 min A28:aa pitkin. Braga 30 min itään. Viana do Castelo 25 min pohjoiseen. Ei rautatietä: lähimmät asemat ovat Barcelosissa ja Viana do Castelossa.",
+    "bestTimeToVisit": "Kesäkuu ja syyskuu. Lämpimät päivät, pitkät rannat, joilla on tilaa, ja iltapäivän tuuli, joka sopii purjelautailuun ja leijasurffaukseen. Heinä- ja elokuu täyttä kesää varten.",
+    "whatToExpect": "Rauhallinen rantakaupunki joen suulla, rannikon luonnonpuiston sisällä. Dyynejä, mäntyjä ja leveitä rantoja, ei jyrkänteitä eikä yöelämää.",
+    "whereToStayIntro": "Esposenden kotimme ovat kaksi huoneistoa meren äärellä, ja molemmat sopivat perheille ja pienille ryhmille. Toinen on kolmen makuuhuoneen parvekkeellinen huoneisto Marinhasissa, viidensadan metrin päässä rannasta ja luonnonpuistosta. Toinen on merinäköalainen kaksikerroksinen huoneisto rantabulevardi Avenida dos Banhosilla, ja siinä on kolme makuuhuonetta kahdessa kerroksessa. Molemmista on lyhyt kävelymatka rannalle ja kaupunkiin, ja molemmista huolehtii Minhon tiimimme. Vieraat, jotka haluavat talon uima-altaalla, yhdistävät usein täkäläisen rannikon koteihimme Viana do Castelon ympäristössä, kahdenkymmenenviiden minuutin päässä pohjoisessa.",
+    "journalSectionTitle": "Päiväkirjasta: tarinoita Esposendesta",
+    "thingsToDoIntro": "Esposende on pitkien kävelyjen ja verkkaisten päivien paikka, ei nähtävyyslistojen. Rannikko on syy tulla, ja se muuttuu pohjoisesta etelään: joen suu ja kaupunki, mäntymetsä ja dyynit, sitten vanha merilevänkerääjien kylä Apúlia. Näin me sen jakaisimme.",
+    "thingsToDo": [
+      {
+        "heading": "Kaupunki ja suisto",
+        "items": [
+          {
+            "name": "Forte de São João Baptista",
+            "category": "Perintö",
+            "description": "Rakennettu vuosien 1699 ja 1704 välillä puolustamaan Cávadon suuta. Lounaiskulmassa on Esposenden punainen rautamajakka."
+          },
+          {
+            "name": "Cávadon suisto",
+            "category": "Luonto",
+            "description": "Joki levenee pitkän hiekkasärkän taakse suojaisaksi suistoksi. Tyyntä vettä suppailuun ja melontaan, ja suolaniittyjä kahlaajalinnuille."
+          },
+          {
+            "name": "Ponte de Fão",
+            "category": "Arkkitehtuuri",
+            "description": "Vuonna 1892 rakennettu rautasilta Cávadon yli. Se yhdistää joen Esposenden puoleisen rannan Fãon kylään."
+          },
+          {
+            "name": "Fão",
+            "category": "Kylä",
+            "description": "Pieni jokivarren kylä etelärannalla, tunnettu kaikkialla Pohjois-Portugalissa clarinhas de Fão -leivonnaisesta."
+          }
+        ]
+      },
+      {
+        "heading": "Dyynit ja rannat",
+        "items": [
+          {
+            "name": "Ofir",
+            "category": "Ranta",
+            "description": "Pitkä ranta mäntymetsän päässä joen etelärannalla. Edustalla merellä ovat Cavalos de Fão -nimellä tunnetut kalliot."
+          },
+          {
+            "name": "Dyynien pitkospuut",
+            "category": "Luonto",
+            "description": "Puiset pitkospuut kulkevat luonnonpuiston suojeltujen dyynien yli, joten rannan takana voi kävellä kilometrikaupalla vahingoittamatta hiekkaa sitovia kasveja."
+          },
+          {
+            "name": "Apúlia",
+            "category": "Kylä",
+            "description": "Rantakylä puiston eteläpäässä. Dyyneillä seisoo rivi kivisiä tuulimyllyjä, ja kylä vaalii sargaceirojen, merilevänkerääjien, muistoa."
+          },
+          {
+            "name": "Pohjoiset rannat",
+            "category": "Ranta",
+            "description": "Kaupungin pohjoispuolella, kohti Neiva-jokea, rannat muuttuvat villimmiksi ja hiljaisemmiksi, ja niiden takana on dyynejä ja viljelysmaata."
+          }
+        ]
+      },
+      {
+        "heading": "Sisämaa ja lähiseutu",
+        "items": [
+          {
+            "name": "Castro de São Lourenço",
+            "category": "Arkeologia",
+            "description": "Rautakautinen kukkula-asuinpaikka Vila Chãn yläpuolella. Kivitalojen perustuksia ja näkymä koko rannikon yli."
+          },
+          {
+            "name": "Barcelos",
+            "category": "Retki",
+            "description": "Kahdenkymmenen minuutin päässä sisämaassa. Barcelosin kukon kotikaupunki, jossa pidetään torstaisin yksi Portugalin suurimmista viikkotoreista."
+          },
+          {
+            "name": "Braga",
+            "category": "Retki",
+            "description": "Kolmenkymmenen minuutin päässä idässä. Katedraali, vanhakaupunki ja Bom Jesus do Monten pyhäkkö, Unescon maailmanperintökohde vuodesta 2019, barokkiportaikkoineen ja vesivoimalla kulkevine köysiratoineen."
+          },
+          {
+            "name": "Viana do Castelo",
+            "category": "Retki",
+            "description": "Kahdenkymmenenviiden minuutin päässä pohjoisessa: Santa Luzian basilika, historiallinen keskusta ja lisää Atlantin rantoja."
+          }
+        ]
+      }
+    ],
+    "seasons": {
+      "spring": "Maaliskuusta toukokuuhun. Dyynit kukkivat ja männiköt tuoksuvat pihkalta. Ylimmät lämpötilat nousevat noin seitsemästätoista kahteenkymmeneenyhteen asteeseen, ja sadekuuroja on yhä usein. Meri on kylmä, mutta pitkospuut ja rannikon pyörätie ovat parhaimmillaan, ja rannat ovat tyhjiä.",
+      "summer": "Kesäkuusta elokuuhun. Lämmin ja enimmäkseen kuiva, ylimmät lämpötilat noin kahdenkymmenenviiden asteen tienoilla. Nortada, tasainen pohjoistuuli, puhaltaa useimpina iltapäivinä, pitää rannat viileinä ja tuo paikalle purjelautailijoita ja leijasurffaajia. Meriveden lämpötila pysyy kuudentoista ja kahdeksantoista asteen välillä. Heinä- ja elokuu ovat perheiden kuukausia, ja vilkkainta on elokuun alkupuoliskolla.",
+      "autumn": "Syyskuusta marraskuuhun. Syyskuu on lämmin ja rauhallinen, usein paras rantakuukausi. Lokakuu tuo ensimmäiset rankkasateet ja Atlantin mainingit. Marraskuussa rannikko kuuluu taas kalastajille ja kävelijöille.",
+      "winter": "Joulukuusta helmikuuhun. Leuto, sateinen ja tuulinen, ylimmät lämpötilat noin neljätoista astetta. Atlantin myrskyt tekevät dyynikävelyistä vaikuttavia. Monet rantaravintolat sulkevat ovensa tai lyhentävät aukioloaikojaan, ja kaupunki asettuu paikallisten arkeen.",
+      "bestForFirstTime": "Kesäkuu tai syyskuu. Tarpeeksi lämmintä rannalle, tarpeeksi rauhallista, jotta pitkät rantaosuudet saa itselleen, ja paras valo dyynien ja suiston kävelyille."
+    },
+    "transport": {
+      "byAir": "Porton Francisco Sá Carneiron lentokenttä on noin neljäkymmentä kilometriä etelään, noin kolmenkymmenenviiden minuutin ajomatkan päässä A28:aa pitkin. Se on luonteva saapumispaikka, ja järjestämme yksityiset kuljetukset koteihimme. Galiciassa sijaitseva Vigon lentokenttä on noin tunnin ja vartin päässä pohjoisessa.",
+      "byTrain": "Esposendessa ei ole rautatieasemaa. Lähimmät ovat Barcelos Linha do Minholla noin kahdenkymmenen minuutin päässä sisämaassa ja Viana do Castelo kahdenkymmenenviiden minuutin päässä pohjoisessa; kummastakin loppumatkan voi tehdä taksilla. Portosta Esposendeen kulkee myös busseja.",
+      "byCar": "Portosta A28 vie Esposendeen noin neljässäkymmenessä minuutissa. A11 yhdistää kaupungin Barcelosiin ja Bragaan. Vanha rannikkotie N13 kulkee kaupungin läpi ja on hitaampi, paikallisempi reitti Viana do Casteloon. Ulkomaisilla rekisterikilvillä varustettujen autojen kuljettajien kannattaa rekisteröityä sähköiseen tietullipalveluun ennen saapumista.",
+      "fromSpain": "Vigosta Minho ylitetään Tuin ja Valençan kohdalla, minkä jälkeen moottoritiet vievät etelään Ponte de Liman ja Viana do Castelon kautta, yhteensä noin tunti ja vartti. Santiago de Compostelasta matkaan kannattaa varata noin kaksi tuntia.",
+      "gettingAround": "Kaupungin, rannan ja suiston voi kiertää jalan, ja rannikon pyörätie seuraa suurta osaa luonnonpuistosta. Auto on hyödyllinen Bragaan, Barcelosiin ja Viana do Casteloon, arjessa meren äärellä vähemmän."
+    },
+    "eatDrinkIntro": "Esposenden ruokapöytä on rannikon ruokapöytä: hiilillä grillattua Atlantin kalaa, jaettavaa äyriäisriisiä ja Fãossa leivonnaisperinne, joka on poikkeamisen arvoinen. Apúlian rantabulevardin ja Cávadon varren ravintolat toimivat kauden ja saaliin ehdoilla, ja useimmat niistä ovat pieniä perheyrityksiä. Viini on Cávadon Vinho Verdeä; Cávado on yksi nimityksen alialueista. Conciergemme pitää lyhyttä listaa rannikon pöydistä ja varaa ne vieraille.",
+    "specialties": [
+      {
+        "name": "Clarinhas de Fão",
+        "category": "Leivonnainen",
+        "description": "Ohuesta taikinasta friteerattu puolikuu, jonka täytteenä on doce de chilaa eli kurpitsahilloa ja munankeltuaista ja joka pyöritellään sokerissa. Valmistetaan Fãossa ja myydään sen konditorioissa."
+      },
+      {
+        "name": "Grillattua kalaa",
+        "category": "Ruokalaji",
+        "description": "Meribassia, kultaotsa-ahventa ja kesällä sardiineja, hiilillä grillattuna ja tarjoiltuna keitettyjen perunoiden, vihannesten ja oliiviöljyn kanssa."
+      },
+      {
+        "name": "Arroz de marisco",
+        "category": "Ruokalaji",
+        "description": "Äyriäisriisi, pohjoiseen tapaan löysä ja liemevä. Se tuodaan pöytään padassa ja on tarkoitettu jaettavaksi."
+      },
+      {
+        "name": "Cávadon Vinho Verde",
+        "category": "Viini",
+        "description": "Yksi Vinho Verde -nimityksen alialueista, tunnettu raikkaista, sitruksisista valkoviineistään. Juodaan nuorena ja kylmänä kalan kanssa."
+      }
+    ],
+    "experiencesIntro": "Seuraavassa on elämyksiä, joita conciergemme järjestää Esposenden kodeissamme yöpyville vieraille. Useimmat vaativat päivän varoitusajan, ja concierge voi järjestää kuljetukset kaikkialle, missä muuten tarvittaisiin autoa.",
+    "experiences": [
+      {
+        "name": "Suppailua tai melontaa Cávadon suistossa",
+        "description": "Opastettu retki hiekkasärkän suojaamalla tyynellä vedellä, toisella puolella linnoitus ja majakka, toisella Ofirin männyt.",
+        "duration": "Kahdesta kolmeen tuntia",
+        "season": "Toukokuusta lokakuuhun"
+      },
+      {
+        "name": "Purjelautailu- tai leijasurffaustunteja",
+        "description": "Tunteja aloittelijoille ja edistyneemmille rannikolla, jossa iltapäivän pohjoistuuli puhaltaa luotettavasti koko kesän. Välineet sisältyvät.",
+        "duration": "Kahdesta kolmeen tuntia",
+        "season": "Toukokuusta syyskuuhun"
+      },
+      {
+        "name": "Kävely luonnonpuiston dyyneillä",
+        "description": "Opastettu kävely paikallisen luontoasiantuntijan kanssa pitkospuilla ja männikössä. Opas kertoo, miten dyynijärjestelmä toimii ja miksi se on suojeltu.",
+        "duration": "Puoli päivää",
+        "season": "Ympäri vuoden"
+      },
+      {
+        "name": "Braga ja Bom Jesus",
+        "description": "Päivä Bragassa: katedraali, vanhakaupunki ja Bom Jesus do Monten barokkiportaikko, ja paluu alas vesivoimalla kulkevalla köysiradalla.",
+        "duration": "Koko päivä",
+        "season": "Ympäri vuoden"
+      },
+      {
+        "name": "Barcelosin tori",
+        "description": "Torstaiaamu yhdellä Portugalin suurimmista viikkotoreista: keramiikkaa, tuoretuotteita ja maalattuja kukkoja.",
+        "duration": "Puoli päivää",
+        "season": "Torstaisin, ympäri vuoden"
+      },
+      {
+        "name": "Vinho Verde -maistelu",
+        "description": "Vierailu Vinho Verde -tuottajan luona sisämaassa: alueen valkoviinien maistelu ja lounas viiniköynnösten keskellä.",
+        "duration": "Puoli päivää",
+        "season": "Ympäri vuoden; sadonkorjuuvierailut syyskuussa"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Kuinka kaukana Esposende on Portosta?",
+        "answer": "Noin neljäkymmentä kilometriä. Porton lentokentälle on autolla noin kolmekymmentäviisi minuuttia A28:aa pitkin ja Porton keskustaan noin neljäkymmentäviisi."
+      },
+      {
+        "question": "Mitkä ovat Esposenden parhaat rannat?",
+        "answer": "Tunnetuimmat ovat Ofir, mäntymetsän päässä Cávadon etelärannalla, ja tuulimyllyistään tunnettu Apúlia. Kaupungin ranta on kävelymatkan päässä keskustasta, ja pohjoiset rannat Neiva-joen suuntaan ovat rauhallisimpia."
+      },
+      {
+        "question": "Mikä on Parque Natural do Litoral Norte?",
+        "answer": "Luonnonpuisto, joka kattaa Esposenden kuudentoista kilometrin rantaviivan Neiva-joelta Apúliaan. Se suojelee dyynejä, mäntymetsää, suolaniittyjä ja laajaa merialuetta. Alue suojeltiin ensimmäisen kerran vuonna 1987, ja siitä tuli luonnonpuisto vuonna 2005."
+      },
+      {
+        "question": "Sopiiko Esposende lapsiperheille?",
+        "answer": "Sopii. Rannat ovat pitkiä eivätkä ruuhkaisia, suistossa vesi on tyynempää, ja kaupunki on pieni ja helppo kiertää. Päärannoilla on uimakaudella hengenpelastajat. Molemmat merenrantahuoneistomme sopivat perheille."
+      },
+      {
+        "question": "Keitä olivat Apúlian sargaceirot?",
+        "answer": "Apúlian merilevänkerääjiä, jotka keräsivät Atlantin rantaan tuomaa sargaçoa, kuivasivat sen hiekalla ja myivät sen lannoitteeksi sisämaan tiloille. He työskentelivät valkoisessa villatunikassa, jota kutsuttiin nimellä branqueta, ja perinnettä pitää yllä paikallinen kansanperinneryhmä."
+      },
+      {
+        "question": "Milloin Esposendeen kannattaa matkustaa?",
+        "answer": "Kesäkuussa ja syyskuussa, kun sää on lämmin eikä väkeä ole paljon. Heinä- ja elokuussa täyttä kesää varten, jolloin kaupunki on vilkkaimmillaan. Kevät ja syksy sopivat kävelijöille ja pyöräilijöille."
+      },
+      {
+        "question": "Sopiiko Esposende tukikohdaksi Bragan, Porton ja Viana do Castelon retkille?",
+        "answer": "Sopii. Braga on kolmenkymmenen minuutin päässä idässä, Barcelos kahdenkymmenen, Viana do Castelo kahdenkymmenenviiden minuutin päässä pohjoisessa ja Porto neljänkymmenen minuutin päässä etelässä, joten Esposende on käytännöllinen rannikkotukikohta Pohjois-Portugaliin."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Omistatko kodin Esposendessa?",
+      "body": "Portugal Active hoitaa premium-kohteita Minhon rannikolla Esposendesta Caminhaan: kokonaisvaltainen hallinta, markkinointi, concierge ja kunnossapito hotellistandardein, alueella toimivan tiimin hoitamana.",
+      "cta": "Keskustele tiimimme kanssa",
+      "url": "https://www.portugalactive.com/management/en/?utm_source=destinations&utm_medium=cta&utm_campaign=esposende"
+    }
   },
   "porto": {
     "name": "Porto ja Douro",
@@ -701,18 +1129,278 @@
   },
   "douro": {
     "name": "Douron laakso",
-    "tagline": "UNESCOn maailmanperintökohteen pengerrettyjä viinitarhoja joen yllä.",
-    "heroSubtitle": "Euroopan kuvatuin viinimaisema — ja palkitsevin paikka jäädä.",
+    "tagline": "Porrastetut viinitarhat joen yllä, yhdellä maailman vanhimmista säännellyistä viinialueista.",
+    "description": "Opas Douron laaksoon: Unescon suojelema Alto Douron viinimaisema, quintat, Pinhão, Régua ja Lamego, rautatie ja sadonkorjuu.",
+    "heroSubtitle": "Porrasviljelmiä, liuskekiveä ja joki, joka muovasi viinialueen",
+    "pullQuote": {
+      "text": "Alto Douron alueella perinteiset maanomistajat ovat tuottaneet viiniä noin 2 000 vuoden ajan.",
+      "source": "Unescon maailmanperintökeskus",
+      "year": 2001
+    },
+    "primaryAccolade": {
+      "text": "Unescon maailmanperintöluetteloon kuuluva kulttuurimaisema",
+      "source": "Alto Douron viinialue, merkitty luetteloon 2001",
+      "note": "Rajattu vuonna 1756, yksi maailman vanhimmista säännellyistä viinialueista"
+    },
     "whyOverline": "MIKSI DOURO",
-    "howToGetHere": "Porton lentokenttä (OPO) 1 h 30 min Pinhãosta. Douron linjan juna Porto São Bentosta, 2 h 15 min.",
-    "seoTitle": "Douron laakso, Portugali: UNESCOn maailmanperintöviinialue | Portugal Active",
+    "whyDescription": "Douro on käsin rakennettu viinialue. Noin kahden tuhannen vuoden ajan, ja ennen kaikkea viimeisten kolmen vuosisadan aikana, laakson asukkaat ovat hakanneet jyrkkiin liuskekivirinteisiin terasseja, tukeneet ne kuivakiviladelmilla ja istuttaneet viiniköynnöksiä sinne, missä juuri mikään muu ei kasvaisi. Tuloksena on yksi Euroopan tunnistettavimmista maisemista ja yksi harvoista viinialueista, joilla maisema itse on syy tulla.\n\nAlue rajattiin vuonna 1756, kun Pombalin markiisi perusti yhtiön säätelemään portviinin tuotantoa ja kauppaa, mikä tekee siitä yhden maailman vanhimmista säännellyistä viinialueista. Vuonna 2001 Unesco merkitsi Alto Douron viinialueen, noin kaksikymmentäneljätuhatta hehtaaria rajatun alueen ytimessä, maailmanperintöluetteloon kulttuurimaisemana. Laakso jaetaan perinteisesti kolmeen osaan: Réguan ympäristön Baixo Corgo, vihreämpi ja sateisempi; Pinhãon ympäristön Cima Corgo, portviinin tuotannon sydän; ja Douro Superior, kuumempi ja villimpi, joka ulottuu itään Espanjan rajalle asti.\n\nSuurimman osan historiastaan joki oli ainoa tie ulos. Portviini kulki alas Vila Nova de Gaian kellareihin tasapohjaisilla rabelo-veneillä, kunnes ensin rautatie ja sitten maantie ottivat tehtävän hoitaakseen, ja 1900-luvulla patojen ketju muutti kosket tyyniksi suvannoiksi. Nykyään Douro on purjehduskelpoinen Portosta Espanjan rajalle, ja jokiveneet kulkevat sulkujen läpi, kuten Carrapatelon sulun, joka nostaa ne noin kolmekymmentäviisi metriä. Linha do Douro -rautatie seuraa vettä suurimman osan matkastaan Réguasta Pocinhoon, ja Pinhãossa aseman seiniä koristaa kaksikymmentäneljä vuoden 1937 azulejo-laattataulua, jotka kuvaavat sadonkorjuuta, veneitä ja maisemaa.\n\nPinhão, pieni kaupunki Pinhão-joen ja Douron yhtymäkohdassa, on Cima Corgon keskus, ja sitä ympäröivät eräät portviinimaailman tunnetuimmista quintoista. Alavirrassa sijaitseva Peso da Régua on alueen kauppakaupunki ja Museu do Douron koti. Joen eteläpuolella Lamego nousee Nossa Senhora dos Remédiosin barokkipyhäkölle, jonne johtaa 686 askelman portaikko. Näköalapaikat kuuluvat kokemukseen: Casal de Loivos Pinhãon yläpuolella, São Leonardo de Galafura Réguan yläpuolella ja São Salvador do Mundo São João da Pesqueiran lähellä.\n\nUseimmat kävijät tulevat Portosta päiväksi ja näkevät laakson veneestä tai bussista. Yöpyminen muuttaa kokemuksen. Quintat avaavat ovensa maisteluille, valo terasseilla vaihtuu tunnista toiseen, ja illat ovat hiljaisia tavalla, jota päiväkävijät eivät koskaan näe. Laakso on eläväisimmillään sadonkorjuun aikaan, elokuun lopulta lokakuuhun, jolloin jyrkimmillä rinteillä rypäleet poimitaan yhä käsin ja joillakin quintoilla ne tallataan jaloin graniittisissa lagareissa.\n\nSe on myös äärimmäisyyksien paikka. Cima Corgon kesät ovat Portugalin kuumimpia, ja talvet ovat kylmiä, kun aamusumu täyttää laakson. Kevät, jolloin köynnökset ovat uudessa lehdessä, ja syksy, jolloin terassit muuttuvat punaisiksi ja kultaisiksi, ovat vuodenajat, jotka paikalliset valitsisivat.",
     "highlights": [
-      "UNESCOn maailmanperintökohteen kulttuurimaisema",
-      "Vuosisatoja vanhoja portviinikartanoita",
-      "Pinhãon ja Régua jokikaupungit",
-      "Sadonkorjuukausi (syyskuu)",
-      "Veneristeilyt ja Douron linjan rautatie"
-    ]
+      "Alto Douron viinialue, Unescon maailmanperintökohde vuodesta 2001",
+      "Maisteluille avoimet portviinin ja Douron viinien quintat",
+      "Pinhão, Régua ja Lamegon barokkiportaikko",
+      "Linha do Douro -rautatie ja historiallinen juna Réguasta Tuaan",
+      "Sadonkorjuukausi elokuun lopulta lokakuuhun"
+    ],
+    "seoTitle": "Douron laakso: Quintat, Viini ja Majoitus | Portugal Active",
+    "seoDescription": "Porrastetut viinitarhat, portviinin quintat ja jokikaupungit Unescon Alto Dourossa. Mitä nähdä Douron laaksossa, milloin matkustaa ja missä yöpyä.",
+    "howToGetHere": "Porton lentokenttä (OPO): noin 1 h 20 min Réguaan ja 1 h 45 min Pinhãoon A4- ja A24-teitä pitkin. Linha do Douron juna Porto São Bentosta: noin 2 h Réguaan, 2 h 30 min Pinhãoon.",
+    "bestTimeToVisit": "Huhtikuun lopusta kesäkuuhun vihreiden viinitarhojen ja leudon lämmön vuoksi. Elokuun lopulta lokakuuhun sadonkorjuun vuoksi. Heinä- ja elokuu ovat laaksossa hyvin kuumia.",
+    "whatToExpect": "Toimiva viinimaisema terasseineen, quintoineen ja pienine jokikaupunkeineen. Hitaat tiet, laajat näkymät ja pitkät lounaat. Kuumat kesät, kylmät talvet.",
+    "whereToStayIntro": "Douron kotimme ulottuvat vihreämmästä alalaaksosta, alle tunnin päässä Portosta, Cima Corgon sydämeen Pinhãon ympäristössä. Joukossa on viinitarhataloja Casal de Loivosissa ja Alijón yläpuolella, jokivarren taloja Tuan lähellä omine laitureineen sekä kukkuloilla sijaitsevia quintoja, joilla on omat viinitarhansa. Niihin mahtuu kahdeksasta kahdeksaantoista vierasta, ja useissa on lämmitetty uima-allas, millä on merkitystä laaksossa, jonka parhaat kuukaudet osuvat kevääseen ja syksyyn. Conciergemme järjestää quintavierailut, veneretket ja sadonkorjuupäivät ja voi järjestää myös yksityiskokin.",
+    "journalSectionTitle": "Päiväkirjasta: tarinoita Dourosta",
+    "thingsToDoIntro": "Douro palkitsee kiireettömyyden. Etäisyydet näyttävät kartalla lyhyiltä, mutta tiet seuraavat laakson muotoja, ja parhaissa päivissä yhdistyvät yksi quinta, yksi näköalapaikka ja pitkä lounas tarkistuslistan sijaan. Näin me järjestäisimme ensimmäisen neljän tai viiden päivän vierailun.",
+    "thingsToDo": [
+      {
+        "heading": "Jokikaupungit",
+        "items": [
+          {
+            "name": "Pinhão",
+            "category": "Kaupunki",
+            "description": "Pieni kaupunki Cima Corgon sydämessä. Rautatieaseman seiniä reunustaa kaksikymmentäneljä vuoden 1937 azulejo-laattataulua, jotka kuvaavat sadonkorjuuta, rabelo-veneitä ja laakson maisemaa."
+          },
+          {
+            "name": "Peso da Régua",
+            "category": "Kaupunki",
+            "description": "Laakson kaupallinen keskus ja rautatien jokiosuuden lähtöpiste. Museu do Douro kertoo alueen, sen viinin ja sen ihmisten tarinan."
+          },
+          {
+            "name": "Lamego",
+            "category": "Perintö",
+            "description": "Katedraalikaupunki Réguan eteläpuolella. Siellä on hieno museo ja Nossa Senhora dos Remédiosin barokkipyhäkkö 686 askelman portaikon huipulla."
+          },
+          {
+            "name": "Casa de Mateus",
+            "category": "Perintö",
+            "description": "Vila Realin lähellä, puolen tunnin päässä Réguasta pohjoiseen. 1700-luvun barokkikartano muotopuutarhoineen, sama talo, joka on kuvattu Mateus Rosé -viinin etikettiin."
+          }
+        ]
+      },
+      {
+        "heading": "Näköalapaikat",
+        "items": [
+          {
+            "name": "Casal de Loivos",
+            "category": "Näköalapaikka",
+            "description": "Pinhãon yläpuolella. Näkymä joen mutkaan ja Cima Corgon terasseille, sama, joka esiintyy useimmissa Douron valokuvissa."
+          },
+          {
+            "name": "São Leonardo de Galafura",
+            "category": "Näköalapaikka",
+            "description": "Réguan yläpuolella. Kirjailija Miguel Torgan kuuluisaksi tekemä näköalapaikka, josta näkee pitkälle jokea pitkin."
+          },
+          {
+            "name": "São Salvador do Mundo",
+            "category": "Näköalapaikka",
+            "description": "São João da Pesqueiran lähellä. Pienten kappelien kukkula Cachão da Valeiran rotkon yläpuolella."
+          }
+        ]
+      },
+      {
+        "heading": "Viini ja joki",
+        "items": [
+          {
+            "name": "Quintavierailut",
+            "category": "Viini",
+            "description": "Monet quintat ovat avoinna maisteluille, vuosisatojen historian omaavista portviinitaloista pieniin perhetuottajiin, jotka tekevät Douron puna- ja valkoviinejä. Varaa etukäteen, etenkin sadonkorjuun aikaan."
+          },
+          {
+            "name": "Sadonkorjuu",
+            "category": "Viini",
+            "description": "Elokuun lopulta lokakuuhun. Jotkin quintat ottavat vieraita mukaan poimimaan aamulla ja illalla tallaamaan rypäleitä jaloin graniittisissa lagareissa."
+          },
+          {
+            "name": "Rabelo-veneretket",
+            "category": "Joki",
+            "description": "Lyhyitä retkiä Pinhãosta ja Réguasta perinteisillä rabelo-veneillä, tasapohjaisilla aluksilla, jotka aikoinaan kuljettivat portviinitynnyreitä alas Gaiaan."
+          }
+        ]
+      },
+      {
+        "heading": "Kauempana",
+        "items": [
+          {
+            "name": "Linha do Douro",
+            "category": "Liikenne",
+            "description": "Rautatie Réguasta Pocinhoon kulkee joen vieressä suurimman osan matkastaan, terassien läpi ja quintojen ohi, joille ei pääse suoraan maanteitse."
+          },
+          {
+            "name": "Côan laakso",
+            "category": "Arkeologia",
+            "description": "Douro Superiorissa sijaitsevat paleoliittiset ulkoilmakalliopiirrokset, Unescon maailmanperintökohde vuodesta 1998. Museu do Côa sijaitsee Douron yhtymäkohdan yläpuolella."
+          }
+        ]
+      }
+    ],
+    "seasons": {
+      "spring": "Maaliskuusta toukokuuhun. Köynnökset puhkeavat silmuun maaliskuun lopulla, ja terassit vihertyvät huhti- ja toukokuun aikana. Ylimmät lämpötilat nousevat lähes kahdestakymmenestä asteesta noin kahteenkymmeneenviiteen, ja sadetta tulee silloin tällöin. Helmikuun lopulla ja maaliskuussa Douro Superiorin mantelipuut kukkivat. Toinen vuoden kahdesta parhaasta matka-ajasta.",
+      "summer": "Kesäkuusta elokuuhun. Kuuma ja kuiva. Heinä- ja elokuussa Cima Corgossa lämpötila nousee säännöllisesti yli kolmenkymmenenviiden asteen ja voi ylittää neljäkymmentä. Aamut ja illat ovat kävelyjä ja vierailuja varten; keskipäivä on varjoa, uima-allasta ja jokea varten. Historiallinen juna kulkee kesäkuusta alkaen.",
+      "autumn": "Syyskuusta marraskuuhun. Sadonkorjuu kestää elokuun lopulta lokakuun alkuun vuodesta ja viinitarhan korkeudesta riippuen. Sen jälkeen lehdet muuttuvat punaisiksi, kuparisiksi ja kultaisiksi, yleensä kauneimmillaan lokakuun lopulla ja marraskuun alussa. Lämpötilat laskevat lähes kolmestakymmenestä asteesta noin viiteentoista.",
+      "winter": "Joulukuusta helmikuuhun. Kylmä ja hiljainen, korkeammilla rinteillä hallaa ja aamuisin sumua, joka täyttää laakson. Monet quintat supistavat aukioloaikojaan, mutta aurinkoisina päivinä valo on kirkas, takat on sytytetty ja laakso kuuluu siellä asuville.",
+      "bestForFirstTime": "Syyskuun lopusta lokakuun puoliväliin tai toukokuu. Syksyllä ehtii sadonkorjuun loppuun ja näkee viinitarhojen värien vaihtuvan; toukokuussa terassit ovat vihreitä, päivät pitkiä eikä helle ole vielä käynyt uuvuttavaksi. Kumpikin välttää kesän huipun."
+    },
+    "transport": {
+      "byAir": "Porton Francisco Sá Carneiron lentokenttä on lähes kaikkien kävijöiden saapumispaikka: autolla noin tunti ja kaksikymmentä minuuttia Réguaan ja tunti ja kolme varttia Pinhãoon. Järjestämme yksityiset kuljetukset koteihimme.",
+      "byTrain": "Linha do Douro kulkee Porto São Bentosta ja Campanhãsta Réguaan noin kahdessa tunnissa, Pinhãoon noin kahdessa ja puolessa tunnissa ja Pocinhoon noin kolmessa tunnissa ja kahdessakymmenessä minuutissa. Kesäkuusta lokakuuhun historiallinen juna kulkee valittuina päivinä Réguan ja Tuan välillä.",
+      "byCar": "Portosta A4 ja sen jälkeen A24 vievät Réguaan vähän yli tunnissa. Sieltä N222 seuraa joen etelärantaa Pinhãoon, ja juuri tämän ajomatkan vuoksi useimmat kävijät tulevat. Quintojen väliset tiet ovat kapeita ja mutkaisia, ja matkat kestävät kauemmin kuin kartasta voisi päätellä. Ulkomaisilla rekisterikilvillä varustettujen autojen kuljettajien kannattaa rekisteröityä sähköiseen tietullipalveluun ennen saapumista.",
+      "gettingAround": "Auto tai kuljettaja on lähes välttämätön. Maistelupäivinä yksityinen kuljettaja on järkevä valinta, ja concierge voi järjestää sellaisen. Veneet ja juna ovat paras tapa nähdä itse joki, ja keväällä ja syksyllä kylien ja viinitarhojen väliset vanhat polut sopivat hyvin kävelyyn."
+    },
+    "eatDrinkIntro": "Douron keittiö on sisämaan keittiö, ja se on runsas: puu-uunissa paahdettua kiliä ja karitsaa, kukkuloiden palvattuja lihoja, Douro Superiorin oliiviöljyä ja leipää, joka leivotaan samalla tavalla kuin aina ennenkin. Alueen ravintolat vaihtelevat quintojen ruokasaleista, joista avautuu näkymä viinitarhoille, jokikaupunkien pieniin tascoihin, ja muutama keittiömestari on tehnyt laaksosta matkakohteen jo sinänsä. Viini on pääasia: tietenkin portviini, mutta myös Douron puna- ja valkoviinit, jotka kuuluvat nykyään Portugalin arvostetuimpiin. Conciergemme varaa pöydät, jotka täyttyvät ensimmäisinä.",
+    "restaurants": [
+      {
+        "name": "DOC",
+        "category": "Fine dining",
+        "description": "Keittiömestari Rui Paulan ravintola joen rannalla Folgosassa, Réguan ja Pinhãon välissä, terassi veden yllä."
+      },
+      {
+        "name": "Bomfim 1896",
+        "category": "Quinta",
+        "description": "Symingtonin suvun Quinta do Bomfimilla Pinhãossa, vanhan viinivaraston yläkerrassa. Puulla lämpiävä keittiö ja näkymät joelle."
+      },
+      {
+        "name": "Castas e Pratos",
+        "category": "Alueellinen keittiö",
+        "description": "Peso da Réguassa lähellä asemaa. Modernia Douron keittiötä ja pitkä lista laakson viinejä."
+      },
+      {
+        "name": "Quinta da Pacheca",
+        "category": "Quinta",
+        "description": "Viinitila aivan Réguan ulkopuolella. Ravintola viiniköynnösten keskellä ja maisteluja kellareissa."
+      }
+    ],
+    "specialties": [
+      {
+        "name": "Portviini",
+        "category": "Viini",
+        "description": "Väkevöity viini, joka teki laaksosta kuuluisan, nuorista ruby- ja valkoisista portviineistä kypsytettyihin tawnyihin ja parhaiden vuosien vintage-portviineihin. Sen maistaminen siellä, missä se tehdään, on aivan eri kokemus."
+      },
+      {
+        "name": "Douro DOC -puna- ja valkoviinit",
+        "category": "Viini",
+        "description": "Väkevöimättömiä viinejä samoilta viinitarhoilta. Punaviinit tehdään esimerkiksi Touriga Nacional-, Touriga Franca- ja Tinta Roriz -rypäleistä, valkoviinit Rabigato-, Viosinho- ja Gouveio-rypäleistä."
+      },
+      {
+        "name": "Cabrito assado",
+        "category": "Ruokalaji",
+        "description": "Puu-uunissa perunoiden kanssa paahdettu kili, sunnuntaiden ja juhlien ruoka koko alueella."
+      },
+      {
+        "name": "Bola de Lamego",
+        "category": "Ruokalaji",
+        "description": "Lamegolainen leipä, joka leivotaan palvattujen lihojen täytteen ympärille. Sitä syödään piknikeillä, markkinoilla ja sadonkorjuulounailla."
+      }
+    ],
+    "experiencesIntro": "Seuraavassa on elämyksiä, joita conciergemme järjestää Douron kodeissamme yöpyville vieraille. Useimmat vaativat päivän tai kahden varoitusajan, sadonkorjuun aikaan enemmän, ja kaikki voidaan yhdistää yksityiseen kuljettajaan, jotta kenenkään ei tarvitse ajaa maistelun jälkeen.",
+    "experiences": [
+      {
+        "name": "Quintavierailu ja maistelu tuottajan kanssa",
+        "description": "Aamupäivä toimivalla quintalla: kävelyä terasseilla ja portviinin ja Douron viinien maistelua suvun tai viinintekijän kanssa, ja mahdollisuuksien mukaan lounas tilalla.",
+        "duration": "Puoli päivää",
+        "season": "Ympäri vuoden"
+      },
+      {
+        "name": "Sadonkorjuupäivä",
+        "description": "Poimintaa terasseilla aamulla ja illalla, niillä quintoilla, joilla näin yhä tehdään, rypäleiden tallaamista jaloin graniittisessa lagarissa.",
+        "duration": "Koko päivä",
+        "season": "Elokuun lopusta lokakuun alkuun"
+      },
+      {
+        "name": "Rabelo-veneellä joella",
+        "description": "Tunti Dourolla Pinhãosta perinteisellä rabelolla tai pidempi yksityinen veneretki suoraan talolta, jos siellä on laituri.",
+        "duration": "Yhdestä kolmeen tuntia",
+        "season": "Maaliskuusta marraskuuhun"
+      },
+      {
+        "name": "Historiallinen juna Réguasta Tuaan",
+        "description": "Museojuna aikakauden vaunuineen joen vartta pitkin, musiikkia ja lasillinen portviiniä junassa. Se kulkee valittuina päivinä kesällä ja alkusyksyllä, ja liput myydään nopeasti loppuun.",
+        "duration": "Puoli päivää",
+        "season": "Kesäkuusta lokakuuhun"
+      },
+      {
+        "name": "Näköalapaikat yksityisen kuljettajan kanssa",
+        "description": "Casal de Loivos, São Leonardo de Galafura ja São Salvador do Mundo yhdessä päivässä, lounas jokikaupungissa.",
+        "duration": "Koko päivä",
+        "season": "Ympäri vuoden"
+      },
+      {
+        "name": "Côan laakson kalliotaide",
+        "description": "Opastettu vierailu Côan paleoliittisille ulkoilmakalliopiirroksille ja Museu do Côaan. Pitkä päivä Douro Superioriin, mutta palkitseva.",
+        "duration": "Koko päivä",
+        "season": "Ympäri vuoden"
+      }
+    ],
+    "eventsIntro": "Douron vuosi seuraa viiniköynnöstä. Tärkeimmät viikot ovat sadonkorjuu ja Lamegossa syyskuun alun pyhiinvaellusjuhla; mantelinkukinta ja historiallinen juna merkitsevät matkailukauden alkua ja loppua.",
+    "events": [
+      {
+        "name": "Vindima (sadonkorjuu)",
+        "dates": "Elokuun lopusta lokakuun alkuun",
+        "description": "Laakson vilkkaimmat ja tunnelmallisimmat viikot. Quintat ja kodit varataan täyteen varhain, ja monet tilat tarjoavat sadonkorjuuelämyksiä."
+      },
+      {
+        "name": "Festas de Nossa Senhora dos Remédios",
+        "dates": "Elokuun lopusta 8. syyskuuta, Lamego",
+        "description": "Lamegon suuri pyhiinvaellus- ja kaupunkijuhla, jonka huipennus on 8. syyskuuta järjestettävä kulkue."
+      },
+      {
+        "name": "Comboio Histórico do Douro",
+        "dates": "Kesäkuusta lokakuuhun, valittuina päivinä",
+        "description": "Historiallinen juna Réguan ja Tuan välillä, aikakauden vaunut ja portviiniä junassa."
+      },
+      {
+        "name": "Mantelinkukinta",
+        "dates": "Helmikuun lopusta maaliskuuhun",
+        "description": "Douro Superiorin mantelipuut kukkivat valkoisina ja vaaleanpunaisina Torre de Moncorvon ja Vila Nova de Foz Côan ympäristössä."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Kuinka monta päivää tarvitsen Douron laaksossa?",
+        "answer": "Kolme yötä on vähimmäisaika, jotta laakson ehtii tuntea eikä vain nähdä. Neljässä tai viidessä päivässä ehtii kiirehtimättä kaksi tai kolme quintavierailua, päivän joella tai rautatiellä ja päivän Lamegossa tai näköalapaikoilla."
+      },
+      {
+        "question": "Milloin Douroon kannattaa matkustaa?",
+        "answer": "Toukokuussa sekä syyskuun puolivälistä lokakuun loppuun. Sadonkorjuu kestää elokuun lopulta lokakuun alkuun, ja lokakuun loppu ja marraskuun alku tuovat syksyn värit. Heinä- ja elokuu ovat laaksossa hyvin kuumia."
+      },
+      {
+        "question": "Miten Portosta pääsee Douron laaksoon?",
+        "answer": "Autolla A4 ja A24 vievät Porton lentokentältä Réguaan noin tunnissa ja kahdessakymmenessä minuutissa. Junalla Linha do Douro São Bentosta kestää noin kaksi tuntia Réguaan ja kaksi ja puoli Pinhãoon. Portosta lähtee myös jokiristeilyjä, mutta ne vievät koko päivän tai enemmän."
+      },
+      {
+        "question": "Mikä ero on portviinillä ja Douron viinillä?",
+        "answer": "Molemmat tulevat samalta rajatulta alueelta. Portviini väkevöidään käymisen aikana rypäleviinalla, mikä pysäyttää käymisen ja jättää viinin makeaksi ja vahvaksi. Douro DOC -viinit ovat väkevöimättömiä puna- ja valkoviinejä, jotka tehdään pitkälti samoista rypäleistä."
+      },
+      {
+        "question": "Tarvitsenko auton Dourossa?",
+        "answer": "Siitä on apua, mutta maistelupäivinä yksityinen kuljettaja on parempi valinta. Concierge voi järjestää kuljettajan sekä veneretket ja junaliput."
+      },
+      {
+        "question": "Missä Douron laaksossa kannattaa yöpyä?",
+        "answer": "Se riippuu matkasta. Cima Corgo Pinhãon ja Alijón ympäristössä on portviiniseudun sydän ja maisemaltaan vaikuttavin. Alalaakso Amaranten ja Baiãon suunnalla on vihreämpi ja lähempänä Portoa. Kotimme kattavat molemmat."
+      },
+      {
+        "question": "Sopiiko Douron laakso lapsiperheille?",
+        "answer": "Sopii, kun talossa on uima-allas. Kesät ovat kuumia, joten päivät kannattaa viettää uima-altaalla ja lyhyillä retkillä aamuisin tai iltaisin: veneretki, juna tai quinta, jossa on tilaa liikkua."
+      },
+      {
+        "question": "Voiko quintoilla vierailla ilman varausta?",
+        "answer": "Jotkin quintat ottavat vastaan kävijöitä ilman varausta, mutta useimmat maistelut ovat ajanvarauksella, ja sadonkorjuun aikaan monet täyttyvät viikkoja etukäteen. Concierge varaa vierailut etukäteen."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Omistatko kodin Dourossa?",
+      "body": "Portugal Active hoitaa premium-kohteita kaikkialla Pohjois-Portugalissa: kokonaisvaltainen hallinta, markkinointi, concierge ja kunnossapito hotellistandardein. Jos omistat quintan tai talon Dourossa, keskustelemme mielellämme.",
+      "cta": "Keskustele tiimimme kanssa",
+      "url": "https://www.portugalactive.com/management/en/?utm_source=destinations&utm_medium=cta&utm_campaign=douro"
+    }
   },
   "lisbon": {
     "name": "Lissabon",

@@ -1,7 +1,12 @@
+/** Spoke guides whose homes are found by locality on /homes (the locality
+ *  slug equals the destination slug: "Viana do Castelo", "Caminha",
+ *  "Esposende", and the partner homes whose locality is "Douro"). */
+const LOCALITY_SPOKES = new Set(['viana-do-castelo', 'caminha', 'esposende', 'douro']);
+
 /** Published city guides use locality search; region guides use region search. */
 export function destinationHomesHref(d: { slug: string; region: string }): string {
-  return d.slug === 'viana-do-castelo'
-    ? '/homes?location=viana-do-castelo'
+  return LOCALITY_SPOKES.has(d.slug)
+    ? `/homes?location=${encodeURIComponent(d.slug)}`
     : `/homes?destination=${encodeURIComponent(d.region)}`;
 }
 

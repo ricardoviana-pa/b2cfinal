@@ -277,8 +277,10 @@ function toCard(p: any): any {
  *
  * A region hub (slug === region: minho, porto, algarve…) lists every home
  * whose destination belongs to that region, spokes included (douro → porto).
- * A spoke with homes of its own (douro) lists those; a spoke without any
- * (viana-do-castelo, caminha) falls back to its region.
+ * A spoke with homes of its own (douro) lists those. A town spoke whose homes
+ * are tagged by region but carry the town as their locality (viana-do-castelo,
+ * caminha, esposende) lists the homes in that locality. Only a spoke with
+ * neither falls back to its region.
  *
  * Slim records (~1.5 KB each) so the list can be SSR-prefetched and the
  * cards and the count are in the served HTML.
@@ -291,10 +293,11 @@ export async function getPropertiesForDestination(slug: string): Promise<any[]> 
   const all = (await getPropertiesForSite()).filter((p) => p.isActive !== false);
   const own = all.filter((p) => p.destination === slug);
   const isHub = d.slug === d.region;
-  const list = slug === 'viana-do-castelo'
-    ? all.filter(p => localitySlug(p.locality) === slug)
-    : isHub
+  const inLocality = all.filter((p) => localitySlug(p.locality) === slug);
+  const list = isHub
     ? all.filter((p) => regionOf(p.destination) === d.region)
-    : own.length > 0 ? own : all.filter((p) => p.destination === d.region);
+    : own.length > 0 ? own
+    : inLocality.length > 0 ? inLocality
+    : all.filter((p) => p.destination === d.region);
   return list.map(toCard);
 }
