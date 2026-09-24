@@ -213,9 +213,12 @@ export default function ExperienceDetail() {
   const experienceGraph = useMemo(() => {
     if (!exp) return null;
     const url = `https://www.portugalactive.com/experiences/${exp.slug}`;
+    // A Product needs offers or a rating, or Google flags it as invalid; an
+    // experience priced on request (the yacht) is only a TouristTrip.
+    const isProduct = (exp.priceFrom ?? 0) > 0 || !!exp.aggregateRating?.count;
     const product: Record<string, unknown> = {
       '@context': 'https://schema.org',
-      '@type': ['Product', 'TouristTrip', 'TouristAttraction'],
+      '@type': isProduct ? ['Product', 'TouristTrip', 'TouristAttraction'] : ['TouristTrip', 'TouristAttraction'],
       productID: `EXP-${exp.slug}`,
       name: exp.name,
       description: typeof exp.description === 'string' ? exp.description.slice(0, 300) : (typeof exp.tagline === 'string' ? exp.tagline.slice(0, 300) : ''),

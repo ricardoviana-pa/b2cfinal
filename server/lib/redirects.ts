@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from "express";
+import fs from "fs";
+import path from "path";
 
 /**
  * SEO 301 redirects for the 2026 Webflow → React migration.
@@ -222,6 +224,38 @@ interface PatternRule {
   resolve: (match: RegExpMatchArray, originalPath: string) => string;
 }
 
+// === GUESTY BOOKING ENGINE (booking.portugalactive.com) ====================
+// The old Guesty-hosted engine addresses a home by its Guesty listing id
+// (/properties/6965339dbf04fe0013743e2d) or, in an older layout, by
+// /properties/<town>/<title-slug>/<numeric-id>. Google still ranks those pages
+// for house-name searches, above our own. Once that host forwards its paths
+// here, each one lands on the home itself rather than on the catalogue, so the
+// ranking signal moves to the right page.
+let _homesByGuestyId: Map<string, string> | null = null;
+let _homesByTitleSlug: Map<string, string> | null = null;
+function loadGuestyHomeIndex(): void {
+  if (_homesByGuestyId) return;
+  _homesByGuestyId = new Map();
+  _homesByTitleSlug = new Map();
+  try {
+    const raw = JSON.parse(fs.readFileSync(path.join(process.cwd(), "client", "src", "data", "properties.json"), "utf-8"));
+    for (const p of Array.isArray(raw) ? raw : []) {
+      if (!p?.slug) continue;
+      if (typeof p.guestyId === "string") _homesByGuestyId.set(p.guestyId.toLowerCase(), p.slug);
+      // Home slugs are the Guesty title slug plus the last 6 hex of the id.
+      _homesByTitleSlug.set(String(p.slug).replace(/-[0-9a-f]{6}$/, ""), p.slug);
+    }
+  } catch { /* no data: fall back to the catalogue */ }
+}
+export function homeSlugForGuestyId(id: string): string | null {
+  loadGuestyHomeIndex();
+  return _homesByGuestyId!.get(id.toLowerCase()) ?? null;
+}
+function homeSlugForTitleSlug(titleSlug: string): string | null {
+  loadGuestyHomeIndex();
+  return _homesByTitleSlug!.get(titleSlug.toLowerCase()) ?? null;
+}
+
 // === PATTERN RULES ========================================================
 const PATTERN_REDIRECTS: PatternRule[] = [
   // Partner (Tripwix) homes briefly shipped with the supplier's reference in
@@ -243,6 +277,27 @@ const PATTERN_REDIRECTS: PatternRule[] = [
       return mapped && mapped !== m[1] ? `/en/homes/${mapped}` : (null as unknown as string);
     },
   },
+
+  // Guesty engine: /properties/<24-hex listing id> → that home
+  {
+    pattern: /^\/properties\/([0-9a-f]{24})\/?$/i,
+    resolve: (m) => {
+      const slug = homeSlugForGuestyId(m[1]);
+      return slug ? `/en/homes/${slug}` : "/en/homes";
+    },
+  },
+
+  // Guesty engine, older layout: /properties/<town>/<title-slug>/<numeric id>
+  {
+    pattern: /^\/properties\/[^/?#]+\/([^/?#]+)\/\d+\/?$/i,
+    resolve: (m) => {
+      const slug = homeSlugForTitleSlug(m[1]);
+      return slug ? `/en/homes/${slug}` : "/en/homes";
+    },
+  },
+
+  // Guesty engine search page → the catalogue
+  { pattern: /^\/search\/?$/i, resolve: () => "/en/homes" },
 
   // /properties/<slug> and /rooms/<slug> → /homes/<new-slug>
   {

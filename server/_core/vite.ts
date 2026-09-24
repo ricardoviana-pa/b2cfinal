@@ -926,8 +926,14 @@ function buildExperienceGraph(exp: any, lang: string, pagePath: string): Record<
     : typeof exp.tagline === 'string' ? exp.tagline : '')
     .replace(/\s+/g, ' ').trim().slice(0, 300);
 
+  // Google rejects a Product with none of offers/review/aggregateRating
+  // ("Fragmentos do produto" in Search Console). An experience priced on
+  // request (the yacht) is still a TouristTrip, just not a Product.
+  const hasRating = !!(exp.aggregateRating && exp.aggregateRating.count > 0);
   const product: Record<string, unknown> = {
-    '@type': ['Product', 'TouristTrip', 'TouristAttraction'],
+    '@type': priceFrom > 0 || hasRating
+      ? ['Product', 'TouristTrip', 'TouristAttraction']
+      : ['TouristTrip', 'TouristAttraction'],
     '@id': url,
     productID: `EXP-${exp.slug}`,
     name,
@@ -961,7 +967,7 @@ function buildExperienceGraph(exp: any, lang: string, pagePath: string): Record<
         },
       },
     }),
-    ...(exp.aggregateRating && exp.aggregateRating.count > 0 && {
+    ...(hasRating && {
       aggregateRating: {
         '@type': 'AggregateRating',
         ratingValue: exp.aggregateRating.value,
