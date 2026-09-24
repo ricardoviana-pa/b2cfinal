@@ -12,10 +12,10 @@ consoante o passo onde o hóspede parou.
 
 | Contacto | Quando | Para quem | Argumento |
 |---|---|---|---|
-| 1 | 1 hora depois | Todos | A casa: tudo guardado, um clique para continuar, resposta pessoal do concierge. Se parou no **pagamento**: "Ficou algo por resolver?", com os métodos alternativos (Apple/Google Pay, PayPal, Klarna). |
+| 1 | 1 hora depois | Todos | A casa: tudo guardado, um clique para continuar, convite a responder (a equipa lê todas as respostas; o Reply-To de todos os contactos é a caixa de reservas `BOOKING_NOTIFICATION_EMAIL`, booking@ por omissão, mesmo que o remetente mude; nunca promete leitura pessoal). Se parou no **pagamento**: "Ficou algo por resolver?", com os métodos alternativos (Apple/Google Pay, PayPal, Klarna). |
 | 2 | 20 horas depois | Todos | Urgência verdadeira: a hora exata a que o preço expira e, só quando for verdade, a escassez do calendário ("das 47 noites à volta das suas datas, 29 já não estão disponíveis"). |
 | 3 | 3 dias depois | Só com consentimento de marketing | As datas são re-verificadas no Guesty, o preço é refeito e guardado mais 23 horas, e o **Flex é oferecido durante 72 horas**. Se as datas já não se vendem, salta para o contacto 4. |
-| 4 | 7 dias depois | Só com consentimento de marketing | Até 3 casas na mesma região, com capacidade e livres nas mesmas datas. É o último contacto. |
+| 4 | 7 dias depois | Só com consentimento de marketing | Até 3 casas na mesma região, com capacidade e livres nas mesmas datas, com foto, nome, lugar e ligação. **Sem preço no cartão**: o `priceFrom` do catálogo não é o preço daquelas datas e a unidade (noite ou pessoa) não está confirmada. É o último contacto. |
 
 ## O incentivo: Flex oferecido
 

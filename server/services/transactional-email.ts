@@ -523,8 +523,10 @@ interface CheckoutRecoveryData {
   scarcity?: { unavailable: number; total: number } | null;
   /** Contacto 3: Flex oferecido */
   flexGift?: { until: Date; value: number; days: number } | null;
-  /** Contacto 4: casas alternativas livres nas mesmas datas */
-  alternatives?: Array<{ name: string; imageUrl?: string; url: string; priceFrom?: number; locality?: string }>;
+  /** Contacto 4: casas alternativas livres nas mesmas datas. Sem preço: o
+   *  priceFrom do catálogo não é o preço destas datas e a unidade (noite ou
+   *  pessoa) não está confirmada; o preço real vê-se na página da casa. */
+  alternatives?: Array<{ name: string; imageUrl?: string; url: string; locality?: string }>;
   /** Contacto 4: link para voltar à casa original */
   propertyUrl?: string | null;
 }
@@ -729,7 +731,7 @@ export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<
     <tr><td style="padding:18px 22px 20px 22px;">
       <p style="font-family:${SERIF};font-size:20px;line-height:1.3;color:${PA.dark};margin:0;">${a.name}</p>
       ${a.locality ? `<p style="font-family:${SANS};font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:${PA.stoneAA};margin:5px 0 0 0;">${a.locality}</p>` : ""}
-      <p style="font-family:${SANS};font-size:13px;color:${PA.earth};margin:10px 0 0 0;">${formatStayDate(data.checkIn, lang)} &rarr; ${formatStayDate(data.checkOut, lang)}${a.priceFrom ? ` &nbsp;&middot;&nbsp; ${F.altFrom(eur(a.priceFrom, lang))}` : ""}</p>
+      <p style="font-family:${SANS};font-size:13px;color:${PA.earth};margin:10px 0 0 0;">${formatStayDate(data.checkIn, lang)} &rarr; ${formatStayDate(data.checkOut, lang)}</p>
     </td></tr>
   </table>
   </a>
@@ -776,7 +778,10 @@ ${optout}
 </body>
 </html>`;
 
-  await sendEmail(data.guestEmail, subject, html);
+  // Reply-To explícito para a caixa de reservas: o contacto 1 diz "Lemos
+  // todas as respostas", e isso só é verdade se a resposta cair na caixa que a
+  // equipa lê, mesmo que o EMAIL_FROM volte a apontar para outro remetente.
+  await sendEmail(data.guestEmail, subject, html, BOOKING_NOTIFICATION_EMAIL);
 }
 
 /** Alerta interno: abandono no pagamento de valor alto — ligar ao hóspede. */

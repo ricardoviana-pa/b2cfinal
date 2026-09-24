@@ -133,6 +133,28 @@ describe("funil de 4 contactos", () => {
     expect(mock.claim).toHaveBeenCalledWith(expect.any(String), 2, 4);
     expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 4 }));
   });
+  it("contacto 4 envia as alternativas sem o priceFrom do catálogo", async () => {
+    mock.consent.mockResolvedValue(true);
+    const home = (id: string, over: Record<string, unknown> = {}) => ({
+      guestyId: id, slug: `casa-${id}`, name: `Casa ${id}`, destination: "minho", maxGuests: 6,
+      priceFrom: 250, pricePerNight: 250, locality: "Caminha", images: [`https://assets.example.test/${id}.jpg`], ...over,
+    });
+    mock.properties.mockResolvedValue([home("listing-1"), home("alt-a"), home("alt-b", { priceFrom: 90 })]);
+    mock.candidates.mockResolvedValue([intent(7 * 24 + 2, { recoveryStage: 3, expiresAt: new Date(Date.now() - 3_600_000) })]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
+    expect(mock.claim).toHaveBeenCalledWith(expect.any(String), 3, 4);
+    const sent = mock.send.mock.calls[0][0];
+    expect(sent.stage).toBe(4);
+    expect(sent.alternatives).toHaveLength(2);
+    for (const alt of sent.alternatives) {
+      expect(alt).not.toHaveProperty("priceFrom");
+      expect(alt).toEqual({
+        name: expect.any(String), locality: "Caminha",
+        imageUrl: expect.stringContaining("https://assets.example.test/"),
+        url: expect.stringMatching(/^https:\/\/www\.portugalactive\.com\/pt\/homes\/casa-alt-[ab]\?/),
+      });
+    }
+  });
   it("Guesty em baixo no contacto 3: adia sem reclamar", async () => {
     mock.consent.mockResolvedValue(true);
     mock.beQuote.mockRejectedValue(new Error("be_quote_timeout"));

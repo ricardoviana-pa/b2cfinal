@@ -224,7 +224,10 @@ async function alternativesFor(intent: BookingIntent, stage: RecoveryStage) {
         Math.abs(Number(a.pricePerNight || a.priceFrom || 0) - refPrice) -
         Math.abs(Number(b.pricePerNight || b.priceFrom || 0) - refPrice))
       .slice(0, 8);
-    const out: Array<{ name: string; imageUrl?: string; url: string; priceFrom?: number; locality?: string }> = [];
+    // Sem preço no cartão: o priceFrom do catálogo não é o preço destas datas
+    // e a unidade (noite ou pessoa) não está confirmada. Serve só para ordenar
+    // por semelhança.
+    const out: Array<{ name: string; imageUrl?: string; url: string; locality?: string }> = [];
     for (const p of pool) {
       if (out.length >= 3) break;
       try {
@@ -237,7 +240,6 @@ async function alternativesFor(intent: BookingIntent, stage: RecoveryStage) {
         name: sanitizePropertyName(p.name || ""),
         imageUrl: heroImageUrl(p.images?.[0]),
         url: propertyUrl(p.slug, intent, stage),
-        priceFrom: Number(p.priceFrom || p.pricePerNight || 0) || undefined,
         locality: p.locality,
       });
     }
