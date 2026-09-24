@@ -1380,15 +1380,15 @@
   "privacy": {
     "overline": "LEGAL",
     "title": "Privacy Policy",
-    "lastUpdated": "Last updated: March 2026",
+    "lastUpdated": "Last updated: September 2026",
     "s1Title": "1. Information We Collect",
     "s1Body": "We collect information you provide directly to us, such as when you make a booking enquiry, subscribe to our newsletter, or contact us. This may include your name, email address, phone number, and travel preferences.",
     "s2Title": "2. How We Use Your Information",
     "s2Body": "We use the information we collect to process your bookings, communicate with you about your stay, send marketing communications (with your consent), and improve our services.",
     "s3Title": "3. Data Sharing",
-    "s3Body": "We do not sell your personal information. We may share your data with property owners and service providers solely for the purpose of fulfilling your booking and delivering the services you have requested.",
+    "s3Body": "We do not sell your personal information. We may share your data with property owners and service providers to fulfil your booking and deliver the services you have requested. If you have stayed with us or given us your email address, we may also send it, always hashed and therefore unreadable, to advertising platforms such as Meta (Facebook and Instagram) and Google, so that we can show you our offers on those platforms. You can ask to be removed from these lists at any time by writing to info@portugalactive.com.",
     "s4Title": "4. Your Rights",
-    "s4Body": "Under GDPR, you have the right to access, correct, delete, or port your personal data. You may also withdraw consent for marketing communications at any time. Contact us at info@portugalactive.com to exercise these rights.",
+    "s4Body": "Under GDPR, you have the right to access, correct, delete, or port your personal data. You may also withdraw consent for marketing communications, including personalised ads, at any time. Contact us at info@portugalactive.com to exercise these rights.",
     "s5Title": "5. Contact",
     "s5Body": "For any privacy-related questions, please contact us at info@portugalactive.com or +351 258 358 434."
   },

@@ -1134,15 +1134,15 @@
   "privacy": {
     "overline": "OIKEUDELLINEN",
     "title": "Tietosuojakäytäntö",
-    "lastUpdated": "Päivitetty viimeksi: maaliskuu 2026",
+    "lastUpdated": "Päivitetty viimeksi: syyskuu 2026",
     "s1Title": "1. Keräämämme tiedot",
     "s1Body": "Keräämme tietoja, jotka annat meille suoraan, kuten tehdessäsi varaustiedustelun, tilatessasi uutiskirjeemme tai ottaessasi meihin yhteyttä. Tähän voi sisältyä nimesi, sähköpostiosoitteesi, puhelinnumerosi ja matkatoiveesi.",
     "s2Title": "2. Miten käytämme tietojasi",
     "s2Body": "Käytämme keräämiämme tietoja varaustesi käsittelyyn, sinulle oleskelustasi viestimiseen, markkinointiviestien lähettämiseen (suostumuksellasi) ja palveluidemme parantamiseen.",
     "s3Title": "3. Tietojen jakaminen",
-    "s3Body": "Emme myy henkilökohtaisia tietojasi. Saatamme jakaa tietojasi kiinteistönomistajien ja palveluntarjoajien kanssa ainoastaan varauksesi toteuttamiseksi ja pyytämiesi palvelujen toimittamiseksi.",
+    "s3Body": "Emme myy henkilökohtaisia tietojasi. Saatamme jakaa tietojasi kiinteistönomistajien ja palveluntarjoajien kanssa varauksesi toteuttamiseksi ja pyytämiesi palvelujen toimittamiseksi. Jos olet majoittunut luonamme tai antanut meille sähköpostiosoitteesi, voimme myös välittää sen aina tiivistettynä (hash) ja siten lukukelvottomana mainosalustoille, kuten Metalle (Facebook ja Instagram) ja Googlelle, jotta voimme näyttää sinulle tarjouksiamme niissä. Voit milloin tahansa pyytää, että poistamme sinut näiltä listoilta, kirjoittamalla osoitteeseen info@portugalactive.com.",
     "s4Title": "4. Oikeutesi",
-    "s4Body": "GDPR:n nojalla sinulla on oikeus päästä käsiksi henkilötietoihisi, oikaista, poistaa tai siirtää ne. Voit myös peruuttaa suostumuksesi markkinointiviestintään milloin tahansa. Ota yhteyttä osoitteeseen info@portugalactive.com käyttääksesi näitä oikeuksia.",
+    "s4Body": "GDPR:n nojalla sinulla on oikeus päästä käsiksi henkilötietoihisi, oikaista, poistaa tai siirtää ne. Voit myös peruuttaa suostumuksesi markkinointiviestintään, myös henkilökohtaisiin mainoksiin, milloin tahansa. Ota yhteyttä osoitteeseen info@portugalactive.com käyttääksesi näitä oikeuksia.",
     "s5Title": "5. Yhteystiedot",
     "s5Body": "Tietosuojaan liittyvissä kysymyksissä ota yhteyttä osoitteeseen info@portugalactive.com tai +351 258 358 434."
   },
