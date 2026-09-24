@@ -6004,6 +6004,41 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "The flat and the area were perfect for my week’s stay.  The flat and the lovely little outside terrace are at the back of the building so little traffic noise.  Loved the cathedral bells.  The bus stop and the Metro were right outside the front door, so great transport links.  A pretty park opposite and neighbourhood shops for anything you could need - bought groceries, had my phone fixed, printed a ticket……..  Attractive traditional neighbourhood.  \nFor my stay - perfect!",
+        "guestDisplayName": "Diana",
+        "guestName": "Diana",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-23T13:03:48.992Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 4
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "この素敵なアパートメントで極上の滞在を楽しみました。ユニットはとても使いやすく、デザイン性も高く、そして趣味良くデザインされていて、到着の瞬間から気に入りました。ひとり（ないしはカップル）での滞在に最適な広さで、特にベッドリネンの質が高いことにとても満足しました。また、テラスやサンルームがとても素敵で、すぐ隣の教会のビューや鐘の音、そして夕焼けを毎晩楽しみました。シャワーヘッドに問題がありましたが、比較的迅速にご対応いただき感謝しています。楽しい滞在をありがとうございました！",
         "guestDisplayName": "Kazumi",
         "guestName": "Kazumi",
@@ -6319,7 +6354,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 9,
+    "reviewCount": 10,
     "lastModified": "2026-08-27",
     "contentHash": "5c020bc88dde389b6bf56907ddd658a73173aa1c"
   },
@@ -12971,7 +13006,6 @@
       "https://assets.guesty.com/image/upload/v1782894191/production/6957de4388cba42d9e7a905e/b9owxqhonca735ki9xdn.jpg",
       "https://assets.guesty.com/image/upload/v1782894180/production/6957de4388cba42d9e7a905e/p6dbjmtngw8hnbgdx0lr.jpg",
       "https://assets.guesty.com/image/upload/v1782894173/production/6957de4388cba42d9e7a905e/uy3yboj0ilygyjlnbf1l.jpg",
-      "https://assets.guesty.com/image/upload/v1782293636/production/6957de4388cba42d9e7a905e/yoqdu9b1dmieubywhrts.jpg",
       "https://assets.guesty.com/image/upload/v1782296559/production/6957de4388cba42d9e7a905e/qln2jcalg68rtbclhcsv.jpg",
       "https://assets.guesty.com/image/upload/v1782894187/production/6957de4388cba42d9e7a905e/wwqdzvaffykd0a8rmlaj.jpg",
       "https://assets.guesty.com/image/upload/v1782894187/production/6957de4388cba42d9e7a905e/lxwhljffn96qm5hshksj.jpg",
@@ -13056,7 +13090,7 @@
     "isActive": true,
     "isPortfolio": false,
     "seoTitle": "Main Square River & Beach Retreat by Portugal Active — Portugal Active",
-    "seoDescription": "Immerse yourself in the timeless charm of Viana do Castelo at this luxury retreat, Filigree Plaza by Portugal Active.\nNestled in the heart of the historic cente",
+    "seoDescription": "Immerse yourself in the timeless charm of Viana do Castelo at this luxury retreat, Main Square River & Beach Retreat by Portugal Active.\nNestled in the heart of",
     "address": {
       "full": "",
       "street": "Largo do Instituto Histórico do Minho 6",
@@ -13166,8 +13200,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 2,
-    "lastModified": "2026-09-01",
-    "contentHash": "3bbc3dc10d098a6b0c385ae02ab7f34fff2f8b16"
+    "lastModified": "2026-09-24",
+    "contentHash": "29a7418c810fc619be16e226f9b8e3b3dd3cc9fd"
   },
   {
     "id": "guesty-6970af61638a8a0015eaa850",
