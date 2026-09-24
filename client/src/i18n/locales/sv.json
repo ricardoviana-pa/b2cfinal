@@ -1714,7 +1714,8 @@
       "rule6": "Flex kan endast köpas i kassan och återbetalas inte.",
       "honesty": "Avbokar du inom din taxas fria avbokningsfönster återbetalar vi dina pengar enligt policyn. Flex ersätter aldrig den rätten, det lägger till skydd bortom den.",
       "percentNote": "10 % av nätternas totalsumma, engångsbelopp",
-      "copyNoWindow": "Planer kan ändras. Med Flex går beloppet du betalar aldrig förlorat: omboka upp till {{days}} dagar före incheckning."
+      "copyNoWindow": "Planer kan ändras. Med Flex går beloppet du betalar aldrig förlorat: omboka upp till {{days}} dagar före incheckning.",
+      "gifted": "Bjuds på"
     },
     "curatedFor": "Utvalt för {{property}}",
     "todayTotal": "Totalt",

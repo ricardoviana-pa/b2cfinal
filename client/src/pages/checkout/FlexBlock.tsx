@@ -35,6 +35,7 @@ export default function FlexBlock({
   lang,
   listingId,
   demo,
+  gifted = false,
   onToggle,
 }: {
   config: FlexConfig;
@@ -47,6 +48,8 @@ export default function FlexBlock({
   lang: string;
   listingId?: string;
   demo?: boolean;
+  /** Flex oferecido pelo funil de recuperação: mostra o preço riscado */
+  gifted?: boolean;
   onToggle: (next: boolean) => void;
 }) {
   const { t } = useTranslation();
@@ -138,14 +141,22 @@ export default function FlexBlock({
           </p>
         </div>
         <div className="text-right shrink-0 hidden sm:block max-w-[150px]">
-          <p className="body-sm text-pa-dark font-medium tabular-nums">{formatEur(config.price, lang)}</p>
+          {gifted ? (
+            <p className="body-sm font-medium tabular-nums"><s className="text-pa-stone-aa">{formatEur(config.price, lang)}</s> <span className="text-pa-gold">{t("checkout.flex.gifted", "Offered")}</span></p>
+          ) : (
+            <p className="body-sm text-pa-dark font-medium tabular-nums">{formatEur(config.price, lang)}</p>
+          )}
           <p className="caption text-pa-stone-aa leading-snug">{t("checkout.flex.percentNote", "10% of the nightly total, one-time")}</p>
         </div>
       </div>
 
       {/* Mobile: preço numa linha própria — à direita do título fazia cascata */}
       <p className="sm:hidden mt-2 body-sm text-pa-dark tabular-nums">
-        <span className="font-medium">{formatEur(config.price, lang)}</span>
+        {gifted ? (
+          <span className="font-medium"><s className="text-pa-stone-aa">{formatEur(config.price, lang)}</s> <span className="text-pa-gold">{t("checkout.flex.gifted", "Offered")}</span></span>
+        ) : (
+          <span className="font-medium">{formatEur(config.price, lang)}</span>
+        )}
         <span className="text-pa-stone-aa caption"> · {t("checkout.flex.percentNote", "10% of the nightly total, one-time")}</span>
       </p>
 

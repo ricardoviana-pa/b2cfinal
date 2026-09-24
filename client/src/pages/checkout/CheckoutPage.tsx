@@ -773,7 +773,10 @@ export default function CheckoutPage() {
       ? Math.round(((quote?.totalNights ?? 0) * ((flexConfig as any).pricePercent ?? 10)) / 100)
       : flexConfig.price
     : 0;
-  const flexPrice = flexSelected && flexConfig ? flexUnit : 0;
+  // Flex oferecido pelo funil de recuperação (contacto 3): o servidor cobra 0
+  // enquanto flexGiftUntil for válido; o ecrã tem de dizer o mesmo
+  const flexGifted = !!(intent as any)?.flexGiftUntil && new Date((intent as any).flexGiftUntil).getTime() > Date.now();
+  const flexPrice = flexSelected && flexConfig && !flexGifted ? flexUnit : 0;
   // M2 (auditoria set/2026): mudar para um plano mais barato abaixo do limiar
   // escondia o bloco do Flex mas deixava os 250 € presos no total — e o
   // servidor cobrava-os. Abaixo do limiar, o Flex sai sozinho.
@@ -1228,7 +1231,11 @@ export default function CheckoutPage() {
             </button>
             <span className="truncate">{t("checkout.flex.title", "Flex — guaranteed rebooking")}</span>
           </span>
-          <span className="text-pa-dark tabular-nums shrink-0">{formatQuotedEur(flexUnit, lang)}</span>
+          {flexGifted ? (
+            <span className="tabular-nums shrink-0"><s className="text-pa-stone-aa">{formatQuotedEur(flexUnit, lang)}</s> <span className="text-pa-gold">{t("checkout.flex.gifted", "Offered")}</span></span>
+          ) : (
+            <span className="text-pa-dark tabular-nums shrink-0">{formatQuotedEur(flexUnit, lang)}</span>
+          )}
         </div>
       )}
       <div className="flex justify-between items-baseline border-t border-pa-sand pt-2.5">
@@ -1785,6 +1792,7 @@ export default function CheckoutPage() {
               {flexConfig && effective && (
                 <FlexBlock
                   config={{ ...flexConfig, price: flexUnit }}
+                  gifted={flexGifted}
                   selected={flexSelected}
                   stayTotal={effective.total}
                   nonRefundableSelected={nonRefundableSelected}

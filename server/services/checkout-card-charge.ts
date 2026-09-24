@@ -10,6 +10,7 @@ import { completeCheckoutIntent } from "./checkout-confirmation";
  */
 import { getBookingIntent, updateBookingIntent } from "../db";
 import { computeChargeBreakdown } from "./checkout-pricing";
+import { flexGiftActive } from "./recovery-funnel";
 import { resolveCleaningRates } from "../config/cleaning-rates";
 import {
   getPaymentIntent,
@@ -42,6 +43,9 @@ export function breakdownFromIntent(m: any, bedrooms: number | null = null) {
     reception: (m?.reception as any) ?? null,
     extras: (m?.extras as any) ?? null,
     flex: !!m?.flex,
+    // Flex oferecido pelo funil de recuperação: vale para cartão, wallets,
+    // PayPal e Klarna porque todos passam por aqui
+    flexGift: flexGiftActive(m),
     unitPriceOverrides: (() => {
       const r = resolveCleaningRates((m as any)?.listingId, bedrooms);
       return { "daily-cleaning": r.daily, "deep-cleaning": r.deep };

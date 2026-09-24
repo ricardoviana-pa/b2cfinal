@@ -74,6 +74,8 @@ export function computeChargeBreakdown(input: {
   reception?: { type: "self" | "hosted"; late?: boolean | null } | null;
   extras?: IntentExtraSelection[] | null;
   flex?: boolean | null;
+  /** Flex oferecido pelo funil de recuperação (contacto 3): conta 0 */
+  flexGift?: boolean | null;
   /** Preços por casa (limpezas): sku → EUR */
   unitPriceOverrides?: Record<string, number> | null;
 }): ChargeBreakdown {
@@ -102,7 +104,7 @@ export function computeChargeBreakdown(input: {
 
   const flexEur = input.flex ? flexPriceFor(input.totalNights) : 0;
   // Guarda-vidas: Flex só é cobrável acima do limiar
-  const flexCents = flexEur > 0 && (input.quoteTotal ?? 0) >= FLEX_CONFIG.minTotal ? flexEur * 100 : 0;
+  const flexCents = !input.flexGift && flexEur > 0 && (input.quoteTotal ?? 0) >= FLEX_CONFIG.minTotal ? flexEur * 100 : 0;
 
   const receptionCents = receptionEur * 100;
   const extrasCents = extrasEur * 100;

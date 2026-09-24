@@ -1,28 +1,43 @@
 /**
- * CHECKOUT RECOVERY — Fase 4 (docs/checkout_spec.md §12/§16)
+ * CHECKOUT RECOVERY — funil de recuperação de checkouts abandonados.
+ * Regras e tempos: ./recovery-funnel.ts · Documento: docs/checkout_recovery.md
  *
- * Two-touch abandonment sequence for booking intents that captured an email
- * but never reached paid:
- *   stage 0 → 1: reminder ~1h after the intent was created
- *   stage 1 → 2: guaranteed-price nudge ~20h in (quote dies at ~23h)
+ * Quatro contactos (1h, 20h, 72h, 7 dias), cada um com um argumento
+ * diferente; 10% de grupo de controlo sem emails; alerta ao concierge para
+ * abandonos de valor alto no passo de pagamento.
  *
- * Idempotency: `recovery_stage` on the intent is claimed with a conditional
- * UPDATE before any email goes out, so a stage is sent at most once even
- * across concurrent sweeps or server instances. If the server was down past
- * the 20h mark, the guest gets only the 20h email — never both at once.
+ * Idempotência: cada contacto é reclamado com um UPDATE condicional em
+ * `recovery_stage` ANTES de o email sair, por isso nunca se repete, mesmo com
+ * sweeps concorrentes. Se o servidor esteve em baixo, sai só o contacto mais
+ * recente em atraso, nunca dois seguidos.
  *
- * The resume link lands on /:locale/checkout/:intentId, where the existing
- * client already fires the `checkout_resume` analytics event for sessions
- * that did not create the intent (CheckoutPage.tsx).
+ * O link de retoma leva a /:locale/checkout/:intentId, onde o cliente dispara
+ * `checkout_resume` para sessões que não criaram o intent (CheckoutPage.tsx).
  */
 import { createHmac, timingSafeEqual } from "crypto";
 import { CHECKOUT_EMAIL_ORIGIN, canSendCheckoutRecovery } from "../lib/checkout-email";
 import { sanitizePropertyName } from "@shared/displayName";
-import { listRecoveryCandidates, claimRecoveryStage } from "../db";
-import { sendCheckoutRecovery } from "./transactional-email";
+import {
+  listRecoveryCandidates,
+  claimRecoveryStage,
+  hasNewsletterConsent,
+  claimConciergeAlert,
+  updateBookingIntent,
+} from "../db";
+import { sendCheckoutRecovery, sendConciergeCallAlert } from "./transactional-email";
 import { getPropertiesForSite } from "./properties-store";
 import type { BookingIntent } from "../../drizzle/schema";
 import { canRemindRecoveryStay } from './recovery-eligibility';
+import {
+  RECOVERY_TIMING,
+  CONCIERGE_ALERT_MIN_TOTAL,
+  isRecoveryHoldout,
+  nextRecoveryStage,
+  hasEnoughLeadTime,
+  calendarScarcity,
+  type RecoveryStage,
+} from "./recovery-funnel";
+import { FLEX_CONFIG, flexPriceFor } from "../config/checkout-extras";
 
 const HOUR_MS = 60 * 60 * 1000;
 
@@ -62,14 +77,22 @@ export function verifyRecoveryOptoutToken(intentId: string, token: string): bool
 export function recoveryOptoutUrl(intentId: string): string {
   return `${CHECKOUT_EMAIL_ORIGIN}/api/checkout/recovery-optout?intent=${encodeURIComponent(intentId)}&t=${recoveryOptoutToken(intentId)}`;
 }
-const STAGE_1_AFTER_MS = 1 * HOUR_MS;
-const STAGE_2_AFTER_MS = 20 * HOUR_MS;
 const SWEEP_INTERVAL_MS = 10 * 60 * 1000;
+const STAGE_TAG: Record<RecoveryStage, string> = { 1: "1h", 2: "20h", 3: "3d", 4: "7d" };
 
-function resumeUrl(intent: BookingIntent, stage: 1 | 2): string {
+function utm(stage: RecoveryStage): string {
+  return `utm_source=email&utm_medium=recovery&utm_campaign=checkout_recovery_${STAGE_TAG[stage]}`;
+}
+
+function resumeUrl(intent: BookingIntent, stage: RecoveryStage): string {
   const locale = intent.locale || "en";
-  const utm = `utm_source=email&utm_medium=recovery&utm_campaign=checkout_recovery_${stage === 1 ? "1h" : "20h"}`;
-  return `${CHECKOUT_EMAIL_ORIGIN}/${locale}/checkout/${intent.id}?${utm}`;
+  return `${CHECKOUT_EMAIL_ORIGIN}/${locale}/checkout/${intent.id}?${utm(stage)}`;
+}
+
+function propertyUrl(slug: string, intent: BookingIntent, stage: RecoveryStage): string {
+  const locale = intent.locale || "en";
+  const q = `checkin=${intent.checkIn}&checkout=${intent.checkOut}&guests=${intent.guests}&${utm(stage)}`;
+  return `${CHECKOUT_EMAIL_ORIGIN}/${locale}/homes/${slug}?${q}`;
 }
 
 
@@ -97,9 +120,161 @@ async function resolvePropertyPhoto(intent: BookingIntent): Promise<string | und
   }
 }
 
+type QuoteSnap = {
+  nightlyRate?: number; nights?: number; totalNights?: number;
+  cleaningFee?: number; taxesAndFees?: number; total?: number;
+};
+
+/** Escassez real do calendário (±21 dias à volta das datas). Fail-soft. */
+async function scarcityFor(intent: BookingIntent) {
+  try {
+    const { guestyClient } = await import("../lib/guesty");
+    const day = 24 * HOUR_MS;
+    const from = new Date(Date.parse(`${intent.checkIn}T00:00:00Z`) - 21 * day).toISOString().slice(0, 10);
+    const to = new Date(Date.parse(`${intent.checkOut}T00:00:00Z`) + 21 * day).toISOString().slice(0, 10);
+    const cal = await guestyClient.getListingCalendar(intent.listingId, from, to);
+    const days = Array.isArray(cal) ? cal : (cal?.days || []);
+    return calendarScarcity(days);
+  } catch {
+    return null;
+  }
+}
+
 /**
- * One pass over the abandoned intents. Exported for manual triggering/tests.
- * Never throws — recovery must not take the server down.
+ * Contacto 3: refaz a cotação no Guesty. Devolve a cotação nova (e grava-a no
+ * intent com nova validade e o Flex oferecido), "unavailable" se as datas já
+ * não se vendem, ou null se o Guesty não respondeu (adiar, não perder).
+ */
+async function requoteForStage3(intent: BookingIntent): Promise<
+  | { kind: "ok"; quote: QuoteSnap & { total: number }; expiresAt: Date; flexGift: { until: Date; value: number; days: number } | null }
+  | { kind: "unavailable" }
+  | null
+> {
+  try {
+    const { createBEQuote } = await import("./guesty-booking");
+    const be = await createBEQuote({
+      listingId: intent.listingId, checkIn: intent.checkIn, checkOut: intent.checkOut, guests: intent.guests,
+    });
+    const plans = be.ratePlanOptions ?? [];
+    const plan = plans.find((p) => p.ratePlanId === intent.ratePlanId)
+      ?? plans.find((p) => p.ratePlanId === be.ratePlanId)
+      ?? null;
+    const total = plan?.total ?? be.total;
+    if (!(total > 0)) return null;
+    const cleaningFee = plan?.cleaningFee ?? be.pricing.cleaningFee;
+    const taxesAndFees = plan?.taxesAndFees ?? be.pricing.taxesAndFees ?? 0;
+    const quote = {
+      nightlyRate: plan?.nightlyRate ?? be.pricing.nightlyRate,
+      totalNights: total - cleaningFee - taxesAndFees,
+      cleaningFee,
+      taxesAndFees,
+      total,
+      nights: be.nights,
+      currency: be.currency || "EUR",
+      quoteCreatedAt: Date.now(),
+      ratePlanOptions: plans.map((o) => ({
+        ratePlanId: o.ratePlanId, name: o.name, total: o.total, nightlyRate: o.nightlyRate,
+        cleaningFee: o.cleaningFee, taxesAndFees: o.taxesAndFees ?? 0, cancellationPolicy: o.cancellationPolicy,
+      })),
+    };
+    const expiresAt = new Date(Date.now() + RECOVERY_TIMING.requoteTtlMs);
+    // O Flex só existe acima do limiar (decisão de produto); abaixo, o
+    // contacto 3 vai sem incentivo em vez de oferecer algo que não se vende
+    const giftEligible = total >= FLEX_CONFIG.minTotal;
+    const flexGift = giftEligible
+      ? {
+          until: new Date(Date.now() + RECOVERY_TIMING.flexGiftMs),
+          value: flexPriceFor(quote.totalNights),
+          days: FLEX_CONFIG.rescheduleDaysBefore,
+        }
+      : null;
+    const ok = await updateBookingIntent(intent.id, {
+      quote: quote as any,
+      guestyQuoteId: be.quoteId,
+      ratePlanId: plan?.ratePlanId ?? be.ratePlanId,
+      expiresAt,
+      ...(flexGift ? { flexGiftUntil: flexGift.until, flex: true } : {}),
+    } as any);
+    if (!ok) return null;
+    return { kind: "ok", quote, expiresAt, flexGift };
+  } catch (err: any) {
+    const { describeGuestyError } = await import("./guesty");
+    const reason = describeGuestyError(err);
+    if (/not available|only available by request/i.test(reason)) return { kind: "unavailable" };
+    console.warn(`[Recovery] Requote falhou para ${intent.id}: ${reason}`);
+    return null;
+  }
+}
+
+/** Contacto 4: até 3 casas na mesma região, com lugar e livres nas datas. */
+async function alternativesFor(intent: BookingIntent, stage: RecoveryStage) {
+  try {
+    const { checkAvailability } = await import("./guesty");
+    const props = (await getPropertiesForSite()) as any[];
+    const region = String(intent.destination || "").toLowerCase();
+    const current = props.find((p) => (p.guestyId || p.listingId) === intent.listingId);
+    const refPrice = Number(current?.pricePerNight || current?.priceFrom || 0);
+    const pool = props
+      .filter((p) =>
+        p.isActive !== false && p.guestyId && p.slug &&
+        p.guestyId !== intent.listingId &&
+        String(p.destination || "").toLowerCase() === region &&
+        Number(p.maxGuests || 0) >= intent.guests)
+      .sort((a, b) =>
+        Math.abs(Number(a.pricePerNight || a.priceFrom || 0) - refPrice) -
+        Math.abs(Number(b.pricePerNight || b.priceFrom || 0) - refPrice))
+      .slice(0, 8);
+    const out: Array<{ name: string; imageUrl?: string; url: string; priceFrom?: number; locality?: string }> = [];
+    for (const p of pool) {
+      if (out.length >= 3) break;
+      try {
+        const a = await checkAvailability(p.guestyId, intent.checkIn, intent.checkOut);
+        if (!a.available) continue;
+      } catch {
+        continue;
+      }
+      out.push({
+        name: sanitizePropertyName(p.name || ""),
+        imageUrl: heroImageUrl(p.images?.[0]),
+        url: propertyUrl(p.slug, intent, stage),
+        priceFrom: Number(p.priceFrom || p.pricePerNight || 0) || undefined,
+        locality: p.locality,
+      });
+    }
+    return {
+      alternatives: out,
+      ownUrl: current?.slug ? propertyUrl(current.slug, intent, stage) : resumeUrl(intent, stage),
+    };
+  } catch {
+    return { alternatives: [], ownUrl: resumeUrl(intent, stage) };
+  }
+}
+
+/** Alerta ao concierge: abandono no pagamento de valor alto (uma vez). */
+async function maybeAlertConcierge(intent: BookingIntent, ageMs: number): Promise<void> {
+  const total = Number((intent.quote as QuoteSnap | null)?.total ?? 0);
+  if (intent.status !== "payment_pending" || total < CONCIERGE_ALERT_MIN_TOTAL) return;
+  if ((intent as any).conciergeAlerted || !intent.guestPhone) return;
+  if (ageMs < RECOVERY_TIMING.stage1AfterMs || ageMs > 48 * HOUR_MS) return;
+  if (!await claimConciergeAlert(intent.id)) return;
+  await sendConciergeCallAlert({
+    intentId: intent.id,
+    guestName: [intent.guestFirstName, intent.guestLastName].filter(Boolean).join(" "),
+    guestEmail: intent.email || "",
+    guestPhone: intent.guestPhone,
+    propertyName: sanitizePropertyName(intent.propertyName || ""),
+    checkIn: intent.checkIn,
+    checkOut: intent.checkOut,
+    guests: intent.guests,
+    total,
+    locale: intent.locale,
+    resumeUrl: `${CHECKOUT_EMAIL_ORIGIN}/${intent.locale || "en"}/checkout/${intent.id}`,
+  }).catch((e: any) => console.error(`[Recovery] Alerta concierge falhou ${intent.id}:`, e?.message));
+}
+
+/**
+ * Uma passagem pelos checkouts abandonados. Exportada para testes e disparo
+ * manual. Nunca lança: a recuperação não pode derrubar o servidor.
  */
 export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checked: number }> {
   let sent = 0;
@@ -110,17 +285,23 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
     const candidates = await listRecoveryCandidates();
     checked = candidates.length;
     for (const intent of candidates) {
-      const age = Date.now() - intent.createdAt.getTime();
+      if (!intent.email || (intent as any).recoveryOptout) continue;
+      if (!hasEnoughLeadTime(intent.checkIn)) continue;
+      const now = Date.now();
+      const ageMs = now - intent.createdAt.getTime();
       const stage = intent.recoveryStage ?? 0;
+      const quoteValid = !!intent.expiresAt && intent.expiresAt.getTime() > now;
 
-      // Decide the single email owed right now. An intent already past the
-      // 20h mark skips straight to the final nudge, whatever its stage.
-      let target: 1 | 2 | null = null;
-      if (age >= STAGE_2_AFTER_MS && stage < 2) target = 2;
-      else if (age >= STAGE_1_AFTER_MS && stage < 1) target = 1;
-      if (!target || !intent.email) continue;
-      // Belt and braces: a query já filtra, mas o opt-out nunca recebe email
-      if ((intent as any).recoveryOptout) continue;
+      // O alerta humano vale para todos (inclui o grupo de controlo): o
+      // controlo mede os emails automáticos, não a chamada do concierge.
+      await maybeAlertConcierge(intent, ageMs);
+
+      // O consentimento só importa depois de a cotação expirar (contactos 3/4)
+      const needsConsent = !quoteValid || ageMs >= RECOVERY_TIMING.stage3AfterMs;
+      const consent = needsConsent ? await hasNewsletterConsent(intent.email) : false;
+      let target = nextRecoveryStage({ stage, ageMs, quoteValid, consent });
+      if (!target) continue;
+      if (isRecoveryHoldout(intent.id)) continue;
 
       try {
         if (!await canRemindRecoveryStay(intent)) continue;
@@ -130,15 +311,30 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
         continue;
       }
 
+      // Preparação específica de cada contacto, antes do claim: se o Guesty
+      // falhar, adia-se sem perder o contacto.
+      let quote = intent.quote as QuoteSnap | null;
+      let expiresAt = intent.expiresAt;
+      let flexGift: { until: Date; value: number; days: number } | null = null;
+      if (target === 3) {
+        const rq = await requoteForStage3(intent);
+        if (!rq) continue;
+        if (rq.kind === "unavailable") {
+          target = 4; // datas perdidas: saltar para as alternativas
+        } else {
+          quote = rq.quote;
+          expiresAt = rq.expiresAt;
+          flexGift = rq.flexGift;
+        }
+      }
+      const scarcity = target === 2 ? await scarcityFor(intent) : null;
+      const alt = target === 4 ? await alternativesFor(intent, 4) : null;
+
       // Claim before sending — losing an email beats repeating one.
       const claimed = await claimRecoveryStage(intent.id, stage, target);
       if (!claimed) continue;
 
       try {
-        const quote = intent.quote as {
-          nightlyRate?: number; nights?: number; totalNights?: number;
-          cleaningFee?: number; taxesAndFees?: number; total?: number;
-        } | null;
         await sendCheckoutRecovery({
           guestEmail: intent.email,
           guestFirstName: intent.guestFirstName,
@@ -150,16 +346,19 @@ export async function runCheckoutRecoverySweep(): Promise<{ sent: number; checke
           total: quote?.total,
           quote,
           imageUrl: await resolvePropertyPhoto(intent),
-          expiresAt: intent.expiresAt,
+          expiresAt,
           resumeUrl: resumeUrl(intent, target),
           optoutUrl: recoveryOptoutUrl(intent.id),
           locale: intent.locale,
           stage: target,
+          paymentStep: intent.status === "payment_pending",
+          scarcity,
+          flexGift,
+          alternatives: alt?.alternatives,
+          propertyUrl: alt?.ownUrl,
         });
         sent++;
-        console.info(
-          `[Recovery] Sent ${target === 1 ? "1h" : "20h"} email for intent ${intent.id} (${intent.email})`,
-        );
+        console.info(`[Recovery] Contacto ${target} (${STAGE_TAG[target]}) enviado para intent ${intent.id}`);
       } catch (err: any) {
         console.error(`[Recovery] Send failed for intent ${intent.id}:`, err?.message ?? err);
       }
@@ -187,5 +386,5 @@ export function startCheckoutRecoveryScheduler(): void {
   timer.unref?.();
   // First pass shortly after boot so a restart doesn't delay overdue emails
   setTimeout(() => void runCheckoutRecoverySweep(), 30 * 1000).unref?.();
-  console.info("[Recovery] Checkout abandonment sweep scheduled every 10 min (1h and 20h emails)");
+  console.info("[Recovery] Funil de recuperação agendado a cada 10 min (contactos 1h, 20h, 3d, 7d)");
 }

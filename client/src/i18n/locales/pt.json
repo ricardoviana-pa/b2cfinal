@@ -1714,7 +1714,8 @@
       "rule6": "O Flex adquire-se apenas no checkout e não é reembolsável.",
       "honesty": "Se cancelar dentro da janela de cancelamento gratuito da sua tarifa, devolvemos o dinheiro conforme a política. O Flex nunca substitui esse direito: acrescenta proteção para lá dele.",
       "percentNote": "10% do valor das noites, pagamento único",
-      "copyNoWindow": "Os planos podem mudar. Com o Flex, o valor que paga nunca se perde: remarque até {{days}} dias antes do check-in."
+      "copyNoWindow": "Os planos podem mudar. Com o Flex, o valor que paga nunca se perde: remarque até {{days}} dias antes do check-in.",
+      "gifted": "Oferecido"
     },
     "curatedFor": "Selecionado para {{property}}",
     "todayTotal": "Total",

@@ -601,6 +601,20 @@ ${allUrls.join("\n")}
           console.warn("[Migration] booking_intents.payment_intent_id:", alterErr.message);
         }
       }
+      // Funil de recuperação (set/2026): Flex oferecido e alerta ao concierge
+      for (const [col, ddl] of [
+        ["flex_gift_until", "ALTER TABLE `booking_intents` ADD COLUMN `flex_gift_until` timestamp NULL"],
+        ["concierge_alerted", "ALTER TABLE `booking_intents` ADD COLUMN `concierge_alerted` boolean NOT NULL DEFAULT false"],
+      ] as const) {
+        try {
+          await (db as any).execute(ddl);
+          console.info(`[Migration] booking_intents.${col} column added`);
+        } catch (alterErr: any) {
+          if (!/duplicate column|exists/i.test(`${alterErr?.message || ""} ${alterErr?.cause?.message || ""}`)) {
+            console.warn(`[Migration] booking_intents.${col}:`, alterErr.message);
+          }
+        }
+      }
       console.info("[Migration] booking_intents table OK");
     }
   } catch (migErr: any) {

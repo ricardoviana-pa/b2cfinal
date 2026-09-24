@@ -1714,7 +1714,8 @@
       "rule6": "Flex on ostettavissa vain kassalla, eikä sitä hyvitetä.",
       "honesty": "Jos peruutat hintasi maksuttoman peruutusikkunan sisällä, palautamme rahasi käytännön mukaisesti. Flex ei koskaan korvaa tätä oikeutta, se lisää suojaa sen yli.",
       "percentNote": "10 % öiden kokonaishinnasta, kertamaksu",
-      "copyNoWindow": "Suunnitelmat voivat muuttua. Flexin ansiosta maksamasi summa ei koskaan mene hukkaan: siirrä varaustasi jopa {{days}} päivää ennen saapumista."
+      "copyNoWindow": "Suunnitelmat voivat muuttua. Flexin ansiosta maksamasi summa ei koskaan mene hukkaan: siirrä varaustasi jopa {{days}} päivää ennen saapumista.",
+      "gifted": "Tarjottu"
     },
     "curatedFor": "Valittu kohteelle {{property}}",
     "todayTotal": "Yhteensä",

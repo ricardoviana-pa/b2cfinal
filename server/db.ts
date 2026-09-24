@@ -892,6 +892,11 @@ export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent
   if (!db) return [];
   try {
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    // Funil de 4 contactos (recovery-funnel.ts): os contactos 3 e 4 chegam
+    // depois de a cotação expirar, por isso já não se filtra por expiresAt.
+    // Janela de 9 dias e check-in a pelo menos 2 dias.
+    const nineDaysAgo = new Date(Date.now() - 9 * 24 * 60 * 60 * 1000);
+    const minCheckIn = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
     return await db
       .select()
       .from(bookingIntents)
@@ -899,9 +904,11 @@ export async function listRecoveryCandidates(limit = 200): Promise<BookingIntent
         and(
           isNotNull(bookingIntents.email),
           inArray(bookingIntents.status, ["draft", "contact_captured", "payment_pending"]),
-          gt(bookingIntents.expiresAt, new Date()),
-          lt(bookingIntents.recoveryStage, 2),
+          lt(bookingIntents.recoveryStage, 4),
           lt(bookingIntents.createdAt, oneHourAgo),
+          gt(bookingIntents.createdAt, nineDaysAgo),
+          gt(bookingIntents.checkIn, minCheckIn),
+          sql`${bookingIntents.reservationId} IS NULL`,
           // Bloco 2: quem carregou em "Não quero receber estes lembretes"
           // sai da automação para sempre
           eq(bookingIntents.recoveryOptout, false),
@@ -944,6 +951,42 @@ export async function listUnsettledCardIntents(limit = 50): Promise<BookingInten
   } catch (error) {
     console.error("[Database] listUnsettledCardIntents failed:", error);
     return [];
+  }
+}
+
+/** Consentimento de marketing atual deste email: o captureLead mantém o
+ *  source do lead em "newsletter-*" enquanto a caixa estiver marcada e
+ *  retira-o quando é desmarcada, por isso é a fonte de verdade. */
+export async function hasNewsletterConsent(email: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db || !email) return false;
+  try {
+    const rows = await db
+      .select({ id: leads.id })
+      .from(leads)
+      .where(and(eq(leads.email, email), like(leads.source, "newsletter%")))
+      .limit(1);
+    return rows.length > 0;
+  } catch (error) {
+    console.error("[Database] hasNewsletterConsent failed:", error);
+    return false;
+  }
+}
+
+/** Claim do alerta "ligar ao hóspede": só o primeiro sweep o envia. */
+export async function claimConciergeAlert(id: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    const res: any = await db
+      .update(bookingIntents)
+      .set({ conciergeAlerted: true })
+      .where(and(eq(bookingIntents.id, id), eq(bookingIntents.conciergeAlerted, false)));
+    const affected = Array.isArray(res) ? res[0]?.affectedRows : res?.affectedRows;
+    return (affected ?? 0) > 0;
+  } catch (error) {
+    console.error("[Database] claimConciergeAlert failed:", error);
+    return false;
   }
 }
 
@@ -1004,7 +1047,9 @@ export async function claimRecoveryStage(
         eq(bookingIntents.id, id), eq(bookingIntents.recoveryStage, fromStage),
         inArray(bookingIntents.status, ['draft', 'contact_captured', 'payment_pending']),
         eq(bookingIntents.recoveryOptout, false),
-        gt(bookingIntents.expiresAt, new Date()),
+        // Os contactos 1 e 2 falam do preço garantido: só com a cotação viva.
+        // Os contactos 3 e 4 refazem a cotação ou mostram alternativas.
+        ...(toStage <= 2 ? [gt(bookingIntents.expiresAt, new Date())] : []),
         sql`${bookingIntents.reservationId} IS NULL`,
       ));
     const affected = Array.isArray(res) ? res[0]?.affectedRows : res?.affectedRows;

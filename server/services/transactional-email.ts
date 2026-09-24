@@ -6,6 +6,7 @@ import { formatQuotedMoney } from "@shared/booking-money";
 
 import { Resend } from "resend";
 import { getEmailSigner } from "@shared/concierges";
+import { FUNNEL_I18N } from "./recovery-copy";
 import { sanitizePropertyName } from "@shared/displayName";
 import { CHECKOUT_EMAIL_ORIGIN } from "../lib/checkout-email";
 import {
@@ -511,11 +512,21 @@ interface CheckoutRecoveryData {
   /** Real quote expiry — powers the "guaranteed until" line (spec: real urgency only) */
   expiresAt?: Date | null;
   resumeUrl: string;
-  /** Bloco 2: link de opt-out dos lembretes (rodapé). Sem ele o rodapé segue sem link. */
+  /** Link de opt-out dos lembretes (rodapé) */
   optoutUrl?: string | null;
   locale?: string | null;
-  /** 1 = 1h email, 2 = 20h email */
-  stage: 1 | 2;
+  /** Contacto do funil (recovery-funnel.ts): 1h, 20h, 3d, 7d */
+  stage: 1 | 2 | 3 | 4;
+  /** Contacto 1: o hóspede parou no passo de pagamento */
+  paymentStep?: boolean;
+  /** Contacto 2: escassez real do calendário (só quando é verdade) */
+  scarcity?: { unavailable: number; total: number } | null;
+  /** Contacto 3: Flex oferecido */
+  flexGift?: { until: Date; value: number; days: number } | null;
+  /** Contacto 4: casas alternativas livres nas mesmas datas */
+  alternatives?: Array<{ name: string; imageUrl?: string; url: string; priceFrom?: number; locality?: string }>;
+  /** Contacto 4: link para voltar à casa original */
+  propertyUrl?: string | null;
 }
 
 /* Brand tokens mirrored from client/src/index.css (@theme --color-pa-*) so the
@@ -607,131 +618,158 @@ function formatGuaranteeUntil(expiresAt: Date, lang: EmailLang, atWord: string):
 }
 
 export async function sendCheckoutRecovery(data: CheckoutRecoveryData): Promise<void> {
-  // Bloco 5: 9 línguas pelo locale do intent (fallback EN, como o site)
   const lang = emailLang(data.locale);
   const T = RECOVERY_I18N[lang];
+  const F = FUNNEL_I18N[lang];
   const house = data.propertyName || CONFIRMATION_I18N[lang].yourHome;
   const firstName = (data.guestFirstName || "").trim().split(" ")[0];
-
-  const subject = data.stage === 1 ? T.subject1(house) : T.subject2(house);
-
   const greeting = firstName ? T.greetingNamed(firstName) : T.greeting;
+  const pay = data.stage === 1 && !!data.paymentStep;
+  const gift = data.stage === 3 ? data.flexGift ?? null : null;
+  const alts = data.stage === 4 ? (data.alternatives ?? []) : [];
+  const until = data.expiresAt ? formatGuaranteeUntil(data.expiresAt, lang, T.atTime) : "";
+  const timeOnly = data.expiresAt
+    ? new Intl.DateTimeFormat(INTL_TAG[lang] ?? "en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Lisbon" }).format(data.expiresAt)
+    : "";
 
-  const headline = data.stage === 1 ? T.headline1 : T.headline2;
+  // ── Texto por contacto ──
+  let subject: string, preheader: string, headline: string, body: string, personal: string, cta: string, ctaUrl: string;
+  switch (data.stage) {
+    case 1:
+      subject = pay ? F.subject1Pay(house) : F.subject1(house);
+      preheader = pay ? F.preheader1Pay : F.preheader1;
+      headline = pay ? F.headline1Pay : F.headline1;
+      body = pay ? F.body1Pay(greeting, house) : F.body1(greeting, house);
+      personal = pay ? F.personal1Pay : F.personal1;
+      cta = T.cta; ctaUrl = data.resumeUrl;
+      break;
+    case 2:
+      subject = timeOnly ? F.subject2(house, timeOnly) : T.subject2(house);
+      preheader = F.preheader2;
+      headline = F.headline2;
+      body = until ? F.body2(greeting, house, until) : T.body2(greeting, house);
+      personal = T.closing;
+      cta = T.cta; ctaUrl = data.resumeUrl;
+      break;
+    case 3:
+      subject = F.subject3(house);
+      preheader = gift ? F.preheader3Gift : F.preheader3;
+      headline = F.headline3;
+      body = F.body3(greeting, house);
+      personal = T.closing;
+      cta = gift ? F.cta3Gift : F.cta3; ctaUrl = data.resumeUrl;
+      break;
+    default:
+      subject = alts.length ? F.subject4(house) : F.subject4None(house);
+      preheader = F.preheader4;
+      headline = F.headline4;
+      body = alts.length ? F.body4(greeting, house) : F.body4None(greeting, house);
+      personal = F.lastNote;
+      cta = F.ownLink(house); ctaUrl = data.propertyUrl || data.resumeUrl;
+  }
 
-  const body = data.stage === 1 ? T.body1(greeting, house) : T.body2(greeting, house);
-
-  const cta = T.cta;
-  const closing = T.closing;
-
-  const nightsLabel = T.nightsLabel;
-  const guestsLabel = T.guestsLabel;
-  const cleaningLabel = "Service fee"; // rótulo do site (decisão 12 jul)
-  const taxesLabel = T.taxesLabel;
-  const totalLabel = "Total";
-
-  // Price lines exactly like the checkout summary (CheckoutPage summaryLines)
+  // ── Cartão da estadia (contactos 1 a 3) ──
   const q = data.quote || {};
-  const line = (label: string, value: string) => `
+  const line = (label: string, value: string, strong = false) => `
       <tr>
-        <td style="padding:5px 0;font-family:${SANS};font-size:13px;color:${PA.earth};">${label}</td>
-        <td style="padding:5px 0;font-family:${SANS};font-size:13px;color:${PA.dark};text-align:right;">${value}</td>
+        <td style="padding:5px 0;font-family:${SANS};font-size:13px;color:${strong ? PA.gold : PA.earth};">${label}</td>
+        <td style="padding:5px 0;font-family:${SANS};font-size:13px;color:${strong ? PA.gold : PA.dark};text-align:right;">${value}</td>
       </tr>`;
   let priceLines = "";
-  if (q.nights && q.totalNights != null) {
-    priceLines += line(`${q.nights} ${nightsLabel}`, eur(q.totalNights, lang));
-  }
-  if (q.cleaningFee && q.cleaningFee > 0) priceLines += line(cleaningLabel, eur(q.cleaningFee, lang));
-  if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(taxesLabel, eur(q.taxesAndFees, lang));
-
+  if (q.nights && q.totalNights != null) priceLines += line(`${q.nights} ${T.nightsLabel}`, eur(q.totalNights, lang));
+  if (q.cleaningFee && q.cleaningFee > 0) priceLines += line("Service fee", eur(q.cleaningFee, lang));
+  if (q.taxesAndFees && q.taxesAndFees > 0) priceLines += line(T.taxesLabel, eur(q.taxesAndFees, lang));
+  if (gift) priceLines += line(F.flexIncluded, `<s style="color:${PA.stoneAA};">${eur(gift.value, lang)}</s> &nbsp;${eur(0, lang)}`, true);
   const total = q.total ?? data.total;
-  const destination = data.destination
-    ? data.destination.charAt(0).toUpperCase() + data.destination.slice(1)
-    : "";
-
-  const guaranteeUntil = data.expiresAt ? formatGuaranteeUntil(data.expiresAt, lang, T.atTime) : "";
-  const guaranteeLine = guaranteeUntil
-    ? `<tr><td style="padding:14px 24px 0 24px;">
-        <p style="font-family:${SANS};font-size:11.5px;color:${PA.gold};line-height:1.5;margin:0;">
-          ${T.guaranteedUntil} ${guaranteeUntil}
-        </p>
-      </td></tr>`
-    : "";
-
+  const destination = data.destination ? data.destination.charAt(0).toUpperCase() + data.destination.slice(1) : "";
   const photo = data.imageUrl
-    ? `<tr><td style="border-radius:12px 12px 0 0;overflow:hidden;">
-        <img src="${data.imageUrl}" alt="${house}" width="600" style="display:block;width:100%;height:auto;border-radius:12px 12px 0 0;" />
-      </td></tr>`
+    ? `<tr><td style="border-radius:12px 12px 0 0;overflow:hidden;"><img src="${data.imageUrl}" alt="${house}" width="600" style="display:block;width:100%;height:auto;border-radius:12px 12px 0 0;" /></td></tr>`
     : "";
-
-  const preheader = data.stage === 1 ? T.preheader1 : T.preheader2;
-  const html = `<!DOCTYPE html>
-<html lang="${lang}">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:${PA.warm};font-family:${SANS};">
-<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${preheader}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PA.warm};">
-
-<!-- Top bar: brand-dark band with the white logo (the logoColor asset is
-     imagem full-width com o logo real: fundo cozido borda a borda -->
-<tr><td align="center" style="padding:0;">
-  <img src="${BRAND_BAND_URL}" alt="Portugal Active" width="600" style="display:block;margin:0 auto;width:100%;max-width:600px;height:auto;" />
-</td></tr>
-
-<tr><td align="center" style="padding:36px 20px 44px 20px;">
-<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
-
-<!-- Headline -->
-<tr><td style="padding:0 0 12px 0;">
-  <h1 style="font-family:${SERIF};font-size:30px;line-height:1.2;color:${PA.dark};margin:0;font-weight:400;">${headline}</h1>
-</td></tr>
-<tr><td style="padding:0 0 24px 0;">
-  <p style="font-family:${SANS};font-size:15px;color:${PA.earth};line-height:1.65;margin:0;">${body}</p>
-</td></tr>
-
-<!-- Summary card: photo + stay + breakdown, mirroring the checkout's lateral summary -->
+  const stayCard = data.stage === 4 ? "" : `
 <tr><td style="padding:0 0 24px 0;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid ${PA.sand};border-radius:12px;">
   ${photo}
   <tr><td style="padding:22px 24px 4px 24px;">
     <p style="font-family:${SERIF};font-size:21px;line-height:1.3;color:${PA.dark};margin:0;">${house}</p>
     ${destination ? `<p style="font-family:${SANS};font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:${PA.stoneAA};margin:5px 0 0 0;">${destination}</p>` : ""}
-    <p style="font-family:${SANS};font-size:13px;color:${PA.earth};margin:10px 0 0 0;">
-      ${formatStayDate(data.checkIn, lang)} &rarr; ${formatStayDate(data.checkOut, lang)} &nbsp;&middot;&nbsp; ${data.guests} ${guestsLabel}
-    </p>
+    <p style="font-family:${SANS};font-size:13px;color:${PA.earth};margin:10px 0 0 0;">${formatStayDate(data.checkIn, lang)} &rarr; ${formatStayDate(data.checkOut, lang)} &nbsp;&middot;&nbsp; ${data.guests} ${T.guestsLabel}</p>
   </td></tr>
-  ${priceLines ? `<tr><td style="padding:14px 24px 0 24px;">
-    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">
-      ${priceLines}
-    </table>
-  </td></tr>` : ""}
-  ${total ? `<tr><td style="padding:10px 24px 0 24px;">
-    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-top:1px solid ${PA.sand};">
-      <tr>
-        <td style="padding:12px 0 0 0;font-family:${SANS};font-size:14px;font-weight:500;color:${PA.dark};">${totalLabel}</td>
-        <td style="padding:12px 0 0 0;font-family:${SANS};font-size:21px;color:${PA.dark};text-align:right;">${eur(total, lang)}</td>
-      </tr>
-    </table>
-  </td></tr>` : ""}
-  ${guaranteeLine}
+  ${priceLines ? `<tr><td style="padding:14px 24px 0 24px;"><table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">${priceLines}</table></td></tr>` : ""}
+  ${total ? `<tr><td style="padding:10px 24px 0 24px;"><table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-top:1px solid ${PA.sand};"><tr>
+    <td style="padding:12px 0 0 0;font-family:${SANS};font-size:14px;font-weight:500;color:${PA.dark};">Total</td>
+    <td style="padding:12px 0 0 0;font-family:${SANS};font-size:21px;color:${PA.dark};text-align:right;">${eur(total, lang)}</td>
+  </tr></table></td></tr>` : ""}
+  ${until ? `<tr><td style="padding:14px 24px 0 24px;"><p style="font-family:${SANS};font-size:11.5px;color:${PA.gold};line-height:1.5;margin:0;">${T.guaranteedUntil} ${until}</p></td></tr>` : ""}
   <tr><td style="padding:0 0 20px 0;"></td></tr>
 </table>
-</td></tr>
+</td></tr>`;
 
-<!-- Resume CTA: full-width black button like the checkout's continue bar -->
+  // ── Blocos específicos ──
+  const scarcityBlock = data.stage === 2 && data.scarcity ? `
 <tr><td style="padding:0 0 24px 0;">
-  <a href="${data.resumeUrl}" target="_blank" style="display:block;background:${PA.dark};color:#ffffff;font-family:${SANS};font-size:13px;font-weight:600;text-decoration:none;text-align:center;padding:15px 24px;letter-spacing:0.1em;text-transform:uppercase;border-radius:8px;">${cta}</a>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:2px solid ${PA.gold};"><tr><td style="padding:4px 0 4px 16px;">
+    <p style="font-family:${SERIF};font-size:19px;line-height:1.4;color:${PA.dark};margin:0;">${F.scarcity(data.scarcity.unavailable, data.scarcity.total)}</p>
+  </td></tr></table>
+</td></tr>` : "";
+
+  const giftBlock = gift ? `
+<tr><td style="padding:0 0 24px 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid ${PA.gold};border-radius:12px;"><tr><td style="padding:22px 24px;">
+    <p style="font-family:${SANS};font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;color:${PA.gold};margin:0 0 8px 0;">Flex</p>
+    <p style="font-family:${SERIF};font-size:24px;line-height:1.25;color:${PA.dark};margin:0 0 10px 0;">${F.giftTitle}</p>
+    <p style="font-family:${SANS};font-size:14px;line-height:1.65;color:${PA.earth};margin:0;">${F.giftBody(formatGuaranteeUntil(gift.until, lang, T.atTime), gift.days, eur(gift.value, lang))}</p>
+  </td></tr></table>
+</td></tr>` : "";
+
+  const altBlock = alts.length ? alts.map((a) => `
+<tr><td style="padding:0 0 18px 0;">
+  <a href="${a.url}" target="_blank" style="text-decoration:none;display:block;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid ${PA.sand};border-radius:12px;">
+    ${a.imageUrl ? `<tr><td><img src="${a.imageUrl}" alt="${a.name}" width="600" style="display:block;width:100%;height:auto;border-radius:12px 12px 0 0;" /></td></tr>` : ""}
+    <tr><td style="padding:18px 22px 20px 22px;">
+      <p style="font-family:${SERIF};font-size:20px;line-height:1.3;color:${PA.dark};margin:0;">${a.name}</p>
+      ${a.locality ? `<p style="font-family:${SANS};font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:${PA.stoneAA};margin:5px 0 0 0;">${a.locality}</p>` : ""}
+      <p style="font-family:${SANS};font-size:13px;color:${PA.earth};margin:10px 0 0 0;">${formatStayDate(data.checkIn, lang)} &rarr; ${formatStayDate(data.checkOut, lang)}${a.priceFrom ? ` &nbsp;&middot;&nbsp; ${F.altFrom(eur(a.priceFrom, lang))}` : ""}</p>
+    </td></tr>
+  </table>
+  </a>
+</td></tr>`).join("") : "";
+
+  const optout = data.optoutUrl
+    ? `<tr><td style="padding:0 20px 30px;text-align:center;"><a href="${data.optoutUrl}" style="font-family:${SANS};font-size:11px;color:${PA.stoneAA};text-decoration:underline;">${T.optout}</a></td></tr>`
+    : "";
+
+  const html = `<!DOCTYPE html>
+<html lang="${lang}">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:${PA.warm};font-family:${SANS};">
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${preheader}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PA.warm};">
+<tr><td align="center" style="padding:0;">
+  <img src="${BRAND_BAND_URL}" alt="Portugal Active" width="600" style="display:block;margin:0 auto;width:100%;max-width:600px;height:auto;" />
+</td></tr>
+<tr><td align="center" style="padding:36px 20px 44px 20px;">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+<tr><td style="padding:0 0 12px 0;">
+  <h1 style="font-family:${SERIF};font-size:30px;line-height:1.2;color:${PA.dark};margin:0;font-weight:400;">${headline}</h1>
+</td></tr>
+<tr><td style="padding:0 0 24px 0;">
+  <p style="font-family:${SANS};font-size:15px;color:${PA.earth};line-height:1.65;margin:0;">${body}</p>
+</td></tr>
+${scarcityBlock}
+${giftBlock}
+${stayCard}
+${altBlock}
+<tr><td style="padding:0 0 24px 0;">
+  <a href="${ctaUrl}" target="_blank" style="display:block;background:${PA.dark};color:#ffffff;font-family:${SANS};font-size:13px;font-weight:600;text-decoration:none;text-align:center;padding:15px 24px;letter-spacing:0.1em;text-transform:uppercase;border-radius:8px;">${cta}</a>
   <p style="text-align:center;margin:14px 0 0;"><a href="https://wa.me/351927161771?text=${encodeURIComponent(T.whatsappMsg(String(data.propertyName ?? house)))}" style="font-family:${SANS};font-size:13px;color:${PA.gold};text-decoration:underline;">${T.whatsappLine}</a></p>
 </td></tr>
-
 <tr><td style="padding:0 0 8px 0;">
-  <p style="font-family:${SANS};font-size:13.5px;color:${PA.earth};line-height:1.6;margin:0;">${closing}</p>
+  <p style="font-family:${SANS};font-size:13.5px;color:${PA.earth};line-height:1.6;margin:0;">${personal}</p>
   ${conciergeSignature(lang, data.destination)}
 </td></tr>
-
-<!-- Footer -->
 ${brandFooter(lang === "pt")}
-
+${optout}
 </table>
 </td></tr>
 </table>
@@ -739,6 +777,31 @@ ${brandFooter(lang === "pt")}
 </html>`;
 
   await sendEmail(data.guestEmail, subject, html);
+}
+
+/** Alerta interno: abandono no pagamento de valor alto — ligar ao hóspede. */
+export async function sendConciergeCallAlert(d: {
+  intentId: string; guestName: string; guestEmail: string; guestPhone: string;
+  propertyName: string; checkIn: string; checkOut: string; guests: number;
+  total: number; locale?: string | null; resumeUrl: string;
+}): Promise<void> {
+  const wa = `https://wa.me/${d.guestPhone.replace(/[^0-9]/g, "")}`;
+  const html = wrapTemplate(`
+<tr><td style="padding:0 0 16px 0;">
+  <h1 style="font-family:Georgia,serif;font-size:22px;color:#1A1A18;margin:0;font-weight:400;">Ligar ao hóspede: reserva de ${Math.round(d.total).toLocaleString("pt-PT")} EUR parada no pagamento</h1>
+</td></tr>
+<tr><td style="padding:0 0 12px 0;"><p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.6;margin:0;">
+  <strong>${d.guestName || "Hóspede"}</strong> chegou ao pagamento de <strong>${d.propertyName}</strong> (${d.checkIn} a ${d.checkOut}, ${d.guests} hóspedes) e não concluiu há mais de uma hora.
+</p></td></tr>
+<tr><td style="padding:0 0 12px 0;"><p style="font-family:Arial,sans-serif;font-size:14px;color:#1A1A18;line-height:1.8;margin:0;">
+  Telefone: <a href="tel:${d.guestPhone}">${d.guestPhone}</a> · <a href="${wa}">WhatsApp</a><br>
+  Email: <a href="mailto:${d.guestEmail}">${d.guestEmail}</a> · Língua: ${d.locale || "en"}<br>
+  Checkout do hóspede: <a href="${d.resumeUrl}">abrir</a>
+</p></td></tr>
+<tr><td style="padding:0 0 10px 0;"><p style="font-family:Arial,sans-serif;font-size:13px;color:#6B6860;line-height:1.6;margin:0;">
+  Contactar nas próximas 2 horas. O hóspede já recebeu o email automático "Ficou algo por resolver?". Um alerta por checkout.
+</p></td></tr>`);
+  await sendEmail(BOOKING_ALERT_EMAIL, `[CS] Ligar: ${d.propertyName} · ${Math.round(d.total)} EUR parado no pagamento`, html);
 }
 
 /* ================================================================
@@ -897,6 +960,9 @@ export async function sendCheckoutGuestConfirmation(d: {
     }
     const flexAmt = d.canonical ? d.canonical.flexCents / 100 : d.flex && d.flexPrice ? d.flexPrice : 0;
     if (flexAmt > 0) priceLines += line(C.flexLine, eur(flexAmt, lang));
+    // Flex oferecido pelo funil de recuperação: o hóspede tem de o ver na
+    // confirmação (é o que o fez reservar), a 0
+    else if (d.flex) priceLines += line(C.flexLine, `${FUNNEL_I18N[lang].flexIncluded}, ${eur(0, lang)}`);
     // Compras: a conta do supermercado é à parte, ao custo — dizê-lo também aqui
     if (hasNeedsConfirmation) {
       priceLines += `<tr><td colspan="2" style="padding:2px 0 6px;font-family:${SANS};font-size:11.5px;color:${PA.stoneAA};">${C.refund24hNote}</td></tr>`;

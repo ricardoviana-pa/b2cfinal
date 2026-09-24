@@ -466,6 +466,13 @@ export const bookingIntents = mysqlTable("booking_intents", {
   /** Opt-out dos lembretes de recuperação (link no rodapé dos emails).
    *  Uma vez true, o scheduler nunca mais toca neste intent. */
   recoveryOptout: boolean("recovery_optout").default(false).notNull(),
+  /** Funil de recuperação, contacto 3: Flex oferecido até esta data. O preço
+   *  do Flex conta 0 em TODAS as cobranças enquanto for válido. Só o
+   *  servidor escreve este campo (nunca vem do browser). */
+  flexGiftUntil: timestamp("flex_gift_until"),
+  /** Alerta "ligar ao hóspede" enviado ao concierge (abandono no pagamento
+   *  de valor alto). Claim condicional: um alerta por intent. */
+  conciergeAlerted: boolean("concierge_alerted").default(false).notNull(),
   /** 2b: PI pendente/capturado — o retry retoma este em vez de criar novo */
   paymentIntentId: varchar("payment_intent_id", { length: 64 }),
   status: mysqlEnum("status", [

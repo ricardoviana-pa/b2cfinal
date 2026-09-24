@@ -2,9 +2,16 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mock = vi.hoisted(() => ({
   candidates: vi.fn(), claim: vi.fn(), send: vi.fn(), properties: vi.fn(), eligible: vi.fn(),
+  consent: vi.fn(), claimAlert: vi.fn(), alert: vi.fn(), update: vi.fn(), beQuote: vi.fn(), avail: vi.fn(),
 }));
-vi.mock("../db", () => ({ listRecoveryCandidates: mock.candidates, claimRecoveryStage: mock.claim }));
-vi.mock("./transactional-email", () => ({ sendCheckoutRecovery: mock.send }));
+vi.mock("../db", () => ({
+  listRecoveryCandidates: mock.candidates, claimRecoveryStage: mock.claim,
+  hasNewsletterConsent: mock.consent, claimConciergeAlert: mock.claimAlert, updateBookingIntent: mock.update,
+}));
+vi.mock("./transactional-email", () => ({ sendCheckoutRecovery: mock.send, sendConciergeCallAlert: mock.alert }));
+vi.mock("./guesty-booking", () => ({ createBEQuote: mock.beQuote }));
+vi.mock("./guesty", () => ({ checkAvailability: mock.avail, describeGuestyError: (e: any) => String(e?.message ?? e) }));
+vi.mock("../lib/guesty", () => ({ guestyClient: { getListingCalendar: vi.fn().mockResolvedValue([]) } }));
 vi.mock("./properties-store", () => ({ getPropertiesForSite: mock.properties }));
 vi.mock('./recovery-eligibility', () => ({ canRemindRecoveryStay: mock.eligible }));
 import { recoveryOptoutUrl, runCheckoutRecoverySweep, startCheckoutRecoveryScheduler } from "./checkout-recovery";
@@ -19,14 +26,25 @@ beforeEach(() => {
   mock.send.mockResolvedValue(undefined);
   mock.properties.mockResolvedValue([]);
   mock.eligible.mockResolvedValue(true);
+  mock.consent.mockResolvedValue(false);
+  mock.claimAlert.mockResolvedValue(true);
+  mock.alert.mockResolvedValue(undefined);
+  mock.update.mockResolvedValue(true);
+  mock.avail.mockResolvedValue({ available: true });
 });
 afterEach(() => { vi.unstubAllEnvs(); vi.useRealTimers(); });
-const intent = (hours: number) => ({
+const futureCheckIn = new Date(Date.now() + 40 * 86_400_000).toISOString().slice(0, 10);
+const futureCheckOut = new Date(Date.now() + 45 * 86_400_000).toISOString().slice(0, 10);
+const intent = (hours: number, over: Record<string, unknown> = {}) => ({
   id: "12345678-1234-1234-1234-123456789abc", locale: "pt",
-  email: "guest@example.test", recoveryStage: 0,
+  email: "guest@example.test", recoveryStage: 0, status: "contact_captured",
+  listingId: "listing-1", destination: "minho", guests: 2,
+  checkIn: futureCheckIn, checkOut: futureCheckOut,
   createdAt: new Date(Date.now() - hours * 3_600_000),
   expiresAt: new Date(Date.now() + 3_600_000), quote: { total: 100 },
+  ...over,
 });
+const HOLDOUT_ID = "b1f0cbcd-6881-4459-ae49-edf3b0c3cd19";
 
 describe("recovery email environment regression", () => {
   it("DEV cannot read or claim shared intents or send emails", async () => {
@@ -74,5 +92,68 @@ describe("recovery email environment regression", () => {
     expect(await runCheckoutRecoverySweep()).toEqual({ sent: 0, checked: 1 });
     expect(mock.claim).not.toHaveBeenCalled();
     expect(mock.send).not.toHaveBeenCalled();
+  });
+});
+
+describe("funil de 4 contactos", () => {
+  it("grupo de controlo: nunca recebe email nem é reclamado", async () => {
+    mock.candidates.mockResolvedValue([intent(2, { id: HOLDOUT_ID })]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 0, checked: 1 });
+    expect(mock.claim).not.toHaveBeenCalled();
+    expect(mock.send).not.toHaveBeenCalled();
+  });
+  it("contacto 1 parado no pagamento leva a variante de pagamento", async () => {
+    mock.candidates.mockResolvedValue([intent(2, { status: "payment_pending" })]);
+    await runCheckoutRecoverySweep();
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 1, paymentStep: true }));
+  });
+  it("sem consentimento, depois de a cotação expirar não há mais contactos", async () => {
+    mock.candidates.mockResolvedValue([intent(80, { recoveryStage: 2, expiresAt: new Date(Date.now() - 3_600_000) })]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 0, checked: 1 });
+    expect(mock.send).not.toHaveBeenCalled();
+  });
+  it("contacto 3 refaz a cotação, grava o Flex oferecido e envia", async () => {
+    mock.consent.mockResolvedValue(true);
+    mock.beQuote.mockResolvedValue({
+      quoteId: "q-new", total: 2280, currency: "EUR", nights: 5, ratePlanId: "rp1",
+      pricing: { nightlyRate: 420, totalNights: 2100, cleaningFee: 180, taxesAndFees: 0 },
+      ratePlanOptions: [{ ratePlanId: "rp1", name: "Flexible", total: 2280, nightlyRate: 420, cleaningFee: 180, taxesAndFees: 0 }],
+    });
+    mock.candidates.mockResolvedValue([intent(80, { recoveryStage: 2, expiresAt: new Date(Date.now() - 3_600_000) })]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 1, checked: 1 });
+    expect(mock.update).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({ guestyQuoteId: "q-new", flex: true, flexGiftUntil: expect.any(Date) }));
+    expect(mock.claim).toHaveBeenCalledWith(expect.any(String), 2, 3);
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 3, flexGift: expect.objectContaining({ days: expect.any(Number) }) }));
+  });
+  it("contacto 3 com datas perdidas salta para as alternativas", async () => {
+    mock.consent.mockResolvedValue(true);
+    mock.beQuote.mockRejectedValue(new Error("This property is not available for the selected dates."));
+    mock.candidates.mockResolvedValue([intent(80, { recoveryStage: 2, expiresAt: new Date(Date.now() - 3_600_000) })]);
+    await runCheckoutRecoverySweep();
+    expect(mock.claim).toHaveBeenCalledWith(expect.any(String), 2, 4);
+    expect(mock.send).toHaveBeenCalledWith(expect.objectContaining({ stage: 4 }));
+  });
+  it("Guesty em baixo no contacto 3: adia sem reclamar", async () => {
+    mock.consent.mockResolvedValue(true);
+    mock.beQuote.mockRejectedValue(new Error("be_quote_timeout"));
+    mock.candidates.mockResolvedValue([intent(80, { recoveryStage: 2, expiresAt: new Date(Date.now() - 3_600_000) })]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 0, checked: 1 });
+    expect(mock.claim).not.toHaveBeenCalled();
+  });
+  it("check-in a menos de 2 dias: sem contactos", async () => {
+    const soon = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10);
+    mock.candidates.mockResolvedValue([intent(2, { checkIn: soon })]);
+    expect(await runCheckoutRecoverySweep()).toEqual({ sent: 0, checked: 1 });
+  });
+  it("abandono de valor alto no pagamento alerta o concierge uma vez", async () => {
+    mock.candidates.mockResolvedValue([intent(2, { status: "payment_pending", guestPhone: "+351900000000", quote: { total: 4200 } })]);
+    await runCheckoutRecoverySweep();
+    expect(mock.claimAlert).toHaveBeenCalledOnce();
+    expect(mock.alert).toHaveBeenCalledWith(expect.objectContaining({ total: 4200 }));
+  });
+  it("valor baixo não alerta o concierge", async () => {
+    mock.candidates.mockResolvedValue([intent(2, { status: "payment_pending", guestPhone: "+351900000000", quote: { total: 900 } })]);
+    await runCheckoutRecoverySweep();
+    expect(mock.alert).not.toHaveBeenCalled();
   });
 });
