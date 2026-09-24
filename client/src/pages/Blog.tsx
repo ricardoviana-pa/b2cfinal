@@ -5,6 +5,7 @@
 
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { blogAuthorName, blogCategoryLabel } from '@/lib/blogLabels';
 import { useBlogOverrides, mergeBlogOverride } from '@/lib/localizeBlog';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { cdnResize, cdnSrcSet } from '@/lib/images';
@@ -175,7 +176,7 @@ export default function Blog() {
                   )}
                 </div>
                 <div className="flex flex-col justify-center">
-                  <p className="text-[11px] font-medium text-[#8B7355] mb-3 tracking-[0.08em]">{featured.category.replace('-', ' ').toUpperCase()}</p>
+                  <p className="text-[11px] font-medium text-[#8B7355] mb-3 tracking-[0.08em]">{blogCategoryLabel(featured.category, t).toUpperCase()}</p>
                   <h2 className="font-display text-[2rem] lg:text-[2.5rem] text-[#1A1A18] leading-tight mb-4 group-hover:text-[#8B7355] transition-colors">
                     {featured.title}
                   </h2>
@@ -231,17 +232,19 @@ export default function Blog() {
                       </div>
                     )}
                   </div>
-                  <p className="text-[10px] font-medium text-[#8B7355] mb-2 tracking-[0.08em]">{article.category.replace('-', ' ').toUpperCase()}</p>
+                  <p className="text-[10px] font-medium text-[#8B7355] mb-2 tracking-[0.08em]">{blogCategoryLabel(article.category, t).toUpperCase()}</p>
                   <h3 className="font-display text-[18px] text-[#1A1A18] mb-2 group-hover:text-[#8B7355] transition-colors line-clamp-2">
                     {article.title}
                   </h3>
                   <p className="text-[13px] text-[#6B6860] font-light line-clamp-2 mb-3">{article.excerpt}</p>
-                  <div className="flex items-center gap-3 text-[11px] text-[#726D63]">
-                    <span>{new Date(article.publishDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                    <span>·</span>
-                    <span>{article.readTime} {t("blog.minRead")}</span>
-                    {article.author?.name && (<><span>·</span><span>{article.author.name}</span></>)}
-                  </div>
+                  {/* One run of text that wraps between items, never inside
+                      one ("30 de mar. de" / "2026" on two lines). */}
+                  <p className="text-[11px] leading-relaxed text-[#726D63]">
+                    <span className="whitespace-nowrap">{new Date(article.publishDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    <span aria-hidden="true"> · </span>
+                    <span className="whitespace-nowrap">{article.readTime} {t("blog.minRead")}</span>
+                    {article.author?.name && (<><span aria-hidden="true"> · </span><span className="whitespace-nowrap">{blogAuthorName(article.author, t)}</span></>)}
+                  </p>
                 </Link>
               ))}
             </div>
