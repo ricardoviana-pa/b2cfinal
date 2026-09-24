@@ -27,6 +27,15 @@ const inFlightBEQuotes = new Map<string, Promise<BEQuoteResult>>();
 /** Cooldown after a 429 on the quotes endpoint — set from Guesty's retryAfterMs. */
 let beQuoteCooldownUntil = 0;
 
+/** Drop every cached anonymous quote with this id. A coupon changes the quote on Guesty's side, and the
+ *  cache shares one quoteId across visitors for 8 minutes: a later visitor would otherwise get a quote
+ *  that already carries someone else's code, and the payment check would refuse the mismatch. */
+export function forgetCachedBEQuote(quoteId: string): void {
+  for (const [key, entry] of beQuoteCache) {
+    if (entry.value?.quoteId === quoteId) beQuoteCache.delete(key);
+  }
+}
+
 function getBEQuoteCacheKey(input: { listingId: string; checkIn: string; checkOut: string; guests: number }): string {
   return `${input.listingId}:${input.checkIn}:${input.checkOut}:${input.guests}`;
 }
@@ -531,6 +540,7 @@ export async function applyCouponToBEQuote(input: {
     if (status === 400 || status === 422 || /coupon/i.test(details)) throw new Error("INVALID_COUPON");
     throw new Error(parseBEError(details) || "Unable to apply the promo code.");
   }
+  forgetCachedBEQuote(input.quoteId);
   // A valid code is accepted by Guesty, but the POST response does not carry the quote's rate plans
   // in the shape parseBEQuote expects: that raised "No rate plan available for this property" for every
   // real code (production, 23 Sep 2026). Always read the updated quote back with the same GET the
@@ -547,11 +557,26 @@ export async function applyCouponToBEQuote(input: {
   }
   const parsed = parseBEQuote(quote, input.listingId, input.checkIn, input.checkOut);
   // The applied codes come from the same quote the charge reads (trusted-checkout-quote.ts).
-  const coupons: BECouponInfo[] = (Array.isArray(quote?.coupons) ? quote.coupons : [])
+  // Guesty lists a coupon by its internal display name (e.g. "PA2027 outras datas verao 2027"), not by
+  // the code the guest typed. Showing that name leaked internal labels, and re-applying it on a date
+  // change failed the coupon regex and silently dropped the code (production, 23 Sep 2026). Report the
+  // code the guest typed whenever the coupon on the quote is the one requested.
+  const requested = input.coupons.map((code) => code.toUpperCase());
+  const rawCoupons: any[] = Array.isArray(quote?.coupons) ? quote.coupons : [];
+  const codeOf = (c: any): string => {
+    if (c?.code) return String(c.code);
+    const name = String(c?.name ?? "").trim();
+    const upper = name.toUpperCase();
+    const hit = requested.find((r) => upper === r || upper.startsWith(`${r} `) || upper.startsWith(`${r}-`));
+    if (hit) return hit;
+    if (requested.length === 1 && rawCoupons.length === 1) return requested[0];
+    return name;
+  };
+  const coupons: BECouponInfo[] = rawCoupons
     .map((c: any) => ({
-      code: String(c.code ?? c.name ?? ""),
-      type: c.type ? String(c.type) : undefined,
-      adjustment: typeof c.adjustment === "number" ? c.adjustment : undefined,
+      code: codeOf(c),
+      type: c?.type ? String(c.type) : undefined,
+      adjustment: typeof c?.adjustment === "number" ? c.adjustment : undefined,
     }))
     .filter((c: BECouponInfo) => c.code);
   const missing = input.coupons.filter((code) => !coupons.some((c) => c.code.toUpperCase() === code.toUpperCase()));
