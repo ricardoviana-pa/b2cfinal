@@ -1,5 +1,6 @@
 import { buildDestinationGraph } from '../../shared/destinationSchema';
 import { blogLanguages, blogLanguageRedirect } from '../../shared/blogPublication';
+import { articlePhotos, stripPhotoLines } from '../../shared/articlePhotos';
 import { corporateSchema } from '../../shared/corporateSchema';
 import { deepMerge } from '../../client/src/lib/deepMerge';
 import { vacationRentalSchema } from '../../shared/vacationRentalSchema';
@@ -997,7 +998,11 @@ function buildBlogGraph(post: any, lang: string): Record<string, unknown> {
     ...((post.excerpt || post.seoDescription) && {
       description: String(post.excerpt || post.seoDescription).slice(0, 250),
     }),
-    ...((post.coverImage || post.featuredImage) && { image: [new URL(post.coverImage || post.featuredImage, BOT_BASE_URL).href] }),
+    ...((post.coverImage || post.featuredImage) && {
+      // Cover first, then the real home photos in the body (Google Images).
+      image: [...new Set([post.coverImage || post.featuredImage, ...articlePhotos(post.content).map((p) => p.src)]
+        .map((src) => new URL(src, BOT_BASE_URL).href))],
+    }),
     inLanguage: lang,
     ...(published && { datePublished: published }),
     ...(modified && { dateModified: modified }),
@@ -1135,7 +1140,7 @@ function buildBlogSeoBody(post: any, lang: string): string {
   const excerpt = post.excerpt ? `<p>${escText(String(post.excerpt))}</p>` : '';
   let body = '';
   if (typeof post.content === 'string' && post.content) {
-    const plain = post.content.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    const plain = stripPhotoLines(post.content).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
     body = renderParagraphs(plain, 4000);
   }
   return `<article>${breadcrumb}<h1>${escText(title)}</h1>${img}${excerpt}${body}</article>`;

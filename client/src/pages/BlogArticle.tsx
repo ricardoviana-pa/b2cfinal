@@ -6,6 +6,7 @@ import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { getDisplayName } from '@shared/displayName';
 import { useParams, Link } from 'wouter';
 import ArticleBody from '@/components/blog/ArticleBody';
+import { stripPhotoLines } from '@shared/articlePhotos';
 import { blogLanguageRedirect, isBlogLanguagePublished } from '@shared/blogPublication';
 import { useTranslation } from 'react-i18next';
 import { blogAuthorName, blogAuthorRole, blogCategoryLabel } from '@/lib/blogLabels';
@@ -104,7 +105,7 @@ export default function BlogArticle() {
 
   const articleSchema = useMemo(() => {
     if (!article) return null;
-    const body = article.content || article.excerpt;
+    const body = (article.content && stripPhotoLines(article.content)) || article.excerpt;
     return buildArticleSchema({
       title: article.title,
       slug: article.slug,
