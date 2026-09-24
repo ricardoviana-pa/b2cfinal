@@ -43,7 +43,8 @@ describe('corporate publication across language editions', () => {
     const graph = __testing.buildBlogGraph(article, 'pt')['@graph'] as any[];
     expect(graph[0].author).toEqual({ '@type': 'Organization', name: 'Portugal Active' });
     expect(graph[0].inLanguage).toBe('pt');
-    expect(graph[0].image[0]).toMatch(/^https:\/\/www.portugalactive.com\//);
+    // Absolute URL: the site's own asset or a real home photo from Guesty.
+    expect(graph[0].image[0]).toMatch(/^https:\/\/(www.portugalactive.com|assets.guesty.com)\//);
     expect(graph[0]['@id']).toContain('/pt/blog/');
   });
   it('every commercial guide link resolves to a published edition', () => {

@@ -197,7 +197,7 @@ export default function BlogArticle() {
             src={cdnResize((article as any).coverImage || (article as any).featuredImage || '/images/destinations/minho-coast.webp', 1280)}
             srcSet={cdnSrcSet((article as any).coverImage || (article as any).featuredImage || '/images/destinations/minho-coast.webp', [640, 960, 1280])}
             sizes="(min-width: 896px) 896px, 100vw"
-            alt={`${article.title} – Portugal Active journal`}
+            alt={article.title}
             className="w-full aspect-[16/9] object-cover"
             width={1200} height={675} fetchPriority="high"
           />
@@ -291,7 +291,7 @@ export default function BlogArticle() {
                         src={cdnResize(home.image, 640)}
                         srcSet={cdnSrcSet(home.image, [320, 480, 640])}
                         sizes="(min-width: 768px) 22vw, 45vw"
-                        alt={`${getDisplayName(home)} – Portugal Active`}
+                        alt={getDisplayName(home)}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         loading="lazy"
                         width={640}
@@ -330,7 +330,7 @@ export default function BlogArticle() {
                       src={cdnResize((a as any).coverImage || (a as any).featuredImage || '/images/destinations/minho-coast.webp', 768)}
                       srcSet={cdnSrcSet((a as any).coverImage || (a as any).featuredImage || '/images/destinations/minho-coast.webp', [400, 640, 768])}
                       sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw"
-                      alt={`${a.title} – Portugal Active journal`}
+                      alt={a.title}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
                       width={800}
