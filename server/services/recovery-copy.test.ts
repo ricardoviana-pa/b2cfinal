@@ -129,6 +129,83 @@ describe("contacto 4: texto PT à volta do cartão", () => {
   });
 });
 
+describe("italiano: o funil trata o hóspede por Lei, como o resto do site", () => {
+  /** Todas as strings do funil em italiano, com as funções chamadas com marcadores neutros. */
+  const itStrings = (): Array<[string, string]> =>
+    Object.entries(FUNNEL_I18N.it).map(([key, value]) => {
+      if (typeof value === "string") return [key, value];
+      const fn = value as (...args: unknown[]) => string;
+      return [key, fn(...Array.from({ length: fn.length }, (_, i) => `‹${i}›`))];
+    });
+
+  /** Marcas de "tu" como palavras inteiras (possessivos, pronomes, verbos na 2.ª pessoa). */
+  const TU = /(?<![\p{L}'’])(tu|tua|tuo|tue|tuoi|ti|te|hai|vuoi|puoi|preferisci|rispondi|scegli|cerchi|scrivici|dicci)(?![\p{L}'’])/iu;
+  /**
+   * Imperativos na 2.ª pessoa no início de frase ou de botão. Fora desta posição
+   * "prenota", "completa" e "torna" também são 3.ª pessoa ("finché qualcuno non
+   * prenota"), por isso só se procuram aqui.
+   */
+  const TU_IMPERATIVE = /(^|[.!?:]\s+)(Prenota|Completa|Vedi|Torna|Scopri|Continua|Riprendi|Scrivi|Rispondi|Scegli)(?![\p{L}'’])/u;
+  /** Cortesia em maiúscula a meio da frase: os outros emails italianos escrevem-na em minúscula. */
+  const CAPITAL_COURTESY = /[\p{L},]\s+(Lei|La|Le|Suo|Sua|Suoi|Sue|Gli|Glielo)(?![\p{L}'’])/u;
+
+  it.each(itStrings())("it.%s não usa 'tu'", (_key, text) => {
+    expect(text).not.toMatch(TU);
+    expect(text).not.toMatch(TU_IMPERATIVE);
+    expect(text).not.toMatch(CAPITAL_COURTESY);
+  });
+
+  it("usa as formas de Lei nos quatro contactos e na variante de pagamento", () => {
+    const F = FUNNEL_I18N.it;
+    expect(F.body1("Buongiorno Ana,", "Casa Sintetica")).toContain("il suo soggiorno a Casa Sintetica esattamente come l'ha lasciato");
+    expect(F.personal1).toContain("risponda a questa email");
+    expect(F.body1Pay("Buongiorno Ana,", "Casa Sintetica")).toContain("può pagare come preferisce");
+    expect(F.personal1Pay).toContain("Risponda a questa email o ci scriva su WhatsApp");
+    expect(F.headline2).toBe("Il suo prezzo resta valido ancora per qualche ora.");
+    expect(F.giftBody("‹u›", 7, "‹v›")).toMatch(/^Prenoti entro ‹u› e le offriamo Flex/);
+    expect(F.body4None("Buongiorno Ana,", "Casa Sintetica")).toContain("ci dica cosa ha in mente");
+    expect(F.lastNote).toContain("che le inviamo");
+  });
+
+  it("os botões ficam no infinitivo, como os outros emails italianos", () => {
+    const F = FUNNEL_I18N.it;
+    expect([F.cta3Gift, F.cta3, F.ownLink("Casa Sintetica")]).toEqual([
+      "Prenotare con Flex incluso",
+      "Vedere il prezzo di oggi",
+      "Tornare a Casa Sintetica",
+    ]);
+  });
+
+  const alternatives = [
+    { name: "Casa Alternativa Uno", locality: "Caminha", imageUrl: "https://assets.example.test/alt-1.jpg", url: "https://www.portugalactive.com/it/homes/alt-uno" },
+  ];
+  it.each([
+    ["1", { stage: 1, paymentStep: false }],
+    ["1, pagamento", { stage: 1, paymentStep: true }],
+    ["2", { stage: 2 }],
+    ["3, com Flex oferecido", { stage: 3, flexGift: { until: new Date("2099-11-02T18:00:00Z"), days: 7, value: 120 } }],
+    ["3, sem oferta", { stage: 3 }],
+    ["4, com alternativas", { stage: 4, alternatives }],
+    ["4, sem alternativas", { stage: 4 }],
+  ] as const)("o email italiano do contacto %s sai sem 'tu'", async (_label, variant) => {
+    for (const guestFirstName of ["Ana", ""]) {
+      for (const propertyName of ["Casa Sintetica", ""]) {
+        await email.sendCheckoutRecovery({
+          ...base, guestFirstName, propertyName, locale: "it", ...variant,
+          quote: { nights: 5, totalNights: 1500, total: 1500 },
+          expiresAt: new Date("2099-11-01T18:00:00Z"),
+          scarcity: { unavailable: 3, total: 10 },
+          propertyUrl: "https://www.portugalactive.com/it/homes/original",
+        });
+        const sent = lastSend();
+        const text = `${sent.subject}\n${sent.html.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ")}`;
+        expect(text).not.toMatch(TU);
+        expect(text).not.toMatch(TU_IMPERATIVE);
+      }
+    }
+  });
+});
+
 describe("respostas: Reply-To explícito para a caixa de reservas", () => {
   it.each([1, 2, 3, 4] as const)("contacto %s responde para booking@, mesmo com outro remetente", async (stage) => {
     await email.sendCheckoutRecovery({
