@@ -68,6 +68,15 @@ describe('destinations connect useful content to the right homes', () => {
     expect(homes.length).toBeGreaterThan(0);
     expect(homes.every(p=>p.locality==='Viana do Castelo')).toBe(true);
   });
+  it('lists town spokes by locality, not the whole region', async () => {
+    for (const [slug, locality] of [['caminha', 'Caminha'], ['esposende', 'Esposende']] as const) {
+      expect(destinationHomesHref({ slug, region: 'minho' })).toBe(`/homes?location=${slug}`);
+      const homes = await getPropertiesForDestination(slug);
+      expect(homes.length).toBeGreaterThan(0);
+      expect(homes.every(p => p.locality === locality)).toBe(true);
+    }
+    expect(destinationHomesHref({ slug: 'minho', region: 'minho' })).toBe('/homes?destination=minho');
+  });
   it('keeps the supplier UID needed to show live partner prices on destination cards', async () => {
     const homes = await getPropertiesForDestination('alentejo');
     const partner = homes.find(p=>p.source==='tripwix');

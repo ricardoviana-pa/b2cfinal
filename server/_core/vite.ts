@@ -1313,16 +1313,16 @@ const DESTINATION_DESCRIPTION: Record<string, Record<string, string>> = {
     pt: 'Viana do Castelo, a capital atlântica do norte de Portugal. Guia completo da terceira cidade mais acolhedora do mundo e das nossas casas de luxo no Minho.',
   },
   caminha: {
-    en: 'Caminha, Portugal: fortified border town facing Galicia across the Minho estuary. A guide to medieval walls, Moledo beach, and the ferry to Tui.',
-    pt: 'Caminha, Portugal: vila fortificada na fronteira com a Galiza, no estuário do Minho. Guia das muralhas medievais, da praia do Moledo e do ferry para Tui.',
+    en: 'Caminha, Portugal: walled border town facing Galicia across the Minho estuary. A guide to the old town, Moledo beach, the Camarido pines and the Coura valley.',
+    pt: 'Caminha, Portugal: vila muralhada na fronteira com a Galiza, no estuário do Minho. Guia do centro histórico, da praia de Moledo, do Camarido e do vale do Coura.',
   },
   esposende: {
     en: 'Esposende, Portugal: Litoral Norte natural park, Atlantic dunes and the Cávado estuary. A guide to the quietest coastline 40 minutes north of Porto.',
     pt: 'Esposende, Portugal: o Parque Natural do Litoral Norte, dunas atlânticas e o estuário do Cávado. Guia da costa mais sossegada a 40 minutos a norte do Porto.',
   },
   douro: {
-    en: 'Douro Valley, Portugal: UNESCO World Heritage vineyards, port-wine quintas and Pinhão river-cruises. A complete guide to Europe\'s most photographed wine landscape.',
-    pt: 'Vale do Douro, Portugal: vinhas Património Mundial UNESCO, quintas de vinho do Porto e cruzeiros fluviais no Pinhão. Guia completo da paisagem vinícola mais fotografada da Europa.',
+    en: 'Douro Valley, Portugal: UNESCO World Heritage vineyards, port quintas, Pinhão, Régua and the river. A guide to the valley, when to go and where to stay.',
+    pt: 'Vale do Douro, Portugal: vinhas Património Mundial da UNESCO, quintas do vinho do Porto, Pinhão, Régua e o rio. Guia do vale, quando ir e onde ficar.',
   },
 };
 

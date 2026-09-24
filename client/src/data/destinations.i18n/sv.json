@@ -654,31 +654,459 @@
   },
   "caminha": {
     "name": "Caminha",
-    "tagline": "Befäst gränsstad, vänd mot Galicien, på andra sidan Minhos flodmynning.",
-    "heroSubtitle": "Där Portugal möter Galicien, på andra sidan en flodmynning med tomma stränder.",
+    "tagline": "En gränsstad innanför murar vid Minhos mynning, med Galicien på andra sidan flodmynningen.",
+    "description": "En guide till Caminha: den befästa staden vid Minhos mynning, stranden i Moledo, tallskogen i Camarido och Couradalen.",
+    "heroSubtitle": "Där Minho möter Atlanten, med Galicien på den bortre stranden",
     "whyOverline": "VARFÖR CAMINHA",
-    "howToGetHere": "Porto flygplats (OPO) 1h15 via A28. Vigo (Spanien) 45 min. Viana do Castelo 25 min söderut.",
-    "seoTitle": "Caminha, Portugal: Atlantisk gränsstad | Portugal Active",
+    "whyDescription": "Caminha är den sista portugisiska staden vid Atlantkusten före Spanien. Den ligger på södra stranden av Minhos flodmynning, några kilometer innan floden når havet, och blickar rakt över vattnet mot Galicien och den skogklädda konen Monte de Santa Tecla. Under större delen av historien var den utsikten en gräns. I dag är den en båttur på tio minuter.\n\nDen gamla staden är liten och formas fortfarande av sina murar. De äldsta partierna är från 1200-talet, och Torre do Relógio, klocktornet vid huvudtorget, var den viktigaste porten genom dem. Framför tornet, på torget som lokalborna kallar Terreiro, står en fontän i granit som byggdes mellan 1551 och 1553 av stenhuggarmästaren João Lopes o Velho, som också gjorde fontänen på Praça da República i Viana do Castelo. Solar dos Pitas, ett gotiskt stadshus, och det gamla rådhuset ligger vid samma torg. En kort promenad längs Rua Direita leder till Igreja Matriz, en församlingskyrka i granit som påbörjades omkring 1488 och byggdes under ungefär sextio år, med manuelinska stenhuggerier vid koret och ett snidat mudéjartak i trä.\n\nKusten börjar strax utanför staden. Mata Nacional do Camarido, en tallskog planterad på sanden vid flodmynningen, sträcker sig ner till flodstranden i Camarido, där den galiciska stranden känns nära nog att röra vid. Söder därom ligger Praia de Moledo, en lång och öppen strand med fin sand, vänd mot ön Ínsua, där ett fort från 1600-talet omsluter resterna av ett franciskankloster. Moledo har varit sommarstrand för familjer från norra Portugal i generationer. Den är bred, ren och ofta blåsig, vilket håller den sval i augusti och gör den till en bra strand för kitesurfing och långa promenader.\n\nInåt land öppnar sig staden mot två dalar. Uppströms längs Minho passerar vägen Seixas och Lanhelas på väg till Vila Nova de Cerveira och fästningsstaden Valença. Söderut och österut rinner floden Coura ner från bergen genom en grön dal med majsfält, granitbyar och gamla vattenkvarnar. Vid Vilar de Mouros korsar en gammal stenbro floden bredvid en by vars namn sedan 1971 är förknippat med en av de mest berömda upplagorna av någon portugisisk musikfestival. Bakom alltihop reser sig Serra d'Arga, ett granitmassiv där garranohästar betar fritt.\n\nÖverfarten till Spanien hör till vardagen. Bilfärjan som i årtionden förband Caminha med A Guarda lades ner 2020, till slut besegrad av sandbankarna i flodmynningen. Små licensierade vattentaxibåtar gör nu överfarten på omkring tio minuter och tar framför allt pilgrimer på kustvägen av pilgrimsleden till Santiago, som går genom staden. Med bil ligger Galicien femton till tjugofem minuter bort via broarna vid Vila Nova de Cerveira och Valença.\n\nRytmen följer årstiderna. Under senvintern och våren bär Minho nejonöga och majfisk till de lokala borden. På sommaren fylls Moledo, flodstränderna vid Coura blir varmare och dalens musikfestivaler kommer i augusti. Utanför de veckorna återgår staden till sin egen skala: en kaffe på Terreiro, en promenad under tallarna för att se tidvattnet vända vid flodmynningen, middag medan ljusen tänds på andra sidan vattnet i Galicien.",
     "highlights": [
-      "Murad medeltidskärna och Torre do Relógio",
-      "Praia do Moledo och Camaridos tallskog",
-      "Daglig färja till Tui (Spanien) över Minhos flodmynning",
-      "Musikfestivalen i Paredes de Coura, 20 min in i landet"
-    ]
+      "Befäst gammal stad med Torre do Relógio och en granitfontän från 1551",
+      "Praia de Moledo och tallskogen i Camarido vid Minhos mynning",
+      "Vattentaxi över flodmynningen till A Guarda i Galicien",
+      "Couradalen, Vilar de Mouros och Serra d'Arga",
+      "Nejonöga och majfisk från Minho under senvintern och våren"
+    ],
+    "seoTitle": "Caminha: Moledostranden, Gamla Stan och Boende | Portugal Active",
+    "seoDescription": "Befäst gammal stad, Moledostranden, tallarna i Camarido och båtar till Galicien. Vad du ska se i Caminha, när du ska åka och var du bor.",
+    "howToGetHere": "Porto flygplats (OPO) cirka 1 h via A28. Vigo flygplats (Spanien) cirka 50 min. Viana do Castelo 25 min söderut. Regionaltåg på Linha do Minho stannar i Caminha och Moledo.",
+    "bestTimeToVisit": "Juni och september. Långa dagar, en varm Coura för flodbad och Moledo utan augustis folkmassor. Senvinter och vår för nejonögonsäsongen.",
+    "whatToExpect": "En liten stad innanför murar vid en bred flodmynning, med tallskog, en atlantstrand och Galicien på andra stranden. Lugnt större delen av året, livligt i augusti.",
+    "whereToStayIntro": "De flesta av våra hem i Caminha ligger vid en trehundra år gammal vattenkvarn i granit vid floden Coura i Vilar de Mouros, tio minuter inåt land från staden. Kvarnen och stenhusen runt den hyrs ut som separata hem, från en loftvåning med ett sovrum till ett hus med fyra sovrum, eller tillsammans som en egendom för upp till tjugo gäster, med flodstranden nedanför trädgården. Vid kusten har ett strandhus i Moledo tre sviter och en pool vänd mot solnedgången. Alla sköts av vårt team i Alto Minho, samma team som driver våra hem i Viana do Castelo, tjugofem minuter söderut.",
+    "journalSectionTitle": "Ur dagboken: berättelser från Caminha",
+    "thingsToDoIntro": "Caminha är liten nog att se till fots på en förmiddag, och det mesta av intresset ligger i omgivningarna: flodmynningen, stranden, Couradalen och den galiciska stranden. Så här skulle vi tillbringa tre dagar här.",
+    "thingsToDo": [
+      {
+        "heading": "Staden innanför murarna",
+        "items": [
+          {
+            "name": "Torre do Relógio",
+            "category": "Arkitektur",
+            "description": "Klocktornet var huvudporten i de medeltida murarna, vars äldsta partier är från 1200-talet. Gå genom det från torget in på Rua Direita, den gamla huvudgatan."
+          },
+          {
+            "name": "Chafariz do Terreiro",
+            "category": "Arkitektur",
+            "description": "Granitfontän byggd mellan 1551 och 1553 av João Lopes o Velho, stenhuggaren bakom fontänen i Viana do Castelo. Nationalmonument sedan 1910."
+          },
+          {
+            "name": "Igreja Matriz",
+            "category": "Arkitektur",
+            "description": "Församlingskyrka som påbörjades omkring 1488 och byggdes under ungefär sextio år. Manuelinska stenhuggerier vid koret och ett snidat mudéjartak i trä."
+          },
+          {
+            "name": "Praça Conselheiro Silva Torres",
+            "category": "Torg",
+            "description": "Torget som lokalborna kallar Terreiro, med fontänen, det gotiska Solar dos Pitas, det gamla rådhuset och kaféborden. Centrum för stadens sociala liv."
+          }
+        ]
+      },
+      {
+        "heading": "Flodmynningen och kusten",
+        "items": [
+          {
+            "name": "Mata Nacional do Camarido",
+            "category": "Natur",
+            "description": "Tallskog planterad på sanddynerna mellan staden och havet, med skuggiga stigar som slutar vid flodstranden i Camarido, vänd mot Galicien."
+          },
+          {
+            "name": "Praia de Moledo",
+            "category": "Strand",
+            "description": "En lång atlantstrand med fin sand, vänd mot ön Ínsua. Bred, ren och ofta blåsig, vilket passar strandvandrare, kitesurfare och alla som vill undkomma värmen."
+          },
+          {
+            "name": "Ínsua",
+            "category": "Kulturarv",
+            "description": "En liten klippö utanför Moledo, med ett fort från 1600-talet byggt runt ett äldre franciskankloster. Syns bäst från stranden."
+          },
+          {
+            "name": "Vila Praia de Âncora",
+            "category": "Stad",
+            "description": "Fiskehamn och badort tio minuter söderut, med det lilla Fortim da Lagarteira och, strax inåt land, den neolitiska Dólmen da Barrosa."
+          }
+        ]
+      },
+      {
+        "heading": "Inåt land",
+        "items": [
+          {
+            "name": "Vilar de Mouros och Coura",
+            "category": "Natur",
+            "description": "Granitby vid floden Coura, tio minuter från staden, med en gammal stenbro, flodstränder och festivalen som har burit byns namn sedan 1970-talet."
+          },
+          {
+            "name": "Serra d'Arga",
+            "category": "Natur",
+            "description": "Granitberget bakom Caminha, med fritt strövande garranohästar, små byar och klostret São João de Arga. Bäst att vandra på våren och hösten."
+          },
+          {
+            "name": "Vila Nova de Cerveira",
+            "category": "Utflykt",
+            "description": "Stad vid floden femton minuter uppströms, sedan 1978 hem för en av Portugals mest långlivade konstbiennaler, med en bro över till Galicien."
+          },
+          {
+            "name": "Valença",
+            "category": "Kulturarv",
+            "description": "Stjärnformad fästningsstad mitt emot Tui på andra sidan Minho, tjugofem minuter uppströms. Gå längs vallarna och korsa sedan den gamla järnbron till fots till katedralen i Tui."
+          }
+        ]
+      },
+      {
+        "heading": "På andra sidan flodmynningen",
+        "items": [
+          {
+            "name": "A Guarda och Monte de Santa Tecla",
+            "category": "Utflykt",
+            "description": "Galicien, på den bortre stranden. En vattentaxi från Caminha tar omkring tio minuter. Ovanför A Guarda blickar järnåldersbosättningen på Monte de Santa Tecla ut över hela flodmynningen."
+          }
+        ]
+      }
+    ],
+    "seasons": {
+      "spring": "Mars till maj. Dalarna är som grönast och Coura går full. Maxtemperaturerna stiger från omkring sjutton till tjugoen grader, och regnet är fortfarande en regelbunden gäst. Säsongen för nejonöga och majfisk i Minho pågår under de här månaderna, och lederna i Serra d'Arga är som bäst. Havet är kallt, runt fjorton grader.",
+      "summer": "Juni till augusti. Varmt och mestadels torrt, med maxtemperaturer runt tjugofem grader och en nordlig vind, nortada, som blåser de flesta eftermiddagar vid kusten och håller Moledo svalt. Havet håller sexton till arton grader; flodstränderna vid Coura är varmare. Augusti är den mest välbesökta månaden, med festivalerna i Paredes de Coura och Vilar de Mouros och fulla stränder.",
+      "autumn": "September till november. September är ofta årets bästa månad: varma dagar, en lugn strand och vinskörd i dalarna. Oktober för med sig det första kraftiga regnet och löv som skiftar färg längs Coura. I november har staden återgått till sin vinterrytm.",
+      "winter": "December till februari. Milt men blött, med maxtemperaturer runt tretton till femton grader och regelbundna atlantstormar. Flodmynningen är som mest dramatisk och staden som tystast. Nejonögonsäsongen börjar kring årsskiftet.",
+      "bestForFirstTime": "Juni eller september. Båda ger varmt och stabilt väder och hela bredden av det platsen har att erbjuda, från bad i hav och flod till vandringar i Serra d'Arga, utan augustis folkmassor och tryck på boendet."
+    },
+    "transport": {
+      "byAir": "Flygplatsen Francisco Sá Carneiro i Porto ligger cirka nittiofem kilometer söderut, ungefär en timme med bil via A28. Vigo flygplats i Galicien ligger omkring femtio minuter bort på väg, via broarna vid Valença eller Vila Nova de Cerveira, och är ett rimligt alternativ för anslutningar via Madrid. Vi ordnar privata transfers från båda.",
+      "byTrain": "Regionaltåg på Linha do Minho, som går från Porto till Valença, stannar i Caminha, Moledo och Vila Praia de Âncora. Räkna med omkring två timmar från Porto Campanhã, ibland med byte i Viana do Castelo. Stationen i Caminha ligger en kort promenad från den gamla staden.",
+      "byCar": "A28 går från Porto längs kusten till Caminha och passerar Viana do Castelo tjugofem kilometer söderut. Kustvägen N13 är långsammare och följer stränderna och fiskelägena. Förare av bilar med utländska registreringsskyltar bör registrera sig hos en elektronisk vägtullstjänst före ankomsten, eftersom flera motorvägar nära Porto har elektroniska tullportar.",
+      "fromSpain": "Från Vigo eller Santiago de Compostela korsar du Minho via motorvägsbron vid Tui och Valença, eller via bron mellan Goián och Vila Nova de Cerveira, och följer sedan flodvägen ner till Caminha. Till fots eller med cykel går vattentaxibåtar över från A Guarda på omkring tio minuter, om väder och tidvatten tillåter.",
+      "gettingAround": "Den gamla staden är kompakt och bäst till fots. Camaridoskogen och Moledo nås till fots eller med cykel, och längs stora delar av Minhos strand uppströms mot Vila Nova de Cerveira finns en gång- och cykelväg. För Couradalen, Serra d'Arga och stränderna längre söderut gör en bil livet enklare."
+    },
+    "eatDrinkIntro": "Caminha äter från floden och havet. Under senvintern och våren ger Minho nejonöga och majfisk, tillagade på sätt som knappt har förändrats på ett sekel, och restauranger i hela dalen planerar sitt år kring säsongen. Fiskehamnen i Vila Praia de Âncora, tio minuter söderut, levererar den grillade fisken som fyller sommarens menyer längs kusten. Vinet är Vinho Verde, och uppströms i Monção och Melgaço görs det på Alvarinho, druvan bakom regionens främsta vita viner. Vår concierge har en kort lista över bord, från familjetascas i den gamla staden till restauranger vid floden i Couradalen, och bokar dem åt gästerna.",
+    "specialties": [
+      {
+        "name": "Lampreia do Minho",
+        "category": "Säsongsbetonat",
+        "description": "Nejonöga från floden, i säsong ungefär från januari till april, oftast tillagad à bordalesa, i en fyllig rödvinssås, med ris. Den som tycker om rätten reser för den."
+      },
+      {
+        "name": "Sável",
+        "category": "Säsongsbetonat",
+        "description": "Majfisk, Minhos andra vårfisk, vanligen friterad och serverad med açorda eller ris."
+      },
+      {
+        "name": "Alvarinho",
+        "category": "Vin",
+        "description": "Den vita druvan från Monção och Melgaço, fyrtio minuter uppströms. Fylligare och mer lagringsduglig än de flesta Vinho Verde, och det självklara valet till regionens fisk."
+      },
+      {
+        "name": "Grillad fisk från Âncora",
+        "category": "Rätt",
+        "description": "Det som kom in till Vila Praia de Âncora samma morgon, grillat över kol och serverat med kokt potatis, grönsaker och olivolja."
+      }
+    ],
+    "experiencesIntro": "Det som följer är upplevelser som vår concierge ordnar för gäster som bor i våra hem i Caminha. De flesta kan ordnas med en dags varsel, och conciergen kan ordna transfers överallt där man annars skulle behöva bil.",
+    "experiences": [
+      {
+        "name": "Kajak på Minhos flodmynning",
+        "description": "En guidad paddeltur från staden mot flodmynningen, mellan tallarna i Camarido och den galiciska stranden, med ett stopp på en sandbank när tidvattnet tillåter.",
+        "duration": "Halvdag",
+        "season": "Maj till oktober"
+      },
+      {
+        "name": "Över till A Guarda och Monte de Santa Tecla",
+        "description": "En vattentaxi över flodmynningen och sedan upp till järnåldersbosättningen ovanför A Guarda för utsikten tillbaka över Caminha och flodmynningen. Lunch i den galiciska fiskehamnen innan det är dags att åka tillbaka.",
+        "duration": "Halvdag till heldag",
+        "season": "Året runt, om vädret tillåter"
+      },
+      {
+        "name": "Vandring i Serra d'Arga",
+        "description": "En guidad dag på granitberget bakom staden, genom små byar och höglandsbeten där garranohästar betar, med ett stopp vid klostret São João de Arga.",
+        "duration": "Heldag",
+        "season": "Mars till november"
+      },
+      {
+        "name": "Alvarinhoprovning i Monção och Melgaço",
+        "description": "En förmiddag uppströms hos en Alvarinhoproducent, med provning av regionens främsta vita viner, följd av lunch i dalen.",
+        "duration": "Halvdag",
+        "season": "Året runt; skördebesök i september"
+      },
+      {
+        "name": "Surf eller kitesurf i Moledo",
+        "description": "Lektioner för nybörjare och de som vill utvecklas på den långa stranden i Moledo, där sommarens eftermiddagsvind passar kitesurfing. Utrustning ingår.",
+        "duration": "Två till tre timmar",
+        "season": "April till oktober"
+      },
+      {
+        "name": "Cykling längs Minhos strand",
+        "description": "En lätt tur uppströms på stigen längs floden mot Vila Nova de Cerveira, med Galicien på andra sidan vattnet hela vägen. Cyklar ordnas av conciergen.",
+        "duration": "Halvdag",
+        "season": "Året runt"
+      }
+    ],
+    "eventsIntro": "Caminhas kalender styrs av floden och av augusti. Nejonögonsäsongen fyller restaurangerna från vintern in i våren; musikfestivalerna i Couradalen fyller regionen under andra halvan av augusti, då hem bör bokas i god tid.",
+    "events": [
+      {
+        "name": "Paredes de Coura-festivalen",
+        "dates": "Mitten av augusti, datum meddelas varje år",
+        "description": "En av Portugals mest kända alternativa musikfestivaler, som sedan 1993 hålls i en naturlig amfiteater bredvid flodstranden Taboão, omkring fyrtio minuter från Caminha."
+      },
+      {
+        "name": "Vilar de Mouros-festivalen",
+        "dates": "Slutet av augusti, datum meddelas varje år",
+        "description": "Rockfestival vid Couras stränder, tio minuter från Caminha. Upplagan 1971 gjorde den till en milstolpe i den portugisiska musikhistorien."
+      },
+      {
+        "name": "Nejonögonsäsongen",
+        "dates": "Januari till april",
+        "description": "Restauranger i Caminha och längs Minho bygger sina menyer kring flodens nejonöga, och senare dess majfisk."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Hur många dagar behöver jag i Caminha?",
+        "answer": "Två dagar räcker för staden, Camaridoskogen och Moledo. Med fyra eller fem kan du lägga till Couradalen, Serra d'Arga, en överfart till A Guarda och en dag uppströms i Valença eller i Alvarinhotrakterna kring Monção och Melgaço."
+      },
+      {
+        "question": "Går det fortfarande en färja från Caminha till A Guarda?",
+        "answer": "Bilfärjan lades ner 2020 och är inte i trafik. Små licensierade vattentaxibåtar korsar flodmynningen till A Guarda på omkring tio minuter, om väder och tidvatten tillåter, och används främst av pilgrimer på Camino. Med bil ligger de närmaste broarna vid Vila Nova de Cerveira och Valença."
+      },
+      {
+        "question": "Vilken är den bästa stranden nära Caminha?",
+        "answer": "Praia de Moledo, en lång atlantstrand strax söder om staden, vänd mot ön Ínsua. För lugnare vatten ligger flodstranden i Camarido vänd mot Galicien på andra sidan flodmynningen. På sommaren är flodstränderna vid Coura varmare än havet."
+      },
+      {
+        "question": "När är bästa tiden att besöka Caminha?",
+        "answer": "Juni och september för väder och utrymme. Augusti för festivalerna och de mest välbesökta stränderna. Senvinter och vår för nejonögonsäsongen och dalarna när de är som grönast."
+      },
+      {
+        "question": "Hur långt är det från Porto till Caminha?",
+        "answer": "Omkring nittiofem kilometer, ungefär en timme med bil via A28 från Portos flygplats. Regionaltåg från Porto tar omkring två timmar."
+      },
+      {
+        "question": "Är Caminha en bra bas för att besöka Galicien?",
+        "answer": "Ja. A Guarda ligger på andra sidan flodmynningen, Tui omkring tjugofem minuter bort med bil, Vigo under en timme och Santiago de Compostela under två timmar."
+      },
+      {
+        "question": "Vad är Caminha känt för?",
+        "answer": "Sin befästa gamla stad och sitt klocktorn, sitt läge vid Minho mitt emot Spanien, stranden i Moledo och flodens nejonöga. Staden är också en etapp på kustvägen av den portugisiska pilgrimsleden till Santiago."
+      },
+      {
+        "question": "Passar Caminha för barnfamiljer?",
+        "answer": "Ja. Staden är liten och lätt att gå i, Moledo har livräddare under badsäsongen och flodstränderna vid Coura har lugnare vatten för mindre barn. Våra hem vid vattenkvarnen, som kan bokas tillsammans, passar grupper med flera generationer."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Äger du ett hem i Caminha?",
+      "body": "Portugal Active förvaltar premiumfastigheter i hela Alto Minho, från Caminha och Couradalen till Viana do Castelo: fullständig förvaltning, marknadsföring, concierge och underhåll, drivet med hotellstandard av ett team med bas i regionen.",
+      "cta": "Prata med vårt team",
+      "url": "https://www.portugalactive.com/management/en/?utm_source=destinations&utm_medium=cta&utm_campaign=caminha"
+    }
   },
   "esposende": {
     "name": "Esposende",
-    "tagline": "Där floden Cávado möter Atlanten, mellan dynerna och tallskogarna.",
-    "heroSubtitle": "Portugals lugnaste atlantdyner, 40 minuter med bil från Porto.",
+    "tagline": "Där Cávado möter Atlanten, mellan skyddade sanddyner och tallskog.",
+    "description": "En guide till Esposende: naturparken Litoral Norte, Ofir och Apúlia, Cávados flodmynning och sanddynerna, fyrtio minuter norr om Porto.",
+    "heroSubtitle": "Skyddade sanddyner, tallskog och Cávados flodmynning, fyrtio minuter norr om Porto",
     "whyOverline": "VARFÖR ESPOSENDE",
-    "howToGetHere": "Porto flygplats (OPO) 40 min via A28. Viana do Castelo 25 min norrut. Braga 25 min österut.",
-    "seoTitle": "Esposende, Portugal: Norra kustens dyner | Portugal Active",
+    "whyDescription": "Esposende är den del av den norra kusten som de flesta kör förbi. A28 går några kilometer inåt land, och från motorvägen finns lite som antyder vad som ligger mellan vägen och havet: sexton kilometer strand, sanddyner och tallskog, skyddade som naturpark, med en liten stad vid floden Cávados mynning mitt i alltihop.\n\nParque Natural do Litoral Norte omfattar hela kommunens kustlinje, från Neivas mynning i norr till södra kanten av Apúlia. Området skyddades första gången 1987 och blev naturpark 2005, och större delen av ytan ligger till havs, över rev och klippig havsbotten. På land skyddar parken ett ömtåligt system av sanddyner, tallskog och saltängar av ett slag som i stort sett har försvunnit på andra håll längs den här kusten. Spänger av trä korsar dynerna, och en cykelväg längs kusten förbinder stränderna.\n\nStaden ligger på norra stranden av Cávado, där floden vidgas till en flodmynning i skydd av en lång sandrevel. Forte de São João Baptista, byggt mellan 1699 och 1704 för att vakta flodmynningen, står fortfarande vid vattnet, med en röd fyr i järn i sitt sydvästra hörn. En järnbro från 1892 korsar floden till Fão, en by vid floden som är känd i hela norra Portugal för sina clarinhas, ett litet friterat bakverk fyllt med pumpasylt och ägg. Bortom Fão ligger Ofir, en tallskog på dynerna med en lång strand längst ut och, utanför kusten, de mörka klipporna som kallas Cavalos de Fão.\n\nLängre söderut ligger Apúlia, byn som gav den här kusten dess mest kända näring. I generationer samlade folket i Apúlia sargaço, tången som Atlanten förde in, torkade den på sanden och sålde den som gödsel till gårdarna inåt land. Sargaceiros arbetade i bränningarna i en vit ylletunika som kallades branqueta, och väderkvarnarna av sten på dynerna ovanför stranden, byggda för att mala säd, är fortfarande byns kännemärke. Tångskörden är inte längre en försörjning, men den lever vidare genom byns folkdansgrupp och i det lokala minnet.\n\nBakom kusten stiger landet sakta mot Barcelos och Braga. På en kulle ovanför Vila Chã bevarar Castro de São Lourenço grunderna till en bosättning från järnåldern, med utsikt längs hela kustlinjen. Braga, med sin katedral och helgedomen Bom Jesus do Monte, ligger trettio minuter bort. Viana do Castelo ligger tjugofem minuter norrut och Porto fyrtio minuter söderut.\n\nEsposende är en badort på sommaren och en lugn stad resten av året. Den nordliga vind som blåser de flesta sommareftermiddagar håller stränderna svala och lockar vindsurfare och kitesurfare till kusten. Familjer återvänder år efter år av skäl som inte har förändrats mycket: långa stränder med gott om plats, fisk på grillen och ett tempo som passar dem.",
     "highlights": [
-      "Parque Natural do Litoral Norte — skyddat dynsystem",
-      "Praia de Ofir och Praia da Apúlia",
-      "Floden Cávados mynning — paddleboard och kajak",
-      "Restaurerade kustkvarnar (Apúlias kvarnar)"
-    ]
+      "Parque Natural do Litoral Norte: sexton kilometer skyddade sanddyner, tallskog och strand",
+      "Ofir och dess tallskog på Cávados södra strand",
+      "Apúlia, dess väderkvarnar och tångsamlarnas tradition",
+      "Cávados flodmynning, för paddleboard, kajak och fågelskådning",
+      "Trettiofem minuter från Portos flygplats, trettio från Braga"
+    ],
+    "seoTitle": "Esposende: Sanddyner, Stränder och Boende | Portugal Active",
+    "seoDescription": "Skyddade dyner, stränderna i Ofir och Apúlia och Cávados mynning norr om Porto. Vad du ska se i Esposende, när du ska åka och var du bor.",
+    "howToGetHere": "Porto flygplats (OPO) cirka 35 min via A28. Braga 30 min österut. Viana do Castelo 25 min norrut. Ingen järnväg: närmaste stationer är Barcelos och Viana do Castelo.",
+    "bestTimeToVisit": "Juni och september. Varma dagar, långa stränder med gott om plats och eftermiddagsvinden som passar vindsurfing och kitesurfing. Juli och augusti för högsommar.",
+    "whatToExpect": "En lågmäld badort vid en flodmynning, inne i en naturpark vid kusten. Sanddyner, tallar och breda stränder snarare än klippor och nattliv.",
+    "whereToStayIntro": "Våra hem i Esposende är två lägenheter vid havet, båda lämpade för familjer och mindre grupper. Den ena är en lägenhet med tre sovrum i Marinhas med balkong, femhundra meter från stranden och naturparken. Den andra är en tvåplanslägenhet med havsutsikt på Avenida dos Banhos, strandpromenaden, med tre sovrum fördelade på två våningar. Båda ligger en kort promenad från stranden och staden, och båda sköts av vårt team i Minho. Gäster som vill ha ett hus med pool kombinerar ofta kusten här med våra hem runt Viana do Castelo, tjugofem minuter norrut.",
+    "journalSectionTitle": "Ur dagboken: berättelser från Esposende",
+    "thingsToDoIntro": "Esposende är en plats för långa promenader och lugna dagar snarare än sevärdhetslistor. Kusten är skälet att komma, och den skiftar från norr till söder: flodmynning och stad, tallskog och sanddyner, sedan den gamla tångsamlarbyn Apúlia. Så här skulle vi dela upp den.",
+    "thingsToDo": [
+      {
+        "heading": "Staden och flodmynningen",
+        "items": [
+          {
+            "name": "Forte de São João Baptista",
+            "category": "Kulturarv",
+            "description": "Byggt mellan 1699 och 1704 för att försvara Cávados mynning, med Esposendes röda fyr i järn i sitt sydvästra hörn."
+          },
+          {
+            "name": "Cávados flodmynning",
+            "category": "Natur",
+            "description": "Floden vidgas till en skyddad flodmynning bakom en lång sandrevel. Lugnt vatten för paddleboard och kajak, och saltängar för vadarfåglar."
+          },
+          {
+            "name": "Ponte de Fão",
+            "category": "Arkitektur",
+            "description": "Järnbro från 1892 över Cávado, som förbinder Esposendesidan av floden med byn Fão."
+          },
+          {
+            "name": "Fão",
+            "category": "By",
+            "description": "Liten by vid floden på den södra stranden, känd i hela norra Portugal för bakverket clarinhas de Fão."
+          }
+        ]
+      },
+      {
+        "heading": "Sanddynerna och stränderna",
+        "items": [
+          {
+            "name": "Ofir",
+            "category": "Strand",
+            "description": "En lång strand längst ut i en tallskog på flodens södra strand, med klipporna utanför kusten som kallas Cavalos de Fão."
+          },
+          {
+            "name": "Spänger över dynerna",
+            "category": "Natur",
+            "description": "Spänger av trä korsar naturparkens skyddade sanddyner, så att du kan gå i kilometervis bakom stranden utan att skada växterna som håller sanden på plats."
+          },
+          {
+            "name": "Apúlia",
+            "category": "By",
+            "description": "Strandby i parkens södra ände, med sin rad av väderkvarnar i sten på dynerna och minnet av sargaceiros, tångsamlarna."
+          },
+          {
+            "name": "De norra stränderna",
+            "category": "Strand",
+            "description": "Norr om staden, mot floden Neiva, blir stränderna vildare och lugnare, med sanddyner och jordbruksmark bakom sig."
+          }
+        ]
+      },
+      {
+        "heading": "Inåt land och i närheten",
+        "items": [
+          {
+            "name": "Castro de São Lourenço",
+            "category": "Arkeologi",
+            "description": "Bosättning från järnåldern på en kulle ovanför Vila Chã, med grunder till stenhus och utsikt längs hela kusten."
+          },
+          {
+            "name": "Barcelos",
+            "category": "Utflykt",
+            "description": "Tjugo minuter inåt land, hem för Barcelostuppen och en av Portugals största veckomarknader, som hålls på torsdagar."
+          },
+          {
+            "name": "Braga",
+            "category": "Utflykt",
+            "description": "Trettio minuter österut. Katedralen, den gamla stadskärnan och helgedomen Bom Jesus do Monte, på Unescos världsarvslista sedan 2019, med sin barocktrappa och vattendrivna bergbana."
+          },
+          {
+            "name": "Viana do Castelo",
+            "category": "Utflykt",
+            "description": "Tjugofem minuter norrut: basilikan Santa Luzia, den historiska stadskärnan och fler atlantstränder."
+          }
+        ]
+      }
+    ],
+    "seasons": {
+      "spring": "Mars till maj. Sanddynerna blommar och tallskogen doftar kåda. Maxtemperaturerna stiger från omkring sjutton till tjugoen grader, och skurarna är fortfarande täta. Havet är kallt, men spängerna och cykelvägen längs kusten är som bäst, och stränderna är tomma.",
+      "summer": "Juni till augusti. Varmt och mestadels torrt, med maxtemperaturer runt tjugofem grader. Nortada, en jämn nordlig vind, blåser de flesta eftermiddagar, håller stränderna svala och lockar vindsurfare och kitesurfare. Vattnet håller sexton till arton grader. Juli och augusti är familjemånaderna, med mest folk under första halvan av augusti.",
+      "autumn": "September till november. September är varmt och lugnt, ofta den bästa månaden för stranden. Oktober för med sig det första kraftiga regnet och atlantdyningen. I november tillhör kusten återigen fiskare och strandvandrare.",
+      "winter": "December till februari. Milt, blött och blåsigt, med maxtemperaturer runt fjorton grader. Atlantstormarna ger dramatiska promenader längs dynerna. Många strandrestauranger stänger eller kortar sina öppettider, och staden faller tillbaka in i det lokala livet.",
+      "bestForFirstTime": "Juni eller september. Varmt nog för stranden, lugnt nog för att ha långa sträckor av den för sig själv, och med det bästa ljuset för promenader över dynerna och längs flodmynningen."
+    },
+    "transport": {
+      "byAir": "Flygplatsen Francisco Sá Carneiro i Porto ligger cirka fyrtio kilometer söderut, omkring trettiofem minuter med bil via A28. Den är den självklara ankomstpunkten, och vi ordnar privata transfers till våra hem. Vigo flygplats i Galicien ligger ungefär en timme och en kvart norrut.",
+      "byTrain": "Esposende har ingen järnvägsstation. De närmaste är Barcelos, på Linha do Minho omkring tjugo minuter inåt land, och Viana do Castelo, tjugofem minuter norrut; från båda tar en taxi dig resten av vägen. Det går också bussar mellan Porto och Esposende.",
+      "byCar": "Från Porto når du Esposende via A28 på omkring fyrtio minuter. A11 förbinder staden med Barcelos och Braga. N13, den gamla kustvägen, går genom staden och är det långsammare och mer lokala sättet att ta sig till Viana do Castelo. Förare av bilar med utländska registreringsskyltar bör registrera sig hos en elektronisk vägtullstjänst före ankomsten.",
+      "fromSpain": "Från Vigo korsar du Minho vid Tui och Valença och följer motorvägarna söderut via Ponte de Lima och Viana do Castelo, omkring en timme och en kvart totalt. Från Santiago de Compostela bör du räkna med omkring två timmar.",
+      "gettingAround": "Staden, stranden och flodmynningen nås alla till fots, och en cykelväg längs kusten följer stora delar av naturparken. En bil är användbar för Braga, Barcelos och Viana do Castelo, mindre för vardagen vid havet."
+    },
+    "eatDrinkIntro": "Esposendes bord är kustens bord: atlantfisk grillad över kol, skaldjursris att dela och i Fão en bakverkstradition som är värd en omväg. Restaurangerna längs strandpromenaden i Apúlia och vid Cávado arbetar efter säsongen och fångsten, och de flesta är små och familjedrivna. Vinet är Vinho Verde från Cávado, en av appellationens delregioner. Vår concierge har en kort lista över bord längs kusten och bokar dem åt gästerna.",
+    "specialties": [
+      {
+        "name": "Clarinhas de Fão",
+        "category": "Bakverk",
+        "description": "En halvmåne av tunn friterad deg fylld med doce de chila, en pumpasylt, och äggula, sedan rullad i socker. Görs i Fão och säljs i byns konditorier."
+      },
+      {
+        "name": "Grillad fisk",
+        "category": "Rätt",
+        "description": "Havsabborre, havsruda och, på sommaren, sardiner, grillade över kol och serverade med kokt potatis, grönsaker och olivolja."
+      },
+      {
+        "name": "Arroz de marisco",
+        "category": "Rätt",
+        "description": "Skaldjursris, löst och buljongrikt på nordligt vis, som bärs in till bordet i grytan och är tänkt att delas."
+      },
+      {
+        "name": "Vinho Verde från Cávado",
+        "category": "Vin",
+        "description": "En av Vinho Verde-appellationens delregioner, känd för friska vita viner med citrustoner. Dricks unga och kalla, till fisk."
+      }
+    ],
+    "experiencesIntro": "Det som följer är upplevelser som vår concierge ordnar för gäster som bor i våra hem i Esposende. De flesta kräver en dags varsel, och conciergen kan ordna transfers överallt där man annars skulle behöva bil.",
+    "experiences": [
+      {
+        "name": "Paddleboard eller kajak på Cávados flodmynning",
+        "description": "En guidad tur på det skyddade vattnet bakom sandreveln, med fortet och fyren på ena sidan och tallarna i Ofir på den andra.",
+        "duration": "Två till tre timmar",
+        "season": "Maj till oktober"
+      },
+      {
+        "name": "Lektioner i vindsurfing eller kitesurfing",
+        "description": "Lektioner för nybörjare och de som vill utvecklas på en kust där den nordliga eftermiddagsvinden blåser pålitligt hela sommaren. Utrustning ingår.",
+        "duration": "Två till tre timmar",
+        "season": "Maj till september"
+      },
+      {
+        "name": "Vandring över naturparkens sanddyner",
+        "description": "En guidad promenad med en lokal naturguide längs spängerna och genom tallskogen, som förklarar hur dynsystemet fungerar och varför det är skyddat.",
+        "duration": "Halvdag",
+        "season": "Året runt"
+      },
+      {
+        "name": "Braga och Bom Jesus",
+        "description": "En dag i Braga: katedralen, den gamla stadskärnan och barocktrappan vid Bom Jesus do Monte, med färden ner i den vattendrivna bergbanan.",
+        "duration": "Heldag",
+        "season": "Året runt"
+      },
+      {
+        "name": "Marknaden i Barcelos",
+        "description": "Torsdagsförmiddag på en av Portugals största veckomarknader, för keramik, råvaror och de målade tupparna.",
+        "duration": "Halvdag",
+        "season": "Torsdagar, året runt"
+      },
+      {
+        "name": "Vinho Verde-provning",
+        "description": "Ett besök hos en Vinho Verde-producent inåt land, med provning av regionens vita viner och lunch bland vinstockarna.",
+        "duration": "Halvdag",
+        "season": "Året runt; skördebesök i september"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Hur långt är det från Porto till Esposende?",
+        "answer": "Omkring fyrtio kilometer. Portos flygplats ligger cirka trettiofem minuter bort med bil via A28, och Portos centrum omkring fyrtiofem."
+      },
+      {
+        "question": "Vilka är de bästa stränderna i Esposende?",
+        "answer": "Ofir, längst ut i en tallskog på Cávados södra strand, och Apúlia, med sina väderkvarnar, är de mest kända. Stadsstranden ligger på gångavstånd från centrum, och stränderna norrut, mot floden Neiva, är de lugnaste."
+      },
+      {
+        "question": "Vad är Parque Natural do Litoral Norte?",
+        "answer": "En naturpark som omfattar Esposendes sexton kilometer långa kustlinje, från floden Neiva till Apúlia. Den skyddar sanddyner, tallskog, saltängar och ett stort havsområde. Området skyddades första gången 1987 och blev naturpark 2005."
+      },
+      {
+        "question": "Passar Esposende för barnfamiljer?",
+        "answer": "Ja. Stränderna är långa och glest besökta, flodmynningen har lugnare vatten och staden är liten och lätt att ta sig runt i. De största stränderna har livräddare under badsäsongen. Båda våra lägenheter vid havet passar familjer."
+      },
+      {
+        "question": "Vilka var sargaceiros i Apúlia?",
+        "answer": "Tångsamlarna i Apúlia, som samlade den sargaço som Atlanten förde in, torkade den på sanden och sålde den som gödsel till gårdarna inåt land. De arbetade i en vit ylletunika som kallades branqueta, och traditionen hålls vid liv av en lokal folkdansgrupp."
+      },
+      {
+        "question": "När är bästa tiden att besöka Esposende?",
+        "answer": "Juni och september för varmt väder utan folkmassor. Juli och augusti för högsommar, när staden är som livligast. Våren och hösten passar vandrare och cyklister."
+      },
+      {
+        "question": "Är Esposende en bra bas för Braga, Porto och Viana do Castelo?",
+        "answer": "Ja. Braga ligger trettio minuter österut, Barcelos tjugo, Viana do Castelo tjugofem minuter norrut och Porto fyrtio minuter söderut, vilket gör Esposende till en praktisk bas vid kusten för norra Portugal."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Äger du ett hem i Esposende?",
+      "body": "Portugal Active förvaltar premiumfastigheter längs Minhokusten, från Esposende till Caminha: fullständig förvaltning, marknadsföring, concierge och underhåll, drivet med hotellstandard av ett team med bas i regionen.",
+      "cta": "Prata med vårt team",
+      "url": "https://www.portugalactive.com/management/en/?utm_source=destinations&utm_medium=cta&utm_campaign=esposende"
+    }
   },
   "porto": {
     "name": "Porto och Douro",
@@ -701,18 +1129,278 @@
   },
   "douro": {
     "name": "Dourodalen",
-    "tagline": "Terrassodlade vingårdar med UNESCO-världsarv över floden.",
-    "heroSubtitle": "Europas mest fotograferade vinlandskap — och det mest belönande att stanna kvar i.",
+    "tagline": "Terrasserade vingårdar ovanför floden, i en av världens äldsta reglerade vinregioner.",
+    "description": "En guide till Dourodalen: Unescos vinlandskap Alto Douro, quintas, Pinhão, Régua och Lamego, järnvägen och skörden.",
+    "heroSubtitle": "Terrasserade vingårdar, skiffer och en flod som format en vinregion",
+    "pullQuote": {
+      "text": "Vin har producerats av traditionella jordägare i regionen Alto Douro i omkring 2 000 år.",
+      "source": "Unescos världsarvscenter",
+      "year": 2001
+    },
+    "primaryAccolade": {
+      "text": "Kulturlandskap på Unescos världsarvslista",
+      "source": "Vinregionen Alto Douro, upptagen 2001",
+      "note": "Avgränsad 1756, en av världens äldsta reglerade vinregioner"
+    },
     "whyOverline": "VARFÖR DOURO",
-    "howToGetHere": "Porto flygplats (OPO) 1h30 från Pinhão. Tåg på Linha do Douro från Porto São Bento, 2h15.",
-    "seoTitle": "Dourodalen, Portugal: Vinregion med UNESCO-världsarv | Portugal Active",
+    "whyDescription": "Douro är en vinregion byggd för hand. Under omkring två tusen år, och framför allt under de senaste tre århundradena, har människorna i dalen huggit ut terrasser i branta skiffersluttningar, hållit dem uppe med kallmurar och planterat vinstockar där nästan ingenting annat kunde växa. Resultatet är ett av Europas mest igenkännbara landskap, och en av få vinregioner där landskapet i sig är skälet att komma.\n\nRegionen avgränsades 1756, när markisen av Pombal grundade ett bolag för att reglera produktionen av och handeln med portvin, vilket gör den till en av världens äldsta reglerade vinregioner. År 2001 förde Unesco upp vinregionen Alto Douro, omkring tjugofyra tusen hektar i hjärtat av det avgränsade området, på världsarvslistan som kulturlandskap. Dalen delas traditionellt in i tre delar: Baixo Corgo runt Régua, grönare och blötare; Cima Corgo runt Pinhão, hjärtat av portvinsproduktionen; och Douro Superior, varmare och vildare, som sträcker sig österut till den spanska gränsen.\n\nUnder större delen av historien var floden den enda vägen ut. Portvinet fraktades ner till vinlagren i Vila Nova de Gaia i flatbottnade rabelobåtar tills järnvägen och sedan landsvägen tog över, och under 1900-talet förvandlade en kedja av dammar forsarna till en rad lugna sträckor. I dag är Douro farbar från Porto till den spanska gränsen, och flodbåtarna passerar slussar som den vid Carrapatelo, som lyfter dem omkring trettiofem meter. Järnvägen Linha do Douro följer vattnet under större delen av sträckan från Régua till Pocinho, och i Pinhão bär stationens väggar tjugofyra azulejopaneler från 1937 som visar skörden, båtarna och landskapet.\n\nPinhão, en liten stad där floden Pinhão möter Douro, är centrum för Cima Corgo, omgiven av några av portvinets mest kända quintas. Peso da Régua, nedströms, är regionens handelsstad och hem för Museu do Douro. Söder om floden klättrar Lamego upp till barockhelgedomen Nossa Senhora dos Remédios, som nås via en trappa med 686 steg. Utsiktsplatserna är en del av upplevelsen: Casal de Loivos ovanför Pinhão, São Leonardo de Galafura ovanför Régua och São Salvador do Mundo nära São João da Pesqueira.\n\nDe flesta besökare kommer över dagen från Porto och ser dalen från en båt eller en buss. Att stanna förändrar den. Quintas öppnar sina dörrar för provningar, ljuset på terrasserna skiftar från timme till timme, och kvällarna är tysta på ett sätt som dagsbesökarna aldrig får uppleva. Dalen är som mest levande under skörden, från slutet av augusti in i oktober, när druvorna fortfarande plockas för hand på de brantaste sluttningarna och, på vissa quintas, trampas med fötterna i lagares av granit.\n\nDet är också en plats av ytterligheter. Somrarna i Cima Corgo hör till de varmaste i Portugal, och vintrarna är kalla, med morgondimma som fyller dalen. Våren, med vinstockarna i nytt löv, och hösten, när terrasserna skiftar i rött och guld, är de årstider lokalborna själva skulle välja.",
     "highlights": [
-      "Kulturlandskap klassat som världsarv av UNESCO",
-      "Hundraåriga portvinsgårdar",
-      "Flodstäderna Pinhão och Régua",
-      "Skördesäsongen (september)",
-      "Båtkryssningar och järnvägen på Linha do Douro"
-    ]
+      "Vinregionen Alto Douro, på Unescos världsarvslista sedan 2001",
+      "Quintas för portvin och Dourovin som tar emot besökare för provning",
+      "Pinhão, Régua och barocktrappan i Lamego",
+      "Järnvägen Linha do Douro och det historiska tåget från Régua till Tua",
+      "Skördesäsongen, från slutet av augusti in i oktober"
+    ],
+    "seoTitle": "Dourodalen: Quintas, Vin och Boende | Portugal Active",
+    "seoDescription": "Terrasserade vingårdar, portvinsquintas och flodstäder i Unescos Alto Douro. Vad du ska se i Dourodalen, när du ska åka och var du bor.",
+    "howToGetHere": "Porto flygplats (OPO) cirka 1 h 20 min till Régua och 1 h 45 min till Pinhão via A4 och A24. Tåg på Linha do Douro från Porto São Bento: omkring 2 h till Régua, 2 h 30 min till Pinhão.",
+    "bestTimeToVisit": "Slutet av april till juni för gröna vingårdar och mild värme. Slutet av augusti in i oktober för skörden. Juli och augusti är mycket varma i dalen.",
+    "whatToExpect": "Ett vinlandskap i drift, med terrasser, quintas och små flodstäder. Långsamma vägar, vida vyer och långa luncher. Heta somrar, kalla vintrar.",
+    "whereToStayIntro": "Våra hem i Douro sträcker sig från den grönare nedre dalen, inom en timme från Porto, till hjärtat av Cima Corgo runt Pinhão. Bland dem finns vingårdshus i Casal de Loivos och ovanför Alijó, hus vid floden nära Tua med egna bryggor och quintas på kullarna med egna vinstockar. De rymmer från åtta till arton gäster, och flera har uppvärmda pooler, vilket spelar roll i en dal där de bästa månaderna är våren och hösten. Vår concierge ordnar besök på quintas, båtturer och skördedagar, och kan ordna en privat kock.",
+    "journalSectionTitle": "Ur dagboken: berättelser från Douro",
+    "thingsToDoIntro": "Douro belönar den som tar det lugnt. Avstånden ser korta ut på kartan, men vägarna följer dalens konturer, och de bästa dagarna kombinerar en quinta, en utsiktsplats och en lång lunch snarare än en checklista. Så här skulle vi lägga upp en första vistelse på fyra eller fem dagar.",
+    "thingsToDo": [
+      {
+        "heading": "Flodstäderna",
+        "items": [
+          {
+            "name": "Pinhão",
+            "category": "Stad",
+            "description": "Liten stad i hjärtat av Cima Corgo. Järnvägsstationen är klädd med tjugofyra azulejopaneler från 1937 som visar skörden, rabelobåtarna och dalens landskap."
+          },
+          {
+            "name": "Peso da Régua",
+            "category": "Stad",
+            "description": "Dalens handelscentrum och startpunkten för järnvägens sträcka längs floden. Museu do Douro berättar historien om regionen, dess vin och dess människor."
+          },
+          {
+            "name": "Lamego",
+            "category": "Kulturarv",
+            "description": "Katedralstad söder om Régua, med ett fint museum och barockhelgedomen Nossa Senhora dos Remédios högst upp i en trappa med 686 steg."
+          },
+          {
+            "name": "Casa de Mateus",
+            "category": "Kulturarv",
+            "description": "Nära Vila Real, en halvtimme norr om Régua. En barockherrgård från 1700-talet med formella trädgårdar, huset som finns avbildat på etiketten till Mateus Rosé."
+          }
+        ]
+      },
+      {
+        "heading": "Utsiktsplatserna",
+        "items": [
+          {
+            "name": "Casal de Loivos",
+            "category": "Utsiktsplats",
+            "description": "Ovanför Pinhão, utsikten över flodens krök och terrasserna i Cima Corgo som syns på de flesta fotografier av Douro."
+          },
+          {
+            "name": "São Leonardo de Galafura",
+            "category": "Utsiktsplats",
+            "description": "Ovanför Régua, en utsiktsplats som författaren Miguel Torga gjorde berömd, med blick längs en lång sträcka av floden."
+          },
+          {
+            "name": "São Salvador do Mundo",
+            "category": "Utsiktsplats",
+            "description": "Nära São João da Pesqueira, en kulltopp med små kapell ovanför ravinen Cachão da Valeira."
+          }
+        ]
+      },
+      {
+        "heading": "Vinet och floden",
+        "items": [
+          {
+            "name": "Besök på quintas",
+            "category": "Vin",
+            "description": "Många quintas tar emot besökare för provning, från portvinshus med århundraden av historia till små familjeproducenter som gör röda och vita Dourovin. Boka i förväg, särskilt under skörden."
+          },
+          {
+            "name": "Skörden",
+            "category": "Vin",
+            "description": "Från slutet av augusti in i oktober. Vissa quintas välkomnar gäster att plocka på förmiddagen och, på kvällen, trampa druvor med fötterna i lagares av granit."
+          },
+          {
+            "name": "Turer med rabelobåt",
+            "category": "Flod",
+            "description": "Korta turer från Pinhão och Régua i traditionella rabelobåtar, de flatbottnade farkoster som en gång fraktade portvinsfat ner till Gaia."
+          }
+        ]
+      },
+      {
+        "heading": "Längre bort",
+        "items": [
+          {
+            "name": "Linha do Douro",
+            "category": "Transport",
+            "description": "Järnvägen från Régua till Pocinho går längs floden under större delen av sträckan, genom terrasser och förbi quintas som ingen väg når direkt."
+          },
+          {
+            "name": "Côadalen",
+            "category": "Arkeologi",
+            "description": "I Douro Superior, paleolitiska hällristningar under bar himmel, på Unescos världsarvslista sedan 1998, med Museu do Côa ovanför sammanflödet med Douro."
+          }
+        ]
+      }
+    ],
+    "seasons": {
+      "spring": "Mars till maj. Vinstockarna knoppas i slutet av mars och terrasserna grönskar under april och maj. Maxtemperaturerna stiger från strax under tjugo till runt tjugofem grader, med enstaka regn. I slutet av februari och i mars blommar mandelträden i Douro Superior. En av de två bästa tiderna för ett besök.",
+      "summer": "Juni till augusti. Varmt och torrt. I juli och augusti passerar Cima Corgo regelbundet trettiofem grader och kan överstiga fyrtio. Morgnar och kvällar är till för promenader och besök; mitt på dagen gäller skugga, poolen och floden. Det historiska tåget går från juni.",
+      "autumn": "September till november. Skörden pågår från slutet av augusti in i början av oktober, beroende på år och på vingårdens höjd över havet. Därefter skiftar löven i rött, koppar och guld, oftast som vackrast i slutet av oktober och början av november. Temperaturerna sjunker från strax under trettio till runt femton grader.",
+      "winter": "December till februari. Kallt och stilla, med frost på de högre sluttningarna och dimma som fyller dalen på morgnarna. Många quintas har kortare öppettider, men ljuset är klart under soliga dagar, brasorna är tända och dalen tillhör dem som bor där.",
+      "bestForFirstTime": "Slutet av september till mitten av oktober, eller maj. Hösten ger slutet av skörden och vingårdar som skiftar färg; maj ger gröna terrasser, långa dagar och en värme som ännu inte har blivit plågsam. Båda undviker högsommaren."
+    },
+    "transport": {
+      "byAir": "Flygplatsen Francisco Sá Carneiro i Porto är ankomstpunkten för nästan alla besökare: omkring en timme och tjugo minuter med bil till Régua och en timme och tre kvart till Pinhão. Vi ordnar privata transfers till våra hem.",
+      "byTrain": "Linha do Douro går från Porto São Bento och Campanhã till Régua på omkring två timmar, till Pinhão på ungefär två och en halv och till Pocinho på ungefär tre timmar och tjugo minuter. Mellan juni och oktober går ett historiskt tåg vissa dagar mellan Régua och Tua.",
+      "byCar": "Från Porto når du Régua via A4 och sedan A24 på drygt en timme. Därifrån följer N222 flodens södra strand till Pinhão, den bilfärd som de flesta besökare kommer för. Vägarna mellan quintas är smala och slingriga, och resorna tar längre tid än kartan antyder. Förare av bilar med utländska registreringsskyltar bör registrera sig hos en elektronisk vägtullstjänst före ankomsten.",
+      "gettingAround": "En bil, eller en chaufför, är i det närmaste nödvändig. För provningsdagar är en privat chaufför det förnuftiga valet, och conciergen kan ordna en. Båtar och tåget är det bästa sättet att se själva floden, och på våren och hösten är de gamla stigarna mellan byar och vingårdar fina att vandra på."
+    },
+    "eatDrinkIntro": "Köket i Douro är inlandets och generöst: killing och lamm stekta i vedugn, charkuterier från bergen, olivolja från Douro Superior och bröd bakat på samma sätt som det alltid har bakats. Regionens restauranger sträcker sig från matsalar på quintas med utsikt över vinstockarna till små tascas i flodstäderna, och en handfull kockar har gjort dalen till ett resmål i sig. Vinet är huvudsaken: portvin, förstås, men också de röda och vita Dourovin som i dag hör till de mest respekterade i Portugal. Vår concierge bokar de bord som blir fullbokade först.",
+    "restaurants": [
+      {
+        "name": "DOC",
+        "category": "Fine dining",
+        "description": "Kocken Rui Paulas restaurang vid flodstranden i Folgosa, mellan Régua och Pinhão, med en terrass över vattnet."
+      },
+      {
+        "name": "Bomfim 1896",
+        "category": "Quinta",
+        "description": "På familjen Symingtons Quinta do Bomfim i Pinhão, på övervåningen i ett gammalt vinlager, med vedeldat kök och utsikt över floden."
+      },
+      {
+        "name": "Castas e Pratos",
+        "category": "Regional",
+        "description": "I Peso da Régua, nära stationen, med modernt Dourokök och en lång lista med dalens viner."
+      },
+      {
+        "name": "Quinta da Pacheca",
+        "category": "Quinta",
+        "description": "Vingård strax utanför Régua, med en restaurang bland vinstockarna och provningar i källarna."
+      }
+    ],
+    "specialties": [
+      {
+        "name": "Portvin",
+        "category": "Vin",
+        "description": "Det starkvin som gjorde dalen berömd, från unga ruby och vita portviner till lagrade tawny och årgångsportviner från de bästa åren. Att prova det där det görs är en annan upplevelse."
+      },
+      {
+        "name": "Röda och vita Douro DOC",
+        "category": "Vin",
+        "description": "Viner utan förstärkning från samma vingårdar, gjorda på druvor som Touriga Nacional, Touriga Franca och Tinta Roriz för de röda, och Rabigato, Viosinho och Gouveio för de vita."
+      },
+      {
+        "name": "Cabrito assado",
+        "category": "Rätt",
+        "description": "Killing stekt i vedugn med potatis, söndagarnas och festernas rätt i hela regionen."
+      },
+      {
+        "name": "Bola de Lamego",
+        "category": "Rätt",
+        "description": "Ett bröd från Lamego bakat runt en fyllning av charkuterier, som äts på picknickar, marknader och vid skördeluncher."
+      }
+    ],
+    "experiencesIntro": "Det som följer är upplevelser som vår concierge ordnar för gäster som bor i våra hem i Douro. De flesta kräver en eller två dagars varsel, mer under skörden, och alla kan kombineras med en privat chaufför så att ingen behöver köra efter en provning.",
+    "experiences": [
+      {
+        "name": "Besök och provning hos producenten på en quinta",
+        "description": "En förmiddag på en quinta i drift, med promenad bland terrasserna och provning av portvin och Dourovin tillsammans med familjen eller vinmakaren, följd av lunch på gården när det går.",
+        "duration": "Halvdag",
+        "season": "Året runt"
+      },
+      {
+        "name": "Skördedag",
+        "description": "Plockning på terrasserna på förmiddagen och, på de quintas som fortfarande gör det, druvtrampning med fötterna i en lagar av granit på kvällen.",
+        "duration": "Heldag",
+        "season": "Slutet av augusti till början av oktober"
+      },
+      {
+        "name": "Rabelobåt på floden",
+        "description": "En timme på Douro från Pinhão i en traditionell rabelo, eller en längre privat båttur från huset där det finns en brygga.",
+        "duration": "En till tre timmar",
+        "season": "Mars till november"
+      },
+      {
+        "name": "Det historiska tåget från Régua till Tua",
+        "description": "Ett veterantåg med tidstypiska vagnar längs floden, med musik och ett glas portvin ombord. Det går vissa dagar på sommaren och tidig höst och blir snabbt slutsålt.",
+        "duration": "Halvdag",
+        "season": "Juni till oktober"
+      },
+      {
+        "name": "Utsiktsplatserna med privat chaufför",
+        "description": "Casal de Loivos, São Leonardo de Galafura och São Salvador do Mundo på en dag, med lunch i en flodstad.",
+        "duration": "Heldag",
+        "season": "Året runt"
+      },
+      {
+        "name": "Hällristningarna i Côadalen",
+        "description": "Ett guidat besök vid de paleolitiska hällristningarna under bar himmel i Côa och på Museu do Côa. En lång dag in i Douro Superior, och en givande sådan.",
+        "duration": "Heldag",
+        "season": "Året runt"
+      }
+    ],
+    "eventsIntro": "Året i Douro följer vinstocken. De veckor som betyder mest är skörden och, i Lamego, vallfärden i början av september; mandelblomningen och det historiska tåget markerar besökssäsongens början och slut.",
+    "events": [
+      {
+        "name": "Vindima (skörden)",
+        "dates": "Slutet av augusti till början av oktober",
+        "description": "De mest intensiva och stämningsfulla veckorna i dalen. Quintas och hem blir tidigt fullbokade, och många gårdar erbjuder skördeupplevelser."
+      },
+      {
+        "name": "Festas de Nossa Senhora dos Remédios",
+        "dates": "Slutet av augusti till 8 september, Lamego",
+        "description": "Lamegos stora vallfärd och stadsfest, som når sin höjdpunkt i processionen den 8 september."
+      },
+      {
+        "name": "Comboio Histórico do Douro",
+        "dates": "Juni till oktober, vissa dagar",
+        "description": "Historiskt tåg mellan Régua och Tua, med tidstypiska vagnar och portvin ombord."
+      },
+      {
+        "name": "Mandelblomningen",
+        "dates": "Slutet av februari till mars",
+        "description": "Mandelträden i Douro Superior blommar i vitt och rosa runt Torre de Moncorvo och Vila Nova de Foz Côa."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Hur många dagar behöver jag i Dourodalen?",
+        "answer": "Tre nätter är minimum för att känna dalen och inte bara se den. Fyra eller fem ger utrymme för två eller tre besök på quintas, en dag på floden eller med järnvägen och en dag för Lamego eller utsiktsplatserna utan att stressa."
+      },
+      {
+        "question": "När är bästa tiden att besöka Douro?",
+        "answer": "Maj, och från mitten av september till slutet av oktober. Skörden pågår från slutet av augusti in i början av oktober, och slutet av oktober och början av november bjuder på höstfärgerna. Juli och augusti är mycket varma i dalen."
+      },
+      {
+        "question": "Hur tar jag mig från Porto till Dourodalen?",
+        "answer": "Med bil når du Régua via A4 och A24 på omkring en timme och tjugo minuter från Portos flygplats. Med tåg tar Linha do Douro från São Bento omkring två timmar till Régua och två och en halv till Pinhão. Flodkryssningar avgår också från Porto, men tar en hel dag eller mer."
+      },
+      {
+        "question": "Vad är skillnaden mellan portvin och Dourovin?",
+        "answer": "Båda kommer från samma avgränsade region. Portvin förstärks med druvsprit under jäsningen, vilket stoppar den och gör vinet sött och starkt. Douro DOC-viner är röda och vita viner utan förstärkning, gjorda på många av samma druvor."
+      },
+      {
+        "question": "Behöver jag bil i Douro?",
+        "answer": "Det hjälper, men för provningsdagar är en privat chaufför det bättre valet. Conciergen kan ordna en, liksom båtturer och tågbiljetter."
+      },
+      {
+        "question": "Var är det bäst att bo i Dourodalen?",
+        "answer": "Det beror på resan. Cima Corgo runt Pinhão och Alijó är portvinslandets hjärta och har det mest dramatiska landskapet. Den nedre dalen mot Amarante och Baião är grönare och närmare Porto. Våra hem finns i båda."
+      },
+      {
+        "question": "Passar Dourodalen för barnfamiljer?",
+        "answer": "Ja, med ett hus som har pool. Somrarna är varma, så dagarna tillbringas bäst mellan poolen och korta utflykter på morgonen eller kvällen: en båttur, tåget, en quinta med plats att ströva omkring."
+      },
+      {
+        "question": "Kan jag besöka quintas utan bokning?",
+        "answer": "Vissa quintas tar emot besökare utan bokning, men de flesta provningar sker efter överenskommelse, och under skörden blir många fullbokade flera veckor i förväg. Conciergen bokar besök i förväg."
+      }
+    ],
+    "ownersCTA": {
+      "headline": "Äger du ett hem i Douro?",
+      "body": "Portugal Active förvaltar premiumfastigheter i hela norra Portugal: fullständig förvaltning, marknadsföring, concierge och underhåll, drivet med hotellstandard. Om du äger en quinta eller ett hus i Douro pratar vi gärna med dig.",
+      "cta": "Prata med vårt team",
+      "url": "https://www.portugalactive.com/management/en/?utm_source=destinations&utm_medium=cta&utm_campaign=douro"
+    }
   },
   "lisbon": {
     "name": "Lisboa",
