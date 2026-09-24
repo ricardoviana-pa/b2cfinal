@@ -34,8 +34,11 @@ export const IMAGES = {
   contactHero: '/experiences/pa-contact-villa-twilight.webp',
 
   // Logo
-  logoWhite: '/brand/pa-logo-white.webp',
-  logoColor: '/brand/pa-logo-dark.webp',
+  // 211×120: the header shows the logo at 32-40 px tall, so this covers 3×
+  // screens. The 2048 px masters (kept for structured data) were 34 KB and,
+  // being the first <img> React meets, got preloaded ahead of the hero photo.
+  logoWhite: '/brand/pa-logo-white-240.webp',
+  logoColor: '/brand/pa-logo-dark-240.webp',
 
   // Press logos
   pressForbes: '/press/forbes.webp',

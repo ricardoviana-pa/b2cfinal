@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { toCatalogCard, recentGuestFeedback } from './services/property-catalog';
+import fs from 'fs';
+import path from 'path';
+import { toCatalogCard, recentGuestFeedback, CATALOG_AMENITY_PATTERN } from './services/property-catalog';
 
 describe('public catalogue cards', () => {
   it('keeps filter, group and display data without the full listing or precise address', () => {
@@ -14,6 +16,20 @@ describe('public catalogue cards', () => {
     expect(card).not.toHaveProperty('description');
     expect(card).not.toHaveProperty('reviews');
     expect(card).not.toHaveProperty('internalNotes');
+  });
+  it('ships only the amenities the listing filters on', () => {
+    const card = toCatalogCard({ slug: 'v', amenities: {
+      property: ['Outdoor pool', 'Toaster', 'Hot tub', 'Pets allowed', 'Sea view', 'Hangers'], kitchen: ['Kettle'],
+    } });
+    expect(card.amenities).toEqual({ property: ['Outdoor pool', 'Hot tub', 'Pets allowed', 'Sea view'] });
+  });
+  it('keeps every amenity a collection filters on', () => {
+    const raw = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'client/src/data/collections.json'), 'utf8'));
+    const list = Array.isArray(raw) ? raw : raw.collections;
+    for (const c of list) {
+      if (c.filter?.type !== 'amenity') continue;
+      for (const word of String(c.filter.pattern).split('|')) expect(CATALOG_AMENITY_PATTERN.test(word), `${c.slug}: ${word}`).toBe(true);
+    }
   });
   it('handles missing images and invalid coordinates', () => {
     expect(toCatalogCard({ slug: 'partner', address: { lat: null, lng: 2 } })).toEqual({ slug: 'partner', images: [], amenities: {} });
