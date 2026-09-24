@@ -26,7 +26,8 @@ const CHECKOUT = process.env.CHECKOUT || iso(new Date(monday.getTime() + 5 * 864
 const THROTTLE_MS = Number(process.env.THROTTLE_MS || 1500);
 
 const raw = JSON.parse(fs.readFileSync(new URL("../client/src/data/properties.json", import.meta.url), "utf8"));
-const props = (raw.properties || raw).filter((p) => p.guestyId || p.listingId);
+// Casas de portfolio (isPortfolio) são só montra e nunca têm preço online
+const props = (raw.properties || raw).filter((p) => (p.guestyId || p.listingId) && !p.isPortfolio);
 
 const rows = { live: [], base: [], unavailable: [], error: [] };
 console.log(`Quote health · ${HOST} · ${CHECKIN} → ${CHECKOUT} · ${props.length} casas · ${THROTTLE_MS}ms entre pedidos\n`);
