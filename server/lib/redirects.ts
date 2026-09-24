@@ -399,22 +399,12 @@ function resolvePath(path: string): string | null {
  */
 const SUPPORTED_LANGS = new Set(["en", "pt", "fr", "es", "it", "fi", "de", "nl", "sv"]);
 
-export function legacyRedirects(req: Request, res: Response, next: NextFunction) {
-  if (req.method !== "GET" && req.method !== "HEAD") return next();
-
-  const rawPath = req.path;
-
-  // Skip server-internal paths
-  if (
-    rawPath.startsWith("/api/") ||
-    rawPath.startsWith("/trpc/") ||
-    rawPath.startsWith("/__") ||
-    rawPath === "/sitemap.xml" ||
-    rawPath === "/robots.txt"
-  ) {
-    return next();
-  }
-
+/**
+ * Where a request path would be 301-redirected by legacyRedirects, or null if
+ * it is served as is. Exported so the sitemap can leave out any URL that
+ * redirects — a sitemap must list only final, 200 URLs.
+ */
+export function redirectTarget(rawPath: string): string | null {
   // Try bare path first (covers most legacy URLs)
   let target = resolvePath(rawPath);
 
@@ -434,10 +424,28 @@ export function legacyRedirects(req: Request, res: Response, next: NextFunction)
     }
   }
 
-  if (!target) return next();
+  if (!target || target === rawPath) return null;
+  return target;
+}
 
-  // Don't redirect to self
-  if (target === rawPath) return next();
+export function legacyRedirects(req: Request, res: Response, next: NextFunction) {
+  if (req.method !== "GET" && req.method !== "HEAD") return next();
+
+  const rawPath = req.path;
+
+  // Skip server-internal paths
+  if (
+    rawPath.startsWith("/api/") ||
+    rawPath.startsWith("/trpc/") ||
+    rawPath.startsWith("/__") ||
+    rawPath === "/sitemap.xml" ||
+    rawPath === "/robots.txt"
+  ) {
+    return next();
+  }
+
+  const target = redirectTarget(rawPath);
+  if (!target) return next();
 
   // Preserve query string (e.g., utm_*) on redirect
   const query = req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : "";
