@@ -18,6 +18,12 @@ describe('sitemap lists only URLs that are served as is', () => {
     expect(STATIC_SITEMAP_PAGES.map((p) => p.loc)).not.toContain('/adventures');
   });
 
+  it('flags a services.json slug that the redirect table retired (private-chauffeur)', () => {
+    // services.json still lists private-chauffeur; the sitemap handler must
+    // drop it because the redirect table sends it to airport-shuttle.
+    expect(redirectTarget('/es/services/private-chauffeur')).toBe('/es/services/airport-shuttle');
+  });
+
   it('redirectTarget answers null for a page served as is', () => {
     expect(redirectTarget('/es/homes')).toBeNull();
     expect(redirectTarget('/en/corporate-retreats')).toBeNull();
