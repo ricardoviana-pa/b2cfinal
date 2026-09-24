@@ -15,7 +15,9 @@ const files = ['client/src/data/blog.json', ...['pt', 'es', 'fr', 'de', 'nl', 'i
 describe('Journal links to homes', () => {
   it.each(files)('%s links only to homes that exist', (file) => {
     const text = fs.readFileSync(path.join(root, file), 'utf8');
-    const broken = [...text.matchAll(/\/homes\/([a-z0-9-]+)/g)].map((m) => m[1]).filter((slug) => !live.has(slug));
+    // Links only: "](/homes/slug)" in markdown. Partner photos live under
+    // /homes/photos/… and are images, not home pages.
+    const broken = [...text.matchAll(/\]\(\/homes\/([a-z0-9-]+)[)?#]/g)].map((m) => m[1]).filter((slug) => !live.has(slug));
     expect([...new Set(broken)]).toEqual([]);
   });
 
