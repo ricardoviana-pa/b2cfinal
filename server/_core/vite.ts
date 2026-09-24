@@ -259,7 +259,7 @@ async function getDestinationBySlugCached(slug: string, lang: string): Promise<a
     const name = ov?.name || base.name || slug;
     // Curated per-destination title, per locale, falling back to English.
     const seoTitle = (ov?.seoTitle || base.seoTitle || "").trim();
-    const desc = (ov?.seoDescription || ov?.description || base.seoDescription || base.description || base.tagline || "").replace(/\s+/g, " ").trim().slice(0, 155);
+    const desc = truncateWords(ov?.seoDescription || ov?.description || base.seoDescription || base.description || base.tagline || "", 155);
     return desc ? { ...deepMerge(base, ov || {}), name, desc, seoTitle: seoTitle || undefined } : null;
   } catch (err) {
     console.error("[Meta] Failed to load destination data for meta injection:", err);
@@ -733,13 +733,26 @@ function decodeEntities(s: string): string {
     .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ');
 }
 
-/** Cut at a word boundary, never mid-word ("Vieir"), with an ellipsis. */
+/** Cut a snippet to `max` characters without leaving half a thought: end on
+ *  the last whole sentence when one fills most of the budget, else at a word
+ *  boundary with an ellipsis — never mid-word ("e as nossa", auditoria
+ *  set/2026). */
 function truncateWords(s: string, max: number): string {
   const clean = String(s ?? '').replace(/\s+/g, ' ').trim();
   if (clean.length <= max) return clean;
+  const window = clean.slice(0, max);
+  const sentenceEnd = Math.max(window.lastIndexOf('. '), window.lastIndexOf('! '), window.lastIndexOf('? '));
+  if (sentenceEnd > max * 0.6) return window.slice(0, sentenceEnd + 1);
   const cut = clean.slice(0, max - 1);
   const at = cut.lastIndexOf(' ');
   return (at > max * 0.6 ? cut.slice(0, at) : cut).replace(/[\s,;:–—-]+$/, '') + '…';
+}
+
+/** Close a free-text fragment (an imported tagline) with a full stop so the
+ *  sentence that follows doesn't run into it ("beach close Book direct"). */
+function asSentence(s: string): string {
+  const clean = String(s ?? '').replace(/\s+/g, ' ').trim();
+  return !clean || /[.!?…]$/.test(clean) ? clean : `${clean}.`;
 }
 
 const DEFAULT_OG_IMAGE = 'https://www.portugalactive.com/hero/home-cliff-villa.webp';
@@ -1373,7 +1386,7 @@ const PROPERTY_TITLE: Record<string, (p: { name: string; bedrooms?: number | nul
  *  a descriptive sentence. Closes with a localized CTA. Trimmed to 155 chars. */
 const PROPERTY_DESCRIPTION: Record<string, (p: { tagline?: string | null; bedrooms?: number | null; maxGuests?: number | null; destination: string; name: string }) => string> = {
   en: ({ tagline, bedrooms, maxGuests, destination, name }) => {
-    const base = tagline || `${bedrooms ? `${bedrooms}-bedroom ` : ''}luxury villa in ${destLabel(destination, 'en')}${maxGuests ? ` for up to ${maxGuests} guests` : ''}.`;
+    const base = (tagline && asSentence(tagline)) || `${bedrooms ? `${bedrooms}-bedroom ` : ''}luxury villa in ${destLabel(destination, 'en')}${maxGuests ? ` for up to ${maxGuests} guests` : ''}.`;
     return `${name}. ${base} Book direct with Portugal Active.`;
   },
   // Imported taglines can remain English. On translated routes use the
@@ -1427,15 +1440,15 @@ const EXPERIENCE_TITLE: Record<string, (e: { name: string; destination?: string 
 
 /** Experience description: preserve tagline if present; otherwise generate. */
 const EXPERIENCE_DESCRIPTION: Record<string, (e: { name: string; tagline?: string | null; duration?: string | null; destination?: string | null }) => string> = {
-  en: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` in ${destLabel(destination, 'en')}` : ''}. Guided by local experts. Book direct with Portugal Active.`,
-  pt: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` em ${destLabel(destination, 'pt')}` : ''}. Guiado por especialistas locais. Reserve direto com a Portugal Active.`,
-  es: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` en ${destLabel(destination, 'es')}` : ''}. Guiado por expertos locales. Reserva directa con Portugal Active.`,
-  fr: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` à ${destLabel(destination, 'fr')}` : ''}. Guidé par des experts locaux. Réservation directe avec Portugal Active.`,
-  de: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` in ${destLabel(destination, 'de')}` : ''}. Geführt von lokalen Experten. Direkt bei Portugal Active buchen.`,
-  it: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` a ${destLabel(destination, 'it')}` : ''}. Guidato da esperti locali. Prenota diretto con Portugal Active.`,
-  nl: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` in ${destLabel(destination, 'nl')}` : ''}. Begeleid door lokale experts. Direct boeken bij Portugal Active.`,
-  fi: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` kohteessa ${destLabel(destination, 'fi')}` : ''}. Paikallisten asiantuntijoiden opastama. Varaa suoraan Portugal Activesta.`,
-  sv: ({ name, tagline, duration, destination }) => tagline || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` i ${destLabel(destination, 'sv')}` : ''}. Guidad av lokala experter. Boka direkt med Portugal Active.`,
+  en: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` in ${destLabel(destination, 'en')}` : ''}. Guided by local experts. Book direct with Portugal Active.`,
+  pt: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` em ${destLabel(destination, 'pt')}` : ''}. Guiado por especialistas locais. Reserve direto com a Portugal Active.`,
+  es: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` en ${destLabel(destination, 'es')}` : ''}. Guiado por expertos locales. Reserva directa con Portugal Active.`,
+  fr: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` à ${destLabel(destination, 'fr')}` : ''}. Guidé par des experts locaux. Réservation directe avec Portugal Active.`,
+  de: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` in ${destLabel(destination, 'de')}` : ''}. Geführt von lokalen Experten. Direkt bei Portugal Active buchen.`,
+  it: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` a ${destLabel(destination, 'it')}` : ''}. Guidato da esperti locali. Prenota diretto con Portugal Active.`,
+  nl: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` in ${destLabel(destination, 'nl')}` : ''}. Begeleid door lokale experts. Direct boeken bij Portugal Active.`,
+  fi: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` kohteessa ${destLabel(destination, 'fi')}` : ''}. Paikallisten asiantuntijoiden opastama. Varaa suoraan Portugal Activesta.`,
+  sv: ({ name, tagline, duration, destination }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}${destination ? ` i ${destLabel(destination, 'sv')}` : ''}. Guidad av lokala experter. Boka direkt med Portugal Active.`,
 };
 
 /** Service title. */
@@ -1452,15 +1465,15 @@ const SERVICE_TITLE: Record<string, (s: { name: string }) => string> = {
 };
 
 const SERVICE_DESCRIPTION: Record<string, (s: { name: string; tagline?: string | null; duration?: string | null }) => string> = {
-  en: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Add to any Portugal Active villa stay. Book alongside your villa.`,
-  pt: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Acrescente a qualquer estadia Portugal Active. Reserve junto com a sua casa.`,
-  es: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Añade a cualquier estancia Portugal Active. Reserva junto con tu villa.`,
-  fr: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Ajoutez à tout séjour Portugal Active. Réservez avec votre villa.`,
-  de: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Zu jedem Portugal-Active-Aufenthalt hinzufügen. Zusammen mit Ihrer Villa buchen.`,
-  it: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Aggiungi a qualsiasi soggiorno Portugal Active. Prenota insieme alla tua villa.`,
-  nl: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Voeg toe aan elk Portugal Active-verblijf. Boek samen met je villa.`,
-  fi: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Lisää mihin tahansa Portugal Active -huvilalomaan. Varaa huvilasi kanssa.`,
-  sv: ({ name, tagline, duration }) => tagline || `${name}${duration ? ` — ${duration}` : ''}. Lägg till vid valfri Portugal Active-vistelse. Boka tillsammans med din villa.`,
+  en: ({ name, tagline, duration }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}. Add to any Portugal Active villa stay. Book alongside your villa.`,
+  pt: ({ name, tagline, duration }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}. Acrescente a qualquer estadia Portugal Active. Reserve junto com a sua casa.`,
+  es: ({ name, tagline, duration }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}. Añade a cualquier estancia Portugal Active. Reserva junto con tu villa.`,
+  fr: ({ name, tagline, duration }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}. Ajoutez à tout séjour Portugal Active. Réservez avec votre villa.`,
+  de: ({ name, tagline, duration }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}. Zu jedem Portugal-Active-Aufenthalt hinzufügen. Zusammen mit Ihrer Villa buchen.`,
+  it: ({ name, tagline, duration }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}. Aggiungi a qualsiasi soggiorno Portugal Active. Prenota insieme alla tua villa.`,
+  nl: ({ name, tagline, duration }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}. Voeg toe aan elk Portugal Active-verblijf. Boek samen met je villa.`,
+  fi: ({ name, tagline, duration }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}. Lisää mihin tahansa Portugal Active -huvilalomaan. Varaa huvilasi kanssa.`,
+  sv: ({ name, tagline, duration }) => (tagline && asSentence(tagline)) || `${name}${duration ? ` — ${duration}` : ''}. Lägg till vid valfri Portugal Active-vistelse. Boka tillsammans med din villa.`,
 };
 
 /** Blog title suffix — blog content is written in English, so we keep the
@@ -1926,7 +1939,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
           const rawDesc = descFn({ tagline: prop.tagline, bedrooms: prop.bedrooms, maxGuests: prop.maxGuests, destination: prop.destination, name: displayName });
           dynamicMeta = {
             title,
-            description: rawDesc.replace(/\s+/g, ' ').trim().slice(0, 155),
+            description: truncateWords(rawDesc, 155),
             image: Array.isArray(prop.images) && prop.images.length > 0 ? prop.images[0] : undefined,
             url: `${BOT_BASE_URL}/${lang}/homes/${prop.slug}`,
             type: 'place',
@@ -1949,7 +1962,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
             const suffix = BLOG_SUFFIX[lang] ?? BLOG_SUFFIX.en;
             dynamicMeta = {
               title: post.seoTitle || `${post.title}${suffix}`,
-              description: (post.seoDescription || post.excerpt || '').replace(/\s+/g, ' ').trim().slice(0, 155),
+              description: truncateWords((post.seoDescription || post.excerpt || ''), 155),
               image: post.coverImage ?? post.featuredImage ?? undefined,
               url: `${BOT_BASE_URL}/${lang}/blog/${post.slug}`,
               type: 'article',
@@ -2036,7 +2049,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
             }
             dynamicMeta = {
               title: titleFn({ name: svc.name }),
-              description: descFn({ name: svc.name, tagline: svc.tagline, duration: svc.duration }).replace(/\s+/g, ' ').trim().slice(0, 155),
+              description: truncateWords(descFn({ name: svc.name, tagline: svc.tagline, duration: svc.duration }), 155),
               image: svcImage,
               url: `${BOT_BASE_URL}/${lang}/services/${svc.slug}`,
             };
@@ -2068,7 +2081,7 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
             }
             dynamicMeta = {
               title: titleFn({ name: exp.name, destination }),
-              description: descFn({ name: exp.name, tagline: exp.tagline, duration: exp.duration, destination }).replace(/\s+/g, ' ').trim().slice(0, 155),
+              description: truncateWords(descFn({ name: exp.name, tagline: exp.tagline, duration: exp.duration, destination }), 155),
               image: expImage,
               url: `${BOT_BASE_URL}/${lang}${p}`,
               schemaDomId: `sd-experience-${exp.slug}`,
@@ -2126,6 +2139,8 @@ export const __testing = {
   injectSchemaGraph,
   PROPERTY_DESCRIPTION,
   DESTINATION_DESCRIPTION,
+  truncateWords,
+  asSentence,
   DESTINATION_TITLE,
   destLabel,
 };
