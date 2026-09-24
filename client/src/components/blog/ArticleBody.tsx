@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'wouter';
+import { parsePhotoBlock } from '@shared/articlePhotos';
+import { cdnSrcSet, cdnVariant } from '@/lib/images';
 
 export function renderInline(text: string): React.ReactNode[] {
   const parts: React.ReactNode[] = [];
@@ -33,6 +35,24 @@ export default function ArticleBody({ content }: { content: string }) {
     {content.split(/\n\s*\n/).map((block, index) => {
       const text = block.trim();
       if (!text) return null;
+      const photo = parsePhotoBlock(text);
+      if (photo) {
+        const resize = cdnVariant(photo.src);
+        return <figure key={index} className="my-10">
+          <img
+            src={resize ? resize(1280) : photo.src}
+            srcSet={cdnSrcSet(photo.src, [640, 960, 1280]) || undefined}
+            sizes="(min-width: 768px) 720px, 100vw"
+            alt={photo.alt}
+            width={1200}
+            height={800}
+            loading="lazy"
+            decoding="async"
+            className="w-full h-auto aspect-[3/2] object-cover rounded-lg bg-[#F5F1EB]"
+          />
+          {photo.caption && <figcaption className="mt-3 text-sm text-[#726D63]">{renderInline(photo.caption)}</figcaption>}
+        </figure>;
+      }
       if (text.startsWith('### ')) return <h3 key={index} className="text-[#1A1A18] font-display text-xl md:text-2xl mt-10 mb-4">{renderInline(text.slice(4))}</h3>;
       if (text.startsWith('## ')) return <h2 key={index} className="text-[#1A1A18] font-display text-2xl md:text-3xl mt-12 mb-5">{renderInline(text.slice(3))}</h2>;
       const lines = text.split('\n');

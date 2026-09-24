@@ -115,7 +115,7 @@ export function bokunSrcSet(url: string | undefined | null, widths: number[]): s
  * (Guesty, Bókun, Unsplash, Pexels), or null for hosts we can't (local files,
  * CloudFront, Webflow) — those keep their single original size.
  */
-function cdnVariant(url?: string | null): ((w: number) => string) | null {
+export function cdnVariant(url?: string | null): ((w: number) => string) | null {
   if (!url) return null;
   if (url.includes('assets.guesty.com/image/upload/') && !/\/image\/upload\/[a-z]{1,3}_/.test(url))
     return (w) => url.replace('/image/upload/', `/image/upload/w_${w},q_auto,f_auto/`);
