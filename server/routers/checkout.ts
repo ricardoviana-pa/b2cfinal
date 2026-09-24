@@ -42,6 +42,7 @@ import {
   sendCheckoutGuestConfirmation,
 } from "../services/transactional-email";
 import { appendReservationNote } from "../services/guesty-openapi-paypal";
+import { couponNoteLine } from "../services/coupon-note";
 
 const quoteSnapshotSchema = z.object({
   nightlyRate: z.number(),
@@ -242,10 +243,16 @@ export async function fireCheckoutPaidEmails(m: any, intentId: string): Promise<
         );
     }
     const hasPayload = m.reception || (Array.isArray(m.extras) && m.extras.length) || m.flex;
+    // O código promocional vai na MESMA nota (duas escritas em paralelo à nota
+    // da reserva perdem uma: o append é ler, juntar, gravar).
+    const couponLine = couponNoteLine(m.quote);
+    if (m.reservationId && !hasPayload && couponLine) {
+      void appendReservationNote(String(m.reservationId), couponLine);
+    }
     if (m.reservationId && hasPayload) {
       const lines = (Array.isArray(m.extras) ? m.extras : []).map((e: any) =>
         "- " + e.sku + (e.qty ? " x" + e.qty : "") + (e.days ? " " + e.days + " dias" : "") + (e.people ? " " + e.people + "p" : "") + " " + (e.amount != null ? e.amount + " EUR" : "(sob orcamento)") + (e.fulfillment === "needs_confirmation" ? " [CONFIRMAR 24H]" : ""));
-      const note = "SERVICOS DO CHECKOUT:\nRececao: " + (m.reception?.type === "hosted" ? "presencial" + (m.reception.late ? " apos 21h" : "") : "self check-in") + "\nFlex: " + (m.flex ? "SIM" : "nao") + "\n" + lines.join("\n");
+      const note = (couponLine ? couponLine + "\n" : "") + "SERVICOS DO CHECKOUT:\nRececao: " + (m.reception?.type === "hosted" ? "presencial" + (m.reception.late ? " apos 21h" : "") : "self check-in") + "\nFlex: " + (m.flex ? "SIM" : "nao") + "\n" + lines.join("\n");
       void appendReservationNote(String(m.reservationId), note);
     }
   } catch (err: any) {
