@@ -7,20 +7,23 @@ import { blogLanguages, blogLanguageRedirect, isBlogLanguagePublished } from '..
 import { __testing } from './_core/vite';
 import data from '../client/src/data/blog.json';
 import pt from '../client/src/data/blog.i18n/pt.json';
+import es from '../client/src/data/blog.i18n/es.json';
 import { corporatePlanning } from '../client/src/data/corporatePlanning';
 
 const corporate = data.articles.filter(a => 'commercialIntent' in a && a.commercialIntent === 'corporate');
 
 describe('corporate publication across language editions', () => {
-  it('publishes two original articles with a complete PT edition and unique covers', () => {
+  it('publishes two original articles with complete PT and ES editions and unique covers', () => {
     expect(corporate).toHaveLength(2);
     expect(new Set(corporate.map(a => a.coverImage)).size).toBe(2);
     for (const article of corporate) {
       expect(article.status).toBe('published');
-      expect(blogLanguages(article)).toEqual(['en', 'pt']);
-      const translated = pt[article.slug as keyof typeof pt];
-      expect(translated.title).not.toBe(article.title);
-      expect(translated.content.length).toBeGreaterThan(2000);
+      expect(blogLanguages(article)).toEqual(['en', 'pt', 'es']);
+      for (const edition of [pt, es] as Record<string, { title: string; content: string }>[]) {
+        const translated = edition[article.slug];
+        expect(translated.title).not.toBe(article.title);
+        expect(translated.content.length).toBeGreaterThan(2000);
+      }
       expect(article.content).toContain('/contact?subject=events&intent=corporate');
     }
   });
