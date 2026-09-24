@@ -80,7 +80,7 @@ export const FUNNEL_I18N: Record<EmailLang, FunnelStrings> = {
     subject4None: () => "Continuamos a ajudar com a sua estadia",
     preheader4: "Casas na mesma região, livres nas mesmas datas.",
     headline4: "Talvez a casa certa seja outra.",
-    body4: (g, h) => `${g} ainda não reservou ${h}, e está tudo bem: escolher a casa certa leva tempo. Escolhemos casas na mesma região, livres nas suas datas, que achamos que vai gostar.`,
+    body4: (g, h) => `${g} ainda não reservou ${h}, e está tudo bem: escolher a casa certa leva tempo. Escolhemos casas na mesma região, livres nas suas datas, que achamos que lhe vão agradar.`,
     body4None: (g, h) => `${g} ainda não reservou ${h}. Se as datas ou a casa não encaixam no que procura, diga-nos o que tem em mente e o nosso concierge encontra a opção certa para si.`,
     ownLink: (h) => `Voltar a ${h}`,
     lastNote: "Este é o último email que lhe enviamos sobre esta reserva.",

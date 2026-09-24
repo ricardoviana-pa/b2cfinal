@@ -778,7 +778,10 @@ ${optout}
 </body>
 </html>`;
 
-  await sendEmail(data.guestEmail, subject, html);
+  // Reply-To explícito para a caixa de reservas: o contacto 1 diz "Lemos
+  // todas as respostas", e isso só é verdade se a resposta cair na caixa que a
+  // equipa lê, mesmo que o EMAIL_FROM volte a apontar para outro remetente.
+  await sendEmail(data.guestEmail, subject, html, BOOKING_NOTIFICATION_EMAIL);
 }
 
 /** Alerta interno: abandono no pagamento de valor alto — ligar ao hóspede. */

@@ -7,6 +7,8 @@
  * 2. O cartão das casas alternativas do contacto 4 não mostra preço: o
  *    priceFrom do catálogo não é o preço daquelas datas e a unidade (noite ou
  *    pessoa) não está confirmada.
+ * 3. As respostas aos emails de recuperação vão sempre para a caixa de
+ *    reservas (Reply-To explícito), mesmo que o remetente mude.
  */
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { EMAIL_LANGS, type EmailLang } from "./email-i18n";
@@ -19,12 +21,17 @@ let email: typeof import("./transactional-email");
 beforeAll(async () => {
   // Resend está simulado acima: nada sai para a rede.
   vi.stubEnv("RESEND_API_KEY", "synthetic-mocked-email-only");
+  // Remetente de envio que não é a caixa lida pela equipa: o Reply-To tem de
+  // continuar a apontar para booking@.
+  vi.stubEnv("EMAIL_FROM", "Portugal Active <noreply@send.example.test>");
+  vi.stubEnv("BOOKING_NOTIFICATION_EMAIL", "");
   email = await import("./transactional-email");
 });
 beforeEach(() => fake.send.mockClear());
 afterAll(() => vi.unstubAllEnvs());
 
-const lastHtml = (): string => (fake.send.mock.calls.at(-1) as any)[0].html;
+const lastSend = (): any => (fake.send.mock.calls.at(-1) as any)[0];
+const lastHtml = (): string => lastSend().html;
 
 const base = {
   guestEmail: "guest@example.test",
@@ -111,5 +118,26 @@ describe("contacto 4: o cartão das alternativas não tem preço", () => {
     expect(html).not.toContain("€");
     expect(html).not.toMatch(/1[\s.,  ]?234/);
     expect(html).not.toMatch(PER_NIGHT);
+  });
+});
+
+describe("contacto 4: texto PT à volta do cartão", () => {
+  it("usa a regência certa (agradar a alguém), sem 'que achamos que vai gostar'", () => {
+    const body = FUNNEL_I18N.pt.body4("Olá Ana,", "Casa Sintética");
+    expect(body).toContain("que achamos que lhe vão agradar.");
+    expect(body).not.toMatch(/que achamos que vai gostar/);
+  });
+});
+
+describe("respostas: Reply-To explícito para a caixa de reservas", () => {
+  it.each([1, 2, 3, 4] as const)("contacto %s responde para booking@, mesmo com outro remetente", async (stage) => {
+    await email.sendCheckoutRecovery({
+      ...base, locale: "pt", stage,
+      expiresAt: new Date("2099-11-01T18:00:00Z"),
+      propertyUrl: "https://www.portugalactive.com/pt/homes/original",
+    });
+    const sent = lastSend();
+    expect(sent.from).toBe("Portugal Active <noreply@send.example.test>");
+    expect(sent.replyTo).toBe("booking@portugalactive.com");
   });
 });

@@ -225,7 +225,8 @@ async function alternativesFor(intent: BookingIntent, stage: RecoveryStage) {
         Math.abs(Number(b.pricePerNight || b.priceFrom || 0) - refPrice))
       .slice(0, 8);
     // Sem preço no cartão: o priceFrom do catálogo não é o preço destas datas
-    // (e em muitas casas é por pessoa). Serve só para ordenar por semelhança.
+    // e a unidade (noite ou pessoa) não está confirmada. Serve só para ordenar
+    // por semelhança.
     const out: Array<{ name: string; imageUrl?: string; url: string; locality?: string }> = [];
     for (const p of pool) {
       if (out.length >= 3) break;
