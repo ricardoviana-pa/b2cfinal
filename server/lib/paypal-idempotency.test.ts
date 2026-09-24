@@ -174,4 +174,45 @@ describe("getOrCreateReservation", () => {
 
     expect(result.reservationId).toBe("res_raced");
   });
+
+  it("retries a failed payment record in the background and stays quiet when it recovers", async () => {
+    // GY-tNwxeWRA: Guesty had not priced the folio yet, the one record attempt
+    // failed and CS got a "BOOKING FAILED" alert for a booking that was fine.
+    const mod = await import("./paypal-idempotency");
+    mod.RECORD_PAYMENT_RETRY_DELAYS_MS.splice(0, Infinity, 5, 5, 5);
+    const stripe = fakeStripePort();
+    const piId = "pi_retry_ok_" + Date.now();
+    const recordPayment = vi.fn().mockRejectedValueOnce(new Error("balanceDue unreadable")).mockResolvedValue(undefined);
+    const onRecordPaymentFailure = vi.fn();
+
+    await mod.getOrCreateReservation(piId, stripe.port, {
+      createReservation: vi.fn().mockResolvedValue(reservation),
+      recordPayment,
+      onRecordPaymentFailure,
+    });
+    await vi.waitFor(() => expect(stripe.read(piId).guestyPaymentRecorded).toBe("true"));
+
+    expect(recordPayment).toHaveBeenCalledTimes(2);
+    expect(onRecordPaymentFailure).not.toHaveBeenCalled();
+  });
+
+  it("alerts once, with the last error, when every retry fails", async () => {
+    const mod = await import("./paypal-idempotency");
+    mod.RECORD_PAYMENT_RETRY_DELAYS_MS.splice(0, Infinity, 5, 5, 5);
+    const stripe = fakeStripePort();
+    const piId = "pi_retry_fail_" + Date.now();
+    const recordPayment = vi.fn().mockRejectedValue(new Error("guesty down"));
+    const onRecordPaymentFailure = vi.fn();
+
+    await mod.getOrCreateReservation(piId, stripe.port, {
+      createReservation: vi.fn().mockResolvedValue(reservation),
+      recordPayment,
+      onRecordPaymentFailure,
+    });
+    await vi.waitFor(() => expect(onRecordPaymentFailure).toHaveBeenCalledTimes(1));
+
+    expect(recordPayment).toHaveBeenCalledTimes(4);
+    expect(onRecordPaymentFailure).toHaveBeenCalledWith(reservation.reservationId, expect.any(Error));
+    expect(stripe.read(piId).guestyPaymentRecorded).toBeUndefined();
+  });
 });

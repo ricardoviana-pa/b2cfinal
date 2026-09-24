@@ -6,7 +6,7 @@
  */
 
 import { guestyClient } from "../lib/guesty";
-import { isBEApiConfigured, createBEQuote, type BERatePlanOption } from "./guesty-booking";
+import { isBEApiConfigured, createBEQuote, beQuotesUnderPressure, type BERatePlanOption } from "./guesty-booking";
 import { getPropertiesForSite } from "./properties-store";
 
 type QuoteSource = "live" | "cached" | "base" | "request";
@@ -363,6 +363,62 @@ async function _getQuoteImpl(
   } catch { /* ignore */ }
 
   return buildPriceOnRequestResult(listingId, checkIn, checkOut, guests);
+}
+
+/**
+ * Quote LIVE para trabalho de fundo (o "Desde €X" do PLP/PDP). Não é o
+ * getQuote: esse, quando o BE falha, desce aos tiers 3–4 (calendário BE +
+ * listing Open API) para dar ao hóspede uma estimativa — e o warm-up ignora
+ * estimativas. Em 24 set 2026 isso multiplicava cada quote falhada por 3
+ * chamadas, e um só visitante no PLP punha o Guesty em 429: o cooldown global
+ * deixava TODOS os hóspedes sem preço live (alertas "QUOTES EM FALLBACK").
+ * Aqui: uma tentativa, nada de fallbacks, nada de contar para o alerta de
+ * saúde, e desiste logo se o BE estiver sob rate limit. Resultado live fica em
+ * cache para o hóspede que vier a seguir.
+ */
+export async function getBackgroundLiveQuote(
+  listingId: string,
+  checkIn: string,
+  checkOut: string,
+  guests = 2,
+  timeoutMs = 12_000,
+): Promise<QuoteResult | null> {
+  const cacheKey = getQuoteCacheKey(listingId, checkIn, checkOut, guests);
+  const cached = getCachedQuote(cacheKey);
+  if (cached && (cached.source === "live" || cached.source === "cached")) return { ...cached, source: "cached" };
+  if (!isBEApiConfigured() || beQuotesUnderPressure()) return null;
+  const nights = Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000);
+  try {
+    const beQuote = await Promise.race([
+      createBEQuote({ listingId, checkIn, checkOut, guests }),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("be_quote_timeout")), timeoutMs)),
+    ]);
+    if (!beQuote || !(beQuote.total > 0)) return null;
+    const result: QuoteResult = {
+      available: true,
+      listingId,
+      checkIn,
+      checkOut,
+      nights,
+      currency: beQuote.currency || "EUR",
+      pricing: {
+        nightlyRate: beQuote.pricing.nightlyRate,
+        totalNights: beQuote.pricing.totalNights,
+        cleaningFee: beQuote.pricing.cleaningFee,
+        taxesAndFees: beQuote.pricing.taxesAndFees,
+        subtotal: beQuote.pricing.totalNights + beQuote.pricing.cleaningFee + beQuote.pricing.taxesAndFees,
+        total: beQuote.total,
+      },
+      source: "live",
+      quoteId: beQuote.quoteId,
+      ratePlanId: beQuote.ratePlanId,
+      ratePlanOptions: beQuote.ratePlanOptions,
+    };
+    setCachedQuote(cacheKey, result);
+    return result;
+  } catch {
+    return null;
+  }
 }
 
 /** Used when live quote + fallbacks cannot complete in time (PLP batch safety). */

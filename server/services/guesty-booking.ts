@@ -26,6 +26,16 @@ const beQuoteCache = new Map<string, { expiresAt: number; value: BEQuoteResult }
 const inFlightBEQuotes = new Map<string, Promise<BEQuoteResult>>();
 /** Cooldown after a 429 on the quotes endpoint — set from Guesty's retryAfterMs. */
 let beQuoteCooldownUntil = 0;
+/** Last time the quotes endpoint answered 429 (0 = never in this process). */
+let beQuoteLast429At = 0;
+
+/** Background work (the "From €X" warm-up) must not spend the quote budget that
+ *  guests need: it asks this before every quote and backs off while Guesty is
+ *  rate-limiting us, or has been in the last `quietMs`. */
+export function beQuotesUnderPressure(quietMs = 120_000): boolean {
+  const now = Date.now();
+  return now < beQuoteCooldownUntil || (beQuoteLast429At > 0 && now - beQuoteLast429At < quietMs);
+}
 
 /** Drop every cached anonymous quote with this id. A coupon changes the quote on Guesty's side, and the
  *  cache shares one quoteId across visitors for 8 minutes: a later visitor would otherwise get a quote
@@ -365,6 +375,7 @@ async function _createBEQuoteImpl(input: {
     if (status === 429) {
       const waitMs = parseRetryAfterMs(details);
       beQuoteCooldownUntil = Date.now() + waitMs;
+      beQuoteLast429At = Date.now();
       console.warn(`[BE Quote] 429 received — quotes endpoint cooldown for ${Math.ceil(waitMs / 1000)}s (until ${new Date(beQuoteCooldownUntil).toISOString()})`);
       throw new Error(GUESTY_BE_AUTH_ERROR);
     }

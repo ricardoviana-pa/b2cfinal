@@ -154,3 +154,30 @@ describe("appendReservationNote — acrescenta, nunca apaga", () => {
     expect(await appendReservationNote("res-1", "x")).toBe(false);
   });
 });
+
+describe("recordExternalPayment — espera que o Guesty precifique a reserva", () => {
+  beforeEach(() => {
+    vi.mocked(guestyClient.request).mockReset();
+  });
+
+  it("uma reserva acabada de criar ainda sem balanceDue não faz desistir (GY-tNwxeWRA)", async () => {
+    vi.useFakeTimers();
+    try {
+      const { recordExternalPayment } = await import("./guesty-openapi-paypal");
+      vi.mocked(guestyClient.request)
+        .mockResolvedValueOnce({ money: {} } as any) // 200, folio ainda por precificar
+        .mockResolvedValueOnce({ money: { balanceDue: 378.36 } } as any)
+        .mockResolvedValueOnce({} as any); // POST payment
+
+      const done = recordExternalPayment("res-1", 378.36, "EUR", "pi_klarna");
+      await vi.runAllTimersAsync();
+      await done;
+
+      const post = vi.mocked(guestyClient.request).mock.calls[2];
+      expect(post[0]).toBe("POST");
+      expect((post[2] as any).body.amount).toBe(378.36);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});

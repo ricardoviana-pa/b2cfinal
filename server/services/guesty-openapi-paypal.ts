@@ -110,20 +110,30 @@ async function fetchReservationBalanceDue(reservationId: string): Promise<number
   // consistency) — and the client's 500-retry does not cover 404s. Retry here:
   // recording a payment without the real balanceDue is how payments get rejected
   // ("amount can't be greater than balance due"), so waiting beats guessing.
-  for (let attempt = 1; attempt <= 6; attempt++) {
+  // The 200 can also arrive BEFORE Guesty has priced the folio: `money` comes
+  // back without a numeric balanceDue. That used to return null on the first
+  // try — GY-tNwxeWRA (Klarna, 24 set 2026) was read 1.5s after creation, the
+  // payment was never recorded and CS had to post it by hand an hour later.
+  // Both cases wait and re-read (~36s in total).
+  const MAX_ATTEMPTS = 8;
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     try {
       const data = await guestyClient.request<any>("GET", `/v1/reservations/${reservationId}`, {
         query: { fields: "money status" },
       });
       const balanceDue = data?.money?.balanceDue;
-      return typeof balanceDue === "number" ? balanceDue : null;
+      if (typeof balanceDue === "number") return balanceDue;
+      if (attempt === MAX_ATTEMPTS) {
+        console.warn(`[Guesty] balanceDue still not priced for ${reservationId} after ${attempt} reads`);
+        return null;
+      }
     } catch (err: any) {
-      if (attempt === 6) {
+      if (attempt === MAX_ATTEMPTS) {
         console.warn(`[Guesty] Could not read balanceDue for ${reservationId} after ${attempt} tries: ${err?.message || err}`);
         return null;
       }
-      await new Promise((r) => setTimeout(r, attempt * 1000));
     }
+    await new Promise((r) => setTimeout(r, attempt * 1000));
   }
   return null;
 }

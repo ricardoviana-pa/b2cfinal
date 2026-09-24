@@ -164,6 +164,15 @@ async function createAndRecordReservation(
   return result;
 }
 
+/**
+ * Delays of the background retries after the first record attempt fails. The
+ * error text always promised "(will retry)" but nothing did: the webhook that
+ * should have been the second attempt joins the same in-flight promise (or is
+ * disabled), so every transient Guesty hiccup became a manual job for CS.
+ * Exported so tests can shorten them.
+ */
+export const RECORD_PAYMENT_RETRY_DELAYS_MS = [30_000, 120_000, 300_000];
+
 async function recordPaymentOnce(
   piId: string,
   stripe: StripeMetadataPort,
@@ -171,19 +180,48 @@ async function recordPaymentOnce(
   recordPayment: (reservationId: string) => Promise<void>,
   onFailure?: (reservationId: string, error: unknown) => void
 ): Promise<void> {
-  try {
+  const attempt = async () => {
+    // Another instance/path may have recorded it meanwhile.
+    const meta = await stripe.getMetadata(piId).catch(() => ({} as Record<string, string>));
+    if (meta[PAYMENT_RECORDED_KEY] === "true") return;
     await recordPayment(reservationId);
     await stripe
       .setMetadata(piId, { [PAYMENT_RECORDED_KEY]: "true" })
       .catch((e) => console.warn(`[Reservation] Failed to set ${PAYMENT_RECORDED_KEY} for ${piId}: ${e?.message || e}`));
-  } catch (e: any) {
+  };
+  const alert = (e: unknown) => {
     // The guest HAS paid (Stripe PI succeeded) but Guesty will show "Not paid" —
     // this must reach a human, never just a log line.
-    console.error(`[Reservation] CRITICAL: recordPayment failed for ${reservationId} (PI ${piId}) — guest paid but Guesty reservation is UNPAID: ${e?.message || e}`);
+    console.error(`[Reservation] CRITICAL: recordPayment failed for ${reservationId} (PI ${piId}) — guest paid but Guesty reservation is UNPAID: ${(e as any)?.message || e}`);
     try {
       onFailure?.(reservationId, e);
     } catch (alertErr: any) {
       console.error(`[Reservation] onRecordPaymentFailure handler threw: ${alertErr?.message || alertErr}`);
     }
+  };
+
+  try {
+    await recordPayment(reservationId);
+    await stripe
+      .setMetadata(piId, { [PAYMENT_RECORDED_KEY]: "true" })
+      .catch((e) => console.warn(`[Reservation] Failed to set ${PAYMENT_RECORDED_KEY} for ${piId}: ${e?.message || e}`));
+  } catch (first: any) {
+    // The reservation exists and the guest has their confirmation — do not hold
+    // the response. Retry in the background and only page CS if all retries fail.
+    console.warn(`[Reservation] recordPayment failed for ${reservationId} (PI ${piId}), retrying in background: ${first?.message || first}`);
+    void (async () => {
+      let last: unknown = first;
+      for (const delay of RECORD_PAYMENT_RETRY_DELAYS_MS) {
+        await new Promise((r) => setTimeout(r, delay));
+        try {
+          await attempt();
+          console.info(`[Reservation] recordPayment recovered for ${reservationId} (PI ${piId}) on retry`);
+          return;
+        } catch (e) {
+          last = e;
+        }
+      }
+      alert(last);
+    })();
   }
 }

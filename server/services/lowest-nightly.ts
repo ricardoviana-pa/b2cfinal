@@ -19,16 +19,23 @@
  * behaviour.
  * ========================================================================= */
 import { guestyBEClient } from "../lib/guesty";
-import { getQuoteWithDeadline } from "./guesty";
+import { getBackgroundLiveQuote } from "./guesty";
+import { beQuotesUnderPressure } from "./guesty-booking";
 import { getSetting, upsertSetting } from "../db";
 
 const TTL_MS = 8 * 60 * 60 * 1000; // 8h in-memory cache
 const HORIZON_DAYS = 90;
 const MAX_SAMPLES = 14; // quotes per listing on a cache miss
 const SAMPLE_CADENCE_DAYS = 7; // probe ~every week so no seasonal low (a whole cheap month) is missed
-const MAX_CONCURRENT_QUOTES = 4; // GLOBAL cap on in-flight Guesty quotes (across all warming listings)
+// Orçamento do warm-up. O BE do Guesty dá ~275 quotes/min à conta TODA, e um
+// 429 põe o endpoint em cooldown para todos — hóspedes incluídos. Antes: 4 em
+// paralelo, sem ritmo, 10 casas por visita ao PLP = até 150 chamadas em
+// segundos (24 set 2026: 429 → "QUOTES EM FALLBACK" 24/34). Agora: 2 em
+// paralelo, no máximo 1 arranque por segundo, e pára ao primeiro sinal de 429.
+const MAX_CONCURRENT_QUOTES = 2; // GLOBAL cap on in-flight Guesty quotes (across all warming listings)
+const MIN_QUOTE_GAP_MS = 1_000; // pacing between quote starts (≤60/min, well under the shared budget)
 const STORE_CAT = "lowest_nightly";
-const WARM_PER_REQUEST = 10; // how many never-computed listings to warm per PLP batch call
+const WARM_PER_REQUEST = 4; // how many never-computed listings to warm per PLP batch call
 
 const NULL_TTL_MS = 30 * 60 * 1000; // retry no-value results (rate-limited / no availability) after 30 min, not 8h
 
@@ -43,12 +50,16 @@ const ymd = (d: Date) => d.toISOString().slice(0, 10);
  *  20s per-quote deadline never starts ticking while a call is still queued. */
 let activeQuotes = 0;
 const quoteWaiters: Array<() => void> = [];
+let nextQuoteStartAt = 0;
 async function withQuoteSlot<T>(fn: () => Promise<T>): Promise<T> {
   if (activeQuotes >= MAX_CONCURRENT_QUOTES) {
     await new Promise<void>((resolve) => quoteWaiters.push(resolve));
   }
   activeQuotes++;
   try {
+    const wait = nextQuoteStartAt - Date.now();
+    nextQuoteStartAt = Math.max(Date.now(), nextQuoteStartAt) + MIN_QUOTE_GAP_MS;
+    if (wait > 0) await new Promise((r) => setTimeout(r, wait));
     return await fn();
   } finally {
     activeQuotes--;
@@ -102,7 +113,12 @@ async function computeLowestNightly(listingId: string, basePriceHint?: number): 
   const to = ymd(new Date(today.getTime() + HORIZON_DAYS * 86400000));
 
   let lowest: number | null = null;
+  // Amostra incompleta (o BE entrou em rate limit a meio): o mínimo visto é
+  // real mas pode faltar a semana mais barata — não fica 8h como definitivo.
+  let partial = false;
   try {
+    // Guesty já a limitar-nos: nem o calendário se pede (também gasta BE).
+    if (beQuotesUnderPressure()) throw new Error("BE quotes under rate-limit pressure — warm-up deferred");
     const days = await guestyBEClient.getCalendar(listingId, from, to);
     const byDate = new Map<string, any>(days.map((d: any) => [d.date, d]));
     const availDates = days
@@ -145,7 +161,17 @@ async function computeLowestNightly(listingId: string, basePriceHint?: number): 
     // limit. Bursting past it makes quotes fail and degrades the "from" to a
     // fallback (wrong) price — exactly what we're trying to fix.
     const quotes = await Promise.allSettled(
-      samples.map((s) => withQuoteSlot(() => getQuoteWithDeadline(listingId, s.ci, s.co, 2, 20_000))),
+      samples.map((s) =>
+        withQuoteSlot(async () => {
+          if (beQuotesUnderPressure()) {
+            partial = true;
+            return null;
+          }
+          const q = await getBackgroundLiveQuote(listingId, s.ci, s.co, 2, 12_000);
+          if (!q) partial = true;
+          return q;
+        }),
+      ),
     );
     for (const r of quotes) {
       if (r.status !== "fulfilled" || !r.value) continue;
@@ -161,10 +187,11 @@ async function computeLowestNightly(listingId: string, basePriceHint?: number): 
       }
     }
   } catch (err: any) {
+    partial = true;
     console.warn(`[lowestNightly] calendar/quote failed for ${listingId}: ${err?.message || err}`);
   }
 
-  if (lowest !== null && lowest > 0) {
+  if (lowest !== null && lowest > 0 && !partial) {
     const at = Date.now();
     CACHE.set(listingId, { value: lowest, source: "calendar", at });
     upsertSetting(`${STORE_CAT}_${listingId}`, encodeStored(lowest, at), STORE_CAT).catch(() => {});
@@ -176,7 +203,7 @@ async function computeLowestNightly(listingId: string, basePriceHint?: number): 
   try {
     lastKnown = parseStored(await getSetting(`${STORE_CAT}_${listingId}`)).price;
   } catch { /* db unavailable */ }
-  const candidates = [basePriceHint, lastKnown].filter((x): x is number => typeof x === "number" && x > 0);
+  const candidates = [basePriceHint, lastKnown, lowest].filter((x): x is number => typeof x === "number" && x > 0);
   const fb = candidates.length ? Math.min(...candidates) : null;
   CACHE.set(listingId, { value: fb, source: fb !== null ? "fallback" : "none", at: Date.now() });
   return { from: fb, source: fb !== null ? "fallback" : "none", currency: "EUR" };
