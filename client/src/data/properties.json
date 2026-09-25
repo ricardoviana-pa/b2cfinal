@@ -2009,7 +2009,7 @@
     "isActive": true,
     "isPortfolio": false,
     "seoTitle": "Alentejo Rural Farmhouse with Heated Pool & Total Privacy — Portugal Active",
-    "seoDescription": "A peaceful retreat in the heart of the Alentejo. Traditional Farm with 4 bedrooms, heated pool, dark wood rural kitchen and unlimited green space. Just 30km fro",
+    "seoDescription": "Pool heating is an optional extra, charged at €70 per night.\n\nA peaceful retreat in the heart of the Alentejo. Traditional Farm with 4 bedrooms, heated pool, da",
     "address": {
       "full": "",
       "street": "Monte do Sossego",
@@ -2277,8 +2277,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 6,
-    "lastModified": "2026-09-19",
-    "contentHash": "e9974dd8978667d986943b4680fccd690b17a973"
+    "lastModified": "2026-09-25",
+    "contentHash": "57ee91ef3bb40722b499856411265261180446cc"
   },
   {
     "id": "guesty-69e7350685a8b000124854c5",
@@ -2754,8 +2754,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 7,
-    "lastModified": "2026-08-24",
-    "contentHash": "51826d7dc3264d25bd193540648c758fdc1635cc"
+    "lastModified": "2026-09-25",
+    "contentHash": "523e10142b06494147e2f930955b1ed6d9ab54f7"
   },
   {
     "id": "guesty-69653354109993001383ef5f",
@@ -3448,7 +3448,7 @@
     "priceFrom": 160,
     "pricePerNight": 160,
     "cleaningFee": 210,
-    "minNights": 2,
+    "minNights": 1,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533762def930014e917bf/952df398-6f1c-47-tGPxG",
@@ -3829,7 +3829,7 @@
     "priceFrom": 120,
     "pricePerNight": 120,
     "cleaningFee": 152,
-    "minNights": 2,
+    "minNights": 1,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965338a753fb0001424acf6/baa024a0-36d8-48-ccG5a",
@@ -5424,8 +5424,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 2,
-    "lastModified": "2026-08-24",
-    "contentHash": "d5545b37675e9e14a36f01edce41e1d5fcf65bf2"
+    "lastModified": "2026-09-25",
+    "contentHash": "de37b0fd1c9295f9ffe5cf126842a07cf268eb82"
   },
   {
     "id": "guesty-6a2ad70638d6620013badaef",
@@ -7218,7 +7218,7 @@
     "priceFrom": 100,
     "pricePerNight": 100,
     "cleaningFee": 147,
-    "minNights": 2,
+    "minNights": 1,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/6965335df1c3a8001597c8e4/772eacb1-01c3-42-dPwx2",
@@ -9728,8 +9728,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 18,
-    "lastModified": "2026-09-18",
-    "contentHash": "616eeb0560d307053d47a7129aa674399fc917fb"
+    "lastModified": "2026-09-25",
+    "contentHash": "3f3e5a524be489c5a091b1948005652cd6a82902"
   },
   {
     "id": "guesty-696533b7bf04fe00137440f8",
@@ -10598,7 +10598,7 @@
     "priceFrom": 180,
     "pricePerNight": 180,
     "cleaningFee": 144,
-    "minNights": 2,
+    "minNights": 1,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/69653388753fb0001424abad/984c0529-485c-42-VkcvR",
@@ -12976,7 +12976,7 @@
     "priceFrom": 150,
     "pricePerNight": 150,
     "cleaningFee": 98,
-    "minNights": 3,
+    "minNights": 1,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1782894202/production/6957de4388cba42d9e7a905e/ihtu5ymajnyh7agqnreq.jpg",
@@ -14941,7 +14941,7 @@
     "priceFrom": 90,
     "pricePerNight": 90,
     "cleaningFee": 164,
-    "minNights": 2,
+    "minNights": 1,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532fa6d209c001510d5ee/cbbdfd1c-2201-41-pmWoy",
@@ -16410,7 +16410,7 @@
     "priceFrom": 90,
     "pricePerNight": 90,
     "cleaningFee": 98,
-    "minNights": 2,
+    "minNights": 1,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696532eee44e1a0015bb2460/01abff78-8d17-41-_NGT1",
@@ -16965,7 +16965,7 @@
     "priceFrom": 90,
     "pricePerNight": 90,
     "cleaningFee": 88,
-    "minNights": 2,
+    "minNights": 1,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533266dec35001492fdbb/29f4083f-bc29-4f-HwwhR",
@@ -17473,7 +17473,7 @@
     "isActive": true,
     "isPortfolio": false,
     "seoTitle": "Portugal Active Cabedelo Beach Lodge I Heated Pool — Portugal Active",
-    "seoDescription": "Welcome to Portugal Active Cabedelo Beach Lodge, your gateway to a coastal paradise in Viana do Castelo. Nestled in the heart of this picturesque region, our se",
+    "seoDescription": "Pool heating is an optional extra, charged at €70 per night, for stays of five nights or more.\n\nWelcome to Portugal Active Cabedelo Beach Lodge, your gateway to",
     "address": {
       "full": "",
       "street": "Rua Pero Galego 188",
@@ -17818,8 +17818,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 21,
-    "lastModified": "2026-09-18",
-    "contentHash": "8d0c0daa0293d49ff7f574aceff2b86693f9166d"
+    "lastModified": "2026-09-25",
+    "contentHash": "a1915e2d54afd7eb34d032fdbd26e84668823a69"
   },
   {
     "id": "guesty-69653335bf04fe0013742743",
@@ -19051,7 +19051,7 @@
     "isActive": true,
     "isPortfolio": false,
     "seoTitle": "Portugal Active Sunset Beach Lodge I Heated Pool — Portugal Active",
-    "seoDescription": "Welcome to our modern villa in Viana do Castelo, where luxury meets breathtaking ocean views. With 4 bedrooms accommodating up to 11 guests, this stunning prope",
+    "seoDescription": "Pool heating is an optional extra, charged at €70 per night.\n\nWelcome to our modern villa in Viana do Castelo, where luxury meets breathtaking ocean views. With",
     "address": {
       "full": "",
       "street": "Rua Fonte das Hortas, 77",
@@ -19549,8 +19549,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 19,
-    "lastModified": "2026-09-23",
-    "contentHash": "c97ae0fb7fbaec5a64bf6235e0b339be06d4fd36"
+    "lastModified": "2026-09-25",
+    "contentHash": "501d6b42386c787702004638e38af1cb46880fd0"
   },
   {
     "id": "guesty-6aabba70fb0419001219e9a3",
@@ -20251,7 +20251,7 @@
     "priceFrom": 160,
     "pricePerNight": 160,
     "cleaningFee": 157,
-    "minNights": 3,
+    "minNights": 1,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1777479312/production/6957de4388cba42d9e7a905e/p5jknrf1uhlzednxvwwl.jpg",
@@ -21826,7 +21826,7 @@
     "priceFrom": 104,
     "pricePerNight": 104,
     "cleaningFee": 98,
-    "minNights": 3,
+    "minNights": 1,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1782226203/production/6957de4388cba42d9e7a905e/z0mak81zfo2m8lmduu1s.jpg",
@@ -22071,7 +22071,7 @@
     "priceFrom": 160,
     "pricePerNight": 160,
     "cleaningFee": 178,
-    "minNights": 2,
+    "minNights": 1,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1789730312/production/6957de4388cba42d9e7a905e/nfubaqkkvj6w1crxxb1h.jpg",
@@ -22623,7 +22623,7 @@
     "priceFrom": 160,
     "pricePerNight": 160,
     "cleaningFee": 203,
-    "minNights": 2,
+    "minNights": 1,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533752def930014e9167c/b3cf568b-6c0c-4d-ZmpQD",
@@ -23437,7 +23437,7 @@
     "priceFrom": 140,
     "pricePerNight": 140,
     "cleaningFee": 186,
-    "minNights": 2,
+    "minNights": 1,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533cf4b583900135cfb02/dc87d9a4-6781-47-KpYAv",
@@ -23723,7 +23723,7 @@
     "priceFrom": 130,
     "pricePerNight": 130,
     "cleaningFee": 112,
-    "minNights": 2,
+    "minNights": 1,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/v1786980533/production/6957de4388cba42d9e7a905e/fdhxesgt2uqbnb8nwyww.jpg",
@@ -23881,6 +23881,76 @@
     "reviews": [
       {
         "rating": 5,
+        "text": "Tudo muito limpo, espaço bastante agradável e acolhedor, piscina com ótima vista e sossegada! O Sam foi sempre pro ativo a tentar ajudar! Recomendo!",
+        "guestDisplayName": "Tiago",
+        "guestName": "Tiago",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-20T15:14:03.507Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 4
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
+        "text": "Very nice and beautiful apartment!!👏",
+        "guestDisplayName": "Success",
+        "guestName": "Success",
+        "guestPhoto": null,
+        "guestLocation": null,
+        "date": "2026-09-20T12:45:15.698Z",
+        "categories": [
+          {
+            "name": "cleanliness",
+            "score": 5
+          },
+          {
+            "name": "accuracy",
+            "score": 5
+          },
+          {
+            "name": "checkin",
+            "score": 5
+          },
+          {
+            "name": "communication",
+            "score": 5
+          },
+          {
+            "name": "location",
+            "score": 5
+          },
+          {
+            "name": "value",
+            "score": 5
+          }
+        ]
+      },
+      {
+        "rating": 5,
         "text": "Beautiful apartment, in a nice location, good amenities, easily accessible from Lisbon, would stay again. \n\nOnly had an issue with checking in as the instructions are not clear, same with getting to the pool, not ideal but manageable :)",
         "guestDisplayName": "Ebony",
         "guestName": "Ebony",
@@ -23951,7 +24021,7 @@
       }
     ],
     "averageRating": 5,
-    "reviewCount": 2,
+    "reviewCount": 4,
     "lastModified": "2026-08-24",
     "contentHash": "d7e38ceaa9b85f286e303ed8ce0cefff8f545e99"
   },
@@ -27117,7 +27187,7 @@
     "priceFrom": 180,
     "pricePerNight": 180,
     "cleaningFee": 178,
-    "minNights": 2,
+    "minNights": 1,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533616cff760015e28965/c7e29b6b-d3fe-4f-n7r_B",
@@ -29002,8 +29072,8 @@
     ],
     "averageRating": 5,
     "reviewCount": 18,
-    "lastModified": "2026-09-19",
-    "contentHash": "fd446c0a91bfd47b0631b4bcda577f6f042956e5"
+    "lastModified": "2026-09-25",
+    "contentHash": "2867a6e4e0a2aa14d91cb3cfb2475283cb44993f"
   },
   {
     "id": "guesty-6a341163c50f210012f12b80",
@@ -29313,7 +29383,7 @@
     "priceFrom": 80,
     "pricePerNight": 80,
     "cleaningFee": 98,
-    "minNights": 2,
+    "minNights": 1,
     "currency": "EUR",
     "images": [
       "https://assets.guesty.com/image/upload/listing_images_s3/production/property-photos/37fa8987056cd492c04e218f5de336d16b8597815897dd91/696533af4fe6a100145fecb6/2a84e705-7a07-42-JcVx2",
@@ -30473,7 +30543,7 @@
     ],
     "averageRating": 5,
     "reviewCount": 4,
-    "lastModified": "2026-08-24",
-    "contentHash": "2ec7c6bce1d26d174b96ec695b68f4cbae2f4b1e"
+    "lastModified": "2026-09-25",
+    "contentHash": "9f34b88e40d27fba54dc19ecf87cdf61c688e02d"
   }
 ]
