@@ -5,9 +5,10 @@
 export const IMAGES = {
   // Hero images
   // Homepage cover — Mirante 1 (Albufeira, partner home): the private tennis
-  // court with the blue-trimmed villa behind it. Source is the supplier's
-  // 1920×1080 original (exports/tripwix-photos, gitignored); there is no
-  // larger master, so 1920 is the top of the srcSet.
+  // court with the blue-trimmed villa behind it. The supplier's original is
+  // a grainy 1920×1080 JPEG; the shipped set (768/1280/1920/2560) and the
+  // social JPEG are derived from a Real-ESRGAN x2 master kept next to the
+  // original in exports/tripwix-photos (gitignored).
   heroMain: '/hero/home-mirante-tennis.webp',
   // Auto-hospedada: o CDN da plataforma original (d2xsxph8kpxj0f.cloudfront.net)
   // comecou a devolver 403/503 em 24 ago 2026 e nao volta — qualquer imagem

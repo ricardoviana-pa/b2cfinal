@@ -384,7 +384,7 @@ export default function Home() {
         <div className="absolute inset-0">
           <img
             src={IMAGES.heroMain}
-            srcSet="/hero/home-mirante-tennis-768.webp 768w, /hero/home-mirante-tennis-1280.webp 1280w, /hero/home-mirante-tennis.webp 1920w"
+            srcSet="/hero/home-mirante-tennis-768.webp 768w, /hero/home-mirante-tennis-1280.webp 1280w, /hero/home-mirante-tennis.webp 1920w, /hero/home-mirante-tennis-2560.webp 2560w"
             sizes="100vw"
             alt={t('home.heroAlt')}
             className="w-full h-full object-cover"

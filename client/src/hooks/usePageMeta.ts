@@ -5,7 +5,7 @@ const SUPPORTED_LANGS = ['en', 'pt', 'fr', 'es', 'it', 'fi', 'de', 'nl', 'sv'];
 const BASE_TITLE = 'Private Hotels in Portugal | Portugal Active';
 const BASE_DESC = 'Private hotels in Portugal: whole private homes operated end to end by one in-house team, with dedicated concierge, private chef and housekeeping. Minho, Porto, Douro, Lisbon, Alentejo and Algarve. Book direct.';
 const BASE_URL = 'https://www.portugalactive.com';
-const BASE_IMAGE = 'https://www.portugalactive.com/hero/home-cliff-villa.webp';
+const BASE_IMAGE = 'https://www.portugalactive.com/hero/home-mirante-tennis-og.jpg';
 
 
 function setMeta(selector: string, attr: string, value: string) {
