@@ -8,8 +8,10 @@ export const IMAGES = {
   // court with the blue-trimmed villa behind it. The supplier's original is
   // a grainy 1920×1080 JPEG; the shipped set (768/1280/1920/2560) and the
   // social JPEG are derived from a Real-ESRGAN x2 master kept next to the
-  // original in exports/tripwix-photos (gitignored).
-  heroMain: '/hero/home-mirante-tennis.webp',
+  // original in exports/tripwix-photos (gitignored). The "court" basename
+  // replaced a first "tennis" cut so the 1 h edge cache could not keep
+  // serving the grainy files under the same URLs.
+  heroMain: '/hero/home-mirante-court-1920.webp',
   // Auto-hospedada: o CDN da plataforma original (d2xsxph8kpxj0f.cloudfront.net)
   // comecou a devolver 403/503 em 24 ago 2026 e nao volta — qualquer imagem
   // que la ficasse desaparece assim que a cache de edge expira.
