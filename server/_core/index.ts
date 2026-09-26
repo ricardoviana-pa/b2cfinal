@@ -683,10 +683,11 @@ ${allUrls.join("\n")}
     // Guesty id to its page, from the live store rather than the snapshot.
     const refreshRedirectHomes = async () => {
       try {
-        const [{ getPropertiesForSite }, { registerLiveHomes }] = await Promise.all([
+        const [{ getPropertiesForSite }, { registerLiveHomes, setLiveHomesLoader }] = await Promise.all([
           import("../services/properties-store"),
           import("../lib/redirects"),
         ]);
+        setLiveHomesLoader(getPropertiesForSite);
         registerLiveHomes(await getPropertiesForSite());
       } catch (e: any) {
         console.warn("[Redirects] live homes not loaded:", e?.message ?? e);

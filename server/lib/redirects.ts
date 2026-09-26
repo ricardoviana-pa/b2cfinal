@@ -529,12 +529,30 @@ export function legacyRedirects(req: Request, res: Response, next: NextFunction)
     return next();
   }
 
+  const query = req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : "";
   const target = redirectTarget(rawPath);
   if (!target) return next();
 
+  // An old booking-engine URL whose Guesty id the index doesn't know yet
+  // would fall back to the catalogue. Ask the live store once before
+  // settling for that (it is cached, so this is cheap after the first call).
+  const guestyId = rawPath.match(/\/properties\/([0-9a-f]{24})\/?$/i)?.[1];
+  if (guestyId && !homeSlugForGuestyId(guestyId) && liveHomesLoader) {
+    liveHomesLoader()
+      .then((homes) => { registerLiveHomes(homes); })
+      .catch(() => { /* keep the catalogue fallback */ })
+      .finally(() => res.redirect(301, `${redirectTarget(rawPath) ?? target}${query}`));
+    return;
+  }
+
   // Preserve query string (e.g., utm_*) on redirect
-  const query = req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : "";
   res.redirect(301, `${target}${query}`);
+}
+
+/** Set at boot: returns the homes the site publishes (properties-store). */
+let liveHomesLoader: (() => Promise<Array<{ guestyId?: unknown; slug?: unknown }>>) | null = null;
+export function setLiveHomesLoader(fn: typeof liveHomesLoader): void {
+  liveHomesLoader = fn;
 }
 
 // Export for tests

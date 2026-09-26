@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { __testing, legacyRedirects, redirectTarget, registerLiveHomes } from "./lib/redirects.js";
+import { __testing, legacyRedirects, redirectTarget, registerLiveHomes, setLiveHomesLoader } from "./lib/redirects.js";
 
 const { resolvePath } = __testing;
 
@@ -57,6 +57,17 @@ describe("legacyRedirects.resolvePath", () => {
       expect(resolvePath("/properties/0000000000000000abcdef12")).toBe("/en/homes");
       registerLiveHomes([{ guestyId: "0000000000000000abcdef12", slug: "test-home-abcdef" }]);
       expect(resolvePath("/properties/0000000000000000abcdef12")).toBe("/en/homes/test-home-abcdef");
+    });
+
+    it("asks the live store for a Guesty id the index doesn't know", async () => {
+      setLiveHomesLoader(async () => [{ guestyId: "0000000000000000fedcba98", slug: "late-home-fedcba" }]);
+      const redirect = vi.fn();
+      await new Promise<void>((done) => {
+        redirect.mockImplementation(() => done());
+        legacyRedirects({ method: "GET", path: "/de/properties/0000000000000000fedcba98", url: "/de/properties/0000000000000000fedcba98?utm_source=x" } as any, { redirect } as any, vi.fn());
+      });
+      expect(redirect).toHaveBeenCalledWith(301, "/de/homes/late-home-fedcba?utm_source=x");
+      setLiveHomesLoader(null);
     });
 
     it("sends an unknown Guesty id and the engine search to the catalogue", () => {
