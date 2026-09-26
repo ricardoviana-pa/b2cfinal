@@ -247,6 +247,24 @@ function loadGuestyHomeIndex(): void {
     }
   } catch { /* no data: fall back to the catalogue */ }
 }
+/** Merge the homes the site actually publishes (DB-backed) into the index.
+ *  properties.json is only the auto-synced snapshot and has missed homes
+ *  that do have a live page (Calejo, Ocean Bliss, Saltwind, Countryside
+ *  House, Sep 2026), which then fell back to the catalogue. */
+export function registerLiveHomes(homes: Array<{ guestyId?: unknown; slug?: unknown }>): number {
+  loadGuestyHomeIndex();
+  let n = 0;
+  for (const h of homes) {
+    if (typeof h?.slug !== "string" || !h.slug) continue;
+    if (typeof h.guestyId === "string" && h.guestyId) {
+      _homesByGuestyId!.set(h.guestyId.toLowerCase(), h.slug);
+      n++;
+    }
+    _homesByTitleSlug!.set(h.slug.replace(/-[0-9a-f]{6}$/, ""), h.slug);
+  }
+  return n;
+}
+
 export function homeSlugForGuestyId(id: string): string | null {
   loadGuestyHomeIndex();
   return _homesByGuestyId!.get(id.toLowerCase()) ?? null;

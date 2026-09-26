@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { __testing, legacyRedirects, redirectTarget } from "./lib/redirects.js";
+import { __testing, legacyRedirects, redirectTarget, registerLiveHomes } from "./lib/redirects.js";
 
 const { resolvePath } = __testing;
 
@@ -51,6 +51,12 @@ describe("legacyRedirects.resolvePath", () => {
       expect(resolvePath("/properties/viana-do-castelo/coastal-horizon-by-portugal-active/87782")).toBe(
         "/en/homes/coastal-horizon-by-portugal-active-fd1b52"
       );
+    });
+
+    it("maps homes the live store publishes but the snapshot lacks", () => {
+      expect(resolvePath("/properties/0000000000000000abcdef12")).toBe("/en/homes");
+      registerLiveHomes([{ guestyId: "0000000000000000abcdef12", slug: "test-home-abcdef" }]);
+      expect(resolvePath("/properties/0000000000000000abcdef12")).toBe("/en/homes/test-home-abcdef");
     });
 
     it("sends an unknown Guesty id and the engine search to the catalogue", () => {

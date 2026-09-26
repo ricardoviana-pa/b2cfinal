@@ -679,6 +679,22 @@ ${allUrls.join("\n")}
       console.warn("[Card2b] Settle sweep not started:", e?.message ?? e);
     }
 
+    // booking.portugalactive.com forwards here: map every published home's
+    // Guesty id to its page, from the live store rather than the snapshot.
+    const refreshRedirectHomes = async () => {
+      try {
+        const [{ getPropertiesForSite }, { registerLiveHomes }] = await Promise.all([
+          import("../services/properties-store"),
+          import("../lib/redirects"),
+        ]);
+        registerLiveHomes(await getPropertiesForSite());
+      } catch (e: any) {
+        console.warn("[Redirects] live homes not loaded:", e?.message ?? e);
+      }
+    };
+    refreshRedirectHomes();
+    setInterval(refreshRedirectHomes, 30 * 60 * 1000).unref?.();
+
     // Guesty sync: pull listings (photos, texts, pricing).
     // DISABLED on startup to prevent OAuth rate-limit exhaustion during deploys.
     // Static fallback JSON (auto-committed to GitHub by previous syncs) covers the gap.
