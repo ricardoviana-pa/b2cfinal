@@ -213,6 +213,39 @@ function getBedTypeDisplay(bedType: string, t: (key: string, fallback: string) =
 
 
 /** Parse description: handle string, split by \n\n or \n */
+/** Google Maps embed, mounted only when the visitor scrolls near it. The
+ *  embed pulls ~400 KB of Maps JS; `loading="lazy"` alone still fetched it
+ *  on mobile page load (Chrome's lazy-iframe distance is thousands of px),
+ *  roughly doubling the PDP's script weight. */
+function LazyMapFrame({ title, src }: { title: string; src: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || show) return;
+    if (typeof IntersectionObserver === 'undefined') { setShow(true); return; }
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) { setShow(true); io.disconnect(); }
+    }, { rootMargin: '200px 0px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [show]);
+  return (
+    <div ref={ref} className="w-full h-[300px] lg:h-[360px] bg-pa-sand/40">
+      {show && (
+        <iframe
+          title={title}
+          className="w-full h-full border-0"
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          src={src}
+          allowFullScreen
+        />
+      )}
+    </div>
+  );
+}
+
 function formatDescription(desc: unknown): string[] {
   if (!desc) return [];
   const s = typeof desc === 'string' ? desc : String(desc);
@@ -1498,17 +1531,13 @@ export default function PropertyDetail() {
                   )}
                 </p>
                 <div className="rounded-xl overflow-hidden border border-pa-sand">
-                  <iframe
+                  <LazyMapFrame
                     title={`${property.name} — ${property.locality}`}
-                    className="w-full h-[300px] lg:h-[360px] border-0"
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
                     src={
                       property.address?.lat && property.address?.lng
                         ? `https://maps.google.com/maps?q=${Number(property.address.lat).toFixed(3)},${Number(property.address.lng).toFixed(3)}&z=12&output=embed`
                         : `https://maps.google.com/maps?q=${encodeURIComponent(`${property.locality}, Portugal`)}&z=13&output=embed`
                     }
-                    allowFullScreen
                   />
                 </div>
               </section>
