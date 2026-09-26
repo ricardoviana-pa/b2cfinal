@@ -21,9 +21,11 @@ interface HomesMapProps {
   checkout?: string;
   guests?: number;
   lang: string;
+  /** Wrapper classes; replaces the default banner height (e.g. to fill a sticky column). */
+  className?: string;
 }
 
-export default function HomesMap({ properties, fromPrices, quotes, checkin, checkout, guests, lang }: HomesMapProps) {
+export default function HomesMap({ properties, fromPrices, quotes, checkin, checkout, guests, lang, className }: HomesMapProps) {
   const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
@@ -105,10 +107,10 @@ export default function HomesMap({ properties, fromPrices, quotes, checkin, chec
   useEffect(() => () => { mapRef.current?.remove(); mapRef.current = null; }, []);
 
   return (
-    <div className="mb-8">
+    <div className={className ?? 'mb-8'}>
       <div
         ref={containerRef}
-        className="h-[340px] lg:h-[420px] rounded-xl overflow-hidden border border-[#E8E4DC] z-0"
+        className={`${className ? 'h-full' : 'h-[340px] lg:h-[420px]'} rounded-xl overflow-hidden border border-[#E8E4DC] z-0`}
         role="region"
         aria-label="Map of homes"
       />
