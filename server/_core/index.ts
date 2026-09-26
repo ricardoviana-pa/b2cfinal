@@ -17,6 +17,7 @@ import { registerGoogleAuthRoutes } from "./googleAuth";
 import { registerBookingRoutes, registerGuestyWebhookRoute } from "../routes/booking";
 import { redirectLegacyRecoveryEmail } from "../routes/checkout-recovery-redirect";
 import { registerRecoveryOptoutRoute } from "../routes/checkout-recovery-optout";
+import { registerNewsletterRoutes } from "../routes/newsletter-confirm";
 import { registerStripePayPalWebhookRoute } from "../routes/stripe-paypal-webhook";
 import { registerStripeKlarnaWebhookRoute } from "../routes/stripe-klarna-webhook";
 import { registerStripeCardWebhookRoute } from "../routes/stripe-card-webhook";
@@ -114,6 +115,7 @@ async function startServer() {
   app.use("/api/auth/dev-login", authLimiter);
   app.use("/api/reservations", apiLimiter);
   app.use("/api/trpc/leads.create", leadLimiter);
+  app.use("/api/trpc/newsletter.subscribe", leadLimiter); // pop-up, bloco e rodapé (chamada isolada, nunca em lote)
   app.use("/api/trpc/booking", apiLimiter);
   app.use("/api/trpc/checkout", apiLimiter); // checkout_v2 intents + lead capture
 
@@ -135,6 +137,8 @@ async function startServer() {
   registerBookingRoutes(app);
   // Bloco 2: opt-out dos lembretes de recuperação (link no rodapé dos emails)
   registerRecoveryOptoutRoute(app);
+  // Newsletter: clique de dupla confirmação e página estática de confirmação
+  registerNewsletterRoutes(app);
   registerVitalsRoute(app);
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);

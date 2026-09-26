@@ -17,6 +17,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { StructuredData, buildArticleSchema, buildBreadcrumbSchema } from '@/components/seo/StructuredData';
 import AnswerCapsule from '@/components/seo/AnswerCapsule';
+import NewsletterBlock from '@/components/marketing/NewsletterBlock';
 import type { BlogArticle as BlogArticleType } from '@/lib/types';
 import blogData from '@/data/blog.json';
 import { useBlogOverrides, mergeBlogOverride } from '@/lib/localizeBlog';
@@ -253,6 +254,9 @@ export default function BlogArticle() {
           </div>
         </div>
       </section>
+
+      {/* Newsletter capture at the end of the article (origin "article") */}
+      <NewsletterBlock origin="article" />
 
       {/* Contextual CTA */}
       <section className="py-12 lg:py-16" style={{ backgroundColor: '#1A1A18' }}>

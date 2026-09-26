@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../_core/trpc";
 import * as db from "../db";
-import { sendContactConfirmation, sendContactNotification, sendNewsletterWelcome } from "../services/email";
+import { sendContactConfirmation, sendContactNotification } from "../services/email";
 import { sendContactInquiryNotification, sendAvailabilityRequestNotification, sendAvailabilityRequestConfirmation } from "../services/transactional-email";
 
 /* ================================================================
@@ -284,9 +284,11 @@ export const leadsRouter = router({
           guests: input.metadata?.guests ?? '—',
           locale: input.metadata?.locale,
         }).catch(e => console.error("[Email] Availability request confirmation failed:", e));
-      } else if (input.source.startsWith('newsletter')) {
-        sendNewsletterWelcome(input.email).catch(e => console.error("[Email] Newsletter welcome failed:", e));
       }
+      // Newsletter signups no longer pass through here: the footer, the
+      // pop-up and the inline block call newsletter.subscribe (double opt-in
+      // in Brevo, server/routers/newsletter.ts). The ActiveCampaign sync that
+      // used to run for 'newsletter*' sources was dead since 22 Sep 2026.
 
       return lead;
     }),

@@ -418,10 +418,7 @@
   "footer": {
     "allRightsReserved": "Alle rechten voorbehouden",
     "tagline": "Privéhotels in Portugal.",
-    "newsletterHint": "Blijf geïnspireerd. Nieuwe huizen, reisideeën en exclusieve aanbiedingen.",
-    "emailPlaceholder": "Uw e-mail",
     "subscribe": "ABONNEREN",
-    "welcomeInbox": "Welkom. Controleer uw inbox.",
     "destinationsTitle": "BESTEMMINGEN",
     "servicesTitle": "SERVICES",
     "companyTitle": "BEDRIJF",
@@ -458,8 +455,7 @@
     "paymentBankTransfer": "Bankoverschrijving",
     "copyrightLine": "© {{year}} Portugal Active. {{rights}}",
     "nlHeadline": "Laat je inspireren.",
-    "nlSub": "Geselecteerde verblijven, seizoensaanbiedingen en reisverhalen uit Portugal — maandelijks bezorgd.",
-    "nlError": "Er is iets misgegaan. Probeer het opnieuw.",
+    "nlSub": "Subscriber-only offers and the news about our homes. Few emails.",
     "conciergeServices": "Conciërgediensten",
     "realEstate": "Een huis kopen of verkopen",
     "offices": "Kantoren"
@@ -651,11 +647,6 @@
     "ownersBody": "Wij werken samen met huiseigenaren die onze visie op gastvrijheid delen. Ons beheermodel levert uitzonderlijk rendement op zonder operationele betrokkenheid van uw kant. Eigen teams, hotelstandaarden en een merk dat het hele jaar door premium gasten aantrekt.",
     "ownersCta": "MEER OVER ONS MODEL",
     "ownersNote": "Vertrouwelijke beoordeling. Reactie binnen 2 uur.",
-    "newsletterOverline": "BLIJF GEÏNSPIREERD",
-    "newsletterTitle": "Woningen, verhalen en seizoensaanbiedingen.",
-    "newsletterSuccess": "Welkom bij de familie. Controleer uw inbox voor een bevestiging.",
-    "newsletterPlaceholder": "Uw e-mailadres",
-    "newsletterCta": "ABONNEREN",
     "searchCheckin": "Aankomst",
     "searchCheckout": "Vertrek",
     "decreaseGuests": "Minder gasten",
@@ -2136,5 +2127,32 @@
     "faq1A": "De eisen verschillen per activiteit. Bekijk de ervaringspagina voor de moeilijkheidsgraad, leeftijdsgrenzen en wat je moet meenemen. Ons team helpt je kiezen.",
     "faq2Q": "Kan ik activiteiten combineren met een verblijf?",
     "faq2A": "Ja. Kies je huis en ontdek activiteiten in dezelfde regio. Onze conciërge kan het programma helpen samenstellen. Activiteiten en eventuele transfers worden apart berekend."
+  },
+  "newsletter": {
+    "popup": {
+      "overline": "Subscribers only",
+      "title": "Subscriber-only offers and the news about our homes.",
+      "body": "Leave your email and you will receive the subscriber-only offers and the news about our homes: dates that open, new homes. Few emails, only when there is something worth it.",
+      "interest": "Interest noted: {{house}}."
+    },
+    "block": {
+      "overline": "Subscribers only",
+      "titleHouse": "Want to know when {{house}} opens dates or goes on offer?",
+      "titleArticle": "Subscriber-only offers and the news about our homes.",
+      "body": "Leave your email. We let subscribers know when dates open, when a new home arrives and when there is an offer. Few emails, no noise.",
+      "note": "You can unsubscribe in any email."
+    },
+    "form": {
+      "email": "Your email",
+      "consent": "I agree to receive emails from Portugal Active with offers and news. I can unsubscribe in any email. I have read the",
+      "consentPrivacy": "privacy policy",
+      "cta": "Sign me up",
+      "sending": "Sending...",
+      "close": "Not now",
+      "success": "One more step: we have sent you an email to confirm the subscription. Open it and press the button.",
+      "errorInvalid": "This email is not valid.",
+      "errorProxy": "Please use your personal email.",
+      "errorGeneric": "Something went wrong. Please try again in a moment."
+    }
   }
 }

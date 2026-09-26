@@ -418,10 +418,7 @@
   "footer": {
     "allRightsReserved": "Alle Rechte vorbehalten",
     "tagline": "Private Hotels in Portugal.",
-    "newsletterHint": "Inspiration, neue Häuser und exklusive Angebote.",
-    "emailPlaceholder": "Ihre E-Mail",
     "subscribe": "ABONNIEREN",
-    "welcomeInbox": "Willkommen. Bitte Posteingang prüfen.",
     "destinationsTitle": "REISEZIELE",
     "servicesTitle": "SERVICES",
     "companyTitle": "UNTERNEHMEN",
@@ -458,8 +455,7 @@
     "paymentBankTransfer": "Banküberweisung",
     "copyrightLine": "© {{year}} Portugal Active. {{rights}}",
     "nlHeadline": "Lassen Sie sich inspirieren.",
-    "nlSub": "Ausgewählte Aufenthalte, saisonale Angebote und Reisegeschichten aus Portugal — monatlich geliefert.",
-    "nlError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "nlSub": "Subscriber-only offers and the news about our homes. Few emails.",
     "conciergeServices": "Concierge-Dienste",
     "realEstate": "Ein Haus kaufen oder verkaufen",
     "offices": "Büros"
@@ -651,11 +647,6 @@
     "ownersBody": "Wir arbeiten mit Eigentümern zusammen, die unsere Vision von Gastfreundschaft teilen. Unser Managementmodell liefert außergewöhnliche Renditen bei null operativem Aufwand für Sie. Hauseigene Teams, Hotelstandards und eine Marke, die das ganze Jahr über Premium-Gäste anzieht.",
     "ownersCta": "UNSER MODELL KENNENLERNEN",
     "ownersNote": "Vertrauliche Einschätzung. Antwort innerhalb von 2 Stunden.",
-    "newsletterOverline": "LASSEN SIE SICH INSPIRIEREN",
-    "newsletterTitle": "Häuser, Geschichten und saisonale Angebote.",
-    "newsletterSuccess": "Willkommen in der Familie. Prüfen Sie Ihren Posteingang für eine Bestätigung.",
-    "newsletterPlaceholder": "Ihre E-Mail-Adresse",
-    "newsletterCta": "ABONNIEREN",
     "searchCheckin": "Anreise",
     "searchCheckout": "Abreise",
     "decreaseGuests": "Weniger Gäste",
@@ -2136,5 +2127,32 @@
     "faq1A": "Die Voraussetzungen hängen von der Aktivität ab. Auf der Erlebnis-Seite finden Sie Schwierigkeitsgrad, Altersgrenzen und die Packliste. Unser Team hilft Ihnen bei der Auswahl.",
     "faq2Q": "Kann ich Aktivitäten mit einem Aufenthalt verbinden?",
     "faq2A": "Ja. Wählen Sie Ihr Haus und entdecken Sie Aktivitäten in derselben Region. Unser Concierge hilft bei der Planung. Aktivitäten und mögliche Transfers werden separat berechnet."
+  },
+  "newsletter": {
+    "popup": {
+      "overline": "Subscribers only",
+      "title": "Subscriber-only offers and the news about our homes.",
+      "body": "Leave your email and you will receive the subscriber-only offers and the news about our homes: dates that open, new homes. Few emails, only when there is something worth it.",
+      "interest": "Interest noted: {{house}}."
+    },
+    "block": {
+      "overline": "Subscribers only",
+      "titleHouse": "Want to know when {{house}} opens dates or goes on offer?",
+      "titleArticle": "Subscriber-only offers and the news about our homes.",
+      "body": "Leave your email. We let subscribers know when dates open, when a new home arrives and when there is an offer. Few emails, no noise.",
+      "note": "You can unsubscribe in any email."
+    },
+    "form": {
+      "email": "Your email",
+      "consent": "I agree to receive emails from Portugal Active with offers and news. I can unsubscribe in any email. I have read the",
+      "consentPrivacy": "privacy policy",
+      "cta": "Sign me up",
+      "sending": "Sending...",
+      "close": "Not now",
+      "success": "One more step: we have sent you an email to confirm the subscription. Open it and press the button.",
+      "errorInvalid": "This email is not valid.",
+      "errorProxy": "Please use your personal email.",
+      "errorGeneric": "Something went wrong. Please try again in a moment."
+    }
   }
 }

@@ -1029,7 +1029,7 @@ export default function Homes() {
                   {t('homes.leadThanks', "Thank you — we'll come back to you with options for these dates.")}
                 </p>
               ) : (
-                <form onSubmit={submitLead} className="max-w-md mx-auto mb-4" noValidate>
+                <form onSubmit={submitLead} className="max-w-md mx-auto mb-4" noValidate data-nl-suppress="search-no-availability">
                   <p className="caption text-pa-stone mb-2">
                     {t('homes.leadPrompt', 'Want us to check these exact dates for you?')}
                   </p>

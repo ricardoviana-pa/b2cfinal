@@ -418,10 +418,7 @@
   "footer": {
     "allRightsReserved": "Todos os direitos reservados",
     "tagline": "Hotéis Privados em Portugal.",
-    "newsletterHint": "Mantenha-se inspirado. Novos alojamentos, ideias de viagem e ofertas exclusivas.",
-    "emailPlaceholder": "O seu email",
     "subscribe": "SUBSCREVER",
-    "welcomeInbox": "Bem-vindo. Verifique a sua caixa de entrada.",
     "destinationsTitle": "DESTINOS",
     "servicesTitle": "SERVIÇOS",
     "companyTitle": "EMPRESA",
@@ -458,8 +455,7 @@
     "paymentBankTransfer": "Transferência bancária",
     "copyrightLine": "© {{year}} Portugal Active. {{rights}}",
     "nlHeadline": "Inspire-se.",
-    "nlSub": "Estadias selecionadas, ofertas sazonais e histórias de viagem por Portugal — entregues mensalmente.",
-    "nlError": "Algo correu mal. Por favor, tente novamente.",
+    "nlSub": "As promoções só para subscritores e as novidades das nossas casas. Poucos emails.",
     "conciergeServices": "Serviços de concierge",
     "realEstate": "Comprar ou vender casa",
     "offices": "Escritórios"
@@ -651,11 +647,6 @@
     "ownersBody": "Estabelecemos parcerias com proprietários que compartilham a nossa visão de hospitalidade. O nosso modelo de gestão oferece retornos excecionais sem envolvimento operacional de sua parte. Equipas internas, padrões de qualidade hoteleira e uma marca que atrai hóspedes premium o ano todo.",
     "ownersCta": "SAIBA MAIS SOBRE O NOSSO MODELO",
     "ownersNote": "Avaliação confidencial. Resposta em 2 horas.",
-    "newsletterOverline": "MANTENHA-SE INSPIRADO",
-    "newsletterTitle": "Casas, histórias e ofertas sazonais.",
-    "newsletterSuccess": "Bem-vindo à família. Verifique a sua caixa de entrada para uma confirmação.",
-    "newsletterPlaceholder": "O seu endereço de email",
-    "newsletterCta": "SUBSCREVER",
     "searchCheckin": "Check-in",
     "searchCheckout": "Check-out",
     "decreaseGuests": "Menos hóspedes",
@@ -2136,5 +2127,32 @@
     "faq1A": "Os requisitos variam por atividade. Consulte a página da experiência para conhecer a dificuldade, os limites de idade e o que levar. A nossa equipa pode ajudar a escolher.",
     "faq2Q": "Posso combinar atividades com uma estadia?",
     "faq2A": "Sim. Escolha a casa e explore atividades na mesma região. O concierge pode ajudar a coordenar o programa. As atividades e eventuais transfers são cobrados à parte."
+  },
+  "newsletter": {
+    "popup": {
+      "overline": "Só para subscritores",
+      "title": "Promoções só para subscritores e as novidades das nossas casas.",
+      "body": "Deixe o seu email e recebe as promoções só para subscritores e as novidades das nossas casas: datas que abrem, casas novas. Poucos emails, só quando há algo que valha a pena.",
+      "interest": "Interesse registado: {{house}}."
+    },
+    "block": {
+      "overline": "Só para subscritores",
+      "titleHouse": "Quer saber quando a {{house}} abre datas ou entra em promoção?",
+      "titleArticle": "Promoções só para subscritores e as novidades das nossas casas.",
+      "body": "Deixe o seu email. Avisamos os subscritores quando abrem datas, quando entra uma casa nova e quando há uma promoção. Poucos emails, sem ruído.",
+      "note": "Pode cancelar em qualquer email."
+    },
+    "form": {
+      "email": "O seu email",
+      "consent": "Aceito receber emails da Portugal Active com promoções e novidades. Posso cancelar em qualquer email. Li a",
+      "consentPrivacy": "política de privacidade",
+      "cta": "Quero receber",
+      "sending": "A enviar...",
+      "close": "Agora não",
+      "success": "Falta um passo: enviámos um email para confirmar a subscrição. Abra o email e carregue no botão.",
+      "errorInvalid": "Este email não é válido.",
+      "errorProxy": "Use o seu email pessoal.",
+      "errorGeneric": "Algo correu mal. Tente outra vez daqui a instantes."
+    }
   }
 }

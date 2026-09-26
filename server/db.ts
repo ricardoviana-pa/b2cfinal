@@ -423,6 +423,68 @@ export async function updateLead(id: number, data: Partial<InsertLead>) {
   await db.update(leads).set(data).where(eq(leads.id, id));
 }
 
+/* ── Newsletter (dupla confirmação): ver server/services/newsletter.ts ── */
+
+export async function getLeadById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select().from(leads).where(eq(leads.id, id)).limit(1);
+  return rows[0] ?? null;
+}
+
+/**
+ * Lead pendente do mesmo email e origem nas últimas `sinceMs`: reutiliza-se
+ * em vez de criar outro (a pessoa carregou duas vezes, ou o Brevo falhou).
+ */
+export async function findPendingNewsletterLead(email: string, origin: string, sinceMs: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const since = new Date(Date.now() - sinceMs);
+  const rows = await db
+    .select()
+    .from(leads)
+    .where(and(eq(leads.email, email), eq(leads.source, `nl-pending-${origin}`), gt(leads.createdAt, since)))
+    .orderBy(desc(leads.createdAt))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+/**
+ * Promove o lead pendente a subscritor confirmado: só a partir daqui o
+ * source começa por "newsletter-" e conta para hasNewsletterConsent.
+ * Idempotente: um lead já confirmado não muda.
+ */
+export async function confirmNewsletterLead(id: number, origin: string, confirmedAt: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const current = await getLeadById(id);
+  if (!current) return false;
+  if (current.source === `newsletter-${origin}`) return true;
+  if (current.source !== `nl-pending-${origin}`) return false;
+  await db
+    .update(leads)
+    .set({ source: `newsletter-${origin}`, status: "contacted", metadata: { ...(current.metadata || {}), confirmedAt } })
+    .where(and(eq(leads.id, id), eq(leads.source, `nl-pending-${origin}`)));
+  return true;
+}
+
+/**
+ * Claim do email de boas-vindas: só o primeiro clique o dispara. UPDATE
+ * condicional em metadata.welcomeAt, como claimRecoveryStage.
+ */
+export async function claimNewsletterWelcome(id: number, welcomeAt: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const current = await getLeadById(id);
+  if (!current || (current.metadata || {}).welcomeAt) return false;
+  const res: any = await db
+    .update(leads)
+    .set({ metadata: { ...(current.metadata || {}), welcomeAt } })
+    .where(and(eq(leads.id, id), sql`JSON_EXTRACT(${leads.metadata}, '$.welcomeAt') IS NULL`));
+  const affected = Array.isArray(res) ? res[0]?.affectedRows : res?.affectedRows;
+  return (affected ?? 0) > 0;
+}
+
 export async function deleteLead(id: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
