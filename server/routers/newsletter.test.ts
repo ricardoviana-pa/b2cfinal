@@ -23,6 +23,8 @@ const logs: string[] = [];
 beforeEach(() => {
   vi.clearAllMocks();
   logs.length = 0;
+  // CI runs the suite with APP_ENV=preview; these cases describe production.
+  vi.stubEnv("APP_ENV", "production");
   vi.stubEnv("NODE_ENV", "production");
   vi.stubEnv("RENDER_GIT_BRANCH", "main");
   vi.stubEnv("SITE_URL", "https://www.portugalactive.com");
