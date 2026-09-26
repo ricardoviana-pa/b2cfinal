@@ -32,7 +32,8 @@ export default function Footer() {
     retry: false,
     refetchOnWindowFocus: false,
   });
-  const showNewsletter = !!newsletterConfig.data?.locales.includes(language);
+  // configured: Brevo keys present and not a preview (no broken form that answers 503).
+  const showNewsletter = !!newsletterConfig.data?.configured && !!newsletterConfig.data?.locales.includes(language);
 
   const footerLinks = (label: string, href: string, external?: boolean) => (
     <li>

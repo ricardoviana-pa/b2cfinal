@@ -4,7 +4,7 @@ const mock = vi.hoisted(() => ({
   findPending: vi.fn(), createLead: vi.fn(), getLeadById: vi.fn(), updateLead: vi.fn(), properties: vi.fn(),
 }));
 vi.mock("../db", () => ({
-  findPendingNewsletterLead: mock.findPending, createLead: mock.createLead,
+  findPendingNewsletterLeads: mock.findPending, createLead: mock.createLead,
   getLeadById: mock.getLeadById, updateLead: mock.updateLead,
 }));
 vi.mock("../services/properties-store", () => ({ getPropertiesForSite: mock.properties }));
@@ -37,12 +37,13 @@ beforeEach(() => {
   vi.spyOn(console, "info").mockImplementation((...a) => { logs.push(a.map(String).join(" ")); });
   vi.spyOn(console, "warn").mockImplementation((...a) => { logs.push(a.map(String).join(" ")); });
   vi.spyOn(console, "error").mockImplementation((...a) => { logs.push(a.map(String).join(" ")); });
-  mock.findPending.mockResolvedValue(null);
+  mock.findPending.mockResolvedValue([]);
   mock.createLead.mockResolvedValue({ id: 91 });
   mock.getLeadById.mockResolvedValue({ id: 91, metadata: {} });
   mock.updateLead.mockResolvedValue(undefined);
   mock.properties.mockResolvedValue([
     { slug: "casa-x", name: "Casa X by Portugal Active I Pool", guestyId: "abc123", isActive: true },
+    { slug: "quinta-parceira", name: "Quinta Parceira", source: "tripwix", supplierUid: "tw-1", isActive: true },
   ]);
 });
 afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); vi.restoreAllMocks(); });
@@ -50,9 +51,14 @@ afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); vi.restoreAllMocks(
 describe("newsletter.config", () => {
   it("is public and tells the client what the server allows", async () => {
     const cfg = await newsletterRouter.createCaller(ctx()).config();
-    expect(cfg).toEqual({ enabled: true, locales: ["pt", "es"], popup: { delayMs: 20_000, scrollPct: 50, cooldownDays: 30 } });
+    expect(cfg).toEqual({ configured: true, enabled: true, locales: ["pt", "es"], popup: { delayMs: 20_000, scrollPct: 50, cooldownDays: 30 } });
+    // Kill switch: the pop-up goes, the block and the footer stay.
+    vi.stubEnv("NEWSLETTER_POPUP", "false");
+    expect(await newsletterRouter.createCaller(ctx()).config()).toMatchObject({ configured: true, enabled: false });
+    // Without the Brevo key nothing shows: no form that would answer 503.
+    vi.stubEnv("NEWSLETTER_POPUP", "");
     vi.stubEnv("BREVO_API_KEY", "");
-    expect((await newsletterRouter.createCaller(ctx()).config()).enabled).toBe(false);
+    expect(await newsletterRouter.createCaller(ctx()).config()).toMatchObject({ configured: false, enabled: false });
   });
 });
 
@@ -82,13 +88,54 @@ describe("newsletter.subscribe", () => {
     expect(logs.join("\n")).not.toContain("example.test");
   });
   it("reuses a pending lead from the last 24 h instead of creating another", async () => {
-    mock.findPending.mockResolvedValue({ id: 33, metadata: { consentAt: "2026-10-01T09:00:00.000Z" }, createdAt: new Date() });
+    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
+    mock.findPending.mockResolvedValue([
+      { id: 33, metadata: { consentAt: "2026-10-01T09:00:00.000Z", doiLog: twoHoursAgo }, createdAt: new Date() },
+    ]);
     await newsletterRouter.createCaller(ctx()).subscribe(input());
-    expect(mock.findPending).toHaveBeenCalledWith(EMAIL, "house", 24 * 60 * 60 * 1000);
+    expect(mock.findPending).toHaveBeenCalledWith(EMAIL, 24 * 60 * 60 * 1000);
     expect(mock.createLead).not.toHaveBeenCalled();
     const body = JSON.parse(String((globalThis.fetch as any).mock.calls[0][1].body));
     expect(body.redirectionUrl).toContain("lead=33&");
     expect(body.attributes.INSCRITO_EM).toBe("2026-10-01T09:00:00.000Z");
+    // The new request is recorded before Brevo is called.
+    const doiLog = mock.updateLead.mock.calls[0][1].metadata.doiLog.split(",");
+    expect(doiLog).toHaveLength(2);
+    expect(doiLog[0]).toBe(twoHoursAgo);
+  });
+  it("sends at most one confirmation email per address per hour, with the same success answer", async () => {
+    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    mock.findPending.mockResolvedValue([{ id: 33, metadata: { doiLog: tenMinutesAgo }, createdAt: new Date() }]);
+    expect(await newsletterRouter.createCaller(ctx()).subscribe(input())).toEqual({ ok: true });
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+    expect(mock.createLead).not.toHaveBeenCalled();
+    expect(mock.updateLead).not.toHaveBeenCalled();
+    expect(logs.join("\n")).toContain("DOI throttled");
+    expect(logs.join("\n")).not.toContain("example.test");
+  });
+  it("sends at most three confirmation emails per address in 24 h, whatever the origin", async () => {
+    const hoursAgo = (h: number) => new Date(Date.now() - h * 60 * 60 * 1000).toISOString();
+    mock.findPending.mockResolvedValue([
+      { id: 35, source: "nl-pending-footer", metadata: { doiLog: hoursAgo(2) }, createdAt: new Date() },
+      { id: 34, source: "nl-pending-popup", metadata: { doiLog: `${hoursAgo(10)},${hoursAgo(5)}` }, createdAt: new Date() },
+    ]);
+    expect(await newsletterRouter.createCaller(ctx()).subscribe(input({ origin: "article" }))).toEqual({ ok: true });
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+    // A day later the window is clear again.
+    mock.findPending.mockResolvedValue([
+      { id: 35, metadata: { doiLog: `${hoursAgo(30)},${hoursAgo(26)},${hoursAgo(25)}` }, createdAt: new Date() },
+    ]);
+    await newsletterRouter.createCaller(ctx()).subscribe(input());
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+  });
+  it("gives the hour back when Brevo fails, so a real retry is not throttled", async () => {
+    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
+    const lead = { id: 33, metadata: { doiLog: twoHoursAgo }, createdAt: new Date() };
+    mock.findPending.mockResolvedValue([lead]);
+    mock.getLeadById.mockResolvedValue(lead);
+    vi.stubGlobal("fetch", vi.fn(async () => jsonResponse(500, { code: "server_error" })));
+    await newsletterRouter.createCaller(ctx()).subscribe(input()).catch(() => null);
+    expect(mock.updateLead).toHaveBeenLastCalledWith(33, { metadata: { doiLog: twoHoursAgo, doiError: "1" } });
   });
   it("ignores the honeypot silently and refuses platform relay addresses and missing consent", async () => {
     const caller = newsletterRouter.createCaller(ctx());
@@ -122,8 +169,26 @@ describe("newsletter.subscribe", () => {
     vi.stubGlobal("fetch", vi.fn(async () => jsonResponse(500, { code: "server_error", message: "boom" })));
     const err = await newsletterRouter.createCaller(ctx()).subscribe(input()).catch((e) => e);
     expect(err.message).toBe("NEWSLETTER_DOI_FAILED");
-    expect(mock.updateLead).toHaveBeenCalledWith(91, { metadata: { doiError: "1" } });
+    expect(mock.updateLead).toHaveBeenCalledWith(91, { metadata: { doiError: "1", doiLog: "" } });
     expect(logs.join("\n")).not.toContain("example.test");
+  });
+  it("never records a partner (Tripwix) home as the subscriber's interest", async () => {
+    await newsletterRouter.createCaller(ctx()).subscribe(input({ propertySlug: "quinta-parceira" }));
+    expect(mock.createLead.mock.calls[0][0].metadata).toMatchObject({ propertySlug: "", propertyName: "", listingId: "" });
+    const body = JSON.parse(String((globalThis.fetch as any).mock.calls[0][1].body));
+    expect(body.attributes).toMatchObject({ CASA_INTERESSE: "", CASA_INTERESSE_ID: "" });
+  });
+  it("never logs a failed query's message, which carries the address in its parameters", async () => {
+    const queryError = Object.assign(
+      new Error(`Failed query: insert into leads (email, source) values (?, ?)\nparams: ${EMAIL},nl-pending-house`),
+      { name: "DrizzleQueryError", cause: Object.assign(new Error(`Duplicate entry '${EMAIL}'`), { code: "ER_DUP_ENTRY" }) },
+    );
+    mock.createLead.mockRejectedValue(queryError);
+    const err = await newsletterRouter.createCaller(ctx()).subscribe(input()).catch((e) => e);
+    expect(err.message).toBe("NEWSLETTER_STORE_FAILED");
+    expect(logs.join("\n")).toContain("DrizzleQueryError ER_DUP_ENTRY");
+    expect(logs.join("\n")).not.toContain("example.test");
+    expect(JSON.stringify(err)).not.toContain("example.test");
   });
   it("fails with a generic error when the database is not available (dev)", async () => {
     mock.createLead.mockRejectedValue(new Error("Database not available"));

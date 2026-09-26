@@ -8,6 +8,7 @@ import {
   NL_POPUP_COOLDOWN_DAYS,
   hasEmailOrRecoveryUtm,
   isExcludedPath,
+  isNewsletterHouse,
   isWithinCooldown,
   popupEligibility,
   type PopupEligibilityInput,
@@ -65,5 +66,16 @@ describe("popup eligibility", () => {
   });
   it("waits for a visible document", () => {
     expect(popupEligibility({ ...base, visible: false })).toEqual({ eligible: false, reason: "hidden" });
+  });
+});
+
+describe("isNewsletterHouse", () => {
+  it("keeps the house texts for PA houses and leaves partner homes out", () => {
+    expect(isNewsletterHouse({ guestyId: "abc123" })).toBe(true);
+    expect(isNewsletterHouse({ guestyId: "abc123", source: "guesty" })).toBe(true);
+    expect(isNewsletterHouse({ source: "tripwix", supplierUid: "tw-1" })).toBe(false);
+    expect(isNewsletterHouse({ source: "tripwix", guestyId: "abc123" })).toBe(false);
+    expect(isNewsletterHouse({ guestyId: "  " })).toBe(false);
+    expect(isNewsletterHouse(null)).toBe(false);
   });
 });

@@ -130,10 +130,154 @@ export function isNewsletterConfigured(env: NodeJS.ProcessEnv = process.env): bo
   return !!env.BREVO_API_KEY && newsletterListId(env) !== null && doiTemplateId("pt", env) !== null;
 }
 
-export function isNewsletterEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
-  if (env.NEWSLETTER_POPUP === "false") return false;
+/**
+ * The forms (inline block and footer) may be shown: Brevo is configured and
+ * this is not a preview. Without it every submission would answer 503, so the
+ * forms stay hidden instead of showing a broken form on every PT page.
+ */
+export function isNewsletterAvailable(env: NodeJS.ProcessEnv = process.env): boolean {
   if (isPreviewDeployment(env)) return false;
   return isNewsletterConfigured(env);
+}
+
+/** The pop-up may be shown: the forms are available and the kill switch is off. */
+export function isNewsletterEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
+  if (env.NEWSLETTER_POPUP === "false") return false;
+  return isNewsletterAvailable(env);
+}
+
+/* ── Log hygiene ───────────────────────────────────────────────────────── */
+
+/**
+ * What an error may put in a log line: its class name and, when present, a
+ * short driver code (ER_DUP_ENTRY, ECONNREFUSED). Never err.message: a
+ * DrizzleQueryError message is "Failed query: ... params: <values>" and the
+ * values carry the subscriber's address.
+ */
+export function safeErrorLabel(err: unknown): string {
+  const name = err instanceof Error ? err.name : typeof err;
+  const rawCode = (err as any)?.code ?? (err as any)?.cause?.code;
+  const code = typeof rawCode === "string" && /^[A-Z0-9_]{2,40}$/.test(rawCode) ? rawCode : "";
+  return code ? `${name} ${code}` : name;
+}
+
+/* ── Confirmation emails per address (anti email bombing) ──────────────── */
+
+/** At most one confirmation email per address per hour... */
+export const DOI_MIN_INTERVAL_MS = 60 * 60 * 1000;
+/** ...and three per 24 hours, whatever the origin. */
+export const DOI_MAX_PER_DAY = 3;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** metadata.doiLog: comma-separated ISO times of the DOI requests (last 24 h). */
+export function parseDoiLog(raw: string | null | undefined, now: number = Date.now()): number[] {
+  return String(raw || "")
+    .split(",")
+    .map((s) => Date.parse(s.trim()))
+    .filter((t) => Number.isFinite(t) && now - t < DAY_MS && t <= now + 60_000)
+    .sort((a, b) => a - b);
+}
+
+export function formatDoiLog(times: number[]): string {
+  return times.map((t) => new Date(t).toISOString()).join(",");
+}
+
+/**
+ * May the site ask Brevo for another confirmation email to this address?
+ * `times` are the DOI requests of the last 24 h across every pending lead of
+ * the address. When the answer is no, the endpoint still answers success
+ * (never reveals the state) and sends nothing.
+ */
+export function doiAllowed(times: number[], now: number = Date.now()): boolean {
+  const recent = times.filter((t) => now - t < DAY_MS);
+  if (recent.length >= DOI_MAX_PER_DAY) return false;
+  const last = recent.length ? Math.max(...recent) : -Infinity;
+  return now - last >= DOI_MIN_INTERVAL_MS;
+}
+
+/* ── Sources the public leads.create may write ─────────────────────────── */
+
+/**
+ * leads.create is public and takes any source. A source that starts with
+ * "newsletter" counts as marketing consent (db.hasNewsletterConsent), and
+ * "nl-pending-" is a pending double opt-in: only newsletter.subscribe, the
+ * confirmation click and the checkout may write those. Anything else (an old
+ * cached footer bundle, a script) is rewritten to "nl-legacy-*", which grants
+ * nothing.
+ */
+export function publicLeadSource(source: string): string {
+  const s = String(source || "").trim();
+  if (/^newsletter/i.test(s)) return `nl-legacy-${s.replace(/^newsletter-?/i, "") || "unknown"}`.slice(0, 100);
+  if (/^nl-pending/i.test(s)) return `nl-legacy-${s.replace(/^nl-pending-?/i, "") || "unknown"}`.slice(0, 100);
+  return s;
+}
+
+/* ── Consent withdrawn in Brevo (RGPD: every channel respects it) ──────── */
+
+/**
+ * subscribed: on the Newsletter list. unsubscribed: blacklisted or unsubscribed
+ * from the list (consent withdrawn). not_listed: known to Brevo (another list)
+ * but not on the Newsletter list. absent: unknown to Brevo. unknown: Brevo did
+ * not answer or is not configured.
+ */
+export type BrevoContactStatus = "subscribed" | "unsubscribed" | "not_listed" | "absent" | "unknown";
+
+/**
+ * Marketing consent from the site's lead sources plus the contact's state in
+ * Brevo. Someone who unsubscribed in any Brevo email keeps "newsletter-*" in
+ * the site's MySQL; without this check the checkout recovery contacts 3 and 4
+ * (marketing) would keep going to them.
+ *
+ * - Brevo says unsubscribed or blacklisted: no consent, whatever the source.
+ * - A double opt-in source (newsletter-popup/house/article/footer): consent
+ *   only while Brevo confirms the contact is on the list. Fail closed: if
+ *   Brevo cannot answer, no marketing email.
+ * - "newsletter-checkout": the checkbox of the checkout, withdrawn by the
+ *   checkout itself (demoteCheckoutLeadFromNewsletter) and by the opt-out
+ *   link of the recovery emails; kept unless Brevo says unsubscribed.
+ */
+export function consentFromSources(sources: Array<string | null | undefined>, status: BrevoContactStatus): boolean {
+  const consentSources = sources.filter((s): s is string => !!s && s.startsWith(CONFIRMED_PREFIX));
+  if (consentSources.length === 0) return false;
+  if (status === "unsubscribed") return false;
+  if (status === "subscribed") return true;
+  return consentSources.includes("newsletter-checkout");
+}
+
+/**
+ * GET /v3/contacts/{email}: is this contact still on the Newsletter list and
+ * not blacklisted? Server to server only; the address is never logged.
+ */
+export async function fetchBrevoContactStatus(
+  email: string,
+  env: NodeJS.ProcessEnv = process.env,
+  fetchImpl: FetchLike = globalThis.fetch,
+): Promise<BrevoContactStatus> {
+  const apiKey = env.BREVO_API_KEY;
+  if (!apiKey || !email) return "unknown";
+  const listId = newsletterListId(env);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), BREVO_TIMEOUT_MS);
+  try {
+    const res = await fetchImpl(`${BREVO_API_BASE}/contacts/${encodeURIComponent(email)}?identifierType=email_id`, {
+      method: "GET",
+      headers: { "api-key": apiKey, accept: "application/json" },
+      signal: controller.signal,
+    });
+    if (res.status === 404) return "absent";
+    if (!res.ok) return "unknown";
+    const json = (await res.json()) as { emailBlacklisted?: boolean; listIds?: number[]; listUnsubscribed?: number[] };
+    if (json?.emailBlacklisted) return "unsubscribed";
+    if (listId !== null) {
+      if ((json?.listUnsubscribed || []).includes(listId)) return "unsubscribed";
+      if (!(json?.listIds || []).includes(listId)) return "not_listed";
+    }
+    return "subscribed";
+  } catch {
+    return "unknown";
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 /* ── Confirmation token (HMAC of the lead id; ids are guessable) ───────── */

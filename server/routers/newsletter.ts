@@ -3,9 +3,11 @@
  * (public mutation). The rules live in ../services/newsletter.ts; this file
  * only wires the request to them.
  *
- * Rate limit: server/_core/index.ts applies the leadLimiter to
- * /api/trpc/newsletter.subscribe. The client calls the mutation alone (never
- * in a tRPC batch), otherwise the per-path limiter would not see it.
+ * Rate limit: server/lib/newsletter-rate-limit.ts, mounted on /api/trpc in
+ * server/_core/index.ts, applies the leadLimiter to any request whose path
+ * names newsletter.subscribe, batched or not, and refuses a batch that names
+ * it more than once. Per address: at most one confirmation email per hour and
+ * three per 24 hours (doiAllowed), with the same success answer.
  */
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
@@ -13,20 +15,25 @@ import { publicProcedure, router } from "../_core/trpc";
 import * as db from "../db";
 import { getPropertiesForSite } from "../services/properties-store";
 import { getDisplayName } from "@shared/displayName";
-import { NL_POPUP_COOLDOWN_DAYS, NL_POPUP_SCROLL_PCT } from "@shared/newsletterPopup";
+import { NL_POPUP_COOLDOWN_DAYS, NL_POPUP_SCROLL_PCT, isNewsletterHouse } from "@shared/newsletterPopup";
 import {
   NEWSLETTER_ORIGINS,
   PENDING_REUSE_MS,
   brevoAttributes,
   confirmUrl,
   createDoiContact,
+  doiAllowed,
+  formatDoiLog,
+  isNewsletterAvailable,
   isNewsletterConfigured,
   isNewsletterEnabled,
   isProxyEmail,
   newsletterLocales,
   normaliseEmail,
   pendingSource,
+  parseDoiLog,
   popupDelayMs,
+  safeErrorLabel,
 } from "../services/newsletter";
 
 const subscribeInput = z.object({
@@ -43,14 +50,19 @@ const subscribeInput = z.object({
   hp: z.string().max(200).optional(),
 });
 
-/** Never trust a house name from the browser: resolve it by slug on the server. */
+/**
+ * Never trust a house name from the browser: resolve it by slug on the server.
+ * Only houses the PA manages (a Guesty id, not a partner home) are recorded as
+ * the subscriber's interest: the PA does not open dates nor set promotions for
+ * partner (Tripwix) homes, so the promise would not hold for them.
+ */
 async function resolveHouse(slug: string | undefined): Promise<{ name: string; listingId: string; slug: string } | null> {
   if (!slug) return null;
   try {
     const props = await getPropertiesForSite();
     const hit = props.find((p: any) => p?.slug === slug);
-    if (!hit) return null;
-    return { name: getDisplayName(hit), listingId: String(hit.guestyId || hit.listingId || hit.id || ""), slug };
+    if (!hit || !isNewsletterHouse(hit)) return null;
+    return { name: getDisplayName(hit), listingId: String(hit.guestyId), slug };
   } catch {
     return null;
   }
@@ -58,6 +70,9 @@ async function resolveHouse(slug: string | undefined): Promise<{ name: string; l
 
 export const newsletterRouter = router({
   config: publicProcedure.query(() => ({
+    /** The inline block and the footer form may show (Brevo configured, not a preview). */
+    configured: isNewsletterAvailable(),
+    /** The pop-up may show (configured and the NEWSLETTER_POPUP switch is on). */
     enabled: isNewsletterEnabled(),
     locales: newsletterLocales(),
     popup: { delayMs: popupDelayMs(), scrollPct: NL_POPUP_SCROLL_PCT, cooldownDays: NL_POPUP_COOLDOWN_DAYS },
@@ -93,11 +108,25 @@ export const newsletterRouter = router({
 
     let leadId: number;
     let subscribedAt = now;
+    /** doiLog before this request: restored when Brevo fails, so a real retry is not throttled. */
+    let previousDoiLog = "";
     try {
-      const pending = await db.findPendingNewsletterLead(email, input.origin, PENDING_REUSE_MS);
-      if (pending) {
-        leadId = pending.id;
-        subscribedAt = pending.metadata?.consentAt || new Date(pending.createdAt).toISOString();
+      const pending = await db.findPendingNewsletterLeads(email, PENDING_REUSE_MS);
+      const nowMs = Date.parse(now);
+      const sent = pending.flatMap((p: any) => parseDoiLog(p?.metadata?.doiLog, nowMs));
+      if (!doiAllowed(sent, nowMs)) {
+        // Same answer as a success, nothing sent: nobody can use the form to
+        // flood an address with confirmation emails.
+        console.info(`[Newsletter] DOI throttled for lead #${pending[0]?.id ?? "?"} origin=${input.origin}`);
+        return { ok: true as const };
+      }
+      const latest = pending[0];
+      if (latest) {
+        leadId = latest.id;
+        subscribedAt = latest.metadata?.consentAt || new Date(latest.createdAt).toISOString();
+        const own = parseDoiLog(latest.metadata?.doiLog, nowMs);
+        previousDoiLog = formatDoiLog(own);
+        await db.updateLead(leadId, { metadata: { ...(latest.metadata || {}), doiLog: formatDoiLog([...own, nowMs]) } });
       } else {
         const created = await db.createLead({
           email,
@@ -112,13 +141,15 @@ export const newsletterRouter = router({
             country,
             consent: "true",
             consentAt: now,
+            doiLog: now,
           },
         });
         leadId = created.id;
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       // createLead throws "Database not available" without DATABASE_URL (dev).
-      console.error("[Newsletter] could not store the pending lead:", err?.message ?? err);
+      // Only the error class: a DrizzleQueryError message carries the address.
+      console.error("[Newsletter] could not store the pending lead:", safeErrorLabel(err));
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "NEWSLETTER_STORE_FAILED" });
     }
 
@@ -147,7 +178,7 @@ export const newsletterRouter = router({
     console.warn(`[Newsletter] Brevo DOI failed for lead #${leadId}: status=${result.status} code=${result.code ?? ""}`);
     try {
       const current = await db.getLeadById(leadId);
-      await db.updateLead(leadId, { metadata: { ...(current?.metadata || {}), doiError: "1" } });
+      await db.updateLead(leadId, { metadata: { ...(current?.metadata || {}), doiError: "1", doiLog: previousDoiLog } });
     } catch {
       /* best effort */
     }

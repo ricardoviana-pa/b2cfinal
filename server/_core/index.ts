@@ -18,6 +18,7 @@ import { registerBookingRoutes, registerGuestyWebhookRoute } from "../routes/boo
 import { redirectLegacyRecoveryEmail } from "../routes/checkout-recovery-redirect";
 import { registerRecoveryOptoutRoute } from "../routes/checkout-recovery-optout";
 import { registerNewsletterRoutes } from "../routes/newsletter-confirm";
+import { newsletterSubscribeGuard } from "../lib/newsletter-rate-limit";
 import { registerStripePayPalWebhookRoute } from "../routes/stripe-paypal-webhook";
 import { registerStripeKlarnaWebhookRoute } from "../routes/stripe-klarna-webhook";
 import { registerStripeCardWebhookRoute } from "../routes/stripe-card-webhook";
@@ -115,7 +116,9 @@ async function startServer() {
   app.use("/api/auth/dev-login", authLimiter);
   app.use("/api/reservations", apiLimiter);
   app.use("/api/trpc/leads.create", leadLimiter);
-  app.use("/api/trpc/newsletter.subscribe", leadLimiter); // pop-up, bloco e rodapé (chamada isolada, nunca em lote)
+  // Newsletter (pop-up, bloco e rodapé): o limite vale também dentro de um lote
+  // tRPC, e um lote com mais de uma subscrição é recusado.
+  app.use("/api/trpc", newsletterSubscribeGuard(leadLimiter));
   app.use("/api/trpc/booking", apiLimiter);
   app.use("/api/trpc/checkout", apiLimiter); // checkout_v2 intents + lead capture
 

@@ -21,6 +21,14 @@ import {
   verifyConfirmToken,
   welcomeMode,
   welcomeParams,
+  consentFromSources,
+  doiAllowed,
+  fetchBrevoContactStatus,
+  formatDoiLog,
+  isNewsletterAvailable,
+  parseDoiLog,
+  publicLeadSource,
+  safeErrorLabel,
 } from "./newsletter";
 import { formatValidUntil, interestLine, newsletterLang, offerLine } from "./newsletter-copy";
 
@@ -85,6 +93,12 @@ describe("configuration", () => {
     expect(isNewsletterEnabled({ ...PROD, NEWSLETTER_POPUP: "false" })).toBe(false);
     expect(isNewsletterEnabled({ ...PROD, APP_ENV: "preview" })).toBe(false);
     expect(isNewsletterEnabled({ ...PROD, RENDER_GIT_BRANCH: "dev" })).toBe(false);
+  });
+  it("shows the block and the footer only when configured and not in a preview; the kill switch only hides the pop-up", () => {
+    expect(isNewsletterAvailable(PROD)).toBe(true);
+    expect(isNewsletterAvailable({ ...PROD, NEWSLETTER_POPUP: "false" })).toBe(true);
+    expect(isNewsletterAvailable({ ...PROD, BREVO_API_KEY: "" })).toBe(false);
+    expect(isNewsletterAvailable({ ...PROD, APP_ENV: "preview" })).toBe(false);
   });
   it("falls back to the English template for languages without one", () => {
     expect(doiTemplateId("pt", PROD)).toBe(101);
@@ -226,5 +240,91 @@ describe("Brevo calls (fetch injected)", () => {
     const none = vi.fn();
     expect((await sendWelcomeTransactional({ email: "a@example.test", locale: "de", params }, PROD, none)).code).toBe("not_configured");
     expect(none).not.toHaveBeenCalled();
+  });
+});
+
+describe("interest line (welcome email)", () => {
+  it("names the house without a gendered article and promises nothing", () => {
+    expect(interestLine("pt", "The Sea House")).toBe("Interesse registado: The Sea House.");
+    expect(interestLine("es", "Casa X")).toBe("Interés registrado: Casa X.");
+    expect(interestLine("en", "Casa X")).toBe("Interest noted: Casa X.");
+  });
+});
+
+describe("log hygiene", () => {
+  it("logs the error class and a driver code, never the message of a failed query", () => {
+    const err = Object.assign(new Error("Failed query: insert into leads\nparams: guest@example.test"), {
+      name: "DrizzleQueryError",
+      cause: Object.assign(new Error("Duplicate entry 'guest@example.test'"), { code: "ER_DUP_ENTRY" }),
+    });
+    expect(safeErrorLabel(err)).toBe("DrizzleQueryError ER_DUP_ENTRY");
+    expect(safeErrorLabel(new Error("Database not available"))).toBe("Error");
+    expect(safeErrorLabel(Object.assign(new Error("x"), { code: "guest@example.test" }))).toBe("Error");
+    expect(safeErrorLabel("guest@example.test")).toBe("string");
+  });
+});
+
+describe("confirmation emails per address", () => {
+  const NOW = Date.parse("2026-10-05T12:00:00Z");
+  const H = 60 * 60 * 1000;
+  it("allows one per hour and three per 24 hours", () => {
+    expect(doiAllowed([], NOW)).toBe(true);
+    expect(doiAllowed([NOW - 30 * 60 * 1000], NOW)).toBe(false);
+    expect(doiAllowed([NOW - 61 * 60 * 1000], NOW)).toBe(true);
+    expect(doiAllowed([NOW - 20 * H, NOW - 10 * H], NOW)).toBe(true);
+    expect(doiAllowed([NOW - 20 * H, NOW - 10 * H, NOW - 2 * H], NOW)).toBe(false);
+    expect(doiAllowed([NOW - 30 * H, NOW - 26 * H, NOW - 25 * H], NOW)).toBe(true);
+  });
+  it("reads and writes the log, dropping entries older than 24 h and junk", () => {
+    const log = formatDoiLog([NOW - 25 * H, NOW - 2 * H]);
+    expect(parseDoiLog(`${log},not-a-date,`, NOW)).toEqual([NOW - 2 * H]);
+    expect(parseDoiLog(undefined, NOW)).toEqual([]);
+  });
+});
+
+describe("public leads.create sources", () => {
+  it("never lets the public endpoint write a consent or pending source", () => {
+    expect(publicLeadSource("newsletter-footer")).toBe("nl-legacy-footer");
+    expect(publicLeadSource("newsletter")).toBe("nl-legacy-unknown");
+    expect(publicLeadSource("Newsletter-checkout")).toBe("nl-legacy-checkout");
+    expect(publicLeadSource("nl-pending-popup")).toBe("nl-legacy-popup");
+    expect(publicLeadSource("contact-form")).toBe("contact-form");
+    expect(publicLeadSource("search-no-availability")).toBe("search-no-availability");
+  });
+});
+
+describe("consent withdrawn in Brevo", () => {
+  it("combines the site's sources with the contact's state in Brevo", () => {
+    // Unsubscribed in Brevo wins over any source.
+    expect(consentFromSources(["newsletter-popup"], "unsubscribed")).toBe(false);
+    expect(consentFromSources(["newsletter-checkout"], "unsubscribed")).toBe(false);
+    // Double opt-in sources need Brevo to confirm the contact is on the list (fail closed).
+    expect(consentFromSources(["newsletter-house"], "subscribed")).toBe(true);
+    expect(consentFromSources(["newsletter-house"], "not_listed")).toBe(false);
+    expect(consentFromSources(["newsletter-house"], "absent")).toBe(false);
+    expect(consentFromSources(["newsletter-house"], "unknown")).toBe(false);
+    // The checkout checkbox is withdrawn by the checkout itself and the opt-out link.
+    expect(consentFromSources(["newsletter-checkout"], "absent")).toBe(true);
+    expect(consentFromSources(["newsletter-checkout"], "unknown")).toBe(true);
+    expect(consentFromSources(["newsletter-checkout", "newsletter-footer"], "not_listed")).toBe(true);
+    // No consent source at all.
+    expect(consentFromSources(["nl-pending-popup", "checkout"], "subscribed")).toBe(false);
+    expect(consentFromSources([], "subscribed")).toBe(false);
+  });
+  it("reads the contact from Brevo without logging the address", async () => {
+    const f = vi.fn(async () => jsonResponse(200, { emailBlacklisted: false, listIds: [42], listUnsubscribed: [] }));
+    expect(await fetchBrevoContactStatus("guest@example.test", PROD, f as any)).toBe("subscribed");
+    const [url, init] = f.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe(`${BREVO_API_BASE}/contacts/guest%40example.test?identifierType=email_id`);
+    expect(init.method).toBe("GET");
+    const status = async (body: unknown, code = 200) =>
+      fetchBrevoContactStatus("guest@example.test", PROD, (async () => jsonResponse(code, body)) as any);
+    expect(await status({ emailBlacklisted: true, listIds: [42] })).toBe("unsubscribed");
+    expect(await status({ emailBlacklisted: false, listIds: [7], listUnsubscribed: [42] })).toBe("unsubscribed");
+    expect(await status({ emailBlacklisted: false, listIds: [7] })).toBe("not_listed");
+    expect(await status({ code: "document_not_found" }, 404)).toBe("absent");
+    expect(await status({}, 500)).toBe("unknown");
+    expect(await fetchBrevoContactStatus("guest@example.test", PROD, (async () => { throw new Error("network"); }) as any)).toBe("unknown");
+    expect(await fetchBrevoContactStatus("guest@example.test", { ...PROD, BREVO_API_KEY: "" }, f as any)).toBe("unknown");
   });
 });

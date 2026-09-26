@@ -77,7 +77,7 @@ export default function NewsletterPopupGate() {
     const data = config.data;
     if (!data || shownRef.current || open) return;
     const evaluate = () => popupEligibility({
-      enabled: data.enabled,
+      enabled: data.enabled && data.configured,
       locales: data.locales,
       lang,
       path,

@@ -21,6 +21,7 @@ const deps = {
   getLeadById: vi.fn(),
   confirmNewsletterLead: vi.fn(),
   claimNewsletterWelcome: vi.fn(),
+  releaseNewsletterWelcome: vi.fn(),
   fetchImpl: vi.fn(),
 };
 const pendingLead = (over: Record<string, unknown> = {}) => ({
@@ -51,6 +52,7 @@ beforeEach(() => {
   deps.getLeadById.mockResolvedValue(pendingLead());
   deps.confirmNewsletterLead.mockResolvedValue(true);
   deps.claimNewsletterWelcome.mockResolvedValue(true);
+  deps.releaseNewsletterWelcome.mockResolvedValue(undefined);
   deps.fetchImpl.mockResolvedValue(new Response(null, { status: 204 }));
 });
 afterEach(() => { vi.restoreAllMocks(); });
@@ -92,7 +94,7 @@ describe("GET /api/newsletter/confirmed", () => {
     const body = JSON.parse(String(init.body));
     expect(body.event_name).toBe("newsletter_confirmada");
     expect(body.identifiers.email_id).toBe(EMAIL);
-    expect(body.contact_properties.LINHA_INTERESSE).toContain("Casa X");
+    expect(body.contact_properties.LINHA_INTERESSE).toBe("Interesse registado: Casa X.");
     expect(body.event_properties.origem).toBe("house");
     // The address never reaches the log.
     expect(logs.join("\n")).not.toContain(EMAIL);
@@ -138,6 +140,24 @@ describe("GET /api/newsletter/confirmed", () => {
     } finally {
       await new Promise<void>((resolve) => s2.close(() => resolve()));
     }
+  });
+  it("frees the welcome claim when Brevo fails, so a later click or the daily sync retries", async () => {
+    deps.fetchImpl.mockResolvedValue(new Response(JSON.stringify({ code: "server_error" }), { status: 503 }));
+    const res = await get(validUrl());
+    expect(res.status).toBe(302);
+    expect(deps.releaseNewsletterWelcome).toHaveBeenCalledWith(77);
+    deps.fetchImpl.mockResolvedValue(new Response(null, { status: 204 }));
+    deps.releaseNewsletterWelcome.mockClear();
+    await get(validUrl());
+    expect(deps.releaseNewsletterWelcome).not.toHaveBeenCalled();
+  });
+  it("never logs a database error message (a failed query carries its parameters)", async () => {
+    const queryError = Object.assign(new Error(`Failed query: select * from leads where email = ?\nparams: ${EMAIL}`), { name: "DrizzleQueryError" });
+    deps.getLeadById.mockRejectedValue(queryError);
+    const res = await get(validUrl());
+    expect(res.status).toBe(500);
+    expect(logs.join("\n")).toContain("DrizzleQueryError");
+    expect(logs.join("\n")).not.toContain("example.test");
   });
   it("answers with the error page when the lead cannot be promoted", async () => {
     deps.confirmNewsletterLead.mockResolvedValue(false);

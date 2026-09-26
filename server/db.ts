@@ -1,4 +1,5 @@
 import { isPreviewDeployment } from "./lib/preview-isolation";
+import { consentFromSources, fetchBrevoContactStatus, safeErrorLabel } from "./services/newsletter";
 import { ne, eq, desc, asc, and, or, like, sql, inArray, isNotNull, gt, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
@@ -433,20 +434,21 @@ export async function getLeadById(id: number) {
 }
 
 /**
- * Lead pendente do mesmo email e origem nas últimas `sinceMs`: reutiliza-se
- * em vez de criar outro (a pessoa carregou duas vezes, ou o Brevo falhou).
+ * Leads pendentes deste email nas últimas `sinceMs`, de qualquer origem, do
+ * mais recente para o mais antigo. O mais recente reutiliza-se em vez de criar
+ * outro (a pessoa carregou duas vezes, ou o Brevo falhou); o metadata.doiLog
+ * de todos conta para o limite de emails de confirmação por endereço.
  */
-export async function findPendingNewsletterLead(email: string, origin: string, sinceMs: number) {
+export async function findPendingNewsletterLeads(email: string, sinceMs: number) {
   const db = await getDb();
-  if (!db) return null;
+  if (!db) return [];
   const since = new Date(Date.now() - sinceMs);
-  const rows = await db
+  return db
     .select()
     .from(leads)
-    .where(and(eq(leads.email, email), eq(leads.source, `nl-pending-${origin}`), gt(leads.createdAt, since)))
+    .where(and(eq(leads.email, email), like(leads.source, "nl-pending-%"), gt(leads.createdAt, since)))
     .orderBy(desc(leads.createdAt))
-    .limit(1);
-  return rows[0] ?? null;
+    .limit(10);
 }
 
 /**
@@ -483,6 +485,23 @@ export async function claimNewsletterWelcome(id: number, welcomeAt: string): Pro
     .where(and(eq(leads.id, id), sql`JSON_EXTRACT(${leads.metadata}, '$.welcomeAt') IS NULL`));
   const affected = Array.isArray(res) ? res[0]?.affectedRows : res?.affectedRows;
   return (affected ?? 0) > 0;
+}
+
+/**
+ * O envio do boas-vindas falhou (timeout, 5xx): liberta o claim e marca
+ * welcomeError, para o próximo clique ou a sincronização diária voltarem a
+ * tentar em vez de o email se perder.
+ */
+export async function releaseNewsletterWelcome(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  const current = await getLeadById(id);
+  if (!current) return;
+  const { welcomeAt: _drop, ...rest } = (current.metadata || {}) as Record<string, string>;
+  await db
+    .update(leads)
+    .set({ metadata: { ...rest, welcomeError: "1" } })
+    .where(eq(leads.id, id));
 }
 
 export async function deleteLead(id: number) {
@@ -1017,23 +1036,30 @@ export async function listUnsettledCardIntents(limit = 50): Promise<BookingInten
   }
 }
 
-/** Consentimento de marketing atual deste email: o captureLead mantém o
- *  source do lead em "newsletter-*" enquanto a caixa estiver marcada e
- *  retira-o quando é desmarcada, por isso é a fonte de verdade. */
+/** Consentimento de marketing atual deste email. O captureLead mantém o
+ *  source do lead em "newsletter-*" enquanto a caixa do checkout estiver
+ *  marcada e retira-o quando é desmarcada; a newsletter do site (dupla
+ *  confirmação) promove o lead a "newsletter-<origem>". Quem cancelou no
+ *  Brevo mantém esse source no MySQL, por isso o estado do contacto no Brevo
+ *  entra na decisão (consentFromSources em services/newsletter.ts). */
 export async function hasNewsletterConsent(email: string): Promise<boolean> {
   const db = await getDb();
   if (!db || !email) return false;
+  let sources: string[];
   try {
     const rows = await db
-      .select({ id: leads.id })
+      .select({ source: leads.source })
       .from(leads)
       .where(and(eq(leads.email, email), like(leads.source, "newsletter%")))
-      .limit(1);
-    return rows.length > 0;
+      .limit(20);
+    sources = rows.map((r) => r.source);
   } catch (error) {
-    console.error("[Database] hasNewsletterConsent failed:", error);
+    console.error("[Database] hasNewsletterConsent failed:", safeErrorLabel(error));
     return false;
   }
+  if (sources.length === 0) return false;
+  const status = await fetchBrevoContactStatus(email);
+  return consentFromSources(sources, status);
 }
 
 /** Claim do alerta "ligar ao hóspede": só o primeiro sweep o envia. */

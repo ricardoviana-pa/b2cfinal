@@ -12,6 +12,10 @@ Três superfícies, um formulário (`client/src/components/marketing/NewsletterF
 |---|---|---|
 | Pop-up | Todas as páginas elegíveis, aos 20 s ou a 50% de scroll | `nl-pending-popup` → `newsletter-popup` |
 | Bloco inline | Fim da página de cada casa e fim de cada artigo do Diário | `nl-pending-house` / `nl-pending-article` → `newsletter-house` / `newsletter-article` |
+
+Nas casas de parceiros (Tripwix, sem id do Guesty) o bloco usa o título genérico, o pop-up
+não mostra a linha de interesse e o servidor não grava `CASA_INTERESSE`: a PA não abre datas
+nem faz promoções nessas casas (`isNewsletterHouse` em `shared/newsletterPopup.ts`).
 | Rodapé | Todas as páginas | `nl-pending-footer` → `newsletter-footer` |
 
 O formulário tem email, caixa de consentimento desligada por defeito com link para
@@ -25,13 +29,22 @@ O formulário tem email, caixa de consentimento desligada por defeito com link p
    **pendente** com a prova do consentimento (`metadata.consentAt`, `page`, `origin`,
    `country` do cabeçalho `cf-ipcountry`) e pede ao Brevo a dupla confirmação
    (`POST /v3/contacts/doubleOptinConfirmation`, modelo por língua, `redirectionUrl`
-   com o id do lead e um HMAC). O email nunca vai num URL nem numa linha de log.
+   com o id do lead e um HMAC). O email nunca vai num URL nem numa linha de log: os erros
+   registam só a classe e o código do driver (`safeErrorLabel`), nunca `err.message`, porque
+   uma `DrizzleQueryError` traz os parâmetros da consulta.
+   Limites contra o envio de emails a terceiros: no máximo um email de confirmação por
+   endereço por hora e três em 24 horas, somando todas as origens (`metadata.doiLog` dos
+   leads pendentes; a resposta é a mesma de um sucesso). Por IP, 10 pedidos por minuto com
+   `server/lib/newsletter-rate-limit.ts` montado em `/api/trpc`, que também vê a subscrição
+   dentro de um lote tRPC e recusa lotes com mais de uma.
 2. O Brevo envia o email de confirmação de `reservas@news.portugalactive.com` e só põe o
    contacto na lista Newsletter depois do clique.
 3. `GET /api/newsletter/confirmed?lead=<id>&t=<hmac>&lang=<pt>`
    (`server/routes/newsletter-confirm.ts`): verifica o token em tempo constante, promove o
    lead a `newsletter-<origem>` (`metadata.confirmedAt`), dispara o boas-vindas uma só vez
-   (claim em `metadata.welcomeAt`) e redireciona, sem cache, para
+   (claim em `metadata.welcomeAt`; se o Brevo falhar, o claim é libertado e fica
+   `metadata.welcomeError`, para o próximo clique ou a sincronização diária voltarem a
+   tentar) e redireciona, sem cache, para
    `/<lang>/newsletter/confirmada`, uma página estática de marca (`server/lib/brand-page.ts`,
    partilhada com o opt-out do carrinho abandonado).
 4. Boas-vindas: `NEWSLETTER_WELCOME_MODE=event` dispara o evento `newsletter_confirmada`
@@ -41,7 +54,18 @@ O formulário tem email, caixa de consentimento desligada por defeito com link p
 
 As fontes pendentes chamam-se `nl-pending-*` de propósito: `hasNewsletterConsent` faz
 `LIKE 'newsletter%'` e desbloqueia os contactos 3 e 4 do carrinho abandonado, que uma
-subscrição não confirmada nunca deve desbloquear.
+subscrição não confirmada nunca deve desbloquear. O `leads.create` público reescreve
+qualquer `source` que comece por `newsletter` ou `nl-pending` para `nl-legacy-*`, que não
+conta como consentimento: só este fluxo e o checkout escrevem fontes de consentimento.
+
+Retirada do consentimento (RGPD): quem cancela num email do Brevo mantém `newsletter-*` no
+MySQL do site. Por isso `hasNewsletterConsent` pergunta ao Brevo pelo contacto
+(`GET /v3/contacts/{email}`) e aplica `consentFromSources`: cancelado ou na lista negra do
+Brevo, sem consentimento em qualquer origem; origens de dupla confirmação só contam enquanto
+o Brevo confirmar o contacto na lista Newsletter (se o Brevo não responder, não há email de
+marketing); `newsletter-checkout` continua a ser retirado pelo próprio checkout e pelo link
+de opt-out dos lembretes. Os leads antigos `newsletter-footer` (rodapé anterior, sem dupla
+confirmação) deixam de desbloquear os contactos 3 e 4 enquanto não estiverem na lista.
 
 ## Regras do pop-up (`shared/newsletterPopup.ts`, testadas no servidor)
 
@@ -59,8 +83,8 @@ do formulário "sem disponibilidade" da listagem (`data-nl-suppress`). Eventos n
 
 Ver o bloco "Newsletter" em `.env.example`. Sem `BREVO_API_KEY`, `BREVO_NEWSLETTER_LIST_ID`
 e `BREVO_DOI_TEMPLATE_ID_PT` o endpoint responde 503 (`NEWSLETTER_NOT_CONFIGURED`) e o
-pop-up fica escondido; o bloco e o rodapé continuam visíveis e mostram o erro genérico ao
-submeter. Em dev e previews as chaves são recusadas no arranque e qualquer POST devolve 503:
+pop-up, o bloco e o rodapé ficam escondidos (`newsletter.config.configured`, falso também em
+previews). `NEWSLETTER_POPUP=false` esconde só o pop-up. Em dev e previews as chaves são recusadas no arranque e qualquer POST devolve 503:
 o teste real faz-se em www.portugalactive.com com um endereço da equipa.
 
 `NEWSLETTER_LOCALES` arranca só com `pt`. As chaves `newsletter.*` das outras oito línguas
@@ -81,4 +105,5 @@ repositório pa-marketing (`b-crm/jobs/newsletter_sync.py`, por construir).
 fetch simulado), `server/routers/newsletter.test.ts` (endpoint com base de dados e catálogo
 simulados), `server/routes/newsletter-confirm.test.ts` (rota de confirmação e página),
 `server/services/newsletter-popup-gate.test.ts` (uma vez por 30 dias, nunca depois de
-subscrever, rotas e línguas).
+subscrever, rotas e línguas, casas de parceiros), `server/lib/newsletter-rate-limit.test.ts`
+(limite por IP dentro de lotes tRPC).

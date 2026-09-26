@@ -35,9 +35,9 @@ export const CONFIRM_PAGE_COPY: Record<NewsletterLang, ConfirmPageCopy> = {
   pt: {
     confirmedTitle: "Subscrição confirmada",
     confirmedBody:
-      "Obrigado. A partir de agora recebe as promoções só para subscritores e as novidades das nossas casas.",
+      "Obrigado. A partir de agora recebe as novidades e as promoções das nossas casas.",
     confirmedBodyWithCode:
-      "Obrigado. A partir de agora recebe as promoções só para subscritores e as novidades das nossas casas. O primeiro email, com o seu código de boas-vindas, chega dentro de minutos.",
+      "Obrigado. A partir de agora recebe as novidades e as promoções das nossas casas. O primeiro email, com o seu código de boas-vindas, chega dentro de minutos.",
     ctaHomes: "Ver as casas",
     invalidTitle: "Link inválido",
     invalidBody: "Este link já não é válido. Se quiser subscrever, volte ao site e deixe o seu email outra vez.",
@@ -47,9 +47,9 @@ export const CONFIRM_PAGE_COPY: Record<NewsletterLang, ConfirmPageCopy> = {
   es: {
     confirmedTitle: "Suscripción confirmada",
     confirmedBody:
-      "Gracias. A partir de ahora recibe las promociones solo para suscriptores y las novedades de nuestras casas.",
+      "Gracias. A partir de ahora recibe las novedades y las promociones de nuestras casas.",
     confirmedBodyWithCode:
-      "Gracias. A partir de ahora recibe las promociones solo para suscriptores y las novedades de nuestras casas. El primer correo, con su código de bienvenida, llega en unos minutos.",
+      "Gracias. A partir de ahora recibe las novedades y las promociones de nuestras casas. El primer correo, con su código de bienvenida, llega en unos minutos.",
     ctaHomes: "Ver las casas",
     invalidTitle: "Enlace no válido",
     invalidBody: "Este enlace ya no es válido. Si quiere suscribirse, vuelva a la web y deje su correo otra vez.",
@@ -59,9 +59,9 @@ export const CONFIRM_PAGE_COPY: Record<NewsletterLang, ConfirmPageCopy> = {
   en: {
     confirmedTitle: "Subscription confirmed",
     confirmedBody:
-      "Thank you. From now on you will receive the subscriber-only offers and the news about our homes.",
+      "Thank you. From now on you will receive the news and the offers from our homes.",
     confirmedBodyWithCode:
-      "Thank you. From now on you will receive the subscriber-only offers and the news about our homes. The first email, with your welcome code, arrives within minutes.",
+      "Thank you. From now on you will receive the news and the offers from our homes. The first email, with your welcome code, arrives within minutes.",
     ctaHomes: "See the homes",
     invalidTitle: "Invalid link",
     invalidBody: "This link is no longer valid. If you would like to subscribe, go back to the site and leave your email again.",
@@ -70,17 +70,21 @@ export const CONFIRM_PAGE_COPY: Record<NewsletterLang, ConfirmPageCopy> = {
   },
 };
 
-/** "Ficou registado o seu interesse na {casa}: ..." or empty when there is no house. */
+/**
+ * "Interesse registado: {casa}." or empty when there is no house. No gendered
+ * article before the name (names like "The ...", "U2" or "Lima ..." exist in
+ * knowledge/houses.csv) and no promise of hearing first.
+ */
 export function interestLine(lang: NewsletterLang, houseName: string | undefined | null): string {
   const house = (houseName || "").trim();
   if (!house) return "";
   switch (lang) {
     case "pt":
-      return `Ficou registado o seu interesse na ${house}: quando houver novidades sobre ela, sabe primeiro.`;
+      return `Interesse registado: ${house}.`;
     case "es":
-      return `Hemos registrado su interés en ${house}: cuando haya novedades sobre ella, lo sabrá primero.`;
+      return `Interés registrado: ${house}.`;
     default:
-      return `We have noted your interest in ${house}: when there is news about it, you will hear first.`;
+      return `Interest noted: ${house}.`;
   }
 }
 

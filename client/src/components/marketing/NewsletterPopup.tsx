@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { useIsMobile } from '@/hooks/useMobile';
 import { trpc } from '@/lib/trpc';
 import { getDisplayName } from '@shared/displayName';
+import { isNewsletterHouse } from '@shared/newsletterPopup';
 import NewsletterForm from './NewsletterForm';
 
 export type PopupCloseReason = 'x' | 'esc' | 'fundo' | 'agora_nao' | 'subscrito';
@@ -29,7 +30,9 @@ function PopupBody({ onClose, propertySlug, titleId, descId }: { onClose: (r: Po
   const { t } = useTranslation();
   // Reads the property page's own cached query: no extra request on a home page.
   const property = trpc.properties.getBySlugForSite.useQuery({ slug: propertySlug ?? '' }, { enabled: !!propertySlug, staleTime: Infinity });
-  const houseName = property.data ? getDisplayName(property.data as any) : '';
+  // Partner (Tripwix) homes: no interest line and no house sent to the server.
+  const promotable = !!property.data && isNewsletterHouse(property.data);
+  const houseName = promotable ? getDisplayName(property.data as any) : '';
 
   return (
     <div className="px-6 pt-2 pb-6 sm:px-8 sm:pb-8" style={{ fontFamily: 'var(--font-body)' }}>
@@ -42,7 +45,7 @@ function PopupBody({ onClose, propertySlug, titleId, descId }: { onClose: (r: Po
         <p className="text-[12.5px] text-[#1A1A18] mb-4">{t('newsletter.popup.interest', { house: houseName })}</p>
       )}
       <div className="mt-4">
-        <NewsletterForm origin="popup" propertySlug={propertySlug} autoFocus />
+        <NewsletterForm origin="popup" propertySlug={promotable ? propertySlug : undefined} autoFocus />
       </div>
       <button
         type="button"

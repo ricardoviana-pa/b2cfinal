@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../_core/trpc";
 import * as db from "../db";
+import { publicLeadSource } from "../services/newsletter";
 import { sendContactConfirmation, sendContactNotification } from "../services/email";
 import { sendContactInquiryNotification, sendAvailabilityRequestNotification, sendAvailabilityRequestConfirmation } from "../services/transactional-email";
 
@@ -254,7 +255,10 @@ export const leadsRouter = router({
 
   create: publicProcedure
     .input(leadInput)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input: raw }) => {
+      // Consent sources (newsletter*, nl-pending-*) are written only by
+      // newsletter.subscribe, its confirmation click and the checkout.
+      const input = { ...raw, source: publicLeadSource(raw.source) };
       const lead = await db.createLead(input);
 
       if (input.source === 'contact-form' && input.name) {

@@ -100,3 +100,17 @@ export function popupEligibility(input: PopupEligibilityInput): { eligible: bool
   if (!input.visible) return { eligible: false, reason: "hidden" };
   return { eligible: true };
 }
+
+/**
+ * A house whose news the newsletter can promise: managed by the PA (it has a
+ * Guesty id) and not a partner home (source "tripwix"). The PA neither opens
+ * dates nor sets promotions for partner homes, so the house title of the
+ * inline block, the pop-up interest line and the CASA_INTERESSE attribute are
+ * kept for PA houses; partner pages get the generic texts.
+ */
+export function isNewsletterHouse(property: unknown): boolean {
+  const p = property as { source?: unknown; guestyId?: unknown } | null | undefined;
+  if (!p) return false;
+  if (p.source === "tripwix") return false;
+  return typeof p.guestyId === "string" ? p.guestyId.trim().length > 0 : !!p.guestyId;
+}

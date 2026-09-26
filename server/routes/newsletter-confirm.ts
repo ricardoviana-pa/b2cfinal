@@ -20,6 +20,7 @@ import {
   confirmedPagePath,
   fireConfirmedEvent,
   originFromSource,
+  safeErrorLabel,
   sendWelcomeTransactional,
   verifyConfirmToken,
   welcomeMode,
@@ -33,6 +34,7 @@ export interface NewsletterRouteDeps {
   getLeadById: typeof dbModule.getLeadById;
   confirmNewsletterLead: typeof dbModule.confirmNewsletterLead;
   claimNewsletterWelcome: typeof dbModule.claimNewsletterWelcome;
+  releaseNewsletterWelcome: typeof dbModule.releaseNewsletterWelcome;
   env: NodeJS.ProcessEnv;
   fetchImpl: FetchLike;
 }
@@ -41,6 +43,7 @@ const defaultDeps = (): NewsletterRouteDeps => ({
   getLeadById: dbModule.getLeadById,
   confirmNewsletterLead: dbModule.confirmNewsletterLead,
   claimNewsletterWelcome: dbModule.claimNewsletterWelcome,
+  releaseNewsletterWelcome: dbModule.releaseNewsletterWelcome,
   env: process.env,
   fetchImpl: globalThis.fetch,
 });
@@ -86,8 +89,8 @@ export function registerNewsletterRoutes(app: Express, overrides: Partial<Newsle
     let lead: Awaited<ReturnType<typeof dbModule.getLeadById>>;
     try {
       lead = await deps.getLeadById(leadId);
-    } catch (err: any) {
-      console.error("[Newsletter] confirm: lead lookup failed:", err?.message ?? err);
+    } catch (err: unknown) {
+      console.error("[Newsletter] confirm: lead lookup failed:", safeErrorLabel(err));
       return res.status(500).type("html").send(brandPage(lang, copy.errorTitle, copy.errorBody));
     }
     const origin = originFromSource(lead?.source);
@@ -100,8 +103,8 @@ export function registerNewsletterRoutes(app: Express, overrides: Partial<Newsle
     let confirmed = false;
     try {
       confirmed = await deps.confirmNewsletterLead(leadId, origin, confirmedAt);
-    } catch (err: any) {
-      console.error(`[Newsletter] confirm: lead #${leadId} update failed:`, err?.message ?? err);
+    } catch (err: unknown) {
+      console.error(`[Newsletter] confirm: lead #${leadId} update failed:`, safeErrorLabel(err));
     }
     if (!confirmed) return res.status(500).type("html").send(brandPage(lang, copy.errorTitle, copy.errorBody));
 
@@ -111,8 +114,8 @@ export function registerNewsletterRoutes(app: Express, overrides: Partial<Newsle
       let claimed = false;
       try {
         claimed = await deps.claimNewsletterWelcome(leadId, confirmedAt);
-      } catch (err: any) {
-        console.error(`[Newsletter] welcome claim failed for lead #${leadId}:`, err?.message ?? err);
+      } catch (err: unknown) {
+        console.error(`[Newsletter] welcome claim failed for lead #${leadId}:`, safeErrorLabel(err));
       }
       if (claimed) {
         const params = welcomeParams({ locale, propertyName: meta.propertyName, confirmedAt }, deps.env);
@@ -121,6 +124,15 @@ export function registerNewsletterRoutes(app: Express, overrides: Partial<Newsle
             ? await fireConfirmedEvent({ email: lead.email, origin, params }, deps.env, deps.fetchImpl)
             : await sendWelcomeTransactional({ email: lead.email, locale, params }, deps.env, deps.fetchImpl);
         console.info(`[Newsletter] confirmed lead #${leadId} origin=${origin} lang=${locale} welcome=${mode} status=${result.status}${result.ok ? "" : ` code=${result.code ?? ""}`}`);
+        if (!result.ok) {
+          // Timeout or 5xx: free the claim and mark welcomeError, so the next
+          // click (or the daily newsletter_sync) sends it instead of losing it.
+          try {
+            await deps.releaseNewsletterWelcome(leadId);
+          } catch (err: unknown) {
+            console.error(`[Newsletter] welcome release failed for lead #${leadId}:`, safeErrorLabel(err));
+          }
+        }
       } else {
         console.info(`[Newsletter] confirmed lead #${leadId} again (welcome already sent)`);
       }

@@ -27,6 +27,7 @@ import PropertyUnitsSection from '@/components/property/PropertyUnitsSection';
 import SecurityDepositNotice from '@/components/property/SecurityDepositNotice';
 import ReviewsSection from '@/components/property/ReviewsSection';
 import NewsletterBlock from '@/components/marketing/NewsletterBlock';
+import { isNewsletterHouse } from '@shared/newsletterPopup';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from '@/components/ui/drawer';
 import { getGroupByParentGuestyId } from '@/config/propertyGroups';
 import { trpc } from '@/lib/trpc';
@@ -1728,7 +1729,7 @@ export default function PropertyDetail() {
             em promoção". Full-width band after the reviews and the booking
             column, before the related homes. The fixed mobile price bar above
             is untouched (auditoria CRO, 24 set 2026). */}
-        <NewsletterBlock origin="house" propertySlug={property.slug} propertyName={displayName} />
+        <NewsletterBlock origin="house" propertySlug={property.slug} promotableHouse={isNewsletterHouse(property)} />
 
         {/* Related properties from same region */}
         {relatedProperties.length > 0 && (

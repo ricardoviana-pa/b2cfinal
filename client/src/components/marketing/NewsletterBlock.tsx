@@ -16,10 +16,11 @@ import NewsletterForm from './NewsletterForm';
 interface NewsletterBlockProps {
   origin: 'house' | 'article';
   propertySlug?: string;
-  propertyName?: string;
+  /** False on partner (Tripwix) homes: generic title, no house interest recorded. */
+  promotableHouse?: boolean;
 }
 
-export default function NewsletterBlock({ origin, propertySlug, propertyName }: NewsletterBlockProps) {
+export default function NewsletterBlock({ origin, propertySlug, promotableHouse = false }: NewsletterBlockProps) {
   const { t, i18n } = useTranslation();
   // Client-only: the server render has no config and would fetch a relative URL.
   const [mounted, setMounted] = useState(false);
@@ -32,11 +33,12 @@ export default function NewsletterBlock({ origin, propertySlug, propertyName }: 
   });
 
   const lang = (i18n.language || 'en').slice(0, 2);
-  if (!config.data || !config.data.locales.includes(lang)) return null;
+  // configured: Brevo keys present and not a preview. Without it every
+  // submission would answer 503, so the block stays hidden.
+  if (!config.data || !config.data.configured || !config.data.locales.includes(lang)) return null;
 
-  const title = origin === 'house' && propertyName
-    ? t('newsletter.block.titleHouse', { house: propertyName })
-    : t('newsletter.block.titleArticle');
+  const houseMode = origin === 'house' && promotableHouse && !!propertySlug;
+  const title = houseMode ? t('newsletter.block.titleHouse') : t('newsletter.block.titleArticle');
 
   return (
     <section
@@ -51,7 +53,7 @@ export default function NewsletterBlock({ origin, propertySlug, propertyName }: 
           <h2 id="newsletter-block-title" className="font-display headline-md font-light leading-[1.3] text-pa-dark mb-4">{title}</h2>
           <p className="body-sm text-pa-earth leading-relaxed font-light mb-7">{t('newsletter.block.body')}</p>
           <div className="max-w-md mx-auto text-left">
-            <NewsletterForm origin={origin} propertySlug={origin === 'house' ? propertySlug : undefined} />
+            <NewsletterForm origin={origin} propertySlug={houseMode ? propertySlug : undefined} />
             <p className="mt-3 text-[11px] text-[#78756F] text-center" style={{ fontFamily: 'var(--font-body)', fontWeight: 300 }}>
               {t('newsletter.block.note')}
             </p>

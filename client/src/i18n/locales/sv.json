@@ -455,7 +455,7 @@
     "paymentBankTransfer": "Banköverföring",
     "copyrightLine": "© {{year}} Portugal Active. {{rights}}",
     "nlHeadline": "Låt dig inspireras.",
-    "nlSub": "Subscriber-only offers and the news about our homes. Few emails.",
+    "nlSub": "The news and the offers from our homes. Few emails.",
     "conciergeServices": "Conciergetjänster",
     "realEstate": "Köpa eller sälja bostad",
     "offices": "Kontor"
@@ -2130,16 +2130,16 @@
   },
   "newsletter": {
     "popup": {
-      "overline": "Subscribers only",
-      "title": "Subscriber-only offers and the news about our homes.",
-      "body": "Leave your email and you will receive the subscriber-only offers and the news about our homes: dates that open, new homes. Few emails, only when there is something worth it.",
+      "overline": "News and offers",
+      "title": "The news and the offers from our homes, in your inbox.",
+      "body": "Leave your email and receive the news and the offers from our homes: dates that open, new homes. Few emails, only when there is something worth it.",
       "interest": "Interest noted: {{house}}."
     },
     "block": {
-      "overline": "Subscribers only",
-      "titleHouse": "Want to know when {{house}} opens dates or goes on offer?",
-      "titleArticle": "Subscriber-only offers and the news about our homes.",
-      "body": "Leave your email. We let subscribers know when dates open, when a new home arrives and when there is an offer. Few emails, no noise.",
+      "overline": "News and offers",
+      "titleHouse": "Like this home? Get the news and the offers from our homes.",
+      "titleArticle": "The news and the offers from our homes, in your inbox.",
+      "body": "Leave your email. We let you know when dates open, when a new home arrives and when there is an offer. Few emails, no noise.",
       "note": "You can unsubscribe in any email."
     },
     "form": {

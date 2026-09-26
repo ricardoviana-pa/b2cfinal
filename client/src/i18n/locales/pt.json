@@ -455,7 +455,7 @@
     "paymentBankTransfer": "Transferência bancária",
     "copyrightLine": "© {{year}} Portugal Active. {{rights}}",
     "nlHeadline": "Inspire-se.",
-    "nlSub": "As promoções só para subscritores e as novidades das nossas casas. Poucos emails.",
+    "nlSub": "As novidades e as promoções das nossas casas. Poucos emails.",
     "conciergeServices": "Serviços de concierge",
     "realEstate": "Comprar ou vender casa",
     "offices": "Escritórios"
@@ -2130,16 +2130,16 @@
   },
   "newsletter": {
     "popup": {
-      "overline": "Só para subscritores",
-      "title": "Promoções só para subscritores e as novidades das nossas casas.",
-      "body": "Deixe o seu email e recebe as promoções só para subscritores e as novidades das nossas casas: datas que abrem, casas novas. Poucos emails, só quando há algo que valha a pena.",
+      "overline": "Novidades e promoções",
+      "title": "As novidades e as promoções das nossas casas, no seu email.",
+      "body": "Deixe o seu email e receba as novidades e as promoções das nossas casas: datas que abrem, casas novas. Poucos emails, só quando há algo que valha a pena.",
       "interest": "Interesse registado: {{house}}."
     },
     "block": {
-      "overline": "Só para subscritores",
-      "titleHouse": "Quer saber quando a {{house}} abre datas ou entra em promoção?",
-      "titleArticle": "Promoções só para subscritores e as novidades das nossas casas.",
-      "body": "Deixe o seu email. Avisamos os subscritores quando abrem datas, quando entra uma casa nova e quando há uma promoção. Poucos emails, sem ruído.",
+      "overline": "Novidades e promoções",
+      "titleHouse": "Gostou desta casa? Receba as novidades e as promoções das nossas casas.",
+      "titleArticle": "As novidades e as promoções das nossas casas, no seu email.",
+      "body": "Deixe o seu email. Avisamos quando abrem datas, quando entra uma casa nova e quando há uma promoção. Poucos emails, sem ruído.",
       "note": "Pode cancelar em qualquer email."
     },
     "form": {
