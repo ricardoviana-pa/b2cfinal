@@ -100,6 +100,6 @@ export async function getRelatedHomes(
   destinationTag: string | null | undefined,
   limit = 4,
 ): Promise<RelatedHome[]> {
-  const { getPropertiesForSite } = await import("./properties-store");
-  return pickRelatedHomes(await getPropertiesForSite(), destinationTag, limit);
+  const { getPropertiesForSite, catalogProperties } = await import("./properties-store");
+  return pickRelatedHomes(catalogProperties(await getPropertiesForSite()), destinationTag, limit);
 }

@@ -14,7 +14,7 @@
  *     windows when no house can take the whole stay.
  */
 import { guestyBEClient } from "../lib/guesty";
-import { getPropertiesForSite } from "./properties-store";
+import { getPropertiesForSite, catalogProperties } from "./properties-store";
 
 /** Beyond this we don't try to validate a continuous stay against calendars
  *  (horizon limits); the answer becomes "here are the windows + concierge". */
@@ -77,7 +77,7 @@ export async function getSearchHint(
 
   // Listings that fit the party, roomiest first — the rules we read are the
   // ones this guest would actually be quoted.
-  const props = await getPropertiesForSite();
+  const props = catalogProperties(await getPropertiesForSite());
   const candidates = props
     .filter((p: any) => p?.guestyId && (!guests || (p.maxGuests ?? 0) >= guests))
     .sort((a: any, b: any) => (b.maxGuests ?? 0) - (a.maxGuests ?? 0));
@@ -218,7 +218,7 @@ export async function datesAreBookable(
   );
   if (nights <= 0 || nights > VALIDATE_CAP_NIGHTS) return { available: false, homes: [] };
 
-  const props = await getPropertiesForSite();
+  const props = catalogProperties(await getPropertiesForSite());
   const candidates = props
     .filter((p: any) => p?.guestyId && (!guests || (p.maxGuests ?? 0) >= guests))
     .sort((a: any, b: any) => (b.maxGuests ?? 0) - (a.maxGuests ?? 0))

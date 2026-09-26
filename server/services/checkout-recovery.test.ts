@@ -12,7 +12,7 @@ vi.mock("./transactional-email", () => ({ sendCheckoutRecovery: mock.send, sendC
 vi.mock("./guesty-booking", () => ({ createBEQuote: mock.beQuote }));
 vi.mock("./guesty", () => ({ checkAvailability: mock.avail, describeGuestyError: (e: any) => String(e?.message ?? e) }));
 vi.mock("../lib/guesty", () => ({ guestyClient: { getListingCalendar: vi.fn().mockResolvedValue([]) } }));
-vi.mock("./properties-store", () => ({ getPropertiesForSite: mock.properties }));
+vi.mock("./properties-store", () => ({ getPropertiesForSite: mock.properties, isHiddenFromCatalog: () => false }));
 vi.mock('./recovery-eligibility', () => ({ canRemindRecoveryStay: mock.eligible }));
 import { recoveryOptoutUrl, runCheckoutRecoverySweep, startCheckoutRecoveryScheduler } from "./checkout-recovery";
 
