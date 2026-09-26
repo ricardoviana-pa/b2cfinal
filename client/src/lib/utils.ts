@@ -127,20 +127,29 @@ export function filterProperties(
   return filtered;
 }
 
+/** Apartments are the lower tier of the catalogue: they list after every house and villa. */
+export function isApartment(p: Pick<Property, 'propertyType'>): boolean {
+  return (p.propertyType || '') === 'Apartment';
+}
+
 export function sortProperties(properties: Property[], sort: SortOption): Property[] {
   const sorted = [...properties];
   switch (sort) {
-    case 'recommended':
+    case 'recommended': {
       // Curated top + secondary (sortOrder). Lead picks come from
       // CURATED_PROPERTY_ORDER (an explicit guestyId array). Anything not
       // in the array falls through to the default sortOrder ranking — stable
       // and deterministic so the grid doesn't reshuffle between renders.
-      return sorted.sort((a, b) => {
+      const ranked = sorted.sort((a, b) => {
         const pa = curatedPosition(a.guestyId);
         const pb = curatedPosition(b.guestyId);
         if (pa !== pb) return pa - pb; // both curated → array order; one curated → curated first
         return (a.sortOrder ?? 0) - (b.sortOrder ?? 0); // secondary
       });
+      // Houses and villas first, apartments at the end, each group keeping
+      // its curated order (Ricardo, 26 Sep 2026).
+      return ranked.filter((p) => !isApartment(p)).concat(ranked.filter(isApartment));
+    }
     case 'price-asc': return sorted.sort((a, b) => a.priceFrom - b.priceFrom);
     case 'price-desc': return sorted.sort((a, b) => b.priceFrom - a.priceFrom);
     case 'newest': return sorted.filter(p => p.tier === 'new').concat(sorted.filter(p => p.tier !== 'new'));
