@@ -553,32 +553,46 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 4: STATS BAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      {/* Quiet credibility band — warm surface with hairlines (same treatment
-          as the About stats band) instead of the old near-black slab, which
-          broke the page's light rhythm mid-scroll. */}
-      <section ref={s4Ref} className="fade-in cv-auto bg-pa-warm border-y border-pa-sand">
-        <div className="container py-12 lg:py-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 divide-x divide-[#E1DACE]">
-            {[
-              { value: HOME_COUNT_LABEL, label: t('home.statHomes') },
-              { value: 'Viana · Lisboa', label: t('footer.offices') },
-              { value: '9', label: t('conversion.languages') },
-              { value: '2017', label: t('home.statFounded') },
-            ].map((stat, i) => (
-              <div key={i} className="text-center px-2">
-                <p
-                  className="text-pa-dark font-display font-light"
-                  style={{fontSize: 'clamp(24px, 3vw, 36px)', lineHeight: 1}}
-                >
-                  {stat.value}
-                </p>
-                <p className="mt-2 eyebrow tracking-[0.18em] uppercase text-pa-gold font-body" >
-                  {stat.label}
-                </p>
-              </div>
-            ))}
-          </div>
+      {/* ─── SECTION 4: PRESS BAND ─── */}
+      {/* The stats band (homes · offices · languages · founded) said nothing a
+          guest cares about; the press logos do the credibility work here,
+          on the same warm surface with hairlines (Ricardo, 27 Sep 2026). */}
+<section ref={s4Ref} className="fade-in cv-auto bg-pa-warm border-y border-pa-sand">
+        <div className="container py-10 lg:py-12">
+          <p
+            className="text-center caption font-medium text-pa-stone mb-8 lg:mb-10 font-body"
+            style={{letterSpacing: '0.14em'}}
+          >
+            {t('home.pressOverline')}
+          </p>
+          {(() => {
+            const logos = [
+              { src: IMAGES.pressForbes, alt: 'Featured in Forbes', h: 'h-5 md:h-6' },
+              { src: IMAGES.pressTheTimes, alt: 'Featured in The Times', h: 'h-7 md:h-8' },
+              { src: IMAGES.pressTheGuardian, alt: 'Featured in The Guardian', h: 'h-4 md:h-5' },
+              { src: IMAGES.pressTimeOut, alt: 'Featured in Time Out', h: 'h-5 md:h-6' },
+              { src: IMAGES.pressMensHealth, alt: "Featured in Men's Health", h: 'h-4 md:h-5' },
+              { src: IMAGES.pressArquitectura, alt: 'Featured in Arquitectura y Diseño', h: 'h-4 md:h-5' },
+            ];
+            return (
+              <>
+                {/* Mobile: marquee scroll */}
+                <div className="overflow-hidden md:hidden">
+                  <div className="flex items-center gap-12 w-max" style={{ animation: 'marquee 25s linear infinite' }}>
+                    {[...logos, ...logos].map((logo, i) => (
+                      <img key={i} src={logo.src} alt={logo.alt} className={`${logo.h} w-auto object-contain opacity-40 shrink-0`} loading="lazy" />
+                    ))}
+                  </div>
+                </div>
+                {/* Desktop: static, centred */}
+                <div className="hidden md:flex items-center justify-center gap-10 lg:gap-14">
+                  {logos.map((logo, i) => (
+                    <img key={i} src={logo.src} alt={logo.alt} className={`${logo.h} w-auto object-contain opacity-40`} loading="lazy" />
+                  ))}
+                </div>
+              </>
+            );
+          })()}
         </div>
       </section>
 
@@ -811,45 +825,6 @@ export default function Home() {
       {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTION 10: OWNERS CTA Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
       <BookingCTA />
 
-      {/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ PRESS BAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */}
-      <section className="cv-auto bg-white">
-        <div className="container py-12 lg:py-16">
-          <p
-            className="text-center caption font-medium text-pa-stone mb-8 lg:mb-10 font-body"
-            style={{letterSpacing: '0.14em'}}
-          >
-            {t('home.pressOverline')}
-          </p>
-          {(() => {
-            const logos = [
-              { src: IMAGES.pressForbes, alt: 'Featured in Forbes', h: 'h-5 md:h-6' },
-              { src: IMAGES.pressTheTimes, alt: 'Featured in The Times', h: 'h-7 md:h-8' },
-              { src: IMAGES.pressTheGuardian, alt: 'Featured in The Guardian', h: 'h-4 md:h-5' },
-              { src: IMAGES.pressTimeOut, alt: 'Featured in Time Out', h: 'h-5 md:h-6' },
-              { src: IMAGES.pressMensHealth, alt: "Featured in Men's Health", h: 'h-4 md:h-5' },
-              { src: IMAGES.pressArquitectura, alt: 'Featured in Arquitectura y Diseño', h: 'h-4 md:h-5' },
-            ];
-            return (
-              <>
-                {/* Mobile: marquee scroll */}
-                <div className="overflow-hidden md:hidden">
-                  <div className="flex items-center gap-12 w-max" style={{ animation: 'marquee 25s linear infinite' }}>
-                    {[...logos, ...logos].map((logo, i) => (
-                      <img key={i} src={logo.src} alt={logo.alt} className={`${logo.h} w-auto object-contain opacity-40 shrink-0`} loading="lazy" />
-                    ))}
-                  </div>
-                </div>
-                {/* Desktop: static, centred */}
-                <div className="hidden md:flex items-center justify-center gap-10 lg:gap-14">
-                  {logos.map((logo, i) => (
-                    <img key={i} src={logo.src} alt={logo.alt} className={`${logo.h} w-auto object-contain opacity-40`} loading="lazy" />
-                  ))}
-                </div>
-              </>
-            );
-          })()}
-        </div>
-      </section>
 
 
       <Footer />
