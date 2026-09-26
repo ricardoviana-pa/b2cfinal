@@ -352,6 +352,18 @@ async function main() {
         (_, i) => authored.imageAlts[i] ?? base.imageAlts[i] ?? "",
       );
     }
+    // `coverIndex` picks which of the supplier's photos leads: the card and
+    // the PDP hero show images[0], and the supplier's first photo is not
+    // always the strongest one. It is a position in the supplier's order
+    // (the same order imageAlts is written in), so the choice survives a
+    // re-import; applied last so the alt text travels with its photo.
+    const cover = authored.coverIndex;
+    if (Number.isInteger(cover) && cover > 0 && cover < merged.images.length) {
+      const lead = (list) => [list[cover], ...list.slice(0, cover), ...list.slice(cover + 1)];
+      merged.images = lead(merged.images);
+      merged.imageAlts = lead(merged.imageAlts);
+    }
+    delete merged.coverIndex;
     return merged;
   });
 

@@ -103,3 +103,43 @@ export function curatedPosition(guestyId: string | undefined): number {
 export function isCurated(guestyId: string | undefined): boolean {
   return !!guestyId && positionByGuestyId.has(guestyId);
 }
+
+/**
+ * Homepage strip ("Editor's Picks"). Separate from the PLP ranking above:
+ * Ricardo wants the homepage to open on six partner homes (Tripwix
+ * inventory, 26 Sep 2026) and then continue with the top of the curated
+ * PLP order, while the PLP itself keeps its commercial-team ranking.
+ *
+ * Entries are catalogue keys (see `catalogKey`): the Guesty listingId for
+ * our own homes, the `tripwix-<ref>` catalogue id for partner homes, which
+ * have no Guesty listing. Multi-unit groups use the PARENT id, as above.
+ *
+ * To reorder or swap a home: edit the array, commit, push. If an entry is
+ * missing from the live catalogue the homepage fills the slot from the
+ * curated PLP order.
+ */
+export const HOME_FEATURED_ORDER: string[] = [
+  'tripwix-PT0009', // Mirante 1 (Albufeira)
+  'tripwix-PT0148', // Quinta Vale das Papas (Douro)
+  'tripwix-PT0164', // Villa Mare (Albufeira)
+  'tripwix-PT0175', // Alma da Comporta (Comporta)
+  'tripwix-PT0021', // Casa da Rocha (Central Algarve)
+  'tripwix-PT0186', // Quinta do Pinho (Douro)
+  '6a2ad70638d6620013badaef', // Carcavelos House by Portugal Active
+  '696533466d209c001510ecfe', // Eben Lodge (show off)
+  '69e7350685a8b000124854c5', // Alvarinho Villa 5 Suites & Heated Pool
+  '696533722def930014e914e2', // Abreu Retreat Palace - Luxury, Elegance & Leisure
+  '69c415ceab80a8001247452c', // Azenha do Tio Luis - Riverside Watermill (multi-unit)
+  '6965335cbf04fe00137431cb', // Lima River Houses (multi-unit)
+];
+
+/** Cards in the homepage strip: four rows of three on desktop, six of two on tablet. */
+export const HOME_FEATURED_COUNT = 12;
+
+/**
+ * The key a catalogue entry is matched on in HOME_FEATURED_ORDER: Guesty
+ * listingId when the home is ours, otherwise the catalogue id (partner homes).
+ */
+export function catalogKey(p: { id: string; guestyId?: string | null }): string {
+  return p.guestyId || p.id;
+}

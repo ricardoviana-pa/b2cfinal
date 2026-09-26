@@ -4,9 +4,11 @@
 
 export const IMAGES = {
   // Hero images
-  // Homepage cover — Carcavelos Manor House: the 18th-century estate with its
-  // lap pool and mature grounds.
-  heroMain: '/hero/home-cliff-villa.webp',
+  // Homepage cover — Mirante 1 (Albufeira, partner home): the private tennis
+  // court with the blue-trimmed villa behind it. Source is the supplier's
+  // 1920×1080 original (exports/tripwix-photos, gitignored); there is no
+  // larger master, so 1920 is the top of the srcSet.
+  heroMain: '/hero/home-mirante-tennis.webp',
   // Auto-hospedada: o CDN da plataforma original (d2xsxph8kpxj0f.cloudfront.net)
   // comecou a devolver 403/503 em 24 ago 2026 e nao volta — qualquer imagem
   // que la ficasse desaparece assim que a cache de edge expira.

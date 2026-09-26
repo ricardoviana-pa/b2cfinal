@@ -1,5 +1,5 @@
 {
-  "_README": "Authored English copy for the Tripwix partner homes, merged over the API payload by scripts/tripwix-import.mjs. The supplier's own text is byte-identical to their canonical pages on tripwix.com, so publishing it would make these 35 URLs duplicates of a site that already outranks us on those strings. Everything here is written from the structured data — amenities, layout, address, region — and never paraphrased from theirs. Keys are the supplier reference. Fields: name (only where theirs carries back-office noise), tagline, description (HTML), seoTitle, seoDescription, imageAlts (positional, index 0 = hero).",
+  "_README": "Authored English copy for the Tripwix partner homes, merged over the API payload by scripts/tripwix-import.mjs. The supplier's own text is byte-identical to their canonical pages on tripwix.com, so publishing it would make these 35 URLs duplicates of a site that already outranks us on those strings. Everything here is written from the structured data — amenities, layout, address, region — and never paraphrased from theirs. Keys are the supplier reference. Fields: name (only where theirs carries back-office noise), tagline, description (HTML), seoTitle, seoDescription, imageAlts (positional, in the supplier's photo order), coverIndex (optional: position, in that same order, of the photo that leads the card and the PDP hero; the import moves it and its alt to index 0).",
   "PT0023": {
     "tagline": "A restored quinta on the Douro's edge, with its own vineyard and river dock",
     "description": "Casa do Rolapipas sits at the water's edge in the Douro Valley, on a bend of the river where the terraced vineyards climb the far bank in near-vertical lines. The house has its own dock, so the river is not a view you admire from a terrace — it is somewhere you push off from before breakfast.\n\nSix bedrooms and seven bathrooms open onto the vineyard and the water, sleeping fourteen without anyone drawing the short straw. The pool sits between the house and the river, on a lawn that runs to the bank. Inside, an indoor fireplace anchors the living room for the cold, clear winters this valley is known for, and a wine cooler waits for whatever you carry back from the quintas upstream.\n\nThe kitchen is set up for people who intend to use it — dishwasher, oven, full cooking basics, dining table, wine glasses for a table of fourteen. If you would rather not, a chef can be arranged to cook in the house, and breakfast preparation and daily housekeeping are available on request.\n\nThis is Douro wine country at its most concentrated: port quintas within a short drive, river cruises from the local landings, and the terraced UNESCO landscape in every direction. The estate is gated, with parking on site, and the setting is quiet enough that the loudest thing most evenings is the water.",
@@ -233,7 +233,8 @@
       "Mirante 1 — private tennis court",
       "Mirante 1 — lawn garden and BBQ terrace",
       "Mirante 1 — games room with billiards table"
-    ]
+    ],
+    "coverIndex": 1
   },
   "PT0223": {
     "tagline": "A Quinta do Lago-area villa with indoor and outdoor pools, sauna and gym",

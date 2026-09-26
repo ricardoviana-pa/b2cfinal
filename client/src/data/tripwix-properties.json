@@ -458,8 +458,8 @@
     "minNights": 7,
     "currency": "EUR",
     "images": [
-      "/homes/photos/PT0009/00.webp",
       "/homes/photos/PT0009/01.webp",
+      "/homes/photos/PT0009/00.webp",
       "/homes/photos/PT0009/02.webp",
       "/homes/photos/PT0009/03.webp",
       "/homes/photos/PT0009/04.webp",
@@ -480,8 +480,8 @@
       "/homes/photos/PT0009/19.webp"
     ],
     "imageAlts": [
-      "Mirante 1 — heated pool and terrace with ocean views above Albufeira",
       "Mirante 1 — private tennis court",
+      "Mirante 1 — heated pool and terrace with ocean views above Albufeira",
       "Mirante 1 — lawn garden and BBQ terrace",
       "Mirante 1 — games room with billiards table",
       "",
@@ -686,7 +686,7 @@
     "supplierReference": "PT0009",
     "supplierUid": "2ff3c27b-da80-49e7-9c59-53e99106de2e",
     "supplierCommission": "10%",
-    "lastModified": "2026-09-05",
+    "lastModified": "2026-09-26",
     "imagesSelfHosted": true,
     "hasAuthoredCopy": true
   },

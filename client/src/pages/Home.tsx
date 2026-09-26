@@ -43,7 +43,8 @@ import { trpc } from '@/lib/trpc';
 import type { Destination, Property } from '@/lib/types';
 import { getUniqueLocalities } from '@/lib/utils';
 import { pushDL, pushEcommerce } from '@/lib/datalayer';
-import { CURATED_PROPERTY_ORDER, curatedPosition } from '@/config/propertyOrder';
+import { HOME_FEATURED_ORDER, HOME_FEATURED_COUNT, catalogKey, curatedPosition } from '@/config/propertyOrder';
+import { usePartnerPrices } from '@/hooks/usePartnerPrices';
 import { isChildUnit } from '@/config/propertyGroups';
 
 const destinations = destinationsData as unknown as Destination[];
@@ -198,30 +199,34 @@ export default function Home() {
   const s9Ref = useFadeIn();
   const s10Ref = useFadeIn();
 
-  // Featured homes — top 6 of the commercial team's curated PLP order
-  // (src/config/propertyOrder.ts). The homepage and the PLP share the
-  // same source of truth, so reordering the ranking updates both in
-  // one place.
+  // Featured homes — the homepage strip follows HOME_FEATURED_ORDER
+  // (src/config/propertyOrder.ts): six partner homes leading, then the
+  // top of the commercial team's curated PLP order. The PLP keeps its
+  // own ranking (CURATED_PROPERTY_ORDER); only the homepage reads this
+  // list. Partner homes have no Guesty listing, so entries are matched
+  // on the catalogue key (guestyId for our homes, catalogue id for
+  // partner inventory).
   //
   // Multi-unit child units are filtered out so a group's units never
   // surface individually in the strip (the parent listing — which
   // PropertyCard auto-renders as a group card — is what represents
-  // the cluster). If fewer than 6 curated entries exist in the
-  // current catalogue (e.g. a listing is temporarily unlisted in
-  // Guesty), the slot is filled by the next-highest-priced active
-  // property, skipping anything already chosen and any group child.
+  // the cluster). If fewer than HOME_FEATURED_COUNT entries exist in
+  // the current catalogue (e.g. a listing is temporarily unlisted in
+  // Guesty, or partner inventory is switched off), the slots are filled
+  // from our own homes in curated PLP order, then by price descending,
+  // skipping anything already chosen and any group child.
   const featured = useMemo(() => {
-    const byGuestyId = new Map(properties.filter(p => p.guestyId).map(p => [p.guestyId!, p]));
-    const pinned = CURATED_PROPERTY_ORDER
-      .map(id => byGuestyId.get(id))
+    const byKey = new Map(properties.map(p => [catalogKey(p), p]));
+    const pinned = HOME_FEATURED_ORDER
+      .map(key => byKey.get(key))
       .filter((p): p is NonNullable<typeof p> => !!p && !isChildUnit(p.guestyId))
-      .slice(0, 6);
-    if (pinned.length >= 6) return pinned;
-    const pinnedSet = new Set(pinned.map(p => p.guestyId));
+      .slice(0, HOME_FEATURED_COUNT);
+    if (pinned.length >= HOME_FEATURED_COUNT) return pinned;
+    const pinnedSet = new Set(pinned.map(catalogKey));
     const fillers = [...properties]
-      .filter(p => p.guestyId && !pinnedSet.has(p.guestyId) && !isChildUnit(p.guestyId))
+      .filter(p => p.guestyId && !pinnedSet.has(catalogKey(p)) && !isChildUnit(p.guestyId))
       .sort((a, b) => {
-        // Use the next curated ranks as the tie-breaker so fillers still
+        // Use the curated ranks as the tie-breaker so fillers still
         // come in commercial-team order, falling back to price descending
         // for anything completely off the ranking.
         const pa = curatedPosition(a.guestyId);
@@ -229,13 +234,19 @@ export default function Home() {
         if (pa !== pb) return pa - pb;
         return (b.priceFrom ?? 0) - (a.priceFrom ?? 0);
       });
-    return [...pinned, ...fillers].slice(0, 6);
+    return [...pinned, ...fillers].slice(0, HOME_FEATURED_COUNT);
   }, [properties]);
 
   const fromListingIds = useMemo(() => featured.filter(p => p.guestyId).map(p => p.guestyId!), [featured]);
   const { data: featuredFromPrices } = trpc.booking.lowestNightlyBatch.useQuery(
     { listingIds: fromListingIds },
     { enabled: fromListingIds.length > 0, staleTime: 5 * 60_000 },
+  );
+  // Partner homes (Tripwix) have no Guesty listing: their "from" price and
+  // dated quotes come from the partner calendar, exactly as on the PLP.
+  const partner = usePartnerPrices(
+    featured,
+    hasDates ? { checkIn: searchCheckin, checkOut: searchCheckout, guests: searchGuests || 2 } : undefined,
   );
 
   // Homepage geography block: show only region-hub entries
@@ -297,6 +308,7 @@ export default function Home() {
         // Fallback: base price estimates
         const computed: typeof homeQuotes = {};
         for (const p of featured) {
+          if (p.source === 'tripwix') continue; // partner quotes come from usePartnerPrices
           const rate = (p as any).pricePerNight ?? p.priceFrom ?? 0;
           const fee = (p as any).cleaningFee ?? 0;
           if (rate > 0) {
@@ -372,7 +384,7 @@ export default function Home() {
         <div className="absolute inset-0">
           <img
             src={IMAGES.heroMain}
-            srcSet="/hero/home-cliff-villa-768.webp 768w, /hero/home-cliff-villa-1280.webp 1280w, /hero/home-cliff-villa.webp 1920w"
+            srcSet="/hero/home-mirante-tennis-768.webp 768w, /hero/home-mirante-tennis-1280.webp 1280w, /hero/home-mirante-tennis.webp 1920w"
             sizes="100vw"
             alt={t('home.heroAlt')}
             className="w-full h-full object-cover"
@@ -516,9 +528,9 @@ export default function Home() {
                   checkout={searchCheckout || undefined}
                   guests={searchGuests > 1 ? searchGuests : undefined}
                   nights={searchNights}
-                  liveQuote={homeQuotes[property.slug] || undefined}
-                  quoteLoading={homeQuotesLoading}
-                  fromPrice={property.guestyId ? featuredFromPrices?.[property.guestyId] : undefined}
+                  liveQuote={(property.source === 'tripwix' ? partner.quotes[property.slug] : homeQuotes[property.slug]) || undefined}
+                  quoteLoading={property.source === 'tripwix' ? partner.isFetching : homeQuotesLoading}
+                  fromPrice={property.supplierUid ? partner.prices[property.supplierUid] : property.guestyId ? featuredFromPrices?.[property.guestyId] : undefined}
                   listId="featured_homes"
                   listName="Editor's Picks"
                   itemIndex={index + 1}
