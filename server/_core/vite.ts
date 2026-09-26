@@ -1194,8 +1194,8 @@ async function buildPropertyLinkIndex(strippedPath: string, lang: string): Promi
   if (hit && Date.now() - hit.at < LINK_INDEX_TTL_MS) return hit.html;
 
   try {
-    const { getPropertiesForSite } = await import("../services/properties-store");
-    const all = await getPropertiesForSite();
+    const { getPropertiesForSite, catalogProperties } = await import("../services/properties-store");
+    const all = catalogProperties(await getPropertiesForSite());
     // Match the destination slug against BOTH fields. Properties are tagged by
     // commercial region ("minho"), while the destination pages include
     // city-level spokes ("viana-do-castelo", "caminha", "esposende"). Matching
@@ -1739,9 +1739,9 @@ const _ssrRenderCache = new Map<string, { appHtml: string; dehydratedState: stri
     // meant tapping "Destination" opened a blank list.
     if (strippedPath === "/" || strippedPath === "/homes" || strippedPath.startsWith("/collections/")) {
       try {
-        const { getSiteLocalities, getPropertiesForSite } = await import("../services/properties-store");
+        const { getSiteLocalities, getPropertiesForSite, catalogProperties } = await import("../services/properties-store");
         const { toCatalogCard, recentGuestFeedback } = await import("../services/property-catalog");
-        const [localities, properties] = await Promise.all([getSiteLocalities(), getPropertiesForSite()]);
+        const [localities, properties] = await Promise.all([getSiteLocalities(), getPropertiesForSite().then(catalogProperties)]);
         return { localities, catalogForSite: properties.map(toCatalogCard), ...(strippedPath === "/" ? { guestFeedback: recentGuestFeedback(properties) } : {}) };
       } catch {
         return undefined;

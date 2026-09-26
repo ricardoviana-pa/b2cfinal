@@ -69,7 +69,9 @@ describe('destinations connect useful content to the right homes', () => {
     expect(homes.every(p=>p.locality==='Viana do Castelo')).toBe(true);
   });
   it('lists town spokes by locality, not the whole region', async () => {
-    for (const [slug, locality] of [['caminha', 'Caminha'], ['esposende', 'Esposende']] as const) {
+    // Esposende's two homes are kept off the catalogue (CATALOG_HIDDEN_GUESTY_IDS),
+    // so only Caminha is a locality spoke with homes to list.
+    for (const [slug, locality] of [['caminha', 'Caminha']] as const) {
       expect(destinationHomesHref({ slug, region: 'minho' })).toBe(`/homes?location=${slug}`);
       const homes = await getPropertiesForDestination(slug);
       expect(homes.length).toBeGreaterThan(0);

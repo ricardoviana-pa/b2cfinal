@@ -25,7 +25,7 @@ import {
   updateBookingIntent,
 } from "../db";
 import { sendCheckoutRecovery, sendConciergeCallAlert } from "./transactional-email";
-import { getPropertiesForSite } from "./properties-store";
+import { getPropertiesForSite, isHiddenFromCatalog } from "./properties-store";
 import type { BookingIntent } from "../../drizzle/schema";
 import { canRemindRecoveryStay } from './recovery-eligibility';
 import {
@@ -216,7 +216,7 @@ async function alternativesFor(intent: BookingIntent, stage: RecoveryStage) {
     const refPrice = Number(current?.pricePerNight || current?.priceFrom || 0);
     const pool = props
       .filter((p) =>
-        p.isActive !== false && !p.isPortfolio && p.guestyId && p.slug &&
+        p.isActive !== false && !p.isPortfolio && !isHiddenFromCatalog(p) && p.guestyId && p.slug &&
         p.guestyId !== intent.listingId &&
         String(p.destination || "").toLowerCase() === region &&
         Number(p.maxGuests || 0) >= intent.guests)

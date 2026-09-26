@@ -128,17 +128,50 @@ const EXCLUDED_SLUG_PATTERNS: string[] = [
   "test-guesty-test", // Guesty's own test listing — never public (auditoria set/2026, N10)
 ];
 
-/**
- * Brand-cleanup exclusions (2026-06-28 → revertida a 2026-09-24).
- * Em junho, 18 casas "mais fracas" saíram do www para proteger o
- * posicionamento de luxo. Revertido a pedido do Ricardo: grande parte das
- * vendas diretas vêm de hóspedes que viram a casa numa OTA e a procuram pelo
- * nome — e essas páginas davam 404. Todas as casas voltam a ter página
- * indexável; o topo da página de casas continua a seguir a ordem comercial
- * (client/src/config/propertyOrder.ts), por isso o destaque não muda.
- * Para voltar a esconder uma casa: acrescentar o id do Guesty aqui.
- */
+/** Hard exclusions: no page at all. Empty on purpose (see below). */
 const EXCLUDED_GUESTY_IDS = new Set<string>([]);
+
+/**
+ * Off the catalogue, still findable by name (Ricardo, 24–26 Sep 2026).
+ *
+ * In June these 18 homes left www to protect the luxury positioning, and
+ * their pages 404'd. But many direct bookings come from guests who saw a home
+ * on an OTA and search its name, so each keeps a page: 200, "index, follow",
+ * in sitemap.xml. What they don't get is a place in anything that *lists*
+ * homes: /homes, the homepage, collections, destinations, the search picker,
+ * similar homes, blog "where to stay" and the recovery-email alternatives.
+ * Use catalogProperties() for those; getPropertiesForSite() stays complete.
+ */
+export const CATALOG_HIDDEN_GUESTY_IDS = new Set<string>([
+  "6965338ed1c09900156e8502", // Calejo House
+  "696532fa6d209c001510d5ee", // Ocean view Cabedelo Beach Duplex
+  "696533762def930014e917bf", // Seabreeze Duplex
+  "696533616cff760015e28965", // Tide Terrace Duplex
+  "6a341163c50f210012f12b80", // Douro Garden
+  "6a0359b4e343150013abc14d", // Atlas Hideway
+  "696533d2ec19770014fd1b52", // Coastal Horizon
+  "696533752def930014e9167c", // Seaside Urban Retreat
+  "6965332c6d209c001510e1c1", // Slow Living Countryside House
+  "696532f3753fb0001424a570", // Countryside House near the Beach
+  "696533af4fe6a100145fecb6", // White Charm by the Sea
+  "69ca869e5b0a0500158b7d5a", // River View
+  "6965333104b96f00147f5428", // Bandeira Retreat
+  "696533794fe6a100145fe4bf", // Ocean Bliss
+  "6965335df1c3a8001597c8e4", // Divine Waves Duplex
+  "6965337d2def930014e919c6", // Urban Reflections
+  "696533cf4b583900135cfb02", // Shoreline Escape
+  "6a3a63f9e19cb0001db6a05e", // Saltwind Studio
+]);
+
+export function isHiddenFromCatalog(p: any): boolean {
+  const gid = p?.guestyId || p?.listingId || "";
+  return !!gid && CATALOG_HIDDEN_GUESTY_IDS.has(gid);
+}
+
+/** The homes the site may list. Pages and the sitemap use the full set. */
+export function catalogProperties<T>(properties: T[]): T[] {
+  return properties.filter((p) => !isHiddenFromCatalog(p));
+}
 
 function isExcluded(p: any): boolean {
   const gid = p.guestyId || p.listingId || "";
@@ -193,7 +226,7 @@ function slugifyLocality(name: string): string {
 export async function getSiteLocalities(): Promise<
   Array<{ label: string; value: string; group?: string; groupSlug?: string }>
 > {
-  const properties = await getPropertiesForSite();
+  const properties = catalogProperties(await getPropertiesForSite());
 
   // destination slug → display name + order, so the picker can group the raw
   // municipalities under the regions guests actually recognise.
@@ -290,7 +323,7 @@ export async function getPropertiesForDestination(slug: string): Promise<any[]> 
   const d = dests.find((x) => x.slug === slug);
   if (!d) return [];
   const regionOf = (dest: string) => dests.find((x) => x.slug === dest)?.region ?? dest;
-  const all = (await getPropertiesForSite()).filter((p) => p.isActive !== false);
+  const all = catalogProperties(await getPropertiesForSite()).filter((p) => p.isActive !== false);
   const own = all.filter((p) => p.destination === slug);
   const isHub = d.slug === d.region;
   const inLocality = all.filter((p) => localitySlug(p.locality) === slug);

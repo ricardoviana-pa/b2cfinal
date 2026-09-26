@@ -1,7 +1,9 @@
 /** Spoke guides whose homes are found by locality on /homes (the locality
  *  slug equals the destination slug: "Viana do Castelo", "Caminha",
  *  "Esposende", and the partner homes whose locality is "Douro"). */
-const LOCALITY_SPOKES = new Set(['viana-do-castelo', 'caminha', 'esposende', 'douro']);
+// Esposende's homes are off the catalogue for now, so its "view all" goes to
+// the region; add it back once it has a listed home.
+const LOCALITY_SPOKES = new Set(['viana-do-castelo', 'caminha', 'douro']);
 
 /** Published city guides use locality search; region guides use region search. */
 export function destinationHomesHref(d: { slug: string; region: string }): string {
