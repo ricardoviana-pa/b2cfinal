@@ -1,5 +1,5 @@
 import { isPreviewDeployment } from "./lib/preview-isolation";
-import { ne, eq, desc, asc, and, or, like, sql, inArray, isNotNull, gt, lt } from "drizzle-orm";
+import { ne, eq, desc, asc, and, or, like, sql, inArray, isNotNull, gt, gte, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   InsertUser, users,
@@ -10,7 +10,7 @@ import {
   blogAuthors, InsertBlogAuthor,
   blogPosts, InsertBlogPost,
   reviews, InsertReview,
-  leads, InsertLead,
+  leads, InsertLead, Lead,
   siteSettings, InsertSiteSetting,
   faqs, InsertFaq,
   destinations, InsertDestination,
@@ -989,6 +989,31 @@ export async function claimConciergeAlert(id: string): Promise<boolean> {
     console.error("[Database] claimConciergeAlert failed:", error);
     return false;
   }
+}
+
+/**
+ * Exportação interna para a máquina de leads do pa-marketing (server/routes/leads-export.ts):
+ * os carrinhos não pagos com email criados desde `since`, os mais recentes primeiro.
+ */
+export async function listUnpaidIntentsForExport(since: Date): Promise<BookingIntent[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(bookingIntents).where(and(
+    inArray(bookingIntents.status, ["contact_captured", "payment_pending"]),
+    isNotNull(bookingIntents.email),
+    gte(bookingIntents.createdAt, since),
+  )).orderBy(desc(bookingIntents.updatedAt));
+}
+
+/** A mesma exportação: os pedidos do site (contact-form, search-no-availability) por tratar desde `since`. */
+export async function listLeadsForExport(since: Date): Promise<Lead[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(leads).where(and(
+    inArray(leads.source, ["contact-form", "search-no-availability"]),
+    inArray(leads.status, ["new", "contacted"]),
+    gte(leads.createdAt, since),
+  )).orderBy(desc(leads.createdAt));
 }
 
 export async function listIntentsForRecoveryStay(intent: BookingIntent): Promise<BookingIntent[]> {
